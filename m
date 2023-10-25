@@ -2,122 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D961B7D6438
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098A87D6448
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjJYH62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S234393AbjJYH7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbjJYH6Z (ORCPT
+        with ESMTP id S234308AbjJYH7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:58:25 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D912DE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:58:23 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40842752c6eso42232985e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:58:23 -0700 (PDT)
+        Wed, 25 Oct 2023 03:59:09 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A08110A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:59:02 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so790522266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698220702; x=1698825502; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WMrCJ8iC2zXGi7WZzN0qtiWTpbbCtXullTI936AcbsQ=;
-        b=wlfZO9j2cdzfnXGv+GrEwzkto1LzOdNQatU/Cd5a5Ito6j/DyAmswn7l9XMB5ZYlsa
-         Y1RHKEwM6jmkH1hwqmrDtuTVIObmH8FYWt/O++EZUFSLwmiWKSEO8ew8qTNMr1dCKoGX
-         iLCZk2wh7rYUJMbrTHdLtYeoPBA68P6H5qsAnfmx/DkMc9wquylBWpwjO55yoPEbCRfw
-         1Lwa4dzk00+k4YErdQ0jtc2xr++7LnQQWud2pY+eQRvZ09f6hwFlCAy4SZgFVW+XgslC
-         4XuBAKoUKX6laRM35Ne+YYOtbGZ/+7VRsLAz9RqtBYwBRn6veBjkX3FX4krYrQU6PT95
-         OnjQ==
+        d=semihalf.com; s=google; t=1698220741; x=1698825541; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fvDTx3KAIXzd8vHpw9Vdd86W/jVpG2BbTDbBYIT2poU=;
+        b=VQTt6/cI4XU6BepFIqCzmQLic3PVoVFnoIyzFOZiLHoStCPLi5bRJTaj9sli/o0aSo
+         1h5XEYf+X/jgu0dMOEYdXZnDtVWHmnNFJDO8boO0Yt6KjrUupgrbf2Me8O7yyzYtSrbu
+         /IEZwPaea1keVu3TaCVsxz8nqTioGA+NXAXD0d0e83ZEKNZfRukA0VqRUQ7OtvWfMBcV
+         QbV9p7o1g8LRmwZUG18CBALPgDBSW/zrT3KSOccAEPhfdNEjwysF4sYChi83N1TbB3z9
+         zXHqYV3vRIzrD71h+BYPRDv56GxzXCRY/oQdprYXbfkZEKTjIli/Ryz1EP3oLwET5dRJ
+         2BYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698220702; x=1698825502;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WMrCJ8iC2zXGi7WZzN0qtiWTpbbCtXullTI936AcbsQ=;
-        b=Nw3rh37e46pegSNNVDYEyvnp4DmjGMYV7uhgunaUw1NfQ6iWaZjaw3lDcLoVjYcxWQ
-         vJD8K59EDTy5CqveTxyCoJg27MoAtLPd66IwmWN4pGtOqBXQJw3TgShnAxspQscSTCaG
-         thLRfA+FNiEYhP80sjQUn/QqOmr6BccvvAHsc745I9HnfDI5voscOJ7n9U5MFMU2G5Ed
-         +FtsNABCUUPQJaq+mNBJHU0fEX+7B8ftke2vWPE93ZqOkEBNyq5E5Yyd6thP/sH/N9Ho
-         br1OfN3eoBLDdFuvbPb2Pny4kXibkIzajMSSSqneoncH/N0YR+bFgnKKoecyO7AlhcRJ
-         uN1Q==
-X-Gm-Message-State: AOJu0YzX4wwnU6IaeLzPjgDV/6/5YK6uk1WRRuaZLFpIxhYywBtwfU8o
-        p+H5H7p0SIdEqXcsDgSK5iETWA==
-X-Google-Smtp-Source: AGHT+IGL1CURpHvmvHUxJ659idDO9tON4/vU6aty9Ek592QwHGxiormjS7dAov33vLsLUnLq1zMmHA==
-X-Received: by 2002:a5d:52cd:0:b0:32d:9daf:3f8d with SMTP id r13-20020a5d52cd000000b0032d9daf3f8dmr9750049wrv.49.1698220701756;
-        Wed, 25 Oct 2023 00:58:21 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id f5-20020a056000128500b0032179c4a46dsm11469523wrx.100.2023.10.25.00.58.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 00:58:21 -0700 (PDT)
-Message-ID: <ecf52f54-b082-4157-8643-4b967e7a9cb3@linaro.org>
-Date:   Wed, 25 Oct 2023 09:58:19 +0200
+        d=1e100.net; s=20230601; t=1698220741; x=1698825541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fvDTx3KAIXzd8vHpw9Vdd86W/jVpG2BbTDbBYIT2poU=;
+        b=wJGz20Xi9SzRLcfxyO+Cygm+iILP7NMCzSyifoGdtVvQ143ZKkYgdDLgF7n+fjwXZE
+         VdI7C/jl1sxJN2+aH8GMHLf7Y/A2qjFzPaENgDFWn8pF/xZ69FBGCEMnu/GLGuJ94WbI
+         BL/lRrHQXKWWSDl3B4thPQDClKYkVWf0acBlRXImgU4+eya2MqbUWwF7rkK4PpJ9WFF1
+         egwkdxmaZrR/notuwzKkz5UN/uxF22Ns6QFDTYGO8kM86x6BtmHkir5tnwe5+lGU9EMD
+         v08/NE+O0T2+IeJK4vRDEoJgWVQmSnTBo9keVCYPlkcXcc59trcVh1ehOJd7WjlxXpSd
+         n+6w==
+X-Gm-Message-State: AOJu0YypjGkydc42ipU3Sa5fhVJD6tqiCZgb6e1NIP7Kq7/S8zyCUhOf
+        DGDMZXQE5yYGC9/3h0jaqf2QSIxJW0vHgs52WUf7
+X-Google-Smtp-Source: AGHT+IHQDD2PMnD063AfB7TfpeyTJJunL+f9pAaWINSnFI6ntpcyU0hhbYs4wDdOMV/JgVEny1vSjCGeBM5x75REj+A=
+X-Received: by 2002:a17:906:c141:b0:9c5:7f8b:bafc with SMTP id
+ dp1-20020a170906c14100b009c57f8bbafcmr11359409ejc.22.1698220740637; Wed, 25
+ Oct 2023 00:59:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [DMARC error] Re: [PATCH v2 03/11] dt-bindings: leds: aw200xx:
- introduce optional hwen-gpios property
-Content-Language: en-US
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     lee@kernel.org, pavel@ucw.cz, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, andy.shevchenko@gmail.com,
-        kernel@sberdevices.ru, rockosov@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-References: <20231018182943.18700-1-ddrokosov@salutedevices.com>
- <20231018182943.18700-4-ddrokosov@salutedevices.com>
- <20231024183014.GA243505-robh@kernel.org>
- <20231024185211.x753eonmq5flwqa3@CAB-WSD-L081021>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231024185211.x753eonmq5flwqa3@CAB-WSD-L081021>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230915154856.1896062-1-lb@semihalf.com> <b76cc0b1-4a90-5d03-9e38-ac06ef5fd4f8@akamai.com>
+In-Reply-To: <b76cc0b1-4a90-5d03-9e38-ac06ef5fd4f8@akamai.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Wed, 25 Oct 2023 09:58:49 +0200
+Message-ID: <CAK8ByeKw6=FCHUJ+Rqc3izUHOOh4UtV4XzcgQKC8QFTbZnos+g@mail.gmail.com>
+Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Jim Cromie <jim.cromie@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,38 +74,1253 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 20:52, Dmitry Rokosov wrote:
-> On Tue, Oct 24, 2023 at 01:30:14PM -0500, Rob Herring wrote:
->> On Wed, Oct 18, 2023 at 09:29:35PM +0300, Dmitry Rokosov wrote:
->>> Property 'hwen-gpios' is optional, it can be used by the board
->>> developer to connect AW200XX LED controller with appropriate poweron
->>> GPIO pad.
->>>
->>> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
->>> ---
->>>  Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
->>> index feb5febaf361..255eb0563737 100644
->>> --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
->>> +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
->>> @@ -41,6 +41,9 @@ properties:
->>>      description:
->>>        Leds matrix size
->>>  
->>> +  hwen-gpios:
->>> +    maxItems: 1
->>
->> The standard enable-gpios or powerdown-gpios don't work for you?
-> 
-> HWEN is the name from the official datasheet. I thought it's always
-> better to use a naming convention that is similar to the notations used
-> in the datasheet.
+wt., 24 pa=C5=BA 2023 o 18:24 Jason Baron <jbaron@akamai.com> napisa=C5=82(=
+a):
+>
+>
+>
+> On 9/15/23 11:48 AM, =C5=81ukasz Bartosik wrote:
+> > Add support for selection of dynamic debug logs destination.
+> > When enabled it allows to configure destination of each callsite
+> > individually. The option adds a framework (described by struct
+> > ddebug_dst_ops) which provides flexible means to add a new destination
+> > for debug logs. On top of the framework support for trace instance as
+> > destination is added. By default destination of debug logs is syslog.
+> > Syslog can be set explicitly by using dst keyword or is selected by
+> > default when dst keyword is omitted, for example:
+> >
+> > localhost ~ # echo -n "module usbcore dst syslog =3Dp" >
+> >                           <debugfs>/dynamic_debug/control
+> > or
+> >
+> > localhost ~ # echo -n "module usbcore =3Dp" >
+> >                           <debugfs>/dynamic_debug/control
+> >
+> > To enable a trace instance as a destination of debug logs a user
+> > can for example issue the command:
+> >
+> > localhost ~ # echo -n "module usbcore dst trace:usb =3Dp" >
+> >                           <debugfs>/dynamic_debug/control
+>
+>
+> Sorry for the late reply here. So I normally thing of the dynamic debug
+> keywords- func,file,line,etc... as 'selectors'. Like these control which
+> sites are selected. Whereas the 'dst' keyword is where the output of
+> what is selected goes to. So it feels like it should be more like somethi=
+ng:
+>
+> echo "module usbcore =3DT:usb" > <debugfs>/dyanmic_debug/control
+>
+> And then if there are other flags maybe we need a comma?
+>
+> echo "module usbcore =3DT:usb,ptm" > <debugfs>/dyanmic_debug/control
+>
+> or
+>
+> echo "module usbcore =3DptmT:usb" > <debugfs>/dyanmic_debug/control
+>
+> And if you just have 'T' like:
+>
+> echo "module usbcore =3DptmT" > <debugfs>/dyanmic_debug/control
+>
+> That means use the 'default' trace buffer. And 'p' continues to mean the
+> printk buffer. So you could send lines to both. But you can't send
+> output to more than one trace buffer (although we could relax that in
+> the future, if needed with another ':' separator?).
+>
 
-I think we have such rule only for supplies, otherwise you will have
-multiple variants of the same reset/enable/powerdown-gpios.
+Thanks for the comment. I will follow your suggestions.
 
-Best regards,
-Krzysztof
+Lukasz
 
+> Thanks,
+>
+> -Jason
+>
+> >
+> > The command will write debug logs from usbcore subsystem to the
+> > trace instance named "usb" and the captured logs can be read
+> > later with the command:
+> >
+> > localhost ~ # cat <debugfs>/tracing/instances/usb/trace
+> >
+> > When trace instance name is omitted the debug logs will be written
+> > to "ddebug_default" trace instance:
+> >
+> > localhost ~ # cat <debugfs>/tracing/instances/ddebug_default/trace
+> >
+> > The DYNAMIC_DEBUG_DST option adds destination information
+> > in the dynamic debug control:
+> >
+> > localhost ~ # cat  <debugfs>/dynamic_debug/control
+> > drivers/usb/core/usb-acpi.c:143 [usbcore]usb_acpi_set_power_state =3Dp =
+"acpi: power failed to be set\n" trace:usb
+> > drivers/usb/core/usb-acpi.c:141 [usbcore]usb_acpi_set_power_state =3Dp =
+"acpi: power was set to %d\n" trace:usb
+> >
+> > There are two modes of operation for dynamic debug logs destination
+> > which can be selected during configuration stage of a kernel:
+> >
+> > * Dynamic - callsites configuration and destination of debug logs
+> > can be dynamically changed during runtime. This has slight impact
+> > on performance because it requires SRCU to be used for synchronization.
+> >
+> > * Static - callsites configuration and destination of debug logs
+> > can be configured only from a kernel boot command line. This option
+> > hides <debugfs>/dynamic_debug/control interface. It does not require
+> > SRCU synchronization because of the static configuration. It also
+> > provides convenient means to capture debug logs on production systems
+> > for issues which are difficult to reproduce but on the other hand
+> > do not expose <debugfs>/dynamic_debug/control interface for security
+> > reasons.
+> >
+> > For example to capture thunderbolt subsystem debug logs on production
+> > system to trace instance named "thunderbolt":
+> > * enable kernel configuration option CONFIG_DYNAMIC_DEBUG_CORE,
+> > * enable kernel configuration option DYNAMIC_DEBUG_DST and set its
+> >    operation mode to Static.
+> > * add the option to the thunderbolt's drivers/thunderbolt/Makefile
+> > in order to compile in debug logs:
+> >       CFLAGS_nhi.o :=3D -DDYNAMIC_DEBUG_MODULE
+> > * compile the kernel and update it on a target device,
+> > * finally append the entry to the kernel boot command line:
+> >       thunderbolt.dyndbg=3D"dst trace:thunderbolt =3Dp"
+> >
+> > The DYNAMIC_DEBUG_DST option increases each callsite size by
+> > the pointer size.
+> >
+> > Signed-off-by: =C5=81ukasz Bartosik <lb@semihalf.com>
+> > ---
+> > Changelog v1:
+> > - initial creation
+> > ---
+> >   include/linux/dynamic_debug.h |  30 ++
+> >   lib/Kconfig.debug             | 103 ++++++
+> >   lib/dynamic_debug.c           | 659 +++++++++++++++++++++++++++++++++=
+-
+> >   3 files changed, 786 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debu=
+g.h
+> > index 41682278d2e8..8dee10f66e72 100644
+> > --- a/include/linux/dynamic_debug.h
+> > +++ b/include/linux/dynamic_debug.h
+> > @@ -38,8 +38,18 @@ struct _ddebug {
+> >   #define _DPRINTK_FLAGS_INCL_LINENO  (1<<3)
+> >   #define _DPRINTK_FLAGS_INCL_TID             (1<<4)
+> >   #define _DPRINTK_FLAGS_INCL_SOURCENAME      (1<<5)
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     /*
+> > +      * The 6th and 7th bits of the flags are used to determine
+> > +      * destination of debug logs, currently supported destinations
+> > +      * are defined in ddebug_dst_type enumeration
+> > +      */
+> > +#define _DPRINTK_FLAGS_DST_SHIFT     6
+> > +#define _DPRINTK_FLAGS_DST_MASK      (3<<_DPRINTK_FLAGS_DST_SHIFT)
+> > +#endif
+> > +
+> >   #define _DPRINTK_FLAGS_INCL_ANY             \
+> >       (_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
+> >        _DPRINTK_FLAGS_INCL_LINENO  | _DPRINTK_FLAGS_INCL_TID |\
+> >        _DPRINTK_FLAGS_INCL_SOURCENAME)
+> > @@ -54,6 +64,10 @@ struct _ddebug {
+> >               struct static_key_false dd_key_false;
+> >       } key;
+> >   #endif
+> > +
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst *dst;
+> > +#endif
+> >   } __attribute__((aligned(8)));
+> >
+> >   enum class_map_type {
+> > @@ -280,10 +294,26 @@ void __dynamic_ibdev_dbg(struct _ddebug *descript=
+or,
+> >       _dynamic_func_call(fmt, __dynamic_ibdev_dbg,            \
+> >                          dev, fmt, ##__VA_ARGS__)
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +
+> > +void __print_hex_dump_dst(const struct _ddebug *descriptor, const char=
+ *level,
+> > +                       const char *prefix_str, int prefix_type, int ro=
+wsize,
+> > +                       int groupsize, const void *buf, size_t len,
+> > +                       bool ascii);
+> > +
+> > +#define dynamic_hex_dump(prefix_str, prefix_type, rowsize,            =
+               \
+> > +                      groupsize, buf, len, ascii)                     =
+               \
+> > +     _dynamic_func_call(__builtin_constant_p(prefix_str) ? prefix_str =
+: "hexdump",   \
+> > +                        __print_hex_dump_dst,                         =
+               \
+> > +                        KERN_DEBUG, prefix_str, prefix_type,          =
+               \
+> > +                        rowsize, groupsize, buf, len, ascii)
+> > +#else
+> > +
+> >   #define dynamic_hex_dump(prefix_str, prefix_type, rowsize,          \
+> >                        groupsize, buf, len, ascii)                    \
+> >       _dynamic_func_call_no_desc(__builtin_constant_p(prefix_str) ? pre=
+fix_str : "hexdump", \
+> >                                  print_hex_dump,                      \
+> >                                  KERN_DEBUG, prefix_str, prefix_type, \
+> >                                  rowsize, groupsize, buf, len, ascii)
+> > +#endif
+> >
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index f0c30ad83f22..4abfa126bde5 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -188,6 +188,109 @@ config DYNAMIC_DEBUG_CORE
+> >         the case of embedded system where the kernel image size is
+> >         sensitive for people.
+> >
+> > +menuconfig DYNAMIC_DEBUG_DST
+> > +     bool "Enable selection of dynamic debug logs destination"
+> > +     depends on DYNAMIC_DEBUG_CORE
+> > +     select TRACING
+> > +     help
+> > +       Add support for selecting destination of dynamic debug logs.
+> > +       When enabled it allows to configure destination of each callsit=
+e
+> > +       individually. The option adds a framework (described by struct
+> > +       ddebug_dst_ops) which provides flexible means to add a new dest=
+ination
+> > +       for debug logs. On top of the framework support for trace insta=
+nce as
+> > +       destination is added. By default destination of debug logs is s=
+yslog.
+> > +       Syslog can be set explicitly by using dst keyword or is selecte=
+d by
+> > +       default when dst keyword is omitted, for example:
+> > +
+> > +       localhost ~ # echo -n "module usbcore dst syslog =3Dp" >
+> > +                               <debugfs>/dynamic_debug/control
+> > +       or
+> > +
+> > +       localhost ~ # echo -n "module usbcore =3Dp" >
+> > +                               <debugfs>/dynamic_debug/control
+> > +
+> > +       To enable a trace instance as a destination of debug logs a use=
+r
+> > +       can for example issue the command:
+> > +
+> > +       localhost ~ # echo -n "module usbcore dst trace:usb =3Dp" >
+> > +                               <debugfs>/dynamic_debug/control
+> > +
+> > +       The command will write debug logs from usbcore subsystem to the
+> > +       trace instance named "usb" and the captured logs can be read
+> > +       later with the command:
+> > +
+> > +       localhost ~ # cat <debugfs>/tracing/instances/usb/trace
+> > +
+> > +       When trace instance name is omitted the debug logs will be writ=
+ten
+> > +       to "ddebug_default" trace instance:
+> > +
+> > +       localhost ~ # cat <debugfs>/tracing/instances/ddebug_default/tr=
+ace
+> > +
+> > +       The DYNAMIC_DEBUG_DST option adds destination information
+> > +       in the dynamic debug control:
+> > +
+> > +       localhost ~ # cat  <debugfs>/dynamic_debug/control
+> > +       # filename:lineno [module]function flags format destination
+> > +       drivers/usb/core/usb-acpi.c:143 [usbcore]usb_acpi_set_power_sta=
+te =3Dp "acpi: power failed to be set\n" trace:usb
+> > +       drivers/usb/core/usb-acpi.c:141 [usbcore]usb_acpi_set_power_sta=
+te =3Dp "acpi: power was set to %d\n" trace:usb
+> > +
+> > +       The DYNAMIC_DEBUG_DST option increases each callsite size by
+> > +       the pointer size.
+> > +
+> > +if DYNAMIC_DEBUG_DST
+> > +
+> > +choice
+> > +     prompt "Destination mode"
+> > +     default DYNAMIC_DEBUG_DST_DYNAMIC
+> > +     help
+> > +       There are two modes of operation for dynamic debug logs destina=
+tion
+> > +       which can be selected during configuration stage of a kernel:
+> > +
+> > +       * Dynamic - callsites configuration and destination of debug lo=
+gs
+> > +       can be dynamically changed during runtime. This has slight impa=
+ct
+> > +       on performance because it requires SRCU to be used for synchron=
+ization.
+> > +
+> > +       * Static - callsites configuration and destination of debug log=
+s
+> > +       can be configured only from a kernel boot command line. This op=
+tion
+> > +       hides <debugfs>/dynamic_debug/control interface. It does not re=
+quire
+> > +       SRCU synchronization because of the static configuration. It al=
+so
+> > +       provides convenient means to capture debug logs on production s=
+ystems
+> > +       for issues which are difficult to reproduce and at the same tim=
+e
+> > +       do not expose <debugfs>/dynamic_debug/control interface for sec=
+urity
+> > +       reasons.
+> > +
+> > +config DYNAMIC_DEBUG_DST_DYNAMIC
+> > +     bool "Dynamic"
+> > +     select SRCU
+> > +     help
+> > +       Callsites configuration and destination of debug logs can be
+> > +       dynamically changed during runtime. This has slight impact on
+> > +       performance because it requires SRCU to be used for synchroniza=
+tion.
+> > +
+> > +       The interface which allows to dynamically change configuration =
+is:
+> > +             <debugfs>/dynamic_debug/control
+> > +
+> > +config DYNAMIC_DEBUG_DST_STATIC
+> > +     bool "Static"
+> > +     help
+> > +       Callsites configuration and destination of debug logs can be
+> > +       configured only from a kernel boot command line. This option
+> > +       does not expose <debugfs>/dynamic_debug/control interface and
+> > +       therefore does not require SRCU synchronization. It also provid=
+es
+> > +       convenient means to capture debug logs on production systems
+> > +       for issues which are difficult to reproduce and at the same tim=
+e
+> > +       do not expose <debugfs>/dynamic_debug/control interface
+> > +       for security reasons.
+> > +
+> > +       For example to configure usbcore module to output its debug log=
+s
+> > +       to trace instance named "usb" the following line would have to =
+be
+> > +       appended to a kernel boot command line:
+> > +
+> > +           usbcore.dyndbg=3D"dst trace:usb =3Dp"
+> > +
+> > +endchoice
+> > +endif
+> > +
+> >   config SYMBOLIC_ERRNAME
+> >       bool "Support symbolic error names in printf"
+> >       default y if PRINTK
+> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> > index 009f2ead09c1..0cb69b553554 100644
+> > --- a/lib/dynamic_debug.c
+> > +++ b/lib/dynamic_debug.c
+> > @@ -44,6 +44,87 @@ extern struct _ddebug __stop___dyndbg[];
+> >   extern struct ddebug_class_map __start___dyndbg_classes[];
+> >   extern struct ddebug_class_map __stop___dyndbg_classes[];
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +#include <linux/trace.h>
+> > +
+> > +enum ddebug_dst_type {
+> > +     DDEBUG_DST_SYSLOG,      /* destination syslog */
+> > +     DDEBUG_DST_TRACE,       /* destination trace instance */
+> > +     /* DDEBUG_DST_NOT_USED_1 */
+> > +     /* DDEBUG_DST_NOT_USED_2 */
+> > +     DDEBUG_DST_MAX,
+> > +};
+> > +
+> > +/*
+> > + * The structure holds information related to debug logs output
+> > + * destination other than syslog. Currently only trace instance
+> > + * is supported.
+> > + */
+> > +struct ddebug_dst {
+> > +     unsigned int use_count;
+> > +     enum ddebug_dst_type type;
+> > +     struct ddebug_dst_ops *ops;
+> > +     union {
+> > +             struct {
+> > +                     const char *instance;
+> > +                     struct trace_array *arr;
+> > +             } trace;
+> > +     };
+> > +};
+> > +
+> > +#ifndef CONFIG_DYNAMIC_DEBUG_DST_STATIC
+> > +
+> > +/*
+> > + * Instead of slicing code with #ifdefs create
+> > + * wrappers around SRCU functions we use
+> > + */
+> > +DEFINE_STATIC_SRCU(dst_srcu);
+> > +
+> > +#define dd_srcu_dereference(p, ssp) srcu_dereference(p, ssp)
+> > +#define dd_rcu_assign_pointer(p, v) rcu_assign_pointer(p, v)
+> > +
+> > +static inline int dd_srcu_read_lock(struct srcu_struct *ssp)
+> > +{
+> > +     return srcu_read_lock(ssp);
+> > +}
+> > +
+> > +static inline void dd_srcu_read_unlock(struct srcu_struct *ssp, int id=
+x)
+> > +{
+> > +     return srcu_read_unlock(ssp, idx);
+> > +}
+> > +
+> > +static void dd_synchronize_srcu(struct srcu_struct *ssp)
+> > +{
+> > +     synchronize_srcu(ssp);
+> > +}
+> > +
+> > +#else
+> > +
+> > +struct dd_srcu_struct {
+> > +};
+> > +
+> > +static struct dd_srcu_struct dst_srcu;
+> > +
+> > +#define dd_srcu_dereference(p, ssp) (p)
+> > +#define dd_rcu_assign_pointer(p, v) ((p) =3D (v))
+> > +
+> > +static inline int dd_srcu_read_lock(struct dd_srcu_struct *ssp)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +static inline void dd_srcu_read_unlock(struct dd_srcu_struct *ssp, int=
+ idx)
+> > +{
+> > +}
+> > +
+> > +void dd_synchronize_srcu(struct dd_srcu_struct *ssp)
+> > +{
+> > +}
+> > +
+> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST_STATIC */
+> > +
+> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST */
+> > +
+> >   struct ddebug_table {
+> >       struct list_head link, maps;
+> >       const char *mod_name;
+> > @@ -58,6 +139,7 @@ struct ddebug_query {
+> >       const char *format;
+> >       const char *class_string;
+> >       unsigned int first_lineno, last_lineno;
+> > +     struct ddebug_dst *dst;
+> >   };
+> >
+> >   struct ddebug_iter {
+> > @@ -126,10 +208,402 @@ do {                                            =
+               \
+> >   #define v3pr_info(fmt, ...) vnpr_info(3, fmt, ##__VA_ARGS__)
+> >   #define v4pr_info(fmt, ...) vnpr_info(4, fmt, ##__VA_ARGS__)
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +
+> > +static inline enum ddebug_dst_type get_dst_type(const struct _ddebug *=
+dp)
+> > +{
+> > +     return (dp->flags & _DPRINTK_FLAGS_DST_MASK) >>
+> > +             _DPRINTK_FLAGS_DST_SHIFT;
+> > +}
+> > +
+> > +static void set_dst_type(unsigned int *newflags,
+> > +                      enum ddebug_dst_type type)
+> > +{
+> > +     *newflags &=3D ~_DPRINTK_FLAGS_DST_MASK;
+> > +     *newflags |=3D (type << _DPRINTK_FLAGS_DST_SHIFT);
+> > +}
+> > +
+> > +#define DST_SYSLOG_STR       "syslog"
+> > +#define DST_TRACE_STR        "trace"
+> > +#define DST_INVALID_STR      "invalid"
+> > +#define DST_DST_STR  "destination"
+> > +
+> > +struct dstbuf {
+> > +#define DST_DESC_MAX_SIZE 32
+> > +     char buf[DST_DESC_MAX_SIZE];
+> > +};
+> > +
+> > +static char *describe_dst_type(const enum ddebug_dst_type type)
+> > +{
+> > +     switch (type) {
+> > +     case DDEBUG_DST_SYSLOG:
+> > +             return DST_SYSLOG_STR;
+> > +     case DDEBUG_DST_TRACE:
+> > +             return DST_TRACE_STR;
+> > +     default:
+> > +             return DST_INVALID_STR;
+> > +     }
+> > +}
+> > +
+> > +static char *ddebug_describe_dst(const struct ddebug_dst *dst,
+> > +                              struct dstbuf *dstb)
+> > +{
+> > +     if (!dst)
+> > +             return DST_SYSLOG_STR;
+> > +
+> > +     switch (dst->type) {
+> > +     case DDEBUG_DST_SYSLOG:
+> > +             return DST_SYSLOG_STR;
+> > +     case DDEBUG_DST_TRACE:
+> > +             snprintf(dstb->buf, DST_DESC_MAX_SIZE, "%s:%s",
+> > +                      DST_TRACE_STR, dst->trace.instance);
+> > +             break;
+> > +     default:
+> > +             return DST_INVALID_STR;
+> > +     }
+> > +
+> > +     return dstb->buf;
+> > +}
+> > +
+> > +static char *ddebug_describe_dst_dp(struct _ddebug *dp, struct dstbuf =
+*dstb)
+> > +{
+> > +     if (!get_dst_type(dp))
+> > +             return DST_SYSLOG_STR;
+> > +
+> > +     return ddebug_describe_dst(dp->dst, dstb);
+> > +}
+> > +
+> > +/*
+> > + * struct ddebug_dst_ops - dynamic debug logs destination operations
+> > + *
+> > + * @parse_and_init - parses and initializes destination
+> > + * @has_changed - checks whether destination has changed for a callsit=
+e
+> > + * @print - prints message for a callsite
+> > + * @dev_print - prints device message for a callsite
+> > + * @free - frees memory associated with a destination
+> > + */
+> > +struct ddebug_dst_ops {
+> > +     int (*parse_and_init)(struct ddebug_query *query, const char *arg=
+);
+> > +     bool (*has_changed)(const struct ddebug_query *query,
+> > +                         const struct _ddebug *dp);
+> > +     void (*print)(const struct ddebug_dst *dst, const char *fmt, ...)=
+;
+> > +     void (*dev_print)(const struct ddebug_dst *dst,
+> > +                       const struct device *dev, const char *fmt, ...)=
+;
+> > +     void (*free)(struct ddebug_dst *dst, int arg);
+> > +};
+> > +
+> > +static int tr_parse_and_init(struct ddebug_query *query,
+> > +                          const char *arg)
+> > +{
+> > +     char *instance =3D strchr(arg, ':');
+> > +     struct trace_array *arr;
+> > +     int ret =3D -EINVAL;
+> > +
+> > +     if (instance)
+> > +             instance++;
+> > +     else
+> > +             instance =3D "ddebug_default";
+> > +
+> > +     arr =3D trace_array_get_by_name(instance);
+> > +     if (!arr)
+> > +             goto err;
+> > +
+> > +     ret =3D trace_array_init_printk(arr);
+> > +     if (ret)
+> > +             goto err_trace;
+> > +
+> > +     query->dst->trace.instance =3D kstrdup(instance, GFP_KERNEL);
+> > +     if (!query->dst->trace.instance)
+> > +             goto err_trace;
+> > +
+> > +     query->dst->trace.arr =3D arr;
+> > +
+> > +     v3pr_info("parsed trace dst: instance name=3D%s, arrray=3D%p\n",
+> > +               query->dst->trace.instance, arr);
+> > +     return 0;
+> > +err_trace:
+> > +     trace_array_put(arr);
+> > +     trace_array_destroy(arr);
+> > +err:
+> > +     return ret;
+> > +}
+> > +
+> > +bool tr_has_changed(const struct ddebug_query *query, const struct _dd=
+ebug *dp)
+> > +{
+> > +     if (!dp->dst)
+> > +             return true;
+> > +     else if (dp->dst->type !=3D DDEBUG_DST_TRACE)
+> > +             return true;
+> > +
+> > +     return query->dst->trace.arr !=3D dp->dst->trace.arr;
+> > +}
+> > +
+> > +__printf(2, 3)
+> > +static void tr_print(const struct ddebug_dst *dst, const char *fmt, ..=
+.)
+> > +{
+> > +     va_list args;
+> > +     struct va_format vaf;
+> > +
+> > +     va_start(args, fmt);
+> > +     vaf.fmt =3D fmt;
+> > +     vaf.va =3D &args;
+> > +
+> > +     trace_array_printk(dst->trace.arr, _THIS_IP_, "%pV", &vaf);
+> > +
+> > +     va_end(args);
+> > +}
+> > +
+> > +__printf(3, 4)
+> > +static void tr_dev_print(const struct ddebug_dst *dst,
+> > +                      const struct device *dev, const char *fmt, ...)
+> > +{
+> > +     va_list args;
+> > +     struct va_format vaf;
+> > +
+> > +     va_start(args, fmt);
+> > +     vaf.fmt =3D fmt;
+> > +     vaf.va =3D &args;
+> > +
+> > +     trace_array_printk(dst->trace.arr, _THIS_IP_, "%pV", &vaf);
+> > +     va_end(args);
+> > +}
+> > +
+> > +static void tr_free(struct ddebug_dst *dst, int tr_arr_destroy)
+> > +{
+> > +     WARN_ON(!dst);
+> > +
+> > +     v2pr_info("freed dst: type=3Dtrace, instance=3D%s\n", dst->trace.=
+instance);
+> > +
+> > +     kfree(dst->trace.instance);
+> > +     dst->trace.instance =3D NULL;
+> > +
+> > +     trace_array_put(dst->trace.arr);
+> > +     /*
+> > +      * destroy trace instance in case when query was not applied to a=
+ny
+> > +      * of the callsites, otherwise don't try to destroy it because it=
+ will
+> > +      * be removed from sysfs together with captured debug logs, let a=
+ user
+> > +      * to delete it manually later at convenient time
+> > +      */
+> > +     if (tr_arr_destroy)
+> > +             trace_array_destroy(dst->trace.arr);
+> > +     dst->trace.arr =3D NULL;
+> > +}
+> > +
+> > +bool syslog_has_changed(const struct ddebug_query *query,
+> > +                     const struct _ddebug *dp)
+> > +{
+> > +     if (!dp->dst)
+> > +             return false;
+> > +
+> > +     return dp->dst->type !=3D DDEBUG_DST_SYSLOG;
+> > +}
+> > +
+> > +static void syslog_free(struct ddebug_dst *dst, int arg)
+> > +{
+> > +     v2pr_info("freed dst: type=3Dsyslog\n");
+> > +}
+> > +
+> > +static struct ddebug_dst_ops dst_ops[] =3D {
+> > +     // syslog destination ops
+> > +     {
+> > +             .parse_and_init =3D NULL,
+> > +             .has_changed =3D syslog_has_changed,
+> > +             .print =3D NULL,
+> > +             .dev_print =3D NULL,
+> > +             .free =3D syslog_free,
+> > +     },
+> > +     // trace destination ops
+> > +     {
+> > +             .parse_and_init =3D tr_parse_and_init,
+> > +             .has_changed =3D tr_has_changed,
+> > +             .print =3D tr_print,
+> > +             .dev_print =3D tr_dev_print,
+> > +             .free =3D tr_free,
+> > +     },
+> > +};
+> > +
+> > +static int dst_parse_and_init(struct ddebug_query *query, const char *=
+arg)
+> > +{
+> > +     int ret =3D -EINVAL;
+> > +
+> > +     if (!arg)
+> > +             goto err;
+> > +
+> > +     if (query->dst)
+> > +             goto err;
+> > +
+> > +     query->dst =3D kzalloc(sizeof(struct ddebug_dst), GFP_KERNEL);
+> > +     if (!query->dst) {
+> > +             ret =3D -ENOMEM;
+> > +             goto err;
+> > +     }
+> > +
+> > +     if (!strcmp(arg, "syslog")) {
+> > +             query->dst->type =3D DDEBUG_DST_SYSLOG;
+> > +             query->dst->ops =3D &dst_ops[DDEBUG_DST_SYSLOG];
+> > +     } else if (!strcmp(arg, "trace") ||
+> > +                !strncmp(arg, "trace:", 6)) {
+> > +             query->dst->type =3D DDEBUG_DST_TRACE;
+> > +             query->dst->ops =3D &dst_ops[DDEBUG_DST_TRACE];
+> > +     } else
+> > +             goto err_mem;
+> > +
+> > +     if (query->dst->ops->parse_and_init) {
+> > +             ret =3D query->dst->ops->parse_and_init(query, arg);
+> > +             if (ret)
+> > +                     goto err_mem;
+> > +     }
+> > +
+> > +     v3pr_info("parsed dst: type=3D%s\n", describe_dst_type(query->dst=
+->type));
+> > +     return 0;
+> > +err_mem:
+> > +     kfree(query->dst);
+> > +err:
+> > +     return ret;
+> > +}
+> > +
+> > +static void dst_apply_change(const struct ddebug_query *query,
+> > +                          struct _ddebug *dp)
+> > +{
+> > +     /* store old destination pointer */
+> > +     struct ddebug_dst *old_dst =3D dp->dst;
+> > +     struct ddebug_dst *new_dst;
+> > +
+> > +     /* increase use count */
+> > +     query->dst->use_count++;
+> > +
+> > +     /*
+> > +      * syslog destination does not require additional description
+> > +      * however we use it to simplify control path processing
+> > +      */
+> > +     new_dst =3D (query->dst->type =3D=3D DDEBUG_DST_SYSLOG) ? NULL : =
+query->dst;
+> > +
+> > +     /* update destination pointer */
+> > +     dd_rcu_assign_pointer(dp->dst, new_dst);
+> > +
+> > +     if (!old_dst)
+> > +             return;
+> > +
+> > +     old_dst->use_count--;
+> > +     /* check if old destination pointer is still being used */
+> > +     if (!old_dst->use_count) {
+> > +             /*
+> > +              * wait for all read rcu critical sections
+> > +              * in progress to finish
+> > +              */
+> > +             dd_synchronize_srcu(&dst_srcu);
+> > +             /* call destination specific free function */
+> > +             old_dst->ops->free(old_dst, 0);
+> > +             /* free old destination pointer */
+> > +             kfree(old_dst);
+> > +     }
+> > +}
+> > +
+> > +static void dst_try_free(struct ddebug_query *query)
+> > +{
+> > +     if (!query)
+> > +             return;
+> > +
+> > +     /* free destination if it wasn't applied to any callsite */
+> > +     if (!query->dst->use_count) {
+> > +             if (query->dst->ops->free)
+> > +                     query->dst->ops->free(query->dst, 1);
+> > +             /*
+> > +              * for syslog we always free its destination because
+> > +              * it is used only to simplify control path processing
+> > +              */
+> > +             if (query->dst->type)
+> > +                     v2pr_info("freed dst: didn't apply to any of the =
+callsites\n");
+> > +             kfree(query->dst);
+> > +             query->dst =3D NULL;
+> > +     }
+> > +}
+> > +
+> > +void __print_hex_dump_dst(const struct _ddebug *descriptor, const char=
+ *level,
+> > +                       const char *prefix_str, int prefix_type,
+> > +                       int rowsize, int groupsize, const void *buf,
+> > +                       size_t len, bool ascii)
+> > +{
+> > +     if (get_dst_type(descriptor)) {
+> > +             const u8 *ptr =3D buf;
+> > +             struct ddebug_dst *dst;
+> > +             int i, linelen, remaining =3D len, idx;
+> > +             unsigned char linebuf[32 * 3 + 2 + 32 + 1];
+> > +
+> > +             if (rowsize !=3D 16 && rowsize !=3D 32)
+> > +                     rowsize =3D 16;
+> > +
+> > +             idx =3D dd_srcu_read_lock(&dst_srcu);
+> > +             dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
+> > +             WARN_ON(!dst);
+> > +             for (i =3D 0; i < len; i +=3D rowsize) {
+> > +                     linelen =3D min(remaining, rowsize);
+> > +                     remaining -=3D rowsize;
+> > +
+> > +                     hex_dump_to_buffer(ptr + i, linelen, rowsize, gro=
+upsize,
+> > +                                        linebuf, sizeof(linebuf), asci=
+i);
+> > +
+> > +                     switch (prefix_type) {
+> > +                     case DUMP_PREFIX_ADDRESS:
+> > +                             dst->ops->print(descriptor->dst, "%s%s%p:=
+ %s\n",
+> > +                                             level, prefix_str, ptr + =
+i, linebuf);
+> > +                             break;
+> > +                     case DUMP_PREFIX_OFFSET:
+> > +                             dst->ops->print(descriptor->dst, "%s%s%.8=
+x: %s\n",
+> > +                                             level, prefix_str, i, lin=
+ebuf);
+> > +                             break;
+> > +                     default:
+> > +                             dst->ops->print(descriptor->dst, "%s%s%s\=
+n",
+> > +                                             level, prefix_str, linebu=
+f);
+> > +                             break;
+> > +                     }
+> > +             }
+> > +
+> > +             dd_srcu_read_unlock(&dst_srcu, idx);
+> > +     } else
+> > +             print_hex_dump(level, prefix_str, prefix_type, rowsize,
+> > +                            groupsize, buf, len, ascii);
+> > +}
+> > +EXPORT_SYMBOL(__print_hex_dump_dst);
+> > +
+> > +#else
+> > +
+> > +struct ddebug_dst {
+> > +};
+> > +
+> > +struct dstbuf {
+> > +};
+> > +
+> > +static inline unsigned int get_dst_type(const struct _ddebug *dp)
+> > +{
+> > +     return  0;
+> > +}
+> > +
+> > +static char *ddebug_describe_dst(const struct ddebug_dst *dst,
+> > +                              struct dstbuf *dstb)
+> > +{
+> > +     return "";
+> > +}
+> > +
+> > +static char *ddebug_describe_dst_dp(struct _ddebug *dp,
+> > +                                 struct dstbuf *dstb)
+> > +{
+> > +     return "";
+> > +}
+> > +
+> > +static void dst_try_free(struct ddebug_query *query)
+> > +{
+> > +}
+> > +
+> > +#define DST_DST_STR  ""
+> > +
+> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST */
+> > +
+> >   static void vpr_info_dq(const struct ddebug_query *query, const char =
+*msg)
+> >   {
+> >       /* trim any trailing newlines */
+> >       int fmtlen =3D 0;
+> > +     struct dstbuf dstb;
+> >
+> >       if (query->format) {
+> >               fmtlen =3D strlen(query->format);
+> > @@ -137,13 +611,14 @@ static void vpr_info_dq(const struct ddebug_query=
+ *query, const char *msg)
+> >                       fmtlen--;
+> >       }
+> >
+> > -     v3pr_info("%s: func=3D\"%s\" file=3D\"%s\" module=3D\"%s\" format=
+=3D\"%.*s\" lineno=3D%u-%u class=3D%s\n",
+> > +     v3pr_info("%s: func=3D\"%s\" file=3D\"%s\" module=3D\"%s\" format=
+=3D\"%.*s\" lineno=3D%u-%u class=3D%s %s=3D%s\n",
+> >                 msg,
+> >                 query->function ?: "",
+> >                 query->filename ?: "",
+> >                 query->module ?: "",
+> >                 fmtlen, query->format ?: "",
+> > -               query->first_lineno, query->last_lineno, query->class_s=
+tring);
+> > +               query->first_lineno, query->last_lineno, query->class_s=
+tring,
+> > +               DST_DST_STR, ddebug_describe_dst(query->dst, &dstb));
+> >   }
+> >
+> >   static struct ddebug_class_map *ddebug_find_valid_class(struct ddebug=
+_table const *dt,
+> > @@ -178,8 +653,12 @@ static int ddebug_change(const struct ddebug_query=
+ *query,
+> >       unsigned int newflags;
+> >       unsigned int nfound =3D 0;
+> >       struct flagsbuf fbuf, nbuf;
+> > +     struct dstbuf dstbc, dstbn;
+> >       struct ddebug_class_map *map =3D NULL;
+> >       int __outvar valid_class;
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst_ops *dst_ops =3D query->dst->ops;
+> > +#endif
+> >
+> >       /* search for matching ddebugs */
+> >       mutex_lock(&ddebug_lock);
+> > @@ -243,8 +722,19 @@ static int ddebug_change(const struct ddebug_query=
+ *query,
+> >                       nfound++;
+> >
+> >                       newflags =3D (dp->flags & modifiers->mask) | modi=
+fiers->flags;
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +                     /* set destination type in newflags */
+> > +                     set_dst_type(&newflags, query->dst->type);
+> > +                     if (newflags =3D=3D dp->flags &&
+> > +                         (!dst_ops->has_changed ||
+> > +                          !dst_ops->has_changed(query, dp)))
+> > +                             /* nothing changed */
+> > +                             continue;
+> > +#else
+> >                       if (newflags =3D=3D dp->flags)
+> >                               continue;
+> > +#endif
+> > +
+> >   #ifdef CONFIG_JUMP_LABEL
+> >                       if (dp->flags & _DPRINTK_FLAGS_PRINT) {
+> >                               if (!(newflags & _DPRINTK_FLAGS_PRINT))
+> > @@ -253,14 +743,24 @@ static int ddebug_change(const struct ddebug_quer=
+y *query,
+> >                               static_branch_enable(&dp->key.dd_key_true=
+);
+> >                       }
+> >   #endif
+> > -                     v4pr_info("changed %s:%d [%s]%s %s =3D> %s\n",
+> > +                     v4pr_info("changed %s:%d [%s]%s %s %s =3D> %s %s\=
+n",
+> >                                 trim_prefix(dp->filename), dp->lineno,
+> >                                 dt->mod_name, dp->function,
+> >                                 ddebug_describe_flags(dp->flags, &fbuf)=
+,
+> > -                               ddebug_describe_flags(newflags, &nbuf))=
+;
+> > +                               ddebug_describe_dst_dp(dp, &dstbc),
+> > +                               ddebug_describe_flags(newflags, &nbuf),
+> > +                               ddebug_describe_dst(query->dst, &dstbn)=
+);
+> >                       dp->flags =3D newflags;
+> > +
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +                     if (dst_ops->has_changed &&
+> > +                         dst_ops->has_changed(query, dp))
+> > +                             /* destination changed, apply it */
+> > +                             dst_apply_change(query, dp);
+> > +#endif
+> >               }
+> >       }
+> > +
+> >       mutex_unlock(&ddebug_lock);
+> >
+> >       if (!nfound && verbose)
+> > @@ -456,6 +956,12 @@ static int ddebug_parse_query(char *words[], int n=
+words,
+> >                               return -EINVAL;
+> >               } else if (!strcmp(keyword, "class")) {
+> >                       rc =3D check_set(&query->class_string, arg, "clas=
+s");
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +             } else if (!strcmp(keyword, "dst")) {
+> > +                     rc =3D dst_parse_and_init(query, arg);
+> > +                     if (rc)
+> > +                             return rc;
+> > +#endif
+> >               } else {
+> >                       pr_err("unknown keyword \"%s\"\n", keyword);
+> >                       return -EINVAL;
+> > @@ -463,6 +969,15 @@ static int ddebug_parse_query(char *words[], int n=
+words,
+> >               if (rc)
+> >                       return rc;
+> >       }
+> > +
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     /* set destination to syslog by default if it was not explicitly =
+set */
+> > +     if (!query->dst) {
+> > +             rc =3D dst_parse_and_init(query, "syslog");
+> > +             if (rc)
+> > +                     return rc;
+> > +     }
+> > +#endif
+> >       if (!query->module && modname)
+> >               /*
+> >                * support $modname.dyndbg=3D<multiple queries>, when
+> > @@ -549,11 +1064,14 @@ static int ddebug_exec_query(char *query_string,=
+ const char *modname)
+> >       }
+> >       if (ddebug_parse_query(words, nwords-1, &query, modname)) {
+> >               pr_err("query parse failed\n");
+> > +             dst_try_free(&query);
+> >               return -EINVAL;
+> >       }
+> > +
+> >       /* actually go and implement the change */
+> >       nfound =3D ddebug_change(&query, &modifiers);
+> >       vpr_info_dq(&query, nfound ? "applied" : "no-match");
+> > +     dst_try_free(&query);
+> >
+> >       return nfound;
+> >   }
+> > @@ -856,6 +1374,10 @@ static inline char *dynamic_emit_prefix(struct _d=
+debug *desc, char *buf)
+> >
+> >   void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, =
+...)
+> >   {
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst *dst;
+> > +     int idx;
+> > +#endif
+> >       va_list args;
+> >       struct va_format vaf;
+> >       char buf[PREFIX_SIZE] =3D "";
+> > @@ -868,6 +1390,21 @@ void __dynamic_pr_debug(struct _ddebug *descripto=
+r, const char *fmt, ...)
+> >       vaf.fmt =3D fmt;
+> >       vaf.va =3D &args;
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     if (!get_dst_type(descriptor))
+> > +             goto syslog;
+> > +
+> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
+> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
+> > +     WARN_ON(!dst);
+> > +     dst->ops->print(dst, "%s%pV", dynamic_emit_prefix(descriptor, buf=
+),
+> > +                     &vaf);
+> > +
+> > +     dd_srcu_read_unlock(&dst_srcu, idx);
+> > +     va_end(args);
+> > +     return;
+> > +syslog:
+> > +#endif
+> >       printk(KERN_DEBUG "%s%pV", dynamic_emit_prefix(descriptor, buf), =
+&vaf);
+> >
+> >       va_end(args);
+> > @@ -877,6 +1414,10 @@ EXPORT_SYMBOL(__dynamic_pr_debug);
+> >   void __dynamic_dev_dbg(struct _ddebug *descriptor,
+> >                     const struct device *dev, const char *fmt, ...)
+> >   {
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst *dst;
+> > +     int idx;
+> > +#endif
+> >       struct va_format vaf;
+> >       va_list args;
+> >
+> > @@ -888,6 +1429,29 @@ void __dynamic_dev_dbg(struct _ddebug *descriptor=
+,
+> >       vaf.fmt =3D fmt;
+> >       vaf.va =3D &args;
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     if (!get_dst_type(descriptor))
+> > +             goto syslog;
+> > +
+> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
+> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
+> > +     WARN_ON(!dst);
+> > +     if (!dev) {
+> > +             dst->ops->print(dst, "(NULL device *): %pV", &vaf);
+> > +     } else {
+> > +             char buf[PREFIX_SIZE] =3D "";
+> > +
+> > +             dst->ops->dev_print(dst, dev, "%s%s %s: %pV",
+> > +                                 dynamic_emit_prefix(descriptor, buf),
+> > +                                 dev_driver_string(dev), dev_name(dev)=
+,
+> > +                                 &vaf);
+> > +     }
+> > +
+> > +     dd_srcu_read_unlock(&dst_srcu, idx);
+> > +     va_end(args);
+> > +     return;
+> > +syslog:
+> > +#endif
+> >       if (!dev) {
+> >               printk(KERN_DEBUG "(NULL device *): %pV", &vaf);
+> >       } else {
+> > @@ -908,6 +1472,10 @@ EXPORT_SYMBOL(__dynamic_dev_dbg);
+> >   void __dynamic_netdev_dbg(struct _ddebug *descriptor,
+> >                         const struct net_device *dev, const char *fmt, =
+...)
+> >   {
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst *dst;
+> > +     int idx;
+> > +#endif
+> >       struct va_format vaf;
+> >       va_list args;
+> >
+> > @@ -919,6 +1487,35 @@ void __dynamic_netdev_dbg(struct _ddebug *descrip=
+tor,
+> >       vaf.fmt =3D fmt;
+> >       vaf.va =3D &args;
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     if (!get_dst_type(descriptor))
+> > +             goto syslog;
+> > +
+> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
+> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
+> > +     WARN_ON(!dst);
+> > +     if (dev && dev->dev.parent) {
+> > +             char buf[PREFIX_SIZE] =3D "";
+> > +
+> > +             dst->ops->dev_print(dst, dev->dev.parent,
+> > +                                 "%s%s %s %s%s: %pV",
+> > +                                 dynamic_emit_prefix(descriptor, buf),
+> > +                                 dev_driver_string(dev->dev.parent),
+> > +                                 dev_name(dev->dev.parent),
+> > +                                 netdev_name(dev), netdev_reg_state(de=
+v),
+> > +                                 &vaf);
+> > +     } else if (dev) {
+> > +             dst->ops->print(dst, "%s%s: %pV", netdev_name(dev),
+> > +                             netdev_reg_state(dev), &vaf);
+> > +     } else {
+> > +             dst->ops->print(dst, "(NULL net_device *): %pV", &vaf);
+> > +     }
+> > +
+> > +     dd_srcu_read_unlock(&dst_srcu, idx);
+> > +     va_end(args);
+> > +     return;
+> > +syslog:
+> > +#endif
+> >       if (dev && dev->dev.parent) {
+> >               char buf[PREFIX_SIZE] =3D "";
+> >
+> > @@ -947,6 +1544,10 @@ EXPORT_SYMBOL(__dynamic_netdev_dbg);
+> >   void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+> >                        const struct ib_device *ibdev, const char *fmt, =
+...)
+> >   {
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     struct ddebug_dst *dst;
+> > +     int idx;
+> > +#endif
+> >       struct va_format vaf;
+> >       va_list args;
+> >
+> > @@ -955,6 +1556,34 @@ void __dynamic_ibdev_dbg(struct _ddebug *descript=
+or,
+> >       vaf.fmt =3D fmt;
+> >       vaf.va =3D &args;
+> >
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +     if (!get_dst_type(descriptor))
+> > +             goto syslog;
+> > +
+> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
+> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
+> > +     WARN_ON(!dst);
+> > +     if (ibdev && ibdev->dev.parent) {
+> > +             char buf[PREFIX_SIZE] =3D "";
+> > +
+> > +             dst->ops->dev_print(dst, ibdev->dev.parent,
+> > +                                 "%s%s %s %s: %pV",
+> > +                                 dynamic_emit_prefix(descriptor, buf),
+> > +                                 dev_driver_string(ibdev->dev.parent),
+> > +                                 dev_name(ibdev->dev.parent),
+> > +                                 dev_name(&ibdev->dev),
+> > +                                 &vaf);
+> > +     } else if (ibdev) {
+> > +             dst->ops->print(dst, "%s: %pV", dev_name(&ibdev->dev), &v=
+af);
+> > +     } else {
+> > +             dst->ops->print(dst, "(NULL ib_device): %pV", &vaf);
+> > +     }
+> > +
+> > +     dd_srcu_read_unlock(&dst_srcu, idx);
+> > +     va_end(args);
+> > +     return;
+> > +syslog:
+> > +#endif
+> >       if (ibdev && ibdev->dev.parent) {
+> >               char buf[PREFIX_SIZE] =3D "";
+> >
+> > @@ -1127,11 +1756,16 @@ static int ddebug_proc_show(struct seq_file *m,=
+ void *p)
+> >       struct ddebug_iter *iter =3D m->private;
+> >       struct _ddebug *dp =3D p;
+> >       struct flagsbuf flags;
+> > +     struct dstbuf dstb;
+> >       char const *class;
+> >
+> >       if (p =3D=3D SEQ_START_TOKEN) {
+> > -             seq_puts(m,
+> > -                      "# filename:lineno [module]function flags format=
+\n");
+> > +             seq_puts(m, "# filename:lineno [module]function flags for=
+mat");
+> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
+> > +             seq_puts(m, " destination\n");
+> > +#else
+> > +             seq_puts(m, "\n");
+> > +#endif
+> >               return 0;
+> >       }
+> >
+> > @@ -1149,6 +1783,7 @@ static int ddebug_proc_show(struct seq_file *m, v=
+oid *p)
+> >               else
+> >                       seq_printf(m, " class unknown, _id:%d", dp->class=
+_id);
+> >       }
+> > +     seq_printf(m, " %s", ddebug_describe_dst_dp(dp, &dstb));
+> >       seq_puts(m, "\n");
+> >
+> >       return 0;
+> > @@ -1351,6 +1986,9 @@ static void ddebug_remove_all_tables(void)
+> >
+> >   static __initdata int ddebug_init_success;
+> >
+> > +
+> > +#ifndef CONFIG_DYNAMIC_DEBUG_DST_STATIC
+> > +
+> >   static int __init dynamic_debug_init_control(void)
+> >   {
+> >       struct proc_dir_entry *procfs_dir;
+> > @@ -1374,6 +2012,15 @@ static int __init dynamic_debug_init_control(voi=
+d)
+> >       return 0;
+> >   }
+> >
+> > +#else
+> > +
+> > +static int __init dynamic_debug_init_control(void)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +#endif
+> > +
+> >   static int __init dynamic_debug_init(void)
+> >   {
+> >       struct _ddebug *iter, *iter_mod_start;
