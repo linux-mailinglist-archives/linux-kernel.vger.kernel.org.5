@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CA77D6FEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A6D7D7001
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343756AbjJYOrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
+        id S1344043AbjJYOtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjJYOrh (ORCPT
+        with ESMTP id S233628AbjJYOtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:47:37 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAD9B0;
-        Wed, 25 Oct 2023 07:47:35 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b2e44c7941so3966883b6e.2;
-        Wed, 25 Oct 2023 07:47:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698245255; x=1698850055;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eU9dcz1YGa9iU8LlGA/PhULWkXEMb0rfxCJT61Ovfuc=;
-        b=m8e1sfrhXtPvOoE1xxgYXZByt7tKA0HZt9rcv5lMdIcHX0Y1VPf90UVm1tbUga+En1
-         wlpVRksokoYHJQ8vqs86EdJmCorAhm0uJaKdGMoo01jpypUnM/IR+8QHoZPrjgHWxGZ1
-         mD/cVavHM6nUP7Dq+vF/r4bRi+Z0dAeZT/P7ViC17rlgZC9MmTLPO7SkR24W3UtFiSlo
-         TimjA6aUpjZ2X7ynaVPghhcVoFcRLBFmm7BZqKs2iKu1NK3Y+QteBAqLLZm6nJuE2zLz
-         62xMz8N8TIbzN9iCLFuN19foV/fCcCz8jMMc0DuJswe2rFo48BCLC+iLUMBIx/Zs/42C
-         fswg==
-X-Gm-Message-State: AOJu0YwpBfRfCCMb448Wii9QZcRuoRx7ozi22Z/zGown7hWmrFBFcPos
-        DeJDnbalb7W8+hia1d+aMa1432xR9w==
-X-Google-Smtp-Source: AGHT+IGHO+eEDenRbvjdxLALO/vIF1UN+JMcjErf2td8FFO4465DCrb+T8KVr5y3/DBabI3sw0GQiQ==
-X-Received: by 2002:a54:448f:0:b0:3ae:5743:533a with SMTP id v15-20020a54448f000000b003ae5743533amr17400033oiv.47.1698245254994;
-        Wed, 25 Oct 2023 07:47:34 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056808000c00b003af6eeed9b6sm2387440oic.27.2023.10.25.07.47.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:47:34 -0700 (PDT)
-Received: (nullmailer pid 259082 invoked by uid 1000);
-        Wed, 25 Oct 2023 14:47:33 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Wed, 25 Oct 2023 10:49:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6041FDC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698245325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/Pt8PD3fKJKJEHUeXOD6j5kypGWK1I6rGvh+TneYCRQ=;
+        b=Hv9q02rOyJEZbRM0HarzRfnFLLIAxMaymUm9bv4p0YD+/Nl5x01GfBXycaCL/Z8qzOmjlt
+        V/UwrVM8+m3W7sYuh+gbXdbqoHpg4teFd4fwIVxgem7Lp/zLggA8XtCT7ftOdhdZ1mUivd
+        FxAlqMYig2G62N3fiQnfBdJq8+fvUNw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-8kJ3MnFsNg-wBKvUmRwjXw-1; Wed, 25 Oct 2023 10:48:41 -0400
+X-MC-Unique: 8kJ3MnFsNg-wBKvUmRwjXw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AA182857CF1;
+        Wed, 25 Oct 2023 14:48:40 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.225.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D704B2026D66;
+        Wed, 25 Oct 2023 14:48:38 +0000 (UTC)
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Michal Schmidt <mschmidt@redhat.com>
+Subject: [PATCH iwl-next v2] i40e: Delete unused i40e_mac_info fields
+Date:   Wed, 25 Oct 2023 16:48:38 +0200
+Message-ID: <20231025144838.1827302-1-ivecera@redhat.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org>
-References: <20231025-topic-sm8650-upstream-clocks-v1-0-c89b59594caf@linaro.org>
- <20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org>
-Message-Id: <169824516120.243773.546101172844888564.robh@kernel.org>
-Subject: Re: [PATCH 03/10] dt-bindings: clock: qcom: document the SM8650
- Display Clock Controller
-Date:   Wed, 25 Oct 2023 09:47:33 -0500
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From commit 9eed69a9147c ("i40e: Drop FCoE code from core driver files")
+the field i40e_mac_info.san_addr is unused (never filled).
+The field i40e_mac_info.max_fcoeq is unused from the beginning.
+Remove both.
 
-On Wed, 25 Oct 2023 09:32:40 +0200, Neil Armstrong wrote:
-> Add bindings documentation for the SM8650 Display Clock Controller.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  .../bindings/clock/qcom,sm8650-dispcc.yaml         | 106 +++++++++++++++++++++
->  include/dt-bindings/clock/qcom,sm8650-dispcc.h     | 101 ++++++++++++++++++++
->  2 files changed, 207 insertions(+)
-> 
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+Co-developed-by: Michal Schmidt <mschmidt@redhat.com>
+Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c  | 5 +----
+ drivers/net/ethernet/intel/i40e/i40e_debugfs.c | 3 +--
+ drivers/net/ethernet/intel/i40e/i40e_type.h    | 2 --
+ 3 files changed, 2 insertions(+), 8 deletions(-)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.example.dts:18:18: fatal error: dt-bindings/clock/qcom,sm8650-gcc.h: No such file or directory
-   18 |         #include <dt-bindings/clock/qcom,sm8650-gcc.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c b/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
+index 1ee77a2433c0..4721845fda6e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
+@@ -827,15 +827,12 @@ static void i40e_dcbnl_get_perm_hw_addr(struct net_device *dev,
+ 					u8 *perm_addr)
+ {
+ 	struct i40e_pf *pf = i40e_netdev_to_pf(dev);
+-	int i, j;
++	int i;
+ 
+ 	memset(perm_addr, 0xff, MAX_ADDR_LEN);
+ 
+ 	for (i = 0; i < dev->addr_len; i++)
+ 		perm_addr[i] = pf->hw.mac.perm_addr[i];
+-
+-	for (j = 0; j < dev->addr_len; j++, i++)
+-		perm_addr[i] = pf->hw.mac.san_addr[j];
+ }
+ 
+ static const struct dcbnl_rtnl_ops dcbnl_ops = {
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+index e0849f0c9c27..88240571721a 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+@@ -147,9 +147,8 @@ static void i40e_dbg_dump_vsi_seid(struct i40e_pf *pf, int seid)
+ 			 "    state[%d] = %08lx\n",
+ 			 i, vsi->state[i]);
+ 	if (vsi == pf->vsi[pf->lan_vsi])
+-		dev_info(&pf->pdev->dev, "    MAC address: %pM SAN MAC: %pM Port MAC: %pM\n",
++		dev_info(&pf->pdev->dev, "    MAC address: %pM Port MAC: %pM\n",
+ 			 pf->hw.mac.addr,
+-			 pf->hw.mac.san_addr,
+ 			 pf->hw.mac.port_addr);
+ 	hash_for_each(vsi->mac_filter_hash, bkt, f, hlist) {
+ 		dev_info(&pf->pdev->dev,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
+index e3d40630f689..76bcbaec8ae5 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_type.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
+@@ -270,9 +270,7 @@ struct i40e_mac_info {
+ 	enum i40e_mac_type type;
+ 	u8 addr[ETH_ALEN];
+ 	u8 perm_addr[ETH_ALEN];
+-	u8 san_addr[ETH_ALEN];
+ 	u8 port_addr[ETH_ALEN];
+-	u16 max_fcoeq;
+ };
+ 
+ enum i40e_aq_resources_ids {
+-- 
+2.41.0
 
