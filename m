@@ -2,67 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A248E7D6CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218B07D6CDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344513AbjJYNNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S234987AbjJYNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjJYNNL (ORCPT
+        with ESMTP id S234967AbjJYNOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:13:11 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D01111;
-        Wed, 25 Oct 2023 06:13:09 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7789cb322deso386381985a.3;
-        Wed, 25 Oct 2023 06:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698239588; x=1698844388; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lFeJTuWj+8fliI7ZKMp8fCArGM+QdzaiPtmM5GUkmWs=;
-        b=SNF7niw1Zq+KJnYAgueR96YtvqRZSCYk2H+2bHeVQF7JuPhataQFwbo+tYL8FLXBlP
-         4G8iYfKFyPeAO3B3aywtd09Bw138siNMEDkYOuPHwFRD0VrLuRAhZ9G/kVqSlIV1ayjO
-         tNdGeFxNU4oRaC159WT61yzmJvyNxOwcaHl/fJfNR1cIuoV1kASrMcqbRlI+7YFQImKv
-         zsN+F+h0Jp1wHzs8+9aNEGfJgJ7bKDNOYyX+VA5Yrfnwye0SfLpJrus8GXuRpYD74DAQ
-         Y+O3poJtQqPkIVs8A9M0PEBGnTLAEI2DUtqfcto67/xXmvW7VXmm8Av256IVa8Nzl1jn
-         QAAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239588; x=1698844388;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lFeJTuWj+8fliI7ZKMp8fCArGM+QdzaiPtmM5GUkmWs=;
-        b=Yy2Cdgme7xcpoUiLWNdvnntnhJmslGeA0f0smYc7OvAQP9cLoAK551MLS1yqXXJSso
-         mDTG+kk70Ddbd0i9xj7PmGo4jLmyrD5vp4Z2QkdkbBhvPuGauoGh27eldUzbr9vJPm3c
-         CZkm5lA8YsD2yUkmnWthphqYeHWzLffXRe7LAaNNtwl6uHo5nm8UiPKZy7X8Yu07CspL
-         OaVuIRB5Y1aUUTtxHNGEc23C5nzWBZVZ0Fhc9rYqbyc+9OES95zhjmoz5bXUsGlk4H3q
-         8I8d4zlVp3kSaTC3oHxuln0E6hOrxWui+lYOBsmngPSOSNFPbJMxypwCxuuDqpbeAfu7
-         P10g==
-X-Gm-Message-State: AOJu0YwwJKZ2Zp2xpVeJ7pQr+dSCj/AivJer0sC9nPAml7yZ3w0rtIKR
-        d3uQ6gFzukgWz9Nycx1tr3tdrsGL6aTmDTsmIyw=
-X-Google-Smtp-Source: AGHT+IHtBOrHCchdxTvkzOtqs00oPy95CN565EVEhi3PvnF3Mkw20XMvsMc54VKjw7pknPZg6eTnJTtXs/qFgyFyNaw=
-X-Received: by 2002:a05:6214:1c4a:b0:66d:ba99:ba1e with SMTP id
- if10-20020a0562141c4a00b0066dba99ba1emr9984191qvb.52.1698239588401; Wed, 25
- Oct 2023 06:13:08 -0700 (PDT)
+        Wed, 25 Oct 2023 09:14:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A44F12F;
+        Wed, 25 Oct 2023 06:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698239686; x=1729775686;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=MmHp/FqCRi2labE9naDPRt9cTmWCDIW+XHuza7qUgb8=;
+  b=QHmF5RNbcCMPSr7rPX2txe+mStsCEUAJ0CuS52Mialub2ZTY3rDP8T1T
+   aw0emdFIQOv85oF36c8YARQ2qg/MoSf+njrAfH/+6drps3O/QiH4vt2w+
+   Tn4EKoBWu9pTksgboRKZvGmp8rvVcaTkAncbhrpIhLuW7FoRtyqCNZ/EA
+   bLyThDaAZoKj6sMW75S4AwAPTRf6JLU4dY13/8l4Q/x6O4LS2npjrf/VR
+   LsqonjqDTelWVrQlpp5uhjRrvOy22/7ywOvqP0kbUJoS1M3tAqSi0jmt3
+   bn46Z9YhKm5wVKW1cohs+HGB+J0+lcASZ5hwCVxUrBQHMl8MrBLr2PdtI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="384514240"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="384514240"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 06:14:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="89020"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Oct 2023 06:14:11 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 25 Oct 2023 06:14:45 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 25 Oct 2023 06:14:44 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 25 Oct 2023 06:14:44 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 25 Oct 2023 06:14:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ibcpin87W0avR7T9LmYkMwgkpkm0ZhohxKTB9CksZ6fe1l2U8++0oXbszYR8uoZNs1BI88a+NvN8MwgEo39iAQKeexqATPAP2iMoo1akJmQYfdxuHkDJYKARfDWcRg2jibQ4QhMTGtz1yhbpObOUePC5Oo/+Pl8HH5RnxW1LUJFpsuwIstcWSbVxZ42xUTMCi9HqUHuPfvsCxu233C17t5a45U8C1OnO/B3ugxXLZ/VbO5RWeK63oXMvZWDnV8tB+fve72WTqAmAAq3QBkfm9w2hJl1e7hJ/3/l4b0CTgwx/THaPLmh4ij8relVLa+RSUseHAKI7MH5kGsNQHEM2Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o+MFktwB3vX4fL1jEGjzwRD/DT8JiQbPwrTQXO53Cj4=;
+ b=cMm2LG2UsItwmz86z1MUqg6JXc52ev3xgAeEWNuhhwBqXckOmF6gICLXkoUtmPLSxO83bjbTKS5ci+Lyj1DyhoaWSktNiy/gWklAZjaGn93PYavjhuOylDFNSO68JTauQQFuBEHHidGL3Bqom1oFTIlvjymmqT2GFul+zBpQw2yTk8zOiz/1L81k8pgBxA+CeDvwtSIvTLhGi2ELyH7Y3H2fnl+QAdgl8sqwzWyHYyB2vOtCB9M7lnycqfofJP72BBLp31r1eJmZMdqYHhdqUOtL23jQPXNo3sG7Mp8l/TXWWDJNNmETZTffxa/VJM0ou9yiiwlQq32fPXb+1vPFHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by SJ0PR11MB5772.namprd11.prod.outlook.com (2603:10b6:a03:422::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 25 Oct
+ 2023 13:14:43 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6907.021; Wed, 25 Oct 2023
+ 13:14:43 +0000
+Message-ID: <f7e712a2-a0d0-f1e1-b6dc-7c41c1ef3d86@intel.com>
+Date:   Wed, 25 Oct 2023 15:14:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH net-next] bareudp: use ports to lookup route
+To:     Beniamino Galvani <b.galvani@gmail.com>, <netdev@vger.kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20231025094441.417464-1-b.galvani@gmail.com>
+Content-Language: en-US
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <20231025094441.417464-1-b.galvani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0416.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d0::19) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 MIME-Version: 1.0
-References: <20231025112932.84336-1-zohar@linux.ibm.com>
-In-Reply-To: <20231025112932.84336-1-zohar@linux.ibm.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 25 Oct 2023 16:12:57 +0300
-Message-ID: <CAOQ4uxhtasz_mapEiUBb5ecoVaKy+H9=rNeLRTTAN8Tyf4jyVw@mail.gmail.com>
-Subject: Re: [PATCH v2] ima: detect changes to the backing overlay file
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Raul Rangel <rrangel@chromium.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|SJ0PR11MB5772:EE_
+X-MS-Office365-Filtering-Correlation-Id: 193502f2-a0be-4af6-f5e2-08dbd55c5a28
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gSpVlcqKCJZTvsXb5G1hhSchgcVfvYPgyucP4EE1NQNnFXK9gEGgEb/GtjUdQ6eC46Eprc/CSyi9U2ba4/wKBs9tsNyKycV/vb8j+qCQ5BYe6VYLSURwW3W/iteHfhoQRUuKAW7Cszip2oDvOKPNi5drcxUN7kVFD8w8CmcAqW97GqvYwFv5BpwBDlS2Bou06IyILb5R4PTF3+ivkAVBFKF8EUEW/zF6YSnufGE2pBzBCC98nEX4Kub8Ltt+zGdb/sAppQamMsJ1Oe0WKHn3DYOIhbebIt9mWaaye9kvWqYowogrTrDbT79VsrzB19jj7SbANHdh0o13s8fpE4a9eXkMFPbqFyHuzFNkJ3tbbmo83Jimqm54YsG2/FLNJ3BXZdsiMBgVx6/ACZxt0f+DbBCL1Yhv4jBKYOqWQ+VNYichJnz3tzZ6dRxSi0DVSS2Ei8DCxczBNEmJUJNaHKdqJaf69Xd9hDKVDmOu3VuUtqmp/2dWgTJQ5GJMxNpLa48xwEgKACYLIl2+meFEAJpekgQ7AKJDV4qQaLCTnX+JYKSTNTsb1qEnRBvAr8RUsMK+x3AThaNTPnjHYy1hboTZ1GNnCsV2NcI+8xtxVMxsqwdio0XWyLqpOmF6YOYMdfkmbmcVwAhXV8GsLmVdhS+R0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(366004)(396003)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(6506007)(36756003)(316002)(38100700002)(53546011)(6666004)(31696002)(41300700001)(4744005)(2616005)(2906002)(4326008)(31686004)(66556008)(54906003)(66476007)(66946007)(5660300002)(8676002)(6512007)(26005)(478600001)(86362001)(8936002)(6486002)(82960400001)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K29wODZmNGZIYTR2ajQ3aWRmZWxyUWNQeW1RaHJaNGV2N0trWVlJQVpCcWo4?=
+ =?utf-8?B?L2toZW01S3lmZ05ldFlSaGRlV3U3L0pVMXFZbTUyc0NEQUQ0b0syRkVaeWpN?=
+ =?utf-8?B?S2RodHo5eVRGWks2UGpQc0k4Tjl1d25LYjAwemVESkJpdWFQN0tBbkxvNzdr?=
+ =?utf-8?B?WWFjKzJxeU1yeXh3L1ZDekxvWUNDeWt2VmJEd1NwanYvLzduWWdzL0N1VkRN?=
+ =?utf-8?B?SEdqNlpEc3Z3NGR4ZkF5OWtXcGdNWEQ2V292dW9relpPd1lrZ3BTcVF3RHQ5?=
+ =?utf-8?B?UEd1R1psT2ZRL3NmT2dvaDFNeEcySFBCMzZ1NTlGMlJEbGFPTGIzeERlYVRo?=
+ =?utf-8?B?eWdjNEMzMUxIYWExcVJzRDhDeUR1ektkRjlCc0hhYitkLy8vY0ZPc3gvRmR4?=
+ =?utf-8?B?WGg1U0F6R292Z1IzY0lnVGo0VVlQa3VnTXFoQTdxZGZmMnBnMlRLb25nYk5Y?=
+ =?utf-8?B?eWhtcG1JL1psUngvYnN3ZFltVnRGZGFMYWFOOHNQbVdwRzA4TkQwcWlXaFhO?=
+ =?utf-8?B?cy9SdlRtYXI1Mlh6RERRTDRCWEwrbHNwWEYxNjIzVjVMTDVkMG80b1J1a056?=
+ =?utf-8?B?Y0krcTVmbXJNL3lBdEFRbFNGMmJ0V2hoaXZuNDdrRmNzY21tOTc1SmhML0JU?=
+ =?utf-8?B?bUJkQ2RTRGJjMmkvOEVJR25iMmtPRXNleWdKN0RKdlN1VFphOGo5V1V2TTl2?=
+ =?utf-8?B?MGtUTnRXQmhUYkxxOTROZ25jZ05GMnFidEZyTW5UbFI2Zm5XTUx0TEJYRS8z?=
+ =?utf-8?B?WGRaa0h0Y1ZEeFp2YmZic21TaGxHcHIzcEtYaUh1RjVGbER6aG9FRytoa256?=
+ =?utf-8?B?b0dLUHhORE5mNXBvcDUvZHR6REo3V1BlWW9vUlJ0aGdibm9WT2s4ejFDOGxk?=
+ =?utf-8?B?d20yc1d1dVlucnRtMHNjVWIwTTdtd3R0K0h4RWVHSXNQYURyZTUva3lTMnp3?=
+ =?utf-8?B?NzJkNUhFeUUvZ1NkU25hdHRFMVlqRFNZMmJFOFJqaGZYQitGOUtNMkkyNUZq?=
+ =?utf-8?B?OVVYU3VUbVZ2TG93Ym1zWHhtV3hwM2xrOWhuaGpFMjlreDdzM0lEUjJSZGoy?=
+ =?utf-8?B?dW1lNlZGcE9PeGEvMWlBSXNTL2c5ZEpFb3BZOG9uL2k2dTh5YUl0WVZvSk4x?=
+ =?utf-8?B?bGxUcEZPSmxVdUhpMG5zQVBKV2gyN210QzVkL3kxNXBiZkJDVGoxN2tkN1JM?=
+ =?utf-8?B?R3kxLzlLVThCTE54WS9TcVZ5MSs1aDVXa3JETFJvd21jdldvU1U4dFozV0pK?=
+ =?utf-8?B?Yzg1ek5VemZzNnorMVFsZXNpQXdMdFEybUtvaVFKZ2FzYXRiNm9QZXc1aHZ3?=
+ =?utf-8?B?Q0NaSFdBamZPMnJNN215V2c0bDlLZ2dhSVhmOENIcTI0MDlaME1kRFFsMlN2?=
+ =?utf-8?B?T0c0WDZvWGt2WkNJYWt3ZWFGWXBQckQ4eWQ5MC9ncy9LSEYrdWgzVHMvK1NZ?=
+ =?utf-8?B?SzhsZFVSQXZ6U0QrS1VyN21PSXlVRFVka1FNWGN1TDVpdXl2d1VVWnJtWDFi?=
+ =?utf-8?B?RVpsdmZaaG9rSlNMWjY1czBLcUZKOWxMTElQVXgvQUZmNDVxUi9KNTNPbi9a?=
+ =?utf-8?B?L0o3S0lVaHhsZ1B4TGt4YnBZS1VVbk92dDFFSWR5WXp3VXdDUDRVQ1VSQ2lU?=
+ =?utf-8?B?ZUdyMzY2T3I1bEdXTHJQelRkNVFnaDdjTzV0Yy9lWjhrd2VyMmh1QjZsOHRa?=
+ =?utf-8?B?RnBCbnZxSjh5SVllejhKVXNRM0kxQ3BUSTRGcVd1Z0hOZjZDS1BrWWM2cWRX?=
+ =?utf-8?B?RDhZOCs0dkk5VWsrZ1dGTWQ2UFZKOFRGUHREaXRpb3JoYnYxN3lWVFJCZW9G?=
+ =?utf-8?B?MHc4V2k5UHFEU1JualFDd25ldE9VZmd3V3BwSGJ3bGNHRFFlZ002aC9IS21y?=
+ =?utf-8?B?eXNrdW5pNUFJZ3pTNTlUZFQ0RThmWEJaMlZTSE45N1JtdE8zQzYweTdGaGFi?=
+ =?utf-8?B?YU5PMWJwOVVhZ05hNy9LNzNLRGp2MmRjTTFNR2F0Lys1Um1wZU9MVGh1dFQ1?=
+ =?utf-8?B?QTNFb0pvc2FESHIvVTVrOSs4bkxaU0ltc2QvRWo3RlllTGtMZVBVdnZMYm15?=
+ =?utf-8?B?alVTYW02WlZWNkdxKzhYbXFZaXhkWXQzK0lvc3pnK3NSR1VBaG5SM1R3d3dQ?=
+ =?utf-8?B?VjlQZnBqcFdXdnVZTE01K040MnhzYWEzbC8vNDJDdnRVU3hTbjZUNUZTYTRt?=
+ =?utf-8?B?ekE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 193502f2-a0be-4af6-f5e2-08dbd55c5a28
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 13:14:43.2810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vxZ7l0oKG3IyRa6RbPSrFH0UwKWPqcIgXSkHWCUMX91b1tmfbis61RzF4pL4oIc4+a28U5ImYXVWkeoNm7TGUsThXvWIPMad07iS6qKX4vE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5772
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,152 +165,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 2:29=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
->
-> Commit 18b44bc5a672 ("ovl: Always reevaluate the file signature for
-> IMA") forced signature re-evaulation on every file access.
->
-> Instead of always re-evaluating the file's integrity, detect a change
-> to the backing file, by comparing the cached file metadata with the
-> backing file's metadata.  Verifying just the i_version has not changed
-> is insufficient.  In addition save and compare the i_ino and i_rdev
-> as well.
->
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+On 10/25/23 11:44, Beniamino Galvani wrote:
+> The source and destination ports should be taken into account when
+> determining the route destination; they can affect the result, for
+> example in case there are routing rules defined.
+> 
+> Signed-off-by: Beniamino Galvani <b.galvani@gmail.com>
 > ---
-> Changelog:
-> - Changes made based on Amir's review: removal of unnecessary overlay
-> magic test, verify i_version, i_ino and i_rdev haven't changed.
->
->  fs/overlayfs/super.c              |  2 +-
->  security/integrity/ima/ima_api.c  |  4 ++++
->  security/integrity/ima/ima_main.c | 16 +++++++++++++++-
->  security/integrity/integrity.h    |  2 ++
->  4 files changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index 3fa2416264a4..c71d185980c0 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -1489,7 +1489,7 @@ int ovl_fill_super(struct super_block *sb, struct f=
-s_context *fc)
->                 ovl_trusted_xattr_handlers;
->         sb->s_fs_info =3D ofs;
->         sb->s_flags |=3D SB_POSIXACL;
-> -       sb->s_iflags |=3D SB_I_SKIP_SYNC | SB_I_IMA_UNVERIFIABLE_SIGNATUR=
-E;
-> +       sb->s_iflags |=3D SB_I_SKIP_SYNC;
->
->         err =3D -ENOMEM;
->         root_dentry =3D ovl_get_root(sb, ctx->upper.dentry, oe);
-> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/im=
-a_api.c
-> index 452e80b541e5..f191bdcceef8 100644
-> --- a/security/integrity/ima/ima_api.c
-> +++ b/security/integrity/ima/ima_api.c
-> @@ -243,6 +243,7 @@ int ima_collect_measurement(struct integrity_iint_cac=
-he *iint,
->  {
->         const char *audit_cause =3D "failed";
->         struct inode *inode =3D file_inode(file);
-> +       struct inode *real_inode =3D d_real_inode(file_dentry(file));
->         const char *filename =3D file->f_path.dentry->d_name.name;
->         struct ima_max_digest_data hash;
->         struct kstat stat;
-> @@ -272,6 +273,7 @@ int ima_collect_measurement(struct integrity_iint_cac=
-he *iint,
->                                    AT_STATX_SYNC_AS_STAT);
->         if (!result && (stat.result_mask & STATX_CHANGE_COOKIE))
->                 i_version =3D stat.change_cookie;
-> +
->         hash.hdr.algo =3D algo;
->         hash.hdr.length =3D hash_digest_size[algo];
->
-> @@ -302,6 +304,8 @@ int ima_collect_measurement(struct integrity_iint_cac=
-he *iint,
->         iint->ima_hash =3D tmpbuf;
->         memcpy(iint->ima_hash, &hash, length);
->         iint->version =3D i_version;
+>   drivers/net/bareudp.c | 29 ++++++++++++++++-------------
+>   1 file changed, 16 insertions(+), 13 deletions(-)
+> 
 
-You don't have to store them if real_inode =3D=3D inode.
+Good, steady work!
 
-> +       iint->real_ino =3D real_inode->i_ino;
-> +       iint->real_rdev =3D real_inode->i_rdev;
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 
-iint->real_dev =3D real_inode->i_sb->s_dev;
-
-i_rdev is something else.
-it's the device pointed to by a blockdev/chardev inode.
-
-Thanks,
-Amir.
-
-
->
->         /* Possibly temporary failure due to type of read (eg. O_DIRECT) =
-*/
->         if (!result)
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
-ma_main.c
-> index 365db0e43d7c..4a6a22f8805b 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -25,6 +25,7 @@
->  #include <linux/xattr.h>
->  #include <linux/ima.h>
->  #include <linux/fs.h>
-> +#include <linux/iversion.h>
->
->  #include "ima.h"
->
-> @@ -207,7 +208,7 @@ static int process_measurement(struct file *file, con=
-st struct cred *cred,
->                                u32 secid, char *buf, loff_t size, int mas=
-k,
->                                enum ima_hooks func)
->  {
-> -       struct inode *inode =3D file_inode(file);
-> +       struct inode *backing_inode, *inode =3D file_inode(file);
->         struct integrity_iint_cache *iint =3D NULL;
->         struct ima_template_desc *template_desc =3D NULL;
->         char *pathbuf =3D NULL;
-> @@ -284,6 +285,19 @@ static int process_measurement(struct file *file, co=
-nst struct cred *cred,
->                 iint->measured_pcrs =3D 0;
->         }
->
-> +       /* Detect and re-evaluate changes made to the backing file. */
-> +       backing_inode =3D d_real_inode(file_dentry(file));
-> +       if (backing_inode !=3D inode &&
-> +           (action & IMA_DO_MASK) && (iint->flags & IMA_DONE_MASK)) {
-> +               if (!IS_I_VERSION(backing_inode) ||
-> +                   backing_inode->i_rdev !=3D iint->real_rdev ||
-> +                   backing_inode->i_ino !=3D iint->real_ino ||
-> +                   !inode_eq_iversion(backing_inode, iint->version)) {
-> +                       iint->flags &=3D ~IMA_DONE_MASK;
-> +                       iint->measured_pcrs =3D 0;
-> +               }
-> +       }
-> +
->         /* Determine if already appraised/measured based on bitmask
->          * (IMA_MEASURE, IMA_MEASURED, IMA_XXXX_APPRAISE, IMA_XXXX_APPRAI=
-SED,
->          *  IMA_AUDIT, IMA_AUDITED)
-> diff --git a/security/integrity/integrity.h b/security/integrity/integrit=
-y.h
-> index d7553c93f5c0..dd2bb2d150f6 100644
-> --- a/security/integrity/integrity.h
-> +++ b/security/integrity/integrity.h
-> @@ -164,6 +164,8 @@ struct integrity_iint_cache {
->         unsigned long flags;
->         unsigned long measured_pcrs;
->         unsigned long atomic_flags;
-> +       unsigned long real_ino;
-> +       dev_t real_rdev;
->         enum integrity_status ima_file_status:4;
->         enum integrity_status ima_mmap_status:4;
->         enum integrity_status ima_bprm_status:4;
-> --
-> 2.39.3
->
