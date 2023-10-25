@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B687D69E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80647D69E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbjJYLSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
+        id S234796AbjJYLSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234017AbjJYLSi (ORCPT
+        with ESMTP id S233804AbjJYLSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:18:38 -0400
+        Wed, 25 Oct 2023 07:18:39 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B28AC;
-        Wed, 25 Oct 2023 04:18:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF50137;
+        Wed, 25 Oct 2023 04:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698232715; x=1729768715;
+  t=1698232716; x=1729768716;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FBsgi0f5RSq42TrQbFfpfnW/pY1sLDlris71usgmqQw=;
-  b=i29CdDs5hpEiGQ/o5KOI6Wm9I0jbG2aDGpKTdb/rAf5+GG0afbO6lXg3
-   mtAKKFgjCPl3DTXkVA4J+2JvYRZZgRmCFv9GdDq9bmctwbgmLWSt6yq2Q
-   pgWQi3Ccr22gRJ1ioXRUuFkXnynSeX/K+hybVdxkjrjh0aFCDwo2KM1c7
-   bGTZDzSHx8U1Aq9eWXvmicNCnmVMQzz+6bFpXePI4BaYVAZ1pDg96bYoR
-   Mt7Fu3wmCJDdNSQH6q5eSUXZW00oevyJf8bPVKG4elutc7leXjZPOu/JX
-   laGefowj6zkSvTEQ01QNzMtZTj/KlfxFaBonTvhGyEPmfjnzJZowfvooc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="391154626"
+  bh=GGWBLv1O7SHoGXNqpswjaidLqIzwApROs0cSW0Fp2r8=;
+  b=XVnH2i6yhtAz/hY4hA0WS3OjmJbRC8Vi1L0e9WESRTIgx0xzGyvQdSdh
+   ICZoR7QVgZJ6oduA7tWm0bpO4sTbbpAfBMgkSam53mK0peLfQIWRQGoLs
+   iO/p6RBo/+BcI3Mi0NcR460Rm90FzkfA5vROZNb2Y3lUwFRBAt7O7JxGH
+   udpKh6LqZS/++FPM9jZ8kpueie9omX0N52aLVeUeFTYWsSkBWdByDq+Hz
+   QKsxaG+A604I67LIaXT918sT78A5daxmWE5GrIuH/26N5A9wV1JLFx+XD
+   SlHwU92WkvO9x0PBbqlZMe8Hx8lsU+vC0jkY0RHBi19pa5FPc0UJqRroO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="391154628"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="391154626"
+   d="scan'208";a="391154628"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:18:22 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:18:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="762425094"
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="762425103"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="762425094"
+   d="scan'208";a="762425103"
 Received: from powerlab.fi.intel.com ([10.237.71.25])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:18:20 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:18:22 -0700
 From:   Michal Wilczynski <michal.wilczynski@intel.com>
 To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
         lenb@kernel.org, Michal Wilczynski <michal.wilczynski@intel.com>
-Subject: [PATCH v1 2/6] ACPI: acpi_video: Use yes_or_no helper instead of ternary operator
-Date:   Wed, 25 Oct 2023 14:18:02 +0300
-Message-ID: <20231025111806.2416524-3-michal.wilczynski@intel.com>
+Subject: [PATCH v1 3/6] ACPI: acpi_video: Remove unnecessary driver_data clear
+Date:   Wed, 25 Oct 2023 14:18:03 +0300
+Message-ID: <20231025111806.2416524-4-michal.wilczynski@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231025111806.2416524-1-michal.wilczynski@intel.com>
 References: <20231025111806.2416524-1-michal.wilczynski@intel.com>
@@ -60,32 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use string helper, instead of manually computing "yes" or "no" using
-ternary operator.
+Commit
+0d16710146a1 ("ACPI: bus: Set driver_data to NULL every time .add() fails")
+introduced clearing driver_data every time probe fails, so it's not
+necessary to clear it in the probe() callback.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Remove NULL assignment to driver_data in error path in
+acpi_video_bus_add().
+
 Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
 ---
- drivers/acpi/acpi_video.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/acpi_video.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-index c14b44f99e35..e17474949bbb 100644
+index e17474949bbb..0c93b0ef0feb 100644
 --- a/drivers/acpi/acpi_video.c
 +++ b/drivers/acpi/acpi_video.c
-@@ -2032,9 +2032,9 @@ static int acpi_video_bus_add(struct acpi_device *device)
+@@ -2077,7 +2077,6 @@ static int acpi_video_bus_add(struct acpi_device *device)
+ 	kfree(video->attached_array);
+ err_free_video:
+ 	kfree(video);
+-	device->driver_data = NULL;
  
- 	pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
- 	       ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
--	       video->flags.multihead ? "yes" : "no",
--	       video->flags.rom ? "yes" : "no",
--	       video->flags.post ? "yes" : "no");
-+	       str_yes_no(video->flags.multihead),
-+	       str_yes_no(video->flags.rom),
-+	       str_yes_no(video->flags.post));
- 	mutex_lock(&video_list_lock);
- 	list_add_tail(&video->entry, &video_bus_head);
- 	mutex_unlock(&video_list_lock);
+ 	return error;
+ }
 -- 
 2.41.0
 
