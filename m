@@ -2,189 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14047D70FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A767D70FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344576AbjJYPaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
+        id S1344183AbjJYPaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235234AbjJYP3u (ORCPT
+        with ESMTP id S235133AbjJYP3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:29:50 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1161990
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:28:15 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-66d17bdabe1so39975096d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:28:15 -0700 (PDT)
+        Wed, 25 Oct 2023 11:29:49 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A921A5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:28:48 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1e9baf16a86so3711176fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698247691; x=1698852491; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8/OEf6wY4K8LL5fCd9Dam3mad0hP6D3Fcdj2bC0ObXE=;
-        b=xW43IF8AQEwDX+cYuI/NbiRfB2POLxdGkH0WoNUe/y3dSi+EcIbq3ItiosYFEXrcyg
-         TgQNhXITQbMZZmIjPWCi5TBs2GxIzBg8MRqXpmTmMxS8oLyE9ZZYxOM2Em3y9E3pq5v9
-         sRScR0FfKvI0k9aUnTU1Y9YzYMU+ecmL5A3wy04VW5C7C4n2vXdif79yXOXMd9WipWrt
-         6QbxOhhMOAp+ZwXlUzZk75eP59BMT6TK2m0MKq6tvMmzW50UN0mftxt4rND1npwwrAHz
-         w4HayfcRXdpNS2ayrgYkKuB7ZsD+XT3qS4WTdQ9WMD20NWDeCDp3ovaIrg+pIFgp4+0G
-         +5xw==
+        d=google.com; s=20230601; t=1698247727; x=1698852527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FLJnARkfIBMUfgquTTGlj0tPN4MXFqJ8fdXtHqq+8bA=;
+        b=rcMXqPXHNin4Ta1yJhxDfVFdFfBVu/1Psqp1m1hzNSxpkcJreMbeoZWgByX2gLmTkp
+         TZL/GSUf6zuS/kdQL38fj9VC5SbO7ZZG0jnQUxrmy+8NcJ20p3MQQUBzU6Rj1kTDehgE
+         aFV6SIFh9NRwlwE9MbZu08Y/bwSOdCMm0TtW3GbED7ah2K8DFW1NoAafGp8EfRhBRYJ9
+         xj1i8wY4ceKQUy0fT2UMeIrjIcIMZRd/SzsCGB9OTUOgCMDOG7BhyC11g8kfavrehZjT
+         2ewoH5y5aBjiT9+8UmxFrxcjDtIORiDfoTCiMDyUAf6/Kd4gxekOdEk1i2KDZgOXKPHx
+         bC4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698247691; x=1698852491;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8/OEf6wY4K8LL5fCd9Dam3mad0hP6D3Fcdj2bC0ObXE=;
-        b=kJiS8I7DLp87a1IjI5AeW12tdFdkSetZiC50iBCM2KDT7dzn1mEYS+v8NwikNXzNiL
-         9AZq2ej4mQQ62lalg7FdQyjWqPaAqJIe67fJSOkK97DsN4xKG/vPvIVpvZfRbFbTzViV
-         C5xwmh5NfBv38xAeZ02ti5dXZvSN3/Qwt96VmvdEuyqQTLurj0c9vt+ze3IrxjOWIuC+
-         86mPOMg1JqQ1UIi5Bb4LLhEer/SpGX5bASelgfO4qM/A7cbED6u4l/4rgVob/I0+U1Ue
-         3ZU4tITsaRV8GSMeHhHUxaK00HC1+a5PIFFlDan8wwJgGAuI1jw2mfX3YdV8Yr3qF0qA
-         6xcw==
-X-Gm-Message-State: AOJu0YwtcNLbhzpFAn1cOtJcQ89ZXrSgHLwynPBcUZ0RVOFquAyYj4Tl
-        oVqr/YABwJIgw+g24dVpt6iWAw==
-X-Google-Smtp-Source: AGHT+IE+oXbdMGDC42eUqY/5d0Rh7NZd8nWQ0r8DPCttIVT1/TMaphayNooiWx9ODfgyZFTKsCHSrg==
-X-Received: by 2002:a05:6214:2586:b0:66d:1d22:42d8 with SMTP id fq6-20020a056214258600b0066d1d2242d8mr20338672qvb.11.1698247691667;
-        Wed, 25 Oct 2023 08:28:11 -0700 (PDT)
-Received: from [192.168.1.212] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id g24-20020a37e218000000b007671b599cf5sm4280080qki.40.2023.10.25.08.28.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 08:28:10 -0700 (PDT)
-Message-ID: <6f145485-c330-4a89-9e5a-af35d0b72e21@linaro.org>
-Date:   Wed, 25 Oct 2023 18:28:04 +0300
+        d=1e100.net; s=20230601; t=1698247727; x=1698852527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FLJnARkfIBMUfgquTTGlj0tPN4MXFqJ8fdXtHqq+8bA=;
+        b=auarRSDdLbqejO2RXpS5FermXQiKO7MhAdLY97gPvFYkTpUWRmTKOFjbq0rNXTMSZy
+         VqU3uRPomhzkNYGQUohM+k5DYTKoYdAQdoIdk/mIuU2Y9ZBYR0CmB82M/PwuMfDH58od
+         A3lNUUk4ImJ3FemqLjf78zqU/j+UzvAxozEM8TzrsUzP/qex162kgVFMplhtTboUZWmX
+         qHqJfI2qdI0r3ca4rDWtJls8xScan+FD/s2QF2+eaJZd328VFz6XOqzdtF27OubGOuf6
+         QabAvSO3pgrjxIIDTp3EIt3DhrcSZQeNhiveQBP5LUZv6o4/MmPR5bCbh6aaOlw6/EoD
+         KEhg==
+X-Gm-Message-State: AOJu0YwSzCx01KO2etLTB/C2GEEt6pIRnmUAZlyzK1YK5PzyCkSD3+1t
+        om4DsMTgtJB76HEA8uu3mEUPkRH1nSlVrpgYSMSghg==
+X-Google-Smtp-Source: AGHT+IHL6UT5V0z1/nV7C2aKZX3u20HQgpTlx8EY9sjj8g+GZ70q4xGtJEt1W/Cng5aHzKMeb5xqOwS2911dC7wfxYg=
+X-Received: by 2002:a05:6870:1157:b0:1da:ed10:bcb with SMTP id
+ 23-20020a056870115700b001daed100bcbmr15750180oag.31.1698247727385; Wed, 25
+ Oct 2023 08:28:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] drm/fourcc: Add drm/vs tiled modifiers
-Content-Language: en-GB
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
-References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
- <20231025103957.3776-4-keith.zhao@starfivetech.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20231025103957.3776-4-keith.zhao@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-7-surenb@google.com>
+ <20231025074652.44bc0eb4@meshulam.tesarici.cz>
+In-Reply-To: <20231025074652.44bc0eb4@meshulam.tesarici.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 25 Oct 2023 08:28:32 -0700
+Message-ID: <CAJuCfpHS1JTRU69zFDAJjmMYR3K5TAS9+AsA3oYLs2LCs5aTBw@mail.gmail.com>
+Subject: Re: [PATCH v2 06/39] mm: enumerate all gfp flags
+To:     =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+Cc:     Neil Brown <neilb@suse.de>, akpm@linux-foundation.org,
+        kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+        juri.lelli@redhat.com, ldufour@linux.ibm.com,
+        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, peterx@redhat.com, david@redhat.com,
+        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, vvvvvv@google.com,
+        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 13:39, Keith Zhao wrote:
-> For each modifier, add the corresponding description
-> 
-> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> ---
->   include/uapi/drm/drm_fourcc.h | 57 +++++++++++++++++++++++++++++++++++
->   1 file changed, 57 insertions(+)
-> 
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index 8db7fd3f7..a580a848c 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -419,6 +419,7 @@ extern "C" {
->   #define DRM_FORMAT_MOD_VENDOR_ARM     0x08
->   #define DRM_FORMAT_MOD_VENDOR_ALLWINNER 0x09
->   #define DRM_FORMAT_MOD_VENDOR_AMLOGIC 0x0a
-> +#define DRM_FORMAT_MOD_VENDOR_VERISILICON 0x0b
->   
->   /* add more to the end as needed */
->   
-> @@ -1562,6 +1563,62 @@ drm_fourcc_canonicalize_nvidia_format_mod(__u64 modifier)
->   #define AMD_FMT_MOD_CLEAR(field) \
->   	(~((__u64)AMD_FMT_MOD_##field##_MASK << AMD_FMT_MOD_##field##_SHIFT))
->   
-> +#define DRM_FORMAT_MOD_VERISILICON_TYPE_NORMAL					0x00
-> +#define DRM_FORMAT_MOD_VERISILICON_TYPE_MASK					((__u64)0x3 << 54)
-> +
-> +#define fourcc_mod_vs_code(type, val) \
-> +	fourcc_mod_code(VERISILICON, ((((__u64)type) << 54) | (val)))
+On Tue, Oct 24, 2023 at 10:47=E2=80=AFPM Petr Tesa=C5=99=C3=ADk <petr@tesar=
+ici.cz> wrote:
+>
+> On Tue, 24 Oct 2023 06:46:03 -0700
+> Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > Introduce GFP bits enumeration to let compiler track the number of used
+> > bits (which depends on the config options) instead of hardcoding them.
+> > That simplifies __GFP_BITS_SHIFT calculation.
+> > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
+> >  1 file changed, 62 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+> > index 6583a58670c5..3fbe624763d9 100644
+> > --- a/include/linux/gfp_types.h
+> > +++ b/include/linux/gfp_types.h
+> > @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+> >   * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
+> >   */
+> >
+> > +enum {
+> > +     ___GFP_DMA_BIT,
+> > +     ___GFP_HIGHMEM_BIT,
+> > +     ___GFP_DMA32_BIT,
+> > +     ___GFP_MOVABLE_BIT,
+> > +     ___GFP_RECLAIMABLE_BIT,
+> > +     ___GFP_HIGH_BIT,
+> > +     ___GFP_IO_BIT,
+> > +     ___GFP_FS_BIT,
+> > +     ___GFP_ZERO_BIT,
+> > +     ___GFP_UNUSED_BIT,      /* 0x200u unused */
+> > +     ___GFP_DIRECT_RECLAIM_BIT,
+> > +     ___GFP_KSWAPD_RECLAIM_BIT,
+> > +     ___GFP_WRITE_BIT,
+> > +     ___GFP_NOWARN_BIT,
+> > +     ___GFP_RETRY_MAYFAIL_BIT,
+> > +     ___GFP_NOFAIL_BIT,
+> > +     ___GFP_NORETRY_BIT,
+> > +     ___GFP_MEMALLOC_BIT,
+> > +     ___GFP_COMP_BIT,
+> > +     ___GFP_NOMEMALLOC_BIT,
+> > +     ___GFP_HARDWALL_BIT,
+> > +     ___GFP_THISNODE_BIT,
+> > +     ___GFP_ACCOUNT_BIT,
+> > +     ___GFP_ZEROTAGS_BIT,
+> > +#ifdef CONFIG_KASAN_HW_TAGS
+> > +     ___GFP_SKIP_ZERO_BIT,
+> > +     ___GFP_SKIP_KASAN_BIT,
+> > +#endif
+> > +#ifdef CONFIG_LOCKDEP
+> > +     ___GFP_NOLOCKDEP_BIT,
+> > +#endif
+> > +     ___GFP_LAST_BIT
+> > +};
+> > +
+> >  /* Plain integer GFP bitmasks. Do not use this directly. */
+> > -#define ___GFP_DMA           0x01u
+> > -#define ___GFP_HIGHMEM               0x02u
+> > -#define ___GFP_DMA32         0x04u
+> > -#define ___GFP_MOVABLE               0x08u
+> > -#define ___GFP_RECLAIMABLE   0x10u
+> > -#define ___GFP_HIGH          0x20u
+> > -#define ___GFP_IO            0x40u
+> > -#define ___GFP_FS            0x80u
+> > -#define ___GFP_ZERO          0x100u
+> > +#define ___GFP_DMA           BIT(___GFP_DMA_BIT)
+> > +#define ___GFP_HIGHMEM               BIT(___GFP_HIGHMEM_BIT)
+> > +#define ___GFP_DMA32         BIT(___GFP_DMA32_BIT)
+> > +#define ___GFP_MOVABLE               BIT(___GFP_MOVABLE_BIT)
+> > +#define ___GFP_RECLAIMABLE   BIT(___GFP_RECLAIMABLE_BIT)
+> > +#define ___GFP_HIGH          BIT(___GFP_HIGH_BIT)
+> > +#define ___GFP_IO            BIT(___GFP_IO_BIT)
+> > +#define ___GFP_FS            BIT(___GFP_FS_BIT)
+> > +#define ___GFP_ZERO          BIT(___GFP_ZERO_BIT)
+> >  /* 0x200u unused */
+>
+> This comment can be also removed here, because it is already stated
+> above with the definition of ___GFP_UNUSED_BIT.
 
-Please use fourcc_mode_code directly.
+Ack.
 
-> +
-> +#define DRM_FORMAT_MOD_VERISILICON_NORM_MODE_MASK				0x1F
-> +
-> +/*
-> + * An x-major 8x8 super tile consists of 64 8x8 sub-tiles in total.
-> + * Each 8x8 sub-tile consists of four standard tiles .
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_XMAJOR_8X8		0x02
-> +
-> +/*
-> + * A y-major 8x8 super tile consists of 64 8x8 sub-tiles in total.
-> + * Each 8x8 sub-tile consists of four standard tiles .
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_YMAJOR_8X8		0x03
-> +
-> +/*
-> + * An 8x8 tile consists of four standard tiles
-> + * that are organized in Z-order.
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_TILE_8X8						0x04
-> +
-> +/*
-> + * An 8x4 tile consists of two standard tiles
-> + * that are organized in Z-order.
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_TILE_8X4						0x07
-> +
-> +/*
-> + * An x-major 8x4 super tile consists of 128 8x4 sub-tiles in total.
-> + * Each 8x4 sub-tile consists of two standard tiles.
-> + * two standard tiles also same with DRM_FORMAT_MOD_VS_TILE_8X4
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_XMAJOR_8X4		0x0B
-> +
-> +/*
-> + * A y-major 4x8 super tile consists of 128 4x8 sub-tiles in total.
-> + * Each 4x8 sub-tile consists of two standard tiles.
-> + * two standard tiles also same with DRM_FORMAT_MOD_VS_TILE_8X4
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_YMAJOR_4X8    0x0C
-> +
-> +#define fourcc_mod_vs_norm_code(tile) \
-> +	fourcc_mod_vs_code(DRM_FORMAT_MOD_VERISILICON_TYPE_NORMAL, \
-> +				(tile))
+>
+> Then again, I think that the GFP bits have never been compacted after
+> Neil Brown removed __GFP_ATOMIC with commit 2973d8229b78 simply because
+> that would mean changing definitions of all subsequent GFP flags. FWIW
+> I am not aware of any code that would depend on the numeric value of
+> ___GFP_* macros, so this patch seems like a good opportunity to change
+> the numbering and get rid of this unused 0x200u altogether.
+>
+> @Neil: I have added you to the conversation in case you want to correct
+> my understanding of the unused bit.
 
-1) this is not a part of uAPI
-2) please use fourcc_mod_code directly.
+Hmm. I would prefer to do that in a separate patch even though it
+would be a one-line change. Seems safer to me in case something goes
+wrong and we have to bisect and revert it. If that sounds ok I'll post
+that in the next version.
 
-> +
->   #if defined(__cplusplus)
->   }
->   #endif
+>
+> Other than that LGTM.
 
--- 
-With best wishes
-Dmitry
+Thanks for the review!
+Suren.
 
+>
+> Petr T
+>
+> > -#define ___GFP_DIRECT_RECLAIM        0x400u
+> > -#define ___GFP_KSWAPD_RECLAIM        0x800u
+> > -#define ___GFP_WRITE         0x1000u
+> > -#define ___GFP_NOWARN                0x2000u
+> > -#define ___GFP_RETRY_MAYFAIL 0x4000u
+> > -#define ___GFP_NOFAIL                0x8000u
+> > -#define ___GFP_NORETRY               0x10000u
+> > -#define ___GFP_MEMALLOC              0x20000u
+> > -#define ___GFP_COMP          0x40000u
+> > -#define ___GFP_NOMEMALLOC    0x80000u
+> > -#define ___GFP_HARDWALL              0x100000u
+> > -#define ___GFP_THISNODE              0x200000u
+> > -#define ___GFP_ACCOUNT               0x400000u
+> > -#define ___GFP_ZEROTAGS              0x800000u
+> > +#define ___GFP_DIRECT_RECLAIM        BIT(___GFP_DIRECT_RECLAIM_BIT)
+> > +#define ___GFP_KSWAPD_RECLAIM        BIT(___GFP_KSWAPD_RECLAIM_BIT)
+> > +#define ___GFP_WRITE         BIT(___GFP_WRITE_BIT)
+> > +#define ___GFP_NOWARN                BIT(___GFP_NOWARN_BIT)
+> > +#define ___GFP_RETRY_MAYFAIL BIT(___GFP_RETRY_MAYFAIL_BIT)
+> > +#define ___GFP_NOFAIL                BIT(___GFP_NOFAIL_BIT)
+> > +#define ___GFP_NORETRY               BIT(___GFP_NORETRY_BIT)
+> > +#define ___GFP_MEMALLOC              BIT(___GFP_MEMALLOC_BIT)
+> > +#define ___GFP_COMP          BIT(___GFP_COMP_BIT)
+> > +#define ___GFP_NOMEMALLOC    BIT(___GFP_NOMEMALLOC_BIT)
+> > +#define ___GFP_HARDWALL              BIT(___GFP_HARDWALL_BIT)
+> > +#define ___GFP_THISNODE              BIT(___GFP_THISNODE_BIT)
+> > +#define ___GFP_ACCOUNT               BIT(___GFP_ACCOUNT_BIT)
+> > +#define ___GFP_ZEROTAGS              BIT(___GFP_ZEROTAGS_BIT)
+> >  #ifdef CONFIG_KASAN_HW_TAGS
+> > -#define ___GFP_SKIP_ZERO     0x1000000u
+> > -#define ___GFP_SKIP_KASAN    0x2000000u
+> > +#define ___GFP_SKIP_ZERO     BIT(___GFP_SKIP_ZERO_BIT)
+> > +#define ___GFP_SKIP_KASAN    BIT(___GFP_SKIP_KASAN_BIT)
+> >  #else
+> >  #define ___GFP_SKIP_ZERO     0
+> >  #define ___GFP_SKIP_KASAN    0
+> >  #endif
+> >  #ifdef CONFIG_LOCKDEP
+> > -#define ___GFP_NOLOCKDEP     0x4000000u
+> > +#define ___GFP_NOLOCKDEP     BIT(___GFP_NOLOCKDEP_BIT)
+> >  #else
+> >  #define ___GFP_NOLOCKDEP     0
+> >  #endif
+> > -/* If the above are modified, __GFP_BITS_SHIFT may need updating */
+> >
+> >  /*
+> >   * Physical address zone modifiers (see linux/mmzone.h - low four bits=
+)
+> > @@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
+> >  #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
+> >
+> >  /* Room for N __GFP_FOO bits */
+> > -#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
+> > +#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
+> >  #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
+> >
+> >  /**
+>
+>
