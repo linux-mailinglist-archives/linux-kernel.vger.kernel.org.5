@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7B87D7513
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D3E7D7518
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjJYUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S234431AbjJYUDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYUCk (ORCPT
+        with ESMTP id S229632AbjJYUDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:02:40 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776BD136
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=djw/RRwrhOxPrgNjShiS6oN+TeWC1Dv3drvGlxrWCb0=;
-        t=1698264157; x=1699473757; b=SlfArgRyZWQBTEg4hcaxsS/v9ZJFFsZE8IKXqk212vAR+RR
-        WMiU6uoyAKaVj7ns0sOcKmNmQLHgMNOJoZzG5U0flbdFbjjfJnRclPEpnu+NVo7kxwl4esr8+BZrY
-        9/6jQr8VvAf/s4e2nd2o9Br1n4nl8JOJtip7ARsEfyBLFyJs8AVC6csxdnQ7K/Cr7qJ4zZ1D9xQx9
-        FCcyn9MqWHRuUU/77HEw06SUsVtF/R0co3LFAU0g9FsjHY3HQXH0ewtTWvtIxxTxC+oqRePol4TcO
-        D0mjNB8Q9h40m5zvHdP4vfYmvrDFuwGHtBahIStIQv5r3nftBHNlEtm0nioUp4hw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97-RC1)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qvk5K-00000002hhp-36fu;
-        Wed, 25 Oct 2023 22:02:34 +0200
-Message-ID: <68b18065d8be905c25522bd3f5a9b46dbe3a976d.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: time-travel: fix time going backwards
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Vincent Whitchurch <Vincent.Whitchurch@axis.com>,
-        "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
-        "richard@nod.at" <richard@nod.at>
-Cc:     "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel <kernel@axis.com>
-Date:   Wed, 25 Oct 2023 22:02:33 +0200
-In-Reply-To: <a2f6e0cc8e498f72dfe1fcd5f2233ada8548a4d1.camel@sipsolutions.net>
-References: <20231020-uml-time-backwards-v1-1-90b776fc6dfd@axis.com>
-         <4a75c40636be267163dc30b5a6a2442089628e57.camel@axis.com>
-         <4dbed8896c94a347dcb58b3a83792c52fdc1c04a.camel@sipsolutions.net>
-         <cc7d340e4e06e42cd67b46bfa95da6129b0010cb.camel@axis.com>
-         <a2f6e0cc8e498f72dfe1fcd5f2233ada8548a4d1.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 25 Oct 2023 16:03:12 -0400
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5414F129;
+        Wed, 25 Oct 2023 13:03:10 -0700 (PDT)
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1e0ee4e777bso63284fac.3;
+        Wed, 25 Oct 2023 13:03:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698264189; x=1698868989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5r+62BGyhlZ2nS1rxbtagnoldZmEnkd8Tctfhnbykf0=;
+        b=J49iXWc8HUI6J0OsmVqV1dI/hjOvn7c0hFTkegTO/cWe5HEr6QwWdvd1PkUHBZD4wO
+         vT7r8gJXxccgAVeNeiDI/efYtieaImJ5qZTrNa0xbxMe0vK2XOhgcQ/2wgNpejC907Eb
+         oGhZoDL6blymEfijZ6aTnjkvlaPDtnuDfbbDK0VlyLsNf4h7lnA5jHgAs59kxSbQ0rFP
+         hSHPoxfbbK5KMLMJmXyWKHPEzi/7LWrd6YchWX3E7c8dZdeRndRU3kNFNuYIccgt2kes
+         xmEvvFUNBZmqzP2Yy3ugJTexHlJF/QsCmBIAKwVF7QAD42CscPyyQZAC6AtFXUhGWTJx
+         VBog==
+X-Gm-Message-State: AOJu0YzJbO8WavpGNKhSM3dDmzjV4rBKj5oZw94LqyF+IrGUbSkmb5Cm
+        TGY7X/dT0t6vwwvCVaP54G71MkrcUg==
+X-Google-Smtp-Source: AGHT+IEh96+Eom5+++QZIF6DKoxC+gFh+J0Jjb7AI/CVWjOw1Yv61sZNaPJPNdmEwA+s6Pu73BExDw==
+X-Received: by 2002:a05:6870:2893:b0:1e9:da6f:a161 with SMTP id gy19-20020a056870289300b001e9da6fa161mr20155913oab.3.1698264189543;
+        Wed, 25 Oct 2023 13:03:09 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id i1-20020a056870344100b001ea7e2adbc2sm2775807oah.1.2023.10.25.13.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 13:03:08 -0700 (PDT)
+Received: (nullmailer pid 1069035 invoked by uid 1000);
+        Wed, 25 Oct 2023 20:03:07 -0000
+Date:   Wed, 25 Oct 2023 15:03:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v2] dt-bindings: irqchip: renesas,irqc: Add r8a779f0
+ support
+Message-ID: <20231025200307.GA1068690-robh@kernel.org>
+References: <9467a1c67d5d240211f88336973fa968d39cc860.1690446928.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9467a1c67d5d240211f88336973fa968d39cc860.1690446928.git.geert+renesas@glider.be>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-25 at 21:51 +0200, Johannes Berg wrote:
-> On Wed, 2023-10-25 at 11:55 +0000, Vincent Whitchurch wrote:
-> > On Mon, 2023-10-23 at 09:33 +0200, Johannes Berg wrote:
-> > > Do you have a specific workload that tends to reproduce this?
-> >=20
-> > I've been seeing it when running roadtest, but it's easily reproducible
-> > without that by using the attached config and the following program as
-> > init.
-> >=20
-> >   cp repro.config .config
-> >   make ARCH=3Dum olddefconfig all
-> >   gcc -Wall -static -o repro repro.c
-> >   ./linux time-travel init=3D$PWD/repro rootfstype=3Dhostfs
+On Thu, Jul 27, 2023 at 10:36:23AM +0200, Geert Uytterhoeven wrote:
+> Document support for the Interrupt Controller for External Devices
+> (INT-EX) in the Renesas R-Car S4-8 (R8A779F0) SoC.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> ---
+> v2:
+>   - Add Reviewed-by,
+>   - Widen audience after testing.
+> ---
+>  .../devicetree/bindings/interrupt-controller/renesas,irqc.yaml   | 1 +
+>  1 file changed, 1 insertion(+)
 
-Ohhh.
-
-Pure "time-travel" is actually something I hardly think about these
-days, we mostly use time-travel=3Dinf-cpu (or =3Dext).
-
-That makes sense, here you actually *can* get interrupted. I'll need to
-dig into what happens though.
-
-johannes
+Applied, thanks.
