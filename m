@@ -2,92 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8607D72CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9D57D72D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbjJYSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
+        id S234488AbjJYSEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJYSB1 (ORCPT
+        with ESMTP id S234883AbjJYSEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:01:27 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1DBE5;
-        Wed, 25 Oct 2023 11:01:25 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PHnfac028294;
-        Wed, 25 Oct 2023 18:01:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=S3E5OHSsLvkSVq5CBpCHcR3UqUEpCAQogTfCqA8nkoI=;
- b=NkxwAAV73nFNwisl1U7c7ShrD0ZiV0v10tv73aQyGMS7Iu/mzxOyofjEYdDvW5rQmUNU
- VwjWgkbfn00aK6qBIG4os1uUllKPysr5Pc5O9+59H1DcQ24X0azrMncw5uwSOX2OefZG
- H57cHeL4TmIn2CvsNI+o5wZvzAqvCsGrZmkf9EAAuBNChabRpy78CcMjjOS5oO9XeE0K
- jz9Z+0ag9BZJZAI6RN9bLWdc0JsUS/kMSoGAsp64CM/P/nvg7oO4mubtAcuOTIsmu1tA
- F7ip9WpOCKR6Gj7JVYzwFV0oqAM84Opd05JFaG/VvgBDe4bF6bPbtHTcGto0yVk/aAJT HA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty7rt8dfq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 18:01:18 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39PHoU2t030652;
-        Wed, 25 Oct 2023 18:01:18 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty7rt8df7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 18:01:18 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39PHZj84012336;
-        Wed, 25 Oct 2023 18:01:17 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvup1yyce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 18:01:17 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39PI1GWr48955848
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 18:01:17 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C86C758054;
-        Wed, 25 Oct 2023 18:01:16 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2353B5805F;
-        Wed, 25 Oct 2023 18:01:16 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Oct 2023 18:01:16 +0000 (GMT)
-Message-ID: <488442598c3703760ed6182426ed891f85fe0a1a.camel@linux.ibm.com>
-Subject: Re: [PATCH v3] ima: detect changes to the backing overlay file
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Raul Rangel <rrangel@chromium.org>,
-        Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 25 Oct 2023 14:01:15 -0400
-In-Reply-To: <485C9C57-ABF1-4618-81D1-345597A1B9FA@oracle.com>
-References: <20231025143906.133218-1-zohar@linux.ibm.com>
-         <485C9C57-ABF1-4618-81D1-345597A1B9FA@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
+        Wed, 25 Oct 2023 14:04:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C8495A3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:03:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 219BA1FB;
+        Wed, 25 Oct 2023 11:04:40 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1C7A3F738;
+        Wed, 25 Oct 2023 11:03:55 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com, amitsinght@marvell.com
+Subject: [PATCH v7 00/24] x86/resctrl: monitored closid+rmid together, separate arch/fs locking
+Date:   Wed, 25 Oct 2023 18:03:21 +0000
+Message-Id: <20231025180345.28061-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DW2-vXhn9iiqXKfJd9Zt7NUDllj0fqj2
-X-Proofpoint-GUID: GVfTRXIF0kpJbO-msQSx2OnkmbDpG0Ib
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_07,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=987
- bulkscore=0 clxscore=1015 malwarescore=0 spamscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250156
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,29 +53,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-25 at 16:27 +0000, Eric Snowberg wrote:
-> 
-> > On Oct 25, 2023, at 8:39 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > 
-> > Commit 18b44bc5a672 ("ovl: Always reevaluate the file signature for
-> > IMA") forced signature re-evaulation on every file access.
-> > 
-> > Instead of always re-evaluating the file's integrity, detect a change
-> > to the backing file, by comparing the cached file metadata with the
-> > backing file's metadata.  Verifying just the i_version has not changed
-> > is insufficient.  In addition save and compare the i_ino and s_dev
-> > as well.
-> > 
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
-> I ran the file integrity tests that originally uncovered the need for 
-> "Commit 18b44bc5a672 ("ovl: Always reevaluate the file signature for 
-> IMA”). When the backing file is changed, file integrity remains.  For that 
-> part, feel free to add:
-> 
-> Tested-by: Eric Snowberg <eric.snowberg@oracle.com>
+The only significant change in this series is to add cpus_read_lock() around
+the limbo and overflow handlers in the last patch. Other changes are a mix of
+comments and whitespace, or code marked __exit.
 
-Thanks!
+Changes are noted in each patch, some patches even say 'No changes since v6'!
+~
 
-Mimi
+This series does two things, it changes resctrl to call resctrl_arch_rmid_read()
+in a way that works for MPAM, and it separates the locking so that the arch code
+and filesystem code don't have to share a mutex. I tried to split this as two
+series, but these touch similar call sites, so it would create more work.
+
+(What's MPAM? See the cover letter of the first series. [1])
+
+On x86 the RMID is an independent number. MPAMs equivalent is PMG, but this
+isn't an independent number - it extends the PARTID (same as CLOSID) space
+with bits that aren't used to select the configuration. The monitors can
+then be told to match specific PMG values, allowing monitor-groups to be
+created.
+
+But, MPAM expects the monitors to always monitor by PARTID. The
+Cache-storage-utilisation counters can only work this way.
+(In the MPAM spec not setting the MATCH_PARTID bit is made CONSTRAINED
+UNPREDICTABLE - which is Arm's term to mean portable software can't rely on
+this)
+
+It gets worse, as some SoCs may have very few PMG bits. I've seen the
+datasheet for one that has a single bit of PMG space.
+
+To be usable, MPAM's counters always need the PARTID and the PMG.
+For resctrl, this means always making the CLOSID available when the RMID
+is used.
+
+To ensure RMID are always unique, this series combines the CLOSID and RMID
+into an index, and manages RMID based on that. For x86, the index and RMID
+would always be the same.
+
+
+Currently the architecture specific code in the cpuhp callbacks takes the
+rdtgroup_mutex. This means the filesystem code would have to export this
+lock, resulting in an ill-defined interface between the two, and the possibility
+of cross-architecture lock-ordering head aches.
+
+The second part of this series adds a domain_list_lock to protect writes to the
+domain list, and protects the domain list with RCU - or cpus_read_lock().
+
+Use of RCU is to allow lockless readers of the domain list. To get MPAMs monitors
+working, its very likely they'll need to be plumbed up to perf. An uncore PMU
+driver would need to be a lockless reader of the domain list.
+
+This series is based on tip/master's commit 6b7b1e57a824, and can be retrieved from:
+https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/monitors_and_locking/v7
+
+Bugs welcome,
+
+Thanks,
+
+James
+
+[1] https://lore.kernel.org/lkml/20210728170637.25610-1-james.morse@arm.com/
+[v1] https://lore.kernel.org/all/20221021131204.5581-1-james.morse@arm.com/
+[v2] https://lore.kernel.org/lkml/20230113175459.14825-1-james.morse@arm.com/
+[v3] https://lore.kernel.org/r/20230320172620.18254-1-james.morse@arm.com 
+[v4] https://lore.kernel.org/r/20230525180209.19497-1-james.morse@arm.com
+[v5] https://lore.kernel.org/lkml/20230728164254.27562-1-james.morse@arm.com/
+[v6] https://lore.kernel.org/all/20230914172138.11977-1-james.morse@arm.com/
+
+James Morse (24):
+  tick/nohz: Move tick_nohz_full_mask declaration outside the #ifdef
+  x86/resctrl: kfree() rmid_ptrs from rdtgroup_exit()
+  x86/resctrl: Create helper for RMID allocation and mondata dir
+    creation
+  x86/resctrl: Move rmid allocation out of mkdir_rdt_prepare()
+  x86/resctrl: Track the closid with the rmid
+  x86/resctrl: Access per-rmid structures by index
+  x86/resctrl: Allow RMID allocation to be scoped by CLOSID
+  x86/resctrl: Track the number of dirty RMID a CLOSID has
+  x86/resctrl: Use __set_bit()/__clear_bit() instead of open coding
+  x86/resctrl: Allocate the cleanest CLOSID by searching
+    closid_num_dirty_rmid
+  x86/resctrl: Move CLOSID/RMID matching and setting to use helpers
+  x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
+  x86/resctrl: Queue mon_event_read() instead of sending an IPI
+  x86/resctrl: Allow resctrl_arch_rmid_read() to sleep
+  x86/resctrl: Allow arch to allocate memory needed in
+    resctrl_arch_rmid_read()
+  x86/resctrl: Make resctrl_mounted checks explicit
+  x86/resctrl: Move alloc/mon static keys into helpers
+  x86/resctrl: Make rdt_enable_key the arch's decision to switch
+  x86/resctrl: Add helpers for system wide mon/alloc capable
+  x86/resctrl: Add CPU online callback for resctrl work
+  x86/resctrl: Allow overflow/limbo handlers to be scheduled on any-but
+    cpu
+  x86/resctrl: Add CPU offline callback for resctrl work
+  x86/resctrl: Move domain helper migration into resctrl_offline_cpu()
+  x86/resctrl: Separate arch and fs resctrl locks
+
+ arch/x86/include/asm/resctrl.h            |  90 +++++
+ arch/x86/kernel/cpu/resctrl/core.c        |  94 ++---
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  48 ++-
+ arch/x86/kernel/cpu/resctrl/internal.h    |  67 +++-
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 453 +++++++++++++++++-----
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  15 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 349 ++++++++++++-----
+ include/linux/resctrl.h                   |  48 ++-
+ include/linux/tick.h                      |   9 +-
+ 9 files changed, 903 insertions(+), 270 deletions(-)
+
+-- 
+2.39.2
 
