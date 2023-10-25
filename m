@@ -2,61 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29DE7D71C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CB77D71CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbjJYQcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        id S232897AbjJYQhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjJYQcC (ORCPT
+        with ESMTP id S229561AbjJYQhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:32:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BB7E5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698251474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=cjxB3xp7qNdoLHO4rmc9qAWqnKY0DCrkevqsgM+Qm2c=;
-        b=fzqnmMPQdkT/BdnggzePz3BOEIaCF1dADKCfe4snNu/stowL9gliP6GSTaW/SZoX3uz+Fb
-        D+rMlbyIQAE7+V8PMQZEa7nNux5LZBPL1TxnIOWAOTVWp5Wuq97AFiR1nqjcEJ1yCH55fq
-        fUwtklcF41zZ0zDXe9QJ3W0EiVp01HM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-Z-jgggwrNsevrjYIupxzqw-1; Wed, 25 Oct 2023 12:31:10 -0400
-X-MC-Unique: Z-jgggwrNsevrjYIupxzqw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C29309423D1;
-        Wed, 25 Oct 2023 16:31:09 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CB7161121314;
-        Wed, 25 Oct 2023 16:31:07 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 25 Oct 2023 18:30:09 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 18:30:06 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: nfsd_copy_write_verifier: wrong usage of read_seqbegin_or_lock()
-Message-ID: <20231025163006.GA8279@redhat.com>
+        Wed, 25 Oct 2023 12:37:21 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B88C1;
+        Wed, 25 Oct 2023 09:37:19 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PDQ3pE011914;
+        Wed, 25 Oct 2023 16:37:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=mriEVODwMmqGlFPhZP7OYi+cBWE1ycXr0W5zwFMUH+g=;
+ b=Vo9uwHAk0ksi6bMEeA98bWmjXHCQ/GY/JwQTCJLfLDR4YV6zDqzHA/VpenpkxMIsiYc5
+ uplVQjrW2dJutWz1W7tRVN1thyYN+lU9UHbcVCZUtg8llj+fDQ+It0FO9DW9/75ASDiB
+ PVtD3rxmdZKL1e87/Kt8/N87AMbsItlvTalAsit2Ian+KRTEJ7xLu/q6lQjKdCjDuluA
+ az9q7wGJnObyME6YtEgOk9a61Ng2sglM3wo8Wm8CY4M9VzagEB254uFeQSJiY1/7ei95
+ ejUaQEo3yGI3AYpXFk75GPR2pbd8SQYdYCapsJC/bah+LUAmrJGn16XhK1Vowba6Sq4k rw== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txtw1hhg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 16:37:04 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PGb3Fb011646
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 16:37:03 GMT
+Received: from quicinc.com (10.49.16.6) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
+ 2023 09:37:02 -0700
+Date:   Wed, 25 Oct 2023 09:37:01 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+CC:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
+        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
+        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
+        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 3/3] dt-bindings: firmware: qcom,scm: document SCM on
+ SC8380XP SoCs
+Message-ID: <ZTlELVl/F28rfphf@quicinc.com>
+Mail-Followup-To: Sibi Sankar <quic_sibis@quicinc.com>,
+        andersson@kernel.org, konrad.dybcio@linaro.org, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+        vkoul@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+References: <20231025140640.22601-1-quic_sibis@quicinc.com>
+ <20231025140640.22601-4-quic_sibis@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+In-Reply-To: <20231025140640.22601-4-quic_sibis@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: SvJ-7QYkW5KQtPk2rOnInGaEHm9fo-3a
+X-Proofpoint-GUID: SvJ-7QYkW5KQtPk2rOnInGaEHm9fo-3a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_05,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=439
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310250143
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,66 +92,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Oct 25 2023 19:36, Sibi Sankar wrote:
+> Document scm compatible for SC8380XP SoCs.
+> 
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 
-The usage of writeverf_lock is wrong and misleading no matter what and
-I can not understand the intent.
-
-nfsd_copy_write_verifier() uses read_seqbegin_or_lock() incorrectly.
-"seq" is always even, so read_seqbegin_or_lock() can never take the
-lock for writing. We need to make the counter odd for the 2nd round:
-
-	--- a/fs/nfsd/nfssvc.c
-	+++ b/fs/nfsd/nfssvc.c
-	@@ -359,11 +359,14 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
-	  */
-	 void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
-	 {
-	-	int seq = 0;
-	+	int seq, nextseq = 0;
-	 
-		do {
-	+		seq = nextseq;
-			read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-			memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
-	+		/* If lockless access failed, take the lock. */
-	+		nextseq = 1;
-		} while (need_seqretry(&nn->writeverf_lock, seq));
-		done_seqretry(&nn->writeverf_lock, seq);
-	 }
-
-OTOH. This function just copies 8 bytes, this makes me think that it doesn't
-need the conditional locking and read_seqbegin_or_lock() at all. So perhaps
-the (untested) patch below makes more sense? Please note that it should not
-change the current behaviour, it just makes the code look correct (and more
-optimal but this is minor).
-
-Another question is why we can't simply turn nn->writeverf into seqcount_t.
-I guess we can't because nfsd_reset_write_verifier() needs spin_lock() to
-serialise with itself, right?
-
-Oleg.
----
-
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index c7af1095f6b5..094b765c5397 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
-  */
- void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
- {
--	int seq = 0;
-+	unsigned seq;
- 
- 	do {
--		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-+		seq = read_seqbegin(&nn->writeverf_lock);
- 		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
--	} while (need_seqretry(&nn->writeverf_lock, seq));
--	done_seqretry(&nn->writeverf_lock, seq);
-+	} while (read_seqretry(&nn->writeverf_lock, seq));
- }
- 
- static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
-
+Reviewed-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
