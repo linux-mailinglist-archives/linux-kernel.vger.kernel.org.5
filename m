@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A5C7D6568
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA197D6579
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbjJYImI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        id S233935AbjJYInW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjJYImG (ORCPT
+        with ESMTP id S232807AbjJYInV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:42:06 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE07116;
-        Wed, 25 Oct 2023 01:42:04 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P8ELMe008097;
-        Wed, 25 Oct 2023 08:41:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=piw4ASk/F6MXM5znsVtEgx59dMp8hWKsUBoemdSAOTM=;
- b=MpOF5jGbtHenZ/IUcHv9CbtBFdhKtxFiXxiLNPORku5RA3RbHdOLn72hXEuc3/6HKs6R
- k4yUN3KPOqQWxZxbWcep0S+BkcKwExJTH1bh0GmcGEF7eSMB2un8nsH5czjQevuX0Hvp
- GeCE3vWMrGy6+lMytLTxeDMDCdjb8AP1UzPB8yjM8JR6tVKuAq7dfdyHCySZI5FjS/8g
- sWQvlOVX8EPumtQae11EnEmt0dYz7sATS7kf2e9WZxIS7/CQd4e3omuUGR3oOtUY1xms
- rT1etO8VjImWLrK29hWOP+OLhmNu1+vsaEey7vn9XsqGTq3SE63EV0EqDdIy5ZUYlr/7 1g== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txmhx96a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 08:41:58 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39P8fv6O017316
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 08:41:57 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
- 2023 01:41:53 -0700
-Message-ID: <444ef41e-632c-4402-849d-80e8876b6e72@quicinc.com>
-Date:   Wed, 25 Oct 2023 14:11:50 +0530
+        Wed, 25 Oct 2023 04:43:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972FF9C;
+        Wed, 25 Oct 2023 01:43:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E48C433C7;
+        Wed, 25 Oct 2023 08:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698223399;
+        bh=0zZhtkrYhPXwaPPhoU0Ao0T3LN1o1SJTsWAiRLH+OtY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bGX6ec8k8faIE72JDouiLWwMaguSXqR0yLi1tItQC4S4F4CekXA1hPt7C79hE9a6F
+         PGbTOEGvkD3efKyOw4DroIi4UMl/D9PEFyWGgtPJTTOJt9Ujb4qL+pge+uAWvmmPCf
+         4PCNB3Vsc3OHFCdRiLc9t0gQna0xczLbN1LNdnJfoSQr/ALqiL7ClNmCn2ykSZWH8H
+         t3XVEym8yUOz7lmr6NLHYX7BbG3OEoojzIWBUpek3DyCFamqBDn1cGJaD1g7G+YEMU
+         zi5ETf/Na9fv6+UWt25ZuKxKwUJEHrmnAC9+rhXe2er4nGF6SFErv1TVlLYvN1pay5
+         sCbXdZYdLp7Bw==
+Date:   Wed, 25 Oct 2023 10:43:16 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Marco Pagani <marpagan@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [RFC PATCH] drm/test: add a test suite for GEM objects backed by
+ shmem
+Message-ID: <bychwi46hiqd34ch2f2ikvcijnq3hxvqudycsja5mawng46gyx@cq7wwxozv4si>
+References: <20231023164541.92913-1-marpagan@redhat.com>
+ <zakappnhljtx3axi2ovvis3evhju4cwqrena7j6gqn5kjdjtsb@mgrhkn5oboid>
+ <789aaf2b-4d68-4128-b8ff-c1ba4849e141@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>
-CC:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231015162114.976202-1-robimarko@gmail.com>
- <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
- <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com>
- <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
- <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
- <CAOX2RU7Z1BS0u_k=cx58oq8RODPV=a3kV26OsbYpkDaN1atixg@mail.gmail.com>
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <CAOX2RU7Z1BS0u_k=cx58oq8RODPV=a3kV26OsbYpkDaN1atixg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: a0pLzSUo_K5mzzQ3IhRA65xhyKIDjsbM
-X-Proofpoint-GUID: a0pLzSUo_K5mzzQ3IhRA65xhyKIDjsbM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
- priorityscore=1501 mlxlogscore=970 impostorscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250074
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tcuh3gisjtvmugdz"
+Content-Disposition: inline
+In-Reply-To: <789aaf2b-4d68-4128-b8ff-c1ba4849e141@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,65 +59,177 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--tcuh3gisjtvmugdz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/21/2023 5:27 PM, Robert Marko wrote:
-> On Fri, 20 Oct 2023 at 08:40, Kathiravan Thirumoorthy
-> <quic_kathirav@quicinc.com> wrote:
->>
->>
->> On 10/19/2023 7:53 PM, Robert Marko wrote:
->>> On Thu, 19 Oct 2023 at 08:46, Kathiravan Thirumoorthy
->>> <quic_kathirav@quicinc.com> wrote:
->>>>
->>>> On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
->>>>>
->>>>> On 10/15/23 18:20, Robert Marko wrote:
->>>>>> QUP6 I2C clock is listed in the dt bindings but it was never included in
->>>>>> the GCC driver.
->>>>>> So lets add support for it, its intentionally marked to never be
->>>>>> disabled
->>>>>> as its somehow affecting DVFS and if disabled it sometimes crashes the
->>>>>> board.
->>>>>>
->>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>>>>> ---
->>>>> Bjorn, would you be able to get an idea of what could be sitting
->>>>> on that bus?
->>>>>
->>>>> Or maybe the IPQ folks could know?
->>>>>
->>>> Konrad / Robert,
->>>>
->>>> Similar to IPQ9574, RPM needs this clock to communicate with PMIC over
->>>> I2C interface. Discussion happened here[1] is pretty much applicable to
->>>> IPQ6018 as well. Based on previous experience, we may need to document
->>>> the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
->>>>
->>>> Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
->>> Thanks for the explanation, it makes sense as I used to control the
->>> MP5496 directly
->>> via I2C.
->>>
->>> Is it possible to disable RPM so it doesn't conflict and just use the
->>> full MP5496 driver instead?
->>> I find the RPM quite limiting as there is no way to actually retrieve
->>> the current-voltage.
->>
->>
->> Robert, checked with the team and currently we don't have any option to
->> disable the RPM as such.
-> 
-> Thanks for checking.
-> 
-> BTW, is there any information you could share on the USB GDSC-s?
-> I tried converting them to GDSC-s like IPQ8074 has, but it seems that
-> they have different features.
-> It would be great to use proper GSDC support instead of manually
-> setting bits during GCC probe.
+Hi,
 
+On Tue, Oct 24, 2023 at 07:14:25PM +0200, Marco Pagani wrote:
+> >> +static void drm_gem_shmem_test_obj_create_private(struct kunit *test)
+> >> +{
+> >> +	struct fake_dev *fdev =3D test->priv;
+> >> +	struct drm_gem_shmem_object *shmem;
+> >> +	struct drm_gem_object *gem_obj;
+> >> +	struct dma_buf buf_mock;
+> >> +	struct dma_buf_attachment attach_mock;
+> >> +	struct sg_table *sgt;
+> >> +	char *buf;
+> >> +	int ret;
+> >> +
+> >> +	/* Create a mock scatter/gather table */
+> >> +	buf =3D kunit_kzalloc(test, TEST_SIZE, GFP_KERNEL);
+> >> +	KUNIT_ASSERT_NOT_NULL(test, buf);
+> >> +
+> >> +	sgt =3D kzalloc(sizeof(*sgt), GFP_KERNEL);
+> >> +	KUNIT_ASSERT_NOT_NULL(test, sgt);
+> >> +
+> >> +	ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
+> >> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> >> +	sg_init_one(sgt->sgl, buf, TEST_SIZE);
+> >> +
+> >> +	/* Init a mock DMA-BUF */
+> >> +	buf_mock.size =3D TEST_SIZE;
+> >> +	attach_mock.dmabuf =3D &buf_mock;
+> >> +
+> >> +	gem_obj =3D drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &att=
+ach_mock, sgt);
+> >> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+> >> +	KUNIT_ASSERT_EQ(test, gem_obj->size, TEST_SIZE);
+> >> +	KUNIT_ASSERT_NULL(test, gem_obj->filp);
+> >> +	KUNIT_ASSERT_NOT_NULL(test, gem_obj->funcs);
+> >> +
+> >> +	shmem =3D to_drm_gem_shmem_obj(gem_obj);
+> >> +	KUNIT_ASSERT_PTR_EQ(test, shmem->sgt, sgt);
+> >> +
+> >> +	/* The scatter/gather table is freed by drm_gem_shmem_free */
+> >> +	drm_gem_shmem_free(shmem);
+> >> +}
+> >=20
+> > KUNIT_ASSERT_* will stop the execution of the test on failure, you
+> > should probably use a bit more of KUNIT_EXPECT_* calls otherwise you'll
+> > leak resources.
+> >=20
+> > You also probably want to use a kunit_action to clean up and avoid that
+> > whole discussion
+> >
+>=20
+> You are right. I slightly prefer using KUnit expectations (unless actions
+> are strictly necessary) since I feel using actions makes test cases a bit
+> less straightforward to understand. Is this okay for you?
 
-Could you please explain the issue which you are facing? Based on quick 
-look at the HW documentation, seems there is no difference between 
-IPQ8074 and IPQ6018 GDSC-s.
+I disagree. Actions make it easier to reason about, even when comparing
+assertion vs expectation
 
-Thanks,
+Like, for the call to sg_alloc_table and
+drm_gem_shmem_prime_import_sg_table(), the reasonable use of assert vs
+expect would be something like:
+
+sgt =3D kzalloc(sizeof(*sgt), GFP_KERNEL);
+KUNIT_ASSERT_NOT_NULL(test, sgt);
+
+ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
+KUNIT_ASSERT_EQ(test, ret, 0);
+
+/*
+ * Here, it's already not super clear whether you want to expect vs
+ * assert. expect will make you handle the failure case later, assert will
+ * force you to call kfree on sgt. Both kind of suck in their own ways.
+ */
+
+sg_init_one(sgt->sgl, buf, TEST_SIZE);
+
+gem_obj =3D drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &attach_moc=
+k, sgt);
+KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+
+/*
+ * If the assert fails, we forgot to call sg_free_table(sgt) and kfree(sgt).
+ */
+
+KUNIT_EXPECT_EQ(test, gem_obj->size, TEST_SIZE);
+KUNIT_EXPECT_NULL(test, gem_obj->filp);
+KUNIT_EXPECT_NOT_NULL(test, gem_obj->funcs);
+
+/*
+ * And here we have to handle the case where the expectation was wrong,
+ * but the test still continued.
+ */
+
+But if you're not using an action, you still have to call kfree(sgt),
+which means that you might still
+
+shmem =3D to_drm_gem_shmem_obj(gem_obj);
+KUNIT_ASSERT_PTR_EQ(test, shmem->sgt, sgt);
+
+/*
+ * If the assertion fails, we now have to call drm_gem_shmem_free(shmem)
+ */
+
+/* The scatter/gather table is freed by drm_gem_shmem_free */
+drm_gem_shmem_free(shmem);
+
+/* everything's fine now */
+
+The semantics around drm_gem_shmem_free make it a bit convoluted, but
+doing it using goto/labels, plus handling the assertions and error
+reporting would be difficult.
+
+Using actions, we have:
+
+sgt =3D kzalloc(sizeof(*sgt), GFP_KERNEL);
+KUNIT_ASSERT_NOT_NULL(test, sgt);
+
+ret =3D kunit_add_action_or_reset(test, kfree_wrapper, sgt);
+KUNIT_ASSERT_EQ(test, ret, 0);
+
+ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
+KUNIT_ASSERT_EQ(test, ret, 0);
+
+ret =3D kunit_add_action_or_reset(test, sg_free_table_wrapper, sgt);
+KUNIT_ASSERT_EQ(test, ret, 0);
+
+sg_init_one(sgt->sgl, buf, TEST_SIZE);
+
+gem_obj =3D drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &attach_moc=
+k, sgt);
+KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+KUNIT_EXPECT_EQ(test, gem_obj->size, TEST_SIZE);
+KUNIT_EXPECT_NULL(test, gem_obj->filp);
+KUNIT_EXPECT_NOT_NULL(test, gem_obj->funcs);
+
+/* drm_gem_shmem_free will free the struct sg_table itself */
+kunit_remove_action(test, sg_free_table_wrapper, sgt);
+kunit_remove_action(test, kfree_wrapper, sgt);
+
+shmem =3D to_drm_gem_shmem_obj(gem_obj);
+KUNIT_ASSERT_PTR_EQ(test, shmem->sgt, sgt);
+
+ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+KUNIT_ASSERT_EQ(test, ret, 0);
+
+The last one is arguable, but for the previous ones it makes error
+handling much more convenient and easy to reason about.
+
+The wrappers are also a bit inconvenient to use, but it's mostly there
+to avoid a compiler warning at the moment.
+
+This patch will help hopefully:
+https://lore.kernel.org/linux-kselftest/20230915050125.3609689-1-davidgow@g=
+oogle.com/
+
+Maxime
+
+--tcuh3gisjtvmugdz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTjVJAAKCRDj7w1vZxhR
+xYdGAQDkxKhWaor5tcnx6YjSfUKy3qxOyvKwHBkTrnr3ZiZJhgD/ciezUk1mtw77
+8KroW1oLeeULoY/vcRzY1uB96jxR5Ac=
+=fbyv
+-----END PGP SIGNATURE-----
+
+--tcuh3gisjtvmugdz--
