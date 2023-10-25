@@ -2,203 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEA47D7281
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AE97D727F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbjJYRl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        id S231539AbjJYRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJYRlZ (ORCPT
+        with ESMTP id S229485AbjJYRk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:41:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4175199
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698255640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UkGSArifVcPZ7lZ367bjkLWFmP8Ugc7BI10JCKWK7ek=;
-        b=N9XjQLpwIA8sDfZqlRNDwQQ4sNAeFKj2W/iNLTMo4T+B0G9AmwuP6p6r8ITWuM/IFOff86
-        wmJsV+IOXNbzHJ8ntc+74YmpEOJbiMhawEY5KE+QNikIM2Yc2HtJNW1jBu5+Soep+Ybabh
-        IaAecZsKdTmvhCgtTmH1YvHzum6NTe0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-576-ES4kaKGwPp2CW3tKmHRYRw-1; Wed, 25 Oct 2023 13:40:35 -0400
-X-MC-Unique: ES4kaKGwPp2CW3tKmHRYRw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FDB08F5DA0;
-        Wed, 25 Oct 2023 17:40:35 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
-        by smtp.corp.redhat.com (Postfix) with SMTP id ED2152166B26;
-        Wed, 25 Oct 2023 17:40:32 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 25 Oct 2023 19:39:34 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 19:39:31 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: nfsd_copy_write_verifier: wrong usage of read_seqbegin_or_lock()
-Message-ID: <20231025173931.GA29779@redhat.com>
-References: <20231025163006.GA8279@redhat.com>
- <ZTlJmuDpGE+U3pEF@tissot.1015granger.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTlJmuDpGE+U3pEF@tissot.1015granger.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 25 Oct 2023 13:40:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8861137;
+        Wed, 25 Oct 2023 10:40:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0BECC433C8;
+        Wed, 25 Oct 2023 17:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698255626;
+        bh=vowI2I62ibmckfqS1BgsmGmzvGGzK48iOcs0vXDIj9o=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=hrrZD3YaKFG3WBXkYLbm7jYNKJBa04fRbCGoe3D/K3LG8t8zMnWNsGnXu44/TXr6W
+         XdE54VqBFQPnpj8cixVjGYzwGgFex+KrvYPQKU58ryTRbw6MU8902YuWNTXrFYp3+h
+         bhJ7NqAlAP2omqduFtpZF1QtumtB/xhkkBjyjXf8voavmR2I+myq7XSP07c12bSnBx
+         3XMYb8Ql3VBuUXpyEb/CTbkINIp5PVxXpBdoXgeTAcAM7tb0TNSqeW1uc6jF8LBtD0
+         44etvTgFq99q5a3CcGI2T/Ltjis3Q1JIR5Q3ii5d2MTsZWKqd7fPTH6rcsKflO/bfr
+         LK5epcBcKa3cQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 25 Oct 2023 20:40:17 +0300
+Message-Id: <CWHPDGHI9EJK.WMPDVUJUR67I@suppilovahvero>
+Subject: Re: [PATCH v4 1/5] crypto: mxs-dcp: Add support for hardware-bound
+ keys
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "David Gstir" <david@sigma-star.at>,
+        "Mimi Zohar" <zohar@linux.ibm.com>,
+        "James Bottomley" <jejb@linux.ibm.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     "Shawn Guo" <shawnguo@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        "Fabio Estevam" <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        "Ahmad Fatoum" <a.fatoum@pengutronix.de>,
+        "sigma star Kernel Team" <upstream+dcp@sigma-star.at>,
+        "David Howells" <dhowells@redhat.com>,
+        "Li Yang" <leoyang.li@nxp.com>, "Paul Moore" <paul@paul-moore.com>,
+        "James Morris" <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Tejun Heo" <tj@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        <linux-security-module@vger.kernel.org>,
+        "Richard Weinberger" <richard@nod.at>,
+        "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
+X-Mailer: aerc 0.15.2
+References: <20231024162024.51260-1-david@sigma-star.at>
+ <20231024162024.51260-2-david@sigma-star.at>
+In-Reply-To: <20231024162024.51260-2-david@sigma-star.at>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chuck,
+On Tue Oct 24, 2023 at 7:20 PM EEST, David Gstir wrote:
+> DCP is capable of performing AES with two hardware-bound keys:
+>
+> - The one-time programmable (OTP) key which is burnt via on-chip fuses
+> - The unique key (UK) which is derived from the OTP key
+>
+> In addition to the two hardware-bound keys, DCP also supports
+> storing keys in 4 dedicated key slots within its secure memory area
+> (internal SRAM).
+>
+> These keys are not stored in main memory and are therefore
+> not directly accessible by the operating system. To use them
+> for AES operations, a one-byte key reference has to supplied
+> with the DCP operation descriptor in the control register.
+>
+> This adds support for using any of these 6 keys through the crypto API
+> via their key reference after they have been set up. The main purpose
+> is to add support for DCP-backed trusted keys. Other use cases are
+> possible too (see similar existing paes implementations), but these
+> should carefully be evaluated as e.g. enabling AF_ALG will give
+> userspace full access to use keys. In scenarios with untrustworthy
+> userspace, this will enable en-/decryption oracles.
+>
+> Co-developed-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: David Gstir <david@sigma-star.at>
+> ---
+>  drivers/crypto/mxs-dcp.c | 104 ++++++++++++++++++++++++++++++++++-----
+>  include/soc/fsl/dcp.h    |  17 +++++++
+>  2 files changed, 110 insertions(+), 11 deletions(-)
+>  create mode 100644 include/soc/fsl/dcp.h
+>
+> diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+> index f6b7bce0e656..2dc664fb2faf 100644
+> --- a/drivers/crypto/mxs-dcp.c
+> +++ b/drivers/crypto/mxs-dcp.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/stmp_device.h>
+>  #include <linux/clk.h>
+> +#include <soc/fsl/dcp.h>
+> =20
+>  #include <crypto/aes.h>
+>  #include <crypto/sha1.h>
+> @@ -101,6 +102,7 @@ struct dcp_async_ctx {
+>  	struct crypto_skcipher		*fallback;
+>  	unsigned int			key_len;
+>  	uint8_t				key[AES_KEYSIZE_128];
+> +	bool				key_referenced;
+>  };
+> =20
+>  struct dcp_aes_req_ctx {
+> @@ -155,6 +157,7 @@ static struct dcp *global_sdcp;
+>  #define MXS_DCP_CONTROL0_HASH_TERM		(1 << 13)
+>  #define MXS_DCP_CONTROL0_HASH_INIT		(1 << 12)
+>  #define MXS_DCP_CONTROL0_PAYLOAD_KEY		(1 << 11)
+> +#define MXS_DCP_CONTROL0_OTP_KEY		(1 << 10)
+>  #define MXS_DCP_CONTROL0_CIPHER_ENCRYPT		(1 << 8)
+>  #define MXS_DCP_CONTROL0_CIPHER_INIT		(1 << 9)
+>  #define MXS_DCP_CONTROL0_ENABLE_HASH		(1 << 6)
+> @@ -168,6 +171,8 @@ static struct dcp *global_sdcp;
+>  #define MXS_DCP_CONTROL1_CIPHER_MODE_ECB	(0 << 4)
+>  #define MXS_DCP_CONTROL1_CIPHER_SELECT_AES128	(0 << 0)
+> =20
+> +#define MXS_DCP_CONTROL1_KEY_SELECT_SHIFT	8
+> +
+>  static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
+>  {
+>  	int dma_err;
+> @@ -224,13 +229,16 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *ac=
+tx,
+>  	struct dcp *sdcp =3D global_sdcp;
+>  	struct dcp_dma_desc *desc =3D &sdcp->coh->desc[actx->chan];
+>  	struct dcp_aes_req_ctx *rctx =3D skcipher_request_ctx(req);
+> +	bool key_referenced =3D actx->key_referenced;
+>  	int ret;
+> =20
+> -	key_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_key,
+> -				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
+> -	ret =3D dma_mapping_error(sdcp->dev, key_phys);
+> -	if (ret)
+> -		return ret;
+> +	if (!key_referenced) {
+> +		key_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_key,
+> +					  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
+> +		ret =3D dma_mapping_error(sdcp->dev, key_phys);
+> +		if (ret)
+> +			return ret;
+> +	}
+> =20
+>  	src_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
+>  				  DCP_BUF_SZ, DMA_TO_DEVICE);
+> @@ -255,8 +263,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *act=
+x,
+>  		    MXS_DCP_CONTROL0_INTERRUPT |
+>  		    MXS_DCP_CONTROL0_ENABLE_CIPHER;
+> =20
+> -	/* Payload contains the key. */
+> -	desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
+> +	if (key_referenced)
+> +		/* Set OTP key bit to select the key via KEY_SELECT. */
+> +		desc->control0 |=3D MXS_DCP_CONTROL0_OTP_KEY;
+> +	else
+> +		/* Payload contains the key. */
+> +		desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
+> =20
+>  	if (rctx->enc)
+>  		desc->control0 |=3D MXS_DCP_CONTROL0_CIPHER_ENCRYPT;
+> @@ -270,6 +282,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx=
+,
+>  	else
+>  		desc->control1 |=3D MXS_DCP_CONTROL1_CIPHER_MODE_CBC;
+> =20
+> +	if (key_referenced)
+> +		desc->control1 |=3D sdcp->coh->aes_key[0] << MXS_DCP_CONTROL1_KEY_SELE=
+CT_SHIFT;
+> +
+>  	desc->next_cmd_addr =3D 0;
+>  	desc->source =3D src_phys;
+>  	desc->destination =3D dst_phys;
+> @@ -284,9 +299,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx=
+,
+>  err_dst:
+>  	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
+>  err_src:
+> -	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
+> -			 DMA_TO_DEVICE);
+> -
+> +	if (!key_referenced)
+> +		dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
+> +				 DMA_TO_DEVICE);
+>  	return ret;
+>  }
+> =20
+> @@ -453,7 +468,7 @@ static int mxs_dcp_aes_enqueue(struct skcipher_reques=
+t *req, int enc, int ecb)
+>  	struct dcp_aes_req_ctx *rctx =3D skcipher_request_ctx(req);
+>  	int ret;
+> =20
+> -	if (unlikely(actx->key_len !=3D AES_KEYSIZE_128))
+> +	if (unlikely(actx->key_len !=3D AES_KEYSIZE_128 && !actx->key_reference=
+d))
+>  		return mxs_dcp_block_fallback(req, enc);
+> =20
+>  	rctx->enc =3D enc;
+> @@ -500,6 +515,7 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher =
+*tfm, const u8 *key,
+>  	 * there can still be an operation in progress.
+>  	 */
+>  	actx->key_len =3D len;
+> +	actx->key_referenced =3D false;
+>  	if (len =3D=3D AES_KEYSIZE_128) {
+>  		memcpy(actx->key, key, len);
+>  		return 0;
+> @@ -516,6 +532,32 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher=
+ *tfm, const u8 *key,
+>  	return crypto_skcipher_setkey(actx->fallback, key, len);
+>  }
+> =20
+> +static int mxs_dcp_aes_setrefkey(struct crypto_skcipher *tfm, const u8 *=
+key,
+> +				 unsigned int len)
+> +{
+> +	struct dcp_async_ctx *actx =3D crypto_skcipher_ctx(tfm);
+> +
+> +	if (len !=3D DCP_PAES_KEYSIZE)
+> +		return -EINVAL;
+> +
+> +	switch (key[0]) {
+> +	case DCP_PAES_KEY_SLOT0:
+> +	case DCP_PAES_KEY_SLOT1:
+> +	case DCP_PAES_KEY_SLOT2:
+> +	case DCP_PAES_KEY_SLOT3:
+> +	case DCP_PAES_KEY_UNIQUE:
+> +	case DCP_PAES_KEY_OTP:
+> +		memcpy(actx->key, key, len);
+> +		actx->key_len =3D len;
+> +		actx->key_referenced =3D true;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int mxs_dcp_aes_fallback_init_tfm(struct crypto_skcipher *tfm)
+>  {
+>  	const char *name =3D crypto_tfm_alg_name(crypto_skcipher_tfm(tfm));
+> @@ -539,6 +581,13 @@ static void mxs_dcp_aes_fallback_exit_tfm(struct cry=
+pto_skcipher *tfm)
+>  	crypto_free_skcipher(actx->fallback);
+>  }
+> =20
+> +static int mxs_dcp_paes_init_tfm(struct crypto_skcipher *tfm)
+> +{
+> +	crypto_skcipher_set_reqsize(tfm, sizeof(struct dcp_aes_req_ctx));
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Hashing (SHA1/SHA256)
+>   */
+> @@ -889,6 +938,39 @@ static struct skcipher_alg dcp_aes_algs[] =3D {
+>  		.ivsize			=3D AES_BLOCK_SIZE,
+>  		.init			=3D mxs_dcp_aes_fallback_init_tfm,
+>  		.exit			=3D mxs_dcp_aes_fallback_exit_tfm,
+> +	}, {
+> +		.base.cra_name		=3D "ecb(paes)",
+> +		.base.cra_driver_name	=3D "ecb-paes-dcp",
+> +		.base.cra_priority	=3D 401,
+> +		.base.cra_alignmask	=3D 15,
+> +		.base.cra_flags		=3D CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
+> +		.base.cra_blocksize	=3D AES_BLOCK_SIZE,
+> +		.base.cra_ctxsize	=3D sizeof(struct dcp_async_ctx),
+> +		.base.cra_module	=3D THIS_MODULE,
+> +
+> +		.min_keysize		=3D DCP_PAES_KEYSIZE,
+> +		.max_keysize		=3D DCP_PAES_KEYSIZE,
+> +		.setkey			=3D mxs_dcp_aes_setrefkey,
+> +		.encrypt		=3D mxs_dcp_aes_ecb_encrypt,
+> +		.decrypt		=3D mxs_dcp_aes_ecb_decrypt,
+> +		.init			=3D mxs_dcp_paes_init_tfm,
+> +	}, {
+> +		.base.cra_name		=3D "cbc(paes)",
+> +		.base.cra_driver_name	=3D "cbc-paes-dcp",
+> +		.base.cra_priority	=3D 401,
+> +		.base.cra_alignmask	=3D 15,
+> +		.base.cra_flags		=3D CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
+> +		.base.cra_blocksize	=3D AES_BLOCK_SIZE,
+> +		.base.cra_ctxsize	=3D sizeof(struct dcp_async_ctx),
+> +		.base.cra_module	=3D THIS_MODULE,
+> +
+> +		.min_keysize		=3D DCP_PAES_KEYSIZE,
+> +		.max_keysize		=3D DCP_PAES_KEYSIZE,
+> +		.setkey			=3D mxs_dcp_aes_setrefkey,
+> +		.encrypt		=3D mxs_dcp_aes_cbc_encrypt,
+> +		.decrypt		=3D mxs_dcp_aes_cbc_decrypt,
+> +		.ivsize			=3D AES_BLOCK_SIZE,
+> +		.init			=3D mxs_dcp_paes_init_tfm,
+>  	},
+>  };
+> =20
+> diff --git a/include/soc/fsl/dcp.h b/include/soc/fsl/dcp.h
+> new file mode 100644
+> index 000000000000..cda89e260c46
+> --- /dev/null
+> +++ b/include/soc/fsl/dcp.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2021 sigma star gmbh
+> + */
+> +
+> +#ifndef MXS_DCP_H
+> +#define MXS_DCP_H
+> +
+> +#define DCP_PAES_KEYSIZE 1
+> +#define DCP_PAES_KEY_SLOT0 0x00
+> +#define DCP_PAES_KEY_SLOT1 0x01
+> +#define DCP_PAES_KEY_SLOT2 0x02
+> +#define DCP_PAES_KEY_SLOT3 0x03
+> +#define DCP_PAES_KEY_UNIQUE 0xfe
+> +#define DCP_PAES_KEY_OTP 0xff
+> +
+> +#endif /* MXS_DCP_H */
 
-Thanks for your reply. But I am already sleeping and I can't understand it.
-So let me ask a couple of questions.
+For me this looks quite reasonable.
 
-1. Do you agree that the current nfsd_copy_write_verifier() code makes no sense?
-
-   I mean, the usage of read_seqbegin_or_lock() suggests that if the lockless
-   pass fails it should take writeverf_lock for writing. But this can't happen,
-   and thus this code doesn't look right no matter what. None of the
-   read_seqbegin_or_lock/need_seqretry/done_seqretry helpers make any sense
-   because "seq" is alway even.
-
-2. If yes, which change do you prefer? I'd prefer the patch at the end.
-
-Oleg.
-
-On 10/25, Chuck Lever wrote:
->
-> On Wed, Oct 25, 2023 at 06:30:06PM +0200, Oleg Nesterov wrote:
-> > Hello,
-> >
-> > The usage of writeverf_lock is wrong and misleading no matter what and
-> > I can not understand the intent.
->
-> The structure of the seqlock was introduced in commit 27c438f53e79
-> ("nfsd: Support the server resetting the boot verifier").
->
-> The NFS write verifier is an 8-byte cookie that is supposed to
-> indicate the boot epoch of the server -- simply put, when the server
-> restarts, the epoch (and this verifier) changes.
->
-> NFSv3 and later have a two-phase write scheme where the client
-> sends data to the server (known as an UNSTABLE WRITE), then later
-> asks the server to commit that data (a COMMIT). Before the COMMIT,
-> that data is not durable and the client must hold onto it until
-> the server's COMMIT Reply indicates it's safe for the client to
-> discard that data and move on.
->
-> When an UNSTABLE WRITE is done, the server reports its current
-> epoch as part of each WRITE Reply. If this verifier cookie changes,
-> the client knows that the server might have lost previously
-> written written-but-uncommitted data, so it must send the WRITEs
-> again in that (rare) case.
->
-> NFSD abuses this slightly by changing the write verifier whenever
-> there is an underlying local write error that might have occurred in
-> the background (ie, there was no WRITE or COMMIT operation at the
-> time that the server could use to convey the error back to the
-> client). This is supposed to trigger clients to send UNSTABLE WRITEs
-> again to ensure that data is properly committed to durable storage.
->
-> The point of the seqlock is to ensure that
->
-> a) a write verifier update does not tear the verifier
-> b) a write verifier read does not see a torn verifier
->
-> This is a hot path, so we don't want a full spinlock to achieve
-> a) and b).
->
-> Way back when, the verifier was updated by two separate 32-bit
-> stores; hence the risk of tearing.
->
->
-> > nfsd_copy_write_verifier() uses read_seqbegin_or_lock() incorrectly.
-> > "seq" is always even, so read_seqbegin_or_lock() can never take the
-> > lock for writing. We need to make the counter odd for the 2nd round:
-> >
-> > 	--- a/fs/nfsd/nfssvc.c
-> > 	+++ b/fs/nfsd/nfssvc.c
-> > 	@@ -359,11 +359,14 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
-> > 	  */
-> > 	 void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
-> > 	 {
-> > 	-	int seq = 0;
-> > 	+	int seq, nextseq = 0;
-> >
-> > 		do {
-> > 	+		seq = nextseq;
-> > 			read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-> > 			memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
-> > 	+		/* If lockless access failed, take the lock. */
-> > 	+		nextseq = 1;
-> > 		} while (need_seqretry(&nn->writeverf_lock, seq));
-> > 		done_seqretry(&nn->writeverf_lock, seq);
-> > 	 }
-> >
-> > OTOH. This function just copies 8 bytes, this makes me think that it doesn't
-> > need the conditional locking and read_seqbegin_or_lock() at all. So perhaps
-> > the (untested) patch below makes more sense? Please note that it should not
-> > change the current behaviour, it just makes the code look correct (and more
-> > optimal but this is minor).
-> >
-> > Another question is why we can't simply turn nn->writeverf into seqcount_t.
-> > I guess we can't because nfsd_reset_write_verifier() needs spin_lock() to
-> > serialise with itself, right?
->
-> "reset" is supposed to be very rare operation. Using a lock in that
-> case is probably quite acceptable, as long as reading the verifier
-> is wait-free and guaranteed to be untorn.
->
-> But a seqcount_t is only 32 bits.
->
->
-> > Oleg.
-> > ---
-> >
-> > diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> > index c7af1095f6b5..094b765c5397 100644
-> > --- a/fs/nfsd/nfssvc.c
-> > +++ b/fs/nfsd/nfssvc.c
-> > @@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
-> >   */
-> >  void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
-> >  {
-> > -	int seq = 0;
-> > +	unsigned seq;
-> >
-> >  	do {
-> > -		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-> > +		seq = read_seqbegin(&nn->writeverf_lock);
-> >  		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
-> > -	} while (need_seqretry(&nn->writeverf_lock, seq));
-> > -	done_seqretry(&nn->writeverf_lock, seq);
-> > +	} while (read_seqretry(&nn->writeverf_lock, seq));
-> >  }
-> >
-> >  static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
-> >
->
-> --
-> Chuck Lever
->
-
+BR, Jarkko
