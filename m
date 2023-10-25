@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABA77D7349
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A210E7D7352
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjJYSc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
+        id S233233AbjJYSdx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 14:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJYSc0 (ORCPT
+        with ESMTP id S229522AbjJYSdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:32:26 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11485116
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:32:23 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 5614622812f47-3b52360cdf0so483623b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698258742; x=1698863542; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8ITofy++IV5vAJ6Tm+pHoA0acLIWPFQv5Ue2A3iNM5o=;
-        b=GFNwcaXmYI71s0FO/FywHOz58uGioJbFy32RCR6eoeRaVcBV3zAyuJqwgyS+Uh6/09
-         JzMY2Dj9bKZ4tWb0C/RxOJ9en6TxRKVq98M/vczziX+YcT8IpXRqwYtzRxbyBMNY36ka
-         rxwIpIqGg0MVVE5P8Gyy9XZcaqrjti0G+1ISpkuht7Guu6e8HIE3yedGajvf53OqkAcS
-         nImiL+tuvY81F85MdlXpn9X0DA/LLveAh9Pml51Fd+RJ6wtgQ1SsF450+hGwuS71hAUr
-         LiF4yDtO+g9yniX6FDKnOVPVcYHxj758/ypK16jVqh5RIL1QeGeNwbX/uJmnfPnoBSpb
-         +JyQ==
+        Wed, 25 Oct 2023 14:33:51 -0400
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80CFDC;
+        Wed, 25 Oct 2023 11:33:49 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1ea1742c1a5so3742fac.0;
+        Wed, 25 Oct 2023 11:33:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698258742; x=1698863542;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ITofy++IV5vAJ6Tm+pHoA0acLIWPFQv5Ue2A3iNM5o=;
-        b=TkYtiaYxanBt8fMN6jFteFWDf47WMhofxh+la32+baAtcAadqlokQegqGyYTureA0l
-         mWwQO55x8X3SfNOfCKyN6ceu2ecB4pDlz1eLvGz7euwiqshAo985p5OqIlW/VxzCPt67
-         Crn4xymc1IgbY1EZOWhs7A8crMUSRxFLDYeEiCdjTAPC7gHKP69e5u1X1ywjZvuvprpP
-         pyyEFBeSlYCrAvMIv0Z+B8kEGpiVCkOQs1mm9BmMsYgnpX9+j/5djhWeryM4IrjuZZNa
-         ZCGyB5uDlEHgWmDmqLlwlJZl4SBFE0y2XbDiHVK4EkrB/lKr9DF6MaF9A4ydAzJ3OBXb
-         e94Q==
-X-Gm-Message-State: AOJu0Yz+8o/aJzTzNmQE8sYaTAH6vIx8SOaSzNjRcvSYbKQYRQjAyiJF
-        WRKdBCT26lBfFw0S5jmQN+/vuA==
-X-Google-Smtp-Source: AGHT+IF3zGyOio/TyOgUPNVF8bSfN9eycyQP3oHU1zL2/yr7Aw+jM1elK8/PMy/0y8tVVtoMH4HvQQ==
-X-Received: by 2002:a05:6808:b29:b0:3ab:8956:ada4 with SMTP id t9-20020a0568080b2900b003ab8956ada4mr13619518oij.10.1698258742362;
-        Wed, 25 Oct 2023 11:32:22 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id bl29-20020a056808309d00b003b2e4511f22sm2468353oib.17.2023.10.25.11.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 11:32:21 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qvig0-004vSE-Mf;
-        Wed, 25 Oct 2023 15:32:20 -0300
-Date:   Wed, 25 Oct 2023 15:32:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+45f6cae2ca8c1f71e529@syzkaller.appspotmail.com>
-Cc:     iommu@lists.linux.dev, joro@8bytes.org, kevin.tian@intel.com,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Subject: Re: [syzbot] [iommu?] KASAN: slab-use-after-free Read in
- iommufd_ioas_iova_ranges
-Message-ID: <20231025183220.GQ691768@ziepe.ca>
-References: <000000000000d621b406088a2f55@google.com>
+        d=1e100.net; s=20230601; t=1698258829; x=1698863629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lS7dc6OeEagjVnOXqO7ndPxuPeYtv6s3DDu32hsvyZo=;
+        b=EyMebHsnQSqqipkJMvdOvcWP9rZAOsfQvUnIbcDE3MSkeBNDpQ2OO9gnKGFiSfPTD4
+         /nb7TeZIWdPNfUBEgQ3SCnv9ajvwapDzuIlIXjdbDSsVhiNzZlFxUbs5dXQ/ZJ3Qr3ex
+         IJkH2TILovmO/fM5i1wzsL8pPYE8u+DX/YvntrSDwpRK3NxfrSN+zhmXAAr7gQW1c9+z
+         4BHPhcXMg4J1qjVTazfiEN7soAwcSHUa+TJUFW3lbj5Z+0/pj/fALRTIAANHGaRMedJE
+         JhB6MjbiTKePw2VVmHKjY0QaUwU4Js3rTfZt49r7M1aAi24EEniqCHT8PeG8ocYhDpxz
+         nxww==
+X-Gm-Message-State: AOJu0YzwBTgHD/bKyrGjLWRAx2aTaEW8dOJc1OqK1yFGWlOL8xRihvKS
+        ifw6F4P5jkvXjOsnWxhcUqqJYtuIuYEzK4OQkJGliugno9E=
+X-Google-Smtp-Source: AGHT+IGvOnfAlquQB4nxlxu/kS+7sHxNr5PLcWMwUNaRIF5Ci5hC2ktLAwVk9WM2JlIAH6NyRq60sK6OxQvi/Pz7ei0=
+X-Received: by 2002:a05:6870:f60b:b0:1d0:e372:6cf8 with SMTP id
+ ek11-20020a056870f60b00b001d0e3726cf8mr16666905oab.2.1698258828862; Wed, 25
+ Oct 2023 11:33:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000d621b406088a2f55@google.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20231025053833.16014-1-raag.jadav@intel.com> <20231025055345.GI3208943@black.fi.intel.com>
+ <CAJZ5v0iYA3Qh=KQm_+XGm=jvLO=ZN-AyYx7DW=-EiqkE5LS19Q@mail.gmail.com> <ZTlcmA0VpE2jsbUQ@black.fi.intel.com>
+In-Reply-To: <ZTlcmA0VpE2jsbUQ@black.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Oct 2023 20:33:37 +0200
+Message-ID: <CAJZ5v0j0qfzjikB1Pi-9mKX0rG3Hpw_cQuF421_ahFW9jjgJtA@mail.gmail.com>
+Subject: Re: [PATCH v1] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        len.brown@intel.com, andriy.shevchenko@linux.intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 06:11:01AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c3200081020d Merge tag 'block-6.6-2023-10-20' of git://git..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15013471680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=849fe52ba7c6d78a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=45f6cae2ca8c1f71e529
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/caa5c1eed3ec/disk-c3200081.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/7990a3a9f71e/vmlinux-c3200081.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/015551ac9acc/bzImage-c3200081.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+45f6cae2ca8c1f71e529@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in __up_read+0xb3/0x690 kernel/locking/rwsem.c:1342
-> Read of size 8 at addr ffff8880283c9068 by task syz-executor.2/30372
+On Wed, Oct 25, 2023 at 8:21 PM Raag Jadav <raag.jadav@intel.com> wrote:
+>
+> On Wed, Oct 25, 2023 at 08:04:44PM +0200, Rafael J. Wysocki wrote:
+> > On Wed, Oct 25, 2023 at 7:53 AM Mika Westerberg
+> > <mika.westerberg@linux.intel.com> wrote:
+> > >
+> > > On Wed, Oct 25, 2023 at 11:08:33AM +0530, Raag Jadav wrote:
+> > > > Use acpi_dev_uid_match() for matching _UID instead of treating it
+> > > > as an integer.
+> > > >
+> > > > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > >
+> > > Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> >
+> > I was about to apply this, but then I realized that it might change
+> > the behavior in a subtle way, because what if the _UID string is
+> > something like "01"?
+>
+> I checked the git history and found below.
+>
+> commit 2a036e489eb1571810126d6fa47bd8af1e237c08
+> Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Date:   Tue Sep 13 19:31:41 2022 +0300
+>
+>     ACPI: LPSS: Refactor _UID handling to use acpi_dev_uid_to_integer()
+>
+>     ACPI utils provide acpi_dev_uid_to_integer() helper to extract _UID as
+>     an integer. Use it instead of custom approach.
+>
+>     Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>     Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+> index c4d4d21391d7..4d415e210c32 100644
+> --- a/drivers/acpi/acpi_lpss.c
+> +++ b/drivers/acpi/acpi_lpss.c
+> @@ -167,10 +167,10 @@ static struct pwm_lookup byt_pwm_lookup[] = {
+>
+>  static void byt_pwm_setup(struct lpss_private_data *pdata)
+>  {
+> -       struct acpi_device *adev = pdata->adev;
+> +       u64 uid;
+>
+>         /* Only call pwm_add_table for the first PWM controller */
+> -       if (!adev->pnp.unique_id || strcmp(adev->pnp.unique_id, "1"))
+> +       if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
+>                 return;
+>
+>         pwm_add_table(byt_pwm_lookup, ARRAY_SIZE(byt_pwm_lookup));
+>
+> So if we consider the original logic with strcmp, which is more inline
+> with acpi_dev_uid_match(), "01" should not be the case here in my opinion.
+>
+> Thanks for sharing your concern though.
 
-Oh *ugh* I knew about this limitation once and forgot about it
-apparently.
-
-  CPU 0         CPU1
- down_read()
- up_read()
-                down_write()
-                up_write()
-		kfree()
- [..]
-  tail portion of up_read()
-
-I suppose the rwsem should be turned into a refcount and completion
-
-Jason
+Well, this means that what the patch really does is to effectively
+revert commit 2a036e489eb1571810126d6fa47bd8af1e237c08 and use the new
+helper instead of the open-coded check that was there before, so all
+of this information should be present in the changelog.
