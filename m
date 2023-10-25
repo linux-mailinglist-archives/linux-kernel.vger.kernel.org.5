@@ -2,150 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F3E7D6E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E45C7D6E2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344756AbjJYOAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        id S1344734AbjJYOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344685AbjJYOAd (ORCPT
+        with ESMTP id S234214AbjJYOAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:00:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6559C;
-        Wed, 25 Oct 2023 07:00:28 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P9VgoM003134;
-        Wed, 25 Oct 2023 14:00:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=ypZW6YDknrSjp4Z0Tc7VoK7ZfYKqwjhnfLRxRoEWhBs=;
- b=VcSjjfJGdsedKR99c8UrD36zc6I2wwTkc3Md5KqSSoeuWAvtKbzYIryjcjcXanv3l2Eo
- c7DoY66BFkf7fPQJeb+DaFQ9oO+lHVQMWGdDOpihgoDc07t8aPRzrEUQdB8VA3kRIi7K
- 3TOVngmhXLcDLpYTQdADQjN8MqR23mC/0PRF+tskcN8rA8qtSq4TpQsuK6DqB8Es8CmE
- xv/lSDsQBYF4mxAwvmFZAwYcZ2+1eOFXrVT5V3THNyiBOQs4zS5Anr925tiRUUhlmMkZ
- bQZc7gGhQewaxQyUdUGvf8yZQ9lCLTRmGa0xkiDVUCYmOyouOUv5twDaqv65kc0iLKPO WA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tx7r83t1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:00:25 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PE0PG2029716
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:00:25 GMT
-Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 25 Oct 2023 07:00:19 -0700
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <ulf.hansson@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
-        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH 3/3] pmdomain: qcom: rpmhpd: Add SC8380XP power domains
-Date:   Wed, 25 Oct 2023 19:29:43 +0530
-Message-ID: <20231025135943.13854-4-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231025135943.13854-1-quic_sibis@quicinc.com>
-References: <20231025135943.13854-1-quic_sibis@quicinc.com>
+        Wed, 25 Oct 2023 10:00:30 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C2C18A;
+        Wed, 25 Oct 2023 07:00:25 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id B90105C03FA;
+        Wed, 25 Oct 2023 10:00:22 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 25 Oct 2023 10:00:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1698242422; x=1698328822; bh=KI
+        5w58UTfABvjvptIvDrQdHkWsalGJQZedeBlycOud4=; b=jkIviQ9qbhFEllr47i
+        upP2prLGMngnNzPF2D3xx1Kp7VMPqdBmX8kdZeQ6L3BPIpiveh6M1/YjBa8yyPi4
+        Y8AvETg4AwRuq2KWdiM4UO40g2DYRTNsQfzLnteGmHe/sEexC3wsDMe3YT4LHeX+
+        5TwtL0cmArv4qkILCKL2+RZKU1wuMNAQ6NvSZ8IuiNhJSBCKfmMZI5ppvoIsAI8Z
+        Xpcn+5GdEm0cSwXTLPZglYEj91eT4oHL4BigzhV1nhrv/pL0YAcUFY3KroSEv0uB
+        34vcsNsW0NtlqFLyGP4CTCB9X3IRZSWJeo8NqPyeYeyTwlEvIyUTjbIcVZML+kWm
+        tzjQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1698242422; x=1698328822; bh=KI5w58UTfABvj
+        vptIvDrQdHkWsalGJQZedeBlycOud4=; b=gOJs7LGImdiOAT4LGQkbRHYtNebd4
+        MQ0VH8jbq9fCFG/AVYgUocW8DY1Gjft6GBJ8TUWw7iSaonpCE72LPKuHNPfXeqPC
+        NT+ZnAjy3tmyovZLJkhGFOdIDKHy7XYbNLSMMaJIF8o1fO2CMyTzOtcR4SQaEhex
+        KevFlXZ7W5v0qHfnVPn95/jNhHWvx+SbXCO1lfxHyPCiZLNhk4XmcVDJNBJnlU1j
+        Eqo0N04yNM36bBDuwE78nnNWmi9t/1WtcTwz432gKV0/AVp7WZB7c2fP7uAYhI3R
+        v3o3WP79G+IerXIuw8CAjE52yEszmXEYvvq+IdDjaPjloEeGL0EHSRLgA==
+X-ME-Sender: <xms:dh85ZRZ7X1C2M74qCikQ0Ckt703A8xOJiS18i0DsPP8EOiCvTSggBg>
+    <xme:dh85ZYZIe9XUFQ37oPbKZ-_NGcJ8UHbDd3nUNr1hKGiBBPlNRElckC8TLlnuh4YZR
+    drUjta55n-VrPQY54s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:dh85ZT-djq942ipU6diXlpgBtGg-Vo03bcbF58nnpesEKO1jvuNSrw>
+    <xmx:dh85Zfr59r33lMffZS1JAF4eyxiKuKvunjVgK9ETMV1lDZmb-mK3og>
+    <xmx:dh85ZcrPekFXq1OJVKIawG2Q9-ZbaLntwOgruiIyCddjAxDHnSyehQ>
+    <xmx:dh85ZXVNOiuo91JkYwkCZpJgW67PW-9t2NdUfz065iGbatzffxh86A>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4884AB6008D; Wed, 25 Oct 2023 10:00:22 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
+Message-Id: <5e5e3e9b-dc16-428c-bd7f-d723960beb3c@app.fastmail.com>
+In-Reply-To: <20231025073802.117625-1-thuth@redhat.com>
+References: <20231025073802.117625-1-thuth@redhat.com>
+Date:   Wed, 25 Oct 2023 15:59:44 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Thomas Huth" <thuth@redhat.com>,
+        "Oleg Nesterov" <oleg@redhat.com>, linux-hexagon@vger.kernel.org,
+        "Brian Cain" <bcain@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, "Richard Kuo" <rkuo@codeaurora.org>
+Subject: Re: [PATCH] hexagon: Remove unusable symbols from the ptrace.h uapi
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Fp5K797bd-vo9z2Q7f8psKXSxuqQf4vf
-X-Proofpoint-GUID: Fp5K797bd-vo9z2Q7f8psKXSxuqQf4vf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_03,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=846 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250120
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abel Vesa <abel.vesa@linaro.org>
+On Wed, Oct 25, 2023, at 09:38, Thomas Huth wrote:
+> Kernel-internal prototypes, references to current_thread_info()
+> and code hidden behind a CONFIG_HEXAGON_ARCH_VERSION switch are
+> certainly not usable in userspace, so this should not reside
+> in a uapi header. Move the code into an internal version of
+> ptrace.h instead.
+>
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  I've compile tested it now with a hexagon cross-compiler and the kernel
+>  compiles fine with this change, so I think this should be good to go.
 
-Add the power domains exposed by RPMH in the Qualcomm SC8380XP platform.
+I've applied this to the asm-generic tree, thanks for the
+patch.
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
- drivers/pmdomain/qcom/rpmhpd.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+> +++ b/scripts/headers_install.sh
+> @@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
+>  arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
+>  arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
+>  arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
+> -arch/hexagon/include/uapi/asm/ptrace.h:CONFIG_HEXAGON_ARCH_VERSION
+>  arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
+>  arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
+>  arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
 
-diff --git a/drivers/pmdomain/qcom/rpmhpd.c b/drivers/pmdomain/qcom/rpmhpd.c
-index a631fe1f9a06..28b7f5fcea7e 100644
---- a/drivers/pmdomain/qcom/rpmhpd.c
-+++ b/drivers/pmdomain/qcom/rpmhpd.c
-@@ -202,6 +202,11 @@ static struct rpmhpd qphy = {
- 	.res_name = "qphy.lvl",
- };
- 
-+static struct rpmhpd gmxc = {
-+	.pd = { .name = "gmxc", },
-+	.res_name = "gmxc.lvl",
-+};
-+
- /* SA8540P RPMH powerdomains */
- static struct rpmhpd *sa8540p_rpmhpds[] = {
- 	[SC8280XP_CX] = &cx,
-@@ -564,6 +569,28 @@ static const struct rpmhpd_desc sc8280xp_desc = {
- 	.num_pds = ARRAY_SIZE(sc8280xp_rpmhpds),
- };
- 
-+/* SC8380xp RPMH powerdomains */
-+static struct rpmhpd *sc8380xp_rpmhpds[] = {
-+	[RPMHPD_CX] = &cx,
-+	[RPMHPD_CX_AO] = &cx_ao,
-+	[RPMHPD_EBI] = &ebi,
-+	[RPMHPD_GFX] = &gfx,
-+	[RPMHPD_LCX] = &lcx,
-+	[RPMHPD_LMX] = &lmx,
-+	[RPMHPD_MMCX] = &mmcx,
-+	[RPMHPD_MMCX_AO] = &mmcx_ao,
-+	[RPMHPD_MX] = &mx,
-+	[RPMHPD_MX_AO] = &mx_ao,
-+	[RPMHPD_NSP] = &nsp,
-+	[RPMHPD_MXC] = &mxc,
-+	[RPMHPD_GMXC] = &gmxc,
-+};
-+
-+static const struct rpmhpd_desc sc8380xp_desc = {
-+	.rpmhpds = sc8380xp_rpmhpds,
-+	.num_pds = ARRAY_SIZE(sc8380xp_rpmhpds),
-+};
-+
- static const struct of_device_id rpmhpd_match_table[] = {
- 	{ .compatible = "qcom,qdu1000-rpmhpd", .data = &qdu1000_desc },
- 	{ .compatible = "qcom,sa8155p-rpmhpd", .data = &sa8155p_desc },
-@@ -573,6 +600,7 @@ static const struct of_device_id rpmhpd_match_table[] = {
- 	{ .compatible = "qcom,sc7280-rpmhpd", .data = &sc7280_desc },
- 	{ .compatible = "qcom,sc8180x-rpmhpd", .data = &sc8180x_desc },
- 	{ .compatible = "qcom,sc8280xp-rpmhpd", .data = &sc8280xp_desc },
-+	{ .compatible = "qcom,sc8380xp-rpmhpd", .data = &sc8380xp_desc },
- 	{ .compatible = "qcom,sdm670-rpmhpd", .data = &sdm670_desc },
- 	{ .compatible = "qcom,sdm845-rpmhpd", .data = &sdm845_desc },
- 	{ .compatible = "qcom,sdx55-rpmhpd", .data = &sdx55_desc},
--- 
-2.17.1
+Would you like to send another patch for the other hexagon
+file? It looks trivial enough as we can just drop the #if
+portion there and keep the #else side.
 
+      Arnd
