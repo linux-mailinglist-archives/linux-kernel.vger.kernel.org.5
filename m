@@ -2,75 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B764D7D671E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9226E7D672F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbjJYJm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S234688AbjJYJoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbjJYJmz (ORCPT
+        with ESMTP id S229606AbjJYJoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:42:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9173F9D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698226923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rM4ED7GZcY2szaoTQ6CTpdR7CfxOuwD/iAsYdHgxgfY=;
-        b=UdWQ5qh8SKvfjJRMR+MZvOOks9Mmj/MH/kabsbI5ovaoCrcIQmQMsCLv6ETuWGi2DmjWH0
-        ZZyQbcMvj3BwWFqqRKyC33fQKTEt/Lk5ZdLaMtuvkhEr3+rhkNBhqfQxGCIE7dgW3cnRK6
-        aFIX4+bNkl3irSIVi5t8LsTcKPJmHoY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-153-KQPDtPV2OvSGrWkP3OeEJA-1; Wed, 25 Oct 2023 05:42:01 -0400
-X-MC-Unique: KQPDtPV2OvSGrWkP3OeEJA-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-53e1fe5b328so3550876a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:42:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698226920; x=1698831720;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rM4ED7GZcY2szaoTQ6CTpdR7CfxOuwD/iAsYdHgxgfY=;
-        b=hZfun1jOgXX3tCS921L/qhiUIuSKDczyLCtyYkTTYhGtZWofM33l88jeFvAcoghNGv
-         D+TKBrXzeH59QX4vdlwqlimLhnnahls5TFTF1L/keg3Xk5LnO+pn01Bg5J/T+lDhSbZv
-         fkzi1ceFP0lyp3bvD22nRD3U9krI6+73vFgXVCwzj2+d68LdEBry5UdPsTkWQuRFhejX
-         Zgd/m+K1rXtzfrAlrmiRCUl0WyqTl+2PN5Q0R17XdMqwJ280MD6DxjFQ8c4B8pB+Rpyx
-         9SRurZkXfCauP2sUGlscUEqSKULG0PrZhJKmpr4HtfHQ+LvHZNeVysskWNQV9OcHkMxH
-         4IvQ==
-X-Gm-Message-State: AOJu0YwAOeJE7LiL22rZhp62qhv38YQBmNR1HKfXKNiBdSVPkVxnzhoM
-        jV49z0C28qbKCSbRId2XwJEyp2zW9tmrIVsUXFjUQzWjMx8Fg6vFN2YUMgHKwWfiH/XpH/4xmUD
-        pYUGukDyOLHycqwHrIXP28xkVl4vF+6ffNesnBSW8
-X-Received: by 2002:a05:6402:354a:b0:53d:bc68:633d with SMTP id f10-20020a056402354a00b0053dbc68633dmr11630266edd.7.1698226920470;
-        Wed, 25 Oct 2023 02:42:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHO0vlyW3p2KjMhlI20o7oRYIPFES37SBQlQ6WT+BXgUvPmqk47yt+17r5nshYMKYmbw4fPRKUVoF2npGI/TG8=
-X-Received: by 2002:a05:6402:354a:b0:53d:bc68:633d with SMTP id
- f10-20020a056402354a00b0053dbc68633dmr11630244edd.7.1698226919995; Wed, 25
- Oct 2023 02:41:59 -0700 (PDT)
+        Wed, 25 Oct 2023 05:44:09 -0400
+X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 02:44:04 PDT
+Received: from mail-edgeDD24.fraunhofer.de (mail-edgedd24.fraunhofer.de [IPv6:2a03:db80:1504:d267::25:24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BD9B4;
+        Wed, 25 Oct 2023 02:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=aisec.fraunhofer.de; i=@aisec.fraunhofer.de;
+  q=dns/txt; s=emailbd1; t=1698227044; x=1729763044;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=Up3YVuLKsGDdnBFQmhZhoKZMjl7vV68tAultxQbNSys=;
+  b=UvFZmE0Ii0vlQYiYmcDkcURDngOqhLZ+AdlOLKxs8k9scK8UFnIAqgod
+   hAcweGZkgg07XjJnuQC7k82yP6FsLzEhIlDPffblezwO3P4GfbkebZ1KB
+   fL3SCPmjtziXAde1oT0lTaLbwpv3qAwgWj4FvWQdA+wNA2I0fVVSYjwmo
+   9cum9Uvwb0VnylIcJz5KSnzZ3p95ROgdUrGYa9OhUyUb2Mko33m+4VV9q
+   52tLO14hxm4EC9xawDo8CJVrrwpTm0EGFc/eFAI5oG7zACEBy6UHT3u7a
+   3SPsfRMHSfpz+2P6U2czUXlfqNCtQ4sbGwfy4Xw6gtC5jMFKea54yqgF7
+   A==;
+X-CSE-ConnectionGUID: I2U5gTPAQ9qQ4Lrbjfnuqg==
+X-CSE-MsgGUID: v7vt5JqZQEipSqwlBobHoA==
+Authentication-Results: mail-edgeDD24.fraunhofer.de; dkim=pass (signature verified) header.i=@fraunhofer.onmicrosoft.com
+X-IPAS-Result: =?us-ascii?q?A2E2AABB4jhl/xoBYJlaHQEBAQEJARIBBQUBQIE7CAELA?=
+ =?us-ascii?q?YI4eoFdhFOIHYlBnCoqgSyBJQNWDwEBAQEBAQEBAQcBATsJBAEBAwSEf4ccJ?=
+ =?us-ascii?q?zQJDgECAQMBAQEBAwIDAQEBAQEBAQIBAQYBAQEBAQEGBgKBGYUvOQ2EAIEeA?=
+ =?us-ascii?q?QEBAQEBAQEBAQEBHQINKFYnDwENAQE3ATQCJgI0KwENBYJ+AYIqAzEUBrF+g?=
+ =?us-ascii?q?TKBAYIJAQEGsB8YgSCBHgMGCQGBEC4Bg1uELgGENIEdhwSBSoMzhFiDRoJog?=
+ =?us-ascii?q?3WFPAcygiKDLymLfoEBR1oWGwMHA1kqECsHBC0iBgkWLSUGUQQXFiQJExI+B?=
+ =?us-ascii?q?IM4CoEDPw8OEYJCIgIHNjYZS4JbCRUMNQRJdhAqBBQXgRFuBRoVHjcREhcNA?=
+ =?us-ascii?q?wh2HQIRIzwDBQMENAoVDQshBVcDRAZKCwMCGgUDAwSBNgUNHgIQLScDAxlNA?=
+ =?us-ascii?q?hAUAzsDAwYDCzEDMFdHDFkDbB8aHAk8CwQMHwIbHg0yAwkDBwUsHUADCxgNS?=
+ =?us-ascii?q?BEsNQYOG0QBcwecYG2CTRkHPVEBKwRJA18iCSMvHJJPLgyDCQGueQeCMYFej?=
+ =?us-ascii?q?AGVCBozlyuSTy6YDiCLUIF1lHmFSgIEAgQFAg4IgWOCFjM+T4JnUhkPjiA4g?=
+ =?us-ascii?q?0CFFIpndAIBOAIHAQoBAQMJgjmEFIR+AQE?=
+IronPort-PHdr: A9a23:lPrJrBKHcCYjC/1bwtmcuDdnWUAX0o4cQyYLv8N0w7sbaL+quo/iN
+ RaCu6YlhwrTUIHS+/9IzPDbt6nwVGBThPTJvCUMapVRUR8Ch8gM2QsmBc+OE0rgK/D2KSc9G
+ ZcKTwp+8nW2OlRSApy7aUfbv3uy6jAfAFD4Mw90Lf7yAYnck4G80OXhnv+bY1Bmnj24M597M
+ BjklhjbtMQdndlHJ70qwxTE51pkKc9Rw39lI07Wowfk65WV3btOthpdoekg8MgSYeDfROEVX
+ bdYBTIpPiUO6cvnuAPqYSCP63AfAQB02hBIVizZxkj0DqeyuTHk6so+yibCep2qa7Uzdh6u1
+ oZsdED0sCMaNBti/lDrt5Ql38c56Bj0gUZmzdXrTtq4KctBYvnGTewrRnFLQMB/VxJQBtjta
+ qlRDtgPP+ZCpJbP+3oEtED5DDKrBefdzxJO2W3R5fUY9N4gTS/qzU8DJ4lXsGyXld/ROaw8C
+ s+awon6wy6TcNNViC7suKrEfEAjmvzVUZNxIPjS4GMmPDOYqU6396XuJiOL8ecc61ew7LZNC
+ r6tmkMoiQBspym9xsgItYjWltstlGn25AYl+r4rP97oHR0zcZulCpxWryaAK85sT9g/R309o
+ C8h0e5uUf+TeSELzNEqyxHSR9DdL86G+Bv+UuaWLzpiwn5oK/qzhBe3pFCp0fa0FtK131BDs
+ jdfn5HSu2oM2R3e5onPSvZ08kq7nzfa/w7J4/xCIUc6mLCdLJgkw7UqkYEUv1iFFSjz8Hg=
+X-Talos-CUID: 9a23:LqQY9Wwk6pEKX4iz866mBgU1QP14fUHl5U6BOnbkLXxjSrOTVEafrfY=
+X-Talos-MUID: 9a23:sfUauwXMTB9aCLjq/CGzmi0/Ft5a2omvEHsUjpEsvMOkMgUlbg==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.03,250,1694728800"; 
+   d="scan'208";a="71347880"
+Received: from mail-mtaka26.fraunhofer.de ([153.96.1.26])
+  by mail-edgeDD24.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:42:55 +0200
+IronPort-SDR: 6538e31d_h5/+007enWyWsNC8CU0HhGNvwg8wFuCTNOZWq59JBSXCaLB
+ VwG/AtCm+DOjrNxnIb9gBXASmQj3fJA6O1ZFOsQ==
+X-IPAS-Result: =?us-ascii?q?A0BYAABB4jhl/3+zYZlaHQEBAQEJARIBBQUBQAkcgRYIA?=
+ =?us-ascii?q?QsBgWZSB3NYgQWEUoNNAQGETl+GQYIhOwGcGIEsgSUDVg8BAwEBAQEBBwEBO?=
+ =?us-ascii?q?wkEAQGFBocZAic0CQ4BAgEBAgEBAQEDAgMBAQEBAQEDAQEFAQEBAgEBBgSBC?=
+ =?us-ascii?q?hOFaA2GTxYRDwENAQEUIwE0AiYCNAckAQ0FIoJcAYIqAzECAQEQBqUZAYFAA?=
+ =?us-ascii?q?osigTKBAYIJAQEGBASwFxiBIIEeAwYJAYEQLgGDW4QuAYQ0gR2HBIFKgzOIH?=
+ =?us-ascii?q?oJog3WFPAcygiKDLymLfoEBR1oWGwMHA1kqECsHBC0iBgkWLSUGUQQXFiQJE?=
+ =?us-ascii?q?xI+BIM4CoEDPw8OEYJCIgIHNjYZS4JbCRUMNQRJdhAqBBQXgRFuBRoVHjcRE?=
+ =?us-ascii?q?hcNAwh2HQIRIzwDBQMENAoVDQshBVcDRAZKCwMCGgUDAwSBNgUNHgIQLScDA?=
+ =?us-ascii?q?xlNAhAUAzsDAwYDCzEDMFdHDFkDbB8WBBwJPAsEDB8CGx4NMgMJAwcFLB1AA?=
+ =?us-ascii?q?wsYDUgRLDUGDhtEAXMHnGBtgk0ZBz1RASsESQNfIgkjLxySTy4MgwkBrnkHg?=
+ =?us-ascii?q?jGBXowBlQgaM5crkk8umA4gjUWUeYVKAgQCBAUCDgEBBoFjPIFZMz5PgmdPA?=
+ =?us-ascii?q?xkPjiA4g0CFFIpnQTMCATgCBwEKAQEDCYI5hBSEfQEB?=
+IronPort-PHdr: A9a23:ITK+hhFT8I1cJG2jVMoxaZ1Gf29NhN3EVzX9l7I53usdOq325Y/re
+ Vff7K8w0gyBVtDB5vZNm+fa9LrtXWUQ7JrS1RJKfMlCTRYYj8URkQE6RsmDDEzwNvnxaCImW
+ s9FUQwt5CSgPExYE9r5fQeXrGe78DgSHRvyL09yIOH0EZTVlMO5y6W5/JiABmcAhG+Te7R3f
+ jm/sQiDjdQcg4ZpNvQUxwDSq3RFPsV6l0hvI06emQq52tao8cxG0gF9/sws7dVBVqOoT+Edd
+ vl1HD8mOmY66YjQuB/PQBGmylAcX24VwX8qSwLFuTXmdM7/4hu5vfBjhAnZL8KuCuBofzGlw
+ I1ncT7vtHgbDzok80SMhP1MsfoO83fD7xYq5dTNbtqqGqFTY5LiYYkBdVVwXd1bSSpvAr2ta
+ 9BeCshfPNRWrYnnrEQ88Tq0HFLrDdjoyzt6g1Lwgr8d67wDNjvHgCIMDpEtiC+NrM22Da02X
+ Oubl4bnwxXxYegGxhf+uZHZIjItr6GOZr8pfevQmHssPinMpWXNjpfCYRqez/QTlGuKt9VLV
+ r6C1DIluix+gDmyw9Y+iobtuYMK2gn8qxxL0aVpH+WmUk0rNI3sAN5RrSacL4xsXoY4Tnp1v
+ Dpv0rQdos3TlEkizZ0mw1vad/WkWtLWpBz5XfuXITB2iWgjdL/szxqx8E310uTnTYH0y1dFq
+ CNZj8PB/m4AzR3d68WLC7N9806t1CzJ1lX75PtNPEY0kqTWMdgmxLsxnYAUqkPNAmn9n0Ces
+ Q==
+IronPort-Data: A9a23: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
+ HfrXCGY1gh6AJDIVXcB4LrFWZNJNM8=
+IronPort-HdrOrdr: A9a23:RLSEO6krXCH30wo76QE0GJCEA9vpDfIo3DAbv31ZSRFFG/Fw8P
+ re+sjztCWE7wr5PUtLpTnuAse9qB/nmqKdgrNhX4tKPjOW3FdARbsKheffKlvbak7DH4Zmvp
+ uIGJIeNDSfNzhHZJbBjTVRUb4bsby6zJw=
+X-Talos-CUID: =?us-ascii?q?9a23=3AkaTPr2u2IZBYPpUuHLyX6scz6IsCbUL6jyrAL3a?=
+ =?us-ascii?q?XFGpAZuWcFwS5+Pp7xp8=3D?=
+X-Talos-MUID: 9a23:xuXgVwgMG7XjZIR2g6LpgsMpM9tE+6v1Vk4xyJhX4cbVaAppHT2YtWHi
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.03,250,1694728800"; 
+   d="scan'208";a="68486262"
+Received: from 153-97-179-127.vm.c.fraunhofer.de (HELO smtp.exch.fraunhofer.de) ([153.97.179.127])
+  by mail-mtaKA26.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:42:52 +0200
+Received: from XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) by
+ XCH-HYBRID-03.ads.fraunhofer.de (10.225.9.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27; Wed, 25 Oct 2023 11:42:52 +0200
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (104.47.11.168)
+ by XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27 via Frontend Transport; Wed, 25 Oct 2023 11:42:52 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YJ2m4lJGd3mUhgIFNJB5Ri4Zn9XuLXk9o8IcUSuuwGiaJdCBxXH/8RclxwOPzvQwla5hVOk/b6Ls08JcmjHat3+0nO6kcYr5rzpRkIdUW54ygL67fLzEgjsvze85m1eLtOCeHrDvegMQkIrBQTPadXOrknzid1Vg/tXzmYf0zaAyUQSF5q8/PdGYQ2hVcWkz9V/noEtHKrJJQAC2orLqCQca5mGLNuOavxJjflz+77Aoy4IhluQRup5Rlnb/2RvLVqESjfo9QvDO4/WCcVTF3+DwO+C237C/RmMMbu76X+lXypHjP34wsRVtxj4t5rVo+00Rgk9FesSEhpdc72PXUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LtB1f8X+crv4H+zg0/84NmoGBdQIoT7tPlukM3fYTU0=;
+ b=BtZRcoALYlpNzOFQ04Gz1vrJvRXvxJRApHVymMp5fcxzj8LYl8UbGaxqGrY6hVevQllyJUVA8/Ismi15Mjt9BzbVfyg8jKx2A89pQt4hoqhArGMORBl01sz18iWhjbsjh/N7+mbFhfYAWhIOnhlyJOhe9Lv04ZTAQfVO9wn/VQ4vgdKlWmYJ7lvGLxw7gnr6YJvumfXtnHFoPvQftJlgRd83YAkZNbjHw2mEKkNRI4aNvfEPWC413vEM+UbW7IsXJ7UZORanwunpze3z1zBptHjL14JCfKCOSUK/HWJS6f7X91Te5j42/QOrRuSemLQYLvD6qR4b4xdNQeMc5BUWpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aisec.fraunhofer.de; dmarc=pass action=none
+ header.from=aisec.fraunhofer.de; dkim=pass header.d=aisec.fraunhofer.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fraunhofer.onmicrosoft.com; s=selector2-fraunhofer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LtB1f8X+crv4H+zg0/84NmoGBdQIoT7tPlukM3fYTU0=;
+ b=N2qf3WF3EuYWt2sXWYksbvnFhVyl39mJ6iZfjhrcwZ4Ibq3/aSoilZmEn7zOP0JORi4FDy+KP31hp+QbLecF3GGfHZfs8wHk9qy8Jdf8jSe1dIi9ZkABaCX5OsO6AcqxvOky0WCk4E74jyEgJiumyzhgLWiwx1P6QZyK4RPvrk8=
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:50::14)
+ by BEZP281MB1814.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:5a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 09:42:51 +0000
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::7330:78f8:1bf2:2f4d]) by BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::7330:78f8:1bf2:2f4d%5]) with mapi id 15.20.6933.019; Wed, 25 Oct 2023
+ 09:42:51 +0000
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <gyroidos@aisec.fraunhofer.de>,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Subject: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for non-initial user namespace
+Date:   Wed, 25 Oct 2023 11:42:10 +0200
+Message-Id: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.30.2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0420.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d0::17) To BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:50::14)
 MIME-Version: 1.0
-References: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
- <CACGkMEvkSFcHXC0HFw-NoDtDNnaucJbpfPO0Yho2r1QP8F6zSw@mail.gmail.com>
- <4d03661b-4289-46e7-8760-32a186783b73@oracle.com> <CAPpAL=za9VKy2csCPKOKHEKe3qGDQ=89n_08G_MWd7XMiNpUvQ@mail.gmail.com>
- <b5dadd3d-8806-4d72-90c4-ee1ba6446c3a@oracle.com>
-In-Reply-To: <b5dadd3d-8806-4d72-90c4-ee1ba6446c3a@oracle.com>
-From:   Lei Yang <leiyang@redhat.com>
-Date:   Wed, 25 Oct 2023 17:41:23 +0800
-Message-ID: <CAPpAL=yHDqn1AztEcN3MpS8o4M+BL_HVy02FdpiHN7DWd91HwQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] vdpa: decouple reset of iotlb mapping from device reset
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        eperezma@redhat.com, sgarzare@redhat.com, dtatulea@nvidia.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="0000000000005181b60608874427"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BEZP281MB2791:EE_|BEZP281MB1814:EE_
+X-MS-Office365-Filtering-Correlation-Id: cbf2ee99-853f-4346-4d3a-08dbd53ec166
+X-LD-Processed: f930300c-c97d-4019-be03-add650a171c4,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M71rx3AkW9OlJvs6OyvOcAZPOUsZkapbSNEGZbaivp/XBNOWyhzr26wYm7m8SZrROVn6opiKZl/ttiPnEKDrm7KeEq4Asbpkg/Sk9rQU2MNqZEuy8KUexOzh6yoiKrhKI6vKCLA54siKrVD0bOLvhm9x3JHosXDFGFuI4kdiRgRTpWVFOr2UtPr8g1QkgqMfAwAD/T694ot9SaORWTHn6kmPvDb8XuEYN9+fpVjVk5ZmhB0JIUy447pVCKAlLOhle2UQ+gjcq/7kSj2G/rERrzG7Y0NgAU+cYtRCFsOubpV9EBo0/Hvnc6LhJxeCGJWnCxz883NM0vqKhPmrwyMlrTMit8O2ugGbY79LvJgZ+JXopWTO5h2V07RoLtNGlbpPOn4Q2YZopboBoWiyacmqrjapjGG2LRIOi+/6scBaEg0WQqoV6MaGQe4J+Zu77T/TURM5tLhnrcFUQZykHGJGmurusdwgNF8RNchD72kUCqDqrldd3zwiSpK0dD3YfSBE8bzvhBDc4fVSbybPvWpOFF5oV+IVWP9RlCQ2mIwZYu0HIiEc1V+M8nqnqvfMs/Yg/BiS1wwHV9R0qJBmobo56SY8pz79XUa3k9RaEmzjB9Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(110136005)(38100700002)(41300700001)(2906002)(7416002)(86362001)(5660300002)(8676002)(8936002)(4326008)(6666004)(6506007)(478600001)(107886003)(54906003)(1076003)(82960400001)(66476007)(66946007)(316002)(66556008)(2616005)(966005)(83380400001)(6512007)(6486002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WjAwWEpwWkJLZlhHZWZFbUVnSkNoTWtSdE9lYU4wS2d0VTFDTitORGRiQVFz?=
+ =?utf-8?B?RXYxcnUwMjUrSUxKUWlZL3RwbEVPclZwdWg4QTUyVEJqTjdpVUN3OG1NQkV2?=
+ =?utf-8?B?TGRGNnhwNUNTUmNoeUlDcDdwaHhzRlhMVVc3T2k0SVFhWDBIR3VkUk9sNlVM?=
+ =?utf-8?B?QjV0NzZKU1BhOUNIYzdJSWVzQVNHV2cwc0VmMzJLU2NNYjhkMStnYTA1a0tv?=
+ =?utf-8?B?TFIxMDBGTWV2a2c0MTVzSHgxK3NuM1pKQWlqZVhXdStzcjc1aTczb1lLbC9l?=
+ =?utf-8?B?NkFuRUVzRWU2MmZaTE4yQktwdXdSSGRXNVpOY0RtQXQyKzFsNlJHYThCWlBS?=
+ =?utf-8?B?blFyZWRYdjlFSHp6L242RGZmd0traXVpWDQzeVpsMUE1MzI0cU9TSnB0Ym4v?=
+ =?utf-8?B?amE2elpESzNDbnZ4djNrazE0a1hLSXpaWWUySVBJb0lWcUdvK0dsSmdidjJs?=
+ =?utf-8?B?b1YzOVhkdG9Mck1sZHlXeko0NDg3emkyVmdtaVRqWWJrMFFORi9KK1hBSTJZ?=
+ =?utf-8?B?QUFQbi9menVSUzJzeUJuVXIvUkhSckpvY1djWXFXVTJua1JtV0dqNzlUaklP?=
+ =?utf-8?B?dkdIT09pa3M1dTRleExqZUl5S3R4ZmpxUE5UMUFJOHBoWndCS09xSW9zOHpm?=
+ =?utf-8?B?UHZ2NTl5VXNTQnNzZ3NRUzhPNVZFMExaMkdHRHAzdTJxMXFDcUhUY1FuOEdu?=
+ =?utf-8?B?dWt0RTV3MWVMUk01YVhFamV5VW41QkQ4N00yZ3ExMmZmUEVkYUduWWdjNEta?=
+ =?utf-8?B?cWdGT0RrZ1RiZDdiMnZtdGtaTEZWQVV1QmpBSlpGUzVCSXdpbFFLRFhDbHNK?=
+ =?utf-8?B?UXhEeTNkTlFLUWF3aGRwUnNqMWZTWEwzUStJQ2dEbmMwSTJmd2FORW0wdWRk?=
+ =?utf-8?B?VmwxSUZHVFAxWVV1NTN4dmdhVDVENEtPbDhEUmZDTEFlWXkwTHp6NUhabG5F?=
+ =?utf-8?B?UkFpd2QzOXR2ZlplMXhzMTlUS0psbERTME9OVGdPcGl2eFFPd09HdG1uZnds?=
+ =?utf-8?B?Z05zc2JOK2RwTzlUZGFPblV5RHBkTFRnU2RHQ2FySDNScmN5UUU5dTRXcDlG?=
+ =?utf-8?B?VWo3ZmRUVzlQZFJ1UlQraC9RQzFpTW9yVW5kbDdvTnFrN1h6NStLMUJGZ2My?=
+ =?utf-8?B?SWdTd0huUWVySUxFRFJsaDBMTXg2ZkN3ODR6aHdPNjVIOW9PeFN0QmtRNnRT?=
+ =?utf-8?B?T2g0TTVaU2dZM0hBeFN2Mms2MHpwYXh2elF2MGMwdVNYVnkvTXRaM2JieUY1?=
+ =?utf-8?B?RUlqY1pwQjJKN3hBbnBiU3ViWFFCRFpiZmVIekpHeUFjUHh5TkR6b0ZUckw3?=
+ =?utf-8?B?cGtRbEM4UkN5VlhOb3NKMnR5UHVLWGxNd1p0cnFTZ0t1eVNLZy9LZ1RwdDJ2?=
+ =?utf-8?B?OU9WUDY2czBnd0RyQzBqZ0lUeU83ZUJhT3pjYnY4VGhmMmxralpvTS8vMTIx?=
+ =?utf-8?B?NVZDZVYvaDN4aDFhWFp6V1JqWlkyY2VZVkVjZ0dHM2JWVEZjQnpaRFZrV25R?=
+ =?utf-8?B?eVNsWS9FOXk3d1Iwem5yUUo4NDdzZ01DOENhQjhVYmdLa2wxWnRlYW5CQWJr?=
+ =?utf-8?B?RFVNRlcyT0g3Qk43OVZvVTMyYzNNeFNDaXZGb2Q2SzcrWWE0NkxCeEJFT1Rr?=
+ =?utf-8?B?YkhiSm9oTjUvdXlzbzNudXhHSGMvWWQ2WWZNazVFeDdvdjNIODRVaG9FVys5?=
+ =?utf-8?B?eGRDRDl4ZGdJN3E2QWI3MkpYOWRkalFWTkFiRUJJRDJkeFYrbmFXdmpIVTdw?=
+ =?utf-8?B?TVB6em9CemJjSWF2NERIaWprMXV0WTlvbE5IMnNoQ2VkbGtIK3RhRm4rbmY4?=
+ =?utf-8?B?RFh4MXltSU9KU2ZWV21lYVJCL2lscGVUVDV5MTRxMEsxUmYvRWJtUWxlVitU?=
+ =?utf-8?B?TEtKYlppTTdKUFVJU2YwKzc3SmpQanhKeFNnVUZ2NlhMVjhHSmh1NVFJaFJE?=
+ =?utf-8?B?dHgyR3VkM2xhTzNkL0N6RTF1cXcxWGlZWGlWenpva3gwQkYxdlVEQ0xTZVFU?=
+ =?utf-8?B?eXNnblB1a3JORWUrcXFIK2JJaUtkNnQzRjlEU1NPam5Bb2JjRlVKZzFTb3lC?=
+ =?utf-8?B?QzduU1huUWx2b0E4Ymg0N05GazhvY3k3ZXZkc1BVaU4wQ0RpdHp4K1AwYkkv?=
+ =?utf-8?B?RXdKWlJ0cGJ4b1FWeWg3UXozeVUzMUF5Qk5xWDFuUXZKNEN0N3V1eTNZcHRv?=
+ =?utf-8?B?WUNaK1Q2MWcvaElHZUR3aDFoZ2tiMVkycTZOaGVHVGdMTlV2elg0dG45Rklk?=
+ =?utf-8?Q?xiAKigBmBVBQEtDyXUU1JIpy54LUCe0MFb+giD/qbM=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbf2ee99-853f-4346-4d3a-08dbd53ec166
+X-MS-Exchange-CrossTenant-AuthSource: BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 09:42:51.4030
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f930300c-c97d-4019-be03-add650a171c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FgRQ51fTszwwskzABsKs90519CPxfv+r4HUWmtbdjWp3uP5H3u1i96NUyC/W/WnBsj8anuveFMvMlWSzF8Xh6Rh91KQACIVcURLgRmrSVBVz8Cmv5O25tfObg7fMz3lI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB1814
+X-OriginatorOrg: aisec.fraunhofer.de
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,269 +269,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005181b60608874427
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
+BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
+in non-initial user namespaces.
 
-On Wed, Oct 25, 2023 at 1:27=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
-wrote:
->
-Hello Si-Wei
-> Thanks a lot for testing! Please be aware that there's a follow-up fix
-> for a potential oops in this v4 series:
->
-The first, when I did not apply this patch [1], I will also hit this
-patch mentioned problem. After I applied this patch, this problem will
-no longer to hit again. But I hit another issues, about the error
-messages please review the attached file.
-[1] https://lore.kernel.org/virtualization/1698102863-21122-1-git-send-emai=
-l-si-wei.liu@oracle.com/
+If a container manager restricts its unprivileged (user namespaced)
+children by a device cgroup, it is not necessary to deny mknod()
+anymore. Thus, user space applications may map devices on different
+locations in the file system by using mknod() inside the container.
 
-My test steps:
-git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t
-cd  linux/
-b4 am 1697880319-4937-1-git-send-email-si-wei.liu@oracle.com
-b4 am 20231018171456.1624030-2-dtatulea@nvidia.com
-b4 am 1698102863-21122-1-git-send-email-si-wei.liu@oracle.com
-git am ./v4_20231018_dtatulea_vdpa_add_support_for_vq_descriptor_mappings.m=
-bx
-git am ./v4_20231021_si_wei_liu_vdpa_decouple_reset_of_iotlb_mapping_from_d=
-evice_reset.mbx
-git am ./20231023_si_wei_liu_vhost_vdpa_fix_null_pointer_deref_in__compat_v=
-dpa_reset.mbx
-cp /boot/config-5.14.0-377.el9.x86_64 .config
-make -j 32
-make modules_install
-make install
+A use case for this, we also use in GyroidOS, is to run virsh for
+VMs inside an unprivileged container. virsh creates device nodes,
+e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
+in a non-initial userns, even if a cgroup device white list with the
+corresponding major, minor of /dev/null exists. Thus, in this case
+the usual bind mounts or pre populated device nodes under /dev are
+not sufficient.
 
-Thanks
+To circumvent this limitation, allow mknod() by checking CAP_MKNOD
+in the userns by implementing the security_inode_mknod_nscap(). The
+hook implementation checks if the corresponding permission flag
+BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
+To avoid to create unusable inodes in user space the hook also
+checks SB_I_NODEV on the corresponding super block.
 
-Lei
-> https://lore.kernel.org/virtualization/1698102863-21122-1-git-send-email-=
-si-wei.liu@oracle.com/
->
-> Would be nice to have it applied for any tests.
->
-> Thanks,
-> -Siwei
->
-> On 10/23/2023 11:51 PM, Lei Yang wrote:
-> > QE tested this series v4 with regression testing on real nic, there is
-> > no new regression bug.
-> >
-> > Tested-by: Lei Yang <leiyang@redhat.com>
-> >
-> > On Tue, Oct 24, 2023 at 6:02=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.c=
-om> wrote:
-> >>
-> >>
-> >> On 10/22/2023 8:51 PM, Jason Wang wrote:
-> >>> Hi Si-Wei:
-> >>>
-> >>> On Sat, Oct 21, 2023 at 5:28=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle=
-.com> wrote:
-> >>>> In order to reduce needlessly high setup and teardown cost
-> >>>> of iotlb mapping during live migration, it's crucial to
-> >>>> decouple the vhost-vdpa iotlb abstraction from the virtio
-> >>>> device life cycle, i.e. iotlb mappings should be left
-> >>>> intact across virtio device reset [1]. For it to work, the
-> >>>> on-chip IOMMU parent device could implement a separate
-> >>>> .reset_map() operation callback to restore 1:1 DMA mapping
-> >>>> without having to resort to the .reset() callback, the
-> >>>> latter of which is mainly used to reset virtio device state.
-> >>>> This new .reset_map() callback will be invoked only before
-> >>>> the vhost-vdpa driver is to be removed and detached from
-> >>>> the vdpa bus, such that other vdpa bus drivers, e.g.
-> >>>> virtio-vdpa, can start with 1:1 DMA mapping when they
-> >>>> are attached. For the context, those on-chip IOMMU parent
-> >>>> devices, create the 1:1 DMA mapping at vdpa device creation,
-> >>>> and they would implicitly destroy the 1:1 mapping when
-> >>>> the first .set_map or .dma_map callback is invoked.
-> >>>>
-> >>>> This patchset is rebased on top of the latest vhost tree.
-> >>>>
-> >>>> [1] Reducing vdpa migration downtime because of memory pin / maps
-> >>>> https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
-> >>>>
-> >>>> ---
-> >>>> v4:
-> >>>> - Rework compatibility using new .compat_reset driver op
-> >>> I still think having a set_backend_feature()
-> >> This will overload backend features with the role of carrying over
-> >> compatibility quirks, which I tried to avoid from. While I think the
-> >> .compat_reset from the v4 code just works with the backend features
-> >> acknowledgement (and maybe others as well) to determine, but not
-> >> directly tie it to backend features itself. These two have different
-> >> implications in terms of requirement, scope and maintaining/deprecatio=
-n,
-> >> better to cope with compat quirks in explicit and driver visible way.
-> >>
-> >>>    or reset_map(clean=3Dtrue) might be better.
-> >> An explicit op might be marginally better in driver writer's point of
-> >> view. Compliant driver doesn't have to bother asserting clean_map neve=
-r
-> >> be true so their code would never bother dealing with this case, as
-> >> explained in the commit log for patch 5 "vhost-vdpa: clean iotlb map
-> >> during reset for older userspace":
-> >>
-> >> "
-> >>       The separation of .compat_reset from the regular .reset allows
-> >>       vhost-vdpa able to know which driver had broken behavior before,=
- so it
-> >>       can apply the corresponding compatibility quirk to the individua=
-l
-> >> driver
-> >>       whenever needed.  Compared to overloading the existing .reset wi=
-th
-> >>       flags, .compat_reset won't cause any extra burden to the impleme=
-ntation
-> >>       of every compliant driver.
-> >> "
-> >>
-> >>>    As it tries hard to not introduce new stuff on the bus.
-> >> Honestly I don't see substantial difference between these other than t=
-he
-> >> color. There's no single best solution that stands out among the 3. An=
-d
-> >> I assume you already noticed it from all the above 3 approaches will
-> >> have to go with backend features negotiation, that the 1st vdpa reset
-> >> before backend feature negotiation will use the compliant version of
-> >> .reset that doesn't clean up the map. While I don't think this nuance
-> >> matters much to existing older userspace apps, as the maps should
-> >> already get cleaned by previous process in vhost_vdpa_cleanup(), but i=
-f
-> >> bug-for-bug behavioral compatibility is what you want, module paramete=
-r
-> >> will be the single best answer.
-> >>
-> >> Regards,
-> >> -Siwei
-> >>
-> >>> But we can listen to others for sure.
-> >>>
-> >>> Thanks
-> >>>
->
+Further, the security_sb_alloc_userns() hook is implemented using
+cgroup_bpf_current_enabled() to allow usage of device nodes on super
+blocks mounted by a guarded task.
 
---0000000000005181b60608874427
-Content-Type: application/octet-stream; name=log
-Content-Disposition: attachment; filename=log
-Content-Transfer-Encoding: base64
-Content-ID: <f_lo5k83xt0>
-X-Attachment-Id: f_lo5k83xt0
+Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
 
-WyA2MzI1LjQ2MjQyNl0gQlVHOiB1bmFibGUgdG8gaGFuZGxlIHBhZ2UgZmF1bHQgZm9yIGFkZHJl
-c3M6IDAwMDAwMDAxMDA1YjRhZjQKWyA2MzI1LjQ2OTMwMV0gI1BGOiBzdXBlcnZpc29yIHJlYWQg
-YWNjZXNzIGluIGtlcm5lbCBtb2RlClsgNjMyNS40NzQ0NDBdICNQRjogZXJyb3JfY29kZSgweDAw
-MDApIC0gbm90LXByZXNlbnQgcGFnZQpbIDYzMjUuNDc5NTc3XSBQR0QgMTZhODBhMDY3IFA0RCAw
-IApbIDYzMjUuNDgyODExXSBPb3BzOiAwMDAwIFsjMV0gUFJFRU1QVCBTTVAgTk9QVEkKWyA2MzI1
-LjQ4NzE2OV0gQ1BVOiA0IFBJRDogNDAzODcgQ29tbTogcWVtdS1rdm0gTm90IHRhaW50ZWQgNi42
-LjAtcmM3KyAjMwpbIDYzMjUuNDkzNjk1XSBIYXJkd2FyZSBuYW1lOiBEZWxsIEluYy4gUG93ZXJF
-ZGdlIFI3NTAvMFBKODBNLCBCSU9TIDEuOC4yIDA5LzE0LzIwMjIKWyA2MzI1LjUwMTE3NV0gUklQ
-OiAwMDEwOl9jb21wYXRfdmRwYV9yZXNldC5pc3JhLjArMHgyNy8weGIwIFt2aG9zdF92ZHBhXQpb
-IDYzMjUuNTA3NzA4XSBDb2RlOiA5MCA5MCA5MCAwZiAxZiA0NCAwMCAwMCA0MSA1NSA0YyA4ZCBh
-ZSAwOCAwMyAwMCAwMCA0MSA1NCA1NSA0OCA4OSBmNSA1MyA0YyA4YiBhNiAwMCAwMyAwMCAwMCA0
-OCA4NSBmZiA3NCA0OSA0OCA4YiAwNyA0YyA4OSBlZiA8NDg+IDhiIDgwIDg4IDQ1IDAwIDAwIDQ4
-IGMxIGU4IDA4IDQ4IDgzIGYwIDAxIDg5IGMzIGU4IDczIDVlIDliIGRjClsgNjMyNS41MjY0NTVd
-IFJTUDogMDAxODpmZjczYTg1NzYyMDczYmEwIEVGTEFHUzogMDAwMTAyODYKWyA2MzI1LjUzMTY4
-MV0gUkFYOiAwMDAwMDAwMTAwNWIwNTZjIFJCWDogZmYzMmIxM2NhNjk5NGM2OCBSQ1g6IDAwMDAw
-MDAwMDAwMDAwMDIKWyA2MzI1LjUzODgxM10gUkRYOiAwMDAwMDAwMDAwMDAwMDAxIFJTSTogZmYz
-MmIxM2MwNzU1OTAwMCBSREk6IGZmMzJiMTNjMDc1NTkzMDgKWyA2MzI1LjU0NTk0N10gUkJQOiBm
-ZjMyYjEzYzA3NTU5MDAwIFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IGZmMzJiMTJjYTQ5N2Mw
-ZjAKWyA2MzI1LjU1MzA3OV0gUjEwOiBmZjczYTg1NzYyMDczYzU4IFIxMTogMDAwMDAwMGMxMDZm
-OWRlMyBSMTI6IGZmMzJiMTJjOTViMWQwNTAKWyA2MzI1LjU2MDIxMl0gUjEzOiBmZjMyYjEzYzA3
-NTU5MzA4IFIxNDogZmYzMmIxMmQwZGRjNTEwMCBSMTU6IDAwMDAwMDAwMDAwMDgwMDIKWyA2MzI1
-LjU2NzM0Nl0gRlM6ICAwMDAwN2ZlYzViOGNiZjgwKDAwMDApIEdTOmZmMzJiMTNiYmZjODAwMDAo
-MDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMApbIDYzMjUuNTc1NDMyXSBDUzogIDAwMTAgRFM6
-IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzClsgNjMyNS41ODExNzddIENSMjog
-MDAwMDAwMDEwMDViNGFmNCBDUjM6IDAwMDAwMDAxNTY0NGEwMDMgQ1I0OiAwMDAwMDAwMDAwNzcz
-ZWUwClsgNjMyNS41ODgzMDldIFBLUlU6IDU1NTU1NTU0ClsgNjMyNS41OTEwMjJdIENhbGwgVHJh
-Y2U6ClsgNjMyNS41OTM0NzddICA8VEFTSz4KWyA2MzI1LjU5NTU4Ml0gID8gX19kaWUrMHgyMC8w
-eDcwClsgNjMyNS41OTg2NTBdICA/IHBhZ2VfZmF1bHRfb29wcysweDc2LzB4MTcwClsgNjMyNS42
-MDI2NjJdICA/IGV4Y19wYWdlX2ZhdWx0KzB4NjUvMHgxNTAKWyA2MzI1LjYwNjU4OF0gID8gYXNt
-X2V4Y19wYWdlX2ZhdWx0KzB4MjIvMHgzMApbIDYzMjUuNjEwNzc1XSAgPyBfY29tcGF0X3ZkcGFf
-cmVzZXQuaXNyYS4wKzB4MjcvMHhiMCBbdmhvc3RfdmRwYV0KWyA2MzI1LjYxNjY5Ml0gIHZob3N0
-X3ZkcGFfb3BlbisweDU3LzB4MjgwIFt2aG9zdF92ZHBhXQpbIDYzMjUuNjIxNjYwXSAgPyBfX3Bm
-eF9jaHJkZXZfb3BlbisweDEwLzB4MTAKWyA2MzI1LjYyNTc1OV0gIGNocmRldl9vcGVuKzB4YzYv
-MHgyNjAKWyA2MzI1LjYyOTI1MF0gID8gX19wZnhfY2hyZGV2X29wZW4rMHgxMC8weDEwClsgNjMy
-NS42MzMzNDldICBkb19kZW50cnlfb3BlbisweDE2ZS8weDUzMApbIDYzMjUuNjM3MTg5XSAgZG9f
-b3BlbisweDIxYy8weDQwMApbIDYzMjUuNjQwNDIxXSAgcGF0aF9vcGVuYXQrMHgxMTEvMHgyOTAK
-WyA2MzI1LjY0NDAwMF0gIGRvX2ZpbHBfb3BlbisweGIyLzB4MTYwClsgNjMyNS42NDc1ODJdICA/
-IF9fY2hlY2tfb2JqZWN0X3NpemUucGFydC4wKzB4NWUvMHgxNDAKWyA2MzI1LjY1MjU0OF0gIGRv
-X3N5c19vcGVuYXQyKzB4OTYvMHhkMApbIDYzMjUuNjU2MjEyXSAgX194NjRfc3lzX29wZW5hdCsw
-eDUzLzB4YTAKWyA2MzI1LjY2MDA1MV0gIGRvX3N5c2NhbGxfNjQrMHg1OS8weDkwClsgNjMyNS42
-NjM2MzFdICA/IHN5c2NhbGxfZXhpdF90b191c2VyX21vZGUrMHgyMi8weDQwClsgNjMyNS42Njg0
-MjNdICA/IGRvX3N5c2NhbGxfNjQrMHg2OS8weDkwClsgNjMyNS42NzIxNzRdICA/IHN5c2NhbGxf
-ZXhpdF90b191c2VyX21vZGUrMHgyMi8weDQwClsgNjMyNS42NzY5NzBdICA/IGRvX3N5c2NhbGxf
-NjQrMHg2OS8weDkwClsgNjMyNS42ODA3MjFdICA/IGRvX3N5c2NhbGxfNjQrMHg2OS8weDkwClsg
-NjMyNS42ODQ0NzNdICA/IHN5c2NhbGxfZXhpdF90b191c2VyX21vZGUrMHgyMi8weDQwClsgNjMy
-NS42ODkyNjhdICA/IGRvX3N5c2NhbGxfNjQrMHg2OS8weDkwClsgNjMyNS42OTMwMjBdICA/IGV4
-Y19wYWdlX2ZhdWx0KzB4NjUvMHgxNTAKWyA2MzI1LjY5Njk0NV0gIGVudHJ5X1NZU0NBTExfNjRf
-YWZ0ZXJfaHdmcmFtZSsweDZlLzB4ZDgKWyA2MzI1LjcwMTk5OF0gUklQOiAwMDMzOjB4N2ZlYzVj
-MzNlNjU0ClsgNjMyNS43MDU1NzZdIENvZGU6IDI0IDIwIGViIDhmIDY2IDkwIDQ0IDg5IDU0IDI0
-IDBjIGU4IGI2IGQ1IGY1IGZmIDQ0IDhiIDU0IDI0IDBjIDQ0IDg5IGUyIDQ4IDg5IGVlIDQxIDg5
-IGMwIGJmIDljIGZmIGZmIGZmIGI4IDAxIDAxIDAwIDAwIDBmIDA1IDw0OD4gM2QgMDAgZjAgZmYg
-ZmYgNzcgMzQgNDQgODkgYzcgODkgNDQgMjQgMGMgZTggMDggZDYgZjUgZmYgOGIgNDQKWyA2MzI1
-LjcyNDMyMl0gUlNQOiAwMDJiOjAwMDA3ZmZlYmJlMjhmYTAgRUZMQUdTOiAwMDAwMDI5MyBPUklH
-X1JBWDogMDAwMDAwMDAwMDAwMDEwMQpbIDYzMjUuNzMxODkwXSBSQVg6IGZmZmZmZmZmZmZmZmZm
-ZGEgUkJYOiAwMDAwN2ZlYTEwMDE4NTYwIFJDWDogMDAwMDdmZWM1YzMzZTY1NApbIDYzMjUuNzM5
-MDIxXSBSRFg6IDAwMDAwMDAwMDAwODAwMDIgUlNJOiAwMDAwN2ZlYTEwMDE4NTYwIFJESTogMDAw
-MDAwMDBmZmZmZmY5YwpbIDYzMjUuNzQ2MTU2XSBSQlA6IDAwMDA3ZmVhMTAwMTg1NjAgUjA4OiAw
-MDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDAwMApbIDYzMjUuNzUzMjg3XSBSMTA6
-IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMjkzIFIxMjogMDAwMDAwMDAwMDA4
-MDAwMgpbIDYzMjUuNzYwNDE5XSBSMTM6IDAwMDA3ZmVjNWIzMjhlNzAgUjE0OiAwMDAwN2ZlYzVi
-MzI4ZTgwIFIxNTogMDAwMDAwMDAwMDAwMDAwMgpbIDYzMjUuNzY3NTUyXSAgPC9UQVNLPgpbIDYz
-MjUuNzY5NzQ0XSBNb2R1bGVzIGxpbmtlZCBpbjogYWN0X3NrYmVkaXQgYWN0X21pcnJlZCBtbHg1
-X3ZkcGEgdnJpbmdoIHZob3N0X3ZkcGEgdmhvc3Qgdmhvc3RfaW90bGIgdmRwYSBjbHNfbWF0Y2hh
-bGwgbmZuZXRsaW5rX2N0dGltZW91dCBuZm5ldGxpbmsgYWN0X2dhY3QgY2xzX2Zsb3dlciBzY2hf
-aW5ncmVzcyBvcGVudnN3aXRjaCBuZl9jb25uY291bnQgbmZfbmF0IG5mX2Nvbm50cmFjayBuZl9k
-ZWZyYWdfaXB2NiBuZl9kZWZyYWdfaXB2NCBycGNzZWNfZ3NzX2tyYjUgYXV0aF9ycGNnc3MgbmZz
-djQgZG5zX3Jlc29sdmVyIG5mcyBsb2NrZCBncmFjZSBmc2NhY2hlIG5ldGZzIGJyaWRnZSBzdHAg
-bGxjIHFydHIgaW50ZWxfcmFwbF9tc3IgaW50ZWxfcmFwbF9jb21tb24gaW50ZWxfdW5jb3JlX2Zy
-ZXF1ZW5jeSBpbnRlbF91bmNvcmVfZnJlcXVlbmN5X2NvbW1vbiBpMTBubV9lZGFjIG5maXQgbGli
-bnZkaW1tIHg4Nl9wa2dfdGVtcF90aGVybWFsIGludGVsX3Bvd2VyY2xhbXAgY29yZXRlbXAga3Zt
-X2ludGVsIG1seDVfaWIga3ZtIGRlbGxfd21pIGxlZHRyaWdfYXVkaW8gaVRDT193ZHQgaWJfdXZl
-cmJzIGlzc3RfaWZfbW1pbyBzcGFyc2Vfa2V5bWFwIGliX2NvcmUgaVRDT192ZW5kb3Jfc3VwcG9y
-dCBpcnFieXBhc3MgaXNzdF9pZl9tYm94X3BjaSBpbnRlbF92c2VjIGFjcGlfaXBtaSBpc3N0X2lm
-X2NvbW1vbiBpMmNfaTgwMSByZmtpbGwgcmFwbCBpcG1pX3NzaWYgdmlkZW8gZGVsbF9zbWJpb3Mg
-am95ZGV2IGRheF9obWVtIGN4bF9hY3BpIGludGVsX2NzdGF0ZSBtZWlfbWUgaXBtaV9zaSBkZWxs
-X3dtaV9kZXNjcmlwdG9yIG1laSB3bWlfYm1vZiBkY2RiYXMgaW50ZWxfcGNoX3RoZXJtYWwgaXBt
-aV9kZXZpbnRmIGludGVsX3VuY29yZSBpcG1pX21zZ2hhbmRsZXIgY3hsX2NvcmUgaTJjX3NtYnVz
-IHBjc3BrciBhY3BpX3Bvd2VyX21ldGVyIHhmcyBsaWJjcmMzMmMgc2RfbW9kIG1nYWcyMDAgbnZt
-ZV90Y3Agc2cgaTJjX2FsZ29fYml0IG52bWVfZmFicmljcyBkcm1fc2htZW1faGVscGVyIG52bWVf
-Y29yZQpbIDYzMjUuNzY5ODAwXSAgZHJtX2ttc19oZWxwZXIgbnZtZV9jb21tb24gYWhjaSBjcmN0
-MTBkaWZfcGNsbXVsIG1seDVfY29yZSB0MTBfcGkgbGliYWhjaSBjcmMzMl9wY2xtdWwgZHJtIG1s
-eGZ3IGNyYzMyY19pbnRlbCBsaWJhdGEgcHNhbXBsZSBtZWdhcmFpZF9zYXMgdGczIGdoYXNoX2Ns
-bXVsbmlfaW50ZWwgcGNpX2h5cGVydl9pbnRmIHdtaSBkbV9tdWx0aXBhdGggc3VucnBjIGRtX21p
-cnJvciBkbV9yZWdpb25faGFzaCBkbV9sb2cgZG1fbW9kIGJlMmlzY3NpIGJueDJpIGNuaWMgdWlv
-IGN4Z2I0aSBjeGdiNCB0bHMgbGliY3hnYmkgbGliY3hnYiBxbGE0eHh4IGlzY3NpX2Jvb3Rfc3lz
-ZnMgaXNjc2lfdGNwIGxpYmlzY3NpX3RjcCBsaWJpc2NzaSBzY3NpX3RyYW5zcG9ydF9pc2NzaSBm
-dXNlClsgNjMyNS44OTQyNDJdIENSMjogMDAwMDAwMDEwMDViNGFmNApbIDYzMjUuODk3NTYwXSAt
-LS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0KWyA2MzI1Ljk2NzQzMF0gcHN0b3Jl
-OiBiYWNrZW5kIChlcnN0KSB3cml0aW5nIGVycm9yICgtMjgpClsgNjMyNS45NzI1NzBdIFJJUDog
-MDAxMDpfY29tcGF0X3ZkcGFfcmVzZXQuaXNyYS4wKzB4MjcvMHhiMCBbdmhvc3RfdmRwYV0KWyA2
-MzI1Ljk3OTA5NF0gQ29kZTogOTAgOTAgOTAgMGYgMWYgNDQgMDAgMDAgNDEgNTUgNGMgOGQgYWUg
-MDggMDMgMDAgMDAgNDEgNTQgNTUgNDggODkgZjUgNTMgNGMgOGIgYTYgMDAgMDMgMDAgMDAgNDgg
-ODUgZmYgNzQgNDkgNDggOGIgMDcgNGMgODkgZWYgPDQ4PiA4YiA4MCA4OCA0NSAwMCAwMCA0OCBj
-MSBlOCAwOCA0OCA4MyBmMCAwMSA4OSBjMyBlOCA3MyA1ZSA5YiBkYwpbIDYzMjUuOTk3ODQwXSBS
-U1A6IDAwMTg6ZmY3M2E4NTc2MjA3M2JhMCBFRkxBR1M6IDAwMDEwMjg2ClsgNjMyNi4wMDMwNjdd
-IFJBWDogMDAwMDAwMDEwMDViMDU2YyBSQlg6IGZmMzJiMTNjYTY5OTRjNjggUkNYOiAwMDAwMDAw
-MDAwMDAwMDAyClsgNjMyNi4wMTAyMDBdIFJEWDogMDAwMDAwMDAwMDAwMDAwMSBSU0k6IGZmMzJi
-MTNjMDc1NTkwMDAgUkRJOiBmZjMyYjEzYzA3NTU5MzA4ClsgNjMyNi4wMTczMzJdIFJCUDogZmYz
-MmIxM2MwNzU1OTAwMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiBmZjMyYjEyY2E0OTdjMGYw
-ClsgNjMyNi4wMjQ0NjRdIFIxMDogZmY3M2E4NTc2MjA3M2M1OCBSMTE6IDAwMDAwMDBjMTA2Zjlk
-ZTMgUjEyOiBmZjMyYjEyYzk1YjFkMDUwClsgNjMyNi4wMzE1OTldIFIxMzogZmYzMmIxM2MwNzU1
-OTMwOCBSMTQ6IGZmMzJiMTJkMGRkYzUxMDAgUjE1OiAwMDAwMDAwMDAwMDA4MDAyClsgNjMyNi4w
-Mzg3MzFdIEZTOiAgMDAwMDdmZWM1YjhjYmY4MCgwMDAwKSBHUzpmZjMyYjEzYmJmYzgwMDAwKDAw
-MDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDAKWyA2MzI2LjA0NjgxNl0gQ1M6ICAwMDEwIERTOiAw
-MDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwpbIDYzMjYuMDUyNTYzXSBDUjI6IDAw
-MDAwMDAxMDA1YjRhZjQgQ1IzOiAwMDAwMDAwMTU2NDRhMDAzIENSNDogMDAwMDAwMDAwMDc3M2Vl
-MApbIDYzMjYuMDU5Njk1XSBQS1JVOiA1NTU1NTU1NApbIDYzMjYuMDYyNDA3XSBLZXJuZWwgcGFu
-aWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uClsgNjMyNi4wNjc2NTFdIEtlcm5lbCBP
-ZmZzZXQ6IDB4MWM4MDAwMDAgZnJvbSAweGZmZmZmZmZmODEwMDAwMDAgKHJlbG9jYXRpb24gcmFu
-Z2U6IDB4ZmZmZmZmZmY4MDAwMDAwMC0weGZmZmZmZmZmYmZmZmZmZmYpClsgNjMyNi4xNDI4OTRd
-IC0tLVsgZW5kIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBGYXRhbCBleGNlcHRpb24gXS0t
-LQo=
---0000000000005181b60608874427--
+Patch 4 to 8 rework explicit calls to devcgroup_check_permission
+also as LSM hooks and finalize the conversion of the device_cgroup
+subsystem to a LSM.
+
+Patch 9 and 10 introduce new generic security hooks to be used
+for the actual mknod device guard implementation.
+
+Patch 11 wires up the security hooks in the vfs
+
+Patch 12 and 13 provide helper functions in the bpf cgroup
+subsystem.
+
+Patch 14 finally implement the LSM hooks to grand access
+
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+---
+Changes in v2:
+- Integrate this as LSM (Christian, Paul)
+- Switched to a device cgroup specific flag instead of a generic
+  bpf program flag (Christian)
+- do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
+  sb_alloc_super in fs/super.c
+- Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de
+
+Michael Weiß (14):
+  device_cgroup: Implement devcgroup hooks as lsm security hooks
+  vfs: Remove explicit devcgroup_inode calls
+  device_cgroup: Remove explicit devcgroup_inode hooks
+  lsm: Add security_dev_permission() hook
+  device_cgroup: Implement dev_permission() hook
+  block: Switch from devcgroup_check_permission to security hook
+  drm/amdkfd: Switch from devcgroup_check_permission to security hook
+  device_cgroup: Hide devcgroup functionality completely in lsm
+  lsm: Add security_inode_mknod_nscap() hook
+  lsm: Add security_sb_alloc_userns() hook
+  vfs: Wire up security hooks for lsm-based device guard in userns
+  bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
+  bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
+  device_cgroup: Allow mknod in non-initial userns if guarded
+
+ block/bdev.c                                 |   9 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
+ fs/namei.c                                   |  24 ++--
+ fs/super.c                                   |   6 +-
+ include/linux/bpf-cgroup.h                   |   2 +
+ include/linux/device_cgroup.h                |  67 -----------
+ include/linux/lsm_hook_defs.h                |   4 +
+ include/linux/security.h                     |  18 +++
+ include/uapi/linux/bpf.h                     |   1 +
+ init/Kconfig                                 |   4 +
+ kernel/bpf/cgroup.c                          |  14 +++
+ security/Kconfig                             |   1 +
+ security/Makefile                            |   2 +-
+ security/device_cgroup/Kconfig               |   7 ++
+ security/device_cgroup/Makefile              |   4 +
+ security/{ => device_cgroup}/device_cgroup.c |   3 +-
+ security/device_cgroup/device_cgroup.h       |  20 ++++
+ security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
+ security/security.c                          |  75 ++++++++++++
+ 19 files changed, 294 insertions(+), 88 deletions(-)
+ delete mode 100644 include/linux/device_cgroup.h
+ create mode 100644 security/device_cgroup/Kconfig
+ create mode 100644 security/device_cgroup/Makefile
+ rename security/{ => device_cgroup}/device_cgroup.c (99%)
+ create mode 100644 security/device_cgroup/device_cgroup.h
+ create mode 100644 security/device_cgroup/lsm.c
+
+
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+-- 
+2.30.2
 
