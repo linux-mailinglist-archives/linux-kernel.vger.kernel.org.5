@@ -2,277 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2107D7555
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E057D7562
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbjJYUQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
+        id S229881AbjJYUUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbjJYUQ3 (ORCPT
+        with ESMTP id S229498AbjJYUUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:16:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4478A4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698264986; x=1729800986;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1qBwA4OtmmXxOg5RUg97HzD0clgAd3mue3RS9D2uZ/A=;
-  b=jjzPIgKIHK5UXpnX076k9FZ+wRyK8KQDkY9LmYKLxZ8PJnPYQiBKP4Et
-   gGhnYVL8hkVWwLyXL6nx0nv20CXYK7YEg04bR5cz+3NdArf6psQkAcC5u
-   8/+igiiQEdFEP+AciJYqUa6Opa7Hl4/8QqNcIpINY00RXZ5YLBJDSk/Ie
-   P+zG95ELG9ZpkNDi5AyWK3trsLZOvUDiEu/DK5OGz5rfVIHaPIb1KuTMv
-   JzUDuAaXiYW7iP1rQVquaErNmlHMI/ZILSLjvPMZpAPKAwx7jjMdaiXo/
-   ew4eSYf566iR24gNRn3UuCZTRFSNml0wlyl2gyhPF+jwPvFwmUhONf8N+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377758242"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="377758242"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:16:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752459102"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="752459102"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2023 13:16:25 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V5 8/8] perf tools: Add branch counter knob
-Date:   Wed, 25 Oct 2023 13:16:26 -0700
-Message-Id: <20231025201626.3000228-8-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20231025201626.3000228-1-kan.liang@linux.intel.com>
-References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
+        Wed, 25 Oct 2023 16:20:37 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8F7A4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:20:35 -0700 (PDT)
+Received: from localhost.localdomain (31.173.86.85) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Wed, 25 Oct
+ 2023 23:20:25 +0300
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] f2fs: data: fix possible overflow in check_swap_activate()
+Date:   Wed, 25 Oct 2023 23:20:19 +0300
+Message-ID: <20231025202019.5228-1-s.shtylyov@omp.ru>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [31.173.86.85]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/25/2023 20:04:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180898 [Oct 25 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.85 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.85 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.85
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/25/2023 20:09:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/25/2023 7:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_SBL_CSS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+In check_swap_activate(), if the *while* loop exits early (0- or 1-page
+long swap file), an overflow happens while calculating the value of the
+span parameter as the lowest_pblock variable ends up being greater than
+the highest_pblock variable. Let's set *span to 0 in this case...
 
-Add a new branch filter, "counter", for the branch counter option. It is
-used to mark the events which should be logged in the branch. If it is
-applied with the -j option, the counters of all the events should be
-logged in the branch. If the legacy kernel doesn't support the new
-branch sample type, switching off the branch counter filter.
+Found by Linux Verification Center (linuxtesting.org) with the SVACE static
+analysis tool.
 
-The stored counter values in each branch are displayed right after the
-regular branch stack information via perf report -D.
-
-Usage examples:
-
-perf record -e "{branch-instructions,branch-misses}:S" -j any,counter
-
-Only the first event, branch-instructions, collect the LBR. Both
-branch-instructions and branch-misses are marked as logged events.
-The occurrences information of them can be found in the branch stack
-extension space of each branch.
-
-perf record -e "{cpu/branch-instructions,branch_type=any/,
-cpu/branch-misses,branch_type=counter/}"
-
-Only the first event, branch-instructions, collect the LBR. Only the
-branch-misses event is marked as a logged event.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 ---
+This patch is against the 'master' branch of Jaegeuk Kim's F2FS repo...
 
-No changes since V4
+ fs/f2fs/data.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- tools/perf/Documentation/perf-record.txt  |  4 +++
- tools/perf/util/evsel.c                   | 31 ++++++++++++++++++++++-
- tools/perf/util/evsel.h                   |  1 +
- tools/perf/util/parse-branch-options.c    |  1 +
- tools/perf/util/perf_event_attr_fprintf.c |  1 +
- tools/perf/util/sample.h                  |  1 +
- tools/perf/util/session.c                 | 15 +++++++++--
- 7 files changed, 51 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index d5217be012d7..b6afe7cc948d 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -442,6 +442,10 @@ following filters are defined:
- 		     4th-Gen Xeon+ server), the save branch type is unconditionally enabled
- 		     when the taken branch stack sampling is enabled.
- 	- priv: save privilege state during sampling in case binary is not available later
-+	- counter: save occurrences of the event since the last branch entry. Currently, the
-+		   feature is only supported by a newer CPU, e.g., Intel Sierra Forest and
-+		   later platforms. An error out is expected if it's used on the unsupported
-+		   kernel or CPUs.
- 
- +
- The option requires at least one branch type among any, any_call, any_ret, ind_call, cond.
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a8a5ff87cc1f..58a9b8c82790 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1831,6 +1831,8 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- static void evsel__disable_missing_features(struct evsel *evsel)
- {
-+	if (perf_missing_features.branch_counters)
-+		evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_COUNTERS;
- 	if (perf_missing_features.read_lost)
- 		evsel->core.attr.read_format &= ~PERF_FORMAT_LOST;
- 	if (perf_missing_features.weight_struct) {
-@@ -1884,7 +1886,12 @@ bool evsel__detect_missing_features(struct evsel *evsel)
- 	 * Must probe features in the order they were added to the
- 	 * perf_event_attr interface.
- 	 */
--	if (!perf_missing_features.read_lost &&
-+	if (!perf_missing_features.branch_counters &&
-+	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS)) {
-+		perf_missing_features.branch_counters = true;
-+		pr_debug2("switching off branch counters support\n");
-+		return true;
-+	} else if (!perf_missing_features.read_lost &&
- 	    (evsel->core.attr.read_format & PERF_FORMAT_LOST)) {
- 		perf_missing_features.read_lost = true;
- 		pr_debug2("switching off PERF_FORMAT_LOST support\n");
-@@ -2344,6 +2351,18 @@ u64 evsel__bitfield_swap_branch_flags(u64 value)
- 	return new_val;
- }
- 
-+static inline bool evsel__has_branch_counters(const struct evsel *evsel)
-+{
-+	struct evsel *cur, *leader = evsel__leader(evsel);
-+
-+	evlist__for_each_entry(evsel->evlist, cur) {
-+		if ((leader == evsel__leader(cur)) &&
-+		    (cur->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS))
-+			return true;
-+	}
-+	return false;
-+}
-+
- int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 			struct perf_sample *data)
- {
-@@ -2577,6 +2596,16 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 
- 		OVERFLOW_CHECK(array, sz, max_size);
- 		array = (void *)array + sz;
-+
-+		if (evsel__has_branch_counters(evsel)) {
-+			OVERFLOW_CHECK_u64(array);
-+
-+			data->branch_stack_cntr = (u64 *)array;
-+			sz = data->branch_stack->nr * sizeof(u64);
-+
-+			OVERFLOW_CHECK(array, sz, max_size);
-+			array = (void *)array + sz;
-+		}
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 916e317ac925..342cb0d5056d 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -4047,7 +4047,10 @@ static int check_swap_activate(struct swap_info_struct *sis,
+ 		cur_lblock += nr_pblocks;
  	}
- 
- 	if (type & PERF_SAMPLE_REGS_USER) {
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 848534ec74fa..85f24c986392 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -191,6 +191,7 @@ struct perf_missing_features {
- 	bool code_page_size;
- 	bool weight_struct;
- 	bool read_lost;
-+	bool branch_counters;
- };
- 
- extern struct perf_missing_features perf_missing_features;
-diff --git a/tools/perf/util/parse-branch-options.c b/tools/perf/util/parse-branch-options.c
-index fd67d204d720..f7f7aff3d85a 100644
---- a/tools/perf/util/parse-branch-options.c
-+++ b/tools/perf/util/parse-branch-options.c
-@@ -36,6 +36,7 @@ static const struct branch_mode branch_modes[] = {
- 	BRANCH_OPT("stack", PERF_SAMPLE_BRANCH_CALL_STACK),
- 	BRANCH_OPT("hw_index", PERF_SAMPLE_BRANCH_HW_INDEX),
- 	BRANCH_OPT("priv", PERF_SAMPLE_BRANCH_PRIV_SAVE),
-+	BRANCH_OPT("counter", PERF_SAMPLE_BRANCH_COUNTERS),
- 	BRANCH_END
- };
- 
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index 2247991451f3..8f04d3b7f3ec 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -55,6 +55,7 @@ static void __p_branch_sample_type(char *buf, size_t size, u64 value)
- 		bit_name(COND), bit_name(CALL_STACK), bit_name(IND_JUMP),
- 		bit_name(CALL), bit_name(NO_FLAGS), bit_name(NO_CYCLES),
- 		bit_name(TYPE_SAVE), bit_name(HW_INDEX), bit_name(PRIV_SAVE),
-+		bit_name(COUNTERS),
- 		{ .name = NULL, }
- 	};
- #undef bit_name
-diff --git a/tools/perf/util/sample.h b/tools/perf/util/sample.h
-index c92ad0f51ecd..70b2c3135555 100644
---- a/tools/perf/util/sample.h
-+++ b/tools/perf/util/sample.h
-@@ -113,6 +113,7 @@ struct perf_sample {
- 	void *raw_data;
- 	struct ip_callchain *callchain;
- 	struct branch_stack *branch_stack;
-+	u64 *branch_stack_cntr;
- 	struct regs_dump  user_regs;
- 	struct regs_dump  intr_regs;
- 	struct stack_dump user_stack;
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 1e9aa8ed15b6..4a094ab0362b 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1150,9 +1150,13 @@ static void callchain__printf(struct evsel *evsel,
- 		       i, callchain->ips[i]);
- }
- 
--static void branch_stack__printf(struct perf_sample *sample, bool callstack)
-+static void branch_stack__printf(struct perf_sample *sample,
-+				 struct evsel *evsel)
- {
- 	struct branch_entry *entries = perf_sample__branch_entries(sample);
-+	bool callstack = evsel__has_branch_callstack(evsel);
-+	u64 *branch_stack_cntr = sample->branch_stack_cntr;
-+	struct perf_env *env = evsel__env(evsel);
- 	uint64_t i;
- 
- 	if (!callstack) {
-@@ -1194,6 +1198,13 @@ static void branch_stack__printf(struct perf_sample *sample, bool callstack)
- 			}
- 		}
- 	}
-+
-+	if (branch_stack_cntr) {
-+		printf("... branch stack counters: nr:%" PRIu64 " (counter width: %u max counter nr:%u)\n",
-+			sample->branch_stack->nr, env->br_cntr_width, env->br_cntr_nr);
-+		for (i = 0; i < sample->branch_stack->nr; i++)
-+			printf("..... %2"PRIu64": %016" PRIx64 "\n", i, branch_stack_cntr[i]);
-+	}
- }
- 
- static void regs_dump__printf(u64 mask, u64 *regs, const char *arch)
-@@ -1355,7 +1366,7 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
- 		callchain__printf(evsel, sample);
- 
- 	if (evsel__has_br_stack(evsel))
--		branch_stack__printf(sample, evsel__has_branch_callstack(evsel));
-+		branch_stack__printf(sample, evsel);
- 
- 	if (sample_type & PERF_SAMPLE_REGS_USER)
- 		regs_user__printf(sample, arch);
+ 	ret = nr_extents;
+-	*span = 1 + highest_pblock - lowest_pblock;
++	if (lowest_pblock <= highest_pblock)
++		*span = 1 + highest_pblock - lowest_pblock;
++	else
++		*span = 0;
+ 	if (cur_lblock == 0)
+ 		cur_lblock = 1;	/* force Empty message */
+ 	sis->max = cur_lblock;
 -- 
-2.35.1
+2.26.3
 
