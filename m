@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 627837D69EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D9D7D69F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbjJYLVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S233984AbjJYLWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYLVt (ORCPT
+        with ESMTP id S232076AbjJYLWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:21:49 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E84AC;
-        Wed, 25 Oct 2023 04:21:46 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso8602373a12.3;
-        Wed, 25 Oct 2023 04:21:46 -0700 (PDT)
+        Wed, 25 Oct 2023 07:22:09 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C3210A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:22:06 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso79207031fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:22:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698232905; x=1698837705; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E2rHfcsjlV4rlBGbf4CfwSEr1+dgsfk+VxIq/saYt7A=;
-        b=QH0zn8AfCu8yLe24O97F19CUDfYyn+D7LnEY0TkkmKEz5V/1ZTA2X+oFxl7IIUytjG
-         qeuTimXeMYhkcZxvvonlb26y2shQbxQSXEZvHWg26eB2xbgBLGJaSS30UVc3xcswD/Ru
-         +mMPx8ewrIo9Itjt1wwLwpOLrNq2MrFICSE/ufd/Y6n81bu6NIq5U1uzR8l1frnc9eFu
-         5t6HGUDogPpbaIC5ubC/U/Hqk6YGFJ0koPIiljYGgT3wpNcrxFlrKDy4pDfszp02vtfX
-         KouhZHXlCpAC50EgERnsVae3WU/MP3xUBygq/t/a2CBg0OJHfB8jQx8lgqmZ4pyMciCJ
-         cMPA==
+        d=linaro.org; s=google; t=1698232925; x=1698837725; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dwp8E74sI4tVBaqrgu+e8RzHTAWo0YSAPvz5KCe5hyQ=;
+        b=aY07CGEIYA8zybKuO4KqyfbYe0+V0m3ih1/Mp8aNqLBEwpZhGwZbL1IkCxiW1RyUoK
+         NdhfhGU5a7byOEXq9tN5DvTBVfouTZDZv9uHaH47eVbvaxM4fU2WTklwOe/v/IORSCM9
+         renAg5q1HekURoFkVl8Okn5DdHlA5u08iCGhYaIXRDHrqklc2gkfoH25rCx8NuPzPlL8
+         3t3gZKXjwKpQJJhLRqrFay1GnbNvFTImTAwV8kDmgD5+SdTcawFMkVKduS+LYAGbsZ8Y
+         ch7M6mqaqwto/BYwKcH6XlX7bcHNWQTkZGKj1byZZuGjpkJl5Av2fsedBXU7Sq2sqgB8
+         y6WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698232905; x=1698837705;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E2rHfcsjlV4rlBGbf4CfwSEr1+dgsfk+VxIq/saYt7A=;
-        b=ogyiRrtICWbTri2PLWhU7dpLbXnGyz4kUuPvBpEbTeNW6Yd2y6TuiYJYH+6lI9yTrK
-         prtMCC8DGsHlkay2Km/rNinscgg6SU9HBiWw7AMmkHhwO5d/GY+DW3LaX/p8oFU83QED
-         oP3hAg0zD0O0htKMIvQcX0nonWtN9xLWolkZfE562LOQfnC8b1OJFWdsHRZHkVmqpGsj
-         1RlYWxX8pL1i6ldp1H5IYZcLAbf2H1UyeYgT+q13huPeYUtJB/qoSY9Q6TYjohzJKzz7
-         wINFf8rbI/ytnQDP4rGqfx0F5yajyjaGa7LsN4WOlJDfdfSiryGs0n0d3EB3aDwiCacL
-         KcYA==
-X-Gm-Message-State: AOJu0YzrL7lLR71sumFjbMAR+c8uz12FsLJQDk8b/05e0KgJaxoLdq+b
-        MMNQ8lO7neMZJPmXRexcGu4tX0D0VVg=
-X-Google-Smtp-Source: AGHT+IGPuYW/6V1UmkcJQL53Gndt5qS6mrifdkq1FD6CQye3uPK1nErdTXZVKKpQwX3DZ2hm9yT2yA==
-X-Received: by 2002:a17:906:6a0e:b0:9be:45b3:1c3d with SMTP id qw14-20020a1709066a0e00b009be45b31c3dmr9871645ejc.48.1698232904750;
-        Wed, 25 Oct 2023 04:21:44 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:2cbd:f9ec:f035:ebea])
-        by smtp.gmail.com with ESMTPSA id xa22-20020a170907b9d600b0099bd1ce18fesm9841288ejc.10.2023.10.25.04.21.43
+        d=1e100.net; s=20230601; t=1698232925; x=1698837725;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dwp8E74sI4tVBaqrgu+e8RzHTAWo0YSAPvz5KCe5hyQ=;
+        b=dTP2wXqwYCon4+ua+pFdpdCceZF2wkdGWzh1FTpUvkUWDOu2ZW+4d8ac+J3H3EXIJS
+         7pv40Q9wmVL8JIj/3i1+/pfbLYznNyiQXO04asVNeYi/Nywr7r9gMGe7sGbOIQbYw9/j
+         pm5VwU+lXWBPNyBPhl7iHJCPiiLI3OAqYatN8KvLSXiYLVmAo+A5m73a4jvH+se0T9TH
+         vLLjH1t/CZj/bgcYcRWAbtHeMxBOOp473BDcLQgefv2aDqmR89X6/Q6ZfWAZhaai6PGi
+         dXqiAUwzpXEIQ/tTfPhyDjxvdU7IyxMpJgw0vmmxWxlMagRbvNkfRGWblte0zN6BbuPH
+         z5Jw==
+X-Gm-Message-State: AOJu0YyG0iLADTT6SwfQrl8U8Oi4kVI4CbL7E3sk3lkPQG1CMqCCwABv
+        aqzK3bpsGxy1yGZIwNmcD2As1g==
+X-Google-Smtp-Source: AGHT+IFlEL56ocYJgKzp9u4zcIru0vmdc7o15SYfWmBqbz4xfgdTzW9qzGMVBhIZCBtLcMqtAQbTVA==
+X-Received: by 2002:a05:651c:b20:b0:2c5:8a4:9e6f with SMTP id b32-20020a05651c0b2000b002c508a49e6fmr12089142ljr.37.1698232924963;
+        Wed, 25 Oct 2023 04:22:04 -0700 (PDT)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id o12-20020a05600c4fcc00b0040775501256sm14361794wmq.16.2023.10.25.04.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 04:21:44 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5}
-Date:   Wed, 25 Oct 2023 13:21:36 +0200
-Message-Id: <20231025112136.3445-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Oct 2023 04:22:04 -0700 (PDT)
+Message-ID: <d6fdf664bd18eee581a2644e376124e830633045.camel@linaro.org>
+Subject: Re: [PATCH v2] tty: serial: samsung_tty: remove dead code
+From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski@linaro.org,
+        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
+Date:   Wed, 25 Oct 2023 12:22:03 +0100
+In-Reply-To: <20231024215509.ak4jbbahw2vsahs6@zenone.zhora.eu>
+References: <20231019100901.4026680-1-andre.draszik@linaro.org>
+         <20231024215509.ak4jbbahw2vsahs6@zenone.zhora.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4-1 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for omap2 and
-omap3/4/5 common uarts") adds address definitions of DEBUG_UART_PHYS for
-OMAP2, OMAP3, OMAP4 and OMAP5 in ./arch/arm/Kconfig.debug.
+Hi Andi,
 
-These definitions depend on DEBUG_OMAP{2,3,4,5}UART{1,2}; however, only
-DEBUG_OMAP2UART{1,2} are defined in ./arch/arm/Kconfig.debug, and
-DEBUG_OMAP{3,4,5}UART{1,2} are not defined. Hence, the script
-./scripts/checkkconfigsymbols.py warns here on non-existing symbols.
-Simply reuse the config DEBUG_OMAP2UART{1,2}; there is no need to define
-separate config symbols for OMAP{3,4,5}. So, just delete the dead
-references to DEBUG_OMAP{3,4,5}UART{1,2}.
+On Tue, 2023-10-24 at 23:55 +0200, Andi Shyti wrote:
+> Hi Andre,
+>=20
+> On Thu, Oct 19, 2023 at 11:09:01AM +0100, Andr=C3=A9 Draszik wrote:
+> > When support for various old platforms was removed in commit
+> > 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks"),
+> > s3c24xx_serial_ops also became unused here because nothing sets
+> > port
+> > type TYPE_S3C24XX anymore.
+> >=20
+> > Remove s3c24xx_serial_ops and all the code that's unreachable now.
+> >=20
+> > Fixes: 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks")
+>=20
+> is this really a fix? Or is it a cleanup?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/arm/Kconfig.debug | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+I guess from my position it's fixing the issue of dead code, introduced
+in the commit referenced. Which is of course also a cleanup :-)
 
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index b407b7b9b715..fc2b41d41447 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -1593,10 +1593,8 @@ config DEBUG_UART_PHYS
- 	default 0x48020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
- 	default 0x48022000 if DEBUG_TI81XXUART2
- 	default 0x48024000 if DEBUG_TI81XXUART3
--	default 0x4806a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
--				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
--	default 0x4806c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
--				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
-+	default 0x4806a000 if DEBUG_OMAP2UART1
-+	default 0x4806c000 if DEBUG_OMAP2UART2
- 	default 0x4806e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
- 	default 0x49020000 if DEBUG_OMAP3UART3
- 	default 0x49042000 if DEBUG_OMAP3UART4
-@@ -1719,10 +1717,8 @@ config DEBUG_UART_VIRT
- 	default 0xfa020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
- 	default 0xfa022000 if DEBUG_TI81XXUART2
- 	default 0xfa024000 if DEBUG_TI81XXUART3
--	default 0xfa06a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
--				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
--	default 0xfa06c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
--				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
-+	default 0xfa06a000 if DEBUG_OMAP2UART1
-+	default 0xfa06c000 if DEBUG_OMAP2UART2
- 	default 0xfa06e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
- 	default 0xfa71e000 if DEBUG_QCOM_UARTDM
- 	default 0xfb009000 if DEBUG_REALVIEW_STD_PORT
--- 
-2.17.1
+Not sure...
+
+Cheers,
+Andre
 
