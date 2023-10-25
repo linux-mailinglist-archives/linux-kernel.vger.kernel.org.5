@@ -2,189 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2697D765A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F0D7D7651
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjJYVHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        id S229884AbjJYVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjJYVHC (ORCPT
+        with ESMTP id S229632AbjJYVGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:07:02 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA90185
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ca72f8ff3aso1195215ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:59 -0700 (PDT)
+        Wed, 25 Oct 2023 17:06:35 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448BD136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:32 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-3575826ba20so26855ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698268019; x=1698872819; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+IdohqfpG/gdF3wirCpdcxePGouLjdXX9N31xMFKe2w=;
-        b=Cxrl5WomlT0YHCrxWtMnpWW98T9vagBhfjWbFE/o/MfO/yH5O/qhPMEG0k+AFwAr6h
-         paCPGXiPn0HE3cwhXd265qaXgK2yrQSkWFA/NUBKJ1x/KeRBcRxIObjoqqkTcBvnQeAr
-         HIgx3BtvaNGwwcVx0i6KjErTWm90Sqlv7slaw=
+        d=google.com; s=20230601; t=1698267991; x=1698872791; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YfKUQfUVw2J0FwzBs8kRktoJX+okfytV+T+B1kRuBio=;
+        b=Uzjc4i9Rw9syaHUHEzJ+R+rqVahROI2kY8UxdD3VMs7SMIA2KCDXIThzUVtRv2HuzT
+         mRmt8kqehxt6FnN0hViy7d27MvNaJFzEx8DDXiizgt19Mz5As48mp9iZJ6eBFQETkXUG
+         acS25QB184H3tszqJ5l4CmXeSmwxOVi+q4Mtc3vtFr//B2S8RzMBXjcyYfuSyx3cxGeq
+         ZE7DgTHyJMzbr4UwEaz37oRDXd7T1B6s85IO8QypyWb1rCHCAf6Uh1GFetRR90YzL3sw
+         tANFInQnsP52z0T9Jtcq51/sp5Z4Vz9esA1N+ucXctSf7ofeAcdxF3r0WhZHc0Bvj4wF
+         DhZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698268019; x=1698872819;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+IdohqfpG/gdF3wirCpdcxePGouLjdXX9N31xMFKe2w=;
-        b=JSSeObRouH8aX30dfvBE3uug9yzNKi39/eSIkd0IYirj5mMNF7nrycGioiNJd/XPWP
-         vM6Xtl21SqaTrR1YYb63x1EcT9Zu+TRNHUle2qu8ZdyAJ4oUGLqWdiIx0wEfiGbzThTf
-         tvTFGIWSxwJ6CkWhnqjGRL+Nbdwrt2mWU51idJ2MWOeLMDU1y7Z30mHRqLCo4lsHHKag
-         r619apvuezpWtDCWLRQFQkps2/Glgm6svEqjzsR8TvlCmBv33pRB40zT1jfaVo3h48nj
-         d8CjJOJu7hUd+h6ufmsMUG869f3zyQ9mjkaOgXaT+AnYj/7+9Bd44Yjzju2nBp9sIM5Y
-         l6cw==
-X-Gm-Message-State: AOJu0YyKasrXFLHTwTQS3GJzOq+BWyFzsSl/KnZb4blVrLfRWz6/yCqt
-        bIjNBSBRIWgsjLpvwFHtpYWMsw==
-X-Google-Smtp-Source: AGHT+IFnYu/xqKemRScJTcQjBe6USxgn3fG2r+kl8UXZa4BqRGhtLWHTLuta2cTb0ciL0LID92X1Rw==
-X-Received: by 2002:a17:903:110d:b0:1c9:e508:ad43 with SMTP id n13-20020a170903110d00b001c9e508ad43mr15865350plh.8.1698268019179;
-        Wed, 25 Oct 2023 14:06:59 -0700 (PDT)
-Received: from sjg1.roam.corp.google.com ([202.144.206.130])
-        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm9689447plb.180.2023.10.25.14.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 14:06:58 -0700 (PDT)
-From:   Simon Glass <sjg@chromium.org>
-To:     devicetree@vger.kernel.org
-Cc:     Michael Walle <mwalle@kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Tom Rini <trini@konsulko.com>, Rob Herring <robh@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Simon Glass <sjg@chromium.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] dt-bindings: mtd: binman-partitions: Add alignment properties
-Date:   Thu, 26 Oct 2023 10:06:12 +1300
-Message-ID: <20231025210616.3201502-3-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-In-Reply-To: <20231025210616.3201502-1-sjg@chromium.org>
-References: <20231025210616.3201502-1-sjg@chromium.org>
+        d=1e100.net; s=20230601; t=1698267991; x=1698872791;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YfKUQfUVw2J0FwzBs8kRktoJX+okfytV+T+B1kRuBio=;
+        b=FQt0mzKCaH4E8AVOvw0ZqU3oNvItXqJmOkaAtVcpM4hyhcAC1bV1jqgkty2HiWEisO
+         nG51lQLcfeRnT6xQak4+vxLcso8mSJuuPJ58WNjHAx8vKN2axNpOK0R07Hv3HjcPwbip
+         SPTWzsVnfBOcDk0BQJpTsWltMGWkFHrMFLnzcoVazEnuMvC+c8mtYDApMs+gS2CuXJbQ
+         lGw5BwyYIp1Q4BdLzH0TYVlFXdqUENhpIP9cEbltARqoHB4mE86Bwx8wHPjZwApqF0Hy
+         53xgNHqLRB0Cp2xUxtyiFhE6BoxZ3vSVZk9VKKW4HcCY9+BvvU1oHLX2UsoEK79Vb6xk
+         wMfQ==
+X-Gm-Message-State: AOJu0YyvDon6XI6I/ocBh3EQ9ylo/fcO/QakYCZnAPuqVIoa0lFdx4ax
+        /45wLybakJ6AWSqevrRPuoWW2yxnz4cRoOvyWmu6ZA==
+X-Google-Smtp-Source: AGHT+IEH7+hN0UnU2m4b/Gl5oLvAf7k4M9Ve15jrFHBr/Sc2DlZfGnPuEjrzAsXX50m1rLP8WUI0gf8alcW5t9Zj81w=
+X-Received: by 2002:a05:6e02:b24:b0:357:cb1a:9621 with SMTP id
+ e4-20020a056e020b2400b00357cb1a9621mr375512ilu.10.1698267991544; Wed, 25 Oct
+ 2023 14:06:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231024181600.8270-1-tony.luck@intel.com> <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
+ <ZTluypa9bCWv4k2n@agluck-desk3>
+In-Reply-To: <ZTluypa9bCWv4k2n@agluck-desk3>
+From:   Peter Newman <peternewman@google.com>
+Date:   Wed, 25 Oct 2023 23:06:20 +0200
+Message-ID: <CALPaoCj72V=o60tqsFMRzaeUw-1+rN7pyhsdCyVEV=0tN_CZ7A@mail.gmail.com>
+Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
+ b/w unavailable
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add three properties for controlling alignment of partitions, aka
-'entries' in binman.
+Hi Tony,
 
-For now there is no explicit mention of hierarchy, so a 'section' is
-just the 'binman' node.
+On Wed, Oct 25, 2023, 21:38 Tony Luck <tony.luck@intel.com> wrote:
+>
+> On Wed, Oct 25, 2023 at 02:46:53PM +0200, Peter Newman wrote:
+>
+> > > +static struct mbm_state *get_mbm_data(struct rdt_domain *dom_mbm, int rmid)
+> > > +{
+> > > +       if (is_mbm_local_enabled())
+> > > +               return &dom_mbm->mbm_local[rmid];
+> > > +
+> > > +       return &dom_mbm->mbm_total[rmid];
+> > > +}
+> >
+> > That looks very similar to the get_mbm_state() function I added to
+> > this same file recently:
+> >
+> > https://lore.kernel.org/all/20221220164132.443083-2-peternewman%40google.com
+> >
+> > I think the name you picked is misleadingly general. "local if
+> > available, otherwise total" seems to be a choice specific to the mbps
+> > controller. I think these functions should be reconciled a little
+> > better.
+> >
+>
+> Peter (and Babu, who made the same point about get_mbm_state().
+>
+> Do you want to see your function extended to do the "pick an MBM event?"
 
-These new properties are inputs to the packaging process, but are also
-needed if the firmware is repacked, to ensure that alignment
-constraints are not violated. Therefore they are provided as part of
-the schema.
+What I meant was I think it would be enough to just give the function
+you added a name that's more specific to the Mbps controller use case.
+For example, get_mba_sc_mbm_state().
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
+It's only problematic that you added a function with an equivalent
+name to an existing function that does something different.
 
-Changes in v6:
-- Correct schema-validation errors missed due to older dt-schema
-  (enum fix and reg addition)
-
-Changes in v5:
-- Add value ranges
-- Consistently mention alignment must be power-of-2
-- Mention that alignment refers to bytes
-
-Changes in v2:
-- Fix 'a' typo in commit message
-
- .../mtd/partitions/binman-partition.yaml      | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-index 83222ac9aa78..2bc80c24bb9b 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-@@ -33,6 +33,57 @@ properties:
-     minItems: 1
-     maxItems: 2
- 
-+  align:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment of the entry in bytes.
-+
-+      The entry offset is adjusted so that the entry starts on an aligned
-+      boundary within the containing section or image. For example ‘align =
-+      <16>’ means that the entry will start on a 16-byte boundary. This may
-+      mean that padding is added before the entry. The padding is part of
-+      the containing section but is not included in the entry, meaning that
-+      an empty space may be created before the entry starts. Alignment
-+      must be a power of 2. If ‘align’ is not provided, no alignment is
-+      performed.
-+
-+  align-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment of the entry size in bytes. It must be a power
-+      of 2.
-+
-+      For example, to ensure that the size of an entry is a multiple of 64
-+      bytes, set this to 64. While this does not affect the contents of the
-+      entry within binman itself (the padding is performed only when its
-+      parent section is assembled), the end result is that the entry ends
-+      with the padding bytes, so may grow. If ‘align-size’ is not provided,
-+      no alignment is performed.
-+
-+  align-end:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment (in bytes) of the end of an entry with respect
-+      to the containing section. It must be a power of 2.
-+
-+      Some entries require that they end on an alignment boundary,
-+      regardless of where they start. This does not move the start of the
-+      entry, so the contents of the entry will still start at the beginning.
-+      But there may be padding at the end. While this does not affect the
-+      contents of the entry within binman itself (the padding is performed
-+      only when its parent section is assembled), the end result is that the
-+      entry ends with the padding bytes, so may grow. If ‘align-end’ is not
-+      provided, no alignment is performed.
-+
- additionalProperties: false
- 
- examples:
-@@ -45,10 +96,13 @@ examples:
-         partition@100000 {
-             compatible = "u-boot";
-             reg = <0x100000 0xf00000>;
-+            align-size = <0x1000>;
-+            align-end = <0x10000>;
-         };
- 
-         partition@200000 {
-             compatible = "tfa-bl31";
-             reg = <0x200000 0x100000>;
-+            align = <0x4000>;
-         };
-     };
--- 
-2.42.0.758.gaed0368e0e-goog
-
+-Peter
