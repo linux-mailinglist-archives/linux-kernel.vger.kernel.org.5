@@ -2,183 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F5D7D6C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB217D6C3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbjJYMpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S233747AbjJYMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbjJYMpF (ORCPT
+        with ESMTP id S233759AbjJYMpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:45:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332E090;
-        Wed, 25 Oct 2023 05:45:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A376C433C7;
-        Wed, 25 Oct 2023 12:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698237902;
-        bh=NpzQ9qHRjySkxPMIQIfKH78Kx7piv7QmHamr5dkzg7c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K4EZFx0y3NoHsS9aVpzI4wQOiq5LFfl8lA2lRbkrpXooQ4iSPl9KN//5i445s9DoN
-         qAk0QGtBQ7Qvxggeq5YgXQG5XuDjSTVee7vtlacxMX7lFEtAJN8HweScxL0gX6Rcdh
-         bnC3VzLx4TOu1AGbCG9y7ug591clv8qAzLfngd1nZYzp0ghi+fUdaEd1iNFfOtlJ+l
-         Wf83er4I9tn/F9wREiq6MmEroEXOrQbw5ZfntrMfuvaNaTzBs1fwbHsYITyQ0Bk3g0
-         lAco+WhSmOulB6T3+jqDvzh6ECGpjF4ik8fkmMAinmYecQxzStrfola+PQ8Yo5ye4+
-         O/oy3jhbBjzFQ==
-Date:   Wed, 25 Oct 2023 14:44:59 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
- the DSI link power state
-Message-ID: <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
-References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
- <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
- <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
- <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
+        Wed, 25 Oct 2023 08:45:38 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C65CC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:45:35 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bfed7c4e6dso83016791fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698237934; x=1698842734; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8hwbHxNJHKIYfg2V9fOMg3eCs72qgcfQnjq8FaDx1jw=;
+        b=K7esk2lQBlWmBMhBDLYiBSS2MczKLeLq+HDpYsabyFfEwFcgzRSXzstS1nbH3dq+ZQ
+         vZimVR7IWlHmKCxwLaRIYJhzoQgzqLTJndJ9Gbhm2h+DuhGANXueQhwEVS46m0rmDfvz
+         Mkf43m3q8HQHi2vIunxat5DJcQGPLvZ7K0AFBy6brTdL6nPr8mjxi8ZnOcmMV1FzcHQp
+         dMewcZ+vLDdmRADNhNxvG5kpD4L5PnEnZlGyL10ckoZjzZQIUtGyPMtYncHjZRRYULPt
+         XzHnj9gILBbCRprmhZiypYAQJETL+gj1Y8l99xnOlnl8ke2ibxJ5E1uBDk95Y7tSIj/P
+         CN4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698237934; x=1698842734;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8hwbHxNJHKIYfg2V9fOMg3eCs72qgcfQnjq8FaDx1jw=;
+        b=ruz7OjwZdSY09LByGp1RIJUIOnDLllae/8CKpinSBmYa3oaxc7Br0+i556HtjpGzR/
+         3OwB/WyApFNJthe0TovH8bHCEGpG66gv/WJNDQZ0RlCoF/2cFZBx02Pb8O0jVgqEVr60
+         vpXsrMYusPo4VWi4su1Ef5nHzapqdi/GKm+akk33vNVSjDygrKkCStxla1JWz7dcMfnJ
+         ReDLn8y5D/UPpuimjQ79vmkmUchv4sXl9Qfw0+Ny1QF38jnUzc7iKNXPBNVHzG6xkXgu
+         L7WFAe40SevXb7soIXPdvqSvjnK9/UKoli38GJKmw3/t1CQCXzC0cIFEvqB30G9QdE/t
+         RPVw==
+X-Gm-Message-State: AOJu0Yxjt7Gjk0biGhQjq0xXaopNzb+G9n84NSEXd5OG9P4/orcfg+FO
+        cOFBZZcXL2gXGIn7l/v7FlHMpA==
+X-Google-Smtp-Source: AGHT+IGm4J06QL06svQANFyfaj+/EUWPdef+xMSV/kjvuIObpEBzlgVccGrT3eMK/MQ05YabvI6mnA==
+X-Received: by 2002:a2e:9c44:0:b0:2c5:12c4:5ff with SMTP id t4-20020a2e9c44000000b002c512c405ffmr10140098ljj.17.1698237934113;
+        Wed, 25 Oct 2023 05:45:34 -0700 (PDT)
+Received: from [192.168.53.189] ([188.162.65.61])
+        by smtp.gmail.com with ESMTPSA id t13-20020a2e8e6d000000b002c4faf47378sm2419884ljk.28.2023.10.25.05.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 05:45:33 -0700 (PDT)
+Message-ID: <65f841ba-5b70-4cbe-98e0-3d53e5b7944c@linaro.org>
+Date:   Wed, 25 Oct 2023 15:45:31 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kczefdkwiwg32tj2"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: pmic_glink: fix connector type to be
+ DisplayPort
+Content-Language: en-GB
+To:     Simon Ser <contact@emersion.fr>, Johan Hovold <johan@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231010225229.77027-1-dmitry.baryshkov@linaro.org>
+ <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+ <NDl6Ye92jJDp3fm20AwcuUKWuP8tzQ9CyWGGRltZ_DxYgxep2DO8Wil0Nmsfmhp1j4vAp9Yu1duiHeQkjBG-bcAdFoW3ZbWxvVqrCEpQe_4=@emersion.fr>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <NDl6Ye92jJDp3fm20AwcuUKWuP8tzQ9CyWGGRltZ_DxYgxep2DO8Wil0Nmsfmhp1j4vAp9Yu1duiHeQkjBG-bcAdFoW3ZbWxvVqrCEpQe_4=@emersion.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/10/2023 15:29, Simon Ser wrote:
+> On Wednesday, October 25th, 2023 at 14:22, Johan Hovold <johan@kernel.org> wrote:
+> 
+>> I was just going to post a patch fixing this after finally investigating
+>> why the DisplayPort outputs on the X13s were annoyingly identified as
+>> "Unknown20-1" and "Unknown20-2" instead of the expected "DP-1" and
+>> "DP-2".
+> 
+> Note, ideally userspace should use drmModeGetConnectorTypeName() from
+> libdrm to figure out the proper name for a connector type. That way we
+> only need to update a single spot when adding a new connector type,
+> instead of patching a whole bunch of programs.
 
---kczefdkwiwg32tj2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+X11 does its own thing. It further "renames" DP MST connectors. So on my 
+laptop I end up with DP-1-1 in xrandr, but DP-3 in kernel.
 
-On Thu, Oct 19, 2023 at 02:19:51PM +0300, Dmitry Baryshkov wrote:
-> On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
-> > > The MIPI DSI links do not fully fall into the DRM callbacks model.
-> >
-> > Explaining why would help
->=20
-> A kind of explanation comes afterwards, but probably I should change
-> the order of the phrases and expand it:
->=20
-> The atomic_pre_enable / atomic_enable and correspondingly
-> atomic_disable / atomic_post_disable expect that the bridge links
-> follow a simple paradigm: either it is off, or it is on and streaming
-> video. Thus, it is fine to just enable the link at the enable time,
-> doing some preparations during the pre_enable.
->=20
-> But then it causes several issues with DSI. First, some of the DSI
-> bridges and most of the DSI panels would like to send commands over
-> the DSI link to setup the device.
+-- 
+With best wishes
+Dmitry
 
-What prevent them from doing it in enable when the link is enabled?
-
-> Next, some of the DSI hosts have limitations on sending the commands.
-> The proverbial sunxi DSI host can not send DSI commands after the
-> video stream has started. Thus most of the panels have opted to send
-> all DSI commands from pre_enable (or prepare) callback (before the
-> video stream has started).
-
-I'm not sure we should account for a single driver when designing a
-framework. We should focus on designing something sound, and then making
-that driver work with whatever we designed, but not the other way
-around. And if we can't, we should get rid of that driver because it's
-de-facto unmaintainable. And I'm saying that as the author of that
-driver.
-
-> However this leaves no good place for the DSI host to power up the DSI
-> link. By default the host's pre_enable callback is called after the
-> DSI bridge's pre_enable. For quite some time we were powering up the
-> DSI link from mode_set. This doesn't look fully correct.
-
-Yeah, it's not.
-
-> And also we got into the issue with ps8640 bridge, which requires for
-> the DSI link to be quiet / unpowered at the bridge's reset time.
->=20
-> Dave has come with the idea of pre_enable_prev_first /
-> prepare_prev_first flags, which attempt to solve the issue by
-> reversing the order of pre_enable callbacks. This mostly solves the
-> issue. However during this cycle it became obvious that this approach
-> is not ideal too. There is no way for the DSI host to know whether the
-> DSI panel / bridge has been updated to use this flag or not, see the
-> discussion at [1].
-
-Yeah. Well, that happens. I kind of disagree with Neil here though when
-he says that "A panel driver should not depend on features of a DSI
-controller". Panels definitely rely on particular features, like the
-number of lanes, the modes supported, etc.
-
-Panels shouldn't depend on a particular driver *behaviour*. But the
-features are fine.
-
-For our particular discussion, I think that that kind of discussion is a
-dead-end, and we just shouldn't worry about it. Yes, some panels have
-not yet been updated to take the new flags into account. However, the
-proper thing to do is to update them if we see a problem with that (and
-thus move forward to the ideal solution), not revert the beginning of
-that feature enablement (thus moving away from where we want to end up
-in).
-
-> Thus comes this proposal. It allows for the panels to explicitly bring
-> the link up and down at the correct time, it supports automatic use
-> case, where no special handling is required. And last, but not least,
-> it allows the DSI host to note that the bridge / panel were not
-> updated to follow new protocol and thus the link should be powered on
-> at the mode_set time. This leaves us with the possibility of dropping
-> support for this workaround once all in-kernel drivers are updated.
-
-I'm kind of skeptical for these kind of claims that everything will be
-automatic and will be handled fine. What if we have conflicting
-requirements, for example two bridges drivers that would request the
-power up at different times?
-
-Also, we would still need to update every single panel driver, which is
-going to create a lot of boilerplate that people might get wrong.
-
-I have the feeling that we should lay out the problem without talking
-about any existing code base first. So, what does the MIPI-DSI spec
-requires and what does panels and bridges expect?
-
-Maxime
-
---kczefdkwiwg32tj2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTkNywAKCRDj7w1vZxhR
-xYIdAP9PbpeyIE0X74jUaXHN6mAfkT+xcxdOpc1D77WN0VbA0gEA2/73asuJtKhK
-KTH1Pj57iemOVPDZWxGgANraRbBuWwY=
-=Mzkb
------END PGP SIGNATURE-----
-
---kczefdkwiwg32tj2--
