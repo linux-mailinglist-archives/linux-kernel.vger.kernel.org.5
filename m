@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A977D76FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2787D76DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjJYVni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S229881AbjJYVeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjJYVnh (ORCPT
+        with ESMTP id S230054AbjJYVeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:43:37 -0400
-X-Greylist: delayed 629 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 14:43:33 PDT
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A47132
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: MIME-Version: Message-ID: Date: Subject: Cc:
- To: From; q=dns/txt; s=fe-e1b5cab7be; t=1698270211;
- bh=PSE4xeckRKb3xz86Jk8z81faXilq5QfiYs9qzrlEBgs=;
- b=GDYEI/m1CUdpu3BWilvchZCojANJJCajL1UyT9c8Yxf+a4cBzXM8CuOgczhK4B5jwkV84eE8p
- lvzVw+yNCvjw6tWNpmcKVaoLAllhBWLPN8B49xtkY1ExJouB9sASZx+tQIzgfxBynqP3zoH7cMv
- x6zrPiKPRHvSGfdBNpbZfgbqyaDNoZMRNYs/joL+WT1jVLMCx2CJnchu/lIFabLJ6eEs3fTtm1a
- rrKVg+2O/3vhlqBd3rkLe+gS3ZPw8N1U5vs1Oc7ZiFlKztYqMIOa0nAYRlVR6r0mserBJxnB7sS
- EKfr/gxmFIIlbDRo7d+lWhJ+o0IYL3ceUzyc4HBsACwA==
-From:   Jonas Karlman <jonas@kwiboo.se>
-To:     Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Andy Yan <andy.yan@rock-chips.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/rockchip: vop2: Add NV20 and NV30 support
-Date:   Wed, 25 Oct 2023 21:32:46 +0000
-Message-ID: <20231025213248.2641962-1-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.42.0
+        Wed, 25 Oct 2023 17:34:15 -0400
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B9B128
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1698269649; x=1698528849;
+        bh=uiUe6WVCm0aaHbhBXNo4kkWYKw5SBau4ovvcrSad9DA=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=Yg1ptZ7Iu2gnfRFp2pWfcsbc7FROFS4YsR6RmgxZ2PNEyB71jVvLhP+ZgIt8dgDQ6
+         Wkd0PpRGoBIhtXEaw8saacjcjyLckAafe7bLCpYpvXSmkUZg2WwWBhggxckLuC0jX6
+         EugVoKUPe9Jfe/wp1BMqrYYobDUPRJdc2jazg7WbY7VwszxWMmAtIvZTH+l0GCKKv0
+         4QpnPyQOjeTr9CLWNBACO0sE/PfpLuPf87DI1RTGI/BiS9S4jA++5lsu3Cxq7K+L/g
+         8KzQHFk08/PFcGf8BXtX9MgUnYpBlaus8jPZBnt8zbO6uLaHyo2jAX1ULInJHjSsA8
+         W30LQWeP2ztAA==
+Date:   Wed, 25 Oct 2023 21:34:02 +0000
+To:     Gary Guo <gary@garyguo.net>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rust: macros: improve `#[vtable]` documentation
+Message-ID: <e3a2ff70-3d10-4c0f-a9f7-5dd07a198f8c@proton.me>
+In-Reply-To: <20231025201445.497f6ef4.gary@garyguo.net>
+References: <20231019171540.259173-1-benno.lossin@proton.me> <20231024122423.383ea1bb@eugeo> <5c8b516d-323e-4a0b-8b8a-c0f0aec38b06@proton.me> <20231025201445.497f6ef4.gary@garyguo.net>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 65398986da73b54fc2dc42e3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the 10-bit 4:2:2 and 4:4:4 formats NV20 and NV30.
+On 25.10.23 21:14, Gary Guo wrote:
+> On Tue, 24 Oct 2023 14:43:30 +0000
+> Benno Lossin <benno.lossin@proton.me> wrote:
+>=20
+>> On 24.10.23 13:24, Gary Guo wrote:
+>>> On Thu, 19 Oct 2023 17:15:53 +0000
+>>> Benno Lossin <benno.lossin@proton.me> wrote:
+>>
+>> [...]
+>>
+>>>> -/// This attribute is intended to close the gap. Traits can be declar=
+ed and
+>>>> -/// implemented with the `#[vtable]` attribute, and a `HAS_*` associa=
+ted constant
+>>>> -/// will be generated for each method in the trait, indicating if the=
+ implementor
+>>>> -/// has overridden a method.
+>>>> +/// This attribute closes that gap. A trait can be annotated with the=
+ `#[vtable]` attribute.
+>>>> +/// Implementers of the trait will then also have to annotate the tra=
+it with `#[vtable]`. This
+>>>> +/// attribute generates a `HAS_*` associated constant bool for each m=
+ethod in the trait that is set
+>>>> +/// to true if the implementer has overridden the associated method.
+>>>> +///
+>>>> +/// For a function to be optional, it must have a default implementat=
+ion. But this default
+>>>> +/// implementation will never be executed, since these functions are =
+exclusively called from
+>>>> +/// callbacks from the C side. This is because the vtable will have a=
+ `NULL` entry and the C side
+>>>> +/// will execute the default behavior. Since it is not maintainable t=
+o replicate the default
+>>>> +/// behavior in Rust, the default implementation should be:
+>>>> +///
+>>>> +/// ```compile_fail
+>>>> +/// # use kernel::error::VTABLE_DEFAULT_ERROR;
+>>>> +/// kernel::build_error(VTABLE_DEFAULT_ERROR)
+>>>
+>>> Note that `build_error` function is considered impl detail and is
+>>> hidden.
+>>
+>> I see, we should mention that in the docs on `build_error`.
+>=20
+> Well, it's marked as `#[doc(hidden)]`...
 
-These formats can be tested using modetest [1]:
+Yes, but I did not even build the docs, but read it directly
+inside of the `build_error` crate and thus I did not see the
+`#[doc(hidden)]`.
 
-  modetest -P <plane_id>@<crtc_id>:1920x1080@<format>
+>>> This should use the macro version instead:
+>>>
+>>> kernel::build_error!(VTABLE_DEFAULT_ERROR)
+>>
+>> Is there a reason that it is a macro? Why is it re-exported in the
+>> kernel crate? The macro could just use `::bulid_error::build_error()`.
+>=20
+> The original intention is to allow format strings, but Rust const
+> panic is not powerful enough to support it at the moment. Macro
+> allows higher flexibility.
 
-e.g. on a ROCK 3 Model A (rk3568):
+That is what I thought. But should we then not always require a
+string literal? So
 
-  modetest -P 43@67:1920x1080@NV20 -F tiles,tiles
-  modetest -P 43@67:1920x1080@NV30 -F smpte,smpte
+     kernel::build_error!("{}", VTABLE_DEFAULT_ERROR)
 
-[1] https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/329
+> It's re-exported so the macro can reference them (note that downstream
+> crates can't reference build_error directly). Perhaps I should put it
+> inside __private_reexport or something instead.
 
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 5 +++++
- drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 ++
- 2 files changed, 7 insertions(+)
+I see, I did not know that they cannot reference build error directly.
+Is that some limitation of the build system? If it is possible to not
+re-export it, I think that would be better, otherwise just put it in
+`__private`.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index ab944010fe14..592f9d726f2e 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -326,11 +326,14 @@ static enum vop2_data_format vop2_convert_format(u32 format)
- 	case DRM_FORMAT_NV16:
- 	case DRM_FORMAT_NV61:
- 		return VOP2_FMT_YUV422SP;
-+	case DRM_FORMAT_NV20:
- 	case DRM_FORMAT_Y210:
- 		return VOP2_FMT_YUV422SP_10;
- 	case DRM_FORMAT_NV24:
- 	case DRM_FORMAT_NV42:
- 		return VOP2_FMT_YUV444SP;
-+	case DRM_FORMAT_NV30:
-+		return VOP2_FMT_YUV444SP_10;
- 	case DRM_FORMAT_YUYV:
- 	case DRM_FORMAT_YVYU:
- 		return VOP2_FMT_VYUY422;
-@@ -415,6 +418,8 @@ static bool vop2_win_uv_swap(u32 format)
- 	case DRM_FORMAT_NV16:
- 	case DRM_FORMAT_NV24:
- 	case DRM_FORMAT_NV15:
-+	case DRM_FORMAT_NV20:
-+	case DRM_FORMAT_NV30:
- 	case DRM_FORMAT_YUYV:
- 	case DRM_FORMAT_UYVY:
- 		return true;
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-index fdb48571efce..0b4280218a59 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-@@ -48,8 +48,10 @@ static const uint32_t formats_rk356x_esmart[] = {
- 	DRM_FORMAT_NV15, /* yuv420_10bit linear mode, 2 plane, no padding */
- 	DRM_FORMAT_NV16, /* yuv422_8bit linear mode, 2 plane */
- 	DRM_FORMAT_NV61, /* yuv422_8bit linear mode, 2 plane */
-+	DRM_FORMAT_NV20, /* yuv422_10bit linear mode, 2 plane, no padding */
- 	DRM_FORMAT_NV24, /* yuv444_8bit linear mode, 2 plane */
- 	DRM_FORMAT_NV42, /* yuv444_8bit linear mode, 2 plane */
-+	DRM_FORMAT_NV30, /* yuv444_10bit linear mode, 2 plane, no padding */
- 	DRM_FORMAT_YVYU, /* yuv422_8bit[YVYU] linear mode */
- 	DRM_FORMAT_VYUY, /* yuv422_8bit[VYUY] linear mode */
- };
--- 
-2.42.0
+--=20
+Cheers,
+Benno
+
 
