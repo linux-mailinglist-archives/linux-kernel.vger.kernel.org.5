@@ -2,277 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFC37D7629
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF197D7646
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjJYU7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        id S229738AbjJYVEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjJYU6x (ORCPT
+        with ESMTP id S229573AbjJYVEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:58:53 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5702812A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:58:50 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c4fe37f166so2269051fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698267528; x=1698872328; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5E+y3Sa5hhlUIO0lLz8Lj8Z/SZXQuFdPCCdWtajuYnA=;
-        b=R/PmA97jtdu7U+OlrZWWmzbBCZJ4J85CMAH3Y88zgW/9VOm5/PXPDL5VQ63GZIN4qv
-         a1hWb+ZbQRtJMwzfbDn3vu2tUpZAz3L7zvpvWf8rg6NBb/7fsLiYe5FJjno7PdxTEoRa
-         vNc0zEhCAGviC5CqVoqKHjjLeLijJOa8ZAp6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698267528; x=1698872328;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5E+y3Sa5hhlUIO0lLz8Lj8Z/SZXQuFdPCCdWtajuYnA=;
-        b=CvppYzCdyCZWnlRj2tTa8ViQwThrRyg3TaRyGCdwvLtpYC+uBZ5LY1DEsrK1UzOxzJ
-         LWbGvfzGKUtizyddzBfTUEGRccw0m8NgJ0RPlDKSB/LhOwqE/VGJbWPmx+tNcMQLnFXp
-         GTrT5f8ZjD2pnM+Fq5GM6TmyIDxOIUmq8U/YNoALX5LMU1KOE3TzvU9PwVuU33D/0Zxy
-         piRfzGE2LBGpcZFvBITh2WpctsbiRczqsXNwOlbZQ6LrPgeP93EuoRFlSw6HzsIYt6gQ
-         NNfgg5aINpmnDdJJG/SmJTm18RnopqX1yWaGVm6u02gE1rVPQ0heGQy8At7GfX/NX1PM
-         +tBQ==
-X-Gm-Message-State: AOJu0YxLJ8SrpFpmMgP2fRrrJ/JPGNZ1y8dS5KsxSITCuCG9SftXFpQi
-        Re47DTXXlgWUUk8rzoU7SAbgFfb17AgY+19fIzWQHQ==
-X-Google-Smtp-Source: AGHT+IFIpzj33tVTxfmSbifouoWpSglC2W9rs1RwuI9tQBH2J4n3lYoTMUopFM/zLfxYuDpMHPxKVmRlPbKDytQm8m4=
-X-Received: by 2002:a2e:3018:0:b0:2c5:1623:66b8 with SMTP id
- w24-20020a2e3018000000b002c5162366b8mr11230277ljw.12.1698267528156; Wed, 25
- Oct 2023 13:58:48 -0700 (PDT)
+        Wed, 25 Oct 2023 17:04:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4FD132
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:04:18 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698267856; h=from:from:reply-to:subject:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=TPuwtI1kuhVX5ITa/AAnqFvkxKf7BGaubhPzT2UNE74=;
+        b=oPvdKVbHmRxor0QJdAoEkesozaykgzHyFM1Y8mU3ePFVB69v3gQLnMFAkRbhLlpN5CS55z
+        qWen4rc0tqgxN46mTmAYGmoxo5MEBtcnIcqNkAfm10cnxWbUVWkKyNBmdCQMQ8h2SRViui
+        BiHqQ24w7t9E42iO4ITFd9k/zjukwBAFS+X7Q/e0SbBMX76YTdZmy+Ydkni/i65DZDG8Dr
+        eodkcIKfYLffamwhPx+mSg76M8C912BdJn94wyj8kLvYCEqw2/aqKi1bcVLaTpawAsYHqz
+        EflhvV1qmlW4rfSQQiISBkKL01pbyVuiUX+jsYyBlCiwS7xAEfaLYJ4nqn22WA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698267856; h=from:from:reply-to:subject:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=TPuwtI1kuhVX5ITa/AAnqFvkxKf7BGaubhPzT2UNE74=;
+        b=9HWGUBsXPYxnzZJLR8evvLGcbzm0V7W3Y8sB5wd7WaVo/Q6mTIsupHnaHMydd5NP0E8BBG
+        mUQNgRi2DUsivlDg==
+To:     David Lazar <dlazar@gmail.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH] x86/i8259: Skip probing when ACPI/MADT advertises PCAT
+ compatibility
+Subject: 
+In-Reply-To: <87jzra6235.ffs@tglx>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+ <87ttqhcotn.ffs@tglx> <87v8avawe0.ffs@tglx>
+ <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+ <ZTkzYA3w2p3L4SVA@localhost> <87jzra6235.ffs@tglx>
+Date:   Wed, 25 Oct 2023 23:04:15 +0200
+Message-ID: <875y2u5s8g.ffs@tglx>
 MIME-Version: 1.0
-References: <20231009220436.2164245-1-sjg@chromium.org> <20231009220436.2164245-2-sjg@chromium.org>
- <20231024161644.GB3707756-robh@kernel.org> <CAPnjgZ0G3W0a1T5TMuS_8L+4OwqFU3xXBKPnTs+MDDFBWYP_VA@mail.gmail.com>
- <20231025101126.2234a74c@xps-13>
-In-Reply-To: <20231025101126.2234a74c@xps-13>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Wed, 25 Oct 2023 20:58:36 +0000
-Message-ID: <CAPnjgZ0GH-06xA3ij2ZBV_zDwPKa3m=wpHrsj8oKNS=8S0FvHA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: binman-partition: Add binman compatibles
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, Michael Walle <mwalle@kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+David and a few others reported that on certain newer systems some legacy
+interrupts fail to work correctly.
 
-On Wed, 25 Oct 2023 at 08:11, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Simon,
->
-> sjg@chromium.org wrote on Tue, 24 Oct 2023 14:40:54 -0700:
->
-> > Hi Rob,
-> >
-> > On Tue, 24 Oct 2023 at 09:16, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Mon, Oct 09, 2023 at 04:04:14PM -0600, Simon Glass wrote:
-> > > > Add two compatible for binman entries, as a starting point for the
-> > > > schema.
-> > > >
-> > > > Note that, after discussion on v2, we decided to keep the existing
-> > > > meaning of label so as not to require changes to existing userspace
-> > > > software when moving to use binman nodes to specify the firmware
-> > > > layout.
-> > > >
-> > > > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > > > ---
-> > > >
-> > > > Changes in v4:
-> > > > - Correct selection of multiple compatible strings
-> > > >
-> > > > Changes in v3:
-> > > > - Drop fixed-partitions from the example
-> > > > - Use compatible instead of label
-> > > >
-> > > > Changes in v2:
-> > > > - Use plain partition@xxx for the node name
-> > > >
-> > > >  .../mtd/partitions/binman-partition.yaml      | 49 +++++++++++++++++++
-> > > >  1 file changed, 49 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..35a320359ec1
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> > > > @@ -0,0 +1,49 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > +# Copyright 2023 Google LLC
-> > > > +
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Binman partition
-> > > > +
-> > > > +maintainers:
-> > > > +  - Simon Glass <sjg@chromium.org>
-> > > > +
-> > > > +select: false
-> > >
-> > > So this schema is never used. 'select: false' is only useful if
-> > > something else if referencing the schema.
-> >
-> > OK. Is there a user guide to this somewhere? I really don't understand
-> > it very well.
->
-> The example-schema.yaml at the root of the dt-bindings directory is
-> well commented.
+Debugging revealed that the BIOS of these systems leaves the legacy PIC in
+uninitialized state which makes the PIC detection fail and the kernel
+switches to a dummy implementation.
 
-OK I had forgotten about that, thank you.
+Unfortunately this fallback causes quite some code to fail as it depends on
+checks for the number of legacy PIC interrupts or the availability of the
+real PIC.
 
->
-> > > > +description: |
-> > > > +  This corresponds to a binman 'entry'. It is a single partition which holds
-> > > > +  data of a defined type.
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: /schemas/mtd/partitions/partition.yaml#
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    oneOf:
-> > > > +      - const: binman,entry     # generic binman entry
-> > >
-> > > 'binman' is not a vendor. You could add it if you think that's useful.
-> > > Probably not with only 1 case...
-> >
-> > I think it is best to use this for generic things implemented by
-> > binman, rather than some other project. For example, binman supports a
-> > 'fill' region. It also supports sections which are groups of
-> > sub-entries. So we will likely start with half a dozen of these and it
-> > will likely grow: binman,fill, binman,section, binman,files
-> >
-> > If we don't use 'binman', what do you suggest?
-> >
-> > >
-> > > > +      - items:
-> > > > +          - const: u-boot       # u-boot.bin from U-Boot project
-> > > > +          - const: atf-bl31     # bl31.bin or bl31.elf from TF-A project
-> > >
-> > > Probably should use the new 'tfa' rather than old 'atf'. Is this the
-> > > only binary for TFA? The naming seems inconsistent in that every image
-> > > goes in (or can go in) a bl?? section. Why does TFA have it but u-boot
-> > > doesn't? Perhaps BL?? is orthogonal to defining what is in each
-> > > partition. Perhaps someone more familar with all this than I am can
-> > > comment.
-> >
-> > From what I can tell TF-A can produce all sorts of binaries, of which
-> > bl31 is one. U-Boot can also produce lots of binaries, but its naming
-> > is different (u-boot, u-boot-spl, etc.). Bear in mind that U-Boot is
-> > used on ARM, where this terminology is defined, and on x86 (for
-> > example), where it is not.
-> >
-> > >
-> > > Once you actually test this, you'll find you are specifying:
-> > >
-> > > compatible = "u-boot", "atf-bl31";
-> >
-> > I don't understand that, sorry. I'll send a v5 and see if the problem goes away.
->
-> For me this means the partition contains U-Boot and TF-A, which is
-> probably not what you want. I believe Rob is saying that how you define
-> the compatible property above does not match the examples below. Did
-> you run make dt_binding_check?
+In theory there is no reason to use the PIC on any modern system when
+IO/APIC is available, but the dependencies on the related checks cannot be
+resolved trivially and on short notice. This needs lots of analysis and
+rework.
 
-Yes, but I have not been able to install the correct version with 'pip
-install'. So the check about not being an object did not appear for
-me.
+The PIC detection has been added to avoid quirky checks and force selection
+of the dummy implementation all over the place, especially in VM guest
+scenarios. So it's not an option to revert the relevant commit as that
+would break a lot of other scenarios.
 
-I have now figured out how to run the latest version locally with the
-Linux validation, so will fix these problems in v6.
+One solution would be to try to initialize the PIC on detection fail and
+retry the detection, but that puts the burden on everything which does not
+have a PIC.
 
->
-> Also, do you really need to say which software project provides a
-> component? Would using "bl31", "bl33", etc be enough? Or maybe you
-> could have eg. "bl31-tf-a" and "bl31-u-boot-spl" (in this order) for
-> clarity? This way one knows which stage a partition contains and also
-> the software project which provided it.
+Fortunately the ACPI/MADT table header has a flag field, which advertises
+in bit 0 that the system is PCAT compatible, which means it has a legacy
+8259 PIC.
 
-The software project tells binman the filename to pick up and any
-processing it might need to use. It is quite an important element of
-this schema. Bear in mind that Binman assembles the image...so it must
-read in the various files that are needed.
+Evaluate that bit and if set avoid the detection routine and keep the real
+PIC installed, which then gets initialized (for nothing) and makes the rest
+of the code with all the dependencies work again.
 
-The bl31 terminology is used by ARM but not x86. So using bl31 in the
-context of U-Boot would be quite confusing on non-ARM SoCs.
+Fixes: e179f6914152 ("x86, irq, pic: Probe for legacy PIC and set legacy_pic appropriately")
+Reported-by: David Lazar <dlazar@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: David Lazar <dlazar@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218003
+---
+---
+ arch/x86/include/asm/i8259.h |    2 ++
+ arch/x86/kernel/acpi/boot.c  |    3 +++
+ arch/x86/kernel/i8259.c      |   38 ++++++++++++++++++++++++++++++--------
+ 3 files changed, 35 insertions(+), 8 deletions(-)
 
-For the stage (or what I call Phase), I have not considered that yet.
-The purpose of adding 'bl31' is because TF-A (like U-Boot) produces a
-few binaries so we need to specify which one is wanted, which in turn
-leads to the filename. We do have the concept of a boot phase in DT
-(bootph-pre-ram for example), so I hope to integrate that at some
-point, for runtime use. But for the purposes of assembling the image,
-it doesn't matter when the phase runs...all that matters is being able
-to read in the files which need to be assembled into the image.
-
->
-> To be honest I still don't fully get where you want to go and I believe
-> a more complete schema would probably help, with different examples, to
-> catch what you need and why.
-
-The full schema is described at [1] and [2]. Note that this may need
-to change as I slowly upstream it. The top of [1] describes the
-motivation for binman and there is a more detailed talk at [3].
-
-So far I am just trying to describe two things:
-
-- U-Boot (u-boot.bin)
-- TF-A BL31 (bl31.elf)
-
-I am doing things in baby steps because even that is quite a
-challenge. But I think the linked docs should help explain where it is
-heading.
-
->
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    partitions {
-> > > > +        compatible = "binman";
-> > > > +        #address-cells = <1>;
-> > > > +        #size-cells = <1>;
-> > > > +
-> > > > +        partition@100000 {
-> > > > +            compatible = "u-boot";
-> > > > +            reg = <0x100000 0xf00000>;
-> > > > +        };
-> > > > +
-> > > > +        partition@200000 {
-> > > > +            compatible = "atf-bl31";
-> > > > +            reg = <0x200000 0x100000>;
-> > > > +        };
-> > > > +    };
-> > > > --
-> > > > 2.42.0.609.gbb76f46606-goog
-> > > >
-
-Regards,
-SImon
-
-[1] https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-[2] https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#entry-documentation
-[3] https://elinux.org/Boot_Loaders#U-Boot
+--- a/arch/x86/include/asm/i8259.h
++++ b/arch/x86/include/asm/i8259.h
+@@ -69,6 +69,8 @@ struct legacy_pic {
+ 	void (*make_irq)(unsigned int irq);
+ };
+ 
++void legacy_pic_pcat_compat(void);
++
+ extern struct legacy_pic *legacy_pic;
+ extern struct legacy_pic null_legacy_pic;
+ 
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -148,6 +148,9 @@ static int __init acpi_parse_madt(struct
+ 		pr_debug("Local APIC address 0x%08x\n", madt->address);
+ 	}
+ 
++	if (madt->flags & ACPI_MADT_PCAT_COMPAT)
++		legacy_pic_pcat_compat();
++
+ 	/* ACPI 6.3 and newer support the online capable bit. */
+ 	if (acpi_gbl_FADT.header.revision > 6 ||
+ 	    (acpi_gbl_FADT.header.revision == 6 &&
+--- a/arch/x86/kernel/i8259.c
++++ b/arch/x86/kernel/i8259.c
+@@ -32,6 +32,7 @@
+  */
+ static void init_8259A(int auto_eoi);
+ 
++static bool pcat_compat __ro_after_init;
+ static int i8259A_auto_eoi;
+ DEFINE_RAW_SPINLOCK(i8259A_lock);
+ 
+@@ -299,15 +300,32 @@ static void unmask_8259A(void)
+ 
+ static int probe_8259A(void)
+ {
++	unsigned char new_val, probe_val = ~(1 << PIC_CASCADE_IR);
+ 	unsigned long flags;
+-	unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
+-	unsigned char new_val;
++
++	/*
++	 * If MADT has the PCAT_COMPAT flag set, then do not bother probing
++	 * for the PIC. Some BIOSes leave the PIC uninitialized and probing
++	 * fails.
++	 *
++	 * Right now this causes problems as quite some code depends on
++	 * nr_legacy_irqs() > 0 or has_legacy_pic() == true. This is silly
++	 * when the system has an IO/APIC because then PIC is not required
++	 * at all, except for really old machines where the timer interrupt
++	 * must be routed through the PIC. So just pretend that the PIC is
++	 * there and let legacy_pic->init() initialize it for nothing.
++	 *
++	 * Alternatively this could just try to initialize the PIC and
++	 * repeat the probe, but for cases where there is no PIC that's
++	 * just pointless.
++	 */
++	if (pcat_compat)
++		return nr_legacy_irqs();
++
+ 	/*
+-	 * Check to see if we have a PIC.
+-	 * Mask all except the cascade and read
+-	 * back the value we just wrote. If we don't
+-	 * have a PIC, we will read 0xff as opposed to the
+-	 * value we wrote.
++	 * Check to see if we have a PIC.  Mask all except the cascade and
++	 * read back the value we just wrote. If we don't have a PIC, we
++	 * will read 0xff as opposed to the value we wrote.
+ 	 */
+ 	raw_spin_lock_irqsave(&i8259A_lock, flags);
+ 
+@@ -429,5 +447,9 @@ static int __init i8259A_init_ops(void)
+ 
+ 	return 0;
+ }
+-
+ device_initcall(i8259A_init_ops);
++
++void __init legacy_pic_pcat_compat(void)
++{
++	pcat_compat = true;
++}
