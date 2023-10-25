@@ -2,76 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D4D7D6C15
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958567D6C20
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbjJYMim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        id S1344111AbjJYMkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbjJYMil (ORCPT
+        with ESMTP id S234863AbjJYMkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:38:41 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFA8C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:38:39 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53f98cbcd76so9720a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698237518; x=1698842318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W3l3fK8JlnRDjMYiAMXlKadC5mulz1cY1IxH7egtavM=;
-        b=bFFgKStkFAry370sQGddW0mcTkJIE6k4/z2ZOaQjKIalzxTfWLEQBF8NzLLL7tLYjd
-         DxLWT0UsCFkeBoAK4UwuuvXSaIfdp/UaWfWqo0ZHiturCM8hr6hEbY3Jolis4YKqk9gM
-         NHWLrT8xqV2JUY2ZFCfbifNbbYIk70e+4USi5NtubxezhIUhVaTPOaEG/2myBNhOGUVk
-         w2q+hh02okgpaGzxKVl8k1KXXJ5+GskvoT4z8CLcEuo0kA1oteMmfJDPvyBTOScdmnPz
-         AkLQzheupyhecLjaYf+J+GOinlCXoid/Cf7lGVERDODSr6nrwjHQZGPX7qfHTZ7pLyb6
-         iUHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698237518; x=1698842318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W3l3fK8JlnRDjMYiAMXlKadC5mulz1cY1IxH7egtavM=;
-        b=BLmx0wTsZa4dR8/1QT9cfseDZ3mBInqPLdHMYVG3QJOOas++l+eOkTmZIltjoxa5eP
-         JgrBFRAdfz0y6x2L0HLs6cZ5chKG0G2lEhRgza3Z6/THlPHO7wAgIWo5/2mLdWC1dUwN
-         5i5x3sZ+/W1peVtn8BB84X449qyiw6RDJG898V2plEVGdmHgZR84UoP3A3bzAGqNHV62
-         NV7FZyyOGEXGHoADbX3WIuDyUoXj/1gzVBryRKaR5IP6gVddqsWic910XyQkdTBy8dWE
-         bn+nTnwGQeA3X/8xSkzopBWuw0tUX5wzUBNxxlLJEkTEwkousL4FgBOv7yHoGBJcA1I9
-         S22g==
-X-Gm-Message-State: AOJu0YxsJEjbRGUXrm16Lery6be7qa1B6yF1+ksTHrZcR3IoZ41j93Vm
-        YEr1M8iLRWc3pc50f0UaFhxCSlptO96bVKozssti6n8EelqoHvHqcUM=
-X-Google-Smtp-Source: AGHT+IFV2kYyS0nXl907qHoBld9IgBOGa6z3I92wemf4cX+a+J09AbWj2FmewWIkgDqgwLMA1Zl/MsRimaHvir5XoA4=
-X-Received: by 2002:a50:9556:0:b0:53f:c607:c87a with SMTP id
- v22-20020a509556000000b0053fc607c87amr73797eda.7.1698237517682; Wed, 25 Oct
- 2023 05:38:37 -0700 (PDT)
+        Wed, 25 Oct 2023 08:40:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFFAC13D
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:39:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E53E72F4;
+        Wed, 25 Oct 2023 05:40:39 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B84A3F738;
+        Wed, 25 Oct 2023 05:39:57 -0700 (PDT)
+Message-ID: <ec86712a-0c46-4b27-9736-e34b02168e19@arm.com>
+Date:   Wed, 25 Oct 2023 13:39:56 +0100
 MIME-Version: 1.0
-References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
- <20231024075748.1675382-5-dapeng1.mi@linux.intel.com> <CALMp9eSQyyihzEz+xpB0QCZ4=WqQ9TGiSwMYiFob0D_Z7OY7mg@mail.gmail.com>
- <305f1ee4-a8c3-48eb-9368-531329e5266e@linux.intel.com>
-In-Reply-To: <305f1ee4-a8c3-48eb-9368-531329e5266e@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 25 Oct 2023 05:38:25 -0700
-Message-ID: <CALMp9eT94bGZFr3sfPAssh4jJLnLe4jGosRieGVb4pK1E31b5Q@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch 4/5] x86: pmu: Support validation for Intel
- PMU fixed counter 3
-To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/7] iommu: Validate that devices match domains
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
+        baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org
+References: <cover.1697047261.git.robin.murphy@arm.com>
+ <4e8bda33aac4021b444e40389648deccf61c1f37.1697047261.git.robin.murphy@arm.com>
+ <20231024185213.GA1061115@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231024185213.GA1061115@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,49 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 4:26=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.intel.=
-com> wrote:
->
->
-> On 10/25/2023 3:05 AM, Jim Mattson wrote:
-> > On Tue, Oct 24, 2023 at 12:51=E2=80=AFAM Dapeng Mi <dapeng1.mi@linux.in=
-tel.com> wrote:
-> >> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
-> >> (fixed counter 3) to counter/sample topdown.slots event, but current
-> >> code still doesn't cover this new fixed counter.
-> >>
-> >> So add code to validate this new fixed counter.
-> > Can you explain how this "validates" anything?
->
->
-> I may not describe the sentence clearly. This would validate the fixed
-> counter 3 can count the slots event and get a valid count in a
-> reasonable range. Thanks.
+On 24/10/2023 7:52 pm, Jason Gunthorpe wrote:
+> On Wed, Oct 11, 2023 at 07:14:50PM +0100, Robin Murphy wrote:
+> 
+>> @@ -2279,10 +2280,16 @@ struct iommu_domain *iommu_get_dma_domain(struct device *dev)
+>>   static int __iommu_attach_group(struct iommu_domain *domain,
+>>   				struct iommu_group *group)
+>>   {
+>> +	struct device *dev;
+>> +
+>>   	if (group->domain && group->domain != group->default_domain &&
+>>   	    group->domain != group->blocking_domain)
+>>   		return -EBUSY;
+>>   
+>> +	dev = iommu_group_first_dev(group);
+>> +	if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
+>> +		return -EINVAL;
+> 
+> I was thinking about this later, how does this work for the global
+> static domains? domain->owner will not be set?
+> 
+> 	if (alloc_type == IOMMU_DOMAIN_IDENTITY && ops->identity_domain)
+> 		return ops->identity_domain;
+> 	else if (alloc_type == IOMMU_DOMAIN_BLOCKED && ops->blocked_domain)
+> 		return ops->blocked_domain;
+> 
+> Seems like it will break everything?
 
-I thought the current vPMU implementation did not actually support
-top-down slots. If it doesn't work, how can it be validated?
+I don't believe it makes any significant difference - as the commit 
+message points out, this validation is only applied at the public 
+interface boundaries of iommu_attach_group(), iommu_attach_device(), and 
+iommu_attach_device_pasid(), which are only expected to be operating on 
+explicitly-allocated unmanaged domains. For internal default domain 
+attachment, the domain is initially derived from the device/group itself 
+so we know it's appropriate by construction.
 
->
-> >
-> >> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> >> ---
-> >>   x86/pmu.c | 3 ++-
-> >>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/x86/pmu.c b/x86/pmu.c
-> >> index 1bebf493d4a4..41165e168d8e 100644
-> >> --- a/x86/pmu.c
-> >> +++ b/x86/pmu.c
-> >> @@ -46,7 +46,8 @@ struct pmu_event {
-> >>   }, fixed_events[] =3D {
-> >>          {"fixed 1", MSR_CORE_PERF_FIXED_CTR0, 10*N, 10.2*N},
-> >>          {"fixed 2", MSR_CORE_PERF_FIXED_CTR0 + 1, 1*N, 30*N},
-> >> -       {"fixed 3", MSR_CORE_PERF_FIXED_CTR0 + 2, 0.1*N, 30*N}
-> >> +       {"fixed 3", MSR_CORE_PERF_FIXED_CTR0 + 2, 0.1*N, 30*N},
-> >> +       {"fixed 4", MSR_CORE_PERF_FIXED_CTR0 + 3, 1*N, 100*N}
-> >>   };
-> >>
-> >>   char *buf;
-> >> --
-> >> 2.34.1
-> >>
+I guess this *would* now prevent some external caller reaching in and 
+trying to attach something to some other group's identity default 
+domain, but frankly it feels like making that fail would be no bad thing 
+anyway.
+
+Thanks,
+Robin.
