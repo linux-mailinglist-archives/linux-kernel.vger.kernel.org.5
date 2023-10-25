@@ -2,237 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E71BF7D782C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1B47D7838
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjJYWpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 18:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53924 "EHLO
+        id S230165AbjJYWqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 18:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJYWpA (ORCPT
+        with ESMTP id S229723AbjJYWq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 18:45:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D9E116;
-        Wed, 25 Oct 2023 15:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698273898; x=1729809898;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=mEPqGi0w6uK1G2oMRp9GXgOlOlinp7OhMTBnsnQmtwo=;
-  b=PD3wnLkz2tygg+9IWqBEPMXIbFrKkNJmk/HKwctX562zQw+Tvv3KFjm1
-   aLjihFJy2lUm16GSnPTCaxkV6r6EIxlIL98SiwiCFuofIxBhY/UlmTT7/
-   x3Fok0Nb0K78mwOL3DahoR2vVTlv92Qk7Zf8zFcSDp2P0BDx8fRutjVoN
-   J/ohWoEBGg9XPU+h26Bf3NMpDpU81YEIfpxC64jSbQFMJSrUicgPr8491
-   HPMceEgn//uFRlaSjVXVTtmnCkApT3HiXctEBSh9KS1AdwXXqncwwhj7Q
-   zIOqF6kjzgX+jU3GNtVEEHK/WRYjBSsVX+JPKibpFAbtW5QI5BBmvPGUR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="473650467"
-X-IronPort-AV: E=Sophos;i="6.03,252,1694761200"; 
-   d="scan'208";a="473650467"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 15:44:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708846737"
-X-IronPort-AV: E=Sophos;i="6.03,252,1694761200"; 
-   d="scan'208";a="708846737"
-Received: from nmckubrx-mobl.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.68.190])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 15:44:52 -0700
-From:   Vishal Verma <vishal.l.verma@intel.com>
-Date:   Wed, 25 Oct 2023 16:44:35 -0600
-Subject: [PATCH v7 3/3] dax/kmem: allow kmem to add memory with
- memmap_on_memory
+        Wed, 25 Oct 2023 18:46:28 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDE5E116;
+        Wed, 25 Oct 2023 15:46:24 -0700 (PDT)
+Received: from [10.137.106.151] (unknown [131.107.159.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 02F9D20B74C0;
+        Wed, 25 Oct 2023 15:46:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02F9D20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698273984;
+        bh=dm0CpobQbsS7czPRbypssTTQ8Y+D288bv9BFBEkdSMg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VmAw5akzIQiz/kj0sGLX3UeCAxwTCCby0Z4dr5chbT8LOZuTjrV6zzf6eX6rdeTB2
+         HgzjasdJ8l9JQAN+hrSjlG6Pw2BbPf+Nau7CHPLo9dsnkAMZbhogCk09Psu6AyXNRZ
+         T0Rg2cw/n2Sjeqk/kQGKNahzQPmB22jPvN4zyRHc=
+Message-ID: <594923f6-6942-4b4b-8ca1-b9dcf74c9c1c@linux.microsoft.com>
+Date:   Wed, 25 Oct 2023 15:45:37 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v11 2/19] ipe: add policy parser
+To:     Paul Moore <paul@paul-moore.com>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1696457386-3010-3-git-send-email-wufan@linux.microsoft.com>
+ <7c8c2a158c628a642078f746e5c42f2f.paul@paul-moore.com>
+Content-Language: en-US
+From:   Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <7c8c2a158c628a642078f746e5c42f2f.paul@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231025-vv-kmem_memmap-v7-3-4a76d7652df5@intel.com>
-References: <20231025-vv-kmem_memmap-v7-0-4a76d7652df5@intel.com>
-In-Reply-To: <20231025-vv-kmem_memmap-v7-0-4a76d7652df5@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4972;
- i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=mEPqGi0w6uK1G2oMRp9GXgOlOlinp7OhMTBnsnQmtwo=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKmWsxIm2j5sMK2Rlc/4flfo6tdP+y3Fvfnip/y6583My
- PQqmLm0o5SFQYyLQVZMkeXvno+Mx+S25/MEJjjCzGFlAhnCwMUpABN538jIcNtXk1Ei4sPciT8Y
- LYvUskIPurWm5kSdye9leXj+wCOBOYwM/w6Hvpz8dcnkvCrVy6s4L4swFRSxfiq3f7N6Z9PPzOQ
- 4BgA=
-X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
- fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Large amounts of memory managed by the kmem driver may come in via CXL,
-and it is often desirable to have the memmap for this memory on the new
-memory itself.
 
-Enroll kmem-managed memory for memmap_on_memory semantics if the dax
-region originates via CXL. For non-CXL dax regions, retain the existing
-default behavior of hot adding without memmap_on_memory semantics.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
----
- drivers/dax/bus.h         | 1 +
- drivers/dax/dax-private.h | 1 +
- drivers/dax/bus.c         | 3 +++
- drivers/dax/cxl.c         | 1 +
- drivers/dax/hmem/hmem.c   | 1 +
- drivers/dax/kmem.c        | 8 +++++++-
- drivers/dax/pmem.c        | 1 +
- 7 files changed, 15 insertions(+), 1 deletion(-)
+On 10/23/2023 8:52 PM, Paul Moore wrote:
+> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+>>
+>> IPE's interpretation of the what the user trusts is accomplished through
+>> its policy. IPE's design is to not provide support for a single trust
+>> provider, but to support multiple providers to enable the end-user to
+>> choose the best one to seek their needs.
+>>
+>> This requires the policy to be rather flexible and modular so that
+>> integrity providers, like fs-verity, dm-verity, dm-integrity, or
+>> some other system, can plug into the policy with minimal code changes.
+>>
+>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+...
+>> ---
+>>   security/ipe/Makefile        |   2 +
+>>   security/ipe/policy.c        | 101 ++++++++
+>>   security/ipe/policy.h        |  83 ++++++
+>>   security/ipe/policy_parser.c | 487 +++++++++++++++++++++++++++++++++++
+>>   security/ipe/policy_parser.h |  11 +
+>>   5 files changed, 684 insertions(+)
+>>   create mode 100644 security/ipe/policy.c
+>>   create mode 100644 security/ipe/policy.h
+>>   create mode 100644 security/ipe/policy_parser.c
+>>   create mode 100644 security/ipe/policy_parser.h
+> 
+> ...
+> 
+>> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+>> new file mode 100644
+>> index 000000000000..3a529c7950a1
+>> --- /dev/null
+>> +++ b/security/ipe/policy.c
+>> @@ -0,0 +1,101 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) Microsoft Corporation. All rights reserved.
+>> + */
+> 
+> ...
+> 
+>> +static int set_pkcs7_data(void *ctx, const void *data, size_t len,
+>> +			  size_t asn1hdrlen)
+>> +{
+>> +	struct ipe_policy *p = ctx;
+>> +
+>> +	p->text = (const char *)data;
+>> +	p->textlen = len;
+>> +
+>> +	return 0;
+>> +}
+> 
+> The @asn1hdrlen parameter isn't used in this function, at least at this
+> point in the patchset, so you really should remove it.  If it is needed
+> later in the patchset you can always update the function.
+>
+Although the @asn1hdrlen is not used, it's a required parameter for the 
+pkcs7 callback. I guess adding a __always_unused might be the right 
+solution?
 
-diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-index 1ccd23360124..cbbf64443098 100644
---- a/drivers/dax/bus.h
-+++ b/drivers/dax/bus.h
-@@ -23,6 +23,7 @@ struct dev_dax_data {
- 	struct dev_pagemap *pgmap;
- 	resource_size_t size;
- 	int id;
-+	bool memmap_on_memory;
- };
- 
- struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data);
-diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-index 27cf2daaaa79..446617b73aea 100644
---- a/drivers/dax/dax-private.h
-+++ b/drivers/dax/dax-private.h
-@@ -70,6 +70,7 @@ struct dev_dax {
- 	struct ida ida;
- 	struct device dev;
- 	struct dev_pagemap *pgmap;
-+	bool memmap_on_memory;
- 	int nr_range;
- 	struct dev_dax_range {
- 		unsigned long pgoff;
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 0ee96e6fc426..ad9f821b8c78 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -367,6 +367,7 @@ static ssize_t create_store(struct device *dev, struct device_attribute *attr,
- 			.dax_region = dax_region,
- 			.size = 0,
- 			.id = -1,
-+			.memmap_on_memory = false,
- 		};
- 		struct dev_dax *dev_dax = devm_create_dev_dax(&data);
- 
-@@ -1400,6 +1401,8 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- 	dev_dax->align = dax_region->align;
- 	ida_init(&dev_dax->ida);
- 
-+	dev_dax->memmap_on_memory = data->memmap_on_memory;
-+
- 	inode = dax_inode(dax_dev);
- 	dev->devt = inode->i_rdev;
- 	dev->bus = &dax_bus_type;
-diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
-index 8bc9d04034d6..c696837ab23c 100644
---- a/drivers/dax/cxl.c
-+++ b/drivers/dax/cxl.c
-@@ -26,6 +26,7 @@ static int cxl_dax_region_probe(struct device *dev)
- 		.dax_region = dax_region,
- 		.id = -1,
- 		.size = range_len(&cxlr_dax->hpa_range),
-+		.memmap_on_memory = true,
- 	};
- 
- 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
-diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
-index 5d2ddef0f8f5..b9da69f92697 100644
---- a/drivers/dax/hmem/hmem.c
-+++ b/drivers/dax/hmem/hmem.c
-@@ -36,6 +36,7 @@ static int dax_hmem_probe(struct platform_device *pdev)
- 		.dax_region = dax_region,
- 		.id = -1,
- 		.size = region_idle ? 0 : range_len(&mri->range),
-+		.memmap_on_memory = false,
- 	};
- 
- 	return PTR_ERR_OR_ZERO(devm_create_dev_dax(&data));
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index c57acb73e3db..0aa6c45a4e5a 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -12,6 +12,7 @@
- #include <linux/mm.h>
- #include <linux/mman.h>
- #include <linux/memory-tiers.h>
-+#include <linux/memory_hotplug.h>
- #include "dax-private.h"
- #include "bus.h"
- 
-@@ -56,6 +57,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 	unsigned long total_len = 0;
- 	struct dax_kmem_data *data;
- 	int i, rc, mapped = 0;
-+	mhp_t mhp_flags;
- 	int numa_node;
- 
- 	/*
-@@ -136,12 +138,16 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 		 */
- 		res->flags = IORESOURCE_SYSTEM_RAM;
- 
-+		mhp_flags = MHP_NID_IS_MGID;
-+		if (dev_dax->memmap_on_memory)
-+			mhp_flags |= MHP_MEMMAP_ON_MEMORY;
-+
- 		/*
- 		 * Ensure that future kexec'd kernels will not treat
- 		 * this as RAM automatically.
- 		 */
- 		rc = add_memory_driver_managed(data->mgid, range.start,
--				range_len(&range), kmem_name, MHP_NID_IS_MGID);
-+				range_len(&range), kmem_name, mhp_flags);
- 
- 		if (rc) {
- 			dev_warn(dev, "mapping%d: %#llx-%#llx memory add failed\n",
-diff --git a/drivers/dax/pmem.c b/drivers/dax/pmem.c
-index ae0cb113a5d3..f3c6c67b8412 100644
---- a/drivers/dax/pmem.c
-+++ b/drivers/dax/pmem.c
-@@ -63,6 +63,7 @@ static struct dev_dax *__dax_pmem_probe(struct device *dev)
- 		.id = id,
- 		.pgmap = &pgmap,
- 		.size = range_len(&range),
-+		.memmap_on_memory = false,
- 	};
- 
- 	return devm_create_dev_dax(&data);
+>> diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
+>> new file mode 100644
+>> index 000000000000..c09458bd348d
+>> --- /dev/null
+>> +++ b/security/ipe/policy_parser.c
+>> @@ -0,0 +1,487 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) Microsoft Corporation. All rights reserved.
+>> + */
+> 
+> ...
+> 
+>> +/**
+>> + * remove_trailing_spaces - Truncate all trailing spaces in a string.
+>> + *
+>> + * @line: Supplies a poilcy line string for preprocessing.
+>> + *
+>> + * Return: The length of truncated string.
+>> + */
+>> +static size_t remove_trailing_spaces(char *line)
+>> +{
+>> +	size_t i = 0;
+>> +
+>> +	for (i = strlen(line); i > 0 && (line[i - 1] == ' ' || line[i - 1] == '\t'); --i)
+>> +		;
+> 
+> Maybe I've asked this before, I can't remember: could you use the
+> isspace() macro here instead of explicitly checking for ' ' and '\t'?
+> Yes, isspace() works here. I will update this part.
 
--- 
-2.41.0
+>    i = strlen(line);
+>    while (i > 0 && isspace(line[i - 1]))
+>      i--;
+>    line[i] = '\0';
+> 
+>> +	line[i] = '\0';
+>> +
+>> +	return i;
+>> +}
+>> +
+>> +/**
+>> + * parse_version - Parse policy version.
+>> + * @ver: Supplies a version string to be parsed.
+>> + * @p: Supplies the partial parsed policy.
+>> + *
+>> + * Return:
+>> + * * 0	- OK
+>> + * * !0	- Standard errno
+>> + */
+>> +static int parse_version(char *ver, struct ipe_parsed_policy *p)
+>> +{
+>> +	int rc = 0;
+>> +	size_t sep_count = 0;
+>> +	char *token;
+>> +	u16 *const cv[] = { &p->version.major, &p->version.minor, &p->version.rev };
+>> +
+>> +	while ((token = strsep(&ver, ".")) != NULL) {
+>> +		/* prevent overflow */
+>> +		if (sep_count >= ARRAY_SIZE(cv))
+>> +			return -EBADMSG;
+>> +
+>> +		rc = kstrtou16(token, 10, cv[sep_count]);
+>> +		if (rc)
+>> +			return rc;
+>> +
+>> +		++sep_count;
+>> +	}
+>> +
+>> +	/* prevent underflow */
+>> +	if (sep_count != ARRAY_SIZE(cv))
+>> +		rc = -EBADMSG;
+> 
+> You could always just 'return -EBADMSG' here and 'return 0' below to
+> simplify things a little.
+> 
+I agree, this part is kind of unnecessary. I will update accordingly.
 
+>> +	return rc;
+>> +}
+>> +
+>> +enum header_opt {
+>> +	IPE_HEADER_POLICY_NAME = 0,
+>> +	IPE_HEADER_POLICY_VERSION,
+>> +	__IPE_HEADER_MAX
+>> +};
+>> +
+>> +static const match_table_t header_tokens = {
+>> +	{IPE_HEADER_POLICY_NAME,	"policy_name=%s"},
+>> +	{IPE_HEADER_POLICY_VERSION,	"policy_version=%s"},
+>> +	{__IPE_HEADER_MAX,		NULL}
+>> +};
+>> +
+>> +/**
+>> + * parse_header - Parse policy header information.
+>> + * @line: Supplies header line to be parsed.
+>> + * @p: Supplies the partial parsed policy.
+>> + *
+>> + * Return:
+>> + * * 0	- OK
+>> + * * !0	- Standard errno
+>> + */
+>> +static int parse_header(char *line, struct ipe_parsed_policy *p)
+>> +{
+>> +	int rc = 0;
+>> +	char *t, *ver = NULL;
+>> +	substring_t args[MAX_OPT_ARGS];
+>> +	size_t idx = 0;
+>> +
+>> +	while ((t = strsep(&line, IPE_POLICY_DELIM)) != NULL) {
+>> +		int token;
+>> +
+>> +		if (*t == '\0')
+>> +			continue;
+>> +		if (idx >= __IPE_HEADER_MAX) {
+>> +			rc = -EBADMSG;
+>> +			goto out;
+>> +		}
+>> +
+>> +		token = match_token(t, header_tokens, args);
+>> +		if (token != idx) {
+>> +			rc = -EBADMSG;
+>> +			goto out;
+>> +		}
+>> +
+>> +		switch (token) {
+>> +		case IPE_HEADER_POLICY_NAME:
+>> +			p->name = match_strdup(&args[0]);
+>> +			if (!p->name)
+>> +				rc = -ENOMEM;
+>> +			break;
+>> +		case IPE_HEADER_POLICY_VERSION:
+>> +			ver = match_strdup(&args[0]);
+>> +			if (!ver) {
+>> +				rc = -ENOMEM;
+>> +				break;
+>> +			}
+>> +			rc = parse_version(ver, p);
+>> +			break;
+>> +		default:
+>> +			rc = -EBADMSG;
+>> +		}
+>> +		if (rc)
+>> +			goto out;
+>> +		++idx;
+>> +	}
+>> +
+>> +	if (idx != __IPE_HEADER_MAX) {
+>> +		rc = -EBADMSG;
+>> +		goto out;
+> 
+> You probably don't need to 'goto out' here.
+>
+Yes it's unnecessary, thanks for pointing that out.
+
+>> +	}
+>> +
+>> +out:
+>> +	kfree(ver);
+>> +	return rc;
+>> +}
+> 
+> ...
+> 
+>> +/**
+>> + * parse_rule - parse a policy rule line.
+>> + * @line: Supplies rule line to be parsed.
+>> + * @p: Supplies the partial parsed policy.
+>> + *
+>> + * Return:
+>> + * * !IS_ERR	- OK
+>> + * * -ENOMEM	- Out of memory
+>> + * * -EBADMSG	- Policy syntax error
+>> + */
+>> +static int parse_rule(char *line, struct ipe_parsed_policy *p)
+>> +{
+>> +	int rc = 0;
+>> +	bool first_token = true, is_default_rule = false;
+>> +	bool op_parsed = false;
+>> +	enum ipe_op_type op = IPE_OP_INVALID;
+>> +	enum ipe_action_type action = IPE_ACTION_INVALID;
+>> +	struct ipe_rule *r = NULL;
+>> +	char *t;
+>> +
+>> +	r = kzalloc(sizeof(*r), GFP_KERNEL);
+>> +	if (!r)
+>> +		return -ENOMEM;
+>> +
+>> +	INIT_LIST_HEAD(&r->next);
+>> +	INIT_LIST_HEAD(&r->props);
+>> +
+>> +	while (t = strsep(&line, IPE_POLICY_DELIM), line) {
+>> +		if (*t == '\0')
+>> +			continue;
+>> +		if (first_token && token_default(t)) {
+>> +			is_default_rule = true;
+>> +		} else {
+>> +			if (!op_parsed) {
+>> +				op = parse_operation(t);
+>> +				if (op == IPE_OP_INVALID)
+>> +					rc = -EBADMSG;
+>> +				else
+>> +					op_parsed = true;
+>> +			} else {
+>> +				rc = parse_property(t, r);
+>> +			}
+>> +		}
+>> +
+>> +		if (rc)
+>> +			goto err;
+>> +		first_token = false;
+>> +	}
+>> +
+>> +	action = parse_action(t);
+>> +	if (action == IPE_ACTION_INVALID) {
+>> +		rc = -EBADMSG;
+>> +		goto err;
+>> +	}
+>> +
+>> +	if (is_default_rule) {
+>> +		if (!list_empty(&r->props)) {
+>> +			rc = -EBADMSG;
+>> +		} else if (op == IPE_OP_INVALID) {
+>> +			if (p->global_default_action != IPE_ACTION_INVALID)
+>> +				rc = -EBADMSG;
+>> +			else
+>> +				p->global_default_action = action;
+>> +		} else {
+>> +			if (p->rules[op].default_action != IPE_ACTION_INVALID)
+>> +				rc = -EBADMSG;
+>> +			else
+>> +				p->rules[op].default_action = action;
+>> +		}
+>> +	} else if (op != IPE_OP_INVALID && action != IPE_ACTION_INVALID) {
+>> +		r->op = op;
+>> +		r->action = action;
+>> +	} else {
+>> +		rc = -EBADMSG;
+>> +	}
+> 
+> I might be missing something important in the policy syntac, but could
+> this function, and perhaps the ipe_parsed_policy struct, be simplified
+> if the default action was an explicit rule?
+> 
+>   "op=DEFAULT action=ALLOW"
+>
+The complexity here arises from our need for two types of default rules: 
+one for global settings and another for operation-specific settings.
+
+To illustrate the flexibility of operation-specific default rules, users 
+can set their policy to have a default rule of 'DENY' for execution, 
+meaning all execution actions are prohibited by default. This let users 
+to create an allow-list for execution. At the same time, the default 
+rule for read can be set to 'ALLOW'.  This let users to create an 
+deny-list for read.
+
+Adding explicit default rules can simplify ipe_parsed_policy struct, but 
+that impose a burden on users that requires users always add the default 
+rules the end of the policy. In contrast, our current design allows 
+users to place the default rule anywhere in the policy. In practice, we 
+often position the default rule at the beginning of the policy, which 
+makes it more convenient for users to add new rules.
+
+>> +	if (rc)
+>> +		goto err;
+>> +	if (!is_default_rule)
+>> +		list_add_tail(&r->next, &p->rules[op].rules);
+>> +	else
+>> +		free_rule(r);
+>> +
+>> +	return rc;
+>> +err:
+>> +	free_rule(r);
+>> +	return rc;
+>> +}
+>> +
+>> +/**
+>> + * free_parsed_policy - free a parsed policy structure.
+>> + * @p: Supplies the parsed policy.
+>> + */
+>> +void free_parsed_policy(struct ipe_parsed_policy *p)
+>> +{
+>> +	size_t i = 0;
+>> +	struct ipe_rule *pp, *t;
+>> +
+>> +	if (IS_ERR_OR_NULL(p))
+>> +		return;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(p->rules); ++i)
+>> +		list_for_each_entry_safe(pp, t, &p->rules[i].rules, next) {
+>> +			list_del(&pp->next);
+>> +			free_rule(pp);
+>> +		}
+>> +
+>> +	kfree(p->name);
+>> +	kfree(p);
+>> +}
+>> +
+>> +/**
+>> + * validate_policy - validate a parsed policy.
+>> + * @p: Supplies the fully parsed policy.
+>> + *
+>> + * Given a policy structure that was just parsed, validate that all
+>> + * necessary fields are present, initialized correctly.
+>> + *
+>> + * A parsed policy can be in an invalid state for use (a default was
+>> + * undefined) by just parsing the policy.
+>> + *
+>> + * Return:
+>> + * * 0		- OK
+>> + * * -EBADMSG	- Policy is invalid
+>> + */
+>> +static int validate_policy(const struct ipe_parsed_policy *p)
+>> +{
+>> +	size_t i = 0;
+>> +
+>> +	if (p->global_default_action != IPE_ACTION_INVALID)
+>> +		return 0;
+> 
+> Should the if conditional above be "==" and not "!="?
+>No, "!=" is the correct one.
+
+The purpose of validation is to ensure that we have enough default rules 
+to cover all cases. If the global default action not invalid, it means 
+we have a global default rule in the policy to cover all cases, thus we 
+simply return 0.
+
+However, if there is no global default rule, then we need to ensure that 
+for each operation, there is a operation specific default rule, this is 
+validated in the for loop below.
+
+-Fan
+
+>> +	for (i = 0; i < ARRAY_SIZE(p->rules); ++i) {
+>> +		if (p->rules[i].default_action == IPE_ACTION_INVALID)
+>> +			return -EBADMSG;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> --
+> paul-moore.com
