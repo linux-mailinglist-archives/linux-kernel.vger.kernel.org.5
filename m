@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3567D678C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADD27D6780
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343631AbjJYJwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S234128AbjJYJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343610AbjJYJwe (ORCPT
+        with ESMTP id S230217AbjJYJvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:52:34 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C466DDE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:52:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C3432F4;
-        Wed, 25 Oct 2023 02:53:11 -0700 (PDT)
-Received: from bogus (unknown [10.57.93.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55DE63F738;
-        Wed, 25 Oct 2023 02:52:27 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 10:50:53 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: Re: [PATCH 1/4] firmware: arm_ffa: Allow FF-A initialisation even
- when notification fails
-Message-ID: <20231025095053.i7bpswi6x6ckqdnr@bogus>
-References: <20231024-ffa-notification-fixes-v1-0-d552c0ec260d@arm.com>
- <20231024-ffa-notification-fixes-v1-1-d552c0ec260d@arm.com>
- <CAHUa44GvCeihX8KQkXELOAkZpYVq6=3M06MT8GEd3COA3GPhTw@mail.gmail.com>
+        Wed, 25 Oct 2023 05:51:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C70DD;
+        Wed, 25 Oct 2023 02:51:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50ADBC433C7;
+        Wed, 25 Oct 2023 09:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698227473;
+        bh=+cg3kYM3oFry35hZbmbwSVjd6ek+Za/QIdrk5JlXVCU=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Mk3aBPSYzxfaNtQwgFmWCAiO3PKRxQWVvwar4NEUMMiOvsIundUsqhpzRFFMObBCE
+         QveXtgBd9HCA98TLqFTA7yovLjoI21iZM1b2zsZT+w7MRzWAckSLuIKE2YobbE61dQ
+         sgLdpJ/XgcIOmVN79MziCxoVSJzNyhWmXslfB81mka1hPexK5GDEhlcoSjoBwK0fto
+         bW9Wzd1ZHIMD7kMd60aPMQtGNiYylkYtgeclMtVyBvZnyl1bTaNtztUOlC3YFUNyfZ
+         2+dIJhrxa0fr8p8lwqkv2YcQ8y8axKaoishIr0bOR+6khcx8rQgNlfypsgPtQ8fVrF
+         QAAdapnSoULUA==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] wifi: ath11k: fix temperature event locking
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+        <20231019153115.26401-2-johan+linaro@kernel.org>
+        <87sf60xgs8.fsf@kernel.org> <ZTfUswqVkAgJvnye@hovoldconsulting.com>
+Date:   Wed, 25 Oct 2023 12:51:10 +0300
+In-Reply-To: <ZTfUswqVkAgJvnye@hovoldconsulting.com> (Johan Hovold's message
+        of "Tue, 24 Oct 2023 16:29:07 +0200")
+Message-ID: <87bkcnxc6p.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHUa44GvCeihX8KQkXELOAkZpYVq6=3M06MT8GEd3COA3GPhTw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 09:10:11AM +0200, Jens Wiklander wrote:
-> On Tue, Oct 24, 2023 at 12:56 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > FF-A notifications are optional feature in the specification. Currently
-> > we allow to continue if the firmware reports no support for the
-> > notifications. However, we fail to continue and complete the FF-A
-> > driver initialisation if the notification setup fails for any reason.
-> >
-> > Let us allow the FF-A driver to complete the initialisation even if the
-> > notification fails to setup. We will just flag the error and continue
-> > to provide other features in the driver.
-> >
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/firmware/arm_ffa/driver.c | 21 +++++++++------------
-> >  1 file changed, 9 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-> > index 07b72c679247..b4ba52d674e5 100644
-> > --- a/drivers/firmware/arm_ffa/driver.c
-> > +++ b/drivers/firmware/arm_ffa/driver.c
-[..]
-> > @@ -1426,10 +1426,11 @@ static int ffa_notifications_setup(void)
-> >         ret = ffa_sched_recv_cb_update(drv_info->vm_id, ffa_self_notif_handle,
-> >                                        drv_info, true);
-> >         if (!ret)
-> > -               return ret;
-> > +               return;
-> >  cleanup:
-> > +       pr_info("Notification setup failed %d, not enabled\n", ret);
-> >         ffa_notifications_cleanup();
-> > -       return ret;
-> > +       return;
->
-> This return is redundant.
->
+Johan Hovold <johan@kernel.org> writes:
 
-Thanks, will fix it.
+> On Tue, Oct 24, 2023 at 04:59:35PM +0300, Kalle Valo wrote:
+>> Johan Hovold <johan+linaro@kernel.org> writes:
+>> 
+>> > The ath11k active pdevs are protected by RCU but the temperature event
+>> > handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
+>> > read-side critical section as reported by RCU lockdep:
+>
+>> On what hardware and firmware version did you test this? As there's so
+>> many different combos we use Tested-on tag to provide that information
+>> in the commit message:
+>> 
+>> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/submittingpatches#tested-on_tag
+>> 
+>> I can add that if you let me know what you used.
+>
+> I hit this on the Lenovo Thinkpad X13s and I guess the tag should be:
+>
+> Tested-on: QCNFA765 hw2.1 WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
 
---
-Regards,
-Sudeep
+From ath11k point of view QCNFA765 is WCN6855 so I used this one:
+
+Tested-on: WCN6855 hw2.1 PCI WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
+
+> Note that I've only been able to test the ath11k fixes (not the
+> corresponding ath12k) and I only tested this particular patch fully
+
+Thanks, I added Tested-on to this patch 1 and for the rest I added
+"compile tested only".
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
