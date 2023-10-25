@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F67C7D736E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B097D736D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343782AbjJYSim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S235054AbjJYSii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjJYSh6 (ORCPT
+        with ESMTP id S235038AbjJYSiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:37:58 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F063110C6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:32 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so94806a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:32 -0700 (PDT)
+        Wed, 25 Oct 2023 14:38:00 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189F410F1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:37 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso25211a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698259052; x=1698863852; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1698259056; x=1698863856; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7enZoXOtIU3XtaKli1cup0KAoO2RhV7XTzE5tAb0h4E=;
-        b=HHUPa22Y7HYqn6Y4Skkl5V31Ueb+WGodFcJL43YiI8B4mg6qqg3EASryejuaTyhRTT
-         lAZ4RyhXcthsdskZzGGCHbS4Tc5GCvFe5WfW4DkVsX09tXsC9tBjdomVrrD9vY0JYs1I
-         xru5B0i95BSNZt+Kioo7VUI+vruyAZJWBhbbegRDuuQ+ojdFxOcOXlArmBRAbZzfun8n
-         R14U5vHd0hsd8uW5j5JuVZLLVcgbk4J7LB7YPluNQeaqblZMy3d+KtwEeazEYL8sMbpR
-         7/svpkrfJzhRrMcfLrq1qsxMTSXH9wGY0SkQhP00gH6L01X7kI2AhTiW/OUfp67t5NHd
-         berA==
+        bh=HmLKITkx1eSP8gqJH+WnAeHuaVXFpzAB9w+G6AVIsu4=;
+        b=iyJEFLwpQMIymHKm5MfRobOYyLy3KRrZa4dQD/GwYe8SNCcdS/DZ4aMduqc/ZcbALi
+         sUtSh9NQKaM+LFSQDiGJ2nK7TtMcO7MfrEjlF5JrNTWrzNL6X2MrSjZRdI59gGfY2+4g
+         2dkMW7huuXUgfU33aCbk5SSUfwZmbirob2aara/mHcrAXTCokkB38PGODuXY/t0dIwr+
+         Jk280ei59QPG6BLETCSLQoKM2Xk00gMfLxqTozM4WrISQGcZI+DPpyITfe7ySGF2GWN6
+         8WyG4wHN1bgVhYJgCBlbGu/ee1OQh2Er5wZeszDP50k+bU+F+KrCUL2ycKqqM77P7kjR
+         cc8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698259052; x=1698863852;
+        d=1e100.net; s=20230601; t=1698259056; x=1698863856;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7enZoXOtIU3XtaKli1cup0KAoO2RhV7XTzE5tAb0h4E=;
-        b=I9PAFuGiMmlbHdis8Qcqq0V8z9MiLETlY9vDNHwN4LjxyOM8UDe1Z8BsvSI0YbcAdk
-         56Ykj/8bFJ2ZewN0j/fqVVRQDemqi61hsdRoryeVNyDRjXpCm10mu0U36Cj8RPCCw02g
-         RkTai6Re5CQnrqWwm+IPp0D8GgXYjXboP70N6NjR7i8b/1uNu5fRyL6Qfy7syfz1FDjV
-         emNPHyeX4bTab2nECYBbnprVyw4kRdM29/iTFXCABuEs0pwSsZk7408oh7ljt+tjh3d5
-         g29aMTytVDFHKfoIO89ENkwyyYx4qhy7k1v8ZzRLYJCPFqVmLuyyeFuehXrCamvD1JFw
-         LUmw==
-X-Gm-Message-State: AOJu0YymsJBB1rdZSNPfJSba1FXBFRCR6SENyDTaeJubxkmR57/KPyXi
-        KFCGjhfayT8W0mSDTsIcxwHrLg==
-X-Google-Smtp-Source: AGHT+IFQNnAhIQ8YExaXerfZBQxg2S+wLRmCHdO0Ci+54ovI9KEgDmWZR5yOGY9s0heFc6s5y7jgEQ==
-X-Received: by 2002:a17:90b:510c:b0:27d:9f6:47a3 with SMTP id sc12-20020a17090b510c00b0027d09f647a3mr16548160pjb.31.1698259052145;
-        Wed, 25 Oct 2023 11:37:32 -0700 (PDT)
+        bh=HmLKITkx1eSP8gqJH+WnAeHuaVXFpzAB9w+G6AVIsu4=;
+        b=DDPPKltAV0L5aio1Q2Bs2Fi5cYpR2gRwvxD9M7WJyv4bk5rLjjPa+fnvgujEXCEPPT
+         iZu8o6ObYWjIzLWp8A1TGd2488ZI92giC2lPSbmNq55y6NW9hjjCEpGXhYA6NMa5vlyG
+         kivKg6IbetSePzCDpjEC5al2WczrmegK2sF3nA+sdLowBVoZBSZJ7JWJEvjZZJadqCYb
+         l1hOl0X9blSzhbEsID+gNmcw9evvbqhnx0U7C5y1ui323s5dfoPdWJwovp2ND03zUr1I
+         PITWvuUgbUi6O/bed97gxXMaS9SUbLLjlm5iBJiJHYbIluXDiCMEqjl/LLm5fuPye70F
+         MR5w==
+X-Gm-Message-State: AOJu0YzqOHf2IxGum6DotDmzorxbxW/32zGKppRkh1MfxO9xc46qcV9I
+        4oOrtV+GA/nzNCRAuzSGH1xD4Q==
+X-Google-Smtp-Source: AGHT+IHzBlS+B5URuxLTQ8oBJy/h5hlYy7abyTtFnLBrnHWfXXOjXLi3op7KwlrM0zcS/751EbwnpQ==
+X-Received: by 2002:a17:90b:1652:b0:27d:1126:1ff6 with SMTP id il18-20020a17090b165200b0027d11261ff6mr536600pjb.8.1698259056268;
+        Wed, 25 Oct 2023 11:37:36 -0700 (PDT)
 Received: from localhost.localdomain ([49.216.222.119])
-        by smtp.gmail.com with ESMTPSA id g3-20020a17090adb0300b00278f1512dd9sm212367pjv.32.2023.10.25.11.37.28
+        by smtp.gmail.com with ESMTPSA id g3-20020a17090adb0300b00278f1512dd9sm212367pjv.32.2023.10.25.11.37.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Oct 2023 11:37:31 -0700 (PDT)
+        Wed, 25 Oct 2023 11:37:35 -0700 (PDT)
 From:   Jerry Shih <jerry.shih@sifive.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
@@ -60,9 +60,9 @@ Cc:     andy.chiu@sifive.com, greentime.hu@sifive.com,
         phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 09/12] RISC-V: crypto: add Zvknhb accelerated SHA384/512 implementations
-Date:   Thu, 26 Oct 2023 02:36:41 +0800
-Message-Id: <20231025183644.8735-10-jerry.shih@sifive.com>
+Subject: [PATCH 10/12] RISC-V: crypto: add Zvksed accelerated SM4 implementation
+Date:   Thu, 26 Oct 2023 02:36:42 +0800
+Message-Id: <20231025183644.8735-11-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231025183644.8735-1-jerry.shih@sifive.com>
 References: <20231025183644.8735-1-jerry.shih@sifive.com>
@@ -78,66 +78,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SHA384 and 512 implementations using Zvknhb vector crypto extension
-from OpenSSL(openssl/openssl#21923).
+Add SM4 implementation using Zvksed vector crypto extension from OpenSSL
+(openssl/openssl#21923).
 
-Co-developed-by: Charalampos Mitrodimas <charalampos.mitrodimas@vrull.eu>
-Signed-off-by: Charalampos Mitrodimas <charalampos.mitrodimas@vrull.eu>
+The perlasm here is different from the original implementation in OpenSSL.
+In OpenSSL, SM4 has the separated set_encrypt_key and set_decrypt_key
+functions. In kernel, these set_key functions are merged into a single
+one in order to skip the redundant key expanding instructions.
+
+Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
+Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
 Co-developed-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
 Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Co-developed-by: Phoebe Chen <phoebe.chen@sifive.com>
-Signed-off-by: Phoebe Chen <phoebe.chen@sifive.com>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
- arch/riscv/crypto/Kconfig                     |  13 +
- arch/riscv/crypto/Makefile                    |   7 +
- arch/riscv/crypto/sha512-riscv64-glue.c       | 133 +++++++++
- .../crypto/sha512-riscv64-zvkb-zvknhb.pl      | 266 ++++++++++++++++++
- 4 files changed, 419 insertions(+)
- create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/sha512-riscv64-zvkb-zvknhb.pl
+ arch/riscv/crypto/Kconfig               |  19 ++
+ arch/riscv/crypto/Makefile              |   7 +
+ arch/riscv/crypto/sm4-riscv64-glue.c    | 120 +++++++++++
+ arch/riscv/crypto/sm4-riscv64-zvksed.pl | 268 ++++++++++++++++++++++++
+ 4 files changed, 414 insertions(+)
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed.pl
 
 diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index dbc86592063a..a5a34777d9c3 100644
+index a5a34777d9c3..ff004afa2874 100644
 --- a/arch/riscv/crypto/Kconfig
 +++ b/arch/riscv/crypto/Kconfig
-@@ -62,4 +62,17 @@ config CRYPTO_SHA256_RISCV64
+@@ -75,4 +75,23 @@ config CRYPTO_SHA512_RISCV64
  	  - Zvkb vector crypto extension
- 	  - Zvknha or Zvknhb vector crypto extensions
+ 	  - Zvknhb vector crypto extension
  
-+config CRYPTO_SHA512_RISCV64
++config CRYPTO_SM4_RISCV64
 +	default y if RISCV_ISA_V
-+	tristate "Hash functions: SHA-384 and SHA-512"
++	tristate "Ciphers: SM4 (ShangMi 4)"
 +	depends on 64BIT && RISCV_ISA_V
-+	select CRYPTO_HASH
-+	select CRYPTO_SHA512
++	select CRYPTO_ALGAPI
++	select CRYPTO_SM4
++	select CRYPTO_SM4_GENERIC
 +	help
-+	  SHA-512 secure hash algorithm (FIPS 180)
++	  SM4 cipher algorithms (OSCCA GB/T 32907-2016,
++	  ISO/IEC 18033-3:2010/Amd 1:2021)
++
++	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
++	  Organization of State Commercial Administration of China (OSCCA)
++	  as an authorized cryptographic algorithms for the use within China.
 +
 +	  Architecture: riscv64 using:
 +	  - Zvkb vector crypto extension
-+	  - Zvknhb vector crypto extension
++	  - Zvksed vector crypto extension
 +
  endmenu
 diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 49577fb72cca..ebb4e861ebdc 100644
+index ebb4e861ebdc..ffad095e531f 100644
 --- a/arch/riscv/crypto/Makefile
 +++ b/arch/riscv/crypto/Makefile
-@@ -15,6 +15,9 @@ ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
- obj-$(CONFIG_CRYPTO_SHA256_RISCV64) += sha256-riscv64.o
- sha256-riscv64-y := sha256-riscv64-glue.o sha256-riscv64-zvkb-zvknha_or_zvknhb.o
+@@ -18,6 +18,9 @@ sha256-riscv64-y := sha256-riscv64-glue.o sha256-riscv64-zvkb-zvknha_or_zvknhb.o
+ obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
+ sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvkb-zvknhb.o
  
-+obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
-+sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvkb-zvknhb.o
++obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
++sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed.o
 +
  quiet_cmd_perlasm = PERLASM $@
        cmd_perlasm = $(PERL) $(<) void $(@)
  
-@@ -33,8 +36,12 @@ $(obj)/ghash-riscv64-zvkg.S: $(src)/ghash-riscv64-zvkg.pl
- $(obj)/sha256-riscv64-zvkb-zvknha_or_zvknhb.S: $(src)/sha256-riscv64-zvkb-zvknha_or_zvknhb.pl
+@@ -39,9 +42,13 @@ $(obj)/sha256-riscv64-zvkb-zvknha_or_zvknhb.S: $(src)/sha256-riscv64-zvkb-zvknha
+ $(obj)/sha512-riscv64-zvkb-zvknhb.S: $(src)/sha512-riscv64-zvkb-zvknhb.pl
  	$(call cmd,perlasm)
  
-+$(obj)/sha512-riscv64-zvkb-zvknhb.S: $(src)/sha512-riscv64-zvkb-zvknhb.pl
++$(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
 +	$(call cmd,perlasm)
 +
  clean-files += aes-riscv64-zvkned.S
@@ -145,152 +154,140 @@ index 49577fb72cca..ebb4e861ebdc 100644
  clean-files += aes-riscv64-zvkb-zvkned.S
  clean-files += ghash-riscv64-zvkg.S
  clean-files += sha256-riscv64-zvkb-zvknha_or_zvknhb.S
-+clean-files += sha512-riscv64-zvkb-zvknhb.S
-diff --git a/arch/riscv/crypto/sha512-riscv64-glue.c b/arch/riscv/crypto/sha512-riscv64-glue.c
+ clean-files += sha512-riscv64-zvkb-zvknhb.S
++clean-files += sm4-riscv64-zvksed.S
+diff --git a/arch/riscv/crypto/sm4-riscv64-glue.c b/arch/riscv/crypto/sm4-riscv64-glue.c
 new file mode 100644
-index 000000000000..31202b7b8c9b
+index 000000000000..2d9983a4b1ee
 --- /dev/null
-+++ b/arch/riscv/crypto/sha512-riscv64-glue.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/arch/riscv/crypto/sm4-riscv64-glue.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Linux/riscv64 port of the OpenSSL SHA512 implementation for RISC-V 64
++ * Linux/riscv64 port of the OpenSSL SM4 implementation for RISC-V 64
 + *
 + * Copyright (C) 2023 VRULL GmbH
 + * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
++ *
++ * Copyright (C) 2023 SiFive, Inc.
++ * Author: Jerry Shih <jerry.shih@sifive.com>
 + */
 +
 +#include <asm/simd.h>
 +#include <asm/vector.h>
++#include <crypto/sm4.h>
++#include <crypto/internal/cipher.h>
++#include <crypto/internal/simd.h>
++#include <linux/crypto.h>
++#include <linux/delay.h>
++#include <linux/err.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
-+#include <crypto/internal/hash.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/sha512_base.h>
 +
-+/*
-+ * sha512 using zvkb and zvknhb vector crypto extension
-+ *
-+ * This asm function will just take the first 512-bit as the sha512 state from
-+ * the pointer to `struct sha512_state`.
-+ */
-+void sha512_block_data_order_zvkb_zvknhb(struct sha512_state *digest,
-+					 const u8 *data, int num_blks);
++/* sm4 using zvksed vector crypto extension */
++void rv64i_zvksed_sm4_encrypt(const u8 *in, u8 *out, const u32 *key);
++void rv64i_zvksed_sm4_decrypt(const u8 *in, u8 *out, const u32 *key);
++int rv64i_zvksed_sm4_set_key(const u8 *userKey, unsigned int key_len,
++			     u32 *enc_key, u32 *dec_key);
 +
-+static int riscv64_sha512_update(struct shash_desc *desc, const u8 *data,
-+				 unsigned int len)
++static int riscv64_sm4_setkey_zvksed(struct crypto_tfm *tfm, const u8 *key,
++				     unsigned int key_len)
 +{
++	struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
 +	int ret = 0;
-+
-+	/*
-+	 * Make sure struct sha256_state begins directly with the SHA256
-+	 * 256-bit internal state, as this is what the asm function expect.
-+	 */
-+	BUILD_BUG_ON(offsetof(struct sha512_state, state) != 0);
 +
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		ret = sha512_base_do_update(
-+			desc, data, len, sha512_block_data_order_zvkb_zvknhb);
++		if (rv64i_zvksed_sm4_set_key(key, key_len, ctx->rkey_enc,
++					     ctx->rkey_dec))
++			ret = -EINVAL;
 +		kernel_vector_end();
 +	} else {
-+		ret = crypto_sha512_update(desc, data, len);
++		ret = sm4_expandkey(ctx, key, key_len);
 +	}
 +
 +	return ret;
 +}
 +
-+static int riscv64_sha512_finup(struct shash_desc *desc, const u8 *data,
-+				unsigned int len, u8 *out)
++static void riscv64_sm4_encrypt_zvksed(struct crypto_tfm *tfm, u8 *dst,
++				       const u8 *src)
 +{
++	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
++
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		if (len)
-+			sha512_base_do_update(
-+				desc, data, len,
-+				sha512_block_data_order_zvkb_zvknhb);
-+		sha512_base_do_finalize(desc,
-+					sha512_block_data_order_zvkb_zvknhb);
++		rv64i_zvksed_sm4_encrypt(src, dst, ctx->rkey_enc);
 +		kernel_vector_end();
-+
-+		return sha512_base_finish(desc, out);
++	} else {
++		sm4_crypt_block(ctx->rkey_enc, dst, src);
 +	}
-+
-+	return crypto_sha512_finup(desc, data, len, out);
 +}
 +
-+static int riscv64_sha512_final(struct shash_desc *desc, u8 *out)
++static void riscv64_sm4_decrypt_zvksed(struct crypto_tfm *tfm, u8 *dst,
++				       const u8 *src)
 +{
-+	return riscv64_sha512_finup(desc, NULL, 0, out);
++	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
++
++	if (crypto_simd_usable()) {
++		kernel_vector_begin();
++		rv64i_zvksed_sm4_decrypt(src, dst, ctx->rkey_dec);
++		kernel_vector_end();
++	} else {
++		sm4_crypt_block(ctx->rkey_dec, dst, src);
++	}
 +}
 +
-+static struct shash_alg sha512_alg[] = {
-+	{
-+		.digestsize = SHA512_DIGEST_SIZE,
-+		.init = sha512_base_init,
-+		.update = riscv64_sha512_update,
-+		.final = riscv64_sha512_final,
-+		.finup = riscv64_sha512_finup,
-+		.descsize = sizeof(struct sha512_state),
-+		.base.cra_name = "sha512",
-+		.base.cra_driver_name = "sha512-riscv64-zvkb-zvknhb",
-+		.base.cra_priority = 150,
-+		.base.cra_blocksize = SHA512_BLOCK_SIZE,
-+		.base.cra_module = THIS_MODULE,
++struct crypto_alg riscv64_sm4_zvksed_alg = {
++	.cra_name = "sm4",
++	.cra_driver_name = "sm4-riscv64-zvkb-zvksed",
++	.cra_module = THIS_MODULE,
++	.cra_priority = 300,
++	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
++	.cra_blocksize = SM4_BLOCK_SIZE,
++	.cra_ctxsize = sizeof(struct sm4_ctx),
++	.cra_cipher = {
++		.cia_min_keysize = SM4_KEY_SIZE,
++		.cia_max_keysize = SM4_KEY_SIZE,
++		.cia_setkey = riscv64_sm4_setkey_zvksed,
++		.cia_encrypt = riscv64_sm4_encrypt_zvksed,
++		.cia_decrypt = riscv64_sm4_decrypt_zvksed,
 +	},
-+	{
-+		.digestsize = SHA384_DIGEST_SIZE,
-+		.init = sha384_base_init,
-+		.update = riscv64_sha512_update,
-+		.final = riscv64_sha512_final,
-+		.finup = riscv64_sha512_finup,
-+		.descsize = sizeof(struct sha512_state),
-+		.base.cra_name = "sha384",
-+		.base.cra_driver_name = "sha384-riscv64-zvkb-zvknhb",
-+		.base.cra_priority = 150,
-+		.base.cra_blocksize = SHA384_BLOCK_SIZE,
-+		.base.cra_module = THIS_MODULE,
-+	}
 +};
 +
-+static inline bool check_sha512_ext(void)
++static inline bool check_sm4_ext(void)
 +{
-+	return riscv_isa_extension_available(NULL, ZVKNHB) &&
++	return riscv_isa_extension_available(NULL, ZVKSED) &&
 +	       riscv_isa_extension_available(NULL, ZVKB) &&
 +	       riscv_vector_vlen() >= 128;
 +}
 +
-+static int __init riscv64_sha512_mod_init(void)
++static int __init riscv64_sm4_mod_init(void)
 +{
-+	if (check_sha512_ext())
-+		return crypto_register_shashes(sha512_alg,
-+					       ARRAY_SIZE(sha512_alg));
++	if (check_sm4_ext())
++		return crypto_register_alg(&riscv64_sm4_zvksed_alg);
 +
 +	return -ENODEV;
 +}
 +
-+static void __exit riscv64_sha512_mod_fini(void)
++static void __exit riscv64_sm4_mod_fini(void)
 +{
-+	if (check_sha512_ext())
-+		crypto_unregister_shashes(sha512_alg, ARRAY_SIZE(sha512_alg));
++	if (check_sm4_ext())
++		crypto_unregister_alg(&riscv64_sm4_zvksed_alg);
 +}
 +
-+module_init(riscv64_sha512_mod_init);
-+module_exit(riscv64_sha512_mod_fini);
++module_init(riscv64_sm4_mod_init);
++module_exit(riscv64_sm4_mod_fini);
 +
-+MODULE_DESCRIPTION("SHA-512 (RISC-V accelerated)");
-+MODULE_AUTHOR("Andy Polyakov <appro@openssl.org>");
-+MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
++MODULE_DESCRIPTION("SM4 (RISC-V accelerated)");
 +MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("sha384");
-+MODULE_ALIAS_CRYPTO("sha512");
-diff --git a/arch/riscv/crypto/sha512-riscv64-zvkb-zvknhb.pl b/arch/riscv/crypto/sha512-riscv64-zvkb-zvknhb.pl
++MODULE_ALIAS_CRYPTO("sm4");
+diff --git a/arch/riscv/crypto/sm4-riscv64-zvksed.pl b/arch/riscv/crypto/sm4-riscv64-zvksed.pl
 new file mode 100644
-index 000000000000..4be448266a59
+index 000000000000..a764668c8398
 --- /dev/null
-+++ b/arch/riscv/crypto/sha512-riscv64-zvkb-zvknhb.pl
-@@ -0,0 +1,266 @@
++++ b/arch/riscv/crypto/sm4-riscv64-zvksed.pl
+@@ -0,0 +1,268 @@
 +#! /usr/bin/env perl
 +# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
 +#
@@ -306,7 +303,7 @@ index 000000000000..4be448266a59
 +# or
 +#
 +# Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
-+# Copyright (c) 2023, Phoebe Chen <phoebe.chen@sifive.com>
++# Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
 +# All rights reserved.
 +#
 +# Redistribution and use in source and binary forms, with or without
@@ -332,9 +329,9 @@ index 000000000000..4be448266a59
 +
 +# The generated code of this file depends on the following RISC-V extensions:
 +# - RV64I
-+# - RISC-V vector ('V') with VLEN >= 128
++# - RISC-V Vector ('V') with VLEN >= 128
 +# - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
-+# - RISC-V Vector SHA-2 Secure Hash extension ('Zvknhb')
++# - RISC-V Vector SM4 Block Cipher extension ('Zvksed')
 +
 +use strict;
 +use warnings;
@@ -355,203 +352,205 @@ index 000000000000..4be448266a59
 +.text
 +___
 +
-+my ($V0, $V1, $V2, $V3, $V4, $V5, $V6, $V7,
-+    $V8, $V9, $V10, $V11, $V12, $V13, $V14, $V15,
-+    $V16, $V17, $V18, $V19, $V20, $V21, $V22, $V23,
-+    $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
-+) = map("v$_",(0..31));
-+
-+my $K512 = "K512";
-+
-+# Function arguments
-+my ($H, $INP, $LEN, $KT, $H2, $INDEX_PATTERN) = ("a0", "a1", "a2", "a3", "t3", "t4");
-+
-+################################################################################
-+# void sha512_block_data_order_zvkb_zvknhb(void *c, const void *p, size_t len)
++####
++# int rv64i_zvksed_sm4_set_key(const u8 *userKey, unsigned int key_len,
++#			                         u32 *enc_key, u32 *dec_key);
++#
++{
++my ($ukey,$key_len,$enc_key,$dec_key)=("a0","a1","a2","a3");
++my ($fk,$stride)=("a4","a5");
++my ($t0,$t1)=("t0","t1");
++my ($vukey,$vfk,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
 +$code .= <<___;
-+.p2align 2
-+.globl sha512_block_data_order_zvkb_zvknhb
-+.type sha512_block_data_order_zvkb_zvknhb,\@function
-+sha512_block_data_order_zvkb_zvknhb:
-+    @{[vsetivli "zero", 4, "e64", "m2", "ta", "ma"]}
++.p2align 3
++.globl rv64i_zvksed_sm4_set_key
++.type rv64i_zvksed_sm4_set_key,\@function
++rv64i_zvksed_sm4_set_key:
++    li $t0, 16
++    beq $t0, $key_len, 1f
++    li a0, 1
++    ret
++1:
 +
-+    # H is stored as {a,b,c,d},{e,f,g,h}, but we need {f,e,b,a},{h,g,d,c}
-+    # The dst vtype is e64m2 and the index vtype is e8mf4.
-+    # We use index-load with the following index pattern at v1.
-+    #   i8 index:
-+    #     40, 32, 8, 0
-+    # Instead of setting the i8 index, we could use a single 32bit
-+    # little-endian value to cover the 4xi8 index.
-+    #   i32 value:
-+    #     0x 00 08 20 28
-+    li $INDEX_PATTERN, 0x00082028
-+    @{[vsetivli "zero", 1, "e32", "m1", "ta", "ma"]}
-+    @{[vmv_v_x $V1, $INDEX_PATTERN]}
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
 +
-+    addi $H2, $H, 16
++    # Load the user key
++    @{[vle32_v $vukey, $ukey]}
++    @{[vrev8_v $vukey, $vukey]}
 +
-+    # Use index-load to get {f,e,b,a},{h,g,d,c}
-+    @{[vsetivli "zero", 4, "e64", "m2", "ta", "ma"]}
-+    @{[vluxei8_v $V22, $H, $V1]}
-+    @{[vluxei8_v $V24, $H2, $V1]}
++    # Load the FK.
++    la $fk, FK
++    @{[vle32_v $vfk, $fk]}
 +
-+    # Setup v0 mask for the vmerge to replace the first word (idx==0) in key-scheduling.
-+    # The AVL is 4 in SHA, so we could use a single e8(8 element masking) for masking.
-+    @{[vsetivli "zero", 1, "e8", "m1", "ta", "ma"]}
-+    @{[vmv_v_i $V0, 0x01]}
++    # Generate round keys.
++    @{[vxor_vv $vukey, $vukey, $vfk]}
++    @{[vsm4k_vi $vk0, $vukey, 0]} # rk[0:3]
++    @{[vsm4k_vi $vk1, $vk0, 1]} # rk[4:7]
++    @{[vsm4k_vi $vk2, $vk1, 2]} # rk[8:11]
++    @{[vsm4k_vi $vk3, $vk2, 3]} # rk[12:15]
++    @{[vsm4k_vi $vk4, $vk3, 4]} # rk[16:19]
++    @{[vsm4k_vi $vk5, $vk4, 5]} # rk[20:23]
++    @{[vsm4k_vi $vk6, $vk5, 6]} # rk[24:27]
++    @{[vsm4k_vi $vk7, $vk6, 7]} # rk[28:31]
 +
-+    @{[vsetivli "zero", 4, "e64", "m2", "ta", "ma"]}
++    # Store enc round keys
++    @{[vse32_v $vk0, $enc_key]} # rk[0:3]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk1, $enc_key]} # rk[4:7]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk2, $enc_key]} # rk[8:11]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk3, $enc_key]} # rk[12:15]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk4, $enc_key]} # rk[16:19]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk5, $enc_key]} # rk[20:23]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk6, $enc_key]} # rk[24:27]
++    addi $enc_key, $enc_key, 16
++    @{[vse32_v $vk7, $enc_key]} # rk[28:31]
 +
-+L_round_loop:
-+    # Load round constants K512
-+    la $KT, $K512
++    # Store dec round keys in reverse order
++    addi $dec_key, $dec_key, 12
++    li $stride, -4
++    @{[vsse32_v $vk7, $dec_key, $stride]} # rk[31:28]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk6, $dec_key, $stride]} # rk[27:24]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk5, $dec_key, $stride]} # rk[23:20]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk4, $dec_key, $stride]} # rk[19:16]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk3, $dec_key, $stride]} # rk[15:12]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk2, $dec_key, $stride]} # rk[11:8]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk1, $dec_key, $stride]} # rk[7:4]
++    addi $dec_key, $dec_key, 16
++    @{[vsse32_v $vk0, $dec_key, $stride]} # rk[3:0]
 +
-+    # Decrement length by 1
-+    addi $LEN, $LEN, -1
++    li a0, 0
++    ret
++.size rv64i_zvksed_sm4_set_key,.-rv64i_zvksed_sm4_set_key
++___
++}
 +
-+    # Keep the current state as we need it later: H' = H+{a',b',c',...,h'}.
-+    @{[vmv_v_v $V26, $V22]}
-+    @{[vmv_v_v $V28, $V24]}
++####
++# void rv64i_zvksed_sm4_encrypt(const unsigned char *in, unsigned char *out,
++#                               const SM4_KEY *key);
++#
++{
++my ($in,$out,$keys,$stride)=("a0","a1","a2","t0");
++my ($vdata,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7,$vgen)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
++$code .= <<___;
++.p2align 3
++.globl rv64i_zvksed_sm4_encrypt
++.type rv64i_zvksed_sm4_encrypt,\@function
++rv64i_zvksed_sm4_encrypt:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
 +
-+    # Load the 1024-bits of the message block in v10-v16 and perform the endian
-+    # swap.
-+    @{[vle64_v $V10, $INP]}
-+    @{[vrev8_v $V10, $V10]}
-+    addi $INP, $INP, 32
-+    @{[vle64_v $V12, $INP]}
-+    @{[vrev8_v $V12, $V12]}
-+    addi $INP, $INP, 32
-+    @{[vle64_v $V14, $INP]}
-+    @{[vrev8_v $V14, $V14]}
-+    addi $INP, $INP, 32
-+    @{[vle64_v $V16, $INP]}
-+    @{[vrev8_v $V16, $V16]}
-+    addi $INP, $INP, 32
++    # Load input data
++    @{[vle32_v $vdata, $in]}
++    @{[vrev8_v $vdata, $vdata]}
 +
-+    .rept 4
-+    # Quad-round 0 (+0, v10->v12->v14->v16)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V10]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+    @{[vmerge_vvm $V18, $V14, $V12, $V0]}
-+    @{[vsha2ms_vv $V10, $V18, $V16]}
++    # Order of elements was adjusted in sm4_set_key()
++    # Encrypt with all keys
++    @{[vle32_v $vk0, $keys]} # rk[0:3]
++    @{[vsm4r_vs $vdata, $vk0]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk1, $keys]} # rk[4:7]
++    @{[vsm4r_vs $vdata, $vk1]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk2, $keys]} # rk[8:11]
++    @{[vsm4r_vs $vdata, $vk2]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk3, $keys]} # rk[12:15]
++    @{[vsm4r_vs $vdata, $vk3]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk4, $keys]} # rk[16:19]
++    @{[vsm4r_vs $vdata, $vk4]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk5, $keys]} # rk[20:23]
++    @{[vsm4r_vs $vdata, $vk5]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk6, $keys]} # rk[24:27]
++    @{[vsm4r_vs $vdata, $vk6]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk7, $keys]} # rk[28:31]
++    @{[vsm4r_vs $vdata, $vk7]}
 +
-+    # Quad-round 1 (+1, v12->v14->v16->v10)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V12]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+    @{[vmerge_vvm $V18, $V16, $V14, $V0]}
-+    @{[vsha2ms_vv $V12, $V18, $V10]}
-+
-+    # Quad-round 2 (+2, v14->v16->v10->v12)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V14]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+    @{[vmerge_vvm $V18, $V10, $V16, $V0]}
-+    @{[vsha2ms_vv $V14, $V18, $V12]}
-+
-+    # Quad-round 3 (+3, v16->v10->v12->v14)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V16]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+    @{[vmerge_vvm $V18, $V12, $V10, $V0]}
-+    @{[vsha2ms_vv $V16, $V18, $V14]}
-+    .endr
-+
-+    # Quad-round 16 (+0, v10->v12->v14->v16)
-+    # Note that we stop generating new message schedule words (Wt, v10-16)
-+    # as we already generated all the words we end up consuming (i.e., W[79:76]).
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V10]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+
-+    # Quad-round 17 (+1, v12->v14->v16->v10)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V12]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+
-+    # Quad-round 18 (+2, v14->v16->v10->v12)
-+    @{[vle64_v $V20, $KT]}
-+    addi $KT, $KT, 32
-+    @{[vadd_vv $V18, $V20, $V14]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+
-+    # Quad-round 19 (+3, v16->v10->v12->v14)
-+    @{[vle64_v $V20, $KT]}
-+    # No t1 increment needed.
-+    @{[vadd_vv $V18, $V20, $V16]}
-+    @{[vsha2cl_vv $V24, $V22, $V18]}
-+    @{[vsha2ch_vv $V22, $V24, $V18]}
-+
-+    # H' = H+{a',b',c',...,h'}
-+    @{[vadd_vv $V22, $V26, $V22]}
-+    @{[vadd_vv $V24, $V28, $V24]}
-+    bnez $LEN, L_round_loop
-+
-+    # Store {f,e,b,a},{h,g,d,c} back to {a,b,c,d},{e,f,g,h}.
-+    @{[vsuxei8_v $V22, $H, $V1]}
-+    @{[vsuxei8_v $V24, $H2, $V1]}
++    # Save the ciphertext (in reverse element order)
++    @{[vrev8_v $vdata, $vdata]}
++    li $stride, -4
++    addi $out, $out, 12
++    @{[vsse32_v $vdata, $out, $stride]}
 +
 +    ret
-+.size sha512_block_data_order_zvkb_zvknhb,.-sha512_block_data_order_zvkb_zvknhb
++.size rv64i_zvksed_sm4_encrypt,.-rv64i_zvksed_sm4_encrypt
++___
++}
 +
++####
++# void rv64i_zvksed_sm4_decrypt(const unsigned char *in, unsigned char *out,
++#                               const SM4_KEY *key);
++#
++{
++my ($in,$out,$keys,$stride)=("a0","a1","a2","t0");
++my ($vdata,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7,$vgen)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
++$code .= <<___;
 +.p2align 3
-+.type $K512,\@object
-+$K512:
-+    .dword 0x428a2f98d728ae22, 0x7137449123ef65cd
-+    .dword 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc
-+    .dword 0x3956c25bf348b538, 0x59f111f1b605d019
-+    .dword 0x923f82a4af194f9b, 0xab1c5ed5da6d8118
-+    .dword 0xd807aa98a3030242, 0x12835b0145706fbe
-+    .dword 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2
-+    .dword 0x72be5d74f27b896f, 0x80deb1fe3b1696b1
-+    .dword 0x9bdc06a725c71235, 0xc19bf174cf692694
-+    .dword 0xe49b69c19ef14ad2, 0xefbe4786384f25e3
-+    .dword 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65
-+    .dword 0x2de92c6f592b0275, 0x4a7484aa6ea6e483
-+    .dword 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5
-+    .dword 0x983e5152ee66dfab, 0xa831c66d2db43210
-+    .dword 0xb00327c898fb213f, 0xbf597fc7beef0ee4
-+    .dword 0xc6e00bf33da88fc2, 0xd5a79147930aa725
-+    .dword 0x06ca6351e003826f, 0x142929670a0e6e70
-+    .dword 0x27b70a8546d22ffc, 0x2e1b21385c26c926
-+    .dword 0x4d2c6dfc5ac42aed, 0x53380d139d95b3df
-+    .dword 0x650a73548baf63de, 0x766a0abb3c77b2a8
-+    .dword 0x81c2c92e47edaee6, 0x92722c851482353b
-+    .dword 0xa2bfe8a14cf10364, 0xa81a664bbc423001
-+    .dword 0xc24b8b70d0f89791, 0xc76c51a30654be30
-+    .dword 0xd192e819d6ef5218, 0xd69906245565a910
-+    .dword 0xf40e35855771202a, 0x106aa07032bbd1b8
-+    .dword 0x19a4c116b8d2d0c8, 0x1e376c085141ab53
-+    .dword 0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8
-+    .dword 0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb
-+    .dword 0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3
-+    .dword 0x748f82ee5defb2fc, 0x78a5636f43172f60
-+    .dword 0x84c87814a1f0ab72, 0x8cc702081a6439ec
-+    .dword 0x90befffa23631e28, 0xa4506cebde82bde9
-+    .dword 0xbef9a3f7b2c67915, 0xc67178f2e372532b
-+    .dword 0xca273eceea26619c, 0xd186b8c721c0c207
-+    .dword 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178
-+    .dword 0x06f067aa72176fba, 0x0a637dc5a2c898a6
-+    .dword 0x113f9804bef90dae, 0x1b710b35131c471b
-+    .dword 0x28db77f523047d84, 0x32caab7b40c72493
-+    .dword 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c
-+    .dword 0x4cc5d4becb3e42b6, 0x597f299cfc657e2a
-+    .dword 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
-+.size $K512,.-$K512
++.globl rv64i_zvksed_sm4_decrypt
++.type rv64i_zvksed_sm4_decrypt,\@function
++rv64i_zvksed_sm4_decrypt:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    # Load input data
++    @{[vle32_v $vdata, $in]}
++    @{[vrev8_v $vdata, $vdata]}
++
++    # Order of key elements was adjusted in sm4_set_key()
++    # Decrypt with all keys
++    @{[vle32_v $vk7, $keys]} # rk[31:28]
++    @{[vsm4r_vs $vdata, $vk7]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk6, $keys]} # rk[27:24]
++    @{[vsm4r_vs $vdata, $vk6]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk5, $keys]} # rk[23:20]
++    @{[vsm4r_vs $vdata, $vk5]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk4, $keys]} # rk[19:16]
++    @{[vsm4r_vs $vdata, $vk4]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk3, $keys]} # rk[15:11]
++    @{[vsm4r_vs $vdata, $vk3]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk2, $keys]} # rk[11:8]
++    @{[vsm4r_vs $vdata, $vk2]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk1, $keys]} # rk[7:4]
++    @{[vsm4r_vs $vdata, $vk1]}
++    addi $keys, $keys, 16
++    @{[vle32_v $vk0, $keys]} # rk[3:0]
++    @{[vsm4r_vs $vdata, $vk0]}
++
++    # Save the ciphertext (in reverse element order)
++    @{[vrev8_v $vdata, $vdata]}
++    li $stride, -4
++    addi $out, $out, 12
++    @{[vsse32_v $vdata, $out, $stride]}
++
++    ret
++.size rv64i_zvksed_sm4_decrypt,.-rv64i_zvksed_sm4_decrypt
++___
++}
++
++$code .= <<___;
++# Family Key (little-endian 32-bit chunks)
++.p2align 3
++FK:
++    .word 0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC
++.size FK,.-FK
 +___
 +
 +print $code;
