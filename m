@@ -2,310 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCC17D722E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781CB7D722D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjJYRSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        id S230217AbjJYRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJYRSL (ORCPT
+        with ESMTP id S229485AbjJYRRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:18:11 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5FE111;
-        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7b91faf40so57005167b3.1;
-        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698254288; x=1698859088; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
-        b=UP6pDkdCV4was2SvMGbiTefza9yZ5KcGarGRScycs/w04j54BFI1DWgyqlWTr1oWba
-         mciGjNvHezQ5YxYVBktmo+Nbr9+I+GpDzA52xx+uVifbeSGlAoPdfnwQT3IQhU0e9eZp
-         knva3sh04M1oDEgpvt4AapfaMR3FXWswRp8zq7gy0dJYIkChAOM4Ky4LusUXBXZMvIKz
-         qF3Zh5c+9T9M12QuVcRLrWx/1WB6W8IOvj48L0yt2g3RxjAvADZApyXkPTh9bpNlOhqJ
-         X7htJkhMozGvlbgcKIFhSBF1BqYR9fAwPH7x88JcBPJKZFvm1NaeFH7RzpCDZx2mdBNu
-         6p4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698254288; x=1698859088;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
-        b=rnuOwjSerxgn7JxWpONgkDXdXE9V9NdGJa/uHxI+j2++r9i7UP+WyTdSNwlMyTyUDa
-         C7+56vaO4UMNIv9+808I5srFUb+Mo/tbL0NvdrkFjRsBNWww/SlF3/nicIs6KNVw5UFB
-         9Ob0fmN/Axn5lynew4xhgFmT/ageUqagOCP1iEvHp5iBK45lONkopiZhhpVdBMYr0xED
-         +/YBpKbcY1sjYKYYDLMyIHwa1HX4ZlSjc305BS7LcEivQYdq8zVuw+2CyiAXCSQTFQJd
-         g2wbGve3E7r/3wIW/Tti2mOZwWOfae6kZzZcyJI09STBB+dfY8eCC/4vpUc9/WAfNdaT
-         k9PA==
-X-Gm-Message-State: AOJu0YyIJscQzYrCP8wg5wnipAWfFBT+hgB8UjQxDUKeookAGWlnM66n
-        xFDF9u3m4YW6Mm8ZqdhfrLA=
-X-Google-Smtp-Source: AGHT+IGgtUBJjDpdcpn94j2EDhiGSURlNcjaDyIDVmNUdwVVea2/754GCkqaKNr0vxpI0nr3Cz+c7g==
-X-Received: by 2002:a25:d68c:0:b0:d9a:60c8:c5ff with SMTP id n134-20020a25d68c000000b00d9a60c8c5ffmr15314241ybg.65.1698254287660;
-        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id p20-20020a257414000000b00d9cb16d7749sm4587420ybc.21.2023.10.25.10.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8F4C527C0054;
-        Wed, 25 Oct 2023 13:18:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 25 Oct 2023 13:18:06 -0400
-X-ME-Sender: <xms:zU05ZWbsFnlpkY4KFibxZDFs-r_x1VAjT9RgFb3VlVQhcP4QjVfZ7Q>
-    <xme:zU05ZZZnJNGfh-wHgECw4WXHLvfFWl4JatXMbF9rP5SjWbtDB39W4gGDr3a2RsZN-
-    IY5RJII5H-K5og7QA>
-X-ME-Received: <xmr:zU05ZQ83OUv7VLixvcvI9Hw1u9NdBZ5RpHqjXtxqOU6gjqVT0ynbS4E3uPM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:zU05ZYpXi3eU_u35nadjKbyQPkB5r-CprRF04-3PyQnYChI-wiQyfg>
-    <xmx:zU05ZRoGdrJ711ynPXw464RpTS46WNs_Rg9u19tNNlz8ALVpOtH5kg>
-    <xmx:zU05ZWSRmrINNmfSqk9ytvjlxlS6wkSeTs0MWwJVwui3h7HR1V__NA>
-    <xmx:zk05ZVcBcFYPR74NDKjUDgjwmUxcLTSLFpWrrQYmVoY3-uy0EcjEqA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Oct 2023 13:18:05 -0400 (EDT)
-Date:   Wed, 25 Oct 2023 10:17:22 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        Wed, 25 Oct 2023 13:17:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B35F111
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:17:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E835FC433C7;
+        Wed, 25 Oct 2023 17:17:33 +0000 (UTC)
+Date:   Wed, 25 Oct 2023 13:17:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZTlNogQ_nWUzVJ9M@boqun-archlinux>
-References: <20231025140915.590390-1-urezki@gmail.com>
- <20231025140915.590390-2-urezki@gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Message-ID: <20231025131731.48461873@gandalf.local.home>
+In-Reply-To: <20231025162435.ibhdktcshhzltr3r@f>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
+        <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+        <20231025085434.35d5f9e0@gandalf.local.home>
+        <20231025135545.GG31201@noisy.programming.kicks-ass.net>
+        <20231025103105.5ec64b89@gandalf.local.home>
+        <884e4603-4d29-41ae-8715-a070c43482c4@efficios.com>
+        <20231025162435.ibhdktcshhzltr3r@f>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025140915.590390-2-urezki@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) wrote:
-> A call to a synchronize_rcu() can be optimized from time point of
-> view. Different workloads can be affected by this especially the
-> ones which use this API in its time critical sections.
-> 
-> For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-> callback can be delayed and such delay depends on:
-> 
-> - where in a nocb list it is located;
-> - how fast previous callbacks completed.
-> 
-> 1. On our Android devices i can easily trigger the scenario when
-> it is a last in the list out of ~3600 callbacks:
-> 
+On Wed, 25 Oct 2023 18:24:35 +0200
+Mateusz Guzik <mjguzik@gmail.com> wrote:
 
-I wonder how many of the callbacks are queued via call_rcu_hurry()? If
-not a lot, I wonder whether we can resolve the problem differently, see
-below:
+> On Wed, Oct 25, 2023 at 11:42:34AM -0400, Mathieu Desnoyers wrote:
+> > On 2023-10-25 10:31, Steven Rostedt wrote:  
+> > > On Wed, 25 Oct 2023 15:55:45 +0200
+> > > Peter Zijlstra <peterz@infradead.org> wrote:  
+> > 
+> > [...]
+> > 
+> > After digging lore for context, here are some thoughts about the actual
+> > proposal: AFAIU the intent here is to boost the scheduling slice for a
+> > userspace thread running with a mutex held so it can complete faster,
+> > and therefore reduce contention.
+> > 
+> > I suspect this is not completely unrelated to priority inheritance
+> > futexes, except that one goal stated by Steven is to increase the
+> > owner slice without requiring to call a system call on the fast-path.
 
-> <snip>
->   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> ...
->   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
->   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> <snip>
-> 
-> 2. We use cpuset/cgroup to classify tasks and assign them into
-> different cgroups. For example "backgrond" group which binds tasks
-> only to little CPUs or "foreground" which makes use of all CPUs.
-> Tasks can be migrated between groups by a request if an acceleration
-> is needed.
-> 
-> See below an example how "surfaceflinger" task gets migrated.
-> Initially it is located in the "system-background" cgroup which
-> allows to run only on little cores. In order to speed it up it
-> can be temporary moved into "foreground" cgroup which allows
-> to use big/all CPUs:
-> 
-> cgroup_attach_task():
->  -> cgroup_migrate_execute()
->    -> cpuset_can_attach()
->      -> percpu_down_write()
->        -> rcu_sync_enter()
->          -> synchronize_rcu()
->    -> now move tasks to the new cgroup.
->  -> cgroup_migrate_finish()
-> 
-> <snip>
->          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
->     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> <snip>
-> 
-> "A moving time" depends on how fast synchronize_rcu() completes. See
-> the first trace line. The migration has not occurred until the sync
-> was done first. Please note, number of different callbacks to be
-> invoked can be thousands.
-> 
-> 3. To address this drawback, maintain a separate track that consists
-> of synchronize_rcu() callers only. The GP-kthread, that drivers a GP
-> either wake-ups a worker to drain all list or directly wakes-up end
-> user if it is one in the drain list.
-> 
+No, I wouldn't say it's the same as priority inheritance, which is to help
+with determinism and not performance. PI adds overhead but removes
+unbounded latency. On average, a non PI mutex is faster than PI mutex, but
+can suffer from unbounded priority inversion.
 
-Late to the party, but I kinda wonder whether we can resolve it by:
+For this code, I took off my RT hat, and put on my performance hat.
 
-1) either introduce a separate seglist that only contains callbacks
-queued by call_rcu_hurry(), and whenever after an GP and callbacks are
-ready, call_rcu_hurry() callbacks will be called first.
+> > 
+> > Compared to PI futexes, I think Steven's proposal misses the part
+> > where a thread waiting on a futex boosts the lock owner's priority
+> > so it can complete faster. By making the lock owner selfishly claim
+> > that it needs a larger scheduling slice, it opens the door to
+> > scheduler disruption, and it's hard to come up with upper-bounds
+> > that work for all cases.
 
-2) or make call_rcu_hurry() callbacks always inserted at the head of the
-NEXT list instead of the tail, e.g. (untested code):
+Currently, the extended time is only 1ms for 1000 HZ kernel. It's no
+different than holding a kernel spin lock for that much time. It doesn't
+happen often, but I have in the past measured spin locks being held for
+that long in a non PREEMPT_RT kernel.
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index f71fac422c8f..89a875f8ecc7 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -338,13 +338,21 @@ bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp)
-  * absolutely not OK for it to ever miss posting a callback.
-  */
- void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
--			   struct rcu_head *rhp)
-+			   struct rcu_head *rhp,
-+			   bool is_lazy)
- {
- 	rcu_segcblist_inc_len(rsclp);
- 	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
--	rhp->next = NULL;
--	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
--	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-+	/* If hurry and the list is not empty, put it in the front */
-+	if (!is_lazy && rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL) > 1) {
-+		// hurry callback, queued at front
-+		rhp->next = READ_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL]);
-+		WRITE_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL], rhp);
-+	} else {
-+		rhp->next = NULL;
-+		WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-+		WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-+	}
- }
- 
- /*
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 4fe877f5f654..459475bb8df9 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -136,7 +136,8 @@ struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
- struct rcu_head *rcu_segcblist_first_pend_cb(struct rcu_segcblist *rsclp);
- bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp);
- void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
--			   struct rcu_head *rhp);
-+			   struct rcu_head *rhp,
-+			   bool is_lazy);
- bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
- 			   struct rcu_head *rhp);
- void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 20d7a238d675..53adf5ab9c9f 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1241,7 +1241,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 		sdp = raw_cpu_ptr(ssp->sda);
- 	spin_lock_irqsave_sdp_contention(sdp, &flags);
- 	if (rhp)
--		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-+		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp, true);
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
- 	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8d65f7d576a3..7dec7c68f88f 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -362,7 +362,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 	}
- 	if (needwake)
- 		rtpcp->urgent_gp = 3;
--	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
-+	rcu_segcblist_enqueue(&rtpcp->cblist, rhp, true);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
- 	if (unlikely(needadjust)) {
- 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cb1caefa8bd0..e05cbff40dc7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2670,7 +2670,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- 	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
- 		return; // Enqueued onto ->nocb_bypass, so just leave.
- 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
--	rcu_segcblist_enqueue(&rdp->cblist, head);
-+	rcu_segcblist_enqueue(&rdp->cblist, head, lazy_in);
- 	if (__is_kvfree_rcu_offset((unsigned long)func))
- 		trace_rcu_kvfree_callback(rcu_state.name, head,
- 					 (unsigned long)func,
+And with the new EEVDF, extended time slices will be handled by the
+eligibility algorithm, by keeping the task that extended itself from being
+eligible for a longer period of time. This keeps things "fair".
 
-Sure, there may be some corner cases I'm missing, but I think overall
-this is better than (sorta) duplicating the logic of seglist (the llist
-in sr_normal_state) or the logic of wake_rcu_gp()
-(synchronize_rcu_normal).
+> > 
+> > Hopefully I'm not oversimplifying if I state that we have mainly two
+> > actors to consider:
+> > 
+> > [A] the lock owner thread
+> > 
+> > [B] threads that block trying to acquire the lock
+> > 
+> > The fast-path here is [A]. [B] can go through a system call, I don't
+> > think it matters at all.
 
-Anyway, these are just if-you-have-time-to-try options ;-)
+No, B going into a system call can be just as devastating. Adaptive
+spinning helps with that. The thing here is that if A gets preempted, there
+will be a lot more B's getting stuck.
 
-Regards,
-Boqun
+I implemented the test with futexes (where you go to sleep on contention)
+and the performance dropped considerably, where the benefits of not having
+A get preempted made no difference at all. Sure, adaptive spinning helps in
+that case, but adaptive spinning would only make it as good as my spinning
+in user space logic is without any changes.
 
-> 4. This patch improves the performance of synchronize_rcu() approximately
-> by ~30% on synthetic tests. The real test case, camera launch time, shows
-> below figures(time is in milliseconds):
+> > 
+> > So perhaps we can extend the rseq per-thread area with a field that
+> > implements a "held locks" list that allows [A] to let the kernel know
+> > that it is currently holding a set of locks (those can be chained when
+> > locks are nested). It would be updated on lock/unlock with just a few
+> > stores in userspace.
+
+And I can see that being a total nightmare to maintain and keep from races
+and trusting user space.
+
+> > 
+> > Those lock addresses could then be used as keys for private locks,
+> > or transformed into inode/offset keys for shared-memory locks. Threads
+> > [B] blocking trying to acquire the lock can call a system call which
+> > would boost the lock owner's slice and/or priority for a given lock key.
+
+Do you mean that this would be done in user space? Going into the kernel to
+do any of this would make it already lost.
+
+> > 
+> > When the scheduler preempts [A], it would check whether the rseq
+> > per-thread area has a "held locks" field set and use this information
+> > to find the slice/priority boost which are currently active for each
+> > lock, and use this information to boost the task slice/priority
+> > accordingly.
+
+Why do we care about locks here? Note, I'm looking at using this same
+feature for VMs on interrupt handlers. The only thing user space needs to
+tell the kernel is "It's not a good time to preempt me, but it will be
+shortly".
+
+> > 
+> > A scheme like this should allow lock priority inheritance without
+> > requiring system calls on the userspace lock/unlock fast path.
+
+Priority inheritance doesn't make sense when everything is running.
+
+> >   
 > 
-> 542 vs 489 diff: 9%
-> 540 vs 466 diff: 13%
-> 518 vs 468 diff: 9%
-> 531 vs 457 diff: 13%
-> 548 vs 475 diff: 13%
-> 509 vs 484 diff: 4%
+> I think both this proposal and the original in this thread are opening a
+> can of worms and I don't think going down that road was properly
+> justified. A proper justification would demonstrate a big enough(tm)
+> improvement over a locking primitive with adaptive spinning.
 > 
-> Synthetic test:
+> It is well known that what mostly shafts performance of regular
+> userspace locking is all the nasty going off cpu to wait.
 > 
-> Hardware: x86_64 64 CPUs, 64GB of memory
+> The original benchmark with slice extension disabled keeps using CPUs,
+> virtually guaranteeing these threads will keep getting preempted, some
+> of the time while holding the lock. Should that happen all other threads
+> which happened to get preempted actively waste time.
 > 
-> - 60.000 tasks(simultaneous);
-> - each task does(1000 loops)
->      synchronize_rcu();
->      kfree(p);
+> Adaptive spinning was already mentioned elsewhere in the thread and the
+> idea itself is at least 2 decades old. If anything I find it strange it
+> did not land years ago.
+
+I tried pushing it a long time ago but I believe Peter didn't like the
+logic touching the scheduler. Which it had to do, so I dropped it.
+
+Anyway, as I stated previously, my experience here is based on the work I
+had done with PREEMPT_RT. Let me give you a little history:
+
+A long time ago, when an 8 CPU machine was considered "huge!", we got
+priority inheritance spin-lock turn mutexes working nicely. But because rw
+locks were exponentially complex to add PI to (believe me, I tried!), we
+gave up and just turned them into a single mutex. This caused huge
+contention on the mmap_sem (which was now a mutex and not a rwsem)
+especially when running java (which for some unknown reasons creates
+hundreds of threads for "Hello world!").
+
+When we booted a machine with 16 or more CPUs, it took forever to boot up
+on PREEMPT_RT. The lock contention between all these spin-lock turn mutexes
+and rwsems turn mutexes was crazy. PREEMPT_RT took exponentially longer to
+boot than the vanilla kernel as the number of CPUs went up.
+
+SUSE proposed a new feature called "adaptive spinning", where on contention
+to one of these spin-locks turned mutexes, it would spin if the owner of
+the lock was held, and otherwise go to sleep. This was a huge win, as we
+found that the contention on these locks dropped significantly. So much so,
+that the difference between PREEMPT_RT and vanilla only linearly degraded
+as the number of CPUs increased.
+
+The PREEMPT_RT folks continued happily along. But the performance of
+PREEMPT_RT was still significantly behind that of the vanilla kernel.
+Thomas realized that a large part of this performance gap was due to the
+over aggressive preemption that PREEMPT_RT would cause. What PREEMPT_RT
+does, is simply allow for more places in the kernel to be preempted where
+CONFIG_PREEMPT does not. Specifically, while holding a spin_lock. That
+means, when you preempted a kernel when holding a spin_lock, that spin_lock
+was much more likely to be contended upon for the simple fact that it is
+now held for a much longer time. Thomas realized that introducing
+NEED_RECHED_LAZY, and by allowing SCHED_OTHER scheduling to be delayed
+while these spin locks are held it would decrease the number of times
+preemption happened while these locks are taken. This would decrease the
+time that the locks are held and that would decrease the number of times
+they were contended.
+
+IMPORTANT NOTE: The above was noticed *with* adaptive spin locks enabled!
+
+That is, adaptive spinning did not solve the issue with tasks holding locks
+being preempted.
+
+This is why I'm saying that user space adaptive spin locks solves a
+*different* problem. This patch solves the preemption of lock holders
+problem, which adaptive spinning DOES NOT ADDRESS.
+
 > 
-> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
-> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
+> I find there is a preliminary patch by you which exports the state so
+> one can nicely spin without even going to the kernel:
+> https://lore.kernel.org/lkml/20230529191416.53955-1-mathieu.desnoyers@efficios.com/
 > 
-> Please note, by default this functionality is OFF and the old way is
-> still used instead, In order to activate it, please do:
+> To be clear, I think a locking primitive which can do adaptive spinning
+> *and* futexes *and* not get preempted while holding locks is the fastest
+> option. What is not clear to me if it is sufficiently faster than
+> adaptive spinning and futexes.
+
+And I'm stating it is, simply because it worked so well with PREEMPT_RT.
+
 > 
-> echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
-[...]
+> tl;dr perhaps someone(tm) could carry the above to a state where it can
+> be benchmarked vs the original patch
+
+And don't get me wrong. I *want* adaptive spinning in user space. I'm just
+saying that this is solving a different issue.
+
+-- Steve
