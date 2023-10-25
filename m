@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EFE7D7010
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA92A7D6FE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344452AbjJYOxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        id S1344370AbjJYOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234955AbjJYOx0 (ORCPT
+        with ESMTP id S1344353AbjJYOxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:53:26 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C342137
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:53:23 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c2a0725825so866979966b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698245601; x=1698850401; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IV52gqKvJLev/nEwlZaq8bDCbTo7SRK1FTCEJKQYD08=;
-        b=cOd15unraBWkmFspGLaL0GfxB/78j1Tm6aOiofDjj4L45vwmftUaz4LFGWXxVHde7r
-         IYB4/Hsg7BQQ+A03gdZb5T4c1wUzJIE0KO6/bkgKx8RQ7Li1VtSQ5POhQIa8fGk8xKkY
-         oBgNDOgnWV8w62tlGVe2bYu6N29tMaoUFPPLmZK2kRu/YLTezHPEHaob3Fjy1zxeTt1W
-         LBxbRVoOp07RvVxq9T+P/PXZqYpB8ZS5yyMg9XGD03rv0qcH5CiHS8XFYSulQQp1vsnp
-         IkELAHwMfdZMSFs4fbxW9kbRjQU0g94+HptwjCPUojLFNbdC0e2+guUUzUBfZleSyMgc
-         ijBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698245601; x=1698850401;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IV52gqKvJLev/nEwlZaq8bDCbTo7SRK1FTCEJKQYD08=;
-        b=hJCFHvA7qV3U+dLo+o4QID6jPv0uKUE3mV8w8AWQ7cuNzikxlDoAJ1yeHQ49AfDKur
-         JbuYUIqxZwe96Ke2IvOh/WwheGR45SQ6YfBr253Tn1/AobM/kMXebjjZxnUpVnW/M0GK
-         5L5t5i5Svlph+HvrhR2yUPjAqrB8Po2RgT9qKXyKqMx0LCR+63SDU7t35K4e0rj/zoAk
-         6+3MGoBoMfrCivA8ousOmOWkfK7+yL/dB9lqB/zx+KBps8NCmDQw1DY4+2gienn7zQcT
-         SwrWT6U88fXuWiSeRx+gkpkCIjrwzJ/a2z99bAh9SGaGSgIMAmjvUqSCpwM9X45ohZLQ
-         9noA==
-X-Gm-Message-State: AOJu0YzlvwNHiSOZr3uONzz64qT8X98iR8iTsH8Z5tPEJQaSanxdSJf5
-        UJhp9m0vzqk0SrNOfKr4wYjZXmyZ6bifklahYYZSZg==
-X-Google-Smtp-Source: AGHT+IGmhcMX3P2d7rTTjdKLj40MV1gB5lLVVyV2lpf5dzF8jwl8z5JSxtSWL2/X52ewQjM28dAM3Q==
-X-Received: by 2002:a17:907:94ce:b0:9bd:931e:30d8 with SMTP id dn14-20020a17090794ce00b009bd931e30d8mr12102066ejc.14.1698245601586;
-        Wed, 25 Oct 2023 07:53:21 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a6])
-        by smtp.gmail.com with ESMTPSA id a7-20020a1709062b0700b009932337747esm9856733ejg.86.2023.10.25.07.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:53:21 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH v2] virtio_pci: Switch away from deprecated irq_set_affinity_hint
-Date:   Wed, 25 Oct 2023 16:53:19 +0200
-Message-ID: <20231025145319.380775-1-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 25 Oct 2023 10:53:44 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A99B0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:53:39 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 0253F100048;
+        Wed, 25 Oct 2023 17:53:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0253F100048
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1698245617;
+        bh=AKaXrVnp5wObDD8weP6QzDDT60hIJPj/Pzxc3A40cz8=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=Qm8uRIch39gETLUoMno1qEfgwedy3+8mk3kU5F4msvXFeOpYwHtMFY9Ot4JIO0h5O
+         RN5val+8Az8zAGmAXgIuLlV8sb5reovLSeRDHDpwxOxvqOGgkGzpIIqqYFBeHzkqn3
+         DHP+m6cNuirFUF87ymPQeHBLers7sZxE3opDCSS3dpfjp17R5cfTdq3hJ4XyTO2SHb
+         GsE/WLgoILy9LlLNaUKhZ8YJ+iXI1ZOIhyBvDUozULMOv6DLmYY/jXqSkVGJolVUqY
+         1ZGKnfTL3QGJJJGkBtb/DVW4dgPl+eEv21YyosRCMliKvEyDOtOutzEMEs8NMk5/EO
+         Z37rWMTm5jYAg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 25 Oct 2023 17:53:36 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 25 Oct 2023 17:53:36 +0300
+Message-ID: <06a5aebc-b90d-4c0b-b496-921e14452f9d@salutedevices.com>
+Date:   Wed, 25 Oct 2023 17:53:35 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>
+CC:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Yu Zhe <yuzhe@nfschina.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>
+References: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
+ <20231019073838.17586-3-mmkurbanov@salutedevices.com>
+ <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
+ <3951ac21-a0a4-47b5-be94-edb0140c69a5@salutedevices.com>
+ <cb1456a3fa874772a531c4885f0d204041ecf5bf.camel@infradead.org>
+Content-Language: en-US
+From:   Martin Kurbanov <mmkurbanov@salutedevices.com>
+In-Reply-To: <cb1456a3fa874772a531c4885f0d204041ecf5bf.camel@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180891 [Oct 25 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/25 13:08:00 #22292805
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 65c7cdedeb30 ("genirq: Provide new interfaces for affinity
-hints") irq_set_affinity_hint is being phased out.
+Hi David, Thank you for reply.
 
-Switch to new interfaces for setting and applying irq affinity hints.
+On 23.10.2023 20:55, David Woodhouse wrote:
+> On Mon, 2023-10-23 at 17:54 +0300, Martin Kurbanov wrote:
+>> Hello Richard,
+>>
+>> On 19.10.2023 11:12, Richard Weinberger wrote:
+>>>> This patch support for disable cleanmarker option. This is useful on
+>>>> some NAND devices which entire OOB area is protected by ECC. Problem
+>>>> fires when JFFS2 driver writes cleanmarker to some page and later it
+>>>> tries to write to this page - write will be done successfully, but after
+>>>> that such page becomes unreadable due to invalid ECC codes. This occurs
+>>>> because the second write necessitates an update to ECC, but it is
+>>>> impossible to do it correctly without block erase.
+>>> Hmm, I miss an explanation why this change is correct and safe.
+>>> You explain why the OOB area can't be used, okay. But you need to
+>>> add more details on why you change is safe in terms of filesystem
+>>> consistency.
+>>  
+>> If you disable the cleanmarker, the found clean block (filled with 0xff)
+>> will be erased again (see fs/jffs2/scan.c#L162).
+>> In my opinion, it is better to perform the block erasure again than to
+>> not work with such a nand flash at all.
+> 
+> Erasing all unused blocks over and over again on every reboot/remount
+> is going to destroy your flash quite quickly, surely?
+> 
+> I think you need to come up with a way to log the clean blocks (or
+> erase requests) in the JFFS2 log itself.
+> 
+> Perhaps a 'block erase log' node type, which just contains a version#
+> and a list of blocks which are currently being erased. You write it out
+> before doing any erase operation. And then at *some* point after the
+> erase completes (it doesn't need to be immediate) you write out a new
+> one (which may be empty, or may list new blocks which are about to be
+> erased).
+> 
+> On mount, we just need to re-erase any blocks which are indicated as
+> being erased in the latest erase log node.
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
-v2:
- - Leave cpumask_copy as is. We can't pass pointer to stack memory as hint.
-   Proposed a change to IRQ affinity interface to address this limitation:
-   https://lore.kernel.org/r/20231025141517.375378-1-jakub@cloudflare.com
+What if we don't erase the free blocks during mounting, but instead
+erase them when a clean block is needed (before writing)?
 
-v1: https://lore.kernel.org/r/20231019101625.412936-2-jakub@cloudflare.com
----
- drivers/virtio/virtio_pci_common.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index c2524a7207cf..7a5593997e0e 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -242,7 +242,7 @@ void vp_del_vqs(struct virtio_device *vdev)
- 			if (v != VIRTIO_MSI_NO_VECTOR) {
- 				int irq = pci_irq_vector(vp_dev->pci_dev, v);
- 
--				irq_set_affinity_hint(irq, NULL);
-+				irq_update_affinity_hint(irq, NULL);
- 				free_irq(irq, vq);
- 			}
- 		}
-@@ -443,10 +443,10 @@ int vp_set_vq_affinity(struct virtqueue *vq, const struct cpumask *cpu_mask)
- 		mask = vp_dev->msix_affinity_masks[info->msix_vector];
- 		irq = pci_irq_vector(vp_dev->pci_dev, info->msix_vector);
- 		if (!cpu_mask)
--			irq_set_affinity_hint(irq, NULL);
-+			irq_update_affinity_hint(irq, NULL);
- 		else {
- 			cpumask_copy(mask, cpu_mask);
--			irq_set_affinity_hint(irq, mask);
-+			irq_set_affinity_and_hint(irq, mask);
- 		}
- 	}
- 	return 0;
 -- 
-2.41.0
-
+Best Regards,
+Martin Kurbanov
