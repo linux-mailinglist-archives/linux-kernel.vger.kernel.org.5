@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAFA7D7389
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0157D738D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbjJYSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S231539AbjJYSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjJYSsE (ORCPT
+        with ESMTP id S229583AbjJYSt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:48:04 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57702133
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:48:02 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6ce29652abaso55813a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:48:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698259681; x=1698864481;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=enekH0kmAY2hDmPuxAiuuGFjnISGBg+lcc1EKA1WVr8=;
-        b=cgYCYDqvURPerRsQAGIFANIbVtt52f30PyMMBzodcUgXl63FXbAdA6DgtZLwnUan/7
-         FP2RuV/gKcjyH6dkgbLYCcNW3B5e6lEgqhH52pnFi+kIfoXyApsAsV+GLW51y0nnRgEk
-         DsJLPNXapqS1tOiya/gNAfD35GZYEg3Qw9Gx9sPUWvySXc5KEpI1jQefy5pjeRlBCy3X
-         jjQMDgJWi9tV8LBRtmoagdwBjPLwNvZ8N6pKdV5hNuvUUaWkETiJJAElvGL2O/fWbjR8
-         BI6pw+DDn5JPzsfI1DbA0MZeIqMFTs7YO8m2RgFg4yfCs3F7iyq5nqPDbS0nSjV4Cifs
-         xVSw==
-X-Gm-Message-State: AOJu0Yz0QCiQE9S6eCf2FIr2iXCjAbNxztoLROvsBRaZKlQcI3rM92VU
-        CAnSAFayOR/GU6XYiOyOgHfGz9wtetesTuBBji/1aaMIYPBq
-X-Google-Smtp-Source: AGHT+IHVcSLF8wX+G3zJ0MdiID25mT3cqEIYRiD7J1wepM6gbCS0Gq+9Fyh9RzOLK5wuMyYHnxQaa+RmvHvuls7DZJt723EGkjzp
+        Wed, 25 Oct 2023 14:49:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BB1DC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698259766; x=1729795766;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=A920Hyiiee/QDSjMBa5FulAMIKTEKe/GTe44BYBFeTI=;
+  b=NDGhkT52j8iLfwJejYhbPm6CNovN1emb7B8RLa8qJUWVGiye6+G0Y+ue
+   X14TXM7S2jPbiMa4XQgchGcgxhdvZg/61/ehqdKnnswN7XF6ZfMC3fj18
+   sVEhcbZkVyOkdGPJSVt57inA/+sNxIKuz038zRufNcfHFSSJ7m6Z09Zln
+   k49hAtf7FoVJkot+dQjOt3Jbdo6I3ucazt9TcwRdw4yGakteB2hqnEzPq
+   tOrgdHxEw0tX7KxCtmYLgmMq7fvuFtyNxHCJpdO4SErtMiaOKVTqURfyw
+   pcn5okmP1+3UP44J8J0XmB2LPE2ujlz/TljahxzNSDfD8KUbajubu4Usv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377742730"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="377742730"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:49:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708785677"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="708785677"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 25 Oct 2023 11:49:23 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qviwT-00096q-1N;
+        Wed, 25 Oct 2023 18:49:21 +0000
+Date:   Thu, 26 Oct 2023 02:48:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-team@cloudflare.com, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH] genirq: Own affinity hint
+Message-ID: <202310260237.0IF4S81f-lkp@intel.com>
+References: <20231025141517.375378-1-jakub@cloudflare.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:63d9:0:b0:6c8:f9bc:f768 with SMTP id
- e25-20020a9d63d9000000b006c8f9bcf768mr4527702otl.1.1698259681666; Wed, 25 Oct
- 2023 11:48:01 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 11:48:01 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000fed5606088ee598@google.com>
-Subject: [syzbot] [mptcp?] WARNING in subflow_data_ready
-From:   syzbot <syzbot+c53d4d3ddb327e80bc51@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martineau@kernel.org,
-        matthieu.baerts@tessares.net, matttbe@kernel.org,
-        mptcp@lists.linux.dev, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025141517.375378-1-jakub@cloudflare.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Jakub,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build warnings:
 
-HEAD commit:    9c5d00cb7b6b Merge tag 'perf-tools-fixes-for-v6.6-2-2023-1..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123fbacd680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=530f7d8ed0a57417
-dashboard link: https://syzkaller.appspot.com/bug?extid=c53d4d3ddb327e80bc51
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+[auto build test WARNING on tip/irq/core]
+[also build test WARNING on linus/master v6.6-rc7 next-20231025]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jakub-Sitnicki/genirq-Own-affinity-hint/20231026-001606
+base:   tip/irq/core
+patch link:    https://lore.kernel.org/r/20231025141517.375378-1-jakub%40cloudflare.com
+patch subject: [PATCH] genirq: Own affinity hint
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310260237.0IF4S81f-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310260237.0IF4S81f-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8423b244df95/disk-9c5d00cb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/aaee5e776b7e/vmlinux-9c5d00cb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/11fb49db00f3/bzImage-9c5d00cb.xz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310260237.0IF4S81f-lkp@intel.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c53d4d3ddb327e80bc51@syzkaller.appspotmail.com
+All warnings (new ones prefixed by >>):
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 18534 at net/mptcp/subflow.c:1405 subflow_data_ready+0x39f/0x4e0 net/mptcp/subflow.c:1405
-Modules linked in:
-CPU: 1 PID: 18534 Comm: syz-executor.2 Not tainted 6.6.0-rc6-syzkaller-00285-g9c5d00cb7b6b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:subflow_data_ready+0x39f/0x4e0 net/mptcp/subflow.c:1405
-Code: 18 89 ee e8 a3 80 62 f7 40 84 ed 75 1f e8 69 85 62 f7 44 89 f6 bf 07 00 00 00 e8 cc 80 62 f7 41 83 fe 07 74 07 e8 51 85 62 f7 <0f> 0b e8 4a 85 62 f7 48 89 df e8 02 b2 ff ff 31 ff 89 c5 89 c6 e8
-RSP: 0000:ffffc90015aff3a8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88807c2e9880 RCX: 0000000000000100
-RDX: ffff88801f458000 RSI: ffffffff8a25449f RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000007
-R10: 000000000000000b R11: ffffffff88331ae6 R12: 1ffff92002b5fe75
-R13: ffff8880208d0a00 R14: 000000000000000b R15: ffff88802e60af00
-FS:  0000555556c8e480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7455279b13 CR3: 000000007899e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tcp_data_ready+0x14c/0x5b0 net/ipv4/tcp_input.c:5034
- tcp_data_queue+0x25fc/0x4f10 net/ipv4/tcp_input.c:5114
- tcp_rcv_state_process+0x1871/0x4d00 net/ipv4/tcp_input.c:6728
- tcp_v4_do_rcv+0x346/0x9e0 net/ipv4/tcp_ipv4.c:1751
- tcp_v4_rcv+0x33a9/0x3b40 net/ipv4/tcp_ipv4.c:2151
- ip_protocol_deliver_rcu+0x9f/0x480 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x2e4/0x510 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:304 [inline]
- NF_HOOK include/linux/netfilter.h:298 [inline]
- ip_local_deliver+0x1b6/0x550 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:468 [inline]
- ip_rcv_finish+0x1c4/0x2e0 net/ipv4/ip_input.c:449
- NF_HOOK include/linux/netfilter.h:304 [inline]
- NF_HOOK include/linux/netfilter.h:298 [inline]
- ip_rcv+0xc9/0x430 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core+0x115/0x180 net/core/dev.c:5552
- __netif_receive_skb+0x1f/0x1b0 net/core/dev.c:5666
- process_backlog+0x101/0x6b0 net/core/dev.c:5994
- __napi_poll.constprop.0+0xb4/0x530 net/core/dev.c:6556
- napi_poll net/core/dev.c:6623 [inline]
- net_rx_action+0x956/0xe90 net/core/dev.c:6756
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x47/0xc0 arch/x86/kernel/apic/apic.c:1074
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0033:0x7f50c2238602
-Code: 48 39 d1 72 f3 48 83 e8 08 48 39 f2 73 17 66 2e 0f 1f 84 00 00 00 00 00 48 8b 70 f8 48 83 e8 08 48 39 f2 72 f3 48 39 c3 73 3e <48> 89 33 48 83 c3 08 48 8b 70 f8 48 89 08 48 8b 0b 49 8b 14 24 eb
-RSP: 002b:00007f50c24bfa00 EFLAGS: 00000287
-RAX: 00007f50c1c009a0 RBX: 00007f50c1c00678 RCX: ffffffff813205d6
-RDX: ffffffff813205d6 RSI: ffffffff813205d6 RDI: 00007f50c1c00a50
-RBP: 00007f50c1c00570 R08: 00007f50c1c007d8 R09: 0000000000000317
-R10: 00000000817374e2 R11: 0000000000000246 R12: 00007f50c1c00568
-R13: 0000000000000014 R14: 00007f50c2390000 R15: 00007f50c239c018
- </TASK>
+   kernel/irq/irqdesc.c: In function 'alloc_masks':
+>> kernel/irq/irqdesc.c:79:1: warning: label 'err_effective_affinity' defined but not used [-Wunused-label]
+      79 | err_effective_affinity:
+         | ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/irq/irqdesc.c:75:1: warning: label 'err_pending_mask' defined but not used [-Wunused-label]
+      75 | err_pending_mask:
+         | ^~~~~~~~~~~~~~~~
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +/err_effective_affinity +79 kernel/irq/irqdesc.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+    68	
+    69	#ifdef CONFIG_GENERIC_PENDING_IRQ
+    70		if (!zalloc_cpumask_var_node(&desc->pending_mask, GFP_KERNEL, node))
+    71			goto err_pending_mask;
+    72	#endif
+    73		return 0;
+    74	
+  > 75	err_pending_mask:
+    76	#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+    77		free_cpumask_var(desc->irq_common_data.effective_affinity);
+    78	#endif
+  > 79	err_effective_affinity:
+    80		free_cpumask_var(desc->irq_common_data.affinity_hint);
+    81	err_affinity_hint:
+    82		free_cpumask_var(desc->irq_common_data.affinity);
+    83	err_affinity:
+    84		return -ENOMEM;
+    85	}
+    86	
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
