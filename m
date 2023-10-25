@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098A87D6448
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89847D644F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbjJYH7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S234197AbjJYIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbjJYH7J (ORCPT
+        with ESMTP id S234009AbjJYIAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:59:09 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A08110A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:59:02 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so790522266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:59:02 -0700 (PDT)
+        Wed, 25 Oct 2023 04:00:25 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91B9BB
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:00:20 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4084de32db5so45303675e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1698220741; x=1698825541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fvDTx3KAIXzd8vHpw9Vdd86W/jVpG2BbTDbBYIT2poU=;
-        b=VQTt6/cI4XU6BepFIqCzmQLic3PVoVFnoIyzFOZiLHoStCPLi5bRJTaj9sli/o0aSo
-         1h5XEYf+X/jgu0dMOEYdXZnDtVWHmnNFJDO8boO0Yt6KjrUupgrbf2Me8O7yyzYtSrbu
-         /IEZwPaea1keVu3TaCVsxz8nqTioGA+NXAXD0d0e83ZEKNZfRukA0VqRUQ7OtvWfMBcV
-         QbV9p7o1g8LRmwZUG18CBALPgDBSW/zrT3KSOccAEPhfdNEjwysF4sYChi83N1TbB3z9
-         zXHqYV3vRIzrD71h+BYPRDv56GxzXCRY/oQdprYXbfkZEKTjIli/Ryz1EP3oLwET5dRJ
-         2BYw==
+        d=linaro.org; s=google; t=1698220819; x=1698825619; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HUDxPllVjvtMGLYmGqXFr8rYTP1Q0YIxZZQkyQjpPSg=;
+        b=kBHXxCst6UpDSiXCV3ImdDTyf5wIdrxYldBNaVjNf+Yf0I6Tn7F/+EB+xMkksleaFA
+         9Fcy1OnK7bFtKoxnMbX/B8xQR9wothdHMNL/MSb2s4qa48nC2qH19KBRE3JbHgiFWQlQ
+         oUpqW6gnxMr0+scPcQ7XWYJ3OPx0GWkc2LmisnoA2NO+DI7c9vGoFXO6Te/j57UQt1Zi
+         Hs1PAm6WstT7eUPeRyNyBYDb6A6+4+DG8SeaqMquOn1cl48oYOqftEaAU8iOgQBOXF0y
+         gwVR9yhBoU7WFA8pFqQjceKLU1o932ZcMBjGV2bhA6SfNsUwQltuEvsn8CNmz+QkbGLO
+         CgyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698220741; x=1698825541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fvDTx3KAIXzd8vHpw9Vdd86W/jVpG2BbTDbBYIT2poU=;
-        b=wJGz20Xi9SzRLcfxyO+Cygm+iILP7NMCzSyifoGdtVvQ143ZKkYgdDLgF7n+fjwXZE
-         VdI7C/jl1sxJN2+aH8GMHLf7Y/A2qjFzPaENgDFWn8pF/xZ69FBGCEMnu/GLGuJ94WbI
-         BL/lRrHQXKWWSDl3B4thPQDClKYkVWf0acBlRXImgU4+eya2MqbUWwF7rkK4PpJ9WFF1
-         egwkdxmaZrR/notuwzKkz5UN/uxF22Ns6QFDTYGO8kM86x6BtmHkir5tnwe5+lGU9EMD
-         v08/NE+O0T2+IeJK4vRDEoJgWVQmSnTBo9keVCYPlkcXcc59trcVh1ehOJd7WjlxXpSd
-         n+6w==
-X-Gm-Message-State: AOJu0YypjGkydc42ipU3Sa5fhVJD6tqiCZgb6e1NIP7Kq7/S8zyCUhOf
-        DGDMZXQE5yYGC9/3h0jaqf2QSIxJW0vHgs52WUf7
-X-Google-Smtp-Source: AGHT+IHQDD2PMnD063AfB7TfpeyTJJunL+f9pAaWINSnFI6ntpcyU0hhbYs4wDdOMV/JgVEny1vSjCGeBM5x75REj+A=
-X-Received: by 2002:a17:906:c141:b0:9c5:7f8b:bafc with SMTP id
- dp1-20020a170906c14100b009c57f8bbafcmr11359409ejc.22.1698220740637; Wed, 25
- Oct 2023 00:59:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698220819; x=1698825619;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HUDxPllVjvtMGLYmGqXFr8rYTP1Q0YIxZZQkyQjpPSg=;
+        b=rn+Ca1wrpgNgs9q+1cF7DUyfepRy3PAT34YOAjk7Sz7UGB24hFPM1KZKNc9a/gyKV8
+         N2y1zahDAuoQLH3WvsRskKIHaH3typ2pkAUwH9bfAxJnWukf8l1eymaIamFYCia6NMBF
+         Tvgad3KE3O6PvV36PXcqfatnd2Sij/GfLvip3QYLbHbx4KB1tcBo2rZM83R0Bo4hmdpU
+         Hf3MnSrqgmOmX1ajYZPcFzF9jSyCS2/VQZsbNy/1iCZqAXBia9rvBfXQcIzwNkWHAVlR
+         NC26X+vqkSkfCf9dpG8L/FrLTQDyWn0HgWjfxP0Da6QIci1X46hVqY05Ds3V1G6z3IVP
+         wSAw==
+X-Gm-Message-State: AOJu0YzjkXs02OwOSTdsTk5iUGnENKu2U/IDDW3e+a93cbfO5Rmew3R4
+        JyS+3C6zF6C8/tjoPuRcM6cpWQ==
+X-Google-Smtp-Source: AGHT+IEgJHtD4b5JuOkeCpqix6oPZdL1Tqr679K+poJHJWU1CZFFeC+K4/K3fDoTDUAPpngzFmgBSw==
+X-Received: by 2002:adf:e58e:0:b0:32d:a430:beb with SMTP id l14-20020adfe58e000000b0032da4300bebmr9988963wrm.39.1698220819021;
+        Wed, 25 Oct 2023 01:00:19 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4b03:ec74:6374:5430? ([2a01:e0a:982:cbb0:4b03:ec74:6374:5430])
+        by smtp.gmail.com with ESMTPSA id a3-20020a5d4d43000000b003196b1bb528sm11465307wru.64.2023.10.25.01.00.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 01:00:18 -0700 (PDT)
+Message-ID: <9c820bdc-315b-4f2f-9b08-af57e065fe6d@linaro.org>
+Date:   Wed, 25 Oct 2023 10:00:16 +0200
 MIME-Version: 1.0
-References: <20230915154856.1896062-1-lb@semihalf.com> <b76cc0b1-4a90-5d03-9e38-ac06ef5fd4f8@akamai.com>
-In-Reply-To: <b76cc0b1-4a90-5d03-9e38-ac06ef5fd4f8@akamai.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Wed, 25 Oct 2023 09:58:49 +0200
-Message-ID: <CAK8ByeKw6=FCHUJ+Rqc3izUHOOh4UtV4XzcgQKC8QFTbZnos+g@mail.gmail.com>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     Jim Cromie <jim.cromie@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 5/8] drm/msm: dpu1: add support for SM8650 DPU
+Content-Language: en-US, fr
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025-topic-sm8650-upstream-mdss-v1-0-bb219b8c7a51@linaro.org>
+ <20231025-topic-sm8650-upstream-mdss-v1-5-bb219b8c7a51@linaro.org>
+ <CAA8EJpq5AyPUusqkWE2QfuXxYnmUuUohsKToiC2H1Y2PmGfqeA@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CAA8EJpq5AyPUusqkWE2QfuXxYnmUuUohsKToiC2H1Y2PmGfqeA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -74,1253 +118,594 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 24 pa=C5=BA 2023 o 18:24 Jason Baron <jbaron@akamai.com> napisa=C5=82(=
-a):
->
->
->
-> On 9/15/23 11:48 AM, =C5=81ukasz Bartosik wrote:
-> > Add support for selection of dynamic debug logs destination.
-> > When enabled it allows to configure destination of each callsite
-> > individually. The option adds a framework (described by struct
-> > ddebug_dst_ops) which provides flexible means to add a new destination
-> > for debug logs. On top of the framework support for trace instance as
-> > destination is added. By default destination of debug logs is syslog.
-> > Syslog can be set explicitly by using dst keyword or is selected by
-> > default when dst keyword is omitted, for example:
-> >
-> > localhost ~ # echo -n "module usbcore dst syslog =3Dp" >
-> >                           <debugfs>/dynamic_debug/control
-> > or
-> >
-> > localhost ~ # echo -n "module usbcore =3Dp" >
-> >                           <debugfs>/dynamic_debug/control
-> >
-> > To enable a trace instance as a destination of debug logs a user
-> > can for example issue the command:
-> >
-> > localhost ~ # echo -n "module usbcore dst trace:usb =3Dp" >
-> >                           <debugfs>/dynamic_debug/control
->
->
-> Sorry for the late reply here. So I normally thing of the dynamic debug
-> keywords- func,file,line,etc... as 'selectors'. Like these control which
-> sites are selected. Whereas the 'dst' keyword is where the output of
-> what is selected goes to. So it feels like it should be more like somethi=
-ng:
->
-> echo "module usbcore =3DT:usb" > <debugfs>/dyanmic_debug/control
->
-> And then if there are other flags maybe we need a comma?
->
-> echo "module usbcore =3DT:usb,ptm" > <debugfs>/dyanmic_debug/control
->
-> or
->
-> echo "module usbcore =3DptmT:usb" > <debugfs>/dyanmic_debug/control
->
-> And if you just have 'T' like:
->
-> echo "module usbcore =3DptmT" > <debugfs>/dyanmic_debug/control
->
-> That means use the 'default' trace buffer. And 'p' continues to mean the
-> printk buffer. So you could send lines to both. But you can't send
-> output to more than one trace buffer (although we could relax that in
-> the future, if needed with another ':' separator?).
->
+On 25/10/2023 09:49, Dmitry Baryshkov wrote:
+> On Wed, 25 Oct 2023 at 10:35, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> Add DPU version 10.0 support for the SM8650 platform.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> Thanks for your patch. Could you please rebase it on top of
+> https://patchwork.freedesktop.org/series/119804/ ?
 
-Thanks for the comment. I will follow your suggestions.
+Sure, will do
 
-Lukasz
+Thanks,
+Neil
 
-> Thanks,
->
-> -Jason
->
-> >
-> > The command will write debug logs from usbcore subsystem to the
-> > trace instance named "usb" and the captured logs can be read
-> > later with the command:
-> >
-> > localhost ~ # cat <debugfs>/tracing/instances/usb/trace
-> >
-> > When trace instance name is omitted the debug logs will be written
-> > to "ddebug_default" trace instance:
-> >
-> > localhost ~ # cat <debugfs>/tracing/instances/ddebug_default/trace
-> >
-> > The DYNAMIC_DEBUG_DST option adds destination information
-> > in the dynamic debug control:
-> >
-> > localhost ~ # cat  <debugfs>/dynamic_debug/control
-> > drivers/usb/core/usb-acpi.c:143 [usbcore]usb_acpi_set_power_state =3Dp =
-"acpi: power failed to be set\n" trace:usb
-> > drivers/usb/core/usb-acpi.c:141 [usbcore]usb_acpi_set_power_state =3Dp =
-"acpi: power was set to %d\n" trace:usb
-> >
-> > There are two modes of operation for dynamic debug logs destination
-> > which can be selected during configuration stage of a kernel:
-> >
-> > * Dynamic - callsites configuration and destination of debug logs
-> > can be dynamically changed during runtime. This has slight impact
-> > on performance because it requires SRCU to be used for synchronization.
-> >
-> > * Static - callsites configuration and destination of debug logs
-> > can be configured only from a kernel boot command line. This option
-> > hides <debugfs>/dynamic_debug/control interface. It does not require
-> > SRCU synchronization because of the static configuration. It also
-> > provides convenient means to capture debug logs on production systems
-> > for issues which are difficult to reproduce but on the other hand
-> > do not expose <debugfs>/dynamic_debug/control interface for security
-> > reasons.
-> >
-> > For example to capture thunderbolt subsystem debug logs on production
-> > system to trace instance named "thunderbolt":
-> > * enable kernel configuration option CONFIG_DYNAMIC_DEBUG_CORE,
-> > * enable kernel configuration option DYNAMIC_DEBUG_DST and set its
-> >    operation mode to Static.
-> > * add the option to the thunderbolt's drivers/thunderbolt/Makefile
-> > in order to compile in debug logs:
-> >       CFLAGS_nhi.o :=3D -DDYNAMIC_DEBUG_MODULE
-> > * compile the kernel and update it on a target device,
-> > * finally append the entry to the kernel boot command line:
-> >       thunderbolt.dyndbg=3D"dst trace:thunderbolt =3Dp"
-> >
-> > The DYNAMIC_DEBUG_DST option increases each callsite size by
-> > the pointer size.
-> >
-> > Signed-off-by: =C5=81ukasz Bartosik <lb@semihalf.com>
-> > ---
-> > Changelog v1:
-> > - initial creation
-> > ---
-> >   include/linux/dynamic_debug.h |  30 ++
-> >   lib/Kconfig.debug             | 103 ++++++
-> >   lib/dynamic_debug.c           | 659 +++++++++++++++++++++++++++++++++=
--
-> >   3 files changed, 786 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debu=
-g.h
-> > index 41682278d2e8..8dee10f66e72 100644
-> > --- a/include/linux/dynamic_debug.h
-> > +++ b/include/linux/dynamic_debug.h
-> > @@ -38,8 +38,18 @@ struct _ddebug {
-> >   #define _DPRINTK_FLAGS_INCL_LINENO  (1<<3)
-> >   #define _DPRINTK_FLAGS_INCL_TID             (1<<4)
-> >   #define _DPRINTK_FLAGS_INCL_SOURCENAME      (1<<5)
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     /*
-> > +      * The 6th and 7th bits of the flags are used to determine
-> > +      * destination of debug logs, currently supported destinations
-> > +      * are defined in ddebug_dst_type enumeration
-> > +      */
-> > +#define _DPRINTK_FLAGS_DST_SHIFT     6
-> > +#define _DPRINTK_FLAGS_DST_MASK      (3<<_DPRINTK_FLAGS_DST_SHIFT)
-> > +#endif
-> > +
-> >   #define _DPRINTK_FLAGS_INCL_ANY             \
-> >       (_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
-> >        _DPRINTK_FLAGS_INCL_LINENO  | _DPRINTK_FLAGS_INCL_TID |\
-> >        _DPRINTK_FLAGS_INCL_SOURCENAME)
-> > @@ -54,6 +64,10 @@ struct _ddebug {
-> >               struct static_key_false dd_key_false;
-> >       } key;
-> >   #endif
-> > +
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst *dst;
-> > +#endif
-> >   } __attribute__((aligned(8)));
-> >
-> >   enum class_map_type {
-> > @@ -280,10 +294,26 @@ void __dynamic_ibdev_dbg(struct _ddebug *descript=
-or,
-> >       _dynamic_func_call(fmt, __dynamic_ibdev_dbg,            \
-> >                          dev, fmt, ##__VA_ARGS__)
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +
-> > +void __print_hex_dump_dst(const struct _ddebug *descriptor, const char=
- *level,
-> > +                       const char *prefix_str, int prefix_type, int ro=
-wsize,
-> > +                       int groupsize, const void *buf, size_t len,
-> > +                       bool ascii);
-> > +
-> > +#define dynamic_hex_dump(prefix_str, prefix_type, rowsize,            =
-               \
-> > +                      groupsize, buf, len, ascii)                     =
-               \
-> > +     _dynamic_func_call(__builtin_constant_p(prefix_str) ? prefix_str =
-: "hexdump",   \
-> > +                        __print_hex_dump_dst,                         =
-               \
-> > +                        KERN_DEBUG, prefix_str, prefix_type,          =
-               \
-> > +                        rowsize, groupsize, buf, len, ascii)
-> > +#else
-> > +
-> >   #define dynamic_hex_dump(prefix_str, prefix_type, rowsize,          \
-> >                        groupsize, buf, len, ascii)                    \
-> >       _dynamic_func_call_no_desc(__builtin_constant_p(prefix_str) ? pre=
-fix_str : "hexdump", \
-> >                                  print_hex_dump,                      \
-> >                                  KERN_DEBUG, prefix_str, prefix_type, \
-> >                                  rowsize, groupsize, buf, len, ascii)
-> > +#endif
-> >
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index f0c30ad83f22..4abfa126bde5 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -188,6 +188,109 @@ config DYNAMIC_DEBUG_CORE
-> >         the case of embedded system where the kernel image size is
-> >         sensitive for people.
-> >
-> > +menuconfig DYNAMIC_DEBUG_DST
-> > +     bool "Enable selection of dynamic debug logs destination"
-> > +     depends on DYNAMIC_DEBUG_CORE
-> > +     select TRACING
-> > +     help
-> > +       Add support for selecting destination of dynamic debug logs.
-> > +       When enabled it allows to configure destination of each callsit=
-e
-> > +       individually. The option adds a framework (described by struct
-> > +       ddebug_dst_ops) which provides flexible means to add a new dest=
-ination
-> > +       for debug logs. On top of the framework support for trace insta=
-nce as
-> > +       destination is added. By default destination of debug logs is s=
-yslog.
-> > +       Syslog can be set explicitly by using dst keyword or is selecte=
-d by
-> > +       default when dst keyword is omitted, for example:
-> > +
-> > +       localhost ~ # echo -n "module usbcore dst syslog =3Dp" >
-> > +                               <debugfs>/dynamic_debug/control
-> > +       or
-> > +
-> > +       localhost ~ # echo -n "module usbcore =3Dp" >
-> > +                               <debugfs>/dynamic_debug/control
-> > +
-> > +       To enable a trace instance as a destination of debug logs a use=
-r
-> > +       can for example issue the command:
-> > +
-> > +       localhost ~ # echo -n "module usbcore dst trace:usb =3Dp" >
-> > +                               <debugfs>/dynamic_debug/control
-> > +
-> > +       The command will write debug logs from usbcore subsystem to the
-> > +       trace instance named "usb" and the captured logs can be read
-> > +       later with the command:
-> > +
-> > +       localhost ~ # cat <debugfs>/tracing/instances/usb/trace
-> > +
-> > +       When trace instance name is omitted the debug logs will be writ=
-ten
-> > +       to "ddebug_default" trace instance:
-> > +
-> > +       localhost ~ # cat <debugfs>/tracing/instances/ddebug_default/tr=
-ace
-> > +
-> > +       The DYNAMIC_DEBUG_DST option adds destination information
-> > +       in the dynamic debug control:
-> > +
-> > +       localhost ~ # cat  <debugfs>/dynamic_debug/control
-> > +       # filename:lineno [module]function flags format destination
-> > +       drivers/usb/core/usb-acpi.c:143 [usbcore]usb_acpi_set_power_sta=
-te =3Dp "acpi: power failed to be set\n" trace:usb
-> > +       drivers/usb/core/usb-acpi.c:141 [usbcore]usb_acpi_set_power_sta=
-te =3Dp "acpi: power was set to %d\n" trace:usb
-> > +
-> > +       The DYNAMIC_DEBUG_DST option increases each callsite size by
-> > +       the pointer size.
-> > +
-> > +if DYNAMIC_DEBUG_DST
-> > +
-> > +choice
-> > +     prompt "Destination mode"
-> > +     default DYNAMIC_DEBUG_DST_DYNAMIC
-> > +     help
-> > +       There are two modes of operation for dynamic debug logs destina=
-tion
-> > +       which can be selected during configuration stage of a kernel:
-> > +
-> > +       * Dynamic - callsites configuration and destination of debug lo=
-gs
-> > +       can be dynamically changed during runtime. This has slight impa=
-ct
-> > +       on performance because it requires SRCU to be used for synchron=
-ization.
-> > +
-> > +       * Static - callsites configuration and destination of debug log=
-s
-> > +       can be configured only from a kernel boot command line. This op=
-tion
-> > +       hides <debugfs>/dynamic_debug/control interface. It does not re=
-quire
-> > +       SRCU synchronization because of the static configuration. It al=
-so
-> > +       provides convenient means to capture debug logs on production s=
-ystems
-> > +       for issues which are difficult to reproduce and at the same tim=
-e
-> > +       do not expose <debugfs>/dynamic_debug/control interface for sec=
-urity
-> > +       reasons.
-> > +
-> > +config DYNAMIC_DEBUG_DST_DYNAMIC
-> > +     bool "Dynamic"
-> > +     select SRCU
-> > +     help
-> > +       Callsites configuration and destination of debug logs can be
-> > +       dynamically changed during runtime. This has slight impact on
-> > +       performance because it requires SRCU to be used for synchroniza=
-tion.
-> > +
-> > +       The interface which allows to dynamically change configuration =
-is:
-> > +             <debugfs>/dynamic_debug/control
-> > +
-> > +config DYNAMIC_DEBUG_DST_STATIC
-> > +     bool "Static"
-> > +     help
-> > +       Callsites configuration and destination of debug logs can be
-> > +       configured only from a kernel boot command line. This option
-> > +       does not expose <debugfs>/dynamic_debug/control interface and
-> > +       therefore does not require SRCU synchronization. It also provid=
-es
-> > +       convenient means to capture debug logs on production systems
-> > +       for issues which are difficult to reproduce and at the same tim=
-e
-> > +       do not expose <debugfs>/dynamic_debug/control interface
-> > +       for security reasons.
-> > +
-> > +       For example to configure usbcore module to output its debug log=
-s
-> > +       to trace instance named "usb" the following line would have to =
-be
-> > +       appended to a kernel boot command line:
-> > +
-> > +           usbcore.dyndbg=3D"dst trace:usb =3Dp"
-> > +
-> > +endchoice
-> > +endif
-> > +
-> >   config SYMBOLIC_ERRNAME
-> >       bool "Support symbolic error names in printf"
-> >       default y if PRINTK
-> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> > index 009f2ead09c1..0cb69b553554 100644
-> > --- a/lib/dynamic_debug.c
-> > +++ b/lib/dynamic_debug.c
-> > @@ -44,6 +44,87 @@ extern struct _ddebug __stop___dyndbg[];
-> >   extern struct ddebug_class_map __start___dyndbg_classes[];
-> >   extern struct ddebug_class_map __stop___dyndbg_classes[];
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +#include <linux/trace.h>
-> > +
-> > +enum ddebug_dst_type {
-> > +     DDEBUG_DST_SYSLOG,      /* destination syslog */
-> > +     DDEBUG_DST_TRACE,       /* destination trace instance */
-> > +     /* DDEBUG_DST_NOT_USED_1 */
-> > +     /* DDEBUG_DST_NOT_USED_2 */
-> > +     DDEBUG_DST_MAX,
-> > +};
-> > +
-> > +/*
-> > + * The structure holds information related to debug logs output
-> > + * destination other than syslog. Currently only trace instance
-> > + * is supported.
-> > + */
-> > +struct ddebug_dst {
-> > +     unsigned int use_count;
-> > +     enum ddebug_dst_type type;
-> > +     struct ddebug_dst_ops *ops;
-> > +     union {
-> > +             struct {
-> > +                     const char *instance;
-> > +                     struct trace_array *arr;
-> > +             } trace;
-> > +     };
-> > +};
-> > +
-> > +#ifndef CONFIG_DYNAMIC_DEBUG_DST_STATIC
-> > +
-> > +/*
-> > + * Instead of slicing code with #ifdefs create
-> > + * wrappers around SRCU functions we use
-> > + */
-> > +DEFINE_STATIC_SRCU(dst_srcu);
-> > +
-> > +#define dd_srcu_dereference(p, ssp) srcu_dereference(p, ssp)
-> > +#define dd_rcu_assign_pointer(p, v) rcu_assign_pointer(p, v)
-> > +
-> > +static inline int dd_srcu_read_lock(struct srcu_struct *ssp)
-> > +{
-> > +     return srcu_read_lock(ssp);
-> > +}
-> > +
-> > +static inline void dd_srcu_read_unlock(struct srcu_struct *ssp, int id=
-x)
-> > +{
-> > +     return srcu_read_unlock(ssp, idx);
-> > +}
-> > +
-> > +static void dd_synchronize_srcu(struct srcu_struct *ssp)
-> > +{
-> > +     synchronize_srcu(ssp);
-> > +}
-> > +
-> > +#else
-> > +
-> > +struct dd_srcu_struct {
-> > +};
-> > +
-> > +static struct dd_srcu_struct dst_srcu;
-> > +
-> > +#define dd_srcu_dereference(p, ssp) (p)
-> > +#define dd_rcu_assign_pointer(p, v) ((p) =3D (v))
-> > +
-> > +static inline int dd_srcu_read_lock(struct dd_srcu_struct *ssp)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static inline void dd_srcu_read_unlock(struct dd_srcu_struct *ssp, int=
- idx)
-> > +{
-> > +}
-> > +
-> > +void dd_synchronize_srcu(struct dd_srcu_struct *ssp)
-> > +{
-> > +}
-> > +
-> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST_STATIC */
-> > +
-> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST */
-> > +
-> >   struct ddebug_table {
-> >       struct list_head link, maps;
-> >       const char *mod_name;
-> > @@ -58,6 +139,7 @@ struct ddebug_query {
-> >       const char *format;
-> >       const char *class_string;
-> >       unsigned int first_lineno, last_lineno;
-> > +     struct ddebug_dst *dst;
-> >   };
-> >
-> >   struct ddebug_iter {
-> > @@ -126,10 +208,402 @@ do {                                            =
-               \
-> >   #define v3pr_info(fmt, ...) vnpr_info(3, fmt, ##__VA_ARGS__)
-> >   #define v4pr_info(fmt, ...) vnpr_info(4, fmt, ##__VA_ARGS__)
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +
-> > +static inline enum ddebug_dst_type get_dst_type(const struct _ddebug *=
-dp)
-> > +{
-> > +     return (dp->flags & _DPRINTK_FLAGS_DST_MASK) >>
-> > +             _DPRINTK_FLAGS_DST_SHIFT;
-> > +}
-> > +
-> > +static void set_dst_type(unsigned int *newflags,
-> > +                      enum ddebug_dst_type type)
-> > +{
-> > +     *newflags &=3D ~_DPRINTK_FLAGS_DST_MASK;
-> > +     *newflags |=3D (type << _DPRINTK_FLAGS_DST_SHIFT);
-> > +}
-> > +
-> > +#define DST_SYSLOG_STR       "syslog"
-> > +#define DST_TRACE_STR        "trace"
-> > +#define DST_INVALID_STR      "invalid"
-> > +#define DST_DST_STR  "destination"
-> > +
-> > +struct dstbuf {
-> > +#define DST_DESC_MAX_SIZE 32
-> > +     char buf[DST_DESC_MAX_SIZE];
-> > +};
-> > +
-> > +static char *describe_dst_type(const enum ddebug_dst_type type)
-> > +{
-> > +     switch (type) {
-> > +     case DDEBUG_DST_SYSLOG:
-> > +             return DST_SYSLOG_STR;
-> > +     case DDEBUG_DST_TRACE:
-> > +             return DST_TRACE_STR;
-> > +     default:
-> > +             return DST_INVALID_STR;
-> > +     }
-> > +}
-> > +
-> > +static char *ddebug_describe_dst(const struct ddebug_dst *dst,
-> > +                              struct dstbuf *dstb)
-> > +{
-> > +     if (!dst)
-> > +             return DST_SYSLOG_STR;
-> > +
-> > +     switch (dst->type) {
-> > +     case DDEBUG_DST_SYSLOG:
-> > +             return DST_SYSLOG_STR;
-> > +     case DDEBUG_DST_TRACE:
-> > +             snprintf(dstb->buf, DST_DESC_MAX_SIZE, "%s:%s",
-> > +                      DST_TRACE_STR, dst->trace.instance);
-> > +             break;
-> > +     default:
-> > +             return DST_INVALID_STR;
-> > +     }
-> > +
-> > +     return dstb->buf;
-> > +}
-> > +
-> > +static char *ddebug_describe_dst_dp(struct _ddebug *dp, struct dstbuf =
-*dstb)
-> > +{
-> > +     if (!get_dst_type(dp))
-> > +             return DST_SYSLOG_STR;
-> > +
-> > +     return ddebug_describe_dst(dp->dst, dstb);
-> > +}
-> > +
-> > +/*
-> > + * struct ddebug_dst_ops - dynamic debug logs destination operations
-> > + *
-> > + * @parse_and_init - parses and initializes destination
-> > + * @has_changed - checks whether destination has changed for a callsit=
-e
-> > + * @print - prints message for a callsite
-> > + * @dev_print - prints device message for a callsite
-> > + * @free - frees memory associated with a destination
-> > + */
-> > +struct ddebug_dst_ops {
-> > +     int (*parse_and_init)(struct ddebug_query *query, const char *arg=
-);
-> > +     bool (*has_changed)(const struct ddebug_query *query,
-> > +                         const struct _ddebug *dp);
-> > +     void (*print)(const struct ddebug_dst *dst, const char *fmt, ...)=
-;
-> > +     void (*dev_print)(const struct ddebug_dst *dst,
-> > +                       const struct device *dev, const char *fmt, ...)=
-;
-> > +     void (*free)(struct ddebug_dst *dst, int arg);
-> > +};
-> > +
-> > +static int tr_parse_and_init(struct ddebug_query *query,
-> > +                          const char *arg)
-> > +{
-> > +     char *instance =3D strchr(arg, ':');
-> > +     struct trace_array *arr;
-> > +     int ret =3D -EINVAL;
-> > +
-> > +     if (instance)
-> > +             instance++;
-> > +     else
-> > +             instance =3D "ddebug_default";
-> > +
-> > +     arr =3D trace_array_get_by_name(instance);
-> > +     if (!arr)
-> > +             goto err;
-> > +
-> > +     ret =3D trace_array_init_printk(arr);
-> > +     if (ret)
-> > +             goto err_trace;
-> > +
-> > +     query->dst->trace.instance =3D kstrdup(instance, GFP_KERNEL);
-> > +     if (!query->dst->trace.instance)
-> > +             goto err_trace;
-> > +
-> > +     query->dst->trace.arr =3D arr;
-> > +
-> > +     v3pr_info("parsed trace dst: instance name=3D%s, arrray=3D%p\n",
-> > +               query->dst->trace.instance, arr);
-> > +     return 0;
-> > +err_trace:
-> > +     trace_array_put(arr);
-> > +     trace_array_destroy(arr);
-> > +err:
-> > +     return ret;
-> > +}
-> > +
-> > +bool tr_has_changed(const struct ddebug_query *query, const struct _dd=
-ebug *dp)
-> > +{
-> > +     if (!dp->dst)
-> > +             return true;
-> > +     else if (dp->dst->type !=3D DDEBUG_DST_TRACE)
-> > +             return true;
-> > +
-> > +     return query->dst->trace.arr !=3D dp->dst->trace.arr;
-> > +}
-> > +
-> > +__printf(2, 3)
-> > +static void tr_print(const struct ddebug_dst *dst, const char *fmt, ..=
-.)
-> > +{
-> > +     va_list args;
-> > +     struct va_format vaf;
-> > +
-> > +     va_start(args, fmt);
-> > +     vaf.fmt =3D fmt;
-> > +     vaf.va =3D &args;
-> > +
-> > +     trace_array_printk(dst->trace.arr, _THIS_IP_, "%pV", &vaf);
-> > +
-> > +     va_end(args);
-> > +}
-> > +
-> > +__printf(3, 4)
-> > +static void tr_dev_print(const struct ddebug_dst *dst,
-> > +                      const struct device *dev, const char *fmt, ...)
-> > +{
-> > +     va_list args;
-> > +     struct va_format vaf;
-> > +
-> > +     va_start(args, fmt);
-> > +     vaf.fmt =3D fmt;
-> > +     vaf.va =3D &args;
-> > +
-> > +     trace_array_printk(dst->trace.arr, _THIS_IP_, "%pV", &vaf);
-> > +     va_end(args);
-> > +}
-> > +
-> > +static void tr_free(struct ddebug_dst *dst, int tr_arr_destroy)
-> > +{
-> > +     WARN_ON(!dst);
-> > +
-> > +     v2pr_info("freed dst: type=3Dtrace, instance=3D%s\n", dst->trace.=
-instance);
-> > +
-> > +     kfree(dst->trace.instance);
-> > +     dst->trace.instance =3D NULL;
-> > +
-> > +     trace_array_put(dst->trace.arr);
-> > +     /*
-> > +      * destroy trace instance in case when query was not applied to a=
-ny
-> > +      * of the callsites, otherwise don't try to destroy it because it=
- will
-> > +      * be removed from sysfs together with captured debug logs, let a=
- user
-> > +      * to delete it manually later at convenient time
-> > +      */
-> > +     if (tr_arr_destroy)
-> > +             trace_array_destroy(dst->trace.arr);
-> > +     dst->trace.arr =3D NULL;
-> > +}
-> > +
-> > +bool syslog_has_changed(const struct ddebug_query *query,
-> > +                     const struct _ddebug *dp)
-> > +{
-> > +     if (!dp->dst)
-> > +             return false;
-> > +
-> > +     return dp->dst->type !=3D DDEBUG_DST_SYSLOG;
-> > +}
-> > +
-> > +static void syslog_free(struct ddebug_dst *dst, int arg)
-> > +{
-> > +     v2pr_info("freed dst: type=3Dsyslog\n");
-> > +}
-> > +
-> > +static struct ddebug_dst_ops dst_ops[] =3D {
-> > +     // syslog destination ops
-> > +     {
-> > +             .parse_and_init =3D NULL,
-> > +             .has_changed =3D syslog_has_changed,
-> > +             .print =3D NULL,
-> > +             .dev_print =3D NULL,
-> > +             .free =3D syslog_free,
-> > +     },
-> > +     // trace destination ops
-> > +     {
-> > +             .parse_and_init =3D tr_parse_and_init,
-> > +             .has_changed =3D tr_has_changed,
-> > +             .print =3D tr_print,
-> > +             .dev_print =3D tr_dev_print,
-> > +             .free =3D tr_free,
-> > +     },
-> > +};
-> > +
-> > +static int dst_parse_and_init(struct ddebug_query *query, const char *=
-arg)
-> > +{
-> > +     int ret =3D -EINVAL;
-> > +
-> > +     if (!arg)
-> > +             goto err;
-> > +
-> > +     if (query->dst)
-> > +             goto err;
-> > +
-> > +     query->dst =3D kzalloc(sizeof(struct ddebug_dst), GFP_KERNEL);
-> > +     if (!query->dst) {
-> > +             ret =3D -ENOMEM;
-> > +             goto err;
-> > +     }
-> > +
-> > +     if (!strcmp(arg, "syslog")) {
-> > +             query->dst->type =3D DDEBUG_DST_SYSLOG;
-> > +             query->dst->ops =3D &dst_ops[DDEBUG_DST_SYSLOG];
-> > +     } else if (!strcmp(arg, "trace") ||
-> > +                !strncmp(arg, "trace:", 6)) {
-> > +             query->dst->type =3D DDEBUG_DST_TRACE;
-> > +             query->dst->ops =3D &dst_ops[DDEBUG_DST_TRACE];
-> > +     } else
-> > +             goto err_mem;
-> > +
-> > +     if (query->dst->ops->parse_and_init) {
-> > +             ret =3D query->dst->ops->parse_and_init(query, arg);
-> > +             if (ret)
-> > +                     goto err_mem;
-> > +     }
-> > +
-> > +     v3pr_info("parsed dst: type=3D%s\n", describe_dst_type(query->dst=
-->type));
-> > +     return 0;
-> > +err_mem:
-> > +     kfree(query->dst);
-> > +err:
-> > +     return ret;
-> > +}
-> > +
-> > +static void dst_apply_change(const struct ddebug_query *query,
-> > +                          struct _ddebug *dp)
-> > +{
-> > +     /* store old destination pointer */
-> > +     struct ddebug_dst *old_dst =3D dp->dst;
-> > +     struct ddebug_dst *new_dst;
-> > +
-> > +     /* increase use count */
-> > +     query->dst->use_count++;
-> > +
-> > +     /*
-> > +      * syslog destination does not require additional description
-> > +      * however we use it to simplify control path processing
-> > +      */
-> > +     new_dst =3D (query->dst->type =3D=3D DDEBUG_DST_SYSLOG) ? NULL : =
-query->dst;
-> > +
-> > +     /* update destination pointer */
-> > +     dd_rcu_assign_pointer(dp->dst, new_dst);
-> > +
-> > +     if (!old_dst)
-> > +             return;
-> > +
-> > +     old_dst->use_count--;
-> > +     /* check if old destination pointer is still being used */
-> > +     if (!old_dst->use_count) {
-> > +             /*
-> > +              * wait for all read rcu critical sections
-> > +              * in progress to finish
-> > +              */
-> > +             dd_synchronize_srcu(&dst_srcu);
-> > +             /* call destination specific free function */
-> > +             old_dst->ops->free(old_dst, 0);
-> > +             /* free old destination pointer */
-> > +             kfree(old_dst);
-> > +     }
-> > +}
-> > +
-> > +static void dst_try_free(struct ddebug_query *query)
-> > +{
-> > +     if (!query)
-> > +             return;
-> > +
-> > +     /* free destination if it wasn't applied to any callsite */
-> > +     if (!query->dst->use_count) {
-> > +             if (query->dst->ops->free)
-> > +                     query->dst->ops->free(query->dst, 1);
-> > +             /*
-> > +              * for syslog we always free its destination because
-> > +              * it is used only to simplify control path processing
-> > +              */
-> > +             if (query->dst->type)
-> > +                     v2pr_info("freed dst: didn't apply to any of the =
-callsites\n");
-> > +             kfree(query->dst);
-> > +             query->dst =3D NULL;
-> > +     }
-> > +}
-> > +
-> > +void __print_hex_dump_dst(const struct _ddebug *descriptor, const char=
- *level,
-> > +                       const char *prefix_str, int prefix_type,
-> > +                       int rowsize, int groupsize, const void *buf,
-> > +                       size_t len, bool ascii)
-> > +{
-> > +     if (get_dst_type(descriptor)) {
-> > +             const u8 *ptr =3D buf;
-> > +             struct ddebug_dst *dst;
-> > +             int i, linelen, remaining =3D len, idx;
-> > +             unsigned char linebuf[32 * 3 + 2 + 32 + 1];
-> > +
-> > +             if (rowsize !=3D 16 && rowsize !=3D 32)
-> > +                     rowsize =3D 16;
-> > +
-> > +             idx =3D dd_srcu_read_lock(&dst_srcu);
-> > +             dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
-> > +             WARN_ON(!dst);
-> > +             for (i =3D 0; i < len; i +=3D rowsize) {
-> > +                     linelen =3D min(remaining, rowsize);
-> > +                     remaining -=3D rowsize;
-> > +
-> > +                     hex_dump_to_buffer(ptr + i, linelen, rowsize, gro=
-upsize,
-> > +                                        linebuf, sizeof(linebuf), asci=
-i);
-> > +
-> > +                     switch (prefix_type) {
-> > +                     case DUMP_PREFIX_ADDRESS:
-> > +                             dst->ops->print(descriptor->dst, "%s%s%p:=
- %s\n",
-> > +                                             level, prefix_str, ptr + =
-i, linebuf);
-> > +                             break;
-> > +                     case DUMP_PREFIX_OFFSET:
-> > +                             dst->ops->print(descriptor->dst, "%s%s%.8=
-x: %s\n",
-> > +                                             level, prefix_str, i, lin=
-ebuf);
-> > +                             break;
-> > +                     default:
-> > +                             dst->ops->print(descriptor->dst, "%s%s%s\=
-n",
-> > +                                             level, prefix_str, linebu=
-f);
-> > +                             break;
-> > +                     }
-> > +             }
-> > +
-> > +             dd_srcu_read_unlock(&dst_srcu, idx);
-> > +     } else
-> > +             print_hex_dump(level, prefix_str, prefix_type, rowsize,
-> > +                            groupsize, buf, len, ascii);
-> > +}
-> > +EXPORT_SYMBOL(__print_hex_dump_dst);
-> > +
-> > +#else
-> > +
-> > +struct ddebug_dst {
-> > +};
-> > +
-> > +struct dstbuf {
-> > +};
-> > +
-> > +static inline unsigned int get_dst_type(const struct _ddebug *dp)
-> > +{
-> > +     return  0;
-> > +}
-> > +
-> > +static char *ddebug_describe_dst(const struct ddebug_dst *dst,
-> > +                              struct dstbuf *dstb)
-> > +{
-> > +     return "";
-> > +}
-> > +
-> > +static char *ddebug_describe_dst_dp(struct _ddebug *dp,
-> > +                                 struct dstbuf *dstb)
-> > +{
-> > +     return "";
-> > +}
-> > +
-> > +static void dst_try_free(struct ddebug_query *query)
-> > +{
-> > +}
-> > +
-> > +#define DST_DST_STR  ""
-> > +
-> > +#endif /* CONFIG_DYNAMIC_DEBUG_DST */
-> > +
-> >   static void vpr_info_dq(const struct ddebug_query *query, const char =
-*msg)
-> >   {
-> >       /* trim any trailing newlines */
-> >       int fmtlen =3D 0;
-> > +     struct dstbuf dstb;
-> >
-> >       if (query->format) {
-> >               fmtlen =3D strlen(query->format);
-> > @@ -137,13 +611,14 @@ static void vpr_info_dq(const struct ddebug_query=
- *query, const char *msg)
-> >                       fmtlen--;
-> >       }
-> >
-> > -     v3pr_info("%s: func=3D\"%s\" file=3D\"%s\" module=3D\"%s\" format=
-=3D\"%.*s\" lineno=3D%u-%u class=3D%s\n",
-> > +     v3pr_info("%s: func=3D\"%s\" file=3D\"%s\" module=3D\"%s\" format=
-=3D\"%.*s\" lineno=3D%u-%u class=3D%s %s=3D%s\n",
-> >                 msg,
-> >                 query->function ?: "",
-> >                 query->filename ?: "",
-> >                 query->module ?: "",
-> >                 fmtlen, query->format ?: "",
-> > -               query->first_lineno, query->last_lineno, query->class_s=
-tring);
-> > +               query->first_lineno, query->last_lineno, query->class_s=
-tring,
-> > +               DST_DST_STR, ddebug_describe_dst(query->dst, &dstb));
-> >   }
-> >
-> >   static struct ddebug_class_map *ddebug_find_valid_class(struct ddebug=
-_table const *dt,
-> > @@ -178,8 +653,12 @@ static int ddebug_change(const struct ddebug_query=
- *query,
-> >       unsigned int newflags;
-> >       unsigned int nfound =3D 0;
-> >       struct flagsbuf fbuf, nbuf;
-> > +     struct dstbuf dstbc, dstbn;
-> >       struct ddebug_class_map *map =3D NULL;
-> >       int __outvar valid_class;
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst_ops *dst_ops =3D query->dst->ops;
-> > +#endif
-> >
-> >       /* search for matching ddebugs */
-> >       mutex_lock(&ddebug_lock);
-> > @@ -243,8 +722,19 @@ static int ddebug_change(const struct ddebug_query=
- *query,
-> >                       nfound++;
-> >
-> >                       newflags =3D (dp->flags & modifiers->mask) | modi=
-fiers->flags;
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +                     /* set destination type in newflags */
-> > +                     set_dst_type(&newflags, query->dst->type);
-> > +                     if (newflags =3D=3D dp->flags &&
-> > +                         (!dst_ops->has_changed ||
-> > +                          !dst_ops->has_changed(query, dp)))
-> > +                             /* nothing changed */
-> > +                             continue;
-> > +#else
-> >                       if (newflags =3D=3D dp->flags)
-> >                               continue;
-> > +#endif
-> > +
-> >   #ifdef CONFIG_JUMP_LABEL
-> >                       if (dp->flags & _DPRINTK_FLAGS_PRINT) {
-> >                               if (!(newflags & _DPRINTK_FLAGS_PRINT))
-> > @@ -253,14 +743,24 @@ static int ddebug_change(const struct ddebug_quer=
-y *query,
-> >                               static_branch_enable(&dp->key.dd_key_true=
-);
-> >                       }
-> >   #endif
-> > -                     v4pr_info("changed %s:%d [%s]%s %s =3D> %s\n",
-> > +                     v4pr_info("changed %s:%d [%s]%s %s %s =3D> %s %s\=
-n",
-> >                                 trim_prefix(dp->filename), dp->lineno,
-> >                                 dt->mod_name, dp->function,
-> >                                 ddebug_describe_flags(dp->flags, &fbuf)=
-,
-> > -                               ddebug_describe_flags(newflags, &nbuf))=
-;
-> > +                               ddebug_describe_dst_dp(dp, &dstbc),
-> > +                               ddebug_describe_flags(newflags, &nbuf),
-> > +                               ddebug_describe_dst(query->dst, &dstbn)=
-);
-> >                       dp->flags =3D newflags;
-> > +
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +                     if (dst_ops->has_changed &&
-> > +                         dst_ops->has_changed(query, dp))
-> > +                             /* destination changed, apply it */
-> > +                             dst_apply_change(query, dp);
-> > +#endif
-> >               }
-> >       }
-> > +
-> >       mutex_unlock(&ddebug_lock);
-> >
-> >       if (!nfound && verbose)
-> > @@ -456,6 +956,12 @@ static int ddebug_parse_query(char *words[], int n=
-words,
-> >                               return -EINVAL;
-> >               } else if (!strcmp(keyword, "class")) {
-> >                       rc =3D check_set(&query->class_string, arg, "clas=
-s");
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +             } else if (!strcmp(keyword, "dst")) {
-> > +                     rc =3D dst_parse_and_init(query, arg);
-> > +                     if (rc)
-> > +                             return rc;
-> > +#endif
-> >               } else {
-> >                       pr_err("unknown keyword \"%s\"\n", keyword);
-> >                       return -EINVAL;
-> > @@ -463,6 +969,15 @@ static int ddebug_parse_query(char *words[], int n=
-words,
-> >               if (rc)
-> >                       return rc;
-> >       }
-> > +
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     /* set destination to syslog by default if it was not explicitly =
-set */
-> > +     if (!query->dst) {
-> > +             rc =3D dst_parse_and_init(query, "syslog");
-> > +             if (rc)
-> > +                     return rc;
-> > +     }
-> > +#endif
-> >       if (!query->module && modname)
-> >               /*
-> >                * support $modname.dyndbg=3D<multiple queries>, when
-> > @@ -549,11 +1064,14 @@ static int ddebug_exec_query(char *query_string,=
- const char *modname)
-> >       }
-> >       if (ddebug_parse_query(words, nwords-1, &query, modname)) {
-> >               pr_err("query parse failed\n");
-> > +             dst_try_free(&query);
-> >               return -EINVAL;
-> >       }
-> > +
-> >       /* actually go and implement the change */
-> >       nfound =3D ddebug_change(&query, &modifiers);
-> >       vpr_info_dq(&query, nfound ? "applied" : "no-match");
-> > +     dst_try_free(&query);
-> >
-> >       return nfound;
-> >   }
-> > @@ -856,6 +1374,10 @@ static inline char *dynamic_emit_prefix(struct _d=
-debug *desc, char *buf)
-> >
-> >   void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, =
-...)
-> >   {
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst *dst;
-> > +     int idx;
-> > +#endif
-> >       va_list args;
-> >       struct va_format vaf;
-> >       char buf[PREFIX_SIZE] =3D "";
-> > @@ -868,6 +1390,21 @@ void __dynamic_pr_debug(struct _ddebug *descripto=
-r, const char *fmt, ...)
-> >       vaf.fmt =3D fmt;
-> >       vaf.va =3D &args;
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     if (!get_dst_type(descriptor))
-> > +             goto syslog;
-> > +
-> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
-> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
-> > +     WARN_ON(!dst);
-> > +     dst->ops->print(dst, "%s%pV", dynamic_emit_prefix(descriptor, buf=
-),
-> > +                     &vaf);
-> > +
-> > +     dd_srcu_read_unlock(&dst_srcu, idx);
-> > +     va_end(args);
-> > +     return;
-> > +syslog:
-> > +#endif
-> >       printk(KERN_DEBUG "%s%pV", dynamic_emit_prefix(descriptor, buf), =
-&vaf);
-> >
-> >       va_end(args);
-> > @@ -877,6 +1414,10 @@ EXPORT_SYMBOL(__dynamic_pr_debug);
-> >   void __dynamic_dev_dbg(struct _ddebug *descriptor,
-> >                     const struct device *dev, const char *fmt, ...)
-> >   {
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst *dst;
-> > +     int idx;
-> > +#endif
-> >       struct va_format vaf;
-> >       va_list args;
-> >
-> > @@ -888,6 +1429,29 @@ void __dynamic_dev_dbg(struct _ddebug *descriptor=
-,
-> >       vaf.fmt =3D fmt;
-> >       vaf.va =3D &args;
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     if (!get_dst_type(descriptor))
-> > +             goto syslog;
-> > +
-> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
-> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
-> > +     WARN_ON(!dst);
-> > +     if (!dev) {
-> > +             dst->ops->print(dst, "(NULL device *): %pV", &vaf);
-> > +     } else {
-> > +             char buf[PREFIX_SIZE] =3D "";
-> > +
-> > +             dst->ops->dev_print(dst, dev, "%s%s %s: %pV",
-> > +                                 dynamic_emit_prefix(descriptor, buf),
-> > +                                 dev_driver_string(dev), dev_name(dev)=
-,
-> > +                                 &vaf);
-> > +     }
-> > +
-> > +     dd_srcu_read_unlock(&dst_srcu, idx);
-> > +     va_end(args);
-> > +     return;
-> > +syslog:
-> > +#endif
-> >       if (!dev) {
-> >               printk(KERN_DEBUG "(NULL device *): %pV", &vaf);
-> >       } else {
-> > @@ -908,6 +1472,10 @@ EXPORT_SYMBOL(__dynamic_dev_dbg);
-> >   void __dynamic_netdev_dbg(struct _ddebug *descriptor,
-> >                         const struct net_device *dev, const char *fmt, =
-...)
-> >   {
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst *dst;
-> > +     int idx;
-> > +#endif
-> >       struct va_format vaf;
-> >       va_list args;
-> >
-> > @@ -919,6 +1487,35 @@ void __dynamic_netdev_dbg(struct _ddebug *descrip=
-tor,
-> >       vaf.fmt =3D fmt;
-> >       vaf.va =3D &args;
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     if (!get_dst_type(descriptor))
-> > +             goto syslog;
-> > +
-> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
-> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
-> > +     WARN_ON(!dst);
-> > +     if (dev && dev->dev.parent) {
-> > +             char buf[PREFIX_SIZE] =3D "";
-> > +
-> > +             dst->ops->dev_print(dst, dev->dev.parent,
-> > +                                 "%s%s %s %s%s: %pV",
-> > +                                 dynamic_emit_prefix(descriptor, buf),
-> > +                                 dev_driver_string(dev->dev.parent),
-> > +                                 dev_name(dev->dev.parent),
-> > +                                 netdev_name(dev), netdev_reg_state(de=
-v),
-> > +                                 &vaf);
-> > +     } else if (dev) {
-> > +             dst->ops->print(dst, "%s%s: %pV", netdev_name(dev),
-> > +                             netdev_reg_state(dev), &vaf);
-> > +     } else {
-> > +             dst->ops->print(dst, "(NULL net_device *): %pV", &vaf);
-> > +     }
-> > +
-> > +     dd_srcu_read_unlock(&dst_srcu, idx);
-> > +     va_end(args);
-> > +     return;
-> > +syslog:
-> > +#endif
-> >       if (dev && dev->dev.parent) {
-> >               char buf[PREFIX_SIZE] =3D "";
-> >
-> > @@ -947,6 +1544,10 @@ EXPORT_SYMBOL(__dynamic_netdev_dbg);
-> >   void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
-> >                        const struct ib_device *ibdev, const char *fmt, =
-...)
-> >   {
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     struct ddebug_dst *dst;
-> > +     int idx;
-> > +#endif
-> >       struct va_format vaf;
-> >       va_list args;
-> >
-> > @@ -955,6 +1556,34 @@ void __dynamic_ibdev_dbg(struct _ddebug *descript=
-or,
-> >       vaf.fmt =3D fmt;
-> >       vaf.va =3D &args;
-> >
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +     if (!get_dst_type(descriptor))
-> > +             goto syslog;
-> > +
-> > +     idx =3D dd_srcu_read_lock(&dst_srcu);
-> > +     dst =3D dd_srcu_dereference(descriptor->dst, &dst_srcu);
-> > +     WARN_ON(!dst);
-> > +     if (ibdev && ibdev->dev.parent) {
-> > +             char buf[PREFIX_SIZE] =3D "";
-> > +
-> > +             dst->ops->dev_print(dst, ibdev->dev.parent,
-> > +                                 "%s%s %s %s: %pV",
-> > +                                 dynamic_emit_prefix(descriptor, buf),
-> > +                                 dev_driver_string(ibdev->dev.parent),
-> > +                                 dev_name(ibdev->dev.parent),
-> > +                                 dev_name(&ibdev->dev),
-> > +                                 &vaf);
-> > +     } else if (ibdev) {
-> > +             dst->ops->print(dst, "%s: %pV", dev_name(&ibdev->dev), &v=
-af);
-> > +     } else {
-> > +             dst->ops->print(dst, "(NULL ib_device): %pV", &vaf);
-> > +     }
-> > +
-> > +     dd_srcu_read_unlock(&dst_srcu, idx);
-> > +     va_end(args);
-> > +     return;
-> > +syslog:
-> > +#endif
-> >       if (ibdev && ibdev->dev.parent) {
-> >               char buf[PREFIX_SIZE] =3D "";
-> >
-> > @@ -1127,11 +1756,16 @@ static int ddebug_proc_show(struct seq_file *m,=
- void *p)
-> >       struct ddebug_iter *iter =3D m->private;
-> >       struct _ddebug *dp =3D p;
-> >       struct flagsbuf flags;
-> > +     struct dstbuf dstb;
-> >       char const *class;
-> >
-> >       if (p =3D=3D SEQ_START_TOKEN) {
-> > -             seq_puts(m,
-> > -                      "# filename:lineno [module]function flags format=
-\n");
-> > +             seq_puts(m, "# filename:lineno [module]function flags for=
-mat");
-> > +#if defined CONFIG_DYNAMIC_DEBUG_DST
-> > +             seq_puts(m, " destination\n");
-> > +#else
-> > +             seq_puts(m, "\n");
-> > +#endif
-> >               return 0;
-> >       }
-> >
-> > @@ -1149,6 +1783,7 @@ static int ddebug_proc_show(struct seq_file *m, v=
-oid *p)
-> >               else
-> >                       seq_printf(m, " class unknown, _id:%d", dp->class=
-_id);
-> >       }
-> > +     seq_printf(m, " %s", ddebug_describe_dst_dp(dp, &dstb));
-> >       seq_puts(m, "\n");
-> >
-> >       return 0;
-> > @@ -1351,6 +1986,9 @@ static void ddebug_remove_all_tables(void)
-> >
-> >   static __initdata int ddebug_init_success;
-> >
-> > +
-> > +#ifndef CONFIG_DYNAMIC_DEBUG_DST_STATIC
-> > +
-> >   static int __init dynamic_debug_init_control(void)
-> >   {
-> >       struct proc_dir_entry *procfs_dir;
-> > @@ -1374,6 +2012,15 @@ static int __init dynamic_debug_init_control(voi=
-d)
-> >       return 0;
-> >   }
-> >
-> > +#else
-> > +
-> > +static int __init dynamic_debug_init_control(void)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +#endif
-> > +
-> >   static int __init dynamic_debug_init(void)
-> >   {
-> >       struct _ddebug *iter, *iter_mod_start;
+> 
+>> ---
+>>   .../drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h    | 458 +++++++++++++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |  23 ++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   1 +
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h        |   3 +
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   1 +
+>>   5 files changed, 486 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+>> new file mode 100644
+>> index 000000000000..3a37d78804e7
+>> --- /dev/null
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+>> @@ -0,0 +1,458 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2022. Qualcomm Innovation Center, Inc. All rights reserved.
+>> + * Copyright (c) 2015-2018, 2020 The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +#ifndef _DPU_10_0_SM8650_H
+>> +#define _DPU_10_0_SM8650_H
+>> +
+>> +static const struct dpu_caps sm8650_dpu_caps = {
+>> +       .max_mixer_width = DEFAULT_DPU_OUTPUT_LINE_WIDTH,
+>> +       .max_mixer_blendstages = 0xb,
+>> +       .qseed_type = DPU_SSPP_SCALER_QSEED4,
+>> +       .has_src_split = true,
+>> +       .has_dim_layer = true,
+>> +       .has_idle_pc = true,
+>> +       .has_3d_merge = true,
+>> +       .max_linewidth = 8192,
+>> +       .pixel_ram_size = DEFAULT_PIXEL_RAM_SIZE,
+>> +};
+>> +
+>> +static const struct dpu_mdp_cfg sm8650_mdp = {
+>> +       .name = "top_0",
+>> +       .base = 0, .len = 0x494,
+>> +       .features = BIT(DPU_MDP_PERIPH_0_REMOVED),
+>> +       .clk_ctrls = {
+>> +               [DPU_CLK_CTRL_REG_DMA] = { .reg_off = 0x2bc, .bit_off = 20 },
+>> +       },
+>> +};
+>> +
+>> +/* FIXME: get rid of DPU_CTL_SPLIT_DISPLAY in favour of proper ACTIVE_CTL support */
+>> +static const struct dpu_ctl_cfg sm8650_ctl[] = {
+>> +       {
+>> +               .name = "ctl_0", .id = CTL_0,
+>> +               .base = 0x15000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK | BIT(DPU_CTL_SPLIT_DISPLAY),
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 9),
+>> +       }, {
+>> +               .name = "ctl_1", .id = CTL_1,
+>> +               .base = 0x16000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK | BIT(DPU_CTL_SPLIT_DISPLAY),
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 10),
+>> +       }, {
+>> +               .name = "ctl_2", .id = CTL_2,
+>> +               .base = 0x17000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK,
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 11),
+>> +       }, {
+>> +               .name = "ctl_3", .id = CTL_3,
+>> +               .base = 0x18000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK,
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 12),
+>> +       }, {
+>> +               .name = "ctl_4", .id = CTL_4,
+>> +               .base = 0x19000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK,
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 13),
+>> +       }, {
+>> +               .name = "ctl_5", .id = CTL_5,
+>> +               .base = 0x1a000, .len = 0x1000,
+>> +               .features = CTL_SM8550_MASK,
+>> +               .intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 23),
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_sspp_cfg sm8650_sspp[] = {
+>> +       {
+>> +               .name = "sspp_0", .id = SSPP_VIG0,
+>> +               .base = 0x4000, .len = 0x344,
+>> +               .features = VIG_SC7180_MASK,
+> 
+> Could you please use _SDMA mask here after testing that SmartDMA works
+> as expected?
+> 
+>> +               .sblk = &sm8550_vig_sblk_0,
+>> +               .xin_id = 0,
+>> +               .type = SSPP_TYPE_VIG,
+>> +       }, {
+>> +               .name = "sspp_1", .id = SSPP_VIG1,
+>> +               .base = 0x6000, .len = 0x344,
+>> +               .features = VIG_SC7180_MASK,
+>> +               .sblk = &sm8550_vig_sblk_1,
+>> +               .xin_id = 4,
+>> +               .type = SSPP_TYPE_VIG,
+>> +       }, {
+>> +               .name = "sspp_2", .id = SSPP_VIG2,
+>> +               .base = 0x8000, .len = 0x344,
+>> +               .features = VIG_SC7180_MASK,
+>> +               .sblk = &sm8550_vig_sblk_2,
+>> +               .xin_id = 8,
+>> +               .type = SSPP_TYPE_VIG,
+>> +       }, {
+>> +               .name = "sspp_3", .id = SSPP_VIG3,
+>> +               .base = 0xa000, .len = 0x344,
+>> +               .features = VIG_SC7180_MASK,
+>> +               .sblk = &sm8550_vig_sblk_3,
+>> +               .xin_id = 12,
+>> +               .type = SSPP_TYPE_VIG,
+>> +       }, {
+>> +               .name = "sspp_8", .id = SSPP_DMA0,
+>> +               .base = 0x24000, .len = 0x344,
+>> +               .features = DMA_SDM845_MASK,
+>> +               .sblk = &sdm845_dma_sblk_0,
+>> +               .xin_id = 1,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       }, {
+>> +               .name = "sspp_9", .id = SSPP_DMA1,
+>> +               .base = 0x26000, .len = 0x344,
+>> +               .features = DMA_SDM845_MASK,
+>> +               .sblk = &sdm845_dma_sblk_1,
+>> +               .xin_id = 5,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       }, {
+>> +               .name = "sspp_10", .id = SSPP_DMA2,
+>> +               .base = 0x28000, .len = 0x344,
+>> +               .features = DMA_SDM845_MASK,
+>> +               .sblk = &sdm845_dma_sblk_2,
+>> +               .xin_id = 9,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       }, {
+>> +               .name = "sspp_11", .id = SSPP_DMA3,
+>> +               .base = 0x2a000, .len = 0x344,
+>> +               .features = DMA_SDM845_MASK,
+>> +               .sblk = &sdm845_dma_sblk_3,
+>> +               .xin_id = 13,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       }, {
+>> +               .name = "sspp_12", .id = SSPP_DMA4,
+>> +               .base = 0x2c000, .len = 0x344,
+>> +               .features = DMA_CURSOR_SDM845_MASK,
+>> +               .sblk = &sm8550_dma_sblk_4,
+>> +               .xin_id = 14,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       }, {
+>> +               .name = "sspp_13", .id = SSPP_DMA5,
+>> +               .base = 0x2e000, .len = 0x344,
+>> +               .features = DMA_CURSOR_SDM845_MASK,
+>> +               .sblk = &sm8550_dma_sblk_5,
+>> +               .xin_id = 15,
+>> +               .type = SSPP_TYPE_DMA,
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_lm_cfg sm8650_lm[] = {
+>> +       {
+>> +               .name = "lm_0", .id = LM_0,
+>> +               .base = 0x44000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_1,
+>> +               .pingpong = PINGPONG_0,
+>> +               .dspp = DSPP_0,
+>> +       }, {
+>> +               .name = "lm_1", .id = LM_1,
+>> +               .base = 0x45000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_0,
+>> +               .pingpong = PINGPONG_1,
+>> +               .dspp = DSPP_1,
+>> +       }, {
+>> +               .name = "lm_2", .id = LM_2,
+>> +               .base = 0x46000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_3,
+>> +               .pingpong = PINGPONG_2,
+>> +       }, {
+>> +               .name = "lm_3", .id = LM_3,
+>> +               .base = 0x47000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_2,
+>> +               .pingpong = PINGPONG_3,
+>> +       }, {
+>> +               .name = "lm_4", .id = LM_4,
+>> +               .base = 0x48000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_5,
+>> +               .pingpong = PINGPONG_4,
+>> +       }, {
+>> +               .name = "lm_5", .id = LM_5,
+>> +               .base = 0x49000, .len = 0x400,
+>> +               .features = MIXER_SDM845_MASK,
+>> +               .sblk = &sdm845_lm_sblk,
+>> +               .lm_pair = LM_4,
+>> +               .pingpong = PINGPONG_5,
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_dspp_cfg sm8650_dspp[] = {
+>> +       {
+>> +               .name = "dspp_0", .id = DSPP_0,
+>> +               .base = 0x54000, .len = 0x1800,
+>> +               .features = DSPP_SC7180_MASK,
+>> +               .sblk = &sdm845_dspp_sblk,
+>> +       }, {
+>> +               .name = "dspp_1", .id = DSPP_1,
+>> +               .base = 0x56000, .len = 0x1800,
+>> +               .features = DSPP_SC7180_MASK,
+>> +               .sblk = &sdm845_dspp_sblk,
+>> +       }, {
+>> +               .name = "dspp_2", .id = DSPP_2,
+>> +               .base = 0x58000, .len = 0x1800,
+>> +               .features = DSPP_SC7180_MASK,
+>> +               .sblk = &sdm845_dspp_sblk,
+>> +       }, {
+>> +               .name = "dspp_3", .id = DSPP_3,
+>> +               .base = 0x5a000, .len = 0x1800,
+>> +               .features = DSPP_SC7180_MASK,
+>> +               .sblk = &sdm845_dspp_sblk,
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_pingpong_cfg sm8650_pp[] = {
+>> +       {
+>> +               .name = "pingpong_0", .id = PINGPONG_0,
+>> +               .base = 0x69000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_0,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 8),
+>> +       }, {
+>> +               .name = "pingpong_1", .id = PINGPONG_1,
+>> +               .base = 0x6a000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_0,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 9),
+>> +       }, {
+>> +               .name = "pingpong_2", .id = PINGPONG_2,
+>> +               .base = 0x6b000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_1,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 10),
+>> +       }, {
+>> +               .name = "pingpong_3", .id = PINGPONG_3,
+>> +               .base = 0x6c000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_1,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 11),
+>> +       }, {
+>> +               .name = "pingpong_4", .id = PINGPONG_4,
+>> +               .base = 0x6d000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_2,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 30),
+>> +       }, {
+>> +               .name = "pingpong_5", .id = PINGPONG_5,
+>> +               .base = 0x6e000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_2,
+>> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 31),
+>> +       }, {
+>> +               .name = "pingpong_6", .id = PINGPONG_6,
+>> +               .base = 0x66000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_3,
+>> +       }, {
+>> +               .name = "pingpong_7", .id = PINGPONG_7,
+>> +               .base = 0x66400, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_3,
+>> +       }, {
+>> +               .name = "pingpong_8", .id = PINGPONG_8,
+>> +               .base = 0x7e000, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_4,
+>> +       }, {
+>> +               .name = "pingpong_9", .id = PINGPONG_9,
+>> +               .base = 0x7e400, .len = 0,
+>> +               .features = BIT(DPU_PINGPONG_DITHER),
+>> +               .sblk = &sc7280_pp_sblk,
+>> +               .merge_3d = MERGE_3D_4,
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_merge_3d_cfg sm8650_merge_3d[] = {
+>> +       {
+>> +               .name = "merge_3d_0", .id = MERGE_3D_0,
+>> +               .base = 0x4e000, .len = 0x8,
+>> +       }, {
+>> +               .name = "merge_3d_1", .id = MERGE_3D_1,
+>> +               .base = 0x4f000, .len = 0x8,
+>> +       }, {
+>> +               .name = "merge_3d_2", .id = MERGE_3D_2,
+>> +               .base = 0x50000, .len = 0x8,
+>> +       }, {
+>> +               .name = "merge_3d_3", .id = MERGE_3D_3,
+>> +               .base = 0x66700, .len = 0x8,
+>> +       }, {
+>> +               .name = "merge_3d_4", .id = MERGE_3D_4,
+>> +               .base = 0x7e700, .len = 0x8,
+>> +       },
+>> +};
+>> +
+>> +/*
+>> + * NOTE: Each display compression engine (DCE) contains dual hard
+>> + * slice DSC encoders so both share same base address but with
+>> + * its own different sub block address.
+>> + */
+>> +static const struct dpu_dsc_cfg sm8650_dsc[] = {
+>> +       {
+>> +               .name = "dce_0_0", .id = DSC_0,
+>> +               .base = 0x80000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2) | BIT(DPU_DSC_NATIVE_42x_EN),
+>> +               .sblk = &dsc_sblk_0,
+>> +       }, {
+>> +               .name = "dce_0_1", .id = DSC_1,
+>> +               .base = 0x80000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2) | BIT(DPU_DSC_NATIVE_42x_EN),
+>> +               .sblk = &dsc_sblk_1,
+>> +       }, {
+>> +               .name = "dce_1_0", .id = DSC_2,
+>> +               .base = 0x81000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2) | BIT(DPU_DSC_NATIVE_42x_EN),
+>> +               .sblk = &dsc_sblk_0,
+>> +       }, {
+>> +               .name = "dce_1_1", .id = DSC_3,
+>> +               .base = 0x81000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2) | BIT(DPU_DSC_NATIVE_42x_EN),
+>> +               .sblk = &dsc_sblk_1,
+>> +       }, {
+>> +               .name = "dce_2_0", .id = DSC_4,
+>> +               .base = 0x82000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2),
+>> +               .sblk = &dsc_sblk_0,
+>> +       }, {
+>> +               .name = "dce_2_1", .id = DSC_5,
+>> +               .base = 0x82000, .len = 0x6,
+>> +               .features = BIT(DPU_DSC_HW_REV_1_2),
+>> +               .sblk = &dsc_sblk_1,
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_wb_cfg sm8650_wb[] = {
+>> +       {
+>> +               .name = "wb_2", .id = WB_2,
+>> +               .base = 0x65000, .len = 0x2c8,
+>> +               .features = WB_SM8250_MASK,
+>> +               .format_list = wb2_formats,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .xin_id = 6,
+>> +               .vbif_idx = VBIF_RT,
+>> +               .maxlinewidth = 4096,
+>> +               .intr_wb_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 4),
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_intf_cfg sm8650_intf[] = {
+>> +       {
+>> +               .name = "intf_0", .id = INTF_0,
+>> +               .base = 0x34000, .len = 0x280,
+>> +               .features = INTF_SC7280_MASK,
+>> +               .type = INTF_DP,
+>> +               .controller_id = MSM_DP_CONTROLLER_0,
+>> +               .prog_fetch_lines_worst_case = 24,
+>> +               .intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 24),
+>> +               .intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 25),
+>> +       }, {
+>> +               .name = "intf_1", .id = INTF_1,
+>> +               .base = 0x35000, .len = 0x300,
+>> +               .features = INTF_SC7280_MASK,
+>> +               .type = INTF_DSI,
+>> +               .controller_id = MSM_DSI_CONTROLLER_0,
+>> +               .prog_fetch_lines_worst_case = 24,
+>> +               .intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 26),
+>> +               .intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 27),
+>> +               .intr_tear_rd_ptr = DPU_IRQ_IDX(MDP_INTF1_TEAR_INTR, 2),
+>> +       }, {
+>> +               .name = "intf_2", .id = INTF_2,
+>> +               .base = 0x36000, .len = 0x300,
+>> +               .features = INTF_SC7280_MASK,
+>> +               .type = INTF_DSI,
+>> +               .controller_id = MSM_DSI_CONTROLLER_1,
+>> +               .prog_fetch_lines_worst_case = 24,
+>> +               .intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 28),
+>> +               .intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 29),
+>> +               .intr_tear_rd_ptr = DPU_IRQ_IDX(MDP_INTF2_TEAR_INTR, 2),
+>> +       }, {
+>> +               .name = "intf_3", .id = INTF_3,
+>> +               .base = 0x37000, .len = 0x280,
+>> +               .features = INTF_SC7280_MASK,
+>> +               .type = INTF_DP,
+>> +               .controller_id = MSM_DP_CONTROLLER_1,
+>> +               .prog_fetch_lines_worst_case = 24,
+>> +               .intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 30),
+>> +               .intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 31),
+>> +       },
+>> +};
+>> +
+>> +static const struct dpu_perf_cfg sm8650_perf_data = {
+>> +       .max_bw_low = 17000000,
+>> +       .max_bw_high = 27000000,
+>> +       .min_core_ib = 2500000,
+>> +       .min_llcc_ib = 0,
+>> +       .min_dram_ib = 800000,
+>> +       .min_prefill_lines = 35,
+>> +       /* FIXME: lut tables */
+>> +       .danger_lut_tbl = {0x3ffff, 0x3ffff, 0x0},
+>> +       .safe_lut_tbl = {0xfe00, 0xfe00, 0xffff},
+>> +       .qos_lut_tbl = {
+>> +               {.nentry = ARRAY_SIZE(sc7180_qos_linear),
+>> +               .entries = sc7180_qos_linear
+>> +               },
+>> +               {.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+>> +               .entries = sc7180_qos_macrotile
+>> +               },
+>> +               {.nentry = ARRAY_SIZE(sc7180_qos_nrt),
+>> +               .entries = sc7180_qos_nrt
+>> +               },
+>> +               /* TODO: macrotile-qseed is different from macrotile */
+>> +       },
+>> +       .cdp_cfg = {
+>> +               {.rd_enable = 1, .wr_enable = 1},
+>> +               {.rd_enable = 1, .wr_enable = 0}
+>> +       },
+>> +       .clk_inefficiency_factor = 105,
+>> +       .bw_inefficiency_factor = 120,
+>> +};
+>> +
+>> +static const struct dpu_mdss_version sm8650_mdss_ver = {
+>> +       .core_major_ver = 10,
+>> +       .core_minor_ver = 0,
+>> +};
+>> +
+>> +const struct dpu_mdss_cfg dpu_sm8650_cfg = {
+>> +       .mdss_ver = &sm8650_mdss_ver,
+>> +       .caps = &sm8650_dpu_caps,
+>> +       .mdp = &sm8650_mdp,
+>> +       .ctl_count = ARRAY_SIZE(sm8650_ctl),
+>> +       .ctl = sm8650_ctl,
+>> +       .sspp_count = ARRAY_SIZE(sm8650_sspp),
+>> +       .sspp = sm8650_sspp,
+>> +       .mixer_count = ARRAY_SIZE(sm8650_lm),
+>> +       .mixer = sm8650_lm,
+>> +       .dspp_count = ARRAY_SIZE(sm8650_dspp),
+>> +       .dspp = sm8650_dspp,
+>> +       .pingpong_count = ARRAY_SIZE(sm8650_pp),
+>> +       .pingpong = sm8650_pp,
+>> +       .dsc_count = ARRAY_SIZE(sm8650_dsc),
+>> +       .dsc = sm8650_dsc,
+>> +       .merge_3d_count = ARRAY_SIZE(sm8650_merge_3d),
+>> +       .merge_3d = sm8650_merge_3d,
+>> +       .wb_count = ARRAY_SIZE(sm8650_wb),
+>> +       .wb = sm8650_wb,
+>> +       .intf_count = ARRAY_SIZE(sm8650_intf),
+>> +       .intf = sm8650_intf,
+>> +       .vbif_count = ARRAY_SIZE(sm8650_vbif),
+>> +       .vbif = sm8650_vbif,
+>> +       .perf = &sm8650_perf_data,
+>> +};
+>> +
+>> +#endif
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> index a1aada630780..0b8af44e12dd 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> @@ -472,6 +472,7 @@ static const u32 msm8998_rt_pri_lvl[] = {1, 2, 2, 2};
+>>   static const u32 msm8998_nrt_pri_lvl[] = {1, 1, 1, 1};
+>>   static const u32 sdm845_rt_pri_lvl[] = {3, 3, 4, 4, 5, 5, 6, 6};
+>>   static const u32 sdm845_nrt_pri_lvl[] = {3, 3, 3, 3, 3, 3, 3, 3};
+>> +static const u32 sm8650_rt_pri_lvl[] = {4, 4, 5, 5, 5, 5, 6};
+> 
+> Just 7 of them?
+> 
+>>
+>>   static const struct dpu_vbif_dynamic_ot_cfg msm8998_ot_rdwr_cfg[] = {
+>>          {
+>> @@ -558,6 +559,26 @@ static const struct dpu_vbif_cfg sm8550_vbif[] = {
+>>          },
+>>   };
+>>
+>> +static const struct dpu_vbif_cfg sm8650_vbif[] = {
+>> +       {
+>> +       .name = "vbif_rt", .id = VBIF_RT,
+>> +       .base = 0, .len = 0x1074,
+>> +       .features = BIT(DPU_VBIF_QOS_REMAP),
+>> +       .xin_halt_timeout = 0x4000,
+>> +       .qos_rp_remap_size = 0x40,
+>> +       .qos_rt_tbl = {
+>> +               .npriority_lvl = ARRAY_SIZE(sm8650_rt_pri_lvl),
+>> +               .priority_lvl = sm8650_rt_pri_lvl,
+>> +               },
+>> +       .qos_nrt_tbl = {
+>> +               .npriority_lvl = ARRAY_SIZE(sdm845_nrt_pri_lvl),
+>> +               .priority_lvl = sdm845_nrt_pri_lvl,
+>> +               },
+>> +       .memtype_count = 16,
+>> +       .memtype = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+>> +       },
+>> +};
+>> +
+>>   /*************************************************************
+>>    * PERF data config
+>>    *************************************************************/
+>> @@ -673,3 +694,5 @@ static const struct dpu_qos_lut_entry sc7180_qos_nrt[] = {
+>>   #include "catalog/dpu_8_1_sm8450.h"
+>>
+>>   #include "catalog/dpu_9_0_sm8550.h"
+>> +
+>> +#include "catalog/dpu_10_0_sm8650.h"
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> index df024e10d3a3..92cce867a7e0 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> @@ -841,5 +841,6 @@ extern const struct dpu_mdss_cfg dpu_sc7280_cfg;
+>>   extern const struct dpu_mdss_cfg dpu_sc8280xp_cfg;
+>>   extern const struct dpu_mdss_cfg dpu_sm8450_cfg;
+>>   extern const struct dpu_mdss_cfg dpu_sm8550_cfg;
+>> +extern const struct dpu_mdss_cfg dpu_sm8650_cfg;
+>>
+>>   #endif /* _DPU_HW_CATALOG_H */
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> index d85157acfbf8..a6702b2bfc68 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> @@ -195,6 +195,8 @@ enum dpu_pingpong {
+>>          PINGPONG_5,
+>>          PINGPONG_6,
+>>          PINGPONG_7,
+>> +       PINGPONG_8,
+>> +       PINGPONG_9,
+>>          PINGPONG_S0,
+>>          PINGPONG_MAX
+>>   };
+>> @@ -204,6 +206,7 @@ enum dpu_merge_3d {
+>>          MERGE_3D_1,
+>>          MERGE_3D_2,
+>>          MERGE_3D_3,
+>> +       MERGE_3D_4,
+>>          MERGE_3D_MAX
+>>   };
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> index fe7267b3bff5..4a017064207f 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> @@ -1363,6 +1363,7 @@ static const struct of_device_id dpu_dt_match[] = {
+>>          { .compatible = "qcom,sm8350-dpu", .data = &dpu_sm8350_cfg, },
+>>          { .compatible = "qcom,sm8450-dpu", .data = &dpu_sm8450_cfg, },
+>>          { .compatible = "qcom,sm8550-dpu", .data = &dpu_sm8550_cfg, },
+>> +       { .compatible = "qcom,sm8650-dpu", .data = &dpu_sm8650_cfg, },
+>>          {}
+>>   };
+>>   MODULE_DEVICE_TABLE(of, dpu_dt_match);
+>>
+>> --
+>> 2.34.1
+>>
+> 
+> 
+
