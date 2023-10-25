@@ -2,198 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0ED7D6CF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBB77D6D0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344307AbjJYNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S1343865AbjJYNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbjJYNRv (ORCPT
+        with ESMTP id S233953AbjJYNWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:17:51 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DCC138
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7eef0b931so56781717b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698239868; x=1698844668; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
-        b=YUExOLi3bB63BLB3LmYOz5fXJsFz3giuSe6MQq8EMmn0CbAicL3fynsuabXbu5RnpM
-         8YerNvWGWSvLxa4RpdC8ZKkr6GO+zdwHREY0+u6WbPDTZxY+HFatJXYan1fFXjo1IKdZ
-         vGEF4K/J3gwmKsairkEsU5iQ7q5Z1Av03mCrwGf7P42OsacRgFuwDhR5676fhGxlXki8
-         lFKd24FRToX7wRSQOqIZAmTOxSTYCIl9/0b9RZGhHsO3R6+yi2d9Zi1Uwp5XD+D9tPlf
-         s1OBenoev16RvP2Jd8aoDcQDGm7D28qgTAnINVZAzfr0KmVchGFRN/KpvWSgc+Mwd0iC
-         2fsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239868; x=1698844668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
-        b=bWApbU4YGNuAidkEovF4rL9tTYcwwGI/GBxoC+G2/LQguGn2g0FVRRmElZ8iB6XoT0
-         exfkviEKAgu1t6RUc10zgAyEvck/CTuGqGnGDaV/85DU+epVU3eBsuoLqTHWDl8X0mjy
-         z2VzkxYDBUTPyi9CcqV0uEa9yreqqdJ3cXqjmZqH5FfzUDsr85R3vsYcfJIUqnLzHLqa
-         MFERVJ7ETpwsh4CTmtFCrdgKQE4/4eBaMT8YMgjiDB0Pa7tOv6jscNHNMgCB53hdbDC7
-         lFHl8uMqxY2yZgLaaDeQD/nBK1plEjS7l2aFvmT6TBr5P2KTfm4XvL4Rn8Tf6kxFjAiH
-         xAfA==
-X-Gm-Message-State: AOJu0Yxka4GMQ9GJkdnmBl11WrGwkjlhHQZx21+JG6NqOVC5x0DvBdBL
-        Bxd+AIH+svOdONWxkmFVtD+rpzSs5UsE+G3s3T5f
-X-Google-Smtp-Source: AGHT+IEmM4VRNzvMlwEig7LRJ0/I8fW70H8OJI07w9jqnVgfL3k2gIIT/BmMHa1TUskU3QK75Bw+pBd7fYHozFYVqsg=
-X-Received: by 2002:a25:5856:0:b0:da0:86e8:aea4 with SMTP id
- m83-20020a255856000000b00da086e8aea4mr840904ybb.57.1698239868426; Wed, 25 Oct
- 2023 06:17:48 -0700 (PDT)
+        Wed, 25 Oct 2023 09:22:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1D1111
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:22:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698240170; x=1729776170;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VCsAR60EOLjvkvfdhGiMeRwZV7/SoJUu/p67SJIwIzA=;
+  b=K6zF4434XbhZwHWesSWnINFp+4N2W77Jf4l60qjvfFVcDzsKWCWwS45N
+   GVSWzt89ZsmR10mtm7ts+BIL/nrdmqf7V12ffrK/e4osiG39k+i1NGO4o
+   mVGIrZOrYIowS0OPLZ4TPqamKvFWHw10xzOIpRpghtrgpti+e//ehRsZG
+   /nT6xagU2TnhePHHOv74iH4y8FUajWI4Ojxnizsw/hg+RHGlCbTuoOwRa
+   jm7odeb2v7vvhM8JJ9cgN1X95hf4ySYOR9GMrV+LiO/xLasNM5Fx3l9p9
+   hVmcBDeQbdicRQDPLsKhEdbkEbLVL+FElQuHsQ3y0FrRETHR5WRvqFQXT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="418427491"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="418427491"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 06:22:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1090220714"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="1090220714"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Oct 2023 06:22:48 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/1] Revert "iommu/vt-d: Remove unused function"
+Date:   Wed, 25 Oct 2023 21:18:54 +0800
+Message-Id: <20231025131854.375388-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
-In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 25 Oct 2023 09:17:37 -0400
-Message-ID: <CAHC9VhThNGA+qRgs=rOmEfvffj3qLzB=Jx4ii-uksuU1YJ6F5w@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
- non-initial user namespace
-To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 5:42=E2=80=AFAM Michael Wei=C3=9F
-<michael.weiss@aisec.fraunhofer.de> wrote:
->
-> Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
-> BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
-> in non-initial user namespaces.
->
-> If a container manager restricts its unprivileged (user namespaced)
-> children by a device cgroup, it is not necessary to deny mknod()
-> anymore. Thus, user space applications may map devices on different
-> locations in the file system by using mknod() inside the container.
->
-> A use case for this, we also use in GyroidOS, is to run virsh for
-> VMs inside an unprivileged container. virsh creates device nodes,
-> e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
-> in a non-initial userns, even if a cgroup device white list with the
-> corresponding major, minor of /dev/null exists. Thus, in this case
-> the usual bind mounts or pre populated device nodes under /dev are
-> not sufficient.
->
-> To circumvent this limitation, allow mknod() by checking CAP_MKNOD
-> in the userns by implementing the security_inode_mknod_nscap(). The
-> hook implementation checks if the corresponding permission flag
-> BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
-> To avoid to create unusable inodes in user space the hook also
-> checks SB_I_NODEV on the corresponding super block.
->
-> Further, the security_sb_alloc_userns() hook is implemented using
-> cgroup_bpf_current_enabled() to allow usage of device nodes on super
-> blocks mounted by a guarded task.
->
-> Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
->
-> Patch 4 to 8 rework explicit calls to devcgroup_check_permission
-> also as LSM hooks and finalize the conversion of the device_cgroup
-> subsystem to a LSM.
->
-> Patch 9 and 10 introduce new generic security hooks to be used
-> for the actual mknod device guard implementation.
->
-> Patch 11 wires up the security hooks in the vfs
->
-> Patch 12 and 13 provide helper functions in the bpf cgroup
-> subsystem.
->
-> Patch 14 finally implement the LSM hooks to grand access
->
-> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
-> ---
-> Changes in v2:
-> - Integrate this as LSM (Christian, Paul)
-> - Switched to a device cgroup specific flag instead of a generic
->   bpf program flag (Christian)
-> - do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
->   sb_alloc_super in fs/super.c
-> - Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971a=
-b88b1@aisec.fraunhofer.de
->
-> Michael Wei=C3=9F (14):
->   device_cgroup: Implement devcgroup hooks as lsm security hooks
->   vfs: Remove explicit devcgroup_inode calls
->   device_cgroup: Remove explicit devcgroup_inode hooks
->   lsm: Add security_dev_permission() hook
->   device_cgroup: Implement dev_permission() hook
->   block: Switch from devcgroup_check_permission to security hook
->   drm/amdkfd: Switch from devcgroup_check_permission to security hook
->   device_cgroup: Hide devcgroup functionality completely in lsm
->   lsm: Add security_inode_mknod_nscap() hook
->   lsm: Add security_sb_alloc_userns() hook
->   vfs: Wire up security hooks for lsm-based device guard in userns
->   bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
->   bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
->   device_cgroup: Allow mknod in non-initial userns if guarded
->
->  block/bdev.c                                 |   9 +-
->  drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
->  fs/namei.c                                   |  24 ++--
->  fs/super.c                                   |   6 +-
->  include/linux/bpf-cgroup.h                   |   2 +
->  include/linux/device_cgroup.h                |  67 -----------
->  include/linux/lsm_hook_defs.h                |   4 +
->  include/linux/security.h                     |  18 +++
->  include/uapi/linux/bpf.h                     |   1 +
->  init/Kconfig                                 |   4 +
->  kernel/bpf/cgroup.c                          |  14 +++
->  security/Kconfig                             |   1 +
->  security/Makefile                            |   2 +-
->  security/device_cgroup/Kconfig               |   7 ++
->  security/device_cgroup/Makefile              |   4 +
->  security/{ =3D> device_cgroup}/device_cgroup.c |   3 +-
->  security/device_cgroup/device_cgroup.h       |  20 ++++
->  security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
->  security/security.c                          |  75 ++++++++++++
->  19 files changed, 294 insertions(+), 88 deletions(-)
->  delete mode 100644 include/linux/device_cgroup.h
->  create mode 100644 security/device_cgroup/Kconfig
->  create mode 100644 security/device_cgroup/Makefile
->  rename security/{ =3D> device_cgroup}/device_cgroup.c (99%)
->  create mode 100644 security/device_cgroup/device_cgroup.h
->  create mode 100644 security/device_cgroup/lsm.c
+This reverts commit c61c255e114c52682546447ed44d3470b5708134.
 
-Hi Michael,
+The pasid_set_wpe() helper, which was removed by the reverted commit,
+is still used by the nesting translation support in the iommufd tree.
+To avoid a merge conflict, revert the commit.
 
-I think this was lost because it wasn't CC'd to the LSM list (see
-below).  I've CC'd the list on my reply, but future patch submissions
-that involve the LSM must be posted to the LSM list if you would like
-them to be considered.
+Link: https://lore.kernel.org/linux-kernel/20231025153455.283c5b12@canb.auug.org.au/
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/intel/pasid.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-http://vger.kernel.org/vger-lists.html#linux-security-module
+diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+index 06ddb3c927f5..8f92b92f3d2a 100644
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@ -335,6 +335,15 @@ static inline void pasid_set_fault_enable(struct pasid_entry *pe)
+ 	pasid_set_bits(&pe->val[0], 1 << 1, 0);
+ }
+ 
++/*
++ * Setup the WPE(Write Protect Enable) field (Bit 132) of a
++ * scalable mode PASID entry.
++ */
++static inline void pasid_set_wpe(struct pasid_entry *pe)
++{
++	pasid_set_bits(&pe->val[2], 1 << 4, 1 << 4);
++}
++
+ /*
+  * Setup the P(Present) field (Bit 0) of a scalable mode PASID
+  * entry.
+-- 
+2.34.1
 
---=20
-paul-moore.com
