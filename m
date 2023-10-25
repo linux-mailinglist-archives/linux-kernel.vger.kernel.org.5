@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1579D7D6160
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C667D6167
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 08:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjJYF7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 01:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S231469AbjJYGCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 02:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjJYF7b (ORCPT
+        with ESMTP id S229583AbjJYGCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 01:59:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B16130;
-        Tue, 24 Oct 2023 22:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698213568; x=1729749568;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jQJiiFvpOMKFbrXXC4RAupxJWvxclI+9fI31oaetUbg=;
-  b=Y8ud/hFcpiKS7W12OPz8RMn7+QCHv/VFToNTe3miWiIibEW2xQANxJZL
-   cmI4Y8CGgUa8qk0Cq6mnsTq41D09BIDiwF9i9VqjjJnpwx+j2rBbWSEub
-   HG0KKph8R3gk8xb1kwQOa1naIJRp5x5htweqtSV+LwtMLQe512oPOj9oI
-   4b8BHnNlXA8N3S9sCiD/pKdtFKXwShRphymCXEvTOUYSdjeyI5K9b21R/
-   ALdFsX3NKaktpFlflbJMEbemGdQUkvFGUQdiHNnOrVMZWJZYKvzwJlJj6
-   4800+FoeHB0wuIzLZHlGsLsN3OCny9YBQnpvl9wOkqHgAgCzWSwF82mS7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473479250"
-X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
-   d="scan'208";a="473479250"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 22:59:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="788021763"
-X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
-   d="scan'208";a="788021763"
-Received: from lxy-clx-4s.sh.intel.com ([10.239.48.52])
-  by orsmga008.jf.intel.com with ESMTP; 24 Oct 2023 22:59:25 -0700
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: [PATCH v2 2/2] KVM: x86: Improve documentation of MSR_KVM_ASYNC_PF_EN
-Date:   Wed, 25 Oct 2023 01:59:14 -0400
-Message-Id: <20231025055914.1201792-3-xiaoyao.li@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231025055914.1201792-1-xiaoyao.li@intel.com>
-References: <20231025055914.1201792-1-xiaoyao.li@intel.com>
+        Wed, 25 Oct 2023 02:02:34 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B7AAC
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 23:02:32 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1e98a9dd333so6534998fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 23:02:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698213751; x=1698818551;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wii8E7zHSEDik3+/ZAl9Uy7hVmIz0evyew93pf3levg=;
+        b=JdS4SgCG6m/yo21E0aB+lghcSFjhr1nk6Gq6KVLoygzNfmOR+9oH/bjpW1mD6DutVF
+         m+eZ9HNMR7N++KsXNDkcIVINNQ8N5xE+oN6N/Z9qAA7o4X74pkWUZucKG5afFZH32bG4
+         8+gJzZlPrt6172sZsEfrWxoDZxVMtlaqBZXlFr5p8/4nZu6gqdPqf+x7ECmFyKlxjRZe
+         /SwJDi6yszyeMJ+Uw/MsO3ottNPrtH54XgBOkbjzJZc7nenj3W2bcEPXIQtNQtbXquA/
+         gq+xAJ4q+On3/Ul0Qfr3pFG7Eow6eh/D0gLgYDx5z2ejR1B+NT2wp+d2WWg1kc5FDkSa
+         i/Nw==
+X-Gm-Message-State: AOJu0YxU45n6+rLmgklLFKpddZvoitAzf9jHV3Ve/Yxu0wJKvh86tvcm
+        FatF500ICQA5ZlQxt3hB3RaFMlx/J9lWlzpAOqYadjCVTMWy
+X-Google-Smtp-Source: AGHT+IHssJml8McZlRux6ZXt3VOeHacpOyLeRKgWH6j9CJmj9sveOQS0uWJF+F3U2CxWMMjmBub9b2Hx+0PMCfEE4WJkoUN7Sz2i
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:472c:b0:1e5:7978:9ce4 with SMTP id
+ b44-20020a056870472c00b001e579789ce4mr6743294oaq.11.1698213751574; Tue, 24
+ Oct 2023 23:02:31 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 23:02:31 -0700
+In-Reply-To: <000000000000e8364c05ceefa4cf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a55890608843368@google.com>
+Subject: Re: [syzbot] [can?] possible deadlock in j1939_session_activate
+From:   syzbot <syzbot+f32cbede7fd867ce0d56@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, hdanton@sina.com,
+        kernel@pengutronix.de, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@rempel-privat.de,
+        mkl@pengutronix.de, netdev@vger.kernel.org, pabeni@redhat.com,
+        robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com, wg@grandegger.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some incorrect statement of MSR_KVM_ASYNC_PF_EN documentation and
-state clearly the token in 'struct kvm_vcpu_pv_apf_data' of 'page ready'
-event is matchted with the token in CR2 in 'page not present' event.
+syzbot has bisected this issue to:
 
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
----
- Documentation/virt/kvm/x86/msr.rst | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+commit 259bdba27e32368b4404f69d613b1c1014c07cbf
+Author: Oliver Hartkopp <socketcan@hartkopp.net>
+Date:   Wed Mar 9 12:04:16 2022 +0000
 
-diff --git a/Documentation/virt/kvm/x86/msr.rst b/Documentation/virt/kvm/x86/msr.rst
-index f6d70f99a1a7..3aecf2a70e7b 100644
---- a/Documentation/virt/kvm/x86/msr.rst
-+++ b/Documentation/virt/kvm/x86/msr.rst
-@@ -193,8 +193,8 @@ data:
- 	Asynchronous page fault (APF) control MSR.
- 
- 	Bits 63-6 hold 64-byte aligned physical address of a 64 byte memory area
--	which must be in guest RAM and must be zeroed. This memory is expected
--	to hold a copy of the following structure::
-+	which must be in guest RAM. This memory is expected to hold the
-+	following structure::
- 
- 	  struct kvm_vcpu_pv_apf_data {
- 		/* Used for 'page not present' events delivered via #PF */
-@@ -231,14 +231,14 @@ data:
- 	as regular page fault, guest must reset 'flags' to '0' before it does
- 	something that can generate normal page fault.
- 
--	Bytes 5-7 of 64 byte memory location ('token') will be written to by the
-+	Bytes 4-7 of 64 byte memory location ('token') will be written to by the
- 	hypervisor at the time of APF 'page ready' event injection. The content
--	of these bytes is a token which was previously delivered as 'page not
--	present' event. The event indicates the page in now available. Guest is
--	supposed to write '0' to 'token' when it is done handling 'page ready'
--	event and to write 1' to MSR_KVM_ASYNC_PF_ACK after clearing the location;
--	writing to the MSR forces KVM to re-scan its queue and deliver the next
--	pending notification.
-+	of these bytes is a token which was previously delivered in CR2 as
-+	'page not present' event. The event indicates the page is now available.
-+	Guest is supposed to write '0' to 'token' when it is done handling
-+	'page ready' event and to write '1' to MSR_KVM_ASYNC_PF_ACK after
-+	clearing the location; writing to the MSR forces KVM to re-scan its
-+	queue and deliver the next pending notification.
- 
- 	Note, MSR_KVM_ASYNC_PF_INT MSR specifying the interrupt vector for 'page
- 	ready' APF delivery needs to be written to before enabling APF mechanism
--- 
-2.34.1
+    vxcan: enable local echo for sent CAN frames
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a2e55d680000
+start commit:   84186fcb834e Merge tag 'urgent/nolibc.2023.10.16a' of git:..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a2e55d680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a2e55d680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7d1f30869bb78ec6
+dashboard link: https://syzkaller.appspot.com/bug?extid=f32cbede7fd867ce0d56
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c6300d680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e6935d680000
+
+Reported-by: syzbot+f32cbede7fd867ce0d56@syzkaller.appspotmail.com
+Fixes: 259bdba27e32 ("vxcan: enable local echo for sent CAN frames")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
