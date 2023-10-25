@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E45C7D6E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C357D7D6E38
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344734AbjJYOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        id S1344628AbjJYOAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234214AbjJYOAa (ORCPT
+        with ESMTP id S232809AbjJYOAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:00:30 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C2C18A;
-        Wed, 25 Oct 2023 07:00:25 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id B90105C03FA;
-        Wed, 25 Oct 2023 10:00:22 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 25 Oct 2023 10:00:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698242422; x=1698328822; bh=KI
-        5w58UTfABvjvptIvDrQdHkWsalGJQZedeBlycOud4=; b=jkIviQ9qbhFEllr47i
-        upP2prLGMngnNzPF2D3xx1Kp7VMPqdBmX8kdZeQ6L3BPIpiveh6M1/YjBa8yyPi4
-        Y8AvETg4AwRuq2KWdiM4UO40g2DYRTNsQfzLnteGmHe/sEexC3wsDMe3YT4LHeX+
-        5TwtL0cmArv4qkILCKL2+RZKU1wuMNAQ6NvSZ8IuiNhJSBCKfmMZI5ppvoIsAI8Z
-        Xpcn+5GdEm0cSwXTLPZglYEj91eT4oHL4BigzhV1nhrv/pL0YAcUFY3KroSEv0uB
-        34vcsNsW0NtlqFLyGP4CTCB9X3IRZSWJeo8NqPyeYeyTwlEvIyUTjbIcVZML+kWm
-        tzjQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698242422; x=1698328822; bh=KI5w58UTfABvj
-        vptIvDrQdHkWsalGJQZedeBlycOud4=; b=gOJs7LGImdiOAT4LGQkbRHYtNebd4
-        MQ0VH8jbq9fCFG/AVYgUocW8DY1Gjft6GBJ8TUWw7iSaonpCE72LPKuHNPfXeqPC
-        NT+ZnAjy3tmyovZLJkhGFOdIDKHy7XYbNLSMMaJIF8o1fO2CMyTzOtcR4SQaEhex
-        KevFlXZ7W5v0qHfnVPn95/jNhHWvx+SbXCO1lfxHyPCiZLNhk4XmcVDJNBJnlU1j
-        Eqo0N04yNM36bBDuwE78nnNWmi9t/1WtcTwz432gKV0/AVp7WZB7c2fP7uAYhI3R
-        v3o3WP79G+IerXIuw8CAjE52yEszmXEYvvq+IdDjaPjloEeGL0EHSRLgA==
-X-ME-Sender: <xms:dh85ZRZ7X1C2M74qCikQ0Ckt703A8xOJiS18i0DsPP8EOiCvTSggBg>
-    <xme:dh85ZYZIe9XUFQ37oPbKZ-_NGcJ8UHbDd3nUNr1hKGiBBPlNRElckC8TLlnuh4YZR
-    drUjta55n-VrPQY54s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdejtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:dh85ZT-djq942ipU6diXlpgBtGg-Vo03bcbF58nnpesEKO1jvuNSrw>
-    <xmx:dh85Zfr59r33lMffZS1JAF4eyxiKuKvunjVgK9ETMV1lDZmb-mK3og>
-    <xmx:dh85ZcrPekFXq1OJVKIawG2Q9-ZbaLntwOgruiIyCddjAxDHnSyehQ>
-    <xmx:dh85ZXVNOiuo91JkYwkCZpJgW67PW-9t2NdUfz065iGbatzffxh86A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4884AB6008D; Wed, 25 Oct 2023 10:00:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Wed, 25 Oct 2023 10:00:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CC99C;
+        Wed, 25 Oct 2023 07:00:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB370C433C8;
+        Wed, 25 Oct 2023 14:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698242406;
+        bh=qc+ov5LIKiozFMXukORRE9nDxHa73MG+JepRkO8LbM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ob42NPr3nRpkQzqR67FWvlhiE8STmmnJgumoM4rT/MisrlsTxUAd/GAlcmN4Y1TKY
+         2+vEvjd8gr7bvzjQGGOijUj4K6Gma1DNJKEL6G31fCXWlE0qeigb8v7xhQazaWwHV2
+         GUH0libugDsrQNtXk6ii+aZySXKaX61WHfGIGLV5Tb0NaUSSbiM52P5gdT5EOEJYuX
+         XL74b8uM/r8dsLCFRhqTNWB8HIzXuwmSTiFWSrGVmrtz6poMtUAn4tQE7ZcDG+uO08
+         ftUc0SIFtTK6ATlq5RC9hMli98aNgYYgtxvVD62TP9D84E0ajcNZp4T4RtHr2CY+vy
+         bzlrUl3haTjkQ==
+Date:   Wed, 25 Oct 2023 15:00:01 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Richard Leitner <richard.leitner@linux.dev>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: hwmon: add ti,ina238
+Message-ID: <20231025-hut-omnivore-f4b44a7b928d@spud>
+References: <20231025-ina237-v1-0-a0196119720c@linux.dev>
+ <20231025-ina237-v1-2-a0196119720c@linux.dev>
 MIME-Version: 1.0
-Message-Id: <5e5e3e9b-dc16-428c-bd7f-d723960beb3c@app.fastmail.com>
-In-Reply-To: <20231025073802.117625-1-thuth@redhat.com>
-References: <20231025073802.117625-1-thuth@redhat.com>
-Date:   Wed, 25 Oct 2023 15:59:44 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Thomas Huth" <thuth@redhat.com>,
-        "Oleg Nesterov" <oleg@redhat.com>, linux-hexagon@vger.kernel.org,
-        "Brian Cain" <bcain@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, "Richard Kuo" <rkuo@codeaurora.org>
-Subject: Re: [PATCH] hexagon: Remove unusable symbols from the ptrace.h uapi
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XaYXm4eAH/Q3nOpF"
+Content-Disposition: inline
+In-Reply-To: <20231025-ina237-v1-2-a0196119720c@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023, at 09:38, Thomas Huth wrote:
-> Kernel-internal prototypes, references to current_thread_info()
-> and code hidden behind a CONFIG_HEXAGON_ARCH_VERSION switch are
-> certainly not usable in userspace, so this should not reside
-> in a uapi header. Move the code into an internal version of
-> ptrace.h instead.
->
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
+
+--XaYXm4eAH/Q3nOpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 25, 2023 at 10:34:12AM +0000, Richard Leitner wrote:
+> The ina238 driver is available since 2021 but lacks a dt-bindings file.
+> Therefore add the missing file now.
+
+Seemingly it is documented in Documentation/devicetree/bindings/hwmon/ti,in=
+a2xx.yaml
+
+Cheers,
+Conor.
+
+>=20
+> Mention Jean Delvare and Guenter Roeck as maintainers as reported by the
+> get_maintainer.pl script.
+>=20
+> Signed-off-by: Richard Leitner <richard.leitner@linux.dev>
 > ---
->  I've compile tested it now with a hexagon cross-compiler and the kernel
->  compiles fine with this change, so I think this should be good to go.
+>  .../devicetree/bindings/hwmon/ti,ina238.yaml       | 46 ++++++++++++++++=
+++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 47 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/ti,ina238.yaml b/Doc=
+umentation/devicetree/bindings/hwmon/ti,ina238.yaml
+> new file mode 100644
+> index 000000000000..aba89e5f34b3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/ti,ina238.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/ti,ina238.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments INA238 power/voltage monitors
+> +
+> +maintainers:
+> +  - Jean Delvare <jdelvare@suse.com>
+> +  - Guenter Roeck <linux@roeck-us.net>
+> +
+> +description: |
+> +  The INA238 is an ultra-precise digital power monitor with a
+> +  16-bit delta-sigma ADC specifically designed for current-sensing
+> +  applications.
+> +
+> +  Datasheets:
+> +    https://www.ti.com/lit/ds/symlink/ina238.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,ina238
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        power-sensor@40 {
+> +            compatible =3D "ti,ina238";
+> +            reg =3D <0x40>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 28f91c8a2e1c..13858bd6a3d4 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10271,6 +10271,7 @@ INA238 HARDWARE MONITOR DRIVER
+>  M:	Guenter Roeck <linux@roeck-us.net>
+>  L:	linux-hwmon@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/hwmon/ti,ina238.yaml
+>  F:	drivers/hwmon/ina238.c
+> =20
+>  INDEX OF FURTHER KERNEL DOCUMENTATION
+>=20
+> --=20
+> 2.40.1
+>=20
 
-I've applied this to the asm-generic tree, thanks for the
-patch.
+--XaYXm4eAH/Q3nOpF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +++ b/scripts/headers_install.sh
-> @@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
->  arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
->  arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
->  arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
-> -arch/hexagon/include/uapi/asm/ptrace.h:CONFIG_HEXAGON_ARCH_VERSION
->  arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
->  arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
->  arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
+-----BEGIN PGP SIGNATURE-----
 
-Would you like to send another patch for the other hexagon
-file? It looks trivial enough as we can just drop the #if
-portion there and keep the #else side.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTkfYQAKCRB4tDGHoIJi
+0ij5AP41Xbf/AKBA0f15LztKkzCyqgf5yYkdNMp577jLE0Pw0wD8DnKGgXfXFTKQ
+XEU/DYq7TMdXOb1pMA9qCvfttAhNTQE=
+=uvAL
+-----END PGP SIGNATURE-----
 
-      Arnd
+--XaYXm4eAH/Q3nOpF--
