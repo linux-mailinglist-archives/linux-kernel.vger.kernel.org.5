@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FD47D707A
+	by mail.lfdr.de (Postfix) with ESMTP id E8D197D707B
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344265AbjJYPM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        id S1344288AbjJYPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjJYPMy (ORCPT
+        with ESMTP id S234960AbjJYPNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:12:54 -0400
+        Wed, 25 Oct 2023 11:13:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B5E129
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:12:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FF8C433C7;
-        Wed, 25 Oct 2023 15:12:49 +0000 (UTC)
-Date:   Wed, 25 Oct 2023 11:12:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B5613A;
+        Wed, 25 Oct 2023 08:13:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF80C4339A;
+        Wed, 25 Oct 2023 15:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698246782;
+        bh=lhZy4Nj6dgXfSnBnyvATK18+Fp1f1bpHUcPYkcig8jg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SeG4g2xv+0dvT68JEZGixpW8/+VeI2+sQrDkqamfK7fWH4bNOKBcVZChWlI9AN2qy
+         ULjeMCdc5MEzLGO5++ZYliOjhK5Ro2Qp/gKWAPIHJew+dvjVsARKGzKT0yDl79pxJK
+         YNAjk1/NGflq8XwBeCLsTmZWU+LiLlj4JiVPRPG6wQGs2R67RorUAwOZi8cij3wWIR
+         V1evpNEA5Z1fqp696aozakmXXwVruBief4jTHatcWo6iE56WiigF4466YTJfs3mnv8
+         +nu1GGEa1ccNWkrhf/d4si60D8B0OsMfG8jxKgn8qb8vCSZtdE0ygLABn2odDfO0x1
+         SyGbBjq6jVYoQ==
+Date:   Thu, 26 Oct 2023 00:12:57 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Mark Rutland <mark.rutland@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
-Message-ID: <20231025111247.64d7b653@gandalf.local.home>
-In-Reply-To: <20231025054219.1acaa3dd@gandalf.local.home>
-References: <20231025054219.1acaa3dd@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [External] [PATCH] locking/atomic: sh: Use
+ generic_cmpxchg_local for arch_cmpxchg_local()
+Message-Id: <20231026001257.7685ba787c5a53b1c4db029a@kernel.org>
+In-Reply-To: <560f1066-cefa-2ed9-e4f6-992096e11fda@bytedance.com>
+References: <169815917362.8695.13904684741526725648.stgit@devnote2>
+        <560f1066-cefa-2ed9-e4f6-992096e11fda@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 05:42:19 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 25 Oct 2023 19:26:37 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
-> I ran a traceeval tool on it (still work in progress, but I can post when
-> it's done), and with the following trace, and the writes to trace-marker
-> (tracefs_printf)
+> On 2023/10/24 22:52, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
+> > in SH architecture because it does not implement arch_cmpxchg_local().
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >   arch/sh/include/asm/cmpxchg.h |    2 ++
+> >   1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
+> > index 288f6f38d98f..e920e61fb817 100644
+> > --- a/arch/sh/include/asm/cmpxchg.h
+> > +++ b/arch/sh/include/asm/cmpxchg.h
+> > @@ -71,4 +71,6 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
+> >   				    (unsigned long)_n_, sizeof(*(ptr))); \
+> >     })
+> >   
+> > +#include <asm-generic/cmpxchg-local.h>
+> > +
 > 
->  trace-cmd record -e sched_switch ./extend-sched
+> asm-generic/cmpxchg-local.h defines only 2 routines: __generic_cmpxchg_local
+> and __generic_cmpxchg64_local.
+
+Thanks Wuqiang, I found how I can fix that from your message.
+
 > 
-> It showed that without the extend, each task was preempted while holding
-> the lock around 200 times. With the extend, only one task was ever
-> preempted while holding the lock, and it only happened once!
+> Shall add the definition of arch_cmpxchg_local into 
+> arch/sh/include/asm/cmpxchg.h, or group arch_cmpxchg_local and 
+> arch_cmpxchg64_local into
+> asm-generic/cmpxchg-local.h ?
 
-And looking at the trace, it was because it was preempted by an RT task.
+No, maybe it depends on the arch that which __generic function need to use.
 
-    extend-sched-3349  [007]  3309.320747: print:                tracing_mark_write: Have lock!
-    extend-sched-3349  [007]  3309.320751: sched_switch:         extend-sched:3349 [120] R ==> migration/7:68 [0]
-     migration/7-68    [007]  3309.320754: sched_switch:         migration/7:68 [0] S ==> extend-sched:3349 [120]
-    extend-sched-3349  [007]  3309.320756: print:                tracing_mark_write: released lock!
+Thank you,
 
-So we know that part of the code works. ;-)
+> 
+> >   #endif /* __ASM_SH_CMPXCHG_H */
+> > 
+> 
 
--- Steve
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
