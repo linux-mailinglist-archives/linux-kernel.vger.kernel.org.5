@@ -2,194 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787AA7D71BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29DE7D71C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjJYQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S232992AbjJYQcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjJYQ3N (ORCPT
+        with ESMTP id S229561AbjJYQcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:29:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDD510E
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:29:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A95FC433C8;
-        Wed, 25 Oct 2023 16:29:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698251348;
-        bh=N32nvEq5O286yd+ttiB1pgrNAbStdRL1vSHhePO5p0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vJBS0L4RzSG8tAourCAatHd0t27wxqx8mQnqr4y5By27WRVpfn2BXehziF2KmREXj
-         MZVZH4vcriS6lBRTmcAEdbAGQDfnxFuCBS8M24OFi/Ogy5higVYOFHSC9GXqpaCguA
-         0q51N8GaqwijL9vxlmuTJFpmvucCIFb3pAgfJw3qkji4L7ydB/b43Y1IM+yc23t5II
-         RT8T65Rb5Xd32zOPveTOLhmwHWJtdtRgokcEpn6jXvtqdkOS4ohIC1/V/2fwtfHVO/
-         15nJLKdow1zhWjhWyq34r6zEpNPnAhswfBgZ1k4a0YnvzkT1bqJTcN/cUF7S7m8YgQ
-         XmS2nlmzDc8Yw==
-Date:   Wed, 25 Oct 2023 09:29:06 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 12/12] x86/bugs: Add a separate config for missing
- mitigation
-Message-ID: <20231025162906.abnyb7xum7cpjwxy@treble>
-References: <20231019181158.1982205-1-leitao@debian.org>
- <20231019181158.1982205-13-leitao@debian.org>
+        Wed, 25 Oct 2023 12:32:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BB7E5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698251474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=cjxB3xp7qNdoLHO4rmc9qAWqnKY0DCrkevqsgM+Qm2c=;
+        b=fzqnmMPQdkT/BdnggzePz3BOEIaCF1dADKCfe4snNu/stowL9gliP6GSTaW/SZoX3uz+Fb
+        D+rMlbyIQAE7+V8PMQZEa7nNux5LZBPL1TxnIOWAOTVWp5Wuq97AFiR1nqjcEJ1yCH55fq
+        fUwtklcF41zZ0zDXe9QJ3W0EiVp01HM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-Z-jgggwrNsevrjYIupxzqw-1; Wed, 25 Oct 2023 12:31:10 -0400
+X-MC-Unique: Z-jgggwrNsevrjYIupxzqw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C29309423D1;
+        Wed, 25 Oct 2023 16:31:09 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CB7161121314;
+        Wed, 25 Oct 2023 16:31:07 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 25 Oct 2023 18:30:09 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 18:30:06 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: nfsd_copy_write_verifier: wrong usage of read_seqbegin_or_lock()
+Message-ID: <20231025163006.GA8279@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019181158.1982205-13-leitao@debian.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 11:11:58AM -0700, Breno Leitao wrote:
-> Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
-> where some mitigations have entries in Kconfig, and they could be
-> modified, while others mitigations do not have Kconfig entries, and
-> could not be controlled at build time.
-> 
-> Create an entry for each CPU mitigation under
-> CONFIG_SPECULATION_MITIGATIONS. This allow users to enable or disable
-> them at compilation time.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+Hello,
 
-We also probably need a CONFIG_MITIGATION_MELTDOWN.
+The usage of writeverf_lock is wrong and misleading no matter what and
+I can not understand the intent.
 
-> ---
->  arch/x86/Kconfig           | 93 ++++++++++++++++++++++++++++++++++++++
->  arch/x86/kernel/cpu/bugs.c | 39 ++++++++++------
->  2 files changed, 117 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index a5cada7443ea..ccdcb1dcdc0c 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2591,6 +2591,99 @@ config MITIGATION_GDS_FORCE
->  
->  	  If in doubt, say N.
->  
-> +config MITIGATION_MDS
-> +	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
-> +	depends on CPU_SUP_INTEL
-> +	default y
-> +	help
-> +	  Enable mitigation for Microarchitectural Data Sampling (MDS). MDS is
-> +	  a hardware vulnerability which allows unprivileged speculative access
-> +	  to data which is available in various CPU internal buffer. Deeper
+nfsd_copy_write_verifier() uses read_seqbegin_or_lock() incorrectly.
+"seq" is always even, so read_seqbegin_or_lock() can never take the
+lock for writing. We need to make the counter odd for the 2nd round:
 
-buffers
+	--- a/fs/nfsd/nfssvc.c
+	+++ b/fs/nfsd/nfssvc.c
+	@@ -359,11 +359,14 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
+	  */
+	 void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
+	 {
+	-	int seq = 0;
+	+	int seq, nextseq = 0;
+	 
+		do {
+	+		seq = nextseq;
+			read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
+			memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
+	+		/* If lockless access failed, take the lock. */
+	+		nextseq = 1;
+		} while (need_seqretry(&nn->writeverf_lock, seq));
+		done_seqretry(&nn->writeverf_lock, seq);
+	 }
 
-> +	  technical information is available in the MDS specific x86 architecture
-> +	  section: Documentation/arch/x86/mds.rst.
+OTOH. This function just copies 8 bytes, this makes me think that it doesn't
+need the conditional locking and read_seqbegin_or_lock() at all. So perhaps
+the (untested) patch below makes more sense? Please note that it should not
+change the current behaviour, it just makes the code look correct (and more
+optimal but this is minor).
 
-I believe the high-level document is actually
-Documentation/admin-guide/hw-vuln/mds.rst.
+Another question is why we can't simply turn nn->writeverf into seqcount_t.
+I guess we can't because nfsd_reset_write_verifier() needs spin_lock() to
+serialise with itself, right?
 
-> +config MITIGATION_TAA
-> +	bool "Mitigate TSX Asynchronous Abort (TAA) hardware bug"
-> +	depends on CPU_SUP_INTEL
-> +	default y
-> +	help
-> +	  Enable mitigation for TSX Asynchronous Abort (TAA). TAA is a hardware
-> +	  vulnerability that allows unprivileged speculative access to data
-> +	  which is available in various CPU internal buffers by using
-> +	  asynchronous aborts within an Intel TSX transactional region.
+Oleg.
+---
 
-Refer to Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index c7af1095f6b5..094b765c5397 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
+  */
+ void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
+ {
+-	int seq = 0;
++	unsigned seq;
+ 
+ 	do {
+-		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
++		seq = read_seqbegin(&nn->writeverf_lock);
+ 		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
+-	} while (need_seqretry(&nn->writeverf_lock, seq));
+-	done_seqretry(&nn->writeverf_lock, seq);
++	} while (read_seqretry(&nn->writeverf_lock, seq));
+ }
+ 
+ static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
 
-> +config MITIGATION_MMIO_STALE_DATA
-> +	bool "Mitigate MMIO Stale Data hardware bug"
-> +	depends on CPU_SUP_INTEL
-> +	default y
-> +	help
-> +	  Enable mitigation for MMIO Stale Data hardware bugs.  Processor MMIO
-> +	  Stale Data Vulnerabilities are a class of memory-mapped I/O (MMIO)
-> +	  vulnerabilities that can expose data. The vulnerabilities require the
-> +	  attacker to have access to MMIO.
-
-Refer to Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-
-> +config MITIGATION_L1TF
-> +	bool "Mitigate L1 Terminal Fault (L1TF) hardware bug"
-
-	depends on CPU_SUP_INTEL
-
-> +	default y
-> +	help
-> +	  Mitigate L1 Terminal Fault (L1TF) hardware bug. L1 Terminal Fault is a
-> +	  hardware vulnerability which allows unprivileged speculative access to data
-> +	  which is available in the Level 1 Data Cache when the page table
-> +	  entry controlling the virtual address.
-
--EGRAMMAR
-
-Also refer to Documentation/admin-guide/hw-vuln/l1tf.rst
-
-> +config MITIGATION_RETBLEED
-> +	bool "Mitigate RETBleed hardware bug"
-
-	depends on CPU_SUP_INTEL || (CPU_SUP_AMD && MITIGATION_UNRET_ENTRY)
-
-> +config MITIGATION_SPECTRE_V1
-> +	bool "Mitigate SPECTRE V1 hardware bug"
-> +	default y
-> +	help
-> +	  Enable mitigation for Spectre V1 (Bounds Check Bypass). Spectre V1 is a
-> +	  class of side channel attacks that takes advantage of speculative
-> +	  execution that bypasses conditional branch instructions used for
-> +	  memory access bounds check.
-
-Refer to Documentation/admin-guide/hw-vuln/spectre.rst
-
-> +config MITIGATION_SPECTRE_V2
-> +	bool "Mitigate SPECTRE V2 hardware bug"
-> +	default y
-> +	help
-> +	  Enable mitigation for Spectre V2 (Branch Target Injection). Spectre
-> +	  V2 is a class of side channel attacks that takes advantage of
-> +	  indirect branch predictors inside the processor. In Spectre variant 2
-> +	  attacks, the attacker can steer speculative indirect branches in the
-> +	  victim to gadget code by poisoning the branch target buffer of a CPU
-> +	  used for predicting indirect branch addresses.
-
-Refer to Documentation/admin-guide/hw-vuln/spectre.rst
-
-> +config MITIGATION_SRBDS
-> +	bool "Mitigate Special Register Buffer Data Sampling (SRBDS) hardware bug"
-> +	depends on CPU_SUP_INTEL
-> +	default y
-> +	help
-> +	  Enable mitigation for Special Register Buffer Data Sampling (SRBDS).
-> +	  SRBDS is a hardware vulnerability that allows Microarchitectural Data
-> +	  Sampling (MDS) techniques to infer values returned from special
-> +	  register accesses. An unprivileged user can extract values returned
-> +	  from RDRAND and RDSEED executed on another core or sibling thread
-> +	  using MDS techniques.
-
-Refer to Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
-
-> +	cmd = IS_ENABLED(CONFIG_MITIGATION_SPECTRE_V2) ?  SPECTRE_V2_CMD_AUTO : SPECTRE_V2_CMD_NONE;
->  	if (cmdline_find_option_bool(boot_command_line, "nospectre_v2") ||
->  	    cpu_mitigations_off())
->  		return SPECTRE_V2_CMD_NONE;
-
-I'm thinking CONFIG_MITIGATION_SPECTRE_V2 should also affect whether the spectre v2 user
-mitigation gets enabled.
-
--- 
-Josh
