@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6307D7356
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AFF7D7357
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbjJYSfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S231469AbjJYSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjJYSfQ (ORCPT
+        with ESMTP id S229522AbjJYSg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:35:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3540B111;
-        Wed, 25 Oct 2023 11:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698258914; x=1729794914;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oaYHGFnltjKVxa0IyIyg4So3Eyo7jYfErQk25FAvYl4=;
-  b=hLkA/5F+1/z5PxGwmxMx4PPEcXnxnNRFF++qDpl2R+0sMjQ/cEqrVSz7
-   pYlXCJeemL0A8lEGPNfAVlOu6OzORqJ7Rm1L6N2Q+9p7bCIIzPXJQpJPT
-   sSVO8YogBT/pMRnedmf9qqL+neKGZ5dqr/di1JfQ+dbZea3EDUz1RdjPH
-   oYFjV7fPPQRc/5fwELqTTPmkYzHyEsHS4tyCaUUgo9qOKcB9WhqqKbDwZ
-   YsvSYmNqRzMOJXspRsrzfbxP66DDQlHIwoIEADKRMupxTi0P1eirv4qIp
-   KmKNRO4hiLnJwZQvTV3fVB1/qoM4Edrkme4fa5nABzVtFOtCbu9JNJtan
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="384584102"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="384584102"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:35:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="1006109244"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="1006109244"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.32.107])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:35:06 -0700
-Message-ID: <739ae8a0-e3fc-4281-bfc2-41d97a876739@intel.com>
-Date:   Wed, 25 Oct 2023 21:35:00 +0300
+        Wed, 25 Oct 2023 14:36:56 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA12E115
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:36:54 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9c75ceea588so12280666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698259013; x=1698863813; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2e92O8wEWD/53OKXUltaj6IOD/TJFtp9v92hFMtfX+0=;
+        b=HZUDCNyWfmVGsQvYptxE2H5bp/TtofRCTOocZ+RBHWLyryaezilnDrb/MzrfogOWdp
+         +DgOnlBW/XHxVKrIRjqb9K9+2uOyM8p0iHryEfbWWxKwv643z3Jdl5um+CxPeGQ+5pAG
+         I2405qN/sR/CmHZ8RZbvDJSQpPIo+G5uMdQyDHqXlJ8UynGCYES3iL47Rks0xEghww7l
+         DlxaAghKgRKsQMzC0+yq9KAzzxcLmuv+I97df0DhiC28+5i4iyKiBjid0wDExEXxf5cL
+         2piE8YMRLN7pvWIjoMKXU2c9uZ+dW5In6wdX7LL3GRAqgMvAURLahG1NMFaSfjlpv4wB
+         97/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698259013; x=1698863813;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2e92O8wEWD/53OKXUltaj6IOD/TJFtp9v92hFMtfX+0=;
+        b=viPuT8G8KhK5RHGMMa8Qa8wnGs4EqEmcsb4H1klxRKAKIhZsrUj2fapemvDFDkla/9
+         G39TvWY8UEwjJWtaIH2ugV4XkA3SvrTLZcLPbyvVtyLmUdYHVTpcp+KxAtS2sNihMM9g
+         cAMLl+dfxVAw5xMPOQICUfEKGrZTgpsyz/4iX5mfjboO0BJkV063DG5RpXLqCguZs1QL
+         fwyQROVv/zV74jj89XXBv5ITR1UyCIxfrzpYnO+Ksz2txBz4b5jviTYfAz0xVo4Jurhz
+         sWlxKDfo92HTluZ4IiWj/Ypm5NHQ27aqBi3PJNxLGCe+JzzwlLwKVjO0hPstGt/Bspjy
+         hNJA==
+X-Gm-Message-State: AOJu0YxF91YF2cQJZKawJe0ztsYpO7WuK0gfy9zLO1asgr+CTce99rLN
+        qogceQ2OXBFGp104fn0L9dXIBzP/ZWlixxqMiZH/WA==
+X-Google-Smtp-Source: AGHT+IFOrNXjGlGRWcmGJFHDoHQlFO4oVM3n0QNoccBm8uXU8YVkyo7zdGNfYE0da5c1OHviWCGusZmXqEZmjkytLeo=
+X-Received: by 2002:a17:907:70b:b0:9c6:724:fa16 with SMTP id
+ xb11-20020a170907070b00b009c60724fa16mr12368133ejb.59.1698259012860; Wed, 25
+ Oct 2023 11:36:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/50] perf record: Lazy load kernel symbols
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20231024222353.3024098-1-irogers@google.com>
- <20231024222353.3024098-13-irogers@google.com>
- <CAM9d7cjsnEQ5Ns45HbFfDbOtFerAhFnzasyRP2Qow-=vOAJTwQ@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAM9d7cjsnEQ5Ns45HbFfDbOtFerAhFnzasyRP2Qow-=vOAJTwQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231010032117.1577496-4-yosryahmed@google.com>
+ <202310202303.c68e7639-oliver.sang@intel.com> <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
+ <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
+ <ZTXLeAAI1chMamkU@feng-clx> <CAJD7tka5UnHBz=eX1LtynAjJ+O_oredMKBBL3kFNfG7PHjuMCw@mail.gmail.com>
+ <CAJD7tkYXJ3vcGvteNH98tB_C7OTo718XSxL=mFsUa7kO8vzFzA@mail.gmail.com>
+ <ZTdqpcDFVHhFwWMc@xsang-OptiPlex-9020> <CAJD7tka7hmOD6KPmJBJa+TscbYEMmTjS+Jh2utPfTbKkfvwD9A@mail.gmail.com>
+ <ZTiw/iIb0SbvN7vh@xsang-OptiPlex-9020> <CAJD7tkaBnSwarz8yHu9RL_3DtaLRfjrcZ7m0YZZgHJsJdtHaZw@mail.gmail.com>
+ <CALvZod5V-Ag5avAewE2nFp8__J6b_WqHuQw5=F70OPQrGNjfVw@mail.gmail.com>
+In-Reply-To: <CALvZod5V-Ag5avAewE2nFp8__J6b_WqHuQw5=F70OPQrGNjfVw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 25 Oct 2023 11:36:13 -0700
+Message-ID: <CAJD7tkaw1bFDgC1dfbuuCkyLToXRO2T2T7OuMt2fbfEKisP_4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Oliver Sang <oliver.sang@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Feng Tang <feng.tang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        lkp <lkp@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,125 +95,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/23 21:25, Namhyung Kim wrote:
-> Hi Ian,
-> 
-> On Tue, Oct 24, 2023 at 3:24 PM Ian Rogers <irogers@google.com> wrote:
->>
->> Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
->> changed it so that loading a kernel dso would cause the symbols for
->> the dso to be eagerly loaded. For perf record this is overhead as the
->> symbols won't be used. Add a symbol_conf to control the behavior and
->> disable it for perf record and perf inject.
-> 
-> I'm curious if it can simply move to lazy loading unconditionally.
-> In most cases, the code calls machine__resolve() which calls
-> thread__find_map() and map__find_symbol() to load symbols.
-> 
-> So I think it's unnecessary to do it in the thread__find_map().
-> If it needs a symbol, it should call map__find_symbol() first
-> and it'll load the symbol table.
-> 
-> Adrian, what's special in inject or Intel-PT on this?
+On Wed, Oct 25, 2023 at 10:06=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
+ wrote:
+>
+> On Tue, Oct 24, 2023 at 11:23=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+> [...]
+> >
+> > Thanks Oliver for running the numbers. If I understand correctly the
+> > will-it-scale.fallocate1 microbenchmark is the only one showing
+> > significant regression here, is this correct?
+> >
+> > In my runs, other more representative microbenchmarks benchmarks like
+> > netperf and will-it-scale.page_fault* show minimal regression. I would
+> > expect practical workloads to have high concurrency of page faults or
+> > networking, but maybe not fallocate/ftruncate.
+> >
+> > Oliver, in your experience, how often does such a regression in such a
+> > microbenchmark translate to a real regression that people care about?
+> > (or how often do people dismiss it?)
+> >
+> > I tried optimizing this further for the fallocate/ftruncate case but
+> > without luck. I even tried moving stats_updates into cgroup core
+> > (struct cgroup_rstat_cpu) to reuse the existing loop in
+> > cgroup_rstat_updated() -- but it somehow made it worse.
+> >
+> > On the other hand, we do have some machines in production running this
+> > series together with a previous optimization for non-hierarchical
+> > stats [1] on an older kernel, and we do see significant reduction in
+> > cpu time spent on reading the stats. Domenico did a similar experiment
+> > with only this series and reported similar results [2].
+> >
+> > Shakeel, Johannes, (and other memcg folks), I personally think the
+> > benefits here outweigh a regression in this particular benchmark, but
+> > I am obviously biased. What do you think?
+> >
+> > [1]https://lore.kernel.org/lkml/20230726153223.821757-2-yosryahmed@goog=
+le.com/
+> > [2]https://lore.kernel.org/lkml/CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0d=
+PYEL7nK77e2A@mail.gmail.com/
+>
+> I still am not convinced of the benefits outweighing the regression
+> but I would not block this. So, let's do this, skip this open window,
+> get the patch series reviewed and hopefully we can work together on
+> fixing that regression and we can make an informed decision of
+> accepting the regression for this series for the next cycle.
 
-Was a long time ago.  Apart from what the commit says below,
-I think there might also be other changes to the kernel maps
-that happen at loading, but I would have to have a look.
+Skipping this open window sounds okay to me.
 
-commit 5b7ba82a75915e739709d0ace4bb559cb280db09
-Author: Adrian Hunter <adrian.hunter@intel.com>
-Date:   Wed Aug 7 14:38:46 2013 +0300
+FWIW, I think with this patch series we can keep the old behavior
+(roughly) and hide the changes behind a tunable (config option or
+sysfs file). I think the only changes that need to be done to the code
+to approximate the previous behavior are:
+- Use root when updating the pending stats in memcg_rstat_updated()
+instead of the passed memcg.
+- Use root in mem_cgroup_flush_stats() instead of the passed memcg.
+- Use mutex_trylock() instead of mutex_lock() in mem_cgroup_flush_stats().
 
-    perf symbols: Load kernel maps before using
-    
-    In order to use kernel maps to read object code, those maps must be
-    adjusted to map to the dso file offset.  Because lazy-initialization is
-    used, that is not done until symbols are loaded.  However the maps are
-    first used by thread__find_addr_map() before symbols are loaded.  So
-    this patch changes thread__find_addr() to "load" kernel maps before
-    using them.
-
-
-
-> 
-> Thanks,
-> Namhyung
-> 
-> 
->>
->> Signed-off-by: Ian Rogers <irogers@google.com>
->> ---
->>  tools/perf/builtin-inject.c   | 6 ++++++
->>  tools/perf/builtin-record.c   | 2 ++
->>  tools/perf/util/event.c       | 4 ++--
->>  tools/perf/util/symbol_conf.h | 3 ++-
->>  4 files changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
->> index c8cf2fdd9cff..eb3ef5c24b66 100644
->> --- a/tools/perf/builtin-inject.c
->> +++ b/tools/perf/builtin-inject.c
->> @@ -2265,6 +2265,12 @@ int cmd_inject(int argc, const char **argv)
->>                 "perf inject [<options>]",
->>                 NULL
->>         };
->> +
->> +       if (!inject.itrace_synth_opts.set) {
->> +               /* Disable eager loading of kernel symbols that adds overhead to perf inject. */
->> +               symbol_conf.lazy_load_kernel_maps = true;
->> +       }
->> +
->>  #ifndef HAVE_JITDUMP
->>         set_option_nobuild(options, 'j', "jit", "NO_LIBELF=1", true);
->>  #endif
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index dcf288a4fb9a..8ec818568662 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
->>  # undef set_nobuild
->>  #endif
->>
->> +       /* Disable eager loading of kernel symbols that adds overhead to perf record. */
->> +       symbol_conf.lazy_load_kernel_maps = true;
->>         rec->opts.affinity = PERF_AFFINITY_SYS;
->>
->>         rec->evlist = evlist__new();
->> diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
->> index 923c0fb15122..68f45e9e63b6 100644
->> --- a/tools/perf/util/event.c
->> +++ b/tools/perf/util/event.c
->> @@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
->>         if (cpumode == PERF_RECORD_MISC_KERNEL && perf_host) {
->>                 al->level = 'k';
->>                 maps = machine__kernel_maps(machine);
->> -               load_map = true;
->> +               load_map = !symbol_conf.lazy_load_kernel_maps;
->>         } else if (cpumode == PERF_RECORD_MISC_USER && perf_host) {
->>                 al->level = '.';
->>         } else if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
->>                 al->level = 'g';
->>                 maps = machine__kernel_maps(machine);
->> -               load_map = true;
->> +               load_map = !symbol_conf.lazy_load_kernel_maps;
->>         } else if (cpumode == PERF_RECORD_MISC_GUEST_USER && perf_guest) {
->>                 al->level = 'u';
->>         } else {
->> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
->> index 0b589570d1d0..2b2fb9e224b0 100644
->> --- a/tools/perf/util/symbol_conf.h
->> +++ b/tools/perf/util/symbol_conf.h
->> @@ -42,7 +42,8 @@ struct symbol_conf {
->>                         inline_name,
->>                         disable_add2line_warn,
->>                         buildid_mmap2,
->> -                       guest_code;
->> +                       guest_code,
->> +                       lazy_load_kernel_maps;
->>         const char      *vmlinux_name,
->>                         *kallsyms_name,
->>                         *source_prefix,
->> --
->> 2.42.0.758.gaed0368e0e-goog
->>
-
+So I think it should be doable to hide most changes behind a tunable,
+but let's not do this unless necessary.
