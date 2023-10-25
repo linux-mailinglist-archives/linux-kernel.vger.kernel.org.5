@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 562747D65E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAC97D65E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbjJYIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S232665AbjJYI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJYIy0 (ORCPT
+        with ESMTP id S232979AbjJYI4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:54:26 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09D012D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:54:24 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d8a000f6a51so4870635276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698224064; x=1698828864; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QecDQjqHLVvpHg006tlf1j+vCUfglYL3ZKJX8YIByeY=;
-        b=Ix5VLswD/abFH+lep9L719cV7UV9OoAoT1p9bZrB1DIHXk0s2Rpy/72gcvc9kMV4uO
-         SQR80C1IWTckMJkKHoQKdLskU1+Vqvbb5mREww4Eu/iVoGQZpDTf78T7hKkUG8ggsYfi
-         af1VfqJWOGzEVK7PGmGTs6HaQ95qct3Ur8bGkrysuZcPwNnFUx35jeetHwcSs2kS2RZi
-         yKopOacAkb7zptvcjd+chcr+3NmTq6m6JjmYQAH/55abcllOV/rlgcVPojDf4A+hGBMF
-         eCU5Cl0DIpuTiwfsXRob/FwJAgPpCp1zBNdumqEWaGrVZCZ3Rs2Ydyo2xOIgGptPCmHp
-         1VEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698224064; x=1698828864;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QecDQjqHLVvpHg006tlf1j+vCUfglYL3ZKJX8YIByeY=;
-        b=lQoIHIfkuCgElb8kGADPYN+ib5dnIJsJVAKhKENIZNA8p3CcCkBXRBmtAu8Vwvn5Xw
-         urI558rQ42YTj8AqQELgxJwAeA9wSoemWSE4UK+i2goifS1IZ5bL+VGSr7BgeIbbiWMK
-         YqOJTPiQyPqUvlayLPP4t2qYNpQsgpJBL+QFZCE/KpgRRdFV25eGmasFFa37ZNyLePc4
-         oZQCSqn70UFuGb6RnPw6qznH5KtWKfwDBGBu3CUx+VT2pITH3zfjpClHTSqTvQUuoZrl
-         vWcys/8H+91tFM4owU2bD1kHnLtbS6NxqtygwmHL3DrbQeMPv+f77ppAji5PDXQCdlQa
-         aoYw==
-X-Gm-Message-State: AOJu0Yz+mrC+6BXyPjOwETZI+gTfy78BWe1YYhpWZFvIwtSW/J1C1ysm
-        f2/KcbowqgCSbrw1w7SRGJRQAv/g7ldHhQhdh5WTHw==
-X-Google-Smtp-Source: AGHT+IH3K4Q7pknM1I5B7pKsXdsaVUiTIYG6c6iSatv1EUWsCGs8m2b6Zpy65Pq+Q7ybNggFu3TV5l/LRdXBlTF0Kh8=
-X-Received: by 2002:a25:cecd:0:b0:da0:4201:6365 with SMTP id
- x196-20020a25cecd000000b00da042016365mr4494885ybe.3.1698224064152; Wed, 25
- Oct 2023 01:54:24 -0700 (PDT)
+        Wed, 25 Oct 2023 04:56:25 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 01:56:21 PDT
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com [207.54.90.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6948129;
+        Wed, 25 Oct 2023 01:56:21 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="116857370"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694703600"; 
+   d="scan'208";a="116857370"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 17:55:16 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
+        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id ED401D9DA6;
+        Wed, 25 Oct 2023 17:55:13 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 25CB528E18;
+        Wed, 25 Oct 2023 17:55:13 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+        by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 9D1D71E9CB7;
+        Wed, 25 Oct 2023 17:55:12 +0900 (JST)
+Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
+        by edo.cn.fujitsu.com (Postfix) with ESMTP id B560E1A0070;
+        Wed, 25 Oct 2023 16:55:11 +0800 (CST)
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     alison.schofield@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, bwidawsk@kernel.org, dan.j.williams@intel.com,
+        linux-cxl@vger.kernel.org
+Cc:     dave.jiang@intel.com, Jonathan.Cameron@huawei.com,
+        fan.ni@samsung.com, linux-kernel@vger.kernel.org,
+        Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH] cxl/region: Fix cxl_region_rwsem lock held when returning to user space
+Date:   Wed, 25 Oct 2023 16:54:50 +0800
+Message-ID: <20231025085450.2514906-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231025-topic-sm8650-upstream-phy-v1-0-6137101520c4@linaro.org> <20231025-topic-sm8650-upstream-phy-v1-7-6137101520c4@linaro.org>
-In-Reply-To: <20231025-topic-sm8650-upstream-phy-v1-7-6137101520c4@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 25 Oct 2023 11:54:13 +0300
-Message-ID: <CAA8EJpr4zLPZrTbtPEuTTtRZy2NuCS-=vMeC7K8TLTJnKEf4ZQ@mail.gmail.com>
-Subject: Re: [PATCH 7/7] phy: qcom: qmp-combo: add QMP USB3/DP PHY tables for SM8650
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27956.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27956.006
+X-TMASE-Result: 10--4.190000-10.000000
+X-TMASE-MatchedRID: 1Eu80e4q/YTU2//X4sLSxR1kSRHxj+Z5jkDrBOJwwnRU0vVJesIjQDSg
+        hb/pcAwyDsw5NBgZqd05FeaVnwctxVdvtTbdcIRVupDIC9422DruZ8ZuWMHQFcC5DTEMxpeQfiq
+        1gj2xET8vYRhsicUjm84WYLmQfXYmSSOWVJeuO1AURSScn+QSXpjDMT0TyDk5+gtHj7OwNO25V9
+        z3vqk3KvBRmyhQxZi3IbDJrgrtvXK/+8BaAUFJX2CXm9pxxigKAbN3VNSL6ABSCEZ94phmrkPsa
+        ltbXLYI+/pKeoesceTuBxK2U00v/YaT7FRqp0wPAcQrAfBh69vBRLFeH6OJSCTDD+DBjuEw
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 at 10:46, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->
-> Add QMP USB3/DP Combo PHY support for the SM8650 platform.
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 4 ++++
->  1 file changed, 4 insertions(+)
+goto out to release cxl_region_rwsem. Fix below warning:
+================================================
+WARNING: lock held when returning to user space!
+6.6.0-rc3-lizhijian+ #213 Not tainted
+------------------------------------------------
+cxl/673 is leaving the kernel with locks still held!
+1 lock held by cxl/673:
+ #0: ffffffffa013b9d0 (cxl_region_rwsem){++++}-{3:3}, at: commit_store+0x7d/0x3e0 [cxl_core]
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: d1257d098a5a ("cxl/region: Move cache invalidation before region teardown, and before setup")
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+ drivers/cxl/core/region.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index 6d63b8798c29..18da77f8f22b 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -294,7 +294,7 @@ static ssize_t commit_store(struct device *dev, struct device_attribute *attr,
+ 	 */
+ 	rc = cxl_region_invalidate_memregion(cxlr);
+ 	if (rc)
+-		return rc;
++		goto out;
+ 
+ 	if (commit) {
+ 		rc = cxl_region_decode_commit(cxlr);
 -- 
-With best wishes
-Dmitry
+2.29.2
+
