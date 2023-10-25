@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 570147D64CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BF07D64D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbjJYIUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
+        id S233957AbjJYIWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbjJYIU1 (ORCPT
+        with ESMTP id S233692AbjJYIWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:20:27 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DF1182
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:22 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so3872223f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:22 -0700 (PDT)
+        Wed, 25 Oct 2023 04:22:02 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB2EB0;
+        Wed, 25 Oct 2023 01:22:01 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b44befac59so486620b3a.0;
+        Wed, 25 Oct 2023 01:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698222021; x=1698826821; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NMqBSE89bG7+p2J3O4yzh6qx9zhFrZcOPoHe2cYMZhc=;
-        b=qXxda0K3EqY22wqYGJpu6zDSqpf1XjzzQ9M13h51dOx9ZUJbsiXW0hpFtRAsQM6vpV
-         /ut8hGtXBzfX3IG4xbNIKuoXcMWtqxPlr3V8c/OvDg4LOKEKvsmQYg14jZcMFXqmDWBI
-         0PmaPcq/i3GCn5lstFFBvfeLV9v61AhJmBWgkXVNLKSs5raaXw37As3wovvZSfYwTT76
-         e7yyDlCpNpUPewtAtFbcL3+ld9tF4dMDBu9uCR9aVjLDkAyr0PGiZMQ2jl1x8MmdaaMd
-         qzW4ijB9ng8c9zyEgp0vg4VRxKZqrcJnyY+lxstSqratVdr+RYL0r/X4jjW95BdqUnVO
-         MNvA==
+        d=gmail.com; s=20230601; t=1698222120; x=1698826920; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NvpdJed8NCe/yTREqi/Xqq5XpahV3XtayL2qO/vF1bc=;
+        b=hKaPJB6rUJ/OPCFcqGLTD6z8QY89YzvYem+rL0ZyLov/qiaQlOQScd7OBLjvM//ACW
+         dQ63D+Ry1ncSTH/trgi9prplJuba7yjn78GmybjeCY7APNEDvsrK9AhCME0CRLQt6NyZ
+         UbeeARe5+HO5yaZ0oec7RZO47QLVSOrFBdECBlbJA8i8dct+wkV1E4uSN5F1SwlgSDTb
+         45TFlQ+x63ykWTvxkq5NI3LCL3XyrzR1V/Vdx+qPDRqmL8ddu5iUCN/sIfNkICjjG/dh
+         sXdiK06WuYb+06bvoQYz8NkilE5ocWk3njilX03VZR/d/FlC2PpfFT4ubSrh4j+qxaoH
+         fQlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698222021; x=1698826821;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698222120; x=1698826920;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NMqBSE89bG7+p2J3O4yzh6qx9zhFrZcOPoHe2cYMZhc=;
-        b=ZiGCAvj2w+aj6BKa6eGuHEK3aa8JoB0MqPtCxZGkNYKmZXG3aIHd2vSmm4YAb73Kut
-         /0SeSqhUMA6KmfwTbkW48jZVnUIJ2IY9LUHoJS97vEW98I7ceNvBerfUBa1KqfsphP4n
-         93s/6BI08eq2X8L5OZf2dVUqxANCPDae67iAsIqw4bEZFvRE8AgeNXuoRwY9MMnedyEo
-         AuRfGUoN0UK02Ex+LK+eIcldlBXQCoqlco3OthKfe/XJXlqG2YeDnmPm4T1uou+zWf4K
-         ibfP/fJaKdj4AFO34/wThWSoarNWIM3Wthe+1PBwHWamb/ipFnKE8BtRu9u62kVgGrZC
-         anUQ==
-X-Gm-Message-State: AOJu0YyLQlms3OaMgBZfNlOuCL0gDiInSedlyGBWyAcMkKQY8c1axrFW
-        gJYJ3489GwTSJE70A1CT4Y+gLw==
-X-Google-Smtp-Source: AGHT+IH/5NSpgBbdHJEqyZWParnMDYlqB8D76j6xi5DHlI/S7MAQ3sm+65z/7jX3R1j8V0rJTWviIA==
-X-Received: by 2002:a5d:5592:0:b0:32d:b06c:80b2 with SMTP id i18-20020a5d5592000000b0032db06c80b2mr9493121wrv.0.1698222021010;
-        Wed, 25 Oct 2023 01:20:21 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id g7-20020a5d6987000000b003232380ffd7sm11556557wru.102.2023.10.25.01.20.19
+        bh=NvpdJed8NCe/yTREqi/Xqq5XpahV3XtayL2qO/vF1bc=;
+        b=Afk2c1DqSwxi6dgUS6UwIWF1MksHgeT5x0H/mZluMCZD949tOSPySfFPv/JmYjNfvI
+         0YdSrBBuu32r4R5I/jmw/QWrOKTdtcooE7U0t1gXgwZXTJgRaTOokATuFc1JTjnrvDix
+         /RX/hWQQDNAK+ahpnjkWNg7fOLX3qFNRAfgPD1ggHpEVlwXejJixxESMSaS72YfbQIIV
+         uK835mQlxKdO3gXvmIjPJbotBBVfyNiwtonL2+ex7FTSO31w0SSfQmpMdPHsggECA5eS
+         4dBqiV2A/pMsONr4JjmEz82DhrMVXdwcDuMBY0okLwjq2hvsU/useA5Gqj/CfUhTalXr
+         2BKQ==
+X-Gm-Message-State: AOJu0Yxluw0kQHpjI+PElidUUTqNB8ZclbTV5MxLfpraYGjUToqP4LLI
+        SzOdBhAvOBM5Ozmj9nBlLsoFPv0hOt3njCh/
+X-Google-Smtp-Source: AGHT+IGxHaO21Y7We44VFn56IIIjQpblfIOHyJnAwflJ2icjvRi5bnX2MikIvWC7cwv6ba89Al9keA==
+X-Received: by 2002:a05:6a21:6d89:b0:159:c07d:66f0 with SMTP id wl9-20020a056a216d8900b00159c07d66f0mr6177544pzb.6.1698222120380;
+        Wed, 25 Oct 2023 01:22:00 -0700 (PDT)
+Received: from localhost.localdomain (2001-b400-e38c-defd-6dc9-16c9-6f6d-2997.emome-ip6.hinet.net. [2001:b400:e38c:defd:6dc9:16c9:6f6d:2997])
+        by smtp.gmail.com with ESMTPSA id y66-20020a62ce45000000b00690ca4356f1sm9255860pfg.198.2023.10.25.01.21.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 01:20:20 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Wed, 25 Oct 2023 10:20:18 +0200
-Subject: [PATCH v2] dt-bindings: ufs: qcom-ufs: document the SM8650 UFS
- Controller
+        Wed, 25 Oct 2023 01:21:59 -0700 (PDT)
+From:   Wei-Shih Lin <frank101417@gmail.com>
+X-Google-Original-From: Wei-Shih Lin <Weishih_Lin@novatek.com.tw>
+To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add Novatek NT519XX touchcreen driver
+Date:   Wed, 25 Oct 2023 16:20:52 +0800
+Message-ID: <20231025082054.1190-1-Weishih_Lin@novatek.com.tw>
+X-Mailer: git-send-email 2.42.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231025-topic-sm8650-upstream-bindings-ufs-v2-1-040ad1c44b46@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAMHPOGUC/42NTQ6CMBBGr2K6dkx/MmhceQ/DotICk0hLZoBoC
- He3Eg/g4lu8b/HeqiQyRVHXw6o4LiSUUwF7PKim96mLQKGwsto6o00FUx6pARkuFWqYR5k4+gE
- elAKlTmBuBYJ2TYs24DmgKqKRY0uvPXKvC/ckU+b33lzM9/3pLf6jXwwY8A4xllXozO1JyXM+Z
- e5UvW3bB3PNuG7VAAAA
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1424;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=bfiy79+1AeTC3eD2gpu/e3v7nDKR1WuR2ncD0BX0P+o=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOM/DCZpXl4w2Il7wAsAz/R6xDcyRAo+cdAitixPB
- 6vcmSYCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjPwwAKCRB33NvayMhJ0RXgD/
- 9cFQZrZRPh/FK7pb6g5pCNy8HUtPKGbJ3dZ3ZgJQXtaqbQm1yIcoTB6c9bfr3odNC1hqu3HNmggNDX
- 3h6quEF3md13Vsd6WfBMzPhuViWrm5DkaHNEZvcFWb4HKvss/hokr5s1ojj4aw2V6tSA3BbfIn4dDk
- Kc0RJEIX+jxLG3Wf6alSanBlwHHGCSNYWOFpMfKtQ3xh5WJYgZZgGH2J3Gza1/VVi2JZvONbWqsPgu
- vYW7WDEFL+30Maq7oy3iJriY/vKqP7iz44vHJNFEIP+23IrRlmpInjiP6CvEcQ/2qYKdnNl5eyp3IB
- 3XRwT3JvNUpI4vy7TYqRzS4eBt1tj13exnMVgOA10ORxz7kEFmyz5ewxVKHzrYDOBjh6LzTJpwBXux
- nFioL0cJl2/S1E7Ta4JDg2gcYMS18TWDLym4bE9MOguRNr0+1lPdzJ1/cdPZe679cBLsdPMM751HX2
- 0IG14UyDO5Hgh+au7sOA/Xh9JnxB9kmeAEffWa6oTG4z8bQveiYXsUvfyCyb4993ORQ37anPhevxfJ
- LluSS1tJ99/cLyY2QujFAVPhL49c7ldYZhKXe1UcZ4EXdUKcgo5gNkCEt1wrnCurtu/BSwS7ZUwrL4
- 0NOKv6ah7UEvwDCd2N1qZXT6mf4rRDm9zz8rkF6g9XBkdXsz74nzipp82H3g==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the UFS Controller on the SM8650 Platform.
+This series adds a driver for Novatek TDDI NT519XX which mainly used in 
+automotive display products. This driver is different from the existing 
+driver named as novatek-nvt-ts.c in the path drivers/input/touchscreen/. 
+The existing driver supports another Novatek IC NT11205 used in Acer 
+Iconia One 7 B1-750 tablet.
 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
-For convenience, a regularly refreshed linux-next based git tree containing
-all the SM8650 related work is available at:
-https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
----
-Changes in v2:
-- Fixed subject
-- Collected review tags
-- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-ufs-v1-1-a355e3556531@linaro.org
----
- Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Wei-Shih Lin (2):
+  dt-bindings: touchscreen: Add Novatek NT519XX series bindings
+  Input: Add driver for Novatek NT519XX series touchscreen devices
 
-diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-index 462ead5a1cec..0d136c047b8b 100644
---- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-+++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-@@ -36,6 +36,7 @@ properties:
-           - qcom,sm8350-ufshc
-           - qcom,sm8450-ufshc
-           - qcom,sm8550-ufshc
-+          - qcom,sm8650-ufshc
-       - const: qcom,ufshc
-       - const: jedec,ufs-2.0
- 
+ .../input/touchscreen/novatek,nt519xx.yaml    |  60 ++
+ MAINTAINERS                                   |   9 +
+ drivers/input/touchscreen/Kconfig             |  12 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/nt519xx.c           | 995 ++++++++++++++++++
+ drivers/input/touchscreen/nt519xx.h           | 130 +++
+ drivers/input/touchscreen/nt519xx_mem_map.h   | 262 +++++
+ 7 files changed, 1469 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt519xx.yaml
+ create mode 100644 drivers/input/touchscreen/nt519xx.c
+ create mode 100644 drivers/input/touchscreen/nt519xx.h
+ create mode 100644 drivers/input/touchscreen/nt519xx_mem_map.h
 
----
-base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
-change-id: 20231016-topic-sm8650-upstream-bindings-ufs-d03cf52d57d5
-
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.26.1
 
