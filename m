@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8567D6C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527F57D6C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343973AbjJYMgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S1344078AbjJYMg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344058AbjJYMgs (ORCPT
+        with ESMTP id S1344113AbjJYMgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:36:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFDB182
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698237360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vvU+ODlhbBzCksS16LHKl+sMj+DM+WDalvoXiTfFa+g=;
-        b=RYc5hthBKMJPZje1BHIm6mXvDJqiA6alVL7l5EySZ7WXEHLTmzHU7pe5pVUtiD/Te1apfv
-        aP44ByU0D/YuCflrQRfDC0FAhLDCYPDDHhS+tI3RPkv18lu05n1jLgPHm6HWjm6f30qaLT
-        2xddBcud3Jzx5d0BbW2RnzLQaSM0UvE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-252-A6s7jHGRMh-yERqHpw417A-1; Wed, 25 Oct 2023 08:35:58 -0400
-X-MC-Unique: A6s7jHGRMh-yERqHpw417A-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c5ff1ee155so58784825ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:35:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698237357; x=1698842157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vvU+ODlhbBzCksS16LHKl+sMj+DM+WDalvoXiTfFa+g=;
-        b=eh872cO9yEtfHAhZGZb8sbRDY8uRQffUBs4nolE3m4lAyKQovEnCXMECBzx57lT9HV
-         v/xXtzajAUAUc7nKDfJ0aB7a+3YD8o29wIIi3mVjkQq+JY0tUp9EL74qer8f/LmFoy+K
-         8b+i2xU/sUTXGCl+JjjszsoWeI5VwF9lAF0WjCRyJD72kikQmEAMOF9P09JZrQxb7vGP
-         s5KdLhPlOWvnUH9BIl8NTnxOY8USC7GG9UwQA3R38cNa7DOp6yGiobNJ69QpZ8ndYx+/
-         j0T4r1fnbQspu7FtlM98pU9KyVU2dI2EB6Ue1+r8jUW5S6eawi353hK++k4zvGasVoej
-         ueCQ==
-X-Gm-Message-State: AOJu0Yz4iZ0rogLpdZe4tKRnGlgSx2AEii0C++SfqS2A+qqeWLiM2fvZ
-        Fi+k64ULMXBxF4l6w1F6dTp7hBFwr+pLcWG5spVBn8F+UGtXO4nzSsS3OQuzWOieMNlFhRrLqEb
-        3pg6igQVdyG3plbxxYTqwxeBpkrqu+mSLo/z9PJ5P
-X-Received: by 2002:a17:902:e841:b0:1b6:6f12:502e with SMTP id t1-20020a170902e84100b001b66f12502emr17465922plg.49.1698237357772;
-        Wed, 25 Oct 2023 05:35:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/lVpfMUNBBfWqBo8bfvljBYSBCHKzm8BaAaoys67eChIuLm8w5Asc6ul+K1gzocSNYltZL1dL0BrIqtcbXRQ=
-X-Received: by 2002:a17:902:e841:b0:1b6:6f12:502e with SMTP id
- t1-20020a170902e84100b001b66f12502emr17465908plg.49.1698237357450; Wed, 25
- Oct 2023 05:35:57 -0700 (PDT)
+        Wed, 25 Oct 2023 08:36:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01861AC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:36:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 405C6C433C8;
+        Wed, 25 Oct 2023 12:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698237380;
+        bh=wyBTthqKcfkO2ojgR97LQEfheUDy16wEYDsyyZztt1w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VF7DP9hWihFTYldQ4VlETRZme+Ag7HiUQmcOZgvH8zqbgLchlmqDlwdbofg/cEPGE
+         boahSAC7v2SIV8XypOtiWLxzIzszuTJv7Q4Fb8tf/GOeHwGHaMpk+TKXDNI3KVtx9C
+         1VoJ5dhJhMnu5OR8sqKdqyJqEPIUcBkdSqbXhh+VmiDMTPn77XgnEmVYUPPJc6UJsk
+         au7pRyp5HtTE4nG+yQnZ/6RQFBZfEx6zzTmJdlkBWystY6f+mRMdRQk8ehONPRUYXB
+         U4ujeJ+WgNOys0dUY/qPedw5EspK3hj+yMxuWrSzYpKD4uCi74L0pgigA8udbwB4F9
+         vU6c3esvXIkjw==
+Date:   Wed, 25 Oct 2023 13:36:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        johan+linaro@kernel.org, steev@kali.org,
+        dmitry.baryshkov@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 3/4] ASoC: codecs: wsa883x: mute/unmute PA in correct
+ sequence
+Message-ID: <6df45f92-5fe6-4b44-af04-c528d540ac06@sirena.org.uk>
+References: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+ <20230323164403.6654-4-srinivas.kandagatla@linaro.org>
+ <ff3eb88a-6941-4303-a4ba-17cad3842b88@sirena.org.uk>
+ <2a0aabf5-41a3-cc07-3203-9b0bca6b71aa@linaro.org>
+ <ZTjKWHAAfSYfc5px@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <0b9cb1ea-4656-4802-b7a7-811c1e9e118a@moroto.mountain>
-In-Reply-To: <0b9cb1ea-4656-4802-b7a7-811c1e9e118a@moroto.mountain>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 25 Oct 2023 14:35:45 +0200
-Message-ID: <CAHc6FU646Jj3iODoHoAYpps2PL732Feb_w+5p=8GfUOMfYTHhw@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: uninitialized variable in __gfs2_iomap_get()
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Bob Peterson <rpeterso@redhat.com>, gfs2@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rt5zetGAX6yWh0JO"
+Content-Disposition: inline
+In-Reply-To: <ZTjKWHAAfSYfc5px@hovoldconsulting.com>
+X-Cookie: There's no time like the pleasant.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan,
 
-On Wed, Oct 25, 2023 at 1:57=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
-.org> wrote:
-> The "ret" variable is uninitialized when we goto out because
-> gfs2_is_stuffed(ip).
->
-> Fixes: 2cd225820b91 ("gfs2: Initialize metapaths outside of __gfs2_iomap_=
-get")
+--rt5zetGAX6yWh0JO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks for catching this. I've fixed that patch directly.
+On Wed, Oct 25, 2023 at 09:57:12AM +0200, Johan Hovold wrote:
 
-Andreas
+> I understand Srini has looked at this but has not yet been able to come
+> up with a generic implementation. Would it be possible to merge the two
+> codec fixes as an interim workaround for 6.7?
 
+You're talking about two fixes here but this is a 4 patch series...
+
+--rt5zetGAX6yWh0JO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU5C70ACgkQJNaLcl1U
+h9AXWQf/T9xZ70IX74zqgGEQvJQW8f5WuAjh3quFZ3EGIn0VgypXfRhXm36u8tDQ
+B62+t6eMRRNj0YL8nyACWJUJ/MJebuPDNaNU+GUbE0yd5uZ0ByLwDKxN46IOD77V
+oNkhPcf6GYPBzO76cNcaZJbkceN2dvGhLImmwGOEZGrspk9dVl/MGMUVUkEoHOgH
+l/V2B+WwMJDLMOmzdqyq/FCU26+XpdNhwaR8pELO8VbjyNfa0Z+eu2qKx3TZ7LY3
+mrVl+w95kK4H61ilMF3VsJ9NECYjUIGq83lr8SeHtm8qIPpnh2ydz5SNKmkuCFmf
+SmfKJZPfodlipTiHHGVeFfZKr/n7lQ==
+=btYs
+-----END PGP SIGNATURE-----
+
+--rt5zetGAX6yWh0JO--
