@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96C37D6AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F349E7D6B04
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbjJYMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        id S234812AbjJYMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234837AbjJYMOe (ORCPT
+        with ESMTP id S234479AbjJYMQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:14:34 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9E4182;
-        Wed, 25 Oct 2023 05:14:31 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso8579940a12.1;
-        Wed, 25 Oct 2023 05:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698236069; x=1698840869; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mjXStcUt9Iguy5smRWKpn6s+oJAKiIOpUoRTCMmhueI=;
-        b=St3P1CfKAHPWitDvjlNQOQmMksLayGIY/dKhsZ9/8rR5+XHjyUlE6GsXvye51NImPz
-         0H9Q0UVtxXk64ushty8UVkON14nDb/tevnCS6irTERZdJYC20XrLcaj9Wn3qiz710EP6
-         VAjO0icYApxm8r5WSnHFPoEc28CVKquLktcaOeRYWkJcnBRKgi4EaiPrAPZJYgyY2uia
-         igOv1xi8piTYnJVQYme3p7nApakT0a2TlHUDPjGqhb7vPi/HV4qmivnkrH0TAZctVwDn
-         yMQlvN9BQcFJFxwlBX1Plp1+KojiiuFC+P5ch13P1G1klvq5B/ZH2rcVFoOcX8xZVf+f
-         NFcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698236069; x=1698840869;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mjXStcUt9Iguy5smRWKpn6s+oJAKiIOpUoRTCMmhueI=;
-        b=I9B9qxuCKWUoIA5z87k2IyybkOXlWe4UZg3qbLJ+LJis2CmWhfjKpB4/JoOxTtZzAK
-         DuC6I0yWXVZzkgqw1LjxsuiikgVb3DvwraXxbASG+K3UIfakwMRHo7J2+b41FBdOZd7r
-         FOQkL3xAfcgM4XfnJcP4JaW5UdBI+nVajLyYxcR5KnCekTmFWFIclrv9PIylFXt9Haq0
-         YY9RTsVlw73ERBij85UFcGg9xCAQhIl+28nX2zFiP+wbo8RXR0UTCOyKVgP/rOEHuURj
-         CTDHxKozuTtm0L/rHDW+VfNSID1JkEoYZCG8h9+2ZD2fb8nTDMtXpfNbobgyW/GGu9fR
-         H/bg==
-X-Gm-Message-State: AOJu0YzSzxGCdWn+Ci3EbtxALhfgtO01ffV2dqAOlW9AiZitoJK0bxfK
-        A98+9aWItjHGeq8StIFv3Y0=
-X-Google-Smtp-Source: AGHT+IG4K//lUoGVaZxJDWWI+11BjVh8sHP99EZg7E7wAjdHtOJoJ8whP+K1049KAHHUhD52O9FLAQ==
-X-Received: by 2002:a50:aa93:0:b0:540:9b47:4f70 with SMTP id q19-20020a50aa93000000b005409b474f70mr3344005edc.26.1698236069130;
-        Wed, 25 Oct 2023 05:14:29 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id w12-20020aa7cb4c000000b0053e7809615esm9347644edt.80.2023.10.25.05.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 05:14:28 -0700 (PDT)
-Message-ID: <17e03fa708cf0c1d297c2fa3d139a22a358a65e7.camel@gmail.com>
-Subject: Re: bpf: incorrect value spill in check_stack_write_fixed_off()
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 25 Oct 2023 15:14:27 +0300
-In-Reply-To: <CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
-References: <CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Wed, 25 Oct 2023 08:16:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37458CE;
+        Wed, 25 Oct 2023 05:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698236182; x=1729772182;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tDzwyDjkaDc8TUEWuENwxjT1Dw93wCEeJpJVuaYZ1ps=;
+  b=cCqI8tf4itA/7bmy2m3LSeAKBcVk51KfwRTBbok/YWTD96HRCIAb2+fE
+   CwtkNG4VoyVaYFJqoNRk/QzgD3VfXfvuHdY2zfWvssCXZb6g1XMyeAqUR
+   KTBbd+HAE4SABBFi1SWuCcayCNUoXNIxcyYj+VZuXxz5XYfrOIERwEj/M
+   B+SL9afOPlgzFonNLHLEJ2XXS8YPFa2X2PQ6dpA4M7uSkMKwSeO7ZByfy
+   LrM7dhT03Q5RccXdcrGGDRQ/5w5mgDGwkK6TrZnLwdT7Hzs83Yu1uq7eW
+   d5LIOe77JU+6moszdTcmacZPc895dIJ6x/78Dh5x3/jWWNywbNe/7RmLE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="366641824"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="366641824"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:16:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="875482045"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="875482045"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.178]) ([10.254.211.178])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:16:19 -0700
+Message-ID: <617cc452-2d31-4fe0-a808-a980baa43056@linux.intel.com>
+Date:   Wed, 25 Oct 2023 20:16:16 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the iommufd tree with the iommu tree
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yi Liu <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>
+References: <20231025153455.283c5b12@canb.auug.org.au>
+ <20231025121212.GB3952@nvidia.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231025121212.GB3952@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-25 at 11:16 +0200, Hao Sun wrote:
-> Hi,
->=20
-> In check_stack_write_fixed_off(), the verifier creates a fake reg to stor=
-e the
-> imm in a BPF_ST_MEM:
-> ...
-> else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
-> insn->imm !=3D 0 && env->bpf_capable) {
->         struct bpf_reg_state fake_reg =3D {};
->=20
->         __mark_reg_known(&fake_reg, (u32)insn->imm);
->         fake_reg.type =3D SCALAR_VALUE;
->         save_register_state(state, spi, &fake_reg, size);
->=20
-> Here, insn->imm is cast to u32, and used to mark fake_reg, which is incor=
-rect
-> and may lose sign information.
+On 2023/10/25 20:12, Jason Gunthorpe wrote:
+> On Wed, Oct 25, 2023 at 03:34:55PM +1100, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Today's linux-next merge of the iommufd tree got a conflict in:
+>>
+>>    drivers/iommu/intel/pasid.c
+>>
+>> between commit:
+>>
+>>    c61c255e114c ("iommu/vt-d: Remove unused function")
+>>
+>> from the iommu tree and commits:
+>>
+>>    f35f22cc760e ("iommu/vt-d: Access/Dirty bit support for SS domains")
+>>    cbf8b441ea08 ("iommu/vt-d: Add helper to setup pasid nested translation")
+>>
+>> from the iommufd tree.
+>>
+>> I fixed it up (the latter added a use of the function removed by
+>> the former, so I just used the latter) and can carry the fix as
+>> necessary. This is now fixed as far as linux-next is concerned, but any
+>> non trivial
+> Intel folks, this is not nice 🙁 Why was the first commit done at all
+> if the nesting series needs this?
 
-This bug is on me.
-Thank you for reporting it along with the example program.
-Looks like the patch below is sufficient to fix the issue.
-Have no idea at the moment why I used u32 cast there.
-Let me think a bit more about it and I'll submit an official patch.
+It's my fault. My apologies for not realizing that the helper would
+still be used by the nesting translation series. I will be more careful
+in the future.
 
-Thanks,
-Eduard
-
----
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 857d76694517..44af69ce1301 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4674,7 +4674,7 @@ static int check_stack_write_fixed_off(struct bpf_ver=
-ifier_env *env,
-                   insn->imm !=3D 0 && env->bpf_capable) {
-                struct bpf_reg_state fake_reg =3D {};
-=20
--               __mark_reg_known(&fake_reg, (u32)insn->imm);
-+               __mark_reg_known(&fake_reg, insn->imm);
-                fake_reg.type =3D SCALAR_VALUE;
-                save_register_state(state, spi, &fake_reg, size);
-        } else if (reg && is_spillable_regtype(reg->type)) {
+Best regards,
+baolu
