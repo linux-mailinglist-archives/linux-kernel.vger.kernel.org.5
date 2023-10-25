@@ -2,228 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CCB7D75D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2537D75E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjJYUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S229596AbjJYUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJYUh3 (ORCPT
+        with ESMTP id S229583AbjJYUiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:37:29 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2DC136
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:37:27 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce37d0f13fso96257a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:37:27 -0700 (PDT)
+        Wed, 25 Oct 2023 16:38:08 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831EEDE
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:38:06 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9338e4695so1971911fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698266244; x=1698871044; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GRvWkvBoDYkTwsED6VPJ0pdisbEkaoGqPda2wjpU/Qs=;
-        b=MII0mSTzaQsqVwpW2bZubOzl9GP8xBXYgW3rk0k3ReYKcLrieCYwQP2tmFC5O1kssl
-         1Lf9FuZ8RiskJ6lVenwZwo8w6QVlTemUAWvQPhvVh7lZGv2BVUt3P3oaz+6e0vJ3nVT6
-         NLUZQU61fyc4pHxV5dQUECFsA1WGYxdpdCxWy5uCwcNhYxDllCsoqA01eCLt9y6zRghr
-         0r9I5hppaMVdV9aHFjylDJhgY/Nk8jifUnVvUv8HwM9tM7e2dqn7dhPBltnERgXRp7Wb
-         GoRYc3/WKLU9r6YzD8DUkkd8d0My9GHNrjKKPlrJ526/zGcics5PhrNOAzpxga+ZBaIL
-         ZYtw==
+        d=linaro.org; s=google; t=1698266285; x=1698871085; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bkNNejbCmL/k7pWRnrsJGwZqih1Jcn9nw5isK0ZcLhI=;
+        b=BqFf2MHxH8RheMmwKqkJvx6gQAkizRpw+qnQqERHcsX8hjnF0eMrGg/5S0z1V5f7Dp
+         mS5G+ZEcT3GDbiC5U7PvMZp2Fe6+T6ETsN2fNvz7XXSH+HTOsyy3xSv0EvzvI71FteF9
+         QJZSJeVGkmq6aZVucENJgTZ7KFmm59YtZkiVPM34VvsIOeOhZrxCW5RMY1SdmZsDC86j
+         pyU7b3eUsrhGVCgyYPvCDV+/kMWE+6PLAqcpMtd+ntEyP56O8qBDk9NRvrlPZyKXpnRb
+         X1wgeNtQg6epvPnpGIJQ5vlG6SK7/wY9kLDhYWqKUSd1WEN2TlzmW53HbQMmlQVQKsjD
+         zhHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698266244; x=1698871044;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GRvWkvBoDYkTwsED6VPJ0pdisbEkaoGqPda2wjpU/Qs=;
-        b=t8N0n7aZvzT00ydh6RySvd1cJj13JET7B02zkpQTxNuc59G69kL9cLhHs5FXnBjweA
-         TH7UJDrvbSZpGwGPgPmJCG+3rtgqM9WotRNKvLKg5x0tLW2+nl8UGP2epd1yg5IMlJ3i
-         1gxIsIKRpwKBSl3GkZqDdOAj3OzyqyJtD1hlavXIy4Vv4oo+Sm62mp4uEI1IXty48/Gx
-         Ygk6CSTLD2v3olc2pt/ZFFUSfCZHyBy2FvPXiTUphU5vqzu7QWLhOBcMm7QhythmFBWl
-         /48H/9YRr/RByG5K5qYW8IDF3c1CAAgzyHaGHt3XhxvJZsyg57NmeePRFocIggojgVxN
-         u4jA==
-X-Gm-Message-State: AOJu0YwMqZPEGRyMBENhINncre5H9Ij0xtNR/PicFc416aZ+vkMpK09T
-        7ByURF5RBRGCYdnCFuVSNksTAw==
-X-Google-Smtp-Source: AGHT+IFbX7AlguqhQunscrGf7kDQdcHYoFURhBlkQP1vlzURhFZhOpWBh6z5tFsLLNMSZKF3FqxKdg==
-X-Received: by 2002:a9d:6286:0:b0:6bd:152f:9918 with SMTP id x6-20020a9d6286000000b006bd152f9918mr18452849otk.14.1698266244527;
-        Wed, 25 Oct 2023 13:37:24 -0700 (PDT)
-Received: from ghost ([208.116.208.98])
-        by smtp.gmail.com with ESMTPSA id g15-20020a056830160f00b006b9cc67386fsm2385303otr.66.2023.10.25.13.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 13:37:24 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 13:37:21 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v7 2/4] riscv: Checksum header
-Message-ID: <ZTl8gauEst2NGrw6@ghost>
-References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
- <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
- <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
+        d=1e100.net; s=20230601; t=1698266285; x=1698871085;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bkNNejbCmL/k7pWRnrsJGwZqih1Jcn9nw5isK0ZcLhI=;
+        b=lhjHr++VmKicmJeC8IPVlSbZksXTZQ3uZVKrLwWbW5TUDrk2It45FTZIAlNLYreKT/
+         ssQiDbifewNhWrzmfz5dOOKErPLcq7u4A8uYtkx7PLpWbKn9C4pmcaBvXE4iFTOQ19pL
+         f6cBduVcKBfihibUTI9+5KHjXWxdheXBHClvkydEd4tikvsNSOIEjEQXEjh5g0WgiI5P
+         9swQFCl/PS+JzOljxXolkCtm9bRaxI8goMOC1qWx36+5JHvWFcTPcVpS4ir0EHdYQeij
+         9YUgT+g/AWEfyPv2dHb3thbWVgXpS8ZntWOKdTFnGw48QCAIqpPQ9P7915NURk3vM7fh
+         HYxA==
+X-Gm-Message-State: AOJu0YwND+RaBjXkX0v6cAlSTs4ntMF7Xf5g4v0CTVMlh/w9PbryWBXI
+        8yYh46rg8KfUy9UwCQc+PrRhDA==
+X-Google-Smtp-Source: AGHT+IFEsNWUEVHLgy9no9zt5n/oSi9ff1FZksTxjp/VP/wDM1Yxxc6Zxk7YI/vaALGIt3FYIrQlCQ==
+X-Received: by 2002:a2e:bb12:0:b0:2bf:6852:9339 with SMTP id v18-20020a2ebb12000000b002bf68529339mr10819527lje.3.1698266284776;
+        Wed, 25 Oct 2023 13:38:04 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id c18-20020a05600c0a5200b0040770ec2c19sm669758wmq.10.2023.10.25.13.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 13:38:04 -0700 (PDT)
+Message-ID: <c9c6b20e-cac2-43a1-a026-ea01b0e245bd@linaro.org>
+Date:   Wed, 25 Oct 2023 21:38:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] clk: qcom: rpmh: Add support for SC8380XP rpmh clocks
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
+        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        abel.vesa@linaro.org, quic_tsoni@quicinc.com
+References: <20231025133320.4720-1-quic_sibis@quicinc.com>
+ <20231025133320.4720-5-quic_sibis@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20231025133320.4720-5-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 06:50:05AM +0000, Wang, Xiao W wrote:
-> Hi Charlie,
+On 25/10/2023 14:33, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 > 
-> > -----Original Message-----
-> > From: linux-riscv <linux-riscv-bounces@lists.infradead.org> On Behalf Of
-> > Charlie Jenkins
-> > Sent: Wednesday, September 20, 2023 2:45 AM
-> > To: Charlie Jenkins <charlie@rivosinc.com>; Palmer Dabbelt
-> > <palmer@dabbelt.com>; Conor Dooley <conor@kernel.org>; Samuel Holland
-> > <samuel.holland@sifive.com>; David Laight <David.Laight@aculab.com>;
-> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
-> > arch@vger.kernel.org
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>; Albert Ou
-> > <aou@eecs.berkeley.edu>; Arnd Bergmann <arnd@arndb.de>
-> > Subject: [PATCH v7 2/4] riscv: Checksum header
-> > 
-> > Provide checksum algorithms that have been designed to leverage riscv
-> > instructions such as rotate. In 64-bit, can take advantage of the larger
-> > register to avoid some overflow checking.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/checksum.h | 79
-> > +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 79 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/checksum.h
-> > b/arch/riscv/include/asm/checksum.h
-> > new file mode 100644
-> > index 000000000000..dc0dd89f2a13
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/checksum.h
-> > @@ -0,0 +1,79 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * IP checksum routines
-> > + *
-> > + * Copyright (C) 2023 Rivos Inc.
-> > + */
-> > +#ifndef __ASM_RISCV_CHECKSUM_H
-> > +#define __ASM_RISCV_CHECKSUM_H
-> > +
-> > +#include <linux/in6.h>
-> > +#include <linux/uaccess.h>
-> > +
-> > +#define ip_fast_csum ip_fast_csum
-> > +
-> > +#include <asm-generic/checksum.h>
-> > +
-> > +/*
-> > + * Quickly compute an IP checksum with the assumption that IPv4 headers
-> > will
-> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
-> > + * @ihl is the number of 32 bit segments and must be greater than or equal
-> > to 5.
-> > + * @iph is assumed to be word aligned.
+> Adds the RPMH clocks present in SC8380XP SoC
 > 
-> Not sure if the assumption is always true. It looks the implementation in "lib/checksum.c" doesn't take this assumption.
-> The ip header can comes after a 14-Byte ether header, which may start from a word-aligned or DMA friendly address.
+> Co-developed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
 
-While lib/checksum.c does not make this assumption, other architectures
-(x86, ARM, powerpc, mips, arc) do make this assumption. Architectures
-seem to only align the header on a word boundary in do_csum. I worry
-that the benefit of aligning iph in this "fast" csum function would
-disproportionately impact hardware that has fast misaligned accesses.
+This looks pretty straight forward.
 
-- Charlie
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-> 
-> > + */
-> > +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> > +{
-> > +	unsigned long csum = 0;
-> > +	int pos = 0;
-> > +
-> > +	do {
-> > +		csum += ((const unsigned int *)iph)[pos];
-> > +		if (IS_ENABLED(CONFIG_32BIT))
-> > +			csum += csum < ((const unsigned int *)iph)[pos];
-> > +	} while (++pos < ihl);
-> > +
-> > +	/*
-> > +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
-> > +	 * worth checking if supported without Alternatives.
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> > +		unsigned long fold_temp;
-> > +
-> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> > +					      RISCV_ISA_EXT_ZBB, 1)
-> > +		    :
-> > +		    :
-> > +		    :
-> > +		    : no_zbb);
-> > +
-> > +		if (IS_ENABLED(CONFIG_32BIT)) {
-> > +			asm(".option push				\n\
-> > +			.option arch,+zbb				\n\
-> > +				not	%[fold_temp], %[csum]
-> > 	\n\
-> > +				rori	%[csum], %[csum], 16		\n\
-> > +				sub	%[csum], %[fold_temp], %[csum]
-> > 	\n\
-> > +			.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> > +		} else {
-> > +			asm(".option push				\n\
-> > +			.option arch,+zbb				\n\
-> > +				rori	%[fold_temp], %[csum], 32	\n\
-> > +				add	%[csum], %[fold_temp], %[csum]
-> > 	\n\
-> > +				srli	%[csum], %[csum], 32		\n\
-> > +				not	%[fold_temp], %[csum]
-> > 	\n\
-> > +				roriw	%[csum], %[csum], 16		\n\
-> > +				subw	%[csum], %[fold_temp], %[csum]
-> > 	\n\
-> > +			.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> > +		}
-> > +		return csum >> 16;
-> > +	}
-> > +no_zbb:
-> > +#ifndef CONFIG_32BIT
-> > +	csum += (csum >> 32) | (csum << 32);
-> 
-> Just like patch 3/4 does, we can call ror64(csum, 32).
-> 
-> BRs,
-> Xiao
-> 
-> > +	csum >>= 32;
-> > +#endif
-> > +	return csum_fold((__force __wsum)csum);
-> > +}
-> > +
-> > +#endif // __ASM_RISCV_CHECKSUM_H
-> > 
-> > --
-> > 2.42.0
-> > 
-> > 
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
