@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958567D6C20
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1E47D6C1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344111AbjJYMkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S1344087AbjJYMjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbjJYMkB (ORCPT
+        with ESMTP id S1344054AbjJYMjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:40:01 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFFAC13D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:39:58 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E53E72F4;
-        Wed, 25 Oct 2023 05:40:39 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B84A3F738;
-        Wed, 25 Oct 2023 05:39:57 -0700 (PDT)
-Message-ID: <ec86712a-0c46-4b27-9736-e34b02168e19@arm.com>
-Date:   Wed, 25 Oct 2023 13:39:56 +0100
+        Wed, 25 Oct 2023 08:39:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11539C;
+        Wed, 25 Oct 2023 05:39:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 611B9C433C7;
+        Wed, 25 Oct 2023 12:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698237589;
+        bh=izrauq5aGqPVsDf/t0BCTrBB/O9la1zB0gYc2jn+qiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tqNrenIzHolLr1199ZbICpYPT1fmWKQEqqMcl7slVFxLQuTTJa91uF8NBve1BVg4f
+         UavUx9TeF/lflT6Uk4F/O7rGGwM2+8bEhGFHok4GWU5ULI9TbGzIkmMXcxQn70Qegx
+         JPPYBdpvKvaQKKBwRk+P8fpiRQAGHlMP4fgLJx2UCLf0tC/QQFUrbQFbJdBRPQnN8E
+         APEuJCM/0RNhIJzBz1oWrGnCP42F2zrXl/f6AA6/rimZS5qxNqaiOq3zeQZvadEm/N
+         5n9bEBwYBeN7eGzp/l76c4a8qVtRdGx7601TQbt21+lBkSTsylNHxtNVDiRfb3N1VF
+         jkbC433is4KWQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qvdBB-0006Ln-1I;
+        Wed, 25 Oct 2023 14:40:09 +0200
+Date:   Wed, 25 Oct 2023 14:40:09 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: pmic_glink: fix connector type to be
+ DisplayPort
+Message-ID: <ZTkMqYQzy7k-zgJM@hovoldconsulting.com>
+References: <20231010225229.77027-1-dmitry.baryshkov@linaro.org>
+ <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+ <NDl6Ye92jJDp3fm20AwcuUKWuP8tzQ9CyWGGRltZ_DxYgxep2DO8Wil0Nmsfmhp1j4vAp9Yu1duiHeQkjBG-bcAdFoW3ZbWxvVqrCEpQe_4=@emersion.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/7] iommu: Validate that devices match domains
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-        baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org
-References: <cover.1697047261.git.robin.murphy@arm.com>
- <4e8bda33aac4021b444e40389648deccf61c1f37.1697047261.git.robin.murphy@arm.com>
- <20231024185213.GA1061115@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231024185213.GA1061115@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <NDl6Ye92jJDp3fm20AwcuUKWuP8tzQ9CyWGGRltZ_DxYgxep2DO8Wil0Nmsfmhp1j4vAp9Yu1duiHeQkjBG-bcAdFoW3ZbWxvVqrCEpQe_4=@emersion.fr>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 7:52 pm, Jason Gunthorpe wrote:
-> On Wed, Oct 11, 2023 at 07:14:50PM +0100, Robin Murphy wrote:
+On Wed, Oct 25, 2023 at 12:29:26PM +0000, Simon Ser wrote:
+> On Wednesday, October 25th, 2023 at 14:22, Johan Hovold <johan@kernel.org> wrote:
 > 
->> @@ -2279,10 +2280,16 @@ struct iommu_domain *iommu_get_dma_domain(struct device *dev)
->>   static int __iommu_attach_group(struct iommu_domain *domain,
->>   				struct iommu_group *group)
->>   {
->> +	struct device *dev;
->> +
->>   	if (group->domain && group->domain != group->default_domain &&
->>   	    group->domain != group->blocking_domain)
->>   		return -EBUSY;
->>   
->> +	dev = iommu_group_first_dev(group);
->> +	if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
->> +		return -EINVAL;
+> > I was just going to post a patch fixing this after finally investigating
+> > why the DisplayPort outputs on the X13s were annoyingly identified as
+> > "Unknown20-1" and "Unknown20-2" instead of the expected "DP-1" and
+> > "DP-2".
 > 
-> I was thinking about this later, how does this work for the global
-> static domains? domain->owner will not be set?
-> 
-> 	if (alloc_type == IOMMU_DOMAIN_IDENTITY && ops->identity_domain)
-> 		return ops->identity_domain;
-> 	else if (alloc_type == IOMMU_DOMAIN_BLOCKED && ops->blocked_domain)
-> 		return ops->blocked_domain;
-> 
-> Seems like it will break everything?
+> Note, ideally userspace should use drmModeGetConnectorTypeName() from
+> libdrm to figure out the proper name for a connector type. That way we
+> only need to update a single spot when adding a new connector type,
+> instead of patching a whole bunch of programs.
 
-I don't believe it makes any significant difference - as the commit 
-message points out, this validation is only applied at the public 
-interface boundaries of iommu_attach_group(), iommu_attach_device(), and 
-iommu_attach_device_pasid(), which are only expected to be operating on 
-explicitly-allocated unmanaged domains. For internal default domain 
-attachment, the domain is initially derived from the device/group itself 
-so we know it's appropriate by construction.
+Yeah, I only skimmed the xrandr code and these strings appear to
+originate from some X library. So hopefully not that many places to
+update.
 
-I guess this *would* now prevent some external caller reaching in and 
-trying to attach something to some other group's identity default 
-domain, but frankly it feels like making that fail would be no bad thing 
-anyway.
+Scripts and other tools may still be using these strings directly
+however (e.g. as did my custom script to enable external displays).
 
-Thanks,
-Robin.
+Johan
