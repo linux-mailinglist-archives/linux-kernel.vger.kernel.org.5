@@ -2,42 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CDD7D7054
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AD27D704B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344489AbjJYO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344445AbjJYO7d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344437AbjJYO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 25 Oct 2023 10:59:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB2AB0;
-        Wed, 25 Oct 2023 07:59:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAA0C433C7;
-        Wed, 25 Oct 2023 14:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698245971;
-        bh=kIFujZGjzcp/zjA/bisHTWZeLa/8sA2vWQ45CuhLzTU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RNbtBOKQLV2rkZwKLZQEcOjPEpIFnPmJIUtIRjCbaCGeJYv6tQXemjcRB8hyjoj6P
-         JNU51FU2VlsmblfNYKG3tSXocRlCTHPfHQCnEXUugU43tVuJDb92ZkDZVSvIECfEVc
-         TrxQXQHWD2OPw6JZtCZzokBFoCiwR9qTh6M/MRgfTgNhwWlbLtUJ3jfX6yRaQSIoul
-         ms3mACLYgiFXWrUhd8/Lb0sQ6nqL3Av+rKJl8zTJW7uhD/IQ/hJu76q76NVRwgC81R
-         juEifmN9L7j7Tw7acNc4QOSlel3LhuMwcJUbQpbFc1EyAY9CfrQJi9Z4tHImak0pFo
-         NOEeFK5zAfCIQ==
-From:   Georgi Djakov <djakov@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        djakov@kernel.org
-Subject: [GIT PULL] interconnect changes for 6.7
-Date:   Wed, 25 Oct 2023 17:58:56 +0300
-Message-Id: <20231025145857.2212632-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.34.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343878AbjJYO7b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Oct 2023 10:59:31 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80B4B0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:59:28 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-495d687b138so2208768e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698245967; x=1698850767; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iYQ3okT5d3Nr7vbYAmBVtOHd+MxXyv8cMuIfiU00t8Q=;
+        b=ADGaA0xmleuK1l6FS4+GodnO0Qyh6/xhZt3WB0utPAcFv0AXCjKJAbuqZXj0PUE4WX
+         8VN49wv5sVU/q8bI2A1e5H2XxuQHN6YmKcv1GIMoB593XxZH7Ji7z2nfZwTqrnwYQA1h
+         hQ7kywC6XQ6VkAlItZXQ0sl1b7Q96tMVIhU7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698245967; x=1698850767;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iYQ3okT5d3Nr7vbYAmBVtOHd+MxXyv8cMuIfiU00t8Q=;
+        b=wdVsUp7HPED4C0ahzNlBZzAd+5KUD4K5t/54Nu44lDI/meFI1qKoo5BnLumgd9BugW
+         59OSwbA9Y3Khp9pJG+Ijwwba3LL/vcDU4Wc1x6Y6IL//TwjRQNF7oHbVlD1d2l17MLPR
+         HLPu0J33vE0J1mQShDzKzWZ1jiMUIuW2+59eujAxILsdyg28E6HqQe4zTACDV0awTS9T
+         pVoE3zRrwurAi517ebg9x9YkCNPMhVm/FwvF4+BigGtXITcyhpvt8CS6sJlLl1nUC+Y7
+         XxmrkQVNo3qF4GPMjBmFZFWM7NPEVR2Qy3q55A75M2FaFE/CBKUu1wAgdTo0//nHw29x
+         SAnA==
+X-Gm-Message-State: AOJu0Yy4Gv2JUavzaDjPzrEhyGpIXh+TWLlADM78q9Y/XPgRPOQJxced
+        5wd1lwgPYkDi0oxQu5BcrWAQsjrB37p30aDZD2E=
+X-Google-Smtp-Source: AGHT+IGTjmSBB0wnk3+BWU75cqUx+evogXF5mZL02fGOC7IvqYB2uzGku8oP9jEKBrPGCogD7kPIVw==
+X-Received: by 2002:a1f:f486:0:b0:493:7df9:bcc4 with SMTP id s128-20020a1ff486000000b004937df9bcc4mr10267864vkh.4.1698245967608;
+        Wed, 25 Oct 2023 07:59:27 -0700 (PDT)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id p11-20020a1f290b000000b0049aa4300a86sm1173vkp.39.2023.10.25.07.59.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 07:59:27 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-49d9ef118a5so2214920e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:59:27 -0700 (PDT)
+X-Received: by 2002:a67:c190:0:b0:458:8ef9:a27d with SMTP id
+ h16-20020a67c190000000b004588ef9a27dmr12269216vsj.20.1698245966786; Wed, 25
+ Oct 2023 07:59:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231025143906.133218-1-zohar@linux.ibm.com>
+In-Reply-To: <20231025143906.133218-1-zohar@linux.ibm.com>
+From:   Raul Rangel <rrangel@chromium.org>
+Date:   Wed, 25 Oct 2023 08:59:13 -0600
+X-Gmail-Original-Message-ID: <CAHQZ30BSD2c4WwUTARx9OeqTjusgq7te8OzwdUi6Qk+L=9vSgA@mail.gmail.com>
+Message-ID: <CAHQZ30BSD2c4WwUTARx9OeqTjusgq7te8OzwdUi6Qk+L=9vSgA@mail.gmail.com>
+Subject: Re: [PATCH v3] ima: detect changes to the backing overlay file
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -48,149 +77,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Wed, Oct 25, 2023 at 8:39=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+> +               if (!IS_I_VERSION(backing_inode) ||
+> +                   backing_inode->i_sb->s_dev !=3D iint->real_dev ||
+> +                   backing_inode->i_ino !=3D iint->real_ino ||
+> +                   !inode_eq_iversion(backing_inode, iint->version)) {
+> +                       iint->flags &=3D ~IMA_DONE_MASK;
+> +                       iint->measured_pcrs =3D 0;
+> +               }
+> +       }
+> +
+Does this mean I need to mount ext4 with `-o iversion`? Or has it been
+enabled by default?
 
-This is the pull request with interconnect changes for the v6.7-rc1 merge
-window. This time it contains only driver updates. There is one new driver
-and fixes and cleanups in existing drivers and dt bindings. The summary is
-in the signed tag.
+I can test this patch out sometime this week and verify it fixes the
+performance regression.
 
-All patches have been in linux-next during the last week. Please pull into
-char-misc-next when possible.
-
-Thanks,
-Georgi
-
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.7-rc1
-
-for you to fetch changes up to d4c720a19e9ac3a907a8bf9a11c5a3a4e3e50a34:
-
-  Merge branch 'icc-platform-remove' into icc-next (2023-10-19 00:50:03 +0300)
-
-----------------------------------------------------------------
-interconnect changes for 6.7
-
-This pull request contains the interconnect changes for the 6.7-rc1 merge
-window which contains just driver changes with the following highlights:
-
-Driver changes:
-- New interconnect driver for the SDX75 platform.
-- Support for coefficients to allow node-specific rate adjustments.
-- Update DT bindings according to the recent changes of how we
-  represent the SMD and RPM bus clocks on Qualcomm platforms.
-- Misc fixes and cleanups.
-
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-Andy Shevchenko (4):
-      interconnect: imx: Replace custom implementation of COUNT_ARGS()
-      interconnect: msm8974: Replace custom implementation of COUNT_ARGS()
-      interconnect: qcom: osm-l3: Replace custom implementation of COUNT_ARGS()
-      interconnect: imx: Replace inclusion of kernel.h in the header
-
-Georgi Djakov (6):
-      Merge branch 'icc-qcom-coefficients' into icc-next
-      Merge branch 'icc-rpm-dt-bindings' into icc-next
-      Merge branch 'icc-acv-enable-mask' into icc-next
-      Merge branch 'icc-sdx75' into icc-next
-      Merge branch 'icc-misc' into icc-next
-      Merge branch 'icc-platform-remove' into icc-next
-
-Konrad Dybcio (27):
-      interconnect: qcom: icc-rpm: Add AB/IB calculations coefficients
-      interconnect: qcom: icc-rpm: Separate out clock rate calulcations
-      interconnect: qcom: icc-rpm: Let nodes drive their own bus clock
-      interconnect: qcom: icc-rpm: Check for node-specific rate coefficients
-      interconnect: qcom: qcm2290: Hook up MAS_APPS_PROC's bus clock
-      interconnect: qcom: qcm2290: Set AB coefficients
-      interconnect: qcom: qcm2290: Update EBI channel configuration
-      interconnect: qcom: sdm660: Set AB/IB coefficients
-      interconnect: qcom: msm8996: Set AB/IB coefficients
-      dt-bindings: interconnect: qcom: Introduce qcom,rpm-common
-      dt-bindings: interconnect: qcom: qcm2290: Remove RPM bus clocks
-      dt-bindings: interconnect: qcom: Fix and separate out SDM660
-      dt-bindings: interconnect: qcom: Fix and separate out MSM8996
-      dt-bindings: interconnect: qcom: Fix and separate out MSM8939
-      dt-bindings: interconnect: qcom: rpm: Clean up the file
-      dt-bindings: interconnect: qcom: rpm: Clean up the example
-      interconnect: qcom: qdu1000: Set ACV enable_mask
-      interconnect: qcom: sc7180: Set ACV enable_mask
-      interconnect: qcom: sc7280: Set ACV enable_mask
-      interconnect: qcom: sc8180x: Set ACV enable_mask
-      interconnect: qcom: sc8280xp: Set ACV enable_mask
-      interconnect: qcom: sdm670: Set ACV enable_mask
-      interconnect: qcom: sdm845: Set ACV enable_mask
-      interconnect: qcom: sm6350: Set ACV enable_mask
-      interconnect: qcom: sm8150: Set ACV enable_mask
-      interconnect: qcom: sm8250: Set ACV enable_mask
-      interconnect: qcom: sm8350: Set ACV enable_mask
-
-Krzysztof Kozlowski (1):
-      dt-bindings: interconnect: qcom,rpmh: do not require reg on SDX65 MC virt
-
-Rohit Agarwal (2):
-      dt-bindings: interconnect: Add compatibles for SDX75
-      interconnect: qcom: Add SDX75 interconnect provider driver
-
-Uwe Kleine-König (1):
-      interconnect: qcom: Convert to platform remove callback returning void
-
-Yang Yingliang (1):
-      interconnect: fix error handling in qnoc_probe()
-
- .../devicetree/bindings/interconnect/qcom,msm8939.yaml         |   74 +
- .../devicetree/bindings/interconnect/qcom,msm8996.yaml         |  126 +
- .../devicetree/bindings/interconnect/qcom,qcm2290.yaml         |   60 +-
- .../devicetree/bindings/interconnect/qcom,rpm-common.yaml      |   28 +
- Documentation/devicetree/bindings/interconnect/qcom,rpm.yaml   |  250 +-
- Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml  |    1 +
- .../devicetree/bindings/interconnect/qcom,sdm660.yaml          |  108 +
- .../devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml      |   92 +
- drivers/interconnect/imx/imx.h                                 |    9 +-
- drivers/interconnect/qcom/Kconfig                              |    9 +
- drivers/interconnect/qcom/Makefile                             |    2 +
- drivers/interconnect/qcom/icc-rpm-clocks.c                     |    6 +
- drivers/interconnect/qcom/icc-rpm.c                            |   90 +-
- drivers/interconnect/qcom/icc-rpm.h                            |   15 +
- drivers/interconnect/qcom/icc-rpmh.c                           |    4 +-
- drivers/interconnect/qcom/icc-rpmh.h                           |    2 +-
- drivers/interconnect/qcom/msm8974.c                            |    4 +-
- drivers/interconnect/qcom/msm8996.c                            |    8 +-
- drivers/interconnect/qcom/osm-l3.c                             |    3 +-
- drivers/interconnect/qcom/qcm2290.c                            |    9 +-
- drivers/interconnect/qcom/qdu1000.c                            |    3 +-
- drivers/interconnect/qcom/sa8775p.c                            |    2 +-
- drivers/interconnect/qcom/sc7180.c                             |    3 +-
- drivers/interconnect/qcom/sc7280.c                             |    3 +-
- drivers/interconnect/qcom/sc8180x.c                            |    3 +-
- drivers/interconnect/qcom/sc8280xp.c                           |    3 +-
- drivers/interconnect/qcom/sdm660.c                             |    4 +
- drivers/interconnect/qcom/sdm670.c                             |    3 +-
- drivers/interconnect/qcom/sdm845.c                             |    3 +-
- drivers/interconnect/qcom/sdx55.c                              |    2 +-
- drivers/interconnect/qcom/sdx65.c                              |    2 +-
- drivers/interconnect/qcom/sdx75.c                              | 1107 ++++++++
- drivers/interconnect/qcom/sdx75.h                              |   97 +
- drivers/interconnect/qcom/sm6350.c                             |    3 +-
- drivers/interconnect/qcom/sm8150.c                             |    3 +-
- drivers/interconnect/qcom/sm8250.c                             |    3 +-
- drivers/interconnect/qcom/sm8350.c                             |    3 +-
- drivers/interconnect/qcom/sm8450.c                             |    2 +-
- drivers/interconnect/qcom/sm8550.c                             |    2 +-
- include/dt-bindings/interconnect/qcom,sdx75.h                  |  102 +
- 40 files changed, 1916 insertions(+), 337 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,msm8939.yaml
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,msm8996.yaml
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,rpm-common.yaml
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
- create mode 100644 drivers/interconnect/qcom/sdx75.c
- create mode 100644 drivers/interconnect/qcom/sdx75.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sdx75.h
+Thanks!
