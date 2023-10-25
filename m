@@ -2,183 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F237D6D84
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F9D7D6D8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbjJYNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
+        id S234893AbjJYNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbjJYNnD (ORCPT
+        with ESMTP id S233757AbjJYNoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:43:03 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89486132
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:42:57 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qve9u-0002YC-Np; Wed, 25 Oct 2023 15:42:54 +0200
-Message-ID: <c1f50467-1524-40a3-b0ae-44795990a912@leemhuis.info>
-Date:   Wed, 25 Oct 2023 15:42:54 +0200
+        Wed, 25 Oct 2023 09:44:39 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87A913D;
+        Wed, 25 Oct 2023 06:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1698241477; x=1729777477;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=a9ypiX+SDR4b3cxwKKOrAMbEE7xPUJwX0R6Z5CRRadY=;
+  b=T2eNObRo8vfoS7KSn5/wGt/jNvR7t4TXJMNTahnUSjZNdKwFzDhTBGiv
+   vKR2PgDwjygYX2AjdPHO+O/tj+KFeeMwo5OhWHANYmLhxKzghj5pvwzjB
+   2586dacm0HIgDH5az/lpTnFW+6w3LYLipj2zRhUUELyu9yoq10hueqgQw
+   y2n4DT/at58FHwnPtvvUPZho5V+iFaYx8Nl9cc7qJnPZuqgRsCnVtdcTB
+   VJwUUsnmdTp66KwZUn69pk606kCawhdLaag/mgk2HMTB80X6EQ69tdTy9
+   IhbvRpM+eENfxwv8Sh7jLm6h032cMOJ2rBLgNTm5vzy7cmd8c+l6BWJmy
+   Q==;
+X-CSE-ConnectionGUID: 0glr9WvsTTKB7/1tnc1ysA==
+X-CSE-MsgGUID: dwCoq9ftRqC0sU3ss26Syw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="241332153"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Oct 2023 06:44:36 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 25 Oct 2023 06:44:20 -0700
+Received: from marius-VM.mshome.net (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 25 Oct 2023 06:44:18 -0700
+From:   <marius.cristea@microchip.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>
+CC:     <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marius.cristea@microchip.com>
+Subject: [PATCH v2 1/2] dt-bindings: iio: adc: adding dt-bindings for PAC193X
+Date:   Wed, 25 Oct 2023 16:44:03 +0300
+Message-ID: <20231025134404.131485-2-marius.cristea@microchip.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231025134404.131485-1-marius.cristea@microchip.com>
+References: <20231025134404.131485-1-marius.cristea@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
- L570
-Content-Language: en-US, de-DE
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Evan Preston <x.arch@epreston.net>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jaak Ristioja <jaak@ristioja.ee>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
- <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info>
- <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
- <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
- <ZSO9uArAtsPMPeTP@debian.me>
- <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
- <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info>
- <CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com>
- <ZTWoDSPxGO-ApR4r@P70.localdomain>
- <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
- <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698241377;615e3bba;
-X-HE-SMSGID: 1qve9u-0002YC-Np
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.10.23 15:23, Huacai Chen wrote:
-> On Wed, Oct 25, 2023 at 6:08 PM Thorsten Leemhuis
-> <regressions@leemhuis.info> wrote:
->>
->> Javier, Dave, Sima,
->>
->> On 23.10.23 00:54, Evan Preston wrote:
->>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
->>>> On Fri, Oct 20, 2023 at 5:35 PM Linux regression tracking (Thorsten
->>>> Leemhuis) <regressions@leemhuis.info> wrote:
->>>>> On 09.10.23 10:54, Huacai Chen wrote:
->>>>>> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
->>>>>>>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
->>>>>>>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
->>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
->>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
->>>>>>>>>>>
->>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
->>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
->>>>>>>>>>> screen after boot until the display manager starts... if it does start
->>>>>>>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
->>>>>>>>>>>
->>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
->>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
->>>>>>>>>>> subsys_initcall_sync").
->>>>>>>>>>
->>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
->>>>>>>> again. So I guess the reason:
->>>>>
->>>>> Well, this to me still looks a lot (please correct me if I'm wrong) like
->>>>> regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
->>>>> if I understood things correctly. Or is there a proper fix for this
->>>>> already in the works and I just missed this? Or is there some good
->>>>> reason why this won't/can't be fixed?
->>>>
->>>> DRM_SIMPLEDRM was enabled but it didn't work at all because there was
->>>> no corresponding platform device. Now DRM_SIMPLEDRM works but it has a
->>>> blank screen. Of course it is valuable to investigate further about
->>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort because
->>>> I don't have a same machine.
->>
->> Side note: Huacai, have you tried working with Jaak to get down to the
->> real problem? Evan, might you be able to help out here?
-> No, Jaak has no response after he 'fixed' his problem by disabling SIMPLEDRM.
+From: Marius Cristea <marius.cristea@microchip.com>
 
-Yeah, understood, already suspected something like that, thx for confirming.
+This is the device tree schema for iio driver for
+Microchip PAC193X series of Power Monitors with Accumulator.
 
->> But I write this mail for a different reason:
->>
->>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
->>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).
->>> Upgrading from Linux 6.4.12 to 6.5 and later results in only a blank
->>> screen after boot and a rapidly flashing device-access-status
->>> indicator.
->>
->> This additional report makes me wonder if we should revert the culprit
->> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
->> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess that
->> might lead to regressions for some users? But the patch description says
->> that this is not a common configuration, so can we maybe get away with that?
->>From my point of view, this is not a regression, 60aebc9559492c
-> doesn't cause a problem, but exposes a problem.
+Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+---
+ .../bindings/iio/adc/microchip,pac1934.yaml   | 146 ++++++++++++++++++
+ 1 file changed, 146 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
 
-From my understanding of Linus stance in cases like this I think that
-aspect doesn't matter. To for example quote
-https://lore.kernel.org/lkml/CAHk-=wiP4K8DRJWsCo=20hn_6054xBamGKF2kPgUzpB5aMaofA@mail.gmail.com/
+diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+new file mode 100644
+index 000000000000..837053ed8a71
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+@@ -0,0 +1,146 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip PAC1934 Power Monitors with Accumulator
++
++maintainers:
++  - Marius Cristea <marius.cristea@microchip.com>
++
++description: |
++  Bindings for the Microchip family of Power Monitors with Accumulator.
++  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found here:
++    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
++
++properties:
++  compatible:
++    enum:
++      - microchip,pac1931
++      - microchip,pac1932
++      - microchip,pac1933
++      - microchip,pac1934
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  interrupts:
++    description: IRQ line of the ADC
++    maxItems: 1
++
++  drive-open-drain:
++    description: The IRQ signal is configured as open-drain.
++    type: boolean
++    maxItems: 1
++
++  microchip,slow-io:
++    type: boolean
++    description: |
++      A GPIO used to trigger a change is sampling rate (lowering the chip power consumption).
++      In default mode, if this pin is forced high, sampling rate is forced to eight
++      samples/second. When it is forced low, the sampling rate is 1024 samples/second unless
++      a different sample rate has been programmed.
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++
++patternProperties:
++  "^channel@[1-4]+$":
++    type: object
++    $ref: adc.yaml
++    description: Represents the external channels which are connected to the ADC.
++
++    properties:
++      reg:
++        description: |
++          The channel number.
++          It can have up to 4 channels, numbered from 1 to 4.
++        items:
++          - minimum: 1
++            maximum: 4
++
++      shunt-resistor-micro-ohms:
++        description: |
++          Value in micro Ohms of the shunt resistor connected between
++          the SENSE+ and SENSE- inputs, across which the current is measured. Value
++          is needed to compute the scaling of the measured current.
++
++      label:
++        $ref: /schemas/types.yaml#/definitions/string
++        description: Name of the monitored power rail.
++
++      bipolar:
++        description: Whether the channel is bi-directional.
++        type: boolean
++
++    required:
++      - reg
++      - shunt-resistor-micro-ohms
++
++    additionalProperties: false
++
++allOf:
++  - if:
++      required:
++        - interrupts
++    then:
++      required:
++        - drive-open-drain
++    else:
++      properties:
++        drive-open-drain: false
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pac193x: pac193x@10 {
++            compatible = "microchip,pac1934";
++            reg = <0x10>;
++
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            channel@1 {
++                reg = <0x1>;
++                shunt-resistor-micro-ohms = <24900000>;
++                label = "CPU";
++            };
++
++            channel@2 {
++                reg = <0x2>;
++                shunt-resistor-micro-ohms = <49900000>;
++                label = "GPU";
++            };
++
++            channel@3 {
++                reg = <0x3>;
++                shunt-resistor-micro-ohms = <75000000>;
++                label = "MEM";
++                bipolar;
++            };
++
++            channel@4 {
++                reg = <0x4>;
++                shunt-resistor-micro-ohms = <100000000>;
++                label = "NET";
++                bipolar;
++            };
++        };
++    };
++
++...
+-- 
+2.34.1
 
-""
-But it ended up exposing another problem, and as such caused a kernel
-upgrade to fail for a user. So it got reverted.
-"""
-
-For other examples of his view see the bottom half of
-https://docs.kernel.org/process/handling-regressions.html
-
-We could bring Linus in to clarify if needed, but I for now didn't CC
-him, as I hope we can solve this without him.
-
-> So we need to fix the
-> real problem (SIMPLEDRM has a blank screen on some conditions). This
-> needs Jaak or Evan's help.
-
-I'm all for solving the real problem, but if that is not possible within
-a reasonable timeframe (which seems to be the case here) I assume Linus
-in cases like this would want the culprit to be reverted. Unless of
-cause that itself might cause a regression (which is possible, as the
-commit made it into 6.5), then things become tricky.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
->>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
->>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
->>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
->>>>>>>> no platform device created for SIMPLEDRM at early stage, so it seems
->>>>>>>> also "no problem".
->>>>>>> I don't understand above. You mean that after that commit the platform
->>>>>>> device is also none, right?
->>>>>> No. The SIMPLEDRM driver needs a platform device to work, and that
->>>>>> commit makes the platform device created earlier. So, before that
->>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
->>>>>> commit, SIMPLEDRM works, but the screen is blank.
->>>>>>
->>>>>> Huacai
->>>>>>>
->>>>>>> Confused...
->>>>>>>
->>>>>>> --
->>>>>>> An old man doll... just what I always wanted! - Clara
->>>>>>
->>>>>>
->>>
->>>
-> 
-> 
