@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974987D7471
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549317D7477
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjJYTg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
+        id S230354AbjJYTif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYTgz (ORCPT
+        with ESMTP id S229498AbjJYTid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:36:55 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7937C13A;
-        Wed, 25 Oct 2023 12:36:53 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so91491b3a.1;
-        Wed, 25 Oct 2023 12:36:53 -0700 (PDT)
+        Wed, 25 Oct 2023 15:38:33 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C1013A;
+        Wed, 25 Oct 2023 12:38:32 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27d1aee5aa1so82251a91.0;
+        Wed, 25 Oct 2023 12:38:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698262613; x=1698867413; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698262711; x=1698867511; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TGbMnAcQD9MpNg1isUp8Xn3wZuZoLOEwvnOJV3Zib1c=;
-        b=bztixrk69l+e/+jYISH76bAmPfZObiC7kZDH/4Ca0ghdA0sPIu2NLK74NWXSabG774
-         eIi7N6H6CW3zUJZD+A0PThMI5RDrXkhd2m5i2cn5sslVklqovQuJGL/4Kesf4rzfg1Hl
-         uDYvAifXSn6gQ99DypxNbMDc2nt3/yo7YtmnnWubxH7W3Y9kXR5T8zhysWdM45yvlm8X
-         snO/8iFmaUf4dr56gp/YQBW40nIqt/PMUVcDM+HjDQg5+heubVA4kenJ4FKejJZnaRkU
-         UeP7mIAU3i1lYmk5F+9amlzCeHKCowKdMhaSamvQiNl/BsSuJmLb7cGVBU1vFhDGRHHM
-         NAuw==
+        bh=6z0oQ7+PlkATT0Vdd6vvsp8LGGR7gTa4RN839qkxV70=;
+        b=ECiSZqHCdUEfFxn38vB/32Yz4/t0xLOUYD2M/z+E8PwBZbZNM1XanG9OsqpDEszOaf
+         K0mAfB/0iXZ3iMjvPGkyJapt7msvdCJOgfV1IhgYEF5mcrCBvB43rllLSz5MNtPJZkqr
+         upOq3ty3b77HT2QInDBalnILSl1r+9BZA+lwk4+zMUNR3rtaoKSrzkCL0kK1+sDFlIMg
+         aVTWiPOsmW0XVF1YkcE33Pak/EhCTfqii7BGvpEnFyACSElEbHCRHbneCN7How2vSOlF
+         6crqn+knfjx3YkhjO54/nlQ/9UQgCL4aj67d1I2dOVZTESVoFZiuPte2JarSlqCzBjN3
+         G3PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698262613; x=1698867413;
+        d=1e100.net; s=20230601; t=1698262711; x=1698867511;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TGbMnAcQD9MpNg1isUp8Xn3wZuZoLOEwvnOJV3Zib1c=;
-        b=V4BLka9nyp1cTG4/aE90R1SoKUxfxbe9c8q0/1DaFUGIo5upDH3DtM8Cx/36mdZDdG
-         9K8LQHDgegAtpKLzZQiCoPibNuyGrxU0eBiROD9TQ5Hk87GtgRZstSWLwzvwY/iO54mo
-         YnGUak+v+gbJGpzUqFWzEHmNEQf3JlUDda3c67YNOuErT304lQCvgoc2x1nP9VL+zQh8
-         Zi4lBeGbEZ6dJDlgvB28Km+n2WYyamlmJmtTpzbWpdbdV7Gy3fo4YeNFQOOcrsbRamCX
-         uJsl+y9JI3vNtfJfjZyXM/OSi+HO2sjXfKngS8mEiH/ZbRY/pBZxQ9TZ50d05eWB1WyG
-         AZOw==
-X-Gm-Message-State: AOJu0YztsFcZwQPJyqo9bbIwaFHak2s2HA5ch+LbCIAYMNQbVnN3OS6W
-        UVotfw9IhLvWh2CDR+9tYIQ=
-X-Google-Smtp-Source: AGHT+IFDdIs+VkhqOZmhmb39SGTaiCH9s23YjOt7r0Pg9uoy33BcIMUwPDCXdR+5BIBpQO0/ZEH7AQ==
-X-Received: by 2002:a05:6a00:1a4f:b0:6bc:e7f8:821e with SMTP id h15-20020a056a001a4f00b006bce7f8821emr19565769pfv.10.1698262612844;
-        Wed, 25 Oct 2023 12:36:52 -0700 (PDT)
+        bh=6z0oQ7+PlkATT0Vdd6vvsp8LGGR7gTa4RN839qkxV70=;
+        b=qdaV5ynu35Hn/KnsyV9jmuzMxw6bn0+eLufvzogWVrJ19yXyWSy4EQi1HCGJ1FnLqa
+         NXBP9RCrvqqtkE/JGuhvtWPe4V1BZz7jiv5BYRM/9pgZWmwtNRV/30r8fV7IyJNCQ+6U
+         2q7XWh049C0CpSvD9isn5VHI0A8Y+TDty/Bq6+rNDfpbwajsWsZifevLDR0vGfJyY83s
+         H3rx7oCEBwTs4vWgrpuqgRRU7P1REuNodyVwVdJ+UWUhcEg3cuOx2slRxttkSGtg9MiL
+         e77CYDkxm4zlizEQaxHqIOq5eKf9T287NIFm5TUUy6CHBEPjymBK934AOZZ4bmG1D1xv
+         B9eA==
+X-Gm-Message-State: AOJu0Yx/TDwUc37SKTpx65N9cQpvTlUZdkI7ul4QmR1811ZlMcCHS9C/
+        0ZSRHIZdqfdqVw7Po51SVV3saxpnEwo=
+X-Google-Smtp-Source: AGHT+IHddo8qg9luyeDGCB2S9jMN51Ao1TIS9tk3t6dVtgEvRzi03FhZ5KpwEYoihkkJytVI6X8Ptg==
+X-Received: by 2002:a17:90b:1c06:b0:27c:f4a9:7e20 with SMTP id oc6-20020a17090b1c0600b0027cf4a97e20mr715215pjb.15.1698262711662;
+        Wed, 25 Oct 2023 12:38:31 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g5-20020aa79f05000000b006be055ab117sm9980413pfr.92.2023.10.25.12.36.52
+        by smtp.gmail.com with ESMTPSA id 22-20020a17090a1a1600b0027d0d4d4128sm288828pjk.25.2023.10.25.12.38.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 12:36:52 -0700 (PDT)
+        Wed, 25 Oct 2023 12:38:31 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 12:36:51 -0700
+Date:   Wed, 25 Oct 2023 12:38:30 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        jdelvare@suse.com, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, openbmc@lists.ozlabs.org,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] hwmon: npcm750-pwm: add an error code check in
- npcm7xx_en_pwm_fan
-Message-ID: <5036fed5-ff29-4d9b-a31a-1676a8e4f051@roeck-us.net>
-References: <20231020085518.198477-1-suhui@nfschina.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: hwmon: ltc2992: avoid division by zero
+Message-ID: <68829dec-8bfa-4969-84fa-0cc63a8ee012@roeck-us.net>
+References: <20231011135754.13508-1-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231020085518.198477-1-suhui@nfschina.com>
+In-Reply-To: <20231011135754.13508-1-antoniu.miclaus@analog.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -79,13 +74,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 04:55:19PM +0800, Su Hui wrote:
-> npcm7xx_pwm_config_set() can return '-ENODEV' for failed. So check
-> the value of 'ret' after calling npcm7xx_pwm_config_set().
+On Wed, Oct 11, 2023 at 04:57:53PM +0300, Antoniu Miclaus wrote:
+> Do not allow setting shunt resistor to 0. This results in a division by
+> zero when performing current value computations based on input voltages
+> and connected resistor values.
 > 
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-Applied.
+Applied. Please note that the subject should not include "drivers:".
 
-Thanks,
 Guenter
