@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B29E7D737D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3FB7D737B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjJYSnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S229893AbjJYSnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJYSnK (ORCPT
+        with ESMTP id S229738AbjJYSnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:43:10 -0400
+        Wed, 25 Oct 2023 14:43:12 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B898DC;
-        Wed, 25 Oct 2023 11:43:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56946111;
+        Wed, 25 Oct 2023 11:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698259387; x=1729795387;
+  t=1698259389; x=1729795389;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=T1sOH8MzD7ijqC2IX92sIk4YyeSEBbdujMf4a6IQTo0=;
-  b=hpnolXxbUnhqliba/zRd5Kq7TqHBo9QG2rVe0DUEYI9NYknDTF8L9NhT
-   w9UgrPaKeBzpIeKOFxNz/DyyN/UF+gG9VIjZXlXLOuVFLRz153x02Weuv
-   ueBBRv5zvsEqrizUG+Izc8nk+cma87X5C8rXsNdXdnDWea1mWa9Ah1aVF
-   SqPnwXn+wgQaIZuQnAHh5j5xcsj8qClexLf1NWbBDnjNXOrd8cwn8z10j
-   vK2zIYYWHB6x/nbDM66W6qImUr9n8pb9+hKByZBtvonzIxv5wXBdyKJyC
-   X+sPW0h/m6Y4y3MYXgGI3clFaM2yuNgHa5nS9G/vSYx7wI0rpzU6/dOd5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390233006"
+  bh=dpLiufvLW4ReyqiDHIArSLkX2JA+hA4CEIqKp4YRTIA=;
+  b=Fq/B05hjLOj7NVxInMmTm3MMZNDfOue2B2WXBujoPldP6kxsC3MLuRbW
+   lrBOJDpien2tSkFgptlLCtg64kaixV/P7gK4zP3yZ+JBjaGRipkRogCDY
+   2fi7oaEAh5YqqyBZesK/o9Li/ojC4QNoe+YPfBnv1GQdu303IIxjXN7bG
+   Xp9ehJDQIS7uCKEIBLcH5jA75vEF951p3GlKcSHOvv6pd68PLQS5FZHrD
+   REqzD9A+6WXA1EpB7uSV2p1C1fT2wFBtw1mkpEhWS5gtcls0AnU3DpzgN
+   pd7IWKNU3dhB+X4z7P6gU27tvHTLfiIMxXTDKqY5mXy/T3jaU1PGB+UsX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390233013"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="390233006"
+   d="scan'208";a="390233013"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:43:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="932458246"
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="932458248"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="932458246"
+   d="scan'208";a="932458248"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga005.jf.intel.com with ESMTP; 25 Oct 2023 11:43:03 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D2142FF; Wed, 25 Oct 2023 21:43:01 +0300 (EEST)
+        id E0D64430; Wed, 25 Oct 2023 21:43:01 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -54,9 +54,9 @@ Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v1 1/3] device property: Implement device_is_big_endian()
-Date:   Wed, 25 Oct 2023 21:42:57 +0300
-Message-Id: <20231025184259.250588-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/3] gpio: mmio: Make use of device properties
+Date:   Wed, 25 Oct 2023 21:42:58 +0300
+Message-Id: <20231025184259.250588-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
 References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
@@ -72,61 +72,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some users want to use the struct device pointer to see if the
-device is big endian in terms of Open Firmware specifications,
-i.e. if it has a "big-endian" property, or if the kernel was
-compiled for BE *and* the device has a "native-endian" property.
-
-Provide inline helper for the users.
+Convert the module to be property provider agnostic and allow
+it to be used on non-OF platforms.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/property.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/gpio/gpio-mmio.c | 25 +++++++------------------
+ 1 file changed, 7 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 2b8f07fc68a9..d1400a477b0a 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -80,12 +80,38 @@ int fwnode_property_match_string(const struct fwnode_handle *fwnode,
+diff --git a/drivers/gpio/gpio-mmio.c b/drivers/gpio/gpio-mmio.c
+index 3ff0ea1e351c..66308b165a0d 100644
+--- a/drivers/gpio/gpio-mmio.c
++++ b/drivers/gpio/gpio-mmio.c
+@@ -58,7 +58,6 @@ o        `                     ~~~~\___/~~~~    ` controller in FPGA is ,.`
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/mod_devicetable.h>
+-#include <linux/of.h>
  
- bool fwnode_device_is_available(const struct fwnode_handle *fwnode);
+ #include "gpiolib.h"
  
-+static inline bool fwnode_device_is_big_endian(const struct fwnode_handle *fwnode)
-+{
-+	if (fwnode_property_present(fwnode, "big-endian"))
-+		return true;
-+	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) &&
-+	    fwnode_property_present(fwnode, "native-endian"))
-+		return true;
-+	return false;
-+}
-+
- static inline
- bool fwnode_device_is_compatible(const struct fwnode_handle *fwnode, const char *compat)
- {
- 	return fwnode_property_match_string(fwnode, "compatible", compat) >= 0;
+@@ -688,7 +687,6 @@ static void __iomem *bgpio_map(struct platform_device *pdev,
+ 	return devm_ioremap_resource(&pdev->dev, r);
  }
  
-+/**
-+ * device_is_big_endian - check if a device has BE registers
-+ * @dev: Pointer to the struct device
-+ *
-+ * Returns: true if the device has a "big-endian" property, or if the kernel
-+ * was compiled for BE *and* the device has a "native-endian" property.
-+ * Returns false otherwise.
-+ *
-+ * Callers would nominally use ioread32be/iowrite32be if
-+ * device_is_big_endian() == true, or readl/writel otherwise.
-+ */
-+static inline bool device_is_big_endian(const struct device *dev)
-+{
-+	return fwnode_device_is_big_endian(dev_fwnode(dev));
-+}
-+
- /**
-  * device_is_compatible - match 'compatible' property of the device with a given string
-  * @dev: Pointer to the struct device
+-#ifdef CONFIG_OF
+ static const struct of_device_id bgpio_of_match[] = {
+ 	{ .compatible = "brcm,bcm6345-gpio" },
+ 	{ .compatible = "wd,mbl-gpio" },
+@@ -697,36 +695,27 @@ static const struct of_device_id bgpio_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, bgpio_of_match);
+ 
+-static struct bgpio_pdata *bgpio_parse_dt(struct platform_device *pdev,
+-					  unsigned long *flags)
++static struct bgpio_pdata *bgpio_parse_fw(struct device *dev, unsigned long *flags)
+ {
+ 	struct bgpio_pdata *pdata;
+ 
+-	if (!pdev->dev.of_node)
++	if (!dev_fwnode(dev))
+ 		return NULL;
+ 
+-	pdata = devm_kzalloc(&pdev->dev, sizeof(struct bgpio_pdata),
+-			     GFP_KERNEL);
++	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	pdata->base = -1;
+ 
+-	if (of_device_is_big_endian(pdev->dev.of_node))
++	if (device_is_big_endian(dev))
+ 		*flags |= BGPIOF_BIG_ENDIAN_BYTE_ORDER;
+ 
+-	if (of_property_read_bool(pdev->dev.of_node, "no-output"))
++	if (device_property_read_bool(dev, "no-output"))
+ 		*flags |= BGPIOF_NO_OUTPUT;
+ 
+ 	return pdata;
+ }
+-#else
+-static struct bgpio_pdata *bgpio_parse_dt(struct platform_device *pdev,
+-					  unsigned long *flags)
+-{
+-	return NULL;
+-}
+-#endif /* CONFIG_OF */
+ 
+ static int bgpio_pdev_probe(struct platform_device *pdev)
+ {
+@@ -743,7 +732,7 @@ static int bgpio_pdev_probe(struct platform_device *pdev)
+ 	struct gpio_chip *gc;
+ 	struct bgpio_pdata *pdata;
+ 
+-	pdata = bgpio_parse_dt(pdev, &flags);
++	pdata = bgpio_parse_fw(dev, &flags);
+ 	if (IS_ERR(pdata))
+ 		return PTR_ERR(pdata);
+ 
+@@ -814,7 +803,7 @@ MODULE_DEVICE_TABLE(platform, bgpio_id_table);
+ static struct platform_driver bgpio_driver = {
+ 	.driver = {
+ 		.name = "basic-mmio-gpio",
+-		.of_match_table = of_match_ptr(bgpio_of_match),
++		.of_match_table = bgpio_of_match,
+ 	},
+ 	.id_table = bgpio_id_table,
+ 	.probe = bgpio_pdev_probe,
 -- 
 2.40.0.1.gaa8946217a0b
 
