@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2612E7D6CE9
+	by mail.lfdr.de (Postfix) with ESMTP id D025F7D6CEB
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjJYNQg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 09:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        id S1343498AbjJYNQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233757AbjJYNQd (ORCPT
+        with ESMTP id S233875AbjJYNQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:16:33 -0400
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FBF111;
-        Wed, 25 Oct 2023 06:16:31 -0700 (PDT)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a86b6391e9so55982767b3.0;
-        Wed, 25 Oct 2023 06:16:31 -0700 (PDT)
+        Wed, 25 Oct 2023 09:16:56 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3849133;
+        Wed, 25 Oct 2023 06:16:53 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41cc537ed54so36850601cf.2;
+        Wed, 25 Oct 2023 06:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698239813; x=1698844613; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g1tU5kbwVb+Wg1uvhO3+D2ibDL+pMHtlvIijrkuaPh8=;
+        b=JztT+RB5tT9OlVCWDTDHrk8Yb+mSxQGALK/XRzNVQ6Uai4dbyc4lOxSADoG1tjvg3/
+         1Oz9hBZSd1LbPvqKLtANYd9hsSSEhbRvLRBmG/VEMua51TfZi/Lq/9JNgfsfVm4mLK2z
+         uHybcIwIPPdQRwtsee0u0prDHLQwcQHlButJulpCLb8QJWxrdqb6NkfKvFDrIfxKa97F
+         3LpLMTuhSjtpu1dGiXEybaSidDKCWVFMOQqJV+hwFPvgVsYc6zNyUNRYenUJOLhFX50E
+         5jXXsVhRS6r7o4T4eRvCxRhskMd97iPJMBj9NH5vqX8awtOYbST1unPib0bHwC6QPY4u
+         xs5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239790; x=1698844590;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bhDHPAul78LD2824BVXA4iCfuI07/2hT5EkQSJobW90=;
-        b=OFTXvQI2SUJClwdlHrZvPBexmMkmtaL8BSVfdIuWf52kyDKZwxdySFrXyZtP6KfAlI
-         GmB4J9KLwWA4AFBgrEGwpUOfLVNMNOLp8UwLtB6XwSkFdYsPMqA19kTTwMpy0LJXL5P3
-         Von5s8xtvOQuYrCvoK6vek2H68EPFRWhaitpT049owcLsKVEeEOlyrh5x3lk5jg61W8l
-         Q2fVs7u55iNSOmlSv6a90nE25vC0NesVPauUWwMVfPbRnMR61OdB/480JJKe5QrNdlGF
-         NXQIK0D2nZirp/P1hZl0qnZLna5fSE1lM8p6BB5STkpAfqqo4jF/X5Lqqu8dqS38LqOL
-         xuhQ==
-X-Gm-Message-State: AOJu0YxRf8pJk7XxVbVTgy/IEn3Q85mdC5uCUHM3XHFB86fSb2T7TaMN
-        qHaAKdp0WXpEKXIXUgNLMhaI9Vh3oZJPHA==
-X-Google-Smtp-Source: AGHT+IHqmeFX73+zk8SaC43O8gmaoGU+oEle8ITv9nU1wxnW4ln96u2XQHeAb0hp7/Rc5viCY9xqxQ==
-X-Received: by 2002:a0d:e20a:0:b0:59b:fb69:1639 with SMTP id l10-20020a0de20a000000b0059bfb691639mr16292128ywe.32.1698239790374;
-        Wed, 25 Oct 2023 06:16:30 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id y83-20020a0dd656000000b0056d51c39c1fsm4989318ywd.23.2023.10.25.06.16.28
+        d=1e100.net; s=20230601; t=1698239813; x=1698844613;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1tU5kbwVb+Wg1uvhO3+D2ibDL+pMHtlvIijrkuaPh8=;
+        b=MJjZZFkTAzcKG5RK8lbTrZz7ZAfUAwXYz8P9ged/IxhpB3exi4zfglrl4KoJsTI0xf
+         YI7CThxWVdT4Ay7w73pfdabl57wtzszasenSe1Cz8kYrA6avUNOxoX2uIjubwj0JFUdG
+         Z1eq5LQzAhhd/8tg6J16F5aTE8ZF1qIERVk8YFQCllfxq/qaiU3r3TK/9NeNqLq/uOt4
+         h70N8BG6WQqJ4HZvngea9nlGeozBvNXrQYHD8Pvpvvswx9jLyLrQLr/mkzIM/0TJbjpH
+         HiDBZp6ph3bWjyPNxP5/Tcrrj+3cNxdnRG5l6YjMFsQKnRFvPHRLO/O0JbvOkK+QT+Ba
+         QZGg==
+X-Gm-Message-State: AOJu0Yyj9DnhhIfJfYEgRFZywojeJETWmvXRbnHR8Z24SHHk2dPw7WSA
+        Giy7YJs7OSVHzkU88wYsb+g=
+X-Google-Smtp-Source: AGHT+IGDdTkY4rbUQVfZKtiVec1opfPoUHwbLgxu9buNeZQ8XoSBU+I/OT31DE12H3tKf3Lub14xEg==
+X-Received: by 2002:ac8:5715:0:b0:418:11ee:6315 with SMTP id 21-20020ac85715000000b0041811ee6315mr16789523qtw.43.1698239812806;
+        Wed, 25 Oct 2023 06:16:52 -0700 (PDT)
+Received: from [192.168.20.212] (cpe-107-15-246-199.nc.res.rr.com. [107.15.246.199])
+        by smtp.gmail.com with ESMTPSA id g3-20020ac842c3000000b0041977932fc6sm4188578qtm.18.2023.10.25.06.16.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 06:16:29 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4890585276.2;
-        Wed, 25 Oct 2023 06:16:28 -0700 (PDT)
-X-Received: by 2002:a25:dc52:0:b0:da0:4bda:dc41 with SMTP id
- y79-20020a25dc52000000b00da04bdadc41mr4238651ybe.37.1698239788460; Wed, 25
- Oct 2023 06:16:28 -0700 (PDT)
+        Wed, 25 Oct 2023 06:16:52 -0700 (PDT)
+Message-ID: <c84f0999-5de0-1161-4061-75aa2795d45a@gmail.com>
+Date:   Wed, 25 Oct 2023 09:16:50 -0400
 MIME-Version: 1.0
-References: <169815917362.8695.13904684741526725648.stgit@devnote2>
- <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com> <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
- <ZTjuH074CJuLh7Zw@FVFF77S0Q05N> <1bce4bc5ccd38bf9108283535470a7a8eb7e06e9.camel@physik.fu-berlin.de>
-In-Reply-To: <1bce4bc5ccd38bf9108283535470a7a8eb7e06e9.camel@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 25 Oct 2023 15:16:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
-Message-ID: <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
-Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v9 01/20] dt-bindings: PCI: Add PLDA XpressRICH PCIe host
+ common properties
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor@kernel.org>
+Cc:     Minda Chen <minda.chen@starfivetech.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231020104341.63157-1-minda.chen@starfivetech.com>
+ <20231020104341.63157-2-minda.chen@starfivetech.com>
+ <8ced1915-7b94-4abc-bd8b-cb4bf027fa01@linaro.org>
+ <bd441e1d-73ae-4abc-8eb2-877419acb2df@starfivetech.com>
+ <97e2decd-f6a3-91cb-6ca7-539f53b686f3@gmail.com>
+ <20231025-dotted-almighty-ae489e9eb764@spud>
+ <3d7a2dba-53f6-4625-8981-fbeb469418c1@linaro.org>
+Content-Language: en-US
+From:   John Clark <inindev@gmail.com>
+In-Reply-To: <3d7a2dba-53f6-4625-8981-fbeb469418c1@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+That is correct, I tested the entire series against Linux 6.6-rc7 and 
+confirmed that pcie/nvme/usb work on the VisionFive2 device. I was 
+unable to test the Microchip side of the equation. I will be more clear 
+as to what I verified if I comment in the future.
 
-On Wed, Oct 25, 2023 at 12:32 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On Wed, 2023-10-25 at 11:30 +0100, Mark Rutland wrote:
-> > On Wed, Oct 25, 2023 at 08:42:55AM +0900, Masami Hiramatsu wrote:
-> > > On Tue, 24 Oct 2023 16:08:12 +0100
-> > > Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
-> > > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > >
-> > > > > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
-> > > > > in SH architecture because it does not implement arch_cmpxchg_local().
-> > > >
-> > > > I do not think this is correct.
-> > > >
-> > > > The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
-> > > > disables interrupts), whereas arch/sh can be built SMP. We should probably add
-> > > > some guards into <asm-generic/cmpxchg-local.h> for that as we have in
-> > > > <asm-generic/cmpxchg.h>.
-> > >
-> > > Isn't cmpxchg_local for the data which only needs to ensure to do cmpxchg
-> > > on local CPU?
-> > > So I think it doesn't care about the other CPUs (IOW, it should not touched by
-> > > other CPUs), so it only considers UP case. E.g. on x86, arch_cmpxchg_local() is
-> > > defined as raw "cmpxchg" without lock prefix.
-> > >
-> > > #define __cmpxchg_local(ptr, old, new, size)                            \
-> > >         __raw_cmpxchg((ptr), (old), (new), (size), "")
-> > >
-> >
-> > Yes, you're right; sorry for the noise.
-> >
-> > For your original patch:
-> >
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+John Clark
+
+
+On 10/25/23 6:41 AM, Krzysztof Kozlowski wrote:
+> On 25/10/2023 12:28, Conor Dooley wrote:
+>> Hi John,
+>>
+>> On Mon, Oct 23, 2023 at 11:09:50PM -0400, John Clark wrote:
+>>>> On 2023/10/20 19:04, Krzysztof Kozlowski wrote:
+>>>>> On 20/10/2023 12:43, Minda Chen wrote:
+>>>>>> Add PLDA XpressRICH PCIe host common properties dt-binding doc.
+>>>>>> Microchip PolarFire PCIe host using PLDA IP.
+>>>>>> Move common properties from Microchip PolarFire PCIe host
+>>>>>> to PLDA files.
+>>>>>>
+>>>>>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>>>>>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>>>>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>>>>> ---
+>>>>>>    .../bindings/pci/microchip,pcie-host.yaml     | 55 +-------------
+>>>>>>    .../pci/plda,xpressrich3-axi-common.yaml      | 75 +++++++++++++++++++
+>>>>> Where was this patch reviewed?
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
+>>>> This Conor's review tag. v2 : https://patchwork.kernel.org/project/linux-pci/patch/20230727103949.26149-2-minda.chen@starfivetech.com/
+>>>> This is Rob's review tag v3: https://patchwork.kernel.org/project/linux-pci/patch/20230814082016.104181-2-minda.chen@starfivetech.com/
+>>> Tested-by: John Clark <inindev@gmail.com>:
+>>> https://github.com/inindev/visionfive2/tree/main/kernel/patches
+>> I suspect you don't mean that you tested this individual dt-binding, but
+>> rather that you tested the whole series. If so, you should probably
+>> provide this tested-by against the cover-letter instead of this bindings
+>> patch.
+> Yeah, otherwise I would like to hear how do you test bindings (other
+> than dt_binding_check which is something similar to testing as compiling
+> code).
 >
-> Geert, what's your opinion on this?
-
-While this looks OK on first sight (ARM includes the same file, even
-on SMP), it does not seem to work?
-
-For sh-allnoconfig, as reported by kernel test robot:
-
-$ make ARCH=sh CROSS_COMPILE=sh2-linux- allnoconfig lib/objpool.o
-lib/objpool.c: In function 'objpool_try_add_slot':
-./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
-declaration of function 'arch_cmpxchg_local'; did you mean
-'raw_cmpxchg_local'? [-Werror=implicit-function-declaration]
-  384 | #define raw_cmpxchg_local arch_cmpxchg_local
-      |                           ^~~~~~~~~~~~~~~~~~
-./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
-expansion of macro 'raw_cmpxchg_local'
-  392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
-      |                ^~~~~~~~~~~~~~~~~
-./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
-expansion of macro 'raw_try_cmpxchg_local'
- 4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-lib/objpool.c:169:19: note: in expansion of macro 'try_cmpxchg_local'
-  169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
-      |                   ^~~~~~~~~~~~~~~~~
-
-For an SMP defconfig:
-
-$ make ARCH=sh CROSS_COMPILE=sh4-linux-gnu- sdk7786_defconfig lib/objpool.o
-
-./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
-declaration of function ‘arch_cmpxchg_local’; did you mean
-‘try_cmpxchg_local’? [-Werror=implicit-function-declaration]
-  384 | #define raw_cmpxchg_local arch_cmpxchg_local
-      |                           ^~~~~~~~~~~~~~~~~~
-./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
-expansion of macro ‘raw_cmpxchg_local’
-  392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
-      |                ^~~~~~~~~~~~~~~~~
-./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
-expansion of macro ‘raw_try_cmpxchg_local’
- 4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-lib/objpool.c:169:19: note: in expansion of macro ‘try_cmpxchg_local’
-  169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
-      |                   ^~~~~~~~~~~~~~~~~
-
-Hiramatsu-san: do these build for you?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Best regards,
+> Krzysztof
+>
