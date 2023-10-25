@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52567D6881
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1087D6883
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343521AbjJYKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S232807AbjJYKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjJYKaT (ORCPT
+        with ESMTP id S232584AbjJYKa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:30:19 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194D4B0;
-        Wed, 25 Oct 2023 03:30:14 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39PAU8vsC1456276, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39PAU8vsC1456276
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 18:30:08 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 25 Oct 2023 18:30:08 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 25 Oct 2023 18:30:08 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Wed, 25 Oct 2023 18:30:08 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "tommyhebb@gmail.com" <tommyhebb@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3] mmc: rtsx: improve performance for multi block rw
-Thread-Topic: [PATCH v3] mmc: rtsx: improve performance for multi block rw
-Thread-Index: AQHX9mTncx2NNhc4Hk2xCW7FootmX6w8X/iAgAN+/CD//4BBAIAB2EewgAY9WACAAfsEAIA+RCiAgATnqGCAAA5YAIO7cd/ggAGUdwCAAVcUMIAHB40AgAxJQWA=
-Date:   Wed, 25 Oct 2023 10:30:08 +0000
-Message-ID: <8eb029c41a734aeaa27be19d8629ef95@realtek.com>
-References: <8e61aed5f64e434abc1d7b6f81859c8a@realtek.com>
- <CAPDyKFrLpim75nUB7ksDie2edkWsnFSq6TbFSFFpw5cY5d4y1w@mail.gmail.com>
- <fabaed5751f04105a9719c1cb0390c98@realtek.com>
- <CAPDyKFr3NRUgfKtkb2DBrhziekFAB0jT_X3Fsfvjk_bGZLC9mA@mail.gmail.com>
- <fa10aa1c644241808c2ad880088240ab@realtek.com>
- <CAPDyKFrtBKHHRgeF-JO27ANsbSmt8rdnhn-WNr5Je9okEgA29Q@mail.gmail.com>
- <feb0c4e71e9c48a2a21f18b7d3baf135@realtek.com>
- <CAPDyKFoq_PDk_JgW4D+o4eEPdcffUq2RLbBreRDqeK47m0UnJA@mail.gmail.com>
- <a82d7e877dc041d4be5e0ef38c2da406@realtek.com>
- <CAPDyKFo59Q3dmUJU-hJ++=k0uwx2KxamW9KckDX=O_CA84O1_g@mail.gmail.com>
- <a533dde76d2d4345b85cd060a8e403db@realtek.com>
- <CAPDyKFp3sbbQmKiV6NnuWnPmpfuyWzRBTuYJaWx_7oTLLsXdaA@mail.gmail.com>
- <5752164983174ca68a669c241e7ef436@realtek.com>
- <CAPDyKFpeirjA4QmCiqnu4MxN8Yph6d0GiyA95pcmOBRYf8ywSg@mail.gmail.com>
-In-Reply-To: <CAPDyKFpeirjA4QmCiqnu4MxN8Yph6d0GiyA95pcmOBRYf8ywSg@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.81.100]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 25 Oct 2023 06:30:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B44D4BB;
+        Wed, 25 Oct 2023 03:30:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED2332F4;
+        Wed, 25 Oct 2023 03:31:07 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.69.205])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F31B23F738;
+        Wed, 25 Oct 2023 03:30:24 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 11:30:20 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for
+ arch_cmpxchg_local()
+Message-ID: <ZTjuH074CJuLh7Zw@FVFF77S0Q05N>
+References: <169815917362.8695.13904684741526725648.stgit@devnote2>
+ <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com>
+ <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+DQo+ID4gPiBPbiBXZWQsIDExIE9jdCAyMDIzIGF0IDA3OjM2LCBSaWNreSBXVSA8cmlja3lf
-d3VAcmVhbHRlay5jb20+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBIaSBVbGYgSGFuc3NvbiwN
-Cj4gPiA+ID4NCj4gPiA+ID4gQ2FuIEkga25vdyB3aGF0IGlzIHRoaXMgcGF0Y2ggc3RhdHVzIG9y
-IGhhcyBzb21lIGNvbmNlcm4gb24gdGhpcyBwYXRjaD8NCj4gPiA+DQo+ID4gPiBEaWRuJ3QgeW91
-IHJlYWQgbXkgZWFybGllciByZXBsaWVzPw0KPiA+ID4NCj4gPg0KPiA+IEFyZSB5b3UgdGFsa2lu
-ZyBhYm91dCBCRlEgZm9yIHRlc3Rpbmcgc3BlZWQ/DQo+ID4gQmVjYXVzZSB3ZSB0ZXN0ZWQgdGhl
-IFJlYWQvV3JpdGUgc3BlZWQgYXJlIGJldHRlciB0aGFuIGJlZm9yZSBhbmQgb3VyDQo+IGN1c3Rv
-bWVyIHRoYXQgdXNlcyBvdXIgcmVhZGVyIG9uIHRoZWlyIHByb2R1Y3QgYWxzbyB0ZXN0ZWQgdGhl
-IFJlYWQvV3JpdGUNCj4gc3BlZWQsIHRoZXkgd2FudCB1cyB0byBwdXNoIHRoaXMgcGF0Y2ggb24N
-Cj4gDQo+IEl0J3MgY2VydGFpbmx5IGEgdmVyeSBwb3NpdGl2ZSB0aGluZyB0aGF0IHlvdXIgdGFy
-Z2V0IGlzIHRvIHVwc3RyZWFtDQo+IHNvbHV0aW9ucyB0aGF0IGltcHJvdmUgcGVyZm9ybWFuY2Uu
-IFdlIGFsbCBhcHByZWNpYXRlIHRoaXMhDQo+IA0KPiBJbiB0aGlzIHJlZ2FyZCwgSSBiZWxpZXZl
-IEkgaGF2ZSB0cmllZCB0byBndWlkZSB5b3Ugb24gaG93IHRvIG1vdmUNCj4gZm9yd2FyZCB3aXRo
-IHRoaXMuIFRoaXMgcGFydGljdWxhciBvcHRpbWl6YXRpb24gZG9lc24ndCBiZWxvbmcgaW4gYW4N
-Cj4gbW1jIGhvc3QgZHJpdmVyLCBidXQgcmF0aGVyIGF0IHRoZSBjb21tb24gdXBwZXIgYmxvY2sg
-ZGV2aWNlIGRyaXZlcg0KPiBsYXllciwgc3VjaCB0aGF0IGl0IGNhbiBiZW5lZml0IG1vcmUgdGhh
-biBvbmUgcGFydGljdWxhciBtbWMgaG9zdA0KPiBkcml2ZXIuDQo+IA0KPiBJIGZ1bGx5IHVuZGVy
-c3RhbmQgdGhhdCBtYWtpbmcgdGhhdCBraW5kIG9mIGltcHJvdmVtZW50IGlzIHdheSBtb3JlDQo+
-IGRpZmZpY3VsdCBhbmQgcmVxdWlyZXMgaW4tZGVwdGggYW5hbHlzaXMgdG8gdW5kZXJzdGFuZCB3
-aGF0IGlzDQo+IGhhcHBlbmluZyBvbiB0aG9zZSBsYXllcnMgdG9vLiBPbiB0aGUgb3RoZXIgaGFu
-ZCBpdCBjb3VsZCBiZSBzb21ldGhpbmcNCj4gdGhhdCBtYXkgYmVuZWZpdCBhIGxvdCBvZiBkZXZp
-Y2VzL3BsYXRmb3Jtcy4gVW5mb3J0dW5hdGVseSwgSSBhbQ0KPiBjdXJyZW50bHkgbm90IGluIGEg
-cG9zaXRpb24gd2hlcmUgSSBoYXZlIHRoZSBiYW5kd2lkdGggdG8gZGl2ZSBkZWVwZXINCj4gaW50
-byB0aGlzLg0KPiANCj4gSWYgeW91IGRlY2lkZSB0byBwdXJzdWUgeW91ciBpbnZlc3RpZ2F0aW9u
-cywgSSB0aGluayB3ZSBuZWVkIHRvDQo+IGludm9sdmUgdGhlIGV4cGVydHMgZnJvbSB0aGUgY29t
-bW9uIGJsb2NrIGNvbW11bml0eSAobGludXgtYmxvY2sNCj4gbWFpbGluZyBsaXN0KSB0byBnZXQg
-dGhlaXIgYWR2aWNlLg0KPiANCj4gU28gdG8gYmUgY2xlYXIsIEkgYW0gbm90IGdvaW5nIHRvIGFw
-cGx5ICRzdWJqZWN0IHBhdGNoIC0gb3IgYW55dGhpbmcNCj4gc2ltaWxhciB0byBhbiBtbWMgaG9z
-dCBkcml2ZXIuDQo+IA0KDQpUaGlzIGltcHJvdmUgcGVyZm9ybWFuY2Ugc29sdXRpb24gaXMgZGV2
-ZWxvcGVkIGZvciBvdXIgSFcgZGVzaWduDQoNCldlIGRpc2N1c3NlZCBpbnRlcm5hbGx5LCBUaGUg
-Q01EIDEyIHJlc3BvbnNlIHRpbWluZyBpcyBkZXBlbmQgb24gSFcgZGVzaWduIHNvIHRoaXMgc29s
-dXRpb24gDQptYXliZSBjYW5ub3QgbWVldCBhbGwgZGV2aWNlcywgYW5kIHRoZSBjb3JlIHBhcnQg
-b2YgdGhpcyBtZWNoYW5pc20gaXMgd2hlbiB3ZSBnb3Qgc2VxdWVudGlhbCBkYXRhIA0Kd2UgY29u
-dHJvbCBvdXIgRE1BIHJlZ2lzdGVyIGZvciByZWFkL3dyaXRlIGRhdGEsIHRoaXMgb3BlcmF0aW5n
-IGhhcyBkaWZmZXJlbnQgZGVzaWduZWQgb24gZGlmZmVyZW50IGRldmljZSwNCnNvIHRoaXMgaXMg
-bm90IGVhc3kgdG8gcHVzaCBhIHNhbWUgd2F5IG9uIHRoZSBtbWMgY29yZS4gDQoNCj4gDQo+IEtp
-bmQgcmVnYXJkcw0KPiBVZmZlDQo=
+On Wed, Oct 25, 2023 at 08:42:55AM +0900, Masami Hiramatsu wrote:
+> On Tue, 24 Oct 2023 16:08:12 +0100
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> > On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
+> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
+> > > in SH architecture because it does not implement arch_cmpxchg_local().
+> > 
+> > I do not think this is correct.
+> > 
+> > The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
+> > disables interrupts), whereas arch/sh can be built SMP. We should probably add
+> > some guards into <asm-generic/cmpxchg-local.h> for that as we have in
+> > <asm-generic/cmpxchg.h>.
+> 
+> Isn't cmpxchg_local for the data which only needs to ensure to do cmpxchg
+> on local CPU?
+> So I think it doesn't care about the other CPUs (IOW, it should not touched by
+> other CPUs), so it only considers UP case. E.g. on x86, arch_cmpxchg_local() is
+> defined as raw "cmpxchg" without lock prefix.
+> 
+> #define __cmpxchg_local(ptr, old, new, size)                            \
+>         __raw_cmpxchg((ptr), (old), (new), (size), "")
+> 
+
+Yes, you're right; sorry for the noise.
+
+For your original patch:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> 
+> Thank you,
+> 
+> 
+> > 
+> > I think the right thing to do here is to define arch_cmpxchg_local() in terms
+> > of arch_cmpxchg(), i.e. at the bottom of arch/sh's <asm/cmpxchg.h> add:
+> > 
+> > #define arch_cmpxchg_local              arch_cmpxchg
+> > 
+> > Mark.
+> > 
+> > > 
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
+> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > ---
+> > >  arch/sh/include/asm/cmpxchg.h |    2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
+> > > index 288f6f38d98f..e920e61fb817 100644
+> > > --- a/arch/sh/include/asm/cmpxchg.h
+> > > +++ b/arch/sh/include/asm/cmpxchg.h
+> > > @@ -71,4 +71,6 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
+> > >  				    (unsigned long)_n_, sizeof(*(ptr))); \
+> > >    })
+> > >  
+> > > +#include <asm-generic/cmpxchg-local.h>
+> > > +
+> > >  #endif /* __ASM_SH_CMPXCHG_H */
+> > > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
