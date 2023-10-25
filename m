@@ -2,115 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755A57D61FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 08:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634297D61FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 08:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjJYG65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 02:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S232543AbjJYG7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 02:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbjJYG6x (ORCPT
+        with ESMTP id S232558AbjJYG7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 02:58:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6671DD;
-        Tue, 24 Oct 2023 23:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eDKxmuej9tXfCEvb9vvcLDbQO6JariJ+oFUVHWu6xYU=; b=lXRiBz0fpXvDJLERZRH4R6/dOH
-        8WcES3v/b44vy20LpA3DpgZjtcOxXkV04gv+3jtsISxr/DHSqc9/a06KYB9iwYwCy1a3m5959tzve
-        3l7VW09AOplEaTSe/3KEOsT6trZpwbG8OND6mSMxxXvTHyCDks1p372/+sWzgCVQht6CACs+dEDst
-        Wlf9qsXXrbbMuoejkBaHDbs0NL5Jvf7q+cqI/O9NKQ+6ti8K6Ak07Cp+nisGb8iZfrmQehOe/X0ez
-        doIHoEEeFwKKyKPRHrXnwCbUwPwTQc64qhqN19lmEC8VIyNdOkFy2DljqH4vsIivevY0Uzg47nCTG
-        KibtAllw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qvXqN-007H5T-Bg; Wed, 25 Oct 2023 06:58:19 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0A9E030047C; Wed, 25 Oct 2023 08:58:19 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 08:58:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231025065818.GB31201@noisy.programming.kicks-ass.net>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
- <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
- <20231024103601.GH31411@noisy.programming.kicks-ass.net>
- <20231025040029.uglv4dwmlnfhcjde@desk>
+        Wed, 25 Oct 2023 02:59:17 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CFD10E3;
+        Tue, 24 Oct 2023 23:59:10 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P5RBUe028836;
+        Wed, 25 Oct 2023 06:59:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=jm0AJIxNIWSTRPzcxpYZ/riAaWPsV8BfuXd+7+yNIyg=;
+ b=p6gW9XupXl4DcoIx3suqeHfmCI7JF+7WjzJzJjsUOeOdXePdtYO1+z6mQgA+3S//lGEM
+ HdIssf0ssFopKUf8wMLGuvjYjWQZoBjh2I/M4P51cdOhKcuVyyQ2h+kpHKC5NtVMGlbk
+ tYbc3sVNOf0WhnUfw9/x22k4vb3WJcHteOrjhQU1KWJ17hfZaAax4PiQOPFtgVCBBhNO
+ cFonJMBt2jbe9PUB0HGYTTXQccHQlpkUqFljGSr0AytWRQEU5bckZ1UQBo22WmHvCxq7
+ +AhCplcX6GfPtQCG8xtThOoHOB4b+yX+v7g+ZTrXJOGjxJK7+WdC2CmZzPx3B5QP3Hs8 kA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txngvgw0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 06:59:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39P6x4tc020845
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 06:59:04 GMT
+Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 24 Oct 2023 23:59:00 -0700
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Date:   Wed, 25 Oct 2023 12:28:52 +0530
+Subject: [PATCH] arm64: dts: qcom: ipq9574: enable GPIO based LED
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025040029.uglv4dwmlnfhcjde@desk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231025-ipq9574-led-v1-1-b8217e997dfb@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAKu8OGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDAyNT3cyCQktTcxPdnNQUXYuklMTEJJNky+Q0MyWgjoKi1LTMCrBp0bG
+ 1tQCkZF65XQAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698217140; l=1313;
+ i=quic_kathirav@quicinc.com; s=20230906; h=from:subject:message-id;
+ bh=KUfPgtsNmQYnugjmK4hBeNKZ3ac7DYy6rwDzb4WmbB8=;
+ b=KveIsJSWyP2/SkuzdEbSBd649/FyCjcBU4vsUVHXosFeV2ILRYiueJMFpy8WpRm+BljruhRQ9
+ P980Cpt2FFCBqWOYoMTQWthHU98MOF+cVjf8Z7bA/OsuSZgQL9PkcR/
+X-Developer-Key: i=quic_kathirav@quicinc.com; a=ed25519;
+ pk=xWsR7pL6ch+vdZ9MoFGEaP61JUaRf0XaZYWztbQsIiM=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zJqCDf0XRVD3V8sNs2cw9SyllmTEVxBz
+X-Proofpoint-ORIG-GUID: zJqCDf0XRVD3V8sNs2cw9SyllmTEVxBz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 clxscore=1015 adultscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=520 impostorscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250059
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 09:00:29PM -0700, Pawan Gupta wrote:
+Add support for wlan-2g LED on GPIO64.
 
-> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> index c55cc243592e..ed8218e2d9a7 100644
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -13,6 +13,7 @@
->  #include <asm/unwind_hints.h>
->  #include <asm/percpu.h>
->  #include <asm/current.h>
-> +#include <asm/segment.h>
->  
->  /*
->   * Call depth tracking for Intel SKL CPUs to address the RSB underflow
-> @@ -329,6 +330,29 @@
->  #endif
->  .endm
->  
-> +/*
-> + * Macros to execute VERW instruction that mitigate transient data sampling
-> + * attacks such as MDS. On affected systems a microcode update overloaded VERW
-> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
-> + *
-> + * Note: Only the memory operand variant of VERW clears the CPU buffers.
-> + */
-> +.pushsection .rodata
-> +.align 64
-> +mds_verw_sel:
-> +	.word __KERNEL_DS
-> + 	.byte 0xcc
-> +.align 64
-> +.popsection
+Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-This should not be in a header file, you'll get an instance of this per
-translation unit, not what you want.
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+index 49c9b6478357..b6f90da31778 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+@@ -51,6 +51,18 @@ button-wps {
+ 			debounce-interval = <60>;
+ 		};
+ 	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-0 = <&gpio_leds_default>;
++		pinctrl-names = "default";
++
++		led-0 {
++			gpios = <&tlmm 64 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tx";
++			default-state = "off";
++		};
++	};
+ };
+ 
+ &blsp1_spi0 {
+@@ -117,6 +129,13 @@ gpio_keys_default: gpio-keys-default-state {
+ 		drive-strength = <8>;
+ 		bias-pull-up;
+ 	};
++
++	gpio_leds_default: gpio-leds-default-state {
++		pins = "gpio64";
++		function = "gpio";
++		drive-strength = <8>;
++		bias-pull-up;
++	};
+ };
+ 
+ &usb_0_dwc3 {
 
-> +
-> +.macro EXEC_VERW
-> +	verw _ASM_RIP(mds_verw_sel)
-> +.endm
-> +
-> +.macro CLEAR_CPU_BUFFERS
-> +	ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
-> +.endm
-> +
->  #else /* __ASSEMBLY__ */
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231025-ipq9574-led-8bdaab4c9cf6
+
+Best regards,
+-- 
+Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+
