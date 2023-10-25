@@ -2,153 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51347D7272
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE067D7276
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbjJYRhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S232566AbjJYRiA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 13:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJYRhb (ORCPT
+        with ESMTP id S233837AbjJYRh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:37:31 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BC9137
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:37:29 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so9377013a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698255447; x=1698860247; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yl2dU+9nKTty0GF9smAcA+fSgOnuLvaP8a1ykaCWH2s=;
-        b=RsURUyBR1U2/DG3GDqrlDTdQT1YYI0mA9M7+elplEivButN+59scNF4aNWwAaQsahp
-         yk2sQFAcYGsLds/wnal8037gPaXFHvx25WyW0jjvak15a3yYUPZ5OA/oKevs9U+7bFyJ
-         3di9bL0V+bM+i3Fvl3GOYbjh9GsUzDlnWbgIY=
+        Wed, 25 Oct 2023 13:37:57 -0400
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBDB181
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:37:55 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1e99b05c8f4so595261fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:37:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698255447; x=1698860247;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yl2dU+9nKTty0GF9smAcA+fSgOnuLvaP8a1ykaCWH2s=;
-        b=Ncaa2hb0FHmx72XsB+W5o7u3pwk3k5pvc7/T5ybLmNTx2W5KOMu80DbQh7xgrDZevl
-         dURz6Mu3q7SiLExpZL7Bn/B5GoqOcQUSzh4t3Spe0QxwGGW50U2xLI7QEhlWpnywsVSL
-         uObXjb0Ee2u8t7bdac2JpfKIxbROxkdtp5g8abb0d3i6x4rRKaEkicEjPhb4f5yfEBn+
-         c0thQZwRwc22owhWSmlMaPjZdpMKB65Z+rP0Lv5CqV4BSzZD5OekR4IvxEOHQ97LY/ZH
-         j1qkqsVxv7w48fSDQal/foVXWkeTTIQevdlwBbb/zYnHItwFcST+cmS9g6nXgzgNoAUn
-         KxHA==
-X-Gm-Message-State: AOJu0Yx4vrUspDWWCIPTlxkHp0+CniLnM0vnoyqdtmubnFGRUmiDIh+S
-        I4VNw/gFPb8Orv0awnMrxbZzKyhWXxjRJWwKmVH/pw==
-X-Google-Smtp-Source: AGHT+IHMdooQ3RBIavzdHoptLpqPvI1P7b7j0nNdBaHPPuKkBftWHOM56fpPj60UiwbLGEfyewtirw==
-X-Received: by 2002:a17:907:5cb:b0:9ae:4eb9:e09b with SMTP id wg11-20020a17090705cb00b009ae4eb9e09bmr13550599ejb.27.1698255447501;
-        Wed, 25 Oct 2023 10:37:27 -0700 (PDT)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
-        by smtp.gmail.com with ESMTPSA id q6-20020a1709060e4600b009b28ad521f4sm10162754eji.4.2023.10.25.10.37.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 10:37:26 -0700 (PDT)
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9be1ee3dc86so5919666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:37:26 -0700 (PDT)
-X-Received: by 2002:a17:906:c155:b0:9be:3c7e:7f38 with SMTP id
- dp21-20020a170906c15500b009be3c7e7f38mr12949467ejc.10.1698255446403; Wed, 25
- Oct 2023 10:37:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698255475; x=1698860275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZgnP6sRKjtsw0eyoGkM/oxKWHVsXQhLZa9uKQ+VKj7g=;
+        b=MrO7DVCN9M2AqALdIAsrlLn9zSZ3LHGEza2gRMjECcQmiDYVZBOMY5WOV9uKfTRcwW
+         ntvDd8YUa0h8VB4BDuG48dIb0dWCnPWI3ahf7zSC7JBzvZdV4/NFRBFfzFzfCuy4CCK3
+         t1srLs1gegN2LF710mBBY93pAZylBfxaJVH0x7CcBME6uM07md3bqkiIV5M1k2/gbClK
+         330gvqd5YkLwx6JH7JJQ5a8E9tMcV+AxszEZrlBNhfE/ZaeHOXS0ic5+2m7ACI+qBJGa
+         W4tfkPxeLojd+dMtcsDJEhod9n6+9TTL/5xFWc8vv1fP0nhODxqUTSnmCAHUR3Tnhj4u
+         Bd/Q==
+X-Gm-Message-State: AOJu0Ywh1PtwDX1UoVCbKaZ+/Xa0rgIHVcyUDLw52uxSNL/v5hxrgI4v
+        stwSnLX5cqa+EmXWSXnNZ0Xk4Ra8N6PQiC0HdOw=
+X-Google-Smtp-Source: AGHT+IFJMil7pFFO7TwFVb92Vb/j02jLmMuDXJwdCiJMhYyVC/zPHOdLjJ1y39qbP2asrkZc6TRUULyhmFwiaCCkL58=
+X-Received: by 2002:a05:6870:9f8a:b0:1d5:1a99:537f with SMTP id
+ xm10-20020a0568709f8a00b001d51a99537fmr18854775oab.2.1698255474892; Wed, 25
+ Oct 2023 10:37:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231024161931.78567-1-sebastian.reichel@collabora.com>
- <20231024161931.78567-2-sebastian.reichel@collabora.com> <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
- <CAHk-=wjO5ivM6k7iMiThO9JfxH0dhLe=mcC4TQwReU0nBCnWpg@mail.gmail.com> <7ba90240-33ba-4e08-af38-3ec2d40c3837@rasmusvillemoes.dk>
-In-Reply-To: <7ba90240-33ba-4e08-af38-3ec2d40c3837@rasmusvillemoes.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 25 Oct 2023 07:37:09 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wieb+dUFet+pNqB7MTy88iYQU3KtTK9V0JHnxwwKoMGpQ@mail.gmail.com>
-Message-ID: <CAHk-=wieb+dUFet+pNqB7MTy88iYQU3KtTK9V0JHnxwwKoMGpQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, kernel@collabora.com
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com> <878r7z4kb4.ffs@tglx>
+ <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com> <87ttqhcotn.ffs@tglx>
+ <87v8avawe0.ffs@tglx> <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+ <ZTkzYA3w2p3L4SVA@localhost> <87jzra6235.ffs@tglx>
+In-Reply-To: <87jzra6235.ffs@tglx>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Oct 2023 19:37:43 +0200
+Message-ID: <CAJZ5v0gS8c75ar2E1kg-h5rDGoXXxM04Vs1y8gt+ro5ZjEU2+w@mail.gmail.com>
+Subject: Re: PIC probing code from e179f6914152 failing
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     David Lazar <dlazar@gmail.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 22:03, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+On Wed, Oct 25, 2023 at 7:31 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> Both the existing and new implementation are simply wrong for negative
-> n, because / doesn't do floor(), it does round-towards-0 (I do believe
-> that's a bug in the C standard, but not much one can do about that).
+> On Wed, Oct 25 2023 at 17:25, David Lazar wrote:
+> > --- On Wed, 25 Oct 2023, Mario Limonciello wrote:
+> >> David - can you see if the below helps your hardware?
+> >
+> > The keyboard and mouse work fine with Thomas' patch.
+> >
+> > I've uploaded the debug info to the bug:
+> >
+> > https://bugzilla.kernel.org/attachment.cgi?id=305291&action=edit
+>
+> Let me write a changelog then. Unless Rafael has any objections to that
+> approach.
 
-Honestly, while I found several cases where the arithmetic was done
-with a signed type, all the ones I looked at were purely about the
-_type_, not the values.
-
-Any actual negative values would have been too random before to make a
-difference. In that patch, I tried to keep the signed type around
-mainly to at least get *similar* values to the old code, but honestly,
-it was all broken before already if the values were actually signed.
-
-If it were to change the result and somebody would find a bug due to
-that, that would be a good thing, in other words. The negative value
-would need to be fixed anyway - as you say, integer division of signed
-values is simply not rgeat in the first place.
-
-Side note: if you dislike the "round towards zero" behavior, I can
-tell you that it is better than the historical alternative, which was
-"implementation defined".
-
-IIRC, the rule used to be that signed division could either round down
-or towards zero, and the only rule was that (a) it had to be
-documented (ie "implementation defined" rather than "undefined") and
-(b) the modulus had to follow the same rules, ie regardless of
-rounding, you'd have
-
-  (a/b)*b + a%b = a
-
-That said:
-
-> Preventing signed types from being used is probably too difficult.
-
-It might not be. My horror with _Generic() is certainly not pretty,
-but it *does* have the advantage that we could error out for signed
-cases.
-
-I did that initially, and it didn't look horrific, particularly if you
-just accept signed positive constants as unsigned values (which
-requires another bit of macro magic but is not conceptually hard).
-
-The patch I sent out was not it, though - it was meant really as a
-minimal "something like this" that still compiled my defconfig.
-
-> Aside: I don't think uapi/ stuff can include non-uapi/ stuff.
-
-Yeah, no, I left it in that uapi header just for the same reason I
-didn't bother trying to fix any signed type cases - actively avoiding
-changes *outside* the DIV_ROUND_UP() case itself.
-
-In reality, I'd just make any users of __KERNEL_DIV_ROUND_UP include
-<linux/div_round_up.h> and get rid of the crazy UAPI thing entirely.
-
-So ignore that part.
-
-> Aside2: do_div(n-1, d); probably doesn't compile :)
-
-.. I did say it was untested and "might approach being correct".
-
-That 32-bit ULL case should also have some attempt at checking that
-the divisor really fits in 32 bits. Because I still refuse to believe
-that the full 64-by-64 divisions are sane on a 32-bit machine, and
-anybody who does that needs to go to extra lengths for them. No
-"silently do them without telling the programmer they are doing
-something horrendously bad".
-
-                Linus
+I don't have any, thanks!
