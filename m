@@ -2,202 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F3D7D6A19
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C7D7D6A20
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbjJYL1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
+        id S234655AbjJYL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234897AbjJYL1b (ORCPT
+        with ESMTP id S230217AbjJYL3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:27:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 175EF18D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:27:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 586552F4;
-        Wed, 25 Oct 2023 04:28:06 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.69.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95EC23F738;
-        Wed, 25 Oct 2023 04:27:23 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 12:27:20 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Andrea della Porta <andrea.porta@suse.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nik.borisov@suse.com, arnd@arndb.de
-Subject: Re: [PATCH v2 3/4] arm64/entry-common: Make Aarch32 exceptions'
- availability depend on aarch32_enabled()
-Message-ID: <ZTj7mHTv-PDT4ba8@FVFF77S0Q05N>
-References: <cover.1698069331.git.andrea.porta@suse.com>
- <d0484051d8ff23e0ed1f2933789cde3d390a2fa6.1698069331.git.andrea.porta@suse.com>
+        Wed, 25 Oct 2023 07:29:13 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F7A10A;
+        Wed, 25 Oct 2023 04:29:10 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 34B9766071C9;
+        Wed, 25 Oct 2023 12:29:08 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698233348;
+        bh=YcIUG+bFG3gCP/KGT755SKLbRpNGiug2TGJ8Qy80gUA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=aAfy4Taoi7eEhWJhC0q5SXJZ6OWE+V4gv4d7aT6Ge/Roi5iW8GZvhJzVM0rO7hjtb
+         JtZPD7oPTYddIwZ7+EhBn/b/D48b/05qyX8kI3vVAtRtbn3ZZFKzMlWRcETrqmJeHq
+         M/ZqnMeOWCOmdNxN+4wVA7NuYugeYveW/TmbkoibFU3D675qvpeTK6VFQiAr/58jl4
+         Yq2+v8bEWgufMNBSdpIE3L2qUQrnu5pLz7E5NnZEGZuocWpcQwprwrv2oOM7s049La
+         240tPMxBQPDCROAJZNkUxnlXE1oVjlOTTtKT//ea/3D6mKtMBis43FF20Uh7hoRNt8
+         7wyGG/inj3fEQ==
+Message-ID: <eb4f7d6e-0e4c-4b2d-b889-cad9fc9262d8@collabora.com>
+Date:   Wed, 25 Oct 2023 13:29:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0484051d8ff23e0ed1f2933789cde3d390a2fa6.1698069331.git.andrea.porta@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: mediatek: mt8186: Change I2C 4/5/6 ap clocks parent
+ to infra
+Content-Language: en-US
+To:     =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= 
+        <Yu-chang.Lee@mediatek.com>,
+        "wenst@chromium.org" <wenst@chromium.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        =?UTF-8?B?Q2h1bi1KaWUgQ2hlbiAo6Zmz5rWa5qGAKQ==?= 
+        <Chun-Jie.Chen@mediatek.com>,
+        =?UTF-8?B?TWlsZXMgQ2hlbiAo6Zmz5rCR5qi6KQ==?= 
+        <Miles.Chen@mediatek.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+References: <20231019124914.13545-1-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5H0rUajeU-i8nYyV2xWFQTnzqxioZCCyyP_RZXKqmcugQ@mail.gmail.com>
+ <283d18028590d57025e5654d18b8b5b7.sboyd@kernel.org>
+ <CAGXv+5EpBLnXVdxnk9wBZi5F7U5wdJRfYH7fgg4Lkr1HJXm+WA@mail.gmail.com>
+ <9c1e10b56db315e03daa3df5918cde844297c680.camel@mediatek.com>
+ <CAGXv+5HQ2sVx=F3my2jOGMw3j3pU2aarEg+Dj1XgNzwio98ezA@mail.gmail.com>
+ <e049985de9da9958ba425824ab5f38c7cf41025b.camel@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <e049985de9da9958ba425824ab5f38c7cf41025b.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 04:42:22PM +0200, Andrea della Porta wrote:
-> Another major aspect of supporting running of 32bit processes is the
-> ability to access 32bit syscalls and exceptions. Syscalls, in
-> particular, can be invoked by using the svc instruction.
+Il 25/10/23 11:50, Yu-chang Lee (李禹璋) ha scritto:
+> On Tue, 2023-10-24 at 17:20 +0800, Chen-Yu Tsai wrote:
+>>   	
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>   On Tue, Oct 24, 2023 at 3:47 PM Yu-chang Lee (李禹璋)
+>> <Yu-chang.Lee@mediatek.com> wrote:
+>>>
+>>> On Tue, 2023-10-24 at 10:58 +0800, Chen-Yu Tsai wrote:
+>>>> On Tue, Oct 24, 2023 at 10:52 AM Stephen Boyd <sboyd@kernel.org>
+>>>> wrote:
+>>>>>
+>>>>> Quoting Chen-Yu Tsai (2023-10-19 22:06:35)
+>>>>>> On Thu, Oct 19, 2023 at 8:49 PM AngeloGioacchino Del Regno
+>>>>>> <angelogioacchino.delregno@collabora.com> wrote:
+>>>>>>>
+>>>>>>> Fix the parenting of clocks imp_iic_wrap_ap_clock_i2c{4-6},
+>> as
+>>>>>>> those
+>>>>>>> are effectively parented to infra_ao_i2c{4-6} and not to
+>> the
+>>>>>>> I2C_AP.
+>>>>>>> This permits the correct (and full) enablement and
+>> disablement
+>>>>>>> of the
+>>>>>>> I2C4, I2C5 and I2C6 bus clocks, satisfying the whole clock
+>> tree
+>>>>>>> of
+>>>>>>> those.
+>>>>>>>
+>>>>>>> As an example, when requesting to enable
+>>>>>>> imp_iic_wrap_ap_clock_i2c4:
+>>>>>>>
+>>>>>>> Before: infra_ao_i2c_ap -> imp_iic_wrap_ap_clock_i2c4
+>>>>>>> After:  infra_ao_i2c_ap -> infra_ao_i2c4 ->
+>>>>>>> imp_iic_wrap_ap_clock_i2c4
+>>>>>>>
+>>>>>>> Fixes: 66cd0b4b0ce5 ("clk: mediatek: Add MT8186 imp i2c
+>> wrapper
+>>>>>>> clock support")
+>>>>>>> Signed-off-by: AngeloGioacchino Del Regno <
+>>>>>>> angelogioacchino.delregno@collabora.com>
+>>>>>>
+>>>>>> I'm curious about what led to discovering this error?
+>>>>>>
+>>>>>
+>>>>> Is that an acked-by?
+>>>>
+>>>> MediaTek engineers are saying the original code already matches
+>> the
+>>>> documentation provided by their hardware engineers. I'm trying to
+>> get
+>>>> them to respond on the mailing list.
+>>>>
+>>>> ChenYu
+>>>>
+>>> After checking with I2C clock hardware designer there is no
+>>> infra_ao_i2c{4-6} clock gate in between. And the clock document at
+>> hand
+>>> aslo shows the same result. Generallly speaking, we would like to
+>> keep
+>>> sw setting align with the hardware design document. I would
+>> recommand
+>>> not to change this part of code, but enable infra_ao_i2c{4-6} prior
+>> to
+>>> the usage of imp_iic_wrap_ap_clock_i2c clock.
+>>
+>> Are infra_ao_i2c{4-6} actually used by the hardware? If so, for what
+>> purpose?
 > 
-> If Aarch32 support is disabled ensure that calling svc (or any
-> exceptions) from 32bit context results in the same behavior as if
-> CONFIG_COMPAT has not been enabled (i.e. a kernel panic).
+> According to hardware designer it servers no purpose. Just a legacy of
+> previous design...
 > 
-> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
-
-Just to be clear, as it stands, I don't think we should apply this patch.
-
-* There's no justficiation so far for disabling the vectors given they should
-  be unreachable.
-
-* If we really want to do this, the behaviour should be driven by a cpucap, so
-  as to have truly negligible impact and to be consistent with how we handle
-  features elsewhere.
-
-  That will require some preparatory rework to the way de handle detecing
-  support for AArch32 at EL0 (some of which I think we should do anyway as a
-  cleanup).
-
-* We should not introduce new *_ni_handler() functions. If we really want to
-  do this, we should refactor the existing code such that we have a single
-  el0t_32_<vector>_handler() implementation for each vector regardless of
-  CONFIG_COMPAT, which can figure out what to do, e.g. something like:
-
-  | asmlinkage void noinstr el0t_32_irq_handler(struct pt_regs *regs)
-  | {
-  |         if (!system_suports_compat_el0())
-  | 	            panic_unhandled_vector(el0t, 32, irq, regs);
-  |             
-  | 	    __el0_irq_handler_common(regs);
-  | }
-
-  That way the feature check only needs to test IS_ENABLED(CONFIG_COMPAT) and
-  alternative_has_cap(whatever), and we can rely on the compiler to elide the
-  unreachable code. That way we use the exact same code for the case that
-  32-bit support is disabled statically or dynamically.
-
-  I had a quick go at mocking that up:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/entry/unhandled-rework
-
-  ... which doesn't look too hard.
- 
-> ---
->  arch/arm64/include/asm/exception.h |  7 +++++++
->  arch/arm64/kernel/entry-common.c   | 25 ++++++++++++++++++++++---
->  2 files changed, 29 insertions(+), 3 deletions(-)
+>> If it is actually needed by the hardware and it is not in the
+>> existing path,
+>> then it needs to be described in the device tree and handled by the
+>> driver.
+>>
+>> ChenYu
 > 
-> diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-> index ad688e157c9b..ccb41ba8d86c 100644
-> --- a/arch/arm64/include/asm/exception.h
-> +++ b/arch/arm64/include/asm/exception.h
-> @@ -48,6 +48,13 @@ asmlinkage void el0t_32_irq_handler(struct pt_regs *regs);
->  asmlinkage void el0t_32_fiq_handler(struct pt_regs *regs);
->  asmlinkage void el0t_32_error_handler(struct pt_regs *regs);
->  
-> +#ifdef CONFIG_COMPAT
-> +asmlinkage void el0t_32_sync_ni_handler(struct pt_regs *regs);
-> +asmlinkage void el0t_32_irq_ni_handler(struct pt_regs *regs);
-> +asmlinkage void el0t_32_fiq_ni_handler(struct pt_regs *regs);
-> +asmlinkage void el0t_32_error_ni_handler(struct pt_regs *regs);
-> +#endif
-> +
->  asmlinkage void call_on_irq_stack(struct pt_regs *regs,
->  				  void (*func)(struct pt_regs *));
->  asmlinkage void asm_exit_to_user_mode(struct pt_regs *regs);
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 69ff9b8c0bde..32761760d9dd 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -802,6 +802,11 @@ asmlinkage void noinstr el0t_64_error_handler(struct pt_regs *regs)
->  }
->  
->  #ifdef CONFIG_COMPAT
-> +UNHANDLED(el0t, 32, sync_ni)
-> +UNHANDLED(el0t, 32, irq_ni)
-> +UNHANDLED(el0t, 32, fiq_ni)
-> +UNHANDLED(el0t, 32, error_ni)
-
-This isn't the right way to use the UNHANDLED() macro, the 'vector' argument is
-supposed to be the name of the exception vector, since that'll be printed out
-in the message. The above will result in wanings like:
-
-  "Unhandled 32-bit sync_ni exception"
-
-Whereas we want:
-  
-  "Unhandled 32-bit sync exception"
-
-As with the code linked to above, I'd be happy to remove the UNHANDLED() macro
-entirely.
-
-> +
->  static void noinstr el0_cp15(struct pt_regs *regs, unsigned long esr)
->  {
->  	enter_from_user_mode(regs);
-> @@ -821,6 +826,11 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
->  
->  asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
->  {
-> +	if (!aarch32_enabled()) {
-
-As above, we should use a cpucap so that this can be an alternative branch
-rather than a load and test of a global variable.
-
-> +		el0t_32_sync_ni_handler(regs);
-
-... and similarly we shouldn't need the *_ni_handler() functions.
-
-Mark.
-
-> +		return;
-> +	}
-> +
->  	unsigned long esr = read_sysreg(esr_el1);
->  
->  	switch (ESR_ELx_EC(esr)) {
-> @@ -865,17 +875,26 @@ asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
->  
->  asmlinkage void noinstr el0t_32_irq_handler(struct pt_regs *regs)
->  {
-> -	__el0_irq_handler_common(regs);
-> +	if (!aarch32_enabled())
-> +		el0t_32_irq_ni_handler(regs);
-> +	else
-> +		__el0_irq_handler_common(regs);
->  }
->  
->  asmlinkage void noinstr el0t_32_fiq_handler(struct pt_regs *regs)
->  {
-> -	__el0_fiq_handler_common(regs);
-> +	if (!aarch32_enabled())
-> +		el0t_32_fiq_ni_handler(regs);
-> +	else
-> +		__el0_fiq_handler_common(regs);
->  }
->  
->  asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
->  {
-> -	__el0_error_handler_common(regs);
-> +	if (!aarch32_enabled())
-> +		el0t_32_error_ni_handler(regs);
-> +	else
-> +		__el0_error_handler_common(regs);
->  }
->  
->  bool __aarch32_enabled __ro_after_init = true;
-> -- 
-> 2.35.3
+> After reviewing hardware design diagram, hardware designer concludes
+> that the clock tree is indeed
 > 
+> top_i2c -> infra_ao_i2c{4-6}
+> top_i2c -> infra_ao_i2c_ap -> imp_iic_wrap_ap_clock_i2c{4-6}
+> 
+> so I think we should keep this clock relation unchanged.
+> 
+> Thanks
+> YuChang
+> 
+
+Can you please also expand on CLK_INFRA_AO_I2C{1,2,5}_ARBITER clocks?
+Is the I2C arbiter also legacy of previous designs?
+
+Please check [1], as I've sent a commit adding those in the devicetree.
+
+Thanks,
+Angelo
+
+[1]: 
+https://lore.kernel.org/all/20231020075540.15191-1-angelogioacchino.delregno@collabora.com/
