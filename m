@@ -2,114 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297E97D75F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614EE7D7613
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjJYUwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
+        id S232952AbjJYUxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYUwn (ORCPT
+        with ESMTP id S230233AbjJYUwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:52:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC81136;
-        Wed, 25 Oct 2023 13:52:40 -0700 (PDT)
+        Wed, 25 Oct 2023 16:52:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA653136;
+        Wed, 25 Oct 2023 13:52:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698267160; x=1729803160;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XTbrElkU1MbX6ZrhPb1QYOzV1U9Co1VHsj67ZR6GG3g=;
-  b=TGq8NBDOml6EemXEi9z6ISE3nVI291MD184rYq3x5nMy8II6Rtc3wLc8
-   dqzEzUlUyooxAfoTwlze/vcXw3VWYMETeDKLtijq7NTkm6hl/QPhzbcjc
-   H6Hmjsz19ZJZsEvazEQPvGQiuDB7SXQ63bJA3hfQwD3itZiF62lv323gi
-   t8NhIT1/qb0aJW/U4ClFOeM6kbhzTvYwUD/FyFKAbOdiX+3cbYsx2UPB+
-   9InzzXxYCOsvVfU+cgZWNEx3MPzlvrhSJ2tkNDmmD+2IGTJVge7uK5CaU
-   /z5bc536Sa/KoiQdt6MrrMAwQC7I/qpqagxbX0LEiQLrV7ZZWoWO908K6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="387222339"
+  t=1698267169; x=1729803169;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=nFU0gWVfaBmzYZu/sQ4XkeGrRDvj/BfRgOvVsVQkje4=;
+  b=Y5ZOcJEvkN6QrjZ9b3ItbSYy5d9G9MwqOVOaptKEePeD4uAHKzrrMQ+4
+   6oz/0MXKteweeLUlEM0YMGOzf7ImQwSJwVSvayzm2q9EXUhFZyQbtZphX
+   UlxNLDLacqwqYfuagf7LODrXjMeaDSGlk2vbpw6rMJFfCziLLvziQWCuw
+   vX9zytI3Nq4pUzMQcu7UElIY7JstWRf+EKup2j0l4tCOcodsjM9TqibOl
+   OhChClHt+HWNe2xVwyEut59Gp+491d+DMz6gbK0EdwZk6lMMkqefDYV25
+   dAQUbozr6Uij74KgLCjVyPJabaR/MvsUWJOLwSFcG0sZ9E1LOgWR2Pr6r
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390255461"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="387222339"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:39 -0700
+   d="scan'208";a="390255461"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708817429"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="708817429"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:38 -0700
-Date:   Wed, 25 Oct 2023 13:52:37 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     "Moger, Babu" <babu.moger@amd.com>
-Cc:     Peter Newman <peternewman@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
+   d="scan'208";a="259486"
+Received: from kkomeyli-mobl.amr.corp.intel.com (HELO desk) ([10.251.29.139])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:36 -0700
+Date:   Wed, 25 Oct 2023 13:52:44 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
- b/w unavailable
-Message-ID: <ZTmAFVuYlMuCbQHz@agluck-desk3>
-References: <20231024181600.8270-1-tony.luck@intel.com>
- <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
- <ZTluypa9bCWv4k2n@agluck-desk3>
- <e4994218-a7a2-4505-868e-a5c825ca4db0@amd.com>
- <b8ea0a74-347d-475f-a36d-8944ced16951@amd.com>
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Alyssa Milburn <alyssa.milburn@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [PATCH v3 0/6] Delay VERW
+Message-ID: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAH19OWUC/2XMSw6CMBSF4a2Qji3pSyiO3IdxgO2t3ASLabFCC
+ Hu3wQnG4fmT8y0kQkCI5FQsJEDCiIPPQx4KYrrW34GizZsIJiRnnFMLfTvTBOFNLVO1anR1E0a
+ SfHgGcDht2IWQay4dxnEI86YnvvUvJNgeSpwyapw7KtZUUlT23KN/TSX6EfrSDI8NS2IPqB9AZ
+ MBxrblUzGhW/wPrun4A7q9Tae0AAAA=
+X-Mailer: b4 0.12.3
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b8ea0a74-347d-475f-a36d-8944ced16951@amd.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 03:42:14PM -0500, Moger, Babu wrote:
-> I meant, I was thinking bit different.
-> 
-> > 
-> > You need these changes in only two functions, mbm_bw_count and
-> > update_mba_bw. You decide which event you want to use based on availability,
-> > 
-> > Something like this. I updated mbm_bw_count.
-> > 
-> > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
-> > b/arch/x86/kernel/cpu/resctrl/monitor.c
-> > index 0ad23475fe16..302993e4fbc3 100644
-> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> > @@ -436,8 +436,16 @@ static int __mon_event_count(u32 rmid, struct
-> > rmid_read *rr)
-> >   */
-> >  static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
-> >  {
-> > -       struct mbm_state *m = &rr->d->mbm_local[rmid];
-> >         u64 cur_bw, bytes, cur_bytes;
-> > +       struct mbm_state *m;
-> > +       int evtid;
-> > +
-> > +       if (is_mbm_local_enabled())
-> > +               evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
-> > +       else
-> > +               evtid = QOS_L3_MBM_TOTAL_EVENT_ID;
-> > +
-> > +       m = get_mbm_state(rr->d, rmid, evtid);
+v3:
+- Use .entry.text section for VERW memory operand. (Andrew/PeterZ)
+- Fix the duplicate header inclusion. (Chao)
 
-Ok. Yes. That seems simpler.
+v2: https://lore.kernel.org/r/20231024-delay-verw-v2-0-f1881340c807@linux.intel.com
+- Removed the extra EXEC_VERW macro layers. (Sean)
+- Move NOPL before VERW. (Sean)
+- s/USER_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh/Dave)
+- Removed the comments before CLEAR_CPU_BUFFERS. (Josh)
+- Remove CLEAR_CPU_BUFFERS from NMI returning to kernel and document the
+  reason. (Josh/Dave)
+- Reformat comment in md_clear_update_mitigation(). (Josh)
+- Squash "x86/bugs: Cleanup mds_user_clear" patch. (Nikolay)
+- s/GUEST_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh)
+- Added a patch from Sean to use CFLAGS.CF for VMLAUNCH/VMRESUME
+  selection. This facilitates a single CLEAR_CPU_BUFFERS location for both
+  VMLAUNCH and VMRESUME. (Sean)
 
-Maybe I should just set a global "mbm_evtid" at mount
-time. No need to check every time to see if is_mbm_local_enabled()
-somehow changed and local b/w measurements were suddenly
-available!
+v1: https://lore.kernel.org/r/20231020-delay-verw-v1-0-cff54096326d@linux.intel.com
 
--Tony
+Hi,
+
+Legacy instruction VERW was overloaded by some processors to clear
+micro-architectural CPU buffers as a mitigation of CPU bugs. This series
+moves VERW execution to a later point in exit-to-user path. This is
+needed because in some cases it may be possible for kernel data to be
+accessed after VERW in arch_exit_to_user_mode(). Such accesses may put
+data into MDS affected CPU buffers, for example:
+
+  1. Kernel data accessed by an NMI between VERW and return-to-user can
+     remain in CPU buffers (since NMI returning to kernel does not
+     execute VERW to clear CPU buffers).
+  2. Alyssa reported that after VERW is executed,
+     CONFIG_GCC_PLUGIN_STACKLEAK=y scrubs the stack used by a system
+     call. Memory accesses during stack scrubbing can move kernel stack
+     contents into CPU buffers.
+  3. When caller saved registers are restored after a return from
+     function executing VERW, the kernel stack accesses can remain in
+     CPU buffers(since they occur after VERW).
+
+Although these cases are less practical to exploit, moving VERW closer
+to ring transition reduces the attack surface.
+
+Overview of the series:
+
+Patch 1: Prepares VERW macros for use in asm.
+Patch 2: Adds macros to 64-bit entry/exit points.
+Patch 3: Adds macros to 32-bit entry/exit points.
+Patch 4: Enables the new macros.
+Patch 5: Uses CFLAGS.CF for VMLAUNCH/VMRESUME selection.
+Patch 6: Adds macro to VMenter.
+
+Below is some performance data collected with v1 on a Skylake client
+compared with previous implementation:
+
+Baseline: v6.6-rc5
+
+| Test               | Configuration          | Relative |
+| ------------------ | ---------------------- | -------- |
+| build-linux-kernel | defconfig              | 1.00     |
+| hackbench          | 32 - Process           | 1.02     |
+| nginx              | Short Connection - 500 | 1.01     |
+
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+Pawan Gupta (5):
+      x86/bugs: Add asm helpers for executing VERW
+      x86/entry_64: Add VERW just before userspace transition
+      x86/entry_32: Add VERW just before userspace transition
+      x86/bugs: Use ALTERNATIVE() instead of mds_user_clear static key
+      KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+
+Sean Christopherson (1):
+      KVM: VMX: Use BT+JNC, i.e. EFLAGS.CF to select VMRESUME vs. VMLAUNCH
+
+ Documentation/arch/x86/mds.rst       | 39 ++++++++++++++++++++++++++----------
+ arch/x86/entry/entry.S               | 16 +++++++++++++++
+ arch/x86/entry/entry_32.S            |  3 +++
+ arch/x86/entry/entry_64.S            | 11 ++++++++++
+ arch/x86/entry/entry_64_compat.S     |  1 +
+ arch/x86/include/asm/cpufeatures.h   |  2 +-
+ arch/x86/include/asm/entry-common.h  |  1 -
+ arch/x86/include/asm/nospec-branch.h | 27 ++++++++++++++-----------
+ arch/x86/kernel/cpu/bugs.c           | 15 ++++++--------
+ arch/x86/kernel/nmi.c                |  2 --
+ arch/x86/kvm/vmx/run_flags.h         |  7 +++++--
+ arch/x86/kvm/vmx/vmenter.S           |  9 ++++++---
+ arch/x86/kvm/vmx/vmx.c               | 10 ++++++---
+ 13 files changed, 99 insertions(+), 44 deletions(-)
+---
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+change-id: 20231011-delay-verw-d0474986b2c3
+
+Best regards,
+-- 
+Thanks,
+Pawan
+
+
