@@ -2,61 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EF67D6B8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30CB7D6B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343922AbjJYM2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S1343963AbjJYM3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbjJYM2r (ORCPT
+        with ESMTP id S1343822AbjJYM3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:28:47 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AF28F;
-        Wed, 25 Oct 2023 05:28:43 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 96B5B660731F;
-        Wed, 25 Oct 2023 13:28:41 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698236922;
-        bh=XVUNCwXvwwO8iAGXwgWiNkikQdtq3Qfu7s3r4hSQ49Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VvaXFBCXSZopdm9zEMBPwk52IGi4WqgdVNuy/su89jrUPEmGfR3Oh2C+7rodLTPs8
-         MsF+R+8rndzXh7Dwkmx4UoffY9LX9WYImV1DCu4O2I238ybFyQmHsTCnJGatMusYbT
-         7VcI//prbtGebFGqWqNCwPBHw2BCcEglfjRgxFarDMdoaTth2X6hboQhferuPcYshq
-         56XPcLdv+MLLr8x4ZtmzjbYwdwhedhEQ9SCGVXTZ0tJBEa13eO52w4TZ/J5sEJ9D7F
-         INdKjtHNV9aNoJhlN0RIeMd3oi/fI/446tUbAV/ytB/IE40yf3xBjrp9zcJ3XLlmiF
-         07Pdti5Kv8WHw==
-Message-ID: <42c8fbc2-49db-4cca-aabe-520e4eee597a@collabora.com>
-Date:   Wed, 25 Oct 2023 14:28:39 +0200
+        Wed, 25 Oct 2023 08:29:49 -0400
+Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD79C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1698236983; x=1698496183;
+        bh=b7f1p7v4IPk9TLdlMpg0hUuSOsaHLDgWkqrooNiV9wk=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=jy59f/ZkCee2bLGRnHVg6g6CX68UCj9a8NVwVI0ICMdirIhvdFlP5+eNjfu9SV0su
+         /oJHO6ZSqNeHqeyRX0I2/Fzw5z3IXNThqhemaOC0myO8kXuzMpWXQcSo2FcALYDvUV
+         FEr8SrmnqJS5SfVDy5puJ09yAoAtr8vV1GK5zE7oyKn3znZUtWpGm7nAYPwyDOtFg4
+         wPXCXMFrgCuduplg6dftl8UMmjz+e/q6s8jaoBdbuU2Bk5iBUv2tu0EzoN3Vr7A3jc
+         BBupHU1taO1hpNfPMYepInDRSct3pGAYCCduE8+Y7lc3GaULLNU8nQUUzeLqBIH1au
+         +SoQd80BMNASw==
+Date:   Wed, 25 Oct 2023 12:29:26 +0000
+To:     Johan Hovold <johan@kernel.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: pmic_glink: fix connector type to be DisplayPort
+Message-ID: <NDl6Ye92jJDp3fm20AwcuUKWuP8tzQ9CyWGGRltZ_DxYgxep2DO8Wil0Nmsfmhp1j4vAp9Yu1duiHeQkjBG-bcAdFoW3ZbWxvVqrCEpQe_4=@emersion.fr>
+In-Reply-To: <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+References: <20231010225229.77027-1-dmitry.baryshkov@linaro.org> <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+Feedback-ID: 1358184:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/3] arm64: dts: mt7986: change cooling trips
-Content-Language: en-US
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230820153135.42588-1-linux@fw-web.de>
- <20230820153135.42588-3-linux@fw-web.de>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230820153135.42588-3-linux@fw-web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,66 +54,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 20/08/23 17:31, Frank Wunderlich ha scritto:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Add Critical and hot trips for emergency system shutdown and limiting
-> system load.
-> 
-> Change passive trip to active to make sure fan is activated on the
-> lowest trip.
-> 
-> Fixes: 1f5be05132f3 ("arm64: dts: mt7986: add thermal-zones")
-> Suggested-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->   arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 20 ++++++++++++++++----
->   1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> index 207510abda89..36d8945400df 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-> @@ -614,22 +614,34 @@ cpu_thermal: cpu-thermal {
->   			thermal-sensors = <&thermal 0>;
->   
->   			trips {
-> +				cpu_trip_crit: crit {
-> +					temperature = <125000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +
-> +				cpu_trip_hot: hot {
-> +					temperature = <120000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
->   				cpu_trip_active_high: active-high {
->   					temperature = <115000>;
->   					hysteresis = <2000>;
->   					type = "active";
->   				};
->   
-> -				cpu_trip_active_low: active-low {
-> +				cpu_trip_active_med: active-med {
->   					temperature = <85000>;
->   					hysteresis = <2000>;
->   					type = "active";
->   				};
->   
-> -				cpu_trip_passive: passive {
+On Wednesday, October 25th, 2023 at 14:22, Johan Hovold <johan@kernel.org> =
+wrote:
 
-Rule of thumb is that each commit has to build on its own: this will break build
-because of mt7986a-bananapi-bpi-r3.dts referencing the now unexistant
-cpu_trip_passive phandle.
+> I was just going to post a patch fixing this after finally investigating
+> why the DisplayPort outputs on the X13s were annoyingly identified as
+> "Unknown20-1" and "Unknown20-2" instead of the expected "DP-1" and
+> "DP-2".
 
-Solving that is simple.
-Merge commit [2/3] and [3/3] in a single commit.
-
-Obviously, retain both fixes tags :-)
-
-Cheers,
-Angelo
-
+Note, ideally userspace should use drmModeGetConnectorTypeName() from
+libdrm to figure out the proper name for a connector type. That way we
+only need to update a single spot when adding a new connector type,
+instead of patching a whole bunch of programs.
