@@ -2,315 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFD27D5FD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEEC7D5FD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjJYCSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 22:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S231292AbjJYCUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 22:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJYCSx (ORCPT
+        with ESMTP id S229441AbjJYCUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 22:18:53 -0400
-Received: from out-192.mta1.migadu.com (out-192.mta1.migadu.com [95.215.58.192])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8459110D7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 19:18:50 -0700 (PDT)
-Message-ID: <b295680c-a9f3-4328-9c76-3c59b22df55e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698200328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/QErtuE7jtTGYZC64XoY1sDur6jRHRBSfnHHKhuu6XU=;
-        b=AmiPxCLTxGMx67NNdT+Um/pi4jJXGv3LWzRCElKkSSYPjrLrFCERd54Xlg0kvIsYoDP+Yr
-        sJuXyNqcMZORoJ817h0fij9xOs3uWgvA/v1PnMAbD2shrFrFwn9B49WJtbfBl0NKM1t/eg
-        NV3dNIzKYblcz18/5Y5Y/9NoY99J3xo=
-Date:   Wed, 25 Oct 2023 10:18:16 +0800
+        Tue, 24 Oct 2023 22:20:07 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02F69C;
+        Tue, 24 Oct 2023 19:20:05 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OLUNN6004153;
+        Wed, 25 Oct 2023 02:19:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=BoJr5H11P3Mxq3RdCvbv/K4oFLgQ2TVLlaOWrcTCKVA=;
+ b=pTQdANJyioC3m+r9ve023Kg9iRG3ds0R+WfQ3nYga1KW8Or9zRCLbGuo1dxZNrXuFwDN
+ dQSBjKHRLOIYJOdg1mb9X+EuqNOfQdB7tnoNjSpDf7CP44WRBdx59SVT/7ja4oVN3a2/
+ UM0Oo/gdI6fSy2iqZBd0Bi6sZ3rxJsiAExyhUwQQjhx6oHtRDEDWdeQEkgXou3O/rF/j
+ 2RiBY4JQiG0ffNICsPccmwPfIMN7hBfbTrsyhrWmtJERNbR7zEzPKPcXc0xnH/30JzBd
+ ZPImBvmA9cbLQXUOQkvczoIXkcIvuIDwAWOyg82EzdAMBzcoiBF/qeoVf7/Bss4Kqh0I vA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv581pr9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 02:19:53 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39P0LjbR015130;
+        Wed, 25 Oct 2023 02:19:53 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tv53621a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 02:19:52 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39P2JpFK000926;
+        Wed, 25 Oct 2023 02:19:52 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3tv5362196-2;
+        Wed, 25 Oct 2023 02:19:52 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Douglas Gilbert <dgilbert@interlog.com>,
+        Wenchao Hao <haowenchao2@huawei.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        louhongxiang@huawei.com
+Subject: Re: [PATCH v6 00/10] scsi:scsi_debug: Add error injection for single device
+Date:   Tue, 24 Oct 2023 22:19:44 -0400
+Message-Id: <169819964272.2667926.6343411701212225977.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231010092051.608007-1-haowenchao2@huawei.com>
+References: <20231010092051.608007-1-haowenchao2@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 6/7] slub: Delay freezing of partial slabs
-Content-Language: en-US
-To:     cl@linux.com, penberg@kernel.org
-Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
- <20231024093345.3676493-7-chengming.zhou@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20231024093345.3676493-7-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=985
+ bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250018
+X-Proofpoint-GUID: l5JbVltxVkkgXdqC-5QwO4vc7xS5ppie
+X-Proofpoint-ORIG-GUID: l5JbVltxVkkgXdqC-5QwO4vc7xS5ppie
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/24 17:33, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> Now we will freeze slabs when moving them out of node partial list to
-> cpu partial list, this method needs two cmpxchg_double operations:
-> 
-> 1. freeze slab (acquire_slab()) under the node list_lock
-> 2. get_freelist() when pick used in ___slab_alloc()
-> 
-> Actually we don't need to freeze when moving slabs out of node partial
-> list, we can delay freezing to when use slab freelist in ___slab_alloc(),
-> so we can save one cmpxchg_double().
-> 
-> And there are other good points:
->  - The moving of slabs between node partial list and cpu partial list
->    becomes simpler, since we don't need to freeze or unfreeze at all.
-> 
->  - The node list_lock contention would be less, since we don't need to
->    freeze any slab under the node list_lock.
-> 
-> We can achieve this because there is no concurrent path would manipulate
-> the partial slab list except the __slab_free() path, which is serialized
-> now.
-> 
-> Since the slab returned by get_partial() interfaces is not frozen anymore
-> and no freelist in the partial_context, so we need to use the introduced
-> freeze_slab() to freeze it and get its freelist.
-> 
-> Similarly, the slabs on the CPU partial list are not frozen anymore,
-> we need to freeze_slab() on it before use.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/slub.c | 111 +++++++++++-------------------------------------------
->  1 file changed, 21 insertions(+), 90 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 5b428648021f..486d44421432 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2215,51 +2215,6 @@ static void *alloc_single_from_new_slab(struct kmem_cache *s,
->  	return object;
->  }
->  
-> -/*
-> - * Remove slab from the partial list, freeze it and
-> - * return the pointer to the freelist.
-> - *
-> - * Returns a list of objects or NULL if it fails.
-> - */
-> -static inline void *acquire_slab(struct kmem_cache *s,
-> -		struct kmem_cache_node *n, struct slab *slab,
-> -		int mode)
-> -{
-> -	void *freelist;
-> -	unsigned long counters;
-> -	struct slab new;
-> -
-> -	lockdep_assert_held(&n->list_lock);
-> -
-> -	/*
-> -	 * Zap the freelist and set the frozen bit.
-> -	 * The old freelist is the list of objects for the
-> -	 * per cpu allocation list.
-> -	 */
-> -	freelist = slab->freelist;
-> -	counters = slab->counters;
-> -	new.counters = counters;
-> -	if (mode) {
-> -		new.inuse = slab->objects;
-> -		new.freelist = NULL;
-> -	} else {
-> -		new.freelist = freelist;
-> -	}
-> -
-> -	VM_BUG_ON(new.frozen);
-> -	new.frozen = 1;
-> -
-> -	if (!__slab_update_freelist(s, slab,
-> -			freelist, counters,
-> -			new.freelist, new.counters,
-> -			"acquire_slab"))
-> -		return NULL;
-> -
-> -	remove_partial(n, slab);
-> -	WARN_ON(!freelist);
-> -	return freelist;
-> -}
-> -
->  #ifdef CONFIG_SLUB_CPU_PARTIAL
->  static void put_cpu_partial(struct kmem_cache *s, struct slab *slab, int drain);
->  #else
-> @@ -2276,7 +2231,6 @@ static struct slab *get_partial_node(struct kmem_cache *s,
->  				     struct partial_context *pc)
->  {
->  	struct slab *slab, *slab2, *partial = NULL;
-> -	void *object = NULL;
->  	unsigned long flags;
->  	unsigned int partial_slabs = 0;
->  
-> @@ -2295,7 +2249,7 @@ static struct slab *get_partial_node(struct kmem_cache *s,
->  			continue;
->  
->  		if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
-> -			object = alloc_single_from_partial(s, n, slab,
-> +			void *object = alloc_single_from_partial(s, n, slab,
->  							pc->orig_size);
->  			if (object) {
->  				partial = slab;
-> @@ -2305,13 +2259,10 @@ static struct slab *get_partial_node(struct kmem_cache *s,
->  			continue;
->  		}
->  
-> -		object = acquire_slab(s, n, slab, object == NULL);
-> -		if (!object)
-> -			break;
-> +		remove_partial(n, slab);
->  
->  		if (!partial) {
->  			partial = slab;
-> -			pc->object = object;
->  			stat(s, ALLOC_FROM_PARTIAL);
->  		} else {
->  			put_cpu_partial(s, slab, 0);
-> @@ -2610,9 +2561,6 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
->  	unsigned long flags = 0;
->  
->  	while (partial_slab) {
-> -		struct slab new;
-> -		struct slab old;
-> -
->  		slab = partial_slab;
->  		partial_slab = slab->next;
->  
-> @@ -2625,23 +2573,7 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
->  			spin_lock_irqsave(&n->list_lock, flags);
->  		}
->  
-> -		do {
-> -
-> -			old.freelist = slab->freelist;
-> -			old.counters = slab->counters;
-> -			VM_BUG_ON(!old.frozen);
-> -
-> -			new.counters = old.counters;
-> -			new.freelist = old.freelist;
-> -
-> -			new.frozen = 0;
-> -
-> -		} while (!__slab_update_freelist(s, slab,
-> -				old.freelist, old.counters,
-> -				new.freelist, new.counters,
-> -				"unfreezing slab"));
-> -
-> -		if (unlikely(!new.inuse && n->nr_partial >= s->min_partial)) {
-> +		if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial)) {
->  			slab->next = slab_to_discard;
->  			slab_to_discard = slab;
->  		} else {
-> @@ -3148,7 +3080,6 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  			node = NUMA_NO_NODE;
->  		goto new_slab;
->  	}
-> -redo:
->  
->  	if (unlikely(!node_match(slab, node))) {
->  		/*
-> @@ -3224,7 +3155,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  
->  new_slab:
->  
-> -	if (slub_percpu_partial(c)) {
-> +	while (slub_percpu_partial(c)) {
->  		local_lock_irqsave(&s->cpu_slab->lock, flags);
->  		if (unlikely(c->slab)) {
->  			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
-> @@ -3236,11 +3167,20 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  			goto new_objects;
->  		}
->  
-> -		slab = c->slab = slub_percpu_partial(c);
-> +		slab = slub_percpu_partial(c);
->  		slub_set_percpu_partial(c, slab);
->  		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
->  		stat(s, CPU_PARTIAL_ALLOC);
-> -		goto redo;
-> +
-> +		if (unlikely(!node_match(slab, node) ||
-> +			     !pfmemalloc_match(slab, gfpflags))) {
-> +			slab->next = NULL;
-> +			__unfreeze_partials(s, slab);
-> +			continue;
-> +		}
-> +
-> +		freelist = freeze_slab(s, slab);
-> +		goto retry_load_slab;
->  	}
+On Tue, 10 Oct 2023 17:20:41 +0800, Wenchao Hao wrote:
 
-Oops, this while(slub_percpu_partial(c)) loop block should be put in #ifdef CONFIG_SLUB_CPU_PARTIAL,
-since the slab->next and __unfreeze_partials() only defined when CONFIG_SLUB_CPU_PARTIAL.
+> The original error injection mechanism was based on scsi_host which
+> could not inject fault for a single SCSI device.
+> 
+> This patchset provides the ability to inject errors for a single
+> SCSI device. Now we support inject timeout errors, queuecommand
+> errors, and hostbyte, driverbyte, statusbyte, and sense data for
+> specific SCSI Command. Two new error injection is defined to make
+> abort command or reset LUN failed.
+> 
+> [...]
 
-And I should append a cleanup patch to rename all *unfreeze_partials* functions to *put_partials*
-since there is no "unfreeze" in these functions anymore.
+Applied to 6.7/scsi-queue, thanks!
 
-Will do in the next version.
+[01/10] scsi: scsi_debug: create scsi_debug directory in the debugfs filesystem
+        https://git.kernel.org/mkp/scsi/c/6e2d15f59b1c
+[02/10] scsi: scsi_debug: Add interface to manage single device's error inject
+        https://git.kernel.org/mkp/scsi/c/a9996d722b11
+[03/10] scsi: scsi_debug: Define grammar to remove added error injection
+        https://git.kernel.org/mkp/scsi/c/962d77cd4c85
+[04/10] scsi: scsi_debug: timeout command if the error is injected
+        https://git.kernel.org/mkp/scsi/c/32be8b6e22eb
+[05/10] scsi: scsi_debug: Return failed value if the error is injected
+        https://git.kernel.org/mkp/scsi/c/33bccf55c20b
+[06/10] scsi: scsi_debug: set command's result and sense data if the error is injected
+        https://git.kernel.org/mkp/scsi/c/33592274321e
+[07/10] scsi: scsi_debug: Add new error injection abort failed
+        https://git.kernel.org/mkp/scsi/c/5551ce928805
+[08/10] scsi: scsi_debug: Add new error injection reset lun failed
+        https://git.kernel.org/mkp/scsi/c/0267811625e1
+[09/10] scsi: scsi_debug: Add debugfs interface to fail target reset
+        https://git.kernel.org/mkp/scsi/c/f084fe52c640
+[10/10] scsi: scsi_debug: Add param to control sdev's allow_restart
+        https://git.kernel.org/mkp/scsi/c/573c2d066eb9
 
-Thanks.
-
->  
->  new_objects:
-> @@ -3249,8 +3189,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  	pc.orig_size = orig_size;
->  	slab = get_partial(s, node, &pc);
->  	if (slab) {
-> -		freelist = pc.object;
->  		if (kmem_cache_debug(s)) {
-> +			freelist = pc.object;
->  			/*
->  			 * For debug caches here we had to go through
->  			 * alloc_single_from_partial() so just store the
-> @@ -3262,6 +3202,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  			return freelist;
->  		}
->  
-> +		freelist = freeze_slab(s, slab);
->  		goto retry_load_slab;
->  	}
->  
-> @@ -3663,18 +3604,8 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  		was_frozen = new.frozen;
->  		new.inuse -= cnt;
->  		if ((!new.inuse || !prior) && !was_frozen) {
-> -
-> -			if (kmem_cache_has_cpu_partial(s) && !prior) {
-> -
-> -				/*
-> -				 * Slab was on no list before and will be
-> -				 * partially empty
-> -				 * We can defer the list move and instead
-> -				 * freeze it.
-> -				 */
-> -				new.frozen = 1;
-> -
-> -			} else { /* Needs to be taken off a list */
-> +			/* Needs to be taken off a list */
-> +			if (!kmem_cache_has_cpu_partial(s) || prior) {
->  
->  				n = get_node(s, slab_nid(slab));
->  				/*
-> @@ -3704,9 +3635,9 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  			 * activity can be necessary.
->  			 */
->  			stat(s, FREE_FROZEN);
-> -		} else if (new.frozen) {
-> +		} else if (kmem_cache_has_cpu_partial(s) && !prior) {
->  			/*
-> -			 * If we just froze the slab then put it onto the
-> +			 * If we started with a full slab then put it onto the
->  			 * per cpu partial list.
->  			 */
->  			put_cpu_partial(s, slab, 1);
+-- 
+Martin K. Petersen	Oracle Linux Engineering
