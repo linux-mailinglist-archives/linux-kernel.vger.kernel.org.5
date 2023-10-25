@@ -2,76 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F0D7D7651
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63697D7665
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjJYVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S229573AbjJYVKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJYVGf (ORCPT
+        with ESMTP id S229441AbjJYVKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:06:35 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448BD136
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:32 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-3575826ba20so26855ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:32 -0700 (PDT)
+        Wed, 25 Oct 2023 17:10:47 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49AB133
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:10:44 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a62d4788so251944e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698267991; x=1698872791; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YfKUQfUVw2J0FwzBs8kRktoJX+okfytV+T+B1kRuBio=;
-        b=Uzjc4i9Rw9syaHUHEzJ+R+rqVahROI2kY8UxdD3VMs7SMIA2KCDXIThzUVtRv2HuzT
-         mRmt8kqehxt6FnN0hViy7d27MvNaJFzEx8DDXiizgt19Mz5As48mp9iZJ6eBFQETkXUG
-         acS25QB184H3tszqJ5l4CmXeSmwxOVi+q4Mtc3vtFr//B2S8RzMBXjcyYfuSyx3cxGeq
-         ZE7DgTHyJMzbr4UwEaz37oRDXd7T1B6s85IO8QypyWb1rCHCAf6Uh1GFetRR90YzL3sw
-         tANFInQnsP52z0T9Jtcq51/sp5Z4Vz9esA1N+ucXctSf7ofeAcdxF3r0WhZHc0Bvj4wF
-         DhZg==
+        d=citrix.com; s=google; t=1698268243; x=1698873043; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=3hbGAH2u7UanqA7JiF1FSpJgxoOcyqFnHxpWblYWTOA=;
+        b=iubvNXY8JO4iHihgpCiYUOSVhyXQ37cnlE8ygyyJPjV1kn1FPZE7j+3Ofk5lBPEHR1
+         uaB2wX08K3rXMvPr6kd0W6wNRScNNcVqs5znaXDHRsXi45UJIwlB5k74A2YW+G2XoN37
+         q8MWNV193XhXgUw/AAtu0xl7Rn2g+BCNj67YY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698267991; x=1698872791;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698268243; x=1698873043;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YfKUQfUVw2J0FwzBs8kRktoJX+okfytV+T+B1kRuBio=;
-        b=FQt0mzKCaH4E8AVOvw0ZqU3oNvItXqJmOkaAtVcpM4hyhcAC1bV1jqgkty2HiWEisO
-         nG51lQLcfeRnT6xQak4+vxLcso8mSJuuPJ58WNjHAx8vKN2axNpOK0R07Hv3HjcPwbip
-         SPTWzsVnfBOcDk0BQJpTsWltMGWkFHrMFLnzcoVazEnuMvC+c8mtYDApMs+gS2CuXJbQ
-         lGw5BwyYIp1Q4BdLzH0TYVlFXdqUENhpIP9cEbltARqoHB4mE86Bwx8wHPjZwApqF0Hy
-         53xgNHqLRB0Cp2xUxtyiFhE6BoxZ3vSVZk9VKKW4HcCY9+BvvU1oHLX2UsoEK79Vb6xk
-         wMfQ==
-X-Gm-Message-State: AOJu0YyvDon6XI6I/ocBh3EQ9ylo/fcO/QakYCZnAPuqVIoa0lFdx4ax
-        /45wLybakJ6AWSqevrRPuoWW2yxnz4cRoOvyWmu6ZA==
-X-Google-Smtp-Source: AGHT+IEH7+hN0UnU2m4b/Gl5oLvAf7k4M9Ve15jrFHBr/Sc2DlZfGnPuEjrzAsXX50m1rLP8WUI0gf8alcW5t9Zj81w=
-X-Received: by 2002:a05:6e02:b24:b0:357:cb1a:9621 with SMTP id
- e4-20020a056e020b2400b00357cb1a9621mr375512ilu.10.1698267991544; Wed, 25 Oct
- 2023 14:06:31 -0700 (PDT)
+        bh=3hbGAH2u7UanqA7JiF1FSpJgxoOcyqFnHxpWblYWTOA=;
+        b=sr6TePD8MT5NLxWSZDMaDCnJB5Jxc94Oigxay6d5rGYW0q1RSmOY3TIzS/7LPSM/7U
+         8LyIEoDeOS6PQzVcJYD7I8tmQ8ts2z5R5ZJkE7G6Fn5VEhnCPODi4K0N8S0StAE/ezaL
+         991mGlv79xvNXRBwGG9DVQrWpQsQQteGDeNDAbpTQIVJhsvlHk1H8jRSTuAgGSJmtomU
+         9MoYi1jmHSg1CKrbt7Q1ECfDti9Ez4D5vLUDosQ/Px94X/VSWKuX+AAJ6AZlnQlNEeaC
+         P7Ox1RfhbymOf8ZsRlCLWPLypgVIjmFkEma/A/92JU1TXyxzDskZmmbWZWfF5S2xoPBz
+         9PMQ==
+X-Gm-Message-State: AOJu0YyZLpYN7qm4gzsCBhILkNHYGOWWGzjVTokj8No/PMC4B6Nd5dUN
+        PL3VTRzMXvt8rnz4WvwSX2d0/Q==
+X-Google-Smtp-Source: AGHT+IFNq+J4mXYBXKxXJf8nBbQlLfxc7pcyxnm1nbbmBBvG+HwJT4NQz4A5XbaNBKIqJp3QeU/Bhw==
+X-Received: by 2002:ac2:46c4:0:b0:508:12f4:34dc with SMTP id p4-20020ac246c4000000b0050812f434dcmr3212357lfo.42.1698268242936;
+        Wed, 25 Oct 2023 14:10:42 -0700 (PDT)
+Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id fx4-20020a170906b74400b009b9a1714524sm10650205ejb.12.2023.10.25.14.10.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 14:10:42 -0700 (PDT)
+Message-ID: <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
+Date:   Wed, 25 Oct 2023 22:10:41 +0100
 MIME-Version: 1.0
-References: <20231024181600.8270-1-tony.luck@intel.com> <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
- <ZTluypa9bCWv4k2n@agluck-desk3>
-In-Reply-To: <ZTluypa9bCWv4k2n@agluck-desk3>
-From:   Peter Newman <peternewman@google.com>
-Date:   Wed, 25 Oct 2023 23:06:20 +0200
-Message-ID: <CALPaoCj72V=o60tqsFMRzaeUw-1+rN7pyhsdCyVEV=0tN_CZ7A@mail.gmail.com>
-Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
- b/w unavailable
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
+User-Agent: Mozilla Thunderbird
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-GB
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,40 +131,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On 25/10/2023 9:52 pm, Pawan Gupta wrote:
+> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
+> index bfb7bcb362bc..f8ba0c0b6e60 100644
+> --- a/arch/x86/entry/entry.S
+> +++ b/arch/x86/entry/entry.S
+> @@ -20,3 +23,16 @@ SYM_FUNC_END(entry_ibpb)
+>  EXPORT_SYMBOL_GPL(entry_ibpb);
+>  
+>  .popsection
+> +
+> +.pushsection .entry.text, "ax"
+> +
+> +.align L1_CACHE_BYTES, 0xcc
+> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> +	UNWIND_HINT_UNDEFINED
+> +	ANNOTATE_NOENDBR
+> +	.word __KERNEL_DS
 
-On Wed, Oct 25, 2023, 21:38 Tony Luck <tony.luck@intel.com> wrote:
->
-> On Wed, Oct 25, 2023 at 02:46:53PM +0200, Peter Newman wrote:
->
-> > > +static struct mbm_state *get_mbm_data(struct rdt_domain *dom_mbm, int rmid)
-> > > +{
-> > > +       if (is_mbm_local_enabled())
-> > > +               return &dom_mbm->mbm_local[rmid];
-> > > +
-> > > +       return &dom_mbm->mbm_total[rmid];
-> > > +}
-> >
-> > That looks very similar to the get_mbm_state() function I added to
-> > this same file recently:
-> >
-> > https://lore.kernel.org/all/20221220164132.443083-2-peternewman%40google.com
-> >
-> > I think the name you picked is misleadingly general. "local if
-> > available, otherwise total" seems to be a choice specific to the mbps
-> > controller. I think these functions should be reconciled a little
-> > better.
-> >
->
-> Peter (and Babu, who made the same point about get_mbm_state().
->
-> Do you want to see your function extended to do the "pick an MBM event?"
+You need another .align here.  Otherwise subsequent code will still
+start in this cacheline and defeat the purpose of trying to keep it
+separate.
 
-What I meant was I think it would be enough to just give the function
-you added a name that's more specific to the Mbps controller use case.
-For example, get_mba_sc_mbm_state().
+> +SYM_CODE_END(mds_verw_sel);
 
-It's only problematic that you added a function with an equivalent
-name to an existing function that does something different.
+Thinking about it, should this really be CODE and not a data entry?
 
--Peter
+It lives in .entry.text but it really is data and objtool shouldn't be
+writing ORC data for it at all.
+
+(Not to mention that if it's marked as STT_OBJECT, objdump -d will do
+the sensible thing and not even try to disassemble it).
+
+~Andrew
+
+P.S. Please CC on the full series.  Far less effort than fishing the
+rest off lore.
