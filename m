@@ -2,247 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D30F7D6AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96C37D6AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbjJYMO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        id S231648AbjJYMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjJYMOZ (ORCPT
+        with ESMTP id S234837AbjJYMOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:14:25 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8FF182;
-        Wed, 25 Oct 2023 05:14:21 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 39PCDvLd007254;
-        Wed, 25 Oct 2023 20:13:57 +0800 (+08)
-        (envelope-from Kaiwei.Liu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SFnmB49j2z2L033G;
-        Wed, 25 Oct 2023 20:09:30 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
- (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 25 Oct
- 2023 20:13:56 +0800
-From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
-To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH 3/3] dmaengine: sprd: optimize two stage transfer function
-Date:   Wed, 25 Oct 2023 20:13:48 +0800
-Message-ID: <20231025121348.9147-1-kaiwei.liu@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 25 Oct 2023 08:14:34 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9E4182;
+        Wed, 25 Oct 2023 05:14:31 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso8579940a12.1;
+        Wed, 25 Oct 2023 05:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698236069; x=1698840869; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mjXStcUt9Iguy5smRWKpn6s+oJAKiIOpUoRTCMmhueI=;
+        b=St3P1CfKAHPWitDvjlNQOQmMksLayGIY/dKhsZ9/8rR5+XHjyUlE6GsXvye51NImPz
+         0H9Q0UVtxXk64ushty8UVkON14nDb/tevnCS6irTERZdJYC20XrLcaj9Wn3qiz710EP6
+         VAjO0icYApxm8r5WSnHFPoEc28CVKquLktcaOeRYWkJcnBRKgi4EaiPrAPZJYgyY2uia
+         igOv1xi8piTYnJVQYme3p7nApakT0a2TlHUDPjGqhb7vPi/HV4qmivnkrH0TAZctVwDn
+         yMQlvN9BQcFJFxwlBX1Plp1+KojiiuFC+P5ch13P1G1klvq5B/ZH2rcVFoOcX8xZVf+f
+         NFcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698236069; x=1698840869;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mjXStcUt9Iguy5smRWKpn6s+oJAKiIOpUoRTCMmhueI=;
+        b=I9B9qxuCKWUoIA5z87k2IyybkOXlWe4UZg3qbLJ+LJis2CmWhfjKpB4/JoOxTtZzAK
+         DuC6I0yWXVZzkgqw1LjxsuiikgVb3DvwraXxbASG+K3UIfakwMRHo7J2+b41FBdOZd7r
+         FOQkL3xAfcgM4XfnJcP4JaW5UdBI+nVajLyYxcR5KnCekTmFWFIclrv9PIylFXt9Haq0
+         YY9RTsVlw73ERBij85UFcGg9xCAQhIl+28nX2zFiP+wbo8RXR0UTCOyKVgP/rOEHuURj
+         CTDHxKozuTtm0L/rHDW+VfNSID1JkEoYZCG8h9+2ZD2fb8nTDMtXpfNbobgyW/GGu9fR
+         H/bg==
+X-Gm-Message-State: AOJu0YzSzxGCdWn+Ci3EbtxALhfgtO01ffV2dqAOlW9AiZitoJK0bxfK
+        A98+9aWItjHGeq8StIFv3Y0=
+X-Google-Smtp-Source: AGHT+IG4K//lUoGVaZxJDWWI+11BjVh8sHP99EZg7E7wAjdHtOJoJ8whP+K1049KAHHUhD52O9FLAQ==
+X-Received: by 2002:a50:aa93:0:b0:540:9b47:4f70 with SMTP id q19-20020a50aa93000000b005409b474f70mr3344005edc.26.1698236069130;
+        Wed, 25 Oct 2023 05:14:29 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id w12-20020aa7cb4c000000b0053e7809615esm9347644edt.80.2023.10.25.05.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 05:14:28 -0700 (PDT)
+Message-ID: <17e03fa708cf0c1d297c2fa3d139a22a358a65e7.camel@gmail.com>
+Subject: Re: bpf: incorrect value spill in check_stack_write_fixed_off()
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 25 Oct 2023 15:14:27 +0300
+In-Reply-To: <CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
+References: <CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
+ nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
+ t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx07.spreadtrum.com (10.0.1.12)
-X-MAIL: SHSQR01.spreadtrum.com 39PCDvLd007254
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
+On Wed, 2023-10-25 at 11:16 +0200, Hao Sun wrote:
+> Hi,
+>=20
+> In check_stack_write_fixed_off(), the verifier creates a fake reg to stor=
+e the
+> imm in a BPF_ST_MEM:
+> ...
+> else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+> insn->imm !=3D 0 && env->bpf_capable) {
+>         struct bpf_reg_state fake_reg =3D {};
+>=20
+>         __mark_reg_known(&fake_reg, (u32)insn->imm);
+>         fake_reg.type =3D SCALAR_VALUE;
+>         save_register_state(state, spi, &fake_reg, size);
+>=20
+> Here, insn->imm is cast to u32, and used to mark fake_reg, which is incor=
+rect
+> and may lose sign information.
 
-For SPRD DMA, it provides a function that one channel can start
-the second channel after completing the transmission, which we
-call two stage transfer mode. You can choose which channel can
-generate interrupt when finished. It can support up to two sets
-of such patterns.
-When configuring registers for two stage transfer mode, we need
-to set the mask bit to ensure that the setting are accurate. And
-we should clear the two stage transfer configuration when release
-DMA channel.
-The two stage transfer function is mainly used by SPRD audio, and
-now audio also requires that the data need to be accessed on the
-device side. So here use the src_port_window_size and dst_port_win-
-dow_size in the struct of dma_slave_config.
+This bug is on me.
+Thank you for reporting it along with the example program.
+Looks like the patch below is sufficient to fix the issue.
+Have no idea at the moment why I used u32 cast there.
+Let me think a bit more about it and I'll submit an official patch.
 
-Signed-off-by: kaiwei.liu <kaiwei.liu@unisoc.com>
+Thanks,
+Eduard
+
 ---
- drivers/dma/sprd-dma.c | 116 ++++++++++++++++++++++++-----------------
- 1 file changed, 69 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
-index f8ed2f3f764b..50916296cd08 100644
---- a/drivers/dma/sprd-dma.c
-+++ b/drivers/dma/sprd-dma.c
-@@ -68,6 +68,7 @@
- #define SPRD_DMA_GLB_TRANS_DONE_TRG	BIT(18)
- #define SPRD_DMA_GLB_BLOCK_DONE_TRG	BIT(17)
- #define SPRD_DMA_GLB_FRAG_DONE_TRG	BIT(16)
-+#define SPRD_DMA_GLB_TRG_MASK		GENMASK(19, 16)
- #define SPRD_DMA_GLB_TRG_OFFSET		16
- #define SPRD_DMA_GLB_DEST_CHN_MASK	GENMASK(13, 8)
- #define SPRD_DMA_GLB_DEST_CHN_OFFSET	8
-@@ -155,6 +156,13 @@
- 
- #define SPRD_DMA_SOFTWARE_UID		0
- 
-+#define SPRD_DMA_SRC_CHN0_INT		9
-+#define SPRD_DMA_SRC_CHN1_INT		10
-+#define SPRD_DMA_DST_CHN0_INT		11
-+#define SPRD_DMA_DST_CHN1_INT		12
-+#define SPRD_DMA_2STAGE_SET		1
-+#define SPRD_DMA_2STAGE_CLEAR		0
-+
- /* dma data width values */
- enum sprd_dma_datawidth {
- 	SPRD_DMA_DATAWIDTH_1_BYTE,
-@@ -431,53 +439,57 @@ static enum sprd_dma_req_mode sprd_dma_get_req_type(struct sprd_dma_chn *schan)
- 	return (frag_reg >> SPRD_DMA_REQ_MODE_OFFSET) & SPRD_DMA_REQ_MODE_MASK;
- }
- 
--static int sprd_dma_set_2stage_config(struct sprd_dma_chn *schan)
-+static void sprd_dma_2stage_write(struct sprd_dma_chn *schan,
-+				  u32 config_type, u32 grp_offset)
- {
- 	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
--	u32 val, chn = schan->chn_num + 1;
--
--	switch (schan->chn_mode) {
--	case SPRD_DMA_SRC_CHN0:
--		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
--		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_SRC_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
--		break;
--
--	case SPRD_DMA_SRC_CHN1:
--		val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
--		val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_SRC_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
--		break;
--
--	case SPRD_DMA_DST_CHN0:
--		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
--			SPRD_DMA_GLB_DEST_CHN_MASK;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_DEST_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP1, val, val);
--		break;
--
--	case SPRD_DMA_DST_CHN1:
--		val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
--			SPRD_DMA_GLB_DEST_CHN_MASK;
--		val |= SPRD_DMA_GLB_2STAGE_EN;
--		if (schan->int_type != SPRD_DMA_NO_INT)
--			val |= SPRD_DMA_GLB_DEST_INT;
--
--		sprd_dma_glb_update(sdev, SPRD_DMA_GLB_2STAGE_GRP2, val, val);
--		break;
-+	u32 mask_val;
-+	u32 chn = schan->chn_num + 1;
-+	u32 val = 0;
-+
-+	if (config_type == SPRD_DMA_2STAGE_SET) {
-+		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+		    schan->chn_mode == SPRD_DMA_SRC_CHN1) {
-+			val = chn & SPRD_DMA_GLB_SRC_CHN_MASK;
-+			val |= BIT(schan->trg_mode - 1) << SPRD_DMA_GLB_TRG_OFFSET;
-+			val |= SPRD_DMA_GLB_2STAGE_EN;
-+			if (schan->int_type & SPRD_DMA_SRC_CHN0_INT ||
-+			    schan->int_type & SPRD_DMA_SRC_CHN1_INT)
-+				val |= SPRD_DMA_GLB_SRC_INT;
-+			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
-+				   SPRD_DMA_GLB_SRC_CHN_MASK;
-+		} else {
-+			val = (chn << SPRD_DMA_GLB_DEST_CHN_OFFSET) &
-+			       SPRD_DMA_GLB_DEST_CHN_MASK;
-+			val |= SPRD_DMA_GLB_2STAGE_EN;
-+			if (schan->int_type & SPRD_DMA_DST_CHN0_INT ||
-+			    schan->int_type & SPRD_DMA_DST_CHN1_INT)
-+				val |= SPRD_DMA_GLB_DEST_INT;
-+			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_DEST_CHN_MASK;
-+		}
-+	} else {
-+		if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+		    schan->chn_mode == SPRD_DMA_SRC_CHN1)
-+			mask_val = SPRD_DMA_GLB_SRC_INT | SPRD_DMA_GLB_TRG_MASK |
-+				   SPRD_DMA_GLB_2STAGE_EN | SPRD_DMA_GLB_SRC_CHN_MASK;
-+		else
-+			mask_val = SPRD_DMA_GLB_DEST_INT | SPRD_DMA_GLB_2STAGE_EN |
-+				   SPRD_DMA_GLB_DEST_CHN_MASK;
-+	}
-+	sprd_dma_glb_update(sdev, grp_offset, mask_val, val);
-+}
- 
--	default:
-+static int sprd_dma_2stage_config(struct sprd_dma_chn *schan, u32 config_type)
-+{
-+	struct sprd_dma_dev *sdev = to_sprd_dma_dev(&schan->vc.chan);
-+
-+	if (schan->chn_mode == SPRD_DMA_SRC_CHN0 ||
-+	    schan->chn_mode == SPRD_DMA_DST_CHN0)
-+		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP1);
-+	else if (schan->chn_mode == SPRD_DMA_SRC_CHN1 ||
-+		 schan->chn_mode == SPRD_DMA_DST_CHN1)
-+		sprd_dma_2stage_write(schan, config_type, SPRD_DMA_GLB_2STAGE_GRP2);
-+	else {
- 		dev_err(sdev->dma_dev.dev, "invalid channel mode setting %d\n",
- 			schan->chn_mode);
- 		return -EINVAL;
-@@ -545,7 +557,7 @@ static void sprd_dma_start(struct sprd_dma_chn *schan)
- 	 * Set 2-stage configuration if the channel starts one 2-stage
- 	 * transfer.
- 	 */
--	if (schan->chn_mode && sprd_dma_set_2stage_config(schan))
-+	if (schan->chn_mode && sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_SET))
- 		return;
- 
- 	/*
-@@ -569,6 +581,12 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
- 	sprd_dma_set_pending(schan, false);
- 	sprd_dma_unset_uid(schan);
- 	sprd_dma_clear_int(schan);
-+	/*
-+	 * If 2-stage transfer is used, the configuration must be clear
-+	 * when release DMA channel.
-+	 */
-+	if (schan->chn_mode)
-+		sprd_dma_2stage_config(schan, SPRD_DMA_2STAGE_CLEAR);
- 	schan->cur_desc = NULL;
- }
- 
-@@ -757,7 +775,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
- 	phys_addr_t llist_ptr;
- 
- 	if (dir == DMA_MEM_TO_DEV) {
--		src_step = sprd_dma_get_step(slave_cfg->src_addr_width);
-+		src_step = slave_cfg->src_port_window_size ?
-+			   slave_cfg->src_port_window_size :
-+			   sprd_dma_get_step(slave_cfg->src_addr_width);
- 		if (src_step < 0) {
- 			dev_err(sdev->dma_dev.dev, "invalid source step\n");
- 			return src_step;
-@@ -773,7 +793,9 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
- 		else
- 			dst_step = SPRD_DMA_NONE_STEP;
- 	} else {
--		dst_step = sprd_dma_get_step(slave_cfg->dst_addr_width);
-+		dst_step = slave_cfg->dst_port_window_size ?
-+			   slave_cfg->dst_port_window_size :
-+			   sprd_dma_get_step(slave_cfg->dst_addr_width);
- 		if (dst_step < 0) {
- 			dev_err(sdev->dma_dev.dev, "invalid destination step\n");
- 			return dst_step;
--- 
-2.17.1
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 857d76694517..44af69ce1301 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4674,7 +4674,7 @@ static int check_stack_write_fixed_off(struct bpf_ver=
+ifier_env *env,
+                   insn->imm !=3D 0 && env->bpf_capable) {
+                struct bpf_reg_state fake_reg =3D {};
+=20
+-               __mark_reg_known(&fake_reg, (u32)insn->imm);
++               __mark_reg_known(&fake_reg, insn->imm);
+                fake_reg.type =3D SCALAR_VALUE;
+                save_register_state(state, spi, &fake_reg, size);
+        } else if (reg && is_spillable_regtype(reg->type)) {
