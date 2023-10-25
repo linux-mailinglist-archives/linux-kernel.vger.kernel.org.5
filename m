@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B247D7682
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01577D7684
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjJYVUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        id S229583AbjJYVUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJYVU3 (ORCPT
+        with ESMTP id S230286AbjJYVUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:20:29 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A1D132
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6cd09663b1cso106988a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698268827; x=1698873627; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x4R+fBPz/tYoWNwPb9Pp7jc9YbV1QMHyx6psPQvV2NA=;
-        b=mr158P156/Z9KJDv08VPhWe22lAiExxKdjEjGw09Oy9Ryx3vnwevfoAsM1mb/Eep5Z
-         GdhWMxpgRwK1C61JWfoXrYnEjtGNNfBxYjugtXY6CEDo6reTGSbe3q7q99h4W36OqzxX
-         Ojp5L/buBcxj/NcDnssvPD2eRAdxYUZs418j3uWNlUJ8t/tlNZzNosJrAZPyyn1umFOY
-         8nsTj5u7HK5nsYkiepcJiIHAvdWoCjhy5UIAgRVNk6tgIF5uu4sHDByK613UOtd5oG0c
-         VTfNoeDwTpJOUQtXnb/B02IdJJPDItDVlLXBHk1U+5u9dB5hAokXhKLjukBvsigs1h75
-         146w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698268827; x=1698873627;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x4R+fBPz/tYoWNwPb9Pp7jc9YbV1QMHyx6psPQvV2NA=;
-        b=DaSwb8XsOaUtyv2HYPelhBSkIC4U0dV4PIpS3/gCPqvzqBH9Pb2y/ZlvBNOBKRHiKt
-         PTpBc9xNX0wb1tC/PlnuZ4Ft+L4YoVzmDZjBWQJ2T3sxSUtCCuxDCt74ppqWAtjg2CuT
-         Rk2YmZl16fVbd3W8l5i8oyEi9Cs35ogmAJBOTxmcUfQnCG23iKrVmeZ4dfsLTWaZ/LoK
-         /1iUL6j0nLaRzpsyl6dMNw+vjqay1Uk9e9t8P3Qy7V+vHUxxCWyxomvfy2ZbtIlU7aSv
-         6xiSTtT9OM4mw8T5hmtqYQhSGWWMfGwhtycfFPuI5WDnOJQgfcclWIpxYgOvY3wGTVxG
-         EULA==
-X-Gm-Message-State: AOJu0Yy4nohcfx8kvSlZDqlioV1449rCgGcKkNP8Kch7NXDdUx2G48xM
-        de0grOf1IqtF5XQklzF/qpqWdA==
-X-Google-Smtp-Source: AGHT+IGav5/1dQVNAHhyYvy58dHFfkWIu/JtH4MUc2KdaTCN0BgNu4GrGfs3WwaokFiLCk2KDuCXfg==
-X-Received: by 2002:a05:6830:7:b0:6b8:9a3a:ea12 with SMTP id c7-20020a056830000700b006b89a3aea12mr18253103otp.12.1698268827023;
-        Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
-Received: from ghost ([208.116.208.98])
-        by smtp.gmail.com with ESMTPSA id r125-20020a4a4e83000000b0057b38a94f38sm166296ooa.12.2023.10.25.14.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 14:20:26 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 14:20:23 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "Wang, Xiao W" <xiao.w.wang@intel.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        Wed, 25 Oct 2023 17:20:31 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723BA136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:28 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A59612C018E;
+        Thu, 26 Oct 2023 10:20:25 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1698268825;
+        bh=Oyep/E5GiktCQRcG5NVa0QX+QRv8E54K2LOUBcMGVAA=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:Reply-To:From;
+        b=iwE3EDxVkwYgL/2RJUq0c9ZiKUTbmPUzJzibs/oQjiIn2DxGm3p80uVCp+lWFJFuS
+         FGbZh/hbKUyIzs0aVVyAy1LzbF7tnDbummXjkRLAvTPrtknd5bT9aZ6+FNihePEnOH
+         Qc9f6oBy1bQ+zzu/eFrPebe+G2Gx1ZFohOLabG4/vX0BYOSF9UZfZdes+Txwy2ds8N
+         Dg5vWu5mDCOcZBeR9cAxQ1G6jdR1MG0xdFrNeZ8NvY+0htVQqWTm+fvgeYxZLJVz3l
+         TlbSXz8f7RS73oWvtnTX8btgpZoatYZAWblTzCIlNFSuaMNcugmSK5A9IYUdsN9kcR
+         38oie+5/pdmeQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B653986990000>; Thu, 26 Oct 2023 10:20:25 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 26 Oct 2023 10:20:25 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.039; Thu, 26 Oct 2023 10:20:25 +1300
+From:   Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>
+To:     Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v7 2/4] riscv: Checksum header
-Message-ID: <ZTmGl36A3X1UtnNu@ghost>
-References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
- <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
- <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
- <ZTl8gauEst2NGrw6@ghost>
- <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
- <ZTmEkYn1NcUvL58n@ghost>
- <571211a1-470a-43da-a603-fd12a640b7a8@app.fastmail.com>
+        "andi.shyti@kernel.org" <andi.shyti@kernel.org>
+Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
+Thread-Topic: [PATCH] i2c:octeon:Add block-mode r/w
+Thread-Index: AQHZr5q3r2c2MLptDkmOgF4YLLXmVq/KZ7iAgCKcq4CAG5lIAIACRR2AgAC6nQCAK37rAIAjvLCA
+Date:   Wed, 25 Oct 2023 21:20:25 +0000
+Message-ID: <c4ad50cea20cb083a35eefc91d12c32c4849d7dd.camel@alliedtelesis.co.nz>
+References: <20230903123446.vjgpplnogejbzneb@zenone.zhora.eu>
+         <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
+         <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
+         <9882daa4945914886b21642837816c2d99c027ac.camel@alliedtelesis.co.nz>
+In-Reply-To: <9882daa4945914886b21642837816c2d99c027ac.camel@alliedtelesis.co.nz>
+Reply-To: "20230912011633.2401616-1-aryan.srivastava@alliedtelesis.co.nz" 
+          <20230912011633.2401616-1-aryan.srivastava@alliedtelesis.co.nz>
+Accept-Language: en-US, en-NZ
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.26]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3D289340F6978F4FB3C953BC3F7843E7@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <571211a1-470a-43da-a603-fd12a640b7a8@app.fastmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=JMFsQdWQCw4A:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=W1-Ysb4atzn0RGZzD8UA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 11:18:40PM +0200, Arnd Bergmann wrote:
-> On Wed, Oct 25, 2023, at 23:11, Charlie Jenkins wrote:
-> >
-> > Thank you for pointing that out, I had not realized that macro existed.
-> > Since riscv keeps NET_IP_ALIGN at 0 it should be expected that
-> > ip_fast_csum is only called with 32-bit aligned addresses. I will update
-> > the comment and refer to that macro. riscv supports misaligned accesses
-> > but there are no guarantees of speed.
-> 
-> Just to clarify for your comment: riscv gets the default value of '2',
-> which is the one that makes the header aligned.
-> 
->       Arnd
-
-Oops, typo. I meant to write 2.
-
-- Charlie
-
+SGkgQW5kaSwNCg0KRGlkIHlvdSBoYXZlIGFueSBtb3JlIGNvbW1lbnRzIG9uIG15IHBhdGNoPw0K
+DQpUaGFuayB5b3UsDQpBcnlhbi4NCg==
