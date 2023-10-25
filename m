@@ -2,186 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AA17D718C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4CA7D7191
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbjJYQQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        id S233850AbjJYQSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjJYQQn (ORCPT
+        with ESMTP id S229655AbjJYQSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:16:43 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A3C123;
-        Wed, 25 Oct 2023 09:16:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698250597; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=gLCa3+5gsMBsLqkGJnPgYTo9DQhiS7UtiJkO2w3onvNgyUgu3c+UJZQ3WpkkqmFgio
-    +Ct7THBgNSn3VDUuUpcVeneLcWyhb+DmA8n/s+Ay/MVc4WkK5zHCczdfdiX5dd2A7EiP
-    XBpQgv0+4YgqIdHNn/7LSgZ3EU2Ffx25IPwgRAhSS9Gf3i5C1fYxiOTpKWuXuJoLm3Xd
-    0OiajtKpow2ysGTWHJzGqMqrOOj68JHrk30al6dAsT1fhySbcqV8beUvjX/iLHoQbxg4
-    0zktsFkusnzeGNJ0hpSpU6YRvBXvpWpHyiWcTL0ByIPljwLpY6k0Tz8OXYbqjTV7F/ac
-    9+VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698250597;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
-    b=oUTBczkl/Z7j569z4b/Z0RHpvRxywVU19DkVeadQv7SUhAjCYIzcEDztpPpqx619rj
-    yJAPo4V1jNVgAxI2dYGR5wKMJx18hVOhQ9nNLvx/ebS8sB5JTYYwhGHsemaFXKJYhPKk
-    qdnP/gmh8fmV14DjMN3wxGAJWFee15KFyk3rI2XqwXVL0sZaI4tCImU0NXFstGj3RvdD
-    gSmEADSfpAagbNt+7hoOTI98IIs3mVyLYndP+XNTrGKI/1201AMGiJo58CNUI7aveXLq
-    Hc4kmTwONS6a9GjShx7T9trWf/AYVeDSVn+rUV2qCDp4sSWcX1KaGD3ZocT3s+RWqZvl
-    RjOg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698250597;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
-    b=ni1H2Tg09k9Yx2+vqmEr50MShI56zElzEEX4DfMGrezSaDxXlHpj25BYnJIJsd4yE7
-    4ga3lJ6nIEdJS4dPlPT0Hgs/s0ODvGie2pk+ASEkX937nlFva8nQXrsAwm7jEqmyyBJL
-    kRZZasD8X5oCIe+hcBfRW/3Xi4VoAtI6WEVfUBEKK7mIm4CMSdizoueO7Y9wmzuSRkmi
-    xGLGT13I4qIHtpNVtVMBPhIXVCJzHcDOiLWQIMDn4AxAndeG99cssnrtj6iWPkeRc1ga
-    353YrVKMbtoPXOAaZTOZ/DSfFcq1qYybF3Zl8YDZkJai/UUO615QWl42I+gxtQehESBL
-    DUsA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698250597;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
-    b=FYXRoN4r3jY0yJQhpSLkzm7eQDw7/04cE0FHFwuJBobq+KjWBXissAbCSoLxt5ipbg
-    fmvq8AEAo4lGvomcXvDQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z2L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id Lbb8e2z9PGGb0iQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 25 Oct 2023 18:16:37 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 18:16:23 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
-Message-ID: <ZTk_M0JFdAg7FR7E@gerhold.net>
-References: <cover.1697710527.git.viresh.kumar@linaro.org>
- <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
- <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
- <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
- <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
- <ZTkciw5AwufxQYnB@gerhold.net>
- <20231025152431.bhdv772dwbufocck@vireshk-i7>
+        Wed, 25 Oct 2023 12:18:36 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34315123
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:18:34 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cac20789e8so9722795ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:18:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1698250713; x=1698855513; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=arsy052jeDvZ80rgUaVwXGHmFjPuyeZ++dpm6EdQU54=;
+        b=DWRvHHtb8RznXxlCuSaGMxuvPwz9yE7vgXHOdyDTVOJCiCD0rER18psMq0gAkHkPoF
+         e4E3CCWOYBu/cS9YZzrJ0avkb3W1VlOhwmTFaBhLF7lXwfMWYs+SeeGjefQe7BtvMd6J
+         dDpjw5hhgzE0KjHstkylhZUImFnzPDniMFyc0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698250713; x=1698855513;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=arsy052jeDvZ80rgUaVwXGHmFjPuyeZ++dpm6EdQU54=;
+        b=G1IX+D3iXz1/MqJy0ZyVOPyVQIwwM9P2izTazXj2zjVSl2qCoHNF8xThG/LZ1j4uSb
+         aWCByjLD5Td9Y0QxAYaNgRwDrDJO8m2D49K2i6+0uaDWADdeFSRqgjPkh/d9Xmn5wKBg
+         8Fe8MoFkffkOdUyAxLpzFqB5TmuOQishCwjd+B3aUnm9r8fKSJRMTY4yc5yjhrZ5dZGz
+         leEdI9cUKxFsCvfsED5pc4AcMFJWubrzp+uOEPpYM8D/X96d0IGtZYYG9Zgnjzd8rs+z
+         piTH6Y5W6q0RqIyZk3LFkWY1OHemErB0UILApb1JfPAIpkfAU73v8U5nJ47c2dejSWf8
+         PMCA==
+X-Gm-Message-State: AOJu0Yy7nQuJ5zae/9RJInq/MOxE1D1QJrJgLCVnAGEr/evHeuE2Hlg8
+        1gytWCcLs2uFa+uqrxFZ+jltPeGcNQsHS+sjH3E=
+X-Google-Smtp-Source: AGHT+IEHz2zX5L1X5ZAHX0Ckn5ujEv6EKrMfDsgQGnC0pIkIrr9N+ffoFA2gPE9N1Xa0GMZC2U4X2g==
+X-Received: by 2002:a17:903:2348:b0:1bb:9e6e:a9f3 with SMTP id c8-20020a170903234800b001bb9e6ea9f3mr15207916plh.4.1698250713622;
+        Wed, 25 Oct 2023 09:18:33 -0700 (PDT)
+Received: from [172.20.1.11] ([12.222.71.83])
+        by smtp.gmail.com with ESMTPSA id b5-20020a170903228500b001c9d968563csm9387668plh.79.2023.10.25.09.18.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 09:18:33 -0700 (PDT)
+Message-ID: <20dbb743-9cc0-4405-babd-024e64a0b673@linuxfoundation.org>
+Date:   Wed, 25 Oct 2023 10:18:31 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025152431.bhdv772dwbufocck@vireshk-i7>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cpupower: fix reference to nonexistent document
+To:     Vegard Nossum <vegard.nossum@oracle.com>,
+        Thomas Renninger <trenn@suse.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231022185446.919363-1-vegard.nossum@oracle.com>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231022185446.919363-1-vegard.nossum@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:54:31PM +0530, Viresh Kumar wrote:
-> On 25-10-23, 15:47, Stephan Gerhold wrote:
-> > FWIW I'm hitting this WARNing when trying to set up the parent domain
-> > setup for CPR->RPMPD(MX) on MSM8916 that I discussed with Uffe recently
-> > [1]. I know, me and all my weird OPP setups. :'D
-> > 
-> > Basically, I have cpufreq voting for performance states of the CPR genpd
-> > (via required-opps). CPR is supposed to have <&rpmpd MSM8916_VDDMX_AO>
-> > as parent genpd and translates to the parent performance state using the
-> > "required-opps" in the *CPR* OPP table:
-> > 
-> > 	cpr: power-controller@b018000 {
-> > 		compatible = "qcom,msm8916-cpr", "qcom,cpr";
-> > 		reg = <0x0b018000 0x1000>;
-> > 		/* ... */
-> > 		#power-domain-cells = <0>;
-> > 		operating-points-v2 = <&cpr_opp_table>;
-> > 		/* Supposed to be parent domain, not consumer */
-> > 		power-domains = <&rpmpd MSM8916_VDDMX_AO>;
-> > 
-> > 		cpr_opp_table: opp-table {
-> > 			compatible = "operating-points-v2-qcom-level";
-> > 
-> > 			cpr_opp1: opp1 {
-> > 				opp-level = <1>;
-> > 				qcom,opp-fuse-level = <1>;
-> > 				required-opps = <&rpmpd_opp_svs_soc>;
-> > 			};
-> > 			cpr_opp2: opp2 {
-> > 				opp-level = <2>;
-> > 				qcom,opp-fuse-level = <2>;
-> > 				required-opps = <&rpmpd_opp_nom>;
-> > 			};
-> > 			cpr_opp3: opp3 {
-> > 				opp-level = <3>;
-> > 				qcom,opp-fuse-level = <3>;
-> > 				required-opps = <&rpmpd_opp_super_turbo>;
-> > 			};
-> > 		};
-> > 	};
+On 10/22/23 12:54, Vegard Nossum wrote:
+> This file was renamed from .txt to .rst and left a dangling reference.
+> Fix it.
 > 
-> I have forgotten a bit about this usecase. How exactly does the
-> configurations work currently for this ? I mean genpd core must be
-> setting the vote finally for only one of them or something else ?
-> 
+> Fixes: 151f4e2bdc7a ("docs: power: convert docs to ReST and rename to *.rst")
+> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Arjan van de Ven <arjan@linux.intel.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Len Brown <len.brown@intel.com>
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> ---
 
-I'm not sure if I understand your question correctly. Basically, setting
-<&rpmpd MSM8916_VDDMX_AO> as "parent genpd" of <&cpr> is supposed to
-describe that there is a direct relationship between the performance
-states of CPR and VDDMX. When changing the CPR performance state, VDDMX
-should also be adjusted accordingly.
+Thank you. Applied to
+git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git cpupower
+branch for Linux 6.7-rc1.
 
-This is implemented in the genpd core in _genpd_set_performance_state().
-It loops over the parent genpds, and re-evaluates the performance states
-of each of them. Translation happens using genpd_xlate_performance_state()
-which is just a direct call to dev_pm_opp_xlate_performance_state().
-This will look up the required-opps from the OPP table above. However,
-the genpd core calls ->set_performance_state() on the parent genpd
-directly, so dev_pm_opp_set_opp() isn't involved in this case.
-
-Overall the call sequence for a CPUfreq switch will look something like:
-
- - cpu0: dev_pm_opp_set_rate(998.4 MHz)
-  - cpu0: _set_required_opps(opp-998400000)
-   - genpd:1:cpu0: dev_pm_opp_set_opp(&cpr_opp3)
-    - genpd:1:cpu0: _set_opp_level(&cpr_opp3)
-     - cpr: _genpd_set_performance_state(3)
-
-      # genpd: translate & adjust parent performance states
-      - cpr: genpd_xlate_performance_state(parent=VDDMX_AO)
-             => &rpmpd_opp_super_turbo = 6
-       - VDDMX_AO: _genpd_set_performance_state(6)
-        - rpmpd: ->set_performance_state(VDDMX_AO, 6)
-
-      # genpd: change actual performance state
-      - cpr: ->set_performance_state(cpr, 3)
-
-Before the discussion with Uffe I did not describe this relationship
-between CPR<->VDDMX as parent-child, I just had them as two separate
-power domains in the CPU OPP table. That worked fine too but Uffe
-suggested the parent-child representation might be better.
-   
-Does that help or were you looking for something else? :D
-
-Thanks,
-Stephan
+thanks,
+-- Shuah
