@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C7E7D7189
+	by mail.lfdr.de (Postfix) with ESMTP id CA2917D718A
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjJYQQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S234055AbjJYQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjJYQQM (ORCPT
+        with ESMTP id S233452AbjJYQQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:16:12 -0400
+        Wed, 25 Oct 2023 12:16:14 -0400
 Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF63E5;
-        Wed, 25 Oct 2023 09:16:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2EC12F;
+        Wed, 25 Oct 2023 09:16:11 -0700 (PDT)
 Received: from [192.168.1.103] (31.173.84.85) by msexch01.omp.ru (10.188.4.12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Wed, 25 Oct
- 2023 19:16:01 +0300
+ 2023 19:16:06 +0300
 Subject: Re: [PATCH v5] usb: Reduce 'set_address' command timeout with a new
  quirk
 From:   Sergey Shtylyov <s.shtylyov@omp.ru>
@@ -31,8 +31,8 @@ References: <de2ed64a-363a-464c-95be-584ce1a7a4ad@rowland.harvard.edu>
  <20231025141316.117514-1-hgajjar@de.adit-jv.com>
  <41e22c23-07b3-5fd9-5fb1-935ab42fa83e@omp.ru>
 Organization: Open Mobile Platform
-Message-ID: <671fe78d-413c-4bfb-84a2-560c41864619@omp.ru>
-Date:   Wed, 25 Oct 2023 19:16:01 +0300
+Message-ID: <032f236a-e212-fa28-ecf4-b5b585ba7ac2@omp.ru>
+Date:   Wed, 25 Oct 2023 19:16:05 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
@@ -60,13 +60,16 @@ X-KSE-AntiSpam-Info: {SMTP from is not routable}
 X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.85 in (user)
  b.barracudacentral.org}
 X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.85 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2;31.173.84.85:7.1.2
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;31.173.84.85:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
 X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.85
 X-KSE-AntiSpam-Info: {DNS response errors}
 X-KSE-AntiSpam-Info: Rate: 59
 X-KSE-AntiSpam-Info: Status: not_detected
 X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
  smtp.mailfrom=omp.ru;dkim=none
 X-KSE-Antiphishing-Info: Clean
 X-KSE-Antiphishing-ScanningType: Heuristic
