@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424F17D6C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DA07D6C82
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbjJYM53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        id S234954AbjJYM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYM52 (ORCPT
+        with ESMTP id S234947AbjJYM63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:57:28 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A2C8F;
-        Wed, 25 Oct 2023 05:57:25 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id EC8D0401B5;
-        Wed, 25 Oct 2023 17:57:17 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698238638; bh=JzCgUGweZjRuxxNU1g3eIRDVzT4P0AzRXtHxoGPZHgY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BJxvSeoPB8gqOmJj4wyYR8fTLT5fJgrw2rumFOHlm2mWm1D9LBquF40UE68tag0e0
-         gE13ZzabJCcd75kUGBBR5qhITZha5c4Hq6RlCJTRKGo7nqWxUQqSxHMLTFkpZZsieK
-         qIM+RGw7wGqCwAzCNecDRCeU+Iq8HBmN/0WmoZCIcMDoCnD1DIgdkCZyA1ofEX5G8l
-         1Lu37MoYZnlpeYiXwZ6swUTQUL3rpx4RGT54u19+40Fl6KpdIf4AzqC1aZNj05T6lE
-         jftmKGyBPlBN36GUnxri26i5VWxxQ8L1ScmsPhmEpmLX0ehuPzxMgpVlV7LfKcO/zc
-         qTz8Kf1+buwug==
+        Wed, 25 Oct 2023 08:58:29 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B10B185
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:58:27 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40837ebba42so41245065e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698238705; x=1698843505; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o3YuyVEdgZZMmRRL1MGrlm9rqrd903CfEJKn3RLe0cI=;
+        b=MSNhn7Qpjv60BuUvuzfKHE+YDwQ+/6hLLDhL+WGCiNJPdtac3ahw120xL9ScsQrjCm
+         UtkZ0GfPO+USxd+RNJeEjaJ3cATDpKzAHzMUbiU3VaFbMGXsE3ppD+z0kZNTapat1QWE
+         fP54zuA4ab52C6Xq/pvb1Ou/OzNrEqcSKMMQGicugLEgvsGrPTzjMx7fJ3dxBuva53uK
+         cHMMjMlBBX5f1cAvG4LlXD7vgXiIx61c13ONdsyHGmAK1TgSGnTv/+RsiIl7SjkL7b2u
+         vQbUXGjuu2Y5RCeK/xTCX43ASo/BVeZLeZCzCg7djqFmWhCSbiZxkRmIw7HCY7xLg6AV
+         pA7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698238705; x=1698843505;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o3YuyVEdgZZMmRRL1MGrlm9rqrd903CfEJKn3RLe0cI=;
+        b=dNQ+qsJtL9xFGWvUGODZw5ZYEn8d2BQz12puCbyX5E+ev3Y9/CpXtRHc40e208tGgg
+         bPCXqhQH/fZdKWwLmx+TlFsK1/uiuwz91ZikvNT2vEQn3E4EmINxwBnSwVcBngdE/N+u
+         +fdgN1bKbWlsB0mQTBlhzmz35O+V79/PNqO4YW12j72Yro3efUA9+7wux6uI61syQodD
+         VN4Ro7IRygMt6HivH4vUirhHUnPoYu+WITV1euLsKc+z5nUD2bfL+43IBa+mEEH4J22/
+         zkgOni4eO5Fy0nnsyWYzwpBzp9z+X4XWUngTy4ea6UgDvbeg4KIlRHHpm4DoN/EARkdF
+         EHHQ==
+X-Gm-Message-State: AOJu0Yx7hB7uLW567p4uFZX3fbtJ3iJ8D0NQ4gostfyK8at2SUpgrwJa
+        Hs5893Y5zwJ2W8gzLN/GoDXkvtLKyxfgn3UsbIo=
+X-Google-Smtp-Source: AGHT+IEfuEPazASgnCKxv7IwMhAjfOdzHBm51oF9N5cDOtNHdSG3LhrgnJUobDy0ZoJFRDw6CgOWOQ==
+X-Received: by 2002:a05:600c:502a:b0:406:545a:f8fe with SMTP id n42-20020a05600c502a00b00406545af8femr12935805wmr.29.1698238705565;
+        Wed, 25 Oct 2023 05:58:25 -0700 (PDT)
+Received: from [192.168.69.115] (ghy59-h01-176-171-219-76.dsl.sta.abo.bbox.fr. [176.171.219.76])
+        by smtp.gmail.com with ESMTPSA id fc11-20020a05600c524b00b004064cd71aa8sm14782102wmb.34.2023.10.25.05.58.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 05:58:25 -0700 (PDT)
+Message-ID: <513bc341-25b8-5a57-d760-861a3e88a4a1@linaro.org>
+Date:   Wed, 25 Oct 2023 14:58:23 +0200
 MIME-Version: 1.0
-Date:   Wed, 25 Oct 2023 17:57:17 +0500
-From:   Nikita Travkin <nikita@trvn.ru>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916
- vm-bms and lbc
-In-Reply-To: <20231025122124.GO8909@google.com>
-References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
- <20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru>
- <169808265626.861066.13083505051202182067.robh@kernel.org>
- <53474576e3c860a1bb93f811cfe3964a@trvn.ru>
- <20231025122124.GO8909@google.com>
-Message-ID: <eaa4a6e2d8539a0a772286f7f13ccc2c@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] MAINTAINERS: Add myself as maintainer of the Ralink
+ architecture
+Content-Language: en-US
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-mips@vger.kernel.org
+Cc:     john@phrozen.org, tsbogend@alpha.franken.de,
+        linux-kernel@vger.kernel.org
+References: <20231022090633.792831-1-sergio.paracuellos@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20231022090633.792831-1-sergio.paracuellos@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones писал(а) 25.10.2023 17:21:
-> On Tue, 24 Oct 2023, Nikita Travkin wrote:
+On 22/10/23 11:06, Sergio Paracuellos wrote:
+> Its been a while since I am making contributions to this architecture.
+> Hence add myself as maintainer.
 > 
->> Rob Herring писал(а) 23.10.2023 22:40:
->> > On Mon, 23 Oct 2023 11:20:32 +0500, Nikita Travkin wrote:
->> >> PM8916 (and probably some other similar pmics) have hardware blocks for
->> >> battery monitoring and charging. Add patterns for respecive nodes so the
->> >> devicetree for those blocks can be validated properly.
->> >>
->> >> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> >> ---
->> >>  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
->> >>  1 file changed, 6 insertions(+)
->> >>
->> >
->> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
->> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
->> >
->> > yamllint warnings/errors:
->> >
->> > dtschema/dtc warnings/errors:
->> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml:
->> > Error in referenced schema matching $id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml
->> >
->> > doc reference errors (make refcheckdocs):
->> >
->> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru
->> >
->> > The base for the series is generally the latest rc1. A different dependency
->> > should be noted in *this* patch.
->> >
->>
->> Somehow I missed the memo and thought it tracks -next...
->>
->> This patch depends on 7f590e3831 and 5cee843d56 in linux-next.git
->> They were applied in [1].
->>
->> I'm wondering if the bot just bails out when the "depend" is present
->> or there is some more sophisticated logic to suggest the base to it?
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+> Hi John, if you are not ok with this please let me know. In other case
+> please ack this patch. I can add myself as Reviewer if you prefer to
+> maintain alone this.
 > 
-> So is this good to go, or not?
+> Thanks in advance for your time!
+> 
+> Best regards,
+>      Sergio Paracuellos
+> 
+>   MAINTAINERS | 1 +
+>   1 file changed, 1 insertion(+)
 
-IMO this patch should be good, it passes the check on today's linux-next
-on my end.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-The only concern might be that if someone runs dt_binding_check on
-for-mfd-next, it would skip that file with an error since there is no
-dependency yet.
-
-If this is critical to you, I was going to respin this after the -rc1,
-but if you can pick the schema now, I can respin the remainder earlier.
-
-Nikita
