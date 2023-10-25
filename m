@@ -2,711 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1C47D671D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509067D6755
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbjJYJmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S234359AbjJYJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjJYJm3 (ORCPT
+        with ESMTP id S234735AbjJYJo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:42:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4D4A1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:42:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC4BDC433C8;
-        Wed, 25 Oct 2023 09:42:22 +0000 (UTC)
-Date:   Wed, 25 Oct 2023 05:42:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
-Message-ID: <20231025054219.1acaa3dd@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 25 Oct 2023 05:44:58 -0400
+Received: from mail-edgeF24.fraunhofer.de (mail-edgef24.fraunhofer.de [IPv6:2a03:db80:3004:d210::25:24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A4818C;
+        Wed, 25 Oct 2023 02:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=aisec.fraunhofer.de; i=@aisec.fraunhofer.de;
+  q=dns/txt; s=emailbd1; t=1698227060; x=1729763060;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=gFNlG21hG/sxMF1KBM1RHVr2MMnDPrrmCyHPmjqTDOU=;
+  b=ETN9AftI2VH5xZ+m0AI1/Qn1qe449Jt8fX1CnOfLnArXAeDMlbzAD5J3
+   UU9ROMInm6hzQvJiN3PKC4RfmWVvIUTUFwn4PSB0xE9YtnMKJaLNnYk/N
+   w/NIVVhDWh70dtHAgY8ipn3mJXWv6OyMw84H0gr0aKikyf8TX4ZrRgADR
+   9fRzr/5xZlJ2Uy2MRcoPe9vB9I/q/p/DnplFSGGyaAkX6dVfNcRXo4jWf
+   xGtQLmd5Vi0DSuUTl4mPOnJcdA0aiBqA2TT3v/qXOq1BE5l1yhDHO4flY
+   r4yOr3zTLsS0Y9YF7XLCbiegVAB9CVUPflPbBLWltTxaI4laOQfK8YJ55
+   Q==;
+X-CSE-ConnectionGUID: FNRhH9OYR72QJYuNmKwI2g==
+X-CSE-MsgGUID: Em72RxrxRKisqQg4dlw01g==
+Authentication-Results: mail-edgeF24.fraunhofer.de; dkim=pass (signature verified) header.i=@fraunhofer.onmicrosoft.com
+X-IPAS-Result: =?us-ascii?q?A2ElAABB4jhl/xwBYJlaHAEBAQEBAQcBARIBAQQEAQFAg?=
+ =?us-ascii?q?TsHAQELAYIQKIJXhFOIHYlBmCaEBCqBLIElA1YPAQEBAQEBAQEBBwEBRAQBA?=
+ =?us-ascii?q?QMEhH8ChxonNAkOAQIBAwEBAQEDAgMBAQEBAQEBAgEBBgEBAQEBAQYGAoEZh?=
+ =?us-ascii?q?S85DYQAgR4BAQEBAQEBAQEBAQEdAjVUAgEDIwQLAQ0BATcBDyUCJgICMiUGA?=
+ =?us-ascii?q?Q0FgiZYgisDMbIYfzOBAYIJAQEGsB8YgSCBHgkJAYEQLgGDW4QuAYQ0gR2EN?=
+ =?us-ascii?q?YJPgUqBBoE3doRYg0aCaIN1hTwHMoIigy8pi36BAUdaFhsDBwNZKhArBwQtI?=
+ =?us-ascii?q?gYJFi0lBlEEFxYkCRMSPgSBZ4FRCoEDPw8OEYJCIgIHNjYZS4JbCRUMNQRJd?=
+ =?us-ascii?q?hAqBBQXgRFuBRoVHjcREgUSDQMIdh0CESM8AwUDBDQKFQ0LIQVXA0QGSgsDA?=
+ =?us-ascii?q?hoFAwMEgTYFDR4CEC0nAwMZTQIQFAM7AwMGAwsxAzBXRwxZA2wfGhwJPA8MH?=
+ =?us-ascii?q?wIbHg0yAwkDBwUsHUADCxgNSBEsNQYOG0QBcwedTYJtATZECQuCBVIclhIBr?=
+ =?us-ascii?q?nkHgjGBXqEJGgQvlyuSTy6HRpBIIKI+QoUIAgQCBAUCDgiBY4IWMz5PgmdSG?=
+ =?us-ascii?q?Q+OIAwWg1aPe3QCOQIHAQoBAQMJgjmJEgEB?=
+IronPort-PHdr: A9a23:eEZLuhJkiVNlqM5m39mcuChnWUAX0o4cQyYLv8N0w7sbaL+quo/iN
+ RaCu6YlhwrTUIHS+/9IzPDbt6nwVGBThPTJvCUMapVRUR8Ch8gM2QsmBc+OE0rgK/D2KSc9G
+ ZcKTwp+8nW2OlRSApy7aUfbv3uy6jAfAFD4Mw90Lf7yAYnck4G80OXhnv+bY1Bmnj24M597M
+ BjklhjbtMQdndlHJ70qwxTE51pkKc9Rw39lI07Wowfk65WV3btOthpdoekg8MgSYeDfROEVX
+ bdYBTIpPiUO6cvnuAPqYSCP63AfAQB02hBIVgPkyy3fecngmXTFuudWxHGTHtTJZJwGUA+Qx
+ IowRj3V0AM7OhozqFDp0pwl38c56Bj0qzpC86feXtilBOR6V/33Jv8HHjsefvhcCnRGRYm/f
+ 5IjIeMFHLwDlamglUdU8jaROQutI/js1DR6gVnEmqo076N+Eg7sxTQlEYohl3n3po6yG7wvD
+ v6N/rDYwxngQON//Rnns9fVdk96rsydf49tLePA6GAWLyXVhViAl4XcExOW9+crqlKD3/V4C
+ Pv1lFY7lTohnB6k2uIAio6Zrb0Ww1Lc9GIi+942YuS7HR0zcZulCpxWryaAK85sT9g/R309o
+ C8h0e5uUf+TeSELzNEqyxHSRabbNYaS6w/lVOGfLC0+iH82ML68hhPn6UG70aW8Tci71l9Ws
+ zBI2sfBrHED1hHfq4CHR/Jx813n2GOn2Rra9+dEJk45j+zcLZsgyaQ3jZ0drQLIGSqepQ==
+X-Talos-CUID: 9a23:1E5CkmB2LER7pKT6EwdBzk40S+cUSCKH9VXhPmm9KnlIErLAHA==
+X-Talos-MUID: 9a23:oRpsBwbCKfluSuBTmjqz3gtyLtdSwKW1EXkCzZkCpJHdOnkl
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.03,250,1694728800"; 
+   d="scan'208";a="62757490"
+Received: from mail-mtaka28.fraunhofer.de ([153.96.1.28])
+  by mail-edgeF24.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:43:10 +0200
+IronPort-SDR: 6538e32d_qqFUkNDfE+GaAo77s5JplLIbgmHxK1JyQ2+Knb8aIqCaohb
+ 4QUEFxf5fUoJMNQFxPw7VF3SLuqrO3ByhgM+XGA==
+X-IPAS-Result: =?us-ascii?q?A0A8AAC94Thl/3+zYZlaHAEBAQEBAQcBARIBAQQEAQFAC?=
+ =?us-ascii?q?RyBFgcBAQsBgWYqKAeBS4EFhFKDTQEBhE5fhkGCITsBl2qELoEsgSUDVg8BA?=
+ =?us-ascii?q?wEBAQEBBwEBRAQBAYUGAocXAic0CQ4BAgEBAgEBAQEDAgMBAQEBAQEDAQEFA?=
+ =?us-ascii?q?QEBAgEBBgSBChOFaA2GTQIBAxIRBAsBDQEBFCMBDyUCJgICMgceBgENBSKCB?=
+ =?us-ascii?q?FiCKwMxAgEBpTABgUACiyJ/M4EBggkBAQYEBLAXGIEggR4JCQGBEC4Bg1uEL?=
+ =?us-ascii?q?gGENIEdhDWCT4FKgQaBN3aIHoJog3WFPAcygiKDLymLfoEBR1oWGwMHA1kqE?=
+ =?us-ascii?q?CsHBC0iBgkWLSUGUQQXFiQJExI+BIFngVEKgQM/Dw4RgkIiAgc2NhlLglsJF?=
+ =?us-ascii?q?Qw1BEl2ECoEFBeBEW4FGhUeNxESBRINAwh2HQIRIzwDBQMENAoVDQshBVcDR?=
+ =?us-ascii?q?AZKCwMCGgUDAwSBNgUNHgIQLScDAxlNAhAUAzsDAwYDCzEDMFdHDFkDbB8WB?=
+ =?us-ascii?q?BwJPA8MHwIbHg0yAwkDBwUsHUADCxgNSBEsNQYOG0QBcwedTYJtATZECQuCB?=
+ =?us-ascii?q?VIclhIBrnkHgjGBXqEJGgQvlyuSTy6HRpBIIKI+QoUIAgQCBAUCDgEBBoFjP?=
+ =?us-ascii?q?IFZMz5PgmdPAxkPjiAMFoNWj3tBMwI5AgcBCgEBAwmCOYkRAQE?=
+IronPort-PHdr: A9a23:6zXrWBT+0EVSYsnXMXNFXV55E9psovKeAWYlg6HP9ppQJ/3wt523J
+ lfWoO5thQWUA9aT4Kdehu7fo63sHnYN5Z+RvXxRFf4EW0oLk8wLmQwnDsOfT0r9Kf/hdSshG
+ 8peElRi+iLzKh1OFcLzbEHVuCf34yQbBxP/MgR4PKHyHIvThN6wzOe859jYZAAb4Vj1YeZcN
+ hKz/ynYqsREupZoKKs61knsr2BTcutbgEJEd3mUmQrx4Nv1wI97/nZ1mtcMsvBNS777eKJqf
+ fl9N3ELI2s17cvkuFz4QA2D62E1fk4WnxFLUG2npBv6C5zQlRffkbRs83alMcDdUeg9ei2dx
+ otZQSTaowpcORwEqEXrh+h61JNl+EL09Hkdi4SBbKeoBNN0QPrtTc0ebDRrBepMDH0eIr2xM
+ tMISOACLf90gYD5hgFVlzvjNxX2W87A9j1JoWT1w6YI1MITVgbI4Et/HN0kqUzRoo3aE6oxW
+ 7vy47L1kiv7XepG1xvex5jhVj47+q6RWe0rfvfA63QySyrUr3ypkar1ND6F6O00n0iYzulGT
+ Ni3u3E/9hgrvQCz+Px8tK/Cmqc5yleU3hp6yYQtJJrjcxZ4JuenRcgYp2SbLYxwWsQ4XyRyt
+ T0nzqFToZegZ3tiIPUPwhfeb7mCb4Gry0izEuiLKCp+hHVrdaj5ixvhuUSjy+ipTsCvyx4Kt
+ StKlNDQq2oAnwLe8MmJS/Zxvw+h1D+D2hqV67RsL1o9iKzbLJAs2Pg3kJ8Sul7EBSj4hAP9i
+ 6r+Sw==
+IronPort-Data: A9a23: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
+ W/sDX64i4xMNqf/ZYNy0z7xvZJJNA==
+IronPort-HdrOrdr: A9a23:1ECvRKM9OzLtw8BcTvyjsMiBIKoaSvp037By7TEVdfUnSL39qy
+ nOpoVi6faaskdzZJhNo7y90cq7MAjhHPxOkOss1N6ZNWGM0gaVxepZg7cKtgeBJ8SIzI9gPM
+ lbHJSWQ+eAamSSxfyKhjVQPexQueW6zA==
+X-Talos-CUID: 9a23:Xr3eSm59CeGjma3vadss+BA+Ku4mI0Xhl0zrGGaeKGVsD+a2YArF
+X-Talos-MUID: 9a23:7Czu4QTdESZ0R/1hRXTdgDJtKsRK6p2NDWEIvslYgNenEypZbmI=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.03,250,1694728800"; 
+   d="scan'208";a="135077959"
+Received: from 153-97-179-127.vm.c.fraunhofer.de (HELO smtp.exch.fraunhofer.de) ([153.97.179.127])
+  by mail-mtaKA28.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:43:08 +0200
+Received: from XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) by
+ XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27; Wed, 25 Oct 2023 11:43:08 +0200
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (104.47.11.169)
+ by XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27 via Frontend Transport; Wed, 25 Oct 2023 11:43:08 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e2hzgb8r7hZalJF0ZM2bkrYt5zOI2Yeh52VSsO3MiBtOm8Abdht3AAeWtavVWCcro6E0QUsykMYy0HbvogvfsTVvfaXttf5gV43jY36KsPR9iefohkGUC2mldifWnxWwcsJVym0VrzqI1dmEPHatbeuz3M26KdWVpSkqkJSVTkL7+GubtL1Hq1iDwvClKd66clXm9mOOVifEUJrxxDNjhxt4W34wACV6WXFCKBF+QQSoDEvBfu/7NR1eISf1zJTfBADh+6wnR73/S7b9v7ztmr01JFhcmhhSlJHeeunx/5iQbKAvRYcvBUdMkD7sAjgCeTiPEYwiaVSQ0eA2oUUjHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cIOTMO6yC7WdeCt0aKqWADZaSZCE3fJU0LTeLb0YV08=;
+ b=Qpb5n5l+AqRU/0oum+MBrunSDz1eWoTtXIrg5+0o42NyfYCA9VYSEvexjkhsGOlNfOui7hHLvH6uidZXs3eVn/0LtWnxf2IW1PLjTIEaorg4LOTJtk3m04CvYxYJqs/XXKyU5CLZ2IY2elRZMhqReamQ350nGXtqaeKl27XUlqV64MlKh0KjJK5vCleFQcP0vQZj739foVMg7drFAXm2hwVLNI9vSsZwWxZ0YgnsJTgxBxTOzkhKiTS6HtZ7mnAIB876N1IVAxJyQgjZWJq3YhOot0gouvqlFRpbJ3HCVVuvaSFUKvjVtNZgVrJ4HSS+KfcqJ8QfORuDDnbxTi9C5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aisec.fraunhofer.de; dmarc=pass action=none
+ header.from=aisec.fraunhofer.de; dkim=pass header.d=aisec.fraunhofer.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fraunhofer.onmicrosoft.com; s=selector2-fraunhofer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cIOTMO6yC7WdeCt0aKqWADZaSZCE3fJU0LTeLb0YV08=;
+ b=dNUXAbV1XXvlA6B3Du397HVe50o/bkxqDFalI23RH5Zt27EGTjiOskvcZoNZ/ofT/7kgBqPmf0GOeKb3/GsU7vPZqxfDKGxALFr37ul73gUyJUu4AyIAQPNxcexVaQDHkIkNqRpXwp5q2wPtVS8VNctMDho8CWkajpi/3S0k/Qk=
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:50::14)
+ by BE0P281MB0116.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Wed, 25 Oct
+ 2023 09:43:03 +0000
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::7330:78f8:1bf2:2f4d]) by BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::7330:78f8:1bf2:2f4d%5]) with mapi id 15.20.6933.019; Wed, 25 Oct 2023
+ 09:43:03 +0000
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <gyroidos@aisec.fraunhofer.de>,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Subject: [RESEND RFC PATCH v2 10/14] lsm: Add security_sb_alloc_userns() hook
+Date:   Wed, 25 Oct 2023 11:42:20 +0200
+Message-Id: <20231025094224.72858-11-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0420.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d0::17) To BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:50::14)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/GSO.Gnmk=U3cJP=_1fA.1ey"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BEZP281MB2791:EE_|BE0P281MB0116:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce86aa94-ab14-4c5e-f490-08dbd53ec8b5
+X-LD-Processed: f930300c-c97d-4019-be03-add650a171c4,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QbgbIKIngUxtsPJvgT/sCum3eicU7A48hQd8rzkB01YSVWePCPn9urLE6xLhCr+8DwAvftzISqEaQ3ywUOz7iscGXT5WP2+De4wlqlV71djhDgtobVw6myqlPkMYZbh7aAkP3joQXuCB0F5ocb4tyJdKu87qDEIUnd056cT+fjjGRtz6keVpC01roAa2Wxko4AogCHnrS5tOctiNMq5JP/89Dpa+K8sHTNLNPRoOvvv4NCnghvbYCIb7tCc8u9OaD/PxxhCBGDiq2aqo1EAU2iudgKYKDhzAttJRHQTyMB9vU1PtzcZtPKMa2TAu4tvf8+Fv1uqoktkW5EOol4jhoJvYUlBBaVdlrdQK9LLewv6M6BJbOk1ClyKIkrV/JWLHvlXahVeXdZ1/tH0mZ59uP5AOuvcvodbGn+Oqgc0HRMdcG/OnDXQix//9cAJ6XQBIRbIM/KrFGNcGvahrLyQHaDOb9bja1zP5IPMkgJaxaV5qZrlILa8BLyGXl0tp9hkfg2UTq7ySzvd01PNJ/8OVBonSOuxg100v/uNz6X63KS+mch8Iu14OCW1DyxbmrDmvF0gKDroaK3fURtyxn0zVWkdqUO2lMaBBunEzhXZ7WzU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(376002)(39860400002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(66946007)(83380400001)(316002)(38100700002)(6486002)(478600001)(6666004)(54906003)(110136005)(66556008)(66476007)(1076003)(107886003)(52116002)(6506007)(2616005)(6512007)(15650500001)(7416002)(2906002)(86362001)(4326008)(8936002)(82960400001)(8676002)(41300700001)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGoxQnZNVHcxbTIxU1NJY1NtUnpORWQ5ckJsRWxkcEVsTXJXVitHanI0eVNp?=
+ =?utf-8?B?TklvK2gyOGpNNFptclU0OHBHUXhraHYxV1puSmJKbkowWjlhcE9TV0Y4UWJm?=
+ =?utf-8?B?Y0JrSDBZTjVPbjdCeHR4OHpiRFNKUU1TL2FVTUN6UForOHlvYlM5Vkc1dVVG?=
+ =?utf-8?B?S1JYZFIrUFBwak0xK21WN2NBM1JPUDZQMjhucU5BakpQWkFTQVBLWVNwTHpv?=
+ =?utf-8?B?dDFlZG5jK0d1Z3AvNFBlUis1K0xxVmdoUlplVVY3NWNIM280eXBLSmFLL1lB?=
+ =?utf-8?B?aG1KOWdkQTdkSTR5Q3Qxcmdaak5lQml5bmx5SDVUb3R6eERPdHBoUVlWZ1hQ?=
+ =?utf-8?B?YjBDWVVmSk1MRDBSMVJxRlF6c2hneFlBakR3endyelc4dVdJZHdDSEFYVWt5?=
+ =?utf-8?B?U0dPMnhJaEtVYzNrVUp4NGNrTzJJbHVNWlUvRWg1amFmWTV6Y0VGZ1gyb2V1?=
+ =?utf-8?B?RHR5cFZrV3JEbEdnV3ZWQnNPNzBxdTRteEYyWnk3cXRZMitMd2V5R0pMdU91?=
+ =?utf-8?B?eHpDUmFwb0dYa2JjUzZNNEsvYVVrWkxoN0tNOUFhMWwrV3poYlpOOEV3QzI3?=
+ =?utf-8?B?bERQQUUrYzB2Ums2TUlGZ2dNbjg1Z0FJblRQenZHajBmLzlIUWR2RFhPTU1J?=
+ =?utf-8?B?N3o2VEE1TCs2V2syVXNQbUdFajlRbW5OY2NUSFRmNXhlSk5wUW1MWWF2SnRl?=
+ =?utf-8?B?UzRqdnJVOEM5Vm45Q3FvZUZjTkE1dWswWG4xSHV0bHg0dlJEaDN5ZThvbXRE?=
+ =?utf-8?B?dHpkMWwxUVMzYTRCOUVvRU0rQnc0UStjbHprMlpUY2dEWEpwbUhzUFhOSi9w?=
+ =?utf-8?B?bzBacm9zWkZqL0tCakNvejJzcWhvWjVtUXB6dEVFREx6QXFvMllSdjYwTUx5?=
+ =?utf-8?B?UEhQSFMzOWx4dCtDMFVXNXFvejFRMy83WUhEbld5Q2VOYVZHcGR1OHZMVnVx?=
+ =?utf-8?B?TDRoTlVqUHlUVHJKaEpQNjV0d0VEVXcyblZMU3VQRjJpT1JRTytMQ1BMTC9C?=
+ =?utf-8?B?emMzU2FHMkxRYUpLWHFYdUtvMlA1amxGRm1EVm5pNmZXc05Sd05UaS9WdU9q?=
+ =?utf-8?B?MU5CZktZVWFpUy9UelRkVHpVTGhhaG53c3NReHRQTnpoNGtYOXllQ3gyYTFU?=
+ =?utf-8?B?TWZsck1hZFFBZWd3aEJ1ejBmK1RUUUFhWnFXT1dGaFJ1RnhCd051WURKNUts?=
+ =?utf-8?B?QzFpdUNlazhId1FCM09iclVhS2ZyMWpsSHMyeDFNcmo3aEJPZmc3RTBVUkR1?=
+ =?utf-8?B?TXJRUkZFeCs3Q2J0REpGclUvT1V3Zml1dGdhSVBtOUQrVnJBeGlVdnJ1Vmpy?=
+ =?utf-8?B?bDV0blBTQU1RQTJLMXpteHFtbXhyT1JUTm9SdWxKZWdkQlQrNUI3TC8zYU1M?=
+ =?utf-8?B?K001QWt0dEwrR2FRRHREMnlsUGx1Y0Z0T09BcHdFUVc0U1F6ZG1MemFBbmlp?=
+ =?utf-8?B?amJ3YytnSm5Fc1ZXNUhTWm1FeE9zbk9leVVndVNrWUJGaEQ2V0F6VjQ2d3lC?=
+ =?utf-8?B?MmJqQ0M3NkNmOXFTRGFiNVB4ang4VjJiSnNQcHprQnRwTENpTjVvdUVEdXd3?=
+ =?utf-8?B?c05UUEJPc2lWNk9mdUszc1BabkxJVmtJZ1A3NmkycXFUMGhrSVpiM2J3Qmhr?=
+ =?utf-8?B?ZE5YdFRPaVMzZGx5ckdxWnpzdk55WDNhbHFwZlI3SldhdzN4dENtWjR1eklL?=
+ =?utf-8?B?UHM2dUE3TXpsTlVFMDlxK2YzVk9NaFZqU2R4bHB3cCtLaUQ5aFVRY2IzU21i?=
+ =?utf-8?B?aEVwaklpZTJTUUtJenIwS0twVVVXcEtYLzdNRDRhSVNoRDM5ZldmUFlSR04y?=
+ =?utf-8?B?SVUyZHpKVjRqWW9mVzVYa0U0K0pCbXpTYjlFMWltaEttWWFxdlkvbzc5SUs4?=
+ =?utf-8?B?WFhuSDVlVGdHYmhpM1J3V1RscjNmaEkzUUk1dEw3WUlwT0VlOUhBOU5jVngv?=
+ =?utf-8?B?Q2ZVUWgyWXdvVjZnMFlSWEh2Q0xzcnBramMrOXl0SlFjSmNnODJJR1B2Zmt3?=
+ =?utf-8?B?LzI4bDVlS0JjWEZ6Mk43MWpRaC9wdURvOXJ1WnNETFRPTzA5WGFOTlhjelYw?=
+ =?utf-8?B?bTlsbjlPVXFZNlpna2grWWFLN0J3NzZVT09PcExIcm4ySzRyM2FHc29XOXpi?=
+ =?utf-8?B?bXhwYkc3UXFFbkdYcURXdUhIN3gzdm01Qk9tS0JtNVNvc2RpSjN5WW00cm83?=
+ =?utf-8?B?dWkvWGdoUzJhd2QwaHV6SWdPc3ovd1QvS25CVDZDS0Mzdm8zYVhCWEx0Mith?=
+ =?utf-8?Q?yn/+SlXnuLdx8E715HKeKC312uXWCAv5Czigv4Tq1A=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce86aa94-ab14-4c5e-f490-08dbd53ec8b5
+X-MS-Exchange-CrossTenant-AuthSource: BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 09:43:03.6216
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f930300c-c97d-4019-be03-add650a171c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JgeP67re2q74JkCUO30lzjbAs+YaH9mKGtX3aa1EDydjk67ULJNDox/xr3C+mEVtIbzR0v14mz4P5IHzheYMFWb9xw3QkIN/bArfkH1/gJ4+r/cHrfLfBk1yhrOHCDkF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BE0P281MB0116
+X-OriginatorOrg: aisec.fraunhofer.de
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/GSO.Gnmk=U3cJP=_1fA.1ey
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Provide a new lsm hook which may be used to allow access to device
+nodes for super blocks created in unprivileged namespaces if some
+sort of device guard to control access is implemented.
 
-[
- This is basically a resend of this email, but as a separate patch and not
- part of a very long thread.
- https://lore.kernel.org/lkml/20231024214958.22fff0bc@gandalf.local.home/
-]
+By default this will return -EPERM if no lsm implements the hook.
+A first lsm to use this will be the lately converted cgroup_device
+module.
 
-This has very good performance improvements on user space implemented spin
-locks, and I'm sure this can be used for spin locks in VMs too. That will
-come shortly.
-
-I started with Thomas's PREEMPT_AUTO.patch from the rt-devel tree:
-
- https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/PREEMPT_AUTO.patch?h=v6.6-rc6-rt10-patches
-
-So you need to select:
-
-  CONFIG_PREEMPT_AUTO
-
-The below is my proof of concept patch. It still has debugging in it, and
-I'm sure the interface will need to be changed.
-
-There's now a new file:  /sys/kernel/extend_sched
-
-Attached is a program that tests it. It mmaps that file, with:
-
- struct extend_map {
-	unsigned long		flags;
- };
-
- static __thread struct extend_map *extend_map;
-
-That is, there's this structure for every thread. It's assigned with:
-
-	fd = open("/sys/kernel/extend_sched", O_RDWR);
-	extend_map = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-
-I don't actually like this interface, as it wastes a full page for just two
-bits :-p  Perhaps it should be a new system call, where it just locks in
-existing memory from the user application? The requirement is that each
-thread needs its own bits to play with. It should not be shared with other
-threads. It could be, as it will not mess up the kernel, but will mess up
-the application.
-
-Anyway, to tell the kernel to "extend" the time slice if possible because
-it's in a critical section, we have:
-
- static void extend(void)
- {
-	if (!extend_map)
-		return;
-
-	extend_map->flags = 1;
- }
-
-And to say that's it's done:
-
- static void unextend(void)
- {
-	unsigned long prev;
-
-	if (!extend_map)
-		return;
-
-	prev = xchg(&extend_map->flags, 0);
-	if (prev & 2)
-		sched_yield();
- }
-
-So, bit 1 is for user space to tell the kernel "please extend me", and bit
-two is for the kernel to tell user space "OK, I extended you, but call
-sched_yield() when done".
-
-This test program creates 1 + number of CPUs threads, that run in a loop
-for 5 seconds. Each thread will grab a user space spin lock (not a futex,
-but just shared memory). Before grabbing the lock it will call "extend()",
-if it fails to grab the lock, it calls "unextend()" and spins on the lock
-until its free, where it will try again. Then after it gets the lock, it
-will update a counter, and release the lock, calling "unextend()" as well.
-Then it will spin on the counter until it increments again to allow another
-task to get into the critical section.
-
-With the init of the extend_map disabled and it doesn't use the extend
-code, it ends with:
-
- Ran for 3908165 times
- Total wait time: 33.965654
-
-I can give you stdev and all that too, but the above is pretty much the
-same after several runs.
-
-After enabling the extend code, it has:
-
- Ran for 4829340 times
- Total wait time: 32.635407
-
-It was able to get into the critical section almost 1 million times more in
-those 5 seconds! That's a 23% improvement!
-
-The wait time for getting into the critical section also dropped by the
-total of over a second (4% improvement).
-
-I ran a traceeval tool on it (still work in progress, but I can post when
-it's done), and with the following trace, and the writes to trace-marker
-(tracefs_printf)
-
- trace-cmd record -e sched_switch ./extend-sched
-
-It showed that without the extend, each task was preempted while holding
-the lock around 200 times. With the extend, only one task was ever
-preempted while holding the lock, and it only happened once!
-
-Note, I tried replacing the user space spin lock with a futex, and it
-dropped performance down so much with and without the update, that the
-benefit is in the noise.
-
-Below is my patch (with debugging and on top of Thomas's PREEMPT_AUTO.patch):
-
-Attached is the program I tested it with. It uses libtracefs to write to
-the trace_marker file, but if you don't want to build it with libtracefs:
-
-  gcc -o extend-sched extend-sched.c `pkg-config --libs --cflags libtracefs` -lpthread
-
-You can just do:
-
- grep -v tracefs extend-sched.c > extend-sched-notracefs.c
-
-And build that.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
 ---
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 9b13b7d4f1d3..fb540dd0dec0 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -740,6 +740,10 @@ struct kmap_ctrl {
- #endif
- };
+ include/linux/lsm_hook_defs.h |  1 +
+ include/linux/security.h      |  5 +++++
+ security/security.c           | 26 ++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index f4fa01182910..0f734a0a5ebc 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -278,6 +278,7 @@ LSM_HOOK(int, 0, inode_getsecctx, struct inode *inode, void **ctx,
+ LSM_HOOK(int, 0, dev_permission, umode_t mode, dev_t dev, int mask)
+ LSM_HOOK(int, -EPERM, inode_mknod_nscap, struct inode *dir, struct dentry *dentry,
+ 	 umode_t mode, dev_t dev)
++LSM_HOOK(int, -EPERM, sb_alloc_userns, struct super_block *sb)
  
-+struct extend_map {
-+	long				flags;
-+};
-+
- struct task_struct {
- #ifdef CONFIG_THREAD_INFO_IN_TASK
- 	/*
-@@ -802,6 +806,8 @@ struct task_struct {
- 	unsigned int			core_occupation;
- #endif
+ #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+ LSM_HOOK(int, 0, post_notification, const struct cred *w_cred,
+diff --git a/include/linux/security.h b/include/linux/security.h
+index bad6992877f4..0f66be1ed1ed 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -487,6 +487,7 @@ int security_locked_down(enum lockdown_reason what);
+ int security_dev_permission(umode_t mode, dev_t dev, int mask);
+ int security_inode_mknod_nscap(struct inode *dir, struct dentry *dentry,
+ 			       umode_t mode, dev_t dev);
++int security_sb_alloc_userns(struct super_block *sb);
+ #else /* CONFIG_SECURITY */
  
-+	struct extend_map		*extend_map;
-+
- #ifdef CONFIG_CGROUP_SCHED
- 	struct task_group		*sched_task_group;
- #endif
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index c1f706038637..21d0e4d81d33 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -147,17 +147,32 @@ void __weak arch_do_signal_or_restart(struct pt_regs *regs) { }
- static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 					    unsigned long ti_work)
+ static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+@@ -1408,6 +1409,10 @@ static inline int security_inode_mknod_nscap(struct inode *dir,
  {
-+	unsigned long ignore_mask;
+ 	return -EPERM;
+ }
++static inline int security_sb_alloc_userns(struct super_block *sb)
++{
++	return -EPERM;
++}
+ #endif	/* CONFIG_SECURITY */
+ 
+ #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+diff --git a/security/security.c b/security/security.c
+index 7708374b6d7e..9d5d4ec28e62 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -4065,6 +4065,32 @@ int security_inode_mknod_nscap(struct inode *dir, struct dentry *dentry,
+ }
+ EXPORT_SYMBOL(security_inode_mknod_nscap);
+ 
++/**
++ * security_sb_alloc_userns() - Grand access to device nodes on sb in userns
++ *
++ * If device access is provided elsewere, this hook will grand access to device nodes
++ * on the allocated sb for unprivileged user namespaces.
++ *
++ * Return: Returns 0 on success, error on failure.
++ */
++int security_sb_alloc_userns(struct super_block *sb)
++{
++	int thisrc;
++	int rc = LSM_RET_DEFAULT(sb_alloc_userns);
++	struct security_hook_list *hp;
 +
- 	/*
- 	 * Before returning to user space ensure that all pending work
- 	 * items have been completed.
- 	 */
- 	while (ti_work & EXIT_TO_USER_MODE_WORK) {
-+		ignore_mask = 0;
- 
- 		local_irq_enable_exit_to_user(ti_work);
- 
--		if (ti_work & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
-+		if (ti_work & _TIF_NEED_RESCHED) {
- 			schedule();
- 
-+		} else if (ti_work & _TIF_NEED_RESCHED_LAZY) {
-+			if (!current->extend_map ||
-+			    !(current->extend_map->flags & 1)) {
-+				schedule();
-+			} else {
-+				trace_printk("Extend!\n");
-+				/* Allow to leave with NEED_RESCHED_LAZY still set */
-+				ignore_mask |= _TIF_NEED_RESCHED_LAZY;
-+				current->extend_map->flags |= 2;
-+			}
++	hlist_for_each_entry(hp, &security_hook_heads.sb_alloc_userns, list) {
++		thisrc = hp->hook.sb_alloc_userns(sb);
++		if (thisrc != LSM_RET_DEFAULT(sb_alloc_userns)) {
++			rc = thisrc;
++			if (thisrc != 0)
++				break;
 +		}
-+
- 		if (ti_work & _TIF_UPROBE)
- 			uprobe_notify_resume(regs);
- 
-@@ -184,6 +199,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 		tick_nohz_user_enter_prepare();
- 
- 		ti_work = read_thread_flags();
-+		ti_work &= ~ignore_mask;
- 	}
- 
- 	/* Return the latest work state for arch_exit_to_user_mode() */
-diff --git a/kernel/exit.c b/kernel/exit.c
-index edb50b4c9972..ddf89ec9ab62 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -906,6 +906,13 @@ void __noreturn do_exit(long code)
- 	if (tsk->io_context)
- 		exit_io_context(tsk);
- 
-+	if (tsk->extend_map) {
-+		unsigned long addr = (unsigned long)tsk->extend_map;
-+
-+		virt_to_page(addr)->mapping = NULL;
-+		free_page(addr);
 +	}
-+
- 	if (tsk->splice_pipe)
- 		free_pipe_info(tsk->splice_pipe);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 3b6d20dfb9a8..da2214082d25 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1166,6 +1166,8 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- 	tsk->wake_q.next = NULL;
- 	tsk->worker_private = NULL;
- 
-+	tsk->extend_map = NULL;
-+
- 	kcov_task_init(tsk);
- 	kmsan_task_create(tsk);
- 	kmap_local_fork(tsk);
-diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-index 976092b7bd45..297061cfa08d 100644
---- a/kernel/sched/Makefile
-+++ b/kernel/sched/Makefile
-@@ -32,3 +32,4 @@ obj-y += core.o
- obj-y += fair.o
- obj-y += build_policy.o
- obj-y += build_utility.o
-+obj-y += extend.o
-diff --git a/kernel/sched/extend.c b/kernel/sched/extend.c
-new file mode 100644
-index 000000000000..a632e1a8f57b
---- /dev/null
-+++ b/kernel/sched/extend.c
-@@ -0,0 +1,90 @@
-+#include <linux/kobject.h>
-+#include <linux/pagemap.h>
-+#include <linux/sysfs.h>
-+#include <linux/init.h>
-+
-+#ifdef CONFIG_SYSFS
-+static ssize_t extend_sched_read(struct file *file,  struct kobject *kobj,
-+				 struct bin_attribute *bin_attr,
-+				 char *buf, loff_t off, size_t len)
-+{
-+	static const char output[] = "Extend scheduling time slice\n";
-+
-+	printk("%s:%d\n", __func__, __LINE__);
-+	if (off >= sizeof(output))
-+		return 0;
-+
-+	strscpy(buf, output + off, len);
-+	return min((ssize_t)len, sizeof(output) - off - 1);
++	return rc;
 +}
++EXPORT_SYMBOL(security_sb_alloc_userns);
 +
-+static ssize_t extend_sched_write(struct file *file, struct kobject *kobj,
-+				  struct bin_attribute *bin_attr,
-+				  char *buf, loff_t off, size_t len)
-+{
-+	printk("%s:%d\n", __func__, __LINE__);
-+	return -EINVAL;
-+}
-+
-+static vm_fault_t extend_sched_mmap_fault(struct vm_fault *vmf)
-+{
-+	vm_fault_t ret = VM_FAULT_SIGBUS;
-+
-+	trace_printk("%s:%d\n", __func__, __LINE__);
-+	/* Only has one page */
-+	if (vmf->pgoff || !current->extend_map)
-+		return ret;
-+
-+	vmf->page = virt_to_page(current->extend_map);
-+
-+	get_page(vmf->page);
-+	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
-+	vmf->page->index   = vmf->pgoff;
-+
-+	return 0;
-+}
-+
-+static void extend_sched_mmap_open(struct vm_area_struct *vma)
-+{
-+	printk("%s:%d\n", __func__, __LINE__);
-+	WARN_ON(!current->extend_map);
-+}
-+
-+static const struct vm_operations_struct extend_sched_vmops = {
-+	.open		= extend_sched_mmap_open,
-+	.fault		= extend_sched_mmap_fault,
-+};
-+
-+static int extend_sched_mmap(struct file *file, struct kobject *kobj,
-+			     struct bin_attribute *attr,
-+			     struct vm_area_struct *vma)
-+{
-+	if (current->extend_map)
-+		return -EBUSY;
-+
-+	current->extend_map = page_to_virt(alloc_page(GFP_USER | __GFP_ZERO));
-+	if (!current->extend_map)
-+		return -ENOMEM;
-+
-+	vm_flags_mod(vma, VM_DONTCOPY | VM_DONTDUMP | VM_MAYWRITE, 0);
-+	vma->vm_ops = &extend_sched_vmops;
-+
-+	return 0;
-+}
-+
-+static struct bin_attribute extend_sched_attr = {
-+	.attr = {
-+		.name = "extend_sched",
-+		.mode = 0777,
-+	},
-+	.read = &extend_sched_read,
-+	.write = &extend_sched_write,
-+	.mmap = &extend_sched_mmap,
-+};
-+
-+static __init int extend_init(void)
-+{
-+	return sysfs_create_bin_file(kernel_kobj, &extend_sched_attr);
-+}
-+late_initcall(extend_init);
-+#endif
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 700b140ac1bb..17ca22e80384 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -993,9 +993,10 @@ static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se, bool
- 		resched_curr(rq);
- 	} else {
- 		/* Did the task ignore the lazy reschedule request? */
--		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
-+		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY)) {
-+			trace_printk("Force resched?\n");
- 			resched_curr(rq);
--		else
-+		} else
- 			resched_curr_lazy(rq);
- 	}
- 	clear_buddies(cfs_rq, se);
+ #ifdef CONFIG_WATCH_QUEUE
+ /**
+  * security_post_notification() - Check if a watch notification can be posted
+-- 
+2.30.2
 
-
---MP_/GSO.Gnmk=U3cJP=_1fA.1ey
-Content-Type: text/x-c++src
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=extend-sched.c
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <errno.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <tracefs.h>
-
-#define barrier() asm volatile ("" ::: "memory")
-#define rmb() asm volatile ("lfence" ::: "memory")
-#define wmb() asm volatile ("sfence" ::: "memory")
-
-#define EXTEND_SCHED "/sys/kernel/extend_sched"
-
-struct extend_map {
-	unsigned long		flags;
-};
-
-static pthread_barrier_t pbarrier;
-
-static __thread struct extend_map *extend_map;
-
-static void init_extend_map(void)
-{
-	int page_size;
-	void *map;
-	int fd;
-
-//	return;
-
-	if (extend_map)
-		return;
-
-	fd = open(EXTEND_SCHED, O_RDWR);
-	if (fd < 0)
-		return;
-
-	page_size = getpagesize();
-
-	map = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (map == MAP_FAILED) {
-		perror("mmap");
-		exit(-1);
-	}
-
-	extend_map = map;
-
-#ifdef TEST 
-{
-	int x = 0;
-	extend_map->flags = 1;
-
-	printf("Spinning\n");
-	while (!(*(volatile int *)(&extend_map->flags) & 2)) {
-		x++;
-		barrier();
-	}
-	printf("Break! x=%d\n", x);
-}
-#endif
-}
-
-struct data;
-
-struct thread_data {
-	unsigned long long			start_wait;
-	unsigned long long			x_count;
-	unsigned long long			total;
-	unsigned long long			max;
-	unsigned long long			min;
-	unsigned long long			total_wait;
-	unsigned long long			max_wait;
-	unsigned long long			min_wait;
-	struct data				*data;
-};
-
-struct data {
-	unsigned long long		x;
-	unsigned long			lock;
-	struct thread_data		*tdata;
-	bool				done;
-};
-
-static inline unsigned long
-cmpxchg(volatile unsigned long *ptr, unsigned long old, unsigned long new)
-{
-        unsigned long prev;
-
-	asm volatile("lock; cmpxchg %b1,%2"
-		     : "=a"(prev)
-		     : "q"(new), "m"(*(ptr)), "0"(old)
-		     : "memory");
-        return prev;
-}
-
-static inline unsigned long
-xchg(volatile unsigned long *ptr, unsigned long new)
-{
-        unsigned long ret = new;
-
-	asm volatile("xchg %b0,%1"
-		     : "+r"(ret), "+m"(*(ptr))
-		     : : "memory");
-        return ret;
-}
-
-static void extend(void)
-{
-	if (!extend_map)
-		return;
-
-	extend_map->flags = 1;
-}
-
-static void unextend(void)
-{
-	unsigned long prev;
-
-	if (!extend_map)
-		return;
-
-	prev = xchg(&extend_map->flags, 0);
-	if (prev & 2) {
-		tracefs_printf(NULL, "Yield!\n");
-		sched_yield();
-	}
-}
-
-#define sec2usec(sec) (sec * 1000000ULL)
-#define usec2sec(usec) (usec / 1000000ULL)
-
-static unsigned long long get_time(void)
-{
-	struct timeval tv;
-	unsigned long long time;
-
-	gettimeofday(&tv, NULL);
-
-	time = sec2usec(tv.tv_sec);
-	time += tv.tv_usec;
-
-	return time;
-}
-
-static void grab_lock(struct thread_data *tdata, struct data *data)
-{
-	unsigned long long start, end, delta;
-	unsigned long long end_wait;
-	unsigned long long last;
-	unsigned long prev;
-
-	if (!tdata->start_wait)
-		tdata->start_wait = get_time();
-
-	while (data->lock && !data->done)
-		rmb();
-
-	extend();
-	start = get_time();
-	prev = cmpxchg(&data->lock, 0, 1);
-	if (prev) {
-		unextend();
-		return;
-	}
-	end_wait = get_time();
-	tracefs_printf(NULL, "Have lock!\n");
-
-	delta = end_wait - tdata->start_wait;
-	tdata->start_wait = 0;
-	if (!tdata->total_wait || tdata->max_wait < delta)
-		tdata->max_wait = delta;
-	if (!tdata->total_wait || tdata->min_wait > delta)
-		tdata->min_wait = delta;
-	tdata->total_wait += delta;
-
-	data->x++;
-	last = data->x;
-
-	if (data->lock != 1) {
-		printf("Failed locking\n");
-		exit(-1);
-	}
-	prev = cmpxchg(&data->lock, 1, 0);
-	end = get_time();
-	if (prev != 1) {
-		printf("Failed unlocking\n");
-		exit(-1);
-	}
-	tracefs_printf(NULL, "released lock!\n");
-	unextend();
-
-	delta = end - start;
-	if (!tdata->total || tdata->max < delta)
-		tdata->max = delta;
-
-	if (!tdata->total || tdata->min > delta)
-		tdata->min = delta;
-
-	tdata->total += delta;
-	tdata->x_count++;
-
-	/* Let someone else have a turn */
-	while (data->x == last && !data->done)
-		rmb();
-}
-
-	
-	
-static void *run_thread(void *d)
-{
-	struct thread_data *tdata = d;
-	struct data *data = tdata->data;
-
-	init_extend_map();
-
-	pthread_barrier_wait(&pbarrier);
-
-	while (!data->done) {
-		grab_lock(tdata, data);
-	}
-	return NULL;
-}
-
-int main (int argc, char **argv)
-{
-	unsigned long long total_wait = 0;
-	unsigned long long secs;
-	pthread_t *threads;
-	struct data data;
-	int cpus;
-
-	memset(&data, 0, sizeof(data));
-
-	cpus = sysconf(_SC_NPROCESSORS_CONF);
-
-	threads = calloc(cpus + 1, sizeof(*threads));
-	if (!threads) {
-		perror("threads");
-		exit(-1);
-	}
-
-	data.tdata = calloc(cpus + 1, sizeof(*data.tdata));
-	if (!data.tdata) {
-		perror("Allocating tdata");
-		exit(-1);
-	}
-
-	tracefs_print_init(NULL);
-	pthread_barrier_init(&pbarrier, NULL, cpus + 2);
-
-	for (int i = 0; i <= cpus; i++) {
-		int ret;
-
-		data.tdata[i].data = &data;
-		ret = pthread_create(&threads[i], NULL, run_thread, &data.tdata[i]);
-		if (ret < 0) {
-			perror("creating threads");
-			exit(-1);
-		}
-	}
-
-	pthread_barrier_wait(&pbarrier);
-	sleep(5);
-
-	printf("Finish up\n");
-	data.done = true;
-	wmb();
-
-	for (int i = 0; i <= cpus; i++) {
-		pthread_join(threads[i], NULL);
-		printf("thread %i:\n", i);
-		printf("   count:\t%lld\n", data.tdata[i].x_count);
-		printf("   total:\t%lld\n", data.tdata[i].total);
-		printf("     max:\t%lld\n", data.tdata[i].max);
-		printf("     min:\t%lld\n", data.tdata[i].min);
-		printf("   total wait:\t%lld\n", data.tdata[i].total_wait);
-		printf("     max wait:\t%lld\n", data.tdata[i].max_wait);
-		printf("     min wait:\t%lld\n", data.tdata[i].min_wait);
-		total_wait += data.tdata[i].total_wait;
-	}
-
-	secs = usec2sec(total_wait);
-
-	printf("Ran for %lld times\n", data.x);
-	printf("Total wait time: %lld.%06lld\n", secs, total_wait - sec2usec(secs));
-	return 0;
-}
-
---MP_/GSO.Gnmk=U3cJP=_1fA.1ey--
