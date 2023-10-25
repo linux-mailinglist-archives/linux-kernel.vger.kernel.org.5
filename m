@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F51C7D66B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F967D66B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbjJYJY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        id S233804AbjJYJ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjJYJY5 (ORCPT
+        with ESMTP id S231794AbjJYJ0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:24:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A45DC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698225895; x=1729761895;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Z5QuHEH9/Il1E5F4X+UOg9jbSOOGe6HK4yUv0ZPfB/w=;
-  b=idUasxdNicP7LVYk+nceEsvJXvMxxbvsbEuZbLkrbNtuqtEQi+wT4tH+
-   QV1DsIOg1x/jfZyti+41vfmshBDw+4YsoogUyDKhPm74yLUcwtx9Pt+9w
-   +Dl8hqBXL25E5ZHeNyCtZMfBSDT0Vw4OgK5W0mnNze+pEUw3+S6h8kvz6
-   C9xTSt55C5YOst/YKjf3QqCvXHmPRwli4AGnuY9ary4tD6jBpjUSDoVZe
-   qSa0jqIxGaqNFh1+Q3nDa5xjbuGBUS/LyNwynSDCk4/sw0hbTpBe+0Ytx
-   8K6vkZfam4IpJn58z+WrHkIsLef0wsJR5hwiiuarJvzHCkYHM45LT25aO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473508350"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="473508350"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 02:24:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1005946234"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="1005946234"
-Received: from shenkel-mobl.ger.corp.intel.com (HELO intel.com) ([10.252.63.39])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 02:24:52 -0700
-Date:   Wed, 25 Oct 2023 11:24:49 +0200
-From:   Andi Shyti <andi.shyti@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v2 3/7] drm/i915/dsi: Replace check with a
- (missing) MIPI sequence name
-Message-ID: <ZTje4ZFzDLuVWkxB@ashyti-mobl2.lan>
-References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
- <20231024155739.3861342-4-andriy.shevchenko@linux.intel.com>
+        Wed, 25 Oct 2023 05:26:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FC88F;
+        Wed, 25 Oct 2023 02:26:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D99D1C433C8;
+        Wed, 25 Oct 2023 09:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698226005;
+        bh=4n0iQGryR3l11ivfAXSZJrCU7Nk2I5Jy+sv+NdwUasQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tULDT4F4BuJuij+PaCntRR4+ii5P140m7lR+dfTCphuE2Q+ux46tUY8wcaQ6uXiMb
+         pLYWpIqLoR9/kKBHvCCvRkzTR3OGVnmxBc9TDnZkHYNEJqB0ZZPB9y5VXOCuDtB561
+         7PB4243yWqd+wmudvFJX/c16YrRlC+opihHGC5/SMlUkJevQCZpDCqePPdRYcGj31p
+         JzIr9+RKEI7INPqB8H1fiChgl5cpBDZ3RL2ct7XoslhxFnwSEJ5jjWbyX676rEQLJA
+         n6jYty+uYu4cQ5gYBLp2h18fOBAZnPgC/CmwiXq2VateWeAW0vdbpIT3/c5AFUbanw
+         6EwJxQVsC8z3Q==
+Date:   Wed, 25 Oct 2023 10:26:39 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     James Ogletree <james.ogletree@opensource.cirrus.com>,
+        James Ogletree <james.ogletree@cirrus.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Fred Treven <fred.treven@cirrus.com>,
+        Ben Bright <ben.bright@cirrus.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
+Message-ID: <20231025092639.GL8909@google.com>
+References: <20231018175726.3879955-1-james.ogletree@opensource.cirrus.com>
+ <20231018175726.3879955-4-james.ogletree@opensource.cirrus.com>
+ <ZTiJYxAvqfBMMJ1S@nixie71>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231024155739.3861342-4-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTiJYxAvqfBMMJ1S@nixie71>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 06:57:35PM +0300, Andy Shevchenko wrote:
-> Names of the MIPI sequence steps are sequential and defined, no
-> need to check for the gaps. However in seq_name the MIPI_SEQ_END
-> is missing. Add it there, and drop unneeded NULL check in
-> sequence_name().
+On Tue, 24 Oct 2023, Jeff LaBundy wrote:
+
+> Hi James,
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Just a few trailing comments on top of Lee's feedback.
+> 
+> On Wed, Oct 18, 2023 at 05:57:24PM +0000, James Ogletree wrote:
+> > From: James Ogletree <james.ogletree@cirrus.com>
+> > 
+> > Introduce support for Cirrus Logic Device CS40L50: a
+> > haptic driver with waveform memory, integrated DSP,
+> > and closed-loop algorithms.
+> > 
+> > The MFD component registers and initializes the device.
+> > 
+> > Signed-off-by: James Ogletree <james.ogletree@cirrus.com>
+> > ---
+> >  MAINTAINERS                 |   2 +
+> >  drivers/mfd/Kconfig         |  30 +++
+> >  drivers/mfd/Makefile        |   4 +
+> >  drivers/mfd/cs40l50-core.c  | 443 ++++++++++++++++++++++++++++++++++++
+> >  drivers/mfd/cs40l50-i2c.c   |  69 ++++++
+> >  drivers/mfd/cs40l50-spi.c   |  68 ++++++
+> >  include/linux/mfd/cs40l50.h | 198 ++++++++++++++++
+> >  7 files changed, 814 insertions(+)
+> >  create mode 100644 drivers/mfd/cs40l50-core.c
+> >  create mode 100644 drivers/mfd/cs40l50-i2c.c
+> >  create mode 100644 drivers/mfd/cs40l50-spi.c
+> >  create mode 100644 include/linux/mfd/cs40l50.h
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+Just popping along to say; these are excellent comments Jeff.
 
-Andi
+Thank you for your review.
+
+-- 
+Lee Jones [李琼斯]
