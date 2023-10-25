@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7827D68D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4004E7D6884
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343547AbjJYK2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        id S234820AbjJYKau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234790AbjJYK2r (ORCPT
+        with ESMTP id S234817AbjJYKam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:28:47 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07651D56;
-        Wed, 25 Oct 2023 03:28:37 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B933C000C;
-        Wed, 25 Oct 2023 10:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698229715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z0VFej7lIc8Tw0pWBz/Y9lLcMVb2c7+L+vzZC6J9dkI=;
-        b=NJg/COsAqjIcBAKiAewVyxisum8g8jw2yKZDrcOgvL50JsuerikogK/QEV5UDj4/t7fG+X
-        XHhErbRpsQIlBkQo/GS9wgm+W2p2Bce/ktmDbX1kDJox9om/2UOTS8L52JkWlAbfHFD+IF
-        stWud9REKlD8zyrq29m3zNpdfyrOOQjXLSxJqTXTYfDO2FjyFsCKLfTXoDN8GLoYomGKd3
-        SjcFKGoLGWoy//xy3oSz5108shFAQfeGutzg+/C/etrAMeNh4ll0d60pnekQZ/mhXdT0og
-        ch+xgsrwmvvZiWsDu2wWq8jICQDqqyuEMcxO5VOAjMaNrvjmTd+bJyUTpcovLQ==
-Date:   Wed, 25 Oct 2023 12:28:33 +0200
-From:   Mehdi Djait <mehdi.djait@bootlin.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Michael Riesch <michael.riesch@wolfvision.net>, mchehab@kernel.org,
-        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, ezequiel@vanguardiasur.com.ar,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com
-Subject: Re: [PATCH v8 2/3] media: rockchip: Add a driver for Rockhip's
- camera interface
-Message-ID: <ZTjt0VUMTbeP3mxb@pc-70.home>
-References: <cover.1697446303.git.mehdi.djait@bootlin.com>
- <3790470ff7606fc075ec742d43254e52dde5d120.1697446303.git.mehdi.djait@bootlin.com>
- <ee4034b9-85f6-42cc-abca-d61004aa0a6c@wolfvision.net>
- <ZTjWsf69QdXoJNKj@aptenodytes>
- <a57db26a-704f-4859-a528-26d87c555576@wolfvision.net>
- <ZTjkWIbhV0OsvepD@aptenodytes>
+        Wed, 25 Oct 2023 06:30:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF319D
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u3vNha6LjEv/b3c8jTWSa/Lwv001Wj+D+Q8nha9WSuA=; b=VNIrsB9urY0wekP8UTVIzVjsM2
+        y6efNVLQ9NwjDhypEthpckjEZPMVeqyEtF/oBg/fgl0pUUWcSvrWLCItoC4101n7brRReLBaGXR2G
+        a61iM8g4J4lzNbWfSVUKJSZiIt0ZetJIH7TCAUv7V19U7lTCyLBziKpv8qio6sSJo6jTy7fQiZZpQ
+        HkZk161Xwc5jYkiD4IhUSJUN+Ao+Bre6qV0ZjA1TtBiDvtJc+utBIyb6NR+WpTRdiV4vCjUR4cjhE
+        zrz0hsVLkrP2y2HedlSlehaycHSosozsQnR+mJeZL5zdcqg+/laDfzXosx8FOj/y0z/0RFfPXElEf
+        H95OXypg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qvb96-008CLV-W4; Wed, 25 Oct 2023 10:29:53 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A328730047C; Wed, 25 Oct 2023 12:29:52 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 12:29:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Message-ID: <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTjkWIbhV0OsvepD@aptenodytes>
-X-GND-Sasl: mehdi.djait@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231025054219.1acaa3dd@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul, Hi Michael
+On Wed, Oct 25, 2023 at 05:42:19AM -0400, Steven Rostedt wrote:
 
-Thank you for the review!
+> That is, there's this structure for every thread. It's assigned with:
+> 
+> 	fd = open("/sys/kernel/extend_sched", O_RDWR);
+> 	extend_map = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> 
+> I don't actually like this interface, as it wastes a full page for just two
+> bits :-p  Perhaps it should be a new system call, where it just locks in
+> existing memory from the user application? The requirement is that each
+> thread needs its own bits to play with. It should not be shared with other
+> threads. It could be, as it will not mess up the kernel, but will mess up
+> the application.
 
-On Wed, Oct 25, 2023 at 11:48:08AM +0200, Paul Kocialkowski wrote:
-> Michael,
-> 
-> On Wed 25 Oct 23, 11:38, Michael Riesch wrote:
-> > Hi Paul,
-> > 
-> > On 10/25/23 10:49, Paul Kocialkowski wrote:
-> > > Hi,
-> > > 
-> > > On Mon 23 Oct 23, 15:28, Michael Riesch wrote:
-> > >> Typo in the subject: "Rockhip's" -> "Rockchip's"
-> > >> I think this typo has been in there for a while now ;-)
-> > > 
-> > > Great hips make for great dancing!
-> > 
-> > ...to rock music, obviously.
-> 
-> :)
-> 
-> > > [...]
-> > >>> +#define write_vip_reg(base, addr, val)  writel(val, (addr) + (base))
-> > >>> +#define read_vip_reg(base, addr) readl((addr) + (base))
-> > >>
-> > >> Please provide those helpers as proper inline functions. As to the
-> > >> naming, the "_reg" suffix seems unnecessary.
-> > >>
-> > >> Alternatively, you could consider converting the driver to use regmap.
-> > > 
-> > > Come to think of it, I feel like it would make more sense to have an inline
-> > > function which is given a struct rk_vip_device instead of having to dereference
-> > > it every time in the caller to access the base address.
-> > 
-> > Indeed. Either using regmap, e.g.,
-> > 
-> > int regmap_write(struct regmap *map, unsigned int reg, unsigned int val);
-> > 
-> > or something equivalant
-> > 
-> > static inline int cif_write(struct cif_device *device, unsigned int reg,
-> > unsigned int val);
-> 
-> Looks good to me!
-> 
+What was wrong with using rseq?
 
-Yes, I will change it ro cif_write()
-
-> > Not sure what you agreed on in terms of a method prefix. The Rockchip
-> > RGA driver uses "rga_something", the Rockchip ISP driver uses
-> > "rkisp1_something". This would mean either "cif_something" or
-> > "rkcif_something", right?
-
-I am going with cif_*()
-
+> Anyway, to tell the kernel to "extend" the time slice if possible because
+> it's in a critical section, we have:
 > 
-> Yeah I don't really have strong opinions on this so I'll let Mehdi decide
-> (as long as it's consistent everywhere in the code).
+>  static void extend(void)
+>  {
+> 	if (!extend_map)
+> 		return;
 > 
-> I guess there is a slight readability advantage in using "cif_" instead of
-> "rkcif_".
+> 	extend_map->flags = 1;
+>  }
 > 
-> > > [...]
-> > >>> +	struct rk_vip_sensor_info	sensor;
-> > >>
-> > >> Using "sensor" as name does not seem correct. As pointed out above it
-> > >> could be a video decoder just as well. Something with "subdevice" maybe?
-> > > 
-> > > Agreed. I suggest renaming the struct "rk_vip_sensor_info" -> "rk_cif_remote"
-> > > and just calling the member "remote".
+> And to say that's it's done:
+> 
+>  static void unextend(void)
+>  {
+> 	unsigned long prev;
+> 
+> 	if (!extend_map)
+> 		return;
+> 
+> 	prev = xchg(&extend_map->flags, 0);
+> 	if (prev & 2)
+> 		sched_yield();
+>  }
+> 
+> So, bit 1 is for user space to tell the kernel "please extend me", and bit
+> two is for the kernel to tell user space "OK, I extended you, but call
+> sched_yield() when done".
 
-Yes "remote" sounds right in this situation
+So what if it doesn't ? Can we kill it for not playing nice ?
 
---
-Kind Regards
-Mehdi Djait
+[ aside from it being bit 0 and bit 1 as you yourself point out, it is
+  also jarring you use a numeral for one and write out the other. ]
+
+That said, I properly hate all these things, extending a slice doesn't
+reliably work and we're always left with people demanding an ever longer
+extension.
+
+The *much* better heuristic is what the kernel uses, don't spin if the
+lock holder isn't running.
