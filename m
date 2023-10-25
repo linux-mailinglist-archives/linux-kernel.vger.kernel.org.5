@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAAB7D69F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467A37D69FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbjJYLXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S234479AbjJYLYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234479AbjJYLXL (ORCPT
+        with ESMTP id S230217AbjJYLYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:23:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F0D130
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:23:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2699CC433C8;
-        Wed, 25 Oct 2023 11:23:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698232988;
-        bh=rd8vsu6VohhU/lcsgpXqdi7nIrZyR6h4n0YxnC1/pQM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eC7a/rJ18UcEM9fHbpovUo0TkOPNGQdPNEJfnTsSh2Pm0hVznbAoxo93mM8m3YxS/
-         rq7p7v7Tw9AFPoKraGX6w/50zZ5zfSsFEbtbC/2x+bODvR+lxL/2Wv5QeAfb+DdW1Z
-         8u7N3cyX7mu91uOzpt4wnuxsGVT5xa5je7BZIh4egeIAKLVfuGP9NnGI/LT5X/tRGl
-         aAvkFJLJphftUJlqpeeEQYjtUTsl8yLP+HZiup7pggGhubPpzdvh06ELROUSTrAHYJ
-         RfG3kypUaPYi6bUn2PpJyKKidP/udKN0fs1XgW2DXSbL9wAk/afOumyYDO4RC+yx0W
-         VN2EROU/1lw2w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 42EC74035D; Wed, 25 Oct 2023 08:23:05 -0300 (-03)
-Date:   Wed, 25 Oct 2023 08:23:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] perf build: Address stray '\' before # that is warned
- about since grep 3.8
-Message-ID: <ZTj6mfM9UqY2DggC@kernel.org>
+        Wed, 25 Oct 2023 07:24:45 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B6AE8;
+        Wed, 25 Oct 2023 04:24:43 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso604856a91.1;
+        Wed, 25 Oct 2023 04:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698233083; x=1698837883; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z8Z+tYRzui7BaJuiaZnyDHDcWrbR6sR0khHhdgWMTK0=;
+        b=Uogu5R6NiorHh7DCI/9zY4nv8zOLuluoQ0guDV3Ozy46RTj6zOp/EP+vYbK6JDBsg3
+         BeI2yJE1IgHX3OHQvwrV9rKPU6dt3Ez/zwifapxw1882oiUr6DLRwpgpmJ28XG5OyVDA
+         HZWBagVbnqjc38osyGP/6kVQgG4fKEZXUBTlpYm1vfJxu/uzZQFLFfcu4BkJix1NERqo
+         r3MkV691EayVYjeEOh9gdNPkFzBY4iKTxgBPUKNFKAMsCVr6BeLe8bow/4q1eh3tLbil
+         RoBPOrwznvEE3OEMv+NCc/Ku/GTRUkJTw++B8rg5NIf6UpeLAz2hL/3x8skCPOQfg6E2
+         sDBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698233083; x=1698837883;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z8Z+tYRzui7BaJuiaZnyDHDcWrbR6sR0khHhdgWMTK0=;
+        b=p2aUdiaKSqgc/jKil3caX0mSoRw8hHP258N8p6+Qef/IaRzjZ19d/kxRIPO68hcMCF
+         Gp4Fu9HVEc0kNifBUMY8urUZSQyzlzzJYK3BPLBcGIO/VAImiWyMdJBuUaZJ1vfjC8j7
+         JbnzhGgR806vizM/PNeGEj85z3KMJRkukiCyU91DblX1/AV2/Y2sre4ph4fQOycKzXX/
+         z7TuZ7N91yZo2lEH2/he8tpi6fpt7qmDLU6RR9So4x+MthLgTr1h3pk11CsObq4p+AN1
+         rPnU93W0mnDC/L/6CVOf+SHxUYOrtbRAF1QaiFDtU6O90S36i4ZjkO5aH2KHjWo4ccRs
+         5THQ==
+X-Gm-Message-State: AOJu0Yw+uKxbo1uA32f2CK6zpMBFrP+rOy/ESRDw5ySpUyY+lafKmJCI
+        Lzlk/urzrokaLuCEp3Jqviw=
+X-Google-Smtp-Source: AGHT+IGo7WioyE6T60WElBAE+qqcB9BUrGyOmNrgzD0IHWwguA2y5too62V1ajdxZCs0XWEO+XnjjQ==
+X-Received: by 2002:a17:90b:8c:b0:27d:1aa:32b8 with SMTP id bb12-20020a17090b008c00b0027d01aa32b8mr24636071pjb.9.1698233082761;
+        Wed, 25 Oct 2023 04:24:42 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id k5-20020a17090a7f0500b00267b38f5e13sm8545467pjl.2.2023.10.25.04.24.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 04:24:42 -0700 (PDT)
+Message-ID: <53d7caba-8b00-42ab-849a-d8c8d94aea37@gmail.com>
+Date:   Wed, 25 Oct 2023 19:24:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/xsave: Remove 'return void' expression for 'void
+ function'
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+References: <20231007064019.17472-1-likexu@tencent.com>
+ <e4d6c6a5030f49f44febf99ba4c7040938c3c483.camel@redhat.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <e4d6c6a5030f49f44febf99ba4c7040938c3c483.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To address this grep 3.8 warning:
+Emm, did we miss this little fix ?
 
-  grep: warning: stray \ before #
-
-We needed to remove the '' around the grep expression and keep the \
-before # so that it is escaped by the $(shell grep ...) and thus doesn't
-get to grep.
-
-We need that \ before the #, otherwise we get this:
-
-  Makefile.perf:364: *** unterminated call to function 'shell': missing ')'.  Stop.
-
-As everything after the # will be considered a comment.
-
-Removing the single quotes needs some more escaping so that _some_ of
-the escaped chars gets to grep, like the '\|' that becomes '\\\|�.
-
-Running on debian:10, where there is no libtraceevent-devel available,
-we get:
-
-  Makefile.perf:367: *** PYTHON_EXT_SRCS= util/python.c ../lib/ctype.c util/cap.c util/evlist.c util/evsel.c util/evsel_fprintf.c util/perf_event_attr_fprintf.c util/cpumap.c util/memswap.c util/mmap.c util/namespaces.c ../lib/bitmap.c ../lib/find_bit.c ../lib/list_sort.c ../lib/hweight.c ../lib/string.c ../lib/vsprintf.c util/thread_map.c util/util.c util/cgroup.c util/parse-branch-options.c util/rblist.c util/counts.c util/print_binary.c util/strlist.c ../lib/rbtree.c util/string.c util/symbol_fprintf.c util/units.c util/affinity.c util/rwsem.c util/hashmap.c util/perf_regs.c util/fncache.c util/perf-regs-arch/perf_regs_aarch64.c util/perf-regs-arch/perf_regs_arm.c util/perf-regs-arch/perf_regs_csky.c util/perf-regs-arch/perf_regs_loongarch.c util/perf-regs-arch/perf_regs_mips.c util/perf-regs-arch/perf_regs_powerpc.c util/perf-regs-arch/perf_regs_riscv.c util/perf-regs-arch/perf_regs_s390.c util/perf-regs-arch/perf_regs_x86.c.  Stop.
-  make[1]: *** [Makefile.perf:242: sub-make] Error 2
-
-I.e. both the comments and the util/trace-event.c were removed.
-
-When using:
-
-msg := $(error PYTHON_EXT_SRCS=$(PYTHON_EXT_SRCS))
-
-While on the more recent fedora:38, with the new grep and make packages
-and libtraceevent-devel installed:
-
-  Makefile.perf:367: *** PYTHON_EXT_SRCS= util/python.c ../lib/ctype.c util/cap.c util/evlist.c util/evsel.c util/evsel_fprintf.c util/perf_event_attr_fprintf.c util/cpumap.c util/memswap.c util/mmap.c util/namespaces.c ../lib/bitmap.c ../lib/find_bit.c ../lib/list_sort.c ../lib/hweight.c ../lib/string.c ../lib/vsprintf.c util/thread_map.c util/util.c util/cgroup.c util/parse-branch-options.c util/rblist.c util/counts.c util/print_binary.c util/strlist.c util/trace-event.c ../lib/rbtree.c util/string.c util/symbol_fprintf.c util/units.c util/affinity.c util/rwsem.c util/hashmap.c util/perf_regs.c util/fncache.c util/perf-regs-arch/perf_regs_aarch64.c util/perf-regs-arch/perf_regs_arm.c util/perf-regs-arch/perf_regs_csky.c util/perf-regs-arch/perf_regs_loongarch.c util/perf-regs-arch/perf_regs_mips.c util/perf-regs-arch/perf_regs_powerpc.c util/perf-regs-arch/perf_regs_riscv.c util/perf-regs-arch/perf_regs_s390.c util/perf-regs-arch/perf_regs_x86.c.  Stop.
-  make[1]: *** [Makefile.perf:242: sub-make] Error 2
-  make: *** [Makefile:113: install-bin] Error 2
-  make: Leaving directory '/home/acme/git/perf-tools-next/tools/perf'
-  $
-
-I.e. only the comments were removed.
-
-If we build it on the same fedora:38 system, but using NO_LIBTRACEEVENT=1
-
-  $ make NO_LIBTRACEEVENT=1 CORESIGHT=1 O=/tmp/build/$(basename $PWD) -C tools/perf install-bin
-  Makefile.perf:367: *** PYTHON_EXT_SRCS= util/python.c ../lib/ctype.c util/cap.c util/evlist.c util/evsel.c util/evsel_fprintf.c util/perf_event_attr_fprintf.c util/cpumap.c util/memswap.c util/mmap.c util/namespaces.c ../lib/bitmap.c ../lib/find_bit.c ../lib/list_sort.c ../lib/hweight.c ../lib/string.c ../lib/vsprintf.c util/thread_map.c util/util.c util/cgroup.c util/parse-branch-options.c util/rblist.c util/counts.c util/print_binary.c util/strlist.c ../lib/rbtree.c util/string.c util/symbol_fprintf.c util/units.c util/affinity.c util/rwsem.c util/hashmap.c util/perf_regs.c util/fncache.c util/perf-regs-arch/perf_regs_aarch64.c util/perf-regs-arch/perf_regs_arm.c util/perf-regs-arch/perf_regs_csky.c util/perf-regs-arch/perf_regs_loongarch.c util/perf-regs-arch/perf_regs_mips.c util/perf-regs-arch/perf_regs_powerpc.c util/perf-regs-arch/perf_regs_riscv.c util/perf-regs-arch/perf_regs_s390.c util/perf-regs-arch/perf_regs_x86.c.  Stop.
-  make[1]: *** [Makefile.perf:242: sub-make] Error 2
-  make: *** [Makefile:113: install-bin] Error 2
-  make: Leaving directory '/home/acme/git/perf-tools-next/tools/perf'
-  $
-
-Both comments and the util/trace-event.c file removed.
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Makefile.perf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 456872ac410df4c0..d80dcaa5a1e337ae 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -361,7 +361,7 @@ python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT
- ifeq ($(CONFIG_LIBTRACEEVENT),y)
-   PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
- else
--  PYTHON_EXT_SRCS := $(shell grep -v '^\#\|util/trace-event.c' util/python-ext-sources)
-+  PYTHON_EXT_SRCS := $(shell grep -v ^\#\\\|util/trace-event.c util/python-ext-sources)
- endif
- 
- PYTHON_EXT_DEPS := util/python-ext-sources util/setup.py $(LIBAPI)
--- 
-2.41.0
-
+On 11/10/2023 12:12 am, Maxim Levitsky wrote:
+> У сб, 2023-10-07 у 14:40 +0800, Like Xu пише:
+>> From: Like Xu <likexu@tencent.com>
+>>
+>> The requested info will be stored in 'guest_xsave->region' referenced by
+>> the incoming pointer "struct kvm_xsave *guest_xsave", thus there is no need
+>> to explicitly use return void expression for a void function "static void
+>> kvm_vcpu_ioctl_x86_get_xsave(...)". The issue is caught with [-Wpedantic].
+>>
+>> Fixes: 2d287ec65e79 ("x86/fpu: Allow caller to constrain xfeatures when copying to uabi buffer")
+>> Signed-off-by: Like Xu <likexu@tencent.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index fdb2b0e61c43..2571466a317f 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -5503,8 +5503,8 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
+>>   static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+>>   					 struct kvm_xsave *guest_xsave)
+>>   {
+>> -	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
+>> -					     sizeof(guest_xsave->region));
+>> +	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
+>> +				      sizeof(guest_xsave->region));
+>>   }
+>>   
+>>   static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
+>>
+>> base-commit: 86701e115030e020a052216baa942e8547e0b487
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
