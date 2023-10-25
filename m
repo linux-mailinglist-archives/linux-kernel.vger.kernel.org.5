@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65207D62D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE50E7D62DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbjJYHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        id S233837AbjJYHcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbjJYHbu (ORCPT
+        with ESMTP id S233726AbjJYHby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:31:50 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CD310FD
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:31:44 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32dcd3e5f3fso3708652f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:31:44 -0700 (PDT)
+        Wed, 25 Oct 2023 03:31:54 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A9418A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:31:48 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53ebf429b4fso8289411a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698219102; x=1698823902; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BtHL7LpE3QD2/IvlMAVMaT0urMhUDFq2xkJqxNBcDXs=;
-        b=e2Ol219B7q4fQlqNVtFJjhjdwCPUX6PWxf17OUTeapTn4sC2KMCGU5P6DFU0QsgIGB
-         fuRV25hbOFuwT1SxTA+Z5TGHQRZVTyu3n97cUBj16+vibUQE1VpSvpMXYSZbBbSJNvF5
-         ZNkP/oVjafxpBa9pJCA0MobW5AFny5O9DShPh/aA0FrmmeLo8g/IMxMl7bkCJXl4Epny
-         TpTIugx/feT4QOABUSim4FJf4KTut5CUt/5bfdG6xle3Z/p+ybdSeDGIgqG1lAgYpX2x
-         dLQood3f8d46lta885UMTuRRNxaQlYV6A1psN5BI1r5Ti1UYfvTjNcSdTFdFpxM7ASAe
-         21JA==
+        d=linaro.org; s=google; t=1698219107; x=1698823907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X5Xj3adjVq1q+WO8nJ8wDiWDQw4ibB/yFmf1RCpJk7g=;
+        b=CVw/TNQOjX3E0krI4nLUi5MAKbLnid0dvwNGT3mfQErL8W1L8TpWxY6TGmg/x1SN+y
+         ARki8UIs0qvI0jVrnOl26Andb71mafihAaLpUxdz7L4pg7rWb/cdz8iDWYOn9Ddye8ty
+         ba297uyap/juJbgM+WVHUVkrz2fksJwBfSI+vFSg2MASp324DPtUWbUwt8ViLe9kqf74
+         gSccwPsogToJi7mAggiQe6ZzwGDjpYpNjgBCHYNs3oMqcS75GZ31r76QaPgEfT58IVWG
+         i9QBQNOGd6OlxacSanpJf2AxgQVi7vAgjawo+BJNqyhb/Zz9wtqcItI832e+HtNvTv07
+         fDZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698219102; x=1698823902;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BtHL7LpE3QD2/IvlMAVMaT0urMhUDFq2xkJqxNBcDXs=;
-        b=cK0dpFdoIHT4Hl7PV7LVXetdLR6iUUNmqJxvpGx36zrZWhEruh5DG17jRDYTXbuKb9
-         vfKmY5RdG6u5tIH0mntUp5hYaOB+actShl5f4D8nUDpoyrsNMvYLUeYbDBKKjRVHBNPv
-         d95vDeNdBEQ2xJFzFZFKb8YQRGkNHn7CXhSsxNLQjk+4ZwiPcnhvW2NiEUu8kINVv/V5
-         H/mv8ei/iTL5M4vU9o+FIRo0W+OmmM+lLK4b4K47ThR/WEgNoGT13EOVALEtNWjF9W6k
-         9S5ZJ0x2tLuyUyaPSEPyewdSZXaSVm5r8HskkS9gMvjxUjaCHD3dsSNT4VFm4YHKCQHV
-         qvOg==
-X-Gm-Message-State: AOJu0YyRMoC0EuJ465tF1ysNrsETheY1Z02Sk8N/XBYlDB15cLLDY3hN
-        i8IWSjvn+ezjhXOsfmC16MbZOQ==
-X-Google-Smtp-Source: AGHT+IGPF3ntvMBLZTzR73Jpnus1FdCBUouAAb1ke7apMhAFUBqTwGZ27NpmPpckgDyQOI3Cp3SXpA==
-X-Received: by 2002:adf:fcca:0:b0:32d:a221:446 with SMTP id f10-20020adffcca000000b0032da2210446mr10372758wrs.59.1698219102110;
-        Wed, 25 Oct 2023 00:31:42 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id d17-20020a5d6451000000b0032da022855fsm11412184wrw.111.2023.10.25.00.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 00:31:41 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Wed, 25 Oct 2023 09:31:37 +0200
-Subject: [PATCH 2/2] soc: qcom: llcc: Add configuration data for SM8650
+        d=1e100.net; s=20230601; t=1698219107; x=1698823907;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5Xj3adjVq1q+WO8nJ8wDiWDQw4ibB/yFmf1RCpJk7g=;
+        b=Js3FX7SW0HR9f2v0PtEmDb7J4rRGl53toHXFL0LyfdfSmXumIHsvnju0nNniBkQP3i
+         2MO+Ur0jnrvN486ER8GT00G/VSx4lh85744VuBRceWxSUkynUbXGgsySLbrXj/nkUFyr
+         +DFqOGSgIj9PyOIWrrbTVMwvZ/S5CC68d31h9V8TGOszIbR/jrUl10eAiH0u3WqEd0bT
+         eVmNm6J+GAuIhCPHu0vjYQD/JyfYLgIXCHTD+RNLvaQtkS0BGz61IQVnCua8raJPgj5r
+         149yliaXkqnxfxd5L+OOEQQ0kmXiYLU/x8LFfi5XaQonqujrZt82jyzhCxRgJEDbVvvj
+         9kaQ==
+X-Gm-Message-State: AOJu0YwDrInvfbT8XV4B0yxclM9UJ7+M+nP9HXbxIKxlCJWtJ2XXm7EX
+        VPeBk3J0yrj1Rfd/lEIiwYac+Q==
+X-Google-Smtp-Source: AGHT+IFHFRuHt5VNXJXYQKishST1VcYlPkRDPwsLtzRXdMTOaYLsW1rOzuDL19GVHlv04wpTQCu7TA==
+X-Received: by 2002:a17:907:9812:b0:9ae:5fe1:ef01 with SMTP id ji18-20020a170907981200b009ae5fe1ef01mr10589568ejc.37.1698219106862;
+        Wed, 25 Oct 2023 00:31:46 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id fx4-20020a170906b74400b009b9a1714524sm9500543ejb.12.2023.10.25.00.31.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 00:31:46 -0700 (PDT)
+Message-ID: <9a34fa23-fcb9-42c2-86e4-c85d9ddbedd7@linaro.org>
+Date:   Wed, 25 Oct 2023 09:31:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231025-topic-sm8650-upstream-llcc-v1-2-ba4566225424@linaro.org>
-References: <20231025-topic-sm8650-upstream-llcc-v1-0-ba4566225424@linaro.org>
-In-Reply-To: <20231025-topic-sm8650-upstream-llcc-v1-0-ba4566225424@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: soc: qcom,aoss-qmp: document the SM8560
+ Always-On Subsystem side channel
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4489;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=WqW786t7q9+ihDgpJN44FgB1Jae/JlXTjR9cUVFHX5Q=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOMRaLRiIOl73vjQW8a+WDffq8SPP3C0JS4B0l1jT
- wfRBWAiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjEWgAKCRB33NvayMhJ0cpYEA
- Ct4IzhYMW1f+Sui+qm/asTGqy7frjqZIkG345PgKXxwKsLYK+sjfeCKVYf6KgIoCYtBLasUcg3USWx
- 6IEH3mJ4OiuaO32Kz7t8GZ6tI5j1PjSc7UwMSZkcr2LwXcqAMA1PgvFln+6hAleZrI/KN0Fb1WIOGC
- 63QzgdXcaJJifYSmEEGQIn0WzdFXupJXk/tssjkkiPIT1OZcrC+7gDceNyKpFjmNge3o0PIiFZbhjN
- B9i1SfjKILTTS0I2eklKu+40e+CAeRMvO5Pcx1SPNlq5HMNiF6ZLa5+53GTOCp/Z1O+W2h2g9ISw+x
- LzG2Id5SHBZFE5KtBehPwYZOZ1aDuJHskXaq9gnfi2rriIlHW7z+y3LWQFe7x6zyR0O70BOxYkhwUl
- h72bzUD6u8bUL3AWB4JMdniAyqjhs5/JJlQ5JLKzQ4S56GtYc85QTU74dii4XCRaK5WpUiIHF0JwD4
- 0D/3GIGfyT5aejDT1wcrLXK8iJbIcPLmtc2t0SXZYqXarlvToSZ11aRUWkiZMH1v/WVeRdF0hgfzp3
- GsvL1iGedBZ8OEKCqA37jfWDml+BqwhmJvAhL+vC/DPh621BVfezmzaq2Er2uOWLqKNaQqfoV4ZrXZ
- Lv7jXPuyGY0iGeUT9DxpICwhDXpGbcAlQ3xAqTv+lIHIsQCBW+1v/pTDqWMQ==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+        linux-kernel@vger.kernel.org
+References: <20231025-topic-sm8650-upstream-bindings-aoss-qmp-v1-1-8940621d704c@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025-topic-sm8650-upstream-bindings-aoss-qmp-v1-1-8940621d704c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,88 +125,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Last Level Cache Controller support for the SM8650 platform.
+On 25/10/2023 09:18, Neil Armstrong wrote:
+> Document the Always-On Subsystem side channel on the SM8650 Platform.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+> For convenience, a regularly refreshed linux-next based git tree containing
+> all the SM8650 related work is available at:
+> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
+> ---
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/soc/qcom/llcc-qcom.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index 674abd0d6700..dddbba52b057 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -362,6 +362,32 @@ static const struct llcc_slice_config sm8550_data[] =  {
- 	{LLCC_VIDVSP,   28,  256, 4, 1, 0xFFFFFF, 0x0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
- };
- 
-+static const struct llcc_slice_config sm8650_data[] = {
-+	{LLCC_CPUSS,     1,    0, 1, 1,      0x0, 0x0,      0, 0x0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_VIDSC0,    2,  512, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_AUDIO,     6, 1024, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_MDMHPGRW, 25, 1024, 3, 0, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_MODHW,    26, 1024, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_CMPT,     10, 4096, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_GPUHTW,   11,  512, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_GPU,       9, 3096, 1, 0, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_MMUHWT,   18,  768, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_DISP,     16, 6144, 1, 1, 0xFFFFFF, 0x0,      2, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_MDMPNG,   27, 1024, 0, 1, 0x000000, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_AUDHW,    22, 1024, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_CVP,       8,  256, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_MODPE,    29,  128, 1, 1, 0xF00000, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-+	{LLCC_WRCACHE,  31,  512, 1, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_CAMEXP0,   4,  256, 3, 1,      0xF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_CAMEXP1,   7, 3200, 3, 1, 0xFFFFF0, 0x0,      2, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_CMPTHCP,  17,  256, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_LCPDARE,  30,  128, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-+	{LLCC_AENPU,     3, 3072, 1, 1, 0xFFFFFF, 0x0,      2, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_ISLAND1,  12, 6144, 7, 1,      0x0, 0xFFFFFF, 0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_DISP_WB,  23, 1024, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+	{LLCC_VIDVSP,   28,  256, 3, 1, 0xFFFFFF, 0x0,      0, 0x0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-+};
-+
- static const struct llcc_slice_config qdu1000_data_2ch[] = {
- 	{ LLCC_MDMHPGRW, 7, 512, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
- 	{ LLCC_MODHW,    9, 256, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-@@ -610,6 +636,16 @@ static const struct qcom_llcc_config sm8550_cfg[] = {
- 	},
- };
- 
-+static const struct qcom_llcc_config sm8650_cfg[] = {
-+	{
-+		.sct_data       = sm8650_data,
-+		.size           = ARRAY_SIZE(sm8650_data),
-+		.need_llcc_cfg	= true,
-+		.reg_offset	= llcc_v2_1_reg_offset,
-+		.edac_reg_offset = &llcc_v2_1_edac_reg_offset,
-+	},
-+};
-+
- static const struct qcom_sct_config qdu1000_cfgs = {
- 	.llcc_config	= qdu1000_cfg,
- 	.num_config	= ARRAY_SIZE(qdu1000_cfg),
-@@ -675,6 +711,11 @@ static const struct qcom_sct_config sm8550_cfgs = {
- 	.num_config	= ARRAY_SIZE(sm8550_cfg),
- };
- 
-+static const struct qcom_sct_config sm8650_cfgs = {
-+	.llcc_config	= sm8650_cfg,
-+	.num_config	= ARRAY_SIZE(sm8650_cfg),
-+};
-+
- static struct llcc_drv_data *drv_data = (void *) -EPROBE_DEFER;
- 
- /**
-@@ -1249,6 +1290,7 @@ static const struct of_device_id qcom_llcc_of_match[] = {
- 	{ .compatible = "qcom,sm8350-llcc", .data = &sm8350_cfgs },
- 	{ .compatible = "qcom,sm8450-llcc", .data = &sm8450_cfgs },
- 	{ .compatible = "qcom,sm8550-llcc", .data = &sm8550_cfgs },
-+	{ .compatible = "qcom,sm8650-llcc", .data = &sm8650_cfgs },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_llcc_of_match);
-
--- 
-2.34.1
+Best regards,
+Krzysztof
 
