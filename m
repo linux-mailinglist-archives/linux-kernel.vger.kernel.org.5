@@ -2,58 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D3A7D6CF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B957D6D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344519AbjJYNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S1343844AbjJYNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbjJYNTN (ORCPT
+        with ESMTP id S233953AbjJYNWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:19:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E36116;
-        Wed, 25 Oct 2023 06:19:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22AFBC433C8;
-        Wed, 25 Oct 2023 13:19:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698239950;
-        bh=Ci0vxFFZNtFeVP3RCR5K8NdyiUpR9ShP/DL1ujPvA3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ja7U9t4UPBw5U7+7ivbTtzhJDsKv74ZqnJQhhb2P4yiygiKRgqP6HJbKIFpe1+tfB
-         inFd5+1NtHECdhg/QV/QOnQ5MN64AOVINbkmixGo7JVR2XND/Ay6xtHGMJVm34D121
-         mMa/OvkeOryvyCuihvYJvwIoIxWlphDlz197VN9DS6OYJlnnZan8chHCKDdZ8fqO4V
-         KAi+0VFc7+nP0ryVSX5eIGcWXoDUDSy+7M1o3IF+gOqrM5As2lK0Z83QwJi06YoSt6
-         464vR52OL/EB9djGwfJVAGTbhiqpW+FI2dt9ilBO1xi8qDCaOYQxR3AWE5p2duokzS
-         EhMQq5VsCl++g==
-Date:   Wed, 25 Oct 2023 15:19:05 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
-Subject: Re: upcoming merge window: Re: linux-next: manual merge of the
- vfs-brauner tree with the btrfs tree
-Message-ID: <20231025-braumeister-sprung-44d486e2d721@brauner>
-References: <20231009104840.1bdadc80@canb.auug.org.au>
- <20231009-bauch-gedanken-e02e35804e03@brauner>
- <20231011083754.45a9ed53@canb.auug.org.au>
- <20231011092004.GE2211@suse.cz>
- <20231012154210.GI2211@suse.cz>
- <20231023175513.GL26353@twin.jikos.cz>
- <20231024082543.575b3edd@canb.auug.org.au>
- <20231024-kolossal-ungelegen-f95c436de174@brauner>
- <20231024154620.GQ26353@twin.jikos.cz>
+        Wed, 25 Oct 2023 09:22:09 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FD5116;
+        Wed, 25 Oct 2023 06:22:07 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PD6lX4004426;
+        Wed, 25 Oct 2023 13:22:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=buXHtXxmivbJEdS9h1J93aPaDy39QdlVwWR4uC0gIOQ=;
+ b=MlQkPZajgNopFucrzaL3RyWzvdG5p/JpXIKsNvIS84ryRN8q274eCMK75rd1PP3W77O/
+ aWWp1TOX+O3y8vj6xxi42Z+dMU40Imd2JuvyimfLUdMWB0eLmhkM8M4vJDk6ptm4iAd7
+ ls/DmdX2Je7qAkgcLQWO02Ae7NIQIr7oo6a/h+jJyxQ/3S/Y+LyVmE0rAZVB4gwYMIT6
+ xVOL7r1BNDx3BeWRIGDv30N6sVP8R0Feqd6thk3sqQH0CgF6GwML7A29KDX9WS/Skr5T
+ Om27A+jkNXyQoNL2ge4VkL1aFQxVs3Mgtt04GYb8xAPvyke9A9dum/6PVBNZOYJEyql0 EA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3dfgw06-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:22:06 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39PDKksU029602;
+        Wed, 25 Oct 2023 13:21:03 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3dfgtv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:21:03 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39PD1Lqc010231;
+        Wed, 25 Oct 2023 13:20:20 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbypyw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:20:20 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39PDKKna53608948
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 13:20:20 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11FA758056;
+        Wed, 25 Oct 2023 13:20:20 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 464445805A;
+        Wed, 25 Oct 2023 13:20:19 +0000 (GMT)
+Received: from [9.171.58.254] (unknown [9.171.58.254])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 25 Oct 2023 13:20:19 +0000 (GMT)
+Message-ID: <4fbae6da-4dbd-9901-2d5b-d17cfb240223@linux.ibm.com>
+Date:   Wed, 25 Oct 2023 15:20:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231024154620.GQ26353@twin.jikos.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] drivers: s390: dasd_int.h: resolved spelling mistake
+To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>,
+        hoeppner@linux.ibm.com
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231010043140.28416-1-m.muzzammilashraf@gmail.com>
+Content-Language: en-US
+From:   Stefan Haberland <sth@linux.ibm.com>
+In-Reply-To: <20231010043140.28416-1-m.muzzammilashraf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HQDYs-_FIKY4a9_MMDa4DiRPZqoBFow8
+X-Proofpoint-GUID: tfzM6o2-xT2sE8A8yZenjYkzk7PBNAVZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_02,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=653 adultscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 impostorscore=0 clxscore=1011 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250116
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,84 +94,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 05:46:20PM +0200, David Sterba wrote:
-> On Tue, Oct 24, 2023 at 10:59:39AM +0200, Christian Brauner wrote:
-> > On Tue, Oct 24, 2023 at 08:25:43AM +1100, Stephen Rothwell wrote:
-> > > Hi David,
-> > > 
-> > > On Mon, 23 Oct 2023 19:55:13 +0200 David Sterba <dsterba@suse.cz> wrote:
-> > > >
-> > > > I have updated my for-next branch again, sorry (top commit 1a4dc97c883a4f763cbaf50).
-> > > > There are some fixes I don't want to miss from the 6.7 pull request.
-> > > > There should be minimal change to the VFS tree conflict resolution so
-> > > > the diff should be reusable.
-> > > 
-> > > So, why did you not just merge in v6.6-rc7 (or better yet, the branch
-> > > that contains the fix(es) that Linus merged) and then apply your new
-> > > commits on top of that?  All the commits that were in the btrfs tree
-> > > have been rebased unchanged.
-> > 
-> > Please reconsider that and follow Stephen's suggestion. I'm sending pull
-> > requests this week and it'd be really annoying having to rebase
-> > vfs.super right before sending them.
-> > 
-> > We let you carry the required patches in btrfs on your insistence even
-> > though this effectively blocked two patchsets for a whole cycle
-> 
-> I hope I explained my reasons already under that series, core btrfs
-> changes should not go via VFS tree.
-> 
-> > and then
-> > merged in btrfs into vfs.super for that. Rebasing on such short notice
-> > is really not very nice.
-> 
-> Like said in the my other reply, the amount of VFS changes asks for
-> stopping taking new patches to btrfs and not continuing the patch
-> workflow that I've been doing. I understand that the inter-tree
-> dependencies are never easy so it's about finding some common way and
-> splitting the work over more releases eventually.
-> 
-> A resync of our branches a week before merge window, when there are no
+Am 10.10.23 um 06:31 schrieb Muhammad Muzammil:
+> resolved typing mistake from pimary to primary
+>
+> Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+> ---
 
-Pull requests for VFS and a bunch of other trees are going out the week
-before the merge window opens. This has been requested multiple times.
-It's mentioned in almost every kernel release mail that pull requests
-should go out early.
+applied, thanks
 
-So you rebasing a week before the merge window means rebasing
-right before the pr is sent for us. You might send pull requests later
-and are free to do so of course but you made us depend on your tree so
-we need some stability. That's why the rebase is problematic here.
 
-> significant changes on my side does not sound like too short notice, but
-> you can feel otherwise of course.
-> 
-> > I'm going to wait with the rebase for a bit.
-> 
-> Ok, don't rebase. I'll push to linux-next the previous snapshot and will
-> find a way how to deliver the new patches.
-
-Thanks! So I know you have your workflow and that's obviously fine but
-rebasing when other major trees depend on your tree is a problem and I
-believe Stephen has already linked to our official "Rebasing and
-merging" documentation:
-
-"- Do not reparent a tree without a good reason to do so.  Just being on a
-   newer base or avoiding a merge with an upstream repository is not
-   generally a good reason."
-
-[...]
-
-"A frequent cause of merge-window trouble is when Linus is presented with a
-patch series that has clearly been reparented, often to a random commit,
-shortly before the pull request was sent.  The chances of such a series
-having been adequately tested are relatively low - as are the chances of
-the pull request being acted upon."
-
-So I'll make sure to point out that we're depending on the btrfs tree
-and I have a clear merge commit explaining why we're pulling it in. All
-of that would be invalidated if you're rebasing. So not rebasing really
-helps us a lot.
-
-I specifically put Linus in Cc so hopefully everyone is aware up front
-and there are no unnecessary suprises during the merge window.
