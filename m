@@ -2,201 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCB27D6991
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B227D6969
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbjJYKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        id S233341AbjJYKsR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 06:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234893AbjJYKsy (ORCPT
+        with ESMTP id S229456AbjJYKsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:48:54 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FED12D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:48:47 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qvbQQ-0001DN-Q8; Wed, 25 Oct 2023 12:47:46 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qvbQO-0049gV-FC; Wed, 25 Oct 2023 12:47:44 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qvbQO-005ubj-4j; Wed, 25 Oct 2023 12:47:44 +0200
-Date:   Wed, 25 Oct 2023 12:47:43 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <20231025104743.56elaloj3jmojz2v@pengutronix.de>
-References: <cover.1697534024.git.sean@mess.org>
- <a7fcd19938d5422abc59c968ff7b3d5c275577ed.1697534024.git.sean@mess.org>
- <90728c06-4c6c-b3d2-4723-c24711be2fa5@redhat.com>
- <20231019105118.64gdzzixwqrztjir@pengutronix.de>
- <01a505ac-320f-3819-a58d-2b82c1bf2a86@redhat.com>
- <ZTT9fvEF+lqfzGJ/@gofer.mess.org>
- <20231023133417.GE49511@aspen.lan>
- <ZTjll7oTNVWqygbD@gofer.mess.org>
+        Wed, 25 Oct 2023 06:48:15 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC4393;
+        Wed, 25 Oct 2023 03:48:13 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59e88a28b98so6650907b3.1;
+        Wed, 25 Oct 2023 03:48:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698230892; x=1698835692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q7T7NGjmsCv32Izm0iMAgL/DHgoAs/s0TcgPa3jLVR8=;
+        b=n0lKfl6dFROgyHTE8WIYLvsiJnNVvyE7gzGqm+BCRbghllqtUS3BW/MO+8HgkguZL2
+         3OT38Fbh1P49wVakqH/oYACNIiKh6v53eUjBlyFWBHVjSBlS2ZC6+vdvpWx4/srAhl36
+         PMM5i4FntR+tlqk5CDWn4tY86f3P9MN7v/iVao6w7U1zRJipixDknKlaAjH/h12lPjMC
+         yfjSpVzy26W1MZn6gs9gMB1Ehfp7jLTY41zoriJpFAjou0ACHB93F32JVUcb247BbVUW
+         faypM0HrG3vH0dsouDPXVcmw9tqpvtOuN29275p9R9UT67oREbUxUOk5vaGXydV06ZLC
+         3UFg==
+X-Gm-Message-State: AOJu0YwQlV0nuP4jQiYXkNUaRI1qaIN1PCJD5RpaCWk3Xf+NFpXjezxZ
+        2oJ5UXnJ56I1QbfWL3gYVttaKWWDGRoKKg==
+X-Google-Smtp-Source: AGHT+IEfd/WP3MSwk5oB8X3FKP+O8MfqjblkSC95xVYIPf4egqHK/s7KnBLQgIE10CYRQB7i7zaYcQ==
+X-Received: by 2002:a0d:d444:0:b0:5a7:bf2b:4729 with SMTP id w65-20020a0dd444000000b005a7bf2b4729mr21077075ywd.23.1698230892159;
+        Wed, 25 Oct 2023 03:48:12 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id l2-20020a81d542000000b005a7b8d12f52sm4922349ywj.40.2023.10.25.03.48.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 03:48:10 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-da0359751dbso659497276.1;
+        Wed, 25 Oct 2023 03:48:09 -0700 (PDT)
+X-Received: by 2002:a25:b116:0:b0:da0:81da:e4df with SMTP id
+ g22-20020a25b116000000b00da081dae4dfmr1644233ybj.13.1698230889565; Wed, 25
+ Oct 2023 03:48:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kdxw67dv7iobkbz2"
-Content-Disposition: inline
-In-Reply-To: <ZTjll7oTNVWqygbD@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231009130126.697995596@linuxfoundation.org> <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
+ <ZSRe78MAQwbBdyFP@duo.ucw.cz> <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
+ <ZSU+GHl1q7T/TBp5@duo.ucw.cz> <ZSWg1fv3gOyV5t+h@shikoro> <2023101057-runny-pellet-8952@gregkh>
+ <ZTgZa1ic1iFbdaTM@duo.ucw.cz>
+In-Reply-To: <ZTgZa1ic1iFbdaTM@duo.ucw.cz>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 25 Oct 2023 12:47:57 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXQApuOPfU1zNKcHKN5=fCuLBSDiLtF06U7e4Tx0+noyA@mail.gmail.com>
+Message-ID: <CAMuHMdXQApuOPfU1zNKcHKN5=fCuLBSDiLtF06U7e4Tx0+noyA@mail.gmail.com>
+Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10 000/226]
+ 5.10.198-rc1 review
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        niklas.soderlund+renesas@ragnatech.se,
+        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
+        biju.das.jz@bp.renesas.com, Chris.Paterson2@renesas.com,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pavel,
 
---kdxw67dv7iobkbz2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Wed, Oct 25, 2023 at 10:53:27AM +0100, Sean Young wrote:
-> On Mon, Oct 23, 2023 at 02:34:17PM +0100, Daniel Thompson wrote:
-> > On Sun, Oct 22, 2023 at 11:46:22AM +0100, Sean Young wrote:
-> > > On Sat, Oct 21, 2023 at 11:08:22AM +0200, Hans de Goede wrote:
-> > > > On 10/19/23 12:51, Uwe Kleine-K=F6nig wrote:
-> > > > > On Wed, Oct 18, 2023 at 03:57:48PM +0200, Hans de Goede wrote:
-> > > > >> On 10/17/23 11:17, Sean Young wrote:
-> > > > > I think it's very subjective if you consider this
-> > > > > churn or not.
+On Tue, Oct 24, 2023 at 9:22 PM Pavel Machek <pavel@denx.de> wrote:
+> > > > And testing failed. So
 > > > >
-> > > > I consider it churn because I don't think adding a postfix
-> > > > for what is the default/expected behavior is a good idea
-> > > > (with GPIOs not sleeping is the expected behavior).
+> > > > commit f5799b4e142884c2e7aa99f813113af4a3395ffb
+> > > > Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > > Date:   Tue Nov 10 15:20:57 2020 +0100
 > > > >
-> > > > I agree that this is very subjective and very much goes
-> > > > into the territory of bikeshedding. So please consider
-> > > > the above my 2 cents on this and lets leave it at that.
+> > > >     mmc: renesas_sdhi: populate SCC pointer at the proper place
+> > > >
+> > > >     [ Upstream commit d14ac691bb6f6ebaa7eeec21ca04dd47300ff5b6 ]
+> > > >
+> > > > seems to be the buggy commit that breaks renesas boards in 5.10.
 > > >
-> > > You have a valid point. Let's focus on having descriptive function na=
-mes.
-> >=20
-> > For a couple of days I've been trying to resist the bikeshedding (esp.
-> > given the changes to backlight are tiny) so I'll try to keep it as
-> > brief as I can:
-> >=20
-> > 1. I dislike the do_it() and do_it_cansleep() pairing. It is
-> >    difficult to detect when a client driver calls do_it() by mistake.
-> >    In fact a latent bug of this nature can only be detected by runtime
-> >    testing with the small number of PWMs that do not support
-> >    configuration from an atomic context.
-> >=20
-> >    In contrast do_it() and do_it_atomic()[*] means that although
-> >    incorrectly calling do_it() from an atomic context can be pretty
-> >    catastrophic it is also trivially detected (with any PWM driver)
-> >    simply by running with CONFIG_DEBUG_ATOMIC_SLEEP.
+> > > This patch was part of a series. Did the other two patches come with it?
+> > >
+> > > b161d87dfd3d ("mmc: renesas_sdhi: probe into TMIO after SCC parameters have been setup")
+> >
+> > Yes.
+> >
+> > > 45bffc371fef ("mmc: renesas_sdhi: only reset SCC when its pointer is populated")
+> >
+> > No :(
+> >
+> > > If not, I could imagine that could lead to a crash. No idea why only
+> > > with 5.10, though.
+> >
+> > The above commit is only in 5.11, so newer kernels should be fine.
+> >
+> > I'll go queue up the one missing patch now, thanks.
+>
+> Thank you. Patch indeed appears to be in 5.10.199.
+>
+> But we still have failures on Renesas with 5.10.199-rc2:
+>
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1047368849
+>
+> And they still happed during MMC init:
+>
+>     2.638013] renesas_sdhi_internal_dmac ee100000.mmc: Got CD GPIO
+> [    2.638846] INFO: trying to register non-static key.
+> [    2.644192] ledtrig-cpu: registered to indicate activity on CPUs
+> [    2.649066] The code is fine but needs lockdep annotation, or maybe
+> [    2.649069] you didn't initialize this object before use?
+> [    2.649071] turning off the locking correctness validator.
+> [    2.649080] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.199-rc2-arm64-renesas-ge31b6513c43d #1
+> [    2.649082] Hardware name: HopeRun HiHope RZ/G2M with sub board (DT)
+> [    2.649086] Call trace:
+> [    2.655106] SMCCC: SOC_ID: ARCH_SOC_ID not implemented, skipping ....
+> [    2.661354]  dump_backtrace+0x0/0x194
+> [    2.661361]  show_stack+0x14/0x20
+> [    2.667430] usbcore: registered new interface driver usbhid
+> [    2.672230]  dump_stack+0xe8/0x130
+> [    2.672238]  register_lock_class+0x480/0x514
+> [    2.672244]  __lock_acquire+0x74/0x20ec
+> [    2.681113] usbhid: USB HID core driver
+> [    2.687450]  lock_acquire+0x218/0x350
+> [    2.687456]  _raw_spin_lock+0x58/0x80
+> [    2.687464]  tmio_mmc_irq+0x410/0x9ac
+> [    2.688556] renesas_sdhi_internal_dmac ee160000.mmc: mmc0 base at 0x00000000ee160000, max clock rate 200 MHz
+> [    2.744936]  __handle_irq_event_percpu+0xbc/0x340
+> [    2.749635]  handle_irq_event+0x60/0x100
+> [    2.753553]  handle_fasteoi_irq+0xa0/0x1ec
+> [    2.757644]  __handle_domain_irq+0x7c/0xdc
+> [    2.761736]  efi_header_end+0x4c/0xd0
+> [    2.765393]  el1_irq+0xcc/0x180
+> [    2.768530]  arch_cpu_idle+0x14/0x2c
+> [    2.772100]  default_idle_call+0x58/0xe4
+> [    2.776019]  do_idle+0x244/0x2c0
+> [    2.779242]  cpu_startup_entry+0x20/0x6c
+> [    2.783160]  rest_init+0x164/0x28c
+> [    2.786561]  arch_call_rest_init+0xc/0x14
+> [    2.790565]  start_kernel+0x4c4/0x4f8
+> [    2.794233] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000014
+> [    2.803011] Mem abort info:
+>
+> from https://lava.ciplatform.org/scheduler/job/1025535
+> from
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/5360973735 .
+>
+> Is there something else missing?
 
-Wrongly calling the atomic variant (no matter how it's named) in a
-context where sleeping is possible is only a minor issue. Being faster
-than necessary is hardly a problem, so it only hurts by not being an
-preemption point with PREEMPT_VOLUNTARY which might not even be relevant
-because we're near to a system call anyhow.
+I don't have a HopeRun HiHope RZ/G2M, but both v5.10.198 and v5.10.199
+seem to work fine on Salvator-XS with R-Car H3 ES2.0 and Salvator-X
+with R-Car M3-W ES1.0, using a config based on latest renesas_defconfig.
 
-For me the naming is only very loosely related to the possible bugs. I
-think calling the wrong function happens mainly because the driver author
-isn't aware in which context the call happens and not because of wrong
-assumptions about the sleepiness of a certain function call.
-If you consider this an argument however, do_it + do_it_cansleep is
-better than do_it_atomic + do_it as wrongly assuming do_it would sleep
-is less bad than wrongly assuming do_it wouldn't sleep. (The latter is
-catched by CONFIG_DEBUG_ATOMIC_SLEEP, but only if it's enabled.)
+Gr{oetje,eeting}s,
 
-Having said that while my subjective preference ordering is (with first
-=3D best):
+                        Geert
 
-	do_it + do_it_cansleep
-	do_it_atomic + do_it_cansleep
-	do_it_atomic + do_it
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-wi(th a _might_sleep or _mightsleep suffix ranging below _cansleep)
-I wouldn't get sleepless nights when I get overruled here
-(uwe_cansleep :-).
-
-> >    No objections (beyond churn) to fully spelt out pairings such as
-> >    do_it_cansleep() and do_it_atomic()[*]!
->=20
-> I must say I do like the look of this. Uwe, how do you feel about:
-> pwm_apply_cansleep() and pwm_apply_atomic()? I know we've talked about
-> pwm_apply_atomic in the past, however I think this this the best=20
-> option I've seen so far.
->=20
-> > 2. If there is an API rename can we make sure the patch contains no
-> >    other changes (e.g. don't introduce any new API in the same patch).
-> >    Seperating renames makes the patches easier to review!
-> >    It makes each one smaller and easier to review!
->=20
-> Yes, this should have been separated out. Will fix for next version.
-
-+1
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---kdxw67dv7iobkbz2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmU48k8ACgkQj4D7WH0S
-/k6W3AgAk4aFQs6woLctFKPwObedmFaF4LVusjnyP2JYEuwOcWzfmL/W31PFxuWP
-KEm7kc/16r0LD6qbwwgpOGUucBHmXKkmJa+0tdj/pRKkbkBfbA/RDaly9ZNh9Aql
-dZEuZ4CyAE7Pw6ea3ZQhQL1W4x37ZZwVPMvNmQaydtP5VBP1cBrml1SBcrT+6r0j
-j6N5LZR1Jb1+8XuisgUnufJAbBpykKTDJSdqwsREGb93kuDzhiTB7/YDFXe9P8fs
-NOvV78af278xkuohhXrWRRdqJSd+/PDGii+WImHHQpWcJPmcgwsXMCnjnK7DruZR
-Ket6emGp+CLdMp+GKhD7b53atfLNjQ==
-=7sp5
------END PGP SIGNATURE-----
-
---kdxw67dv7iobkbz2--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
