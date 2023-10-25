@@ -2,97 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269287D64BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7D27D64C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbjJYISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50216 "EHLO
+        id S232985AbjJYIUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjJYISG (ORCPT
+        with ESMTP id S230147AbjJYIUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:18:06 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E042C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:18:05 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so8006176a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1698221883; x=1698826683; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xF6RmXe0iwrBVlFJKvkrtWsUWK5y+quiCOALv0ygLjY=;
-        b=cHMoCLoyWqLWgCXUUkkDnO5cbAijynfJ0KVXEABg7InAxq1gAlCLqegw8NqEZZn41h
-         G5foSadkFXVwf9Q2pbcuYF3lRalC/3mL2rW65LTbdP0Mv3R14Z5KXsPX48Ts4Cgj4f9Z
-         C/KABSVzXS54FGaiYBTszdh5oIQ7ZEzT8qIFM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698221883; x=1698826683;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xF6RmXe0iwrBVlFJKvkrtWsUWK5y+quiCOALv0ygLjY=;
-        b=E3zgnQ8iyRNhZyaylO8XOaTFeXpQBY5xniYJ0PhCGIm1yHMBgJM52+DfK8mSs9MAnb
-         oLaYiA8Wx2yb1AEY9wQxjRvsxpl/BxIygHrxOyNi67Knd+M0k1Qx+KdlUlIGP9rrzYz0
-         RopZsuhilpwWPsBKp27SLRj/Q4F3f1WPn4FvEJVIb49CxvbC/ZbAJsxHMjHkhHzjGTez
-         j68cOl+0ycymlSqqWnU7jcZrap1eNhZYBIxy+jhefmLnX70uUwoQtFe20IsBlowGWJSx
-         +q9doHk82d+7H26CZLEFrYl4m6hviGzVk6Df99yZbajU5/0bEdGZwfCfbFvPh/9+mD95
-         tsaA==
-X-Gm-Message-State: AOJu0YzMQnfhrAHKQUCb09sb02fpWGs54/qw2J7b7VaI3YSWq8h0SxJi
-        zK6bT77iAQ1WOw4HY0UllxcY5w==
-X-Google-Smtp-Source: AGHT+IFIy8aB1unRqCPL9qYewTHPkrA5JVy0EuoyQaAtd8SKKnjyQjwdjhFVPf1/NxxldDs9u8D+LQ==
-X-Received: by 2002:a17:907:1c0b:b0:9be:45b3:1c3c with SMTP id nc11-20020a1709071c0b00b009be45b31c3cmr12738251ejc.64.1698221882709;
-        Wed, 25 Oct 2023 01:18:02 -0700 (PDT)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id ov5-20020a170906fc0500b009a1fef32ce6sm9561110ejb.177.2023.10.25.01.18.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 01:18:02 -0700 (PDT)
-Message-ID: <374465d3-dceb-43b1-930e-dd4e9b7322d2@rasmusvillemoes.dk>
-Date:   Wed, 25 Oct 2023 10:18:00 +0200
+        Wed, 25 Oct 2023 04:20:05 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B747B0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:02 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P8CFuP028224;
+        Wed, 25 Oct 2023 08:19:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8fyN1XSY3iCzycp1u1WIJ7TbJh+QRJ4JC+EH0GTwq6A=;
+ b=gGEd1imBRlYBLjZWM4WWitsIvM7HE4nBnDRuC7pKeW4XsiLjLfrM+Q4pxokDwVlVc59s
+ Lk1A348Mh9V+rWj8jrocKOnOLqQf3MoZBpvnb3/B8Ua43Mst8KheDWYj4QTGUMTsuF/H
+ UlgLxpXXOkvc0NNl2XM1fVJV4/ED9wdL5uf54Y7C7YSbRN/ZE/f4OtOTGjDcHoEgkMpq
+ jyfGXqR77NDQ38e6ddxhehWVfo1ZasA3T6g7MJnjGeFqgMpcl+90ZlJx7qcmpkmX6KtI
+ +c9jjJFs/DRgVel5OEJOYQM9MLG7UtJkpbGaZQc4wlde2AZGbsTS0IHEwyAO1rCYqJac CQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txya3r8d3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 08:19:55 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39P5wqWk024403;
+        Wed, 25 Oct 2023 08:19:55 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvu6k4wkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 08:19:54 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39P8JrmZ21430838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 08:19:53 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 317C52004B;
+        Wed, 25 Oct 2023 08:19:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C83B920040;
+        Wed, 25 Oct 2023 08:19:52 +0000 (GMT)
+Received: from [9.171.32.46] (unknown [9.171.32.46])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 25 Oct 2023 08:19:52 +0000 (GMT)
+Message-ID: <9cdba213-d6cf-427e-abd3-a0e1e1b39299@linux.ibm.com>
+Date:   Wed, 25 Oct 2023 10:19:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] lib/find: Make functions safe on changing bitmaps
-Content-Language: en-US, da
-To:     kernel test robot <oliver.sang@intel.com>, Jan Kara <jack@suse.cz>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        Yury Norov <yury.norov@gmail.com>,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org
-References: <202310251458.48b4452d-oliver.sang@intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <202310251458.48b4452d-oliver.sang@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] ocxl: make ocxl_class constant
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <2023102403-squirt-defraud-6c0c@gregkh>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+In-Reply-To: <2023102403-squirt-defraud-6c0c@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dNcJmMaG1T2GK9C19kaa-ksAv4XOWZdv
+X-Proofpoint-ORIG-GUID: dNcJmMaG1T2GK9C19kaa-ksAv4XOWZdv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250070
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 09.18, kernel test robot wrote:
+
+
+On 24/10/2023 13:49, Greg Kroah-Hartman wrote:
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
 > 
+> Cc: Frederic Barrat <fbarrat@linux.ibm.com>
+> Cc: Andrew Donnellan <ajd@linux.ibm.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+
+Thanks!
+
+Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
+
+   Fred
+
+
+>   drivers/misc/ocxl/file.c | 27 +++++++++++++++------------
+>   1 file changed, 15 insertions(+), 12 deletions(-)
 > 
-> Hello,
-> 
-> kernel test robot noticed a 3.7% improvement of will-it-scale.per_thread_ops on:
-
-So with that, can we please just finally say "yeah, let's make the
-generic bitmap library functions correct and usable in more cases"
-instead of worrying about random micro-benchmarks that just show
-you-win-some-you-lose-some.
-
-Yes, users will have to treat results from the find routines carefully
-if their bitmap may be concurrently modified. They do. Nobody wins if
-those users are forced to implement their own bitmap routines for their
-lockless algorithms.
-
-Rasmus
-
+> diff --git a/drivers/misc/ocxl/file.c b/drivers/misc/ocxl/file.c
+> index 6e63f060e4cc..ac69b7f361f5 100644
+> --- a/drivers/misc/ocxl/file.c
+> +++ b/drivers/misc/ocxl/file.c
+> @@ -14,7 +14,6 @@
+>   #define OCXL_NUM_MINORS 256 /* Total to reserve */
+>   
+>   static dev_t ocxl_dev;
+> -static struct class *ocxl_class;
+>   static DEFINE_MUTEX(minors_idr_lock);
+>   static struct idr minors_idr;
+>   
+> @@ -509,6 +508,16 @@ static void ocxl_file_make_invisible(struct ocxl_file_info *info)
+>   	cdev_del(&info->cdev);
+>   }
+>   
+> +static char *ocxl_devnode(const struct device *dev, umode_t *mode)
+> +{
+> +	return kasprintf(GFP_KERNEL, "ocxl/%s", dev_name(dev));
+> +}
+> +
+> +static const struct class ocxl_class = {
+> +	.name =		"ocxl",
+> +	.devnode =	ocxl_devnode,
+> +};
+> +
+>   int ocxl_file_register_afu(struct ocxl_afu *afu)
+>   {
+>   	int minor;
+> @@ -529,7 +538,7 @@ int ocxl_file_register_afu(struct ocxl_afu *afu)
+>   
+>   	info->dev.parent = &fn->dev;
+>   	info->dev.devt = MKDEV(MAJOR(ocxl_dev), minor);
+> -	info->dev.class = ocxl_class;
+> +	info->dev.class = &ocxl_class;
+>   	info->dev.release = info_release;
+>   
+>   	info->afu = afu;
+> @@ -584,11 +593,6 @@ void ocxl_file_unregister_afu(struct ocxl_afu *afu)
+>   	device_unregister(&info->dev);
+>   }
+>   
+> -static char *ocxl_devnode(const struct device *dev, umode_t *mode)
+> -{
+> -	return kasprintf(GFP_KERNEL, "ocxl/%s", dev_name(dev));
+> -}
+> -
+>   int ocxl_file_init(void)
+>   {
+>   	int rc;
+> @@ -601,20 +605,19 @@ int ocxl_file_init(void)
+>   		return rc;
+>   	}
+>   
+> -	ocxl_class = class_create("ocxl");
+> -	if (IS_ERR(ocxl_class)) {
+> +	rc = class_register(&ocxl_class);
+> +	if (rc) {
+>   		pr_err("Unable to create ocxl class\n");
+>   		unregister_chrdev_region(ocxl_dev, OCXL_NUM_MINORS);
+> -		return PTR_ERR(ocxl_class);
+> +		return rc;
+>   	}
+>   
+> -	ocxl_class->devnode = ocxl_devnode;
+>   	return 0;
+>   }
+>   
+>   void ocxl_file_exit(void)
+>   {
+> -	class_destroy(ocxl_class);
+> +	class_unregister(&ocxl_class);
+>   	unregister_chrdev_region(ocxl_dev, OCXL_NUM_MINORS);
+>   	idr_destroy(&minors_idr);
+>   }
