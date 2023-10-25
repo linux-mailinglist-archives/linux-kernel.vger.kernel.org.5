@@ -2,159 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795E7D75C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CCB7D75D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjJYUfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
+        id S229884AbjJYUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYUfl (ORCPT
+        with ESMTP id S229596AbjJYUh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:35:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926E0136
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698266139; x=1729802139;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=o1yuSRsgQc+sPh946y487tolXIujCnSoSyc/S22vVb8=;
-  b=UdwAp3hBmiuImjD4wgrDWTnKyHqDmcqnjtaHtkIvEe/tAAhF1RZweM9B
-   nIbiBIIQtNyHSjHvYtXI+y2wQ3i/XYjvxD0+MGlSXHegda4FShoZp/wZO
-   bgiDeCIxU+7Ziqfwo5fsetUucaa+vEQvVpwdUdLbMf1JW/1fHFyk7Yggh
-   szMz/lZ9U60U7G1l4MjD0xQDU5vKCnK6pDQGc941+jbyCH8o8769q2eqL
-   ddZolwyKItCxxZPcOiAxcToIaDlVKbekKq0jKSisGh6qA2jWwRnszMfyO
-   HcLiSTWFQjorGy1er8NHSgc0SQA5KhaIXg9fy2Yv7/3KQj/I4hFf0oKSz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="8949855"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="8949855"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:35:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="762579376"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="762579376"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Oct 2023 13:35:34 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvkbE-0009BS-19;
-        Wed, 25 Oct 2023 20:35:32 +0000
-Date:   Thu, 26 Oct 2023 04:34:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Marek Vasut <marex@denx.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: drivers/clk/clk-si521xx.c:318:26: warning: '%d' directive output may
- be truncated writing between 1 and 10 bytes into a region of size 2
-Message-ID: <202310260412.AGASjFN4-lkp@intel.com>
+        Wed, 25 Oct 2023 16:37:29 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2DC136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:37:27 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce37d0f13fso96257a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:37:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698266244; x=1698871044; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GRvWkvBoDYkTwsED6VPJ0pdisbEkaoGqPda2wjpU/Qs=;
+        b=MII0mSTzaQsqVwpW2bZubOzl9GP8xBXYgW3rk0k3ReYKcLrieCYwQP2tmFC5O1kssl
+         1Lf9FuZ8RiskJ6lVenwZwo8w6QVlTemUAWvQPhvVh7lZGv2BVUt3P3oaz+6e0vJ3nVT6
+         NLUZQU61fyc4pHxV5dQUECFsA1WGYxdpdCxWy5uCwcNhYxDllCsoqA01eCLt9y6zRghr
+         0r9I5hppaMVdV9aHFjylDJhgY/Nk8jifUnVvUv8HwM9tM7e2dqn7dhPBltnERgXRp7Wb
+         GoRYc3/WKLU9r6YzD8DUkkd8d0My9GHNrjKKPlrJ526/zGcics5PhrNOAzpxga+ZBaIL
+         ZYtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698266244; x=1698871044;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GRvWkvBoDYkTwsED6VPJ0pdisbEkaoGqPda2wjpU/Qs=;
+        b=t8N0n7aZvzT00ydh6RySvd1cJj13JET7B02zkpQTxNuc59G69kL9cLhHs5FXnBjweA
+         TH7UJDrvbSZpGwGPgPmJCG+3rtgqM9WotRNKvLKg5x0tLW2+nl8UGP2epd1yg5IMlJ3i
+         1gxIsIKRpwKBSl3GkZqDdOAj3OzyqyJtD1hlavXIy4Vv4oo+Sm62mp4uEI1IXty48/Gx
+         Ygk6CSTLD2v3olc2pt/ZFFUSfCZHyBy2FvPXiTUphU5vqzu7QWLhOBcMm7QhythmFBWl
+         /48H/9YRr/RByG5K5qYW8IDF3c1CAAgzyHaGHt3XhxvJZsyg57NmeePRFocIggojgVxN
+         u4jA==
+X-Gm-Message-State: AOJu0YwMqZPEGRyMBENhINncre5H9Ij0xtNR/PicFc416aZ+vkMpK09T
+        7ByURF5RBRGCYdnCFuVSNksTAw==
+X-Google-Smtp-Source: AGHT+IFbX7AlguqhQunscrGf7kDQdcHYoFURhBlkQP1vlzURhFZhOpWBh6z5tFsLLNMSZKF3FqxKdg==
+X-Received: by 2002:a9d:6286:0:b0:6bd:152f:9918 with SMTP id x6-20020a9d6286000000b006bd152f9918mr18452849otk.14.1698266244527;
+        Wed, 25 Oct 2023 13:37:24 -0700 (PDT)
+Received: from ghost ([208.116.208.98])
+        by smtp.gmail.com with ESMTPSA id g15-20020a056830160f00b006b9cc67386fsm2385303otr.66.2023.10.25.13.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 13:37:24 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 13:37:21 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v7 2/4] riscv: Checksum header
+Message-ID: <ZTl8gauEst2NGrw6@ghost>
+References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
+ <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
+ <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   611da07b89fdd53f140d7b33013f255bf0ed8f34
-commit: edc12763a3a29836b23c4fc97a1207baea1d11e8 clk: si521xx: Clock driver for Skyworks Si521xx I2C PCIe clock generators
-date:   7 months ago
-config: x86_64-buildonly-randconfig-004-20231026 (https://download.01.org/0day-ci/archive/20231026/202310260412.AGASjFN4-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310260412.AGASjFN4-lkp@intel.com/reproduce)
+On Wed, Oct 25, 2023 at 06:50:05AM +0000, Wang, Xiao W wrote:
+> Hi Charlie,
+> 
+> > -----Original Message-----
+> > From: linux-riscv <linux-riscv-bounces@lists.infradead.org> On Behalf Of
+> > Charlie Jenkins
+> > Sent: Wednesday, September 20, 2023 2:45 AM
+> > To: Charlie Jenkins <charlie@rivosinc.com>; Palmer Dabbelt
+> > <palmer@dabbelt.com>; Conor Dooley <conor@kernel.org>; Samuel Holland
+> > <samuel.holland@sifive.com>; David Laight <David.Laight@aculab.com>;
+> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> > arch@vger.kernel.org
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>; Albert Ou
+> > <aou@eecs.berkeley.edu>; Arnd Bergmann <arnd@arndb.de>
+> > Subject: [PATCH v7 2/4] riscv: Checksum header
+> > 
+> > Provide checksum algorithms that have been designed to leverage riscv
+> > instructions such as rotate. In 64-bit, can take advantage of the larger
+> > register to avoid some overflow checking.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/checksum.h | 79
+> > +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 79 insertions(+)
+> > 
+> > diff --git a/arch/riscv/include/asm/checksum.h
+> > b/arch/riscv/include/asm/checksum.h
+> > new file mode 100644
+> > index 000000000000..dc0dd89f2a13
+> > --- /dev/null
+> > +++ b/arch/riscv/include/asm/checksum.h
+> > @@ -0,0 +1,79 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * IP checksum routines
+> > + *
+> > + * Copyright (C) 2023 Rivos Inc.
+> > + */
+> > +#ifndef __ASM_RISCV_CHECKSUM_H
+> > +#define __ASM_RISCV_CHECKSUM_H
+> > +
+> > +#include <linux/in6.h>
+> > +#include <linux/uaccess.h>
+> > +
+> > +#define ip_fast_csum ip_fast_csum
+> > +
+> > +#include <asm-generic/checksum.h>
+> > +
+> > +/*
+> > + * Quickly compute an IP checksum with the assumption that IPv4 headers
+> > will
+> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
+> > + * @ihl is the number of 32 bit segments and must be greater than or equal
+> > to 5.
+> > + * @iph is assumed to be word aligned.
+> 
+> Not sure if the assumption is always true. It looks the implementation in "lib/checksum.c" doesn't take this assumption.
+> The ip header can comes after a 14-Byte ether header, which may start from a word-aligned or DMA friendly address.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310260412.AGASjFN4-lkp@intel.com/
+While lib/checksum.c does not make this assumption, other architectures
+(x86, ARM, powerpc, mips, arc) do make this assumption. Architectures
+seem to only align the header on a word boundary in do_csum. I worry
+that the benefit of aligning iph in this "fast" csum function would
+disproportionately impact hardware that has fast misaligned accesses.
 
-All warnings (new ones prefixed by >>):
+- Charlie
 
-   drivers/clk/clk-si521xx.c: In function 'si521xx_probe':
->> drivers/clk/clk-si521xx.c:318:26: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
-      snprintf(name, 6, "DIFF%d", i);
-                             ^~
-   drivers/clk/clk-si521xx.c:318:21: note: directive argument in the range [0, 2147483647]
-      snprintf(name, 6, "DIFF%d", i);
-                        ^~~~~~~~
-   drivers/clk/clk-si521xx.c:318:3: note: 'snprintf' output between 6 and 15 bytes into a destination of size 6
-      snprintf(name, 6, "DIFF%d", i);
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +318 drivers/clk/clk-si521xx.c
-
-   279	
-   280	static int si521xx_probe(struct i2c_client *client)
-   281	{
-   282		const u16 chip_info = (u16)(uintptr_t)device_get_match_data(&client->dev);
-   283		const struct clk_parent_data clk_parent_data = { .index = 0 };
-   284		struct si521xx *si;
-   285		unsigned char name[6] = "DIFF0";
-   286		struct clk_init_data init = {};
-   287		int i, ret;
-   288	
-   289		if (!chip_info)
-   290			return -EINVAL;
-   291	
-   292		si = devm_kzalloc(&client->dev, sizeof(*si), GFP_KERNEL);
-   293		if (!si)
-   294			return -ENOMEM;
-   295	
-   296		i2c_set_clientdata(client, si);
-   297		si->client = client;
-   298	
-   299		/* Fetch common configuration from DT (if specified) */
-   300		ret = si521xx_get_common_config(si);
-   301		if (ret)
-   302			return ret;
-   303	
-   304		si->regmap = devm_regmap_init(&client->dev, NULL, client,
-   305					      &si521xx_regmap_config);
-   306		if (IS_ERR(si->regmap))
-   307			return dev_err_probe(&client->dev, PTR_ERR(si->regmap),
-   308					     "Failed to allocate register map\n");
-   309	
-   310		/* Always read back 1 Byte via I2C */
-   311		ret = regmap_write(si->regmap, SI521XX_REG_BC, 1);
-   312		if (ret < 0)
-   313			return ret;
-   314	
-   315		/* Register clock */
-   316		for (i = 0; i < hweight16(chip_info); i++) {
-   317			memset(&init, 0, sizeof(init));
- > 318			snprintf(name, 6, "DIFF%d", i);
-   319			init.name = name;
-   320			init.ops = &si521xx_diff_clk_ops;
-   321			init.parent_data = &clk_parent_data;
-   322			init.num_parents = 1;
-   323			init.flags = CLK_SET_RATE_PARENT;
-   324	
-   325			si->clk_dif[i].hw.init = &init;
-   326			si->clk_dif[i].si = si;
-   327	
-   328			si521xx_diff_idx_to_reg_bit(chip_info, i, &si->clk_dif[i]);
-   329	
-   330			ret = devm_clk_hw_register(&client->dev, &si->clk_dif[i].hw);
-   331			if (ret)
-   332				return ret;
-   333		}
-   334	
-   335		ret = devm_of_clk_add_hw_provider(&client->dev, si521xx_of_clk_get, si);
-   336		if (!ret)
-   337			si521xx_update_config(si);
-   338	
-   339		return ret;
-   340	}
-   341	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> > + */
+> > +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+> > +{
+> > +	unsigned long csum = 0;
+> > +	int pos = 0;
+> > +
+> > +	do {
+> > +		csum += ((const unsigned int *)iph)[pos];
+> > +		if (IS_ENABLED(CONFIG_32BIT))
+> > +			csum += csum < ((const unsigned int *)iph)[pos];
+> > +	} while (++pos < ihl);
+> > +
+> > +	/*
+> > +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
+> > +	 * worth checking if supported without Alternatives.
+> > +	 */
+> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
+> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
+> > +		unsigned long fold_temp;
+> > +
+> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
+> > +					      RISCV_ISA_EXT_ZBB, 1)
+> > +		    :
+> > +		    :
+> > +		    :
+> > +		    : no_zbb);
+> > +
+> > +		if (IS_ENABLED(CONFIG_32BIT)) {
+> > +			asm(".option push				\n\
+> > +			.option arch,+zbb				\n\
+> > +				not	%[fold_temp], %[csum]
+> > 	\n\
+> > +				rori	%[csum], %[csum], 16		\n\
+> > +				sub	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +			.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> > +		} else {
+> > +			asm(".option push				\n\
+> > +			.option arch,+zbb				\n\
+> > +				rori	%[fold_temp], %[csum], 32	\n\
+> > +				add	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +				srli	%[csum], %[csum], 32		\n\
+> > +				not	%[fold_temp], %[csum]
+> > 	\n\
+> > +				roriw	%[csum], %[csum], 16		\n\
+> > +				subw	%[csum], %[fold_temp], %[csum]
+> > 	\n\
+> > +			.option pop"
+> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
+> > +		}
+> > +		return csum >> 16;
+> > +	}
+> > +no_zbb:
+> > +#ifndef CONFIG_32BIT
+> > +	csum += (csum >> 32) | (csum << 32);
+> 
+> Just like patch 3/4 does, we can call ror64(csum, 32).
+> 
+> BRs,
+> Xiao
+> 
+> > +	csum >>= 32;
+> > +#endif
+> > +	return csum_fold((__force __wsum)csum);
+> > +}
+> > +
+> > +#endif // __ASM_RISCV_CHECKSUM_H
+> > 
+> > --
+> > 2.42.0
+> > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
