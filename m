@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CEA7D7686
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B247D7682
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjJYVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        id S230233AbjJYVUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjJYVUu (ORCPT
+        with ESMTP id S229632AbjJYVU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:20:50 -0400
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C737C133
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:46 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-56-w4m3W4JtM1qeNA1RPUeHUg-1; Wed, 25 Oct 2023 17:20:26 -0400
-X-MC-Unique: w4m3W4JtM1qeNA1RPUeHUg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 277A7857CF6;
-        Wed, 25 Oct 2023 21:20:26 +0000 (UTC)
-Received: from hog (unknown [10.39.192.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D12321121314;
-        Wed, 25 Oct 2023 21:20:24 +0000 (UTC)
-Date:   Wed, 25 Oct 2023 23:20:23 +0200
-From:   Sabrina Dubroca <sd@queasysnail.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hangyu Hua <hbh25y@gmail.com>, borisp@nvidia.com,
-        john.fastabend@gmail.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: tls: Fix possible NULL-pointer dereference in
- tls_decrypt_device() and tls_decrypt_sw()
-Message-ID: <ZTmGl1BFr0NQtJRn@hog>
-References: <20231023080611.19244-1-hbh25y@gmail.com>
- <ZTZ9H4aDB45RzrFD@hog>
- <120e6c2c-6122-41db-8c46-7753e9659c70@gmail.com>
- <ZTjteQgXWKXDqnos@hog>
- <20231025071408.3b33f733@kernel.org>
+        Wed, 25 Oct 2023 17:20:29 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A1D132
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6cd09663b1cso106988a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698268827; x=1698873627; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x4R+fBPz/tYoWNwPb9Pp7jc9YbV1QMHyx6psPQvV2NA=;
+        b=mr158P156/Z9KJDv08VPhWe22lAiExxKdjEjGw09Oy9Ryx3vnwevfoAsM1mb/Eep5Z
+         GdhWMxpgRwK1C61JWfoXrYnEjtGNNfBxYjugtXY6CEDo6reTGSbe3q7q99h4W36OqzxX
+         Ojp5L/buBcxj/NcDnssvPD2eRAdxYUZs418j3uWNlUJ8t/tlNZzNosJrAZPyyn1umFOY
+         8nsTj5u7HK5nsYkiepcJiIHAvdWoCjhy5UIAgRVNk6tgIF5uu4sHDByK613UOtd5oG0c
+         VTfNoeDwTpJOUQtXnb/B02IdJJPDItDVlLXBHk1U+5u9dB5hAokXhKLjukBvsigs1h75
+         146w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698268827; x=1698873627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x4R+fBPz/tYoWNwPb9Pp7jc9YbV1QMHyx6psPQvV2NA=;
+        b=DaSwb8XsOaUtyv2HYPelhBSkIC4U0dV4PIpS3/gCPqvzqBH9Pb2y/ZlvBNOBKRHiKt
+         PTpBc9xNX0wb1tC/PlnuZ4Ft+L4YoVzmDZjBWQJ2T3sxSUtCCuxDCt74ppqWAtjg2CuT
+         Rk2YmZl16fVbd3W8l5i8oyEi9Cs35ogmAJBOTxmcUfQnCG23iKrVmeZ4dfsLTWaZ/LoK
+         /1iUL6j0nLaRzpsyl6dMNw+vjqay1Uk9e9t8P3Qy7V+vHUxxCWyxomvfy2ZbtIlU7aSv
+         6xiSTtT9OM4mw8T5hmtqYQhSGWWMfGwhtycfFPuI5WDnOJQgfcclWIpxYgOvY3wGTVxG
+         EULA==
+X-Gm-Message-State: AOJu0Yy4nohcfx8kvSlZDqlioV1449rCgGcKkNP8Kch7NXDdUx2G48xM
+        de0grOf1IqtF5XQklzF/qpqWdA==
+X-Google-Smtp-Source: AGHT+IGav5/1dQVNAHhyYvy58dHFfkWIu/JtH4MUc2KdaTCN0BgNu4GrGfs3WwaokFiLCk2KDuCXfg==
+X-Received: by 2002:a05:6830:7:b0:6b8:9a3a:ea12 with SMTP id c7-20020a056830000700b006b89a3aea12mr18253103otp.12.1698268827023;
+        Wed, 25 Oct 2023 14:20:27 -0700 (PDT)
+Received: from ghost ([208.116.208.98])
+        by smtp.gmail.com with ESMTPSA id r125-20020a4a4e83000000b0057b38a94f38sm166296ooa.12.2023.10.25.14.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 14:20:26 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 14:20:23 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "Wang, Xiao W" <xiao.w.wang@intel.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v7 2/4] riscv: Checksum header
+Message-ID: <ZTmGl36A3X1UtnNu@ghost>
+References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
+ <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
+ <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <ZTl8gauEst2NGrw6@ghost>
+ <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
+ <ZTmEkYn1NcUvL58n@ghost>
+ <571211a1-470a-43da-a603-fd12a640b7a8@app.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231025071408.3b33f733@kernel.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+In-Reply-To: <571211a1-470a-43da-a603-fd12a640b7a8@app.fastmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,27 +83,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-10-25, 07:14:08 -0700, Jakub Kicinski wrote:
-> On Wed, 25 Oct 2023 12:27:05 +0200 Sabrina Dubroca wrote:
-> > > My bad. I only checked &msg->msg_iter's address in tls_decrypt_sw and found
-> > > it was wrong. Do I need to make a new patch to fix the harmless bogus
-> > > pointer?  
-> > 
-> > I don't think that's necessary, but maybe it would avoid people trying
-> > to "fix" this code in the future. Jakub, WDYT?
+On Wed, Oct 25, 2023 at 11:18:40PM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 25, 2023, at 23:11, Charlie Jenkins wrote:
+> >
+> > Thank you for pointing that out, I had not realized that macro existed.
+> > Since riscv keeps NET_IP_ALIGN at 0 it should be expected that
+> > ip_fast_csum is only called with 32-bit aligned addresses. I will update
+> > the comment and refer to that macro. riscv supports misaligned accesses
+> > but there are no guarantees of speed.
 > 
-> No strong feelings, but personally I find checks for conditions which
-> cannot happen decrease the readability. Maybe a comment is better?
+> Just to clarify for your comment: riscv gets the default value of '2',
+> which is the one that makes the header aligned.
+> 
+>       Arnd
 
-There's already a comment above tls_decrypt_sg that (pretty much) says
-out_iov is only used in zero-copy mode.
+Oops, typo. I meant to write 2.
 
- *          [...]            The input parameter 'darg->zc' indicates if
- * zero-copy mode needs to be tried or not. With zero-copy mode, either
- * out_iov or out_sg must be non-NULL.
-
-Do we need another just above the call to tls_decrypt_sg?
-
--- 
-Sabrina
+- Charlie
 
