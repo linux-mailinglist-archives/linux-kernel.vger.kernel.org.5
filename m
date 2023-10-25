@@ -2,228 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35C77D7716
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6674B7D7738
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjJYVvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
+        id S230354AbjJYV4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbjJYVvj (ORCPT
+        with ESMTP id S229709AbjJYV4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:51:39 -0400
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF6192;
-        Wed, 25 Oct 2023 14:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1698270694; x=1698529894;
-        bh=+mIMtJy5g/3pP0bfV4kNM3vtmyjGkqlYbw5iT4J0tl8=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=iRbIVns0Dvfe0uo4iphsA8sVRHbI3fybSM6Y3MW1meOEMhMW3SdN9huZmKHpXxX2A
-         oAK5DOYYJZdr4M/kC5NJ+cqGDRzHm0csHrZ4b6h6eWh/WH8RjXWL5YFH4eqIncxgIJ
-         EDkHDM3DRwaW+RxWzN2/5QYQpFRbt83ITw/C427DwracoFThk79D0EYG8u3lo7UpQs
-         FS7NOh7g+xWsN0rozPH61QKY3ppBd5gPVD4R5zuO4AN2dgdGKfGi97VAyLAaXJOs9/
-         9+4MysEB0mgU9ipH7wCJyhJkoNKt1bVhQErSz7YIkKG7dA/2UiizCzBeuMdLrL5lPb
-         nu1WNLGiBcOsQ==
-Date:   Wed, 25 Oct 2023 21:51:28 +0000
-To:     Boqun Feng <boqun.feng@gmail.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        kent.overstreet@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        elver@google.com, Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC] rust: types: Add read_once and write_once
-Message-ID: <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me>
-In-Reply-To: <20231025195339.1431894-1-boqun.feng@gmail.com>
-References: <20231025195339.1431894-1-boqun.feng@gmail.com>
-Feedback-ID: 71780778:user:proton
+        Wed, 25 Oct 2023 17:56:40 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808BD9D
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:56:38 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5068b69f4aeso1201e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:56:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698270997; x=1698875797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z6Wm2hf7VPlcOAa3DFo3dVIOp8FjeRPkG/lab590sqk=;
+        b=Z33ra6RdU1y/uiTnpvjheeEvB4rV0s0ziD//NCsYjxNoX/+EOTaGFV2SvewrZn01p/
+         L8EyCSsz7pUiHHuvx8Fipr5ALqhZzFS6uMeLGxtUnf/5tABwHhsScWDPK0q4z0fPQ7lL
+         Vj6bHxtyZCU1FVRRGucfP2ripjvZMIa8ClbGHuYeDppatjHs3RzgbkiQnRQLSHCxLTqw
+         NRnQUzPKuCOwEQ386zwI7bjNtg57Nm3TiVLcHuunhSu13Y8f3g46r2VZyIumMqc1dEax
+         42KqrmjgFvz0Ew0wO+ZXGoBcf/b2nQYkyw//tWegSxMZQB73Ulq3y3CzzOGue62AjwK1
+         6JVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698270997; x=1698875797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z6Wm2hf7VPlcOAa3DFo3dVIOp8FjeRPkG/lab590sqk=;
+        b=r6+SjYrhYK46SyyDukJU8yz/ru6+QWIvzUW+Q/hy+YeaTi1wpQ5jme+iYqx+rOaEKm
+         SemCmFBbN5jBx5Eadmqm2SyaY+trbrPunWz0XZ4N344iBjyNoWVXelVrzQvx3dyFSyZt
+         lLRjUFbuhjfv99j5UwwqLNEEZyGlsYPM0CYkzJz7taGmTiSJQkPeFcRb09cUT06AEiuj
+         +oPcXWfU3p8whoPO3d7O88JdtQn/AVpr3fMQEiJCx7ak30vaDjZORCCEr6DxtfJG6dGZ
+         UNH0Ovh5strp7uSIQ2sU6AuaWjeVEtNxmW/pKN8//TVSOLJ30T3JAXoofSCaq1XzDFgI
+         HRfA==
+X-Gm-Message-State: AOJu0YyFvXNCiSyxNyHQXX6OAmeXaA6gin+JF243poSCiCUU6v3RsA9x
+        tYzA4NeECXvwp2gJPv39bHdxIj6i+sr/5n458fGInw==
+X-Google-Smtp-Source: AGHT+IExoPoplQRtg8C3JaBDX8w1qcS2KCbhHdRcfnxtxvjRtEZc4ZpdWhkCkVIRh9sRJXZUoLFHcKzxcpAsiutj91k=
+X-Received: by 2002:ac2:58ef:0:b0:501:a2b9:6046 with SMTP id
+ v15-20020ac258ef000000b00501a2b96046mr107431lfo.7.1698270996475; Wed, 25 Oct
+ 2023 14:56:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
+ <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
+In-Reply-To: <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 25 Oct 2023 14:56:24 -0700
+Message-ID: <CAP-5=fURbve928P5CGi-dQ7Y8mZhxRmi9wucFc_gP+aDGMftYw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
+ tma_info_system_dram_bw_use metric
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> In theory, `read_volatile` and `write_volatile` in Rust can have UB in
-> case of the data races [1]. However, kernel uses volatiles to implement
+On Thu, Oct 5, 2023 at 3:16=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Wed, Sep 27, 2023 at 6:47=E2=80=AFAM Liang, Kan <kan.liang@linux.intel=
+.com> wrote:
+> >
+> >
+> >
+> > On 2023-09-26 4:59 p.m., Ian Rogers wrote:
+> > > Broadwell-de has a consumer core and server uncore. The uncore_arb PM=
+U
+> > > isn't present and the broadwellx style cbox PMU should be used
+> > > instead. Fix the tma_info_system_dram_bw_use metric to use the server
+> > > metric rather than client.
+> > >
+> > > The associated converter script fix is in:
+> > > https://github.com/intel/perfmon/pull/111
+> > >
+> > > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell vari=
+ant events/metrics")
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> >
+> > Thanks Ian. The whole patch series looks good to me.
+> >
+> > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>
+> Would be good to pick this up in perf-tools-next.
+>
+> Thanks,
+> Ian
 
-I would not write "In theory", but rather state that data races involving
-`read_volatile` is documented to still be UB.
+Ping.
 
-> READ_ONCE() and WRITE_ONCE(), and expects races on these marked accesses
+Thanks,
+Ian
 
-Missing "`"?
-
-> don't cause UB. And they are proven to have a lot of usages in kernel.
->=20
-> To close this gap, `read_once` and `write_once` are introduced, they
-> have the same semantics as `READ_ONCE` and `WRITE_ONCE` especially
-> regarding data races under the assumption that `read_volatile` and
-
-I would separate implementation from specification. We specify
-`read_once` and `write_once` to have the same semantics as `READ_ONCE`
-and `WRITE_ONCE`. But we implement them using
-`read_volatile`/`write_volatile`, so we might still encounter UB, but it
-is still a sort of best effort. As soon as we have the actual thing in
-Rust, we will switch the implementation.
-
-> `write_volatile` have the same behavior as a volatile pointer in C from
-> a compiler point of view.
->=20
-> Longer term solution is to work with Rust language side for a better way
-> to implement `read_once` and `write_once`. But so far, it should be good
-> enough.
->=20
-> Suggested-by: Alice Ryhl <aliceryhl@google.com>
-> Link: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html#safety [1]
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->=20
-> Notice I also make the primitives only work on T: Copy, since I don't
-> think Rust side and C side will use a !Copy type to communicate, but we
-> can always remove that constrait later.
->=20
->=20
->  rust/kernel/prelude.rs |  2 ++
->  rust/kernel/types.rs   | 43 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 45 insertions(+)
->=20
-> diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-> index ae21600970b3..351ad182bc63 100644
-> --- a/rust/kernel/prelude.rs
-> +++ b/rust/kernel/prelude.rs
-> @@ -38,3 +38,5 @@
->  pub use super::init::{InPlaceInit, Init, PinInit};
->=20
->  pub use super::current;
-> +
-> +pub use super::types::{read_once, write_once};
-
-Do we really want people to use these so often that they should be in
-the prelude?
-
-Sure there will not really be any name conflicts, but I think an
-explicit import might make sense.
-
-> diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> index d849e1979ac7..b0872f751f97 100644
-> --- a/rust/kernel/types.rs
-> +++ b/rust/kernel/types.rs
-
-I don't think this should go into `types.rs`. But I do not have a good
-name for the new module.
-
-> @@ -432,3 +432,46 @@ pub enum Either<L, R> {
->      /// Constructs an instance of [`Either`] containing a value of type =
-`R`.
->      Right(R),
->  }
-> +
-> +/// (Concurrent) Primitives to interact with C side, which are considere=
-d as marked access:
-> +///
-> +/// tools/memory-memory/Documentation/access-marking.txt
-> +
-
-Accidental empty line? Or is this meant as a comment for both
-functions?
-
-> +/// The counter part of C `READ_ONCE()`.
-> +///
-> +/// The semantics is exactly the same as `READ_ONCE()`, especially when =
-used for intentional data
-> +/// races.
-
-It would be great if these semantics are either linked or spelled out
-here. Ideally both.
-
-> +///
-> +/// # Safety
-> +///
-> +/// * `src` must be valid for reads.
-> +/// * `src` must be properly aligned.
-> +/// * `src` must point to a properly initialized value of value `T`.
-> +#[inline(always)]
-> +pub unsafe fn read_once<T: Copy>(src: *const T) -> T {
-
-Why only `T: Copy`?
-
-> +    // SAFETY: the read is valid because of the function's safety requir=
-ement, plus the assumption
-> +    // here is that 1) a volatile pointer dereference in C and 2) a `rea=
-d_volatile` in Rust have the
-> +    // same semantics, so this function should have the same behavior as=
- `READ_ONCE()` regarding
-> +    // data races.
-
-I would explicitly state that we might have UB here due to data races.
-But that we have not seen any invalid codegen and thus assume there to
-be no UB (you might also want to write this in the commit message).
-
---
-Cheers,
-Benno
-
-> +    unsafe { src.read_volatile() }
-> +}
-> +
-> +/// The counter part of C `WRITE_ONCE()`.
-> +///
-> +/// The semantics is exactly the same as `WRITE_ONCE()`, especially when=
- used for intentional data
-> +/// races.
-> +///
-> +/// # Safety
-> +///
-> +/// * `dst` must be valid for writes.
-> +/// * `dst` must be properly aligned.
-> +#[inline(always)]
-> +pub unsafe fn write_once<T: Copy>(dst: *mut T, value: T) {
-> +    // SAFETY: the write is valid because of the function's safety requi=
-rement, plus the assumption
-> +    // here is that 1) a write to a volatile pointer dereference in C an=
-d 2) a `write_volatile` in
-> +    // Rust have the same semantics, so this function should have the sa=
-me behavior as
-> +    // `WRITE_ONCE()` regarding data races.
-> +    unsafe {
-> +        core::ptr::write_volatile(dst, value);
-> +    }
-> +}
-> --
-> 2.41.0
+> > Thanks,
+> > Kan
+> >
+> > >  tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics=
+.json b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
+> > > index 8fc62b8f667d..d0ef46c9bb61 100644
+> > > --- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
+> > > +++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
+> > > @@ -652,7 +652,7 @@
+> > >      },
+> > >      {
+> > >          "BriefDescription": "Average external Memory Bandwidth Use f=
+or reads and writes [GB / sec]",
+> > > -        "MetricExpr": "64 * (arb@event\\=3D0x81\\,umask\\=3D0x1@ + a=
+rb@event\\=3D0x84\\,umask\\=3D0x1@) / 1e6 / duration_time / 1e3",
+> > > +        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR=
+) / 1e9 / duration_time",
+> > >          "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
+> > >          "MetricName": "tma_info_system_dram_bw_use",
+> > >          "PublicDescription": "Average external Memory Bandwidth Use =
+for reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_band=
+width, tma_sq_full"
