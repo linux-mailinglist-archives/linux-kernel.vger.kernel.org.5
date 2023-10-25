@@ -2,128 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEB87D7395
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10797D737E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjJYSuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S229738AbjJYSng convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 14:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbjJYSue (ORCPT
+        with ESMTP id S229682AbjJYSnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:50:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF78111;
-        Wed, 25 Oct 2023 11:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698259833; x=1729795833;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DsRoRBNKoqw/Cc7dTmkqie/fv1TrhPx6ZfTLpdADeQM=;
-  b=BQ+akP4gxHkswTNgcXluntrWQ/4GEekGAf0UhauyDzq+86J+BOZ7f5xx
-   CvN7Kk46z7OwnjKZQt14kzIZedifL+fvv6Xakpdlr1CbmXwIiu5ro+ec0
-   ZVhdPFO0L2tSlczybu9WEliKvKM46fHFwyVoOazZg7kicRNeZJHwmI+f5
-   5l5akgILpjSTayBEv7OdbAw465hLDAXUUpQXNzKrR9GyCKAjsUFOy9Olp
-   FendhJZV4N2HBqETUIRoi9QdOqTCU9BX8UhaCH0+M+zfRIbP/A+LMtwwz
-   mJDFOBDZWyoXLvv6rqB8ky5j/V4J8NiP5a4w8EvirplkhovBxXPbAPfiS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="176173"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="176173"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 11:50:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902642576"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="902642576"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2023 11:48:03 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EABB12F3; Wed, 25 Oct 2023 21:43:01 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v1 3/3] gpio: mmio: Clean up headers
-Date:   Wed, 25 Oct 2023 21:42:59 +0300
-Message-Id: <20231025184259.250588-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
-References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
+        Wed, 25 Oct 2023 14:43:35 -0400
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46528115;
+        Wed, 25 Oct 2023 11:43:33 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-564b6276941so91238a12.3;
+        Wed, 25 Oct 2023 11:43:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698259413; x=1698864213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tYCMWJw47/vXzt/AlomWVuji6mKZPa8r5u3HJinoFCY=;
+        b=d2Onxy2EozszoSpIDrM2uMymBDIriyd5lHN3PyHFK2dBTU4uAVOtTtjnZ0r/AQ3Sn+
+         ehAzMf/6vGcbhP9epyLQn2/Bwb/2/pUnIpmhU9U5VdmtaPS4h28VC6laHI87m3h9RRaR
+         Ni1OrF97/7n5I5cv5QRRfezYA7W5NABdIwSb0lqcPTkvcnTWSwOwKEHOwBzPgpGpvHwY
+         +dXJs0OVlPSesund135Fy00cJZHUySNPtQfI3r8APy1zgc4U6NFx5IZIUvct4ao9DO+J
+         IpJoa7IwleqPMR+gzcxzWq8TU9HvulWnw5iUXZA885CIiJHqymgccpPZLaVtacmhEHT3
+         Uz8w==
+X-Gm-Message-State: AOJu0YzN8322uASLFrOiJpTrt2ZFC+zuSnXOqA8ssdqDp+StiW1aFf+q
+        CLPbeN/i2r0dbZf+w4qnHKlejHI/7MvgBOs9QB8=
+X-Google-Smtp-Source: AGHT+IHlN5LcLU2+3wZ6yuUT607ZoDFdjK4WqiQH9Qt47ljhPX9spEdT5497fBdr48jj+4G+nD0cASMpEgp9LhbQRwQ=
+X-Received: by 2002:a17:90a:5993:b0:27d:1b04:d69d with SMTP id
+ l19-20020a17090a599300b0027d1b04d69dmr14521597pji.35.1698259412590; Wed, 25
+ Oct 2023 11:43:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024222353.3024098-1-irogers@google.com> <20231024222353.3024098-19-irogers@google.com>
+In-Reply-To: <20231024222353.3024098-19-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 25 Oct 2023 11:43:21 -0700
+Message-ID: <CAM9d7chKwxnCe=FDCxyuui5S8yp4=3xYytShCi9QTGzjK1yqZw@mail.gmail.com>
+Subject: Re: [PATCH v3 18/50] tools lib api: Add io_dir an allocation free
+ readdir alternative
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a few things done:
-- include only the headers we are direct user of
-- add missing headers
-- group generic headers and subsystem headers
-- sort each group alphabetically
+On Tue, Oct 24, 2023 at 3:24 PM Ian Rogers <irogers@google.com> wrote:
+>
+> glibc's opendir allocates a minimum of 32kb, when called recursively
+> for a directory tree the memory consumption can add up - nearly 300kb
+> during perf start-up when processing modules. Add a stack allocated
+> variant of readdir sized a little more than 1kb.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/api/Makefile |  2 +-
+>  tools/lib/api/io_dir.h | 72 ++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 73 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/lib/api/io_dir.h
+>
+> diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
+> index 044860ac1ed1..186aa407de8c 100644
+> --- a/tools/lib/api/Makefile
+> +++ b/tools/lib/api/Makefile
+> @@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
+>                 $(call do_install_mkdir,$(libdir_SQ)); \
+>                 cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
+>
+> -HDRS := cpu.h debug.h io.h
+> +HDRS := cpu.h debug.h io.h io_dir.h
+>  FD_HDRS := fd/array.h
+>  FS_HDRS := fs/fs.h fs/tracing_path.h
+>  INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
+> diff --git a/tools/lib/api/io_dir.h b/tools/lib/api/io_dir.h
+> new file mode 100644
+> index 000000000000..8a70c0718df5
+> --- /dev/null
+> +++ b/tools/lib/api/io_dir.h
+> @@ -0,0 +1,72 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +/*
+> + * Lightweight directory reading library.
+> + */
+> +#ifndef __API_IO_DIR__
+> +#define __API_IO_DIR__
+> +
+> +#include <dirent.h>
+> +#include <fcntl.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <sys/stat.h>
+> +
+> +struct io_dirent64 {
+> +       ino64_t        d_ino;    /* 64-bit inode number */
+> +       off64_t        d_off;    /* 64-bit offset to next structure */
+> +       unsigned short d_reclen; /* Size of this dirent */
+> +       unsigned char  d_type;   /* File type */
+> +       char           d_name[NAME_MAX + 1]; /* Filename (null-terminated) */
+> +};
+> +
+> +struct io_dir {
+> +       int dirfd;
+> +       ssize_t available_bytes;
+> +       struct io_dirent64 *next;
+> +       struct io_dirent64 buff[4];
+> +};
+> +
+> +static inline void io_dir__init(struct io_dir *iod, int dirfd)
+> +{
+> +       iod->dirfd = dirfd;
+> +       iod->available_bytes = 0;
+> +}
+> +
+> +static inline void io_dir__rewinddir(struct io_dir *iod)
+> +{
+> +       lseek(iod->dirfd, 0, SEEK_SET);
+> +       iod->available_bytes = 0;
+> +}
+> +
+> +static inline struct io_dirent64 *io_dir__readdir(struct io_dir *iod)
+> +{
+> +       struct io_dirent64 *entry;
+> +
+> +       if (iod->available_bytes <= 0) {
+> +               ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
+> +
+> +               if (rc <= 0)
+> +                       return NULL;
+> +               iod->available_bytes = rc;
+> +               iod->next = iod->buff;
+> +       }
+> +       entry = iod->next;
+> +       iod->next = (struct io_dirent64 *)((char *)entry + entry->d_reclen);
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpio-mmio.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+Any chance of unaligned access?
 
-diff --git a/drivers/gpio/gpio-mmio.c b/drivers/gpio/gpio-mmio.c
-index 66308b165a0d..71e1af7c2184 100644
---- a/drivers/gpio/gpio-mmio.c
-+++ b/drivers/gpio/gpio-mmio.c
-@@ -40,24 +40,22 @@ o        `                     ~~~~\___/~~~~    ` controller in FPGA is ,.`
-  *               `.......````.```
-  */
- 
--#include <linux/init.h>
--#include <linux/err.h>
--#include <linux/bug.h>
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/spinlock.h>
--#include <linux/compiler.h>
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/log2.h>
--#include <linux/ioport.h>
--#include <linux/io.h>
--#include <linux/gpio/driver.h>
--#include <linux/slab.h>
- #include <linux/bitops.h>
-+#include <linux/compiler.h>
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/log2.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
--#include <linux/mod_devicetable.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#include <linux/gpio/driver.h>
- 
- #include "gpiolib.h"
- 
--- 
-2.40.0.1.gaa8946217a0b
 
+> +       iod->available_bytes -= entry->d_reclen;
+> +       return entry;
+> +}
+> +
+> +static inline bool io_dir__is_dir(const struct io_dir *iod, const struct io_dirent64 *dent)
+> +{
+> +       if (dent->d_type == DT_UNKNOWN) {
+> +               struct stat st;
+> +
+> +               if (fstatat(iod->dirfd, dent->d_name, &st, /*flags=*/0))
+> +                       return false;
+> +
+> +               return S_ISDIR(st.st_mode);
+
+You may want to save the type if it's a DIR.
+
+Thanks,
+Namhyung
+
+
+> +       }
+> +       return dent->d_type == DT_DIR;
+> +}
+> +
+> +#endif
+> --
+> 2.42.0.758.gaed0368e0e-goog
+>
