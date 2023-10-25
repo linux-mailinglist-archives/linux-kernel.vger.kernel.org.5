@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF17D6B46
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86447D6B4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343851AbjJYMWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        id S1343844AbjJYMXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343767AbjJYMWm (ORCPT
+        with ESMTP id S1343767AbjJYMX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:22:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363469C;
-        Wed, 25 Oct 2023 05:22:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD994C433C8;
-        Wed, 25 Oct 2023 12:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698236560;
-        bh=FHGd6NpfB/B13XEZMLkAe39ErfCw2QU5DJd1J3NruBM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C2yz81KLl+r9bAd6j0nYVV1FUAIOb7j/ADcabXK/5pQfccoWCGy0SfDP8Qxnkj8bU
-         buzLByBay9Rt7Bh9VLsCrkU3ZIlS3YXnrgh+k/HkZjyElFzkmOVRu7CT8olxi3HzJ0
-         VvfmH8oGBTs8RpPemIcUfzQOOsuqB/1zvhem0MjRRWoKmgGHdnPVynmN0owXtc61yd
-         031HfnKxICkOMCHvWKk0IpYo43FvoU9pspwipKOhng8OBtpC3JZaMygNc4Id97lTer
-         WKFfLvdd1yQeWAMk3q2YVQSfUse1B7eAPpj9ii3CPuAdfdez4GDpyN+l9zQ+pNiFEI
-         kroFwE2kU4RbA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvcua-0006E3-2o;
-        Wed, 25 Oct 2023 14:23:00 +0200
-Date:   Wed, 25 Oct 2023 14:23:00 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Simon Ser <contact@emersion.fr>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: pmic_glink: fix connector type to be
- DisplayPort
-Message-ID: <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
-References: <20231010225229.77027-1-dmitry.baryshkov@linaro.org>
+        Wed, 25 Oct 2023 08:23:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FCD9C;
+        Wed, 25 Oct 2023 05:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698236607; x=1729772607;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CioEJ/ktqThFVcUxv05JHlMHKJHPP+QEuG95YNoPBAQ=;
+  b=C45IpDwdsG2VKWyze+hohhtDEIzG9XqL0gQw4z4kUxGcYS5yD6GHkkxq
+   RYJ5ZB0CRKTaggJ8LQDA5rHL+24cn+J6xjVYu55hurFyNgFcFVM9NGm4X
+   8yPiHawwbKUtqZYryWYxAlQaTWwlsoJYcdmpzbnaCsGdb240RX6nWwEEC
+   xo+M3xoN+KdaWsdAKNELLY6EXrl6IH0bff3tOk22bK3+B5Sp0Zu4xWEQL
+   UIrGUD4f9SrCsnK+sR4ZCOPelEM/BAkHp2RkGhNBSZlAWbXUK7fCNcKHQ
+   cnFN4QXatdth8rELorV6gdjz+yuTjFp1EqFL2Sb6bMMdxyCCai43L//9F
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473530578"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="473530578"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:23:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1005993196"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="1005993196"
+Received: from liyingmi-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.249.172.75])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:23:24 -0700
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     linux@roeck-us.net, jdelvare@suse.com, fenghua.yu@intel.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkp@intel.com, dave.hansen@linux.intel.com, len.brown@intel.com
+Subject: [PATCH] hwmon: (coretemp) Fix potentially truncated sysfs attribute name
+Date:   Wed, 25 Oct 2023 20:23:16 +0800
+Message-Id: <20231025122316.836400-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010225229.77027-1-dmitry.baryshkov@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 01:52:29AM +0300, Dmitry Baryshkov wrote:
-> As it was pointed out by Simon Ser, the DRM_MODE_CONNECTOR_USB connector
-> is reserved for the GUD devices. Other drivers (i915, amdgpu) use
-> DRM_MODE_CONNECTOR_DisplayPort even if the DP stream is handled by the
-> USB-C altmode. While we are still working on implementing the proper way
-> to let userspace know that the DP is wrapped into USB-C, change
-> connector type to be DRM_MODE_CONNECTOR_DisplayPort.
-> 
-> Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
-> Cc: Simon Ser <contact@emersion.fr>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/soc/qcom/pmic_glink_altmode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-> index 9569d999391d..6f8b2f7ae3cc 100644
-> --- a/drivers/soc/qcom/pmic_glink_altmode.c
-> +++ b/drivers/soc/qcom/pmic_glink_altmode.c
-> @@ -467,7 +467,7 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
->  		alt_port->bridge.funcs = &pmic_glink_altmode_bridge_funcs;
->  		alt_port->bridge.of_node = to_of_node(fwnode);
->  		alt_port->bridge.ops = DRM_BRIDGE_OP_HPD;
-> -		alt_port->bridge.type = DRM_MODE_CONNECTOR_USB;
-> +		alt_port->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
->  
->  		ret = devm_drm_bridge_add(dev, &alt_port->bridge);
->  		if (ret) {
+When build with W=1 and "-Werror=format-truncation", below error is
+observed in coretemp driver,
 
-I was just going to post a patch fixing this after finally investigating
-why the DisplayPort outputs on the X13s were annoyingly identified as
-"Unknown20-1" and "Unknown20-2" instead of the expected "DP-1" and
-"DP-2".
+   drivers/hwmon/coretemp.c: In function 'create_core_data':
+>> drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be truncated writing likely 5 or more bytes into a region of size between 3 and 13 [-Werror=format-truncation=]
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                                  ^~
+   drivers/hwmon/coretemp.c:393:26: note: assuming directive output of 5 bytes
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                          ^~~~~~~~~~~
+   drivers/hwmon/coretemp.c:392:17: note: 'snprintf' output 7 or more bytes (assuming 22) into a destination of size 19
+     392 |                 snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     393 |                          "temp%d_%s", attr_no, suffixes[i]);
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
-A lore search just before posting led me to this fix from two weeks ago.
+Given that
+1. '%d' could take 10 charactors,
+2. '%s' could take 10 charactors ("crit_alarm"),
+3. "temp", "_" and the NULL terminator take 6 charactors,
+fix the problem by increasing CORETEMP_NAME_LENGTH to 28.
 
-I think the commit message should have mentioned something about the how
-this change affects user space. My patch also had a CC stable, but I
-guess we can ping the stable team once it hits mainline:
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Fixes: 7108b80a542b ("hwmon/coretemp: Handle large core ID value")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310200443.iD3tUbbK-lkp@intel.com/
+---
+Note that, in practice, I found that the problem is gone if I increase
+the size to 22. But I cannot explain this.
+---
+ drivers/hwmon/coretemp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit e5f55bf5ad4effdd59d4d06c839a0ac553a73c7d (HEAD -> work)
-Author: Johan Hovold <johan+linaro@kernel.org>
-Date:   Wed Oct 25 11:54:09 2023 +0200
+diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
+index eba94f68585a..ba82d1e79c13 100644
+--- a/drivers/hwmon/coretemp.c
++++ b/drivers/hwmon/coretemp.c
+@@ -42,7 +42,7 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
+ #define PKG_SYSFS_ATTR_NO	1	/* Sysfs attribute for package temp */
+ #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
+ #define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
+-#define CORETEMP_NAME_LENGTH	19	/* String Length of attrs */
++#define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
+ #define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
+ #define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
+ #define MAX_CORE_DATA		(NUM_REAL_CORES + BASE_SYSFS_ATTR_NO)
+-- 
+2.34.1
 
-    soc: qcom: pmic_glink_altmode: fix DP alt mode connector type
-    
-    The PMIC glink altmode bridge connector type should be "DisplayPort"
-    rather than "USB", which is intended for custom USB display protocols
-    (e.g. see 40e1a70b4aed ("drm: Add GUD USB Display driver")).
-    
-    This specifically makes the DisplayPort outputs on the Lenovo ThinkPad
-    X13s show up as "DP-1" and "DP-2" rather than "Unknown20-1" and
-    "Unknown20-2" with xrandr as expected (by users and tools):
-    
-      Screen 0: minimum 320 x 200, current 1920 x 1200, maximum 5120 x 4096
-      eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 286mm x 178mm
-         1920x1200     60.03*+
-         1600x1200     60.00
-      DP-1 disconnected (normal left inverted right x axis y axis)
-      DP-2 connected (normal left inverted right x axis y axis)
-         1920x1200     59.95 +
-      ...
-    
-    Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
-    Cc: stable@vger.kernel.org      # 6.3
-    Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-
-Johan
