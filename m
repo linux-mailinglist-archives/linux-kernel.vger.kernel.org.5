@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E057D7562
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03BA7D7568
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjJYUUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S229881AbjJYUYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYUUh (ORCPT
+        with ESMTP id S229498AbjJYUYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:20:37 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8F7A4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:20:35 -0700 (PDT)
-Received: from localhost.localdomain (31.173.86.85) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Wed, 25 Oct
- 2023 23:20:25 +0300
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] f2fs: data: fix possible overflow in check_swap_activate()
-Date:   Wed, 25 Oct 2023 23:20:19 +0300
-Message-ID: <20231025202019.5228-1-s.shtylyov@omp.ru>
-X-Mailer: git-send-email 2.26.3
+        Wed, 25 Oct 2023 16:24:13 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711C3136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:24:09 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5b837dc2855so109335a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1698265449; x=1698870249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9/pedB262IMNHEh1PUtoWlFeNdn65+nq0ZZR6F2re8=;
+        b=KDBnVad/L98ks9dD6PFiobWlP+Y3q+9Zm0vjzN3/+4omI65ozoSxrD30/6HzY+mbQM
+         H6IwEnthNvfRwxUvup1anEfy2bOrqPYRKxmyXL8n7RErVvzVMLkMSVCO7hpfrjYtH967
+         DjN2SsObKv5oVudbtz50lcuB4ySHSDcD6Wh6SOMfo2yD3D+YqW0nTUr0e5GspcQSN1RR
+         0SQngTgKrPvDXXIV4axCjPlx5lK03PX8xn98jaouG9PAq2gCBMUUmhBYWJdAC6qDUJ0p
+         LWmZI7tMzbAE30w6Pfmzr9D5j2bPqBiUqkDxoC4PhCl3ovTi17+Z+lXxmFwU3u+0FhpL
+         rZMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698265449; x=1698870249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F9/pedB262IMNHEh1PUtoWlFeNdn65+nq0ZZR6F2re8=;
+        b=iCtrZU38sUWwTxeEtayitGp07Mm5r5bp5ztFdpSxnOIAZx70utI4+StHF/rvPJRpu8
+         wHKGn8vprrbmH345NvcsIDayg2Dw8h6hwc9tjNeNkBQZAkZG9ycotChviQ5peWXLWEjS
+         7nLNDfkXdhs3/e7VKmxoyCfDOilVmE7SphpCdqon+lw5U0oMgr/NVhAOyke/hoPvaFcC
+         PqM4bF5bOIqDS8ioUNERKdKCfAeIF96YPdVXFuUAYtaTj/WHHvB81ooPjbLK8uS2Fja4
+         1hrOwkY6Mo3YBsYfMh/5YlHs7BSLfswfDyyadOfTLeEBzTRWCTCbDntrZaI7NXJZ9pBI
+         DQMA==
+X-Gm-Message-State: AOJu0Yyb2yKk+9RNocZN6f7FdmBWTgym9HGb9NFy2DA+V484MmRlcrjU
+        /s4O6ZW1nL1Kz5M6/3PIyzapog==
+X-Google-Smtp-Source: AGHT+IEV4o/13i3hZesUJvr2asiwuxud0jha6gl4OJB79xQ7DR2BCPeSNSC6qZTwPjauiylzsIcCjw==
+X-Received: by 2002:a05:6a20:8e12:b0:14e:2208:d62f with SMTP id y18-20020a056a208e1200b0014e2208d62fmr801359pzj.22.1698265448502;
+        Wed, 25 Oct 2023 13:24:08 -0700 (PDT)
+Received: from sunil-pc.Dlink ([106.51.188.78])
+        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 13:24:08 -0700 (PDT)
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Sunil V L <sunilvl@ventanamicro.com>
+Subject: [RFC PATCH v2 00/21] RISC-V: ACPI: Add external interrupt controller support 
+Date:   Thu, 26 Oct 2023 01:53:23 +0530
+Message-Id: <20231025202344.581132-1-sunilvl@ventanamicro.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [31.173.86.85]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/25/2023 20:04:26
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180898 [Oct 25 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.85 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.85 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.85
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/25/2023 20:09:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/25/2023 7:21:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_SBL_CSS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,37 +87,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In check_swap_activate(), if the *while* loop exits early (0- or 1-page
-long swap file), an overflow happens while calculating the value of the
-span parameter as the lowest_pblock variable ends up being greater than
-the highest_pblock variable. Let's set *span to 0 in this case...
+This series adds support for the below ECR approved by ASWG.
+1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
 
-Found by Linux Verification Center (linuxtesting.org) with the SVACE static
-analysis tool.
+The series primarily enables irqchip drivers for RISC-V ACPI based
+platforms.
 
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
-This patch is against the 'master' branch of Jaegeuk Kim's F2FS repo...
+In addition, PCI ACPI related functions are migrated from arm64 to
+common file so that we don't need to duplicate them for RISC-V.
 
- fs/f2fs/data.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On RISC-V platforms, apart from root irqchips which provide local
+interrupts and IPI, all other interrupt controllers are probed late
+during boot. Hence, the drivers for the devices connected to these
+interrupt controllers which are probed late, should also support
+deferred probe. While ACPI platform devices/drivers seem to support
+deferred probe since they use acpi_irq_get(), the PNP devices and the
+PCI INTx expect GSIs are registered early. So, patches are required
+to enable few essential drivers to support deferred probe. To minimize
+the impact, a new CONFIG option is introduced which can be enabled only
+by the architecture like RISC-V which supports deferred irqchip probe.
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 916e317ac925..342cb0d5056d 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -4047,7 +4047,10 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 		cur_lblock += nr_pblocks;
- 	}
- 	ret = nr_extents;
--	*span = 1 + highest_pblock - lowest_pblock;
-+	if (lowest_pblock <= highest_pblock)
-+		*span = 1 + highest_pblock - lowest_pblock;
-+	else
-+		*span = 0;
- 	if (cur_lblock == 0)
- 		cur_lblock = 1;	/* force Empty message */
- 	sis->max = cur_lblock;
+This series is based on Anup's AIA v11 series. Since Anup's AIA v11 is
+not merged yet and first time introducing deferred probe, this series is
+still kept as RFC. Looking forward for the feedback!
+
+Changes since RFC v1:
+	1) Abandoned swnode approach as per Marc's feedback.
+	2) To cope up with AIA series changes which changed irqchip driver
+	   probe from core_initcall() to platform_driver, added patches
+	   to support deferred probing.
+	3) Rebased on top of Anup's AIA v11 and added tags.
+
+To test the series,
+
+1) Qemu should be built using the riscv_acpi_b2_v4 branch at
+https://github.com/vlsunil/qemu.git
+
+2) EDK2 should be built using the instructions at:
+https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+
+3) Build Linux using this series on top of Anup's AIA v11 series.
+
+Run Qemu:
+qemu-system-riscv64 \
+ -M virt,pflash0=pflash0,pflash1=pflash1,aia=aplic-imsic \
+ -m 2G -smp 8 \
+ -serial mon:stdio \
+ -device virtio-gpu-pci -full-screen \
+ -device qemu-xhci \
+ -device usb-kbd \
+ -blockdev node-name=pflash0,driver=file,read-only=on,filename=RISCV_VIRT_CODE.fd \
+ -blockdev node-name=pflash1,driver=file,filename=RISCV_VIRT_VARS.fd \
+ -netdev user,id=net0 -device virtio-net-pci,netdev=net0 \
+ -kernel arch/riscv/boot/Image \
+ -initrd rootfs.cpio \
+ -append "root=/dev/ram ro console=ttyS0 rootwait earlycon=uart8250,mmio,0x10000000"
+
+To boot with APLIC only, use aia=aplic.
+To boot with PLIC, remove aia= option.
+
+This series is also available in acpi_b2_v2_riscv_aia_v11 branch at
+https://github.com/vlsunil/linux.git
+
+Based-on: 20231023172800.315343-1-apatel@ventanamicro.com
+(https://lore.kernel.org/lkml/20231023172800.315343-1-apatel@ventanamicro.com/)
+
+Sunil V L (21):
+  arm64: PCI: Migrate ACPI related functions to pci-acpi.c
+  RISC-V: ACPI: Implement PCI related functionality
+  ACPI: Kconfig: Introduce new option to support deferred GSI probe
+  ACPI: irq: Add support for deferred probe in acpi_register_gsi()
+  pnp.h: Return -EPROBE_DEFER for disabled IRQ resource in pnp_irq()
+  RISC-V: Kconfig: Select deferred GSI probe for ACPI systems
+  serial: 8250_pnp: Add support for deferred probe
+  ACPI: pci_irq: Avoid warning for deferred probe in
+    acpi_pci_irq_enable()
+  ACPI: scan.c: Add weak arch specific function to reorder the IRQCHIP
+    probe
+  ACPI: RISC-V: Implement arch function to reorder irqchip probe entries
+  PCI: MSI: Add helper function to set system wide MSI support
+  PCI: pci-acpi.c: Return correct value from pcibios_alloc_irq()
+  irqchip: riscv-intc: Add ACPI support for AIA
+  irqchip: riscv-imsic: Add ACPI support
+  irqchip: riscv-aplic: Add ACPI support
+  irqchip: irq-sifive-plic: Add ACPI support
+  ACPI: bus: Add RINTC IRQ model for RISC-V
+  irqchip: riscv-intc: Set ACPI irqmodel
+  ACPI: bus: Add acpi_riscv_init function
+  ACPI: RISC-V: Create APLIC platform device
+  ACPI: RISC-V: Create PLIC platform device
+
+ arch/arm64/kernel/pci.c                    | 191 ---------------------
+ arch/riscv/Kconfig                         |   3 +
+ arch/riscv/include/asm/irq.h               |  31 ++++
+ arch/riscv/kernel/acpi.c                   |  31 ++--
+ drivers/acpi/Kconfig                       |   3 +
+ drivers/acpi/bus.c                         |   4 +
+ drivers/acpi/irq.c                         |  12 +-
+ drivers/acpi/pci_irq.c                     |   7 +-
+ drivers/acpi/riscv/Makefile                |   2 +-
+ drivers/acpi/riscv/init.c                  |  15 ++
+ drivers/acpi/riscv/init.h                  |   6 +
+ drivers/acpi/riscv/irq.c                   | 120 +++++++++++++
+ drivers/acpi/scan.c                        |   3 +
+ drivers/irqchip/irq-riscv-aplic-direct.c   |  22 ++-
+ drivers/irqchip/irq-riscv-aplic-main.c     | 105 ++++++++---
+ drivers/irqchip/irq-riscv-aplic-main.h     |   1 +
+ drivers/irqchip/irq-riscv-aplic-msi.c      |  10 +-
+ drivers/irqchip/irq-riscv-imsic-early.c    |  52 +++++-
+ drivers/irqchip/irq-riscv-imsic-platform.c |  51 ++++--
+ drivers/irqchip/irq-riscv-imsic-state.c    | 128 +++++++-------
+ drivers/irqchip/irq-riscv-imsic-state.h    |   2 +-
+ drivers/irqchip/irq-riscv-intc.c           | 114 +++++++++++-
+ drivers/irqchip/irq-sifive-plic.c          | 113 ++++++++++--
+ drivers/pci/msi/msi.c                      |   5 +
+ drivers/pci/pci-acpi.c                     | 182 ++++++++++++++++++++
+ drivers/pci/pci.h                          |   2 +
+ drivers/tty/serial/8250/8250_pnp.c         |  18 +-
+ include/linux/acpi.h                       |   9 +
+ include/linux/irqchip/riscv-imsic.h        |  10 ++
+ include/linux/pnp.h                        |  10 +-
+ 30 files changed, 906 insertions(+), 356 deletions(-)
+ create mode 100644 drivers/acpi/riscv/init.c
+ create mode 100644 drivers/acpi/riscv/init.h
+ create mode 100644 drivers/acpi/riscv/irq.c
+
 -- 
-2.26.3
+2.39.2
 
