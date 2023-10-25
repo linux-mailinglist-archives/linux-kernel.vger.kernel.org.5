@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811737D721D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7A37D721A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbjJYRJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S233766AbjJYRI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233247AbjJYRIv (ORCPT
+        with ESMTP id S233876AbjJYRIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 25 Oct 2023 13:08:51 -0400
-Received: from mxout3.routing.net (mxout3.routing.net [IPv6:2a03:2900:1:a::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622E3111
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:08:46 -0700 (PDT)
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D30C13A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:08:48 -0700 (PDT)
 Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
-        by mxout3.routing.net (Postfix) with ESMTP id E17B4625F9;
-        Wed, 25 Oct 2023 17:08:42 +0000 (UTC)
+        by mxout1.routing.net (Postfix) with ESMTP id 968DA3FC25;
+        Wed, 25 Oct 2023 17:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
         s=20200217; t=1698253723;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0665A9x6QlRYnS9Etes7tT5/Mif1F5zTWwPvutSrAPg=;
-        b=rvm/NFkLEWSsqXzjols28RiFyiBk3ob7Vu3l+nD0eM5i8ATrLKUYssp+YNqtdh1TCha588
-        rMyUaLd8CMGOuKBZHHew6GTy+oisu+5lNgCXvIeXh1qpdZtkDrR0bR1WzCo0txtZX521nA
-        tl1P6mEWEdf4N2WqWfL+vbpxwZR3W90=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bac0cPNtRqeMT6ltBwYDY11vruRiib1jT+EBIKA5buQ=;
+        b=Gql11qAG1rQf0U7yBatwmKbA0iV7KgSvliP/+cIz3IjPjCEw9PeyUftMorgZD/fAvWB9tR
+        3P/01PexfIvBZs58mWou57ZQL2KYJ8I9f6szVIN3hj5o7Azquh6RKbmFP7p5ylTJDIjHOd
+        mkfvTt/wEds8iweT4efe3s/NGU/fbGs=
 Received: from frank-G5.. (fttx-pool-217.61.159.50.bambit.de [217.61.159.50])
-        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 1092A3607E4;
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id DEE393608ED;
         Wed, 25 Oct 2023 17:08:42 +0000 (UTC)
 From:   Frank Wunderlich <linux@fw-web.de>
 To:     linux-mediatek@lists.infradead.org
@@ -41,14 +42,16 @@ Cc:     Frank Wunderlich <frank-w@public-files.de>,
         Conor Dooley <conor+dt@kernel.org>,
         Daniel Golle <daniel@makrotopia.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Eric Woudstra <ericwouds@gmail.com>
-Subject: [PATCH v2 0/5] mt7986 DTS Patches
-Date:   Wed, 25 Oct 2023 19:08:27 +0200
-Message-Id: <20231025170832.78727-1-linux@fw-web.de>
+        Eric Woudstra <ericwouds@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v2 1/5] arm64: dts: mt7986: fix emmc hs400 mode without uboot initialization
+Date:   Wed, 25 Oct 2023 19:08:28 +0200
+Message-Id: <20231025170832.78727-2-linux@fw-web.de>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231025170832.78727-1-linux@fw-web.de>
+References: <20231025170832.78727-1-linux@fw-web.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mail-ID: 17890061-734c-4475-9c1d-3c0bf0eeb55e
+X-Mail-ID: e843dea4-707f-44c8-985a-73ad6095ed42
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -58,49 +61,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+From: Eric Woudstra <ericwouds@gmail.com>
 
-Hi,
+Eric reports errors on emmc with hs400 mode when booting linux on bpi-r3
+without uboot [1]. Booting with uboot does not show this because clocks
+seem to be initialized by uboot.
 
-i collected the open dts patches for mt7986 to make it easier for mtk
-maintainer to pick them up.
+Fix this by adding assigned-clocks and assigned-clock-parents like it's
+done in uboot [2].
 
-so the following patches/series are superseeded:
+[1] https://forum.banana-pi.org/t/bpi-r3-kernel-fails-setting-emmc-clock-to-416m-depends-on-u-boot/15170
+[2] https://github.com/u-boot/u-boot/blob/master/arch/arm/dts/mt7986.dtsi#L287
 
-- Fix emmc hs400 mode on mt7986
-  https://patchwork.kernel.org/project/linux-mediatek/list/?series=761293
-- mt7986 DTS fixes (for thermal and sfp)
-  https://patchwork.kernel.org/project/linux-mediatek/list/?series=777712
-- arm64: dts: mediatek: add dtbs with applied overlays for bpi-r3
-  https://patchwork.kernel.org/project/linux-mediatek/patch/20230916083214.7059-1-linux@fw-web.de/
-- arm64: dts: mt7986: add overlay for SATA power socket on BPI-R3
-  https://patchwork.kernel.org/project/linux-mediatek/patch/20230901072730.13571-1-linux@fw-web.de/
+Cc: stable@vger.kernel.org
+Fixes: 513b49d19b34 ("arm64: dts: mt7986: add mmc related device nodes")
+Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-updated the dtbs overlay patch to make it better readable based on 
-arm64/boot/dts/ti/Makefile and squashed 2 patches from the thermal-zone
-series.
-
-sidenote for angelo: after this series only the thermal driver patch is
-open from the list i've sent to you if this goes through your tree.
-
-regards Frank
-
-Eric Woudstra (1):
-  arm64: dts: mt7986: fix emmc hs400 mode without uboot initialization
-
-Frank Wunderlich (4):
-  arm64: dts: mt7986: define 3W max power to both SFP on BPI-R3
-  arm64: dts: mt7986: change cooling trips
-  arm64: dts: mt7986: add dtbs with applied overlays for bpi-r3
-  arm64: dts: mt7986: add overlay for SATA power socket on BPI-R3
-
- arch/arm64/boot/dts/mediatek/Makefile         | 27 +++++++++++++
- .../mt7986a-bananapi-bpi-r3-sata.dtso         | 39 +++++++++++++++++++
- .../dts/mediatek/mt7986a-bananapi-bpi-r3.dts  | 12 +++---
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi     | 24 ++++++++++--
- 4 files changed, 93 insertions(+), 9 deletions(-)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-sata.dtso
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+index 24eda00e320d..77ddd9e44ed2 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+@@ -374,6 +374,10 @@ mmc0: mmc@11230000 {
+ 			reg = <0 0x11230000 0 0x1000>,
+ 			      <0 0x11c20000 0 0x1000>;
+ 			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
++			assigned-clocks = <&topckgen CLK_TOP_EMMC_416M_SEL>,
++					  <&topckgen CLK_TOP_EMMC_250M_SEL>;
++			assigned-clock-parents = <&apmixedsys CLK_APMIXED_MPLL>,
++						 <&topckgen CLK_TOP_NET1PLL_D5_D2>;
+ 			clocks = <&topckgen CLK_TOP_EMMC_416M_SEL>,
+ 				 <&infracfg CLK_INFRA_MSDC_HCK_CK>,
+ 				 <&infracfg CLK_INFRA_MSDC_CK>,
 -- 
 2.34.1
 
