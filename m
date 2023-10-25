@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BC07D7680
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CEA7D7686
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbjJYVTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        id S230054AbjJYVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJYVTj (ORCPT
+        with ESMTP id S230306AbjJYVUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:19:39 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AA5132;
-        Wed, 25 Oct 2023 14:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698268772;
-        bh=9i/tRfR1/MlpKccRuA2orgn+CMdJmbapG4NBmApW1Ig=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eFQ/CaUSrtMlyOHzS6n+RpShHQNlTig9xjqv/AGbXBNbvwvGQCPOHFeCjp2HZ3D+h
-         LzESavJ4XRniRslL/aQeE3mrOaPX+ZuPhyto3knP7RBLox+ncHhlWO42qrtvFbvPRs
-         cZ7ySRveBxmkrCmmNpOkjBa6JbB4qg8cCCIEgkzjXbPbsE5JHNAkZm8Zquk2bHjzRl
-         0oJsFzZk/2zAoZP2rBE17kd3Ds3ZG/8mObeuPg52tu/hTY2IxNgX6h0zGmAadaYUIe
-         XhumDUaK15n4qgZ98nmEdsYnoCUip2qhFmp3os7pqlqXa+b2TXL4pdEWWxb1HK2i0d
-         3hVRZu+zLyz/A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Wed, 25 Oct 2023 17:20:50 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C737C133
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:20:46 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-56-w4m3W4JtM1qeNA1RPUeHUg-1; Wed, 25 Oct 2023 17:20:26 -0400
+X-MC-Unique: w4m3W4JtM1qeNA1RPUeHUg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SG1yr2ZFnz4wxX;
-        Thu, 26 Oct 2023 08:19:32 +1100 (AEDT)
-Date:   Thu, 26 Oct 2023 08:19:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the devicetree tree
-Message-ID: <20231026081930.6b588920@canb.auug.org.au>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 277A7857CF6;
+        Wed, 25 Oct 2023 21:20:26 +0000 (UTC)
+Received: from hog (unknown [10.39.192.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D12321121314;
+        Wed, 25 Oct 2023 21:20:24 +0000 (UTC)
+Date:   Wed, 25 Oct 2023 23:20:23 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Hangyu Hua <hbh25y@gmail.com>, borisp@nvidia.com,
+        john.fastabend@gmail.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: tls: Fix possible NULL-pointer dereference in
+ tls_decrypt_device() and tls_decrypt_sw()
+Message-ID: <ZTmGl1BFr0NQtJRn@hog>
+References: <20231023080611.19244-1-hbh25y@gmail.com>
+ <ZTZ9H4aDB45RzrFD@hog>
+ <120e6c2c-6122-41db-8c46-7753e9659c70@gmail.com>
+ <ZTjteQgXWKXDqnos@hog>
+ <20231025071408.3b33f733@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=NvWPYFzAhMvBTG6bLp1PJu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231025071408.3b33f733@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=NvWPYFzAhMvBTG6bLp1PJu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+2023-10-25, 07:14:08 -0700, Jakub Kicinski wrote:
+> On Wed, 25 Oct 2023 12:27:05 +0200 Sabrina Dubroca wrote:
+> > > My bad. I only checked &msg->msg_iter's address in tls_decrypt_sw and found
+> > > it was wrong. Do I need to make a new patch to fix the harmless bogus
+> > > pointer?  
+> > 
+> > I don't think that's necessary, but maybe it would avoid people trying
+> > to "fix" this code in the future. Jakub, WDYT?
+> 
+> No strong feelings, but personally I find checks for conditions which
+> cannot happen decrease the readability. Maybe a comment is better?
 
-Hi all,
+There's already a comment above tls_decrypt_sg that (pretty much) says
+out_iov is only used in zero-copy mode.
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+ *          [...]            The input parameter 'darg->zc' indicates if
+ * zero-copy mode needs to be tried or not. With zero-copy mode, either
+ * out_iov or out_sg must be non-NULL.
 
-  460babc96c13 ("dt-bindings: irqchip: renesas,irqc: Add r8a779f0 support")
+Do we need another just above the call to tls_decrypt_sg?
 
-This is commit
+-- 
+Sabrina
 
-  977f7c2b2756 ("dt-bindings: interrupt-controller: renesas,irqc: Add r8a77=
-9f0 support")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=NvWPYFzAhMvBTG6bLp1PJu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU5hmIACgkQAVBC80lX
-0GzhUAf/dGlwGTVxv2s5qCqwa2d3Fm5x8lOylJKMvopP/OlOaQN95w+8Q9Ss34ud
-qUBvepcUYlM3RU1l4vumMa/bK+j0rILI/mr5I5/LSFQWaXATUUgp0pr/OktjA7oR
-A51+S1+CHglpclqNps0c6/2qiC5xvQofcIKrro/HkfOMES7J6ASLFwFZwk7/Jvgj
-nZ7iOMPs9R5Kre2ACRuyyw3RGhsSWg2flTRkRcG+JFQdJB1HbuToG4T0dJMtGf1Q
-w6eGvTDB6BxSfgEy/M1Vcuo+0eIE470BjkQuCaejSWR16mWnvDGHU+dkoGkKbL6h
-mGF/1rUuznCsFoWag0FASq7AyRTu4A==
-=QgMm
------END PGP SIGNATURE-----
-
---Sig_/=NvWPYFzAhMvBTG6bLp1PJu--
