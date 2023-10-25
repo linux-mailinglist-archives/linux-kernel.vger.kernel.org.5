@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37A27D6A6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074307D6A72
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbjJYLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S1343592AbjJYLyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233280AbjJYLxv (ORCPT
+        with ESMTP id S233280AbjJYLyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:53:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF4812A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698234829; x=1729770829;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=WGLwc5iTwr+p0DGCwq0HmPdYYtDkR3qB+ype1OEIfNA=;
-  b=h4b9o338cxZdqEWP6IuEeryAbMhWehqhjR9mNTZIJFvOZMp1r5GHzQR/
-   dtueqXz+4+qUeuUacyIOfT4W5ncfA13PxiC/tXth5J42gJbEHd/AH3EnC
-   rU7yvH1fH3FZPPF/3k2oYFEfcmEyHA9L8cYz8MbE+2KolWvevWvaevJ/Z
-   FcH2cYuniJ9x7ollfxxswVu0woPsetkhDQhZ+zFDmH21xeJ1yZ3tg9syU
-   O3L4/2L6a2inN2zDkjTcgwiPxvtc6Xa2/eBn9ZScyHEiJKMA9FPfaZx9T
-   UtYJg0bGzebpDxFmvPliybFVfGkbcUhnrJlBbExPbuV8H0o5UdNLRQMKE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="377656073"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="377656073"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:53:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="788100608"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="788100608"
-Received: from dtorrice-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.33.83])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:53:41 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Badal Nilawar <badal.nilawar@intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Vinay Belgaumkar <vinay.belgaumkar@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Andi Shyti <andi.shyti@linux.intel.com>
-Subject: Re: [PATCH] drm/i915/mtl: avoid stringop-overflow warning
-In-Reply-To: <20231024174153.byeq7ctssvxuwa4z@zenone.zhora.eu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231016201012.1022812-1-arnd@kernel.org>
- <87edhlbj16.fsf@intel.com>
- <20231024174153.byeq7ctssvxuwa4z@zenone.zhora.eu>
-Date:   Wed, 25 Oct 2023 14:53:38 +0300
-Message-ID: <87o7gm9av1.fsf@intel.com>
+        Wed, 25 Oct 2023 07:54:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FC313A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:54:11 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32d9b507b00so4020735f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698234849; x=1698839649; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+ltZJ6+Swzk+yoph3jfCx5O+AxaS4gg+n6PcWMPDR1U=;
+        b=xhQnCET61UW2n5ZKo12yldp5czbdio0pwNBWYL/ZYa0ZXXoQLqYhdllxcH+Qe33eAa
+         k5cu9DG+PrpsByQrp7ShH3D+RcpCAw7AdRp1FHCWYCAHbIVOfykrtx1x4BaRtR6NcbeO
+         zsbC6Ak/O31NSdUe5bWm8mA/L+jsp9XRYmqT7GGtEKVIvvG1BI779++Yl9kg2xiybJ1N
+         gEhBjFnFNmcFzSFiP+LbbEHuc2jY69viBPUTBkuLuP7wtRFMzVR82FKNWgiPYrKdI+5+
+         oHRFZBk6wMDeipbQx0JgUATcK30vMeNE7oYNNEwtFYQ9wyVPhVBClcJD8/CUCXqlUyhj
+         YK7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698234849; x=1698839649;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+ltZJ6+Swzk+yoph3jfCx5O+AxaS4gg+n6PcWMPDR1U=;
+        b=eeHCh0SNL+VuIr8N9np38Qd1lb/s4PJ66Zr5qu1XxTzQQx9kW+oDmvdDbayfwhgod3
+         F53H55VBtV3deYGRJMQ1RND9aCq6Zg+1ylmVLZh9GV3Lf2ksu2f3fxawb2jrJ4GHfrNw
+         2y/Jzbnn47U9gesr+mheUjYPpybkUDmUNueRD31xhsDkAW0U5dgKm60NNtKj9+BFmAKH
+         iT7dvmRy+Wq9FpDzU+8rIVHwjXusi9Vkp2JW7Z2ECmPFBQCmrbzYFEkP14u8wAepjbO8
+         ZfStj/h2kkH7P/YOF3EX18DgcrKkA7T/inbFL8hfqnUG8IhcJxNVbDdTynrbQpatby6+
+         PBmQ==
+X-Gm-Message-State: AOJu0YyzJ2OgRRj+rOJgg2Ql/Ny/a0qO4GrpSwfgULXMc5/L+4lTXVVS
+        9jfsZusyfIQUJ3F0qnQ+vd4XRw==
+X-Google-Smtp-Source: AGHT+IGS8IxeGnw77ae04CewqnJrvLNlhqcwo7Not1TX3kus/2zqI9HEmaXRirkfvq4MiWRki24zag==
+X-Received: by 2002:a5d:664c:0:b0:32d:93aa:3d63 with SMTP id f12-20020a5d664c000000b0032d93aa3d63mr11621264wrw.69.1698234849478;
+        Wed, 25 Oct 2023 04:54:09 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4b03:ec74:6374:5430? ([2a01:e0a:982:cbb0:4b03:ec74:6374:5430])
+        by smtp.gmail.com with ESMTPSA id t13-20020a5d49cd000000b003176c6e87b1sm11797593wrs.81.2023.10.25.04.54.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 04:54:09 -0700 (PDT)
+Message-ID: <03630289-d25a-498a-9f24-ac7633b48ee7@linaro.org>
+Date:   Wed, 25 Oct 2023 13:54:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH RFC 7/8] arm64: dts: qcom: sm8650-mtp: add interconnect
+ dependent device nodes
+Content-Language: en-US, fr
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025-topic-sm8650-upstream-dt-v1-0-a821712af62f@linaro.org>
+ <20231025-topic-sm8650-upstream-dt-v1-7-a821712af62f@linaro.org>
+ <c98a3141-13a2-4cb3-bbd0-74ff63446183@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <c98a3141-13a2-4cb3-bbd0-74ff63446183@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023, Andi Shyti <andi.shyti@kernel.org> wrote:
-> Hi Jani,
->
->> >  static void rc6_res_reg_init(struct intel_rc6 *rc6)
->> >  {
->> > -	memset(rc6->res_reg, INVALID_MMIO_REG.reg, sizeof(rc6->res_reg));
->> 
->> That's just bollocks. memset() is byte granularity, while
->> INVALID_MMIO_REG.reg is u32. If the value was anything other than 0,
->> this would break.
->
-> Actually it's:
->
->    void *memset(void *s, int c, size_t count)
+On 25/10/2023 11:11, Konrad Dybcio wrote:
+> 
+> 
+> On 10/25/23 09:47, Neil Armstrong wrote:
+>> Now interconnect dependent devices are added in sm8650 DTSI,
+>> now enable more devices for the Qualcomm SM8650 MTP board:
+>> - PCIe
+>> - Display
+>> - DSPs
+>> - SDCard
+>> - UFS
+>> - USB role switch with PMIC Glink
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> [...]
+> 
+>> +&ufs_mem_hc {
+>> +    reset-gpios = <&tlmm 210 GPIO_ACTIVE_LOW>;
+>> +
+>> +    vcc-supply = <&vreg_l17b_2p5>;
+>> +    vcc-max-microamp = <1300000>;
+>> +    vccq-supply = <&vreg_l1c_1p2>;
+>> +    vccq-max-microamp = <1200000>;
+> You should amend these regulators' nodes with loadsetting
+> and allowed mode properties
 
-And? It still sets each byte in s to (the lowest 8 bits of) c.
+Ack will do that on both patches 7 & 8,
 
->
->> And you're not supposed to look at the guts of i915_reg_t to begin with,
->> that's why it's a typedef. Basically any code that accesses the members
->> of i915_reg_t outside of its implementation are doing it wrong.
->> 
->> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
->
-> in any case, I agree with your argument, but why can't we simply
-> do:
->
->    memset(rc6->res_reg, 0, sizeof(rc6->res_reg));
->
-> ?
+Thanks,
+Neil
 
-We can simply do a lot of things in C, but IMO that's semantically
-wrong. i915_reg_t is supposed to be an opaque type. We're not supposed
-to know what it contains, and what values are valid or invalid for it.
-That's one of the reasons we have i915_reg_t in the first place (type
-safety being the primary one).
+> 
+> Konrad
 
-Basically you should be able to do
-
--#define INVALID_MMIO_REG _MMIO(0)
-+#define INVALID_MMIO_REG _MMIO(0xdeadbeef)
-
-and expect everything to still work.
-
-BR,
-Jani.
-
->
-> The patch looks to me like it's being more complex that it
-> should.
->
-> Andi
-
--- 
-Jani Nikula, Intel
