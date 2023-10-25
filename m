@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E641B7D6D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4867D6D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344560AbjJYNaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S1344550AbjJYNaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344555AbjJYNac (ORCPT
+        with ESMTP id S1343840AbjJYNaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:30:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC19B4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698240584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RKM+gb1rWlbrsyGe0ru+asYHoehN8Amt0gEY38pCGlY=;
-        b=DSpn5zaqSRytD1Kvth4qXMjcacBWBt8E1TtD23QUQlsGnJop2RhwQDr4uxd/EXb3Cq/z7h
-        fL35OjMihOuD/PiiMOE2BhiOWaO43gmUQi2h6CX1Eo+XKVKZLt/5Tnkufk6SqlK1dwoIL7
-        tUNpFVD/9sBOzKs4ZvjK5m3D0Om3oxE=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-640-R1DUIScEOIy4KTXQyzyODQ-1; Wed, 25 Oct 2023 09:29:28 -0400
-X-MC-Unique: R1DUIScEOIy4KTXQyzyODQ-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c5073588cbso43757001fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:29:27 -0700 (PDT)
+        Wed, 25 Oct 2023 09:30:11 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1CE132
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:30:08 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-49dd647a477so2094542e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:30:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698240607; x=1698845407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9FCfEKDsSxj0UbnaNrhG13AiQF2xaylJwEFbU7V7KMs=;
+        b=hIktdwxpd9E3a7a/b45fH2I/23koFstKRUL0OUVCY/6eEPeerRP8Sk0f+GP044xPj2
+         fM+6cmb8yqX7AXWr90cqddHS7krSZZerL5gWsAy2xNonzoCTWwN6RvZ+gAYK3gT6hjil
+         R0o+6KxKkSet9cDuNKgZJLOVEorn1vjyoWDg2nVQhiyD2MYZRqwPkk5LMladSs8MHiYr
+         QtCiaSd72ERGxRwIgLNazjmOr/JPeyl986oAbHU4u+c0c4sZM9oXq8C81uMgLQ7fmB/c
+         Y2p75VP372Ybhmd73h/xysJ9zHCbhfz37FQsGQGjng2wReEZah9glRoMYvgP5oirYbSR
+         caNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698240566; x=1698845366;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698240607; x=1698845407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RKM+gb1rWlbrsyGe0ru+asYHoehN8Amt0gEY38pCGlY=;
-        b=fG+PbAyyN65HOA2oTsfxrNDAVQJPmdWqlszQjaPNxf7BeZIF2QZLQ2JUTOr5DYoM39
-         Mlfz0iEopjuXFXZA8ed92qZ7+ZtuilCDbN9RYDWfy7u4/asEyakBDlZ1Qt4pr1RKxCpz
-         l7u03vHmc1Fw7ycZWhpGFn51yKw1QNq/YVwxwe6y0/tdmFvbay4FbDYxTRqsQLcoiwz7
-         Mkqt0xal8nJJwDcozkxvYsf8osb4gxoLhYnIE04aGrs3EA5hncQ+Ui+fXbob5CYfvAXY
-         +2koSVY52gshl8YEFW23ysf055GSCvKTVjLqlQuTgzb5/i4cQFLttXnUlR/7b13UDY6S
-         ZfdQ==
-X-Gm-Message-State: AOJu0YzKEWBwbSCLm7reocpkwGBX/aN/ffMPelLiWYpdoEFMdjB+vwVA
-        8MhhGTdNdN2pz7Mb0ZramxA3PBMjISskYGDsqLPoFR3iomU2SH93YZPFuC0ZNhvAgvyzn3qiCUF
-        t3vG+ovL72e9Se5rqJG9yQjan
-X-Received: by 2002:a2e:a167:0:b0:2c5:2242:ba5f with SMTP id u7-20020a2ea167000000b002c52242ba5fmr10223990ljl.26.1698240566741;
-        Wed, 25 Oct 2023 06:29:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG/bd1sv994kl11qxaY4JhVZknbw1CMFlecWdVOEe4wLnbmCw3X4wu/FtaHxVQeGg/8wymYQw==
-X-Received: by 2002:a2e:a167:0:b0:2c5:2242:ba5f with SMTP id u7-20020a2ea167000000b002c52242ba5fmr10223969ljl.26.1698240566378;
-        Wed, 25 Oct 2023 06:29:26 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id q12-20020a05600c2e4c00b0040648217f4fsm19250273wmf.39.2023.10.25.06.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 06:29:26 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Evan Preston <x.arch@epreston.net>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jaak Ristioja <jaak@ristioja.ee>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
- L570
-In-Reply-To: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
-References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
- <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info>
- <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
- <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
- <ZSO9uArAtsPMPeTP@debian.me>
- <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
- <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info>
- <CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com>
- <ZTWoDSPxGO-ApR4r@P70.localdomain>
- <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
- <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
-Date:   Wed, 25 Oct 2023 15:29:24 +0200
-Message-ID: <87v8auhlu3.fsf@minerva.mail-host-address-is-not-set>
+        bh=9FCfEKDsSxj0UbnaNrhG13AiQF2xaylJwEFbU7V7KMs=;
+        b=cARuosKP7JGOUmyH5MLiHg+Rp6SrU9P6jtjYF2jd9z4VhVgWxfURBPgz5+PeZM88Fn
+         WC/53tBW4ouPxO7K1eGuQ+H8iedf29BOzfsvETfjZy1w4HRemKISce3xTeTohbU9P3QN
+         ZBiMCdSwEJZfEzXMHg7DFCLhsX6tz8Yj7pr/dQQfAhhtKhZw54ZyUiYZlUR03vxl0vo/
+         QvBJiL1g8kOwgqFMgSSJ9lfWKe8z1pr0hYnvB56QZXPPGuwZxvx/WbiNaSoBqHLWlc/a
+         XweKWm9fAIt7ryI4Z3Q4sdy6o7OZxBAsqGbSKZgM1zCK93K6M1fst0o4TlHZCK7ARDM0
+         iV+A==
+X-Gm-Message-State: AOJu0Yw4ChvDBop8I6ATD409sxdntCkMon3cyB/x2wU5zidgO93Xtcc5
+        ax29btL/9brk8d5Jank7UeEMRCGET9Egma+0tIbFsg==
+X-Google-Smtp-Source: AGHT+IEZIO89GvjY7p6Onv9qJsiFS8XSTMJNgINxOt+FqqhdyaLpY0c4XnNgQgLeJNXkNJv6us7+wxUzs2ulyGkppzw=
+X-Received: by 2002:a05:6122:d0e:b0:49a:6742:b176 with SMTP id
+ az14-20020a0561220d0e00b0049a6742b176mr14979846vkb.16.1698240607437; Wed, 25
+ Oct 2023 06:30:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231019171540.259173-1-benno.lossin@proton.me>
+ <1cc11492-248e-4b37-9608-b475acde3da2@ryhl.io> <06d27457-6b6c-4392-9be1-d1fecfbfd9f3@proton.me>
+In-Reply-To: <06d27457-6b6c-4392-9be1-d1fecfbfd9f3@proton.me>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Wed, 25 Oct 2023 15:29:56 +0200
+Message-ID: <CAH5fLgiT4A1jMcsUhPdnXZC0cd=GMWuwDmLjnAGxe55+9HBiJA@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: macros: improve `#[vtable]` documentation
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <alice@ryhl.io>, Boqun Feng <boqun.feng@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huacai Chen <chenhuacai@kernel.org> writes:
-
-Hello,
-
-> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
-> <regressions@leemhuis.info> wrote:
-
-[...]
-
->>
->> This additional report makes me wonder if we should revert the culprit
->> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
->> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess that
->> might lead to regressions for some users? But the patch description says
->> that this is not a common configuration, so can we maybe get away with t=
-hat?
-> From my point of view, this is not a regression, 60aebc9559492c
-> doesn't cause a problem, but exposes a problem. So we need to fix the
-> real problem (SIMPLEDRM has a blank screen on some conditions). This
-> needs Jaak or Evan's help.
+On Mon, Oct 23, 2023 at 9:01=E2=80=AFAM Benno Lossin <benno.lossin@proton.m=
+e> wrote:
 >
+> On 21.10.23 14:45, Alice Ryhl wrote:
+> > On 10/19/23 19:15, Benno Lossin wrote:
+> >> Traits marked with `#[vtable]` need to provide default implementations
+> >> for optional functions. The C side represents these with `NULL` in the
+> >> vtable, so the default functions are never actually called. We do not
+> >> want to replicate the default behavior from C in Rust, because that is
+> >> not maintainable. Therefore we should use `build_error` in those defau=
+lt
+> >> implementations. The error message for that is provided at
+> >> `kernel::error::VTABLE_DEFAULT_ERROR`.
+> >>
+> >> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> >
+> > Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> >
+> > There is a minor nit below, and in reviews sent by others, but overall
+> > this looks fine to me.
+> >
+> >>    /// # Examples
+> >>    ///
+> >>    /// ```ignore
+> >> +/// # use kernel::error::VTABLE_DEFAULT_ERROR;
+> >>    /// use kernel::prelude::*;
+> > I probably wouldn't hide the import of VTABLE_DEFAULT_ERROR from this
+> > example.
+>
+> What do you guys think of putting the const it in the prelude?
 
-I agree with this.
+I think it's fine to just import it.
 
-> Huacai
-
---=20
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Alice
