@@ -2,112 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2F67D65AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931177D65AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234449AbjJYIsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S234561AbjJYIrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbjJYIrp (ORCPT
+        with ESMTP id S234475AbjJYIrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:47:45 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AE710F5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:47:26 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so77641551fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698223644; x=1698828444; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AWLunRg+mdtBWttUW92XIFkEVDjp3aPObiDCT739YI8=;
-        b=fB7uULUi1pn0+9AkBACyt++CU31BzVQvbvXjRlZ2dWk0xItPqvJdqotwAQafix/U/S
-         jxU9yUtZiWlPpIZfm3hCJbon2qzbLMmgvhPA/OLelYm22CxhJuhi9WrLKWkY56Y13GIc
-         XrMH9DRNscQRdbQ6mqQ8WYvxf4iNgPaO9Shy6ktGmnS0Ym1coY3E7HO4kFyB0XBQO86Q
-         yhxbA42kO99svHyCD+cElPFuswMCVu1CV48OCOKaM+AJ1njKIWGwx6FN3n/uht3fPBH0
-         7NqnccbmfjXv2HAfMWCG3yvteYneexFz48BZb6gYvIFlH0WeaGu+k9Ug5f8ibvFqbfaE
-         3yrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698223644; x=1698828444;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AWLunRg+mdtBWttUW92XIFkEVDjp3aPObiDCT739YI8=;
-        b=HUFFecjB+wR9IYNlqqz/TEnYMBiNGJthaDJxIgHAFJZrKLJWy8DT4uLj8Hku4U1qlk
-         JgPySvMYX3EPjcbS3p57cM/y0ye269r4jHtss7F4ZD0J9slD6GnKcWMq5Cyw5fDtR/bb
-         TG98JUHTb1YDGNnSUtV0g1/KQZmOVsEwkl1mvmW7/w38nfmBjaS2TQcJ8f8sZ7V241GK
-         +7iOEuXInFwgRqdqIRXdavphD73dvPMWQT5su1YF5uPBl/U1rmfi80j1VZ0skizAoZwn
-         bwTivppp+BbsOx5xWvrSHLPX4hIw0YtH9EVVbnvucaOFAG8w1Sg/bjEjp6adU/R9k9Cg
-         1STQ==
-X-Gm-Message-State: AOJu0YzY0QNVJ9fR0FQswucTfTk/1XEAUst0odFDPcuFq7lVyoIQTqAx
-        bjsZGCpMUOV8p5gWEVvENf1cxw==
-X-Google-Smtp-Source: AGHT+IEafQID4C58Vd4asshYumAJa15oxm3wsXK3dPqRvDIJ2A6H8umL7F5QWjcQQICDpZ6VpnJjKA==
-X-Received: by 2002:a2e:9882:0:b0:2c5:183d:42bf with SMTP id b2-20020a2e9882000000b002c5183d42bfmr9960635ljj.45.1698223644604;
-        Wed, 25 Oct 2023 01:47:24 -0700 (PDT)
-Received: from [172.30.204.57] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id p13-20020a2e9a8d000000b002c5122f13b8sm2320875lji.30.2023.10.25.01.47.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 01:47:24 -0700 (PDT)
-Message-ID: <467bc514-1cff-4bc5-a553-fd1ef0886ee5@linaro.org>
-Date:   Wed, 25 Oct 2023 10:47:23 +0200
+        Wed, 25 Oct 2023 04:47:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC9C31BEE;
+        Wed, 25 Oct 2023 01:47:04 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C9BD2F4;
+        Wed, 25 Oct 2023 01:47:45 -0700 (PDT)
+Received: from monolith (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F06E3F64C;
+        Wed, 25 Oct 2023 01:46:58 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 09:47:36 +0100
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>, will@kernel.org,
+        oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de,
+        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
+        pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
+ reuse
+Message-ID: <ZTjWKJ0K78jeCJr-@monolith>
+References: <ZOc0fehF02MohuWr@arm.com>
+ <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
+ <0b9c122a-c05a-b3df-c69f-85f520294adc@redhat.com>
+ <ZOd2LvUKMguWdlgq@arm.com>
+ <ZPhfNVWXhabqnknK@monolith>
+ <ZP7/e8YFiosElvTm@arm.com>
+ <0cc8a118-2522-f666-5bcc-af06263fd352@redhat.com>
+ <ZQHVVdlN9QQztc7Q@arm.com>
+ <CGME20231025031004epcas2p485a0b7a9247bc61d54064d7f7bdd1e89@epcas2p4.samsung.com>
+ <20231025025932.GA3953138@tiffany>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] clk: qcom: rpmh: add clocks for SM8650
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Taniya Das <quic_tdas@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231025-topic-sm8650-upstream-clocks-v1-0-c89b59594caf@linaro.org>
- <20231025-topic-sm8650-upstream-clocks-v1-10-c89b59594caf@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231025-topic-sm8650-upstream-clocks-v1-10-c89b59594caf@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025025932.GA3953138@tiffany>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 10/25/23 09:32, Neil Armstrong wrote:
-> Add RPMH Clocks for the SM8650 platform.
+On Wed, Oct 25, 2023 at 11:59:32AM +0900, Hyesoo Yu wrote:
+> On Wed, Sep 13, 2023 at 04:29:25PM +0100, Catalin Marinas wrote:
+> > On Mon, Sep 11, 2023 at 02:29:03PM +0200, David Hildenbrand wrote:
+> > > On 11.09.23 13:52, Catalin Marinas wrote:
+> > > > On Wed, Sep 06, 2023 at 12:23:21PM +0100, Alexandru Elisei wrote:
+> > > > > On Thu, Aug 24, 2023 at 04:24:30PM +0100, Catalin Marinas wrote:
+> > > > > > On Thu, Aug 24, 2023 at 01:25:41PM +0200, David Hildenbrand wrote:
+> > > > > > > On 24.08.23 13:06, David Hildenbrand wrote:
+> > > > > > > > Regarding one complication: "The kernel needs to know where to allocate
+> > > > > > > > a PROT_MTE page from or migrate a current page if it becomes PROT_MTE
+> > > > > > > > (mprotect()) and the range it is in does not support tagging.",
+> > > > > > > > simplified handling would be if it's in a MIGRATE_CMA pageblock, it
+> > > > > > > > doesn't support tagging. You have to migrate to a !CMA page (for
+> > > > > > > > example, not specifying GFP_MOVABLE as a quick way to achieve that).
+> > > > > > > 
+> > > > > > > Okay, I now realize that this patch set effectively duplicates some CMA
+> > > > > > > behavior using a new migrate-type.
+> > > > [...]
+> > > > > I considered mixing the tag storage memory memory with normal memory and
+> > > > > adding it to MIGRATE_CMA. But since tag storage memory cannot be tagged,
+> > > > > this means that it's not enough anymore to have a __GFP_MOVABLE allocation
+> > > > > request to use MIGRATE_CMA.
+> > > > > 
+> > > > > I considered two solutions to this problem:
+> > > > > 
+> > > > > 1. Only allocate from MIGRATE_CMA is the requested memory is not tagged =>
+> > > > > this effectively means transforming all memory from MIGRATE_CMA into the
+> > > > > MIGRATE_METADATA migratetype that the series introduces. Not very
+> > > > > appealing, because that means treating normal memory that is also on the
+> > > > > MIGRATE_CMA lists as tagged memory.
+> > > > 
+> > > > That's indeed not ideal. We could try this if it makes the patches
+> > > > significantly simpler, though I'm not so sure.
+> > > > 
+> > > > Allocating metadata is the easier part as we know the correspondence
+> > > > from the tagged pages (32 PROT_MTE page) to the metadata page (1 tag
+> > > > storage page), so alloc_contig_range() does this for us. Just adding it
+> > > > to the CMA range is sufficient.
+> > > > 
+> > > > However, making sure that we don't allocate PROT_MTE pages from the
+> > > > metadata range is what led us to another migrate type. I guess we could
+> > > > achieve something similar with a new zone or a CPU-less NUMA node,
+> > > 
+> > > Ideally, no significant core-mm changes to optimize for an architecture
+> > > oddity. That implies, no new zones and no new migratetypes -- unless it is
+> > > unavoidable and you are confident that you can convince core-MM people that
+> > > the use case (giving back 3% of system RAM at max in some setups) is worth
+> > > the trouble.
+> > 
+> > If I was an mm maintainer, I'd also question this ;). But vendors seem
+> > pretty picky about the amount of RAM reserved for MTE (e.g. 0.5G for a
+> > 16G platform does look somewhat big). As more and more apps adopt MTE,
+> > the wastage would be smaller but the first step is getting vendors to
+> > enable it.
+> > 
+> > > I also had CPU-less NUMA nodes in mind when thinking about that, but not
+> > > sure how easy it would be to integrate it. If the tag memory has actually
+> > > different performance characteristics as well, a NUMA node would be the
+> > > right choice.
+> > 
+> > In general I'd expect the same characteristics. However, changing the
+> > memory designation from tag to data (and vice-versa) requires some cache
+> > maintenance. The allocation cost is slightly higher (not the runtime
+> > one), so it would help if the page allocator does not favour this range.
+> > Anyway, that's an optimisation to worry about later.
+> > 
+> > > If we could find some way to easily support this either via CMA or CPU-less
+> > > NUMA nodes, that would be much preferable; even if we cannot cover each and
+> > > every future use case right now. I expect some issues with CXL+MTE either
+> > > way , but are happy to be taught otherwise :)
+> > 
+> > I think CXL+MTE is rather theoretical at the moment. Given that PCIe
+> > doesn't have any notion of MTE, more likely there would be some piece of
+> > interconnect that generates two memory accesses: one for data and the
+> > other for tags at a configurable offset (which may or may not be in the
+> > same CXL range).
+> > 
+> > > Another thought I had was adding something like CMA memory characteristics.
+> > > Like, asking if a given CMA area/page supports tagging (i.e., flag for the
+> > > CMA area set?)?
+> > 
+> > I don't think adding CMA memory characteristics helps much. The metadata
+> > allocation wouldn't go through cma_alloc() but rather
+> > alloc_contig_range() directly for a specific pfn corresponding to the
+> > data pages with PROT_MTE. The core mm code doesn't need to know about
+> > the tag storage layout.
+> > 
+> > It's also unlikely for cma_alloc() memory to be mapped as PROT_MTE.
+> > That's typically coming from device drivers (DMA API) with their own
+> > mmap() implementation that doesn't normally set VM_MTE_ALLOWED (and
+> > therefore PROT_MTE is rejected).
+> > 
+> > What we need though is to prevent vma_alloc_folio() from allocating from
+> > a MIGRATE_CMA list if PROT_MTE (VM_MTE). I guess that's basically
+> > removing __GFP_MOVABLE in those cases. As long as we don't have large
+> > ZONE_MOVABLE areas, it shouldn't be an issue.
+> > 
 > 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-[...]
+> How about unsetting ALLOC_CMA if GFP_TAGGED ?
+> Removing __GFP_MOVABLE may cause movable pages to be allocated in un
+> unmovable migratetype, which may not be desirable for page fragmentation.
 
-> +static struct clk_hw *sm8650_rpmh_clocks[] = {
-> +	[RPMH_CXO_CLK]		= &clk_rpmh_bi_tcxo_div2.hw,
-> +	[RPMH_CXO_CLK_A]	= &clk_rpmh_bi_tcxo_div2_ao.hw,
-> +	[RPMH_LN_BB_CLK1]	= &clk_rpmh_clk6_a2.hw,
-> +	[RPMH_LN_BB_CLK1_A]	= &clk_rpmh_clk6_a2_ao.hw,
-> +	[RPMH_LN_BB_CLK2]	= &clk_rpmh_clk7_a2.hw,
-> +	[RPMH_LN_BB_CLK2_A]	= &clk_rpmh_clk7_a2_ao.hw,
-> +	[RPMH_LN_BB_CLK3]	= &clk_rpmh_clk8_a2.hw,
-> +	[RPMH_LN_BB_CLK3_A]	= &clk_rpmh_clk8_a2_ao.hw,
-> +	[RPMH_RF_CLK1]		= &clk_rpmh_clk1_a1.hw,
-> +	[RPMH_RF_CLK1_A]	= &clk_rpmh_clk1_a1_ao.hw,
-> +	[RPMH_RF_CLK2]		= &clk_rpmh_clk2_a1.hw,
-> +	[RPMH_RF_CLK2_A]	= &clk_rpmh_clk2_a1_ao.hw,
-> +	/* missing RPMh resource address for clka3 */
-So, the downstream driver suggested it's there but CMD-DB disagrees?
+Yes, not setting ALLOC_CMA in alloc_flags if __GFP_TAGGED is what I am
+intending to do.
 
-Can we get a confirmation whether it should be there?
+> 
+> > > When you need memory that supports tagging and have a page that does not
+> > > support tagging (CMA && taggable), simply migrate to !MOVABLE memory
+> > > (eventually we could also try adding !CMA).
+> > > 
+> > > Was that discussed and what would be the challenges with that? Page
+> > > migration due to compaction comes to mind, but it might also be easy to
+> > > handle if we can just avoid CMA memory for that.
+> > 
+> > IIRC that was because PROT_MTE pages would have to come only from
+> > !MOVABLE ranges. Maybe that's not such big deal.
+> > 
+> 
+> Could you explain what it means that PROT_MTE have to come only from
+> !MOVABLE range ? I don't understand this part very well.
 
-Konrad
+I believe that was with the old approach, where tag storage cannot be tagged.
+
+I'm guessing that the idea was that during migration of a tagged page, to make
+sure that the destination page is not a tag storage page (which cannot be
+tagged), the gfp flags used for allocating the destination page would be set
+without __GFP_MOVABLE, which ensures that the destination page is not
+allocated from MIGRATE_CMA. But that is not needed anymore, if we don't set
+ALLOC_CMA if __GFP_TAGGED.
+
+Thanks,
+Alex
+
+> 
+> Thanks,
+> Hyesoo.
+> 
+> > We'll give this a go and hopefully it simplifies the patches a bit (it
+> > will take a while as Alex keeps going on holiday ;)). In the meantime,
+> > I'm talking to the hardware people to see whether we can have MTE pages
+> > in the tag storage/metadata range. We'd still need to reserve about 0.1%
+> > of the RAM for the metadata corresponding to the tag storage range when
+> > used as data but that's negligible (1/32 of 1/32). So if some future
+> > hardware allows this, we can drop the page allocation restriction from
+> > the CMA range.
+> > 
+> > > > though the latter is not guaranteed not to allocate memory from the
+> > > > range, only make it less likely. Both these options are less flexible in
+> > > > terms of size/alignment/placement.
+> > > > 
+> > > > Maybe as a quick hack - only allow PROT_MTE from ZONE_NORMAL and
+> > > > configure the metadata range in ZONE_MOVABLE but at some point I'd
+> > > > expect some CXL-attached memory to support MTE with additional carveout
+> > > > reserved.
+> > > 
+> > > I have no idea how we could possibly cleanly support memory hotplug in
+> > > virtual environments (virtual DIMMs, virtio-mem) with MTE. In contrast to
+> > > s390x storage keys, the approach that arm64 with MTE took here (exposing tag
+> > > memory to the VM) makes it rather hard and complicated.
+> > 
+> > The current thinking is that the VM is not aware of the tag storage,
+> > that's entirely managed by the host. The host would treat the guest
+> > memory similarly to the PROT_MTE user allocations, reserve metadata etc.
+> > 
+> > Thanks for the feedback so far, very useful.
+> > 
+> > -- 
+> > Catalin
+> > 
+
+
