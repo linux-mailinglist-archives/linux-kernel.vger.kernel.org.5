@@ -2,189 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFAC7D6E32
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CDF7D6E13
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235036AbjJYNup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        id S1344243AbjJYNum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235059AbjJYNui (ORCPT
+        with ESMTP id S234163AbjJYNuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:50:38 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C71133
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:50:30 -0700 (PDT)
-Received: from mail-vk1-f197.google.com (mail-vk1-f197.google.com [209.85.221.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 611B1420B6
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698241818;
-        bh=W1x37B91j9+69z88CpRerUtWigBjNUnfhOj4SQBIvW4=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=vS+12Q40AQ4TZ0QJz97o+VvWhbM+rqyeHwG+1ZD+Ih8mEMUEE8DoQjwmMIsgVMZTc
-         GRM4mUkK6H6/qKxgwcbVsHIpKMlGOUewITUboL59t5wtXNriDvTxFx9Yn1VWJH4olL
-         sSs6Va3B3mjbT5hy/2xEjh1E99qDgI8tGviExP4LEQPo/F7+2KyEuWPvxdL2Q/RIf2
-         jB4LWj8G67cKC11NE8f8z2CVaGGSWC+D1HzLf0ptDTq5nc/zmuhFlYKOKJxaDiQ6/3
-         TMpt0ttlunlbci+q1eSnxI05nJ/e1Yshlm6mTvtzNuew0gcCZ7qmpsZ/9Gfx3DtLVN
-         mkExeCxE4l/5g==
-Received: by mail-vk1-f197.google.com with SMTP id 71dfb90a1353d-49e22068ec1so1816400e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:50:18 -0700 (PDT)
+        Wed, 25 Oct 2023 09:50:37 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1504186
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:50:26 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c5b313b3ffso813560766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698241825; x=1698846625; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zlFrqy2n4jMGFeX5yqzkCap/aItgCW38V/WXrjhEwkQ=;
+        b=XBu+iwT6ElNNbUpziO75cIm15hkxJ6GXn6mwhgf476Y/0mU4GwVU46LbNR5at5VdHo
+         VX05+8Xk4XGuvDPc6Rdxi1WbBmiolN8pgs43Qx3WolhK0hSlsWIC8S3ehgGSmExaGvd2
+         D3OfZzN1awrqmDHF8pEPqDj32MNLVdrvfF1aUD5if9iy1tMTOXL7CYCOCM4ZLSenD2Oy
+         LyBtaCd2NeJvWlE/eBarmj70OkYOypGC4UgcWOcP2o2fhBoDMT9IdUDIiO44wQz5HpUH
+         LWgl7Tx5DS8obFJTkk+n6fnLJgPM9ADAfH2wczPGZqhVSJHMtAdwVdMYqVPxOPPLt6Nz
+         B5PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698241817; x=1698846617;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W1x37B91j9+69z88CpRerUtWigBjNUnfhOj4SQBIvW4=;
-        b=NhTe/tMHOuQT6jSWIR5kbW0b9VER72e5Bv/afEbyYdC+gee4yzq1suaOSU6wvac5YU
-         A+lYi5uiDvDuDKpZJ+8/37Fgcd+0+1f/nmSQHf0KMo5ZCld+JoE85VxHfSILAMLnwKg7
-         1nqIwqbBalEntr/0eH4s/FZwLg2jNT5RRvMB/aQoAkZhLuN3SxXrP2+C/VqxYUML8Bk5
-         DraRMX3x5ogJZ12zM8e3LIg6f/YOSGk8tARFyDkTSi5cPf0mRCNaoWanXJzgSjLT5W3+
-         a18MVOWRNiTTE+NNBECzVVKU1BhIRzynZcm+FGfRiCb4k1rycZUy8zXSYwKUuH1Lp2wC
-         datA==
-X-Gm-Message-State: AOJu0YzeukSTQIIgoMqEhhw0QK7ZvW8UYaMLsk4RRVrqTv3O492J6rMW
-        umuzzQyV1UBCxVxrZ4H7X7PqGznEw0T+Y+qmeWaopuCXYP2rrYq8THWOd05+kEia3ZvKScF5V/v
-        4NzUh5I0jaYiyf/M67ANEJ9SAXESbRGnJtRS/5fVhuXh2DIJM9ETm9g1Gjg==
-X-Received: by 2002:a1f:2413:0:b0:496:b3b7:5d4c with SMTP id k19-20020a1f2413000000b00496b3b75d4cmr9124785vkk.16.1698241817334;
-        Wed, 25 Oct 2023 06:50:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9zDnpBEjkuG+zK5+I3md5OYseNj7+FyeAufjrHbMrkjT4o0+aAODqiZVHTJv2jiFeyLuyYUPzrjH27o2gXYU=
-X-Received: by 2002:a1f:2413:0:b0:496:b3b7:5d4c with SMTP id
- k19-20020a1f2413000000b00496b3b75d4cmr9124773vkk.16.1698241817037; Wed, 25
- Oct 2023 06:50:17 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Oct 2023 06:50:16 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231025103957.3776-4-keith.zhao@starfivetech.com>
-References: <20231025103957.3776-1-keith.zhao@starfivetech.com> <20231025103957.3776-4-keith.zhao@starfivetech.com>
-Mime-Version: 1.0
-Date:   Wed, 25 Oct 2023 06:50:16 -0700
-Message-ID: <CAJM55Z_SS351YyudUkiS3YvBx7O9OM=MGL6PpgVZZjaYjLy3+w@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] drm/fourcc: Add drm/vs tiled modifiers
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698241825; x=1698846625;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zlFrqy2n4jMGFeX5yqzkCap/aItgCW38V/WXrjhEwkQ=;
+        b=eH6KV/4ljmj/RWTNseSvbtMM1EBNx3nGLqNFpihSOxOyMvNyRO3Hcuub+KJjQehQNI
+         4g574RueNr/L9oDvWqFjFFCmTrSTywFyI50dRc4jPMJEc/C4XgfcuAqwejqJCEKjaTgR
+         jbhDbN3LT5UWZkQYbS1a0sEmcyyZFs6RI5E3/t7QPC8Unec5C0HWmcoHIeRXPxxy6Bks
+         5WehiCGMPb9hAnnyQks8TZ/khHFpptizpZjiaLKoZdLpwCd4q25GEL0z2lWcPB9qweWC
+         EgK6UFj2zcvBo4wDy2CAmYGaKAa4EcVd1Juy+1rTN24S5Oe7KILRKP3VzliM8KwIOQRx
+         NOKg==
+X-Gm-Message-State: AOJu0YyUxNANBDHMa7osmk/gclHG9cqqFFzYemwC661XIYwg5pOqKkzn
+        5tM8EgYul7v+vISaoZDCEf8mTQ==
+X-Google-Smtp-Source: AGHT+IEixrfDcdtPzYMFUVRxieMPrVod97N8gmxr4oqwLzaBaVMniP5dj9RJz2iumUwUsutXnv8Gqw==
+X-Received: by 2002:a17:907:e91:b0:9bf:6200:fe33 with SMTP id ho17-20020a1709070e9100b009bf6200fe33mr14068860ejc.16.1698241824848;
+        Wed, 25 Oct 2023 06:50:24 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id s20-20020a170906355400b009bf7a4d591csm10158234eja.11.2023.10.25.06.50.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 06:50:24 -0700 (PDT)
+Message-ID: <67345a93-2c29-4b66-95dc-34917affd3b1@linaro.org>
+Date:   Wed, 25 Oct 2023 15:50:22 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm SC8380XP SoC
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        djakov@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231025134049.9734-1-quic_sibis@quicinc.com>
+ <20231025134049.9734-2-quic_sibis@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025134049.9734-2-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keith Zhao wrote:
-> For each modifier, add the corresponding description
->
-> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> ---
->  include/uapi/drm/drm_fourcc.h | 57 +++++++++++++++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index 8db7fd3f7..a580a848c 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -419,6 +419,7 @@ extern "C" {
->  #define DRM_FORMAT_MOD_VENDOR_ARM     0x08
->  #define DRM_FORMAT_MOD_VENDOR_ALLWINNER 0x09
->  #define DRM_FORMAT_MOD_VENDOR_AMLOGIC 0x0a
-> +#define DRM_FORMAT_MOD_VENDOR_VERISILICON 0x0b
->
->  /* add more to the end as needed */
->
-> @@ -1562,6 +1563,62 @@ drm_fourcc_canonicalize_nvidia_format_mod(__u64 modifier)
->  #define AMD_FMT_MOD_CLEAR(field) \
->  	(~((__u64)AMD_FMT_MOD_##field##_MASK << AMD_FMT_MOD_##field##_SHIFT))
->
-> +#define DRM_FORMAT_MOD_VERISILICON_TYPE_NORMAL					0x00
-> +#define DRM_FORMAT_MOD_VERISILICON_TYPE_MASK					((__u64)0x3 << 54)
-> +
-> +#define fourcc_mod_vs_code(type, val) \
-> +	fourcc_mod_code(VERISILICON, ((((__u64)type) << 54) | (val)))
-> +
-> +#define DRM_FORMAT_MOD_VERISILICON_NORM_MODE_MASK				0x1F
-> +
-> +/*
-> + * An x-major 8x8 super tile consists of 64 8x8 sub-tiles in total.
-> + * Each 8x8 sub-tile consists of four standard tiles .
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_XMAJOR_8X8		0x02
-> +
-> +/*
-> + * A y-major 8x8 super tile consists of 64 8x8 sub-tiles in total.
-> + * Each 8x8 sub-tile consists of four standard tiles .
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_YMAJOR_8X8		0x03
-> +
-> +/*
-> + * An 8x8 tile consists of four standard tiles
-> + * that are organized in Z-order.
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_TILE_8X8						0x04
-> +
-> +/*
-> + * An 8x4 tile consists of two standard tiles
-> + * that are organized in Z-order.
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_TILE_8X4						0x07
-> +
-> +/*
-> + * An x-major 8x4 super tile consists of 128 8x4 sub-tiles in total.
-> + * Each 8x4 sub-tile consists of two standard tiles.
-> + * two standard tiles also same with DRM_FORMAT_MOD_VS_TILE_8X4
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_XMAJOR_8X4		0x0B
+On 25/10/2023 15:40, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+> 
+> The Qualcomm SC8380XP SoC has several bus fabrics that could be controlled
+> and tuned dynamically according to the bandwidth demand.
 
-These indents are all over the place. Please either align them with tabs or use
-a single space like the AMD defines above.
+
+...
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +allOf:
+> +  - $ref: qcom,rpmh-common.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sc8380xp-clk-virt
+> +              - qcom,sc8380xp-mc-virt
+> +    then:
+> +      properties:
+> +        reg: false
+> +    else:
+> +      required:
+> +        - reg
+> +
+> +required:
+> +  - compatible
+
+By convention we put required: block before allOf: and that's what
+existing recent code has (qcom,sc8280xp-rpmh.yaml or
+qcom,sc7280-rpmh.yaml' for example). Please use recent files as a
+template for new bindings, so there will not be a need to fix the same
+things again.
+
+With fixes like in qcom,sc7280-rpmh.yaml:
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 > +
-> +/*
-> + * A y-major 4x8 super tile consists of 128 4x8 sub-tiles in total.
-> + * Each 4x8 sub-tile consists of two standard tiles.
-> + * two standard tiles also same with DRM_FORMAT_MOD_VS_TILE_8X4
-> + * standard tiles (see Vivante 4x4 tiling layout)
-> + */
-> +#define DRM_FORMAT_MOD_VERISILICON_SUPER_TILED_YMAJOR_4X8    0x0C
-> +
-> +#define fourcc_mod_vs_norm_code(tile) \
-> +	fourcc_mod_vs_code(DRM_FORMAT_MOD_VERISILICON_TYPE_NORMAL, \
-> +				(tile))
-> +
->  #if defined(__cplusplus)
->  }
->  #endif
-> --
-> 2.34.1
->
+> +unevaluatedProperties: false
+Best regards,
+Krzysztof
+
