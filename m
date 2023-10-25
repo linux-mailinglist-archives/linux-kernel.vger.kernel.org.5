@@ -2,144 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A847D7478
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB177D747E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjJYTi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
+        id S232105AbjJYTkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbjJYTiy (ORCPT
+        with ESMTP id S229576AbjJYTkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:38:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD22F13D;
-        Wed, 25 Oct 2023 12:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698262733; x=1729798733;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=+1FcziEC4Fko1fRoSTXWHKNgLHQEHQDm0zdcSDsN4rg=;
-  b=CRv+3ZTYOMeUbP2RZ5zdTq8OPfu4LN14lPvM37N4FR7GgvOjif27RaAl
-   QREwocGm/NAamGRylFdiNow7+ZSx23ppBOORiRZ9gZKiWoCxMpZ2wKKiM
-   PvBV14rzq+Ou7hmP3eNDSppNf03iw+bStLjacf3/RcF+xz6ukO9bBnZSv
-   HKxKjt8w7LJZ9/oytGRD+rfOuNxcx5DcghmvPB3y9JrhP1CCAi/Z9rMiM
-   4UDMsZMnun30bGtFyx6z3eeSW1rf5zFV/u2GF4Am/l5oR5m/UcqY2YfMJ
-   3Q5U8mIZqfxlyUYeB1f41/JE4A/+UDT6IggpHShgd4PyYJ681h75T//Od
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="8941200"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="8941200"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 12:38:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="829350374"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="829350374"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 12:38:52 -0700
-Date:   Wed, 25 Oct 2023 12:38:50 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Peter Newman <peternewman@google.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
- b/w unavailable
-Message-ID: <ZTluypa9bCWv4k2n@agluck-desk3>
-References: <20231024181600.8270-1-tony.luck@intel.com>
- <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
+        Wed, 25 Oct 2023 15:40:17 -0400
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF0193;
+        Wed, 25 Oct 2023 12:40:15 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3b2d9ac9926so40052b6e.2;
+        Wed, 25 Oct 2023 12:40:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698262815; x=1698867615;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bgzWQGUF2R94XSvaqGsE9kf71dMgnkeRT2bUDQQ5vCg=;
+        b=r2MkOu+rsW9gBavov31SG31pajrP1jmAvR+6VS9fziwkUAC4YonD9e4GTHqQjKnh4a
+         W2H5TyHxB7eRS8HTWiOs7G7vrWjJ7vgmqH5iwiS8j3/M4eOhHFuRZVq5K/Bcv17FCzvp
+         XOCDJxnss2s5Wlla7auD3jHH2/kyYayR34VMiIYPnfpYEtlzS0yzaBm80C3kdCcwxfai
+         bgS1cOVojBU52KGyfRiJ5vZArEKB9kOPvb2Y8aK/AuDZtBEmXICnYX8abyUR+o11n19k
+         BPXQGJ5zeFIHLDh6M5IG/1SFHFoy32VVp6ujRWWM6dBaNEUro0b/DUbOaww73eHODj25
+         qKQQ==
+X-Gm-Message-State: AOJu0Yz2aOI87dhrK1XjlzhGSifYXrPVRlmBXLc++Ie0ULpiOnxE1T4X
+        giOdawarmuactQT0lVUPTw==
+X-Google-Smtp-Source: AGHT+IFeJP7N/L5R+uMmYJroNwQpvnXY+ul54ClclPvR8XWk7eVljdarNhM7eS8z/FAvzyX6wsoIOw==
+X-Received: by 2002:a05:6808:2201:b0:3a4:ccf:6a63 with SMTP id bd1-20020a056808220100b003a40ccf6a63mr23179813oib.55.1698262815183;
+        Wed, 25 Oct 2023 12:40:15 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id b25-20020aca1b19000000b003a99bb60815sm2485395oib.22.2023.10.25.12.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 12:40:14 -0700 (PDT)
+Received: (nullmailer pid 1037636 invoked by uid 1000);
+        Wed, 25 Oct 2023 19:40:13 -0000
+Date:   Wed, 25 Oct 2023 14:40:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 03/10] dt-bindings: clock: qcom: document the SM8650
+ Display Clock Controller
+Message-ID: <169826281293.1037580.4025547355263346758.robh@kernel.org>
+References: <20231025-topic-sm8650-upstream-clocks-v1-0-c89b59594caf@linaro.org>
+ <20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 02:46:53PM +0200, Peter Newman wrote:
-> Hi Tony,
+
+On Wed, 25 Oct 2023 09:32:40 +0200, Neil Armstrong wrote:
+> Add bindings documentation for the SM8650 Display Clock Controller.
 > 
-> On Tue, Oct 24, 2023 at 8:16 PM Tony Luck <tony.luck@intel.com> wrote:
-> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> > @@ -418,6 +418,14 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
-> >         return 0;
-> >  }
-> >
-> > +static struct mbm_state *get_mbm_data(struct rdt_domain *dom_mbm, int rmid)
-> > +{
-> > +       if (is_mbm_local_enabled())
-> > +               return &dom_mbm->mbm_local[rmid];
-> > +
-> > +       return &dom_mbm->mbm_total[rmid];
-> > +}
-> 
-> That looks very similar to the get_mbm_state() function I added to
-> this same file recently:
-> 
-> https://lore.kernel.org/all/20221220164132.443083-2-peternewman%40google.com
-> 
-> I think the name you picked is misleadingly general. "local if
-> available, otherwise total" seems to be a choice specific to the mbps
-> controller. I think these functions should be reconciled a little
-> better.
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  .../bindings/clock/qcom,sm8650-dispcc.yaml         | 106 +++++++++++++++++++++
+>  include/dt-bindings/clock/qcom,sm8650-dispcc.h     | 101 ++++++++++++++++++++
+>  2 files changed, 207 insertions(+)
 > 
 
-Peter (and Babu, who made the same point about get_mbm_state().
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Do you want to see your function extended to do the "pick an MBM event?"
-
-I could add a s/w defined "event" to the enum resctrl_event_id and
-extend get_mbm_state() like this:
-
-
-static struct mbm_state *get_mbm_state(struct rdt_domain *d, u32 rmid,
-				       enum resctrl_event_id evtid)
-{
-	switch (evtid) {
-	case QOS_L3_MBM_TOTAL_EVENT_ID:
-		return &d->mbm_total[rmid];
-	case QOS_L3_MBM_LOCAL_EVENT_ID:
-		return &d->mbm_local[rmid];
-+	case QOS_L3_MBM_LOCAL_OR_TOTAL_EVENT_ID:
-+		if (is_mbm_local_enabled())
-+			return &d->mbm_local[rmid];
-+		if (is_mbm_total_enabled())
-+			return &d->mbm_total[rmid];
-+		fallthrough;
-	default:
-		return NULL;
-	}
-}
-
-Is this the direction you are thinking of?
-
-Callers then look like:
-
-static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
-{
-	struct mbm_state *m = get_mbm_state(rr->d, rmid, QOS_L3_MBM_LOCAL_OR_TOTAL_EVENT_ID);
-	u64 cur_bw, bytes, cur_bytes;
-
-similar for the other three places where this is needed.
-
-Any suggestions on how "QOS_L3_MBM_LOCAL_OR_TOTAL_EVENT_ID" could be
-abbreviated, or just have some different, but descriptive, name?
-
--Tony
