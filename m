@@ -2,198 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AD77D68A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D757D68B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343545AbjJYKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
+        id S1343677AbjJYKen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233435AbjJYKdv (ORCPT
+        with ESMTP id S234828AbjJYKeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:33:51 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79712128;
-        Wed, 25 Oct 2023 03:33:46 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32D1FE0005;
-        Wed, 25 Oct 2023 10:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698230025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HVHJ26usSDJ1RI4KvMEc2gmIMKMl++Lw968y4l7GNow=;
-        b=XBqQ0grrMSCEPJRxjdoIWMwJbKyi5yyFoX0mT1x1f1VVEvpXtQGKkNrCW5eSRRdoNn7iDD
-        fAEaLWGrgXCf79W9DWv1ow8bKiwH7ySguOzgfZiUjHglJ6avdbCyHEg4DMnN3HZkxqnwBe
-        ilUllW0KqxlyfWpwRbxryAMGqg3DFgzvLznsPk1sWWaau1OWB8MrAAxww8Bsrotx3NmQsy
-        3vKv+5PILprQbXhs8AY4NILZDX6A14IWHEOdHA1TSCTEoASVSb1ECr90kVeDYx3YY1rkSN
-        QPOuRVt98FOig536zSZBAhCfBnG5lQgI8+MS0nifTXIoX026hiP5BpJPGOxnkQ==
-Date:   Wed, 25 Oct 2023 12:33:42 +0200
-From:   Mehdi Djait <mehdi.djait@bootlin.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Michael Riesch <michael.riesch@wolfvision.net>, mchehab@kernel.org,
-        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, ezequiel@vanguardiasur.com.ar,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com
-Subject: Re: [PATCH v8 0/3] media: rockchip: Add a driver for Rockchip's
- camera interface
-Message-ID: <ZTjvBgxtMh1YZbYm@pc-70.home>
-References: <cover.1697446303.git.mehdi.djait@bootlin.com>
- <ZTFMR7PlcQXpeoQO@aptenodytes>
- <11cccad3-e665-41dc-89c2-5ddc22b1e2fe@wolfvision.net>
- <ZTjVOAPnXEj9LgOE@aptenodytes>
- <5438a194-7349-4a20-84d0-efe88b7ab396@wolfvision.net>
- <ZTjl0xJMTqZfO2Xf@aptenodytes>
+        Wed, 25 Oct 2023 06:34:36 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427EC189
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:34:32 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BDDE140E01B1;
+        Wed, 25 Oct 2023 10:34:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id QhHASVTCwIga; Wed, 25 Oct 2023 10:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698230067; bh=18/mcvH27y89kOfWgOoc8il6KtQKA9GxDmtXxRzFDWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=THlV6aVyPuO4ttcnuH/sGy+hWth3pFJ07cC8hdq9VyG+NrRs/JloOwG2eT09BBphI
+         RlM67phHuDDqlYPZj44DIIVVPEP0IbQLF6FlE7kTMwDkM9ucCXtShvRTn3PURoC7+S
+         71N3Cgs86GC7rspSy0IFg1kiTZX9AXS6TRlmhA8CchZBik8YxcJY2RHS8pQnaEgjcJ
+         +UDXQ/F6AJ/wmNnWh6fGhA3s0cN1TiXtb3/aP30DNq1EGWpoG5dCVw54fe9CcSnTMw
+         LkybLkvVkIJGj5Ax2VPWJsFlGPNwXoiUhtOo39O2PdqpH6rx6Z2f7d7lO3heV4q9Oj
+         jmRV9D25H83khSsp3ccugLurO/iUhzlRD8aGNl2b7PkflskJnrV486d+8EOoJFDWup
+         H36ii52EzVM/gC1PQheMUv9cNyPpZG3lsIY13i3B1b8uCCh8CwnK05i0M4kqjzyU8A
+         v7yevDQlwKxc43uw/0QlTAdTA7sQ4CFT3aRpbSthtG4/CGwXlVRbkDEMUGrcMAMNyV
+         SjhVKhf0madhWha83TWsjxX+DndfcCe06zn2F4TzrpxE0ccnwU5xNm0Ou4wP/w3BGq
+         l2qJa88fiy1hYv+ux2UZyZustv7joHhOV5ves/f5olzL7HgQaoeDOo9ZaJ3lMal37F
+         kiycBZsBh5nho7t4msMZd5IY=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B3E1740E0196;
+        Wed, 25 Oct 2023 10:34:08 +0000 (UTC)
+Date:   Wed, 25 Oct 2023 12:34:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
+ alternative
+Message-ID: <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
+References: <20231019091520.14540-1-jgross@suse.com>
+ <20231019091520.14540-2-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZTjl0xJMTqZfO2Xf@aptenodytes>
-X-GND-Sasl: mehdi.djait@bootlin.com
+In-Reply-To: <20231019091520.14540-2-jgross@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul, Hi Michael
+On Thu, Oct 19, 2023 at 11:15:16AM +0200, Juergen Gross wrote:
+> +/* Low-level backend functions usable from alternative code replacements. */
+> +DEFINE_ASM_FUNC(x86_nop, "", .entry.text);
+> +EXPORT_SYMBOL_GPL(x86_nop);
 
-On Wed, Oct 25, 2023 at 11:54:27AM +0200, Paul Kocialkowski wrote:
-> Michael,
-> 
-> On Wed 25 Oct 23, 11:17, Michael Riesch wrote:
-> > Hi Paul,
-> > 
-> > On 10/25/23 10:43, Paul Kocialkowski wrote:
-> > > [...]
-> > >>> Here is the detail of my research on the concerned chips. The + at the beginning
-> > >>> of the line indicate support in Rockchip's 4.4 tree:
-> > >>>
-> > >>> - RK3566/RK3568 (2020): CIF pins + VICAP terminology
-> > >>> + RK1808 (2019): CIF pins + VIP registers + VIP_MIPI registers
-> > >>> + PX30 (2017): VIP pins + VIP registers
-> > >>> + RK3328 (2017): CIF pins + VIP terminology
-> > >>> - RK3326 (2017): CIF pins + VIP terminology
-> > >>> - RK3399 (2016): CIF pins
-> > >>> - RK3368 (2015): CIF pins
-> > >>> - PX2 (2014-11): CIF pins + CIF registers
-> > >>> + RK3126/RK3128 (2014-10): CIF pins + registers
-> > >>> + RK3288 (2014-05): CIF pins + VIP terminology
-> > >>> - RK3026 (2013): CIF pins + CIF registers
-> > >>> - RK3168/RK3188/PX3 (2012): CIF pins + CIF registers
-> > >>> - RK3066 (2012): CIF pins + CIF registers
-> > >>>
-> > >>> Note that there are a few variations over time (added/removed registers), but
-> > >>> the offsets of crucial registers are always the same, so we can safely
-> > >>> assume this is the same unit in different generations.
-> > >>>
-> > >>> Since the RK3066 is the first model starting the RK30 lineup I think we can
-> > >>> safely use that for the "base" compatible to be used for e.g. the bindings
-> > >>> document, instead of px30 which is just one of the many SoCs that use this unit.
-> > >>
-> > >> Once the name of the driver is defined and adjusted in v9, I can try to
-> > >> give the series a shot on my RK3568 board. First attempts to do so
+This is all x86 code so you don't really need the "x86_" prefix - "nop"
+is perfectly fine.
 
-This sounds good!
+> +noinstr void x86_BUG(void)
+> +{
+> +	BUG();
+> +}
+> +EXPORT_SYMBOL_GPL(x86_BUG);
 
-> > >> basing on Maxime's v5 showed that with a few modifications the DVP
-> > >> feature works fine. In a subsequent step, we could discuss the inclusion
-> > >> of the MIPI CSI-2 things in order to keep the driver sufficiently general.
-> > > 
-> > > Nice! I guess there will be a need to introduce a variant structure associated
-> > > to each compatible to express the differences betweens these different
-> > > generations.
-> > 
-> > Indeed. If Mehdi and you suggest something, I'd be happy to review.
-> 
-> Well the be honest the scope of work on our side is really centered on PX30
-> and merging this first version.
-> 
-> > Otherwise, I'll try to come up with something reasonable. IMHO it would
-> > make sense (as a first step) to have the clocks and the resets in this
-> > structure, as well as a sub-structure that describes the DVP. The latter
-> > consists of registers mainly, but maybe supported input/output formats
-> > and other things should go in there as well. Also, downstream code has a
-> > significant number of
-> >     if (some condition including chip_id) A; else B;
-> > things that we should probably get rid of with this variant structure.
-> 
-> Indeed I think we want to try avoid that. Another common option is to define
-> capability flags to represent differences between generations in a more
-> practical and clean way than explicitly checking chip ids or so.
-> 
-> > As next step, a sub-structure for MIPI CSI-2 could be defined. RK356X
-> > will have one of those, RK3588 will feature even six of them. So we
-> > should add a const array to the variant structure.
-> > 
-> > > Note that we will also probably need to convert the driver over to a MC-centric
-> > > approach, but this is of course outside of the scope of this series.
-> > 
-> > That would absolutely make sense. What is missing, though? (I was
-> > wondering that the driver calls media_device_(un)register but no
-> > /dev/mediaX device pops up.)
-> 
-> Switching from video node-centric to MC-centric is more of a semantic change.
-> In the first case we expect that subdevs are configured by the video device
-> driver and userspace is not expected to change anything in the media topology
-> or to configure media entities explicitly.
-> 
-> In the latter case it's the opposite : the driver should never try to push
-> configuration to a subdev and should instead validate that the current
-> configuration makes sense.
-> 
-> Still, I believe should be a media device registered and visible to userspace.
-> Mehdi could you take a look at this? Do you see a media device in `media-ctl -p`
-> and /dev/mediaX?
+That export is needed for?
 
-Yes I do have a media device
+Paravirt stuff in modules?
 
-media-ctl -p
-Media device information
-------------------------
-driver          rockchip-cif
-model           rk_cif
-serial          
-bus info        platform:ff490000.video-capture
-hw revision     0x0
-driver version  6.6.0
+It builds here without it - I guess I need to do an allmodconfig.
 
-Device topology
-- entity 1: rockchip_cif (1 pad, 1 link)
-            type Node subtype V4L flags 0
-            device node name /dev/video0
-        pad0: Sink
-                <- "tw9900 2-0044":0 [ENABLED]
+-- 
+Regards/Gruss,
+    Boris.
 
-- entity 5: tw9900 2-0044 (1 pad, 1 link)
-            type V4L2 subdev subtype Unknown flags 0
-            device node name /dev/v4l-subdev0
-        pad0: Source
-                [fmt:UYVY8_2X8/720x480 field:none colorspace:smpte170m xfer:709 ycbcr:601]
-                -> "rockchip_cif":0 [ENABLED]
-
-> 
-> Cheers,
-> 
-> Paul
-> 
-> > Best regards,
-> > Michael
-> > 
-> > > 
-> > > Cheers,
-> > > 
-> > > Paul
-> > > 
-> > >> @Mehdi: If you could Cc: me when you send out v9 it'd be much appreciated.
-
-Of course I will :)
-
---
-Kind Regards
-Mehdi Djait
+https://people.kernel.org/tglx/notes-about-netiquette
