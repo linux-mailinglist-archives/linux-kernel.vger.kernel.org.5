@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1729E7D74B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615BD7D74B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjJYTs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        id S229889AbjJYTtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231469AbjJYTsz (ORCPT
+        with ESMTP id S229441AbjJYTtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:48:55 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7520493;
-        Wed, 25 Oct 2023 12:48:53 -0700 (PDT)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A76D66607331;
-        Wed, 25 Oct 2023 20:48:51 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698263331;
-        bh=4C0knIOWZSCqz/j853cFCQSGyZP8bkVC+6liKLv+oVM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U0dTNgmUY1CMPIH0+Dt8SUXHELGlSctli8R80RvqsaGhDMVMMWOzUM1L6F6I8mzoN
-         E8Z7ZZ1itNj0j0VKV203EA2p7LcdTmiPA2vZQgokyOfPnoRKMOjDhUmddTYSLuYsqn
-         ADzrAb9j8ACihiX5dCdAIm5Ccp/bOZ3dBWaw31v1N4dED8dHGe8NxtQ+tshcJO/QS5
-         Y49iA4cp+Km7CBQA4LKjgVNlE7HdZcflH3x2/o7tfODgdtGZ3sghAuDoZCoqteL3nZ
-         hIk871DhA3ySDmONlW9Rf9j2fPVi/DYw6KpM6haJlN5ihzF4x/vqcCzafhIA20iYA4
-         BDf0GGY4hGLeg==
-Received: by mercury (Postfix, from userid 1000)
-        id 23927106057B; Wed, 25 Oct 2023 21:48:49 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 21:48:49 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     conor+dt@kernel.org, heiko@sntech.de, kever.yang@rock-chips.com,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, zhangqing@rock-chips.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangtao@rock-chips.com,
-        andy.yan@rock-chips.com
-Subject: Re: [PATCH v4 0/4] rockchip: add GATE_LINK
-Message-ID: <20231025194849.4esjw4w2trgalp55@mercury.elektranox.org>
-References: <20231018070144.8512-1-zhangqing@rock-chips.com>
- <b0af9e04bafb07e8a73e8f242a4ff556.sboyd@kernel.org>
+        Wed, 25 Oct 2023 15:49:46 -0400
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DC193;
+        Wed, 25 Oct 2023 12:49:44 -0700 (PDT)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1dceb2b8823so49781fac.1;
+        Wed, 25 Oct 2023 12:49:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698263384; x=1698868184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KlpnZS6vHRIFnFbC0pQo/A91UW+0pz54vArEwjVrVww=;
+        b=LUyc8PU+GNTKhltVRNVptyX0JC3ROB1lDqdbTQvZ/Lhn9VUeUsL+gZIMnI+bUd01xC
+         xXW7s3BYZS/NLL2oBLgIWlrgwyQDwGAjxdu0G7oOLJD2ZWHA+E6STkcf2AHFBrTGBsN4
+         RTm7GeDskvW2QDy8363BCIY6d9FktI8/HwR460bU2nxjX+Nq8bLZJBLwjae/sjTzsu1Z
+         oQbbyR+2A1QVIHq59kCYXKg3AWBnGitxyRZwHAP3dzMo3gENk1tnS6pEeSzAY4ydvM1/
+         ab6v0HTyQH2m1Ef5x8wTim1vmxApe+8FcxjJoE6Rb/oqDag/GZ7LcvN7jXnLqX3ZEdKD
+         gSiw==
+X-Gm-Message-State: AOJu0YwjVSmHGNdLEftN8pK8dgISfZMO4nWTMLp/9ZZDtMCTUvHpAC2/
+        V9ivHJkbh4VdPihLAmYnxw==
+X-Google-Smtp-Source: AGHT+IGBHca4D69sq5SUb+4A1BYOlPKyV6+DnZxSCW2CC4ONvq8/C5HyP20X+NVQ6jOPYr1M+S+tgA==
+X-Received: by 2002:a05:6871:34a1:b0:1e9:e413:b9d with SMTP id ni33-20020a05687134a100b001e9e4130b9dmr368135oac.2.1698263384044;
+        Wed, 25 Oct 2023 12:49:44 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id t1-20020a4aadc1000000b00581fc1af0a7sm124913oon.28.2023.10.25.12.49.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 12:49:43 -0700 (PDT)
+Received: (nullmailer pid 1048139 invoked by uid 1000);
+        Wed, 25 Oct 2023 19:49:42 -0000
+Date:   Wed, 25 Oct 2023 14:49:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/10] dt-bindings: clock: qcom: document the SM8650
+ Display Clock Controller
+Message-ID: <20231025194942.GA1038327-robh@kernel.org>
+References: <20231025-topic-sm8650-upstream-clocks-v1-0-c89b59594caf@linaro.org>
+ <20231025-topic-sm8650-upstream-clocks-v1-3-c89b59594caf@linaro.org>
+ <169824516120.243773.546101172844888564.robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tqfdiz36ofh6j432"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b0af9e04bafb07e8a73e8f242a4ff556.sboyd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <169824516120.243773.546101172844888564.robh@kernel.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 25, 2023 at 09:47:33AM -0500, Rob Herring wrote:
+> 
+> On Wed, 25 Oct 2023 09:32:40 +0200, Neil Armstrong wrote:
+> > Add bindings documentation for the SM8650 Display Clock Controller.
+> > 
+> > Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> > ---
+> >  .../bindings/clock/qcom,sm8650-dispcc.yaml         | 106 +++++++++++++++++++++
+> >  include/dt-bindings/clock/qcom,sm8650-dispcc.h     | 101 ++++++++++++++++++++
+> >  2 files changed, 207 insertions(+)
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.example.dts:18:18: fatal error: dt-bindings/clock/qcom,sm8650-gcc.h: No such file or directory
+>    18 |         #include <dt-bindings/clock/qcom,sm8650-gcc.h>
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> compilation terminated.
+> make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/clock/qcom,sm8650-dispcc.example.dtb] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
 
---tqfdiz36ofh6j432
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks like the series got split up in the delivery causing this.
 
-Hello Stephen,
-
-On Mon, Oct 23, 2023 at 06:47:17PM -0700, Stephen Boyd wrote:
-> Quoting Elaine Zhang (2023-10-18 00:01:40)
-> > Recent Rockchip SoCs have a new hardware block called Native Interface
-> > Unit (NIU), which gates clocks to devices behind them. These effectively
-> > need two parent clocks.
-> > Use GATE_LINK to handle this.
->=20
-> Why can't pm clks be used here? The qcom clk driver has been doing that
-> for some time now.=20
->=20
->  $ git grep pm_clk_add -- drivers/clk/qcom/
-
-Maybe I'm mistaken, but as far as I can tell this is adding the
-dependency on controller level and only works because Qualcomm
-has multiple separate clock controllers. In the Rockchip design
-there is only one platform device.
-
-Note, that the original downstream code from Rockchip actually used
-pm_clk infrastructure by moving these clocks to separate platform
-devices. I changed this when upstreaming the code, since that leaks
-into DT and from DT point of view there should be only one clock
-controller.
-
-Greetings,
-
--- Sebastian
-
---tqfdiz36ofh6j432
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmU5cR0ACgkQ2O7X88g7
-+poZyA/+KGnTXYS/rnZLCMXb/+17hHTvzcgSIdn/BeQmRnEBHE9sjPFzD1KQ8Wy3
-304qrkQt4azButXo31zUjB0creBEH1ZvhDV6tX8s7Gy+8mT2LmvvArVIWinZFnDj
-YskCNEgiDFFDitOEh19nofsINcZO3YaHiVU1qUksXmvj9l350AD4vxsX6L+3f/lj
-tF9RS81EzPZjyHci6j1LRttHnr8N8UBxGMZiSctcehrCcZPAYlrIfZh9NX1W5zRg
-Rz2lhpPw22eh8Y07NHmiaDYvSWQTLQhBf4cAvBvNf/flzQ1V4U/Epaz3PJ7dob8h
-xNZqNDn1/gEFUJeUtgsyXsZdnMnU3gnauiHlMU6jvAWo2fmh0MUJckysF/clUfBm
-o05It58JOT1pjpHfIo7QRfK+NtW9z0Oi/YcsbxxzF0E9i7fuWd+tXgYK7ct0tGT2
-dZo6eMm/RWQ7iUGgqvFoWhznuibG3vTyyJJ0n8hRySNtcrdUT6xsC7dnk7uzGyJn
-U2afY2D+URGaEVX5h0xIL5dbPn0T2gnUmQoKeSdQgJHlCjoDUcOCkM7RTFr63x/6
-k7ehuFax9yDUFfa83vK9TL1VsTPsiJoj9CFAjZEIL2HXlR2Iq2XbBCpweWIaA3Zz
-gecnzHef2NW/Pi5znStuOQEcy0/HZAZq25N58364hewLcxFtrDE=
-=xiVS
------END PGP SIGNATURE-----
-
---tqfdiz36ofh6j432--
+Rob
