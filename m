@@ -2,160 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC687D6410
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A777D6417
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbjJYHwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S233904AbjJYHxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjJYHwj (ORCPT
+        with ESMTP id S233886AbjJYHw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:52:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C04FDE;
-        Wed, 25 Oct 2023 00:52:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E63C433C7;
-        Wed, 25 Oct 2023 07:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698220355;
-        bh=AjvHbivfFAj4feaP3aHyTgho0kLeTTMjqn0xHKJqObY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Au1eplrqt71V0W8QiBWNe2G4Yt1Oo5Nwe1X9M5FenWXHtTYUyb207aW2LFGcyCWhS
-         zV7j5ngxfjrhePd3EDD3Jm+6rbJM4NaiyRax0zGFz4DBTz+PHXLLknRC2YjWVpJ3Oy
-         jXEp0aJZYsV8DWK0QjVwU1724Ebqkh7EtBUXSTt7FTqH4r8c7cl33Osn2PGke1fPtn
-         LXj9gnwfXVYYHR9uRm8ne146V2qe1GEJ+lrc+a5S49DyJncP47JS5D87NUURR60Mzn
-         hbNMX2JBySi4GYlW9fExrNPnywHtX69EINNWbSk+YzS7o4Tnyl81i4FMjg4bcz4fKS
-         b0ZDKaaj0dTTw==
-Date:   Wed, 25 Oct 2023 13:22:24 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, quic_shazhuss@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 5/5] arm64: dts: qcom: sa8775p: Add ep pcie0
- controller node
-Message-ID: <20231025075224.GB3648@thinkpad>
-References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
- <1697715430-30820-6-git-send-email-quic_msarkar@quicinc.com>
+        Wed, 25 Oct 2023 03:52:56 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF0C116
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:52:53 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32ded3eb835so2909579f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1698220372; x=1698825172; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=EvDbK3AJ3DIdy4tdTmUriG4VrugsDy7JcPbRZPmtYB4=;
+        b=oFGKwZ8a4elkockZeAI0+Ny8+b1o+2iwfOrpH9GcTi0e/4wFY2OeAW6BC7qiwJRyeK
+         xgsqADjqghiAPcGsjxYRWZpigLFT36XQZPMxlftWNtJCOThEYB2SaQU2SXp6c7EstvsJ
+         DiObnfJ8Y+GMBQ6SqlUlIBRaBTHrOZi099mic=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698220372; x=1698825172;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EvDbK3AJ3DIdy4tdTmUriG4VrugsDy7JcPbRZPmtYB4=;
+        b=iae7MEinT0kdXDkC0mzdLS0M2uUr4be3O/FEObVynKImL8MGFiSoWHt1ioJXxeJQOt
+         dPIKE8/7ZzYc369alyA6++cvxsxILqK44skL3pXaDgCXVKU/FJ/cwmUprIAqvisIQ2UM
+         w7z8G9Tp2DesnMkx4wtMyh/RW5sfBeGhezJVB4rKm8fDOcBFI8c2nvRbAIn1eV84eZO6
+         m+nXM4ywCSsGaEAe97COPGHrFxJgdxKYRzCi34gLSz18kL7vM505/e6haUmnehCppKqX
+         OF/7BNY8DKaR7RnRPLtEuw3rSZ8A8YjS5dIqQjQg53D4qmCFFDeBy33g7ySubKUPJQxJ
+         OGog==
+X-Gm-Message-State: AOJu0YyWaWhYBDMOHE+pQ29qAmEKV+GhsYerf7Rrqi8UGvbmA0zjjQoy
+        RFwEJLjtMMRDGVx8D5BO7d1h8A==
+X-Google-Smtp-Source: AGHT+IHQ9MicPffqRdlPjnVY2P4UrG8OLUiDpChIRL+8PB7v6WFNlNtI6KSlLtziVC46aIw9hM3NPw==
+X-Received: by 2002:a05:6000:10f:b0:32d:7efc:7e1f with SMTP id o15-20020a056000010f00b0032d7efc7e1fmr9028332wrx.71.1698220371961;
+        Wed, 25 Oct 2023 00:52:51 -0700 (PDT)
+Received: from [192.168.1.10] (host-92-26-107-252.as13285.net. [92.26.107.252])
+        by smtp.gmail.com with ESMTPSA id o15-20020adfcf0f000000b00327de0173f6sm11432651wrj.115.2023.10.25.00.52.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 00:52:51 -0700 (PDT)
+Message-ID: <654468cf-1563-4c1c-8c7c-076bc6dfbabf@citrix.com>
+Date:   Wed, 25 Oct 2023 08:52:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-GB
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
+ <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
+ <20231025062818.7kaerqklaut7dg5r@desk>
+ <20231025072255.GA37471@noisy.programming.kicks-ass.net>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ xsFNBFLhNn8BEADVhE+Hb8i0GV6mihnnr/uiQQdPF8kUoFzCOPXkf7jQ5sLYeJa0cQi6Penp
+ VtiFYznTairnVsN5J+ujSTIb+OlMSJUWV4opS7WVNnxHbFTPYZVQ3erv7NKc2iVizCRZ2Kxn
+ srM1oPXWRic8BIAdYOKOloF2300SL/bIpeD+x7h3w9B/qez7nOin5NzkxgFoaUeIal12pXSR
+ Q354FKFoy6Vh96gc4VRqte3jw8mPuJQpfws+Pb+swvSf/i1q1+1I4jsRQQh2m6OTADHIqg2E
+ ofTYAEh7R5HfPx0EXoEDMdRjOeKn8+vvkAwhviWXTHlG3R1QkbE5M/oywnZ83udJmi+lxjJ5
+ YhQ5IzomvJ16H0Bq+TLyVLO/VRksp1VR9HxCzItLNCS8PdpYYz5TC204ViycobYU65WMpzWe
+ LFAGn8jSS25XIpqv0Y9k87dLbctKKA14Ifw2kq5OIVu2FuX+3i446JOa2vpCI9GcjCzi3oHV
+ e00bzYiHMIl0FICrNJU0Kjho8pdo0m2uxkn6SYEpogAy9pnatUlO+erL4LqFUO7GXSdBRbw5
+ gNt25XTLdSFuZtMxkY3tq8MFss5QnjhehCVPEpE6y9ZjI4XB8ad1G4oBHVGK5LMsvg22PfMJ
+ ISWFSHoF/B5+lHkCKWkFxZ0gZn33ju5n6/FOdEx4B8cMJt+cWwARAQABzSlBbmRyZXcgQ29v
+ cGVyIDxhbmRyZXcuY29vcGVyM0BjaXRyaXguY29tPsLBegQTAQgAJAIbAwULCQgHAwUVCgkI
+ CwUWAgMBAAIeAQIXgAUCWKD95wIZAQAKCRBlw/kGpdefoHbdD/9AIoR3k6fKl+RFiFpyAhvO
+ 59ttDFI7nIAnlYngev2XUR3acFElJATHSDO0ju+hqWqAb8kVijXLops0gOfqt3VPZq9cuHlh
+ IMDquatGLzAadfFx2eQYIYT+FYuMoPZy/aTUazmJIDVxP7L383grjIkn+7tAv+qeDfE+txL4
+ SAm1UHNvmdfgL2/lcmL3xRh7sub3nJilM93RWX1Pe5LBSDXO45uzCGEdst6uSlzYR/MEr+5Z
+ JQQ32JV64zwvf/aKaagSQSQMYNX9JFgfZ3TKWC1KJQbX5ssoX/5hNLqxMcZV3TN7kU8I3kjK
+ mPec9+1nECOjjJSO/h4P0sBZyIUGfguwzhEeGf4sMCuSEM4xjCnwiBwftR17sr0spYcOpqET
+ ZGcAmyYcNjy6CYadNCnfR40vhhWuCfNCBzWnUW0lFoo12wb0YnzoOLjvfD6OL3JjIUJNOmJy
+ RCsJ5IA/Iz33RhSVRmROu+TztwuThClw63g7+hoyewv7BemKyuU6FTVhjjW+XUWmS/FzknSi
+ dAG+insr0746cTPpSkGl3KAXeWDGJzve7/SBBfyznWCMGaf8E2P1oOdIZRxHgWj0zNr1+ooF
+ /PzgLPiCI4OMUttTlEKChgbUTQ+5o0P080JojqfXwbPAyumbaYcQNiH1/xYbJdOFSiBv9rpt
+ TQTBLzDKXok86M7BTQRS4TZ/ARAAkgqudHsp+hd82UVkvgnlqZjzz2vyrYfz7bkPtXaGb9H4
+ Rfo7mQsEQavEBdWWjbga6eMnDqtu+FC+qeTGYebToxEyp2lKDSoAsvt8w82tIlP/EbmRbDVn
+ 7bhjBlfRcFjVYw8uVDPptT0TV47vpoCVkTwcyb6OltJrvg/QzV9f07DJswuda1JH3/qvYu0p
+ vjPnYvCq4NsqY2XSdAJ02HrdYPFtNyPEntu1n1KK+gJrstjtw7KsZ4ygXYrsm/oCBiVW/OgU
+ g/XIlGErkrxe4vQvJyVwg6YH653YTX5hLLUEL1NS4TCo47RP+wi6y+TnuAL36UtK/uFyEuPy
+ wwrDVcC4cIFhYSfsO0BumEI65yu7a8aHbGfq2lW251UcoU48Z27ZUUZd2Dr6O/n8poQHbaTd
+ 6bJJSjzGGHZVbRP9UQ3lkmkmc0+XCHmj5WhwNNYjgbbmML7y0fsJT5RgvefAIFfHBg7fTY/i
+ kBEimoUsTEQz+N4hbKwo1hULfVxDJStE4sbPhjbsPCrlXf6W9CxSyQ0qmZ2bXsLQYRj2xqd1
+ bpA+1o1j2N4/au1R/uSiUFjewJdT/LX1EklKDcQwpk06Af/N7VZtSfEJeRV04unbsKVXWZAk
+ uAJyDDKN99ziC0Wz5kcPyVD1HNf8bgaqGDzrv3TfYjwqayRFcMf7xJaL9xXedMcAEQEAAcLB
+ XwQYAQgACQUCUuE2fwIbDAAKCRBlw/kGpdefoG4XEACD1Qf/er8EA7g23HMxYWd3FXHThrVQ
+ HgiGdk5Yh632vjOm9L4sd/GCEACVQKjsu98e8o3ysitFlznEns5EAAXEbITrgKWXDDUWGYxd
+ pnjj2u+GkVdsOAGk0kxczX6s+VRBhpbBI2PWnOsRJgU2n10PZ3mZD4Xu9kU2IXYmuW+e5KCA
+ vTArRUdCrAtIa1k01sPipPPw6dfxx2e5asy21YOytzxuWFfJTGnVxZZSCyLUO83sh6OZhJkk
+ b9rxL9wPmpN/t2IPaEKoAc0FTQZS36wAMOXkBh24PQ9gaLJvfPKpNzGD8XWR5HHF0NLIJhgg
+ 4ZlEXQ2fVp3XrtocHqhu4UZR4koCijgB8sB7Tb0GCpwK+C4UePdFLfhKyRdSXuvY3AHJd4CP
+ 4JzW0Bzq/WXY3XMOzUTYApGQpnUpdOmuQSfpV9MQO+/jo7r6yPbxT7CwRS5dcQPzUiuHLK9i
+ nvjREdh84qycnx0/6dDroYhp0DFv4udxuAvt1h4wGwTPRQZerSm4xaYegEFusyhbZrI0U9tJ
+ B8WrhBLXDiYlyJT6zOV2yZFuW47VrLsjYnHwn27hmxTC/7tvG3euCklmkn9Sl9IAKFu29RSo
+ d5bD8kMSCYsTqtTfT6W4A3qHGvIDta3ptLYpIAOD2sY3GYq2nf3Bbzx81wZK14JdDDHUX2Rs
+ 6+ahAA==
+In-Reply-To: <20231025072255.GA37471@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1697715430-30820-6-git-send-email-quic_msarkar@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 05:07:10PM +0530, Mrinmay Sarkar wrote:
-> Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
-> It supports gen4 and x2 link width. Due to some stability issue in
-> gen4 enabling gen3 as of now.
-> 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 48 +++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> index 13dd44d..2aa7383 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> @@ -3714,4 +3714,52 @@
+On 25/10/2023 8:22 am, Peter Zijlstra wrote:
+> On Tue, Oct 24, 2023 at 11:28:18PM -0700, Pawan Gupta wrote:
+>
+>> With .text.entry section I am getting getting below warnings and an
+>> error:
+>>
+>> -----------------------------------------------------------------
+>>     LD      vmlinux.o
+>>   vmlinux.o: warning: objtool: .text.entry+0x0: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x40: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x80: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0xc0: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x100: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x140: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x180: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x1c0: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x200: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x240: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x280: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x2c0: unreachable instruction
+>>   vmlinux.o: warning: objtool: .text.entry+0x300: unreachable instruction
+>>   vmlinux.o: warning: objtool: .altinstr_replacement+0x2c: relocation to !ENDBR: .text.entry+0x0
+>>   vmlinux.o: warning: objtool: .altinstr_replacement+0x1c4: relocation to !ENDBR: .text.entry+0x0
+>>   vmlinux.o: warning: objtool: .altinstr_replacement+0x1d0: relocation to !ENDBR: .text.entry+0x0
+>>   vmlinux.o: warning: objtool: .altinstr_replacement+0x2d2: relocation to !ENDBR: .text.entry+0x80
+>>   vmlinux.o: warning: objtool: .altinstr_replacement+0x5d5: relocation to !ENDBR: .text.entry+0xc0
+>>     OBJCOPY modules.builtin.modinfo
+>>     GEN     modules.builtin
+>>     MODPOST vmlinux.symvers
+>>     UPD     include/generated/utsversion.h
+>>     CC      init/version-timestamp.o
+>>     LD      .tmp_vmlinux.kallsyms1
+>>   ld: error: unplaced orphan section `.text.entry' from `vmlinux.o'
+>>   make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] Error 1
+>> -----------------------------------------------------------------
+>>
+>> ... because my config has CONFIG_LD_ORPHAN_WARN_LEVEL="error" and
+>> objtool needs to be told about this entry.
+>>
+>> Do you think its worth fighting these warnings and error, or simply use
+>> .rodata section for verw memory operand?
+> I'm thinking you need to at the very least stay in a section that's
+> actually still mapped with PTI :-)
+
+Sorry.  Xen and Linux have this section named opposite ways around.
+
+> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
+> index bfb7bcb362bc..9eb2b532c92a 100644
+> --- a/arch/x86/entry/entry.S
+> +++ b/arch/x86/entry/entry.S
+> @@ -20,3 +22,16 @@ SYM_FUNC_END(entry_ibpb)
+>  EXPORT_SYMBOL_GPL(entry_ibpb);
 >  
->  		status = "disabled";
->  	};
+>  .popsection
 > +
-> +	pcie0_ep: pcie-ep@1c00000 {
-> +		compatible = "qcom,sa8775p-pcie-ep";
-> +		reg = <0x0 0x01c00000 0x0 0x3000>,
-> +		      <0x0 0x40000000 0x0 0xf20>,
-> +		      <0x0 0x40000f20 0x0 0xa8>,
-> +		      <0x0 0x40001000 0x0 0x4000>,
-> +		      <0x0 0x40200000 0x0 0x100000>,
-> +		      <0x0 0x01c03000 0x0 0x1000>,
-> +		      <0x0 0x40005000 0x0 0x2000>;
-
-Can we sort the reg entries?
-
-> +		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-> +			    "mmio", "dma";
+> +.pushsection .entry.text, "ax"
 > +
-> +		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
-> +			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-> +			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-> +			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
-> +			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
-> +
-> +		clock-names = "aux",
-> +			      "cfg",
-> +			      "bus_master",
-> +			      "bus_slave",
-> +			      "slave_q2a";
-> +
-> +		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +		interrupt-names = "global", "doorbell", "dma";
-> +
-> +		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
-> +				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
-> +		interconnect-names = "pcie-mem", "cpu-pcie";
-> +
-> +		iommu-map = <0x0 &pcie_smmu 0x0000 0x1>,
-> +			    <0x100 &pcie_smmu 0x0001 0x1>;
+> +.align 64
+> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> +	UNWIND_HINT_UNDEFINED
+> +	ANNOTATE_NOENDBR
+> +1:
+> +	.word __KERNEL_DS
+> +	.skip 64 - (. - 1b), 0xcc
 
-I think I recommended using "iommu-map" instead of "iommus" property. But
-looking at it again, I think it is fine to use just "iommus" property as the SID
-will be associated with the EP directly.
+The 1 label aliases mds_verw_sel and this must remain like this for the
+construct to work.
 
-Unless you want to have different SID for each function.
+So instead of .skip, why not simply .align 64, 0xcc and get rid of the
+1: label?
 
-> +
-> +		resets = <&gcc GCC_PCIE_0_BCR>;
-> +		reset-names = "core";
-> +		power-domains = <&gcc PCIE_0_GDSC>;
-> +		phys = <&pcie0_phy>;
-> +		phy-names = "pciephy";
-> +		max-link-speed = <3>;
+Do we have a suitably named constant cacheline size, rather than
+opencoding 64?
 
-Please add a comment here that you are limiting the Gen speed due to stability
-issues. Like,
+> +SYM_CODE_END(mds_verw_sel);
 
-		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
+Given that KVM needs it, this probably needs an EXPORT_SYMBOL_GPL() on it.
 
-> +		num-lanes = <2>;
-
-Can you check if the controller is cache coherent? If so, we should add
-"dma-coherent" property.
-
-- Mani
-
-> +
-> +		status = "disabled";
-> +	};
->  };
-> -- 
-> 2.7.4
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+~Andrew
