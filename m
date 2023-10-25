@@ -2,146 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A445B7D5FE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105AF7D5FEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbjJYCX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 22:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S231984AbjJYCZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 22:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJYCX0 (ORCPT
+        with ESMTP id S229548AbjJYCZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 22:23:26 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B74710DB;
-        Tue, 24 Oct 2023 19:23:24 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OLUOtl004163;
-        Wed, 25 Oct 2023 02:23:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=TIqylN3wvAgYRKjfYdoRqFBiqfjsaaZThevou/pUHZs=;
- b=NBFsFwew+CMfIIKRhbX0y7SmAwL8bLkbAyWxlwDfg2O3pytB67n/uFIEG9f/MGkBgl6n
- w0rSzAZDQ/baJ1wm+911VuYAC0Pvm/vfSwOkYlu3+1O4Y8bHomrC1Hz3d8j3Yeq+B8LW
- 4Fj5iDsQ3cFXxdeOGjQSXntpEp3zN40lvWyyhXkPOW4OgAe483unHo/PI6kXdXcFa+lB
- 9BElKS92upQR4ze6q2MFvRGEYJ17Vz8VmDYGAM1z6EeF8+qC1Bz0p+FBSbreyszBCSiu
- RTLAKgIEkkDoYZwvAtCG7ZXqwT5u/+ACuVTSNMhsSaPS6PkmV/shpXZDOiCaJ9ZsrSOH VQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv581prd1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 02:23:21 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39P0XThG019157;
-        Wed, 25 Oct 2023 02:23:20 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tv5369ve8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 02:23:20 +0000
+        Tue, 24 Oct 2023 22:25:29 -0400
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82499C;
+        Tue, 24 Oct 2023 19:25:26 -0700 (PDT)
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39P1sEUd024298;
+        Wed, 25 Oct 2023 02:25:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-transfer-encoding:mime-version; s=
+        PPS06212021; bh=jkmYaKf/hvpnwlNMd1NL7PJsJcTT1a1Mj/0lP3RFx0w=; b=
+        YmaR1WkWki7OSVh8AXoaF96WSLEQRT46C0T1nFNaAyme1hlx4hbAT3BXamqOA3iE
+        y/8uUSGSlCDao11cyz17eMavnUDuAKu30Ti+MOWISRHEwXihFrwbjI9Rv3mZz+Hx
+        7h15EuQun6DzpiEmf9hIl9AfTBK4XiItcZsWMqRYNEmk6BUgjhHHYSE+eMIBg/Ts
+        1iuxKJg89peAo0cFXo6VZfdpeKFTe0RxwVZ1fIDQw/pPr3oOOJ1rhQo6kjNFBj0A
+        3wwzdlzL6ejwNNe+Brqoq6CPvhHDJSNEWf+td4x/IIWAWGy3N+4Iz3TFeljlts3m
+        Xa0gh6m8Y5fjUTij5UKdAA==
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3tv5m5v138-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 02:25:21 +0000 (GMT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lf6H+es4vX5pCpRfL97Y1Wq9DEgSZaMPq5oHlrOAv/Lb+ZcM1yqCBBmnQESjNUdsS43ULZDHn0fkNatyEQ+dG9xLMeOsay2Otu/+973orKQSRWpKu9RX6dFH5rltnbcf3WvYG087zrYUhbnRItu787+TtVR+Ah7Q0O0gPrv/vrh3yiIcQz6xJR913LfaP5b1HBaNgEZTixY/gB03wiE3XIgl7V/cGtq0/KEx8UQZOPSjFvzrchWbnk5vMQ/QHqGB3ZlhVMjjiuN+R5Uey5Oltu1QQ0BlloHKi4p9bSsGxJ/mJ/wLukP7OKu70w4L3vZr3VGnWUQXhOzmQbqvLyx5Gg==
+ b=aY40kbZQXS+/MzwmqW2Qx3ShSo+qtY5doL8NlPnRk9kzy0Yu7aNvG9hiDaum5G/S3XyW9okP0QwQYSWt1pqOr8VhqsIF4cZUVnWFi3raOr/1QSTAJfMciF+cZ1VbK5D4UjqKjqoPYG5wkEfugLPQ5it3BiN8JYV4Q4G55ZbL+kDevEoNALjDsvsycT1S731Ia8Pt868cU59TNq2tSQHWxY9hr/ysDHmb44KyceHlQnAGggc4sZ35LLByN2FwovpJCFiH+F0UQHjSC+KwNekNT6oDiRQe3nxy00Xr8XvRFyY1/a8K2VtHupzXf+staxJQ/QkoDhvHDTlGJuNfq1anbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TIqylN3wvAgYRKjfYdoRqFBiqfjsaaZThevou/pUHZs=;
- b=KfK63UMslI8ipMOoJHYsn/nc0CUwlyZ3s/dNmru71ANSRgLD8bdOuk8isiE689hcYp69+dmFGHKot/JuPCV3m+QJ44ZgDtM8u5wW3yvTevRpToqgtRZXFDUTyP5mNlN30ifPOyo8iVxw6gqQs7RP9RL6GLfCqGQT02y2SjTnxJf0ZMsn5gx8kw/AVIWCxyapLU2tLgO345GDPo4FUxNCSSIeebh6cEgsk1VxV2dOm51IHTim+jjkR+nnLOTvNQn5wPSXXkFzotYiEtcnNBwMlb+zPPH/EWpShkO1iFSvOl4oveeI1whIU/2/dDcCyshAVFK1UXL6PoJ4hifdBNmq1A==
+ bh=jkmYaKf/hvpnwlNMd1NL7PJsJcTT1a1Mj/0lP3RFx0w=;
+ b=cnfR2kCupqjkT6cP3XMNM8BvtW9VnO7d/IFTiHZc1TIxEUwX26JDSPxPKAN8rJZhtkFDWZVWy1X6kZADinzfQTE1z9dPTFBQ1Zaj9BURnJHOh7M9SinoMwUMApv2y3izgYEthOGgahgURNyY4faLjaf8nKyI40/fuIXT/PyaQWsVlYiXLGyzn/SNmwy+KADFyJCMf6MK8uQXU3t0sk0d/CMkEOzhOv1ZB+xoSLkgA7xE909vqWL8lsXIrWduW3zF8VgRM1YNqeMwy0zk+VrD5Sx1eyGw4N4pe/ImPNaZk6bcE+SKLg3ZwFdDbDg8Raq3ZW9IeqJyQXaN1as8mlWXtA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TIqylN3wvAgYRKjfYdoRqFBiqfjsaaZThevou/pUHZs=;
- b=aClZzzYdH0NEqzVlTB+AnD5UsVNej+TdGSBS/rCsLSv91wUFna642/44Sa9hJRG3FYpaKN+DErSHqPByYe9UZZ+sRV/jxHwG6bh4hoqq3iGo9wkdO7FU4913A9sC4iflaK1Kz0eOso7q4gud8EkN5NrXf/F7RbOV2Z64xHitgzw=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by BL3PR10MB6233.namprd10.prod.outlook.com (2603:10b6:208:38c::18) with
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from CO1PR11MB5188.namprd11.prod.outlook.com (2603:10b6:303:95::16)
+ by SA3PR11MB8117.namprd11.prod.outlook.com (2603:10b6:806:2f0::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
- 2023 02:23:18 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::7afa:f0a6:e2d6:8e20]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::7afa:f0a6:e2d6:8e20%3]) with mapi id 15.20.6907.025; Wed, 25 Oct 2023
- 02:23:18 +0000
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] scsi: target: core: Fix one kernel-doc comment
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq17cnbfnjl.fsf@ca-mkp.ca.oracle.com>
-References: <20231017030913.89973-1-yang.lee@linux.alibaba.com>
-Date:   Tue, 24 Oct 2023 22:23:16 -0400
-In-Reply-To: <20231017030913.89973-1-yang.lee@linux.alibaba.com> (Yang Li's
-        message of "Tue, 17 Oct 2023 11:09:13 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR21CA0008.namprd21.prod.outlook.com
- (2603:10b6:a03:114::18) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.40; Wed, 25 Oct
+ 2023 02:25:18 +0000
+Received: from CO1PR11MB5188.namprd11.prod.outlook.com
+ ([fe80::37fc:5e18:cb39:ca1e]) by CO1PR11MB5188.namprd11.prod.outlook.com
+ ([fe80::37fc:5e18:cb39:ca1e%3]) with mapi id 15.20.6907.022; Wed, 25 Oct 2023
+ 02:25:17 +0000
+From:   "Li, Meng" <Meng.Li@windriver.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "usb-storage@lists.one-eyed-alien.net" 
+        <usb-storage@lists.one-eyed-alien.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Thread-Topic: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Thread-Index: AQHaBXOS0TY0dBbnMkyFvU8OyrUaFrBXvqSAgAB6/iCAANrZgIAAAuUAgAADnoCAABRegIAAJNiAgABwKrA=
+Date:   Wed, 25 Oct 2023 02:25:17 +0000
+Message-ID: <CO1PR11MB5188998FE62B30C3CA83A6F8F1DEA@CO1PR11MB5188.namprd11.prod.outlook.com>
+References: <20231023054111.2744872-1-Meng.Li@windriver.com>
+ <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
+ <PH0PR11MB51918DD50651DB6BE937BEA3F1DFA@PH0PR11MB5191.namprd11.prod.outlook.com>
+ <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
+ <2023102428-zit-quickness-9b73@gregkh>
+ <5107f6ca-e972-4af1-a21d-6c95778969f3@rowland.harvard.edu>
+ <2023102459-protector-frequency-1033@gregkh>
+ <a6bb88cd-0b89-4eb1-b90d-8ad633b7a8f2@rowland.harvard.edu>
+In-Reply-To: <a6bb88cd-0b89-4eb1-b90d-8ad633b7a8f2@rowland.harvard.edu>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO1PR11MB5188:EE_|SA3PR11MB8117:EE_
+x-ms-office365-filtering-correlation-id: 16eb95df-4532-4fbe-a8ae-08dbd501a129
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zd4gzyCbK/XrkKrjztTzAFsMWqRJvA354G/1kBFlxVW4B88gdekFPsSJ0e9uWtfFcdkPQremjOoqiLr1u+GGuUn6ndB3yzncc2e7be6U18p7BPP/1G37ITQGTBe5IdzMHWb384Z14PWz1ZDVyzFIw7HJXd7yVoLqS1O+lMCGOw5EW9qppDuK6a7gipJBHJU1K5wj4XzQolS6xVkesBJXCxZQgVSwL38it78J+Zqxr2oFWb22DG971KNC7maCBlL7X8HtBBdqf4xZVsOBHXfkFxRpsa1/Soh9koSus65qpRiy7iVRg0TjD5ImLePIRgMed/JSlil1VeFMKRsiNgH9mbzKvTduNKP6V+0JpI11N2VsWEuHvYT3MItiFHnEfNxDvb8oFTNSk4FL35KhkK2gqoObJkIk5EI5woIE8GnG8X2Gd05orVpPPAim6RR9+MMxG/9Jsi7nVRR6z43zitTgemMIJe9vzuUxiNzDQWcLXZ2V5gXPCiB7LZsdrWlHIZMEqGSp5JMr0Sr/X2nnVZYcEyU16vQnJ0MrhRJUtNCFQ6r8lmuQVZoxoOtk/FcqKxUWvfj4EIr3hFWDNT5KyXjwWOUxjMSHKTG+aX3rVyH1HIahXxasFsvUUpsHZ1Py79VE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5188.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(376002)(346002)(396003)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(53546011)(2906002)(478600001)(54906003)(71200400001)(76116006)(6506007)(66446008)(33656002)(41300700001)(66556008)(64756008)(9686003)(66476007)(86362001)(316002)(26005)(38100700002)(7696005)(122000001)(8676002)(110136005)(55016003)(4326008)(8936002)(52536014)(5660300002)(83380400001)(66946007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?q/L7f77OLi1XGHMw0rv/kpdSNp/ZFUeeJqoxc/JQy1G0YpanmV4AcAbtRzmj?=
+ =?us-ascii?Q?bWNEiGh1gg5qx/ivpDMkxGpaCfKBxMVt31CxJqRw1w+8ZB53zybkP9ItMbI1?=
+ =?us-ascii?Q?fEMpfQTgeIi2rPiPYPC63D0+sqhUc6pMRBl3Zms8j++afyg6oDAbPDli+m9/?=
+ =?us-ascii?Q?1ugwEontEzRhCVOsPSMFkg6vyAg0+FQWZtb20EQ8Wys6qCES9Q2TowwVxDur?=
+ =?us-ascii?Q?febu7WTlYjxiDffBIKVRi0EvHhiwuORmEvwI0f3KAdGy+d0/63YlaFYxKTl3?=
+ =?us-ascii?Q?sBkSfU4b0yjG4NJY+3qN73YWWrCKqB6d+Xnmns01E2Rvagn7VG/KN9cjLfpF?=
+ =?us-ascii?Q?RR8Qld2fmjR0/BZUFJ+FzE72q6OahranUKzYevpo1S3o7xtvv4cU/9afWmPC?=
+ =?us-ascii?Q?sBX7JSfeYBslTxLOfR8R3KwgbIKLZPI+9PMxVGlKmKG6zTfOJWgpjVy3Attq?=
+ =?us-ascii?Q?uI908KdPUdfNbKYURJB5Q6wQWgqBGIF8JIZaRhBax7vJqCQJpnJKzVNSm20E?=
+ =?us-ascii?Q?Vkslz0Ld4nToNw+4gpxzfNxWEu2ZBTLmezxZEuWw33Bx7c5AX285bLJDNsiS?=
+ =?us-ascii?Q?oU9lFYOvlPQMYyk02599E3wjjyfp+1oV8i0fmXijVNfrKnofNmH6HZfZg3Ez?=
+ =?us-ascii?Q?IFh6uBsL6tOMBGbEOolm5BDwgNd3PDpEI7anNkyLtO7UdqZH7lgJX33KXM+j?=
+ =?us-ascii?Q?k5bHAOFV5QpOsHwFHvHBOEelxQ+BDC/boNql4WftDYoo2piFArVkI+n+G7UW?=
+ =?us-ascii?Q?uFiQZ38otmuFGwbdRXu9jribXrXWd0fn3ormv00iOHq7dTZ9/qiSUDs6R9Hs?=
+ =?us-ascii?Q?zX1W/BNUgbocPz5bt29FzVE7k0azlrE5246nRXqVP54CAH8WnmsFik/T19sC?=
+ =?us-ascii?Q?OJYZKizMRd3G787nXXmDRIsA9rm2LIbc9n/7BfN/ISeeKWf82H5L22Wbnxsx?=
+ =?us-ascii?Q?Dtz4rMQJJ+Z0AlOBLHtLAR8pmTKO6goctnBj/C9dEbqPJeQbhyRtpwCfGtQU?=
+ =?us-ascii?Q?5NwO5qXwvFhye/SZG2JcQiNh/HHtaSa3FVDPl8QaTIft663gPSeXJIUEHddz?=
+ =?us-ascii?Q?+7kHxcg686I9H3wERSrWnai0ObcIUpZEPMEiDaPLhkeCl2uIYeH4wqfRdaBY?=
+ =?us-ascii?Q?wJuqRR1rX2kTcHm0vGiE8NNsnz+e/nXeWSigJEpdAGDnDcTE0qzcWTooYniM?=
+ =?us-ascii?Q?8obdOTG78ZNH2s9+T3aCsfrWxr2ObpEhVRwi9fFwXOsrUszEtl0nqDaXhGoF?=
+ =?us-ascii?Q?GyKJoqrqgJdFjT+hgUvAeg89nvLB7uwlyH3yF1zdLU3z5ybZ5Qs8u1U6d3Sv?=
+ =?us-ascii?Q?faysqseDy3Uwzp1/eXi/dZ9HgYD5qqQzo2Fhs/SwaT+bNUHCq+l9pVZavErR?=
+ =?us-ascii?Q?+hoxvlKyfYRIl4MqG92yRhPf+VIqJRgpgIjWwfRIUzZ8VwxXkaI4WHgsq9KP?=
+ =?us-ascii?Q?wP6811gRR+HBVvg/4qkAGMCnHviKmWw7uVaRzUd3Ve5R+ZCFGHKt/ddcAdrF?=
+ =?us-ascii?Q?Exu995ktV1+GPW9BOUJNu1WVS2eAq1xupFb22Ju/nhCBZLmgcDcdmjpzyJkD?=
+ =?us-ascii?Q?PU8LhAhDfUQIPw14z24d6L0PM1vVTA2fULKkLgt3?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|BL3PR10MB6233:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc5b51bb-7ffa-4a78-96eb-08dbd50159d8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /HUbi3J5Y/sz5ePooSW3a7o8fDi+MKGMgttsqtFmlAZcmPmgMatWWVgduY8e8ndeozOqy9GX13KogcLE1ggzxyhmHWaNap3iBKq1AUMYHvAiDHKD4/VpyOsb+cWglIyL3dB2qZjEEUTzskotkCElLBOzbVfH7ZEHJk7Di32wEBOHrP6/jSTHpFC5KXYMqDv62MQjfJA8jRlLG6BrNkKfStFYJMzYTKSba+iLRYT0PRQtYXDSpnk5USGtXpAUV6fj9J6BJdeEJhFOEn+eNSbEsIhTmr3sgYtWC5yLywOyfg6P5CmpWbdNtADgmQf+VEmnm8s6VWQj6ulDdf2xbCiLEVooYj6UFX0L0U/RYwv6KNu1tDIWJFgtHWt++sp6roXAp9MwJHlGhpyr3TWbFEPNV76ON7MkFl3H/9pfMQVIkAJSxwx9KaKVxmqlG4v9cym/6U7w1o6WS0Pt0uZhxStg70cTDMtqSzYJ53qPWW4TDZbm1AKYTpWz8BNlEqP5m0GwxOPSR6LtuTESkPHy3MOSCWV6CUlno7QVZ2GdB1mWGwW7M8g/j6Kj6/EZ2b/m/dRE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(83380400001)(5660300002)(66556008)(41300700001)(86362001)(66946007)(66476007)(478600001)(316002)(6916009)(6506007)(6512007)(6486002)(36916002)(4326008)(2906002)(38100700002)(8936002)(8676002)(4744005)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+PLzWbkowZIHTOnLM6ix8+RA/rlkoZ0pJ/9WApDlZIvFlipvVp/LvuIARlBe?=
- =?us-ascii?Q?AgT9x5lX0FZYljmTRlq43hqFUXm83kOklrjf05J7TlcqWZkx8cdTwoUHz6Fx?=
- =?us-ascii?Q?Lpd0q0z49VwQpoJrcPB+BImm8KlQH5VK2wMpAWb3/1FMdOO5Z+kw4RFlchQX?=
- =?us-ascii?Q?BLYVGZccqaSEZG8fEC+u8X9ZoR1+jbE1BzrRa6G32gjc2r3ebLkdjCpOrpyf?=
- =?us-ascii?Q?MH/wcaxLnMVpzTPXMGJ8ux/kpdGXhz1k7HTEYTQY3xbUBk4yZUzKHCHSZN/M?=
- =?us-ascii?Q?HNsBSR4yqvFkR3S85tjn47KiXy4skN4Y2ygoT6AVcYu1XrfnwVeZV+O0mDjZ?=
- =?us-ascii?Q?cqZCF18wtCR4SwdTo1X1kuZa+WM6uKXuRu4fU4B6yZf92eVZaBbB0axMDA4H?=
- =?us-ascii?Q?QZcZmk86dMNA70Xq6pC9TBRzksmlc9pnSyR5/AEPRbIXk5xy0X2NkwX9caQs?=
- =?us-ascii?Q?h7Q2mzHrmtD4+hcuCXD738tn7DCMZQJEqphh9nBqARexqkTAkNpqO6jGeY7z?=
- =?us-ascii?Q?E9EAExyeilVa8GH9RaCXkDvQSIKcrHhejqyIBmwjqSv6Ex9TDSo8cSLHLUFW?=
- =?us-ascii?Q?tccuCowZbjSujjoU7ff2fXV8Y9/z2M8rlULa/He9PwjQUEAnGxIZkkR0E4hs?=
- =?us-ascii?Q?g9SmEqXe/sKXYKtUXdhpSKPAfYhQDdOagwGtJVM6MoJQTXU93RPYkwkvItO/?=
- =?us-ascii?Q?3h9okcWxVJa6T6jA0fBhzI8PI1Ebu0ZIs1BMWwzTBQ3lJmKWxY8LamARXogP?=
- =?us-ascii?Q?IOgLHzaO62IPMbVG3CHQbsBAFXrMgMION8qOdJ+sw2nhHEY+j+sGrCDOqONC?=
- =?us-ascii?Q?/tcbQ8opD3FjFM41ICLd0cuGt1Esk2fXXFYTPL5vtBfAr3EDfYaqGhNEmouA?=
- =?us-ascii?Q?/Fy/nWrSKmO+4NRlVCR0l6O3kpa1ljeIrwSOFbhvPDwRkTuAmU1xP9qi05Zs?=
- =?us-ascii?Q?dvMTRTolFw4ySghkxY/nBnE8KhgcBN/7X/oiO48XoEYwmnPAHoDbpgNykCI9?=
- =?us-ascii?Q?jkmXJ8VMIJLr8kPWA8DDR8PZXoEIc+tlK4PGZ3FXgfY2Oazfzfn7oO1cFJk2?=
- =?us-ascii?Q?cHsCQ4aPmUcbxgEL42kEnAUHxaeZmxX+IAfXEbyFEZ/sAcu2jtbmZOsTamrP?=
- =?us-ascii?Q?KajtIfe0HLx3fWvNmBvYOlHVfye0vDMefAPsAFn2h1/Ou1IHTA+LUP2Rv1lF?=
- =?us-ascii?Q?4zcQPOf9bGlDivMDV84umiDckDp+eh+a1WBTVFSeFAcJ+homS106SVrJHvY8?=
- =?us-ascii?Q?H/h8g2AsEjIS30N21YTW6/niF2JFpCMDr5h3pUXYzNLsBXhzaSVtrmyJzcjU?=
- =?us-ascii?Q?bDOqcF4qif4YsY/aofkBkQMewk48ZH/yRv3E5HJvxRpWhQmuGbSy4xGd6ohU?=
- =?us-ascii?Q?PbTUm1dBgCgPcl3myBY6PaNRI2NLfWy7lxWEv7AQAPsZb8loz89kPfs/Ghug?=
- =?us-ascii?Q?HoH2sZdDCDKt4wPjPKg3YyKwEcb6i5iysrrGVDizCT96zDRzYDKn60d6zWVD?=
- =?us-ascii?Q?bY1xDLK3Y29L9kip2togBqa/Mw3Bz9OZRkJOiQFi9jhBSBiQPHCWaDpgAN4p?=
- =?us-ascii?Q?DfVo0qetToV2DsCQ6ecCqET/iNiqW+vNWF0ADaKdkJ0cbfGnM2LbGMBuZkK7?=
- =?us-ascii?Q?fg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: VaPRN5sE4MLyb+pK3V4O6UI2O6V26+DUUM4k1YFHAgRHS2bJUiwQy/rzENZ6X6g/nlDL8TwLIAk8m/tmLjJeA3NYTnRWBD7fqEl2T8mEY5FO90+l0n8DARyqruC4/YDsGXgVrY0TmXjs6jfWyIUUNfFzTCki5LFBNHESAVMeN7Ggb+6qhlE9/D9sbSHpr9yQcGolmkzFCJ15GfarA8cUVi3aEStRjnpm8do3JdksE4rRlm+6qtoCl3B57EG5zB/b3pBzHEyDvP9SE7qRme8q6V3T3O9lMLVqGU8dXGh3VY765H2VQZ3NumvxnaHg1njQmJTXr4phYHQmgU1n0wfsqs73VE2N57nrHkSZCAVzwdsiIvMTidIR82oJtz5wXWDWncWgrC+FIN0a2cUSwfpRZzvrHwoddYmBagZqyeRGCK6BIgDKxZcHxbzoUn9GM67hK6Qjip9d4MvQnWKIsGlApIz09NGbdFw9CvIHr0Dalg0EzTn0uW/6OyOcO6Bels+V4pQblniAQWjWXm5udmzmLlk1OIbly3CS/bUJH2G2Tw1p9P/JOexg5/x1YBLXbgUDefcAnWnZFjV+Fr3lgfsM9w1QilT2MyeeLlTY2pl1HnJps+edsqvSkhNEGfk2jbj6X/At/GhpNE68uw8+ciCYWzY5iezD1ZpiNwYKm9Z3qYDaR5pA8jD07Ubga7h/TsZARhKnth/UI6n3ohmgDOYChhoXNLU4yldm9GVx8FryjVtbzwx3PZjRZVS0J5RahAxy+38XbXVkXJh0fBicm3WkdxRNL0/DlJiDqTXlPiwo3z8vd0lIXLQYBHtVuDJOHDhu
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc5b51bb-7ffa-4a78-96eb-08dbd50159d8
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-OriginatorOrg: windriver.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 02:23:18.3604
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5188.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16eb95df-4532-4fbe-a8ae-08dbd501a129
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2023 02:25:17.8199
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9zfR2FxELviGoXLayyAWwlIl6pNUEQMWSaQmCU/3Q01BC0NMIPeSN1w0AgwwPVSH1mIBAOdRn2pq6xdAMADNYL1zp5cwEbZNcw3Lq+DQ9+M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6233
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kor143Bs4GDoN22Ps1quJQtgqFhYVWOp9RdgwGL/q1HVoTLnrM47cnAOJjnY2TKt4jAUz+LGE/qSdZpoldPLPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8117
+X-Proofpoint-GUID: ydie7U6U-GsM_b6XqYPqNXiszHCC_o2Z
+X-Proofpoint-ORIG-GUID: ydie7U6U-GsM_b6XqYPqNXiszHCC_o2Z
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310250019
-X-Proofpoint-GUID: PVnmxnskQmgAK2jWgWvJrZFz-L1EIwPw
-X-Proofpoint-ORIG-GUID: PVnmxnskQmgAK2jWgWvJrZFz-L1EIwPw
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2310170000 definitions=main-2310250018
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -149,15 +149,120 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Yang,
 
-> Fix one kernel-doc comment to silence the warnings:
-> drivers/target/target_core_transport.c:1930: warning: Excess function
-> parameter 'cmd' description in 'target_submit'
-> drivers/target/target_core_transport.c:1930: warning: Function
-> parameter or member 'se_cmd' not described in 'target_submit'
+> -----Original Message-----
+> From: Alan Stern <stern@rowland.harvard.edu>
+> Sent: Wednesday, October 25, 2023 3:23 AM
+> To: gregkh@linuxfoundation.org
+> Cc: Li, Meng <Meng.Li@windriver.com>; linux-usb@vger.kernel.org; usb-
+> storage@lists.one-eyed-alien.net; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
+> driver
+>=20
+> CAUTION: This email comes from a non Wind River email account!
+> Do not click links or open attachments unless you recognize the sender an=
+d
+> know the content is safe.
+>=20
+> On Tue, Oct 24, 2023 at 07:11:31PM +0200, gregkh@linuxfoundation.org
+> wrote:
+> > On Tue, Oct 24, 2023 at 11:58:37AM -0400, Alan Stern wrote:
+> > > On Tue, Oct 24, 2023 at 05:45:40PM +0200, gregkh@linuxfoundation.org
+> wrote:
+> > > > On Tue, Oct 24, 2023 at 11:35:19AM -0400, Alan Stern wrote:
+> > > > > Okay, that's a different matter.  In fact, I don't know what is
+> > > > > supposed to happen during a clean reboot.
+> > > >
+> > > > Define "clean" :)
+> > >
+> > > In this case, I mean what happens when you give the "reboot" command.
+> >
+> > That's a userspace binary/script/whatever that can do loads of
+> > different things not involving the kernel, so it all depends on the
+> > user's system as to what will happen here.
+> >
+> > Many "good" userspace implementation of reboot will go and sync and
+> > unmount all mounted disks in the correct order, before the kernel is
+> > told to reboot.
+>=20
+> Even if the filesystems are unmounted, the kernel will still probe the dr=
+ive
+> periodically (once every few seconds) if it claims to have removable medi=
+a.
+> Failure of those probes won't hurt anything, but it is likely to generate=
+ an error
+> message.  I don't know if that's what's happening in this case, though.
+>=20
+> > All we can do in the kernel is act on the reboot system call.
+> >
+> > So perhaps the original poster here can see why his userspace isn't
+> > correctly shutting down their storage devices?
+>=20
+> Meng, can you do this?  Maybe you can fix the problem by adding a script =
+to
+> be executed by the "reboot" command.  If the script writes to the "remove=
+"
+> attribute file in the drive's sysfs directory, that will unbind usb-stora=
+ge from
+> the device.  It should give the same result as your patch, for clean rebo=
+ots.  It
+> won't help "reboot -f", though.
+>=20
 
-Applied to 6.7/scsi-staging, thanks!
+Ok! Got it.
+In fact, the reported error is not critical one. In my real work environmen=
+t, there is not the error because there is not PCIe-TO-USB card installed o=
+n board.
+The issue is reported to me from our tester who used the PCIe-TO-USB card t=
+o test the PCIe feature, not test USB feature.
+I am ok to NAK this patch. The primary intention of sending this patch is t=
+o raise up the discussion about whether shutdown function should be added f=
+or usb mass storage driver, and I have got what I want.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks,
+Limeng
+
+> > > > > What happens with non-USB disk drives?  Or other removable device=
+s?
+> > > >
+> > > > It would have to come from "above" in the device tree, so does the
+> > > > PCI or platform bus say that they should be shut down and their
+> > > > child devices?
+> > >
+> > > Well, the PCI layer invokes the HCD's ->shutdown callback.  But the
+> > > usb-storage driver and usbcore don't know this has happened, so they
+> > > start logging errors because they are suddenly unable to communicate
+> > > with a USB drive.  Meng Li is unhappy about these error messages.
+> > >
+> > > Adding a shutdown callback of sorts to usb-storage allows the driver
+> > > to know that it shouldn't communicate with the drive any more, which
+> > > prevents the error message from appearing.  That's what this patch do=
+es.
+> > >
+> > > But that's all it does.  Basically it creates a layering violation
+> > > just to prevent some error messages from showing up in the system
+> > > log during a shutdown or reboot.  The question is whether we want to
+> > > do this at all, and if we do, shouldn't it be handled at the usbcore
+> > > level rather than just within usb-storage?
+> >
+> > We should do this within the usb core if we care about it, but why did
+> > the USB device suddenly go away before the USB storage driver was told
+> > about it?  That feels like something else is pulling the power on the
+> > device that is out-of-band here.
+>=20
+> The device went away because the HCD shut down the host controller,
+> thereby stopping all USB communication.  The usb-storage driver wasn't
+> informed because this all happened inside the HCD's PCI ->shutdown callba=
+ck.
+> HCD shutdown doesn't do anything to the USB bus -- in particular, it does=
+n't
+> remove the root hub or anything else -- it just turns off the host contro=
+ller.
+>=20
+> Since USB class-device drivers don't have ->shutdown callbacks (there is =
+no
+> shutdown() method in struct usb_driver), they don't know what's going on
+> while a shutdown or reboot is in progress.  All they see is a bunch of er=
+rors.
+>=20
+> Alan Stern
