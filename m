@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B49F27D7521
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E02E7D7526
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjJYUEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S229867AbjJYUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjJYUEn (ORCPT
+        with ESMTP id S229441AbjJYUHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:04:43 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163618F;
-        Wed, 25 Oct 2023 13:04:41 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9338e4695so1580821fa.2;
-        Wed, 25 Oct 2023 13:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698264279; x=1698869079; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aRXCvqUEGxPWmLeNrK49IAezUNl9MkqYIjX1pTeuyPs=;
-        b=CyXkHZI8wVNtfKaOvmmhbeqlQwpIgNtlcdc9pouWUyF/ZCGu/1kJK5SAlCKiFpJOnc
-         dQzemP2H4U3eQuxijtTlDAoLQcCnQTwl5ui8MidVTbPRcqbyAI+dnfaAdD1HDhpenhBg
-         5BNZPMy0+u08y+N7OgWdnAiDT7IjzcDmM+2hLbkAx4CU7OLHOc0Z4CR0Q8xwMX4GmX+F
-         etSFfexyGS6Wifp2RhWJ+D7YG5sKYEtBfBqCLxLODVPYHoCyP42uhgirgfqxOki/DHkq
-         8WPxPEC136Xui6vrnDeyNqzBCQv6XA9Qmxq5TFD6RJUjCCkEVXDaKSFui5D9tEX6N2tG
-         XRWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698264279; x=1698869079;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aRXCvqUEGxPWmLeNrK49IAezUNl9MkqYIjX1pTeuyPs=;
-        b=O9nz73wmlOeed026+eTbpw9MbMUYQ2Btvp5n6DYMgR//mge4nXWvr6ghEHyhYeXNUd
-         qJBNf1luD1CaSp+AjoV6KHpW3iQiPND4TWhZLb3YpDshk9nvXe258TDTXuJCXu3cnV5f
-         6VRdM+qtlMgvMO36UX7eH1nRgNNLGMxTtxJZ21X8RyOsFGSnILAnyXq/hEakobq2yANp
-         vg2l5i7fupog1Ey3NnGwk6NZQdwHVRZ6W4IhzeJGR2TMeIzyalo1t6J0c1WH5UWjdthV
-         kcDQTYUQt1hISJftegJokbMYtpMMfi5XymU4Y1F/cMnuz2z/ezMiu0TQF556uVOxgYs/
-         vEuw==
-X-Gm-Message-State: AOJu0YwIb0ZFtGZ68IVyg2MiQGgO5GM4ubg5flaMMh0smmbVR+QFuxkf
-        zjqb/84W1wrN6FwemdMq1og=
-X-Google-Smtp-Source: AGHT+IGcyVppwMzWcJePLy+2lwN2fhKViA8GWuWortnTRRjauD38DvPVVxmawlDSowy+NlXgYcywQQ==
-X-Received: by 2002:a2e:8716:0:b0:2bc:b0ae:a9e5 with SMTP id m22-20020a2e8716000000b002bcb0aea9e5mr11159207lji.42.1698264279020;
-        Wed, 25 Oct 2023 13:04:39 -0700 (PDT)
-Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id az32-20020a05600c602000b004053e9276easm599668wmb.32.2023.10.25.13.04.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 13:04:38 -0700 (PDT)
-Message-ID: <456be27a-1e62-4b88-a868-6238813c26c8@gmail.com>
-Date:   Wed, 25 Oct 2023 22:04:36 +0200
+        Wed, 25 Oct 2023 16:07:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC6A12A;
+        Wed, 25 Oct 2023 13:07:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B00FC433C9;
+        Wed, 25 Oct 2023 20:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698264461;
+        bh=c9hY4E7jNHBShkUUZ0IIyWNWNrY3oYNTtk51W23cdQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p9b7mj3Rvwlumnqd+iAxFml04cedqz1VNqRw7ZOpi+Ms5Tz2+VR9XaoQdBG2uhCBu
+         m2Pgphd4aG/1B19GZYT+ZvK497Y0KaC8Hq3ow70yk1qH5Bt36qm+ltwt4oEbgvc82y
+         Ri/hVZYApxi1B/Wer954MhIRxDvs/7Xho5Goo2rktPYUGVsRXTm/IIqNMeT1MH3WQO
+         ddFU0/HrHoxwA/rmhJ7OU2dZRsLM5uIjySzUFE0QfAXgQGS4oDEdmMXferM5rpSbUg
+         YkOE9+oOTCtTlQH/ec73SO8TcUCiY4R5DkoaT/2XEtqu+3Gp7KjdM3CNDJGYbQDigV
+         Kry5GkHjqZ8kw==
+Date:   Wed, 25 Oct 2023 21:07:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH RFC 1/2] regulator: core: Disable unused regulators with
+ unknown status
+Message-ID: <b1cf1c20-4fc6-40cd-932d-0937d78ea1dd@sirena.org.uk>
+References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
+ <20231004-reg-smd-unused-v1-1-5d682493d555@kernkonzept.com>
+ <80307316-f55e-4540-9c5f-655844c3b3f4@sirena.org.uk>
+ <ZTeHAqL5QB2w33RN@kernkonzept.com>
+ <802e7f15-029c-4eb6-b0d8-53d16f7da37a@sirena.org.uk>
+ <ZTlx13fBddvf4n0h@gerhold.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     savicaleksa83@gmail.com, linux-hwmon@vger.kernel.org,
-        leonard.anderweit@gmail.com, Jack Doan <me@jackdoan.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (aquacomputer_d5next) Check if temp sensors of
- legacy devices are connected
-To:     Guenter Roeck <linux@roeck-us.net>
-References: <20231016083559.139341-1-savicaleksa83@gmail.com>
- <20231016083559.139341-2-savicaleksa83@gmail.com>
- <ac61decf-8ab7-46c1-83f0-d3f79f737bbf@roeck-us.net>
-Content-Language: en-US
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-In-Reply-To: <ac61decf-8ab7-46c1-83f0-d3f79f737bbf@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="g2hqgQBCw4uunBRz"
+Content-Disposition: inline
+In-Reply-To: <ZTlx13fBddvf4n0h@gerhold.net>
+X-Cookie: There's no time like the pleasant.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-25 21:41:00 GMT+02:00, Guenter Roeck wrote:
-> 
-> Why is the sensor instantiated in the first place ?
-> Returning -ENODATA for every reading is not desirable.
-> If this can happen, the is_visible function should check
-> for it and skip affected sensors.
-> 
-> Guenter
-> 
 
-The external temp sensor(s) are hot-swappable and can be plugged
-or unplugged anytime. Similar logic already exists in
-aqc_raw_event() for the sensors.
+--g2hqgQBCw4uunBRz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Aleksa
+On Wed, Oct 25, 2023 at 09:51:51PM +0200, Stephan Gerhold wrote:
+> On Wed, Oct 25, 2023 at 06:49:47PM +0100, Mark Brown wrote:
+
+> > In these cases where we simply can't read the expectation is that we'll
+> > always be using the logical state - one way of thinking about it is that
+> > the operation is mostly a bootstrapping helper to figure out what the
+> > initial state is.  A quick survey of users suggest they'll pretty much
+> > all be buggy if we start returning errors, and I frankly even if all the
+> > current users were fixed I'd expect that to continue to be a common
+> > error.  I suppose that the effect of ignoring the possibility of error
+> > is like the current behaviour though.
+
+> regulator_is_enabled() already returns error codes in various cases,
+> e.g. regulator_is_enabled_regmap() returns the original error code from
+> the regmap_read() call if that fails. So if users ignore that and
+> interpret the value as logical one they either don't care (which is
+> probably fine in some cases?) or already use it wrong. Or am I missing
+> something?
+
+That's broadly what I just indicated.  Expecting anybody to do anything
+useful with an error report is probably optimistic, but it's probably
+going to give the same behaviour as we have currently so it's probably
+fine.
+
+> > We have to do the reference count in the core anyway since it's a
+> > reference count not just a simple on/off so it doesn't really cost us
+> > anything to make it available to drivers.
+
+> I assume you're referring to "use_count" as the reference counter?
+
+Yes.
+
+> On a closer look I think it cannot be used as-is for my purpose:
+
+>  1. With "regulator-boot-on", set_machine_constraints() explicitly
+>     enables the regulator, but doesn't increase the use_count.
+>     In that case we should return true in ->is_enabled(). I'm not sure
+>     how we would know, just based on use_count = 0.
+
+OK, so use_count plus other information we also already have to hand.
+Or OTOH it's not that much overhead to track the enable state explicitly
+for hardware without readback as you're suggesting below if it ends up
+being too much hassle.
+
+>  2. To cleanup unused regulators that may or may not be enabled we need
+>     to know if the regulator was ever explicitly enabled/disabled before.
+>     It's pointless to send a disable request for a regulator that we
+>     already disabled explicitly before (after a enable -> disable cycle).
+>     use_count just tells us if there is currently a user, but not if
+>     there was one before.
+
+It's pointless, but equally well it's not huge overhead.
+
+> I think I would literally need to move the existing "enabled" field from
+> the RPM regulator drivers to the core and manage it similarly there
+> based on ->enable() and ->disable() calls. Which would be a (slight)
+> overhead for all regulators rather than being isolated for the few RPM
+> regulator drivers.
+
+These aren't the only regulators with this limitation, we've also got
+similar open coding for GPIO controlled regulators like the fixed
+regualtor for example.
+
+--g2hqgQBCw4uunBRz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU5dYYACgkQJNaLcl1U
+h9CeoQf9GrG1ZXfwu4S3UmgmHdp/ON9f+Wh+FEWdiwReoUY+kbRwtjoKqk/QQFFL
+M+WuBNZyzkdDDotlVFUkAWNgWVn3WN6VjavgvNqv7vUePrYirPZUCLH8BOJTUWAv
+aEbBj8RebicIbsRsmdr6nuKo5l8P0pj9OpgbKTg1JwFqRtXbkR+y+peZu0BVDtN8
+qGFk1bXYH9yD8qT5rjdigc74tSlqkyCj/eH9B2hO4YxeyixK+Kdokw9yr4xwAu8f
++XpQ8YALA8yVw/ebravxfl1CHW0FaqoyW5KkyB4Z/RmYhhT+7wQisnXLQ2pUynMX
+637bnpuWKiZI4M7p9v3XnBo5P4HWuQ==
+=O9bn
+-----END PGP SIGNATURE-----
+
+--g2hqgQBCw4uunBRz--
