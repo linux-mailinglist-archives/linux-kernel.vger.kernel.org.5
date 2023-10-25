@@ -2,339 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 618AB7D7859
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A651F7D7873
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjJYXDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 19:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        id S229797AbjJYXQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 19:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjJYXDf (ORCPT
+        with ESMTP id S229583AbjJYXQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 19:03:35 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB3CBB;
-        Wed, 25 Oct 2023 16:03:32 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d81d09d883dso196429276.0;
-        Wed, 25 Oct 2023 16:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698275012; x=1698879812; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=61JSi82jmprMEy2wjLB3v55zpvhJh5bM0LopIsNdZBI=;
-        b=jXCfQ4MkgGZo0vVIaUkQGcBd881pWRRXMSrwxv/sCVleGYRejRAr87UbXvghsAPxHn
-         l3i0yypXGre04zp0ZRfEVy8Fmc8+khED2wJDIgRWowq2mBfQWtUCkiJy7vgSsoXwnsso
-         +za+35BYb2yeBGUzDoKB3VYs7+Oqpi80RryGtFaME5ulMd/9ByVYFJuEHC5X+yPIuVQl
-         PYQypJ6mPdz9Y5NxBX4IjjIXv4/5pb9IuKIdaB+63q4gBhFvHZNxE7u/LdX3DW5G9Lmp
-         In5Nzr2ce/PxOEnXw1ciR4y/5OXaqAd3dkwa3onqoe/gpI3hHwEbX8hiiOKN5bZBd8yH
-         ZpHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698275012; x=1698879812;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=61JSi82jmprMEy2wjLB3v55zpvhJh5bM0LopIsNdZBI=;
-        b=TnkJ7udCbkcQL66SWDbbdCgGzyb0kXp5ZGNPMVcAq+waQ4EcSnYfe+hD/NdB0L3R6G
-         br+xf+bZcZ8SD57X6XJJTniSrrPNOUZlCxdMZHgtDHT98wlQ7pnYF48OI2BlEwOJ7+WP
-         XgRprXnjiYPg3FNoiB+ZXeR2IbLXTbHwy3Xv3vb4v8vAIJkxr86oy8VS4C4MvNUNgzPr
-         fD9MUEF45tXKjeFGWdLf4/awwYpmgRuopCCHLuEyNEu+EiE184FInLF/Gx8bGxaKt84V
-         xBgOgFzJFHqBZHUP74LGxJncB6G3Mlhc+ecMdX8AkLpSIo33j8KIhXbobsOms97lF4Xx
-         KyTQ==
-X-Gm-Message-State: AOJu0Yy28fr0NaeZHBnDjSDR3ZI0ebm1vyD8KK3ADoM3Fkwa1BXqFd2R
-        FrMQp9x4L84/E7BiMJ7W1eA=
-X-Google-Smtp-Source: AGHT+IHzO+kZQE6t+6SokT/XjMJiUdNBfvOO3vMCUbf3gh0kZ9vOkSrhSIeP9wvnukh1IIjW55IOtw==
-X-Received: by 2002:a25:cfc9:0:b0:da0:68a0:7cc6 with SMTP id f192-20020a25cfc9000000b00da068a07cc6mr3923847ybg.17.1698275011722;
-        Wed, 25 Oct 2023 16:03:31 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id m10-20020a258c8a000000b00d9a4aad7f40sm4722392ybl.24.2023.10.25.16.03.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 16:03:31 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 15D0227C005B;
-        Wed, 25 Oct 2023 19:03:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 25 Oct 2023 19:03:30 -0400
-X-ME-Sender: <xms:wZ45ZXhrsAQv86EZB20iNdVStWugNJLSiSs8UqlV8WOzkdpe3iscVg>
-    <xme:wZ45ZUCuQeq1Fm7OMN92dciAz3VWEIKPi3isoU5Jy_HhjiwzD_MfmO3hxdl73AXqq
-    a9wQ14E2glff84OkA>
-X-ME-Received: <xmr:wZ45ZXEJ5dqgov2_NYos_099EEN_Matr_EBjJtuXtODoXPxOeC9MHdFg1eE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledugdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtugfgjgesthekrodttddtjeenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeelgfegfeehtdeftedvjeffffdutddtvdduvddutdeigfffheehjeeutdeu
-    keeuieenucffohhmrghinheprhhushhtqdhlrghnghdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgr
-    uhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsoh
-    hquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:wZ45ZUT3D_EgD3vYO4rUAkdJ_hj7h1AKSYudX2jVrHUrRPsJrL5ACg>
-    <xmx:wZ45ZUwk5yKED0_O9mfPn1S6DyCpCrQEmzr1U-03ZkU6bGSLR_qkHw>
-    <xmx:wZ45Za5Y_WVxM_VIkdzobstZ76uBfYKYIPpNf_yGiTzqLqsPJg-8jQ>
-    <xmx:wp45ZVRw4Nc-eD9_tWFDJqqPeb_AOUnatoLTu8HK250Oa41qsU7erA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Oct 2023 19:03:28 -0400 (EDT)
-Date:   Wed, 25 Oct 2023 16:02:45 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        kent.overstreet@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        elver@google.com, Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC] rust: types: Add read_once and write_once
-Message-ID: <ZTmelWlSncdtExXp@boqun-archlinux>
-References: <20231025195339.1431894-1-boqun.feng@gmail.com>
- <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 25 Oct 2023 19:16:10 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EF3BB;
+        Wed, 25 Oct 2023 16:16:07 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PLPwHS019306;
+        Wed, 25 Oct 2023 23:15:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2023-03-30;
+ bh=YhogheplkOov6CtuctZ/3d9HRRT8CjStcBY8dqmxkp8=;
+ b=YPNtUBboX2R2y8h6H9ms+P7TnCCvpqdKDAnXm17vwlGO/aBuh8E+bUU50vb9pfcfEKmk
+ iTjlVFhCMlWBAESEI6Y6yxVemvhiKT6S58CMSIUyHsbDpEm9Umo6eWTyC0ghoHsi1UHX
+ Ue87p1fXPH+o+2D0cNqvd5TRlH2Xb5GWNabRWZWmNCV+WeLDOcrMoJD5t4JOlhCqCd2i
+ nUwV4wpK8UjQfmhnkiRJTSxeqKvqf/RLDfgHclve2ktJ3xZw9pIT/tIoheVZk+O2LV+d
+ 5TfOkMYx8M/wHIJyNRrJLY3RlB61wWuTLnNsLNja74KMgAwgo18zeew4IjZAp6kRRUVb CA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv68thh08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 23:15:58 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39PLKj1j001460;
+        Wed, 25 Oct 2023 23:15:57 GMT
+Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tv53dutnx-1;
+        Wed, 25 Oct 2023 23:15:57 +0000
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     jasowang@redhat.com, mst@redhat.com,
+        virtualization@lists.linux-foundation.org, sfr@canb.auug.org.au
+Cc:     leiyang@redhat.com, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: [PATCH] vhost-vdpa: fix use-after-free in _compat_vdpa_reset
+Date:   Wed, 25 Oct 2023 16:13:14 -0700
+Message-Id: <1698275594-19204-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_13,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=807
+ adultscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250198
+X-Proofpoint-ORIG-GUID: YZX4G4tlMob0ASMuBYR5Jy2w6eU9RXzk
+X-Proofpoint-GUID: YZX4G4tlMob0ASMuBYR5Jy2w6eU9RXzk
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 09:51:28PM +0000, Benno Lossin wrote:
-> > In theory, `read_volatile` and `write_volatile` in Rust can have UB in
-> > case of the data races [1]. However, kernel uses volatiles to implement
-> 
-> I would not write "In theory", but rather state that data races involving
-> `read_volatile` is documented to still be UB.
-> 
+When the vhost-vdpa device is being closed, vhost_vdpa_cleanup() doesn't
+clean up the vqs pointer after free. This could lead to use-after-tree
+when _compat_vdpa_reset() tries to access the vqs that are freed already.
+Fix is to set vqs pointer to NULL at the end of vhost_vdpa_cleanup()
+after getting freed, which is guarded by atomic opened state.
 
-Good point.
+  BUG: unable to handle page fault for address: 00000001005b4af4
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 16a80a067 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 4 PID: 40387 Comm: qemu-kvm Not tainted 6.6.0-rc7+ #3
+  Hardware name: Dell Inc. PowerEdge R750/0PJ80M, BIOS 1.8.2 09/14/2022
+  RIP: 0010:_compat_vdpa_reset.isra.0+0x27/0xb0 [vhost_vdpa]
+  Code: 90 90 90 0f 1f 44 00 00 41 55 4c 8d ae 08 03 00 00 41 54 55 48
+  89 f5 53 4c 8b a6 00 03 00 00 48 85 ff 74 49 48 8b 07 4c 89 ef <48> 8b
+  80 88 45 00 00 48 c1 e8 08 48 83 f0 01 89 c3 e8 73 5e 9b dc
+  RSP: 0018:ff73a85762073ba0 EFLAGS: 00010286
+  RAX: 00000001005b056c RBX: ff32b13ca6994c68 RCX: 0000000000000002
+  RDX: 0000000000000001 RSI: ff32b13c07559000 RDI: ff32b13c07559308
+  RBP: ff32b13c07559000 R08: 0000000000000000 R09: ff32b12ca497c0f0
+  R10: ff73a85762073c58 R11: 0000000c106f9de3 R12: ff32b12c95b1d050
+  R13: ff32b13c07559308 R14: ff32b12d0ddc5100 R15: 0000000000008002
+  FS:  00007fec5b8cbf80(0000) GS:ff32b13bbfc80000(0000)
+  knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00000001005b4af4 CR3: 000000015644a003 CR4: 0000000000773ee0
+  PKRU: 55555554
+  Call Trace:
+   <TASK>
+   ? __die+0x20/0x70
+   ? page_fault_oops+0x76/0x170
+   ? exc_page_fault+0x65/0x150
+   ? asm_exc_page_fault+0x22/0x30
+   ? _compat_vdpa_reset.isra.0+0x27/0xb0 [vhost_vdpa]
+   vhost_vdpa_open+0x57/0x280 [vhost_vdpa]
+   ? __pfx_chrdev_open+0x10/0x10
+   chrdev_open+0xc6/0x260
+   ? __pfx_chrdev_open+0x10/0x10
+   do_dentry_open+0x16e/0x530
+   do_open+0x21c/0x400
+   path_openat+0x111/0x290
+   do_filp_open+0xb2/0x160
+   ? __check_object_size.part.0+0x5e/0x140
+   do_sys_openat2+0x96/0xd0
+   __x64_sys_openat+0x53/0xa0
+   do_syscall_64+0x59/0x90
+   ? syscall_exit_to_user_mode+0x22/0x40
+   ? do_syscall_64+0x69/0x90
+   ? syscall_exit_to_user_mode+0x22/0x40
+   ? do_syscall_64+0x69/0x90
+   ? do_syscall_64+0x69/0x90
+   ? syscall_exit_to_user_mode+0x22/0x40
+   ? do_syscall_64+0x69/0x90
+   ? exc_page_fault+0x65/0x150
+   entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
-> > READ_ONCE() and WRITE_ONCE(), and expects races on these marked accesses
-> 
-> Missing "`"?
-> 
+Fixes: 10cbf8dfaf93 ("vhost-vdpa: clean iotlb map during reset for older userspace")
+Fixes: ac7e98c73c05 ("vhost-vdpa: fix NULL pointer deref in _compat_vdpa_reset")
+Reported-by: Lei Yang <leiyang@redhat.com>
+Closes: https://lore.kernel.org/all/CAPpAL=yHDqn1AztEcN3MpS8o4M+BL_HVy02FdpiHN7DWd91HwQ@mail.gmail.com/
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+---
+ drivers/vhost/vdpa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yeah, but these are C macros, and here is the commit log, so I wasn't so
-sure I want to add "`", but I guess it's good for consistency.
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 9a2343c45df0..30df5c58db73 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -1355,6 +1355,7 @@ static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
+ 	vhost_vdpa_free_domain(v);
+ 	vhost_dev_cleanup(&v->vdev);
+ 	kfree(v->vdev.vqs);
++	v->vdev.vqs = NULL;
+ }
+ 
+ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+-- 
+2.39.3
 
-> > don't cause UB. And they are proven to have a lot of usages in kernel.
-> > 
-> > To close this gap, `read_once` and `write_once` are introduced, they
-> > have the same semantics as `READ_ONCE` and `WRITE_ONCE` especially
-> > regarding data races under the assumption that `read_volatile` and
-> 
-> I would separate implementation from specification. We specify
-> `read_once` and `write_once` to have the same semantics as `READ_ONCE`
-> and `WRITE_ONCE`. But we implement them using
-> `read_volatile`/`write_volatile`, so we might still encounter UB, but it
-> is still a sort of best effort. As soon as we have the actual thing in
-> Rust, we will switch the implementation.
-> 
-
-Sounds good, I will use this in the next version.
-
-> > `write_volatile` have the same behavior as a volatile pointer in C from
-> > a compiler point of view.
-> > 
-> > Longer term solution is to work with Rust language side for a better way
-> > to implement `read_once` and `write_once`. But so far, it should be good
-> > enough.
-> > 
-> > Suggested-by: Alice Ryhl <aliceryhl@google.com>
-> > Link: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html#safety [1]
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> > 
-> > Notice I also make the primitives only work on T: Copy, since I don't
-> > think Rust side and C side will use a !Copy type to communicate, but we
-> > can always remove that constrait later.
-> > 
-> > 
-> >  rust/kernel/prelude.rs |  2 ++
-> >  rust/kernel/types.rs   | 43 ++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 45 insertions(+)
-> > 
-> > diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-> > index ae21600970b3..351ad182bc63 100644
-> > --- a/rust/kernel/prelude.rs
-> > +++ b/rust/kernel/prelude.rs
-> > @@ -38,3 +38,5 @@
-> >  pub use super::init::{InPlaceInit, Init, PinInit};
-> > 
-> >  pub use super::current;
-> > +
-> > +pub use super::types::{read_once, write_once};
-> 
-> Do we really want people to use these so often that they should be in
-> the prelude?
-> 
-
-The reason I prelude them is because that `READ_ONCE` and `WRITE_ONCE`
-have total ~7000 users in kernel, but now think about it, maybe it's
-better not.
-
-> Sure there will not really be any name conflicts, but I think an
-> explicit import might make sense.
-> 
-> > diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> > index d849e1979ac7..b0872f751f97 100644
-> > --- a/rust/kernel/types.rs
-> > +++ b/rust/kernel/types.rs
-> 
-> I don't think this should go into `types.rs`. But I do not have a good
-> name for the new module.
-> 
-
-kernel::sync?
-
-> > @@ -432,3 +432,46 @@ pub enum Either<L, R> {
-> >      /// Constructs an instance of [`Either`] containing a value of type `R`.
-> >      Right(R),
-> >  }
-> > +
-> > +/// (Concurrent) Primitives to interact with C side, which are considered as marked access:
-> > +///
-> > +/// tools/memory-memory/Documentation/access-marking.txt
-> > +
-> 
-> Accidental empty line? Or is this meant as a comment for both
-> functions?
-> 
-
-Right, it's the documentation for both functions.
-
-> > +/// The counter part of C `READ_ONCE()`.
-> > +///
-> > +/// The semantics is exactly the same as `READ_ONCE()`, especially when used for intentional data
-> > +/// races.
-> 
-> It would be great if these semantics are either linked or spelled out
-> here. Ideally both.
-> 
-
-Actually I haven't found any document about `READ_ONCE()` races with
-writes is not UB: we do have document saying `READ_ONCE()` will disable
-KCSAN checks, but no document says (explicitly) that it's not a UB.
-
-> > +///
-> > +/// # Safety
-> > +///
-> > +/// * `src` must be valid for reads.
-> > +/// * `src` must be properly aligned.
-> > +/// * `src` must point to a properly initialized value of value `T`.
-> > +#[inline(always)]
-> > +pub unsafe fn read_once<T: Copy>(src: *const T) -> T {
-> 
-> Why only `T: Copy`?
-> 
-
-I actually explained this above, after "---" of the commit log, but
-maybe it's worth its own documentation? The reason that it only works
-with `T: Copy`, is that these primitives should be mostly used for
-C/Rust communication, and using a `T: !Copy` is probably wrong (or at
-least complicated) for communication, since users need to handle which
-one should be used after `read_once()`. This is in the same spirit as
-`read_volatile` documentation:
-
-```
-Like read, read_volatile creates a bitwise copy of T, regardless of
-whether T is Copy. If T is not Copy, using both the returned value and
-the value at *src can violate memory safety. However, storing non-Copy
-types in volatile memory is almost certainly incorrect.
-```
-
-I want to start with restrict usage.
-
-> > +    // SAFETY: the read is valid because of the function's safety requirement, plus the assumption
-> > +    // here is that 1) a volatile pointer dereference in C and 2) a `read_volatile` in Rust have the
-> > +    // same semantics, so this function should have the same behavior as `READ_ONCE()` regarding
-> > +    // data races.
-> 
-> I would explicitly state that we might have UB here due to data races.
-> But that we have not seen any invalid codegen and thus assume there to
-
-I'd rather not claim this (no invalid codegen), not because it's not
-true, but because it's not under our control. We have written doc in
-Rust says:
-
-```
-... so the precise semantics of what “volatile” means here is subject
-to change over time. That being said, the semantics will almost always
-end up pretty similar to C11’s definition of volatile.
-```
-
-, so we have some confidence to say `read_volatile` equals to a volatile
-read, and `write_volatile` equals to a volatile write. Therefore, we can
-assume they have the same behaviors as `READ_ONCE()` and `WRITE_ONCE()`,
-but that's it. Going futher to talk about codegen means we have more
-guarantee from Rust compiler implementation.
-
-In other words, we are not saying racing `read_volatile`s don't have
-UBs, we are saying racing `read_volatile`s behave the same as a volatile
-read on UBs.
-
-Regards,
-Boqun
-
-> be no UB (you might also want to write this in the commit message).
-> 
-> --
-> Cheers,
-> Benno
-> 
-> > +    unsafe { src.read_volatile() }
-> > +}
-> > +
-> > +/// The counter part of C `WRITE_ONCE()`.
-> > +///
-> > +/// The semantics is exactly the same as `WRITE_ONCE()`, especially when used for intentional data
-> > +/// races.
-> > +///
-> > +/// # Safety
-> > +///
-> > +/// * `dst` must be valid for writes.
-> > +/// * `dst` must be properly aligned.
-> > +#[inline(always)]
-> > +pub unsafe fn write_once<T: Copy>(dst: *mut T, value: T) {
-> > +    // SAFETY: the write is valid because of the function's safety requirement, plus the assumption
-> > +    // here is that 1) a write to a volatile pointer dereference in C and 2) a `write_volatile` in
-> > +    // Rust have the same semantics, so this function should have the same behavior as
-> > +    // `WRITE_ONCE()` regarding data races.
-> > +    unsafe {
-> > +        core::ptr::write_volatile(dst, value);
-> > +    }
-> > +}
-> > --
-> > 2.41.0
-> 
