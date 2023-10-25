@@ -2,144 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6674B7D7738
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9297D7737
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbjJYV4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
+        id S229649AbjJYV4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjJYV4k (ORCPT
+        with ESMTP id S231238AbjJYV4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:56:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808BD9D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:56:38 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5068b69f4aeso1201e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698270997; x=1698875797; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z6Wm2hf7VPlcOAa3DFo3dVIOp8FjeRPkG/lab590sqk=;
-        b=Z33ra6RdU1y/uiTnpvjheeEvB4rV0s0ziD//NCsYjxNoX/+EOTaGFV2SvewrZn01p/
-         L8EyCSsz7pUiHHuvx8Fipr5ALqhZzFS6uMeLGxtUnf/5tABwHhsScWDPK0q4z0fPQ7lL
-         Vj6bHxtyZCU1FVRRGucfP2ripjvZMIa8ClbGHuYeDppatjHs3RzgbkiQnRQLSHCxLTqw
-         NRnQUzPKuCOwEQ386zwI7bjNtg57Nm3TiVLcHuunhSu13Y8f3g46r2VZyIumMqc1dEax
-         42KqrmjgFvz0Ew0wO+ZXGoBcf/b2nQYkyw//tWegSxMZQB73Ulq3y3CzzOGue62AjwK1
-         6JVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698270997; x=1698875797;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z6Wm2hf7VPlcOAa3DFo3dVIOp8FjeRPkG/lab590sqk=;
-        b=r6+SjYrhYK46SyyDukJU8yz/ru6+QWIvzUW+Q/hy+YeaTi1wpQ5jme+iYqx+rOaEKm
-         SemCmFBbN5jBx5Eadmqm2SyaY+trbrPunWz0XZ4N344iBjyNoWVXelVrzQvx3dyFSyZt
-         lLRjUFbuhjfv99j5UwwqLNEEZyGlsYPM0CYkzJz7taGmTiSJQkPeFcRb09cUT06AEiuj
-         +oPcXWfU3p8whoPO3d7O88JdtQn/AVpr3fMQEiJCx7ak30vaDjZORCCEr6DxtfJG6dGZ
-         UNH0Ovh5strp7uSIQ2sU6AuaWjeVEtNxmW/pKN8//TVSOLJ30T3JAXoofSCaq1XzDFgI
-         HRfA==
-X-Gm-Message-State: AOJu0YyFvXNCiSyxNyHQXX6OAmeXaA6gin+JF243poSCiCUU6v3RsA9x
-        tYzA4NeECXvwp2gJPv39bHdxIj6i+sr/5n458fGInw==
-X-Google-Smtp-Source: AGHT+IExoPoplQRtg8C3JaBDX8w1qcS2KCbhHdRcfnxtxvjRtEZc4ZpdWhkCkVIRh9sRJXZUoLFHcKzxcpAsiutj91k=
-X-Received: by 2002:ac2:58ef:0:b0:501:a2b9:6046 with SMTP id
- v15-20020ac258ef000000b00501a2b96046mr107431lfo.7.1698270996475; Wed, 25 Oct
- 2023 14:56:36 -0700 (PDT)
+        Wed, 25 Oct 2023 17:56:36 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF799D4E
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1698270993;
+        bh=TA9xzrgkBA6toYmpTWXm43xTIGzbqE9vmGlGdMiPvJU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EKXfRoSmYTkR+fQlQEuCgyBcvnIUpPLODi9TvWmy9AczK1+e7NAfKkS8otA4kSRcR
+         fJE6CY7NvzF9Xbi8N3DIKAHkkOmllTJ3U0zQ2ChmRrEyXStg/adLZTwclyMeLERggI
+         SVnFxmh2VklAV4J0/UHfSidLb9+7OLwZd1uaydCtDwxe3HbSVanqp6S75TmhBsvN55
+         NEiKeGmzTYYNdl/n/Af8C2xslG2byNxG8VtGH5sAirPUOy+mdQ1s1WsnYGFTXB0Ekv
+         vo8Cu1GflDhkoXYIJYo8x0gIwuzZTTUQWnztaSun1tThE69AZXpDNO4hmacWWe8tXW
+         yzTAwnjK/QGVg==
+Received: from [IPV6:2606:6d00:100:4000:582e:ab84:d98b:7516] (unknown [IPv6:2606:6d00:100:4000:582e:ab84:d98b:7516])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SG2nY4dJxz1Z4N;
+        Wed, 25 Oct 2023 17:56:33 -0400 (EDT)
+Message-ID: <dc5c0574-e7e9-4538-9cd1-528fc0a3e355@efficios.com>
+Date:   Wed, 25 Oct 2023 17:56:48 -0400
 MIME-Version: 1.0
-References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
- <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
-In-Reply-To: <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 25 Oct 2023 14:56:24 -0700
-Message-ID: <CAP-5=fURbve928P5CGi-dQ7Y8mZhxRmi9wucFc_gP+aDGMftYw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
- tma_info_system_dram_bw_use metric
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
+ <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+ <20231025085434.35d5f9e0@gandalf.local.home>
+ <20231025135545.GG31201@noisy.programming.kicks-ass.net>
+ <20231025103105.5ec64b89@gandalf.local.home>
+ <884e4603-4d29-41ae-8715-a070c43482c4@efficios.com>
+ <20231025162435.ibhdktcshhzltr3r@f>
+ <20231025131731.48461873@gandalf.local.home>
+ <0d95385f-1be1-4dcf-93cb-8c5df3bc9d0c@efficios.com>
+ <20231025151951.5f1a9ab1@gandalf.local.home>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231025151951.5f1a9ab1@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 3:16=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> On Wed, Sep 27, 2023 at 6:47=E2=80=AFAM Liang, Kan <kan.liang@linux.intel=
-.com> wrote:
-> >
-> >
-> >
-> > On 2023-09-26 4:59 p.m., Ian Rogers wrote:
-> > > Broadwell-de has a consumer core and server uncore. The uncore_arb PM=
-U
-> > > isn't present and the broadwellx style cbox PMU should be used
-> > > instead. Fix the tma_info_system_dram_bw_use metric to use the server
-> > > metric rather than client.
-> > >
-> > > The associated converter script fix is in:
-> > > https://github.com/intel/perfmon/pull/111
-> > >
-> > > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell vari=
-ant events/metrics")
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> >
-> > Thanks Ian. The whole patch series looks good to me.
-> >
-> > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
->
-> Would be good to pick this up in perf-tools-next.
->
-> Thanks,
-> Ian
+On 2023-10-25 15:19, Steven Rostedt wrote:
+> On Wed, 25 Oct 2023 14:49:44 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>>>
+>>> No, I wouldn't say it's the same as priority inheritance, which is to help
+>>> with determinism and not performance. PI adds overhead but removes
+>>> unbounded latency. On average, a non PI mutex is faster than PI mutex, but
+>>> can suffer from unbounded priority inversion.
+>>
+>> AFAIU, this is because PI mutex as implemented by sys futex only boosts the
+>> priority of the lock owner. In my proposal here the owner would be able to
+>> borrow scheduler slices from the waiters as well.
+> 
+> I would be worried that that could cause even more scheduling disruption.
+> Now we are taking time slices from other CPUs to run the current one?
+> 
 
-Ping.
+AFAIU, as we look at the time slices of the waiting tasks, those have meaning
+in the context of the runqueue they are currently attached to. We first consume
+time slices from tasks sharing the same runqueue as the owner task. Else, I
+guess we'd need to migrate the owner task to the runqueue where the time slice
+is available so we can use it (but only if migration of the owner task is
+allowed to that target cpu).
 
 Thanks,
-Ian
 
-> > Thanks,
-> > Kan
-> >
-> > >  tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics=
-.json b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > > index 8fc62b8f667d..d0ef46c9bb61 100644
-> > > --- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > > +++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > > @@ -652,7 +652,7 @@
-> > >      },
-> > >      {
-> > >          "BriefDescription": "Average external Memory Bandwidth Use f=
-or reads and writes [GB / sec]",
-> > > -        "MetricExpr": "64 * (arb@event\\=3D0x81\\,umask\\=3D0x1@ + a=
-rb@event\\=3D0x84\\,umask\\=3D0x1@) / 1e6 / duration_time / 1e3",
-> > > +        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR=
-) / 1e9 / duration_time",
-> > >          "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
-> > >          "MetricName": "tma_info_system_dram_bw_use",
-> > >          "PublicDescription": "Average external Memory Bandwidth Use =
-for reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_band=
-width, tma_sq_full"
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
