@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751427D6CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D72F7D6CC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344395AbjJYNH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        id S235003AbjJYNIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234947AbjJYNHx (ORCPT
+        with ESMTP id S1344347AbjJYNHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:07:53 -0400
+        Wed, 25 Oct 2023 09:07:55 -0400
 Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F9E131;
-        Wed, 25 Oct 2023 06:07:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DF5111;
+        Wed, 25 Oct 2023 06:07:53 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 1626E100046;
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 41D8F100047;
         Wed, 25 Oct 2023 16:07:45 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1626E100046
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 41D8F100047
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
         s=mail; t=1698239265;
-        bh=0EQMoFRrUMx/pZxHfkfAMtFPBkQrssL7XqzVKbD+szU=;
+        bh=oixfku0w9a55w5ewxmzKyEa0rIk5Ii9elJB6GpE/4So=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=vx7Mcugj3I9S9uBn5rE9V5gZRQf8CUYDa9cbpn7gaCtackskccpRqqVw0zcmZ3QOS
-         0zraMsyawXa63Eg83alOBOoAtLHB1PkWXAjhXzNHVl+1Q0HEIJYffeuEfMuQSo5jtN
-         jyg+rx5GyBPaiwkC7GhYzrbG1CYRymgrWqSufJ72/P5JccGdqk4gbd5JBmOj85byQi
-         8RWoH1dl+oNkX1MVLlDNk9a++QarZSRWb97vGp8eL9Pi8Etletswgf3DWNzMxv3RCi
-         7d9NkNYGklHunkQY0Krex0ADtCfcboiJIwI5CzBDrQGNb0bOPN2OjKMJshjUCvloLw
-         wKoGthGQ0y5vA==
+        b=JTTgkKt0p6xO4qtz6WSKRWy/EAKHEVUbJHuYRMIpW/u5mzRvw+5YeQrApya0AzjYE
+         673HGNkA9lOnam9JcG4sHvTC3NfQnBIrqdWpXnxKqIzr3obiYJ5VEEJcuCrWtamRnW
+         nNq1qiE8ecwC3g24VScn4jGdkTozEIV7ZjE//RvEf18vg17uq4opxfKCUpejcsiZgW
+         Odly5/PkftjP7/H2XUrsp7/+DNvRlPsn0948dHMzrhFlpLDZ7GlQlCpviPcfZB8fGX
+         iS79uDOHdGwL6IDzc/cIgztEYi2LEXwH/GRuA4zmJSGThQcFfybuW2Q4hTLx3KSvhK
+         yXRG75zTfFupg==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 25 Oct 2023 16:07:44 +0300 (MSK)
+        Wed, 25 Oct 2023 16:07:45 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -44,9 +44,9 @@ To:     <pavel@ucw.cz>, <lee@kernel.org>, <vadimp@nvidia.com>,
         <christophe.leroy@csgroup.eu>, <gnstark@salutedevices.com>
 CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <kernel@sberdevices.ru>
-Subject: [PATCH 4/8] leds: mlxreg: explicitly unregister LEDs at module's shutdown
-Date:   Wed, 25 Oct 2023 16:07:33 +0300
-Message-ID: <20231025130737.2015468-5-gnstark@salutedevices.com>
+Subject: [PATCH 5/8] leds: aw200xx: explicitly unregister LEDs at module's shutdown
+Date:   Wed, 25 Oct 2023 16:07:34 +0300
+Message-ID: <20231025130737.2015468-6-gnstark@salutedevices.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231025130737.2015468-1-gnstark@salutedevices.com>
 References: <20231025130737.2015468-1-gnstark@salutedevices.com>
@@ -89,45 +89,24 @@ So explicitly unregister LEDs at module shutdown.
 
 Signed-off-by: George Stark <gnstark@salutedevices.com>
 ---
- drivers/leds/leds-mlxreg.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/leds/leds-aw200xx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/leds/leds-mlxreg.c b/drivers/leds/leds-mlxreg.c
-index b7855c93bd72..6d65e39c3372 100644
---- a/drivers/leds/leds-mlxreg.c
-+++ b/drivers/leds/leds-mlxreg.c
-@@ -258,6 +258,7 @@ static int mlxreg_led_probe(struct platform_device *pdev)
+diff --git a/drivers/leds/leds-aw200xx.c b/drivers/leds/leds-aw200xx.c
+index 96979b8e09b7..3da0923507ec 100644
+--- a/drivers/leds/leds-aw200xx.c
++++ b/drivers/leds/leds-aw200xx.c
+@@ -539,6 +539,10 @@ static int aw200xx_probe(struct i2c_client *client)
+ static void aw200xx_remove(struct i2c_client *client)
  {
- 	struct mlxreg_core_platform_data *led_pdata;
- 	struct mlxreg_led_priv_data *priv;
-+	int res;
- 
- 	led_pdata = dev_get_platdata(&pdev->dev);
- 	if (!led_pdata) {
-@@ -273,13 +274,22 @@ static int mlxreg_led_probe(struct platform_device *pdev)
- 	priv->pdev = pdev;
- 	priv->pdata = led_pdata;
- 
--	return mlxreg_led_config(priv);
-+	if (!devres_open_group(&pdev->dev, priv, GFP_KERNEL))
-+		return -ENOMEM;
+ 	struct aw200xx *chip = i2c_get_clientdata(client);
++	int i;
 +
-+	res = mlxreg_led_config(priv);
-+	if (res)
-+		devres_remove_group(&pdev->dev, priv);
-+
-+	return res;
- }
++	for (i = 0; i < chip->num_leds; i++)
++		devm_led_classdev_unregister(&client->dev, &chip->leds[i].cdev);
  
- static int mlxreg_led_remove(struct platform_device *pdev)
- {
- 	struct mlxreg_led_priv_data *priv = dev_get_drvdata(&pdev->dev);
- 
-+	devres_release_group(&pdev->dev, priv);
-+
- 	mutex_destroy(&priv->access_lock);
- 
- 	return 0;
+ 	aw200xx_chip_reset(chip);
+ 	mutex_destroy(&chip->mutex);
 -- 
 2.38.4
 
