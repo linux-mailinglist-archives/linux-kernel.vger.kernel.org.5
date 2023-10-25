@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8177D6F8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39AE7D6F96
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344897AbjJYOPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        id S1344643AbjJYOJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbjJYOPO (ORCPT
+        with ESMTP id S1344597AbjJYOJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:15:14 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 07:15:08 PDT
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF859F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:15:08 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 16:07:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698242853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tuu/xKNEUp/rVDyrYJ845iJbRdmfWFFfKxYqRchBIq0=;
-        b=Uvj77L7n0FVroa8NBfscxvh0MGR2XFY59+eXSR8HvoBB5koZtT753qnqt2/bckbVU9cj1c
-        TNUnGoPv11idbQP+xJkRdOA+ZDsfZ/0HbpzN+Oy0xRfdQutwbUSzGbeyLZps/zuI+F4+WY
-        qZbW3Zk7IUWpipvLDVIe6JBGPVLGzfc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Richard Leitner <richard.leitner@linux.dev>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: hwmon: add ti,ina238
-Message-ID: <qoxgyho5twbm4jopfveaf5ee3z4tkyb2z5f2vsyrpglffegmxf@v2z5ckcaa5jc>
-References: <20231025-ina237-v1-0-a0196119720c@linux.dev>
- <20231025-ina237-v1-2-a0196119720c@linux.dev>
- <20231025-hut-omnivore-f4b44a7b928d@spud>
+        Wed, 25 Oct 2023 10:09:23 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78261133;
+        Wed, 25 Oct 2023 07:09:20 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507b9408c61so7837219e87.0;
+        Wed, 25 Oct 2023 07:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698242959; x=1698847759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wmEvOZOZBOhclOxlPn09a+GCZzFmuG5NCdmw689iQU8=;
+        b=eRPhSbEum2efFyRJsgKMGShGE3R7z/5EpI9qTfVvkk+gmh8vLfuyzJHOQu18qrjmYG
+         IeXCOqa0eTdBxhPlCTRgepLi6Oe/KZAXU09+h/Einzj+okTwej/y0onp4HZIlZfQkFG/
+         F3n8CxNfSDGBkFlhngrVQF54ouGqvydXSU+zQRfqk+VRAvc9ZFt/NXSZ+GMDEx+ZkHJz
+         Xb1xKZRoSrMo37ssHyOJljs7SBGQVrJZhJY4e8slCqD3BhDsz97+IGJxDoHhMgMeCfC1
+         TMNE4Nx8RDZCTdB/0eZNZHJ94MhoULtpyp+U+im5MHkNBdjrtQNsnGP4sPKSRltaZQ7E
+         O3ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698242959; x=1698847759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wmEvOZOZBOhclOxlPn09a+GCZzFmuG5NCdmw689iQU8=;
+        b=hRHoaqQyKttM3vmZJAg6rL07j3slei3xsZ7RmSJtflwGmIFisZTGJoqfIAe6DQvUOk
+         e6+lP4JITr5jkELAhoNjuAryIMdQEdViFdjgrgfo86Q+WRmYD66jhVfCbPjTy71I+2qI
+         uRt/qZHCDUBXrTmTH2tPmHRv9qwb7nMJ64qCZqGd0XuxZho/korCgoHXBN/WqZWdPG99
+         8JPiwzfrhbLF4GbRq3BFy28o9VAF8hXgXf6Jh5xwQtnkA0oJ415c0NGGH8l74iycTbBk
+         zHc5HqoKGOv5rqmilyo9mIwbbfolY1+6VpWyIVdK19YqVaZ19FvdHzwKsMR/62GNeVPW
+         EMjw==
+X-Gm-Message-State: AOJu0YzvOL50ZV/D16ZYEOWRkyHVxxaZF719Qld2wBkDWZrTm8TBoh/C
+        RuUlK4JQjqKGO2OkO+JDPHo=
+X-Google-Smtp-Source: AGHT+IEx8rlub2pACfZdENkdmtdDFZnd+a/ebbeVKAXNHLNyyW+sVcoYmrefelECGF9yPq67dldxQw==
+X-Received: by 2002:ac2:5470:0:b0:500:a6c1:36f7 with SMTP id e16-20020ac25470000000b00500a6c136f7mr11596559lfn.3.1698242958398;
+        Wed, 25 Oct 2023 07:09:18 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id o8-20020ac24e88000000b00507977e9a38sm2555680lfr.35.2023.10.25.07.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 07:09:17 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 0/3] reduce latency of synchronize_rcu()
+Date:   Wed, 25 Oct 2023 16:09:12 +0200
+Message-Id: <20231025140915.590390-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025-hut-omnivore-f4b44a7b928d@spud>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 03:00:01PM +0100, Conor Dooley wrote:
-> On Wed, Oct 25, 2023 at 10:34:12AM +0000, Richard Leitner wrote:
-> > The ina238 driver is available since 2021 but lacks a dt-bindings file.
-> > Therefore add the missing file now.
-> 
-> Seemingly it is documented in Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+Here is a small series that tends to reduce a waiting time of
+synchronize_rcu() call. Please note, this is only limited to
+a "normal" version.
 
-Thanks for the feedback. True. So is it fine if it's left there or
-should it be removed from ti,ina2xxx.yml as this is a separate driver
-with different properties?
+As for performance figures, i used real test cases and a synthetic.
+For example
+ - camera app launch time on our Android device is reduced by 9-13 percent;
+ - loading 100 kernel modules also get improved by 10-12 percent;
+ - synthetic gives 30 and higher percentage of boost.
 
-> 
-> Cheers,
-> Conor.
-> 
-> > 
-> > Mention Jean Delvare and Guenter Roeck as maintainers as reported by the
-> > get_maintainer.pl script.
-> > 
-> > Signed-off-by: Richard Leitner <richard.leitner@linux.dev>
-> > ---
-> >  .../devicetree/bindings/hwmon/ti,ina238.yaml       | 46 ++++++++++++++++++++++
-> >  MAINTAINERS                                        |  1 +
-> >  2 files changed, 47 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/hwmon/ti,ina238.yaml b/Documentation/devicetree/bindings/hwmon/ti,ina238.yaml
-> > new file mode 100644
-> > index 000000000000..aba89e5f34b3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/hwmon/ti,ina238.yaml
-> > @@ -0,0 +1,46 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +
-> > +$id: http://devicetree.org/schemas/hwmon/ti,ina238.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Texas Instruments INA238 power/voltage monitors
-> > +
-> > +maintainers:
-> > +  - Jean Delvare <jdelvare@suse.com>
-> > +  - Guenter Roeck <linux@roeck-us.net>
-> > +
-> > +description: |
-> > +  The INA238 is an ultra-precise digital power monitor with a
-> > +  16-bit delta-sigma ADC specifically designed for current-sensing
-> > +  applications.
-> > +
-> > +  Datasheets:
-> > +    https://www.ti.com/lit/ds/symlink/ina238.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - ti,ina238
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        power-sensor@40 {
-> > +            compatible = "ti,ina238";
-> > +            reg = <0x40>;
-> > +        };
-> > +    };
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 28f91c8a2e1c..13858bd6a3d4 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -10271,6 +10271,7 @@ INA238 HARDWARE MONITOR DRIVER
-> >  M:	Guenter Roeck <linux@roeck-us.net>
-> >  L:	linux-hwmon@vger.kernel.org
-> >  S:	Maintained
-> > +F:	Documentation/devicetree/bindings/hwmon/ti,ina238.yaml
-> >  F:	drivers/hwmon/ina238.c
-> >  
-> >  INDEX OF FURTHER KERNEL DOCUMENTATION
-> > 
-> > -- 
-> > 2.40.1
-> > 
+Uladzislau Rezki (Sony) (3):
+  rcu: Reduce synchronize_rcu() waiting time
+  rcu: Add a trace event for synchronize_rcu_normal()
+  doc: Add rcutree.rcu_normal_wake_from_gp to kernel-parameters.txt
 
+ .../admin-guide/kernel-parameters.txt         |  12 ++
+ include/trace/events/rcu.h                    |  27 ++++
+ kernel/rcu/tree.c                             | 152 +++++++++++++++++-
+ kernel/rcu/tree_exp.h                         |   2 +-
+ 4 files changed, 191 insertions(+), 2 deletions(-)
+
+-- 
+2.30.2
 
