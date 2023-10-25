@@ -2,252 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1B37D6146
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D8D7D6149
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbjJYFqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 01:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
+        id S231428AbjJYFrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 01:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYFqi (ORCPT
+        with ESMTP id S229583AbjJYFrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 01:46:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC1E12A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 22:46:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031BCC433C8;
-        Wed, 25 Oct 2023 05:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698212792;
-        bh=gb9BVji0VYp7LxmEzIRU/AWqHxH7pf0Z7AqfkYt4rJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C7caWDWkVFFW7JMO/rSqBJYixStQIxsnNF+qOXVHxNTYEF66hljARBFjKQtdS4Mqp
-         jGKLJgvSUrLFpx673Wsgro7IyHJSLFurhyZyIcDXGZrZeJCjqZObGKdHeeoEgamLNA
-         KRba/TSeA8f/Bxxb0leT4Bt2+NhCcdN+GUBweaxtEybXvqCObVuleT/ikIPWZIb2pO
-         OwgIoVlHepUJDP16l/rFDfhLxSH+ss9MktaYj0riU3SwZoqrj1gB1WKatLaT5JxX51
-         YrgaMbZl0PakMpgjzQ+cxi5hEvxEZZCUkZPWDzVDpgGYmDk4aE02oHCiy529a/n/o+
-         mzUu5g6Fwua9g==
-Date:   Wed, 25 Oct 2023 08:46:16 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Liam Ni <zhiguangni01@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, chenhuacai@kernel.org,
-        kernel@xen0n.name, Dave Hansen <dave.hansen@linux.intel.com>,
-        luto@kernel.org, peterz@infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>, maobibo@loongson.cn,
-        chenfeiyang@loongson.cn, zhoubinbin@loongson.cn
-Subject: Re: [PATCH V6] NUMA: optimize detection of memory with no node id
- assigned by firmware
-Message-ID: <20231025054616.GG2824@kernel.org>
-References: <CACZJ9cUzd-33v3B_DckkCrMzX=bHdABT1Hy0235uKrSJc0NN3Q@mail.gmail.com>
+        Wed, 25 Oct 2023 01:47:03 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DA6132;
+        Tue, 24 Oct 2023 22:46:58 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id A2366176EDE;
+        Wed, 25 Oct 2023 07:46:53 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1698212815; bh=Fzoj7znzln2FKzFSy7EkpghoFnNQo2dDFbO99KLMZ1U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CtP3+TzS8CkcsgomgnQyRoews1e8kSXl6tIW6PP+WD6S7jUaZvG8SXzQc1jmk8G/E
+         JVGgfluKh0ZFUK69XkviXYUoLMWoBpqXlVoj+g6o/MkSwFYRcIsZLf2UD15izjtD5O
+         kIGiSxnG7PwSuFgbt2n28YOlyxAV82uWECuofceWuVNOjzkxb4AaY4+WFBA+e2vMWB
+         NHze7yHWtky0MHvjo2j/KSUzOPtgQfip6wsqvb/kxwmblgqsZUBvu3YcB7TydoTx/f
+         od6AL+VJNBPeFBQ+Wl5U3hQwxkVjP/CL3Nje1qTpGnTV0EZy4vR8Cy+BODfM5l08H6
+         ifCvvmhseikqA==
+Date:   Wed, 25 Oct 2023 07:46:52 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Suren Baghdasaryan <surenb@google.com>, Neil Brown <neilb@suse.de>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
+        arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+        david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+        masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+        tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+        paulmck@kernel.org, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+        hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, vvvvvv@google.com,
+        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 06/39] mm: enumerate all gfp flags
+Message-ID: <20231025074652.44bc0eb4@meshulam.tesarici.cz>
+In-Reply-To: <20231024134637.3120277-7-surenb@google.com>
+References: <20231024134637.3120277-1-surenb@google.com>
+        <20231024134637.3120277-7-surenb@google.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACZJ9cUzd-33v3B_DckkCrMzX=bHdABT1Hy0235uKrSJc0NN3Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 09:15:20PM +0800, Liam Ni wrote:
-> Sanity check that makes sure the nodes cover all memory loops over
-> numa_meminfo to count the pages that have node id assigned by the firmware,
-> then loops again over memblock.memory to find the total amount of memory
-> and in the end checks that the difference between the total memory and
-> memory that covered by nodes is less than some threshold. Worse, the loop
-> over numa_meminfo calls __absent_pages_in_range() that also partially
-> traverses memblock.memory.
-> 
-> It's much simpler and more efficient to have a single traversal of
-> memblock.memory that verifies that amount of memory not covered by nodes is
-> less than a threshold.
-> 
-> Introduce memblock_validate_numa_coverage() that does exactly that and use
-> it instead of numa_meminfo_cover_memory().
-> 
-> Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
+On Tue, 24 Oct 2023 06:46:03 -0700
+Suren Baghdasaryan <surenb@google.com> wrote:
+
+> Introduce GFP bits enumeration to let compiler track the number of used
+> bits (which depends on the config options) instead of hardcoding them.
+> That simplifies __GFP_BITS_SHIFT calculation.
+> Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 > ---
->  arch/loongarch/kernel/numa.c | 28 +---------------------------
->  arch/x86/mm/numa.c           | 34 ++--------------------------------
->  include/linux/memblock.h     |  1 +
->  mm/memblock.c                | 34 ++++++++++++++++++++++++++++++++++
->  4 files changed, 38 insertions(+), 59 deletions(-)
-> 
-> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
-> index cb00804826f7..84e1b046ab52 100644
-> --- a/arch/loongarch/kernel/numa.c
-> +++ b/arch/loongarch/kernel/numa.c
-> @@ -226,32 +226,6 @@ static void __init node_mem_init(unsigned int node)
-> 
->  #ifdef CONFIG_ACPI_NUMA
-> 
-> -/*
-> - * Sanity check to catch more bad NUMA configurations (they are amazingly
-> - * common).  Make sure the nodes cover all memory.
-> - */
-> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
-> -{
-> -   int i;
-> -   u64 numaram, biosram;
-> -
-> -   numaram = 0;
-> -   for (i = 0; i < mi->nr_blks; i++) {
-> -       u64 s = mi->blk[i].start >> PAGE_SHIFT;
-> -       u64 e = mi->blk[i].end >> PAGE_SHIFT;
-> -
-> -       numaram += e - s;
-> -       numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
-> -       if ((s64)numaram < 0)
-> -           numaram = 0;
-> -   }
-> -   max_pfn = max_low_pfn;
-> -   biosram = max_pfn - absent_pages_in_range(0, max_pfn);
-> -
-> -   BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
-> -   return true;
-> -}
-> -
->  static void __init add_node_intersection(u32 node, u64 start, u64
-> size, u32 type)
->  {
->     static unsigned long num_physpages;
-> @@ -396,7 +370,7 @@ int __init init_numa_memory(void)
->         return -EINVAL;
-> 
->     init_node_memblock();
-> -   if (numa_meminfo_cover_memory(&numa_meminfo) == false)
-> +   if (!memblock_validate_numa_coverage(SZ_1M >> PAGE_SIZE))
->         return -EINVAL;
-> 
->     for_each_node_mask(node, node_possible_map) {
-> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> index 2aadb2019b4f..39772d551924 100644
-> --- a/arch/x86/mm/numa.c
-> +++ b/arch/x86/mm/numa.c
-> @@ -447,37 +447,6 @@ int __node_distance(int from, int to)
->  }
->  EXPORT_SYMBOL(__node_distance);
-> 
-> -/*
-> - * Sanity check to catch more bad NUMA configurations (they are amazingly
-> - * common).  Make sure the nodes cover all memory.
-> - */
-> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
-> -{
-> -   u64 numaram, e820ram;
-> -   int i;
-> -
-> -   numaram = 0;
-> -   for (i = 0; i < mi->nr_blks; i++) {
-> -       u64 s = mi->blk[i].start >> PAGE_SHIFT;
-> -       u64 e = mi->blk[i].end >> PAGE_SHIFT;
-> -       numaram += e - s;
-> -       numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
-> -       if ((s64)numaram < 0)
-> -           numaram = 0;
-> -   }
-> -
-> -   e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
-> -
-> -   /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
-> -   if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
-> -       printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB
-> e820 RAM. Not used.\n",
-> -              (numaram << PAGE_SHIFT) >> 20,
-> -              (e820ram << PAGE_SHIFT) >> 20);
-> -       return false;
-> -   }
-> -   return true;
-> -}
-> -
+>  include/linux/gfp_types.h | 90 +++++++++++++++++++++++++++------------
+>  1 file changed, 62 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+> index 6583a58670c5..3fbe624763d9 100644
+> --- a/include/linux/gfp_types.h
+> +++ b/include/linux/gfp_types.h
+> @@ -21,44 +21,78 @@ typedef unsigned int __bitwise gfp_t;
+>   * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
+>   */
+> =20
+> +enum {
+> +	___GFP_DMA_BIT,
+> +	___GFP_HIGHMEM_BIT,
+> +	___GFP_DMA32_BIT,
+> +	___GFP_MOVABLE_BIT,
+> +	___GFP_RECLAIMABLE_BIT,
+> +	___GFP_HIGH_BIT,
+> +	___GFP_IO_BIT,
+> +	___GFP_FS_BIT,
+> +	___GFP_ZERO_BIT,
+> +	___GFP_UNUSED_BIT,	/* 0x200u unused */
+> +	___GFP_DIRECT_RECLAIM_BIT,
+> +	___GFP_KSWAPD_RECLAIM_BIT,
+> +	___GFP_WRITE_BIT,
+> +	___GFP_NOWARN_BIT,
+> +	___GFP_RETRY_MAYFAIL_BIT,
+> +	___GFP_NOFAIL_BIT,
+> +	___GFP_NORETRY_BIT,
+> +	___GFP_MEMALLOC_BIT,
+> +	___GFP_COMP_BIT,
+> +	___GFP_NOMEMALLOC_BIT,
+> +	___GFP_HARDWALL_BIT,
+> +	___GFP_THISNODE_BIT,
+> +	___GFP_ACCOUNT_BIT,
+> +	___GFP_ZEROTAGS_BIT,
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +	___GFP_SKIP_ZERO_BIT,
+> +	___GFP_SKIP_KASAN_BIT,
+> +#endif
+> +#ifdef CONFIG_LOCKDEP
+> +	___GFP_NOLOCKDEP_BIT,
+> +#endif
+> +	___GFP_LAST_BIT
+> +};
+> +
+>  /* Plain integer GFP bitmasks. Do not use this directly. */
+> -#define ___GFP_DMA		0x01u
+> -#define ___GFP_HIGHMEM		0x02u
+> -#define ___GFP_DMA32		0x04u
+> -#define ___GFP_MOVABLE		0x08u
+> -#define ___GFP_RECLAIMABLE	0x10u
+> -#define ___GFP_HIGH		0x20u
+> -#define ___GFP_IO		0x40u
+> -#define ___GFP_FS		0x80u
+> -#define ___GFP_ZERO		0x100u
+> +#define ___GFP_DMA		BIT(___GFP_DMA_BIT)
+> +#define ___GFP_HIGHMEM		BIT(___GFP_HIGHMEM_BIT)
+> +#define ___GFP_DMA32		BIT(___GFP_DMA32_BIT)
+> +#define ___GFP_MOVABLE		BIT(___GFP_MOVABLE_BIT)
+> +#define ___GFP_RECLAIMABLE	BIT(___GFP_RECLAIMABLE_BIT)
+> +#define ___GFP_HIGH		BIT(___GFP_HIGH_BIT)
+> +#define ___GFP_IO		BIT(___GFP_IO_BIT)
+> +#define ___GFP_FS		BIT(___GFP_FS_BIT)
+> +#define ___GFP_ZERO		BIT(___GFP_ZERO_BIT)
+>  /* 0x200u unused */
+
+This comment can be also removed here, because it is already stated
+above with the definition of ___GFP_UNUSED_BIT.
+
+Then again, I think that the GFP bits have never been compacted after
+Neil Brown removed __GFP_ATOMIC with commit 2973d8229b78 simply because
+that would mean changing definitions of all subsequent GFP flags. FWIW
+I am not aware of any code that would depend on the numeric value of
+___GFP_* macros, so this patch seems like a good opportunity to change
+the numbering and get rid of this unused 0x200u altogether.
+
+@Neil: I have added you to the conversation in case you want to correct
+my understanding of the unused bit.
+
+Other than that LGTM.
+
+Petr T
+
+> -#define ___GFP_DIRECT_RECLAIM	0x400u
+> -#define ___GFP_KSWAPD_RECLAIM	0x800u
+> -#define ___GFP_WRITE		0x1000u
+> -#define ___GFP_NOWARN		0x2000u
+> -#define ___GFP_RETRY_MAYFAIL	0x4000u
+> -#define ___GFP_NOFAIL		0x8000u
+> -#define ___GFP_NORETRY		0x10000u
+> -#define ___GFP_MEMALLOC		0x20000u
+> -#define ___GFP_COMP		0x40000u
+> -#define ___GFP_NOMEMALLOC	0x80000u
+> -#define ___GFP_HARDWALL		0x100000u
+> -#define ___GFP_THISNODE		0x200000u
+> -#define ___GFP_ACCOUNT		0x400000u
+> -#define ___GFP_ZEROTAGS		0x800000u
+> +#define ___GFP_DIRECT_RECLAIM	BIT(___GFP_DIRECT_RECLAIM_BIT)
+> +#define ___GFP_KSWAPD_RECLAIM	BIT(___GFP_KSWAPD_RECLAIM_BIT)
+> +#define ___GFP_WRITE		BIT(___GFP_WRITE_BIT)
+> +#define ___GFP_NOWARN		BIT(___GFP_NOWARN_BIT)
+> +#define ___GFP_RETRY_MAYFAIL	BIT(___GFP_RETRY_MAYFAIL_BIT)
+> +#define ___GFP_NOFAIL		BIT(___GFP_NOFAIL_BIT)
+> +#define ___GFP_NORETRY		BIT(___GFP_NORETRY_BIT)
+> +#define ___GFP_MEMALLOC		BIT(___GFP_MEMALLOC_BIT)
+> +#define ___GFP_COMP		BIT(___GFP_COMP_BIT)
+> +#define ___GFP_NOMEMALLOC	BIT(___GFP_NOMEMALLOC_BIT)
+> +#define ___GFP_HARDWALL		BIT(___GFP_HARDWALL_BIT)
+> +#define ___GFP_THISNODE		BIT(___GFP_THISNODE_BIT)
+> +#define ___GFP_ACCOUNT		BIT(___GFP_ACCOUNT_BIT)
+> +#define ___GFP_ZEROTAGS		BIT(___GFP_ZEROTAGS_BIT)
+>  #ifdef CONFIG_KASAN_HW_TAGS
+> -#define ___GFP_SKIP_ZERO	0x1000000u
+> -#define ___GFP_SKIP_KASAN	0x2000000u
+> +#define ___GFP_SKIP_ZERO	BIT(___GFP_SKIP_ZERO_BIT)
+> +#define ___GFP_SKIP_KASAN	BIT(___GFP_SKIP_KASAN_BIT)
+>  #else
+>  #define ___GFP_SKIP_ZERO	0
+>  #define ___GFP_SKIP_KASAN	0
+>  #endif
+>  #ifdef CONFIG_LOCKDEP
+> -#define ___GFP_NOLOCKDEP	0x4000000u
+> +#define ___GFP_NOLOCKDEP	BIT(___GFP_NOLOCKDEP_BIT)
+>  #else
+>  #define ___GFP_NOLOCKDEP	0
+>  #endif
+> -/* If the above are modified, __GFP_BITS_SHIFT may need updating */
+> =20
 >  /*
->   * Mark all currently memblock-reserved physical memory (which covers the
->   * kernel's own memory ranges) as hot-unswappable.
-> @@ -583,7 +552,8 @@ static int __init numa_register_memblks(struct
-> numa_meminfo *mi)
->             return -EINVAL;
->         }
->     }
-> -   if (!numa_meminfo_cover_memory(mi))
-> +
-> +   if (!memblock_validate_numa_coverage(SZ_1M >> PAGE_SIZE))
->         return -EINVAL;
-> 
->     /* Finally register nodes. */
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 1c1072e3ca06..727242f4b54a 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -120,6 +120,7 @@ int memblock_physmem_add(phys_addr_t base,
-> phys_addr_t size);
->  void memblock_trim_memory(phys_addr_t align);
->  bool memblock_overlaps_region(struct memblock_type *type,
->                   phys_addr_t base, phys_addr_t size);
-> +bool memblock_validate_numa_coverage(const u64 threshold_pages);
->  int memblock_mark_hotplug(phys_addr_t base, phys_addr_t size);
->  int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 0863222af4a4..ebea0c204eaa 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -734,6 +734,40 @@ int __init_memblock memblock_add(phys_addr_t
-> base, phys_addr_t size)
->     return memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
->  }
-> 
-> +/**
-> + * memblock_validate_numa_coverage - check if amount of memory with
-> + * no node ID assigned is less than a threshold
-> + * @threshold_pages: maximal number of pages that can have unassigned node
-> + * ID (in pages).
-> + *
-> + * A buggy firmware may report memory that does not belong to any node.
-> + * Check if amount of such memory is below @threshold_pages.
-> + *
-> + * Return: true on success, false on failure.
-> + */
-> +bool __init_memblock memblock_validate_numa_coverage(const u64 threshold_pages)
-
-With threshold in bytes there will be less conversions from pages to bytes.
-Also, I don't think const has much value here and unsigned long should
-suffice.
-
-> +{
-> +   unsigned long nr_pages = 0;
-> +   unsigned long start_pfn, end_pfn, mem_size_mb;
-> +   int nid, i;
-> +
-> +   /* calculate lose page */
-> +   for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
-> +       if (nid == NUMA_NO_NODE)
-> +           nr_pages += end_pfn - start_pfn;
-> +   }
-> +
-> +   if (nr_pages >= threshold_pages) {
-> +       mem_size_mb = memblock_phys_mem_size() >> 20;
-> +       pr_err("NUMA: no nodes coverage for %luMB of %luMB RAM\n",
-> +              (nr_pages << PAGE_SHIFT) >> 20, mem_size_mb);
-> +       return false;
-> +   }
-> +
-> +   return true;
-> +}
-> +
-> +
+>   * Physical address zone modifiers (see linux/mmzone.h - low four bits)
+> @@ -249,7 +283,7 @@ typedef unsigned int __bitwise gfp_t;
+>  #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
+> =20
+>  /* Room for N __GFP_FOO bits */
+> -#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
+> +#define __GFP_BITS_SHIFT ___GFP_LAST_BIT
+>  #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
+> =20
 >  /**
->   * memblock_isolate_range - isolate given range into disjoint memblocks
->   * @type: memblock type to isolate range for
-> -- 
-> 2.25.1
 
--- 
-Sincerely yours,
-Mike.
