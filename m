@@ -2,230 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6EF7D7277
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEA47D7281
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbjJYRiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S233153AbjJYRl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjJYRiE (ORCPT
+        with ESMTP id S229485AbjJYRlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:38:04 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F062B181
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:38:02 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-777754138bdso2641685a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:38:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698255482; x=1698860282; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V0ox2ILz1EMIrFJ8x14pC0Hnt0rJlC5uG4uVHyod354=;
-        b=LJdYj/3cwCCXAqA2MEjaBRAuemeoUpVSmqsEJOYGSgHzL4oNPDTapPFCnEWuUFKLNy
-         s0K8SVOvLouoYPGYjEshWd55CSDnqLcClKxQPuUyMdVTV4A7V76AXTeRXUn2NRAX4Oo9
-         CZY2T5E/S/diYCRfkOmcw1V/urnAS1CEHQ8PI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698255482; x=1698860282;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=V0ox2ILz1EMIrFJ8x14pC0Hnt0rJlC5uG4uVHyod354=;
-        b=pcn14wYADIieOq2lgnvIFPh8sBYJbu37CAiXMrXgfklR5XuUQpa6RG/3bOo8TvY3/O
-         beTUZT7au9TpZbS1cNVZF9wKqhKo+B3WPoG9Icsx4hK2qG8rUTCACQhkx+qsg7L46NCb
-         xtBckqaDtr2oIDZprmeyVXJ7pU1qPHggW7YydfiOWmYk6axvRtRgc1kF8L/NDSMKDJCn
-         KoIhYBXBSPoc/EuuLdI7uBT8qNWw2ahozKRsiE1UKWBRugCP7tyT4zcssWZUpGOZgAOQ
-         0f2G3Y2+hKJPPED2IoDDGo/Bt16b6Q2MK610P7f4nDZgZ5B0z2GPv1EPlu2oMRA5U+s+
-         t4BQ==
-X-Gm-Message-State: AOJu0YwokyjFBiG+5oQl5sJuyJ6eD5JaNfUOZap3s0XtpqYjDLM4XUDV
-        t+vnA8tXl8lLOpgmUuWnVlfLlQ==
-X-Google-Smtp-Source: AGHT+IHyhzKNaBSe5R0DEn37pHoczhlw8E7HXQVcWeEqwx7l31IJy6CYoa+h0kFyZlPSo9LYvJCXXg==
-X-Received: by 2002:a05:620a:444e:b0:767:923:48e7 with SMTP id w14-20020a05620a444e00b00767092348e7mr19453666qkp.5.1698255482017;
-        Wed, 25 Oct 2023 10:38:02 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b007788c1a81b6sm4366669qkp.46.2023.10.25.10.37.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 10:38:01 -0700 (PDT)
-Message-ID: <848b9490-64a1-4db7-8de2-7bc5e6107769@broadcom.com>
-Date:   Wed, 25 Oct 2023 10:37:54 -0700
+        Wed, 25 Oct 2023 13:41:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4175199
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698255640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UkGSArifVcPZ7lZ367bjkLWFmP8Ugc7BI10JCKWK7ek=;
+        b=N9XjQLpwIA8sDfZqlRNDwQQ4sNAeFKj2W/iNLTMo4T+B0G9AmwuP6p6r8ITWuM/IFOff86
+        wmJsV+IOXNbzHJ8ntc+74YmpEOJbiMhawEY5KE+QNikIM2Yc2HtJNW1jBu5+Soep+Ybabh
+        IaAecZsKdTmvhCgtTmH1YvHzum6NTe0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-ES4kaKGwPp2CW3tKmHRYRw-1; Wed, 25 Oct 2023 13:40:35 -0400
+X-MC-Unique: ES4kaKGwPp2CW3tKmHRYRw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FDB08F5DA0;
+        Wed, 25 Oct 2023 17:40:35 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ED2152166B26;
+        Wed, 25 Oct 2023 17:40:32 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 25 Oct 2023 19:39:34 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 19:39:31 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: nfsd_copy_write_verifier: wrong usage of read_seqbegin_or_lock()
+Message-ID: <20231025173931.GA29779@redhat.com>
+References: <20231025163006.GA8279@redhat.com>
+ <ZTlJmuDpGE+U3pEF@tissot.1015granger.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 5/5] net: bcmgenet: Interrogate PHY for
- WAKE_FILTER programming
-To:     netdev@vger.kernel.org
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Daniil Tatianin <d-tatianin@yandex-team.ru>,
-        Simon Horman <horms@kernel.org>,
-        Justin Chen <justin.chen@broadcom.com>,
-        Ratheesh Kannoth <rkannoth@marvell.com>,
-        Joe Damato <jdamato@fastly.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jiri Pirko <jiri@resnulli.us>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231025173300.1776832-1-florian.fainelli@broadcom.com>
- <20231025173300.1776832-6-florian.fainelli@broadcom.com>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <20231025173300.1776832-6-florian.fainelli@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c33b5a06088dea84"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTlJmuDpGE+U3pEF@tissot.1015granger.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c33b5a06088dea84
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Chuck,
 
-On 10/25/23 10:33, Florian Fainelli wrote:
-> Determine whether the PHY can support waking up from the user programmed
-> network filter, and if it can utilize it.
-> 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>>
-> ---
+Thanks for your reply. But I am already sleeping and I can't understand it.
+So let me ask a couple of questions.
 
-[snip]
+1. Do you agree that the current nfsd_copy_write_verifier() code makes no sense?
 
-> diff --git a/drivers/net/phy/bcm-phy-lib.c b/drivers/net/phy/bcm-phy-lib.c
-> index cfbeedc5ee81..569aeab68f97 100644
-> --- a/drivers/net/phy/bcm-phy-lib.c
-> +++ b/drivers/net/phy/bcm-phy-lib.c
+   I mean, the usage of read_seqbegin_or_lock() suggests that if the lockless
+   pass fails it should take writeverf_lock for writing. But this can't happen,
+   and thus this code doesn't look right no matter what. None of the
+   read_seqbegin_or_lock/need_seqretry/done_seqretry helpers make any sense
+   because "seq" is alway even.
 
-This hunk belongs in the previous patch, I will send a v2 after 
-collecting feedback.
--- 
-Florian
+2. If yes, which change do you prefer? I'd prefer the patch at the end.
 
+Oleg.
 
---000000000000c33b5a06088dea84
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+On 10/25, Chuck Lever wrote:
+>
+> On Wed, Oct 25, 2023 at 06:30:06PM +0200, Oleg Nesterov wrote:
+> > Hello,
+> >
+> > The usage of writeverf_lock is wrong and misleading no matter what and
+> > I can not understand the intent.
+>
+> The structure of the seqlock was introduced in commit 27c438f53e79
+> ("nfsd: Support the server resetting the boot verifier").
+>
+> The NFS write verifier is an 8-byte cookie that is supposed to
+> indicate the boot epoch of the server -- simply put, when the server
+> restarts, the epoch (and this verifier) changes.
+>
+> NFSv3 and later have a two-phase write scheme where the client
+> sends data to the server (known as an UNSTABLE WRITE), then later
+> asks the server to commit that data (a COMMIT). Before the COMMIT,
+> that data is not durable and the client must hold onto it until
+> the server's COMMIT Reply indicates it's safe for the client to
+> discard that data and move on.
+>
+> When an UNSTABLE WRITE is done, the server reports its current
+> epoch as part of each WRITE Reply. If this verifier cookie changes,
+> the client knows that the server might have lost previously
+> written written-but-uncommitted data, so it must send the WRITEs
+> again in that (rare) case.
+>
+> NFSD abuses this slightly by changing the write verifier whenever
+> there is an underlying local write error that might have occurred in
+> the background (ie, there was no WRITE or COMMIT operation at the
+> time that the server could use to convey the error back to the
+> client). This is supposed to trigger clients to send UNSTABLE WRITEs
+> again to ensure that data is properly committed to durable storage.
+>
+> The point of the seqlock is to ensure that
+>
+> a) a write verifier update does not tear the verifier
+> b) a write verifier read does not see a torn verifier
+>
+> This is a hot path, so we don't want a full spinlock to achieve
+> a) and b).
+>
+> Way back when, the verifier was updated by two separate 32-bit
+> stores; hence the risk of tearing.
+>
+>
+> > nfsd_copy_write_verifier() uses read_seqbegin_or_lock() incorrectly.
+> > "seq" is always even, so read_seqbegin_or_lock() can never take the
+> > lock for writing. We need to make the counter odd for the 2nd round:
+> >
+> > 	--- a/fs/nfsd/nfssvc.c
+> > 	+++ b/fs/nfsd/nfssvc.c
+> > 	@@ -359,11 +359,14 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
+> > 	  */
+> > 	 void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
+> > 	 {
+> > 	-	int seq = 0;
+> > 	+	int seq, nextseq = 0;
+> >
+> > 		do {
+> > 	+		seq = nextseq;
+> > 			read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
+> > 			memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
+> > 	+		/* If lockless access failed, take the lock. */
+> > 	+		nextseq = 1;
+> > 		} while (need_seqretry(&nn->writeverf_lock, seq));
+> > 		done_seqretry(&nn->writeverf_lock, seq);
+> > 	 }
+> >
+> > OTOH. This function just copies 8 bytes, this makes me think that it doesn't
+> > need the conditional locking and read_seqbegin_or_lock() at all. So perhaps
+> > the (untested) patch below makes more sense? Please note that it should not
+> > change the current behaviour, it just makes the code look correct (and more
+> > optimal but this is minor).
+> >
+> > Another question is why we can't simply turn nn->writeverf into seqcount_t.
+> > I guess we can't because nfsd_reset_write_verifier() needs spin_lock() to
+> > serialise with itself, right?
+>
+> "reset" is supposed to be very rare operation. Using a lock in that
+> case is probably quite acceptable, as long as reading the verifier
+> is wait-free and guaranteed to be untorn.
+>
+> But a seqcount_t is only 32 bits.
+>
+>
+> > Oleg.
+> > ---
+> >
+> > diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+> > index c7af1095f6b5..094b765c5397 100644
+> > --- a/fs/nfsd/nfssvc.c
+> > +++ b/fs/nfsd/nfssvc.c
+> > @@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
+> >   */
+> >  void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
+> >  {
+> > -	int seq = 0;
+> > +	unsigned seq;
+> >
+> >  	do {
+> > -		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
+> > +		seq = read_seqbegin(&nn->writeverf_lock);
+> >  		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
+> > -	} while (need_seqretry(&nn->writeverf_lock, seq));
+> > -	done_seqretry(&nn->writeverf_lock, seq);
+> > +	} while (read_seqretry(&nn->writeverf_lock, seq));
+> >  }
+> >
+> >  static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
+> >
+>
+> --
+> Chuck Lever
+>
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPwf/q3mIyIvdv4B
-E+N0zjcFM9L70hBkFsRXV6SjfmSiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAyNTE3MzgwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB6vOB9mz7erkzPvG2yT4hXAghxRedxklxi
-JhTIaOtoKr1PKzYZCRykb7HfPqJs3ntQKsUtd60RqVg88swDHO9/pzQ+eSvfjTiOZxaccCY0Rcrl
-ZB6OdlbnCsn04bBVtyXiI7HK3Xd+/i6Kz9NlPnRseKKOJtkcFnR7K1A1JYqBOdnB+Rt43pHWemyO
-wGPfwXw2rFC7r3bjnFhA3pOCVzSSqYZo6dSWB1xuhs47pk5Kb5Gg0+EYkG/Npidi8Pnv1E7FDV23
-Mb8FoRGf2pjXGboBv+f2wUkQqlKHWd0/IR79Zq4vXhtxtiZR2dYd3jfMfk4ykG1BI9xERP2GmH+o
-GFS9
---000000000000c33b5a06088dea84--
