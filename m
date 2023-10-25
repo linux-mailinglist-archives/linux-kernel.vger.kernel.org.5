@@ -2,161 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F527D60F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58987D60FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjJYE6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 00:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        id S229629AbjJYFDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 01:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYE6E (ORCPT
+        with ESMTP id S229456AbjJYFDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 00:58:04 -0400
-X-Greylist: delayed 401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 Oct 2023 21:58:02 PDT
-Received: from smtp161.vfemail.net (smtp161.vfemail.net [146.59.185.161])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300E5128
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 21:58:01 -0700 (PDT)
-Received: (qmail 18737 invoked from network); 25 Oct 2023 04:51:19 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 25 Oct 2023 04:51:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
-        :subject:date:message-id:mime-version:content-transfer-encoding;
-         s=2018; bh=z3I7BxJWkJGWMcauhe7x+lldOe3CDXrLlKAqfautbjk=; b=JKsc
-        ZA1fcTejIgxVxwE99gtg3mw34yQTjcVa8RC4teaG6ZfTDisPJTcXsKrmpjHFQ8G+
-        cSc8mTxgzsEiK2w8hBLAmKlLEOR1LT58CGC72gxYKa+RgYX8+f8HyndQSbL2QyPj
-        4Tvi2cTwrNsxT9rG4ZHe5LiQ7SEqK48PUHjxpes=
-Received: (qmail 80579 invoked from network); 25 Oct 2023 04:51:18 -0000
-Received: by simscan 1.4.0 ppid: 80549, pid: 80569, t: 1.8100s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 25 Oct 2023 04:51:16 -0000
-From:   Edward Chow <equu@openmail.cc>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Edward Chow <equu@openmail.cc>
-Subject: [PATCH] dt-bindings: mtd-partitions: Export special values
-Date:   Wed, 25 Oct 2023 12:50:58 +0800
-Message-ID: <20231025045101.825236-1-equu@openmail.cc>
-X-Mailer: git-send-email 2.42.0
+        Wed, 25 Oct 2023 01:03:17 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A103E5;
+        Tue, 24 Oct 2023 22:03:15 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39P52tl9125931;
+        Wed, 25 Oct 2023 00:02:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698210175;
+        bh=3zOX6TUjyNNgjljAkOrTg04EXn1HnypXqTsDWnDgMkM=;
+        h=Date:From:Subject:To:CC:References:In-Reply-To;
+        b=KiuO+Qi8x7F7wJgye1QmAuld7eE4GbP5+7VouFlMMzrYe/1EsnKgi7xGS9EhHZwch
+         7TcJL8kqBzGG8GKcPsetvmC8eGPDa29k5xKybyjnzP/PRR3j/jCehURfVV3hbitmU9
+         UUliMs4da9kAehXo99waO0OMJj4VjlF9x1HvMJIQ=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39P52tet103204
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Oct 2023 00:02:55 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 25
+ Oct 2023 00:02:55 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 25 Oct 2023 00:02:55 -0500
+Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39P52o6I019290;
+        Wed, 25 Oct 2023 00:02:51 -0500
+Message-ID: <c7851172-f474-42f3-9730-1f323f9e6c73@ti.com>
+Date:   Wed, 25 Oct 2023 10:32:50 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+Subject: Re: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>
+CC:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        <bhelgaas@google.com>, <lpieralisi@kernel.org>, <robh@kernel.org>,
+        <kw@linux.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+References: <20231023212628.GA1627567@bhelgaas>
+Content-Language: en-US
+In-Reply-To: <20231023212628.GA1627567@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are special "offset" and "size" values defined and documented in
-linux/mtd/partitions.h:
+Hello Bjorn,
 
-// consume as much as possible, leaving size after the end of partition.
+On 24/10/23 02:56, Bjorn Helgaas wrote:
+> On Mon, Oct 23, 2023 at 05:05:30PM +0530, Siddharth Vadapalli wrote:
+>> On 23/10/23 16:12, Serge Semin wrote:
+>>
+>> ...
+>>
+>>> Siddharth, if it won't be that much bother and you have an access to
+>>> the v3.65-based Keystone PCIe device, could you please have a look
+>>> whether it's possible to implement what Bjorn suggested?
+>>
+>> Unfortunately I don't have any SoC/Device with me that has the v3.65 PCIe
+>> controller, so I will not be able to test Bjorn's suggestion.
+> 
+> Huh.  57e1d8206e48 ("MAINTAINERS: move Murali Karicheri to credits")
+> removed the maintainer for pci-keystone.c, so the driver hasn't had a
+> maintainer for over two years.
+> 
+> Given the fact that there's no maintainer, I'm more than happy to take
+> a patch to move this code to somewhere in the host_init() callback,
+> even if you don't have the hardware to test it.
 
-// the partition will start at the next erase block.
+Sure, I can work on a patch for it. The execution flow with the existing code is
+as follows:
 
-// the partition will start where the previous one ended.
+ks_pcie_probe()
+    dw_pcie_host_init()
+        pci_host_probe()
+            ks_pcie_v3_65_add_bus()
 
-(Though not explicitly, they are compared against variables in uint64_t
-in drivers/mtd/mtdpart.c, so they had better be considered as such.)
+So I assume that as long as ks_pcie_v3_65_add_bus() is invoked after
+pci_host_probe(), it should be acceptable. With this understanding, I plan to
+move it immediately after the invocation to dw_pcie_host_init() within
+ks_pcie_probe() conditionally (based on the is_am6 flag). The new call trace
+with this change will look like:
 
-// the partition will extend to the end of the master MTD device.
+ks_pcie_probe()
+    dw_pcie_host_init()
+        pci_host_probe()
+    ks_pcie_v3_65_add_bus()
 
-These special values could be used to define partitions automatically
-fitting to the size of the master MTD device at runtime.
+Since the .add_bus() method will be removed following this change, I suppose
+that the patch I post for it can be applied instead of this v3 patch which fixes
+pci_ops.
 
-However, these values used not to be exported to dt-bindings, thus
-seldom used before, since they might have been only used in numeric form,
-such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
+The patch I plan to post as a replacement for the current patch which shall also
+remove the ks_pcie_v3_65_add_bus() and the .add_bus() method is:
 
-Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
-values, so 2-cell addressed should be defined to use special offset values,
-such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
-linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index 0def919f89fa..3933e857ecaa 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -447,44 +447,10 @@ static struct pci_ops ks_child_pcie_ops = {
+ 	.write = pci_generic_config_write,
+ };
 
-Signed-off-by: Edward Chow <equu@openmail.cc>
----
- .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
- MAINTAINERS                                   |  2 ++
- include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
- 3 files changed, 46 insertions(+)
- create mode 100644 include/dt-bindings/mtd/partitions.h
+-/**
+- * ks_pcie_v3_65_add_bus() - keystone add_bus post initialization
+- * @bus: A pointer to the PCI bus structure.
+- *
+- * This sets BAR0 to enable inbound access for MSI_IRQ register
+- */
+-static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
+-{
+-	struct dw_pcie_rp *pp = bus->sysdata;
+-	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+-	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+-
+-	if (!pci_is_root_bus(bus))
+-		return 0;
+-
+-	/* Configure and set up BAR0 */
+-	ks_pcie_set_dbi_mode(ks_pcie);
+-
+-	/* Enable BAR0 */
+-	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
+-	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
+-
+-	ks_pcie_clear_dbi_mode(ks_pcie);
+-
+-	 /*
+-	  * For BAR0, just setting bus address for inbound writes (MSI) should
+-	  * be sufficient.  Use physical address to avoid any conflicts.
+-	  */
+-	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
+-
+-	return 0;
+-}
+-
+ static struct pci_ops ks_pcie_ops = {
+ 	.map_bus = dw_pcie_own_conf_map_bus,
+ 	.read = pci_generic_config_read,
+ 	.write = pci_generic_config_write,
+-	.add_bus = ks_pcie_v3_65_add_bus,
+ };
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-index 331e564f29dc..a939fb52ef76 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-@@ -164,3 +164,32 @@ examples:
-             read-only;
-         };
-     };
+ /**
+@@ -1270,6 +1236,29 @@ static int ks_pcie_probe(struct platform_device *pdev)
+ 		ret = dw_pcie_host_init(&pci->pp);
+ 		if (ret < 0)
+ 			goto err_get_sync;
 +
-+  - |
-+    partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <2>;
-+        #size-cells = <1>;
++		if (!ks_pcie->is_am6) {
++			/*
++			 * For v3.65 DWC PCIe Controllers, setup BAR0 to enable
++			 * inbound access for MSI_IRQ register.
++			 */
 +
-+        partition@0 {
-+            label = "bootloader";
-+            reg = <0 0x000000 0x020000>;
-+            read-only;
-+        };
++			/* Configure and set up BAR0 */
++			ks_pcie_set_dbi_mode(ks_pcie);
 +
-+        firmware@1 {
-+            label = "firmware";
-+            /* From the end of the last partition, occupying as mush
-+             * as possible, retaining 0x010000 after it,
-+             * "MTDPART_OFS_SPECIAL MTDPART_OFS_NXTBLK" similar to
-+             * this, but always beginning at erase block boundary. */
-+            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN 0x010000>;
-+        };
++			/* Enable BAR0 */
++			dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
++			dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
 +
-+        calibration@2 {
-+            compatible = "fixed-partitions";
-+            label = "calibration";
-+            /* Appending to the last partition, occupying 0x010000 */
-+            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_APPEND 0x010000>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 668d1e24452d..7d6beadc8b36 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13771,9 +13771,11 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
- F:	Documentation/devicetree/bindings/mtd/
- F:	drivers/mtd/
-+F:	include/dt-bindings/mtd/
- F:	include/linux/mtd/
- F:	include/uapi/mtd/
- 
++			ks_pcie_clear_dbi_mode(ks_pcie);
 +
- MEMSENSING MICROSYSTEMS MSA311 DRIVER
- M:	Dmitry Rokosov <ddrokosov@sberdevices.ru>
- L:	linux-iio@vger.kernel.org
-diff --git a/include/dt-bindings/mtd/partitions.h b/include/dt-bindings/mtd/partitions.h
-new file mode 100644
-index 000000000000..456a54a1259a
---- /dev/null
-+++ b/include/dt-bindings/mtd/partitions.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Device Tree constants identical to those in include/linux/mtd/partitions.h
-+ */
++			 /*
++			  * For BAR0, just setting bus address for inbound writes (MSI) should
++			  * be sufficient.  Use physical address to avoid any conflicts.
++			  */
++			dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
++		}
 +
-+#ifndef _DT_BINDINGS_MTD_PARTITIONS_H
-+#define _DT_BINDINGS_MTD_PARTITIONS_H
-+
-+#define MTDPART_OFS_SPECIAL	(-1)
-+#define MTDPART_OFS_RETAIN	(-3)
-+#define MTDPART_OFS_NXTBLK	(-2)
-+#define MTDPART_OFS_APPEND	(-1)
-+#define MTDPART_SIZ_FULL	(0)
-+
-+#endif
+ 		break;
+ 	case DW_PCIE_EP_TYPE:
+ 		if (!IS_ENABLED(CONFIG_PCI_KEYSTONE_EP)) {
+
+Please review and let me know if this looks fine. If so, I will post the patch for it.
+
 -- 
-2.42.0
-
+Regards,
+Siddharth.
