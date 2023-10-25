@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFA17D6C79
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7DC7D6C83
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344267AbjJYM5I convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 08:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S1344280AbjJYM6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjJYM5H (ORCPT
+        with ESMTP id S229583AbjJYM6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:57:07 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EB7116;
-        Wed, 25 Oct 2023 05:57:04 -0700 (PDT)
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b413cc2789so266761b6e.0;
-        Wed, 25 Oct 2023 05:57:04 -0700 (PDT)
+        Wed, 25 Oct 2023 08:58:20 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EF88F;
+        Wed, 25 Oct 2023 05:58:18 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bee11456baso4687075b3a.1;
+        Wed, 25 Oct 2023 05:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698238698; x=1698843498; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mKssY7Y5qZz0OjqP1oL2c2x0KaPXiTplfs3rAHRoWHo=;
+        b=aKlyC7l0aeU1CzVhbaLifyAmyWafC0vrRpl50KSlZ+3AuJoOtwfG7i75cWu4+JA1el
+         +05p9yu818kP1XxGsynmic5BdJU/yv48eu5ajmCLaWWDhr+pEaSVBK2MHcas0Zjavd0+
+         cfPSafc5SwrsTtXcN5VN4UT/nchAKb33qWSHqQn/aNIVeOkXTnsMdxLZtl+NTvd75/ns
+         zcC2Q16itKDBr0JfgE3aWk5TqZrtFS1DPxBj+0OgJy0hK+YoNCi6d+cCEF+QQbyvUWnN
+         Fa4CQCE0ppnkPwbGKkQ8itmVLTxTyN6E/hZHp/SoGdcfRIFVCI8E6+PAWhi6OPZrWoF8
+         GXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698238624; x=1698843424;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iXkd9CYREbxYom8qIlZV1H5Ayph53CXojJYgpfSQsTw=;
-        b=vrxX2PXkT8LPmUYJwTtMZAOHW85b/2vrED+MvJ8RZPLHKZCiQ/S/sV1Cjg/gsaaXoh
-         QTb6osh42WwOkVAM+m7X+jVO7VPislGyThYw+5kWNyfSmCoHaohGlRKvLCdRdevvZKXj
-         WY9cYO0Vvr/cGC8o24Jmk0ANimye8YU8OD/+TIUxYtjH0ZqlBJFfncyJoTpzW44doEdX
-         4le9YYXKN3VslCv6gCirItOlHlTgzEaz8GEhe6d0QIrtMSA4q5qFU5QW1Spd13afYtiy
-         7hZSZ+KJQKCA1nHJ6xqCf8K5I8DRTUGezuQPlhfitYUiahA+xSozTUkocnPiyCfHZVj3
-         7EGQ==
-X-Gm-Message-State: AOJu0YzvG+oEtr6k9tVzQwb57gqIiftUSvpoNeStvOj7/L+edqVLrZuE
-        6Iir+KRyKz2XrPGbrbVPRTpuUbvtXBxjwfAh6tuzJOfx
-X-Google-Smtp-Source: AGHT+IFa57Vto1+bpGsZj3Sj3ypmLBQMvnjG7z1p5RFQwODE2222n3Z8mQbF79uS7Hlc0CSFdJ/R9suLFz2Epg+GHck=
-X-Received: by 2002:a05:6870:818d:b0:1ea:6883:99ff with SMTP id
- k13-20020a056870818d00b001ea688399ffmr16936693oae.5.1698238624011; Wed, 25
- Oct 2023 05:57:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698238698; x=1698843498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mKssY7Y5qZz0OjqP1oL2c2x0KaPXiTplfs3rAHRoWHo=;
+        b=HHLCuTrJkaM+9/DLKU8F1iIj+8wtnb4jqxRz+IHv4BiCXhOJdycM1o0RI8evtITUXy
+         XcvWZs8squkQ1zZYHFCtVe0nG2vWPk0MyEeMzKSjSeG+hvcflwWsFQUTF71CUOh1kXou
+         B5TkvXasUN0nwpkmjF9pfDeJETDCKZugXcOaFY7N4M5HZVEAgkA7W9I1DFBGzKrPXmes
+         jYLyoGZlsi+fTRoVoJP3LAjZBwhGY5YSkvjG2/gU99FawHkNlCYEZYrWgBgwm21qTv/d
+         8UZmz4Y8kQzfypuLLxPKuMBGjcNz7roOKSZk889CqUwWiyQ7R6qEOoyNKaia8qGba0l6
+         /abQ==
+X-Gm-Message-State: AOJu0YyoHFSjlWruMS01e2wqOs4qALbpY6zLLr2vQjg6RZS20P1PLbZ0
+        uU50WtgENkNMkMGo4C0VybHw/bvP3h5rZKD+
+X-Google-Smtp-Source: AGHT+IF7u5zOkI2ZSeBYv1Vmh8U1NKHmyEJN2pzxKcBcv2+dRSJ2rJqN/f/ETo8o4HFp2LeHuAeU0A==
+X-Received: by 2002:a05:6a21:1c82:b0:172:f4e:5104 with SMTP id sf2-20020a056a211c8200b001720f4e5104mr4521846pzb.20.1698238697699;
+        Wed, 25 Oct 2023 05:58:17 -0700 (PDT)
+Received: from sagar-virtual-machine.localdomain ([103.70.144.216])
+        by smtp.gmail.com with ESMTPSA id a3-20020a655c83000000b005b3cc663c8csm7402302pgt.21.2023.10.25.05.58.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 05:58:17 -0700 (PDT)
+From:   Sagar Vashnav <sagarvashnav72427@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sagarvashnav72427@gmail.com
+Subject: [PATCH] lib/crypto/aesgcm.c:add kernel docs for aesgcm_mac
+Date:   Wed, 25 Oct 2023 08:57:07 -0400
+Message-Id: <20231025125708.20645-1-sagarvashnav72427@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231025111806.2416524-1-michal.wilczynski@intel.com>
-In-Reply-To: <20231025111806.2416524-1-michal.wilczynski@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 25 Oct 2023 14:56:52 +0200
-Message-ID: <CAJZ5v0gPhG2VB4p4oXuJ36Qoj-BSEbs1kRyb8jPGVDekk06dJg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] Replace acpi_driver with platform_driver
-To:     Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
-        lenb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 2:34 PM Michal Wilczynski
-<michal.wilczynski@intel.com> wrote:
->
-> This patchset is a continuation of efforts from [1] aiming to replace
-> acpi_driver with platform_driver. To ease up review effort I'm sending
-> miniseries per driver, with a replacement patch + various improvements
-> that were noticed by me, or during internal review.
->
-> This mini-series takes care of acpi_video driver.
->
-> [1] - https://lore.kernel.org/linux-acpi/20231011083334.3987477-1-michal.wilczynski@intel.com/T/#t
->
-> Michal Wilczynski (6):
->   ACPI: acpi_video: Remove unnecessary checks
->   ACPI: acpi_video: Use yes_or_no helper instead of ternary operator
->   ACPI: acpi_video: Remove unnecessary driver_data clear
->   ACPI: acpi_video: Replace acpi_driver with platform_driver
->   ACPI: acpi_video: Rename ACPI device instances from device to adev
->   ACPI: acpi_video: Fix holes in acpi_video_bus
->
->  drivers/acpi/acpi_video.c | 101 +++++++++++++++++---------------------
->  1 file changed, 46 insertions(+), 55 deletions(-)
->
-> --
+Add kernel documentation for the aesgcm_mac.
+This function generates the authentication tag using the AES-GCM algorithm.
 
-Because this is not going to get into 6.7 anyway, I'm deferring the
-review of it until 6.7-rc1 is out.
+Signed-off-by: Sagar Vashnav <sagarvashnav72427@gmail.com>
+---
+ lib/crypto/aesgcm.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Thanks!
+diff --git a/lib/crypto/aesgcm.c b/lib/crypto/aesgcm.c
+index c632d6e17..eb55cc57a 100644
+--- a/lib/crypto/aesgcm.c
++++ b/lib/crypto/aesgcm.c
+@@ -73,6 +73,19 @@ static void aesgcm_ghash(be128 *ghash, const be128 *key, const void *src,
+ 	}
+ }
+ 
++/**
++ * aesgcm_mac - Generates the authentication tag using AES-GCM algorithm.
++ * @ctx: The data structure that will hold the AES-GCM key schedule
++ * @src: The input source data.
++ * @src_len: Length of the source data.
++ * @assoc: Points to the associated data.
++ * @assoc_len: Length of the associated data values.
++ * @ctr: Points to the counter value.
++ * @authtag: The output buffer for the authentication tag.
++ *
++ * It takes in the AES-GCM context, source data, associated data, counter value,
++ * and an output buffer for the authentication tag.
++ */
+ static void aesgcm_mac(const struct aesgcm_ctx *ctx, const u8 *src, int src_len,
+ 		       const u8 *assoc, int assoc_len, __be32 *ctr, u8 *authtag)
+ {
+-- 
+2.34.1
+
