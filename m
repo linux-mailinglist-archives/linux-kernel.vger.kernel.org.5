@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BF57D5F16
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261A67D5F1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344768AbjJYAb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 20:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        id S230009AbjJYAet convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 20:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344751AbjJYAb1 (ORCPT
+        with ESMTP id S229568AbjJYAer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 20:31:27 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E404B9;
-        Tue, 24 Oct 2023 17:31:25 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-578b4981526so3087125a12.0;
-        Tue, 24 Oct 2023 17:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698193885; x=1698798685; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=GpAI6ozunbQoZWUQVTayqufjb3hbc6BcZ1+mXMEKxPs=;
-        b=M2+PxccDyn2L92869k0CYOU6hsXIUuz789rKmFSEzqQm9FFiQsIzDvCHe2vcuAmtJ/
-         OtNAU0olNNFOCiGyAgzqeN1+yzXSOfj5CTHpz2YZKKg7GKA2PZtSklMinR67bmvp2RB3
-         85RwsaQh0zfcska2GiWaqkwYo9fnsRLylbm6zgKuEb8pbq9/3oWGndpjmdovAsIRLjF6
-         VTkNHW4n1Rbb6GNBWb1lFnl4pzDsh5yLx4BK/kKeo1NtV1CLjP6ZfAGROKnYHldSjlmm
-         KgdmlYY3ks8VNxpJ4Z9o6yqXRfBptFyrmSXdesaAw9XuP/OCQvb+FE2lJCbvEcpDbgBE
-         qhJQ==
+        Tue, 24 Oct 2023 20:34:47 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35AA10DC;
+        Tue, 24 Oct 2023 17:34:45 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-564b6276941so4012769a12.3;
+        Tue, 24 Oct 2023 17:34:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698193885; x=1698798685;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GpAI6ozunbQoZWUQVTayqufjb3hbc6BcZ1+mXMEKxPs=;
-        b=UCZXL4KKO5SC2rA6wXoo+WGcv8IJ/L64GgODwiIMGZ3XsVZ4MRGstQN6bbvjwmjCds
-         pSdOm06m9uQQYXGB1G6t/vC4Dwp5mExFHZ3lDhprMUQ7JQBZXqsm9rDy/9exOCD4co4I
-         AskjRan5AC3nR2XOUCcPnU2iPxJQWAW1et0L1ZAzJ1eHbVFS3l2ufqaM1KdQCjSg5Ek5
-         uwzSRPDe9IuyvBPt/7Gp6vN5nHNXWV0b2wjL2cbIBPal9Wc89ghTo3yO5ycwhl9jBLGp
-         SxDNHmm39aRO8Zwyj5WCXDl4pOjiIv0X/9Qipk/Wznz1YyogoAvGoVmcFI3vXzNH/UsN
-         77Sg==
-X-Gm-Message-State: AOJu0YyvkB0HcTPke/yZYabHSk+s3v9CjcgnMYbJYCZBNIQZlRjPKnuU
-        /vYjxmeuL+PSm1Oae/jkYs0=
-X-Google-Smtp-Source: AGHT+IExbYkV20Qsce/iBoTkvlqsPI+HiuO852xRML9Pw1o5w9+HtqXK+8TBwMKRj/6bH2lzOjAUdA==
-X-Received: by 2002:a05:6a21:47c7:b0:17e:5d2f:f439 with SMTP id as7-20020a056a2147c700b0017e5d2ff439mr4638886pzc.46.1698193884786;
-        Tue, 24 Oct 2023 17:31:24 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:9710:a537:7681:714f])
-        by smtp.gmail.com with ESMTPSA id g17-20020a056a00079100b006930db1e6d1sm8251094pfu.203.2023.10.24.17.31.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 17:31:23 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH] perf report: Fix hierarchy mode on pipe input
-Date:   Tue, 24 Oct 2023 17:31:21 -0700
-Message-ID: <20231025003121.2811738-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+        d=1e100.net; s=20230601; t=1698194085; x=1698798885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IPJ3ikDFUsXo043wQDFUZjWLaI/XIii/rtjaUwo0cPo=;
+        b=p/u7wmkDNA7Ec9ZRxJS5yPdSjg836B66gl60BnIZzCIl2Km3Ckf7nP0/el83PDxUXm
+         /h3m+wedIwUp5OAx2elHEhsDLXDTlh5RCaYthfsUt8MkQpu4EDIAA5QFiyQK6s9FYNn8
+         idkQD2x2fJ28oDeq/iHfuVr2KBp7nMpT1qkr1MzA5l9YTeIN5PMpOjCfAQrv10IX0ver
+         iqAGS5xWF45drIMiIFeqxVk/KlgSKXuGI0l0CaNIrRYYlnXbXNeoEnNpjR9dbYzcg/UT
+         MnKKppWTKp1vtRxqQOZkkhQkdaHW4syohCC10bkcoOTbM3XRoYOE3LVoDsK1rCMCrB4E
+         Ppuw==
+X-Gm-Message-State: AOJu0YwNEyjkhXQxdK5u4+vFJdzOte4zSPH7nlAKTirVm4I3dyEGZ24m
+        0mawQfWewXYQb4mPOQTJoVdu6gWfh/W8tKpIS08=
+X-Google-Smtp-Source: AGHT+IHuCWQmOV9T92y6SKKVVwNZ03oYE1gpCz7tq6+YH0oXEFwazTvYlG8PSf0eqOaJsq1BsYXFVbR/UuAo0ZLHPSs=
+X-Received: by 2002:a17:90a:1602:b0:27d:4dae:3c62 with SMTP id
+ n2-20020a17090a160200b0027d4dae3c62mr13428350pja.27.1698194084918; Tue, 24
+ Oct 2023 17:34:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231025102647.321c6629@canb.auug.org.au>
+In-Reply-To: <20231025102647.321c6629@canb.auug.org.au>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 24 Oct 2023 17:34:33 -0700
+Message-ID: <CAM9d7cjNAiE6bdSoQKsAqQcHBm1APz6C+-vQwu4BTB5R83dEgg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the perf tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hierarchy mode needs to setup output formats for each evsel.
-Normally setup_sorting() handles this at the beginning, but it cannot
-do that if data comes from a pipe since there's no evsel info before
-reading the data.  And then perf report cannot process the samples
-in hierarchy mode and think as if there's no sample.
+Hello,
 
-Let's check the condition and setup the output formats after reading
-data so that it can find evsels.
+On Tue, Oct 24, 2023 at 4:27 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the perf tree, today's linux-next build (native perf)
+> failed like this:
+>
+> perf/util/pmu-flex.c:1812:1: error: unterminated comment
+>  1812 | /** Setup the input buffer state to scan a string. The next call to yylex() will
+>       | ^
+> perf/util/pmu-flex.c:550:24: error: 'yy_fatal_error' used but never defined [-Werror]
+>   550 | static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
+>       |                        ^~~~~~~~~~~~~~
+>
+> I don't know what caused this, but the above file looks fine and redoing
+> the build works, so it may be some timing problem when doing an
+> incremental build?
 
-Before:
+Yeah, I think I saw this error before.  Looks like a timing issue
+but I believe something is wrong with it.  I'll take a look.
 
-  $ ./perf record -o- true | ./perf report -i- --hierarchy -q
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.000 MB - ]
-  Error:
-  The - data has no samples!
-
-After:
-
-  $ ./perf record -o- true | ./perf report -i- --hierarchy -q
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.000 MB - ]
-      94.76%        true
-         94.76%        [kernel.kallsyms]
-            94.76%        [k] filemap_fault
-       5.24%        perf-ex
-          5.24%        [kernel.kallsyms]
-             5.06%        [k] __memset
-             0.18%        [k] native_write_msr
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-report.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index dcedfe00f04d..ca8f2331795c 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -691,10 +691,25 @@ static int report__browse_hists(struct report *rep)
- 
- static int report__collapse_hists(struct report *rep)
- {
-+	struct perf_session *session = rep->session;
-+	struct evlist *evlist = session->evlist;
- 	struct ui_progress prog;
- 	struct evsel *pos;
- 	int ret = 0;
- 
-+	/*
-+	 * The pipe data needs to setup hierarchy hpp formats now, because it
-+	 * cannot know about evsels in the data before reading the data.  The
-+	 * normal file data saves the event (attribute) info in the header
-+	 * section, but pipe does not have the luxury.
-+	 */
-+	if (perf_data__is_pipe(session->data)) {
-+		if (perf_hpp__setup_hists_formats(&perf_hpp_list, evlist) < 0) {
-+			ui__error("Failed to setup hierachy output formats\n");
-+			return -1;
-+		}
-+	}
-+
- 	ui_progress__init(&prog, rep->nr_entries, "Merging related events...");
- 
- 	evlist__for_each_entry(rep->session->evlist, pos) {
--- 
-2.42.0.758.gaed0368e0e-goog
-
+Thanks,
+Namhyung
