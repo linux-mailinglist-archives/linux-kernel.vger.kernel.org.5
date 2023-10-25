@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE2D7D7284
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CECF7D7286
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbjJYRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        id S233950AbjJYRmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjJYRlj (ORCPT
+        with ESMTP id S229978AbjJYRl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:41:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A2018D
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:41:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507d7b73b74so8571815e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:41:35 -0700 (PDT)
+        Wed, 25 Oct 2023 13:41:56 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2113.outbound.protection.outlook.com [40.107.212.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B2F186;
+        Wed, 25 Oct 2023 10:41:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DXDoeN4n7pkMuTxT1kKlDM2Y1cTsRNOYeYJ+QxAMjIzVZRU8DUgv2OYUr3uKzQCoOIwQp9Ve4Z7QGPOqYr8Ben4gwIQh+maj1EdOqCbBeDaq9818/V20IGFVXXrKNH++8W0Ucvsp/sJ067WmwCwNpuI+Y4UxHtqv2hJSHV81rrpti2US9Eh5OFK5aSyLhS8eU1iPqsSH2/8L5SPIy4sjqqVnlZKyi1uBH1WyGxMXrsmS3cXntpLXM7sCKXK8zrMUwIENyMb6xM7XdBilF0k0nIhFAe2IXtokndy1oVr4T0jeDjHeTFrTrDRYO+DedVnJimR6hZXeARMdb4pzE+Z5lA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b+ZyeqVLVnVSGBccMcimpbQkmh6Sqz/f5y4eRFiv/qE=;
+ b=MAdARKvbX6qCV/ygfnEXzrEGsoZL9pyet0dIlIehhWz+hVHvgtrtVOkE0Iy/lXPcc5sScEwvhxai9/UxNtH8U2j8w7FVYnw/Yt8o5N/ZW/1lv5yXzXXYHOXlkq179F2B0OM9z2usTv1L0HvA8/UbDjxVf1hjOn03og+IGALFnwSo3XSXBRypUn6/qFXLC0WCAo1OVzdf3lVWGFYjHwLqu3Dbqvfko7DYg2vL1e+QRh1/1Ibo3NrjSDRvUpFB2h47cqc0C5uYSwWsDaqeLfK3wpByqYXOGzQ3+RQVT+/gstLPEAUh9vr5WXfGmE8qKQgdvP4hI3XhMIyzpwP975/GKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698255693; x=1698860493; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cBNaTjBwmD7DDb8oYXr337UXXRS17wg2IqMWRZnMrPs=;
-        b=a8ADbzxA97WkVE7jEmgvzOP35ExZG5aEKw5LffNswukF9Em9Lei/Q4mPAgqRrl0SAh
-         1a4Nvm88a967sAuXajj4zZnilwgzuIYgpej3CWwi4jJPWJYnT7i4HM/kB8Z7v5sjg4RB
-         NQRxHZs/n+dypH+lk97sE2B0KTiY+oAKZELtk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698255693; x=1698860493;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cBNaTjBwmD7DDb8oYXr337UXXRS17wg2IqMWRZnMrPs=;
-        b=d9OAXqjAKjmhbDBom6cXk5OY2m4Ouao0Iei2dR48cX5SJMfNbRmbkC5VCRMFwNfZpx
-         393tY4eLvOxCgi2QONt6+gYmHoFuhObu2AotneFqiKT+NViaNTLkKzsFxJBTxcUbJ1+i
-         ZctsaozhU8UFRUUb0LUPVmhT5BtT3RuwqBN0noPadJK83eBtls1o4K0rj6eZql/B5csz
-         meF7teBfY7Xbz4gfl0kuQgn7AKfGTZzs1m9V4SnP8n1q0eMX1IJwlD0J0fPyGt6ZFxFv
-         DKlL69t3zKv1TR+5PeIGjJ8aPFzSyUzV5XczI7RglKWki/I10obeZoTqkm4ywLhqatWC
-         0hmg==
-X-Gm-Message-State: AOJu0YwiQo3d/PgZILoc4VN+279CMOCGCvtS7JnN5U9FiFnB+0/Jqgox
-        MAExz+66Aom4wc/oTiLY28iwg26whENDxYKC/VLc6A==
-X-Google-Smtp-Source: AGHT+IHRpF0zSoJqTQU8iGe+r6TTv3OOqpU+2f32IzdhDI6nYMMVOdIn4sAgSK9FS3D+9W/7SnrO4Q==
-X-Received: by 2002:ac2:485b:0:b0:507:9a33:f105 with SMTP id 27-20020ac2485b000000b005079a33f105mr11050461lfy.69.1698255693249;
-        Wed, 25 Oct 2023 10:41:33 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id d24-20020a170906041800b0099cb1a2cab0sm10329703eja.28.2023.10.25.10.41.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 10:41:32 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-540105dea92so6961474a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:41:32 -0700 (PDT)
-X-Received: by 2002:a17:906:fd45:b0:9c3:cefa:93c6 with SMTP id
- wi5-20020a170906fd4500b009c3cefa93c6mr7840525ejb.10.1698255692298; Wed, 25
- Oct 2023 10:41:32 -0700 (PDT)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b+ZyeqVLVnVSGBccMcimpbQkmh6Sqz/f5y4eRFiv/qE=;
+ b=gEDGARADve7YEbU/LB1KKlPqYDdLxelCZ7Sxs9mWnY+F+wU2ht0S15zJPpfkIrlENR3AOydJ+VN7WszqaBH8Csv+NuD8AXxiS5GdxUxASVLeGU9juER+GDG/yiHn2w4CPG12PtmyKH8CDY226+cFYizNdK8AqiJZbufCCWW5kTo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from MWHPR0101MB2893.prod.exchangelabs.com (2603:10b6:301:33::25) by
+ PH0PR01MB6280.prod.exchangelabs.com (2603:10b6:510:18::6) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.33; Wed, 25 Oct 2023 17:41:48 +0000
+Received: from MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::d4ec:6220:2d1d:7030]) by MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::d4ec:6220:2d1d:7030%4]) with mapi id 15.20.6933.019; Wed, 25 Oct 2023
+ 17:41:48 +0000
+From:   D Scott Phillips <scott@os.amperecomputing.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        Darren Hart <darren@os.amperecomputing.com>,
+        patches@amperecomputing.com
+Subject: Re: [PATCH v2 2/2] PCI: hotplug: Add extension driver for Ampere
+ Altra hotplug LED control
+In-Reply-To: <20231025172237.GA1754650@bhelgaas>
+References: <20231025172237.GA1754650@bhelgaas>
+Date:   Wed, 25 Oct 2023 10:41:46 -0700
+Message-ID: <86ttqe4n1h.fsf@scott-ph-mail.amperecomputing.com>
+Content-Type: text/plain
+X-ClientProxiedBy: CH2PR14CA0053.namprd14.prod.outlook.com
+ (2603:10b6:610:56::33) To MWHPR0101MB2893.prod.exchangelabs.com
+ (2603:10b6:301:33::25)
 MIME-Version: 1.0
-References: <20231024161931.78567-1-sebastian.reichel@collabora.com>
- <20231024161931.78567-2-sebastian.reichel@collabora.com> <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
- <CAHk-=wjO5ivM6k7iMiThO9JfxH0dhLe=mcC4TQwReU0nBCnWpg@mail.gmail.com> <4c2d36375bd74d94a2e6ef5d2fa0df99@AcuMS.aculab.com>
-In-Reply-To: <4c2d36375bd74d94a2e6ef5d2fa0df99@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 25 Oct 2023 07:41:15 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whrytmsiaLS=rn==qrYw81y2Qiv6dAZxvGzwgX=dMFxng@mail.gmail.com>
-Message-ID: <CAHk-=whrytmsiaLS=rn==qrYw81y2Qiv6dAZxvGzwgX=dMFxng@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        "kernel@collabora.com" <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR0101MB2893:EE_|PH0PR01MB6280:EE_
+X-MS-Office365-Filtering-Correlation-Id: e396ec66-e606-4139-0669-08dbd581a9d5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: baiiIFJIc3BjWJH1df/AiSZNyYf0ivFrtnZrasI+jt2tgvTECgTtGzLvo7SzWrBGkBDtPkKfVx9EejJp8qp1ih6V51+jvajDjmNPHO8h2E29gZJGyvkD/31mrOZbkV3qw9eB/FF8y4vZwTTI2sqGUZ9SpH/MzygRGjTPiAisIO+Pt7aulp+Uh+uRZyOQSAktXBvPRwp7J0uC13HD1EVJ8MDv+54IhNYZe+6RX4mVzUsKxMMHo5/NII4kLz3lXVuxplWzOao9UQCt96B+z/+ZtgZMhkbYoxstpL0X0TGuBLBmk0wBqK5qETXQe1Rn7ijXw3U8/SBu4ptV8SNvPH47cR/4pAhud61sXir62/TYl9l0SgC7jBgfY7iiIDf9aQlD8RocVIj5dgz81uSnab4wFgN7Bqc/qfjHTrxeFmWQ/NhFpgJMtUm9A5p4L3AbET7iEjW7vnJmhTBBfp7aOfcHePmIIJJn5jTbni9PN0dS2Je/c1XmPBla6qCcNFuBubF6jk42snUNBCCQmgbczDTVTyAWIyAJ5CqVwymV2IP+sBv8+Wvv0GfGh7QvmCWsq+C+fDRehqopTNC/kjf0Gb3Xaup188kqVs+kUMqiRF0UBPKr5HTyYbNBEHj+J4bumtpg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB2893.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(39850400004)(376002)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(2906002)(41300700001)(107886003)(4744005)(86362001)(38100700002)(38350700005)(26005)(83380400001)(5660300002)(52116002)(6506007)(6512007)(9686003)(54906003)(478600001)(66476007)(66556008)(316002)(66946007)(6916009)(6486002)(8936002)(8676002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sxsyKT4MzSrLTKUNgyziOBhuO4wpgg754SgJ2KOFsH3yllGdbwkr8p/97j08?=
+ =?us-ascii?Q?icQU3+W1xt1x7FUEs5arsm2btGJP2JqTc7geXNCldWFrjP/zkY/boF0PpU50?=
+ =?us-ascii?Q?PViWi5dmomB2L4n1zt2GL10Bv1CjTLSldXAWKvEaXYMYrHWicag4IrNuuyK9?=
+ =?us-ascii?Q?9cM2O/zP1FPMghJRBmukrFumbS8kHkse/Ni77HCK4BgIyXvfFdBu2jceu5AM?=
+ =?us-ascii?Q?gTGzCmd14gaHmvEazwD/dCYpkn5fv9O1cz7n62HSGmAvMCtBsDouF0nQWY1D?=
+ =?us-ascii?Q?rb9syp6zrse5QwqsI3WHyEtXLLN1AfWHi6w0OIzOEusFQLHNT+j+EVgQq87p?=
+ =?us-ascii?Q?Qmup4aOmmwFKq1OwQ2kiCcFXHHkY5yf/YBEgh+aaJUeloEljMLPQVDUnUQzt?=
+ =?us-ascii?Q?dIqn4YoAm8RWd8izR85oIQE9LS3XiHdDq1XdybMAv6qvg39J/tq+NFKOVd+W?=
+ =?us-ascii?Q?xHKq3GdQaDOTxrvTesMI4ULfpTnEUPfVMJ7crc/4eRh+9DcPKnR0G5PqbL8Q?=
+ =?us-ascii?Q?vXIIzI2iCuZG1kMy1nAAP7GlflxhONvxHDjL4L0TVIBkfC9YuRDQNxO3bGbE?=
+ =?us-ascii?Q?wX+N37qEJjdWX4jj7rWKECCUpbFhOk7DTeKIl+WDTk2u5EOVnVJ7rN3IYhFH?=
+ =?us-ascii?Q?KvtFAVl6R0FGbVvoxRo6JSF3vQzepBQze2LD9OCeQfi+aCRK+QYn5nmyfrZB?=
+ =?us-ascii?Q?qMWyMX/4sloivw9Usm2qum/KRmu3/S9PnQU3oc2sRmpq4TYkdxuRY0zPIwLJ?=
+ =?us-ascii?Q?c3y4CtADV0zzqYmqw+Nt5gV0n+u4zmCyORoOZahX1m4D2NJ28k1dGPGY5K7m?=
+ =?us-ascii?Q?hGxwBbWmvyfWZWJ3QVoZ1NtV2/2b0m6VDPvhwAi/FLivxSeMDybWjZH0AYC1?=
+ =?us-ascii?Q?6gpTs72UTAElzMQsDgWvLyfTdHiGStvOJOfRto6zgVAN/P6xyV7+I4eBFVhW?=
+ =?us-ascii?Q?Wi6n/emj2rS7uFaByMe2LMKtTE3z8ncedgk4pY3jIEpw+LyTH0KfCQsYa2G8?=
+ =?us-ascii?Q?yTce3WEkHkaUywfAgxdtWQCLbRWy+cPJV4FWs/IeG4tEnC9YqFX/qgkqrgBC?=
+ =?us-ascii?Q?lGmDxBqyh/0SQea9raMh+u9+62C3huQrLDX7K3Ks44fz2w3ncpo5pVe7FbUt?=
+ =?us-ascii?Q?mOUdphLqFhkBQliPj0oVBOl3MwcsEnS4L7OcmxHnf2+Yp3QYze++l5ixKdNY?=
+ =?us-ascii?Q?Cp+nyO/8aXGUFT28RcUzUCp8E25dVJ2u3DeWX8KD8rUWLZ7jCZ+S7hdFJXw2?=
+ =?us-ascii?Q?pkFaNG3J5keuBsACsxKGuqCWxsVc89KyW8p1NljtfitkjeJdWuuDXrB64G62?=
+ =?us-ascii?Q?AIeL6rq+ieIS+77gZLVt2Kjf2x7uwnJvxvHst3WfzLH4UHHDNg29KE+F4p1D?=
+ =?us-ascii?Q?qEso2qEVapwrX39w0qSviW1Su33j2Ch78Qwuj3tMizfL0W79O1xj5/x5AQog?=
+ =?us-ascii?Q?P1kCxLjHjPE4Rotqvevgxb69i0EAuuvcYd429YQIiDHGRpsnXiFTqkMJPCnZ?=
+ =?us-ascii?Q?krk/71xR7VSRcSRGQP+7GcjHwkMPKQTRHaI6hILJo1GZn7a1zez+xJnWJs0K?=
+ =?us-ascii?Q?w3974stHuOWgwtkbniczbifR1LQiGujcOOKUpUgLz8LlI1NTcXz6B5RA9ZBC?=
+ =?us-ascii?Q?xQMmwkWmiTcO4ujjnTNCMus=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e396ec66-e606-4139-0669-08dbd581a9d5
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB2893.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 17:41:48.3127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x5IxGWYTrBKUT+BSJfbG9M4qgku1E3phyz9L21fZBKCh3ijSdjU9/TFOWfLgSfFdAJLnQkJb3SemhBbfCPxvQXbMGEGowZvuYJcGlpefArHPKY+Ww/epgOn4oyPJ0ARY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6280
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 22:38, David Laight <David.Laight@aculab.com> wrote:
+Bjorn Helgaas <helgaas@kernel.org> writes:
+
+> On Fri, Sep 29, 2023 at 05:20:36PM -0700, D Scott Phillips wrote:
+>> On Ampere Altra, PCIe hotplug is handled through ACPI. A side interface is
+>> also present to request system firmware control of attention LEDs. Add an
+>> ACPI PCI Hotplug companion driver to support attention LED control.
+>> ...
 >
-> From: Linus Torvalds
-> > >  - we can't even use a statement expression and __auto_type, because
-> > > these things are used in type definitions etc and need to be constant
-> > > expressions
+>> +	arm_smccc_smc(REQUEST, LED_CMD, led_status(status), LED_ATTENTION,
+>> +		      pci_domain_nr(bus) | (PCI_SLOT(root_port->devfn) << 4), 0, 0,
 >
-> Doesn't min() get around that by using is_constexpr() and
-> __builtin_choose_exptr() - the same could be done here.
+> pci_domain_nr() returns "int" (normally 32 bits), but since this is an
+> ACPI system, the domain comes from _SEG, which is defined to be 16
+> bits (ACPI r6.5, sec 6.5.6).
+>
+> So it looks like ORing in the "slot << 4" clobbers the upper 12 bits
+> of _SEG.
+>
+> Is this code doing the right thing?
 
-Nope. I wanted to do it that way - it would have made things much
-simpler and avoid the whole _Generic() thing, but try it - you cannot
-use statement expressions in a non-function context even with
-__builtin_choose_expr().
+Hi Bjorn,
 
-And no, min/max have never been usable in that context
-
-                 Linus
+on these Altra platforms _SEG is limited within 0-11. I can add an `&
+0xf` to pci_domain_nr() to make it clear that the segment number is
+encoded down into 4 bits in the smc request.
