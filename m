@@ -2,92 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDAB7D73BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0430E7D73C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjJYTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S230091AbjJYTBL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 15:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYTAX (ORCPT
+        with ESMTP id S229583AbjJYTBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:00:23 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1169F10E;
-        Wed, 25 Oct 2023 12:00:22 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c9e95aa02dso569465ad.0;
-        Wed, 25 Oct 2023 12:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698260421; x=1698865221; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nzAfQ6yYZLyhx2cAwtxAGCA0+tOzhnyj4YuE87FGQU4=;
-        b=bIsGHb7WaVBQ74oLBGji5cEIrgoN6P9fvH2alJukwyw8Uh34w2+o96pbJ9G66cStNL
-         O8wkG4nsPp3C+xj7jC6ug9A5vGQzgOtW5UdgbkEKmYhfaRtUb9wUA9q3ehy23PiEd9k1
-         jDqVPgVtOAnkk+mqjnYbaFZIGsdER14TPRthHpIV5cjznvB1l4V6ahFubjXTtueIIAC9
-         ihr+lyuXZaG0bJYIBgT6HAEgalzYK3+/zrMpYT168UdRB2IqiRDDod07Ogh82I8ToIqA
-         WvmziC3JhNCvwaIsnTY/6tnQE1HgQRU+PchxNA9rkxJPO1Y+8b/+Qfs0njyPjdWGKfwF
-         JNlw==
+        Wed, 25 Oct 2023 15:01:09 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECC810E;
+        Wed, 25 Oct 2023 12:01:08 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-565e54cb93aso99560a12.3;
+        Wed, 25 Oct 2023 12:01:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698260421; x=1698865221;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698260467; x=1698865267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nzAfQ6yYZLyhx2cAwtxAGCA0+tOzhnyj4YuE87FGQU4=;
-        b=f6j5EuLS21jBkiygUhYLUfZe1K7QEyTKOKFj75QWzWbUdfnJ+NHp381G7Q7gCLaUgf
-         jmhcAfE8OlJic/RIhptZOC2I2gh86wHtpgUf34naerS/S5bAX2+Goz5wg1UCt+87LXOR
-         ZBb1s4Y+Z5ltc9fJSNMI5MBYqpV5fPbh8dtlR0VAcHuVBwxEdQ8eQleIQ7TEzj9n2UCb
-         c1tipL9aT2uVWCcVaUpmDJZhg0CYXL+ECFug8z/F4c/x0b86x96mG5GYiQO8/cIhHVDg
-         eFNhqXx54EJp8FfAR/Z18y53yjRSGEoK7mFAmBh9oim7KoelTqoXiXbtyGsFN8Z/gldB
-         dhJw==
-X-Gm-Message-State: AOJu0YyKcCgDkKe1CCub+Y2hSakt52iFp6EXK+px1Pj+7IetjAsR19Ve
-        nqQU5YG2ajDYjTIJ0oUo3ytdX7fa7T4=
-X-Google-Smtp-Source: AGHT+IH0f70yOL3Vogs/TZ3xF70f7ik/ljg1vfYB4+38oocqr+9dom1dGVftRe4bhCVo4zwwbojxUg==
-X-Received: by 2002:a17:902:d50b:b0:1c8:75d9:f7dc with SMTP id b11-20020a170902d50b00b001c875d9f7dcmr626772plg.28.1698260421448;
-        Wed, 25 Oct 2023 12:00:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id jj11-20020a170903048b00b001c8a0879805sm9591444plb.206.2023.10.25.12.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 12:00:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 12:00:20 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     Andre Werner <andre.werner@systec-electronic.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: HS3001: remove redundant store on division
-Message-ID: <6a943960-d283-44e5-b19c-0250d6f4bed8@roeck-us.net>
-References: <20231023135828.667297-1-colin.i.king@gmail.com>
+        bh=hFFp1teDPTWctvGkI7bKcJj5VRaVw2/baBUihjKuLl8=;
+        b=YOsPyctpJ841e2DNiD87/TjFzFrBqL5IYKn1+0iG4LmAZGo03FhqIujqkmLBfR4Pbr
+         dSS/3GRo6rZjIjwXvyD/kkQeaE0t1Wqzlmtf8N8ONYd4EQUpExDdr9E+XoGXAM/4HN3H
+         GXpoYqOvXt2DF57MlbVaD4c7/cQGnMDvQisNmaCLnt+OzgSrQ17IhiR96R8xZyAfaGo6
+         nw5C/4HoHUUzJnBbiruZIX8pZi5BsS2vWqwlfeqwmLfG7jigVgd20prYvkx8tZbRAWGE
+         rh3zk9X2Qk8+1IDblpooSpCSnXj0RVz0H43yDDqn2a1pXnZePuI9pVRQdQ1qkH4I2ACs
+         zc4A==
+X-Gm-Message-State: AOJu0YzTptOYgmIUZSSciTbsEpHcQRdqgaKA6skVDz7pYuy/rJm28RVq
+        oJJY0pPExCqxIfNZbzvGolioWcpHiIrb+Poy3TpwJ8afy9Q=
+X-Google-Smtp-Source: AGHT+IHdfdJTZRIPepX8FQ+H7h+vOc2whDrTlCapGWKT2dM5oWBx0JJg09yVoS0zsJY7Tls/djhijSwzE9/tCpZ8JA4=
+X-Received: by 2002:a17:90b:608:b0:27d:44ce:cf7a with SMTP id
+ gb8-20020a17090b060800b0027d44cecf7amr14544657pjb.5.1698260467237; Wed, 25
+ Oct 2023 12:01:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023135828.667297-1-colin.i.king@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+References: <20231024222353.3024098-1-irogers@google.com> <20231024222353.3024098-21-irogers@google.com>
+In-Reply-To: <20231024222353.3024098-21-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 25 Oct 2023 12:00:56 -0700
+Message-ID: <CAM9d7cgMVcr-ZV2m=9B=B82PmGgWDWecBvt+fMhk-Yhzk_Q5Ow@mail.gmail.com>
+Subject: Re: [PATCH v3 20/50] perf record: Be lazier in allocating lost
+ samples buffer
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 02:58:28PM +0100, Colin Ian King wrote:
-> Currently the local variable hum is being divided by a constant and
-> the results is being re-assigned back to hum before the value is being
-> returned to the caller. The assignment to hum is redundant and can
-> be removed.
-> 
-> Cleans up clang scan build warning:
-> drivers/hwmon/hs3001.c:65:9: warning: Although the value stored to 'hum'
-> is used in the enclosing expression, the value is never actually read
-> from 'hum' [deadcode.DeadStores]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+On Tue, Oct 24, 2023 at 3:25 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Wait until a lost sample occurs to allocate the lost samples buffer,
+> often the buffer isn't necessary. This saves a 64kb allocation and
+> 5.3kb of peak memory consumption.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 9b4f3805ca92..b6c8c1371b39 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
+>  static void record__read_lost_samples(struct record *rec)
+>  {
+>         struct perf_session *session = rec->session;
+> -       struct perf_record_lost_samples *lost;
+> +       struct perf_record_lost_samples *lost = NULL;
+>         struct evsel *evsel;
+>
+>         /* there was an error during record__open */
+>         if (session->evlist == NULL)
+>                 return;
+>
+> -       lost = zalloc(PERF_SAMPLE_MAX_SIZE);
 
-Applied.
+Sorry for naively choosing the max size. :-p
+It could be sizeof(*lost) + machine->id_hdr_size.
 
-Guenter
+Thanks,
+Namhyung
+
+
+> -       if (lost == NULL) {
+> -               pr_debug("Memory allocation failed\n");
+> -               return;
+> -       }
+> -
+> -       lost->header.type = PERF_RECORD_LOST_SAMPLES;
+> -
+>         evlist__for_each_entry(session->evlist, evsel) {
+>                 struct xyarray *xy = evsel->core.sample_id;
+>                 u64 lost_count;
+> @@ -1961,6 +1953,14 @@ static void record__read_lost_samples(struct record *rec)
+>                                 }
+>
+>                                 if (count.lost) {
+> +                                       if (!lost) {
+> +                                               lost = zalloc(PERF_SAMPLE_MAX_SIZE);
+> +                                               if (!lost) {
+> +                                                       pr_debug("Memory allocation failed\n");
+> +                                                       return;
+> +                                               }
+> +                                               lost->header.type = PERF_RECORD_LOST_SAMPLES;
+> +                                       }
+>                                         __record__save_lost_samples(rec, evsel, lost,
+>                                                                     x, y, count.lost, 0);
+>                                 }
+> @@ -1968,9 +1968,18 @@ static void record__read_lost_samples(struct record *rec)
+>                 }
+>
+>                 lost_count = perf_bpf_filter__lost_count(evsel);
+> -               if (lost_count)
+> +               if (lost_count) {
+> +                       if (!lost) {
+> +                               lost = zalloc(PERF_SAMPLE_MAX_SIZE);
+> +                               if (!lost) {
+> +                                       pr_debug("Memory allocation failed\n");
+> +                                       return;
+> +                               }
+> +                               lost->header.type = PERF_RECORD_LOST_SAMPLES;
+> +                       }
+>                         __record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
+>                                                     PERF_RECORD_MISC_LOST_SAMPLES_BPF);
+> +               }
+>         }
+>  out:
+>         free(lost);
+> --
+> 2.42.0.758.gaed0368e0e-goog
+>
