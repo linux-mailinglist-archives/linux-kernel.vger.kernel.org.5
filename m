@@ -2,183 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 780307D7228
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCC17D722E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbjJYRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
+        id S231705AbjJYRSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjJYRPQ (ORCPT
+        with ESMTP id S229485AbjJYRSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:15:16 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BEB132;
-        Wed, 25 Oct 2023 10:15:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MqGMeFf1ZeIveuOkymIcgdfLqp1ZKHVBUVHQg0OgpOV04oXdasulRqaDFK0iR031m1Ukl4qQJ3Q0l8eOM9Cx04U7G3iYhxEWhsVq+u/s0rUgQpadrj5ELkcvH44LNvqzTyOFuZbkdpX8EvrQDUN0TCjJNPxppoufcNAB+OqWt2zapmOXngbhB7osG5s1jCYSlU1ZPEANUrUoV+jf8quOinxSnJGSEHzrxWuH/4QpO4TX2bPwiE+hlW5YVtsIsiU7Ra27Rjvz0HfQdRSbRzIDfyMdJeoY88GSHVMwEypID0zbjf+LPmPnR4uyLantuGGBqo4A5ILdjfGU1nTOZ6wOTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D7iTYyEdd0ux3kcOnZA4tjXsg2EYTYcZLBS/h2/vivw=;
- b=UBIHCH92twrrY9O8K7UoMOAS8Aisgy2hgXlSDOUnoKjiWDEq/fQVNkwIuZab8Y6Qh1nZb2Co/eqUifhQn48obYcOSDEigaAIKP7/5WoRZeM3YHT1ggztiK4KBuIYmTBbdMqi6cTBmFhFigHiJAAh3OnAUcFazPWMKaY/7hyUYgQdf2jLgE6uLnMhjfpO75qSx0Zq65A5iRhe7tcS7Kqs6S1b9BrjTtnoopX08NM6yp4G15UgSyDC0na1ebcU6wrkhNU+94EH/PIinE5V/fvlxdIpH8YcUVW5drNuVtH6Io7tJMUhjENET/MqCsFQKJMqm8m9iDFHhjatVYiO/Funrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D7iTYyEdd0ux3kcOnZA4tjXsg2EYTYcZLBS/h2/vivw=;
- b=ggA6QeWdr5P6KpCwf43Y5UKXVrJlaYd5VR1xxMEJsObOCxYHYWDPnQNyqTjiifL1p4aZpRrwWCwqww3/HGcC85T/h9leTKke9K0GQ1K8J4HT6X8iKVKNpniFdxMkzE1D7O7Y6nNb+z/9QuQ+yVXpNa7IMvB2K2wzJoPg3woJbGG1mknIDfkq1WhA6OwnRx6M2nyRh9/g3mcGzAg5B+ky3Vl5PXaGdq0QeY1tf8u/wo32dqgCjTaEtveiNVDUwt1YOXYitQ6WEZI0Fb8ou2Wms4X0zdpiKrvfXG/7Cdo9dygT37d9ZwJwrZ06I5tFN549OX4MFNv0acab+q9/Ccq5kg==
-Received: from BY5PR12MB3763.namprd12.prod.outlook.com (2603:10b6:a03:1a8::24)
- by DS0PR12MB9323.namprd12.prod.outlook.com (2603:10b6:8:1b3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Wed, 25 Oct
- 2023 17:15:12 +0000
-Received: from BY5PR12MB3763.namprd12.prod.outlook.com
- ([fe80::84:dd27:ba92:6b15]) by BY5PR12MB3763.namprd12.prod.outlook.com
- ([fe80::84:dd27:ba92:6b15%4]) with mapi id 15.20.6907.030; Wed, 25 Oct 2023
- 17:15:12 +0000
-From:   Ankit Agrawal <ankita@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Andy Currid <acurrid@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <danw@nvidia.com>,
-        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for grace
- hopper
-Thread-Topic: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for
- grace hopper
-Thread-Index: AQHZ/4T6dPreO49caEWsaHN/ceuQqrBOmsSAgAi/5YSAACTLAIABhTmtgAAJHQCAAS20AIAAOkSMgAAn94CAACslEw==
-Date:   Wed, 25 Oct 2023 17:15:12 +0000
-Message-ID: <BY5PR12MB3763ACDF0C7AD7C8094C91CAB0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
-References: <20231015163047.20391-1-ankita@nvidia.com>
-        <20231017165437.69a84f0c.alex.williamson@redhat.com>
-        <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
-        <20231023084312.15b8e37e.alex.williamson@redhat.com>
-        <BY5PR12MB37636C06DED20856CF604A86B0DFA@BY5PR12MB3763.namprd12.prod.outlook.com>
-        <20231024082854.0b767d74.alex.williamson@redhat.com>
-        <BN9PR11MB5276A59033E514C051E9E4618CDEA@BN9PR11MB5276.namprd11.prod.outlook.com>
-        <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
- <20231025082019.14575863.alex.williamson@redhat.com>
-In-Reply-To: <20231025082019.14575863.alex.williamson@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY5PR12MB3763:EE_|DS0PR12MB9323:EE_
-x-ms-office365-filtering-correlation-id: 1bb6af8c-4270-4472-f2dc-08dbd57df29b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O7lm4qS+wZ0vkfVaJCMKXLM0N/OY0Z3nxAwt2VW9/cBYr4pyUeIY6yp5F9KTRJ4kztHV7YngyH7d38Spb00ZF2bcFtyQNzq1iPN+IibkLgWTtmzZ6ylcOzNIzhEXUukElOepO5TPYk7vBmcTCCi315LNvA+8YrGyc0FOrZCIA1pncDVn+1LkywoIfMbaXbn6STlZ6gpZ8YBFX2XHkJgtev3vigug1Ue3uynJBgqnZV/8MQ48QMAPXuHp9944Zz8NgQRlzPAO8fTMBJAh/dnEE6ebsV+8pnrD2JYfdjW/iwavy4XZ8tAo0ggvhaOOONJvbFUUpgJakieQ1AE+RxnMvXv5GNEVIn6AYtVyjjtjKFGyqOnmaKLu+KmarUdDvEPAIY4DVKzoEhn1bbdw6phHckWA8l9M+wJTPElTMvwg5RSvntz1yrMlttD7GHNrbsz/xy8gJYhi/HIJ1R2LlREIfexOS1DJ+Yvaaiz3ybqxq/nQJ3fm108DoTRRqIjQ0IUEzt0IXzBihkHtDQp+dV8Z1H4Mrgkh8TAI0yRe/T8kjPJXP98/tuMd4dEZXSb/YeNe6nheVFm2Krikb2k96c0qM2WSIJ1ZwSI0B3rKGbgioIG+7NBz/sM76BnRYL1hQFBQmgEiNtDWpLhj5Np2aapT/joeZAlovyvzaa6P21jgk3o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(5660300002)(55016003)(52536014)(83380400001)(26005)(38100700002)(41300700001)(122000001)(4326008)(38070700009)(8676002)(8936002)(76116006)(66476007)(9686003)(66556008)(54906003)(316002)(6916009)(91956017)(66946007)(66446008)(64756008)(6506007)(7696005)(71200400001)(478600001)(33656002)(86362001)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Km870qLPGgxsOowlH/oWhlhYTT5LMOT+6dCyxaeIY1qymwFQqLZqCPIGMX?=
- =?iso-8859-1?Q?2eOGIK9yW33yHVzeAdpewsqOlQekqZtzPetSfwUSUBLlur0qYrXLT7YfIW?=
- =?iso-8859-1?Q?d8pnZRkJ8eK1bQnlWCM4nxoCBeexS1kllRQkS0QHau82urps7VwK2LuEEs?=
- =?iso-8859-1?Q?PQT+kBF4sfplqIZayd9T7vIFYvtZMZZEV6yimzjTG8lDVefBXbNOgh1jZ1?=
- =?iso-8859-1?Q?/myUAXCfspOzy3lAEifJ4INEfsCE4/zehXLEVas2wSvJqqoo9TsB+3c2+u?=
- =?iso-8859-1?Q?I8Hn8Wd0TTCQA2/6nH/tk3sbUvSm0KRVr0qJBBidgrGJxheQ4zIyvZUrcp?=
- =?iso-8859-1?Q?HJGdMosuez7V0F6Nd/mIHyc/d0vS71QQH3R1a46MS4SnFsjvngV0HTYsM1?=
- =?iso-8859-1?Q?8CGN7dsbCwwCRIoCiE8f6RcxyqX5RcoHVU8L2hs563L9LUEnsCYJOhnBoz?=
- =?iso-8859-1?Q?nnmrC7OukNOH78/a/nTj+xqiiFLH64PhQ6EfRiJ4pmxPZrY1EYch5WmLLv?=
- =?iso-8859-1?Q?smYI8zmgX7Oqq6eHUxiAXQjLngVf7S8YqT0dZzq3lSuW5M7oDdZkMbKfrE?=
- =?iso-8859-1?Q?scacKxJyWj9c/9SkY9IJcnh58wWNy+yTc3iYoA+xsPkIaZ/I+QcrwFXzFu?=
- =?iso-8859-1?Q?p/Goi361zPsq312dYpB0R0g9CI281zYncMmFiUSHU7uJsoqmUbaJ1c4B5W?=
- =?iso-8859-1?Q?rqeaipxBD91TLz4dOgvsKzdH2zZ2HVsbdl5mIsWNgiimlNrCbnIkqL7Et/?=
- =?iso-8859-1?Q?wthtDXc8xKuCxbZozwol7MHX5FKzf3J0uf76sYVao2ULnTJMTHKRQBm6J6?=
- =?iso-8859-1?Q?utSj4PZUn3fxWAHcfqEjOknO0Fsd//KsZV7CVqaIEgFDwtZ8bdB4eaK9O7?=
- =?iso-8859-1?Q?Rnhi4pvMUORPutwXTDJBvyGdQ4eRS1RI5ckX+OazIoXsK4Jt1l+and4Klh?=
- =?iso-8859-1?Q?vamljJNZwGQ7CowCIG277BbOaD1updAZ/zMeAauEpLd62sTUBgQx7upOcx?=
- =?iso-8859-1?Q?RSMqdTp51nA3HuRuh+lR6WjKFhkMZs4J2073gRJrapvlbKdZN3C+V9LTKB?=
- =?iso-8859-1?Q?mwDLvMZMnL2Id01MEm8ieaAWVOxpysJLFSDK+fbPQj1mGsUH8LUM8VXc8o?=
- =?iso-8859-1?Q?iA//fEMC4bhq6vHZ1GEX/tx2drKZy8NP8xerD8uTfQ0iyTQTN4r4xm2w5y?=
- =?iso-8859-1?Q?T/GMf7/duc22kNaISWZsi0xXK+4Hes5zCqU2AIn9Cm9U8efe/DFoMzhp/u?=
- =?iso-8859-1?Q?5rGUM1Uacg5k5VVMCKSkJjnNJqHIC+1Hz7QpzOPhLIekCtXCuEYlicOP5w?=
- =?iso-8859-1?Q?vl+ff43KjZ1F5PBKTtlkLRCoY2D7j1YRRbY65bYmBgYMfmpGKL5G9K8M8O?=
- =?iso-8859-1?Q?hWdWi/E5eN0TrLC1X/8ledJL9lYLLkzWI9sraUEsMfYhizdFkTGTDVMox/?=
- =?iso-8859-1?Q?K5UxYyivSEDKGk6iLc1fima/KPXOaaf5W/PACZqPOTjw0qlGhx0UHaGIS9?=
- =?iso-8859-1?Q?LzJJdgd6mnSC1E+gvMBe/dDctGaySyrSFvvMWPX+aYD0Xkg9RLdHDtgd0y?=
- =?iso-8859-1?Q?2fafcQc9mb9KF3kKn5KTrORFhBg2FAOPEIa0+W58dpR/W8c+X1BpYO2LMQ?=
- =?iso-8859-1?Q?CKhjZObOb8ckg=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 25 Oct 2023 13:18:11 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5FE111;
+        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7b91faf40so57005167b3.1;
+        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698254288; x=1698859088; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
+        b=UP6pDkdCV4was2SvMGbiTefza9yZ5KcGarGRScycs/w04j54BFI1DWgyqlWTr1oWba
+         mciGjNvHezQ5YxYVBktmo+Nbr9+I+GpDzA52xx+uVifbeSGlAoPdfnwQT3IQhU0e9eZp
+         knva3sh04M1oDEgpvt4AapfaMR3FXWswRp8zq7gy0dJYIkChAOM4Ky4LusUXBXZMvIKz
+         qF3Zh5c+9T9M12QuVcRLrWx/1WB6W8IOvj48L0yt2g3RxjAvADZApyXkPTh9bpNlOhqJ
+         X7htJkhMozGvlbgcKIFhSBF1BqYR9fAwPH7x88JcBPJKZFvm1NaeFH7RzpCDZx2mdBNu
+         6p4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698254288; x=1698859088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
+        b=rnuOwjSerxgn7JxWpONgkDXdXE9V9NdGJa/uHxI+j2++r9i7UP+WyTdSNwlMyTyUDa
+         C7+56vaO4UMNIv9+808I5srFUb+Mo/tbL0NvdrkFjRsBNWww/SlF3/nicIs6KNVw5UFB
+         9Ob0fmN/Axn5lynew4xhgFmT/ageUqagOCP1iEvHp5iBK45lONkopiZhhpVdBMYr0xED
+         +/YBpKbcY1sjYKYYDLMyIHwa1HX4ZlSjc305BS7LcEivQYdq8zVuw+2CyiAXCSQTFQJd
+         g2wbGve3E7r/3wIW/Tti2mOZwWOfae6kZzZcyJI09STBB+dfY8eCC/4vpUc9/WAfNdaT
+         k9PA==
+X-Gm-Message-State: AOJu0YyIJscQzYrCP8wg5wnipAWfFBT+hgB8UjQxDUKeookAGWlnM66n
+        xFDF9u3m4YW6Mm8ZqdhfrLA=
+X-Google-Smtp-Source: AGHT+IGgtUBJjDpdcpn94j2EDhiGSURlNcjaDyIDVmNUdwVVea2/754GCkqaKNr0vxpI0nr3Cz+c7g==
+X-Received: by 2002:a25:d68c:0:b0:d9a:60c8:c5ff with SMTP id n134-20020a25d68c000000b00d9a60c8c5ffmr15314241ybg.65.1698254287660;
+        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id p20-20020a257414000000b00d9cb16d7749sm4587420ybc.21.2023.10.25.10.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8F4C527C0054;
+        Wed, 25 Oct 2023 13:18:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Wed, 25 Oct 2023 13:18:06 -0400
+X-ME-Sender: <xms:zU05ZWbsFnlpkY4KFibxZDFs-r_x1VAjT9RgFb3VlVQhcP4QjVfZ7Q>
+    <xme:zU05ZZZnJNGfh-wHgECw4WXHLvfFWl4JatXMbF9rP5SjWbtDB39W4gGDr3a2RsZN-
+    IY5RJII5H-K5og7QA>
+X-ME-Received: <xmr:zU05ZQ83OUv7VLixvcvI9Hw1u9NdBZ5RpHqjXtxqOU6gjqVT0ynbS4E3uPM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdduuddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:zU05ZYpXi3eU_u35nadjKbyQPkB5r-CprRF04-3PyQnYChI-wiQyfg>
+    <xmx:zU05ZRoGdrJ711ynPXw464RpTS46WNs_Rg9u19tNNlz8ALVpOtH5kg>
+    <xmx:zU05ZWSRmrINNmfSqk9ytvjlxlS6wkSeTs0MWwJVwui3h7HR1V__NA>
+    <xmx:zk05ZVcBcFYPR74NDKjUDgjwmUxcLTSLFpWrrQYmVoY3-uy0EcjEqA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Oct 2023 13:18:05 -0400 (EDT)
+Date:   Wed, 25 Oct 2023 10:17:22 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <ZTlNogQ_nWUzVJ9M@boqun-archlinux>
+References: <20231025140915.590390-1-urezki@gmail.com>
+ <20231025140915.590390-2-urezki@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3763.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bb6af8c-4270-4472-f2dc-08dbd57df29b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2023 17:15:12.0551
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H2bNaY+um+mfA/6ITTbRLqrSif/TnIbBeooLkzmDZRptH0NN5jgRknNkm5Cbgqsy82Wpg1FyFmtqTPYe1hah/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9323
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025140915.590390-2-urezki@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> BTW, it's still never been answered why the latest QEMU series dropped=0A=
-> the _DSD support.=0A=
-=0A=
-The _DSD keys were there in v1 to communicate the PXM start id and the=0A=
-count associated with the device to the VM kernel. In v2, we proposed an=0A=
-alternative approach to leverage the Generic Initiator (GI) Affinity struct=
-ure=0A=
-in SRAT (ACPI Spec 6.5, Section 5.2.16.6) to create NUMA nodes. GI structur=
-e=0A=
-allows an association between a GI (GPU in this case) and proximity domains=
-.=0A=
-So we create 8 GI structures with a unique PXM Id and the device BDF. This=
-=0A=
-removes the need for DSD keys as the VM kernel could parse the GI structure=
-s=0A=
-and identify the PXM IDs associated with the device using the BDF.=0A=
-(E.g. https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/am=
-dkfd/kfd_crat.c#L1938)=0A=
-=0A=
-> In light of that, I don't think we should be independently calculating=0A=
-> the BAR2 region size using roundup_pow_of_two(nvdev->memlength).=0A=
-> Instead we should be using pci_resource_len() of the physical BAR2 to=0A=
-> make it evident that this relationship exists.=0A=
-=0A=
-Sure, I will make the change in the next posting.=0A=
-=0A=
-> The comments throughout should also be updated to reflect this as=0A=
-> currently they're written as if there is no physical BAR2 and we're=0A=
-> making a completely independent decision relative to BAR2 sizing.=A0 A=0A=
-> comment should also be added to nvgrace_gpu_vfio_pci_read/write()=0A=
-> explaining that the physical BAR2 provides the correct behavior=0A=
-> relative to config space accesses.=0A=
-=0A=
-Yeah, will update the comments.=0A=
-=0A=
-> The probe function should also fail if pci_resource_len() for BAR2 is=0A=
-> not sufficient for the coherent memory region.=A0 Thanks,=0A=
-=0A=
-Ack.=0A=
-=0A=
+On Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) wrote:
+> A call to a synchronize_rcu() can be optimized from time point of
+> view. Different workloads can be affected by this especially the
+> ones which use this API in its time critical sections.
+> 
+> For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
+> callback can be delayed and such delay depends on:
+> 
+> - where in a nocb list it is located;
+> - how fast previous callbacks completed.
+> 
+> 1. On our Android devices i can easily trigger the scenario when
+> it is a last in the list out of ~3600 callbacks:
+> 
+
+I wonder how many of the callbacks are queued via call_rcu_hurry()? If
+not a lot, I wonder whether we can resolve the problem differently, see
+below:
+
+> <snip>
+>   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
+> ...
+>   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+>   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
+> <snip>
+> 
+> 2. We use cpuset/cgroup to classify tasks and assign them into
+> different cgroups. For example "backgrond" group which binds tasks
+> only to little CPUs or "foreground" which makes use of all CPUs.
+> Tasks can be migrated between groups by a request if an acceleration
+> is needed.
+> 
+> See below an example how "surfaceflinger" task gets migrated.
+> Initially it is located in the "system-background" cgroup which
+> allows to run only on little cores. In order to speed it up it
+> can be temporary moved into "foreground" cgroup which allows
+> to use big/all CPUs:
+> 
+> cgroup_attach_task():
+>  -> cgroup_migrate_execute()
+>    -> cpuset_can_attach()
+>      -> percpu_down_write()
+>        -> rcu_sync_enter()
+>          -> synchronize_rcu()
+>    -> now move tasks to the new cgroup.
+>  -> cgroup_migrate_finish()
+> 
+> <snip>
+>          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
+>     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+>     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+>    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
+> <snip>
+> 
+> "A moving time" depends on how fast synchronize_rcu() completes. See
+> the first trace line. The migration has not occurred until the sync
+> was done first. Please note, number of different callbacks to be
+> invoked can be thousands.
+> 
+> 3. To address this drawback, maintain a separate track that consists
+> of synchronize_rcu() callers only. The GP-kthread, that drivers a GP
+> either wake-ups a worker to drain all list or directly wakes-up end
+> user if it is one in the drain list.
+> 
+
+Late to the party, but I kinda wonder whether we can resolve it by:
+
+1) either introduce a separate seglist that only contains callbacks
+queued by call_rcu_hurry(), and whenever after an GP and callbacks are
+ready, call_rcu_hurry() callbacks will be called first.
+
+2) or make call_rcu_hurry() callbacks always inserted at the head of the
+NEXT list instead of the tail, e.g. (untested code):
+
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index f71fac422c8f..89a875f8ecc7 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -338,13 +338,21 @@ bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp)
+  * absolutely not OK for it to ever miss posting a callback.
+  */
+ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
+-			   struct rcu_head *rhp)
++			   struct rcu_head *rhp,
++			   bool is_lazy)
+ {
+ 	rcu_segcblist_inc_len(rsclp);
+ 	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
+-	rhp->next = NULL;
+-	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
+-	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
++	/* If hurry and the list is not empty, put it in the front */
++	if (!is_lazy && rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL) > 1) {
++		// hurry callback, queued at front
++		rhp->next = READ_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL]);
++		WRITE_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL], rhp);
++	} else {
++		rhp->next = NULL;
++		WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
++		WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
++	}
+ }
+ 
+ /*
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 4fe877f5f654..459475bb8df9 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -136,7 +136,8 @@ struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
+ struct rcu_head *rcu_segcblist_first_pend_cb(struct rcu_segcblist *rsclp);
+ bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp);
+ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
+-			   struct rcu_head *rhp);
++			   struct rcu_head *rhp,
++			   bool is_lazy);
+ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
+ 			   struct rcu_head *rhp);
+ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 20d7a238d675..53adf5ab9c9f 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1241,7 +1241,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 		sdp = raw_cpu_ptr(ssp->sda);
+ 	spin_lock_irqsave_sdp_contention(sdp, &flags);
+ 	if (rhp)
+-		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
++		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp, true);
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+ 	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 8d65f7d576a3..7dec7c68f88f 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -362,7 +362,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 	}
+ 	if (needwake)
+ 		rtpcp->urgent_gp = 3;
+-	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
++	rcu_segcblist_enqueue(&rtpcp->cblist, rhp, true);
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 	if (unlikely(needadjust)) {
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index cb1caefa8bd0..e05cbff40dc7 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2670,7 +2670,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
+ 		return; // Enqueued onto ->nocb_bypass, so just leave.
+ 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
+-	rcu_segcblist_enqueue(&rdp->cblist, head);
++	rcu_segcblist_enqueue(&rdp->cblist, head, lazy_in);
+ 	if (__is_kvfree_rcu_offset((unsigned long)func))
+ 		trace_rcu_kvfree_callback(rcu_state.name, head,
+ 					 (unsigned long)func,
+
+Sure, there may be some corner cases I'm missing, but I think overall
+this is better than (sorta) duplicating the logic of seglist (the llist
+in sr_normal_state) or the logic of wake_rcu_gp()
+(synchronize_rcu_normal).
+
+Anyway, these are just if-you-have-time-to-try options ;-)
+
+Regards,
+Boqun
+
+> 4. This patch improves the performance of synchronize_rcu() approximately
+> by ~30% on synthetic tests. The real test case, camera launch time, shows
+> below figures(time is in milliseconds):
+> 
+> 542 vs 489 diff: 9%
+> 540 vs 466 diff: 13%
+> 518 vs 468 diff: 9%
+> 531 vs 457 diff: 13%
+> 548 vs 475 diff: 13%
+> 509 vs 484 diff: 4%
+> 
+> Synthetic test:
+> 
+> Hardware: x86_64 64 CPUs, 64GB of memory
+> 
+> - 60.000 tasks(simultaneous);
+> - each task does(1000 loops)
+>      synchronize_rcu();
+>      kfree(p);
+> 
+> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
+> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
+> 
+> Please note, by default this functionality is OFF and the old way is
+> still used instead, In order to activate it, please do:
+> 
+> echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+[...]
