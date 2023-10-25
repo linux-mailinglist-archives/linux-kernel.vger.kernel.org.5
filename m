@@ -2,75 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B8B7D7489
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021D57D7499
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjJYTlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S229672AbjJYTnh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 15:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYTlE (ORCPT
+        with ESMTP id S229441AbjJYTng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:41:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC5B189;
-        Wed, 25 Oct 2023 12:41:02 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ca3a54d2c4so388485ad.3;
-        Wed, 25 Oct 2023 12:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698262862; x=1698867662; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IdzTaQLvIjWdCW23uUwjApK25y8OzySo8bAMr5Qvrrc=;
-        b=G/jmQSvS+vH8+KbuGGYKLBZJFM2R3+8UcQj38qZyeJyGpoJKGQDXP0JaqPe8LjIlx5
-         F82OIpd8Q8+OvAPTSZAkCe1P+V31oZT1rr0jEGzSHqqYoNevW9Wx8zh9yPQcb5CvLZbA
-         SEAmnIjI579p206cMAPpXP9wfNm8lVk4kIgZd8sl1tnAtjMkY5p5G4gPyNzVG8AL/6kg
-         WeFnTfzdu96PrAb9Ay8PIZigZjGRozcg4/KruPiNlyONeY8sgtHg4s/gGe5mEFKoc/+/
-         ARxsFgl1odZM0Ha1pSalrFvLDGvaqvVjVSj+WWURYYPaF0rl+bfu98awvDKVix/kU5To
-         kgWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698262862; x=1698867662;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IdzTaQLvIjWdCW23uUwjApK25y8OzySo8bAMr5Qvrrc=;
-        b=bokGs0hm7WHIfySPIGarj8j+5Dx/+7kbSm7KE5SZqGdR1IQCGwx58oGztfSvlGGSX9
-         Th+daC6nIyjhCL34mL0OuO8v1rN96eQhCN8eAAtD7ZFEONtyKIRzajYK3Q9rKXjf0CDd
-         ayxMkufCKP0qM2wWlS/JlrK+D6hl1fx3eAhefdpAMgzTMoarW3bqJHEWEJUH1KMog3et
-         Oy5PmFd8zPo5uNtUdgGsbKmiG11w7R5kBzPeupR0DHz9chsbFys+ImmSuLtzTAXgSIIF
-         ISUcKyav9zBqwwP85UHEzaqf2p6ckFcCUvyDp4apDHxb3Jo4CIU6NoB46cka9ZkKr5Aq
-         LZ9A==
-X-Gm-Message-State: AOJu0YyPb1KCJJua0jfJ0xodzOpC97lPUBte0D+4g5nLpSQs28XPIUgJ
-        +FvTU+9fZEL0699Zg/Xnymc=
-X-Google-Smtp-Source: AGHT+IFZyvarEOoRSc9FXYqsMJLGoAA6rpsNiBAXJxTtm56787NJ2q1l4vPNbHRuh+eqs01IQCzXCw==
-X-Received: by 2002:a17:903:644:b0:1c9:ca45:f86 with SMTP id kh4-20020a170903064400b001c9ca450f86mr13714334plb.18.1698262861743;
-        Wed, 25 Oct 2023 12:41:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t12-20020a170902a5cc00b001c74876f032sm9512635plq.162.2023.10.25.12.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 12:41:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 12:41:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Aleksa Savic <savicaleksa83@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, leonard.anderweit@gmail.com,
-        Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (aquacomputer_d5next) Check if temp sensors
- of legacy devices are connected
-Message-ID: <ac61decf-8ab7-46c1-83f0-d3f79f737bbf@roeck-us.net>
-References: <20231016083559.139341-1-savicaleksa83@gmail.com>
- <20231016083559.139341-2-savicaleksa83@gmail.com>
+        Wed, 25 Oct 2023 15:43:36 -0400
+Received: from smtprelay01.ispgateway.de (smtprelay01.ispgateway.de [80.67.18.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B59C137;
+        Wed, 25 Oct 2023 12:43:32 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay01.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.1)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qvjmp-00019n-1N;
+        Wed, 25 Oct 2023 21:43:27 +0200
+Message-ID: <fa4afea49b33fb20c1c6b46a65d73912c96fdaa7.camel@apitzsch.eu>
+Subject: Re: [PATCH 2/4] media: i2c: imx214: Move controls init to separate
+ function
+From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Ricardo Ribalda <ribalda@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Date:   Wed, 25 Oct 2023 21:43:25 +0200
+In-Reply-To: <kdp6brzqdllnyokwsalkpsbjl6cfnpv62gojfp3xoilsurphke@qqqa4gufb7xf>
+References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
+         <20231023-imx214-v1-2-b33f1bbd1fcf@apitzsch.eu>
+         <kdp6brzqdllnyokwsalkpsbjl6cfnpv62gojfp3xoilsurphke@qqqa4gufb7xf>
+Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016083559.139341-2-savicaleksa83@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,37 +56,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:35:57AM +0200, Aleksa Savic wrote:
-> Return -ENODATA if a temp sensor of a legacy device
-> does not contain a reading.
+Am Dienstag, dem 24.10.2023 um 09:22 +0200 schrieb Jacopo Mondi:
+> Hi Andre'
 > 
-
-Why is the sensor instantiated in the first place ?
-Returning -ENODATA for every reading is not desirable.
-If this can happen, the is_visible function should check
-for it and skip affected sensors.
-
-Guenter
-
-> Originally-from: Leonard Anderweit <leonard.anderweit@gmail.com>
-> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
-> ---
->  drivers/hwmon/aquacomputer_d5next.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> On Mon, Oct 23, 2023 at 11:47:51PM +0200, André Apitzsch wrote:
+> > Code refinement, no functional changes.
+> > 
+> > Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> > ---
+> >  drivers/media/i2c/imx214.c | 111 ++++++++++++++++++++++++++-------
+> > ------------
+> >  1 file changed, 64 insertions(+), 47 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/imx214.c
+> > b/drivers/media/i2c/imx214.c
+> > index 9218c149d4c8..554fc4733128 100644
+> > --- a/drivers/media/i2c/imx214.c
+> > +++ b/drivers/media/i2c/imx214.c
+> > @@ -695,6 +695,68 @@ static const struct v4l2_ctrl_ops
+> > imx214_ctrl_ops = {
+> >  	.s_ctrl = imx214_set_ctrl,
+> >  };
+> > 
+> > +static int imx214_ctrls_init(struct imx214 *imx214)
+> > +{
+> > +	static const s64 link_freq[] = {
+> > +		IMX214_DEFAULT_LINK_FREQ
+> > +	};
+> > +	static const struct v4l2_area unit_size = {
+> > +		.width = 1120,
+> > +		.height = 1120,
+> > +	};
+> > +	struct v4l2_ctrl_handler *ctrl_hdlr;
+> > +	int ret;
+> > +
+> > +	ctrl_hdlr = &imx214->ctrls;
+> > +	ret = v4l2_ctrl_handler_init(&imx214->ctrls, 3);
 > 
-> diff --git a/drivers/hwmon/aquacomputer_d5next.c b/drivers/hwmon/aquacomputer_d5next.c
-> index 023807859be7..46ff4fd4f87d 100644
-> --- a/drivers/hwmon/aquacomputer_d5next.c
-> +++ b/drivers/hwmon/aquacomputer_d5next.c
-> @@ -926,7 +926,10 @@ static int aqc_legacy_read(struct aqc_data *priv)
->  	for (i = 0; i < priv->num_temp_sensors; i++) {
->  		sensor_value = get_unaligned_le16(priv->buffer + priv->temp_sensor_start_offset +
->  						  i * AQC_SENSOR_SIZE);
-> -		priv->temp_input[i] = sensor_value * 10;
-> +		if (sensor_value == AQC_SENSOR_NA)
-> +			priv->temp_input[i] = -ENODATA;
-> +		else
-> +			priv->temp_input[i] = sensor_value * 10;
->  	}
->  
->  	/* Special-case sensor readings */
+> I know it was already like this, but you could take occasion to
+> pre-allocate enough control slots. I count 4 here, plus the 2 parsed
+> from system firware in the next patch.
+> 
+> You can change this here and mention it in the commit message or with
+> a separate patch on top. Up to you!
+> 
+I will add it to the next patch ("Read orientation and rotation from
+system firmware"). As it should be increased there anyway. Hope that's
+fine.
+
+> 
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	imx214->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, NULL,
+> > +					      
+> > V4L2_CID_PIXEL_RATE, 0,
+> > +					      
+> > IMX214_DEFAULT_PIXEL_RATE, 1,
+> > +					      
+> > IMX214_DEFAULT_PIXEL_RATE);
+> > +
+> > +	imx214->link_freq = v4l2_ctrl_new_int_menu(ctrl_hdlr,
+> > NULL,
+> > +						  
+> > V4L2_CID_LINK_FREQ,
+> > +						  
+> > ARRAY_SIZE(link_freq) - 1,
+> > +						   0, link_freq);
+> > +	if (imx214->link_freq)
+> > +		imx214->link_freq->flags |=
+> > V4L2_CTRL_FLAG_READ_ONLY;
+> > +
+> > +	/*
+> > +	 * WARNING!
+> > +	 * Values obtained reverse engineering blobs and/or
+> > devices.
+> > +	 * Ranges and functionality might be wrong.
+> > +	 *
+> > +	 * Sony, please release some register set documentation
+> > for the
+> > +	 * device.
+> > +	 *
+> > +	 * Yours sincerely, Ricardo.
+> > +	 */
+> > +	imx214->exposure = v4l2_ctrl_new_std(ctrl_hdlr,
+> > &imx214_ctrl_ops,
+> > +					     V4L2_CID_EXPOSURE,
+> > +					     IMX214_EXPOSURE_MIN,
+> > +					     IMX214_EXPOSURE_MAX,
+> > +					     IMX214_EXPOSURE_STEP,
+> > +					    
+> > IMX214_EXPOSURE_DEFAULT);
+> > +
+> > +	imx214->unit_size = v4l2_ctrl_new_std_compound(ctrl_hdlr,
+> > +				NULL,
+> > +				V4L2_CID_UNIT_CELL_SIZE,
+> > +				v4l2_ctrl_ptr_create((void
+> > *)&unit_size));
+> > +
+> > +	ret = ctrl_hdlr->error;
+> > +	if (ret) {
+> > +		v4l2_ctrl_handler_free(ctrl_hdlr);
+> > +		return dev_err_probe(imx214->dev, ret, "failed to
+> > add controls\n");
+> 
+> dev_err_probe won't help I think, or could ctrl_hdr->error be
+> -EPROBE_DEFER ? Not a big deal though!
+
+dev_err_probe() is used by imx415 (the latest added imx* driver).
+That's why I used it, too.
+
+André
+> 
+> All minor comments, with these addressed
+> Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+> 
+> Thanks
+>   j
+> 
