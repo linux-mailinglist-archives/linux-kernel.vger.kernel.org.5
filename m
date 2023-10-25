@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B79087D668C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDD67D6691
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjJYJR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S233880AbjJYJS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234230AbjJYJRY (ORCPT
+        with ESMTP id S233306AbjJYJS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:17:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FD1181;
-        Wed, 25 Oct 2023 02:17:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC42EC433C7;
-        Wed, 25 Oct 2023 09:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698225442;
-        bh=SQKdM/Kxu04h1c8FbFA9IJo9KecIQs7DTttOwbPdWUM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X6umIJieOSUHChlY+IijtgaGmlGx3wekwa6Uu5S1+5yivcZn7/BF0BA+5elFjJNDe
-         voG0wWuWiysAY2i6u5gxdj5MGckjeATvIs9LnfF2ETpEdC2oKvYt9xGdCq2JO9mrES
-         MwHOKBVTpXV8An6kqxtwoypKHyVWtTZ10Pltdr/Yz9Ru4IfBRiGmz3+FS/7gkN8iW1
-         6Dov2iNdPybyWJyB9q+tBCyQ63fAacFwLqKv2ntjAQrQYFRyjOcPFvZLicylPoixLa
-         GI2sQco4vZ0dvvrZN4Edm4SoL8kF1RTFNZpoSqBmxZkZLHF4N/ss+3pYk5ZN7mbuGc
-         +N1RZLqx937Bg==
-Date:   Wed, 25 Oct 2023 11:17:19 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Rae Moar <rmoar@google.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kunit: Warn if tests are slow
-Message-ID: <7nhmlcn3bbe3ey5tw43umsahjei3fisyxxp3vhf34lsi5s4wkr@qpp4bsdv4wom>
-References: <20230920084903.1522728-1-mripard@kernel.org>
- <CA+GJov6YQ2YcfqudffKzAKmcwbgCvuXpd8HzKnwSuytF-ozvww@mail.gmail.com>
+        Wed, 25 Oct 2023 05:18:27 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF89130
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:18:24 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507adc3381cso7966628e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698225503; x=1698830303; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BAHJikpep9ynpiLuY3eXxwOgPXKE7wTHSFE/9ZFm21A=;
+        b=bRT28XsLgswaqZEF4ilV0xXxuzoFkSdowsODyRo4sNDxCUM4JRJzFZU/NBT0wLzk3s
+         3IIcn5mnJ9KIf1AzV8/jWonC6sK059gxMWlAuC1G6XKbGNkHJof74IWhxOJX4HtEM36y
+         dtlRNQFQ51ppRbqomBh32eDWmOhlODtdiqMAtwo3gKi3KOZu03afBdeuHs5b1MAXxegQ
+         RuMlu6b5G8d2EJ4IbU0vBsXPlUv5QrwTCpQDmXuZArHzZk0c19ZZPte6pGONndVwxxfo
+         0e4hk8cKGqh/xtXDaQdloq2BkQyqBvoR9j+VGU7haqiRwMMflu/R+05FihxlAFfpxPsj
+         aETw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698225503; x=1698830303;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BAHJikpep9ynpiLuY3eXxwOgPXKE7wTHSFE/9ZFm21A=;
+        b=pmiEtdehtSsxgPVyJELfE3BqXcXabP7uVNAs0ytYNY+EQK5ci5n0+kNhA+gSXgPopW
+         oWr/oCFh4ZXbTc1o/Z/PlGOCJRvSzwyovHxDnvkj5CAr17f0yKWTorokeriiXQwLcRhZ
+         xVuabCtcmdh+JkntgKpvkGz2k6goIqK/H6w5fekoHKMz1rrtLJJjsMzXJxSeZ2dWwWYI
+         7pmK+V78qEuQX+adDvelrET1Rfnqz/lzlKxny+zeYwkrglSEtt0NWhrzvagpNskDEKQ/
+         /csbDfeoHzCgoNjKfhdFg8EzVKVD3hRb0GkrJ8RyZ2y5TNH7H87nVOQ7dAy1eh4EWaL6
+         oU2w==
+X-Gm-Message-State: AOJu0YwoEq+guyS1qyNavQuyD7vEAQ45+Vj6BEMppEuja7iiwkJvatmq
+        nCARSN7BEFNX3MfBrmipptIJlQ==
+X-Google-Smtp-Source: AGHT+IGm96vi+l1CKUKEFUw2b075VE/cmmy09HWIJtcYPHTWh4c621SNC0JpC+WCWMSyx9UpnDQJaA==
+X-Received: by 2002:a05:6512:3085:b0:4fb:8939:d95c with SMTP id z5-20020a056512308500b004fb8939d95cmr12502304lfd.30.1698225502780;
+        Wed, 25 Oct 2023 02:18:22 -0700 (PDT)
+Received: from [172.30.204.57] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id w4-20020a05651234c400b005057a5587f0sm2471866lfr.52.2023.10.25.02.18.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 02:18:22 -0700 (PDT)
+Message-ID: <d0d30b6b-3664-4531-a71f-6faec3330d2c@linaro.org>
+Date:   Wed, 25 Oct 2023 11:18:20 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="re4ceqeclcsd5wjq"
-Content-Disposition: inline
-In-Reply-To: <CA+GJov6YQ2YcfqudffKzAKmcwbgCvuXpd8HzKnwSuytF-ozvww@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] media: qcom: camss: Use common VFE
+ pm_domain_on/pm_domain_off where applicable
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231024224255.754779-1-bryan.odonoghue@linaro.org>
+ <20231024224255.754779-3-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231024224255.754779-3-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,112 +79,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---re4ceqeclcsd5wjq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Rae,
+On 10/25/23 00:42, Bryan O'Donoghue wrote:
+> For the various versions of VFE we have a boiler-plate
+> pm_domain_on/pm_domain_off callback pair of the general form.
+> 
+> - Error check.
+>    Not always done but applicable to all.
+> 
+> - device_link_add (DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME |
+>                     DL_FLAG_RPM_ACTIVE);
+> 
+> - Error check returning -EINVAL on error.
+> 
+> - Return 0
+> 
+> Reduce the pattern down to a common callback. VFE 4.1 is a special case
+> which to me also indicates that it is worthwhile maintaining an indirection
+> for the vfe_pm_domain_{on|off} for now.
+Are there issues when powering it off like all the others?
 
-On Tue, Oct 24, 2023 at 03:41:33PM -0400, Rae Moar wrote:
-> On Wed, Sep 20, 2023 at 4:49=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
-> wrote:
-> >
-> > Kunit recently gained support to setup attributes, the first one being
-> > the speed of a given test, then allowing to filter out slow tests.
-> >
-> > A slow test is defined in the documentation as taking more than one
-> > second. There's an another speed attribute called "super slow" but whose
-> > definition is less clear.
-> >
-> > Add support to the test runner to check the test execution time, and
-> > report tests that should be marked as slow but aren't.
-> >
-> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> >
->=20
-> Hello!
->=20
-> Thanks for following up! Sorry for the delay in this response.
+> 
+> Otherwise lets chuck out a bunch of needlessly replicated code.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-np, I kind of forgot about it too to be fair :)
-
-> This looks great to me. I do have one comment below regarding the
-> KUNIT_SPEED_SLOW_THRESHOLD_S macro but other than that I would be
-> happy with this patch.
->=20
-> This patch does bring up the question of how to handle KUnit warnings
-> as mentioned before. But I am happy to approach that in a future
-> patch.
->
-> And I do still have concerns with this being annoying for those on
-> slower architectures but again that would depend on how we deal with
-> KUnit warnings.
-
-Yeah, I agree there
-
-> > To: Brendan Higgins <brendan.higgins@linux.dev>
-> > To: David Gow <davidgow@google.com>
-> > Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> > Cc: Rae Moar <rmoar@google.com>
-> > Cc: linux-kselftest@vger.kernel.org
-> > Cc: kunit-dev@googlegroups.com
-> > Cc: linux-kernel@vger.kernel.org
-> >
-> > Changes from v1:
-> > - Split the patch out of the series
-> > - Change to trigger the warning only if the runtime is twice the
-> >   threshold (Jani, Rae)
-> > - Split the speed check into a separate function (Rae)
-> > - Link: https://lore.kernel.org/all/20230911-kms-slow-tests-v1-0-d3800a=
-69a1a1@kernel.org/
-> > ---
-> >  lib/kunit/test.c | 27 +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> >
-> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > index 49698a168437..a1d5dd2bf87d 100644
-> > --- a/lib/kunit/test.c
-> > +++ b/lib/kunit/test.c
-> > @@ -372,6 +372,25 @@ void kunit_init_test(struct kunit *test, const cha=
-r *name, char *log)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kunit_init_test);
-> >
-> > +#define KUNIT_SPEED_SLOW_THRESHOLD_S   1
-> > +
-> > +static void kunit_run_case_check_speed(struct kunit *test,
-> > +                                      struct kunit_case *test_case,
-> > +                                      struct timespec64 duration)
-> > +{
-> > +       enum kunit_speed speed =3D test_case->attr.speed;
-> > +
-> > +       if (duration.tv_sec < (2 * KUNIT_SPEED_SLOW_THRESHOLD_S))
->=20
-> I think I would prefer that KUNIT_SPEED_SLOW_THRESHOLD_S is instead
-> set to 2 rather than using 2 as the multiplier. I realize the actual
-> threshold for the attributes is 1 sec but for the practical use of
-> this warning it is 2 sec.
-
-Right. So I kind of disagree here. To me, the define should match the
-definition we have for a slow test. We chose to report it only if it
-exceeds it by a margin, but that's a separate thing from the actual
-threshold.
-
-I guess I could add a new version to make that distinction clearer.
-Would that work for you?
-
-Maxime
-
---re4ceqeclcsd5wjq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTjdHwAKCRDj7w1vZxhR
-xTdtAQD0p4cQm0zUoPf24k74/8nRBRRg4MM1MIick9LeHTrQqQD/fmHItzqlVDea
-tpzEFOtAAZg64NPAvfUr4OqoLeuxIAY=
-=MNhh
------END PGP SIGNATURE-----
-
---re4ceqeclcsd5wjq--
+Konrad
