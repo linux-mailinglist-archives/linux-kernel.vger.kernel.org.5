@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 261A67D5F1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241347D5F1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjJYAet convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 20:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
+        id S231349AbjJYAhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 20:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJYAer (ORCPT
+        with ESMTP id S229548AbjJYAhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 20:34:47 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35AA10DC;
-        Tue, 24 Oct 2023 17:34:45 -0700 (PDT)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-564b6276941so4012769a12.3;
-        Tue, 24 Oct 2023 17:34:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698194085; x=1698798885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IPJ3ikDFUsXo043wQDFUZjWLaI/XIii/rtjaUwo0cPo=;
-        b=p/u7wmkDNA7Ec9ZRxJS5yPdSjg836B66gl60BnIZzCIl2Km3Ckf7nP0/el83PDxUXm
-         /h3m+wedIwUp5OAx2elHEhsDLXDTlh5RCaYthfsUt8MkQpu4EDIAA5QFiyQK6s9FYNn8
-         idkQD2x2fJ28oDeq/iHfuVr2KBp7nMpT1qkr1MzA5l9YTeIN5PMpOjCfAQrv10IX0ver
-         iqAGS5xWF45drIMiIFeqxVk/KlgSKXuGI0l0CaNIrRYYlnXbXNeoEnNpjR9dbYzcg/UT
-         MnKKppWTKp1vtRxqQOZkkhQkdaHW4syohCC10bkcoOTbM3XRoYOE3LVoDsK1rCMCrB4E
-         Ppuw==
-X-Gm-Message-State: AOJu0YwNEyjkhXQxdK5u4+vFJdzOte4zSPH7nlAKTirVm4I3dyEGZ24m
-        0mawQfWewXYQb4mPOQTJoVdu6gWfh/W8tKpIS08=
-X-Google-Smtp-Source: AGHT+IHuCWQmOV9T92y6SKKVVwNZ03oYE1gpCz7tq6+YH0oXEFwazTvYlG8PSf0eqOaJsq1BsYXFVbR/UuAo0ZLHPSs=
-X-Received: by 2002:a17:90a:1602:b0:27d:4dae:3c62 with SMTP id
- n2-20020a17090a160200b0027d4dae3c62mr13428350pja.27.1698194084918; Tue, 24
- Oct 2023 17:34:44 -0700 (PDT)
+        Tue, 24 Oct 2023 20:37:53 -0400
+Received: from out203-205-251-82.mail.qq.com (out203-205-251-82.mail.qq.com [203.205.251.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA4A9F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 17:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1698194267;
+        bh=0KqtPlkMXope95NR0/xm224zF04p2pWTZxB68OVS11w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=w5i6dBH9T68iwruLFKrOV9lkN3UEdVid5gYb7GCMDUerSvDV12UFJMqi0BtDyKQ+3
+         jZZs3ejqq0JyizejSHBByvfaktz4RDEBGSGiO4oQfK5ga2u+Y3TyAlNPig/PZ32dFe
+         ZAE5vS3bCbffWsgoD2eB8y9VnsXgvTg9nS9B5CZw=
+Received: from RT-NUC.. ([39.156.73.12])
+        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+        id 96D3F02D; Wed, 25 Oct 2023 08:37:45 +0800
+X-QQ-mid: xmsmtpt1698194265tfm9ud90l
+Message-ID: <tencent_0821AFD8A3B188E906574290598D97B42A08@qq.com>
+X-QQ-XMAILINFO: MyHh0PQai9FpwDirSAjGbYAO6AtHKWB7xawBDw+lEGp5XryY4MxzP+oNVRBIE1
+         QiBfMLH2iRovJxDCT1l0pxX3OCDsw6qQby9Mbbr8uXXS5L5coF+vpu4WW6nQStu2MMj9jW3LvkJ/
+         lAVvCk+yClAL6Mf3aiCAOiSFTIDkQM3I7Ydr/9M+bgfCAcY4YY0GKISejOQIu2IA+d2RK1MqoywR
+         8HiRNtsFn8suw/CqLa1MKYdFjrAzUP4jgC9QFgU9170nlObuJDCu7CdiRmdz6xAr488puPDKxEbW
+         /ub46q/12U+9ZTv9EKHiw9cXEWAYSG0NmXIqhNnlV/ztmUauYI/fhkvNy0GjTbouOn3p6SGREigQ
+         34a6lYk8zGYqYm8LEaCrHsxh+V7OdwkU4E4wt9dft2O7mCjCwwcuP3awHFK5XK9jO1vuo5HCRcGy
+         3m/5LPo8vtcS54XXjULHg38CO2Xj35T34UUbhLBEUwuhexKFWZZ0XaFE3W6EVghvFcFylxREGBZK
+         RZYhtPGb7mNzDZEYo6eA4uunV4kIL8VYWZLBXrCeKjiMZ65+3cOl0HOQbIVgsq1t501S4abDWGPe
+         wzJgyvYSqQ6c749R/3Jl0Imdl5XFENCCnmb9qZPhothRpspUhNIEjlihjQMGZqB3wXWw9aaP76rm
+         hALNhU28usFWz70sKKHJuik56fvABLsUJTAnmKZqtO2d1ujXwzw21ZaTpndwdLJWRiyMRnlq/AZk
+         NMNAg59tZhsZj//mydjJnnCSlYfPwBhko3sK24HaPmpPys8s3lvLvOz02gPiI9M8fyLFx/HDmRv3
+         sDVBGzr2jVPK1FF9WgnnWW+fs7Nle/H8Sp5dPBEb8i5NfwugzcEqWTxhLPA1v6AJ+44bdeY/35dD
+         K0QGpOowYx9KHWmN5qdD7AwuKfQX5PiwDFn2dA+WcVw7u0xL9IueEFFlN5H8vLFFtDvNHPWWLUra
+         6BdxbBFeza3IQkQ6uGobywe+VW0seBjCJm6wn02T8SXN7Dl19rsN4+329cMFA6
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     mark.rutland@arm.com
+Cc:     elver@google.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, rongtao@cestc.cn, rtoax@foxmail.com,
+        tglx@linutronix.de
+Subject: Re: [PATCH 1/2] stop_machine: Use non-atomic read multi_stop_data::state clearly
+Date:   Wed, 25 Oct 2023 08:37:45 +0800
+X-OQ-MSGID: <20231025003745.4255-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <ZTegiFbGQUAp1l0p@FVFF77S0Q05N>
+References: <ZTegiFbGQUAp1l0p@FVFF77S0Q05N>
 MIME-Version: 1.0
-References: <20231025102647.321c6629@canb.auug.org.au>
-In-Reply-To: <20231025102647.321c6629@canb.auug.org.au>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 24 Oct 2023 17:34:33 -0700
-Message-ID: <CAM9d7cjNAiE6bdSoQKsAqQcHBm1APz6C+-vQwu4BTB5R83dEgg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the perf tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Thanks for your advice, Mark.
 
-On Tue, Oct 24, 2023 at 4:27 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the perf tree, today's linux-next build (native perf)
-> failed like this:
->
-> perf/util/pmu-flex.c:1812:1: error: unterminated comment
->  1812 | /** Setup the input buffer state to scan a string. The next call to yylex() will
->       | ^
-> perf/util/pmu-flex.c:550:24: error: 'yy_fatal_error' used but never defined [-Werror]
->   550 | static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
->       |                        ^~~~~~~~~~~~~~
->
-> I don't know what caused this, but the above file looks fine and redoing
-> the build works, so it may be some timing problem when doing an
-> incremental build?
+Your commit information is clearer and easier to understand, I will use it
+in the next patch version, thank you.
 
-Yeah, I think I saw this error before.  Looks like a timing issue
-but I believe something is wrong with it.  I'll take a look.
+Rong Tao
 
-Thanks,
-Namhyung
