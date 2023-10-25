@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E567D6C33
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F5D7D6C39
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343592AbjJYMoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        id S234897AbjJYMpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbjJYMoU (ORCPT
+        with ESMTP id S234509AbjJYMpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:44:20 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788E6C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:44:18 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40906fc54fdso21548265e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698237857; x=1698842657; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a5RrS2yYeK5bjUw1rZUWj9pBqQobZoGf1IDWSRzrsqM=;
-        b=gYKqfbboKktkyYROh8btLH2N3a59zQ4wtS6vWPbU//Vecggim0srJNFzSxSxEBLOW7
-         ww4C+7wqlws5aSdE0c5/qt1m54oNE52SYU46w9jl2EonKRYRhPSNlB2VrX9BsrkEbhLh
-         t4SCdzsYTYD8Y/QQcfkyB+Kz2mERvXTGf5l8BPYfjMSGeR+oUefYQVSsiyQGJpFxvNDE
-         9qAn6tw7nsfBcEOuO54IqefFgDTAniGb43yUuR0JpNm51ljXyiwrGoTVtK4xBr/n2kEO
-         kNIwADXOQ0+tUuYeNLbpE9lMCwKJHUjkn7KUcKk+bNJuelnhmuaW0w02sSHFz2+OtPe5
-         0LbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698237857; x=1698842657;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a5RrS2yYeK5bjUw1rZUWj9pBqQobZoGf1IDWSRzrsqM=;
-        b=MIrYJtaN3z+UCbeEcC/soyvCR1o/14J38F/gUbHGr/lci4M3IEsgkAKGWO29ODoFr0
-         kiMpokwsyeEcxI0J2x3Ij90LOf5BErlKoOm1sIhsW8gtAdzTMGarUziHfj4tfECEn3hX
-         O71UZTyof77eyDXRrjth4rcrlpER8PfJSvYn6fPrfHQXQtrY/bz6X8VrNiBzylLYX/zw
-         iXGNXg3pbdUuZGbZlVCD3ab5WvJ/4amaK91ib35SV22//EWRgW/Bc8xYNdZJ+BCmfyrM
-         +8TNhJRpjAqkZQbeAmNt9g8142FiHK/5IC0b1tE9DBrHpHhvSYelY6wXdRrWtUMUQTdU
-         cxfw==
-X-Gm-Message-State: AOJu0Yw1Y+yLN1piYia+JNEKvxaN/l3YlhCmLvYunLhtZuUYgOwMOfii
-        nuf+oOaAsmJlaX4vdQ6UVc9RUA==
-X-Google-Smtp-Source: AGHT+IGSUsKI85ITAnpUgeCIl6JelifzcoxD98WkR/5+LQQMNxpsSNP5eT6iZVPZxfpnFozBsiRuRA==
-X-Received: by 2002:adf:efc3:0:b0:32d:8e54:29f7 with SMTP id i3-20020adfefc3000000b0032d8e5429f7mr10899361wrp.64.1698237856809;
-        Wed, 25 Oct 2023 05:44:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id r5-20020a056000014500b0032db4825495sm11938013wrx.22.2023.10.25.05.44.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 05:44:15 -0700 (PDT)
-Message-ID: <142e5e99-ecfd-4eb6-ae69-84de752481f9@linaro.org>
-Date:   Wed, 25 Oct 2023 14:44:13 +0200
+        Wed, 25 Oct 2023 08:45:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332E090;
+        Wed, 25 Oct 2023 05:45:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A376C433C7;
+        Wed, 25 Oct 2023 12:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698237902;
+        bh=NpzQ9qHRjySkxPMIQIfKH78Kx7piv7QmHamr5dkzg7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K4EZFx0y3NoHsS9aVpzI4wQOiq5LFfl8lA2lRbkrpXooQ4iSPl9KN//5i445s9DoN
+         qAk0QGtBQ7Qvxggeq5YgXQG5XuDjSTVee7vtlacxMX7lFEtAJN8HweScxL0gX6Rcdh
+         bnC3VzLx4TOu1AGbCG9y7ug591clv8qAzLfngd1nZYzp0ghi+fUdaEd1iNFfOtlJ+l
+         Wf83er4I9tn/F9wREiq6MmEroEXOrQbw5ZfntrMfuvaNaTzBs1fwbHsYITyQ0Bk3g0
+         lAco+WhSmOulB6T3+jqDvzh6ECGpjF4ik8fkmMAinmYecQxzStrfola+PQ8Yo5ye4+
+         O/oy3jhbBjzFQ==
+Date:   Wed, 25 Oct 2023 14:44:59 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
+ the DSI link power state
+Message-ID: <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
+References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
+ <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
+ <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
+ <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: clock: qcom: ipq6018: add USB GDSCs
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20231025104457.628109-1-robimarko@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025104457.628109-1-robimarko@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kczefdkwiwg32tj2"
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,14 +72,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 12:44, Robert Marko wrote:
-> Add bindings for the USB GDSCs found in IPQ6018 GCC.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+--kczefdkwiwg32tj2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Thu, Oct 19, 2023 at 02:19:51PM +0300, Dmitry Baryshkov wrote:
+> On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrote:
+> >
+> > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
+> > > The MIPI DSI links do not fully fall into the DRM callbacks model.
+> >
+> > Explaining why would help
+>=20
+> A kind of explanation comes afterwards, but probably I should change
+> the order of the phrases and expand it:
+>=20
+> The atomic_pre_enable / atomic_enable and correspondingly
+> atomic_disable / atomic_post_disable expect that the bridge links
+> follow a simple paradigm: either it is off, or it is on and streaming
+> video. Thus, it is fine to just enable the link at the enable time,
+> doing some preparations during the pre_enable.
+>=20
+> But then it causes several issues with DSI. First, some of the DSI
+> bridges and most of the DSI panels would like to send commands over
+> the DSI link to setup the device.
 
+What prevent them from doing it in enable when the link is enabled?
+
+> Next, some of the DSI hosts have limitations on sending the commands.
+> The proverbial sunxi DSI host can not send DSI commands after the
+> video stream has started. Thus most of the panels have opted to send
+> all DSI commands from pre_enable (or prepare) callback (before the
+> video stream has started).
+
+I'm not sure we should account for a single driver when designing a
+framework. We should focus on designing something sound, and then making
+that driver work with whatever we designed, but not the other way
+around. And if we can't, we should get rid of that driver because it's
+de-facto unmaintainable. And I'm saying that as the author of that
+driver.
+
+> However this leaves no good place for the DSI host to power up the DSI
+> link. By default the host's pre_enable callback is called after the
+> DSI bridge's pre_enable. For quite some time we were powering up the
+> DSI link from mode_set. This doesn't look fully correct.
+
+Yeah, it's not.
+
+> And also we got into the issue with ps8640 bridge, which requires for
+> the DSI link to be quiet / unpowered at the bridge's reset time.
+>=20
+> Dave has come with the idea of pre_enable_prev_first /
+> prepare_prev_first flags, which attempt to solve the issue by
+> reversing the order of pre_enable callbacks. This mostly solves the
+> issue. However during this cycle it became obvious that this approach
+> is not ideal too. There is no way for the DSI host to know whether the
+> DSI panel / bridge has been updated to use this flag or not, see the
+> discussion at [1].
+
+Yeah. Well, that happens. I kind of disagree with Neil here though when
+he says that "A panel driver should not depend on features of a DSI
+controller". Panels definitely rely on particular features, like the
+number of lanes, the modes supported, etc.
+
+Panels shouldn't depend on a particular driver *behaviour*. But the
+features are fine.
+
+For our particular discussion, I think that that kind of discussion is a
+dead-end, and we just shouldn't worry about it. Yes, some panels have
+not yet been updated to take the new flags into account. However, the
+proper thing to do is to update them if we see a problem with that (and
+thus move forward to the ideal solution), not revert the beginning of
+that feature enablement (thus moving away from where we want to end up
+in).
+
+> Thus comes this proposal. It allows for the panels to explicitly bring
+> the link up and down at the correct time, it supports automatic use
+> case, where no special handling is required. And last, but not least,
+> it allows the DSI host to note that the bridge / panel were not
+> updated to follow new protocol and thus the link should be powered on
+> at the mode_set time. This leaves us with the possibility of dropping
+> support for this workaround once all in-kernel drivers are updated.
+
+I'm kind of skeptical for these kind of claims that everything will be
+automatic and will be handled fine. What if we have conflicting
+requirements, for example two bridges drivers that would request the
+power up at different times?
+
+Also, we would still need to update every single panel driver, which is
+going to create a lot of boilerplate that people might get wrong.
+
+I have the feeling that we should lay out the problem without talking
+about any existing code base first. So, what does the MIPI-DSI spec
+requires and what does panels and bridges expect?
+
+Maxime
+
+--kczefdkwiwg32tj2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTkNywAKCRDj7w1vZxhR
+xYIdAP9PbpeyIE0X74jUaXHN6mAfkT+xcxdOpc1D77WN0VbA0gEA2/73asuJtKhK
+KTH1Pj57iemOVPDZWxGgANraRbBuWwY=
+=Mzkb
+-----END PGP SIGNATURE-----
+
+--kczefdkwiwg32tj2--
