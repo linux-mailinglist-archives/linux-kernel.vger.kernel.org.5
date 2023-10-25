@@ -2,175 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4967D7055
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384F57D704E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344152AbjJYO5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
+        id S1344406AbjJYO6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234655AbjJYO5k (ORCPT
+        with ESMTP id S234789AbjJYO6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:57:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3297B0;
-        Wed, 25 Oct 2023 07:57:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C144DC433C7;
-        Wed, 25 Oct 2023 14:57:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698245857;
-        bh=FJMuPNiTnN8SIyYPd4VkfWpKSbI2Dx6yU/FVfERd4EA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cIb8qrJTfHufYPgWgAUMtJ7uL0F/8QBGvzIhL61Br6iSvX6gKZtor7wd5vT1TVQZF
-         l23at4t8X5tTeBVI/d4bmsOk2GUnRtxi9mhfPMVQPuIqX4K/QqricNmtFHxmCMUBhs
-         WFEvqhtwwpji7FF7ZdVCSPTpmiNan9P9ULxfETq6TrYYVz5SLAZ6Vzv40uaaUMlpeZ
-         v53havv8B1ItVLUE6/xAKtAdMWu2t/zWfqHwObdVaDsRvzYP+agNXfHMyvlZovetuI
-         jDftXoAQh4jevIE/m1QjKdOZXBlEokmwF6pAPuVs4L4pwj+ONBR4mllju6yz5Q7hdN
-         zu7622Fu5tTGQ==
-Date:   Wed, 25 Oct 2023 23:57:33 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for
- arch_cmpxchg_local()
-Message-Id: <20231025235733.bb89c8ffe5b13998a3c2a974@kernel.org>
-In-Reply-To: <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
-References: <169815917362.8695.13904684741526725648.stgit@devnote2>
-        <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com>
-        <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
-        <ZTjuH074CJuLh7Zw@FVFF77S0Q05N>
-        <1bce4bc5ccd38bf9108283535470a7a8eb7e06e9.camel@physik.fu-berlin.de>
-        <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 25 Oct 2023 10:58:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F91312A;
+        Wed, 25 Oct 2023 07:58:42 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PEUUU6027092;
+        Wed, 25 Oct 2023 14:58:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=0Nzdx1M3poa9Sohv9GvecOCxrIdczNKBTiFsRzPNhEg=;
+ b=BN9qMVWy61zuBJAXh5/NFFvEhonVHJiBTzl59gf7FXo/w8cCeW6lWoLEdYKff2oPlBjy
+ JFkExd5tGgDa/UyQkoAbN0ZZFT/HYqzKQ66b92XWz3xrn5UvtTqmq88asTazRtKlW9rc
+ 7GMSrKfO2x1M3NkFeYRQveznBLZlC7epkjE+adgLCH/j2srhHYmdhyiDtSxw3rvem4Xr
+ yA2H4BBjLdrjXanPbrwf9AhE6+4NICq0U97PFGxtnV8yZ5foEp4bx0VcLBOtfaT1cVRy
+ tnJP8ajOxqn3cQyirTTicJPIbTjCt0Kf3zRmOgsaVTE9qIKR9fnEWO1Z//T/sZLnS1Gd Iw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txngvhs65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 14:58:39 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PEwc7x027452
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 14:58:38 GMT
+Received: from hu-mdtipton-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 25 Oct 2023 07:58:38 -0700
+From:   Mike Tipton <quic_mdtipton@quicinc.com>
+To:     <djakov@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Mike Tipton <quic_mdtipton@quicinc.com>
+Subject: [PATCH] interconnect: Treat xlate() returning NULL node as an error
+Date:   Wed, 25 Oct 2023 07:58:29 -0700
+Message-ID: <20231025145829.11603-1-quic_mdtipton@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jqJuwUcqJ2vbZCvmsOwbWAv3cA92iilW
+X-Proofpoint-ORIG-GUID: jqJuwUcqJ2vbZCvmsOwbWAv3cA92iilW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_03,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 clxscore=1011 adultscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250129
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 15:16:16 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Currently, if provider->xlate() or provider->xlate_extended()
+"successfully" return a NULL node, then of_icc_get_from_provider() won't
+consider that an error and will successfully return the NULL node. This
+bypasses error handling in of_icc_get_by_index() and leads to NULL
+dereferences in path_find().
 
-> Hi Adrian,
-> 
-> On Wed, Oct 25, 2023 at 12:32 PM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > On Wed, 2023-10-25 at 11:30 +0100, Mark Rutland wrote:
-> > > On Wed, Oct 25, 2023 at 08:42:55AM +0900, Masami Hiramatsu wrote:
-> > > > On Tue, 24 Oct 2023 16:08:12 +0100
-> > > > Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > > On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
-> > > > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
-> > > > > > in SH architecture because it does not implement arch_cmpxchg_local().
-> > > > >
-> > > > > I do not think this is correct.
-> > > > >
-> > > > > The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
-> > > > > disables interrupts), whereas arch/sh can be built SMP. We should probably add
-> > > > > some guards into <asm-generic/cmpxchg-local.h> for that as we have in
-> > > > > <asm-generic/cmpxchg.h>.
-> > > >
-> > > > Isn't cmpxchg_local for the data which only needs to ensure to do cmpxchg
-> > > > on local CPU?
-> > > > So I think it doesn't care about the other CPUs (IOW, it should not touched by
-> > > > other CPUs), so it only considers UP case. E.g. on x86, arch_cmpxchg_local() is
-> > > > defined as raw "cmpxchg" without lock prefix.
-> > > >
-> > > > #define __cmpxchg_local(ptr, old, new, size)                            \
-> > > >         __raw_cmpxchg((ptr), (old), (new), (size), "")
-> > > >
-> > >
-> > > Yes, you're right; sorry for the noise.
-> > >
-> > > For your original patch:
-> > >
-> > > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> >
-> > Geert, what's your opinion on this?
-> 
-> While this looks OK on first sight (ARM includes the same file, even
-> on SMP), it does not seem to work?
-> 
-> For sh-allnoconfig, as reported by kernel test robot:
-> 
-> $ make ARCH=sh CROSS_COMPILE=sh2-linux- allnoconfig lib/objpool.o
-> lib/objpool.c: In function 'objpool_try_add_slot':
-> ./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
-> declaration of function 'arch_cmpxchg_local'; did you mean
-> 'raw_cmpxchg_local'? [-Werror=implicit-function-declaration]
->   384 | #define raw_cmpxchg_local arch_cmpxchg_local
->       |                           ^~~~~~~~~~~~~~~~~~
-> ./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
-> expansion of macro 'raw_cmpxchg_local'
->   392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
->       |                ^~~~~~~~~~~~~~~~~
-> ./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
-> expansion of macro 'raw_try_cmpxchg_local'
->  4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
->       |         ^~~~~~~~~~~~~~~~~~~~~
-> lib/objpool.c:169:19: note: in expansion of macro 'try_cmpxchg_local'
->   169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
->       |                   ^~~~~~~~~~~~~~~~~
-> 
-> For an SMP defconfig:
-> 
-> $ make ARCH=sh CROSS_COMPILE=sh4-linux-gnu- sdk7786_defconfig lib/objpool.o
-> 
-> ./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
-> declaration of function ‘arch_cmpxchg_local’; did you mean
-> ‘try_cmpxchg_local’? [-Werror=implicit-function-declaration]
->   384 | #define raw_cmpxchg_local arch_cmpxchg_local
->       |                           ^~~~~~~~~~~~~~~~~~
-> ./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
-> expansion of macro ‘raw_cmpxchg_local’
->   392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
->       |                ^~~~~~~~~~~~~~~~~
-> ./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
-> expansion of macro ‘raw_try_cmpxchg_local’
->  4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
->       |         ^~~~~~~~~~~~~~~~~~~~~
-> lib/objpool.c:169:19: note: in expansion of macro ‘try_cmpxchg_local’
->   169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
->       |                   ^~~~~~~~~~~~~~~~~
-> 
-> Hiramatsu-san: do these build for you?
+This could be avoided by ensuring provider callbacks always return an
+error for NULL nodes, but it's better to explicitly protect against this
+in the common framework.
 
-Thanks for pointing. I thought I just need to include the header file.
-That's my fault.
+Fixes: 87e3031b6fbd ("interconnect: Allow endpoints translation via DT")
+Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
+---
 
-Let me fix that.
+I'm not specifically aware of any upstream cases of this happening, but
+we did hit this downstream. And it's hard to ensure this can never
+happen upstream, since it's hard to ensure that none of the
+qcom_icc_desc::nodes arrays have zero holes in them, for instance.
 
-Thank you!
+ drivers/interconnect/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-
-
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index dfab160ca529..50bac2d79d9b 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -395,6 +395,9 @@ struct icc_node_data *of_icc_get_from_provider(struct of_phandle_args *spec)
+ 	}
+ 	mutex_unlock(&icc_lock);
+ 
++	if (!node)
++		return ERR_PTR(-EINVAL);
++
+ 	if (IS_ERR(node))
+ 		return ERR_CAST(node);
+ 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.17.1
+
