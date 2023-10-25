@@ -2,259 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D567D6CDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2612E7D6CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbjJYNPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
+        id S234194AbjJYNQg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 09:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbjJYNPj (ORCPT
+        with ESMTP id S233757AbjJYNQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:15:39 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4313E116
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:15:35 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so1828365a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698239734; x=1698844534; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9RaUlU1nxCqKDcemUMCbFBahiSg15h6A7+woT7EpFjA=;
-        b=Pk4wQi2bNBBvgB5xf7kgJ70o0nb21GYyN+vsGEREDAz6H8kNp5Yn49oCbDw9vTG79E
-         VEtzBnUHtkbNL/7pkReXB7s2FHJGVR1LVE9ONVXIhc+pxN2C6myyl6prPEF9ysoZLJWh
-         5LcW5kOu/G9/a4NV67rbGHH7xPGXcmcOO1Nu6ugQ6/Y4rB1Kdu0mJCHf8IVG+snI9ZV+
-         bPc262iEw2nKHcElMtKSQ3DlDNYeQCKm/e8bE6KasS9jiNWyKHHKN95KLgNmm7+2oMIi
-         29mSOr0WXZ67YbYxJinDqsYOYt9S4qAJ6CI05nTChYWRHqeEa3ve+Xub2epTlx4rVSzY
-         jaLw==
+        Wed, 25 Oct 2023 09:16:33 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FBF111;
+        Wed, 25 Oct 2023 06:16:31 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a86b6391e9so55982767b3.0;
+        Wed, 25 Oct 2023 06:16:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239734; x=1698844534;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9RaUlU1nxCqKDcemUMCbFBahiSg15h6A7+woT7EpFjA=;
-        b=dvN3sjuDZ0uL4bDNeSXUHQLttO7GTO9S6DzfGzD9LFSdiN0QzBRyqG+c2uhTGJYkcn
-         ppZnHGofX+MYvfuyUHLtTJAJq9kZ9MIrfuH4VsuB957ui5YXjID9gE1Kbo8eW+pmqoXf
-         XyjQyOGbY9XlaAgpr7qeDn0hdTw1xuGsFgCe+liwDmkpymuxI63+yZuHurFprgiW9mFR
-         b+KadixuZCEX4CsJWdWdFPsIGpu8hgu4Z1j/4X8vZ9Gyu3H58KcQaj4dmKO3r0Gdyo03
-         cVFjFd32lPlRVkj5Artat0WwZ2eHSgshFcFDxzfbuAU+PqZT0JPrdhFm7/c8Nu1yyuzX
-         p6hg==
-X-Gm-Message-State: AOJu0YxjqYM4ruYKmT/NqEiSC++OhRollwsHk48RRZ9SlbSBD0es7FD/
-        ttVNZTaXOmZkaza4yiZe5aQBEqar+YXoc7+tZHc=
-X-Google-Smtp-Source: AGHT+IGf0RFhqVSBCtZWMVshUEqDHl2Mhw5MfY0Igi6bPLXi+zIldIN36bhKyeMs64sCzHBPAcBSh0Gu0kSB2/0dvw8=
-X-Received: by 2002:a17:906:fe06:b0:9a9:f042:deb9 with SMTP id
- wy6-20020a170906fe0600b009a9f042deb9mr14576255ejb.19.1698239733182; Wed, 25
- Oct 2023 06:15:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698239790; x=1698844590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bhDHPAul78LD2824BVXA4iCfuI07/2hT5EkQSJobW90=;
+        b=OFTXvQI2SUJClwdlHrZvPBexmMkmtaL8BSVfdIuWf52kyDKZwxdySFrXyZtP6KfAlI
+         GmB4J9KLwWA4AFBgrEGwpUOfLVNMNOLp8UwLtB6XwSkFdYsPMqA19kTTwMpy0LJXL5P3
+         Von5s8xtvOQuYrCvoK6vek2H68EPFRWhaitpT049owcLsKVEeEOlyrh5x3lk5jg61W8l
+         Q2fVs7u55iNSOmlSv6a90nE25vC0NesVPauUWwMVfPbRnMR61OdB/480JJKe5QrNdlGF
+         NXQIK0D2nZirp/P1hZl0qnZLna5fSE1lM8p6BB5STkpAfqqo4jF/X5Lqqu8dqS38LqOL
+         xuhQ==
+X-Gm-Message-State: AOJu0YxRf8pJk7XxVbVTgy/IEn3Q85mdC5uCUHM3XHFB86fSb2T7TaMN
+        qHaAKdp0WXpEKXIXUgNLMhaI9Vh3oZJPHA==
+X-Google-Smtp-Source: AGHT+IHqmeFX73+zk8SaC43O8gmaoGU+oEle8ITv9nU1wxnW4ln96u2XQHeAb0hp7/Rc5viCY9xqxQ==
+X-Received: by 2002:a0d:e20a:0:b0:59b:fb69:1639 with SMTP id l10-20020a0de20a000000b0059bfb691639mr16292128ywe.32.1698239790374;
+        Wed, 25 Oct 2023 06:16:30 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id y83-20020a0dd656000000b0056d51c39c1fsm4989318ywd.23.2023.10.25.06.16.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 06:16:29 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4890585276.2;
+        Wed, 25 Oct 2023 06:16:28 -0700 (PDT)
+X-Received: by 2002:a25:dc52:0:b0:da0:4bda:dc41 with SMTP id
+ y79-20020a25dc52000000b00da04bdadc41mr4238651ybe.37.1698239788460; Wed, 25
+ Oct 2023 06:16:28 -0700 (PDT)
 MIME-Version: 1.0
-From:   Liam Ni <zhiguangni01@gmail.com>
-Date:   Wed, 25 Oct 2023 21:15:21 +0800
-Message-ID: <CACZJ9cUggCs1E_E_CKJzK=TVN9v+s=tegsHV_8NczsPB5OhW5w@mail.gmail.com>
-Subject: [PATCH V7] NUMA: optimize detection of memory with no node id
- assigned by firmware
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, Mike Rapoport <rppt@kernel.org>
-Cc:     chenhuacai@kernel.org, kernel@xen0n.name,
-        Dave Hansen <dave.hansen@linux.intel.com>, luto@kernel.org,
-        peterz@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>, maobibo@loongson.cn,
-        chenfeiyang@loongson.cn, Zhiguang Ni <zhiguangni01@gmail.com>,
-        zhoubinbin@loongson.cn
+References: <169815917362.8695.13904684741526725648.stgit@devnote2>
+ <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com> <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
+ <ZTjuH074CJuLh7Zw@FVFF77S0Q05N> <1bce4bc5ccd38bf9108283535470a7a8eb7e06e9.camel@physik.fu-berlin.de>
+In-Reply-To: <1bce4bc5ccd38bf9108283535470a7a8eb7e06e9.camel@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 25 Oct 2023 15:16:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
+Message-ID: <CAMuHMdXrOt3vWrJcoVZNUSJRH4E45iJgdeXMi6ncb4vOSg6_jw@mail.gmail.com>
+Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sanity check that makes sure the nodes cover all memory loops over
-numa_meminfo to count the pages that have node id assigned by the firmware,
-then loops again over memblock.memory to find the total amount of memory
-and in the end checks that the difference between the total memory and
-memory that covered by nodes is less than some threshold. Worse, the loop
-over numa_meminfo calls __absent_pages_in_range() that also partially
-traverses memblock.memory.
+Hi Adrian,
 
-It's much simpler and more efficient to have a single traversal of
-memblock.memory that verifies that amount of memory not covered by nodes is
-less than a threshold.
+On Wed, Oct 25, 2023 at 12:32 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Wed, 2023-10-25 at 11:30 +0100, Mark Rutland wrote:
+> > On Wed, Oct 25, 2023 at 08:42:55AM +0900, Masami Hiramatsu wrote:
+> > > On Tue, 24 Oct 2023 16:08:12 +0100
+> > > Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
+> > > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > >
+> > > > > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
+> > > > > in SH architecture because it does not implement arch_cmpxchg_local().
+> > > >
+> > > > I do not think this is correct.
+> > > >
+> > > > The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
+> > > > disables interrupts), whereas arch/sh can be built SMP. We should probably add
+> > > > some guards into <asm-generic/cmpxchg-local.h> for that as we have in
+> > > > <asm-generic/cmpxchg.h>.
+> > >
+> > > Isn't cmpxchg_local for the data which only needs to ensure to do cmpxchg
+> > > on local CPU?
+> > > So I think it doesn't care about the other CPUs (IOW, it should not touched by
+> > > other CPUs), so it only considers UP case. E.g. on x86, arch_cmpxchg_local() is
+> > > defined as raw "cmpxchg" without lock prefix.
+> > >
+> > > #define __cmpxchg_local(ptr, old, new, size)                            \
+> > >         __raw_cmpxchg((ptr), (old), (new), (size), "")
+> > >
+> >
+> > Yes, you're right; sorry for the noise.
+> >
+> > For your original patch:
+> >
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+>
+> Geert, what's your opinion on this?
 
-Introduce memblock_validate_numa_coverage() that does exactly that and use
-it instead of numa_meminfo_cover_memory().
+While this looks OK on first sight (ARM includes the same file, even
+on SMP), it does not seem to work?
 
-Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
----
- arch/loongarch/kernel/numa.c | 28 +---------------------------
- arch/x86/mm/numa.c           | 34 ++--------------------------------
- include/linux/memblock.h     |  1 +
- mm/memblock.c                | 34 ++++++++++++++++++++++++++++++++++
- 4 files changed, 38 insertions(+), 59 deletions(-)
+For sh-allnoconfig, as reported by kernel test robot:
 
-diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
-index cb00804826f7..0e69679bfc8d 100644
---- a/arch/loongarch/kernel/numa.c
-+++ b/arch/loongarch/kernel/numa.c
-@@ -226,32 +226,6 @@ static void __init node_mem_init(unsigned int node)
+$ make ARCH=sh CROSS_COMPILE=sh2-linux- allnoconfig lib/objpool.o
+lib/objpool.c: In function 'objpool_try_add_slot':
+./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
+declaration of function 'arch_cmpxchg_local'; did you mean
+'raw_cmpxchg_local'? [-Werror=implicit-function-declaration]
+  384 | #define raw_cmpxchg_local arch_cmpxchg_local
+      |                           ^~~~~~~~~~~~~~~~~~
+./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
+expansion of macro 'raw_cmpxchg_local'
+  392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
+      |                ^~~~~~~~~~~~~~~~~
+./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
+expansion of macro 'raw_try_cmpxchg_local'
+ 4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+      |         ^~~~~~~~~~~~~~~~~~~~~
+lib/objpool.c:169:19: note: in expansion of macro 'try_cmpxchg_local'
+  169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
+      |                   ^~~~~~~~~~~~~~~~~
 
- #ifdef CONFIG_ACPI_NUMA
+For an SMP defconfig:
 
--/*
-- * Sanity check to catch more bad NUMA configurations (they are amazingly
-- * common).  Make sure the nodes cover all memory.
-- */
--static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
--{
--   int i;
--   u64 numaram, biosram;
--
--   numaram = 0;
--   for (i = 0; i < mi->nr_blks; i++) {
--       u64 s = mi->blk[i].start >> PAGE_SHIFT;
--       u64 e = mi->blk[i].end >> PAGE_SHIFT;
--
--       numaram += e - s;
--       numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
--       if ((s64)numaram < 0)
--           numaram = 0;
--   }
--   max_pfn = max_low_pfn;
--   biosram = max_pfn - absent_pages_in_range(0, max_pfn);
--
--   BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
--   return true;
--}
--
- static void __init add_node_intersection(u32 node, u64 start, u64
-size, u32 type)
- {
-    static unsigned long num_physpages;
-@@ -396,7 +370,7 @@ int __init init_numa_memory(void)
-        return -EINVAL;
+$ make ARCH=sh CROSS_COMPILE=sh4-linux-gnu- sdk7786_defconfig lib/objpool.o
 
-    init_node_memblock();
--   if (numa_meminfo_cover_memory(&numa_meminfo) == false)
-+   if (!memblock_validate_numa_coverage(SZ_1M))
-        return -EINVAL;
+./include/linux/atomic/atomic-arch-fallback.h:384:27: error: implicit
+declaration of function ‘arch_cmpxchg_local’; did you mean
+‘try_cmpxchg_local’? [-Werror=implicit-function-declaration]
+  384 | #define raw_cmpxchg_local arch_cmpxchg_local
+      |                           ^~~~~~~~~~~~~~~~~~
+./include/linux/atomic/atomic-arch-fallback.h:392:16: note: in
+expansion of macro ‘raw_cmpxchg_local’
+  392 |         ___r = raw_cmpxchg_local((_ptr), ___o, (_new)); \
+      |                ^~~~~~~~~~~~~~~~~
+./include/linux/atomic/atomic-instrumented.h:4980:9: note: in
+expansion of macro ‘raw_try_cmpxchg_local’
+ 4980 |         raw_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+      |         ^~~~~~~~~~~~~~~~~~~~~
+lib/objpool.c:169:19: note: in expansion of macro ‘try_cmpxchg_local’
+  169 |         } while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
+      |                   ^~~~~~~~~~~~~~~~~
 
-    for_each_node_mask(node, node_possible_map) {
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 2aadb2019b4f..4079c9edaa93 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -447,37 +447,6 @@ int __node_distance(int from, int to)
- }
- EXPORT_SYMBOL(__node_distance);
+Hiramatsu-san: do these build for you?
 
--/*
-- * Sanity check to catch more bad NUMA configurations (they are amazingly
-- * common).  Make sure the nodes cover all memory.
-- */
--static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
--{
--   u64 numaram, e820ram;
--   int i;
--
--   numaram = 0;
--   for (i = 0; i < mi->nr_blks; i++) {
--       u64 s = mi->blk[i].start >> PAGE_SHIFT;
--       u64 e = mi->blk[i].end >> PAGE_SHIFT;
--       numaram += e - s;
--       numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
--       if ((s64)numaram < 0)
--           numaram = 0;
--   }
--
--   e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
--
--   /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
--   if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
--       printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB
-e820 RAM. Not used.\n",
--              (numaram << PAGE_SHIFT) >> 20,
--              (e820ram << PAGE_SHIFT) >> 20);
--       return false;
--   }
--   return true;
--}
--
- /*
-  * Mark all currently memblock-reserved physical memory (which covers the
-  * kernel's own memory ranges) as hot-unswappable.
-@@ -583,7 +552,8 @@ static int __init numa_register_memblks(struct
-numa_meminfo *mi)
-            return -EINVAL;
-        }
-    }
--   if (!numa_meminfo_cover_memory(mi))
-+
-+   if (!memblock_validate_numa_coverage(SZ_1M))
-        return -EINVAL;
+Gr{oetje,eeting}s,
 
-    /* Finally register nodes. */
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 1c1072e3ca06..a94efe977539 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -120,6 +120,7 @@ int memblock_physmem_add(phys_addr_t base,
-phys_addr_t size);
- void memblock_trim_memory(phys_addr_t align);
- bool memblock_overlaps_region(struct memblock_type *type,
-                  phys_addr_t base, phys_addr_t size);
-+bool memblock_validate_numa_coverage(unsigned long threshold_bytes);
- int memblock_mark_hotplug(phys_addr_t base, phys_addr_t size);
- int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
- int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 0863222af4a4..a1917aa331d6 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -734,6 +734,40 @@ int __init_memblock memblock_add(phys_addr_t
-base, phys_addr_t size)
-    return memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
- }
+                        Geert
 
-+/**
-+ * memblock_validate_numa_coverage - check if amount of memory with
-+ * no node ID assigned is less than a threshold
-+ * @threshold_bytes: maximal number of bytes that can have unassigned node
-+ * ID (in bytes).
-+ *
-+ * A buggy firmware may report memory that does not belong to any node.
-+ * Check if amount of such memory is below @threshold_pages.
-+ *
-+ * Return: true on success, false on failure.
-+ */
-+bool __init_memblock memblock_validate_numa_coverage(unsigned long
-threshold_bytes)
-+{
-+   unsigned long nr_pages = 0;
-+   unsigned long start_pfn, end_pfn, mem_size_mb;
-+   int nid, i;
-+
-+   /* calculate lose page */
-+   for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
-+       if (nid == NUMA_NO_NODE)
-+           nr_pages += end_pfn - start_pfn;
-+   }
-+
-+   if ((nr_pages << PAGE_SHIFT) >= threshold_bytes) {
-+       mem_size_mb = memblock_phys_mem_size() >> 20;
-+       pr_err("NUMA: no nodes coverage for %luMB of %luMB RAM\n",
-+              (nr_pages << PAGE_SHIFT) >> 20, mem_size_mb);
-+       return false;
-+   }
-+
-+   return true;
-+}
-+
-+
- /**
-  * memblock_isolate_range - isolate given range into disjoint memblocks
-  * @type: memblock type to isolate range for
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
