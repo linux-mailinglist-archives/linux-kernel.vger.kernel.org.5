@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC237D78BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC927D78C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjJYXkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 19:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S230320AbjJYXkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 19:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjJYXki (ORCPT
+        with ESMTP id S230241AbjJYXkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 19:40:38 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3838F186
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a9012ab0adso2806187b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:36 -0700 (PDT)
+        Wed, 25 Oct 2023 19:40:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0F4181
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0737dcb26so204708276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698277235; x=1698882035; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698277236; x=1698882036; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oNMGb9FVii3IGjmd6icxEZoz/qRHnqOvKwptGS/KQfw=;
-        b=YvTPg8qLj2PMxvR4OQNkkFdiBq0OM+3Yy7ycaAXjudp5OSwAfhdnWdbPRg6O+lAHwB
-         BLCayyImCoL4xrmMqiCkuYqLNB/bTnFdr0q8xyfVHvOrGnVnZ9v+y9fW/d2oKK0T3+ep
-         9byl8cd/YDvxM46neGsGlf+kynYKdHegkrAz1aY1EG1iJE3N4d6rSxH9eOHTcFy5F5D4
-         1AXyUPBL75eb5xfU0JkKvcvICakkqPF3BL1Bmee5Vv3cvf83BbkrKoL2aPmUrnqWKIbw
-         vr12FtWTWadJ5uNqPmECReHcI3/v98mnR3oPRsFTWIwsbvDkvNp0fUFhaeQ4CteYYMFy
-         sm7Q==
+        bh=92wFLxsoPGDcDgzdqEMo/xkLNUw9pgV/KjaEenuGMqA=;
+        b=UQBodTP7w6KcZUs4/M0vUbB5sOYygEevjLGvp/ZROinq14iRWPoAuJ4sgPmdTnO7ui
+         OhHcrzNPV5Pb1USg0wvR8d1UbgNJKMWbZ8xWETEPtrB9XUzYpO/wJnsSEixvEl+TLczQ
+         kYZd7L7xdUbT0EA3l0vrQwEzjHkbl/xtbp9No5QosAW9sulhjNX+aPDeMR56no0Ni1pk
+         EQZhJpIfSKppKbpeJPGYmyVeBbYABFvN91KYUTrjv8ZvNap266HX/hTR2WlQg6wn22qf
+         VYbcfOMPky6DwSfc1L0OHoAe/pkHNWkDB6QoiOR3wUzw2q5u4spWF3qgx3d2i3b6WQq9
+         RoUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698277235; x=1698882035;
+        d=1e100.net; s=20230601; t=1698277236; x=1698882036;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oNMGb9FVii3IGjmd6icxEZoz/qRHnqOvKwptGS/KQfw=;
-        b=UwuI7qReWiMiLqg2DvhAvba6yM2ro8RpwDOABUihS/I1IWS90sjkuvl//Be1VsQenI
-         k9QpNnoSzq28r5RaFbi9p9yooMh43N4obI5LOlRW/OHfFq71d3WuTSh9oZHGjcJo0EYt
-         g8z2JZ1UmXe8OHcdu3OGxJJatBzvhSk74iBz4mkJsxTOcDcg2UZmlrgFzM1A4At/01QP
-         EJk+ufVUQGVgRvSSO2Taqp8lREZrOT11FCywvzIlmYDW/oWf7gWeOp3ZYNYHexiLP9rG
-         9zWwYZjkajmhDKCqBW9/1lI8U+2EapeJ40LmC8/zPzNtQ77kstRS8OISivlhm63FI3GI
-         XLqA==
-X-Gm-Message-State: AOJu0YxFP1lM4PMmKlX/fVko/CE8z/e/maLbBrDv2pqLmBBS5FFj0Hal
-        6zzjZeiny3VyWnsKLw/h6q5KQhjCftQPVi8S2g==
-X-Google-Smtp-Source: AGHT+IFJIK76hUmK9IMs6QqAzA9uOFIFG/qocsEdNxKZvGSrcgX5hg8Q1Z7MU31OebIcNGSSzaWsrnXdem0jyNbySA==
+        bh=92wFLxsoPGDcDgzdqEMo/xkLNUw9pgV/KjaEenuGMqA=;
+        b=lOti4a9s/ywbzoBikn+IUDcUvQyqaueF6QXoyFeHK6vKxhO0Xw4lxJdfrjaj3cFgf7
+         s4sBbN4/GmnSYKw+qo5jN9+3WcQAePnaw556nIpTtcOcp95NN+YQXQdGTt0ReyYxdYo2
+         35Mr/iwWPvwQWDJJ4btC9s9TeeensC82wuLwliVozv3ZNkJ9S+qHKSX+6lh/iuQ6uMIO
+         xb4hE8LXd6mvfLPqgyjpIS+jPqF1Oe7H45PDWpgjmcemF93Snovwo3y1PMmMH++aKvdN
+         Qtm+yxN67gcyLqHN9PuGJ4pxrKW50lmZn8nyK3al1gfRikUSmMp/puslewynsZ5KlY8i
+         0cmw==
+X-Gm-Message-State: AOJu0YwqNGwMOfCAbYrleOGzRLETWINHP8rX0XMbRijMA1wLQClKR112
+        jn+/JSw8s7imLiM1iZV1T+Miy2tZ2VX1JltrWw==
+X-Google-Smtp-Source: AGHT+IFnqGPER4081fkIARbl7ZE1xZNQmaBtQYUn8w2e7QG3Aepeq6fF7vi6pxvynCcyjQX5iVkahHq27dI64Y/KHw==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:a08c:0:b0:57a:e0b:f63 with SMTP id
- x134-20020a81a08c000000b0057a0e0b0f63mr380188ywg.7.1698277235043; Wed, 25 Oct
- 2023 16:40:35 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 23:40:32 +0000
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:105:b0:da0:3da9:ce08 with
+ SMTP id o5-20020a056902010500b00da03da9ce08mr134889ybh.10.1698277236688; Wed,
+ 25 Oct 2023 16:40:36 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 23:40:33 +0000
 In-Reply-To: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
 Mime-Version: 1.0
 References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698277232; l=1734;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698277232; l=20195;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=Q2b3CrzFCZg2hyLmS5X7LihvuuU/XPSccLiVK8DkHC8=; b=RTzd6uTUtmb8/kblStBypVrgGEsj0nKal14coZdooyBDEQzz7JbHzkUsxY+9+36UkzwkB1uJD
- FhNgS/gDVBpB4j8vHHp5tVTFvTU+oud2hDTmH8UYyz0X9J+PtSrHqTO
+ bh=XewvV5AvmkBtamipBNjPxqcegse/dUU2/uXw/TGYiLY=; b=m4vKfFdr1hW6+my7jFAVOYpzrRsm6SC5owuZ4JzUanKp+RrPoleFIe+G2gO00cb5XjF5tLsaD
+ iOI5CpGQT0XDS+1U5Ax+TzrpFHV4vAa/PztVvbtL04EMphTmta1hzil
 X-Mailer: b4 0.12.3
-Message-ID: <20231025-ethtool_puts_impl-v1-1-6a53a93d3b72@google.com>
-Subject: [PATCH 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <20231025-ethtool_puts_impl-v1-2-6a53a93d3b72@google.com>
+Subject: [PATCH 2/3] treewide: Convert some ethtool_sprintf() to ethtool_puts()
 From:   Justin Stitt <justinstitt@google.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -105,57 +105,461 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use strscpy() to implement ethtool_puts().
+This patch converts some basic cases of ethtool_sprintf() to
+ethtool_puts().
 
-Functionally the same as ethtool_sprintf() when it's used with two
-arguments or with just "%s" format specifier.
+The conversions are used in cases where ethtool_sprintf() was being used
+with just two arguments:
+|       ethtool_sprintf(&data, buffer[i].name);
+or when it's used with format string: "%s"
+|       ethtool_sprintf(&data, "%s", buffer[i].name);
+which both now become:
+|       ethtool_puts(&data, buffer[i].name);
+
+There are some outstanding patches [1] that I've sent using plain "%s"
+with ethtool_sprintf() that should be ethtool_puts() now. Some have been
+picked up as-is but I will send new versions for the others.
+
+[1]: https://lore.kernel.org/all/?q=dfb%3Aethtool_sprintf+AND+f%3Ajustinstitt
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- include/linux/ethtool.h | 13 +++++++++++++
- net/ethtool/ioctl.c     |  7 +++++++
- 2 files changed, 20 insertions(+)
+ drivers/net/ethernet/amazon/ena/ena_ethtool.c      |  4 +-
+ drivers/net/ethernet/brocade/bna/bnad_ethtool.c    |  2 +-
+ .../net/ethernet/fungible/funeth/funeth_ethtool.c  |  8 +--
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c |  2 +-
+ .../net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c    |  2 +-
+ drivers/net/ethernet/hisilicon/hns/hns_ethtool.c   | 66 +++++++++++-----------
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |  4 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c       | 10 ++--
+ drivers/net/ethernet/intel/igb/igb_ethtool.c       |  6 +-
+ drivers/net/ethernet/intel/igc/igc_ethtool.c       |  6 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c   |  5 +-
+ .../net/ethernet/netronome/nfp/nfp_net_ethtool.c   | 44 +++++++--------
+ drivers/net/ethernet/pensando/ionic/ionic_stats.c  |  4 +-
+ drivers/net/hyperv/netvsc_drv.c                    |  4 +-
+ drivers/net/vmxnet3/vmxnet3_ethtool.c              | 10 ++--
+ 15 files changed, 87 insertions(+), 90 deletions(-)
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 62b61527bcc4..fdd65050bf1b 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -1052,4 +1052,17 @@ static inline int ethtool_mm_frag_size_min_to_add(u32 val_min, u32 *val_add,
-  * next string.
-  */
- extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt, ...);
-+
-+/**
-+ * ethtool_puts - Write string to ethtool string data
-+ * @data: Pointer to start of string to update
-+ * @str: String to write
-+ *
-+ * Write string to data. Update data to point at start of next
-+ * string.
-+ *
-+ * Prefer this function to ethtool_sprintf() when given only
-+ * two arguments or if @fmt is just "%s".
-+ */
-+extern void ethtool_puts(u8 **data, const char *str);
- #endif /* _LINUX_ETHTOOL_H */
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 0b0ce4f81c01..abdf05edf804 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -1991,6 +1991,13 @@ __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt, ...)
- }
- EXPORT_SYMBOL(ethtool_sprintf);
+diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
+index d671df4b76bc..e3ef081aa42b 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
++++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
+@@ -299,13 +299,13 @@ static void ena_get_strings(struct ena_adapter *adapter,
  
-+void ethtool_puts(u8 **data, const char *str)
-+{
-+	strscpy(*data, str, ETH_GSTRING_LEN);
-+	*data += ETH_GSTRING_LEN;
-+}
-+EXPORT_SYMBOL(ethtool_puts);
+ 	for (i = 0; i < ENA_STATS_ARRAY_GLOBAL; i++) {
+ 		ena_stats = &ena_stats_global_strings[i];
+-		ethtool_sprintf(&data, ena_stats->name);
++		ethtool_puts(&data, ena_stats->name);
+ 	}
+ 
+ 	if (eni_stats_needed) {
+ 		for (i = 0; i < ENA_STATS_ARRAY_ENI(adapter); i++) {
+ 			ena_stats = &ena_stats_eni_strings[i];
+-			ethtool_sprintf(&data, ena_stats->name);
++			ethtool_puts(&data, ena_stats->name);
+ 		}
+ 	}
+ 
+diff --git a/drivers/net/ethernet/brocade/bna/bnad_ethtool.c b/drivers/net/ethernet/brocade/bna/bnad_ethtool.c
+index df10edff5603..d1ad6c9f8140 100644
+--- a/drivers/net/ethernet/brocade/bna/bnad_ethtool.c
++++ b/drivers/net/ethernet/brocade/bna/bnad_ethtool.c
+@@ -608,7 +608,7 @@ bnad_get_strings(struct net_device *netdev, u32 stringset, u8 *string)
+ 
+ 	for (i = 0; i < BNAD_ETHTOOL_STATS_NUM; i++) {
+ 		BUG_ON(!(strlen(bnad_net_stats_strings[i]) < ETH_GSTRING_LEN));
+-		ethtool_sprintf(&string, bnad_net_stats_strings[i]);
++		ethtool_puts(&string, bnad_net_stats_strings[i]);
+ 	}
+ 
+ 	bmap = bna_tx_rid_mask(&bnad->bna);
+diff --git a/drivers/net/ethernet/fungible/funeth/funeth_ethtool.c b/drivers/net/ethernet/fungible/funeth/funeth_ethtool.c
+index 31aa185f4d17..091c93bd7587 100644
+--- a/drivers/net/ethernet/fungible/funeth/funeth_ethtool.c
++++ b/drivers/net/ethernet/fungible/funeth/funeth_ethtool.c
+@@ -655,7 +655,7 @@ static void fun_get_strings(struct net_device *netdev, u32 sset, u8 *data)
+ 						i);
+ 		}
+ 		for (j = 0; j < ARRAY_SIZE(txq_stat_names); j++)
+-			ethtool_sprintf(&p, txq_stat_names[j]);
++			ethtool_puts(&p, txq_stat_names[j]);
+ 
+ 		for (i = 0; i < fp->num_xdpqs; i++) {
+ 			for (j = 0; j < ARRAY_SIZE(xdpq_stat_names); j++)
+@@ -663,7 +663,7 @@ static void fun_get_strings(struct net_device *netdev, u32 sset, u8 *data)
+ 						xdpq_stat_names[j], i);
+ 		}
+ 		for (j = 0; j < ARRAY_SIZE(xdpq_stat_names); j++)
+-			ethtool_sprintf(&p, xdpq_stat_names[j]);
++			ethtool_puts(&p, xdpq_stat_names[j]);
+ 
+ 		for (i = 0; i < netdev->real_num_rx_queues; i++) {
+ 			for (j = 0; j < ARRAY_SIZE(rxq_stat_names); j++)
+@@ -671,10 +671,10 @@ static void fun_get_strings(struct net_device *netdev, u32 sset, u8 *data)
+ 						i);
+ 		}
+ 		for (j = 0; j < ARRAY_SIZE(rxq_stat_names); j++)
+-			ethtool_sprintf(&p, rxq_stat_names[j]);
++			ethtool_puts(&p, rxq_stat_names[j]);
+ 
+ 		for (j = 0; j < ARRAY_SIZE(tls_stat_names); j++)
+-			ethtool_sprintf(&p, tls_stat_names[j]);
++			ethtool_puts(&p, tls_stat_names[j]);
+ 		break;
+ 	default:
+ 		break;
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c
+index 8f391e2adcc0..bdb7afaabdd0 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c
+@@ -678,7 +678,7 @@ static void hns_gmac_get_strings(u32 stringset, u8 *data)
+ 		return;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(g_gmac_stats_string); i++)
+-		ethtool_sprintf(&buff, g_gmac_stats_string[i].desc);
++		ethtool_puts(&buff, g_gmac_stats_string[i].desc);
+ }
+ 
+ static int hns_gmac_get_sset_count(int stringset)
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
+index fc26ffaae620..c58833eb4830 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c
+@@ -752,7 +752,7 @@ static void hns_xgmac_get_strings(u32 stringset, u8 *data)
+ 		return;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(g_xgmac_stats_string); i++)
+-		ethtool_sprintf(&buff, g_xgmac_stats_string[i].desc);
++		ethtool_puts(&buff, g_xgmac_stats_string[i].desc);
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+index b54f3706fb97..b40415910e57 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+@@ -912,42 +912,42 @@ static void hns_get_strings(struct net_device *netdev, u32 stringset, u8 *data)
+ 
+ 	if (stringset == ETH_SS_TEST) {
+ 		if (priv->ae_handle->phy_if != PHY_INTERFACE_MODE_XGMII)
+-			ethtool_sprintf(&buff,
+-					hns_nic_test_strs[MAC_INTERNALLOOP_MAC]);
+-		ethtool_sprintf(&buff,
+-				hns_nic_test_strs[MAC_INTERNALLOOP_SERDES]);
++			ethtool_puts(&buff,
++				     hns_nic_test_strs[MAC_INTERNALLOOP_MAC]);
++		ethtool_puts(&buff,
++			     hns_nic_test_strs[MAC_INTERNALLOOP_SERDES]);
+ 		if ((netdev->phydev) && (!netdev->phydev->is_c45))
+-			ethtool_sprintf(&buff,
+-					hns_nic_test_strs[MAC_INTERNALLOOP_PHY]);
++			ethtool_puts(&buff,
++				     hns_nic_test_strs[MAC_INTERNALLOOP_PHY]);
+ 
+ 	} else {
+-		ethtool_sprintf(&buff, "rx_packets");
+-		ethtool_sprintf(&buff, "tx_packets");
+-		ethtool_sprintf(&buff, "rx_bytes");
+-		ethtool_sprintf(&buff, "tx_bytes");
+-		ethtool_sprintf(&buff, "rx_errors");
+-		ethtool_sprintf(&buff, "tx_errors");
+-		ethtool_sprintf(&buff, "rx_dropped");
+-		ethtool_sprintf(&buff, "tx_dropped");
+-		ethtool_sprintf(&buff, "multicast");
+-		ethtool_sprintf(&buff, "collisions");
+-		ethtool_sprintf(&buff, "rx_over_errors");
+-		ethtool_sprintf(&buff, "rx_crc_errors");
+-		ethtool_sprintf(&buff, "rx_frame_errors");
+-		ethtool_sprintf(&buff, "rx_fifo_errors");
+-		ethtool_sprintf(&buff, "rx_missed_errors");
+-		ethtool_sprintf(&buff, "tx_aborted_errors");
+-		ethtool_sprintf(&buff, "tx_carrier_errors");
+-		ethtool_sprintf(&buff, "tx_fifo_errors");
+-		ethtool_sprintf(&buff, "tx_heartbeat_errors");
+-		ethtool_sprintf(&buff, "rx_length_errors");
+-		ethtool_sprintf(&buff, "tx_window_errors");
+-		ethtool_sprintf(&buff, "rx_compressed");
+-		ethtool_sprintf(&buff, "tx_compressed");
+-		ethtool_sprintf(&buff, "netdev_rx_dropped");
+-		ethtool_sprintf(&buff, "netdev_tx_dropped");
+-
+-		ethtool_sprintf(&buff, "netdev_tx_timeout");
++		ethtool_puts(&buff, "rx_packets");
++		ethtool_puts(&buff, "tx_packets");
++		ethtool_puts(&buff, "rx_bytes");
++		ethtool_puts(&buff, "tx_bytes");
++		ethtool_puts(&buff, "rx_errors");
++		ethtool_puts(&buff, "tx_errors");
++		ethtool_puts(&buff, "rx_dropped");
++		ethtool_puts(&buff, "tx_dropped");
++		ethtool_puts(&buff, "multicast");
++		ethtool_puts(&buff, "collisions");
++		ethtool_puts(&buff, "rx_over_errors");
++		ethtool_puts(&buff, "rx_crc_errors");
++		ethtool_puts(&buff, "rx_frame_errors");
++		ethtool_puts(&buff, "rx_fifo_errors");
++		ethtool_puts(&buff, "rx_missed_errors");
++		ethtool_puts(&buff, "tx_aborted_errors");
++		ethtool_puts(&buff, "tx_carrier_errors");
++		ethtool_puts(&buff, "tx_fifo_errors");
++		ethtool_puts(&buff, "tx_heartbeat_errors");
++		ethtool_puts(&buff, "rx_length_errors");
++		ethtool_puts(&buff, "tx_window_errors");
++		ethtool_puts(&buff, "rx_compressed");
++		ethtool_puts(&buff, "tx_compressed");
++		ethtool_puts(&buff, "netdev_rx_dropped");
++		ethtool_puts(&buff, "netdev_tx_dropped");
 +
- static int ethtool_phys_id(struct net_device *dev, void __user *useraddr)
- {
- 	struct ethtool_value id;
++		ethtool_puts(&buff, "netdev_tx_timeout");
+ 
+ 		h->dev->ops->get_strings(h, stringset, buff);
+ 	}
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index bd1321bf7e26..2641b2a4fcb0 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -2512,11 +2512,11 @@ static void i40e_get_priv_flag_strings(struct net_device *netdev, u8 *data)
+ 	u8 *p = data;
+ 
+ 	for (i = 0; i < I40E_PRIV_FLAGS_STR_LEN; i++)
+-		ethtool_sprintf(&p, i40e_gstrings_priv_flags[i].flag_string);
++		ethtool_puts(&p, i40e_gstrings_priv_flags[i].flag_string);
+ 	if (pf->hw.pf_id != 0)
+ 		return;
+ 	for (i = 0; i < I40E_GL_PRIV_FLAGS_STR_LEN; i++)
+-		ethtool_sprintf(&p, i40e_gl_gstrings_priv_flags[i].flag_string);
++		ethtool_puts(&p, i40e_gl_gstrings_priv_flags[i].flag_string);
+ }
+ 
+ static void i40e_get_strings(struct net_device *netdev, u32 stringset,
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+index ad4d4702129f..7871bba4b099 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -1060,8 +1060,8 @@ __ice_get_strings(struct net_device *netdev, u32 stringset, u8 *data,
+ 	switch (stringset) {
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < ICE_VSI_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					ice_gstrings_vsi_stats[i].stat_string);
++			ethtool_puts(&p,
++				     ice_gstrings_vsi_stats[i].stat_string);
+ 
+ 		if (ice_is_port_repr_netdev(netdev))
+ 			return;
+@@ -1080,8 +1080,8 @@ __ice_get_strings(struct net_device *netdev, u32 stringset, u8 *data,
+ 			return;
+ 
+ 		for (i = 0; i < ICE_PF_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					ice_gstrings_pf_stats[i].stat_string);
++			ethtool_puts(&p,
++				     ice_gstrings_pf_stats[i].stat_string);
+ 
+ 		for (i = 0; i < ICE_MAX_USER_PRIORITY; i++) {
+ 			ethtool_sprintf(&p, "tx_priority_%u_xon.nic", i);
+@@ -1097,7 +1097,7 @@ __ice_get_strings(struct net_device *netdev, u32 stringset, u8 *data,
+ 		break;
+ 	case ETH_SS_PRIV_FLAGS:
+ 		for (i = 0; i < ICE_PRIV_FLAG_ARRAY_SIZE; i++)
+-			ethtool_sprintf(&p, ice_gstrings_priv_flags[i].name);
++			ethtool_puts(&p, ice_gstrings_priv_flags[i].name);
+ 		break;
+ 	default:
+ 		break;
+diff --git a/drivers/net/ethernet/intel/igb/igb_ethtool.c b/drivers/net/ethernet/intel/igb/igb_ethtool.c
+index 319ed601eaa1..e0a24c7c37f9 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ethtool.c
++++ b/drivers/net/ethernet/intel/igb/igb_ethtool.c
+@@ -2356,11 +2356,9 @@ static void igb_get_strings(struct net_device *netdev, u32 stringset, u8 *data)
+ 		break;
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < IGB_GLOBAL_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					igb_gstrings_stats[i].stat_string);
++			ethtool_puts(&p, igb_gstrings_stats[i].stat_string);
+ 		for (i = 0; i < IGB_NETDEV_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					igb_gstrings_net_stats[i].stat_string);
++			ethtool_puts(&p, igb_gstrings_net_stats[i].stat_string);
+ 		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			ethtool_sprintf(&p, "tx_queue_%u_packets", i);
+ 			ethtool_sprintf(&p, "tx_queue_%u_bytes", i);
+diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+index 7ab6dd58e400..2aac55ebdf5a 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
++++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+@@ -773,10 +773,10 @@ static void igc_ethtool_get_strings(struct net_device *netdev, u32 stringset,
+ 		break;
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < IGC_GLOBAL_STATS_LEN; i++)
+-			ethtool_sprintf(&p, igc_gstrings_stats[i].stat_string);
++			ethtool_puts(&p, igc_gstrings_stats[i].stat_string);
+ 		for (i = 0; i < IGC_NETDEV_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					igc_gstrings_net_stats[i].stat_string);
++			ethtool_puts(&p,
++				     igc_gstrings_net_stats[i].stat_string);
+ 		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			ethtool_sprintf(&p, "tx_queue_%u_packets", i);
+ 			ethtool_sprintf(&p, "tx_queue_%u_bytes", i);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+index 0bbad4a5cc2f..dd722b0381e0 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+@@ -1413,12 +1413,11 @@ static void ixgbe_get_strings(struct net_device *netdev, u32 stringset,
+ 	switch (stringset) {
+ 	case ETH_SS_TEST:
+ 		for (i = 0; i < IXGBE_TEST_LEN; i++)
+-			ethtool_sprintf(&p, ixgbe_gstrings_test[i]);
++			ethtool_puts(&p, ixgbe_gstrings_test[i]);
+ 		break;
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < IXGBE_GLOBAL_STATS_LEN; i++)
+-			ethtool_sprintf(&p,
+-					ixgbe_gstrings_stats[i].stat_string);
++			ethtool_puts(&p, ixgbe_gstrings_stats[i].stat_string);
+ 		for (i = 0; i < netdev->num_tx_queues; i++) {
+ 			ethtool_sprintf(&p, "tx_queue_%u_packets", i);
+ 			ethtool_sprintf(&p, "tx_queue_%u_bytes", i);
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+index e75cbb287625..1636ce61a3c0 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+@@ -800,7 +800,7 @@ static void nfp_get_self_test_strings(struct net_device *netdev, u8 *data)
+ 
+ 	for (i = 0; i < NFP_TEST_TOTAL_NUM; i++)
+ 		if (nfp_self_test[i].is_supported(netdev))
+-			ethtool_sprintf(&data, nfp_self_test[i].name);
++			ethtool_puts(&data, nfp_self_test[i].name);
+ }
+ 
+ static int nfp_get_self_test_count(struct net_device *netdev)
+@@ -852,24 +852,24 @@ static u8 *nfp_vnic_get_sw_stats_strings(struct net_device *netdev, u8 *data)
+ 		ethtool_sprintf(&data, "rvec_%u_tx_busy", i);
+ 	}
+ 
+-	ethtool_sprintf(&data, "hw_rx_csum_ok");
+-	ethtool_sprintf(&data, "hw_rx_csum_inner_ok");
+-	ethtool_sprintf(&data, "hw_rx_csum_complete");
+-	ethtool_sprintf(&data, "hw_rx_csum_err");
+-	ethtool_sprintf(&data, "rx_replace_buf_alloc_fail");
+-	ethtool_sprintf(&data, "rx_tls_decrypted_packets");
+-	ethtool_sprintf(&data, "hw_tx_csum");
+-	ethtool_sprintf(&data, "hw_tx_inner_csum");
+-	ethtool_sprintf(&data, "tx_gather");
+-	ethtool_sprintf(&data, "tx_lso");
+-	ethtool_sprintf(&data, "tx_tls_encrypted_packets");
+-	ethtool_sprintf(&data, "tx_tls_ooo");
+-	ethtool_sprintf(&data, "tx_tls_drop_no_sync_data");
+-
+-	ethtool_sprintf(&data, "hw_tls_no_space");
+-	ethtool_sprintf(&data, "rx_tls_resync_req_ok");
+-	ethtool_sprintf(&data, "rx_tls_resync_req_ign");
+-	ethtool_sprintf(&data, "rx_tls_resync_sent");
++	ethtool_puts(&data, "hw_rx_csum_ok");
++	ethtool_puts(&data, "hw_rx_csum_inner_ok");
++	ethtool_puts(&data, "hw_rx_csum_complete");
++	ethtool_puts(&data, "hw_rx_csum_err");
++	ethtool_puts(&data, "rx_replace_buf_alloc_fail");
++	ethtool_puts(&data, "rx_tls_decrypted_packets");
++	ethtool_puts(&data, "hw_tx_csum");
++	ethtool_puts(&data, "hw_tx_inner_csum");
++	ethtool_puts(&data, "tx_gather");
++	ethtool_puts(&data, "tx_lso");
++	ethtool_puts(&data, "tx_tls_encrypted_packets");
++	ethtool_puts(&data, "tx_tls_ooo");
++	ethtool_puts(&data, "tx_tls_drop_no_sync_data");
++
++	ethtool_puts(&data, "hw_tls_no_space");
++	ethtool_puts(&data, "rx_tls_resync_req_ok");
++	ethtool_puts(&data, "rx_tls_resync_req_ign");
++	ethtool_puts(&data, "rx_tls_resync_sent");
+ 
+ 	return data;
+ }
+@@ -943,13 +943,13 @@ nfp_vnic_get_hw_stats_strings(u8 *data, unsigned int num_vecs, bool repr)
+ 	swap_off = repr * NN_ET_SWITCH_STATS_LEN;
+ 
+ 	for (i = 0; i < NN_ET_SWITCH_STATS_LEN; i++)
+-		ethtool_sprintf(&data, nfp_net_et_stats[i + swap_off].name);
++		ethtool_puts(&data, nfp_net_et_stats[i + swap_off].name);
+ 
+ 	for (i = NN_ET_SWITCH_STATS_LEN; i < NN_ET_SWITCH_STATS_LEN * 2; i++)
+-		ethtool_sprintf(&data, nfp_net_et_stats[i - swap_off].name);
++		ethtool_puts(&data, nfp_net_et_stats[i - swap_off].name);
+ 
+ 	for (i = NN_ET_SWITCH_STATS_LEN * 2; i < NN_ET_GLOBAL_STATS_LEN; i++)
+-		ethtool_sprintf(&data, nfp_net_et_stats[i].name);
++		ethtool_puts(&data, nfp_net_et_stats[i].name);
+ 
+ 	for (i = 0; i < num_vecs; i++) {
+ 		ethtool_sprintf(&data, "rxq_%u_pkts", i);
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_stats.c b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
+index 9859a4432985..1f6022fb7679 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_stats.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
+@@ -258,10 +258,10 @@ static void ionic_sw_stats_get_strings(struct ionic_lif *lif, u8 **buf)
+ 	int i, q_num;
+ 
+ 	for (i = 0; i < IONIC_NUM_LIF_STATS; i++)
+-		ethtool_sprintf(buf, ionic_lif_stats_desc[i].name);
++		ethtool_puts(buf, ionic_lif_stats_desc[i].name);
+ 
+ 	for (i = 0; i < IONIC_NUM_PORT_STATS; i++)
+-		ethtool_sprintf(buf, ionic_port_stats_desc[i].name);
++		ethtool_puts(buf, ionic_port_stats_desc[i].name);
+ 
+ 	for (q_num = 0; q_num < MAX_Q(lif); q_num++)
+ 		ionic_sw_stats_get_tx_strings(lif, buf, q_num);
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 3ba3c8fb28a5..cbd9405fc2f3 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -1582,10 +1582,10 @@ static void netvsc_get_strings(struct net_device *dev, u32 stringset, u8 *data)
+ 	switch (stringset) {
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < ARRAY_SIZE(netvsc_stats); i++)
+-			ethtool_sprintf(&p, netvsc_stats[i].name);
++			ethtool_puts(&p, netvsc_stats[i].name);
+ 
+ 		for (i = 0; i < ARRAY_SIZE(vf_stats); i++)
+-			ethtool_sprintf(&p, vf_stats[i].name);
++			ethtool_puts(&p, vf_stats[i].name);
+ 
+ 		for (i = 0; i < nvdev->num_chn; i++) {
+ 			ethtool_sprintf(&p, "tx_queue_%u_packets", i);
+diff --git a/drivers/net/vmxnet3/vmxnet3_ethtool.c b/drivers/net/vmxnet3/vmxnet3_ethtool.c
+index 98c22d7d87a2..8f5f202cde39 100644
+--- a/drivers/net/vmxnet3/vmxnet3_ethtool.c
++++ b/drivers/net/vmxnet3/vmxnet3_ethtool.c
+@@ -245,20 +245,20 @@ vmxnet3_get_strings(struct net_device *netdev, u32 stringset, u8 *buf)
+ 
+ 	for (j = 0; j < adapter->num_tx_queues; j++) {
+ 		for (i = 0; i < ARRAY_SIZE(vmxnet3_tq_dev_stats); i++)
+-			ethtool_sprintf(&buf, vmxnet3_tq_dev_stats[i].desc);
++			ethtool_puts(&buf, vmxnet3_tq_dev_stats[i].desc);
+ 		for (i = 0; i < ARRAY_SIZE(vmxnet3_tq_driver_stats); i++)
+-			ethtool_sprintf(&buf, vmxnet3_tq_driver_stats[i].desc);
++			ethtool_puts(&buf, vmxnet3_tq_driver_stats[i].desc);
+ 	}
+ 
+ 	for (j = 0; j < adapter->num_rx_queues; j++) {
+ 		for (i = 0; i < ARRAY_SIZE(vmxnet3_rq_dev_stats); i++)
+-			ethtool_sprintf(&buf, vmxnet3_rq_dev_stats[i].desc);
++			ethtool_puts(&buf, vmxnet3_rq_dev_stats[i].desc);
+ 		for (i = 0; i < ARRAY_SIZE(vmxnet3_rq_driver_stats); i++)
+-			ethtool_sprintf(&buf, vmxnet3_rq_driver_stats[i].desc);
++			ethtool_puts(&buf, vmxnet3_rq_driver_stats[i].desc);
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(vmxnet3_global_stats); i++)
+-		ethtool_sprintf(&buf, vmxnet3_global_stats[i].desc);
++		ethtool_puts(&buf, vmxnet3_global_stats[i].desc);
+ }
+ 
+ netdev_features_t vmxnet3_fix_features(struct net_device *netdev,
 
 -- 
 2.42.0.758.gaed0368e0e-goog
