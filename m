@@ -2,123 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF407D6BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A427D6BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343986AbjJYMc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S1343968AbjJYMdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234838AbjJYMcy (ORCPT
+        with ESMTP id S234876AbjJYMdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:32:54 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32FA129;
-        Wed, 25 Oct 2023 05:32:49 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 203A466057B6;
-        Wed, 25 Oct 2023 13:32:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698237168;
-        bh=/4dXk3Un/vaxtCsUQZxzPGs3gNA8QPr1cZShAvmvMvg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MpzRZNViuoPfy7pkhZLcZ03fqKpTu+dsSqM9MQFDtpjGQyMoOn9XNNgSR3yW5xeWJ
-         VvlYQx4lfunbCLN45YIQDePd+aSfBWTbuBFCgsLnlpQH+Uy78/j1kxgfk1z725LrXb
-         zgVxxfEFsTnBRas8zpPnoKMfD0DRYx3zER6C640CW1xL+u3fhUc9YVVKByT0f86vf1
-         KsAjoZLnve4eBIv3pf2AEwtWdVKg8KrnBklzts0mBAmsLo3XncB2sMQsD8b7NQHDg2
-         Nns0czgK5QvlF3sugJbQDTG6WRr5aiyVDlxMSADoR5BJRCsWimtLRr32Y5pxtMBOhI
-         AgKvgG2i7zuKQ==
-Date:   Wed, 25 Oct 2023 08:32:42 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kselftest@vger.kernel.org, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] kselftest: devices: Add board file for
- google,spherion
-Message-ID: <e49c63c4-2b24-4428-801c-1f854a98c593@notapiano>
-References: <20231024211818.365844-1-nfraprado@collabora.com>
- <20231024211818.365844-3-nfraprado@collabora.com>
- <2023102546-filled-onboard-3dfb@gregkh>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Wed, 25 Oct 2023 08:33:07 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D8218E;
+        Wed, 25 Oct 2023 05:33:05 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3b2f2b9a176so3734225b6e.0;
+        Wed, 25 Oct 2023 05:33:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698237184; x=1698841984;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8CPemYXBUDg57/WVb4vOz03sRB1TRQWESGKykqWrHzg=;
+        b=kfLk/HwAJFNxCDS+nCShcYMgexOfU/V3ciNtLYJaAiyrRLl1uGf5AFtwQcNjACeymm
+         R+4K4MxTfgXSYYAwtYORC9mN6+tBQ46ElyGYSPi+Pbms486qPrYVkYXmX9VLPOMf3eSz
+         jD31HY3D/n4+M3/ROXdk0SnXHAhZfyUIa8v86hfPC3cyKQMo/E/1EDVOrlXVU8hUQ2P9
+         ZHGzKimEmmRwYOoDqgGCqWxG8FzK44dq9plY/7R4B8bTcvPsWDgCiu9oSnc5ZcEtLvW2
+         zqTPjZvWb6/ON5ErUpG0hgER3/UDhIOKOp/Z0jrPtL72OkzNICQjGH7nU04UtvmWXiqm
+         XZyQ==
+X-Gm-Message-State: AOJu0Yxj1yR9R9oUF14JCE00lCLR3VihFz/FAIpPzX98RzGbBm9yuZbX
+        qkd5bf3kMo5Bisxb7y3Wpg==
+X-Google-Smtp-Source: AGHT+IGFRmvPp4komL3PmPB+n4EaJxfBNyiGvm6AYFq8mhHjHNqEKyiOmK8UKYdLkHWzvM0ogmXGug==
+X-Received: by 2002:a54:4581:0:b0:3a8:ccf0:103f with SMTP id z1-20020a544581000000b003a8ccf0103fmr16717681oib.3.1698237184122;
+        Wed, 25 Oct 2023 05:33:04 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id n12-20020aca240c000000b003afe584ed4fsm2356547oic.42.2023.10.25.05.33.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 05:33:03 -0700 (PDT)
+Received: (nullmailer pid 3559498 invoked by uid 1000);
+        Wed, 25 Oct 2023 12:33:02 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023102546-filled-onboard-3dfb@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Edward Chow <equu@openmail.cc>
+Cc:     linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20231025052937.830813-1-equu@openmail.cc>
+References: <20231025052937.830813-1-equu@openmail.cc>
+Message-Id: <169823714202.3554834.10341623302238023195.robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: mtd-partitions: Export special values
+Date:   Wed, 25 Oct 2023 07:33:02 -0500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 12:32:15PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Oct 24, 2023 at 05:18:00PM -0400, Nícolas F. R. A. Prado wrote:
-> > Add the list of devices expected to be probed from the USB and PCI
-> > busses on the google,spherion machine. The USB host controller at
-> > 11200000 is shared between two busses, for USB2 and USB3, so an
-> > additional match is used to select the USB2 bus.
-> > 
-> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> > ---
-> > 
-> >  tools/testing/selftests/devices/boards/google,spherion | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >  create mode 100644 tools/testing/selftests/devices/boards/google,spherion
-> > 
-> > diff --git a/tools/testing/selftests/devices/boards/google,spherion b/tools/testing/selftests/devices/boards/google,spherion
-> > new file mode 100644
-> > index 000000000000..ba86ffcfe43c
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/devices/boards/google,spherion
-> > @@ -0,0 +1,3 @@
-> > +usb camera 11200000,PRODUCT=.*/2/.* 1.4.1 1 0,1
-> > +usb bluetooth 11200000,PRODUCT=.*/2/.* 1.4.2 1 0,1
-> > +pci wifi 11230000 0.0/0.0
+
+On Wed, 25 Oct 2023 13:29:37 +0800, Edward Chow wrote:
+> There are special "offset" and "size" values defined and documented in
+> linux/mtd/partitions.h:
 > 
-> USB busses (and PCI ids) are not determinisitic and can, and will,
-> change values randomly.  So while it is nice to test "did the devices
-> show up properly", you can not do that based on bus ids at all, sorry.
+> // consume as much as possible, leaving size after the end of partition.
 > 
-> Unless I'm reading these values wrong?  What are the fields
-> representing?  Perhaps a comment at the top to describe them so that we
-> know how to parse them?
+> // the partition will start at the next erase block.
+> 
+> // the partition will start where the previous one ended.
+> 
+> (Though not explicitly, they are compared against variables in uint64_t
+> in drivers/mtd/mtdpart.c, so they had better be considered as such.)
+> 
+> // the partition will extend to the end of the master MTD device.
+> 
+> These special values could be used to define partitions automatically
+> fitting to the size of the master MTD device at runtime.
+> 
+> However, these values used not to be exported to dt-bindings, thus
+> seldom used before, since they might have been only used in numeric form,
+> such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
+> 
+> Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
+> values, so 2-cell addressed should be defined to use special offset values,
+> such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
+> linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
+> 
+> Signed-off-by: Edward Chow <equu@openmail.cc>
+> ---
+>  .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 ++
+>  include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
+>  3 files changed, 46 insertions(+)
+>  create mode 100644 include/dt-bindings/mtd/partitions.h
+> 
 
-Hi Greg,
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-I have described the fields in the commit message of patch 1. Here they are:
+yamllint warnings/errors:
 
-usb <test_name> <controller_address>[,<additional_match>] <ports_path> <configuration> <interfaces>
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dts:225.24-25 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
-pci <test_name> <controller_address> <device-function_pairs_path>
+doc reference errors (make refcheckdocs):
 
-I'm aware that bus IDs are assigned at runtime, and that's exactly why I've
-avoided those in the test definitions, instead describing the hardware topology,
-which won't ever change.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231025052937.830813-1-equu@openmail.cc
 
-And just to be extra clear, by hardware topology I mean:
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-For USB, we find the USB bus based on the address of its controller (and
-optionally its productID if two busses share the same controller for USB2 and
-USB3), and then find the device by following the ports at each hub. The
-configuration number and interfaces then describe what interfaces to check for
-presence and driver binding.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-For PCI, we find the controller again based on its address, and follow the
-device-function pairs at each level in the topology until we arrive at the
-desired device.
+pip3 install dtschema --upgrade
 
-We don't rely on the USB bus number, nor on the PCI domain and bus number, since
-these are all assigned at runtime.
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-Thanks,
-Nícolas
