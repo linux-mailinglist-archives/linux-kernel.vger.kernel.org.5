@@ -2,326 +2,713 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5537D5F8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 03:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A726F7D5F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 03:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjJYBo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 21:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
+        id S229587AbjJYBuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 21:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJYBo5 (ORCPT
+        with ESMTP id S229441AbjJYBuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 21:44:57 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6064910D5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 18:44:54 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7b6d6773d05so1833596241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 18:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698198293; x=1698803093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QvYlReFl2iFwDppsisTa/4XhhXlafVLVna0q5Gl6KZ8=;
-        b=UrzjBkcHUyg/y5DbNpOjlAFkcJDXbiG58qTOzrGqkZeqCLUddhDz/BUE9sCcrCxvDY
-         hPFRxbqqCfCAh9jALhKbdxmKhG8SoWe41hZFQQ65cAEWcQVjgOYqCwhskFUHVPXDo/NO
-         Sm0RMSEaKSYv7wQu0B+o12Ku9de8VVkjibRUJji9aSOPiWyezNmh7tSlmrdQRcFU3KOd
-         T0LJZJTff8KFBLXzTBr1DRIk0cpSpuPELne6ZFuKFjULb9s/M6MmlLl4X2LSGInefZtW
-         hxhBVwjPg+zeDnfNu3L43z0YRsgCxKXG46ZFOrq51O5d8yE53xmUfaEIYYu9/QnuYHqo
-         JXKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698198293; x=1698803093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QvYlReFl2iFwDppsisTa/4XhhXlafVLVna0q5Gl6KZ8=;
-        b=fXXcw/th8Ke/YnK5qGbL9X6RexAfD/mHu7VSECOtMihNlnBQqASY6z9rpVDZtqLd52
-         7MIAMUSHOXCPtzxhUUg25vV1Zu5YkKjRFyLlDnqOs2fdWShSR90VoGCYGUNvkIYudi3e
-         /BdZ6cdR2LQdiGZm2XaiTWrWJufDLfsV3HkdLQghQXdXwU5MJPxGfIxWc/D869KEzYAR
-         NQtgT+JokrVZNNXQzO6mk7e4zaFt/tbvh662PvXYlRwJ39X8jYMWUK4gFKxZWkEvLjot
-         FAsZcr7vWXDLeqGYOeYsWR7MTEsxar/EyGfU29C/HB7G7XpRidh7EjnPnRBsm8ucCUsD
-         bnTA==
-X-Gm-Message-State: AOJu0Ywxcl2u0PiJeE7z7pdu8b7beXQy3AKw/CqJg3738OQ5mMO9SnMn
-        vuHRKcBYbTVAtX6g5PPx77iyF6WJrXMvyp7eaUE=
-X-Google-Smtp-Source: AGHT+IHHQ/64kU/wjSFBYKOc/erC/5nP1nhYJPI9Gj/z5cI4PH/ZXR2KmQnm4B4cnNtN35XqOvVPFa0hZSBe4O5Zvvw=
-X-Received: by 2002:a67:ae05:0:b0:452:5798:64bd with SMTP id
- x5-20020a67ae05000000b00452579864bdmr11995808vse.35.1698198293316; Tue, 24
- Oct 2023 18:44:53 -0700 (PDT)
+        Tue, 24 Oct 2023 21:50:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7286B10CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 18:50:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B28B4C433C7;
+        Wed, 25 Oct 2023 01:50:00 +0000 (UTC)
+Date:   Tue, 24 Oct 2023 21:49:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20231024214958.22fff0bc@gandalf.local.home>
+In-Reply-To: <20231024103426.4074d319@gandalf.local.home>
+References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
+        <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+        <87zg1v3xxh.fsf@oracle.com>
+        <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+        <87edj64rj1.fsf@oracle.com>
+        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+        <87zg1u1h5t.fsf@oracle.com>
+        <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+        <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+        <87h6o01w1a.fsf@oracle.com>
+        <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+        <87cyyfxd4k.ffs@tglx>
+        <20231024103426.4074d319@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
- <CAGsJ_4z1u4-_JXUM9GG2cqc4Nwrx1v69uHsbff5jDQZHQgWP+w@mail.gmail.com> <87y1frqz2u.fsf@nvdebian.thelocal>
-In-Reply-To: <87y1frqz2u.fsf@nvdebian.thelocal>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 25 Oct 2023 09:44:41 +0800
-Message-ID: <CAGsJ_4wFiz-obaoXqfU9p-YqgFwExyXpGjpDKMOUt7mnenD-ew@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="MP_/jsj69kGF.jAY9NqZHaY.orM"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 9:18=E2=80=AFAM Alistair Popple <apopple@nvidia.com=
-> wrote:
->
->
-> Barry Song <21cnbao@gmail.com> writes:
->
-> > On Wed, Oct 25, 2023 at 7:16=E2=80=AFAM Barry Song <21cnbao@gmail.com> =
-wrote:
-> >>
-> >> On Tue, Oct 24, 2023 at 8:57=E2=80=AFPM Baolin Wang
-> >> <baolin.wang@linux.alibaba.com> wrote:
-> >> >
-> >> > Now ptep_clear_flush_young() is only called by folio_referenced() to
-> >> > check if the folio was referenced, and now it will call a tlb flush =
-on
-> >> > ARM64 architecture. However the tlb flush can be expensive on ARM64
-> >> > servers, especially for the systems with a large CPU numbers.
-> >> >
-> >> > Similar to the x86 architecture, below comments also apply equally t=
-o
-> >> > ARM64 architecture. So we can drop the tlb flush operation in
-> >> > ptep_clear_flush_young() on ARM64 architecture to improve the perfor=
-mance.
-> >> > "
-> >> > /* Clearing the accessed bit without a TLB flush
-> >> >  * doesn't cause data corruption. [ It could cause incorrect
-> >> >  * page aging and the (mistaken) reclaim of hot pages, but the
-> >> >  * chance of that should be relatively low. ]
-> >> >  *
-> >> >  * So as a performance optimization don't flush the TLB when
-> >> >  * clearing the accessed bit, it will eventually be flushed by
-> >> >  * a context switch or a VM operation anyway. [ In the rare
-> >> >  * event of it not getting flushed for a long time the delay
-> >> >  * shouldn't really matter because there's no real memory
-> >> >  * pressure for swapout to react to. ]
-> >> >  */
-> >> > "
-> >> > Running the thpscale to show some obvious improvements for compactio=
-n
-> >> > latency with this patch:
-> >> >                              base                   patched
-> >> > Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%=
-*
-> >> > Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%=
-*
-> >> > Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%=
-*
-> >> > Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%=
-*
-> >> > Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%=
-*
-> >> > Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%=
-*
-> >> > Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%=
-*
-> >> > Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%=
-*
-> >> > Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%=
-*
-> >> >                        base       patched
-> >> > Duration User         167.78      161.03
-> >> > Duration System      1836.66     1673.01
-> >> > Duration Elapsed     2074.58     2059.75
-> >> >
-> >> > Barry Song submitted a similar patch [1] before, that replaces the
-> >> > ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
-> >> > folio_referenced_one(). However, I'm not sure if removing the tlb fl=
-ush
-> >> > operation is applicable to every architecture in kernel, so dropping
-> >> > the tlb flush for ARM64 seems a sensible change.
-> >> >
-> >> > Note: I am okay for both approach, if someone can help to ensure tha=
-t
-> >> > all architectures do not need the tlb flush when clearing the access=
-ed
-> >> > bit, then I also think Barry's patch is better (hope Barry can resen=
-d
-> >> > his patch).
-> >> >
-> >>
-> >> Thanks!
-> >>
-> >> ptep_clear_flush_young() with "flush" in its name clearly says it need=
-s a
-> >> flush. but it happens in arm64, all other code which needs a flush has
-> >> called other variants, for example __flush_tlb_page_nosync():
-> >>
-> >> static inline void arch_tlbbatch_add_pending(struct
-> >> arch_tlbflush_unmap_batch *batch,
-> >>  struct mm_struct *mm, unsigned long uaddr)
-> >> {
-> >>  __flush_tlb_page_nosync(mm, uaddr);
-> >> }
-> >>
-> >> so it seems folio_referenced is the only left user of this
-> >> ptep_clear_flush_young().
-> >> The fact makes Baolin's patch look safe now.
-> >>
-> >> but this function still has "flush" in its name, so one day, one perso=
-n might
-> >> call it with the understanding that it will flush tlb but actually it
-> >> won't. This is
-> >> bad smell in code.
-> >>
-> >> I guess one side effect of not flushing tlb while clearing the access
-> >> flag is that
-> >> hardware won't see this cleared flag in the tlb, so it might not set t=
-his bit in
-> >> memory even though the bit has been cleared before in memory(but not i=
-n tlb)
-> >> while the page is accessed *again*.
-> >>
-> >> next time, someone reads the access flag in memory again by folio_refe=
-renced,
-> >> he/she will see the page is cold as hardware has lost a chance to set
-> >> the bit again
-> >> since it finds tlb already has a true access flag.
-> >>
-> >> But anyway, tlb is so small, it will be flushed by context switch and
-> >> other running
-> >> code soon. so it seems we don't actually require the access flag being=
- instantly
-> >> updated. the time gap, in which access flag might lose the new set by =
-hardware,
-> >> seems to be too short to really affect the accuracy of page reclamatio=
-n. but its
-> >> cost is large.
-> >>
-> >> (A). Constant flush cost vs. (B). very very occasional reclaimed hot
-> >> page,  B might
-> >> be a correct choice.
-> >
-> > Plus, I doubt B is really going to happen. as after a page is promoted =
-to
-> > the head of lru list or new generation, it needs a long time to slide b=
-ack
-> > to the inactive list tail or to the candidate generation of mglru. the =
-time
-> > should have been large enough for tlb to be flushed. If the page is rea=
-lly
-> > hot, the hardware will get second, third, fourth etc opportunity to set=
- an
-> > access flag in the long time in which the page is re-moved to the tail
-> > as the page can be accessed multiple times if it is really hot.
->
-> This might not be true if you have external hardware sharing the page
-> tables with software through either HMM or hardware supported ATS
-> though.
->
-> In those cases I think it's much more likely hardware can still be
-> accessing the page even after a context switch on the CPU say. So those
-> pages will tend to get reclaimed even though hardware is still actively
-> using them which would be quite expensive and I guess could lead to
-> thrashing as each page is reclaimed and then immediately faulted back
-> in.
+--MP_/jsj69kGF.jAY9NqZHaY.orM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-i am not quite sure i got your point. has the external hardware sharing cpu=
-'s
-pagetable the ability to set access flag in page table entries by
-itself? if yes,
-I don't see how our approach will hurt as folio_referenced can notify the
-hardware driver and the driver can flush its own tlb. If no, i don't see
-either as the external hardware can't set access flags, that means we
-have ignored its reference and only knows cpu's access even in the current
-mainline code. so we are not getting worse.
+On Tue, 24 Oct 2023 10:34:26 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-so the external hardware can also see cpu's TLB? or cpu's tlb flush can
-also broadcast to external hardware, then external hardware sees the
-cleared access flag, thus, it can set access flag in page table when the
-hardware access it?  If this is the case, I feel what you said is true.
+> I'm going to work on a POC, and see if I can get some benchmarks on how
+> much this could help tasks like databases and VMs in general.
 
->
-> Of course TLB flushes are equally (perhaps even more) expensive for this
-> kind of external HW so reducing them would still be beneficial. I wonder
-> if there's some way they could be deferred until the page is moved to
-> the inactive list say?
->
-> >>
-> >> > [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gma=
-il.com/
-> >> > Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> >> > ---
-> >> >  arch/arm64/include/asm/pgtable.h | 31 ++++++++++++++++-------------=
---
-> >> >  1 file changed, 16 insertions(+), 15 deletions(-)
-> >> >
-> >> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/a=
-sm/pgtable.h
-> >> > index 0bd18de9fd97..2979d796ba9d 100644
-> >> > --- a/arch/arm64/include/asm/pgtable.h
-> >> > +++ b/arch/arm64/include/asm/pgtable.h
-> >> > @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(st=
-ruct vm_area_struct *vma,
-> >> >  static inline int ptep_clear_flush_young(struct vm_area_struct *vma=
-,
-> >> >                                          unsigned long address, pte_=
-t *ptep)
-> >> >  {
-> >> > -       int young =3D ptep_test_and_clear_young(vma, address, ptep);
-> >> > -
-> >> > -       if (young) {
-> >> > -               /*
-> >> > -                * We can elide the trailing DSB here since the wors=
-t that can
-> >> > -                * happen is that a CPU continues to use the young e=
-ntry in its
-> >> > -                * TLB and we mistakenly reclaim the associated page=
-. The
-> >> > -                * window for such an event is bounded by the next
-> >> > -                * context-switch, which provides a DSB to complete =
-the TLB
-> >> > -                * invalidation.
-> >> > -                */
-> >> > -               flush_tlb_page_nosync(vma, address);
-> >> > -       }
-> >> > -
-> >> > -       return young;
-> >> > +       /*
-> >> > +        * This comment is borrowed from x86, but applies equally to=
- ARM64:
-> >> > +        *
-> >> > +        * Clearing the accessed bit without a TLB flush doesn't cau=
-se
-> >> > +        * data corruption. [ It could cause incorrect page aging an=
-d
-> >> > +        * the (mistaken) reclaim of hot pages, but the chance of th=
-at
-> >> > +        * should be relatively low. ]
-> >> > +        *
-> >> > +        * So as a performance optimization don't flush the TLB when
-> >> > +        * clearing the accessed bit, it will eventually be flushed =
-by
-> >> > +        * a context switch or a VM operation anyway. [ In the rare
-> >> > +        * event of it not getting flushed for a long time the delay
-> >> > +        * shouldn't really matter because there's no real memory
-> >> > +        * pressure for swapout to react to. ]
-> >> > +        */
-> >> > +       return ptep_test_and_clear_young(vma, address, ptep);
-> >> >  }
-> >> >
-> >> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >> > --
-> >> > 2.39.3
-> >> >
-> >>
-> >> Thanks
-> >> Barry
->
-Thanks
-Barry
+And that was much easier than I thought it would be. It also shows some
+great results!
+
+I started with Thomas's PREEMPT_AUTO.patch from the rt-devel tree:
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/PREEMPT_AUTO.patch?h=v6.6-rc6-rt10-patches
+
+So you need to select:
+
+  CONFIG_PREEMPT_AUTO
+
+The below is my proof of concept patch. It still has debugging in it, and
+I'm sure the interface will need to be changed.
+
+There's now a new file:  /sys/kernel/extend_sched
+
+Attached is a program that tests it. It mmaps that file, with:
+
+ struct extend_map {
+	unsigned long		flags;
+ };
+
+ static __thread struct extend_map *extend_map;
+
+That is, there's this structure for every thread. It's assigned with:
+
+	fd = open("/sys/kernel/extend_sched", O_RDWR);
+	extend_map = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+I don't actually like this interface, as it wastes a full page for just two
+bits :-p
+
+Anyway, to tell the kernel to "extend" the time slice if possible because
+it's in a critical section, we have:
+
+ static void extend(void)
+ {
+	if (!extend_map)
+		return;
+
+	extend_map->flags = 1;
+ }
+
+And to say that's it's done:
+
+ static void unextend(void)
+ {
+	unsigned long prev;
+
+	if (!extend_map)
+		return;
+
+	prev = xchg(&extend_map->flags, 0);
+	if (prev & 2)
+		sched_yield();
+ }
+
+So, bit 1 is for user space to tell the kernel "please extend me", and bit
+two is for the kernel to tell user space "OK, I extended you, but call
+sched_yield() when done".
+
+This test program creates 1 + number of CPUs threads, that run in a loop
+for 5 seconds. Each thread will grab a user space spin lock (not a futex,
+but just shared memory). Before grabbing the lock it will call "extend()",
+if it fails to grab the lock, it calls "unextend()" and spins on the lock
+until its free, where it will try again. Then after it gets the lock, it
+will update a counter, and release the lock, calling "unextend()" as well.
+Then it will spin on the counter until it increments again to allow another
+task to get into the critical section.
+
+With the init of the extend_map disabled and it doesn't use the extend
+code, it ends with:
+
+ Ran for 3908165 times
+ Total wait time: 33.965654
+
+I can give you stdev and all that too, but the above is pretty much the
+same after several runs.
+
+After enabling the extend code, it has:
+
+ Ran for 4829340 times
+ Total wait time: 32.635407
+
+It was able to get into the critical section almost 1 million times more in
+those 5 seconds! That's a 23% improvement!
+
+The wait time for getting into the critical section also dropped by the
+total of over a second (4% improvement).
+
+I ran a traceeval tool on it (still work in progress, but I can post when
+it's done), and with the following trace, and the writes to trace-marker
+(tracefs_printf)
+
+ trace-cmd record -e sched_switch ./extend-sched
+
+It showed that without the extend, each task was preempted while holding
+the lock around 200 times. With the extend, only one task was ever
+preempted while holding the lock, and it only happened once!
+
+Below is my patch (with debugging and on top of Thomas's PREEMPT_AUTO.patch):
+
+Attached is the program I tested it with. It uses libtracefs to write to
+the trace_marker file, but if you don't want to build it with libtracefs:
+
+  gcc -o extend-sched extend-sched.c `pkg-config --libs --cflags libtracefs` -lpthread
+
+You can just do:
+
+ grep -v tracefs extend-sched.c > extend-sched-notracefs.c
+
+And build that.
+
+-- Steve
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 9b13b7d4f1d3..fb540dd0dec0 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -740,6 +740,10 @@ struct kmap_ctrl {
+ #endif
+ };
+ 
++struct extend_map {
++	long				flags;
++};
++
+ struct task_struct {
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 	/*
+@@ -802,6 +806,8 @@ struct task_struct {
+ 	unsigned int			core_occupation;
+ #endif
+ 
++	struct extend_map		*extend_map;
++
+ #ifdef CONFIG_CGROUP_SCHED
+ 	struct task_group		*sched_task_group;
+ #endif
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index c1f706038637..21d0e4d81d33 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -147,17 +147,32 @@ void __weak arch_do_signal_or_restart(struct pt_regs *regs) { }
+ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+ 					    unsigned long ti_work)
+ {
++	unsigned long ignore_mask;
++
+ 	/*
+ 	 * Before returning to user space ensure that all pending work
+ 	 * items have been completed.
+ 	 */
+ 	while (ti_work & EXIT_TO_USER_MODE_WORK) {
++		ignore_mask = 0;
+ 
+ 		local_irq_enable_exit_to_user(ti_work);
+ 
+-		if (ti_work & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
++		if (ti_work & _TIF_NEED_RESCHED) {
+ 			schedule();
+ 
++		} else if (ti_work & _TIF_NEED_RESCHED_LAZY) {
++			if (!current->extend_map ||
++			    !(current->extend_map->flags & 1)) {
++				schedule();
++			} else {
++				trace_printk("Extend!\n");
++				/* Allow to leave with NEED_RESCHED_LAZY still set */
++				ignore_mask |= _TIF_NEED_RESCHED_LAZY;
++				current->extend_map->flags |= 2;
++			}
++		}
++
+ 		if (ti_work & _TIF_UPROBE)
+ 			uprobe_notify_resume(regs);
+ 
+@@ -184,6 +199,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+ 		tick_nohz_user_enter_prepare();
+ 
+ 		ti_work = read_thread_flags();
++		ti_work &= ~ignore_mask;
+ 	}
+ 
+ 	/* Return the latest work state for arch_exit_to_user_mode() */
+diff --git a/kernel/exit.c b/kernel/exit.c
+index edb50b4c9972..ddf89ec9ab62 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -906,6 +906,13 @@ void __noreturn do_exit(long code)
+ 	if (tsk->io_context)
+ 		exit_io_context(tsk);
+ 
++	if (tsk->extend_map) {
++		unsigned long addr = (unsigned long)tsk->extend_map;
++
++		virt_to_page(addr)->mapping = NULL;
++		free_page(addr);
++	}
++
+ 	if (tsk->splice_pipe)
+ 		free_pipe_info(tsk->splice_pipe);
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 3b6d20dfb9a8..da2214082d25 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1166,6 +1166,8 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+ 	tsk->wake_q.next = NULL;
+ 	tsk->worker_private = NULL;
+ 
++	tsk->extend_map = NULL;
++
+ 	kcov_task_init(tsk);
+ 	kmsan_task_create(tsk);
+ 	kmap_local_fork(tsk);
+diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+index 976092b7bd45..297061cfa08d 100644
+--- a/kernel/sched/Makefile
++++ b/kernel/sched/Makefile
+@@ -32,3 +32,4 @@ obj-y += core.o
+ obj-y += fair.o
+ obj-y += build_policy.o
+ obj-y += build_utility.o
++obj-y += extend.o
+diff --git a/kernel/sched/extend.c b/kernel/sched/extend.c
+new file mode 100644
+index 000000000000..a632e1a8f57b
+--- /dev/null
++++ b/kernel/sched/extend.c
+@@ -0,0 +1,90 @@
++#include <linux/kobject.h>
++#include <linux/pagemap.h>
++#include <linux/sysfs.h>
++#include <linux/init.h>
++
++#ifdef CONFIG_SYSFS
++static ssize_t extend_sched_read(struct file *file,  struct kobject *kobj,
++				 struct bin_attribute *bin_attr,
++				 char *buf, loff_t off, size_t len)
++{
++	static const char output[] = "Extend scheduling time slice\n";
++
++	printk("%s:%d\n", __func__, __LINE__);
++	if (off >= sizeof(output))
++		return 0;
++
++	strscpy(buf, output + off, len);
++	return min((ssize_t)len, sizeof(output) - off - 1);
++}
++
++static ssize_t extend_sched_write(struct file *file, struct kobject *kobj,
++				  struct bin_attribute *bin_attr,
++				  char *buf, loff_t off, size_t len)
++{
++	printk("%s:%d\n", __func__, __LINE__);
++	return -EINVAL;
++}
++
++static vm_fault_t extend_sched_mmap_fault(struct vm_fault *vmf)
++{
++	vm_fault_t ret = VM_FAULT_SIGBUS;
++
++	trace_printk("%s:%d\n", __func__, __LINE__);
++	/* Only has one page */
++	if (vmf->pgoff || !current->extend_map)
++		return ret;
++
++	vmf->page = virt_to_page(current->extend_map);
++
++	get_page(vmf->page);
++	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
++	vmf->page->index   = vmf->pgoff;
++
++	return 0;
++}
++
++static void extend_sched_mmap_open(struct vm_area_struct *vma)
++{
++	printk("%s:%d\n", __func__, __LINE__);
++	WARN_ON(!current->extend_map);
++}
++
++static const struct vm_operations_struct extend_sched_vmops = {
++	.open		= extend_sched_mmap_open,
++	.fault		= extend_sched_mmap_fault,
++};
++
++static int extend_sched_mmap(struct file *file, struct kobject *kobj,
++			     struct bin_attribute *attr,
++			     struct vm_area_struct *vma)
++{
++	if (current->extend_map)
++		return -EBUSY;
++
++	current->extend_map = page_to_virt(alloc_page(GFP_USER | __GFP_ZERO));
++	if (!current->extend_map)
++		return -ENOMEM;
++
++	vm_flags_mod(vma, VM_DONTCOPY | VM_DONTDUMP | VM_MAYWRITE, 0);
++	vma->vm_ops = &extend_sched_vmops;
++
++	return 0;
++}
++
++static struct bin_attribute extend_sched_attr = {
++	.attr = {
++		.name = "extend_sched",
++		.mode = 0777,
++	},
++	.read = &extend_sched_read,
++	.write = &extend_sched_write,
++	.mmap = &extend_sched_mmap,
++};
++
++static __init int extend_init(void)
++{
++	return sysfs_create_bin_file(kernel_kobj, &extend_sched_attr);
++}
++late_initcall(extend_init);
++#endif
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 700b140ac1bb..17ca22e80384 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -993,9 +993,10 @@ static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se, bool
+ 		resched_curr(rq);
+ 	} else {
+ 		/* Did the task ignore the lazy reschedule request? */
+-		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
++		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY)) {
++			trace_printk("Force resched?\n");
+ 			resched_curr(rq);
+-		else
++		} else
+ 			resched_curr_lazy(rq);
+ 	}
+ 	clear_buddies(cfs_rq, se);
+
+--MP_/jsj69kGF.jAY9NqZHaY.orM
+Content-Type: text/x-c++src
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=extend-sched.c
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <tracefs.h>
+
+#define barrier() asm volatile ("" ::: "memory")
+#define rmb() asm volatile ("lfence" ::: "memory")
+#define wmb() asm volatile ("sfence" ::: "memory")
+
+#define EXTEND_SCHED "/sys/kernel/extend_sched"
+
+struct extend_map {
+	unsigned long		flags;
+};
+
+static pthread_barrier_t pbarrier;
+
+static __thread struct extend_map *extend_map;
+
+static void init_extend_map(void)
+{
+	int page_size;
+	void *map;
+	int fd;
+
+//	return;
+
+	if (extend_map)
+		return;
+
+	fd = open(EXTEND_SCHED, O_RDWR);
+	if (fd < 0)
+		return;
+
+	page_size = getpagesize();
+
+	map = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (map == MAP_FAILED) {
+		perror("mmap");
+		exit(-1);
+	}
+
+	extend_map = map;
+
+#ifdef TEST 
+{
+	int x = 0;
+	extend_map->flags = 1;
+
+	printf("Spinning\n");
+	while (!(*(volatile int *)(&extend_map->flags) & 2)) {
+		x++;
+		barrier();
+	}
+	printf("Break! x=%d\n", x);
+}
+#endif
+}
+
+struct data;
+
+struct thread_data {
+	unsigned long long			start_wait;
+	unsigned long long			x_count;
+	unsigned long long			total;
+	unsigned long long			max;
+	unsigned long long			min;
+	unsigned long long			total_wait;
+	unsigned long long			max_wait;
+	unsigned long long			min_wait;
+	struct data				*data;
+};
+
+struct data {
+	unsigned long long		x;
+	unsigned long			lock;
+	struct thread_data		*tdata;
+	bool				done;
+};
+
+static inline unsigned long
+cmpxchg(volatile unsigned long *ptr, unsigned long old, unsigned long new)
+{
+        unsigned long prev;
+
+	asm volatile("lock; cmpxchg %b1,%2"
+		     : "=a"(prev)
+		     : "q"(new), "m"(*(ptr)), "0"(old)
+		     : "memory");
+        return prev;
+}
+
+static inline unsigned long
+xchg(volatile unsigned long *ptr, unsigned long new)
+{
+        unsigned long ret = new;
+
+	asm volatile("xchg %b0,%1"
+		     : "+r"(ret), "+m"(*(ptr))
+		     : : "memory");
+        return ret;
+}
+
+static void extend(void)
+{
+	if (!extend_map)
+		return;
+
+	extend_map->flags = 1;
+}
+
+static void unextend(void)
+{
+	unsigned long prev;
+
+	if (!extend_map)
+		return;
+
+	prev = xchg(&extend_map->flags, 0);
+	if (prev & 2) {
+		tracefs_printf(NULL, "Yield!\n");
+		sched_yield();
+	}
+}
+
+#define sec2usec(sec) (sec * 1000000ULL)
+#define usec2sec(usec) (usec / 1000000ULL)
+
+static unsigned long long get_time(void)
+{
+	struct timeval tv;
+	unsigned long long time;
+
+	gettimeofday(&tv, NULL);
+
+	time = sec2usec(tv.tv_sec);
+	time += tv.tv_usec;
+
+	return time;
+}
+
+static void grab_lock(struct thread_data *tdata, struct data *data)
+{
+	unsigned long long start, end, delta;
+	unsigned long long end_wait;
+	unsigned long long last;
+	unsigned long prev;
+
+	if (!tdata->start_wait)
+		tdata->start_wait = get_time();
+
+	while (data->lock && !data->done)
+		rmb();
+
+	extend();
+	start = get_time();
+	prev = cmpxchg(&data->lock, 0, 1);
+	if (prev) {
+		unextend();
+		return;
+	}
+	end_wait = get_time();
+	tracefs_printf(NULL, "Have lock!\n");
+
+	delta = end_wait - tdata->start_wait;
+	tdata->start_wait = 0;
+	if (!tdata->total_wait || tdata->max_wait < delta)
+		tdata->max_wait = delta;
+	if (!tdata->total_wait || tdata->min_wait > delta)
+		tdata->min_wait = delta;
+	tdata->total_wait += delta;
+
+	data->x++;
+	last = data->x;
+
+	if (data->lock != 1) {
+		printf("Failed locking\n");
+		exit(-1);
+	}
+	prev = cmpxchg(&data->lock, 1, 0);
+	end = get_time();
+	if (prev != 1) {
+		printf("Failed unlocking\n");
+		exit(-1);
+	}
+	tracefs_printf(NULL, "released lock!\n");
+	unextend();
+
+	delta = end - start;
+	if (!tdata->total || tdata->max < delta)
+		tdata->max = delta;
+
+	if (!tdata->total || tdata->min > delta)
+		tdata->min = delta;
+
+	tdata->total += delta;
+	tdata->x_count++;
+
+	/* Let someone else have a turn */
+	while (data->x == last && !data->done)
+		rmb();
+}
+
+	
+	
+static void *run_thread(void *d)
+{
+	struct thread_data *tdata = d;
+	struct data *data = tdata->data;
+
+	init_extend_map();
+
+	pthread_barrier_wait(&pbarrier);
+
+	while (!data->done) {
+		grab_lock(tdata, data);
+	}
+	return NULL;
+}
+
+int main (int argc, char **argv)
+{
+	unsigned long long total_wait = 0;
+	unsigned long long secs;
+	pthread_t *threads;
+	struct data data;
+	int cpus;
+
+	memset(&data, 0, sizeof(data));
+
+	cpus = sysconf(_SC_NPROCESSORS_CONF);
+
+	threads = calloc(cpus + 1, sizeof(*threads));
+	if (!threads) {
+		perror("threads");
+		exit(-1);
+	}
+
+	data.tdata = calloc(cpus + 1, sizeof(*data.tdata));
+	if (!data.tdata) {
+		perror("Allocating tdata");
+		exit(-1);
+	}
+
+	tracefs_print_init(NULL);
+	pthread_barrier_init(&pbarrier, NULL, cpus + 2);
+
+	for (int i = 0; i <= cpus; i++) {
+		int ret;
+
+		data.tdata[i].data = &data;
+		ret = pthread_create(&threads[i], NULL, run_thread, &data.tdata[i]);
+		if (ret < 0) {
+			perror("creating threads");
+			exit(-1);
+		}
+	}
+
+	pthread_barrier_wait(&pbarrier);
+	sleep(5);
+
+	printf("Finish up\n");
+	data.done = true;
+	wmb();
+
+	for (int i = 0; i <= cpus; i++) {
+		pthread_join(threads[i], NULL);
+		printf("thread %i:\n", i);
+		printf("   count:\t%lld\n", data.tdata[i].x_count);
+		printf("   total:\t%lld\n", data.tdata[i].total);
+		printf("     max:\t%lld\n", data.tdata[i].max);
+		printf("     min:\t%lld\n", data.tdata[i].min);
+		printf("   total wait:\t%lld\n", data.tdata[i].total_wait);
+		printf("     max wait:\t%lld\n", data.tdata[i].max_wait);
+		printf("     min wait:\t%lld\n", data.tdata[i].min_wait);
+		total_wait += data.tdata[i].total_wait;
+	}
+
+	secs = usec2sec(total_wait);
+
+	printf("Ran for %lld times\n", data.x);
+	printf("Total wait time: %lld.%06lld\n", secs, total_wait - sec2usec(secs));
+	return 0;
+}
+
+--MP_/jsj69kGF.jAY9NqZHaY.orM--
