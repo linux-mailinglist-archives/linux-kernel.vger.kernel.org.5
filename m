@@ -2,174 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AB47D6C5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48E07D6C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjJYMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        id S1344023AbjJYMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbjJYMvH (ORCPT
+        with ESMTP id S234921AbjJYMs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:51:07 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A31116;
-        Wed, 25 Oct 2023 05:51:04 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PClMf6030661;
-        Wed, 25 Oct 2023 12:48:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=ULQ4YxdcX8D9cI1DIKnQIgJzU19KsvPJwigu81r9uA8=;
- b=eR86F/EbsAqLayHx+tBDE+qRqQBbFKHhivarsyNquDAIiqbow7KfyBkPnKzYcbVvskAV
- 9N1HQoljX8OIuS35mKs5P9CADTmUBWsvF6ys/ELKUTtqXiuHpek8e6mMyVFoYV/CZFrZ
- dsFgA+SZWSZ2wEkjKYlXxx2V7y5DmYDKKxsILpK5zYW5vyjMVQFH9t3UfamKbbJy9Iu5
- a4/G4kqpJw+r+kqPwzq98NzQyZA1/w9dpRoIXXT4RIHC2a4OVlBNQ9PSXiNM4dgmCFn7
- V76zbb5q+eIxjI+E20s59H4DjQ+Eto+SzNWbRn8JKs7JQNUPyDSx2O+qfSGqQzkLwHj/ zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3b202j4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 12:48:51 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39PClQrd030781;
-        Wed, 25 Oct 2023 12:48:47 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3b202ch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 12:48:47 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39PBi2k4012344;
-        Wed, 25 Oct 2023 12:48:44 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvup1x4mh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 12:48:44 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39PCmhSm28705464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 12:48:43 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 63E7658065;
-        Wed, 25 Oct 2023 12:48:43 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A572758055;
-        Wed, 25 Oct 2023 12:48:42 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.173.216])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Oct 2023 12:48:42 +0000 (GMT)
-Message-ID: <ed4e9e491c381ea201c1ac37501c6582fba6334d.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH] certs: Only allow certs signed by keys on the
- builtin keyring
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Denis Glazkov <d.glazkov@omp.ru>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-Date:   Wed, 25 Oct 2023 08:48:42 -0400
-In-Reply-To: <CWG7J7N7NE6L.3MHDW81QMPYRY@suppilovahvero>
-References: <20231017122507.185896-1-zohar@linux.ibm.com>
-         <CWG7J7N7NE6L.3MHDW81QMPYRY@suppilovahvero>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
+        Wed, 25 Oct 2023 08:48:59 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4971913D
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:48:56 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so86713441fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698238134; x=1698842934; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mhfK3Xbp7dGorRag1GQdAYkUAEC0Al9vXL9om2bY/oI=;
+        b=MZV3uxJLrPBAE6Y5odc5Wz6n33WPTtx8ciBWL4crzscX4d+1/GEAc/q/yIYbyUND1W
+         Xo2vwvH6KWhChQfOuC13kB8DaktvkBQr4jmnx/CPEkw0vcodH3lApyOOR5QZQxpkSm/V
+         Y0WZnMiZnP0JkTwOxMMZnUmagKUZhy+B3nf0ML5gao8RkTvONhdGva2J8C9Wd1qtBOBG
+         loOAxcsLUKoThKwn/AvhFC2U8TfUizLa713O4mW7i7JfPzaqfh5WW2tztW3bVRpZ6i64
+         aMGaDgTMv/EnynWYUBq6mcarSKVJrRmmggQOqfmA6NHeKBj6xCtE8e10x2EabiicgUWM
+         t1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698238134; x=1698842934;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mhfK3Xbp7dGorRag1GQdAYkUAEC0Al9vXL9om2bY/oI=;
+        b=v2cY8tnAgxvuwyLcBPjy7MzS9D5e17XeEt8nnEZ4XrqVb1qEaWgRqBhbZPYedADxwp
+         +uGBSNRTj6da6KuHEKKFMs2B3LKrqDF84ae8TQ/byIIj0OP2es6BXRCpB8Dp1xgxiB6Z
+         Gy9gUXXO0MXUhToVizvNoTjnu1xpb/qaf7ULiMuHsSvYr6fQq6rNEYXF9X8R/jAVHufq
+         YrftU2ng95OzGcR6TXWQkSNMqtu5PYxSfuOvF6Mwk7QAwr6HyFimjyRrJqsxtuqPQiqH
+         UwwCbREZ6ejpX0JRcSSYkodD5cAhbBzIR3s74lGcK5ar5hZDyvmvYFY+Rv7kn7klJ+43
+         it4g==
+X-Gm-Message-State: AOJu0Yxg8L5Oza2Un1ni/L08/2/PSzE6qaE+x1gNz+9eWIdycmgUMazF
+        Eq16Px2nAzZQV7osNnSl6sdTyw==
+X-Google-Smtp-Source: AGHT+IGtGtGHKJuO0bAirx2hne0N0Y/3+/cSERvZVDPv9gjGAUiKzMFk7r5OAYKMrzB4SUepkCEJgA==
+X-Received: by 2002:a2e:86c7:0:b0:2c5:1602:53f6 with SMTP id n7-20020a2e86c7000000b002c5160253f6mr10457117ljj.34.1698238134501;
+        Wed, 25 Oct 2023 05:48:54 -0700 (PDT)
+Received: from [192.168.53.189] ([188.162.65.61])
+        by smtp.gmail.com with ESMTPSA id f7-20020a2e9187000000b002c0167edd86sm2443551ljg.122.2023.10.25.05.48.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 05:48:53 -0700 (PDT)
+Message-ID: <c5c233e9-a3e7-4a65-b1d5-cf11e68d0f8e@linaro.org>
+Date:   Wed, 25 Oct 2023 15:48:51 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: pmic_glink: fix connector type to be
+ DisplayPort
+Content-Language: en-GB
+To:     Johan Hovold <johan@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Simon Ser <contact@emersion.fr>, linux-kernel@vger.kernel.org
+References: <20231010225229.77027-1-dmitry.baryshkov@linaro.org>
+ <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <ZTkIpMWpxKzSE7gQ@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CldYim4D4jzZ8ofLEelVGGlHu_e3dx_m
-X-Proofpoint-GUID: vjUz4cSy6JV3TOQao940HKm-E3urhV7O
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 impostorscore=0
- phishscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250111
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-24 at 02:28 +0300, Jarkko Sakkinen wrote:
-> On Tue Oct 17, 2023 at 3:25 PM EEST, Mimi Zohar wrote:
-> > Originally the secondary trusted keyring provided a keyring to which extra
-> > keys may be added, provided those keys were not blacklisted and were
-> > vouched for by a key built into the kernel or already in the secondary
-> > trusted keyring.
-> >
-> > On systems with the machine keyring configured, additional keys may also
-> > be vouched for by a key on the machine keyring.
-> >
-> > Prevent loading additional certificates directly onto the secondary
-> > keyring, vouched for by keys on the machine keyring, yet allow these
-> > certificates to be loaded onto other trusted keyrings.
-> >
-> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  certs/Kconfig                     | 16 +++++++++++++++-
-> >  crypto/asymmetric_keys/restrict.c |  4 ++++
-> >  2 files changed, 19 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/certs/Kconfig b/certs/Kconfig
-> > index 4a4dc8aab892..2e621963d260 100644
-> > --- a/certs/Kconfig
-> > +++ b/certs/Kconfig
-> > @@ -88,7 +88,21 @@ config SECONDARY_TRUSTED_KEYRING
-> >  	help
-> >  	  If set, provide a keyring to which extra keys may be added, provided
-> >  	  those keys are not blacklisted and are vouched for by a key built
-> > -	  into the kernel or already in the secondary trusted keyring.
-> > +	  into the kernel, machine keyring (if configured), or already in the
-> > +	  secondary trusted keyring.
-> > +
-> > +config SECONDARY_TRUSTED_KEYRING_SIGNED_BY_BUILTIN
-> > +	bool "Only allow additional certs signed by keys on the builtin trusted keyring"
-> > +	depends on SECONDARY_TRUSTED_KEYRING
-> > +	help
-> > +	  If set, only certificates signed by keys on the builtin trusted
-> > +	  keyring may be loaded onto the secondary trusted keyring.
-> > +
-> > +	  Note: The machine keyring, if configured, will be linked to the
-> > +	  secondary keyring.  When enabling this option, it is recommended
-> > +	  to also configure INTEGRITY_CA_MACHINE_KEYRING_MAX to prevent
-> > +	  linking code signing keys with imputed trust to the secondary
-> > +	  trusted keyring.
-> >  
-> >  config SECONDARY_TRUSTED_KEYRING_FOR_CA_CERTIFICATES_ONLY
-> >  	bool "Allow only CA certificates to be added to the secondary trusted keyring"
-> > diff --git a/crypto/asymmetric_keys/restrict.c b/crypto/asymmetric_keys/restrict.c
-> > index 6b69ea40da23..afcd4d101ac5 100644
-> > --- a/crypto/asymmetric_keys/restrict.c
-> > +++ b/crypto/asymmetric_keys/restrict.c
-> > @@ -102,6 +102,10 @@ int restrict_link_by_signature(struct key *dest_keyring,
-> >  
-> >  	if (use_builtin_keys && !test_bit(KEY_FLAG_BUILTIN, &key->flags))
-> >  		ret = -ENOKEY;
-> > +	else if (IS_BUILTIN(CONFIG_SECONDARY_TRUSTED_KEYRING_SIGNED_BY_BUILTIN) &&
-> > +		 !strcmp(dest_keyring->description, ".secondary_trusted_keys") &&
-> > +		 !test_bit(KEY_FLAG_BUILTIN, &key->flags))
-> > +		ret = -ENOKEY;
-> >  	else
-> >  		ret = verify_signature(key, sig);
-> >  	key_put(key);
+On 25/10/2023 15:23, Johan Hovold wrote:
+> On Wed, Oct 11, 2023 at 01:52:29AM +0300, Dmitry Baryshkov wrote:
+>> As it was pointed out by Simon Ser, the DRM_MODE_CONNECTOR_USB connector
+>> is reserved for the GUD devices. Other drivers (i915, amdgpu) use
+>> DRM_MODE_CONNECTOR_DisplayPort even if the DP stream is handled by the
+>> USB-C altmode. While we are still working on implementing the proper way
+>> to let userspace know that the DP is wrapped into USB-C, change
+>> connector type to be DRM_MODE_CONNECTOR_DisplayPort.
+>>
+>> Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
+>> Cc: Simon Ser <contact@emersion.fr>
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> ---
+>>   drivers/soc/qcom/pmic_glink_altmode.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
+>> index 9569d999391d..6f8b2f7ae3cc 100644
+>> --- a/drivers/soc/qcom/pmic_glink_altmode.c
+>> +++ b/drivers/soc/qcom/pmic_glink_altmode.c
+>> @@ -467,7 +467,7 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
+>>   		alt_port->bridge.funcs = &pmic_glink_altmode_bridge_funcs;
+>>   		alt_port->bridge.of_node = to_of_node(fwnode);
+>>   		alt_port->bridge.ops = DRM_BRIDGE_OP_HPD;
+>> -		alt_port->bridge.type = DRM_MODE_CONNECTOR_USB;
+>> +		alt_port->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
+>>   
+>>   		ret = devm_drm_bridge_add(dev, &alt_port->bridge);
+>>   		if (ret) {
 > 
-> Plese pick this to your tree.
-> 
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> I was just going to post a patch fixing this after finally investigating
+> why the DisplayPort outputs on the X13s were annoyingly identified as
+> "Unknown20-1" and "Unknown20-2" instead of the expected "DP-1" and
+> "DP-2".
 
-Thanks, Jarkko.   Applied.
+Well, that depends on the userspace being updated to know about USB 
+connectors or not. But you are right, we should probably mention that in 
+the commit message.
+
+> 
+> A lore search just before posting led me to this fix from two weeks ago.
+> 
+> I think the commit message should have mentioned something about the how
+> this change affects user space. My patch also had a CC stable, but I
+> guess we can ping the stable team once it hits mainline:
+> 
+> commit e5f55bf5ad4effdd59d4d06c839a0ac553a73c7d (HEAD -> work)
+> Author: Johan Hovold <johan+linaro@kernel.org>
+> Date:   Wed Oct 25 11:54:09 2023 +0200
+> 
+>      soc: qcom: pmic_glink_altmode: fix DP alt mode connector type
+>      
+>      The PMIC glink altmode bridge connector type should be "DisplayPort"
+>      rather than "USB", which is intended for custom USB display protocols
+>      (e.g. see 40e1a70b4aed ("drm: Add GUD USB Display driver")).
+>      
+>      This specifically makes the DisplayPort outputs on the Lenovo ThinkPad
+>      X13s show up as "DP-1" and "DP-2" rather than "Unknown20-1" and
+>      "Unknown20-2" with xrandr as expected (by users and tools):
+>      
+>        Screen 0: minimum 320 x 200, current 1920 x 1200, maximum 5120 x 4096
+>        eDP-1 connected primary 1920x1200+0+0 (normal left inverted right x axis y axis) 286mm x 178mm
+>           1920x1200     60.03*+
+>           1600x1200     60.00
+>        DP-1 disconnected (normal left inverted right x axis y axis)
+>        DP-2 connected (normal left inverted right x axis y axis)
+>           1920x1200     59.95 +
+>        ...
+>      
+>      Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
+>      Cc: stable@vger.kernel.org      # 6.3
+>      Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> 
+> Johan
 
 -- 
-thanks,
-
-Mimi
-
-
-
+With best wishes
+Dmitry
 
