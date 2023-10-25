@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F17D7D75A8
+	by mail.lfdr.de (Postfix) with ESMTP id C790D7D75A9
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343973AbjJYU1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
+        id S235120AbjJYU1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbjJYU0b (ORCPT
+        with ESMTP id S1343747AbjJYU0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:26:31 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9D5173A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:48 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5b7f3f470a9so188728a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:48 -0700 (PDT)
+        Wed, 25 Oct 2023 16:26:37 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2760D1BEA
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:54 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so130422b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698265548; x=1698870348; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1698265553; x=1698870353; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8cuOe+AU3MQZSBvbMUo9B/kQ2SYr1hcMCXHjeEaDcfY=;
-        b=cZDdqT/gtqqI0oRq7UCAkp68DsV0s5Wqf+YVZ1of5fXPaZ95fQ1mwqXd5CoOeff3Pn
-         cWT82Cg/EhuvcFsKVQTjTH4THO35VgzBwMguia2vgolJ9+0ZyEwWwJ1cOkjg20y8VuZY
-         sLOhrr7oUewiG4Rhb2YweEwgUxxUhYD1lb8Rymo1TEkjYyO0NmbW6HUsmHjuOP75O+Nh
-         ZFPnpmAU1Z7lbL8uugrDLcXdMyQtMUhSFFvt6+WJAS91FdwgYZQbquE1TJ5hBPh1po5a
-         +c4wrcjBMG7B/TuKcikOoUPZC8GpKJ3/8NHrgBSMFJjQpR9Vkl7OB/9FHz7/+XqTg6e7
-         /iVw==
+        bh=VwZ9IOYC0gRC/owt7RZ2EBdGuffYJiDuVuQ5+XRLwVw=;
+        b=gni9otB/RxqkdQcBtDhkGtxYXI1WhO6/nBa5LuP10/nNencAljOkoEGMmIzHInY/ky
+         oDlR4aIa6BOWPeVwvMeutGJ5V6ffVJCjq9yAVxUgQJ2NWKDBS7IHFKiQ+l6fFBvSh15A
+         mZC/WjARqRxm2wTMlRiEvP5OHITXIqMDoeYIdAubOwiSoJbWpW6qqgDG3R3ijHPWgG3l
+         RZ7TnvwKTmJTwhe02+58gFnl2LR1WgjHj440rGe69OikbaJsYYesrFvKharIMMus1Hog
+         QqV5S9f6vTbimWXy/i5vLDf/0GQKcbKhCidzew7Kz1qBK6XcaGk99AbAHyc/PlHte0Xp
+         EzEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698265548; x=1698870348;
+        d=1e100.net; s=20230601; t=1698265553; x=1698870353;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8cuOe+AU3MQZSBvbMUo9B/kQ2SYr1hcMCXHjeEaDcfY=;
-        b=K1UNfRjXoaGk1DNDZTsdJ2qK8KrHAUlNPfNJvipnwRRrptzBVeccZgJ8T8sNxNv8O1
-         OA04TUnheixB/xC0h3pvuSksS+X5g2eP75QYhgZ256nHot/p9/pyC/sdG8FIb4wE0CqF
-         9RnQuzDoDPXoH23zNt5l+fADa1JB01zt0VgqMz7EzjsQoMLXbeRV1C/LGVlFY3Gz/9WZ
-         IidRt/y7X5UtChXmvkVW+D/z34wXCRete3hpWAqGvxhTr8rmXpHEaJXycuAcoWGJTUO3
-         /ll6lis6sWIH7+7E0lJmt6rhogJi5+9nnBJpZ3/k2bWxCY0WOADmYU7eKhG75Yig607v
-         yfVQ==
-X-Gm-Message-State: AOJu0YyWXdBUA/NiUVjLPtMTx44l1Z11xXkwoNuHKOrR8TclkMpZOaVm
-        uvfOa4Vn0tu1jeFlRQOGr4MMEw==
-X-Google-Smtp-Source: AGHT+IEhemy4634FjVGt90Fqrc/7Er8LwdUnaKYZ7F/EhXxC4jPWbW3jfNiUW2TVJUJPoCyPB2P5Hw==
-X-Received: by 2002:a05:6a21:78a3:b0:17a:eddb:acc2 with SMTP id bf35-20020a056a2178a300b0017aeddbacc2mr8715766pzc.46.1698265547753;
-        Wed, 25 Oct 2023 13:25:47 -0700 (PDT)
+        bh=VwZ9IOYC0gRC/owt7RZ2EBdGuffYJiDuVuQ5+XRLwVw=;
+        b=eBWvE420c6c8QG4Cd4k2vme4j6DjYZ0aqHLwMEEaunIfFg3fqHMeAz5+xSjy65xEL8
+         IpGgJHZml1T7STdIYckmh2Zc7kpWC0g8zZN0LQp6BSOAlLBVwzjITTBvgk9Ly2XiZwOy
+         6QFh7xYOqkOnk5vcXB6zgGkIzu823S/7wWD9MqvLgmBrvn4G4uszp8/satEC6WMpnxr7
+         nyKWAMT0pSucM2X6SIDqL3Ep2nwZwoPTMoyJesj4cV+5DDSkd5hDsXP5W+v1gJnK/5yo
+         djnNmn2tI51hm3Tsky8rkg9q0S2x+OXJiKkt/ztpjVGlvrD04mi9vph2n/f1VbRWoX7H
+         9CMg==
+X-Gm-Message-State: AOJu0Yw4/0YiUeDBmfVcje2UwgvzhSIyqI/ia/yBn/tALSkiRoz5SuXi
+        mMc0QngFXPIBH2fFhLCtneIlLw==
+X-Google-Smtp-Source: AGHT+IHkn2z1G+Hl0DvKFF4S04ijeypy9mwQD0HYMK+syY66BONzs/0zW1LpSVQhK3aml5xBfnLnBg==
+X-Received: by 2002:a05:6a00:17a1:b0:6be:265:1bf6 with SMTP id s33-20020a056a0017a100b006be02651bf6mr14834736pfg.32.1698265553494;
+        Wed, 25 Oct 2023 13:25:53 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.42
+        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 13:25:47 -0700 (PDT)
+        Wed, 25 Oct 2023 13:25:53 -0700 (PDT)
 From:   Sunil V L <sunilvl@ventanamicro.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
@@ -71,9 +71,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Atish Kumar Patra <atishp@rivosinc.com>,
         Haibo Xu <haibo1.xu@intel.com>,
         Sunil V L <sunilvl@ventanamicro.com>
-Subject: [RFC PATCH v2 17/21] ACPI: bus: Add RINTC IRQ model for RISC-V
-Date:   Thu, 26 Oct 2023 01:53:40 +0530
-Message-Id: <20231025202344.581132-18-sunilvl@ventanamicro.com>
+Subject: [RFC PATCH v2 18/21] irqchip: riscv-intc: Set ACPI irqmodel
+Date:   Thu, 26 Oct 2023 01:53:41 +0530
+Message-Id: <20231025202344.581132-19-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231025202344.581132-1-sunilvl@ventanamicro.com>
 References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
@@ -90,40 +90,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the IRQ model for RISC-V INTC so that acpi_set_irq_model can use this
-for RISC-V.
+INTC being the root interrupt controller, set the ACPI irqmodel with
+callback function to get the GSI domain id.
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- drivers/acpi/bus.c   | 3 +++
- include/linux/acpi.h | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/irqchip/irq-riscv-intc.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index a4aa53b7e2bb..9eace6c7042e 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1158,6 +1158,9 @@ static int __init acpi_bus_init_irq(void)
- 	case ACPI_IRQ_MODEL_LPIC:
- 		message = "LPIC";
- 		break;
-+	case ACPI_IRQ_MODEL_RINTC:
-+		message = "RINTC";
-+		break;
- 	default:
- 		pr_info("Unknown interrupt routing model\n");
- 		return -ENODEV;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 4ad256a0039c..19c3dda9c2ed 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -95,6 +95,7 @@ enum acpi_irq_model_id {
- 	ACPI_IRQ_MODEL_PLATFORM,
- 	ACPI_IRQ_MODEL_GIC,
- 	ACPI_IRQ_MODEL_LPIC,
-+	ACPI_IRQ_MODEL_RINTC,
- 	ACPI_IRQ_MODEL_COUNT
- };
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index f3aaecde12dd..627723d72b01 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -273,6 +273,17 @@ int acpi_get_imsic_mmio_info(u32 index, struct resource *res)
+ 	return 0;
+ }
+ 
++static struct fwnode_handle *riscv_get_gsi_domain_id(u32 gsi)
++{
++	struct fwnode_handle *gsi_fwnode = NULL;
++
++	gsi_fwnode = aplic_get_gsi_domain_id(gsi);
++	if (!gsi_fwnode)
++		gsi_fwnode = plic_get_gsi_domain_id(gsi);
++
++	return gsi_fwnode;
++}
++
+ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+ 				       const unsigned long end)
+ {
+@@ -318,6 +329,7 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
+ 	 * unsupported. Once IMSIC is probed, MSI support will be set.
+ 	 */
+ 	pci_no_msi();
++	acpi_set_irq_model(ACPI_IRQ_MODEL_RINTC, riscv_get_gsi_domain_id);
+ 	return 0;
+ }
  
 -- 
 2.39.2
