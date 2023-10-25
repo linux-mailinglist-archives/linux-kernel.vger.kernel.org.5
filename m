@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D9D7D69F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBA87D69F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbjJYLWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
+        id S234509AbjJYLXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbjJYLWJ (ORCPT
+        with ESMTP id S232076AbjJYLXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:22:09 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C3210A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:22:06 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso79207031fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698232925; x=1698837725; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dwp8E74sI4tVBaqrgu+e8RzHTAWo0YSAPvz5KCe5hyQ=;
-        b=aY07CGEIYA8zybKuO4KqyfbYe0+V0m3ih1/Mp8aNqLBEwpZhGwZbL1IkCxiW1RyUoK
-         NdhfhGU5a7byOEXq9tN5DvTBVfouTZDZv9uHaH47eVbvaxM4fU2WTklwOe/v/IORSCM9
-         renAg5q1HekURoFkVl8Okn5DdHlA5u08iCGhYaIXRDHrqklc2gkfoH25rCx8NuPzPlL8
-         3t3gZKXjwKpQJJhLRqrFay1GnbNvFTImTAwV8kDmgD5+SdTcawFMkVKduS+LYAGbsZ8Y
-         ch7M6mqaqwto/BYwKcH6XlX7bcHNWQTkZGKj1byZZuGjpkJl5Av2fsedBXU7Sq2sqgB8
-         y6WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698232925; x=1698837725;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dwp8E74sI4tVBaqrgu+e8RzHTAWo0YSAPvz5KCe5hyQ=;
-        b=dTP2wXqwYCon4+ua+pFdpdCceZF2wkdGWzh1FTpUvkUWDOu2ZW+4d8ac+J3H3EXIJS
-         7pv40Q9wmVL8JIj/3i1+/pfbLYznNyiQXO04asVNeYi/Nywr7r9gMGe7sGbOIQbYw9/j
-         pm5VwU+lXWBPNyBPhl7iHJCPiiLI3OAqYatN8KvLSXiYLVmAo+A5m73a4jvH+se0T9TH
-         vLLjH1t/CZj/bgcYcRWAbtHeMxBOOp473BDcLQgefv2aDqmR89X6/Q6ZfWAZhaai6PGi
-         dXqiAUwzpXEIQ/tTfPhyDjxvdU7IyxMpJgw0vmmxWxlMagRbvNkfRGWblte0zN6BbuPH
-         z5Jw==
-X-Gm-Message-State: AOJu0YyG0iLADTT6SwfQrl8U8Oi4kVI4CbL7E3sk3lkPQG1CMqCCwABv
-        aqzK3bpsGxy1yGZIwNmcD2As1g==
-X-Google-Smtp-Source: AGHT+IFlEL56ocYJgKzp9u4zcIru0vmdc7o15SYfWmBqbz4xfgdTzW9qzGMVBhIZCBtLcMqtAQbTVA==
-X-Received: by 2002:a05:651c:b20:b0:2c5:8a4:9e6f with SMTP id b32-20020a05651c0b2000b002c508a49e6fmr12089142ljr.37.1698232924963;
-        Wed, 25 Oct 2023 04:22:04 -0700 (PDT)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05600c4fcc00b0040775501256sm14361794wmq.16.2023.10.25.04.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 04:22:04 -0700 (PDT)
-Message-ID: <d6fdf664bd18eee581a2644e376124e830633045.camel@linaro.org>
-Subject: Re: [PATCH v2] tty: serial: samsung_tty: remove dead code
-From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski@linaro.org,
-        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
-Date:   Wed, 25 Oct 2023 12:22:03 +0100
-In-Reply-To: <20231024215509.ak4jbbahw2vsahs6@zenone.zhora.eu>
-References: <20231019100901.4026680-1-andre.draszik@linaro.org>
-         <20231024215509.ak4jbbahw2vsahs6@zenone.zhora.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4-1 
+        Wed, 25 Oct 2023 07:23:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606B3AC;
+        Wed, 25 Oct 2023 04:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698232982; x=1729768982;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CZg24sm7bW9fHsCSHaWFydwaTAPtdesmJoU4Yu4b6n8=;
+  b=VMgcg73FlyVtlNW6f8icUfjFfKdq5m1xFo+xQ8LcPet/ZAt56iYojmKs
+   DMjDvfphZ5qmmtEN/Q9aVJRaz8ezqrZ0vNsPmn23DBVjeKPot9sFZcfd3
+   yymxhfpJt0yukcK0tzm1URG+fV33DvII2+H2AzlaszXpivSnlLHEudhoE
+   5oslbwgGREbz5L2wgCvua62vU+6AINAHsv/t4Fux/0xqaTbAcUeUVMra4
+   icF58eG7yeo+Xi+9ofgKUPlGEdzkTWV89SO7HnAfcsFDs77yb0jJ65L2a
+   criBnhktrYfyUeNutfHaL5xLP9r9ZoBhK6XzgOlLV/r0HPXgYS2Ln53Fd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="386170339"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="386170339"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:23:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1005984943"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="1005984943"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.25.165]) ([10.93.25.165])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 04:22:58 -0700
+Message-ID: <6132ba52-fdf1-4680-9e4e-5ea2fcb63b3c@linux.intel.com>
+Date:   Wed, 25 Oct 2023 19:22:55 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-unit-tests Patch 2/5] x86: pmu: Change the minimum value of
+ llc_misses event to 0
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
+ <20231024075748.1675382-3-dapeng1.mi@linux.intel.com>
+ <CALMp9eRqGr+5+C1OLhxv1i8Q=YVRmFxkZQJoh7HzWkPg2z=WoA@mail.gmail.com>
+Content-Language: en-US
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CALMp9eRqGr+5+C1OLhxv1i8Q=YVRmFxkZQJoh7HzWkPg2z=WoA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andi,
 
-On Tue, 2023-10-24 at 23:55 +0200, Andi Shyti wrote:
-> Hi Andre,
->=20
-> On Thu, Oct 19, 2023 at 11:09:01AM +0100, Andr=C3=A9 Draszik wrote:
-> > When support for various old platforms was removed in commit
-> > 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks"),
-> > s3c24xx_serial_ops also became unused here because nothing sets
-> > port
-> > type TYPE_S3C24XX anymore.
-> >=20
-> > Remove s3c24xx_serial_ops and all the code that's unreachable now.
-> >=20
-> > Fixes: 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks")
->=20
-> is this really a fix? Or is it a cleanup?
+On 10/24/2023 9:03 PM, Jim Mattson wrote:
+> On Tue, Oct 24, 2023 at 12:51 AM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
+>> Along with the CPU HW's upgrade and optimization, the count of LLC
+>> misses event for running loop() helper could be 0 just like seen on
+>> Sapphire Rapids.
+>>
+>> So modify the lower limit of possible count range for LLC misses
+>> events to 0 to avoid LLC misses event test failure on Sapphire Rapids.
+> I'm not convinced that these tests are really indicative of whether or
+> not the PMU is working properly. If 0 is allowed for llc misses, for
+> instance, doesn't this sub-test pass even when the PMU is disabled?
+>
+> Surely, we can do better.
 
-I guess from my position it's fixing the issue of dead code, introduced
-in the commit referenced. Which is of course also a cleanup :-)
 
-Not sure...
+Considering the testing workload is just a simple adding loop, it's 
+reasonable and possible that it gets a 0 result for LLC misses and 
+branch misses events. Yeah, I agree the 0 count makes the results not so 
+credible. If we want to avoid these 0 count values, we may have to 
+complicate the workload, such as adding flush cache instructions, or 
+something like that (I'm not sure if there are instructions which can 
+force branch misses). How's your idea about this?
 
-Cheers,
-Andre
 
+>
+>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>> ---
+>>   x86/pmu.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/x86/pmu.c b/x86/pmu.c
+>> index 0def28695c70..7443fdab5c8a 100644
+>> --- a/x86/pmu.c
+>> +++ b/x86/pmu.c
+>> @@ -35,7 +35,7 @@ struct pmu_event {
+>>          {"instructions", 0x00c0, 10*N, 10.2*N},
+>>          {"ref cycles", 0x013c, 1*N, 30*N},
+>>          {"llc references", 0x4f2e, 1, 2*N},
+>> -       {"llc misses", 0x412e, 1, 1*N},
+>> +       {"llc misses", 0x412e, 0, 1*N},
+>>          {"branches", 0x00c4, 1*N, 1.1*N},
+>>          {"branch misses", 0x00c5, 0, 0.1*N},
+>>   }, amd_gp_events[] = {
+>> --
+>> 2.34.1
+>>
