@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C7A7D6B4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B0A7D6B63
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343871AbjJYMYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S234789AbjJYMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343767AbjJYMYk (ORCPT
+        with ESMTP id S234732AbjJYMZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:24:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5D013D;
-        Wed, 25 Oct 2023 05:24:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 790E1C433C7;
-        Wed, 25 Oct 2023 12:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698236678;
-        bh=bSqqHMVrLE2p2KXzPxKAUj5EAEySNGDGKAQl8sg/cd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nyFd1EWTdVN2lxnS39uPc9hCivr3ihlFMHBDVc4iBVFz2HoXjX4hJbCnrB3Ni/Gu9
-         C1j4cKXnYWkrEv0B1smstVP/NviqBtFABLPMMPT+sZhtXh+ItwaDgzmGwoUZdAGSGJ
-         8+D2KLS2379wiiJDbwwj9oEtXtZM2mmC1SwspVSrjx44Mw40wRgelww5qtYqgJTyqm
-         uwDYR2Cp2vnt/b9llLS2hFurewavtRjCSmLAM/TDSmd+Srjrklr062zfPjTcslhnlb
-         XL9/nxEY82ffWaNt3DLkPhZPEDMzUWQJ0eF3Z7Zw9Uyn0uqiWlbqeQa7PTT9ldQhWt
-         AtA87O40EKD8g==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvcwU-0006Eh-1O;
-        Wed, 25 Oct 2023 14:24:58 +0200
-Date:   Wed, 25 Oct 2023 14:24:58 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/5] mfd: qcom-spmi-pmic: fix revid
- implementation
-Message-ID: <ZTkJGh1twK7o0QQi@hovoldconsulting.com>
-References: <20231003152927.15000-1-johan+linaro@kernel.org>
- <169823622555.724579.17090745891924053957.b4-ty@kernel.org>
- <20231025121827.GN8909@google.com>
+        Wed, 25 Oct 2023 08:25:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F4CC1;
+        Wed, 25 Oct 2023 05:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698236725; x=1729772725;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+snF8WpLYOf3FfP6eAfIi+MSvoRrSzIJD5FHq+jNHXo=;
+  b=eGcbO7cxAOs3DcvEzOCueAm+utSXfdr4iN+gUshWeUvdHKem3r6BfUTw
+   AAr7MEs/vep365EsOnsxBV/LWorAEDraqqRcjkXRfHqZ0Ao9Tn2Io6e8X
+   7odrPP8eVB/J1pMRKeOFbabJXCbMaKrcmijm7zikb0lOYCENz6+qs6iJH
+   mhC6ZkA+7uNyH8VCjsRshJE+y2mPugtRX5VwRXzgl7Qndg15E1ug1O9ND
+   5vMkiSXPI8TRN8rPNrRHqp0w5h95Ll64/j+18uxDW3kKPPnvfao/ksWAR
+   EKCwJfR5nk81jgjxSl9O8vPdel3b+alElwwMHp7qpyMgBU5e1Xgk1v7bD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="451521607"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="451521607"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:25:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1090189710"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="1090189710"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.178]) ([10.254.211.178])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 05:25:21 -0700
+Message-ID: <2dea40af-af71-4ea6-b3db-fd0db17c9846@linux.intel.com>
+Date:   Wed, 25 Oct 2023 20:25:19 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025121827.GN8909@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yi Liu <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the iommufd tree with the iommu tree
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20231025153455.283c5b12@canb.auug.org.au>
+ <20231025121212.GB3952@nvidia.com>
+ <617cc452-2d31-4fe0-a808-a980baa43056@linux.intel.com>
+ <20231025121744.GD3952@nvidia.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231025121744.GD3952@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 01:18:27PM +0100, Lee Jones wrote:
-> On Wed, 25 Oct 2023, Lee Jones wrote:
-> > On Tue, 03 Oct 2023 17:29:22 +0200, Johan Hovold wrote:
+On 2023/10/25 20:17, Jason Gunthorpe wrote:
+> On Wed, Oct 25, 2023 at 08:16:16PM +0800, Baolu Lu wrote:
+>> On 2023/10/25 20:12, Jason Gunthorpe wrote:
+>>> On Wed, Oct 25, 2023 at 03:34:55PM +1100, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> Today's linux-next merge of the iommufd tree got a conflict in:
+>>>>
+>>>>     drivers/iommu/intel/pasid.c
+>>>>
+>>>> between commit:
+>>>>
+>>>>     c61c255e114c ("iommu/vt-d: Remove unused function")
+>>>>
+>>>> from the iommu tree and commits:
+>>>>
+>>>>     f35f22cc760e ("iommu/vt-d: Access/Dirty bit support for SS domains")
+>>>>     cbf8b441ea08 ("iommu/vt-d: Add helper to setup pasid nested translation")
+>>>>
+>>>> from the iommufd tree.
+>>>>
+>>>> I fixed it up (the latter added a use of the function removed by
+>>>> the former, so I just used the latter) and can carry the fix as
+>>>> necessary. This is now fixed as far as linux-next is concerned, but any
+>>>> non trivial
+>>> Intel folks, this is not nice 🙁 Why was the first commit done at all
+>>> if the nesting series needs this?
+>> It's my fault. My apologies for not realizing that the helper would
+>> still be used by the nesting translation series. I will be more careful
+>> in the future.
+> Can you send a revert of c61c255e114c ASAP to Joerg please?
 
-> > > Included is also a rename of the SPMI device lookup helper which can
-> > > hopefully help prevent similar leaks from being reintroduced.
+Sure!
 
-> > Applied, thanks!
-> > 
-> > [4/5] spmi: document spmi_device_from_of() refcounting
-> >       commit: 7db72c01ae2359dbab29f4a60cda49757cf84516
-> > [5/5] spmi: rename spmi device lookup helper
-> >       (no commit info)
-> 
-> Not entirely sure why B4 is sending out these separately!
-> 
-> Still, both applied, thanks.
-
-Thanks for taking these, and thanks for the acks Stephen!
-
-Johan
+Best regards,
+baolu
