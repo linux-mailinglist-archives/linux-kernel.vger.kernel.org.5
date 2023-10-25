@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF197D7646
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE7C7D7653
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjJYVEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S229776AbjJYVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjJYVEV (ORCPT
+        with ESMTP id S230037AbjJYVGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:04:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4FD132
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:04:18 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698267856; h=from:from:reply-to:subject:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=TPuwtI1kuhVX5ITa/AAnqFvkxKf7BGaubhPzT2UNE74=;
-        b=oPvdKVbHmRxor0QJdAoEkesozaykgzHyFM1Y8mU3ePFVB69v3gQLnMFAkRbhLlpN5CS55z
-        qWen4rc0tqgxN46mTmAYGmoxo5MEBtcnIcqNkAfm10cnxWbUVWkKyNBmdCQMQ8h2SRViui
-        BiHqQ24w7t9E42iO4ITFd9k/zjukwBAFS+X7Q/e0SbBMX76YTdZmy+Ydkni/i65DZDG8Dr
-        eodkcIKfYLffamwhPx+mSg76M8C912BdJn94wyj8kLvYCEqw2/aqKi1bcVLaTpawAsYHqz
-        EflhvV1qmlW4rfSQQiISBkKL01pbyVuiUX+jsYyBlCiwS7xAEfaLYJ4nqn22WA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698267856; h=from:from:reply-to:subject:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=TPuwtI1kuhVX5ITa/AAnqFvkxKf7BGaubhPzT2UNE74=;
-        b=9HWGUBsXPYxnzZJLR8evvLGcbzm0V7W3Y8sB5wd7WaVo/Q6mTIsupHnaHMydd5NP0E8BBG
-        mUQNgRi2DUsivlDg==
-To:     David Lazar <dlazar@gmail.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
-        hpa@linux.intel.com, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH] x86/i8259: Skip probing when ACPI/MADT advertises PCAT
- compatibility
-Subject: 
-In-Reply-To: <87jzra6235.ffs@tglx>
-References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
- <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
- <87ttqhcotn.ffs@tglx> <87v8avawe0.ffs@tglx>
- <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
- <ZTkzYA3w2p3L4SVA@localhost> <87jzra6235.ffs@tglx>
-Date:   Wed, 25 Oct 2023 23:04:15 +0200
-Message-ID: <875y2u5s8g.ffs@tglx>
+        Wed, 25 Oct 2023 17:06:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B03182
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ca215cc713so979175ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698268008; x=1698872808; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WnXMZq3u2P4hkyafsQIarDOhM2i0PYXnQvhdzNae9NQ=;
+        b=LES5SJL3G9mPesbDOETZb/4ZH+A56/X31ajPTrjx5g/OD5W4HBbgk0Z4CZFLfplc7X
+         492KMD1UjIvxu8aypCqpA8uCODZPfaz+RBttrdN+lLQBAfPJ/Dkucy06QrlUVy3L5/k2
+         zowk3iacBegxLCF7WDprC6GHxJLt9YBQN2gtQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698268008; x=1698872808;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WnXMZq3u2P4hkyafsQIarDOhM2i0PYXnQvhdzNae9NQ=;
+        b=vsWPXgbYkjmiKFpsNWll9qo+hFRn7g44qDVB4Od5IhXEf4g5VZ1296aVIFNM0O46Br
+         GshlU351aYMwNxzHCTi+FD9O/JRe4TWPjR2UVlgWZMw34q4rPavU0V13kwncDyTRteJN
+         fPLaGHVeuDr+oJgFGDZHBYglR9vtBUYmXvJ/vdV0iYG7tosE30SdpwAfVLbO8MwN5i7H
+         Kr7ig79JnPSRd2lD7K8C0xtLKzIWfLpCZC1oTPfwfzS0Ffkmvpi0tCyrTkTkFlXF2Wcm
+         O7nyTRhZS0t994UDXPa1jklfCxCzb6hwU4KKjLngT7++t5CpaKsHMJ+FpgNKhIdSKKwY
+         cdcg==
+X-Gm-Message-State: AOJu0YzSjeapL5WKiv3TliCzScza+AxsCiXKaYCuymx4j7BId1Nrq9Rq
+        XiW+u/3ZcfxGtcSYjLlgI3bZgA==
+X-Google-Smtp-Source: AGHT+IH4aVVDtY2IJieLds6qeSo6hYbAInLL16xsPZo6LgCZwA6yQaSh6ZRcocjYXRXKbHbLy6unzw==
+X-Received: by 2002:a17:902:ce91:b0:1ca:3d53:2867 with SMTP id f17-20020a170902ce9100b001ca3d532867mr15084532plg.15.1698268007804;
+        Wed, 25 Oct 2023 14:06:47 -0700 (PDT)
+Received: from sjg1.roam.corp.google.com ([202.144.206.130])
+        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm9689447plb.180.2023.10.25.14.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 14:06:47 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     devicetree@vger.kernel.org
+Cc:     Michael Walle <mwalle@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>, Rob Herring <robh@kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Simon Glass <sjg@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dhruva Gole <d-gole@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Pratyush Yadav <ptyadav@amazon.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
+Date:   Thu, 26 Oct 2023 10:06:10 +1300
+Message-ID: <20231025210616.3201502-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,133 +79,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David and a few others reported that on certain newer systems some legacy
-interrupts fail to work correctly.
+Add a compatible string for binman, so we can extend fixed-partitions
+in various ways.
 
-Debugging revealed that the BIOS of these systems leaves the legacy PIC in
-uninitialized state which makes the PIC detection fail and the kernel
-switches to a dummy implementation.
-
-Unfortunately this fallback causes quite some code to fail as it depends on
-checks for the number of legacy PIC interrupts or the availability of the
-real PIC.
-
-In theory there is no reason to use the PIC on any modern system when
-IO/APIC is available, but the dependencies on the related checks cannot be
-resolved trivially and on short notice. This needs lots of analysis and
-rework.
-
-The PIC detection has been added to avoid quirky checks and force selection
-of the dummy implementation all over the place, especially in VM guest
-scenarios. So it's not an option to revert the relevant commit as that
-would break a lot of other scenarios.
-
-One solution would be to try to initialize the PIC on detection fail and
-retry the detection, but that puts the burden on everything which does not
-have a PIC.
-
-Fortunately the ACPI/MADT table header has a flag field, which advertises
-in bit 0 that the system is PCAT compatible, which means it has a legacy
-8259 PIC.
-
-Evaluate that bit and if set avoid the detection routine and keep the real
-PIC installed, which then gets initialized (for nothing) and makes the rest
-of the code with all the dependencies work again.
-
-Fixes: e179f6914152 ("x86, irq, pic: Probe for legacy PIC and set legacy_pic appropriately")
-Reported-by: David Lazar <dlazar@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: David Lazar <dlazar@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218003
+Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
----
- arch/x86/include/asm/i8259.h |    2 ++
- arch/x86/kernel/acpi/boot.c  |    3 +++
- arch/x86/kernel/i8259.c      |   38 ++++++++++++++++++++++++++++++--------
- 3 files changed, 35 insertions(+), 8 deletions(-)
 
---- a/arch/x86/include/asm/i8259.h
-+++ b/arch/x86/include/asm/i8259.h
-@@ -69,6 +69,8 @@ struct legacy_pic {
- 	void (*make_irq)(unsigned int irq);
- };
- 
-+void legacy_pic_pcat_compat(void);
+(no changes since v5)
+
+Changes in v5:
+- Add #address/size-cells and parternProperties
+- Drop $ref to fixed-partitions.yaml
+- Drop 'select: false'
+
+Changes in v4:
+- Change subject line
+
+Changes in v3:
+- Drop fixed-partition additional compatible string
+- Drop fixed-partitions from the example
+- Mention use of compatible instead of label
+
+Changes in v2:
+- Drop mention of 'enhanced features' in fixed-partitions.yaml
+- Mention Binman input and output properties
+- Use plain partition@xxx for the node name
+
+ .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
+ .../bindings/mtd/partitions/partitions.yaml   |  1 +
+ MAINTAINERS                                   |  5 ++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+new file mode 100644
+index 000000000000..329217550a98
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Google LLC
 +
- extern struct legacy_pic *legacy_pic;
- extern struct legacy_pic null_legacy_pic;
- 
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -148,6 +148,9 @@ static int __init acpi_parse_madt(struct
- 		pr_debug("Local APIC address 0x%08x\n", madt->address);
- 	}
- 
-+	if (madt->flags & ACPI_MADT_PCAT_COMPAT)
-+		legacy_pic_pcat_compat();
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	/* ACPI 6.3 and newer support the online capable bit. */
- 	if (acpi_gbl_FADT.header.revision > 6 ||
- 	    (acpi_gbl_FADT.header.revision == 6 &&
---- a/arch/x86/kernel/i8259.c
-+++ b/arch/x86/kernel/i8259.c
-@@ -32,6 +32,7 @@
-  */
- static void init_8259A(int auto_eoi);
- 
-+static bool pcat_compat __ro_after_init;
- static int i8259A_auto_eoi;
- DEFINE_RAW_SPINLOCK(i8259A_lock);
- 
-@@ -299,15 +300,32 @@ static void unmask_8259A(void)
- 
- static int probe_8259A(void)
- {
-+	unsigned char new_val, probe_val = ~(1 << PIC_CASCADE_IR);
- 	unsigned long flags;
--	unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
--	unsigned char new_val;
++title: Binman firmware layout
 +
-+	/*
-+	 * If MADT has the PCAT_COMPAT flag set, then do not bother probing
-+	 * for the PIC. Some BIOSes leave the PIC uninitialized and probing
-+	 * fails.
-+	 *
-+	 * Right now this causes problems as quite some code depends on
-+	 * nr_legacy_irqs() > 0 or has_legacy_pic() == true. This is silly
-+	 * when the system has an IO/APIC because then PIC is not required
-+	 * at all, except for really old machines where the timer interrupt
-+	 * must be routed through the PIC. So just pretend that the PIC is
-+	 * there and let legacy_pic->init() initialize it for nothing.
-+	 *
-+	 * Alternatively this could just try to initialize the PIC and
-+	 * repeat the probe, but for cases where there is no PIC that's
-+	 * just pointless.
-+	 */
-+	if (pcat_compat)
-+		return nr_legacy_irqs();
++maintainers:
++  - Simon Glass <sjg@chromium.org>
 +
- 	/*
--	 * Check to see if we have a PIC.
--	 * Mask all except the cascade and read
--	 * back the value we just wrote. If we don't
--	 * have a PIC, we will read 0xff as opposed to the
--	 * value we wrote.
-+	 * Check to see if we have a PIC.  Mask all except the cascade and
-+	 * read back the value we just wrote. If we don't have a PIC, we
-+	 * will read 0xff as opposed to the value we wrote.
- 	 */
- 	raw_spin_lock_irqsave(&i8259A_lock, flags);
- 
-@@ -429,5 +447,9 @@ static int __init i8259A_init_ops(void)
- 
- 	return 0;
- }
--
- device_initcall(i8259A_init_ops);
++description: |
++  The binman node provides a layout for firmware, used when packaging firmware
++  from multiple projects. It is based on fixed-partitions, with some
++  extensions, but uses 'compatible' to indicate the contents of the node, to
++  avoid perturbing or confusing existing installations which use 'label' for a
++  particular purpose.
 +
-+void __init legacy_pic_pcat_compat(void)
-+{
-+	pcat_compat = true;
-+}
++  Binman supports properties used as inputs to the firmware-packaging process,
++  such as those which control alignment of partitions. This binding addresses
++  these 'input' properties. For example, it is common for the 'reg' property
++  (an 'output' property) to be set by Binman, based on the alignment requested
++  in the input.
++
++  Once processing is complete, input properties have mostly served their
++  purpose, at least until the firmware is repacked later, e.g. due to a
++  firmware update. The 'fixed-partitions' binding should provide enough
++  information to read the firmware at runtime, including decompression if
++  needed.
++
++  Documentation for Binman is available at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
++
++  with the current image-description format at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
++
++properties:
++  compatible:
++    const: binman
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++patternProperties:
++  "^partition(-.+|@[0-9a-f]+)$":
++    $ref: partition.yaml
++
++additionalProperties: false
++
++examples:
++  - |
++    partitions {
++        compatible = "binman";
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        partition@100000 {
++            label = "u-boot";
++            reg = <0x100000 0xf00000>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+index 1dda2c80747b..849fd15d085c 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+@@ -15,6 +15,7 @@ maintainers:
+ 
+ oneOf:
+   - $ref: arm,arm-firmware-suite.yaml
++  - $ref: binman.yaml
+   - $ref: brcm,bcm4908-partitions.yaml
+   - $ref: brcm,bcm947xx-cfe-partitions.yaml
+   - $ref: fixed-partitions.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2d13bbd69adb..b9441eec979a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3542,6 +3542,11 @@ F:	Documentation/filesystems/bfs.rst
+ F:	fs/bfs/
+ F:	include/uapi/linux/bfs_fs.h
+ 
++BINMAN
++M:	Simon Glass <sjg@chromium.org>
++S:	Supported
++F:	Documentation/devicetree/bindings/mtd/partitions/binman*
++
+ BITMAP API
+ M:	Yury Norov <yury.norov@gmail.com>
+ R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+-- 
+2.42.0.758.gaed0368e0e-goog
+
