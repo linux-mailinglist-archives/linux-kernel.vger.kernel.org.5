@@ -2,173 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247237D6E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AF07D6E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbjJYNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
+        id S233980AbjJYNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbjJYNpq (ORCPT
+        with ESMTP id S232072AbjJYNq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:45:46 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EA4186
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:45:43 -0700 (PDT)
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 146EA413B8
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698241541;
-        bh=+60nkze2sRRgfeFsZmoFML77ioPwo/jReraRdMDEs5A=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=gXXGGt6tMw99lTGXANzK+uLRJ1KxSj4TdHucyyiab1RjnNRqQJKl2Z9t/pUDgb72K
-         xZB1OZCidOULl/B1FkafeCAW0PVjMr0ZiXn56kLq4a00WITjF4yut8Xi42J2hEklDt
-         TzJef9Z9lNcOMVT6D+qLAsPX2oYowrKB7VosHOJBuL2NZ8VcbGxeWvHHH2eZ3VxIZm
-         At7QWmMcKcut4iOKfMKgEM0xuPiyINOAQ6gYFscgRvAaPFCwhoObaoWx9qkjXVxf1o
-         NwUreYjOethZK35nwJhg4RtLtGCQot3fai4VCz4zY94ePRtvu+9Ot8hKPZeNkJl6yk
-         65ByvLdmEkW1A==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41cdce61dcbso68318001cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:45:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698241540; x=1698846340;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+60nkze2sRRgfeFsZmoFML77ioPwo/jReraRdMDEs5A=;
-        b=sDGYvF6gs3UheG4wHXQyn7UQMbkWkLYptH8uw4DSWwZnsh8tEzZ8f4YUn+Hz4ZevJp
-         38zrDhaRV1WaHXbJTdU6IMmriAd10rzy4UvKctXkzELnKus/m9TWnd/TlACO3jKEj8N0
-         +xygRTtpk+pPHQvpFaNBQChHflRIo4+xldmXpqkMSFfBgLYej45xbMZcDtyIXLTL1Esb
-         r8ZH7MRnw2Fb7919h6JXHOPc6gbCSZjPAaXxDweeWf5G3RKS/LJOxYDPzI0tY4zEqUU5
-         nRwtciGZRzJx2WlSzHzFVLODCgfBr2OZGF1GdGvGnGVh7eN9okj8CsTaHKJebbcqMvsy
-         49Pw==
-X-Gm-Message-State: AOJu0YxDM4dB85nAh3IrD0qMT1IBnn/uRQIDRPT/2zvkntWhdKuBFtgF
-        kLnkVxUx6jTAGRGmbh/z8Q+mnI+85iKUfm2ojSS8NsauRMcJmSGad+yY8G+nMr3H/4kVWLF5mv8
-        CgWDw84BoPPxdtNEqm9661/gSU/XKQ0gozSVR5X3o7K4CC5yH5A+15zjjQg==
-X-Received: by 2002:a05:622a:546:b0:418:2242:7823 with SMTP id m6-20020a05622a054600b0041822427823mr19590880qtx.32.1698241540167;
-        Wed, 25 Oct 2023 06:45:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHOVt8UpkWDt9syG2uUYq+GKDBm1AQ/uLpT42Eg0N4uYLR9c2VyMtFdKW/1yQYgIadYQ81RXcVGJLbHiSFOWBI=
-X-Received: by 2002:a05:622a:546:b0:418:2242:7823 with SMTP id
- m6-20020a05622a054600b0041822427823mr19590867qtx.32.1698241539921; Wed, 25
- Oct 2023 06:45:39 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Oct 2023 06:45:39 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231020103741.557735-4-william.qiu@starfivetech.com>
-References: <20231020103741.557735-1-william.qiu@starfivetech.com> <20231020103741.557735-4-william.qiu@starfivetech.com>
-Mime-Version: 1.0
-Date:   Wed, 25 Oct 2023 06:45:39 -0700
-Message-ID: <CAJM55Z9aR0rwK9CSyGw_YJP8VN5sKax1JH6bPEaiX_gjkE049g@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] riscv: dts: starfive: jh7110: Add PWM node and
- pins configuration
-To:     William Qiu <william.qiu@starfivetech.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 25 Oct 2023 09:46:56 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097A7133;
+        Wed, 25 Oct 2023 06:46:54 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PBLuU9009104;
+        Wed, 25 Oct 2023 13:46:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=mkkieoD+WVrAPKb4YZB14Fh4FDvM/Vw+eFmTVwYisCI=;
+ b=Atuom1Ocz85fTfUwIFVBcs7ZI1j3kXvP2kxCxfouMU6DIpGQN5DdNyw5aJoYNQy8IuOg
+ e8mpQqkzT4JRrxNXWo3SSeGggsAnP4m8+3vIbT0rU9Q+bN6TwL4pSGemqDOtjnGSbUGY
+ SrkqPjiG4kFyqZmZXtr+fR3/4sKGk9UNY75qIhSPiGNbxuUEHWd0HeDVRwL6g6Un23WP
+ FGi5Vq/v0EAZgfrG/3zy8AzoYGPKeCWqUcgo8orMHWV95VysWdj9vWccHB2RuY5Kkqw8
+ ItDPOzSmu8xHGzQhBNJXL4nc1gwW0KB8TujoApXh4WxrMI9lr8I/HWnlJ0FDNM5JFf2Q zQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txmhx9s14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:46:51 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PDkot6012153
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:46:50 GMT
+Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 25 Oct 2023 06:46:45 -0700
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH 0/2] cache: qcom,llcc: Add llcc support for SC8380XP
+Date:   Wed, 25 Oct 2023 19:16:30 +0530
+Message-ID: <20231025134632.10363-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LbNBe00PQNqD2o3w00gdxJHMUIVV4Y2g
+X-Proofpoint-GUID: LbNBe00PQNqD2o3w00gdxJHMUIVV4Y2g
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_02,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=821 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250119
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-William Qiu wrote:
-> Add OpenCores PWM controller node and add PWM pins configuration
-> on VisionFive 2 board.
->
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> ---
->  .../jh7110-starfive-visionfive-2.dtsi         | 22 +++++++++++++++++++
->  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  9 ++++++++
->  2 files changed, 31 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index 12ebe9792356..63d16a6a4e12 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -268,6 +268,12 @@ reserved-data@600000 {
->  	};
->  };
->
-> +&pwm {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pwm_pins>;
-> +	status = "okay";
-> +};
-> +
+This series adds llcc support for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
 
-Hi William,
+Dependencies: None
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
 
-I just noticed this node reference is out of order. The references should be
-sorted alphabetically.
+Rajendra Nayak (2):
+  dt-bindings: cache: qcom,llcc: Add SC8380XP compatible
+  soc: qcom: llcc: Add configuration data for SC8380XP
 
-/Emil
+ .../devicetree/bindings/cache/qcom,llcc.yaml  |  2 +
+ drivers/soc/qcom/llcc-qcom.c                  | 39 +++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
->  &spi0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&spi0_pins>;
-> @@ -402,6 +408,22 @@ GPOEN_SYS_SDIO1_DATA3,
->  		};
->  	};
->
-> +	pwm_pins: pwm-0 {
-> +		pwm-pins {
-> +			pinmux = <GPIOMUX(46, GPOUT_SYS_PWM_CHANNEL0,
-> +					      GPOEN_SYS_PWM0_CHANNEL0,
-> +					      GPI_NONE)>,
-> +				 <GPIOMUX(59, GPOUT_SYS_PWM_CHANNEL1,
-> +					      GPOEN_SYS_PWM0_CHANNEL1,
-> +					      GPI_NONE)>;
-> +			bias-disable;
-> +			drive-strength = <12>;
-> +			input-disable;
-> +			input-schmitt-disable;
-> +			slew-rate = <0>;
-> +		};
-> +	};
-> +
->  	spi0_pins: spi0-0 {
->  		mosi-pins {
->  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> index e85464c328d0..4024165d4538 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> @@ -736,6 +736,15 @@ spi6: spi@120a0000 {
->  			status = "disabled";
->  		};
->
-> +		pwm: pwm@120d0000 {
-> +			compatible = "starfive,jh71x0-pwm";
-> +			reg = <0x0 0x120d0000 0x0 0x10000>;
-> +			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
-> +			resets = <&syscrg JH7110_SYSRST_PWM_APB>;
-> +			#pwm-cells = <3>;
-> +			status = "disabled";
-> +		};
-> +
->  		sfctemp: temperature-sensor@120e0000 {
->  			compatible = "starfive,jh7110-temp";
->  			reg = <0x0 0x120e0000 0x0 0x10000>;
-> --
-> 2.34.1
->
+-- 
+2.17.1
+
