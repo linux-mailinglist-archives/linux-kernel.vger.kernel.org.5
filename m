@@ -2,50 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F937D6B29
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D3D7D6B31
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234855AbjJYMSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S1343564AbjJYMUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234852AbjJYMSf (ORCPT
+        with ESMTP id S234803AbjJYMUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:18:35 -0400
+        Wed, 25 Oct 2023 08:20:09 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD75129;
-        Wed, 25 Oct 2023 05:18:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C6FAC433C7;
-        Wed, 25 Oct 2023 12:18:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4839ECE
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:20:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDE82C433C7;
+        Wed, 25 Oct 2023 12:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698236313;
-        bh=Ja5Kf9ILXH67ciGA8XKkZ45ZaownkYfTkf4M+tF4fwg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8opZJxrHmoHIhEuCHc4hlUVv/7ok9DqWVfxi+ZvwP/JJpyt7xzpgh7FgJD6bxhwU
-         pjgH+76BKUczmlRX9sTrCt15AEq68Foy3tLHUjqW3z0cIQjf9betdjorsPdA5bN5Kn
-         ErNJJCxXoHewX+JaAs5ZADDs44IJu1s/eK19LoJSShKzeGItWp2wZYfv2PtLMGJlBH
-         +JWxUUXDDeZx/nZd5gtkZAZh3PyKLEzgdDrZ1f46HPyQjBpRF7xa6kbhhofm+xBP8T
-         Fh4NCqLRIJv7yUcH9CanzgPL7Gu7vOvUSVfMKlFiJLtg+fYMEjRipYHOPmeznE8ctG
-         AfPG9wa4f20ug==
-Date:   Wed, 25 Oct 2023 13:18:27 +0100
+        s=k20201202; t=1698236407;
+        bh=zQrTaEO41znR/LbtDpuLa5tmrMmya+3KE2EbIxv/5AQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Wqd1QD/aD8Cg3lfYqhvFWHK9QItvoZaxuC7l9wO5ubQWkiqsnS+9hy0/Is1qIRZXb
+         rEpnxOnJmP2Xlfu1I6Qs0/5QaOYX2VWdio2NUkeVXb58xgIot/W6JPzsORSdf2XJWx
+         3WQhaQyCIVOaqCd1vm4X2hlAEgTuNWu5d/MMj9H51m5ny/2uMdWYSij418KFoQTUCY
+         FF9Y/2ZGVIg+FjbCX8W+m+C0OlN6ZaHLo1N+V1gJFWV9Vc5DugQImkOJp2uzP6tga4
+         W6K5UAcX4aOi9Z0sSSW37Cn0qO3/mlxshQudtFA0zOMJVID69bDX40NKdayLrR2Mvo
+         VuDy34iiz7S9A==
 From:   Lee Jones <lee@kernel.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/5] mfd: qcom-spmi-pmic: fix revid
- implementation
-Message-ID: <20231025121827.GN8909@google.com>
-References: <20231003152927.15000-1-johan+linaro@kernel.org>
- <169823622555.724579.17090745891924053957.b4-ty@kernel.org>
+To:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Peter Tyser <ptyser@xes-inc.com>
+In-Reply-To: <20231024160650.3898959-1-andriy.shevchenko@linux.intel.com>
+References: <20231024160650.3898959-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: (subset) [PATCH v1 1/1] mfd: lpc_ich: Mark *_gpio_offsets data
+ with const
+Message-Id: <169823640666.726355.5485891757785798787.b4-ty@kernel.org>
+Date:   Wed, 25 Oct 2023 13:20:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <169823622555.724579.17090745891924053957.b4-ty@kernel.org>
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,28 +50,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023, Lee Jones wrote:
-
-> On Tue, 03 Oct 2023 17:29:22 +0200, Johan Hovold wrote:
-> > The Qualcomm SPMI PMIC revid implementation is broken in multiple ways
-> > that can lead to resource leaks and crashes. This series reworks the
-> > implementation so that can be used safely.
-> > 
-> > Included is also a rename of the SPMI device lookup helper which can
-> > hopefully help prevent similar leaks from being reintroduced.
-> > 
-> > [...]
+On Tue, 24 Oct 2023 19:06:50 +0300, Andy Shevchenko wrote:
+> There is no reason why the GPIO resource offsets should not be const.
+> Mark them accordingly and update a qualifier in struct lpc_ich_gpio_info
+> definition.
 > 
-> Applied, thanks!
 > 
-> [4/5] spmi: document spmi_device_from_of() refcounting
->       commit: 7db72c01ae2359dbab29f4a60cda49757cf84516
-> [5/5] spmi: rename spmi device lookup helper
->       (no commit info)
 
-Not entirely sure why B4 is sending out these separately!
+Applied, thanks!
 
-Still, both applied, thanks.
+[1/1] mfd: lpc_ich: Mark *_gpio_offsets data with const
+      commit: 41536c17303d087d7b18a5f6ba45b2c1d17f1483
 
--- 
+--
 Lee Jones [李琼斯]
+
