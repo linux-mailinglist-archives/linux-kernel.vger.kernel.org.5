@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B957D6D06
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFC07D6CFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343844AbjJYNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
+        id S234886AbjJYNUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233953AbjJYNWJ (ORCPT
+        with ESMTP id S234129AbjJYNUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:22:09 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FD5116;
-        Wed, 25 Oct 2023 06:22:07 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PD6lX4004426;
-        Wed, 25 Oct 2023 13:22:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=buXHtXxmivbJEdS9h1J93aPaDy39QdlVwWR4uC0gIOQ=;
- b=MlQkPZajgNopFucrzaL3RyWzvdG5p/JpXIKsNvIS84ryRN8q274eCMK75rd1PP3W77O/
- aWWp1TOX+O3y8vj6xxi42Z+dMU40Imd2JuvyimfLUdMWB0eLmhkM8M4vJDk6ptm4iAd7
- ls/DmdX2Je7qAkgcLQWO02Ae7NIQIr7oo6a/h+jJyxQ/3S/Y+LyVmE0rAZVB4gwYMIT6
- xVOL7r1BNDx3BeWRIGDv30N6sVP8R0Feqd6thk3sqQH0CgF6GwML7A29KDX9WS/Skr5T
- Om27A+jkNXyQoNL2ge4VkL1aFQxVs3Mgtt04GYb8xAPvyke9A9dum/6PVBNZOYJEyql0 EA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3dfgw06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 13:22:06 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39PDKksU029602;
-        Wed, 25 Oct 2023 13:21:03 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ty3dfgtv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 13:21:03 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39PD1Lqc010231;
-        Wed, 25 Oct 2023 13:20:20 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbypyw5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 13:20:20 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39PDKKna53608948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 13:20:20 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11FA758056;
-        Wed, 25 Oct 2023 13:20:20 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 464445805A;
-        Wed, 25 Oct 2023 13:20:19 +0000 (GMT)
-Received: from [9.171.58.254] (unknown [9.171.58.254])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Oct 2023 13:20:19 +0000 (GMT)
-Message-ID: <4fbae6da-4dbd-9901-2d5b-d17cfb240223@linux.ibm.com>
-Date:   Wed, 25 Oct 2023 15:20:18 +0200
+        Wed, 25 Oct 2023 09:20:44 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEE1111;
+        Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d84c24a810dso4894028276.2;
+        Wed, 25 Oct 2023 06:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698240041; x=1698844841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
+        b=lQ+3z9/Q2uCxd+cHRxB6CqFsfiidtLdbnZy/LXXV6WCOindSSmnv7YOPbgrL7hy02b
+         lGYAOEr+gl/mhsV61L8Atqt0H1FuDIQg5EO9RCOnQPLr368tijIBG1+cNiqOWxiR2npA
+         8DXqYsEGC0iaHlJGCPsJgBgW4cISVW/BMHNIouoswdsdJ8a2B9uwqRTd83xSrb7a2XBl
+         6XizrbOo8Go4hJJg8X0Fb+umpOdhJi8Nr8LxXQ+XdYvRsHrNQXlIVyZ6A60tPZyIF3ET
+         gGzft78Z55PDIKi95hzu8VdK8Vohxng93ZPZ9QSk2HxVmWLKH/5UfgXXFaLL43IIPrEq
+         PdJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698240041; x=1698844841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LPF+5Rsz+apiPCuGIdBu5hhoVuX8IXXK92UDgsE51EY=;
+        b=TeVw5nrcnvFwRnkyh8PaA6IyyxdcOSqWO8bAmPr3pW9lw5LpDQHyIdnDRFQ296C0tl
+         kwmEDnLixlSc+esnWkIdL8NCdY89h2PBIVj9naMco5bNBuqGAJZKIKUPL2u0rZ1u7Ujj
+         f05svS0NnzRq4vu+efQytoiQR0OeTAQ26OpTp0wttCyEQnS/1hbFbR7VdtqiQlCyLD7j
+         N2QjX51caMokYn3XqL9xff8f6mtoMIgXCQkrgRcKQf2yVu5sZD+8EoHt29tn5ZGou+E0
+         mB0r3GYP5G9O939QMfCzP2hnMc8JDCqWvLWaMKC2FCkGpcuPverYghnImVqNY2UIhthI
+         B00w==
+X-Gm-Message-State: AOJu0Yx+5V0drmcpQiYatuviFaDc7SWB+3EVfV5/AA7VLtELEOKVks6n
+        RyqPUocrgGFy4iPk1OznSKcbPbvw4HutZT+Irg==
+X-Google-Smtp-Source: AGHT+IFLcsLSPKofOHu3dzTz4AZ1rnCSfsnB8IkZsu8AAEegFHBMsO/Qf1WLF1WQHbiJsXgzosCssWZXEzoyfbfzDeg=
+X-Received: by 2002:a25:aca0:0:b0:d9a:4d90:feda with SMTP id
+ x32-20020a25aca0000000b00d9a4d90fedamr261633ybi.62.1698240041458; Wed, 25 Oct
+ 2023 06:20:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] drivers: s390: dasd_int.h: resolved spelling mistake
-To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>,
-        hoeppner@linux.ibm.com
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231010043140.28416-1-m.muzzammilashraf@gmail.com>
-Content-Language: en-US
-From:   Stefan Haberland <sth@linux.ibm.com>
-In-Reply-To: <20231010043140.28416-1-m.muzzammilashraf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HQDYs-_FIKY4a9_MMDa4DiRPZqoBFow8
-X-Proofpoint-GUID: tfzM6o2-xT2sE8A8yZenjYkzk7PBNAVZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_02,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=653 adultscore=0
- suspectscore=0 spamscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 impostorscore=0 clxscore=1011 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250116
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+ <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
+In-Reply-To: <CACkBjsbYMC7PgoGDK71fnqJ3QMywrwoA5Ctzh84Ldp6U_+_Ygg@mail.gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 25 Oct 2023 15:20:29 +0200
+Message-ID: <CACkBjsYHN2VGjRUV_KA+EBPYeOjBbOgysj4JVBFqd6pPBN-_0w@mail.gmail.com>
+Subject: Re: bpf: shift-out-of-bounds in tnum_rshift()
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,12 +79,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 10.10.23 um 06:31 schrieb Muhammad Muzammil:
-> resolved typing mistake from pimary to primary
+On Wed, Oct 25, 2023 at 2:31=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wrote=
+:
 >
-> Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-> ---
+> On Tue, Oct 24, 2023 at 2:40=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wro=
+te:
+> >
+> > Hi,
+> >
+> > The following program can trigger a shift-out-of-bounds in
+> > tnum_rshift(), called by scalar32_min_max_rsh():
+> >
+> > 0: (bc) w0 =3D w1
+> > 1: (bf) r2 =3D r0
+> > 2: (18) r3 =3D 0xd
+> > 4: (bc) w4 =3D w0
+> > 5: (bf) r5 =3D r0
+> > 6: (bf) r7 =3D r3
+> > 7: (bf) r8 =3D r4
+> > 8: (2f) r8 *=3D r5
+> > 9: (cf) r5 s>>=3D r5
+> > 10: (a6) if w8 < 0xfffffffb goto pc+10
+> > 11: (1f) r7 -=3D r5
+> > 12: (71) r6 =3D *(u8 *)(r1 +17)
+> > 13: (5f) r3 &=3D r8
+> > 14: (74) w2 >>=3D 30
+> > 15: (1f) r7 -=3D r5
+> > 16: (5d) if r8 !=3D r6 goto pc+4
+> > 17: (c7) r8 s>>=3D 5
+> > 18: (cf) r0 s>>=3D r0
+> > 19: (7f) r0 >>=3D r0
+> > 20: (7c) w5 >>=3D w8         # shift-out-bounds here
+> > 21: exit
+> >
+>
+> Here are the c macros for the above program in case anyone needs this:
+>
+>         // 0: (bc) w0 =3D w1
+>         BPF_MOV32_REG(BPF_REG_0, BPF_REG_1),
+>         // 1: (bf) r2 =3D r0
+>         BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
+>         // 2: (18) r3 =3D 0xd
+>         BPF_LD_IMM64(BPF_REG_3, 0xd),
+>         // 4: (bc) w4 =3D w0
+>         BPF_MOV32_REG(BPF_REG_4, BPF_REG_0),
+>         // 5: (bf) r5 =3D r0
+>         BPF_MOV64_REG(BPF_REG_5, BPF_REG_0),
+>         // 6: (bf) r7 =3D r3
+>         BPF_MOV64_REG(BPF_REG_7, BPF_REG_3),
+>         // 7: (bf) r8 =3D r4
+>         BPF_MOV64_REG(BPF_REG_8, BPF_REG_4),
+>         // 8: (2f) r8 *=3D r5
+>         BPF_ALU64_REG(BPF_MUL, BPF_REG_8, BPF_REG_5),
+>         // 9: (cf) r5 s>>=3D r5
+>         BPF_ALU64_REG(BPF_ARSH, BPF_REG_5, BPF_REG_5),
+>         // 10: (a6) if w8 < 0xfffffffb goto pc+10
+>         BPF_JMP32_IMM(BPF_JLT, BPF_REG_8, 0xfffffffb, 10),
+>         // 11: (1f) r7 -=3D r5
+>         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
+>         // 12: (71) r6 =3D *(u8 *)(r1 +17)
+>         BPF_LDX_MEM(BPF_B, BPF_REG_6, BPF_REG_1, 17),
+>         // 13: (5f) r3 &=3D r8
+>         BPF_ALU64_REG(BPF_AND, BPF_REG_3, BPF_REG_8),
+>         // 14: (74) w2 >>=3D 30
+>         BPF_ALU32_IMM(BPF_RSH, BPF_REG_2, 30),
+>         // 15: (1f) r7 -=3D r5
+>         BPF_ALU64_REG(BPF_SUB, BPF_REG_7, BPF_REG_5),
+>         // 16: (5d) if r8 !=3D r6 goto pc+4
+>         BPF_JMP_REG(BPF_JNE, BPF_REG_8, BPF_REG_6, 4),
+>         // 17: (c7) r8 s>>=3D 5
+>         BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 5),
+>         // 18: (cf) r0 s>>=3D r0
+>         BPF_ALU64_REG(BPF_ARSH, BPF_REG_0, BPF_REG_0),
+>         // 19: (7f) r0 >>=3D r0
+>         BPF_ALU64_REG(BPF_RSH, BPF_REG_0, BPF_REG_0),
+>         // 20: (7c) w5 >>=3D w8
+>         BPF_ALU32_REG(BPF_RSH, BPF_REG_5, BPF_REG_8),
+>         BPF_EXIT_INSN()
+>
+> > After load:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > UBSAN: shift-out-of-bounds in kernel/bpf/tnum.c:44:9
+> > shift exponent 255 is too large for 64-bit type 'long long unsigned int=
+'
+> > CPU: 2 PID: 8574 Comm: bpf-test Not tainted
+> > 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #21
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+> >  ubsan_epilogue lib/ubsan.c:217 [inline]
+> >  __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
+> >  tnum_rshift.cold+0x17/0x32 kernel/bpf/tnum.c:44
+> >  scalar32_min_max_rsh kernel/bpf/verifier.c:12999 [inline]
+> >  adjust_scalar_min_max_vals kernel/bpf/verifier.c:13224 [inline]
+> >  adjust_reg_min_max_vals+0x1936/0x5d50 kernel/bpf/verifier.c:13338
+> >  do_check kernel/bpf/verifier.c:16890 [inline]
+> >  do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
+> >  do_check_main kernel/bpf/verifier.c:19626 [inline]
+> >  bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
+> >  bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+> >  __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
+> >  __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
+> >  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x5610511e23cd
+> > Code: 24 80 00 00 00 48 0f 42 d0 48 89 94 24 68 0c 00 00 b8 41 01 00
+> > 00 bf 05 00 00 00 ba 90 00 00 00 48 8d b44
+> > RSP: 002b:00007f5357fc7820 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 0000000000000095 RCX: 00005610511e23cd
+> > RDX: 0000000000000090 RSI: 00007f5357fc8410 RDI: 0000000000000005
+> > RBP: 0000000000000000 R08: 00007f5357fca458 R09: 00007f5350005520
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002b
+> > R13: 0000000d00000000 R14: 000000000000002b R15: 000000000000002b
+> >  </TASK>
+> >
 
-applied, thanks
+Here is another similar one, which can probably be fixed in the same
+patch. Build the kernel with UBSAN and run the following repro can
+easily reproduce this.
 
+C reproducer: https://pastebin.com/raw/zNfHaBnj
 
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+UBSAN: shift-out-of-bounds in kernel/bpf/verifier.c:13049:63
+shift exponent 55 is too large for 32-bit type 'int'
+CPU: 3 PID: 8614 Comm: poc Not tainted 6.6.0-rc5-01400-g7c2f6c9fb91f-dirty =
+#22
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
+2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
+ scalar32_min_max_arsh kernel/bpf/verifier.c:13049 [inline]
+ adjust_scalar_min_max_vals kernel/bpf/verifier.c:13237 [inline]
+ adjust_reg_min_max_vals.cold+0x116/0x353 kernel/bpf/verifier.c:13338
+ do_check kernel/bpf/verifier.c:16890 [inline]
+ do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
+ do_check_main kernel/bpf/verifier.c:19626 [inline]
+ bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
+ bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+ __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
+ __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x43b0a9
+Code: 48 83 c4 28 c3 e8 17 1a 00 00 0f 1f 80 00 00 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
+RSP: 002b:00007fffec705b18 EFLAGS: 00000202 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fffec705ff8 RCX: 000000000043b0a9
+RDX: 0000000000000080 RSI: 00007fffec705b30 RDI: 0000000000000005
+RBP: 00007fffec705c00 R08: 0000000400000002 R09: 0000003e00000000
+R10: 00000000000000fc R11: 0000000000000202 R12: 0000000000000001
+R13: 00007fffec705fe8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
