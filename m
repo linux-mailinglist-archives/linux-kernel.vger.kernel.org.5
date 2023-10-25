@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CEE7D7361
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828787D7362
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234943AbjJYSh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
+        id S234978AbjJYSha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjJYShR (ORCPT
+        with ESMTP id S234194AbjJYShU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:37:17 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35831198
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:08 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9d3a21f7aso51321235ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:08 -0700 (PDT)
+        Wed, 25 Oct 2023 14:37:20 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E47E193
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:12 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27d3c886671so3817a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698259027; x=1698863827; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1698259032; x=1698863832; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N6MgwafsLqjywfMCXjdUW6zqI+itRnJtEI6/v6PIAPo=;
-        b=J8pGuzYtbwxp6BKJzugWb4G291Ue4UVOcQSQawBCrNn4p3lu+nplTptpFfof1jRrdI
-         zMds9De++5yQtiqFH/l6oQTQt0bwBi0M83WK7BftijDhpUR7KZ/xc30dkB2p/HI/yd2S
-         0I2VzrHAxN23Pc1iAOW+gULA9PmjO/wEl8QgLi9X+4R/r4JZBnnXSMi1LuvNYJmbHX1r
-         9pLICOwfRnbFSJqu7/8Ns0Bc5gR2Cw8b9OdBUAPf1L/S/3QHsx5eEytG7WhJgH+JSxwd
-         Ej47reBYEfb6BDN2r5sRyJga/pfxdG4wjvr1Gd8mYeoHTVu7DHuwL7wy8brLy4raCppS
-         +nPQ==
+        bh=MWKTD/SWI8njkmgyeeN+5f9jkvLnhIgL7e3VWIYvG8Q=;
+        b=OligZW4ClXoFMTp8YmdWgUfsaapPuy6hpOpQA9zMBmB1EXNnFxE1dd7VV14ml5FDBM
+         yTkYGMcI61LSTl7Z8KwhU/vfP0K5Fb499YEzUqFtA1mx7CxkLOnClJGMhZhsAzx4uQkA
+         Q52tvYCe4x1yD8jOwHskx78991r7AWed5ajzE5wJ62/b4Jp5Xj+R4qYxpHdGIOXlPqop
+         LTww+Rm0tubgnfiO16wIW8Laz9h3xjkI8xR517eoJpA0hiV2h7QKhCVjCbzBqUqzbOwB
+         PfKaB7gIyJymwQMgDF8a1cT5Hf8/PkZDJiGSqKxoxnM+X1nU65G1edz+D4kHz/c9lY2Q
+         +ETA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698259027; x=1698863827;
+        d=1e100.net; s=20230601; t=1698259032; x=1698863832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N6MgwafsLqjywfMCXjdUW6zqI+itRnJtEI6/v6PIAPo=;
-        b=T7xiNwZ1PfiDtDgJIK32cwESLI/JH45bOnR2RwSNwSNJws5gXJYn+IdDoxBMZhvkjf
-         F1mYdzLI/U2GZjjShTQtRY09K6a9yU1oCYwWYRYfK7ysr4K4nIX6S3mWUNrodFQ9zoIM
-         meMi4xexvu4k614+ZyuwG6IxisHuR6aElXklEI5JzClP+TaUusXONIV2tRAYwScbjijG
-         IzqIO0moFTRhrVxL6rpapZo2W8jz1ykP8J6ruWaUxrtj8f1z6nCadxidGTevj2ITF2AG
-         7Hnc37oz9EUQWoh0GQCfXA1L8OobPsDsWz1kn2GmYdLPokWLMmt9lIZ78hbDIROnZbey
-         IwOw==
-X-Gm-Message-State: AOJu0YwlOs9OOkQke+zP5Q/u/CT2cqMxMhN89TMUEk3dz7LGZTWI4sZ6
-        6C9TiotHCEfQebtsTr9WghDeLA==
-X-Google-Smtp-Source: AGHT+IG0z9SRqLNyJg2TehdS4CqqTSOT1S0/ni0xDxr1Z9HFhKdeiZpJ1HKxezskjzDh9blmV89o3A==
-X-Received: by 2002:a17:90a:1c8:b0:27d:6dd:fb7d with SMTP id 8-20020a17090a01c800b0027d06ddfb7dmr16708676pjd.17.1698259027428;
-        Wed, 25 Oct 2023 11:37:07 -0700 (PDT)
+        bh=MWKTD/SWI8njkmgyeeN+5f9jkvLnhIgL7e3VWIYvG8Q=;
+        b=ieYSXOBcpXqj46/bhcNT0l55xxukCvmz0bRVjI+cswVVdRSPv00h7RRPTBahEzaDb6
+         Tw3u2gqMR2r6J/YxuEfy6jd/6hh+r4g4O168bI7aEm883oKP8u9Mk6SMaLu5jU7r4sfc
+         LK0Ubg/MxExNaDcZTJ79Dvi1IVUFP/yUvQNoKQ5aIGyqWN1U8VvBuFX3Rdk2COL/LIE7
+         BfVLGy5LLXl75C9ofMtjxHf/b0AtWtHZrNBwrNrr9XldadyqclKzdQncepkvvfvhW/lq
+         V/sqvc2aS9a0rR65iDP70dw/gDiXYzqysjfuqPt0Vd4Ie2EsipayEp9ySYJnit3zi4ci
+         BTtQ==
+X-Gm-Message-State: AOJu0YzR/fKmUoPby+gFFOotu77+mcVbRDTKvzDiHQqPjVxea4fLevYd
+        2I4ar9GbuwYUwL4bQcPN5EsvX7k7XvGCAiTJ1X/g5A==
+X-Google-Smtp-Source: AGHT+IGRNYQPO/oiPp8ACsYhU0M5aGJ04WqOdeXXrN2GlGvrHQNkylxeMduls440BMus9XknRraQ5g==
+X-Received: by 2002:a17:90a:7442:b0:27d:9b67:7fa6 with SMTP id o2-20020a17090a744200b0027d9b677fa6mr14293424pjk.3.1698259031716;
+        Wed, 25 Oct 2023 11:37:11 -0700 (PDT)
 Received: from localhost.localdomain ([49.216.222.119])
-        by smtp.gmail.com with ESMTPSA id g3-20020a17090adb0300b00278f1512dd9sm212367pjv.32.2023.10.25.11.37.03
+        by smtp.gmail.com with ESMTPSA id g3-20020a17090adb0300b00278f1512dd9sm212367pjv.32.2023.10.25.11.37.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Oct 2023 11:37:06 -0700 (PDT)
+        Wed, 25 Oct 2023 11:37:11 -0700 (PDT)
 From:   Jerry Shih <jerry.shih@sifive.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
@@ -60,9 +60,9 @@ Cc:     andy.chiu@sifive.com, greentime.hu@sifive.com,
         phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH 03/12] RISC-V: crypto: add OpenSSL perl module for vector instructions
-Date:   Thu, 26 Oct 2023 02:36:35 +0800
-Message-Id: <20231025183644.8735-4-jerry.shih@sifive.com>
+Subject: [PATCH 04/12] RISC-V: crypto: add Zvkned accelerated AES implementation
+Date:   Thu, 26 Oct 2023 02:36:36 +0800
+Message-Id: <20231025183644.8735-5-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231025183644.8735-1-jerry.shih@sifive.com>
 References: <20231025183644.8735-1-jerry.shih@sifive.com>
@@ -71,19 +71,16 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OpenSSL has some RISC-V vector cryptography implementations which
-could be reused for kernel. These implementations use a number of perl
-helpers for handling vector and vector-crypto-extension instructions.
-This patch take these perl helpers from OpenSSL(openssl/openssl#21923).
-The unused scalar crypto instructions in the original perl module are
-skipped.
+The AES implementation using the Zvkned vector crypto extension from
+OpenSSL(openssl/openssl#21923).
 
 Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
 Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
@@ -93,16 +90,265 @@ Co-developed-by: Phoebe Chen <phoebe.chen@sifive.com>
 Signed-off-by: Phoebe Chen <phoebe.chen@sifive.com>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
- arch/riscv/crypto/riscv.pm | 828 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 828 insertions(+)
- create mode 100644 arch/riscv/crypto/riscv.pm
+ arch/riscv/crypto/Kconfig               |  12 +
+ arch/riscv/crypto/Makefile              |  11 +
+ arch/riscv/crypto/aes-riscv64-glue.c    | 163 +++++++++
+ arch/riscv/crypto/aes-riscv64-glue.h    |  28 ++
+ arch/riscv/crypto/aes-riscv64-zvkned.pl | 451 ++++++++++++++++++++++++
+ 5 files changed, 665 insertions(+)
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.h
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.pl
 
-diff --git a/arch/riscv/crypto/riscv.pm b/arch/riscv/crypto/riscv.pm
+diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
+index 10d60edc0110..500938317e71 100644
+--- a/arch/riscv/crypto/Kconfig
++++ b/arch/riscv/crypto/Kconfig
+@@ -2,4 +2,16 @@
+ 
+ menu "Accelerated Cryptographic Algorithms for CPU (riscv)"
+ 
++config CRYPTO_AES_RISCV64
++	default y if RISCV_ISA_V
++	tristate "Ciphers: AES"
++	depends on 64BIT && RISCV_ISA_V
++	select CRYPTO_AES
++	select CRYPTO_ALGAPI
++	help
++	  Block ciphers: AES cipher algorithms (FIPS-197)
++
++	  Architecture: riscv64 using:
++	  - Zvkned vector crypto extension
++
+ endmenu
+diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
+index b3b6332c9f6d..90ca91d8df26 100644
+--- a/arch/riscv/crypto/Makefile
++++ b/arch/riscv/crypto/Makefile
+@@ -2,3 +2,14 @@
+ #
+ # linux/arch/riscv/crypto/Makefile
+ #
++
++obj-$(CONFIG_CRYPTO_AES_RISCV64) += aes-riscv64.o
++aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o
++
++quiet_cmd_perlasm = PERLASM $@
++      cmd_perlasm = $(PERL) $(<) void $(@)
++
++$(obj)/aes-riscv64-zvkned.S: $(src)/aes-riscv64-zvkned.pl
++	$(call cmd,perlasm)
++
++clean-files += aes-riscv64-zvkned.S
+diff --git a/arch/riscv/crypto/aes-riscv64-glue.c b/arch/riscv/crypto/aes-riscv64-glue.c
 new file mode 100644
-index 000000000000..e188f7476e3e
+index 000000000000..5c4f1018d3aa
 --- /dev/null
-+++ b/arch/riscv/crypto/riscv.pm
-@@ -0,0 +1,828 @@
++++ b/arch/riscv/crypto/aes-riscv64-glue.c
+@@ -0,0 +1,163 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Port of the OpenSSL AES implementation for RISC-V
++ *
++ * Copyright (C) 2023 VRULL GmbH
++ * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
++ *
++ * Copyright (C) 2023 SiFive, Inc.
++ * Author: Jerry Shih <jerry.shih@sifive.com>
++ */
++
++#include <asm/simd.h>
++#include <asm/vector.h>
++#include <crypto/aes.h>
++#include <crypto/internal/cipher.h>
++#include <crypto/internal/simd.h>
++#include <linux/crypto.h>
++#include <linux/module.h>
++#include <linux/types.h>
++
++#include "aes-riscv64-glue.h"
++
++/*
++ * aes cipher using zvkned vector crypto extension
++ *
++ * All zvkned-based functions use encryption expending keys for both encryption
++ * and decryption.
++ */
++void rv64i_zvkned_encrypt(const u8 *in, u8 *out, const struct aes_key *key);
++void rv64i_zvkned_decrypt(const u8 *in, u8 *out, const struct aes_key *key);
++
++static inline int aes_round_num(unsigned int keylen)
++{
++	switch (keylen) {
++	case AES_KEYSIZE_128:
++		return 10;
++	case AES_KEYSIZE_192:
++		return 12;
++	case AES_KEYSIZE_256:
++		return 14;
++	default:
++		return 0;
++	}
++}
++
++int riscv64_aes_setkey(struct riscv64_aes_ctx *ctx, const u8 *key,
++		       unsigned int keylen)
++{
++	/*
++	 * The RISC-V AES vector crypto key expending doesn't support AES-192.
++	 * We just use the generic software key expending here to simplify the key
++	 * expending flow.
++	 */
++	u32 aes_rounds;
++	u32 key_length;
++	int ret;
++
++	ret = aes_expandkey(&ctx->fallback_ctx, key, keylen);
++	if (ret < 0)
++		return -EINVAL;
++
++	/*
++	 * Copy the key from `crypto_aes_ctx` to `aes_key` for zvkned-based AES
++	 * implementations.
++	 */
++	aes_rounds = aes_round_num(keylen);
++	ctx->key.rounds = aes_rounds;
++	key_length = AES_BLOCK_SIZE * (aes_rounds + 1);
++	memcpy(ctx->key.key, ctx->fallback_ctx.key_enc, key_length);
++
++	return 0;
++}
++
++void riscv64_aes_encrypt_zvkned(const struct riscv64_aes_ctx *ctx, u8 *dst,
++				const u8 *src)
++{
++	if (crypto_simd_usable()) {
++		kernel_vector_begin();
++		rv64i_zvkned_encrypt(src, dst, &ctx->key);
++		kernel_vector_end();
++	} else {
++		aes_encrypt(&ctx->fallback_ctx, dst, src);
++	}
++}
++
++void riscv64_aes_decrypt_zvkned(const struct riscv64_aes_ctx *ctx, u8 *dst,
++				const u8 *src)
++{
++	if (crypto_simd_usable()) {
++		kernel_vector_begin();
++		rv64i_zvkned_decrypt(src, dst, &ctx->key);
++		kernel_vector_end();
++	} else {
++		aes_decrypt(&ctx->fallback_ctx, dst, src);
++	}
++}
++
++static int aes_setkey(struct crypto_tfm *tfm, const u8 *key,
++		      unsigned int keylen)
++{
++	struct riscv64_aes_ctx *ctx = crypto_tfm_ctx(tfm);
++
++	return riscv64_aes_setkey(ctx, key, keylen);
++}
++
++static void aes_encrypt_zvkned(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
++{
++	const struct riscv64_aes_ctx *ctx = crypto_tfm_ctx(tfm);
++
++	riscv64_aes_encrypt_zvkned(ctx, dst, src);
++}
++
++static void aes_decrypt_zvkned(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
++{
++	const struct riscv64_aes_ctx *ctx = crypto_tfm_ctx(tfm);
++
++	riscv64_aes_decrypt_zvkned(ctx, dst, src);
++}
++
++static struct crypto_alg riscv64_aes_alg_zvkned = {
++	.cra_name = "aes",
++	.cra_driver_name = "aes-riscv64-zvkned",
++	.cra_module = THIS_MODULE,
++	.cra_priority = 300,
++	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
++	.cra_blocksize = AES_BLOCK_SIZE,
++	.cra_ctxsize = sizeof(struct riscv64_aes_ctx),
++	.cra_cipher = {
++		.cia_min_keysize = AES_MIN_KEY_SIZE,
++		.cia_max_keysize = AES_MAX_KEY_SIZE,
++		.cia_setkey = aes_setkey,
++		.cia_encrypt = aes_encrypt_zvkned,
++		.cia_decrypt = aes_decrypt_zvkned,
++	},
++};
++
++static inline bool check_aes_ext(void)
++{
++	return riscv_isa_extension_available(NULL, ZVKNED) &&
++	       riscv_vector_vlen() >= 128;
++}
++
++static int __init riscv64_aes_mod_init(void)
++{
++	if (check_aes_ext())
++		return crypto_register_alg(&riscv64_aes_alg_zvkned);
++
++	return -ENODEV;
++}
++
++static void __exit riscv64_aes_mod_fini(void)
++{
++	if (check_aes_ext())
++		crypto_unregister_alg(&riscv64_aes_alg_zvkned);
++}
++
++module_init(riscv64_aes_mod_init);
++module_exit(riscv64_aes_mod_fini);
++
++MODULE_DESCRIPTION("AES (RISC-V accelerated)");
++MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS_CRYPTO("aes");
+diff --git a/arch/riscv/crypto/aes-riscv64-glue.h b/arch/riscv/crypto/aes-riscv64-glue.h
+new file mode 100644
+index 000000000000..7f1f675aca0d
+--- /dev/null
++++ b/arch/riscv/crypto/aes-riscv64-glue.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef AES_RISCV64_GLUE_H
++#define AES_RISCV64_GLUE_H
++
++#include <crypto/aes.h>
++#include <linux/types.h>
++
++struct aes_key {
++	u32 key[AES_MAX_KEYLENGTH_U32];
++	u32 rounds;
++};
++
++struct riscv64_aes_ctx {
++	struct aes_key key;
++	struct crypto_aes_ctx fallback_ctx;
++};
++
++int riscv64_aes_setkey(struct riscv64_aes_ctx *ctx, const u8 *key,
++		       unsigned int keylen);
++
++void riscv64_aes_encrypt_zvkned(const struct riscv64_aes_ctx *ctx, u8 *dst,
++				const u8 *src);
++
++void riscv64_aes_decrypt_zvkned(const struct riscv64_aes_ctx *ctx, u8 *dst,
++				const u8 *src);
++
++#endif /* AES_RISCV64_GLUE_H */
+diff --git a/arch/riscv/crypto/aes-riscv64-zvkned.pl b/arch/riscv/crypto/aes-riscv64-zvkned.pl
+new file mode 100644
+index 000000000000..c0ecde77bf56
+--- /dev/null
++++ b/arch/riscv/crypto/aes-riscv64-zvkned.pl
+@@ -0,0 +1,451 @@
 +#! /usr/bin/env perl
 +# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
 +#
@@ -118,7 +364,6 @@ index 000000000000..e188f7476e3e
 +# or
 +#
 +# Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
-+# Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
 +# Copyright (c) 2023, Phoebe Chen <phoebe.chen@sifive.com>
 +# All rights reserved.
 +#
@@ -143,794 +388,418 @@ index 000000000000..e188f7476e3e
 +# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 +# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 +
++# - RV64I
++# - RISC-V Vector ('V') with VLEN >= 128
++# - RISC-V Vector AES block cipher extension ('Zvkned')
++
 +use strict;
 +use warnings;
 +
-+# Set $have_stacktrace to 1 if we have Devel::StackTrace
-+my $have_stacktrace = 0;
-+if (eval {require Devel::StackTrace;1;}) {
-+    $have_stacktrace = 1;
-+}
-+
-+my @regs = map("x$_",(0..31));
-+# Mapping from the RISC-V psABI ABI mnemonic names to the register number.
-+my @regaliases = ('zero','ra','sp','gp','tp','t0','t1','t2','s0','s1',
-+    map("a$_",(0..7)),
-+    map("s$_",(2..11)),
-+    map("t$_",(3..6))
-+);
-+
-+my %reglookup;
-+@reglookup{@regs} = @regs;
-+@reglookup{@regaliases} = @regs;
-+
-+# Takes a register name, possibly an alias, and converts it to a register index
-+# from 0 to 31
-+sub read_reg {
-+    my $reg = lc shift;
-+    if (!exists($reglookup{$reg})) {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unknown register ".$reg."\n".$trace);
-+    }
-+    my $regstr = $reglookup{$reg};
-+    if (!($regstr =~ /^x([0-9]+)$/)) {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Could not process register ".$reg."\n".$trace);
-+    }
-+    return $1;
-+}
-+
-+# Read the sew setting(8, 16, 32 and 64) and convert to vsew encoding.
-+sub read_sew {
-+    my $sew_setting = shift;
-+
-+    if ($sew_setting eq "e8") {
-+        return 0;
-+    } elsif ($sew_setting eq "e16") {
-+        return 1;
-+    } elsif ($sew_setting eq "e32") {
-+        return 2;
-+    } elsif ($sew_setting eq "e64") {
-+        return 3;
-+    } else {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unsupported SEW setting:".$sew_setting."\n".$trace);
-+    }
-+}
-+
-+# Read the LMUL settings and convert to vlmul encoding.
-+sub read_lmul {
-+    my $lmul_setting = shift;
-+
-+    if ($lmul_setting eq "mf8") {
-+        return 5;
-+    } elsif ($lmul_setting eq "mf4") {
-+        return 6;
-+    } elsif ($lmul_setting eq "mf2") {
-+        return 7;
-+    } elsif ($lmul_setting eq "m1") {
-+        return 0;
-+    } elsif ($lmul_setting eq "m2") {
-+        return 1;
-+    } elsif ($lmul_setting eq "m4") {
-+        return 2;
-+    } elsif ($lmul_setting eq "m8") {
-+        return 3;
-+    } else {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unsupported LMUL setting:".$lmul_setting."\n".$trace);
-+    }
-+}
-+
-+# Read the tail policy settings and convert to vta encoding.
-+sub read_tail_policy {
-+    my $tail_setting = shift;
-+
-+    if ($tail_setting eq "ta") {
-+        return 1;
-+    } elsif ($tail_setting eq "tu") {
-+        return 0;
-+    } else {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unsupported tail policy setting:".$tail_setting."\n".$trace);
-+    }
-+}
-+
-+# Read the mask policy settings and convert to vma encoding.
-+sub read_mask_policy {
-+    my $mask_setting = shift;
-+
-+    if ($mask_setting eq "ma") {
-+        return 1;
-+    } elsif ($mask_setting eq "mu") {
-+        return 0;
-+    } else {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unsupported mask policy setting:".$mask_setting."\n".$trace);
-+    }
-+}
-+
-+my @vregs = map("v$_",(0..31));
-+my %vreglookup;
-+@vreglookup{@vregs} = @vregs;
-+
-+sub read_vreg {
-+    my $vreg = lc shift;
-+    if (!exists($vreglookup{$vreg})) {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Unknown vector register ".$vreg."\n".$trace);
-+    }
-+    if (!($vreg =~ /^v([0-9]+)$/)) {
-+        my $trace = "";
-+        if ($have_stacktrace) {
-+            $trace = Devel::StackTrace->new->as_string;
-+        }
-+        die("Could not process vector register ".$vreg."\n".$trace);
-+    }
-+    return $1;
-+}
-+
-+# Read the vm settings and convert to mask encoding.
-+sub read_mask_vreg {
-+    my $vreg = shift;
-+    # The default value is unmasked.
-+    my $mask_bit = 1;
-+
-+    if (defined($vreg)) {
-+        my $reg_id = read_vreg $vreg;
-+        if ($reg_id == 0) {
-+            $mask_bit = 0;
-+        } else {
-+            my $trace = "";
-+            if ($have_stacktrace) {
-+                $trace = Devel::StackTrace->new->as_string;
-+            }
-+            die("The ".$vreg." is not the mask register v0.\n".$trace);
-+        }
-+    }
-+    return $mask_bit;
-+}
-+
-+# Vector instructions
-+
-+sub vadd_vv {
-+    # vadd.vv vd, vs2, vs1, vm
-+    my $template = 0b000000_0_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vadd_vx {
-+    # vadd.vx vd, vs2, rs1, vm
-+    my $template = 0b000000_0_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vsub_vv {
-+    # vsub.vv vd, vs2, vs1, vm
-+    my $template = 0b000010_0_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vsub_vx {
-+    # vsub.vx vd, vs2, rs1, vm
-+    my $template = 0b000010_0_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vid_v {
-+    # vid.v vd
-+    my $template = 0b0101001_00000_10001_010_00000_1010111;
-+    my $vd = read_vreg shift;
-+    return ".word ".($template | ($vd << 7));
-+}
-+
-+sub viota_m {
-+    # viota.m vd, vs2, vm
-+    my $template = 0b010100_0_00000_10000_010_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vle8_v {
-+    # vle8.v vd, (rs1), vm
-+    my $template = 0b000000_0_00000_00000_000_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vle32_v {
-+    # vle32.v vd, (rs1), vm
-+    my $template = 0b000000_0_00000_00000_110_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vle64_v {
-+    # vle64.v vd, (rs1)
-+    my $template = 0b0000001_00000_00000_111_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vlse32_v {
-+    # vlse32.v vd, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_110_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($rs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vlsseg_nf_e32_v {
-+    # vlsseg<nf>e32.v vd, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_110_00000_0000111;
-+    my $nf = shift;
-+    $nf -= 1;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($nf << 29) | ($rs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vlse64_v {
-+    # vlse64.v vd, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_111_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($rs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vluxei8_v {
-+    # vluxei8.v vd, (rs1), vs2, vm
-+    my $template = 0b000001_0_00000_00000_000_00000_0000111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vmerge_vim {
-+    # vmerge.vim vd, vs2, imm, v0
-+    my $template = 0b0101110_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $imm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($imm << 15) | ($vd << 7));
-+}
-+
-+sub vmerge_vvm {
-+    # vmerge.vvm vd vs2 vs1
-+    my $template = 0b0101110_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7))
-+}
-+
-+sub vmseq_vi {
-+    # vmseq.vi vd vs1, imm
-+    my $template = 0b0110001_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    my $imm = shift;
-+    return ".word ".($template | ($vs1 << 20) | ($imm << 15) | ($vd << 7))
-+}
-+
-+sub vmsgtu_vx {
-+    # vmsgtu.vx vd vs2, rs1, vm
-+    my $template = 0b011110_0_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7))
-+}
-+
-+sub vmv_v_i {
-+    # vmv.v.i vd, imm
-+    my $template = 0b0101111_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $imm = shift;
-+    return ".word ".($template | ($imm << 15) | ($vd << 7));
-+}
-+
-+sub vmv_v_x {
-+    # vmv.v.x vd, rs1
-+    my $template = 0b0101111_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vmv_v_v {
-+    # vmv.v.v vd, vs1
-+    my $template = 0b0101111_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vor_vv_v0t {
-+    # vor.vv vd, vs2, vs1, v0.t
-+    my $template = 0b0010100_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vse8_v {
-+    # vse8.v vd, (rs1), vm
-+    my $template = 0b000000_0_00000_00000_000_00000_0100111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vse32_v {
-+    # vse32.v vd, (rs1), vm
-+    my $template = 0b000000_0_00000_00000_110_00000_0100111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vssseg_nf_e32_v {
-+    # vssseg<nf>e32.v vs3, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_110_00000_0100111;
-+    my $nf = shift;
-+    $nf -= 1;
-+    my $vs3 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($nf << 29) | ($rs2 << 20) | ($rs1 << 15) | ($vs3 << 7));
-+}
-+
-+sub vsuxei8_v {
-+   # vsuxei8.v vs3, (rs1), vs2, vm
-+   my $template = 0b000001_0_00000_00000_000_00000_0100111;
-+   my $vs3 = read_vreg shift;
-+   my $rs1 = read_reg shift;
-+   my $vs2 = read_vreg shift;
-+   my $vm = read_mask_vreg shift;
-+   return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($rs1 << 15) | ($vs3 << 7));
-+}
-+
-+sub vse64_v {
-+    # vse64.v vd, (rs1)
-+    my $template = 0b0000001_00000_00000_111_00000_0100111;
-+    my $vd = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vsetivli__x0_2_e64_m1_tu_mu {
-+    # vsetivli x0, 2, e64, m1, tu, mu
-+    return ".word 0xc1817057";
-+}
-+
-+sub vsetivli__x0_4_e32_m1_tu_mu {
-+    # vsetivli x0, 4, e32, m1, tu, mu
-+    return ".word 0xc1027057";
-+}
-+
-+sub vsetivli__x0_4_e64_m1_tu_mu {
-+    # vsetivli x0, 4, e64, m1, tu, mu
-+    return ".word 0xc1827057";
-+}
-+
-+sub vsetivli__x0_8_e32_m1_tu_mu {
-+    # vsetivli x0, 8, e32, m1, tu, mu
-+    return ".word 0xc1047057";
-+}
-+
-+sub vsetvli {
-+    # vsetvli rd, rs1, vtypei
-+    my $template = 0b0_00000000000_00000_111_00000_1010111;
-+    my $rd = read_reg shift;
-+    my $rs1 = read_reg shift;
-+    my $sew = read_sew shift;
-+    my $lmul = read_lmul shift;
-+    my $tail_policy = read_tail_policy shift;
-+    my $mask_policy = read_mask_policy shift;
-+    my $vtypei = ($mask_policy << 7) | ($tail_policy << 6) | ($sew << 3) | $lmul;
-+
-+    return ".word ".($template | ($vtypei << 20) | ($rs1 << 15) | ($rd << 7));
-+}
-+
-+sub vsetivli {
-+    # vsetvli rd, uimm, vtypei
-+    my $template = 0b11_0000000000_00000_111_00000_1010111;
-+    my $rd = read_reg shift;
-+    my $uimm = shift;
-+    my $sew = read_sew shift;
-+    my $lmul = read_lmul shift;
-+    my $tail_policy = read_tail_policy shift;
-+    my $mask_policy = read_mask_policy shift;
-+    my $vtypei = ($mask_policy << 7) | ($tail_policy << 6) | ($sew << 3) | $lmul;
-+
-+    return ".word ".($template | ($vtypei << 20) | ($uimm << 15) | ($rd << 7));
-+}
-+
-+sub vslidedown_vi {
-+    # vslidedown.vi vd, vs2, uimm
-+    my $template = 0b0011111_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vslidedown_vx {
-+    # vslidedown.vx vd, vs2, rs1
-+    my $template = 0b0011111_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vslideup_vi_v0t {
-+    # vslideup.vi vd, vs2, uimm, v0.t
-+    my $template = 0b0011100_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vslideup_vi {
-+    # vslideup.vi vd, vs2, uimm
-+    my $template = 0b0011101_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vsll_vi {
-+    # vsll.vi vd, vs2, uimm, vm
-+    my $template = 0b1001011_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vsrl_vx {
-+    # vsrl.vx vd, vs2, rs1
-+    my $template = 0b1010001_00000_00000_100_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vsse32_v {
-+    # vse32.v vs3, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_110_00000_0100111;
-+    my $vs3 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($rs2 << 20) | ($rs1 << 15) | ($vs3 << 7));
-+}
-+
-+sub vsse64_v {
-+    # vsse64.v vs3, (rs1), rs2
-+    my $template = 0b0000101_00000_00000_111_00000_0100111;
-+    my $vs3 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    my $rs2 = read_reg shift;
-+    return ".word ".($template | ($rs2 << 20) | ($rs1 << 15) | ($vs3 << 7));
-+}
-+
-+sub vxor_vv_v0t {
-+    # vxor.vv vd, vs2, vs1, v0.t
-+    my $template = 0b0010110_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vxor_vv {
-+    # vxor.vv vd, vs2, vs1
-+    my $template = 0b0010111_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vzext_vf2 {
-+    # vzext.vf2 vd, vs2, vm
-+    my $template = 0b010010_0_00000_00110_010_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+# Vector crypto instructions
-+
-+## Zvbb and Zvkb instructions
-+##
-+## vandn (also in zvkb)
-+## vbrev
-+## vbrev8 (also in zvkb)
-+## vrev8 (also in zvkb)
-+## vclz
-+## vctz
-+## vcpop
-+## vrol (also in zvkb)
-+## vror (also in zvkb)
-+## vwsll
-+
-+sub vbrev8_v {
-+    # vbrev8.v vd, vs2, vm
-+    my $template = 0b010010_0_00000_01000_010_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vrev8_v {
-+    # vrev8.v vd, vs2, vm
-+    my $template = 0b010010_0_00000_01001_010_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vror_vi {
-+    # vror.vi vd, vs2, uimm
-+    my $template = 0b01010_0_1_00000_00000_011_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    my $uimm_i5 = $uimm >> 5;
-+    my $uimm_i4_0 = $uimm & 0b11111;
-+
-+    return ".word ".($template | ($uimm_i5 << 26) | ($vs2 << 20) | ($uimm_i4_0 << 15) | ($vd << 7));
-+}
-+
-+sub vwsll_vv {
-+    # vwsll.vv vd, vs2, vs1, vm
-+    my $template = 0b110101_0_00000_00000_000_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    my $vm = read_mask_vreg shift;
-+    return ".word ".($template | ($vm << 25) | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+## Zvbc instructions
-+
-+sub vclmulh_vx {
-+    # vclmulh.vx vd, vs2, rs1
-+    my $template = 0b0011011_00000_00000_110_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vclmul_vx_v0t {
-+    # vclmul.vx vd, vs2, rs1, v0.t
-+    my $template = 0b0011000_00000_00000_110_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+sub vclmul_vx {
-+    # vclmul.vx vd, vs2, rs1
-+    my $template = 0b0011001_00000_00000_110_00000_1010111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $rs1 = read_reg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($rs1 << 15) | ($vd << 7));
-+}
-+
-+## Zvkg instructions
-+
-+sub vghsh_vv {
-+    # vghsh.vv vd, vs2, vs1
-+    my $template = 0b1011001_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
-+}
-+
-+sub vgmul_vv {
-+    # vgmul.vv vd, vs2
-+    my $template = 0b1010001_00000_10001_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+## Zvkned instructions
-+
-+sub vaesdf_vs {
-+    # vaesdf.vs vd, vs2
-+    my $template = 0b101001_1_00000_00001_010_00000_1110111;
-+    my $vd = read_vreg  shift;
-+    my $vs2 = read_vreg  shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vaesdm_vs {
-+    # vaesdm.vs vd, vs2
-+    my $template = 0b101001_1_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vaesef_vs {
-+    # vaesef.vs vd, vs2
-+    my $template = 0b101001_1_00000_00011_010_00000_1110111;
-+    my $vd = read_vreg  shift;
-+    my $vs2 = read_vreg  shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vaesem_vs {
-+    # vaesem.vs vd, vs2
-+    my $template = 0b101001_1_00000_00010_010_00000_1110111;
-+    my $vd = read_vreg  shift;
-+    my $vs2 = read_vreg  shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vaeskf1_vi {
-+    # vaeskf1.vi vd, vs2, uimmm
-+    my $template = 0b100010_1_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg  shift;
-+    my $vs2 = read_vreg  shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($uimm << 15) | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+sub vaeskf2_vi {
-+    # vaeskf2.vi vd, vs2, uimm
-+    my $template = 0b101010_1_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vaesz_vs {
-+    # vaesz.vs vd, vs2
-+    my $template = 0b101001_1_00000_00111_010_00000_1110111;
-+    my $vd = read_vreg  shift;
-+    my $vs2 = read_vreg  shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+## Zvknha and Zvknhb instructions
-+
-+sub vsha2ms_vv {
-+    # vsha2ms.vv vd, vs2, vs1
-+    my $template = 0b1011011_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20)| ($vs1 << 15 )| ($vd << 7));
-+}
-+
-+sub vsha2ch_vv {
-+    # vsha2ch.vv vd, vs2, vs1
-+    my $template = 0b101110_10000_00000_001_00000_01110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20)| ($vs1 << 15 )| ($vd << 7));
-+}
-+
-+sub vsha2cl_vv {
-+    # vsha2cl.vv vd, vs2, vs1
-+    my $template = 0b101111_10000_00000_001_00000_01110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20)| ($vs1 << 15 )| ($vd << 7));
-+}
-+
-+## Zvksed instructions
-+
-+sub vsm4k_vi {
-+    # vsm4k.vi vd, vs2, uimm
-+    my $template = 0b1000011_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
-+}
-+
-+sub vsm4r_vs {
-+    # vsm4r.vs vd, vs2
-+    my $template = 0b1010011_00000_10000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vd << 7));
-+}
-+
-+## zvksh instructions
-+
-+sub vsm3c_vi {
-+    # vsm3c.vi vd, vs2, uimm
-+    my $template = 0b1010111_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $uimm = shift;
-+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15 ) | ($vd << 7));
-+}
-+
-+sub vsm3me_vv {
-+    # vsm3me.vv vd, vs2, vs1
-+    my $template = 0b1000001_00000_00000_010_00000_1110111;
-+    my $vd = read_vreg shift;
-+    my $vs2 = read_vreg shift;
-+    my $vs1 = read_vreg shift;
-+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15 ) | ($vd << 7));
-+}
-+
-+1;
++use FindBin qw($Bin);
++use lib "$Bin";
++use lib "$Bin/../../perlasm";
++use riscv;
++
++# $output is the last argument if it looks like a file (it has an extension)
++# $flavour is the first argument if it doesn't look like a file
++my $output = $#ARGV >= 0 && $ARGV[$#ARGV] =~ m|\.\w+$| ? pop : undef;
++my $flavour = $#ARGV >= 0 && $ARGV[0] !~ m|\.| ? shift : undef;
++
++$output and open STDOUT,">$output";
++
++my $code=<<___;
++.text
++___
++
++my ($V0, $V1, $V2, $V3, $V4, $V5, $V6, $V7,
++    $V8, $V9, $V10, $V11, $V12, $V13, $V14, $V15,
++    $V16, $V17, $V18, $V19, $V20, $V21, $V22, $V23,
++    $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
++) = map("v$_",(0..31));
++
++{
++################################################################################
++# void rv64i_zvkned_encrypt(const unsigned char *in, unsigned char *out,
++#                           const AES_KEY *key);
++my ($INP, $OUTP, $KEYP) = ("a0", "a1", "a2");
++my ($T0, $T1, $ROUNDS, $T6) = ("a3", "a4", "t5", "t6");
++
++$code .= <<___;
++.p2align 3
++.globl rv64i_zvkned_encrypt
++.type rv64i_zvkned_encrypt,\@function
++rv64i_zvkned_encrypt:
++    # Load number of rounds
++    lwu $ROUNDS, 240($KEYP)
++
++    # Get proper routine for key size
++    li $T6, 14
++    beq $ROUNDS, $T6, L_enc_256
++    li $T6, 10
++    beq $ROUNDS, $T6, L_enc_128
++    li $T6, 12
++    beq $ROUNDS, $T6, L_enc_192
++
++    j L_fail_m2
++.size rv64i_zvkned_encrypt,.-rv64i_zvkned_encrypt
++___
++
++$code .= <<___;
++.p2align 3
++L_enc_128:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesz_vs $V1, $V10]}    # with round key w[ 0, 3]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesem_vs $V1, $V11]}   # with round key w[ 4, 7]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesem_vs $V1, $V12]}   # with round key w[ 8,11]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesem_vs $V1, $V13]}   # with round key w[12,15]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesem_vs $V1, $V14]}   # with round key w[16,19]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesem_vs $V1, $V15]}   # with round key w[20,23]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesem_vs $V1, $V16]}   # with round key w[24,27]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesem_vs $V1, $V17]}   # with round key w[28,31]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesem_vs $V1, $V18]}   # with round key w[32,35]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesem_vs $V1, $V19]}   # with round key w[36,39]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesef_vs $V1, $V20]}   # with round key w[40,43]
++
++    @{[vse32_v $V1, ($OUTP)]}
++
++    ret
++.size L_enc_128,.-L_enc_128
++___
++
++$code .= <<___;
++.p2align 3
++L_enc_192:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesz_vs $V1, $V10]}     # with round key w[ 0, 3]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesem_vs $V1, $V11]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesem_vs $V1, $V12]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesem_vs $V1, $V13]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesem_vs $V1, $V14]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesem_vs $V1, $V15]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesem_vs $V1, $V16]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesem_vs $V1, $V17]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesem_vs $V1, $V18]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesem_vs $V1, $V19]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesem_vs $V1, $V20]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V21, ($KEYP)]}
++    @{[vaesem_vs $V1, $V21]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V22, ($KEYP)]}
++    @{[vaesef_vs $V1, $V22]}
++
++    @{[vse32_v $V1, ($OUTP)]}
++    ret
++.size L_enc_192,.-L_enc_192
++___
++
++$code .= <<___;
++.p2align 3
++L_enc_256:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesz_vs $V1, $V10]}     # with round key w[ 0, 3]
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesem_vs $V1, $V11]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesem_vs $V1, $V12]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesem_vs $V1, $V13]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesem_vs $V1, $V14]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesem_vs $V1, $V15]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesem_vs $V1, $V16]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesem_vs $V1, $V17]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesem_vs $V1, $V18]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesem_vs $V1, $V19]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesem_vs $V1, $V20]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V21, ($KEYP)]}
++    @{[vaesem_vs $V1, $V21]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V22, ($KEYP)]}
++    @{[vaesem_vs $V1, $V22]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V23, ($KEYP)]}
++    @{[vaesem_vs $V1, $V23]}
++    addi $KEYP, $KEYP, 16
++    @{[vle32_v $V24, ($KEYP)]}
++    @{[vaesef_vs $V1, $V24]}
++
++    @{[vse32_v $V1, ($OUTP)]}
++    ret
++.size L_enc_256,.-L_enc_256
++___
++
++################################################################################
++# void rv64i_zvkned_decrypt(const unsigned char *in, unsigned char *out,
++#                           const AES_KEY *key);
++$code .= <<___;
++.p2align 3
++.globl rv64i_zvkned_decrypt
++.type rv64i_zvkned_decrypt,\@function
++rv64i_zvkned_decrypt:
++    # Load number of rounds
++    lwu $ROUNDS, 240($KEYP)
++
++    # Get proper routine for key size
++    li $T6, 14
++    beq $ROUNDS, $T6, L_dec_256
++    li $T6, 10
++    beq $ROUNDS, $T6, L_dec_128
++    li $T6, 12
++    beq $ROUNDS, $T6, L_dec_192
++
++    j L_fail_m2
++.size rv64i_zvkned_decrypt,.-rv64i_zvkned_decrypt
++___
++
++$code .= <<___;
++.p2align 3
++L_dec_128:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    addi $KEYP, $KEYP, 160
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesz_vs $V1, $V20]}    # with round key w[40,43]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V19]}   # with round key w[36,39]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V18]}   # with round key w[32,35]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V17]}   # with round key w[28,31]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V16]}   # with round key w[24,27]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V15]}   # with round key w[20,23]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V14]}   # with round key w[16,19]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V13]}   # with round key w[12,15]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V12]}   # with round key w[ 8,11]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V11]}   # with round key w[ 4, 7]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesdf_vs $V1, $V10]}   # with round key w[ 0, 3]
++
++    @{[vse32_v $V1, ($OUTP)]}
++
++    ret
++.size L_dec_128,.-L_dec_128
++___
++
++$code .= <<___;
++.p2align 3
++L_dec_192:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    addi $KEYP, $KEYP, 192
++    @{[vle32_v $V22, ($KEYP)]}
++    @{[vaesz_vs $V1, $V22]}    # with round key w[48,51]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V21, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V21]}   # with round key w[44,47]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V20]}    # with round key w[40,43]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V19]}   # with round key w[36,39]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V18]}   # with round key w[32,35]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V17]}   # with round key w[28,31]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V16]}   # with round key w[24,27]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V15]}   # with round key w[20,23]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V14]}   # with round key w[16,19]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V13]}   # with round key w[12,15]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V12]}   # with round key w[ 8,11]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V11]}   # with round key w[ 4, 7]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesdf_vs $V1, $V10]}   # with round key w[ 0, 3]
++
++    @{[vse32_v $V1, ($OUTP)]}
++
++    ret
++.size L_dec_192,.-L_dec_192
++___
++
++$code .= <<___;
++.p2align 3
++L_dec_256:
++    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
++
++    @{[vle32_v $V1, ($INP)]}
++
++    addi $KEYP, $KEYP, 224
++    @{[vle32_v $V24, ($KEYP)]}
++    @{[vaesz_vs $V1, $V24]}    # with round key w[56,59]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V23, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V23]}   # with round key w[52,55]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V22, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V22]}    # with round key w[48,51]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V21, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V21]}   # with round key w[44,47]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V20, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V20]}    # with round key w[40,43]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V19, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V19]}   # with round key w[36,39]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V18, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V18]}   # with round key w[32,35]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V17, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V17]}   # with round key w[28,31]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V16, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V16]}   # with round key w[24,27]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V15, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V15]}   # with round key w[20,23]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V14, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V14]}   # with round key w[16,19]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V13, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V13]}   # with round key w[12,15]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V12, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V12]}   # with round key w[ 8,11]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V11, ($KEYP)]}
++    @{[vaesdm_vs $V1, $V11]}   # with round key w[ 4, 7]
++    addi $KEYP, $KEYP, -16
++    @{[vle32_v $V10, ($KEYP)]}
++    @{[vaesdf_vs $V1, $V10]}   # with round key w[ 0, 3]
++
++    @{[vse32_v $V1, ($OUTP)]}
++
++    ret
++.size L_dec_256,.-L_dec_256
++___
++}
++
++$code .= <<___;
++L_fail_m1:
++    li a0, -1
++    ret
++.size L_fail_m1,.-L_fail_m1
++
++L_fail_m2:
++    li a0, -2
++    ret
++.size L_fail_m2,.-L_fail_m2
++
++L_end:
++  ret
++.size L_end,.-L_end
++___
++
++print $code;
++
++close STDOUT or die "error closing STDOUT: $!";
 -- 
 2.28.0
 
