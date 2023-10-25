@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1657D693C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEE17D6941
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343752AbjJYKnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S234735AbjJYKoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343522AbjJYKmy (ORCPT
+        with ESMTP id S234854AbjJYKnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:42:54 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD6F10FD;
-        Wed, 25 Oct 2023 03:42:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507a62d4788so8673363e87.0;
-        Wed, 25 Oct 2023 03:42:18 -0700 (PDT)
+        Wed, 25 Oct 2023 06:43:51 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9921FC3;
+        Wed, 25 Oct 2023 03:42:58 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9fa869a63so36375985ad.0;
+        Wed, 25 Oct 2023 03:42:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698230536; x=1698835336; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=USY4fw267Go83RxyHyFwK1+6pc6Q77CrkKJFbgSONJU=;
-        b=ShlEeboAgNI0keEKRxCp1TNhPFyAOyjzExRBcVJ4Z3oV86IulG0uOM0dL4VVVXzabv
-         A8bFrjCSoJ90aAMkJ0MW2GsAHvMMmYoFZaCM6+9Xnx3gRSGRnwZ+ajEaa9b2R3rkxE7i
-         PRDe1CslYMWmm81JE1cauzr3omMjBBCLXznW78hFyBz93gQ85N0cy6iUMYqgsg4X84qS
-         LbLgaFwuRApfltyVOjoauHhfgq7f8athyNYeWOVKsHTrWsDFk1UTfub7s5fKBjuI6XeB
-         qkL6knTUYxqbiJkugTeJGWSUe2YAe8A9B2VuC2wDi0zQDacWZZe+/srh/PgI48Q1KqOQ
-         SYnQ==
+        d=gmail.com; s=20230601; t=1698230578; x=1698835378; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=56h1JpcHvZsCRQ9iJdOKAqTAwTON7/OrDuQGdot/+iA=;
+        b=dkz9kz8ExE1YIjnXAlKwhxJ1VbCSWPRXN1QRWJZGGLN6T01hJWx5Uy6LCMBAe2zNMs
+         XIwysCDWy0qUOjO/06kxASDSMsoTREs4v9aJgLF2i65KPgrv+PuAYGH3L+X7IGRfBt+Y
+         0eLY70Ju0JWd6IpQSs5jS4yBw+Yi1uY3tqkCMhZNhOrWwkH95tVA4V6/k6LGVv1vLM1y
+         o5bVsbBFSAxpWXC7LabyvEkhrw5BqOR2TFdhQ9U3t2xBwfWankuL1bsw6f/DQU6w3aqk
+         Fv0w73ldp+nLi52HAQ0uG7/fNZMvkPb2Ntl5Wo3nfGTb3WZa3aFdvzFxCbyA8sA307ZH
+         uuKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698230536; x=1698835336;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=USY4fw267Go83RxyHyFwK1+6pc6Q77CrkKJFbgSONJU=;
-        b=r+foBiem2wNeURN/xnH8D5gGVbw36TmTzWbyyjN34e08LsnbiWYsdEHlWxGZR+Ck8w
-         oTw8Gz0TMaFkBzpzRVMbW5eFpCt6b4aBqldzT8mDBrcyBWuFQJ5cErPD076xk4NPj/4E
-         gUGNwwvBJFJoXiJ/xOkMUB1qJzANrqvS4LzOuRtwpNgk69zySKTuUeRS6PiE964SPCVd
-         G1m8Wqc6vqJz9meb6ortXTkdbT7xIVvMbFSBSpyFqHQOe9qCUDL/tcCxXm1L5JW2BXek
-         dLmtNvAbr5WvJWpRDySrdF8AbKcy5pHHplSJ6Ecjeg9jtWKNRAUUXSY0KpgfvxCzte/z
-         UJvg==
-X-Gm-Message-State: AOJu0YyCQpp8kydZquV+WIK1ebNkY/ayhRFew93lF1taZEQUOb3/nDch
-        rQkUW/AZE/qvgcclheuNlwU=
-X-Google-Smtp-Source: AGHT+IH+mKnvmoscLzowQ7hAev3IlVRR9DHwfFnnTp13am39rRDQgcxMoWLTpMzT+6bZeJXrYawGfA==
-X-Received: by 2002:a19:5212:0:b0:505:6e21:32e1 with SMTP id m18-20020a195212000000b005056e2132e1mr10207820lfb.10.1698230536071;
-        Wed, 25 Oct 2023 03:42:16 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:2cbd:f9ec:f035:ebea])
-        by smtp.gmail.com with ESMTPSA id t12-20020a05640203cc00b0053e67bcb3e7sm9179868edw.82.2023.10.25.03.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 03:42:15 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] docs: module-signing: adjust guide after sha1 and sha224 support is gone
-Date:   Wed, 25 Oct 2023 12:42:12 +0200
-Message-Id: <20231025104212.12738-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        d=1e100.net; s=20230601; t=1698230578; x=1698835378;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=56h1JpcHvZsCRQ9iJdOKAqTAwTON7/OrDuQGdot/+iA=;
+        b=u2lAtMM3Enk+OXqIHPskJx25JvBCoI2X6kwQxXufvLn1oZGbgv6SNvdpdnEYpsXX5l
+         pbYQzvfxkl0ltN6dN7tc9SbtYkpQIz2oUrojuVzZ+jM+5RJg/4L9jgBBFy26aokpNDs/
+         4KQbrhJ4svaJoSJArTwkIgBEQw9KqTtq5TBb7JCy/GqwRq6dSJqAZVXgPK/Q1I3c/JaA
+         3cRXWYuSa+vS5Vy5JXmaITwQ3LkF1vcUtELt7wgXAuV/jkuP4PXGZLe7I+O7hcbLJJO5
+         d3rKZqBQJbodv5HQI08memJ0HFwXqg5g0atPV/3l5BKlvaE7crGGagtRVkUfk3jaCzBD
+         ph6w==
+X-Gm-Message-State: AOJu0YxWopUcTeWUqw24/UzIbxak2xSXqih6bM5R4cBm+WAM9QHsO8+w
+        09n9UDyrwGEwqdWwVkaOBv5YhjP8vcgVEqxgvuw=
+X-Google-Smtp-Source: AGHT+IGu6RadKqlaivUp1Agx0JAVTkBz0ox2q7y+J3UsKXFtZj1ToELfyUv5XsBOmBBv+Yk1JjwNb5rp81iLFbNlIcM=
+X-Received: by 2002:a17:903:6c4:b0:1bd:ca80:6fe6 with SMTP id
+ kj4-20020a17090306c400b001bdca806fe6mr9659343plb.41.1698230577913; Wed, 25
+ Oct 2023 03:42:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231015162114.976202-1-robimarko@gmail.com> <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
+ <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com> <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
+ <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com> <CAOX2RU7Z1BS0u_k=cx58oq8RODPV=a3kV26OsbYpkDaN1atixg@mail.gmail.com>
+ <444ef41e-632c-4402-849d-80e8876b6e72@quicinc.com>
+In-Reply-To: <444ef41e-632c-4402-849d-80e8876b6e72@quicinc.com>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Wed, 25 Oct 2023 12:42:46 +0200
+Message-ID: <CAOX2RU5DfuOTr-pzU=mSaz_bxX9VOB1oAC6000PzS5OqmZsFEg@mail.gmail.com>
+Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,41 +72,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 16ab7cb5825f ("crypto: pkcs7 - remove sha1 support") and commit
-fc3225fd6f1e ("module: Do not offer sha224 for built-in module signing")
-removes sha1 and sha224 support for kernel module signing.
+On Wed, 25 Oct 2023 at 10:42, Kathiravan Thirumoorthy
+<quic_kathirav@quicinc.com> wrote:
+>
+>
+>
+> On 10/21/2023 5:27 PM, Robert Marko wrote:
+> > On Fri, 20 Oct 2023 at 08:40, Kathiravan Thirumoorthy
+> > <quic_kathirav@quicinc.com> wrote:
+> >>
+> >>
+> >> On 10/19/2023 7:53 PM, Robert Marko wrote:
+> >>> On Thu, 19 Oct 2023 at 08:46, Kathiravan Thirumoorthy
+> >>> <quic_kathirav@quicinc.com> wrote:
+> >>>>
+> >>>> On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
+> >>>>>
+> >>>>> On 10/15/23 18:20, Robert Marko wrote:
+> >>>>>> QUP6 I2C clock is listed in the dt bindings but it was never included in
+> >>>>>> the GCC driver.
+> >>>>>> So lets add support for it, its intentionally marked to never be
+> >>>>>> disabled
+> >>>>>> as its somehow affecting DVFS and if disabled it sometimes crashes the
+> >>>>>> board.
+> >>>>>>
+> >>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>>>>> ---
+> >>>>> Bjorn, would you be able to get an idea of what could be sitting
+> >>>>> on that bus?
+> >>>>>
+> >>>>> Or maybe the IPQ folks could know?
+> >>>>>
+> >>>> Konrad / Robert,
+> >>>>
+> >>>> Similar to IPQ9574, RPM needs this clock to communicate with PMIC over
+> >>>> I2C interface. Discussion happened here[1] is pretty much applicable to
+> >>>> IPQ6018 as well. Based on previous experience, we may need to document
+> >>>> the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
+> >>>>
+> >>>> Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> >>> Thanks for the explanation, it makes sense as I used to control the
+> >>> MP5496 directly
+> >>> via I2C.
+> >>>
+> >>> Is it possible to disable RPM so it doesn't conflict and just use the
+> >>> full MP5496 driver instead?
+> >>> I find the RPM quite limiting as there is no way to actually retrieve
+> >>> the current-voltage.
+> >>
+> >>
+> >> Robert, checked with the team and currently we don't have any option to
+> >> disable the RPM as such.
+> >
+> > Thanks for checking.
+> >
+> > BTW, is there any information you could share on the USB GDSC-s?
+> > I tried converting them to GDSC-s like IPQ8074 has, but it seems that
+> > they have different features.
+> > It would be great to use proper GSDC support instead of manually
+> > setting bits during GCC probe.
+>
+>
+> Could you please explain the issue which you are facing? Based on quick
+> look at the HW documentation, seems there is no difference between
+> IPQ8074 and IPQ6018 GDSC-s.
 
-Adjust the module-signing admin guide documentation to those changes.
+Thanks for checking, it seems I hit a buggy kernel version last time I tried to
+convert the driver to use proper GDSC-s and now it seems to work fine,
+I will send patches to add GDSC-s.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- Documentation/admin-guide/module-signing.rst | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 2898b2703297..e3ea1def4c0c 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -30,8 +30,8 @@ This facility uses X.509 ITU-T standard certificates to encode the public keys
- involved.  The signatures are not themselves encoded in any industrial standard
- type.  The facility currently only supports the RSA public key encryption
- standard (though it is pluggable and permits others to be used).  The possible
--hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, and
--SHA-512 (the algorithm is selected by data in the signature).
-+hash algorithms that can be used are SHA-256, SHA-384, and SHA-512 (the
-+algorithm is selected by data in the signature).
- 
- 
- ==========================
-@@ -81,8 +81,6 @@ This has a number of options available:
-      sign the modules with:
- 
-         =============================== ==========================================
--	``CONFIG_MODULE_SIG_SHA1``	:menuselection:`Sign modules with SHA-1`
--	``CONFIG_MODULE_SIG_SHA224``	:menuselection:`Sign modules with SHA-224`
- 	``CONFIG_MODULE_SIG_SHA256``	:menuselection:`Sign modules with SHA-256`
- 	``CONFIG_MODULE_SIG_SHA384``	:menuselection:`Sign modules with SHA-384`
- 	``CONFIG_MODULE_SIG_SHA512``	:menuselection:`Sign modules with SHA-512`
--- 
-2.17.1
-
+Regards,
+Robert
+>
+> Thanks,
