@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8D47D620E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCCD7D6210
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjJYHCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        id S232553AbjJYHDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbjJYHCh (ORCPT
+        with ESMTP id S232397AbjJYHDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:02:37 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D6319F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:02:31 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so7904589a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:02:31 -0700 (PDT)
+        Wed, 25 Oct 2023 03:03:13 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391D7CE
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:03:11 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b9faf05f51so762535266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698217349; x=1698822149; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698217389; x=1698822189; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ISa8zL6UMcVxhtYUYtsZ90GndIzLZwLMRsock1IO5nw=;
-        b=U2T6AptnIIqV1wynN1MJ9K4RpvAYXZP719JjyvInNW08Ii3lO9akLH8HyIuTDrmat3
-         2nVXrAAc8hnSp1gBNCzc/3HDy/YenqwcyEF2W3NAWfSfb2vB9YCqPNIQP7boQXmbUiLg
-         HqUQ4GtYfWhJVutawMSCmGisITXmcLut+qU/2o/S98b4Q7I02dyP+kiaFT21pKy1qHG9
-         hZUxcipC8gfuBGgPUdfYMzxJvjHrtfAz/4gW8J1iwjbc9j0y9Zhcw0l2l9dZDhflfTZJ
-         5mMqbR3qOLdbY09Or/bwwdsbInSlYqvaeewTpPl0w55MiaAkdF3jiJ83PHm9xnbrSk69
-         aXrQ==
+        bh=xHpuJC4KgncbTnsWB4mHH6PpjZeiPTQ6BhQqKXvyuiA=;
+        b=i3kK1bGZd/EOxsySRjPe/AvJ6kctzL/DhTKGdlU8C9v2A6IvMqsxqcDg3a9xnMUIBo
+         f7SDArdW4pAuAu1eZX8nyOtnfNWquwbPC64qJbtj9gKbSwuwZrYu3/Kmu9zDC0hQlriQ
+         3CusiiOTSkSlSKXuVdPk7V4VSHq2PJYFldqviUq5oZjy3waog/QGhw9dH/HLuKthaT2x
+         wHyag8wuHLVktHE7rwxbNgykJ5g+feEANEvSJN84QUUmOyUyCBaD4kwP1pYMFL/bTKuz
+         ENIgJC79VGPMYXUIMrV53sqHZMIpFYzZY2cZpQlTpghYUh5DF56DqPJCrdd2tcYrnG/H
+         AWGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698217349; x=1698822149;
+        d=1e100.net; s=20230601; t=1698217389; x=1698822189;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISa8zL6UMcVxhtYUYtsZ90GndIzLZwLMRsock1IO5nw=;
-        b=nfBNzUQ2OCykV++xueO4PyRpuvMsakyLShWprnW7S3lY25jdGmgYmAVUyIMw0qKUxw
-         eLqiD9ZXznomkKyA4F1N5UhRXMTT+Z+B8rVqvtwFSY7GLvvSyNtGZbd2ahA4B6by2jgu
-         Ecd1dw68fmsSEUsaG0ocZnaEWmWPL7uRUUSuSya5FhIKOF4sGI83jaz+RJuhQXSOXgi3
-         ficiXfaS50IGiaws6b9b/leN7r1Ry0bIJrWIlsrYiqfU4isupndQX2QjPoEomo9iI5bV
-         PzZZ9X9QQ0X6/yW16r/vZ6zt0gDV5BCeeqlLFrb/n02AWxkr9Dle00yhxlx5m9kt7StP
-         KalQ==
-X-Gm-Message-State: AOJu0Yxem4sHR6p2ui7z8ERzgaqhxL53l68vnwbuTtae+y2NqKDYptXi
-        cVC2NuyVyLH5lFZYN8jY9wfxBA==
-X-Google-Smtp-Source: AGHT+IFq1rm5Awxh+Wpr0IvxefH7nYNkUw4u4jWjGDDb3VxVcGrsc7FX4UTKbZejkxgRNAIWA7/LCA==
-X-Received: by 2002:a17:907:3f09:b0:9ad:c763:bc7a with SMTP id hq9-20020a1709073f0900b009adc763bc7amr13515922ejc.23.1698217349648;
-        Wed, 25 Oct 2023 00:02:29 -0700 (PDT)
+        bh=xHpuJC4KgncbTnsWB4mHH6PpjZeiPTQ6BhQqKXvyuiA=;
+        b=srL+75A7uKpXaYTbc7zFXZ1AqvRQWbgdvq4HxvOkRMBG/QDKfnubc350lFSiYrRgug
+         MZwp3pE5tPgB3AoW65qRNW5cpBYQ3JBxwBOP+XBlLTYzWebC1L7ejJm4aHkNefXuYp7D
+         wj4oyJm8Ljw7BLorpEKDM3B3x8D2mUvM/mpRteWnng2tJiTwed0jmh91GS3btDY7eS/c
+         KQQrikWV9ju7fBgzm95HEfBxHMlmPaYj3ICfwvMk5QfzAh8DYZbJFaOdYn72GhkDACQT
+         MsvWDJzVPsd8zPz18c+SBXj6VPLM0U9nlUvX3ofhoT3l4hVQqGAXM7Ky5/wyenjjf8Jv
+         nvMw==
+X-Gm-Message-State: AOJu0YwQXejqF5ISKKqzueE42KpNnrVjHL9TIYMfaK6D2TtKn3UIKtOg
+        oxbkWrC0CuIT5/20lUdhIx7zRA==
+X-Google-Smtp-Source: AGHT+IFUxATVYWFN3qO7Bliy7ziR/WMZTEq4tllbr3spD1f1gG3joZOBgiVTFreXZQChyPhT4sTruw==
+X-Received: by 2002:a17:907:ea7:b0:9b2:8c37:eb2b with SMTP id ho39-20020a1709070ea700b009b28c37eb2bmr10991861ejc.58.1698217389658;
+        Wed, 25 Oct 2023 00:03:09 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id l20-20020a1709065a9400b009786c8249d6sm9576921ejq.175.2023.10.25.00.02.28
+        by smtp.gmail.com with ESMTPSA id l20-20020a1709065a9400b009786c8249d6sm9576921ejq.175.2023.10.25.00.03.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 00:02:29 -0700 (PDT)
-Message-ID: <2f3a4dcf-fa70-4834-9986-b5cf389f541c@linaro.org>
-Date:   Wed, 25 Oct 2023 09:02:27 +0200
+        Wed, 25 Oct 2023 00:03:09 -0700 (PDT)
+Message-ID: <1ecf2bb2-6f3e-41e1-b01d-988f0a9f2846@linaro.org>
+Date:   Wed, 25 Oct 2023 09:03:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq9574: enable GPIO based LED
+Subject: Re: [PATCH v2 1/9] dt-bindings: gce: mt8195: Add
+ CMDQ_SYNC_TOKEN_SECURE_THR_EOF event id
 Content-Language: en-US
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231025-ipq9574-led-v1-1-b8217e997dfb@quicinc.com>
+To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        =?UTF-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
+        <Johnson.Wang@mediatek.com>,
+        =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
+        <Jason-ch.Chen@mediatek.com>,
+        =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "jkardatzke@google.com" <jkardatzke@google.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+References: <20231023043751.17114-1-jason-jh.lin@mediatek.com>
+ <20231023043751.17114-2-jason-jh.lin@mediatek.com>
+ <d93ff8f4-984a-4a20-9b81-5c088baf12e8@linaro.org>
+ <53d8f44f485cbcd45a1910418dc0049909371682.camel@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,47 +134,71 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025-ipq9574-led-v1-1-b8217e997dfb@quicinc.com>
+In-Reply-To: <53d8f44f485cbcd45a1910418dc0049909371682.camel@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 08:58, Kathiravan Thirumoorthy wrote:
-> Add support for wlan-2g LED on GPIO64.
+On 25/10/2023 08:26, Jason-JH Lin (林睿祥) wrote:
+> Hi Krzysztof,
 > 
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> Thanks for the reviews.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> index 49c9b6478357..b6f90da31778 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> @@ -51,6 +51,18 @@ button-wps {
->  			debounce-interval = <60>;
->  		};
->  	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		pinctrl-0 = <&gpio_leds_default>;
-> +		pinctrl-names = "default";
-> +
-> +		led-0 {
-> +			gpios = <&tlmm 64 GPIO_ACTIVE_LOW>;
-> +			linux,default-trigger = "phy0tx";
-> +			default-state = "off";
+> On Mon, 2023-10-23 at 09:47 +0200, Krzysztof Kozlowski wrote:
+>>  	 
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>  On 23/10/2023 06:37, Jason-JH.Lin wrote:
+>>> CMDQ_SYNC_TOKEN_SECURE_THR_EOF is used as secure irq to notify CMDQ
+>>> driver in the normal world that GCE secure thread has completed a
+>> task
+>>> in thee secure world.
+>>
+>> s/thee/the/
+>>
+>>>
+>>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>>> ---
+>>
+>> This is a new patch, so you must mention it in the changelog. There
+>> is
+>> nothing in the changelog saying about this new patch.
+>>
+>>
+>>>  include/dt-bindings/gce/mt8195-gce.h | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/include/dt-bindings/gce/mt8195-gce.h b/include/dt-
+>> bindings/gce/mt8195-gce.h
+>>> index dcfb302b8a5b..9f99da3363b9 100644
+>>> --- a/include/dt-bindings/gce/mt8195-gce.h
+>>> +++ b/include/dt-bindings/gce/mt8195-gce.h
+>>> @@ -809,4 +809,10 @@
+>>>  /* end of hw event */
+>>>  #define CMDQ_MAX_HW_EVENT1019
+>>>  
+>>> +/*
+>>> + * Notify normal CMDQ there are some secure task done,
+>>> + * this token sync with secure world.
+>>> + */
+>>> +#define CMDQ_SYNC_TOKEN_SECURE_THR_EOF980
+>>
+>> Why is this below 1019? Your driver calls it also even, so is this an
+>> event or not?
+>>
+>> Your driver does not use this value, so does it mean FW uses it?
+> 
+> I just want to separate this kind of event (sw token) from the HW
+> event. So I define it after CMDQ_MAX_HW_EVENT.
 
-Missing function and color.
+SW event? Then why is it in the bindings?
 
 Best regards,
 Krzysztof
