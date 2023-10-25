@@ -2,113 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376297D664B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82D17D6657
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbjJYJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S232846AbjJYJL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbjJYJK0 (ORCPT
+        with ESMTP id S231648AbjJYJLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:10:26 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03CEB9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:10:24 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c5210a1515so84002161fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698225023; x=1698829823; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9WKxzWYTIPEx72gLwqiuI8euT7QCbNEIlRKEwqUgI6Q=;
-        b=gNpGjZ5MxUke0lxvfYdaA/16YsOOn75zYudfkdJL7T5HPcSH9KTRCjtxzJnjJxYeXB
-         4zFGc8vvmzsy1fEjdtFaQk5nz2+fs/rveTGyJokBzeP6aqrWBnE9U9z4rSojKd4m5LI1
-         aAc7tkExOQaZDoZVQYPtRUEJCwBGsYCz3X9lJHvxIOLkrRux/6urblgh7ordq+0oMcMb
-         yDiBo/0wyGerqbqvh6GP2qrVUKM+nc1EN8N7wuVVyZV+p9QsaqY3cRHflFt1kZ9xZQNZ
-         j6GIrwUMJ7vLf7LxM+8N9UZowu4oXWa5aOsc0dyNp89lxT0zQqG2E7lsmR9nQpxSE3vc
-         m6yw==
+        Wed, 25 Oct 2023 05:11:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FE138
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698225037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/FytEg3M9eI+HiGC4+Q1c4/7OpeWyHjtYgtZUMsVmeo=;
+        b=TpOnb6y28M84LFyaJE5iRFSGaiphlp+ik72dF51Y57YBZSUlDvVZ/LRRRtVnSCFkBL5l9v
+        l+j7IJ2GfAP8ahvavjaLkBJ4MRVb5vdvpgcz5z9xk9ziFHtmroO5dWNBKeiZhHAXa0EAgY
+        uZX8dYnbODmzH7CIhqqfijjddsXAki8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-6flSrF0MMJWKE47u615DNw-1; Wed, 25 Oct 2023 05:10:35 -0400
+X-MC-Unique: 6flSrF0MMJWKE47u615DNw-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-533d8a785a5so3744563a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:10:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698225023; x=1698829823;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9WKxzWYTIPEx72gLwqiuI8euT7QCbNEIlRKEwqUgI6Q=;
-        b=afzRrnDiDZOalat9ZBn+ieT+2FU10hnVtf+3qntUeU8vxCldYlVRAxdQG/AfNnDoV2
-         Y3F02pBrwQHk/USoz1RdVlsEQfMm9gMJOezqDbOBM7V1NSxprBdrtL0MNRc0adyOmKAZ
-         xlTthA1/zERmUM36KV8LUauSlAEdpSpX2mS4LGJ9V7aDFcgtnBRn5VtFUdXMD1UVlUFW
-         ltxgwXIQRVw8Yh3DdD7tloFUdKCDTRMPLHN4vbvhVvQNPDqCUfX+uSEx9xmNylIFOQkV
-         jAOOTd4glLHY60wPRvaDSuapJvFioPdm7idP7X0d0e4oKqd3RI672p+OQHEoZ0KpftUn
-         gCKQ==
-X-Gm-Message-State: AOJu0Yx+IsO6dQ5Z+Zmnfzc8eQ3m/k8l8YB5MQfFs2HOK4uWGES+pyN9
-        smdwxCAyeTQEdQugXsca7HqsDA==
-X-Google-Smtp-Source: AGHT+IE9+723ygXj7zuVPqEp3ynEibr5Ni7XXz2Au0L291BnhJCM/pjwh0RCN+qumAYXwzEy8ZMRjg==
-X-Received: by 2002:a2e:7815:0:b0:2c0:300a:82f1 with SMTP id t21-20020a2e7815000000b002c0300a82f1mr10658057ljc.14.1698225022885;
-        Wed, 25 Oct 2023 02:10:22 -0700 (PDT)
-Received: from [172.30.204.57] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id d24-20020a2e3318000000b002bce87faca9sm2354356ljc.57.2023.10.25.02.10.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 02:10:22 -0700 (PDT)
-Message-ID: <247f2ec2-c400-4d85-ac6b-2fd058989857@linaro.org>
-Date:   Wed, 25 Oct 2023 11:10:20 +0200
+        d=1e100.net; s=20230601; t=1698225034; x=1698829834;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/FytEg3M9eI+HiGC4+Q1c4/7OpeWyHjtYgtZUMsVmeo=;
+        b=SHCZd5YFPMuRSkxWAiBqD9Ipmc/Kptemv/JiDzKVHIkNgVL6XNKbSwAXYx6tg38Nor
+         PNk7a9YbtTVzGK+EDGombO9Jg4utRLlsdnxtProTMGXExR+3pksa+A1oL56QjICF+PpC
+         EcAkcpB8/zWPxzPL4riyWty6fexkLPFtE1iDL9kQmWHdleAN3ApMoN4LHn2S3eyxvE4s
+         s9F0PNPgmZXxh+9IcbLtdNcWwo4S+bCY9Zz+mTLxOgHA/A9fInE6P+z3tnQexasTGC4+
+         W91szo5df0tirD3edAXDS3zTw1MJ75DmVP847Kd/rjrGQ2zboXIrwdnaLM9trsKjlBuF
+         3DsQ==
+X-Gm-Message-State: AOJu0Yzz/n1tlxHYgxgfFWX7F8PnJor1ZF4xgbhoF4/SoTaqYRynhcUV
+        7GgGQUxlF7RO40AwcH5yBCUboukLm85R02A24lkDjDXraqPMASZTf5cVLljBJJb+I/eGOLnrsty
+        KpYmvHkuwkGHjQv2cG2H57Jpvnxe65P85
+X-Received: by 2002:a05:6402:5202:b0:53e:21f6:d784 with SMTP id s2-20020a056402520200b0053e21f6d784mr14486022edd.8.1698225034067;
+        Wed, 25 Oct 2023 02:10:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFFD80j3WcFfiUdgylUIgLspDEpIABd2HeAzpTH/p0Oax+3buRNAhbLFsOGTIWHvTHnr2BaSA==
+X-Received: by 2002:a05:6402:5202:b0:53e:21f6:d784 with SMTP id s2-20020a056402520200b0053e21f6d784mr14485999edd.8.1698225033756;
+        Wed, 25 Oct 2023 02:10:33 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id d8-20020a05640208c800b0053e5a1bf77dsm9103868edz.88.2023.10.25.02.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 02:10:33 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH v2 1/2] x86/kvm/async_pf: Use separate percpu variable
+ to track the enabling of asyncpf
+In-Reply-To: <20231025055914.1201792-2-xiaoyao.li@intel.com>
+References: <20231025055914.1201792-1-xiaoyao.li@intel.com>
+ <20231025055914.1201792-2-xiaoyao.li@intel.com>
+Date:   Wed, 25 Oct 2023 11:10:32 +0200
+Message-ID: <87a5s73w53.fsf@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 6/8] arm64: dts: qcom: sm8650: add interconnect
- dependent device nodes
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231025-topic-sm8650-upstream-dt-v1-0-a821712af62f@linaro.org>
- <20231025-topic-sm8650-upstream-dt-v1-6-a821712af62f@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231025-topic-sm8650-upstream-dt-v1-6-a821712af62f@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xiaoyao Li <xiaoyao.li@intel.com> writes:
 
+> Refer to commit fd10cde9294f ("KVM paravirt: Add async PF initialization
+> to PV guest") and commit 344d9588a9df ("KVM: Add PV MSR to enable
+> asynchronous page faults delivery"). It turns out that at the time when
+> asyncpf was introduced, the purpose was defining the shared PV data 'struct
+> kvm_vcpu_pv_apf_data' with the size of 64 bytes. However, it made a mistake
+> and defined the size to 68 bytes, which failed to make fit in a cache line
+> and made the code inconsistent with the documentation.
 
-On 10/25/23 09:47, Neil Armstrong wrote:
-> Add Hardware nodes that depends on an interconnect property to
-> be valid.
-> 
-> The includes:
-> - all QUP i2s/spi nodes
-> - PCIe
-> - UFS
-> - SDHCI
-> - Display
-> - HWMON
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Oh, I actually though it was done on purpose :-) 'enabled' is not
+accessed by the host, it's only purpose is to cache MSR_KVM_ASYNC_PF_EN.
+
+>
+> Below justification quoted from Sean[*]
+>
+>   KVM (the host side) has *never* read kvm_vcpu_pv_apf_data.enabled, and
+>   the documentation clearly states that enabling is based solely on the
+>   bit in the synthetic MSR.
+>
+>   So rather than update the documentation, fix the goof by removing the
+>   enabled filed and use the separate percpu variable instread.
+>   KVM-as-a-host obviously doesn't enforce anything or consume the size,
+>   and changing the header will only affect guests that are rebuilt against
+>   the new header, so there's no chance of ABI breakage between KVM and its
+>   guests. The only possible breakage is if some other hypervisor is
+>   emulating KVM's async #PF (LOL) and relies on the guest to set
+>   kvm_vcpu_pv_apf_data.enabled. But (a) I highly doubt such a hypervisor
+>   exists, (b) that would arguably be a violation of KVM's "spec", and
+>   (c) the worst case scenario is that the guest would simply lose async
+>   #PF functionality.
+>
+> [*] https://lore.kernel.org/all/ZS7ERnnRqs8Fl0ZF@google.com/T/#u
+>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
 > ---
-QCOM_ICC_TAG_ALWAYS would be nice.. (see sa8775p)
+>  Documentation/virt/kvm/x86/msr.rst   |  1 -
+>  arch/x86/include/uapi/asm/kvm_para.h |  1 -
+>  arch/x86/kernel/kvm.c                | 11 ++++++-----
+>  3 files changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/Documentation/virt/kvm/x86/msr.rst b/Documentation/virt/kvm/x86/msr.rst
+> index 9315fc385fb0..f6d70f99a1a7 100644
+> --- a/Documentation/virt/kvm/x86/msr.rst
+> +++ b/Documentation/virt/kvm/x86/msr.rst
+> @@ -204,7 +204,6 @@ data:
+>  		__u32 token;
+>  
+>  		__u8 pad[56];
+> -		__u32 enabled;
+>  	  };
+>  
+>  	Bits 5-4 of the MSR are reserved and should be zero. Bit 0 is set to 1
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 6e64b27b2c1e..605899594ebb 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -142,7 +142,6 @@ struct kvm_vcpu_pv_apf_data {
+>  	__u32 token;
+>  
+>  	__u8 pad[56];
+> -	__u32 enabled;
+>  };
+>  
+>  #define KVM_PV_EOI_BIT 0
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index b8ab9ee5896c..388a3fdd3cad 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -65,6 +65,7 @@ static int __init parse_no_stealacc(char *arg)
+>  
+>  early_param("no-steal-acc", parse_no_stealacc);
+>  
+> +static DEFINE_PER_CPU_READ_MOSTLY(bool, async_pf_enabled);
 
-[...]
+Would it make a difference is we replace this with a cpumask? I realize
+that we need to access it on all CPUs from hotpaths but this mask will
+rarely change so maybe there's no real perfomance hit?
 
-> +			/* Forbid SDR104/SDR50 - broken hw! */
-> +			sdhci-caps-mask = <0x3 0>;
-Have they *still* not fixed that?
+>  static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_reason) __aligned(64);
+>  DEFINE_PER_CPU_DECRYPTED(struct kvm_steal_time, steal_time) __aligned(64) __visible;
+>  static int has_steal_clock = 0;
+> @@ -244,7 +245,7 @@ noinstr u32 kvm_read_and_reset_apf_flags(void)
+>  {
+>  	u32 flags = 0;
+>  
+> -	if (__this_cpu_read(apf_reason.enabled)) {
+> +	if (__this_cpu_read(async_pf_enabled)) {
+>  		flags = __this_cpu_read(apf_reason.flags);
+>  		__this_cpu_write(apf_reason.flags, 0);
+>  	}
+> @@ -295,7 +296,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
+>  
+>  	inc_irq_stat(irq_hv_callback_count);
+>  
+> -	if (__this_cpu_read(apf_reason.enabled)) {
+> +	if (__this_cpu_read(async_pf_enabled)) {
+>  		token = __this_cpu_read(apf_reason.token);
+>  		kvm_async_pf_task_wake(token);
+>  		__this_cpu_write(apf_reason.token, 0);
+> @@ -362,7 +363,7 @@ static void kvm_guest_cpu_init(void)
+>  		wrmsrl(MSR_KVM_ASYNC_PF_INT, HYPERVISOR_CALLBACK_VECTOR);
+>  
+>  		wrmsrl(MSR_KVM_ASYNC_PF_EN, pa);
+> -		__this_cpu_write(apf_reason.enabled, 1);
+> +		__this_cpu_write(async_pf_enabled, 1);
 
-[...]
+As 'async_pf_enabled' is bool, it would probably be more natural to
+write
 
-There's a whole lot to digest here, but I don't see anything
-obviously wrong..
+	__this_cpu_write(async_pf_enabled, true);
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  		pr_debug("setup async PF for cpu %d\n", smp_processor_id());
+>  	}
+>  
+> @@ -383,11 +384,11 @@ static void kvm_guest_cpu_init(void)
+>  
+>  static void kvm_pv_disable_apf(void)
+>  {
+> -	if (!__this_cpu_read(apf_reason.enabled))
+> +	if (!__this_cpu_read(async_pf_enabled))
+>  		return;
+>  
+>  	wrmsrl(MSR_KVM_ASYNC_PF_EN, 0);
+> -	__this_cpu_write(apf_reason.enabled, 0);
+> +	__this_cpu_write(async_pf_enabled, 0);
 
-Konrad
+... and 'false' here.
+
+>  
+>  	pr_debug("disable async PF for cpu %d\n", smp_processor_id());
+>  }
+
+-- 
+Vitaly
+
