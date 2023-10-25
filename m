@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3527D6C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFA17D6C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344192AbjJYM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S1344267AbjJYM5I convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 08:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjJYM4t (ORCPT
+        with ESMTP id S234451AbjJYM5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:56:49 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512C7A4
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:56:47 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40891d38e3fso29651495e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698238606; x=1698843406; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KRrPxKdD6N+/g+2dK+wqANRJEo4EPu/UcvP8mlbKOo4=;
-        b=MKfqzwsr2Cp1oBs2Sx6Qv5JjuOCY7M/sw1lynmYkEdj82lrMOXyCUgFWnjwLZ/oYq/
-         6GxNhUjLgpmDW/vS1K55ZNj92J5anOcVoLnwq3eQphtn1Nfnc0/iAtpOFlRDjoJFtmnK
-         QJ6Ibkt8NKbn+awjeWnYwI+RxWf1YG5jBZqohVly/eTiSVax8wVeq1kcydUTaDazX2Vy
-         pIh6B9tMaoB6xfdWF1i2shRKFeF6Y+7ESMriKWmuiz4FVmvi331I7zVWZWyRa6Ypii6g
-         6LQFIRJFxJvzxsCbEELnB03YivWIF9KWZyAOQ18JUuaWzhNQDUNypX+fb6Z46SOKL8PH
-         vANw==
+        Wed, 25 Oct 2023 08:57:07 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EB7116;
+        Wed, 25 Oct 2023 05:57:04 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b413cc2789so266761b6e.0;
+        Wed, 25 Oct 2023 05:57:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698238606; x=1698843406;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KRrPxKdD6N+/g+2dK+wqANRJEo4EPu/UcvP8mlbKOo4=;
-        b=EAV1b24Srwgfr44rEyFUBuIafwdiWqOr9E8rmmTX1QoMGqPdm/GIEhMn8IQqc9tfXY
-         9SCaGfsbJSDW0VMO44uMZUbwXvLVfgJnhTAFVVn9uVvNcn/e1jzhOP9KPVHGnwh/7Mh2
-         t8EtQMe0tPxOMzyIbdXDYTBWdzQjIRghVGEmez/iKHxWSEdpjttba1VYnO6dYp5FiiDx
-         oZrwGIvypLTfdCC5ZyizZkoQvhg7SVivu42yZJ9tMZHjoLTYxaqo6l67VbQWsBxeioK1
-         PbaBY/B84xOZksWAXphhScD/QkNtUzi/+Te0JVu1d8yBsYgTIEFDhKnL0zX8vdtEVjjZ
-         x+aQ==
-X-Gm-Message-State: AOJu0YxyXdMWnjGAwTWg6RdX6Z64CwuFBHR8TuxM7J/GbNAoGXUz3alR
-        V12PuxleC6nVYq3+W4KWlOzxLf8CfrPHwc4voJE=
-X-Google-Smtp-Source: AGHT+IHzPdQ6td1akWxo15vd0IEPgEJRWfrOUs/FWRsXXjrFRGmb5+OUJo9VVf0HY9ruwmtW7l1fmg==
-X-Received: by 2002:a05:600c:34d0:b0:408:3f87:cba with SMTP id d16-20020a05600c34d000b004083f870cbamr10993678wmq.39.1698238605703;
-        Wed, 25 Oct 2023 05:56:45 -0700 (PDT)
-Received: from [192.168.69.115] (ghy59-h01-176-171-219-76.dsl.sta.abo.bbox.fr. [176.171.219.76])
-        by smtp.gmail.com with ESMTPSA id fm15-20020a05600c0c0f00b004090ca6d785sm4439257wmb.2.2023.10.25.05.56.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 05:56:45 -0700 (PDT)
-Message-ID: <ee2fa120-a5de-37c9-19c2-91ea84c0d584@linaro.org>
-Date:   Wed, 25 Oct 2023 14:56:43 +0200
+        d=1e100.net; s=20230601; t=1698238624; x=1698843424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iXkd9CYREbxYom8qIlZV1H5Ayph53CXojJYgpfSQsTw=;
+        b=vrxX2PXkT8LPmUYJwTtMZAOHW85b/2vrED+MvJ8RZPLHKZCiQ/S/sV1Cjg/gsaaXoh
+         QTb6osh42WwOkVAM+m7X+jVO7VPislGyThYw+5kWNyfSmCoHaohGlRKvLCdRdevvZKXj
+         WY9cYO0Vvr/cGC8o24Jmk0ANimye8YU8OD/+TIUxYtjH0ZqlBJFfncyJoTpzW44doEdX
+         4le9YYXKN3VslCv6gCirItOlHlTgzEaz8GEhe6d0QIrtMSA4q5qFU5QW1Spd13afYtiy
+         7hZSZ+KJQKCA1nHJ6xqCf8K5I8DRTUGezuQPlhfitYUiahA+xSozTUkocnPiyCfHZVj3
+         7EGQ==
+X-Gm-Message-State: AOJu0YzvG+oEtr6k9tVzQwb57gqIiftUSvpoNeStvOj7/L+edqVLrZuE
+        6Iir+KRyKz2XrPGbrbVPRTpuUbvtXBxjwfAh6tuzJOfx
+X-Google-Smtp-Source: AGHT+IFa57Vto1+bpGsZj3Sj3ypmLBQMvnjG7z1p5RFQwODE2222n3Z8mQbF79uS7Hlc0CSFdJ/R9suLFz2Epg+GHck=
+X-Received: by 2002:a05:6870:818d:b0:1ea:6883:99ff with SMTP id
+ k13-20020a056870818d00b001ea688399ffmr16936693oae.5.1698238624011; Wed, 25
+ Oct 2023 05:57:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] vgacon: fix mips/sibyte build regression
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Helge Deller <deller@gmx.de>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231024054412.2291220-1-arnd@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20231024054412.2291220-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231025111806.2416524-1-michal.wilczynski@intel.com>
+In-Reply-To: <20231025111806.2416524-1-michal.wilczynski@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 25 Oct 2023 14:56:52 +0200
+Message-ID: <CAJZ5v0gPhG2VB4p4oXuJ36Qoj-BSEbs1kRyb8jPGVDekk06dJg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] Replace acpi_driver with platform_driver
+To:     Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
+        lenb@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/23 07:44, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The conversion to vgacon_register_screen() was missing an #include statement
-> for the swarm board:
-> 
-> arch/mips/sibyte/swarm/setup.c:146:9: error: implicit declaration of function 'vgacon_register_screen' [-Werror=implicit-function-declaration]
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310240429.UqeQ2Cpr-lkp@intel.com/
-> Fixes: 555624c0d10b vgacon: clean up global screen_info instances
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   arch/mips/sibyte/swarm/setup.c | 1 +
->   1 file changed, 1 insertion(+)
+On Wed, Oct 25, 2023 at 2:34 PM Michal Wilczynski
+<michal.wilczynski@intel.com> wrote:
+>
+> This patchset is a continuation of efforts from [1] aiming to replace
+> acpi_driver with platform_driver. To ease up review effort I'm sending
+> miniseries per driver, with a replacement patch + various improvements
+> that were noticed by me, or during internal review.
+>
+> This mini-series takes care of acpi_video driver.
+>
+> [1] - https://lore.kernel.org/linux-acpi/20231011083334.3987477-1-michal.wilczynski@intel.com/T/#t
+>
+> Michal Wilczynski (6):
+>   ACPI: acpi_video: Remove unnecessary checks
+>   ACPI: acpi_video: Use yes_or_no helper instead of ternary operator
+>   ACPI: acpi_video: Remove unnecessary driver_data clear
+>   ACPI: acpi_video: Replace acpi_driver with platform_driver
+>   ACPI: acpi_video: Rename ACPI device instances from device to adev
+>   ACPI: acpi_video: Fix holes in acpi_video_bus
+>
+>  drivers/acpi/acpi_video.c | 101 +++++++++++++++++---------------------
+>  1 file changed, 46 insertions(+), 55 deletions(-)
+>
+> --
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Because this is not going to get into 6.7 anyway, I'm deferring the
+review of it until 6.7-rc1 is out.
 
+Thanks!
