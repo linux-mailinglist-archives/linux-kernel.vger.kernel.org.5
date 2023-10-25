@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E68F7D639E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEDB7D63AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbjJYHkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
+        id S233766AbjJYHm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjJYHkH (ORCPT
+        with ESMTP id S233479AbjJYHmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:40:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E317559B
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698219488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WPhN4WgWrFt8KJh56S1ds5IuWAdjP+nxTuZMp1+QSOI=;
-        b=h6uvDODAFlES7LRFtMUzTHgnQ4AXoq5j6xrcJZjwW2hmTJbmSkVTe3gDQQl3lNn2Y7IOG3
-        dNPSV7QL5MQ8HkIa3kkDw6Y/hL9ZIkRuvLDnkGE4/oXXRxPod/402pV5Y+lw5Z5217WC5Y
-        CZThRB1jdNemV8Qe3OQxj2roLu6f+uo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-612-N3W1iORqM6arSQApGlt4PA-1; Wed,
- 25 Oct 2023 03:38:05 -0400
-X-MC-Unique: N3W1iORqM6arSQApGlt4PA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1CE1F3827978;
-        Wed, 25 Oct 2023 07:38:05 +0000 (UTC)
-Received: from thuth-p1g4.redhat.com (unknown [10.39.194.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B548A492BD9;
-        Wed, 25 Oct 2023 07:38:03 +0000 (UTC)
-From:   Thomas Huth <thuth@redhat.com>
-To:     Oleg Nesterov <oleg@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-hexagon@vger.kernel.org, Brian Cain <bcain@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, Richard Kuo <rkuo@codeaurora.org>
-Subject: [PATCH] hexagon: Remove unusable symbols from the ptrace.h uapi
-Date:   Wed, 25 Oct 2023 09:38:02 +0200
-Message-ID: <20231025073802.117625-1-thuth@redhat.com>
+        Wed, 25 Oct 2023 03:42:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC61FC9;
+        Wed, 25 Oct 2023 00:41:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18F5C433C7;
+        Wed, 25 Oct 2023 07:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698219698;
+        bh=AfCalJj7ZkoRwGtErTTI+0JtKyrgUPXCqMrGPh9iMXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HqSVHNOF82q6jHZRldi3AtUFmC+HWXd9H7YAYpkMk9IilvZkDKR/OQN21yuBN0Fdi
+         5ltaSGigA8T2UJJ491MKZ26/pirER1zOfUaJ0qsilGjHkx4QfRqPCqxGGrp2pAxrYL
+         y6mvo6YGKGTjRDyh4xLR6kH5q8BjiJ6wDAXa8UvJqP8uxY5QrHYv/NqnGpCFSRXQWX
+         OrdxwmvL0hJjF0jQpQMC5UDB+RqtVbdZm2qn9PYkCIEKII4K+FJPU/1Yhdq1Nms98U
+         z88fXT0/Ti3YxTNqUvlT7McAweGE7uLLSad7L2BHS5YcIOY0ywtFSbtLFJQ0aeA/dX
+         gWC2nRdqOW7Ww==
+Date:   Wed, 25 Oct 2023 13:11:28 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>
+Cc:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        bvanassche@acm.org, mani@kernel.org, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_rampraka@quicinc.com,
+        linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
+ ufs_qcom_device_reset()
+Message-ID: <20231025074128.GA3648@thinkpad>
+References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-internal prototypes, references to current_thread_info()
-and code hidden behind a CONFIG_HEXAGON_ARCH_VERSION switch are
-certainly not usable in userspace, so this should not reside
-in a uapi header. Move the code into an internal version of
-ptrace.h instead.
+On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
+> During PISI test, we found the issue that host Tx still bursting after
 
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- I've compile tested it now with a hexagon cross-compiler and the kernel
- compiles fine with this change, so I think this should be good to go.
+What is PISI test?
 
- arch/hexagon/include/asm/ptrace.h      | 25 +++++++++++++++++++++++++
- arch/hexagon/include/uapi/asm/ptrace.h | 13 -------------
- scripts/headers_install.sh             |  1 -
- 3 files changed, 25 insertions(+), 14 deletions(-)
- create mode 100644 arch/hexagon/include/asm/ptrace.h
+> H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
+> reset host before device reset to stop tx burst.
+> 
 
-diff --git a/arch/hexagon/include/asm/ptrace.h b/arch/hexagon/include/asm/ptrace.h
-new file mode 100644
-index 000000000000..ed35da1ee685
---- /dev/null
-+++ b/arch/hexagon/include/asm/ptrace.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Ptrace definitions for the Hexagon architecture
-+ *
-+ * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
-+ */
-+
-+#ifndef _ASM_HEXAGON_PTRACE_H
-+#define _ASM_HEXAGON_PTRACE_H
-+
-+#include <uapi/asm/ptrace.h>
-+
-+/* kprobe-based event tracer support */
-+extern int regs_query_register_offset(const char *name);
-+extern const char *regs_query_register_name(unsigned int offset);
-+
-+#define current_pt_regs() \
-+	((struct pt_regs *) \
-+	 ((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
-+
-+#if CONFIG_HEXAGON_ARCH_VERSION >= 4
-+#define arch_has_single_step()	(1)
-+#endif
-+
-+#endif
-diff --git a/arch/hexagon/include/uapi/asm/ptrace.h b/arch/hexagon/include/uapi/asm/ptrace.h
-index f79de05b8689..2a3ea14ad9b9 100644
---- a/arch/hexagon/include/uapi/asm/ptrace.h
-+++ b/arch/hexagon/include/uapi/asm/ptrace.h
-@@ -29,17 +29,4 @@
- 
- #define profile_pc(regs) instruction_pointer(regs)
- 
--/* kprobe-based event tracer support */
--extern int regs_query_register_offset(const char *name);
--extern const char *regs_query_register_name(unsigned int offset);
--
--#define current_pt_regs() \
--	((struct pt_regs *) \
--	 ((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
--
--#if CONFIG_HEXAGON_ARCH_VERSION >= 4
--#define arch_has_single_step()	(1)
--#endif
--
--
- #endif
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index 56d3c338d91d..c3064ac31003 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
- arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
- arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
- arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
--arch/hexagon/include/uapi/asm/ptrace.h:CONFIG_HEXAGON_ARCH_VERSION
- arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
- arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
+device_reset() callback is supposed to reset only the device and not the host.
+So NACK for this patch.
+
+- Mani
+
+> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 96cb8b5..43163d3 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -445,12 +445,6 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+>  	struct phy *phy = host->generic_phy;
+>  	int ret;
+>  
+> -	/* Reset UFS Host Controller and PHY */
+> -	ret = ufs_qcom_host_reset(hba);
+> -	if (ret)
+> -		dev_warn(hba->dev, "%s: host reset returned %d\n",
+> -				  __func__, ret);
+> -
+>  	/* phy initialization - calibrate the phy */
+>  	ret = phy_init(phy);
+>  	if (ret) {
+> @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
+>  static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> +	int ret = 0;
+> +
+> +	/* Reset UFS Host Controller and PHY */
+> +	ret = ufs_qcom_host_reset(hba);
+> +	if (ret)
+> +		dev_warn(hba->dev, "%s: host reset returned %d\n",
+> +				  __func__, ret);
+>  
+>  	/* reset gpio is optional */
+>  	if (!host->device_reset)
+> -- 
+> 2.7.4
+> 
+
 -- 
-2.41.0
-
+மணிவண்ணன் சதாசிவம்
