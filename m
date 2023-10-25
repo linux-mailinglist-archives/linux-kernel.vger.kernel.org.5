@@ -2,48 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CADD27D6780
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E257D6784
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbjJYJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S233876AbjJYJvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjJYJvQ (ORCPT
+        with ESMTP id S233496AbjJYJvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:51:16 -0400
+        Wed, 25 Oct 2023 05:51:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C70DD;
-        Wed, 25 Oct 2023 02:51:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50ADBC433C7;
-        Wed, 25 Oct 2023 09:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698227473;
-        bh=+cg3kYM3oFry35hZbmbwSVjd6ek+Za/QIdrk5JlXVCU=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Mk3aBPSYzxfaNtQwgFmWCAiO3PKRxQWVvwar4NEUMMiOvsIundUsqhpzRFFMObBCE
-         QveXtgBd9HCA98TLqFTA7yovLjoI21iZM1b2zsZT+w7MRzWAckSLuIKE2YobbE61dQ
-         sgLdpJ/XgcIOmVN79MziCxoVSJzNyhWmXslfB81mka1hPexK5GDEhlcoSjoBwK0fto
-         bW9Wzd1ZHIMD7kMd60aPMQtGNiYylkYtgeclMtVyBvZnyl1bTaNtztUOlC3YFUNyfZ
-         2+dIJhrxa0fr8p8lwqkv2YcQ8y8axKaoishIr0bOR+6khcx8rQgNlfypsgPtQ8fVrF
-         QAAdapnSoULUA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] wifi: ath11k: fix temperature event locking
-References: <20231019153115.26401-1-johan+linaro@kernel.org>
-        <20231019153115.26401-2-johan+linaro@kernel.org>
-        <87sf60xgs8.fsf@kernel.org> <ZTfUswqVkAgJvnye@hovoldconsulting.com>
-Date:   Wed, 25 Oct 2023 12:51:10 +0300
-In-Reply-To: <ZTfUswqVkAgJvnye@hovoldconsulting.com> (Johan Hovold's message
-        of "Tue, 24 Oct 2023 16:29:07 +0200")
-Message-ID: <87bkcnxc6p.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA680DC;
+        Wed, 25 Oct 2023 02:51:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2972AC433C7;
+        Wed, 25 Oct 2023 09:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698227498;
+        bh=Wfwc4nskkH9y2B6jb0LokkDtwFJ+4RhPxaaMXQFzgrI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UaeArjjpuyuyoF5t7+FvmLZ6fBRQ4Ij7jTdX/ZrpAj95E+zH5eeTNs6v0O3y2Ey7/
+         NPs+emZuZN09lK4rhyoQHUfz2wWUkJ0u+qpIR/xEpRyBzLRSgPvM/aNdUEEm0Nr1y9
+         QFn+CB1Z3K5OUISZV5pT2U8qCLf4P/iUIVjhuBZI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.328
+Date:   Wed, 25 Oct 2023 11:51:34 +0200
+Message-ID: <2023102534-reverse-whiny-2546@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,38 +45,263 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johan Hovold <johan@kernel.org> writes:
+I'm announcing the release of the 4.14.328 kernel.
 
-> On Tue, Oct 24, 2023 at 04:59:35PM +0300, Kalle Valo wrote:
->> Johan Hovold <johan+linaro@kernel.org> writes:
->> 
->> > The ath11k active pdevs are protected by RCU but the temperature event
->> > handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
->> > read-side critical section as reported by RCU lockdep:
->
->> On what hardware and firmware version did you test this? As there's so
->> many different combos we use Tested-on tag to provide that information
->> in the commit message:
->> 
->> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/submittingpatches#tested-on_tag
->> 
->> I can add that if you let me know what you used.
->
-> I hit this on the Lenovo Thinkpad X13s and I guess the tag should be:
->
-> Tested-on: QCNFA765 hw2.1 WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
+All users of the 4.14 kernel series must upgrade.
 
-From ath11k point of view QCNFA765 is WCN6855 so I used this one:
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Tested-on: WCN6855 hw2.1 PCI WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
+thanks,
 
-> Note that I've only been able to test the ath11k fixes (not the
-> corresponding ath12k) and I only tested this particular patch fully
+greg k-h
 
-Thanks, I added Tested-on to this patch 1 and for the rest I added
-"compile tested only".
+------------
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+ Makefile                                       |    2 
+ arch/arm/boot/dts/omap4-droid4-xt894.dts       |    1 
+ arch/s390/pci/pci_dma.c                        |   16 ++++-
+ arch/x86/include/asm/msr-index.h               |    4 +
+ arch/x86/kernel/cpu/amd.c                      |    9 +++
+ arch/x86/kvm/lapic.c                           |    8 ++
+ drivers/acpi/irq.c                             |    7 ++
+ drivers/ata/libata-eh.c                        |    2 
+ drivers/base/regmap/regmap.c                   |    2 
+ drivers/bluetooth/hci_vhci.c                   |    3 +
+ drivers/gpio/gpio-timberdale.c                 |    5 +
+ drivers/gpio/gpio-vf610.c                      |    4 -
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c    |    2 
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c        |    2 
+ drivers/hid/hid-holtek-kbd.c                   |    4 +
+ drivers/hid/hid-logitech-hidpp.c               |    3 -
+ drivers/i2c/i2c-mux.c                          |    2 
+ drivers/iio/pressure/bmp280-core.c             |    2 
+ drivers/iio/pressure/ms5611_core.c             |    2 
+ drivers/infiniband/hw/cxgb4/cm.c               |    3 +
+ drivers/input/joystick/xpad.c                  |    2 
+ drivers/input/misc/powermate.c                 |    1 
+ drivers/mcb/mcb-core.c                         |   10 +--
+ drivers/mcb/mcb-parse.c                        |    2 
+ drivers/mmc/core/mmc.c                         |    2 
+ drivers/net/ethernet/intel/i40e/i40e_common.c  |    4 -
+ drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c |    5 +
+ drivers/net/ethernet/marvell/sky2.h            |    2 
+ drivers/net/ieee802154/ca8210.c                |   17 +----
+ drivers/net/usb/dm9601.c                       |    7 ++
+ drivers/net/usb/smsc95xx.c                     |    2 
+ drivers/usb/core/hub.c                         |   28 ++++++++-
+ drivers/usb/core/hub.h                         |    2 
+ drivers/usb/gadget/function/f_ncm.c            |   26 ++++++---
+ drivers/usb/gadget/udc/udc-xilinx.c            |   20 ++++--
+ drivers/usb/host/xhci-ring.c                   |    4 -
+ drivers/usb/musb/musb_debugfs.c                |    2 
+ drivers/usb/musb/musb_host.c                   |    9 ++-
+ drivers/usb/serial/option.c                    |    7 ++
+ fs/btrfs/tree-log.c                            |    2 
+ fs/ceph/inode.c                                |    4 -
+ fs/overlayfs/copy_up.c                         |    2 
+ include/linux/mcb.h                            |    1 
+ include/linux/perf_event.h                     |    1 
+ include/net/bluetooth/hci_core.h               |    2 
+ include/net/netns/xfrm.h                       |    1 
+ kernel/cgroup/cgroup-v1.c                      |    5 -
+ kernel/events/core.c                           |   39 +++++++++++--
+ kernel/trace/trace_events.c                    |    1 
+ kernel/workqueue.c                             |    8 ++
+ net/bluetooth/hci_conn.c                       |   72 +++++++++++++++----------
+ net/bluetooth/hci_core.c                       |    8 +-
+ net/bluetooth/hci_event.c                      |   33 +++++++++--
+ net/bluetooth/hci_sock.c                       |    3 -
+ net/ipv4/esp4.c                                |    4 +
+ net/ipv6/esp6.c                                |    4 +
+ net/mac80211/tx.c                              |    3 -
+ net/netfilter/nft_payload.c                    |    2 
+ net/nfc/nci/core.c                             |    5 +
+ net/nfc/nci/spi.c                              |    2 
+ net/rfkill/rfkill-gpio.c                       |    4 -
+ net/wireless/nl80211.c                         |    2 
+ net/xfrm/xfrm_policy.c                         |    6 --
+ 63 files changed, 309 insertions(+), 140 deletions(-)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Alexander Zangerl (1):
+      iio: pressure: ms5611: ms5611_prom_is_valid false negative bug
+
+Andy Shevchenko (1):
+      Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
+
+Arkadiusz Bokowy (1):
+      Bluetooth: vhci: Fix race when opening vhci device
+
+Arnd Bergmann (1):
+      Bluetooth: avoid memcmp() out of bounds warning
+
+Artem Chernyshev (1):
+      RDMA/cxgb4: Check skb value for failure to allocate
+
+Avri Altman (1):
+      mmc: core: Capture correct oemid-bits for eMMC cards
+
+Benjamin Berg (1):
+      wifi: cfg80211: avoid leaking stack data into trace
+
+Benoît Monin (1):
+      USB: serial: option: add entry for Sierra EM9191 with new firmware
+
+Borislav Petkov (AMD) (1):
+      x86/cpu: Fix AMD erratum #1485 on Zen4-based CPUs
+
+Chengfeng Ye (1):
+      gpio: timberdale: Fix potential deadlock on &tgpio->lock
+
+Clément Léger (1):
+      tracing: relax trace_event_eval_update() execution with cond_resched()
+
+Damien Le Moal (1):
+      ata: libata-eh: Fix compilation warning in ata_eh_link_report()
+
+Dan Carpenter (2):
+      ixgbe: fix crash with empty VF macvlan list
+      net: usb: smsc95xx: Fix an error code in smsc95xx_reset()
+
+Dinghao Liu (1):
+      ieee802154: ca8210: Fix a potential UAF in ca8210_probe
+
+Dmitry Torokhov (1):
+      pinctrl: avoid unsafe code pattern in find_pinctrl()
+
+Edward AD (1):
+      Bluetooth: hci_sock: fix slab oob read in create_monitor_event
+
+Eric Dumazet (1):
+      xfrm: fix a data-race in xfrm_gen_index()
+
+Fabio Porcedda (1):
+      USB: serial: option: add Telit LE910C4-WWX 0x1035 composition
+
+Florian Westphal (1):
+      netfilter: nft_payload: fix wrong mac header matching
+
+Greg Kroah-Hartman (1):
+      Linux 4.14.328
+
+Haibo Chen (1):
+      gpio: vf610: set value before the direction to avoid a glitch
+
+Hans de Goede (1):
+      HID: logitech-hidpp: Fix kernel crash on receiver USB disconnect
+
+Heiner Kallweit (1):
+      i2c: mux: Avoid potential false error message in i2c_mux_add_adapter
+
+Javier Carrasco (2):
+      net: usb: dm9601: fix uninitialized variable use in dm9601_mdio_read
+      Input: powermate - fix use-after-free in powermate_config_complete
+
+Jeff Layton (1):
+      overlayfs: set ctime when setting mtime and atime
+
+Jeremy Cline (1):
+      nfc: nci: assert requested protocol is valid
+
+Jim Mattson (1):
+      KVM: x86: Mask LVTPC when handling a PMI
+
+Johan Hovold (1):
+      regmap: fix NULL deref on lookup
+
+Jorge Sanjuan Garcia (1):
+      mcb: remove is_added flag from mcb_device struct
+
+Josef Bacik (1):
+      btrfs: initialize start_slot in btrfs_log_prealloc_extents
+
+Josua Mayer (1):
+      net: rfkill: gpio: prevent value glitch during probe
+
+Kees Cook (2):
+      sky2: Make sure there is at least one frag_addr available
+      Bluetooth: hci_sock: Correctly bounds check and pad HCI_MON_NEW_INDEX name
+
+Konstantin Meskhidze (1):
+      drm/vmwgfx: fix typo of sizeof argument
+
+Krishna Kurapati (1):
+      usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call
+
+Krzysztof Kozlowski (1):
+      nfc: nci: fix possible NULL pointer dereference in send_acknowledge()
+
+Lee, Chun-Yi (2):
+      Bluetooth: hci_event: Ignore NULL link key
+      Bluetooth: Reject connection with the device which has same BD_ADDR
+
+Luiz Augusto von Dentz (3):
+      Bluetooth: hci_event: Fix coding style
+      Bluetooth: hci_core: Fix build warnings
+      Bluetooth: hci_event: Fix using memcmp when comparing keys
+
+Ma Ke (3):
+      net: ipv4: fix return value check in esp_remove_trailer
+      net: ipv6: fix return value check in esp_remove_trailer
+      HID: holtek: fix slab-out-of-bounds Write in holtek_kbd_input_event
+
+Martin Fuzzey (1):
+      drm: etvnaviv: fix bad backport leading to warning
+
+Matthias Berndt (1):
+      Input: xpad - add PXN V900 support
+
+Michal Koutný (1):
+      cgroup: Remove duplicates in cgroup v1 tasks file
+
+Michal Schmidt (1):
+      i40e: prevent crash on probe if hw registers have invalid values
+
+Niklas Schnelle (1):
+      s390/pci: fix iommu bitmap allocation
+
+Peter Zijlstra (1):
+      perf: Disallow mis-matched inherited group reads
+
+Phil Elwell (1):
+      iio: pressure: bmp280: Fix NULL pointer exception
+
+Piyush Mehta (1):
+      usb: gadget: udc-xilinx: replace memcpy with memcpy_toio
+
+Puliang Lu (1):
+      USB: serial: option: add Fibocom to DELL custom modem FM101R-GL
+
+Ricardo Cañuelo (1):
+      usb: hub: Guard against accesses to uninitialized BOS descriptors
+
+Sunil V L (1):
+      ACPI: irq: Fix incorrect return value in acpi_register_gsi()
+
+Tony Lindgren (1):
+      ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
+
+Waiman Long (1):
+      workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()
+
+Wen Gong (1):
+      wifi: mac80211: allow transmitting EAPOL frames with tainted key
+
+Wesley Cheng (1):
+      usb: xhci: xhci-ring: Use sysdev for mapping bounce buffer
+
+Xingxing Luo (2):
+      usb: musb: Get the musb_qh poniter after musb_giveback
+      usb: musb: Modify the "HWVers" register address
+
+Xiubo Li (1):
+      ceph: fix incorrect revoked caps assert in ceph_fill_file_size()
+
+Ying Hsu (1):
+      Bluetooth: Avoid redundant authentication
+
+Ziyang Xuan (1):
+      Bluetooth: Fix a refcnt underflow problem for hci_conn
+
