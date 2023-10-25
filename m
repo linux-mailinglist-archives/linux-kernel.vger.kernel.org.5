@@ -2,119 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00517D7062
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52517D7067
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbjJYPHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S234333AbjJYPI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234655AbjJYPHd (ORCPT
+        with ESMTP id S233033AbjJYPIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:07:33 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591ED189;
-        Wed, 25 Oct 2023 08:07:30 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1caad0bcc95so39687495ad.0;
-        Wed, 25 Oct 2023 08:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698246449; x=1698851249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JP1FjdQMG6Z5vfQZsofPNw1OQcVaM3P5E6uI/DRXk8k=;
-        b=Qn5vlhFVoXbgoqeylx+lYTaMP1mjGMSthZVRY5G+m9D1uRCKU49PoFwSEllWUTs3Kl
-         y+XBqIH3BSLZsbWIwbKmn8By2odg4TzRCdZHClv/DdyRjW02JuDbfj4h4sfim49GAKyb
-         09d+wGIZroJ5bFa5W5YjDi2OvM46K34trymswgLus28Yi1nX/BZskxcla/F7xdGVzHC+
-         06O50hNXwcWwO1mqyDk7kgAXMeRZSSTKaSS9A5AY9j3CVGjHPeutzgzt9oLQ2CX8MPHF
-         cZbwKNbxkxuhVXelgEoD98sOJAHnsVOwEzotXCGMRut6ojftv2BRriifebBpKzp7Pbdl
-         iGpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698246449; x=1698851249;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JP1FjdQMG6Z5vfQZsofPNw1OQcVaM3P5E6uI/DRXk8k=;
-        b=aBDpJY8M51KfRPJiH8+MO7WgFXvx6XguvAF//Gd6EI9qjXvevjgs1abTs3GVmmNkuh
-         56+VSxAczOLQzRYTaEcbaTZFHdnxmmJgAY0vNBVO5xucApbDlkPe+bqA7LFoJWkUGOSr
-         QADvpswTnWFU4FEYVyrF3U4sdFANuc6jIBO/NhTk7E8T91cpGWqsmSGNjX6+TEMatWsN
-         Pv0OWEyoKljBVYY1WDjaZ0wCKCFkR55sPN57DFZvrVlFlBGz6lrHItJ+PoJisy+Jlo9m
-         3AeYbLsmwgY9+Qemdl4yhgsuuMDv2m+J1F1t7bpR7sQUyZOx3WEsYaQ9g/s88Wi8xFAg
-         evnw==
-X-Gm-Message-State: AOJu0Yyci4R4adh9gixBQ0b9v95ogDqSMycy/aMN4vZdljL/Z40vxKBi
-        s9Ljr7ns42gFtED6L7MEq0UfYmJIdvE=
-X-Google-Smtp-Source: AGHT+IFMOIIhptdepjZLOZzYYCzLergAVAmDgWVhVsoemQVUM+VhK/lctlxxQ/HCg7xsgPO3MFsjUQ==
-X-Received: by 2002:a17:902:cece:b0:1c6:16d3:1783 with SMTP id d14-20020a170902cece00b001c616d31783mr13902474plg.58.1698246449576;
-        Wed, 25 Oct 2023 08:07:29 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z20-20020a170902ee1400b001bdc9daadc9sm9334783plb.89.2023.10.25.08.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 08:07:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <6413ac66-2608-cd76-1b3c-5a185fe6d88d@roeck-us.net>
-Date:   Wed, 25 Oct 2023 08:07:26 -0700
+        Wed, 25 Oct 2023 11:08:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A960128;
+        Wed, 25 Oct 2023 08:08:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6307C433C8;
+        Wed, 25 Oct 2023 15:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698246502;
+        bh=EmGG2bIEHpNFNsbXGuXDFwFfImfIAEmvCH+yu4IiAQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hxIJusxgziIeOjGZnH5vgUQdMAVFCU3Tj4YiMTQSqfHAJ/M591Z2FHQ6b5mJZp88o
+         CnaiV0kgufr/AUpXcdCPqIEIvWnVX+74FLa9KHS5G1PXI8BKgSWmZrOu+19pK02b1J
+         jVPLK1oFfw07klVxvto4kapMw+x8AzJYvv2FXMbp//ArEiY9ORXpAZBMSXn7pk1WGR
+         VtKa6awKAp+SsGoNfs/k/7KOrtdUw8xagMC0p4hmpIiWyEc5usyT1O98xG7qA8bv6e
+         I5eE8IOSi1iS2MmbZ8/i1sCYgaLtV5gcAuf5agw9TOGfngPO0EK9VKKp16D7wTL61U
+         WdQi57npZBnbA==
+Date:   Wed, 25 Oct 2023 16:08:18 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     marius.cristea@microchip.com
+Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding dt-bindings for
+ PAC193X
+Message-ID: <20231025-cheddar-tucking-b2ea777ed4f9@spud>
+References: <20231025134404.131485-1-marius.cristea@microchip.com>
+ <20231025134404.131485-2-marius.cristea@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231024083326.219645073@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.10 000/199] 5.10.199-rc2 review
-In-Reply-To: <20231024083326.219645073@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ActSxKFGitGW1WzK"
+Content-Disposition: inline
+In-Reply-To: <20231025134404.131485-2-marius.cristea@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 01:36, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.199 release.
-> There are 199 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 26 Oct 2023 08:32:45 +0000.
-> Anything received after that time might be too late.
-> 
 
-Build reference: v5.10.198-200-ge31b6513c43d
-Compiler version: x86_64-linux-gcc (GCC) 11.4.0
-Assembler version: GNU assembler (GNU Binutils) 2.40
+--ActSxKFGitGW1WzK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Building x86_64:defconfig ... passed
-Building x86_64:allyesconfig ... failed
---------------
-Error log:
-Unsupported relocation type: unknown type rel type name (-1940038754)
-make[3]: *** [arch/x86/boot/compressed/Makefile:122: arch/x86/boot/compressed/vmlinux.relocs] Error 1
-make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
-make[3]: *** Waiting for unfinished jobs....
-x86_64-linux-objcopy: vmlinux: unsupported relocation type 0x9e
-x86_64-linux-objcopy: vmlinux[.text]: relocation count is negative: bad value
-make[3]: *** [arch/x86/boot/compressed/Makefile:114: arch/x86/boot/compressed/vmlinux.bin] Error 1
-make[2]: *** [arch/x86/boot/Makefile:115: arch/x86/boot/compressed/vmlinux] Error 2
-make[1]: *** [arch/x86/Makefile:274: bzImage] Error 2
-make: *** [Makefile:192: __sub-make] Error 2
+Hey Marius,
 
-No idea what is causing it, but it is persistent. Something odd between
-compiler/binutils/objcopy.
+On Wed, Oct 25, 2023 at 04:44:03PM +0300, marius.cristea@microchip.com wrot=
+e:
+> From: Marius Cristea <marius.cristea@microchip.com>
+>=20
+> This is the device tree schema for iio driver for
+> Microchip PAC193X series of Power Monitors with Accumulator.
+>=20
+> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+> ---
+>  .../bindings/iio/adc/microchip,pac1934.yaml   | 146 ++++++++++++++++++
+>  1 file changed, 146 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,p=
+ac1934.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.=
+yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> new file mode 100644
+> index 000000000000..837053ed8a71
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> @@ -0,0 +1,146 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip PAC1934 Power Monitors with Accumulator
+> +
+> +maintainers:
+> +  - Marius Cristea <marius.cristea@microchip.com>
+> +
+> +description: |
+> +  Bindings for the Microchip family of Power Monitors with Accumulator.
+> +  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found h=
+ere:
+> +    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/Produ=
+ctDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,pac1931
+> +      - microchip,pac1932
+> +      - microchip,pac1933
+> +      - microchip,pac1934
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  interrupts:
+> +    description: IRQ line of the ADC
+> +    maxItems: 1
+> +
+> +  drive-open-drain:
+> +    description: The IRQ signal is configured as open-drain.
+> +    type: boolean
+> +    maxItems: 1
+> +
+> +  microchip,slow-io:
+> +    type: boolean
+> +    description: |
+> +      A GPIO used to trigger a change is sampling rate (lowering the chi=
+p power consumption).
+> +      In default mode, if this pin is forced high, sampling rate is forc=
+ed to eight
+> +      samples/second. When it is forced low, the sampling rate is 1024 s=
+amples/second unless
+> +      a different sample rate has been programmed.
 
-Guess it doesn't matter since the release is out already.
+This description doesn't really make sense to me - if a GPIO is used to
+drive the pin low or high, why do we need a property? A DT property
+implies that this is a static configuration depending on the board, but
+reading the description this seems to be something that can be toggled
+at runtime.
+I do note though, that this GPIO is not documented in the binding, so I
+suppose what really needs to happen here is document the gpio so that
+the driver can determine at runtime what state this pin is in?
 
-Guenter
+Also, you say "In default mode", but don't mention what the non-default
+mode is. What happens in the other mode?
 
+Cheers,
+Conor.
+
+--ActSxKFGitGW1WzK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTkvYgAKCRB4tDGHoIJi
+0p/jAQC8aTY9tapI5zJAbel/AlSiuunOhpwryaeBOFSHulfBtwD/Qm+HEKQnOX21
+IT9MfeRfd0f0YwK+jzSSPQpdWjDaiw0=
+=Kxul
+-----END PGP SIGNATURE-----
+
+--ActSxKFGitGW1WzK--
