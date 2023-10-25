@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F617D6F89
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75307D6F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344880AbjJYOHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        id S1344855AbjJYOHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbjJYOHx (ORCPT
+        with ESMTP id S1343648AbjJYOHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:07:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BDD138;
-        Wed, 25 Oct 2023 07:07:51 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PDPqlc027561;
-        Wed, 25 Oct 2023 14:07:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=paTHhorFoV0+3eopi3ZOENz95C7tNzgHSf7lKvtL8h8=;
- b=ga6L/TZ+TGxRq2P1wGlkEiK27jTYSNLwKkbHJKQXxAF4OaRGPbQeFTmny4GG/hlRq1fK
- JflV5aVYpL8VCkeA0BP/xJspxAnRTLGfUt+2N8CWPS8I/UQXw610om1xdMSDGHNnOufm
- zFh23J4pQptsE0u97IhOWXuQQ8c7Ja5HVl7YNN1mFyXRo+Oe+/SoLBAJAH0ySXgOLbp8
- 5MQ/hYNP9UcsmdI05KJ8L6MWCiSyWopAEkEWd1XfuowC5LvtN5AfhMmivr1ZQhJtmKuT
- G0isWh8lNlHnQePNOCIQWSTp0pJMOAmtaG80DG4Ro0sYQuEGFcghDbb8zdnLunmvFFBl FQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txngvhne8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:07:35 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PE7YpP006817
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:07:34 GMT
-Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 25 Oct 2023 07:07:28 -0700
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
-CC:     <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
-        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH 3/3] dt-bindings: firmware: qcom,scm: document SCM on SC8380XP SoCs
-Date:   Wed, 25 Oct 2023 19:36:40 +0530
-Message-ID: <20231025140640.22601-4-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231025140640.22601-1-quic_sibis@quicinc.com>
-References: <20231025140640.22601-1-quic_sibis@quicinc.com>
+        Wed, 25 Oct 2023 10:07:11 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8415F138
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:07:04 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxqOgFITllw400AA--.801S3;
+        Wed, 25 Oct 2023 22:07:01 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_y_zIDllYjMyAA--.40980S3;
+        Wed, 25 Oct 2023 22:06:57 +0800 (CST)
+Message-ID: <34d1858c-5b31-474a-80bd-129f3123a71f@loongson.cn>
+Date:   Wed, 25 Oct 2023 22:06:43 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0L0QsYZ32gjvZfJfB-efXBWqulnnNkJ_
-X-Proofpoint-ORIG-GUID: 0L0QsYZ32gjvZfJfB-efXBWqulnnNkJ_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_03,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 malwarescore=0 clxscore=1015 adultscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250122
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/logicvc: Kconfig: select REGMAP and REGMAP_MMIO
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230608024207.581401-1-suijingfeng@loongson.cn>
+ <ZIGAEZTJvq1GqFVD@aptenodytes>
+ <50fbc003-fd3c-c7c4-9c6b-76d14a0babfc@loongson.cn>
+ <ZTjp65yjul76zKWm@aptenodytes>
+Content-Language: en-US
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <ZTjp65yjul76zKWm@aptenodytes>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Dx_y_zIDllYjMyAA--.40980S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Aw4fWw1DZFWxJr4xGF48GrX_yoW8CFyxpF
+        48t3W2kF4IvrWYyr12yF1aqFyYqwn7KrWfWF12kwn8W3s0kF1DZFZ3ZrW5ur98XrZrAF40
+        qrn3KFy3JF47A3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document scm compatible for SC8380XP SoCs.
+Hi,
 
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
- Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-index 0613a37a851a..7941e71cb3e8 100644
---- a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-+++ b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-@@ -48,6 +48,7 @@ properties:
-           - qcom,scm-sc7280
-           - qcom,scm-sc8180x
-           - qcom,scm-sc8280xp
-+          - qcom,scm-sc8380xp
-           - qcom,scm-sdm670
-           - qcom,scm-sdm845
-           - qcom,scm-sdx55
--- 
-2.17.1
+On 2023/10/25 18:11, Paul Kocialkowski wrote:
+> Hi,
+>
+> On Tue 20 Jun 23, 11:56, Sui Jingfeng wrote:
+>> Hi,
+>>
+>> On 2023/6/8 15:15, Paul Kocialkowski wrote:
+>>> Hi,
+>>>
+>>> On Thu 08 Jun 23, 10:42, Sui Jingfeng wrote:
+>>>> drm/logicvc driver is depend on REGMAP and REGMAP_MMIO, should select this
+>>>> two kconfig option, otherwise the driver failed to compile on platform
+>>>> without REGMAP_MMIO selected:
+>>>>
+>>>> ERROR: modpost: "__devm_regmap_init_mmio_clk" [drivers/gpu/drm/logicvc/logicvc-drm.ko] undefined!
+>>>> make[1]: *** [scripts/Makefile.modpost:136: Module.symvers] Error 1
+>>>> make: *** [Makefile:1978: modpost] Error 2
+>>>>
+>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>>> Thanks for the fix, looks good to me!
+>>>
+>>> Acked-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+>> Thanks a lot,
+>>
+>> Please don't forget to push this to drm-misc or drm-tip if you has the time,
+>> as (even though trivial) it's precious for me.
+> So I totally forgot about this and only pushed it to drm-misc-fixes now.
+> Sincere apologies for this.
+>
+> Thanks again for spotting this issue and submitting the fix.
+>
+> Paul
+
+
+Nice, thanks your reply.
+
+
+>>
+>>> Cheers,
+>>>
+>>> Paul
+>>>
+>>>> ---
+>>>>    drivers/gpu/drm/logicvc/Kconfig | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/logicvc/Kconfig b/drivers/gpu/drm/logicvc/Kconfig
+>>>> index fa7a88368809..1df22a852a23 100644
+>>>> --- a/drivers/gpu/drm/logicvc/Kconfig
+>>>> +++ b/drivers/gpu/drm/logicvc/Kconfig
+>>>> @@ -5,5 +5,7 @@ config DRM_LOGICVC
+>>>>    	select DRM_KMS_HELPER
+>>>>    	select DRM_KMS_DMA_HELPER
+>>>>    	select DRM_GEM_DMA_HELPER
+>>>> +	select REGMAP
+>>>> +	select REGMAP_MMIO
+>>>>    	help
+>>>>    	  DRM display driver for the logiCVC programmable logic block from Xylon
+>>>> -- 
+>>>> 2.25.1
+>>>>
+>> -- 
+>> Jingfeng
+>>
 
