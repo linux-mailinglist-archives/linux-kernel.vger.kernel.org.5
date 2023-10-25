@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB297D7453
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280CE7D7458
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjJYTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S229733AbjJYTbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjJYTaW (ORCPT
+        with ESMTP id S229557AbjJYTbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:30:22 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7CC137;
-        Wed, 25 Oct 2023 12:30:20 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-408382da7f0so872525e9.0;
-        Wed, 25 Oct 2023 12:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698262219; x=1698867019; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=38LmIm3WWmTeISnemF0NvIfw6jlThfIqPKHIQvM/85M=;
-        b=UwC6+ZBbztlonU7HOQN2OKVdPdQ+KflQa+q14nuZITX8ph4kLsU2gNBLnwN+sUv/dy
-         19Zp+zXAFOxkLrYX3NUMrxHBEWWl78eQXcNoxxTnDq7EL05cNyJOUqHmLJoefFHTXO6o
-         9+EmOs2VEJNReBkwfgpViNRx8wZ2Fyivzj4EG60ohF6c0ZKQxpO99Y56bAG+3N/unc0P
-         4sCprr5QFS/75tUL8N5xOl6ZV2zFKhkCLlrMjTmZ8pF1CwXsN3elfwPu+cmSHr/7hCMF
-         +aSbxVM7NiFXXAagQMno9VoTigmcLIriKd0aUCkfifrG2ybazacv/eDgn1xagUWA5BDb
-         A4Sg==
+        Wed, 25 Oct 2023 15:31:17 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F49B137;
+        Wed, 25 Oct 2023 12:31:15 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-586753b0ab0so92742eaf.0;
+        Wed, 25 Oct 2023 12:31:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698262219; x=1698867019;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=38LmIm3WWmTeISnemF0NvIfw6jlThfIqPKHIQvM/85M=;
-        b=VTmNdGOPvtePaEoHOb5Sb92Gc17IJct3XudkzZyO5NG4UPua/qmjSZa6j/uN2uZDb+
-         ApOFlr8tORACX4fKQ6VQh3LBbiPf0ztjZal+EvjwFhwqAAy6HDj4MRvQiaTPN/9vMkKb
-         qXJ4ILqDk1700m1X7WACrN3XXcWc+VV2TjMtlH4LC/rHwNPBJpIEk5gHkvOw7L/yoBEK
-         zQ0f/+eUNMqsavyoljfR3PK0mFbuJRfdSH5IjZ2sGaIRWK/tQtSuoMKxOctr93axLa/E
-         lklMz74O3nH+fD5LPinR1KHpoXjH4EVE7HcRLr55JEpTjsPt7c73LJq+9HTz/HYKA9xM
-         wClg==
-X-Gm-Message-State: AOJu0YwwX2xOcwNIihGCYTIm0+/VItP/teUoFFpSUh1MY+YbbeDxl/qz
-        zVjwFn2YZqFkGhhreI/pb2c=
-X-Google-Smtp-Source: AGHT+IGwti76O2zJQVpT+QX8wGpjB9FrDEpoR6HJyduUUaglRCBVfwBNMsGyJVMwrl0TNVfqURn9QA==
-X-Received: by 2002:adf:e742:0:b0:32d:bbed:a08e with SMTP id c2-20020adfe742000000b0032dbbeda08emr13973322wrn.70.1698262218948;
-        Wed, 25 Oct 2023 12:30:18 -0700 (PDT)
-Received: from localhost ([2001:171b:c9bb:4130:c056:27ff:fec4:81cb])
-        by smtp.gmail.com with ESMTPSA id g18-20020adfa492000000b003232380ffd5sm12702536wrb.106.2023.10.25.12.30.17
+        d=1e100.net; s=20230601; t=1698262274; x=1698867074;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BULHmGVlpE9lA4m1uLl0w75mKoeV83pmpBJtjeqEY5Y=;
+        b=xM5H8kvGk6D+3QGCSUShBEiNGa8RonqjmBzoMRgAsgWxd4KKE3SLi/FuZVhhO0eiIB
+         J7VETrNs8TK7gtNfGoODcWLuYqRJVelB3md6UkfRup8Hug/371V55e4wCmUB9Q12uzQN
+         5W/nXvZ8kwPjBgi+5hC8wOHWzNyrG1kptmFbVPY50P/5dITgjaf9WQQANUN7bORzH8oE
+         msKQ/0WMJ3XOygH49ZsfXepIEF7bfA2D+uGgtLUVUeDYbyHyrLavtz18Mhi58VZp/pA4
+         ygk3JrbAoAHU1aIv52pdlzhc8jEVbdza5TPrTotURZ39O8viGf1MwUHoUE71gr5aNGAI
+         fXkw==
+X-Gm-Message-State: AOJu0YzkQammM9zWPJrHBuJILYBasMK3FAdBOBpPIYkfpX6Ijbu8YQik
+        YgYkbLL6Spo6/lKYdUaEmA==
+X-Google-Smtp-Source: AGHT+IFHo+BtKG7vjbDrq1BHQjnxxSLUCQXu79LbewJtihFoXoDEcI7VB4bO88HE6WlmOy94m9dRTg==
+X-Received: by 2002:a05:6871:522b:b0:1ea:7bd1:c495 with SMTP id ht43-20020a056871522b00b001ea7bd1c495mr19869975oac.27.1698262274627;
+        Wed, 25 Oct 2023 12:31:14 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id a21-20020a056870b21500b001e9dabc3224sm2717937oam.50.2023.10.25.12.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 12:30:18 -0700 (PDT)
-Received: from localhost (localhost [local])
-        by localhost (OpenSMTPD) with ESMTPA id 258966bb;
-        Wed, 25 Oct 2023 19:30:16 +0000 (UTC)
-Date:   Wed, 25 Oct 2023 21:30:16 +0200
-From:   David Lazar <dlazar@gmail.com>
-To:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>
-Subject: [PATCH] platform/x86: Add s2idle quirk for more Lenovo laptops
-Message-ID: <ZTlsyOaFucF2pWrL@localhost>
+        Wed, 25 Oct 2023 12:31:14 -0700 (PDT)
+Received: (nullmailer pid 1027831 invoked by uid 1000);
+        Wed, 25 Oct 2023 19:31:13 -0000
+Date:   Wed, 25 Oct 2023 14:31:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aradhya Bhatia <a-bhatia1@ti.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jai Luthra <j-luthra@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>
+Subject: Re: [PATCH] scripts/dtc: Allow ports to have a single port@0 child
+Message-ID: <20231025193113.GA994152-robh@kernel.org>
+References: <20231013085424.7137-1-a-bhatia1@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231013085424.7137-1-a-bhatia1@ti.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,112 +69,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When suspending to idle and resuming on some Lenovo laptops using the
-Mendocino APU, multiple NVME IOMMU page faults occur, showing up in
-dmesg as repeated errors:
+On Fri, Oct 13, 2023 at 02:24:24PM +0530, Aradhya Bhatia wrote:
+> Exempt 'ports' from the rule which asserts that nodes with single child
+> node having reg = 0, should not have the '#size-cells' and
+> '#address-cells' properties.
+> 
+> Ports of certain hardware do need to be described as only having a
+> single child node 'port@0', especially when hardware has multiple ports,
+> and the other ports 'port@x' are planned to be added subsequently. In
+> such cases, just using 'port', would be an inaccurate hardware
+> description.
+> 
+> For example, Texas Instruments' DSS (display-subsystem), which has 2 or
+> 4 video ports depending on the SoC. Describing the first video port with
+> just 'port' under ports would be inaccurate and even slightly
+> misleading. Simply using port@0 (when other ports are not added)
+> produces the following warning, while making dtbs with W=1 flag set[0].
 
-nvme 0000:01:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x000b
-address=0xb6674000 flags=0x0000]
+There's a reason this is behind W=1.
 
-The system is unstable afterwards.
+In general, if you only have a single 'port' it should be just 'port' 
+which is equivalent to port 0. There's exceptions to that, so the 
+warning is off by default.
 
-Applying the s2idle quirk introduced by commit 455cd867b85b5
-("platform/x86: thinkpad_acpi: Add a s2idle resume quirk for a number of
-laptops") allows these systems to work with the IOMMU enabled and s2idle
-resume to work.
+> code-block ::
+> 
+> 	Warning (graph_child_address): /bus@100000/dss@4a00000/ports:
+> 	graph node has single child node 'port@0',
+> 	#address-cells/#size-cells are not necessary
+> 
+> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> 
+> [0]: https://lore.kernel.org/all/570903b6-8239-d44a-5fac-71700804cb5d@ti.com/
+> ---
+>  scripts/dtc/checks.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218024
-Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-Suggested-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-Signed-off-by: David Lazar <dlazar@gmail.com>
----
- drivers/platform/x86/amd/pmc/pmc-quirks.c | 73 +++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+This is a copy of upstream dtc. We don't take patches for it (except in 
+emergency). Look at the commit history.
 
-diff --git a/drivers/platform/x86/amd/pmc/pmc-quirks.c b/drivers/platform/x86/amd/pmc/pmc-quirks.c
-index ad702463a65d..6bbffb081053 100644
---- a/drivers/platform/x86/amd/pmc/pmc-quirks.c
-+++ b/drivers/platform/x86/amd/pmc/pmc-quirks.c
-@@ -111,6 +111,79 @@ static const struct dmi_system_id fwbug_list[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21A1"),
- 		}
- 	},
-+	/* https://bugzilla.kernel.org/show_bug.cgi?id=218024 */
-+	{
-+		.ident = "V14 G4 AMN",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82YT"),
-+		}
-+	},
-+	{
-+		.ident = "V14 G4 AMN",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "83GE"),
-+		}
-+	},
-+	{
-+		.ident = "V15 G4 AMN",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82YU"),
-+		}
-+	},
-+	{
-+		.ident = "V15 G4 AMN",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "83CQ"),
-+		}
-+	},
-+	{
-+		.ident = "IdeaPad 1 14AMN7",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82VF"),
-+		}
-+	},
-+	{
-+		.ident = "IdeaPad 1 15AMN7",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82VG"),
-+		}
-+	},
-+	{
-+		.ident = "IdeaPad 1 15AMN7",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82X5"),
-+		}
-+	},
-+	{
-+		.ident = "IdeaPad Slim 3 14AMN8",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82XN"),
-+		}
-+	},
-+	{
-+		.ident = "IdeaPad Slim 3 15AMN8",
-+		.driver_data = &quirk_s2idle_bug,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82XQ"),
-+		}
-+	},
- 	/* https://gitlab.freedesktop.org/drm/amd/-/issues/2684 */
- 	{
- 		.ident = "HP Laptop 15s-eq2xxx",
--- 
-2.39.2
-
+Rob
