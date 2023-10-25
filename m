@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5EB7D6F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBBE7D6F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344611AbjJYOSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        id S1344516AbjJYOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235090AbjJYOSl (ORCPT
+        with ESMTP id S232846AbjJYOVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:18:41 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB65418C
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:18:36 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-313e742a787so580433f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698243515; x=1698848315; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mz+BlFZhw2f57rcawWivLZhBkzrLw1iX4+S/xW1xXjk=;
-        b=POZOXhi4y6RdTllGjjnULXNpzQqQ/wAj9KapdA168qNAaVSEQ2feg/ec6//QOOpw3L
-         SEQ3FqJnQi1l2rJ1l7bDqIqoz8bAVRMywi5nIk1nimdNlokbePRWekAfzopzTaHh5esI
-         l7XwnzhiVOgIh4lsWL0g3aRqoanebejjGlM1MUCSEhVvYIio64zxTQG7tutd8/g96GcN
-         wbfvue01wcxPFRoepcIiJTgpGNarxptQJlvo3jgfABZVteiuIPfDQ/JvKQADhCgQpMPb
-         e/Ep0CKXnpL8ajn1jOSDZMPT4yn6ceTwadn/CisGXwwRDadUtu6UIyuUbkNT6p1MK5JC
-         I4hg==
+        Wed, 25 Oct 2023 10:21:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7671B9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698243623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S1yh9aFBXnB/uUDqIchESZqamQpwZAPHQV0zqqMljjg=;
+        b=KPW6x6rVg7rgOsqO8KUx/BD1X22FUcAV5tt2tTyWxHS7nXLrBOXmMFy/lNu4jxc2dhIVaB
+        xFFUmi93uYgWoazqOB7ku5Qgfr3WnPTLxjCv2owQ18RKI5WMQY8wEqBhR5ugKurqwlno1U
+        RFXPd7bG6f+sgl3IQU6xn07xEprsWas=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-392-JUp5NiC9M6yxak6uV_XpCw-1; Wed, 25 Oct 2023 10:20:22 -0400
+X-MC-Unique: JUp5NiC9M6yxak6uV_XpCw-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7a9985d56a8so70346139f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:20:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698243515; x=1698848315;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mz+BlFZhw2f57rcawWivLZhBkzrLw1iX4+S/xW1xXjk=;
-        b=XFuVCKYe/Y4nQNyaK7O54BR6oSVLk2qiuqT2vNOIEaeDvwVXMX/tY5T32NdMiLifYt
-         /J27Xa0v83zpBGnx8Pt0INSjQcXP8Kr3xtJRmTFJHng7i41H5jEKiqjCb6e3wTlfPKE6
-         aWwHcbT2/JtGP5LBLceJeUk/SQ80HS19qfSED3wngs1ABNm1o5de/LhB4DBE1iTdxg3W
-         dd6h8lVaxhaAeUBHb66DgfoUUHhJEHA7DMqVl64m/wx/6shDiRQBzvTHiZ1E26BSTdF0
-         8cAhUNVs7yQYcDxtLesjL5BZvC03b5O01fJhaXwyuN4U4/PmKaVV7b9kf5UeRcnJSgIE
-         GUBQ==
-X-Gm-Message-State: AOJu0YwaIdp/c6fPIwGTaALyOSD7pykY97XX50W4Sje08fWvXvHPKPpx
-        oAU2AFswihgX+skxmSIy4g33/g==
-X-Google-Smtp-Source: AGHT+IFnDSrUcr1TfWB+YvnQwidLEvOgTF75iRZSAjlPtOeYhGGhAslj7p6tI+DD6Ylll+dtExHbDw==
-X-Received: by 2002:adf:f283:0:b0:313:f75b:c552 with SMTP id k3-20020adff283000000b00313f75bc552mr14072623wro.15.1698243515063;
-        Wed, 25 Oct 2023 07:18:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id e16-20020adfe7d0000000b0032db8f7f378sm12230946wrn.71.2023.10.25.07.18.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 07:18:34 -0700 (PDT)
-Message-ID: <8cd5c34e-f733-445d-bc1e-d4dea1bcb47d@linaro.org>
-Date:   Wed, 25 Oct 2023 16:18:31 +0200
+        d=1e100.net; s=20230601; t=1698243621; x=1698848421;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S1yh9aFBXnB/uUDqIchESZqamQpwZAPHQV0zqqMljjg=;
+        b=eSr1j86pAUpQHBTSf7EiGwUEBDLDhE83chdX0jPqT1CWsa8aRhJ/svJ4LNvfb/RKAc
+         z9pmDIpdXnMEsgUP5kw5U3hpPcSa19fTQm+TXjEak38Cl97nDvIfjLs+e8sUwK3t6YUD
+         b5LFDcNN4Dc8yFGN3kEFskYpPnlnJvRH1665Yz44QlsxrzWRvNSOnNu8bZ8lANNeaJwr
+         W2EEuqlSP0J6mH+sc/iy9ZS0n2nZ51pxUdKi3lm2HmF9DbzTjsKvreU8i41AyNmoM/Sx
+         x5Ptwyim1kUjaBIjshRaxkEweouGA74cQISaexLLSpKib8816g6lgjNouITSqC/zeMRG
+         8GGQ==
+X-Gm-Message-State: AOJu0YyNlhhGeOCMSY6zmUei+j6p1CeUaogeIfxjiYnPdImo+Y2G1Unc
+        b1uG+ruf4SjSreEkP3BVUdgY+UbwPGwTIRpsfXBLGm/Arb7W8prPLuCRe7Zosu10BUPPs9Pw0P0
+        M3klgjoA98Zqx6/99e6QCqyZI
+X-Received: by 2002:a05:6e02:12c6:b0:357:a04c:31d2 with SMTP id i6-20020a056e0212c600b00357a04c31d2mr20557624ilm.16.1698243621710;
+        Wed, 25 Oct 2023 07:20:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKwcXNmgBx56Nwj0CHsxsSuQrL5I2Rqp2efJfKlsiSWqJhSMRfzxIfmT0Id8DMwf8cHqeybw==
+X-Received: by 2002:a05:6e02:12c6:b0:357:a04c:31d2 with SMTP id i6-20020a056e0212c600b00357a04c31d2mr20557588ilm.16.1698243621425;
+        Wed, 25 Oct 2023 07:20:21 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id a18-20020a92d352000000b0035742971dd3sm3769998ilh.16.2023.10.25.07.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 07:20:20 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 08:20:19 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Ankit Agrawal <ankita@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20231025082019.14575863.alex.williamson@redhat.com>
+In-Reply-To: <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20231015163047.20391-1-ankita@nvidia.com>
+        <20231017165437.69a84f0c.alex.williamson@redhat.com>
+        <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <20231023084312.15b8e37e.alex.williamson@redhat.com>
+        <BY5PR12MB37636C06DED20856CF604A86B0DFA@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <20231024082854.0b767d74.alex.williamson@redhat.com>
+        <BN9PR11MB5276A59033E514C051E9E4618CDEA@BN9PR11MB5276.namprd11.prod.outlook.com>
+        <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: hwmon: add ti,ina238
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>,
-        Richard Leitner <richard.leitner@linux.dev>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231025-ina237-v1-0-a0196119720c@linux.dev>
- <20231025-ina237-v1-2-a0196119720c@linux.dev>
- <20231025-hut-omnivore-f4b44a7b928d@spud>
- <qoxgyho5twbm4jopfveaf5ee3z4tkyb2z5f2vsyrpglffegmxf@v2z5ckcaa5jc>
- <20231025-eatery-backup-ad85c043cb01@spud>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025-eatery-backup-ad85c043cb01@spud>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 16:11, Conor Dooley wrote:
-> On Wed, Oct 25, 2023 at 04:07:31PM +0200, Richard Leitner wrote:
->> On Wed, Oct 25, 2023 at 03:00:01PM +0100, Conor Dooley wrote:
->>> On Wed, Oct 25, 2023 at 10:34:12AM +0000, Richard Leitner wrote:
->>>> The ina238 driver is available since 2021 but lacks a dt-bindings file.
->>>> Therefore add the missing file now.
->>>
->>> Seemingly it is documented in Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
->>
->> Thanks for the feedback. True. So is it fine if it's left there or
->> should it be removed from ti,ina2xxx.yml as this is a separate driver
->> with different properties?
-> 
-> Merging them would seem like the most straightforward thing to do, no?
+On Wed, 25 Oct 2023 12:43:24 +0000
+Ankit Agrawal <ankita@nvidia.com> wrote:
 
-Sorry folks, I don't quite get what do you want to merge or move and
-why. Drivers are not related to bindings. The point is the compatible is
-already documented, so is anything wrong with existing documentation?
+> While the physical BAR is present on the device, it is not being used on =
+the host
+> system. The access to the device memory region on the host occur through =
+the
+> C2C interconnect link (not the PCIe) and is present for access as a separ=
+ate memory
+> region in the physical address space on the host. The variant driver quer=
+ies this range
+> from the host ACPI DSD tables.
 
-Best regards,
-Krzysztof
+BTW, it's still never been answered why the latest QEMU series dropped
+the _DSD support.
+
+> Now, this device memory region on the host is exposed as a device BAR in =
+the VM.
+> So the device BAR in the VM is actually mapped to the device memory regio=
+n in the
+> physical address space (and not to the physical BAR) on the host. The con=
+fig space
+> accesses to the device however, are still going to the physical BAR on th=
+e host.
+>=20
+> > Does this BAR2 size match the size we're reporting for the region?=C2=
+=A0 Now
+> > I'm confused why we need to intercept the BAR2 region info if there's
+> > physically a real BAR behind it.=C2=A0 Thanks, =20
+>=20
+> Yes, it does match the size being reported through region info. But the r=
+egion
+> info ioctl is still intercepted to provide additional cap to establish th=
+e sparse
+> mapping. Why we do sparse mapping? The actual device memory size is not
+> power-of-2 aligned (a requirement for a BAR). So we roundup to the next
+> power-of-2 value and report the size as such. Then we utilize sparse mapp=
+ing
+> to show only the actual size of the device memory as mappable.
+
+Yes, it's clear to me why we need the sparse mapping and why we
+intercept the accesses, but the fact that there's an underlying
+physical BAR of the same size in config space has been completely
+absent in any previous discussions.
+
+In light of that, I don't think we should be independently calculating
+the BAR2 region size using roundup_pow_of_two(nvdev->memlength).
+Instead we should be using pci_resource_len() of the physical BAR2 to
+make it evident that this relationship exists.
+
+The comments throughout should also be updated to reflect this as
+currently they're written as if there is no physical BAR2 and we're
+making a completely independent decision relative to BAR2 sizing.  A
+comment should also be added to nvgrace_gpu_vfio_pci_read/write()
+explaining that the physical BAR2 provides the correct behavior
+relative to config space accesses.
+
+The probe function should also fail if pci_resource_len() for BAR2 is
+not sufficient for the coherent memory region.  Thanks,
+
+Alex
 
