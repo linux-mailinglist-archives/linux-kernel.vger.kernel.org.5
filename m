@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CB77D71CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3100B7D71CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjJYQhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S233306AbjJYQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjJYQhV (ORCPT
+        with ESMTP id S229561AbjJYQk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:37:21 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B88C1;
-        Wed, 25 Oct 2023 09:37:19 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PDQ3pE011914;
-        Wed, 25 Oct 2023 16:37:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=mriEVODwMmqGlFPhZP7OYi+cBWE1ycXr0W5zwFMUH+g=;
- b=Vo9uwHAk0ksi6bMEeA98bWmjXHCQ/GY/JwQTCJLfLDR4YV6zDqzHA/VpenpkxMIsiYc5
- uplVQjrW2dJutWz1W7tRVN1thyYN+lU9UHbcVCZUtg8llj+fDQ+It0FO9DW9/75ASDiB
- PVtD3rxmdZKL1e87/Kt8/N87AMbsItlvTalAsit2Ian+KRTEJ7xLu/q6lQjKdCjDuluA
- az9q7wGJnObyME6YtEgOk9a61Ng2sglM3wo8Wm8CY4M9VzagEB254uFeQSJiY1/7ei95
- ejUaQEo3yGI3AYpXFk75GPR2pbd8SQYdYCapsJC/bah+LUAmrJGn16XhK1Vowba6Sq4k rw== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txtw1hhg9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 16:37:04 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PGb3Fb011646
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 16:37:03 GMT
-Received: from quicinc.com (10.49.16.6) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
- 2023 09:37:02 -0700
-Date:   Wed, 25 Oct 2023 09:37:01 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Sibi Sankar <quic_sibis@quicinc.com>
-CC:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
-        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
-Subject: Re: [PATCH 3/3] dt-bindings: firmware: qcom,scm: document SCM on
- SC8380XP SoCs
-Message-ID: <ZTlELVl/F28rfphf@quicinc.com>
-Mail-Followup-To: Sibi Sankar <quic_sibis@quicinc.com>,
-        andersson@kernel.org, konrad.dybcio@linaro.org, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
-        vkoul@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
-        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-References: <20231025140640.22601-1-quic_sibis@quicinc.com>
- <20231025140640.22601-4-quic_sibis@quicinc.com>
+        Wed, 25 Oct 2023 12:40:29 -0400
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA08137;
+        Wed, 25 Oct 2023 09:40:25 -0700 (PDT)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 02BF95200CE;
+        Wed, 25 Oct 2023 18:40:24 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Wed, 25 Oct
+ 2023 18:40:23 +0200
+Date:   Wed, 25 Oct 2023 18:40:19 +0200
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <mathias.nyman@intel.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>
+Subject: Re: [PATCH v5] usb: Reduce 'set_address' command timeout with a new
+ quirk
+Message-ID: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
+References: <de2ed64a-363a-464c-95be-584ce1a7a4ad@rowland.harvard.edu>
+ <20231025141316.117514-1-hgajjar@de.adit-jv.com>
+ <41e22c23-07b3-5fd9-5fb1-935ab42fa83e@omp.ru>
+ <032f236a-e212-fa28-ecf4-b5b585ba7ac2@omp.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231025140640.22601-4-quic_sibis@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SvJ-7QYkW5KQtPk2rOnInGaEHm9fo-3a
-X-Proofpoint-GUID: SvJ-7QYkW5KQtPk2rOnInGaEHm9fo-3a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_05,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=439
- lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310250143
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <032f236a-e212-fa28-ecf4-b5b585ba7ac2@omp.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Oct 25 2023 19:36, Sibi Sankar wrote:
-> Document scm compatible for SC8380XP SoCs.
+On Wed, Oct 25, 2023 at 07:16:05PM +0300, Sergey Shtylyov wrote:
+> On 10/25/23 7:00 PM, Sergey Shtylyov wrote:
 > 
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> [...]
+> >    Sorry to be PITA but... (-:
+> 
+>    I just had to speak up after Alan's ACK. :-)
+No problem, Thanks for the feedback. I agreed with many of them
+> 
+> >> This patch introduces a new USB quirk, USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT,
+> >> which modifies the timeout value for the 'set_address' command. The
+> > 
+> >    This is called a request, not a command by the spec. And the USB spec
+> > names the requests in all uppercase, e.g. SET_ADDRESS...
+> > 
+> >> standard timeout for this command is 5000 ms, as recommended in the USB
+> >> 3.2 specification (section 9.2.6.1).
+> > 
+> >    This section in the USB specs 1.1/2.0/3.0 talks about _all_ requests.
+> > I don't have USB 3.2 but It believe it has the same wording.
+> > 
 
-Reviewed-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+The patch modifies both xhci and hub.c, and the keywords 'command' come from the xhci driver.
+I will change 'command' to '(all)request' and newly added 'address_device' to 'SET_ADDRESS' in hub.c.
+That sounds better for hub.c
+
+> > [...]
+> > 
+> >> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> [...]
+> 
+> >> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> >> index e1b1b64a0723..0c610a853aef 100644
+> >> --- a/drivers/usb/host/xhci.c
+> >> +++ b/drivers/usb/host/xhci.c
+> >> @@ -3998,11 +3998,17 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
+> >>  }
+> >>  
+> >>  /*
+> > 
+> >    You seem to be converting the existing comment to a kernel-doc one
+> > but you miss changing from /* /** at the start and adding colons after
+> 
+>    From /* to /**, I meant to type...
+> 
+> > the param names below...
+> 
+>    This comment update also looks like a meterial for a separate patch...
+>
+
+I think this is acceptable in the patch since it modifies the function arguments
+as well. I improved the existing comments while adding information about the new
+argument. However will update /* to /**
+
+
+> >> - * Issue an Address Device command and optionally send a corresponding
+> >> - * SetAddress request to the device.
+> >> + * xhci_setup_device - issues an Address Device command to assign a unique
+> >> + *			USB bus address.
+> >> + * @hcd USB host controller data structure.
+> >> + * @udev USB dev structure representing the connected device.
+> >> + * @setup Enum specifying setup mode: address only or with context.
+> >> + * @timeout_ms Max wait time (ms) for the command operation to complete.
+> >> + *
+> >> + * Return: 0 if successful; otherwise, negative error code.
+> >>   */
+> >>  static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+> >> -			     enum xhci_setup_dev setup)
+> >> +			     enum xhci_setup_dev setup, unsigned int timeout_ms)
+> > [...]
+> 
+> MBR, Sergey
+
+Thanks,
+Hardik
