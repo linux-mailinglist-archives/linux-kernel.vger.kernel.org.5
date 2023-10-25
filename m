@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DF67D65B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057F27D65B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbjJYIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
+        id S234414AbjJYIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234456AbjJYIsL (ORCPT
+        with ESMTP id S234537AbjJYIsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:48:11 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E161BD
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32d9d8284abso3588040f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:08 -0700 (PDT)
+        Wed, 25 Oct 2023 04:48:18 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C1010D1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:15 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507b96095abso8044600e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698223687; x=1698828487; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698223693; x=1698828493; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PmU0JSwBBTCbuAIvfPvlwQrKuSI376moyh5uECvCBNA=;
-        b=xE+0qqNuS86IseO+0dm7hKlbTzSHBIX3S+WFFdpJENnavkfvetlH6ESLIjr1ycPyle
-         9u7Etn1r5MU47n8CqlA9I13sr2FgE6naSZPKpcUuMywguwIhxDuNtSeax8LF8WH4nD+g
-         /zk/Z2YNl5qKZ1+aR/ZJe2ZVcfSEXS5GLR/ckw5qsDmGmQnm5M3lGejSA+HR0QG91Qug
-         6S5Pn+lQ7PBjQc1MPUp6e2KpzEeflEFCj+a4z+AHHmoZ1sITjnesqpSND/n+NhuRSs5M
-         ggVxHF53Qp7ce86fFDGoIN5Mctadg8Q5iraEiYH3+85bWVSwHg2EFsEgoTgjxiqTCHWH
-         TXVA==
+        bh=FkqJduOzXjPNoXLYlUx0HTE0sa8mKdyOyNN/qLkGEQk=;
+        b=uHLZudRhJNy45uXTBSwoB+3N9oz3hBHE6SB/irewveJL6hV6N8qVkwq2/LDHqZXcGl
+         BywboyCQb2YT3TA49+hJJJWhJwmrkLr1B7ZtGbr32PTR0BJ1weYIx1CwFnZLiLHT8g8L
+         AuozNoJ5wBrfEMiGVZeGdrmJHHZzQSYzizVXaS7WLbYtL9tUvQ21Aq+/VOhMHFLzq3No
+         q60r14HRKUvscEE9x9AK/SCvJTSg95EjEsdS5MCNHoMceBkoZdts/bhchma3Yezb3OkM
+         QHBpLfRFlpKixrsFNyFQS7cueZnfW5qZHHwq4zhpiPKx3xJO1UYxnNU93kDHcz8akDFW
+         6hfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698223687; x=1698828487;
+        d=1e100.net; s=20230601; t=1698223693; x=1698828493;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PmU0JSwBBTCbuAIvfPvlwQrKuSI376moyh5uECvCBNA=;
-        b=dqmv0Fs0XCDdb/uzsxJbRpuSHnE+Z/RLmovNNuN1VtEL0NVRdr9BAhH1g79WIYxlAG
-         ZZ1xMmfmJYgmLWo9hdqQVmMo8kY60mDVfWVd4xvWeU8kH2ehy3WU73Y+sHsoEZW76GZO
-         C5mw1XkOlDklTPZiWamv2NbP+rHjAlJfSOgFNV+TNb2cEG9Gc0G1g2+q5UUD0CjtTyuq
-         bnIhh719lf/ZpDwLcD7TzgwXQ0aUm4KhgLVtSqkNDyeAMX0VPTAU51XxxiIu9QhyUrR5
-         ns1ddQxAJsYq3wHUYEPCM4DOKYfZjpmvsdBZTS265UcESRmN186nslJArbVyF0PcJNmr
-         wHSg==
-X-Gm-Message-State: AOJu0YzQW2wn42GvvMiX+s/HQcEVnl3KM2e8zOnBJAygtTXeEbTT3dCV
-        uaBB+iBuCs+YRv3zfBBEcFzCCA==
-X-Google-Smtp-Source: AGHT+IGuYPayor/rtxON3pA5qwyVcx7ZIFA44YA8KYUSvbFp5oFPl7FBWsszIKelwt9ulWA6cZ7Q1Q==
-X-Received: by 2002:a05:6000:1ce:b0:32d:96dd:704d with SMTP id t14-20020a05600001ce00b0032d96dd704dmr9457920wrx.18.1698223686859;
-        Wed, 25 Oct 2023 01:48:06 -0700 (PDT)
+        bh=FkqJduOzXjPNoXLYlUx0HTE0sa8mKdyOyNN/qLkGEQk=;
+        b=orWYfBDMZeGTfBJgDHbQAYK2pqs9+KT+d3qTlVLPVR618yyyX4QbM67flBMhRfB2gd
+         O4CdOUc3+Y/o9JFDqlXyeOnYcS+5QrTEGn4QAWQ025SzMym/HeJO9CNT7ewUGWcC6hSq
+         ML2M5aHClNGDETpsDr7RQdrXie9/r/kqDZb308UgIMgEfPpnNmKUdq7SViijYVfXDvTt
+         laeWK8ENKqMl1vhQfxIjUfjm79szqRDZGt8gECZIkbxQRr22K7BZ2mNrjxYqftGzK6gB
+         zCPO8jNoRhfzo/Gwv4AMKWEqsKiva25HrjFkeD4QqlwBdTlmOkSJRmPUJSPDkX/XD0ux
+         Q02A==
+X-Gm-Message-State: AOJu0Yzid0CKRyc+AgXb2AANEt3LSjUO/Jf7QhOQn3WslQLx96dWV/aH
+        qkHtlwHHp4OuYYbVH4nJXwDmtg==
+X-Google-Smtp-Source: AGHT+IEzsioGuOlLUiHFaykpAmOanNYr48M8ck95W0xTGCJUWYPuW+XgpSTKCPhTiTwUZsf+kkCqKQ==
+X-Received: by 2002:ac2:522c:0:b0:503:3278:3225 with SMTP id i12-20020ac2522c000000b0050332783225mr9410863lfl.63.1698223693565;
+        Wed, 25 Oct 2023 01:48:13 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id q11-20020a056000136b00b0032dc74c093dsm11622009wrz.103.2023.10.25.01.48.05
+        by smtp.gmail.com with ESMTPSA id q11-20020a056000136b00b0032dc74c093dsm11622009wrz.103.2023.10.25.01.48.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 01:48:06 -0700 (PDT)
-Message-ID: <04fae330-0866-408a-8016-b6f897f9550e@linaro.org>
-Date:   Wed, 25 Oct 2023 10:48:04 +0200
+        Wed, 25 Oct 2023 01:48:13 -0700 (PDT)
+Message-ID: <8154fb11-c18f-4d22-a02f-7fe1a6c4f012@linaro.org>
+Date:   Wed, 25 Oct 2023 10:48:12 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] Add samsung-matisselte and common matisse dtsi
+Subject: Re: [PATCH v3 2/4] dt-bindings: arm: qcom: Add Samsung Galaxy Tab 4
+ 10.1 LTE
 Content-Language: en-US
 To:     Stefan Hansson <newbyte@postmarketos.org>,
         Andy Gross <agross@kernel.org>,
@@ -67,6 +68,7 @@ To:     Stefan Hansson <newbyte@postmarketos.org>,
         linux-kernel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
 References: <20231025083952.12367-1-newbyte@postmarketos.org>
+ <20231025083952.12367-3-newbyte@postmarketos.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,11 +114,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025083952.12367-1-newbyte@postmarketos.org>
+In-Reply-To: <20231025083952.12367-3-newbyte@postmarketos.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -126,24 +128,27 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25/10/2023 10:37, Stefan Hansson wrote:
-> This series adds a common samsung-matisse dtsi and reworks
-> samsung-matisse-wifi to use it, and introduces samsung-matisselte. I
-> choose matisselte over matisse-lte as this is how most other devices
-> (klte, s3ve3g) do it and it is the codename that Samsung gave the
-> device. See individual commits for more information.
+> This documents Samsung Galaxy Tab 4 10.1 LTE (samsung,matisselte)
+> which is a tablet by Samsung based on the MSM8926 SoC.
 > 
+> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
 > ---
-> Changes since v1:
-> 
->  - Rebased on latest linux-next
->  - Added qcom,msm8226 compatible to matisselte inspired by recent Lumia
->    830 patch. This is done as in v1, the patch was rejected because I
->    included the msm8226 dtsi despite not marking matisselte as
->    compatible with msm8226, and I was not sure how to resolve that. As
->    such, I'm copying what was done in the Lumia 830 (microsoft-tesla)
->    patch given that it was accepted.
 
-One version per day, so you won't ignore tags.
+This is a friendly reminder during the review process.
+
+It looks like you received a tag and forgot to add it.
+
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+If a tag was not added on purpose, please state why and what changed.
 
 Best regards,
 Krzysztof
