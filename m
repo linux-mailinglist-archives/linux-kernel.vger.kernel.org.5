@@ -2,107 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D0D7D882D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239E47D8833
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbjJZSUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
+        id S233035AbjJZSWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbjJZSUw (ORCPT
+        with ESMTP id S231186AbjJZSWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:20:52 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8811B9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:20:50 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b2f4a5ccebso742561b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1698344449; x=1698949249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zD9c3qk1zR7XohQX5ahXN11vQdLFMJ+dj+AbgUO48eE=;
-        b=MkwQingpnUfpWQ882rMdNyp7ER7EpAotba/gzkXUCa4J1oCl4TCs46N+Hm4G16vYWD
-         oZk10J8ZtbCdk0Ik53iCqD5n25hz7FZ4/ZFk+ov2tX1h/kY8XxgyVg/n2m1p4omnCfik
-         fqv0T2BFCQQ1nNp1EOVlBFcpqJW4lj1t/oJfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698344449; x=1698949249;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zD9c3qk1zR7XohQX5ahXN11vQdLFMJ+dj+AbgUO48eE=;
-        b=vFSp6Vl7ukse8nIFqbDASFikAX0gFrGr8DLn4PeVoBvO792c5XiOO1y3gJqLrNI32S
-         5bIywhVDFYbCZBjHWtOQpfloFUzy8RWMDuiRxdvWivforByEz2MdQEZvT6Wch7beatUQ
-         gLHdb+C/ykWrMRIrjCw+ExJYdFjQYpjgXKiGzSOzeUKyHrkTDqZ71hsAvLj/e1Wlxj8U
-         P0M8c/h3xEdyYLWhjb6OwkwMEa/xlwvgpH4tva8ztb2IKa9OhteKCNoSm2fNnqDlSeKe
-         KZ1jTF+NrFXi5KYhm+3GEHQB+L6aPANM0XLOhm4amKOie5p0GwRx21LeC5KzWlj/Fhvn
-         GEBw==
-X-Gm-Message-State: AOJu0YzSGuEKVJLQm8TcrOAxmzd+XqRMPzTa4QkaA4gnhPDhzkweS8eH
-        Sfe3kI3FaqwcBqSe9LBFQNGpwA==
-X-Google-Smtp-Source: AGHT+IF81kqYKRpUAdo55BhO6rS7qI2l7xrzwZ9WNDOVB0ff4TIsIPfZ0l6kDz3LLIAX4RzIAJN5ig==
-X-Received: by 2002:a05:6808:f8e:b0:3af:9fc4:26c6 with SMTP id o14-20020a0568080f8e00b003af9fc426c6mr171353oiw.20.1698344449334;
-        Thu, 26 Oct 2023 11:20:49 -0700 (PDT)
-Received: from [172.22.22.28] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.googlemail.com with ESMTPSA id u15-20020a056808150f00b003ae5cb55513sm2889138oiw.38.2023.10.26.11.20.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 11:20:48 -0700 (PDT)
-Message-ID: <5d457162-d20a-43a5-989e-ef263fbd91b2@ieee.org>
-Date:   Thu, 26 Oct 2023 13:20:47 -0500
+        Thu, 26 Oct 2023 14:22:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C39192;
+        Thu, 26 Oct 2023 11:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698344534; x=1729880534;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=cYIxkR82XJN7QwgqI+OKwTqx/44GZ0qbMpYYJhx2f0k=;
+  b=QnBIt7bmSZVy4HsKubEwvHmbQvNNAaZIH1J8NSltswB4BLGsvX35ILon
+   KNAbWELeUwZk0gE3Zzg3MPWTctBFxUfNxCI5hh85yDOa5bXDNhi+qbKNq
+   umjq6hLLrdwGJQjGKIdKUC4S/wgoXtbIh5Ga2In5Pge414cW6WVtwhDyd
+   jmRYIpGtnAac/lWTaZBetwzPfriJ0aApg3eHsy/1LZYeCTDyHLlyyvEP/
+   QqLUUKy3LBw+t07ZIWGz0S4CxDgEyMIATzJaVz45wgsSDQZIMucBF4irr
+   AZVP5G2G2n8bYj0fHlEyuMsWhItgbdEIlPh2VZ8hNbvMV4KYTXnO2WzXU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418733766"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="418733766"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:21:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="825087494"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="825087494"
+Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.121.242])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:21:40 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH RFC v2 0/3] efi/cxl-cper: Report CPER CXL component events
+ through trace events
+Date:   Thu, 26 Oct 2023 11:21:37 -0700
+Message-Id: <20230601-cxl-cper-v2-0-314d9c36ab02@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] staging: greybus: bootrom: fixed prefer using
- ftrace warning
-Content-Language: en-US
-To:     Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     kumaran.4353@gmail.com
-References: <cover.1697976302.git.nandhakumar.singaram@gmail.com>
- <39be7bb04ce1362b00aa31a638ebe2e88dd81fec.1697976302.git.nandhakumar.singaram@gmail.com>
-From:   Alex Elder <elder@ieee.org>
-In-Reply-To: <39be7bb04ce1362b00aa31a638ebe2e88dd81fec.1697976302.git.nandhakumar.singaram@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADGuOmUC/2WNTQqDMBBGryKzbkqMJWpXhUIP0G1xEaeTOqBRk
+ iAW8e6Nbrt83w9vhUCeKcA1W8HTzIFHl0CdMsDOuA8JficGJVUhtcwFLr3AibxQ2lqsiho1akj
+ z1gQSrTcOu/0wmBDJ78XkyfJyOF7wfNyhSWHHIY7+e3jn/Kj+FXMupKjr1lwKW9mylDd2kfozj
+ gM027b9AFG98ky+AAAA
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-0f7f0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698344500; l=2842;
+ i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
+ bh=cYIxkR82XJN7QwgqI+OKwTqx/44GZ0qbMpYYJhx2f0k=;
+ b=7s8SBu/QCI7hecIDsrUe8LMAN6XHfjY8UjXGzODOwwEV327s8tzPiyPjmOufnZe6EodIcttB9
+ XVe0rrsDjivCZUnvC5CiRqAnqGaBqx1iOv8LqnggOV4nQJgNOUderDX
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/23 7:22 AM, Nandha Kumar Singaram wrote:
-> Adhere to linux coding style. Reported by checkpatch.pl:
-> WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-> 
-> Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+Series status/background
+========================
 
-This change looks reasonable to me, though I don't think
-ftrace provides device information.
+This is another RFC version of processing the CXL CPER records through
+the CXL trace mechanisms as Dan mentioned in [1].
 
-Acked-by: Alex Elder <elder@linaro.org>
+I moved forward with eliminating the GUID to UUID conversion I mentioned
+in the original RFC thread[2].  Instead a new event type is used once
+the GUID or UUID's is used to decode the event.
 
-> ---
->   drivers/staging/greybus/bootrom.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
-> index a8efb86de140..79581457c4af 100644
-> --- a/drivers/staging/greybus/bootrom.c
-> +++ b/drivers/staging/greybus/bootrom.c
-> @@ -491,8 +491,6 @@ static void gb_bootrom_disconnect(struct gb_bundle *bundle)
->   {
->   	struct gb_bootrom *bootrom = greybus_get_drvdata(bundle);
->   
-> -	dev_dbg(&bundle->dev, "%s\n", __func__);
-> -
->   	gb_connection_disable(bootrom->connection);
->   
->   	/* Disable timeouts */
+This remains compile tested with only.
+
+[1] https://lore.kernel.org/all/6528808cef2ba_780ef294c5@dwillia2-xfh.jf.intel.com.notmuch/
+[2] https://lore.kernel.org/all/652f45e29915c_2bb07d2949b@iweiny-mobl.notmuch/
+
+Cover letter
+============
+
+CXL Component Events, as defined by EFI 2.10 Section N.2.14, wrap a
+mostly CXL event payload in an EFI Common Platform Error Record (CPER)
+record.  If a device is configured for firmware first CXL event records
+are not sent directly to the host.
+
+The CXL sub-system uniquely has DPA to HPA translation information.  It
+also already properly decodes the event record format.  Send the CXL
+CPER records to the CXL sub-system for processing.
+
+With CXL event logs the device interrupts the host with events.  In the
+EFI case events are wrapped with device information which needs to be
+matched with memdev devices the CXL driver is tracking.
+
+A number of alternatives were considered to match the memdev with the
+CPER record.  The most straight forward comparison is via serial number.
+
+CPER records are identified with GUID's while CXL event logs contain
+UUID's.  The UUID was previously printed for all events.  But the UUID
+is redundant information which presents unnecessary complexity when
+processing CPER data.  Remove the UUIDs from known events.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+Changes in RFC v2:
+- iweiny: remove uuid from existing known event traces
+- iweiny: pass an enum for the event type.
+- Link to v1: https://lore.kernel.org/r/20230601-cxl-cper-v1-0-99ba43f8f770@intel.com
+
+---
+Ira Weiny (3):
+      cxl/trace: Remove uuid from event trace known events
+      firmware/efi: Process CXL Component Events
+      cxl/memdev: Register for and process CPER events
+
+ drivers/cxl/core/mbox.c         | 45 +++++++++++++++++++++------
+ drivers/cxl/core/trace.h        | 10 +++---
+ drivers/cxl/cxlmem.h            |  7 +++++
+ drivers/cxl/pci.c               | 69 ++++++++++++++++++++++++++++++++++++++++-
+ drivers/firmware/efi/cper.c     | 16 ++++++++++
+ drivers/firmware/efi/cper_cxl.c | 40 ++++++++++++++++++++++++
+ drivers/firmware/efi/cper_cxl.h | 29 +++++++++++++++++
+ include/linux/efi.h             | 59 +++++++++++++++++++++++++++++++++++
+ 8 files changed, 259 insertions(+), 16 deletions(-)
+---
+base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+change-id: 20230601-cxl-cper-26ffc839c6c6
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
 
