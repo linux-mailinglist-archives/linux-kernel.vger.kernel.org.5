@@ -2,231 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF287D7E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D39D7D7E07
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbjJZIDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
+        id S231406AbjJZIEK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 04:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjJZIDk (ORCPT
+        with ESMTP id S229567AbjJZIEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:03:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A46CDE
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698307418; x=1729843418;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qMt5ZPojg75JkAqXGf7jIl0RxhOEj13z6uep9k/4hfc=;
-  b=lFZoA94xSZ5zaNLtYfrv9bDmK50xekmkLR8fQzj6zX9gE4mK/RuAJeOz
-   11geYk2tmdlErCRirtm6SYuv6u0IGMSS+NEhZJdgvOf51VRGU+oJr5S78
-   KIBEVTH53xXw4/H/oSgelU6yWltH5Uv652fmLkF/LKw+Xn9+xUF9f7j19
-   vGPNrxxOomgmQRQVnTUoxhqqpGnfxZEb8fvAgGKz/JUCPFB/AusRYv8SU
-   FzRHRvwTFOm0FfXSDj9dZ+NbYonRV40ojTN5AkDe0dW/b+ajHliV7ypsg
-   5VU46Wv0e72rRCKypm8ej7KeiJLaO4SH7z7oxU4d29b+PVF9m3g0NCSws
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="279183"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="279183"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 01:03:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="849839867"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="849839867"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Oct 2023 01:03:37 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 26 Oct 2023 01:03:37 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 26 Oct 2023 01:03:37 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 26 Oct 2023 01:03:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fk/XDtOzqGX9PEEnqmPuhIXpoFKf2rLBMA+bTXSnOOYKJsNgqsy8SLkFJGew5A7miyRgPuFt7shGPRocAHNYRC9rhzbOVtHArtZXWCJtLxoOdoRS1GcPDOrW/BX7SzbpTEO1uJ4qLDwD77DatSBRijoKuUyr2iRjn+nh1vfVUyDXygGs2SjDHgTSwXR7XfYnDfdL8lnqOUsQ5l/CK3Qe0IUmGGedpQWboOkDMnGyhoZp9laNE4eDzaDKy7FFhEZu4H8sqY0oVAYjSPdUbagwJEmTEMiaqOSkTU/s8y+BFHFQ/I7FtckTnWxVlNOrYhPDfbGEw9LWfQtOhLt6q+hZ+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1P/fS0Vlqi5Nt8eecP4n+1FwAAEYHC2se5GcWCjn0r4=;
- b=K5/FpDik3hH7fy7L92+Io3ggqBmzYWs/B0597rPEKy+uuGTFCEnWjvhvrbTFRtglcIcNzZcSfwAr+gwvHeXqL1fEN+rURYolW9RICKCLNFgqTUZEf2Nm1YsfE9UL9qFQ/shJ+30AqWKo7kvNkFHu9ebu3epLrhoM5qlDepebaNUwf+SnLctoLm0XGk/fRHoPpcjlVc02xe6A2VuW3MdCRZ0ifAL6jMv4chPLEu2m8QPR1hmj81QWnwvVzr3iQ6GhT7J5CDmDjp/o2p4y+0T78bb+tWFjXeI+yBgdmrii39H7K9Aj6NdDrtjaFYyK1zqyNlWyYpw29jYzGS66mheUaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BY5PR11MB4243.namprd11.prod.outlook.com (2603:10b6:a03:1c8::16)
- by IA0PR11MB8334.namprd11.prod.outlook.com (2603:10b6:208:483::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.44; Thu, 26 Oct
- 2023 08:03:34 +0000
-Received: from BY5PR11MB4243.namprd11.prod.outlook.com
- ([fe80::bbfc:d1f2:512c:2f97]) by BY5PR11MB4243.namprd11.prod.outlook.com
- ([fe80::bbfc:d1f2:512c:2f97%4]) with mapi id 15.20.6933.019; Thu, 26 Oct 2023
- 08:03:34 +0000
-Message-ID: <adbd431d-39b7-8026-bc38-4741bc037ef4@intel.com>
-Date:   Thu, 26 Oct 2023 10:03:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/i915/gt: Remove {} from if-else
-Content-Language: en-US
-To:     Soumya Negi <soumya.negi97@gmail.com>
-CC:     Andi Shyti <andi.shyti@intel.com>,
-        Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>,
-        Aravind Iddamsetty <aravind.iddamsetty@intel.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20231026044309.17213-1-soumya.negi97@gmail.com>
-From:   Karolina Stolarek <karolina.stolarek@intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
- Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <20231026044309.17213-1-soumya.negi97@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DUZPR01CA0349.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b8::14) To BY5PR11MB4243.namprd11.prod.outlook.com
- (2603:10b6:a03:1c8::16)
+        Thu, 26 Oct 2023 04:04:08 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643ACAC;
+        Thu, 26 Oct 2023 01:04:06 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a7af52ee31so4622797b3.2;
+        Thu, 26 Oct 2023 01:04:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698307445; x=1698912245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BB0o43vI8z74zHN6iTW8mGP9lEUheGzyrHw+L3QBcAU=;
+        b=JeA1TQpH5XF6GXKsOr36H4iFgCCgLV0o7V3peAva9X6sAt9c/S5O7CK77q5k9bcO+J
+         HICNMC2D+8nua+W28UGgzdIlEieu4Qqw2OYxXHbCY4DKj/W8CCAjuxVrqwYaoyAibF3h
+         P7FehwUNz7ZRxVK/2Byjov9+KsdTjSPT0P5+W2y6ll8NV/msn7MdGGNY4YDPqusf+l4X
+         nBCb4zvcwfYoiQk9B+ILLKkaz3p2rp91/kFyjRhWw7gw64/E+tBlaTFfOnjX97PhCYs9
+         FaYKQ9dnCWeXDwLWhSVhHKWZJUWocnn88Iw006zchI72uKmZkaPVuL6v1lJCTztHxcBR
+         RIQA==
+X-Gm-Message-State: AOJu0YyB//pSvqqNTPaLeJfpxgFrr+UEmLDEhh+XOUom2c1wr9TZjxB1
+        rnlpuQv7jq6TE2POMSzDXbcdSv1w5gGsrQ==
+X-Google-Smtp-Source: AGHT+IE9ex1R+42ZVJcYrtkyoj3B4oqnZd2OfHE5JGCl6BPlE6pkYARcDhF/dg4Cg2aLDESbuS4wCQ==
+X-Received: by 2002:a81:48ca:0:b0:5a7:c973:c82 with SMTP id v193-20020a8148ca000000b005a7c9730c82mr18888071ywa.13.1698307445417;
+        Thu, 26 Oct 2023 01:04:05 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id j143-20020a819295000000b005a8a7d4f9a5sm5745999ywg.28.2023.10.26.01.04.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 01:04:05 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5a7af52ee31so4622687b3.2;
+        Thu, 26 Oct 2023 01:04:04 -0700 (PDT)
+X-Received: by 2002:a0d:e84b:0:b0:589:8b55:f7f7 with SMTP id
+ r72-20020a0de84b000000b005898b55f7f7mr17337962ywe.39.1698307444821; Thu, 26
+ Oct 2023 01:04:04 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR11MB4243:EE_|IA0PR11MB8334:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb1ac768-8773-43ac-227e-08dbd5fa0c96
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uevMFAYI7CYQ5njHqkaFYu5LU6kbfGSewm02GGLJGS5ySHstZ7kHsv9o1PFu3+wMCS0xGJD1ya0NS3DjH36HMS2QcqMKTcYsUm3JN/BcIuafNYHvul/TKva7XikkDkDsHKB8DR8Dfb2F20ff1Z2QQo//boH1m4bdOdWfXT+Ewh5B3UJI21pMRCtBxhO96rfYpKKiWTppy96Lqvqy4m0/A4bvuCyAYVzcHGV6vAy8HVC1P1PEOQ0alm5G+Zg60MswNAasuy+15a9aaK2YMEXlinINcnl+ORL+mmF0UdH1U3W1ZqsVh+pb0XtkEFG3CygGjkkcLIcltYHcT4HYtFP4IUXQMzhjL8JpEQVhxiWOvAEN6Dne6xc4HT1YegX5Z+NE8OwIZ8LxBGCsoIsqU8tBwO7axKB/3qumVfsFUsmEyJMi9xLoXOXs355IUOY5V6YOu9P1haXYymvF7F59D07xinoL0KermIeR5cWEVrLJl7iddDZvhA/cw6WQyptZwkCd5OoA0KLuzqJZLFRstWxHaQFUlxKmMEx1dddUkr/b+WV2Uk46veO94aX4Dn8bl/kZLyZfPgLMl6QaCo2ucRhonuRpmMVNNzSSVJ6K7kYAHsEAGj3UMkTN0mKFrY6stXP1AgB3yodzK3k6j5cSNlc3HOrAcQM+cz5CSOQlu11BLMlkK2DKJgR9UQD9C9IlthfL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4243.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(136003)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(31686004)(83380400001)(316002)(31696002)(36756003)(41300700001)(82960400001)(86362001)(2906002)(5660300002)(44832011)(478600001)(6666004)(54906003)(6486002)(66556008)(66476007)(66946007)(4326008)(8676002)(8936002)(38100700002)(6512007)(53546011)(6506007)(36916002)(6916009)(2616005)(26005)(125773002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVRydjBEMjRRM2Fmdm9vQkx1YWNWZGZYdXJyQWZUMzcxN0hBWHR5UUs1a1Ja?=
- =?utf-8?B?eENiWEhwR0JlTElKZVRIRUwwWEFLb2lva0tJZXJtNE9WOUhveS9hUkNkQkZM?=
- =?utf-8?B?eVMxZzUrcExxOUkweWFHZ3ZNY2RkR2JVcS9aZTFRd2ZnSTdWN0tHc01lQ09m?=
- =?utf-8?B?NGE0b3pmQnJKclk5Qk9iSlJkeWtlSFplR0cwYlJuQ1Rvb2JrM0R1Y3hyV3lN?=
- =?utf-8?B?WXd0N2NEb0dTak5VcVZTVVI3SG5lZmRHckVURmRmdktBNnBLOE5DeGNWVmF5?=
- =?utf-8?B?SzIrcFRQcnRBQVFSTTJ1VFlLU002dTBEaHh5YmxKTU1GUmlQSnQrUXlQeUpH?=
- =?utf-8?B?SHowZkorT2pzUXJLNFZjTE8xdE9Fa3JZcHREdUdaZkJ1T2ZvUkZiaU5RZmJw?=
- =?utf-8?B?ekFEeGttdnFJZ2JKdURSQUYremh3QVVBTWRMV2xGWk8yN2FOMk9RellZT3FQ?=
- =?utf-8?B?VWo2K3M3K0VnK29FTkViZ0JOeGhwakxMb0hWajlYdEwxUFo4YkxBalZxTnVu?=
- =?utf-8?B?WEtJWXFtUEtXakNCOUtNL01NVXdNc1IzZkp0VTlkY3A4c3RzRmtMcVFoTXZv?=
- =?utf-8?B?ejh6MXVxUThVZzd4R0lLVDN5ZlBrLy9UZlcxeTdQamhlU2NrWS9NYWwvYjZV?=
- =?utf-8?B?elZCbkZleFhFSmFveU14cm5BK3lTc3ZTaHZibXE1WUxHMmR6b3YzOWVuaXI4?=
- =?utf-8?B?VlUza1hUcERHZ0k3K0Y3OVBVR1h4YmFPU2NqS1BBVjExcmRVN1MzaEJ3aVV1?=
- =?utf-8?B?azRwRmJnejVxSWovUEZVVWVaSnZNMFhoT1AzdTlzUVhPSFpVKzVsejJtbnVP?=
- =?utf-8?B?RjE4enFMZE1NUytsWW92MC9LdWt3SDFtb1pPcVpyY20vQ3pwNXZodkg2TVZG?=
- =?utf-8?B?c013L3V3U1F6ZWNYcjFMM01HWndXWjl5T0NiSHdxbitiRittZHg0dWZIZjhH?=
- =?utf-8?B?WjRlQlNxSWFIQlFmcDRNb2YrUHFFNTg2WmRvTUgrd2JrZkp3T0FzeUgvSGZF?=
- =?utf-8?B?SnBWeXlGZUlzWjFESXhnTmRLVmd5Rmtyc2xLeFdCZWJlcGJ6S2UrZXpDNjlP?=
- =?utf-8?B?WC9SNUR4ZXVaTUhNSFhadDhJNUR5eWkwZ0t4NTBQaU04alFyeC9KZ2ZRbk94?=
- =?utf-8?B?S05OamVvK0hMU1djaGhUK3U5bFRjM3lnK2xYb3BPNUtPSmtmVExmM2Y3eDBz?=
- =?utf-8?B?UWFHaEMzZE9aMFNOeUlMb3V2K3FraElJMThKTDlSTHVLQU13NEp1b1VFMWpC?=
- =?utf-8?B?UTdldkZldEc4UERuMVRjYlpJYnhoRjFOdW1wNDVCdVgweVB6SytzREI4OWdT?=
- =?utf-8?B?MVB0R2JKRU5YcU1weVVNNFJBVFJNRldEL3VqOWYrdXc4RjFscW52aFp0cXlv?=
- =?utf-8?B?dHFyNXF5VnNFWGJaRGx5alRTb1dITGdZYXFvdmVCdFMxajBlSWZlMEkzQkpa?=
- =?utf-8?B?bWJxTkVOcWcxTyt2aFEzNXpTQ2pkZFMyUHdIUHp4T1BRZ1A0M3Q0RXQ3TVQz?=
- =?utf-8?B?L01maFkrN1psdW5vL0szQ1pPdjBMSll1YmRmUENoaHltL2U2VFhueEtlTFJr?=
- =?utf-8?B?R0dFWVFrREN3MFdxMXh6VTRQV0NnQ1dNNmlBbzVpVmwyY1dreUxMb3hwamR6?=
- =?utf-8?B?M1dWMjdqRFlCQU1WV3NSNSs0M2MyOE1oNldadzZwUGNrODUvOTdHdCt1ZUVo?=
- =?utf-8?B?ZTdoSjMwcFJsdkZUMzZQaEd3VzJoYUp5eHFOTFgzR2FOSlgwcmdiYm5VaFpV?=
- =?utf-8?B?OTRqUjJhbTY0aFgxNStqTWlwZW5mNkxsVkUvd3p6ZVk0WnpVYkgzK3l1bU1s?=
- =?utf-8?B?NFhabGdLSGMrZkRvZWNPcGhhVWxtWTRBNkdBcXgrMVZ1c0p5Sm9pQ3BVYXE0?=
- =?utf-8?B?bXNCL3VkUUQvOVVaSzVCYmNLcGhGdWpaUk9qVW9jM3hhYW8xYlhHQ1k3ZXVE?=
- =?utf-8?B?a1A3bHJMd05pOEltdnpWWmlDaFlVeDd4Z1dNeEFKRk9GaE9SQy81eWp4SE9v?=
- =?utf-8?B?M3BoRy9Qa1B0NTMvTHpPcE9qVjhyMWVZMEdOc1Q0VHplZkVHbUtLTGs0QmV3?=
- =?utf-8?B?bmhmaTh1eXk4UlF5TTI5NnppdEV2MjRTRDdoRFZGcWU2emljWVZiazlQbHhU?=
- =?utf-8?B?SWlrQW9IYU4wS0xWZ24zdUxMRWV0Qy9sZVR6TXFYekJTWHFMS1Mwbnh2T0xt?=
- =?utf-8?B?MVE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb1ac768-8773-43ac-227e-08dbd5fa0c96
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4243.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 08:03:33.6463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xVGV1AtrlX1N1gU2y/LowmA+U0Qo8SlNGCiDSru+d0Z5NPha1/lPNMO4c0mYYyhbSaXI9kfmDa0X0tUytqoBmO/mnomD0lWw+MUgCbm3Fsc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8334
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231026063941.1882023-1-peng.fan@oss.nxp.com>
+ <CAMuHMdUA_OOvQmkZXn21pxC=nTw6wHQZp1P8mNjTca65+KjxAQ@mail.gmail.com> <DU0PR04MB9417B338597E78EA51B7F6DF88DDA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB9417B338597E78EA51B7F6DF88DDA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Oct 2023 10:03:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXR1K9+HsJcq+E=BLJpNpgF2vgYY0kv2_2H85oGq6wpXQ@mail.gmail.com>
+Message-ID: <CAMuHMdXR1K9+HsJcq+E=BLJpNpgF2vgYY0kv2_2H85oGq6wpXQ@mail.gmail.com>
+Subject: Re: [PATCH] clk: clk-conf: bypass setting rate/parent if already same
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "abelvesa@kernel.org" <abelvesa@kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "clement.leger@bootlin.com" <clement.leger@bootlin.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "cristian.marussi@arm.com" <cristian.marussi@arm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "pure.logic@nexus-software.ie" <pure.logic@nexus-software.ie>,
+        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
+        "aford173@gmail.com" <aford173@gmail.com>,
+        "absahu@codeaurora.org" <absahu@codeaurora.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peng,
 
-On 26.10.2023 06:43, Soumya Negi wrote:
-> In accordance to Linux coding style(Documentation/process/4.Coding.rst),
-> remove unneeded braces from if-else block as all arms of this block
-> contain single statements.
+On Thu, Oct 26, 2023 at 10:01 AM Peng Fan <peng.fan@nxp.com> wrote:
+> > Subject: Re: [PATCH] clk: clk-conf: bypass setting rate/parent if already same
+> > On Thu, Oct 26, 2023 at 8:35 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > If the original rate and parent is already the same as what users
+> > > wanna to configure through assigned clock rate and parent, there is no
+> > > need to configure them again which may cause more cpu cycles or more
+> > > SCMI RPC calls.
+> > >
+> > > So check the rate and parent first, and bypass when the original rate
+> > > and parent are same as requested by device tree node.
+> > >
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-I'd just keep the description simple, and say that braces are not needed
-for single line statements.
+> >     /**
+> >      * clk_get_rate - obtain the current clock rate (in Hz) for a clock source.
+> >      *                This is only valid once the clock source has been enabled.
+> >      * @clk: clock source
+> >      */
+> >
+> > So at least the second part is not guaranteed to work?
+>
+> I am not sure, but seems there is no clk enabled check in clk_get_rate
+> function.
 
-The patch looks fine to me. Andi, if you decide to merge it, feel free
-to add my ack.
+There is indeed no such check.  On most hardware, clk_get_rate()
+works fine when the clock is disabled, but that is not guaranteed to
+work everywhere.
 
-While we're here, I wanted briefly discuss how to construct To and CC
-when working on i915 code. These are not hard rules (and some developers
-might disagree with me), but suggestions on how to get the right people
-look at your code and reduce the noise (decided to drop maintainers;
-they'll be able to join the conversation from their subscription to ML)
+Gr{oetje,eeting}s,
 
-First of all, if you work on something in i915 that only touches this
-driver, you should submit it to intel-gfx, and there's no need to
-include dri-devel. You can, but that mailing list is mostly used for
-changes that are either for DRM or impact other drivers.
+                        Geert
 
-Secondly, try to include only people who are directly involved and
-potential reviewers. You can CC maintainers for bigger changes that
-require their involvement, but here, it's enough to include Andi, myself
-and someone who added this piece of code.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-So, if it was my patch, I'd have intel-gfx in To: and Andi, Prathap and
-myself in Cc:. get_maintainer.pl script might've added a lot more people
-there, so I'd move away from using it, and only include developers that
-are involved or interested in your work. You can always reach out to
-Andi and me before sending your patches, if you have any doubts.
-
-All the best,
-Karolina
-
-> 
-> Suggested-by: Andi Shyti <andi.shyti@intel.com>
-> Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
-> ---
->   drivers/gpu/drm/i915/gt/intel_ggtt.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/intel_ggtt.c b/drivers/gpu/drm/i915/gt/intel_ggtt.c
-> index 1c93e84278a0..9f6f9e138532 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_ggtt.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_ggtt.c
-> @@ -226,16 +226,15 @@ static void guc_ggtt_invalidate(struct i915_ggtt *ggtt)
->   	gen8_ggtt_invalidate(ggtt);
->   
->   	list_for_each_entry(gt, &ggtt->gt_list, ggtt_link) {
-> -		if (intel_guc_tlb_invalidation_is_available(&gt->uc.guc)) {
-> +		if (intel_guc_tlb_invalidation_is_available(&gt->uc.guc))
->   			guc_ggtt_ct_invalidate(gt);
-> -		} else if (GRAPHICS_VER(i915) >= 12) {
-> +		else if (GRAPHICS_VER(i915) >= 12)
->   			intel_uncore_write_fw(gt->uncore,
->   					      GEN12_GUC_TLB_INV_CR,
->   					      GEN12_GUC_TLB_INV_CR_INVALIDATE);
-> -		} else {
-> +		else
->   			intel_uncore_write_fw(gt->uncore,
->   					      GEN8_GTCR, GEN8_GTCR_INVALIDATE);
-> -		}
->   	}
->   }
->   
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
