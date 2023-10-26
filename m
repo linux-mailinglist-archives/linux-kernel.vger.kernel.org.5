@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0717C7D8579
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799187D8580
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345356AbjJZPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S1345305AbjJZPF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345381AbjJZPDy (ORCPT
+        with ESMTP id S231364AbjJZPFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:03:54 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A20C129
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9JXxaYRYmSkXZPyr8is9yL820vMXmViHhclzJzT9u/0=; b=gBpFbiWzvbN93E3gafQXCGxQBO
-        ZSRav/VBD5HLDT8ZoEjvC6BQx9M8rOSPOl3QEL2PxZUica4i+xwjVcn61jv2Jx2gZfK1q0foO3Lo3
-        Oiypa5M9U9YPf+fSJx49QNhrGHCSW4bZi3PDLdVfh1eP6sabdCH0WNYIoW/iplHVq31ZtUdXFe7ir
-        M3edVB7Rp+rv3K3V2yPu3pG8/v0iWRs7lui6RKLdd0ZNHVXDWnwfwcoWsFCYKh/FqvZzvC+1EZKja
-        L1LFoF4WrZX2K+RdI3adZpZsKsMB/6MVURIeoSKdNGqSQp5dSTJxdSHyuYxycLNdlEagrQyB+NcXP
-        hHT0qaPQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qw1tP-00HPi2-0s;
-        Thu, 26 Oct 2023 15:03:27 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E9257300473; Thu, 26 Oct 2023 17:03:26 +0200 (CEST)
-Date:   Thu, 26 Oct 2023 17:03:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
-Cc:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        mst@redhat.com, michael.christie@oracle.com,
-        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
-        npiggin@gmail.com, shakeelb@google.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Oleg Nesterov <oleg@redhat.com>, dhowells@redhat.com
-Subject: Re: [PATCH] Fixing directly deferencing a __rcu pointer warning
-Message-ID: <20231026150326.GA33303@noisy.programming.kicks-ass.net>
-References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
- <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
+        Thu, 26 Oct 2023 11:05:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9E41AA
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698332683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xcgpm5FyjFqTemGBTnIPqZ37PcnGyir9Nrd1x+JqZkw=;
+        b=eYJU0CVXfICQojF3esAMdQfMpf5hlK6tmlmJ0dtZgqVbflL+osot2bbnY9fpY0AR0E2nwj
+        IEv/yLYNDY1Tj+9VKqK5Z6LbmqlJSub50J6HmDO6NaFQ7p9wr44iID86lefIyZ/1GGC0iH
+        YGl+2TtUpZSidp+oXQxaRk1bh2zmS9g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-575-ncRMg-7YOae_cswAK-0W3w-1; Thu, 26 Oct 2023 11:04:39 -0400
+X-MC-Unique: ncRMg-7YOae_cswAK-0W3w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2D055101A529;
+        Thu, 26 Oct 2023 15:04:38 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CD5D21C060AE;
+        Thu, 26 Oct 2023 15:04:36 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 26 Oct 2023 17:03:37 +0200 (CEST)
+Date:   Thu, 26 Oct 2023 17:03:35 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH -next] fs: Remove unneeded semicolon
+Message-ID: <20231026150334.GA13945@redhat.com>
+References: <20231026005634.6581-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231026005634.6581-1-yang.lee@linux.alibaba.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/26, Yang Li wrote:
+>
+> @@ -3826,7 +3826,7 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
+>  	for_each_thread(task, pos) {
+>  		if (!nr--)
+>  			goto found;
+> -	};
+> +	}
 
-$Subject should indicate a subsystem, also you seem to have a somewhat
-random collection of Cc. It looks like dhowells is the cred guy and he's
-not on.
+Ah, I forgot to remove this semicolon :/
 
-On Thu, Oct 26, 2023 at 05:57:48PM +0530, Abhinav Singh wrote:
-> This patch fixes the warning about directly dereferencing a pointer
-> tagged with __rcu annotation.
-> 
-> Dereferencing the pointers tagged with __rcu directly should
-> always be avoided according to the docs. There is a rcu helper
-> functions rcu_dereference(...) to use when dereferencing a __rcu
-> pointer. This functions returns the non __rcu tagged pointer which
-> can be dereferenced just like a normal pointers.
-> 
-> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
-> ---
->  kernel/fork.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 10917c3e1f03..802b7bbe3d92 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
->  
->  	retval = -EAGAIN;
->  	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
-> -		if (p->real_cred->user != INIT_USER &&
-> +		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
->  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
->  			goto bad_fork_cleanup_count;
->  	}
+This is on top of
 
-This seems entirely misguided and only makes the code more confusing.
+	document-while_each_thread-change-first_tid-to-use-for_each_thread.patch
 
-AFAICT at this point @p is not life, we're constructing the new task,
-but it's not yet published, therefore no concurrency possible.
-Additionally we're not actually in an RCU critical section afaict.
+perhaps this cleanup can be folded into the patch above along with Yang's sob ?
 
-> @@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
->  			 */
->  			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
->  							 p->real_parent->signal->is_child_subreaper;
-> -			list_add_tail(&p->sibling, &p->real_parent->children);
-> +			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
->  			list_add_tail_rcu(&p->tasks, &init_task.tasks);
->  			attach_pid(p, PIDTYPE_TGID);
->  			attach_pid(p, PIDTYPE_PGID);
+If Yang doesn't object.
 
-As to the real_parent, we hold the tasklist lock, which is the write
-side lock for parent stuff, so rcu dereference is pointless here.
+Oleg.
+
