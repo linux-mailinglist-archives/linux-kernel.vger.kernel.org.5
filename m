@@ -2,121 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28C7D8C57
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 01:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122FC7D8C5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 01:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbjJZXww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 19:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S1345019AbjJZXxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 19:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJZXwv (ORCPT
+        with ESMTP id S229437AbjJZXxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 19:52:51 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAD0198
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:52:49 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-66d13ac2796so9692246d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:52:49 -0700 (PDT)
+        Thu, 26 Oct 2023 19:53:38 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0281B9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:53:34 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2800dfa0dd6so17474a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698364368; x=1698969168; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7hGj2Ru0UVUWH0tXl0iC53ogASmHTjwo4VVgXBsogEA=;
-        b=KtHBUszZLX7CioDr45Z70I4ZfS6FU8fici/T6T1yV3qOBqjwA4gLnWvn1OyTXejUBm
-         1Gz5hF9foiyxji1+pybwthnnddb+RnRPSuspGsGb+ls2nMaiYK5e6vSCJM2u/7FRUj2r
-         8h+uLg0o0aylWcR9AAiRD31dA39FU+qkRJ7rk=
+        d=gmail.com; s=20230601; t=1698364414; x=1698969214; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bPUJt5LRLkoFKrQkmKdp/52n5DApmDpEURBE+GDif+k=;
+        b=U1uVzOHLgjnaMObqCQUAxFH44jDScFZYnGqiN9owq64G+lCoFCImC6FqPkGDYoER9/
+         1fZlTBlOTH0vLAKjYtWuty1qD3j4C7ubos5W623nj3oDWzVq9YCjeBJDKDDLJeBQqYfB
+         DIpJJo/lWlYpMhBqtnT6UdTl+ICT/tCFbm8tHGqrJBeSGexShYa0yGa1PBvm4eaXyvYK
+         dz/4uhe8J2AzQ+YbgYu/tr/MDrZ+5l8GOMZAV8yEeqr5seyTbYHdJFKs8Tygjq/tHFvM
+         VVgo+rLaJqOw8uuLGpKATuo6XWZbZOabL89iEmiceAMrMvv8mxcurfbCoRiKY9BOPfhM
+         PQ8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698364368; x=1698969168;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7hGj2Ru0UVUWH0tXl0iC53ogASmHTjwo4VVgXBsogEA=;
-        b=GOb2gBsy1Mit0xta44VMwZt+4kaDXM0U3eZW1j06KsErSMGPuNx2ySqCN20AMMDZbN
-         NiQUGbbOzuvfMpi1970z7070u6W0jgfm3SfQHMnoivhaQvLGLmqL/BVhmywcaGVmCh6P
-         5f5x0fo8W18NUVe7QciD7u0D7K+i3paG8f+nQgRBpFGjdT48DkPa9cTOh+PcaISHEE9s
-         O2kMm2m8inVfb/8pp0h9BclUrJreNK4+IhGjs1uVKnixhHlwicEzTfHxjE3LWh70jaTZ
-         HNvvcpj40/URvtgMnAIAp4yK4zr5guVbD3IV8tERy6nDeCfMzRUIlYGpaSb4FbN8Xc3F
-         fJfA==
-X-Gm-Message-State: AOJu0YzDvDVDM0SIM97H9p29rNNqETJiIpRhU9axgYRERHKHtLzlLWKM
-        mVsGmxzJjgP/tOrQA1g4CSZ1Mw==
-X-Google-Smtp-Source: AGHT+IG5SBUXh4Zar8r6cegOulArPB3MBFkvu4mKyaqQ0eH/M5rzqRpJ4o7fHr9UycS/SGITNvk83w==
-X-Received: by 2002:ad4:5d6e:0:b0:66d:a5ee:5590 with SMTP id fn14-20020ad45d6e000000b0066da5ee5590mr1369333qvb.27.1698364368478;
-        Thu, 26 Oct 2023 16:52:48 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id mn5-20020a0562145ec500b0065b13180892sm183206qvb.16.2023.10.26.16.52.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 16:52:47 -0700 (PDT)
-Message-ID: <2eeb8e24-4122-450b-adf5-8c8a746db518@broadcom.com>
-Date:   Thu, 26 Oct 2023 16:52:43 -0700
+        d=1e100.net; s=20230601; t=1698364414; x=1698969214;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bPUJt5LRLkoFKrQkmKdp/52n5DApmDpEURBE+GDif+k=;
+        b=Dt+ghAq4VKys2f7BPqA6xN6c59Jq+758q2qogPPG+os0Ghk+tdmmH0kBEL5bEsXaow
+         IiCUowLVHVusjCN8Dlm/3Hk5WC6vwhcYijl2ZjQSdxB4zt3WjKZ6pysXdi6UdE917cHe
+         u1xCde9sIsRb6198gf3BWGS4vlMxybmdhQ+QVydjpqMBJ3Y+OQ2K+1zQshRbcFNXB9yZ
+         RBkF91Hxub8Jcmnd0ZFsIsJMUZKeVid65s1liLvSwTs2Su07/uSbA+sLIjOI0tWHL1gz
+         SbntRAgIPp64JKUGTf7GIusiTsoN4qR6/MItNP4c5alht1Q9uUk1iUHXwYi+0dRmxFeA
+         JjCw==
+X-Gm-Message-State: AOJu0Yyr03BGpdU0DyOxxCxZ1d0viEs3s16TWItQUQi1a7qQekrbfkxe
+        66/4C41yjjbEooHHYA/AcOd8zHqt9Vc=
+X-Google-Smtp-Source: AGHT+IFLnUzRReWC4Vcbn/QeHEdJNZLFaU8EP32LJnB4+aXTtBHRKUxLHnL3IiJFDRCmJxi2XzOA0A==
+X-Received: by 2002:a17:90a:d388:b0:27d:515d:94f0 with SMTP id q8-20020a17090ad38800b0027d515d94f0mr974677pju.24.1698364413651;
+        Thu, 26 Oct 2023 16:53:33 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:85a4:5aef:279b:f31e])
+        by smtp.gmail.com with ESMTPSA id q1-20020a17090a750100b0027ce34334f5sm123657pjk.37.2023.10.26.16.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 16:53:33 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v2] f2fs-tools: make six open zone check resilient
+Date:   Thu, 26 Oct 2023 16:53:16 -0700
+Message-ID: <20231026235316.1189315-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 5/5] net: bcmgenet: Interrogate PHY for
- WAKE_FILTER programming
-To:     Jacob Keller <jacob.e.keller@intel.com>, netdev@vger.kernel.org
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Gal Pressman <gal@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Daniil Tatianin <d-tatianin@yandex-team.ru>,
-        Simon Horman <horms@kernel.org>,
-        Justin Chen <justin.chen@broadcom.com>,
-        Ratheesh Kannoth <rkannoth@marvell.com>,
-        Joe Damato <jdamato@fastly.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jiri Pirko <jiri@resnulli.us>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231026224509.112353-1-florian.fainelli@broadcom.com>
- <20231026224509.112353-6-florian.fainelli@broadcom.com>
- <0a164b9b-4f9b-4886-b19e-48298cdcff8d@intel.com>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <0a164b9b-4f9b-4886-b19e-48298cdcff8d@intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e655bf0608a74478"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,142 +69,292 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e655bf0608a74478
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Daeho Jeong <daehojeong@google.com>
 
-On 10/26/23 16:23, Jacob Keller wrote:
-> 
-> 
-> On 10/26/2023 3:45 PM, Florian Fainelli wrote:
->> Determine whether the PHY can support waking up from the user programmed
->> network filter, and if it can utilize it.
->>
-> 
-> Here, you're passing through to phy_ethtool_set_rxnfc, basically
-> allowing the lower device to program the wakeup filter if its supported. Ok.
-> 
-> This almost feels like it would belong generally in the higher level
-> ethtool code rather than in the driver?
+We need to make sure to finish all the zones except six open zones. In
+a case of that the previous mount wasn't successfully unmounted, we have
+to change all the current segments.
 
-Agreed, as Doug just pointed out to me, there is still an open question 
-about reconciling the PHY and the MAC RXNFC spaces into a single 
-ethtool_rxnfc structure.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 
-An ideal goal is to have zero modifications to neither the MAC or the 
-PHY drivers such that they can both work in their own spaces as if they 
-were alone, or combined.
+---
+v2: skip write pointer check after fixing it.
+---
+ fsck/fsck.c         | 107 +++++++++++++++++++-------------------------
+ include/f2fs_fs.h   |   1 +
+ lib/libf2fs_zoned.c |  28 ++++++++++++
+ 3 files changed, 75 insertions(+), 61 deletions(-)
 
-I suppose that if we get the number of supported rules from the MAC 
-first, and then get the supported number of rules from the PHY next, we 
-could do something like this:
-
-rule index
-| 0|
-| .| -> MAC rules
-|15|
-|16| -> PHY rule
-
-and each of the MAC or the PHY {get,set}_rxnfc() operate within a base 
-rule number which is relative to their own space. So the MAC driver 
-would continue to care about its (max..first) - base (0) range, and the 
-PHY would care about (max..first) - base (16).
-
-Though then the issue is discoverability, how do you know which rule 
-location is backed by which hardware block. We could create an 
-intermediate and inert rule at index 16 for instance that acts as a 
-delimiter?
-
-Or we could create yet another RX_CLS_LOC_* value that is "special" and 
-can denote whether of the MAC or the PHY we should be targeting 
-whichever is supported, but that does not usually lend itself to being 
-logically ORed with the existing RX_CLS_LOC_* values. WDYT?
-
-pw-bot: cr
+diff --git a/fsck/fsck.c b/fsck/fsck.c
+index dc8e282..46cc2e5 100644
+--- a/fsck/fsck.c
++++ b/fsck/fsck.c
+@@ -2600,10 +2600,9 @@ static int check_curseg_write_pointer(struct f2fs_sb_info *sbi, int type)
+ 	struct curseg_info *curseg = CURSEG_I(sbi, type);
+ 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+ 	struct blk_zone blkz;
+-	block_t cs_block, wp_block, zone_last_vblock;
++	block_t cs_block, wp_block;
+ 	uint64_t cs_sector, wp_sector;
+ 	int i, ret;
+-	unsigned int zone_segno;
+ 	int log_sectors_per_block = sbi->log_blocksize - SECTOR_SHIFT;
+ 
+ 	/* get the device the curseg points to */
+@@ -2637,49 +2636,28 @@ static int check_curseg_write_pointer(struct f2fs_sb_info *sbi, int type)
+ 		(blk_zone_wp_sector(&blkz) >> log_sectors_per_block);
+ 	wp_sector = blk_zone_wp_sector(&blkz);
+ 
+-	if (cs_sector == wp_sector)
+-		return 0;
+-
+-	if (cs_sector > wp_sector) {
++	if (cs_sector == wp_sector) {
++		if (is_set_ckpt_flags(F2FS_CKPT(sbi), CP_UMOUNT_FLAG))
++			return 0;
++		MSG(0, "Correct write pointer. But, we can't trust it, "
++		    "since the previous mount wasn't safely unmounted: "
++		    "curseg %d[0x%x,0x%x]\n",
++		    type, curseg->segno, curseg->next_blkoff);
++	} else if (cs_sector > wp_sector) {
+ 		MSG(0, "Inconsistent write pointer with curseg %d: "
+ 		    "curseg %d[0x%x,0x%x] > wp[0x%x,0x%x]\n",
+ 		    type, type, curseg->segno, curseg->next_blkoff,
++		    GET_SEGNO(sbi, wp_block),
++		    OFFSET_IN_SEG(sbi, wp_block));
++		if (!c.fix_on)
++			fsck->chk.wp_inconsistent_zones++;
++	} else {
++		MSG(0, "Write pointer goes advance from curseg %d: "
++		    "curseg %d[0x%x,0x%x] wp[0x%x,0x%x]\n",
++		    type, type, curseg->segno, curseg->next_blkoff,
+ 		    GET_SEGNO(sbi, wp_block), OFFSET_IN_SEG(sbi, wp_block));
+-		fsck->chk.wp_inconsistent_zones++;
+-		return -EINVAL;
+-	}
+-
+-	MSG(0, "Write pointer goes advance from curseg %d: "
+-	    "curseg %d[0x%x,0x%x] wp[0x%x,0x%x]\n",
+-	    type, type, curseg->segno, curseg->next_blkoff,
+-	    GET_SEGNO(sbi, wp_block), OFFSET_IN_SEG(sbi, wp_block));
+-
+-	zone_segno = GET_SEG_FROM_SEC(sbi,
+-				      GET_SEC_FROM_SEG(sbi, curseg->segno));
+-	zone_last_vblock = START_BLOCK(sbi, zone_segno) +
+-		last_vblk_off_in_zone(sbi, zone_segno);
+-
+-	/*
+-	 * If valid blocks exist between the curseg position and the write
+-	 * pointer, they are fsync data. This is not an error to fix. Leave it
+-	 * for kernel to recover later.
+-	 * If valid blocks exist between the curseg's zone start and the curseg
+-	 * position, or if there is no valid block in the curseg's zone, fix
+-	 * the inconsistency between the curseg and the writ pointer.
+-	 * Of Note is that if there is no valid block in the curseg's zone,
+-	 * last_vblk_off_in_zone() returns -1 and zone_last_vblock is always
+-	 * smaller than cs_block.
+-	 */
+-	if (cs_block <= zone_last_vblock && zone_last_vblock < wp_block) {
+-		MSG(0, "Curseg has fsync data: curseg %d[0x%x,0x%x] "
+-		    "last valid block in zone[0x%x,0x%x]\n",
+-		    type, curseg->segno, curseg->next_blkoff,
+-		    GET_SEGNO(sbi, zone_last_vblock),
+-		    OFFSET_IN_SEG(sbi, zone_last_vblock));
+-		return 0;
+ 	}
+ 
+-	fsck->chk.wp_inconsistent_zones++;
+ 	return -EINVAL;
+ }
+ 
+@@ -2693,7 +2671,7 @@ static int check_curseg_write_pointer(struct f2fs_sb_info *UNUSED(sbi),
+ 
+ #endif
+ 
+-int check_curseg_offset(struct f2fs_sb_info *sbi, int type)
++int check_curseg_offset(struct f2fs_sb_info *sbi, int type, bool check_wp)
+ {
+ 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
+ 	struct curseg_info *curseg = CURSEG_I(sbi, type);
+@@ -2727,30 +2705,30 @@ int check_curseg_offset(struct f2fs_sb_info *sbi, int type)
+ 		}
+ 	}
+ 
+-	if (c.zoned_model == F2FS_ZONED_HM)
++	if (check_wp && c.zoned_model == F2FS_ZONED_HM)
+ 		return check_curseg_write_pointer(sbi, type);
+ 
+ 	return 0;
+ }
+ 
+-int check_curseg_offsets(struct f2fs_sb_info *sbi)
++int check_curseg_offsets(struct f2fs_sb_info *sbi, bool check_wp)
+ {
+ 	int i, ret;
+ 
+ 	for (i = 0; i < NO_CHECK_TYPE; i++) {
+-		ret = check_curseg_offset(sbi, i);
++		ret = check_curseg_offset(sbi, i, check_wp);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 	return 0;
+ }
+ 
+-static void fix_curseg_info(struct f2fs_sb_info *sbi)
++static void fix_curseg_info(struct f2fs_sb_info *sbi, bool check_wp)
+ {
+ 	int i, need_update = 0;
+ 
+ 	for (i = 0; i < NO_CHECK_TYPE; i++) {
+-		if (check_curseg_offset(sbi, i)) {
++		if (check_curseg_offset(sbi, i, check_wp)) {
+ 			update_curseg_info(sbi, i);
+ 			need_update = 1;
+ 		}
+@@ -3219,10 +3197,8 @@ static int chk_and_fix_wp_with_sit(int UNUSED(i), void *blkzone, void *opaque)
+ 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+ 	block_t zone_block, wp_block, wp_blkoff;
+ 	unsigned int zone_segno, wp_segno;
+-	struct curseg_info *cs;
+-	int cs_index, ret, last_valid_blkoff;
++	int ret, last_valid_blkoff;
+ 	int log_sectors_per_block = sbi->log_blocksize - SECTOR_SHIFT;
+-	unsigned int segs_per_zone = sbi->segs_per_sec * sbi->secs_per_zone;
+ 
+ 	if (blk_zone_conv(blkz))
+ 		return 0;
+@@ -3238,14 +3214,6 @@ static int chk_and_fix_wp_with_sit(int UNUSED(i), void *blkzone, void *opaque)
+ 	wp_segno = GET_SEGNO(sbi, wp_block);
+ 	wp_blkoff = wp_block - START_BLOCK(sbi, wp_segno);
+ 
+-	/* if a curseg points to the zone, skip the check */
+-	for (cs_index = 0; cs_index < NO_CHECK_TYPE; cs_index++) {
+-		cs = &SM_I(sbi)->curseg_array[cs_index];
+-		if (zone_segno <= cs->segno &&
+-		    cs->segno < zone_segno + segs_per_zone)
+-			return 0;
+-	}
+-
+ 	last_valid_blkoff = last_vblk_off_in_zone(sbi, zone_segno);
+ 
+ 	/*
+@@ -3281,10 +3249,27 @@ static int chk_and_fix_wp_with_sit(int UNUSED(i), void *blkzone, void *opaque)
+ 	if (last_valid_blkoff + zone_block > wp_block) {
+ 		MSG(0, "Unexpected invalid write pointer: wp[0x%x,0x%x]\n",
+ 		    wp_segno, wp_blkoff);
++		if (!c.fix_on)
++			fsck->chk.wp_inconsistent_zones++;
++	}
++
++	if (!c.fix_on)
+ 		return 0;
++
++	ret = f2fs_finish_zone(wpd->dev_index, blkz);
++	if (ret) {
++		u64 fill_sects = blk_zone_length(blkz) -
++			(blk_zone_wp_sector(blkz) - blk_zone_sector(blkz));
++		printf("[FSCK] Finishing zone failed: %s\n", dev->path);
++		ret = dev_fill(NULL, wp_block * F2FS_BLKSIZE,
++			(fill_sects >> log_sectors_per_block) * F2FS_BLKSIZE);
++		if (ret)
++			printf("[FSCK] Fill up zone failed: %s\n", dev->path);
+ 	}
+ 
+-	return 0;
++	if (!ret)
++		fsck->chk.wp_fixed = 1;
++	return ret;
+ }
+ 
+ static void fix_wp_sit_alignment(struct f2fs_sb_info *sbi)
+@@ -3330,8 +3315,8 @@ void fsck_chk_and_fix_write_pointers(struct f2fs_sb_info *sbi)
+ 	if (c.zoned_model != F2FS_ZONED_HM)
+ 		return;
+ 
+-	if (check_curseg_offsets(sbi) && c.fix_on) {
+-		fix_curseg_info(sbi);
++	if (check_curseg_offsets(sbi, true) && c.fix_on) {
++		fix_curseg_info(sbi, true);
+ 		fsck->chk.wp_fixed = 1;
+ 	}
+ 
+@@ -3525,7 +3510,7 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+ 	}
+ 
+ 	printf("[FSCK] next block offset is free                     ");
+-	if (check_curseg_offsets(sbi) == 0) {
++	if (check_curseg_offsets(sbi, false) == 0) {
+ 		printf(" [Ok..]\n");
+ 	} else {
+ 		printf(" [Fail]\n");
+@@ -3578,7 +3563,7 @@ int fsck_verify(struct f2fs_sb_info *sbi)
+ 			fix_nat_entries(sbi);
+ 			rewrite_sit_area_bitmap(sbi);
+ 			fix_wp_sit_alignment(sbi);
+-			fix_curseg_info(sbi);
++			fix_curseg_info(sbi, false);
+ 			fix_checksum(sbi);
+ 			fix_checkpoints(sbi);
+ 		} else if (is_set_ckpt_flags(cp, CP_FSCK_FLAG) ||
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index 772a6a5..d94e447 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -1749,6 +1749,7 @@ extern int f2fs_report_zones(int, report_zones_cb_t *, void *);
+ extern int f2fs_check_zones(int);
+ int f2fs_reset_zone(int, void *);
+ extern int f2fs_reset_zones(int);
++int f2fs_finish_zone(int i, void *blkzone);
+ extern uint32_t f2fs_get_usable_segments(struct f2fs_super_block *sb);
+ 
+ #define SIZE_ALIGN(val, size)	(((val) + (size) - 1) / (size))
+diff --git a/lib/libf2fs_zoned.c b/lib/libf2fs_zoned.c
+index 2ab2497..ba9286f 100644
+--- a/lib/libf2fs_zoned.c
++++ b/lib/libf2fs_zoned.c
+@@ -502,6 +502,28 @@ out:
+ 	return ret;
+ }
+ 
++int f2fs_finish_zone(int i, void *blkzone)
++{
++	struct blk_zone *blkz = (struct blk_zone *)blkzone;
++	struct device_info *dev = c.devices + i;
++	struct blk_zone_range range;
++	int ret;
++
++	if (!blk_zone_seq(blkz) || blk_zone_empty(blkz))
++		return 0;
++
++	/* Non empty sequential zone: finish */
++	range.sector = blk_zone_sector(blkz);
++	range.nr_sectors = blk_zone_length(blkz);
++	ret = ioctl(dev->fd, BLKFINISHZONE, &range);
++	if (ret != 0) {
++		ret = -errno;
++		ERR_MSG("ioctl BLKFINISHZONE failed: errno=%d\n", errno);
++	}
++
++	return ret;
++}
++
+ uint32_t f2fs_get_usable_segments(struct f2fs_super_block *sb)
+ {
+ #ifdef HAVE_BLK_ZONE_REP_V2
+@@ -588,6 +610,12 @@ int f2fs_reset_zones(int i)
+ 	return -1;
+ }
+ 
++int f2fs_finish_zone(int i, void *UNUSED(blkzone))
++{
++	ERR_MSG("%d: Unsupported zoned block device\n", i);
++	return -1;
++}
++
+ uint32_t f2fs_get_usable_segments(struct f2fs_super_block *sb)
+ {
+ 	return get_sb(segment_count_main);
 -- 
-Florian
+2.42.0.820.g83a721a137-goog
 
-
---000000000000e655bf0608a74478
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAyACKTG+MHNeLuR
-bi7MJFjDCSAUmCE38mKd3kOAg8g4MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAyNjIzNTI0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBl+jJ815qMl3OBOX38nQIjmgmOthHLbJI6
-0C1ssbAJiAPEVJOAvwtSL4fCNAm/xXB6scAVT6bucn4pyTD3z0LqtnAFX5xNB3+rzUv3Vqkw+1cu
-Zlx2L+4bSxRQM4iOChxivlgWa0RPyGFQ7YLJeAhyrTdbzdNyfnTmxdHgxjtvqoOC2GOGCx4zfdSe
-8tLfgHTYe0B/O3me4yY3weB6cOCEbnXwZuAT9WDh5ckVfYhHJgLdcPtHzFpC3Au5JKBKhgSzfHc6
-fi69J3ZyqUgdDCoJ6OhkZ4ayvnwjV7LLFlFeaRUGgvLX0JsgYGNBW+8hYudc9zCUXKZpLrbTlTU+
-bEqu
---000000000000e655bf0608a74478--
