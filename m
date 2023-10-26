@@ -2,129 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988B37D8A20
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8239E7D8A21
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344788AbjJZVPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 17:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S1344759AbjJZVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 17:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjJZVPO (ORCPT
+        with ESMTP id S232063AbjJZVPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 17:15:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4156410E;
-        Thu, 26 Oct 2023 14:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698354912; x=1729890912;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=9ITEn21ERPZbocLmTIC8sZ/1PpEOBtBDdPjs69y5nx8=;
-  b=FVmY8569TykfkKhC6q0SFDXTTIKmpmaX8HIQJRKmijPwcQpIdeYH8dFX
-   EGXfR+3TwFM1vcXf6yIvGzc2O05ox9D9WDa8OaUidTzF0snRDwZua0fX1
-   pnhGPSRbPTB85isy5zXGshXU46XwL6MFjeVYi+yeRwhrOgRpITCz0cmNj
-   7ppnV7z5xQSzP0Y/7S5Z6Jqc5g5Im3V0LolT8axufb91qpRIwXWUkgfZc
-   1tHAb8bf/eCnLI0IXU/mjPIDAmzMl4z2fROGOnw9GllVtaJDsmgQTjPWt
-   Y9rMuIkvDdE/juYH4MzjI1C8BVqqs7lr4MDDfAiqGjv+kaUmdABvtPxAb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="391527760"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="391527760"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 14:15:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="762986083"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="762986083"
-Received: from paseron-mobl4.amr.corp.intel.com (HELO desk) ([10.209.17.113])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 14:15:09 -0700
-Date:   Thu, 26 Oct 2023 14:15:08 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Nikolay Borisov <nik.borisov@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com
-Subject: Re: [PATCH v3 2/6] x86/entry_64: Add VERW just before userspace
- transition
-Message-ID: <20231026211508.tmd7hfniesiu53ps@desk>
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-2-52663677ee35@linux.intel.com>
- <2cda7e85-aa75-4257-864d-0092b3339e0e@suse.com>
- <20231026192950.ylzc66f3f5naqvjv@desk>
- <ae3d993f-6ce4-42de-b9c4-ef0c7db663c0@intel.com>
+        Thu, 26 Oct 2023 17:15:41 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76BA2D42;
+        Thu, 26 Oct 2023 14:15:39 -0700 (PDT)
+Received: from localhost.localdomain (unknown [167.220.81.210])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C581420B74C0;
+        Thu, 26 Oct 2023 14:15:38 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C581420B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698354938;
+        bh=PgZoaoibE13ScmHye43oCQ/2BwAjMAKb/hl5ibbfSWM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mECLMyoqF9w2yNqUDNY7F9NDbH4P1tPk+cINv6d/rbddrJ7V/Sc9whevItpN7mq+d
+         u0UwQDmnBKziulz0MoFpI9it8oTJ2Uv85lONKfus6VskyJEGvdYzT+1Pg+N2i1RnfH
+         MSMwznr4M0zr0U1EEfpcVosP+E/DFd/TzQ0o3jhY=
+From:   Jarred White <jarredwhite@linux.microsoft.com>
+To:     jarredwhite@linux.microsoft.com
+Cc:     lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org
+Subject: [PATCH v2] acpi: Use access_width over register_width for system memory  accesses
+Date:   Thu, 26 Oct 2023 14:15:13 -0700
+Message-Id: <20231026211513.474-1-jarredwhite@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <42a5c36d-8b65-418f-9826-2808ab49d67a@linux.microsoft.com>
+References: <42a5c36d-8b65-418f-9826-2808ab49d67a@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ae3d993f-6ce4-42de-b9c4-ef0c7db663c0@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:40:49PM -0700, Dave Hansen wrote:
-> On 10/26/23 12:29, Pawan Gupta wrote:
-> > On Thu, Oct 26, 2023 at 07:25:27PM +0300, Nikolay Borisov wrote:
-> >> On 25.10.23 г. 23:52 ч., Pawan Gupta wrote:
-> >>> @@ -1520,6 +1530,7 @@ SYM_CODE_START(ignore_sysret)
-> >>>   	UNWIND_HINT_END_OF_STACK
-> >>>   	ENDBR
-> >>>   	mov	$-ENOSYS, %eax
-> >>> +	CLEAR_CPU_BUFFERS
-> >> nit: Just out of curiosity is it really needed in this case or it's doesn
-> >> for the sake of uniformity so that all ring3 transitions are indeed
-> >> covered??
-> > Interrupts returning to kernel don't clear the CPU buffers. I believe
-> > interrupts will be enabled here, and getting an interrupt here could
-> > leak the data that interrupt touched.
-> 
-> Specifically NMIs, right?
+To align with ACPI 6.3+, since bit_width can be any 8-bit value, we cannot
+depend on it being always on a clean 8b boundary. Instead, use access_width
+to determine the size and use the offset and width to shift and mask the
+bits we want to read/write out. Make sure to add a check for system memory
+since pcc redefines the access_width to subspace id.
 
-Yes, and VERW can omitted for the same reason as NMI returning to
-kernel.
+Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
+---
+changelog:
+v1-->v2:
+	1. Fixed coding style errors
+        2. Backwards compatibility with ioremapping of address still an
+           open question. Suggestions are welcomed.
 
-> X86_EFLAGS_IF should be clear here.
+ drivers/acpi/cppc_acpi.c | 36 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 5 deletions(-)
 
-I see that SYSCALL has a configuration for IF, but I didn't see it for
-SYSENTER in the code. But looking at the SDM, it clear IF by default.
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 7ff269a78c20..fb37e1727bf8 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -163,6 +163,13 @@ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_freq);
+ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
+ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
+ 
++/* Use access_width to determine the total number of bits */
++#define ACCESS_WIDTH_TO_BITS(reg) 8 << ((reg)->access_width - 1)
++
++/* Shift and apply the mask for CPC reads/writes */
++#define MASK_VAL(val) (((val) >> reg->bit_offset) & 			\
++					GENMASK((reg->bit_width), 0))
++
+ static ssize_t show_feedback_ctrs(struct kobject *kobj,
+ 		struct kobj_attribute *attr, char *buf)
+ {
+@@ -777,6 +784,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 			} else if (gas_t->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+ 				if (gas_t->address) {
+ 					void __iomem *addr;
++					size_t access_width;
+ 
+ 					if (!osc_cpc_flexible_adr_space_confirmed) {
+ 						pr_debug("Flexible address space capability not supported\n");
+@@ -784,7 +792,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 							goto out_free;
+ 					}
+ 
+-					addr = ioremap(gas_t->address, gas_t->bit_width/8);
++					access_width = ACCESS_WIDTH_TO_BITS(gas_t) / 8;
++					addr = ioremap(gas_t->address, access_width);
+ 					if (!addr)
+ 						goto out_free;
+ 					cpc_ptr->cpc_regs[i-2].sys_mem_vaddr = addr;
+@@ -980,6 +989,7 @@ int __weak cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
+ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
+ {
+ 	void __iomem *vaddr = NULL;
++	int size;
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+ 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
+ 
+@@ -991,7 +1001,7 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
+ 	*val = 0;
+ 
+ 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_IO) {
+-		u32 width = 8 << (reg->access_width - 1);
++		u32 width = ACCESS_WIDTH_TO_BITS(reg);
+ 		u32 val_u32;
+ 		acpi_status status;
+ 
+@@ -1015,7 +1025,12 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
+ 		return acpi_os_read_memory((acpi_physical_address)reg->address,
+ 				val, reg->bit_width);
+ 
+-	switch (reg->bit_width) {
++	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
++		size = ACCESS_WIDTH_TO_BITS(reg);
++	else
++		size = reg->bit_width;
++
++	switch (size) {
+ 	case 8:
+ 		*val = readb_relaxed(vaddr);
+ 		break;
+@@ -1034,18 +1049,22 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
+ 		return -EFAULT;
+ 	}
+ 
++	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
++		*val = MASK_VAL(*val);
++
+ 	return 0;
+ }
+ 
+ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ {
+ 	int ret_val = 0;
++	int size;
+ 	void __iomem *vaddr = NULL;
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+ 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
+ 
+ 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_IO) {
+-		u32 width = 8 << (reg->access_width - 1);
++		u32 width = ACCESS_WIDTH_TO_BITS(reg);
+ 		acpi_status status;
+ 
+ 		status = acpi_os_write_port((acpi_io_address)reg->address,
+@@ -1067,7 +1086,14 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ 		return acpi_os_write_memory((acpi_physical_address)reg->address,
+ 				val, reg->bit_width);
+ 
+-	switch (reg->bit_width) {
++	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
++		size = ACCESS_WIDTH_TO_BITS(reg);
++		val = MASK_VAL(val);
++	} else {
++		size = reg->bit_width;
++	}
++
++	switch (size) {
+ 	case 8:
+ 		writeb_relaxed(val, vaddr);
+ 		break;
+-- 
+2.34.1
 
-syscall_init()
-{
-...
-#else
-	wrmsrl_cstar((unsigned long)ignore_sysret);
-	wrmsrl_safe(MSR_IA32_SYSENTER_CS, (u64)GDT_ENTRY_INVALID_SEG);
-	wrmsrl_safe(MSR_IA32_SYSENTER_ESP, 0ULL);
-	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, 0ULL);
-#endif
-
-	/*
-	 * Flags to clear on syscall; clear as much as possible
-	 * to minimize user space-kernel interference.
-	 */
-	wrmsrl(MSR_SYSCALL_MASK,
-	       X86_EFLAGS_CF|X86_EFLAGS_PF|X86_EFLAGS_AF|
-	       X86_EFLAGS_ZF|X86_EFLAGS_SF|X86_EFLAGS_TF|
-	       X86_EFLAGS_IF|X86_EFLAGS_DF|X86_EFLAGS_OF|
-	       X86_EFLAGS_IOPL|X86_EFLAGS_NT|X86_EFLAGS_RF|
-	       X86_EFLAGS_AC|X86_EFLAGS_ID);
