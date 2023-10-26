@@ -2,136 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2B57D82C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB3D7D82CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbjJZMgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S1344879AbjJZMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjJZMgq (ORCPT
+        with ESMTP id S229649AbjJZMiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:36:46 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E10111;
-        Thu, 26 Oct 2023 05:36:43 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 6632E3200943;
-        Thu, 26 Oct 2023 08:36:41 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 26 Oct 2023 08:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698323800; x=1698410200; bh=7Ou35+gtN5wPlKenTK4K7QdEWtUFHuuBjgj
-        vnmJt2so=; b=ReK/1CPMHcj4oFv60BrYhPVG1zqUf01nfY1GKPWcNf69ULCkO8o
-        cnP8yuy5WQmqBeNLBdnx5BJVYm6Z2qRPNSb+q6QXW4R2/Wrq1GKORxLZsnMNIxxY
-        6PG1jsYaHi/9fj96JAPLCKrr9OoudlC6RYE6s3RFVPOJ7vN/X7LpY01xWgNevNa7
-        +7RYD67P1hdjp4srkFlYBgiob57FfonvLTXqde6ri0zooVr+EH/pEoQRfKos+1Ce
-        Og+toa/ApC7M0jWyY7X6ONmOShWHFE+3zpvt2vINo9n4c3Tke38wISEe4yipxtDc
-        aGrfNOqerCiyDzq34glZqQRkLneKPgek2Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698323800; x=1698410200; bh=7Ou35+gtN5wPlKenTK4K7QdEWtUFHuuBjgj
-        vnmJt2so=; b=loijJ83r4Let7U+9tN186djBs/D0jVuaFqRfByNiqGvgbW7yuIH
-        IQ8/m6s50xNKY0IdAKlVGkIB/4qRjrxAEKKypCIPTL0w0PoqoXhUhj7PFx4dGFny
-        bxj04yVY9TpU2p41660X7hqq6Fu4r2k3qIBdbfmlzEBMbE3PDa4QU8qzsanHZ4E5
-        JA0NuwKApPdV5RXu+3uAayL+yZPFPb81lpcu/yEwS6jLq61QXKobVB4YcMeWelWO
-        kwCXkgkxMiawKTxtP+8jpKLB9o0IMpMULEX7pxPQFVDIbSXoAoBG1nwDzapRYOut
-        Eafmz0T75gCZLMLT+WgcQEvCTpR+efc8Erw==
-X-ME-Sender: <xms:WF06ZR_oEwY7nQqu-JgSf15pAQKz9G4xHIa3ctQTy88aJKmxLQ7Mpw>
-    <xme:WF06ZVvLj596brZxRQG7TJqhIdo__s5djGJhFbP2FEWlSYpn2Zlpqx3d2p0EmxVar
-    eHfLlXHMV2CIkAKhRk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledvgdehfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
-    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-    eqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefhjeeu
-    geevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:WF06ZfCvMXqNGY963g5bF6Z2PeH8e47FzVTL5fbAZPN2fAKmpPEVwQ>
-    <xmx:WF06ZVf1XEF6HYkgxH75gdFnHnUl3TOVInxr2CRbL2SgbzZWFfugkA>
-    <xmx:WF06ZWNkeDMfuZ9oB8bQT9QclpRwTSh6a8cFR5l3zjszWN7zUsVfDQ>
-    <xmx:WF06ZXHVnC-rSqPU1vPCnVB1PSViYfPqZdx49gBkbH92JFieBzB7lA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 06B5A36A0075; Thu, 26 Oct 2023 08:36:39 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Thu, 26 Oct 2023 08:38:05 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01489193
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:38:02 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-586a5d76413so392263eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698323882; x=1698928682; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQqMrZDq+OCCC7E+rUSLhgCSlCp+SRTlpWYY64uyomU=;
+        b=JrTeY1yOuZa7bNWUiaVa7Th71xUw3OJWNy9XLlqaiuCFo+bmq27A/WB7C7W6q8bLsY
+         tiIHvCrBaGwKs7z4pSmdecw1yKH6GrSnJw/Jyb8vff1MXVxAbeziTh9h8g42eJ6jQytn
+         W4thcownCOqObZYu+p6GgtAn7QAQX/oJ3hy7lfBXHLrgJyS7t8tyag8uYr6n0+wVcH2z
+         1bjhz2QQJ2qME+7gzKuNje4MCUGn72iZuvU4nrniHJ2Pi1yt7YfLOp7ZpqZFzieB9BHw
+         Gr4xJ3DLSFxDtPjuSqwOeYeePDFEBT/ykXGfoe1txBV5DA6uQbOIMk+/iyKmwWM8zSLh
+         0BfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698323882; x=1698928682;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yQqMrZDq+OCCC7E+rUSLhgCSlCp+SRTlpWYY64uyomU=;
+        b=cGF+T0+XdJtJJYYsYJD24NnKeO257cc6138fjlQQtFSONfCeOvNtrq+flDKaZ9O0Gu
+         4pYzLMgkda27svsVLeMYAMSd6c9tBN+9+Phcq6tZZdjQu4I03msnCDU74Z1wDY286yKi
+         YTCmA+ehDAXFCTqTK0ZD0J2wq/hL+lHIzuL/y6eoAbRAm1SrFke9bgEUbiF6B5bMI7Xb
+         jbz7XOSf6JtC+MOsEX7etd6ib1jIDjdkXqDN7ACofj3oIgg//ydMXBA7B11dhzv9SPxv
+         bjwd7k0TZZIx0EqJm1YxLTWxcutHHSqni6guk9yGw8dU94kCBzQEzEzJ3YpNSf56Zut3
+         4v2A==
+X-Gm-Message-State: AOJu0YySCYvVTWaE8e6Lgq9SvjCI9h5UrrsKkEA9XFzqv+zhbMVmB2tz
+        V7/L5t8uVcif3xZAJTGMM2A=
+X-Google-Smtp-Source: AGHT+IGvSqGHx22WraCmrfuVm1PHF2GnlMekMr+QaJzRW++2LrRxNblNzHLOt0zLttrhTsn5uczqBQ==
+X-Received: by 2002:a05:6359:4296:b0:168:d346:ce5e with SMTP id kp22-20020a056359429600b00168d346ce5emr13381970rwb.8.1698323882032;
+        Thu, 26 Oct 2023 05:38:02 -0700 (PDT)
+Received: from localhost.lan ([2a01:111:f100:6000::4134:a26f])
+        by smtp.gmail.com with ESMTPSA id u13-20020a65670d000000b0056c2f1a2f6bsm9035103pgf.41.2023.10.26.05.37.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 05:38:01 -0700 (PDT)
+From:   Peng Liang <tcx4c70@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tcx4c70@gmail.com
+Subject: [PATCH] sched/fair: remove 2 early returns
+Date:   Thu, 26 Oct 2023 20:37:20 +0800
+Message-ID: <20231026123721.957154-1-tcx4c70@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Message-Id: <a7e3fdcd-d5e6-4261-85be-3ec1221edf24@app.fastmail.com>
-In-Reply-To: <20230921110424.215592-1-bhe@redhat.com>
-References: <20230921110424.215592-1-bhe@redhat.com>
-Date:   Thu, 26 Oct 2023 13:36:13 +0100
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Baoquan He" <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Arnd Bergmann" <arnd@arndb.de>, mpe@ellerman.id.au,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Luis Chamberlain" <mcgrof@kernel.org>, hch@infradead.org,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Florian Fainelli" <f.fainelli@gmail.com>, deller@gmx.de
-Subject: Re: [PATCH v5 0/4] arch/*/io.h: remove ioremap_uc in some architectures
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After commit 5e963f2bd465 ("sched/fair: Commit to EEVDF"), the 2 early
+returns in entity_tick can be removed safely.
 
+Signed-off-by: Peng Liang <tcx4c70@gmail.com>
+---
+ kernel/sched/fair.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-=E5=9C=A82023=E5=B9=B49=E6=9C=8821=E6=97=A5=E4=B9=9D=E6=9C=88 =E4=B8=8B=E5=
-=8D=8812:04=EF=BC=8CBaoquan He=E5=86=99=E9=81=93=EF=BC=9A
-> This patchset tries to remove ioremap_uc() in the current architectures
-> except of x86 and ia64. They will use the default ioremap_uc version
-> in <asm-generic/io.h> which returns NULL. Anyone who wants to add new
-> invocation of ioremap_uc(), please consider using ioremap() instead or
-> adding a new ARCH specific ioremap_uc(), or refer to the callsite
-> in drivers/video/fbdev/aty/atyfb_base.c.
->
-> This change won't cuase breakage to the current kernel because in the
-> only ioremap_uc callsite, an adjustment is made to eliminate impact in
-> patch 1 of this series.
->
-> To get rid of all of them other than x86 and ia64, add asm-generic/io.h
-> to asm/io.h of mips ARCH. With this adding, we can get rid of the
-> ioremap_uc() in mips too. This is done in patch 2. And a followup patch
-> 4 is added to remove duplicated code according to Arnd's suggestion.
->
-> Test:
-> =3D=3D=3D=3D=3D
-> Except of Jiaxun's efficient testing on patch 2/4, I also did cross co=
-mpiling
-> of this series on mips64, building passed.
->
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index df348aa55d3c..74f72a01aad4 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5322,16 +5322,8 @@ entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr, int queued)
+ 	 * queued ticks are scheduled to match the slice, so don't bother
+ 	 * validating it and just reschedule.
+ 	 */
+-	if (queued) {
++	if (queued)
+ 		resched_curr(rq_of(cfs_rq));
+-		return;
+-	}
+-	/*
+-	 * don't let the period tick interfere with the hrtick preemption
+-	 */
+-	if (!sched_feat(DOUBLE_TICK) &&
+-			hrtimer_active(&rq_of(cfs_rq)->hrtick_timer))
+-		return;
+ #endif
+ }
+ 
+-- 
+2.41.0
 
-For whole series:
-
-Tested-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-
-Hi Arnd and Thomas,
-
-I've got some work pending based on this series, however I'm unclear abo=
-ut
-which tree this series will go since both of you give acked-by.
-
-Given that there are some tree-wide modifications, I guess it should go =
-into
-Arnd's asm-generic tree?
-
-Thanks
---=20
-- Jiaxun
