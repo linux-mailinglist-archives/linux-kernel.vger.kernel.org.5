@@ -2,181 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32047D888C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB1B7D889F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjJZStI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S231181AbjJZS6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZStG (ORCPT
+        with ESMTP id S230116AbjJZS6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:49:06 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A731A5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:49:03 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e84912038so1893659a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:49:03 -0700 (PDT)
+        Thu, 26 Oct 2023 14:58:05 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F82A1A5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:03 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507c1936fd5so2734192e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698346141; x=1698950941; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1N6Og79ebnOUyWTGEW3Q50Z1o013flCNliiH7msTKzQ=;
-        b=k7QfMQTrR+uV5UaM7kiLr7KUu8EI0TR/umNKBfD9NsmQnqpFE8M+h5sa2261f9lhi5
-         HXiPrjhNu4loNWYnxO4sV+XWtPJmwWXtKCStqFIeECzbwfe4DvUrg0MKneqiw6B414MB
-         iDoQoLyrjlULpqzhlq8Tt9/VDB1f12WlF6BMa7hmUv+L7/7NwJ6jiid9rVptJ8awJq7G
-         gZ0fbccpKwxX1Xowxok4wUICUp+2ac2qnCghMjxJFmBOB/uzME3cdg9VbSpiCfDGEdQX
-         uUCccG2uRoY2oOwaudWPMlnAcXTOo133TKxkRSfZw15KWe+2Ip73ls0hHrESypO6p6Au
-         BmjA==
+        d=linux-foundation.org; s=google; t=1698346681; x=1698951481; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FCdrR76awIJQhAH7GAdkL7E4ZFaTBKsQRWujNlskIyM=;
+        b=R/pipA2GCWrOH4V6HgSk1BBOUVR4Yo9q8QBbSw1dS/jt/LLNcv0SWwje44eXsVZxPt
+         hSdRWk8U7g3eq3M2HTvoi6m1RrVRXLx8MbheHHZNsbMgqtN1p8mIjrqe6QrV07g/Eed5
+         +oOWiALTyECmV9dqmViv0hK4ksmBJbw69VVXI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698346141; x=1698950941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1N6Og79ebnOUyWTGEW3Q50Z1o013flCNliiH7msTKzQ=;
-        b=B6uq9NAQAawo6fQqpzitssPc9maSvB3/t0siXpZYZdSczopTABYY1AWYE0aKKvoz8Y
-         OD7LlMO/WSGQeZB1kNlVzVqkLlErlaDJm4gkwqtx8RSVZfvLztTg4HMDj3kd77Mx29Br
-         RBxwnpTJxGdfjgGOXRe0hTDXKHQuBVUEAaSmwVOdNMdBFTeytRcqiS+fASgQGMY9vcNb
-         PSE38cPLzmqcAV9pZsys3GG9Nb7zW/DZ34Tcf5RMlszLKNDV3gYifvnNhu+LRuSDs0Cn
-         bbupYR5niFRui+lrdfJL7kDwruxKAkUnPXjpFkI0r96DDbL8KySb8ntylBCjV4w0rnpr
-         rL9w==
-X-Gm-Message-State: AOJu0Yy1BxrMcjfcNPnM7Wcjey15CWzlqD1vk5w2rjPU+JcURyzQZYB1
-        kPyLwCwU0XhW03X1E79Omh0kZm5C8UOL9KjoNzw=
-X-Google-Smtp-Source: AGHT+IEoS2m2ZQvFhi0YtoS9Qs0lJlwh7RzkKY7+JML+C/+nRZ65v1hOehslsdE4NS/P1XVfXfcqkiDAq4Tkntsj6+A=
-X-Received: by 2002:aa7:c441:0:b0:52f:b00a:99be with SMTP id
- n1-20020aa7c441000000b0052fb00a99bemr522645edr.33.1698346140214; Thu, 26 Oct
- 2023 11:49:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698346681; x=1698951481;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FCdrR76awIJQhAH7GAdkL7E4ZFaTBKsQRWujNlskIyM=;
+        b=aDq0dA52z5QXCkxyb6eT1DjsFKQSuKVQnNptplGnEK3rySEaFBS9sA1b0eSQ/Xb61p
+         PAH7ElHslBxsgvQ3zJVOSkyMTEjoHePui8/QqLdhjVe8Ze1cFiZSVaUoS/55vZujvMyz
+         CNkxErDXRF9YsMRUgzQvSelX8/jEao0u8B1b5VibzWzh2ei8WP71UygteWhlhAXSgEXe
+         TdOIve+X16EdKzQPht6cNZIPRkNWFrKkT32QRp7yRG4gyoPIvVv3Fe2JrUsv1U23bFv/
+         7AyZXr76py+TJroz8+pxVfKyVDe4uhBzUuBSlX3xHrtgRJDzXqgtcqCULoQpZX2C04ed
+         L2Kg==
+X-Gm-Message-State: AOJu0Yx90n92V5b9m23z+pp6d5ftewov1CRjIEUHTRjchG2FKYbL/Ux6
+        1w8YRhxLngaTDKmzJ36dst1p45edO67lA24BuGn1zeTG
+X-Google-Smtp-Source: AGHT+IGONZ5AYAKSnonvXL7BAxneclsemu7xxzsP6Gw5xsRHUMSnx3WHBVTt6wYhF/n2YvEvoqpC4w==
+X-Received: by 2002:a05:6512:108c:b0:508:1a4c:84b9 with SMTP id j12-20020a056512108c00b005081a4c84b9mr228013lfg.14.1698346680986;
+        Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id w2-20020ac254a2000000b00507d1ed897esm3098505lfk.129.2023.10.26.11.58.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so1423981e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
+X-Received: by 2002:aa7:d352:0:b0:541:1e0d:b56f with SMTP id
+ m18-20020aa7d352000000b005411e0db56fmr2544458edr.12.1698346251196; Thu, 26
+ Oct 2023 11:50:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-10-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-10-brgerst@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 26 Oct 2023 20:48:49 +0200
-Message-ID: <CAFULd4YMdEZ7_BT5kvpyL3HwN_bRKTUxgM2_8AC-ua69v6GAew@mail.gmail.com>
-Subject: Re: [PATCH v2 09/11] x86/percpu/64: Remove INIT_PER_CPU macros
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
+References: <20231025235413.597287e1@gandalf.local.home> <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
+ <20231026071413.4ed47b0e@gandalf.local.home> <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
+In-Reply-To: <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 26 Oct 2023 08:50:32 -1000
+X-Gmail-Original-Message-ID: <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
+Message-ID: <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
+Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
+        Ankur Arora <ankur.a.arora@oracle.com>, linux-mm@kvack.org,
+        x86@kernel.org, akpm@linux-foundation.org, luto@kernel.org,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
+On Thu, 26 Oct 2023 at 08:36, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> The load and link addresses of percpu variables are now the same, so
-> these macros are no longer necessary.
+> >       asm volatile("xchg %b0,%1"
 >
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> which has an implicit lock prefix (xchg with a memory operand is a
+> special-case):
 
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
+Yeah, this is why we do "percpu_xchg()" - which does not want locked
+semantics - as a "cmpxchg" loop.
 
-> ---
->  arch/x86/include/asm/percpu.h | 22 ----------------------
->  arch/x86/kernel/irq_64.c      |  1 -
->  arch/x86/kernel/vmlinux.lds.S |  7 -------
->  arch/x86/tools/relocs.c       |  1 -
->  4 files changed, 31 deletions(-)
->
-> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.=
-h
-> index b86b27d15e52..7a176381ee01 100644
-> --- a/arch/x86/include/asm/percpu.h
-> +++ b/arch/x86/include/asm/percpu.h
-> @@ -20,12 +20,6 @@
->
->  #define PER_CPU_VAR(var)       __percpu(var)__percpu_rel
->
-> -#ifdef CONFIG_X86_64_SMP
-> -#define INIT_PER_CPU_VAR(var)  init_per_cpu__##var
-> -#else
-> -#define INIT_PER_CPU_VAR(var)  var
-> -#endif
-> -
->  #else /* ...!ASSEMBLY */
->
->  #include <linux/kernel.h>
-> @@ -96,22 +90,6 @@
->  #define __percpu_arg(x)                __percpu_prefix "%" #x
->  #define __force_percpu_arg(x)  __force_percpu_prefix "%" #x
->
-> -/*
-> - * Initialized pointers to per-cpu variables needed for the boot
-> - * processor need to use these macros to get the proper address
-> - * offset from __per_cpu_load on SMP.
-> - *
-> - * There also must be an entry in vmlinux_64.lds.S
-> - */
-> -#define DECLARE_INIT_PER_CPU(var) \
-> -       extern typeof(var) init_per_cpu_var(var)
-> -
-> -#ifdef CONFIG_X86_64_SMP
-> -#define init_per_cpu_var(var)  init_per_cpu__##var
-> -#else
-> -#define init_per_cpu_var(var)  var
-> -#endif
-> -
->  /* For arch-specific code, we can use direct single-insn ops (they
->   * don't give an lvalue though). */
->
-> diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
-> index fe0c859873d1..30424f9876bc 100644
-> --- a/arch/x86/kernel/irq_64.c
-> +++ b/arch/x86/kernel/irq_64.c
-> @@ -26,7 +26,6 @@
->  #include <asm/apic.h>
->
->  DEFINE_PER_CPU_PAGE_ALIGNED(struct irq_stack, irq_stack_backing_store) _=
-_visible;
-> -DECLARE_INIT_PER_CPU(irq_stack_backing_store);
->
->  #ifdef CONFIG_VMAP_STACK
->  /*
-> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.=
-S
-> index efa4885060b5..9aea7b6b02c7 100644
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -482,13 +482,6 @@ SECTIONS
->            "kernel image bigger than KERNEL_IMAGE_SIZE");
->
->  #ifdef CONFIG_X86_64
-> -/*
-> - * Per-cpu symbols which need to be offset from __per_cpu_load
-> - * for the boot processor.
-> - */
-> -#define INIT_PER_CPU(x) init_per_cpu__##x =3D ABSOLUTE(x)
-> -INIT_PER_CPU(gdt_page);
-> -INIT_PER_CPU(irq_stack_backing_store);
->
->  #ifdef CONFIG_CPU_UNRET_ENTRY
->  . =3D ASSERT((retbleed_return_thunk & 0x3f) =3D=3D 0, "retbleed_return_t=
-hunk not cacheline-aligned");
-> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-> index 7feb63179b62..931d90aa814c 100644
-> --- a/arch/x86/tools/relocs.c
-> +++ b/arch/x86/tools/relocs.c
-> @@ -83,7 +83,6 @@ static const char * const sym_regex_kernel[S_NSYMTYPES]=
- =3D {
->         "__initramfs_start|"
->         "(jiffies|jiffies_64)|"
->  #if ELF_BITS =3D=3D 64
-> -       "init_per_cpu__.*|"
->         "__end_rodata_hpage_align|"
->  #endif
->         "__vvar_page|"
-> --
-> 2.41.0
->
+Steven, check out
+
+    arch/x86/include/asm/percpu.h
+
+for a rough implementation of a 'xchg()' without SMP coherency, just
+cpu-local one (ie atomic wrt being preempted by the kernel, but not
+atomic wrt other CPU's accessing the same variable concurrently)
+
+             Linus
