@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CD77D89B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279A77D89B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjJZUdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S231397AbjJZUdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZUdY (ORCPT
+        with ESMTP id S229501AbjJZUdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:33:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BCB191
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:33:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FCF0C433C8;
-        Thu, 26 Oct 2023 20:33:19 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 16:33:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
-Message-ID: <20231026163317.4516369a@gandalf.local.home>
-In-Reply-To: <ZTrJ/5Jrzz5D62hh@smile.fi.intel.com>
-References: <20231026194033.it.702-kees@kernel.org>
-        <ZTrJ/5Jrzz5D62hh@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 26 Oct 2023 16:33:33 -0400
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC21191
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1698352404;
+ bh=j3tk+oe4LZw1thVxrSHhxg7YiJq4jgOvzV867gqOGjc=;
+ b=CqAJyFeIsT6eSLAibN2Oypjza3vA6nY0sMI24lhSgB1RTkaIzK+Tc0rVANje6uUD4fF+UgpmZ
+ xMRQb9xbJHO1aePuqQ0GDNQ9wtV6tOuUpcBv3rW/Gvp8fkrBGBMAGhAUhddM7sZe8+zX7LPSymk
+ EkAez8fREIeZ0IXRM/oqVQ/02iFJ1fm+2nYbNBTQvj81VaQu3yDP3INoxF4Fsne1UL9GJEcTyEI
+ nY/PXyaWZjBB2v9MC2Ji/rJEMI36+P1vs0rH0rYHg8YAe9GeYNYYWCkiZA/D2TqoTJJ5nom8rms
+ 7Mllq9nGkKJslxE0EPCXUqKvoBheG95kJBpu88ZrKlDQ==
+Message-ID: <2307c147-fe6f-4e80-874c-0f306bc6ea81@kwiboo.se>
+Date:   Thu, 26 Oct 2023 22:33:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/rockchip: vop: Fix color for RGB888/BGR888 format
+ on VOP full
+Content-Language: en-US
+To:     Christopher Obbard <chris.obbard@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Andy Yan <andy.yan@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231026191500.2994225-1-jonas@kwiboo.se>
+ <ea5a78a59e983e08d02c89718c5c7315e923f170.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <ea5a78a59e983e08d02c89718c5c7315e923f170.camel@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 653acd145956f7edd77b4fc4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 23:20:15 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Hi Chris,
 
-> > +#define DECLARE_SEQ_BUF(NAME, SIZE)					\
-> > +	char __ ## NAME ## _buffer[SIZE] = "";				\
-> > +	struct seq_buf NAME = { .buffer = &__ ## NAME ## _buffer,	\
-> > +				.size = SIZE }  
+On 2023-10-26 22:02, Christopher Obbard wrote:
+> Hi Jonas,
 > 
-> Hmm... Wouldn't be more readable to have it as
+> On Thu, 2023-10-26 at 19:14 +0000, Jonas Karlman wrote:
+>> Use of DRM_FORMAT_RGB888 and DRM_FORMAT_BGR888 on e.g. RK3288, RK3328
+>> and RK3399 result in wrong colors being displayed.
+>>
+>> The issue can be observed using modetest:
+>>
+>>   modetest -s <connector_id>@<crtc_id>:1920x1080-60@RG24
+>>   modetest -s <connector_id>@<crtc_id>:1920x1080-60@BG24
+>>
+>> Vendor 4.4 kernel apply an inverted rb swap for these formats on VOP
+>> full framework (IP version 3.x) compared to VOP little framework (2.x).
+>>
+>> Fix colors by applying different rb swap for VOP full framework (3.x)
+>> and VOP little framework (2.x) similar to vendor 4.4 kernel.
+>>
+>> Fixes: 85a359f25388 ("drm/rockchip: Add BGR formats to VOP")
+>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 > 
-> #define DECLARE_SEQ_BUF(NAME, SIZE)			\
-> 	char __ ## NAME ## _buffer[SIZE] = "";		\
-> 	struct seq_buf NAME = {				\
-> 		.buffer = &__ ## NAME ## _buffer,	\
-> 		.size = SIZE,				\
-> 	}
+> Reviewed-by: Christopher Obbard <chris.obbard@collabora.com>
+> Tested-by: Christopher Obbard <chris.obbard@collabora.com>
 > 
-> ?
-
-I agree with the above.
-
-> 
-> ...
-> 
-> > +static inline char *seq_buf_str(struct seq_buf *s)
-> >  {
-> >  	if (WARN_ON(s->size == 0))
-> > -		return;
-> > +		return "";  
-> 
-> I'm wondering why it's a problem to have an empty string?
-
-Not sure what you mean? With s->size = 0, s->buffer may not have been
-assigned. That shouldn't be the case, but it does make it more robust.
-
--- Steve
-
-
-> 
-> >  	if (seq_buf_buffer_left(s))
-> >  		s->buffer[s->len] = 0;
-> >  	else
-> >  		s->buffer[s->size - 1] = 0;
-> > +
-> > +	return s->buffer;
-> >  }  
+> Since you missed adding my *-by tags in v2.
 > 
 
+Thanks, and sorry about that ;-)
+
+Regards,
+Jonas
