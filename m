@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938DC7D81A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C275C7D81A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344785AbjJZLQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S1344784AbjJZLRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjJZLQC (ORCPT
+        with ESMTP id S230105AbjJZLRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:16:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3561A1;
-        Thu, 26 Oct 2023 04:16:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C89B0C433C8;
-        Thu, 26 Oct 2023 11:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698318959;
-        bh=oS3dDY0VGtcsFofITmhDH6ZXwaHMR6sc41P5kDoJWAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xwk5W6HVUYToMhjeU4D3TnNQiXxaTurjTckT0jFvRSuehp4e/frGTIJ5ho1v4u+d1
-         ckUZ2LXIv/jL42IBgff+UWreF1YTF89VTfl3XIvTGdHb/V9sU9sm1rqImMFvj5c979
-         qVyd3h1y8uU9gNeOpxZBXJup4FR6L39xm/zp3qvCXz9tUYp9c52Ry/B5a4fqDLQdOF
-         6KZ37FcVwDaDVt/3FxSem9T3l2FT6zPJbOdXIqELOOK7LWs+ZWXhJDwr2u7SeSHcdL
-         kPXG4k5yloHHZ++ZQ3H+i0FPT1ma00CdIRdEeYsp1fmTKDvRm2EWmq2lqi2Yh9bMww
-         PStpZFqjnJfBA==
-Date:   Thu, 26 Oct 2023 13:15:55 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios
- property
-Message-ID: <ZTpKa7R/xxKeCo+z@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231024223032.3387487-1-chris.packham@alliedtelesis.co.nz>
- <20231024223032.3387487-2-chris.packham@alliedtelesis.co.nz>
+        Thu, 26 Oct 2023 07:17:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B21191;
+        Thu, 26 Oct 2023 04:17:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5cohiNIB1FuP42t4pW7beekQI1iJD/MHJhnEGgn6Hk4=; b=OXHMup0eJ11eXPtr0XyZILpT2W
+        QK73ZPV5Gh1MXIYdKATLblLvVMNNzIyUhhkt1NDZNH3IHqUzOMkIUSbRjfYGqA/DGj5h3dLAUAjPV
+        HdETUfXELNLZEJDpknsAteTNcktZ6BDQRU4sdyL/8NXnd6IOvGqGKAQX93tNpTvDHCwdFfDNpjPvD
+        0r1n1zWKUNDfGm/NQK+25GAeCBOoJxL1rZ9FJgupeVYdYPrgU1gN+pxAqW2M5HC1kEMa3Nn4B+JCd
+        zbqH85Y+btf6RaY2W+D9rRtsxl85VwWps6ET3xzsfjV0J2kvTiixo7By3NJB3jpJFDumdEBdDM+u0
+        KqfSMHrw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvyLh-00HGQ2-2Q;
+        Thu, 26 Oct 2023 11:16:26 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6969D300473; Thu, 26 Oct 2023 13:16:25 +0200 (CEST)
+Date:   Thu, 26 Oct 2023 13:16:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Gary Guo <gary@garyguo.net>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        kent.overstreet@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        elver@google.com, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC] rust: types: Add read_once and write_once
+Message-ID: <20231026111625.GK33965@noisy.programming.kicks-ass.net>
+References: <20231025195339.1431894-1-boqun.feng@gmail.com>
+ <20231026081345.GJ31411@noisy.programming.kicks-ass.net>
+ <20231026113610.1425be1b@eugeo>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rg7y9QorxhhnN2an"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231024223032.3387487-2-chris.packham@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231026113610.1425be1b@eugeo>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 11:36:10AM +0100, Gary Guo wrote:
 
---rg7y9QorxhhnN2an
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> There's two reasons that we are using volatile read/write as opposed to
+> relaxed atomic:
+> * Rust lacks volatile atomics at the moment. Non-volatile atomics are
+>   not sufficient because the compiler is allowed (although they
+>   currently don't) optimise atomics. If you have two adjacent relaxed
+>   loads, they could be merged into one.
+
+Ah yes, that would be problematic, eg, if lifted out of a loop things
+could go sideways fast.
+
+> * Atomics only works for integer types determined by the platform. On
+>   some 32-bit platforms you wouldn't be able to use 64-bit atomics at
+>   all, and on x86 you get less optimal sequence since volatile load is
+>   permitted to tear while atomic load needs to use LOCK CMPXCHG8B.
+
+We only grudgingly allowed u64 READ_ONCE() on 32bit platforms because
+the fallout was too numerous to fix. Some of them are probably bugs.
+
+Also, I think cmpxchg8b without lock prefix would be sufficient, but
+I've got too much of a head-ache to be sure. Worse is that we still
+support targets without cmpxchg8b.
+
+It might be interesting to make the Rust side more strict in this regard
+and see where/when we run into trouble.
+
+> * Atomics doesn't work for complex structs. Although I am not quite sure
+>   of the value of supporting it.
+
+So on the C side we mandate the size is no larger than machine word,
+with the exception of the u64 on 32bit thing. We don't mandate strict
+integer types because things like pte_t are wrapper types.
 
 
-> +  reset-gpios:
-> +    description:
-> +      GPIO pin providing a common reset for all downstream devices. This GPIO
-> +      will be asserted then released before the downstream devices are probed.
-
-How about renaming this to "bus-reset-gpios"?
-
-Reason: When I read "reset-gpios", then I assume the device itself will
-be reset. In this case, the Marvell I2C controller. Some I2C mux devices
-and PCA9564 already use the property like I described.
-
-
---rg7y9QorxhhnN2an
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU6SmsACgkQFA3kzBSg
-KbbbsA//RDTzz4hpTvLsvq18CuGcOb/fuBgBJrR+n2qbShp3qD/U8WEpIDIsN6f+
-e01RCtjocLVQa5hIGwUzP3MC0p8KnYC9XshYj+X1Tt6XSG99WbtoQtd+IZ3Xq9fK
-n/1QDALbxdm9M0Tyf+tnJFfC9jbYwm/KtYNCfmFPGNxvNmHkqgbYkqUAIKJOboqo
-MRPjmtzXe+Ljj7gg4KCDBEkKXa07m9yaO+2FaA+HLF8cT4lSPY8H4dgpt0HiX4c4
-z+YwOWEMEBiD3c7TpglQiulF9rGmzpiTwq6h85ZqxyToIaKOXKg8QxAjjbVQ0MGN
-cm4JanI2/E0Uh3TAmruf04gbxYoWtW0dk3qjZ+vbtKtgAkIGsvtVriSQpBVPO9Yw
-yoeG4zOUqJ2Bej4zuAIred18IhD3R/CalEh+bHSs8Ss2uW8UaUCcBDGY3MFTEjrE
-9voY5WyfY2sKm7a5IQmtYd0IJCZd1ZNQb7z53A6Xut9PBKWFjSshdhl3kb/dWTf6
-bvo/jac1u6pa9uX9bG64x3wmlTcbacmJEPeCgEQVUBzJs+wAEZp9uXSYLwKXmq3l
-bgZPrqC7ZJaAWzLtkYw1azA0AS1x1DsBCjqqALypU0l3vInZKa5ms6aKvGRxlUEB
-3NMK4j90RY66xm7y+QsiZgWgb3cTN3xtItCRNNMINeX6TacyENY=
-=IkNz
------END PGP SIGNATURE-----
-
---rg7y9QorxhhnN2an--
