@@ -2,144 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0629E7D7F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDF37D7F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344531AbjJZJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        id S1344543AbjJZJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZJCk (ORCPT
+        with ESMTP id S230257AbjJZJDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:02:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB01110E
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:02:37 -0700 (PDT)
-Received: from [10.3.2.22] (unknown [185.62.158.188])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: obbardc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 42F8D6607355;
-        Thu, 26 Oct 2023 10:02:36 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698310956;
-        bh=8ltbBldB75/olJyYvKUyyK8iYDH8JjGGeiavbHGt+zs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Qn90eCJhMK7vEsDzV0eWZty8NnB4K5nfXrlFUfRC3bh4I6DZ0dbUXDVpC2SaQFNi5
-         TLHMuHvm2lBhRcGJy567xZznTHmn4k+F5Lr+3oD/N5eAfJCMptwod79Fbmdps/r+bL
-         z2jw6yKObc6hTsVAl+voUF483OFakpduW2fdPh2rZJZwI3h3yi0hHARcBypTnmdFw9
-         a814FiC+ivJd34MR+4TLKSwZ7oCZlJzUGrrqoge8bIORser1pNqcBZy0RIhjGcDZBx
-         9KPlBMVft9PrFiU5BwsOBTOqzVp7XEgrlBoSSNycfPD/FenmjJrSOHKJ794EmPKtNU
-         mzi8DzTlj80ZQ==
-Message-ID: <4caf39049a659343450127870a10598416fd3154.camel@collabora.com>
-Subject: Re: [PATCH] drm/rockchip: vop2: Add NV20 and NV30 support
-From:   Christopher Obbard <chris.obbard@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Andy Yan <andy.yan@rock-chips.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel <kernel@collabora.com>
-Date:   Thu, 26 Oct 2023 10:02:33 +0100
-In-Reply-To: <20231025213248.2641962-1-jonas@kwiboo.se>
-References: <20231025213248.2641962-1-jonas@kwiboo.se>
-Autocrypt: addr=chris.obbard@collabora.com; prefer-encrypt=mutual;
- keydata=mQINBF7k5dIBEACmD3CqXJiJOtLEjilK2ghCO47y9Fl8+jc8yQPNsp4rMZuzlryL3vLseG0DpR3XE0bK0ojRLhUAqw13epLR5/nWp5ehm8kcy8WyDMBco9DaEyoElKCfelMvTtwmYkJXj8Z831nzzyh1CocFoFStL8HyLHc2/iU1wjczkL0t5hC9KvukV3koQTc9w03sNHeZyZedZIwR/r83k1myJXJsOPXZbmI2KGKq5QV4kTqgQJw3OkSVIQ9Mz2zVZNLKedWr2syrHFgojb7WX5iXbMUgJ8/Ikdttou0B/2xfgKNyKFe0DsbgkcEsJTIsx+C/Ju0+ycEk/7dW69oQLJo0j1oBP+8QfAeAT+M5C0uHC87KAmmy83Sh0xMGAVpcH2lLrE+5SjV3rnB+x/R4B/x7+1uYB5n7MU4/W2lYuAe1hfLtqDbEOyqLzC0FvFiZoDKxexQzcGpSW/LliBEvjjA/LXWADaM+mZezzLSjDwsGVohQrP0ZWOZ1NtC0e1sEt870fa4f+YkZeVHJRDInTcecw6c2QpNH4TzcTMD7bW9YZVqNiT5t9z+BzjJk3LtdrYPQ1SSpov7TB3LVKLIZDxgSlrur0dIklFFYPIx1KStCzqbvOEvlz03iZX4+tqZauNTkVhCoDLG+Z4w3OQdmR/uNqXqsbI04+kM3tOcVnXsosSW6E0TAJQARAQABtCZDaHJpc3RvcGhlciBPYmJhcmQgPG9iYmFyZGNAZ21haWwuY29tPokCUQQTAQgAOwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAIZARYhBPGL3ItsJfkKoj1RdGNNxPBocEb4BQJe+22mAAoJEGNNxPBocEb4iUIP+wWXh7bqqLWWo1uYYzMZN9WSnhC1qiD8RyK18DvN8UEOINmvuX2beZjVftZYLyp55bT09VZXY0s4hFVr3PbqIYnkDmXGGnG/fHtmHm4QLNozNRJNXlf+gRvA+
-        D2Zc41viquXrwrJEqrfz+g2rlO17jETQCJe5HWcvj3R1nps5MvymQ29KzmfYvMBmDYcYOVSSrqkItIFb9wppHHy8f1+sLM4pjb26OS1MUv02lRaptsV0wB3uVCNpZ8dS1aJdEYlLzKujKdVUG64ktwxboBbLSxa98J3oroHPBJbLPD+OjB9YUa3rkBIqf5JyrPPeQVzmU7rPb43o1vwWEGK1fj0N1riOWTb+v+xD00R+WBNSLYEouB+rd4d1+adBQY7DERemqQG9WlY2HHHbgcpK5SRYffwof3GL2Dgqd+K3KS+3uqenQByPGf5sXjuvo/uoI2TPoW5vYhApozM8voUycL7HA9f8MTZ7YCbPDHBfmioYiJN4y0EuO2JJ34jMZhySjft2JQ839yZP/iIwY3o6Y/ep97VDQqH8WrqfnnAKzw6WcJJ+5O088CANfI9xFsC5P8oPyBx2Ne3/zN/Bmv+3bLpcTPYyqfxZb3MIKAZXzxFU6Gn2MpNcQfMdwpJvd3NpMI7OAvhzgtW0aRe1Mj3m0gugbbOLiBw0SGPTgNwM4T7A2dltC9DaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzLm9iYmFyZEBjb2xsYWJvcmEuY29tPokCTgQTAQgAOAIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBPGL3ItsJfkKoj1RdGNNxPBocEb4BQJe+22uAAoJEGNNxPBocEb4JYwP+gMIrabuXS5llUz8yvICgusThLej0VSEWWF6BkiJdsaid1IbkbStYITE/jb834VdhjEHOT0A1SNVB6Yx38l9VNryyJkPZ38fELSUTI9FVLIfO3CP2qgJisoGh2LozSu9d+50hFIF0E9xQZCqcR7kS6j2xp14BiCoD94HCW9Z5r6gA57vFBupGwlcGxA5Z4MfFulpFaDry0R6ICksHe07vY49opWSXhSdhtv+apzaMC7r+5zJKBf1G4kNrKkauUiehgUB9f
-        xyA7CXuvB5KtZKILhv8bxyjB66u0REaigEUIBMtD2yE3Z7jXj8H42BV28/l7STNY5CoXaqSpKG82mpLPWiZ3kOd6vKT2q71LnSkk1qcQ3H9QwOTA1yCZk/GwH772nxajA5mfqets+6tAUj5Baj1Zp0MYmoquV2On9W5+0SSc/ei4NsTLj4IO9klPoHFmpd82HwthpkpCVvNKmp6cJdWIOfaIm6q71jPSnWW/YlqNnJ0T3OjwmOrJ1KXagJt1YJfGTlqRgNNrQ3x2gLJH+2upy5ZafgcZ8dZOl/P5MTVSoe5z3a5YPRBz8/hO2luFCLcOlah06ei/N0ZQfNBhzTD+FTn0Q0UB+FUkSb7D+BqBVfOConVQ+MTc51v2RGsIWIhiYo3czhdUPXr4R2Ba8WSvD54VYY1i0CKmfMHG8etCdDaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzQDY0c3R1ZGlvLmNvbT6JAk4EEwEIADgCGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AWIQTxi9yLbCX5CqI9UXRjTcTwaHBG+AUCXvttrgAKCRBjTcTwaHBG+DemD/0RST9WJd1AYk4oq2ZwB9L/X6U9vi9Hcrm/FZDHLJ+kycin0D97hogOXU6YilI+2rV3Wkw6ugu9kxtxY/nFnlCvX80c4UDMca+wZgjFTqbesXSFyjgverZa6APZseiAY4sSWEp8lfKSbb+o5T12urdDPd9k9ok0so4c8O8TOEp2SANEibzb5wl6h3Mv40firL/mwyAFIR0c6UircPG4Skjj5h+dlAf/xA9DlgIGSPFZSD9ZLB+1JeEDMwdwJxHAVkSpAfPEWCcXEb58K0hnbGWasFUe9FugqvhezrxyJ14sVrvoWNKFbTmqamNqZQFuMRsCrNUqZaIvtu7Lz87sMxBfoVESSIDfJngWxBadTuIm5wXjCiAJHbqUclzTbF7GIQ8/JSzFrzOtv/lx+0mGAjXfsU6FTqU
-        OJ25iFzQmr2gYRcc28uu1HfnfXHFgaX344gGg8x3BTySIprJ17ie8VCHHAKmAatcNs96KLCHhre/3AYj15GkkllBuKBRUQdxcTlenvuU2XTl7PGCOa2OhPL8SzTfCof0NFl8kzOeHelFjcWu6gPTB0Z2Lc5tSWGUkzmzUfrQxYUpPGDsXDfNRPN7bCAR9BX1nzqh4CHR+cLSADI5ny96y4SUxdv/i19IoMUewPr9LTVhdJqo3rw1FvAxNYtoYytrVEvyv3zVBxqev+bkCDQRe5OXSARAAs9cI1CeIzb2rtAvIRS4hRKwMdt9ZT/1cdzVFo2IEthRsBs5NuV7s1cwXBXji5rcC/9SbEgGx7h93JJ5h1FjFuqKAgDEMZDu6jSUdbbGbIWWLe9rKETSIqmVSAjSxNg7pR0lFMTcOEkEKTJWkwP32au1WBmTiUZBwaurx+VvQypFpL6zAdnPVL0ajVLWmVeiRWDvPUIDpslMmAQX0ZY0OLG+Z8U55h3qOdXupjBdEXscDoFJNsCw3xLKnhc02Sf8pO6b4Gh3aj7UE6xqFH2Rc9B9KBLy6gxdZuqACz0tAsadYfOA9iJxxCsURchiRmdW66zAFfztYRItLZI7O8TCBKCm9OasxQ+KawbdVw1sn24h5kKpZ1+qRep5c1suSkHnnodhRlyVulRXQ7pA4fTaAez2UV/Qa556ov0/viaYhqUuCooQ82nDXyv2eulhVGWUuDtDpmyn3R6XesUwskmtgia4oWijOUpPGIYpjN6DvhhchTYB2UyAlMcCFAb4mtTpsT/qLb9NOTCuBMenaYr6Q52T9MQPagdgOSIv6p3gjsSoxLge1oGkNW9IZ6g+vNoKzQ87AfHsATZW8MJBsd5sabwlAhEDMAul9dNW0rlF7zdI2wr+OPMvruQ0PmPusPJ8H7x6Tbw1hgxapP8ZrEzoRLBqywDtdXQsbGByd2sc2z50AEQEAAYkCNgQYAQgAIAIbDBYhBPGL
-        3ItsJfkKoj1RdGNNxPBocEb4BQJe+223AAoJEGNNxPBocEb433UP/1ypX5gavjPU0rewv7SKxG4hOMiIzFjz4VouLgUcA/Q65Eq9PIIKgNBYpf4NKSf43OQO+ie1iuwe2l22lRg0ISba+1YZjLix00JnoUOaSBy7vQ+zFXIJxPGCB/7lzcs2V162nNTrQor+O8kpU/Bihr2C1rH0Eru6BHu0nQwky5+14b3LsD5V9mjY0ASVcV5/lBRFjRMcfgqTLCO9YGoSVwrb1+xn6MdMIDgqL6Om5SmPx2g+quF9WZ1ElmJkDIY97lmihdxsWccynwSeF7KnSPnsah1h8WCchBQezMucSA6rbY51oO/DK1rqSeLAhM5JOG3MRWcI8jm9k+wHwU1Ct/Hxnt0kr5t+Rbnvog3cAbnmS0d8oLMOYAPaqgRkH72hPHclxzL5xfAgZ0K5/EXBCpZShbVWk4FoxYKOaoyok3ThEufkOHTyL3CBjHoXqlXLe3e+8oDQ6mmZKSjdG1yVHUdOw14cYynCxZU3PAKNihjk6ElnWnrrg/RXh7aoZUNGCFRtvSfmN5fftY7WdHM6B40BQ4mcS6G0agaFHQOTexwyAq511pgynCsRn7ZhaQLFJU7eoyquh9N0J4vrqWDq7VVnJAEyw1tOZEqWbvJrIVfsvgKnD3eIkGbZV39lkB4mEp8I5Z5RQja1kWwqpkjLT8iAaLyh53MmQJ9yxJztCSoU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+        Thu, 26 Oct 2023 05:03:34 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1136810E;
+        Thu, 26 Oct 2023 02:03:30 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4SGKHz6ZNmz9yKXj;
+        Thu, 26 Oct 2023 16:50:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwD3T5FOKzplbiTyAg--.23455S2;
+        Thu, 26 Oct 2023 10:03:17 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH] security: Don't yet account for IMA in LSM_CONFIG_COUNT calculation
+Date:   Thu, 26 Oct 2023 11:02:59 +0200
+Message-Id: <20231026090259.362945-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwD3T5FOKzplbiTyAg--.23455S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1rZr4rZFW5uw45CF4UArb_yoWfGrcEka
+        1kAr40y3y7ZF93WF47A3W8ZF1vg3y8XrnxG3WYyr13uws8Wr1rXFZ7J34fAF1rJFnxGFWv
+        ka1fKFy3Aw1ktjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
+        AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j4eHgUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQACBF1jj5WKUwACs4
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-On Wed, 2023-10-25 at 21:32 +0000, Jonas Karlman wrote:
-> Add support for the 10-bit 4:2:2 and 4:4:4 formats NV20 and NV30.
->=20
-> These formats can be tested using modetest [1]:
->=20
-> =C2=A0 modetest -P <plane_id>@<crtc_id>:1920x1080@<format>
->=20
-> e.g. on a ROCK 3 Model A (rk3568):
->=20
-> =C2=A0 modetest -P 43@67:1920x1080@NV20 -F tiles,tiles
-> =C2=A0 modetest -P 43@67:1920x1080@NV30 -F smpte,smpte
->=20
-> [1] https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/329
->=20
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+Since IMA is not yet an LSM, don't account for it in the LSM_CONFIG_COUNT
+calculation, used to limit how many LSMs can invoke security_add_hooks().
 
-Reviewed-by: Christopher Obbard <chris.obbard@collabora.com>
-Tested-by: Christopher Obbard <chris.obbard@collabora.com>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ security/security.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> ---
-> =C2=A0drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 5 +++++
-> =C2=A0drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 ++
-> =C2=A02 files changed, 7 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> index ab944010fe14..592f9d726f2e 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> @@ -326,11 +326,14 @@ static enum vop2_data_format vop2_convert_format(u3=
-2
-> format)
-> =C2=A0	case DRM_FORMAT_NV16:
-> =C2=A0	case DRM_FORMAT_NV61:
-> =C2=A0		return VOP2_FMT_YUV422SP;
-> +	case DRM_FORMAT_NV20:
-> =C2=A0	case DRM_FORMAT_Y210:
-> =C2=A0		return VOP2_FMT_YUV422SP_10;
-> =C2=A0	case DRM_FORMAT_NV24:
-> =C2=A0	case DRM_FORMAT_NV42:
-> =C2=A0		return VOP2_FMT_YUV444SP;
-> +	case DRM_FORMAT_NV30:
-> +		return VOP2_FMT_YUV444SP_10;
-> =C2=A0	case DRM_FORMAT_YUYV:
-> =C2=A0	case DRM_FORMAT_YVYU:
-> =C2=A0		return VOP2_FMT_VYUY422;
-> @@ -415,6 +418,8 @@ static bool vop2_win_uv_swap(u32 format)
-> =C2=A0	case DRM_FORMAT_NV16:
-> =C2=A0	case DRM_FORMAT_NV24:
-> =C2=A0	case DRM_FORMAT_NV15:
-> +	case DRM_FORMAT_NV20:
-> +	case DRM_FORMAT_NV30:
-> =C2=A0	case DRM_FORMAT_YUYV:
-> =C2=A0	case DRM_FORMAT_UYVY:
-> =C2=A0		return true;
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-> b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-> index fdb48571efce..0b4280218a59 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-> @@ -48,8 +48,10 @@ static const uint32_t formats_rk356x_esmart[] =3D {
-> =C2=A0	DRM_FORMAT_NV15, /* yuv420_10bit linear mode, 2 plane, no padding
-> */
-> =C2=A0	DRM_FORMAT_NV16, /* yuv422_8bit linear mode, 2 plane */
-> =C2=A0	DRM_FORMAT_NV61, /* yuv422_8bit linear mode, 2 plane */
-> +	DRM_FORMAT_NV20, /* yuv422_10bit linear mode, 2 plane, no padding
-> */
-> =C2=A0	DRM_FORMAT_NV24, /* yuv444_8bit linear mode, 2 plane */
-> =C2=A0	DRM_FORMAT_NV42, /* yuv444_8bit linear mode, 2 plane */
-> +	DRM_FORMAT_NV30, /* yuv444_10bit linear mode, 2 plane, no padding
-> */
-> =C2=A0	DRM_FORMAT_YVYU, /* yuv422_8bit[YVYU] linear mode */
-> =C2=A0	DRM_FORMAT_VYUY, /* yuv422_8bit[VYUY] linear mode */
-> =C2=A0};
+diff --git a/security/security.c b/security/security.c
+index 988483fcf153..7281aa90ca20 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -44,7 +44,6 @@
+ 	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+ 	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+ 	(IS_ENABLED(CONFIG_SECURITY_TOMOYO) ? 1 : 0) + \
+-	(IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
+ 	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
+ 	(IS_ENABLED(CONFIG_SECURITY_YAMA) ? 1 : 0) + \
+ 	(IS_ENABLED(CONFIG_SECURITY_LOADPIN) ? 1 : 0) + \
+-- 
+2.34.1
+
