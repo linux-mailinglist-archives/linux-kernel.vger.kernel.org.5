@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4574C7D7971
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F057D7970
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjJZA02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        id S230021AbjJZA0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjJZA01 (ORCPT
+        with ESMTP id S229877AbjJZA0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:26:27 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8635DC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:26:24 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778a108ae49so119356385a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:26:24 -0700 (PDT)
+        Wed, 25 Oct 2023 20:26:53 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B58186
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:26:51 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-66d03491a1eso2250736d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698279984; x=1698884784; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1698280011; x=1698884811; darn=vger.kernel.org;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=5EZsMvpbL3qJWxo7ikQxxTGWIxNFL16FmWOL7fe7XYc=;
-        b=GBu6UQx//XR2TFTCimpYqKRJHFttjbqQbjmfQSfYfMRXziEVGQX+FWVEoLxwDHN7Yi
-         +/nOCT+EaA7B0J2kxGIc2DFl502AJXFfx9m1RaJDkRu81HMbaqnHx9/ROCJtCiaK9y17
-         1G4uL51n4DCsAChO+tINa01rN+bANAeyZiT2k=
+        bh=5Sp0tpElN5pT63KACc7BdJwCLlZbx4d0ibKaIBf4xJA=;
+        b=V4w+q/oa3QnVMJl+TfX9r/0W4wOTriviUd0NR5be2+v/YWImRL0Wb2/SYA+obxrH1e
+         D2VRkFw/Gdtyi24T22q/9jutJsmUHEYTEJ7FnV038XOYMXYUZmwEpOccanRU4bAH69cZ
+         SxjAeYS/z33+KHU15QO8gMZ7fi59slSV/F2UU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698279984; x=1698884784;
+        d=1e100.net; s=20230601; t=1698280011; x=1698884811;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5EZsMvpbL3qJWxo7ikQxxTGWIxNFL16FmWOL7fe7XYc=;
-        b=TZqVbnvxIIjUIiBfWya9BgGc6ts350nMiO0ieWcmTao+LriBK6cV5xaOvhGBcmc6T5
-         W/PInnvEeqbFBZfe0k+v219gfm3JCbA+ywVr/m//2r4pBbPn3BDxdM5qnzPu9OFEw+LG
-         ea8pQz5COigk+5u4SNwPInnQxyhpsMXIIfdaDQ1+be2vLW4ZKFxLUPL3qgM21LLX5x4N
-         Glt55YCeZXW5arHA9QkUkiquSGdZJHFoORjzEe2SaS9lwMrwZ1N5Yq6PwHjNxewUCk1X
-         TsyvdP6/wKI/w5k3Q1peFHkHdGNNpVuBwp1PaYIkjuwzIgB1U2ZcQHrGI7pDvupG5pjf
-         DsBg==
-X-Gm-Message-State: AOJu0YwLNN2ScbvDi/vXX/xMf62Gj1eIj/K9ex2yxFKHYQFlPhyzXmiT
-        ifiKD+FulIPIgdTibNr0iMZK9g==
-X-Google-Smtp-Source: AGHT+IFPjVl01x3mtCmLtKcDw9sqLfpIOJVElqqXWssees1RoPj66HG+273AlPSK+lyp7A1qGQwkaQ==
-X-Received: by 2002:a05:620a:1aa2:b0:775:9f94:16f1 with SMTP id bl34-20020a05620a1aa200b007759f9416f1mr1661222qkb.22.1698279984042;
-        Wed, 25 Oct 2023 17:26:24 -0700 (PDT)
+        bh=5Sp0tpElN5pT63KACc7BdJwCLlZbx4d0ibKaIBf4xJA=;
+        b=R4d+LDPBFq2tP07GpJIBgjniJKVsVRknUbd4BQTKetQpRnEGeN/fY7wPTGHY5qKH7O
+         86VMYuKp0hl/h+y+6nFb7a5OKENT5qovi2eUbgWDZhMN8UjejcGAFEAqS2ZjSXBNX3PY
+         UUnwUFmGvxZM4NrOXNJNxbL7kBiAG/5EAmbiGDjFut286qeDodLxDSOLEofvd1cEBTNI
+         pV79kdH5zlC7d0sGZFJmNaus4ZsHs4Nu8jfkTiAUXMA2lSdCyjrkGSka5JjPocGKKNit
+         ZynqIdXXOE+nMgUYRkvywXyctsSaLRFUpdSKCEm5JWmyA9um4FvDRIBER02pbZstBOJ5
+         Z8+A==
+X-Gm-Message-State: AOJu0YxGpkZ4GB2NVS8oKrSLgH76L6KjJsk3sltmXMPVdBTq1jOXcgZ3
+        BRjJOR3PDtZfSVYL0K0SCuG7ZnPALs1AR1BCvco=
+X-Google-Smtp-Source: AGHT+IGgXW2bLaAq0ikQPVXN5m4/6TYoB3Rn4JvDwaGoXCxMZ7SLLTxSJOlh4m9ooI9hzskDE/loOA==
+X-Received: by 2002:ad4:4eea:0:b0:66d:6406:1301 with SMTP id dv10-20020ad44eea000000b0066d64061301mr20202926qvb.20.1698280010836;
+        Wed, 25 Oct 2023 17:26:50 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id x9-20020a05620a14a900b0076f1d8b1c2dsm4585848qkj.12.2023.10.25.17.26.22
+        by smtp.gmail.com with ESMTPSA id h5-20020a0ceda5000000b0066d32666a27sm4731116qvr.66.2023.10.25.17.26.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Oct 2023 17:26:23 -0700 (PDT)
-Subject: Re: [PATCH v4 3/4] mtd: rawnand: brcmnand: pass host struct to
- bcmnand_ctrl_poll_status
+        Wed, 25 Oct 2023 17:26:50 -0700 (PDT)
+Subject: Re: [PATCH v4 4/4] mtd: rawnand: brcmnand: exec_op implementation
 To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
         rafal@milecki.pl, joel.peshkin@broadcom.com,
@@ -57,16 +56,16 @@ To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         kdasu.kdev@gmail.com, JaimeLiao <jaimeliao.tw@gmail.com>,
         Adam Borowski <kilobyte@angband.pl>
 References: <20231023171444.322311-1-dregan@broadcom.com>
- <20231023171444.322311-3-dregan@broadcom.com>
+ <20231023171444.322311-4-dregan@broadcom.com>
 From:   William Zhang <william.zhang@broadcom.com>
-Message-ID: <e1c4746f-f057-8707-1f7b-d3c3ff5531e7@broadcom.com>
-Date:   Wed, 25 Oct 2023 17:26:21 -0700
+Message-ID: <99be185e-5e99-84ce-c177-a5ab44ef381a@broadcom.com>
+Date:   Wed, 25 Oct 2023 17:26:48 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20231023171444.322311-3-dregan@broadcom.com>
+In-Reply-To: <20231023171444.322311-4-dregan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000031a8350608939fae"
+        boundary="000000000000cbdf8f060893a06e"
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
@@ -77,7 +76,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000031a8350608939fae
+--000000000000cbdf8f060893a06e
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,27 +86,28 @@ Content-Transfer-Encoding: 7bit
 On 10/23/2023 10:14 AM, dregan@broadcom.com wrote:
 > From: David Regan <dregan@broadcom.com>
 > 
-> Pass host struct to bcmnand_ctrl_poll_status instead of ctrl struct
-> since real time status requires host, and ctrl is a member of host.
-> Real time status is required for low level commands vs cached status
-> since the NAND controller will not do an automatic status read at the
-> end of a low level command as it would with a high level command.
+> exec_op implementation for Broadcom STB, Broadband and iProc SoC
+> This adds exec_op and removes the legacy interface. Based on changes
+> proposed by Boris Brezillon.
+> 
+> https://github.com/bbrezillon/linux/commit/4ec6f8d8d83f5aaca5d1877f02d48da96d41fcba
+> https://github.com/bbrezillon/linux/commit/11b4acffd761c4928652d7028d19fcd6f45e4696
 > 
 > Signed-off-by: David Regan <dregan@broadcom.com>
 > ---
-> Changes in v4: none
+> Changes in v4: made helper functions static
 > 
-> Changes in v3: none
+> Changes in v3: moved WAITRDY out of loop
 > 
-> Changes in v2: added this patch in series
+> Changes in v2: moved status and reset command detect out of loop
 > ---
->   drivers/mtd/nand/raw/brcmnand/brcmnand.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
+>   drivers/mtd/nand/raw/brcmnand/brcmnand.c | 380 ++++++++++-------------
+>   1 file changed, 157 insertions(+), 223 deletions(-)
 > 
 
 Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
---00000000000031a8350608939fae
+--000000000000cbdf8f060893a06e
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -178,13 +178,13 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICkyT+VlSVn/wi6gOiB48LeOz7IP
-skwgajlldBIbUfrPMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MTAyNjAwMjYyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICpvrKo99JbjXNa+xntTi6eDZ6xL
+3/xtylVi5+EStEXiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MTAyNjAwMjY1MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCfxiLhqh5wg6z9rMVfGHlTvg3Ii0NqC0wPLJEqrXo9KNtc
-CciY4IEiyJwUv7zBxtfMtx4H4zuoLN4xuIpjfrGjmqCOZ2L7k2hiZvHIJPxryJVSimJgyoPKLx75
-Cc4XbNflCydRBKBKHc1Ecw9OIQWov9ye33OTcwoQHlNBAUQWUMwQl+Vgwnj42xr3Tqi8FRfDLZhn
-UF23HxAplFweZ3XcoLJsnaGlbUD1MQwSxS+Y6e+GYC56OSr+dxQtWA4/MOTisp2X6s21hWJEYr5y
-iAaj0FooNRUfSFhxViwsqBZwhHC9r0YFdR889UMoNxiIOJ3n0cHlDorsZiQNbI23va9Y
---00000000000031a8350608939fae--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQDEWvN2Kze2TB/RRYP1hoS9a6J7Lu4SvzQzw3ZnN+iTD0cU
+kCCwGb7gRtvChlpm9YPCCKgGQSuwT6FcpZT5IUg7zMcrvKtnPcC5mHdTpWx02bSAbCDA/Cb07S02
+yKad0toZSUhAtolmY3gZzgYk7l8Ustp5PGPG0XCmYvAEJBg5BN1zGkDlMw6OXt3gzDVzPArehE0p
+0Res8xGyvRQRuEiljbFaZplSxdhyBs9f1fbHu07sF2lh6Tqq9gWmhSr67oa/9wNA4F6DdVmrt1hx
+E7tvJ34brwYCVK7m0WVj2kdO0qu/bk06phpS6zlfcjpGMd2jWEV7iaWtwVAiWJCTvlc7
+--000000000000cbdf8f060893a06e--
