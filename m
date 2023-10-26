@@ -2,135 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A64F47D893B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD457D8941
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjJZTyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
+        id S231701AbjJZTzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZTyG (ORCPT
+        with ESMTP id S229501AbjJZTzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:54:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37811B1;
-        Thu, 26 Oct 2023 12:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698350043; x=1729886043;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YoVYbR7RlCt/ClEPZWOyiJe3KsZblEHvYygtlHWLDFU=;
-  b=EmcIatbsYHhuwmtHYEXrrRz9qvMDz0ldoQ5iHs8bIouc8m3OzlkvPKzn
-   a0VCffsODoovEw3C+vxX2++tM6c9laDHR+mZVWrJrk7LOoD5jsyCYXAwp
-   fojs9+KFtKphNW/cwrLTtgQMz6nqzy+kCJ4jNSguGcu3h7ZHZk4tBEuqz
-   yzQC+8uQCBQIDK2SlzwKasd3w9djxF6BN3bHv/iZ3WFS2CSeL4J8LrpIm
-   CoXSXk/2bJtc7F7aDQL2hQln8ZZLdERPP1tTbqlRdEaMZhXYSIKn7/Cth
-   6ZTRQNGpOdoH3Eg1pQWy6uwjv3oB6EtJKWSNFdIm95iMltdxUxIPgGC2I
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="384841179"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="384841179"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:54:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="735856795"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="735856795"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:54:02 -0700
-Date:   Thu, 26 Oct 2023 12:54:01 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     "Moger, Babu" <babu.moger@amd.com>
-Cc:     Peter Newman <peternewman@google.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
- b/w unavailable
-Message-ID: <ZTrD2Q8Hpk1EjIBA@agluck-desk3>
-References: <20231024181600.8270-1-tony.luck@intel.com>
- <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
- <ZTluypa9bCWv4k2n@agluck-desk3>
- <CALPaoCj72V=o60tqsFMRzaeUw-1+rN7pyhsdCyVEV=0tN_CZ7A@mail.gmail.com>
- <95fc35a2-2f19-4ba5-ad3a-7d7ae578289c@amd.com>
- <SJ1PR11MB60837D379853EFB14A6A20BBFCDDA@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <a55c7d7e-019f-4eb1-9ae7-ec5e0f810bd3@amd.com>
+        Thu, 26 Oct 2023 15:55:23 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81C4B9;
+        Thu, 26 Oct 2023 12:55:20 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ce291b5df9so710134a34.2;
+        Thu, 26 Oct 2023 12:55:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698350120; x=1698954920;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P9SEmh3Ti6BweKuBsiI0z3j9kO6wl5de7iuUaFpsagQ=;
+        b=qID3Hdr57cb9Nur07Oa3maNzD7TzNRE4oVUrkozYxDnoQs6++5KaPlKL9IJEAxZc4l
+         c0KVkASptzjCFGNlKkvgPB4MiIQNCN+yxDkaKr/ezK8zZlEfQgymGyt8LNW/YehLv4IG
+         nXSfjlQmMAy0VKf6FTD6/L/MA8mB8CWHoeWbOyLZf4Vf7Jgh5+7xOExJiL3I/SduRLfG
+         dkuO1CMJAgughUgHooAwKir9hOieqZnNyBQziR5IKNIhNrSihlPeLZb0Jq7WXh3SL7BB
+         iQwuNOXSTJqSJainResUKCXb2JhFWZ++TFvehZoOYviKwdD3nY4SDdqxFeCIS0cRpP0P
+         swiA==
+X-Gm-Message-State: AOJu0YyX3trdKa+XqUxfarLVgAiNr+fefIyIshwnm9CVlCIO1kQWF522
+        K9Y8cgkVbuuOaUEROm0GzQ==
+X-Google-Smtp-Source: AGHT+IGFKWUSjFLRB5b0vYmkzpMNPEPkC3HBf+pN5hkdBt1cX6fzmcK5kAGnnfuiZjJO1Sorv/ZI+Q==
+X-Received: by 2002:a05:6830:314c:b0:6b8:9a3a:ea12 with SMTP id c12-20020a056830314c00b006b89a3aea12mr545041ots.12.1698350119860;
+        Thu, 26 Oct 2023 12:55:19 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id d64-20020a4a5243000000b005737ca61829sm5503oob.13.2023.10.26.12.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 12:55:19 -0700 (PDT)
+Received: (nullmailer pid 69534 invoked by uid 1000);
+        Thu, 26 Oct 2023 19:55:18 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH v2] pwm: Use device_get_match_data()
+Date:   Thu, 26 Oct 2023 14:54:17 -0500
+Message-ID: <20231026195417.68090-2-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a55c7d7e-019f-4eb1-9ae7-ec5e0f810bd3@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:19:14PM -0500, Moger, Babu wrote:
-> Hi Tony,
-> 
-> On 10/26/23 11:09, Luck, Tony wrote:
-> >>> What I meant was I think it would be enough to just give the function
-> >>> you added a name that's more specific to the Mbps controller use case.
-> >>> For example, get_mba_sc_mbm_state().
-> >>
-> >> I actually liked this idea. Add a new function get_mba_sc_mbm_state. That
-> >> way we exactly know why this function is used. I see you already sent a v2
-> >> making the event global. Making it global may not be good idea. Can you
-> >> please update the patch and resend. Also please add the comment about why
-> >> you are adding that function.
-> > 
-> > Can you explain why you don't like the global? If there is a better name for it,
-> > or a better comment for what it does, or you think the code that sets the value
-> > could be clearer, then I'm happy to make changes there.
-> 
-> My theory is always try to localize the changes and avoid global variables
-> when there are other ways to do the same thing. It may not be strong argument.
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data. With this, adjust the includes to explicitly
+include the correct headers.
 
-A good theory. I do this too. But it seems I'm more likely to go with
-global variables if the cost of avoiding them is high. But "cost" is
-a very subjective thing.
+As these drivers only do DT based matching, of_match_device() will never
+return NULL if we've gotten to probe(). Therefore, the NULL check and
+error returns can be dropped.
 
-> > Which events are supported by a system is a static property. Figuring out once
-> > at "init" time which event to use for mba_MBps seems a better choice than
-> > re-checking for each of possibly hundreds of RMIDs every second. Even though
-> > the check is cheap, it is utterly pointless.
-> 
-> mbm_update happens here only to the active group (not on all the available
-> rmids).
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Add to commit message about of_match_device() error checking
 
-mbaMBps needs to get data from all active RMIDs to provide input to
-the feedback loop. That might be a lot of RMIDs if many jobs are being
-monitored independently (which I believe is a common mode of operation).
+ drivers/pwm/pwm-img.c      | 8 ++------
+ drivers/pwm/pwm-rockchip.c | 9 ++-------
+ 2 files changed, 4 insertions(+), 13 deletions(-)
 
-> Also, I am not clear about weather this is going fix your problem.
-> You are setting the MSR limit based on total bandwidth. The MSR you are
-> writing may only have the local socket effect. In cases where all the
-> memory is allocated from remote socket then writing the MSR may not have
-> any effect.
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 116fa060e302..0d218c0b690e 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -13,9 +13,9 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/property.h>
+ #include <linux/pwm.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+@@ -260,7 +260,6 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 	u64 val;
+ 	unsigned long clk_rate;
+ 	struct img_pwm_chip *imgchip;
+-	const struct of_device_id *of_dev_id;
+ 
+ 	imgchip = devm_kzalloc(&pdev->dev, sizeof(*imgchip), GFP_KERNEL);
+ 	if (!imgchip)
+@@ -272,10 +271,7 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(imgchip->base))
+ 		return PTR_ERR(imgchip->base);
+ 
+-	of_dev_id = of_match_device(img_pwm_of_match, &pdev->dev);
+-	if (!of_dev_id)
+-		return -ENODEV;
+-	imgchip->data = of_dev_id->data;
++	imgchip->data = device_get_match_data(&pdev->dev);
+ 
+ 	imgchip->periph_regs = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 							       "img,cr-periph");
+diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
+index cce4381e188a..a7c647e37837 100644
+--- a/drivers/pwm/pwm-rockchip.c
++++ b/drivers/pwm/pwm-rockchip.c
+@@ -10,8 +10,8 @@
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/pwm.h>
+ #include <linux/time.h>
+ 
+@@ -296,16 +296,11 @@ MODULE_DEVICE_TABLE(of, rockchip_pwm_dt_ids);
+ 
+ static int rockchip_pwm_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *id;
+ 	struct rockchip_pwm_chip *pc;
+ 	u32 enable_conf, ctrl;
+ 	bool enabled;
+ 	int ret, count;
+ 
+-	id = of_match_device(rockchip_pwm_dt_ids, &pdev->dev);
+-	if (!id)
+-		return -EINVAL;
+-
+ 	pc = devm_kzalloc(&pdev->dev, sizeof(*pc), GFP_KERNEL);
+ 	if (!pc)
+ 		return -ENOMEM;
+@@ -344,7 +339,7 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, pc);
+ 
+-	pc->data = id->data;
++	pc->data = device_get_match_data(&pdev->dev);
+ 	pc->chip.dev = &pdev->dev;
+ 	pc->chip.ops = &rockchip_pwm_ops;
+ 	pc->chip.npwm = 1;
+-- 
+2.42.0
 
-Intel MBA controls operate on all memory operations that miss the L3
-cache (whether they are going to a local memory controller, or across
-a UPI link to a memory controller on another socket).
-
-> Also you said you don't have the hardware to verify. Its always good to
-> verify if is really fixing the problem. my 02 cents.
-
-I don't have hardare that enforces this. But Linux does have a boot
-option clearcpuid=cqm_mbm_local to tell Linux that the system doesn't
-provide a local counter. I've been using that for all my testing.
-
--Tony
