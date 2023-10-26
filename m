@@ -2,142 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC157D7F1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E6B7D7F1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344572AbjJZI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        id S229953AbjJZI5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjJZI5h (ORCPT
+        with ESMTP id S234684AbjJZI5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:57:37 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA31AB
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:34 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81d09d883dso457641276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:34 -0700 (PDT)
+        Thu, 26 Oct 2023 04:57:46 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C49C18D
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:40 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3296b3f03e5so448670f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698310654; x=1698915454; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=d15OUBlXoCJoUgZsOraHwb/V6/eE2WDwET5ZkyPx89I=;
-        b=VGdVAsYlb1hiv6kYyLytVrbDKNuOdBKi4pUjHe7VTA0caJu5yvrVqPQRJ4t1D1W3eM
-         KrRqxJbEzYlDOjvyawUifn1SAELQ0MzA1CNT+qdG7F41T8pZVVHyzMF4EK0XNDog02Kr
-         yHB54LgJiZAn+ymc813OAcm6xilxRpqujqgyvNY9llbMF81w10IFXKTJRjE9yAWpaIQp
-         XiAymVmXqElSI3X0gDuKN48mBnzthQxStmQ2YMj2TjTUKeV3NnqwTILbYfZzqCdtp4GB
-         ZEEU7F4ZK3yoFqKZPb4f9IUKM/OBhoKizEliZRLh0UwVOXP48ehxQWuWMdY5PNFq7M18
-         JyHw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698310659; x=1698915459; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zZ/824BJO1d/EHWcRhN/veSLWctMw07x5UCm1ELLYiY=;
+        b=HdccXSfH/MWHbnxpKL5oTzMlotRMzfZA4b03h63u/YUh5I2HJj/kO4wocbs8a6fEBj
+         LjovLz/bgPrnFsUyNsSUqlWLkKr0jEXCcTry2gUONp7Z7Cwlro3IFHyqHE0CqAkTS/p+
+         XngdxQzNi0Uu0nVwpMPsenklLp1/KQZE7o6wTLv67OZ5JSXCACtReiG9Nuq8apRTRPh2
+         1GLKbY578tXeawtUqknE3Nqprka8zL3vKg3+sMQ7TD8IJQn283wruCXigvStGBcZ/yiN
+         NzkB3p0yzcfIXtaRkSgpT0YLVAsh55L+Oi48HkR5Cx5vC578erAWiNZ15CRWLbBM7M56
+         oEdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698310654; x=1698915454;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d15OUBlXoCJoUgZsOraHwb/V6/eE2WDwET5ZkyPx89I=;
-        b=wHkk0sdotN2OePsC3x98RtKfvO1S3y5G1MIlBtcKKp4tsY58+33tIzbHbR7LcwBApY
-         7kTNQdDf8GD6PaMvY0HFrt9jgMDxPtRiwTfiSIbDEQ/viqpFTzDGdF9+AvZ6R8KHPr9v
-         kNyFB2tlCtIRUURktPFjOKYXzH5rcZRMbMnIyMObdnQKKrvqkUFSY7ah4WASb6kcWphB
-         uNNZ1ukWf1w3DZAP/gWmcWU2/8BCa9bVoB4t91x5i0ZQIl7oPB/VbqUGKsBKaKoQ6Mdp
-         NwjmFJsoIUq6ieqCZM29DCGoBB9B+Se+x2Gg82klz7iopK3+2Nv2RahJGS3XFsES6iIO
-         E0mg==
-X-Gm-Message-State: AOJu0YzNQSmXLSL1gK1dikGMrtDZposwIN0n216tGiExIIbLoOnDRa+4
-        p69k1X5IUBUy9+Jav8OXzblSrg/QTvdCmnInkzr26g==
-X-Google-Smtp-Source: AGHT+IFhzh3jp3HfNlJ8La8+jINi5sy551LrNDFQM80H3MVmgkxMCbioFraPFHdJrZNwGJJzriw+6D047YqUbWdNHEc=
-X-Received: by 2002:a25:fb01:0:b0:da0:9735:b012 with SMTP id
- j1-20020a25fb01000000b00da09735b012mr2234616ybe.11.1698310654073; Thu, 26 Oct
- 2023 01:57:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698310659; x=1698915459;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zZ/824BJO1d/EHWcRhN/veSLWctMw07x5UCm1ELLYiY=;
+        b=T+EQzjDxVVvTgpHaLkf3Dg8UL4zVmRlCymeMNdVN6pWzbNFvE62eJXlgwPwE7lcura
+         S4dLdWHmvThsvH/KalVNdOyPF586CeZSLNOuVzLHuxZRBX7W2JfQRYIwS4omBaXZwa+d
+         lk5DXGeVjyWzILLWNoNNIjcoaHRnSojPS5QoXNq5z3qgYaPknbT3aqgft6nhau4ddLj2
+         V1XQ/A3PYqsc3WeW/i+hvwLw7LsBLC6lUHBqTkN9oG46IhnJ6hX1qFjQ5VTEWReVHc9h
+         H8Td3+JnaJhwX0zqB1xsTvtd6OXVT9vdrq90J1hAlPRR5M+FgT5TpwCIWvujK3uMwCGe
+         SMuA==
+X-Gm-Message-State: AOJu0YyeYsRY5wDx4qpu664y30Rt9P8OJt6DgD5pTDGNOOWl9PHT+edG
+        MDB5voJ9cmBqKj3rMG98DRZKZklM4zzYhuxqub65pQ==
+X-Google-Smtp-Source: AGHT+IH3muhS4J2stt28w/fF1mg4E8iD8ocY1a/XGGeNGDZ1PbgBpfdORtGH6uJ3k03W0uvTXNi6DVixxCLk5iXWVGY=
+X-Received: by 2002:a5d:464a:0:b0:31f:98b4:4b62 with SMTP id
+ j10-20020a5d464a000000b0031f98b44b62mr13281281wrs.37.1698310658773; Thu, 26
+ Oct 2023 01:57:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
- <20231025103957.3776-7-keith.zhao@starfivetech.com> <70805ff2-56a8-45e1-a31c-ffb0e84749e5@linaro.org>
- <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
-In-Reply-To: <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 26 Oct 2023 11:57:22 +0300
-Message-ID: <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] drm/vs: Add hdmi driver
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
+References: <20230928151846.8229-1-alexghiti@rivosinc.com> <305b4dec-c99d-3cee-4563-8d7dcbae9384@ghiti.fr>
+ <20231003090443.67a2e2692b68211e05b53248@linux-foundation.org>
+In-Reply-To: <20231003090443.67a2e2692b68211e05b53248@linux-foundation.org>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Thu, 26 Oct 2023 10:57:27 +0200
+Message-ID: <CAHVXubi5C0hBaXx5tqVHZAJSd1zvHRqoxUEkk9ZbmZ5mq2=mAw@mail.gmail.com>
+Subject: Re: [PATCH -fixes 0/2] Fix set_huge_pte_at()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexandre Ghiti <alex@ghiti.fr>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 11:07, Maxime Ripard <mripard@kernel.org> wrote:
+Hi Andrew,
+
+On Tue, Oct 3, 2023 at 6:04=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+.org> wrote:
 >
-> On Thu, Oct 26, 2023 at 01:23:53AM +0300, Dmitry Baryshkov wrote:
-> > > +static int starfive_hdmi_register(struct drm_device *drm, struct starfive_hdmi *hdmi)
-> > > +{
-> > > +   struct drm_encoder *encoder = &hdmi->encoder;
-> > > +   struct device *dev = hdmi->dev;
-> > > +
-> > > +   encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
-> > > +
-> > > +   /*
-> > > +    * If we failed to find the CRTC(s) which this encoder is
-> > > +    * supposed to be connected to, it's because the CRTC has
-> > > +    * not been registered yet.  Defer probing, and hope that
-> > > +    * the required CRTC is added later.
-> > > +    */
-> > > +   if (encoder->possible_crtcs == 0)
-> > > +           return -EPROBE_DEFER;
-> > > +
-> > > +   drm_encoder_helper_add(encoder, &starfive_hdmi_encoder_helper_funcs);
-> > > +
-> > > +   hdmi->connector.polled = DRM_CONNECTOR_POLL_HPD;
-> > > +
-> > > +   drm_connector_helper_add(&hdmi->connector,
-> > > +                            &starfive_hdmi_connector_helper_funcs);
-> > > +   drmm_connector_init(drm, &hdmi->connector,
-> > > +                       &starfive_hdmi_connector_funcs,
-> > > +                       DRM_MODE_CONNECTOR_HDMIA,
+> On Tue, 3 Oct 2023 17:43:10 +0200 Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> > +cc Andrew: Would  you mind taking this patchset in your tree for the
+> > next rc? This patchset depends on a previous fix for arm64 that you
+> > merged in rc4 which is not in the riscv -fixes branch yet.
 > >
-> > On an embedded device one can not be so sure. There can be MHL or HDMI
-> > Alternative Mode. Usually we use drm_bridge here and drm_bridge_connector.
+> > I saw with Palmer and he should ack this shortly.
 >
-> On an HDMI driver, it's far from being a requirement, especially given
-> the limitations bridges have.
+> Well I grabbed them into mm.git's mm-hotfixes-unstable queue.  All
+> being well I'll move them into mm-hotfixes-stable within a week then
+> into Linus shortly after.
 
-It's a blessing that things like MHL / HDMI-in-USB-C / HDMI-to-MyDP
-are not widely used in the wild and are mostly non-existing except
-several phones that preate wide DP usage.
-Using drm_connector directly prevents one from handling possible
-modifications on the board level. For example, with the DRM connector
-in place, handling a separate HPD GPIO will result in code duplication
-from the hdmi-connector driver. Handling any other variations in the
-board design (which are pretty common in the embedded world) will also
-require changing the driver itself. drm_bridge / drm_bridge_connector
-save us from those issues.
+Those fixes finally did not make it to 6.6, I was hoping for them to
+land in -rc6 or -rc7: for the future, what should have I done to avoid
+that?
 
-BTW: what are the limitations of the drm_bridge wrt. HDMI output? I'm
-asking because we heavily depend on the bridge infrastructure for HDMI
-output. Maybe we are missing something there, which went unnoticed to
-me and my colleagues.
+Thanks,
 
--- 
-With best wishes
-Dmitry
+Alex
+
+>
+> Unless something changes.  It's odd that the riscv tree(s) aren't set
+> up to merge fixes against -rc4?
