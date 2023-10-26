@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7817D8101
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9569A7D80F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344752AbjJZKmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S232126AbjJZKln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235012AbjJZKl5 (ORCPT
+        with ESMTP id S234959AbjJZKlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:41:57 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3D4D42;
-        Thu, 26 Oct 2023 03:41:53 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BD21024000C;
-        Thu, 26 Oct 2023 10:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698316912;
+        Thu, 26 Oct 2023 06:41:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E60A18A
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:41:33 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698316890;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=89QZghIzrhbdFSkiY8cfj50jVqvDezZ7qykG0hXVcLg=;
-        b=X87hLIePGytsjaYLRg0arx9Bl9oHNsdE6MvxwwnFpzyIW4SBLwzF8LBQjdtjzJGJUjnJU9
-        Xq+dAcQUJ87nfTzOpq+VzDum0q6v+s+BVhXPoG3PQY6l7ROEgx8NcPPexfcwcHFG23E3FX
-        YBF621ORbbZnEf25HB83TF+7gmk1pRmGOdmR9Ve4zS/Czav72svci23wHftEGl7Wjw/G8T
-        BzbkPeKJyQrly/u+eqkiITRAI8u1zXG5/RVRayCGpi8Ywz4Kx6jeePPn0PKtaAC1TtAfcv
-        BRbuMVohUSmmAyWicWanqn3fHzsn3L6Whccyhm4MohTgoa06v0f6xxa7MI3YIA==
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date:   Thu, 26 Oct 2023 12:41:23 +0200
-Subject: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6, 7
- or 8 in _get_options
+        bh=O6L6DWD07tt2bFggRawWCkh8dvucnoefnFHvJXio3Cc=;
+        b=SDA2PWvd6GpZ23Q29afOzvItIzP7Dmf9HxNwShbfHzRxZjMPA4ORRmQFrk4WZqVIuYJe78
+        Jjsg0SXxwbKfifz1L23f1CdJwoxreMsFrOKuBeQJfGXO+u26WWu5ivTISfPn4+KXF0cHk/
+        huAuzWJqNSGNclPgsARofKggfNPAuZ+0plX2vdFECnfvEECG9ZCV2OgWZzy/kFyldQpKNy
+        DG2ezfPALHgpx2jG+WhLbas6xIrBHfsdS2IKEi5xAaG6qX720gEFKUw0hn3r6kdvA0wQG0
+        0TZzeFKe5acOFUy8oa/+e/DZcmRQQ1B7ook34O80PbmRILDqUAZryd/8cae/+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698316890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O6L6DWD07tt2bFggRawWCkh8dvucnoefnFHvJXio3Cc=;
+        b=ZME73FASasBJ5RVuSkYko3ct13v8tQwEK3s0Acq8SemU/uhrkeF7J9uba6SJtkbApjKiuN
+        8qpaQyEohb9CJKDg==
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Anup Patel <anup@brainfault.org>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [RFC PATCH] genirq/matrix: Dynamic bitmap allocation
+In-Reply-To: <20231026101957.320572-1-bjorn@kernel.org>
+References: <20231026101957.320572-1-bjorn@kernel.org>
+Date:   Thu, 26 Oct 2023 12:41:30 +0200
+Message-ID: <87r0lh4qed.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
-In-Reply-To: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pl011_console_get_options() gets called to retrieve currently configured
-options from the registers. Previously, LCRH_TX.WLEN was being parsed
-as either 7 or 8 (fallback). Hardware supports values from 5 to 8
-inclusive, which pl011_set_termios() exploits for example.
+Bj=C3=B6rn!
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- drivers/tty/serial/amba-pl011.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+On Thu, Oct 26 2023 at 12:19, Bj=C3=B6rn T=C3=B6pel wrote:
+> Thomas, this is just FYI/RFC. This change would only make sense, if
+> the RISC-V AIA series starts using the IRQ matrix allocator.
 
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 5774d48c7f16..b2062e4cbbab 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2384,10 +2384,7 @@ static void pl011_console_get_options(struct uart_amba_port *uap, int *baud,
- 			*parity = 'o';
- 	}
- 
--	if ((lcr_h & 0x60) == UART01x_LCRH_WLEN_7)
--		*bits = 7;
--	else
--		*bits = 8;
-+	*bits = FIELD_GET(0x60, lcr_h) + 5; /* from 5 to 8 inclusive */
- 
- 	ibrd = pl011_read(uap, REG_IBRD);
- 	fbrd = pl011_read(uap, REG_FBRD);
+I'm not seeing anything horrible with that.
 
--- 
-2.41.0
+Thanks,
 
+        tglx
