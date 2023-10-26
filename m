@@ -2,169 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1E97D8578
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAEF7D8573
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjJZPED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S1345374AbjJZPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbjJZPDx (ORCPT
+        with ESMTP id S231423AbjJZPCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:03:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A81D18F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698332583;
+        Thu, 26 Oct 2023 11:02:33 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318FA187
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:02:31 -0700 (PDT)
+Received: from [127.0.0.1] (unknown [154.135.84.71])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id B3A986FB;
+        Thu, 26 Oct 2023 17:02:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1698332546;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Le7r1qZdjn6tilkqUR5AFBSjzkY/HKzRQy2FXtGZ7Zs=;
-        b=W/tQ7OssfYXpdu8enA/aMercHDT0FCXVSiEphS+4aDiOOww45qCG5hE6MllCQc1AyGv6vr
-        bNXiqMFpwCarLQD6HaqkinAWcuD4xMo/8ncuJslcrw6X+CUhXa6rySe1Xkj7V1BNxmjcQc
-        BHOVqvGkqBHhI6mkixi/2Ixc70urLsE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-nQM2Hu4UMX6Yqa0dw87GYA-1; Thu, 26 Oct 2023 11:02:09 -0400
-X-MC-Unique: nQM2Hu4UMX6Yqa0dw87GYA-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c9fc94b182so9509375ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:02:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698332522; x=1698937322;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Le7r1qZdjn6tilkqUR5AFBSjzkY/HKzRQy2FXtGZ7Zs=;
-        b=W0734whwmMKCcia4piRwZ8/RQsslpEIw8KR7Mgu9+LDs11I/AMWFhFKWtjL2bNZfGN
-         4tU3r8yopgreQlarxTJKaZQemyk+hPeqHs3yLsIhkLInllm0e6rHFjSpgchdpJoUDjd0
-         v2PZDr432VLu9ELzX/GFueFBKicfvE59GgcbE46zrg3Ca522qFi67nlMLcngOfjyxe6i
-         l+m4u8Om36jKwJyRfbNxtljNtoz2nz2p/Cm/VeS+w4vK+kjIdEKqUaujGgH1ISDRc8Lw
-         ITDLzHglJNZhjZ5KIl5gix43zycysIunTl8UspgjtvUOAxaXijPYlUoo6lI5K3j629eD
-         p5Fg==
-X-Gm-Message-State: AOJu0Yz4wTLIpHh8cq4Ze/bFQxirDhYcPBxVnWfQOqzS+INCf/66W4Zb
-        2P5KVyuaPBsPkQQdCsIM0tX+sSMT3LMNTf/hx+oxQde8ageqXRK3+Zg5aLHjIamZrw3zMbJey0R
-        FkSB30i4MMaYkQN5MZINJ/mKY
-X-Received: by 2002:a17:902:d48b:b0:1cc:c0f:c163 with SMTP id c11-20020a170902d48b00b001cc0c0fc163mr2030475plg.17.1698332522043;
-        Thu, 26 Oct 2023 08:02:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkMkNFGl6pf3X2t9+qgnZ2jJ6k9tsZamwMF9GCo+CggK6U8NBQgmvo80UyqhXw/fy4mQy7ew==
-X-Received: by 2002:a17:902:d48b:b0:1cc:c0f:c163 with SMTP id c11-20020a170902d48b00b001cc0c0fc163mr2030417plg.17.1698332521352;
-        Thu, 26 Oct 2023 08:02:01 -0700 (PDT)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id g11-20020a170902740b00b001c60e7bf5besm11032572pll.281.2023.10.26.08.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 08:02:00 -0700 (PDT)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shigeru Yoshida <syoshida@redhat.com>
-Subject: [PATCH net] virtio/vsock: Fix uninit-value in virtio_transport_recv_pkt()
-Date:   Fri, 27 Oct 2023 00:01:54 +0900
-Message-ID: <20231026150154.3536433-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GIq7VKze7/YNlHMTHO1501ppnVinYDbNtzevWz67otA=;
+        b=mwnfwqBdp+eT/hf0Iro83+z7Ih6IJQ+4AipPLZq9fCEfdSLFl3IcdCH3GKmN08MRc7tEyH
+        D6k1GbUg197kRFHWWFZxbKngq9yCqQ1g+TageTzc2LUHrMN+UUdNZRVoXsKuB8uCf5MWul
+        T1prrv7QW1+Bzibu+6xgYJigWV9Sgt3RXVAcNHvb33J8pYFv7i7LtIwaB5zuOPGeNIREIn
+        Th1HNvaQ0ZIPChyUBWyveZmgGjvN+vYzi8wfbw0WuUkFSX3WqrdBa7kRHOUM03DNDQkpWR
+        iTbvF3Qhr0WcVpzij52oioK3rtNnAPh55T/VLTCkpNBEIsmASMXrVySB98oNww==
+Date:   Thu, 26 Oct 2023 18:02:20 +0300
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <pratyush@kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>
+CC:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <mafs0fs1xmrit.fsf@kernel.org>
+References: <20231026012017.518610-1-acelan.kao@canonical.com> <mafs0fs1xmrit.fsf@kernel.org>
+Message-ID: <8D87B330-8FA1-46BE-949E-5A8DFB8AACF3@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN reported the following uninit-value access issue:
+Am 26=2E Oktober 2023 16:39:54 OESZ schrieb Pratyush Yadav <pratyush@kernel=
+=2Eorg>:
+>On Thu, Oct 26 2023, AceLan Kao wrote:
+>
+>> From: "Chia-Lin Kao (AceLan)" <acelan=2Ekao@canonical=2Ecom>
+>>
+>> When the software reset command isn't supported, we now report it
+>> as an informational message(dev_info) instead of a warning(dev_warn)=2E
+>> This adjustment helps avoid unnecessary alarm and confusion regarding
+>> software reset capabilities=2E
+>
+>I still think the soft reset command deserves a warn, and not an info=2E
+>Because it _is_ a bad thing if you need to soft reset and are unable to
+>do so=2E Your bootloader (or linux if you rmmod and modprobe again) might
+>not be able to detect the flash mode and operate it properly=2E=20
 
-=====================================================
-BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
- virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+agreed=2E=2E but=2E=2E=20
 
-Uninit was stored to memory at:
- virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c:1274 [inline]
- virtio_transport_recv_pkt+0x1ee8/0x26a0 net/vmw_vsock/virtio_transport_common.c:1415
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+>I think we should just not unconditionally run this and instead only
+>call it when the flash reset is not connected -- that is only call this
+>under a check for SNOR_F_BROKEN_RESET, like we do for 4-byte addressing
+>mode=2E
 
-Uninit was created at:
- slab_post_alloc_hook+0x105/0xad0 mm/slab.h:767
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5a2/0xaf0 mm/slub.c:3523
- kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:559
- __alloc_skb+0x2fd/0x770 net/core/skbuff.c:650
- alloc_skb include/linux/skbuff.h:1286 [inline]
- virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
- virtio_transport_alloc_skb+0x90/0x11e0 net/vmw_vsock/virtio_transport_common.c:58
- virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.c:957 [inline]
- virtio_transport_recv_pkt+0x1279/0x26a0 net/vmw_vsock/virtio_transport_common.c:1387
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+=2E=2E keep in mind that this is a restriction of the flash controller=2E =
+the Intel one seems to be the only affected one (for now) and it's doing a =
+reset (according to mika) on its own=2E=20
 
-CPU: 1 PID: 10664 Comm: kworker/1:5 Not tainted 6.6.0-rc3-00146-g9f3ebbef746f #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
-Workqueue: vsock-loopback vsock_loopback_work
-=====================================================
+snor_broken_reset is a property of the flash=2E=20
 
-The following simple reproducer can cause the issue described above:
 
-int main(void)
-{
-  int sock;
-  struct sockaddr_vm addr = {
-    .svm_family = AF_VSOCK,
-    .svm_cid = VMADDR_CID_ANY,
-    .svm_port = 1234,
-  };
+>I don't have a strong opposition to this patch but I do think it is
+>fixing the problem in the wrong place=2E
 
-  sock = socket(AF_VSOCK, SOCK_STREAM, 0);
-  connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-  return 0;
-}
+if the flash controller doesn't let you issue a soft reset (or does so on =
+its own), what's the fix?
 
-This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
-`struct virtio_vsock_hdr` are not initialized when a new skb is allocated
-in `virtio_transport_alloc_skb()`. This patch resolves the issue by
-initializing these fields during allocation.
-
-Fixes: 71dc9ec9ac7d ("virtio/vsock: replace virtio_vsock_pkt with sk_buff")
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- net/vmw_vsock/virtio_transport_common.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index 352d042b130b..102673bef189 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -68,6 +68,8 @@ virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
- 	hdr->dst_port	= cpu_to_le32(dst_port);
- 	hdr->flags	= cpu_to_le32(info->flags);
- 	hdr->len	= cpu_to_le32(len);
-+	hdr->buf_alloc	= cpu_to_le32(0);
-+	hdr->fwd_cnt	= cpu_to_le32(0);
- 
- 	if (info->msg && len > 0) {
- 		payload = skb_put(skb, len);
--- 
-2.41.0
+-michael=20
 
