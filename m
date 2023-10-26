@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92717D8A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C5D7D8A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344739AbjJZVXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 17:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
+        id S1344829AbjJZVX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 17:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZVXC (ORCPT
+        with ESMTP id S232203AbjJZVXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 17:23:02 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1471AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:00 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a8ead739c3so12195647b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:00 -0700 (PDT)
+        Thu, 26 Oct 2023 17:23:51 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D43FC1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:49 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-508126afc88so2101019e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698355380; x=1698960180; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N16opPDMh2MtQdZI6n+iYWwhhV2tySRlDoDMCXghPSg=;
-        b=tW0tdpJCzDjqvaWkEgER1akFluzgDHehTSAqmh14T6/DYxAaMqvxfAGrhHs+Zm+f2L
-         nBv8f63/eJ2JvKwusuMNw3ydP5+P6acqjEkGZn8G7FSeTB9ip3xwHoqdx7iNrVLES5f4
-         +E8GeemIUIGUH/KF0GAU3daKfSia64wxG7X3VOLJPOYd70JfHg0Pf+uAg/jRX51ZOMub
-         s2K5zMuoDo7TTb/Kt3kLthtgpDSmd2NnmocIau78VzJ5y5LMCa7+Cb/heRmcRQkeggPR
-         6ZP1zh244175ZuQtMBUkB95DZ8Y6fCqPez4Qjhht37k47yAh6Ul4bIUoa1egYUqU8FTL
-         HKdw==
+        d=linaro.org; s=google; t=1698355427; x=1698960227; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=WaS1F6gxvektWaH+1uXMzK+p2rqyW26a4HQpLvHPqcE=;
+        b=JgJgEZo8z0xWPSUgdtQjadp4VGUhjXVVGvrwk55CUM/IM5LXcVAQ01hBzPFMLyU9sS
+         Nj1pVuWDj506FC6GhCbU2ZYZy78D6mZ9HPVe3BYN/sS7L7An0uL/qMX63Ao0QKe7Un4d
+         nJnJF+PUgcsLyi5aOz1MJAUW/o+g5SCTkbx0feGDsQQkxwWZ5ibVqkABBTx4krCCrvRB
+         JNHk/OXPH/yE0kMdrAc9ykkvqLdRCO2yCUXphBahgx6MCSlYWlT5/QiN4w02ylBlZNxh
+         9T8KnfqGtzbBgvhIxlumu+xOCtkMYc3rEYglqvjoumtuDfeJzHH/gvUcYoudsIjKeUht
+         zh6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698355380; x=1698960180;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N16opPDMh2MtQdZI6n+iYWwhhV2tySRlDoDMCXghPSg=;
-        b=Ry1wt/efyPgIO2s4uLDLuOE+4U3xqyFnzBG5JM2UDh52pub8km+si6t1GemJkKOc7z
-         wmIdHkauqVnTboVmvtCaFYCprZDD8zRXnlVvqF5sKzxUvR+hL6BWqAZERmPqUqCMkH3R
-         VwBHnmieIA4fvnzCD//WCj8ZHjbBEEIkmJgEhG3I4G25bD37cBKI0J3ELT83SAnzVVdZ
-         I5McJNVPt3k8BmvdHPeNA8qgemYx8LXSAEbI7TdDbUTh4SbyC560SiaiEjxUcOcoOxZp
-         I+KxtsvKjrI8Ap6pRcZlyGBvviKf0a3PwbwuRNR0XJ/YADwn+uRuyNNAWZ0PrLdVTn0b
-         +Zpw==
-X-Gm-Message-State: AOJu0Yz6u1WBYQTaBHmJYEYnKRBuCvQ021PghCyQawHI9gQ1uWyh4att
-        Paj24BlIRFrlLuWw1+fo7XumsudQ/WA=
-X-Google-Smtp-Source: AGHT+IF/OE8Q5YRB4aDY0tUe8C3rqxSvK3ckwmqPiqpkJm2RHeMEZkjbXTXdwikBk2kuBbypqgWBiHzlcPg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d443:0:b0:5a8:6397:5bd6 with SMTP id
- w64-20020a0dd443000000b005a863975bd6mr15531ywd.3.1698355380052; Thu, 26 Oct
- 2023 14:23:00 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 14:22:58 -0700
-In-Reply-To: <20231026204810.chvljddk6noxsuqi@desk>
-Mime-Version: 1.0
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com> <ZTq-b0uVyf6KLNV0@google.com>
- <20231026204810.chvljddk6noxsuqi@desk>
-Message-ID: <ZTrYsls7ya5yOdSV@google.com>
-Subject: Re: [PATCH  v3 6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698355427; x=1698960227;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WaS1F6gxvektWaH+1uXMzK+p2rqyW26a4HQpLvHPqcE=;
+        b=uCxiHSKEqNaNvLcdgM8D8QgxSzVu0KIWHmxKClpA6w0cqN82u1oprk2jvJzZydR8ZK
+         iN7nPq1a/sM3iNDL69hCQ2cuuYd+X2XRXqA3ht6xoqymddq6sP0zhJcWU+SnnmrLoWDM
+         j5Q8fPKmwtEAEC469PdDRqj0TWaWitVhjT+/ZNQq7J6rnMyXY9wRICB2iGnf+6F8YOnr
+         YDsOa0GUI507FagsYgUzphvFqKX2gD5JfLzGg4XFMV15XClQjkLOTgzVoqdRh4CUAxE7
+         4vh6/7tYt4K0A2hOwzwz96fdDMzhsVDikPdzu5/XA9ye5SrNinv17XAgtKoYVUXG9Z9G
+         nkww==
+X-Gm-Message-State: AOJu0YwQwaL3q4+yVItWU+92WecY7u/s/WF+K1aduFKgFbAINegXggWc
+        6U33u7/oM/n5/WgWU89rBjRT6A==
+X-Google-Smtp-Source: AGHT+IG4rn72MceQOMecssoAqNoze+tcPRSKZ88w+fIaYfqgCbPe9Go1xkti6JH9We47TwImsVs2Nw==
+X-Received: by 2002:ac2:4553:0:b0:502:f2a4:152f with SMTP id j19-20020ac24553000000b00502f2a4152fmr399943lfm.10.1698355427481;
+        Thu, 26 Oct 2023 14:23:47 -0700 (PDT)
+Received: from [172.30.204.146] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id u15-20020ac248af000000b004fdd6b72bfdsm5498lfg.117.2023.10.26.14.23.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 14:23:47 -0700 (PDT)
+Message-ID: <d2c46459-0686-41ba-bf27-a62fcd00d489@linaro.org>
+Date:   Thu, 26 Oct 2023 23:23:45 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20231019105011.7289-1-ansuelsmth@gmail.com>
+ <20231019105011.7289-5-ansuelsmth@gmail.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231019105011.7289-5-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023, Pawan Gupta wrote:
-> On Thu, Oct 26, 2023 at 12:30:55PM -0700, Sean Christopherson wrote:
-> > >  	if (static_branch_unlikely(&vmx_l1d_should_flush))
-> > >  		vmx_l1d_flush(vcpu);
-> > 
-> > There's an existing bug here.  vmx_1ld_flush() is not guaranteed to do a flush in
-> > "conditional mode", and is not guaranteed to do a ucode-based flush
+
+
+On 10/19/23 12:50, Christian Marangi wrote:
+> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
+> Use opp-supported-hw binding to correctly enable and disable the
+> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
+> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
+> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
 > 
-> AFAICT, it is based on the condition whether after a VMexit any
-> sensitive data could have been touched or not. If L1TF mitigation
-> doesn't consider certain data sensitive and skips L1D flush, executing
-> VERW isn't giving any protection, since that data can anyways be leaked
-> from L1D using L1TF.
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+I didn't actually check the values against downstream, maybe we
+can prettyplease ask Dmitry as he's done that before with msm8960-class
+SoCs..
 
-That assumes vcpu->arch.l1tf_flush_l1d is 100% precise and accurate, which is most
-definitely not the case.  You're also preventing the admin from choosing between
-being super paranoind (always flush L1D) and mostly paranoid (conditionally flush
-L1D, always flush CPU buffers).
+[...]
 
-AIUI, flushing the L1D is crazy expensive compared to flushing the CPU buffers,
-so it's entirely plausible for someone to want to choose the mostly paranoid
-option.
+> +	opp_table_cpu: opp-table-cpu {
+> +		compatible = "operating-points-v2-krait-cpu";
+> +		nvmem-cells = <&speedbin_efuse>;
+Shouldn't this be opp-shared?
 
-Side topic, isn't the NMI path missing a call to kvm_set_cpu_l1tf_flush_l1d()?
-
-> > 	/*
-> > 	 * The MMIO stale data vulnerability is a subset of the general MDS
-> > 	 * vulnerability, i.e. this is mutually exclusive with the VERW that's
-> > 	 * done just before VM-Enter.  The vulnerability requires the attacker,
-> > 	 * i.e. the guest, to do MMIO, so this "clear" can be done earlier.
-> > 	 */
-> > 	if (static_branch_unlikely(&mmio_stale_data_clear) &&
-> > 	    !cpu_buffers_flushed && kvm_arch_has_assigned_device(vcpu->kvm))
-> > 		mds_clear_cpu_buffers();
-> 
-> This is certainly better, but I don't know what scenario is this helping with.
-
-Heh, that's host I feel about moving VERW to just before VM-Enter.  I have a hard
-time believing there's meaningful sensitive that's accessed in __vmx_vcpu_run().
-The closest thing is probably CR2, but that's a very dubious vector since CR2 will
-hold a guest value for most VM-Enters.
-
-I'm not against moving VERW close to VM-Enter because it's relatively straightforward,
-but if we're going to be super paranoid, why not go all the way and not have to
-worry about what ifs?
+Konrad
