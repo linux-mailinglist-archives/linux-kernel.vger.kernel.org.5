@@ -2,393 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F03E7D8A70
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71597D8A78
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbjJZVfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 17:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        id S1344889AbjJZVhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 17:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231977AbjJZVfg (ORCPT
+        with ESMTP id S1344840AbjJZVhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 17:35:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33EBDC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:35:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32000C433C8;
-        Thu, 26 Oct 2023 21:35:30 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 17:35:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
-Message-ID: <20231026173527.2ad215cc@gandalf.local.home>
-In-Reply-To: <20231026152022.668ca0f3@gandalf.local.home>
-References: <20231025235413.597287e1@gandalf.local.home>
-        <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
-        <20231026071413.4ed47b0e@gandalf.local.home>
-        <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
-        <20231026152022.668ca0f3@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 26 Oct 2023 17:37:15 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C69D1AC
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:37:11 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5af6c445e9eso4457917b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1698356230; x=1698961030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MXajQCd4F/1lAfqXs9yFErTqS9iveL7bqi06E72Hzxw=;
+        b=O55ntrRkoSk4p1rxbJKdJBiHXyyTLjqfDZlFDCFTDaAftVT9vSSpsZ5Nn/lBMXAMyA
+         ngDsmGBQp16yWWUcSgjhE62qWfR/TPOOju5Wg6mZIWwtVZ0K8IBssUBxJ0uZ5Uqnrg52
+         TKGh5rInzQ0tNfMj7BSwHDqlljEjhadQoqWTGhbl7JaXlDBCzYGjy2L3kHy9P30XCuLX
+         S9MBoeODeT+oeMN2t/4TkRRXms1vrjYWN82xnLFav2POjw6xrL9KOI9y5VnAXIapfMsq
+         RtHKYkm/eYoYhmJW3S40jagam0J1jq/aK7JEDwETISARtuHZHYJxPSwVFCiuI1KA5Le+
+         x4PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698356230; x=1698961030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MXajQCd4F/1lAfqXs9yFErTqS9iveL7bqi06E72Hzxw=;
+        b=F/HOGvcfAvooTunxx90fyaR7EctC6CkJkuholizp+3GOYj+K5kAafvTrdbYuNyk/F0
+         KA1Oxy2mZwONGmkRX4sVG4ljwVR28uStWnwjD0OiPnUYe2ImTfjuQqj6LQTW73BwyLuN
+         Sonh4YU37aNi00RanqEmrDNcQQXp2e01nngTsQ0K+QNkqS0PEzOoOJNu4tQ0xb0jC4Zn
+         cAOts9VGT5ujfzfXjFCdnDz7Bd9mHHRtsm2amRsGWXE/iak0mhiSkV56hwNtlCOnWL2l
+         bBREZb0aFReFxgIFhhNa0OoGQaK7+xnsKh90AntF1+Y9mBAPT9h0u+MZBQupXYqmJ2uT
+         5Yiw==
+X-Gm-Message-State: AOJu0YwSG4GAovQMS+EW+OahxgX7fF/orsxsD5auQiG7yIntPVxE08ct
+        cPLAGStbyMXaqZJ/sjG/9Z29e9z6tVpnqlzfGPnf
+X-Google-Smtp-Source: AGHT+IGs3yVweOLen1m7MhCJB6RbgNFPe23s8osYedKaob9va7EUB7gQ3SlX41xgxocwXKE4pusvmi6cSAkHebq1bDk=
+X-Received: by 2002:a25:238e:0:b0:da1:2a2b:4c5b with SMTP id
+ j136-20020a25238e000000b00da12a2b4c5bmr342821ybj.41.1698356230039; Thu, 26
+ Oct 2023 14:37:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/=uzH+ow/_xOFCsWFh3XaCEE"
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1696457386-3010-3-git-send-email-wufan@linux.microsoft.com>
+ <7c8c2a158c628a642078f746e5c42f2f.paul@paul-moore.com> <594923f6-6942-4b4b-8ca1-b9dcf74c9c1c@linux.microsoft.com>
+In-Reply-To: <594923f6-6942-4b4b-8ca1-b9dcf74c9c1c@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 26 Oct 2023 17:36:59 -0400
+Message-ID: <CAHC9VhQv5xBtG9zVk_rpNmQ=GLm9sitxeyqbwkw=LmHAN0Su3g@mail.gmail.com>
+Subject: Re: [PATCH RFC v11 2/19] ipe: add policy parser
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/=uzH+ow/_xOFCsWFh3XaCEE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thu, 26 Oct 2023 15:20:22 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> Anyway, I changed the code to use:
-> 
-> static inline unsigned clrbit(volatile unsigned *ptr)
-> {
-> 	unsigned ret;
-> 
-> 	asm volatile("andb %b1,%0"
-> 		     : "+m" (*(volatile char *)ptr)
-> 		     : "iq" (0x2)
-> 		     : "memory");
-> 
-> 	ret = *ptr;
-> 	*ptr = 0;
-> 
-> 	return ret;
-> }
-
-Mathieu also told me that glibc's rseq has some extra padding at the end,
-that happens to be big enough to hold this feature. That means you can run
-the code without adding:
-
-  GLIBC_TUNABLES=glibc.pthread.rseq=0
-
-Attached is the updated test program.
-
--- Steve
-
---MP_/=uzH+ow/_xOFCsWFh3XaCEE
-Content-Type: text/x-c++src
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=extend-sched.c
-
-
-// Run with: GLIBC_TUNABLES=glibc.pthread.rseq=0 
-
-#include <stdio.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <errno.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/time.h>
-#include <tracefs.h>
-#include <sys/syscall.h>
-#include "rseq-abi.h"
-#include <linux/tls.h>
-
-#define rseq(rseq, len, flags, sig) syscall(SYS_rseq, rseq, len, \
-					    flags, sig);
-
-#define __weak __attribute__((weak))
-
-//#define barrier() asm volatile ("" ::: "memory")
-#define rmb() asm volatile ("lfence" ::: "memory")
-#define wmb() asm volatile ("sfence" ::: "memory")
-
-
-static pthread_barrier_t pbarrier;
-
-static __thread struct rseq_abi __attribute__((aligned(sizeof(struct rseq_abi)))) rseq_map;
-static __thread struct rseq_abi *rseq_ptr;
-
-static bool no_rseq;
-
-static void init_extend_map(void)
-{
-	extern ptrdiff_t __rseq_offset;
-	extern unsigned int __rseq_size;
-	int ret;
-
-	if (no_rseq)
-		return;
-
-	if (__rseq_size) {
-		if (__rseq_size < sizeof(rseq_map)) {
-			printf("glibc rseq less than required mapping\n");
-			return;
-		}
-		rseq_ptr = __builtin_thread_pointer() + __rseq_offset;
-		printf("Using glibc rseq %p\n", rseq_ptr);
-		return;
-	}
-
-	rseq_ptr = &rseq_map;
-	ret = rseq(rseq_ptr, sizeof(rseq_map), 0, 0);
-	perror("rseq");
-	printf("ret = %d (%zd) %p\n", ret, sizeof(rseq_map), &rseq_map);
-	if (ret < 0)
-		rseq_ptr = NULL;
-}
-
-struct data;
-
-struct thread_data {
-	unsigned long long			start_wait;
-	unsigned long long			x_count;
-	unsigned long long			total;
-	unsigned long long			max;
-	unsigned long long			min;
-	unsigned long long			total_wait;
-	unsigned long long			max_wait;
-	unsigned long long			min_wait;
-	struct data				*data;
-};
-
-struct data {
-	unsigned long long		x;
-	unsigned long			lock;
-	struct thread_data		*tdata;
-	bool				done;
-};
-
-static inline unsigned long
-cmpxchg(volatile unsigned long *ptr, unsigned long old, unsigned long new)
-{
-        unsigned long prev;
-
-	asm volatile("lock; cmpxchg %b1,%2"
-		     : "=a"(prev)
-		     : "q"(new), "m"(*(ptr)), "0"(old)
-		     : "memory");
-        return prev;
-}
-
-static inline unsigned clrbit(volatile unsigned *ptr)
-{
-	unsigned ret;
-
-	asm volatile("andb %b1,%0"
-		     : "+m" (*(volatile char *)ptr)
-		     : "iq" (0x2)
-		     : "memory");
-
-	ret = *ptr;
-	*ptr = 0;
-
-	return ret;
-}
-
-static void extend(void)
-{
-	if (!rseq_ptr)
-		return;
-
-	rseq_ptr->cr_flags = 1;
-}
-
-static void unextend(void)
-{
-	unsigned prev;
-
-	if (!rseq_ptr)
-		return;
-
-	prev = clrbit(&rseq_ptr->cr_flags);
-	if (prev & 2) {
-		tracefs_printf(NULL, "Yield!\n");
-		sched_yield();
-	}
-}
-
-#define sec2usec(sec) (sec * 1000000ULL)
-#define usec2sec(usec) (usec / 1000000ULL)
-
-static unsigned long long get_time(void)
-{
-	struct timeval tv;
-	unsigned long long time;
-
-	gettimeofday(&tv, NULL);
-
-	time = sec2usec(tv.tv_sec);
-	time += tv.tv_usec;
-
-	return time;
-}
-
-static void grab_lock(struct thread_data *tdata, struct data *data)
-{
-	unsigned long long start, end, delta;
-	unsigned long long end_wait;
-	unsigned long long last;
-	unsigned long prev;
-
-	if (!tdata->start_wait)
-		tdata->start_wait = get_time();
-
-	while (data->lock && !data->done)
-		rmb();
-
-	extend();
-	start = get_time();
-	prev = cmpxchg(&data->lock, 0, 1);
-	if (prev) {
-		unextend();
-		return;
-	}
-	end_wait = get_time();
-	tracefs_printf(NULL, "Have lock!\n");
-
-	delta = end_wait - tdata->start_wait;
-	tdata->start_wait = 0;
-	if (!tdata->total_wait || tdata->max_wait < delta)
-		tdata->max_wait = delta;
-	if (!tdata->total_wait || tdata->min_wait > delta)
-		tdata->min_wait = delta;
-	tdata->total_wait += delta;
-
-	data->x++;
-	last = data->x;
-
-	if (data->lock != 1) {
-		printf("Failed locking\n");
-		exit(-1);
-	}
-	prev = cmpxchg(&data->lock, 1, 0);
-	end = get_time();
-	if (prev != 1) {
-		printf("Failed unlocking\n");
-		exit(-1);
-	}
-	tracefs_printf(NULL, "released lock!\n");
-	unextend();
-
-	delta = end - start;
-	if (!tdata->total || tdata->max < delta)
-		tdata->max = delta;
-
-	if (!tdata->total || tdata->min > delta)
-		tdata->min = delta;
-
-	tdata->total += delta;
-	tdata->x_count++;
-
-	/* Let someone else have a turn */
-	while (data->x == last && !data->done)
-		rmb();
-}
-
-	
-	
-static void *run_thread(void *d)
-{
-	struct thread_data *tdata = d;
-	struct data *data = tdata->data;
-
-	init_extend_map();
-
-	pthread_barrier_wait(&pbarrier);
-
-	while (!data->done) {
-		grab_lock(tdata, data);
-	}
-	return NULL;
-}
-
-int main (int argc, char **argv)
-{
-	unsigned long long total_wait = 0;
-	unsigned long long secs;
-	pthread_t *threads;
-	struct data data;
-	int cpus;
-
-	memset(&data, 0, sizeof(data));
-
-	cpus = sysconf(_SC_NPROCESSORS_CONF);
-
-	threads = calloc(cpus + 1, sizeof(*threads));
-	if (!threads) {
-		perror("threads");
-		exit(-1);
-	}
-
-	data.tdata = calloc(cpus + 1, sizeof(*data.tdata));
-	if (!data.tdata) {
-		perror("Allocating tdata");
-		exit(-1);
-	}
-
-	tracefs_print_init(NULL);
-	pthread_barrier_init(&pbarrier, NULL, cpus + 2);
-
-	for (int i = 0; i <= cpus; i++) {
-		int ret;
-
-		data.tdata[i].data = &data;
-		ret = pthread_create(&threads[i], NULL, run_thread, &data.tdata[i]);
-		if (ret < 0) {
-			perror("creating threads");
-			exit(-1);
-		}
-	}
-
-	pthread_barrier_wait(&pbarrier);
-	sleep(5);
-
-	printf("Finish up\n");
-	data.done = true;
-	wmb();
-
-	for (int i = 0; i <= cpus; i++) {
-		pthread_join(threads[i], NULL);
-		printf("thread %i:\n", i);
-		printf("   count:\t%lld\n", data.tdata[i].x_count);
-		printf("   total:\t%lld\n", data.tdata[i].total);
-		printf("     max:\t%lld\n", data.tdata[i].max);
-		printf("     min:\t%lld\n", data.tdata[i].min);
-		printf("   total wait:\t%lld\n", data.tdata[i].total_wait);
-		printf("     max wait:\t%lld\n", data.tdata[i].max_wait);
-		printf("     min wait:\t%lld\n", data.tdata[i].min_wait);
-		total_wait += data.tdata[i].total_wait;
-	}
-
-	secs = usec2sec(total_wait);
-
-	printf("Ran for %lld times\n", data.x);
-	printf("Total wait time: %lld.%06lld\n", secs, total_wait - sec2usec(secs));
-	return 0;
-}
-
---MP_/=uzH+ow/_xOFCsWFh3XaCEE--
+On Wed, Oct 25, 2023 at 6:46=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
+wrote:
+> On 10/23/2023 8:52 PM, Paul Moore wrote:
+> > On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+> >>
+> >> IPE's interpretation of the what the user trusts is accomplished throu=
+gh
+> >> its policy. IPE's design is to not provide support for a single trust
+> >> provider, but to support multiple providers to enable the end-user to
+> >> choose the best one to seek their needs.
+> >>
+> >> This requires the policy to be rather flexible and modular so that
+> >> integrity providers, like fs-verity, dm-verity, dm-integrity, or
+> >> some other system, can plug into the policy with minimal code changes.
+> >>
+> >> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> >> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> ...
+> >> ---
+> >>   security/ipe/Makefile        |   2 +
+> >>   security/ipe/policy.c        | 101 ++++++++
+> >>   security/ipe/policy.h        |  83 ++++++
+> >>   security/ipe/policy_parser.c | 487 +++++++++++++++++++++++++++++++++=
+++
+> >>   security/ipe/policy_parser.h |  11 +
+> >>   5 files changed, 684 insertions(+)
+> >>   create mode 100644 security/ipe/policy.c
+> >>   create mode 100644 security/ipe/policy.h
+> >>   create mode 100644 security/ipe/policy_parser.c
+> >>   create mode 100644 security/ipe/policy_parser.h
+> >
+> > ...
+> >
+> >> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> >> new file mode 100644
+> >> index 000000000000..3a529c7950a1
+> >> --- /dev/null
+> >> +++ b/security/ipe/policy.c
+> >> @@ -0,0 +1,101 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> >> + */
+> >
+> > ...
+> >
+> >> +static int set_pkcs7_data(void *ctx, const void *data, size_t len,
+> >> +                      size_t asn1hdrlen)
+> >> +{
+> >> +    struct ipe_policy *p =3D ctx;
+> >> +
+> >> +    p->text =3D (const char *)data;
+> >> +    p->textlen =3D len;
+> >> +
+> >> +    return 0;
+> >> +}
+> >
+> > The @asn1hdrlen parameter isn't used in this function, at least at this
+> > point in the patchset, so you really should remove it.  If it is needed
+> > later in the patchset you can always update the function.
+>
+> Although the @asn1hdrlen is not used, it's a required parameter for the
+> pkcs7 callback. I guess adding a __always_unused might be the right
+> solution?
+
+Ah gotcha, I'm sorry for the noise, I obviously didn't catch that.  As
+for the __always_unused marking, yes, that's probably a good idea.
+
+> >> +/**
+> >> + * parse_rule - parse a policy rule line.
+> >> + * @line: Supplies rule line to be parsed.
+> >> + * @p: Supplies the partial parsed policy.
+> >> + *
+> >> + * Return:
+> >> + * * !IS_ERR        - OK
+> >> + * * -ENOMEM        - Out of memory
+> >> + * * -EBADMSG       - Policy syntax error
+> >> + */
+> >> +static int parse_rule(char *line, struct ipe_parsed_policy *p)
+> >> +{
+> >> +    int rc =3D 0;
+> >> +    bool first_token =3D true, is_default_rule =3D false;
+> >> +    bool op_parsed =3D false;
+> >> +    enum ipe_op_type op =3D IPE_OP_INVALID;
+> >> +    enum ipe_action_type action =3D IPE_ACTION_INVALID;
+> >> +    struct ipe_rule *r =3D NULL;
+> >> +    char *t;
+> >> +
+> >> +    r =3D kzalloc(sizeof(*r), GFP_KERNEL);
+> >> +    if (!r)
+> >> +            return -ENOMEM;
+> >> +
+> >> +    INIT_LIST_HEAD(&r->next);
+> >> +    INIT_LIST_HEAD(&r->props);
+> >> +
+> >> +    while (t =3D strsep(&line, IPE_POLICY_DELIM), line) {
+> >> +            if (*t =3D=3D '\0')
+> >> +                    continue;
+> >> +            if (first_token && token_default(t)) {
+> >> +                    is_default_rule =3D true;
+> >> +            } else {
+> >> +                    if (!op_parsed) {
+> >> +                            op =3D parse_operation(t);
+> >> +                            if (op =3D=3D IPE_OP_INVALID)
+> >> +                                    rc =3D -EBADMSG;
+> >> +                            else
+> >> +                                    op_parsed =3D true;
+> >> +                    } else {
+> >> +                            rc =3D parse_property(t, r);
+> >> +                    }
+> >> +            }
+> >> +
+> >> +            if (rc)
+> >> +                    goto err;
+> >> +            first_token =3D false;
+> >> +    }
+> >> +
+> >> +    action =3D parse_action(t);
+> >> +    if (action =3D=3D IPE_ACTION_INVALID) {
+> >> +            rc =3D -EBADMSG;
+> >> +            goto err;
+> >> +    }
+> >> +
+> >> +    if (is_default_rule) {
+> >> +            if (!list_empty(&r->props)) {
+> >> +                    rc =3D -EBADMSG;
+> >> +            } else if (op =3D=3D IPE_OP_INVALID) {
+> >> +                    if (p->global_default_action !=3D IPE_ACTION_INVA=
+LID)
+> >> +                            rc =3D -EBADMSG;
+> >> +                    else
+> >> +                            p->global_default_action =3D action;
+> >> +            } else {
+> >> +                    if (p->rules[op].default_action !=3D IPE_ACTION_I=
+NVALID)
+> >> +                            rc =3D -EBADMSG;
+> >> +                    else
+> >> +                            p->rules[op].default_action =3D action;
+> >> +            }
+> >> +    } else if (op !=3D IPE_OP_INVALID && action !=3D IPE_ACTION_INVAL=
+ID) {
+> >> +            r->op =3D op;
+> >> +            r->action =3D action;
+> >> +    } else {
+> >> +            rc =3D -EBADMSG;
+> >> +    }
+> >
+> > I might be missing something important in the policy syntac, but could
+> > this function, and perhaps the ipe_parsed_policy struct, be simplified
+> > if the default action was an explicit rule?
+> >
+> >   "op=3DDEFAULT action=3DALLOW"
+>
+> The complexity here arises from our need for two types of default rules:
+> one for global settings and another for operation-specific settings.
+>
+> To illustrate the flexibility of operation-specific default rules, users
+> can set their policy to have a default rule of 'DENY' for execution,
+> meaning all execution actions are prohibited by default. This let users
+> to create an allow-list for execution. At the same time, the default
+> rule for read can be set to 'ALLOW'.  This let users to create an
+> deny-list for read.
+>
+> Adding explicit default rules can simplify ipe_parsed_policy struct, but
+> that impose a burden on users that requires users always add the default
+> rules the end of the policy. In contrast, our current design allows
+> users to place the default rule anywhere in the policy. In practice, we
+> often position the default rule at the beginning of the policy, which
+> makes it more convenient for users to add new rules.
+
+Okay, thanks for the explanation.
+
+> >> +/**
+> >> + * free_parsed_policy - free a parsed policy structure.
+> >> + * @p: Supplies the parsed policy.
+> >> + */
+> >> +void free_parsed_policy(struct ipe_parsed_policy *p)
+> >> +{
+> >> +    size_t i =3D 0;
+> >> +    struct ipe_rule *pp, *t;
+> >> +
+> >> +    if (IS_ERR_OR_NULL(p))
+> >> +            return;
+> >> +
+> >> +    for (i =3D 0; i < ARRAY_SIZE(p->rules); ++i)
+> >> +            list_for_each_entry_safe(pp, t, &p->rules[i].rules, next)=
+ {
+> >> +                    list_del(&pp->next);
+> >> +                    free_rule(pp);
+> >> +            }
+> >> +
+> >> +    kfree(p->name);
+> >> +    kfree(p);
+> >> +}
+> >> +
+> >> +/**
+> >> + * validate_policy - validate a parsed policy.
+> >> + * @p: Supplies the fully parsed policy.
+> >> + *
+> >> + * Given a policy structure that was just parsed, validate that all
+> >> + * necessary fields are present, initialized correctly.
+> >> + *
+> >> + * A parsed policy can be in an invalid state for use (a default was
+> >> + * undefined) by just parsing the policy.
+> >> + *
+> >> + * Return:
+> >> + * * 0              - OK
+> >> + * * -EBADMSG       - Policy is invalid
+> >> + */
+> >> +static int validate_policy(const struct ipe_parsed_policy *p)
+> >> +{
+> >> +    size_t i =3D 0;
+> >> +
+> >> +    if (p->global_default_action !=3D IPE_ACTION_INVALID)
+> >> +            return 0;
+> >
+> > Should the if conditional above be "=3D=3D" and not "!=3D"?
+>
+> >No, "!=3D" is the correct one.
+>
+> The purpose of validation is to ensure that we have enough default rules
+> to cover all cases. If the global default action not invalid, it means
+> we have a global default rule in the policy to cover all cases, thus we
+> simply return 0.
+>
+> However, if there is no global default rule, then we need to ensure that
+> for each operation, there is a operation specific default rule, this is
+> validated in the for loop below.
+
+Makes sense, thanks.
+
+--=20
+paul-moore.com
