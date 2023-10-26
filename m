@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873987D80F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479DE7D80F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjJZKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        id S235043AbjJZKl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjJZKlT (ORCPT
+        with ESMTP id S234902AbjJZKlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:41:19 -0400
-X-Greylist: delayed 21256 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 03:41:15 PDT
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F0418D
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:41:14 -0700 (PDT)
-Message-ID: <df22c0f4-671f-4108-85a0-d1667ec1da77@monoid.al>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monoid.al; s=key1;
-        t=1698316872;
+        Thu, 26 Oct 2023 06:41:55 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DF91B2;
+        Thu, 26 Oct 2023 03:41:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F20F824000B;
+        Thu, 26 Oct 2023 10:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698316908;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rd3eoaiF/+tbh5L7T/uyc81E4f5T3FXS86ruMLdkn04=;
-        b=iEG+loyV0OVdROto6FwhYBLSvgpMxCFBSsDjAOLWEx2pQa/812stSjx6zR/W44ppOD1z5/
-        63/1bOQRsXpW0emDYWCgI7BgWJ5cSsJLMQfsW2q7szxIQEPPxzUU0Y9v4ypAlURe6s4cPk
-        ZSWRo1IFj/V+5gsJjEN5Vu5a6dqLY/l2vhCc/a/WCVvM+PUZfQ7s9cG3zwHvXKk216yQjq
-        EQ2WnVdNXn17TC0X5rkFglWQ3AZptuBZ0tjutsYNaEkY3V8MuBgmI66KM/fUM4fY9+87dw
-        06XSSKCmX3hXz/h3H4yfgcsNvfAKp+llnSZW4qqm2HpkZAc6vIJAlWohhEhAcg==
-Date:   Thu, 26 Oct 2023 18:41:05 +0800
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7FO3bXg4jaYqWVw7SUw9GVHbeVNPGlx4JKNogiekb4w=;
+        b=nuNiebBs72L1ynsy2Kldz2/h12GOsQYrI8XbztCaRZlHCO+74uJ1qjaiLXX9heZSnEvVf3
+        AJPBvI8zVv0oqF/xzmyHPW0kpZSW+x9Jvv/CuOn5DBTMpDsR5IuLjazzEHqMQvsQgD/QM1
+        BE97roaofc9OeBsJXP537pvNtmv8WSVgGb5rjcBi9kBuZqZ/AD/I6SVe6MLMXexaLybEuM
+        v+jl67/WdATJFIwE1fWNF8INxAltZF6dHD+4bGkATvgYGzDoP+y7oig8xRl4sFMv8i8vvF
+        o/OpRYGoY8ADus4Q2dCxDuNn57XTLgpnaGp2exuR60E7A1e6wYTkwDqmWiqwRA==
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH 0/6] Cleanup AMBA PL011 driver
+Date:   Thu, 26 Oct 2023 12:41:17 +0200
+Message-Id: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Ellie Hermaszewska <kernel@monoid.al>
-Subject: Re: [PATCH v2] hwmon: (asus-ec-sensors) add ROG Crosshair X670E Gene.
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     eugene.shalygin@gmail.com, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
- <20231019135640.434752-1-kernel@monoid.al>
- <d013e9a3-df0a-4b8f-a1f3-db3cbd32812f@roeck-us.net>
- <b81ae275-d3ac-4565-a09a-4a5ce38fadf1@monoid.al>
- <3a8fd5d6-9b79-76de-80fe-b39e24510dec@roeck-us.net>
-In-Reply-To: <3a8fd5d6-9b79-76de-80fe-b39e24510dec@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-B4-Tracking: v=1; b=H4sIAE1COmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDINbNTcqp1C1NLCrRTUxLTkxOSrK0SLNIUgKqLyhKTcusAJsVHVtbCwB
+ 74cndWwAAAA==
+To:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.3
+X-GND-Sasl: theo.lebrun@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/23 13:01, Guenter Roeck wrote:
-> On 10/25/23 21:46, Ellie Hermaszewska wrote:
->> On 10/26/23 03:35, Guenter Roeck wrote:
->>  > This is not an acceptable commit description.
->>
->> This is not acceptable feedback.
->>
->> I am unable to accept it because it is not clear to me what you think
->> should be changed.
->>
->> Is it because I misplaced the message to Eugene? Is it because of the
->> Greek characters? Is is not descriptive enough of the change, or in the
->> wrong tense, or has incorrect punctuation? Do I need to include my
->> testing methodology?
->>
->> If it's only something minor, then please also feel free to correct it
->> yourself before applying. If you can't or it's not something minor,
->> then please let me know what ought to change and I can try to correct it.
->>
->> If you don't let me know, then I will have to guess and possibly waste 
->> everyone's time further.
->>
-> 
-> Please consider reading and following the directions in
-> Documentation/process/submitting-patches.rst.
+Hi,
 
-I will guess that it was my misplaced reply, and submit again without 
-that part.
+While adding upstream support to a new platform (Mobileye EyeQ5[1]) that
+uses the AMBA PL011 driver, I took some time to look at the PL011
+driver and ended up with a few patches that cleanup parts of it. The
+line-diff is big mostly because of the checkpatch-fixing commits.
 
-Thank you for your time.
+The driver hadn't received any love for quite some time. A single commit
+changes the code's behavior: see "tty: serial: amba-pl011: Parse bits
+option as 5, 6, 7 or 8 in _get_options". See commit messages for more
+information.
+
+[1]: https://lore.kernel.org/all/202310050726.GDpZbMDO-lkp@intel.com/T/
+
+Have a nice day,
+Théo Lebrun
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Théo Lebrun (6):
+      tty: serial: amba: cleanup whitespace
+      tty: serial: amba: Use BIT() macro for constant declarations
+      tty: serial: amba-pl011: cleanup driver
+      tty: serial: amba-pl011: replace TIOCMBIT macros by static functions
+      tty: serial: amba-pl011: unindent pl011_console_get_options function body
+      tty: serial: amba-pl011: Parse bits option as 5, 6, 7 or 8 in _get_options
+
+ drivers/tty/serial/amba-pl011.c | 238 ++++++++++++++++++++--------------------
+ include/linux/amba/serial.h     | 192 ++++++++++++++++----------------
+ 2 files changed, 214 insertions(+), 216 deletions(-)
+---
+base-commit: ad582615776e62e365ab2dfa7a7a3806ada28b30
+change-id: 20231023-mbly-uart-afcacbb98f8b
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
+
