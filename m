@@ -2,216 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0047D895D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4577D895F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344739AbjJZUC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
+        id S1344785AbjJZUCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjJZUC2 (ORCPT
+        with ESMTP id S231841AbjJZUCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:02:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAC41B3;
-        Thu, 26 Oct 2023 13:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698350546; x=1729886546;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wjSZygfJTLzc3CEGzIuqI0B49Tz5lLOHyJHjqouS46w=;
-  b=V3KiXJ/YNgh7JwSyWDIUJyLFVNNQXBMQyA1ycuYEKDN5PRJk6vKBEBfB
-   XD5CHA2iSfTUQDNhqw7YldjtPc2hkbFK1NBwBVd04JU0UnCIgPZ5RGLZE
-   bjH+zrnUO/kee3yyO8oeUGKhCF4IfM6ELqRmuE/8AS1GXGKq5plpJ2NoY
-   j5oCzzdP/KBzblS7EgiIHrK5glBoQTmbjUL0PKLqjHFoCZTK5H9soGvND
-   PMPe5PQsy8pkWoZZPpVCP46PwRUCRM03Zb6m4BJpR143Bl+yt8qcuWpz8
-   Y+HEPOb+dQYyBWH0x3uSvSIwiI5COnRiPrCjfOrHVeqSCZavWBSDCQsVW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="367850590"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="367850590"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:02:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="903034800"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="903034800"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:59:58 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3] x86/resctrl: mba_MBps: Fall back to total b/w if local b/w unavailable
-Date:   Thu, 26 Oct 2023 13:02:14 -0700
-Message-ID: <20231026200214.16017-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231025235046.12940-1-tony.luck@intel.com>
-References: <20231025235046.12940-1-tony.luck@intel.com>
+        Thu, 26 Oct 2023 16:02:43 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743C2D44
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:02:40 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c59a4dcdacso22027161fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698350559; x=1698955359; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ONjs2cH5CApPBAHPgpSMiUb1ljLRxVKfmwTZ42RwfII=;
+        b=QEJ6WV7uTqZV5vR2s0xPDqgwEeRz615MlMdrldaKsTEGD3GXhcOeTIJisBtIjOHToh
+         1jNDrifG3WGST2IwjucL8MwCKhr9j2NMVkoS5Ox7XVMC5S7yRaRQYGGtkwDI8obfWZ/e
+         zMwPJgsfTykqDTwdervJUhOPkP8gYeof/EoH2BhpcrijQg+GCDkKVO/Er2MD4JJyFMae
+         UPHZpL4pczT+Qx2H3DDisnmZ58d86+4iN6Z28vCbbroU/gjQGz5ay6cEUZl4ly5bCLkA
+         vtDCEr9OButaQC7o3YcMLoOAYSEMLa0cPSi1JgF5bcv2oGWbcXq6aKwGy02IfZ5oIzT+
+         cY6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698350559; x=1698955359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ONjs2cH5CApPBAHPgpSMiUb1ljLRxVKfmwTZ42RwfII=;
+        b=KYJlTHgaUoVoECzoruqTq/RUF1DYyDvpH0PEph5/OS/8ib4550DjN2Darsws6Ymklh
+         npMAOzql9CbMEue7iNJzAUHZ0Rz186A19eH6ZTOqIGQtBQJ6c91vbz256wrtjQyjTSZk
+         oeBgsMavS+uAx8BKcV8cUytpLhsw5XdrnErlbii21K0A6UxOX57n1nPQua97d/qXEDY2
+         tHwGhyDS6s8i+xbwxk5Fl9cVTRKG1xi3S3omM4uy2c0ERZJyFFUUlLc/qFfbvCrmC1KU
+         4/WJNWAP60D4tBkIEj+NpB3BCD8Doh86CPnqQAXAtsQzN9I7dARTlLMof11dPA0hqqjC
+         INZg==
+X-Gm-Message-State: AOJu0YzdqT+5W2SfpFddvHIjllI6Z0ARcqGB83Z7T3m3PDjuhjhJcUYz
+        rgga5nLmbWnnV4LVBnHNV4gIMGo9531ZFW20
+X-Google-Smtp-Source: AGHT+IHoY3Ca81vomgs9IcEqPDy/cXtcgXAgDKSZri5WJ8oEhDFDyj8CO2/eru4bqdr3tSuWfRBtlg==
+X-Received: by 2002:a2e:bc81:0:b0:2bf:f32a:1f68 with SMTP id h1-20020a2ebc81000000b002bff32a1f68mr492841ljf.19.1698350558295;
+        Thu, 26 Oct 2023 13:02:38 -0700 (PDT)
+Received: from HP-ENVY-Notebook (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.gmail.com with ESMTPSA id a26-20020a2eb17a000000b002c02cf6cac5sm2971096ljm.83.2023.10.26.13.02.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 13:02:37 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 22:02:35 +0200
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] staging: octeon: Fix warnings due to introduction
+ of new typedefs
+Message-ID: <ZTrF27Wm3v0Nn4IA@HP-ENVY-Notebook>
+References: <20231021101238.81466-1-bergh.jonathan@gmail.com>
+ <7e866f48-840a-4b9e-a28d-2016075abb4b@kadam.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e866f48-840a-4b9e-a28d-2016075abb4b@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Intel the various resource director technology (RDT) features are all
-orthogonal and independently enumerated. Thus it is possible to have
-a system that  provides "total" memory bandwidth measurements without
-providing "local" bandwidth measurements.
+On Mon, Oct 23, 2023 at 05:41:38PM +0300, Dan Carpenter wrote:
+> On Sat, Oct 21, 2023 at 12:12:31PM +0200, Jonathan Bergh wrote:
+> > This patch series fixes (removes) the introduction of several new typedefs
+> > for enums and structs in the octeon driver. First the declarations are
+> > fixed and then implementations are updated to remove references to the 
+> > old typedefs.
+> > 
+> > Changelog:
+> >  * v1 -> v2: Fix breaking change spread across multiple patches
+> >  * v2 -> v3: Break changes up into individual patches for each removed
+> >    typedef
+> > 
+> > Jonathan Bergh (7):
+> >   staging: octeon: Fix introduction of new enum typedef cvmx_spi_mode_t
+> >     in octeon
+> >   staging: octeon: Fix up introduction of new typedef
+> >     cvmx_helper_interface_mode_t  in octeon
+> >   staging: octeon: Fix introduction of following new typedef
+> >     cvmx_pow_wait_t in octeon
+> >   staging: octeon: Fix up introduction of new typedef cvmx_pko_lock_t in
+> >     octeon
+> >   staging: octeon: Fix introduction of new typedef cvmx_pko_status_t in
+> >     octeon
+> >   staging: octeon: Fix introduction of new typedef
+> >     cvmx_pip_port_status_t in octeon
+> >   staging: octeon: Fix introduction of new typedef
+> >     cvmx_pko_port_status_t in octeon driver
+> > 
+> >  drivers/staging/octeon/ethernet.c     |  6 ++--
+> >  drivers/staging/octeon/octeon-stubs.h | 48 +++++++++++++--------------
 
-If local bandwidth measurement is not available, do not give up on
-providing the "mba_MBps" feedback option completely, make the code fall
-back to using total bandwidth.
+Hi
+ 
+> Please don't change the stubs without change the arch/ code.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
-Change since v2:
-
-Babu doesn't like the global variable. So here's a version without it.
-
-Note that my preference is still the v2 version. But as I tell newbies
-to Linux "Your job isn't to get YOUR patch upstream. You job is to get
-the problem fixed.".  So taking my own advice I don't really mind
-whether v2 or v3 is applied.
-
- arch/x86/kernel/cpu/resctrl/monitor.c  | 43 ++++++++++++++++++--------
- arch/x86/kernel/cpu/resctrl/rdtgroup.c |  2 +-
- 2 files changed, 31 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index f136ac046851..29e86310677d 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -418,6 +418,20 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
- 	return 0;
- }
+My tree was out of date, so these changes had already actually been applied
+by basically the same patches (ie removing these typedefs) around 17/09 
+(Sep).
  
-+/*
-+ * For legacy compatibility use the local memory bandwidth to drive
-+ * the mba_MBps feedback control loop. But on platforms that do not
-+ * provide the local event fall back to use the total bandwidth event
-+ * instead.
-+ */
-+static enum resctrl_event_id pick_mba_mbps_event(void)
-+{
-+	if (is_mbm_local_enabled())
-+		return QOS_L3_MBM_LOCAL_EVENT_ID;
-+
-+	return QOS_L3_MBM_TOTAL_EVENT_ID;
-+}
-+
- /*
-  * mbm_bw_count() - Update bw count from values previously read by
-  *		    __mon_event_count().
-@@ -431,9 +445,11 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
-  */
- static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
- {
--	struct mbm_state *m = &rr->d->mbm_local[rmid];
-+	enum resctrl_event_id mba_mbps_evt_id = pick_mba_mbps_event();
- 	u64 cur_bw, bytes, cur_bytes;
-+	struct mbm_state *m;
- 
-+	m = get_mbm_state(rr->d, rmid, mba_mbps_evt_id);
- 	cur_bytes = rr->val;
- 	bytes = cur_bytes - m->prev_bw_bytes;
- 	m->prev_bw_bytes = cur_bytes;
-@@ -518,6 +534,7 @@ void mon_event_count(void *info)
-  */
- static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- {
-+	enum resctrl_event_id mba_mbps_evt_id = pick_mba_mbps_event();
- 	u32 closid, rmid, cur_msr_val, new_msr_val;
- 	struct mbm_state *pmbm_data, *cmbm_data;
- 	u32 cur_bw, delta_bw, user_bw;
-@@ -526,14 +543,14 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	struct list_head *head;
- 	struct rdtgroup *entry;
- 
--	if (!is_mbm_local_enabled())
-+	if (!is_mbm_enabled())
- 		return;
- 
- 	r_mba = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
- 
- 	closid = rgrp->closid;
- 	rmid = rgrp->mon.rmid;
--	pmbm_data = &dom_mbm->mbm_local[rmid];
-+	pmbm_data = get_mbm_state(dom_mbm, rmid, mba_mbps_evt_id);
- 
- 	dom_mba = get_domain_from_cpu(smp_processor_id(), r_mba);
- 	if (!dom_mba) {
-@@ -553,7 +570,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	 */
- 	head = &rgrp->mon.crdtgrp_list;
- 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
--		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
-+		cmbm_data = get_mbm_state(dom_mbm, entry->mon.rmid, mba_mbps_evt_id);
- 		cur_bw += cmbm_data->prev_bw;
- 		delta_bw += cmbm_data->delta_bw;
- 	}
-@@ -595,7 +612,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	 */
- 	pmbm_data->delta_comp = true;
- 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
--		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
-+		cmbm_data = get_mbm_state(dom_mbm, entry->mon.rmid, mba_mbps_evt_id);
- 		cmbm_data->delta_comp = true;
- 	}
- }
-@@ -621,15 +638,15 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
- 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
- 		rr.val = 0;
- 		__mon_event_count(rmid, &rr);
--
--		/*
--		 * Call the MBA software controller only for the
--		 * control groups and when user has enabled
--		 * the software controller explicitly.
--		 */
--		if (is_mba_sc(NULL))
--			mbm_bw_count(rmid, &rr);
- 	}
-+
-+	/*
-+	 * Call the MBA software controller only for the
-+	 * control groups and when user has enabled
-+	 * the software controller explicitly.
-+	 */
-+	if (is_mba_sc(NULL))
-+		mbm_bw_count(rmid, &rr);
- }
- 
- /*
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 69a1de92384a..0c4f8a1b8df0 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2294,7 +2294,7 @@ static bool supports_mba_mbps(void)
- {
- 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
- 
--	return (is_mbm_local_enabled() &&
-+	return (is_mbm_enabled() &&
- 		r->alloc_capable && is_mba_linear());
- }
- 
--- 
-2.41.0
-
+> regards,
+> dan carpenter
+> 
