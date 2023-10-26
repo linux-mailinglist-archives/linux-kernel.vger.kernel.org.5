@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365587D8882
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F7C7D8885
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjJZSpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
+        id S230456AbjJZSpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjJZSpD (ORCPT
+        with ESMTP id S229991AbjJZSpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:45:03 -0400
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D9410A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:45:01 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 14:44:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698345899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IWLfJjcvE4DmKjAw88y0uY3EAFQFSydpBXEYTrkjUzk=;
-        b=m3r/nVChVfwP7Phhrca6bc0213f9kFa8Bpbr68o2xfyMOrHDmRuw+nQfvxeXawFIO9dX61
-        RkAFsWAD1KkJsso9wq2c+iTZPog4GNSF8a8ZSqSFdaSSTiP6ZbRztd7dJrlfZsMrzs1lfF
-        xF4VY9GPLZhguqYyf03422F3dyeNNUs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        keescook@chromium.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/39] lib/string_helpers: Add flags param to
- string_get_size()
-Message-ID: <20231026184456.q6ocnmpq6jhqi7zi@moria.home.lan>
-References: <20231024134637.3120277-1-surenb@google.com>
- <20231024134637.3120277-2-surenb@google.com>
- <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com>
- <20231024194653.c24qbnk6bx3hep6y@moria.home.lan>
- <ZTpl1ELUMEmne21U@smile.fi.intel.com>
+        Thu, 26 Oct 2023 14:45:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591681AD
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:45:50 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507962561adso1894979e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698345948; x=1698950748; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dfq44KtpvVoTi226YXMj5pM9/ZBtfwTToNeSkmatPXk=;
+        b=kPPKS60s7Gx2wy9Oj0La519Iquo3rC/zpwmJcUtDPOl5BZFEGhBWliSCdrgodyjYRh
+         5jK0IVIlUKlCy7T/KiRJq3wpNhhOOvtHzl3vEOXogyORYqmZ8A/zsCcjfSu11cMMVCb1
+         QB4WwNCYdsZbcoxvaXmJUH1Y2CCi//WwH5xmCteeViBlUSyIfL8IKQX9bMEFgQyywuPZ
+         JxrL6ONOYBPUkEqIeNveR8YYp/A9El5QSEpUfapEiflCcjd8otSdt5hIbNMlKWQYnkBv
+         7pa/Du4IF8WGy4JoSVbFvT2nVkoxolTHhzH/vpi5N76YxQ/QF0BPiE8x/EVOq2d7r6NJ
+         UFVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698345948; x=1698950748;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dfq44KtpvVoTi226YXMj5pM9/ZBtfwTToNeSkmatPXk=;
+        b=e42Z8t5a5BW+uE6y+lyvURKUbQAgAcrxZ6mxp2MDXDysN9/wKP6axgVnaOgHIMcqvc
+         /qPuScwEEGOmhUFJAAZK283ouxKrs0FnAZmxnfIRlg1J3dClqnlKLKo4ce/ATrczn1fh
+         FYF/IEltXa8pqMa+8R1Vk04F9JQkSRoVux+c77I+CyELKj0ss38te1VxyGEzSc9X6Wdk
+         XxvQoj/ekUi9hgKJZx25MAJGZVFjFdn5hq89fi0w5hE/4E8tqq+Hoc9tF6lI64srVqQE
+         A08A5QaAcH0WFem5hbrxFoUg4sJA144W1glVKaP+AxfTbFiNYrD0nrXVrTvK6oYDyyJ1
+         Rikg==
+X-Gm-Message-State: AOJu0YzE8fRWWZGzWGLSyHlWl9MeHvBpyuoDqIBEGPYvNHfaHPbrNQHp
+        PtlDRJyZMtzRpWdxAyF7YuzYHQ==
+X-Google-Smtp-Source: AGHT+IFujQppv52TAisp40xugmwbZaGNvITv9y42W1AvnCP4R391ggguFC+CGFL20f2whKEh/xoHkQ==
+X-Received: by 2002:a19:c510:0:b0:503:34b8:20b with SMTP id w16-20020a19c510000000b0050334b8020bmr143296lfe.65.1698345948438;
+        Thu, 26 Oct 2023 11:45:48 -0700 (PDT)
+Received: from [172.30.204.255] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id n21-20020a05651203f500b005079f69e019sm3092962lfq.59.2023.10.26.11.45.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 11:45:48 -0700 (PDT)
+Message-ID: <1b99abed-6572-4550-98cc-56667a507883@linaro.org>
+Date:   Thu, 26 Oct 2023 20:45:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTpl1ELUMEmne21U@smile.fi.intel.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20231025104457.628109-1-robimarko@gmail.com>
+ <20231025104457.628109-2-robimarko@gmail.com>
+ <77314fe2-2936-4f89-a347-4eb288507c47@linaro.org>
+Content-Language: en-US
+In-Reply-To: <77314fe2-2936-4f89-a347-4eb288507c47@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 04:12:52PM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 24, 2023 at 03:46:53PM -0400, Kent Overstreet wrote:
-> > On Tue, Oct 24, 2023 at 05:26:18PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Oct 24, 2023 at 06:45:58AM -0700, Suren Baghdasaryan wrote:
-> 
-> ...
-> 
-> > > >  	string_get_size(nblocks, queue_logical_block_size(q),
-> > > > -			STRING_UNITS_10, cap_str_10, sizeof(cap_str_10));
-> > > > +			0, cap_str_10, sizeof(cap_str_10));
-> > > 
-> > > This doesn't seem right (even if it works). We shouldn't rely on the
-> > > implementation details.
-> > 
-> > It's now a flags parameter: passing an empty set of flags is not
-> > "relying on an implementation detail".
-> 
-> 0 is the "default" flag which is definitely relies on the "implementation
-> detail". And I think that it's better that caller will explicitly tell what
-> they want.
-> 
-> ...
-> 
-> > > > -/* Descriptions of the types of units to
-> > > > - * print in */
-> > > > -enum string_size_units {
-> > > > -	STRING_UNITS_10,	/* use powers of 10^3 (standard SI) */
-> > > > -	STRING_UNITS_2,		/* use binary powers of 2^10 */
-> > > > +enum string_size_flags {
-> > > 
-> > > So, please add UNITS_10 as it is now. It will help if anybody in the future
-> > > wants to add, e.g., 8-base numbers.
-> > 
-> > Octal human readable numbers? No, no one's wanted that so far and I
-> > very much doubt anyone will want that in the future.
-> 
-> I also in doubt, but still, the explicit is better than implicit in this case
-> in my opinion.
-> 
-> > > > +	STRING_SIZE_BASE2	= (1 << 0),
-> > > > +	STRING_SIZE_NOSPACE	= (1 << 1),
-> > > > +	STRING_SIZE_NOBYTES	= (1 << 2),
-> > > >  };
-> 
-> ...
-> 
-> > > > +enum string_size_units {
-> > > > +	STRING_UNITS_10,	/* use powers of 10^3 (standard SI) */
-> > > > +	STRING_UNITS_2,		/* use binary powers of 2^10 */
-> > > > +};
-> > > 
-> > > And what a point now in having these?
-> > 
-> > Minimizing the size of the diff and making it more reviewable. It's fine
-> > as an internal implementation thing.
-> 
-> It's not an issue to rename these all over the places as you already did that
-> for most of the users. And minimizing diff could be done better with
-> --histogram algorithm or so. Otherwise it is not an objective here, right?
-> 
-> ...
-> 
-> > > I assume you need to split this to a few patches:
-> > > 
-> > > 1) rename parameter to be a flags without renaming the definitions (this will
-> > >    touch only string_helpers part);
-> > > 2) do the end job by renaming it all over the drivers;
-> > > 3) add the other flags one-by-one (each in a separate change);
-> > > 4) use new flags where it's needed;
-> > 
-> > No, those would not be atomic changes. In particular changing the
-> > parameter to a flags without changing the callers - that's not how we do
-> > things.
-> 
-> > We're currently working towards _better_ type safety for enums, fyi.
-> > 
-> > The new flags _could_ be a separate patch, but since it would be
-> > touching much the same code as the previous patch I don't see the point
-> > in splitting it.
-> 
-> Individual flags can be discussed, objected or approved and won't affect the
-> rest of the changes. That's why I highly recommend to reconsider splitting of
-> this change.
-> 
-> It would be possible to squash back if maintainer wants this, but from review
-> perspective you are adding more burden to the reviewer's shoulders is not good.
-> 
-> ...
-> 
-> > > >  	static const char *const units_10[] = {
-> > > > -		"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
-> > > > +		"", "k", "M", "G", "T", "P", "E", "Z", "Y"
-> > > >  	};
-> > > >  	static const char *const units_2[] = {
-> > > > -		"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
-> > > > +		"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"
-> > > >  	};
-> > > 
-> > > Ouch, instead of leaving this and actually "cutting the letter" with NO* flags,
-> > > you did something different.
-> > 
-> > Not sure I understand your complaint? Were you attached to the redundant
-> > Bs?
-> 
-> Flag means "cutting" while in the code you "adding" (doing the opposite). Why
-> not do exactly "cutting" without touching there. Or since you mentioned changes
-> across the all callers, make them explicitly tell that they want Bytes suffix.
 
-Andy: to be blunt, you've been pretty hostile and hysterical ("breaking
-the kernel!" over debug statements? really?) and the bikeshedding is
-getting to be too much - I'm just going to drop this patch from the
-series and we'll post process the output as needed.
+
+On 10/26/23 20:42, Konrad Dybcio wrote:
+> 
+> 
+> On 10/25/23 12:44, Robert Marko wrote:
+>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
+>> and drop the curent code that is de-asserting the USB GDSC-s as part of
+>> the GCC probe.
+>>
+>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>> ---
+> Applying patches 1 and 3 without this one breaks usb, no?
+Sorry, my hands don't keep up with my brain - that's almost another
+speculative execution vulnerability!
+
+What I meant to say is:
+
+applying patches 1 and 2 breaks USB
+
+but
+
+the solution here would be to apply patch 1 and patch 3, followed
+by patch 2 (unless it will make the USB defer, IDK, it's probably
+easier to just test than to dive deep into the code)
+
+with Bjorn taking both subsystems, we can make that work I think
+
+Konrad
