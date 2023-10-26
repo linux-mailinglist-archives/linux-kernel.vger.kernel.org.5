@@ -2,186 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C05F97D89A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3527D89A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344835AbjJZUUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
+        id S1344818AbjJZUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjJZUT7 (ORCPT
+        with ESMTP id S231971AbjJZUU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:19:59 -0400
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEC31AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1698351593; x=1698610793;
-        bh=MY6UhJS4wgOAoosPta+TuxtbXCsYhD59Xf2pfqIYj2s=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=dGbPzAOcCpW+TbJACsMXT18aTk1rLFR5+rb05l3gHLPdhgtMrVbqZVRZ50zxXpY2o
-         B7mIbgbT0foKPJ/yVeAjyepHdQbl8FwlcawjHZ3G9k940FIvLuXSVKIGt+Ya41Rnfl
-         hclu30YXG9ikEA3d98cRg+N9ZFlE5ULWNGl/2Azr+CspZVqq8ncu3jmlU4DsNHvc4B
-         sDvr5sJzuAsXe2dfSTsitxxpvm5+FVKPGITNVgASvMAjGcl5v/UdRYDj16Yh2FESpP
-         Jh3bz3+/HbJvj674iAU5dmrPCQEUJlRyWlHFFGEl+TWqTpxsOiSXaX52w9YrVY40lo
-         uJwBTi5C/5K7g==
-Date:   Thu, 26 Oct 2023 20:19:33 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Asahi Lina <lina@asahilina.net>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Viktor Garske <viktor@v-gar.de>, Finn Behrens <me@kloenk.dev>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] rust: macros: improve `#[vtable]` documentation
-Message-ID: <20231026201855.1497680-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+        Thu, 26 Oct 2023 16:20:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC5618A;
+        Thu, 26 Oct 2023 13:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698351625; x=1729887625;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d9QFfqFoHIzmszUDwJhsesLvCTOCbL+5vMd7tK5kcmY=;
+  b=BnCE+LEOLOcSwoBeKNmQubx5+Qm9mwakWzBQ25+QvERtD3kRQq0Yy0oE
+   lQU6TaD8rmRiisarnIhTEoEznHth899zl9y7nqpN31b86emmaZGIaqM+D
+   uCTr272F5fzr7R8q1YxKu5bW06AfC1EFRBzVPPPwE0JcSADkytoRB4j8E
+   b/DJpBNhrZ5Z36tYpJgOBcWanfypyDSg5d/HsfsBGCd+kwSOEGsntEvjc
+   XmVsZt2mV+zrrwl7CgQQrjKs4q9kr8m7qF51Y439Sgb3aRpFhCHGNWUe4
+   ek30wExogg0TP1nheLVq/ZL0wetYnlX3edmMisvUqmofL/3x6Vql4EU1s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="384845878"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="384845878"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:20:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="762964629"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="762964629"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:20:19 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qw6pz-00000008xA2-2pRF;
+        Thu, 26 Oct 2023 23:20:15 +0300
+Date:   Thu, 26 Oct 2023 23:20:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-trace-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
+Message-ID: <ZTrJ/5Jrzz5D62hh@smile.fi.intel.com>
+References: <20231026194033.it.702-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026194033.it.702-kees@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traits marked with `#[vtable]` need to provide default implementations
-for optional functions. The C side represents these with `NULL` in the
-vtable, so the default functions are never actually called. We do not
-want to replicate the default behavior from C in Rust, because that is
-not maintainable. Therefore we should use `build_error` in those default
-implementations. The error message for that is provided at
-`kernel::error::VTABLE_DEFAULT_ERROR`.
+On Thu, Oct 26, 2023 at 12:40:37PM -0700, Kees Cook wrote:
+> Solve two ergonomic issues with struct seq_buf;
+> 
+> 1) Too much boilerplate is required to initialize:
+> 
+> 	struct seq_buf s;
+> 	char buf[32];
+> 
+> 	seq_buf_init(s, buf, sizeof(buf));
+> 
+> Instead, we can build this directly on the stack. Provide
+> DECLARE_SEQ_BUF() macro to do this:
+> 
+> 	DECLARE_SEQ_BUF(s, 32);
+> 
+> 2) %NUL termination is fragile and requires 2 steps to get a valid
+>    C String (and is a layering violation exposing the "internals" of
+>    seq_buf):
+> 
+> 	seq_buf_terminate(s);
+> 	do_something(s->buffer);
+> 
+> Instead, we can just return s->buffer direction after terminating it
+> in refactored seq_buf_terminate(), now known as seq_buf_str():
+> 
+> 	do_soemthing(seq_buf_str(s));
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
----
-v2 -> v3:
-- don't hide the import of the constant in the example
-- fixed "function" typo
-- improve paragraph about optional functions
-- do not remove the `Send + Sync + Sized` bounds on the example
+...
 
-v1 -> v2:
-- removed imperative mode in the paragraph describing optional
-  functions.
+> +#define DECLARE_SEQ_BUF(NAME, SIZE)					\
+> +	char __ ## NAME ## _buffer[SIZE] = "";				\
+> +	struct seq_buf NAME = { .buffer = &__ ## NAME ## _buffer,	\
+> +				.size = SIZE }
 
- rust/kernel/error.rs |  4 ++++
- rust/macros/lib.rs   | 37 ++++++++++++++++++++++++++++++-------
- 2 files changed, 34 insertions(+), 7 deletions(-)
+Hmm... Wouldn't be more readable to have it as
 
-diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-index 05fcab6abfe6..1373cde025ef 100644
---- a/rust/kernel/error.rs
-+++ b/rust/kernel/error.rs
-@@ -335,3 +335,7 @@ pub(crate) fn from_result<T, F>(f: F) -> T
-         Err(e) =3D> T::from(e.to_errno() as i16),
-     }
- }
-+
-+/// Error message for calling a default function of a [`#[vtable]`](macros=
-::vtable) trait.
-+pub const VTABLE_DEFAULT_ERROR: &str =3D
-+    "This function must not be called, see the #[vtable] documentation.";
-diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
-index c42105c2ff96..917a51183c23 100644
---- a/rust/macros/lib.rs
-+++ b/rust/macros/lib.rs
-@@ -87,27 +87,48 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// implementation could just return `Error::EINVAL`); Linux typically use=
- C
- /// `NULL` pointers to represent these functions.
- ///
--/// This attribute is intended to close the gap. Traits can be declared an=
-d
--/// implemented with the `#[vtable]` attribute, and a `HAS_*` associated c=
-onstant
--/// will be generated for each method in the trait, indicating if the impl=
-ementor
--/// has overridden a method.
-+/// This attribute closes that gap. A trait can be annotated with the `#[v=
-table]` attribute.
-+/// Implementers of the trait will then also have to annotate the trait wi=
-th `#[vtable]`. This
-+/// attribute generates a `HAS_*` associated constant bool for each method=
- in the trait that is set
-+/// to true if the implementer has overridden the associated method.
-+///
-+/// For a trait method to be optional, it must have a default implementati=
-on.
-+/// This is also the case for traits annotated with `#[vtable]`, but in th=
-is
-+/// case the default implementation will never be executed. The reason for=
- this
-+/// is that the functions will be called through function pointers install=
-ed in
-+/// C side vtables. When an optional method is not implemented on a `#[vta=
-ble]`
-+/// trait, a NULL entry is installed in the vtable. Thus the default
-+/// implementation is never called. Since these traits are not designed to=
- be
-+/// used on the Rust side, it should not be possible to call the default
-+/// implementation. This is done to ensure that we call the vtable methods
-+/// through the C vtable, and not through the Rust vtable. Therefore, the
-+/// default implementation should call `kernel::build_error`, which preven=
-ts
-+/// calls to this function at compile time:
-+///
-+/// ```compile_fail
-+/// # use kernel::error::VTABLE_DEFAULT_ERROR;
-+/// kernel::build_error(VTABLE_DEFAULT_ERROR)
-+/// ```
-+///
-+/// note that you might need to import [`kernel::error::VTABLE_DEFAULT_ERR=
-OR`].
- ///
--/// This attribute is not needed if all methods are required.
-+/// This macro should not be used when all functions are required.
- ///
- /// # Examples
- ///
- /// ```ignore
-+/// use kernel::error::VTABLE_DEFAULT_ERROR;
- /// use kernel::prelude::*;
- ///
- /// // Declares a `#[vtable]` trait
- /// #[vtable]
- /// pub trait Operations: Send + Sync + Sized {
- ///     fn foo(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- ///
- ///     fn bar(&self) -> Result<()> {
--///         Err(EINVAL)
-+///         kernel::build_error(VTABLE_DEFAULT_ERROR)
- ///     }
- /// }
- ///
-@@ -125,6 +146,8 @@ pub fn module(ts: TokenStream) -> TokenStream {
- /// assert_eq!(<Foo as Operations>::HAS_FOO, true);
- /// assert_eq!(<Foo as Operations>::HAS_BAR, false);
- /// ```
-+///
-+/// [`kernel::error::VTABLE_DEFAULT_ERROR`]: ../kernel/error/constant.VTAB=
-LE_DEFAULT_ERROR.html
- #[proc_macro_attribute]
- pub fn vtable(attr: TokenStream, ts: TokenStream) -> TokenStream {
-     vtable::vtable(attr, ts)
+#define DECLARE_SEQ_BUF(NAME, SIZE)			\
+	char __ ## NAME ## _buffer[SIZE] = "";		\
+	struct seq_buf NAME = {				\
+		.buffer = &__ ## NAME ## _buffer,	\
+		.size = SIZE,				\
+	}
 
-base-commit: 3857af38e57a80b15b994e19d1f4301cac796481
---=20
-2.41.0
+?
+
+...
+
+> +static inline char *seq_buf_str(struct seq_buf *s)
+>  {
+>  	if (WARN_ON(s->size == 0))
+> -		return;
+> +		return "";
+
+I'm wondering why it's a problem to have an empty string?
+
+>  	if (seq_buf_buffer_left(s))
+>  		s->buffer[s->len] = 0;
+>  	else
+>  		s->buffer[s->size - 1] = 0;
+> +
+> +	return s->buffer;
+>  }
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
