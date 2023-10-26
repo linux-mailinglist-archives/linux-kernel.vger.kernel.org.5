@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEEC7D856A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C3F7D856C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235107AbjJZPAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
+        id S1345378AbjJZPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbjJZPAb (ORCPT
+        with ESMTP id S231423AbjJZPAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:00:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3414B187
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:00:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0BC1C433CA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698332428;
-        bh=E3TbXSZFtJIGay/zBzgKcMrSIq3nyoCPzTNhBTttaRQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QbbYOA4AIKe0PnNSEeCqrmoVWRqyCIz0kV0G4d9xPHm9AMTEJvReFhew+PSQx5nW0
-         piNEx1+bAoU163+rZmDCr9/GnmZ2h4E2ZqRWuSrn+XMduMFGjU3qR+6O5A4oPitp0A
-         2lwcnsvG7LKpQXXfanqUQzNfkTtuA48JTfJxEEarPf+Lr6dmRZkZDIJD69rWI9FFxh
-         H3gm42BFLOIF7N2QdI8qoJ11HuWbMy5N9r8OcEKnWt2JOV3xC4tFiACns0PABq7PUh
-         kamqIIbMFMSqf29fWWXj9WSasHJkN/V28DKdyzNzuFBIi5Qz17tNxYRjYaGttETWU8
-         BPN/jZt/zyUkg==
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-27ff83feb29so549911a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:00:28 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxjOTWwiwH1+g1O8w5a3xhN68w7+GTraboo1XByGoUNjm6tdLmg
-        6vnK8PLLG7dPyQdyhKiMqJyPhTpm/ElUUnPjCGo=
-X-Google-Smtp-Source: AGHT+IFf/g3FdqTRlgRtfXQqdXPHTJRFWHub3LPFf7a501CHy+ga2wMn592H/yQa+gSLyAOqZ9Ydut0bLJAcDbwMk14=
-X-Received: by 2002:a17:90b:fd2:b0:27d:30d5:c0f8 with SMTP id
- gd18-20020a17090b0fd200b0027d30d5c0f8mr17665525pjb.43.1698332428375; Thu, 26
- Oct 2023 08:00:28 -0700 (PDT)
+        Thu, 26 Oct 2023 11:00:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 722761AB
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:00:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 580512F4;
+        Thu, 26 Oct 2023 08:01:15 -0700 (PDT)
+Received: from [10.1.36.151] (XHFQ2J9959.cambridge.arm.com [10.1.36.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 649033F64C;
+        Thu, 26 Oct 2023 08:00:32 -0700 (PDT)
+Message-ID: <ca11d0f7-bc4c-4f05-89e8-690da2169fda@arm.com>
+Date:   Thu, 26 Oct 2023 16:00:31 +0100
 MIME-Version: 1.0
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <edeebfab-e26c-4c18-8126-190c3e834521@kernel.org> <12c8c0f3-8364-4f25-976e-8cca29b5e17f@amd.com>
-In-Reply-To: <12c8c0f3-8364-4f25-976e-8cca29b5e17f@amd.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 26 Oct 2023 17:00:17 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPe+kSgxDFjrk+-ycsiyjp1r_SNNrFyy2B_-UDuqDV07XQ@mail.gmail.com>
-Message-ID: <CAJKOXPe+kSgxDFjrk+-ycsiyjp1r_SNNrFyy2B_-UDuqDV07XQ@mail.gmail.com>
-Subject: Re: [PATCH 01/13] ASoC: amd: acp: Add acp6.3 pci legacy driver support
-To:     syed saba kareem <ssabakar@amd.com>
-Cc:     Syed Saba Kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        mario.limonciello@amd.com, venkataprasad.potturu@amd.com,
-        arungopal.kondaveeti@amd.com, mastan.katragadda@amd.com,
-        juan.martinez@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        V Sujith Kumar Reddy <vsujithkumar.reddy@amd.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -fixes 0/2] Fix set_huge_pte_at()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexandre Ghiti <alex@ghiti.fr>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <20230928151846.8229-1-alexghiti@rivosinc.com>
+ <305b4dec-c99d-3cee-4563-8d7dcbae9384@ghiti.fr>
+ <20231003090443.67a2e2692b68211e05b53248@linux-foundation.org>
+ <CAHVXubi5C0hBaXx5tqVHZAJSd1zvHRqoxUEkk9ZbmZ5mq2=mAw@mail.gmail.com>
+ <20231026071300.e12dab3be1edd26007db85ee@linux-foundation.org>
+ <32d9627c-821a-48f0-b430-0532a47b8699@ghiti.fr>
+ <36aa1ec7-df13-4741-be09-c53a05f3d591@arm.com>
+ <20231026075415.47c0a032906b604de08ed39b@linux-foundation.org>
+Content-Language: en-GB
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231026075415.47c0a032906b604de08ed39b@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,23 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 12:09, syed saba kareem <ssabakar@amd.com> wrote:
-> +
-> +module_platform_driver(acp63_driver);
-> +
-> +MODULE_DESCRIPTION("AMD ACP acp63 Driver");
-> +MODULE_IMPORT_NS(SND_SOC_ACP_COMMON);
-> +MODULE_LICENSE("Dual BSD/GPL");
-> +MODULE_ALIAS("platform:" DRV_NAME);
->
-> You should not need MODULE_ALIAS() in normal cases. If you need it,
-> usually it means your device ID table is wrong.
->
-> It is platform driver ,for auto loading MODULE_ALIAS() is required.
+On 26/10/2023 15:54, Andrew Morton wrote:
+> On Thu, 26 Oct 2023 15:30:44 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+> 
+>>>>> Those fixes finally did not make it to 6.6, I was hoping for them to
+>>>>> land in -rc6 or -rc7: for the future, what should have I done to avoid
+>>>>> that?
+>>>> They're merged in Linus's tree.
+>>>>
+>>>> 6f1bace9a9fb arm64: hugetlb: fix set_huge_pte_at() to work with all swap entries
+>>>> 935d4f0c6dc8 mm: hugetlb: add huge page size param to set_huge_pte_at()
+>>>
+>>>
+>>> Oops, sorry, I missed them this morning!
+>>
+>> Those two patches that Andrew highlights are the fix I did for arm64. Weren't
+>> you referring to the corresponding patches you did for riscv, Alex?
+> 
+> These are in mainline:
+> 
+> 1de195dd0e05 riscv: fix set_huge_pte_at() for NAPOT mappings when a swap entry is set
+> 117b1bb0cbc7 riscv: handle VM_FAULT_[HWPOISON|HWPOISON_LARGE] faults instead of panicking
 
-Hm, not really. platform_driver does not need MODULE_ALIAS(). At least
-99% of them do not need it. Please help us understand what is broken
-here that this one platform driver needs alias.
+Ahh, great - I think they were probably the ones Alex was talking about.
 
-BR,
-Krzysztof
+> 
+> I'm not sure what happened to your "riscv: hugetlb: convert
+> set_huge_pte_at() to take vma" - perhaps it was updated.
+
+I modified the approach for v2 (pass size param instead of vma) and it got
+squashed into 935d4f0c6dc8 mm: hugetlb: add huge page size param to
+set_huge_pte_at(), which is in.
+
