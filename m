@@ -2,225 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4104C7D8016
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A654C7D801A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjJZJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S231173AbjJZJ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZJz5 (ORCPT
+        with ESMTP id S234684AbjJZJ4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:55:57 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D10C18F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:55:53 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso501839f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698314152; x=1698918952; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HzK9VMU7biBwtYpWfbq1vfPfka6gtKA3XTGeKlqZMFE=;
-        b=Fno3gG18vOTZRYljWTZeujrdphCFq6DqvpJtzIaSApJwJeTGXh/HJIvVb3HhjxilJl
-         ES5IS03SGPBVQkxNcScFRr1nRPCVaQkM9IQDAi7ZaKNUgR9ZIMTJX3dKHBk6OU8GxAvb
-         tOiU826I+4rxGcUPoR0TjVyGwVP+5ZK1nxh/5a8288rpt9ECOfd+3QjoAGmZKbqg8sdy
-         39n/vuX3CayW28PzDpQcHv8+ETvtyIKPzL+o6WoGoqU2wBvjQ8jpXUmR59q/zXbvURNC
-         Sfi/8prPZJoa8dFjQHQJ9yWUJP5wLFb34sAhprC+LcjzaTzu6bY0Pi2yjcZX54rZnciw
-         mFjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698314152; x=1698918952;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HzK9VMU7biBwtYpWfbq1vfPfka6gtKA3XTGeKlqZMFE=;
-        b=j/f9rU97jWxpPdoBVaOdAZjCbThJPudyBX6qshicBQ453cr+LsEZNTRN1Oz3eI5qsH
-         +MnkuxN2o+rGyb2qF3BsJxD0cOrOpNzzzk9s3AYu4ljpTaE/KHU6btCWLr4Iwb6r4g2X
-         XtJbNaUoi2EF5FeGiJK6hlsh+ig+ioRi3s4xKFVvpl4gsFQ4zqvz3fC2Ifc/dH+fAGyM
-         Z8cTeJS1QrBpupmGtRExXhDTkbZwjmGbvlN7f2zrWAIpfKS4/gGLwV6zB4bb39arXdfm
-         virZT6K/IbW4eqQiybrD1xLXDYyxwe9KEiZi3oCgoi5UbKhh8XV/B/GwvEAFxYbrgDj1
-         c52A==
-X-Gm-Message-State: AOJu0YycNqffksqqWmGrTwLO5Rh93CCx9ykV2bf4LexkfuQmwopLFwWb
-        I6gfUzYcjanzPH6Hu+AvwDLdUA==
-X-Google-Smtp-Source: AGHT+IFb0olVf7k+kG9TMpqi8I49DaAUrabsj77Wjiv7YCbMUEoPbXGZ2VvBCXxZiIXUx1mwSdp7Ww==
-X-Received: by 2002:adf:ef48:0:b0:32d:84a3:f3fe with SMTP id c8-20020adfef48000000b0032d84a3f3femr12620181wrp.41.1698314151935;
-        Thu, 26 Oct 2023 02:55:51 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:f57f:eb08:d29b:8c9c? ([2a01:e0a:982:cbb0:f57f:eb08:d29b:8c9c])
-        by smtp.gmail.com with ESMTPSA id n12-20020adfe78c000000b00326f0ca3566sm13990599wrm.50.2023.10.26.02.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 02:55:51 -0700 (PDT)
-Message-ID: <24ee41f5-1eb3-4f46-b198-a3123a64a39c@linaro.org>
-Date:   Thu, 26 Oct 2023 11:55:50 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 7/8] drm/msm: dsi: add support for DSI-PHY on SM8650
-Content-Language: en-US, fr
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thu, 26 Oct 2023 05:56:24 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14731A2;
+        Thu, 26 Oct 2023 02:56:18 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F1D7D1C0002;
+        Thu, 26 Oct 2023 09:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698314177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iLpdKu5C0fYSPbxSc3YHWPnQqBl6qyVkCmCpGHs4+QQ=;
+        b=J3BWVAytJd2WnybC3NmZ82R6PhfkKM824u1c139GxFwgy5rv2QRuDb/bNnD8rUMGuaiPWD
+        K4uVIt4Yig3m0x6Vzf3PxnHTCVTt/wKE3EjlOHDUG6ubUuu4FkPthqm3cwaIkwk8dBRF4y
+        +sMGkDaaSqGbPv7kYzYWZUriecU4EAbk6AhaKL2jIpxpqHUjJrtumhMGjuxwyaWRPqWtv+
+        AU9nHATD+O5l5Nclrk8Sdnp7TGPdJWsyePOUKNw/4eiNSPufg0mS4zXkrOGwPz22h00tnh
+        xDhzHiQl147R2RPdblcN0LmgRE723QGOJseRRErVkHTugpgC6JkgXApXtLYP6g==
+Date:   Thu, 26 Oct 2023 11:56:16 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231025-topic-sm8650-upstream-mdss-v1-0-bb219b8c7a51@linaro.org>
- <20231025-topic-sm8650-upstream-mdss-v1-7-bb219b8c7a51@linaro.org>
- <CAA8EJpr+QGBFchG9aXJLxyhbMwMWZF6RjSVOpORkP_KFrV=P1A@mail.gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAA8EJpr+QGBFchG9aXJLxyhbMwMWZF6RjSVOpORkP_KFrV=P1A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
+ property
+Message-ID: <202310260956166bdcb845@mail.local>
+References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
+ <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
+ <20231025222327c0b5d460@mail.local>
+ <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
+ <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
+ <20231026005008b8255799@mail.local>
+ <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 10:03, Dmitry Baryshkov wrote:
-> On Wed, 25 Oct 2023 at 10:35, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->>
->> Add DSI PHY support for the SM8650 platform.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c     |  2 ++
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h     |  1 +
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 27 +++++++++++++++++++++++++++
->>   3 files changed, 30 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> index 05621e5e7d63..7612be6c3618 100644
->> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> @@ -585,6 +585,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
->>            .data = &dsi_phy_5nm_8450_cfgs },
->>          { .compatible = "qcom,sm8550-dsi-phy-4nm",
->>            .data = &dsi_phy_4nm_8550_cfgs },
->> +       { .compatible = "qcom,sm8650-dsi-phy-4nm",
->> +         .data = &dsi_phy_4nm_8650_cfgs },
->>   #endif
->>          {}
->>   };
->> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
->> index 8b640d174785..e4275d3ad581 100644
->> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
->> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
->> @@ -62,6 +62,7 @@ extern const struct msm_dsi_phy_cfg dsi_phy_7nm_7280_cfgs;
->>   extern const struct msm_dsi_phy_cfg dsi_phy_5nm_8350_cfgs;
->>   extern const struct msm_dsi_phy_cfg dsi_phy_5nm_8450_cfgs;
->>   extern const struct msm_dsi_phy_cfg dsi_phy_4nm_8550_cfgs;
->> +extern const struct msm_dsi_phy_cfg dsi_phy_4nm_8650_cfgs;
->>
->>   struct msm_dsi_dphy_timing {
->>          u32 clk_zero;
->> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> index 3b1ed02f644d..c66193f2dc0d 100644
->> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> @@ -1121,6 +1121,10 @@ static const struct regulator_bulk_data dsi_phy_7nm_37750uA_regulators[] = {
->>          { .supply = "vdds", .init_load_uA = 37550 },
->>   };
->>
->> +static const struct regulator_bulk_data dsi_phy_7nm_98000uA_regulators[] = {
->> +       { .supply = "vdds", .init_load_uA = 98000 },
->> +};
->> +
->>   static const struct regulator_bulk_data dsi_phy_7nm_97800uA_regulators[] = {
->>          { .supply = "vdds", .init_load_uA = 97800 },
->>   };
->> @@ -1281,3 +1285,26 @@ const struct msm_dsi_phy_cfg dsi_phy_4nm_8550_cfgs = {
->>          .num_dsi_phy = 2,
->>          .quirks = DSI_PHY_7NM_QUIRK_V5_2,
->>   };
->> +
->> +const struct msm_dsi_phy_cfg dsi_phy_4nm_8650_cfgs = {
+On 26/10/2023 11:41:47+0200, Javier Carrasco wrote:
 > 
-> So, this is the same as sm8550 config, just using 400 uA less? I
-> wonder if it makes sense to go for setting the regulator mode instead
-> of setting the load.
-
-I have no idea, we keep changing this but indeed we should instead change
-the regulator mode, it's safer to keep it that way until we figure that out.
-
-I'll double check anyway
-
+> On 26.10.23 02:50, Alexandre Belloni wrote:
+> > On 26/10/2023 01:23:21+0200, Javier Carrasco wrote:
+> >>>>> +  hiz-output:
+> >>>>> +    description:
+> >>>>> +      Use enabled if the output should stay in high-impedance. This
+> >>>>> +      mode will mask the output as an interrupt source.
+> >>>>> +      Use sleep if the otuput should be only active in sleep mode.
+> >>>>> +      This mode is compatible with any other output configuration.
+> >>>>> +      The disabled value acts as if the property was not defined.
+> >>>>> +    enum:
+> >>>>> +      - enabled
+> >>>>> +      - sleep
+> >>>>> +      - disabled
+> >>>>> +    default: disabled
+> >>>>> +
+> >>>>
+> >>>> If instead of using a custom property, you consider this as what it
+> >>>> actually is: pinmuxing, then everything else comes for free. With
+> >>>> pinctrl, you can define different states for runtime and sleep and they
+> >>>> will get applied automatically instead of open coding in the driver.
+> >>
+> >> I am not sure if your solution would cover all my needs:
+> >>
+> >> 1.- With pinctrl I can model the SoC pins, right? That would not stop
+> >> the RTC output though, so the 32 kHz signal would be generated anyways
+> >> even though the SoC would ignore it. That is one of the things I want to
+> >> avoid.
+> >>
+> > 
+> > No, you would model the INTA pin.
+> I am sorry for insisting on this topic, but if I get you right, I would
+> be modeling an interrupt pin (INTA) to keep it from generating a clock
+> signal when the RTC itself offers a high-impedance mode i.e. avoiding to
+> use the RTC feature.
 > 
-> Nevertheless (unless you'd like to reuse sm8550 config entry):
+> Is that not a misuse of the INTA pin in the first place? If there was no
+> other option, that would be an easy fix, but why would we not implement
+> the hi-Z mode when it is available? If I see a pinctrl-* modeling an
+> interrupt pin, it is not obvious that I am doing that to stop the clock
+> signal and I would have to clarify it explicitly, especially if I am not
+> interested in the interrupt.
 > 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> I would rather implement and document the hi-Z mode the RTC offers
+> instead of using another mode like INTA which actually can trigger
+> interrupts. If the implementation must be different is of course another
+> topic.
 
-Thanks,
-Neil
+There is a pin named INTA, it can mux 4 different functions:
 
-> 
->> +       .has_phy_lane = true,
->> +       .regulator_data = dsi_phy_7nm_98000uA_regulators,
->> +       .num_regulators = ARRAY_SIZE(dsi_phy_7nm_98000uA_regulators),
->> +       .ops = {
->> +               .enable = dsi_7nm_phy_enable,
->> +               .disable = dsi_7nm_phy_disable,
->> +               .pll_init = dsi_pll_7nm_init,
->> +               .save_pll_state = dsi_7nm_pll_save_state,
->> +               .restore_pll_state = dsi_7nm_pll_restore_state,
->> +               .set_continuous_clock = dsi_7nm_set_continuous_clock,
->> +       },
->> +       .min_pll_rate = 600000000UL,
->> +#ifdef CONFIG_64BIT
->> +       .max_pll_rate = 5000000000UL,
->> +#else
->> +       .max_pll_rate = ULONG_MAX,
->> +#endif
->> +       .io_start = { 0xae95000, 0xae97000 },
->> +       .num_dsi_phy = 2,
->> +       .quirks = DSI_PHY_7NM_QUIRK_V5_2,
->> +};
->>
->> --
->> 2.34.1
->>
-> 
-> 
+ - clock output
+ - battery mode indication
+ - interrupt
+ - HiZ
 
+with pinmuxing, you can select which function you want for the pin. I'm
+not sure what is misused there.
+
+Can you explain what is your actual use case? I'm starting to understand
+that what you want is simply disable clock out because you are not using
+the interrupt.
+
+If we assume we are never going to use battery mode, then we could
+simply used the CCF for this like the other RTC drivers.
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
