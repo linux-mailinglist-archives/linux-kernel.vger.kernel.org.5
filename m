@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 043DD7D8BD8
+	by mail.lfdr.de (Postfix) with ESMTP id E38527D8BDB
 	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344958AbjJZWua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
+        id S232097AbjJZWwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjJZWu3 (ORCPT
+        with ESMTP id S229633AbjJZWwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:50:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361B61A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:50:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C0EFEC433C8;
-        Thu, 26 Oct 2023 22:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698360626;
-        bh=Zy6E/Q+H/X4NEFmVkmaU5sDSLwMcCrTBPG8UA9Z56SA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ltSS0b8OUBWJWGGCafuNFvnu/DsT/hpkrV0Q9pd9+6gqnIOppUomQysr3EJZjkzrX
-         DN/o/Ft937+AlDTjC00qRoP3Nb6RcVSW8Cg92lBKeE74y7NfQEstTbh4EY1UdZm517
-         d2Y7hYAgTpVfQ3AAxnyKSIC63JWoJl+0+LXnN8C0kHfohj7rVtetGWenldURKd7xOC
-         coLa2U29MQHxYSbdRkV7yHBzemtWlQOsmIXZcBdxVjpdAb7/Fc63o46G+XsWVAhZ6p
-         aMRMVoGZeTpeTmPfLAeUHdX1yKE/olO9TORSGuGqmMQEU6HE43ZendWhVW6bqV0AAx
-         mJECl08JoBMcQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A39EFE11F52;
-        Thu, 26 Oct 2023 22:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 26 Oct 2023 18:52:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACB31AB;
+        Thu, 26 Oct 2023 15:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698360769; x=1729896769;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DibA2OwE41Z1sW1cSL7fP09Xo0QOr8th32q8AiyDesY=;
+  b=IjuLbUNwLzj+DbV5YkiHvcthr83srf02idP95pJGFoBd0493cXdJr1cf
+   O72v7lALS4vfaOkV5poemneRrcQYlMnfBqbaPoKn7xa/g/jm6zASimTtK
+   ZQtqMuuhd3bTSufPeITVO2AO5KtiwJRb/9fiFhtfqGbz23uMkrwIQukkQ
+   +BlbwSgpzx7nXE6ZOXltICfL0S9fPKkCWcIqeavsJs9C+xpCqE6ZC1Nup
+   OI+dgVeTD2dloTACkwyRf1nU22p2YLWYPuSIuWyxwForszLG7wPIaQdW2
+   4FV94mGyF3xklGePc/8hkDNEYdQBRwoEjltIZC+jBfWHO4aKO8CS/pyfS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="454130274"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="454130274"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 15:52:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="825145803"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="825145803"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Oct 2023 15:52:46 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qw9DY-000ACN-1I;
+        Thu, 26 Oct 2023 22:52:44 +0000
+Date:   Fri, 27 Oct 2023 06:52:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-debuggers@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] kernel/config: Introduce
+ CONFIG_DEBUG_INFO_IKCONFIG
+Message-ID: <202310270605.GjEqZtAA-lkp@intel.com>
+References: <20231025223640.1132047-2-stephen.s.brennan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/mlx5: fix uninit value use
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169836062666.25008.3760960827662370668.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Oct 2023 22:50:26 +0000
-References: <20231025145050.36114-1-przemyslaw.kitszel@intel.com>
-In-Reply-To: <20231025145050.36114-1-przemyslaw.kitszel@intel.com>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     netdev@vger.kernel.org, saeedm@nvidia.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jiri@resnulli.us, linux-kernel@vger.kernel.org, leon@kernel.org,
-        tariqt@nvidia.com, danieller@nvidia.com, idosch@nvidia.com,
-        petrm@nvidia.com, moshe@nvidia.com, eranbe@nvidia.com,
-        ayal@mellanox.com, horms@kernel.org, dan.carpenter@linaro.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025223640.1132047-2-stephen.s.brennan@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Stephen,
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+kernel test robot noticed the following build errors:
 
-On Wed, 25 Oct 2023 16:50:50 +0200 you wrote:
-> Avoid use of uninitialized state variable.
-> 
-> In case of mlx5e_tx_reporter_build_diagnose_output_sq_common() it's better
-> to still collect other data than bail out entirely.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Link: https://lore.kernel.org/netdev/8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain
-> Fixes: d17f98bf7cc9 ("net/mlx5: devlink health: use retained error fmsg API")
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> 
-> [...]
+[auto build test ERROR on soc/for-next]
+[also build test ERROR on arnd-asm-generic/master linus/master v6.6-rc7 next-20231026]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Here is the summary with links:
-  - [net-next] net/mlx5: fix uninit value use
-    https://git.kernel.org/netdev/net-next/c/5af8d8ce6434
+url:    https://github.com/intel-lab-lkp/linux/commits/Stephen-Brennan/kernel-config-Introduce-CONFIG_DEBUG_INFO_IKCONFIG/20231026-063844
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20231025223640.1132047-2-stephen.s.brennan%40oracle.com
+patch subject: [PATCH v2 1/1] kernel/config: Introduce CONFIG_DEBUG_INFO_IKCONFIG
+config: alpha-defconfig (https://download.01.org/0day-ci/archive/20231027/202310270605.GjEqZtAA-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231027/202310270605.GjEqZtAA-lkp@intel.com/reproduce)
 
-You are awesome, thank you!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310270605.GjEqZtAA-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/configs-debug.S: Assembler messages:
+>> kernel/configs-debug.S:17: Error: file not found: kernel/config_data.gz
+
+
+vim +17 kernel/configs-debug.S
+
+  > 17		.incbin "kernel/config_data.gz"
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
