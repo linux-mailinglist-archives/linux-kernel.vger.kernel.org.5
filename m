@@ -2,140 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469157D886B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F327D8872
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjJZSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
+        id S230493AbjJZShZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 14:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjJZSgZ (ORCPT
+        with ESMTP id S229501AbjJZShY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:36:25 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C460710A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1698345381;
-        bh=wVwxr0EqhCa/79uqd0S0BfYl2wt+pSfYm2ZTXUv0IJg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=svHuDhDy3Ida9p47ja1VfvQycI6QkrRyu10ZjHZY2WQZuQYUNJyTpCg80O9WM9EeR
-         07/cJGWJSStjt5A/Daw3fAy3FREH73TDChQzfoVuBgNQsdSMiA41J8pWmGkc9d1ok4
-         t+oCOifi7gPN4j4cYFJyYcMWVGuga8Ks3kUzAKa01MAXU9GEJ8CWFxsfVXRzqpxO7P
-         DlkvL3f6v/GZUoDGIw0iGQwkxCIkKcme6KXMtdWaeWbPvs+FgDu3ac0DqOwQTmaouv
-         Orkv6NoA2RlFsUGXcoLksDThUDcUqlv5hGIjVMlHtCIrItsNtvp7fRmdbHpw1T1ajx
-         dU5pY876gteZw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SGZJ53Htgz1ZCH;
-        Thu, 26 Oct 2023 14:36:21 -0400 (EDT)
-Message-ID: <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
-Date:   Thu, 26 Oct 2023 14:36:36 -0400
+        Thu, 26 Oct 2023 14:37:24 -0400
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C971A5;
+        Thu, 26 Oct 2023 11:37:22 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-581e106fd25so183173eaf.0;
+        Thu, 26 Oct 2023 11:37:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698345441; x=1698950241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9JI4dp+Kg7iVHX3cVBNafUR1doVjzD9jk5YuxgZ3wiM=;
+        b=dL9bsiRezZjp2j1U55oB60d9nll0FYoAz25VXTobtq42eY1ICLC0F9nA/euChrn66V
+         7Ibmyez0fLaAahVX958wyxDaCSZx1vEDJyXF14+l0t3kKvMW/ZltLCWdXVL41qeVxdpd
+         SK8yKP2+1C6HaE8pPF07Q/VsSV03ujmCmXQmdu9G+EY+MQRDY6UqvVDq9Ps9+j5hk1a0
+         9dicN1hHa2lS5lJdj5IIUdjWNF8o/hAaqCuYVGD0it1UWqcQtcH+20UyPcaQ35oQRTxS
+         lGFtD9rr78DLzguXxbkK6YjrGW4QEs1ips1c6BGe+3Er4oTIBfYg8RmpkcQG7/OlfDXd
+         h3BA==
+X-Gm-Message-State: AOJu0Yycw5o4ZHeSJ1pbwdmRkZzinjXOYqpMwKjTlot8FNkD7j8W9L05
+        eRwsDDZJcVQ1q3hUC1pB05ScdKr4PtQRJdKXPrk=
+X-Google-Smtp-Source: AGHT+IFjM/1pDBDUCMZ9R0v8dzDFkHGQ9hszsOZuveH9Gi5y8aPW1ascpmLEFGb0yJPIBg2Rh4sROH6ooBgGQYpee+c=
+X-Received: by 2002:a4a:c991:0:b0:586:7095:126d with SMTP id
+ u17-20020a4ac991000000b005867095126dmr386761ooq.0.1698345441597; Thu, 26 Oct
+ 2023 11:37:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-References: <20231025235413.597287e1@gandalf.local.home>
- <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
- <20231026071413.4ed47b0e@gandalf.local.home>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231026071413.4ed47b0e@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20220715210911.714479-1-daniel.lezcano@linaro.org> <20220715210911.714479-4-daniel.lezcano@linaro.org>
+In-Reply-To: <20220715210911.714479-4-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 26 Oct 2023 20:37:10 +0200
+Message-ID: <CAJZ5v0jjs=BVkc-xaVLJ8MQi2KcQiVaVW4Rcaaq95H7VBFrBeA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] thermal/core: Fix thermal trip cross point
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rafael@kernel.org, quic_manafm@quicinc.com, rui.zhang@intel.com,
+        amitk@kernel.org, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-26 07:14, Steven Rostedt wrote:
-> On Thu, 26 Oct 2023 12:59:44 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
->> On Wed, Oct 25, 2023 at 11:54:13PM -0400, Steven Rostedt wrote:
->>
->>>   static void extend(void)
->>>   {
->>> 	rseq_map.cr_flags = 1;
->>>   }
->>>
->>>   static void unextend(void)
->>>   {
->>> 	unsigned long prev;
->>>
->>> 	prev = xchg(&rseq_map.cr_flags, 0);
->>
->> So you complain about overhead and then you add one of the most
->> expensive ops possible here? xchg has an implicit LOCK prefix and you
->> really don't need LOCK prefix here.
-> 
-> Peter, this is the user space side, where I cut and pasted the code from
-> the file I attached.
-> 
-> That has:
-> 
-> static inline unsigned long
-> xchg(volatile unsigned *ptr, unsigned new)
-> {
->          unsigned ret = new;
-> 
-> 	asm volatile("xchg %b0,%1"
+On Fri, Jul 15, 2022 at 11:09 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The routine doing trip point crossing the way up or down is actually
+> wrong.
+>
+> A trip point is composed with a trip temperature and a hysteresis.
+>
+> The trip temperature is used to detect when the trip point is crossed
+> the way up.
+>
+> The trip temperature minus the hysteresis is used to detect when the
+> trip point is crossed the way down.
+>
+> |-----------low--------high------------|
+>              |<--------->|
+>              |    hyst   |
+>              |           |
+>              |          -|--> crossed the way up
+>              |
+>          <---|-- crossed the way down
+>
+> For that, there is a two point comparison: the current temperature and
+> the previous temperature.
+>
+> The actual code assumes if the current temperature is greater than the
+> trip temperature and the previous temperature was lesser, then the
+> trip point is crossed the way up. That is true only if we crossed the
+> way down the low temperature boundary from the previous temperature or
+> if the hysteresis is zero. The temperature can decrease between the
+> low and high, so the trip point is not crossed the way down and then
+> increase again and cross the high temperature raising a new trip point
+> crossed detection which is incorrect. The same scenario happens when
+> crossing the way down.
+>
+> The trip point crossing the way up and down must act as parenthesis, a
+> trip point down must close a trip point up. Today we have multiple
+> trip point up without the corresponding trip point down.
+>
+> In order to fix that, we store the previous trip point which gives the
+> information about the previous trip and we change the trip point
+> browsing order depending on the temperature trend: in the ascending
+> order when the temperature trend is raising, otherwise in the
+> descending order.
 
-which has an implicit lock prefix (xchg with a memory operand is a 
-special-case):
+There is an alternative way of addressing this problem which doesn't
+require using information regarding the previous trip point and so it
+would work even if the trips were not sorted.
 
-Quoting Intel manual:
+Namely, for each trip there can be an effective threshold equal to
+either its temperature. or its temperature minus its hysteresis (low
+temperature).  If the initial zone temperature is below the trip's
+temperature, the initial value of its threshold is equal to its
+temperature.  Otherwise, the initial value of the trip's threshold is
+its low temperature.
 
-"If a memory operand is referenced, the processor’s locking protocol is 
-automatically implemented for the duration of the exchange operation, 
-regardless of the presence or absence of the LOCK prefix or of the value 
-of the IOPL. (See the LOCK prefix description in this chapter for more 
-information on the locking protocol.)"
+Then, if the zone temperature crosses the threshold (either up or
+down), the trip crossing triggers and the threshold value is flipped
+(that is, if it was equal to the trip's temperature, it becomes its
+low temperature or the other way around).  [Note that if the threshold
+value is equal to the trip temperature, it can only be crossed on the
+way up, because it means that the zone temperature was below it at one
+point and has not grown above it since then.  Conversely, if the
+threshold value is equal to the low temperature of the trip, it can
+only be crossed on the way down, because it means that the zone
+temperature was above the trip temperature at one point and it has not
+fallen below the trip's low temperature since then.]
 
-Thanks,
-
-Mathieu
-
-
-> 		     : "+r"(ret), "+m"(*(ptr))
-> 		     : : "memory");
->          return ret;
-> }
-> 
-> -- Steve
-> 
-> 
->>
->>> 	if (prev & 2) {
->>> 		tracefs_printf(NULL, "Yield!\n");
->>> 		sched_yield();
->>> 	}
->>>   }
-> 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+This should not be hard to implement AFAICS and it should also work in
+the cases when one trip is located in the hysteresis range of another
+one.
