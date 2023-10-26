@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B73C17D7EF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12D87D7F02
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344746AbjJZIxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S1344752AbjJZIzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344757AbjJZIxa (ORCPT
+        with ESMTP id S229931AbjJZIy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:53:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21DD410E3;
-        Thu, 26 Oct 2023 01:53:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F3592F4;
-        Thu, 26 Oct 2023 01:54:08 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5154F3F762;
-        Thu, 26 Oct 2023 01:53:24 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 09:53:21 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Zeng Heng <zengheng4@huawei.com>
-Cc:     <broonie@kernel.org>, <joey.gouly@arm.com>, <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, <amit.kachhap@arm.com>,
-        <rafael@kernel.org>, <catalin.marinas@arm.com>,
-        <james.morse@arm.com>, <mark.rutland@arm.com>, <maz@kernel.org>,
-        <viresh.kumar@linaro.org>, <sumitg@nvidia.com>,
-        <yang@os.amperecomputing.com>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <wangxiongfeng2@huawei.com>, <xiexiuqi@huawei.com>
-Subject: Re: [PATCH 2/3] cpufreq: CPPC: Keep the target core awake when
- reading its cpufreq rate
-Message-ID: <ZTopAUnBQXGIuM5f@bogus>
-References: <20231025093847.3740104-1-zengheng4@huawei.com>
- <20231025093847.3740104-3-zengheng4@huawei.com>
- <20231025111301.ng5eaeaixfs3jjpg@bogus>
- <dcc4dfd7-fbef-7b46-5037-3916077ec696@huawei.com>
+        Thu, 26 Oct 2023 04:54:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD3D19D
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZEBcz5oDJwulfgGWI6eBUOuuP2Vu4P0o4e5NZllAitM=; b=PwTKzgqvwdV9vqkNhbYrKz+zek
+        Kon6ciA7lLWc3CH3oFeB3yz7K1FCn6sywGmYEw/yBrczmsPFg1BranwwmAr/W69KAcF5cdCQeoZPF
+        NpNvU7gh9IyC359JYttetQBwZkEuIvfOwf33jiJogBpRKTVgbcKB/Hl6zy9nPlTWOiYBpScpWXhhX
+        /pe8fHGSrwAT/i2ZNzXibH1JGhHivrNhyzcXsgolpORCmMUCrd5vAJHpgdpNx3DdG/c3ESzKBTtZ4
+        UoM3/JDu4XuhdJWnf2m8HjIoLhyHb+j/u8MoEIm+lnF9CVaW/LP2juXic+rGYxDZsjMgT33DNFwLO
+        V/q8AstA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvw86-00H9u7-2g;
+        Thu, 26 Oct 2023 08:54:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7949D300473; Thu, 26 Oct 2023 10:54:14 +0200 (CEST)
+Date:   Thu, 26 Oct 2023 10:54:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Message-ID: <20231026085414.GL31411@noisy.programming.kicks-ass.net>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
+ <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+ <20231025085434.35d5f9e0@gandalf.local.home>
+ <20231025135545.GG31201@noisy.programming.kicks-ass.net>
+ <20231025103105.5ec64b89@gandalf.local.home>
+ <884e4603-4d29-41ae-8715-a070c43482c4@efficios.com>
+ <20231025162435.ibhdktcshhzltr3r@f>
+ <20231025131731.48461873@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dcc4dfd7-fbef-7b46-5037-3916077ec696@huawei.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231025131731.48461873@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:24:54AM +0800, Zeng Heng wrote:
+On Wed, Oct 25, 2023 at 01:17:31PM -0400, Steven Rostedt wrote:
+> On Wed, 25 Oct 2023 18:24:35 +0200
+> Mateusz Guzik <mjguzik@gmail.com> wrote:
 > 
-> 在 2023/10/25 19:13, Sudeep Holla 写道:
-> > On Wed, Oct 25, 2023 at 05:38:46PM +0800, Zeng Heng wrote:
-> > > As ARM AMU's document says, all counters are subject to any changes
-> > > in clock frequency, including clock stopping caused by the WFI and WFE
-> > > instructions.
+> > On Wed, Oct 25, 2023 at 11:42:34AM -0400, Mathieu Desnoyers wrote:
+> > > On 2023-10-25 10:31, Steven Rostedt wrote:  
+> > > > On Wed, 25 Oct 2023 15:55:45 +0200
+> > > > Peter Zijlstra <peterz@infradead.org> wrote:  
 > > > 
-> > > Therefore, using smp_call_on_cpu() to trigger target CPU to
-> > > read self's AMU counters, which ensures the counters are working
-> > > properly while cstate feature is enabled.
+> > > [...]
 > > > 
-> > > Reported-by: Sumit Gupta <sumitg@nvidia.com>
-> > > Link: https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
-> > > Signed-off-by: Zeng Heng <zengheng4@huawei.com>
-> > > ---
-> > >   drivers/cpufreq/cppc_cpufreq.c | 39 ++++++++++++++++++++++++++--------
-> > >   1 file changed, 30 insertions(+), 9 deletions(-)
+> > > After digging lore for context, here are some thoughts about the actual
+> > > proposal: AFAIU the intent here is to boost the scheduling slice for a
+> > > userspace thread running with a mutex held so it can complete faster,
+> > > and therefore reduce contention.
 > > > 
-> > > diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> > > index fe08ca419b3d..321a9dc9484d 100644
-> > > --- a/drivers/cpufreq/cppc_cpufreq.c
-> > > +++ b/drivers/cpufreq/cppc_cpufreq.c
-> > [...]
-> > 
-> > > @@ -850,18 +871,18 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
-> > >   	cpufreq_cpu_put(policy);
-> > > -	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs_t0);
-> > > -	if (ret)
-> > > -		return 0;
-> > > -
-> > > -	udelay(2); /* 2usec delay between sampling */
-> > > +	if (cpu_has_amu_feat(cpu))
-> > Have you compiled this on x86 ? Even if you have somehow managed to,
-> > this is not the right place to check the presence of AMU feature on
-> > the CPU.
-> > If AMU registers are used in CPPC, they must be using FFH GAS, in which
-> > case the interpretation of FFH is architecture dependent code.
->
-> According to drivers/cpufreq/Makefile, cppc_cpufreq.c is only compiled with
-> ARM architecture.
->
+> > > I suspect this is not completely unrelated to priority inheritance
+> > > futexes, except that one goal stated by Steven is to increase the
+> > > owner slice without requiring to call a system call on the fast-path.
+> 
+> No, I wouldn't say it's the same as priority inheritance, which is to help
+> with determinism and not performance. PI adds overhead but removes
+> unbounded latency. On average, a non PI mutex is faster than PI mutex, but
+> can suffer from unbounded priority inversion.
 
-Well that's true but this change doesn't belong to cppc_cpufreq.c, it must
-be part of drivers/acpi/cppc_acpi.c IMO and sorry I assumed that without
-explicitly mentioning that here.
+Matheusz is right though, what you're asking for is a (limited) priority
+ceiling, which is a very primitive form of PI, which itself is a very
+specific case of proxy execution :-)
 
-> But here, I would change cpu_has_amu_feat() with cpc_ffh_supported(), which
-> belongs to FFH APIs.
->
+Note that in kernel spinners have this priority ceiling by means of
+preempt_disable().
 
-It is not like that. cppc_acpi.c will know the GAS is FFH based so no need to
-check anything there. I see counters_read_on_cpu() called from cpc_ffh_read()
-already takes care of reading the AMUs on the right CPU. What exactly is
-the issue you are seeing ? I don't if this change is needed at all.
+> For this code, I took off my RT hat, and put on my performance hat.
 
---
-Regards,
-Sudeep
+Seems to me you took the brain along with the hat.
+
+You're confusing cost of implementation with concept. Yes full blown PI
+is fairly expensive, but the concept is still valid. Priority ceilings
+were always an approximation.
