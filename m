@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEFD7D79C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1C87D79C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbjJZAsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S232366AbjJZAth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjJZAsS (ORCPT
+        with ESMTP id S229877AbjJZAtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:48:18 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77365132;
-        Wed, 25 Oct 2023 17:48:16 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41cd1fe4645so2430491cf.0;
-        Wed, 25 Oct 2023 17:48:16 -0700 (PDT)
+        Wed, 25 Oct 2023 20:49:36 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC6B133;
+        Wed, 25 Oct 2023 17:49:32 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5ac376d311aso2553537b3.1;
+        Wed, 25 Oct 2023 17:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698281295; x=1698886095; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698281372; x=1698886172; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LbvC3Jr6GlBODTrG4s/DZw4mHWi0s4/azQU3339hmps=;
-        b=BFUDTZUXwX4W9xjfJUdy61TiKqPCLJSqofh2NEiG4SnqgvFQTFt/VnkN3VRvnN22mI
-         p03lnj/8EAuD9JjEJNeuJisFPVO3zObwsiFdPT4IBxgIAkho6F7PcTylBX79ncqzDCq/
-         kI62lghnJJ+g9VfMeDrk011N8VvXb4KzvtP/Vk7AA4WL+YYdPBC1ixBKv3h3wijeEsCI
-         +d3PxDsDHbFsH/fft2+LX/iCVZeoXAPbMlTmE1TW+mAUXe5ahZIcxnRFKnKSi3YxEZfL
-         Ru2b9n5vWyoW5SLyi+fLKCobrt8Ux5i/zhPF0j+dAgeqkDfYYgboJ8OwILhtaVm7j+bp
-         26gQ==
+        bh=xqdAXHSGF5VNXAbVriwUjBhLzThGkeSMh88vleW8D9c=;
+        b=XaUAU511/rtotE1B1GqDDtD+5OYzP1xRUbPL+kYwUB7utzLqSPBgdZP2wk1KQXSvEV
+         5+KIdpb4cGG7Xj7gmjWcV0TKP+QlGlunK4rsWV9UCP0G2rFO1DFuFIlU/VSItywLPogH
+         4nFv0/joIQOPGFbE52e3sEhu1+oIXv6pX4fttNR1tc4DjWpXQL5M8gj2TpN4CaUNL1Fw
+         +OrgRmwtkGcCSE8saQAtI5MtplQ+HcDGGwtMmedFxNKOvwagsiLvzLibBfcv7zclWf2J
+         ogJt+/KNPKWTpu57iMIbI8lITmsB83gM7n8SWrLHAdqB1FsiWjoeRa19m0eqktC4DxI7
+         Mqbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698281295; x=1698886095;
+        d=1e100.net; s=20230601; t=1698281372; x=1698886172;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LbvC3Jr6GlBODTrG4s/DZw4mHWi0s4/azQU3339hmps=;
-        b=CVEvRQ+t/3Sdl5qWFPozQCKUbIOG/4R1OeCl1egFVYe/85UTqutp6AQBC5zHzP5Cpp
-         qhVCYmTUx3tgmx2mehRFOmhghQyKxRj01v5wDwla5Y1Lhtb3DvvQ/CDKpz7fZOyuE2a7
-         1C6xv95RKBUXQ2hfuH/IOuQ2Sq+3iwSg42I8tJqFyn0UiesACzO9cGzsWOVwl3H9IyZh
-         pFO0sMyQZjEtpfDtnKJrO8Tq/3AN859+CWn9UTWM7rTRn/4Ncn6G7RMeyhsk0XLCkip8
-         RzWzTvr/rOKMS29SOrieqz4UR9BlGu4O9dGDHLCrLjh8UtbidoKAoohTM+9P+IlBk/8D
-         N/yA==
-X-Gm-Message-State: AOJu0Yyq/leW3rp60R+DXcubKi/wbYgAHSXN1gx/c5NthNqwS3FCwTlg
-        2BxKLHgfD+WYblZRUvIZZJSmsNGAQa8=
-X-Google-Smtp-Source: AGHT+IEySCJt7Lqaa+DiGWDnDKQ/owwawYZ/7VU9DPmC43dSf7qa5qhE0e7NJ3pGXYodwM1xaYpMWQ==
-X-Received: by 2002:ac8:7e8a:0:b0:418:1b8f:4cde with SMTP id w10-20020ac87e8a000000b004181b8f4cdemr23683078qtj.45.1698281295449;
-        Wed, 25 Oct 2023 17:48:15 -0700 (PDT)
+        bh=xqdAXHSGF5VNXAbVriwUjBhLzThGkeSMh88vleW8D9c=;
+        b=fhmc4QIxO/79PWtT9/ZawdY7cJAno80OYa+V+D2JKuK45jH3/Q2YQFaIh8zL5iHqWj
+         NQg5J9hM3SxI0PYyPA8PMMFELX0zzaSHW7pxVdL5Iz1eRDZmp6q7n66/Nt1O6UMmEvcu
+         AydpcX+fcYcdQ14p+nV082RscD4ozoc/Yd5N8NNl4+a+nMvZXHPyXvzNqKhrWWVmE4Z/
+         9X3mR/FRP48YgQLKDdQZkgNrc6WzauawEwmcKEn6Y3MiP4ioDYx7XPCtT+C+7SYUH9kH
+         vj/OWa3krBR8i5JN5mTwthFR/xb7k1Nzo+PYfvhqVAWg7sPDxjxzzX6VKax6Wfjj89ZZ
+         EKdg==
+X-Gm-Message-State: AOJu0Yy/T+0XHcHFqh8Y0V2V30oPI//uhsFBjsxCTSbXLf4hGfwyUBek
+        UYAtPFuwM4BuAhuIFEGcLVn+qLvu1fQ=
+X-Google-Smtp-Source: AGHT+IEZG4qqdvE8KrwcAkmpuurd/lwqfr39gc/UWIzBXB7no1mHwRn/8Deze/4s89oxry/iTtfm/g==
+X-Received: by 2002:a0d:d901:0:b0:583:d8d4:7dfe with SMTP id b1-20020a0dd901000000b00583d8d47dfemr15491489ywe.31.1698281371879;
+        Wed, 25 Oct 2023 17:49:31 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m124-20020a0de382000000b0059b2be24f88sm5448010ywe.143.2023.10.25.17.48.14
+        by smtp.gmail.com with ESMTPSA id o188-20020a8173c5000000b005a7dd6b7eefsm5502897ywc.66.2023.10.25.17.49.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 17:48:15 -0700 (PDT)
+        Wed, 25 Oct 2023 17:49:31 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 17:48:13 -0700
+Date:   Wed, 25 Oct 2023 17:49:30 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-Cc:     joel@jms.id.au, andrew@aj.id.au, eajames@linux.ibm.com,
-        ninad@linux.ibm.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (pmbus/max31785) Add delay between bus accesses
-Message-ID: <bbbf3668-aa7a-4489-85b0-333cf394abe9@roeck-us.net>
-References: <20231023180804.3068154-1-lakshmiy@us.ibm.com>
+To:     Saravanan Sekar <saravanan@linumiz.com>
+Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jdelvare@suse.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] hwmon: (pmbus/mpq7932) Get page count based on
+ chip info
+Message-ID: <17538c4a-a9cf-4632-91f0-307907fc1596@roeck-us.net>
+References: <20231011164754.449399-1-saravanan@linumiz.com>
+ <20231011164754.449399-2-saravanan@linumiz.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231023180804.3068154-1-lakshmiy@us.ibm.com>
+In-Reply-To: <20231011164754.449399-2-saravanan@linumiz.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -75,16 +79,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 01:08:03PM -0500, Lakshmi Yadlapati wrote:
-> Changes since V1:
-> 1. Changed the max31785_wait macro to a function, following the conventions
->   used in other drivers that had the same issue.
-> 2. Changed the function names from max31785_i2c_smbus* to max31785_i2c_* and
->   from max31785_pmbus_* to _max31785_*, making them more concise.
+On Wed, Oct 11, 2023 at 10:17:51PM +0530, Saravanan Sekar wrote:
+> Get page count using compatible match to support the series of chipsets
+> which differs in number of regualator/page.
 > 
+> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
 
-Please check Documentation/process/submitting-patches.rst
-for the expected patch format, specifically details on how
-description and change log are supposed to look like.
+Applied.
 
+Thanks,
 Guenter
