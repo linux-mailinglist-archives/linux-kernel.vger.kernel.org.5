@@ -2,191 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BEF7D7DFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D907D7DFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjJZIDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
+        id S231184AbjJZIDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjJZIDB (ORCPT
+        with ESMTP id S231304AbjJZIDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:03:01 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81102B8;
-        Thu, 26 Oct 2023 01:02:59 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 46e09a7af769-6ce291b5df9so308866a34.2;
-        Thu, 26 Oct 2023 01:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698307379; x=1698912179; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EiNUWaVbyuQ9E3+Z8Xcu/M3576aIKpUu0D5Q0llCz/Y=;
-        b=HdtPWIqR+o4kxo1Y5iDHbGcrPB1w5Fstm7Nx0OOZ3P75OOtel40+ajHTWlwWu/5gSx
-         7nT98Za/HEwDhsjCjbX8qzso2By5Bzh56b0tgRX17pj3/cK12B2CA/EmzUaGajDiPOOj
-         V4uw2IMe1J8LThuEhUqAsmWj/7kqHqYNLtH5TZ1BflSj6DVk32A2m7JCJLF99HMycoMB
-         aD2OiFHaCUIFOsM1luvvstSX8QdW38jpYK9AlLi5k6trM3qWlWi2oJN7Zdmi59cDJg8v
-         pUiNDu3kd5BLMCapi0TXrujTerxjJh9jTDi1SId/CXTK45RCM4tbveIL0cg8VS9VcoPi
-         KcEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698307379; x=1698912179;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EiNUWaVbyuQ9E3+Z8Xcu/M3576aIKpUu0D5Q0llCz/Y=;
-        b=utr6171PHDJyskINhRSjRbn11Cgk5YRnd6vL1t+jkR3SaEG7y6FtLNFT6iFIHhbl/k
-         ou8lPzg3gF9OhfKJHsHXFebrsknPbeUskpZnHNeYr93ImD9pl6VFYrRVOC+QfDkX9Mjv
-         9awrozJF4Z3eeSmAdp1arvHlBL7hLYmBUCxxYNhVGcgUqrMS01wnoCTsd+HtSUCa0/+Z
-         gAFAtGTfgCF3p5TEnU8a4W4zGrt6iSKa8HtiYZYUUqhYJUBPHdAsV7Iva3UPYNlIGJ9y
-         aOPZGWfdyajeaS8zT37B7uQKZWgwOWSbiiche6XA89S4JORXIL+l8bAhilCIGoA2oWNV
-         dCmw==
-X-Gm-Message-State: AOJu0Yxfzjavp7nmqQUVqRgYjYQ1cw86BcANYathIDYVGgxqhDtyMLaO
-        QL/NzNYaqqnaCLSIUAzdfK8=
-X-Google-Smtp-Source: AGHT+IHgKWPQhOLXFQRr+4qqmAwqD5d5K+uinng7SBFGOYZi7HWhXPOFi6EUb9I2souPViSEkRgsWw==
-X-Received: by 2002:a05:6870:6713:b0:1e9:9bad:8989 with SMTP id gb19-20020a056870671300b001e99bad8989mr24160862oab.25.1698307378484;
-        Thu, 26 Oct 2023 01:02:58 -0700 (PDT)
-Received: from dawn-Aspire-A715-74G.. ([183.198.110.181])
-        by smtp.gmail.com with ESMTPSA id b11-20020a655ccb000000b0058a9621f583sm8625579pgt.44.2023.10.26.01.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 01:02:58 -0700 (PDT)
-From:   Li peiyu <579lpy@gmail.com>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li peiyu <579lpy@gmail.com>
-Subject: [PATCH v2] dt-bindings: hwmon: lm87: convert to YAML
-Date:   Thu, 26 Oct 2023 16:02:26 +0800
-Message-Id: <20231026080226.52170-1-579lpy@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <caa50763-74be-4c40-9d8d-7f1f64ce5144@kernel.org>
-References: <caa50763-74be-4c40-9d8d-7f1f64ce5144@kernel.org>
+        Thu, 26 Oct 2023 04:03:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11033B8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:03:13 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 577C5660732A;
+        Thu, 26 Oct 2023 09:03:11 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698307391;
+        bh=Fef1hJcTSlQGakVzORPVPnqgvkpRbVwgbom99kx0qPg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NPyWBOIhlwpM5HsEwVY0+sZFCDYnVMiPjyyFrTPzdbZTTomuxzFPWJeDFB8UIY3un
+         73ZrPdp2gJlVKtCsj9aNqVe+V+B4V7QweJuNjvnpV63I6sftQeFDGrNz/w1jhIk1eO
+         c4SH04h7SDCJBa7C8GTyUETNxcblLNo4tUNXd0Yh9K+LRXq0x6AfTF8j/ZbK8W4c2r
+         D08KUAm8AN5rgtaErjHHMH6LM6QZP9AHVbO2G2VdASPf8+/LDa4hHTaz/iKe3eXeyz
+         Xu+eqiWZlZC5tMxgK4yofLDPGrssSeNKnTGNuTOdX1Z8sThBefFdoapjS4BL7bxegn
+         i889ScG4tR3Dw==
+Message-ID: <831e792e-683b-4305-a451-16bb6736280a@collabora.com>
+Date:   Thu, 26 Oct 2023 10:03:08 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] arm64: dts: mt7986: add overlay for SATA power
+ socket on BPI-R3
+Content-Language: en-US
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Eric Woudstra <ericwouds@gmail.com>
+References: <20231025170832.78727-1-linux@fw-web.de>
+ <20231025170832.78727-6-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231025170832.78727-6-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the lm87 hwmon sensor bindings to DT schema
+Il 25/10/23 19:08, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> Bananapi R3 has a Power socket entended for using external SATA drives.
+> This Socket is off by default but can be switched with gpio 8.
+> 
+> Add an overlay to activate it.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+> v2:
+> - rebase on the patch "add dtbs with applied overlays for bpi-r3"
+> - add sata-overlay to the full dtbs
+> ---
+>   arch/arm64/boot/dts/mediatek/Makefile         | 13 +++++--
+>   .../mt7986a-bananapi-bpi-r3-sata.dtso         | 39 +++++++++++++++++++
+>   2 files changed, 48 insertions(+), 4 deletions(-)
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-sata.dtso
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index 24eeba0703ce..c3b236a47513 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -13,26 +13,31 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-nand.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-nor.dtbo
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sata.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd.dtbo
 
-Signed-off-by: Li peiyu <579lpy@gmail.com>
----
-Changes for v2:
-- replace node name lm87 with sensor
-- replace character '\t' with spaces
+The devicetree overlays make no sense without a base devicetree, right? :-)
 
- .../devicetree/bindings/hwmon/lm87.txt        | 30 ----------
- .../devicetree/bindings/hwmon/lm87.yaml       | 59 +++++++++++++++++++
- 2 files changed, 59 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/hwmon/lm87.txt
- create mode 100644 Documentation/devicetree/bindings/hwmon/lm87.yaml
+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-nor.dtbo <-- makes no sense!
 
-diff --git a/Documentation/devicetree/bindings/hwmon/lm87.txt b/Documentation/devicetree/bindings/hwmon/lm87.txt
-deleted file mode 100644
-index 758ff398b67b..000000000000
---- a/Documentation/devicetree/bindings/hwmon/lm87.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--*LM87 hwmon sensor.
--
--Required properties:
--- compatible: Should be
--	"ti,lm87"
--
--- reg: I2C address
--
--optional properties:
--- has-temp3: This configures pins 18 and 19 to be used as a second
--             remote temperature sensing channel. By default the pins
--             are configured as voltage input pins in0 and in5.
--
--- has-in6: When set, pin 5 is configured to be used as voltage input
--           in6. Otherwise the pin is set as FAN1 input.
--
--- has-in7: When set, pin 6 is configured to be used as voltage input
--           in7. Otherwise the pin is set as FAN2 input.
--
--- vcc-supply: a Phandle for the regulator supplying power, can be
--              configured to measure 5.0V power supply. Default is 3.3V.
--
--Example:
--
--lm87@2e {
--	compatible = "ti,lm87";
--	reg = <0x2e>;
--	has-temp3;
--	vcc-supply = <&reg_5v0>;
--};
-diff --git a/Documentation/devicetree/bindings/hwmon/lm87.yaml b/Documentation/devicetree/bindings/hwmon/lm87.yaml
-new file mode 100644
-index 000000000000..8f4f07845d95
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/lm87.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/lm87.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LM87 hwmon sensor
-+
-+maintainers:
-+  - Jean Delvare <jdelvare@suse.com>
-+  - Guenter Roeck <linux@roeck-us.net>
-+
-+properties:
-+  compatible:
-+    const: ti,lm87
-+
-+  reg:
-+    maxItems: 1
-+
-+  has-temp3:
-+    description: |
-+      This configures pins 18 and 19 to be used as a second remote
-+      temperature sensing channel. By default the pins are configured
-+      as voltage input pins in0 and in5.
-+
-+  has-in6:
-+    description: |
-+      When set, pin 5 is configured to be used as voltage input in6.
-+      Otherwise the pin is set as FAN1 input.
-+
-+  has-in7:
-+    description: |
-+      When set, pin 6 is configured to be used as voltage input in7.
-+      Otherwise the pin is set as FAN2 input.
-+
-+  vcc-supply:
-+    description: |
-+      a Phandle for the regulator supplying power, can be configured to
-+      measure 5.0V power supply. Default is 3.3V.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      sensor@2e {
-+        compatible = "ti,lm87";
-+        reg = <0x2e>;
-+        has-temp3;
-+        vcc-supply = <&reg_5v0>;
-+      };
-+    };
--- 
-2.34.1
+Check how it's done in freescale (nxp) and renesas... and there's also one instance
+of overlays in qualcomm.
+
+In short:
+  - Remove all of the dtb-$(CONFIG_ARCH_MEDIATEK) += blah.dtbo
+  - xxxx-dtbs:= blah.dtb blah-overlay.dtbo, dtb-$(CONFIG_ARCH_MEDIATEK) += xxxx.dtb
+    is correct.
+
+>   mt7986a-bananapi-bpi-r3-emmc-nand-dtbs := \
+>   	mt7986a-bananapi-bpi-r3.dtb \
+>   	mt7986a-bananapi-bpi-r3-emmc.dtbo \
+> -	mt7986a-bananapi-bpi-r3-nand.dtbo
+> +	mt7986a-bananapi-bpi-r3-nand.dtbo \
+> +	mt7986a-bananapi-bpi-r3-sata.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc-nand.dtb
+>   mt7986a-bananapi-bpi-r3-emmc-nor-dtbs := \
+>   	mt7986a-bananapi-bpi-r3.dtb \
+>   	mt7986a-bananapi-bpi-r3-emmc.dtbo \
+> -	mt7986a-bananapi-bpi-r3-nor.dtbo
+> +	mt7986a-bananapi-bpi-r3-nor.dtbo \
+> +	mt7986a-bananapi-bpi-r3-sata.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-emmc-nor.dtb
+>   mt7986a-bananapi-bpi-r3-sd-nand-dtbs := \
+>   	mt7986a-bananapi-bpi-r3.dtb \
+>   	mt7986a-bananapi-bpi-r3-sd.dtbo \
+> -	mt7986a-bananapi-bpi-r3-nand.dtbo
+> +	mt7986a-bananapi-bpi-r3-nand.dtbo \
+> +	mt7986a-bananapi-bpi-r3-sata.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd-nand.dtb
+>   mt7986a-bananapi-bpi-r3-sd-nor-dtbs := \
+>   	mt7986a-bananapi-bpi-r3.dtb \
+>   	mt7986a-bananapi-bpi-r3-sd.dtbo \
+> -	mt7986a-bananapi-bpi-r3-nor.dtbo
+> +	mt7986a-bananapi-bpi-r3-nor.dtbo \
+> +	mt7986a-bananapi-bpi-r3-sata.dtbo
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-bananapi-bpi-r3-sd-nor.dtb
+>   
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-sata.dtso b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-sata.dtso
+> new file mode 100644
+> index 000000000000..6ab06813412a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-sata.dtso
+> @@ -0,0 +1,39 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright (C) 2021 MediaTek Inc.
+> + * Author: Frank Wunderlich <frank-w@public-files.de>
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	compatible = "bananapi,bpi-r3", "mediatek,mt7986a";
+> +
+> +	fragment@0 {
+> +		target-path = "/";
+> +		__overlay__ {
+
+This could be easier, I think.
+
+&{/} {
+
+	reg_sata12v: regulator-sata12v {
+		....
+	};
+
+	something_else: something-else { ... };
+};
+
+Regards,
+Angelo
+
+> +			reg_sata12v: regulator-sata12v {
+> +				compatible = "regulator-fixed";
+> +				regulator-name = "sata12v";
+> +				regulator-min-microvolt = <12000000>;
+> +				regulator-max-microvolt = <12000000>;
+> +				gpio = <&pio 8 GPIO_ACTIVE_HIGH>;
+> +				enable-active-high;
+> +				regulator-always-on;
+> +			};
+> +
+> +			reg_sata5v: regulator-sata5v {
+> +				compatible = "regulator-fixed";
+> +				regulator-name = "sata5v";
+> +				regulator-min-microvolt = <5000000>;
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-always-on;
+> +				vin-supply = <&reg_sata12v>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
 
