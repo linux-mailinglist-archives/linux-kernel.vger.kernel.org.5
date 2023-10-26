@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB307D8631
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5197D862F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345488AbjJZPuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
+        id S1345482AbjJZPtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345479AbjJZPuS (ORCPT
+        with ESMTP id S1345476AbjJZPte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:50:18 -0400
+        Thu, 26 Oct 2023 11:49:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F487196;
-        Thu, 26 Oct 2023 08:50:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD90FC433C7;
-        Thu, 26 Oct 2023 15:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698335415;
-        bh=2TNYOlAWXSo2s3s0MUtNW5qeHxKzDFx3ObC+ajuBzvo=;
-        h=From:Date:Subject:To:Cc:From;
-        b=a0vlJmCmYlf9/apd7la5cvFEuusbJYvfjIz1qcz9wjIsLkiYuC3Fi5GS2TvFET3pc
-         QRlxZT2qT7qYb2+CQLS69YUWI72lGqjUU3IFKXprabDIfKRSGPHyIgeaDdgwXpb7uh
-         67FDiwdUgbN7P87+gvKiRiD8SIwzynvnAnLEYJmcpXIKGE90omnbjsIyAvYojUX53A
-         f7u5dJdG0HcutOtn5gGHO1vXdCRqccsV+83iV5g8u+dvdWfAQ7K1lY+yZeYBZCuinQ
-         uhEzbR2xAsDowfVGDeBAzd/ksfmyCC8lnpV+46CH/eY9HYrcKm8vdYzJClCw9IM8bh
-         AvR90wL0K8rSA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 26 Oct 2023 16:49:19 +0100
-Subject: [PATCH] regmap: Ensure range selector registers are updated after
- cache sync
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3F1196
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:49:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E632CC433C8;
+        Thu, 26 Oct 2023 15:49:28 +0000 (UTC)
+Date:   Thu, 26 Oct 2023 11:49:27 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Message-ID: <20231026114927.46145fe6@gandalf.local.home>
+In-Reply-To: <20231026094035.213e3744@gandalf.local.home>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
+        <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+        <20231025085434.35d5f9e0@gandalf.local.home>
+        <20231025135545.GG31201@noisy.programming.kicks-ass.net>
+        <20231025103105.5ec64b89@gandalf.local.home>
+        <884e4603-4d29-41ae-8715-a070c43482c4@efficios.com>
+        <20231025162435.ibhdktcshhzltr3r@f>
+        <20231025131731.48461873@gandalf.local.home>
+        <20231026085414.GL31411@noisy.programming.kicks-ass.net>
+        <20231026094035.213e3744@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231026-regmap-fix-selector-sync-v1-1-633ded82770d@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAH+KOmUC/x2MQQqDMBBFryKz7kASbRe9SnERkokOtFFmpCjBu
- zu4efDg/d9ASZgU3l0DoT8rL9XEPzpIc6wTIWdzCC703oUXCk2/uGLhHZW+lLZFUI+aMGb/9EM
- x5gI2X4Usuq8/43letFvR32oAAAA=
-To:     Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3008; i=broonie@kernel.org;
- h=from:subject:message-id; bh=2TNYOlAWXSo2s3s0MUtNW5qeHxKzDFx3ObC+ajuBzvo=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlOoq13XfJMKLkO/6LHKkYMytONA8JC1UZg/ZKY9M1
- tXGBwOGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZTqKtQAKCRAk1otyXVSH0PujB/
- 4i0FN10uwbwubidM8dysJf5BXaMoQCcR85HUy6JMnSSjFuukqe+zc/WONlibNM6Bbtvc1xiKCOAxsx
- 98wmL1SCF9wSKLcsib5kHU5f9ZZpl0Zsfg/UgdQdse8hbcVksU3t3sF5I40pJgT6W2p+f7VY9VLyIR
- d0Bzt2wze2KQZM6SOiM9ljkQh5PgAxaQZdN3E92LS+QirepKHDC11UZatT/m0QXeYS6isIlKwc2QLm
- Y6jprBJGG1NTPPs8kuXFF3C8qlXzdnipWPHcWjXQTjetRFX7x5RwHoPCRD82xtiCa6mnadeY2l2Qnd
- /mMAD/DkgMz/+rnRCjGiZQKifuH/eY
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we sync the register cache we do so with the cache bypassed in order
-to avoid overhead from writing the synced values back into the cache. If
-the regmap has ranges and the selector register for those ranges is in a
-register which is cached this has the unfortunate side effect of meaning
-that the physical and cached copies of the selector register can be out of
-sync after a cache sync. The cache will have whatever the selector was when
-the sync started and the hardware will have the selector for the register
-that was synced last.
+On Thu, 26 Oct 2023 09:40:35 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Fix this by rewriting all cached selector registers after every sync,
-ensuring that the hardware and cache have the same content. This will
-result in extra writes that wouldn't otherwise be needed but is simple
-so hopefully robust. We don't read from the hardware since not all
-devices have physical read support.
+> Hence, why I don't want to associate this with priority inheritance. The
+> time constraint is a fundamental difference.
 
-Given that nobody noticed this until now it is likely that we are rarely if
-ever hitting this case.
+Let me add one more fundamental difference here that makes this solution
+different than priority inheritance and ceiling.
 
-Reported-by: Hector Martin <marcan@marcan.st>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- drivers/base/regmap/regcache.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+PI and ceiling define the correctness of the system. If you get it wrong or
+remove it, the system can be incorrect and lock up, fail deadlines, etc.
+There's hundreds, if not thousands of papers mathematically defining the
+correctness of PI, ceiling and proxy execution, as they are complex and
+critical for the system to behave properly.
 
-diff --git a/drivers/base/regmap/regcache.c b/drivers/base/regmap/regcache.c
-index c5d151e9c481..92592f944a3d 100644
---- a/drivers/base/regmap/regcache.c
-+++ b/drivers/base/regmap/regcache.c
-@@ -334,6 +334,11 @@ static int regcache_default_sync(struct regmap *map, unsigned int min,
- 	return 0;
- }
- 
-+static int rbtree_all(const void *key, const struct rb_node *node)
-+{
-+	return 0;
-+}
-+
- /**
-  * regcache_sync - Sync the register cache with the hardware.
-  *
-@@ -351,6 +356,7 @@ int regcache_sync(struct regmap *map)
- 	unsigned int i;
- 	const char *name;
- 	bool bypass;
-+	struct rb_node *node;
- 
- 	if (WARN_ON(map->cache_type == REGCACHE_NONE))
- 		return -EINVAL;
-@@ -392,6 +398,30 @@ int regcache_sync(struct regmap *map)
- 	/* Restore the bypass state */
- 	map->cache_bypass = bypass;
- 	map->no_sync_defaults = false;
-+
-+	/*
-+	 * If we did any paging with cache bypassed and a cached
-+	 * paging register then the register and cache state might
-+	 * have gone out of sync, force writes of all the paging
-+	 * registers.
-+	 */
-+	rb_for_each(node, 0, &map->range_tree, rbtree_all) {
-+		struct regmap_range_node *this =
-+			rb_entry(node, struct regmap_range_node, node);
-+
-+		/* If there's nothing in the cache there's nothing to sync */
-+		ret = regcache_read(map, this->selector_reg, &i);
-+		if (ret != 0)
-+			continue;
-+
-+		ret = _regmap_write(map, this->selector_reg, i);
-+		if (ret != 0) {
-+			dev_err(map->dev, "Failed to write %x = %x: %d\n",
-+				this->selector_reg, i, ret);
-+			break;
-+		}
-+	}
-+
- 	map->unlock(map->lock_arg);
- 
- 	regmap_async_complete(map);
+This feature is a performance boost only, and has nothing to do with
+"correctness". That's because it has that arbitrary time where it can run a
+little more. It's more like the difference between having something in
+cache and a cache miss. This would cause many academics to quit and find a
+job in sales if they had to prove the correctness of an algorithm that gave
+you a boost for some random amount of time. The idea here is to help with
+performance. If it exists, great, your application will likely perform
+better. If it doesn't, no big deal, you may just have to deal with longer
+wait times on critical sections.
 
----
-base-commit: 611da07b89fdd53f140d7b33013f255bf0ed8f34
-change-id: 20231026-regmap-fix-selector-sync-ad1514fd15df
+This is why I do not want to associate this as another form of PI or
+ceiling.
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+-- Steve
