@@ -2,107 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B47AD7D85FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86697D85FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345446AbjJZP0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S1345443AbjJZP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235068AbjJZP0d (ORCPT
+        with ESMTP id S231200AbjJZP0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:26:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB41818F;
-        Thu, 26 Oct 2023 08:26:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698333991; x=1729869991;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AaJUnn8yXQ+rUIuyIoWotDShX4ZQE4ZU64dKYmfhtS8=;
-  b=l1pLh7QC/z+pX7RfLvj2R02i+oCCwvVjvKPuSBEWTWJezULVrKH+AO2b
-   iAW8lgCaSyEzQN4WytBm00XrgH5zXdOzBODpfY6YJ0M8zY5QiWvLZpZ6I
-   sl79hN12bnrGWlXSG0wyhsm+6TDKr0g/hlbkx4FlnLE/EKXHcbVbl3MMl
-   opqopFhxItphBaDvUXarGjSqFYRZbe9RTORH1ghvqsDbc+GYvIYoaSdeZ
-   X6/PBO6fjgi1CYb62GVlbR0moEx54hUE0DHCnQA9HQabvoa9BFha8iECl
-   rfvxVG0/6+p6aX0OK/O6dEddIPM++msXnQR09B8PjwFd8+wshf8qim+pe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="377940159"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="377940159"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 08:26:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="902943379"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="902943379"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2023 08:23:59 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qw2Fb-0009t5-1O;
-        Thu, 26 Oct 2023 15:26:23 +0000
-Date:   Thu, 26 Oct 2023 23:25:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        will@kernel.org, robin.murphy@arm.com, joro@8bytes.org
-Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        quic_cgoldswo@quicinc.com, quic_sukadev@quicinc.com,
-        quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com,
-        djakov@kernel.org
-Subject: Re: [PATCH 3/6] iommu/arm-smmu-qcom: Add Qualcomm TBU driver
-Message-ID: <202310262330.pfzI76DH-lkp@intel.com>
-References: <20231019021923.13939-4-quic_c_gdjako@quicinc.com>
+        Thu, 26 Oct 2023 11:26:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0643AC;
+        Thu, 26 Oct 2023 08:26:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC321C433C9;
+        Thu, 26 Oct 2023 15:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698333978;
+        bh=7f5jXWpac8QZKPV1MUAg3K8E6GSbuJvhCPvV6ZUCJUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mes1gn0zY9wsK9yGdAJYMQwOkw/vWggKfbPilTP63TgMbYNuTEDhgUKEfly6OeUsy
+         Z0/ZzufvG/Kz0eqtWpKHmopfJARvTf/8v/lEp6Bo4RqEntEqzHmpN3JQUaEpJy27S3
+         s6OD+wp0VGGwJEvq1GA0KTDYxjjJpTQywyloxiZIjIxDmcbFkQYXna0L1uUmctcNvt
+         izuOfGIANVrtWl056FnZ93Kpm2u1jtpC7SIORe1R/1ujf6TVPaugc/eOfBOidvqRyc
+         TXA/ObZ6iJUm8g50a4gR3cN1LQdgu+ooMznywwBgVnTN5YIsDnv1xTERQ1cspE6Few
+         byZ9032N1A9AQ==
+Date:   Thu, 26 Oct 2023 16:26:13 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Message-ID: <20231026-poison-encrypt-1df55e023867@spud>
+References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026081514.3610343-2-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026-dicing-crispy-a10af575d3e5@spud>
+ <fffa4330-8d01-8498-4c5f-772ebf2a6b5a@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="krQTSOoQEUtjB+4u"
 Content-Disposition: inline
-In-Reply-To: <20231019021923.13939-4-quic_c_gdjako@quicinc.com>
+In-Reply-To: <fffa4330-8d01-8498-4c5f-772ebf2a6b5a@roeck-us.net>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Georgi,
 
-kernel test robot noticed the following build errors:
+--krQTSOoQEUtjB+4u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on arm/for-next arm/fixes arm64/for-next/core clk/clk-next kvmarm/next rockchip/for-next shawnguo/for-next soc/for-next linus/master v6.6-rc7 next-20231025]
-[cannot apply to joro-iommu/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Thu, Oct 26, 2023 at 08:09:52AM -0700, Guenter Roeck wrote:
+> On 10/26/23 07:25, Conor Dooley wrote:
+> > Hey,
+> >=20
+> > On Thu, Oct 26, 2023 at 04:15:11PM +0800, Delphine CC Chiu wrote:
+> > > Add a device tree bindings for ltc4286 driver.
+> >=20
+> > Bindings are for devices, not for drivers.
+> >=20
+> > >=20
+> > > Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> > >=20
+> > > Changelog:
+> > >    v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
+> > >       - Add type for adi,vrange-select-25p6
+> > >       - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
+> > > ---
+> > >   .../bindings/hwmon/lltc,ltc4286.yaml          | 50 ++++++++++++++++=
++++
+> > >   MAINTAINERS                                   | 10 ++++
+> > >   2 files changed, 60 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc=
+4286.yaml
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yam=
+l b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > new file mode 100644
+> > > index 000000000000..17022de657bb
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> > > @@ -0,0 +1,50 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/hwmon/lltc,ltc4286.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: LTC4286 power monitors
+> > > +
+> > > +maintainers:
+> > > +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - lltc,ltc4286
+> > > +      - lltc,ltc4287
+> >=20
+> > I don't recall seeing an answer to Guenter about this ltc4287 device:
+> > https://lore.kernel.org/all/22f6364c-611c-ffb6-451c-9ddc20418d0a@roeck-=
+us.net/
+> >=20
+>=20
+> At least the chip does officially exist now, and a datasheet is available.
+>=20
+> https://www.analog.com/en/products/ltc4287.html
+>=20
+> It shows that coefficients for the telemetry commands are different,
+> meaning that indeed both chips need to be explicitly referenced
+> in the properties description (and handled in the driver, which proves
+> my point of needing a datasheet before accepting such a driver).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Georgi-Djakov/dt-bindings-iommu-Add-Translation-Buffer-Unit-bindings/20231019-102257
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231019021923.13939-4-quic_c_gdjako%40quicinc.com
-patch subject: [PATCH 3/6] iommu/arm-smmu-qcom: Add Qualcomm TBU driver
-config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231026/202310262330.pfzI76DH-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310262330.pfzI76DH-lkp@intel.com/reproduce)
+Oh neat, would've been good if that'd been mentioned!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310262330.pfzI76DH-lkp@intel.com/
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  adi,vrange-select-25p6:
+> > > +    description:
+> > > +      This property is a bool parameter to represent the
+> > > +      voltage range is 25.6 or not for this chip.
+> >=20
+> > 25.6 what? Volts? microvolts?
+> > What about Guenter's suggestion to name this so that it better matches
+> > the other, similar properties?
+> >=20
+>=20
+> I still would prefer one of the more common properties.
+> I still prefer adi,vrange-high-enable.
 
-All errors (new ones prefixed by >>):
+I think, from reading the previous version, that this is actually the
+lower voltage range, as there is a 102.x $unit range too that is the
+default in the hardware. Obviously, the use of the property could be
+inverted to match that naming however.
 
-   aarch64-linux-ld: drivers/iommu/arm/arm-smmu/arm-smmu-qcom.o: in function `qsmmuv500_tbu_driver_init':
->> arm-smmu-qcom.c:(.init.text+0x8): multiple definition of `init_module'; drivers/iommu/arm/arm-smmu/arm-smmu.o:arm-smmu.c:(.init.text+0x8): first defined here
-   aarch64-linux-ld: drivers/iommu/arm/arm-smmu/arm-smmu-qcom.o: in function `qsmmuv500_tbu_driver_exit':
->> arm-smmu-qcom.c:(.exit.text+0x0): multiple definition of `cleanup_module'; drivers/iommu/arm/arm-smmu/arm-smmu.o:arm-smmu.c:(.exit.text+0x0): first defined here
+Cheers,
+Conor.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--krQTSOoQEUtjB+4u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTqFFQAKCRB4tDGHoIJi
+0miPAP9L8K6SvI6VCT2EjTet+tJAmaS2yY3HJ6tRbYuno10IBQEAwzAatI/gAbTd
+v+T2gZMjF8Xf3EaQtl/98SNYuVMLswc=
+=OU8X
+-----END PGP SIGNATURE-----
+
+--krQTSOoQEUtjB+4u--
