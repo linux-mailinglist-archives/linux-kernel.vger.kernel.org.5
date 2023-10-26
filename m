@@ -2,413 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF6A7D7C82
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFF67D7C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343868AbjJZFvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        id S1343922AbjJZFx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJZFvk (ORCPT
+        with ESMTP id S233203AbjJZFxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:51:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC47D115;
-        Wed, 25 Oct 2023 22:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698299497; x=1729835497;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=OH/20/B2NLsGcslDH5sfUvJ+st0+zsZKKUjG0meGGHQ=;
-  b=IHQ/LM4BNUwYbcbHTB6p8XYXLVqmhpfut5AnDX8uOCMN9XAiyahgyVgi
-   a50LLWMl9M+N5bmQYyS31izWU+c8277viDIkbKrKTadLhnttYkyofoukg
-   +jyQpXfaN6wt8RObXwkregM/3xxLOkDL3HNaQpSEvK51zE7iUyD+rsSOT
-   25tS71uihnExynTCJ1Jb1rW6sFOlqqqUVygsfu9E4xLwGM0QNKH46PyiR
-   r/PcmmxBXWhqWrSZV+vxjj8v9PqbmuuyHlFvsazsi2706AZBH00Y4OaVR
-   rrk3+vUxC6xdgMojEAiTtKM0Yy3hnyqOalVoemF3PoHY7DEXMrQsmzcdj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="473703239"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="473703239"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 22:51:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="788369898"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="788369898"
-Received: from abarix-mobl.ger.corp.intel.com (HELO ubuntu) ([10.252.33.100])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 22:51:34 -0700
-Date:   Thu, 26 Oct 2023 07:51:31 +0200 (CEST)
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: mfd: ams,as3711: Convert to
- json-schema
-In-Reply-To: <56a5ebee588696f9022fa29fa8e266c8bdee6fd7.1698228043.git.geert+renesas@glider.be>
-Message-ID: <4aaabd0-98f1-3c56-96d5-9b3b789dc36c@intel.com>
-References: <56a5ebee588696f9022fa29fa8e266c8bdee6fd7.1698228043.git.geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 26 Oct 2023 01:53:25 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474A4137
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:53:23 -0700 (PDT)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231026055321epoutp0492d7102ed149fd01c8e27004117f96d3~Rkn1PvndA2131721317epoutp04d
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:53:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231026055321epoutp0492d7102ed149fd01c8e27004117f96d3~Rkn1PvndA2131721317epoutp04d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1698299601;
+        bh=EEYBtchdbkxl6Kq3+Ho3IKQ/ZuMOvG204vsnrMfIiVk=;
+        h=Date:Subject:Reply-To:From:To:CC:References:From;
+        b=KJ7sNd2RoPytDdV7UpKBFkRBWb521Ba1OEQyCPHTw0Zwc4Ja+7vgs0PAMcyZtLrO7
+         UCcWaS2BC8LJ9lN8E4e7QkVYobIE4INm5ux4gKuMd9F9BSRuFvIVeJIbRbPYXgGITg
+         EGaSOmUu83SVV6y1u74id3lQtmw7dMHUMnSFdC3k=
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.42.68]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20231026055321epcas5p46b788c0d829401189cc04a3355d0b3eb~Rkn05xG8s0921509215epcas5p4c;
+        Thu, 26 Oct 2023 05:53:21 +0000 (GMT)
+X-AuditID: b6c32a44-3abff70000002177-af-6539fed04caf
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C2.52.08567.0DEF9356; Thu, 26 Oct 2023 14:53:20 +0900 (KST)
+Date:   Thu, 26 Oct 2023 11:23:20 +0530
+Message-ID: <899376598.3134980.1698299600677@mail-kr5-0.mail-kr5.knoxportal-kr-prod-blue.svc.cluster.local>
+Mime-Version: 1.0
+Subject: [PATCH] input: gpio-keys - optimize wakeup sequence.
+Reply-To: abhi1.singh@samsung.com
+Sender: Abhishek Kumar Singh <abhi1.singh@samsung.com>
+From:   Abhishek Kumar Singh <abhi1.singh@samsung.com>
+To:     "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
+CC:     "robh@kernel.org" <robh@kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SRI-N IT Security <sri-n.itsec@samsung.com>,
+        Abhishek Kumar Singh <abhi1.singh@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+X-CMS-MailID: 20231026055320epcms5p4c45782863304460f6ac6f182e1dac15f
+Content-Type: multipart/mixed;
+        boundary="----=_Part_3134979_356400796.1698299600677"
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRmVeSWpSXmKPExsWy7bCmpu6Ff5apBut2W1osXPOX0eLwoheM
+        Fjc/fWO1uLxrDpvF/z072C1O/NnE7MDmsXPWXXaPTas62Tz6tqxi9Pi8SS6AJYrLJiU1J7Ms
+        tUjfLoEro//3T9aCRpWKBZvmMzcw3lfqYuTkkBAwkVh7v5eli5GLQ0hgN6PE+nsb2EASLAKq
+        Ej+ffGAHsXkFsiX+HDgFZHMA2YISf3cIg4SFBWwllv5ewQRiCwkoSiya08EMETeT2Hz3HSNI
+        ORvQ/BXbeUDCIgLWEgf2dbCBrGIWaGOS2Ha+hQ3iBl6JGe1PWSBsaYnty7cyQtiiEjdXv2WH
+        sd8fmw8VF5FovXeWGcIWlHjwczcjTO/3A7egZtZLnPo+AewvCYEeRol5cz9BLTCXOPOrB8p2
+        kZi25DtYA7NAmMT1hVNYIGw+id7fT5hgjtsxD8ZWldh/9h8zzLIdk1ZBHech8e/pUTZIQARK
+        fPn1nW0Co+wsRHDNQrIBwtaWWLbwNTNICbOApsT6XfoQYTWJKf1f2CBsJ4lPZ/dA2YoSU7of
+        si9gZF/FKJlaUJybnppsWmCYl1quV5yYW1yal66XnJ+7iRGcbLRcdjDemP9P7xAjEwfjIUYV
+        oPZHG1ZfYJRiycvPS1US4Y30sUgV4k1JrKxKLcqPLyrNSS0+xCjNwaIkzvu6dW6KkEB6Yklq
+        dmpqQWoRTJaJg1OqgclIIoOlYOY8h/XzHpeo9gYctLme6mLQph4wLePGrC8f1qu97/1+OeT/
+        QrMvM9urHhTKt97y6A3dFsO07m34tV0GbF9P3XyZlHgmeoqo7u1Z+X0FO1aemcNWGPpre2ng
+        Zp+/r53mKjxp2/M+LXXlyTgGsYdHI1Xs7y1Z2/u4opvNSUT+t94buZcCjYcOT3re1GN6IWfC
+        rAVp04q6dYVtHzX3GDPpe1U75lo7i+xjqG98lrd3/x/Gt8c+Ood7HohX9ijvTV/RqWew5NPR
+        M9ckxUJY5+0RKha13jZ5wuH1VQevfFvvpt4YeiAl6YFng3oLi3Ge1EOVtU3x19yZ/FYGbNtr
+        G8DgkNz0aGlW85qlS5RYijMSDbWYi4oTAc2GwR+xAwAA
+X-CMS-RootMailID: 20231017103415epcms5p2f8f5b28a8f5d71055622b82f71b0fc93
+References: <CGME20231017103415epcms5p2f8f5b28a8f5d71055622b82f71b0fc93@epcms5p4>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+------=_Part_3134979_356400796.1698299600677
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Sorry for a late reply. I just noticed that you specified me as a 
-maintainer of as3711 code in your new file. Even though I did author the 
-original version of the driver more than 10 years ago, I haven't worked on 
-it for a long time, so I think it would be better to pick up a more 
-relevant person there.
+Dear Mr. Dmitry,
+Greetings=21
 
-Thanks
-Guennadi
 
-On Wed, 25 Oct 2023, Geert Uytterhoeven wrote:
+The patch removes unused many APIs call chain for every suspend/resume of t=
+he device=C2=A0=0D=0Aif=20no=20key=20press=20event=20triggered.=0D=0A=0D=0A=
+=0D=0AThere=20is=20a=20call=20back=20function=20gpio_keys_resume()=20called=
+=20for=0D=0Aevery=20suspend/resume=20of=20the=20device.=20and=20whenever=20=
+this=20function=20called,=20it=20is=0D=0Areading=20the=20status=20of=20the=
+=20key.=20And=20gpio_keys_resume()=20API=20further=20calls=20the=0D=0Abelow=
+=20chain=20of=20API=20irrespective=20of=20key=20press=20event=0D=0A=0D=0A=
+=0D=0AAPIs=20call=20chain:=0D=0Astatic=20void=20gpio_keys_report_state(stru=
+ct=20gpio_keys_drvdata=20*ddata)=0D=0Astatic=20void=20gpio_keys_gpio_report=
+_event(struct=20gpio_button_data=20*bdata)=0D=0Agpiod_get_value_cansleep(bd=
+ata->gpiod);=0D=0Ainput_event(input,=20type,=20*bdata->code,=20state);=0D=
+=0Ainput_sync(input);=0D=0A=0D=0A=0D=0AThe=20patch=20avoid=20the=20above=20=
+APIs=20call=20chain=20if=20there=20is=20no=20key=20press=20event=20triggere=
+d.=0D=0AIt=20will=20save=20the=20device=20computational=20resources,=20powe=
+r=20resources=20and=20optimize=20the=20suspend/resume=20time=0D=0A=0D=0A=0D=
+=0ASigned-off-by:=20Abhishek=20Kumar=20Singh=20<abhi1.singh=40samsung.com>=
+=0D=0A=0D=0A=0D=0A---=0D=0A=C2=A0linux-6.4.11/drivers/input/keyboard/gpio_k=
+eys.c=20=7C=208=20++++++--=0D=0A=C2=A01=20file=20changed,=206=20insertions(=
++),=202=20deletions(-)=0D=0A=0D=0A=0D=0Adiff=20--git=20a/linux-6.4.11/drive=
+rs/input/keyboard/gpio_keys.c=20b/linux-6.4.11/drivers/input/keyboard/gpio_=
+keys.c=0D=0Aindex=2013a8ba5..cd1609e=20100644=0D=0A---=20a/linux-6.4.11/dri=
+vers/input/keyboard/gpio_keys.c=0D=0A+++=20b/linux-6.4.11/drivers/input/key=
+board/gpio_keys.c=0D=0A=40=40=20-687,8=20+687,12=20=40=40=20static=20void=
+=20gpio_keys_report_state(struct=20gpio_keys_drvdata=20*ddata)=0D=0A=C2=A0=
+=0D=0A=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=20ddata->pdata->nbuttons;=
+=20i++)=20=7B=0D=0A=C2=A0=20=C2=A0=20=C2=A0struct=20gpio_button_data=20*bda=
+ta=20=3D=20&ddata->data=5Bi=5D;=0D=0A-=C2=A0=20=C2=A0=20if=20(bdata->gpiod)=
+=0D=0A-=C2=A0=20=C2=A0=20=C2=A0=20gpio_keys_gpio_report_event(bdata);=0D=0A=
++=C2=A0=20=C2=A0=20if=20(bdata->gpiod)=20=7B=0D=0A+=C2=A0=20=C2=A0=20=C2=A0=
+=20struct=20gpio_keys_button=20*button=20=3D=20bdata->button;=0D=0A+=C2=A0=
+=20=C2=A0=20=C2=A0=20if(button->value)=20=7B=0D=0A+=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20gpio_keys_gpio_report_event(bdata);=0D=0A+=C2=A0=20=C2=A0=20=C2=
+=A0=20=7D=0D=0A+=C2=A0=20=C2=A0=20=7D=0D=0A=C2=A0=20=C2=A0=7D=0D=0A=C2=A0=
+=20=C2=A0input_sync(input);=0D=0A=C2=A0=7D=0D=0A---=0D=0A=0D=0A=0D=0A=0D=0A=
+=0D=0AThanks=20and=20Regards,=0D=0AAbhishek=20Kumar=20Singh=0D=0ASr.=20Chie=
+f=20Engineer,=20Samsung=20Electronics,=20Noida-India=0D=0A=C2=A0=0D=0A=C2=
+=A0=C2=A0=0D=0A=C2=A0=0D=0A=0D=0A
+------=_Part_3134979_356400796.1698299600677
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="input_keys_optimized.zip"
+Content-Transfer-Encoding: base64
 
-> Convert the Austria MicroSystems AS3711 Quad Buck High Current PMIC with
-> Charger Device Tree binding documentation to json-schema.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->  - Consistently use "DC/DC" and "step-up",
->  - Move {additional,unevaluated}Properties in subnodes up to improve
->    readability,
->  - Split dependencies in dependent{Required,Schemas} to fix multiple
->    dependencies,
->  - s/oneof/oneOf/ (flagged by dt-schema as of commit 411c305105dd1273
->    ("meta-schemas: Check sub-schemas of "dependencies" and
->    "dependentSchemas"")),
->  - Use pmic recommended node name.
-> ---
-> .../devicetree/bindings/mfd/ams,as3711.yaml   | 223 ++++++++++++++++++
-> .../devicetree/bindings/mfd/as3711.txt        |  73 ------
-> 2 files changed, 223 insertions(+), 73 deletions(-)
-> create mode 100644 Documentation/devicetree/bindings/mfd/ams,as3711.yaml
-> delete mode 100644 Documentation/devicetree/bindings/mfd/as3711.txt
->
-> diff --git a/Documentation/devicetree/bindings/mfd/ams,as3711.yaml b/Documentation/devicetree/bindings/mfd/ams,as3711.yaml
-> new file mode 100644
-> index 0000000000000000..ad8649cbb2ccef34
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/ams,as3711.yaml
-> @@ -0,0 +1,223 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/ams,as3711.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Austria MicroSystems AS3711 Quad Buck High Current PMIC with Charger
-> +
-> +maintainers:
-> +  - Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> +
-> +description:
-> +  AS3711 is an I2C PMIC from Austria MicroSystems with multiple DC/DC and LDO
-> +  power supplies, a battery charger and an RTC.  So far only bindings for the
-> +  two step-up DC/DC converters are defined.
-> +
-> +properties:
-> +  compatible:
-> +    const: ams,as3711
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  backlight:
-> +    description:
-> +      Step-up converter configuration, to be used as a backlight source
-> +    type: object
-> +    additionalProperties: false
-> +    properties:
-> +      compatible:
-> +        const: ams,as3711-bl
-> +
-> +      su1-dev:
-> +        description: Framebuffer phandle for the first step-up converter
-> +        $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +      su1-max-uA:
-> +        description: Maximum current for the first step-up converter
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      su2-dev:
-> +        description: Framebuffer phandle for the second step-up converter
-> +        $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +      su2-max-uA:
-> +        description: Maximum current for the second step-up converter
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      su2-feedback-voltage:
-> +        description: Second step-up converter uses voltage feedback
-> +        type: boolean
-> +
-> +      su2-feedback-curr1:
-> +        description:
-> +          Second step-up converter uses CURR1 input for current feedback
-> +        type: boolean
-> +
-> +      su2-feedback-curr2:
-> +        description:
-> +          Second step-up converter uses CURR2 input for current feedback
-> +        type: boolean
-> +
-> +      su2-feedback-curr3:
-> +        description:
-> +          Second step-up converter uses CURR3 input for current feedback
-> +        type: boolean
-> +
-> +      su2-feedback-curr-auto:
-> +        description:
-> +          Second step-up converter uses automatic current feedback selection
-> +        type: boolean
-> +
-> +      su2-fbprot-lx-sd4:
-> +        description:
-> +          Second step-up converter uses LX_SD4 for over-voltage protection
-> +        type: boolean
-> +
-> +      su2-fbprot-gpio2:
-> +        description:
-> +          Second step-up converter uses GPIO2 for over-voltage protection
-> +        type: boolean
-> +
-> +      su2-fbprot-gpio3:
-> +        description:
-> +          Second step-up converter uses GPIO3 for over-voltage protection
-> +        type: boolean
-> +
-> +      su2-fbprot-gpio4:
-> +        description:
-> +          Second step-up converter uses GPIO4 for over-voltage protection
-> +        type: boolean
-> +
-> +      su2-auto-curr1:
-> +        description:
-> +          Second step-up converter uses CURR1 input for automatic current
-> +          feedback
-> +        type: boolean
-> +
-> +      su2-auto-curr2:
-> +        description:
-> +          Second step-up converter uses CURR2 input for automatic current
-> +          feedback
-> +        type: boolean
-> +
-> +      su2-auto-curr3:
-> +        description:
-> +          Second step-up converter uses CURR3 input for automatic current
-> +          feedback
-> +        type: boolean
-> +
-> +    required:
-> +      - compatible
-> +
-> +    dependentRequired:
-> +      # To use the SU1 converter as a backlight source the following two
-> +      # properties must be provided:
-> +      su1-dev: [ su1-max-uA ]
-> +      su1-max-uA: [ su1-dev ]
-> +
-> +      # To use the SU2 converter as a backlight source the following two
-> +      # properties must be provided:
-> +      su2-dev: [ su2-max-uA ]
-> +      su2-max-uA: [ su2-dev ]
-> +
-> +      su2-feedback-voltage: [ su2-dev ]
-> +      su2-feedback-curr1: [ su2-dev ]
-> +      su2-feedback-curr2: [ su2-dev ]
-> +      su2-feedback-curr3: [ su2-dev ]
-> +      su2-feedback-curr-auto: [ su2-dev ]
-> +      su2-fbprot-lx-sd4: [ su2-dev ]
-> +      su2-fbprot-gpio2: [ su2-dev ]
-> +      su2-fbprot-gpio3: [ su2-dev ]
-> +      su2-fbprot-gpio4: [ su2-dev ]
-> +      su2-auto-curr1: [ su2-feedback-curr-auto ]
-> +      su2-auto-curr2: [ su2-feedback-curr-auto ]
-> +      su2-auto-curr3: [ su2-feedback-curr-auto ]
-> +
-> +    dependentSchemas:
-> +      su2-dev:
-> +        allOf:
-> +          - oneOf:
-> +              - required:
-> +                  - su2-feedback-voltage
-> +              - required:
-> +                  - su2-feedback-curr1
-> +              - required:
-> +                  - su2-feedback-curr2
-> +              - required:
-> +                  - su2-feedback-curr3
-> +              - required:
-> +                  - su2-feedback-curr-auto
-> +          - oneOf:
-> +              - required:
-> +                  - su2-fbprot-lx-sd4
-> +              - required:
-> +                  - su2-fbprot-gpio2
-> +              - required:
-> +                  - su2-fbprot-gpio3
-> +              - required:
-> +                  - su2-fbprot-gpio4
-> +
-> +      su2-feedback-curr-auto:
-> +        anyOf:
-> +          - required:
-> +              - su2-auto-curr1
-> +          - required:
-> +              - su2-auto-curr2
-> +          - required:
-> +              - su2-auto-curr3
-> +
-> +  regulators:
-> +    description: Other DC/DC and LDO supplies
-> +    type: object
-> +    unevaluatedProperties: false
-> +    patternProperties:
-> +      "^(sd[1-4]|ldo[1-8])$":
-> +        type: object
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        pmic@40 {
-> +            compatible = "ams,as3711";
-> +            reg = <0x40>;
-> +
-> +            regulators {
-> +                sd4 {
-> +                    regulator-name = "1.215V";
-> +                    regulator-min-microvolt = <1215000>;
-> +                    regulator-max-microvolt = <1235000>;
-> +                };
-> +                ldo2 {
-> +                    regulator-name = "2.8V CPU";
-> +                    regulator-min-microvolt = <2800000>;
-> +                    regulator-max-microvolt = <2800000>;
-> +                    regulator-always-on;
-> +                    regulator-boot-on;
-> +                };
-> +            };
-> +
-> +            backlight {
-> +                compatible = "ams,as3711-bl";
-> +                su2-dev = <&lcdc>;
-> +                su2-max-uA = <36000>;
-> +                su2-feedback-curr-auto;
-> +                su2-fbprot-gpio4;
-> +                su2-auto-curr1;
-> +                su2-auto-curr2;
-> +                su2-auto-curr3;
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mfd/as3711.txt b/Documentation/devicetree/bindings/mfd/as3711.txt
-> deleted file mode 100644
-> index d98cf18c721ceb18..0000000000000000
-> --- a/Documentation/devicetree/bindings/mfd/as3711.txt
-> +++ /dev/null
-> @@ -1,73 +0,0 @@
-> -AS3711 is an I2C PMIC from Austria MicroSystems with multiple DCDC and LDO power
-> -supplies, a battery charger and an RTC. So far only bindings for the two stepup
-> -DCDC converters are defined. Other DCDC and LDO supplies are configured, using
-> -standard regulator properties, they must belong to a sub-node, called
-> -"regulators" and be called "sd1" to "sd4" and "ldo1" to "ldo8." Stepup converter
-> -configuration should be placed in a subnode, called "backlight."
-> -
-> -Compulsory properties:
-> -- compatible		: must be "ams,as3711"
-> -- reg			: specifies the I2C address
-> -
-> -To use the SU1 converter as a backlight source the following two properties must
-> -be provided:
-> -- su1-dev		: framebuffer phandle
-> -- su1-max-uA		: maximum current
-> -
-> -To use the SU2 converter as a backlight source the following two properties must
-> -be provided:
-> -- su2-dev		: framebuffer phandle
-> -- su1-max-uA		: maximum current
-> -
-> -Additionally one of these properties must be provided to select the type of
-> -feedback used:
-> -- su2-feedback-voltage	: voltage feedback is used
-> -- su2-feedback-curr1	: CURR1 input used for current feedback
-> -- su2-feedback-curr2	: CURR2 input used for current feedback
-> -- su2-feedback-curr3	: CURR3 input used for current feedback
-> -- su2-feedback-curr-auto: automatic current feedback selection
-> -
-> -and one of these to select the over-voltage protection pin
-> -- su2-fbprot-lx-sd4	: LX_SD4 is used for over-voltage protection
-> -- su2-fbprot-gpio2	: GPIO2 is used for over-voltage protection
-> -- su2-fbprot-gpio3	: GPIO3 is used for over-voltage protection
-> -- su2-fbprot-gpio4	: GPIO4 is used for over-voltage protection
-> -
-> -If "su2-feedback-curr-auto" is selected, one or more of the following properties
-> -have to be specified:
-> -- su2-auto-curr1	: use CURR1 input for current feedback
-> -- su2-auto-curr2	: use CURR2 input for current feedback
-> -- su2-auto-curr3	: use CURR3 input for current feedback
-> -
-> -Example:
-> -
-> -as3711@40 {
-> -	compatible = "ams,as3711";
-> -	reg = <0x40>;
-> -
-> -	regulators {
-> -		sd4 {
-> -			regulator-name = "1.215V";
-> -			regulator-min-microvolt = <1215000>;
-> -			regulator-max-microvolt = <1235000>;
-> -		};
-> -		ldo2 {
-> -			regulator-name = "2.8V CPU";
-> -			regulator-min-microvolt = <2800000>;
-> -			regulator-max-microvolt = <2800000>;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -		};
-> -	};
-> -
-> -	backlight {
-> -		compatible = "ams,as3711-bl";
-> -		su2-dev = <&lcdc>;
-> -		su2-max-uA = <36000>;
-> -		su2-feedback-curr-auto;
-> -		su2-fbprot-gpio4;
-> -		su2-auto-curr1;
-> -		su2-auto-curr2;
-> -		su2-auto-curr3;
-> -	};
-> -};
-> -- 
-> 2.34.1
->
->
+UEsDBBQAAAAIAIZaMlflZigaUAMAACkHAAAaAAAAaW5wdXRfa2V5c19vcHRpbWl6ZWQucGF0Y2it
+VF1vIjcUfca/4j5VUJhPCBCyJEHbjRpVraKSPq1WyGN7wM1gz9oeWNrmv/faQ5ImTVdNVQTj8f04
+9/j6XK6M3kJ2elIyejpNh5SNxlSUxYTn5ZizshwVo2LMR+U0H06m8KNWsBQ1ZBNI01n4Qp6mGblC
+mBnML365vYqmF58vFsVG2o24m+fpD82WGlyXUq03yfJgndji9kbvhTffUONwSZY/X0c/ackv5uQJ
+hiZLR8sS/R/UWiohTLKkW9uo9fx9Pl+kHyrBnNFKMot57yhWzWLrC13aNi5mentOvqNOzDz7AWTT
+cII8zYeQZbNsMjsZQT89GaZk2RS/It4MPt4sbt9//wluN8IIkBYoMFpVUFB2B2WjmJPYiHUt9epO
+HOzKCNtsRbcXogSHUhsidsIcwDa2FoonbQToEtxGABc7yUQMVHHYb4TysejAQo/gLdIApMP6xAjK
+8VQh2TrqGvsAhfVjWCDOK2wWN9cIaDDMBDzrM0ghKr0HtqFSeRAfJA3m1Hh0uQscEQZqNFlAZsrF
+hGCUbXsQEmfEs5AMdnhjz0rX2riVd4qudaZh7i9ebnacOgrfcr/0/gEjvB2BQvlnQEXjnFarFqdo
+cbyDr9bCrXa0asSKUWUrIepu8Efnwd87I1LVzQNmeB+AO9RicASKzpnmuAvsH8PtQbE2Gk0okfVa
+oIK574PCV3AaaDiBvw1aaOzgi2aBDFfVKknpl90FZySCGsFjcu1gLzHPUoR5UgqgiJEA9cqgFWCu
+bgwTdgC1n6InQ1CUrp3cyt9agBcCRI8gURQRqKRqvkTjeBRnWcIN3ryxSThnggQLTQ1PHi8lZvAH
+TKEfPj47g1JW4tgElOkYpLLCeIK22+8NIEfqlWj3UY8QLssSomiNeqbJW2sXb83Au+PiC2RDOi3o
+SRwzno3TUwFZmo5HI9+At7MgePT/wOTyEqLxdDLA7vklywEt/8f0AIEO/tFAV8Ic0jOQ8A54q+O6
+XVQ7LBZ9/X4PfseEztdnCZG+OWL450f56YxEnQ4K+PkseWPnayPbTuYZ6b+SjETQ3PnbAVs6yKRd
+53DMavcBC8G67TY6D7P+APZvyXTu/fMeO+F/r0w43KM6gOTxKIvTeI860nsbZ4T8CVBLAQIUABQA
+AAAIAIZaMlflZigaUAMAACkHAAAaAAAAAAAAAAEAIAAAAAAAAABpbnB1dF9rZXlzX29wdGltaXpl
+ZC5wYXRjaFBLBQYAAAAAAQABAEgAAACIAwAAAAA=
+
+------=_Part_3134979_356400796.1698299600677--
