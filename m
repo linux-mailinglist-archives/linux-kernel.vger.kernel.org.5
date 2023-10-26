@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C517D7EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F8F7D7ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344603AbjJZIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        id S1344619AbjJZIsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZIqm (ORCPT
+        with ESMTP id S229518AbjJZIr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:46:42 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 0CCBC10E;
-        Thu, 26 Oct 2023 01:46:39 -0700 (PDT)
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id AF3DB60863911;
-        Thu, 26 Oct 2023 16:46:30 +0800 (CST)
-Message-ID: <54d21280-6e1e-780c-372d-d630630a4fe9@nfschina.com>
-Date:   Thu, 26 Oct 2023 16:46:29 +0800
+        Thu, 26 Oct 2023 04:47:58 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289B5128;
+        Thu, 26 Oct 2023 01:47:56 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q75xJ4017410;
+        Thu, 26 Oct 2023 01:47:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=GXTcPg+A7EPTsp2xDG9k/He2sWdY5PnPyh5BGWELmAE=;
+ b=FtsvR8M2fJEqQWozndWILj/gzCC9iubKGO6lRV3KIsjOR+WWs8sG0YKQbQwRddVnKNx8
+ bsA0IsyS1Swgd+78Cmb8qgk7rE2SuMxE7B9NOEFDBvYgoWRSQx+POcWen7adqxK9NmaL
+ eLkLftUk9iJDNrjDXIdj+UehYl/leRVSz0DODpL0B5BBkmazCq+G2o3HF+nq7+Uc8hZC
+ A1Ni2ngoNV9qQ/ERhyEICfDkVZkf2q2uHzO6mzNwOh7Ve/+/ogsEOilAWo9hTbO6XuJN
+ qlFATEpYLfqxlZgJMSEp4ib0kEWmhwPPDSJzKK+yoHEGuxt/8CDSLbuQxyRuIN2jg1YH 6w== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3txcsr1efm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 01:47:47 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 26 Oct
+ 2023 01:47:45 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 26 Oct 2023 01:47:45 -0700
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id DE2013F704D;
+        Thu, 26 Oct 2023 01:47:41 -0700 (PDT)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>,
+        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
+        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v3 0/3] arm64: dts: cn913x: add device trees for COM Express boards
+Date:   Thu, 26 Oct 2023 11:47:32 +0300
+Message-ID: <20231026084735.3595944-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH] vga_switcheroo: Fix impossible judgment condition
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     lukas@wunner.de, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, tiwai@suse.de, Jim.Qu@amd.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-In-Reply-To: <4ec2b80b-f042-4abf-b799-0a9ef364f0fa@kadam.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: C_sHaDyhaymAkJYKSHVu0kEByBTXOQza
+X-Proofpoint-GUID: C_sHaDyhaymAkJYKSHVu0kEByBTXOQza
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_06,2023-10-25_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/26 12:44, Dan Carpenter wrote:
-> On Thu, Oct 26, 2023 at 10:10:57AM +0800, Su Hui wrote:
->> 'id' is enum type like unsigned int, so it will never be less than zero.
->>
->> Fixes: 4aaf448fa975 ("vga_switcheroo: set audio client id according to bound GPU id")
->> Signed-off-by: Su Hui <suhui@nfschina.com>
->> ---
->>   drivers/gpu/vga/vga_switcheroo.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
->> index 365e6ddbe90f..d3064466fd3a 100644
->> --- a/drivers/gpu/vga/vga_switcheroo.c
->> +++ b/drivers/gpu/vga/vga_switcheroo.c
->> @@ -375,7 +375,7 @@ int vga_switcheroo_register_audio_client(struct pci_dev *pdev,
->>   	mutex_lock(&vgasr_mutex);
->>   	if (vgasr_priv.active) {
->>   		id = vgasr_priv.handler->get_client_id(vga_dev);
->> -		if (id < 0) {
->> +		if ((int)id < 0) {
-> Hi,
->
-> I feel like you're using Smatch?  Which is great!  Fantastic!
-Yep, Smatch helps me  a lot to find these bugs! I really like this 
-excellent tool!
->
-> Have you built the cross function database?  If you have there is a
-> command that's useful.
-Not yet, bu I want to build this.
-> $ ~/smatch/smatch_db/smdb.py functions vga_switcheroo_handler get_client_id | tee where
-> drivers/gpu/drm/nouveau/nouveau_acpi.c | (struct vga_switcheroo_handler)->get_client_id | nouveau_dsm_get_client_id | 1
-> drivers/gpu/drm/amd/amdgpu/amdgpu_atpx_handler.c | (struct vga_switcheroo_handler)->get_client_id | amdgpu_atpx_get_client_id | 1
-> drivers/gpu/drm/radeon/radeon_atpx_handler.c | (struct vga_switcheroo_handler)->get_client_id | radeon_atpx_get_client_id | 1
-> drivers/platform/x86/apple-gmux.c | (struct vga_switcheroo_handler)->get_client_id | gmux_get_client_id | 1
-> $ make cscope
-> $ vim where
-> Use cscope to jump to each of those four functions.  Move the cursor to
-> the nouveau_dsm_get_client_id and hit CTRL-].
-Sounds great! I must try this!
->
-> They never return negatives.  The enum vga_switcheroo_client_id has a
-> VGA_SWITCHEROO_UNKNOWN_ID define which I guess these functions are
-> supposed to return on error.  They never do return that, but I bet
-> that's what we are supposed to check for.  It honestly might be good
-> to check for both...
->
-> 		if ((int)id < 0 || id == VGA_SWITCHEROO_UNKNOWN_ID) {
-> 			mutex_unlock(&vgasr_mutex);
-> 			return -EINVAL;
-> 		}
-Agreed, I will send v2 patch soon.
-Really thanks for your wonderful suggestion! :)
+From: Elad Nachman <enachman@marvell.com>
 
-Su Hui
+Add support for CN9130 and CN9131 COM Express Type 7 CPU
+module boards by Marvell.
+Define these COM Express CPU modules as dtsi, and
+provide a dts file for a carrier board (Marvell AC5X RD
+COM Express type 7 carrier board).
+This Carrier board only utilizes the PCIe link, hence no
+special device / driver support is provided by this dts file.
 
-> regards,
-> dan carpenter
->
+v3:
+   1) Remove acronym which creates warnings for checkpatch.pl
+
+   2) Correct compatibility string for ac5x rd board
+
+   3) Add above compatibility string to dt bindings
+
+   4) update MAINTAINERS file with ac5 series dts files
+
+   5) remove memory property from carrier dts
+
+   6) add comment explaining that OOB RGMII ethernet port
+      connector and PHY are both on CPU module
+
+v2:
+   1) add compatibility string for the board
+
+   2) remove unneeded hard-coded PHY LED blinking mode initialization
+
+   3) Split the CPU portion of the carrier board to
+      dtsi files, and define a dts file for the AC5X RD
+      carrier board.
+
+Elad Nachman (3):
+  arm64: dts: cn913x: add device trees for COM Express boards
+  dt-bindings: arm64: dts: add dt-bindings for ac5x rd carrier
+  MAINTAINERS: add ac5 to list of maintained Marvell dts files
+
+ .../bindings/arm/marvell/armada-7k-8k.yaml    |   8 ++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/marvell/Makefile          |   1 +
+ .../boot/dts/marvell/ac5x_rd_carrier.dts      |  23 ++++
+ .../dts/marvell/cn9130-db-comexpress.dtsi     | 101 ++++++++++++++++
+ .../dts/marvell/cn9131-db-comexpress.dtsi     | 113 ++++++++++++++++++
+ 6 files changed, 247 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
+
+-- 
+2.25.1
+
