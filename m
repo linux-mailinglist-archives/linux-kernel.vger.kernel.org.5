@@ -2,372 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD4A7D8818
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499F17D881A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJZSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        id S231837AbjJZSQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZSQg (ORCPT
+        with ESMTP id S231676AbjJZSQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:16:36 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E246192
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:16:33 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so2074324a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698344192; x=1698948992; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NYfLSAQQG2e4i194EsulolqwB4lRPQJWolEkKqUp6IM=;
-        b=b819SCFkLRcUjroNaj7bKJqg/168brWxfFTq63wLDgyhA5hbNmoVvub/1/SVhgRkjW
-         9SGhglom8vJHUfvuMYHUU6fDn9hdIhlrSMgWGD0vVJ6Jfu0UM2MTozV608iDxQLjkMGa
-         CANu3yJeeM/k2cTR69Yvex0MiZbUXfADkGE8dlA9+aCfHnmCSKDzeVp4OfQ4n1S4Z+0z
-         ga2XEMFMjcTC4eCbsqndt9ovpYbWfLDZnTLTJv5Aw6BPeSjziSDq5Di9W0L5K3IwIq9D
-         6dk6gYq+jBpqcAWum6lf6gTsj5uW2LnnKN4rTTtr2OjIdLcnXeOduZBp2rdoFc0B6djB
-         Re3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698344192; x=1698948992;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NYfLSAQQG2e4i194EsulolqwB4lRPQJWolEkKqUp6IM=;
-        b=BqzVPuMEBEibZFXu2XQpkCn0mpkkpOcdZG1bqiI8F585QkTElHRSfr4v50mG1/Nufg
-         jiW2GsO52D+AwDJaVIFANo/Nl5wsVCgjzUD1jaoKQaMGYEHPJj6upNOwoLXWza2PuCA3
-         MeY+jSo6BeeB1pwlzUnMiUNdriQwXZXfU0W/UngAudnDK50U3mmIniDQt3Ky5zN+cEeS
-         FUuNAxwAAH4e3t7UJ7zPmqxOPmjZVVQPQs3mXIuD4zzLBkHGFwdTtDUGynBxwLgKuEh/
-         cmPCfB/FFZyQ2R4ny2ERDoA7iYo3AT6/fACTFSVsYFZIrUkfau/bbqlkZIuhSCyzzPRm
-         x5CA==
-X-Gm-Message-State: AOJu0YyNBiioKy/4EkZstOrWof/Fxh89R9ZafwtmCXnXhvXd6NZ02CQJ
-        j7T8TVu269QOTWEg3O8lb5nILQB1Hce8eFEr+aQ=
-X-Google-Smtp-Source: AGHT+IGZXDqn8/AaIlLOW9NvSLM99GXWYj3NPXGpkTEebmzTAbyN5Z53/YUG++L0r/4r47neb5RB5U1iYpJLUdQ3mS4=
-X-Received: by 2002:aa7:d5c3:0:b0:532:e71b:5ead with SMTP id
- d3-20020aa7d5c3000000b00532e71b5eadmr450942eds.32.1698344190877; Thu, 26 Oct
- 2023 11:16:30 -0700 (PDT)
+        Thu, 26 Oct 2023 14:16:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4324D44;
+        Thu, 26 Oct 2023 11:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698344207; x=1729880207;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=OwCFCK+jvrD1vinB0jjRqRvHD2YdZ3MxuKHXfT1ZykM=;
+  b=NEQrlwskAvLwItOO/uWxKWoIcajcg86YS9h6PBvuxU99kedLuwWBLGdn
+   +I4n5xT0XpqctdHgHa8gVJS4VyiO3yNkOjlEUj9DpdyyuOqz4UPEWSaYu
+   PbXUFB00dHVh6ehFF3dTw6OkNJXN2LVq54jEVNLn9VeTV4d1+Ehn12t+a
+   Qq1dpjGK0IFxfgzZgWntj7IxGS7UcXD5NZZX43i0U0OsajaDhqI482jvI
+   92wYkC6FF5drh9ggTGJjrXw5hNzF127dcqM4/ssC4cFlBbU5x3HgdGs21
+   Bfw9CN3ha7BWAL7uptIOkBwM3V9l74VghtL4DhNY9ULqNThH1Na5IDMhr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418732754"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="418732754"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:16:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="1090663738"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="1090663738"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:16:37 -0700
+Received: from [10.209.128.139] (kliang2-mobl1.ccr.corp.intel.com [10.209.128.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 4B7BE580E30;
+        Thu, 26 Oct 2023 11:16:35 -0700 (PDT)
+Message-ID: <e05d01dd-dd6f-4bb6-857f-3458b9b7159d@linux.intel.com>
+Date:   Thu, 26 Oct 2023 14:16:34 -0400
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-6-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-6-brgerst@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 26 Oct 2023 20:16:20 +0200
-Message-ID: <CAFULd4atfV+oAWjb+NeAtoxpjUDevyPMAUf-Ff0H39+Jj=aR2g@mail.gmail.com>
-Subject: Re: [PATCH v2 05/11] x86/stackprotector/64: Convert stack protector
- to normal percpu variable
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/9] perf vendor events intel: Update
+ alderlake/alderlake events to v1.23
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Edward Baker <edward.baker@intel.com>
+References: <20231026003149.3287633-1-irogers@google.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231026003149.3287633-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
->
-> Older versions of GCC fixed the location of the stack protector canary
-> at %gs:40.  This constraint forced the percpu section to be linked at
-> virtual address 0 so that the canary could be the first data object in
-> the percpu section.  Supporting the zero-based percpu section requires
-> additional code to handle relocations for RIP-relative references to
-> percpu data, extra complexity to kallsyms, and workarounds for linker
-> bugs due to the use of absolute symbols.
->
-> Since version 8.1, GCC has options to configure the location of the
-> canary value.  This allows the canary to be turned into a normal
-> percpu variable and removes the constraint that the percpu section
-> be zero-based.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
 
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
+
+On 2023-10-25 8:31 p.m., Ian Rogers wrote:
+> Update alderlake and alderlaken events from v1.21 to v1.23 adding the
+> changes from:
+> https://github.com/intel/perfmon/commit/8df4db9433a2aab59dbbac1a70281032d1af7734
+> https://github.com/intel/perfmon/commit/846bd247c6e04acc572ca56c992e9e65852bbe63
+> 
+> The tsx_cycles_per_elision metric is updated from PR:
+> https://github.com/intel/perfmon/pull/116
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Thanks Ian. The whole patch series looks good to me.
+
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
 
 > ---
->  arch/x86/Kconfig                      |  5 ++--
->  arch/x86/Makefile                     | 19 +++++++++-----
->  arch/x86/entry/entry_64.S             |  2 +-
->  arch/x86/include/asm/processor.h      | 15 +----------
->  arch/x86/include/asm/stackprotector.h | 37 +++++----------------------
->  arch/x86/kernel/asm-offsets_64.c      |  6 -----
->  arch/x86/kernel/cpu/common.c          |  4 +--
->  arch/x86/kernel/head_64.S             |  3 +--
->  arch/x86/xen/xen-head.S               |  3 +--
->  9 files changed, 26 insertions(+), 68 deletions(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 92144c6f26d2..c95e0ce557da 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -410,12 +410,11 @@ config PGTABLE_LEVELS
->
->  config CC_HAS_SANE_STACKPROTECTOR
->         bool
-> -       default y if 64BIT
-> +       default $(cc-option,-mstack-protector-guard-reg=3Dgs -mstack-prot=
-ector-guard-symbol=3D__stack_chk_guard) if 64BIT
->         default $(cc-option,-mstack-protector-guard-reg=3Dfs -mstack-prot=
-ector-guard-symbol=3D__stack_chk_guard)
->         help
->           We have to make sure stack protector is unconditionally disable=
-d if
-> -         the compiler produces broken code or if it does not let us cont=
-rol
-> -         the segment on 32-bit kernels.
-> +         the compiler does not allow control of the segment and symbol.
->
->  menu "Processor type and features"
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 22e41d9dbc23..6ab8b4419f41 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -111,13 +111,7 @@ ifeq ($(CONFIG_X86_32),y)
->          # temporary until string.h is fixed
->          KBUILD_CFLAGS +=3D -ffreestanding
->
-> -       ifeq ($(CONFIG_STACKPROTECTOR),y)
-> -               ifeq ($(CONFIG_SMP),y)
-> -                       KBUILD_CFLAGS +=3D -mstack-protector-guard-reg=3D=
-fs -mstack-protector-guard-symbol=3D__stack_chk_guard
-> -               else
-> -                       KBUILD_CFLAGS +=3D -mstack-protector-guard=3Dglob=
-al
-> -               endif
-> -       endif
-> +       percpu_seg :=3D fs
->  else
->          BITS :=3D 64
->          UTS_MACHINE :=3D x86_64
-> @@ -167,6 +161,17 @@ else
->          KBUILD_CFLAGS +=3D -mcmodel=3Dkernel
->          KBUILD_RUSTFLAGS +=3D -Cno-redzone=3Dy
->          KBUILD_RUSTFLAGS +=3D -Ccode-model=3Dkernel
-> +
-> +       percpu_seg :=3D gs
-> +endif
-> +
-> +ifeq ($(CONFIG_STACKPROTECTOR),y)
-> +       ifeq ($(CONFIG_SMP),y)
-> +               KBUILD_CFLAGS +=3D -mstack-protector-guard-reg=3D$(percpu=
-_seg)
-> +               KBUILD_CFLAGS +=3D -mstack-protector-guard-symbol=3D__sta=
-ck_chk_guard
-> +       else
-> +               KBUILD_CFLAGS +=3D -mstack-protector-guard=3Dglobal
-> +       endif
->  endif
->
->  #
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index 1a88ad8a7b48..cddcc236aaae 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -190,7 +190,7 @@ SYM_FUNC_START(__switch_to_asm)
->
->  #ifdef CONFIG_STACKPROTECTOR
->         movq    TASK_stack_canary(%rsi), %rbx
-> -       movq    %rbx, PER_CPU_VAR(fixed_percpu_data + FIXED_stack_canary)
-> +       movq    %rbx, PER_CPU_VAR(__stack_chk_guard)
->  #endif
->
->         /*
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/proc=
-essor.h
-> index 4b130d894cb6..2b6531d90273 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -394,16 +394,7 @@ struct irq_stack {
->
->  #ifdef CONFIG_X86_64
->  struct fixed_percpu_data {
-> -       /*
-> -        * GCC hardcodes the stack canary as %gs:40.  Since the
-> -        * irq_stack is the object at %gs:0, we reserve the bottom
-> -        * 48 bytes of the irq stack for the canary.
-> -        *
-> -        * Once we are willing to require -mstack-protector-guard-symbol=
-=3D
-> -        * support for x86_64 stackprotector, we can get rid of this.
-> -        */
->         char            gs_base[40];
-> -       unsigned long   stack_canary;
->  };
->
->  DECLARE_PER_CPU_FIRST(struct fixed_percpu_data, fixed_percpu_data) __vis=
-ible;
-> @@ -418,11 +409,7 @@ extern asmlinkage void entry_SYSCALL32_ignore(void);
->
->  /* Save actual FS/GS selectors and bases to current->thread */
->  void current_save_fsgs(void);
-> -#else  /* X86_64 */
-> -#ifdef CONFIG_STACKPROTECTOR
-> -DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
-> -#endif
-> -#endif /* !X86_64 */
-> +#endif /* X86_64 */
->
->  struct perf_event;
->
-> diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm=
-/stackprotector.h
-> index 00473a650f51..33abbd29ea26 100644
-> --- a/arch/x86/include/asm/stackprotector.h
-> +++ b/arch/x86/include/asm/stackprotector.h
-> @@ -2,26 +2,13 @@
->  /*
->   * GCC stack protector support.
->   *
-> - * Stack protector works by putting predefined pattern at the start of
-> + * Stack protector works by putting a predefined pattern at the start of
->   * the stack frame and verifying that it hasn't been overwritten when
-> - * returning from the function.  The pattern is called stack canary
-> - * and unfortunately gcc historically required it to be at a fixed offse=
-t
-> - * from the percpu segment base.  On x86_64, the offset is 40 bytes.
-> + * returning from the function.  The pattern is called the stack canary
-> + * and is a unique value for each task.
->   *
-> - * The same segment is shared by percpu area and stack canary.  On
-> - * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
-> - * base of percpu area.  The first occupant of the percpu area is always
-> - * fixed_percpu_data which contains stack_canary at the appropriate
-> - * offset.  On x86_32, the stack canary is just a regular percpu
-> - * variable.
-> - *
-> - * Putting percpu data in %fs on 32-bit is a minor optimization compared=
- to
-> - * using %gs.  Since 32-bit userspace normally has %fs =3D=3D 0, we are =
-likely
-> - * to load 0 into %fs on exit to usermode, whereas with percpu data in
-> - * %gs, we are likely to load a non-null %gs on return to user mode.
-> - *
-> - * Once we are willing to require GCC 8.1 or better for 64-bit stackprot=
-ector
-> - * support, we can remove some of this complexity.
-> + * GCC is configured to read the stack canary value from the __stack_chk=
-_guard
-> + * per-cpu variable, which is changed on task switch.
->   */
->
->  #ifndef _ASM_STACKPROTECTOR_H
-> @@ -36,6 +23,8 @@
->
->  #include <linux/sched.h>
->
-> +DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
-> +
->  /*
->   * Initialize the stackprotector canary value.
->   *
-> @@ -51,25 +40,13 @@ static __always_inline void boot_init_stack_canary(vo=
-id)
->  {
->         unsigned long canary =3D get_random_canary();
->
-> -#ifdef CONFIG_X86_64
-> -       BUILD_BUG_ON(offsetof(struct fixed_percpu_data, stack_canary) !=
-=3D 40);
-> -#endif
-> -
->         current->stack_canary =3D canary;
-> -#ifdef CONFIG_X86_64
-> -       this_cpu_write(fixed_percpu_data.stack_canary, canary);
-> -#else
->         this_cpu_write(__stack_chk_guard, canary);
-> -#endif
->  }
->
->  static inline void cpu_init_stack_canary(int cpu, struct task_struct *id=
-le)
->  {
-> -#ifdef CONFIG_X86_64
-> -       per_cpu(fixed_percpu_data.stack_canary, cpu) =3D idle->stack_cana=
-ry;
-> -#else
->         per_cpu(__stack_chk_guard, cpu) =3D idle->stack_canary;
-> -#endif
->  }
->
->  #else  /* STACKPROTECTOR */
-> diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offse=
-ts_64.c
-> index bb65371ea9df..590b6cd0eac0 100644
-> --- a/arch/x86/kernel/asm-offsets_64.c
-> +++ b/arch/x86/kernel/asm-offsets_64.c
-> @@ -54,11 +54,5 @@ int main(void)
->         BLANK();
->  #undef ENTRY
->
-> -       BLANK();
-> -
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       OFFSET(FIXED_stack_canary, fixed_percpu_data, stack_canary);
-> -       BLANK();
-> -#endif
->         return 0;
->  }
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 9058da9ae011..fb8f0371ffc3 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -2104,15 +2104,13 @@ void syscall_init(void)
->                X86_EFLAGS_AC|X86_EFLAGS_ID);
->  }
->
-> -#else  /* CONFIG_X86_64 */
-> +#endif /* CONFIG_X86_64 */
->
->  #ifdef CONFIG_STACKPROTECTOR
->  DEFINE_PER_CPU(unsigned long, __stack_chk_guard);
->  EXPORT_PER_CPU_SYMBOL(__stack_chk_guard);
->  #endif
->
-> -#endif /* CONFIG_X86_64 */
-> -
->  /*
->   * Clear all 6 debug registers:
->   */
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index 3dcabbc49149..0d94d2a091fe 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -345,8 +345,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L=
-_GLOBAL)
->
->         /* Set up %gs.
->          *
-> -        * The base of %gs always points to fixed_percpu_data. If the
-> -        * stack protector canary is enabled, it is located at %gs:40.
-> +        * The base of %gs always points to fixed_percpu_data.
->          * Note that, on SMP, the boot cpu uses init data section until
->          * the per cpu areas are set up.
->          */
-> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-> index a0ea285878db..30f27e757354 100644
-> --- a/arch/x86/xen/xen-head.S
-> +++ b/arch/x86/xen/xen-head.S
-> @@ -53,8 +53,7 @@ SYM_CODE_START(startup_xen)
->
->         /* Set up %gs.
->          *
-> -        * The base of %gs always points to fixed_percpu_data.  If the
-> -        * stack protector canary is enabled, it is located at %gs:40.
-> +        * The base of %gs always points to fixed_percpu_data.
->          * Note that, on SMP, the boot cpu uses init data section until
->          * the per cpu areas are set up.
->          */
-> --
-> 2.41.0
->
+>  .../arch/x86/alderlake/adl-metrics.json       |  2 +-
+>  .../arch/x86/alderlake/frontend.json          | 42 ++++++++++--
+>  .../pmu-events/arch/x86/alderlake/memory.json |  4 +-
+>  .../arch/x86/alderlake/pipeline.json          | 20 +++++-
+>  .../x86/alderlake/uncore-interconnect.json    |  2 +
+>  .../arch/x86/alderlaken/memory.json           |  4 +-
+>  .../arch/x86/alderlaken/pipeline.json         | 16 +++++
+>  .../x86/alderlaken/uncore-interconnect.json   | 66 +++++++++++++++++++
+>  tools/perf/pmu-events/arch/x86/mapfile.csv    |  4 +-
+>  9 files changed, 146 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> index 8b6bed3bc766..3388b58b8f1a 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> @@ -99,7 +99,7 @@
+>      },
+>      {
+>          "BriefDescription": "Number of cycles within a transaction divided by the number of elisions.",
+> -        "MetricExpr": "(cycles\\-t / el\\-start if has_event(cycles\\-t) else 0)",
+> +        "MetricExpr": "(cycles\\-t / el\\-start if has_event(el\\-start) else 0)",
+>          "MetricGroup": "transaction",
+>          "MetricName": "tsx_cycles_per_elision",
+>          "ScaleUnit": "1cycles / elision"
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/frontend.json b/tools/perf/pmu-events/arch/x86/alderlake/frontend.json
+> index 81349100fe32..542ba4a81996 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/frontend.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/frontend.json
+> @@ -394,31 +394,61 @@
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "Uops not delivered by IDQ when backend of the machine is not stalled",
+> +        "BriefDescription": "Uops not delivered by IDQ when backend of the machine is not stalled [This event is alias to IDQ_UOPS_NOT_DELIVERED.CORE]",
+> +        "EventCode": "0x9c",
+> +        "EventName": "IDQ_BUBBLES.CORE",
+> +        "PublicDescription": "Counts the number of uops not delivered to by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_UOPS_NOT_DELIVERED.CORE]",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x1",
+> +        "Unit": "cpu_core"
+> +    },
+> +    {
+> +        "BriefDescription": "Cycles when no uops are not delivered by the IDQ when backend of the machine is not stalled [This event is alias to IDQ_UOPS_NOT_DELIVERED.CYCLES_0_UOPS_DELIV.CORE]",
+> +        "CounterMask": "6",
+> +        "EventCode": "0x9c",
+> +        "EventName": "IDQ_BUBBLES.CYCLES_0_UOPS_DELIV.CORE",
+> +        "PublicDescription": "Counts the number of cycles when no uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_UOPS_NOT_DELIVERED.CYCLES_0_UOPS_DELIV.CORE]",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x1",
+> +        "Unit": "cpu_core"
+> +    },
+> +    {
+> +        "BriefDescription": "Cycles when optimal number of uops was delivered to the back-end when the back-end is not stalled [This event is alias to IDQ_UOPS_NOT_DELIVERED.CYCLES_FE_WAS_OK]",
+> +        "CounterMask": "1",
+> +        "EventCode": "0x9c",
+> +        "EventName": "IDQ_BUBBLES.CYCLES_FE_WAS_OK",
+> +        "Invert": "1",
+> +        "PublicDescription": "Counts the number of cycles when the optimal number of uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_UOPS_NOT_DELIVERED.CYCLES_FE_WAS_OK]",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x1",
+> +        "Unit": "cpu_core"
+> +    },
+> +    {
+> +        "BriefDescription": "Uops not delivered by IDQ when backend of the machine is not stalled [This event is alias to IDQ_BUBBLES.CORE]",
+>          "EventCode": "0x9c",
+>          "EventName": "IDQ_UOPS_NOT_DELIVERED.CORE",
+> -        "PublicDescription": "Counts the number of uops not delivered to by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle.",
+> +        "PublicDescription": "Counts the number of uops not delivered to by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_BUBBLES.CORE]",
+>          "SampleAfterValue": "1000003",
+>          "UMask": "0x1",
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "Cycles when no uops are not delivered by the IDQ when backend of the machine is not stalled",
+> +        "BriefDescription": "Cycles when no uops are not delivered by the IDQ when backend of the machine is not stalled [This event is alias to IDQ_BUBBLES.CYCLES_0_UOPS_DELIV.CORE]",
+>          "CounterMask": "6",
+>          "EventCode": "0x9c",
+>          "EventName": "IDQ_UOPS_NOT_DELIVERED.CYCLES_0_UOPS_DELIV.CORE",
+> -        "PublicDescription": "Counts the number of cycles when no uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle.",
+> +        "PublicDescription": "Counts the number of cycles when no uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_BUBBLES.CYCLES_0_UOPS_DELIV.CORE]",
+>          "SampleAfterValue": "1000003",
+>          "UMask": "0x1",
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "Cycles when optimal number of uops was delivered to the back-end when the back-end is not stalled",
+> +        "BriefDescription": "Cycles when optimal number of uops was delivered to the back-end when the back-end is not stalled [This event is alias to IDQ_BUBBLES.CYCLES_FE_WAS_OK]",
+>          "CounterMask": "1",
+>          "EventCode": "0x9c",
+>          "EventName": "IDQ_UOPS_NOT_DELIVERED.CYCLES_FE_WAS_OK",
+>          "Invert": "1",
+> -        "PublicDescription": "Counts the number of cycles when the optimal number of uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle.",
+> +        "PublicDescription": "Counts the number of cycles when the optimal number of uops were delivered by the Instruction Decode Queue (IDQ) to the back-end of the pipeline when there was no back-end stalls. This event counts for one SMT thread in a given cycle. [This event is alias to IDQ_BUBBLES.CYCLES_FE_WAS_OK]",
+>          "SampleAfterValue": "1000003",
+>          "UMask": "0x1",
+>          "Unit": "cpu_core"
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/memory.json b/tools/perf/pmu-events/arch/x86/alderlake/memory.json
+> index 73d92d5c9f9d..23d36164433f 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/memory.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/memory.json
+> @@ -248,7 +248,7 @@
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "Counts demand data reads that were not supplied by the L3 cache.",
+> +        "BriefDescription": "Counts demand data reads that were not supplied by the L3 cache. [L3_MISS_LOCAL is alias to L3_MISS]",
+>          "EventCode": "0xB7",
+>          "EventName": "OCR.DEMAND_DATA_RD.L3_MISS_LOCAL",
+>          "MSRIndex": "0x1a6,0x1a7",
+> @@ -278,7 +278,7 @@
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache.",
+> +        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache. [L3_MISS_LOCAL is alias to L3_MISS]",
+>          "EventCode": "0xB7",
+>          "EventName": "OCR.DEMAND_RFO.L3_MISS_LOCAL",
+>          "MSRIndex": "0x1a6,0x1a7",
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json b/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json
+> index a92013cdf136..f9876bef16da 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/pipeline.json
+> @@ -238,6 +238,15 @@
+>          "UMask": "0x8",
+>          "Unit": "cpu_core"
+>      },
+> +    {
+> +        "BriefDescription": "Counts the number of near taken branch instructions retired.",
+> +        "EventCode": "0xc4",
+> +        "EventName": "BR_INST_RETIRED.NEAR_TAKEN",
+> +        "PEBS": "1",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0xc0",
+> +        "Unit": "cpu_atom"
+> +    },
+>      {
+>          "BriefDescription": "Taken branch instructions retired.",
+>          "EventCode": "0xc4",
+> @@ -411,6 +420,15 @@
+>          "UMask": "0x7e",
+>          "Unit": "cpu_atom"
+>      },
+> +    {
+> +        "BriefDescription": "Counts the number of mispredicted near taken branch instructions retired.",
+> +        "EventCode": "0xc5",
+> +        "EventName": "BR_MISP_RETIRED.NEAR_TAKEN",
+> +        "PEBS": "1",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x80",
+> +        "Unit": "cpu_atom"
+> +    },
+>      {
+>          "BriefDescription": "Number of near branch instructions retired that were mispredicted and taken.",
+>          "EventCode": "0xc5",
+> @@ -842,7 +860,7 @@
+>          "Unit": "cpu_core"
+>      },
+>      {
+> -        "BriefDescription": "INT_MISC.UNKNOWN_BRANCH_CYCLES",
+> +        "BriefDescription": "Bubble cycles of BAClear (Unknown Branch).",
+>          "EventCode": "0xad",
+>          "EventName": "INT_MISC.UNKNOWN_BRANCH_CYCLES",
+>          "MSRIndex": "0x3F7",
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/uncore-interconnect.json b/tools/perf/pmu-events/arch/x86/alderlake/uncore-interconnect.json
+> index 34fc052d00e4..8bf020a9dfa8 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/uncore-interconnect.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/uncore-interconnect.json
+> @@ -25,6 +25,7 @@
+>      },
+>      {
+>          "BriefDescription": "This event is deprecated. Refer to new event UNC_ARB_REQ_TRK_REQUEST.DRD",
+> +        "Deprecated": "1",
+>          "EventCode": "0x81",
+>          "EventName": "UNC_ARB_DAT_REQUESTS.RD",
+>          "PerPkg": "1",
+> @@ -33,6 +34,7 @@
+>      },
+>      {
+>          "BriefDescription": "This event is deprecated. Refer to new event UNC_ARB_DAT_OCCUPANCY.ALL",
+> +        "Deprecated": "1",
+>          "EventCode": "0x85",
+>          "EventName": "UNC_ARB_IFA_OCCUPANCY.ALL",
+>          "PerPkg": "1",
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlaken/memory.json b/tools/perf/pmu-events/arch/x86/alderlaken/memory.json
+> index 37259d38a222..863a3ba2b4b2 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlaken/memory.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlaken/memory.json
+> @@ -59,7 +59,7 @@
+>          "UMask": "0x1"
+>      },
+>      {
+> -        "BriefDescription": "Counts demand data reads that were not supplied by the L3 cache.",
+> +        "BriefDescription": "Counts demand data reads that were not supplied by the L3 cache. [L3_MISS_LOCAL is alias to L3_MISS]",
+>          "EventCode": "0xB7",
+>          "EventName": "OCR.DEMAND_DATA_RD.L3_MISS_LOCAL",
+>          "MSRIndex": "0x1a6,0x1a7",
+> @@ -77,7 +77,7 @@
+>          "UMask": "0x1"
+>      },
+>      {
+> -        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache.",
+> +        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache. [L3_MISS_LOCAL is alias to L3_MISS]",
+>          "EventCode": "0xB7",
+>          "EventName": "OCR.DEMAND_RFO.L3_MISS_LOCAL",
+>          "MSRIndex": "0x1a6,0x1a7",
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlaken/pipeline.json b/tools/perf/pmu-events/arch/x86/alderlaken/pipeline.json
+> index fa53ff11a509..3153bab527a9 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlaken/pipeline.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlaken/pipeline.json
+> @@ -90,6 +90,14 @@
+>          "SampleAfterValue": "200003",
+>          "UMask": "0xf7"
+>      },
+> +    {
+> +        "BriefDescription": "Counts the number of near taken branch instructions retired.",
+> +        "EventCode": "0xc4",
+> +        "EventName": "BR_INST_RETIRED.NEAR_TAKEN",
+> +        "PEBS": "1",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0xc0"
+> +    },
+>      {
+>          "BriefDescription": "This event is deprecated. Refer to new event BR_INST_RETIRED.INDIRECT",
+>          "Deprecated": "1",
+> @@ -183,6 +191,14 @@
+>          "SampleAfterValue": "200003",
+>          "UMask": "0x7e"
+>      },
+> +    {
+> +        "BriefDescription": "Counts the number of mispredicted near taken branch instructions retired.",
+> +        "EventCode": "0xc5",
+> +        "EventName": "BR_MISP_RETIRED.NEAR_TAKEN",
+> +        "PEBS": "1",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x80"
+> +    },
+>      {
+>          "BriefDescription": "This event is deprecated. Refer to new event BR_MISP_RETIRED.INDIRECT",
+>          "Deprecated": "1",
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlaken/uncore-interconnect.json b/tools/perf/pmu-events/arch/x86/alderlaken/uncore-interconnect.json
+> index 4af695a5e755..8bf020a9dfa8 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlaken/uncore-interconnect.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlaken/uncore-interconnect.json
+> @@ -7,6 +7,56 @@
+>          "UMask": "0x1",
+>          "Unit": "ARB"
+>      },
+> +    {
+> +        "BriefDescription": "Each cycle counts number of any coherent request at memory controller that were issued by any core.",
+> +        "EventCode": "0x85",
+> +        "EventName": "UNC_ARB_DAT_OCCUPANCY.ALL",
+> +        "PerPkg": "1",
+> +        "UMask": "0x1",
+> +        "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "Each cycle counts number of coherent reads pending on data return from memory controller that were issued by any core.",
+> +        "EventCode": "0x85",
+> +        "EventName": "UNC_ARB_DAT_OCCUPANCY.RD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event UNC_ARB_REQ_TRK_REQUEST.DRD",
+> +        "Deprecated": "1",
+> +        "EventCode": "0x81",
+> +        "EventName": "UNC_ARB_DAT_REQUESTS.RD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event UNC_ARB_DAT_OCCUPANCY.ALL",
+> +        "Deprecated": "1",
+> +        "EventCode": "0x85",
+> +        "EventName": "UNC_ARB_IFA_OCCUPANCY.ALL",
+> +        "PerPkg": "1",
+> +        "UMask": "0x1",
+> +        "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "Each cycle count number of 'valid' coherent Data Read entries . Such entry is defined as valid when it is allocated till deallocation. Doesn't include prefetches [This event is alias to UNC_ARB_TRK_OCCUPANCY.RD]",
+> +        "EventCode": "0x80",
+> +        "EventName": "UNC_ARB_REQ_TRK_OCCUPANCY.DRD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "Number of all coherent Data Read entries. Doesn't include prefetches [This event is alias to UNC_ARB_TRK_REQUESTS.RD]",
+> +        "EventCode": "0x81",
+> +        "EventName": "UNC_ARB_REQ_TRK_REQUEST.DRD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+> +    },
+>      {
+>          "BriefDescription": "Each cycle counts number of all outgoing valid entries in ReqTrk. Such entry is defined as valid from its allocation in ReqTrk till deallocation. Accounts for Coherent and non-coherent traffic.",
+>          "EventCode": "0x80",
+> @@ -15,6 +65,14 @@
+>          "UMask": "0x1",
+>          "Unit": "ARB"
+>      },
+> +    {
+> +        "BriefDescription": "Each cycle count number of 'valid' coherent Data Read entries . Such entry is defined as valid when it is allocated till deallocation. Doesn't include prefetches [This event is alias to UNC_ARB_REQ_TRK_OCCUPANCY.DRD]",
+> +        "EventCode": "0x80",
+> +        "EventName": "UNC_ARB_TRK_OCCUPANCY.RD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+> +    },
+>      {
+>          "BriefDescription": "Counts the number of coherent and in-coherent requests initiated by IA cores, processor graphic units, or LLC.",
+>          "EventCode": "0x81",
+> @@ -22,5 +80,13 @@
+>          "PerPkg": "1",
+>          "UMask": "0x1",
+>          "Unit": "ARB"
+> +    },
+> +    {
+> +        "BriefDescription": "Number of all coherent Data Read entries. Doesn't include prefetches [This event is alias to UNC_ARB_REQ_TRK_REQUEST.DRD]",
+> +        "EventCode": "0x81",
+> +        "EventName": "UNC_ARB_TRK_REQUESTS.RD",
+> +        "PerPkg": "1",
+> +        "UMask": "0x2",
+> +        "Unit": "ARB"
+>      }
+>  ]
+> diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> index 57ba7e814563..c09b81d8d5e1 100644
+> --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
+> +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> @@ -1,6 +1,6 @@
+>  Family-model,Version,Filename,EventType
+> -GenuineIntel-6-(97|9A|B7|BA|BF),v1.21,alderlake,core
+> -GenuineIntel-6-BE,v1.21,alderlaken,core
+> +GenuineIntel-6-(97|9A|B7|BA|BF),v1.23,alderlake,core
+> +GenuineIntel-6-BE,v1.23,alderlaken,core
+>  GenuineIntel-6-(1C|26|27|35|36),v4,bonnell,core
+>  GenuineIntel-6-(3D|47),v28,broadwell,core
+>  GenuineIntel-6-56,v11,broadwellde,core
