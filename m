@@ -2,80 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD937D820A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6AB7D820C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344840AbjJZLxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S1344848AbjJZLx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZLxL (ORCPT
+        with ESMTP id S229642AbjJZLxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:53:11 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8A21A6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:53:08 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2e2d3560bso932132b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:53:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698321188; x=1698925988;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cuGIGPijPrgaBQJGLRU+uHqNxMgfOKS3BMUr9lUJhx0=;
-        b=Q7dKgRKRiB4ZyPoEypHCONY3rR8djMQyNtpgS43hJXP2qMPRFiSg6UMeUHC75ibii7
-         MFsXz+U/iOqHpu6615Zz8yYDDM5vlSFEbJIxSTfLg1nfy3YSBsLOJU/RTda7U/NFMt7n
-         21f8StTjLrWKaEI5LXg1zgNT8/sedmMB0b5FnoAw0tSb/7CqbHiAH1gCk8FCbiKQlaPC
-         RB4/WDBdmxMhjJ0Z1YYPomQjhzcV8jdm9mKWTnbHT0Tsko4zwVL6b2nbuIcQHtZKAHlg
-         yC7x4agkWsMFEq4/L1cTuXrk2hxkE+s1EAvxfbnd8lbNnstv/0onXpHvlJyocj6FufWq
-         SY8A==
-X-Gm-Message-State: AOJu0YwuhrCECNX5K0hTswqCenHWXl0skYdQGXeRnZ5/bpaMDFO0MQJS
-        PAuZlV/pvkOj8KROeOEDjZuHk5jgwB/21hSjKcJ+exE1yAAX
-X-Google-Smtp-Source: AGHT+IFmz41KBLkoWEbzAiuglztiW8vk0L4Jik6Xzp+mEiD/ouseO4CgSvXC4cd0Gkl5baT2gZU5UyNUOKnmRFdmpGwN+u1evZ0v
+        Thu, 26 Oct 2023 07:53:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415291AC;
+        Thu, 26 Oct 2023 04:53:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C18C433C7;
+        Thu, 26 Oct 2023 11:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698321232;
+        bh=je+DADXCoX+kCTmWmZq0ysK4G7kIaCSpTWt8Az7jl+8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WthaQ/2T2IwZQyvxbjc8i6TLCZH6R0bxGgKm3P19AQmdfpQ6FpjwwvQFGWuJlmFZh
+         tm7fXvL65CzQ5c33upmgr/CpnC+NcEfl7NPZYHB61Dli32HyEHjHTAEm7TVcOCAW6u
+         WX/pzPDujgTi+qekKeBkEKa/w3xdlsSoHtKQqepic+zDucRuItVq9HOI76c1zy0Fnj
+         tcQZxaUmgfx/DxBjhYrjFnhrEajLGZHbOZ1pNFf23+sav93OnPXQUIreqClHVVFSWC
+         4P6xH7xxp6pLnMn6QqN5PTG1/GsT6u4FVHAjey/Jdqt/t8/DPsiwi5Y8eT5xbu0gKF
+         PO2YZ9C1j9ydw==
+Date:   Thu, 26 Oct 2023 13:53:48 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+Subject: Re: [PATCH v2 6/6] drm/vs: Add hdmi driver
+Message-ID: <344veqjvvwlo7vls2kdlgjggf77of2ijxwc2hmk7tarm75ugcs@bmozk23uqxqr>
+References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
+ <20231025103957.3776-7-keith.zhao@starfivetech.com>
+ <70805ff2-56a8-45e1-a31c-ffb0e84749e5@linaro.org>
+ <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
+ <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:90:b0:3b2:df42:589f with SMTP id
- s16-20020a056808009000b003b2df42589fmr6525784oic.7.1698321187991; Thu, 26 Oct
- 2023 04:53:07 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 04:53:07 -0700
-In-Reply-To: <0000000000003a5c4905ef1044d6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ff5ed06089d37f1@google.com>
-Subject: Re: [syzbot] [media?] WARNING in get_vaddr_frames
-From:   syzbot <syzbot+59a71007ccac79e8bb69@syzkaller.appspotmail.com>
-To:     david@redhat.com, hverkuil-cisco@xs4all.nl, hverkuil@xs4all.nl,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        m.szyprowski@samsung.com, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com, tfiga@chromium.org,
-        torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6ydghz6j3eeoumtu"
+Content-Disposition: inline
+In-Reply-To: <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit 735de5caf79e06cc9fb96b1b4f4974674ae3e917
-Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Date:   Thu Aug 17 10:41:32 2023 +0000
+--6ydghz6j3eeoumtu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    media: vb2: frame_vector.c: replace WARN_ONCE with a comment
+On Thu, Oct 26, 2023 at 11:57:22AM +0300, Dmitry Baryshkov wrote:
+> On Thu, 26 Oct 2023 at 11:07, Maxime Ripard <mripard@kernel.org> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 01:23:53AM +0300, Dmitry Baryshkov wrote:
+> > > > +static int starfive_hdmi_register(struct drm_device *drm, struct s=
+tarfive_hdmi *hdmi)
+> > > > +{
+> > > > +   struct drm_encoder *encoder =3D &hdmi->encoder;
+> > > > +   struct device *dev =3D hdmi->dev;
+> > > > +
+> > > > +   encoder->possible_crtcs =3D drm_of_find_possible_crtcs(drm, dev=
+->of_node);
+> > > > +
+> > > > +   /*
+> > > > +    * If we failed to find the CRTC(s) which this encoder is
+> > > > +    * supposed to be connected to, it's because the CRTC has
+> > > > +    * not been registered yet.  Defer probing, and hope that
+> > > > +    * the required CRTC is added later.
+> > > > +    */
+> > > > +   if (encoder->possible_crtcs =3D=3D 0)
+> > > > +           return -EPROBE_DEFER;
+> > > > +
+> > > > +   drm_encoder_helper_add(encoder, &starfive_hdmi_encoder_helper_f=
+uncs);
+> > > > +
+> > > > +   hdmi->connector.polled =3D DRM_CONNECTOR_POLL_HPD;
+> > > > +
+> > > > +   drm_connector_helper_add(&hdmi->connector,
+> > > > +                            &starfive_hdmi_connector_helper_funcs);
+> > > > +   drmm_connector_init(drm, &hdmi->connector,
+> > > > +                       &starfive_hdmi_connector_funcs,
+> > > > +                       DRM_MODE_CONNECTOR_HDMIA,
+> > >
+> > > On an embedded device one can not be so sure. There can be MHL or HDMI
+> > > Alternative Mode. Usually we use drm_bridge here and drm_bridge_conne=
+ctor.
+> >
+> > On an HDMI driver, it's far from being a requirement, especially given
+> > the limitations bridges have.
+>=20
+> It's a blessing that things like MHL / HDMI-in-USB-C / HDMI-to-MyDP
+> are not widely used in the wild and are mostly non-existing except
+> several phones that preate wide DP usage.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c7ad5d680000
-start commit:   53663f4103ff Merge tag 'nfs-for-6.5-2' of git://git.linux-..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=59a71007ccac79e8bb69
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178be4b7a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107609a7a80000
+And those can be supported without relying on bridges.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> Using drm_connector directly prevents one from handling possible
+> modifications on the board level. For example, with the DRM connector
+> in place, handling a separate HPD GPIO will result in code duplication
+> from the hdmi-connector driver. Handling any other variations in the
+> board design (which are pretty common in the embedded world) will also
+> require changing the driver itself. drm_bridge / drm_bridge_connector
+> save us from those issues.
 
-#syz fix: media: vb2: frame_vector.c: replace WARN_ONCE with a comment
+And we have other solutions there too. Like, EDIDs are pretty much in
+the same spot with a lot of device variations, but it also works without
+a common driver. I'd really wish we were having less bridges and more
+helpers, but here we are.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> BTW: what are the limitations of the drm_bridge wrt. HDMI output? I'm
+> asking because we heavily depend on the bridge infrastructure for HDMI
+> output. Maybe we are missing something there, which went unnoticed to
+> me and my colleagues.
+
+A bridge cannot extend the connector state or use properties, for
+example. It works for basic stuff but falls apart as soon as you're
+trying to do something slightly advanced.
+
+Maxime
+
+--6ydghz6j3eeoumtu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTpTTAAKCRDj7w1vZxhR
+xbLFAP4unIAE0v+sEMAKIEHtzqjUKfaDRvFMhet0vamy7Zof+QD/dgmnLOex7TJ1
+wA5XuQ2uivS+Cv7xrc3HS7yTI5xVjAE=
+=5wik
+-----END PGP SIGNATURE-----
+
+--6ydghz6j3eeoumtu--
