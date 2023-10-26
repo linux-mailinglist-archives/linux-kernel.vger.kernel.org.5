@@ -2,274 +2,601 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3221A7D7B57
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558E77D7B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjJZDtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 23:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
+        id S229954AbjJZDyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 23:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZDts (ORCPT
+        with ESMTP id S229554AbjJZDyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 23:49:48 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542EC187;
-        Wed, 25 Oct 2023 20:49:38 -0700 (PDT)
-X-UUID: adaaba4073b211eea33bb35ae8d461a2-20231026
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=c57016u59H1Fjy0BdjYmjN1tyC0TFya9i0cT21OJmJQ=;
-        b=W3m6At3uUaSkw0G9k3+/jGuaF1uObLpYz8qPzU2WEcP7SLQgo9v+UlZGKvmQFQ45R1ZH7FcAV3o7MDeEXtsSICrfulRCIR7YrmyxzTuObLmXcgQEtqDsSwszkVwP6UvDaeepu26N/7siw2L/MDLPAGeNHObscjf7D1TrSVjosE8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:8af48ae0-bfe5-42a6-a475-05d1d0d8f4a5,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:697555d7-04a0-4e50-8742-3543eab8cb8e,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: adaaba4073b211eea33bb35ae8d461a2-20231026
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <yu-chang.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1372694080; Thu, 26 Oct 2023 11:49:35 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 26 Oct 2023 11:49:31 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 26 Oct 2023 11:49:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=drukXVaNvBz60Prks0hxEnKypbNzoEW/hDdNnzxdMLm+QUH8VPhcYrEJan/3hbl81Y4k5AHrx8KC2DkuTsEkBhw4lY8gs49s0eS2wRsdvXON2bKjrN8YAR0K6axfRIV2DLfyaiXO7m2XuocSoZSA9UlGpqcRIEknEcLd5MeSe1KqtSSAO4XQBDKczHD3jxCqQXuIoAyK8h/SbMkD+mDqR/nBIUzFpW6S8oYZ88nUtnphVR71+4gd5uQIkihKRopr8idQ0WGqWkua3qTj01rQrBtNLjnFt+NEDEAwpFFpfBEs95rb9Gplgr1pcXetrZgJYBOerrje3BsKgk3Fv9rOtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c57016u59H1Fjy0BdjYmjN1tyC0TFya9i0cT21OJmJQ=;
- b=ivqAyW3NEJOwgUjxY5eI1+l/4GQsx5GZF4MPfiCFESYjs9bmP5o1GPNu1fZdmkYX1RkSbwgGNYbGpLYTan3D3UVX063f7Hqsam5GRuVVIky/HmElgwHXKe/ksJpAYV5r9XL/wQtCjlpXwDZat4ARH41lUBXhKGlcHVUQSIaSS/UFSGe7Fkg2iyx00iGN7ecdjPYD2TIGphSQtMzp2pVouplGBQibp1y5WRQxjCVUdh5tC3XKSSG08eFr8rwWEGAjWq3tRHVTvlKlbxVs8DNnI3MP8+VtJ+jmfoPIa1idjKcYa7aG0uVBE1QxcbN6QhPpUz7TPjPWETh8lejOq+cbHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c57016u59H1Fjy0BdjYmjN1tyC0TFya9i0cT21OJmJQ=;
- b=OQYbb9Xn5bxnOeatLlsVGZLKovPlhtfNtwCOMmM3LMJveiRft2NuQhbfqeVHZLt4sgV/JEaEurmvcu2QtjMkwdN9dgsrc7nZ5sh/qKiloISdGe9ij+MJfbGJLiXYvioblGUiHxRoWGREzWjL1V2WLxNHM/1hI3HDTfNDqMzbRx4=
-Received: from KL1PR03MB7366.apcprd03.prod.outlook.com (2603:1096:820:ea::9)
- by KL1PR03MB8118.apcprd03.prod.outlook.com (2603:1096:820:102::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
- 2023 03:49:28 +0000
-Received: from KL1PR03MB7366.apcprd03.prod.outlook.com
- ([fe80::eae7:2692:e6a8:e278]) by KL1PR03MB7366.apcprd03.prod.outlook.com
- ([fe80::eae7:2692:e6a8:e278%6]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
- 03:49:27 +0000
-From:   =?utf-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= 
-        <Yu-chang.Lee@mediatek.com>
-To:     "wenst@chromium.org" <wenst@chromium.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        =?utf-8?B?Q2h1bi1KaWUgQ2hlbiAo6Zmz5rWa5qGAKQ==?= 
-        <Chun-Jie.Chen@mediatek.com>,
-        =?utf-8?B?TWlsZXMgQ2hlbiAo6Zmz5rCR5qi6KQ==?= 
-        <Miles.Chen@mediatek.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-Subject: Re: [PATCH] clk: mediatek: mt8186: Change I2C 4/5/6 ap clocks parent
- to infra
-Thread-Topic: [PATCH] clk: mediatek: mt8186: Change I2C 4/5/6 ap clocks parent
- to infra
-Thread-Index: AQHaBaaHQyCeGVCVIkaRHyl/V0yhJrBSGxiAgAYj9oCAAAG2gIAAUHkAgAAaCYCAAZq1AIAAG6OAgAER54A=
-Date:   Thu, 26 Oct 2023 03:49:25 +0000
-Message-ID: <1a734157709adc0cd85e084174bb4889301f1c1a.camel@mediatek.com>
-References: <20231019124914.13545-1-angelogioacchino.delregno@collabora.com>
-         <CAGXv+5H0rUajeU-i8nYyV2xWFQTnzqxioZCCyyP_RZXKqmcugQ@mail.gmail.com>
-         <283d18028590d57025e5654d18b8b5b7.sboyd@kernel.org>
-         <CAGXv+5EpBLnXVdxnk9wBZi5F7U5wdJRfYH7fgg4Lkr1HJXm+WA@mail.gmail.com>
-         <9c1e10b56db315e03daa3df5918cde844297c680.camel@mediatek.com>
-         <CAGXv+5HQ2sVx=F3my2jOGMw3j3pU2aarEg+Dj1XgNzwio98ezA@mail.gmail.com>
-         <e049985de9da9958ba425824ab5f38c7cf41025b.camel@mediatek.com>
-         <eb4f7d6e-0e4c-4b2d-b889-cad9fc9262d8@collabora.com>
-In-Reply-To: <eb4f7d6e-0e4c-4b2d-b889-cad9fc9262d8@collabora.com>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: KL1PR03MB7366:EE_|KL1PR03MB8118:EE_
-x-ms-office365-filtering-correlation-id: 8c54ef49-ed8c-4c00-3382-08dbd5d68c6b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KlMx0ZUVZ6uRQ1z4nYNSVMXqAb+vaZT0AoabdlVMdiEYweg3kxMJ1FL78tvQDxFKDrD4eUW3JMgWZzms/bmHPzKF130ggITadskEF7LUOl6yjZ39VTkXfbApAFnIG+OMthV2enyOgxma12dxd6ueZ3HKbILLXejCrk0YBm/nrBVWr2xBbSJzwFWe1J9vwmulXFaCe0BeGowcix7G/A7xZTQixAhRRzH5837ND7YVr8RUbO4oHQAtwkxnmb9yxv7f50QHAaL7dT8CwBWtrYE2yNDlFPfAetkwozNGagVbJ+/y3IEUBudAqO5YYEWOUmzUvgJ/Ef8+OTGG4YzIdhMfJIyHw5ccR4D5iV8YT7HT736QcbeG/gJnCiIVy75CEP2u7BfCrfWwz4iWmx9hGqK/PekP2tE94fNDkXPpK0CWvylIB6Jwfc9uk9SZpJ5ziYfWwbYMOk0CRAp/PsCrbo+mrmLukpdpsc6M9J3CwpEfpymSNsA0NeYTvOlZOZV44mo6ahIBuQnfnkOOyUHhL9Kh1tEiKzRkFN2N9Xe+RMYw1n4UE45fh9YrEAd3ImNS+CHYei54gM9JUkEPstyNlwoEaAfJvMI5cgYBoYbM8tXLctTGL/Kg/v/86kHjC0hb6Z4vqEOlMm2yGININokZVbxAMg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB7366.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(39860400002)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(4001150100001)(4326008)(38070700009)(2906002)(7416002)(38100700002)(122000001)(5660300002)(41300700001)(8936002)(8676002)(86362001)(66556008)(54906003)(64756008)(110136005)(316002)(66476007)(66446008)(76116006)(66946007)(83380400001)(966005)(478600001)(2616005)(36756003)(53546011)(26005)(6512007)(71200400001)(6506007)(6486002)(85182001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N0x6WmpkdGVFTzZyMGRVdk9jeDdqR2dtSGhTZklnNWM5MmowMGFMWDEvcExG?=
- =?utf-8?B?ZXN0WG5mMTA4ekE5VXdRRHBRSnQ5R0lhM0ZKZmJkb0hWYWgreDg3TlRTU2ow?=
- =?utf-8?B?WndWOWs4d2djd25oS085a2dOQkZRYXF2SWE5N0Q4em12YmI3UHpYdnVWeHBK?=
- =?utf-8?B?SlZva2QxRnM0TmFMRjNPeHcxWGtlSUt4a1Z3U3N0RFJQclpwK2xNbjR5VGRS?=
- =?utf-8?B?UUh4TGFEL3RvMm5PcE1NUzUybENmNjcyUnpxSnVZWUdhQjZoeiswUlBSdzha?=
- =?utf-8?B?ZnBpSTBndjFOZnllQmlURER4WnA2ZlRJRmFBTEpmR3d5T3Bnd3I2YVZQN0Vm?=
- =?utf-8?B?a3lDdm5KbzhTaWxiZ0JTZFRJWWVmdnMrM0ZFYmJwUXU3bDE1WW1PSFZ5T0k2?=
- =?utf-8?B?OHZqd1o3UFplam5kWnZRUkd2QkJRNkZVc28wdmgxS2c5dzJ0NnkyRlVDK2FE?=
- =?utf-8?B?WityenZYREt0aXAyM2ZCRm4ya29kK1hqS1hyWVp5cEkrdWtjcnhQZk50Qkcx?=
- =?utf-8?B?OVE4SmlMbFNFWTB2Vk9BYjNoZXhVQmQ2b1NMSTYwMzhGRHJRRDlRcHFISGhq?=
- =?utf-8?B?bElFQzVvQlVOUDZJdzJJTjAvdEt4VHNzRlkyVTFRYTQvNWNzMjg3UmZ5bm9U?=
- =?utf-8?B?UmJMZUdDaldBZzM0NXR3T0tCTnlQVEtmN3U1UEEwaHIwcTFvL3lxekVLdGVu?=
- =?utf-8?B?aWlMdWlTQWlTQTBzYkRSdmJhUVNGYUZicHpuM3liZEFSWnlaZUxDUjhWM2tj?=
- =?utf-8?B?S2pmSTRHM0pmMTR0dnlSLzFFRDZtcDVhQ0wxREkwQ2dhTFYzUkVxSEZjeHBN?=
- =?utf-8?B?WlBxM05KNVU4ZWl4R1FRQmlUYUVudHFZOHExZW43MTBlSmtHdEhPczJRMTY5?=
- =?utf-8?B?emMxejBZQm9wZkRxQmpQOFQyemRKRzRjb09vQXJxcmpUaXVMZUNaRktxTEtw?=
- =?utf-8?B?U1pSZGx0M1MrUklLc0w0Y3ZJejgvWTdhZnRTa3UvNHZ6ZHdVZk90K0NuOHVM?=
- =?utf-8?B?Q3ZITlVtV1VCNnVBNW8wcE9WbmJ5cEtVSlpCYUFHU0N6TlBzY2lrdlppYlFN?=
- =?utf-8?B?R2NwS1h0bUR3VVErNUpsSHF1NXdxbUN6clp4WndqaTZ4US94enpTem1hYWZR?=
- =?utf-8?B?UndraWppVUhEOE5wTkhYZUI4UmR4bHB2OHNycE5DUC9kQWNGR1RnazNnWkNL?=
- =?utf-8?B?c3RoN3F0Q2FOdkFIQWJMa0JmUHl3Q2FXNWF1WHZSSzF4TlNremM2MlEvamJ5?=
- =?utf-8?B?V2pWVy8vTGx5amd6Z1FTQUlyR2FyTElxdEtkQVpSWTFaVzhPWkh1UEQwL0VK?=
- =?utf-8?B?L0xIaXM5UGtmM0NER0IyeTZsenFzaDZxWUtVcW9sc0R3SnFDRGNTNnYzbEJP?=
- =?utf-8?B?WmdIdjdmQlBkNmVoRjFDdGRybk9vWFBKaG5uUFZVczR0ZzdLSVcwNDZhc2Q0?=
- =?utf-8?B?dUpNdG9zcllsNElsdjRFeVk0VU4zTUdEWW9ZemZEdnU2ek9xOVM5VTdhVmNV?=
- =?utf-8?B?NHM4cWU2VG5lV3RaNDR4MngzNkZuZ0h2NGx0TE05MHRvY2s3MzBxTjlRdFgv?=
- =?utf-8?B?NXIvcVBSc1hYNWJUZUZJdjFaejdTdzdSZ2hCb2RwcDYyU2p5aVBvdjRVWDhJ?=
- =?utf-8?B?VVF5aVhya1NNV0ZsRHQ5WU9TWmFTc2ZFMFE0U0NSODd3SGVLMzBzVUtsUnFM?=
- =?utf-8?B?WmhUS3pyN21WZVN4REdSbThJRHpoK2xJTXZ2R0R0NlAyYXNON0tkZDFHWkYr?=
- =?utf-8?B?MVczSnk1dXVNMWgyNlRhaEFEZC84R3dodG1FNUJHZkRmZUZYSzlEV2ZMWXJh?=
- =?utf-8?B?UTJjMEFabnVsVkl4N2JvVDBCWWE5eUF2NDFScG5SdWVaME1tZmdERzBaNGhU?=
- =?utf-8?B?eVQ0b2NmZzBYczc5TS80SU90b2g0UXVSbXc2RXJBMlBSbStrbHJ2SFdEYjUx?=
- =?utf-8?B?V1ZjVnNxV0E2cDVCL0gyaG5PWGtIYnR5eHpwMCtqVGJLU2RlTWRhMzBIOWJP?=
- =?utf-8?B?anNQOW1ZQXFnblhNbmluNjJ4djNjemxHUm13cGZ3MUFvM040eStpbU1xQ0Jz?=
- =?utf-8?B?dmEyYmJtSUxaVHFXY1dwbDYwWDlIY3dJTzFhVlQ1bWFZdWdxNXFHbHB0eHVY?=
- =?utf-8?B?NlZ0RVloWFllKzhRY1ZHMmhtdGlRVlFTdFp1RE5ISVpVbmk5WmpjcWIyWjhp?=
- =?utf-8?B?R0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D3B37E09125FD347A617FF89E8B05600@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 25 Oct 2023 23:54:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B59DB9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 20:54:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FABC433C7;
+        Thu, 26 Oct 2023 03:54:14 +0000 (UTC)
+Date:   Wed, 25 Oct 2023 23:54:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
+Message-ID: <20231025235413.597287e1@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB7366.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c54ef49-ed8c-4c00-3382-08dbd5d68c6b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 03:49:25.8564
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fU8ZJvU/rEVA2ftJkgOigcL7iTSVGpIIgdg9HtaOsxzncinD4c+Wgnh5i30i9gUrsfm+wuizC69mMBQdZMHwCDC9XC/WSfg6CejlzvcoW4A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB8118
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--28.159600-8.000000
-X-TMASE-MatchedRID: xLkcAt3TQsXUL3YCMmnG4kD6z8N1m1ALjLOy13Cgb49qSjxROy+AU2yd
-        bY7xfgXYlJxMC94GqDWteL4840o+NTchyiq37BQwvHKClHGjjr2cyCGZko2aplVqIv0mjuMGeDg
-        I4iMaw3LhfjC215b2DdmrsqfAJHEma7aDmzqnyU8AIeMYnjom2f3zj+0h3ZMpgrAXgr/AjP2NQC
-        Hv4KBPajAhOMhrMDNMaFCYCprws4YWA/Bj66hcB+Q0jDxGUAJDc3ewuwbSaG52tmRAtFk5V/EnV
-        Vij2P3p8kVP1EEY3ww+K4Yl3VDW5mlm2w5uC3SGQ5lZokGzOaohotH7bEpEMph8u7mojKy+r2Zq
-        hEtkqj2Sg1/uMFG+r58mxCDGyv3tQEdNChTTbLXzh2yKdnl7WArefVId6fzV+3n3Z6rbGhOhetP
-        Rq5gu7VaqomimMSnxEeHs7CCjBEeROBVNmXUDuKMVgdN9w+TC9pLnYtQ99xJRuqFUR05v1HRkZD
-        wt6TorpZ5KvbL6hfs3J4yJ10Xc50kjllSXrjtQ0gVVXNgaM0pyZ8zcONpAscRB0bsfrpPI6T/LT
-        DsmJmg=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--28.159600-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 4BBE4C3AAC7496F7611521543E0C83D7A46656EA399C21B796EB5E810068F65C2000:8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="MP_/ZDyvUi=w9Td/hqvN2ahFssO"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTEwLTI1IGF0IDEzOjI5ICswMjAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
-ZWdubyB3cm90ZToNCj4gSWwgMjUvMTAvMjMgMTE6NTAsIFl1LWNoYW5nIExlZSAo5p2O56a555KL
-KSBoYSBzY3JpdHRvOg0KPiA+IE9uIFR1ZSwgMjAyMy0xMC0yNCBhdCAxNzoyMCArMDgwMCwgQ2hl
-bi1ZdSBUc2FpIHdyb3RlOg0KPiA+ID4gICAJDQo+ID4gPiBFeHRlcm5hbCBlbWFpbCA6IFBsZWFz
-ZSBkbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cw0KPiA+ID4gdW50aWwNCj4g
-PiA+IHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3IgdGhlIGNvbnRlbnQuDQo+ID4gPiAg
-IE9uIFR1ZSwgT2N0IDI0LCAyMDIzIGF0IDM6NDfigK9QTSBZdS1jaGFuZyBMZWUgKOadjuemueeS
-iykNCj4gPiA+IDxZdS1jaGFuZy5MZWVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiA+ID4gDQo+
-ID4gPiA+IE9uIFR1ZSwgMjAyMy0xMC0yNCBhdCAxMDo1OCArMDgwMCwgQ2hlbi1ZdSBUc2FpIHdy
-b3RlOg0KPiA+ID4gPiA+IE9uIFR1ZSwgT2N0IDI0LCAyMDIzIGF0IDEwOjUy4oCvQU0gU3RlcGhl
-biBCb3lkIDwNCj4gPiA+ID4gPiBzYm95ZEBrZXJuZWwub3JnPg0KPiA+ID4gPiA+IHdyb3RlOg0K
-PiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiBRdW90aW5nIENoZW4tWXUgVHNhaSAoMjAyMy0xMC0x
-OSAyMjowNjozNSkNCj4gPiA+ID4gPiA+ID4gT24gVGh1LCBPY3QgMTksIDIwMjMgYXQgODo0OeKA
-r1BNIEFuZ2Vsb0dpb2FjY2hpbm8gRGVsDQo+ID4gPiA+ID4gPiA+IFJlZ25vDQo+ID4gPiA+ID4g
-PiA+IDxhbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNvbGxhYm9yYS5jb20+IHdyb3RlOg0KPiA+
-ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+IEZpeCB0aGUgcGFyZW50aW5nIG9mIGNsb2Nr
-cw0KPiA+ID4gPiA+ID4gPiA+IGltcF9paWNfd3JhcF9hcF9jbG9ja19pMmN7NC02fSwNCj4gPiA+
-IA0KPiA+ID4gYXMNCj4gPiA+ID4gPiA+ID4gPiB0aG9zZQ0KPiA+ID4gPiA+ID4gPiA+IGFyZSBl
-ZmZlY3RpdmVseSBwYXJlbnRlZCB0byBpbmZyYV9hb19pMmN7NC02fSBhbmQgbm90DQo+ID4gPiA+
-ID4gPiA+ID4gdG8NCj4gPiA+IA0KPiA+ID4gdGhlDQo+ID4gPiA+ID4gPiA+ID4gSTJDX0FQLg0K
-PiA+ID4gPiA+ID4gPiA+IFRoaXMgcGVybWl0cyB0aGUgY29ycmVjdCAoYW5kIGZ1bGwpIGVuYWJs
-ZW1lbnQgYW5kDQo+ID4gPiANCj4gPiA+IGRpc2FibGVtZW50DQo+ID4gPiA+ID4gPiA+ID4gb2Yg
-dGhlDQo+ID4gPiA+ID4gPiA+ID4gSTJDNCwgSTJDNSBhbmQgSTJDNiBidXMgY2xvY2tzLCBzYXRp
-c2Z5aW5nIHRoZSB3aG9sZQ0KPiA+ID4gPiA+ID4gPiA+IGNsb2NrDQo+ID4gPiANCj4gPiA+IHRy
-ZWUNCj4gPiA+ID4gPiA+ID4gPiBvZg0KPiA+ID4gPiA+ID4gPiA+IHRob3NlLg0KPiA+ID4gPiA+
-ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+IEFzIGFuIGV4YW1wbGUsIHdoZW4gcmVxdWVzdGluZyB0
-byBlbmFibGUNCj4gPiA+ID4gPiA+ID4gPiBpbXBfaWljX3dyYXBfYXBfY2xvY2tfaTJjNDoNCj4g
-PiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gPiBCZWZvcmU6IGluZnJhX2FvX2kyY19hcCAt
-PiBpbXBfaWljX3dyYXBfYXBfY2xvY2tfaTJjNA0KPiA+ID4gPiA+ID4gPiA+IEFmdGVyOiAgaW5m
-cmFfYW9faTJjX2FwIC0+IGluZnJhX2FvX2kyYzQgLT4NCj4gPiA+ID4gPiA+ID4gPiBpbXBfaWlj
-X3dyYXBfYXBfY2xvY2tfaTJjNA0KPiA+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+IEZp
-eGVzOiA2NmNkMGI0YjBjZTUgKCJjbGs6IG1lZGlhdGVrOiBBZGQgTVQ4MTg2IGltcCBpMmMNCj4g
-PiA+IA0KPiA+ID4gd3JhcHBlcg0KPiA+ID4gPiA+ID4gPiA+IGNsb2NrIHN1cHBvcnQiKQ0KPiA+
-ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25vIDwN
-Cj4gPiA+ID4gPiA+ID4gPiBhbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNvbGxhYm9yYS5jb20+
-DQo+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiBJJ20gY3VyaW91cyBhYm91dCB3aGF0IGxl
-ZCB0byBkaXNjb3ZlcmluZyB0aGlzIGVycm9yPw0KPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+
-IA0KPiA+ID4gPiA+ID4gSXMgdGhhdCBhbiBhY2tlZC1ieT8NCj4gPiA+ID4gPiANCj4gPiA+ID4g
-PiBNZWRpYVRlayBlbmdpbmVlcnMgYXJlIHNheWluZyB0aGUgb3JpZ2luYWwgY29kZSBhbHJlYWR5
-DQo+ID4gPiA+ID4gbWF0Y2hlcw0KPiA+ID4gDQo+ID4gPiB0aGUNCj4gPiA+ID4gPiBkb2N1bWVu
-dGF0aW9uIHByb3ZpZGVkIGJ5IHRoZWlyIGhhcmR3YXJlIGVuZ2luZWVycy4gSSdtDQo+ID4gPiA+
-ID4gdHJ5aW5nIHRvDQo+ID4gPiANCj4gPiA+IGdldA0KPiA+ID4gPiA+IHRoZW0gdG8gcmVzcG9u
-ZCBvbiB0aGUgbWFpbGluZyBsaXN0Lg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IENoZW5ZdQ0KPiA+
-ID4gPiA+IA0KPiA+ID4gPiANCj4gPiA+ID4gQWZ0ZXIgY2hlY2tpbmcgd2l0aCBJMkMgY2xvY2sg
-aGFyZHdhcmUgZGVzaWduZXIgdGhlcmUgaXMgbm8NCj4gPiA+ID4gaW5mcmFfYW9faTJjezQtNn0g
-Y2xvY2sgZ2F0ZSBpbiBiZXR3ZWVuLiBBbmQgdGhlIGNsb2NrIGRvY3VtZW50DQo+ID4gPiA+IGF0
-DQo+ID4gPiANCj4gPiA+IGhhbmQNCj4gPiA+ID4gYXNsbyBzaG93cyB0aGUgc2FtZSByZXN1bHQu
-IEdlbmVyYWxsbHkgc3BlYWtpbmcsIHdlIHdvdWxkIGxpa2UNCj4gPiA+ID4gdG8NCj4gPiA+IA0K
-PiA+ID4ga2VlcA0KPiA+ID4gPiBzdyBzZXR0aW5nIGFsaWduIHdpdGggdGhlIGhhcmR3YXJlIGRl
-c2lnbiBkb2N1bWVudC4gSSB3b3VsZA0KPiA+ID4gDQo+ID4gPiByZWNvbW1hbmQNCj4gPiA+ID4g
-bm90IHRvIGNoYW5nZSB0aGlzIHBhcnQgb2YgY29kZSwgYnV0IGVuYWJsZSBpbmZyYV9hb19pMmN7
-NC02fQ0KPiA+ID4gPiBwcmlvcg0KPiA+ID4gDQo+ID4gPiB0bw0KPiA+ID4gPiB0aGUgdXNhZ2Ug
-b2YgaW1wX2lpY193cmFwX2FwX2Nsb2NrX2kyYyBjbG9jay4NCj4gPiA+IA0KPiA+ID4gQXJlIGlu
-ZnJhX2FvX2kyY3s0LTZ9IGFjdHVhbGx5IHVzZWQgYnkgdGhlIGhhcmR3YXJlPyBJZiBzbywgZm9y
-DQo+ID4gPiB3aGF0DQo+ID4gPiBwdXJwb3NlPw0KPiA+IA0KPiA+IEFjY29yZGluZyB0byBoYXJk
-d2FyZSBkZXNpZ25lciBpdCBzZXJ2ZXJzIG5vIHB1cnBvc2UuIEp1c3QgYSBsZWdhY3kNCj4gPiBv
-Zg0KPiA+IHByZXZpb3VzIGRlc2lnbi4uLg0KPiA+IA0KPiA+ID4gSWYgaXQgaXMgYWN0dWFsbHkg
-bmVlZGVkIGJ5IHRoZSBoYXJkd2FyZSBhbmQgaXQgaXMgbm90IGluIHRoZQ0KPiA+ID4gZXhpc3Rp
-bmcgcGF0aCwNCj4gPiA+IHRoZW4gaXQgbmVlZHMgdG8gYmUgZGVzY3JpYmVkIGluIHRoZSBkZXZp
-Y2UgdHJlZSBhbmQgaGFuZGxlZCBieQ0KPiA+ID4gdGhlDQo+ID4gPiBkcml2ZXIuDQo+ID4gPiAN
-Cj4gPiA+IENoZW5ZdQ0KPiA+IA0KPiA+IEFmdGVyIHJldmlld2luZyBoYXJkd2FyZSBkZXNpZ24g
-ZGlhZ3JhbSwgaGFyZHdhcmUgZGVzaWduZXINCj4gPiBjb25jbHVkZXMNCj4gPiB0aGF0IHRoZSBj
-bG9jayB0cmVlIGlzIGluZGVlZA0KPiA+IA0KPiA+IHRvcF9pMmMgLT4gaW5mcmFfYW9faTJjezQt
-Nn0NCj4gPiB0b3BfaTJjIC0+IGluZnJhX2FvX2kyY19hcCAtPiBpbXBfaWljX3dyYXBfYXBfY2xv
-Y2tfaTJjezQtNn0NCj4gPiANCj4gPiBzbyBJIHRoaW5rIHdlIHNob3VsZCBrZWVwIHRoaXMgY2xv
-Y2sgcmVsYXRpb24gdW5jaGFuZ2VkLg0KPiA+IA0KPiA+IFRoYW5rcw0KPiA+IFl1Q2hhbmcNCj4g
-PiANCj4gDQo+IENhbiB5b3UgcGxlYXNlIGFsc28gZXhwYW5kIG9uIENMS19JTkZSQV9BT19JMkN7
-MSwyLDV9X0FSQklURVIgY2xvY2tzPw0KPiBJcyB0aGUgSTJDIGFyYml0ZXIgYWxzbyBsZWdhY3kg
-b2YgcHJldmlvdXMgZGVzaWducz8NCj4gDQo+IFBsZWFzZSBjaGVjayBbMV0sIGFzIEkndmUgc2Vu
-dCBhIGNvbW1pdCBhZGRpbmcgdGhvc2UgaW4gdGhlDQo+IGRldmljZXRyZWUuDQo+IA0KPiBUaGFu
-a3MsDQo+IEFuZ2Vsbw0KPiANCj4gWzFdOiANCj4gDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9h
-bGwvMjAyMzEwMjAwNzU1NDAuMTUxOTEtMS1hbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNvbGxh
-Ym9yYS5jb20vDQoNCkFjY29yZGluZyB0byBIYXJkd2FyZSBkZXNpZ25lciB0aGlzIGFyYml0ZXIg
-Y2xvY2sgaXMgYWxzbyBsYWdlY3kgb2YNCnByZXZpb3VzIGRlc2lnbiBhbmQgc2VydmUgbm8gZnVu
-Y3Rpb24uIEFuZCB0aGV5IGFyZSBjb25uZXRlZCB0byB0b3BfaTJjDQphcyB3ZWxsLg0KDQp0b3Bf
-aTJjLT4gQ0xLX0lORlJBX0FPX0kyQ3sxLDIsNX1fQVJCSVRFUg0KDQpBbHNvIG1heSBJIGtub3cg
-dGhlIGV4cGVyaW1lbnQgdGhhdCBsZWFkIHRvIHRoZSBjb25jbHVzaW9uIHRoYXQgeW91DQpuZWVk
-IHRoZSBBUkJJVEVSIGNsb2NrLCBhbmQgdGhlIGNsb2NrIHRyZWUgaXMgaW5jb3JyZWN0PyBJIHdp
-bGwgYnJpbmcNCml0IGJhY2sgdG8gZGlzY3VzcyB3aXRoIG91ciBJMkMgb3duZXIuIA0KDQpUaGFu
-a3MsDQpZdUNoYW5nDQoNCg0KDQo=
+--MP_/ZDyvUi=w9Td/hqvN2ahFssO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+This has very good performance improvements on user space implemented spin
+locks, and I'm sure this can be used for spin locks in VMs too. That will
+come shortly.
+
+I started with Thomas's PREEMPT_AUTO.patch from the rt-devel tree:
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/PREEMPT_AUTO.patch?h=v6.6-rc6-rt10-patches
+
+So you need to select:
+
+  CONFIG_PREEMPT_AUTO
+
+The below is my proof of concept patch. It still has debugging in it, and
+although I now use rseq, I likely used it incorrectly, and it needs to be
+changed. It's missing necessary comments too. But this is still just POC.
+
+I added a "cr_flags" to the end of the struct rseq. OK, the name sucks, I
+just thought of "critical" and had to pick something. Let's bikeshed
+that later. Now, that the bits live in the rseq structure, there's no need
+to open up any files. Although, you need to run the test with:
+
+ GLIBC_TUNABLES=glibc.pthread.rseq=0 ./extend-sched
+
+It will prevent glibc from adding its own rseq, and you can use the new
+extensions.
+
+Now my extend() and unextend() look like this:
+
+
+ static void extend(void)
+ {
+	rseq_map.cr_flags = 1;
+ }
+
+ static void unextend(void)
+ {
+	unsigned long prev;
+
+	prev = xchg(&rseq_map.cr_flags, 0);
+	if (prev & 2) {
+		tracefs_printf(NULL, "Yield!\n");
+		sched_yield();
+	}
+ }
+
+Note that any system call will do. sched_yield() is just something that
+"makes sense", but it could also be gettid(), which is probably even more
+efficient as the schedule will happen on the way back to user space,
+because the bit is now cleared but NEED_RESCHED_LAZY is still set.
+
+The magic will be how we get the rseq_map to play with. There's various
+ways to do that, but that's an exercise for later.
+
+So, bit 1 is for user space to tell the kernel "please extend me", and bit
+two is for the kernel to tell user space "OK, I extended you, but call
+sched_yield() (or any system call) when done".
+
+The attached test program creates 1 + number of CPUs threads, that run in a
+loop for 5 seconds. Each thread will grab a user space spin lock (not a
+futex, but just shared memory). Before grabbing the lock it will call
+"extend()", if it fails to grab the lock, it calls "unextend()" and spins
+on the lock until its free, where it will try again. Then after it gets the
+lock, it will update a counter, and release the lock, calling "unextend()"
+as well. Then it will spin on the counter until it increments again to
+allow another task to get into the critical section.
+
+With the init of the extend_map disabled and it doesn't use the extend
+code, it ends with:
+
+ Ran for 3908165 times
+ Total wait time: 33.965654
+
+I can give you stdev and all that too, but the above is pretty much the
+same after several runs.
+
+After enabling the extend code, it has:
+
+ Ran for 4829340 times
+ Total wait time: 32.635407
+
+It was able to get into the critical section almost 1 million times more in
+those 5 seconds! That's a 23% improvement!
+
+The wait time for getting into the critical section also dropped by the
+total of over a second (4% improvement).
+
+I ran a traceeval tool on it (still work in progress, but I can post when
+it's done), and with the following trace, and the writes to trace-marker
+(tracefs_printf)
+
+ trace-cmd record -e sched_switch ./extend-sched
+
+It showed that without the extend, each task was preempted while holding
+the lock around 200 times. With the extend, only one task was ever
+preempted while holding the lock, and it only happened once!
+
+Note, I tried replacing the user space spin lock with a futex, and it
+dropped performance down so much with and without the update, that the
+benefit is in the noise.
+
+Below is my patch (with debugging and on top of Thomas's PREEMPT_AUTO.patch):
+
+Attached is the program I tested it with. It uses libtracefs to write to
+the trace_marker file, but if you don't want to build it with libtracefs:
+
+  gcc -o extend-sched extend-sched.c `pkg-config --libs --cflags libtracefs` -lpthread
+
+You can just do:
+
+ grep -v tracefs extend-sched.c > extend-sched-notracefs.c
+
+And build that.
+
+But either way, to run it you need to export
+
+  GLIBC_TUNABLES=glibc.pthread.rseq=0
+
+Otherwise it will fail to register the rseq structure because glibc has
+already done that, but the glibc version doesn't include the extended size.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/all/20231025054219.1acaa3dd@gandalf.local.home/
+
+ - Use rseq as the interface (Peter Zijlsta)
+
+ (This patch is getting smaller and smaller!)
+
+ include/uapi/linux/rseq.h | 14 ++++++++++++++
+ kernel/entry/common.c     | 17 ++++++++++++++++-
+ kernel/rseq.c             | 27 +++++++++++++++++++++++++++
+ kernel/sched/fair.c       |  5 +++--
+ 4 files changed, 60 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/rseq.h b/include/uapi/linux/rseq.h
+index c233aae5eac9..bd3aa4085e7b 100644
+--- a/include/uapi/linux/rseq.h
++++ b/include/uapi/linux/rseq.h
+@@ -37,6 +37,18 @@ enum rseq_cs_flags {
+ 		(1U << RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE_BIT),
+ };
+ 
++enum rseq_cr_flags_bit {
++	RSEQ_CR_FLAG_IN_CRITICAL_SECTION_BIT	= 0,
++	RSEQ_CR_FLAG_KERNEL_REQUEST_SCHED_BIT	= 1,
++};
++
++enum rseq_cr_flags {
++	RSEQ_CR_FLAG_IN_CRITICAL_SECTION	=
++		(1U << RSEQ_CR_FLAG_IN_CRITICAL_SECTION_BIT),
++	RSEQ_CR_FLAG_KERNEL_REQUEST_SCHED	=
++	(1U << RSEQ_CR_FLAG_KERNEL_REQUEST_SCHED_BIT),
++};
++
+ /*
+  * struct rseq_cs is aligned on 4 * 8 bytes to ensure it is always
+  * contained within a single cache-line. It is usually declared as
+@@ -148,6 +160,8 @@ struct rseq {
+ 	 */
+ 	__u32 mm_cid;
+ 
++	__u32 cr_flags;
++
+ 	/*
+ 	 * Flexible array member at end of structure, after last feature field.
+ 	 */
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index c1f706038637..d8b46b9e5fd7 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -143,21 +143,35 @@ void noinstr exit_to_user_mode(void)
+ 
+ /* Workaround to allow gradual conversion of architecture code */
+ void __weak arch_do_signal_or_restart(struct pt_regs *regs) { }
++bool rseq_ignore_lazy_resched(void);
+ 
+ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+ 					    unsigned long ti_work)
+ {
++	unsigned long ignore_mask;
++
+ 	/*
+ 	 * Before returning to user space ensure that all pending work
+ 	 * items have been completed.
+ 	 */
+ 	while (ti_work & EXIT_TO_USER_MODE_WORK) {
++		ignore_mask = 0;
+ 
+ 		local_irq_enable_exit_to_user(ti_work);
+ 
+-		if (ti_work & (_TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY))
++		if (ti_work & _TIF_NEED_RESCHED) {
+ 			schedule();
+ 
++		} else if (ti_work & _TIF_NEED_RESCHED_LAZY) {
++			if (rseq_ignore_lazy_resched()) {
++				trace_printk("Extend!\n");
++				/* Allow to leave with NEED_RESCHED_LAZY still set */
++				ignore_mask |= _TIF_NEED_RESCHED_LAZY;
++			} else {
++				schedule();
++			}
++		}
++
+ 		if (ti_work & _TIF_UPROBE)
+ 			uprobe_notify_resume(regs);
+ 
+@@ -184,6 +198,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+ 		tick_nohz_user_enter_prepare();
+ 
+ 		ti_work = read_thread_flags();
++		ti_work &= ~ignore_mask;
+ 	}
+ 
+ 	/* Return the latest work state for arch_exit_to_user_mode() */
+diff --git a/kernel/rseq.c b/kernel/rseq.c
+index 9de6e35fe679..fd9d18f60c04 100644
+--- a/kernel/rseq.c
++++ b/kernel/rseq.c
+@@ -339,6 +339,33 @@ void __rseq_handle_notify_resume(struct ksignal *ksig, struct pt_regs *regs)
+ 	force_sigsegv(sig);
+ }
+ 
++bool rseq_ignore_lazy_resched(void)
++{
++	struct task_struct *t = current;
++	u32 flags;
++
++	if (!t->rseq)
++		return false;
++
++	/* Make sure the cr_flags exist */
++	if (t->rseq_len <= offsetof(struct rseq, cr_flags))
++		return false;
++
++	if (copy_from_user(&flags, &t->rseq->cr_flags, sizeof(flags)))
++		return false;
++
++	if (!(flags & RSEQ_CR_FLAG_IN_CRITICAL_SECTION))
++		return false;
++
++	flags |= RSEQ_CR_FLAG_KERNEL_REQUEST_SCHED;
++
++	/* If we fault writing, then do not give it an extended slice */
++	if (copy_to_user(&t->rseq->cr_flags, &flags, sizeof(flags)))
++		return false;
++
++	return true;
++}
++
+ #ifdef CONFIG_DEBUG_RSEQ
+ 
+ /*
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 700b140ac1bb..17ca22e80384 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -993,9 +993,10 @@ static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se, bool
+ 		resched_curr(rq);
+ 	} else {
+ 		/* Did the task ignore the lazy reschedule request? */
+-		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
++		if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY)) {
++			trace_printk("Force resched?\n");
+ 			resched_curr(rq);
+-		else
++		} else
+ 			resched_curr_lazy(rq);
+ 	}
+ 	clear_buddies(cfs_rq, se);
+-- 
+2.42.0
+
+
+--MP_/ZDyvUi=w9Td/hqvN2ahFssO
+Content-Type: text/x-c++src
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=extend-sched.c
+
+
+// Run with: GLIBC_TUNABLES=glibc.pthread.rseq=0 
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/time.h>
+#include <tracefs.h>
+#include <sys/syscall.h>
+#include "rseq-abi.h"
+#include <linux/tls.h>
+
+#define rseq(rseq, len, flags, sig) syscall(SYS_rseq, rseq, len, \
+					    flags, sig);
+
+#define __weak __attribute__((weak))
+
+//#define barrier() asm volatile ("" ::: "memory")
+#define rmb() asm volatile ("lfence" ::: "memory")
+#define wmb() asm volatile ("sfence" ::: "memory")
+
+
+static pthread_barrier_t pbarrier;
+
+static __thread struct rseq_abi __attribute__((aligned(sizeof(struct rseq_abi)))) rseq_map;
+
+static void init_extend_map(void)
+{
+	int ret;
+
+	ret = rseq(&rseq_map, sizeof(rseq_map), 0, 0);
+	perror("rseq");
+	printf("ret = %d (%zd) %p\n", ret, sizeof(rseq_map), &rseq_map);
+}
+
+struct data;
+
+struct thread_data {
+	unsigned long long			start_wait;
+	unsigned long long			x_count;
+	unsigned long long			total;
+	unsigned long long			max;
+	unsigned long long			min;
+	unsigned long long			total_wait;
+	unsigned long long			max_wait;
+	unsigned long long			min_wait;
+	struct data				*data;
+};
+
+struct data {
+	unsigned long long		x;
+	unsigned long			lock;
+	struct thread_data		*tdata;
+	bool				done;
+};
+
+static inline unsigned long
+cmpxchg(volatile unsigned long *ptr, unsigned long old, unsigned long new)
+{
+        unsigned long prev;
+
+	asm volatile("lock; cmpxchg %b1,%2"
+		     : "=a"(prev)
+		     : "q"(new), "m"(*(ptr)), "0"(old)
+		     : "memory");
+        return prev;
+}
+
+static inline unsigned long
+xchg(volatile unsigned *ptr, unsigned new)
+{
+        unsigned ret = new;
+
+	asm volatile("xchg %b0,%1"
+		     : "+r"(ret), "+m"(*(ptr))
+		     : : "memory");
+        return ret;
+}
+
+static void extend(void)
+{
+	rseq_map.cr_flags = 1;
+}
+
+static void unextend(void)
+{
+	unsigned long prev;
+
+	prev = xchg(&rseq_map.cr_flags, 0);
+	if (prev & 2) {
+		tracefs_printf(NULL, "Yield!\n");
+		sched_yield();
+	}
+}
+
+#define sec2usec(sec) (sec * 1000000ULL)
+#define usec2sec(usec) (usec / 1000000ULL)
+
+static unsigned long long get_time(void)
+{
+	struct timeval tv;
+	unsigned long long time;
+
+	gettimeofday(&tv, NULL);
+
+	time = sec2usec(tv.tv_sec);
+	time += tv.tv_usec;
+
+	return time;
+}
+
+static void grab_lock(struct thread_data *tdata, struct data *data)
+{
+	unsigned long long start, end, delta;
+	unsigned long long end_wait;
+	unsigned long long last;
+	unsigned long prev;
+
+	if (!tdata->start_wait)
+		tdata->start_wait = get_time();
+
+	while (data->lock && !data->done)
+		rmb();
+
+	extend();
+	start = get_time();
+	prev = cmpxchg(&data->lock, 0, 1);
+	if (prev) {
+		unextend();
+		return;
+	}
+	end_wait = get_time();
+	tracefs_printf(NULL, "Have lock!\n");
+
+	delta = end_wait - tdata->start_wait;
+	tdata->start_wait = 0;
+	if (!tdata->total_wait || tdata->max_wait < delta)
+		tdata->max_wait = delta;
+	if (!tdata->total_wait || tdata->min_wait > delta)
+		tdata->min_wait = delta;
+	tdata->total_wait += delta;
+
+	data->x++;
+	last = data->x;
+
+	if (data->lock != 1) {
+		printf("Failed locking\n");
+		exit(-1);
+	}
+	prev = cmpxchg(&data->lock, 1, 0);
+	end = get_time();
+	if (prev != 1) {
+		printf("Failed unlocking\n");
+		exit(-1);
+	}
+	tracefs_printf(NULL, "released lock!\n");
+	unextend();
+
+	delta = end - start;
+	if (!tdata->total || tdata->max < delta)
+		tdata->max = delta;
+
+	if (!tdata->total || tdata->min > delta)
+		tdata->min = delta;
+
+	tdata->total += delta;
+	tdata->x_count++;
+
+	/* Let someone else have a turn */
+	while (data->x == last && !data->done)
+		rmb();
+}
+
+	
+	
+static void *run_thread(void *d)
+{
+	struct thread_data *tdata = d;
+	struct data *data = tdata->data;
+
+	init_extend_map();
+
+	pthread_barrier_wait(&pbarrier);
+
+	while (!data->done) {
+		grab_lock(tdata, data);
+	}
+	return NULL;
+}
+
+int main (int argc, char **argv)
+{
+	unsigned long long total_wait = 0;
+	unsigned long long secs;
+	pthread_t *threads;
+	struct data data;
+	int cpus;
+
+	memset(&data, 0, sizeof(data));
+
+	cpus = sysconf(_SC_NPROCESSORS_CONF);
+
+	threads = calloc(cpus + 1, sizeof(*threads));
+	if (!threads) {
+		perror("threads");
+		exit(-1);
+	}
+
+	data.tdata = calloc(cpus + 1, sizeof(*data.tdata));
+	if (!data.tdata) {
+		perror("Allocating tdata");
+		exit(-1);
+	}
+
+	tracefs_print_init(NULL);
+	pthread_barrier_init(&pbarrier, NULL, cpus + 2);
+
+	for (int i = 0; i <= cpus; i++) {
+		int ret;
+
+		data.tdata[i].data = &data;
+		ret = pthread_create(&threads[i], NULL, run_thread, &data.tdata[i]);
+		if (ret < 0) {
+			perror("creating threads");
+			exit(-1);
+		}
+	}
+
+	pthread_barrier_wait(&pbarrier);
+	sleep(5);
+
+	printf("Finish up\n");
+	data.done = true;
+	wmb();
+
+	for (int i = 0; i <= cpus; i++) {
+		pthread_join(threads[i], NULL);
+		printf("thread %i:\n", i);
+		printf("   count:\t%lld\n", data.tdata[i].x_count);
+		printf("   total:\t%lld\n", data.tdata[i].total);
+		printf("     max:\t%lld\n", data.tdata[i].max);
+		printf("     min:\t%lld\n", data.tdata[i].min);
+		printf("   total wait:\t%lld\n", data.tdata[i].total_wait);
+		printf("     max wait:\t%lld\n", data.tdata[i].max_wait);
+		printf("     min wait:\t%lld\n", data.tdata[i].min_wait);
+		total_wait += data.tdata[i].total_wait;
+	}
+
+	secs = usec2sec(total_wait);
+
+	printf("Ran for %lld times\n", data.x);
+	printf("Total wait time: %lld.%06lld\n", secs, total_wait - sec2usec(secs));
+	return 0;
+}
+
+--MP_/ZDyvUi=w9Td/hqvN2ahFssO--
