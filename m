@@ -2,192 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D483E7D7C28
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5997D7C29
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbjJZFYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S233175AbjJZFZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjJZFYc (ORCPT
+        with ESMTP id S229705AbjJZFZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:24:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2537DE;
-        Wed, 25 Oct 2023 22:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698297870; x=1729833870;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=3CPW33dw8E+rfnatzv4xjyTx4hZY4gtXXGIe4Ric7G0=;
-  b=Nf9IJxjmt8VxRV6i2T9BB7Tw6Xy/5Ruua3UdY5Uv8rLmY5KV9MEH7VAL
-   7GpsKMolnvjCjK/0hFKyOgIyKmKpM98dtl2p86+FvB1f6xpSys7cOZJ52
-   w14VmaNSdfdH0nFyJOvZKU8qIQ0FTaRdFxdhYcVt0mEHPY6NUUgu6iH1k
-   RvPDEYZ8/BjLISQxo6KloMlKcm6bI7txLdbn3mxRYiAvo3mw36z2RQWfZ
-   yHDS8vq+l+EQbDZLpC3Nc4JqtGWaZolX+LsK+OvaTurnJwoIjZ9pILWFm
-   i/BMs0In4sUIVhGJsgndlDAa2h5CJVjEsdTA+1lr4e6/72CKJgM28+s9J
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="384668497"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="384668497"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 22:24:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="882699609"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="882699609"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Oct 2023 22:24:30 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 25 Oct 2023 22:24:29 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 25 Oct 2023 22:24:29 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 25 Oct 2023 22:24:29 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 25 Oct 2023 22:24:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JbG+33vRr5/mGyAZ9W6p1KYJtmKGFmEImYdLB/uMgJyqfSoSTg9QTgGf9gLrUpvC/ci0VebTqWVgotXZRhsR3uujSyIghR8c2DzJe8PDDUheqNh+oi/y8a2+E9sFFzs/BeShKDF1rm1PcIyBULEd6Qmnc/xVXmNG1DzoHZy0Y9bI2fhy8pmCQ6ad2c8JuPx7PObpWPAnTWf7XZLXcuuTmWgIvL1CnY4ydbCh1lN9re7kXkzdJ1q05CaPGYnDZJi6xziSpwEPzfVCCZDEl3vn/cNQvv4DmJJJFjJWXe6rwPFnETjayX6k3t6cGboD+pgx00k3dmqIqW5/fxPTKr+Wsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3CPW33dw8E+rfnatzv4xjyTx4hZY4gtXXGIe4Ric7G0=;
- b=MyTzk0UHv3O2Rt4BsHZEqmNGAOJNkpmDePETw2cA5N9AiO5GKoiEklOUwhaJpOuoZV5S2GwHke/MYpCgjaEfiOFLOeg00LmsLtVogCId1rPyg2jLYZaEy/ZOyMNQk/DadOSjaD8b7380m1TmjEK2OQG7pc4xQwWCSGq6DMz+c3v2RA+0ScK0y5n7bZYhDV6+SJigCXvOE/XeJo2ztQWsOus6plRb0oajq0mVq/g0visb+Y78BuNM1Rsi6MzUX7tLyCddNzifVQ4k2Xb6bX808Lhef2bajrH6yRaWRvSxxfjTtWv4EMoQpZsnh56dCl0ez+DmT615QG1Qq4SLz0yI/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DS0PR11MB8208.namprd11.prod.outlook.com (2603:10b6:8:165::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 26 Oct
- 2023 05:24:27 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.6933.022; Thu, 26 Oct 2023
- 05:24:26 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>
-Subject: RE: [PATCH v8 7/8] iommu/vt-d: Add nested domain allocation
-Thread-Topic: [PATCH v8 7/8] iommu/vt-d: Add nested domain allocation
-Thread-Index: AQHaB8baDukoOEgD/ESJ34Xy2HVN37BbiZeg
-Date:   Thu, 26 Oct 2023 05:24:24 +0000
-Message-ID: <BN9PR11MB5276DB4C494507CA5271975D8CDDA@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231026044216.64964-1-yi.l.liu@intel.com>
- <20231026044216.64964-8-yi.l.liu@intel.com>
-In-Reply-To: <20231026044216.64964-8-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS0PR11MB8208:EE_
-x-ms-office365-filtering-correlation-id: 458b7a50-d3fe-4c9b-2edc-08dbd5e3d14b
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pH829fGT2PVfkCCdKPqYel+chfYopUvyVJO2Ct+aoESRECez5UqeZBfWLENRVozHPticKZxI0Ih+yl3UsIzkb7Yfpm8SQu4/UNWTBx6pn7mAWlgj0qhZr4OUQRyn1yavZAGwqiSlb5nhgA2Llc4SZuLeJSSCvbYFGVQMdziAoVlVvgQ8T8MCYImvpkp5Rb+MXbdTfJPaZ8eq+xraKFFNf5fLCujwvellEQm7NpgHwHtPZmUp6bok9tPklonBCGjNZxNUsJDGnIoTFrUCZgYnzh9NOmbwyQMbUpiAzmpKklzG1X2dbe8zL7WuiUPjpCzIMysfaqECEhdeSNV2MhEdFDgALGJ8gw96bJJtfh6Ws7c8n5Eelsw+rxSwpcyYostEEjdean9mLJ2y7sO5J+kPhcAZDXHDJGY9TCm+RGkSGOWJFCJyTOnNlfNQ5aAyRwEpd+7B3mMTc+OeQUZT8LGZXWnWRiLDgzPfp3Obrw6qKQ9amGNzd1rHCMOLLqPxJ8S5UH3nSuHagpPkAYS7zpO9r/tJC7w4HkPIfQMZhDFHEIpyw0QudqLQgjlSbljWuPziWVkt4DHmJs+0RlmKrpkQdl3afno4Ikb+KzyKGWmsXFe1c4Rc0eetDXKVNggouzxe
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(396003)(346002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(110136005)(478600001)(7696005)(76116006)(86362001)(316002)(6506007)(54906003)(66946007)(66476007)(66556008)(66446008)(64756008)(38100700002)(38070700009)(33656002)(52536014)(2906002)(4744005)(7416002)(122000001)(71200400001)(8676002)(4326008)(8936002)(82960400001)(9686003)(5660300002)(41300700001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lFSJqTGPAg37/rxJS64vS/F53y0sLtv9ucwZhiE1Gbnqh5VyTCr0ei83A29H?=
- =?us-ascii?Q?cTFaa01qiVCQ7Gv7Dw98Zx8nRlMecKw+4TyGmSe3wG0COY3uF9Qc5WVxwMU9?=
- =?us-ascii?Q?7GpWZcoQBqyi80lhPnL6czuAHDAk1lSXvrzmzN+aecYm/vFXKVQtltJ7F9O8?=
- =?us-ascii?Q?FJUCZW1kh/1zyzgW61g78QW5v4/iQHSvPOPiI5s6eR1klmHbga3IZm2R/EEl?=
- =?us-ascii?Q?swkb0ZmwI+tzPknNRdGfSRoiqKJClwbm/xLwz/tQjiBR7zKBbLBdWUunmg2D?=
- =?us-ascii?Q?W+tkb0fNQSxNCikVBUaZAMIOLkKmC6BNE60TMqLVZcMtcGMUNc0lfh54AZLT?=
- =?us-ascii?Q?Ke70k+Yw2CaoO5U7tM/OM9c2zDIqcUPoCC1qH3DLFwJ/+WpvaIunma5pkWa4?=
- =?us-ascii?Q?Ijuo/N2e7UJKkOEkO2NiV/jhttVBXKp3hJZHh/xD16ndHSGYJ8B+jYOWaeOu?=
- =?us-ascii?Q?Y7y4K+RoDh21mmgnKrhIx8CCC3iF2nUmV1/PXMYpqESl6P68z92QV28D0Gvi?=
- =?us-ascii?Q?uMR89SYZiYlKc5nXOwaDUsFcJLeGVxKVNoLm7MRI85CmmAF7bxNwbyFJqrmq?=
- =?us-ascii?Q?Ka79wmo3sCTKMybJwgMjlWdeS0KrKPCdEG9ukmWviwYfJXi7CJJJKTsiKrYs?=
- =?us-ascii?Q?58B7fPm/4PL88ITPhOCF4WIsUMarzE9HW9/GU9y0L+e/aS83rLrlc19pAa+z?=
- =?us-ascii?Q?fpyCMkXnQhrmH75/8/y6YQaLgKZ5+Vt0L4xTGcyoLOiJY2S7J/n06PvR88n9?=
- =?us-ascii?Q?sEZf2R3gGcJZ8Ar43leh/gMtEpnrXfqbS/n9GYgx/c3+/XifEjp/ZyWgGinW?=
- =?us-ascii?Q?zm4/0kt+MprvHp5dAr5ZIwaxXJARmvCN69e+mvjUgDHkLp5fPEhCnz24zFtO?=
- =?us-ascii?Q?HSMZLbcrPIJuk5zlkUTDqNflz5QFyuRImAEjPK0YggRbdF9bfcEj4OMn7Wct?=
- =?us-ascii?Q?F7QGgGySzLV7rJf4df+/A0Y//g3Tn7xwSNPUnv9ZsNBlTUDtbfG7/DVqmppr?=
- =?us-ascii?Q?CkGIxmzJe/LWXG2c+n+Z9dgdM66joJEtwmWOuJBKexUFzugFI3szB58GdgTC?=
- =?us-ascii?Q?8B0aM4Zned233FQ+HNYh+T68CfUT5Ddpv4E4DJBCh2aoBw7enJSxCwpeDdDz?=
- =?us-ascii?Q?lYuHKc5IZybPg5WGaH2SYJpK9H+6/JVjYtyt2pJgjAA8oBTu+MhbiJ00B0nh?=
- =?us-ascii?Q?4MvNhsY3FgvJp39alIMWsj6ee0Aag3TQ29CDEwTYaxyd1QrS+URhPCN5Brrn?=
- =?us-ascii?Q?89h/HfYPAeJLDIHehSfc8inr/vPLFTddoDQkSMdjky5R9rxlAsQKB22ouNVl?=
- =?us-ascii?Q?aLAMmmffFGiIZ9GjtI2zU0/H3+MQeIeIcV51Sivd9b3hUKXyNOr74yaKyo5n?=
- =?us-ascii?Q?b/kbRNLoT67LxVo+uQR1+kYYQBmU0PhnUbwmaQT5B5yQbZc7NttRd7sy+NOX?=
- =?us-ascii?Q?lYDW8oVVxFNdsOVaqCi1AJy42YdHSyOcd45UgtdYZdrZ2AW3Ia+6seGQ515U?=
- =?us-ascii?Q?x5WQffEIXKsdsJS6xi3izpk6piNdnXHGroUTZAg4ppvg3yl/yCNcq8ygMrDr?=
- =?us-ascii?Q?vWFRa2q8k3DBNqt9pZs=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 26 Oct 2023 01:25:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5B0DE
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=264fWZxxGW0DECTaVAjBqKdK5xaDEeBQUM+BQhVJXr8=; b=bPcJdpIIRjy9nbG0xYgLhFYaKc
+        E7Kwik4J0iRTYo2zaHoFt+mjojzBkRX3xn9HWrtIkGlgX7F8jQbP+rXdbERNhPUZtDvVgzXfa9j4t
+        XjSTYZpMP5XghxXMxgpG2gP4nuDGos5rL94dWtTqMlrrcRLaJCmcYlh57HE4JoN1i1vOZ9S2XZqd+
+        PEEe7lf7gZFXvep0xNdNOF3v8fKi3UWWSB31Txls96MS//ZegmOE5RIxnCEWUVv2TLYp/Gjbkwu65
+        goOzl2KYpQIhpg4cZL3FUNH/CpNCoJQX9oAOedPsjaxzHgZ6rMrJzlpYYWTp37+vYcHNHTH/ngjFR
+        GQAAOAvg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvss3-00Dh6y-0m;
+        Thu, 26 Oct 2023 05:25:27 +0000
+Message-ID: <8ed89012-9018-473c-9007-8c34bbb57bcf@infradead.org>
+Date:   Wed, 25 Oct 2023 22:25:26 -0700
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 458b7a50-d3fe-4c9b-2edc-08dbd5e3d14b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 05:24:24.8524
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PhD3RoDIiI9B/iFtoGpBopG9oWUWqiNtZYA0ZzZaIaY2d9aDgXx3PXbDdS4M3q7bEZK9/PB0TceHENBpKsfSLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8208
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel/user_namespace.c:239: warning: Function parameter or
+ member 'map_up' not described in 'idmap_key'
+Content-Language: en-US
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <202308172003.O1QB7TgB-lkp@intel.com>
+ <9a05d92f-60c5-6ede-2105-829f09c737b7@infradead.org>
+ <20230830-koiteich-ehrerbietung-8191852e752b@brauner>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230830-koiteich-ehrerbietung-8191852e752b@brauner>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Thursday, October 26, 2023 12:42 PM
->=20
-> From: Lu Baolu <baolu.lu@linux.intel.com>
->=20
-> This adds the support for IOMMU_HWPT_DATA_VTD_S1 type. And
-> 'nested_parent'
-> is added to mark the nested parent domain to sanitize the input parent
-> domain.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-I have given my r-b on this when replying to Jason's change in
-last version.
+
+On 8/30/23 01:24, Christian Brauner wrote:
+> On Mon, Aug 28, 2023 at 10:13:06PM -0700, Randy Dunlap wrote:
+>> Hi Christian,
+>>
+>> On 8/17/23 05:56, kernel test robot wrote:
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>> head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+>>> commit: e227db4d4f125efb1cae2f1337da85bc10b3185e userns: fix a struct's kernel-doc notation
+>>> date:   7 months ago
+>>> config: parisc64-defconfig (https://download.01.org/0day-ci/archive/20230817/202308172003.O1QB7TgB-lkp@intel.com/config)
+>>> compiler: hppa64-linux-gcc (GCC) 12.3.0
+>>> reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172003.O1QB7TgB-lkp@intel.com/reproduce)
+>>>
+>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>>> the same patch/commit), kindly add following tags
+>>> | Reported-by: kernel test robot <lkp@intel.com>
+>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202308172003.O1QB7TgB-lkp@intel.com/
+>>>
+>>> All warnings (new ones prefixed by >>):
+>>>
+>>>>> kernel/user_namespace.c:239: warning: Function parameter or member 'map_up' not described in 'idmap_key'
+>>>>> kernel/user_namespace.c:239: warning: Function parameter or member 'id' not described in 'idmap_key'
+>>>>> kernel/user_namespace.c:239: warning: Function parameter or member 'count' not described in 'idmap_key'
+>>>    kernel/user_namespace.c:246: warning: Function parameter or member 'k' not described in 'cmp_map_id'
+>>>    kernel/user_namespace.c:246: warning: Function parameter or member 'e' not described in 'cmp_map_id'
+>>>    kernel/user_namespace.c:277: warning: Function parameter or member 'extents' not described in 'map_id_range_down_max'
+>>>    kernel/user_namespace.c:277: warning: Function parameter or member 'map' not described in 'map_id_range_down_max'
+>>>    kernel/user_namespace.c:277: warning: Function parameter or member 'id' not described in 'map_id_range_down_max'
+>>>    kernel/user_namespace.c:277: warning: Function parameter or member 'count' not described in 'map_id_range_down_max'
+>>>    kernel/user_namespace.c:295: warning: Function parameter or member 'extents' not described in 'map_id_range_down_base'
+>>>    kernel/user_namespace.c:295: warning: Function parameter or member 'map' not described in 'map_id_range_down_base'
+>>>    kernel/user_namespace.c:295: warning: Function parameter or member 'id' not described in 'map_id_range_down_base'
+>>>    kernel/user_namespace.c:295: warning: Function parameter or member 'count' not described in 'map_id_range_down_base'
+>>>    kernel/user_namespace.c:344: warning: Function parameter or member 'extents' not described in 'map_id_up_base'
+>>>    kernel/user_namespace.c:344: warning: Function parameter or member 'map' not described in 'map_id_up_base'
+>>>    kernel/user_namespace.c:344: warning: Function parameter or member 'id' not described in 'map_id_up_base'
+>>>    kernel/user_namespace.c:364: warning: Function parameter or member 'extents' not described in 'map_id_up_max'
+>>>    kernel/user_namespace.c:364: warning: Function parameter or member 'map' not described in 'map_id_up_max'
+>>>    kernel/user_namespace.c:364: warning: Function parameter or member 'id' not described in 'map_id_up_max'
+>>>    kernel/user_namespace.c:776: warning: Function parameter or member 'map' not described in 'insert_extent'
+>>>    kernel/user_namespace.c:776: warning: Function parameter or member 'extent' not described in 'insert_extent'
+>>>    kernel/user_namespace.c:844: warning: Function parameter or member 'map' not described in 'sort_idmaps'
+>>>
+>>
+>> According to 'git blame', all of these come from additions that you made.
+>>
+>> What do you think about a patch that converts all of these into non-kernel-doc comments?
+>> I.e., change "/**" to "/*" for the functions and struct?
+> 
+> Yeah, sure.
+
+Hi Christian,
+
+I sent a patch for this on 2023-AUG-30:
+
+https://lore.kernel.org/all/20230830163215.13193-1-rdunlap@infradead.org/
+
+
+-- 
+~Randy
