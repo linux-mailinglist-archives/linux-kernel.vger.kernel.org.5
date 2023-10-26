@@ -2,172 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB857D825C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8987D825E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344871AbjJZMPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        id S1344833AbjJZMQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjJZMPu (ORCPT
+        with ESMTP id S230285AbjJZMQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:15:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F96B9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698322548; x=1729858548;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PVAv9bGwxt5kvEjJKPI54bMwvQAwbEv1pym1jtK6Uxg=;
-  b=WK09NWvutb9wmQwR9t18v7+xDi2CbO94k7FR92U8HPhAcRkK/cpwhR52
-   fqZinbG65vnn8BOjDXaxcg8lZxaxsjGqys1Ytxg+HJwEt/wfBdfLEVqJF
-   1SmMr9TkFnxUTPSc1z9rDBsWaaoGycjWVjdjiwi3EIAxbkk5vzhjHYXYT
-   3EEU+qsHtRTArfBxb2qR7Ht/NFJsYGhUrzyrA3kU8V5nRyWDI01bwQrHP
-   ao8zrddBElZyY83pUE/E0jXan/OpageXFXD3AcQgmEo2pxvbmkRbxEHNu
-   Op/mLwXMUx69fHzgIE6aov4yXWChgcBukbpxqXJ86E9ugjJf2V+UGzr14
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="391395439"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="391395439"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:15:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="759164502"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="759164502"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:15:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qvzH2-00000008qkb-2TBo;
-        Thu, 26 Oct 2023 15:15:40 +0300
-Date:   Thu, 26 Oct 2023 15:15:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
-        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
-        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 1/2] lib/bitmap: add bitmap_{read,write}()
-Message-ID: <ZTpYbCa0Qmry0HGH@smile.fi.intel.com>
-References: <20231025083812.456916-1-glider@google.com>
+        Thu, 26 Oct 2023 08:16:39 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01D8B9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:16:36 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9d132d92cso1655075ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698322596; x=1698927396; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
+        b=EYx9yii6b/rzXBx4KU4/nBrcHsWJJDsvR95ktWQNk5/13R79Jz625TL2w01wyfjl6q
+         okJYH9N1nupXgBF7Agjt0nCaNRm35IZJOdttUtb+hks6gf+zpuYTQYlzZVveu6uV9eDR
+         extzggeGHZs0SQdvj0383gl1jiaALrVSoT58oeu28F5p49TEJBtFw1dh8fM0F6QzUySo
+         3hfvfMTP9splfwBNi0zhoTs/pvQPlN39ctYGKTMlGP43tThv3h6aAcWlqp6+lAXqsjZE
+         ESbLzG/4cDLlk4RiGjzBc4NPyz/LyWy/a8ryIPY38UJp7WMzJ1vmOJhG0GyY2Ay40hfh
+         rt0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698322596; x=1698927396;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
+        b=IGGWe6h4yGBhbHkyxrAHncNk0RVyW2Y3a6J57j88ky7BHm8gOJk3lzx7zOhbIP3yHx
+         lfW0cHY2k+0OVi+uBIQu94uRzhBUgp6tE+W5t5Pp0il5P/j6cw/HFeJDLTDvcwj7gHH8
+         yobrF6r4OAOhA24SkuAo9p2fqi2Z8NNiUX5B3wffO3zb/Qb87gd3NmPAWRvkEuCnYlkS
+         rG98C70hZnDPgzBJisTS4noPlJ9/x/jUHYaUR/BprsVr/oC55jDtY7M1cwS/x5S2NWKP
+         9AnDQSwsXDg616d0FqKbU53WQUnWn3oBG+gv2lvS+g8AYYHgVjiK1wGN5HdAqDaNdaqz
+         a8zw==
+X-Gm-Message-State: AOJu0YxN9XizcCMXsC+QquKqxCiCrnLYYgBFNolNsEtX7PE4DdKgp7xR
+        AMmqnU4G9yFu0D1PRmHH52g=
+X-Google-Smtp-Source: AGHT+IEx/OC9MKfzRsz/7kV73A86XsZe58590KKbyAkpmjp40WJ407zi5FlpwA/ZR3sTNt6Q+feoBQ==
+X-Received: by 2002:a17:903:41c7:b0:1bf:349f:b85c with SMTP id u7-20020a17090341c700b001bf349fb85cmr17553128ple.1.1698322596368;
+        Thu, 26 Oct 2023 05:16:36 -0700 (PDT)
+Received: from abhinav.. ([103.75.161.208])
+        by smtp.gmail.com with ESMTPSA id i13-20020a170902eb4d00b001bde65894c8sm691439pli.268.2023.10.26.05.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 05:16:36 -0700 (PDT)
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+To:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        mst@redhat.com, michael.christie@oracle.com,
+        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
+        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>
+Subject: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
+Date:   Thu, 26 Oct 2023 17:46:21 +0530
+Message-Id: <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025083812.456916-1-glider@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 10:38:11AM +0200, Alexander Potapenko wrote:
-> From: Syed Nayyar Waris <syednwaris@gmail.com>
-> 
-> The two new functions allow reading/writing values of length up to
-> BITS_PER_LONG bits at arbitrary position in the bitmap.
-> 
-> The code was taken from "bitops: Introduce the for_each_set_clump macro"
-> by Syed Nayyar Waris with a number of changes and simplifications:
->  - instead of using roundup(), which adds an unnecessary dependency
->    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
->  - indentation is reduced by not using else-clauses (suggested by
->    checkpatch for bitmap_get_value());
->  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
->    and bitmap_write();
->  - some redundant computations are omitted.
+This patch fixes the warning about directly dereferencing a pointer
+tagged with __rcu annotation.
 
-...
+Dereferencing the pointers tagged with __rcu directly should
+always be avoided according to the docs. There is a rcu helper
+functions rcu_dereference(...) to use when dereferencing a __rcu
+pointer. This functions returns the non __rcu tagged pointer which
+can be dereferenced just like a normal pointers.
 
->   *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
->   *  bitmap_get_value8(map, start)               Get 8bit value from map at start
->   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
-> + *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
-> + *                                              map at start
-> + *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
-> + *                                              map at start
+Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+---
+ kernel/fork.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I still didn't get the grouping you implied with this...
-
->   * Note, bitmap_zero() and bitmap_fill() operate over the region of
->   * unsigned longs, that is, bits behind bitmap till the unsigned long
-
-...
-
-> +/**
-> + * bitmap_read - read a value of n-bits from the memory region
-> + * @map: address to the bitmap memory region
-> + * @start: bit offset of the n-bit value
-> + * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
-> + *
-> + * Returns: value of nbits located at the @start bit offset within the @map
-> + * memory region.
-> + *
-> + * Note: callers on 32-bit systems must be careful to not attempt reading more
-> + * than sizeof(unsigned long).
-
-sizeof() here is misleading, We talk about bits, BITS_PER_LONG (which is 32),
-here it's better to be explicit that reading more than 32 bits at a time on
-32-bit platform will return 0. Actually what you need is to describe...
-
-> + */
-> +static inline unsigned long bitmap_read(const unsigned long *map,
-> +					unsigned long start,
-> +					unsigned long nbits)
-> +{
-> +	size_t index = BIT_WORD(start);
-> +	unsigned long offset = start % BITS_PER_LONG;
-> +	unsigned long space = BITS_PER_LONG - offset;
-> +	unsigned long value_low, value_high;
-> +
-> +	if (unlikely(!nbits || nbits > BITS_PER_LONG))
-> +		return 0;
-
-...this return in the Return section.
-
-> +
-> +	if (space >= nbits)
-> +		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
-> +
-> +	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
-> +	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
-> +	return (value_low >> offset) | (value_high << space);
-> +}
-
-...
-
-> +/**
-> + * bitmap_write - write n-bit value within a memory region
-> + * @map: address to the bitmap memory region
-> + * @value: value to write, clamped to nbits
-> + * @start: bit offset of the n-bit value
-> + * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
-> + *
-> + * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
-> + * i.e. bits beyond @nbits are ignored:
-> + *
-> + *   for (bit = 0; bit < nbits; bit++)
-> + *           __assign_bit(start + bit, bitmap, val & BIT(bit));
-
-> + * Note: callers on 32-bit systems must be careful to not attempt writing more
-> + * than sizeof(unsigned long).
-
-Ditto.
-
-> + */
-
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..802b7bbe3d92 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+ 
+ 	retval = -EAGAIN;
+ 	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+-		if (p->real_cred->user != INIT_USER &&
++		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
+ 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+ 			goto bad_fork_cleanup_count;
+ 	}
+@@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
+ 			 */
+ 			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+ 							 p->real_parent->signal->is_child_subreaper;
+-			list_add_tail(&p->sibling, &p->real_parent->children);
++			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
+ 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+ 			attach_pid(p, PIDTYPE_TGID);
+ 			attach_pid(p, PIDTYPE_PGID);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
