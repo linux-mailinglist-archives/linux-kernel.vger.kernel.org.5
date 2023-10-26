@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB1B7D889F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322887D888D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJZS6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S230218AbjJZSvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjJZS6F (ORCPT
+        with ESMTP id S230008AbjJZSvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:58:05 -0400
+        Thu, 26 Oct 2023 14:51:17 -0400
 Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F82A1A5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507c1936fd5so2734192e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8C410A
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:51:14 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507bd644a96so1840988e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698346681; x=1698951481; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCdrR76awIJQhAH7GAdkL7E4ZFaTBKsQRWujNlskIyM=;
-        b=R/pipA2GCWrOH4V6HgSk1BBOUVR4Yo9q8QBbSw1dS/jt/LLNcv0SWwje44eXsVZxPt
-         hSdRWk8U7g3eq3M2HTvoi6m1RrVRXLx8MbheHHZNsbMgqtN1p8mIjrqe6QrV07g/Eed5
-         +oOWiALTyECmV9dqmViv0hK4ksmBJbw69VVXI=
+        d=gmail.com; s=20230601; t=1698346273; x=1698951073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bjgIP3/RFXj237O05z3snhsyWeDqmW3TRwFtEyuVOqk=;
+        b=Z8ZwAL43j4TQLlWJzhDu14EMiU0mstUjkhjb0T5w5PVxgbOhjX63/45h1ZWfkWi2vt
+         oWgfKMzwuAyRPiEvv5MXbxHJGu85UxjpveXWpuPn4sJ6EptJyr7T0LE86LpqMTsk+vvz
+         zzarmpJImPdxL3iWVs8iPP9W+lywUplqyyIW2b7F5MlHbid1iHs++6D/uXokWF9DXhB1
+         qpnWAbseTCAtrQDkrt8Y/rFYuFkqPofkQigP5EGZryEte2FEwQFqHixfpjJ4u/Eu20SF
+         H26NircbNF0r/9n9VGrVFPuaBesexucMqZxENjBAre9rzMtmdxoppKGG8HHgdUwxTMFm
+         akCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698346681; x=1698951481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FCdrR76awIJQhAH7GAdkL7E4ZFaTBKsQRWujNlskIyM=;
-        b=aDq0dA52z5QXCkxyb6eT1DjsFKQSuKVQnNptplGnEK3rySEaFBS9sA1b0eSQ/Xb61p
-         PAH7ElHslBxsgvQ3zJVOSkyMTEjoHePui8/QqLdhjVe8Ze1cFiZSVaUoS/55vZujvMyz
-         CNkxErDXRF9YsMRUgzQvSelX8/jEao0u8B1b5VibzWzh2ei8WP71UygteWhlhAXSgEXe
-         TdOIve+X16EdKzQPht6cNZIPRkNWFrKkT32QRp7yRG4gyoPIvVv3Fe2JrUsv1U23bFv/
-         7AyZXr76py+TJroz8+pxVfKyVDe4uhBzUuBSlX3xHrtgRJDzXqgtcqCULoQpZX2C04ed
-         L2Kg==
-X-Gm-Message-State: AOJu0Yx90n92V5b9m23z+pp6d5ftewov1CRjIEUHTRjchG2FKYbL/Ux6
-        1w8YRhxLngaTDKmzJ36dst1p45edO67lA24BuGn1zeTG
-X-Google-Smtp-Source: AGHT+IGONZ5AYAKSnonvXL7BAxneclsemu7xxzsP6Gw5xsRHUMSnx3WHBVTt6wYhF/n2YvEvoqpC4w==
-X-Received: by 2002:a05:6512:108c:b0:508:1a4c:84b9 with SMTP id j12-20020a056512108c00b005081a4c84b9mr228013lfg.14.1698346680986;
-        Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id w2-20020ac254a2000000b00507d1ed897esm3098505lfk.129.2023.10.26.11.58.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so1423981e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:58:00 -0700 (PDT)
-X-Received: by 2002:aa7:d352:0:b0:541:1e0d:b56f with SMTP id
- m18-20020aa7d352000000b005411e0db56fmr2544458edr.12.1698346251196; Thu, 26
- Oct 2023 11:50:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698346273; x=1698951073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bjgIP3/RFXj237O05z3snhsyWeDqmW3TRwFtEyuVOqk=;
+        b=O/YjYX6GnkQ+oE/KL6vtASw0fvppfxDiQaQFTd3AH1BGnLKF0Fautm+oFEVkw7n9os
+         tOJ9zokxb26+quhtK3u6bDWCLtl2tU7QQ6oh2TbCIzMxn2BNiQib6Qe9egTBu8A3a8P/
+         hOZywd4Grc3cc5SFdxcxhUQvmOyjibv+7a49oCKIKt7SUvIE3BvEf65x1oLdxIe68jDI
+         6vPgxt7yU0nb0M3XKH/P2JpIeejwoB3yi5amNLIg1LPWvur0pio+xrkZhiPXkDV47a5W
+         7kJnEvS+6PC+RavCRht1Cic2HUBP3ZCgl7fs7wHOiD8ggode39Z8eIhYpnQU4lJC5Qut
+         ES+w==
+X-Gm-Message-State: AOJu0YzRJzwNWZYVTEy8XBUgLjHqmj2mtuzeAP15rLLoI0RlZW6MBthw
+        Lg22WkLJUfxOj6dtubQWs0kCYu5za8aqVC4cMl0=
+X-Google-Smtp-Source: AGHT+IHxBylJsTfrxqMHBKxmMPf3QuYDUIfDHr4dq2aV3ffIgf3vZ2Aj5jzif8I2Ijoinsw2ABFVX5lct33MossJfUY=
+X-Received: by 2002:ac2:5618:0:b0:506:93a0:777a with SMTP id
+ v24-20020ac25618000000b0050693a0777amr162433lfd.2.1698346272795; Thu, 26 Oct
+ 2023 11:51:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231025235413.597287e1@gandalf.local.home> <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
- <20231026071413.4ed47b0e@gandalf.local.home> <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
-In-Reply-To: <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 26 Oct 2023 08:50:32 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
-Message-ID: <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
-Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>, linux-mm@kvack.org,
-        x86@kernel.org, akpm@linux-foundation.org, luto@kernel.org,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
+References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-11-brgerst@gmail.com>
+In-Reply-To: <20231026160100.195099-11-brgerst@gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 26 Oct 2023 20:51:01 +0200
+Message-ID: <CAFULd4Z14P5SkQxzLBFfbpmXh9dEi+4NX-NWBjsLxnU1_aZ=yw@mail.gmail.com>
+Subject: Re: [PATCH v2 10/11] percpu: Remove PER_CPU_FIRST_SECTION
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 08:36, Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
+te:
 >
-> >       asm volatile("xchg %b0,%1"
+> x86-64 was the only user.
 >
-> which has an implicit lock prefix (xchg with a memory operand is a
-> special-case):
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
 
-Yeah, this is why we do "percpu_xchg()" - which does not want locked
-semantics - as a "cmpxchg" loop.
+Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
 
-Steven, check out
-
-    arch/x86/include/asm/percpu.h
-
-for a rough implementation of a 'xchg()' without SMP coherency, just
-cpu-local one (ie atomic wrt being preempted by the kernel, but not
-atomic wrt other CPU's accessing the same variable concurrently)
-
-             Linus
+> ---
+>  include/asm-generic/vmlinux.lds.h |  1 -
+>  include/linux/percpu-defs.h       | 12 ------------
+>  2 files changed, 13 deletions(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
+nux.lds.h
+> index 67d8dd2f1bde..23d8acc72760 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -1032,7 +1032,6 @@
+>   */
+>  #define PERCPU_INPUT(cacheline)                                         =
+       \
+>         __per_cpu_start =3D .;                                           =
+ \
+> -       *(.data..percpu..first)                                         \
+>         . =3D ALIGN(PAGE_SIZE);                                          =
+ \
+>         *(.data..percpu..page_aligned)                                  \
+>         . =3D ALIGN(cacheline);                                          =
+ \
+> diff --git a/include/linux/percpu-defs.h b/include/linux/percpu-defs.h
+> index ec3573119923..b9ddee91e6c7 100644
+> --- a/include/linux/percpu-defs.h
+> +++ b/include/linux/percpu-defs.h
+> @@ -26,13 +26,11 @@
+>  #define PER_CPU_SHARED_ALIGNED_SECTION "..shared_aligned"
+>  #define PER_CPU_ALIGNED_SECTION "..shared_aligned"
+>  #endif
+> -#define PER_CPU_FIRST_SECTION "..first"
+>
+>  #else
+>
+>  #define PER_CPU_SHARED_ALIGNED_SECTION ""
+>  #define PER_CPU_ALIGNED_SECTION "..shared_aligned"
+> -#define PER_CPU_FIRST_SECTION ""
+>
+>  #endif
+>
+> @@ -114,16 +112,6 @@
+>  #define DEFINE_PER_CPU(type, name)                                     \
+>         DEFINE_PER_CPU_SECTION(type, name, "")
+>
+> -/*
+> - * Declaration/definition used for per-CPU variables that must come firs=
+t in
+> - * the set of variables.
+> - */
+> -#define DECLARE_PER_CPU_FIRST(type, name)                              \
+> -       DECLARE_PER_CPU_SECTION(type, name, PER_CPU_FIRST_SECTION)
+> -
+> -#define DEFINE_PER_CPU_FIRST(type, name)                               \
+> -       DEFINE_PER_CPU_SECTION(type, name, PER_CPU_FIRST_SECTION)
+> -
+>  /*
+>   * Declaration/definition used for per-CPU variables that must be cachel=
+ine
+>   * aligned under SMP conditions so that, whilst a particular instance of=
+ the
+> --
+> 2.41.0
+>
