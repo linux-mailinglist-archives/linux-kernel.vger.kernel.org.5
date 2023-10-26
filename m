@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5837D87FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE0C7D8805
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjJZSGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        id S231710AbjJZSHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZSGi (ORCPT
+        with ESMTP id S231550AbjJZSHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:06:38 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6836C2;
-        Thu, 26 Oct 2023 11:06:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCB252F4;
-        Thu, 26 Oct 2023 11:07:16 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D78E3F738;
-        Thu, 26 Oct 2023 11:06:33 -0700 (PDT)
-Message-ID: <6790b6ea-4874-4a8c-a8fd-d9ab6caaf1d4@arm.com>
-Date:   Thu, 26 Oct 2023 19:06:32 +0100
+        Thu, 26 Oct 2023 14:07:30 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBE91B1;
+        Thu, 26 Oct 2023 11:07:26 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6cd1918afb2so658527a34.0;
+        Thu, 26 Oct 2023 11:07:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698343646; x=1698948446;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENEollqMGRKDMhbkSMkHaoD54thLMovQWmP1n7sRCUc=;
+        b=GmE/V+sI1/WQXUB++djPnINZ9rRjRwXRsmMKn+t72afl1UvkxufzdVr4AQOif0mXYj
+         LT65o0au8ksgYEo+VquGLluGdiK2N+kR+O6RF1Bd7GF1KcO15bQmOA93bJK4ME0E6DjD
+         JXFf9uYeyXC19EhfrQMXhz7Poi1V0y88LAue7FLDV4zaHiB0hqJAyTeZIGPtNVkV3ts+
+         FoSNqGZMCsEnh3wSrm+BZcUZUOnAXjZIx5sAf0+rp6yC1hVYL0EQJhE2qbWeSJAa29mK
+         uS570XXwozahuRGEVfU30zzlStzA8czJA+w94p3EeIB3e3NJuMBs31wdlmkIAxJs6mXX
+         vr9A==
+X-Gm-Message-State: AOJu0Yz6t0gUEpXxv8qLXFHdzzH5u26qgVTTZAU183w54bRRGI/tu50E
+        1RdHdQgM6vayvL2UF9s6ew==
+X-Google-Smtp-Source: AGHT+IET1KctVP9taJ0RgRpXEMx9LPCq13Vxv2nxhaSHIPgh/LGOf33ATDy4SqI5QHe0tIaxDHaL5w==
+X-Received: by 2002:a05:6830:3110:b0:6b9:3f64:4e8c with SMTP id b16-20020a056830311000b006b93f644e8cmr232430ots.9.1698343645780;
+        Thu, 26 Oct 2023 11:07:25 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id m6-20020a05683026c600b006c4d38e12b9sm2746216otu.65.2023.10.26.11.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 11:07:25 -0700 (PDT)
+Received: (nullmailer pid 4121876 invoked by uid 1000);
+        Thu, 26 Oct 2023 18:07:24 -0000
+Date:   Thu, 26 Oct 2023 13:07:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Cc:     git@amd.com, michal.simek@amd.com, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jirislaby@kernel.org,
+        linux-arm-kernel@lists.infradead.org, radhey.shyam.pandey@amd.com,
+        srinivas.goud@amd.com, shubhrajyoti.datta@amd.com,
+        manion05gk@gmail.com
+Subject: Re: [PATCH V3 1/2] dt-bindings: Add optional gpio property to uartps
+ node to support rs485
+Message-ID: <20231026180724.GA4108223-robh@kernel.org>
+References: <20231024144847.2316941-1-manikanta.guntupalli@amd.com>
+ <20231024144847.2316941-2-manikanta.guntupalli@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Content-Language: en-GB
-To:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Yicong Yang <yangyicong@huawei.com>
-Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
- <20231020134230.53342-4-xueshuai@linux.alibaba.com>
- <20231023123202.GA3515@willie-the-truck>
- <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
- <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024144847.2316941-2-manikanta.guntupalli@amd.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,135 +70,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 10:29 am, Shuai Xue wrote:
-> + Will, Jonathan, Bjorn and Yicong for probe and hotplug handing.
+On Tue, Oct 24, 2023 at 08:18:46PM +0530, Manikanta Guntupalli wrote:
+> Add optional gpio property to uartps node and reference to rs485.yaml
 > 
-> On 2023/10/24 02:51, Robin Murphy wrote:
->> On 2023-10-23 13:32, Will Deacon wrote:
->> [...]
->>>> +
->>>> +    /*
->>>> +     * The Group#1 event measures the amount of data processed in 16-byte
->>>> +     * units. Simplify the end-user interface by multiplying the counter
->>>> +     * at the point of read.
->>>> +     */
->>>> +    if (event_id >= 0x20 && event_id <= 0x23)
->>>> +        return (((u64)hi << 32) | lo) << 4;
->>>> +    else
->>>> +        return (((u64)hi << 32) | lo);
->>>
->>> nit, but I think it would be clearer to do:
->>>
->>>      ret = ((u64)hi << 32) | lo;
->>>
->>>      /* ... */
->>>      if (event_id >= 0x20 && event_id <= 0x23)
->>>          ret <<= 4;
->>
->> Nit: "ret *= 16;" since the comment says it's multiplying a value, not moving a bitfield. The compiler already knows the most efficient way to implement constant multiplication.
+> On Xilinx/AMD Kria SOM KD240 board rs485 connects via TI ISOW1432
+> Transceiver device, where one GPIO is used for driving DE/RE signals.
+> With rs485 half duplex configuration, DE and RE are shorted to each other,
+> and at a time, any node acts as either a driver or a receiver.
 > 
-> Cool, will use multiplication directly.
-> 
->>
->>>
->>>      return ret;
->>>
->> [...]
->>>> +static int __init dwc_pcie_pmu_init(void)
->>>> +{
->>>> +    int ret;
->>>> +
->>>> +    ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
->>>> +                      "perf/dwc_pcie_pmu:online",
->>>> +                      dwc_pcie_pmu_online_cpu,
->>>> +                      dwc_pcie_pmu_offline_cpu);
->>>> +    if (ret < 0)
->>>> +        return ret;
->>>> +
->>>> +    dwc_pcie_pmu_hp_state = ret;
->>>> +
->>>> +    ret = platform_driver_register(&dwc_pcie_pmu_driver);
->>>> +    if (ret)
->>>> +        goto platform_driver_register_err;
->>>> +
->>>> +    dwc_pcie_pmu_dev = platform_device_register_simple(
->>>> +                "dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
->>>> +    if (IS_ERR(dwc_pcie_pmu_dev)) {
->>>> +        ret = PTR_ERR(dwc_pcie_pmu_dev);
->>>> +        goto platform_device_register_error;
->>>> +    }
->>>
->>> I'm a bit confused as to why you're having to create a platform device
->>> for a PCI device -- is this because the main designware driver has already
->>> bound to it? A comment here explaining why you need to do this would be
->>> very helpful. In particular, is there any dependency on another driver
->>> to make sure that e.g. config space accesses work properly? If so, we
->>> probably need to enforce module load ordering or something like that.
->>
->> AFAICS the platform device/driver serve no purpose other than being a hilariously roundabout way to run the for_each_pci_dev() loop in dwc_pcie_pmu_probe() upon module init, and to save explicitly freeing the PMU name/data. Furthermore the devres action for dwc_pcie_pmu_remove_cpuhp_instance() is apparently going for even more style points at module exit by not even relying on the corresponding .remove callback of the tenuous platform driver to undo what its .probe did, but (ab)using the device's devres list to avoid having to keep track of an explicit list of PMU instances at all.
-> 
-> You are right.
-> 
->>
->> Frankly I think it would be a lot more straightforward to just maintain that explicit list of PMU instances, do the PMU creation directly in dwc_pcie_pmu_init(), then unregister and free them in dwc_pcie_pmu_exit(). Not every driver has to contain a literal struct device_driver.
-> 
-> Agreed, it might be more straightforward. But personally speaking, I prefer
-> current implementation.
-> 
->      - standard driver creation / probe flow is more normal
+> Here,
+> DE - Driver enable. If pin is floating, driver is disabled.
+> RE - Receiver enable. If pin is floating, receiver buffer is disabled.
 
-It's really not, though. We have a weird singleton platform device 
-appearing out of nowhere which effectively represents the module being 
-loaded, rather than anything about the actual underlying hardware. If 
-you want this to look like "normal" driver model usage, then create a 
-separate platform device for each physical PCI PMU instance you discover 
-(potentially via both a one-time scan at module_init and an ADD_DEVICE 
-hotplug notifier later), then have the platform driver just register the 
-corresponding PMU device in .probe and unregister it in .remove, without 
-confusing devres action tricks.
+What happens when pin is not floating? Is floating (i.e. open drain) for 
+RTS a requirement? And floating doesn't define high or low because it 
+could be pulled either way.
 
-Thanks,
-Robin.
+> 
+> For more deatils, please find below link which contains Transceiver
+> device(ISOW1432) datasheet
+> https://www.ti.com/lit/ds/symlink/isow1432.pdf?ts=1682607122706&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FISOW1432%252Fpart-details%252FISOW1432DFMR%253FkeyMatch%253DISOW1432DFMR%2526tisearch%253Dsearch-everything%2526usecase%253DOPN
+> 
+> rts-gpios is optional property, because it is not required
+> for uart console node.
+> 
+> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+> ---
+> Changes for V2:
+> Modify optional gpio name to xlnx,phy-ctrl-gpios.
+> Update commit description.
+> Changes for V3:
+> Modify optional gpio name to rts-gpios.
+> Update commit description.
+> ---
+>  Documentation/devicetree/bindings/serial/cdns,uart.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.yaml b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+> index e35ad1109efc..7ee305f9a45f 100644
+> --- a/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+> @@ -46,6 +46,11 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>  
+> +  rts-gpios:
+> +    description: Optional GPIO to control transmit/receive on RS485 phy
+> +      in halfduplex mode.
 
->      - it avoid maintaining list of PMU instances
->      - IMHO, both of them are temporary solution, if PCI core addes a
->        standard mechanism to discover and enbale PCIe VSEC/DVSEC capability,
->        the driver will use the standard way.
+You need to define what 'active' means here because -gpios all have an 
+active flag. Is it always active low (or high) or depends on the board?
+
+
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -55,6 +60,7 @@ required:
+>  
+>  allOf:
+>    - $ref: serial.yaml#
+> +  - $ref: rs485.yaml#
+>    - if:
+>        properties:
+>          compatible:
+> -- 
+> 2.25.1
 > 
-> 
->>
->> It also smells a bit odd that it handles PCI hot-remove but not hot-add - if the underlying device really is hotpluggable, wouldn't we also want to handle new ones turning up after module load? Conversely if it isn't, why pretend to handle it being removed? Even if it's not to do with physical hotplug of the PMU but with the user unloading the PCI controller driver itself (since there's no module/driver-level dependency enforced) and thus tearing down the whole PCI bus, then the same point still applies - if that *can* happen, then what if the user then re-loads it again, or indeed if this module loads first to begin with; wouldn't we want to be able to (re-)discover the PMUs rather than leave the whole PMU driver degraded to a useless state?
->>
-> 
-> I see you point, there are three casees:
-> 1. hot-remove PCI root port firstly and then load the PMU module, the PMU
-> of the removed PCI device will not be registered.
-> 
-> I think it is the expected behavior.
-> 
-> 2. load the PMU module firstly and then hot-remove PCI root port, the PMU
-> of the removed PCI device will be unregistered.
-> 
-> it is what the dwc_pcie_pmu_unregister_nb() does upon BUS_NOTIFY_DEL_DEVICE
-> 
-> 3. load the PMU module firstly, hot-remove PCI root port, and then hot-plug
-> the PCI root port the PMU of the hot-pluged device will not load again by
-> current design upon BUS_NOTIFY_DEL_DEVICE.
-> 
-> I guess it is the really problem. It can be workaround be reload the PMU
-> module. It has been a bit complex around how the following interact:
-> 
->      - Driver loading/unloading
->      - CPU hotplug events
->      - PCI device add/del events
-> 
-> We can also add action for BUS_NOTIFY_ADD_DEVICE to address the problem,
-> 
->      - scan all PCI device
->       - check RAS_DES cap
->       - check cached PMU node
->       - registers its PMU
-> 
-> But I prefer leave as it is, just as x86 does in uncore_bus_notify().
-> Certainly, if the community deems it necessary to implement
-> BUS_NOTIFY_ADD_DEVICE action, I also would like to extend it.
