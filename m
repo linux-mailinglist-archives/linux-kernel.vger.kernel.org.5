@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B36D7D84D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC67D84D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345281AbjJZOep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S1345266AbjJZOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345275AbjJZOen (ORCPT
+        with ESMTP id S230507AbjJZOee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:34:43 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440901AA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:34:40 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QEKuAw016229;
-        Thu, 26 Oct 2023 14:34:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UEcHMU92gXQ4j8QVvUTyivM0ixWQwT+arfYq5SCMI8w=;
- b=kydpvEhP8YA5LN7GpevnUs+T5+EaPTZ8u0IHs/VcIFIOepe97I5e/1lmt0humcWcFWKF
- VBDbmnq9A5JL5Z1iwZi7/gtMKhofAK/4ZmSOUfkVVmeMvh0fStKQaaWd+IT9blL3Do0p
- 1q0iWNfOuDVFa13scCVs4Z6BgKAlOIrvBzH3szdv71n1rClA74p8EhS5ggTts1t4MFWZ
- xfMtzozl2SwCCrJC0dId0ABr0BrOfLJhZgXCXi85Y4gmn6yOM4SfM6xm56yr29nRTvUt
- nqMcD+dp49Iift48gXxI0WDS+QlfgL/lp06Nz48rqimHkasiPVimZ2gb5G3PPPowDCHG CA== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyfm9hbjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 14:34:19 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39QEYIWP009856
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 14:34:18 GMT
-Received: from [10.216.44.163] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 26 Oct
- 2023 07:34:15 -0700
-Message-ID: <1405d85b-f749-6ba6-c5f5-ad1e38feef83@quicinc.com>
-Date:   Thu, 26 Oct 2023 20:04:07 +0530
+        Thu, 26 Oct 2023 10:34:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C3B1A2;
+        Thu, 26 Oct 2023 07:34:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E81C433C7;
+        Thu, 26 Oct 2023 14:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698330871;
+        bh=rKDtDZQL7IF9MPNckBpYcUD5NDFOua3I/T1b8Be9sxU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IiZqL9LeNrTScCl6FAaz9v8ysyES8KP4YtIPM7CSNn90UciwCG0q+ticfFl6GV24b
+         FqFLTSHUjaf8luzv56MNL541GlmMLsfNzrHGDXS1Z9yB6APSdrVN0kNv67HKkZEKB+
+         Mroz1RcEYusxO65SMoY+bvXOpFXw4zEOcqWlYuWMCPII71bd2qFHfBqJPqT8se415k
+         T55W72cY4WdWX5iySJhqy+jBrDNTSSyLfP/A7TGDcdJ9BNRVCHyJnHwYMZUJVTXnCc
+         eMdzivwdlNa/X8XE7MOTzgn3MqgbmSYneDUUuYGHPEeLN+USmK8uG/k8JWLH1rEF1Q
+         NVDiqzxxd6BhA==
+Date:   Thu, 26 Oct 2023 16:34:28 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <ZTp49M8EskD5JJwA@lothringen>
+References: <20231024214625.6483-1-frederic@kernel.org>
+ <20231024214625.6483-3-frederic@kernel.org>
+ <20231025084008.GD37471@noisy.programming.kicks-ass.net>
+ <ZTjudk5mV8PVYsS-@localhost.localdomain>
+ <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] firmware_loader: Abort new fw load request once
- firmware core knows about reboot
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     <russell.h.weight@intel.com>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <1696482420-1329-1-git-send-email-quic_mojha@quicinc.com>
- <ZTF+QLjm8ceL9a00@bombadil.infradead.org>
- <a0c294e1-f76a-6382-ee0f-f1d75ac9d781@quicinc.com>
- <ZTacD4tWZHrzhmQT@bombadil.infradead.org>
-Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <ZTacD4tWZHrzhmQT@bombadil.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 0lYuMFLcj4mLLR2EK1NbRNMNNVgOCkJo
-X-Proofpoint-GUID: 0lYuMFLcj4mLLR2EK1NbRNMNNVgOCkJo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_13,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 clxscore=1015 phishscore=0
- mlxlogscore=906 adultscore=0 suspectscore=0 mlxscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260125
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/2023 9:45 PM, Luis Chamberlain wrote:
-> On Mon, Oct 23, 2023 at 06:11:18PM +0530, Mukesh Ojha wrote:
->> However, if you think we should rename this
->> 'only_kill_custom' to something like its inverse 'kill_all' and reverse the
->> below check to be more meaningful now ?
->>
->>     		if (kill_all || !fw_priv->need_uevent)
+On Thu, Oct 26, 2023 at 08:15:33PM +0800, Z qiang wrote:
+> >
+> > Le Wed, Oct 25, 2023 at 10:40:08AM +0200, Peter Zijlstra a écrit :
+> > > On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
+> > >
+> > > > +/* Check for quiescent states since the pregp's synchronize_rcu() */
+> > > > +static bool rcu_tasks_is_holdout(struct task_struct *t)
+> > > > +{
+> > > > +   int cpu;
+> > > > +
+> > > > +   /* Has the task been seen voluntarily sleeping? */
+> > > > +   if (!READ_ONCE(t->on_rq))
+> > > > +           return false;
+> > > > +
+> > > > +   cpu = task_cpu(t);
+> > > > +
+> > > > +   /*
+> > > > +    * Idle tasks within the idle loop or offline CPUs are RCU-tasks
+> > > > +    * quiescent states. But CPU boot code performed by the idle task
+> > > > +    * isn't a quiescent state.
+> > > > +    */
+> > > > +   if (t == idle_task(cpu)) {
+> > > > +           if (is_idle_task(t))
+> > > > +                   return false;
+> > > > +
+> > > > +           if (!rcu_cpu_online(cpu))
+> > > > +                   return false;
+> > > > +   }
+> > >
+> > > Hmm, why is this guarded by t == idle_task() ?
+> > >
+> > > Notably, there is the idle-injection thing that uses FIFO tasks to run
+> > > 'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
+> > > tasks that are not idle_task().
+> >
+> > Ah good point. So indeed the is_idle_task() test doesn't musn't be
+> > guarded by t == idle_task(cpu). But rcu_cpu_online() has to, otherwise
+> > if it's not an idle task, there is a risk that the task gets migrated out
+> > by the time we observe the old CPU offline.
+> >
 > 
-> This seems like a better approach to make the intent clear and avoid
-> future confusion.
+> If a fifo-tasks use play_idle_precise() to run idle and invoke
+> do_idle(), may cause
+> rcu-tasks to falsely report a rcu-tasks QS
 
-Thanks, have sent it here.
+Well, there can be a debate here: should we consider an idle injector as a real
+task that we must wait for a voluntary schedule or should we treat it just like
+an idle task?
 
-https://lore.kernel.org/lkml/1698330459-31776-1-git-send-email-quic_mojha@quicinc.com/
+Having that whole idle task quiescent state in RCU-tasks is quite a strange
+semantic anyway. And in the long run, the purpose is to unify RCU-tasks and
+RCU-tasks-RUDE with relying on ct_dynticks for idle quiescent states.
 
--Mukesh
+> , when rcu_is_cpu_rrupt_from_idle()
+> return true in rcu_sched_clock_irq(), so should we also add a check for
+> "current == idle_task(task_cpu(current))" in the rcu_is_cpu_rrupt_from_idle()
+> ?
 
-> 
->    Luis
+That looks fine OTOH. Whether idle injection or real idle,
+rcu_is_cpu_rrupt_from_idle() is always a quiescent state in real RCU. Because
+we know we have no RCU reader between ct_idle_enter() and ct_idle_exit().
+
+Thanks.
