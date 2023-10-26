@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 536BF7D7F4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A27D7EB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344527AbjJZJHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S234875AbjJZImE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZJHH (ORCPT
+        with ESMTP id S231383AbjJZIlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:07:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19CB10E;
-        Thu, 26 Oct 2023 02:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698311224; x=1729847224;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tEXGA+hQXBm1ufjQHDtYW7uE1dK4Tg/P5ocdejt0Njw=;
-  b=JQMTeaPDrHN4eo5X9RBBzHlXrmcI+mWM1/xlqz0qSwY1+HaNxdPQ+m/z
-   flm3fNNbBt+wrLK6G24IN33K8iJFw6Ht04Dc6Rbl/IQ8C+qDqsQEOrEu8
-   GHrt2qPUGMRbIIXA+E4v4hlFWaV9wH47HyW2E2SpJRI06klajxjX9IWRM
-   wmgPNR/wOql6MOYa3OoFNU8AEkLgDBF694aJY8ReD4/AUlYN7EzVGDVL7
-   ZbYOoG+rQ8qMr0mKAjUlfdIVsr48Ehyi6j03lnHshMTVU1TOiq6P0+dCq
-   plB9B6BJpQWwezWwCW9CXBh8TGujfqsUnDaujvbkwBQqTZcjaOEbvxNz4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="451732079"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="451732079"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 02:06:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="932662078"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="932662078"
-Received: from wasp.igk.intel.com (HELO wasp) ([10.102.20.192])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 02:06:54 -0700
-Date:   Thu, 26 Oct 2023 10:41:34 +0200
-From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>,
-        linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>, Simon Horman <horms@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH net-next] net/mlx5: fix uninit value use
-Message-ID: <ZTomPuMY/cWwdB8S@wasp>
-References: <20231025145050.36114-1-przemyslaw.kitszel@intel.com>
+        Thu, 26 Oct 2023 04:41:55 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF46810E
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:41:51 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-405-HugBNGsgMPCUITDyO-WHrA-1; Thu, 26 Oct 2023 09:41:48 +0100
+X-MC-Unique: HugBNGsgMPCUITDyO-WHrA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 26 Oct
+ 2023 09:41:47 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 26 Oct 2023 09:41:47 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        "kernel@collabora.com" <kernel@collabora.com>
+Subject: RE: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
+Thread-Topic: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
+Thread-Index: AQHaBszYM+Cp9N+qfkK9yv140Cm+RbBaJ2TAgACPJoCAAQKN4A==
+Date:   Thu, 26 Oct 2023 08:41:47 +0000
+Message-ID: <2873863a22f441c9889ba405d8a71d97@AcuMS.aculab.com>
+References: <20231024161931.78567-1-sebastian.reichel@collabora.com>
+ <20231024161931.78567-2-sebastian.reichel@collabora.com>
+ <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
+ <CAHk-=wjO5ivM6k7iMiThO9JfxH0dhLe=mcC4TQwReU0nBCnWpg@mail.gmail.com>
+ <4c2d36375bd74d94a2e6ef5d2fa0df99@AcuMS.aculab.com>
+ <CAHk-=whrytmsiaLS=rn==qrYw81y2Qiv6dAZxvGzwgX=dMFxng@mail.gmail.com>
+In-Reply-To: <CAHk-=whrytmsiaLS=rn==qrYw81y2Qiv6dAZxvGzwgX=dMFxng@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025145050.36114-1-przemyslaw.kitszel@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 04:50:50PM +0200, Przemek Kitszel wrote:
-> Avoid use of uninitialized state variable.
-> 
-> In case of mlx5e_tx_reporter_build_diagnose_output_sq_common() it's better
-> to still collect other data than bail out entirely.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Link: https://lore.kernel.org/netdev/8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain
-> Fixes: d17f98bf7cc9 ("net/mlx5: devlink health: use retained error fmsg API")
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c | 6 +++++-
->  drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 8 ++++++--
->  2 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-> index fc5a9fdd06db..fea8c0a5fe89 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-> @@ -263,8 +263,12 @@ mlx5e_rx_reporter_build_diagnose_output_rq_common(struct mlx5e_rq *rq,
->  	if (rq->icosq) {
->  		struct mlx5e_icosq *icosq = rq->icosq;
->  		u8 icosq_hw_state;
-> +		int err;
-> +
-> +		err = mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
-> +		if (err)
-> +			return err;
->  
-> -		mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
->  		mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
->  	}
->  
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> index ccff7c26d6ac..6b44ddce14e9 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-> @@ -221,12 +221,16 @@ mlx5e_tx_reporter_build_diagnose_output_sq_common(struct devlink_fmsg *fmsg,
->  	bool stopped = netif_xmit_stopped(sq->txq);
->  	struct mlx5e_priv *priv = sq->priv;
->  	u8 state;
-> +	int err;
->  
-> -	mlx5_core_query_sq_state(priv->mdev, sq->sqn, &state);
->  	devlink_fmsg_u32_pair_put(fmsg, "tc", tc);
->  	devlink_fmsg_u32_pair_put(fmsg, "txq ix", sq->txq_ix);
->  	devlink_fmsg_u32_pair_put(fmsg, "sqn", sq->sqn);
-> -	devlink_fmsg_u8_pair_put(fmsg, "HW state", state);
-> +
-> +	err = mlx5_core_query_sq_state(priv->mdev, sq->sqn, &state);
-> +	if (!err)
-> +		devlink_fmsg_u8_pair_put(fmsg, "HW state", state);
-> +
->  	devlink_fmsg_bool_pair_put(fmsg, "stopped", stopped);
->  	devlink_fmsg_u32_pair_put(fmsg, "cc", sq->cc);
->  	devlink_fmsg_u32_pair_put(fmsg, "pc", sq->pc);
-> -- 
-LGTM
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-> 2.38.1
+RnJvbTogTGludXMgVG9ydmFsZHMgDQo+IFNlbnQ6IDI1IE9jdG9iZXIgMjAyMyAxODo0MQ0KPiAN
+Cj4gT24gVHVlLCAyNCBPY3QgMjAyMyBhdCAyMjozOCwgRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
+aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBMaW51cyBUb3J2YWxkcw0KPiA+
+ID4gPiAgLSB3ZSBjYW4ndCBldmVuIHVzZSBhIHN0YXRlbWVudCBleHByZXNzaW9uIGFuZCBfX2F1
+dG9fdHlwZSwgYmVjYXVzZQ0KPiA+ID4gPiB0aGVzZSB0aGluZ3MgYXJlIHVzZWQgaW4gdHlwZSBk
+ZWZpbml0aW9ucyBldGMgYW5kIG5lZWQgdG8gYmUgY29uc3RhbnQNCj4gPiA+ID4gZXhwcmVzc2lv
+bnMNCj4gPg0KPiA+IERvZXNuJ3QgbWluKCkgZ2V0IGFyb3VuZCB0aGF0IGJ5IHVzaW5nIGlzX2Nv
+bnN0ZXhwcigpIGFuZA0KPiA+IF9fYnVpbHRpbl9jaG9vc2VfZXhwdHIoKSAtIHRoZSBzYW1lIGNv
+dWxkIGJlIGRvbmUgaGVyZS4NCj4gDQo+IE5vcGUuIEkgd2FudGVkIHRvIGRvIGl0IHRoYXQgd2F5
+IC0gaXQgd291bGQgaGF2ZSBtYWRlIHRoaW5ncyBtdWNoDQo+IHNpbXBsZXIgYW5kIGF2b2lkIHRo
+ZSB3aG9sZSBfR2VuZXJpYygpIHRoaW5nLCBidXQgdHJ5IGl0IC0geW91IGNhbm5vdA0KPiB1c2Ug
+c3RhdGVtZW50IGV4cHJlc3Npb25zIGluIGEgbm9uLWZ1bmN0aW9uIGNvbnRleHQgZXZlbiB3aXRo
+DQo+IF9fYnVpbHRpbl9jaG9vc2VfZXhwcigpLg0KDQpfR2VuZXJpYygpIGhhcyBleGFjdGx5IHRo
+ZSBzYW1lIGlzc3VlcyBhcyBfX2J1aWx0aW5fY2hvb3NlX2V4cHIoKS4NCkFsbCB0aGUgY29kZSBo
+YXMgdG8gYmUgdmFsaWQgZm9yIGFsbCB0eXBlcy4NCk1ha2VzIHRlc3RpbmcgZm9yIG5lZ2F0aXZl
+IGNvbnN0YW50cyBhIFBJVEEuDQpTb21ldGhpbmcgbGlrZSB0aGlzIHdvcmtlZDoNCgkoX19idWl0
+aW5fY2hvb3NlX2V4cHIoX19pc19jb25zdGV4cHIoKHgpICYmIGlzX3NpZ25lZF90eXBlKF9fdHlw
+ZW9mKHgpKSwgeCwgMSkgPCAwKQ0KQWx0aG91Z2ggb3VyIGlzX3NpZ25lZF90eXBlKCkgaXNuJ3Qg
+Y29uc3RhbnQgKGVub3VnaCkgZm9yIHBvaW50ZXIgdHlwZXMuDQpTbyB5b3UgbmVlZCBhbm90aGVy
+IGNoZWNrIGZvciAodHlwZW9mKHgpKTEgYmVpbmcgY29uc3RhbnQuDQoNCj4gQW5kIG5vLCBtaW4v
+bWF4IGhhdmUgbmV2ZXIgYmVlbiB1c2FibGUgaW4gdGhhdCBjb250ZXh0DQoNCkkndmUgY2xlYXJs
+eSBub3QgdGVzdGVkIGl0IGFuZCBhc3N1bWVkIHRoZSBjb21tZW50IGltcGxpZWQNCnRoYXQgd2Fz
+IG9rLg0KDQpJdCdkIHByb2JhYmx5IHdvcmsgaW4gQysrIC0gd2hpY2ggaXMgcGVyZmVjdGx5IHdp
+bGxpbmcgdG8NCmFkZCBmdW5jdGlvbnMgdG8gaW5pdGlhbGlzZSBzdGF0aWMgZGF0YSAtIGV2ZW4g
+d2hlbiB5b3UnZA0KcmF0aGVyIGhhdmUgYSBjb21waWxlIHRpbWUgZXJyb3IuDQoNCglEYXZpZA0K
+DQo+IA0KPiAgICAgICAgICAgICAgICAgIExpbnVzDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
+YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
+LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+
