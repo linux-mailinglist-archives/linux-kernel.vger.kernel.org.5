@@ -2,569 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B3E7D7F96
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4219E7D7F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjJZJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S230042AbjJZJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjJZJbd (ORCPT
+        with ESMTP id S229885AbjJZJak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:31:33 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC1E19B;
-        Thu, 26 Oct 2023 02:31:30 -0700 (PDT)
+        Thu, 26 Oct 2023 05:30:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F94196;
+        Thu, 26 Oct 2023 02:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698312636; x=1729848636;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=fKbR2cN6bXisiynmdOl6jeiqpm67HZm/3nLkvvdSHUQ=;
+  b=c/9kHKnbC92orEvFEkDukb86VJv2oDwi5oGfhoR/LYW9cED9O3PQ/Tam
+   GtVyNLkFA4zsmH1haSF5FBS+sMInWPAl8iLIISh82ZvvfTqnt9lDW1RYR
+   /3GpPooiFLaq1QCGeP9MFRPJgMErrURPKVrXbGDaXfZl0NFwWuP7kq8HZ
+   s/3yUs8MBgWJ51WJYkGEuDqSVNR0jcnkO6e43/k56BNr8kKwkLnD7t5YI
+   o80tSqMNwGJ94g7ZCgjcVBSEu7GrBwNTDm+xAxbKybjDY78pYCsITvJB5
+   zqrS3b8ET5u2aohFmm4IhgLibsLFoigDwA8NXZAzqxs5ADwuj1yW4UBwY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="451735497"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="451735497"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 02:30:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="386701"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Oct 2023 02:29:39 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 02:30:13 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 02:30:13 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 26 Oct 2023 02:30:13 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 26 Oct 2023 02:30:13 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=djZDbfR6Fikrw3BtNcAVuHSoxRY3IR8+YjjHoFNgjYORWVW7zoq1ZkVItxLl8zBH+968MpsoLCLkEE7o/NKAG6upAFkUuReqrDf8OZ7gzCEmoBdGonXMeYd7ZosR03pxnz6KONhYzXoxsyrvb8jDYk1N0K31CY99G0TmTyPxCizEWjDZt1mOqUjlnGX0PUPQJqhYqkKZCTnuuhJtVjm0uBLY8ok+3lwhn8+lJ5ILlstqpkIwD3Qmg1m1y7ecW+vokX5KIV+YnapBOb/3Ld/eULpGoaZnda7qO6P0jeq9Gvgp6KJkgXPAUaHzPjxwfxXM7FS5DR06G3b4+u+zw5tIZQ==
+ b=A1lgpSHiCYrpVY0DB/VVn70XwgyKZrr+vVPff1r8ER4PMYDbvitpuoR1HrzF+d9TDLAgcePgaz60sm2MfP9FD1v03+uKn19vCcRcd5U7wNNEVRQlNKDkr06pHZd2i8ZiPj9F5VB8f3r9tyjYkK8UQYQmGipH2WKcaBnXUfpptOiT7AfJ5MiWKeKv+64UnByReo7AYaZGglVhV6IsHPP2/DEU0YrqumFYa+Te2o2WhBDLzIhk3kr8FWevhEEFMbNFBe4oIRn2ZjLm61nmp4Kilpnt/WNZnC3agc7yHgVtNGowJHjxJOaTT0ep/CjK7VvlRfoz5Zg9+Edlh7srtRXUVg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dNpm5YRfFXNs4d/Xy28ixEzGCBbphkzpxq9vNLYOblk=;
- b=Y8HEWvBfMWwTnL2hLF2tlt2IivDhuH4+/mnxld/41T3aUgNOnnbC1z6ej5C+8HBkVvK8PpgspCPgCbZ3UQsn8vbWUOz7qDnVxAItVGKUbwDxy7iFfN1miOuq+qiTnqjrT/msEvM8l4Z1O4pEE54h2DZJSJAOX5kCThYXIfIl9nq6KdxjUOKNKpEwQPA7DqYabBYTPoQuahCPYlQCEcGcbQPaqQDqwz8RCwCOCt22mWbDA/lqFLs7pI3uRYw+g730bOlawLXlWPqf8iJkPWjwQcHGXaG56nYwMxAYtPVvVT/Yvdlth9RVsmxoOuOg8F1/GZlVAJ5UNhXw9tURSIcHXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dNpm5YRfFXNs4d/Xy28ixEzGCBbphkzpxq9vNLYOblk=;
- b=NpKCArVGA4eiO3BR8i1uNVSAd/A8xNZBhUHiy7UvqgjBpaGkcVuHD8JXzBILoVFXEeRXKkEgPzSRXHMfyRjWNYvbdEwed1g55xfUFfXSeTXMMZ1vmVGdwr2R//Zw6chqguOZUqZUB2L4NP8y8bywf8c7H5D0yBjcfcjuHiDp7is=
-Received: from BLAPR03CA0172.namprd03.prod.outlook.com (2603:10b6:208:32f::12)
- by DM6PR12MB4577.namprd12.prod.outlook.com (2603:10b6:5:2aa::18) with
+ bh=9M7DLaf4IRK9hmZcQKlJwMOJX99d2lMPduawTag+NcM=;
+ b=l0ChAzMInCoaqYRHy30/n11wEyP2ibOBDAajRZWgQhhl21grqA88mhTq0wJJkYjNYP50kDTQAXmzsZQTbfmeyjZ7KUxB1NlU8UPPpXo4EM12n4Kg3MBq4WBxx0bRNUgAuHVrtn8bMUC2BQc/+pmDk429Lh4rkzRMHNveoN3lshm5qpa8TKajorD5Cpu3e2zAJ3dK4xH+7zJ3IewzRsXl3Jit2w8W3ypBFTnwTRgbU8Y2+37G56uIehMBIk+jXvtlvmZUPVtElAH8Lgv0FOS8e5o04RQrsh80leLoV8UqYC0EG1Y5yvweY3DlK8PEg/D2Ep0IRS8/jhclYA1THJ20gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by PH8PR11MB6880.namprd11.prod.outlook.com (2603:10b6:510:228::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 26 Oct
- 2023 09:31:27 +0000
-Received: from BL6PEPF0001AB4D.namprd04.prod.outlook.com
- (2603:10b6:208:32f:cafe::51) by BLAPR03CA0172.outlook.office365.com
- (2603:10b6:208:32f::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.34 via Frontend
- Transport; Thu, 26 Oct 2023 09:31:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4D.mail.protection.outlook.com (10.167.242.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Thu, 26 Oct 2023 09:31:27 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 26 Oct
- 2023 04:31:26 -0500
-Received: from xsjapps58.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Thu, 26 Oct 2023 04:31:25 -0500
-From:   Kris Chaplin <kris.chaplin@amd.com>
-To:     <kris.chaplin@amd.com>, <thomas.delev@amd.com>,
-        <michal.simek@amd.com>, <krzysztof.kozlowski@linaro.org>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@amd.com>
-Subject: [RESEND v2 2/2] w1: Add AXI 1-wire host driver for AMD programmable logic IP core
-Date:   Thu, 26 Oct 2023 02:28:42 -0700
-Message-ID: <20231026093029.3122573-3-kris.chaplin@amd.com>
-X-Mailer: git-send-email 2.42.GIT
-In-Reply-To: <20231026093029.3122573-1-kris.chaplin@amd.com>
-References: <20231026093029.3122573-1-kris.chaplin@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
+ 2023 09:30:05 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6907.021; Thu, 26 Oct 2023
+ 09:30:05 +0000
+Message-ID: <cb83107f-f022-86c6-b463-a1eee4936967@intel.com>
+Date:   Thu, 26 Oct 2023 11:29:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH 3/3] checkpatch: add ethtool_sprintf rules
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        "Brett Creeley" <brett.creeley@amd.com>, <drivers@pensando.io>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        "Dwaipayan Ray" <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        <intel-wired-lan@lists.osuosl.org>, <oss-drivers@corigine.com>,
+        <linux-hyperv@vger.kernel.org>
+References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
+ <20231025-ethtool_puts_impl-v1-3-6a53a93d3b72@google.com>
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <20231025-ethtool_puts_impl-v1-3-6a53a93d3b72@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0102.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a1::17) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4D:EE_|DM6PR12MB4577:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5cf45b38-7d44-4394-dd92-08dbd606546d
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|PH8PR11MB6880:EE_
+X-MS-Office365-Filtering-Correlation-Id: 80fad5c7-95f7-422a-0096-08dbd60622fc
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4hMf4zEiY8cj8AYfW3ctYrWSKWyGhf75FcBcCTHoctRLcbA7t8BODKSApo0AphdzZkx9oErz2AOetukxn2nooBPu+KAUvOLgw6CC5mTUg+3UwnjgT5vfjtJ0AIRUl/IZLDWDLVt3IqZM2Jg59dGZoSjz8yGok5dpH44rwXe2szt9wlvFSsWbeTq73Cdgd3DSAO5vg2KYptLNzDi/e102T6a34JpMR3nlYfH8z3SS8mCC72Irn7buTyfHMdslVKE4sMd0S9bD0Wk/r13uaNxWDnoJLdoBni7NuVRLtwTpk2/MXhhFQTTInaZ9dpRAMEncTv1PcvIKcyc2GG+VBWfXZbbcVYF/CcDIAGz0wsgkzznnbY60FhS7K+8Qo6mGeCgnNwnCrdd1UcJaDca/FCIXmhv0o6aJj4sts5opgC8OQg/ZW2UE/dUrHgVtBEfIvp1VPw9+cyVYITiGGM2OLdFeOmieI/pm4zQBK1L10QMBAeKAv2Pntq9EsZ2ZCCkCBVXhb9rWkrltX11x644x9sSS/Xccll+kbnhnv74uhPusavEJ2MtWaDw3DhnqnEdUst+EfcGeE8h8jGh8Y0+o1DodQ7QDLSP7ReqMeazPusb3FgSpHep0MPak6Zzo51QaikDb9JaWDQhev/wTPJ9oqWagUcy3aOlxwqN3+ifdRsu6NXfqhIzoDoujJlki8U3N/2UtSrH+QOl96BwtU4BOtOhvNKtG6kDga9PYln6a1l4NIDd++fz1mIQKve32k16wnpFxtqmBQ9HWZg9tzgfCdad5zg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(230922051799003)(451199024)(186009)(1800799009)(82310400011)(64100799003)(36840700001)(40470700004)(46966006)(40460700003)(6666004)(81166007)(110136005)(316002)(70586007)(36860700001)(54906003)(70206006)(478600001)(86362001)(40480700001)(83380400001)(47076005)(26005)(82740400003)(2616005)(336012)(426003)(356005)(1076003)(41300700001)(36756003)(30864003)(44832011)(8936002)(8676002)(2906002)(4326008)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:31:27.7222
+X-Microsoft-Antispam-Message-Info: FSffYEfD2r+RGox3XxhFGt7Po/zqxSSK17RUh1/qhX17QBsmvhcOFT6e/XddSjIfnFfFd/YXErosfWrcSUoGGwW+72Zn0RCdx5sBp/K/fQ26njw8jc5HMOefFWzlWWEWCE2pUqbUpCEQPs7t0OO2g+rQrZgVLkFdqvASUiHJ1fzvb2VpCDdhAqLuKpOyzfEKNKkamEDwzAEiiEn0yXxhidk0UhkA5sdaedXSB0s9IeAPzuY8+q5JSlhB9PCJROLm1kPnuQzwpfk7PLnOBUipoG/IKQ5CyUzbnEnYOiXaGaqdowX1IGN29K//2l3GSemTDs1hZgiS/PqHd6KRQZu9gvyI6TBsLkgBuDsHNAN2UvUblJRuPS/Z3k4WVjY08gXhHSR6sspw4WaU8RNgj7GimVJ4BAXcbQaG/JJPCccexhnDLcoenHSyz+/PKbYpf9xNCqO0fqVUfcAV3YqgnVPBi0FIuJKksNr3kpxR37mSc6/NWZ4XvvGyYDJYbaoQ5e35Yreq4F0b1Qa4xOC5hykBwB4zZggvYEphHwZytbZ6kXG0GOeEcczsn8vtLk1G/rA1Kv3Qu8fv0G3aVFCLZ2Zr5ON+YEDgSgjDNrsgWRlkyYTlbaUMHj8ppMmBIAGi9xsFSZk4U1tVunE7AI4GRB8oDQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(346002)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(31686004)(921008)(4326008)(2906002)(26005)(7416002)(5660300002)(7406005)(83380400001)(8936002)(53546011)(38100700002)(6506007)(6512007)(8676002)(2616005)(6666004)(66946007)(316002)(86362001)(110136005)(31696002)(36756003)(54906003)(966005)(66556008)(41300700001)(478600001)(66476007)(6486002)(82960400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1FIVk5iY2JNVWExRE0wT1JSUVlZeThFQ0xvMXFGNlFDRHgyajJqM1gyUElJ?=
+ =?utf-8?B?eDI4a0tsNVhCcUlpTEpxZmNoMmFqWElCU1pwZ1RtTFY4bnVrYmc2cmw3MGRo?=
+ =?utf-8?B?VnoyajdZWWttYlM4YmNyR2ZmdVc5OHpCZkhRL2U4UkJJRWloNk1ZSXJPVSt2?=
+ =?utf-8?B?VTVqS3JGQTVUKzVZYkxJaVlLUi85dlFqc3N0ZmFIK1JsdVVORTJKUnJJVXZQ?=
+ =?utf-8?B?N0h5T3EzbmNpVGRxTGhCcTJ4eEpmZ1I1M1daRm9KUjFvNGtGTGI2WGluVE5X?=
+ =?utf-8?B?YS8zSGFvNXVJVGtBeG5wYTd1bTZ4djhkY08rbmdkRnJLYm01MXRyK1pzTm1O?=
+ =?utf-8?B?WFh6MmZwOVJmS0IwZXdCSWZwOExXNzFOS3BrWHpaWCsyODl3QVdwM0pOZlA5?=
+ =?utf-8?B?M3hFMVRuWEJxVTI4V3Q3Y3Y3ZFVjNGRuM0NHS0d1c05LU3AwYnRuUnRqWUVh?=
+ =?utf-8?B?NDdBR05ZZlFRNHdkZ2dwTTczamh3Wkw4dG1QdnJId3JoTEZTZzdVK0lzeDhZ?=
+ =?utf-8?B?R2hNY0lVMXdnV0UrUHdGWXNINE02OTdFZmF5SEt2aDJCRm1HQUhhRHptZDNs?=
+ =?utf-8?B?NjVuQ1VTbEdIT1RwMkN2RGNvOVpvNVlHeFF4dmcrRzVjYXJHQVZpSnIvSnds?=
+ =?utf-8?B?QytVMlJreHgvZzl6M2xYTUR6STBCMHl6UGNtN2tQaUJSOURmTVEvMDFSdTlu?=
+ =?utf-8?B?WjgvMGUrcVJlOTNvY3VIT0FDTWxGbWVjR3JvMlltSVZ6TjFkb1R4dlVJSThu?=
+ =?utf-8?B?L0t1OWVHcFNrV2YyMW8vZEFyOWppRjdRQ3Y4MXdxK0VrMlpJL1JQNm1IOGJH?=
+ =?utf-8?B?eEZoek1VdjMyc1ozbUp4T1dnUFFLazU3VitUNzBjdDlLM3ViTVczMmZGSmVa?=
+ =?utf-8?B?OXBpRGVLQ2ZGc0w5ckVOMFZnVzRQTVJXdUZUZlpvb09qSmE4U0VjMzQzTVZP?=
+ =?utf-8?B?bTd0NlFQdThwY2F4bzZDQ2FrV0p6NGw3NGRaRThxRTJnYjJsVG9TMDUzS0Fr?=
+ =?utf-8?B?emM2SzhvdEx6MXVFVVRabGhjSEI0bEpsemFDWm15YTNLbnZOc2JrSm16dUR2?=
+ =?utf-8?B?cFNUTXZ3b2lYVWJINEVxM3Y1N29nZlVDeGhNV0JGVWcxOWhSTWFKMVNNMXNn?=
+ =?utf-8?B?d1h3VjgvbEFVRkJIM2VseWtpZGpDaWpndE5yOEQvSUI1VlJqTVB4N29SYVJI?=
+ =?utf-8?B?V0RMQ2xLc0hWVjV4RWRNNnhYTDY5NUtZdUFTaWpTbU1rRVhUaStLck9MNlc3?=
+ =?utf-8?B?VG9YMkllUTFvNms2cysvbE5uVjYzc2RpRG1uek83SFV1aWhMRTFEVkdYalJH?=
+ =?utf-8?B?UDdDeFRoNVhWZjd2Nng3VWxFMjhlbmxVOGNoRnJOWll5S1k1dUt4V2NpMlVp?=
+ =?utf-8?B?aHA4d3dVbTErRis5eXJvY0JSMS9zRWc0RTh2bTJFQk5zQ25ITmtjVUFOOHpr?=
+ =?utf-8?B?VEt4bjY2Z2x3VXFYaUh6UFk2UkthODhQNkFHc3oyVy85QlQwcXFiWWdWZ1NY?=
+ =?utf-8?B?U0N6M2FRT0FiQnhaSjVpN2VSOXZzdElmOU5MNW1QRUNpNlhDcHd6U3U5MUIv?=
+ =?utf-8?B?cjQ3cnN5MS9ZdTcrMHdIWC9yc1dzeThNbE55amxUaXFMaERRdG5EN0pxQU5k?=
+ =?utf-8?B?emtiNzhob29HS1NRWk5ZVExET2pQWVJjZyszL2Q4TDdjYU9YTUhRclR3RmI5?=
+ =?utf-8?B?SnFLaGpYWXhjREMwN3pwekZSQnZlM25uTU42MTBjU2ZJb0RKY3crWndTNmdr?=
+ =?utf-8?B?elYvNUk3SzJFbTNZVHZ3bVhsWjhpNUdPTnVlNGdIN0RrZE9SUndyVjNKQVhH?=
+ =?utf-8?B?OU5UL01RSTVweld5WGpFK1E5cHIzRVdnTXQvTzhjdk1xb1ExcTFZSEpIVEk2?=
+ =?utf-8?B?Wmpyb0FvMkRSUjBqRURSVW9uZkFWc09pZVU1cWtmZEd2Zjc1QVNkUzY2Uy9S?=
+ =?utf-8?B?VzNuSDIrVUVNRHJZRlNVQ1g0a0RtalhXYUo2eHNSb2VVc1ozZlQzVzVrMDZ1?=
+ =?utf-8?B?VFNzWDB2T2JHNjBuWVIyTXRpVTB4MmovYWhFN1BZTjZ1VlM2VkpXUmZyZE5P?=
+ =?utf-8?B?ZlZ3Q0NUa0t0Vlc3VnQzT0hTQkt4VFVpUFMyTEFWa0ZkTVd3eGUvRHovQmhV?=
+ =?utf-8?B?eUFpZUVTc1lnNElSbTVqdzIrTXU5T0FkQkN6SEpBWlVXY2tHTXdOc1ZydzV6?=
+ =?utf-8?B?UEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80fad5c7-95f7-422a-0096-08dbd60622fc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:30:05.4387
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cf45b38-7d44-4394-dd92-08dbd606546d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4D.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4577
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SuqanZeHvsNTs5ZYExbL+fjApm/rpyaw43UO8EnzIKTJc9B3h47sQerX/P1O1doBqJPgacq0rFGVTHQQdLkdf9u8qjRovGbLiHJ5bBtGKVc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6880
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a host driver to support the AMD 1-Wire programmable logic IP block.
-This block guarantees protocol timing for driving off-board devices such
-as thermal sensors, proms, etc.
+On 10/26/23 01:40, Justin Stitt wrote:
+> Add some warnings for using ethtool_sprintf() where a simple
+> ethtool_puts() would suffice.
+> 
+> The two cases are:
+> 
+> 1) Use ethtool_sprintf() with just two arguments:
+> |       ethtool_sprintf(&data, driver[i].name);
+> or
+> 2) Use ethtool_sprintf() with a standalone "%s" fmt string:
+> |       ethtool_sprintf(&data, "%s", driver[i].name);
+> 
+> The former may cause -Wformat-security warnings while the latter is just
+> not preferred. Both are safely in the category of warnings, not errors.
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>   scripts/checkpatch.pl | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7d16f863edf1..1ba9ce778746 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -7020,6 +7020,19 @@ sub process {
+>   			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+>   		}
+>   
+> +# ethtool_sprintf uses that should likely be ethtool_puts
+> +		if (   $line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/   ) {
 
-Add file to MAINTAINERS
+no need for whitespace right after opening parenthesis, same at the end
 
-Co-developed-by: Thomas Delev <thomas.delev@amd.com>
-Signed-off-by: Thomas Delev <thomas.delev@amd.com>
-Signed-off-by: Kris Chaplin <kris.chaplin@amd.com>
----
- MAINTAINERS                     |   1 +
- drivers/w1/masters/Kconfig      |  11 +
- drivers/w1/masters/Makefile     |   1 +
- drivers/w1/masters/amd_axi_w1.c | 395 ++++++++++++++++++++++++++++++++
- 4 files changed, 408 insertions(+)
- create mode 100644 drivers/w1/masters/amd_axi_w1.c
+Does it work for ethtool_sprintf(calls broken
+				 into multiple lines)?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3dacb7ed6e3b..c31b17df3be9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -896,6 +896,7 @@ R:	Thomas Delev <thomas.delev@amd.com>
- R:	Michal Simek <michal.simek@amd.com>
- S:	Maintained
- F:	Documentation/devicetree/bindings/w1/amd,axi-1wire-host.yaml
-+F:	drivers/w1/masters/amd_axi_w1.c
- 
- AMD CDX BUS DRIVER
- M:	Nipun Gupta <nipun.gupta@amd.com>
-diff --git a/drivers/w1/masters/Kconfig b/drivers/w1/masters/Kconfig
-index ad316573288a..513c0b114337 100644
---- a/drivers/w1/masters/Kconfig
-+++ b/drivers/w1/masters/Kconfig
-@@ -5,6 +5,17 @@
- 
- menu "1-wire Bus Masters"
- 
-+config W1_MASTER_AMD_AXI
-+	tristate "AMD AXI 1-wire bus host"
-+	help
-+	  Say Y here is you want to support the AMD AXI 1-wire IP core.
-+	  This driver makes use of the programmable logic IP to perform
-+	  correctly timed 1 wire transactions without relying on GPIO timing
-+	  through the kernel.
-+
-+	  This driver can also be built as a module.  If so, the module will be
-+	  called amd_w1_axi.
-+
- config W1_MASTER_MATROX
- 	tristate "Matrox G400 transport layer for 1-wire"
- 	depends on PCI
-diff --git a/drivers/w1/masters/Makefile b/drivers/w1/masters/Makefile
-index c5d85a827e52..6c5a21f9b88c 100644
---- a/drivers/w1/masters/Makefile
-+++ b/drivers/w1/masters/Makefile
-@@ -3,6 +3,7 @@
- # Makefile for 1-wire bus master drivers.
- #
- 
-+obj-$(CONFIG_W1_MASTER_AMD_AXI)		+= amd_axi_w1.o
- obj-$(CONFIG_W1_MASTER_MATROX)		+= matrox_w1.o
- obj-$(CONFIG_W1_MASTER_DS2490)		+= ds2490.o
- obj-$(CONFIG_W1_MASTER_DS2482)		+= ds2482.o
-diff --git a/drivers/w1/masters/amd_axi_w1.c b/drivers/w1/masters/amd_axi_w1.c
-new file mode 100644
-index 000000000000..24a05c2de5f1
---- /dev/null
-+++ b/drivers/w1/masters/amd_axi_w1.c
-@@ -0,0 +1,395 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * amd_axi_w1 - AMD 1Wire programmable logic bus host driver
-+ *
-+ * Copyright (C) 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
-+ */
-+
-+#include <linux/atomic.h>
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/jiffies.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/types.h>
-+#include <linux/wait.h>
-+
-+#include <linux/w1.h>
-+
-+/* 1-wire AMD IP definition */
-+#define AXIW1_IPID	0x10ee4453
-+/* Registers offset */
-+#define AXIW1_INST_REG	0x0
-+#define AXIW1_CTRL_REG	0x4
-+#define AXIW1_IRQE_REG	0x8
-+#define AXIW1_STAT_REG	0xC
-+#define AXIW1_DATA_REG	0x10
-+#define AXIW1_IPVER_REG	0x18
-+#define AXIW1_IPID_REG	0x1C
-+/* Instructions */
-+#define AXIW1_INITPRES	0x0800
-+#define AXIW1_READBIT	0x0C00
-+#define AXIW1_WRITEBIT	0x0E00
-+#define AXIW1_READBYTE	0x0D00
-+#define AXIW1_WRITEBYTE	0x0F00
-+/* Status flag masks */
-+#define AXIW1_DONE	BIT(0)
-+#define AXIW1_READY	BIT(4)
-+#define AXIW1_PRESENCE	BIT(31)
-+#define AXIW1_MAJORVER_MASK	GENMASK(23, 8)
-+#define AXIW1_MINORVER_MASK	GENMASK(7, 0)
-+/* Control flag */
-+#define AXIW1_GO	BIT(0)
-+#define AXI_CLEAR	0
-+#define AXI_RESET	BIT(31)
-+#define AXIW1_READDATA	BIT(0)
-+/* Interrupt Enable */
-+#define AXIW1_READY_IRQ_EN	BIT(4)
-+#define AXIW1_DONE_IRQ_EN	BIT(0)
-+
-+#define AXIW1_TIMEOUT	msecs_to_jiffies(100)
-+
-+#define DRIVER_NAME	"amd_axi_w1"
-+
-+struct amd_axi_w1_local {
-+	struct device *dev;
-+	void __iomem *base_addr;
-+	int irq;
-+	atomic_t flag;			/* Set on IRQ, cleared once serviced */
-+	wait_queue_head_t wait_queue;
-+	struct w1_bus_master bus_host;
-+};
-+
-+/**
-+ * amd_axi_w1_wait_irq_interruptible_timeout() - Wait for IRQ with timeout.
-+ *
-+ * @amd_axi_w1_local:	Pointer to device structure
-+ * @IRQ:		IRQ channel to wait on
-+ *
-+ * Return:		%0 - OK, %-EINTR - Interrupted, %-EBUSY - Timed out
-+ */
-+static int amd_axi_w1_wait_irq_interruptible_timeout(struct amd_axi_w1_local *amd_axi_w1_local,
-+						     u32 IRQ)
-+{
-+	int ret;
-+
-+	/* Enable the IRQ requested and wait for flag to indicate it's been triggered */
-+	iowrite32(IRQ, amd_axi_w1_local->base_addr + AXIW1_IRQE_REG);
-+	ret = wait_event_interruptible_timeout(amd_axi_w1_local->wait_queue,
-+					       atomic_read(&amd_axi_w1_local->flag) != 0,
-+					       AXIW1_TIMEOUT);
-+	if (ret < 0) {
-+		dev_err(amd_axi_w1_local->dev, "Wait IRQ Interrupted\n");
-+		return -EINTR;
-+	}
-+
-+	if (!ret) {
-+		dev_err(amd_axi_w1_local->dev, "Wait IRQ Timeout\n");
-+		return -EBUSY;
-+	}
-+
-+	atomic_set(&amd_axi_w1_local->flag, 0);
-+	return 0;
-+}
-+
-+/**
-+ * amd_axi_w1_touch_bit() - Performs the touch-bit function - write a 0 or 1 and reads the level.
-+ *
-+ * @data:	Pointer to device structure
-+ * @bit:	The level to write
-+ *
-+ * Return:	The level read
-+ */
-+static u8 amd_axi_w1_touch_bit(void *data, u8 bit)
-+{
-+	struct amd_axi_w1_local *amd_axi_w1_local = data;
-+	u8 val = 0;
-+	int rc;
-+
-+	/* Wait for READY signal to be 1 to ensure 1-wire IP is ready */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_READY) == 0) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local,
-+							       AXIW1_READY_IRQ_EN);
-+		if (rc < 0)
-+			return 1; /* Callee doesn't test for error. Return inactive bus state */
-+	}
-+
-+	if (bit)
-+		/* Read. Write read Bit command in register 0 */
-+		iowrite32(AXIW1_READBIT, amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+	else
-+		/* Write. Write tx Bit command in instruction register with bit to transmit */
-+		iowrite32(AXIW1_WRITEBIT + (bit & 0x01),
-+			  amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+
-+	/* Write Go signal and clear control reset signal in control register */
-+	iowrite32(AXIW1_GO, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	/* Wait for done signal to be 1 */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_DONE) != 1) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local, AXIW1_DONE_IRQ_EN);
-+		if (rc < 0)
-+			return 1; /* Callee doesn't test for error. Return inactive bus state */
-+	}
-+
-+	/* If read, Retrieve data from register */
-+	if (bit)
-+		val = (u8)(ioread32(amd_axi_w1_local->base_addr + AXIW1_DATA_REG) & AXIW1_READDATA);
-+
-+	/* Clear Go signal in register 1 */
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	return val;
-+}
-+
-+/**
-+ * amd_axi_w1_read_byte - Performs the read byte function.
-+ *
-+ * @data:	Pointer to device structure
-+ * Return:	The value read
-+ */
-+static u8 amd_axi_w1_read_byte(void *data)
-+{
-+	struct amd_axi_w1_local *amd_axi_w1_local = data;
-+	u8 val = 0;
-+	int rc;
-+
-+	/* Wait for READY signal to be 1 to ensure 1-wire IP is ready */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_READY) == 0) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local,
-+							       AXIW1_READY_IRQ_EN);
-+		if (rc < 0)
-+			return 0xFF; /* Return inactive bus state */
-+	}
-+
-+	/* Write read Byte command in instruction register*/
-+	iowrite32(AXIW1_READBYTE, amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+
-+	/* Write Go signal and clear control reset signal in control register */
-+	iowrite32(AXIW1_GO, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	/* Wait for done signal to be 1 */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_DONE) != 1) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local, AXIW1_DONE_IRQ_EN);
-+		if (rc < 0)
-+			return 0xFF; /* Return inactive bus state */
-+	}
-+
-+	/* Retrieve LSB bit in data register to get RX byte */
-+	val = (u8)(ioread32(amd_axi_w1_local->base_addr + AXIW1_DATA_REG) & 0x000000FF);
-+
-+	/* Clear Go signal in control register */
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	return val;
-+}
-+
-+/**
-+ * amd_axi_w1_write_byte - Performs the write byte function.
-+ *
-+ * @data:	The ds2482 channel pointer
-+ * @val:	The value to write
-+ */
-+static void amd_axi_w1_write_byte(void *data, u8 val)
-+{
-+	struct amd_axi_w1_local *amd_axi_w1_local = data;
-+	int rc;
-+
-+	/* Wait for READY signal to be 1 to ensure 1-wire IP is ready */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_READY) == 0) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local,
-+							       AXIW1_READY_IRQ_EN);
-+		if (rc < 0)
-+			return;
-+	}
-+
-+	/* Write tx Byte command in instruction register with bit to transmit */
-+	iowrite32(AXIW1_WRITEBYTE + val, amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+
-+	/* Write Go signal and clear control reset signal in register 1 */
-+	iowrite32(AXIW1_GO, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	/* Wait for done signal to be 1 */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_DONE) != 1) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local,
-+							       AXIW1_DONE_IRQ_EN);
-+		if (rc < 0)
-+			return;
-+	}
-+
-+	/* Clear Go signal in control register */
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+}
-+
-+/**
-+ * amd_axi_w1_reset_bus() - Issues a reset bus sequence.
-+ *
-+ * @data:	the bus host data struct
-+ * Return:	0=Device present, 1=No device present or error
-+ */
-+static u8 amd_axi_w1_reset_bus(void *data)
-+{
-+	struct amd_axi_w1_local *amd_axi_w1_local = data;
-+	u8 val = 0;
-+	int rc;
-+
-+	/* Reset 1-wire Axi IP */
-+	iowrite32(AXI_RESET, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	/* Wait for READY signal to be 1 to ensure 1-wire IP is ready */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_READY) == 0) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local,
-+							       AXIW1_READY_IRQ_EN);
-+		if (rc < 0)
-+			return 1; /* Something went wrong with the hardware */
-+	}
-+	/* Write Initialization command in instruction register */
-+	iowrite32(AXIW1_INITPRES, amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+
-+	/* Write Go signal and clear control reset signal in register 1 */
-+	iowrite32(AXIW1_GO, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	/* Wait for done signal to be 1 */
-+	while ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_DONE) != 1) {
-+		rc = amd_axi_w1_wait_irq_interruptible_timeout(amd_axi_w1_local, AXIW1_DONE_IRQ_EN);
-+		if (rc < 0)
-+			return 1; /* Something went wrong with the hardware */
-+	}
-+	/* Retrieve MSB bit in status register to get failure bit */
-+	if ((ioread32(amd_axi_w1_local->base_addr + AXIW1_STAT_REG) & AXIW1_PRESENCE) != 0)
-+		val = 1;
-+
-+	/* Clear Go signal in control register */
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+
-+	return val;
-+}
-+
-+/* Reset the 1-wire AXI IP. Put the IP in reset state and clear registers */
-+static void amd_axi_w1_reset(struct amd_axi_w1_local *amd_axi_w1_local)
-+{
-+	iowrite32(AXI_RESET, amd_axi_w1_local->base_addr + AXIW1_CTRL_REG);
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_INST_REG);
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_IRQE_REG);
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_STAT_REG);
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_DATA_REG);
-+}
-+
-+static irqreturn_t amd_axi_w1_irq(int irq, void *lp)
-+{
-+	struct amd_axi_w1_local *amd_axi_w1_local = lp;
-+
-+	/* Reset interrupt trigger */
-+	iowrite32(AXI_CLEAR, amd_axi_w1_local->base_addr + AXIW1_IRQE_REG);
-+
-+	atomic_set(&amd_axi_w1_local->flag, 1);
-+	wake_up_interruptible(&amd_axi_w1_local->wait_queue);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int amd_axi_w1_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct amd_axi_w1_local *lp;
-+	struct clk *clk;
-+	u32 ver_major, ver_minor;
-+	int val, rc = 0;
-+
-+	lp = devm_kzalloc(dev, sizeof(*lp), GFP_KERNEL);
-+	if (!lp)
-+		return -ENOMEM;
-+
-+	lp->dev = dev;
-+	lp->base_addr = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(lp->base_addr))
-+		return PTR_ERR(lp->base_addr);
-+
-+	lp->irq = platform_get_irq(pdev, 0);
-+	if (lp->irq < 0)
-+		return lp->irq;
-+
-+	rc = devm_request_irq(dev, lp->irq, &amd_axi_w1_irq, IRQF_TRIGGER_HIGH, DRIVER_NAME, lp);
-+	if (rc)
-+		return rc;
-+
-+	/* Initialize wait queue and flag */
-+	init_waitqueue_head(&lp->wait_queue);
-+
-+	clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+
-+	/* Verify IP presence in HW */
-+	if (ioread32(lp->base_addr + AXIW1_IPID_REG) != AXIW1_IPID) {
-+		dev_err(dev, "AMD 1-wire IP not detected in hardware\n");
-+		return -ENODEV;
-+	}
-+
-+	/*
-+	 * Allow for future driver expansion supporting new hardware features
-+	 * This driver currently only supports hardware 1.x, but include logic
-+	 * to detect if a potentially incompatible future version is used
-+	 * by reading major version ID. It is highly undesirable for new IP versions
-+	 * to break the API, but this code will at least allow for graceful failure
-+	 * should that happen. Future new features can be enabled by hardware
-+	 * incrementing the minor version and augmenting the driver to detect capability
-+	 * using the minor version number
-+	 */
-+	val = ioread32(lp->base_addr + AXIW1_IPVER_REG);
-+	ver_major = FIELD_GET(AXIW1_MAJORVER_MASK, val);
-+	ver_minor = FIELD_GET(AXIW1_MINORVER_MASK, val);
-+
-+	if (ver_major != 1) {
-+		dev_err(dev, "AMD AXI W1 host version %u.%u is not supported by this driver",
-+			ver_major, ver_minor);
-+		return -ENODEV;
-+	}
-+
-+	lp->bus_host.data = lp;
-+	lp->bus_host.touch_bit = amd_axi_w1_touch_bit;
-+	lp->bus_host.read_byte = amd_axi_w1_read_byte;
-+	lp->bus_host.write_byte = amd_axi_w1_write_byte;
-+	lp->bus_host.reset_bus = amd_axi_w1_reset_bus;
-+
-+	amd_axi_w1_reset(lp);
-+
-+	platform_set_drvdata(pdev, lp);
-+	rc = w1_add_master_device(&lp->bus_host);
-+	if (rc) {
-+		dev_err(dev, "Could not add host device\n");
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+static void amd_axi_w1_remove(struct platform_device *pdev)
-+{
-+	struct amd_axi_w1_local *lp = platform_get_drvdata(pdev);
-+
-+	w1_remove_master_device(&lp->bus_host);
-+}
-+
-+static const struct of_device_id amd_axi_w1_of_match[] = {
-+	{ .compatible = "amd,axi-1wire-host" },
-+	{ /* end of list */ },
-+};
-+MODULE_DEVICE_TABLE(of, amd_axi_w1_of_match);
-+
-+static struct platform_driver amd_axi_w1_driver = {
-+	.probe = amd_axi_w1_probe,
-+	.remove_new = amd_axi_w1_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.of_match_table = amd_axi_w1_of_match,
-+	},
-+};
-+module_platform_driver(amd_axi_w1_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Kris Chaplin <kris.chaplin@amd.com>");
-+MODULE_DESCRIPTION("Driver for AMD AXI 1 Wire IP core");
--- 
-2.42.GIT
+BTW, I really like this series!
+
+> +			WARN("ETHTOOL_SPRINTF",
+> +			     "Prefer ethtool_puts over ethtool_sprintf with only two arguments" . $herecurr);
+> +		}
+> +
+> +		# use $rawline because $line loses %s via sanitization and thus we can't match against it.
+> +		if (   $rawline =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*\"\%s\"\s*,\s*$FuncArg\s*\)/   ) {
+> +			WARN("ETHTOOL_SPRINTF2",
+> +			     "Prefer ethtool_puts over ethtool_sprintf with standalone \"%s\" specifier" . $herecurr);
+> +		}
+> +
+> +
+>   # typecasts on min/max could be min_t/max_t
+>   		if ($perl_version_ok &&
+>   		    defined $stat &&
+> 
 
