@@ -2,121 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBB17D7CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDA97D7CE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344014AbjJZG2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 02:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        id S1344143AbjJZGeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 02:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZG2J (ORCPT
+        with ESMTP id S233221AbjJZGeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 02:28:09 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FBC187
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 23:28:05 -0700 (PDT)
-Received: from [127.0.0.1] (unknown [154.134.133.58])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id E67FC6FB;
-        Thu, 26 Oct 2023 08:28:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1698301683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IKIJ9pz/6EelcsD3a+FNse1RgjHqReUk/N6IeQ8agD0=;
-        b=QjfTdqrrPXwyDOeS0DcSV0WIao1R/jbdIkBMLxnP/rfGfwoj05rWZojGmqROIJv1nuBv4b
-        NalHvOgdtYzNI3YudfDrOWe9Icl5d5gXL+G5+QAMQGvksC4f+2vFkA+3ApDkeyI7aNR/O8
-        PaMIO5oSLmp1mgFA8ZIB0BmciV79cPC9GkzmNxD/w8wtolIiAwp5VNaZ0IZuKs6ZlwqAvJ
-        88TYAG+eBUcZA6nRayAq9AH+lYRYDjlE55M0uGwCtousTPH2vBrWej5CorUSILFfmi6Fob
-        slJzISECcy04LenBRnCEGoYPfSZ2p1lrucEHDtLwjMswblcEwXlcvXxRIIOKug==
-Date:   Thu, 26 Oct 2023 09:28:01 +0300
-From:   Michael Walle <michael@walle.cc>
-To:     AceLan Kao <acelan.kao@canonical.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20231026012017.518610-1-acelan.kao@canonical.com>
-References: <20231026012017.518610-1-acelan.kao@canonical.com>
-Message-ID: <F56F4D7D-1264-41E1-9CE7-5DA410A22D73@walle.cc>
+        Thu, 26 Oct 2023 02:34:01 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9375C0;
+        Wed, 25 Oct 2023 23:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tAnAk
+        c6TwBJA7+4fp+4Np5WkOZfvzRbrX0uyOuK61KA=; b=ez+7t92vmB2fOPMCK+x4t
+        DL2fhHnbL9/a3se/VzVcvNtU39vHFekOnd47GHfssoFR9prMU5cdaTWHbJPNQHCH
+        wgDl1ID4Mv/w0nnE4Xc1d8CHVRuHTI139cbWLLaxv+eWe133vv2KB6E+MKwK11Xj
+        A6xsH/b7FcQekz1Rt5vVkk=
+Received: from ubuntu.. (unknown [171.83.45.213])
+        by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id _____wD3P0lFCDplUGTZAw--.45306S2;
+        Thu, 26 Oct 2023 14:33:41 +0800 (CST)
+From:   Charles Yi <be286@163.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Charles Yi <be286@163.com>
+Subject: [PATCH V3] usb: gadget: f_uac1: add adaptive sync support for capture
+Date:   Thu, 26 Oct 2023 14:33:13 +0800
+Message-Id: <20231026063313.1574618-1-be286@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3P0lFCDplUGTZAw--.45306S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxuFW7KF1kKFyxAr48tF15CFg_yoW7GFykpw
+        1UC3yIkr45ArW3Jr48JFWruF43CFWxGry8GrW7Ww4FganFy3sava42yrWFkFy7JFyrZw4I
+        qF4Fgw1a93ykCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRn2-nUUUUU=
+X-Originating-IP: [171.83.45.213]
+X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiWwcV0mI0cg5OXAAAsj
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 26=2E Oktober 2023 04:20:17 OESZ schrieb AceLan Kao <acelan=2Ekao@canoni=
-cal=2Ecom>:
->From: "Chia-Lin Kao (AceLan)" <acelan=2Ekao@canonical=2Ecom>
->
->When the software reset command isn't supported, we now report it
->as an informational message(dev_info) instead of a warning(dev_warn)=2E
->This adjustment helps avoid unnecessary alarm and confusion regarding
->software reset capabilities=2E
->
->Signed-off-by: Chia-Lin Kao (AceLan) <acelan=2Ekao@canonical=2Ecom>
+UAC1 has it's own freerunning clock and can update Host about
+real clock frequency through feedback endpoint so Host can align
+number of samples sent to the UAC1 to prevent overruns/underruns.
 
-NAK=2E You surely missed my comments on the previous version=2E=20
+Change UAC1 driver to make it configurable through additional
+'c_sync' configfs file.
 
--michael
+Default remains 'adaptive' with possibility to switch it
+to 'asynchronous'.
 
->---
->v2=2E only lower the priority for the not supported failure
->v3=2E replace ENOTSUPP with EOPNOTSUPP and check the first command only
->v4=2E move the version information below the '---' line
->---
-> drivers/mtd/spi-nor/core=2Ec | 5 ++++-
-> drivers/spi/spi-mem=2Ec      | 2 +-
-> 2 files changed, 5 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/mtd/spi-nor/core=2Ec b/drivers/mtd/spi-nor/core=2Ec
->index 1b0c6770c14e=2E=2E42e52af76289 100644
->--- a/drivers/mtd/spi-nor/core=2Ec
->+++ b/drivers/mtd/spi-nor/core=2Ec
->@@ -3252,7 +3252,10 @@ static void spi_nor_soft_reset(struct spi_nor *nor=
-)
->=20
-> 	ret =3D spi_mem_exec_op(nor->spimem, &op);
-> 	if (ret) {
->-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
->+		if (ret =3D=3D -EOPNOTSUPP)
->+			dev_info(nor->dev, "Software reset enable command doesn't support: %d=
-\n", ret);
->+		else
->+			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-> 		return;
-> 	}
->=20
->diff --git a/drivers/spi/spi-mem=2Ec b/drivers/spi/spi-mem=2Ec
->index edd7430d4c05=2E=2E93b77ac0b798 100644
->--- a/drivers/spi/spi-mem=2Ec
->+++ b/drivers/spi/spi-mem=2Ec
->@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct=
- spi_mem_op *op)
-> 		return ret;
->=20
-> 	if (!spi_mem_internal_supports_op(mem, op))
->-		return -ENOTSUPP;
->+		return -EOPNOTSUPP;
->=20
-> 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->sp=
-i, 0)) {
-> 		ret =3D spi_mem_access_start(mem);
+Signed-off-by: Charles Yi <be286@163.com>
+
+---------
+Changes in V3:
+- Changed sync mode of capture to adaptive as default.
+- Added implement of 'c_sync' through configfs file.
+---------
+Changes in V2:
+- Updated the indentation of commit message.
+---------
+---
+ drivers/usb/gadget/function/f_uac1.c | 32 ++++++++++++++++++++++++++++
+ drivers/usb/gadget/function/u_uac1.h |  2 ++
+ 2 files changed, 34 insertions(+)
+
+diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
+index 6f0e1d803dc2..edf3c50766b8 100644
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -33,6 +33,8 @@
+ #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
+ 			|| (_opts)->c_volume_present)
+ 
++#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
++
+ struct f_uac1 {
+ 	struct g_audio g_audio;
+ 	u8 ac_intf, as_in_intf, as_out_intf;
+@@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
+ 	.wLockDelay =		cpu_to_le16(1),
+ };
+ 
++static struct usb_endpoint_descriptor as_fback_ep_desc = {
++	.bLength = USB_DT_ENDPOINT_SIZE,
++	.bDescriptorType = USB_DT_ENDPOINT,
++
++	.bEndpointAddress = USB_DIR_IN,
++	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
++	.wMaxPacketSize = cpu_to_le16(3),
++	.bInterval = 1,
++};
++
+ static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
+ 	.bLength =		0, /* filled on rate setup */
+ 	.bDescriptorType =	USB_DT_CS_INTERFACE,
+@@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
+ 
+ 	(struct usb_descriptor_header *)&as_out_ep_desc,
+ 	(struct usb_descriptor_header *)&as_iso_out_desc,
++	(struct usb_descriptor_header *)&as_fback_ep_desc,
+ 
+ 	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
+ 	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
+@@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
+ 		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
+ 		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
+ 		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
++		if (EPOUT_FBACK_IN_EN(opts)) {
++			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
++		}
+ 	}
+ 	if (EPIN_EN(opts)) {
+ 		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
+@@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+ 		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
+ 		uac1->as_out_intf = status;
+ 		uac1->as_out_alt = 0;
++
++		if (EPOUT_FBACK_IN_EN(audio_opts)) {
++			as_out_ep_desc.bmAttributes =
++			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
++			as_out_interface_alt_1_desc.bNumEndpoints++;
++		}
+ 	}
+ 
+ 	if (EPIN_EN(audio_opts)) {
+@@ -1354,6 +1376,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+ 			goto err_free_fu;
+ 		audio->out_ep = ep;
+ 		audio->out_ep->desc = &as_out_ep_desc;
++		if (EPOUT_FBACK_IN_EN(audio_opts)) {
++			audio->in_ep_fback = usb_ep_autoconfig(gadget, &as_fback_ep_desc);
++			if (!audio->in_ep_fback) {
++				goto err_free_fu;
++			}
++		}
+ 	}
+ 
+ 	if (EPIN_EN(audio_opts)) {
+@@ -1596,6 +1624,7 @@ UAC1_ATTRIBUTE(u32, p_chmask);
+ UAC1_RATE_ATTRIBUTE(p_srate);
+ UAC1_ATTRIBUTE(u32, p_ssize);
+ UAC1_ATTRIBUTE(u32, req_number);
++UAC1_ATTRIBUTE(u32, c_sync);
+ 
+ UAC1_ATTRIBUTE(bool, p_mute_present);
+ UAC1_ATTRIBUTE(bool, p_volume_present);
+@@ -1618,6 +1647,7 @@ static struct configfs_attribute *f_uac1_attrs[] = {
+ 	&f_uac1_opts_attr_p_srate,
+ 	&f_uac1_opts_attr_p_ssize,
+ 	&f_uac1_opts_attr_req_number,
++	&f_uac1_opts_attr_c_sync,
+ 
+ 	&f_uac1_opts_attr_p_mute_present,
+ 	&f_uac1_opts_attr_p_volume_present,
+@@ -1685,6 +1715,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
+ 
+ 	opts->req_number = UAC1_DEF_REQ_NUM;
+ 
++	opts->c_sync = UAC1_DEF_CSYNC;
++
+ 	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
+ 
+ 	return &opts->func_inst;
+diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
+index f7a616760e31..d0a4b86bff5c 100644
+--- a/drivers/usb/gadget/function/u_uac1.h
++++ b/drivers/usb/gadget/function/u_uac1.h
+@@ -27,6 +27,7 @@
+ #define UAC1_DEF_MAX_DB		0		/* 0 dB */
+ #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
+ 
++#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ADAPTIVE
+ 
+ struct f_uac1_opts {
+ 	struct usb_function_instance	func_inst;
+@@ -56,6 +57,7 @@ struct f_uac1_opts {
+ 
+ 	struct mutex			lock;
+ 	int				refcnt;
++	int				c_sync;
+ };
+ 
+ #endif /* __U_UAC1_H */
+-- 
+2.34.1
 
