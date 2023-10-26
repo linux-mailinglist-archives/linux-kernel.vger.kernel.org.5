@@ -2,239 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF46C7D82B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985E47D82BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344924AbjJZMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        id S1344897AbjJZMf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjJZMcf (ORCPT
+        with ESMTP id S229647AbjJZMfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:32:35 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4A493
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:32:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VuxqP9._1698323546;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuxqP9._1698323546)
-          by smtp.aliyun-inc.com;
-          Thu, 26 Oct 2023 20:32:27 +0800
-Message-ID: <37a3e0d0-329f-576f-2498-986ff260c07a@linux.alibaba.com>
-Date:   Thu, 26 Oct 2023 20:32:42 +0800
+        Thu, 26 Oct 2023 08:35:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0667C0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698323722; x=1729859722;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DIoPWLtOcqdIwIafgzx4Ooxy9UjJ9SD+sC1FwI6+syE=;
+  b=NznW7srQn3/MdZ/iFFbhZYrXW4XDKmtAk82nHFMN4NdR4qzZfSSOJ/Kh
+   Qfb0XQHCsgoQ6eM1eOoux/xSFtDyFcVtRD7t5XJVjNcLIV5hTVbB//9rd
+   QS8LMeAYmZzncinKDRwUOF95HkjMyMoWCeVTcca/895kj8n3sNqQwPF+r
+   tXbfUHeaIy2y7/7BKgaMdc5gwNt0SHfDnw6ikCJxlHu721DD9wONG9R2e
+   /B9vTaZ4GdBEwlUQTqbmrphA4MdL82XYJbrvNfoKmc2B+8T5oqFm06Rkw
+   LFrnI4S7CWFg0CsnP+F3GoBcoGISJJIl+pCEBgG4xpOCgW2he32v9owNM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="384735857"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="384735857"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:35:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="1006368162"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="1006368162"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Oct 2023 05:35:20 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvza2-0009md-1T;
+        Thu, 26 Oct 2023 12:35:18 +0000
+Date:   Thu, 26 Oct 2023 20:34:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH] genirq: Own affinity hint
+Message-ID: <202310262054.v57mGz1Z-lkp@intel.com>
+References: <20231025141517.375378-1-jakub@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Barry Song <21cnbao@gmail.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <2f55f62b-cae2-4eee-8572-1b662a170880@arm.com>
- <CAGsJ_4xuH_mftf_8fV12o_Xuvp9gG8ySQq_P0JAyZH=6c66hEA@mail.gmail.com>
- <b4e80296-c541-43f5-b7ad-f80fb34fb1f3@arm.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <b4e80296-c541-43f5-b7ad-f80fb34fb1f3@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025141517.375378-1-jakub@cloudflare.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jakub,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on tip/irq/core]
+[also build test WARNING on linus/master v6.6-rc7 next-20231026]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Jakub-Sitnicki/genirq-Own-affinity-hint/20231026-001606
+base:   tip/irq/core
+patch link:    https://lore.kernel.org/r/20231025141517.375378-1-jakub%40cloudflare.com
+patch subject: [PATCH] genirq: Own affinity hint
+config: mips-malta_kvm_defconfig (https://download.01.org/0day-ci/archive/20231026/202310262054.v57mGz1Z-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310262054.v57mGz1Z-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310262054.v57mGz1Z-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/irq/irqdesc.c:75:1: warning: unused label 'err_pending_mask' [-Wunused-label]
+   err_pending_mask:
+   ^~~~~~~~~~~~~~~~~
+   1 warning generated.
 
 
-On 10/26/2023 2:01 PM, Anshuman Khandual wrote:
-> 
-> 
-> On 10/26/23 11:24, Barry Song wrote:
->> On Thu, Oct 26, 2023 at 12:55 PM Anshuman Khandual
->> <anshuman.khandual@arm.com> wrote:
->>>
->>>
->>>
->>> On 10/24/23 18:26, Baolin Wang wrote:
->>>> Now ptep_clear_flush_young() is only called by folio_referenced() to
->>>> check if the folio was referenced, and now it will call a tlb flush on
->>>> ARM64 architecture. However the tlb flush can be expensive on ARM64
->>>> servers, especially for the systems with a large CPU numbers.
->>>
->>> TLB flush would be expensive on *any* platform with large CPU numbers ?
+vim +/err_pending_mask +75 kernel/irq/irqdesc.c
 
-Perhaps yes, but did not measure it on other platforms.
+    68	
+    69	#ifdef CONFIG_GENERIC_PENDING_IRQ
+    70		if (!zalloc_cpumask_var_node(&desc->pending_mask, GFP_KERNEL, node))
+    71			goto err_pending_mask;
+    72	#endif
+    73		return 0;
+    74	
+  > 75	err_pending_mask:
+    76	#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+    77		free_cpumask_var(desc->irq_common_data.effective_affinity);
+    78	#endif
+    79	err_effective_affinity:
+    80		free_cpumask_var(desc->irq_common_data.affinity_hint);
+    81	err_affinity_hint:
+    82		free_cpumask_var(desc->irq_common_data.affinity);
+    83	err_affinity:
+    84		return -ENOMEM;
+    85	}
+    86	
 
->>>> Similar to the x86 architecture, below comments also apply equally to
->>>> ARM64 architecture. So we can drop the tlb flush operation in
->>>> ptep_clear_flush_young() on ARM64 architecture to improve the performance.
->>>> "
->>>> /* Clearing the accessed bit without a TLB flush
->>>>   * doesn't cause data corruption. [ It could cause incorrect
->>>>   * page aging and the (mistaken) reclaim of hot pages, but the
->>>>   * chance of that should be relatively low. ]
->>>>   *
->>>>   * So as a performance optimization don't flush the TLB when
->>>>   * clearing the accessed bit, it will eventually be flushed by
->>>>   * a context switch or a VM operation anyway. [ In the rare
->>>>   * event of it not getting flushed for a long time the delay
->>>>   * shouldn't really matter because there's no real memory
->>>>   * pressure for swapout to react to. ]
->>>>   */
->>>
->>> If always true, this sounds generic enough for all platforms, why only
->>> x86 and arm64 ?
-
-I am not sure this is always true for every architectures.
-
->>>> "
->>>> Running the thpscale to show some obvious improvements for compaction
->>>> latency with this patch:
->>>>                               base                   patched
->>>> Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%*
->>>> Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%*
->>>> Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%*
->>>> Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%*
->>>> Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%*
->>>> Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%*
->>>> Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%*
->>>> Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%*
->>>> Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%*
->>>>                         base       patched
->>>> Duration User         167.78      161.03
->>>> Duration System      1836.66     1673.01
->>>> Duration Elapsed     2074.58     2059.75
->>>
->>> Could you please point to the test repo you are running ?
-
-The test is based on v6.5 kernel.
-
->>>> Barry Song submitted a similar patch [1] before, that replaces the
->>>> ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
->>>> folio_referenced_one(). However, I'm not sure if removing the tlb flush
->>>> operation is applicable to every architecture in kernel, so dropping
->>>> the tlb flush for ARM64 seems a sensible change.
->>>
->>> The reasoning provided here sounds generic when true, hence there seems
->>> to be no justification to keep it limited just for arm64 and x86. Also
-
-Right, but I can not ensure if this will break other architectures.
-
->>> what about pmdp_clear_flush_young_notify() when THP is enabled. Should
->>> that also not do a TLB flush after clearing access bit ? Although arm64
-
-Yes, I think so.
-
->>> does not enable __HAVE_ARCH_PMDP_CLEAR_YOUNG_FLUSH, rather depends on
->>> the generic pmdp_clear_flush_young() which also does a TLB flush via
->>> flush_pmd_tlb_range() while clearing the access bit.
->>>
->>>>
->>>> Note: I am okay for both approach, if someone can help to ensure that
->>>> all architectures do not need the tlb flush when clearing the accessed
->>>> bit, then I also think Barry's patch is better (hope Barry can resend
->>>> his patch).
->>>
->>> This paragraph belongs after the '----' below and not part of the commit
->>> message.
-
-OK.
-
->>>> [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gmail.com/
->>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>> ---
->>>>   arch/arm64/include/asm/pgtable.h | 31 ++++++++++++++++---------------
->>>>   1 file changed, 16 insertions(+), 15 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index 0bd18de9fd97..2979d796ba9d 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
->>>>   static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->>>>                                         unsigned long address, pte_t *ptep)
->>>>   {
->>>> -     int young = ptep_test_and_clear_young(vma, address, ptep);
->>>> -
->>>> -     if (young) {
->>>> -             /*
->>>> -              * We can elide the trailing DSB here since the worst that can
->>>> -              * happen is that a CPU continues to use the young entry in its
->>>> -              * TLB and we mistakenly reclaim the associated page. The
->>>> -              * window for such an event is bounded by the next
->>>> -              * context-switch, which provides a DSB to complete the TLB
->>>> -              * invalidation.
->>>> -              */
->>>> -             flush_tlb_page_nosync(vma, address);
->>>> -     }
->>>> -
->>>> -     return young;
->>>> +     /*
->>>> +      * This comment is borrowed from x86, but applies equally to ARM64:
->>>> +      *
->>>> +      * Clearing the accessed bit without a TLB flush doesn't cause
->>>> +      * data corruption. [ It could cause incorrect page aging and
->>>> +      * the (mistaken) reclaim of hot pages, but the chance of that
->>>> +      * should be relatively low. ]
->>>> +      *
->>>> +      * So as a performance optimization don't flush the TLB when
->>>> +      * clearing the accessed bit, it will eventually be flushed by
->>>> +      * a context switch or a VM operation anyway. [ In the rare
->>>> +      * event of it not getting flushed for a long time the delay
->>>> +      * shouldn't really matter because there's no real memory
->>>> +      * pressure for swapout to react to. ]
->>>> +      */
->>>> +     return ptep_test_and_clear_young(vma, address, ptep);
->>>>   }
->>>>
->>>>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>
->>> There are three distinct concerns here
->>>
->>> 1) What are the chances of this misleading existing hot page reclaim process
->>> 2) How secondary MMU such as SMMU adapt to change in mappings without a flush
->>> 3) Could this break the architecture rule requiring a TLB flush after access
->>>     bit clear on a page table entry
->>
->> In terms of all of above concerns,  though 2 is different, which is an
->> issue between
->> cpu and non-cpu,
->> i feel kernel has actually dropped tlb flush at least for mglru, there
->> is no flush in
->> lru_gen_look_around(),
->>
->> static bool folio_referenced_one(struct folio *folio,
->>                  struct vm_area_struct *vma, unsigned long address, void *arg)
->> {
->>          ...
->>
->>                  if (pvmw.pte) {
->>                          if (lru_gen_enabled() &&
->>                              pte_young(ptep_get(pvmw.pte))) {
->>                                  lru_gen_look_around(&pvmw);
->>                                  referenced++;
->>                          }
->>
->>                          if (ptep_clear_flush_young_notify(vma, address,
->>                                                  pvmw.pte))
->>                                  referenced++;
->>                  }
->>
->>          return true;
->> }
->>
->> and so is in walk_pte_range() of vmscan.  linux has been surviving with
->> all above concerns for a while, believing it or not :-)
-> 
-> Although the first two concerns could be worked upon in the SW, kernel surviving
-> after breaking arch rules explicitly is not a correct state to be in IMHO.
-
-Not sure what's the meaning of "not a correct state", at least we 
-(Alibaba) have not found this can cause any issues until now when using 
-MGLRU on x86 and ARM64 platforms.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
