@@ -2,81 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC637D8B8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F977D8B91
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344896AbjJZWRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        id S1344988AbjJZWSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbjJZWRi (ORCPT
+        with ESMTP id S1344955AbjJZWRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:17:38 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAAB91;
-        Thu, 26 Oct 2023 15:17:35 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QM9PZ5010260;
-        Thu, 26 Oct 2023 22:17:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=iGJxaPnWBwrWPTu8G/B2k5nK1md372Hn+qv6XIuKvf0=;
- b=X4MMLgHFp/Rx+GmMpHTvjTg8ULYtjV9S9U/ue/Ahkcoe9XYUGODbSKXTuSEBp3i28Z53
- orVcmGloCMiikFvjY3kaMuVUmsfUlUR0upPnP7wKhyOXdZehGuAp+OeWaiajBiytrgh9
- i3ORQ4vBH1TVigbUeiwwaVDZDlLz5ZAhrVUm8hBUlyHM1D9aXMWnPOsLyWBITW+fpb0G
- j55oo7Qg7c9xSX0wiPj37bELJS3rTfi3GjY8ksXK/IwAvsA+LD+JSaWIdpzVgyFVDNA1
- SZghcbp2zjk80NxxOj/dGKxC2YyarCvCyHq8bhcpiCKresIL2Wy7XayGRTCbFzD3mClN 9g== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u00nhr9gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 22:17:14 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39QLsVkB011894;
-        Thu, 26 Oct 2023 22:17:12 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tywqr107a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 22:17:12 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QMHBgw12059236
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Oct 2023 22:17:11 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4358658059;
-        Thu, 26 Oct 2023 22:17:11 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2182158065;
-        Thu, 26 Oct 2023 22:17:11 +0000 (GMT)
-Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 26 Oct 2023 22:17:11 +0000 (GMT)
-Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
-        id 5652E740051; Thu, 26 Oct 2023 17:17:10 -0500 (CDT)
-From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-To:     joel@jms.id.au, andrew@aj.id.au, eajames@linux.ibm.com,
-        ninad@linux.ibm.com, linux@roeck-us.net, jdelvare@suse.com
-Cc:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] hwmon: (pmbus/max31785) Add delay between bus accesses
-Date:   Thu, 26 Oct 2023 17:17:08 -0500
-Message-Id: <20231026221708.1582518-1-lakshmiy@us.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 26 Oct 2023 18:17:55 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24168D47;
+        Thu, 26 Oct 2023 15:17:53 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4084095722aso11038155e9.1;
+        Thu, 26 Oct 2023 15:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698358671; x=1698963471; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J6aQzvymgnykTJYyUNqos0M7PldrCbODsxg27QrFdA8=;
+        b=MqA2I/jk26INgZxxsfVwUbIFNkompGVlAukrf7za5JwMkk0rE5JqLiWst0keoAtdcg
+         wPDrNVF6A1TCMXqSaBcOdf0YvWxoxDZuQyeqnsbFiQoX6ZvBb7TyYF8vJUzH62RRDYnd
+         yd5L2Znfv+pvHvGdB4g03bhFhXNl9yDKz0loSiyC8ppi7q+DZDKYQhCHl7WTGiOZvYr7
+         nb+N3uUMFacjIG3UUEt6rYExk0I9M8dpu1zrG5PHZPGEsYVd0HscdJU2kA6jnT8yNqkL
+         a7QX0aK5wmvuzFNok4B4ZLYi7qsRFDyhmBxsyZTSmLJMNNXmZGUFygtJnIc+MsvvIpcK
+         MImw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698358671; x=1698963471;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J6aQzvymgnykTJYyUNqos0M7PldrCbODsxg27QrFdA8=;
+        b=iJT1grZxiBrWILOARyUcxAl56GlPRsw9z0Lr0W42iYcQagSDNvNJyFpUQ9HFCJUWip
+         4ug48x9jEpl3D2q8uRCjUd7CczyBcphb8k3RBDrUSsQNOmIrDdfqsX8UoRF75dNbxzuj
+         0GZsVqz0KW1Vns+xPKK8wqB0ElKVZTJcJ1zpef8R68rRTSKVGaBMEjwSKdtxrtrwtiXt
+         3IdkykgocQ0WIW6yqu/2cNAqI9TK4B+oXeM9YynyApO56gEWq1M/vaXhclgS7Aq70tkC
+         NbjOmqTcjZcMXtYy7Aw41qKtl8dTefLQeS4+BE1r1kX9puUU8ut1Bh7qzUfTgGAIs2aB
+         JHig==
+X-Gm-Message-State: AOJu0YyjYiud9Fp5YMbn4Z6vnDEQ9XInMDo06MQT/Tuf5bUaTp+K3rZf
+        qJ4u4hVQuJz2u2IM37W3CYM=
+X-Google-Smtp-Source: AGHT+IEXk7wu+BWH5PuNjLGzYfglJqQqyr64jFKw9mM2T6j/NSdcIcGUsTFFoYUci+YzMymGrg+hrA==
+X-Received: by 2002:a05:600c:1d18:b0:408:4475:8cc1 with SMTP id l24-20020a05600c1d1800b0040844758cc1mr930072wms.35.1698358671120;
+        Thu, 26 Oct 2023 15:17:51 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05600c428300b0040596352951sm3541734wmc.5.2023.10.26.15.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 15:17:50 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 01:17:45 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH next v2 3/3] treewide: Convert some ethtool_sprintf() to
+ ethtool_puts()
+Message-ID: <20231026221745.uiqvn6avvcruyafx@skbuf>
+References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-3-0d67cbdd0538@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nJZvGawrEJWSN-hbQ4vpf-vCCPXgFSqR
-X-Proofpoint-GUID: nJZvGawrEJWSN-hbQ4vpf-vCCPXgFSqR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_21,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1015 malwarescore=0
- bulkscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310260194
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026-ethtool_puts_impl-v2-3-0d67cbdd0538@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,323 +135,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MAX31785 has shown erratic behaviour across multiple system
-designs, unexpectedly clock stretching and NAKing transactions.
+On Thu, Oct 26, 2023 at 09:56:09PM +0000, Justin Stitt wrote:
+> This patch converts some basic cases of ethtool_sprintf() to
+> ethtool_puts().
+> 
+> The conversions are used in cases where ethtool_sprintf() was being used
+> with just two arguments:
+> |       ethtool_sprintf(&data, buffer[i].name);
+> or when it's used with format string: "%s"
+> |       ethtool_sprintf(&data, "%s", buffer[i].name);
+> which both now become:
+> |       ethtool_puts(&data, buffer[i].name);
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/net/dsa/lantiq_gswip.c                     |  2 +-
+>  drivers/net/dsa/mt7530.c                           |  2 +-
+>  drivers/net/dsa/qca/qca8k-common.c                 |  2 +-
+>  drivers/net/dsa/realtek/rtl8365mb.c                |  2 +-
+>  drivers/net/dsa/realtek/rtl8366-core.c             |  2 +-
+>  drivers/net/dsa/vitesse-vsc73xx-core.c             |  8 +--
+>  drivers/net/ethernet/amazon/ena/ena_ethtool.c      |  4 +-
+>  drivers/net/ethernet/brocade/bna/bnad_ethtool.c    |  2 +-
+>  drivers/net/ethernet/freescale/fec_main.c          |  4 +-
+>  .../net/ethernet/fungible/funeth/funeth_ethtool.c  |  8 +--
+>  drivers/net/ethernet/hisilicon/hns/hns_dsaf_gmac.c |  2 +-
+>  .../net/ethernet/hisilicon/hns/hns_dsaf_xgmac.c    |  2 +-
+>  drivers/net/ethernet/hisilicon/hns/hns_ethtool.c   | 65 +++++++++++-----------
+>  drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |  6 +-
+>  drivers/net/ethernet/intel/iavf/iavf_ethtool.c     |  3 +-
+>  drivers/net/ethernet/intel/ice/ice_ethtool.c       |  9 +--
+>  drivers/net/ethernet/intel/idpf/idpf_ethtool.c     |  2 +-
+>  drivers/net/ethernet/intel/igb/igb_ethtool.c       |  6 +-
+>  drivers/net/ethernet/intel/igc/igc_ethtool.c       |  6 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c   |  5 +-
+>  .../net/ethernet/microchip/sparx5/sparx5_ethtool.c |  2 +-
+>  .../net/ethernet/netronome/nfp/nfp_net_ethtool.c   | 44 +++++++--------
+>  drivers/net/ethernet/pensando/ionic/ionic_stats.c  |  4 +-
+>  drivers/net/ethernet/wangxun/libwx/wx_ethtool.c    |  2 +-
+>  drivers/net/hyperv/netvsc_drv.c                    |  4 +-
+>  drivers/net/phy/nxp-tja11xx.c                      |  2 +-
+>  drivers/net/phy/smsc.c                             |  2 +-
+>  drivers/net/vmxnet3/vmxnet3_ethtool.c              | 10 ++--
+>  28 files changed, 100 insertions(+), 112 deletions(-)
 
-Experimentation shows that this seems to be triggered by a register access
-directly back to back with a previous register write. Experimentation also
-shows that inserting a small delay after register writes makes the issue go
-away.
-
-Use a similar solution to what the max15301 driver does to solve the same
-problem. Create a custom set of bus read and write functions that make sure
-that the delay is added.
-
-Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
----
-V3 -> V4: Fixed warnings realted to this commit
-V2 -> V3: Fixed the commit message
-V1 -> V2:
-- Changed the max31785_wait macro to a function, following the conventions
-  used in other drivers that had the same issue.
-- Changed the function names from max31785_i2c_smbus* to max31785_i2c_* and
-  from max31785_pmbus_* to _max31785_*, making them more concise.
-
- drivers/hwmon/pmbus/max31785.c | 187 +++++++++++++++++++++++++++++----
- 1 file changed, 166 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
-index f9aa576495a5..cc9acd7bac37 100644
---- a/drivers/hwmon/pmbus/max31785.c
-+++ b/drivers/hwmon/pmbus/max31785.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2017 IBM Corp.
-  */
- 
-+#include <linux/delay.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-@@ -23,19 +24,118 @@ enum max31785_regs {
- 
- #define MAX31785_NR_PAGES		23
- #define MAX31785_NR_FAN_PAGES		6
-+#define MAX31785_WAIT_DELAY_US		250
- 
--static int max31785_read_byte_data(struct i2c_client *client, int page,
--				   int reg)
-+struct max31785_data {
-+	ktime_t access;			/* Chip access time */
-+	struct pmbus_driver_info info;
-+};
-+
-+#define to_max31785_data(x)  container_of(x, struct max31785_data, info)
-+
-+/*
-+ * MAX31785 Driver Workaround
-+ *
-+ * The MAX31785 fan controller occasionally exhibits communication issues.
-+ * These issues are not indicated by the device itself, except for occasional
-+ * NACK responses during master transactions. No error bits are set in STATUS_BYTE.
-+ *
-+ * To address this, we introduce a delay of 250us between consecutive accesses
-+ * to the fan controller. This delay helps mitigate communication problems by
-+ * allowing sufficient time between accesses.
-+ */
-+static inline void max31785_wait(const struct max31785_data *data)
- {
--	if (page < MAX31785_NR_PAGES)
--		return -ENODATA;
-+	s64 delta = ktime_us_delta(ktime_get(), data->access);
-+
-+	if (delta < MAX31785_WAIT_DELAY_US)
-+		udelay(MAX31785_WAIT_DELAY_US - delta);
-+}
-+
-+static int max31785_i2c_write_byte_data(struct i2c_client *client,
-+					struct max31785_data *driver_data,
-+					int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = i2c_smbus_write_byte_data(client, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int max31785_i2c_read_word_data(struct i2c_client *client,
-+				       struct max31785_data *driver_data,
-+				       int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = i2c_smbus_read_word_data(client, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_read_byte_data(struct i2c_client *client,
-+				    struct max31785_data *driver_data,
-+				    int page, int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_read_byte_data(client, page, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_write_byte_data(struct i2c_client *client,
-+				     struct max31785_data *driver_data,
-+				     int page, int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_write_byte_data(client, page, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_read_word_data(struct i2c_client *client,
-+				    struct max31785_data *driver_data,
-+				    int page, int phase, int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_read_word_data(client, page, phase, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_write_word_data(struct i2c_client *client,
-+				     struct max31785_data *driver_data,
-+				     int page, int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_write_word_data(client, page, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int max31785_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 
- 	switch (reg) {
- 	case PMBUS_VOUT_MODE:
- 		return -ENOTSUPP;
- 	case PMBUS_FAN_CONFIG_12:
--		return pmbus_read_byte_data(client, page - MAX31785_NR_PAGES,
--					    reg);
-+		return _max31785_read_byte_data(client, driver_data,
-+						page - MAX31785_NR_PAGES,
-+						reg);
- 	}
- 
- 	return -ENODATA;
-@@ -102,16 +202,19 @@ static int max31785_get_pwm(struct i2c_client *client, int page)
- 	return rv;
- }
- 
--static int max31785_get_pwm_mode(struct i2c_client *client, int page)
-+static int max31785_get_pwm_mode(struct i2c_client *client,
-+				 struct max31785_data *driver_data, int page)
- {
- 	int config;
- 	int command;
- 
--	config = pmbus_read_byte_data(client, page, PMBUS_FAN_CONFIG_12);
-+	config = _max31785_read_byte_data(client, driver_data, page,
-+					  PMBUS_FAN_CONFIG_12);
- 	if (config < 0)
- 		return config;
- 
--	command = pmbus_read_word_data(client, page, 0xff, PMBUS_FAN_COMMAND_1);
-+	command = _max31785_read_word_data(client, driver_data, page, 0xff,
-+					   PMBUS_FAN_COMMAND_1);
- 	if (command < 0)
- 		return command;
- 
-@@ -129,6 +232,8 @@ static int max31785_get_pwm_mode(struct i2c_client *client, int page)
- static int max31785_read_word_data(struct i2c_client *client, int page,
- 				   int phase, int reg)
- {
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 	u32 val;
- 	int rv;
- 
-@@ -157,7 +262,7 @@ static int max31785_read_word_data(struct i2c_client *client, int page,
- 		rv = max31785_get_pwm(client, page);
- 		break;
- 	case PMBUS_VIRT_PWM_ENABLE_1:
--		rv = max31785_get_pwm_mode(client, page);
-+		rv = max31785_get_pwm_mode(client, driver_data, page);
- 		break;
- 	default:
- 		rv = -ENODATA;
-@@ -188,8 +293,36 @@ static inline u32 max31785_scale_pwm(u32 sensor_val)
- 	return (sensor_val * 100) / 255;
- }
- 
--static int max31785_pwm_enable(struct i2c_client *client, int page,
--				    u16 word)
-+static int max31785_update_fan(struct i2c_client *client,
-+			       struct max31785_data *driver_data, int page,
-+			       u8 config, u8 mask, u16 command)
-+{
-+	int from, rv;
-+	u8 to;
-+
-+	from = _max31785_read_byte_data(client, driver_data, page,
-+					PMBUS_FAN_CONFIG_12);
-+	if (from < 0)
-+		return from;
-+
-+	to = (from & ~mask) | (config & mask);
-+
-+	if (to != from) {
-+		rv = _max31785_write_byte_data(client, driver_data, page,
-+					       PMBUS_FAN_CONFIG_12, to);
-+		if (rv < 0)
-+			return rv;
-+	}
-+
-+	rv = _max31785_write_word_data(client, driver_data, page,
-+				       PMBUS_FAN_COMMAND_1, command);
-+
-+	return rv;
-+}
-+
-+static int max31785_pwm_enable(struct i2c_client *client,
-+			       struct max31785_data *driver_data, int page,
-+			       u16 word)
- {
- 	int config = 0;
- 	int rate;
-@@ -217,18 +350,23 @@ static int max31785_pwm_enable(struct i2c_client *client, int page,
- 		return -EINVAL;
- 	}
- 
--	return pmbus_update_fan(client, page, 0, config, PB_FAN_1_RPM, rate);
-+	return max31785_update_fan(client, driver_data, page, config,
-+				   PB_FAN_1_RPM, rate);
- }
- 
- static int max31785_write_word_data(struct i2c_client *client, int page,
- 				    int reg, u16 word)
- {
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
-+
- 	switch (reg) {
- 	case PMBUS_VIRT_PWM_1:
--		return pmbus_update_fan(client, page, 0, 0, PB_FAN_1_RPM,
--					max31785_scale_pwm(word));
-+		return max31785_update_fan(client, driver_data, page, 0,
-+					   PB_FAN_1_RPM,
-+					   max31785_scale_pwm(word));
- 	case PMBUS_VIRT_PWM_ENABLE_1:
--		return max31785_pwm_enable(client, page, word);
-+		return max31785_pwm_enable(client, driver_data, page, word);
- 	default:
- 		break;
- 	}
-@@ -303,13 +441,16 @@ static int max31785_configure_dual_tach(struct i2c_client *client,
- {
- 	int ret;
- 	int i;
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 
- 	for (i = 0; i < MAX31785_NR_FAN_PAGES; i++) {
--		ret = i2c_smbus_write_byte_data(client, PMBUS_PAGE, i);
-+		ret = max31785_i2c_write_byte_data(client, driver_data,
-+						   PMBUS_PAGE, i);
- 		if (ret < 0)
- 			return ret;
- 
--		ret = i2c_smbus_read_word_data(client, MFR_FAN_CONFIG);
-+		ret = max31785_i2c_read_word_data(client, driver_data,
-+						  MFR_FAN_CONFIG);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -329,6 +470,7 @@ static int max31785_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct pmbus_driver_info *info;
-+	struct max31785_data *driver_data;
- 	bool dual_tach = false;
- 	int ret;
- 
-@@ -337,13 +479,16 @@ static int max31785_probe(struct i2c_client *client)
- 				     I2C_FUNC_SMBUS_WORD_DATA))
- 		return -ENODEV;
- 
--	info = devm_kzalloc(dev, sizeof(struct pmbus_driver_info), GFP_KERNEL);
--	if (!info)
-+	driver_data = devm_kzalloc(dev, sizeof(struct max31785_data), GFP_KERNEL);
-+	if (!driver_data)
- 		return -ENOMEM;
- 
-+	info = &driver_data->info;
-+	driver_data->access = ktime_get();
- 	*info = max31785_info;
- 
--	ret = i2c_smbus_write_byte_data(client, PMBUS_PAGE, 255);
-+	ret = max31785_i2c_write_byte_data(client, driver_data,
-+					   PMBUS_PAGE, 255);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.39.2
-
+What's the "next" branch that you expect this to be applied through, and
+why is the patch "treewide"? It only affects networking drivers (I see
+nothing outside of drivers/net/) - so it's "net: Convert ..." and it
+should go through the "net-next.git" tree. The patch should be formatted
+as "PATCH net-next" not "PATCH next", to make this absolutely clear.
