@@ -2,122 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFAD7D8B69
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23637D8B6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344860AbjJZWJK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 18:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S1344906AbjJZWKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbjJZWJI (ORCPT
+        with ESMTP id S229649AbjJZWKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:09:08 -0400
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD81E91;
-        Thu, 26 Oct 2023 15:09:06 -0700 (PDT)
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-27d18475ed4so1241224a91.0;
-        Thu, 26 Oct 2023 15:09:06 -0700 (PDT)
+        Thu, 26 Oct 2023 18:10:17 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB397CC
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:10:13 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53fc7c67a41so5341039a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698358212; x=1698963012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VYkYcPfrdjdF13EUZZ4eE7TIV+DAr//+SL8WC077uOs=;
+        b=J2j7S08RIHdtE5P9LPqWSBmyk4JHy8o0zMHOmCUxJ6ex6gtuzLsOyVnrMcjETdt2my
+         aMWugK8ndDJSbiDSwZtZ3UHf6hLc21mR0kfIJuWsP843otfXTHdMtPWVB6DWEjF6jAvo
+         dKb3bUr/D9d6/CjNzhGa/2kFkg3of1YD3rpsViEouTud9mlyJvZ3egsu134wJnAZppla
+         PH8df/P9K4J6HSuJTPKBgIeEii29VDLq4gtZszfRO4HAaXEjs2qNvKIgcvf0et/1iWR1
+         Bhdr9p+K04toNFsaZlhw0lxk8QKmA/g/C7wE5qjar9deQc6EsbiVR7ymUK4MJTqE8RUL
+         A3+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698358146; x=1698962946;
+        d=1e100.net; s=20230601; t=1698358212; x=1698963012;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aVUcrbGUMw0ppD1wYsBtYUJw806ZaiQ+vq+hatkWY30=;
-        b=j2Hw3NrQhTVzD2LQ52cNRHCHI08u8dN1XGY1eOjAKZga2Ew5hkkP3pSkzKXVV9g9EN
-         cjNjY6KBcNl7rL+lYI4/zjzO0y1v26X5tpa1wXQ0a0ptSi/ITXRcu6rPPewAC9RQIdf0
-         +r+hhnWcPKHoXu5cqJ5UFUOLeQ6/TDVb10j9Ch0RMPBBFglvIqM162xGuK8O6An5uePz
-         Tg02R7koXtgzeA4ZzUBDfRhJVNfiUEeFIYnLwrA5/q8nPQrSaVMRo7NNKFs0CQWxEHhB
-         GP4W63vnoCJcvKz/lcIc8hMZTBO+/JguWlO4+wAkGgxy5EnIgBcKov0taBQvUf50DdgM
-         Z6EA==
-X-Gm-Message-State: AOJu0YzjeM3A+6NNtuAxCvvV9wLX6ePZHKKqF3mowv3sI6+8u/Lwusfz
-        MVpGtc5JotVe/AA25vVccHWtzO3xg5tJK4TRnDI=
-X-Google-Smtp-Source: AGHT+IF1Eztk9O6B5GNlWTQCMsNv4J4w3eJLPrhsWk5fPODMQq7Q3d0B288OOj70RxtmdbuVBRUPWhr0Blr4OYJcSXk=
-X-Received: by 2002:a17:90b:111:b0:27d:c95:b0ad with SMTP id
- p17-20020a17090b011100b0027d0c95b0admr857862pjz.21.1698358146005; Thu, 26 Oct
- 2023 15:09:06 -0700 (PDT)
+        bh=VYkYcPfrdjdF13EUZZ4eE7TIV+DAr//+SL8WC077uOs=;
+        b=w2e3MbR75fIGcta2b1BD19EeMVyxEffdIBr2GINfYhRf/QI4MjAhqE5EXc5DUfYIt9
+         wvaRiBgl/m8adtCoXFy90XhzvO/emgt79eNMmZrdUJbKQIjFFTr1MZtIK+LS82nAcr8u
+         JZ0N5lc8Ghqtz70DJoNWo4JwclgC3MfMGFtxgwje2Q5XL4euDMqd59+bfRt0RVZMmG3M
+         V8T7/doZUSviUKJyF9cLRSzkmRmz+G53+GKmudVzqrt8y7hPfBBnchxWNUiIa5/ZbPt4
+         sGQDpkORdV727k5ZXvfGnpDkrB6ym0E0Je/nTmUBGWE5fUC7plMlcHNGZtmkoec5G8GV
+         DKTg==
+X-Gm-Message-State: AOJu0YzHsZhvIHf7rYnCNQcr2iowa5JVa/Dvqe3dUCGP6FIXxVjp1JVH
+        32s9OdQUBgDgB0I3yejdppEOg1q+v7N+xd+w2pz2jg==
+X-Google-Smtp-Source: AGHT+IHuRGkSLp8NehiD60eytlHzZjcZDIT/jEslbKqr0KO3Wpe3LN4KZHOprmb19kQBB0q3jCL/Ej5UEDw1oqFqc4o=
+X-Received: by 2002:a50:fa83:0:b0:52a:38c3:1b4b with SMTP id
+ w3-20020a50fa83000000b0052a38c31b4bmr1216507edr.15.1698358211957; Thu, 26 Oct
+ 2023 15:10:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231023033144.1011896-1-yangjihong1@huawei.com> <ZTrCS5Z3PZAmfPdV@kernel.org>
-In-Reply-To: <ZTrCS5Z3PZAmfPdV@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 26 Oct 2023 15:08:54 -0700
-Message-ID: <CAM9d7cjhSSV+18ZCHLdTFpMM+MmpoDkYSGjUa5JKZp02Kx9XRw@mail.gmail.com>
-Subject: Re: [PATCH] perf evsel: Rename evsel__increase_rlimit to rlimit__increase_nofile
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-1-0d67cbdd0538@google.com> <20231026220248.blgf7kgt5fkkbg7f@skbuf>
+In-Reply-To: <20231026220248.blgf7kgt5fkkbg7f@skbuf>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Thu, 26 Oct 2023 15:09:59 -0700
+Message-ID: <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
+Subject: Re: [PATCH next v2 1/3] ethtool: Implement ethtool_puts()
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Thu, Oct 26, 2023 at 3:02=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com>=
+ wrote:
+>
+> Hi Justin,
+>
+> On Thu, Oct 26, 2023 at 09:56:07PM +0000, Justin Stitt wrote:
+> > Use strscpy() to implement ethtool_puts().
+> >
+> > Functionally the same as ethtool_sprintf() when it's used with two
+> > arguments or with just "%s" format specifier.
+> >
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> >  include/linux/ethtool.h | 34 +++++++++++++++++++++++-----------
+> >  net/ethtool/ioctl.c     |  7 +++++++
+> >  2 files changed, 30 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+> > index 226a36ed5aa1..7129dd2e227c 100644
+> > --- a/include/linux/ethtool.h
+> > +++ b/include/linux/ethtool.h
+> > @@ -1053,22 +1053,34 @@ static inline int ethtool_mm_frag_size_min_to_a=
+dd(u32 val_min, u32 *val_add,
+> >   */
+> >  extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fmt,=
+ ...);
+> >
+> > +/**
+> > + * ethtool_puts - Write string to ethtool string data
+> > + * @data: Pointer to start of string to update
+> > + * @str: String to write
+> > + *
+> > + * Write string to data. Update data to point at start of next
+> > + * string.
+> > + *
+> > + * Prefer this function to ethtool_sprintf() when given only
+> > + * two arguments or if @fmt is just "%s".
+> > + */
+> > +extern void ethtool_puts(u8 **data, const char *str);
+> > +
+> >  /* Link mode to forced speed capabilities maps */
+> >  struct ethtool_forced_speed_map {
+> > -     u32             speed;
+> > +     u32 speed;
+> >       __ETHTOOL_DECLARE_LINK_MODE_MASK(caps);
+> >
+> > -     const u32       *cap_arr;
+> > -     u32             arr_size;
+> > +     const u32 *cap_arr;
+> > +     u32 arr_size;
+> >  };
+> >
+> > -#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                       =
+       \
+> > -{                                                                    \
+> > -     .speed          =3D SPEED_##value,                               =
+ \
+> > -     .cap_arr        =3D prefix##_##value,                            =
+ \
+> > -     .arr_size       =3D ARRAY_SIZE(prefix##_##value),                =
+ \
+> > -}
+> > +#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                      \
+> > +     {                                                            \
+> > +             .speed =3D SPEED_##value, .cap_arr =3D prefix##_##value, =
+\
+> > +             .arr_size =3D ARRAY_SIZE(prefix##_##value),            \
+> > +     }
+> >
+> > -void
+> > -ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *maps, =
+u32 size);
+> > +void ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *m=
+aps,
+> > +                                 u32 size);
+> >  #endif /* _LINUX_ETHTOOL_H */
+>
+> Maybe this is due to an incorrect rebase conflict resolution, but you
+> shouldn't have touched any of the ethtool force speed maps.
 
-On Thu, Oct 26, 2023 at 12:47 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Mon, Oct 23, 2023 at 03:31:44AM +0000, Yang Jihong escreveu:
-> > evsel__increase_rlimit() helper does nothing with evsel, and description
-> > of the functionality is inaccurate, rename it and move to util/rlimit.c.
->
-> > By the way, fix a checkppatch warning about misplaced license tag:
->
-> >   WARNING: Misplaced SPDX-License-Identifier tag - use line 1 instead
-> >   #160: FILE: tools/perf/util/rlimit.h:3:
-> >   /* SPDX-License-Identifier: LGPL-2.1 */
->
-> > No functional change.
->
-> Please run 'perf test' before sending patches upstream, I'm checking if
-> what is in perf-tools-next/perf-tools-next is building and I noticed
-> this:
->
-> ⬢[acme@toolbox perf-tools-next]$ perf test -v python
-> Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
->  14: 'import perf' in python                                         :
-> --- start ---
-> test child forked, pid 2912462
-> python usage test: "echo "import sys ; sys.path.insert(0, '/tmp/build/perf-tools-next/python'); import perf" | '/usr/bin/python3' "
-> Traceback (most recent call last):
->   File "<stdin>", line 1, in <module>
-> ImportError: /tmp/build/perf-tools-next/python/perf.cpython-311-x86_64-linux-gnu.so: undefined symbol: rlimit__increase_nofile
-> test child finished with -1
-> ---- end ----
-> 'import perf' in python: FAILED!
-> ⬢[acme@toolbox perf-tools-next]$
->
-> The following patch cures it, Namhyung, can you please fold it and force
-> push perf-tools-next/perf-tools-next or let me know if you prefer that I
-> submit a patch fixing this separately.
+Ah, I did have a conflict and resolved by simply moving the hunks
+out of each other's way. Trivial resolution.
 
-Thanks for fixing this.  I prefer having a separate fix.
-Please send it as a formal patch.
-
-Thanks,
-Namhyung
-
+Should I undo this? I want my patch against next since it's targeting
+some stuff in-flight over there. BUT, I also want ethtool_puts() to be
+directly below ethtool_sprintf() in the source code. What to do?
 
 >
-> - Arnaldo
->
-> diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
-> index 26e1c8d973ea0b95..593b660ec75e24e1 100644
-> --- a/tools/perf/util/python-ext-sources
-> +++ b/tools/perf/util/python-ext-sources
-> @@ -40,6 +40,7 @@ util/rwsem.c
->  util/hashmap.c
->  util/perf_regs.c
->  util/fncache.c
-> +util/rlimit.c
->  util/perf-regs-arch/perf_regs_aarch64.c
->  util/perf-regs-arch/perf_regs_arm.c
->  util/perf-regs-arch/perf_regs_csky.c
+> Please wait for at least 24 hours to pass before posting a new version,
+> to allow for more comments to come in.
+
+Ok :)
+
+Thanks
+Justin
