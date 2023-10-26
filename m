@@ -2,139 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5DB7D8845
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92107D8846
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbjJZS3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38298 "EHLO
+        id S231980AbjJZS3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjJZS3B (ORCPT
+        with ESMTP id S230143AbjJZS3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:29:01 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2059.outbound.protection.outlook.com [40.107.223.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FFB1A7;
-        Thu, 26 Oct 2023 11:28:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VHqE+ec9uv+MTTJPfHhExm5UX8x+JGqMubpni24syFBMs67JRJkK1s399ooEIqLKZJH80Z4/tUatbrAzUQPtpDED83s+axZ0UZR0FzN+IyBgP21vMgr3B1ndZMTP+Lm/fWEayJq4hV6R+ehqv2cjLJHuKPIwywxxgqAkuIUiioUiIWNE98bVJUz9dmIfLttLo4uLE47GN8KUxmIyLGg9T5TaicbWD1+AQj4CcHJ8eTdbtsDl+iRpAUeeRQJI9KEwtJqyEW7NY7Lf+aMV+ceWqPw1qpXirMfOsZfNuL/m0sBZCCknzkQHFCspoZyBcc2WtgCR8lYvUybKBe+q4TYcsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d/u7feCbaKbkc3BXs3vMIsw7zLVFKt5ceoFWFbibRzY=;
- b=gITfRa6c0IkRQRt3Yqi7YgbT8sMqrMLk+R1xb5LcGg+T1Sh4OI6vnKdZazqD9ppiKYGHI1i6QeOhOvLltvCHtbzuFD260sc9htu9/9sUHs6vaiypeb1t+kegbPdehew06KyWjgcQB2SjcUdPKLi67TGsBcfY1upxICRgNuCT8329Js1h0CWm4Dt7ZO7grULXhminW7ttFT6SqMO/FlwelMNkwfE2uuFSc7Ec1Xm/GLk/ugrBDDUgNyoKzODgFgKzXdUWyLK1YzuX69xjYPQAgG8sX9YrAEpK8vuo2u1pwVP821pxr6t6seKzXpoNdzhWm0UwqBeMMqsqyonNZdLQJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d/u7feCbaKbkc3BXs3vMIsw7zLVFKt5ceoFWFbibRzY=;
- b=AmMJviwJip7IJxH3JsNtv/oFbi3ghExHMrkj/9gM3NHMdGIMJf7m8cQEtf2rDQ5vLAyvLU6d88WBe4qP2MxtOHwUHCFU5Fpua+SVVn4c+6xwfFCu1kmNFQZZMQszXKDZ6XLYY7czPvRzvGkHVSTIHZmOvcvyXmjlxBMTVBgoZfLySE124kl6HGEYTESgFs9KSD6tMIRzCLI8Elq3/BbTiGoja3FaoRBqbXj9im5sPxkKT+Rab/HW4zcMMJfUblefGFjpqalMdLu6WfUL6GUTftJHV/GAFsPG9wzyaaMt36N/jkqHr88iFWqinEvXVV7AVSFHk8GyNxYxc0GjPDok5Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ0PR12MB6832.namprd12.prod.outlook.com (2603:10b6:a03:47e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
- 2023 18:28:56 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::11a1:b0c7:7c88:9480]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::11a1:b0c7:7c88:9480%4]) with mapi id 15.20.6933.022; Thu, 26 Oct 2023
- 18:28:55 +0000
-Date:   Thu, 26 Oct 2023 15:28:53 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com
-Subject: Re: [PATCH v8 0/8] Add Intel VT-d nested translation (part 1/2)
-Message-ID: <20231026182853.GS3952@nvidia.com>
-References: <20231026044216.64964-1-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026044216.64964-1-yi.l.liu@intel.com>
-X-ClientProxiedBy: DM6PR12CA0019.namprd12.prod.outlook.com
- (2603:10b6:5:1c0::32) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 26 Oct 2023 14:29:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC071B9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698344944; x=1729880944;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+pl4vKRGKy6O4Zjlj2CzoICXCXfxh9aAW36MHBCkKNU=;
+  b=fBbr7uC2OTeTMp/Lns0Z6/w+5ca9Ognde9+dd1zsQ2Yw53Wze/Es9dH1
+   KJUywYTOFlJfxOIIzFL/39VaoZrklMr4JhgjswEpqIh3i+99NQ65bptd/
+   B58khVusXok1TxCcIMmMRV79ZZajB/y2wnd94/1lBfQVykjuYYGevqGrI
+   EJY9AdbNdTO8T1DswK/zsrkPkdGhjuBN0GK2rahHRbJYM52OPKcWnSGGE
+   nHgK9O8J205ydcTZg1oW86pMsm07UsAeiKpvfoXMWlJonI6hshOPDD/WV
+   OEs0AbSvFeGt8NLCWlSizG/tDMiATd3zY4paFfeaxpYhn/SDBiKJ6NHs9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="391495755"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="391495755"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:29:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="576899"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:28:51 -0700
+Received: from [10.209.128.139] (kliang2-mobl1.ccr.corp.intel.com [10.209.128.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 2CFBB580E30;
+        Thu, 26 Oct 2023 11:29:00 -0700 (PDT)
+Message-ID: <acbb895a-475e-4679-98fc-6b90c05a00af@linux.intel.com>
+Date:   Thu, 26 Oct 2023 14:28:59 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB6832:EE_
-X-MS-Office365-Filtering-Correlation-Id: 63206796-a66e-47cc-38fe-08dbd6516965
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gQJUJHNILVY4mi7ECvPwWxatB9UIBCXENgXm/xVgBdI5ztnL+H0FY1yVPnTdR4m/Q9xh/xfqGsnAe/zu5UDOUHFaI+ctYFy1buRK0nDR7sI3/+bBNAy2bTlk5W+h63EYL0Ej+d/GxZhH5fvP9720iRz4/9x3rE6GC6WjXcno5QxH/rmeI2Lv5GYRakMt6YfZW84hatVyoxO/Po7cBH373B+2PQUUqQRl1UI/zeLmdNzDDgGzMVqAG3/WJDQrRU4luwETI+XkPKH14mfu+7pIIiXohR7XIwCTtMJ0P3l13u/k484OioHsRuH2W2gIyVZnNV/K/+o2fOD7m1NzKh9BZrVoN7N0jUwXQMoS+5wJ9+8uemBaY0l+lWYb3f8masRnJc442ib6JEOnIjJX2FepxgPYe5us7e/7KqdVrXC8hNOx4orKd+3x/U357/FelR9z5VXKlO00A+AOyyIgsrTYRQOrvD7gbginItiUM3Zkd5QyJ+MD6fp3m+sn9FzHdSDT3F8IncEqLzhn4bWkBwIJRAwmtjEDWnp4J3mvtvFRzyVJdcalax3/uhCQ3l9GM2KI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(366004)(376002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(26005)(38100700002)(86362001)(2906002)(4744005)(66476007)(316002)(7416002)(33656002)(41300700001)(5660300002)(4326008)(8936002)(8676002)(36756003)(6506007)(2616005)(1076003)(6916009)(66556008)(478600001)(66946007)(83380400001)(6512007)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MNA2KsMtJAR209NTO1AdKRZA1oLq8KokYu1dIONZrT269iDzhREu/ok/2I1+?=
- =?us-ascii?Q?AnF8l068yb33t3YFeCokH3+/zMADQTwXYMBTWX5hvsPo7K46ahNVZivKytX9?=
- =?us-ascii?Q?4JCB8nXtrQc3ymsWPCGiyuX8LttLzxX+iELmIpxHcBxd/9gbgf3/9wvjDvv3?=
- =?us-ascii?Q?FdpGYxZbdqnrW+GdWgtNxblaZ1zRSrfG0IUq/MEkscigz4cBfwHxWwTILwnj?=
- =?us-ascii?Q?JGaNWLCcK2X/k6Nd88w8ApJ2ZVq4y6p/+Ia3Yr/6zjXz+zMZtUj7YfnuQcry?=
- =?us-ascii?Q?bjYx//64lOLHweo5a1u/DkW7hj6RHbZE42pojV7Kn5zkoGsyBVJW8U3qKp1y?=
- =?us-ascii?Q?lNHSvDqe9cSTt6mICWeZ4s4+3oCp4Jr1QyJ7O9hVqD6SNXKj5z1JlVDZ2XTD?=
- =?us-ascii?Q?fz8VaSCGiWNDRUbZ0DaCKior6/iJqPKaUGyjlJlSQ67HEmQJ3OqSyHaQW1Ld?=
- =?us-ascii?Q?e/6ulVQVzB2VJADZ2rrQdjtDIxK9ZcULY2rh9sYuqfj7hU01TD3fxM1607P4?=
- =?us-ascii?Q?GOpRTEzCv4uGPaJA61knNxiuAzHR8vMV3kQGBTeDxY+yclpn8ZUWNkrZYAuc?=
- =?us-ascii?Q?F6aEmEO5mDc6/E8MH/Ne9oEd/93LACFC+ezJ2H2e8eqcnBkZxau/4HZdqzSB?=
- =?us-ascii?Q?vNLyi7SwFVOpz6fAt3jZoUbrIZ83wnVo2NtvGp2lFTNw0bKurYgrHjpZkd/Z?=
- =?us-ascii?Q?8K8/HiuNf4/2F58v3uWqy4WZqB/rrGS12ogz7lpwxrS/963F7i1eABYxNx4n?=
- =?us-ascii?Q?GSRZOn4OMNuI00rTQR0UMnk1dR5Cyc1ncSxPOVnE0F6976Rh6HnLIhNvaz6W?=
- =?us-ascii?Q?C6/bBZArpJTYMJnjxjn43XoyoJsCnjs40OHIjyrn1aeAFHCO6xH0nJC0ito4?=
- =?us-ascii?Q?z8vvhp6DMJ8YasORDIYiqfovdFUtKx6bsGLgi7j24h3qH1fmzHJLihRb0EBd?=
- =?us-ascii?Q?aBqI/FecGSHWg8czzL8XT7Y7nhU6XQk0JithIsRV6aWfwolCvU/qxSQlFAHo?=
- =?us-ascii?Q?Au+3Dkx60Y7+mG6H2VwO5TI+dQtW1NVfRp8V5ZsdY7s1sm6HhoKjm69ajdUe?=
- =?us-ascii?Q?heIeZepu7kHoyetYj7EO8oB546Ac1EmtHbEtHMEJvNjjq5hSRTbfPACRZpAp?=
- =?us-ascii?Q?1a3axloS99vREloDCIJxoSuPHC2xzQonS6nzLqB7IxJkQghxc5NbZxb/hB8f?=
- =?us-ascii?Q?gNePIT/XhtE/a3DhukptFOIz/pxAHTTuWHfX1lo8A8WnOW838MpHkbSfHHXX?=
- =?us-ascii?Q?DIDrvMNOFKFlBBlK04Ew+XJnU7wV/ujeGM9/ZlVxQJ2gtKZQ6EHcQLy91YYt?=
- =?us-ascii?Q?/ey+SsVgbKf3uNnOBxSdjnFR6WP5uxY45geG9AgkOBUCiRIMwBFnCzOEHzf4?=
- =?us-ascii?Q?k0ro8ogn4d/Wnyl3SqfZozZQliAnMb4MB2qCKM4v11CkaNP8OsxtkOI99LBB?=
- =?us-ascii?Q?ZBUSL4AnPz7zsXFF/vI9fxcGbfOs7GKW9BGKlO8CfDPdyHuSul8LVvQCf08j?=
- =?us-ascii?Q?Rwb470atBHOYs6NvOc+XFw1316IsAwWxV3yFOV5JBCQZ4938AGf/DWirkBX+?=
- =?us-ascii?Q?P9KnXGPE0igJ5Dg6k3k=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63206796-a66e-47cc-38fe-08dbd6516965
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 18:28:55.3220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8czxpLzb0P8CEslpzmC6FilidEnCLHNfvgu+UeofxNdQ3j6jdfAbASPV0DniljGp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6832
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 8/8] perf tools: Add branch counter knob
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, adrian.hunter@intel.com, ak@linux.intel.com,
+        eranian@google.com, alexey.v.bayduraev@linux.intel.com,
+        tinghao.zhang@intel.com
+References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
+ <20231025201626.3000228-8-kan.liang@linux.intel.com>
+ <CAP-5=fUjVAk7+2EocoX5pvMKaQ2+Y_quW7p4840=L-mRT_CtXg@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAP-5=fUjVAk7+2EocoX5pvMKaQ2+Y_quW7p4840=L-mRT_CtXg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 09:42:08PM -0700, Yi Liu wrote:
 
-> Lu Baolu (5):
->   iommu/vt-d: Extend dmar_domain to support nested domain
->   iommu/vt-d: Add helper for nested domain allocation
->   iommu/vt-d: Add helper to setup pasid nested translation
->   iommu/vt-d: Add nested domain allocation
->   iommu/vt-d: Disallow read-only mappings to nest parent domain
+
+On 2023-10-25 10:12 p.m., Ian Rogers wrote:
+> On Wed, Oct 25, 2023 at 1:16 PM <kan.liang@linux.intel.com> wrote:
+>>
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Add a new branch filter, "counter", for the branch counter option. It is
+>> used to mark the events which should be logged in the branch. If it is
+>> applied with the -j option, the counters of all the events should be
+>> logged in the branch. If the legacy kernel doesn't support the new
+>> branch sample type, switching off the branch counter filter.
+>>
+>> The stored counter values in each branch are displayed right after the
+>> regular branch stack information via perf report -D.
+>>
+>> Usage examples:
+>>
+>> perf record -e "{branch-instructions,branch-misses}:S" -j any,counter
+>>
+>> Only the first event, branch-instructions, collect the LBR. Both
+>> branch-instructions and branch-misses are marked as logged events.
+>> The occurrences information of them can be found in the branch stack
+>> extension space of each branch.
+>>
+>> perf record -e "{cpu/branch-instructions,branch_type=any/,
+>> cpu/branch-misses,branch_type=counter/}"
+>>
+>> Only the first event, branch-instructions, collect the LBR. Only the
+>> branch-misses event is marked as a logged event.
+>>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Yi Liu (3):
->   iommufd: Add data structure for Intel VT-d stage-1 domain allocation
->   iommu/vt-d: Make domain attach helpers to be extern
->   iommu/vt-d: Set the nested domain to a device
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-Updated, thanks
+Thanks Ian for the review.
 
-Jason
+> 
+> Perhaps add a test somewhere like:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/record.sh
+> for coverage when hardware supports the feature.
+
+Sure, I will add a test when posting the perf tool patches.
+
+Thanks,
+Kan
+> 
+> Thanks,
+> Ian
+> 
+>> ---
+>>
+>> No changes since V4
+>>
+>>  tools/perf/Documentation/perf-record.txt  |  4 +++
+>>  tools/perf/util/evsel.c                   | 31 ++++++++++++++++++++++-
+>>  tools/perf/util/evsel.h                   |  1 +
+>>  tools/perf/util/parse-branch-options.c    |  1 +
+>>  tools/perf/util/perf_event_attr_fprintf.c |  1 +
+>>  tools/perf/util/sample.h                  |  1 +
+>>  tools/perf/util/session.c                 | 15 +++++++++--
+>>  7 files changed, 51 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>> index d5217be012d7..b6afe7cc948d 100644
+>> --- a/tools/perf/Documentation/perf-record.txt
+>> +++ b/tools/perf/Documentation/perf-record.txt
+>> @@ -442,6 +442,10 @@ following filters are defined:
+>>                      4th-Gen Xeon+ server), the save branch type is unconditionally enabled
+>>                      when the taken branch stack sampling is enabled.
+>>         - priv: save privilege state during sampling in case binary is not available later
+>> +       - counter: save occurrences of the event since the last branch entry. Currently, the
+>> +                  feature is only supported by a newer CPU, e.g., Intel Sierra Forest and
+>> +                  later platforms. An error out is expected if it's used on the unsupported
+>> +                  kernel or CPUs.
+>>
+>>  +
+>>  The option requires at least one branch type among any, any_call, any_ret, ind_call, cond.
+>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+>> index a8a5ff87cc1f..58a9b8c82790 100644
+>> --- a/tools/perf/util/evsel.c
+>> +++ b/tools/perf/util/evsel.c
+>> @@ -1831,6 +1831,8 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
+>>
+>>  static void evsel__disable_missing_features(struct evsel *evsel)
+>>  {
+>> +       if (perf_missing_features.branch_counters)
+>> +               evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_COUNTERS;
+>>         if (perf_missing_features.read_lost)
+>>                 evsel->core.attr.read_format &= ~PERF_FORMAT_LOST;
+>>         if (perf_missing_features.weight_struct) {
+>> @@ -1884,7 +1886,12 @@ bool evsel__detect_missing_features(struct evsel *evsel)
+>>          * Must probe features in the order they were added to the
+>>          * perf_event_attr interface.
+>>          */
+>> -       if (!perf_missing_features.read_lost &&
+>> +       if (!perf_missing_features.branch_counters &&
+>> +           (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS)) {
+>> +               perf_missing_features.branch_counters = true;
+>> +               pr_debug2("switching off branch counters support\n");
+>> +               return true;
+>> +       } else if (!perf_missing_features.read_lost &&
+>>             (evsel->core.attr.read_format & PERF_FORMAT_LOST)) {
+>>                 perf_missing_features.read_lost = true;
+>>                 pr_debug2("switching off PERF_FORMAT_LOST support\n");
+>> @@ -2344,6 +2351,18 @@ u64 evsel__bitfield_swap_branch_flags(u64 value)
+>>         return new_val;
+>>  }
+>>
+>> +static inline bool evsel__has_branch_counters(const struct evsel *evsel)
+>> +{
+>> +       struct evsel *cur, *leader = evsel__leader(evsel);
+>> +
+>> +       evlist__for_each_entry(evsel->evlist, cur) {
+>> +               if ((leader == evsel__leader(cur)) &&
+>> +                   (cur->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS))
+>> +                       return true;
+>> +       }
+>> +       return false;
+>> +}
+>> +
+>>  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+>>                         struct perf_sample *data)
+>>  {
+>> @@ -2577,6 +2596,16 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+>>
+>>                 OVERFLOW_CHECK(array, sz, max_size);
+>>                 array = (void *)array + sz;
+>> +
+>> +               if (evsel__has_branch_counters(evsel)) {
+>> +                       OVERFLOW_CHECK_u64(array);
+>> +
+>> +                       data->branch_stack_cntr = (u64 *)array;
+>> +                       sz = data->branch_stack->nr * sizeof(u64);
+>> +
+>> +                       OVERFLOW_CHECK(array, sz, max_size);
+>> +                       array = (void *)array + sz;
+>> +               }
+>>         }
+>>
+>>         if (type & PERF_SAMPLE_REGS_USER) {
+>> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+>> index 848534ec74fa..85f24c986392 100644
+>> --- a/tools/perf/util/evsel.h
+>> +++ b/tools/perf/util/evsel.h
+>> @@ -191,6 +191,7 @@ struct perf_missing_features {
+>>         bool code_page_size;
+>>         bool weight_struct;
+>>         bool read_lost;
+>> +       bool branch_counters;
+>>  };
+>>
+>>  extern struct perf_missing_features perf_missing_features;
+>> diff --git a/tools/perf/util/parse-branch-options.c b/tools/perf/util/parse-branch-options.c
+>> index fd67d204d720..f7f7aff3d85a 100644
+>> --- a/tools/perf/util/parse-branch-options.c
+>> +++ b/tools/perf/util/parse-branch-options.c
+>> @@ -36,6 +36,7 @@ static const struct branch_mode branch_modes[] = {
+>>         BRANCH_OPT("stack", PERF_SAMPLE_BRANCH_CALL_STACK),
+>>         BRANCH_OPT("hw_index", PERF_SAMPLE_BRANCH_HW_INDEX),
+>>         BRANCH_OPT("priv", PERF_SAMPLE_BRANCH_PRIV_SAVE),
+>> +       BRANCH_OPT("counter", PERF_SAMPLE_BRANCH_COUNTERS),
+>>         BRANCH_END
+>>  };
+>>
+>> diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
+>> index 2247991451f3..8f04d3b7f3ec 100644
+>> --- a/tools/perf/util/perf_event_attr_fprintf.c
+>> +++ b/tools/perf/util/perf_event_attr_fprintf.c
+>> @@ -55,6 +55,7 @@ static void __p_branch_sample_type(char *buf, size_t size, u64 value)
+>>                 bit_name(COND), bit_name(CALL_STACK), bit_name(IND_JUMP),
+>>                 bit_name(CALL), bit_name(NO_FLAGS), bit_name(NO_CYCLES),
+>>                 bit_name(TYPE_SAVE), bit_name(HW_INDEX), bit_name(PRIV_SAVE),
+>> +               bit_name(COUNTERS),
+>>                 { .name = NULL, }
+>>         };
+>>  #undef bit_name
+>> diff --git a/tools/perf/util/sample.h b/tools/perf/util/sample.h
+>> index c92ad0f51ecd..70b2c3135555 100644
+>> --- a/tools/perf/util/sample.h
+>> +++ b/tools/perf/util/sample.h
+>> @@ -113,6 +113,7 @@ struct perf_sample {
+>>         void *raw_data;
+>>         struct ip_callchain *callchain;
+>>         struct branch_stack *branch_stack;
+>> +       u64 *branch_stack_cntr;
+>>         struct regs_dump  user_regs;
+>>         struct regs_dump  intr_regs;
+>>         struct stack_dump user_stack;
+>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+>> index 1e9aa8ed15b6..4a094ab0362b 100644
+>> --- a/tools/perf/util/session.c
+>> +++ b/tools/perf/util/session.c
+>> @@ -1150,9 +1150,13 @@ static void callchain__printf(struct evsel *evsel,
+>>                        i, callchain->ips[i]);
+>>  }
+>>
+>> -static void branch_stack__printf(struct perf_sample *sample, bool callstack)
+>> +static void branch_stack__printf(struct perf_sample *sample,
+>> +                                struct evsel *evsel)
+>>  {
+>>         struct branch_entry *entries = perf_sample__branch_entries(sample);
+>> +       bool callstack = evsel__has_branch_callstack(evsel);
+>> +       u64 *branch_stack_cntr = sample->branch_stack_cntr;
+>> +       struct perf_env *env = evsel__env(evsel);
+>>         uint64_t i;
+>>
+>>         if (!callstack) {
+>> @@ -1194,6 +1198,13 @@ static void branch_stack__printf(struct perf_sample *sample, bool callstack)
+>>                         }
+>>                 }
+>>         }
+>> +
+>> +       if (branch_stack_cntr) {
+>> +               printf("... branch stack counters: nr:%" PRIu64 " (counter width: %u max counter nr:%u)\n",
+>> +                       sample->branch_stack->nr, env->br_cntr_width, env->br_cntr_nr);
+>> +               for (i = 0; i < sample->branch_stack->nr; i++)
+>> +                       printf("..... %2"PRIu64": %016" PRIx64 "\n", i, branch_stack_cntr[i]);
+>> +       }
+>>  }
+>>
+>>  static void regs_dump__printf(u64 mask, u64 *regs, const char *arch)
+>> @@ -1355,7 +1366,7 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
+>>                 callchain__printf(evsel, sample);
+>>
+>>         if (evsel__has_br_stack(evsel))
+>> -               branch_stack__printf(sample, evsel__has_branch_callstack(evsel));
+>> +               branch_stack__printf(sample, evsel);
+>>
+>>         if (sample_type & PERF_SAMPLE_REGS_USER)
+>>                 regs_user__printf(sample, arch);
+>> --
+>> 2.35.1
+>>
