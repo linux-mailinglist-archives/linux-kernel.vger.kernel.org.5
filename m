@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB3B7D8969
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8317D896D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344739AbjJZUE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        id S1344759AbjJZUFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbjJZUE5 (ORCPT
+        with ESMTP id S231975AbjJZUFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:04:57 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A081AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:04:55 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 02AA72C022F;
-        Fri, 27 Oct 2023 09:04:53 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1698350693;
-        bh=14khyxyRz0AEdMDJBhA0pwsxUcUvMqnGAK+iD1nf9Lk=;
-        h=From:To:Subject:Date:References:In-Reply-To:From;
-        b=Dj1gkZ2klwj/gUuvdIO6Sg1KQCMkT0Jq6dDwlQxHPS//kq4LfeCk/t1JKLNatBa2F
-         whh9oMyDo+A7+cXxaou4lxdCF3/hcU/O9hYtwTJGjnqqFsJ/dNAv/+7QeMC+an7Hzw
-         lNj0BHZm4SLOVM/JfTzJqksgYafzu5fICC6XIZrD9bH9hhH67n21unuoZSFq9kZguo
-         BYZ67bMkfSqMguf1KgVi3JWYpcebwf0Tal2i+w20ZVTxElW0XZF3R8r9VdL9y0G4Op
-         bP48Z382tJOYFrAt2sNLYfAnJH+QmvqMC+SKKQAKvfbSojBwczuIVWp8i6OzW1VJZT
-         Y6QLnAMCuQBUA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B653ac6640001>; Fri, 27 Oct 2023 09:04:52 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.39; Fri, 27 Oct 2023 09:04:52 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Fri, 27 Oct 2023 09:04:52 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.039; Fri, 27 Oct 2023 09:04:52 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Wolfram Sang <wsa@kernel.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios
- property
-Thread-Topic: [PATCH v4 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios
- property
-Thread-Index: AQHaBsm0MVpXubST+Eu8gnhTr522BbBbFBGAgACTygA=
-Date:   Thu, 26 Oct 2023 20:04:52 +0000
-Message-ID: <a739c815-3b9a-4847-a4ec-1fa4cefe8bdb@alliedtelesis.co.nz>
-References: <20231024223032.3387487-1-chris.packham@alliedtelesis.co.nz>
- <20231024223032.3387487-2-chris.packham@alliedtelesis.co.nz>
- <ZTpKa7R/xxKeCo+z@ninjato>
-In-Reply-To: <ZTpKa7R/xxKeCo+z@ninjato>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A99BB1CAB1C0B94281B9396B3D65448D@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Thu, 26 Oct 2023 16:05:37 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922AF1AC
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:05:34 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50797cf5b69so1860273e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698350733; x=1698955533; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AvOjbgMEiNiwKtiviiRB3Jrac69AW/ULZDJDyb5mOHQ=;
+        b=P4D7ta40bUsOEize9zzj1mKfohkiPXxhP2CVpUFlOM8fzhc1eRaHNJw7Oi/OwzEGBK
+         wEcX6jI7dZFXUY0uHav9JJsvx9mowaROLvDG60su/yR90XkaZvrKNuZgU/vNz3h6khl5
+         sZN90EA/2WeIug3Aa2nJ1/xYTC2D/aN/cLqrv2p7YcnV+a+HccWGezM5YzK+iMI9TCRa
+         Xcw2xvHgvM/e8C07wecuF7EvpmzYlxumS/mZusZEe+/vJ9Q6La8PZLvWpJnMLwrATe5u
+         Y359zoJm4Qn/JtanAE8bUzoXT681Bl2e2yScNcc9R2FA6XpO+GfhuMWEgJ7TjyDTHcsj
+         Va2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698350733; x=1698955533;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvOjbgMEiNiwKtiviiRB3Jrac69AW/ULZDJDyb5mOHQ=;
+        b=PXNDvtkAdyhhnZx6hXGm/1d7n/MsYl3AKrHUeJcLuqUH9oIw8o5s5bXDHQEWRoQks6
+         3rCAEhImkamJ5pRsYE0lzTujuDvPHAgu2BnbMfijbUUlpVT4Qwfa8qzaI2F6jvpwKUOX
+         02qAiLnsCJAAReSoIlXYylavqN98F7Vmc0zave3MT3K3nP1hT52k/D3H2kg+suMngtaT
+         JPmYJRU+kpQhcHnZ0sZ8ViawAtexcc/r3JaBLN+hyyhOY5CfvOWCtC69SAVM0svkRx1c
+         l55T5mMWN39VcHxY0v+k6EPGlarPfT5ifhNzXWLKsnryexORuHh47EvwPdl32zhAfA+1
+         LySA==
+X-Gm-Message-State: AOJu0YwcjJzH97p6MN8MYn3OVdLnljOfMKiBQOU+FwUrFEE6SCszkCbh
+        fHUYs6KprRgym5UJ/+Otlsp3Mw==
+X-Google-Smtp-Source: AGHT+IFEMzDSwODrY3eUmO9ZckI4cUk7p2AKD827UDJVPZI2qPIMi2X4T4qAJW+b0BiLQ16V6StHpA==
+X-Received: by 2002:a05:6512:6cd:b0:503:3644:4a98 with SMTP id u13-20020a05651206cd00b0050336444a98mr344546lff.2.1698350732782;
+        Thu, 26 Oct 2023 13:05:32 -0700 (PDT)
+Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t6-20020a19ad06000000b00503f39e6bcesm672812lfc.95.2023.10.26.13.05.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 13:05:32 -0700 (PDT)
+Message-ID: <883ce8a7-80e1-4065-a957-424d0b4a6535@linaro.org>
+Date:   Thu, 26 Oct 2023 22:05:31 +0200
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=Ke-4JIrgrsVg7Y4wD88A:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] media: qcom: camss: Flag which VFEs require a
+ power-domain
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, andersson@kernel.org,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-2-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231026155042.551731-2-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,18 +79,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KHJlc2VuZCBhcyBwbGFpbiB0ZXh0KQ0KDQoNCk9uIDI3LzEwLzIzIDAwOjE1LCBXb2xmcmFtIFNh
-bmcgd3JvdGU6DQo+PiArICByZXNldC1ncGlvczoNCj4+ICsgICAgZGVzY3JpcHRpb246DQo+PiAr
-ICAgICAgR1BJTyBwaW4gcHJvdmlkaW5nIGEgY29tbW9uIHJlc2V0IGZvciBhbGwgZG93bnN0cmVh
-bSBkZXZpY2VzLiBUaGlzIEdQSU8NCj4+ICsgICAgICB3aWxsIGJlIGFzc2VydGVkIHRoZW4gcmVs
-ZWFzZWQgYmVmb3JlIHRoZSBkb3duc3RyZWFtIGRldmljZXMgYXJlIHByb2JlZC4NCj4gSG93IGFi
-b3V0IHJlbmFtaW5nIHRoaXMgdG8gImJ1cy1yZXNldC1ncGlvcyI/DQo+DQo+IFJlYXNvbjogV2hl
-biBJIHJlYWQgInJlc2V0LWdwaW9zIiwgdGhlbiBJIGFzc3VtZSB0aGUgZGV2aWNlIGl0c2VsZiB3
-aWxsDQo+IGJlIHJlc2V0LiBJbiB0aGlzIGNhc2UsIHRoZSBNYXJ2ZWxsIEkyQyBjb250cm9sbGVy
-LiBTb21lIEkyQyBtdXggZGV2aWNlcw0KPiBhbmQgUENBOTU2NCBhbHJlYWR5IHVzZSB0aGUgcHJv
-cGVydHkgbGlrZSBJIGRlc2NyaWJlZC4NCg0KSSBkb24ndCBoYXZlIGFuIG9iamVjdGlvbiB0byAi
-YnVzLXJlc2V0LWdwaW9zIiBpdCB3b3VsZCBiZSB0cml2aWFsIGZvciANCm1lIHRvIHNwaW4gYSB2
-NSB3aXRoIHRoZSBuYW1pbmcgY2hhbmdlZCBpZiBldmVyeW9uZSBpcyBpbiBhZ3JlZW1lbnQgDQoo
-Z2l2ZW4gbXkgdGltZXpvbmUgSSBtaWdodCBqdXN0IHNlbmQgb3V0IGEgdjUgd2l0aCB0aGlzIGNo
-YW5nZSBhbmQgdGhlbiANCml0IGNhbiBiZSBhcmd1ZWQgd2hldGhlciB0byBhcHBseSB2NCBvciB2
-NSku
+
+
+On 10/26/23 17:50, Bryan O'Donoghue wrote:
+> At the moment we have some complex code for determining if a VFE requires a
+> power-domain attachment. Particularly discordant in this scheme is the
+> subtle reliance on VFE and VFE Lite declaration ordering in our resources.
+> 
+> VFE id is used to determine if a VFE is lite or not and consequently if a
+> VFE requires power-domain attachment. VFE Lite though is not a correct
+> delineation between power-domain and non power-domain state since early
+> SoCs have neither VFE Lite nor power-domains attached to VFEs.
+> 
+> Introduce has_pd to the VFE resource structure to allow the CAMSS code to
+> understand if it needs to try to attach a power-domain for a given VFE.
+> 
+> As a side-effect from this we no longer need to care about VFE Lite or
+> non-Lite or the id number associated with either and which order the
+> VFE/VFE Lite was declared in.
+> 
+> Add the flag and populate the resources. Subsequent patches will disjunct
+> on the bool.
+Generally such things are expected (?) to ship together, but I see that these
+patches are quite big as they are, so this is totally fine!
+
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
