@@ -2,230 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7EA7D7C71
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77E77D7C76
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344516AbjJZFpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        id S1344142AbjJZFpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344254AbjJZFoh (ORCPT
+        with ESMTP id S234937AbjJZFpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:44:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F4F1B1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:44:33 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9bfbc393dfaso12052266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698299072; x=1698903872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pj8Q7YsY/vYkJDue8+dvhserphxMSxUdnrU/yK6lzXQ=;
-        b=RwJIFyPUAT79yCaGZgyZNjJQPid0meKF+FvedNn4Bmx0Co/nwQ9g1eWW2WKUD4OGH5
-         TwLBUbKhPZiaixahtosTFE+n+rq4vZodmseQwWWKwQmNxNiqQ5EJ68apJ7MutgTxsQ4x
-         g8PC6v7qO/Jk6Th1Qh2O1FPvbaZUJOFmlmImdrMga7Nl+YXX8Nj6zdtS8DVeKTOh6Mmm
-         JhhKZ6RJh2wNieCJQsZYAEB+ZdPbm4PYKgzBpqyDOC1yTcuYtxcuuANLg4fG9k/nMUN6
-         2mmUPRIaf75aoEsDpYEWINOugvzNInRaw44cxw11/6p140Gj6oG/Wlg4ammOsP6p4CSq
-         YrgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698299072; x=1698903872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pj8Q7YsY/vYkJDue8+dvhserphxMSxUdnrU/yK6lzXQ=;
-        b=nEveb5WcKteuCoA3huMaWHHJI3NrYqCMsVDLtWXXnrsi9DmVH43+vscY5q74rjIo3h
-         bxkW3XbLUT7DCfMmHYB0tifzoyiTFFpiaZzALHh60C8ys+bQRCG78Lcd7LrELvFzVDty
-         SF6C6RDfsmFHpDppeYNTnHiZtMZaTTNjO7C+n0xnm3OYbMiE7SJRHAnzY60crWhBv52P
-         H8z3CZn2BxdYbEy6659LWRp9rDP0lNdUHmH3cAbi4bnbKiNPtgvWt4DJuOkLD+Ag9F9i
-         DbprF8IX5wfuSQmA3PSy+RwN4L0fKv421KOeb13bi69etvJ0hzqAYVCm/RM2quA+XdTz
-         TL0Q==
-X-Gm-Message-State: AOJu0YxgjeXqelYRpkV7MUNLbcshpNNBSjKBxFQjgpWCjTBJK7Km5LKn
-        YA1IPwV5Om1enJ1g0o9PLTozSOjFJSU=
-X-Google-Smtp-Source: AGHT+IEUTXYnXCN5fDsGVzGmmv4KTEHOhjaAmgsj9i0QbvMs5CJl71PZMyfWOQuPuEV+Aw8f+oyVHQ==
-X-Received: by 2002:a17:906:2250:b0:9bd:cab6:a34b with SMTP id 16-20020a170906225000b009bdcab6a34bmr13813147ejr.0.1698299072414;
-        Wed, 25 Oct 2023 22:44:32 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id x9-20020a170906b08900b0099ce188be7fsm10953361ejy.3.2023.10.25.22.44.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 22:44:32 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 07:44:30 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] staging: rtl8192e: Remove unused constants starting
- with MAX_RX_QUEUE
-Message-ID: <0809e3380ce76354d689edd80b82adada5a18d4e.1698295861.git.philipp.g.hortmann@gmail.com>
-References: <cover.1698295861.git.philipp.g.hortmann@gmail.com>
+        Thu, 26 Oct 2023 01:45:23 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A073A1994;
+        Wed, 25 Oct 2023 22:45:00 -0700 (PDT)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4808475B;
+        Thu, 26 Oct 2023 07:44:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698299084;
+        bh=F61gyrqDirP+JCND20tgRzoVp5z4zN+HisVG9917ft8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BbntZ58q4/rUw2mWYoHoHvNRltSNczNUUSjBDjO9l9kWivVBIkXW06179jzSweO93
+         vYecg06HpWOhJJcJv2634rv1zFnK+IUBUAeZJms1FkOIRgZ3uxHmz0T/boJ3i1Se0v
+         6fr/dygiEsu691Drl/zOAx/Kx/Bnh+Wmj0p+ibzo=
+Message-ID: <d1da5acd-384f-4ddd-a721-ce677cc38a3d@ideasonboard.com>
+Date:   Thu, 26 Oct 2023 08:44:52 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1698295861.git.philipp.g.hortmann@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: Use device_get_match_data()
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Joel Stanley <joel@jms.id.au>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Inki Dae <inki.dae@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>
+References: <20231020125214.2930329-1-robh@kernel.org>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231020125214.2930329-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused constants.
+On 20/10/2023 15:52, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data in a single step. With this, adjust the
+> includes to explicitly include the correct headers. That also serves as
+> preparation to remove implicit includes within the DT headers
+> (of_device.h in particular).
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   drivers/gpu/drm/armada/armada_crtc.c    | 24 +++++++-----------------
+>   drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 10 ++++------
+>   drivers/gpu/drm/exynos/exynos_drm_gsc.c |  9 +++++----
+>   drivers/gpu/drm/imx/ipuv3/imx-ldb.c     |  9 ++++-----
+>   drivers/gpu/drm/mxsfb/mxsfb_drv.c       | 10 +++-------
+>   drivers/gpu/drm/omapdrm/dss/dispc.c     |  4 ++--
+>   drivers/gpu/drm/omapdrm/dss/dss.c       |  5 +++--
+>   7 files changed, 28 insertions(+), 43 deletions(-)
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- .../staging/rtl8192e/rtl8192e/r8190P_def.h    |  2 -
- .../staging/rtl8192e/rtl8192e/r8192E_phyreg.h | 62 +------------------
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h  |  2 -
- drivers/staging/rtl8192e/rtl819x_Qos.h        |  1 -
- drivers/staging/rtl8192e/rtl819x_TS.h         |  1 -
- drivers/staging/rtl8192e/rtllib.h             |  1 -
- 6 files changed, 1 insertion(+), 68 deletions(-)
+For omapdrm:
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8190P_def.h b/drivers/staging/rtl8192e/rtl8192e/r8190P_def.h
-index c229fd244a48..8c85f1c866d3 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8190P_def.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8190P_def.h
-@@ -11,8 +11,6 @@
- 
- #define		MAX_SILENT_RESET_RX_SLOT_NUM	10
- 
--#define RX_MPDU_QUEUE				0
--
- enum rtl819x_loopback {
- 	RTL819X_NO_LOOPBACK = 0,
- 	RTL819X_MAC_LOOPBACK = 1,
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_phyreg.h b/drivers/staging/rtl8192e/rtl8192e/r8192E_phyreg.h
-index 24fb0ca539ea..c48c56869c19 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_phyreg.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_phyreg.h
-@@ -248,75 +248,15 @@
- #define bPAEnd				0xf
- #define bTREnd				0x0f000000
- #define bRFEnd				0x000f0000
--/* T2R */
--#define bCCAMask			0x000000f0
--#define bR2RCCAMask			0x00000f00
--#define bHSSI_R2TDelay			0xf8000000
--#define bHSSI_T2RDelay			0xf80000
- /* Channel gain at continue TX. */
--#define bContTxHSSI			0x400
--#define bIGFromCCK			0x200
--#define bAGCAddress			0x3f
--#define bRxHPTx				0x7000
--#define bRxHPT2R			0x38000
--#define bRxHPCCKIni			0xc0000
--#define bAGCTxCode			0xc00000
--#define bAGCRxCode			0x300000
- #define b3WireDataLength		0x800
- #define b3WireAddressLength		0x400
--#define b3WireRFPowerDown		0x1
--/*#define bHWSISelect			0x8 */
--#define b2GPAPEPolarity			0x80000000
--#define bRFSW_TxDefaultAnt		0x3
--#define bRFSW_TxOptionAnt		0x30
--#define bRFSW_RxDefaultAnt		0x300
--#define bRFSW_RxOptionAnt		0x3000
--#define bRFSI_3WireData			0x1
--#define bRFSI_3WireClock		0x2
--#define bRFSI_3WireLoad			0x4
--#define bRFSI_3WireRW			0x8
- /* 3-wire total control */
--#define bRFSI_3Wire			0xf
- #define bRFSI_RFENV			0x10
--#define bRFSI_TRSW			0x20
--#define bRFSI_TRSWB			0x40
--#define bRFSI_ANTSW			0x100
--#define bRFSI_ANTSWB			0x200
--#define bRFSI_PAPE			0x400
--#define bBandSelect			0x1
--#define bHTSIG2_GI			0x80
--#define bHTSIG2_Smoothing		0x01
--#define bHTSIG2_Sounding		0x02
--#define bHTSIG2_Aggreaton		0x08
--#define bHTSIG2_STBC			0x30
--#define bHTSIG2_AdvCoding		0x40
--#define bHTSIG2_NumOfHTLTF		0x300
--#define bHTSIG2_CRC8			0x3fc
--#define bHTSIG1_MCS			0x7f
--#define bHTSIG1_BandWidth		0x80
--#define bHTSIG1_HTLength		0xffff
--#define bLSIG_Rate			0xf
--#define bLSIG_Reserved			0x10
--#define bLSIG_Length			0x1fffe
--#define bLSIG_Parity			0x20
--#define bCCKRxPhase			0x4
- #define bLSSIReadAddress		0x3f000000 /* LSSI "read" address */
- #define bLSSIReadEdge			0x80000000 /* LSSI "read" edge signal */
- #define bLSSIReadBackData		0xfff
--#define bLSSIReadOKFlag			0x1000
--#define bCCKSampleRate			0x8 /* 0: 44 MHz, 1: 88MHz */
--
--#define bRegulator0Standby		0x1
--#define bRegulatorPLLStandby		0x2
--#define bRegulator1Standby		0x4
--#define bPLLPowerUp			0x8
--#define bDPLLPowerUp			0x10
--#define bDA10PowerUp			0x20
--#define bAD7PowerUp			0x200
--#define bDA6PowerUp			0x2000
--#define bXtalPowerUp			0x4000
--#define b40MDClkPowerUP			0x8000
--#define bDA6DebugMode			0x20000
-+
- #define bDA6Swing			0x380000
- #define bADClkPhase			0x4000000
- #define b80MClkDelay			0x18000000
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index a6c47388d72c..a4afbf3e934d 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -91,8 +91,6 @@
- 
- #define MAX_TX_QUEUE				9
- 
--#define MAX_RX_QUEUE				1
--
- #define MAX_RX_COUNT				64
- #define MAX_TX_QUEUE_COUNT			9
- 
-diff --git a/drivers/staging/rtl8192e/rtl819x_Qos.h b/drivers/staging/rtl8192e/rtl819x_Qos.h
-index f547de4c1da3..1c00092ea3a5 100644
---- a/drivers/staging/rtl8192e/rtl819x_Qos.h
-+++ b/drivers/staging/rtl8192e/rtl819x_Qos.h
-@@ -21,7 +21,6 @@ struct octet_string {
- #define AC1_BK	1
- #define AC2_VI	2
- #define AC3_VO	3
--#define AC_MAX	4
- 
- enum direction_value {
- 	DIR_UP			= 0,
-diff --git a/drivers/staging/rtl8192e/rtl819x_TS.h b/drivers/staging/rtl8192e/rtl819x_TS.h
-index ab737428d4a7..fff36315f174 100644
---- a/drivers/staging/rtl8192e/rtl819x_TS.h
-+++ b/drivers/staging/rtl8192e/rtl819x_TS.h
-@@ -10,7 +10,6 @@
- #define TS_ADDBA_DELAY		60
- 
- #define TOTAL_TS_NUM		16
--#define TCLAS_NUM		4
- 
- enum tr_select {
- 	TX_DIR = 0,
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index dc3488d9693f..d2cf3cfaaaba 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -911,7 +911,6 @@ enum {WMM_all_frame, WMM_two_frame, WMM_four_frame, WMM_six_frame};
- 	((up) < 6) ? WME_AC_VI : \
- 	WME_AC_VO)
- 
--#define	ETHER_ADDR_LEN		6	/* length of an Ethernet address */
- #define ETHERNET_HEADER_SIZE    14      /* length of two Ethernet address
- 					 * plus ether type
- 					 */
--- 
-2.42.0
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+  Tomi
 
