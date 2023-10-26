@@ -2,196 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053F67D8B79
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB817D8B80
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344887AbjJZWMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        id S1344896AbjJZWMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZWMO (ORCPT
+        with ESMTP id S230089AbjJZWMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:12:14 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6E7192;
-        Thu, 26 Oct 2023 15:12:12 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32d80ae19f8so952711f8f.2;
-        Thu, 26 Oct 2023 15:12:12 -0700 (PDT)
+        Thu, 26 Oct 2023 18:12:40 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AD81B8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:12:37 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b2e44c7941so920169b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698358331; x=1698963131; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9dxV0z/KJX2jAtAYojUd4aHcjxi+u31o0EAgu6F7IwM=;
-        b=IN5f6ncj7iukrDUcd6JuT8NsgCZszbYS7mty/v/snDJSUB2IB0ESvl7hUhFP5PSqRo
-         GuS9UEF+L1ptgcPQJIW4JiKbJ8UxkKx9ri7Sudn7LmaL6HhOoXovNL60rMyNVm1IpWMA
-         MtBeaJNf8edBGkbY4GL+NBND/A6Oe27g1s8GQ0Bz8s89E3aVKtiPpKI/lZxhAnTn7klO
-         mRAu5OU44U7Ad8nNzQMDQVJGt9Qno6Xl2gTzeQu0FaGAOeOeQAbXtxVEzzo1iZo/nDOe
-         fdrzcysmRYYMIxpLQMNOecCKdtRt8Xli94unglZkeKjoTeBC4QSWqikr1up15yr1Snxd
-         eieQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698358331; x=1698963131;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1698358357; x=1698963157; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9dxV0z/KJX2jAtAYojUd4aHcjxi+u31o0EAgu6F7IwM=;
-        b=i6IjBNKzuaf/JE54QMtEZ1hr5p4bSRit5HuGsY3pq++18wO5DXYWvxIaKvFlXVNqgB
-         puBguRqP7goPCTiQvbgREn9Mo63wD3j6j3ywqw2XCrJ8E6cJ1oG4G/HBQlwOplAzFsZs
-         cS8wqk3OM56B4D3rGL63BN6Oe2pAgWqjb6KkkNuh15YUO2lasK05CMQCXN4gh9Z3WbGN
-         Y6DUvaEtJtSmotEOOAgCT1K1FsMC+Za+UIJosrAtlrmd+o7JL7Johj6O0HqMuU1Oo7En
-         k1J6Yjd97ls/xVPITQQI+2gUuUiSwbwmhyGY+zT9QRG7LWCRkopx0/1c46kUdc3AuvDd
-         SXiA==
-X-Gm-Message-State: AOJu0Yw9NbzDIvIt3GU7D2xLW9e2IMAuNnCoTsZ5DbUIZ1lRbK3rQvIS
-        +WkbvDKOiOBJATz2fcKSZnE=
-X-Google-Smtp-Source: AGHT+IEFBkpZiWpPOgBWSz7VhB+L8HEH65ute3OKtRNDPYBqco6PY6IhRvs9olvc+3J8je+BIT3EsA==
-X-Received: by 2002:a5d:5a06:0:b0:32d:a101:689d with SMTP id bq6-20020a5d5a06000000b0032da101689dmr886013wrb.56.1698358330949;
-        Thu, 26 Oct 2023 15:12:10 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id d16-20020adfef90000000b0032326908972sm358008wro.17.2023.10.26.15.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 15:12:10 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 01:12:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] checkpatch: add ethtool_sprintf rules
-Message-ID: <20231026221206.52oge3a5w4uxkkd5@skbuf>
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+        bh=FyK27xM5kbIwxsUoSw19E95taRzCJvDq3pVbOquRTi4=;
+        b=RXB7vqUAQsVEoZtRnFcdwYSMSXtc6c9LbA0lTagpouOf01fdEEmMG0mdf4oUFGWoXn
+         wX06Td0qAOWNkEHp3LGRHVBIR85hpq6/bixg9NCs4nNMlukR8hX61IFeAyd9vgruIQpk
+         lEpnq5MTR7WIRemsye5aM2xL/+e1CHKBCNGb2bdDxYPmdU6COWsEnMRA+T5FG2tqeN4g
+         Zw36RqRt4PbyVAeE/GQ4mkaWZ5qIt9qNx0IN9LDpugEg62bd2mMwMzhJDDTebIdtTH9Y
+         L3lcvKsF1h9z/rebYStWYhl+G714T4BTrWjvL2WS40q2BSMBlM7CfDqoaI3mE02tXDGJ
+         NAtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698358357; x=1698963157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FyK27xM5kbIwxsUoSw19E95taRzCJvDq3pVbOquRTi4=;
+        b=WYhN6RlxfpLjk5PSs1p1t2gJKpVsz2Ct3V3zlSEFxtkrXdR7Xqr99PdpZPbfTLo31Q
+         UcoKesvr2auRtYuzx5hI2bc5U+nt2GdmBC2h1g5Fh1nNjUHQAPxg0wE3sW+aAUhBh29J
+         eAaQ2dLQNItHpNgmZgQJ9dmdI0SdTok26dLRSPmdaCnEysA721NHh8DjfbHfAlylbKOL
+         d9H9nkGU5HwHmBv0rLZ5ORjctXlDqpCXfFAWLiTiCw/uNuJsI4QHZqmSx+VTYTUUnEt3
+         M7Dw8LnYA7Ou+4nvGuISfDwPLPEzEWYPbxci1rrP3yv8lBp8UMViTlrWfTYCM8zmO6ob
+         LG2Q==
+X-Gm-Message-State: AOJu0YzusDrivLH0C8jSv9k/KHCHbS1s9ql7g5bRJ59to2GiIwdYyiHw
+        ZMUPwBtWcKO/xo4euiS64T05wIhh2IkoorY7YrZc
+X-Google-Smtp-Source: AGHT+IH4B/F3jSVT6Nn8xcRQnsJ1uiLuOsG9IZM1z8u2NT76JtjnCTm3iCfolyAhImJmOOQWCLxEEJfWlt1eadUfIHE=
+X-Received: by 2002:a05:6808:4d9:b0:3b2:e5f2:5a59 with SMTP id
+ a25-20020a05680804d900b003b2e5f25a59mr797519oie.35.1698358356906; Thu, 26 Oct
+ 2023 15:12:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+References: <1696457386-3010-6-git-send-email-wufan@linux.microsoft.com>
+ <c53599e9d278fc55be30e3bac9411328.paul@paul-moore.com> <616a6fd7-47b1-4b46-af23-46f9b1a3eedf@linux.microsoft.com>
+In-Reply-To: <616a6fd7-47b1-4b46-af23-46f9b1a3eedf@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 26 Oct 2023 18:12:26 -0400
+Message-ID: <CAHC9VhScdtqJeUTTUQVk4D70tTLz4TgU_aRTMRnHa0OARyubaw@mail.gmail.com>
+Subject: Re: [PATCH RFC v11 5/19] ipe: introduce 'boot_verified' as a trust provider
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 09:56:08PM +0000, Justin Stitt wrote:
-> Add some warnings for using ethtool_sprintf() where a simple
-> ethtool_puts() would suffice.
-> 
-> The two cases are:
-> 
-> 1) Use ethtool_sprintf() with just two arguments:
-> |       ethtool_sprintf(&data, driver[i].name);
-> or
-> 2) Use ethtool_sprintf() with a standalone "%s" fmt string:
-> |       ethtool_sprintf(&data, "%s", driver[i].name);
-> 
-> The former may cause -Wformat-security warnings while the latter is just
-> not preferred. Both are safely in the category of warnings, not errors.
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  scripts/checkpatch.pl | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 25fdb7fda112..22f007131337 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -7011,6 +7011,25 @@ sub process {
->  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
->  		}
->  
-> +# ethtool_sprintf uses that should likely be ethtool_puts
-> +		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
-> +			if(WARN("ETHTOOL_SPRINTF",
-> +			   "Prefer ethtool_puts over ethtool_sprintf with only two arguments\n" . $herecurr) &&
-> +         $fix) {
-> +         $fixed[$fixlinenr] =~ s/ethtool_sprintf\s*\(/ethtool_puts\(/;
-> +       }
-> +		}
-> +
-> +		# use $rawline because $line loses %s via sanitization and thus we can't match against it.
-> +		if ($rawline =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*\"\%s\"\s*,\s*$FuncArg\s*\)/) {
-> +			if(WARN("ETHTOOL_SPRINTF",
-> +			   "Prefer ethtool_puts over ethtool_sprintf with standalone \"%s\" specifier\n" . $herecurr) &&
-> +         $fix) {
-> +         $fixed[$fixlinenr] =~ s/ethtool_sprintf\s*\(\s*(.*?),.*?,(.*?)\)/ethtool_puts\($1,$2)/;
-> +       }
-> +		}
-> +
-> +
->  # typecasts on min/max could be min_t/max_t
->  		if ($perl_version_ok &&
->  		    defined $stat &&
-> 
-> -- 
-> 2.42.0.820.g83a721a137-goog
-> 
+On Thu, Oct 26, 2023 at 5:33=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> =
+wrote:
+> On 10/23/2023 8:52 PM, Paul Moore wrote:
+> > On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+> >>
+> >> IPE is designed to provide system level trust guarantees, this usually
+> >> implies that trust starts from bootup with a hardware root of trust,
+> >> which validates the bootloader. After this, the bootloader verifies th=
+e
+> >> kernel and the initramfs.
+> >>
+> >> As there's no currently supported integrity method for initramfs, and
+> >> it's typically already verified by the bootloader, introduce a propert=
+y
+> >> that causes the first superblock to have an execution to be "pinned",
+> >> which is typically initramfs.
+> >>
+> >> When the "pinned" device is unmounted, it will be "unpinned" and
+> >> `boot_verified` property will always evaluate to false afterward.
+> >>
+> >> We use a pointer with a spin_lock to "pin" the device instead of rcu
+> >> because rcu synchronization may sleep, which is not allowed when
+> >> unmounting a device.
+> >>
+> >> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> >> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> ...
+> >> ---
+> >>   security/ipe/eval.c          | 72 ++++++++++++++++++++++++++++++++++=
++-
+> >>   security/ipe/eval.h          |  2 +
+> >>   security/ipe/hooks.c         | 12 ++++++
+> >>   security/ipe/hooks.h         |  2 +
+> >>   security/ipe/ipe.c           |  1 +
+> >>   security/ipe/policy.h        |  2 +
+> >>   security/ipe/policy_parser.c | 35 +++++++++++++++++-
+> >>   7 files changed, 124 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> >> index 8a8bcc5c7d7f..bdac4abc0ddb 100644
+> >> --- a/security/ipe/eval.c
+> >> +++ b/security/ipe/eval.c
+> >> @@ -9,6 +9,7 @@
+> >>   #include <linux/file.h>
+> >>   #include <linux/sched.h>
+> >>   #include <linux/rcupdate.h>
+> >> +#include <linux/spinlock.h>
+> >>
+> >>   #include "ipe.h"
+> >>   #include "eval.h"
+> >> @@ -16,6 +17,44 @@
+> >>
+> >>   struct ipe_policy __rcu *ipe_active_policy;
+> >>
+> >> +static const struct super_block *pinned_sb;
+> >> +static DEFINE_SPINLOCK(pin_lock);
+> >> +#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+> >> +
+> >> +/**
+> >> + * pin_sb - Pin the underlying superblock of @f, marking it as truste=
+d.
+> >> + * @sb: Supplies a super_block structure to be pinned.
+> >> + */
+> >> +static void pin_sb(const struct super_block *sb)
+> >> +{
+> >> +    if (!sb)
+> >> +            return;
+> >> +    spin_lock(&pin_lock);
+> >> +    if (!pinned_sb)
+> >> +            pinned_sb =3D sb;
+> >> +    spin_unlock(&pin_lock);
+> >> +}
+> >> +
+> >> +/**
+> >> + * from_pinned - Determine whether @sb is the pinned super_block.
+> >> + * @sb: Supplies a super_block to check against the pinned super_bloc=
+k.
+> >> + *
+> >> + * Return:
+> >> + * * true   - @sb is the pinned super_block
+> >> + * * false  - @sb is not the pinned super_block
+> >> + */
+> >> +static bool from_pinned(const struct super_block *sb)
+> >> +{
+> >> +    bool rv;
+> >> +
+> >> +    if (!sb)
+> >> +            return false;
+> >> +    spin_lock(&pin_lock);
+> >> +    rv =3D !IS_ERR_OR_NULL(pinned_sb) && pinned_sb =3D=3D sb;
+> >> +    spin_unlock(&pin_lock);
+> >
+> > It's okay for an initial version, but I still think you need to get
+> > away from this spinlock in from_pinned() as quickly as possible.
+> > Maybe I'm wrong, but this looks like a major source of lock contention.
+> >
+> > I understand the issue around RCU and the potential for matching on
+> > a reused buffer/address, but if you modified IPE to have its own LSM
+> > security blob in super_block::security you could mark the superblock
+> > when it was mounted and do a lockless lookup here in from_pinned().
+>
+> Thank you for the suggestion. After some testing, I discovered that
+> switching to RCU to pin the super block and using a security blob to
+> mark a pinned super block works. This approach do avoid many spinlock
+> operations. I'll incorporate these changes in the next version of the pat=
+ch.
 
-I don't really know Perl, but does the indentation and coding style here
-conform to any rules, or is it just free-form? The rest of the script
-looks almost as you'd expect from C. This is unreadable to me.
+I probably wasn't as clear as I should have been, I was thinking of
+doing away with the @pinned_sb global variable entirely, as well as
+its associated lock problems and simply marking the initramfs/initrd
+superblock when it was mounted.  I will admit that I haven't fully
+thought about all the implementation details, but I think you could
+leverage the security_sb_mount() hook to set a flag in IPE's
+superblock metadata when the initramfs was mounted.
+
+--
+paul-moore.com
