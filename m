@@ -2,210 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C169C7D88FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F7C7D88FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjJZTee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S231596AbjJZTfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjJZTec (ORCPT
+        with ESMTP id S229991AbjJZTfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:34:32 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7647D187;
-        Thu, 26 Oct 2023 12:34:30 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-779f2718accso101852085a.1;
-        Thu, 26 Oct 2023 12:34:30 -0700 (PDT)
+        Thu, 26 Oct 2023 15:35:48 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C86610E
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:35:45 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cab2c24ecdso10323245ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698348869; x=1698953669; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dlx257uGBGuSd2Gloxav30tAY6VWTs4Trptnw4lRsxk=;
-        b=KLcJFSQMh1MZw7JIYwUCsfwOChOlPh3xMI9lfevAexH+lcEMavRMag9dVwOiQix8Wy
-         R80gV+UusDmeDGARJVOb8bzXGzF43DhO8EX8oKpImxEwW3ruYM2R6Y16rUMhmJ6aLHGa
-         GMBr9X+JHnj18O5MdVmkAasxukG38kLm61Dw6lMlL0zoG6AlHrzN0xkFNYBoZJkrAjIa
-         VTu7Oc4zfbHis7RP1DVYgEEnmGOEuxQKA/ug8ljnhNvPgB7762gUgGCluT16D1ZN8DWw
-         kYOULKm/zCxi1DZQCoyjWPEGDXXME6OYsxMIFt7u5TuHn7rKd3fCBe1XgFGV1Zf+O+4O
-         vLug==
+        d=chromium.org; s=google; t=1698348945; x=1698953745; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IQC4A/sL4XoeDc7l3OjE8DP+73M4y+QZaaN7R7Z8PCQ=;
+        b=Aywc3mCW9NW0AMC6WgUz95gu5oOfmutaPs4DHPoAfIJnUt8e5xK8aZiSjbq4BjtS6m
+         Um4z9WCPAd2qYuDxuI0/pEzpzvshgTjURFCl8x36stzu2DhXmFDBWrhA5yaUN5Zr8sgm
+         JBOEWHij/NraEObIV6BWKo1s9FbKUF5+nn/qA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698348869; x=1698953669;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dlx257uGBGuSd2Gloxav30tAY6VWTs4Trptnw4lRsxk=;
-        b=Y71+Fr63Blnc+WJE/s+Mc59I24Lpi9OlaoJ6fCP0OwxjDS2BFdOzlnStkNz2ZzoDgo
-         QdpvTajpLGjMGZaA+UoWDY5AASVo+0sKV1ItOwwjtIoLxoO3lNtSLNsdw+5KwO7v9f1n
-         iEhRKsfW8AEvwNz2ckN3xME8I6qIVRf7hLGh3yDd1+pqMadZJO4J/mmnwkXNNqpm7E0t
-         4PVpO0/Sdedw+y7u9sh7CbuMsjUc5GqCHxGgD+8w0vi6psauTQWrZyj2V5ASd9oDvMGb
-         HS0JrQG6tmdak4pcuGDZApERMP5cyGJZ+8HTiG/+czXUs5mBrWdhZQ0ljLovArzNmJUW
-         iSnA==
-X-Gm-Message-State: AOJu0Yx05/I9o2GAFJ2dqnNVsx/BDgQCc25RC3roYC0NYkPS2c4Z/TNx
-        NsElrM6w+okPziZHt+TRvnnv7m2259A/iL6f6sskLTafJIY=
-X-Google-Smtp-Source: AGHT+IFa+a9Wkq0WM46wIhO/htxqSNYR6+vE26pYPjlFIxvtDnoXWFQQ67gzGR3SJ1/2Zn5PLRZUXSIs2u39F9GgLWY=
-X-Received: by 2002:a0c:e34c:0:b0:66d:55d9:9522 with SMTP id
- a12-20020a0ce34c000000b0066d55d99522mr700958qvm.23.1698348869544; Thu, 26 Oct
- 2023 12:34:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698348945; x=1698953745;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IQC4A/sL4XoeDc7l3OjE8DP+73M4y+QZaaN7R7Z8PCQ=;
+        b=a0lcWwUF3UeuI//2ZH1h6howayBDCbdWsedu5qjoyzk7Qm1AfwzADT1SgaFNJtr8Ya
+         66jT0wagU4ldda26/S6x9BUmmMRU+ZMNkuF75kYnlsdJUGUpEnpsbro4OTyfk6HCmtXD
+         Q6t+nz6ShuyZaYmMQ3NxJENMS6Se2sN/aGFw7FIJVlYAnHkd41jJiltc2BNNfqD5sKqz
+         bh2ffdtH+VqNcH3FeYiQKzGg+CUhFbp22/HvkJQslRzinKbX6mwgiBv+26Ra0qDKrayz
+         pF/udIUHcqm5oSoZYEMviUPBciYAycdcs9fkvthhUwCK6pGsjIjMPeZh1WFSCNjsobCk
+         32tQ==
+X-Gm-Message-State: AOJu0YwhXtr880Utt7qCmU4fl0L4V96bvmmXKd3BXwa+fYCmBJ0L3cva
+        +4/2cjsd/DgNyvQyuIHjoCvQCA==
+X-Google-Smtp-Source: AGHT+IF5LDmYM98HgrrDpR0APpEt3rwu9iztxBirzFeXmCAP46nFRKhSnMjIOUGuff1tVeQB7T13qQ==
+X-Received: by 2002:a17:903:1105:b0:1c9:faef:5765 with SMTP id n5-20020a170903110500b001c9faef5765mr603014plh.5.1698348944845;
+        Thu, 26 Oct 2023 12:35:44 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 10-20020a170902c14a00b001b9d95945afsm46208plj.155.2023.10.26.12.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 12:35:44 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 12:35:43 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-trace-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_cstr()
+Message-ID: <202310261233.716843B8@keescook>
+References: <20231026170722.work.638-kees@kernel.org>
+ <20231026133850.138d5415@gandalf.local.home>
+ <202310261050.A621A7F121@keescook>
+ <20231026140247.3a3c68e4@gandalf.local.home>
 MIME-Version: 1.0
-References: <20231026100157.735d7dee@canb.auug.org.au> <CAOQ4uxjmRena4AB3yMQhBJ58c6DRtkDJJrnTgFe=gWsadSdbQw@mail.gmail.com>
- <20231026183539.cffe6uljmnjgacxq@moria.home.lan>
-In-Reply-To: <20231026183539.cffe6uljmnjgacxq@moria.home.lan>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 26 Oct 2023 22:34:18 +0300
-Message-ID: <CAOQ4uxhNDADk9CgSMxKc93qunDUD17AFaA+tuSni9AOsjkfPYw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
- bcachefs tree
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christian Brauner <brauner@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026140247.3a3c68e4@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 9:35=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Oct 26, 2023 at 08:16:14AM +0300, Amir Goldstein wrote:
-> > On Thu, Oct 26, 2023 at 2:02=E2=80=AFAM Stephen Rothwell <sfr@canb.auug=
-.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > Today's linux-next merge of the vfs-brauner tree got a conflict in:
-> > >
-> > >   include/linux/exportfs.h
-> > >
-> > > between commit:
-> > >
-> > >   85e95ca7cc48 ("bcachefs: Update export_operations for snapshots")
-> > >
-> > > from the bcachefs tree and commit:
-> > >
-> > >   2560fa66d2ac ("exportfs: define FILEID_INO64_GEN* file handle types=
-")
-> > >
-> > > from the vfs-brauner tree.
-> > >
-> > > I fixed it up (see below) and can carry the fix as necessary. This
-> > > is now fixed as far as linux-next is concerned, but any non trivial
-> > > conflicts should be mentioned to your upstream maintainer when your t=
-ree
-> > > is submitted for merging.  You may also want to consider cooperating
-> > > with the maintainer of the conflicting tree to minimise any particula=
-rly
-> > > complex conflicts.
-> > >
-> > > --
-> > > Cheers,
-> > > Stephen Rothwell
-> >
-> > [adding exportfs maintainers]
-> >
-> > >
-> > > diff --cc include/linux/exportfs.h
-> > > index be9900cc8786,21bae8bfeef1..000000000000
-> > > --- a/include/linux/exportfs.h
-> > > +++ b/include/linux/exportfs.h
-> > > @@@ -98,12 -98,17 +98,23 @@@ enum fid_type
-> > >          */
-> > >         FILEID_FAT_WITH_PARENT =3D 0x72,
-> > >
-> > >  +      /*
-> > >  +       * 64 bit inode number, 32 bit subvolume, 32 bit generation n=
-umber:
-> > >  +       */
-> > >  +      FILEID_BCACHEFS_WITHOUT_PARENT =3D 0x80,
-> > >  +      FILEID_BCACHEFS_WITH_PARENT =3D 0x81,
-> > >  +
-> > > +       /*
-> > > +        * 64 bit inode number, 32 bit generation number.
-> > > +        */
-> > >  -      FILEID_INO64_GEN =3D 0x81,
-> > > ++      FILEID_INO64_GEN =3D 0x82,
-> > > +
-> > > +       /*
-> > > +        * 64 bit inode number, 32 bit generation number,
-> > > +        * 64 bit parent inode number, 32 bit parent generation.
-> > > +        */
-> > >  -      FILEID_INO64_GEN_PARENT =3D 0x82,
-> > > ++      FILEID_INO64_GEN_PARENT =3D 0x83,
-> > > +
-> >
-> > This is wrong.
-> > Those are filesystem defined constants.
-> > Please don't change them.
-> >
-> > 0x81/0x82 have been used by xfs and fuse for years,
-> > even though neither defined a constant in this enum so far.
->
-> Perhaps we could get that fixed...?
+On Thu, Oct 26, 2023 at 02:02:47PM -0400, Steven Rostedt wrote:
+> On Thu, 26 Oct 2023 10:54:26 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > > Do we really need to call it _cstr? Why not just have seq_buf_str() ?
+> > > 
+> > > I mean, this is C, do we need to state that in the name too?  
+> > 
+> > I'm fine either way. I did that just to make the distinction between our
+> > length-managed string of characters interface (seq_buf), and the
+> > %NUL-terminated string of characters (traditionally called "C String" in
+> > other languages). And it was still shorter than "seq_buf_terminate(s);
+> > s->buffer" ;)
+> 
+> Do you believe that people might get confused with it as seq_buf_str()?
+> 
+> Can you envision that we would want a seq_buf_str() and seq_buf_cstr() that
+> do something different?
 
-commit 2560fa66d2ac ("exportfs: define FILEID_INO64_GEN*
-file handle types") fixes that for fuse.
-I may fix up xfs to use these constants later.
+No, I see your point. Like I said, I don't care either way. I was just
+explaining why I did it that way. "string" means a lot of things to
+different people. "C String" is unambiguous, and I try to be unambiguous
+whenever possible. :)
 
->
-> > Conflicting with FILEID_BCACHEFS_WITH_PARENT is not
-> > a serious issue, but I encourage Kent to pick different constants
-> > for bcachefs or keep the bcachefs constants out of this enum.
->
-> Happy to do so. Since it seems this enum doesn't have all the constants
-> I'd need to avoid conflicting with, I might need some help here :)
->
+I'll send a v2 as seq_buf_str()...
 
-Technically, you don't *need* to avoid conflicting with fileid types
-of other filesystems and you do not *need* to define your constant
-in this enum. It serves no real purpose unless your constant
-declares a fileid format that other filesystems also use.
-
-See the comment at the top of the enum.
-
-> > It is a slight inconvenience for users that have bcachefs exported
-> > to NFS clients and upgrade their server, but maybe that is acceptable.
-> > In overlayfs, we encoded type OVL_FILEID_V0 and switched to encoding
-> > type OVL_FILEID_V1, but we still accept decoding of both types, neither
-> > of which are listed in this enum BTW.
-> >
-> > Adding fid types to this enum is not required.
-> > This enum is a place to standardize and for different fs to share the s=
-ame
-> > fid type/encoding as is the case with  FILEID_INO{32,64}_GEN*.
-> > IMO, the bcachefs constant do not follow the convention in this
-> > enum and their format is unlikely to be used by other fs, so
-> > they should not be added to this enum at all.
->
-> Eh?
->
-> Most of the constants here appear to be completely filesystem specific -
-> I see UDF, nilfs, btrfs, fat...
->
-
-There is no good reason for those to be in the enum either
-other than documentation.
-
-> And since you also don't want conflicts with fid_types that aren't
-> defined here, it seems like they really should all be here.
-
-If you define your constants internally in bcachefs, I don't care
-about conflicts, but if I were you, I would avoid conflicts with
-the known types.
-
-If you want to define your constants in this enum please choose
-any vacant 0x?{1,2} values. 0xb{1,2}?
-
-Thanks,
-Amir.
+-- 
+Kees Cook
