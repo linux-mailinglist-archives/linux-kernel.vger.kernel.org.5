@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E947D8545
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04577D853D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345367AbjJZOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S1345351AbjJZOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345326AbjJZOwR (ORCPT
+        with ESMTP id S1345330AbjJZOva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:52:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2801E1B1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698331887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4TQBD4l/5fg4IXQrIfGCOPl59M/3gquDSBE20dW3+18=;
-        b=aYimpSlrqeruibpY11plRLdWNArAhIdeW0SEcYKdRU+I1KlM0Wk7bH7NkL9v0UbYCmuMHk
-        v3pQ1PVAMsxSS7TvABtl/V6Uv3DlQzs0hymEjt4qAdfcWe2lUnOfmmY3rCy7vtMzCAXCS6
-        DCdehxnkSl+Elz0ldrKRFFvhiM7pqic=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-577-Fi9T2LYyO2aZ3E8vZX5ciw-1; Thu,
- 26 Oct 2023 10:51:22 -0400
-X-MC-Unique: Fi9T2LYyO2aZ3E8vZX5ciw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF63628237D1;
-        Thu, 26 Oct 2023 14:51:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.21])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9EF121C060AE;
-        Thu, 26 Oct 2023 14:51:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 26 Oct 2023 16:50:21 +0200 (CEST)
-Date:   Thu, 26 Oct 2023 16:50:18 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nfsd_copy_write_verifier: use read_seqbegin() rather than
- read_seqbegin_or_lock()
-Message-ID: <20231026145018.GA19598@redhat.com>
-References: <20231025163006.GA8279@redhat.com>
+        Thu, 26 Oct 2023 10:51:30 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F935CA
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1698331882;
+        bh=zCxTGeta7j9+1MvbeHs0ufQDzrEJIbaDrDa1lovi73Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N3P/HydjL1+T6To9o5YEwM0iMpG0Rm+7WPyrd2xKnKLLbuXBLpSPzECFGmtYy6VS4
+         Nr7qxaf2Hyq8573FyuW4FXWFCUUnaKjvtt0DqJ4PSgsfSldgKjTHGhDgxnnIKKcSB+
+         iSI2JZKAolprbzP7y+esbYx3ITCwrGpB/czXIdu0MXOaeQkRRwaybPvuDbcz0rq6/u
+         M70IBI/CzkgOd0UoNpjXk4nAh5qy4b9s/P2EPlwglsAwtERm4Nokm8IYYR0AMCLPKi
+         wuqPt8LfVF623INmssMMXgAYhYw7aYcn4+Zs3fDRCHnXAJlLfdv/we5cmIa51ULraD
+         EHNE8vH2731Aw==
+Received: from [172.16.0.85] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SGTJV2N6Vz1ZXJ;
+        Thu, 26 Oct 2023 10:51:22 -0400 (EDT)
+Message-ID: <b0654dab-eb43-444e-a820-db169812e1ba@efficios.com>
+Date:   Thu, 26 Oct 2023 10:51:36 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025163006.GA8279@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
+Content-Language: en-US
+To:     Mateusz Guzik <mjguzik@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, npiggin@gmail.com,
+        shakeelb@google.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+ <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
+ <20231026091222-mutt-send-email-mst@kernel.org>
+ <CAGudoHFXH_FDgKRaJvVgQ3W8wD2TC=8yhiNm1NECApnQ-CNAZQ@mail.gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAGudoHFXH_FDgKRaJvVgQ3W8wD2TC=8yhiNm1NECApnQ-CNAZQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usage of read_seqbegin_or_lock() in nfsd_copy_write_verifier()
-is wrong. "seq" is always even and thus "or_lock" has no effect,
-this code can never take ->writeverf_lock for writing.
+On 2023-10-26 10:06, Mateusz Guzik wrote:
+> On 10/26/23, Michael S. Tsirkin <mst@redhat.com> wrote:
+>> On Thu, Oct 26, 2023 at 05:46:21PM +0530, Abhinav Singh wrote:
+>>> This patch fixes the warning about directly dereferencing a pointer
+>>> tagged with __rcu annotation.
+>>>
+>>> Dereferencing the pointers tagged with __rcu directly should
+>>> always be avoided according to the docs. There is a rcu helper
+>>> functions rcu_dereference(...) to use when dereferencing a __rcu
+>>> pointer. This functions returns the non __rcu tagged pointer which
+>>> can be dereferenced just like a normal pointers.
+>>>
+>>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+>>
+>> Well yes but these need to be called under rcu_read_lock.
+>> Who does it here?
+>> If no one then maybe you found an actual bug and we need to
+>> fix it not paper over it.
+>>
+> 
+> There is no bug here.
+> 
+> p is the newly created thread, ->real_cred was initialized just prior
+> to this code and there is nobody to whack the creds from under it.
+> 
+> Second bit in the patch changes one real_parent deref, but leaves 2
+> others just above it. Once more no bug since the entire thing happens
+> under tasklist_lock, but the patch should either sort all these cases
+> or none.
 
-I guess this is fine, nfsd_copy_write_verifier() just copies 8 bytes
-and nfsd_reset_write_verifier() is supposed to be very rare operation
-so we do not need the adaptive locking in this case.
+Drive-by comment: perhaps use rcu_dereference_protected() ?
 
-Yet the code looks wrong and sub-optimal, it can use read_seqbegin()
-without changing the behaviour.
+Thanks,
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- fs/nfsd/nfssvc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Mathieu
 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index c7af1095f6b5..094b765c5397 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
-  */
- void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
- {
--	int seq = 0;
-+	unsigned seq;
- 
- 	do {
--		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-+		seq = read_seqbegin(&nn->writeverf_lock);
- 		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
--	} while (need_seqretry(&nn->writeverf_lock, seq));
--	done_seqretry(&nn->writeverf_lock, seq);
-+	} while (read_seqretry(&nn->writeverf_lock, seq));
- }
- 
- static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
+> 
+> I think it would help if the submitter had shown warnings they see.
+> 
+
 -- 
-2.25.1.362.g51ebf55
-
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
