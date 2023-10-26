@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69F37D7C18
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4616C7D7C1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343564AbjJZFNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S230478AbjJZFQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjJZFNU (ORCPT
+        with ESMTP id S229554AbjJZFQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:13:20 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49286187
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:13:18 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1ca052ec63bso4005625ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:13:18 -0700 (PDT)
+        Thu, 26 Oct 2023 01:16:29 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2894BB9;
+        Wed, 25 Oct 2023 22:16:27 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d264e67d8so3711156d6.1;
+        Wed, 25 Oct 2023 22:16:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698297198; x=1698901998; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uXO4N/XeBI5bwKQkWCT3uuchjAs5HEzvmOM9mACPP28=;
-        b=OeLvceppW1/EYtdmtpQMQiTDp5zcEkeaPzeKtyxRWtDhXIpdajqkGnvaSgFDrqG1f4
-         1ik1a6FthvUlQaA+OwwUDy1E9cqsL/ay101Brcfz0+YdcQcz1bmSVFJPmaPb6t2hAgPg
-         9bXkPHpGO8l83fja5ApUP+ebWKIjs897wkogA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698297198; x=1698901998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698297386; x=1698902186; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uXO4N/XeBI5bwKQkWCT3uuchjAs5HEzvmOM9mACPP28=;
-        b=rnkx7cydvRS8BzvMDvOjcDgrHY8xp9F6rVnT8z2GuETC5ojtcQdMdA7rfVC4gwBXaL
-         vj+tP/BCYylh+Do5R/rQutenyxktI0t8kfR5Exxh5iLPgEmkvQXwkjgaDcRz0dRbTdcj
-         pu4KSRSQu20PvT66cHVXZ0fmukqIfX7fG9Dnc7ggAhcsNcuF04aIUF1PVqJDIQaViltW
-         XIw21W/G4DXipYYz6QvRNg35xczTfxcMbVmuj+OkREr/w5nMkHMlFkEBQHD1AHz842gY
-         HufqVvS2abfAzxWrIAznVGRHXKVZIMvqCa31MSiiIZ9MG9Towj44DBQtS/lJuR2U/Hp4
-         GM7g==
-X-Gm-Message-State: AOJu0YxBQWuW478Y5GdnHjKQ1n/X/QZkeUwddnYHSKTr09iPUxxKptDE
-        V/UFDVIka1o4v4vngYT+md7Q1g==
-X-Google-Smtp-Source: AGHT+IEGALSo7AvdYoeTkOtEEN3dfVz6b/lMXoVOPaSvvwoMcA5k+EU/xafeM/XOaoEE+xZvgJNyCA==
-X-Received: by 2002:a17:903:110c:b0:1c6:a0b:7b9a with SMTP id n12-20020a170903110c00b001c60a0b7b9amr20530216plh.3.1698297197671;
-        Wed, 25 Oct 2023 22:13:17 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:f228:3a07:1e7f:b38f])
-        by smtp.gmail.com with ESMTPSA id jj5-20020a170903048500b001ca21c8abf7sm10079659plb.188.2023.10.25.22.13.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 22:13:17 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 14:13:13 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     John Johansen <john.johansen@canonical.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Anil Altinay <aaltinay@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKLM <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] apparmor: cache buffers on percpu list if there
- is lock, contention
-Message-ID: <20231026051313.GA15694@google.com>
-References: <Y19GhTg8Q/3ym/VD@google.com>
- <dac1c2d5-367f-c8a7-c61e-c1774d98d602@canonical.com>
- <4595e7b4-ea31-5b01-f636-259e84737dfc@canonical.com>
- <Y+9aoFjrYkpFSvuE@linutronix.de>
- <f3fd5dd8-9d78-43be-fc5c-bf990ad3a64d@canonical.com>
- <CACCxZWOK6=mHNQrWEhjw4pC2i3qBKYdn9joiaaCNE7ge8FAz0A@mail.gmail.com>
- <CACCxZWO-+M-J_enENr7q1WDcu1U8vYFoytqJxAh=x-nuP268zA@mail.gmail.com>
- <31d6e8d6-0747-a282-746b-5c144a9970bb@canonical.com>
- <20231006041837.GA17924@google.com>
- <ffd13862-bc57-45ae-9fd0-454ee2d30fc2@canonical.com>
+        bh=xcRpgRwe25+UkQEfJDZGZHuA0KvrCaL/46MeTSbRYhg=;
+        b=iNlzEdEHzVV58O1KuXP17K7ludN6tkRrZM8aIHmIv/N8/AV8cefmDYaOxmAQ3oYBG3
+         pu5WCtwOHiBAXp2r7ByggNgY5VxaX3/CsiN2BYC4YMJyc4JU+qzLycrMHluuIxwzSTbG
+         rjM1BWxVpAK8z1wsAvKjohDGEWwL6pU2Vp+uB/yU2+pVSKYbN6HStDddiFFKptTPSZey
+         w7TXzI599gIU0hTnrLWxu/DJK7eX354SSEiw1UXK9bD9KXV9B8eX/oKq/prsJHVLBzOu
+         ctEATEZovdzsLhSJNYrZS399wxzcMw/mlyhQcsZL/f6Z8xYAGc+S/m6vgLouqhmKI1Ri
+         bFqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698297386; x=1698902186;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xcRpgRwe25+UkQEfJDZGZHuA0KvrCaL/46MeTSbRYhg=;
+        b=oyVqpLkoAOkBOjLjPVcL904q1awXPNOk/mYqCfBjvfmAYHqwEskQ1n/pI8ZEzOCGjE
+         It6ul57AB7Re90UkK8cELk0S/iU7rFuvRg8OBVjgElJfDBGfG2vmmNTWa1wgd5YuVIYm
+         GHR+3ZOVkUMsRV2OcF9+U/51utPfna+X1DPv6Vmwo7e4irxk/it2UfjhPbfxPw5ojY5/
+         9AUZcBTFE4nYXaXAbvhrGSj0u0sCTyrnYcmrzt0D5+1AAeID9e2wSMK5Vtj3y+RDvxit
+         mtFGCazvutP8Y4BOgV4ku3sN91KG+NvK2zL+9iQYkyfzRpQ6kyOo6giStgdei8PJvUbW
+         XkXw==
+X-Gm-Message-State: AOJu0YyHOUmaqWvLGltb5CrGfqvCgn/By7iWsEvfOdVu/oyuVhW/UG4w
+        wTIA5dOHzsp5M/EwubafH5FH8j9rg8DGdP5d16pWRw5qJmY=
+X-Google-Smtp-Source: AGHT+IGm5bZjOgdS9pjD1LIYa7YuuuCqRiJOGCr3vjsX7/7RF6uJ7LiB5Vye26ZWHi1SfuEmS2VI7QPhio+2h5rNG1I=
+X-Received: by 2002:a05:6214:c85:b0:65b:1594:264e with SMTP id
+ r5-20020a0562140c8500b0065b1594264emr17698166qvr.51.1698297385896; Wed, 25
+ Oct 2023 22:16:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ffd13862-bc57-45ae-9fd0-454ee2d30fc2@canonical.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231026100157.735d7dee@canb.auug.org.au>
+In-Reply-To: <20231026100157.735d7dee@canb.auug.org.au>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 26 Oct 2023 08:16:14 +0300
+Message-ID: <CAOQ4uxjmRena4AB3yMQhBJ58c6DRtkDJJrnTgFe=gWsadSdbQw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
+ bcachefs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/10/17 02:21), John Johansen wrote:
-> > > yeah, testing help is always much appreciated. I have a v4, and I am
-> > > working on 3 alternate version to compare against, to help give a better
-> > > sense if we can get away with simplifying or tweak the scaling.
-> > > 
-> > > I should be able to post them out some time tonight.
-> > 
-> > Hi John,
-> > 
-> > Did you get a chance to post v4? I may be able to give it some testing
-> > on our real-life case.
-> 
-> sorry yes, how about a v5. That is simplified with 3 follow on patches
-> that aren't strictly necessary, but some combination of them might be
-> better than just the base patch, but splitting them out makes the
-> individual changes easier to review.
+On Thu, Oct 26, 2023 at 2:02=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the vfs-brauner tree got a conflict in:
+>
+>   include/linux/exportfs.h
+>
+> between commit:
+>
+>   85e95ca7cc48 ("bcachefs: Update export_operations for snapshots")
+>
+> from the bcachefs tree and commit:
+>
+>   2560fa66d2ac ("exportfs: define FILEID_INO64_GEN* file handle types")
+>
+> from the vfs-brauner tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-Sorry for late reply. So I gave it a try but, apparently, our build
-environment has changed quite significantly since the last time I
-looked into it.
+[adding exportfs maintainers]
 
-I don't see that many aa_get/put_buffer() anymore. apparmor buffer
-functions are mostly called form the exec path:
+>
+> diff --cc include/linux/exportfs.h
+> index be9900cc8786,21bae8bfeef1..000000000000
+> --- a/include/linux/exportfs.h
+> +++ b/include/linux/exportfs.h
+> @@@ -98,12 -98,17 +98,23 @@@ enum fid_type
+>          */
+>         FILEID_FAT_WITH_PARENT =3D 0x72,
+>
+>  +      /*
+>  +       * 64 bit inode number, 32 bit subvolume, 32 bit generation numbe=
+r:
+>  +       */
+>  +      FILEID_BCACHEFS_WITHOUT_PARENT =3D 0x80,
+>  +      FILEID_BCACHEFS_WITH_PARENT =3D 0x81,
+>  +
+> +       /*
+> +        * 64 bit inode number, 32 bit generation number.
+> +        */
+>  -      FILEID_INO64_GEN =3D 0x81,
+> ++      FILEID_INO64_GEN =3D 0x82,
+> +
+> +       /*
+> +        * 64 bit inode number, 32 bit generation number,
+> +        * 64 bit parent inode number, 32 bit parent generation.
+> +        */
+>  -      FILEID_INO64_GEN_PARENT =3D 0x82,
+> ++      FILEID_INO64_GEN_PARENT =3D 0x83,
+> +
 
-	security_bprm_creds_for_exec()
-	 apparmor_bprm_creds_for_exec()
-	  make_vfsuid()
-	   aa_get_buffer()
+This is wrong.
+Those are filesystem defined constants.
+Please don't change them.
 
-As for vfs_statx()->...->apparmor_inode_getattr()->aa_path_perm(),
-that path is bpf_lsm_inode_getsecid() now.
+0x81/0x82 have been used by xfs and fuse for years,
+even though neither defined a constant in this enum so far.
+
+Conflicting with FILEID_BCACHEFS_WITH_PARENT is not
+a serious issue, but I encourage Kent to pick different constants
+for bcachefs or keep the bcachefs constants out of this enum.
+
+It is a slight inconvenience for users that have bcachefs exported
+to NFS clients and upgrade their server, but maybe that is acceptable.
+In overlayfs, we encoded type OVL_FILEID_V0 and switched to encoding
+type OVL_FILEID_V1, but we still accept decoding of both types, neither
+of which are listed in this enum BTW.
+
+Adding fid types to this enum is not required.
+This enum is a place to standardize and for different fs to share the same
+fid type/encoding as is the case with  FILEID_INO{32,64}_GEN*.
+IMO, the bcachefs constant do not follow the convention in this
+enum and their format is unlikely to be used by other fs, so
+they should not be added to this enum at all.
+
+Thanks,
+Amir.
