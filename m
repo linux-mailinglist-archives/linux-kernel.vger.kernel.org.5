@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38527D8BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9E77D8BE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbjJZWwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        id S229668AbjJZWzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJZWwv (ORCPT
+        with ESMTP id S229633AbjJZWy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:52:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACB31AB;
-        Thu, 26 Oct 2023 15:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698360769; x=1729896769;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DibA2OwE41Z1sW1cSL7fP09Xo0QOr8th32q8AiyDesY=;
-  b=IjuLbUNwLzj+DbV5YkiHvcthr83srf02idP95pJGFoBd0493cXdJr1cf
-   O72v7lALS4vfaOkV5poemneRrcQYlMnfBqbaPoKn7xa/g/jm6zASimTtK
-   ZQtqMuuhd3bTSufPeITVO2AO5KtiwJRb/9fiFhtfqGbz23uMkrwIQukkQ
-   +BlbwSgpzx7nXE6ZOXltICfL0S9fPKkCWcIqeavsJs9C+xpCqE6ZC1Nup
-   OI+dgVeTD2dloTACkwyRf1nU22p2YLWYPuSIuWyxwForszLG7wPIaQdW2
-   4FV94mGyF3xklGePc/8hkDNEYdQBRwoEjltIZC+jBfWHO4aKO8CS/pyfS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="454130274"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="454130274"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 15:52:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="825145803"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="825145803"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Oct 2023 15:52:46 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qw9DY-000ACN-1I;
-        Thu, 26 Oct 2023 22:52:44 +0000
-Date:   Fri, 27 Oct 2023 06:52:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-debuggers@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] kernel/config: Introduce
- CONFIG_DEBUG_INFO_IKCONFIG
-Message-ID: <202310270605.GjEqZtAA-lkp@intel.com>
-References: <20231025223640.1132047-2-stephen.s.brennan@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025223640.1132047-2-stephen.s.brennan@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 26 Oct 2023 18:54:59 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F971A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:54:57 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d99ec34829aso1079329276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698360896; x=1698965696; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/PM5QRoJM5E7sHxdU8Gpjb3WFwx2mvG39y2sogXNJnc=;
+        b=Iscmo+e/Vgq5HNgCpEb7sBAezNDvU36C/6HFzQZRV7N9oNthzc6ErojSxiDaAYN8ao
+         3S8ZkGKFnqjfDVL+C+xst7/uTUIUz3ZmqDjRRyQ0QVtZlKsvvYNDPGt/b7cJc8D7FTZI
+         2ZJWZn/lWVcKDZ1j6oCy+pUkRqCDNa7jwdS+DXSVSbw8IH7MYUXEQ9EybFCvCDH0urQl
+         rZFP2KRqEl+89Aaxagz16WWM0g9OaXsHtSXK58VKoubqPoja6g7A33E9ujwc3hfYiYX6
+         kEDa8wyU5UC+QVnqjC3khfDw+QSxMkCnWc6Z5Mdsmp5k08jCGjHxtagZIF5KInnS/1HC
+         23FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698360896; x=1698965696;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/PM5QRoJM5E7sHxdU8Gpjb3WFwx2mvG39y2sogXNJnc=;
+        b=jGPUrMrVT9DuiBZz6pvRPtILwWqBHBGps4f9+64H3zAiidSGsFAlvNdapebUS4MG0W
+         Tq9AfYcwBzLYep5xvmRkeMFgH+IMVPJsM8TUwkqBgCNnL3647dJOLnLA1CeluqBxwIqn
+         N5CfWnfaSvhLn3bmz2Of209HLP6uZDPrEZjDoOjZKadN1yzplPaTPGBVVbzyswxZY5JM
+         DtGhGHGQwp5rqDjYByRPFJj3w32KyNVX8saM4vXhedSWDl+Mv4hN+x75gD4/VnstBTuC
+         kv/v42sbzA0sawCNIx0+df7c2p2dnqhkogrepLO89Knq3vY9tyOHMGgqDecZznpIZKLm
+         //Ig==
+X-Gm-Message-State: AOJu0YwWRbLMSsSPnK2lW2Kht+ThT5LUVhQ0vwTjKrAPlkTgK0Ajso84
+        u3cwZky+5P2/hvWHdFCaab++t7rld3U=
+X-Google-Smtp-Source: AGHT+IErkEF/8uXxnLXeqR1mA+NdLf9/5+DzWEFWLO0C17ItryM4hgcXADqSB6htfL1r3+UGfZ+aiSEUAmw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1746:b0:d9a:59cb:8bed with SMTP id
+ bz6-20020a056902174600b00d9a59cb8bedmr15832ybb.5.1698360896597; Thu, 26 Oct
+ 2023 15:54:56 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 15:54:55 -0700
+In-Reply-To: <ZTrj1CRKLOVbcytz@google.com>
+Mime-Version: 1.0
+References: <20231024002633.2540714-1-seanjc@google.com> <20231024002633.2540714-9-seanjc@google.com>
+ <ZTrOYztylSn7jNIE@google.com> <ZTrR638_KyKOwLIz@google.com> <ZTrj1CRKLOVbcytz@google.com>
+Message-ID: <ZTruPxjaU7NfrSOC@google.com>
+Subject: Re: [PATCH v5 08/13] KVM: selftests: Test Intel PMU architectural
+ events on gp counters
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Like Xu <likexu@tencent.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Thu, Oct 26, 2023, Mingwei Zhang wrote:
+> On Thu, Oct 26, 2023, Sean Christopherson wrote:
+> > Heh, already did this too.  Though I'm not entirely sure it's more readable.  It's
+> > definitely more precise and featured :-)
+> > 
+> Oh dear, this is challenging to my rusty inline assembly skills :)
+> 
+> > #define GUEST_MEASURE_EVENT(_msr, _value, clflush, FEP)				\
+> > do {										\
+> > 	__asm__ __volatile__("wrmsr\n\t"					\
+> > 			     clflush "\n\t"					\
+> > 			     "mfence\n\t"					\
+> > 			     "1: mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"	\
+> > 			     FEP "loop .\n\t"					\
+> > 			     FEP "mov %%edi, %%ecx\n\t"				\
+> > 			     FEP "xor %%eax, %%eax\n\t"				\
+> > 			     FEP "xor %%edx, %%edx\n\t"				\
+> > 			     "wrmsr\n\t"					\
+> > 			     : "+c"((int){_msr})				\
+> isn't it NUM_BRANCHES?
 
-kernel test robot noticed the following build errors:
+Nope.  It's hard to see because this doesn't provide the usage, but @_msr is an
+MSR index that is consumed by the first "wrmsr", i.e. this blob relies on the
+compiler to preload ECX, EAX, and EDX for WRMSR.  NUM_BRANCHES is manually loaded
+into ECX after WRMSR (WRMSR and LOOP both hardcode consuming ECX).
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on arnd-asm-generic/master linus/master v6.6-rc7 next-20231026]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Ha!  I can actually drop the "+c" clobbering trick since ECX is restored to its
+input value before the asm blob finishes.  EDI is also loaded with _@msr so that
+it can be quickly reloaded into ECX for the WRMSR to disable the event.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stephen-Brennan/kernel-config-Introduce-CONFIG_DEBUG_INFO_IKCONFIG/20231026-063844
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231025223640.1132047-2-stephen.s.brennan%40oracle.com
-patch subject: [PATCH v2 1/1] kernel/config: Introduce CONFIG_DEBUG_INFO_IKCONFIG
-config: alpha-defconfig (https://download.01.org/0day-ci/archive/20231027/202310270605.GjEqZtAA-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231027/202310270605.GjEqZtAA-lkp@intel.com/reproduce)
+The purpose of doing both WRMSRs in assembly is to ensure the compiler doesn't
+insert _any_ code into the measured sequence, e.g. so that a random Jcc doesn't
+throw off instructions retired.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310270605.GjEqZtAA-lkp@intel.com/
+> > 			     : "a"((uint32_t)_value), "d"(_value >> 32),	\
+> > 			       "D"(_msr)					\
+> > 	);									\
+> > } while (0)
+> >
+> 
+> do we need this label '1:' in the above code? It does not seems to be
+> used anywhere within the code.
 
-All errors (new ones prefixed by >>):
+It's used by the caller as the target for CLFLUSH{,OPT}.
 
-   kernel/configs-debug.S: Assembler messages:
->> kernel/configs-debug.S:17: Error: file not found: kernel/config_data.gz
+	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))				\
+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflushopt 1f", FEP);	\
+	else if (this_cpu_has(X86_FEATURE_CLFLUSH))				\
+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflushopt 1f", FEP);	\
+	else									\
+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "nop", FEP);		\
+> 
+> why is clflush needed here?
 
-
-vim +17 kernel/configs-debug.S
-
-  > 17		.incbin "kernel/config_data.gz"
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+As suggested by Jim, it allows verifying LLC references and misses by forcing
+the CPU to evict the cache line that holds the MOV at 1: (and likely holds most
+of the asm blob).
