@@ -2,138 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B07EF7D87DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0067D87E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbjJZR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        id S231532AbjJZR57 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 13:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZR4C (ORCPT
+        with ESMTP id S229649AbjJZR55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:56:02 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BB11A2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698342959;
-        bh=AoxGJ+wBYwrKrdP9vB2wZ9O/z3R0MKu7k+bX0EK20fE=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=XJoRIE5+yAGK/Q0gi9XmPd3BMMF0qnoW0dXzrr8Al9EPjhL22fFTei3Vt8lI+AnHC
-         iyPxjppUrDbRPhVDPQbbPR0f3t131ZcTfycp64GEz9PmG3hTHVYqBUDlQUwHi7k+OG
-         QvUR7S4Vz/0HNOljG0VAf+JfzpzIwp1TGGKbNP5U=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9A4251286BB1;
-        Thu, 26 Oct 2023 13:55:59 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id WV6ZavWvzbtC; Thu, 26 Oct 2023 13:55:59 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698342959;
-        bh=AoxGJ+wBYwrKrdP9vB2wZ9O/z3R0MKu7k+bX0EK20fE=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=XJoRIE5+yAGK/Q0gi9XmPd3BMMF0qnoW0dXzrr8Al9EPjhL22fFTei3Vt8lI+AnHC
-         iyPxjppUrDbRPhVDPQbbPR0f3t131ZcTfycp64GEz9PmG3hTHVYqBUDlQUwHi7k+OG
-         QvUR7S4Vz/0HNOljG0VAf+JfzpzIwp1TGGKbNP5U=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1181A1286B29;
-        Thu, 26 Oct 2023 13:55:57 -0400 (EDT)
-Message-ID: <d468a3f18e871f2af4db9c104d393866849ff2d0.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 1/6] tpm: Move buffer handling from static inlines to
- real functions
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        William Roberts <bill.c.roberts@gmail.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Julien Gomes <julien@arista.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 26 Oct 2023 13:55:55 -0400
-In-Reply-To: <g6grxamrilogiy4vjrvwwn6iz2xm26oeq2y7redbskvcreil6w@seavf5djd4ph>
-References: <20231024011531.442587-1-jarkko@kernel.org>
-         <20231024011531.442587-2-jarkko@kernel.org>
-         <qktrbbbqrz3z4jh4h7pz42leikmyg2mdevzl2brapn32kst55e@s5thpstdtlxp>
-         <CWHPA3T3YIJT.148L3L98EXBXD@suppilovahvero>
-         <g6grxamrilogiy4vjrvwwn6iz2xm26oeq2y7redbskvcreil6w@seavf5djd4ph>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Thu, 26 Oct 2023 13:57:57 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C2DAC;
+        Thu, 26 Oct 2023 10:57:55 -0700 (PDT)
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay07.hostedemail.com (Postfix) with ESMTP id 79A04160B8F;
+        Thu, 26 Oct 2023 17:57:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 6BAAF6000B;
+        Thu, 26 Oct 2023 17:57:39 +0000 (UTC)
+Message-ID: <eb9c31b2121a164a88bdd8cac663f6880cd52a93.camel@perches.com>
+Subject: Re: [PATCH 0/3] ethtool: Add ethtool_puts()
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org
+Date:   Thu, 26 Oct 2023 10:57:38 -0700
+In-Reply-To: <202310261049.92A3FB31@keescook>
+References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
+         <202310260845.B2AEF3166@keescook>
+         <39ca00132597c0cc4aac4ea11ab4b571f3981bcb.camel@perches.com>
+         <202310261049.92A3FB31@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Stat-Signature: hudth4n5i9tsh6noik99p4dqoecq4yae
+X-Rspamd-Server: rspamout07
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 6BAAF6000B
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/FhF5iyLmTVijiQINcZ0DKfw8kt4QZXAA=
+X-HE-Tag: 1698343059-8063
+X-HE-Meta: U2FsdGVkX18EvEmoxNdb8hk6+O6ituHbXxaJFt94yuI4o75cydbMBKO9R15wtEF6VkcdjuFdT9yaMhXRm3vYaUDQE0fY4PwycxT9WeFqvMNRLqEIHiYE+D7Xg4oAc80cClcOXyOn1zfquNjuxwquDIEP8tJmMNk6z3BfC3ZuK2ggJziXypVPsEUK9Keu4FQ3ncfCo+W3BOl6Fmr3KUjH1uOPVXyJ4NSisvMVQpPwtWe6RV1E6cbgFDGHwkHsXtaww+tTwpwABR38XLVHFAAk31CQ+RyAx3SylbbeObJ26LbpA+oEHLjf/YBdaYbPa+iv
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 10:10 -0700, Jerry Snitselaar wrote:
-> On Wed, Oct 25, 2023 at 08:35:55PM +0300, Jarkko Sakkinen wrote:
-> > On Wed Oct 25, 2023 at 12:03 PM EEST, Jerry Snitselaar wrote:
-> > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-> > 
-> > On Wed, 2023-10-25 at 02:03 -0700, Jerry Snitselaar wrote:
-> > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+On Thu, 2023-10-26 at 10:49 -0700, Kees Cook wrote:
+> On Thu, Oct 26, 2023 at 09:33:17AM -0700, Joe Perches wrote:
+> > On Thu, 2023-10-26 at 08:47 -0700, Kees Cook wrote:
+> > > On Wed, Oct 25, 2023 at 11:40:31PM +0000, Justin Stitt wrote:
+> > > > @replace_2_args@
+> > > > identifier BUF;
+> > > > expression VAR;
+> > > > @@
+> > > > 
+> > > > -       ethtool_sprintf
+> > > > +       ethtool_puts
+> > > >         (&BUF, VAR)
+> > > 
+> > > I think cocci will do a better job at line folding if we adjust this
+> > > rule like I had to adjust the next rule: completely remove and re-add
+> > > the arguments:
+> > > 
+> > > -       ethtool_sprintf(&BUF, VAR)
+> > > +       ethtool_puts(&BUF, VAR)
+> > > 
+> > > Then I think the handful of weird line wraps in the treewide patch will
+> > > go away.
 > > > 
 > > 
-> > Thanks I'll add it to the next round.
-> > 
-> > For the tpm_buf_read(), I was thinking along the lines of:
-> > 
-> > /**
-> >  * tpm_buf_read() - Read from a TPM buffer
-> >  * @buf:        &tpm_buf instance
-> >  * @pos:        position within the buffer
-> >  * @count:      the number of bytes to read
-> >  * @output:     the output buffer
-> >  *
-> >  * Read bytes from a TPM buffer, and update the position. Returns
-> > false when the
-> >  * amount of bytes requested would overflow the buffer, which is
-> > expected to
-> >  * only happen in the case of hardware failure.
-> >  */
-> > static bool tpm_buf_read(const struct tpm_buf *buf, off_t *pos,
-> > size_t count, void *output)
-> > {
-> >         off_t next = *pos + count;
-> > 
-> >         if (next >= buf->length) {
-> >                 pr_warn("%s: %lu >= %lu\n", __func__, next,
-> > *offset);
-> >                 return false;
-> >         }
-> > 
-> >         memcpy(output, &buf->data[*pos], count);
-> >         *offset = next;
-> >         return true;
-> > }
-> > 
-> > BR, Jarkko
-> > 
+> > Perhaps this, but i believe spatch needs
+> > 	 --max-width=80
+> > to fill all 80 columns
 > 
-> Then the callers will check, and return -EIO?
+> Ah, yeah. Default is 78. Current coding style max is 100... I'll adjust
+> my local wrappers.
 
-Really, no, why would we do that?
+Coding style max is still 80 with exceptions allowed to 100
+not a generic use of 100.
 
-The initial buffer is a page and no TPM currently can have a command
-that big, so if the buffer overflows, it's likely a programming error
-(failure to terminate loop or something) rather than a runtime one (a
-user actually induced a command that big and wanted it to be sent to
-the TPM).  The only reason you might need to check is the no-alloc case
-and you passed in a much smaller buffer, but even there, I would guess
-it will come down to a coding fault not a possible runtime error.
-
-James
 
