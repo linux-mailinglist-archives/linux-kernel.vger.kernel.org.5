@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BED47D81DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA797D81D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344812AbjJZLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S1344699AbjJZLei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjJZLe4 (ORCPT
+        with ESMTP id S230322AbjJZLeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:34:56 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A781AA;
-        Thu, 26 Oct 2023 04:34:53 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QAmBFV024823;
-        Thu, 26 Oct 2023 11:34:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0RykzLAc2GcpRBB2lxRtT9xw9T54D6XSLPdU1P03Ecg=;
- b=TUbPLcJRU3NeutpppwPr/hqOUndGtWyqtZHchUg2fabbywTsyxW8B99C7mgCpMzrNbIZ
- dKhnFNYGtMhT60D5ZYxeqNgXEuvmpX9A23EOvRFASJbQ1ewVYmhos3ywrD9lNaz0h7xK
- 1xtRZKMT5Cg0DsJtKNQEfvo3ylCuHQ3UASiRh13i7d/bvygPfZ9d7UojdHKByEq3FITY
- ebT3JCUvSuHRnCXYweEBbcTxe9W6oBrUPT44ZARfj/Iy27KWYRTDeWagWbMJwh6gXG0o
- ly4OEBtHmlLj+3IAyOf/Ndg+0tVl0XKIZ6J1tsKaorxlTLC+8uLoFjDgPrBtuPdoCjVI /Q== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tykw28gme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 11:34:37 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39QBYaIs014795
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 11:34:36 GMT
-Received: from [10.216.45.182] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 26 Oct
- 2023 04:34:27 -0700
-Message-ID: <b9fb5970-633b-07f0-4359-09fe8204bbf8@quicinc.com>
-Date:   Thu, 26 Oct 2023 17:04:24 +0530
+        Thu, 26 Oct 2023 07:34:36 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1538B1B1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:34:30 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32db8f8441eso583278f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698320069; x=1698924869; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=guG/4XeVgfANKrbZu4mGuhf3LMfrQDPCzTLE4W9xTUQ=;
+        b=CcTu02xmrvd6uRdisUSflC264cuI3LaRZaMPUmMAM0Le/0hRKug8zchKwTCFTJI+/W
+         L7o5BqsG4o0FD3uLRbShrXzZtcZ2ijAlqBs2INot0WJ8aXeIs993Km7A/e2u34mnBpgU
+         4PnvJaH//HnHLo+mXMa8Z7aIeRP1Svfm40UNRXiuf89TOTeMdFZ0XIaBrtGCguXiUIIb
+         IYYjhnxKptGHiOkCH6RjX6lo049quIcPEN80G3YbR9PRdQ8gXb4B/s53wGmtznJ26kXF
+         K9jQpRTymjG953grbhLwDthysc4vMla/ETH/qSE20qi6LOOi+agptyHlsHsYnIOHsDE0
+         teJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698320069; x=1698924869;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=guG/4XeVgfANKrbZu4mGuhf3LMfrQDPCzTLE4W9xTUQ=;
+        b=Rya1avpOPsUJEHR0DjrOZDLeryqTDFuhOBNdJT25QmcoO8zNi9EC742QwKN7RGo6xo
+         qsgUlOAKRPf2NlcQLqHjfgQfEWwGdBC2sCJjPEa7yzw0V3jXdqzPHgt2ONsCmYV2zqUK
+         HjLpQ/Op6ogOYSSOnJuy/yZfXqq3EVpGjDh29ae9ggmYImJooD5mrfWRy/lNGu17uHlB
+         h0w6uyD8H0O11EHUVfg3jUHoFHQxLrfAnEkM2g+hd0RtiRS5108TBnePpqKYn/ScRQi/
+         S4NZqabtYTSD+NmrQ+Ge+WXpq/HQPgQ3rVlWptmUpqr8PXOUyNT44mhkZ3qN7l63wdBm
+         55Wg==
+X-Gm-Message-State: AOJu0YzBVfhIXeFt1RPTyPKOvH3YGrwV9MlTT+A8sMjQmM2tSvWHaIs7
+        /C83IPa1JMNV1vRvsku6Db6dlw==
+X-Google-Smtp-Source: AGHT+IHSkVTTrHEK5sk3YvrLqIt1UC98bLaicwEdKbLfLHhFFxSyL8PtT3Zt2NSsN8z3RRf7Nbph4A==
+X-Received: by 2002:a05:6000:a:b0:32d:8830:cda1 with SMTP id h10-20020a056000000a00b0032d8830cda1mr13865846wrx.63.1698320069155;
+        Thu, 26 Oct 2023 04:34:29 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id w5-20020adfee45000000b00317a04131c5sm14075315wro.57.2023.10.26.04.34.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 04:34:28 -0700 (PDT)
+Message-ID: <6d44b972-9337-472a-9010-71ebaa0d45cf@linaro.org>
+Date:   Thu, 26 Oct 2023 12:34:27 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 4/5] PCI: epf-mhi: Add support for SA8775P
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v4 3/4] clk: qcom: camcc-sc8280xp: Add sc8280xp
+ CAMCC
 Content-Language: en-US
 To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <dmitry.baryshkov@linaro.org>, <robh@kernel.org>,
-        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
-        <quic_parass@quicinc.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-phy@lists.infradead.org>
-References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
- <1697715430-30820-5-git-send-email-quic_msarkar@quicinc.com>
- <20231025075603.GD3648@thinkpad>
- <610b0621-b140-ee9b-c450-0fec6862c4fc@quicinc.com>
- <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: I9bXBXL35wkZTwKQbllTp6Iof-QEowRZ
-X-Proofpoint-GUID: I9bXBXL35wkZTwKQbllTp6Iof-QEowRZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_09,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=679 spamscore=0 suspectscore=0 bulkscore=0
- phishscore=0 mlxscore=0 clxscore=1015 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260098
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231026105345.3376-1-bryan.odonoghue@linaro.org>
+ <20231026105345.3376-4-bryan.odonoghue@linaro.org>
+ <20e2801d-df4f-436e-a677-2c81d43e3273@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20e2801d-df4f-436e-a677-2c81d43e3273@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/10/2023 12:21, Konrad Dybcio wrote:
+>> +    .flags = HW_CTRL | RETAIN_FF_ENABLE,
+> This should really be HW_CTRL_TRIGGER from [1]
+> 
+> and then downstream uses cam_bps_transfer_gdsc_control and
+> cam_bps_get_gdsc_control to control hw (fast) or sw (normal) mode
+> 
+> similarly in drivers/cam_icp/icp_hw/ipe_hw/ipe_soc.c for IPE
 
-On 10/26/2023 4:40 PM, Konrad Dybcio wrote:
->
->
-> On 10/26/23 07:30, Mrinmay Sarkar wrote:
->>
->> On 10/25/2023 1:26 PM, Manivannan Sadhasivam wrote:
->>> On Thu, Oct 19, 2023 at 05:07:09PM +0530, Mrinmay Sarkar wrote:
->>>> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
->>>> SA8775P has the PID (0x0306) and supports HDMA. Currently, it has
->>> Is the PID fixed? I thought you just want to reuse the SDXxx PID in the
->>> meantime.
->>>
->>> - Mani
->>
->> The PID for SA8775p EP is not decided yet. So using 0x0306 PID meantime.
-> If it's not decided, why should it go upstream then? Would that
-> not break the hosts' expectations when the EP device is updated?
->
-> Konrad
+I'm happy to do such a conversion if said patch hits -next, qcom-next or 
+clk-next before this patch, otherwise I'd rather not gate this driver on 
+stuff that's not queued anywhere.
 
-I don't think it will break the host's functionality. In host side as 
-well we are reusing same 0x0306 for SA8775p
+There's alot of CAMSS stuff driver/compat/dtsi that is gated on having 
+the CAMCC upstream, effectively all of the CAMSS stuff for sc8280xp.
 
---Mrinmay
+Fair ?
+
+---
+bod
+
 
