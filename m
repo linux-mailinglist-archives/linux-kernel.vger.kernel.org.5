@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A41787D829E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3017D82A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344933AbjJZM1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        id S1344928AbjJZM2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344930AbjJZM1i (ORCPT
+        with ESMTP id S1344904AbjJZM2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:27:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32C1194;
-        Thu, 26 Oct 2023 05:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698323257; x=1729859257;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tqtDdD4xvu4zyFQWZK9HVGuWrLui8+ZbecV2jxa/D7U=;
-  b=N6WDbtEo+fYNGc7VpPh3MYquGO5wdb4GYjXCC8h6cNBxfrZPoDNXUlKO
-   /rbu2LX9cHkJs9QxAMW0pthYlVKFh8cz6wxgyew65L1f1cxFY7vLVNS91
-   /TIUHbgsfXeY4xU/yqgb8mX3KPQOFcbnv8m2qJnGfOQKFnRC/NL3JHxng
-   1vWeniNp+C5LYs5moMgun6a8dtthDghtmuzZPoH+Bg25tmEp2qSt2lQmG
-   4JBsIRR3y0IAG3F9WhFV4vg6hNv+Pnx+HKvtINLiuccQa4rVrsxA42doX
-   fTReoFlzxcCJ3jQnETIa0votrE8sh1IiAbz31i80nLttlOMrsmJ6QQH7a
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="391397268"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="391397268"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:27:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="794185006"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="794185006"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:27:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qvzSU-00000008qtb-0Q5s;
-        Thu, 26 Oct 2023 15:27:30 +0300
-Date:   Thu, 26 Oct 2023 15:27:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 1/3] device property: Implement device_is_big_endian()
-Message-ID: <ZTpbMVSdKlOgLbwv@smile.fi.intel.com>
-References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
- <20231025184259.250588-2-andriy.shevchenko@linux.intel.com>
- <2023102624-moonshine-duller-3043@gregkh>
+        Thu, 26 Oct 2023 08:28:05 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE6A192
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:03 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cacbd54b05so1478755ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698323283; x=1698928083; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
+        b=lgZ7JEnAt5In/D2KRzJbpAPn5xAIFaxDzpf2iOFIVM64g7uDJj+Q/zTJJuojUbeHgz
+         Z12QHUl9XVDIHbKd2WkVilKCMCRCIbpy29EOTBBhuLYUkdIhjp5vLDHHcILEXt+dQtZi
+         tkQ4oSjyXbw5crQW2jyTMWGfpzoRNfZOtTzyknx1a6NmXqGS+JYfROfL2lVi9yxheJHg
+         hS5lrZH0gY0/o5hFbZWZiDraO9S3ZEiC2Rgaz1mTvAT0LJEkbFY/HcSmNGhhDB+VuR4+
+         GusYYzKSKrZgJTnX2RqvQE/xQqom483vWFCnoVwfjtng6cD5Q+rAknJtc2UJlfGy1Z84
+         HUqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698323283; x=1698928083;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
+        b=IHir7ErRTQ5GK1cPH3nW4U/R1Oidzguo005XuaRhxC3o6Y8xkgP4JLAyJfPXl40+YB
+         r1OIWBUdy6SsmmezRv1TP0fAVSazvacCeWH6AizqitGc2LF3DFai+YEMunWlSaNLtI6/
+         DVPyhUQD1oUT/DVoWhOLSBQXVxz18Qg3l3Nl4cjJugdhajpMqfcz0YIUhsWmVRw4Ie4G
+         kMMpvVWOth5jWOe1cogIneOap+yn1MMuUAAekG+gDSMFkyYHTGu7AQwtriWWtKCArp0L
+         qrrVO0X/e/l111wZ+zkAsFsbesIbJouchHzk7JDzIEYJ+5v6Zg4RZJ83ysGOZfYvtjdo
+         Rnkg==
+X-Gm-Message-State: AOJu0YzGiSUe/TKTGOcvdgcYSEsUEQZCTxcmrDZ0QzqHseOJtw/r9bPU
+        9RGJJt370ucJuOb4tdwPpS4=
+X-Google-Smtp-Source: AGHT+IH1gymU2/FGsSj8zyAx/Aju3HVO9NonWPsq42FvYiLPy0FZ0P17oXb7rdiEvEs+blNOiSFOyQ==
+X-Received: by 2002:a17:902:654d:b0:1ca:273d:22f with SMTP id d13-20020a170902654d00b001ca273d022fmr17306876pln.0.1698323282764;
+        Thu, 26 Oct 2023 05:28:02 -0700 (PDT)
+Received: from abhinav.. ([103.75.161.211])
+        by smtp.gmail.com with ESMTPSA id 1-20020a170902c10100b001c44dbc92a2sm10850507pli.184.2023.10.26.05.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 05:28:02 -0700 (PDT)
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+To:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        mst@redhat.com, michael.christie@oracle.com,
+        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
+        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>
+Subject: [PATCH] Fixing directly deferencing a __rcu pointer warning
+Date:   Thu, 26 Oct 2023 17:57:48 +0530
+Message-Id: <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023102624-moonshine-duller-3043@gregkh>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 07:25:35AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Oct 25, 2023 at 09:42:57PM +0300, Andy Shevchenko wrote:
-> > Some users want to use the struct device pointer to see if the
-> > device is big endian in terms of Open Firmware specifications,
-> > i.e. if it has a "big-endian" property, or if the kernel was
-> > compiled for BE *and* the device has a "native-endian" property.
-> > 
-> > Provide inline helper for the users.
-> 
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch fixes the warning about directly dereferencing a pointer
+tagged with __rcu annotation.
 
-Thank you, Greg.
+Dereferencing the pointers tagged with __rcu directly should
+always be avoided according to the docs. There is a rcu helper
+functions rcu_dereference(...) to use when dereferencing a __rcu
+pointer. This functions returns the non __rcu tagged pointer which
+can be dereferenced just like a normal pointers.
 
-Bart, would it be still possible to take this into next?
-I would like to have at least this patch applied (with the first user)
-to allow conversion of others (I have some more users of new API).
+Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+---
+ kernel/fork.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..802b7bbe3d92 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+ 
+ 	retval = -EAGAIN;
+ 	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+-		if (p->real_cred->user != INIT_USER &&
++		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
+ 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+ 			goto bad_fork_cleanup_count;
+ 	}
+@@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
+ 			 */
+ 			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+ 							 p->real_parent->signal->is_child_subreaper;
+-			list_add_tail(&p->sibling, &p->real_parent->children);
++			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
+ 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+ 			attach_pid(p, PIDTYPE_TGID);
+ 			attach_pid(p, PIDTYPE_PGID);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
