@@ -2,285 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4588C7D8C50
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 01:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCA17D8C55
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 01:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjJZXsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 19:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        id S1344988AbjJZXuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 19:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJZXsW (ORCPT
+        with ESMTP id S229437AbjJZXuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 19:48:22 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFF81A5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:48:20 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45845db2d63so665107137.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698364099; x=1698968899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+In5cIMB3HJpQTMHOEwIOuwXk/mnIKncDUTw+oPVd94=;
-        b=XYad8IQQWgG2yoVu4U++rvQd3O5duWV9EzKGSv/ltkad1JRQh4aoERlTxJ1fefWVtD
-         Jw5pLgTzJwSSlqXsl8kweKYU0xRXWIooMOpelpFv/5WicZH4CAtKJVWQJBzj+4TBvmYp
-         zh6z0cyDA+/sNi00enX80dKdQo5y60Cn6/SI05jG0s5pQQ/cEHWBRA0/3Uh9CDokBEVW
-         bO54wYmQkoqAk25dBeVs+mcOvv/hgGlU/nSqNZ7my0U9fpeOqyhDtl5SUaDn1VuFwDdf
-         o+kqzc2I5I32hHuYwxSn4tjfUcQpmU5/ROhtjGJQme24Ss4Ceigr+NbMLOXadJykHvcu
-         Cg+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698364099; x=1698968899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+In5cIMB3HJpQTMHOEwIOuwXk/mnIKncDUTw+oPVd94=;
-        b=Gmugwue3o1hyzSymO7IiLfxlr3IkNeTTrxGu9OGfBnF71r8l1nWnkiBr2T5wXXaKUe
-         96gYIP0twsSrX/fT2lWsA0N/MfHWq6ggrQELmIa+M1EFpkpSDLCURMo1yCEfM/agoH/j
-         Un2DbtLVZy6EH8pjME+JLjJAzpz25/doLG7VpcfG9QGgKQDp7ORBKIBNfWix6qHORaMz
-         mHmoBRmTy4VknBXtsvOCx/Ei3tVJyj6bbsv1wZCaMctz2MANNLxCFNekG2yzFsRlruyf
-         rqvucP1NhGlIEmTf4I5EppE2GPtwPjmS3XpY5DQroMUpu6I0xCGtLr3DhlVckvDK/nB8
-         oQ8w==
-X-Gm-Message-State: AOJu0Yz7zWj8goIRzZh0oMjNzITSmm++yTEYWdVJLS22jfm55ZQ6PPwc
-        nGFBPccRtLgXa5SOKERlGVwGipTI8YwPUM3TIWQ=
-X-Google-Smtp-Source: AGHT+IGHK9Xl19bFVAuBbDA6w+Zx4r5YYHEYxhcFPaOUYOyPXe2dhYoI51npOeOFy8MPncPy91scXXqyEycM+oIwE1M=
-X-Received: by 2002:a67:b80c:0:b0:458:1c00:c32f with SMTP id
- i12-20020a67b80c000000b004581c00c32fmr1422072vsf.34.1698364099116; Thu, 26
- Oct 2023 16:48:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
- <CAGsJ_4z1u4-_JXUM9GG2cqc4Nwrx1v69uHsbff5jDQZHQgWP+w@mail.gmail.com>
- <87y1frqz2u.fsf@nvdebian.thelocal> <CAGsJ_4wFiz-obaoXqfU9p-YqgFwExyXpGjpDKMOUt7mnenD-ew@mail.gmail.com>
- <87ttqfqw8f.fsf@nvdebian.thelocal> <d2d8062c-8248-b710-ccd6-e5359d15c385@linux.alibaba.com>
- <87bkcn1j5k.fsf@nvdebian.thelocal> <CAOUHufZ84aDmiW3Efh87q1oMJr-zk5cyaebucCFzevFHx77ngQ@mail.gmail.com>
- <CAGsJ_4zueK32KMHM0=EYjB3spYvh-yJU=buorG+6+Stnu=cypw@mail.gmail.com> <877cnb0zyk.fsf@nvdebian.thelocal>
-In-Reply-To: <877cnb0zyk.fsf@nvdebian.thelocal>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 27 Oct 2023 07:48:07 +0800
-Message-ID: <CAGsJ_4wTmA0FsPe_+EfA4wrxiWO_q1AkrJt0UyfHZaU0EJAQdw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Yu Zhao <yuzhao@google.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        Thu, 26 Oct 2023 19:50:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5858590
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 16:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698364207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XraPJHpUz3iHlmRFAu43bZXLN3dhZLOzZ/zFKxawxmE=;
+        b=KlY7IfFCcL0fAXb5V7AAM/d0dqdubAIr3NBjF93npaUW+/ZLcQ7e7N6mnKFx3XCMxJz32g
+        TOV7gXIJTPuJcEnKenyPCwNE61gJPVdChZWlgAR/0Enf4Cl1wIYgWYC2mVoCXeUiTPEcn+
+        MlnMH6XuKHp92BOVsaQBxGxYwq8n4IE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-263-_7LOw04eNOKN3_h6Jv-UZA-1; Thu, 26 Oct 2023 19:49:36 -0400
+X-MC-Unique: _7LOw04eNOKN3_h6Jv-UZA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F484811E7D;
+        Thu, 26 Oct 2023 23:49:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 083661121319;
+        Thu, 26 Oct 2023 23:49:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH net] rxrpc: Fix two connection reaping bugs
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <783910.1698364174.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Fri, 27 Oct 2023 00:49:34 +0100
+Message-ID: <783911.1698364174@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 6:16=E2=80=AFPM Alistair Popple <apopple@nvidia.com=
-> wrote:
->
->
-> Barry Song <21cnbao@gmail.com> writes:
->
-> > On Wed, Oct 25, 2023 at 2:17=E2=80=AFPM Yu Zhao <yuzhao@google.com> wro=
-te:
-> >>
-> >> On Tue, Oct 24, 2023 at 9:21=E2=80=AFPM Alistair Popple <apopple@nvidi=
-a.com> wrote:
-> >> >
-> >> >
-> >> > Baolin Wang <baolin.wang@linux.alibaba.com> writes:
-> >> >
-> >> > > On 10/25/2023 9:58 AM, Alistair Popple wrote:
-> >> > >> Barry Song <21cnbao@gmail.com> writes:
-> >> > >>
-> >> > >>> On Wed, Oct 25, 2023 at 9:18=E2=80=AFAM Alistair Popple <apopple=
-@nvidia.com> wrote:
-> >> > >>>>
-> >> > >>>>
-> >> > >>>> Barry Song <21cnbao@gmail.com> writes:
-> >> > >>>>
-> >> > >>>>> On Wed, Oct 25, 2023 at 7:16=E2=80=AFAM Barry Song <21cnbao@gm=
-ail.com> wrote:
-> >> > >>>>>>
-> >> > >>>>>> On Tue, Oct 24, 2023 at 8:57=E2=80=AFPM Baolin Wang
-> >> > >>>>>> <baolin.wang@linux.alibaba.com> wrote:
-> >> > >> [...]
-> >> > >>
-> >> > >>>>>> (A). Constant flush cost vs. (B). very very occasional reclai=
-med hot
-> >> > >>>>>> page,  B might
-> >> > >>>>>> be a correct choice.
-> >> > >>>>>
-> >> > >>>>> Plus, I doubt B is really going to happen. as after a page is =
-promoted to
-> >> > >>>>> the head of lru list or new generation, it needs a long time t=
-o slide back
-> >> > >>>>> to the inactive list tail or to the candidate generation of mg=
-lru. the time
-> >> > >>>>> should have been large enough for tlb to be flushed. If the pa=
-ge is really
-> >> > >>>>> hot, the hardware will get second, third, fourth etc opportuni=
-ty to set an
-> >> > >>>>> access flag in the long time in which the page is re-moved to =
-the tail
-> >> > >>>>> as the page can be accessed multiple times if it is really hot=
-.
-> >> > >>>>
-> >> > >>>> This might not be true if you have external hardware sharing th=
-e page
-> >> > >>>> tables with software through either HMM or hardware supported A=
-TS
-> >> > >>>> though.
-> >> > >>>>
-> >> > >>>> In those cases I think it's much more likely hardware can still=
- be
-> >> > >>>> accessing the page even after a context switch on the CPU say. =
-So those
-> >> > >>>> pages will tend to get reclaimed even though hardware is still =
-actively
-> >> > >>>> using them which would be quite expensive and I guess could lea=
-d to
-> >> > >>>> thrashing as each page is reclaimed and then immediately faulte=
-d back
-> >> > >>>> in.
-> >> > >
-> >> > > That's possible, but the chance should be relatively low. At least=
- on
-> >> > > x86, I have not heard of this issue.
-> >> >
-> >> > Personally I've never seen any x86 system that shares page tables wi=
-th
-> >> > external devices, other than with HMM. More on that below.
-> >> >
-> >> > >>> i am not quite sure i got your point. has the external hardware =
-sharing cpu's
-> >> > >>> pagetable the ability to set access flag in page table entries b=
-y
-> >> > >>> itself? if yes,
-> >> > >>> I don't see how our approach will hurt as folio_referenced can n=
-otify the
-> >> > >>> hardware driver and the driver can flush its own tlb. If no, i d=
-on't see
-> >> > >>> either as the external hardware can't set access flags, that mea=
-ns we
-> >> > >>> have ignored its reference and only knows cpu's access even in t=
-he current
-> >> > >>> mainline code. so we are not getting worse.
-> >> > >>>
-> >> > >>> so the external hardware can also see cpu's TLB? or cpu's tlb fl=
-ush can
-> >> > >>> also broadcast to external hardware, then external hardware sees=
- the
-> >> > >>> cleared access flag, thus, it can set access flag in page table =
-when the
-> >> > >>> hardware access it?  If this is the case, I feel what you said i=
-s true.
-> >> > >> Perhaps it would help if I gave a concrete example. Take for exam=
-ple
-> >> > >> the
-> >> > >> ARM SMMU. It has it's own TLB. Invalidating this TLB is done in o=
-ne of
-> >> > >> two ways depending on the specific HW implementation.
-> >> > >> If broadcast TLB maintenance (BTM) is supported it will snoop CPU
-> >> > >> TLB
-> >> > >> invalidations. If BTM is not supported it relies on SW to explici=
-tly
-> >> > >> forward TLB invalidations via MMU notifiers.
-> >> > >
-> >> > > On our ARM64 hardware, we rely on BTM to maintain TLB coherency.
-> >> >
-> >> > Lucky you :-)
-> >> >
-> >> > ARM64 SMMU architecture specification supports the possibilty of bot=
-h,
-> >> > as does the driver. Not that I think whether or not BTM is supported=
- has
-> >> > much relevance to this issue.
-> >> >
-> >> > >> Now consider the case where some external device is accessing map=
-pings
-> >> > >> via the SMMU. The access flag will be cached in the SMMU TLB. If =
-we
-> >> > >> clear the access flag without a TLB invalidate the access flag in=
- the
-> >> > >> CPU page table will not get updated because it's already set in t=
-he SMMU
-> >> > >> TLB.
-> >> > >> As an aside access flag updates happen in one of two ways. If the
-> >> > >> SMMU
-> >> > >> HW supports hardware translation table updates (HTTU) then hardwa=
-re will
-> >> > >> manage updating access/dirty flags as required. If this is not su=
-pported
-> >> > >> then SW is relied on to update these flags which in practice mean=
-s
-> >> > >> taking a minor fault. But I don't think that is relevant here - i=
-n
-> >> > >> either case without a TLB invalidate neither of those things will
-> >> > >> happen.
-> >> > >> I suppose drivers could implement the clear_flush_young() MMU
-> >> > >> notifier
-> >> > >> callback (none do at the moment AFAICT) but then won't that just =
-lead to
-> >> > >> the opposite problem - that every page ever used by an external d=
-evice
-> >> > >> remains active and unavailable for reclaim because the access fla=
-g never
-> >> > >> gets cleared? I suppose they could do the flush then which would =
-ensure
-> >> > >
-> >> > > Yes, I think so too. The reason there is currently no problem, per=
-haps
-> >> > > I think, there are no actual use cases at the moment? At least on =
-our
-> >> > > Alibaba's fleet, SMMU and MMU do not share page tables now.
-> >> >
-> >> > We have systems that do.
-> >>
-> >> Just curious: do those systems run the Linux kernel? If so, are pages
-> >> shared with SMMU pinned? If not, then how are IO PFs handled after
-> >> pages are reclaimed?
->
-> Yes, these systems all run Linux. Pages shared with SMMU aren't pinned
-> and fault handling works as Barry notes below - a driver is notified of
-> a fault and calls handle_mm_fault() in response.
->
-> > it will call handle_mm_fault(vma, prm->addr, fault_flags, NULL); in
-> > I/O PF, so finally
-> > it runs the same codes to get page back just like CPU's PF.
-> >
-> > years ago, we recommended a pin solution, but obviously there were lots=
- of
-> > push backs:
-> > https://lore.kernel.org/linux-mm/1612685884-19514-1-git-send-email-wang=
-zhou1@hisilicon.com/
->
-> Right. Having to pin pages defeats the whole point of having hardware
-> that can handle page faults.
+    =
 
-Right. But
-Sometimes I feel that purpose and the technology for the purpose are
-contradictory.
-People want user space dma to have high bandwidth and performance by droppi=
-ng
-u/k copying and complicated syscalls managing those buffers. but IO PF some=
-how
-defeats all the efforts to improve performance.
+Fix two connection reaping bugs:
 
-AFAIK, IO PF is much much slower than PF as it depends on interrupts and ev=
-ent
-queues in hardware. Even a minor page fault due to page migration or
-demand paging
-can significantly decrease the speed of userspace DMA. So finally people ha=
-ve to
-depend on some mlock-like and pre-paging ways to achieve the purpose
-if performance
-is the key concern.
+ (1) rxrpc_connection_expiry is in units of seconds, so
+     rxrpc_disconnect_call() needs to multiply it by HZ when adding it to
+     jiffies.
 
-Thanks
-Barry
+ (2) rxrpc_client_conn_reap_timeout() should set RXRPC_CLIENT_REAP_TIMER i=
+f
+     local->kill_all_client_conns is clear, not if it is set (in which cas=
+e
+     we don't need the timer).  Without this, old client connections don't
+     get cleaned up until the local endpoint is cleaned up.
+
+Fixes: 5040011d073d ("rxrpc: Make the local endpoint hold a ref on a conne=
+cted call")
+Fixes: 0d6bf319bc5a ("rxrpc: Move the client conn cache management to the =
+I/O thread")
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: netdev@vger.kernel.org
+cc: linux-afs@lists.infradead.org
+---
+ net/rxrpc/conn_object.c  |    2 +-
+ net/rxrpc/local_object.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
+index ac85d4644a3c..df8a271948a1 100644
+--- a/net/rxrpc/conn_object.c
++++ b/net/rxrpc/conn_object.c
+@@ -212,7 +212,7 @@ void rxrpc_disconnect_call(struct rxrpc_call *call)
+ 		conn->idle_timestamp =3D jiffies;
+ 		if (atomic_dec_and_test(&conn->active))
+ 			rxrpc_set_service_reap_timer(conn->rxnet,
+-						     jiffies + rxrpc_connection_expiry);
++						     jiffies + rxrpc_connection_expiry * HZ);
+ 	}
+ =
+
+ 	rxrpc_put_call(call, rxrpc_call_put_io_thread);
+diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
+index 7d910aee4f8c..c553a30e9c83 100644
+--- a/net/rxrpc/local_object.c
++++ b/net/rxrpc/local_object.c
+@@ -87,7 +87,7 @@ static void rxrpc_client_conn_reap_timeout(struct timer_=
+list *timer)
+ 	struct rxrpc_local *local =3D
+ 		container_of(timer, struct rxrpc_local, client_conn_reap_timer);
+ =
+
+-	if (local->kill_all_client_conns &&
++	if (!local->kill_all_client_conns &&
+ 	    test_and_set_bit(RXRPC_CLIENT_CONN_REAP_TIMER, &local->client_conn_f=
+lags))
+ 		rxrpc_wake_up_io_thread(local);
+ }
+
