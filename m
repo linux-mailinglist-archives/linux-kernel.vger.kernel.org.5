@@ -2,329 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27687D7DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB077D7DB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344406AbjJZHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 03:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S1344406AbjJZHi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 03:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjJZHfP (ORCPT
+        with ESMTP id S229638AbjJZHi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 03:35:15 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4ABD6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:35:09 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50816562320so707470e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698305707; x=1698910507; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hJZ6wfm0bTuqieUHXEKtRuJrDeks5L6l8rWKf4hHJEo=;
-        b=TngL/zmJZaURwMCP5/htZ/7voWYDEOowQiXsB8tTuyJ3UI/XnY9l+Scx0H+Ysob/eN
-         fHV5RM48QhHLB19dO6dBztAiBb6+0k36Qt8bVN4fs0zoDwTLsER8PBfn4GxhJiOigBpN
-         EHa4Gq42phQscmDcZwgtF/0Z+dUnsRhsXS9UjmLQLt2pBDfttbc7w6mtCmoZNYTqkecV
-         xesBWS9DWXrlIkb0pWCZukOKDTSWd5vi4Ey5ORDmiNBnc8VJECG0K49h+65jZsAH/LXK
-         mejDYL3Y+n7kO9dZhEUEvXtaneyMUyZr6PzW0oYZDpYp/4aQm3TgFekYItXpsiHdEe9T
-         m4CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698305707; x=1698910507;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hJZ6wfm0bTuqieUHXEKtRuJrDeks5L6l8rWKf4hHJEo=;
-        b=rr0TCZRwkeazKBZLIWHQsbyduqCZo91GIhqYk5O/zq83GbBTYJCiZAOGemybfl0Dpv
-         HtvElYt/gw/8Qgna/NswwKJHlCvboKD3SULPfn5E/uINzdsOXelrbYv4FWu6jYPxsR11
-         OW9LD+enZ7g8tKrvu3/jI550zfPucW6QOcbGPqYT4/P0l5DZEWaNKvBAp29EO2Ws7XwO
-         4pQttUJKslp5dDgD2pDr3ysg3WInggacVhRX7G1M0IC28m/j7GDdz9NH+ZO3fmsyp7Is
-         NXaWCBGNjzI8jzoqWbQ/1oAkW3TCR7kMaHe/U6LN4KXfkHJG6T1JMGLk85kGmlUFva3V
-         hotw==
-X-Gm-Message-State: AOJu0Yy4uPYkfhonHTwUlydGSu0dHJA7N9l4wfJ6ev75VVi0rwT/OBmy
-        ZTK/Gbe2wvmNF8TN29NenJA=
-X-Google-Smtp-Source: AGHT+IF1kDUFN0AdnY4R0HavPdl604V/76H23E4wqzAPj8PJLLQTSSq1movSs/LWlTbRJ2bShRj4gg==
-X-Received: by 2002:a05:6512:3d29:b0:507:ba28:1bc5 with SMTP id d41-20020a0565123d2900b00507ba281bc5mr15172418lfv.3.1698305707045;
-        Thu, 26 Oct 2023 00:35:07 -0700 (PDT)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056512078c00b00507a4661f76sm2895189lfr.145.2023.10.26.00.35.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 00:35:06 -0700 (PDT)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
-Date:   Thu, 26 Oct 2023 09:34:40 +0200
-Message-Id: <20231026073440.6724-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+        Thu, 26 Oct 2023 03:38:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E5F184;
+        Thu, 26 Oct 2023 00:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698305933; x=1729841933;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jcIF8hTieIxX0HnXPHF4xImq6jCa0TEAIWvfuQZEnpc=;
+  b=n2q9cXfhuSNCO8YCjku54a5P9sKPoi1JpNSh3wMpyjw77y5PsJQe52RW
+   YPFKnxwx/USb5nFalaGG1HSzgpkIvPH1fF95ldQFI6Yz5234tldpKxIqB
+   YxNFuJ0F5uJXiwhhxedIjCsrl+rwaELzyVDpwU3W/rv3db5XepVxfjU9a
+   8VwIbhmJXUf2zT0MqKYiQ409YVaYC87cg3KAxmSgRXPou/ZgSx3NfDYwH
+   SqguixkKvu3nKVIqCpOmaT7EmE2azFFkFIIuznA8oSZ9HH1V0qJJuA7y6
+   F5PWAybhsddf6l9fb37xP/ERALuXVH7JM89T27FmRTzAGiXaB1QYFdjE7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="273390"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="273390"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 00:38:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="824890512"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="824890512"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Oct 2023 00:38:52 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 00:38:52 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 00:38:51 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 26 Oct 2023 00:38:51 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 26 Oct 2023 00:38:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GUDOL4sj5gsuR4sAqrU7E/ouae84P4cBRIQnk1JnBSS4ycKkzqqcj3pgZ0TI20mj0SKrELNe/0C993pBvTnBJTX88dJw1ioNGd2D+gJhrIW5LGhZ6tQ1p/uTrDfRixG3WXdGfy8mKgiMPZqKUjcCP3pWqslYF2EKWJj/bfTvYmzeeIqE3V8K/3nhX1I+zjcPAu9yXYwJo5SODLmLc32zh3+s1IPEl/0O1ki1yQRHl3++D+GIq0aC1zSQ9qPWHKYBW3oopeESy7bFxzgBfV1VdIVn9SpeIcf9Xvogu5+T75NsNoRbif/7qCVJ5h3ZLy5wQUC9ijIPCFXV1Z1zjDXm4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Os/Jy1Jlm+l/4ueSjSsXbow1/udDgRqQQlM1ApmKt0=;
+ b=FpJAYmTQUjOFutAgcV53pAm/uWbflZlWlM6nPYMf28Jy2/OtPQgD3Vx+PmjvaJcJUtBVSIZMLeQHNYKrYdCRLVzwYrZQc/+OUy/3wHWKVHy3+LuTZl1Vepwe4MJJGE4XFAzwR2O8ddVkrnlnQBEM3D2Wgcf6vxTfG+iYcXZCayD70zQBtpsDgavxfOGQkVAF6ntSemvxDTNsZW4LaqDVTb3tRSUcqfIzRaFwf3WJ/2clBk+kJJTr2IQG6c/ANlh94LblCD9INRC6572pgxJeKzH/tXinDZKOLLepKxNJD13erAE1DXKt6bDWncdeuJTzJkTZOHwxD5lmHusbUyVMnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+ by PH0PR11MB4888.namprd11.prod.outlook.com (2603:10b6:510:32::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 26 Oct
+ 2023 07:38:44 +0000
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::29f0:3f0f:2591:d1f6]) by PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::29f0:3f0f:2591:d1f6%3]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
+ 07:38:44 +0000
+Date:   Thu, 26 Oct 2023 15:38:37 +0800
+From:   kernel test robot <oliver.sang@intel.com>
+To:     Johannes Berg <johannes.berg@intel.com>
+CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        Max Schulze <max.schulze@online.de>,
+        <linux-wireless@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [linus:master] [wifi]  37c20b2eff:
+ hwsim.wpas_ctrl_signal_monitor.fail
+Message-ID: <202310261527.66167d98-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2PR04CA0151.apcprd04.prod.outlook.com (2603:1096:4::13)
+ To PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH0PR11MB4888:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b67cab8-0f9d-4738-ea94-08dbd5f694e8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5exRfVAky0Rp02nsOimWBoQe2yxBKdW/DERYDHaDpCykRONfUwl422qqybnjFpFxrDPBLa6fC5AKZgj+T0RYRh8NB3QC1/PnDaCDlyiAorK7MGTV/XluU6MSc5QQ96lo+kAyF9Sc9hY+x52qA93VaSdJQz6+XJydaHkPE2I73z0Zsakt8FCXT7rbNytmu7iaVQ2p2v++VdR8BhyhvaythhOgEP3y3gxnC47CrtyPb3cHO7YVk1Xse8SsWWa92/SEgO3FqX+SbUvZE1xmHQAauzVj4fmlzE3ciUY2Tx0HIAR/B+wXcN+lOIepmGGyfWjME1UVZftNU9uPHJtqn1LzFO6x6nKUWcAXA8Sz00u0RbFiZIm+Z/MZoFiTSH77fZ6qx7aE3MjLaJCTNrHsOxInk/k1dYbw8jyI/YnzU8djjOJLDR2vzPRuUacgYsOoMvKr03tiZOYKvNhw25reT5uiqrcz1zUpTsfQe3hFU7teQVqBiNgltbE0CyKrMxQBAoVRaYZ7jbt3ndy5L88UaglO/XShM1fsfMGYmfp0G/NyI4FLrRRI/oJH9W1qyNXv6VRUx6ogzMSW5irc4puhN8adgQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(136003)(39860400002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(36756003)(2906002)(83380400001)(8676002)(6862004)(8936002)(966005)(6486002)(4326008)(107886003)(4001150100001)(82960400001)(5660300002)(41300700001)(6512007)(86362001)(6506007)(37006003)(6636002)(316002)(6666004)(1076003)(26005)(478600001)(2616005)(38100700002)(66946007)(66556008)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lTUEdcWVQ/BTifFKYNOIgLCCEt3YhOlYLsAh+UYH/Bk9aFRiF3W/p+RLICR1?=
+ =?us-ascii?Q?u0Q9ly+A6csV/MLk1LvZwPCGGXPcJkg7CUdbf0wZMvFL93nXLnabHe3YM6aY?=
+ =?us-ascii?Q?Z17YX056D4OcRYELcjg32z1pvfXe6JysLhFjet2+OPkGemEpbID6knSdXsqf?=
+ =?us-ascii?Q?nexbyvCN3EaUfkIi10Kdd3iRUkWPQ9rDvM37Pfz1zyi7L17NMn8PAXrmPFi+?=
+ =?us-ascii?Q?MVsIv9iz0q5yzzkLP3WTCq2kqURIdebMH41KmDR/ADqiMy+urh0B7JmQ/iTb?=
+ =?us-ascii?Q?r33iNqVIMAWfHzWm3f6oEJl/WjhgM23wswVhZQP6EGM/VgKLaw4urSV/hzKm?=
+ =?us-ascii?Q?M7DMbAtz+FZX9/FlaZhXE+Xicaxjy+9hrom5e7336R8Rq8yT47WbH1XxevYR?=
+ =?us-ascii?Q?Q+p5ubp3BPvRohACT1/1J6FNJefuSErcclnVPu5VghLQ72Y5ziPpSr13pNgG?=
+ =?us-ascii?Q?izlDXdaPg4TqrSjmdgVbfqOQM6GpS+uZ/JK3dJofzY7Y6pN848giO3OMevbl?=
+ =?us-ascii?Q?5hiuizJ9xicn+b8zRY2wyaTvJaHSAaX/U4i6x8Qy4X2h7wsNk2DbE+WSYmZv?=
+ =?us-ascii?Q?+71hhY5ufVH23hLjhozI7G5nB8wnhI4JGwAOEOOsf4bkBCQhV/+XX7NMfzbr?=
+ =?us-ascii?Q?5hVpXpwXZSWTe/kKU4m5i57Tohznyv/jS82ofpuJUQuNfILOMSij8iChL7HQ?=
+ =?us-ascii?Q?fYe09PYQxUKMyBLnmEPS+u6ho1FPkuv6BQWVHaPs2r/uTTaLBW9MjPBdsBtF?=
+ =?us-ascii?Q?YGXlmzvVMU0PgBE9uETWc5lZHWKfZbzcoMCapWHoM+eTVCgONTMfZ7kiw0zS?=
+ =?us-ascii?Q?CXCHlMt1af/r1Rt2blsWNV26mlIY5TUaMJ1wPn5L3b/itMpp9WPO3V1fLa1P?=
+ =?us-ascii?Q?8+b3hkREgNJhh/JiTDemJGpS9Nw0XiKxxNTptclbvxY/+nXlSRx9XUBaWRrR?=
+ =?us-ascii?Q?SQ0wtcnktEM6ZoBBCxoJ8nvR8Rs8W8yIzvzz+oNC2N4E7CssaRVMENiwEs1A?=
+ =?us-ascii?Q?tftfhjUYbkIk8pKaukiX6vkj3jG6GC6ahL2weVCMfUw4DK6509tQrMp+rzOt?=
+ =?us-ascii?Q?oTPHqh1RbjK56rRcaUqiLefScqTnEieZ70SPBnRXLELuCxnkLEY8Z+KxTl3N?=
+ =?us-ascii?Q?piFfQxmwRU5/wwmjJi6XN9C8oAWplmsKhQkXtwqYXXulRk9qh1TZHv9ZyWHB?=
+ =?us-ascii?Q?YMV9EvB4Lv6VUA9QtsYazkgzyeCRGM5klCuxbG/C70mnJjwwJ1Mndt8R8Qpj?=
+ =?us-ascii?Q?+AzJ5QA2jaxClBfObUWrvFDVTokvY5hCYdH9I6+SIScidG2qNizZJOs9WhqX?=
+ =?us-ascii?Q?zjPMUTwGbYXDo91+d/0XQfWfRtQOvpK6uXce0bRt/0Zr/26HJ5DID2SXq9xh?=
+ =?us-ascii?Q?rLyQ+bBy2j1s6o8qA6o7g0LNO1td0K1B+hbXm+OhuLIskELVSkP000zrU9EX?=
+ =?us-ascii?Q?ONyG9/0k7+ifDKWfZdm8jnFgd90Ti+9e75g+DGssJV3mXWdWMY8nxncCyue+?=
+ =?us-ascii?Q?wUpY8540XMzgrQxgEQA1aDASIrDKFk6GVXc9g+zXfnypWZczXW2MuJcRFb5F?=
+ =?us-ascii?Q?MUzRFcARXH6mq84WOFHQ/wEV0uUQuqN3i2xkowFbQZu1pBSKtNCV5ly4ozc/?=
+ =?us-ascii?Q?WA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b67cab8-0f9d-4738-ea94-08dbd5f694e8
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 07:38:44.1643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JwnE5bViw2oso5I9xwMNzefScQuS0gLwe8l+C0sbzQK8CC20dX4XeByVrnBoUNCqjULZZN5Mf+DBiyQSmISEBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4888
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
 
-This driver uses MMIO access for reading NVRAM from a flash device.
-Underneath there is a flash controller that reads data and provides
-mapping window.
 
-Using MMIO interface affects controller configuration and may break real
-controller driver. It was reported by multiple users of devices with
-NVRAM stored on NAND.
+Hello,
 
-Modify driver to read & cache NVRAM content during init and use that
-copy to provide NVMEM data when requested. On NAND flashes due to their
-alignment NVRAM partitions can be quite big (1 MiB and more) while
-actual NVRAM content stays quite small (usually 16 to 32 KiB). To avoid
-allocating so much memory check for actual data length.
+kernel test robot noticed "hwsim.wpas_ctrl_signal_monitor.fail" on:
 
-Link: https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
-Fixes: 3fef9ed0627a ("nvmem: brcm_nvram: new driver exposing Broadcom's NVRAM")
-Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Scott Branden <scott.branden@broadcom.com>
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Minialize amount of allocated memory (check for actual data length)
+commit: 37c20b2effe987b806c8de6d12978e4ffeff026f ("wifi: cfg80211: fix cqm_config access race")
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
- drivers/nvmem/brcm_nvram.c | 131 ++++++++++++++++++++++++++-----------
- 1 file changed, 91 insertions(+), 40 deletions(-)
+[test failed on linus/master 9a3dad63edbe9a2ab2be1e7361a2133f519f855b]
+[test failed on linux-next/master e3b18f7200f45d66f7141136c25554ac1e82009b]
 
-diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
-index 9737104f3b76..fbd133732bba 100644
---- a/drivers/nvmem/brcm_nvram.c
-+++ b/drivers/nvmem/brcm_nvram.c
-@@ -17,9 +17,20 @@
- 
- #define NVRAM_MAGIC			"FLSH"
- 
-+/**
-+ * struct brcm_nvram - driver state internal struct
-+ *
-+ * @nvmem_size:		Size of the whole space available for NVRAM
-+ * @data:		NVRAM data copy stored to avoid poking underlaying flash controller
-+ * @data_len:		NVRAM data size
-+ * @padding_byte:	Padding value used to fill remaining space
-+ */
- struct brcm_nvram {
- 	struct device *dev;
--	void __iomem *base;
-+	size_t nvmem_size;
-+	uint8_t *data;
-+	size_t data_len;
-+	uint8_t padding_byte;
- 	struct nvmem_cell_info *cells;
- 	int ncells;
- };
-@@ -36,10 +47,47 @@ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
- 			   size_t bytes)
- {
- 	struct brcm_nvram *priv = context;
--	u8 *dst = val;
-+	size_t to_copy;
-+
-+	if (offset + bytes > priv->data_len)
-+		to_copy = max_t(ssize_t, (ssize_t)priv->data_len - offset, 0);
-+	else
-+		to_copy = bytes;
-+
-+	memcpy(val, priv->data + offset, to_copy);
-+
-+	memset((uint8_t *)val + to_copy, priv->padding_byte, bytes - to_copy);
-+
-+	return 0;
-+}
-+
-+static int brcm_nvram_copy_data(struct brcm_nvram *priv, struct platform_device *pdev)
-+{
-+	struct resource *res;
-+	void __iomem *base;
-+
-+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	priv->nvmem_size = resource_size(res);
-+
-+	priv->padding_byte = readb(base + priv->nvmem_size - 1);
-+	for (priv->data_len = priv->nvmem_size;
-+	     priv->data_len;
-+	     priv->data_len--) {
-+		if (readb(base + priv->data_len - 1) != priv->padding_byte)
-+			break;
-+	}
-+	WARN(priv->data_len > SZ_128K, "Unexpected (big) NVRAM size: %zu B\n", priv->data_len);
-+
-+	priv->data = devm_kzalloc(priv->dev, priv->data_len, GFP_KERNEL);
-+	if (!priv->data)
-+		return -ENOMEM;
-+
-+	memcpy_fromio(priv->data, base, priv->data_len);
- 
--	while (bytes--)
--		*dst++ = readb(priv->base + offset++);
-+	bcm47xx_nvram_init_from_iomem(base, priv->data_len);
- 
- 	return 0;
- }
-@@ -67,8 +115,13 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
- 				size_t len)
- {
- 	struct device *dev = priv->dev;
--	char *var, *value, *eq;
-+	char *var, *value;
-+	uint8_t tmp;
- 	int idx;
-+	int err = 0;
-+
-+	tmp = priv->data[len - 1];
-+	priv->data[len - 1] = '\0';
- 
- 	priv->ncells = 0;
- 	for (var = data + sizeof(struct brcm_nvram_header);
-@@ -78,67 +131,68 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
- 	}
- 
- 	priv->cells = devm_kcalloc(dev, priv->ncells, sizeof(*priv->cells), GFP_KERNEL);
--	if (!priv->cells)
--		return -ENOMEM;
-+	if (!priv->cells) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
- 
- 	for (var = data + sizeof(struct brcm_nvram_header), idx = 0;
- 	     var < (char *)data + len && *var;
- 	     var = value + strlen(value) + 1, idx++) {
-+		char *eq, *name;
-+
- 		eq = strchr(var, '=');
- 		if (!eq)
- 			break;
- 		*eq = '\0';
-+		name = devm_kstrdup(dev, var, GFP_KERNEL);
-+		*eq = '=';
-+		if (!name) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
- 		value = eq + 1;
- 
--		priv->cells[idx].name = devm_kstrdup(dev, var, GFP_KERNEL);
--		if (!priv->cells[idx].name)
--			return -ENOMEM;
-+		priv->cells[idx].name = name;
- 		priv->cells[idx].offset = value - (char *)data;
- 		priv->cells[idx].bytes = strlen(value);
- 		priv->cells[idx].np = of_get_child_by_name(dev->of_node, priv->cells[idx].name);
--		if (!strcmp(var, "et0macaddr") ||
--		    !strcmp(var, "et1macaddr") ||
--		    !strcmp(var, "et2macaddr")) {
-+		if (!strcmp(name, "et0macaddr") ||
-+		    !strcmp(name, "et1macaddr") ||
-+		    !strcmp(name, "et2macaddr")) {
- 			priv->cells[idx].raw_len = strlen(value);
- 			priv->cells[idx].bytes = ETH_ALEN;
- 			priv->cells[idx].read_post_process = brcm_nvram_read_post_process_macaddr;
- 		}
- 	}
- 
--	return 0;
-+out:
-+	priv->data[len - 1] = tmp;
-+	return err;
- }
- 
- static int brcm_nvram_parse(struct brcm_nvram *priv)
- {
-+	struct brcm_nvram_header *header = (struct brcm_nvram_header *)priv->data;
- 	struct device *dev = priv->dev;
--	struct brcm_nvram_header header;
--	uint8_t *data;
- 	size_t len;
- 	int err;
- 
--	memcpy_fromio(&header, priv->base, sizeof(header));
--
--	if (memcmp(header.magic, NVRAM_MAGIC, 4)) {
-+	if (memcmp(header->magic, NVRAM_MAGIC, 4)) {
- 		dev_err(dev, "Invalid NVRAM magic\n");
- 		return -EINVAL;
- 	}
- 
--	len = le32_to_cpu(header.len);
--
--	data = kzalloc(len, GFP_KERNEL);
--	if (!data)
--		return -ENOMEM;
--
--	memcpy_fromio(data, priv->base, len);
--	data[len - 1] = '\0';
--
--	err = brcm_nvram_add_cells(priv, data, len);
--	if (err) {
--		dev_err(dev, "Failed to add cells: %d\n", err);
--		return err;
-+	len = le32_to_cpu(header->len);
-+	if (len > priv->nvmem_size) {
-+		dev_err(dev, "NVRAM length (%zd) exceeds mapped size (%zd)\n", len,
-+			priv->nvmem_size);
-+		return -EINVAL;
- 	}
- 
--	kfree(data);
-+	err = brcm_nvram_add_cells(priv, priv->data, len);
-+	if (err)
-+		dev_err(dev, "Failed to add cells: %d\n", err);
- 
- 	return 0;
- }
-@@ -150,7 +204,6 @@ static int brcm_nvram_probe(struct platform_device *pdev)
- 		.reg_read = brcm_nvram_read,
- 	};
- 	struct device *dev = &pdev->dev;
--	struct resource *res;
- 	struct brcm_nvram *priv;
- 	int err;
- 
-@@ -159,21 +212,19 @@ static int brcm_nvram_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	priv->dev = dev;
- 
--	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
--	if (IS_ERR(priv->base))
--		return PTR_ERR(priv->base);
-+	err = brcm_nvram_copy_data(priv, pdev);
-+	if (err)
-+		return err;
- 
- 	err = brcm_nvram_parse(priv);
- 	if (err)
- 		return err;
- 
--	bcm47xx_nvram_init_from_iomem(priv->base, resource_size(res));
--
- 	config.dev = dev;
- 	config.cells = priv->cells;
- 	config.ncells = priv->ncells;
- 	config.priv = priv;
--	config.size = resource_size(res);
-+	config.size = priv->nvmem_size;
- 
- 	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
- }
+in testcase: hwsim
+version: hwsim-x86_64-717e5d7-1_20230720
+with following parameters:
+
+	test: wpas_ctrl_signal_monitor
+
+
+
+compiler: gcc-12
+test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz (Haswell) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202310261527.66167d98-oliver.sang@intel.com
+
+group: group-07, test: wpas_ctrl_signal_monitor
+2023-10-20 08:52:44 export USER=root
+2023-10-20 08:52:44 ./build.sh
+Building TNC testing tools
+Building wlantest
+Building hs20-osu-client
+Building hostapd
+Building wpa_supplicant
+2023-10-20 08:53:42 ./start.sh
+2023-10-20 08:53:44 ./run-tests.py wpas_ctrl_signal_monitor
+DEV: wlan0: 02:00:00:00:00:00
+DEV: wlan1: 02:00:00:00:01:00
+DEV: wlan2: 02:00:00:00:02:00
+APDEV: wlan3
+APDEV: wlan4
+START wpas_ctrl_signal_monitor 1/1
+Test: wpa_supplicant SIGNAL_MONITOR command
+Starting AP wlan3
+Connect STA wlan0 to AP
+Connect STA wlan1 to AP
+Connect STA wlan2 to AP
+No signal change event seen
+Traceback (most recent call last):
+  File "/lkp/benchmarks/hwsim/tests/hwsim/./run-tests.py", line 531, in main
+    t(dev, apdev)
+  File "/lkp/benchmarks/hwsim/tests/hwsim/test_wpas_ctrl.py", line 2021, in test_wpas_ctrl_signal_monitor
+    raise Exception("No signal change event seen")
+Exception: No signal change event seen
+FAIL wpas_ctrl_signal_monitor 12.266827 2023-10-20 08:53:58.780133
+passed 0 test case(s)
+skipped 0 test case(s)
+failed tests: wpas_ctrl_signal_monitor
+2023-10-20 08:53:58 ./stop.sh
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20231026/202310261527.66167d98-oliver.sang@intel.com
+
+
+
 -- 
-2.35.3
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
