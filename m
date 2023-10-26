@@ -2,104 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2957D7C40
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FCD7D7C45
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbjJZFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S1343564AbjJZFd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjJZFcr (ORCPT
+        with ESMTP id S229705AbjJZFdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:32:47 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6068DC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:32:45 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so482924b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698298365; x=1698903165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kBEAEsZN4djiQ3228v8fI+FpEgZGRwVs54ro+ujbLE8=;
-        b=rCOJ8SEQNCsKyfcnC1fNGPkGLEvHjyro90ohjhc+WsqQOJGz1lPESKmpxgPdKUOYDs
-         N1ZzZymhMTtnBZxYSRz1pEfCrc0URTH9eepcX2qsCsVzUcOAulQSsmOoFq6Z7EeBm8nV
-         Chs3O+jWqzQND9RZuSjxc3y5ELMYZriav4BLgXdhVN5kDF1uTHrYUn5SaY6XAE9UbY/d
-         orPhslPkoeNL7aC5fW1T39V/xM/x4R/6I0Q9zkUe3R45tAY4sqqAODU8Vkq8G0qsub4F
-         Wr3QhBLenssHkjJPtg/pEiQSWS8aRcKSPMiwdXflnah8Ctl6DBBNUghfVt0bPL05ATzs
-         hRMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698298365; x=1698903165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kBEAEsZN4djiQ3228v8fI+FpEgZGRwVs54ro+ujbLE8=;
-        b=VJs5HejldmxzIFvIruB3ZJJEaGGb4yCi7/Oyb949RbGcD7KoFbGWcMSq+0VgDrR1K0
-         2QWveOvBv+EjZteyOHQEaQa3eQfrZr2ObLeWY+psSR2bxeC6LPgSrReckpVnQDxEI7QI
-         2y6OQ0xNz8SFLZTQX1LBZV9o4PkFcFWSenWw4SB4c1SQrCvZcpB3/Mf8bgIIKBFebd1B
-         gLoo2NBzJJcSf0iNhOgVqXXPgz0r7zwv8uBbUv5f1CyV8OKPyGYR8hdEL2MGMjtmIA+u
-         3f6DzASqEZ5bZNC0PodVWMBcf2mTW99yA1KbW7Kf45g4CSa2sNCFS+go2hQpvvw8J0Dt
-         WI6g==
-X-Gm-Message-State: AOJu0YzbwOKJIIv1ofKr0/kAnbknZCtrd+X1uaOb5nTeujgGnIjdS87v
-        F48ta9jqZTiV/Tk+8CiqrVksCQ==
-X-Google-Smtp-Source: AGHT+IFi79EC7J/PZyT8aPuF3e72CbPEci6W2qWDbfoUzWTFvPv6/KSJviE1GdJ+D1eqdcl62hwo3Q==
-X-Received: by 2002:a05:6a00:248d:b0:6b2:5992:9e89 with SMTP id c13-20020a056a00248d00b006b259929e89mr20526019pfv.9.1698298365176;
-        Wed, 25 Oct 2023 22:32:45 -0700 (PDT)
-Received: from leoy-huanghe.lan (211-75-219-209.hinet-ip.hinet.net. [211.75.219.209])
-        by smtp.gmail.com with ESMTPSA id z2-20020aa79f82000000b00692cac7a065sm10258284pfr.151.2023.10.25.22.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 22:32:44 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 13:32:38 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-perf-users@vger.kernel.org, coresight@lists.linaro.org,
-        suzuki.poulose@arm.com, atrajeev@linux.vnet.ibm.com,
-        tianruidong@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Anushree Mathur <anushree.mathur@linux.vnet.ibm.com>
-Subject: Re: [PATCH] perf tests: test_arm_coresight: Simplify source iteration
-Message-ID: <20231026053238.GB111732@leoy-huanghe.lan>
-References: <20231023131550.487760-1-james.clark@arm.com>
+        Thu, 26 Oct 2023 01:33:53 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F564115;
+        Wed, 25 Oct 2023 22:33:50 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q5LHsx014027;
+        Thu, 26 Oct 2023 05:33:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iBCmDpK5gZ+leeqJLbv6yh8XUFDIVGgOsRTdfuW8wow=;
+ b=eWbsIA7cvM2KtrJWoRHBPykB5fgGHyetX8sPkRGDWW9cxh0I8jFKdEDiRMFxKP1Id0Bw
+ 6iVLA59d3J1Zaer5rdCh9eN+wjAm4pImOB0G/1QQh37F7DFdy+fXTayIti66Iy23tT6d
+ ZrSC9rOKXXT6UdRWE1FP23i8PbHzxeHtvOg0FjAS88qamPbaPMf0B9ERU2Sfwo03Jx2X
+ EdR9ffNmX/zNSBqs48KMsfQZwOLZwglEKwQVCZCyeE773Ia8jrif9xwbU599tqkdgAj6
+ i0W3w75dAgYou2JCikcm5My/x+7A4wckSVnlWGWVsEz0vv9tKnFr95LjK7G8TXxgZXr5 MA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tydrk8e6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 05:33:39 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39Q5XbhI014871
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 05:33:37 GMT
+Received: from [10.216.45.182] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
+ 2023 22:33:29 -0700
+Message-ID: <743ed862-d34d-2073-bf9a-7778fbdf586d@quicinc.com>
+Date:   Thu, 26 Oct 2023 11:03:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023131550.487760-1-james.clark@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 5/5] arm64: dts: qcom: sa8775p: Add ep pcie0 controller
+ node
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <quic_shazhuss@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nayiluri@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <robh@kernel.org>, <quic_krichai@quicinc.com>,
+        <quic_vbadigan@quicinc.com>, <quic_parass@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-phy@lists.infradead.org>
+References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
+ <1697715430-30820-6-git-send-email-quic_msarkar@quicinc.com>
+ <20231025075224.GB3648@thinkpad>
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <20231025075224.GB3648@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Dgx6T6KGGEC6CnSzOJ0yrhgnZHYIZhEG
+X-Proofpoint-ORIG-GUID: Dgx6T6KGGEC6CnSzOJ0yrhgnZHYIZhEG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_02,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310260045
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 02:15:49PM +0100, James Clark wrote:
-> There are two reasons to do this, firstly there is a shellcheck warning
-> in cs_etm_dev_name(), which can be completely deleted. And secondly the
-> current iteration method doesn't support systems with both ETE and ETM
-> because it picks one or the other. There isn't a known system with this
-> configuration, but it could happen in the future.
-> 
-> Iterating over all the sources for each CPU can be done by going through
-> /sys/bus/event_source/devices/cs_etm/cpu* and following the symlink back
-> to the Coresight device in /sys/bus/coresight/devices. This will work
-> whether the device is ETE, ETM or any future name, and is much simpler
-> and doesn't require any hard coded version numbers
-> 
-> Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: James Clark <james.clark@arm.com>
 
-Looks good to me.  And I did a test for it:
+On 10/25/2023 1:22 PM, Manivannan Sadhasivam wrote:
+> On Thu, Oct 19, 2023 at 05:07:10PM +0530, Mrinmay Sarkar wrote:
+>> Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
+>> It supports gen4 and x2 link width. Due to some stability issue in
+>> gen4 enabling gen3 as of now.
+>>
+>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sa8775p.dtsi | 48 +++++++++++++++++++++++++++++++++++
+>>   1 file changed, 48 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> index 13dd44d..2aa7383 100644
+>> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> @@ -3714,4 +3714,52 @@
+>>   
+>>   		status = "disabled";
+>>   	};
+>> +
+>> +	pcie0_ep: pcie-ep@1c00000 {
+>> +		compatible = "qcom,sa8775p-pcie-ep";
+>> +		reg = <0x0 0x01c00000 0x0 0x3000>,
+>> +		      <0x0 0x40000000 0x0 0xf20>,
+>> +		      <0x0 0x40000f20 0x0 0xa8>,
+>> +		      <0x0 0x40001000 0x0 0x4000>,
+>> +		      <0x0 0x40200000 0x0 0x100000>,
+>> +		      <0x0 0x01c03000 0x0 0x1000>,
+>> +		      <0x0 0x40005000 0x0 0x2000>;
+> Can we sort the reg entries?
+>
+>> +		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
+>> +			    "mmio", "dma";
+>> +
+>> +		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
+>> +			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
+>> +			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
+>> +			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
+>> +			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
+>> +
+>> +		clock-names = "aux",
+>> +			      "cfg",
+>> +			      "bus_master",
+>> +			      "bus_slave",
+>> +			      "slave_q2a";
+>> +
+>> +		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
+>> +			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
+>> +
+>> +		interrupt-names = "global", "doorbell", "dma";
+>> +
+>> +		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
+>> +				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
+>> +		interconnect-names = "pcie-mem", "cpu-pcie";
+>> +
+>> +		iommu-map = <0x0 &pcie_smmu 0x0000 0x1>,
+>> +			    <0x100 &pcie_smmu 0x0001 0x1>;
+> I think I recommended using "iommu-map" instead of "iommus" property. But
+> looking at it again, I think it is fine to use just "iommus" property as the SID
+> will be associated with the EP directly.
+>
+> Unless you want to have different SID for each function.
+>
+>> +
+>> +		resets = <&gcc GCC_PCIE_0_BCR>;
+>> +		reset-names = "core";
+>> +		power-domains = <&gcc PCIE_0_GDSC>;
+>> +		phys = <&pcie0_phy>;
+>> +		phy-names = "pciephy";
+>> +		max-link-speed = <3>;
+> Please add a comment here that you are limiting the Gen speed due to stability
+> issues. Like,
+>
+> 		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
+>
+>> +		num-lanes = <2>;
+> Can you check if the controller is cache coherent? If so, we should add
+> "dma-coherent" property.
+>
+> - Mani
 
-Tested-by: Leo Yan <leo.yan@linaro.org>
+For cache coherency we need driver change as well. So will add this 
+property along with driver change.
+
+--Mrinmay
+
+>> +
+>> +		status = "disabled";
+>> +	};
+>>   };
+>> -- 
+>> 2.7.4
+>>
