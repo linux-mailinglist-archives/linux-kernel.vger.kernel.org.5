@@ -2,164 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 746AF7D8477
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3D77D8484
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345208AbjJZOVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
+        id S1345200AbjJZOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbjJZOU6 (ORCPT
+        with ESMTP id S231180AbjJZOWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:20:58 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D481B1;
-        Thu, 26 Oct 2023 07:20:54 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QEFaqE017693;
-        Thu, 26 Oct 2023 14:20:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0IjMWkowhLLUbyvviUP9QIhTC8ofFln9OXEuj3q/iWo=;
- b=hcO2tjb88UdgwuRrsaFhwp7u8Pzq4zp4yia3W152T6hZoSqI1lNVPxMHmeboNLudRL28
- lfSUNm4k2D2+5yjbpf3J3aA7B9w1vIPeAYusNLGzDjkhbnwhoDL8G5WPy+NE0I1aIz+T
- XANr6qSpSTQR2Pdq+iWNNmzboAtRgIMg/iP28gHti7a199aa/sSKKpGZ2UPefwk1ELej
- XWBLKFxnr8z/fnwZV/CD2y2LIY618pgvNe52Pq9kWQrkQk/N5udBCxHmn1wb3RqWd6vO
- KK/B9IsRqIdp0/j6PrZyffPFeHMvfdGQ6NXovminZXrSCKpU3Uu/mcQXbCGK3DbsWorq /g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tysqa05s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 14:20:53 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39QEH8Vc024380;
-        Thu, 26 Oct 2023 14:20:52 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tysqa05rs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 14:20:52 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39QEJWNu010305;
-        Thu, 26 Oct 2023 14:20:52 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbyxtxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 14:20:52 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QEKpaH17826364
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Oct 2023 14:20:51 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 217E558052;
-        Thu, 26 Oct 2023 14:20:51 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59EDE58056;
-        Thu, 26 Oct 2023 14:20:50 +0000 (GMT)
-Received: from [9.61.161.121] (unknown [9.61.161.121])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Oct 2023 14:20:50 +0000 (GMT)
-Message-ID: <1e7a9e4a-6d4a-4328-9fe8-0826e6348729@linux.ibm.com>
-Date:   Thu, 26 Oct 2023 10:20:49 -0400
+        Thu, 26 Oct 2023 10:22:01 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2361A2;
+        Thu, 26 Oct 2023 07:21:59 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b2ea7cca04so540401b6e.2;
+        Thu, 26 Oct 2023 07:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698330118; x=1698934918; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dPjnRCIHnU5GzLqzoajHNOA82GCVgkswXThHFIsTG6Y=;
+        b=kd20anX7cbOxyOppXyR5BC+9KPjBzdEZ0w3sNaj16Mgp/XItDFqSjOpmY+S/sqcEEU
+         gkQj5rs1NrUgs/TarAz65JOstfpsNCMzkayeYg11NLQgQ3JJsIhbvcxD088VKo05/Dh6
+         q6NVYjJiRkawp0KJvMpF4K7LzCuDMysNsip8WwNkwl99ekGU0hgTjpy0Kh569vCFIYCu
+         VqOuTSE06Wluq9U3rm3rXEFwtyIJu1NyJHsl5SnfcI4N6cQYbwAx1b/mNC5pZasZUND7
+         Oy/xGY6XG+paEzxoNrofhx3BmWpfXc6mnKS93ZKnR8bcPHY/eUOPinwQXWBmSG9CAZre
+         f1Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698330119; x=1698934919;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dPjnRCIHnU5GzLqzoajHNOA82GCVgkswXThHFIsTG6Y=;
+        b=ZCQT421Cu2mxQC8iNlY+N3RIVIap/r8m39VseKMENOFbcYGR1g+Xym4YY5ugFTpLkN
+         6lX8FtbWiwSEQvAMkB1MEzdv/kj368Q6zDusdBZ9CDgL+phtbUHTTLR1HYNXhrsWyR0i
+         GI/TNzY8Bp6ejsNZh76MAR2rKSQq+vLNn6f4M0E4+BeHhlU1BgXwc7S1mVscF4dVr3ZG
+         gigytbYZwcTTfHU91/3I7jx3prtIsmdhENBi11pAlIQOA5JI2BrlPlzHkKPP/Yc5+Ona
+         bIbbgwKJV6dIfirJAhWZMrg2ld1aQIUl6/eFFdWPndw6wR3xtuxoNqgm3azkFmV4wqhO
+         q3PA==
+X-Gm-Message-State: AOJu0YyPXLb+HhZDRjYuhJGAYQT/rnH90jHeP6XyKmmjDoBg8Bk0pNEF
+        LlyPG1LvP5GQS8H4ZbJZ2/4o4hG17ZyLBg==
+X-Google-Smtp-Source: AGHT+IGOORfdaN+ox+8dGnvK0hFjx7b4auYMD2QU259WIkEBZWSxO8HgvGRbr8aY5mL7QXVUpqpDYA==
+X-Received: by 2002:a05:6808:e85:b0:3b2:d8cb:8e14 with SMTP id k5-20020a0568080e8500b003b2d8cb8e14mr24661826oil.28.1698330118606;
+        Thu, 26 Oct 2023 07:21:58 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id g202-20020a8152d3000000b005a8a78fa9d2sm6085277ywb.17.2023.10.26.07.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 07:21:58 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id C94B027C005B;
+        Thu, 26 Oct 2023 10:21:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 26 Oct 2023 10:21:56 -0400
+X-ME-Sender: <xms:BHY6ZRm0CFDRawFDDqLMq38_zm2Qz4TaqVez6HlJZmIklCbNPXNF9w>
+    <xme:BHY6Zc1AheJIzLy1eCZLvipKuXSNMJpy2pP_MLBUoZI7GFwy4_2aTEt8vF-rUDNwm
+    zMxeY7HQ0G9c7VnxQ>
+X-ME-Received: <xmr:BHY6ZXodUaXPHTT8AbNlXgE_ARzGijaca0D56FIcN3Og8YdXc0QqVDLH5A0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledvgdejiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:BHY6ZRmVYIFyK9hajxKhO7G9pXAEUukEHTKPJLJrKbGr4XnYCrC7Gw>
+    <xmx:BHY6Zf21Yzn6zxmITRGYj8jw2L0D-XZgTjFr4KgYUzA2h1ai0BWaow>
+    <xmx:BHY6ZQtnGLG5lML1wq6fh7r6fKIRvSH0eumBKpAZgiT44cC_7EZCtw>
+    <xmx:BHY6ZUIHVJg3o5U07owCiEI9Tu0kYdhjSk0zcYaETeyW0rI6Nd5xiw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Oct 2023 10:21:55 -0400 (EDT)
+Date:   Thu, 26 Oct 2023 07:21:53 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Gary Guo <gary@garyguo.net>, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        kent.overstreet@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        elver@google.com, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC] rust: types: Add read_once and write_once
+Message-ID: <ZTp2AVY5twZOKEtX@Boquns-Mac-mini.home>
+References: <20231025195339.1431894-1-boqun.feng@gmail.com>
+ <20231026081345.GJ31411@noisy.programming.kicks-ass.net>
+ <20231026113610.1425be1b@eugeo>
+ <20231026111625.GK33965@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] s390/vfio-ap: unpin pages on gisc registration
- failure
-Content-Language: en-US
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Matthew Rosato <mjrosato@linux.ibm.com>, stable@vger.kernel.org
-References: <20231018133829.147226-1-akrowiak@linux.ibm.com>
- <20231018133829.147226-2-akrowiak@linux.ibm.com>
- <c6951c45-b091-11a6-5684-ba2ef0c94df3@linux.ibm.com>
- <7ccf21c4-511c-4de6-bc02-4a936b020a10@linux.ibm.com>
- <ad89deb2-0028-46e4-ccc2-259308f01660@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <ad89deb2-0028-46e4-ccc2-259308f01660@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nkrKO0qceOIs0zPHnVzHu9LSjIF9-t7P
-X-Proofpoint-ORIG-GUID: VBV1Kccn6PKVJs_QiW50wV7SoLnEaI69
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_12,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 spamscore=0 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260123
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026111625.GK33965@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 01:16:25PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 26, 2023 at 11:36:10AM +0100, Gary Guo wrote:
+> 
+> > There's two reasons that we are using volatile read/write as opposed to
+> > relaxed atomic:
+> > * Rust lacks volatile atomics at the moment. Non-volatile atomics are
+> >   not sufficient because the compiler is allowed (although they
+> >   currently don't) optimise atomics. If you have two adjacent relaxed
+> >   loads, they could be merged into one.
+> 
+> Ah yes, that would be problematic, eg, if lifted out of a loop things
+> could go sideways fast.
+> 
 
+Maybe we can workaround this limitation by using compiler barriers, i.e.
 
-On 10/26/23 09:25, Christian Borntraeger wrote:
-> 
-> 
-> Am 26.10.23 um 15:16 schrieb Tony Krowiak:
->>
->>
->> On 10/26/23 08:18, Christian Borntraeger wrote:
->>>
->>>
->>> Am 18.10.23 um 15:38 schrieb Tony Krowiak:
->>>> From: Anthony Krowiak <akrowiak@linux.ibm.com>
->>>>
->>>> In the vfio_ap_irq_enable function, after the page containing the
->>>> notification indicator byte (NIB) is pinned, the function attempts
->>>> to register the guest ISC. If registration fails, the function sets the
->>>> status response code and returns without unpinning the page containing
->>>> the NIB. In order to avoid a memory leak, the NIB should be unpinned 
->>>> before
->>>> returning from the vfio_ap_irq_enable function.
->>>>
->>>> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
->>>
->>> Where is Janoschs signed off coming from here?
->>
->> Janosch found this and composed the patch originally. I just tweaked 
->> the description and posted it.
-> 
-> So we should add
-> 
-> Co-developed-by: Janosch Frank <frankja@linux.ibm.com>
-> 
-> in front of Janoschs signoff.
+	compiler_fence(SeqCst);
+	load(Relaxed);
+	compiler_fence(Acquire);
 
-Will do.
+this is slightly stronger than a volatile atomic.
 
+> > * Atomics only works for integer types determined by the platform. On
+> >   some 32-bit platforms you wouldn't be able to use 64-bit atomics at
+> >   all, and on x86 you get less optimal sequence since volatile load is
+> >   permitted to tear while atomic load needs to use LOCK CMPXCHG8B.
 > 
->>
->>>
->>>> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
->>>> Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
->>>> Fixes: 783f0a3ccd79 ("s390/vfio-ap: add s390dbf logging to the 
->>>> vfio_ap_irq_enable function")
->>>> Cc: <stable@vger.kernel.org>
->>>> ---
->>>>   drivers/s390/crypto/vfio_ap_ops.c | 1 +
->>>>   1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c 
->>>> b/drivers/s390/crypto/vfio_ap_ops.c
->>>> index 4db538a55192..9cb28978c186 100644
->>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
->>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->>>> @@ -457,6 +457,7 @@ static struct ap_queue_status 
->>>> vfio_ap_irq_enable(struct vfio_ap_queue *q,
->>>>           VFIO_AP_DBF_WARN("%s: gisc registration failed: nisc=%d, 
->>>> isc=%d, apqn=%#04x\n",
->>>>                    __func__, nisc, isc, q->apqn);
->>>> +        vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
->>>>           status.response_code = AP_RESPONSE_INVALID_GISA;
->>>>           return status;
->>>>       }
+> We only grudgingly allowed u64 READ_ONCE() on 32bit platforms because
+> the fallout was too numerous to fix. Some of them are probably bugs.
+> 
+> Also, I think cmpxchg8b without lock prefix would be sufficient, but
+> I've got too much of a head-ache to be sure. Worse is that we still
+> support targets without cmpxchg8b.
+> 
+> It might be interesting to make the Rust side more strict in this regard
+> and see where/when we run into trouble.
+> 
+
+Sounds good to me. If the compiler barriers make sense for now, then
+we can do:
+
+	pub unsafe fn read_once_usize(ptr: *const usize) -> usize {
+		core::sync::atomic::compiler_fence(SeqCst);
+		let r = unsafe { *ptr.cast::<AtomicUsize>() }.load(Relaxed);
+		core::sync::atomic::compiler_fence(Acquire);
+		r
+	}
+
+and if the other side (i.e. write) is also atomic (e.g. WRITE_ONCE()),
+we don't have data race.
+
+However, there are still cases where data races are ignored in C code,
+for example inode::i_state: reads out of locks race with writes inside
+locks, since writes are done by plain accesses. Nothing can be done to
+fix that from Rust side only, and fixing the C side is a separate topic.
+
+Thoughts?
+
+Regards,
+Boqun
+
+> > * Atomics doesn't work for complex structs. Although I am not quite sure
+> >   of the value of supporting it.
+> 
+> So on the C side we mandate the size is no larger than machine word,
+> with the exception of the u64 on 32bit thing. We don't mandate strict
+> integer types because things like pte_t are wrapper types.
+> 
+> 
