@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B48D7D79CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05C17D79D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbjJZAuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S232626AbjJZAuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjJZAuO (ORCPT
+        with ESMTP id S229877AbjJZAuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:50:14 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4564E5;
-        Wed, 25 Oct 2023 17:50:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AD5E420004;
-        Thu, 26 Oct 2023 00:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698281409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kw/f9dk03toD/bngeKNCjlbBkW7ybBlC+GD5XNSlQw4=;
-        b=U62Bw4+6YVbdcFQ/mTF87ZhhKowumwwb5pmSYNsclhWqH/0PEFUOXN4SY6PZUBjUVlmkBt
-        MkUK+SE9NHQkTTA/iYN09gp+lNXhoRsKdbK0OQj6KDOS4IjUly+sb3YceetjVpIJRGnLnc
-        Hcey3iTCzTQmUqtLj8TxhUrzMkW9NxkHOdKKBLU1UUlzeabr+ZecLrb39ndDuOjvwNAcAw
-        GV37zJELG42qboEIAJfq85MXJHQpS1Ea/BSLiKwRYst/RfK3npwwQOY90uHd0/DGiJCnaM
-        6LQAnIsGWrRTtAG+vX29KxgqdjEOoE1aHMgNaulWLiUJFEBr/rau5lf0t3YW7A==
-Date:   Thu, 26 Oct 2023 02:50:08 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
- property
-Message-ID: <20231026005008b8255799@mail.local>
-References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
- <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
- <20231025222327c0b5d460@mail.local>
- <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
- <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
+        Wed, 25 Oct 2023 20:50:20 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08E0E5;
+        Wed, 25 Oct 2023 17:50:18 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7fb84f6ceso2621567b3.1;
+        Wed, 25 Oct 2023 17:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698281418; x=1698886218; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i0MKcDRTym0ST849xJvq9BmBOJws/USx0F+Iv3A5PXo=;
+        b=SMDFkvWUaqmwKfj3HDK3WkSjt84OK7tr+jtQbHsXpI/hODkptqbqAtt4s8JXWQspU1
+         gPYN0HTRlf1Eqs3RwZrg+PN4QCwb6Zy/jMYDmf91hlcEmvXurFG/XTZS4RIeaO4lKJPy
+         aq2e0UZ4eqDya/molksPkrAhsOxLeE2r7mruDXG4GCtl1+WNSH0UiPdCmDjfaeqhM+or
+         REOG0PKaEYtTkWVFHdJlkjTpU3aJjVtsaaUPDGTzeEaOb61n88RY6t1kMTqSWKR+SZK3
+         2xQgMYlrRmhjdOvmpntO6xJPfSZDEcGRbdhhi13eZRCDiHRFtk7M89+XVVlt3uKNjRWc
+         rkMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698281418; x=1698886218;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i0MKcDRTym0ST849xJvq9BmBOJws/USx0F+Iv3A5PXo=;
+        b=jFI0cgWbKU1MnfQo96NJlZaE6ff4rXN0JAMl75a46FkGVWjbxUIlgqww4SyO1xirXf
+         PeCCN2oZtUHgNuV+D/jfUECneZ03KFMzsSjeV80Ef8edp4adzeSuf2NrOS4hxM3wkTRa
+         1V9OSQXDvlE3KsM7/+bxVE58QGLmTsg1Oof8Th/nrwXAABulA3Jhe/OZTo5EiImKR1PI
+         jCMhTb341odU8eSImVp9RNbaSu6n0zCn33+Ak1wMag4IlRpmxG5G5BERAjmiH+PuSIZn
+         nPdEmJ+z7t7F/tnKsacSz8xmR/EPw+tODTOdeKuDYMS3/ZpWmigBt9/SM6CHXWdsrOp8
+         EVKg==
+X-Gm-Message-State: AOJu0YwhfBQ0BFBJvOZ0aA0XXxw6IIjPIBV0sbhJpbKHZyPBIv41H0ry
+        mYvK0DXz/QZkTs7/qjBfPNo=
+X-Google-Smtp-Source: AGHT+IHWx64+MztXaf4IQcIKAHvvYa1LoP4g9Wu3PMvq61PZV5ewTB9xtlYQb6vgaSWF9M7ou8f6CA==
+X-Received: by 2002:a05:690c:38b:b0:5a8:1ffe:eb4e with SMTP id bh11-20020a05690c038b00b005a81ffeeb4emr19678323ywb.34.1698281418027;
+        Wed, 25 Oct 2023 17:50:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t65-20020a815f44000000b0059ae483b89dsm5556264ywb.50.2023.10.25.17.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 17:50:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 25 Oct 2023 17:50:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Saravanan Sekar <saravanan@linumiz.com>
+Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jdelvare@suse.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] regulator: dt-bindings: Add mps,mpq2286
+ power-management IC
+Message-ID: <4a25fa2c-4b6e-4a33-b3ce-99a56db0f9ae@roeck-us.net>
+References: <20231011164754.449399-1-saravanan@linumiz.com>
+ <20231011164754.449399-3-saravanan@linumiz.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231011164754.449399-3-saravanan@linumiz.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 01:23:21+0200, Javier Carrasco wrote:
-> >>> +  hiz-output:
-> >>> +    description:
-> >>> +      Use enabled if the output should stay in high-impedance. This
-> >>> +      mode will mask the output as an interrupt source.
-> >>> +      Use sleep if the otuput should be only active in sleep mode.
-> >>> +      This mode is compatible with any other output configuration.
-> >>> +      The disabled value acts as if the property was not defined.
-> >>> +    enum:
-> >>> +      - enabled
-> >>> +      - sleep
-> >>> +      - disabled
-> >>> +    default: disabled
-> >>> +
-> >>
-> >> If instead of using a custom property, you consider this as what it
-> >> actually is: pinmuxing, then everything else comes for free. With
-> >> pinctrl, you can define different states for runtime and sleep and they
-> >> will get applied automatically instead of open coding in the driver.
+On Wed, Oct 11, 2023 at 10:17:52PM +0530, Saravanan Sekar wrote:
+> Document mpq2286 power-management IC.
 > 
-> I am not sure if your solution would cover all my needs:
-> 
-> 1.- With pinctrl I can model the SoC pins, right? That would not stop
-> the RTC output though, so the 32 kHz signal would be generated anyways
-> even though the SoC would ignore it. That is one of the things I want to
-> avoid.
-> 
+> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-No, you would model the INTA pin.
+Applied.
 
-> 2.- What happens if the RTC output is a clock for an external device
-> that is only required when the SoC is in sleep mode? In that case I
-> would like the RTC driver to control the output with the modes it provides.
-
-Even if I doubt this is a valid use case, this would be possible as long
-as the external device node has the correct pinctrl-* properties.
-
-
-> >>
-> >> Also, how you define this property means that everyone currently using
-> >> this RTC is going to have a new warning that they should just ignore.
-> >>
-> >>
-> > Thanks for your reply. The warning can only be triggered if the property
-> > is defined, so in principle no one could have that warning yet. Only the
-> > ones who actually define it and use an invalid value would get the warning.
-> > 
-> > On the other hand I did not consider your approach, which might make
-> > this patch irrelevant. So I will have a look at it to make sure that it
-> > achieves the same results.
-> > 
-> > Thanks again and best regards,
-> > Javier Carrasco
-> > 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+Guenter
