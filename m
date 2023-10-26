@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C0E7D8020
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEA07D8022
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjJZJ5F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 05:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
+        id S231127AbjJZJ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjJZJ5E (ORCPT
+        with ESMTP id S229518AbjJZJ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:57:04 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59850198;
-        Thu, 26 Oct 2023 02:57:02 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a87ac9d245so5223897b3.3;
-        Thu, 26 Oct 2023 02:57:02 -0700 (PDT)
+        Thu, 26 Oct 2023 05:58:10 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE7A93;
+        Thu, 26 Oct 2023 02:58:07 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9bf0ac97fdeso108604466b.2;
+        Thu, 26 Oct 2023 02:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698314286; x=1698919086; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9KIvM94Zo8czLYhdT3nLKb2AOCp1EA16AmR4SZgO/t4=;
+        b=NEt5wwqImRgDWauETNXA/+jsOSV/bAbMRs4dBNT7cfzWdx6QEOBGMXqbrgyAjDGy/7
+         Hr9JirvRT5DeB6wZfZ6tFtvh9+aMKdz7LKsU/V/4veYb/hrLGwTOZcYx0j/J62qKbdCI
+         tgxAWfn0AcXuPISxqqeOb3c+A/drBmfflaVr8CIp8AsKrVmO4mKs0Qff6pZjy3qj5Ufx
+         akde5aojA3aLHl9v2oqO/xEY24bE5/MRAyy91q4GxUv6JkMl51fQvz7Cr7LM7t0FF4Ta
+         4oVAXDsKgxccPbXQUYIZJ88yjf8oQb3C0qjyh3wkkYFIj6pdg97BC+vfV2BLoa3OT7Ov
+         BGlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698314221; x=1698919021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6uFMGKk4XVhVY8W08VRVOiCtZ/hducJ/tdn29JUZaZ4=;
-        b=bakNyPvZHiTrsfM4aE6puyKL4w2dJ0T1pbmTEdGyHH2PtFvDAqdvQtyOJ+GtQuOCUG
-         ZE5SCprvDCXKaE4KpPU7dSCszldvZxM2u0AppkSdD+SyvG5UN29opVqAAW6o4403Xs4O
-         Rap+tTXqY2/6LE31+kUcfpE1k0tLR+Wb2rPkBljx9dTBS4ChryDZGPxFYXVMa0SW+qM7
-         dSeyTbkEQLUJc1NrfxaKRr3x7mKZaUlQBi2GDKaQg5OE7vKsg8HjRWEmFwjP/KWks5LV
-         ZpOYPS1nL2FnmoSuhCzgFlfS0zhxtZkZsif56QY0fD2qrB3oh9R3lAwR0RYs+EcL4R/T
-         F3zw==
-X-Gm-Message-State: AOJu0YweYZlx1RsjAN3PQze0k0kiDsJWDuuJBIDLj9zHgLGFN6hwtPxy
-        7Fm+Rf93IswFQ9K+yNid2pnRPj4fdx61UA==
-X-Google-Smtp-Source: AGHT+IH7wIeOjlSJvNMBfUxVOGODAbusdsWocVpyUz6ss9ux9H3elCLDRA4ze+BVHMz7eI2nmkcXRw==
-X-Received: by 2002:a81:a1c9:0:b0:595:887f:e180 with SMTP id y192-20020a81a1c9000000b00595887fe180mr18741028ywg.40.1698314221076;
-        Thu, 26 Oct 2023 02:57:01 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id b190-20020a0dd9c7000000b005a23ab90366sm5845748ywe.11.2023.10.26.02.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 02:57:00 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a87ac9d245so5223797b3.3;
-        Thu, 26 Oct 2023 02:57:00 -0700 (PDT)
-X-Received: by 2002:a5b:60e:0:b0:da0:84b2:5e3e with SMTP id
- d14-20020a5b060e000000b00da084b25e3emr3856249ybq.21.1698314220279; Thu, 26
- Oct 2023 02:57:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698314286; x=1698919086;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9KIvM94Zo8czLYhdT3nLKb2AOCp1EA16AmR4SZgO/t4=;
+        b=N6vRd4e+QkIhSCtbz710e7guKNQqMixRqqstFYofbnCo5PmPLUVkSrdVmab5CD043r
+         jVTqUZzOfniG8z6M0svhE2+9DL91aEwiF01MKwU0RV+OpS+6/jCaWDOEGssY5KYJppzd
+         miIfeWIchzju/tbiR7AXQa/BqMbhUBP7wL8JA3tD9preyX65pTf55SwbZuNoriSDTFck
+         jBBv358uk50rRhLvh+3F939MEMr2fFAUUY3d+KO5TOCnbGLc7xH2dxq7pSZUyRFYW76P
+         3tT3pucZESR8AC8LX/p8NInXjAqMcKyxSWjTgzBYiJsJnVwX5D1OIKNvz4vo6wuH+eWq
+         4aMQ==
+X-Gm-Message-State: AOJu0Yxsc9ddX5Qn72I2jkBotTlthOpTN9FGgWhvndp2QFmY6tN8Vb8b
+        JtdHVbuPOPbBMhlA4Ml+qU8=
+X-Google-Smtp-Source: AGHT+IFCQqAufKA0LjuOtRNshjlN3m4ejifcXJ3YvxW+ZdXdN/W0E5ZaHeHdmKDkFOFggdRCPQmqFw==
+X-Received: by 2002:a17:907:841:b0:9c7:3611:9e7c with SMTP id ww1-20020a170907084100b009c736119e7cmr13848003ejb.61.1698314286213;
+        Thu, 26 Oct 2023 02:58:06 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170906088d00b0098ec690e6d7sm11396113eje.73.2023.10.26.02.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 02:58:05 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 12:58:03 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v8 1/5] net: dsa: microchip: ksz9477: Add Wake
+ on Magic Packet support
+Message-ID: <20231026095803.a54uni73ugwm33sg@skbuf>
+References: <20231026051051.2316937-1-o.rempel@pengutronix.de>
+ <20231026051051.2316937-1-o.rempel@pengutronix.de>
+ <20231026051051.2316937-2-o.rempel@pengutronix.de>
+ <20231026051051.2316937-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <169824660459.24340.14614817132696360531.stgit@devnote2>
-In-Reply-To: <169824660459.24340.14614817132696360531.stgit@devnote2>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 26 Oct 2023 11:56:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUQg1KNtq0+pNcT3JANM_XS8518Jd7a=JUafToS3etrzw@mail.gmail.com>
-Message-ID: <CAMuHMdUQg1KNtq0+pNcT3JANM_XS8518Jd7a=JUafToS3etrzw@mail.gmail.com>
-Subject: Re: [PATCH v2] locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026051051.2316937-2-o.rempel@pengutronix.de>
+ <20231026051051.2316937-2-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 5:10 PM Masami Hiramatsu (Google)
-<mhiramat@kernel.org> wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> Use __generic_cmpxchg_local() for arch_cmpxchg_local() implementation
-> in SH architecture because it does not implement arch_cmpxchg_local().
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Thu, Oct 26, 2023 at 07:10:47AM +0200, Oleksij Rempel wrote:
+> Introduce Wake on Magic Packet (WoL) functionality to the ksz9477
+> driver.
+> 
+> Major changes include:
+> 
+> 1. Extending the `ksz9477_handle_wake_reason` function to identify Magic
+>    Packet wake events alongside existing wake reasons.
+> 
+> 2. Updating the `ksz9477_get_wol` and `ksz9477_set_wol` functions to
+>    handle WAKE_MAGIC alongside the existing WAKE_PHY option, and to
+>    program the switch's MAC address register accordingly when Magic
+>    Packet wake-up is enabled. This change will prevent WAKE_MAGIC
+>    activation if the related port has a different MAC address compared
+>    to a MAC address already used by HSR or an already active WAKE_MAGIC
+>    on another port.
+> 
+> 3. Adding a restriction in `ksz_port_set_mac_address` to prevent MAC
+>    address changes on ports with active Wake on Magic Packet, as the
+>    switch's MAC address register is utilized for this feature.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
