@@ -2,86 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A1E7D7912
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59EE7D791E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjJZAK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
+        id S230457AbjJZAPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJZAK0 (ORCPT
+        with ESMTP id S229583AbjJZAP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:10:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD0710A;
-        Wed, 25 Oct 2023 17:10:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 64E30C433C9;
-        Thu, 26 Oct 2023 00:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698279024;
-        bh=JS8i/2sc2zs+UZXDO+CAHE2mWcERQZZtKZyVDDf9uo4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kdU3tOQw/EbJhidwrAQDQwEE8D7HBwIeV/63MtCsL0/L4aSxvS1sKmsxdHZIpqmTA
-         FC3fIIJAziPkRO50mHOGR3ocrzjtllhRVi26nETDFbyvvYjnU6g8gpFwpQ7RzhMkPs
-         q5Va9z9ITR1noN0OXWq8ZcgB3Eh0jaEF+ZHs+8PM2H+1xjMmZOEWpISGf676fDk0wR
-         7nqlPlfPTb4ulyZSSYdUolNGe3SV/GHyw3Fx3yLS83vMerzdoMQMxmNvU8NremWTLw
-         vRUtQ3Mr+zoJuZVe3BBeoY6D+rGxkbXZ7TGd1GgAHAL+SGRffME8x2LaE17jKZM2kw
-         CugWPH/xYluTA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4777BE4CC0F;
-        Thu, 26 Oct 2023 00:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 25 Oct 2023 20:15:28 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE5F410E;
+        Wed, 25 Oct 2023 17:15:26 -0700 (PDT)
+Received: from [10.137.106.151] (unknown [131.107.159.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DC7A120B74C0;
+        Wed, 25 Oct 2023 17:15:25 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC7A120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1698279326;
+        bh=Ayg5mamt8HCVNY+t4GHPswTJfJb2ciVUg3Q8qdqL6WE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ovNPjhYAJE3PiwQsqnWOT8BVxfey4Ku6txfhhlOv+IbofSxRoW2I/UfuChbVmptfZ
+         OoqUvAEgfqDQMX460M6f1L4bM/7ro6HymGSEFoD4BIoEM+SpVEJLLY/mlmG8bdt1Cy
+         XGfyJLNcmoePkK24YClYdoBvr20aQVIi2uz0YWJo=
+Message-ID: <84f25e00-3a3a-419f-baea-50d64a1d5575@linux.microsoft.com>
+Date:   Wed, 25 Oct 2023 17:15:25 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 iproute2-next 0/3] Add support to set privileged qkey
- parameter
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169827902428.6163.13738163996032599729.git-patchwork-notify@kernel.org>
-Date:   Thu, 26 Oct 2023 00:10:24 +0000
-References: <20231025123102.27784-1-phaddad@nvidia.com>
-In-Reply-To: <20231025123102.27784-1-phaddad@nvidia.com>
-To:     Patrisious Haddad <phaddad@nvidia.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, dsahern@gmail.com,
-        stephen@networkplumber.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org, huangjunxian6@hisilicon.com,
-        michaelgur@nvidia.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v11 3/19] ipe: add evaluation loop
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>, corbet@lwn.net,
+        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
+        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1696457386-3010-4-git-send-email-wufan@linux.microsoft.com>
+ <aa226bdcba26d74304f6c10c290db840.paul@paul-moore.com>
+From:   Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <aa226bdcba26d74304f6c10c290db840.paul@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to iproute2/iproute2-next.git (main)
-by David Ahern <dsahern@kernel.org>:
 
-On Wed, 25 Oct 2023 15:30:59 +0300 you wrote:
-> This patchset adds support to enable or disable privileged QKEY.
-> When enabled, non-privileged users will be allowed to specify a controlled QKEY.
-> The corresponding kernel commit is 36ce80759f8c
-> ("RDMA/core: Add support to set privileged qkey parameter")
+On 10/23/2023 8:52 PM, Paul Moore wrote:
+> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+>>
+>> IPE must have a centralized function to evaluate incoming callers
+>> against IPE's policy. This iteration of the policy for against the rules
+>> for that specific caller is known as the evaluation loop.
+>>
+>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+...
+>> ---
+>>   security/ipe/Makefile |  1 +
+>>   security/ipe/eval.c   | 96 +++++++++++++++++++++++++++++++++++++++++++
+>>   security/ipe/eval.h   | 24 +++++++++++
+>>   3 files changed, 121 insertions(+)
+>>   create mode 100644 security/ipe/eval.c
+>>   create mode 100644 security/ipe/eval.h
 > 
-> All the information regarding the added parameter and its usage are included
-> in the commits below and the edited man page.
+> ...
 > 
-> [...]
+>> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+>> new file mode 100644
+>> index 000000000000..5533c359bbeb
+>> --- /dev/null
+>> +++ b/security/ipe/eval.c
+>> @@ -0,0 +1,96 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) Microsoft Corporation. All rights reserved.
+>> + */
+>> +
+>> +#include <linux/fs.h>
+>> +#include <linux/types.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/file.h>
+>> +#include <linux/sched.h>
+>> +#include <linux/rcupdate.h>
+>> +
+>> +#include "ipe.h"
+>> +#include "eval.h"
+>> +#include "policy.h"
+>> +
+>> +struct ipe_policy __rcu *ipe_active_policy;
+>> +
+>> +/**
+>> + * evaluate_property - Analyze @ctx against a property.
+>> + * @ctx: Supplies a pointer to the context to be evaluated.
+>> + * @p: Supplies a pointer to the property to be evaluated.
+>> + *
+>> + * Return:
+>> + * * true	- The current @ctx match the @p
+>> + * * false	- The current @ctx doesn't match the @p
+>> + */
+>> +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+>> +			      struct ipe_prop *p)
+>> +{
+>> +	return false;
+>> +}
+>> +
+>> +/**
+>> + * ipe_evaluate_event - Analyze @ctx against the current active policy.
+>> + * @ctx: Supplies a pointer to the context to be evaluated.
+>> + *
+>> + * This is the loop where all policy evaluation happens against IPE policy.
+>> + *
+>> + * Return:
+>> + * * 0		- OK
+>> + * * -EACCES	- @ctx did not pass evaluation.
+>> + * * !0		- Error
+>> + */
+>> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+>> +{
+>> +	bool match = false;
+>> +	enum ipe_action_type action;
+>> +	struct ipe_policy *pol = NULL;
+>> +	const struct ipe_rule *rule = NULL;
+>> +	const struct ipe_op_table *rules = NULL;
+>> +	struct ipe_prop *prop = NULL;
+>> +
+>> +	rcu_read_lock();
+>> +
+>> +	pol = rcu_dereference(ipe_active_policy);
+>> +	if (!pol) {
+>> +		rcu_read_unlock();
+>> +		return 0;
+>> +	}
+>> +
+>> +	if (ctx->op == IPE_OP_INVALID) {
+>> +		rcu_read_unlock();
+>> +		if (pol->parsed->global_default_action == IPE_ACTION_DENY)
+>> +			return -EACCES;
+> 
+> Assuming that the RCU lock protects @pol, shouldn't it be held until
+> after the global_default_action comparison?
+> 
+Yes for this part the unlock should be moved after the comparison. 
+Thanks for spotting this.
 
-Here is the summary with links:
-  - [v3,iproute2-next,1/3] rdma: update uapi headers
-    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=bbcebb2ea76b
-  - [v3,iproute2-next,2/3] rdma: Add an option to set privileged QKEY parameter
-    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=21180a7ac40a
-  - [v3,iproute2-next,3/3] rdma: Adjust man page for rdma system set privileged-qkey command
-    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=ecea0c2a7bba
+>> +		return 0;
+>> +	}
+>> +
+>> +	rules = &pol->parsed->rules[ctx->op];
+>> +
+>> +	list_for_each_entry(rule, &rules->rules, next) {
+>> +		match = true;
+>> +
+>> +		list_for_each_entry(prop, &rule->props, next) {
+>> +			match = match && evaluate_property(ctx, prop);
+> 
+> The @match variable will always be true on the right side above, or am
+> I missing something?
+> 
+Yes the "match &&" are completely unnecessary. I will remove them.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-Fan
+>> +			if (!match)
+>> +				break;
+>> +		}
+>> +
+>> +		if (match)
+>> +			break;
+>> +	}
+>> +
+>> +	if (match)
+>> +		action = rule->action;
+>> +	else if (rules->default_action != IPE_ACTION_INVALID)
+>> +		action = rules->default_action;
+>> +	else
+>> +		action = pol->parsed->global_default_action;
+>> +
+>> +	rcu_read_unlock();
+>> +	if (action == IPE_ACTION_DENY)
+>> +		return -EACCES;
+>> +
+>> +	return 0;
+>> +}
+> 
+> --
+> paul-moore.com
