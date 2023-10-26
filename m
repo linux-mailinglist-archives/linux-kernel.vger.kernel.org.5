@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD727D888B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32047D888C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjJZSrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
+        id S230271AbjJZStI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjJZSrw (ORCPT
+        with ESMTP id S229649AbjJZStG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:47:52 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E13C10A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:47:50 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507f1c29f25so1762257e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:47:50 -0700 (PDT)
+        Thu, 26 Oct 2023 14:49:06 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A731A5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:49:03 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53e84912038so1893659a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:49:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698346069; x=1698950869; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698346141; x=1698950941; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h4Yge/pzHIm5n8Zsrn6PWyJmFn5ZiDLLVD+FzMWOF/k=;
-        b=jcajiP1HBRKqn+9dleQv7r8SWX7QL1A4SplzBcLW8IjfUjJXSCGcDesY1BAj3rXlYC
-         4li0cKoZFPx1FWiY/jHGGHXaPgYbOBpyPh9ZELr4aZ6pDMAGK5QYh6vJhtH0YF3obm0d
-         bL9ApzBV9sxGNwHgwsV4tr485MD4bDrxunzMJAYMrTcBH085w+91b71Mb/aJ59T6M58b
-         08OXv52YesxY/aH3mQFeRLSankI6HiVAD0ttNjaJ/DhMiP0DnBxOFmT+bULkBjiJOG3X
-         lTTwl2LSulblqZ0wX3GRs4m6DYlCBgSbL8pXK1gljM/8zZSaR8/3LHCSRJXwg+i75uE6
-         u4bQ==
+        bh=1N6Og79ebnOUyWTGEW3Q50Z1o013flCNliiH7msTKzQ=;
+        b=k7QfMQTrR+uV5UaM7kiLr7KUu8EI0TR/umNKBfD9NsmQnqpFE8M+h5sa2261f9lhi5
+         HXiPrjhNu4loNWYnxO4sV+XWtPJmwWXtKCStqFIeECzbwfe4DvUrg0MKneqiw6B414MB
+         iDoQoLyrjlULpqzhlq8Tt9/VDB1f12WlF6BMa7hmUv+L7/7NwJ6jiid9rVptJ8awJq7G
+         gZ0fbccpKwxX1Xowxok4wUICUp+2ac2qnCghMjxJFmBOB/uzME3cdg9VbSpiCfDGEdQX
+         uUCccG2uRoY2oOwaudWPMlnAcXTOo133TKxkRSfZw15KWe+2Ip73ls0hHrESypO6p6Au
+         BmjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698346069; x=1698950869;
+        d=1e100.net; s=20230601; t=1698346141; x=1698950941;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h4Yge/pzHIm5n8Zsrn6PWyJmFn5ZiDLLVD+FzMWOF/k=;
-        b=dm+iUw39BvcjThK3JV7BGGjXzXy8kxxukWfCs+nmPgDpgWgijhbvBRErafjltx3WcW
-         96eeGep0+2ZB5q8r2UDWgkDNyZMLHQ3b3quei/siBj7TBmesIDuKOCu/L/M5JmL49cvN
-         k8q1k9UpifNakY0e1HP1sksyJc0X4wZ4vrWSBwyNNDY/DWvg/OOQycuFDF0Cc9KZ2Oxk
-         vNF27+oa8GainyBntckPD9JRbN3h8ay9CdsA71llCGPaUR6V4Emoa+FIioxO1mKgau3F
-         HSm8OuZDR1kodcs/PA4Ln12UTebIkNNGtHsmiLvZjB2dfYiHYE3FQy2IXjMccpKyk7is
-         wOkg==
-X-Gm-Message-State: AOJu0YxjoqhJ9AzYU1muD8oL0/K+EgqpxWceuq8AiOOc61vA9Xp7s+O1
-        gb6sv80iNPwrIany19y6zUW8tTg9olfzNh5KJY04/+qv1kP5uU5I
-X-Google-Smtp-Source: AGHT+IEdqjuQ3p2NMyOBki7F27FeOvvaatahymBlcbjBlZLTnGar1diTEj4esiCLEKkiK0AZZtXIT1mMg/g8QtquJ+Y=
-X-Received: by 2002:a05:6512:3e0f:b0:507:b8c5:6542 with SMTP id
- i15-20020a0565123e0f00b00507b8c56542mr218686lfv.65.1698346068566; Thu, 26 Oct
- 2023 11:47:48 -0700 (PDT)
+        bh=1N6Og79ebnOUyWTGEW3Q50Z1o013flCNliiH7msTKzQ=;
+        b=B6uq9NAQAawo6fQqpzitssPc9maSvB3/t0siXpZYZdSczopTABYY1AWYE0aKKvoz8Y
+         OD7LlMO/WSGQeZB1kNlVzVqkLlErlaDJm4gkwqtx8RSVZfvLztTg4HMDj3kd77Mx29Br
+         RBxwnpTJxGdfjgGOXRe0hTDXKHQuBVUEAaSmwVOdNMdBFTeytRcqiS+fASgQGMY9vcNb
+         PSE38cPLzmqcAV9pZsys3GG9Nb7zW/DZ34Tcf5RMlszLKNDV3gYifvnNhu+LRuSDs0Cn
+         bbupYR5niFRui+lrdfJL7kDwruxKAkUnPXjpFkI0r96DDbL8KySb8ntylBCjV4w0rnpr
+         rL9w==
+X-Gm-Message-State: AOJu0Yy1BxrMcjfcNPnM7Wcjey15CWzlqD1vk5w2rjPU+JcURyzQZYB1
+        kPyLwCwU0XhW03X1E79Omh0kZm5C8UOL9KjoNzw=
+X-Google-Smtp-Source: AGHT+IEoS2m2ZQvFhi0YtoS9Qs0lJlwh7RzkKY7+JML+C/+nRZ65v1hOehslsdE4NS/P1XVfXfcqkiDAq4Tkntsj6+A=
+X-Received: by 2002:aa7:c441:0:b0:52f:b00a:99be with SMTP id
+ n1-20020aa7c441000000b0052fb00a99bemr522645edr.33.1698346140214; Thu, 26 Oct
+ 2023 11:49:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-8-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-8-brgerst@gmail.com>
+References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-10-brgerst@gmail.com>
+In-Reply-To: <20231026160100.195099-10-brgerst@gmail.com>
 From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 26 Oct 2023 20:47:37 +0200
-Message-ID: <CAFULd4ZSzJGzckYLGuh-uVXqpk4E7bxnen0_y5HqFiPkr_36PA@mail.gmail.com>
-Subject: Re: [PATCH v2 07/11] x86/percpu/64: Use relative percpu offsets
+Date:   Thu, 26 Oct 2023 20:48:49 +0200
+Message-ID: <CAFULd4YMdEZ7_BT5kvpyL3HwN_bRKTUxgM2_8AC-ua69v6GAew@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] x86/percpu/64: Remove INIT_PER_CPU macros
 To:     Brian Gerst <brgerst@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Ingo Molnar <mingo@kernel.org>,
@@ -76,224 +76,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
 te:
 >
-> The percpu section is currently linked at virtual address 0, because
-> older compilers hardcoded the stack protector canary value at a fixed
-> offset from the start of the GS segment.  Now that the canary is a
-> normal percpu variable, the percpu section can be linked normally.
-> This means that x86-64 will calculate percpu offsets like most other
-> architectures, as the delta between the initial percpu address and the
-> dynamically allocated memory.
-
-The comments above MSR_GS_BASE setup should be reviewed or removed. I
-don't think they need to be set up to access stack canary, they are
-just clearing MSR now.
-
+> The load and link addresses of percpu variables are now the same, so
+> these macros are no longer necessary.
 >
 > Signed-off-by: Brian Gerst <brgerst@gmail.com>
-
-With fixed comments:
 
 Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
 
 > ---
->  arch/x86/kernel/head_64.S      |  6 ------
->  arch/x86/kernel/setup_percpu.c | 12 ++----------
->  arch/x86/kernel/vmlinux.lds.S  | 24 +-----------------------
->  arch/x86/platform/pvh/head.S   |  6 ------
->  arch/x86/tools/relocs.c        | 10 +++-------
->  arch/x86/xen/xen-head.S        |  6 ------
->  init/Kconfig                   |  2 +-
->  7 files changed, 7 insertions(+), 59 deletions(-)
+>  arch/x86/include/asm/percpu.h | 22 ----------------------
+>  arch/x86/kernel/irq_64.c      |  1 -
+>  arch/x86/kernel/vmlinux.lds.S |  7 -------
+>  arch/x86/tools/relocs.c       |  1 -
+>  4 files changed, 31 deletions(-)
 >
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index f2453eb38417..b35f74e58dd7 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -72,14 +72,8 @@ SYM_CODE_START_NOALIGN(startup_64)
+> diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.=
+h
+> index b86b27d15e52..7a176381ee01 100644
+> --- a/arch/x86/include/asm/percpu.h
+> +++ b/arch/x86/include/asm/percpu.h
+> @@ -20,12 +20,6 @@
 >
->         /* Setup GSBASE to allow stack canary access for C code */
->         movl    $MSR_GS_BASE, %ecx
-> -#ifdef CONFIG_SMP
-> -       leaq    __per_cpu_load(%rip), %rdx
-> -       movl    %edx, %eax
-> -       shrq    $32,  %rdx
+>  #define PER_CPU_VAR(var)       __percpu(var)__percpu_rel
+>
+> -#ifdef CONFIG_X86_64_SMP
+> -#define INIT_PER_CPU_VAR(var)  init_per_cpu__##var
 > -#else
->         xorl    %eax, %eax
->         xorl    %edx, %edx
-> -#endif
->         wrmsr
->
->         call    startup_64_setup_env
-> diff --git a/arch/x86/kernel/setup_percpu.c b/arch/x86/kernel/setup_percp=
-u.c
-> index 2c97bf7b56ae..8707dd07b9ce 100644
-> --- a/arch/x86/kernel/setup_percpu.c
-> +++ b/arch/x86/kernel/setup_percpu.c
-> @@ -23,18 +23,10 @@
->  #include <asm/cpumask.h>
->  #include <asm/cpu.h>
->
-> -#ifdef CONFIG_X86_64
-> -#define BOOT_PERCPU_OFFSET ((unsigned long)__per_cpu_load)
-> -#else
-> -#define BOOT_PERCPU_OFFSET 0
+> -#define INIT_PER_CPU_VAR(var)  var
 > -#endif
 > -
-> -DEFINE_PER_CPU_READ_MOSTLY(unsigned long, this_cpu_off) =3D BOOT_PERCPU_=
-OFFSET;
-> +DEFINE_PER_CPU_READ_MOSTLY(unsigned long, this_cpu_off);
->  EXPORT_PER_CPU_SYMBOL(this_cpu_off);
+>  #else /* ...!ASSEMBLY */
 >
-> -unsigned long __per_cpu_offset[NR_CPUS] __ro_after_init =3D {
-> -       [0 ... NR_CPUS-1] =3D BOOT_PERCPU_OFFSET,
-> -};
-> +unsigned long __per_cpu_offset[NR_CPUS] __ro_after_init;
->  EXPORT_SYMBOL(__per_cpu_offset);
+>  #include <linux/kernel.h>
+> @@ -96,22 +90,6 @@
+>  #define __percpu_arg(x)                __percpu_prefix "%" #x
+>  #define __force_percpu_arg(x)  __force_percpu_prefix "%" #x
 >
+> -/*
+> - * Initialized pointers to per-cpu variables needed for the boot
+> - * processor need to use these macros to get the proper address
+> - * offset from __per_cpu_load on SMP.
+> - *
+> - * There also must be an entry in vmlinux_64.lds.S
+> - */
+> -#define DECLARE_INIT_PER_CPU(var) \
+> -       extern typeof(var) init_per_cpu_var(var)
+> -
+> -#ifdef CONFIG_X86_64_SMP
+> -#define init_per_cpu_var(var)  init_per_cpu__##var
+> -#else
+> -#define init_per_cpu_var(var)  var
+> -#endif
+> -
+>  /* For arch-specific code, we can use direct single-insn ops (they
+>   * don't give an lvalue though). */
+>
+> diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
+> index fe0c859873d1..30424f9876bc 100644
+> --- a/arch/x86/kernel/irq_64.c
+> +++ b/arch/x86/kernel/irq_64.c
+> @@ -26,7 +26,6 @@
+>  #include <asm/apic.h>
+>
+>  DEFINE_PER_CPU_PAGE_ALIGNED(struct irq_stack, irq_stack_backing_store) _=
+_visible;
+> -DECLARE_INIT_PER_CPU(irq_stack_backing_store);
+>
+>  #ifdef CONFIG_VMAP_STACK
 >  /*
 > diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.=
 S
-> index e6126cd21615..efa4885060b5 100644
+> index efa4885060b5..9aea7b6b02c7 100644
 > --- a/arch/x86/kernel/vmlinux.lds.S
 > +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -103,12 +103,6 @@ const_pcpu_hot =3D pcpu_hot;
->  PHDRS {
->         text PT_LOAD FLAGS(5);          /* R_E */
->         data PT_LOAD FLAGS(6);          /* RW_ */
-> -#ifdef CONFIG_X86_64
-> -#ifdef CONFIG_SMP
-> -       percpu PT_LOAD FLAGS(6);        /* RW_ */
-> -#endif
-> -       init PT_LOAD FLAGS(7);          /* RWE */
-> -#endif
->         note PT_NOTE FLAGS(0);          /* ___ */
->  }
+> @@ -482,13 +482,6 @@ SECTIONS
+>            "kernel image bigger than KERNEL_IMAGE_SIZE");
 >
-> @@ -224,21 +218,7 @@ SECTIONS
->                 __init_begin =3D .; /* paired with __init_end */
->         }
+>  #ifdef CONFIG_X86_64
+> -/*
+> - * Per-cpu symbols which need to be offset from __per_cpu_load
+> - * for the boot processor.
+> - */
+> -#define INIT_PER_CPU(x) init_per_cpu__##x =3D ABSOLUTE(x)
+> -INIT_PER_CPU(gdt_page);
+> -INIT_PER_CPU(irq_stack_backing_store);
 >
-> -#if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
-> -       /*
-> -        * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes =
-the
-> -        * output PHDR, so the next output section - .init.text - should
-> -        * start another segment - init.
-> -        */
-> -       PERCPU_VADDR(INTERNODE_CACHE_BYTES, 0, :percpu)
-> -       ASSERT(SIZEOF(.data..percpu) < CONFIG_PHYSICAL_START,
-> -              "per-CPU data too large - increase CONFIG_PHYSICAL_START")
-> -#endif
-> -
->         INIT_TEXT_SECTION(PAGE_SIZE)
-> -#ifdef CONFIG_X86_64
-> -       :init
-> -#endif
->
->         /*
->          * Section for code used exclusively before alternatives are run.=
- All
-> @@ -368,9 +348,7 @@ SECTIONS
->                 EXIT_DATA
->         }
->
-> -#if !defined(CONFIG_X86_64) || !defined(CONFIG_SMP)
->         PERCPU_SECTION(INTERNODE_CACHE_BYTES)
-> -#endif
->
->         . =3D ALIGN(PAGE_SIZE);
->
-> @@ -508,7 +486,7 @@ SECTIONS
->   * Per-cpu symbols which need to be offset from __per_cpu_load
->   * for the boot processor.
->   */
-> -#define INIT_PER_CPU(x) init_per_cpu__##x =3D ABSOLUTE(x) + __per_cpu_lo=
-ad
-> +#define INIT_PER_CPU(x) init_per_cpu__##x =3D ABSOLUTE(x)
->  INIT_PER_CPU(gdt_page);
->  INIT_PER_CPU(irq_stack_backing_store);
->
-> diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-> index d215b16bf89f..4bd925b23436 100644
-> --- a/arch/x86/platform/pvh/head.S
-> +++ b/arch/x86/platform/pvh/head.S
-> @@ -96,14 +96,8 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
->  1:
->         /* Set base address in stack canary descriptor. */
->         mov $MSR_GS_BASE,%ecx
-> -#ifdef CONFIG_SMP
-> -       lea __per_cpu_load(%rip), %rdx
-> -       mov %edx, %eax
-> -       shr $32, %rdx
-> -#else
->         xor %eax, %eax
->         xor %edx, %edx
-> -#endif
->         wrmsr
->
->         call xen_prepare_pvh
+>  #ifdef CONFIG_CPU_UNRET_ENTRY
+>  . =3D ASSERT((retbleed_return_thunk & 0x3f) =3D=3D 0, "retbleed_return_t=
+hunk not cacheline-aligned");
 > diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-> index 3ccd9d4fcf9c..01efbfdd3eb3 100644
+> index 7feb63179b62..931d90aa814c 100644
 > --- a/arch/x86/tools/relocs.c
 > +++ b/arch/x86/tools/relocs.c
-> @@ -815,12 +815,7 @@ static void percpu_init(void)
->   */
->  static int is_percpu_sym(ElfW(Sym) *sym, const char *symname)
->  {
-> -       int shndx =3D sym_index(sym);
-> -
-> -       return (shndx =3D=3D per_cpu_shndx) &&
-> -               strcmp(symname, "__init_begin") &&
-> -               strcmp(symname, "__per_cpu_load") &&
-> -               strncmp(symname, "init_per_cpu_", 13);
-> +       return 0;
->  }
->
->
-> @@ -1043,7 +1038,8 @@ static int cmp_relocs(const void *va, const void *v=
-b)
->
->  static void sort_relocs(struct relocs *r)
->  {
-> -       qsort(r->offset, r->count, sizeof(r->offset[0]), cmp_relocs);
-> +       if (r->count)
-> +               qsort(r->offset, r->count, sizeof(r->offset[0]), cmp_relo=
-cs);
->  }
->
->  static int write32(uint32_t v, FILE *f)
-> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-> index 9ce0d9d268bb..c1d9c92b417a 100644
-> --- a/arch/x86/xen/xen-head.S
-> +++ b/arch/x86/xen/xen-head.S
-> @@ -57,14 +57,8 @@ SYM_CODE_START(startup_xen)
->          * the per cpu areas are set up.
->          */
->         movl    $MSR_GS_BASE,%ecx
-> -#ifdef CONFIG_SMP
-> -       leaq    __per_cpu_load(%rip), %rdx
-> -       movl    %edx, %eax
-> -       shrq    $32, %rdx
-> -#else
->         xorl    %eax, %eax
->         xorl    %edx, %edx
-> -#endif
->         wrmsr
->
->         mov     %rsi, %rdi
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 6d35728b94b2..1af31b23e376 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1718,7 +1718,7 @@ config KALLSYMS_ALL
->  config KALLSYMS_ABSOLUTE_PERCPU
->         bool
->         depends on KALLSYMS
-> -       default X86_64 && SMP
-> +       default n
->
->  config KALLSYMS_BASE_RELATIVE
->         bool
+> @@ -83,7 +83,6 @@ static const char * const sym_regex_kernel[S_NSYMTYPES]=
+ =3D {
+>         "__initramfs_start|"
+>         "(jiffies|jiffies_64)|"
+>  #if ELF_BITS =3D=3D 64
+> -       "init_per_cpu__.*|"
+>         "__end_rodata_hpage_align|"
+>  #endif
+>         "__vvar_page|"
 > --
 > 2.41.0
 >
