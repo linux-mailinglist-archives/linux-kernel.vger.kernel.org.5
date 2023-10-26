@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E77347D895B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2F97D895C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbjJZUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
+        id S231546AbjJZUCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234983AbjJZUBr (ORCPT
+        with ESMTP id S229668AbjJZUCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:01:47 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E00E10CE;
-        Thu, 26 Oct 2023 13:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=vKObmcd+bmpwndDhxnFsTImwwHwCmQi0gNuW0Otfi50=; b=icdFqdMTeZroD4aWMc9ieNuqQc
-        Rg+qHzTO4C+UKoT/erL/j8EpUIGcgwxRoPG/gUb47CRUUoMXyjRZy6pfCl4gxIX13jaJMCjO8HP8T
-        HwyjEp85r6+jKeHcPYSF7stVOVv0Jj+lkyrOp2b8Ra9P+AsU5RcwoCVjO/VjYg8iMfX8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qw6Xo-000HFI-Gs; Thu, 26 Oct 2023 22:01:28 +0200
-Date:   Thu, 26 Oct 2023 22:01:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban.Veerasooran@microchip.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, Steen.Hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [PATCH net-next v2 2/9] net: ethernet: oa_tc6: implement mac-phy
- software reset
-Message-ID: <005b6980-4aa3-4bf7-92cc-d9f938b04006@lunn.ch>
-References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
- <20231023154649.45931-3-Parthiban.Veerasooran@microchip.com>
- <219ae3d7-0c75-49c0-b791-5623894ba318@lunn.ch>
- <fe52e414-c2a7-4e29-bb37-73a5614b3951@microchip.com>
+        Thu, 26 Oct 2023 16:02:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBF9129
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:02:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1EAC433C8;
+        Thu, 26 Oct 2023 20:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698350536;
+        bh=czHelUu63Qcb/7CFa/wjzYwxegwjY0q96Bz6H8eb0JI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=erBoNsW49lYlb649aajpNOZEeJ/Sr0WUNyesTIT7wyEepaRzs1rHUVmCZ7qoPlEN4
+         bpzW8wPu41MZjB/zi8ATP2rqUVPRq1FMrTlQycxX/oKpUpDIOj3R3xOTpvu00SJzGG
+         fkshws07lnwdC6MLctArf/BJDDtoVLTU8ul+4IkfhhrF6HwwGw4Un+XYWXkgpysTQy
+         ce2KXymv1YFCiCD/CsUVtZVvSQfo8+cnjlvgeFGT4i/yggbs0O3lW+jjuUFX5a9zWQ
+         T30nzpK3fx1xSm8OMkQJDKge2ONkty1y+Oh7YtTogeSOcdLTrjtiZffRgfk/4lDzDr
+         pibzmcC3trwiQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A19EC4035D; Thu, 26 Oct 2023 17:02:13 -0300 (-03)
+Date:   Thu, 26 Oct 2023 17:02:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Add -H short option for --hierarchy
+Message-ID: <ZTrFxazbxVx5G1N7@kernel.org>
+References: <20231026062615.3096537-1-namhyung@kernel.org>
+ <5a153604-3e9c-4ae9-b216-64f24199efc4@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fe52e414-c2a7-4e29-bb37-73a5614b3951@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <5a153604-3e9c-4ae9-b216-64f24199efc4@intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,42 +57,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> +     ret = oa_tc6_perform_ctrl(tc6, STATUS0, &regval, 1, false, false);
-> >> +     if (ret)
-> >> +             return ret;
-> >> +
-> >> +     /* Check for reset complete interrupt status */
-> >> +     if (regval & RESETC) {
-> >> +             regval = RESETC;
-> > 
-> > People don't always agree, but i found STATUS0_RESETC easier to see
-> > you have the correct bit for the register you just read.
-> Do you want me to define STATUS0_RESETC instead of RESETC or is my 
-> understanding wrong?
+Em Thu, Oct 26, 2023 at 09:46:02AM +0300, Adrian Hunter escreveu:
+> On 26/10/23 09:26, Namhyung Kim wrote:
+> > I found the hierarchy mode useful, but it's easy to make a typo when
+> > using it.  Let's add a short option for that.
 
-Correct, STATUS0_RESETC. It avoids silly typos like:
+> > Also update the documentation. :)
 
-     ret = oa_tc6_perform_ctrl(tc6, STATUS0, &regval, 1, false, false);
-     if (ret)
-             return ret;
+> Perhaps it would also be possible to support bash-completions for
+> long options
 
-     /* Check for reset complete interrupt status */
-     if (regval & RESET) {
-             regval = RESETC;
+It works:
 
-where RESET is a valid register name, but not a bit. Or say:
+  # . ~acme/git/linux/tools/perf/perf-completion.sh
+  # perf top --hi<TAB>
+  --hide_kernel_symbols  --hide_user_symbols    --hierarchy
+  #
 
-     ret = oa_tc6_perform_ctrl(tc6, STATUS0, &regval, 1, false, false);
-     if (ret)
-             return ret;
+And:
 
-     /* Check for reset complete interrupt status */
-     if (regval & SWRESET) {
-             regval = STATUS0_;
+perf top --hie<ENTER>
 
-where SWRESET is a valid bit, but not for STATUS0.
+works as it is unambiguous (so far).
 
-I've made silly mistakes like this, and learnt that good naming helps
-to avoid it.
+What we don't have is a way to use hierachy by default, i.e. we should
+have:
 
-     Andrew
+perf config top.hierarchy=1
+
+and then:
+
+perf top
+
+would always use the hierarchy view.
+
+tools/perf/Documentation/perf-config.txt has the options that can be
+set, like:
+
+# perf report | head -15
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 373K of event 'cycles:P'
+# Event count (approx.): 205365133495
+#
+# Overhead  Command          Shared Object                                     Symbol
+# ........  ...............  .................    ...................................
+#
+     3.17%  MediaDe~hine #6  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
+     2.31%  swapper          [kernel.vmlinux]     [k] psi_group_change
+     1.87%  MediaSu~sor #10  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
+     1.84%  MediaSu~isor #7  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
+#
+
+Then:
+
+# perf config report.sort_order=dso
+# perf report | head -15
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 373K of event 'cycles:P'
+# Event count (approx.): 205365133495
+#
+# Overhead  Shared Object                                 
+# ........  ..............................................
+#
+    59.52%  [kernel.vmlinux]                              
+    19.79%  libc.so.6                                     
+     8.07%  libxul.so                                     
+     5.25%  libopenh264.so.2.3.1                          
+#
+
+# cat ~/.perfconfig
+# this file is auto-generated.
+[report]
+	sort_order = dso
+[root@five ~]# perf config report.sort_order
+report.sort_order=dso
+#
+
+Right now 'perf top' has only:
+
+static int perf_top_config(const char *var, const char *value, void *cb __maybe_unused)
+{
+        if (!strcmp(var, "top.call-graph")) {
+                var = "call-graph.record-mode";
+                return perf_default_config(var, value, cb);
+        }
+        if (!strcmp(var, "top.children")) {
+                symbol_conf.cumulate_callchain = perf_config_bool(var, value);
+                return 0;
+        }
+
+        return 0;
+}
+
+This would be similar to what was done for --no-children on:
+
+https://git.kernel.org/torvalds/c/104ac991bd821773cba6f262f97a4a752ed76dd5
+
+$ git show --pretty=full 104ac991bd821773cba6f262f97a4a752ed76dd5 | head -5
+commit 104ac991bd821773cba6f262f97a4a752ed76dd5
+Author: Namhyung Kim <namhyung@kernel.org>
+Commit: Jiri Olsa <jolsa@kernel.org>
+
+    perf top: Add top.children config option
+
+- Arnaldo
