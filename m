@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9EF7D8432
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EC87D8437
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345163AbjJZOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
+        id S1345136AbjJZOIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbjJZOGh (ORCPT
+        with ESMTP id S230507AbjJZOIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:06:37 -0400
+        Thu, 26 Oct 2023 10:08:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D891B1;
-        Thu, 26 Oct 2023 07:06:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B39C433C7;
-        Thu, 26 Oct 2023 14:06:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC1D1A2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:08:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2843C433C8;
+        Thu, 26 Oct 2023 14:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698329194;
-        bh=Q4T6YNzviV/YhhhKEggjgAtYZp6sRLmfAiT+GEWyp3U=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=B075zTCHd/tWysLniMnrAMRXcPLl2UYXlI+l1xr4i5FzX9y5Sks28UYfwdbmUqOoR
-         BPEq2fwy80rE64HaHMSwat+FWzGVuRvUs5tnSvelnvE2hk8iMv5e26xjnzjXi2nVBr
-         2Ve4wm/qYcbrJbbq63Jd+7C7dhewgI23qjPLnRlHr0JaRpnfgj/He2EPzQsmfzzKM/
-         OH8p5mrRjYAZZwZu+lmxeW79yQBB/xFZbi9w3Twh2vDG3ld7pw7LbtneJrTocuBXVO
-         mHUURrsbEoGTHNOFBBYL/KvaTIOqFL7fao8IkQeXq3X+unQXUVdJFTuAuAvkhGXOim
-         ZuLW/+Dt99mXg==
-From:   Mark Brown <broonie@kernel.org>
-To:     andersson@kernel.org, konrad.dybcio@linaro.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-In-Reply-To: <20231025135550.13162-1-quic_sibis@quicinc.com>
-References: <20231025135550.13162-1-quic_sibis@quicinc.com>
-Subject: Re: [PATCH 0/2] regulator: qcom-rpmh: Add regulator support for
- SC8380XP
-Message-Id: <169832919131.118035.6543028726284946961.b4-ty@kernel.org>
-Date:   Thu, 26 Oct 2023 15:06:31 +0100
+        s=k20201202; t=1698329312;
+        bh=6f4xiuOx8GAVgCWVik/nTx0Vov7JkxldkKhv4Zht344=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qWi5Ve54FAg4OoUVvKDkCM6+ExJyH8Qsyh+Y/kzOIWQxtJiUbSe7WIlabITNbxIcs
+         bdob6pkGAU9jUioWzGHd5psFFkIED5KjoZwq/8AAXYmMPR72rJAqKX36deS4tpEXQL
+         koTjzv7zlaZCLh1Yl//dIkrXsvEc+q+nSUYTH/8bXIgV4p3W56p5D9zacCCqIrmFDs
+         WDG0pPv/wF7nfO4elApyAEI5B6Q5iuGw5b4sXS+am96gfAVTCjEQNRn3lahDXv76Q+
+         KRnCfdUjObWM8rHs6sQo7ptWI0KvtPjeSzMNgUQUpOR1Tbe5SmfPqnQe6NgJoFC/lu
+         Fs82VQ02mcaLA==
+Date:   Thu, 26 Oct 2023 15:08:27 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        cyuval@marvell.com
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm64: dts: add dt-bindings for ac5x
+ rd carrier
+Message-ID: <20231026-overlay-statutory-320dba426682@spud>
+References: <20231026084735.3595944-1-enachman@marvell.com>
+ <20231026084735.3595944-3-enachman@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jK13gaiH2pAsVtN1"
+Content-Disposition: inline
+In-Reply-To: <20231026084735.3595944-3-enachman@marvell.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 19:25:48 +0530, Sibi Sankar wrote:
-> This series adds regulator support for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
-> 
-> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
-> 
-> Rajendra Nayak (2):
->   dt-bindings: regulator: qcom,rpmh: Add PMC8380 compatible
->   regulator: qcom-rpmh: Add regulators support for PMC8380
-> 
-> [...]
 
-Applied to
+--jK13gaiH2pAsVtN1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+On Thu, Oct 26, 2023 at 11:47:34AM +0300, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+>=20
+> Add dt bindings for AC5X RD COM Express Type 7 carrier board.
+> This board will Accept a CN9131 COM Express Type 7 CPU module.
+>=20
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Thanks!
-
-[1/2] dt-bindings: regulator: qcom,rpmh: Add PMC8380 compatible
-      commit: ae61939cdf378ae3acc5716ccb43fef3cdace36e
-[2/2] regulator: qcom-rpmh: Add regulators support for PMC8380
-      commit: afb823a5843e6790106fcfe5029cfa736e05007f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Mark
+Conor.
 
+> ---
+>  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml     | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.y=
+aml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> index 52d78521e412..71bc94047d1b 100644
+> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+> @@ -60,4 +60,12 @@ properties:
+>            - const: marvell,armada-ap807-quad
+>            - const: marvell,armada-ap807
+> =20
+> +      - description: AC5X RD COM Express Carrier for Armada CN9131 SoC w=
+ith one external CP
+> +        items:
+> +          - const: marvell,ac5x_rd_carrier
+> +          - const: marvell,cn9131
+> +          - const: marvell,cn9130
+> +          - const: marvell,armada-ap807-quad
+> +          - const: marvell,armada-ap807
+> +
+>  additionalProperties: true
+> --=20
+> 2.25.1
+>=20
+
+--jK13gaiH2pAsVtN1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTpy2wAKCRB4tDGHoIJi
+0v6UAQD5nkeE6T2ElyqajbwgeJl0L+dM+KPyCbE6V5qVBEX1ggEA6urabaKXYH+G
++6e267D/NP+3xGLE6/hiHRkVaxiXsA0=
+=hIUT
+-----END PGP SIGNATURE-----
+
+--jK13gaiH2pAsVtN1--
