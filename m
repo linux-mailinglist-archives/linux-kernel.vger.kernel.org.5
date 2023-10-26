@@ -2,178 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B067D89AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5DF7D89B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjJZU2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
+        id S231397AbjJZUan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjJZU2v (ORCPT
+        with ESMTP id S229501AbjJZUam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:28:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E76B1B3;
-        Thu, 26 Oct 2023 13:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698352128; x=1729888128;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=7h41g2NVJaGtrJRiTEHT62ZBUML4ZQfLIzT/Xayg0ug=;
-  b=UASP/O8DyMAo85r19+Oygm9kujjj8cIoTIiVhV97bKBmgb+AeN2i8h6A
-   YtizFXmyIuEP6LhMBsBknDwbFWjqv+Y2cI0I0WRxxaHNjRtGZ2nVQpQeU
-   R7eJP5VknEPgevf4NBxM5Tyn789RBqRAc35GBAGS54eQurRRkfdNVjnmL
-   siGG3n3ouo2yz5409ETcQctX/jmPXa6pENVEdwj055xDNGivEtZj4J2Mo
-   M5Z63MQz7rYqylcDSX68QBuap7I+PSYYKhL8iI5vDVkhJOtCCBq5lCUk6
-   bxJTDXrMM6vz2hHIHh1zryH7OLUu0JOIHI5UB6SCG/vRWpa5tlR4HpC0G
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="391518893"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="391518893"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:28:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="759354038"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="759354038"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:28:47 -0700
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-        by linux.intel.com (Postfix) with ESMTP id 807A7580E30;
-        Thu, 26 Oct 2023 13:28:47 -0700 (PDT)
-Message-ID: <d159f0a78dc50d8e9bcbf4e4afcc1aaa3ee5bea8.camel@linux.intel.com>
-Subject: Re: [PATCH V4 16/17] platform/x86/intel/pmc: Add debug attribute
- for Die C6 counter
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Date:   Thu, 26 Oct 2023 13:28:47 -0700
-In-Reply-To: <5990e2f6-d1c3-875c-b660-ae42e48ca75@linux.intel.com>
-References: <20231018231624.1044633-1-david.e.box@linux.intel.com>
-         <20231018231624.1044633-17-david.e.box@linux.intel.com>
-         <5990e2f6-d1c3-875c-b660-ae42e48ca75@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 26 Oct 2023 16:30:42 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629E91AC;
+        Thu, 26 Oct 2023 13:30:39 -0700 (PDT)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ce2d4567caso829530a34.2;
+        Thu, 26 Oct 2023 13:30:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698352238; x=1698957038;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TkyeTzF/tPkHv6TpS8dsv+uB8svyflGUtJpGpeK6gjs=;
+        b=AIX9qQO58fo6NGgI9fxBQXmFY1DC7Jn35RtByAhebk6c304pYfJLC6qTScweArBR9H
+         gwhDLezldOH2G19FqmB2+FonF9M8W5N8mHMeCKOBRwzVbbmvWAxsMpx8Hl/8PbNvwW0i
+         KfpqMtLcF56mNKp914PDfQE99c+XzDB8smhsxOxJb4vrkNG+f7Rmeg4f7Mqd91AcEA0v
+         /8kDteVOC8YyDNJ2SSZ/G+O+SAh+TPacxe6RhdXeiNt9fvS2yiAf66sz97h42aO27900
+         gyhKBy3Zyhxx5ZAfVY20aGNSJL3Fr34o1fYlqVo/0vwf0S13cUkftgMUL3lrpPgCvsTn
+         Ty2Q==
+X-Gm-Message-State: AOJu0YzMUHSu6OrySVGPRc2XD2YfWiCHTgSMbgPOYullOrMhvzm8ynEp
+        iCq1yFaDQD1D5Jory9aH6g==
+X-Google-Smtp-Source: AGHT+IH6kobtiBdqkODWoCJa7OcCFMsfzJD5tffITWfZyftDjIsVOFBR16HbOPZ6q+2+26m/pWGJ0Q==
+X-Received: by 2002:a05:6808:17a2:b0:3af:6ce1:91fc with SMTP id bg34-20020a05680817a200b003af6ce191fcmr617368oib.21.1698352238569;
+        Thu, 26 Oct 2023 13:30:38 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id m9-20020a0568080f0900b003b2ee6a9358sm19785oiw.16.2023.10.26.13.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 13:30:37 -0700 (PDT)
+Received: (nullmailer pid 347114 invoked by uid 1000);
+        Thu, 26 Oct 2023 20:30:37 -0000
+Date:   Thu, 26 Oct 2023 15:30:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Andrew Davis <afd@ti.com>
+Cc:     Nik Bune <n2h9z4@gmail.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, skhan@linuxfoundation.org,
+        m-karicheri2@ti.com, ivan.khoronzhuk@ti.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: watchdog: davinci-wdt: convert txt to
+ yaml
+Message-ID: <20231026203037.GA327324-robh@kernel.org>
+References: <20231024195839.49607-1-n2h9z4@gmail.com>
+ <41408db6-89f9-4e0b-b407-96c6c922e8a4@ti.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41408db6-89f9-4e0b-b407-96c6c922e8a4@ti.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEwLTIzIGF0IDE5OjMxICswMzAwLCBJbHBvIErDpHJ2aW5lbiB3cm90ZToK
-PiBPbiBXZWQsIDE4IE9jdCAyMDIzLCBEYXZpZCBFLiBCb3ggd3JvdGU6Cj4gCj4gPiBBZGQgYSAi
-ZGllX2M2X3VzX3Nob3ciIGRlYnVnZnMgYXR0cmlidXRlLsKgIFJlYWRzIHRoZSBjb3VudGVyIHZh
-bHVlIHVzaW5nCj4gPiBJbnRlbCBQbGF0Zm9ybSBNb25pdG9yaW5nIFRlY2hub2xvZ3kgKFBNVCkg
-ZHJpdmVyIEFQSS4gVGhpcyBjb3VudGVyIGlzCj4gPiB1c2VmdWwgZm9yIGRldGVybWluaW5nIHRo
-ZSBpZGxlIHJlc2lkZW5jeSBvZiBDUFVzIGluIHRoZSBjb21wdXRlIHRpbGUuCj4gPiAKPiA+IFNp
-Z25lZC1vZmYtYnk6IERhdmlkIEUuIEJveCA8ZGF2aWQuZS5ib3hAbGludXguaW50ZWwuY29tPgo+
-ID4gLS0tCj4gPiBWNCAtIG5vIGNoYW5nZQo+ID4gCj4gPiBWMyAtIFNwbGl0IHByZXZpb3VzIFBB
-VENIIFYyIDEzLiBTZXBhcmF0ZXMgaW1wbGVtZW50YXRpb24gKHRoaXMgcGF0Y2gpIGZyb20KPiA+
-IMKgwqDCoMKgIHBsYXRmb3JtIHNwZWNpZmljIHVzZSAobmV4dCBwYXRjaCkKPiA+IAo+ID4gVjIg
-LSBSZW1vdmUgdXNlIG9mIF9fZnVuY19fCj4gPiDCoMKgIC0gVXNlIEhaX1BFUl9NSFoKPiA+IMKg
-wqAgLSBGaXggbWlzc2luZyBuZXdsaW5lcyBpbiBwcmludGtzCj4gPiAKPiA+IMKgZHJpdmVycy9w
-bGF0Zm9ybS94ODYvaW50ZWwvcG1jL2NvcmUuYyB8IDU1ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKwo+ID4gwqBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbC9wbWMvY29yZS5oIHzCoCA0ICsr
-Cj4gPiDCoDIgZmlsZXMgY2hhbmdlZCwgNTkgaW5zZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWwvcG1jL2NvcmUuYwo+ID4gYi9kcml2ZXJz
-L3BsYXRmb3JtL3g4Ni9pbnRlbC9wbWMvY29yZS5jCj4gPiBpbmRleCBmY2IwZGM3MDJhZWEuLjAy
-ZjNlOTA5Y2YyMiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3Bt
-Yy9jb3JlLmMKPiA+ICsrKyBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3BtYy9jb3JlLmMK
-PiA+IEBAIC0yMCw2ICsyMCw3IEBACj4gPiDCoCNpbmNsdWRlIDxsaW51eC9wY2kuaD4KPiA+IMKg
-I2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KPiA+IMKgI2luY2x1ZGUgPGxpbnV4L3N1c3BlbmQuaD4K
-PiA+ICsjaW5jbHVkZSA8bGludXgvdW5pdHMuaD4KPiA+IMKgCj4gPiDCoCNpbmNsdWRlIDxhc20v
-Y3B1X2RldmljZV9pZC5oPgo+ID4gwqAjaW5jbHVkZSA8YXNtL2ludGVsLWZhbWlseS5oPgo+ID4g
-QEAgLTI3LDYgKzI4LDcgQEAKPiA+IMKgI2luY2x1ZGUgPGFzbS90c2MuaD4KPiA+IMKgCj4gPiDC
-oCNpbmNsdWRlICJjb3JlLmgiCj4gPiArI2luY2x1ZGUgIi4uL3BtdC90ZWxlbWV0cnkuaCIKPiA+
-IMKgCj4gPiDCoC8qIE1heGltdW0gbnVtYmVyIG9mIG1vZGVzIHN1cHBvcnRlZCBieSBwbGF0Zm9t
-cyB0aGF0IGhhcyBsb3cgcG93ZXIgbW9kZQo+ID4gY2FwYWJpbGl0eSAqLwo+ID4gwqBjb25zdCBj
-aGFyICpwbWNfbHBtX21vZGVzW10gPSB7Cj4gPiBAQCAtODIyLDYgKzgyNCw0NyBAQCBzdGF0aWMg
-aW50IHBtY19jb3JlX3N1YnN0YXRlX3JlcV9yZWdzX3Nob3coc3RydWN0Cj4gPiBzZXFfZmlsZSAq
-cywgdm9pZCAqdW51c2VkKQo+ID4gwqB9Cj4gPiDCoERFRklORV9TSE9XX0FUVFJJQlVURShwbWNf
-Y29yZV9zdWJzdGF0ZV9yZXFfcmVncyk7Cj4gPiDCoAo+ID4gK3N0YXRpYyB1bnNpZ25lZCBpbnQg
-cG1jX2NvcmVfZ2V0X2NyeXN0YWxfZnJlcSh2b2lkKQo+ID4gK3sKPiA+ICvCoMKgwqDCoMKgwqDC
-oHVuc2lnbmVkIGludCBlYXhfZGVub21pbmF0b3IsIGVieF9udW1lcmF0b3IsIGVjeF9oeiwgZWR4
-Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKGJvb3RfY3B1X2RhdGEuY3B1aWRfbGV2ZWwg
-PCAweDE1KQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ID4g
-Kwo+ID4gK8KgwqDCoMKgwqDCoMKgZWF4X2Rlbm9taW5hdG9yID0gZWJ4X251bWVyYXRvciA9IGVj
-eF9oeiA9IGVkeCA9IDA7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqAvKiBDUFVJRCAxNUggVFND
-L0NyeXN0YWwgcmF0aW8sIHBsdXMgb3B0aW9uYWxseSBDcnlzdGFsIEh6ICovCj4gPiArwqDCoMKg
-wqDCoMKgwqBjcHVpZCgweDE1LCAmZWF4X2Rlbm9taW5hdG9yLCAmZWJ4X251bWVyYXRvciwgJmVj
-eF9oeiwgJmVkeCk7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoZWJ4X251bWVyYXRvciA9
-PSAwIHx8IGVheF9kZW5vbWluYXRvciA9PSAwKQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoHJldHVybiAwOwo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgcmV0dXJuIGVjeF9oejsK
-PiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIGludCBwbWNfY29yZV9kaWVfYzZfdXNfc2hvdyhzdHJ1
-Y3Qgc2VxX2ZpbGUgKnMsIHZvaWQgKnVudXNlZCkKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBz
-dHJ1Y3QgcG1jX2RldiAqcG1jZGV2ID0gcy0+cHJpdmF0ZTsKPiA+ICvCoMKgwqDCoMKgwqDCoHU2
-NCBkaWVfYzZfcmVzLCBjb3VudDsKPiA+ICvCoMKgwqDCoMKgwqDCoGludCByZXQ7Cj4gPiArCj4g
-PiArwqDCoMKgwqDCoMKgwqBpZiAoIXBtY2Rldi0+Y3J5c3RhbF9mcmVxKSB7Cj4gPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2X3dhcm5fb25jZSgmcG1jZGV2LT5wZGV2LT5kZXYs
-ICJCYWQgY3J5c3RhbAo+ID4gZnJlcXVlbmN5XG4iKTsKPiAKPiBJc24ndCBpdCBtb3JlIGxpa2Ug
-Y3J5c3RhbCBmcmVxdWVuY3kgaXMgbm90IHByb3ZpZGVkIHJhdGhlciB0aGFuIGJhZCAKPiBmcmVx
-dWVuY3k/Cj4gCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FSU5W
-QUw7Cj4gCj4gLUVJTlZBTCBpcyBub3QgZ29vZCB2YWx1ZSB0byByZXR1cm4gaGVyZSBzaW5jZSB0
-aGVyZSB3YXMgbm90aGluZyB3cm9uZyAKPiB3aXRoIHRoZSBpbnB1dC4gTWF5YmUgLUVOWElPIHdv
-dWxkIGJlIGJldHRlci4KCldpbGwgbWFrZSB0aGVzZSBjaGFuZ2VzLgoKPiAKPiA+ICvCoMKgwqDC
-oMKgwqDCoH0KPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoHJldCA9IHBtdF90ZWxlbV9yZWFkKHBt
-Y2Rldi0+cHVuaXRfZXAsIHBtY2Rldi0+ZGllX2M2X29mZnNldCwKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJmNvdW50LCAxKTsKPiA+
-ICvCoMKgwqDCoMKgwqDCoGlmIChyZXQpCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgcmV0dXJuIHJldDsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoGRpZV9jNl9yZXMgPSBkaXY2
-NF91NjQoY291bnQgKiBIWl9QRVJfTUhaLCBwbWNkZXYtPmNyeXN0YWxfZnJlcSk7Cj4gPiArwqDC
-oMKgwqDCoMKgwqBzZXFfcHJpbnRmKHMsICIlbGx1XG4iLCBkaWVfYzZfcmVzKTsKPiA+ICsKPiA+
-ICvCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ID4gK30KPiA+ICtERUZJTkVfU0hPV19BVFRSSUJV
-VEUocG1jX2NvcmVfZGllX2M2X3VzKTsKPiA+ICsKPiA+IMKgc3RhdGljIGludCBwbWNfY29yZV9s
-cG1fbGF0Y2hfbW9kZV9zaG93KHN0cnVjdCBzZXFfZmlsZSAqcywgdm9pZCAqdW51c2VkKQo+ID4g
-wqB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHBtY19kZXYgKnBtY2RldiA9IHMtPnByaXZh
-dGU7Cj4gPiBAQCAtMTExOCw2ICsxMTYxLDEyIEBAIHN0YXRpYyB2b2lkIHBtY19jb3JlX2RiZ2Zz
-X3JlZ2lzdGVyKHN0cnVjdCBwbWNfZGV2Cj4gPiAqcG1jZGV2KQo+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBw
-bWNkZXYtPmRiZ2ZzX2RpciwgcG1jZGV2LAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAmcG1jX2NvcmVfc3Vi
-c3RhdGVfcmVxX3JlZ3NfZm9wcyk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gKwo+ID4gK8Kg
-wqDCoMKgwqDCoMKgaWYgKHBtY2Rldi0+aGFzX2RpZV9jNikgewo+ID4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoGRlYnVnZnNfY3JlYXRlX2ZpbGUoImRpZV9jNl91c19zaG93IiwgMDQ0
-NCwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBwbWNkZXYtPmRiZ2ZzX2RpciwgcG1jZGV2LAo+ID4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgICZwbWNfY29yZV9kaWVfYzZfdXNfZm9wcyk7Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4g
-PiDCoH0KPiA+IMKgCj4gPiDCoHN0YXRpYyBjb25zdCBzdHJ1Y3QgeDg2X2NwdV9pZCBpbnRlbF9w
-bWNfY29yZV9pZHNbXSA9IHsKPiA+IEBAIC0xMjEyLDYgKzEyNjEsMTAgQEAgc3RhdGljIHZvaWQg
-cG1jX2NvcmVfY2xlYW5fc3RydWN0dXJlKHN0cnVjdAo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2
-KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwY2lfZGV2X3B1dChwbWNkZXYt
-PnNzcmFtX3BjaWRldik7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBjaV9k
-aXNhYmxlX2RldmljZShwbWNkZXYtPnNzcmFtX3BjaWRldik7Cj4gPiDCoMKgwqDCoMKgwqDCoMKg
-fQo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKHBtY2Rldi0+cHVuaXRfZXApCgouLi4KCj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcG10X3RlbGVtX3VucmVnaXN0ZXJfZW5k
-cG9pbnQocG1jZGV2LT5wdW5pdF9lcCk7Cj4gPiArCj4gPiDCoMKgwqDCoMKgwqDCoMKgcGxhdGZv
-cm1fc2V0X2RydmRhdGEocGRldiwgTlVMTCk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgbXV0ZXhfZGVz
-dHJveSgmcG1jZGV2LT5sb2NrKTsKPiA+IMKgfQo+ID4gQEAgLTEyMzIsNiArMTI4NSw4IEBAIHN0
-YXRpYyBpbnQgcG1jX2NvcmVfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQo+ID4gKnBkZXYp
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaWYgKCFwbWNkZXYpCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoHJldHVybiAtRU5PTUVNOwo+ID4gwqAKPiA+ICvCoMKgwqDCoMKgwqDCoHBt
-Y2Rldi0+Y3J5c3RhbF9mcmVxID0gcG1jX2NvcmVfZ2V0X2NyeXN0YWxfZnJlcSgpOwo+ID4gKwo+
-ID4gwqDCoMKgwqDCoMKgwqDCoHBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIHBtY2Rldik7Cj4g
-PiDCoMKgwqDCoMKgwqDCoMKgcG1jZGV2LT5wZGV2ID0gcGRldjsKPiA+IMKgCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWwvcG1jL2NvcmUuaAo+ID4gYi9kcml2ZXJz
-L3BsYXRmb3JtL3g4Ni9pbnRlbC9wbWMvY29yZS5oCj4gPiBpbmRleCA4NWI2ZjZhZTQ5OTUuLjZk
-NzY3MzE0NWY5MCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3Bt
-Yy9jb3JlLmgKPiA+ICsrKyBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsL3BtYy9jb3JlLmgK
-PiA+IEBAIC0xNiw2ICsxNiw4IEBACj4gPiDCoCNpbmNsdWRlIDxsaW51eC9iaXRzLmg+Cj4gPiDC
-oCNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KPiA+IMKgCj4gPiArc3RydWN0IHRl
-bGVtX2VuZHBvaW50Owo+ID4gKwo+IAo+IFRoaXMgc2VlbXMgdW5yZWxhdGVkIHRvIHRoZSBwYXRj
-aC4KClRoaXMgd2FzIG1pc3Npbmcgd2hlbiAic3RydWN0IHRlbGVtX2VuZHBvaW50ICpwdW5pdF9l
-cCIgd2FzIGRlY2xhcmVkIGluIHRoaXMKaGVhZGVyIGluIGFuIGVhcmxpZXIgcGF0Y2ggdGhhdCB3
-ZW50IHVwc3RyZWFtLiBCdXQgcHVuaXRfZXAgZG9lcyBub3QgZ2V0IHVzZWQKeWV0IHVudGlsIHRo
-aXMgcGF0Y2ggYXMgc2hvd24gYWJvdmUuIFdpbGwgY2xhcmlmeSBpbiB0aGUgY2hhbmdlbG9nLgoK
-RGF2aWQKCj4gCgo=
+On Tue, Oct 24, 2023 at 03:55:23PM -0500, Andrew Davis wrote:
+> On 10/24/23 2:58 PM, Nik Bune wrote:
+> > Convert txt file to yaml.
+> > Add maintainers list, based on the git history.
+> > Mark clock as required property, by reviewer's suggestion.
+> > 
+> > Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+> > ---
+> > 
+> > Changes in v2 (according to review comments):
+> > - Added clocks to the list of required properties.
+> > - Updated clocks property to have only maxItems without $ref and description.
+> > - Removed timeout-sec explicit definition, as it is defined in watchdog.yaml.
+> > - Updated maintainers list from the git history.
+> > 
+> > v1 patch: https://lore.kernel.org/all/20231021171323.113208-1-n2h9z4@gmail.com/
+> > 
+> >   .../bindings/watchdog/davinci-wdt.txt         | 24 ----------
+> >   .../bindings/watchdog/ti,davinci-wdt.yaml     | 47 +++++++++++++++++++
+> >   2 files changed, 47 insertions(+), 24 deletions(-)
+> >   delete mode 100644 Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+> >   create mode 100644 Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+> > deleted file mode 100644
+> > index aa10b8ec36e2..000000000000
+> > --- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+> > +++ /dev/null
+> > @@ -1,24 +0,0 @@
+> > -Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
+> > -
+> > -Required properties:
+> > -- compatible : Should be "ti,davinci-wdt", "ti,keystone-wdt"
+> > -- reg : Should contain WDT registers location and length
+> > -
+> > -Optional properties:
+> > -- timeout-sec : Contains the watchdog timeout in seconds
+> > -- clocks : the clock feeding the watchdog timer.
+> > -	   Needed if platform uses clocks.
+> > -	   See clock-bindings.txt
+> > -
+> > -Documentation:
+> > -Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+> > -Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
+> > -
+> > -Examples:
+> > -
+> > -wdt: wdt@2320000 {
+> > -	compatible = "ti,davinci-wdt";
+> > -	reg = <0x02320000 0x80>;
+> > -	timeout-sec = <30>;
+> > -	clocks = <&clkwdtimer0>;
+> > -};
+> > diff --git a/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+> > new file mode 100644
+> > index 000000000000..4747be98b7d9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+> > @@ -0,0 +1,47 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/watchdog/ti,davinci-wdt.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
+> > +
+> > +description: |
+> > +  Documentation:
+> > +  Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+> > +  Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a
+> > +
+> > +maintainers:
+> > +  - Murali Karicheri <m-karicheri2@ti.com>
+> > +  - Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> 
+> Neither of these folks will be available for this, you can use me if
+> you want an email that won't bounce for now.
+> 
+> > +
+> > +allOf:
+> > +  - $ref: watchdog.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,davinci-wdt
+> > +      - ti,keystone-wdt
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> 
+> We also have some instances with an optional power-domains prop.
+> 
+>   power-domains:
+>     description: A phandle and PM domain specifier as defined by bindings of
+>       the power controller specified by phandle. See
+>       Documentation/devicetree/bindings/power/power-domain.yaml for details.
 
+But not what the schema should look like here. Same as others. How many 
+and what order if more than 1.
+
+Rob
