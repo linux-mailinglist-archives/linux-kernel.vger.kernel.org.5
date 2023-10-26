@@ -2,75 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A027D7ADB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FBB7D7ADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbjJZCYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S230518AbjJZCZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJZCYV (ORCPT
+        with ESMTP id S229638AbjJZCZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:24:21 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1BD6D8;
-        Wed, 25 Oct 2023 19:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=q1Nvz
-        lz4m5YlXKgzOVfLPIxG3pjGCPz8pjWhlQCBR3s=; b=LujEJlb3QzRohqXLqpoTC
-        akb+/G41SkLeuP2rMsamojGbRXUInr/Gwn3HpzqRsHB8hkhegxn+cR734zsvUsBp
-        JxzsNwmWyDOQd5AHdifxSOvj+jRc23yr6RWF2eFfW5UTusgjWiVRf50mnZaXlg0Q
-        XuwlOWQStG2rroXNT3JsSs=
-Received: from localhost.localdomain (unknown [106.13.245.201])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wCHLyrAzTll_Vn5BQ--.55683S2;
-        Thu, 26 Oct 2023 10:24:01 +0800 (CST)
-From:   gaoyusong <a869920004@163.com>
-To:     brauner@kernel.org, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND] fs: Fix typo in access_override_creds()
-Date:   Thu, 26 Oct 2023 02:23:59 +0000
-Message-Id: <20231026022359.258507-1-a869920004@163.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 25 Oct 2023 22:25:02 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5922D12F;
+        Wed, 25 Oct 2023 19:24:59 -0700 (PDT)
+Received: from kwepemi500024.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SG8fL58PbzMmF3;
+        Thu, 26 Oct 2023 10:20:42 +0800 (CST)
+Received: from [10.174.179.163] (10.174.179.163) by
+ kwepemi500024.china.huawei.com (7.221.188.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 26 Oct 2023 10:24:55 +0800
+Message-ID: <dcc4dfd7-fbef-7b46-5037-3916077ec696@huawei.com>
+Date:   Thu, 26 Oct 2023 10:24:54 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] cpufreq: CPPC: Keep the target core awake when
+ reading its cpufreq rate
+Content-Language: en-US
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     <broonie@kernel.org>, <joey.gouly@arm.com>, <will@kernel.org>,
+        <amit.kachhap@arm.com>, <rafael@kernel.org>,
+        <catalin.marinas@arm.com>, <james.morse@arm.com>,
+        <mark.rutland@arm.com>, <maz@kernel.org>,
+        <viresh.kumar@linaro.org>, <sumitg@nvidia.com>,
+        <yang@os.amperecomputing.com>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <wangxiongfeng2@huawei.com>, <xiexiuqi@huawei.com>
+References: <20231025093847.3740104-1-zengheng4@huawei.com>
+ <20231025093847.3740104-3-zengheng4@huawei.com>
+ <20231025111301.ng5eaeaixfs3jjpg@bogus>
+From:   Zeng Heng <zengheng4@huawei.com>
+In-Reply-To: <20231025111301.ng5eaeaixfs3jjpg@bogus>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCHLyrAzTll_Vn5BQ--.55683S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GFy7GFW3Kr43Zr43Zr4kCrg_yoWxCwc_Cw
-        4Iyr48Grs8tryIywn8WanYyF1Sg34FyF1rG34xJry3KryfZ3ZxuryDKrn7JrWUWr47K3s8
-        Xrn8ZFWDZF4I9jkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnTlk3UUUUU==
-X-Originating-IP: [106.13.245.201]
-X-CM-SenderInfo: zdywmmasqqiki6rwjhhfrp/xtbB0wcV6VXl10aJVAABsV
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.163]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500024.china.huawei.com (7.221.188.100)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo in access_override_creds(), modify non-RCY to non-RCU.
 
-Signed-off-by: gaoyusong <a869920004@163.com>
----
- fs/open.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+在 2023/10/25 19:13, Sudeep Holla 写道:
+> On Wed, Oct 25, 2023 at 05:38:46PM +0800, Zeng Heng wrote:
+>> As ARM AMU's document says, all counters are subject to any changes
+>> in clock frequency, including clock stopping caused by the WFI and WFE
+>> instructions.
+>>
+>> Therefore, using smp_call_on_cpu() to trigger target CPU to
+>> read self's AMU counters, which ensures the counters are working
+>> properly while cstate feature is enabled.
+>>
+>> Reported-by: Sumit Gupta <sumitg@nvidia.com>
+>> Link: https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+>> Signed-off-by: Zeng Heng <zengheng4@huawei.com>
+>> ---
+>>   drivers/cpufreq/cppc_cpufreq.c | 39 ++++++++++++++++++++++++++--------
+>>   1 file changed, 30 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+>> index fe08ca419b3d..321a9dc9484d 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> [...]
+>
+>> @@ -850,18 +871,18 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
+>>   
+>>   	cpufreq_cpu_put(policy);
+>>   
+>> -	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs_t0);
+>> -	if (ret)
+>> -		return 0;
+>> -
+>> -	udelay(2); /* 2usec delay between sampling */
+>> +	if (cpu_has_amu_feat(cpu))
+> Have you compiled this on x86 ? Even if you have somehow managed to,
+> this is not the right place to check the presence of AMU feature on
+> the CPU.
+> If AMU registers are used in CPPC, they must be using FFH GAS, in which
+> case the interpretation of FFH is architecture dependent code.
 
-diff --git a/fs/open.c b/fs/open.c
-index 98f6601fbac6..72eb20a8256a 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -442,7 +442,7 @@ static const struct cred *access_override_creds(void)
- 	 * 'get_current_cred()' function), that will clear the
- 	 * non_rcu field, because now that other user may be
- 	 * expecting RCU freeing. But normal thread-synchronous
--	 * cred accesses will keep things non-RCY.
-+	 * cred accesses will keep things non-RCU.
- 	 */
- 	override_cred->non_rcu = 1;
- 
--- 
-2.34.1
 
+According to drivers/cpufreq/Makefile, cppc_cpufreq.c is only compiled with
+
+ARM architecture.
+
+But here, I would change cpu_has_amu_feat() with cpc_ffh_supported(), which
+
+belongs to FFH APIs.
+
+Thanks for the suggestion.
+
+
+Thanks again,
+
+Zeng Heng
+
+
+
+> --
+> Regards,
+> Sudeep
+>
