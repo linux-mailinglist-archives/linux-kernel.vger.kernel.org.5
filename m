@@ -2,166 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17A17D8157
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31007D815F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344711AbjJZKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        id S231249AbjJZKzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjJZKx6 (ORCPT
+        with ESMTP id S229710AbjJZKzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:53:58 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055F6195;
-        Thu, 26 Oct 2023 03:53:55 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f5b83f254so540796f8f.3;
-        Thu, 26 Oct 2023 03:53:54 -0700 (PDT)
+        Thu, 26 Oct 2023 06:55:44 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB358195
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:55:41 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so846010e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:55:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698317633; x=1698922433; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vfM7+/5S6tv36A7gcla7bfJJw/bBuZjPJgSkhs5PVuk=;
-        b=VnDVxBQRgNhm9h1PA5dje+sQcwojrxmgkHDzjT9xpZuxVDe0XrEDB0L9W9od+VybFh
-         qB3WAyoDhER403BdFFC34CAt2yABG92lk3Vzq+khozjqYVc/ajN/IpCTNeohbxGai9Ka
-         wfdjEaLnVmaXbMLr0iWp4INSpfgnl8W07Ez5cSuxz4kYJMLLWeoPib9lGjT6wQPTm4O9
-         3c3LFSJjKnyqrDJa3O0EIBYhSc0JhJVvTF0jk+5DTvBQDIoUeyEisl4oNrzTOIqyrrpy
-         uymBoXNpospH04MdNmRAf2xuvpwBplzNlxB8NcQrr8cMfYFW5T+6jZcp+YgmcNX//3r5
-         ysiA==
+        d=linaro.org; s=google; t=1698317740; x=1698922540; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dUYZd0Ej097jAhIw6DNm96Y3LVWu6JPXMni62KgrIN8=;
+        b=l0obdJTHYWptkiEEjz2dzvxoel7Vn33Ifsp0uR6RJJaQHnperervUJGswUpgcft8zR
+         zfLaLpRy2FkoyMeZwAsAL2vUTzIsmxlde0SnlUyR7XL2059gJniXuPZEgyesZf/tK+0u
+         fj8Vb9Ifpi1Epx5+wA5VtC2dTbeqBJh/H3n3XFQLao+R2e0R9c0g4UryoZRPh4S6aUns
+         +JGauesxrgtBVNUHGi1eza04ke1cSQR55Ki3L8vaFX9ZDL9nYhsXz+Vv8jA3M69rqr1L
+         jC2QVbR0qiDkgKfvyimjEgwKCnqN6D2tIyLgPcMf3lVaNzUXtoX9zNVp0TGraLCuXdxb
+         O4Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698317633; x=1698922433;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
+        d=1e100.net; s=20230601; t=1698317740; x=1698922540;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vfM7+/5S6tv36A7gcla7bfJJw/bBuZjPJgSkhs5PVuk=;
-        b=s2+q3U8vkMju2J3NSeFAbZxNOU/G7gOywwex1qqxTSE8Zp+eDAP87FSP62vUDSsTH9
-         3XbJ5rWD/COcQ76P1bKyOpJbdUjRDpOQCChA2L5GqEl8KLmRdg4B6gT+hJw5qcp/6ltf
-         IyU7RW659/4/s5V+3W054CHI0DSc+edCgeiF+ZVcIL4kJavBeB9udxQCFb+m1eRmPsv8
-         AP1lOinlaZh5UQ1oY+LLR2vB9A0dnLKg0IUZyOnBy6TlBsikaKUi6fEaA2lUFlZ4GEpE
-         brZ9J7WzqR8m4leSZBQMq2/xwtUAP2rtnS9OSGjfA60Yxnf0vjIJlGpU2RG2K0L4Brho
-         FCPg==
-X-Gm-Message-State: AOJu0YzbFBFUzx/sfRNTzVlvQ7ivhwUR6oabfGPYtCQxkrfvvxEGRh6S
-        tCKyriP5hr1LOs6NRpgCoCPslU/LjFM=
-X-Google-Smtp-Source: AGHT+IGKs2TdCo2eJyoLGjqt05bnjp6G41CClsYEykzy4hfL4dcFFqhk8HNQoex+Ffy/4q/bZXA64w==
-X-Received: by 2002:a5d:598d:0:b0:32f:649f:aa2b with SMTP id n13-20020a5d598d000000b0032f649faa2bmr1205623wri.17.1698317633054;
-        Thu, 26 Oct 2023 03:53:53 -0700 (PDT)
-Received: from Ansuel-xps. (host-82-61-188-111.retail.telecomitalia.it. [82.61.188.111])
-        by smtp.gmail.com with ESMTPSA id m21-20020a056000181500b003271be8440csm13985084wrh.101.2023.10.26.03.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 03:53:52 -0700 (PDT)
-Message-ID: <653a4540.050a0220.1e832.01c8@mx.google.com>
-X-Google-Original-Message-ID: <ZTpFPqtcf6pnZQcO@Ansuel-xps.>
-Date:   Thu, 26 Oct 2023 12:53:50 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] cpufreq: fix broken buffer overflow detection in
- trans_stats
-References: <20231024183016.14648-1-ansuelsmth@gmail.com>
- <CAJZ5v0gzV+nX+dSEShAopkcvx1Zx2Rc2=pjcdH07U9nQhHRe4Q@mail.gmail.com>
+        bh=dUYZd0Ej097jAhIw6DNm96Y3LVWu6JPXMni62KgrIN8=;
+        b=YxKu13Xnk+wCILa7zFGaWD6vQXl5MJWiJgbfrcEeKWxTZn+smPgIY4wzE9/1d+TA3R
+         WnccX9ceRo02Ig00LqksAae9W7UV0yfwEFBFRd8rKDf70f8+/vdVZbpyhLu3408eC1p+
+         yMn5sIRNnblv6zjNdPZybd7zvIJZRCCHF/NodYVAF3dPfMczRP1mroJJ3vSTkv+QFHR4
+         muGYBc/3iPqDvj+G/dJMeuPKRvQMe51O67ES7r6tzEvdAZJulgIa59f3LYcoiULwzHvo
+         qYVyQvd0YQP7rgrRN5JUJYigmSZ1nA/3I4u4t7NtGlRr3GyO17g9CPIk5Kxk1QPilvyy
+         fdSA==
+X-Gm-Message-State: AOJu0YxihhcQ00z0gEkpOO+RSi0RlHGUTbh7ZjmxPOQX5JvD+8MbZxa6
+        oc3DO+uk+KLzAcQ3qlhiW5LOIg==
+X-Google-Smtp-Source: AGHT+IFJY2h+PhA5ZUnssDD4RsegMb7tOojibhbB7ctcpygg5CqvyoT4m7nEpbiCRLtXU5nM8L/JGg==
+X-Received: by 2002:a05:6512:159c:b0:507:cc09:59ab with SMTP id bp28-20020a056512159c00b00507cc0959abmr854411lfb.9.1698317740057;
+        Thu, 26 Oct 2023 03:55:40 -0700 (PDT)
+Received: from [172.30.204.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z8-20020a196508000000b0050420b0a642sm2993332lfb.91.2023.10.26.03.55.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 03:55:39 -0700 (PDT)
+Message-ID: <3ec21dca-14c8-41ed-8295-bc0463826e00@linaro.org>
+Date:   Thu, 26 Oct 2023 12:55:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gzV+nX+dSEShAopkcvx1Zx2Rc2=pjcdH07U9nQhHRe4Q@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] arm64: defconfig: Enable SC8380XP SoC base configs
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        catalin.marinas@arm.com, ulf.hansson@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
+        j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        lpieralisi@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231025142427.2661-1-quic_sibis@quicinc.com>
+ <20231025142427.2661-6-quic_sibis@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231025142427.2661-6-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 10:03:35PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Oct 24, 2023 at 8:30 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
-> >
-> > Commit 3c0897c180c6 ("cpufreq: Use scnprintf() for avoiding potential
-> > buffer overflow") switched from snprintf to the more secure scnprintf
-> > but never updated the exit condition for PAGE_SIZE.
-> >
-> > As the commit say and as scnprintf document, what scnprintf returns what
-> > is actually written not counting the '\0' end char. This results in the
-> > case of len exceeding the size, len set to PAGE_SIZE - 1, as it can be
-> > written at max PAGESIZE - 1 (as '\0' is not counted)
-> >
-> > Because of len is never set to PAGE_SIZE, the function never break early,
-> > never print the warning and never return -EFBIG.
-> >
-> > Fix this by fixing the condition to PAGE_SIZE -1 to correctly trigger
-> > the error condition.
-> >
-> > Cc: stable@vger.kernel.org
-> > Fixes: 3c0897c180c6 ("cpufreq: Use scnprintf() for avoiding potential buffer overflow")
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/cpufreq/cpufreq_stats.c | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-> > index a33df3c66c88..40a9ff18da06 100644
-> > --- a/drivers/cpufreq/cpufreq_stats.c
-> > +++ b/drivers/cpufreq/cpufreq_stats.c
-> > @@ -131,23 +131,23 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
-> >         len += sysfs_emit_at(buf, len, "   From  :    To\n");
-> >         len += sysfs_emit_at(buf, len, "         : ");
-> >         for (i = 0; i < stats->state_num; i++) {
-> > -               if (len >= PAGE_SIZE)
-> > +               if (len >= PAGE_SIZE - 1)
-> >                         break;
-> >                 len += sysfs_emit_at(buf, len, "%9u ", stats->freq_table[i]);
-> >         }
-> > -       if (len >= PAGE_SIZE)
-> > -               return PAGE_SIZE;
-> > +       if (len >= PAGE_SIZE - 1)
-> > +               return PAGE_SIZE - 1;
-> >
-> >         len += sysfs_emit_at(buf, len, "\n");
-> >
-> >         for (i = 0; i < stats->state_num; i++) {
-> > -               if (len >= PAGE_SIZE)
-> > +               if (len >= PAGE_SIZE - 1)
-> >                         break;
-> >
-> >                 len += sysfs_emit_at(buf, len, "%9u: ", stats->freq_table[i]);
-> >
-> >                 for (j = 0; j < stats->state_num; j++) {
-> > -                       if (len >= PAGE_SIZE)
-> > +                       if (len >= PAGE_SIZE - 1)
-> >                                 break;
-> >
-> >                         if (pending)
-> > @@ -157,12 +157,12 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
-> >
-> >                         len += sysfs_emit_at(buf, len, "%9u ", count);
-> >                 }
-> > -               if (len >= PAGE_SIZE)
-> > +               if (len >= PAGE_SIZE - 1)
-> >                         break;
-> >                 len += sysfs_emit_at(buf, len, "\n");
-> >         }
-> >
-> > -       if (len >= PAGE_SIZE) {
-> > +       if (len >= PAGE_SIZE - 1) {
-> >                 pr_warn_once("cpufreq transition table exceeds PAGE_SIZE. Disabling\n");
-> >                 return -EFBIG;
-> >         }
-> > --
+
+
+On 10/25/23 16:24, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 > 
-> Applied (with some edits in the subject and changelog) as 6.7 material, thanks!
+> Enable GCC, Pinctrl and Interconnect configs for SC8380XP needed to boot
+> to a console shell.
+> 
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+Please mention that =y is necessary to get console and =m would
+cause issues there
 
-Hi, I just notice this landed in linux-next but I can't find the devfreq
-change. Only the cpufreq patch has been taken and the devfreq ones are
-still pending?
-
--- 
-	Ansuel
+Konrad
