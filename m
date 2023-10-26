@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3017D82A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D207D82A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344928AbjJZM2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        id S1344904AbjJZM2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344904AbjJZM2F (ORCPT
+        with ESMTP id S229647AbjJZM2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:28:05 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE6A192
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:03 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cacbd54b05so1478755ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:03 -0700 (PDT)
+        Thu, 26 Oct 2023 08:28:44 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99AC111
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:41 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-778925998cbso67045985a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:28:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698323283; x=1698928083; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
-        b=lgZ7JEnAt5In/D2KRzJbpAPn5xAIFaxDzpf2iOFIVM64g7uDJj+Q/zTJJuojUbeHgz
-         Z12QHUl9XVDIHbKd2WkVilKCMCRCIbpy29EOTBBhuLYUkdIhjp5vLDHHcILEXt+dQtZi
-         tkQ4oSjyXbw5crQW2jyTMWGfpzoRNfZOtTzyknx1a6NmXqGS+JYfROfL2lVi9yxheJHg
-         hS5lrZH0gY0/o5hFbZWZiDraO9S3ZEiC2Rgaz1mTvAT0LJEkbFY/HcSmNGhhDB+VuR4+
-         GusYYzKSKrZgJTnX2RqvQE/xQqom483vWFCnoVwfjtng6cD5Q+rAknJtc2UJlfGy1Z84
-         HUqA==
+        d=chromium.org; s=google; t=1698323321; x=1698928121; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1WGRGpf1ARbPQY1fumL5DeKAJhYKCHf4gxWwDp4LFCQ=;
+        b=dnKI+KRYtDpu0CiG0JK1pul4NU9Hct+sFwSQOppcwiuo8mtHcmyexNE62F4XUS6IPD
+         g1YscC/b6pe9EAhaoZGXT6l9HHlQNzZ8w36M+vDezM3QHk2MHFxgv1cH8CcmlC3Q9cJY
+         /qd79aJ3ykA0+83zUYpG3QUwRwtwOnB5h+CbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698323283; x=1698928083;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XO8QG8mtg640mQEHVkNaf9/uSEs9JeitYsu0UTItPaY=;
-        b=IHir7ErRTQ5GK1cPH3nW4U/R1Oidzguo005XuaRhxC3o6Y8xkgP4JLAyJfPXl40+YB
-         r1OIWBUdy6SsmmezRv1TP0fAVSazvacCeWH6AizqitGc2LF3DFai+YEMunWlSaNLtI6/
-         DVPyhUQD1oUT/DVoWhOLSBQXVxz18Qg3l3Nl4cjJugdhajpMqfcz0YIUhsWmVRw4Ie4G
-         kMMpvVWOth5jWOe1cogIneOap+yn1MMuUAAekG+gDSMFkyYHTGu7AQwtriWWtKCArp0L
-         qrrVO0X/e/l111wZ+zkAsFsbesIbJouchHzk7JDzIEYJ+5v6Zg4RZJ83ysGOZfYvtjdo
-         Rnkg==
-X-Gm-Message-State: AOJu0YzGiSUe/TKTGOcvdgcYSEsUEQZCTxcmrDZ0QzqHseOJtw/r9bPU
-        9RGJJt370ucJuOb4tdwPpS4=
-X-Google-Smtp-Source: AGHT+IH1gymU2/FGsSj8zyAx/Aju3HVO9NonWPsq42FvYiLPy0FZ0P17oXb7rdiEvEs+blNOiSFOyQ==
-X-Received: by 2002:a17:902:654d:b0:1ca:273d:22f with SMTP id d13-20020a170902654d00b001ca273d022fmr17306876pln.0.1698323282764;
-        Thu, 26 Oct 2023 05:28:02 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.211])
-        by smtp.gmail.com with ESMTPSA id 1-20020a170902c10100b001c44dbc92a2sm10850507pli.184.2023.10.26.05.27.57
+        d=1e100.net; s=20230601; t=1698323321; x=1698928121;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1WGRGpf1ARbPQY1fumL5DeKAJhYKCHf4gxWwDp4LFCQ=;
+        b=RJp2DJK+vctUjdAdFniSBkG6VM4eTXjOx8YgeVPgaNp3S/+zUPCJbxQqjfyVG8ZUgv
+         IIPYCX8+ZCyMqpjU6iKVekQ3oKXb4FIo7nXzA6ElruHS8VPrImScNdcAuOLKgINIzc/f
+         2frpvzPWo+NFA7MwIOBNF7oLOYloMXBOJI2+P675d94UXz3XZK/JQ7SKhYNSI2fzrDoO
+         WNbBgD875B1kttSJmYB27P0HkRMILNhQBnDS4O7eTHYtVzCUXo8mllDMaR+QUFtCwds/
+         pBNWOxtgmfyhBS42zlgQvQsFtuH2i8fu6M5RnTXkfxUM+aP2wJ4Lc2oTwhT4ufkSLv2z
+         W6iA==
+X-Gm-Message-State: AOJu0YxCi6iDlGIeZLrBeMBLRyM8FT7xkn95PDq0eFU9uhT6S4DODrFz
+        5WCApmoV+JNx4jgyEFhaphDWg9dCYy0T5U0K81Y=
+X-Google-Smtp-Source: AGHT+IGbmmi/fPDM4l/eOyFgg7t4XG2htGE2skFiTTZytx2fRoIZQX1f5cqp42EdqvLnV4afw+cnOw==
+X-Received: by 2002:a05:620a:22a2:b0:770:72c3:dbbc with SMTP id p2-20020a05620a22a200b0077072c3dbbcmr16056365qkh.18.1698323320869;
+        Thu, 26 Oct 2023 05:28:40 -0700 (PDT)
+Received: from denia.c.googlers.com (112.49.199.35.bc.googleusercontent.com. [35.199.49.112])
+        by smtp.gmail.com with ESMTPSA id x6-20020a05620a14a600b0076f35d17d06sm4941476qkj.69.2023.10.26.05.28.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 05:28:02 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        mst@redhat.com, michael.christie@oracle.com,
-        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
-        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH] Fixing directly deferencing a __rcu pointer warning
-Date:   Thu, 26 Oct 2023 17:57:48 +0530
-Message-Id: <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
-References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+        Thu, 26 Oct 2023 05:28:40 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 26 Oct 2023 12:28:36 +0000
+Subject: [PATCH] usb: dwc3: set the dma max_seg_size
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231026-dwc3-v1-1-643c74771599@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAHRbOmUC/x2MSQqAMAwAvyI5W9BWFPyKeEhjqgGp0uIC4t8NH
+ mcY5oHMSThDXzyQ+JQsW1SoywJowTizkUkZbGVdXdnWTBc5E5C6JpB33iJo6jGz8QkjLRrHY11
+ V7omD3P97GN/3A0wzq51rAAAA
+To:     Zubin Mithra <zsm@chromium.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,42 +72,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the warning about directly dereferencing a pointer
-tagged with __rcu annotation.
+Allow devices to have dma operations beyond 4K, and avoid warnings such
+as:
 
-Dereferencing the pointers tagged with __rcu directly should
-always be avoided according to the docs. There is a rcu helper
-functions rcu_dereference(...) to use when dereferencing a __rcu
-pointer. This functions returns the non __rcu tagged pointer which
-can be dereferenced just like a normal pointers.
+DMA-API: dwc3 a600000.usb: mapping sg segment longer than device claims to support [len=86016] [max=65536]
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+Reported-by: Zubin Mithra <zsm@chromium.org>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- kernel/fork.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Found while running 
+yavta -f YUYV -s 1280x720 -c  /dev/video0
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..802b7bbe3d92 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+with:
+
+CONFIG_DMA_API_DEBUG=y
+---
+ drivers/usb/dwc3/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 343d2570189f..65f73dd8ef47 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1918,6 +1918,8 @@ static int dwc3_probe(struct platform_device *pdev)
  
- 	retval = -EAGAIN;
- 	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
--		if (p->real_cred->user != INIT_USER &&
-+		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
- 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
- 			goto bad_fork_cleanup_count;
- 	}
-@@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
- 			 */
- 			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
- 							 p->real_parent->signal->is_child_subreaper;
--			list_add_tail(&p->sibling, &p->real_parent->children);
-+			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
- 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
- 			attach_pid(p, PIDTYPE_TGID);
- 			attach_pid(p, PIDTYPE_PGID);
+ 	pm_runtime_put(dev);
+ 
++	dma_set_max_seg_size(dev, UINT_MAX);
++
+ 	return 0;
+ 
+ err_exit_debugfs:
+
+---
+base-commit: 611da07b89fdd53f140d7b33013f255bf0ed8f34
+change-id: 20231026-dwc3-fac74fcb3b2a
+
+Best regards,
 -- 
-2.39.2
+Ricardo Ribalda <ribalda@chromium.org>
 
