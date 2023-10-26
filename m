@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B97F7D877F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A1F7D8781
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjJZRXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
+        id S229815AbjJZRXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 13:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjJZRX2 (ORCPT
+        with ESMTP id S231173AbjJZRXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:23:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9ABD59;
-        Thu, 26 Oct 2023 10:23:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 911E5C433C8;
-        Thu, 26 Oct 2023 17:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698341003;
-        bh=KHEtv2BW5ufcLceTLdIMBqabDXWqTImDiZvqNq1ZFoo=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Y2nuw3nr5k9IH1ntILq8GvFLs0t2MvQiD2LoKcrMDcVykD60U9AojdjxDDmDzg2U5
-         XSP0AC4essXZBjMCAt/q5uQer4x5Qr+OYvtZYW1pnBgnr9O11paHnmLZBgVO9bC4iZ
-         WuhGbb72T+nKsCJFbn1dQRlS8dyjlYSVUEkQqwL2W3xEN900bUIoGw1TWMDO3YGEbu
-         obNEUHnKrdVgMZj0+L9TRCdi9QKhGoi9WlhAldcAuaMr43XqMW/bvEMKLpOW3Lo1ma
-         2A1N/L1b8igEVExKuzs9Q6ihYxcO0Y7sFOMx9mNGeI9loH6voS+g1geObl7hvwBHEq
-         OeSHNM0T6c+DA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Cc:     stable@vger.kernel.org
-In-Reply-To: <20231026-regmap-fix-selector-sync-v1-1-633ded82770d@kernel.org>
-References: <20231026-regmap-fix-selector-sync-v1-1-633ded82770d@kernel.org>
-Subject: Re: [PATCH] regmap: Ensure range selector registers are updated
- after cache sync
-Message-Id: <169834100229.152944.3846879997258619017.b4-ty@kernel.org>
-Date:   Thu, 26 Oct 2023 18:23:22 +0100
+        Thu, 26 Oct 2023 13:23:47 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC4B1B2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:23:44 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-564b6276941so1027399a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698341024; x=1698945824; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MjCyKU5MtQNKRhUalMMT+7osPR9Bm+U2bHAZcig+q/U=;
+        b=mM8+zmUYldkMLcOKwsHldyUKe7AjazhFbFZ07K3ewQVQbPnGXoMjUh48Jcdmfr7B2j
+         ocTHNLiXH/QY5OcLKcHHL74dTlgaEoteMYa4u3YJ4syj/bxR8LAEQX/Ntyfhh7hminxR
+         qrRvWt3myGI1Aan8NAtvTvdrde+wotpptB1x0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698341024; x=1698945824;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MjCyKU5MtQNKRhUalMMT+7osPR9Bm+U2bHAZcig+q/U=;
+        b=RXAN0AZ18Y/YG/L64aeL/wz6oRYu5l8GpZ+812ENabUlSFCmr3ySZGKzV7mktKVjxJ
+         qinPQKWapPzm1zFvtK/BGCAaBZ5efTmrDDx9lE8t/VbvevszcecAksRH4y4BmW4hFDp3
+         MvNw6JKNwvC87ZhvQNhbI8734QMIK5uw9QGNjvv4i4b7O4h2al1kIwzcNR4XQ0cZpjMv
+         nr/sGTO5pp8kCcfCARKeBa09cH4PO7K3oKIGzyELLUtkG+BUMdNGAcN6fFcPQ6Ic3kKn
+         bQf6UNU5Wx5sl3JfFl6Q6nlpjjVQgSBJCPRBSCrqUljUvbf76uqEFPXkLrk2rIDzpXv4
+         Txxg==
+X-Gm-Message-State: AOJu0YyElG37MIMgWAHbiiRDFqUIq9Ul4K6A2dJeIgnWw5eIpiEHlzy/
+        nbyAR0M6DVnnY75MSQn/haJ3Ww==
+X-Google-Smtp-Source: AGHT+IF7399/OM5BrcFXOLCufSQZJqJZwvqdQhkCoYNF0VGssiBtB1bI+qMz09xlR5vmh4vjcNCJBg==
+X-Received: by 2002:a17:90a:db92:b0:27d:d9c2:6ee5 with SMTP id h18-20020a17090adb9200b0027dd9c26ee5mr182716pjv.9.1698341023789;
+        Thu, 26 Oct 2023 10:23:43 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d7-20020a17090ad98700b0027ceac90684sm1895134pjv.18.2023.10.26.10.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 10:23:43 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 10:23:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] airo: replace deprecated strncpy with strscpy_pad
+Message-ID: <202310261022.1B5587464E@keescook>
+References: <20231017-strncpy-drivers-net-wireless-cisco-airo-c-v1-1-e34d5b3b7e37@google.com>
+ <84ae63d1-671a-48b3-836b-7a12da54aa10@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84ae63d1-671a-48b3-836b-7a12da54aa10@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 16:49:19 +0100, Mark Brown wrote:
-> When we sync the register cache we do so with the cache bypassed in order
-> to avoid overhead from writing the synced values back into the cache. If
-> the regmap has ranges and the selector register for those ranges is in a
-> register which is cached this has the unfortunate side effect of meaning
-> that the physical and cached copies of the selector register can be out of
-> sync after a cache sync. The cache will have whatever the selector was when
-> the sync started and the hardware will have the selector for the register
-> that was synced last.
+On Tue, Oct 17, 2023 at 03:51:58PM -0700, Jeff Johnson wrote:
+> On 10/17/2023 2:12 PM, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> > 
+> > `extra` is clearly supposed to be NUL-terminated which is evident by the
+> > manual NUL-byte assignment as well as its immediate usage with strlen().
+> > 
+> > Moreover, let's NUL-pad since there is deliberate effort (48 instances)
+> > made elsewhere to zero-out buffers in these getters and setters:
+> > 6050 | memset(local->config.nodeName, 0, sizeof(local->config.nodeName));
+> > 6130 | memset(local->config.rates, 0, 8);
+> > 6139 | memset(local->config.rates, 0, 8);
+> > 6414 | memset(key.key, 0, MAX_KEY_SIZE);
+> > 6497 | memset(extra, 0, 16);
+> > (to be clear, strncpy also NUL-padded -- we are matching that behavior)
+> > 
+> > Considering the above, a suitable replacement is `strscpy_pad` due to
+> > the fact that it guarantees both NUL-termination and NUL-padding on the
+> > destination buffer.
+> > 
+> > Technically, we can now copy one less byte into `extra` as we cannot
+> > determine the sizeof `extra` at compile time and the hard-coded value of
+> > 16 means that strscpy_pad() will automatically truncate and set the byte
+> > at offset 15 to NUL. However, the current code manually sets a
+> > NUL-byte at offset 16. If this is an issue, the solution is to change
+> > the hard-coded magic number to 17 instead of 16. I didn't do this in
+> > this patch because a hard-coded 17 seems bad (even more so than 16).
 > 
-> [...]
+> this function is a wext handler. In wext-core.c we have:
+> static const struct iw_ioctl_description standard_ioctl[] = {
+> ...
+> 	[IW_IOCTL_IDX(SIOCGIWNICKN)] = {
+> 		.header_type	= IW_HEADER_TYPE_POINT,
+> 		.token_size	= 1,
+> 		.max_tokens	= IW_ESSID_MAX_SIZE,
+> 	},
+> 
+> So the buffer size is (strangely) IW_ESSID_MAX_SIZE if you want to use that
+> for the buffer size
 
-Applied to
+Yeah, that seems like a good refactor to do at the same time.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+> > -	strncpy(extra, local->config.nodeName, 16);
+> > -	extra[16] = '\0';
+> > +	strscpy_pad(extra, local->config.nodeName, 16);
 
-Thanks!
+Justin, can you respin this with the open-coded "16" updated?
 
-[1/1] regmap: Ensure range selector registers are updated after cache sync
-      commit: 0ec7731655de196bc1e4af99e495b38778109d22
+-Kees
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+Kees Cook
