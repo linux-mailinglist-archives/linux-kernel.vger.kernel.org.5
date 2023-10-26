@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08557D8703
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A76B7D86FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbjJZQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S231442AbjJZQtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 12:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJZQtw (ORCPT
+        with ESMTP id S229815AbjJZQto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 12:49:52 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00A71AE;
-        Thu, 26 Oct 2023 09:49:49 -0700 (PDT)
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6ce353df504so683088a34.3;
-        Thu, 26 Oct 2023 09:49:49 -0700 (PDT)
+        Thu, 26 Oct 2023 12:49:44 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB1A4;
+        Thu, 26 Oct 2023 09:49:43 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7af20c488so8761167b3.1;
+        Thu, 26 Oct 2023 09:49:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698338982; x=1698943782; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=a4/dheoJ9dWHv5mUFQEViTi9AUYQK1a6PHdzoT/e6yo=;
+        b=nUrI6pIPYWF2GXXIolYsKFuJCIWkJ7eKE6aPSAQrZBk8BlieRdtYOWMIyysyz6Erbu
+         c4YUjPqypeMCwqoVgg90Er9ElfIaOcwBsxed0dOA1wC5dGJc85XBVGPbfLVGwXM30NXm
+         o6T1g3vAAJRawLr2iHLmrhpU2eaEgrrMFwrDykQ5NHV5tXHNQjrnEPGAklX9nrwSZhAz
+         VKTHhS7OVwkq+/n5SPEhGCjtDp2OEnl2vKPszstduOMWA9xomQozwRw8ZoXTdhayRHKw
+         b1J5WYIKC5hXf3uL1UOJ7k/BERpCq201QfNZzRAhpgWR5ayJ83OZd1+M276PpeuXcOOd
+         K95w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698338988; x=1698943788;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698338982; x=1698943782;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RtqSxE+Cj1hsQmTK+4OZRpgIIfycTnch7HQYY5KhEog=;
-        b=BPlmZPLZD80mfcVFsqSAGuomfWoCaKYkP0vRr+1BxYlMP9Td4aQNICCx+wEkVnLbP4
-         fipYrstvQio8NsbGqxvx5gqFdZCW/4IIS5CFQ45Cz/SzNex9BWI5IEQLvsPOUsOfHkps
-         2I+t3WDo8ub8zMj5/5xcj9Eb+LxPJwCEGHKaKvKZp+pcLAJ7jyojxcrmbw2RBngzcUo/
-         a4dDhavgUhXjYt8o3q+DYTqDfWA+NjibadvbIm1xl4M9xVpnAFo3cS0bQ1qMXV9XW4YQ
-         jLpTLAnU4qPDWeoJim7gpX01qOBjNUl5/EkcuBt7+L7JfUH6ox4WEStyNN7uwrWt8gJL
-         b5bQ==
-X-Gm-Message-State: AOJu0YxEJna8ujn6HBuXT8jrTrIanzG8c7qTUOqY1lnsVtxqRlcIuqU0
-        rzii1Df7N7ZFJpuxk7RTQwqk2PYAP0ccEA==
-X-Google-Smtp-Source: AGHT+IGrUz1xrXBah/KAgmvMjA872kopPK+jai+gKl9F2xZA2EieLJG/gN9NBwD/vuMFQtDHndS07Q==
-X-Received: by 2002:a9d:7ac6:0:b0:6bd:63b:4b21 with SMTP id m6-20020a9d7ac6000000b006bd063b4b21mr20187806otn.15.1698338988693;
-        Thu, 26 Oct 2023 09:49:48 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id fk1-20020a05690c334100b005ad586d2691sm2525631ywb.43.2023.10.26.09.49.48
+        bh=a4/dheoJ9dWHv5mUFQEViTi9AUYQK1a6PHdzoT/e6yo=;
+        b=ZQF2ej9mUoP2WzaLU67z/H62K5F7otkUBSsjZbb+kHGwvjCuNvZMvHt4CDkbbLQZ4u
+         LCmebJ357J927kp7UJeYiWfrrRXM5oOO01rJ6h+rGZyE0w3Se28dQfpWAAahdbS6Y0bU
+         MTDY81jA1XHvTcF/Uci2Cn1rzPf26EdPXQCddIZLQLuR91wXF2w1wRlxdCf1Fk5laGzo
+         IEthHJFq3NKQw8xuXg1ACWGFvZ1gYoSCPHsqdjyBdlwjut3iKpocn/nv/DYGuSB8PC24
+         nLBPo6EqlmTZ0UevfGTT8/7aIG4tQ++LBWlUZnnGqoYdJY1581P0bJRN4Y7r/1XAdYN9
+         g5jA==
+X-Gm-Message-State: AOJu0Yx3APZ16/GGBnxxonpsonMkaKlJ9QBaCDn9XRqxXX5JVvtwz+qZ
+        0WIZAOOzApILJgbZflKX0A61Gk32vJE=
+X-Google-Smtp-Source: AGHT+IEZH5OKoPGaiv6CJCTTJp/omGpCAA5guxIyAY5G6BFI5PG7LpEBLMTaAvAPxhZu9EyZWL0V1w==
+X-Received: by 2002:a0d:e20a:0:b0:59b:fb69:1639 with SMTP id l10-20020a0de20a000000b0059bfb691639mr20136914ywe.32.1698338982254;
+        Thu, 26 Oct 2023 09:49:42 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t78-20020a818351000000b0059b4e981fe6sm6083009ywf.102.2023.10.26.09.49.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 09:49:48 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so790829276.2;
-        Thu, 26 Oct 2023 09:49:48 -0700 (PDT)
-X-Received: by 2002:a25:374a:0:b0:da0:3b6c:fc22 with SMTP id
- e71-20020a25374a000000b00da03b6cfc22mr8654234yba.31.1698338988025; Thu, 26
- Oct 2023 09:49:48 -0700 (PDT)
+        Thu, 26 Oct 2023 09:49:41 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <fd996a28-99e6-ea69-df0e-49cf68780d16@roeck-us.net>
+Date:   Thu, 26 Oct 2023 09:49:40 -0700
 MIME-Version: 1.0
-References: <20231026164114.2488682-1-hannes@cmpxchg.org>
-In-Reply-To: <20231026164114.2488682-1-hannes@cmpxchg.org>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Thu, 26 Oct 2023 17:49:36 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnQ56cm4Txgy5EhGYvR+Jt4s-KVgoA9_65HKWVMOXp7a9A@mail.gmail.com>
-Message-ID: <CAMw=ZnQ56cm4Txgy5EhGYvR+Jt4s-KVgoA9_65HKWVMOXp7a9A@mail.gmail.com>
-Subject: Re: [PATCH] sched: psi: fix unprivileged polling against cgroups
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] hwmon: (pmbus/max31785) Add delay between bus accesses
+Content-Language: en-US
+To:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>
+Cc:     "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "ninad@linux.ibm.com" <ninad@linux.ibm.com>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231023180804.3068154-1-lakshmiy@us.ibm.com>
+ <bbbf3668-aa7a-4489-85b0-333cf394abe9@roeck-us.net>
+ <25390DC7-E8FF-4706-B241-C45E6DFDF444@us.ibm.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <25390DC7-E8FF-4706-B241-C45E6DFDF444@us.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 17:41, Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> 519fabc7aaba ("psi: remove 500ms min window size limitation for
-> triggers") breaks unprivileged psi polling on cgroups.
->
-> Historically, we had a privilege check for polling in the open() of a
-> pressure file in /proc, but were erroneously missing it for the open()
-> of cgroup pressure files.
->
-> When unprivileged polling was introduced in d82caa273565 ("sched/psi:
-> Allow unprivileged polling of N*2s period"), it needed to filter
-> privileges depending on the exact polling parameters, and as such
-> moved the CAP_SYS_RESOURCE check from the proc open() callback to
-> psi_trigger_create(). Both the proc files as well as cgroup files go
-> through this during write(). This implicitly added the missing check
-> for privileges required for HT polling for cgroups.
->
-> When 519fabc7aaba ("psi: remove 500ms min window size limitation for
-> triggers") followed right after to remove further restrictions on the
-> RT polling window, it incorrectly assumed the cgroup privilege check
-> was still missing and added it to the cgroup open(), mirroring what we
-> used to do for proc files in the past.
->
-> As a result, unprivileged poll requests that would be supported now
-> get rejected when opening the cgroup pressure file for writing.
->
-> Remove the cgroup open() check. psi_trigger_create() handles it.
->
-> Fixes: 519fabc7aaba ("psi: remove 500ms min window size limitation for triggers")
-> Cc: stable@vger.kernel.org # 6.5+
-> Reported-by: Luca Boccassi <bluca@debian.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On 10/26/23 07:48, Lakshmi Yadlapati wrote:
+> Thank you Guenter!
+> Should I fix and send the patch again?
+> 
 
-Acked-by: Luca Boccassi <bluca@debian.org>
+Please do. And don't top-post.
 
-Thank you very much for the quick fix - this was reported originally
-on the systemd bug tracker by Daniel Black (I do not have an email
-address):
+Thanks,
+Guenter
 
-https://github.com/systemd/systemd/issues/29723
+> ﻿On 10/25/23, 7:48 PM, "Guenter Roeck" <groeck7@gmail.com <mailto:groeck7@gmail.com> on behalf of linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
+> 
+> 
+> On Mon, Oct 23, 2023 at 01:08:03PM -0500, Lakshmi Yadlapati wrote:
+>> Changes since V1:
+>> 1. Changed the max31785_wait macro to a function, following the conventions
+>> used in other drivers that had the same issue.
+>> 2. Changed the function names from max31785_i2c_smbus* to max31785_i2c_* and
+>> from max31785_pmbus_* to _max31785_*, making them more concise.
+>>
+> 
+> 
+> Please check Documentation/process/submitting-patches.rst
+> for the expected patch format, specifically details on how
+> description and change log are supposed to look like.
+> 
+> 
+> Guenter
+> 
+> 
+> 
 
-It is very important for systemd services to be able to do this
-without capabilities, as using capabilities means in turn user
-namespaces cannot be used (PrivateUsers=yes in systemd parlance).
-
-Kind regards,
-Luca Boccassi
