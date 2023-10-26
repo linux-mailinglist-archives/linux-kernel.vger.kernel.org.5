@@ -2,138 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311AE7D84F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115437D8508
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345303AbjJZOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S1345313AbjJZOox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234902AbjJZOmI (ORCPT
+        with ESMTP id S234902AbjJZOou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:42:08 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6500F91;
-        Thu, 26 Oct 2023 07:42:06 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58686e94ad7so551503eaf.3;
-        Thu, 26 Oct 2023 07:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698331325; x=1698936125; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kTnrh9xoZy325r5v7+bzRAng/mUcspwJrrB2m/Qv9HA=;
-        b=lvzG3+BLbPbGD1s1hxOi/fKIq72r1YHhXePIrdDJ96BU6nvtwYlu09qXZm+GcjXccP
-         DUFlw2RWAYw8rY4qI64A8NxtthcEqZ1mc/F4rkf6mS7Kpz7nAxSbdRbFCi1c6Vb5gRlX
-         /7KC98ytcVOL36THRGaz7gBWdiK6L2nbfeBIfiHgOVrLS5iyok2g4WQxeFyKUC39Puxj
-         JKHeGuNUIpB6AIDd0+UwX6a082hySYEnquKW4VpSYI0UZ1QTq8/ZIGOGNFfdyITIeL7V
-         KSFki9avL4sMSxYzRyXHmn8KGngP0BxukociROa8xSCxBnL+8JZe+zwvUsDkXtLYLwvy
-         8DLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698331325; x=1698936125;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kTnrh9xoZy325r5v7+bzRAng/mUcspwJrrB2m/Qv9HA=;
-        b=kfDnrxuClXxKPM2fe575V4b2yh+KQtIiTNfT9rQ693nXpO6XDA9HEgV9i7UrkQO85q
-         am6kpYaAjlW0KYswSQdogpkphHPUxsOBcHoQJ+cpSUUFdvVl8DKREu9PHIrMqY4tHfti
-         ifejF2LfCPwbTSYOGhLeIL1K7KbwlSHEW+wAqGL8oxG7vpSoHoZKb6DHw9cs/MmlCndH
-         9J7tjp5xAZ67jGtvG4uO2XFhbTa3GIarkiRwODH//JGBdTwc7DYnhZgsJLIWiklcyfEX
-         I64Td/PS48U5woRKYMFnU/znOtkDJ+sOZ+mM98SJEcZfxq6PXx/uQjtuzGwbjzqSGt77
-         QKhw==
-X-Gm-Message-State: AOJu0YxyPtzsICzhH8gTyJ0ZYJ9br03fCvkoKVcxMYeE68E78qWQ6ztw
-        929FyD2PFqzbaStlaEg9jv4jF+5sh1w=
-X-Google-Smtp-Source: AGHT+IEEQsRl4/c+fXa8rnHxnlQFPUJqQ6KTzRzKF01/jKEFpzu2E/6LwxmyMT6+91DypG8HtNmCKw==
-X-Received: by 2002:a05:6359:639d:b0:169:92d:64c5 with SMTP id sg29-20020a056359639d00b00169092d64c5mr5470513rwb.32.1698331325472;
-        Thu, 26 Oct 2023 07:42:05 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o5-20020a0de505000000b0057085b18cddsm6067255ywe.54.2023.10.26.07.42.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 07:42:05 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <567f7feb-db79-58b8-f72c-d3c69b7b4369@roeck-us.net>
-Date:   Thu, 26 Oct 2023 07:42:03 -0700
+        Thu, 26 Oct 2023 10:44:50 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506BD1AA;
+        Thu, 26 Oct 2023 07:44:48 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39QCiU0l024121;
+        Thu, 26 Oct 2023 10:44:32 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3ty72k6q12-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 10:44:32 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 39QEiU8D010649
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Oct 2023 10:44:30 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 26 Oct 2023 10:44:29 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 26 Oct 2023 10:44:29 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 26 Oct 2023 10:44:29 -0400
+Received: from daniel-Precision-5530.ad.analog.com ([10.48.65.198])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39QEiEiv031489;
+        Thu, 26 Oct 2023 10:44:17 -0400
+From:   Daniel Matyas <daniel.matyas@analog.com>
+CC:     Daniel Matyas <daniel.matyas@analog.com>,
+        kernel test robot <lkp@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 1/4] hwmon: max31827: Handle new properties from the devicetree
+Date:   Thu, 26 Oct 2023 17:44:01 +0300
+Message-ID: <20231026144405.546822-1-daniel.matyas@analog.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] hwmon: (asus-ec-sensors) add ROG Crosshair X670E Gene.
-Content-Language: en-US
-To:     Ellie Hermaszewska <kernel@monoid.al>
-Cc:     eugene.shalygin@gmail.com, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
- <20231019135640.434752-1-kernel@monoid.al>
- <d013e9a3-df0a-4b8f-a1f3-db3cbd32812f@roeck-us.net>
- <b81ae275-d3ac-4565-a09a-4a5ce38fadf1@monoid.al>
- <3a8fd5d6-9b79-76de-80fe-b39e24510dec@roeck-us.net>
- <df22c0f4-671f-4108-85a0-d1667ec1da77@monoid.al>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <df22c0f4-671f-4108-85a0-d1667ec1da77@monoid.al>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: e-zsm7FdMSo8LYQFMuuXaldwCwOnPovq
+X-Proofpoint-GUID: e-zsm7FdMSo8LYQFMuuXaldwCwOnPovq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_13,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 clxscore=1011 priorityscore=1501
+ adultscore=0 malwarescore=0 spamscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2310170000 definitions=main-2310260127
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/23 03:41, Ellie Hermaszewska wrote:
-> On 10/26/23 13:01, Guenter Roeck wrote:
->> On 10/25/23 21:46, Ellie Hermaszewska wrote:
->>> On 10/26/23 03:35, Guenter Roeck wrote:
->>>  > This is not an acceptable commit description.
->>>
->>> This is not acceptable feedback.
->>>
->>> I am unable to accept it because it is not clear to me what you think
->>> should be changed.
->>>
->>> Is it because I misplaced the message to Eugene? Is it because of the
->>> Greek characters? Is is not descriptive enough of the change, or in the
->>> wrong tense, or has incorrect punctuation? Do I need to include my
->>> testing methodology?
->>>
->>> If it's only something minor, then please also feel free to correct it
->>> yourself before applying. If you can't or it's not something minor,
->>> then please let me know what ought to change and I can try to correct it.
->>>
->>> If you don't let me know, then I will have to guess and possibly waste everyone's time further.
->>>
->>
->> Please consider reading and following the directions in
->> Documentation/process/submitting-patches.rst.
-> 
-> I will guess that it was my misplaced reply, and submit again without that part.
-> 
+Used fwnode to retrieve data from the devicetree in the init_client
+function.
 
- From the document:
+If the uint32 properties are not present, the default values are used
+for max31827 chip.
 
- > Other comments relevant only to the moment or the maintainer, not
- > suitable for the permanent changelog, should also go here. A good
- > example of such comments might be ``patch changelogs`` which describe
- > what has changed between the v1 and v2 version of the patch.
+Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+---
 
- > Please put this information **after** the ``---`` line which separates
- > the changelog from the rest of the patch. The version information is
- > not part of the changelog which gets committed to the git tree. It is
- > additional information for the reviewers. If it's placed above the
- > commit tags, it needs manual interaction to remove it. If it is below
- > the separator line, it gets automatically stripped off when applying the
- > patch::
- > ...
- > [ ... ] When sending a next
- > version, add a ``patch changelog`` to the cover letter or to individual patches
- > explaining difference against previous submission
+v4 -> v5: Removed comment from __bf_shf() and used ffs() instead of
+ffs64().
+Added tabs where there was a need.
+Removed i2c_client from private structure. In init_client() passed
+device structure, because I only used that.
+Changed error message when the data in adi,fault-q is invalid.
+Fwnode is initialized in init_client().
 
-Keeping the patch description clean does not mean to _drop_ the changelog
-or additional information not intended to be added to the commit.
+v3 -> v4: Renamed property names to correspond with binding.
 
-Guenter
+v2 -> v3: Separated patch into 2. Fixed 'WARNING: Unexpected
+indentation.'
+Reported-by: kernel test robot <lkp@intel.com>
+
+v2: Added patch.
+
+ Documentation/hwmon/max31827.rst | 48 +++++++++++++++++++-----
+ drivers/hwmon/max31827.c         | 64 +++++++++++++++++++++++++++++---
+ 2 files changed, 97 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/hwmon/max31827.rst b/Documentation/hwmon/max31827.rst
+index 9a1055a007cf..a8bbfb85dd02 100644
+--- a/Documentation/hwmon/max31827.rst
++++ b/Documentation/hwmon/max31827.rst
+@@ -52,13 +52,21 @@ MAX31827 has low and over temperature alarms with an effective value and a
+ hysteresis value: -40 and -30 degrees for under temperature alarm and +100 and
+ +90 degrees for over temperature alarm.
+ 
+-The alarm can be configured in comparator and interrupt mode. Currently only
+-comparator mode is implemented. In Comparator mode, the OT/UT status bits have a
+-value of 1 when the temperature rises above the TH value or falls below TL,
+-which is also subject to the Fault Queue selection. OT status returns to 0 when
+-the temperature drops below the TH_HYST value or when shutdown mode is entered.
+-Similarly, UT status returns to 0 when the temperature rises above TL_HYST value
+-or when shutdown mode is entered.
++The alarm can be configured in comparator and interrupt mode from the
++devicetree. In Comparator mode, the OT/UT status bits have a value of 1 when the
++temperature rises above the TH value or falls below TL, which is also subject to
++the Fault Queue selection. OT status returns to 0 when the temperature drops
++below the TH_HYST value or when shutdown mode is entered. Similarly, UT status
++returns to 0 when the temperature rises above TL_HYST value or when shutdown
++mode is entered.
++
++In interrupt mode exceeding TH also sets OT status to 1, which remains set until
++a read operation is performed on the configuration/status register (max or min
++attribute); at this point, it returns to 0. Once OT status is set to 1 from
++exceeding TH and reset, it is set to 1 again only when the temperature drops
++below TH_HYST. The output remains asserted until it is reset by a read. It is
++set again if the temperature rises above TH, and so on. The same logic applies
++to the operation of the UT status bit.
+ 
+ Putting the MAX31827 into shutdown mode also resets the OT/UT status bits. Note
+ that if the mode is changed while OT/UT status bits are set, an OT/UT status
+@@ -68,6 +76,18 @@ clear the status bits before changing the operating mode.
+ 
+ The conversions can be manual with the one-shot functionality and automatic with
+ a set frequency. When powered on, the chip measures temperatures with 1 conv/s.
++The conversion rate can be modified with update_interval attribute of the chip.
++Conversion/second = 1/update_interval. Thus, the available options according to
++the data sheet are:
++
++- 64000 (ms) = 1 conv/64 sec
++- 32000 (ms) = 1 conv/32 sec
++- 16000 (ms) = 1 conv/16 sec
++- 4000 (ms) = 1 conv/4 sec
++- 1000 (ms) = 1 conv/sec (default)
++- 250 (ms) = 4 conv/sec
++- 125 (ms) = 8 conv/sec
++
+ Enabling the device when it is already enabled has the side effect of setting
+ the conversion frequency to 1 conv/s. The conversion time varies depending on
+ the resolution. The conversion time doubles with every bit of increased
+@@ -83,8 +103,18 @@ in the writing of alarm values too. For positive numbers the user-input value
+ will always be rounded down to the nearest possible value, for negative numbers
+ the user-input will always be rounded up to the nearest possible value.
+ 
++Bus timeout resets the I2C-compatible interface when SCL is low for more than
++30ms (nominal).
++
++Alarm polarity determines if the active state of the alarm is low or high. The
++behavior for both settings is dependent on the Fault Queue setting. The ALARM
++pin is an open-drain output and requires a pullup resistor to operate.
++
++The Fault Queue bits select how many consecutive temperature faults must occur
++before overtemperature or undertemperature faults are indicated in the
++corresponding status bits.
++
+ Notes
+ -----
+ 
+-Currently fault queue, alarm polarity and resolution cannot be modified.
+-PEC is not implemented either.
++PEC and resolution are not implemented.
+diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
+index 614bbf5d25fa..7976d668ffd4 100644
+--- a/drivers/hwmon/max31827.c
++++ b/drivers/hwmon/max31827.c
+@@ -12,6 +12,13 @@
+ #include <linux/i2c.h>
+ #include <linux/mutex.h>
+ #include <linux/regmap.h>
++#include <linux/of_device.h>
++
++#define max31827__bf_shf(x)			 \
++	({					 \
++		typeof(x) x_ = (x);		 \
++		((x_) != 0) ? __ffs(x_) : 0x0; \
++	})
+ 
+ #define MAX31827_T_REG			0x0
+ #define MAX31827_CONFIGURATION_REG	0x2
+@@ -22,6 +29,11 @@
+ 
+ #define MAX31827_CONFIGURATION_1SHOT_MASK	BIT(0)
+ #define MAX31827_CONFIGURATION_CNV_RATE_MASK	GENMASK(3, 1)
++#define MAX31827_CONFIGURATION_TIMEOUT_MASK	BIT(5)
++#define MAX31827_CONFIGURATION_RESOLUTION_MASK	GENMASK(7, 6)
++#define MAX31827_CONFIGURATION_ALRM_POL_MASK	BIT(8)
++#define MAX31827_CONFIGURATION_COMP_INT_MASK	BIT(9)
++#define MAX31827_CONFIGURATION_FLT_Q_MASK	GENMASK(11, 10)
+ #define MAX31827_CONFIGURATION_U_TEMP_STAT_MASK	BIT(14)
+ #define MAX31827_CONFIGURATION_O_TEMP_STAT_MASK	BIT(15)
+ 
+@@ -361,14 +373,54 @@ static int max31827_write(struct device *dev, enum hwmon_sensor_types type,
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int max31827_init_client(struct max31827_state *st)
++static int max31827_init_client(struct max31827_state *st,
++				struct device *dev)
+ {
++	struct fwnode_handle *fwnode;
++	unsigned int res = 0;
++	u32 data, lsb_idx;
++	bool prop;
++	int ret;
++
++	fwnode = dev_fwnode(dev);
++
+ 	st->enable = true;
++	res |= MAX31827_DEVICE_ENABLE(1);
++
++	res |= MAX31827_CONFIGURATION_RESOLUTION_MASK;
++
++	prop = fwnode_property_read_bool(fwnode, "adi,comp-int");
++	res |= FIELD_PREP(MAX31827_CONFIGURATION_COMP_INT_MASK, prop);
++
++	prop = fwnode_property_read_bool(fwnode, "adi,timeout-enable");
++	res |= FIELD_PREP(MAX31827_CONFIGURATION_TIMEOUT_MASK, !prop);
++
++	if (fwnode_property_present(fwnode, "adi,alarm-pol")) {
++		ret = fwnode_property_read_u32(fwnode, "adi,alarm-pol", &data);
++		if (ret)
++			return ret;
++
++		res |= FIELD_PREP(MAX31827_CONFIGURATION_ALRM_POL_MASK, !!data);
++	}
++
++	if (fwnode_property_present(fwnode, "adi,fault-q")) {
++		ret = fwnode_property_read_u32(fwnode, "adi,fault-q", &data);
++		if (ret)
++			return ret;
++
++		/*
++		 * Convert the desired fault queue into register bits.
++		 */
++		lsb_idx = max31827__bf_shf(data);
++		if (lsb_idx > 3 || data != BIT(lsb_idx)) {
++			dev_err(dev, "Invalid data in adi,fault-q\n");
++			return -EINVAL;
++		}
++
++		res |= FIELD_PREP(MAX31827_CONFIGURATION_FLT_Q_MASK, lsb_idx);
++	}
+ 
+-	return regmap_update_bits(st->regmap, MAX31827_CONFIGURATION_REG,
+-				  MAX31827_CONFIGURATION_1SHOT_MASK |
+-					  MAX31827_CONFIGURATION_CNV_RATE_MASK,
+-				  MAX31827_DEVICE_ENABLE(1));
++	return regmap_write(st->regmap, MAX31827_CONFIGURATION_REG, res);
+ }
+ 
+ static const struct hwmon_channel_info *max31827_info[] = {
+@@ -412,7 +464,7 @@ static int max31827_probe(struct i2c_client *client)
+ 		return dev_err_probe(dev, PTR_ERR(st->regmap),
+ 				     "Failed to allocate regmap.\n");
+ 
+-	err = max31827_init_client(st);
++	err = max31827_init_client(st, dev);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.34.1
 
