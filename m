@@ -2,255 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4197D8019
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4104C7D8016
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjJZJ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        id S229885AbjJZJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjJZJ4O (ORCPT
+        with ESMTP id S229518AbjJZJz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:56:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CBF93
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698314127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zyWJrVb8i16NmtX1jUj9T8HsL1UYZG7szk+M19SAoeM=;
-        b=g+wdLQ2R2DukESUWXXgCqSy6y0cdG3xhkitubY6oB5WEaEClNZSyusfmTF/FFVaqf470/w
-        YQSKbktucUgzhvzD9tOkjpJoWK9pmr1El9M17N1mytIFA6E+y4oFWY9Oy6EVy23FNYvPfz
-        /vw/bfFRK6ivrDzg9n2+l6fse1Mdyc0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-654-v9wgk7aZM-KwCqVvp5tUqA-1; Thu, 26 Oct 2023 05:55:25 -0400
-X-MC-Unique: v9wgk7aZM-KwCqVvp5tUqA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C38A68C7EC3;
-        Thu, 26 Oct 2023 09:55:24 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.45.224.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B29C71C060AE;
-        Thu, 26 Oct 2023 09:55:23 +0000 (UTC)
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for v6.6-rc8
-Date:   Thu, 26 Oct 2023 11:55:10 +0200
-Message-ID: <20231026095510.23688-1-pabeni@redhat.com>
+        Thu, 26 Oct 2023 05:55:57 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D10C18F
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:55:53 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso501839f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698314152; x=1698918952; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HzK9VMU7biBwtYpWfbq1vfPfka6gtKA3XTGeKlqZMFE=;
+        b=Fno3gG18vOTZRYljWTZeujrdphCFq6DqvpJtzIaSApJwJeTGXh/HJIvVb3HhjxilJl
+         ES5IS03SGPBVQkxNcScFRr1nRPCVaQkM9IQDAi7ZaKNUgR9ZIMTJX3dKHBk6OU8GxAvb
+         tOiU826I+4rxGcUPoR0TjVyGwVP+5ZK1nxh/5a8288rpt9ECOfd+3QjoAGmZKbqg8sdy
+         39n/vuX3CayW28PzDpQcHv8+ETvtyIKPzL+o6WoGoqU2wBvjQ8jpXUmR59q/zXbvURNC
+         Sfi/8prPZJoa8dFjQHQJ9yWUJP5wLFb34sAhprC+LcjzaTzu6bY0Pi2yjcZX54rZnciw
+         mFjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698314152; x=1698918952;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HzK9VMU7biBwtYpWfbq1vfPfka6gtKA3XTGeKlqZMFE=;
+        b=j/f9rU97jWxpPdoBVaOdAZjCbThJPudyBX6qshicBQ453cr+LsEZNTRN1Oz3eI5qsH
+         +MnkuxN2o+rGyb2qF3BsJxD0cOrOpNzzzk9s3AYu4ljpTaE/KHU6btCWLr4Iwb6r4g2X
+         XtJbNaUoi2EF5FeGiJK6hlsh+ig+ioRi3s4xKFVvpl4gsFQ4zqvz3fC2Ifc/dH+fAGyM
+         Z8cTeJS1QrBpupmGtRExXhDTkbZwjmGbvlN7f2zrWAIpfKS4/gGLwV6zB4bb39arXdfm
+         virZT6K/IbW4eqQiybrD1xLXDYyxwe9KEiZi3oCgoi5UbKhh8XV/B/GwvEAFxYbrgDj1
+         c52A==
+X-Gm-Message-State: AOJu0YycNqffksqqWmGrTwLO5Rh93CCx9ykV2bf4LexkfuQmwopLFwWb
+        I6gfUzYcjanzPH6Hu+AvwDLdUA==
+X-Google-Smtp-Source: AGHT+IFb0olVf7k+kG9TMpqi8I49DaAUrabsj77Wjiv7YCbMUEoPbXGZ2VvBCXxZiIXUx1mwSdp7Ww==
+X-Received: by 2002:adf:ef48:0:b0:32d:84a3:f3fe with SMTP id c8-20020adfef48000000b0032d84a3f3femr12620181wrp.41.1698314151935;
+        Thu, 26 Oct 2023 02:55:51 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f57f:eb08:d29b:8c9c? ([2a01:e0a:982:cbb0:f57f:eb08:d29b:8c9c])
+        by smtp.gmail.com with ESMTPSA id n12-20020adfe78c000000b00326f0ca3566sm13990599wrm.50.2023.10.26.02.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 02:55:51 -0700 (PDT)
+Message-ID: <24ee41f5-1eb3-4f46-b198-a3123a64a39c@linaro.org>
+Date:   Thu, 26 Oct 2023 11:55:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 7/8] drm/msm: dsi: add support for DSI-PHY on SM8650
+Content-Language: en-US, fr
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025-topic-sm8650-upstream-mdss-v1-0-bb219b8c7a51@linaro.org>
+ <20231025-topic-sm8650-upstream-mdss-v1-7-bb219b8c7a51@linaro.org>
+ <CAA8EJpr+QGBFchG9aXJLxyhbMwMWZF6RjSVOpORkP_KFrV=P1A@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CAA8EJpr+QGBFchG9aXJLxyhbMwMWZF6RjSVOpORkP_KFrV=P1A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+On 25/10/2023 10:03, Dmitry Baryshkov wrote:
+> On Wed, 25 Oct 2023 at 10:35, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> Add DSI PHY support for the SM8650 platform.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+>>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c     |  2 ++
+>>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h     |  1 +
+>>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 27 +++++++++++++++++++++++++++
+>>   3 files changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+>> index 05621e5e7d63..7612be6c3618 100644
+>> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+>> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+>> @@ -585,6 +585,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
+>>            .data = &dsi_phy_5nm_8450_cfgs },
+>>          { .compatible = "qcom,sm8550-dsi-phy-4nm",
+>>            .data = &dsi_phy_4nm_8550_cfgs },
+>> +       { .compatible = "qcom,sm8650-dsi-phy-4nm",
+>> +         .data = &dsi_phy_4nm_8650_cfgs },
+>>   #endif
+>>          {}
+>>   };
+>> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+>> index 8b640d174785..e4275d3ad581 100644
+>> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+>> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+>> @@ -62,6 +62,7 @@ extern const struct msm_dsi_phy_cfg dsi_phy_7nm_7280_cfgs;
+>>   extern const struct msm_dsi_phy_cfg dsi_phy_5nm_8350_cfgs;
+>>   extern const struct msm_dsi_phy_cfg dsi_phy_5nm_8450_cfgs;
+>>   extern const struct msm_dsi_phy_cfg dsi_phy_4nm_8550_cfgs;
+>> +extern const struct msm_dsi_phy_cfg dsi_phy_4nm_8650_cfgs;
+>>
+>>   struct msm_dsi_dphy_timing {
+>>          u32 clk_zero;
+>> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+>> index 3b1ed02f644d..c66193f2dc0d 100644
+>> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+>> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+>> @@ -1121,6 +1121,10 @@ static const struct regulator_bulk_data dsi_phy_7nm_37750uA_regulators[] = {
+>>          { .supply = "vdds", .init_load_uA = 37550 },
+>>   };
+>>
+>> +static const struct regulator_bulk_data dsi_phy_7nm_98000uA_regulators[] = {
+>> +       { .supply = "vdds", .init_load_uA = 98000 },
+>> +};
+>> +
+>>   static const struct regulator_bulk_data dsi_phy_7nm_97800uA_regulators[] = {
+>>          { .supply = "vdds", .init_load_uA = 97800 },
+>>   };
+>> @@ -1281,3 +1285,26 @@ const struct msm_dsi_phy_cfg dsi_phy_4nm_8550_cfgs = {
+>>          .num_dsi_phy = 2,
+>>          .quirks = DSI_PHY_7NM_QUIRK_V5_2,
+>>   };
+>> +
+>> +const struct msm_dsi_phy_cfg dsi_phy_4nm_8650_cfgs = {
+> 
+> So, this is the same as sm8550 config, just using 400 uA less? I
+> wonder if it makes sense to go for setting the regulator mode instead
+> of setting the load.
 
-The following changes since commit ce55c22ec8b223a90ff3e084d842f73cfba35588:
+I have no idea, we keep changing this but indeed we should instead change
+the regulator mode, it's safer to keep it that way until we figure that out.
 
-  Merge tag 'net-6.6-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-10-19 12:08:18 -0700)
+I'll double check anyway
 
-are available in the Git repository at:
+> 
+> Nevertheless (unless you'd like to reuse sm8550 config entry):
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.6-rc8
+Thanks,
+Neil
 
-for you to fetch changes up to 53798666648af3aa0dd512c2380576627237a800:
-
-  iavf: in iavf_down, disable queues when removing the driver (2023-10-25 17:48:31 -0700)
-
-----------------------------------------------------------------
-Including fixes from WiFi and netfilter.
-
-Most regressions addressed here come from quite old versions, with
-the exceptions of the iavf one and the WiFi fixes. No known
-outstanding reports or investigation.
-
-Fixes to fixes:
-
- - eth: iavf: in iavf_down, disable queues when removing the driver
-
-Previous releases - regressions:
-
- - sched: act_ct: additional checks for outdated flows
-
- - tcp: do not leave an empty skb in write queue
-
- - tcp: fix wrong RTO timeout when received SACK reneging
-
- - wifi: cfg80211: pass correct pointer to rdev_inform_bss()
-
- - eth: i40e: sync next_to_clean and next_to_process for programming status desc
-
- - eth: iavf: initialize waitqueues before starting watchdog_task
-
-Previous releases - always broken:
-
- - eth: r8169: fix data-races
-
- - eth: igb: fix potential memory leak in igb_add_ethtool_nfc_entry
-
- - eth: r8152: avoid writing garbage to the adapter's registers
-
- - eth: gtp: fix fragmentation needed check with gso
-
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-
-----------------------------------------------------------------
-Alexandru Matei (1):
-      vsock/virtio: initialize the_virtio_vsock before using VQs
-
-Anjali Kulkarni (1):
-      Fix NULL pointer dereference in cn_filter()
-
-Avraham Stern (1):
-      wifi: mac80211: don't drop all unprotected public action frames
-
-Ben Greear (1):
-      wifi: cfg80211: pass correct pointer to rdev_inform_bss()
-
-Christophe JAILLET (1):
-      net: ieee802154: adf7242: Fix some potential buffer overflow in adf7242_stats_show()
-
-David S. Miller (1):
-      Merge branch 'r8152-reg-garbage'
-
-Dell Jin (1):
-      net: ethernet: adi: adin1110: Fix uninitialized variable
-
-Deming Wang (2):
-      net: ipv4: fix typo in comments
-      net: ipv6: fix typo in comments
-
-Douglas Anderson (8):
-      r8152: Increase USB control msg timeout to 5000ms as per spec
-      r8152: Run the unload routine if we have errors during probe
-      r8152: Cancel hw_phy_work if we have an error in probe
-      r8152: Release firmware if we have an error in probe
-      r8152: Check for unplug in rtl_phy_patch_request()
-      r8152: Check for unplug in r8153b_ups_en() / r8153c_ups_en()
-      r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
-      r8152: Block future register access if register access fails
-
-Eric Dumazet (2):
-      net: do not leave an empty skb in write queue
-      neighbour: fix various data-races
-
-Fred Chen (1):
-      tcp: fix wrong RTO timeout when received SACK reneging
-
-Ivan Vecera (2):
-      i40e: Fix I40E_FLAG_VF_VLAN_PRUNING value
-      i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
-
-Jakub Kicinski (2):
-      Merge tag 'wireless-2023-10-24' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless
-      Merge tag 'nf-23-10-25' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-Johannes Berg (1):
-      wifi: cfg80211: fix assoc response warning on failed links
-
-Kunwu Chan (2):
-      treewide: Spelling fix in comment
-      isdn: mISDN: hfcsusb: Spelling fix in comment
-
-Maciej Fijalkowski (1):
-      i40e: xsk: remove count_mask
-
-Mateusz Palczewski (1):
-      igb: Fix potential memory leak in igb_add_ethtool_nfc_entry
-
-Michael Sit Wei Hong (1):
-      net: stmmac: update MAC capabilities when tx queues are updated
-
-Michal Schmidt (2):
-      iavf: initialize waitqueues before starting watchdog_task
-      iavf: in iavf_down, disable queues when removing the driver
-
-Mirsad Goran Todorovac (3):
-      r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx
-      r8169: fix the KCSAN reported data-race in rtl_tx while reading TxDescArray[entry].opts1
-      r8169: fix the KCSAN reported data race in rtl_rx while reading desc->opts1
-
-Moritz Wanzenböck (1):
-      net/handshake: fix file ref count in handshake_nl_accept_doit()
-
-Pablo Neira Ayuso (3):
-      gtp: uapi: fix GTPA_MAX
-      gtp: fix fragmentation needed check with gso
-      netfilter: flowtable: GC pushes back packets to classic path
-
-Paolo Abeni (1):
-      Merge branch 'gtp-tunnel-driver-fixes'
-
-Pieter Jansen van Vuuren (1):
-      sfc: cleanup and reduce netlink error messages
-
-Rob Herring (1):
-      net: xgene: Fix unused xgene_enet_of_match warning for !CONFIG_OF
-
-Sasha Neftin (1):
-      igc: Fix ambiguity in the ethtool advertising
-
-Shigeru Yoshida (1):
-      net: usb: smsc95xx: Fix uninit-value access in smsc95xx_read_reg
-
-Su Hui (1):
-      net: chelsio: cxgb4: add an error code check in t4_load_phy_fw
-
-Tirthendu Sarkar (1):
-      i40e: sync next_to_clean and next_to_process for programming status desc
-
-Vlad Buslov (1):
-      net/sched: act_ct: additional checks for outdated flows
-
- drivers/connector/cn_proc.c                       |   2 +-
- drivers/isdn/hardware/mISDN/hfcsusb.c             |   2 +-
- drivers/net/ethernet/adi/adin1110.c               |   2 +-
- drivers/net/ethernet/apm/xgene/xgene_enet_main.c  |   2 +-
- drivers/net/ethernet/chelsio/cxgb4/t4_hw.c        |   2 +
- drivers/net/ethernet/intel/i40e/i40e.h            |   2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c       |  11 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c        |  22 +-
- drivers/net/ethernet/intel/iavf/iavf_main.c       |   7 +-
- drivers/net/ethernet/intel/igb/igb_ethtool.c      |   6 +-
- drivers/net/ethernet/intel/igc/igc_ethtool.c      |  35 ++-
- drivers/net/ethernet/realtek/r8169_main.c         |   6 +-
- drivers/net/ethernet/sfc/tc.c                     |  38 +--
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |  17 +-
- drivers/net/ethernet/toshiba/ps3_gelic_wireless.c |   2 +-
- drivers/net/gtp.c                                 |   5 +-
- drivers/net/ieee802154/adf7242.c                  |   5 +-
- drivers/net/usb/r8152.c                           | 303 ++++++++++++++++------
- drivers/net/usb/smsc95xx.c                        |   4 +-
- include/linux/ieee80211.h                         |  29 +++
- include/net/netfilter/nf_flow_table.h             |   1 +
- include/uapi/linux/gtp.h                          |   2 +-
- net/core/neighbour.c                              |  67 ++---
- net/handshake/netlink.c                           |  30 +--
- net/ipv4/esp4.c                                   |   2 +-
- net/ipv4/tcp.c                                    |   8 +-
- net/ipv4/tcp_input.c                              |   9 +-
- net/ipv6/esp6.c                                   |   2 +-
- net/mac80211/rx.c                                 |   3 +-
- net/netfilter/nf_flow_table_core.c                |  14 +-
- net/sched/act_ct.c                                |   9 +
- net/vmw_vsock/virtio_transport.c                  |  18 +-
- net/wireless/mlme.c                               |   3 +-
- net/wireless/scan.c                               |   2 +-
- 34 files changed, 458 insertions(+), 214 deletions(-)
+> 
+>> +       .has_phy_lane = true,
+>> +       .regulator_data = dsi_phy_7nm_98000uA_regulators,
+>> +       .num_regulators = ARRAY_SIZE(dsi_phy_7nm_98000uA_regulators),
+>> +       .ops = {
+>> +               .enable = dsi_7nm_phy_enable,
+>> +               .disable = dsi_7nm_phy_disable,
+>> +               .pll_init = dsi_pll_7nm_init,
+>> +               .save_pll_state = dsi_7nm_pll_save_state,
+>> +               .restore_pll_state = dsi_7nm_pll_restore_state,
+>> +               .set_continuous_clock = dsi_7nm_set_continuous_clock,
+>> +       },
+>> +       .min_pll_rate = 600000000UL,
+>> +#ifdef CONFIG_64BIT
+>> +       .max_pll_rate = 5000000000UL,
+>> +#else
+>> +       .max_pll_rate = ULONG_MAX,
+>> +#endif
+>> +       .io_start = { 0xae95000, 0xae97000 },
+>> +       .num_dsi_phy = 2,
+>> +       .quirks = DSI_PHY_7NM_QUIRK_V5_2,
+>> +};
+>>
+>> --
+>> 2.34.1
+>>
+> 
+> 
 
