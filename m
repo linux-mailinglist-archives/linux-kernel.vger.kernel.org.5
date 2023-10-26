@@ -2,155 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8447D826B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BBA7D826E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344889AbjJZMSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S1344891AbjJZMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjJZMSk (ORCPT
+        with ESMTP id S231287AbjJZMSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:18:40 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A53116
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:18:37 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc13149621so796655ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698322717; x=1698927517; darn=vger.kernel.org;
-        h=in-reply-to:from:content-language:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nn8IJ+A31H/W9cHH67lHCBS/HFYbioViyKmugnuvJtM=;
-        b=Ok9qX8u6VoHNDo0aVTp+26E6E+9AeU5cTcAC6p7dXDJsDlrf5fM61iJXnX6lnhBdeT
-         VsWNSRAJCEokwF3eiXUWtBe1vMV3kqyyj2KOBA1aMnpeazsWps9CpA64IgoRRSYG38Ap
-         0HncYvkIlduMvrfn2DREUgaIxjxBQ8IpDLLoKRrQ3qGsWoQSsLbKN8LD/edFIDLdhiSU
-         s4lcvvq2i+KrhC9lA5SW9sYmREkCO+3BN6+yYf/Kje7LwrlD0D7fj43iPT2HVS+9rYoL
-         791c+a5gvWXwmXQKQz1VjzplvrxrxaSH5Tvct6TELpWACmDwbTHkxoST54tZDx0B9oaw
-         zCRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698322717; x=1698927517;
-        h=in-reply-to:from:content-language:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Nn8IJ+A31H/W9cHH67lHCBS/HFYbioViyKmugnuvJtM=;
-        b=ZOrX1IyiBg+T77xBv2rNq5XMtWzuwFzL2GMf3Q7OPHv2LEhzeW2sW0PRZp1W6ia7Pw
-         26tdHGVMvv3Ruos8woW+bAN2p/rE1qfsU+YzFEKW2pUvrQMXA0PFXCTuEXZgvjkCNILD
-         uIwB4iTJtm3kIRLF9ltHIA8at5FH49rTD9PpidjP7AAFknXVOj/IiviYmvshxCjbup6i
-         w+XZrh6hsjoOqSCr5j6qoIUdPV0mFJiSQteeWjh8Q7SbBUyUJvwHjkBgowa0Qd/cBciA
-         Znp8+9sW+he5dpMe8PBLCV3rQGsgk0o04CoBdF4M4aCzQjD8EQBpyJ9PWJBvj6ZE6fAs
-         UEdw==
-X-Gm-Message-State: AOJu0YwdbIDjiwUmRkaVVWND1CczSkEi/8a3tODWYplnC4K+N+vuU2gs
-        gvi5ksBQkNDp5PLQKW5bcg8=
-X-Google-Smtp-Source: AGHT+IGBR3Mbqrv8AlAiltkY3TRkGtkq1GgXPzRgWmBDqhMS9bSaQCMGDwS46PCMtX6VRZMgGYLlGQ==
-X-Received: by 2002:a17:902:e291:b0:1ca:273d:232 with SMTP id o17-20020a170902e29100b001ca273d0232mr17069881plc.0.1698322717362;
-        Thu, 26 Oct 2023 05:18:37 -0700 (PDT)
-Received: from [192.168.0.152] ([103.75.161.208])
-        by smtp.gmail.com with ESMTPSA id z16-20020a170903019000b001c60635c13esm10791976plg.115.2023.10.26.05.18.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 05:18:36 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------teGJ8Wzf9yOlAohCF2VAu6sM"
-Message-ID: <4c171399-87ac-4273-8b73-5d9b440656d2@gmail.com>
-Date:   Thu, 26 Oct 2023 17:48:26 +0530
+        Thu, 26 Oct 2023 08:18:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6ED1AE
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:18:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698322727; x=1729858727;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=WhTiCYyZcaMi9T72mL68Bxhk4qs+XbYizDsbg8rk2pk=;
+  b=he8nOJhcCktLoIUiYUp+Tpw5KSua6n3+NuVRN0sD7/iJeiL1AVySDBdr
+   2qV7ZfbOeu7hbUoAJxhAPk5Kc0nQhZtfgsN4tp3jKyLfOtqNo6P8dcM9X
+   zFM95H/Qz9F2wpYnAQzvn5iRNSUNDknWDTFmSUuRMrqBmjZWhCAr/DaEH
+   nOIlxlfyiE9eXhEAdnfiKLRqN4iBHY9Ai7SPcLT2FPBPK/Ycv0Vz5QVAv
+   L2/j1VydH3zgGh6GYtCO2pjfjtWA87c2FxwpZyk34Y1rLwDqvRooTS188
+   luEyQCzHdjII4TjBmY5yUun8JudCJKu1cnYi6pudsca+g3lsmpimLVH5/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="9083936"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="9083936"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:18:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="709055919"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="709055919"
+Received: from tzirr-desk2.ger.corp.intel.com (HELO localhost) ([10.252.49.68])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:18:42 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Badal Nilawar <badal.nilawar@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Matt Roper <matthew.d.roper@intel.com>
+Subject: Re: [Intel-gfx] [PATCH] drm/i915/mtl: avoid stringop-overflow warning
+In-Reply-To: <87edhlbj16.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231016201012.1022812-1-arnd@kernel.org>
+ <87edhlbj16.fsf@intel.com>
+Date:   Thu, 26 Oct 2023 15:18:39 +0300
+Message-ID: <87wmv97f1c.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Fixing warning of directly dereferencing __rcu tagged
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     brauner@kernel.org, surenb@google.com, mst@redhat.com,
-        michael.christie@oracle.com, mathieu.desnoyers@efficios.com,
-        mjguzik@gmail.com, npiggin@gmail.com, shakeelb@google.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231025222811.855336-1-singhabhinav9051571833@gmail.com>
- <20231025153807.8db950f1db82b2c9ecd03758@linux-foundation.org>
- <c4688c53-4206-4d54-aed9-f877697e8073@gmail.com>
- <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
-Content-Language: en-US
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------teGJ8Wzf9yOlAohCF2VAu6sM
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 10/26/23 05:20, Andrew Morton wrote:
-> On Thu, 26 Oct 2023 04:57:42 +0530 Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
-> 
->> On 10/26/23 04:08, Andrew Morton wrote:
->>>> +++ b/kernel/fork.c
->>>> @@ -2369,7 +2369,9 @@ __latent_entropy struct task_struct *copy_process(
->>>>    
->>>>    	retval = -EAGAIN;
->>>>    	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
->>>> -		if (p->real_cred->user != INIT_USER &&
->>>> +		const struct cred *real_cred = rcu_dereference(p->real_cred);
->>>> +
->>>> +		if (real_cred && real_cred->user != INIT_USER &&
->>>>    		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
->>>>    			goto bad_fork_cleanup_count;
->>>
->>> The old code assumes that p->read_cred cannot be NULL and the new code
->>> does nothing to make it possible that `real_cred' can be NULL?
->>>
->>> In other words, I see no reason to add this new check for NULL?
+On Mon, 23 Oct 2023, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> On Mon, 16 Oct 2023, Arnd Bergmann <arnd@kernel.org> wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
 >>
->> Thank you for the response!
+>> The newly added memset() causes a warning for some reason I could not figure out:
 >>
->> I thought it will be better to have check before accessing it, just so
->> we dont have any segmentation fault in future.
-> 
-> That would be adding code which has no effect?
-> 
->> Also I just noticed there are two more places where direct dereferencing
->> of __rcu pointer is done in this same file. Should I do those changes in
->> this patch ?
-> 
-> I don't see why.  rcu_dereference(p) cannot return NULL if `p' is non-NULL?
+>> In file included from arch/x86/include/asm/string.h:3,
+>>                  from drivers/gpu/drm/i915/gt/intel_rc6.c:6:
+>> In function 'rc6_res_reg_init',
+>>     inlined from 'intel_rc6_init' at drivers/gpu/drm/i915/gt/intel_rc6.c:610:2:
+>> arch/x86/include/asm/string_32.h:195:29: error: '__builtin_memset' writing 16 bytes into a region of size 0 overflows the destination [-Werror=stringop-overflow=]
+>>   195 | #define memset(s, c, count) __builtin_memset(s, c, count)
+>>       |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/i915/gt/intel_rc6.c:584:9: note: in expansion of macro 'memset'
+>>   584 |         memset(rc6->res_reg, INVALID_MMIO_REG.reg, sizeof(rc6->res_reg));
+>>       |         ^~~~~~
+>> In function 'intel_rc6_init':
+>>
+>> Change it to an normal initializer and an added memcpy() that does not have
+>> this problem.
+>>
+>> Fixes: 4bb9ca7ee0745 ("drm/i915/mtl: C6 residency and C state type for MTL SAMedia")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/gpu/drm/i915/gt/intel_rc6.c | 16 ++++++++++------
+>>  1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/gt/intel_rc6.c b/drivers/gpu/drm/i915/gt/intel_rc6.c
+>> index 8b67abd720be8..7090e4be29cb6 100644
+>> --- a/drivers/gpu/drm/i915/gt/intel_rc6.c
+>> +++ b/drivers/gpu/drm/i915/gt/intel_rc6.c
+>> @@ -581,19 +581,23 @@ static void __intel_rc6_disable(struct intel_rc6 *rc6)
+>>  
+>>  static void rc6_res_reg_init(struct intel_rc6 *rc6)
+>>  {
+>> -	memset(rc6->res_reg, INVALID_MMIO_REG.reg, sizeof(rc6->res_reg));
+>
+> That's just bollocks. memset() is byte granularity, while
+> INVALID_MMIO_REG.reg is u32. If the value was anything other than 0,
+> this would break.
+>
+> And you're not supposed to look at the guts of i915_reg_t to begin with,
+> that's why it's a typedef. Basically any code that accesses the members
+> of i915_reg_t outside of its implementation are doing it wrong.
+>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
+Thanks for the patch, pushed to drm-intel-gt-next.
 
---------------teGJ8Wzf9yOlAohCF2VAu6sM
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-Fixing-sparse-warning-cast-removes-address-space-__i.patch"
-Content-Disposition: attachment;
- filename*0="0001-Fixing-sparse-warning-cast-removes-address-space-__i.pa";
- filename*1="tch"
-Content-Transfer-Encoding: base64
+BR,
+Jani.
 
-RnJvbSA1OThiZjgyYjYxMWE5YWY5NmM1ZDQxMjg1NTk1N2UzNzg1MjNmNTI5IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBBYmhpbmF2IFNpbmdoIDxzaW5naGFiaGluYXY5MDUx
-NTcxODMzQGdtYWlsLmNvbT4KRGF0ZTogVHVlLCAyNCBPY3QgMjAyMyAxNToyNDo1MiArMDUz
-MApTdWJqZWN0OiBbUEFUQ0hdIEZpeGluZyB3YXJuaW5nIGNhc3QgcmVtb3ZlcyBhZGRyZXNz
-IHNwYWNlICdfX2lvbWVtJyBvZgogZXhwcmVzc2lvbgoKVGhpcyBwYXRjaCBmaXhlcyBzcGFy
-c2UgY29tcGxhaW5pbmcgYWJvdXQgdGhlIHJlbW92YWwgb2YgX19pb21lbSBhZGRyZXNzCnNw
-YWNlIHdoZW4gY2FzdGluZyB0aGUgcmV0dXJuIHZhbHVlIG9mIHRoaXMgZnVuY3Rpb24gaW9y
-ZW1hcF9jYWNoZSguLi4pCmZyb20gYHZvaWQgX19pb3JlbWFwKmAgdG8gYHZvaWQqYC4KCkkg
-dGhpbmsgdGhlcmUgYXJlIHR3byB3YXkgb2YgZml4aW5nIGl0LCBmaXJzdCBvbmUgaXMgY2hh
-bmdpbmcgdGhlCmRhdGF0eXBlIG9mIHZhcmlhYmxlIGBnaGNiX3ZhYCBmcm9tIGB2b2lkKmAg
-dG8gYHZvaWQgX19pb21lbSpgIC4gClNlY29uZCB3YXkgb2YgZml4aW5nIGl0IGlzIHVzaW5n
-IHRoZSBtZW1yZW1hcCguLi4pIHdoaWNoIGlzIApkb25lIGluIHRoaXMgcGF0Y2guCgpTaWdu
-ZWQtb2ZmLWJ5OiBBYmhpbmF2IFNpbmdoIDxzaW5naGFiaGluYXY5MDUxNTcxODMzQGdtYWls
-LmNvbT4KLS0tCiBhcmNoL3g4Ni9oeXBlcnYvaHZfaW5pdC5jIHwgMiArLQogMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvYXJj
-aC94ODYvaHlwZXJ2L2h2X2luaXQuYyBiL2FyY2gveDg2L2h5cGVydi9odl9pbml0LmMKaW5k
-ZXggMjE1NTZhZDg3ZjRiLi5jMTQxNjFhZGQyNzQgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2h5
-cGVydi9odl9pbml0LmMKKysrIGIvYXJjaC94ODYvaHlwZXJ2L2h2X2luaXQuYwpAQCAtNzAs
-NyArNzAsNyBAQCBzdGF0aWMgaW50IGh5cGVydl9pbml0X2doY2Iodm9pZCkKIAogCS8qIE1h
-c2sgb3V0IHZUT00gYml0LiBpb3JlbWFwX2NhY2hlKCkgbWFwcyBkZWNyeXB0ZWQgKi8KIAln
-aGNiX2dwYSAmPSB+bXNfaHlwZXJ2LnNoYXJlZF9ncGFfYm91bmRhcnk7Ci0JZ2hjYl92YSA9
-ICh2b2lkICopaW9yZW1hcF9jYWNoZShnaGNiX2dwYSwgSFZfSFlQX1BBR0VfU0laRSk7CisJ
-Z2hjYl92YSA9IG1lbXJlbWFwKGdoY2JfZ3BhLCBIVl9IWVBfUEFHRV9TSVpFLCBNRU1SRU1B
-UF9XQik7CiAJaWYgKCFnaGNiX3ZhKQogCQlyZXR1cm4gLUVOT01FTTsKIAotLSAKMi4zOS4y
-Cgo=
+>
+>
+>> +	i915_reg_t res_reg[INTEL_RC6_RES_MAX] = {
+>> +		[0 ... INTEL_RC6_RES_MAX - 1] = INVALID_MMIO_REG,
+>> +	};
+>>  
+>>  	switch (rc6_to_gt(rc6)->type) {
+>>  	case GT_MEDIA:
+>> -		rc6->res_reg[INTEL_RC6_RES_RC6] = MTL_MEDIA_MC6;
+>> +		res_reg[INTEL_RC6_RES_RC6] = MTL_MEDIA_MC6;
+>>  		break;
+>>  	default:
+>> -		rc6->res_reg[INTEL_RC6_RES_RC6_LOCKED] = GEN6_GT_GFX_RC6_LOCKED;
+>> -		rc6->res_reg[INTEL_RC6_RES_RC6] = GEN6_GT_GFX_RC6;
+>> -		rc6->res_reg[INTEL_RC6_RES_RC6p] = GEN6_GT_GFX_RC6p;
+>> -		rc6->res_reg[INTEL_RC6_RES_RC6pp] = GEN6_GT_GFX_RC6pp;
+>> +		res_reg[INTEL_RC6_RES_RC6_LOCKED] = GEN6_GT_GFX_RC6_LOCKED;
+>> +		res_reg[INTEL_RC6_RES_RC6] = GEN6_GT_GFX_RC6;
+>> +		res_reg[INTEL_RC6_RES_RC6p] = GEN6_GT_GFX_RC6p;
+>> +		res_reg[INTEL_RC6_RES_RC6pp] = GEN6_GT_GFX_RC6pp;
+>>  		break;
+>>  	}
+>> +
+>> +	memcpy(rc6->res_reg, res_reg, sizeof(res_reg));
+>>  }
+>>  
+>>  void intel_rc6_init(struct intel_rc6 *rc6)
 
---------------teGJ8Wzf9yOlAohCF2VAu6sM--
+-- 
+Jani Nikula, Intel
