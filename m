@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E607D8325
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151377D8327
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345085AbjJZMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        id S1345025AbjJZMtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345072AbjJZMsR (ORCPT
+        with ESMTP id S1344972AbjJZMtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:48:17 -0400
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8EA10D7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=r2dz3acTOn5lRwuIUAODszuiv28kHPULtXvdoKcdzhM=; b=UJ8adKPLz6HgOt1eyoE2Yxb4rl
-        sbIkrJfDqY6lYjk1o6QzyI1j0A8iwcAUQHfb3e4ZrHbIF2kuLXXr9o/Q3uP3f5mKicqU/bkGHGRIs
-        3mvz2p+G0uPR5lsB+b2HX1CSL5fc/irlyOtf5kontKRZUu+RE6jmSH35VP64g+YgSsVQDCEz7gR8V
-        wEdyCUjO4r9SDEDiaaCBB7mIzlXMMdRm6wP67qypTkx6Ui/LmH1t+jPrYtj/Pxtk3NUEk4rQJ+KRf
-        t6P/o6I2QaKvmFLwAVvCzi5CjY0V95+Tbd4h4B+Qs5OlptGAOJQKqe9YMQfbdE9KYo0rYwRC2HxW2
-        WEdAiDyKiIefb5ulvu1yzeNqT7+SuFTnFYd2kDUgF5i4q0I74vwoQYndvzakSWO5X+kqTXuG0FJT1
-        tMuccsohlEW2IG8XJyMhTFI4Bv1umvGyyqzAJbKOQZn+/fzFRo4LDivjMIxzvDUhEeNk5wnz/BB/K
-        ANQSxoxLepGy2dfOBqiVZB2NCpXjzBViwbKCia4jWtMLYcEvZeDwbnh/1kSCgLTtELou3yiOikK/K
-        2wcznNnHEkCaYXolMoIQ/bt3Mch+2RqyZDQZB1vIa4rKwmBf8cG5PswMD5eHRVDmx/s+Mn+q45i8/
-        Q8S1v1RqDNsPCoXnBOaoS9bPM0s6QAuLcETr0i/sA=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     v9fs@lists.linux.dev, Dominique Martinet <asmadeus@codewreck.org>
-Cc:     ericvh@kernel.org, lucho@ionkov.net, linux-kernel@vger.kernel.org,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: Re: [PATCH] 9p/fs: add MODULE_DESCIPTION
-Date:   Thu, 26 Oct 2023 14:47:33 +0200
-Message-ID: <2207070.NGFuZe4fYI@silver>
-In-Reply-To: <20231025223107.1274963-1-asmadeus@codewreck.org>
-References: <20231025223107.1274963-1-asmadeus@codewreck.org>
+        Thu, 26 Oct 2023 08:49:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC26210A
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:48:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBF58C433C8;
+        Thu, 26 Oct 2023 12:48:08 +0000 (UTC)
+Date:   Thu, 26 Oct 2023 08:48:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20231026084807.3d50aee9@gandalf.local.home>
+In-Reply-To: <20231026075016.GC15694@google.com>
+References: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+        <87edj64rj1.fsf@oracle.com>
+        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+        <87zg1u1h5t.fsf@oracle.com>
+        <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+        <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+        <87h6o01w1a.fsf@oracle.com>
+        <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+        <87cyyfxd4k.ffs@tglx>
+        <20231024103426.4074d319@gandalf.local.home>
+        <20231026075016.GC15694@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 26, 2023 12:31:07 AM CEST Dominique Martinet wrote:
-> Fix modpost warning that MODULE_DESCRIPTION is missing in fs/9p/9p.o
-> 
-> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-> ---
+On Thu, 26 Oct 2023 16:50:16 +0900
+Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
 
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-
-> Probably doesn't really matter after all this time, but noticed this
-> when double-checking there weren't any warnings left in W=1... Might as
-> well get rid of this:
-> WARNING: modpost: missing MODULE_DESCRIPTION() in fs/9p/9p.o
+> > The goal is to prevent a thread / vCPU being preempted while holding a lock
+> > or resource that other threads / vCPUs will want. That is, prevent
+> > contention, as that's usually the biggest issue with performance in user
+> > space and VMs.  
 > 
->  fs/9p/v9fs.c | 1 +
->  1 file changed, 1 insertion(+)
+> I think some time ago we tried to check guest's preempt count on each vm-exit
+> and we'd vm-enter if guest exited from a critical section (those that bump
+> preempt count) so that it can hopefully finish whatever is was going to
+> do and vmexit again. We didn't look into covering guest's RCU read-side
+> critical sections.
 > 
-> diff --git a/fs/9p/v9fs.c b/fs/9p/v9fs.c
-> index d525957594b6..61dbe52bb3a3 100644
-> --- a/fs/9p/v9fs.c
-> +++ b/fs/9p/v9fs.c
-> @@ -732,4 +732,5 @@ module_exit(exit_v9fs)
->  MODULE_AUTHOR("Latchesar Ionkov <lucho@ionkov.net>");
->  MODULE_AUTHOR("Eric Van Hensbergen <ericvh@gmail.com>");
->  MODULE_AUTHOR("Ron Minnich <rminnich@lanl.gov>");
-> +MODULE_DESCRIPTION("9P Client File System");
->  MODULE_LICENSE("GPL");
-> 
+> Can you educate me, is your PoC significantly different from guest preempt
+> count check?
 
+No, it's probably very similar. Just the mechanism to allow it to run
+longer may be different.
 
+-- Steve
