@@ -2,51 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A557D870D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28677D8716
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbjJZQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 12:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S231710AbjJZQzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 12:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjJZQyZ (ORCPT
+        with ESMTP id S229815AbjJZQzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 12:54:25 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28A0A4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:54:22 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6d2a5a99311so1064818a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:54:22 -0700 (PDT)
+        Thu, 26 Oct 2023 12:55:37 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EE4194
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:55:35 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7afd45199so8939857b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:55:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698339335; x=1698944135; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nYYr9jMJ2V9M7XS/9+HHih8eXTUxgWOr4GXFFSjebJY=;
+        b=yotIMnmBwRU8hN1N0WEZHC4RbijY4OrWT6YAQHfnDYiRhpn0IqXaVCEYcQW7V8DKZK
+         eKL/6u62ha5II8v4zzp0Rirkpd4dfiklLfMwAMPP0qw+NBwP0jBisr7q5gzJemL0Wdn0
+         Z7wiCeb2aDAgmTr4u346jvswWjDLIalqDHWwueoBeNVWwNiw+6qMeXDvTN5Gr00bRzFW
+         HvEw8dbhsuNjyjr0/1JwGPRoUUubZ+IF4P6NUhYHwV++vrlDyBloe+R6EXTF+7cJmR10
+         Jw4riRw3Qt+LRHX2kR5SQfRXw1yoBy1kToQkP9rMSBQLXUqcLrtImNKNiMXn54aoZBjO
+         Wo3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698339262; x=1698944062;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EOKnqFAzVWVPbYMOCy9aXSqsX9SjyqMl1ArWycZEEXA=;
-        b=Tj2dTchP9UCptok6ioh728wiRFdrGDjHv0u9VJOy2CLI9d/Epq4O1rl+2xUnddHkcR
-         p5rV0ed16qpnZ9LcTMuIYCnkBY7pdHLpGWVEgKh1s8NfpG4FMJIfnO7NrV7v0h1idrn2
-         lUQzCPgRhmM/ye9yDyH52KKrABiTyRcQ+wTKzjmcY50DkQcdT1xr2muqWeLhFnEpmnZr
-         8Vo3v14GAVpjw3XRaF7JObvRL+wLuyWW8pEn462jVCuG2iAYFlLOOo1sfMVEgxAj2xBh
-         IQKXKUatj2mY8oQJqO/fzOga96efagRtpxYAkhn4YphJagIiGYl7m4xLFk30zwhoYwRH
-         idhQ==
-X-Gm-Message-State: AOJu0YzidgN/XhKi2CzHCF9K/DK91eqVLl3/Y7jhjPNxKZJhVIcaQahz
-        BEdo6jtfBQDAcLkriMEB0u3YrqYI7L63+nRU4O0copW357b2
-X-Google-Smtp-Source: AGHT+IHNiEyjuZJjMhuRzH5GFRSKLECxtDFKN5QoHnCCNQqTbvwr9q60AosDjNc3RnZNQj0C91vH7GgvzXD64zp/LnAOfYuwxat9
+        d=1e100.net; s=20230601; t=1698339335; x=1698944135;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nYYr9jMJ2V9M7XS/9+HHih8eXTUxgWOr4GXFFSjebJY=;
+        b=QgZDZOZyXGFkYMMU4skErRnPViBy6Evef7591pjnaw+s4eOe2Zd0F1Jhn1g/ALF8Nb
+         6bf8FlGiHxuZ3ZFYm7vM3ffMsxmm9lLTBoxR3wh+Lamb7IKJ086wjYYxcwaUEE7y8zoZ
+         xpbHbhQ/1MNb0NrE0ESaiLbrPivk5F6R30KA0LHGmS5vYBBuhHWyxB9Ze2RfokEXQaLd
+         zCWZZChLX8faeGGCDTU2CNpilw0AFu9XWUZK7GBI65CHhy+mZ0Oai8UYQyK+ahY+Ae++
+         3GfILCLh5+9SOSMveEGhWeBWEPT6F9mYVuX2e+xAf4QVQGUJJw99CP7WvlnLwHKImxVE
+         RkJQ==
+X-Gm-Message-State: AOJu0Yw9KvcjbHdBc3ashQB6reLwNsoynVqrUERpJePhK43GF9lNbAok
+        E5foIYIlh0S880UylUDewE18TVVe4J4Q3i/IfGDVqwM9FJastyfkOMVdyQ==
+X-Google-Smtp-Source: AGHT+IHGGDcwYV85wbnLf8ZIn7oNuQOX5jFXTYAVL01wXZlutkg2aQNVxXZm7drjpkZ/4gb9MkcInX7CMBO5pwCTD2Q=
+X-Received: by 2002:a81:9209:0:b0:5a7:b464:ff1a with SMTP id
+ j9-20020a819209000000b005a7b464ff1amr20779809ywg.6.1698339334461; Thu, 26 Oct
+ 2023 09:55:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:6a88:0:b0:6c4:aa6a:c4db with SMTP id
- l8-20020a9d6a88000000b006c4aa6ac4dbmr2528otq.0.1698339262220; Thu, 26 Oct
- 2023 09:54:22 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 09:54:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006f01f00608a16cea@google.com>
-Subject: [syzbot] [kernel?] possible deadlock in console_lock_spinning_enable (3)
-From:   syzbot <syzbot+eb3e11a15d6b5e663c64@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, brauner@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20231026164114.2488682-1-hannes@cmpxchg.org> <CAMw=ZnQ56cm4Txgy5EhGYvR+Jt4s-KVgoA9_65HKWVMOXp7a9A@mail.gmail.com>
+In-Reply-To: <CAMw=ZnQ56cm4Txgy5EhGYvR+Jt4s-KVgoA9_65HKWVMOXp7a9A@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 26 Oct 2023 09:55:23 -0700
+Message-ID: <CAJuCfpFJgzRE5jcg0dKi9J+1e1cJxRPeSW56A4G-fV44zivT_Q@mail.gmail.com>
+Subject: Re: [PATCH] sched: psi: fix unprivileged polling against cgroups
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,314 +72,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Oct 26, 2023 at 9:49=E2=80=AFAM Luca Boccassi <bluca@debian.org> wr=
+ote:
+>
+> On Thu, 26 Oct 2023 at 17:41, Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > 519fabc7aaba ("psi: remove 500ms min window size limitation for
+> > triggers") breaks unprivileged psi polling on cgroups.
+> >
+> > Historically, we had a privilege check for polling in the open() of a
+> > pressure file in /proc, but were erroneously missing it for the open()
+> > of cgroup pressure files.
+> >
+> > When unprivileged polling was introduced in d82caa273565 ("sched/psi:
+> > Allow unprivileged polling of N*2s period"), it needed to filter
+> > privileges depending on the exact polling parameters, and as such
+> > moved the CAP_SYS_RESOURCE check from the proc open() callback to
+> > psi_trigger_create(). Both the proc files as well as cgroup files go
+> > through this during write(). This implicitly added the missing check
+> > for privileges required for HT polling for cgroups.
+> >
+> > When 519fabc7aaba ("psi: remove 500ms min window size limitation for
+> > triggers") followed right after to remove further restrictions on the
+> > RT polling window, it incorrectly assumed the cgroup privilege check
+> > was still missing and added it to the cgroup open(), mirroring what we
+> > used to do for proc files in the past.
+> >
+> > As a result, unprivileged poll requests that would be supported now
+> > get rejected when opening the cgroup pressure file for writing.
 
-syzbot found the following issue on:
+Ah, I see the problem. In our discussion
+https://lore.kernel.org/all/ZADj4YX4uftK%2FFrh@cmpxchg.org/ we decided
+to have the check in open() to fail early but we never considered
+unprivileged processes which only poll and never create any triggers.
+Makes sense.
 
-HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a27383680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c7a3e91cde52da
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb3e11a15d6b5e663c64
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+> >
+> > Remove the cgroup open() check. psi_trigger_create() handles it.
+> >
+> > Fixes: 519fabc7aaba ("psi: remove 500ms min window size limitation for =
+triggers")
+> > Cc: stable@vger.kernel.org # 6.5+
+> > Reported-by: Luca Boccassi <bluca@debian.org>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Acked-by: Luca Boccassi <bluca@debian.org>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Acked-by: Suren Baghdasaryan <surenb@google.com>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3ee1b279e6c2/disk-78124b0c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0f927e3a1d2b/vmlinux-78124b0c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9b7abda45082/Image-78124b0c.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+eb3e11a15d6b5e663c64@syzkaller.appspotmail.com
-
-EEVDF scheduling fail, picking leftmost
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc6-syzkaller-g78124b0c1d10 #0 Not tainted
-------------------------------------------------------
-ksoftirqd/0/16 is trying to acquire lock:
-ffff80008e509100 (console_owner){....}-{0:0}, at: console_lock_spinning_enable+0x38/0x78 kernel/printk/printk.c:1855
-
-but task is already holding lock:
-ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:558 [inline]
-ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
-ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1681 [inline]
-ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x2d8/0x23b4 kernel/sched/core.c:6612
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #5 (&rq->__lock){-.-.}-{2:2}:
-       _raw_spin_lock_nested+0x50/0x6c kernel/locking/spinlock.c:378
-       raw_spin_rq_lock_nested+0x2c/0x44 kernel/sched/core.c:558
-       raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
-       rq_lock kernel/sched/sched.h:1681 [inline]
-       task_fork_fair+0x74/0x128 kernel/sched/fair.c:12416
-       sched_cgroup_fork+0x38c/0x464 kernel/sched/core.c:4816
-       copy_process+0x24bc/0x34b8 kernel/fork.c:2609
-       kernel_clone+0x1d8/0x80c kernel/fork.c:2909
-       user_mode_thread+0x110/0x178 kernel/fork.c:2987
-       rest_init+0x2c/0x2f4 init/main.c:691
-       start_kernel+0x0/0x4e8 init/main.c:823
-       start_kernel+0x3e8/0x4e8 init/main.c:1068
-       __primary_switched+0xb8/0xc0 arch/arm64/kernel/head.S:523
-
--> #4 (&p->pi_lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x5c/0x7c kernel/locking/spinlock.c:162
-       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
-       try_to_wake_up+0xb0/0xe80 kernel/sched/core.c:4230
-       wake_up_process+0x18/0x24 kernel/sched/core.c:4478
-       kick_pool+0x29c/0x36c kernel/workqueue.c:1142
-       create_worker+0x518/0x6ec kernel/workqueue.c:2217
-       workqueue_init+0x338/0x63c kernel/workqueue.c:6694
-       kernel_init_freeable+0x2f8/0x474 init/main.c:1532
-       kernel_init+0x24/0x29c init/main.c:1437
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
--> #3 (&pool->lock){-.-.}-{2:2}:
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
-       __queue_work+0x878/0x1338
-       queue_work_on+0x9c/0x128 kernel/workqueue.c:1834
-       queue_work include/linux/workqueue.h:554 [inline]
-       rpm_suspend+0xea8/0x1aac drivers/base/power/runtime.c:660
-       rpm_idle+0x1f8/0xd90 drivers/base/power/runtime.c:534
-       __pm_runtime_idle+0x1a4/0x498 drivers/base/power/runtime.c:1102
-       pm_runtime_put include/linux/pm_runtime.h:460 [inline]
-       __device_attach+0x34c/0x434 drivers/base/dd.c:1048
-       device_initial_probe+0x24/0x34 drivers/base/dd.c:1079
-       bus_probe_device+0x178/0x240 drivers/base/bus.c:532
-       device_add+0x768/0xaac drivers/base/core.c:3624
-       serial_base_port_add+0x25c/0x370 drivers/tty/serial/serial_base_bus.c:178
-       serial_core_port_device_add drivers/tty/serial/serial_core.c:3315 [inline]
-       serial_core_register_port+0x308/0x1a5c drivers/tty/serial/serial_core.c:3356
-       serial_ctrl_register_port+0x28/0x38 drivers/tty/serial/serial_ctrl.c:41
-       uart_add_one_port+0x28/0x38 drivers/tty/serial/serial_port.c:75
-       pl011_register_port+0x1a0/0x434 drivers/tty/serial/amba-pl011.c:2780
-       sbsa_uart_probe+0x474/0x5dc drivers/tty/serial/amba-pl011.c:2939
-       platform_probe+0x148/0x1c0 drivers/base/platform.c:1404
-       really_probe+0x394/0xa7c drivers/base/dd.c:658
-       __driver_probe_device+0x194/0x3b4 drivers/base/dd.c:800
-       driver_probe_device+0x78/0x330 drivers/base/dd.c:830
-       __device_attach_driver+0x2a8/0x4f4 drivers/base/dd.c:958
-       bus_for_each_drv+0x228/0x2bc drivers/base/bus.c:457
-       __device_attach+0x2b4/0x434 drivers/base/dd.c:1030
-       device_initial_probe+0x24/0x34 drivers/base/dd.c:1079
-       bus_probe_device+0x178/0x240 drivers/base/bus.c:532
-       device_add+0x768/0xaac drivers/base/core.c:3624
-       platform_device_add+0x3f8/0x708 drivers/base/platform.c:717
-       platform_device_register_full+0x4e4/0x5fc drivers/base/platform.c:844
-       acpi_create_platform_device+0x5bc/0x744 drivers/acpi/acpi_platform.c:177
-       acpi_default_enumeration+0x6c/0xdc drivers/acpi/scan.c:2116
-       acpi_bus_attach+0x8bc/0xaac drivers/acpi/scan.c:2225
-       acpi_dev_for_one_check+0xa0/0xb4 drivers/acpi/bus.c:1100
-       device_for_each_child+0xec/0x174 drivers/base/core.c:3953
-       acpi_dev_for_each_child+0xc4/0x108 drivers/acpi/bus.c:1112
-       acpi_bus_attach+0x358/0xaac drivers/acpi/scan.c:2230
-       acpi_dev_for_one_check+0xa0/0xb4 drivers/acpi/bus.c:1100
-       device_for_each_child+0xec/0x174 drivers/base/core.c:3953
-       acpi_dev_for_each_child+0xc4/0x108 drivers/acpi/bus.c:1112
-       acpi_bus_attach+0x358/0xaac drivers/acpi/scan.c:2230
-       acpi_bus_scan+0xfc/0x4cc drivers/acpi/scan.c:2496
-       acpi_scan_init+0x218/0x6b4 drivers/acpi/scan.c:2655
-       acpi_init+0x190/0x254 drivers/acpi/bus.c:1417
-       do_one_initcall+0x23c/0x98c init/main.c:1232
-       do_initcall_level+0x154/0x214 init/main.c:1294
-       do_initcalls+0x58/0xac init/main.c:1310
-       do_basic_setup+0x8c/0xa0 init/main.c:1329
-       kernel_init_freeable+0x320/0x474 init/main.c:1547
-       kernel_init+0x24/0x29c init/main.c:1437
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
--> #2 (&dev->power.lock){-...}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x5c/0x7c kernel/locking/spinlock.c:162
-       __pm_runtime_resume+0xf0/0x180 drivers/base/power/runtime.c:1169
-       pm_runtime_get include/linux/pm_runtime.h:408 [inline]
-       __uart_start+0x158/0x380 drivers/tty/serial/serial_core.c:148
-       uart_write+0x3a8/0x594 drivers/tty/serial/serial_core.c:618
-       process_output_block drivers/tty/n_tty.c:579 [inline]
-       n_tty_write+0xaec/0xed0 drivers/tty/n_tty.c:2384
-       iterate_tty_write drivers/tty/tty_io.c:1017 [inline]
-       file_tty_write+0x40c/0x77c drivers/tty/tty_io.c:1088
-       tty_write drivers/tty/tty_io.c:1109 [inline]
-       redirected_tty_write+0xc0/0xfc drivers/tty/tty_io.c:1132
-       call_write_iter include/linux/fs.h:1956 [inline]
-       new_sync_write fs/read_write.c:491 [inline]
-       vfs_write+0x628/0x93c fs/read_write.c:584
-       ksys_write+0x15c/0x26c fs/read_write.c:637
-       __do_sys_write fs/read_write.c:649 [inline]
-       __se_sys_write fs/read_write.c:646 [inline]
-       __arm64_sys_write+0x7c/0x90 fs/read_write.c:646
-       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
-       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
-       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
--> #1 (&port_lock_key){....}-{2:2}:
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
-       spin_lock include/linux/spinlock.h:351 [inline]
-       pl011_console_write+0x180/0x708 drivers/tty/serial/amba-pl011.c:2341
-       console_emit_next_record kernel/printk/printk.c:2910 [inline]
-       console_flush_all+0x5d0/0xb78 kernel/printk/printk.c:2966
-       console_unlock+0xec/0x3d4 kernel/printk/printk.c:3035
-       vprintk_emit+0x150/0x2e8 kernel/printk/printk.c:2307
-       vprintk_default+0xa0/0xe4 kernel/printk/printk.c:2322
-       vprintk+0x200/0x2d4 kernel/printk/printk_safe.c:45
-       _printk+0xdc/0x128 kernel/printk/printk.c:2332
-       register_console+0x938/0xcf8 kernel/printk/printk.c:3524
-       uart_configure_port drivers/tty/serial/serial_core.c:2605 [inline]
-       serial_core_add_one_port drivers/tty/serial/serial_core.c:3132 [inline]
-       serial_core_register_port+0x1330/0x1a5c drivers/tty/serial/serial_core.c:3360
-       serial_ctrl_register_port+0x28/0x38 drivers/tty/serial/serial_ctrl.c:41
-       uart_add_one_port+0x28/0x38 drivers/tty/serial/serial_port.c:75
-       pl011_register_port+0x1a0/0x434 drivers/tty/serial/amba-pl011.c:2780
-       sbsa_uart_probe+0x474/0x5dc drivers/tty/serial/amba-pl011.c:2939
-       platform_probe+0x148/0x1c0 drivers/base/platform.c:1404
-       really_probe+0x394/0xa7c drivers/base/dd.c:658
-       __driver_probe_device+0x194/0x3b4 drivers/base/dd.c:800
-       driver_probe_device+0x78/0x330 drivers/base/dd.c:830
-       __device_attach_driver+0x2a8/0x4f4 drivers/base/dd.c:958
-       bus_for_each_drv+0x228/0x2bc drivers/base/bus.c:457
-       __device_attach+0x2b4/0x434 drivers/base/dd.c:1030
-       device_initial_probe+0x24/0x34 drivers/base/dd.c:1079
-       bus_probe_device+0x178/0x240 drivers/base/bus.c:532
-       device_add+0x768/0xaac drivers/base/core.c:3624
-       platform_device_add+0x3f8/0x708 drivers/base/platform.c:717
-       platform_device_register_full+0x4e4/0x5fc drivers/base/platform.c:844
-       acpi_create_platform_device+0x5bc/0x744 drivers/acpi/acpi_platform.c:177
-       acpi_default_enumeration+0x6c/0xdc drivers/acpi/scan.c:2116
-       acpi_bus_attach+0x8bc/0xaac drivers/acpi/scan.c:2225
-       acpi_dev_for_one_check+0xa0/0xb4 drivers/acpi/bus.c:1100
-       device_for_each_child+0xec/0x174 drivers/base/core.c:3953
-       acpi_dev_for_each_child+0xc4/0x108 drivers/acpi/bus.c:1112
-       acpi_bus_attach+0x358/0xaac drivers/acpi/scan.c:2230
-       acpi_dev_for_one_check+0xa0/0xb4 drivers/acpi/bus.c:1100
-       device_for_each_child+0xec/0x174 drivers/base/core.c:3953
-       acpi_dev_for_each_child+0xc4/0x108 drivers/acpi/bus.c:1112
-       acpi_bus_attach+0x358/0xaac drivers/acpi/scan.c:2230
-       acpi_bus_scan+0xfc/0x4cc drivers/acpi/scan.c:2496
-       acpi_scan_init+0x218/0x6b4 drivers/acpi/scan.c:2655
-       acpi_init+0x190/0x254 drivers/acpi/bus.c:1417
-       do_one_initcall+0x23c/0x98c init/main.c:1232
-       do_initcall_level+0x154/0x214 init/main.c:1294
-       do_initcalls+0x58/0xac init/main.c:1310
-       do_basic_setup+0x8c/0xa0 init/main.c:1329
-       kernel_init_freeable+0x320/0x474 init/main.c:1547
-       kernel_init+0x24/0x29c init/main.c:1437
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
--> #0 (console_owner){....}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
-       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
-       console_lock_spinning_enable+0x68/0x78 kernel/printk/printk.c:1858
-       console_emit_next_record kernel/printk/printk.c:2904 [inline]
-       console_flush_all+0x590/0xb78 kernel/printk/printk.c:2966
-       console_unlock+0xec/0x3d4 kernel/printk/printk.c:3035
-       vprintk_emit+0x150/0x2e8 kernel/printk/printk.c:2307
-       vprintk_default+0xa0/0xe4 kernel/printk/printk.c:2322
-       vprintk+0x200/0x2d4 kernel/printk/printk_safe.c:45
-       _printk+0xdc/0x128 kernel/printk/printk.c:2332
-       pick_eevdf+0x610/0x618 kernel/sched/fair.c:976
-       pick_next_entity kernel/sched/fair.c:5278 [inline]
-       pick_next_task_fair+0x104/0x930 kernel/sched/fair.c:8222
-       __pick_next_task kernel/sched/core.c:6004 [inline]
-       pick_next_task kernel/sched/core.c:6514 [inline]
-       __schedule+0x638/0x23b4 kernel/sched/core.c:6659
-       schedule+0xc4/0x170 kernel/sched/core.c:6771
-       smpboot_thread_fn+0x51c/0x90c kernel/smpboot.c:160
-       kthread+0x288/0x310 kernel/kthread.c:388
-       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-other info that might help us debug this:
-
-Chain exists of:
-  console_owner --> &p->pi_lock --> &rq->__lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rq->__lock);
-                               lock(&p->pi_lock);
-                               lock(&rq->__lock);
-  lock(console_owner);
-
- *** DEADLOCK ***
-
-3 locks held by ksoftirqd/0/16:
- #0: ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:558 [inline]
- #0: ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1372 [inline]
- #0: ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1681 [inline]
- #0: ffff0001b4189d58 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x2d8/0x23b4 kernel/sched/core.c:6612
- #1: ffff80008e3f0a20 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x134/0x2e8 kernel/printk/printk.c:2306
- #2: ffff80008e3f0650 (console_srcu){....}-{0:0}, at: rcu_lock_acquire+0x18/0x54 include/linux/rcupdate.h:302
-
-stack backtrace:
-CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
- check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- console_lock_spinning_enable+0x68/0x78 kernel/printk/printk.c:1858
- console_emit_next_record kernel/printk/printk.c:2904 [inline]
- console_flush_all+0x590/0xb78 kernel/printk/printk.c:2966
- console_unlock+0xec/0x3d4 kernel/printk/printk.c:3035
- vprintk_emit+0x150/0x2e8 kernel/printk/printk.c:2307
- vprintk_default+0xa0/0xe4 kernel/printk/printk.c:2322
- vprintk+0x200/0x2d4 kernel/printk/printk_safe.c:45
- _printk+0xdc/0x128 kernel/printk/printk.c:2332
- pick_eevdf+0x610/0x618 kernel/sched/fair.c:976
- pick_next_entity kernel/sched/fair.c:5278 [inline]
- pick_next_task_fair+0x104/0x930 kernel/sched/fair.c:8222
- __pick_next_task kernel/sched/core.c:6004 [inline]
- pick_next_task kernel/sched/core.c:6514 [inline]
- __schedule+0x638/0x23b4 kernel/sched/core.c:6659
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- smpboot_thread_fn+0x51c/0x90c kernel/smpboot.c:160
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> Thank you very much for the quick fix - this was reported originally
+> on the systemd bug tracker by Daniel Black (I do not have an email
+> address):
+>
+> https://github.com/systemd/systemd/issues/29723
+>
+> It is very important for systemd services to be able to do this
+> without capabilities, as using capabilities means in turn user
+> namespaces cannot be used (PrivateUsers=3Dyes in systemd parlance).
+>
+> Kind regards,
+> Luca Boccassi
