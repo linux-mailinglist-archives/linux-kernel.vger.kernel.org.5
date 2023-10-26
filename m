@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B49A7D8867
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1DC7D885C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjJZSee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S231287AbjJZSde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjJZSec (ORCPT
+        with ESMTP id S230271AbjJZSdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:34:32 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A4410A;
-        Thu, 26 Oct 2023 11:34:30 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QIFPS4016599;
-        Thu, 26 Oct 2023 18:34:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=gQ2tRQf+68bvSbGEJ8gu3v6Z8ALX4GNpA2mskZujjWU=;
- b=EgVUcjX9gi5iKuUPgzZMJ956/81pwB9PdPSavzxkHS42FGQbSWRFPyDuuoMMum0bghbb
- Sa5oHo06guwl7qQvyH3F+kJCZdDbMwGm28wpSyTOvh8OqoWiw3k1gDXloRli1gNhbtjP
- dYagM/5NI/eK+GSx0TXWra9OCxRFOHyx+OZsyDjfRBqPg5NAB6v6b3jkcyvvrfUuGk12
- ZtuGS8JU19rNw1cKan3uJ2KWadvv78ybiLo1K8YbdOr6V68isGqGKwMx0qxyZPFsiIZS
- 7sk8DomBKNbYFVQOA8uAQkub7HZB1EfxSSNHbogf+NiTh4PJ+H0GnVCoywtwn3BtT16+ 9w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tyw7krgse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 18:34:29 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39QIT3Ic025190;
-        Thu, 26 Oct 2023 18:34:28 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tyw7krg80-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 18:34:28 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39QIFMTx024368;
-        Thu, 26 Oct 2023 18:32:56 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvu6kfs1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 18:32:56 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QIWtlL17039888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Oct 2023 18:32:55 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 907BC5805D;
-        Thu, 26 Oct 2023 18:32:55 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADEAD58052;
-        Thu, 26 Oct 2023 18:32:54 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.161.121])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Oct 2023 18:32:54 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com, mjrosato@linux.ibm.com
-Subject: [PATCH v3 3/3] s390/vfio-ap: improve reaction to response code 07 from PQAP(AQIC) command
-Date:   Thu, 26 Oct 2023 14:32:45 -0400
-Message-ID: <20231026183250.254432-4-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231026183250.254432-1-akrowiak@linux.ibm.com>
-References: <20231026183250.254432-1-akrowiak@linux.ibm.com>
+        Thu, 26 Oct 2023 14:33:32 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FDB10D0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:33:24 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7af52ee31so9633117b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698345203; x=1698950003; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rsh3dPt2/r73NgmaoP1t7gGhxASdUa0L8chPdmn23Qo=;
+        b=rTZGeXNSv39V7CDwWwbTtJTASQ2rK2BoAdrQCuFlLhh8yuAl3n4qHKdjNVN2ZqoB62
+         bEv3SsybLlla5R9YmiMvyzniT1p77RmjoumAu+mZA80D1jsWVuRyL9lby6Oko5k2Brje
+         /B4qDoaVO116OOmgyjlvXUtygLddZRd4pdsIoJpVkuPd2dhnI1sK9hABTLhRYwP90vN9
+         vvo/3fPIqeT7SoYTZjJaaaM9/3Wo9l6c2G+lbJbOfEydg2aB37+ZlEth+zEZEMW5M0Wj
+         iw2AaL5p+eEgxjCqadkYQ7jEbdBumr2S3Tm3OqgexNucK/zd9LFHXauLjpelg8RPBrFk
+         uhiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698345203; x=1698950003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rsh3dPt2/r73NgmaoP1t7gGhxASdUa0L8chPdmn23Qo=;
+        b=hypaRXulVu9/uLYngru9GFY1KtUXMRqoCeVZkm2y4LfkPsFwm37X38+Um/WIURl4h3
+         FjGmg6HQd7jKBFa4d04byr7rJJ0CEv0+VyI9ChCkUdF9rckx134U4CRNMfz8l5FUdBbq
+         biLDfecdLoYgUHdgBse9GloVXUSzlJZQn800hRsWZ82RxTSk1mgJF4IfQ000t5w3mwFB
+         7zc/M6AdOlElLaA4trtxlDij6GdGAzsLfguHbdD9wg5tfdAaAq0a9yzBPFvSsndel6yj
+         ZL17paAkbDlsrK8s+ywwjy2AtzrUf3PRJT0o9kowT1oBTWsgaAvnAhSdd3xgBl8rEi0A
+         orNw==
+X-Gm-Message-State: AOJu0Yw5oFQLgZL2ww5vNIH/vKBwAjiql0SvjipvbC6LYN4cW8nzzl5X
+        svw1dEc+3+MtIBvMVRs3Bd+ug3TMCE5RejjqIdhCxQ==
+X-Google-Smtp-Source: AGHT+IHBtVGuULaTsqSbWWfK0JktN//Yobr+i2oSyvtEqBPvfhvTvIyFXXQYxmpnW+pXruM/MrOawuspY0l3Z4zpy28=
+X-Received: by 2002:a25:74c5:0:b0:da0:46ad:fb46 with SMTP id
+ p188-20020a2574c5000000b00da046adfb46mr114458ybc.41.1698345202763; Thu, 26
+ Oct 2023 11:33:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: TJipFceDFR5kCmyg1yT6h1FStixvQRRh
-X-Proofpoint-ORIG-GUID: 739f-32r0wmHfLB-1r0tH6qa8w9zbLEw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_17,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 adultscore=0 clxscore=1015 spamscore=0 bulkscore=0
- mlxscore=0 mlxlogscore=999 impostorscore=0 phishscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260160
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-29-surenb@google.com>
+ <87h6me620j.ffs@tglx>
+In-Reply-To: <87h6me620j.ffs@tglx>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 26 Oct 2023 18:33:09 +0000
+Message-ID: <CAJuCfpH1pG513-FUE_28MfJ7xbX=9O-auYUjkxKLmtve_6rRAw@mail.gmail.com>
+Subject: Re: [PATCH v2 28/39] timekeeping: Fix a circular include dependency
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
+        arnd@arndb.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, peterx@redhat.com, david@redhat.com,
+        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, vvvvvv@google.com,
+        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's improve the vfio_ap driver's reaction to reception of response code
-07 from the PQAP(AQIC) command when enabling interrupts on behalf of a
-guest:
+On Wed, Oct 25, 2023 at 5:33=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Tue, Oct 24 2023 at 06:46, Suren Baghdasaryan wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > This avoids a circular header dependency in an upcoming patch by only
+> > making hrtimer.h depend on percpu-defs.h
+>
+> What's the actual dependency problem?
 
-* Unregister the guest's ISC before the pages containing the notification
-  indicator bytes are unpinned.
+Sorry for the delay.
+When we instrument per-cpu allocations in [1] we need to include
+sched.h in percpu.h to be able to use alloc_tag_save(). sched.h
+includes hrtimer.h. So, without this change we end up with a circular
+inclusion: percpu.h->sched.h->hrtimer.h->percpu.h
 
-* Capture the return code from the kvm_s390_gisc_unregister function and
-  log a DBF warning if it fails.
+[1] https://lore.kernel.org/all/20231024134637.3120277-32-surenb@google.com=
+/
 
-Suggested-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 25d7ce2094f8..4e80c211ba47 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -476,8 +476,11 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
- 		break;
- 	case AP_RESPONSE_OTHERWISE_CHANGED:
- 		/* We could not modify IRQ settings: clear new configuration */
-+		ret = kvm_s390_gisc_unregister(kvm, isc);
-+		if (ret)
-+			VFIO_AP_DBF_WARN("%s: kvm_s390_gisc_unregister: rc=%d isc=%d, apqn=%#04x\n",
-+					 __func__, ret, isc, q->apqn);
- 		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
--		kvm_s390_gisc_unregister(kvm, isc);
- 		break;
- 	default:
- 		pr_warn("%s: apqn %04x: response: %02x\n", __func__, q->apqn,
--- 
-2.41.0
-
+>
