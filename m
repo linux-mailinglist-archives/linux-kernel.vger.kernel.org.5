@@ -2,76 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE37F7D79D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D997D79DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbjJZAxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
+        id S229928AbjJZA4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjJZAxC (ORCPT
+        with ESMTP id S229583AbjJZA4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:53:02 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D6D133;
-        Wed, 25 Oct 2023 17:53:00 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b512dd7d5bso206138b6e.1;
-        Wed, 25 Oct 2023 17:53:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698281580; x=1698886380; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aiA0G+RcJh/B2NSPmfmRCBdOdOC8eCI9QohAQfa1giY=;
-        b=St6vpWMD4XRacetK7N8I00BJOCAV2LCoW5gxavt+OoJEfNU0J1rRJ4qA8knh1uwpax
-         p+0yEpt/K64BTwT1U0wefUC9+A8OuNY/Q1EsqTMZG1DBAhFPCuEtnh41f/Wxko6rxS7+
-         X6WyGXqd5v+kB4yWERGPBkwRKJwE58AhhrRgODuQ/I5H7nME0MKrR575CtH0EwfxR1aI
-         gqrVCfdH6CeshL7C1oSd9OdaumkneVKbh5g8B2Bp3HiRvCCMU7pDKbZaDbnwb6RJmDgq
-         jdVWcfZEcNApSXgW2Iu8S+03HkxQ4G0VLuNTJPI7jAjOimCjDZll9GA04CHg30mdFdi3
-         sktw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698281580; x=1698886380;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aiA0G+RcJh/B2NSPmfmRCBdOdOC8eCI9QohAQfa1giY=;
-        b=jbJRDSVSPv4kYtXTWmtuUD23sA2GtCwUYb+wlHr0GJgJ1LpELg9qJcSx/St95mUG07
-         Ka/TApkkDfGzX1mehRYcTAOf6OJ74JiRcJpDELZPOJosf9aYh7wL3lYmrOQkSaRuMMWU
-         6fqTkQnukPSpUIHdOXGvXbZ/dOhFktwabTkn79Mz4pNAj27D7jCMip8HBvJ6gkd+Ex5s
-         t0VuI3GmWi1Hn0rzHgQL0TbGmm7ZvVqa/DQVCXqRBUhIxd6t3z6g5nszUrykWHhD1bkm
-         lnhC+cRgfu0O5ruEeVNhEs2cHKOauN4cokocjOATTJTlEJJLx4D3kX0tB5p0us6xlnny
-         TL1Q==
-X-Gm-Message-State: AOJu0YyK5VZxaPfFFqwqIh7cKf48r9AKyrUo9JIANb7GWSKNg4D9wYO6
-        N4ByL0KtfhHS4+kBI9UlmAY=
-X-Google-Smtp-Source: AGHT+IGjeGekXqPJwksk9Z0X2bVnmD2BBR6R+8m1inSFCCSLtmq0nfiILJHwoX2GP251gEgV8gcJMA==
-X-Received: by 2002:aca:100c:0:b0:3ae:5a09:9eb9 with SMTP id 12-20020aca100c000000b003ae5a099eb9mr17568550oiq.32.1698281579969;
-        Wed, 25 Oct 2023 17:52:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y134-20020a25dc8c000000b00c64533e4e20sm4904560ybe.33.2023.10.25.17.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 17:52:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 17:52:58 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Saravanan Sekar <saravanan@linumiz.com>
-Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jdelvare@suse.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] hwmon: (pmbus/mpq2286) Add a support for mpq2286
- Power Management IC
-Message-ID: <806ecf60-3f77-4baf-b289-de4a56b30d1e@roeck-us.net>
-References: <20231011164754.449399-1-saravanan@linumiz.com>
- <20231011164754.449399-5-saravanan@linumiz.com>
+        Wed, 25 Oct 2023 20:56:41 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0825CE5;
+        Wed, 25 Oct 2023 17:56:38 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VuvkxYp_1698281795;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VuvkxYp_1698281795)
+          by smtp.aliyun-inc.com;
+          Thu, 26 Oct 2023 08:56:36 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     akpm@linux-foundation.org, oleg@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] fs: Remove unneeded semicolon
+Date:   Thu, 26 Oct 2023 08:56:34 +0800
+Message-Id: <20231026005634.6581-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011164754.449399-5-saravanan@linumiz.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,15 +40,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:17:54PM +0530, Saravanan Sekar wrote:
-> The MPQ2286 is a programmable, high frequency synchronous buck regulator
-> designed to power a variety of Automotive system peripherals. Single buck
-> converters with hardware monitoring capability is configurable over PMBus
-> interface.
-> 
-> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+./fs/proc/base.c:3829:2-3: Unneeded semicolon
 
-Applied, after fixing the subject. Its tag needs to reference
-the driver, not the added chip.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7057
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/proc/base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Guenter
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index bfe9547d16f9..dd31e3b6bf77 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3826,7 +3826,7 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
+ 	for_each_thread(task, pos) {
+ 		if (!nr--)
+ 			goto found;
+-	};
++	}
+ fail:
+ 	pos = NULL;
+ 	goto out;
+-- 
+2.20.1.7.g153144c
+
