@@ -2,180 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FF37D8463
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746AF7D8477
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345199AbjJZOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        id S1345208AbjJZOVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbjJZOUY (ORCPT
+        with ESMTP id S235044AbjJZOU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:20:24 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EC91B2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:20:20 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6cd0a9b5a90so1148351a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:20:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698330020; x=1698934820;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7laoKfp6mRSUnZKN04Wpi3amSzI30zHY1zAqCLX4lI=;
-        b=HTpfAVnnQJ6zysGN1Bc+z9HY5zFRI9r7wBxwTbeUvYAFxM4SBV4YVJeCJb59MUnu+r
-         3fnAra+lUnroM8eneQlk7T6zCqtsl25F9bT7dLhqtwpxt1qDhaLRdPgGCwU/18FE2/zQ
-         EVGdyFkH4mKQ64+LJJGeJSfuI2ajOSG+hjKiBs89EeolP15h5USd3Yb50HCQrRVACGKF
-         Uu+yZOhmRihaEEcd9qB5MqNHab9ppB6SQLWOE6KTSm7PABFpfKeVdps0s2ZGJZNctDeq
-         G4CKSNEZUIcK6rjeMZpmKol5KvWcC83nZdO70zPgVz8v9lraHWc3Zefx9S1v1MPk3F+1
-         KM/w==
-X-Gm-Message-State: AOJu0YyOH/uXjgleeD7KcejSGbiHnMXtg+x+thlJzEXAgLsKMTWqIp50
-        /p4jRB9HUimC3yZNXYDJkLGO5sv4uW56J4Tk8zOhZO7ZlglZ
-X-Google-Smtp-Source: AGHT+IH4qEDAGCgxLl0bZ+zsAy+kNl3QmFFaPFp4Ws6LnKYJ9+Bz1cSjpQ/dHdQMTYfAFLuXz7DdZ6MK1oY6/XkEUmrz9uOwJPGE
+        Thu, 26 Oct 2023 10:20:58 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D481B1;
+        Thu, 26 Oct 2023 07:20:54 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QEFaqE017693;
+        Thu, 26 Oct 2023 14:20:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0IjMWkowhLLUbyvviUP9QIhTC8ofFln9OXEuj3q/iWo=;
+ b=hcO2tjb88UdgwuRrsaFhwp7u8Pzq4zp4yia3W152T6hZoSqI1lNVPxMHmeboNLudRL28
+ lfSUNm4k2D2+5yjbpf3J3aA7B9w1vIPeAYusNLGzDjkhbnwhoDL8G5WPy+NE0I1aIz+T
+ XANr6qSpSTQR2Pdq+iWNNmzboAtRgIMg/iP28gHti7a199aa/sSKKpGZ2UPefwk1ELej
+ XWBLKFxnr8z/fnwZV/CD2y2LIY618pgvNe52Pq9kWQrkQk/N5udBCxHmn1wb3RqWd6vO
+ KK/B9IsRqIdp0/j6PrZyffPFeHMvfdGQ6NXovminZXrSCKpU3Uu/mcQXbCGK3DbsWorq /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tysqa05s3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 14:20:53 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39QEH8Vc024380;
+        Thu, 26 Oct 2023 14:20:52 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tysqa05rs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 14:20:52 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39QEJWNu010305;
+        Thu, 26 Oct 2023 14:20:52 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbyxtxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 14:20:52 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QEKpaH17826364
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Oct 2023 14:20:51 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 217E558052;
+        Thu, 26 Oct 2023 14:20:51 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59EDE58056;
+        Thu, 26 Oct 2023 14:20:50 +0000 (GMT)
+Received: from [9.61.161.121] (unknown [9.61.161.121])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Oct 2023 14:20:50 +0000 (GMT)
+Message-ID: <1e7a9e4a-6d4a-4328-9fe8-0826e6348729@linux.ibm.com>
+Date:   Thu, 26 Oct 2023 10:20:49 -0400
 MIME-Version: 1.0
-X-Received: by 2002:a9d:4f0b:0:b0:6b7:3eba:59d3 with SMTP id
- d11-20020a9d4f0b000000b006b73eba59d3mr4980998otl.6.1698330020217; Thu, 26 Oct
- 2023 07:20:20 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 07:20:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000910ad106089f45eb@google.com>
-Subject: [syzbot] [net?] BUG: corrupted list in ptp_open
-From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, reibax@gmail.com, richardcochran@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] s390/vfio-ap: unpin pages on gisc registration
+ failure
+Content-Language: en-US
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Matthew Rosato <mjrosato@linux.ibm.com>, stable@vger.kernel.org
+References: <20231018133829.147226-1-akrowiak@linux.ibm.com>
+ <20231018133829.147226-2-akrowiak@linux.ibm.com>
+ <c6951c45-b091-11a6-5684-ba2ef0c94df3@linux.ibm.com>
+ <7ccf21c4-511c-4de6-bc02-4a936b020a10@linux.ibm.com>
+ <ad89deb2-0028-46e4-ccc2-259308f01660@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <ad89deb2-0028-46e4-ccc2-259308f01660@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nkrKO0qceOIs0zPHnVzHu9LSjIF9-t7P
+X-Proofpoint-ORIG-GUID: VBV1Kccn6PKVJs_QiW50wV7SoLnEaI69
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_12,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 spamscore=0 adultscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310260123
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ab79a3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
-dashboard link: https://syzkaller.appspot.com/bug?extid=df3f3ef31f60781fa911
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=140aa715680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11037669680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/disk-20305791.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinux-20305791.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/bzImage-20305791.xz
-
-The issue was bisected to:
-
-commit 8f5de6fb245326704f37d91780b9a10253a8a100
-Author: Xabier Marquiegui <reibax@gmail.com>
-Date:   Wed Oct 11 22:39:55 2023 +0000
-
-    ptp: support multiple timestamp event readers
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15475b89680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17475b89680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13475b89680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
-Fixes: 8f5de6fb2453 ("ptp: support multiple timestamp event readers")
-
-list_add corruption. prev->next should be next (ffff88814a1325e8), but was ffff888078d25048. (prev=ffff888078d21048).
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:32!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 7237 Comm: syz-executor182 Not tainted 6.6.0-rc6-next-20231020-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:__list_add_valid_or_report+0xb6/0x100 lib/list_debug.c:32
-Code: e8 2f a5 3a fd 0f 0b 48 89 d9 48 c7 c7 40 9d e9 8a e8 1e a5 3a fd 0f 0b 48 89 f1 48 c7 c7 c0 9d e9 8a 48 89 de e8 0a a5 3a fd <0f> 0b 48 89 f2 48 89 d9 48 89 ee 48 c7 c7 40 9e e9 8a e8 f3 a4 3a
-RSP: 0018:ffffc90009b3f898 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff88814a1325e8 RCX: ffffffff816bb8d9
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: ffff88807c7a9048 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff88814a132000
-R13: ffffc90009b3f900 R14: ffff888078d21048 R15: ffff88807c7a9048
-FS:  0000555556c00380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffef0aa1138 CR3: 000000007d17e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __list_add_valid include/linux/list.h:88 [inline]
- __list_add include/linux/list.h:150 [inline]
- list_add_tail include/linux/list.h:183 [inline]
- ptp_open+0x1c5/0x4f0 drivers/ptp/ptp_chardev.c:122
- posix_clock_open+0x17e/0x240 kernel/time/posix-clock.c:134
- chrdev_open+0x26d/0x6e0 fs/char_dev.c:414
- do_dentry_open+0x8d4/0x18d0 fs/open.c:948
- do_open fs/namei.c:3621 [inline]
- path_openat+0x1d36/0x2cd0 fs/namei.c:3778
- do_filp_open+0x1dc/0x430 fs/namei.c:3808
- do_sys_openat2+0x176/0x1e0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_openat fs/open.c:1471 [inline]
- __se_sys_openat fs/open.c:1466 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fc6c2099ae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef0aa1238 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc6c2099ae9
-RDX: 0000000000000000 RSI: 0000000020000300 RDI: ffffffffffffff9c
-RBP: 00000000000f4240 R08: 0000000000000000 R09: 00000000000000a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000000130fc
-R13: 00007ffef0aa124c R14: 00007ffef0aa1260 R15: 00007ffef0aa1250
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__list_add_valid_or_report+0xb6/0x100 lib/list_debug.c:32
-Code: e8 2f a5 3a fd 0f 0b 48 89 d9 48 c7 c7 40 9d e9 8a e8 1e a5 3a fd 0f 0b 48 89 f1 48 c7 c7 c0 9d e9 8a 48 89 de e8 0a a5 3a fd <0f> 0b 48 89 f2 48 89 d9 48 89 ee 48 c7 c7 40 9e e9 8a e8 f3 a4 3a
-RSP: 0018:ffffc90009b3f898 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff88814a1325e8 RCX: ffffffff816bb8d9
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: ffff88807c7a9048 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff88814a132000
-R13: ffffc90009b3f900 R14: ffff888078d21048 R15: ffff88807c7a9048
-FS:  0000555556c00380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffef0aa1138 CR3: 000000007d17e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 10/26/23 09:25, Christian Borntraeger wrote:
+> 
+> 
+> Am 26.10.23 um 15:16 schrieb Tony Krowiak:
+>>
+>>
+>> On 10/26/23 08:18, Christian Borntraeger wrote:
+>>>
+>>>
+>>> Am 18.10.23 um 15:38 schrieb Tony Krowiak:
+>>>> From: Anthony Krowiak <akrowiak@linux.ibm.com>
+>>>>
+>>>> In the vfio_ap_irq_enable function, after the page containing the
+>>>> notification indicator byte (NIB) is pinned, the function attempts
+>>>> to register the guest ISC. If registration fails, the function sets the
+>>>> status response code and returns without unpinning the page containing
+>>>> the NIB. In order to avoid a memory leak, the NIB should be unpinned 
+>>>> before
+>>>> returning from the vfio_ap_irq_enable function.
+>>>>
+>>>> Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+>>>
+>>> Where is Janoschs signed off coming from here?
+>>
+>> Janosch found this and composed the patch originally. I just tweaked 
+>> the description and posted it.
+> 
+> So we should add
+> 
+> Co-developed-by: Janosch Frank <frankja@linux.ibm.com>
+> 
+> in front of Janoschs signoff.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Will do.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+>>
+>>>
+>>>> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
+>>>> Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
+>>>> Fixes: 783f0a3ccd79 ("s390/vfio-ap: add s390dbf logging to the 
+>>>> vfio_ap_irq_enable function")
+>>>> Cc: <stable@vger.kernel.org>
+>>>> ---
+>>>>   drivers/s390/crypto/vfio_ap_ops.c | 1 +
+>>>>   1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c 
+>>>> b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> index 4db538a55192..9cb28978c186 100644
+>>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> @@ -457,6 +457,7 @@ static struct ap_queue_status 
+>>>> vfio_ap_irq_enable(struct vfio_ap_queue *q,
+>>>>           VFIO_AP_DBF_WARN("%s: gisc registration failed: nisc=%d, 
+>>>> isc=%d, apqn=%#04x\n",
+>>>>                    __func__, nisc, isc, q->apqn);
+>>>> +        vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
+>>>>           status.response_code = AP_RESPONSE_INVALID_GISA;
+>>>>           return status;
+>>>>       }
