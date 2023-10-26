@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 565297D7C5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D218C7D7C61
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343899AbjJZFnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        id S1343868AbjJZFnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjJZFnW (ORCPT
+        with ESMTP id S233628AbjJZFne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:43:22 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBAD115;
-        Wed, 25 Oct 2023 22:43:19 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso72636266b.0;
-        Wed, 25 Oct 2023 22:43:19 -0700 (PDT)
+        Thu, 26 Oct 2023 01:43:34 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8CC1A6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:43:30 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507f63fcbf6so151067e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698298998; x=1698903798; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rG2UysggiUwoOTUDtuwATYwEsAqlGEHP6tlUqmAyNpE=;
-        b=ar/2J/JqFPEjVt2wsBrYSbQxJkTFugSvD28HqhB4i6WP0frX1rJIMEtIcCC4kA6TSN
-         RjwSxf8sgawbIpLxGUzJSZ8xR7VIz+BgHfWE13fv3RB3FhMAgjwp+ZCWi75WjI2VTXby
-         nsOqHgZ/YUIydNai0CgjOVISCncl7z15UmxAcfjcu0lbFNTS2hIl8JcavJeFVhdy61GS
-         8ZPzYUbMnZZQuWlkU9V4eDFJ/suvWdhoOB7kXEQ+grUVVNG7lpa43Qrm98pAX97vBD8R
-         mbu4CQ8e4UllMU8leEz+0BTPXaNJjcEZnhkonQC0lj7zZmBK+FZLs1ApQHU/peeAxWN9
-         Cqiw==
+        d=gmail.com; s=20230601; t=1698299009; x=1698903809; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZDrfNzJFy46QmelTeNDlluLSuWGgn7i99bhsTcEDtjI=;
+        b=VGnahLKAgQd7S/3y71nFizTewzsIo0+Iwkp7lhSOd4CurNc7uTwvmCbZyR/rvoWqIB
+         aF/kVG+7GSCX/PPEhw34b78E4pG1NFjctF4oFxpHMDVj2GHZ1XNCbv1MSN2kshdy6yrt
+         qhOhroMwLkzaMnn6zpGqV3MIhWNalt1AwYM89I92zjQ5HGQkSZb+EuF6va3NrBV4U2T8
+         La1397SdSbHzLMXlQcKa7Wz6ywl24PI+BUiN2XYoRlye7JRimcx3SDFrOPMs0kHZ6xrI
+         D9K0mBSpdBx0chm1y8j8eLJL0mIrE9Xf0RKpcbIcHR9HoEbt7MH6OLTSvdokUwFXkB5Q
+         8ZsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698298998; x=1698903798;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rG2UysggiUwoOTUDtuwATYwEsAqlGEHP6tlUqmAyNpE=;
-        b=QyT1OyXNxmokemeGnsWcnIRZcThaYIiSI3SFXRxGiWIhuCoEsnB66C+We5ucrOUcj5
-         rbtBWn9yC/dEEVftVJCySKVfsxYcdJGJ9R4nWu2Af4ywsM36Pr0wMl5l6tXKP0aExoJV
-         C6vI431b5d+F32KjuSnSMmBVrmmx7VLApqPuLOpTeapCzZCciG0tOJDAU2t21kf2qmni
-         c0TrLqeK6kaMZ5fvOa43uOeXdeoG6u+IVOnh1s/6LCpKtLlhgVhMgq0Ak+ZY83rroLlC
-         jFf1/AfR4fyooLa89Ti2z9nWwwBX2ZSM5Y6G6I1sWhhU1OQAIs70UtNOlQgwRS48aKMo
-         qTKg==
-X-Gm-Message-State: AOJu0YywaBo7XuKmYRVKw/h9zc1B+ovxoIyDOJLpr6kVl4GsWs+wI3aW
-        SS3400440D0AbyYnoZcUUBLVelI7lzmlq6gNMn4=
-X-Google-Smtp-Source: AGHT+IE2Vvk6/8UrLk+Fqp68uEGIMn/w0ixG329AL4BRaLr6Z9i9Tbw3TAkzOcjxqMEkG/Sa24yY7g==
-X-Received: by 2002:a17:907:7285:b0:9b2:be5e:7545 with SMTP id dt5-20020a170907728500b009b2be5e7545mr13394942ejc.36.1698298997475;
-        Wed, 25 Oct 2023 22:43:17 -0700 (PDT)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id y19-20020a170906519300b009adc7733f98sm11085906ejk.97.2023.10.25.22.43.15
+        d=1e100.net; s=20230601; t=1698299009; x=1698903809;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZDrfNzJFy46QmelTeNDlluLSuWGgn7i99bhsTcEDtjI=;
+        b=vtu9pjzC3sQZ3iJtMQBxea8rxTFCG9iqBtCuzsXOYRI65iqYt5Os4zIN1K1j3bMcHR
+         QAQoWeqxk1HJTxa21IzHaZ+H8QwPc8qDWqcFpLad9sJHknZ9PCvdNanAZ6F3Cqg9vrwt
+         6a9G4bCOXT0XVswseBJrCLDv3N4GbYVCZ7CRAlBNJJ2U/tTeG1nS4qZSgdDFCMOGb299
+         yJhXpt9xyaYtAQyPX6C2H84KDgChjU77fln/xAsuAbxduahSuxVEimIlOKgUJBFLzGQh
+         OGs1pFEo6fRhY+Jgc37PnbmnlJbDpNjD7QZWzzzeC0a9eakrWP3ZqB03L2I9OCDV3+9O
+         T0wQ==
+X-Gm-Message-State: AOJu0YwBKa/pUDWOaAI2LNh/ralXcATiki/WjFzYfkwhLJ7bkYlWBrbp
+        OPBRfz0aVLTfOxPbmVvTu+c=
+X-Google-Smtp-Source: AGHT+IGeR7SZkubWeLWD1BuxNOZShZptn62n6yLXEXds7HHclU9x2fXX3/21XC0OsqU+oGQQd3l7Dw==
+X-Received: by 2002:a05:6512:3a93:b0:503:65d:50c6 with SMTP id q19-20020a0565123a9300b00503065d50c6mr11832855lfu.4.1698299008632;
+        Wed, 25 Oct 2023 22:43:28 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id e13-20020a50ec8d000000b0053e775e428csm10605787edr.83.2023.10.25.22.43.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 22:43:17 -0700 (PDT)
-Message-ID: <a9bb417341ee2f13c63f13afc1a5a3be330dcf07.camel@gmail.com>
-Subject: Re: [RFT PATCH 03/17] ASoC: codecs: adav80x: Handle component name
- prefix
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
-Date:   Thu, 26 Oct 2023 07:43:15 +0200
-In-Reply-To: <20231023095428.166563-4-krzysztof.kozlowski@linaro.org>
-References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
-         <20231023095428.166563-4-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 25 Oct 2023 22:43:27 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 07:43:26 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/10] staging: rtl8192e: Convert array rx_ring[] to rx_ring
+Message-ID: <cover.1698295861.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -92,35 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 11:54 +0200, Krzysztof Kozlowski wrote:
-> Use snd_soc_dapm_widget_name_cmp() helper when comparing widget names,
-> to include also the component's name prefix.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+Remove some functions that always return false or zero.
+Remove a loop that is always executed one time and convert arrays to variables.
+Remove some unused constants.
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Transferred this patch over wlan connection of rtl8192e.
 
-> =C2=A0sound/soc/codecs/adav80x.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-> index bb08969c5917..c8c0fc928211 100644
-> --- a/sound/soc/codecs/adav80x.c
-> +++ b/sound/soc/codecs/adav80x.c
-> @@ -229,7 +229,7 @@ static int adav80x_dapm_sysclk_check(struct snd_soc_d=
-apm_widget
-> *source,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return strcmp(source->name, cl=
-k) =3D=3D 0;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return snd_soc_dapm_widget_nam=
-e_cmp(source, clk) =3D=3D 0;
-> =C2=A0}
-> =C2=A0
-> =C2=A0static int adav80x_dapm_pll_check(struct snd_soc_dapm_widget *sourc=
-e,
+Philipp Hortmann (10):
+  staging: rtl8192e: Remove HTIOTActIsDisableMCS14()
+  staging: rtl8192e: Remove HTIOTActIsDisableMCS15()
+  staging: rtl8192e: Remove HTIOTActIsDisableMCSTwoSpatialStream()
+  staging: rtl8192e: Remove HTIOTActIsDisableEDCATurbo()
+  staging: rtl8192e: Remove loops with constant MAX_RX_QUEUE
+  staging: rtl8192e: Convert array rx_ring[] to variable rx_ring
+  staging: rtl8192e: Convert array rx_buf[][] to array rx_buf[]
+  staging: rtl8192e: Convert array rx_ring_dma[] to variable rx_ring_dma
+  staging: rtl8192e: Convert array rx_idx[] to variable rx_idx
+  staging: rtl8192e: Remove unused constants starting with MAX_RX_QUEUE
+
+ .../staging/rtl8192e/rtl8192e/r8190P_def.h    |   2 -
+ .../staging/rtl8192e/rtl8192e/r8192E_dev.c    |   2 +-
+ .../staging/rtl8192e/rtl8192e/r8192E_phyreg.h |  62 +--------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c  | 131 ++++++++----------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.h  |  10 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c     |  37 -----
+ drivers/staging/rtl8192e/rtl819x_Qos.h        |   1 -
+ drivers/staging/rtl8192e/rtl819x_TS.h         |   1 -
+ drivers/staging/rtl8192e/rtllib.h             |   1 -
+ 9 files changed, 67 insertions(+), 180 deletions(-)
+
+-- 
+2.42.0
 
