@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3AE7D82CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199FB7D82CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344896AbjJZMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S1344958AbjJZMin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZMhv (ORCPT
+        with ESMTP id S229647AbjJZMim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:37:51 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D240E192;
-        Thu, 26 Oct 2023 05:37:49 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4084de32db5so7124885e9.0;
-        Thu, 26 Oct 2023 05:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698323868; x=1698928668; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fj+lNJJuEsuS8tAi4d2u6fdHrfkNu9UmtMbCGXcrmgU=;
-        b=dQVzL5pD6FSaSBKpOqvjUZuBZ5bKHJwAcEFdwMeIew+u7VT+mAdm96vK0+2ZXcSEyt
-         vH40wALiv3BbDhxeyAe/+IjKVYxNzxz/ujw/e3Zs7igQyd8QT8CeNKlGdh83dFCWMk2R
-         Qjvm42fhGJGmOTvJOwBS/e8JmZMPC1kSGv1J6sRakel6j49/ZEpSgAH3OdEAiUVRqXU/
-         cOoiZAD05rbv2w3ODtO3iv26gJXPzna70zXEz+LmG27tGkj7qpZLlu4TGGCb1J0/RQQQ
-         Md3W4mSQgYeYyNK4I+ZtW20lOZpXnO8f+eEcWT1hplmJKF+A4kWanOBGfY0tGVxhDrQO
-         reQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698323868; x=1698928668;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fj+lNJJuEsuS8tAi4d2u6fdHrfkNu9UmtMbCGXcrmgU=;
-        b=SbfIFq0GIYJuIXoxpOmMmqtiwDOy7Ck0DyJHWKnkMc35Gtul3m5ijPbWUxbOjtGsxM
-         Lky6K6mGhxfTATqswtIVd0zUljv+w6PZcZRBps78JozWlNa8Y6tNhFlfFfyAGv+4PovT
-         Z/foCvze2liH+MMJHPVDpykzDwYSU2fClBzHMbbtnVrWIomNcvR+KW09NVLwbtgRGudd
-         fjMff9dmHxpW+FFBkKCdgFvEEc9PuYM3HUPGEZRgaYZxcLsmbRLwfm7NBIuCgfidTeoc
-         9QYDAO2ojC+HIhQJfcxzk8YsUunuj7u9bHX9rSBacLLflpp0gdFQOAsdqbpAMrSS6GMI
-         O9Kg==
-X-Gm-Message-State: AOJu0YykrwyoCG6kSqcD4/fjjc8veEsnTExI9QCX17OeFg9b5orjEGV0
-        lu289TZpIODcQylW0J2aZhnaPDc4dK0ISA==
-X-Google-Smtp-Source: AGHT+IGhRaNy/DDQgo5NKfSuUIA9wsEew/p5BFi/cKsdQ6qGbtCSlW0lQMBEjodYAfsI6RAmxCrUTw==
-X-Received: by 2002:a05:600c:4f45:b0:404:4b6f:d705 with SMTP id m5-20020a05600c4f4500b004044b6fd705mr13830380wmq.17.1698323868142;
-        Thu, 26 Oct 2023 05:37:48 -0700 (PDT)
-Received: from localhost ([2001:171b:c9bb:4130:c056:27ff:fec4:81cb])
-        by smtp.gmail.com with ESMTPSA id c1-20020adfa301000000b00323287186aasm14272097wrb.32.2023.10.26.05.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 05:37:47 -0700 (PDT)
-Received: from localhost (localhost [local])
-        by localhost (OpenSMTPD) with ESMTPA id f1ed972d;
-        Thu, 26 Oct 2023 12:37:47 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 14:37:47 +0200
-From:   David Lazar <dlazar@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Mark Gross <markgross@kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>
-Subject: Re: [PATCH] platform/x86: Add s2idle quirk for more Lenovo laptops
-Message-ID: <ZTpdm72pFkXNjWeH@localhost>
-References: <ZTlsyOaFucF2pWrL@localhost>
- <e2370602-256a-4c30-b73f-1552d7d8bf22@redhat.com>
+        Thu, 26 Oct 2023 08:38:42 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9B4C0;
+        Thu, 26 Oct 2023 05:38:39 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B3E8840E0199;
+        Thu, 26 Oct 2023 12:38:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 2YTANyKn0Y5g; Thu, 26 Oct 2023 12:38:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698323885; bh=SSN5WlJwmWRCNIOEA0x5V1UMR/C6B8U/XdfqYRpooLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SLcSbs0TzE9mC7Bu1GMiQA6VntMTE+G8CSApcFS1uT9EGLMgngWmnQISUy0CXRBSr
+         /giDxE3FWXe6bjhO5k83NbywEd+5s8L8dGj5cm2KtAthknAMorxJigoWEz4RLGmpeq
+         /+iy0E+v7J0lxn94eZJIvq16X10TNMFveiOMK7CZaBH695IACe/955BxIxyBiq4x58
+         5mrwu1MN7Rl1A9Zw8Ak/dvRpc+mpDi7Cm5S0LGWmgWdSf748XHI5aVVmqk5UiCnW+O
+         z7CAbWQeo2SNYPYc8mQgvwsmjB9mXovei/iYWekK5bAu71kdenpx3w0NvCi31CLS9p
+         WhBXSf+hBWkNgZJxJv1E9oe5rVaFLSEDyeFJLL5fefN4pK8MudfleklZVHcOfCwGV9
+         GQju9Ccnaw3lJuos4zrpgC/9SAVgb0bALPRKe4Lxj8tGDJo2jGXlSGPOjJAMn/Gqxw
+         XmWBsdm5FBWlG0peoVRpejcwNmNXEFfUXNLZkSSdRaAD6sdacwOP0KLq7ikZI4lPIy
+         jNorpVzGCqd2nAvU4/U9iEaj9+0VOTqg4L4F5NqJjDMgeZXnBJQV/O5ZxZ/b7813qH
+         AO824+Ovl28PZF/eXsM/SVIBKLP/Hw46DZ3GSm3Uyj39DBEphGd3yNtbpr+YnaRL1E
+         1QXxxgGBTOtxEv2axNywXIKQ=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6066840E0173;
+        Thu, 26 Oct 2023 12:37:59 +0000 (UTC)
+Date:   Thu, 26 Oct 2023 14:37:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "M K, Muralidhara" <muralimk@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v2 1/4] EDAC/mce_amd: Remove SMCA Extended Error code
+ descriptions
+Message-ID: <20231026123754.GBZTpdojw+pNuZMyJy@fat_crate.local>
+References: <20231025051455.101424-1-muralimk@amd.com>
+ <20231025051455.101424-2-muralimk@amd.com>
+ <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
+ <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
+ <20231026111448.GAZTpKKLI6LG1/COFE@fat_crate.local>
+ <850a3e78-f663-c696-2141-7aefb043b6da@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e2370602-256a-4c30-b73f-1552d7d8bf22@redhat.com>
+In-Reply-To: <850a3e78-f663-c696-2141-7aefb043b6da@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023, Hans de Goede wrote:
-> I'll prep + send a fixes pull-req to Linus
-> with just this single patch tomorrow.
+On Thu, Oct 26, 2023 at 05:32:17PM +0530, M K, Muralidhara wrote:
+> Not possible.  User has to check the kernel dmesg log and using "Ext.
+> Error code" user has to refer the "error string" in the PPR for
+> a particular Error code.
 
-Thanks, Hans, both for taking care of this patch, and also for the
-sleuthing on the original keyboard bug.  Much appreciated.
+Let me paste from my previous email:
 
-Cheers,
--=[david]=-
+"If that is not possible with rasdaemon yet, then this patch should not
+remove the error descriptions but limit them only to the families for
+which they're valid.
+
+Bottom line is, I don't want to have the situation mcelog is in where
+decoding errors with it is a total disaster.
+
+IOW, I'd like error decoding on AMD to always work and be trivially easy
+to do."
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
