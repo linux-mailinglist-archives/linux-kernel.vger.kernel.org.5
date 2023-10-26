@@ -2,185 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D627D7B42
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FA37D7B47
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjJZDbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 23:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
+        id S232626AbjJZDck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 23:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjJZDbq (ORCPT
+        with ESMTP id S229596AbjJZDci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 23:31:46 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D28D194;
-        Wed, 25 Oct 2023 20:31:43 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9ad67058fcso325025276.1;
-        Wed, 25 Oct 2023 20:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698291102; x=1698895902; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6GDP4Ji1MuCk3r0rvr3Ck3tuIDn99qjLg2EPnlAxDfI=;
-        b=aj/0YbEw0yP9qQ7QfTRz5qIG2TDcC5ABohmOSzlKIUC3RANRtYa4mblxwK8kXjMsXu
-         tuNJThNtYoYzCeIDSRrC40XsXWkivt7d/9iTV/d9G9K2DcehZN8z/zPEv9E9/rGTC1nH
-         4IXl+/3ORvulLO+GhGRkVv/zWR5Q3HjzrmnfFS7t3iAeJ3lqoPv22tlbI9s7nWS0gQRb
-         8Z7yca9eKfFGbO/u8AZEy339yE8EDhjDiZUwLU804MWtNhFYBJfwy/eycemhkON6rb2m
-         dZEwwym33n12u5Jx56GGc8+GnJSeOWdKBZBUdoPZwhIGWP0Aboptr5QL/tEO4mcRVlnh
-         gpow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698291102; x=1698895902;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6GDP4Ji1MuCk3r0rvr3Ck3tuIDn99qjLg2EPnlAxDfI=;
-        b=K08QtJp+rxMU4OLsTqhted7TveJTT8touTl28by7pehvWjsr8QM0Pq5Jn8P9hb+Gk1
-         PRtSrnZolpiN/3jOb1CsfSlZs26b8xH5rqx8P/VDnWVXMyj6Syn8t/rwONkAp7XQukKZ
-         5DJXuZ1gCrBBghFMvJHSq1MUlDzpy9P8E+Z3xS5zbowoYt6en1qIIyBXdHl7JE5SqytB
-         K4R1bn3bwgMUUl2BP1oFjuFU5csMbXBK2PpUHQnsLcvNUS3RZZ4v7NnnvPSoIE9oVXPE
-         I2OTC+S1ul+1k/tEDXQ6V8AJh3d3PaOffyXZNiqWR/UVYpj5M9GosjZViWtwqqfXmJwr
-         db/g==
-X-Gm-Message-State: AOJu0Yy6cduxSzexMIM/br9kYyRDAjGEgQ0UQp1NlGuTGc/XUKnmiG4K
-        du0TXNw9cVZXHzZWZX6v3fU=
-X-Google-Smtp-Source: AGHT+IE6nWVjaeF4q/0JgTm0tiEMymvKwaOV3OJaUyaEBTfVrh0s6CM2luZevzfv2bUOnfOHijnNPw==
-X-Received: by 2002:a25:918e:0:b0:d36:99eb:fc01 with SMTP id w14-20020a25918e000000b00d3699ebfc01mr15701879ybl.15.1698291102146;
-        Wed, 25 Oct 2023 20:31:42 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id w31-20020a25ac1f000000b00d9ab86bdaffsm4984302ybi.12.2023.10.25.20.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 20:31:41 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3B45227C0054;
-        Wed, 25 Oct 2023 23:31:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 25 Oct 2023 23:31:40 -0400
-X-ME-Sender: <xms:m905ZXHeabl3payzsGhnipr0939fPX1WxlYXtDpPGBitYhhuzVsEdA>
-    <xme:m905ZUVYD2YuuzvX0WrBbGOn5IYF7wzv9iuP8I0NfXrxZVCPa6fP7gmRROY4s1l4r
-    FxrMeZeluMTg5R2Ew>
-X-ME-Received: <xmr:m905ZZLr0mpZlucqGn--iRC_i9zBXh9l9NxoYesfxctvOjI6E6ycdTs-5fk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledugdejtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
-    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:m905ZVHl7gYAxsC6OQxxI0jqcNrRPp__xknC5IfWjYIw-hYel9CIww>
-    <xmx:m905ZdUtrnbZBu41BsfJOKZhpSQNJ0GohEakOq0QmMlAM6gtBAW0Wg>
-    <xmx:m905ZQN-mXx_OzXtxWGhLrWAbo0hWFgf1CNJu5jeGVb7iSg9X2xGJw>
-    <xmx:nN05ZX3KwPnCn483ZeL7KokyhKS-GhK5quGqZ46tVJYPU14rgOCwSw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Oct 2023 23:31:38 -0400 (EDT)
-Date:   Wed, 25 Oct 2023 20:31:37 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        kent.overstreet@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        elver@google.com, Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC] rust: types: Add read_once and write_once
-Message-ID: <ZTndmXEBf37G84X-@Boquns-Mac-mini.home>
-References: <20231025195339.1431894-1-boqun.feng@gmail.com>
- <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me>
- <ZTmelWlSncdtExXp@boqun-archlinux>
+        Wed, 25 Oct 2023 23:32:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D3EA3;
+        Wed, 25 Oct 2023 20:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698291156; x=1729827156;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=j0Fz8CzB06Dw8BJlqfX5Ul19OnFcKlSskxt2P3MS9M8=;
+  b=WtxMPDhV5kM7LIgdkxP/zHJX1NuY8lnNkN2ZOsAEWYNS5HWbdt6wJBAL
+   DO/bjR24ZPMDeoMqJBa/fClgPZul66L8S3hjoL5nwrDNKeWGnvKP3mPki
+   FhtLPCzH2oLsX0QXnfBoncH9hYCp2lmemBvIBEwa9mAtrqXiIjE6RWZ7G
+   vO/zogzHFgAW9iVPhf4oBimxd74l6jCNJ0/EU1TBZDnDy95i0JK6wuP1C
+   ZuzldNyoB9S9OACT0AnlMi/DLHXUFjeC+SaD0Eu5k7X75oFbFrUYsHUYR
+   LR/2Mx6hC5hPpvEbnss3NWbcpK+GW9ZGUGsSibvUv7hcotnZbDIFmCvZK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="366800559"
+X-IronPort-AV: E=Sophos;i="6.03,252,1694761200"; 
+   d="scan'208";a="366800559"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 20:32:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="759059876"
+X-IronPort-AV: E=Sophos;i="6.03,252,1694761200"; 
+   d="scan'208";a="759059876"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.20.184]) ([10.93.20.184])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 20:32:33 -0700
+Message-ID: <719318df-dc19-4f4c-88ff-5c69377f713c@linux.intel.com>
+Date:   Thu, 26 Oct 2023 11:32:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTmelWlSncdtExXp@boqun-archlinux>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-unit-tests Patch 0/5] Fix PMU test failures on Sapphire
+ Rapids
+Content-Language: en-US
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
+ <ZTmo9IVM2Tq6ZSrn@google.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <ZTmo9IVM2Tq6ZSrn@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 04:02:45PM -0700, Boqun Feng wrote:
-[...]
-> > > +/// The counter part of C `READ_ONCE()`.
-> > > +///
-> > > +/// The semantics is exactly the same as `READ_ONCE()`, especially when used for intentional data
-> > > +/// races.
-> > 
-> > It would be great if these semantics are either linked or spelled out
-> > here. Ideally both.
-> > 
-> 
-> Actually I haven't found any document about `READ_ONCE()` races with
-> writes is not UB: we do have document saying `READ_ONCE()` will disable
-> KCSAN checks, but no document says (explicitly) that it's not a UB.
-> 
+On 10/26/2023 7:47 AM, Mingwei Zhang wrote:
+> On Tue, Oct 24, 2023, Dapeng Mi wrote:
+>> When running pmu test on Intel Sapphire Rapids, we found several
+>> failures are encountered, such as "llc misses" failure, "all counters"
+>> failure and "fixed counter 3" failure.
+> hmm, I have tested your series on a SPR machine. It looks like, all "llc
+> misses" already pass on my side. "all counters" always fail with/without
+> your patches. "fixed counter 3" never exists... I have "fixed
+> cntr-{0,1,2}" and "fixed-{0,1,2}"
 
-Apparently I wasn't carefully reading the doc, in
-tools/memory-model/Documentation/explanation.txt, there is:
+1. "LLC misses" failure
 
-	In technical terms, the compiler is allowed to assume that when the
-	program executes, there will not be any data races.  A "data race"
-	occurs when there are two memory accesses such that:
+Yeah, the "LLC misses" failure is not always seen. I can see the "LLC  
+misses" 2 ~3 times out of 10 runs of PMU standalone test and you could 
+see the failure with higher possibility if you run the full 
+kvm-unit-tests. I think whether you can see the "LLC misses" failure it 
+really depends on current cache status on your system, how much cache 
+memory are consumed by other programs. If there are lots of free cache 
+lines on system when running the pmu test, you may have higher 
+possibility to see the LLC misses failures just like what I see below.
 
-	1.      they access the same location,
+PASS: Intel: llc references-7
+*FAIL*: Intel: llc misses-0
+PASS: Intel: llc misses-1
+PASS: Intel: llc misses-2
 
-	2.      at least one of them is a store,
+2. "all counters" failure
 
-	3.      at least one of them is plain,
+Actually the "all counters" failure are not always seen, but it doesn't 
+mean current code is correct. In current code, the length of "cnt[10]" 
+array in check_counters_many() is defined as 10, but there are at least 
+11 counters supported (8 GP counters + 3 fixed counters) on SPR even 
+though fixed counter 3 is not supported in current upstream code. 
+Obviously there would be out of range memory access in 
+check_counters_many().
 
-	4.      they occur on different CPUs (or in different threads on the
-		same CPU), and
+>
+> You may want to double check the requirements of your series. Not just
+> under your setting without explainning those setting in detail.
+>
+> Maybe what I am missing is your topdown series? So, before your topdown
+> series checked in. I don't see value in this series.
 
-	5.      they execute concurrently.
+3. "fixed counter 3" failure
 
-the #3 limits that in LKMM, data races cannot happen if both accesses
-are marked (i.e. not plain).
+Yeah, I just realized I used the kernel which includes the vtopdown 
+supporting patches after Jim's reminding. As the reply for Jim's 
+comments says, the patches for support slots event are still valuable 
+for current emulation framework and I would split them from the original 
+vtopdown patchset and resend them as an independent patchset. Anyway, 
+even though there is not slots event support in Kernel, it only impacts 
+the patch 4/5, other patches are still valuable.
 
-Thank Paul for bringing this to me, and I will update this accordingly
-in the next version.
 
-Regards,
-Boqun
-
-> > > +///
-> > > +/// # Safety
-> > > +///
-> > > +/// * `src` must be valid for reads.
-> > > +/// * `src` must be properly aligned.
-> > > +/// * `src` must point to a properly initialized value of value `T`.
-> > > +#[inline(always)]
-> > > +pub unsafe fn read_once<T: Copy>(src: *const T) -> T {
-> > 
-> > Why only `T: Copy`?
-> > 
-[...]
+>
+> Thanks.
+> -Mingwei
+>> Intel Sapphire Rapids introduces new fixed counter 3, total PMU counters
+>> including GP and fixed counters increase to 12 and also optimizes cache
+>> subsystem. All these changes make the original assumptions in pmu test
+>> unavailable any more on Sapphire Rapids. Patches 2-4 fixes these
+>> failures, patch 0 remove the duplicate code and patch 5 adds assert to
+>> ensure predefine fixed events are matched with HW fixed counters.
+>>
+>> Dapeng Mi (4):
+>>    x86: pmu: Change the minimum value of llc_misses event to 0
+>>    x86: pmu: Enlarge cnt array length to 64 in check_counters_many()
+>>    x86: pmu: Support validation for Intel PMU fixed counter 3
+>>    x86: pmu: Add asserts to warn inconsistent fixed events and counters
+>>
+>> Xiong Zhang (1):
+>>    x86: pmu: Remove duplicate code in pmu_init()
+>>
+>>   lib/x86/pmu.c |  5 -----
+>>   x86/pmu.c     | 17 ++++++++++++-----
+>>   2 files changed, 12 insertions(+), 10 deletions(-)
+>>
+>>
+>> base-commit: bfe5d7d0e14c8199d134df84d6ae8487a9772c48
+>> -- 
+>> 2.34.1
+>>
