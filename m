@@ -2,135 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CFC7D7E7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D1B7D7E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344576AbjJZI3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42354 "EHLO
+        id S1344519AbjJZI3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjJZI3B (ORCPT
+        with ESMTP id S229639AbjJZI3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:29:01 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291C5128
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:28:59 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so6901a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698308937; x=1698913737; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHTnFJcs/zb1X42gP/1gu9nIsKnDhG2sNpR1zu8AWMg=;
-        b=qeeSTzmYBvHp7+6Yv/iDI/D5+btALrqKSbXuIqIMgZkXQJRJfAKCjlg8VeZeNvzt0U
-         glvTY+HIo4Cqev/8xvQWwist9wHNaFfnZpLQFLS8Gi+GuCG6vJwN6KQ9w5rfAk4GrSrS
-         EgYBLu8nWmo7ddkvZFOttFw8Fe1Uo8KpKckwsBa0JjD+5ZyIYO4Bw7PRirCeFI4vAa35
-         RgmfzbwJcD1jJOfy9QpfhALW95Gooi4/jQ90TymWhWxPYoFlWpd2DZssUKVZbCkSV00h
-         Y/dlXoSh2/zao+0OtSfN/vxMlK+nk2fIDzVjgQiYRtI5ThealnEDN6kG3roP9oDEqyD+
-         lJow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698308937; x=1698913737;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NHTnFJcs/zb1X42gP/1gu9nIsKnDhG2sNpR1zu8AWMg=;
-        b=EGp6tuFzFMe790rWM9xM/i0UOA7qp+DFlGrXeg3m9w+abAi3hjkf/S6aB1O+h3Z8Np
-         wOe1tcwBB5Xp3dwVlAC5iCaaeH3rqprxoA6MS00t138Gga0NlpU7T8DO3JUOTip6rAoC
-         Jq+Ua+JqiLMuMtIbea/CjYuw+XWImPDOWjrKGuqHpmoyoHchSMIWVtNSJORiOpM/id0b
-         nlqN+c+nEWvhL/qNKmZeYmv/LptCwqd/atrTsq03pA/GM/rc3I9EKaE1pLvU8P7GB9ti
-         /zgQwwxnI9EfRkBoB7bTtvYfUZrv3QBe9A5zcddcL+FFn2d0nQV/EyrdFxOghF8Gy0Bo
-         lLqw==
-X-Gm-Message-State: AOJu0YxL//8D4VsD8Ww1PjO0+GYVX7c76N4stoKuJX/wXjM1xXw3pc+1
-        DDgbCjqccPaCbKlNWeWdQLgHBdXKJUOcqGI3GEUzRA==
-X-Google-Smtp-Source: AGHT+IGOwpi2fW9KqiCeMSdiPgD7tYE+oJtILLrdFelOmMw2Ngoce0v2/l6TETbREzJm2ekFULZ+ZGFr1k9YgC2okVI=
-X-Received: by 2002:aa7:da95:0:b0:540:e46d:1ee8 with SMTP id
- q21-20020aa7da95000000b00540e46d1ee8mr232051eds.4.1698308937317; Thu, 26 Oct
- 2023 01:28:57 -0700 (PDT)
+        Thu, 26 Oct 2023 04:29:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA43111
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:29:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FDFDC433C8;
+        Thu, 26 Oct 2023 08:29:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698308972;
+        bh=CTFVbTZqO5OGlZiX3WaXdGwenvlKlAQhgXR0GUTuxCU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=rlHtz9xB+wEz9wF3YvoduRFGpaYt51ROpBxrpoWUEi+AZRzB5OBzy9TaGYXvX9SMN
+         bNlEHpVhoMDIUcAafN3xFGL5FPXxJbI9L4uACS3w3MKedHAxi4iuXflr1EQDHAX1pf
+         S1pz+hCfgpsPeJEu2jeg7zZEym+w7ws9rnm/ORELmhEHSc1Kti3PSzNPdWp6HWAtf/
+         soBzXoMxu+6pj+b0CT1E+xzKrf1aFxYr8Xt+m0cmqVCf83sia1zPhicgglqvM3Ijn9
+         dYcDbwzae9VxygW2QGIxGaJ1mRb+uxFDOgG8hpZJAct3aUOvwmdGhj2lz4NwtW59e0
+         jU3a2IlWaB+lg==
+Message-ID: <bd74947f-8827-4539-a590-9c53d5ddd02d@kernel.org>
+Date:   Thu, 26 Oct 2023 11:29:27 +0300
 MIME-Version: 1.0
-References: <20231024145119.2366588-1-srasheed@marvell.com>
- <20231024145119.2366588-4-srasheed@marvell.com> <20231024172151.5fd1b29a@kernel.org>
- <PH0PR18MB473482180622D7C163B487ADC7DDA@PH0PR18MB4734.namprd18.prod.outlook.com>
-In-Reply-To: <PH0PR18MB473482180622D7C163B487ADC7DDA@PH0PR18MB4734.namprd18.prod.outlook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 26 Oct 2023 10:28:44 +0200
-Message-ID: <CANn89iKAn0-KBr00qrVibeM9Y7OqxDsg-keQQkty9oD1aCVtcA@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH net-next v2 3/4] octeon_ep: implement xmit_more
- in transmit
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Haseeb Gani <hgani@marvell.com>,
-        Vimlesh Kumar <vimleshk@marvell.com>,
-        "egallen@redhat.com" <egallen@redhat.com>,
-        "mschmidt@redhat.com" <mschmidt@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wizhao@redhat.com" <wizhao@redhat.com>,
-        "konguyen@redhat.com" <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh B Edara <sedara@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] usb: dwc3: Modify runtime pm ops to handle bus
+ suspend
+Content-Language: en-US
+To:     Elson Serrao <quic_eserrao@quicinc.com>,
+        gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-4-quic_eserrao@quicinc.com>
+ <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+ <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+ <0dee3bec-d49f-4808-a2f8-7a4205303e1f@kernel.org>
+ <c7fc7bc2-1a84-e6b5-5198-1b8cc602d738@quicinc.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <c7fc7bc2-1a84-e6b5-5198-1b8cc602d738@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 9:58=E2=80=AFAM Shinas Rasheed <srasheed@marvell.co=
-m> wrote:
->
-> Hi Jakub,
->
-> Again, thanks for your review.
->
-> > Does this guarantee that a full-sized skb can be accommodated?
-> >> I assume by full-sized skb you mean a non-linear skb with MAX_SG_FRAGS=
- elements in frags array.  Yes, this can be accommodated and the hardware u=
-ses separate SG list memory to siphon these skb frags instead of obtaining =
-them from the same tx hardware queue. What I'm trying to say is, this means=
- that a single tx descriptor will be enough for a full-sized skb as well, a=
-s hardware can pick up SG frags from separate memory and doesn't require se=
-parate descriptors.
->
-> >If so - consider stopping stopping the queue when the condition is not t=
-rue.
-> >> We do stop the queue if tx queue is full, as in octep_iq_full_check ea=
-rlier on.
->
-> >The recommended way of implementing 'driver flow control'
-> is to stop the queue once next packet may not fit, and then use
-> netif_xmit_stopped() when deciding whether we need to flush or we can
-> trust xmit_more. see
-> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.kernel.org_doc=
-_html_next_networking_driver.html-23transmit-2Dpath-2Dguidelines&d=3DDwICAg=
-&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3D1OxLD4y-oxrlgQ1rjXgWtmLz1pnaDjD96sDq-cKUwK4=
-&m=3DFyJHTb5Z2u9DTFSYPU38S5kPcP5KvwGWzY-DPcqOl1gdnm7ToZhTFpyvhLMqh1hd&s=3Dd=
-BMmwfWKAi0UH3nrz7j9kYnAodDjuN3LZ5tC2aL_Prs&e=3D
->
-> >> In the skeleton code above, as I understand each tx desc holds a skb f=
-rag and hence there can be possibility of receiving a full-sized skb, stopp=
-ing the queue but on receiving another normal skb we should observe our que=
-ue to be stopped. This doesn't arise in our case as even if the skb is full=
--sized, it will only use a single tx descriptor so we can be sure if queue =
-has been stopped, the write index will only be updated once posted (and rea=
-d) tx descriptors are processed in napi context and queues awoken.
->
-> Please correct me if I'm wrong anywhere (sorry if so) to further my under=
-standing, and again thanks for your time!
 
-Fact that octep_start_xmit() can return NETDEV_TX_BUSY is very suspicious.
 
-I do not think a driver can implement xmit_more and keep
-NETDEV_TX_BUSY at the same time.
+On 26/10/2023 01:21, Elson Serrao wrote:
+> 
+> 
+> On 10/25/2023 1:02 AM, Roger Quadros wrote:
+>>
+>>
+>> On 24/10/2023 21:41, Elson Serrao wrote:
+>>>
+>>>
+>>> On 10/24/2023 3:14 AM, Roger Quadros wrote:
+>>>> Hi Elson,
+>>>>
+>>>> On 14/08/2023 21:50, Elson Roy Serrao wrote:
+>>>>> The current implementation blocks the runtime pm operations when cable
+>>>>> is connected. This would block dwc3 to enter a low power state during
+>>>>> bus suspend scenario. Modify the runtime pm ops to handle bus suspend
+>>>>> case for such platforms where the controller low power mode entry/exit
+>>>>> is handled by the glue driver. This enablement is controlled through a
+>>>>> dt property and platforms capable of detecting bus resume can benefit
+>>>>> from this feature. Also modify the remote wakeup operations to trigger
+>>>>> runtime resume before sending wakeup signal.
+>>>>>
+>>>>> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+>>>>> ---
+>>>>>    drivers/usb/dwc3/core.c   | 28 ++++++++++++++++++++++++++--
+>>>>>    drivers/usb/dwc3/core.h   |  3 +++
+>>>>>    drivers/usb/dwc3/gadget.c | 32 +++++++++++++++++++++++++-------
+>>>>>    3 files changed, 54 insertions(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>>>>> index 9c6bf054f15d..9bfd9bb18caf 100644
+>>>>> --- a/drivers/usb/dwc3/core.c
+>>>>> +++ b/drivers/usb/dwc3/core.c
+>>>>> @@ -1518,6 +1518,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>>>>        dwc->dis_split_quirk = device_property_read_bool(dev,
+>>>>>                    "snps,dis-split-quirk");
+>>>>>    +    dwc->runtime_suspend_on_usb_suspend = device_property_read_bool(dev,
+>>>>> +                "snps,runtime-suspend-on-usb-suspend");
+>>>>> +
+>>>>>        dwc->lpm_nyet_threshold = lpm_nyet_threshold;
+>>>>>        dwc->tx_de_emphasis = tx_de_emphasis;
+>>>>>    @@ -2029,6 +2032,9 @@ static int dwc3_resume_common(struct dwc3 *dwc, pm_message_t msg)
+>>>>>          switch (dwc->current_dr_role) {
+>>>>>        case DWC3_GCTL_PRTCAP_DEVICE:
+>>>>> +        /* runtime resume on bus resume scenario */
+>>>>> +        if (PMSG_IS_AUTO(msg) && dwc->connected)
+>>>>> +            break;
+>>>>>            ret = dwc3_core_init_for_resume(dwc);
+>>>>>            if (ret)
+>>>>>                return ret;
+>>>>> @@ -2090,8 +2096,13 @@ static int dwc3_runtime_checks(struct dwc3 *dwc)
+>>>>>    {
+>>>>>        switch (dwc->current_dr_role) {
+>>>>>        case DWC3_GCTL_PRTCAP_DEVICE:
+>>>>> -        if (dwc->connected)
+>>>>> +        if (dwc->connected) {
+>>>>> +            /* bus suspend scenario */
+>>>>> +            if (dwc->runtime_suspend_on_usb_suspend &&
+>>>>> +                dwc->suspended)
+>>>>
+>>>> If dwc is already suspended why do we return -EBUSY?
+>>>> Should this be !dwc->suspended?
+>>>>
+>>>
+>>> Hi Roger
+>>>
+>>> Thank you for reviewing.
+>>> If dwc->suspended is true (i.e suspend event due to U3/L2 is received), I am actually breaking from this switch statement and returning 0.
+>>
+>> Of course. I missed the break :)
+>>
+>>>
+>>>>> +                break;
+>>>>>                return -EBUSY;
+>>>>> +        }
+>>>>>            break;
+>>>>>        case DWC3_GCTL_PRTCAP_HOST:
+>>>>>        default:
+>>>>> @@ -2107,9 +2118,22 @@ static int dwc3_runtime_suspend(struct device *dev)
+>>>>>        struct dwc3     *dwc = dev_get_drvdata(dev);
+>>>>>        int        ret;
+>>>>>    -    if (dwc3_runtime_checks(dwc))
+>>>>> +    ret = dwc3_runtime_checks(dwc);
+>>>>> +    if (ret)
+>>>>>            return -EBUSY;
+>>>>>    +    switch (dwc->current_dr_role) {
+>>>>> +    case DWC3_GCTL_PRTCAP_DEVICE:
+>>>>> +        /* bus suspend case */
+>>>>> +        if (!ret && dwc->connected)
+>>>>
+>>>> No need to check !ret again as it will never happen because
+>>>> we are returning -EBUSY earlier if (ret);
+>>>>
+>>> Thanks for this catch. I will remove !ret check in v5.
+>>>
+>>>>> +            return 0;
+>>>>> +        break;
+>>>>> +    case DWC3_GCTL_PRTCAP_HOST:
+>>>>> +    default:
+>>>>> +        /* do nothing */
+>>>>> +        break;
+>>>>> +    }
+>>>>> +
+>>>>
+>>>> While this takes care of runtime suspend case, what about system_suspend?
+>>>> Should this check be moved to dwc3_suspend_common() instead?
+>>>>
+>>>
+>>> Sure I can move these checks to dwc3_suspend_common to make it generic.
+>>
+>> Before you do that let's first decide how we want the gadget driver to behave
+>> in system_suspend case.
+>>
+>> Current behavior is to Disconnect from the Host.
+>>
+>> Earlier I was thinking on the lines that we prevent system suspend if
+>> we are not already in USB suspend. But I'm not sure if that is the right
+>> thing to do anymore. Mainly because, system suspend is a result of user
+>> request and it may not be nice to not to meet his/her request.
+> 
+> Agree. Irrespective of whether USB is suspended or not it is better to honor the system suspend request from user.
+> 
+>> Maybe best to leave this policy handling to user space?
+>> i.e. if user wants USB gadget operation to be alive, he will not issue
+>> system suspend?
+>>
+> 
+> Sure. So below two cases
+> 
+> Case1: User doesn't care if gadget operation is alive and triggers system suspend irrespective of USB suspend. Like you mentioned, current behavior already takes care of this and initiates a DISCONNECT
+> 
+> Case2:  User wants gadget to stay alive and hence can trigger system suspend only when USB is suspended (there are already user space hooks that read cdev->suspended bit to tell whether USB is suspended or not for user to decide). Attempts to request system suspend when USB is not suspended, would result in a DISCONNECT.
+> 
+> For supporting Case2 from gadget driver point of view, we need to extend this series by having relevant checks in suspend_common()
+> 
+> Also, is it better to provide separate flags to control the gadget driver behavior for runtime suspend Vs system suspend when USB is suspended ? For example, what if we want to enable bus suspend handling for runtime suspend only and not for system suspend (Case1).
 
-Please make sure to remove NETDEV_TX_BUSY first, by stopping the queue earl=
-ier.
+But you mentioned that for Case1, USB gadget would disconnect from Host. So USB will be in disconnected state and USB controller can be fully de-activated? Except maybe wakeup handling to bring system out of suspend on a USB plug/unplug event?
+Why do we need separate flags for?
+
+-- 
+cheers,
+-roger
