@@ -2,131 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79567D8617
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5669F7D861C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345442AbjJZPiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
+        id S1345458AbjJZPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjJZPiB (ORCPT
+        with ESMTP id S231280AbjJZPja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:38:01 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BD81A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:37:59 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bcdfcde944so237997b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698334679; x=1698939479; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x/ia5iYg44wnoHJ0oC/4cmxCohdGQUTHKCQk0kzxu1E=;
-        b=VQIIFYzev/4OHuT+U/kvGBbK3bMyqfeTMbd+NXVoi+7/3LQveG/lIXJrRSDqKbqG41
-         XrT1JkO+4mXEQUHlZuGcGyDH2UEgJLFFj+kVv/88Hi4Q/+XL66r8PlR3biygLeIsQHcv
-         PqF+EzSQ36QulfGfc2/d7IVu5Vu9N52eMaBCxba7WXMLci6XYyDx4UCyb7GK6DMWX73N
-         MFXo2H99CbgzBxErHCl96GIVu5gYrGlHdntmCjpHMYHKjfSxNDi4i/DHsCd+kkU1xZvm
-         UMQPWsLNQ70tHy7ngsjD8GZWRSCga/RcEknfhUKNcxS4RzzuPXFNV5fE3fZneDLjCL8G
-         i+Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698334679; x=1698939479;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x/ia5iYg44wnoHJ0oC/4cmxCohdGQUTHKCQk0kzxu1E=;
-        b=PYR0NwKK3/ntYbmCOFljnS3Rk5F3SXg3FdxYq1xjl+ulkuPDBaUEwOLJjX0dwFOApF
-         Vor78r/I0sU82kd8Ng3BH6QOCmMCv7hvb8dG//Z8/SCtcy6zm0gEXj9ZFUHZWqY8Zf2h
-         o+gwJBdlAqsn839mZCjcLu4MvOGMu6o0jeFvhDBFYGDLIMcj7HX+pfigCSTWKD+61pF7
-         fw2qk0JGx62gNOVq1UFtgcHmxm4pucDFpbM+4269SptGLnGmjfZvMD+q5eSGFHh7YxWa
-         ClD1tGrjBBznNGgjA0uqnxot/zyLTy1BYzIqNDlc5fL3lznQgNhswV0dF/g+9KEsu9/K
-         y2wQ==
-X-Gm-Message-State: AOJu0YwYxi8bFaLOp+fp6Jdc3fw1HmTHmy4qGS7QtURo/V/xLJqkWGCR
-        QjXRdnAH9ahOLIsfl/ugAAz+kJJX1qpFULyP
-X-Google-Smtp-Source: AGHT+IEaRvLkf3/LMGsV72caU8fFwJj6ExnROiLmtyAk1A4YB3+0Or2lY9aHpqEzfCqnW39PlEMlBA==
-X-Received: by 2002:a62:b518:0:b0:690:c79c:1912 with SMTP id y24-20020a62b518000000b00690c79c1912mr18392426pfe.0.1698334678676;
-        Thu, 26 Oct 2023 08:37:58 -0700 (PDT)
-Received: from [192.168.0.152] ([103.75.161.210])
-        by smtp.gmail.com with ESMTPSA id k28-20020aa79d1c000000b006bde2480806sm11399447pfp.47.2023.10.26.08.37.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 08:37:58 -0700 (PDT)
-Message-ID: <dc028fd0-b188-435e-9dc3-f5de53dd9686@gmail.com>
-Date:   Thu, 26 Oct 2023 21:07:46 +0530
+        Thu, 26 Oct 2023 11:39:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F251A7;
+        Thu, 26 Oct 2023 08:39:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1555C433CA;
+        Thu, 26 Oct 2023 15:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698334768;
+        bh=FDj+TtkA41V8W+Dgx4SdwNTR5EfRCiqvl6KQP3P3OD0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fZprWnS1zKe9CbthGm2D8C8zn1nHzy+//yBaYsrHS2yMyLV4Mra2DrQCWoWjXTzBz
+         wmZsR2S4VUKMnbpnDA2j8BvXxn9wQ2HGezAJaWDPSU5a6RYVylVKNc71ZBr7bTLf/0
+         md20LufSdvrHbA+7Y/9HEHJai5JDJ/LXeslMvVgc38iVm9ALkXNI0bSx4/No1e7twd
+         9IQkuaWHkBn4DGJqpMUo8J4lmwsu3KxMDmWbAFDWyLMymS1z2I94MghGWnphoVzqHH
+         ek932aj5ECM/nNLrYNV+rPymMUzHfp8t1fNRvVqE1wuLbmDiAGPKuWymrgHTW8l+XM
+         Ylf5ZSpZl3/Zg==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c509d5ab43so16284501fa.0;
+        Thu, 26 Oct 2023 08:39:28 -0700 (PDT)
+X-Gm-Message-State: AOJu0YycJx7gjlFqJWtnyEptC+EvpBCU/kzfQDlV15e8dOd+jvbJktUV
+        V5fomMX7Z0RRR3nhiznnQsBKbpobR11Q4BMQFms=
+X-Google-Smtp-Source: AGHT+IE320/m4nxTYakuJFBJp88Ll7maED97PBXuy6j3H25+6YoIexbnB90kueybRhWmacv8IDTeoQ5wlVQQTkiVzRM=
+X-Received: by 2002:a2e:b04b:0:b0:2c5:1b01:b67f with SMTP id
+ d11-20020a2eb04b000000b002c51b01b67fmr13026501ljl.52.1698334766885; Thu, 26
+ Oct 2023 08:39:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Mateusz Guzik <mjguzik@gmail.com>
-Cc:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        michael.christie@oracle.com, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
- <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
- <20231026091222-mutt-send-email-mst@kernel.org>
- <CAGudoHFXH_FDgKRaJvVgQ3W8wD2TC=8yhiNm1NECApnQ-CNAZQ@mail.gmail.com>
- <20231026110925-mutt-send-email-mst@kernel.org>
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <20231026110925-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
+ <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 26 Oct 2023 17:39:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+Message-ID: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+Subject: Re: qemu-arm64: handle_futex_death - kernel/futex/core.c:661 - Unable
+ to handle kernel unknown 43 at virtual address
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/23 20:47, Michael S. Tsirkin wrote:
-> On Thu, Oct 26, 2023 at 04:06:24PM +0200, Mateusz Guzik wrote:
->> On 10/26/23, Michael S. Tsirkin <mst@redhat.com> wrote:
->>> On Thu, Oct 26, 2023 at 05:46:21PM +0530, Abhinav Singh wrote:
->>>> This patch fixes the warning about directly dereferencing a pointer
->>>> tagged with __rcu annotation.
->>>>
->>>> Dereferencing the pointers tagged with __rcu directly should
->>>> always be avoided according to the docs. There is a rcu helper
->>>> functions rcu_dereference(...) to use when dereferencing a __rcu
->>>> pointer. This functions returns the non __rcu tagged pointer which
->>>> can be dereferenced just like a normal pointers.
->>>>
->>>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
->>>
->>> Well yes but these need to be called under rcu_read_lock.
->>> Who does it here?
->>> If no one then maybe you found an actual bug and we need to
->>> fix it not paper over it.
->>>
->>
->> There is no bug here.
->>
->> p is the newly created thread, ->real_cred was initialized just prior
->> to this code and there is nobody to whack the creds from under it.
->>
->> Second bit in the patch changes one real_parent deref, but leaves 2
->> others just above it. Once more no bug since the entire thing happens
->> under tasklist_lock, but the patch should either sort all these cases
->> or none.
-Sparse reported 3 similar dereferencing warning this patch contains 2 
-fixes for 2, but yeah I should fixed all 3 of them.
->>
->> I think it would help if the submitter had shown warnings they see.
-The warning message :- warning: dereference of noderef expression
-> 
-> Yes, and this must be tested under lockdep, which I think would
-> spit out warnings for this patch.
-Not sure, but I tested this with sparse (make C=2) and after the above 
-changes I dont get the warning.
-> 
-> What should be used here I'm not sure. IIUC rcu_dereference_protected(p, 1)
-> is discouraged now?
-> 
-Not sure but I read that, rcu_dereference should be prefered when 
-reading and rcu_dereference_protected should when writing.
+On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
+> > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
+> > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 and
+> > 6.6.0-rc7-next-20231025.
+> >
+> > BAD: next-20231025
+> > Good: next-20231024
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >
+> > Log:
+> > ----
+> > <1>[  203.119139] Unable to handle kernel unknown 43 at virtual
+> > address 0001ffff9e2e7d78
+> > <1>[  203.119838] Mem abort info:
+> > <1>[  203.120064]   ESR = 0x000000009793002b
+> > <1>[  203.121040]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > set_robust_list01    1  TPASS  :  set_robust_list: retval = -1
+> > (expected -1), errno = 22 (expected 22)
+> > set_robust_list01    2  TPASS  :  set_robust_list: retval = 0
+> > (expected 0), errno = 0 (expected 0)
+> > <1>[  203.124496]   SET = 0, FnV = 0
+> > <1>[  203.124778]   EA = 0, S1PTW = 0
+> > <1>[  203.125029]   FSC = 0x2b: unknown 43
+>
+> It looks like this is fallout from the LPA2 enablement.
+>
+> According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
+> 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
+>
+>         0b101011 When FEAT_LPA2 is implemented:
+>                  Translation fault, level -1.
+>
+> It's triggered here by an LDTR in a get_user() on a bogus userspace address.
+> The exception is expected, and it's supposed to be handled via the exception
+> fixups, but the LPA2 patches didn't update the fault_info table entries for all
+> the level -1 faults, and so those all get handled by do_bad() and don't call
+> fixup_exception(), causing them to be fatal.
+>
+> It should be relatively simple to update the fault_info table for the level -1
+> faults, but given the other issues we're seeing I think it's probably worth
+> dropping the LPA2 patches for the moment.
+>
 
+Thanks for the analysis Mark.
+
+I agree that this should not be difficult to fix, but given the other
+CI problems and identified loose ends, I am not going to object to
+dropping this partially or entirely at this point. I'm sure everybody
+will be thrilled to go over those 60 patches again after I rebase them
+onto v6.7-rc1 :-)
