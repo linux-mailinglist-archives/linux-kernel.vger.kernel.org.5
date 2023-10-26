@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FD27D8546
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9764C7D854B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345326AbjJZOxO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 10:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S1345347AbjJZOxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbjJZOxM (ORCPT
+        with ESMTP id S235105AbjJZOxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:53:12 -0400
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28F51AA;
-        Thu, 26 Oct 2023 07:53:09 -0700 (PDT)
-Received: from omf04.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay05.hostedemail.com (Postfix) with ESMTP id 4391440158;
-        Thu, 26 Oct 2023 14:53:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 983F820027;
-        Thu, 26 Oct 2023 14:52:52 +0000 (UTC)
-Message-ID: <a196427632d824ee0f39ef8da3188a0405bb2893.camel@perches.com>
-Subject: Re: [PATCH 2/3] treewide: Convert some ethtool_sprintf() to
- ethtool_puts()
-From:   Joe Perches <joe@perches.com>
-To:     Louis Peens <louis.peens@corigine.com>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org
-Date:   Thu, 26 Oct 2023 07:52:51 -0700
-In-Reply-To: <ZTp8VgdC5yVkrFeA@LouisNoVo>
-References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
-         <20231025-ethtool_puts_impl-v1-2-6a53a93d3b72@google.com>
-         <ZTp8VgdC5yVkrFeA@LouisNoVo>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 983F820027
-X-Stat-Signature: f6rwzr5tdz6au99az5suny8a7mijkrbc
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/Qdw/iYiftXcMZ8GOytXsi0vlklpywPbo=
-X-HE-Tag: 1698331972-527693
-X-HE-Meta: U2FsdGVkX1/1MIUVFb/Hgk2tNLjvKG+o6wsUTD1CdlUY3VOZyRBIATzUA9gR2f5zcRVjVw1mMT9BLUbdoKmRYvl1eUmaGLar8G99TydWQIQ3OljsmfFN4SqHRuQkRuOopphBbmW35d4zz2g2nnw9Z3NFEmutjwzMW4q3jNinJ5fRf8RwuSFJQhLcp7vLNPyMu7XW0l2SM83ttIlF4a/KXvtx2SAxqeTuejRFixLDJ5Ib2HqkMtyoPCgGfZtBapq75g7b2MlQXv3+j9NxTxVBCgZLU2L54BktcVcEEOFF0qnQfdR2RXb4BzFr6UmcB8s5r7V2B2RppmkIa9qglYe7WHfAC0kwp27f+MdiWaFxlAWenFcL6+2MYQnkwudNJ/7K
+        Thu, 26 Oct 2023 10:53:37 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445DE1AB;
+        Thu, 26 Oct 2023 07:53:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=w6udVa4KUY8OESpc/iEhA/RHWN8N+ZaBUDRJEiNm8UQ=; b=qGnAHknZk5303TPW5XwmmRAOwt
+        1vg8nM9bJvMGqK58yAERPJfSzd8POJ7+Se9WS/UYl9OM7SNiVWrCG7AGV4fLyBvC8mdNe5Dw/6VPo
+        VwvBEusfs2CQSLhNSghyuePvixQuDkPo12emztbL+WClTQpyqdDy4TEU9y3Y+Ty7itbs=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:51632 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qw1jm-0008PR-3F; Thu, 26 Oct 2023 10:53:31 -0400
+Date:   Thu, 26 Oct 2023 10:53:29 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     =?ISO-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Message-Id: <20231026105329.0ee9603563202bd2157a7d27@hugovil.com>
+In-Reply-To: <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
+References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com>
+        <20231026-mbly-uart-v1-6-9258eea297d3@bootlin.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 6/6] tty: serial: amba-pl011: Parse bits option as 5, 6,
+ 7 or 8 in _get_options
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 16:48 +0200, Louis Peens wrote:
-> On Wed, Oct 25, 2023 at 11:40:33PM +0000, Justin Stitt wrote:
-> > This patch converts some basic cases of ethtool_sprintf() to
-> > ethtool_puts().
+On Thu, 26 Oct 2023 12:41:23 +0200
+Th=E9o Lebrun <theo.lebrun@bootlin.com> wrote:
 
-[30k of quoted content]
+Hi,
+I would change the commit title to better indicate that you add support
+for bits 5 and 6, which was missing.
 
-> Thanks Justin. From my perspective the series looks good, though I've
-> not spent very long on it. For the nfp parts:
-> 
-> Acked-by: Louis Peens <louis.peens@corigine.com
+Maybe "Add support for 5 and 6 bits in..." ?
 
-Do please remember to trim your replies.
+> pl011_console_get_options() gets called to retrieve currently configured
+> options from the registers. Previously, LCRH_TX.WLEN was being parsed
+
+It took me some time to understand your explanation :) Maybe change
+to:
+
+"Previously, only 7 or 8 bits were supported."
+
+> as either 7 or 8 (fallback). Hardware supports values from 5 to 8
+
+Add bits:
+
+"5 to 8 bits..."
+
+And indicate that this patch adds support for 5 and 6 bits.
+
+
+> inclusive, which pl011_set_termios() exploits for example.
+>=20
+> Signed-off-by: Th=E9o Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  drivers/tty/serial/amba-pl011.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl=
+011.c
+> index 5774d48c7f16..b2062e4cbbab 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -2384,10 +2384,7 @@ static void pl011_console_get_options(struct uart_=
+amba_port *uap, int *baud,
+>  			*parity =3D 'o';
+>  	}
+> =20
+> -	if ((lcr_h & 0x60) =3D=3D UART01x_LCRH_WLEN_7)
+> -		*bits =3D 7;
+> -	else
+> -		*bits =3D 8;
+> +	*bits =3D FIELD_GET(0x60, lcr_h) + 5; /* from 5 to 8 inclusive */
+
+Capital "F" -> "From...".
+
+And add "bits" -> "From 5 to 8 bits..."
+
+Hugo.
+
+
+> =20
+>  	ibrd =3D pl011_read(uap, REG_IBRD);
+>  	fbrd =3D pl011_read(uap, REG_FBRD);
+>=20
+> --=20
+> 2.41.0
+>=20
