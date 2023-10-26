@@ -2,227 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0EA7D8357
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFEA7D835B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344987AbjJZNNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S1345019AbjJZNPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjJZNNY (ORCPT
+        with ESMTP id S231135AbjJZNPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:13:24 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B46512A;
-        Thu, 26 Oct 2023 06:13:21 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9bf22fe05so6543335ad.2;
-        Thu, 26 Oct 2023 06:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698326001; x=1698930801; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sEnPf88Jt5XnwTHhFWjZ1zcOWPv+iZfytB9ZjHA1/p0=;
-        b=Wyisu8o9M8CgQpvfQzmiCNT2mTo3H8smX6mPWoQqZU3F0OvVTXt6LelOfhUBSppFGD
-         ZEtE8AAW16ERYmM2VfEWfwCPF2rPYSLMTC5xRRukKExlXrX855Asqj91MAGL6zNunVPp
-         OJh6+96rGNNohudVtzy++MSkKX8JZ38O56siNp5Lb9d7k5A+FyYIvHeHvAIXQ+UL/u5n
-         O3F13bZl/CmZ6cp4WSkdXuxH4GDXxOEyXnUQT797n6TnkSgB+VHsSUDgoVlL+fcYawJ5
-         nlPQbh7GgKHk5wjhUFnUTAkEQVVKnG2gUk2kB6woaS39csHnclzPu8BERlZodi8v0Z0A
-         6Sxg==
+        Thu, 26 Oct 2023 09:15:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029A4196
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698326071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITxJfATsg1xPCVF9l8R+7SuGMBL1Ri8aZSO801+6WD8=;
+        b=KgAPhmWCvdmoqFOGJ3gvTXI/BJmPa45Gq4Pi0hyS0m+9ZAiTfsSi9jVvZuT6t5+kZs3Ry0
+        cS0bdhWlyLMFsU4vHJzo3kTEBoS8qtiLJltL/nmDYojfPbSZYnB6N1qDZDebp9IKl10UjN
+        3PXUTViqZDNAy+0qKTBddQk3VJBerv0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-204-FCMroX2NNjS2WDGfLJdQDA-1; Thu, 26 Oct 2023 09:14:29 -0400
+X-MC-Unique: FCMroX2NNjS2WDGfLJdQDA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9c7558b89ccso60399766b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:14:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698326001; x=1698930801;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sEnPf88Jt5XnwTHhFWjZ1zcOWPv+iZfytB9ZjHA1/p0=;
-        b=l+qI92R+L5cKpvhjHHKkotLKsYhqTxY+6LaihSUYa+KSZiyQCebJgHE0YbaO4XNYps
-         vHesriO19QhUKHZlCGJsbZPfHP1c3gYB6T4U/P0wDtwdBqGdPlfq/XHiSqa44fiDLvtR
-         mljMW2uQNzNS+lhlADAVwimuHHAolSgGh7OsZq6aOoESHuDMH+4lV+oMvuqVxlEgb63B
-         O8Wo1885V3qcVTzsSjjDp6DlBBJtRL1bqUA5E1tSWsFUC2rmJ/ab31gIoR6UV3QPfHMv
-         I7HXK4PirYWBFJwF/DEDM2QXKw3KOkehaCc5CAO8B0DSLxhXUuRcFClAsVZ+tVyq19vL
-         tLeA==
-X-Gm-Message-State: AOJu0YxgdIa1hB8LZanCWt0JNo7bpoaVlj85ztN3cTbh9dogI9bdtP9L
-        1FXe1q3eh1efwx1WHYlN/qo=
-X-Google-Smtp-Source: AGHT+IFn2DJJBKgA7L7hBELD5R0h9RsAD2LwKmcN1ybfGVOdhFgeqcvvYnxkBp0a4mtSF7XWHYDLtw==
-X-Received: by 2002:a17:902:c74b:b0:1c9:dac0:fbb3 with SMTP id q11-20020a170902c74b00b001c9dac0fbb3mr12810316plq.31.1698326000729;
-        Thu, 26 Oct 2023 06:13:20 -0700 (PDT)
-Received: from [192.168.1.7] ([159.192.164.247])
-        by smtp.googlemail.com with ESMTPSA id h1-20020a170902704100b001c61921d4d2sm10953151plt.302.2023.10.26.06.13.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 06:13:20 -0700 (PDT)
-Message-ID: <84a78bb8-fd85-4ee5-9c92-859e8450a587@gmail.com>
-Date:   Thu, 26 Oct 2023 20:13:14 +0700
+        d=1e100.net; s=20230601; t=1698326068; x=1698930868;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ITxJfATsg1xPCVF9l8R+7SuGMBL1Ri8aZSO801+6WD8=;
+        b=e6cSPKqym+FTgB9PANpH2f1sdAlJHUDjbIggHFTu2xRMMaZnvLOBVVD6DPS9Rpj/Az
+         armL7uo8c9yftIjtcG8Jxf7bNALKfFAVMpiu9U/umXmRc08JtceMnqLLS3yAWBPWapnS
+         OmE9a8f6o6SS0vwQFbqlzQJGH084dZfW08n6gyNRSgvHgt8xrHme+Wtx4zJVvw83wfgN
+         rrS+zHGUi9XJ7RKZ90qGH95aaHHyeIU3PyDDfPrSgGgp+zV/fm06jP7gPDDSGrfPnEFP
+         aPPj8HnHzls7LE+pFw0qbBbnCLkE/Y5qys5M71DpgUuCNpXnEOYcW5cOoLWLL5R1SyZI
+         S2nQ==
+X-Gm-Message-State: AOJu0Ywd31m9apHPeI4rZjOBmtAmEGrzDqKxiJZzHVdBEUnNnhJFTAcQ
+        LnZoGUCtnRh4GLOo0Gd6FSnq/h6kiwiRaeC2tAc8xlp41rkXvHlmHsIFdWgwpEplZtfPhY0Extl
+        Dn7GinI+TYWig9QfbzdzcrcdX
+X-Received: by 2002:a17:906:9c83:b0:9a1:bd33:4389 with SMTP id fj3-20020a1709069c8300b009a1bd334389mr13653856ejc.74.1698326068175;
+        Thu, 26 Oct 2023 06:14:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGetGp6xoa7QcxxN+Jjc+NqG3O3baXarhaB833PkwjNbYRUCF6sCIKtsgu4V0Uon7NGSJ9/og==
+X-Received: by 2002:a17:906:9c83:b0:9a1:bd33:4389 with SMTP id fj3-20020a1709069c8300b009a1bd334389mr13653833ejc.74.1698326067742;
+        Thu, 26 Oct 2023 06:14:27 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:17b:37eb:8e1f:4b3b:22c7:7722])
+        by smtp.gmail.com with ESMTPSA id 26-20020a170906011a00b009ae587ce128sm11636345eje.216.2023.10.26.06.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 06:14:27 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 09:14:21 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+Cc:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, mathieu.desnoyers@efficios.com,
+        mjguzik@gmail.com, npiggin@gmail.com, shakeelb@google.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
+Message-ID: <20231026091222-mutt-send-email-mst@kernel.org>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+ <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: serial: option: add Fibocom L7xx modules
-Content-Language: en-US
-To:     Victor Fragoso <victorffs@hotmail.com>,
-        "johan@kernel.org" <johan@kernel.org>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <9315051ae981aaad1d46724641defc6e5f79d12b.camel@hotmail.com>
-From:   Lars Melin <larsm17@gmail.com>
-In-Reply-To: <9315051ae981aaad1d46724641defc6e5f79d12b.camel@hotmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/2023 8:24, Victor Fragoso wrote:
-> Add support for Fibocom L7xx module series and variants.
+On Thu, Oct 26, 2023 at 05:46:21PM +0530, Abhinav Singh wrote:
+> This patch fixes the warning about directly dereferencing a pointer
+> tagged with __rcu annotation.
 > 
-> L716-EU-60 (ECM):
-> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 17 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=19d2 ProdID=0579 Rev= 1.00
-> S:  Manufacturer=Fibocom,Incorporated
-> S:  Product=Fibocom Mobile Boardband
-> S:  SerialNumber=1234567890ABCDEF
-> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
-> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
-> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> Dereferencing the pointers tagged with __rcu directly should
+> always be avoided according to the docs. There is a rcu helper
+> functions rcu_dereference(...) to use when dereferencing a __rcu
+> pointer. This functions returns the non __rcu tagged pointer which
+> can be dereferenced just like a normal pointers.
 > 
-> L716-EU-60 (RNDIS):
-> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 21 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
-> S:  Manufacturer=Fibocom,Incorporated
-> S:  Product=Fibocom Mobile Boardband
-> S:  SerialNumber=1234567890ABCDEF
-> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
-> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
-> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> L716-EU-10 (ECM):
-> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 21 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
-> S:  Manufacturer=Fibocom,Incorporated
-> S:  Product=Fibocom Mobile Boardband
-> S:  SerialNumber=1234567890ABCDEF
-> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
-> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
-> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> Signed-off-by: Victor Fragoso <victorffs@hotmail.com>
+> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+
+Well yes but these need to be called under rcu_read_lock.
+Who does it here?
+If no one then maybe you found an actual bug and we need to
+fix it not paper over it.
+
+
 > ---
->   drivers/usb/serial/option.c | 5 +++++
->   1 file changed, 5 insertions(+)
+>  kernel/fork.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 45dcfaadaf98..4ba3dc352d65 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -2262,6 +2262,11 @@ static const struct usb_device_id option_ids[] =
-> {
->   	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a2, 0xff)
-> },			/* Fibocom FM101-GL (laptop MBIM) */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a4,
-> 0xff),			/* Fibocom FM101-GL (laptop MBIM) */
->   	  .driver_info = RSVD(4) },
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0001, 0xff, 0xff,
-> 0xff) },	/* Fibocom L71x */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0001, 0x0a, 0x00,
-> 0xff) },	/* Fibocom L71x */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0100, 0xff, 0xff,
-> 0xff) },	/* Fibocom L71x */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0256, 0xff, 0xff,
-> 0xff) },	/* Fibocom L71x */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0579, 0xff, 0xff,
-> 0xff) },	/* Fibocom L71x */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff)
-> },			/* LongSung M5710 */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff)
-> },			/* GosunCn GM500 RNDIS */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff)
-> },			/* GosunCn GM500 MBIM */
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 10917c3e1f03..802b7bbe3d92 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+>  
+>  	retval = -EAGAIN;
+>  	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+> -		if (p->real_cred->user != INIT_USER &&
+> +		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
+>  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+>  			goto bad_fork_cleanup_count;
+>  	}
+> @@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
+>  			 */
+>  			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+>  							 p->real_parent->signal->is_child_subreaper;
+> -			list_add_tail(&p->sibling, &p->real_parent->children);
+> +			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
+>  			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+>  			attach_pid(p, PIDTYPE_TGID);
+>  			attach_pid(p, PIDTYPE_PGID);
+> -- 
+> 2.39.2
 
-
-Hi Victor, thanks for the patch, there is unfortunately the following 
-errors in it:
-The device list is sorted in ascending order based on vid:pid, you have 
-inserted all of your added Id's in the wrong place.
-
-19d2:0579 is a ZTE device Id and should be placed among the other 19d2 
-devices.
-
-You have not included usb-devices output for 19d2:0256 and 2cb7:0100, 
-and I have strong reasons to believe that they should not be included in 
-the option driver.
-If you are of another opinion then please show the usb-devices output 
-for them, otherwise remove them from the patch.
-
-You have added support for an interface with the attributes 0a/00/ff , 
-there is no such interface in your provided usb-devices listing, 
-interface Class 0a does not even belong to the option driver.
-
-Thanks
-Lars
