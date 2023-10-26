@@ -2,150 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC837D7EA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2457D7EAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjJZIkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S234855AbjJZIlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjJZIko (ORCPT
+        with ESMTP id S234854AbjJZIlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:40:44 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2055.outbound.protection.outlook.com [40.107.7.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F31A128;
-        Thu, 26 Oct 2023 01:40:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kk5q/kjXBn588gtVeA9uc0g9ZrLLnbJ/7/IqObyvWm7VHgIcxe5aCZpIZas9Iro8xa+X+LvBM6WlKWCoQBliQwi78yTI5HZ0n+xiS+j9B5DkD0aFgr3YAg4RinGliE2B2B1rwSYHmqvLME8vRZZ6GYJVugu42RwOuQd8y5haliFdDfDV+8DI3EzKvSABDUHpKf1ouxeThHKvYG+VdMTtEzIeN6cslpdmDtrP6oxFpCzdbpxbwzyuzh4l6DBoxf+U7OaeTradeY5qptHaUdn0RgjagnMjxp2XuKm9JE9NtsyrteHBZGIc0yWNKHrIMNSQXGziBgJeLaWA1ox8pc4hxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w3Wzmfa3FPhq95kNxmMFgkzTc7dBXdgouuiVxIeh0kQ=;
- b=c8ShyuHZcr9Espp7JmciLn7elAd76/LQuShfTVa2G2T+FYJ2IAPS8IEIDBDSvKi3o46K0E3XJvC6CHvq1tit680yDmQsDSTKEP9ZMpJRo9GhfBzbI92nTGBHLTWgdHpHvInY7g7EqcemOKurXPDft+ivcSvcMJdzE9ovRiE2HEmN8zHMYNoYidGAjhvqoiAswjBmK0GklEayhjbqVbpBOkzbOmbgf0FzAjBzsJpFSCBxwgxV0QpW690U3RG1i+VreuZHLAIwgVYrW6USjSnKuZNvsbj6wIUl6s7ziiWT1a9P2KFbK7gHcl3m1eQCaBRMegfvQTgBrLpdimPCokgWvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w3Wzmfa3FPhq95kNxmMFgkzTc7dBXdgouuiVxIeh0kQ=;
- b=hK4MoytfhrvMCzB1+B1HK3K4XfeASDgB1HaKmP4axHyqUmrlnsQKxYF3P0+jWnHQHGS9rFis9rzM6hG9pDPKhuvEYbe6ImhHmGdxnkiAXHn/eje93VgT3SRscYX1FEUp/VQmR5lZQcqNYZ/75Kq7nqCMu+g1+VQrNjg0+fb7SxxOsxgiaG/EjUn564B72qvfcSYVsfEl5e+ZqDSrEFoW1RR4dBDwoD6wxd/Eo6Lbq/UIgrW0PAu1/Y+HnAPDNOUg3+tEgOKx39XIu01uvywWTiDYkZ+SLUpDLzKqFfIEBTTc+PV5D7sKzYU7UsivOly5isBr7Sad+KZj5WwQGqQScQ==
-Received: from DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:395::21)
- by AS8PR10MB5855.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:524::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
- 2023 08:40:39 +0000
-Received: from DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::4880:f83a:7de4:ac92]) by DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::4880:f83a:7de4:ac92%5]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
- 08:40:39 +0000
-From:   "Starke, Daniel" <daniel.starke@siemens.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/2] tty: n_gsm: add partial copyright Siemens Mobility
- GmbH
-Thread-Topic: [PATCH 2/2] tty: n_gsm: add partial copyright Siemens Mobility
- GmbH
-Thread-Index: AQHaB+aZok0E+pm100q+8bmlaY29LrBbwGMw
-Date:   Thu, 26 Oct 2023 08:40:39 +0000
-Message-ID: <DB9PR10MB5881CB4D0C0607507373B824E0DDA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
-References: <20231026055844.3127-1-daniel.starke@siemens.com>
- <20231026055844.3127-2-daniel.starke@siemens.com>
- <2023102649-batch-turbojet-11cb@gregkh>
-In-Reply-To: <2023102649-batch-turbojet-11cb@gregkh>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_ActionId=00015988-e8b6-4b7f-86e8-2a278419aba8;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_ContentBits=0;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Enabled=true;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Method=Standard;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Name=restricted;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SetDate=2023-10-26T08:36:14Z;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB9PR10MB5881:EE_|AS8PR10MB5855:EE_
-x-ms-office365-filtering-correlation-id: 0b99ba1e-c223-4530-f5cd-08dbd5ff3b70
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vVDFk7W0LZ9tRq8swXuPjvWcB/34QlxflcoJQ2uqTfotrDpf5V3924Ngp0TVIonGLZtggV0IIUkVjADeuAmipeO3UbCHeL+nl2Nr1kRZ8Qm1VvJb6lhFtxiYhFxa7waEXbog8hj5rHTBPq6S5pMVNWWOicVXjDlZDPEbDqXbE2eF4arvekM2d8BpBLe3KYr3G9kM9RiumdT4jLeKFTE3t+YZow1iCbCysK+crBOYoeLfraz+E6lXZk1jZVHR7Vl+GATi7ApRl4Rj4YfN2sNVhS1KNZiOeK4n1oKCqHeJ2k6SGaIsAjyRsMDaD6X69C7vUBpf4aB9FJnhaWI1ZgyAiIvuKYg+5nsCJUa9YXL2Gpare+MJwV/gBJRtMsJm/kn8U1wT1PVUPQb2eqzL5FcDJs6foULO6jQtTphhhQkpMNKRISDeXGtEXegxiTCv+duRn1xEXUQUQ3iCs7pk0fiQ1UbqiGPEXECT9YFxpuYVulcHU+KFwGBuWFeG+nHmOK3/vveDAX0fZjESmNFdIgu1Xw9KnCGF28mLWbocdFgGMxUHxIOrAyjKwdZiXbn9WfhG2Bq6jRQxqP2l4h6En00RJ8exZB2BfjQmrf9s7yBFIcALr6uOKrFrA9XuMuT35dAQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(39860400002)(396003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(38070700009)(26005)(41300700001)(38100700002)(2906002)(6506007)(4744005)(55016003)(52536014)(5660300002)(4326008)(86362001)(8676002)(8936002)(478600001)(33656002)(6916009)(66556008)(71200400001)(9686003)(122000001)(64756008)(54906003)(76116006)(66446008)(66946007)(66476007)(82960400001)(316002)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Vyy2tM/btAYMjmmI+hY9ipuaWina2DVEqTqynv1r2vCsoJivw32Kb0O8tL1Y?=
- =?us-ascii?Q?1vFQYv/FlVw9ZEZgj8xUKuu8hhVV6Vpaxl7FZ5zgoNkbe/q3h3YzjorP56q9?=
- =?us-ascii?Q?zSZT5DR/DgzQA6RksE4J29SsYtl1aXCO31lMRivWKOaS9ICfXarudtxSovqm?=
- =?us-ascii?Q?zHoCn/bodH9DMJGRt+AjzuRVKxUbjPj77BBaptbg3xSSwBNrDKpKL5e1UuZ9?=
- =?us-ascii?Q?E1r+lJ+b8tUirK3w/RXyedY78/woZepcscQYuFlm2PMr52zOXwhDPIWA8wzO?=
- =?us-ascii?Q?/yA1cQvu2171Yql5fKd8OS4RKAnbAqvGWZRdQWISMTIJ/jnSKj308Ic/8EGp?=
- =?us-ascii?Q?fyVgaSjZkBfccEppFZtpx/IiTe0mony8g0W3JVfyXPIgs0rIHj+hAMRjInHK?=
- =?us-ascii?Q?rvvT0b7fgbANNi9JOq8w9uMEh4IVFebJqg0vKZNICxJ3+pamMMbtKEr44XFs?=
- =?us-ascii?Q?3lM4oqdq2t1ardRnh3wcnGHfBzgLvA+S83A6Dn7OSQzkOVI2okxO8sKDpuam?=
- =?us-ascii?Q?6ubcbyUV6g/k7cYTVuDwDcwSkRjYnnydtBBAyGAVEosJllBv9JH3QnwKUXFs?=
- =?us-ascii?Q?puQBIiFK4lqQhRoYRqrZRHU/w+WjiQ+/7qQ7di2WijR2uYOcbmE4uOkiAiyQ?=
- =?us-ascii?Q?v9r/aBaaUe3RMdBx+Qlg6Jyym5XLq4gkrrXmfzT5v169r6pdr1QmZosEVEOc?=
- =?us-ascii?Q?yVWU7Zrg5IJsTul7s+4iiI9EbKlt4G1s2fnCre/a9xWMY8gEO+G3qmRixyZ+?=
- =?us-ascii?Q?Rstt0RwlyPHnet7tTV0d6mDmpcbNOit7pvMBlvehE7jCoj6Xz5UBe32YQfJR?=
- =?us-ascii?Q?3fRCSzoXeHAYFFeTwUerHbi7HSdySioPidZjbWwsn4oB8JsocaZejCar10uL?=
- =?us-ascii?Q?pzwr5Vy70SEhX3meLRX0I0J1jSYBmx8Gdz8of9FHTNVkN8aQGoP+sF2lYOJz?=
- =?us-ascii?Q?WamBnslaNcmBrzhky8f1GgHEaDtM2Jp+3Es8artmT3yOCsFm+M6Oih/lJ0XZ?=
- =?us-ascii?Q?wHYYzXchb0FjoWFgKoXW1Tnw5YfWtSc5H/nfXl/1Cy3OUi3+B40YUo8DVC1y?=
- =?us-ascii?Q?Fd+aACp/95mI6h1jzZgOIBPaEzocP4KYRoyOUAr02ty4Au5EC3zorLUaGLeI?=
- =?us-ascii?Q?7C4X1J9HpupdPRBTynWX9iNIWHgjyV5n8lfkPfrWwRqvk4A6PabKfva6oL0g?=
- =?us-ascii?Q?XKt0rc+nTpfgU93rNJv/3cmSi+xs6+FQtC6dja7YDsPzOi4M4M/h7h156qtt?=
- =?us-ascii?Q?4co0UJRL/PEzkJi079BYDWqhIh/XMHs/AfidGzSD1dk94R4covc4JtXw3YBC?=
- =?us-ascii?Q?9kp6FFsPsJRpLqf66GI9fHKGrkbBQPO8pSwQSb1rlAgg/Ixd17Y8E54EznNH?=
- =?us-ascii?Q?u8Hokq+9fLEklrBS6c6YzdTgeIVAt/SGK7dw/G3SDhWi7DJceOv0/Msl+iHJ?=
- =?us-ascii?Q?HwNrtyrzbsNO8LlYLXJrCDN5W1acTER689Sauo0MOhhD0nw6G2QwJKkqMEKu?=
- =?us-ascii?Q?/NyNurbgO/36hLx2HUkjGe40UwACjXrbQ+QXwhWD9pPZhLBcX5LKj4UtNzjU?=
- =?us-ascii?Q?POeFrXw6m2Wdr+F0z644ykUxYK34uM1bH2/tBxOpbaca+2OqBVSIKxt+g429?=
- =?us-ascii?Q?pg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 26 Oct 2023 04:41:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A868C10E;
+        Thu, 26 Oct 2023 01:41:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6AFC433C8;
+        Thu, 26 Oct 2023 08:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698309661;
+        bh=CKweGyf2oPo/e/UZLG1WYH3zEQnVvPRR68BdbBl/TGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oRC27PQC2plQ2QFtxeYNcapuTdKaVmbmEUR0m69y9zSqXieqEvU2U8HaibfItzWZF
+         yERD96v5VwCZUJZD6El6ZorfVxYGGBw2vENxYrzOh3JNxfzIcWV8Hyo/98RmvjYp1O
+         Ink1QwB6gOI9hZMPLodFMqMmfk4UUgDFD2PT2vR0MIfYSLtLLeyvF4ch6/DBDJ+K3Z
+         0bfW6e3KP7yJWPzCmJpvtwgF2RV+VsKMprb/vimV6IovW84by85aPvP9y1WYUJyow3
+         BUjvGbMWEhiJ9hRAr+vd5AhVyyu5+qGt0miVwVbaUWHgtUSofxp310DRt0OzuziAvf
+         CCAilLzZ675cA==
+Date:   Thu, 26 Oct 2023 11:40:39 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 03/13] mm/execmem, arch: convert simple overrides of
+ module_alloc to execmem
+Message-ID: <20231026084039.GJ2824@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-4-rppt@kernel.org>
+ <607927885bb8ca12d4cd5787f01207c256cc8798.camel@intel.com>
+ <00277a3acb36d2309156264c7e8484071bc91614.camel@intel.com>
+ <20231005052622.GD3303@kernel.org>
+ <b26d0a201bf631831a956450ebbccc3c16521133.camel@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b99ba1e-c223-4530-f5cd-08dbd5ff3b70
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 08:40:39.3348
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7mnABzeVlohKCtHVIY+iKTG82rIfE9UyChlVM2ZAN8blU8TV/pOSODBPzOZ5qPx5RrHEP70Vq/o1f1Ow6gR+2e1aunp4o5O+IqS9/uSQtM0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB5855
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b26d0a201bf631831a956450ebbccc3c16521133.camel@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > + * Portions Copyright (c) 2022/23 Siemens Mobility GmbH
->=20
-> I have no objection to you adding your copyright, you all have done a
-> ton of great work here and it is correct to add.  But the "Portions"
-> line is odd, and isn't something we generally use.  Can you just resend
-> this with that word removed?
->=20
-> >   *
-> >   *	* THIS IS A DEVELOPMENT SNAPSHOT IT IS NOT A FINAL RELEASE *
-> >   *
-> > diff --git a/include/uapi/linux/gsmmux.h b/include/uapi/linux/gsmmux.h
-> > index 4c878d84dbda..101ebd15954e 100644
-> > --- a/include/uapi/linux/gsmmux.h
-> > +++ b/include/uapi/linux/gsmmux.h
-> > @@ -1,4 +1,5 @@
-> >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/* Portions Copyright (c) 2022/23 Siemens Mobility GmbH */
->=20
-> Same here, just drop the "Portions"?
+Hi Rick,
 
-This was something suggested by our IP department. But sure, I will resend
-this patch without the word included.
+Sorry for the delay, I was a bit preoccupied with $stuff.
 
-Best regards,
-Daniel Starke
+On Thu, Oct 05, 2023 at 06:09:07PM +0000, Edgecombe, Rick P wrote:
+> On Thu, 2023-10-05 at 08:26 +0300, Mike Rapoport wrote:
+> > On Wed, Oct 04, 2023 at 03:39:26PM +0000, Edgecombe, Rick P wrote:
+> > > On Tue, 2023-10-03 at 17:29 -0700, Rick Edgecombe wrote:
+> > > > It seems a bit weird to copy all of this. Is it trying to be
+> > > > faster
+> > > > or
+> > > > something?
+> > > > 
+> > > > Couldn't it just check r->start in execmem_text/data_alloc() path
+> > > > and
+> > > > switch to EXECMEM_DEFAULT if needed then? The
+> > > > execmem_range_is_data()
+> > > > part that comes later could be added to the logic there too. So
+> > > > this
+> > > > seems like unnecessary complexity to me or I don't see the
+> > > > reason.
+> > > 
+> > > I guess this is a bad idea because if you have the full size array
+> > > sitting around anyway you might as well use it and reduce the
+> > > exec_mem_alloc() logic.
+> > 
+> > That's was the idea, indeed. :)
+> > 
+> > > Just looking at it from the x86 side (and
+> > > similar) though, where there is actually only one execmem_range and
+> > > it
+> > > building this whole array with identical data and it seems weird.
+> > 
+> > Right, most architectures have only one range, but to support all
+> > variants
+> > that we have, execmem has to maintain the whole array.
+> 
+> What about just having an index into a smaller set of ranges. The
+> module area and the extra JIT area. So ->ranges can be size 3
+> (statically allocated in the arch code) for three areas and then the
+> index array can be size EXECMEM_TYPE_MAX. The default 0 value of the
+> indexing array will point to the default area and any special areas can
+> be set in the index point to the desired range.
+> 
+> Looking at how it would do for x86 and arm64, it looks maybe a bit
+> better to me. A little bit less code and memory usage, and a bit easier
+> to trace the configuration through to the final state (IMO). What do
+> you think? Very rough, on top of this series, below.
+
+I like your suggestion to only have definitions of actual ranges in arch
+code and index array to redirect allocation requests to the right range.
+I'll make the next version along the lines of your patch.
+
+> As I was playing around with this, I was also wondering why it needs
+> two copies of struct execmem_params: one returned from the arch code
+> and one in exec mem. 
+
+No actual reason, one copy is enough, thanks for catching this.
+
+> And why the temporary arch copy is ro_after_init,
+> but the final execmem.c copy is not ro_after_init?
+
+I just missed it, thanks for pointing out.
+ 
+-- 
+Sincerely yours,
+Mike.
