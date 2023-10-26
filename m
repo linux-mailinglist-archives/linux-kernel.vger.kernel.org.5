@@ -2,49 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8EF7D8379
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9890E7D837E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344950AbjJZN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S1344993AbjJZN0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbjJZN0S (ORCPT
+        with ESMTP id S231287AbjJZN02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:26:18 -0400
+        Thu, 26 Oct 2023 09:26:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A58E5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:26:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8E9C433C8;
-        Thu, 26 Oct 2023 13:26:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B457CE5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:26:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FCEC433C7;
+        Thu, 26 Oct 2023 13:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698326776;
-        bh=EkEQs9N23jDDNdbmrMAfm/n0wa1XEFhc3nFLxMLQBfk=;
+        s=k20201202; t=1698326786;
+        bh=41Xg+Doxc4aBDvl2iYiwfP8OIdQnKvWUYMtMk4RePuQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=phCC8uNydBc6FI51+5GxUnplh0W6pHKM/k1kCBdgKGdSLVRB25tPZzMSM5b9CSEi6
-         NnDL+8L6rdKgTWVvBT/NBBIj0EfltwYqA99WgClIVDgnKFQTa5pKv5sHghnpJ6iH2L
-         a1Dz1GENta9hCJTNryRzvDwV+Ex5MzGGjK22BdAgwJwpcbcrXqx+zZ2otAAu/7NPZe
-         y1m71EsEfiDdLlwmTX0xT8jkN/b+wKmE7vvRFfWoJIgWZ2xPFy7gBBBGAqFAEw8MkG
-         rKx97y13DM1ZB7pbH/QFsTr7zFLVbyFrDGPF9dKYp0U4R2ckI7QXWHf+yEJ8U2aqn9
-         uWfObGYv/9nUg==
+        b=YyTcABChaU6MYFY2UYYfXz8rPw658AKaFaGnP9VQyN+R04Et5KHx8w8GZ9/Rlz/JQ
+         bEixMV4D3I7Zn5hcQnjuWs7XZSDGl+r531/f2zF819MLd3udsnMwiBpKU1r+KQiUT2
+         XVPabxKNULHZtBF87OPVEaV7o+Qr3PeoMCJljGoq4Al2RQ8IyatksKj3UtktfeDjL1
+         mfJmiPLxLB4vf8RSClf2mhnQuiGb/ve+R6Fh+4Z8j+DHtq9s69l2bDDW/j5uLj2R4L
+         vs3TDYxEwCwT6zPeDsNKtr2+Ezl/bovnII3SJbN2JgubIwMcxIUQnj55aUPnIEd9sx
+         DxJUtM3CBoC9A==
 From:   Maxime Ripard <mripard@kernel.org>
-To:     dri-devel@lists.freedesktop.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     robdclark@chromium.org, dmitry.baryshkov@linaro.org,
-        vignesh.raman@collabora.com, sergi.blanch.torne@collabora.com,
-        guilherme.gallo@collabora.com, david.heidelberg@collabora.com,
-        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
-        daniels@collabora.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-In-Reply-To: <20231024004525.169002-1-helen.koike@collabora.com>
-References: <20231024004525.169002-1-helen.koike@collabora.com>
-Subject: Re: [PATCH v3 00/10] drm/ci: fixes and improvements
-Message-Id: <169832677439.958223.17998130799046222765.b4-ty@kernel.org>
-Date:   Thu, 26 Oct 2023 15:26:14 +0200
+To:     dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>
+Cc:     Emma Anholt <emma@anholt.net>,
+        Helen Koike <helen.koike@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+In-Reply-To: <20231002164715.157298-1-robdclark@gmail.com>
+References: <20231002164715.157298-1-robdclark@gmail.com>
+Subject: Re: [PATCH] drm/ci: Enable CONFIG_BACKLIGHT_CLASS_DEVICE
+Message-Id: <169832678386.958223.2789362196867076790.b4-ty@kernel.org>
+Date:   Thu, 26 Oct 2023 15:26:23 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,16 +53,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 21:45:15 -0300, Helen Koike wrote:
-> This series contains the several fixes, making drm/ci much
-> more reliable and useful.
+On Mon, 02 Oct 2023 09:47:14 -0700, Rob Clark wrote:
+> Dependency for CONFIG_DRM_PANEL_EDP.  Missing this was causing the drm
+> driver to not probe on devices that use panel-edp.
 > 
-> Highlights:
 > 
-> * Current DRM/CI in drm-misc is broken, this series fixes it with mesa
->   uprev (commit 1/9).
-> 
-> [...]
 
 Applied to drm/drm-misc (drm-misc-next).
 
