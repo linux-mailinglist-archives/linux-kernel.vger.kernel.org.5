@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 937F77D7A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 03:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FE37D7A9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbjJZBwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 21:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
+        id S230467AbjJZCCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjJZBwG (ORCPT
+        with ESMTP id S229705AbjJZCCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 21:52:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8997ABD;
-        Wed, 25 Oct 2023 18:52:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16ECBC433C7;
-        Thu, 26 Oct 2023 01:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698285124;
-        bh=uc68CtG1/PmB2c3+G1qYkLU0G3yZyhKP0af8C+0vViw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lxmqelvna5njSYvzoA0nLw61ngRwVaDSkKEMmQ31gysV354IuujhdYvsfxgjZQRtf
-         rQlsRWasYHtpjz1feinFQgQQGMzFv59do8v+sZGdHUjZJDQlyDQDLD4zdxmSAwYy0a
-         gmHmJaN7WuqWWVSLu4BIsRWvG6Grvp+2URDHBTsrcPbbcJnYRuWe3TnBPnrSfdDkfw
-         VEFT7ueeYf6/o5ln6/chIw8khcNno85bjI+0oTCoTfdcnA3/Gv6CEToqIOYdjo8XD8
-         fVRimjDudHv3U5/qZyjupXEi72XJh4aSjE7k9CmN3HvAbOY3O8/X9oykpCeet0SK8Z
-         NNcn8qoXT4WnQ==
-Date:   Wed, 25 Oct 2023 18:56:21 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     konrad.dybcio@linaro.org, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, quic_tsoni@quicinc.com,
-        neil.armstrong@linaro.org
-Subject: Re: [PATCH 0/2] pinctrl: qcom: Introduce Pinctrl/GPIO for SC8380XP
-Message-ID: <faddmpsixivh3rfbsyvwpkt3mjaempkfdzqws2xjxlyhs5m5pm@7ss2k77rlryk>
-References: <20231025135058.11268-1-quic_sibis@quicinc.com>
+        Wed, 25 Oct 2023 22:02:30 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 19:02:27 PDT
+Received: from outboundhk.mxmail.xiaomi.com (outboundhk.mxmail.xiaomi.com [118.143.206.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D05A116
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 19:02:27 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.03,252,1694707200"; 
+   d="scan'208";a="68935568"
+From:   Fang Xiang <fangxiang3@xiaomi.com>
+To:     <tglx@linutronix.de>, <maz@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <fangxiang3@xiaomi.com>
+Subject: [PATCH] irqchip/gic-v3-its: Fix the coherent issue in its_setup_baser() when shr = 0.
+Date:   Thu, 26 Oct 2023 10:01:16 +0800
+Message-ID: <20231026020116.4238-1-fangxiang3@xiaomi.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025135058.11268-1-quic_sibis@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.237.8.18]
+X-ClientProxiedBy: BJ-MBX02.mioffice.cn (10.237.8.122) To BJ-MBX15.mioffice.cn
+ (10.237.8.135)
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_SOFTFAIL,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 07:20:56PM +0530, Sibi Sankar wrote:
-> This series adds pinctrl/gpio support for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
-> 
-> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
-> 
+The table would not be flushed if the input parameter shr = 0 in its_setup_baser() and
+it would cause a coherent problem.
 
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: Fang Xiang <fangxiang3@xiaomi.com>
+---
+ drivers/irqchip/irq-gic-v3-its.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Regards,
-Bjorn
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 75a2dd550625..58a9f24ccfa7 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -2394,13 +2394,15 @@ static int its_setup_baser(struct its_node *its, struct its_baser *baser,
+ 		 * non-cacheable as well.
+ 		 */
+ 		shr = tmp & GITS_BASER_SHAREABILITY_MASK;
+-		if (!shr) {
++		if (!shr)
+ 			cache = GITS_BASER_nC;
+-			gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
+-		}
++
+ 		goto retry_baser;
+ 	}
+ 
++	if (!shr)
++		gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
++
+ 	if (val != tmp) {
+ 		pr_err("ITS@%pa: %s doesn't stick: %llx %llx\n",
+ 		       &its->phys_base, its_base_type_string[type],
+-- 
+2.34.1
 
-> Rajendra Nayak (2):
->   dt-bindings: pinctrl: qcom: Add SC8380XP pinctrl
->   pinctrl: qcom: Add SC8380XP pinctrl driver
-> 
->  .../bindings/pinctrl/qcom,sc8380xp-tlmm.yaml  |  143 ++
->  drivers/pinctrl/qcom/Kconfig.msm              |   10 +
->  drivers/pinctrl/qcom/Makefile                 |    1 +
->  drivers/pinctrl/qcom/pinctrl-sc8380xp.c       | 1876 +++++++++++++++++
->  4 files changed, 2030 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc8380xp-tlmm.yaml
->  create mode 100644 drivers/pinctrl/qcom/pinctrl-sc8380xp.c
-> 
-> -- 
-> 2.17.1
-> 
