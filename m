@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7AA7D8170
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1ED7D8176
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbjJZLCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        id S234863AbjJZLDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjJZLCM (ORCPT
+        with ESMTP id S230285AbjJZLDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:02:12 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9275F18D
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:02:09 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd644a96so1059961e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:02:09 -0700 (PDT)
+        Thu, 26 Oct 2023 07:03:30 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1267419D
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:03:27 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507a5f2193bso840813e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698318128; x=1698922928; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698318205; x=1698923005; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=oFTiVkbcygW9fRAqDmMAspuZYfVMMqoc65jUqQ9G+ng=;
-        b=slPCDwNaSxXQz/dxbRUiWHB8rhWsYd5HpioT1I8BDtDknECorurvfhHW1JVdUd39TI
-         XkdYFcOuywgF1FMrBa0D/3f2lnhDJyAILb+fENADf97IeUfilxpfoEGpDbgAncMZKH40
-         VxrhEzxK9XOLx5wX+Skv6hsEr24Ur3k3ZF+8kjFmwttk8a6HBEBTaA3f/DFljaYPXEIy
-         FPDef0BwUQR5rmuD4gKKRWOoDFpJUtI9PITQexeKMyFyel88Urdv2pSz+oD5klB2NRgT
-         RrskEoR8w4R5CVGxbyyVDKL7CgmJxNlTVUZqi3w/f6IlanLvbxiiWz9aA9RqrgjOIQh0
-         D1Cg==
+        bh=VzUkjj3ioVAuziUZcUjR5KTsG1ZchY1msQxN7OBN/9E=;
+        b=R24ij74OdmOpyo/Oix4XzS1/Te2vaVJIGtwd8a1jfygV41mBJPhZCT5/zEiUtQcXiO
+         pLtJQWgxPzLSOmwDQYIGnZr6nyaxBkCNEuhQHg3vtyBZ/9pXSGv0f/a67WZv9NDJRszd
+         UizYxzEKe4KKwy+Bh1Kv5hPf/7xmLjvBkJckvrYF4uyxUwzolbIiujBeiOImIOjDPpwC
+         2fQONF8XDyJFk6sKW0w0DMJ/wXvSh546mEKxvSKWKS8mFf2ELeiQc0F/LoAM/7PyHH5c
+         NirqqrcwozN/PLO60bM6L/LIhWxsHGf2TO+1+VF/Wq4nCiZGYulN03jO9tXi5fvlGH8N
+         gXPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698318128; x=1698922928;
+        d=1e100.net; s=20230601; t=1698318205; x=1698923005;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFTiVkbcygW9fRAqDmMAspuZYfVMMqoc65jUqQ9G+ng=;
-        b=jcB0Bimy9M/C7vxiZ8AZEwfz6LcvIvlqB4AmX2H51MgMfFJ19znyzejYGYYRf9RJXW
-         iFkrDFMlnf9bpij81OhCxiclXGuk1B54lRH+lCiaj8CIB+tBWqOfuJEzdaEDaLzizGNW
-         zcvSFnyY5dcqQn1TaK6EoNxV26yBQqbsrhIYtrVkBJvuxVSnceqruHSF8s551EFve+6V
-         yPu+E+swKmFjNo1FsGpynQStCT4yRKUEYCf4w/xfW0E0dWoWzNZ3k7J9yQ0DZAhAI3KR
-         tOcL3iHamR1aPj2Zpkraxlr9PzZlFJTHl3zgS+CuFlGzA30kxU+hYghCzjwZ3MD94SXh
-         nvWQ==
-X-Gm-Message-State: AOJu0YyB1ugB9+/uARobck6ViKtVRoQoDEDyYjOF7g1+2WvMYycLQ7FB
-        DIdCZqeSAu/o5GTrKLuZj0fdqg==
-X-Google-Smtp-Source: AGHT+IHuKulB9emKJgqQ69HvVbewPB34ttNv0u9Y6mDJc7Y5W4nrW5hskThJPgFfTpuOkCKhANk+DQ==
-X-Received: by 2002:a19:9155:0:b0:503:18c3:d874 with SMTP id y21-20020a199155000000b0050318c3d874mr11332085lfj.45.1698318127810;
-        Thu, 26 Oct 2023 04:02:07 -0700 (PDT)
+        bh=VzUkjj3ioVAuziUZcUjR5KTsG1ZchY1msQxN7OBN/9E=;
+        b=MpEAbKHmtVAP9qOue17K9Kz9V8+o9HLHeNwF05IlhnLKW0Y/C0V/w1oWFNfOZ+MIwd
+         neTZIJqmv3n0/lhw+s1mpuHswMWsNBdQBy020xgxVBhimbZKCwcaYpsEOTuOGGNRsdhy
+         RnAObbqdtE9VhKog6med0LGZPgV8+MqnMEz2Wo+IwFT+xHl8wPVZ/+nbdrFcNT/z1OUL
+         K4B6KrG1/ZVxW+AFjl0Vnbf/zwrOzeKXKU+2dRpvzENBPL8h2JUV6WvqPGgVZ3yDpzVE
+         RiaVumuX6NplnmuUp7t58abduNrhftgwKcO6jMHi4BgnntYUCtxN0XZ2VAGpa5uA3E5Z
+         cQ0A==
+X-Gm-Message-State: AOJu0YyT6oYPgvQ2aii7qQLC7ySmwZEaazuC0EeE1U4/fRp31bkzCov+
+        ZegIa/5E8PmPpmpRJWyl18U09g==
+X-Google-Smtp-Source: AGHT+IGXWeTTuhTugX6l5vKV6ed4QbMt4Upd/1mje4BckbkWso9Rz1mQfodP+vd3jINdRSXBP+zS5Q==
+X-Received: by 2002:a05:6512:214d:b0:505:728d:b48c with SMTP id s13-20020a056512214d00b00505728db48cmr707543lfr.19.1698318205254;
+        Thu, 26 Oct 2023 04:03:25 -0700 (PDT)
 Received: from [172.30.204.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id m7-20020ac24247000000b005079d34f330sm2956190lfl.282.2023.10.26.04.02.06
+        by smtp.gmail.com with ESMTPSA id m7-20020ac24247000000b005079d34f330sm2956190lfl.282.2023.10.26.04.03.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 04:02:07 -0700 (PDT)
-Message-ID: <147be4db-647f-43d6-a242-cb38a2c96295@linaro.org>
-Date:   Thu, 26 Oct 2023 13:02:05 +0200
+        Thu, 26 Oct 2023 04:03:24 -0700 (PDT)
+Message-ID: <6017d366-b4fa-4ef1-ba39-f54d7963cc88@linaro.org>
+Date:   Thu, 26 Oct 2023 13:03:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] soc: qcom: llcc: Add configuration data for SC8380XP
+Subject: Re: [PATCH 3/3] pmdomain: qcom: rpmhpd: Add SC8380XP power domains
 Content-Language: en-US
 To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+        ulf.hansson@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
 Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
         abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-References: <20231025134632.10363-1-quic_sibis@quicinc.com>
- <20231025134632.10363-3-quic_sibis@quicinc.com>
+        linux-pm@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231025135943.13854-1-quic_sibis@quicinc.com>
+ <20231025135943.13854-4-quic_sibis@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231025134632.10363-3-quic_sibis@quicinc.com>
+In-Reply-To: <20231025135943.13854-4-quic_sibis@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,14 +82,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/25/23 15:46, Sibi Sankar wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+On 10/25/23 15:59, Sibi Sankar wrote:
+> From: Abel Vesa <abel.vesa@linaro.org>
 > 
-> Add LLCC configuration data for SC8380XP SoC.
+> Add the power domains exposed by RPMH in the Qualcomm SC8380XP platform.
 > 
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
 > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 > ---
-Just double-checking, has this been updated for R2?
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
