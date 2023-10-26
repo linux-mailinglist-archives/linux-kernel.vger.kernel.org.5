@@ -2,72 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F352B7D7A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 03:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862157D7A27
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 03:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjJZB2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 21:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjJZB15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 21:27:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8F7186
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 18:27:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37908C4339A;
-        Thu, 26 Oct 2023 01:27:55 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qvpAA-00CqUd-0k;
+        id S232126AbjJZB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 25 Oct 2023 21:27:54 -0400
-Message-ID: <20231026012754.043877861@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 25 Oct 2023 21:27:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 4/4] eventfs: Fix typo in eventfs_inode union comment
-References: <20231026012734.358814002@goodmis.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbjJZB1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 25 Oct 2023 21:27:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C439BD;
+        Wed, 25 Oct 2023 18:27:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CF65C433C8;
+        Thu, 26 Oct 2023 01:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698283670;
+        bh=MYDUnsiElyxN8jg/XOjZrR5F22XrepJGjxLyE0dqysY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dJmop0USTk5foVgmvxw1y8Jc2z9sd0GVeD5iZR66Vb8wZ/Lx/yf5hpYcCDKrZJL24
+         NzxWf1YaOT0sTqG3GKsS1m9Bj48/37LpaTVGra8Xtv14k1kbs0zwD8DQSS3JxXAH9V
+         OxAu5EMbhx4dKX+D64lLvi8N5zznkBYtzyj5zXGBGzEC+zbh+6x52C20044/iHuk8k
+         ShfaNKwa86tJS3Rkw2uTC6OgoDrCHmaL03/gWFexKmaDc9ea1/m2A3rfI3366CkkWz
+         TnAuAeJF7rp8zVWuDUcnuTeoSlsOwP2BTaQTsIkpDCk1vn8gHhJdvIvUu0b3UUZZII
+         ToYFil0l2jSjg==
+Message-ID: <fb12cab33d27c582125a22390e9c3b12.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     <linux-next@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Add spmi tree to linux-next
+Date:   Wed, 25 Oct 2023 18:27:48 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi Stephen,
 
-It's eventfs_inode not eventfs_indoe. There's no deer involved!
+Can you add the spmi-next branch of my spmi tree to linux-next? I
+collect patches in this branch and then email them to Gregkh to be
+applied to the driver tree. I don't send pull requests.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231024131024.5634c743@gandalf.local.home
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git spmi-next
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 298d3ecaf621..64fde9490f52 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -37,7 +37,7 @@ struct eventfs_inode {
- 	/*
- 	 * Union - used for deletion
- 	 * @del_list:	list of eventfs_inode to delete
--	 * @rcu:	eventfs_indoe to delete in RCU
-+	 * @rcu:	eventfs_inode to delete in RCU
- 	 * @is_freed:	node is freed if one of the above is set
- 	 */
- 	union {
--- 
-2.42.0
+Thanks,
+Stephen
