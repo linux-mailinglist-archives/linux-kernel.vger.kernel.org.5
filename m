@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B94287D8BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71D47D8BE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344979AbjJZWzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
+        id S1345006AbjJZWzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjJZWzl (ORCPT
+        with ESMTP id S1344984AbjJZWzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:55:41 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFDF1AB
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:39 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9bf22fe05so11429035ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:39 -0700 (PDT)
+        Thu, 26 Oct 2023 18:55:43 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CB61AB
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:41 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9fa869a63so11639645ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698360938; x=1698965738; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1698360941; x=1698965741; darn=vger.kernel.org;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z6s/cqycKkxXGSPd7c1ykS8tAo7NHRuICQAMtk4hWzA=;
-        b=P1zfzqdhRuE3JzZbaey/Gk/Ig85G9UdsjtgxFiJq7KfOgiNA12KmK9hPBsWGEN3FO6
-         DnSrXpPndA+xYIUkKLxLewADhLw2YWpXh9hBc5twPQysAIJIxrVwFr33EsLmzAnJpYwC
-         snTiv7taQGhMoL0m3W416Lxm84jfyBTjvGfVY=
+        bh=yaFqTunHVouYTTyYYREbezY2cBZLNld0VF4Wbwn0H9k=;
+        b=V7z5bnWcY0BaSvz3I9qxMTL1lADC8f1PGEZ3rFXJz3SkVfdeyDsJXe/TwqN07L8up9
+         ujvS4wRDwNabvMHlSmWOoYZdL8KMI2cxSGNgbtctQqxyV6KYjcN5CM6Y/6RtndOabhef
+         FKZedcrSJgCSDVrc0DvCny/vTgvapszHb8+fk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698360938; x=1698965738;
+        d=1e100.net; s=20230601; t=1698360941; x=1698965741;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z6s/cqycKkxXGSPd7c1ykS8tAo7NHRuICQAMtk4hWzA=;
-        b=VDgKwRZRs43ZnurGV6G73leqU2EIUJwCy6IfBwtxq7UsTPofQacko3r/pw4KcvodmP
-         itIfTYQ+s64QgmDm1rNOEGq66tjErf++JFgIUIxJ7y3N6suLIhH9LL0HjK2G+nQsf97H
-         wN3UtpXsXFFKwR7/y9NWkbEIjtt+WClhrF6Z2JYv7uSXzj919bJvdWX2liPn7NhMG2sA
-         w6qS96fNtBf+VpnEt4IP+GyZ+VdVa6S9hLOJWmRA0HPITCp3nlnOP8wBn45t/N4EYmXF
-         o0c0PwntmXHD2TNqvjTpIg1Ez+VwAj7yTIgR9487n0486qAB1NVDs9u//z8H1GNKAcoy
-         aj0w==
-X-Gm-Message-State: AOJu0YzoQryDOOB/qCOCPbNmoSrwhQ6n72htB/bC4kFWUSxGWbj7bWMr
-        ToRsCK1zHaAiOjC3esfm9KRZz2DtnqRYtUyJyg43kw==
-X-Google-Smtp-Source: AGHT+IHgz2L3+MtwaF8wXHpmQ5hhoVIfkmyxFrXbOfrSnQmXG+IahRaYVM2z350727SZpTA/AR5IKg==
-X-Received: by 2002:a17:902:eb52:b0:1c7:65e3:e605 with SMTP id i18-20020a170902eb5200b001c765e3e605mr937619pli.36.1698360938447;
-        Thu, 26 Oct 2023 15:55:38 -0700 (PDT)
+        bh=yaFqTunHVouYTTyYYREbezY2cBZLNld0VF4Wbwn0H9k=;
+        b=g+QmgQVQA/gaY3NKvrEYBxwrPAbSv143O+US3u4y0cJh/GKXOz6O8rpqtMfNrIM3WJ
+         KHj6Hhcv3XiPHue/57HPKBGvyo8Gbs/wmBPwfARgsfRKgqOYc1S1bQiZaKPcFba6VD0W
+         xtx0GkxFjzxz86X9wXlgpYN/B+1x+98y7zeF+iCr6CoNw8GYOrN3/BsZZ9rxVGHejhkH
+         HG8DQISyBhjtQ4hdsjqvY/68s1zUFoYuP6/YN+QSc+ILgeZMVrn4neP07Fbw0CoC7Xie
+         +FtJlNFBn3s9O26tGDEy5+uoFXP9VmW6M63Lr76zizk5cPPqdFsl8zklmCLjrBpU6HTM
+         NT0A==
+X-Gm-Message-State: AOJu0YyL+PykP1Hlq5vXDdO6B5CFlL7BLdO0UWH8RrI4qdjq0LNyn5Cr
+        iCl9Af8Gkceu/aMJVVrLB/Azqg==
+X-Google-Smtp-Source: AGHT+IGJHiS6vZru+AUOsJcfgVHC/zU/WvqNoaFnAInF01XTG2AshW+hkcJvTW9Rh0vF5uq2BV1RCA==
+X-Received: by 2002:a17:902:d2c9:b0:1bb:d59d:8c57 with SMTP id n9-20020a170902d2c900b001bbd59d8c57mr1019293plc.18.1698360940744;
+        Thu, 26 Oct 2023 15:55:40 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b001c9b5b63e36sm206295plg.32.2023.10.26.15.55.36
+        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b001c9b5b63e36sm206295plg.32.2023.10.26.15.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 15:55:37 -0700 (PDT)
+        Thu, 26 Oct 2023 15:55:40 -0700 (PDT)
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 To:     netdev@vger.kernel.org
 Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -69,15 +69,15 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Jiri Pirko <jiri@resnulli.us>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2 1/5] net: ethtool: Make RXNFC walking code accept a callback
-Date:   Thu, 26 Oct 2023 15:45:05 -0700
-Message-Id: <20231026224509.112353-2-florian.fainelli@broadcom.com>
+Subject: [PATCH net-next v2 2/5] net: ethtool: Add validation for WAKE_FILTER
+Date:   Thu, 26 Oct 2023 15:45:06 -0700
+Message-Id: <20231026224509.112353-3-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231026224509.112353-1-florian.fainelli@broadcom.com>
 References: <20231026224509.112353-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000075dc6d0608a678a5"
+        boundary="000000000000989c160608a678b3"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
@@ -88,110 +88,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000075dc6d0608a678a5
+--000000000000989c160608a678b3
 Content-Transfer-Encoding: 8bit
 
-In preparation for iterating over RXNFC rules for a different purpose,
-factor the generic code that already does that by allowing a callback to
-be specified. The body of ethtool_get_max_rxnfc_channel() now accepts a
-callback as an argument and is renamed to __ethtool_for_each_rxnfc().
+A driver implementing WAKE_FILTER must first install at least one rule
+with RX_CLS_FLOW_WAKE for WAKE_FILTER to be effective. Iterate over
+RXNFC rules to validate that condition while trying to enable
+WAKE_FILTER.
 
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- net/ethtool/common.c | 54 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 45 insertions(+), 9 deletions(-)
+ net/ethtool/common.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ net/ethtool/common.h |  3 +++
+ net/ethtool/ioctl.c  |  3 +++
+ net/ethtool/wol.c    |  3 +++
+ 4 files changed, 51 insertions(+)
 
 diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index b4419fb6df6a..143dae872fb2 100644
+index 143dae872fb2..bab901b35731 100644
 --- a/net/ethtool/common.c
 +++ b/net/ethtool/common.c
-@@ -536,12 +536,24 @@ static int ethtool_get_rxnfc_rule_count(struct net_device *dev)
- 	return info.rule_cnt;
- }
- 
--int ethtool_get_max_rxnfc_channel(struct net_device *dev, u64 *max)
-+/**
-+ * __ethtool_for_each_rxnfc: Iterate over each RXNFC rule installed
-+ * @dev: network device
-+ * @cb: callback to analyze an %ethtool_rxnfc rule
-+ * @priv: private pointer passed to the callback
-+ *
-+ * @cb is supposed to return the following:
-+ *   < 0 on error
-+ *   == 0 to continue
-+ *   > 0 to stop iterating
-+ */
-+static int __ethtool_for_each_rxnfc(struct net_device *dev,
-+				    int (*cb)(struct ethtool_rxnfc *info,
-+					      void *priv), void *priv)
- {
- 	const struct ethtool_ops *ops = dev->ethtool_ops;
- 	struct ethtool_rxnfc *info;
- 	int err, i, rule_cnt;
--	u64 max_ring = 0;
- 
- 	if (!ops->get_rxnfc)
- 		return -EOPNOTSUPP;
-@@ -570,16 +582,14 @@ int ethtool_get_max_rxnfc_channel(struct net_device *dev, u64 *max)
- 		if (err)
- 			goto err_free_info;
- 
--		if (rule_info.fs.ring_cookie != RX_CLS_FLOW_DISC &&
--		    rule_info.fs.ring_cookie != RX_CLS_FLOW_WAKE &&
--		    !(rule_info.flow_type & FLOW_RSS) &&
--		    !ethtool_get_flow_spec_ring_vf(rule_info.fs.ring_cookie))
--			max_ring =
--				max_t(u64, max_ring, rule_info.fs.ring_cookie);
-+		err = cb(&rule_info, priv);
-+		if (err < 0)
-+			goto err_free_info;
-+		if (err > 0)
-+			break;
+@@ -742,3 +742,45 @@ ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *maps, u32 size)
  	}
- 
- 	kvfree(info);
--	*max = max_ring;
- 	return 0;
- 
- err_free_info:
-@@ -587,6 +597,32 @@ int ethtool_get_max_rxnfc_channel(struct net_device *dev, u64 *max)
- 	return err;
  }
- 
-+static int __ethtool_get_max_rxnfc_channel(struct ethtool_rxnfc *rule_info,
-+					   void *priv)
-+{
-+	u64 *max_ring = priv;
+ EXPORT_SYMBOL_GPL(ethtool_forced_speed_maps_init);
 +
-+	if (rule_info->fs.ring_cookie != RX_CLS_FLOW_DISC &&
-+	    rule_info->fs.ring_cookie != RX_CLS_FLOW_WAKE &&
-+	    !(rule_info->flow_type & FLOW_RSS) &&
-+	    !ethtool_get_flow_spec_ring_vf(rule_info->fs.ring_cookie))
-+		*max_ring =
-+			max_t(u64, *max_ring, rule_info->fs.ring_cookie);
++static int __ethtool_check_rxnfc_wake_filter(struct ethtool_rxnfc *rule_info,
++					     void *priv)
++{
++	bool *verdict = priv;
++
++	if (rule_info->fs.ring_cookie == RX_CLS_FLOW_WAKE) {
++		*verdict = true;
++		return 1;
++	}
 +
 +	return 0;
 +}
 +
-+int ethtool_get_max_rxnfc_channel(struct net_device *dev, u64 *max)
++/**
++ * ethtool_dev_check_wake_filter: Tests if a network device can use the
++ * WAKE_FILTER Wake-on-LAN option.
++ * @dev: network device to test
++ * @wol: %ethtool_wolinfo structure with Wake-on-LAN configuration
++ *
++ * Returns true if there is no support for %WAKE_FILTER, no support
++ * for RXNFC ethtool operations, or if there is at least one WAKE_FILTER
++ * installed.
++ */
++bool ethtool_dev_check_wake_filter(struct net_device *dev,
++				   const struct ethtool_wolinfo *wol)
 +{
-+	u64 max_ring = 0;
++	bool verdict = false;
 +	int ret;
 +
-+	ret = __ethtool_for_each_rxnfc(dev, __ethtool_get_max_rxnfc_channel,
-+				       &max_ring);
-+	*max = max_ring;
-+	return ret;
-+}
++	if (!(wol->wolopts & WAKE_FILTER))
++		return true;
 +
- int ethtool_get_max_rxfh_channel(struct net_device *dev, u32 *max)
- {
- 	u32 dev_size, current_max = 0;
++	if (!dev->ethtool_ops->get_rxnfc ||
++	    !dev->ethtool_ops->set_rxnfc)
++		return true;
++
++	ret = __ethtool_for_each_rxnfc(dev, __ethtool_check_rxnfc_wake_filter,
++				       &verdict);
++
++	return ret < 0 ? false : verdict;
++}
+diff --git a/net/ethtool/common.h b/net/ethtool/common.h
+index 28b8aaaf9bcb..6cd3286d5038 100644
+--- a/net/ethtool/common.h
++++ b/net/ethtool/common.h
+@@ -56,4 +56,7 @@ int ethtool_get_module_eeprom_call(struct net_device *dev,
+ 
+ bool __ethtool_dev_mm_supported(struct net_device *dev);
+ 
++bool ethtool_dev_check_wake_filter(struct net_device *dev,
++				   const struct ethtool_wolinfo *wol);
++
+ #endif /* _ETHTOOL_COMMON_H */
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 0b0ce4f81c01..954446185158 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -1457,6 +1457,9 @@ static int ethtool_set_wol(struct net_device *dev, char __user *useraddr)
+ 	    !memcmp(wol.sopass, cur_wol.sopass, sizeof(wol.sopass)))
+ 		return 0;
+ 
++	if (!ethtool_dev_check_wake_filter(dev, &wol))
++		return -EOPNOTSUPP;
++
+ 	ret = dev->ethtool_ops->set_wol(dev, &wol);
+ 	if (ret)
+ 		return ret;
+diff --git a/net/ethtool/wol.c b/net/ethtool/wol.c
+index 0ed56c9ac1bc..65fbe743a070 100644
+--- a/net/ethtool/wol.c
++++ b/net/ethtool/wol.c
+@@ -132,6 +132,9 @@ ethnl_set_wol(struct ethnl_req_info *req_info, struct genl_info *info)
+ 				    tb[ETHTOOL_A_WOL_SOPASS], &mod);
+ 	}
+ 
++	if (!ethtool_dev_check_wake_filter(dev, &wol))
++		return -EOPNOTSUPP;
++
+ 	if (!mod)
+ 		return 0;
+ 	ret = dev->ethtool_ops->set_wol(dev, &wol);
 -- 
 2.34.1
 
 
---00000000000075dc6d0608a678a5
+--000000000000989c160608a678b3
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -262,14 +269,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPW+NGWz2PbDhpbg
-d5ic9lnX8WIxE7RI8owpAR3u9gaBMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAyNjIyNTUzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBHvslxH5XVAUqC0
+VQqu27zdMPfiM8dAJdAoa9wriqZrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAyNjIyNTU0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAykczl45nzPI6YjM8XCXpzD3Ua2A01Al0C
-d2aq4NqJhcaI5N7Lwmu0vvuGX5yS3tEvlvoeHh1t4BQJ2sgvwPjNa/ylfGLcX98ao4yZCAlxy8LB
-s6dNI+x9abm/20+TB3Gu/8F+NBU+l++Lvf3IHwa1sy38oHdl0FJJAzs+5F3INnyp3VsW57GKaHpy
-wAMm2uaLKxrORDvTzXRrLLU4rbH+k+NLVGCOCY7PBIA0xQS7jd7KhoqtsS+ay2k1g2T3uHeMF+W/
-xCfeWuAusBpIIAcYkaH8EZDSSr2+/9bnm7N2kP91r327I2Zd1HCH/jhKDdk/UeoDog5Zl9Z5AIYI
-UUIT
---00000000000075dc6d0608a678a5--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAy+bpEaOjnF6B+zFU+ZZ3Y1mqDUN1YWhdB
+x0OCffYap7H+UcGTzadZ8Ghnh1Z2sXJmJ8+ESzimB/p8Iu4Q0/fWxOcO/PicW0GF7mZ/cNwJ+qKo
+fdLDf2syC29Rg6TLHV9cwUayA7Guvh6DDKwp0X0i5oXDmcq87qAMa9IH9MySWGmuNXm7QVtBFAQw
+GqBvXwKD8CGxJnFRZrBlt/BfXUS7LxkhLE9Yiczhvb+yE17XqNXseuP+dRduN/BNOPseKa9Tb/Rw
+T8FnGoViRVs4e4PFYEkFJM/O7gsJ2BhOlBCdWM10UjY7WtBQtezSgNlgkZFCFBOb7CAA3VE26lHv
+BqWd
+--000000000000989c160608a678b3--
