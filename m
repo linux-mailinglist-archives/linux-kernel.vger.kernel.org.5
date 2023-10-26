@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257A37D7E0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AEF7D7E12
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbjJZIE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S231294AbjJZIHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjJZIE4 (ORCPT
+        with ESMTP id S229705AbjJZIHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:04:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EC7B8;
-        Thu, 26 Oct 2023 01:04:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D14AC433C8;
-        Thu, 26 Oct 2023 08:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698307492;
-        bh=EAQ7g0hX/FrxSMaglusDeCTnn471+1/pfyILaNojVhU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fgekZGHe9w5dxxPKuk6zn5H1uJjUgh68Hyyq0hVSmesw81fAlMk4TVQuV+fG/Ifi1
-         bi/OMcbGSszHDTuVCfHrQcOiYv3LTv20fvoU1SpywODggvG/p4HrkVYhfgA8G/qA1K
-         hq13Qi/F68Tl8sEwYkUI/j7oUhxsyaodVcl4/HP7yzK7y4t2wRZwYwoTFSM79ueRYJ
-         t1gpgTbHagm39EF4326A8/n1Bjl28LzBwLUXBy4K6CFtS7RkxG0Hs4hxI6M4heugEC
-         rmhGrFUtI9Er0T2HPvwVxaNJz1ohb/CzatsuXO6zXUA8YxRIjNRkVZhOVjkzn/xjKi
-         l94O/mMwJ6K+Q==
-Date:   Thu, 26 Oct 2023 10:04:48 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
- the DSI link power state
-Message-ID: <mxtb6vymowutj7whbrygwlcupbdnfqxjralc3nwwapsbvrcmbm@sewxtdslfoen>
-References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
- <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
- <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
- <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
- <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
- <1696f131-83fb-4d0c-b4d7-0bdb61e4ae65@linaro.org>
+        Thu, 26 Oct 2023 04:07:12 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0DAB8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:07:09 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7AAB421B3F;
+        Thu, 26 Oct 2023 08:07:08 +0000 (UTC)
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BE9052C7AE;
+        Thu, 26 Oct 2023 08:07:07 +0000 (UTC)
+Date:   Thu, 26 Oct 2023 10:07:07 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>,
+        Chunlei Wang <chunlei.wang@mediatek.com>
+Subject: Re: [RFC PATCH printk v1] printk: ringbuffer: Do not skip
+ non-finalized with prb_next_seq()
+Message-ID: <ZToeK130KtWvcTx3@alley>
+References: <20231019132545.1190490-1-john.ogness@linutronix.de>
+ <ZTkxOJbDLPy12n41@alley>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t5jjjcy33i2jy7lt"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1696f131-83fb-4d0c-b4d7-0bdb61e4ae65@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <ZTkxOJbDLPy12n41@alley>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         ARC_NA(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(0.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_NOT_FQDN(0.50)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 7AAB421B3F
+X-Spam: Yes
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,167 +78,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 2023-10-25 17:16:09, Petr Mladek wrote:
+> On Thu 2023-10-19 15:31:45, John Ogness wrote:
+> > --- a/kernel/printk/printk_ringbuffer.c
+> > +++ b/kernel/printk/printk_ringbuffer.c
+> > +static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+> > +			    struct printk_record *r, unsigned int *line_count);
+> > +
+> > +/*
+> > + * Check if there are records directly following @last_finalized_seq that are
+> > + * finalized. If so, update @last_finalized_seq to the latest of these
+> > + * records. It is not allowed to skip over records that are not yet finalized.
+> 
+> I would add some details about what expect from this value. Something
+> like:
+> 
+>  * @last_finalized_seq value guarantees that all records up to this
+>  * sequence number are finalized and might be read. The only exception
+>  * are too old records which have already been overwritten.
+>  *
+>  * Also it is guaranteed that the value can only grow.
+>  *
+>  * But it is just a best effort. There is _no_ synchronization between
+>  * writers finalizing records and @last_finalized_seq updates. The result
+>  * might be a lower value because updaters might not see finalized
+>  * records from other CPUs.
+>  *
+>  * There is _no_ easy way to serialize these two operations. It would
+>  * require to remember two values which might be called handled in:
+>  *
+>  *   @last_finalized_id in desc_make_final()
+>  *   @last_readable_seq in desc_update_last_readable_seq()
+>  *
+>  * and these two values would need to be updated atomically together
+>  * so that only the last updater of the @id part would be allowed
+>  * to update the @seq part. Also it would require a barrier so
+>  * that each writer would see the finalized state from other
+>  * writers whom updated the @id part earlier.
+>  *
+>  * Summary:
+>  *
+>  * This value might be used by readers only to check the last
+>  * readable seq number at the given time. They must count with
+>  * the fact that new records might appear at any time.
+>  *
+>  * Beware that this value is not increased with every finalized
+>  * record. It stays the same when there are not-yet-finalized
+>  * records with lower sequence number.
+>  *
+>  * In particular, it does not guarantee that readers woken
+>  * via wake_up_klogd would be able to flush all messages
+>  * up to the one just stored by vprintk_store(). For example,
+>  * it does not guarantee that console_unlock() would flush
+>  * all pending messages.
+>  */
 
---t5jjjcy33i2jy7lt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The last paragraph sounds scary. But it is a pretty old problem.
+I was curious why nobody noticed it.
 
-On Wed, Oct 25, 2023 at 06:16:14PM +0300, Dmitry Baryshkov wrote:
-> On 25/10/2023 15:44, Maxime Ripard wrote:
-> > On Thu, Oct 19, 2023 at 02:19:51PM +0300, Dmitry Baryshkov wrote:
-> > > On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrot=
-e:
-> > > >=20
-> > > > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
-> > > > > The MIPI DSI links do not fully fall into the DRM callbacks model.
-> > > >=20
-> > > > Explaining why would help
-> > >=20
-> > > A kind of explanation comes afterwards, but probably I should change
-> > > the order of the phrases and expand it:
-> > >=20
-> > > The atomic_pre_enable / atomic_enable and correspondingly
-> > > atomic_disable / atomic_post_disable expect that the bridge links
-> > > follow a simple paradigm: either it is off, or it is on and streaming
-> > > video. Thus, it is fine to just enable the link at the enable time,
-> > > doing some preparations during the pre_enable.
-> > >=20
-> > > But then it causes several issues with DSI. First, some of the DSI
-> > > bridges and most of the DSI panels would like to send commands over
-> > > the DSI link to setup the device.
-> >=20
-> > What prevent them from doing it in enable when the link is enabled?
-> >=20
-> > > Next, some of the DSI hosts have limitations on sending the commands.
-> > > The proverbial sunxi DSI host can not send DSI commands after the
-> > > video stream has started. Thus most of the panels have opted to send
-> > > all DSI commands from pre_enable (or prepare) callback (before the
-> > > video stream has started).
-> >=20
-> > I'm not sure we should account for a single driver when designing a
-> > framework. We should focus on designing something sound, and then making
-> > that driver work with whatever we designed, but not the other way
-> > around. And if we can't, we should get rid of that driver because it's
-> > de-facto unmaintainable. And I'm saying that as the author of that
-> > driver.
->=20
-> That's not the only driver with strange peculiarities. For example, see
-> commit 8a4b2fc9c91a ("drm/bridge: tc358762: Split register programming fr=
-om
-> pre-enable to enable"), which was one of the issues that actually prompted
-> me to send this this patchset (after my previous version of this patch be=
-ing
-> rejected because of sunxi).
+IMHO, we are mostly safe in practice because:
 
-The datasheet for that bridge is available so at least we can try to fix
-it (and bridges are much simpler than controllers anyway). It's not
-something we can do with the sunxi driver.
+   1. Every printk() either tries to flush the consoles or
+      queues irq_work to do a deferred flush.
 
-> > > However this leaves no good place for the DSI host to power up the DSI
-> > > link. By default the host's pre_enable callback is called after the
-> > > DSI bridge's pre_enable. For quite some time we were powering up the
-> > > DSI link from mode_set. This doesn't look fully correct.
-> >=20
-> > Yeah, it's not.
-> >=20
-> > > And also we got into the issue with ps8640 bridge, which requires for
-> > > the DSI link to be quiet / unpowered at the bridge's reset time.
-> > >=20
-> > > Dave has come with the idea of pre_enable_prev_first /
-> > > prepare_prev_first flags, which attempt to solve the issue by
-> > > reversing the order of pre_enable callbacks. This mostly solves the
-> > > issue. However during this cycle it became obvious that this approach
-> > > is not ideal too. There is no way for the DSI host to know whether the
-> > > DSI panel / bridge has been updated to use this flag or not, see the
-> > > discussion at [1].
-> >=20
-> > Yeah. Well, that happens. I kind of disagree with Neil here though when
-> > he says that "A panel driver should not depend on features of a DSI
-> > controller". Panels definitely rely on particular features, like the
-> > number of lanes, the modes supported, etc.
->=20
-> In the mentioned discussion it was more about 'DSI host should not assume
-> panel driver features', like the panel sending commands in pre_enable or
-> not, or having pre_enable_prev_first.
->=20
-> So the pre_enable_prev_first clearly lacks feature negotiation.
->=20
-> > Panels shouldn't depend on a particular driver *behaviour*. But the
-> > features are fine.
-> >=20
-> > For our particular discussion, I think that that kind of discussion is a
-> > dead-end, and we just shouldn't worry about it. Yes, some panels have
-> > not yet been updated to take the new flags into account. However, the
-> > proper thing to do is to update them if we see a problem with that (and
-> > thus move forward to the ideal solution), not revert the beginning of
-> > that feature enablement (thus moving away from where we want to end up
-> > in).
-> >=20
-> > > Thus comes this proposal. It allows for the panels to explicitly bring
-> > > the link up and down at the correct time, it supports automatic use
-> > > case, where no special handling is required. And last, but not least,
-> > > it allows the DSI host to note that the bridge / panel were not
-> > > updated to follow new protocol and thus the link should be powered on
-> > > at the mode_set time. This leaves us with the possibility of dropping
-> > > support for this workaround once all in-kernel drivers are updated.
-> >=20
-> > I'm kind of skeptical for these kind of claims that everything will be
-> > automatic and will be handled fine. What if we have conflicting
-> > requirements, for example two bridges drivers that would request the
-> > power up at different times?
->=20
-> Well, we do not support DSI sublinks, do we?
+   2. Every printk() calls wake_up_klogd() to wake user space
+      log daemons.
 
-No, but we start to consider adding support for muxes for example. A DSI
-mux + a DSI bridge behind it might trigger that behaviour, even if we
-don't support sublinks.
+   3. console_unlock() checks prb_next_seq() after releasing
+      the semaphore. It goes back and flushes any message
+      finalized in parallel or the parallel writer is able
+      to take the console semaphore.
 
-> > Also, we would still need to update every single panel driver, which is
-> > going to create a lot of boilerplate that people might get wrong.
->=20
-> Yes, quite unfortunately. Another approach that I have in mind is to add =
-two
-> callbacks to mipi_dsi_device. This way the DSI host will call into the
-> device to initialise it once the link has been powered up and just before
-> tearing it down. We solve a lot of problems this way, no boilerplate and =
-the
-> panel / bridge are in control of the initialisation procedure. WDYT?
->=20
-> > I have the feeling that we should lay out the problem without talking
-> > about any existing code base first. So, what does the MIPI-DSI spec
-> > requires and what does panels and bridges expect?
->=20
-> There is not that much in the DSI spec (or maybe I do not understand the
-> question). The spec is more about the power states and the commands. Our
-> problem is that this doesn't fully match kernel expectations.
+By other words, even when one flush is not able to flush
+everything there always should be scheduled someone
+who would flush the rest in a near future.
 
-You're explicitly asking for comments on that series. How can we provide
-any comment if you're dead-set on a particular implementation and not
-explain what the problem you are trying to solve is?
+The only problem might be a missing barrier when some CPU
+sees a finalized record and others do not see it. But it is
+probably very hard to hit in practice.
 
-Thinking more about it, I'm even more skeptical about the general
-approach that this should be implemented at the bridge level (or in
-KMS).
+Anyway, I haven't been aware about this prb_next_seq() limitation
+until last week. We should keep it in mind or improve it.
+But it seems that it is not that critical in the end.
 
-It looks to me that this is very much a bus problem. USB device drivers
-also require the bus to be powered and generally available to send data
-to their device, and you don't fix that up in the HID or storage
-drivers, you make the bus behave that way.
-
-What prevents us from fixing it at the bus level?
-
-Maxime
-
---t5jjjcy33i2jy7lt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTodoAAKCRDj7w1vZxhR
-xXxfAP9VCXaQR2cQ7p55Qlz1ohFIbsH/qdui1vb3BqtSku+upgEAjT4JPOz2oULJ
-J5eoQVTdscVpioLNgkJXMKMNMAd0+A0=
-=lsQF
------END PGP SIGNATURE-----
-
---t5jjjcy33i2jy7lt--
+Best Regards,
+Petr
