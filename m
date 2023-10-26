@@ -2,179 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E767D7B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47137D7B39
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjJZDVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 23:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S230100AbjJZD1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 23:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZDVl (ORCPT
+        with ESMTP id S229554AbjJZD1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 23:21:41 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4682A3;
-        Wed, 25 Oct 2023 20:21:38 -0700 (PDT)
-Received: from kwepemi500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SG9w82X5qzVlNM;
-        Thu, 26 Oct 2023 11:17:44 +0800 (CST)
-Received: from [10.174.179.163] (10.174.179.163) by
- kwepemi500024.china.huawei.com (7.221.188.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 26 Oct 2023 11:21:35 +0800
-Message-ID: <f605de1c-fa8b-c178-46f2-f27b304e6e66@huawei.com>
-Date:   Thu, 26 Oct 2023 11:21:34 +0800
+        Wed, 25 Oct 2023 23:27:45 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAE3187;
+        Wed, 25 Oct 2023 20:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698290857;
+        bh=uZcN/okWIB4ryLnAV48yQVnuFynysUqMSeAVPBsSjyQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ot91u8+xZEFcqWqJa7UCNIL9yrkGxXKkBU7HrPkQcjr6b9yzqpwP8kEk/sl2y9Fmv
+         4mH4HEpFBzPNl4gm8i+0gEmY2cNd45awjgCi+UZEXl1JyUHQy5L3HbmgVggRqtUKsP
+         8x2SXzXE1d+DDW4UvhIZgIT4zuOpbAHi6TXvDQverWs76pdWIJbdwlqU0fuXWycxRL
+         eRgxGgwcEo9WSxSruQ2Mf2eoEDdtiU76z6CoBK3Me8vWaEeGCN704n18asYQwNaRQ0
+         twjbbRIq8vgzYsmZxqSvT5ljR7WyYLj7H8fT4dNQYKkS8EFm9fmyahFJLVs4rR1ej6
+         yQRUuQ5JhUXKg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGB7X1qtdz4wcZ;
+        Thu, 26 Oct 2023 14:27:36 +1100 (AEDT)
+Date:   Thu, 26 Oct 2023 14:27:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Shavit <mshavit@google.com>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: linux-next: manual merge of the iommufd tree with the iommu tree
+Message-ID: <20231026142733.442e18a5@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 2/3] cpufreq: CPPC: Keep the target core awake when
- reading its cpufreq rate
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     <broonie@kernel.org>, <joey.gouly@arm.com>, <will@kernel.org>,
-        <amit.kachhap@arm.com>, <rafael@kernel.org>,
-        <catalin.marinas@arm.com>, <james.morse@arm.com>, <maz@kernel.org>,
-        <viresh.kumar@linaro.org>, <sumitg@nvidia.com>,
-        <yang@os.amperecomputing.com>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <wangxiongfeng2@huawei.com>, <xiexiuqi@huawei.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-References: <20231025093847.3740104-1-zengheng4@huawei.com>
- <20231025093847.3740104-3-zengheng4@huawei.com>
- <ZTjz2Ox_iqorbejw@FVFF77S0Q05N>
-From:   Zeng Heng <zengheng4@huawei.com>
-In-Reply-To: <ZTjz2Ox_iqorbejw@FVFF77S0Q05N>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.163]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500024.china.huawei.com (7.221.188.100)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/tK7kIIiHSe7r3YfzFGS6Mxb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/tK7kIIiHSe7r3YfzFGS6Mxb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/10/25 18:54, Mark Rutland 写道:
-> [adding Ionela]
->
-> On Wed, Oct 25, 2023 at 05:38:46PM +0800, Zeng Heng wrote:
->> As ARM AMU's document says, all counters are subject to any changes
->> in clock frequency, including clock stopping caused by the WFI and WFE
->> instructions.
->>
->> Therefore, using smp_call_on_cpu() to trigger target CPU to
->> read self's AMU counters, which ensures the counters are working
->> properly while cstate feature is enabled.
-> IIUC there's a pretty deliberate split with all the actual reading of the AMU
-> living in arch/arm64/kernel/topolgy.c, and the driver code being (relatively)
-> generic.
->
-> We already have code in arch/arm64/kernel/topolgy.c to read counters on a
-> specific CPU; why can't e reuse that (and avoid exporting cpu_has_amu_feat())?
->
-> Mark.
+Hi all,
 
-In this scenario, both topology.c and cppc_acpi.c do not provide an API 
-to keep the AMU online
+Today's linux-next merge of the iommufd tree got a conflict in:
 
-during the whole sampling period. Just using cpc_read_ffh at the start 
-and end of the sampling
+  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
 
-period is not enough.
+between commit:
 
-However, I can propose cpc_ffh_supported() function to replace the 
-cpu_has_amu_feat() as v2
+  24503148c545 ("iommu/arm-smmu-v3: Refactor write_ctx_desc")
 
-if you think this patch set is still valuable.
+from the iommu tree and commit:
 
+  a247f322787d ("iommu: Add mm_get_enqcmd_pasid() helper function")
 
-Thanks,
+from the iommufd tree.
 
-Zeng Heng
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
->> Reported-by: Sumit Gupta <sumitg@nvidia.com>
->> Link: https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
->> Signed-off-by: Zeng Heng <zengheng4@huawei.com>
->> ---
->>   drivers/cpufreq/cppc_cpufreq.c | 39 ++++++++++++++++++++++++++--------
->>   1 file changed, 30 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
->> index fe08ca419b3d..321a9dc9484d 100644
->> --- a/drivers/cpufreq/cppc_cpufreq.c
->> +++ b/drivers/cpufreq/cppc_cpufreq.c
->> @@ -90,6 +90,12 @@ static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
->>   				 struct cppc_perf_fb_ctrs *fb_ctrs_t0,
->>   				 struct cppc_perf_fb_ctrs *fb_ctrs_t1);
->>   
->> +struct fb_ctr_pair {
->> +	u32 cpu;
->> +	struct cppc_perf_fb_ctrs fb_ctrs_t0;
->> +	struct cppc_perf_fb_ctrs fb_ctrs_t1;
->> +};
->> +
->>   /**
->>    * cppc_scale_freq_workfn - CPPC arch_freq_scale updater for frequency invariance
->>    * @work: The work item.
->> @@ -840,9 +846,24 @@ static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
->>   	return (reference_perf * delta_delivered) / delta_reference;
->>   }
->>   
->> +static int cppc_get_perf_ctrs_pair(void *val)
->> +{
->> +	struct fb_ctr_pair *fb_ctrs = val;
->> +	int cpu = fb_ctrs->cpu;
->> +	int ret;
->> +
->> +	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs->fb_ctrs_t0);
->> +	if (ret)
->> +		return ret;
->> +
->> +	udelay(2); /* 2usec delay between sampling */
->> +
->> +	return cppc_get_perf_ctrs(cpu, &fb_ctrs->fb_ctrs_t1);
->> +}
->> +
->>   static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->>   {
->> -	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
->> +	struct fb_ctr_pair fb_ctrs = { .cpu = cpu, };
->>   	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
->>   	struct cppc_cpudata *cpu_data = policy->driver_data;
->>   	u64 delivered_perf;
->> @@ -850,18 +871,18 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->>   
->>   	cpufreq_cpu_put(policy);
->>   
->> -	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs_t0);
->> -	if (ret)
->> -		return 0;
->> -
->> -	udelay(2); /* 2usec delay between sampling */
->> +	if (cpu_has_amu_feat(cpu))
->> +		ret = smp_call_on_cpu(cpu, cppc_get_perf_ctrs_pair,
->> +				      &fb_ctrs, false);
->> +	else
->> +		ret = cppc_get_perf_ctrs_pair(&fb_ctrs);
->>   
->> -	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs_t1);
->>   	if (ret)
->>   		return 0;
->>   
->> -	delivered_perf = cppc_perf_from_fbctrs(cpu_data, &fb_ctrs_t0,
->> -					       &fb_ctrs_t1);
->> +	delivered_perf = cppc_perf_from_fbctrs(cpu_data,
->> +					      &fb_ctrs.fb_ctrs_t0,
->> +					      &fb_ctrs.fb_ctrs_t1);
->>   
->>   	return cppc_cpufreq_perf_to_khz(cpu_data, delivered_perf);
->>   }
->> -- 
->> 2.25.1
->>
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index 353248ab18e7,08fac84c1804..000000000000
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@@ -264,10 -233,10 +264,10 @@@ static void arm_smmu_mm_release(struct=20
+  	 * DMA may still be running. Keep the cd valid to avoid C_BAD_CD events,
+  	 * but disable translation.
+  	 */
+- 	arm_smmu_update_ctx_desc_devices(smmu_domain, mm->pasid, &quiet_cd);
+ -	arm_smmu_write_ctx_desc(smmu_domain, mm_get_enqcmd_pasid(mm), &quiet_cd);
+++	arm_smmu_update_ctx_desc_devices(smmu_domain, mm_get_enqcmd_pasid(mm), &=
+quiet_cd);
+ =20
+  	arm_smmu_tlb_inv_asid(smmu_domain->smmu, smmu_mn->cd->asid);
+- 	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, 0, 0);
++ 	arm_smmu_atc_inv_domain(smmu_domain, mm_get_enqcmd_pasid(mm), 0, 0);
+ =20
+  	smmu_mn->cleared =3D true;
+  	mutex_unlock(&sva_lock);
+@@@ -323,16 -290,7 +323,16 @@@ arm_smmu_mmu_notifier_get(struct arm_sm
+  		goto err_free_cd;
+  	}
+ =20
+ -	ret =3D arm_smmu_write_ctx_desc(smmu_domain, mm_get_enqcmd_pasid(mm), cd=
+);
+ +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+ +	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
+- 		ret =3D arm_smmu_write_ctx_desc(master, mm->pasid, cd);
+++		ret =3D arm_smmu_write_ctx_desc(master, mm_get_enqcmd_pasid(mm), cd);
+ +		if (ret) {
+ +			list_for_each_entry_from_reverse(master, &smmu_domain->devices, domain=
+_head)
+- 				arm_smmu_write_ctx_desc(master, mm->pasid, NULL);
+++				arm_smmu_write_ctx_desc(master, mm_get_enqcmd_pasid(mm), NULL);
+ +			break;
+ +		}
+ +	}
+ +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+  	if (ret)
+  		goto err_put_notifier;
+ =20
+@@@ -357,8 -315,7 +357,8 @@@ static void arm_smmu_mmu_notifier_put(s
+  		return;
+ =20
+  	list_del(&smmu_mn->list);
+ -	arm_smmu_write_ctx_desc(smmu_domain, mm_get_enqcmd_pasid(mm), NULL);
+ +
+- 	arm_smmu_update_ctx_desc_devices(smmu_domain, mm->pasid, NULL);
+++	arm_smmu_update_ctx_desc_devices(smmu_domain, mm_get_enqcmd_pasid(mm), N=
+ULL);
+ =20
+  	/*
+  	 * If we went through clear(), we've already invalidated, and no
+
+--Sig_/tK7kIIiHSe7r3YfzFGS6Mxb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU53KUACgkQAVBC80lX
+0Gzndgf/S2pw71j8Idqieqy7PiH0BlPDqksLsRxL1VReKjDDKJqqEajoThQJpAtX
+/4Tny4aCjMB5IBC09THAkV9DSlmf2uW4Cz0iL8WJXVHWuh/VL6f1zfxsuAzsq0mV
+D8zRV02K4HuY+w5XYqFq71XLnLwQy0fD9Lzz4zyrSZdnEDX0AGxVfVTrklNXarjh
+cY61KFOy/qp4uL+SP17uucO87pUvmvGt68jVajEAy/ekyRP77zqFyi2xLxUXRSm6
+q2IYKRPize7MzqO5qyXQQ78VjTLw18fD9USp/FtlrRWknSNWKc2V6w6gOEprAfoE
+ZiKUKBeesymdODmxZfCZ3YPfojKtEg==
+=8UMB
+-----END PGP SIGNATURE-----
+
+--Sig_/tK7kIIiHSe7r3YfzFGS6Mxb--
