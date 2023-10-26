@@ -2,356 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877557D7F9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D878F7D7F9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjJZJdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S1344465AbjJZJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjJZJdD (ORCPT
+        with ESMTP id S229567AbjJZJeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:33:03 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA83194
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:33:00 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66cfd0b2d58so4793736d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698312780; x=1698917580; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8QnzvHljoQK/wJ5DGmho6Kn8XEghwIxtbxfaqrnbWOA=;
-        b=GCzXK2hPHua+XSayW+xE+2fyZROYNUG0bCkzuuaj5HQNnu1nqFbZUZC8LwGMYL3iZt
-         coBW0iAwGJmsIGN2P1ebjt7AnTrthwRC4xrBPVCwFEXtsMe/OPdCtJUwJ/hsdHEz8LYq
-         IBn6ekGK1oQ8ByYUTOM/xxk60R7i2cKomBzW8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698312780; x=1698917580;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8QnzvHljoQK/wJ5DGmho6Kn8XEghwIxtbxfaqrnbWOA=;
-        b=o8eV55tx5q5NyJJo9nWtXZD2lDq7M62vfDj3Au/sOJZhokc/MY/8o/A3biKf+LFld2
-         JLTO1cwoSXlcHQNwmJHqFIYSw0xOCBWvQ7cMPOjxKJ19F6gc0qDq7ZVj6G8hDsnAVMrt
-         v4qnxBVRqA0/sXq4SFAmnC7R5MdlcBTVLw0kOhdDKZTg/904WASgqCMx2mdl83qpNY8G
-         bpbpFitLxAnEqK/5mdPKCKu+HWxGAzF90A25LcNom4Ief9RM4jbZ5M548+3jzgIuWAPQ
-         jpGkqHiSXYqb3iUCyaPFaNR7TcfoTYAzCwDatmxRS3Nz6m3ZCbjlDPByXuywUCKGdCgZ
-         OrKg==
-X-Gm-Message-State: AOJu0Yz79BG8QnCLF+KjM/XpKIdFY1Jb+yks71Vf0m7e8R5cv/Eimwqi
-        LCErGjKrnulV1w50MUA6VDrekreVQOVBRiaZ9nkIvzx0f8uZYBEm
-X-Google-Smtp-Source: AGHT+IF80lstIgX6hCwQkudW7uP9KGjzyJuL2EcTR8jSvozl+A/cKDMws42mMr+uWnJ72O7GuiVVG5mUS6itxQcFUGc=
-X-Received: by 2002:a05:6214:2602:b0:66d:44b6:8aa7 with SMTP id
- gu2-20020a056214260200b0066d44b68aa7mr21390279qvb.24.1698312779620; Thu, 26
- Oct 2023 02:32:59 -0700 (PDT)
+        Thu, 26 Oct 2023 05:34:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D36184;
+        Thu, 26 Oct 2023 02:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698312841; x=1729848841;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=QhtoH3FZcu/shlpuqqT47FHTSFhS+vJ8y2+dxVZoTAo=;
+  b=Q0TMwuw8PqQBHyYi99Z4LECSqdvMrH5aHG79NoIV+o4d+RSe5nNg4Vj1
+   cB8lHX5c2FHwbgXwtQZQQzAOQM73tVsIzPmMlIKLF1JGADEClIdnaZJo4
+   Yuoi/K3G+jFoCSjltWswInmYh1RX8aEo82U4XxmIkzLNukQiRkBA4j0aU
+   ERsBGEHHXo8Ygz9aFcYjU0h89KrwqvYQphJTkgKxoxKjO5D52yVCtx5Ya
+   6s10AUPv+OhxpKRE+SRfuDTNX3058s7JxO7MENB00G0Z4t74Hy4/HcK4U
+   HDmv4YihHI1yOlTjxUOZgB1jXLuJWskZ/6riCpNAIxvEnxd23FefPPxXJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="367711579"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="367711579"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 02:34:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902832719"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="902832719"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Oct 2023 02:31:35 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 02:33:59 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 26 Oct 2023 02:33:59 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 26 Oct 2023 02:33:59 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 26 Oct 2023 02:33:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lpkRLpPHPQjnAIbjHv9215r+N45w0qvIQQ1GHhxNqn/U9+urfmMGSbQ2eoYlr0e+ohviZLkuKaw9/2b9jjJflCbL1NnxAqEQ++yHZEzqncrvjTWvNlzi/kNSJadodf2BWPN9W4Mikf5ijC0tQ77v2pGmXsbNzv6Cyq3nsc3uWbsLjSQc+AJuFRnx23W6tU330x1mIp+8zlBXLlYZd87CFPIh53gVQF9Op3FKHCq+S4O10WSkKrWjRYlm5BY0bL+00iQHD9CeEC2vUrKfHgDCVJnx5bjFhUpjboBvmWl46JPJyDeWLkJuujkOj0tDgzFreVu4dQ4hQGeIc61NFe+3aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4o+yhZa05lIfu1Lvt4i3UzbJ2/WYvQzQJUo/GkTVisU=;
+ b=clrITh1AxfUO1C0mpAww7EJG8Zmbgu+YQUNnlnl5Xal3ziDEotNjzhf6UErSKiBtZvYCOJWoRGaFVnjoc4V7G/LdaT4XqWds/7oS8VHsMtjy3VaBaXv+W/ZKPk57l4ojb60aSizl//gPkmGXeWfqGxtwAgr7IRneV8VUqTp35ZN4FzgSS64uA70zG0oPb6ZByAnoWV0f682fIRogrS6DUv9Ju5Ax+RjsMGpOwpfICAqwZWAWVubCt4k8abSQUAKXnqkVrG6RfMduXoqrXciFDZ0sV+WBSgnpgtneM53V/ZHngp5/s09MsHdskekS1SDjaGvzpVfLWKRH0FEop6/vIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by BY1PR11MB8077.namprd11.prod.outlook.com (2603:10b6:a03:527::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
+ 2023 09:33:57 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6907.021; Thu, 26 Oct 2023
+ 09:33:56 +0000
+Message-ID: <1c87106e-c889-06d6-dab9-67f96f5ba044@intel.com>
+Date:   Thu, 26 Oct 2023 11:33:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH iwl-next] i40e: Delete unused and useless i40e_pf fields
+Content-Language: en-US
+To:     Ivan Vecera <ivecera@redhat.com>, <netdev@vger.kernel.org>
+CC:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        <intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>
+References: <20231025145937.1873040-1-ivecera@redhat.com>
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <20231025145937.1873040-1-ivecera@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0211.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e4::7) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 MIME-Version: 1.0
-References: <20231016095610.1095084-1-korneld@chromium.org>
- <613c51f0-c32e-4de5-9627-525d92fb06ed@intel.com> <CAD=NsqybNrf-=9=5wvoj+9MT3xK3SbX7nDk3N3VLBMyA_u3KTQ@mail.gmail.com>
- <78bb4ad2-853a-4ed4-9998-c4e1122545b6@intel.com> <CAD=NsqxDA=usDRa-KV48RkeEROARsw8JqBF5vyJcEEV5r_Fg1w@mail.gmail.com>
- <f0aecb28-6f82-456e-a319-8d13a2e313b6@intel.com> <CAD=NsqyJHv4nrtrqU4igtaMR=u6xmUtCpoYk66XzarLpu95idA@mail.gmail.com>
- <cf207da8-8ec4-4b9c-8f01-00e1a8a46238@intel.com> <CAD=NsqyvGvbtyMim=Otp-Q-zWW9-+hAh95SOkgvnRusQC_--hQ@mail.gmail.com>
- <4221120e-61bb-4672-8775-e7c1512d824b@intel.com>
-In-Reply-To: <4221120e-61bb-4672-8775-e7c1512d824b@intel.com>
-From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
-Date:   Thu, 26 Oct 2023 11:32:48 +0200
-Message-ID: <CAD=Nsqy-JOdcYXiWYkJ+zw_e5Ox0ur0XGnNLrBg6R-Tihna2rA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: cqhci: Be more verbose in error irq handler
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>, upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|BY1PR11MB8077:EE_
+X-MS-Office365-Filtering-Correlation-Id: be797f07-415d-4662-029b-08dbd606acf1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9OyBJ62OVNNJhbxMehnOfs4ByPJQQ7BNi8w4HKDGsN46zphAcQ8XW5TiBLQlymcWNeIJLniOoMVQ99YrJE9t6GcwvN4gWD9B2Ba1n05IU5fFaSVidwklAPn3Q6YEx6IpSJmCpifxcLou2hL6eswUFngjOnd23MpHd2GW+yByFGE6RWFUkBvPldf2rxsX85EGHVVCpeMwh9BBkx3K7RxUWTdNX15JKQMrGws8U50kcc2wHShAJu0rvsrDN3MMONMHqsV3d8ckhQ/PuRRQy1R3PJmiq2iheUm0ak9OkjBq7oeNSoo3f2bNc7Vbg8mVTfQttur1oowLM4wIn12YydXOkss8095zVANMF4cYfw3u/xgEVrH2IPGuQmj2I+dy0R7qY/aIVOg8chuouV0IBdeWkO9UVEfgPIZpLiQ2qXWznsqUv7s0Ww00djekIpqAlshjq/rRS8vjOkap+Xo43xllmMWVATVS1jmrCGxGONLOyhWcRrwogDnrChxwASsUbrud2n35QUnYJMUd6lHkfuQ1BHUxk42njNC/NZQdY9BC/zfeW1dHNoiF6TmQZ8zn60ux3bOF8M/Y3rj9BbA+V9LssUAMXOg2QHkZfuMsM9bhoJ73kCc3JeWpBEV8SylgTti3l40IF59X8UsRUHY3ydiyBA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(346002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(36756003)(107886003)(6666004)(6512007)(6506007)(53546011)(26005)(2616005)(66556008)(478600001)(66946007)(41300700001)(316002)(82960400001)(6486002)(38100700002)(66476007)(54906003)(83380400001)(2906002)(31686004)(31696002)(86362001)(8936002)(4326008)(8676002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MTdqRXR4cFJCMHRONG4wNFI3b3RVUFpVMmxhdkJLMFFnTkpCbFd0aWVlUy8y?=
+ =?utf-8?B?M3VzU0lJRlhoY1o0V3hETVF1QVhMbUJEU2o1Q1o3cmVSQ3prb0FKUDhJZW1h?=
+ =?utf-8?B?Qms1clk4a1RPVFRXNGxTZlM1UHZ1d2c3VW5YdDJHSnFEemEyUlc0dEp5MnZN?=
+ =?utf-8?B?ZGVoOWRnaEgvR2JLQ2cyUGdueEJKWTI0bUMzOEhMMEh2bG44dnh0Q3NBVkdr?=
+ =?utf-8?B?b3dGSFdBdlZ2NENpUnNXOHMzdmZVL1dvMFFrQWhmNnd2NUxEU2wySW1DLytW?=
+ =?utf-8?B?RW9BS1lqT2xmaWgzV3NWVWZzbGpNbVlkMTFCcW5OTUt2eHZzM294NGNWamJW?=
+ =?utf-8?B?ZkNPNU44TmIxcU9tait5RjJ3ZlVQbEFTYmI0NjVucU93cFp5cStEdnRPS1JR?=
+ =?utf-8?B?S2dXUGRSRkl1bmkrenFPclhpcUxUSHlYMHR4QmRyYjU2RGRPa1FGVFZRVGFQ?=
+ =?utf-8?B?U3ZWdGpKTGdMWlJaYlVTUXhPay8rcTNHTUgybWxJSFJoU2ZxdnVmNHNxbmY2?=
+ =?utf-8?B?d2tvK2t3UVpBYjF5YWFjVGxxcTdyb0lQV0lYZktvTVRkc1AwNmpDTkN2VGd6?=
+ =?utf-8?B?LzVzUzErdXl2R0czUmdHb3hpMWpKL2ZXQXJXM3V1WU5vK2pUeVppUWFOYnRi?=
+ =?utf-8?B?UDJDUk54VXJ4aUhMMVNmdVJhMVd3K00zK2ZSUHFZMlZpeWJMckExUWZ3d0V5?=
+ =?utf-8?B?b3B6S3ZuNG1lRFlneGxGTmJpMGtNcVNRdE9pWUZobCtBaDhuMWMwc1hrVGFv?=
+ =?utf-8?B?SGcrV0wxTm1mbE1QeWEya054VVN3cGc4bC9seURVTkpyUUhCZldiWW5DRXhO?=
+ =?utf-8?B?aE1IZEZQbnEyS3RoSlJLQ0x4RlF2eEt2YU91Y1EwSEorazQ3UnJuVGUxS3VW?=
+ =?utf-8?B?ODBmaVlLZnZqeUc5aXgxV3VsVUM3S3BLSkpGMDFMUWxoc1NQS0hUcnJCOWFh?=
+ =?utf-8?B?U2pHeUUvZHVmVHMzbHdaUHJTVGU4dHR0N1FjNE5wNTdaRFF6MXRwSnZFSTlm?=
+ =?utf-8?B?R05DV3dGYmtwQ2JUdkUyUXlYWDNJY3dwOWZPS2oyTEJOMG1tZUpzUm1YY3B0?=
+ =?utf-8?B?cnd5RjBpeWZJdURrbFFWVXZMQlRqVVgzbzAwbDIxQStPTm1ZUlUvbU1qSkIv?=
+ =?utf-8?B?L2dqRjEvbDFJM01HbWQ2TXQzT0Y5V1U5dDdJTVhZb0Jua0p4QTU0L2RFQWVt?=
+ =?utf-8?B?TWdsK2F2dWsxOG42bzZhNW9qSldlY05VbExkU2IwMWgzNFhPTFFUTTNPaXdw?=
+ =?utf-8?B?b0xEeWVqRVpSTDFCaktwVXU3T0ZCWGJTS28zTVR2NzRmMmxjMzJCR1kvenVI?=
+ =?utf-8?B?SnV6aklwTVh4a0tsUllyMW1sRWYxM3NNTDdERkNITitrUFlVbkN4OHFOM0R4?=
+ =?utf-8?B?NXJteVRibWJwYzRDeVpuancrZVVaY1lTWmdTYVBJTGtmWDd0QUY5T25OL1VF?=
+ =?utf-8?B?VCtNUUsyKzZyOVJaK0Y0anZIb3NERmo2QS9yMHpSZ2dGMkJRZjNQS1dUSnRx?=
+ =?utf-8?B?WGE1cklTa0Y0Y3RmZ3dnWGg5c1NkaXpDTnVPVjVjdXl0UlhSd2JFeCtpUEg0?=
+ =?utf-8?B?VEN3ZG9IK0hSeVpybG55dTNyVlcwVUtqMWFkc2tzMVBsZm1wbHpWYzc5eStr?=
+ =?utf-8?B?eDhkTmhndGxYVjMrM1FkL3c1RDl0UHk1V0dleDkyY0hZQmsxRWgvMlRzQUVp?=
+ =?utf-8?B?REg2R2FtbFBibzVOU05qeHRmSjdVV1gwNmdaN1BXRHhRNGxDTitjYU4zYVJr?=
+ =?utf-8?B?SW1CL0N1NksvcjFQeUJjY0crZ3V2TWRNMEZsVTVWTUg3ZGg1NmJROHRwUzVw?=
+ =?utf-8?B?K0Z4czNRSnc1QjA1NloyUG1rbm5nZTNDak9LV3pockE5cjYrTzdINitxMjNi?=
+ =?utf-8?B?YjlQY2gzZnI0M3Rxc2h1dy83WitETXh3cGVMNjQyZFByenJ5YzBtRnNza0pK?=
+ =?utf-8?B?Lys1VFdybTBYMDU0QVVoSHJqSWhSOVJ1dmczNEx4WDBJZ08xc2tmS3oxTUI2?=
+ =?utf-8?B?dmIxd2JxQkJRSlU2Q2MvR1VWMTArWXMvUWNmNVp6RG00Ritkd0J3S3dWUklo?=
+ =?utf-8?B?cUMwcm1XYWo0MktFQVV3cHh3ZlR3YkE1Z1hQcHZWV0Y1SDl0UGNhTlJSYStr?=
+ =?utf-8?B?N2ZGQkFyQ29uSThSQzNjVUV6OE5Yc3RscldETllkTWFNMXNCcjJpK1UrenNl?=
+ =?utf-8?B?Y1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: be797f07-415d-4662-029b-08dbd606acf1
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:33:56.3742
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0fQ/wL5GkTt07aR1+ymb3Glo+WrvOkN0J1kUkqfYYMLlAWz2fnUZWVZ32sWi1YaXwg+hlDo+czgro+K0wpmEl09AUI1R33H2to8o/zN9+r8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR11MB8077
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:52=E2=80=AFAM Adrian Hunter <adrian.hunter@intel=
-.com> wrote:
+On 10/25/23 16:59, Ivan Vecera wrote:
+> Removed fields:
+> .fc_autoneg_status
+>      Since commit c56999f94876 ("i40e/i40evf: Add set_fc and init of
+>      FC settings") write-only and otherwise unused
+> .eeprom_version
+>      Write-only and otherwise unused
+> .atr_sample_rate
+>      Has only one possible value (I40E_DEFAULT_ATR_SAMPLE_RATE). Remove
+>      it and replace its occurrences by I40E_DEFAULT_ATR_SAMPLE_RATE
+> .adminq_work_limit
+>      Has only one possible value (I40E_AQ_WORK_LIMIT). Remove it and
+>      replace its occurrences by I40E_AQ_WORK_LIMIT
+> .tx_sluggish_count
+>      Unused, never written
+> .pf_seid
+>      Used to store VSI downlink seid and it is referenced only once
+>      in the same codepath. There is no need to save it into i40e_pf.
+>      Remove it and use downlink_seid directly in the mentioned log
+>      message.
+> .instance
+>      Write only. Remove it as well as ugly static local variable
+>      'pfs_found' in i40e_probe.
+> .int_policy
+> .switch_kobj
+> .ptp_pps_work
+> .ptp_extts1_work
+> .ptp_pps_start
+> .pps_delay
+> .ptp_pin
+> .override_q_count
+>      All these unused at all
+> 
+> Prior the patch:
+> pahole -Ci40e_pf drivers/net/ethernet/intel/i40e/i40e.ko | tail -5
+>          /* size: 5368, cachelines: 84, members: 127 */
+>          /* sum members: 5297, holes: 20, sum holes: 71 */
+>          /* paddings: 6, sum paddings: 19 */
+>          /* last cacheline: 56 bytes */
+> };
+> 
+> After the patch:
+> pahole -Ci40e_pf drivers/net/ethernet/intel/i40e/i40e.ko | tail -5
+>          /* size: 4976, cachelines: 78, members: 112 */
+>          /* sum members: 4905, holes: 17, sum holes: 71 */
+>          /* paddings: 6, sum paddings: 19 */
+>          /* last cacheline: 48 bytes */
+> };
+> 
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+>   drivers/net/ethernet/intel/i40e/i40e.h         | 16 ----------------
+>   drivers/net/ethernet/intel/i40e/i40e_debugfs.c |  3 ---
+>   drivers/net/ethernet/intel/i40e/i40e_main.c    | 18 ++++--------------
+>   3 files changed, 4 insertions(+), 33 deletions(-)
 >
-> On 26/10/23 11:29, Kornel Dul=C4=99ba wrote:
-> > On Thu, Oct 26, 2023 at 10:14=E2=80=AFAM Adrian Hunter <adrian.hunter@i=
-ntel.com> wrote:
-> >>
-> >> On 26/10/23 10:56, Kornel Dul=C4=99ba wrote:
-> >>> On Thu, Oct 26, 2023 at 8:25=E2=80=AFAM Adrian Hunter <adrian.hunter@=
-intel.com> wrote:
-> >>>>
-> >>>> On 25/10/23 11:01, Kornel Dul=C4=99ba wrote:
-> >>>>> On Mon, Oct 23, 2023 at 1:38=E2=80=AFPM Adrian Hunter <adrian.hunte=
-r@intel.com> wrote:
-> >>>>>>
-> >>>>>> On 20/10/23 11:53, Kornel Dul=C4=99ba wrote:
-> >>>>>>> On Fri, Oct 20, 2023 at 9:41=E2=80=AFAM Adrian Hunter <adrian.hun=
-ter@intel.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On 16/10/23 12:56, Kornel Dul=C4=99ba wrote:
-> >>>>>>>>> There are several reasons for controller to generate an error i=
-nterrupt.
-> >>>>>>>>> They include controller<->card timeout, and CRC mismatch error.
-> >>>>>>>>> Right now we only get one line in the logs stating that CQE rec=
-overy was
-> >>>>>>>>> triggered, but with no information about what caused it.
-> >>>>>>>>> To figure out what happened be more verbose and dump the regist=
-ers from
-> >>>>>>>>> irq error handler logic.
-> >>>>>>>>> This matches the behaviour of the software timeout logic, see
-> >>>>>>>>> cqhci_timeout.
-> >>>>>>>>>
-> >>>>>>>>> Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
-> >>>>>>>>> ---
-> >>>>>>>>>  drivers/mmc/host/cqhci-core.c | 5 +++--
-> >>>>>>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/c=
-qhci-core.c
-> >>>>>>>>> index b3d7d6d8d654..33abb4bd53b5 100644
-> >>>>>>>>> --- a/drivers/mmc/host/cqhci-core.c
-> >>>>>>>>> +++ b/drivers/mmc/host/cqhci-core.c
-> >>>>>>>>> @@ -700,8 +700,9 @@ static void cqhci_error_irq(struct mmc_host=
- *mmc, u32 status, int cmd_error,
-> >>>>>>>>>
-> >>>>>>>>>       terri =3D cqhci_readl(cq_host, CQHCI_TERRI);
-> >>>>>>>>>
-> >>>>>>>>> -     pr_debug("%s: cqhci: error IRQ status: 0x%08x cmd error %=
-d data error %d TERRI: 0x%08x\n",
-> >>>>>>>>> -              mmc_hostname(mmc), status, cmd_error, data_error=
-, terri);
-> >>>>>>>>> +     pr_warn("%s: cqhci: error IRQ status: 0x%08x cmd error %d=
- data error %d\n",
-> >>>>>>>>> +              mmc_hostname(mmc), status, cmd_error, data_error=
-);
-> >>>>>>>>> +     cqhci_dumpregs(cq_host);
-> >>>>>>>>
-> >>>>>>>> For debugging, isn't dynamic debug seems more appropriate?
-> >>>>>>>
-> >>>>>>> Dynamic debug is an option, but my personal preference would be t=
-o
-> >>>>>>> just log more info in the error handler.
-> >>>>>>
-> >>>>>> Interrupt handlers can get called very rapidly, so some kind of ra=
-te
-> >>>>>> limiting should be used if the message is unconditional.  Also you=
- need
-> >>>>>> to provide actual reasons for your preference.
-> >>>>>>
-> >>>>>> For dynamic debug of the register dump, something like below is
-> >>>>>> possible.
-> >>>>>>
-> >>>>>> #define cqhci_dynamic_dumpregs(cqhost) \
-> >>>>>>         _dynamic_func_call_no_desc("cqhci_dynamic_dumpregs", cqhci=
-_dumpregs, cqhost)
-> >>>>>>
-> >>>>> Fair point.
-> >>>>> The reason I'm not a fan of using dynamic debug for this is that my
-> >>>>> goal here is to improve the warning/error logging information that =
-we
-> >>>>> get from systems running in production.
-> >>>>> I.e. if we get a lot of "running CQE recovery" messages, at the ver=
-y
-> >>>>> least I'd like to know what is causing them.
-> >>>>
-> >>>> So you are saying you want to collect debug information from product=
-ion
-> >>>> systems, but don't want to use dynamic debug to do it?
-> >>>>
-> >>>>>>> To give you some background.
-> >>>>>>> We're seeing some "running CQE recovery" lines in the logs, follo=
-wed
-> >>>>>>> by a dm_verity mismatch error.
-> >>>>>>> The reports come from the field, with no feasible way to reproduc=
-e the
-> >>>>>>> issue locally.
-> >>>>>>
-> >>>>>> If it is a software error, some kind of error injection may well
-> >>>>>> reproduce it.  Also if it is a hardware error that only happens
-> >>>>>> during recovery, error injection could increase the likelihood of
-> >>>>>> reproducing it.
-> >>>>>
-> >>>>> We tried software injection and it didn't yield any results.
-> >>>>> We're currently looking into "injecting" hw errors by using a small
-> >>>>> burst field generator to interfere with transfers on the data line
-> >>>>> directly.
-> >>>>
-> >>>> I just tried instrumenting a driver to inject CRC errors and it
-> >>>> revealed several CQE recovery issues, including spurious TCN for
-> >>>> tag 31.  I will send some patches when they are ready.
-> >>>
-> >>> Sorry, what I meant by it didn't yield results is that Ii didn't
-> >>> trigger the dm-verity error that we're seeing on production.
-> >>> With SW injection there are two potential issues that come to my mind=
-:
-> >>>
-> >>> 1. In the cqhci_error_irq when TERRI is not valid only a single,
-> >>> "random" task is marked as bad.
-> >>> Then in cqhci_recover_mrq we're marking all pending requests as done.
-> >>> For data transfers this is somewhat bening as it will return with
-> >>> bytes_xfered=3D0.
-> >>> IIUC this will then cause the upper layer to re-enqueue this request.
-> >>
-> >> Yes
-> >>
-> >>> The bigger problem is a CMD only mrq, which will be mistakenly marked
-> >>> as completed successfully.
-> >>
-> >> I noticed that also.  Notably the only non-data CMD is cache flush.
-> >>
-> >> There are several other issues, but patches will describe
-> >> them better.
-> >
-> > Sure. :)
-> >
-> > jfyi, I've just managed to inject CRC errors by using a burst field gen=
-erator.
-> > (Langer P23 if you're interested.)
-> > I'm using it by touching the D0 MMC line directly, and it yields
-> > surprisingly good results.
-> > I've changed the spurious TCN WARN_ONCE to pr_warn and got the followin=
-g:
-> >
-> > [   71.885698] mmc1: cqhci: error IRQ status: 0x00000000 cmd error 0
-> > data error -84 TERRI: 0x972e0000
-> > [   71.885730] mmc1: running CQE recovery
-> > [   71.888135] cqhci_recovery_finish: TCN: 0x00000000
-> > [   71.888141] mmc1: cqhci: recovery done
-> > [   71.888223] mmc1: cqhci: spurious TCN for tag 23
-> > (...)
-> > [   95.558736] mmc1: cqhci: error IRQ status: 0x00000000 cmd error 0
-> > data error -84 TERRI: 0x822e0000
-> > [   95.558768] mmc1: running CQE recovery
-> > [   95.561073] cqhci_recovery_finish: TCN: 0x00000000
-> > [   95.561078] mmc1: cqhci: recovery done
-> > [   95.561288] device-mapper: verity: 179:3: data block 712181 is corru=
-pted
-> >
-> > Now I get a spurious TCN after every recovery, with the only exception
-> > being the one that ends up with dm-verity error.
-> > So it'd seem that there's a race in which the "spurious" TCN hits a
-> > pending request, enqueued right after recovery was completed.
-> > I'm currently looking into how to fix it, but if you beat me to it I
-> > can also test your patches and see if it fixes the dm-verity issue.
->
-> OK, but here are some hacks to try:
-(snip)
-Thanks, fyi, with them applied I can see the exact same behaviour,
-including what I'm seeing in the logs.
->
-> >
-> >>
-> >>>
-> >>> 2. As for the spurious task completion warning.
-> >>> I initially thought that it was bening.
-> >>> The check for !mrq is done before checking if we're currently doing r=
-ecovery.
-> >>> So if it's called just right at the end of recovery, right after the
-> >>> cqhci_recover_mrqs is executed that would explain it.
-> >>> With that being said if that irq handler is run right after the
-> >>> recovery is finished we'll end up with a race where a new request,
-> >>> that was just enqueued, might be mistakenly marked as done.
-> >>> This would explain the dm-verity errors we're seeing.
-> >>>
-> >>>>
-> >>>>>>
-> >>>>>>>
-> >>>>>>> I'd argue that logging only the info that CQE recovery was execut=
-ed is
-> >>>>>>> not particularly helpful for someone looking into those logs.
-> >>>>>>
-> >>>>>> As the comment says, that message is there because recovery reduce=
-s
-> >>>>>> performance, it is not to aid debugging per se.
-> >>>>>>
-> >>>>>>> Ideally we would have more data about the state the controller wa=
-s in
-> >>>>>>> when the error happened, or at least what caused the recovery to =
-be
-> >>>>>>> triggered.
-> >>>>>>> The question here is how verbose should we be in this error scena=
-rio.
-> >>>>>>> Looking at other error scenarios, in the case of a software timeo=
-ut
-> >>>>>>> we're dumping the controller registers. (cqhci_timeout)
-> >>>>>>
-> >>>>>> Timeout means something is broken - either the driver, the cq engi=
-ne
-> >>>>>> or the card.  On the other hand, an error interrupt is most likely=
- a
-> >>>>>> CRC error which is not unexpected occasionally, due to thermal dri=
-ft
-> >>>>>> or perhaps interference.
-> >>>>>
-> >>>>> Right, but my point is that we don't know what triggered CQE recove=
-ry.
-> >>>>
-> >>>> True, although probably a CRC error.
-> >>>>
-> >>>>>
-> >>>>>>
-> >>>>>>> Hence I thought that I'd be appropriate to match that and do the =
-same
-> >>>>>>> in CQE recovery logic.
-> >>>>>>
-> >>>>>> It needs to be consistent. There are other pr_debugs, such as:
-> >>>>>>
-> >>>>>>                 pr_debug("%s: cqhci: Failed to clear tasks\n",
-> >>>>>>                 pr_debug("%s: cqhci: Failed to halt\n", mmc_hostna=
-me(mmc));
-> >>>>>>                 pr_debug("%s: cqhci: disable / re-enable\n", mmc_h=
-ostname(mmc));
-> >>>>>>
-> >>>>>> which should perhaps be treated the same.
-> >>>>>>
-> >>>>>> And there are no messages for errors from the commands in
-> >>>>>> mmc_cqe_recovery().
-> >>>>>
-> >>>>> How about this.
-> >>>>> As a compromise would it be okay to just do a single pr_warn direct=
-ly
-> >>>>> from cqhci_error_irq.
-> >>>>
-> >>>> Sure, printk_ratelimited() or __ratelimit()
-> >>>>
-> >>>>> We could simply promote the existing pr_debug to pr_warn at the
-> >>>>> beginning of that function.
-> >>>>> This would tell us what triggered the recovery. (controller timeout=
-,
-> >>>>> CRC mismatch)
-> >>>>> We can also consider removing the "running CQE recovery" print for =
-the
-> >>>>> sake of brevity.
-> >>>>
-> >>>> No, that serves a different purpose.
-> >>>>
-> >>>>> The only downside of this that I can see is that we'd be running th=
-e
-> >>>>> logic from the interrupt handler directly, but I can't see an easy =
-way
-> >>>>> around that.
-> >>>>> What do you think?
-> >>>>
-> >>>> Should be OK with rate limiting.
-> >>>
-> >>> OK, I'll look into the rate limiting and will send a v2.
-> >>>
-> >>>>
-> >>>>>>
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>       /* Forget about errors when recovery has already been tri=
-ggered */
-> >>>>>>>>>       if (cq_host->recovery_halt)
-> >>>>>>>>
-> >>>>>>
-> >>>>
-> >>
->
+
+[...]
+
+> @@ -12831,7 +12830,6 @@ static int i40e_sw_init(struct i40e_pf *pf)
+>   					I40E_MAX_VF_COUNT);
+>   	}
+>   #endif /* CONFIG_PCI_IOV */
+> -	pf->eeprom_version = 0xDEAD;
+
+haha, dead indeed!
+
+[...]
+
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+
