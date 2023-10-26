@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F867D7BFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4AB7D7BFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjJZFJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        id S233132AbjJZFLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZFJG (ORCPT
+        with ESMTP id S229554AbjJZFLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:09:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE417C0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698296945; x=1729832945;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xB8r1iCDvaAf81vie1lsCwaJjJd1upJo9dCecMfNqvI=;
-  b=Ov1kaq+wkKMPZNSRHMtTG1KlcRUG2QDeuc2sAbW5UiP/JU6oCzbRv7or
-   8OcYvQ4+Q3MtC1DuDmHW42ub0KKzw9VeGcDSy5h1YZYDyKVYF3GmuSSOx
-   Lk3DJZzbB+mAItVHzqoqtWaxHUXSqwZJUWbvBkHhegKJDHLhn5jQiE3W5
-   Y6LnaA5q0F8ZL8Xd6Zqi65ElIKAcSTK+RR94i96J50brOkUAhefXjvMO0
-   v6kWWwnhzJj/7C0XK8yR5vFZQ6vbGITRIQvBsyvD20n4JX+daiAoERfc6
-   F0lD0srEg5XmY7+3QoLNMwmlRfu9mI+0T57lMQ6/IiAkM2qEIARBxIW6c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="265624"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="265624"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 22:09:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="829487672"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="829487672"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Oct 2023 22:09:01 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvsc6-0009U5-0R;
-        Thu, 26 Oct 2023 05:08:58 +0000
-Date:   Thu, 26 Oct 2023 13:08:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, philipp.g.hortmann@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: Re: [PATCH v3] staging: rtl8192e: renamed variable TxCountToDataRate
-Message-ID: <202310261254.JYIf89K5-lkp@intel.com>
-References: <20231021215440.6584-1-garyrookard@fastmail.org>
+        Thu, 26 Oct 2023 01:11:21 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A9093
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 22:11:16 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qvsdx-0004Y7-VD; Thu, 26 Oct 2023 07:10:53 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qvsdw-004L1P-KV; Thu, 26 Oct 2023 07:10:52 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qvsdw-009ikT-1p;
+        Thu, 26 Oct 2023 07:10:52 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v8 0/5] net: dsa: microchip: provide Wake on LAN support (part 2)
+Date:   Thu, 26 Oct 2023 07:10:46 +0200
+Message-Id: <20231026051051.2316937-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231021215440.6584-1-garyrookard@fastmail.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gary,
+This patch series introduces extensive Wake on LAN (WoL) support for the
+Microchip KSZ9477 family of switches, coupled with some code refactoring
+and error handling enhancements. The principal aim is to enable and
+manage Wake on Magic Packet and other PHY event triggers for waking up
+the system, whilst ensuring that the switch isn't reset during a
+shutdown if WoL is active.
 
-kernel test robot noticed the following build warnings:
+The Wake on LAN functionality is optional and is particularly beneficial
+if the PME pins are connected to the SoC as a wake source or to a PMIC
+that can enable or wake the SoC.
 
-[auto build test WARNING on staging/staging-testing]
+changes v8:
+- rebase on top of net-next and s/slave/user/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gary-Rookard/staging-rtl8192e-renamed-variable-TxCountToDataRate/20231022-061649
-base:   staging/staging-testing
-patch link:    https://lore.kernel.org/r/20231021215440.6584-1-garyrookard%40fastmail.org
-patch subject: [PATCH v3] staging: rtl8192e: renamed variable TxCountToDataRate
-config: i386-buildonly-randconfig-002-20231026 (https://download.01.org/0day-ci/archive/20231026/202310261254.JYIf89K5-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310261254.JYIf89K5-lkp@intel.com/reproduce)
+changes v7:
+- move wakeup-source after reset-gpios
+- update "Wake event on port.." debug message
+- add and use ksz_is_port_mac_global_usable() instead of
+  ksz_switch_macaddr_get/put.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310261254.JYIf89K5-lkp@intel.com/
+changes v6:
+- add variables magic_switched_off and magic_switched_on for readability
+- EXPORT_SYMBOL(ksz_switch_shutdown); to fix build as module 
 
-All warnings (new ones prefixed by >>):
+changes v5:
+- rework Wake on Magic Packet support.
+- Make sure we show more or less realistic information on get_wol by
+  comparing refcounted mac address against the ports address
+- fix mac address refcounting on set_wol()
+- rework shutdown sequence by to handle PMIC related issues. Make sure
+  PME pin is net frequently toggled.
+- use wakeup_source variable instead of reading PME pin register.
 
->> drivers/staging/rtl8192e/rtl819x_HTProc.c:117:6: warning: no previous declaration for 'tx_count_to_data_rate' [-Wmissing-declarations]
-    u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
-         ^~~~~~~~~~~~~~~~~~~~~
+changes v4:
+- add ksz_switch_shutdown() and do not skip dsa_switch_shutdown() and
+  etc.
+- try to configure MAC address on WAKE_MAGIC. If not possible, prevent
+  WAKE_MAGIC configuration
+- use ksz_switch_macaddr_get() for WAKE_MAGIC.
+- prevent ksz_port_set_mac_address if WAKE_MAGIC is active
+- do some more refactoring and patch reordering
 
+changes v3:
+- use ethernet address of DSA master instead from devicetree
+- use dev_ops->wol* instead of list of supported switch
+- don't shutdown the switch if WoL is enabled
+- rework on top of latest HSR changes
 
-vim +/tx_count_to_data_rate +117 drivers/staging/rtl8192e/rtl819x_HTProc.c
+changes v2:
+- rebase against latest next
 
-   116	
- > 117	u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
-   118	{
-   119		u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
-   120					   0x24, 0x30, 0x48, 0x60, 0x6c};
-   121		u8	is40MHz = 0;
-   122		u8	isShortGI = 0;
-   123	
-   124		if (nDataRate < 12)
-   125			return CCKOFDMRate[nDataRate];
-   126		if (nDataRate >= 0x10 && nDataRate <= 0x1f) {
-   127			is40MHz = 0;
-   128			isShortGI = 0;
-   129		} else if (nDataRate >= 0x20  && nDataRate <= 0x2f) {
-   130			is40MHz = 1;
-   131			isShortGI = 0;
-   132		} else if (nDataRate >= 0x30  && nDataRate <= 0x3f) {
-   133			is40MHz = 0;
-   134			isShortGI = 1;
-   135		} else if (nDataRate >= 0x40  && nDataRate <= 0x4f) {
-   136			is40MHz = 1;
-   137			isShortGI = 1;
-   138		}
-   139		return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
-   140	}
-   141	
+Oleksij Rempel (5):
+  net: dsa: microchip: ksz9477: Add Wake on Magic Packet support
+  net: dsa: microchip: Refactor comment for ksz_switch_macaddr_get()
+    function
+  net: dsa: microchip: Add error handling for ksz_switch_macaddr_get()
+  net: dsa: microchip: Refactor switch shutdown routine for WoL
+    preparation
+  net: dsa: microchip: Ensure Stable PME Pin State for Wake-on-LAN
+
+ drivers/net/dsa/microchip/ksz9477.c     | 103 ++++++++++++++++++++++-
+ drivers/net/dsa/microchip/ksz9477.h     |   1 +
+ drivers/net/dsa/microchip/ksz9477_i2c.c |   5 +-
+ drivers/net/dsa/microchip/ksz_common.c  | 104 +++++++++++++++++++++---
+ drivers/net/dsa/microchip/ksz_common.h  |   6 ++
+ drivers/net/dsa/microchip/ksz_spi.c     |   5 +-
+ 6 files changed, 200 insertions(+), 24 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
