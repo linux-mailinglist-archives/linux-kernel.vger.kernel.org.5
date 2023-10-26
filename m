@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0736A7D8919
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E034A7D891C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbjJZTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S231921AbjJZTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjJZTpI (ORCPT
+        with ESMTP id S231532AbjJZTqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:45:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E081AA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:45:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E66C433C7;
-        Thu, 26 Oct 2023 19:45:03 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 15:44:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
-Message-ID: <20231026154459.1603d750@gandalf.local.home>
-In-Reply-To: <20231026194033.it.702-kees@kernel.org>
-References: <20231026194033.it.702-kees@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 26 Oct 2023 15:46:20 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55871AA;
+        Thu, 26 Oct 2023 12:46:18 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d12b3b479so8460676d6.1;
+        Thu, 26 Oct 2023 12:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698349578; x=1698954378; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9lSRSH0mhmv3CjgtXU9+F7JtvOpTShfmc4Bl2fP9hZQ=;
+        b=XB/H64jN68FxP+alhxrGgD+DtA19GZDLlspB5mMpIJ/+ENYRFxsOlgHEMTa9hUgyq7
+         MW3oIuZbuAbMbDIxypxkKRxQOw9bJ0BbCYMjrQVN0TILwb0z2w6gdslOLRDYx/5Lm/59
+         KV0yIu1IxYLJMGYY6BMRGeyyjZfBHJ/JDYsW/x06A65ziDheWWAAPfUF3mXkcz72Kpkl
+         hOBrRttO5pdyOjUlN2O1M8Y8N6YJAU7ACxEZBUaVpJx3GEYvd6FzjpUsuZ7ctcPA0VRR
+         3ASfHXmfSrfdFH8p2x2MfszE/p70WLmyONY2JSSY9OgC9xLkxm3vOsbNyKYpVO79BvSq
+         lZcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698349578; x=1698954378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9lSRSH0mhmv3CjgtXU9+F7JtvOpTShfmc4Bl2fP9hZQ=;
+        b=T2m2Ke0JGvodiZt5pI3lsudOsMSjJLAu5VMtEQcoVCYeKnmawodEbJVcnw4BsmIbOU
+         0LQ1Y/hnu208xahRZ0fH53kGYT4e9pu/VNh1AHK57gaQMvYCw52vK4Y19Bx5yX7zhSDG
+         Dg3nxSl4RtEHf2UpMt3niuKrKA6TJL4syCFnI0S2ipCTpwALhRGxxEcdvtrTF7nLHXdk
+         5PPuJ1iR2cO2iUPW9QIULuuhnnBzKVcfR+E1Og9J1bLTcmeOj7vgmiy0MrcRXBEd/f2Z
+         63Y0ScJJXSsEsfXCAaiBkXk8TrHE8AwSuUEl7wKnIXTkWLvIpgQ1QGvISlBFZ81mg9CU
+         dAfg==
+X-Gm-Message-State: AOJu0YzRsQVYxYBAnFTeggkG40sTn7WJkStDcJhsHHO+r0j2Vgg4NMEH
+        ST00JTJnnEQ08BYj9A9Q4u8ez2Jul/9qrmlqGtU=
+X-Google-Smtp-Source: AGHT+IEmarWREXvrbH3L5dUOpWtP7gSzyuNeYnq08iLHmXqfKkFEOdq3D+0jdHX3ciukSyf5b8GXIdf93DsdpcigMP0=
+X-Received: by 2002:a05:6214:76d:b0:66d:1d3f:17d7 with SMTP id
+ f13-20020a056214076d00b0066d1d3f17d7mr1004811qvz.8.1698349577784; Thu, 26 Oct
+ 2023 12:46:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231026192830.21288-1-rdunlap@infradead.org>
+In-Reply-To: <20231026192830.21288-1-rdunlap@infradead.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 26 Oct 2023 22:46:06 +0300
+Message-ID: <CAOQ4uxhYiu+ou0SiwYsuSd-YayRq+1=zgUw_2G79L8SxkDQV7g@mail.gmail.com>
+Subject: Re: [PATCH] exportfs: handle CONFIG_EXPORTFS=m also
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 12:40:37 -0700
-Kees Cook <keescook@chromium.org> wrote:
-
-> @@ -81,16 +88,20 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
->   *
->   * After this function is called, s->buffer is safe to use
->   * in string operations.
-> + *
-> + * Returns @s->buf after making sure it is terminated.
+On Thu, Oct 26, 2023 at 10:28=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
+>
+> When CONFIG_EXPORTFS=3Dm, there are multiple build errors due to
+> the header <linux/exportfs.h> not handling the =3Dm setting correctly.
+> Change the header file to check for CONFIG_EXPORTFS enabled at all
+> instead of just set =3Dy.
+>
+> Fixes: dfaf653dc415 ("exportfs: make ->encode_fh() a mandatory method for=
+ NFS export")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Chuck Lever <chuck.lever@oracle.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: linux-nfs@vger.kernel.org
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: linux-fsdevel@vger.kernel.org
+>
+> ---
+>  include/linux/exportfs.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff -- a/include/linux/exportfs.h b/include/linux/exportfs.h
+> --- a/include/linux/exportfs.h
+> +++ b/include/linux/exportfs.h
+> @@ -314,7 +314,7 @@ extern struct dentry *exportfs_decode_fh
+>  /*
+>   * Generic helpers for filesystems.
 >   */
-> -static inline void seq_buf_terminate(struct seq_buf *s)
-> +static inline char *seq_buf_str(struct seq_buf *s)
+> -#ifdef CONFIG_EXPORTFS
+> +#if IS_ENABLED(CONFIG_EXPORTFS)
+>  int generic_encode_ino32_fh(struct inode *inode, __u32 *fh, int *max_len=
+,
+>                             struct inode *parent);
+>  #else
 
-Looking at show_buffer() (below), I wonder if this should be:
+Thanks for the fix, but Arnd reported that this fix could cause a link
+issue in some configuration - I did not verify.
 
-static inline const char *seq_buf_str() ?
+I would much rather turn EXPORTFS into a bool config
+and avoid the unneeded build test matrix.
 
-I mean, it can be modified, but do we want to allow that?
+See comparison to the amount of code of EXPORTFS
+to BUFFER_HEAD and FS_IOMAP code which are bool:
 
--- Steve
+~/src/linux$ wc -l fs/exportfs/*.c
+636 fs/exportfs/expfs.c
 
+~/src/linux$ wc -l fs/buffer.c fs/mpage.c
+  3164 fs/buffer.c
+   685 fs/mpage.c
+  3849 total
 
->  {
->  	if (WARN_ON(s->size == 0))
-> -		return;
-> +		return "";
->  
->  	if (seq_buf_buffer_left(s))
->  		s->buffer[s->len] = 0;
->  	else
->  		s->buffer[s->size - 1] = 0;
-> +
-> +	return s->buffer;
->  }
->  
->  /**
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index d629065c2383..2539cfc20a97 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3828,15 +3828,6 @@ static bool trace_safe_str(struct trace_iterator *iter, const char *str,
->  	return false;
->  }
->  
-> -static const char *show_buffer(struct trace_seq *s)
-> -{
-> -	struct seq_buf *seq = &s->seq;
-> -
-> -	seq_buf_terminate(seq);
-> -
-> -	return seq->buffer;
-> -}
-> -
->  static DEFINE_STATIC_KEY_FALSE(trace_no_verify);
->  
+~/src/linux$ wc -l fs/iomap/*.c
+ 2002 fs/iomap/buffered-io.c
+  754 fs/iomap/direct-io.c
+  124 fs/iomap/fiemap.c
+   97 fs/iomap/iter.c
+  104 fs/iomap/seek.c
+  195 fs/iomap/swapfile.c
+   13 fs/iomap/trace.c
+ 3289 total
+
+Thanks,
+Amir.
