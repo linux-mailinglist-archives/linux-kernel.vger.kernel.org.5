@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B277D81BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171977D81BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344789AbjJZLWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S1344800AbjJZLWR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 07:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344748AbjJZLV7 (ORCPT
+        with ESMTP id S1344799AbjJZLWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:21:59 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14ED1AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:21:56 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507a29c7eefso1075786e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698319315; x=1698924115; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fcxp1fuyddcU0jwy8+vZyqysrnGnDmUXtGIc2oOqr9M=;
-        b=yWKqhpWX+WKh1X4glVG4c2friFCj8xnu298GjlOFo0Bg0WdCCzP85SQYK5KStm5vj+
-         hFoP+eCTSOqZ5It+whhIUtooqbNJXG9jho/DBkGJkCf8QFBnPCLCUp7vIzdIPin+zd4d
-         hC69Vog+mOezJ9TBKDagu2hUH+xDy+VeoZhnQ8V8hTHIwVAtzareutK0bz6NZg07upAf
-         kZ3jxsYPYwkF1mWqIqnucwgYHR1WDlhMCKnCk5XBwoRipVfE8GOg6m8iHumuaKsQeAkv
-         bwp8jVKnkXnELdg17vYdmE31EKZLywv5YNT+qOyLLC+QCc5umveQKF/LEgg++vgNBgKe
-         aJLw==
+        Thu, 26 Oct 2023 07:22:16 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E995C1B3;
+        Thu, 26 Oct 2023 04:22:13 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-57f137dffa5so125015eaf.1;
+        Thu, 26 Oct 2023 04:22:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698319315; x=1698924115;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fcxp1fuyddcU0jwy8+vZyqysrnGnDmUXtGIc2oOqr9M=;
-        b=h8Y+9OnbDaD5XaU0gBfYJEZ77MkZTbhqhC0HWtyOTfhl/7QeZeOE4JJY75wF4UrRKZ
-         ql+UgRqWu9kf2uGUcNzdyKAyIg2WqtxA7fzV1mpWJlY5WU/8nKb2k73AthpSgx91W4ps
-         pBtd3YatHFu4420a13wgdOYBj15xUwLYDDb+81aDV0+KG8uh49VLAIKg/pPjgbbp82es
-         nwjKgTccVMlb1IRvKIJpLer51h0/kJwVJOcWaFt7RutZ4jCo+ZbaU0BnUTX4RaWnaJ1Y
-         YKts1bpY08VXKdUf1h3vusa1DiiAevXrbaNgV7OLXvTOc+FVXFEuJ1um6wqOW/teRmd8
-         ENWw==
-X-Gm-Message-State: AOJu0YyTTEhblaxVfjK4RSUga9WvwI4hZ84yvzuQqDEkO7i1+ZYL2pj5
-        K5DjqxTQ1QrQ9cpSC5tN8qOY+g==
-X-Google-Smtp-Source: AGHT+IEQQc1TyKVlCDJtMSwT9AGEoFnojlydVneMuAjPLtcei3bXDo4wQ/oGtl3IHJ7gxq29CBF0JA==
-X-Received: by 2002:ac2:4acf:0:b0:4fd:faa5:64ed with SMTP id m15-20020ac24acf000000b004fdfaa564edmr11338887lfp.11.1698319315139;
-        Thu, 26 Oct 2023 04:21:55 -0700 (PDT)
-Received: from [172.30.204.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id q5-20020a056512210500b00507a14e18d4sm2974495lfr.222.2023.10.26.04.21.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 04:21:54 -0700 (PDT)
-Message-ID: <70ae0765-8ade-40db-98a0-59271c96f751@linaro.org>
-Date:   Thu, 26 Oct 2023 13:21:53 +0200
+        d=1e100.net; s=20230601; t=1698319333; x=1698924133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LZnbvMK9HIuGTN1h7lEDqvF75KbGWgtR8jRiUFqocC8=;
+        b=ftu06cPjXWTHLrx2v5bmKtfZBSt/mWKlpQsAjZXtcyzo7xZqYi6tagdsEpxWr6AUdU
+         N0hB5fqoFlss89a4NJQHw3VnltH+i43tRaZ3ZYYycVd1MQqlEcJ7IENwxU5Y7uaymkKn
+         i0RFtLzR/pQn//g13RwrjzBGDTfQv7luToooQoqOikmGM6Sp0AcgpNoPPgju2sKrDgOT
+         jBJ9lq3hROK8gNoNrPJioJnSctiLUH4NW/+ncyS4LNkgea6L/dAVu7dv95wGfe9ytM8t
+         xNlygQWHXfJdAKYYc7qAi5nHHlrr69w+YtvPhpjlt1Qv+vdk28wp/TmYp8UX526dsmvH
+         ziwQ==
+X-Gm-Message-State: AOJu0YyIJn+cwhsaP4gvyphSoPDOa52Xtn4bWTP06TfSyDv7DVsLa+Fm
+        wpDMWNMzowHPVuVkFrN6bPBxTPuaJyGtr0uRzcw=
+X-Google-Smtp-Source: AGHT+IEhqrIW1khjvKdbr/1gJOkkek1GTqqAqzEnKkzfTeWzjted4PqUG+fexpsmyUrUVVf6napRvXPIOAX3QRKMzpI=
+X-Received: by 2002:a4a:ea91:0:b0:584:17d0:de3d with SMTP id
+ r17-20020a4aea91000000b0058417d0de3dmr19034787ooh.1.1698319333161; Thu, 26
+ Oct 2023 04:22:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v4 4/4] arm64: dts: qcom: sc8280xp: Add in CAMCC
- for sc8280xp
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20231026105345.3376-1-bryan.odonoghue@linaro.org>
- <20231026105345.3376-5-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231026105345.3376-5-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231024183016.14648-1-ansuelsmth@gmail.com> <CAJZ5v0gzV+nX+dSEShAopkcvx1Zx2Rc2=pjcdH07U9nQhHRe4Q@mail.gmail.com>
+ <653a4540.050a0220.1e832.01c8@mx.google.com>
+In-Reply-To: <653a4540.050a0220.1e832.01c8@mx.google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 26 Oct 2023 13:22:01 +0200
+Message-ID: <CAJZ5v0jXAnZx=EtVSHQAUPChGUwgL0eGBrztXNJ99XzOXPH4TA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] cpufreq: fix broken buffer overflow detection in trans_stats
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Jonghwa Lee <jonghwa3.lee@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 12:54 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+>
+> On Tue, Oct 24, 2023 at 10:03:35PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Oct 24, 2023 at 8:30 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+> > >
+> > > Commit 3c0897c180c6 ("cpufreq: Use scnprintf() for avoiding potential
+> > > buffer overflow") switched from snprintf to the more secure scnprintf
+> > > but never updated the exit condition for PAGE_SIZE.
+> > >
+> > > As the commit say and as scnprintf document, what scnprintf returns what
+> > > is actually written not counting the '\0' end char. This results in the
+> > > case of len exceeding the size, len set to PAGE_SIZE - 1, as it can be
+> > > written at max PAGESIZE - 1 (as '\0' is not counted)
+> > >
+> > > Because of len is never set to PAGE_SIZE, the function never break early,
+> > > never print the warning and never return -EFBIG.
+> > >
+> > > Fix this by fixing the condition to PAGE_SIZE -1 to correctly trigger
+> > > the error condition.
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 3c0897c180c6 ("cpufreq: Use scnprintf() for avoiding potential buffer overflow")
+> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > ---
+> > >  drivers/cpufreq/cpufreq_stats.c | 14 +++++++-------
+> > >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+> > > index a33df3c66c88..40a9ff18da06 100644
+> > > --- a/drivers/cpufreq/cpufreq_stats.c
+> > > +++ b/drivers/cpufreq/cpufreq_stats.c
+> > > @@ -131,23 +131,23 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
+> > >         len += sysfs_emit_at(buf, len, "   From  :    To\n");
+> > >         len += sysfs_emit_at(buf, len, "         : ");
+> > >         for (i = 0; i < stats->state_num; i++) {
+> > > -               if (len >= PAGE_SIZE)
+> > > +               if (len >= PAGE_SIZE - 1)
+> > >                         break;
+> > >                 len += sysfs_emit_at(buf, len, "%9u ", stats->freq_table[i]);
+> > >         }
+> > > -       if (len >= PAGE_SIZE)
+> > > -               return PAGE_SIZE;
+> > > +       if (len >= PAGE_SIZE - 1)
+> > > +               return PAGE_SIZE - 1;
+> > >
+> > >         len += sysfs_emit_at(buf, len, "\n");
+> > >
+> > >         for (i = 0; i < stats->state_num; i++) {
+> > > -               if (len >= PAGE_SIZE)
+> > > +               if (len >= PAGE_SIZE - 1)
+> > >                         break;
+> > >
+> > >                 len += sysfs_emit_at(buf, len, "%9u: ", stats->freq_table[i]);
+> > >
+> > >                 for (j = 0; j < stats->state_num; j++) {
+> > > -                       if (len >= PAGE_SIZE)
+> > > +                       if (len >= PAGE_SIZE - 1)
+> > >                                 break;
+> > >
+> > >                         if (pending)
+> > > @@ -157,12 +157,12 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
+> > >
+> > >                         len += sysfs_emit_at(buf, len, "%9u ", count);
+> > >                 }
+> > > -               if (len >= PAGE_SIZE)
+> > > +               if (len >= PAGE_SIZE - 1)
+> > >                         break;
+> > >                 len += sysfs_emit_at(buf, len, "\n");
+> > >         }
+> > >
+> > > -       if (len >= PAGE_SIZE) {
+> > > +       if (len >= PAGE_SIZE - 1) {
+> > >                 pr_warn_once("cpufreq transition table exceeds PAGE_SIZE. Disabling\n");
+> > >                 return -EFBIG;
+> > >         }
+> > > --
+> >
+> > Applied (with some edits in the subject and changelog) as 6.7 material, thanks!
+>
+> Hi, I just notice this landed in linux-next but I can't find the devfreq
+> change. Only the cpufreq patch has been taken and the devfreq ones are
+> still pending?
 
-
-On 10/26/23 12:53, Bryan O'Donoghue wrote:
-> Add in CAMCC for sc8280xp. The sc8280xp Camera Clock Controller looks
-> similar to most of the sdmX, smX and now scX controllers.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+That's correct AFAICS.  I've only picked up the cpufreq change.
