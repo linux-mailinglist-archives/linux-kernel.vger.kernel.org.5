@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB437D819F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938DC7D81A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344776AbjJZLPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        id S1344785AbjJZLQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZLPl (ORCPT
+        with ESMTP id S231142AbjJZLQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:15:41 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26612191;
-        Thu, 26 Oct 2023 04:15:35 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 91FBE40E018F;
-        Thu, 26 Oct 2023 11:15:02 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aj2PygeIpYNP; Thu, 26 Oct 2023 11:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1698318900; bh=6lLTxehzg5LTyCTg0BbwA8hoIYkdo1cZRHRyXi1xQXY=;
+        Thu, 26 Oct 2023 07:16:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3561A1;
+        Thu, 26 Oct 2023 04:16:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C89B0C433C8;
+        Thu, 26 Oct 2023 11:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698318959;
+        bh=oS3dDY0VGtcsFofITmhDH6ZXwaHMR6sc41P5kDoJWAw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jf59Te4NzBJ44tqUcej6MRL/BL2YhvMqfNHHRZwDlX3Qm//B5OdkoBNw0gi9Ro/dD
-         ldwzFGvnp+pnkDwpvvSbXhN6lXt/Up335lc0HSHZDHy0BY5/ZzMnQY8JFrPJAEX/V2
-         /U7280m79CSs2B3TmBAqLMXC2bj9XCrrLWc209OnieIPL9lV92KND3JR/KRmE8YIw/
-         6wx0Y8pOPIqUqt1wdEMAfv7rCKxvr+x/BmejJyhiIOQMkCx/eYxKWgw1WJ9ptEHpXo
-         FrwB8YjqRQTreX0WwSHt6Cioa+4wXyibYm6tWFXva0xEIokhHRArlfUsPrstedeoch
-         Z5agIsd4rKRl0a9OSqXlD0fEa0FPgZfLCvGYArQL6vGwjWh4/tUiQlsHVr2HuE8JTL
-         WKNadxDDe0Ir4wQuDTFt9kSa+Pwx0Jh6685/l9JkpUnCJ4jyXyzo04QWPYVmX0m1ga
-         58mLCY11ZeoYNS7Z1N6YuVdUMF8fykwFOZDLsNRMd11TEkTpmNdgz6OxQZTzNP/Yx0
-         JsrdRbN6hR44fISAmu3cG7DtI3TIzDcay75w73pnjk28CkY47Uutb8p8eO4tAXRt94
-         zCo59n6r6BbyIFRuD3CZKpp6NhI74s5fvdjwwSw6+UAf/FgLsPV4THlYhClyfHmBhc
-         SQbYp1Qj9YevI3jk1W/avXkg=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4E9CF40E0171;
-        Thu, 26 Oct 2023 11:14:54 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 13:14:48 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "M K, Muralidhara" <muralimk@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v2 1/4] EDAC/mce_amd: Remove SMCA Extended Error code
- descriptions
-Message-ID: <20231026111448.GAZTpKKLI6LG1/COFE@fat_crate.local>
-References: <20231025051455.101424-1-muralimk@amd.com>
- <20231025051455.101424-2-muralimk@amd.com>
- <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
- <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
+        b=Xwk5W6HVUYToMhjeU4D3TnNQiXxaTurjTckT0jFvRSuehp4e/frGTIJ5ho1v4u+d1
+         ckUZ2LXIv/jL42IBgff+UWreF1YTF89VTfl3XIvTGdHb/V9sU9sm1rqImMFvj5c979
+         qVyd3h1y8uU9gNeOpxZBXJup4FR6L39xm/zp3qvCXz9tUYp9c52Ry/B5a4fqDLQdOF
+         6KZ37FcVwDaDVt/3FxSem9T3l2FT6zPJbOdXIqELOOK7LWs+ZWXhJDwr2u7SeSHcdL
+         kPXG4k5yloHHZ++ZQ3H+i0FPT1ma00CdIRdEeYsp1fmTKDvRm2EWmq2lqi2Yh9bMww
+         PStpZFqjnJfBA==
+Date:   Thu, 26 Oct 2023 13:15:55 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: i2c: mv64xxx: add reset-gpios
+ property
+Message-ID: <ZTpKa7R/xxKeCo+z@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        gregory.clement@bootlin.com, andi.shyti@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231024223032.3387487-1-chris.packham@alliedtelesis.co.nz>
+ <20231024223032.3387487-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rg7y9QorxhhnN2an"
 Content-Disposition: inline
-In-Reply-To: <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231024223032.3387487-2-chris.packham@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 03:12:22PM +0530, M K, Muralidhara wrote:
-> Executed rasdaemon:
 
-How do I decode the error with rasdaemon when it wasn't running while
-the error was triggered/logged?
+--rg7y9QorxhhnN2an
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +  reset-gpios:
+> +    description:
+> +      GPIO pin providing a common reset for all downstream devices. This GPIO
+> +      will be asserted then released before the downstream devices are probed.
+
+How about renaming this to "bus-reset-gpios"?
+
+Reason: When I read "reset-gpios", then I assume the device itself will
+be reset. In this case, the Marvell I2C controller. Some I2C mux devices
+and PCA9564 already use the property like I described.
+
+
+--rg7y9QorxhhnN2an
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU6SmsACgkQFA3kzBSg
+KbbbsA//RDTzz4hpTvLsvq18CuGcOb/fuBgBJrR+n2qbShp3qD/U8WEpIDIsN6f+
+e01RCtjocLVQa5hIGwUzP3MC0p8KnYC9XshYj+X1Tt6XSG99WbtoQtd+IZ3Xq9fK
+n/1QDALbxdm9M0Tyf+tnJFfC9jbYwm/KtYNCfmFPGNxvNmHkqgbYkqUAIKJOboqo
+MRPjmtzXe+Ljj7gg4KCDBEkKXa07m9yaO+2FaA+HLF8cT4lSPY8H4dgpt0HiX4c4
+z+YwOWEMEBiD3c7TpglQiulF9rGmzpiTwq6h85ZqxyToIaKOXKg8QxAjjbVQ0MGN
+cm4JanI2/E0Uh3TAmruf04gbxYoWtW0dk3qjZ+vbtKtgAkIGsvtVriSQpBVPO9Yw
+yoeG4zOUqJ2Bej4zuAIred18IhD3R/CalEh+bHSs8Ss2uW8UaUCcBDGY3MFTEjrE
+9voY5WyfY2sKm7a5IQmtYd0IJCZd1ZNQb7z53A6Xut9PBKWFjSshdhl3kb/dWTf6
+bvo/jac1u6pa9uX9bG64x3wmlTcbacmJEPeCgEQVUBzJs+wAEZp9uXSYLwKXmq3l
+bgZPrqC7ZJaAWzLtkYw1azA0AS1x1DsBCjqqALypU0l3vInZKa5ms6aKvGRxlUEB
+3NMK4j90RY66xm7y+QsiZgWgb3cTN3xtItCRNNMINeX6TacyENY=
+=IkNz
+-----END PGP SIGNATURE-----
+
+--rg7y9QorxhhnN2an--
