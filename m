@@ -2,359 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36EA7D841A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403BF7D841F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345167AbjJZN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S1345179AbjJZN7v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 09:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345157AbjJZN7Y (ORCPT
+        with ESMTP id S230507AbjJZN7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:59:24 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292C81B5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:59:21 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-32dceab634dso493395f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698328759; x=1698933559; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qB8yrxWHAh81UTz2RSBiyIh2HT/FiKCzYUt6+8G2cno=;
-        b=h7J7LtsgpZxHtOdWdA0PkdzYu1kUsPUOtNzTX9BXD3UX0dg5xDbwTkejvwbWUEKDDb
-         CyLhGA9ScB4ctKzWNkCveovKVa6TEAByphiAkix+65D0hIoYqVDhrujZhqNm087chv8n
-         RjTbN7F6JMYm773Q8Y2orIACMfGgYuvXkOE3wKwJzOdEoVjwAwPdWX0gmLtHuAKiNJZJ
-         x7+4JLOHZb6yHF8SYVpkkgDXj1jSO3GMHekMLLi/6cdMqkjgALsJINK86BZ0xH3n80oP
-         WpdD8mkn24CMtinomzE2G+/J8uR08K4BxUzrSM74U0n6tm77QgmLXbZTigonfMU7w8ey
-         /0mg==
+        Thu, 26 Oct 2023 09:59:47 -0400
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4EF1BD;
+        Thu, 26 Oct 2023 06:59:44 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so666359276.0;
+        Thu, 26 Oct 2023 06:59:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698328759; x=1698933559;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qB8yrxWHAh81UTz2RSBiyIh2HT/FiKCzYUt6+8G2cno=;
-        b=jlfXw4ER+KBd+j9ky4GDVeuVT0/Q7dpXGMdMslBP5+c71Oo4H+NaVMgb5mhN+uXEJ7
-         M3LyBYFbJZgtzFD46ma0/tpJbJM7IdTYq8HhBSMWpaAX/0qg32ydDWGGheHJrRcJWuuS
-         GoihImq/w0hCmRZE/qkN4BVuiO1pa5uKx5Wq9uH9JynwSYhVioDS0OHAv+kjY+VrcGE7
-         9r3I+c+0nrnra0DCiMFqTsc4bXo9+u77eMtGXMpl0beN8jQqbEB/MthUF8416qPlGtXK
-         inM4+6unptafS5QC834/aeI+KXAaZcRC0GxUTjG4UiWPWzJDZQjm29UUwccc1EIx6B1G
-         KCiQ==
-X-Gm-Message-State: AOJu0Yy4tgD6yD644IEP2qbe5I0oQR86Ust+4tZQqLnKfpsFpCRX8BKr
-        1z5GvEI2gPPETaa2HKPFr2AVSey6jCg=
-X-Google-Smtp-Source: AGHT+IG7K8BIYtb5/ElUzVcWXrYaYc8tpbmfWehLzo40hQg/LRaUkAYRy2k4aAfRHFTAZ/FfUeb4aiyJIuw=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:6c48:d4b4:c637:b013])
- (user=glider job=sendgmr) by 2002:a5d:54d2:0:b0:32d:974b:6de2 with SMTP id
- x18-20020a5d54d2000000b0032d974b6de2mr167450wrv.0.1698328759543; Thu, 26 Oct
- 2023 06:59:19 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 15:59:12 +0200
-In-Reply-To: <20231026135912.1214302-1-glider@google.com>
-Mime-Version: 1.0
-References: <20231026135912.1214302-1-glider@google.com>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231026135912.1214302-2-glider@google.com>
-Subject: [PATCH v10 2/2] lib/test_bitmap: add tests for bitmap_{read,write}()
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
-        pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
-        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
-        alexandru.elisei@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
+        d=1e100.net; s=20230601; t=1698328784; x=1698933584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=20XxON5XilTKGJ9SIc8r5pwdKYtKKocsfNkQqf5x/4c=;
+        b=cbmERCUbJVAVwi7Zw09fZCKC41emrIJ/q6zEkjNd4AB7WPBx1p3JIJE0aLPtKu1NmW
+         CIBOkcXtYmSqQV7lcK7yrvgn8R9HPVZfFgpp+dVJEA+dhVnhMQ9fJ7csAUFmdduyUp9O
+         28snVZO5SfJ5THEurfjZFDd7AT5joFTKipM125LNECLi1a/xtOp7TXPdc4M1+MBTfe8A
+         16atRoT/0hegulgTStUFBgZ9aEfG/Rmbt1R/2DfzD+ecOotyJ+ep68d8W7vDCSDXd3GV
+         Vz5AurDEbIQDoKA8Xh6kSlzdIpsEbo7PVzbGhKz3qTaAGc5qpxZ77yIE1qXJVueURly+
+         OkbQ==
+X-Gm-Message-State: AOJu0Yw32FjCGRyzxinJ3wCRqw0F/WmDRU8GvAWQKJNi5eo7H/VT7np2
+        jjZhmHnM6r0V5OmfsdJ4By2DHVMeB+1/uA==
+X-Google-Smtp-Source: AGHT+IFmIlZ9QCTk6uE4so3wg2spv6XHyYnYWc+a9V3sH9yScBc4exiHpBUBtVsE0xn1biQ1nmy+uA==
+X-Received: by 2002:a25:cad6:0:b0:da0:4ee7:bd44 with SMTP id a205-20020a25cad6000000b00da04ee7bd44mr7847988ybg.5.1698328783738;
+        Thu, 26 Oct 2023 06:59:43 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id u98-20020a25ab6b000000b00da0501b497asm2010057ybi.18.2023.10.26.06.59.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 06:59:42 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9beb863816so654398276.1;
+        Thu, 26 Oct 2023 06:59:41 -0700 (PDT)
+X-Received: by 2002:a25:ef48:0:b0:d9b:4f28:4f7a with SMTP id
+ w8-20020a25ef48000000b00d9b4f284f7amr19582865ybm.55.1698328781289; Thu, 26
+ Oct 2023 06:59:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
+ <20231019054642.GF14346@lst.de> <202310182248.9E197FFD5@keescook>
+ <20231020044645.GC11984@lst.de> <CAFhGd8o8FaD-3rkBAhEXhc8XqpUk_cLqNwyfpndVuSxDOei_gA@mail.gmail.com>
+ <202310201127.DA7EDAFE4D@keescook> <20231026100148.GA26941@lst.de>
+ <710149630eb010b18b69e161d02502bc3b648173.camel@HansenPartnership.com> <20231026095235.760f5546@gandalf.local.home>
+In-Reply-To: <20231026095235.760f5546@gandalf.local.home>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Oct 2023 15:59:28 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV9CcjGkpF=FGe_U5XtbF08bKTEYkPSxArO1zBwnug0Wg@mail.gmail.com>
+Message-ID: <CAMuHMdV9CcjGkpF=FGe_U5XtbF08bKTEYkPSxArO1zBwnug0Wg@mail.gmail.com>
+Subject: Re: the nul-terminated string helper desk chair rearrangement
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, ksummit@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic tests ensuring that values can be added at arbitrary positions
-of the bitmap, including those spanning into the adjacent unsigned
-longs.
+Hi Steven,
 
-Two new performance tests, test_bitmap_read_perf() and
-test_bitmap_write_perf(), can be used to assess future performance
-improvements of bitmap_read() and bitmap_write():
+On Thu, Oct 26, 2023 at 3:52 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> On Thu, 26 Oct 2023 07:39:44 -0400
+> James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+>
+> > While it's nice in theory to have everything documented, it's not much
+> > use if no one can actually find the information ...
+>
+> Does kerneldoc provide an automated index? That is, if we had a single file
+> that had every function in the kernel that is documented, with the path to
+> the file that documents it, it would make finding documentation much
+> simpler.
+>
+> Maybe it already does? Which would mean we need a way to find the index too!
 
-[    0.431119][    T1] test_bitmap: Time spent in test_bitmap_read_perf:	615253
-[    0.433197][    T1] test_bitmap: Time spent in test_bitmap_write_perf:	916313
+ctags?
 
-(numbers from a Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz machine running
-QEMU).
+Although "git grep" is faster (assumed you use the "correct" search
+pattern, which can sometimes be challenging, indeed).
 
-Signed-off-by: Alexander Potapenko <glider@google.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Gr{oetje,eeting}s,
 
----
-This patch was previously part of the "Implement MTE tag compression for
-swapped pages" series
-(https://lore.kernel.org/linux-arm-kernel/20231011172836.2579017-4-glider@google.com/T/)
+                        Geert
 
-This patch was previously called
-"lib/test_bitmap: add tests for bitmap_{set,get}_value()"
-(https://lore.kernel.org/lkml/20230720173956.3674987-3-glider@google.com/)
-and
-"lib/test_bitmap: add tests for bitmap_{set,get}_value_unaligned"
-(https://lore.kernel.org/lkml/20230713125706.2884502-3-glider@google.com/)
-
-v9:
- - use WRITE_ONCE() to prevent optimizations in test_bitmap_read_perf()
- - update patch description
-
-v8:
- - as requested by Andy Shevchenko, add tests for reading/writing
-   sizes > BITS_PER_LONG
-
-v7:
- - as requested by Yury Norov, add performance tests for bitmap_read()
-   and bitmap_write()
-
-v6:
- - use bitmap API to initialize test bitmaps
- - as requested by Yury Norov, do not check the return value of
-   bitmap_read(..., 0)
- - fix a compiler warning on 32-bit systems
-
-v5:
- - update patch title
- - address Yury Norov's comments:
-   - rename the test cases
-   - factor out test_bitmap_write_helper() to test writing over
-     different background patterns;
-   - add a test case copying a nontrivial value bit-by-bit;
-   - drop volatile
-
-v4:
- - Address comments by Andy Shevchenko: added Reviewed-by: and a link to
-   the previous discussion
- - Address comments by Yury Norov:
-   - expand the bitmap to catch more corner cases
-   - add code testing that bitmap_set_value() does not touch adjacent
-     bits
-   - add code testing the nbits==0 case
-   - rename bitmap_{get,set}_value() to bitmap_{read,write}()
-
-v3:
- - switch to using bitmap_{set,get}_value()
- - change the expected bit pattern in test_set_get_value(),
-   as the test was incorrectly assuming 0 is the LSB.
----
- lib/test_bitmap.c | 177 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 177 insertions(+)
-
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index f2ea9f30c7c5d..a4195c7376840 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -71,6 +71,17 @@ __check_eq_uint(const char *srcfile, unsigned int line,
- 	return true;
- }
- 
-+static bool __init
-+__check_eq_ulong(const char *srcfile, unsigned int line,
-+		 const unsigned long exp_ulong, unsigned long x)
-+{
-+	if (exp_ulong != x) {
-+		pr_err("[%s:%u] expected %lu, got %lu\n",
-+			srcfile, line, exp_ulong, x);
-+		return false;
-+	}
-+	return true;
-+}
- 
- static bool __init
- __check_eq_bitmap(const char *srcfile, unsigned int line,
-@@ -186,6 +197,7 @@ __check_eq_str(const char *srcfile, unsigned int line,
- 	})
- 
- #define expect_eq_uint(...)		__expect_eq(uint, ##__VA_ARGS__)
-+#define expect_eq_ulong(...)		__expect_eq(ulong, ##__VA_ARGS__)
- #define expect_eq_bitmap(...)		__expect_eq(bitmap, ##__VA_ARGS__)
- #define expect_eq_pbl(...)		__expect_eq(pbl, ##__VA_ARGS__)
- #define expect_eq_u32_array(...)	__expect_eq(u32_array, ##__VA_ARGS__)
-@@ -1222,6 +1234,168 @@ static void __init test_bitmap_const_eval(void)
- 	BUILD_BUG_ON(~var != ~BIT(25));
- }
- 
-+/*
-+ * Test bitmap should be big enough to include the cases when start is not in
-+ * the first word, and start+nbits lands in the following word.
-+ */
-+#define TEST_BIT_LEN (1000)
-+
-+/*
-+ * Helper function to test bitmap_write() overwriting the chosen byte pattern.
-+ */
-+static void __init test_bitmap_write_helper(const char *pattern)
-+{
-+	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-+	DECLARE_BITMAP(exp_bitmap, TEST_BIT_LEN);
-+	DECLARE_BITMAP(pat_bitmap, TEST_BIT_LEN);
-+	unsigned long w, r, bit;
-+	int i, n, nbits;
-+
-+	/*
-+	 * Only parse the pattern once and store the result in the intermediate
-+	 * bitmap.
-+	 */
-+	bitmap_parselist(pattern, pat_bitmap, TEST_BIT_LEN);
-+
-+	/*
-+	 * Check that writing a single bit does not accidentally touch the
-+	 * adjacent bits.
-+	 */
-+	for (i = 0; i < TEST_BIT_LEN; i++) {
-+		bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
-+		bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
-+		for (bit = 0; bit <= 1; bit++) {
-+			bitmap_write(bitmap, bit, i, 1);
-+			__assign_bit(i, exp_bitmap, bit);
-+			expect_eq_bitmap(exp_bitmap, bitmap,
-+					 TEST_BIT_LEN);
-+		}
-+	}
-+
-+	/* Ensure writing 0 bits does not change anything. */
-+	bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
-+	bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
-+	for (i = 0; i < TEST_BIT_LEN; i++) {
-+		bitmap_write(bitmap, ~0UL, i, 0);
-+		expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
-+	}
-+
-+	for (nbits = BITS_PER_LONG; nbits >= 1; nbits--) {
-+		w = IS_ENABLED(CONFIG_64BIT) ? 0xdeadbeefdeadbeefUL
-+					     : 0xdeadbeefUL;
-+		w >>= (BITS_PER_LONG - nbits);
-+		for (i = 0; i <= TEST_BIT_LEN - nbits; i++) {
-+			bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
-+			bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
-+			for (n = 0; n < nbits; n++)
-+				__assign_bit(i + n, exp_bitmap, w & BIT(n));
-+			bitmap_write(bitmap, w, i, nbits);
-+			expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
-+			r = bitmap_read(bitmap, i, nbits);
-+			expect_eq_ulong(r, w);
-+		}
-+	}
-+}
-+
-+static void __init test_bitmap_read_write(void)
-+{
-+	unsigned char *pattern[3] = {"", "all:1/2", "all"};
-+	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-+	unsigned long zero_bits = 0, bits_per_long = BITS_PER_LONG;
-+	unsigned long val;
-+	int i, pi;
-+
-+	/*
-+	 * Reading/writing zero bits should not crash the kernel.
-+	 * READ_ONCE() prevents constant folding.
-+	 */
-+	bitmap_write(NULL, 0, 0, READ_ONCE(zero_bits));
-+	/* Return value of bitmap_read() is undefined here. */
-+	bitmap_read(NULL, 0, READ_ONCE(zero_bits));
-+
-+	/*
-+	 * Reading/writing more than BITS_PER_LONG bits should not crash the
-+	 * kernel. READ_ONCE() prevents constant folding.
-+	 */
-+	bitmap_write(NULL, 0, 0, READ_ONCE(bits_per_long) + 1);
-+	/* Return value of bitmap_read() is undefined here. */
-+	bitmap_read(NULL, 0, READ_ONCE(bits_per_long) + 1);
-+
-+	/*
-+	 * Ensure that bitmap_read() reads the same value that was previously
-+	 * written, and two consequent values are correctly merged.
-+	 * The resulting bit pattern is asymmetric to rule out possible issues
-+	 * with bit numeration order.
-+	 */
-+	for (i = 0; i < TEST_BIT_LEN - 7; i++) {
-+		bitmap_zero(bitmap, TEST_BIT_LEN);
-+
-+		bitmap_write(bitmap, 0b10101UL, i, 5);
-+		val = bitmap_read(bitmap, i, 5);
-+		expect_eq_ulong(0b10101UL, val);
-+
-+		bitmap_write(bitmap, 0b101UL, i + 5, 3);
-+		val = bitmap_read(bitmap, i + 5, 3);
-+		expect_eq_ulong(0b101UL, val);
-+
-+		val = bitmap_read(bitmap, i, 8);
-+		expect_eq_ulong(0b10110101UL, val);
-+	}
-+
-+	for (pi = 0; pi < ARRAY_SIZE(pattern); pi++)
-+		test_bitmap_write_helper(pattern[pi]);
-+}
-+
-+static void __init test_bitmap_read_perf(void)
-+{
-+	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-+	unsigned int cnt, nbits, i;
-+	unsigned long val;
-+	ktime_t time;
-+
-+	bitmap_fill(bitmap, TEST_BIT_LEN);
-+	time = ktime_get();
-+	for (cnt = 0; cnt < 5; cnt++) {
-+		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
-+			for (i = 0; i < TEST_BIT_LEN; i++) {
-+				if (i + nbits > TEST_BIT_LEN)
-+					break;
-+				/*
-+				 * Prevent the compiler from optimizing away the
-+				 * bitmap_read() by using its value.
-+				 */
-+				WRITE_ONCE(val, bitmap_read(bitmap, i, nbits));
-+			}
-+		}
-+	}
-+	time = ktime_get() - time;
-+	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-+}
-+
-+static void __init test_bitmap_write_perf(void)
-+{
-+	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-+	unsigned int cnt, nbits, i;
-+	unsigned long val = 0xfeedface;
-+	ktime_t time;
-+
-+	bitmap_zero(bitmap, TEST_BIT_LEN);
-+	time = ktime_get();
-+	for (cnt = 0; cnt < 5; cnt++) {
-+		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
-+			for (i = 0; i < TEST_BIT_LEN; i++) {
-+				if (i + nbits > TEST_BIT_LEN)
-+					break;
-+				bitmap_write(bitmap, val, i, nbits);
-+			}
-+		}
-+	}
-+	time = ktime_get() - time;
-+	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-+}
-+
-+#undef TEST_BIT_LEN
-+
- static void __init selftest(void)
- {
- 	test_zero_clear();
-@@ -1237,6 +1411,9 @@ static void __init selftest(void)
- 	test_bitmap_cut();
- 	test_bitmap_print_buf();
- 	test_bitmap_const_eval();
-+	test_bitmap_read_write();
-+	test_bitmap_read_perf();
-+	test_bitmap_write_perf();
- 
- 	test_find_nth_bit();
- 	test_for_each_set_bit();
 -- 
-2.42.0.758.gaed0368e0e-goog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
