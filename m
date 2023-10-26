@@ -2,270 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A077D8408
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AE97D8410
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345121AbjJZN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
+        id S1345138AbjJZN6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjJZN5c (ORCPT
+        with ESMTP id S231171AbjJZN6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:57:32 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC810E9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:56:57 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5a1d89ff4b9so695633a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:56:57 -0700 (PDT)
+        Thu, 26 Oct 2023 09:58:47 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF396183
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:58:44 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso140882066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:58:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698328616; x=1698933416; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fcb5hCmOPF2OqkJ0FwSig4b2YnEFiQUNRhF2Rx+5vEY=;
-        b=KvhcujXbFyg/Rv8Q5Px0bgmSd5YAvO6BUmbd5fgsLsVYCJqdgpGnbsQCZG7ccK8cvy
-         Q6jh0W5tt3M6KB3NwjUs/RN6oaaFbPJkjT8KLtUF78oW8LBsR/ZJ1RDiDBaVadPsI6k+
-         WMou4XRrsBy2KxU3ke2s6citdCN97zcHDkYm6R9WZT0LWDAzc/AlFhIX4/dkdOa2GDqN
-         a10dk72lqFeTEuK8JZGCY5rjopL8XvkxEn3RJ/FlBel0XKgdqQhMFfJvbV8fdEpxGeF8
-         M3GrOLD+aEZ0gbasZj5Yz+yON7xX2wTOlExY2+ZTuywFsQ6h73StGA3I+pNCzk3X+KgY
-         aJ4w==
+        d=citrix.com; s=google; t=1698328723; x=1698933523; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=f/KYa4HkxjjRaaNse5zZEBCRtWEDy9TvEZNCSQroKlA=;
+        b=OmRaJlt3h3pl7MI6mS0dHtDwDLhFscUlKG/I0p2L14uNCUXYP/uIiNVS/IIb54VzlQ
+         rtVbLQQgM17vGASinGX+XKUpbfkmM4PXahpGGWAchVQanhNIxYYpjE3bIXyxI9Dy1fSw
+         YiKeKr7EgiUWPQproy/AtMTfecv+3Gffgp+XI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698328616; x=1698933416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fcb5hCmOPF2OqkJ0FwSig4b2YnEFiQUNRhF2Rx+5vEY=;
-        b=o3bQcQapv8MqjuwDZGj2O7g8nacto3uxG6JRhWt7sxfNrASVNKJcfPemfDLFOGRTZe
-         kJ/bPis9n/RAxnzEY6to1BvD54oIKhBqCmF+M2vu+Pik5/pJzTInPEnd8v36UmBben5S
-         IddTCwkH6IMk1Lklm84IfX5amFHc5kVeoXWoZ7bXLH3l0YzsGaW4/p0hRsnUiZ0gX6AH
-         MhEvu4ZVNKrtTAryd0yu/kPoVpaMsZLMnZ3MamcqwOItfpDEy2x6VhTFVEtuiSpx1p3X
-         4cXLB/XUQ2P1LK4bf0ExT5ZE0Pn70+Zi4Uk8I86rMOaCfzJjjfIGzmYrWMCWlOKtTZON
-         iDgA==
-X-Gm-Message-State: AOJu0YwknnIAxuPfeW+PzVv48VTdBEwkY9sGaEqLn6XJTrh/Zmwm9env
-        mdOPxl/3VPyqg1SPdyYgYm/uXTFsI05rld3C7Y6Qhg==
-X-Google-Smtp-Source: AGHT+IEs0aNayRqtx/g9rMBMY9etWzPiCR1YOkgL4U3HIWllDDz/z+zVVuHJUp7JUorhVL/kIRfJCjjwBBQGHtZfjuM=
-X-Received: by 2002:a17:90a:fd10:b0:27d:428e:3102 with SMTP id
- cv16-20020a17090afd1000b0027d428e3102mr15015021pjb.44.1698328616577; Thu, 26
- Oct 2023 06:56:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698328723; x=1698933523;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f/KYa4HkxjjRaaNse5zZEBCRtWEDy9TvEZNCSQroKlA=;
+        b=WJfHNEf2l7ibBePDvkBz+7cRJ8HzP9lxmvyIq+Y4JCWmk4WarBS1Nxa7PqO6CKpNNv
+         C7ZbN+c5018npoVuVrVfpkhm/Yr6WdMeRHcaYmPMSONfBX4GNjanuT1Fy6jEhnQA36kN
+         pwi//2oUVoKjzyFS2KwY9t1prrF66lf+pnbDbDep12mPHpA1We3ljHs1Z4FkyTe6xAbE
+         8WPfEcqYKShrH1khhv/MvL+sATLiI2w4l30B6zujfM/VFIjXArNFHrvTTPBm3MPRsdRA
+         P7k84HtrYv0GhXLMeXpWGysIhlQ5mQ4dRktvoqCNKRQjnmSoDvpoY2x4XqjjQNIP8Jpk
+         gHwA==
+X-Gm-Message-State: AOJu0YzVlzjjXAuJG7QIxL8bik1tF/Wki93JoZA+zda9ctkJ0tbj74h7
+        /pMCF8NFjOcPI6CGHniXPnUxtQ==
+X-Google-Smtp-Source: AGHT+IF2rU6imsm+9/5fNEkBUbTI0NVZdVoGckX2Pddx8Q6ImRaSm5Kbk4+MvlMi/u+iolhDKI4lYA==
+X-Received: by 2002:a17:907:70a:b0:9b8:b683:5854 with SMTP id xb10-20020a170907070a00b009b8b6835854mr15025269ejb.61.1698328723124;
+        Thu, 26 Oct 2023 06:58:43 -0700 (PDT)
+Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id bm11-20020a170906c04b00b009a193a5acffsm11621069ejb.121.2023.10.26.06.58.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 06:58:42 -0700 (PDT)
+Message-ID: <37b334b2-c040-458d-9c1f-2546dc9b378d@citrix.com>
+Date:   Thu, 26 Oct 2023 14:58:41 +0100
 MIME-Version: 1.0
-References: <20231023082911.23242-1-luxu.kernel@bytedance.com> <CAOnJCUKH0muFHWujXEqJtb4Uv6Kfh5DeJeR2qg9vj7Kc5w43dw@mail.gmail.com>
-In-Reply-To: <CAOnJCUKH0muFHWujXEqJtb4Uv6Kfh5DeJeR2qg9vj7Kc5w43dw@mail.gmail.com>
-From:   Xu Lu <luxu.kernel@bytedance.com>
-Date:   Thu, 26 Oct 2023 21:56:45 +0800
-Message-ID: <CAPYmKFuNr18_jJYZ6X4Rrty=bU0cXiuHpAqSt2+YqDWV6rAveg@mail.gmail.com>
-Subject: Re: [External] Re: [RFC 00/12] riscv: Introduce Pseudo NMI
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, maz@kernel.org,
-        anup@brainfault.org, dengliang.1214@bytedance.com,
-        liyu.yukiteru@bytedance.com, sunjiadong.lff@bytedance.com,
-        xieyongji@bytedance.com, lihangjing@bytedance.com,
-        chaiwen.cc@bytedance.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-GB
+To:     Nikolay Borisov <nik.borisov@suse.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+ <1f756579-8f33-40ca-ae50-4db78c615f60@suse.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ xsFNBFLhNn8BEADVhE+Hb8i0GV6mihnnr/uiQQdPF8kUoFzCOPXkf7jQ5sLYeJa0cQi6Penp
+ VtiFYznTairnVsN5J+ujSTIb+OlMSJUWV4opS7WVNnxHbFTPYZVQ3erv7NKc2iVizCRZ2Kxn
+ srM1oPXWRic8BIAdYOKOloF2300SL/bIpeD+x7h3w9B/qez7nOin5NzkxgFoaUeIal12pXSR
+ Q354FKFoy6Vh96gc4VRqte3jw8mPuJQpfws+Pb+swvSf/i1q1+1I4jsRQQh2m6OTADHIqg2E
+ ofTYAEh7R5HfPx0EXoEDMdRjOeKn8+vvkAwhviWXTHlG3R1QkbE5M/oywnZ83udJmi+lxjJ5
+ YhQ5IzomvJ16H0Bq+TLyVLO/VRksp1VR9HxCzItLNCS8PdpYYz5TC204ViycobYU65WMpzWe
+ LFAGn8jSS25XIpqv0Y9k87dLbctKKA14Ifw2kq5OIVu2FuX+3i446JOa2vpCI9GcjCzi3oHV
+ e00bzYiHMIl0FICrNJU0Kjho8pdo0m2uxkn6SYEpogAy9pnatUlO+erL4LqFUO7GXSdBRbw5
+ gNt25XTLdSFuZtMxkY3tq8MFss5QnjhehCVPEpE6y9ZjI4XB8ad1G4oBHVGK5LMsvg22PfMJ
+ ISWFSHoF/B5+lHkCKWkFxZ0gZn33ju5n6/FOdEx4B8cMJt+cWwARAQABzSlBbmRyZXcgQ29v
+ cGVyIDxhbmRyZXcuY29vcGVyM0BjaXRyaXguY29tPsLBegQTAQgAJAIbAwULCQgHAwUVCgkI
+ CwUWAgMBAAIeAQIXgAUCWKD95wIZAQAKCRBlw/kGpdefoHbdD/9AIoR3k6fKl+RFiFpyAhvO
+ 59ttDFI7nIAnlYngev2XUR3acFElJATHSDO0ju+hqWqAb8kVijXLops0gOfqt3VPZq9cuHlh
+ IMDquatGLzAadfFx2eQYIYT+FYuMoPZy/aTUazmJIDVxP7L383grjIkn+7tAv+qeDfE+txL4
+ SAm1UHNvmdfgL2/lcmL3xRh7sub3nJilM93RWX1Pe5LBSDXO45uzCGEdst6uSlzYR/MEr+5Z
+ JQQ32JV64zwvf/aKaagSQSQMYNX9JFgfZ3TKWC1KJQbX5ssoX/5hNLqxMcZV3TN7kU8I3kjK
+ mPec9+1nECOjjJSO/h4P0sBZyIUGfguwzhEeGf4sMCuSEM4xjCnwiBwftR17sr0spYcOpqET
+ ZGcAmyYcNjy6CYadNCnfR40vhhWuCfNCBzWnUW0lFoo12wb0YnzoOLjvfD6OL3JjIUJNOmJy
+ RCsJ5IA/Iz33RhSVRmROu+TztwuThClw63g7+hoyewv7BemKyuU6FTVhjjW+XUWmS/FzknSi
+ dAG+insr0746cTPpSkGl3KAXeWDGJzve7/SBBfyznWCMGaf8E2P1oOdIZRxHgWj0zNr1+ooF
+ /PzgLPiCI4OMUttTlEKChgbUTQ+5o0P080JojqfXwbPAyumbaYcQNiH1/xYbJdOFSiBv9rpt
+ TQTBLzDKXok86M7BTQRS4TZ/ARAAkgqudHsp+hd82UVkvgnlqZjzz2vyrYfz7bkPtXaGb9H4
+ Rfo7mQsEQavEBdWWjbga6eMnDqtu+FC+qeTGYebToxEyp2lKDSoAsvt8w82tIlP/EbmRbDVn
+ 7bhjBlfRcFjVYw8uVDPptT0TV47vpoCVkTwcyb6OltJrvg/QzV9f07DJswuda1JH3/qvYu0p
+ vjPnYvCq4NsqY2XSdAJ02HrdYPFtNyPEntu1n1KK+gJrstjtw7KsZ4ygXYrsm/oCBiVW/OgU
+ g/XIlGErkrxe4vQvJyVwg6YH653YTX5hLLUEL1NS4TCo47RP+wi6y+TnuAL36UtK/uFyEuPy
+ wwrDVcC4cIFhYSfsO0BumEI65yu7a8aHbGfq2lW251UcoU48Z27ZUUZd2Dr6O/n8poQHbaTd
+ 6bJJSjzGGHZVbRP9UQ3lkmkmc0+XCHmj5WhwNNYjgbbmML7y0fsJT5RgvefAIFfHBg7fTY/i
+ kBEimoUsTEQz+N4hbKwo1hULfVxDJStE4sbPhjbsPCrlXf6W9CxSyQ0qmZ2bXsLQYRj2xqd1
+ bpA+1o1j2N4/au1R/uSiUFjewJdT/LX1EklKDcQwpk06Af/N7VZtSfEJeRV04unbsKVXWZAk
+ uAJyDDKN99ziC0Wz5kcPyVD1HNf8bgaqGDzrv3TfYjwqayRFcMf7xJaL9xXedMcAEQEAAcLB
+ XwQYAQgACQUCUuE2fwIbDAAKCRBlw/kGpdefoG4XEACD1Qf/er8EA7g23HMxYWd3FXHThrVQ
+ HgiGdk5Yh632vjOm9L4sd/GCEACVQKjsu98e8o3ysitFlznEns5EAAXEbITrgKWXDDUWGYxd
+ pnjj2u+GkVdsOAGk0kxczX6s+VRBhpbBI2PWnOsRJgU2n10PZ3mZD4Xu9kU2IXYmuW+e5KCA
+ vTArRUdCrAtIa1k01sPipPPw6dfxx2e5asy21YOytzxuWFfJTGnVxZZSCyLUO83sh6OZhJkk
+ b9rxL9wPmpN/t2IPaEKoAc0FTQZS36wAMOXkBh24PQ9gaLJvfPKpNzGD8XWR5HHF0NLIJhgg
+ 4ZlEXQ2fVp3XrtocHqhu4UZR4koCijgB8sB7Tb0GCpwK+C4UePdFLfhKyRdSXuvY3AHJd4CP
+ 4JzW0Bzq/WXY3XMOzUTYApGQpnUpdOmuQSfpV9MQO+/jo7r6yPbxT7CwRS5dcQPzUiuHLK9i
+ nvjREdh84qycnx0/6dDroYhp0DFv4udxuAvt1h4wGwTPRQZerSm4xaYegEFusyhbZrI0U9tJ
+ B8WrhBLXDiYlyJT6zOV2yZFuW47VrLsjYnHwn27hmxTC/7tvG3euCklmkn9Sl9IAKFu29RSo
+ d5bD8kMSCYsTqtTfT6W4A3qHGvIDta3ptLYpIAOD2sY3GYq2nf3Bbzx81wZK14JdDDHUX2Rs
+ 6+ahAA==
+In-Reply-To: <1f756579-8f33-40ca-ae50-4db78c615f60@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 7:02=E2=80=AFAM Atish Patra <atishp@atishpatra.org>=
- wrote:
+On 26/10/2023 2:44 pm, Nikolay Borisov wrote:
 >
-> On Mon, Oct 23, 2023 at 1:29=E2=80=AFAM Xu Lu <luxu.kernel@bytedance.com>=
- wrote:
-> >
-> > Sorry to resend this patch series as I forgot to Cc the open list befor=
-e.
-> > Below is formal content.
-> >
-> > The existing RISC-V kernel lacks an NMI mechanism as there is still no
-> > ratified resumable NMI extension in RISC-V community, which can not
-> > satisfy some scenarios like high precision perf sampling. There is an
-> > incoming hardware extension called Smrnmi which supports resumable NMI
-> > by providing new control registers to save status when NMI happens.
-> > However, it is still a draft and requires privilege level switches for
-> > kernel to utilize it as NMIs are automatically trapped into machine mod=
-e.
-> >
-> > This patch series introduces a software pseudo NMI mechanism in RISC-V.
-> > The existing RISC-V kernel disables interrupts via per cpu control
-> > register CSR_STATUS, the SIE bit of which controls the enablement of al=
-l
-> > interrupts of whole cpu. When SIE bit is clear, no interrupt is enabled=
-.
-> > This patch series implements NMI by switching interrupt disable way to
-> > another per cpu control register CSR_IE. This register controls the
-> > enablement of each separate interrupt. Each bit of CSR_IE corresponds
-> > to a single major interrupt and a clear bit means disablement of
-> > corresponding interrupt.
-> >
-> > To implement pseudo NMI, we switch to CSR_IE masking when disabling
-> > irqs. When interrupts are disabled, all bits of CSR_IE corresponding to
-> > normal interrupts are cleared while bits corresponding to NMIs are stil=
-l
-> > kept as ones. The SIE bit of CSR_STATUS is now untouched and always kep=
-t
-> > as one.
-> >
-> > We measured performacne of Pseudo NMI patches based on v6.6-rc4 on SiFi=
-ve
-> > FU740 Soc with hackbench as our benchmark. The result shows 1.90%
-> > performance degradation.
-> >
-> >   "hackbench 200 process 1000" (average over 10 runs)
-> >   +-----------+----------+------------+
-> >   |           | v6.6-rc4 | Pseudo NMI |
-> >   +-----------+----------+------------+
-> >   |   time    | 251.646s |  256.416s  |
-> >   +-----------+----------+------------+
-> >
-> > The overhead mainly comes from two parts:
-> >
-> >   1. Saving and restoring CSR_IE register during kernel entry/return.
-> >   This part introduces about 0.57% performance overhead.
-> >
-> >   2. The extra instructions introduced by 'irqs_enabled_ie'. It is a
-> >   special value representing normal CSR_IE when irqs are enabled. It is
-> >   implemented via ALTERNATIVE to adapt to platforms without PMU. This
-> >   part introduces about 1.32% performance overhead.
-> >
 >
-> We had an evaluation of this approach earlier this year and concluded
-> with the similar findings.
-> The pseudo NMI is only useful for profiling use case which doesn't
-> happen all the time in the system
-> Adding the cost to the hotpath and sacrificing performance for
-> everything for something for performance profiling
-> is not desirable at all.
+> <snip>
+>> +
+>> +.pushsection .entry.text, "ax"
+>> +
+>> +.align L1_CACHE_BYTES, 0xcc
+>> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+>> +    UNWIND_HINT_UNDEFINED
+>> +    ANNOTATE_NOENDBR
+>> +    .word __KERNEL_DS
+>> +SYM_CODE_END(mds_verw_sel);
+>> +/* For KVM */
+>> +EXPORT_SYMBOL_GPL(mds_verw_sel);
+>> +
+>> +.popsection
+>
+> <snip>
+>
+>> diff --git a/arch/x86/include/asm/nospec-branch.h
+>> b/arch/x86/include/asm/nospec-branch.h
+>> index c55cc243592e..005e69f93115 100644
+>> --- a/arch/x86/include/asm/nospec-branch.h
+>> +++ b/arch/x86/include/asm/nospec-branch.h
+>> @@ -329,6 +329,21 @@
+>>   #endif
+>>   .endm
+>>   +/*
+>> + * Macros to execute VERW instruction that mitigate transient data
+>> sampling
+>> + * attacks such as MDS. On affected systems a microcode update
+>> overloaded VERW
+>> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
+>> + *
+>> + * Note: Only the memory operand variant of VERW clears the CPU
+>> buffers.
+>> + */
+>> +.macro EXEC_VERW
+>> +    verw _ASM_RIP(mds_verw_sel)
+>> +.endm
+>> +
+>> +.macro CLEAR_CPU_BUFFERS
+>> +    ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
+>> +.endm
+>
+>
+> What happened with the first 5 bytes of a 7 byte nop being
+> complemented by __KERNEL_DS in order to handle VERW being executed
+> after user registers are restored and having its memory operand ?
 
-Thanks a lot for your reply!
+It was moved out of line (so no need to hide a constant in a nop),
+deduped, and renamed to mds_verw_sel.
 
-First, please allow me to explain that CSR_IE Pseudo NMI actually can suppo=
-rt
-more than PMU profiling. For example, if we choose to make external major
-interrupt as NMI and use ithreshold or eithreshold in AIA to control which =
-minor
-external interrupts can be sent to CPU, then we actually can support multip=
-le
-minor interrupts as NMI while keeping the other minor interrupts still
-normal irqs.
-This is what we are working on now.
+verw _ASM_RIP(mds_verw_sel) *is* the memory form.
 
-Also, if we take virtualization scenarios into account, CSR_IE Pseudo NMI c=
-an
-support NMI passthrough to VM without too much effort from hypervisor, if o=
-nly
-corresponding interrupt can be delegated to VS-mode. I wonder if SSE suppor=
-ts
-interrupt passthrough to VM?
-
->
-> That's why, an SBI extension Supervisor Software Events (SSE) is under
-> development.
-> https://lists.riscv.org/g/tech-prs/message/515
->
-> Instead of selective disabling of interrupts, SSE takes an orthogonal
-> approach where M-mode would invoke a special trap
-> handler. That special handler will invoke the driver specific handler
-> which would be registered by the driver (i.e. perf driver)
-> This covers both firmware first RAS and perf use cases.
->
-> The above version of the specification is a bit out-of-date and the
-> revised version will be sent soon.
-> Clement(cc'd) has also done a PoC of SSE and perf driver using the SSE
-> framework. This resulted in actual saving
-> in performance for RAS/perf without sacrificing the normal performance.
->
-> Clement is planning to send the series soon with more details.
-
-The SSE extension you mentioned is a brilliant design and does solve a lot =
-of
-problems!
-
-We have considered implementing NMI via SBI calls before. The main problem
-is that if a driver using NMI needs to cooperate with SBI code, extra
-coupling will
-be introduced as the driver vendor and firmware vendor may not be the same =
-one.
-We think perhaps it is better to keep SBI code as simple and stable as poss=
-ible.
-
-Please correct me if there is any misunderstanding.
-
-Thanks again and looking forward to your reply.
-
->
-> > Limits:
-> >
-> >   CSR_IE is now used for disabling irqs and any other code should
-> >   not touch this register to avoid corrupting irq status, which means
-> >   we do not support masking a single interrupt now.
-> >
-> >   We have tried to fix this by introducing a per cpu variable to save
-> >   CSR_IE value when disabling irqs. Then all operatations on CSR_IE
-> >   will be redirected to this variable and CSR_IE's value will be
-> >   restored from this variable when enabling irqs. Obviously this method
-> >   introduces extra memory accesses in hot code path.
-> >
->
->
->
-> > TODO:
-> >
-> >   1. The adaption to hypervisor extension is ongoing.
-> >
-> >   2. The adaption to advanced interrupt architecture is ongoing.
-> >
-> > This version of Pseudo NMI is rebased on v6.6-rc7.
-> >
-> > Thanks in advance for comments.
-> >
-> > Xu Lu (12):
-> >   riscv: Introduce CONFIG_RISCV_PSEUDO_NMI
-> >   riscv: Make CSR_IE register part of context
-> >   riscv: Switch to CSR_IE masking when disabling irqs
-> >   riscv: Switch back to CSR_STATUS masking when going idle
-> >   riscv: kvm: Switch back to CSR_STATUS masking when entering guest
-> >   riscv: Allow requesting irq as pseudo NMI
-> >   riscv: Handle pseudo NMI in arch irq handler
-> >   riscv: Enable NMIs during irqs disabled context
-> >   riscv: Enable NMIs during exceptions
-> >   riscv: Enable NMIs during interrupt handling
-> >   riscv: Request pmu overflow interrupt as NMI
-> >   riscv: Enable CONFIG_RISCV_PSEUDO_NMI in default
-> >
-> >  arch/riscv/Kconfig                 | 10 ++++
-> >  arch/riscv/include/asm/csr.h       | 17 ++++++
-> >  arch/riscv/include/asm/irqflags.h  | 91 ++++++++++++++++++++++++++++++
-> >  arch/riscv/include/asm/processor.h |  4 ++
-> >  arch/riscv/include/asm/ptrace.h    |  7 +++
-> >  arch/riscv/include/asm/switch_to.h |  7 +++
-> >  arch/riscv/kernel/asm-offsets.c    |  3 +
-> >  arch/riscv/kernel/entry.S          | 18 ++++++
-> >  arch/riscv/kernel/head.S           | 10 ++++
-> >  arch/riscv/kernel/irq.c            | 17 ++++++
-> >  arch/riscv/kernel/process.c        |  6 ++
-> >  arch/riscv/kernel/suspend_entry.S  |  1 +
-> >  arch/riscv/kernel/traps.c          | 54 ++++++++++++++----
-> >  arch/riscv/kvm/vcpu.c              | 18 ++++--
-> >  drivers/clocksource/timer-clint.c  |  4 ++
-> >  drivers/clocksource/timer-riscv.c  |  4 ++
-> >  drivers/irqchip/irq-riscv-intc.c   | 66 ++++++++++++++++++++++
-> >  drivers/perf/riscv_pmu_sbi.c       | 21 ++++++-
-> >  18 files changed, 340 insertions(+), 18 deletions(-)
-> >
-> > --
-> > 2.20.1
-> >
->
->
-> --
-> Regards,
-> Atish
+~Andrew
