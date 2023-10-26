@@ -2,66 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641DB7D7B40
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D627D7B42
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 05:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjJZDba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 23:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S229554AbjJZDbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 23:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZDb3 (ORCPT
+        with ESMTP id S231286AbjJZDbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 23:31:29 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A7C189
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 20:31:26 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564af0ac494so410939a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 20:31:26 -0700 (PDT)
+        Wed, 25 Oct 2023 23:31:46 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D28D194;
+        Wed, 25 Oct 2023 20:31:43 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9ad67058fcso325025276.1;
+        Wed, 25 Oct 2023 20:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698291085; x=1698895885; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698291102; x=1698895902; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pG/yiI8lmu5ttHIV4nGpRPyvwtSsNLtKzIlMaESEX5U=;
-        b=lw4pTdkACroPZGZnyxXKCKHS/ECSztVpHC2gjkl5uspOIp6n4pw5Xa1xj4m/ZURbAE
-         bscFoXRJpCJy//pncIK/uehUwenBdz6fwzyWVIKWITrEGkexpHj4LACvpeNJphjW0J1p
-         BCoctIt/umvTSlzN3ZyOAD30Zb1r6XgLTRnQI2yIt3vcO6uIj45L6TD0xSX5aZyignjg
-         tXxateLQwa3bNDljwNVtr0FI+iEAO5GltOb9et3A/ldJY9US9Y6U0nJlPJGCbLdQuSSW
-         FvyNQnXyDShOO6nXoWpHcHGKVc20By+HqQjcicCfW3VePZO+Gc/oZ5LEgJtbWm1B0tLX
-         BfXA==
+        bh=6GDP4Ji1MuCk3r0rvr3Ck3tuIDn99qjLg2EPnlAxDfI=;
+        b=aj/0YbEw0yP9qQ7QfTRz5qIG2TDcC5ABohmOSzlKIUC3RANRtYa4mblxwK8kXjMsXu
+         tuNJThNtYoYzCeIDSRrC40XsXWkivt7d/9iTV/d9G9K2DcehZN8z/zPEv9E9/rGTC1nH
+         4IXl+/3ORvulLO+GhGRkVv/zWR5Q3HjzrmnfFS7t3iAeJ3lqoPv22tlbI9s7nWS0gQRb
+         8Z7yca9eKfFGbO/u8AZEy339yE8EDhjDiZUwLU804MWtNhFYBJfwy/eycemhkON6rb2m
+         dZEwwym33n12u5Jx56GGc8+GnJSeOWdKBZBUdoPZwhIGWP0Aboptr5QL/tEO4mcRVlnh
+         gpow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698291085; x=1698895885;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698291102; x=1698895902;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pG/yiI8lmu5ttHIV4nGpRPyvwtSsNLtKzIlMaESEX5U=;
-        b=C4BWSmUztHp5+X4eWAuHjwqKIKY/IJsUjCpsLFGIu2sIjK88zS+D5v2ZnFX86sfGzS
-         BylAR2/v3kzBjoLJcmz3Loa+E6zwnhGpg3loM8wgrmsyh9OwNSDJWLoPkzZbyyIxR5nl
-         uNTh6q7LsVw/uoE70WVloVcnoZo31Q0+dWQTp/ATVXV0kekSgvUP19WzCe+wKzlPlzAF
-         pzmhWfE7l7pp2ZYq5L3lUpH3F71blJZzlA+oH4ZMMPbfvfzHf791Tor8Jc5otkgYPCfi
-         2yUT4u+sfjD2PRM9HvwE1H55HKVLjiusEEV8Wobrd5CfgSDQUtH3H0i2LFCkZvw3Ir6i
-         HsZg==
-X-Gm-Message-State: AOJu0YyDtlGcyaM0azwEhuN9dWWkxr9LNaowZW7ChqTTT4Oai8erZEX5
-        GhnO4EBZ2JvaugRhhJZ9cXA=
-X-Google-Smtp-Source: AGHT+IH07xI4RkBOZRAYoV+NutElQZaay70zLfrIOC9VM5ODzrbszTCv4XfDw4XRZvP+OMTX1QjdVQ==
-X-Received: by 2002:a05:6a20:e115:b0:153:78c1:c40f with SMTP id kr21-20020a056a20e11500b0015378c1c40fmr9374574pzb.15.1698291085427;
-        Wed, 25 Oct 2023 20:31:25 -0700 (PDT)
-Received: from localhost ([156.236.96.165])
-        by smtp.gmail.com with ESMTPSA id n14-20020a056a0007ce00b006c046a60580sm1385612pfu.21.2023.10.25.20.31.24
+        bh=6GDP4Ji1MuCk3r0rvr3Ck3tuIDn99qjLg2EPnlAxDfI=;
+        b=K08QtJp+rxMU4OLsTqhted7TveJTT8touTl28by7pehvWjsr8QM0Pq5Jn8P9hb+Gk1
+         PRtSrnZolpiN/3jOb1CsfSlZs26b8xH5rqx8P/VDnWVXMyj6Syn8t/rwONkAp7XQukKZ
+         5DJXuZ1gCrBBghFMvJHSq1MUlDzpy9P8E+Z3xS5zbowoYt6en1qIIyBXdHl7JE5SqytB
+         K4R1bn3bwgMUUl2BP1oFjuFU5csMbXBK2PpUHQnsLcvNUS3RZZ4v7NnnvPSoIE9oVXPE
+         I2OTC+S1ul+1k/tEDXQ6V8AJh3d3PaOffyXZNiqWR/UVYpj5M9GosjZViWtwqqfXmJwr
+         db/g==
+X-Gm-Message-State: AOJu0Yy6cduxSzexMIM/br9kYyRDAjGEgQ0UQp1NlGuTGc/XUKnmiG4K
+        du0TXNw9cVZXHzZWZX6v3fU=
+X-Google-Smtp-Source: AGHT+IE6nWVjaeF4q/0JgTm0tiEMymvKwaOV3OJaUyaEBTfVrh0s6CM2luZevzfv2bUOnfOHijnNPw==
+X-Received: by 2002:a25:918e:0:b0:d36:99eb:fc01 with SMTP id w14-20020a25918e000000b00d3699ebfc01mr15701879ybl.15.1698291102146;
+        Wed, 25 Oct 2023 20:31:42 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id w31-20020a25ac1f000000b00d9ab86bdaffsm4984302ybi.12.2023.10.25.20.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 20:31:25 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 11:31:11 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Ferry Meng <mengferry@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] erofs: get rid of ROOT_NID()
-Message-ID: <20231026113052.00004950.zbestahu@gmail.com>
-In-Reply-To: <20231026021627.23284-1-mengferry@linux.alibaba.com>
-References: <20231026021627.23284-1-mengferry@linux.alibaba.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+        Wed, 25 Oct 2023 20:31:41 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3B45227C0054;
+        Wed, 25 Oct 2023 23:31:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 25 Oct 2023 23:31:40 -0400
+X-ME-Sender: <xms:m905ZXHeabl3payzsGhnipr0939fPX1WxlYXtDpPGBitYhhuzVsEdA>
+    <xme:m905ZUVYD2YuuzvX0WrBbGOn5IYF7wzv9iuP8I0NfXrxZVCPa6fP7gmRROY4s1l4r
+    FxrMeZeluMTg5R2Ew>
+X-ME-Received: <xmr:m905ZZLr0mpZlucqGn--iRC_i9zBXh9l9NxoYesfxctvOjI6E6ycdTs-5fk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledugdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:m905ZVHl7gYAxsC6OQxxI0jqcNrRPp__xknC5IfWjYIw-hYel9CIww>
+    <xmx:m905ZdUtrnbZBu41BsfJOKZhpSQNJ0GohEakOq0QmMlAM6gtBAW0Wg>
+    <xmx:m905ZQN-mXx_OzXtxWGhLrWAbo0hWFgf1CNJu5jeGVb7iSg9X2xGJw>
+    <xmx:nN05ZX3KwPnCn483ZeL7KokyhKS-GhK5quGqZ46tVJYPU14rgOCwSw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Oct 2023 23:31:38 -0400 (EDT)
+Date:   Wed, 25 Oct 2023 20:31:37 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        kent.overstreet@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        elver@google.com, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC] rust: types: Add read_once and write_once
+Message-ID: <ZTndmXEBf37G84X-@Boquns-Mac-mini.home>
+References: <20231025195339.1431894-1-boqun.feng@gmail.com>
+ <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me>
+ <ZTmelWlSncdtExXp@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTmelWlSncdtExXp@boqun-archlinux>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,11 +129,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 10:16:26 +0800
-Ferry Meng <mengferry@linux.alibaba.com> wrote:
-
-> Let's open code this helper for simplicity.
+On Wed, Oct 25, 2023 at 04:02:45PM -0700, Boqun Feng wrote:
+[...]
+> > > +/// The counter part of C `READ_ONCE()`.
+> > > +///
+> > > +/// The semantics is exactly the same as `READ_ONCE()`, especially when used for intentional data
+> > > +/// races.
+> > 
+> > It would be great if these semantics are either linked or spelled out
+> > here. Ideally both.
+> > 
 > 
-> Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
+> Actually I haven't found any document about `READ_ONCE()` races with
+> writes is not UB: we do have document saying `READ_ONCE()` will disable
+> KCSAN checks, but no document says (explicitly) that it's not a UB.
+> 
 
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
+Apparently I wasn't carefully reading the doc, in
+tools/memory-model/Documentation/explanation.txt, there is:
+
+	In technical terms, the compiler is allowed to assume that when the
+	program executes, there will not be any data races.  A "data race"
+	occurs when there are two memory accesses such that:
+
+	1.      they access the same location,
+
+	2.      at least one of them is a store,
+
+	3.      at least one of them is plain,
+
+	4.      they occur on different CPUs (or in different threads on the
+		same CPU), and
+
+	5.      they execute concurrently.
+
+the #3 limits that in LKMM, data races cannot happen if both accesses
+are marked (i.e. not plain).
+
+Thank Paul for bringing this to me, and I will update this accordingly
+in the next version.
+
+Regards,
+Boqun
+
+> > > +///
+> > > +/// # Safety
+> > > +///
+> > > +/// * `src` must be valid for reads.
+> > > +/// * `src` must be properly aligned.
+> > > +/// * `src` must point to a properly initialized value of value `T`.
+> > > +#[inline(always)]
+> > > +pub unsafe fn read_once<T: Copy>(src: *const T) -> T {
+> > 
+> > Why only `T: Copy`?
+> > 
+[...]
