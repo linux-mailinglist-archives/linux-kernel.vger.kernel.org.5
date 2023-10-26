@@ -2,171 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8837D7EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC837D7EA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjJZIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S229934AbjJZIkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZIkQ (ORCPT
+        with ESMTP id S229931AbjJZIko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:40:16 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA7F128
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:40:13 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507c8316abcso689815e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698309612; x=1698914412; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P4TscohSUMsguzpw2lOVFXhOAHSLy0dY/Ok/2lGq6Tg=;
-        b=CL4fgF+QdOruCi2nYBNviChGZiG0m1ZDN6NLmk/g6YLXS+DZ7KYCflHs4JqqeZQql+
-         kibkh2c9atX1sNBcjjW8sZIFIQ7bQBAKdGA+bgtF6XQe8isSeNYVpaAxjx5EyHfmq2hx
-         V4Y8Wxm8kRbBWXENAFDQK1W42Ggz0QhN08dZcwrGT8R7/Gz0QrsMG2WhDlG95tvWZxiw
-         NbI3h5efuQNumDo/Zo6R6KY4vA1J9+JahRVab5j6GxLVqS57vnjyBoFBcBdUP3SlMd9s
-         RqQVCe16Jc7LrYjWhKFuwJrNHO53tzUuHnrxvwjsN6WYXx2J0QiwOnzSN+yfL+REoFl4
-         U9Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698309612; x=1698914412;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P4TscohSUMsguzpw2lOVFXhOAHSLy0dY/Ok/2lGq6Tg=;
-        b=B0gan1k+JInK2F0moP+NLOHFbbD7SUSwgj+IvI2NlL93QPscWD28ffPL8eJ6hNP1bs
-         FP3f8UyJIpCXf0zXqwvwmj4CF5dAFev5ottk0jVOmXIeZCrLI7MgjO/IC6W6/f89TD5J
-         i1x8MH3ndB0Y+7/d4HJO98jYpF/TvZ6XrVCYpUtmB3WO55r7M5fsTvAqYEcwO5iuugs+
-         I/WVOpcKLzQNibqOB5OhJeyvYtnucaJA5sVipT3ad12HNHkUwMeLUMWCqls2np1Xj7eW
-         mPIzB+HtpbYrG1JAKk7b5CqoIc8p03iXwa57902x7zPkCffpuBdrIU70iCcypeRZx+W8
-         W/Kw==
-X-Gm-Message-State: AOJu0YzH+c0XjQu+PlmhfH1uYSiP5bYyrdqj6EV44Gsyeoj2ehjnQFwr
-        KKcZlaQcZ5kOdz1+7F+j9uDiDsHdkipVvTnn2NM=
-X-Google-Smtp-Source: AGHT+IGPzS4QwaJ48KsMa5vMztfn1B9sXTdqP4Ko1neTizBj0F3LXJeqyfJI6fwXGsGtb77TwMCBQg==
-X-Received: by 2002:a05:6512:69:b0:503:3808:389a with SMTP id i9-20020a056512006900b005033808389amr12687011lfo.11.1698309612058;
-        Thu, 26 Oct 2023 01:40:12 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id h1-20020a05600c350100b003fe1fe56202sm1927140wmq.33.2023.10.26.01.40.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 01:40:11 -0700 (PDT)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <anup@brainfault.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Yu Chien Peter Lin <peterlin@andestech.com>
-Subject: [PATCH -fixes v2] drivers: perf: Do not broadcast to other cpus when starting a counter
-Date:   Thu, 26 Oct 2023 10:40:10 +0200
-Message-Id: <20231026084010.11888-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 26 Oct 2023 04:40:44 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2055.outbound.protection.outlook.com [40.107.7.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F31A128;
+        Thu, 26 Oct 2023 01:40:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kk5q/kjXBn588gtVeA9uc0g9ZrLLnbJ/7/IqObyvWm7VHgIcxe5aCZpIZas9Iro8xa+X+LvBM6WlKWCoQBliQwi78yTI5HZ0n+xiS+j9B5DkD0aFgr3YAg4RinGliE2B2B1rwSYHmqvLME8vRZZ6GYJVugu42RwOuQd8y5haliFdDfDV+8DI3EzKvSABDUHpKf1ouxeThHKvYG+VdMTtEzIeN6cslpdmDtrP6oxFpCzdbpxbwzyuzh4l6DBoxf+U7OaeTradeY5qptHaUdn0RgjagnMjxp2XuKm9JE9NtsyrteHBZGIc0yWNKHrIMNSQXGziBgJeLaWA1ox8pc4hxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=w3Wzmfa3FPhq95kNxmMFgkzTc7dBXdgouuiVxIeh0kQ=;
+ b=c8ShyuHZcr9Espp7JmciLn7elAd76/LQuShfTVa2G2T+FYJ2IAPS8IEIDBDSvKi3o46K0E3XJvC6CHvq1tit680yDmQsDSTKEP9ZMpJRo9GhfBzbI92nTGBHLTWgdHpHvInY7g7EqcemOKurXPDft+ivcSvcMJdzE9ovRiE2HEmN8zHMYNoYidGAjhvqoiAswjBmK0GklEayhjbqVbpBOkzbOmbgf0FzAjBzsJpFSCBxwgxV0QpW690U3RG1i+VreuZHLAIwgVYrW6USjSnKuZNvsbj6wIUl6s7ziiWT1a9P2KFbK7gHcl3m1eQCaBRMegfvQTgBrLpdimPCokgWvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w3Wzmfa3FPhq95kNxmMFgkzTc7dBXdgouuiVxIeh0kQ=;
+ b=hK4MoytfhrvMCzB1+B1HK3K4XfeASDgB1HaKmP4axHyqUmrlnsQKxYF3P0+jWnHQHGS9rFis9rzM6hG9pDPKhuvEYbe6ImhHmGdxnkiAXHn/eje93VgT3SRscYX1FEUp/VQmR5lZQcqNYZ/75Kq7nqCMu+g1+VQrNjg0+fb7SxxOsxgiaG/EjUn564B72qvfcSYVsfEl5e+ZqDSrEFoW1RR4dBDwoD6wxd/Eo6Lbq/UIgrW0PAu1/Y+HnAPDNOUg3+tEgOKx39XIu01uvywWTiDYkZ+SLUpDLzKqFfIEBTTc+PV5D7sKzYU7UsivOly5isBr7Sad+KZj5WwQGqQScQ==
+Received: from DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:395::21)
+ by AS8PR10MB5855.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:524::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
+ 2023 08:40:39 +0000
+Received: from DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::4880:f83a:7de4:ac92]) by DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::4880:f83a:7de4:ac92%5]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
+ 08:40:39 +0000
+From:   "Starke, Daniel" <daniel.starke@siemens.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] tty: n_gsm: add partial copyright Siemens Mobility
+ GmbH
+Thread-Topic: [PATCH 2/2] tty: n_gsm: add partial copyright Siemens Mobility
+ GmbH
+Thread-Index: AQHaB+aZok0E+pm100q+8bmlaY29LrBbwGMw
+Date:   Thu, 26 Oct 2023 08:40:39 +0000
+Message-ID: <DB9PR10MB5881CB4D0C0607507373B824E0DDA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM>
+References: <20231026055844.3127-1-daniel.starke@siemens.com>
+ <20231026055844.3127-2-daniel.starke@siemens.com>
+ <2023102649-batch-turbojet-11cb@gregkh>
+In-Reply-To: <2023102649-batch-turbojet-11cb@gregkh>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_ActionId=00015988-e8b6-4b7f-86e8-2a278419aba8;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_ContentBits=0;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Enabled=true;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Method=Standard;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Name=restricted;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SetDate=2023-10-26T08:36:14Z;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR10MB5881:EE_|AS8PR10MB5855:EE_
+x-ms-office365-filtering-correlation-id: 0b99ba1e-c223-4530-f5cd-08dbd5ff3b70
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vVDFk7W0LZ9tRq8swXuPjvWcB/34QlxflcoJQ2uqTfotrDpf5V3924Ngp0TVIonGLZtggV0IIUkVjADeuAmipeO3UbCHeL+nl2Nr1kRZ8Qm1VvJb6lhFtxiYhFxa7waEXbog8hj5rHTBPq6S5pMVNWWOicVXjDlZDPEbDqXbE2eF4arvekM2d8BpBLe3KYr3G9kM9RiumdT4jLeKFTE3t+YZow1iCbCysK+crBOYoeLfraz+E6lXZk1jZVHR7Vl+GATi7ApRl4Rj4YfN2sNVhS1KNZiOeK4n1oKCqHeJ2k6SGaIsAjyRsMDaD6X69C7vUBpf4aB9FJnhaWI1ZgyAiIvuKYg+5nsCJUa9YXL2Gpare+MJwV/gBJRtMsJm/kn8U1wT1PVUPQb2eqzL5FcDJs6foULO6jQtTphhhQkpMNKRISDeXGtEXegxiTCv+duRn1xEXUQUQ3iCs7pk0fiQ1UbqiGPEXECT9YFxpuYVulcHU+KFwGBuWFeG+nHmOK3/vveDAX0fZjESmNFdIgu1Xw9KnCGF28mLWbocdFgGMxUHxIOrAyjKwdZiXbn9WfhG2Bq6jRQxqP2l4h6En00RJ8exZB2BfjQmrf9s7yBFIcALr6uOKrFrA9XuMuT35dAQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(39860400002)(396003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(38070700009)(26005)(41300700001)(38100700002)(2906002)(6506007)(4744005)(55016003)(52536014)(5660300002)(4326008)(86362001)(8676002)(8936002)(478600001)(33656002)(6916009)(66556008)(71200400001)(9686003)(122000001)(64756008)(54906003)(76116006)(66446008)(66946007)(66476007)(82960400001)(316002)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Vyy2tM/btAYMjmmI+hY9ipuaWina2DVEqTqynv1r2vCsoJivw32Kb0O8tL1Y?=
+ =?us-ascii?Q?1vFQYv/FlVw9ZEZgj8xUKuu8hhVV6Vpaxl7FZ5zgoNkbe/q3h3YzjorP56q9?=
+ =?us-ascii?Q?zSZT5DR/DgzQA6RksE4J29SsYtl1aXCO31lMRivWKOaS9ICfXarudtxSovqm?=
+ =?us-ascii?Q?zHoCn/bodH9DMJGRt+AjzuRVKxUbjPj77BBaptbg3xSSwBNrDKpKL5e1UuZ9?=
+ =?us-ascii?Q?E1r+lJ+b8tUirK3w/RXyedY78/woZepcscQYuFlm2PMr52zOXwhDPIWA8wzO?=
+ =?us-ascii?Q?/yA1cQvu2171Yql5fKd8OS4RKAnbAqvGWZRdQWISMTIJ/jnSKj308Ic/8EGp?=
+ =?us-ascii?Q?fyVgaSjZkBfccEppFZtpx/IiTe0mony8g0W3JVfyXPIgs0rIHj+hAMRjInHK?=
+ =?us-ascii?Q?rvvT0b7fgbANNi9JOq8w9uMEh4IVFebJqg0vKZNICxJ3+pamMMbtKEr44XFs?=
+ =?us-ascii?Q?3lM4oqdq2t1ardRnh3wcnGHfBzgLvA+S83A6Dn7OSQzkOVI2okxO8sKDpuam?=
+ =?us-ascii?Q?6ubcbyUV6g/k7cYTVuDwDcwSkRjYnnydtBBAyGAVEosJllBv9JH3QnwKUXFs?=
+ =?us-ascii?Q?puQBIiFK4lqQhRoYRqrZRHU/w+WjiQ+/7qQ7di2WijR2uYOcbmE4uOkiAiyQ?=
+ =?us-ascii?Q?v9r/aBaaUe3RMdBx+Qlg6Jyym5XLq4gkrrXmfzT5v169r6pdr1QmZosEVEOc?=
+ =?us-ascii?Q?yVWU7Zrg5IJsTul7s+4iiI9EbKlt4G1s2fnCre/a9xWMY8gEO+G3qmRixyZ+?=
+ =?us-ascii?Q?Rstt0RwlyPHnet7tTV0d6mDmpcbNOit7pvMBlvehE7jCoj6Xz5UBe32YQfJR?=
+ =?us-ascii?Q?3fRCSzoXeHAYFFeTwUerHbi7HSdySioPidZjbWwsn4oB8JsocaZejCar10uL?=
+ =?us-ascii?Q?pzwr5Vy70SEhX3meLRX0I0J1jSYBmx8Gdz8of9FHTNVkN8aQGoP+sF2lYOJz?=
+ =?us-ascii?Q?WamBnslaNcmBrzhky8f1GgHEaDtM2Jp+3Es8artmT3yOCsFm+M6Oih/lJ0XZ?=
+ =?us-ascii?Q?wHYYzXchb0FjoWFgKoXW1Tnw5YfWtSc5H/nfXl/1Cy3OUi3+B40YUo8DVC1y?=
+ =?us-ascii?Q?Fd+aACp/95mI6h1jzZgOIBPaEzocP4KYRoyOUAr02ty4Au5EC3zorLUaGLeI?=
+ =?us-ascii?Q?7C4X1J9HpupdPRBTynWX9iNIWHgjyV5n8lfkPfrWwRqvk4A6PabKfva6oL0g?=
+ =?us-ascii?Q?XKt0rc+nTpfgU93rNJv/3cmSi+xs6+FQtC6dja7YDsPzOi4M4M/h7h156qtt?=
+ =?us-ascii?Q?4co0UJRL/PEzkJi079BYDWqhIh/XMHs/AfidGzSD1dk94R4covc4JtXw3YBC?=
+ =?us-ascii?Q?9kp6FFsPsJRpLqf66GI9fHKGrkbBQPO8pSwQSb1rlAgg/Ixd17Y8E54EznNH?=
+ =?us-ascii?Q?u8Hokq+9fLEklrBS6c6YzdTgeIVAt/SGK7dw/G3SDhWi7DJceOv0/Msl+iHJ?=
+ =?us-ascii?Q?HwNrtyrzbsNO8LlYLXJrCDN5W1acTER689Sauo0MOhhD0nw6G2QwJKkqMEKu?=
+ =?us-ascii?Q?/NyNurbgO/36hLx2HUkjGe40UwACjXrbQ+QXwhWD9pPZhLBcX5LKj4UtNzjU?=
+ =?us-ascii?Q?POeFrXw6m2Wdr+F0z644ykUxYK34uM1bH2/tBxOpbaca+2OqBVSIKxt+g429?=
+ =?us-ascii?Q?pg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b99ba1e-c223-4530-f5cd-08dbd5ff3b70
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 08:40:39.3348
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7mnABzeVlohKCtHVIY+iKTG82rIfE9UyChlVM2ZAN8blU8TV/pOSODBPzOZ5qPx5RrHEP70Vq/o1f1Ow6gR+2e1aunp4o5O+IqS9/uSQtM0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB5855
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This command:
+> > + * Portions Copyright (c) 2022/23 Siemens Mobility GmbH
+>=20
+> I have no objection to you adding your copyright, you all have done a
+> ton of great work here and it is correct to add.  But the "Portions"
+> line is odd, and isn't something we generally use.  Can you just resend
+> this with that word removed?
+>=20
+> >   *
+> >   *	* THIS IS A DEVELOPMENT SNAPSHOT IT IS NOT A FINAL RELEASE *
+> >   *
+> > diff --git a/include/uapi/linux/gsmmux.h b/include/uapi/linux/gsmmux.h
+> > index 4c878d84dbda..101ebd15954e 100644
+> > --- a/include/uapi/linux/gsmmux.h
+> > +++ b/include/uapi/linux/gsmmux.h
+> > @@ -1,4 +1,5 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +/* Portions Copyright (c) 2022/23 Siemens Mobility GmbH */
+>=20
+> Same here, just drop the "Portions"?
 
-$ perf record -e cycles:k -e instructions:k -c 10000 -m 64M dd if=/dev/zero of=/dev/null count=1000
+This was something suggested by our IP department. But sure, I will resend
+this patch without the word included.
 
-gives rise to this kernel warning:
-
-[  444.364395] WARNING: CPU: 0 PID: 104 at kernel/smp.c:775 smp_call_function_many_cond+0x42c/0x436
-[  444.364515] Modules linked in:
-[  444.364657] CPU: 0 PID: 104 Comm: perf-exec Not tainted 6.6.0-rc6-00051-g391df82e8ec3-dirty #73
-[  444.364771] Hardware name: riscv-virtio,qemu (DT)
-[  444.364868] epc : smp_call_function_many_cond+0x42c/0x436
-[  444.364917]  ra : on_each_cpu_cond_mask+0x20/0x32
-[  444.364948] epc : ffffffff8009f9e0 ra : ffffffff8009fa5a sp : ff20000000003800
-[  444.364966]  gp : ffffffff81500aa0 tp : ff60000002b83000 t0 : ff200000000038c0
-[  444.364982]  t1 : ffffffff815021f0 t2 : 000000000000001f s0 : ff200000000038b0
-[  444.364998]  s1 : ff60000002c54d98 a0 : ff60000002a73940 a1 : 0000000000000000
-[  444.365013]  a2 : 0000000000000000 a3 : 0000000000000003 a4 : 0000000000000100
-[  444.365029]  a5 : 0000000000010100 a6 : 0000000000f00000 a7 : 0000000000000000
-[  444.365044]  s2 : 0000000000000000 s3 : ffffffffffffffff s4 : ff60000002c54d98
-[  444.365060]  s5 : ffffffff81539610 s6 : ffffffff80c20c48 s7 : 0000000000000000
-[  444.365075]  s8 : 0000000000000000 s9 : 0000000000000001 s10: 0000000000000001
-[  444.365090]  s11: ffffffff80099394 t3 : 0000000000000003 t4 : 00000000eac0c6e6
-[  444.365104]  t5 : 0000000400000000 t6 : ff60000002e010d0
-[  444.365120] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
-[  444.365226] [<ffffffff8009f9e0>] smp_call_function_many_cond+0x42c/0x436
-[  444.365295] [<ffffffff8009fa5a>] on_each_cpu_cond_mask+0x20/0x32
-[  444.365311] [<ffffffff806e90dc>] pmu_sbi_ctr_start+0x7a/0xaa
-[  444.365327] [<ffffffff806e880c>] riscv_pmu_start+0x48/0x66
-[  444.365339] [<ffffffff8012111a>] perf_adjust_freq_unthr_context+0x196/0x1ac
-[  444.365356] [<ffffffff801237aa>] perf_event_task_tick+0x78/0x8c
-[  444.365368] [<ffffffff8003faf4>] scheduler_tick+0xe6/0x25e
-[  444.365383] [<ffffffff8008a042>] update_process_times+0x80/0x96
-[  444.365398] [<ffffffff800991ec>] tick_sched_handle+0x26/0x52
-[  444.365410] [<ffffffff800993e4>] tick_sched_timer+0x50/0x98
-[  444.365422] [<ffffffff8008a6aa>] __hrtimer_run_queues+0x126/0x18a
-[  444.365433] [<ffffffff8008b350>] hrtimer_interrupt+0xce/0x1da
-[  444.365444] [<ffffffff806cdc60>] riscv_timer_interrupt+0x30/0x3a
-[  444.365457] [<ffffffff8006afa6>] handle_percpu_devid_irq+0x80/0x114
-[  444.365470] [<ffffffff80065b82>] generic_handle_domain_irq+0x1c/0x2a
-[  444.365483] [<ffffffff8045faec>] riscv_intc_irq+0x2e/0x46
-[  444.365497] [<ffffffff808a9c62>] handle_riscv_irq+0x4a/0x74
-[  444.365521] [<ffffffff808aa760>] do_irq+0x7c/0x7e
-[  444.365796] ---[ end trace 0000000000000000 ]---
-
-That's because the fix in commit 3fec323339a4 ("drivers: perf: Fix panic
-in riscv SBI mmap support") was wrong since there is no need to broadcast
-to other cpus when starting a counter, that's only needed in mmap when
-the counters could have already been started on other cpus, so simply
-remove this broadcast.
-
-Fixes: 3fec323339a4 ("drivers: perf: Fix panic in riscv SBI mmap support")
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Tested-by: Clément Léger <cleger@rivosinc.com>
-Tested-by: Yu Chien Peter Lin <peterlin@andestech.com>
----
-
-Changes in v2:
-- Fix wrong usage of pmu_sbi_set_scounteren in pmu_sbi_ctr_stop, as
-  noticed by Peter Lin
-- Add TB from Peter Lin
-
- drivers/perf/riscv_pmu_sbi.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index 96c7f670c8f0..fcb0c70ca222 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -543,8 +543,7 @@ static void pmu_sbi_ctr_start(struct perf_event *event, u64 ival)
- 
- 	if ((hwc->flags & PERF_EVENT_FLAG_USER_ACCESS) &&
- 	    (hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
--		on_each_cpu_mask(mm_cpumask(event->owner->mm),
--				 pmu_sbi_set_scounteren, (void *)event, 1);
-+		pmu_sbi_set_scounteren((void *)event);
- }
- 
- static void pmu_sbi_ctr_stop(struct perf_event *event, unsigned long flag)
-@@ -554,8 +553,7 @@ static void pmu_sbi_ctr_stop(struct perf_event *event, unsigned long flag)
- 
- 	if ((hwc->flags & PERF_EVENT_FLAG_USER_ACCESS) &&
- 	    (hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
--		on_each_cpu_mask(mm_cpumask(event->owner->mm),
--				 pmu_sbi_reset_scounteren, (void *)event, 1);
-+		pmu_sbi_reset_scounteren((void *)event);
- 
- 	ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, hwc->idx, 1, flag, 0, 0, 0);
- 	if (ret.error && (ret.error != SBI_ERR_ALREADY_STOPPED) &&
--- 
-2.39.2
-
+Best regards,
+Daniel Starke
