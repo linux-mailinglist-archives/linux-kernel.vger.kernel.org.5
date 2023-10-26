@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322887D888D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29627D888F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjJZSvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S230456AbjJZSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjJZSvR (ORCPT
+        with ESMTP id S229991AbjJZSws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:51:17 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8C410A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:51:14 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507bd644a96so1840988e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:51:14 -0700 (PDT)
+        Thu, 26 Oct 2023 14:52:48 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DE51A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:52:43 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1034332a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:52:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698346273; x=1698951073; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bjgIP3/RFXj237O05z3snhsyWeDqmW3TRwFtEyuVOqk=;
-        b=Z8ZwAL43j4TQLlWJzhDu14EMiU0mstUjkhjb0T5w5PVxgbOhjX63/45h1ZWfkWi2vt
-         oWgfKMzwuAyRPiEvv5MXbxHJGu85UxjpveXWpuPn4sJ6EptJyr7T0LE86LpqMTsk+vvz
-         zzarmpJImPdxL3iWVs8iPP9W+lywUplqyyIW2b7F5MlHbid1iHs++6D/uXokWF9DXhB1
-         qpnWAbseTCAtrQDkrt8Y/rFYuFkqPofkQigP5EGZryEte2FEwQFqHixfpjJ4u/Eu20SF
-         H26NircbNF0r/9n9VGrVFPuaBesexucMqZxENjBAre9rzMtmdxoppKGG8HHgdUwxTMFm
-         akCw==
+        d=mariadb.org; s=google; t=1698346363; x=1698951163; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3el8K7l4KhSfOh7Yq5Ci32FysUQLtgWxtCBTApe7bRI=;
+        b=ZYP3ZBefHBIWq0gwuH/s4GV+NIu5HbdVNedrPnEbNJrfl22tWKn7+9itIxnOykOgBI
+         5lru6z5KBjG1Rv9iSeQ6/6duVdte6t5vRjaauq1/w+rk4bJFrZNeVUbJ/YekChh4FGJH
+         pbPGPRvVnwEn7nRHENRt5BE7Pi7+nhP6Z2BWgqlkT7HGbpyC6b8UvMsGiO3fyLHJ9hT2
+         dIY7+P9UX8wxk5KSIuVjev3MTfiBhesFkMesIlqgEkFmKV9pyJoWhApnzVhtSYhx/GG8
+         3I/qOGMa6K7WodeRalJyxntmyAmGF/hLH0fJRMds0FzfUFsTgXWlIDBXjTvF5EM3k8NC
+         CpJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698346273; x=1698951073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bjgIP3/RFXj237O05z3snhsyWeDqmW3TRwFtEyuVOqk=;
-        b=O/YjYX6GnkQ+oE/KL6vtASw0fvppfxDiQaQFTd3AH1BGnLKF0Fautm+oFEVkw7n9os
-         tOJ9zokxb26+quhtK3u6bDWCLtl2tU7QQ6oh2TbCIzMxn2BNiQib6Qe9egTBu8A3a8P/
-         hOZywd4Grc3cc5SFdxcxhUQvmOyjibv+7a49oCKIKt7SUvIE3BvEf65x1oLdxIe68jDI
-         6vPgxt7yU0nb0M3XKH/P2JpIeejwoB3yi5amNLIg1LPWvur0pio+xrkZhiPXkDV47a5W
-         7kJnEvS+6PC+RavCRht1Cic2HUBP3ZCgl7fs7wHOiD8ggode39Z8eIhYpnQU4lJC5Qut
-         ES+w==
-X-Gm-Message-State: AOJu0YzRJzwNWZYVTEy8XBUgLjHqmj2mtuzeAP15rLLoI0RlZW6MBthw
-        Lg22WkLJUfxOj6dtubQWs0kCYu5za8aqVC4cMl0=
-X-Google-Smtp-Source: AGHT+IHxBylJsTfrxqMHBKxmMPf3QuYDUIfDHr4dq2aV3ffIgf3vZ2Aj5jzif8I2Ijoinsw2ABFVX5lct33MossJfUY=
-X-Received: by 2002:ac2:5618:0:b0:506:93a0:777a with SMTP id
- v24-20020ac25618000000b0050693a0777amr162433lfd.2.1698346272795; Thu, 26 Oct
- 2023 11:51:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698346363; x=1698951163;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3el8K7l4KhSfOh7Yq5Ci32FysUQLtgWxtCBTApe7bRI=;
+        b=Bhs7AL1EUKg6ppLNTTLhWr58lodx/9YgbE361wU6hSWEAbd2ZlmYMglA9DZ8we2mgi
+         Euu1W1MjJ2J38t8Ua3KwtJSymahYGhbdpaexKIhoqLEnTDdUZTVh+Kkce6HvGXSdV5iP
+         74pIi+9HfpX2+3e1J4SVmorQrXpU8i4NLteKPNgexc58GQS2oZ1KMKSd/1Uz5vKQWlwm
+         9K3Rac2576X03j7W+BOBJUd/77v+xsd9rJFqeBo8zAlHpmCMZd95YKYbQrNiq7i6H8Dl
+         79AbTaBPXHmlsrERY65d9Sj4fiLkhd7y3e2Q5p1wyhNDiG/U5JuBzDh2VjkECir5tiLp
+         q+/Q==
+X-Gm-Message-State: AOJu0YwjK1coaw0Ifr8A5j9ShFKr7JtL15LmOpMg+YS8IHc7ljpHGDNK
+        u6Lm3O+1BPWb2EM5SWZ/dcWlkUfB5Jo2PbX19kI7Sw==
+X-Google-Smtp-Source: AGHT+IHMyLz/O9mIstfEUzlFO6V+kzmAteEEKojn1pFAGUXXd/4x9PgPtTfqdgya/2WMjzl0tc9RqAwPf5Mdx/2wxn8=
+X-Received: by 2002:a17:90a:f2d4:b0:27c:f845:3e3f with SMTP id
+ gt20-20020a17090af2d400b0027cf8453e3fmr448846pjb.1.1698346363180; Thu, 26 Oct
+ 2023 11:52:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-11-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-11-brgerst@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 26 Oct 2023 20:51:01 +0200
-Message-ID: <CAFULd4Z14P5SkQxzLBFfbpmXh9dEi+4NX-NWBjsLxnU1_aZ=yw@mail.gmail.com>
-Subject: Re: [PATCH v2 10/11] percpu: Remove PER_CPU_FIRST_SECTION
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
+From:   Daniel Black <daniel@mariadb.org>
+Date:   Fri, 27 Oct 2023 05:52:32 +1100
+Message-ID: <CABVffEPthUzEHS4xCdYWMvjSK8EjjqVzsekxEuMaB_j2or1QOw@mail.gmail.com>
+Subject: Re: [PATCH] sched: psi: fix unprivileged polling against cgroups
+To:     hannes@cmpxchg.org
+Cc:     bluca@debian.org, cerasuolodomenico@gmail.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        stable@vger.kernel.org, surenb@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
->
-> x86-64 was the only user.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Thank you,
 
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-
-> ---
->  include/asm-generic/vmlinux.lds.h |  1 -
->  include/linux/percpu-defs.h       | 12 ------------
->  2 files changed, 13 deletions(-)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
-nux.lds.h
-> index 67d8dd2f1bde..23d8acc72760 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -1032,7 +1032,6 @@
->   */
->  #define PERCPU_INPUT(cacheline)                                         =
-       \
->         __per_cpu_start =3D .;                                           =
- \
-> -       *(.data..percpu..first)                                         \
->         . =3D ALIGN(PAGE_SIZE);                                          =
- \
->         *(.data..percpu..page_aligned)                                  \
->         . =3D ALIGN(cacheline);                                          =
- \
-> diff --git a/include/linux/percpu-defs.h b/include/linux/percpu-defs.h
-> index ec3573119923..b9ddee91e6c7 100644
-> --- a/include/linux/percpu-defs.h
-> +++ b/include/linux/percpu-defs.h
-> @@ -26,13 +26,11 @@
->  #define PER_CPU_SHARED_ALIGNED_SECTION "..shared_aligned"
->  #define PER_CPU_ALIGNED_SECTION "..shared_aligned"
->  #endif
-> -#define PER_CPU_FIRST_SECTION "..first"
->
->  #else
->
->  #define PER_CPU_SHARED_ALIGNED_SECTION ""
->  #define PER_CPU_ALIGNED_SECTION "..shared_aligned"
-> -#define PER_CPU_FIRST_SECTION ""
->
->  #endif
->
-> @@ -114,16 +112,6 @@
->  #define DEFINE_PER_CPU(type, name)                                     \
->         DEFINE_PER_CPU_SECTION(type, name, "")
->
-> -/*
-> - * Declaration/definition used for per-CPU variables that must come firs=
-t in
-> - * the set of variables.
-> - */
-> -#define DECLARE_PER_CPU_FIRST(type, name)                              \
-> -       DECLARE_PER_CPU_SECTION(type, name, PER_CPU_FIRST_SECTION)
-> -
-> -#define DEFINE_PER_CPU_FIRST(type, name)                               \
-> -       DEFINE_PER_CPU_SECTION(type, name, PER_CPU_FIRST_SECTION)
-> -
->  /*
->   * Declaration/definition used for per-CPU variables that must be cachel=
-ine
->   * aligned under SMP conditions so that, whilst a particular instance of=
- the
-> --
-> 2.41.0
->
+Reported-by: Daniel Black <daniel@mariadb.org>
