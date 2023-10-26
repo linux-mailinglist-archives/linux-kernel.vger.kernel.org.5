@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97F57D865B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424387D8665
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345496AbjJZQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 12:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
+        id S235146AbjJZQCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 12:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjJZQBL (ORCPT
+        with ESMTP id S1345508AbjJZQBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 12:01:11 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446E61A2;
-        Thu, 26 Oct 2023 09:01:09 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.74.108) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 26 Oct
- 2023 19:00:58 +0300
-Subject: Re: [PATCH v6] usb: Reduce the 'SET_ADDRESS' request timeout with a
- new quirk
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
-        <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
-        <mathias.nyman@intel.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>
-References: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
- <20231026101551.36551-1-hgajjar@de.adit-jv.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <cd598ae5-6eae-8e0b-8295-d98fa5c4b2fd@omp.ru>
-Date:   Thu, 26 Oct 2023 19:00:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 26 Oct 2023 12:01:38 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD47E1B8
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:01:34 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59b5484fbe6so8285837b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698336093; x=1698940893; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=db30fLrdyUYnUnirSu1qpKhiubFgmXt1L06pmuCbQb8=;
+        b=lxC4suD8+q+AxzH9HmdOLE5O0UhJ8gk2iGm9QGVXTBaJxTGESORJ+zY3aRwZ6L0mzc
+         RWzB7VanCRDU+aiVPCv54dd+vCyvhsWPYEVmhRNP2hjyLC5V6VqU/iD6fbn7s8b7Nw5S
+         DOp9W7BrRVMUupAkMPtl953z3VvKdCMSemgYagy4ku3+vFQX0oIaNEwhxH+i1DltXjTO
+         KiYCG1ODLtgLLTQS2efn1AV0NElAyhwJe8ofwyw5y52QSBUXu2uHHc8a8GEz9WLQaTaI
+         Vl6jhlyPL5XXUcSRxi1we+ovK6SQHKUS0PLclWGtoiBUQ0BpQFxpzWCzUTua1vbaQiv/
+         v3sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698336093; x=1698940893;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=db30fLrdyUYnUnirSu1qpKhiubFgmXt1L06pmuCbQb8=;
+        b=ct684/uMKKUWUnypvUbyjjxauKXj5VkOnZuP3LCW1dJf1h6mkaJdvoVXKO9NH3BzXF
+         RGUjAugZ/PxckvoD9K7EglqWB8ICQF8T/ZzqyyiEO05xY2Gyy3Iaz0ZC9NANBzuPlePZ
+         YonxXhVM02O0BVxzh0+gOR5zOZsRcW/eWRAD+ptN4a/1pVmi6EliSM5vP5UzvjDmMVJ7
+         o8i8wTPvCASncuEIcJkxHZ04/kniDNEqdP5ogsFVpTie0MBk251QU0df2OmQutXucjd9
+         PhoPgNyzgKA+vG/AebQm+/Vm0WzFxsIJ8dz0lIXhj8FaJZSl90IKBIjeuwXquT7VQxg1
+         29Nw==
+X-Gm-Message-State: AOJu0Yx06vrUchomR9PwJvMbL1TfzvUY1vyQpp1HdygEgxsGN0dfTO2v
+        i/NfUFw19mtDwvDz6ZOEiSBGA2iX/w==
+X-Google-Smtp-Source: AGHT+IHyjcyJsDHUpjV6DMEL9z/zB/lHNnkFm1hVsiZoCsl7znTfRWP/asWoXmM25VDNKxhzd87SpA==
+X-Received: by 2002:a0d:df44:0:b0:5a8:2037:36d9 with SMTP id i65-20020a0ddf44000000b005a8203736d9mr18901456ywe.25.1698336093543;
+        Thu, 26 Oct 2023 09:01:33 -0700 (PDT)
+Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
+        by smtp.gmail.com with ESMTPSA id a71-20020a0dd84a000000b005a20ab8a184sm6130129ywe.31.2023.10.26.09.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 09:01:33 -0700 (PDT)
+From:   Brian Gerst <brgerst@gmail.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Brian Gerst <brgerst@gmail.com>
+Subject: [PATCH v2 08/11] x86/boot/64: Remove inverse relocations
+Date:   Thu, 26 Oct 2023 12:00:57 -0400
+Message-ID: <20231026160100.195099-9-brgerst@gmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231026160100.195099-1-brgerst@gmail.com>
+References: <20231026160100.195099-1-brgerst@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20231026101551.36551-1-hgajjar@de.adit-jv.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.74.108]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/26/2023 15:43:12
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180928 [Oct 26 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.108 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.108 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.108
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/26/2023 15:46:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/26/2023 2:32:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,92 +77,264 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Now that the percpu section is not at a fixed virtual address, inverse
+relocations, which were needed to offset the effects of relocation on
+RIP-relative percpu references, are no longer needed.
 
-   Please don't post the patches as a reply to the other thread, start a new
-thread with a new patch version (I thought others would tell you that but nobody
-has so far).
-   And how about changing the wording of the subject to s/th like below?
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+---
+ arch/x86/boot/compressed/misc.c |  14 +---
+ arch/x86/tools/relocs.c         | 126 +-------------------------------
+ 2 files changed, 2 insertions(+), 138 deletions(-)
 
-usb: new quirk to reduce the SET_ADDRESS request timeout
+diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+index b99e08e6815b..2de345a236c0 100644
+--- a/arch/x86/boot/compressed/misc.c
++++ b/arch/x86/boot/compressed/misc.c
+@@ -221,7 +221,7 @@ static void handle_relocations(void *output, unsigned long output_len,
+ 
+ 	/*
+ 	 * Process relocations: 32 bit relocations first then 64 bit after.
+-	 * Three sets of binary relocations are added to the end of the kernel
++	 * Two sets of binary relocations are added to the end of the kernel
+ 	 * before compression. Each relocation table entry is the kernel
+ 	 * address of the location which needs to be updated stored as a
+ 	 * 32-bit value which is sign extended to 64 bits.
+@@ -231,8 +231,6 @@ static void handle_relocations(void *output, unsigned long output_len,
+ 	 * kernel bits...
+ 	 * 0 - zero terminator for 64 bit relocations
+ 	 * 64 bit relocation repeated
+-	 * 0 - zero terminator for inverse 32 bit relocations
+-	 * 32 bit inverse relocation repeated
+ 	 * 0 - zero terminator for 32 bit relocations
+ 	 * 32 bit relocation repeated
+ 	 *
+@@ -249,16 +247,6 @@ static void handle_relocations(void *output, unsigned long output_len,
+ 		*(uint32_t *)ptr += delta;
+ 	}
+ #ifdef CONFIG_X86_64
+-	while (*--reloc) {
+-		long extended = *reloc;
+-		extended += map;
+-
+-		ptr = (unsigned long)extended;
+-		if (ptr < min_addr || ptr > max_addr)
+-			error("inverse 32-bit relocation outside of kernel!\n");
+-
+-		*(int32_t *)ptr -= delta;
+-	}
+ 	for (reloc--; *reloc; reloc--) {
+ 		long extended = *reloc;
+ 		extended += map;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index 01efbfdd3eb3..7feb63179b62 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -28,7 +28,6 @@ struct relocs {
+ static struct relocs relocs16;
+ static struct relocs relocs32;
+ #if ELF_BITS == 64
+-static struct relocs relocs32neg;
+ static struct relocs relocs64;
+ #define FMT PRIu64
+ #else
+@@ -84,7 +83,6 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
+ 	"__initramfs_start|"
+ 	"(jiffies|jiffies_64)|"
+ #if ELF_BITS == 64
+-	"__per_cpu_load|"
+ 	"init_per_cpu__.*|"
+ 	"__end_rodata_hpage_align|"
+ #endif
+@@ -281,33 +279,6 @@ static const char *sym_name(const char *sym_strtab, Elf_Sym *sym)
+ 	return name;
+ }
+ 
+-static Elf_Sym *sym_lookup(const char *symname)
+-{
+-	int i;
+-	for (i = 0; i < shnum; i++) {
+-		struct section *sec = &secs[i];
+-		long nsyms;
+-		char *strtab;
+-		Elf_Sym *symtab;
+-		Elf_Sym *sym;
+-
+-		if (sec->shdr.sh_type != SHT_SYMTAB)
+-			continue;
+-
+-		nsyms = sec->shdr.sh_size/sizeof(Elf_Sym);
+-		symtab = sec->symtab;
+-		strtab = sec->link->strtab;
+-
+-		for (sym = symtab; --nsyms >= 0; sym++) {
+-			if (!sym->st_name)
+-				continue;
+-			if (strcmp(symname, strtab + sym->st_name) == 0)
+-				return sym;
+-		}
+-	}
+-	return 0;
+-}
+-
+ #if BYTE_ORDER == LITTLE_ENDIAN
+ #define le16_to_cpu(val) (val)
+ #define le32_to_cpu(val) (val)
+@@ -750,75 +721,8 @@ static void walk_relocs(int (*process)(struct section *sec, Elf_Rel *rel,
+ 	}
+ }
+ 
+-/*
+- * The .data..percpu section is a special case for x86_64 SMP kernels.
+- * It is used to initialize the actual per_cpu areas and to provide
+- * definitions for the per_cpu variables that correspond to their offsets
+- * within the percpu area. Since the values of all of the symbols need
+- * to be offsets from the start of the per_cpu area the virtual address
+- * (sh_addr) of .data..percpu is 0 in SMP kernels.
+- *
+- * This means that:
+- *
+- *	Relocations that reference symbols in the per_cpu area do not
+- *	need further relocation (since the value is an offset relative
+- *	to the start of the per_cpu area that does not change).
+- *
+- *	Relocations that apply to the per_cpu area need to have their
+- *	offset adjusted by by the value of __per_cpu_load to make them
+- *	point to the correct place in the loaded image (because the
+- *	virtual address of .data..percpu is 0).
+- *
+- * For non SMP kernels .data..percpu is linked as part of the normal
+- * kernel data and does not require special treatment.
+- *
+- */
+-static int per_cpu_shndx	= -1;
+-static Elf_Addr per_cpu_load_addr;
+-
+-static void percpu_init(void)
+-{
+-	int i;
+-	for (i = 0; i < shnum; i++) {
+-		ElfW(Sym) *sym;
+-		if (strcmp(sec_name(i), ".data..percpu"))
+-			continue;
+-
+-		if (secs[i].shdr.sh_addr != 0)	/* non SMP kernel */
+-			return;
+-
+-		sym = sym_lookup("__per_cpu_load");
+-		if (!sym)
+-			die("can't find __per_cpu_load\n");
+-
+-		per_cpu_shndx = i;
+-		per_cpu_load_addr = sym->st_value;
+-		return;
+-	}
+-}
+-
+ #if ELF_BITS == 64
+ 
+-/*
+- * Check to see if a symbol lies in the .data..percpu section.
+- *
+- * The linker incorrectly associates some symbols with the
+- * .data..percpu section so we also need to check the symbol
+- * name to make sure that we classify the symbol correctly.
+- *
+- * The GNU linker incorrectly associates:
+- *	__init_begin
+- *	__per_cpu_load
+- *
+- * The "gold" linker incorrectly associates:
+- *	init_per_cpu__gdt_page
+- */
+-static int is_percpu_sym(ElfW(Sym) *sym, const char *symname)
+-{
+-	return 0;
+-}
+-
+-
+ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
+ 		      const char *symname)
+ {
+@@ -829,12 +733,6 @@ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
+ 	if (sym->st_shndx == SHN_UNDEF)
+ 		return 0;
+ 
+-	/*
+-	 * Adjust the offset if this reloc applies to the percpu section.
+-	 */
+-	if (sec->shdr.sh_info == per_cpu_shndx)
+-		offset += per_cpu_load_addr;
+-
+ 	switch (r_type) {
+ 	case R_X86_64_NONE:
+ 		/* NONE can be ignored. */
+@@ -843,33 +741,21 @@ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
+ 	case R_X86_64_PC32:
+ 	case R_X86_64_PLT32:
+ 		/*
+-		 * PC relative relocations don't need to be adjusted unless
+-		 * referencing a percpu symbol.
++		 * PC relative relocations don't need to be adjusted.
+ 		 *
+ 		 * NB: R_X86_64_PLT32 can be treated as R_X86_64_PC32.
+ 		 */
+-		if (is_percpu_sym(sym, symname))
+-			add_reloc(&relocs32neg, offset);
+ 		break;
+ 
+ 	case R_X86_64_PC64:
+ 		/*
+ 		 * Only used by jump labels
+ 		 */
+-		if (is_percpu_sym(sym, symname))
+-			die("Invalid R_X86_64_PC64 relocation against per-CPU symbol %s\n",
+-			    symname);
+ 		break;
+ 
+ 	case R_X86_64_32:
+ 	case R_X86_64_32S:
+ 	case R_X86_64_64:
+-		/*
+-		 * References to the percpu area don't need to be adjusted.
+-		 */
+-		if (is_percpu_sym(sym, symname))
+-			break;
+-
+ 		if (shn_abs) {
+ 			/*
+ 			 * Whitelisted absolute symbols do not require
+@@ -1083,7 +969,6 @@ static void emit_relocs(int as_text, int use_real_mode)
+ 	/* Order the relocations for more efficient processing */
+ 	sort_relocs(&relocs32);
+ #if ELF_BITS == 64
+-	sort_relocs(&relocs32neg);
+ 	sort_relocs(&relocs64);
+ #else
+ 	sort_relocs(&relocs16);
+@@ -1115,13 +1000,6 @@ static void emit_relocs(int as_text, int use_real_mode)
+ 		/* Now print each relocation */
+ 		for (i = 0; i < relocs64.count; i++)
+ 			write_reloc(relocs64.offset[i], stdout);
+-
+-		/* Print a stop */
+-		write_reloc(0, stdout);
+-
+-		/* Now print each inverse 32-bit relocation */
+-		for (i = 0; i < relocs32neg.count; i++)
+-			write_reloc(relocs32neg.offset[i], stdout);
+ #endif
+ 
+ 		/* Print a stop */
+@@ -1172,8 +1050,6 @@ void process(FILE *fp, int use_real_mode, int as_text,
+ 	read_strtabs(fp);
+ 	read_symtabs(fp);
+ 	read_relocs(fp);
+-	if (ELF_BITS == 64)
+-		percpu_init();
+ 	if (show_absolute_syms) {
+ 		print_absolute_symbols();
+ 		return;
+-- 
+2.41.0
 
-On 10/26/23 1:15 PM, Hardik Gajjar wrote:
-
-> This patch introduces a new USB quirk,
-> USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT, which modifies the timeout value
-> for the 'SET_ADDRESS' request. The standard timeout for USB request/command
-
-   The upper case is enough of the emphasis, I don't think the apostrophes
-are needed arounnd SET_ADDRESS...
-
-[...]
-
-> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> ---
-[...]
-> Changes since version 5:
-> 	- Changed the terminology in USB core driver files from 'command' to 'request'
-> 	  as it is more commonly used. 
-> 	  It's important to note that USB specifications indicate these terms are interchangeable.
-
-   Didn't know that... tried to find the proof in the USB specs but haven't
-managed to do it...
-
-> 	  For example, USB spec 3.2, section 9.2.6.1, uses the term 'command' in its text
-> 	  "USB sets an upper limit of 5 seconds for any command to be processed. "
-
-   Hm, indeed; and this wording is even inherited from USB 1.1...
-
-[...]
-
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 3c54b218301c..98db92af2cce 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -54,6 +54,19 @@
->  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
->  #define USB_PING_RESPONSE_TIME		400	/* ns */
->  
-> +/*
-> + * USB 3.2 spec, section 9.2.6.1
-> + * USB sets an upper limit of 5000 ms for any command/request
-> + * to be processed.
-> + */
-> +#define USB_DEFAULT_REQUEST_TIMEOUT_MS	5000 /* ms */
-> +
-> +/*
-> + * The SET_ADDRESS request timeout will be 500 ms when
-> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
-> + */
-> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
-
-   I don'ts see the _MS-like suffixes in the other timeout #define's there...
-
-[...]
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index e1b1b64a0723..d856c4717ca9 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -3997,12 +3997,18 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
->  	return 0;
->  }
->  
-> -/*
-> - * Issue an Address Device command and optionally send a corresponding
-> - * SetAddress request to the device.
-> +/**
-> + * xhci_setup_device - issues an Address Device command to assign a unique
-> + *			USB bus address.
-> + * @hcd: USB host controller data structure.
-> + * @udev: USB dev structure representing the connected device.
-> + * @setup: Enum specifying setup mode: address only or with context.
-> + * @timeout_ms: Max wait time (ms) for the command operation to complete.
-> + *
-> + * Return: 0 if successful; otherwise, negative error code.
-
-   I still think the above change should be a separate follow-up (or even
-a preceding) patch...
-
-[...]
-
-MBR, Sergey
