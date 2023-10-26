@@ -2,409 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDB87D89F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6347A7D8A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjJZVDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 17:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        id S232068AbjJZVEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 17:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZVDB (ORCPT
+        with ESMTP id S229501AbjJZVEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 17:03:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F051AB;
-        Thu, 26 Oct 2023 14:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698354179; x=1729890179;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=QIMUvNAMum0nONllAtxiog7Du+oQmlk8WBIIf2oKzxw=;
-  b=iR4TDWM+YXbOKthZVduBe4alFXJEYlMyxDe2gVIjpiBF+CoEQ+KggyG+
-   i6/WfMorau25ly0XzeP5D6CRnKxQ5s4O3c5d3aNz9UBwp9rOLZg8IQDlZ
-   9DOwJ8EA8j70xJNbKndH2368CsrQV1K2mbAaTwkirYZk+lqA4vnLThO/T
-   cxJPJ2DeKaHdrt+IAkPh/M1yPkX3uYU9LG4pLn9a+6ERDyryp8MaP+9Qp
-   7N/kHm2qxudnDtry6/F1eYtt5RARvhZLfdxMkwXImlM2sZ+/qUM9Bis0V
-   dmztk9mL6rqgoMyaAiLHemTH0YEJ8lEYqzDcy6FHz9NtFJgomw3r6nonF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="386536331"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="386536331"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 14:02:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="825117660"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="825117660"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Oct 2023 14:02:57 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 26 Oct 2023 14:02:56 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 26 Oct 2023 14:02:56 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Thu, 26 Oct 2023 14:02:55 -0700
+        Thu, 26 Oct 2023 17:04:52 -0400
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020003.outbound.protection.outlook.com [52.101.56.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3093;
+        Thu, 26 Oct 2023 14:04:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ifjBY/vzlAkEdYplF72x64SpUbgsUR5QMTgrmp0AsfqhosqpKoWSvEqe/ghTWXKQgGWcRqBM1a68VwZT4bqFf3pHyLdDSbNIZr7cllURxWDS96sJoYhL83UuvcLvnqby9KgCHS3VwhE2Aiwi28YUdB3UHRquZSd6ZosupQsSLa2MIUZOHYdxQ+3cw9KtSmw2B6oKKn9c4c2gmi2dm+di7LxEvemJPqjEn/sMRfaBRgakj11VMfTZSoWdO0fTP/pKMfGipO6pSEpuSV3oeggFZbuX11xl2IwO+1D/ZdkyIW74K3nC4pr9FUsO6/J050n1cRNTNhHpgkhFxcvYTqDn8g==
+ b=iRQR6MX1wKUtoPiaZ6WhV9LnvSwVbahzvhYsObFE8ma34XMgAcTmRoOA5GOoieW5v2HDGSesn+XDIlnlQLF7OSs2Q++SEEd5bHyi+xmRpV/vwak5lSC1ClU9YgOCWytrrAH4cOPR99Y5WqS1PfYx/skOVh3fdX0WsVcgzOFgLVYoTzwx8F2Xube2KBBg9fQ/ePeo9TG0OG60dPOKf/jDpeoNMtqs4n5k4l5FHlqb/lLIDiV4NzKjBqO8gupn5IYzo/mNA0eqvSSFe19tuBJeTb7MLp07jIdq1dFcA85pLmUY7T6oQaFHgpw5neZEal91k5CZxyyKkoICpvr2HNYtZQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MNjlUmfIGiKKlo3MDuzclbs2mlnr4uHaAoKncMxu7PY=;
- b=lmXbtPuA0NhRbv4HJ9iko56C2qL3ed9sEAdcfNrNWgNeC8wyRC2HI8pJLRla+RCskEnvsnqqQQZeK+Bn9t8ZNjM3YuQPPtm2+t3wYwhzZDu3EMyWjxH7Tf9GSj6ZwWZF0syhE+bHnJfxI++pJzWGoJF7zukxn5DqbkvFbmZc+TZG06/OQzIsj53d06QqILUGpWuiWbHwwd4EEc+fiLiy2lRT+hsthEideUD6+sWOzTxR2qCZ2EdTEwyj9qX8kfsTPmCFqio0qxEkxV1nFMBKyQsGH82kYBTIli5PGVBnM++Hh8aQ1abIIrQPMRxU8kCfXU7q42NjDuauTHOAtZramw==
+ bh=DOkExkBFsJbVMSx7K889g30PSBmC7cm9s584MhEmJjQ=;
+ b=CT+hCJtwZR2FxUsvwYu8j2Sq9n4pdf9KpV1lTbW9U0MFFUd9NjKIZGM5iiVqAs2LELqm7ja1BP5u6yJtNmdcbMsCOlUz96DzbVyP+rZ/RsFBZWkRI8hru98NFi5iy4x4wVw+7HW/+quuCrzb5FFgaZURUPd80R5KIfu0qaMygb7OubeJBBD7hUQaQEQhhMaikOB6rd7tDrYumQtLIoGG6WCnStTt0SVLh6nOxdK9BATuegZk8kXReBYZptmD4hyCG4fJj3aA8ERY6R/kM1zjKPwDFEcPHMTWGD45pfwIJaPAu/Jo0ViefCF/njedhXiH5Q3JbOVAhevbTP93VrfgSQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by MW4PR11MB7128.namprd11.prod.outlook.com (2603:10b6:303:22b::8) with
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DOkExkBFsJbVMSx7K889g30PSBmC7cm9s584MhEmJjQ=;
+ b=IgWwhsm1I7e4pQQcfFLbuYgdu3bvdXyKlOJeqL319weOYqIwdFFjSvx6Voz7GOzC/tHgHhMBq3RxoBvBPvKvnuNAq/44TiZWsibxpyLxEZOLbDg/CDq00ROg/Mo/+IfQLmxwCIxPlpRNO39+MLkxDdFA78X9WmKud3MVTzHmQs0=
+Received: from MN0PR21MB3264.namprd21.prod.outlook.com (2603:10b6:208:37c::19)
+ by DM4PR21MB3440.namprd21.prod.outlook.com (2603:10b6:8:ad::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
- 2023 21:02:52 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::e75f:ec47:9be1:e9e4]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::e75f:ec47:9be1:e9e4%4]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
- 21:02:52 +0000
-Date:   Thu, 26 Oct 2023 14:02:49 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: RE: [PATCH RFC v2 2/3] firmware/efi: Process CXL Component Events
-Message-ID: <653ad3f9d3711_780ef29495@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20230601-cxl-cper-v2-0-314d9c36ab02@intel.com>
- <20230601-cxl-cper-v2-2-314d9c36ab02@intel.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.8; Thu, 26 Oct
+ 2023 21:04:46 +0000
+Received: from MN0PR21MB3264.namprd21.prod.outlook.com
+ ([fe80::9f51:f462:e8d2:d242]) by MN0PR21MB3264.namprd21.prod.outlook.com
+ ([fe80::9f51:f462:e8d2:d242%5]) with mapi id 15.20.6954.005; Thu, 26 Oct 2023
+ 21:04:46 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
+ user-mode
+Thread-Topic: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
+ user-mode
+Thread-Index: AQHaB5W4U0Kx/aurvkOjV7lIJbHFdbBcSP+AgABHWaA=
+Date:   Thu, 26 Oct 2023 21:04:46 +0000
+Message-ID: <MN0PR21MB32649DAC2B9A6CE863B320B1CEDDA@MN0PR21MB3264.namprd21.prod.outlook.com>
+References: <1698274250-653-1-git-send-email-longli@linuxonhyperv.com>
+ <20231026094719.04cace95@hermes.local>
+In-Reply-To: <20231026094719.04cace95@hermes.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8f76e82a-7240-44a4-8a38-e096edef6efb;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-26T21:02:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR21MB3264:EE_|DM4PR21MB3440:EE_
+x-ms-office365-filtering-correlation-id: 9b306999-15ac-43a9-e8e6-08dbd6672f32
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xkYdZjGgg5BN/cC9oHbXKA7YFS+OPJIbSlGToagttNfWj18QMJl3Pf22vJfm22mUMNMXGT5D/fwy8GSg/944r9yzrTWJYAtiY2Te3/hWrDxGelG3bmEtN4wDNtLwUO7r6kfEgYJCB5Ygwzx1FQ73GOu8S2mrmc2SFUxoicSx4hFLn9Q9V3HY7HyFmeCxIbBW94Om2w3jfg1iuulI45ZawiVsILHFILahfLuGSeSr1M0lAlCwkovgUJUqxIdVwyDiH4244sY8sCUhtwgKutqXWCIUD5/bqPAn/KIqcMeaMvweRmER+vYDCXIYjhr+TgghT3LVUbtIbY/X3i0RCNXnj+TSMFA/FCgbkzqX/ft2b2d3JwK86HNrSfQpYcgnTbFZzlOhOleOzvyz16su+0VJRuIYuleKxB7JDdg6YCWA227Vcmhf5/3N94o9mRB6SrdufCwkKYk0upRFF3zzGvB2L/gjYTwOgd5j/cEtFkYDdYfQZqpnyB4bFoETVFtmHFK1H1TdG0DBIEorayvLQQhswTqWwn22NKEf6httvBVgua3GS6qTmkKa520kAVb0YYCibrPWR7M/zEUBBGPa/CUjw9uv5fSMHSnub84QMchSWorjA4NOr/5iODTc38LRdFRphEA/BbVmG3FRLQunERg5Fay9DuFs72fGOPvUVKXHs18=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3264.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(55016003)(71200400001)(7696005)(9686003)(6506007)(478600001)(10290500003)(66476007)(66556008)(38100700002)(33656002)(5660300002)(122000001)(82960400001)(86362001)(82950400001)(4744005)(41300700001)(7416002)(2906002)(66446008)(8990500004)(66946007)(76116006)(64756008)(83380400001)(26005)(38070700009)(316002)(52536014)(8676002)(110136005)(54906003)(4326008)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4tFp36DBMufgm8HU8mAX2TUWoehcQp5sQPDYfhwszefvqGFWulnMKor4dsFh?=
+ =?us-ascii?Q?RiWSPR30S+d0xuD9zjmQ/8l0VTzFxDGbMUzw7Ru9/bH438yBqxPFCheqZbiG?=
+ =?us-ascii?Q?BqURibeEmnMjpyV5Zwr5+K0Kd5X+VdrRwYQjlDGYr8/w4HXjNdmWZriom8mI?=
+ =?us-ascii?Q?6B92UYd7EspKSchYJkTwWRY+dfOa79TOHFPckCVNZB6bvNYGmkN70SmYkV/z?=
+ =?us-ascii?Q?bumlJSlee6vhrPhtZ5ILdn3pTxAfQpKqY5hirjZBjPjl87Cn82OhsP/lpG4X?=
+ =?us-ascii?Q?Ch/946RZNcbk/5cgiv5o/2yZuIL6qGB93SEL0/qYuz20rIxgfYnZZ8eEEKWK?=
+ =?us-ascii?Q?4ObeTkVQolQcfv9s3rGsNVi0m3V155qn7GenMaU9k6Jl8E8Uy4nYetpF+dhF?=
+ =?us-ascii?Q?My/KdlBmwwH+1ih30Gp0YzR70x5XeX71o6Z6lAB/uLpFmdruJyd+4qHyBui6?=
+ =?us-ascii?Q?f8Dr8c2bZPZTmS2RmLiCMELAt47b/CzSYH8qRWiYJkKThQDEZI6xCsIZnySL?=
+ =?us-ascii?Q?k1n6KzNoZbbYIMNCKV1heHHte0DDYLhVAvYsc7Mt1ML5Z7W36YDtL0wvkcx9?=
+ =?us-ascii?Q?zUwYOpgF3iXM89wifOFAD4XePxmnOQzDYWP1x22Bz9tzRpevbtaS+bm2xzBj?=
+ =?us-ascii?Q?Ch7KZ8wOsZZH5UibVbs0K9rPw80/lAsMMQOmALZSMkipRY68odXdRWMwu4YQ?=
+ =?us-ascii?Q?CgArhn1OUzaXR9VWAAFR2jQzd8GUhOElXbiMCSRxbvJtBN727MrpIaflMU+C?=
+ =?us-ascii?Q?7DGrLrZY9Hky3W03TN8BzvhRVZ3crvm7IHVc4fISDTw6EIMQ5FsrUO5cN+4B?=
+ =?us-ascii?Q?6VDw3CrHhOQyNnoPt8ING9sHNffj784ydc7a7zwo2Mt/0vG3ncTN0H+S1aGR?=
+ =?us-ascii?Q?pTlHKk9dvM9+03/Fp7slA+M/n3Bk5VTqn96ZGd/ngfwF+rxhmhYPfBMfmPcy?=
+ =?us-ascii?Q?5M9i7+SE8Zohcc0xU8OXoOdwd0ZPV5J50VqP8v1RFZU2+nNNBw7McJ472r5F?=
+ =?us-ascii?Q?9SEWBH7hRqce2QM/SMtg7QJIK1zAgU4B1Wf5CAwayR6A0ey5g4EZ8TJ3cGgT?=
+ =?us-ascii?Q?OehR22lnEwcY8t/xUdPumT7xVPlud9UscqcHjoJjBmZjEBnPW9DnzJghF6y9?=
+ =?us-ascii?Q?amaOkxLsMc+T1Vuckip4OxQaWu5Ob4nZygTULTDwgX40Bv8acTaqZcige8M5?=
+ =?us-ascii?Q?chPfa5E3+sjWNVS229tMycAywfunbMO6YXO56SX/YxFfaPZYQqVtYcevSfYK?=
+ =?us-ascii?Q?6GGQax0WCx42ZVmsWUUMDNFh9Ks44UyTRDauo2U0V303Lg4igTd8eM2n+TJy?=
+ =?us-ascii?Q?TfE/3ys6XiJyBxtVe8+U1A7XTuqZCZ5CLyRQGmuozxy121xy5wOgOXXoyLjQ?=
+ =?us-ascii?Q?/DJR1IORizmz7TMkmMFhWVhDNoNuKXIxUE8yUN5CoerrEEIYf93tbcpb5teY?=
+ =?us-ascii?Q?XfBWHtHRL155hWlGL+WG0RLzVO6njhVAIFxKqbRY05f1l/oiazAIXLIu8yCP?=
+ =?us-ascii?Q?SGuxmz1PznEzjEF/BtsA5skJTO2akYXuYGK2K7LpYqF2v2t32ouLV0nbgsLZ?=
+ =?us-ascii?Q?ySZpW+HwUy004ccO7mtsuS8RyK+5fgj9/MPqSQeL?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230601-cxl-cper-v2-2-314d9c36ab02@intel.com>
-X-ClientProxiedBy: MW4PR04CA0071.namprd04.prod.outlook.com
- (2603:10b6:303:6b::16) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|MW4PR11MB7128:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5116a7a8-0d5e-4b2c-657d-08dbd666eb17
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0Vk8xczhwkVwMlfSq9X4hGtwa8CLj0w/nv/BExg+PPWbt+5FLfXzdE2/hpQbFKTdnSaBS2RqvZ0l0smgyny6jkJ4AjjAHmVB6S4BXL+aO90s7UHNNpkwV1ARxyNl0FlR4516sdhNd8tfZ3ymujSGgtUCA1d+LtFW9jcgwER+IYP6XVwM5B6vkmoqBWPqEGRGfnsJBMkjuDwCuNRcCfF9pnSE1ZmprlfOzLfEXfTIi0FgcF4WtN4axhXzKhAVSLQBi2xNf1NNwt4WZGCQB4GBi15u4BK03zGZ286e5QauCi9eGjmAFWr0I1ccAi7K4aZ+ObMQxAIErPECqhTrEcjgczyya11pcmPhguY1SSf+G4lvN+Nf3MjdxNP9QK1h0vbpBy6YaxqDgQDAGGLJpXwP8t1fy11vhaq++PKNNxXFS6NN7MHiGxnehOTkJl3iLBoJYfc8pcKMfkfxU/T8N6uwYdvUlNTz5y5MZ2sbWHmFxxhFRZx8THFcXSmHH7ZxKpgO3GadY5cmkJydMElIyaeAE4sFip6dBC1BSqGyJwDC53UrIvAK61gE9418POdj+xSa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(8676002)(6666004)(9686003)(4326008)(41300700001)(8936002)(2906002)(26005)(6506007)(107886003)(83380400001)(38100700002)(5660300002)(6512007)(110136005)(66556008)(86362001)(316002)(6486002)(54906003)(66946007)(478600001)(82960400001)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1JQkcYhZw9PYKZE1jTCQnlixKj3/XM0U8UQ7XDGRp3OdctsRJLdYIo+n36fz?=
- =?us-ascii?Q?14DnS7Xs9KfysW5Vl2O1+heMjqlnikUIAjjML0U1iyV/41fIUSqwCyVM1tbd?=
- =?us-ascii?Q?gC5MbInie+mjn6CJWn4pI3cFUNUiVejX0B/k22KQDgI04CKPUKD7r1atGS3M?=
- =?us-ascii?Q?g8qu08SfyFhKHxxabrE1dVd5NwSOy5SaWkLqP74VCTlG6o7j2hYvp4Vrw+50?=
- =?us-ascii?Q?Pro2UkLC4qdz6+Bpb+hFH/fv8azcgBa4OP5WZsokieNtLfPeM71W/XmolS2J?=
- =?us-ascii?Q?VxhjBbhCsEwadsFY/gmsjv1NRnOgRdjo3jOdVYceDDp9/VtdN0FHWGdD0/X/?=
- =?us-ascii?Q?w3teHZf7AwovRazxwK8whsK3WFLsFG2JzQ7YM8cMdA4YhOZzTWH2B5JcvUz3?=
- =?us-ascii?Q?6h1l6mmqwRS/Nl8k65wZ14BqtDBNK7N3PhfzEDYry0etCVnrTGiWRNx2X3gf?=
- =?us-ascii?Q?/J3cFMCOKtf2zZJStSE3kVCqK1WFICbHRZ82PZhH6LSXPXFl+GuIqmtWfSwL?=
- =?us-ascii?Q?MdvCieWnrywq/oPbwTgnw6fmvEMTSztaNakniDhWmfQ1xxC2ovn9CnuNRZdg?=
- =?us-ascii?Q?fJ5KWMCngQND7xkDXbsGouzkwygni/IfQOdhLYRmEs+U4klUFSmdEPMJ1l4K?=
- =?us-ascii?Q?HPBHHK1FYkOBAa2DQZbkDPDcaXknPm59KmR8byCtQXIP25vEdkU61Wx6GSRa?=
- =?us-ascii?Q?frDr7wSGI690+sF45ceQP177fpVcetvbjAgPQ2KSXHiDS5rK7n14jjwAJhPt?=
- =?us-ascii?Q?MpWaP6EwKkVgC7b1Xw8dw95m11F4PH6yWB5DGspfIIZjZgZ2kFqFyPbCWZjw?=
- =?us-ascii?Q?DBN9IIbX1kCD+Qf2SY8r3QzGbwDJY3kDFZWzvC6n892iMbbJ+YnzvtQM42GM?=
- =?us-ascii?Q?S/KAPIwheq2tq9ZLAnt5Ghx6GLKMbmDhBR7phEPnvJu/eJI8FXzm7437DoBG?=
- =?us-ascii?Q?ZZPNdYFaPhxRO4sO6WRmjutvJIVK1DJYbBoP4uQu/YeM5C67DrN4onvJuTZT?=
- =?us-ascii?Q?VNOoCPAiIo4APmqDcOVzyegSKDBXcjrXGvxhfEIiKAAnwVrLaCTcIrZNIJD1?=
- =?us-ascii?Q?8kJ5BsJrvXO+QrHnh3GrcSy5eLOtMH7xcIHyFwdhpLIfYBDk6fihtKZFysJn?=
- =?us-ascii?Q?w1uslccKTNl/ZLDl3QHgshwRGKVWhaGKXko8jUuZFyX5CiXUNKs2Qkc+8blt?=
- =?us-ascii?Q?aDM76B4CkPmXRQ6scVx9gVJD7rVdqy6fKENWYwbssj3yzBkB1d4qTX06ByRG?=
- =?us-ascii?Q?W1bHFs+XUc/PoBOtut/jHbWpr4DyMBYNt/mDQxJ03Iee3bQmWQMviZg/Uf4x?=
- =?us-ascii?Q?DIuFgH4XBk9C1XIVG1BFMrBf450pve83cOsujVUDOYLW2yks25UeCXswQo2i?=
- =?us-ascii?Q?jVlAVGf+QeFVAIr7/b8+Za72gi77E7KdYZB8aDdU+YvEiA7aI+5u16jc+bQC?=
- =?us-ascii?Q?eCt0ItJAPWzPH20gqW+DdaOKjl9bRGIGRdv74YMOc3AUnupWq+azWmr/XeOc?=
- =?us-ascii?Q?JkkQWlXjCeh2azPuzGG18vm/owqtki2vWohg8qPBgmS7UVohmmdFjCJdyOx9?=
- =?us-ascii?Q?dUteoInxFzsTUlFPkVOR4CkSEirkUBikzDccmdVyrZu1kGGpQ1Nhky+vXmM4?=
- =?us-ascii?Q?pg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5116a7a8-0d5e-4b2c-657d-08dbd666eb17
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 21:02:52.4109
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3264.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b306999-15ac-43a9-e8e6-08dbd6672f32
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 21:04:46.4422
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6DfYUkf+UG7kgOdFd9avLGrEoeVNRoJx5SdT/qy9tMLV3WfooJ1CkbmHdc5QPtJPQ7Cy6oKOAzWgX382/SKD4C8twGchYmFjpeme/7blZvA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7128
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vVJsWPo630wTRN5f4TZXN2KWPjm7cbaI6ljH3axYDyfARIlB2BTdaivoQZ9rXgIq5GLQdkeNmBTQRAhNO/8KKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3440
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira Weiny wrote:
-> BIOS can configure memory devices as firmware first.  This will send CXL
-> events to the firmware instead of the OS.  The firmware can then send
-> these events to the OS via UEFI.
-> 
-> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
-> format for CXL Component Events.  The format is mostly the same as the
-> CXL Common Event Record Format.  The only difference is the UUID is
-> passed via the Section Type as a GUID and not included as part of the
-> record data.
-> 
-> Add EFI support to detect CXL CPER records and call a notifier chain
-> with the record data blobs.
-> 
-> Note that the format of a GUID and UUID are not the same.  Therefore the
-> Section Type GUID defines are duplicated from the CXL code.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from RFC v1
-> [iweiny: use an enum for know record types and skip converting GUID to UUID]
-> [iweiny: commit to the UUID not being part of the event record data]
-> [iweiny: use defines for GUID definitions]
-> ---
->  drivers/firmware/efi/cper.c     | 16 +++++++++++
->  drivers/firmware/efi/cper_cxl.c | 40 ++++++++++++++++++++++++++++
->  drivers/firmware/efi/cper_cxl.h | 29 ++++++++++++++++++++
->  include/linux/efi.h             | 59 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 144 insertions(+)
-> 
-> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> index 35c37f667781..d6415c94d584 100644
-> --- a/drivers/firmware/efi/cper.c
-> +++ b/drivers/firmware/efi/cper.c
-> @@ -607,6 +607,22 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
->  			cper_print_prot_err(newpfx, prot_err);
->  		else
->  			goto err_section_too_small;
-> +	} else if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA) ||
-> +		   guid_equal(sec_type, &CPER_SEC_CXL_DRAM) ||
-> +		   guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE)) {
-> +		struct cper_cxl_event_rec *rec = acpi_hest_get_payload(gdata);
-> +
-> +		printk("%ssection type: CXL Event\n", newpfx);
+> Subject: Re: [PATCH] hv_netvsc: Mark VF as slave before exposing it to us=
+er-mode
+>=20
+> On Wed, 25 Oct 2023 15:50:50 -0700
+> longli@linuxonhyperv.com wrote:
+>=20
+> > 	list_for_each_entry(ndev_ctx, &netvsc_dev_list, list) {
+> >  		ndev =3D hv_get_drvdata(ndev_ctx->device_ctx);
+> > -		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr))
+> {
+> > -			netdev_notice(vf_netdev,
+> > -				      "falling back to mac addr based
+> matching\n");
+> > +		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr)
+> ||
+> > +		    ether_addr_equal(vf_netdev->dev_addr, ndev->perm_addr))
+>=20
+> This part looks like unrelated change.
+> The VF mac address shouldn't change, but if it did don't look at i.
 
-I would say that since this is going to be hanlded elsewhere the kernel
-log can stay silent.
-
-> +
-> +		if (rec->hdr.length <= sizeof(rec->hdr))
-> +			goto err_section_too_small;
-> +
-> +		if (rec->hdr.length > sizeof(*rec)) {
-> +			pr_err(FW_WARN "error section length is too big\n");
-> +			return;
-> +		}
-> +
-> +		cper_post_cxl_event(newpfx, sec_type, rec);
->  	} else {
->  		const void *err = acpi_hest_get_payload(gdata);
->  
-> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
-> index a55771b99a97..04234884898d 100644
-> --- a/drivers/firmware/efi/cper_cxl.c
-> +++ b/drivers/firmware/efi/cper_cxl.c
-> @@ -187,3 +187,43 @@ void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_e
->  			       sizeof(cxl_ras->header_log), 0);
->  	}
->  }
-> +
-> +/* CXL CPER notifier chain */
-> +static BLOCKING_NOTIFIER_HEAD(cxl_cper_chain_head);
-> +
-> +void cper_post_cxl_event(const char *pfx, guid_t *sec_type,
-> +			 struct cper_cxl_event_rec *rec)
-> +{
-> +	struct cxl_cper_notifier_data nd = {
-> +		.rec = rec,
-> +	};
-> +
-> +	if (!(rec->hdr.validation_bits & CPER_CXL_COMP_EVENT_LOG_VALID)) {
-> +		pr_err(FW_WARN "cxl event no Component Event Log present\n");
-> +		return;
-> +	}
-> +
-> +	if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA))
-> +		nd.cper_event = CXL_CPER_EVENT_GEN_MEDIA;
-> +	else if (guid_equal(sec_type, &CPER_SEC_CXL_DRAM))
-> +		nd.cper_event = CXL_CPER_EVENT_DRAM;
-> +	else if (guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE))
-> +		nd.cper_event = CXL_CPER_EVENT_MEM_MODULE;
-> +
-> +	if (blocking_notifier_call_chain(&cxl_cper_chain_head, 0, (void *)&nd)
-> +			== NOTIFY_BAD)
-> +		pr_err(FW_WARN "cxl event notifier chain failed\n");
-> +}
-> +
-> +int register_cxl_cper_notifier(struct notifier_block *nb)
-> +{
-> +	return blocking_notifier_chain_register(&cxl_cper_chain_head, nb);
-> +}
-> +EXPORT_SYMBOL(register_cxl_cper_notifier);
-
-I think this should be EXPORT_SYMBOL_NS_GPL(..., CXL) since I can't
-imagine a third-party driver use case for this.
-
-> +
-> +void unregister_cxl_cper_notifier(struct notifier_block *nb)
-> +{
-> +	blocking_notifier_chain_unregister(&cxl_cper_chain_head, nb);
-> +}
-> +EXPORT_SYMBOL(unregister_cxl_cper_notifier);
-> +
-> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
-> index 86bfcf7909ec..ca26126cd9b8 100644
-> --- a/drivers/firmware/efi/cper_cxl.h
-> +++ b/drivers/firmware/efi/cper_cxl.h
-> @@ -10,11 +10,38 @@
->  #ifndef LINUX_CPER_CXL_H
->  #define LINUX_CPER_CXL_H
->  
-> +#include <linux/efi.h>
-> +
->  /* CXL Protocol Error Section */
->  #define CPER_SEC_CXL_PROT_ERR						\
->  	GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,	\
->  		  0x4B, 0x77, 0x10, 0x48)
->  
-> +/* CXL Event record UUIDs are used as the section type */
-> +/*
-> + * General Media Event Record
-> + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-> + */
-> +#define CPER_SEC_CXL_GEN_MEDIA						\
-> +	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
-> +		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
-> +
-> +/*
-> + * DRAM Event Record
-> + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-> + */
-> +#define CPER_SEC_CXL_DRAM						\
-> +	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
-> +		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
-> +
-> +/*
-> + * Memory Module Event Record
-> + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-> + */
-> +#define CPER_SEC_CXL_MEM_MODULE						\
-> +	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
-> +		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
-> +
->  #pragma pack(1)
->  
->  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
-> @@ -62,5 +89,7 @@ struct cper_sec_prot_err {
->  #pragma pack()
->  
->  void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_err);
-> +void cper_post_cxl_event(const char *pfx, guid_t *sec_type,
-> +			 struct cper_cxl_event_rec *rec);
->  
->  #endif //__CPER_CXL_
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 80b21d1c6eaf..b5b8b46c8deb 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -1355,4 +1355,63 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
->  
->  umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
->  
-> +/*
-> + * Event log size adjusted for CPER
-> + *
-> + * Base table from CXL r3.0 Table 8-42: (30h + 50h)
-> + * For lack of UUID: - 10h
-> + *
-> + * (30h + 50h) - 10h = 70h
-> + */
-> +#define CPER_CXL_COMP_EVENT_LOG_SIZE 0x70
-> +#define CPER_CXL_DEVICE_ID_VALID		BIT(0)
-> +#define CPER_CXL_DEVICE_SN_VALID		BIT(1)
-> +#define CPER_CXL_COMP_EVENT_LOG_VALID		BIT(2)
-> +struct cper_cxl_event_rec {
-> +	struct {
-> +		u32 length;
-> +		u64 validation_bits;
-> +		struct {
-> +			u16 vendor_id;
-> +			u16 device_id;
-> +			u8 func_num;
-> +			u8 device_num;
-> +			u8 bus_num;
-> +			u16 segment_num;
-> +			u16 slot_num; /* bits 2:0 reserved */
-> +			u8 reserved;
-> +		} device_id;
-> +		struct {
-> +			u32 lower_dw;
-> +			u32 upper_dw;
-> +		} dev_serial_num;
-> +	} hdr;
-> +
-> +	u8 comp_event_log[CPER_CXL_COMP_EVENT_LOG_SIZE];
-
-Rather than define CPER_CXL_COMP_EVENT_LOG_SIZE I would prefer that CXL
-and EFI share a common struct definition for these common fields.
-
-That would also remove the need for BUILD_BUG_ON() since they literally
-can not disagree on the size in that case.
-
-> +};
-> +#define CPER_CXL_REC_LEN(rec) (rec->hdr.length - sizeof(rec->hdr))
-> +
-> +enum cxl_cper_event {
-> +	CXL_CPER_EVENT_GEN_MEDIA,
-> +	CXL_CPER_EVENT_DRAM,
-> +	CXL_CPER_EVENT_MEM_MODULE,
-> +};
-
-It follows from defining that common data structure above that this enum
-would be a generic CXL namespace that drops "_CPER_". I.e. the CPER
-notification handler and the native driver translate the event to this
-common generic sub-structure that gets emitted.
-
-> +
-> +struct cxl_cper_notifier_data {
-> +	enum cxl_cper_event cper_event;
-> +	struct cper_cxl_event_rec *rec;
-> +};
-> +
-> +#ifdef CONFIG_EFI
-> +int register_cxl_cper_notifier(struct notifier_block *nb);
-> +void unregister_cxl_cper_notifier(struct notifier_block *nb);
-> +#else
-> +static inline int register_cxl_cper_notifier(struct notifier_block *nb)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void unregister_cxl_cper_notifier(struct notifier_block *nb) { }
-> +#endif
-> +
->  #endif /* _LINUX_EFI_H */
-> 
-> -- 
-> 2.41.0
-> 
-
-
+At the time of NETDEV_POST_INIT, the perm_addr is not assigned yet (last it=
+ was copied from dev_addr when device is registered).
