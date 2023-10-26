@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC91B7D7ACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AA07D7AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343564AbjJZCQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S233231AbjJZCOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjJZCQs (ORCPT
+        with ESMTP id S234479AbjJZCOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:16:48 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3CA18A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 19:16:45 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=mengferry@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0Vuw8irE_1698286599;
-Received: from localhost(mailfrom:mengferry@linux.alibaba.com fp:SMTPD_---0Vuw8irE_1698286599)
-          by smtp.aliyun-inc.com;
-          Thu, 26 Oct 2023 10:16:43 +0800
-From:   Ferry Meng <mengferry@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ferry Meng <mengferry@linux.alibaba.com>
-Subject: [PATCH 2/2] erofs: tidy up redundant includes
-Date:   Thu, 26 Oct 2023 10:16:27 +0800
-Message-Id: <20231026021627.23284-2-mengferry@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20231026021627.23284-1-mengferry@linux.alibaba.com>
-References: <20231026021627.23284-1-mengferry@linux.alibaba.com>
+        Wed, 25 Oct 2023 22:14:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743A31BC;
+        Wed, 25 Oct 2023 19:14:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5CDC433C8;
+        Thu, 26 Oct 2023 02:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698286467;
+        bh=jUa0j8kXyR+ZqrJZnoV5zjFY9ZcHXkhKnRFy040alus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mtqSjpfGC88sm08rhZHtFSzjgIa6iszerPfV9hN3YqwaTWtKtatSdNr5BCfEOOr1d
+         4dyLnLt445TuTelm+nZBwnsRZE9d16gKQ24BTXG/KZYOE6TuZJ3eJp+oPw8yk331Ew
+         1ya4opqyveU6lXnCpXqCzKi2F6wemq3YX+Vhw9KhAXyqSQY2IX+y/SCCQoEVvndBCK
+         vyrE3BmirYKIqbZkXzRIrjxJX/NDUyEleHpIA4GJF4BnzR2wCmpmxjASbVaxgrnYMS
+         +MwWPTYe8iPRzFaVYjVSAzIPfbNhcj0Px4IfOVIcyb7IeACYyt9rvRHPB/5n8e542w
+         q7lnvib9JOWuw==
+Date:   Wed, 25 Oct 2023 19:18:45 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_skananth@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH] bus: mhi: host: Add alignment check for event ring read
+ pointer
+Message-ID: <ixs2dtrijaft4j5hnmemhxuq6mpvmlnv64t5nkge4olnnwrldk@bfjffg7ard5g>
+References: <20231023-alignment_check-v1-1-2ca5716d5c15@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023-alignment_check-v1-1-2ca5716d5c15@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Remove unused includes like <linux/parser.h> and <linux/prefetch.h>;
+On Mon, Oct 23, 2023 at 03:13:06PM +0530, Krishna chaitanya chundru wrote:
+> Though we do check the event ring read pointer by "is_valid_ring_ptr"
+> to make sure it is in the buffer range, but there is another risk the
+> pointer may be not aligned.  Since we are expecting event ring elements
+> are 128 bits(struct mhi_tre) aligned, an unaligned read pointer could lead
+> to multiple issues like DoS or ring buffer memory corruption.
+> 
+> So add a alignment check for event ring read pointer.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-- Move common includes into "internal.h".
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
----
- fs/erofs/data.c                 | 2 --
- fs/erofs/decompressor.c         | 1 -
- fs/erofs/decompressor_deflate.c | 1 -
- fs/erofs/decompressor_lzma.c    | 1 -
- fs/erofs/internal.h             | 2 ++
- fs/erofs/super.c                | 3 ---
- 6 files changed, 2 insertions(+), 8 deletions(-)
+Regards,
+Bjorn
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 0c2c99c58b5e..ceb6c248bf40 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -5,9 +5,7 @@
-  * Copyright (C) 2021, Alibaba Cloud
-  */
- #include "internal.h"
--#include <linux/prefetch.h>
- #include <linux/sched/mm.h>
--#include <linux/dax.h>
- #include <trace/events/erofs.h>
- 
- void erofs_unmap_metabuf(struct erofs_buf *buf)
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 332ec5f74002..29d539481a2b 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -4,7 +4,6 @@
-  *             https://www.huawei.com/
-  */
- #include "compress.h"
--#include <linux/module.h>
- #include <linux/lz4.h>
- 
- #ifndef LZ4_DISTANCE_MAX	/* history window size */
-diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
-index 19e5bdeb30b6..c15ce24d51df 100644
---- a/fs/erofs/decompressor_deflate.c
-+++ b/fs/erofs/decompressor_deflate.c
-@@ -1,5 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--#include <linux/module.h>
- #include <linux/zlib.h>
- #include "compress.h"
- 
-diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
-index dee10d22ada9..72a202740cdb 100644
---- a/fs/erofs/decompressor_lzma.c
-+++ b/fs/erofs/decompressor_lzma.c
-@@ -1,6 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- #include <linux/xz.h>
--#include <linux/module.h>
- #include "compress.h"
- 
- struct z_erofs_lzma {
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index ca7d85958450..3551a5734e89 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -8,8 +8,10 @@
- #define __EROFS_INTERNAL_H
- 
- #include <linux/fs.h>
-+#include <linux/dax.h>
- #include <linux/dcache.h>
- #include <linux/mm.h>
-+#include <linux/module.h>
- #include <linux/pagemap.h>
- #include <linux/bio.h>
- #include <linux/magic.h>
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 019229eb2ef6..f38ff2d63364 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -4,14 +4,11 @@
-  *             https://www.huawei.com/
-  * Copyright (C) 2021, Alibaba Cloud
-  */
--#include <linux/module.h>
- #include <linux/statfs.h>
--#include <linux/parser.h>
- #include <linux/seq_file.h>
- #include <linux/crc32c.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
--#include <linux/dax.h>
- #include <linux/exportfs.h>
- #include "xattr.h"
- 
--- 
-2.19.1.6.gb485710b
-
+> ---
+>  drivers/bus/mhi/host/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 499590437e9b..c907bbb67fb2 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -268,7 +268,7 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
+>  
+>  static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
+>  {
+> -	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
+> +	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len && addr % 16 == 0;
+>  }
+>  
+>  int mhi_destroy_device(struct device *dev, void *data)
+> 
+> ---
+> base-commit: 71e68e182e382e951d6248bccc3c960dcec5a718
+> change-id: 20231013-alignment_check-c013f509d24a
+> 
+> Best regards,
+> -- 
+> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> 
