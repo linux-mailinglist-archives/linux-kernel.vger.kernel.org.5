@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72697D8003
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844B87D8009
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbjJZJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S233231AbjJZJwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjJZJv1 (ORCPT
+        with ESMTP id S230405AbjJZJwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:51:27 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E4C191;
-        Thu, 26 Oct 2023 02:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=JE/wzep2Kl9fulvu7hozBAZLnaAXZolsk/A0oBuPFR0=;
-        t=1698313884; x=1699523484; b=aUPICMNRjEfQRVhPTSCqMqFE9qUaOz9kSL/nyE2hCk1cJ7k
-        Exl19kY2+639qapt2SBvgNU7acJpenBvcNhC2bgNqdD9F1/HsRwOsJzfabi7ZkO+g11fthbiWpnnj
-        kP9tk1BDjDsW6Hmc3tx2bn2hWOLAE0/8Y7AsoOXSY1Q4pmpCEKkSX7T87wtkOc3+26aTURH50c1fP
-        TXS+cKMSTNm6cDyt5CEgrquDMGAFEhHwYt9vtMYqAR06hIy3k9eWugEuAPfsUUZ+ZP3758iOlmO/3
-        vZgPdKVtfKKi3ugSU22JUeOR8m0JBrgjpD9gdaoKfZpm+JAOiN/CyHehDL5IhtFg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97-RC1)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qvx1A-00000003a91-3X6O;
-        Thu, 26 Oct 2023 11:51:09 +0200
-Message-ID: <14bd2e39338dd755f7bfde23a93563865580ee83.camel@sipsolutions.net>
-Subject: Re: [PATCH 10/10] [RFC] wifi: remove ipw2100/ipw2200 drivers
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kalle Valo <kvalo@kernel.org>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     Witold Baryluk <witold.baryluk@gmail.com>, arnd@kernel.org,
-        Larry.Finger@lwfinger.net, alexandre.belloni@bootlin.com,
-        arnd@arndb.de, claudiu.beznea@tuxon.dev, davem@davemloft.net,
-        geert@linux-m68k.org, geoff@infradead.org,
-        gregkh@linuxfoundation.org, gregory.greenman@intel.com,
-        ilw@linux.intel.com, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, nicolas.ferre@microchip.com,
-        pavel@ucw.cz, quic_jjohnson@quicinc.com, stas.yakovlev@gmail.com,
-        stf_xl@wp.pl
-Date:   Thu, 26 Oct 2023 11:51:07 +0200
-In-Reply-To: <87jzr9d883.fsf@kernel.org>
-References: <CAEGMnwo6RFqADPO5FRkRUNL=GfV6DY8UuwgsypEYOD3LTnXdJg@mail.gmail.com>
-         <c608f328-387e-431b-b3c2-4b8fa0c4f11f@gmail.com>
-         <87jzr9d883.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 26 Oct 2023 05:52:00 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D43192
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:51:58 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SGLJb3lyMz9v7YL
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 17:35:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.81.222.195])
+        by APP1 (Coremail) with SMTP id LxC2BwBnwJGjNjplmLDyAg--.24089S2;
+        Thu, 26 Oct 2023 10:51:38 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Wangkefeng <wangkefeng.wang@huawei.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH] swiotlb: check dynamically allocated TLB address before decrypting
+Date:   Thu, 26 Oct 2023 11:51:23 +0200
+Message-Id: <20231026095123.222-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwBnwJGjNjplmLDyAg--.24089S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFWDCry3Ar17Ww4fAr17GFg_yoW5Xr1kpF
+        4Syr1Sqr98tFy7CrWxAF4kCFy3Kws5CFW3CFW5X343ZFnxWFySkr9rCw109ayfJr4kua17
+        JrW0v3Wayr47ZwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY1x0264kExVAvwVAq07x20xyl42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnLvKUUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 12:49 +0300, Kalle Valo wrote:
-> Philipp Hortmann <philipp.g.hortmann@gmail.com> writes:
->=20
-> > On 10/26/23 00:27, Witold Baryluk wrote:
-> > > I might be interested in modernizing the driver, but I have no idea
-> > > how much effort it would be (in terms of changed fraction of code).
-> > > 20k LOC is neither small or big, and not obvious (a lot of it would
-> > > be unchanged), if it is a week of work, or months of work.
-> >=20
-> > Hi Witold,
-> >=20
-> > I am trying to do this with rtl8192e.
-> > One possibility is to take the following patch series as a starting poi=
-nt:
-> > https://yhbt.net/lore/all/1414604649-9105-1-git-send-email-tvboxspy@gma=
-il.com/
-> >=20
-> > For me as a beginner and hobbyist this is a huge task. I am happy when
-> > I can finish it until next summer.
->=20
-> We also have some docs available:
->=20
-> https://docs.kernel.org/driver-api/80211/
->=20
-> And I also recommend looking at our hwsim driver as that gives a good
-> idea how a simple mac80211 driver works:
->=20
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-FWIW, I don't think this can be ported to mac80211 - only cfg80211. It's
-a fullMAC device.
+Do not decrypt a dynamically allocated TLB area until its physical address
+is known to be below the requested limit. Currently, pages are allocated
+and decrypted, but then they may be freed while still decrypted if
+swiotlb_alloc_tlb() determines that the physical address is too high.
 
-johannes
+Let the caller differentiate between unsuitable physical address (=> retry
+from a lower zone) and allocation failures (=> no point in retrying).
+
+Fixes: 79636caad361 ("swiotlb: if swiotlb is full, fall back to a transient memory pool")
+Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+---
+ kernel/dma/swiotlb.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index dff067bd56b1..d1118f6f61b8 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -558,30 +558,36 @@ void __init swiotlb_exit(void)
+  * alloc_dma_pages() - allocate pages to be used for DMA
+  * @gfp:	GFP flags for the allocation.
+  * @bytes:	Size of the buffer.
++ * @phys_limit:	Maximum allowed physical address of the buffer.
+  *
+  * Allocate pages from the buddy allocator. If successful, make the allocated
+  * pages decrypted that they can be used for DMA.
+  *
+- * Return: Decrypted pages, or %NULL on failure.
++ * Return: Decrypted pages, %NULL on allocation failure, or ERR_PTR(-EAGAIN)
++ * if the allocated physical address was above @phys_limit.
+  */
+-static struct page *alloc_dma_pages(gfp_t gfp, size_t bytes)
++static struct page *alloc_dma_pages(gfp_t gfp, size_t bytes, u64 phys_limit)
+ {
+ 	unsigned int order = get_order(bytes);
+ 	struct page *page;
++	phys_addr_t paddr;
+ 	void *vaddr;
+ 
+ 	page = alloc_pages(gfp, order);
+ 	if (!page)
+ 		return NULL;
+ 
+-	vaddr = page_address(page);
++	paddr = page_to_phys(page);
++	if (paddr + bytes - 1 > phys_limit)
++		goto error;
++	vaddr = phys_to_virt(paddr);
+ 	if (set_memory_decrypted((unsigned long)vaddr, PFN_UP(bytes)))
+ 		goto error;
+ 	return page;
+ 
+ error:
+ 	__free_pages(page, order);
+-	return NULL;
++	return ERR_PTR(-EAGAIN);
+ }
+ 
+ /**
+@@ -618,11 +624,7 @@ static struct page *swiotlb_alloc_tlb(struct device *dev, size_t bytes,
+ 	else if (phys_limit <= DMA_BIT_MASK(32))
+ 		gfp |= __GFP_DMA32;
+ 
+-	while ((page = alloc_dma_pages(gfp, bytes)) &&
+-	       page_to_phys(page) + bytes - 1 > phys_limit) {
+-		/* allocated, but too high */
+-		__free_pages(page, get_order(bytes));
+-
++	while (IS_ERR(page = alloc_dma_pages(gfp, bytes, phys_limit))) {
+ 		if (IS_ENABLED(CONFIG_ZONE_DMA32) &&
+ 		    phys_limit < DMA_BIT_MASK(64) &&
+ 		    !(gfp & (__GFP_DMA32 | __GFP_DMA)))
+-- 
+2.42.0
+
