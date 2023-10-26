@@ -2,160 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBF37D7F37
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0629E7D7F36
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjJZJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
+        id S1344531AbjJZJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZJDa (ORCPT
+        with ESMTP id S229518AbjJZJCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:03:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180F210E
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698311008; x=1729847008;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tdMCYhhtdDyuQ1YyIqyhjZ6BXjSHRnJQZrR/uUizRRA=;
-  b=cTWFYcXVXDQYzMxza63AL4Z/w3sjJKTdVjDwhaPbPaKtP8ObBIW+D6Nx
-   8kH1KYTgytkz5cG+nHaYWOlu8ZtPBJbK1FGJxcv1acsYkBrYkwIEFnu7S
-   Ecwz+GwPVhVR/wF6w/WMylBLnoFqgZnykN152licc735DVfBi54FgyyFc
-   IZcDfCSSjp29WdlszP1EtiI3p1/vJaJqUF7FOy1aJPEldJT2SmS7ouTrL
-   HDb8VdQXy1yHHKX7ZNTUQwz3uzQCiRD7V5i+YGV+KXJyR8TkO1oHso8y+
-   roLZ6aX15iRdYCzOhcJ9Pi4CuOUeK489BL2B2Q8Nsu/aPzsJ3bzQBsFgP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="386376293"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="386376293"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 02:03:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752648781"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="752648781"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2023 02:03:13 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvwGl-0009fP-1J;
-        Thu, 26 Oct 2023 09:03:11 +0000
-Date:   Thu, 26 Oct 2023 17:02:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, virtualization@lists.linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v3 4/5] x86/paravirt: switch mixed paravirt/alternative
- calls to alternative_2
-Message-ID: <202310261653.LKIRqagq-lkp@intel.com>
-References: <20231019091520.14540-5-jgross@suse.com>
+        Thu, 26 Oct 2023 05:02:40 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB01110E
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 02:02:37 -0700 (PDT)
+Received: from [10.3.2.22] (unknown [185.62.158.188])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: obbardc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 42F8D6607355;
+        Thu, 26 Oct 2023 10:02:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698310956;
+        bh=8ltbBldB75/olJyYvKUyyK8iYDH8JjGGeiavbHGt+zs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Qn90eCJhMK7vEsDzV0eWZty8NnB4K5nfXrlFUfRC3bh4I6DZ0dbUXDVpC2SaQFNi5
+         TLHMuHvm2lBhRcGJy567xZznTHmn4k+F5Lr+3oD/N5eAfJCMptwod79Fbmdps/r+bL
+         z2jw6yKObc6hTsVAl+voUF483OFakpduW2fdPh2rZJZwI3h3yi0hHARcBypTnmdFw9
+         a814FiC+ivJd34MR+4TLKSwZ7oCZlJzUGrrqoge8bIORser1pNqcBZy0RIhjGcDZBx
+         9KPlBMVft9PrFiU5BwsOBTOqzVp7XEgrlBoSSNycfPD/FenmjJrSOHKJ794EmPKtNU
+         mzi8DzTlj80ZQ==
+Message-ID: <4caf39049a659343450127870a10598416fd3154.camel@collabora.com>
+Subject: Re: [PATCH] drm/rockchip: vop2: Add NV20 and NV30 support
+From:   Christopher Obbard <chris.obbard@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Andy Yan <andy.yan@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel <kernel@collabora.com>
+Date:   Thu, 26 Oct 2023 10:02:33 +0100
+In-Reply-To: <20231025213248.2641962-1-jonas@kwiboo.se>
+References: <20231025213248.2641962-1-jonas@kwiboo.se>
+Autocrypt: addr=chris.obbard@collabora.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019091520.14540-5-jgross@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
+Hi Jonas,
 
-kernel test robot noticed the following build errors:
+On Wed, 2023-10-25 at 21:32 +0000, Jonas Karlman wrote:
+> Add support for the 10-bit 4:2:2 and 4:4:4 formats NV20 and NV30.
+>=20
+> These formats can be tested using modetest [1]:
+>=20
+> =C2=A0 modetest -P <plane_id>@<crtc_id>:1920x1080@<format>
+>=20
+> e.g. on a ROCK 3 Model A (rk3568):
+>=20
+> =C2=A0 modetest -P 43@67:1920x1080@NV20 -F tiles,tiles
+> =C2=A0 modetest -P 43@67:1920x1080@NV30 -F smpte,smpte
+>=20
+> [1] https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/329
+>=20
+> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 
-[auto build test ERROR on kvm/queue]
-[also build test ERROR on tip/master linus/master v6.6-rc7 next-20231025]
-[cannot apply to tip/x86/core kvm/linux-next tip/auto-latest]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Reviewed-by: Christopher Obbard <chris.obbard@collabora.com>
+Tested-by: Christopher Obbard <chris.obbard@collabora.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Juergen-Gross/x86-paravirt-move-some-functions-and-defines-to-alternative/20231019-171709
-base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
-patch link:    https://lore.kernel.org/r/20231019091520.14540-5-jgross%40suse.com
-patch subject: [PATCH v3 4/5] x86/paravirt: switch mixed paravirt/alternative calls to alternative_2
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310261653.LKIRqagq-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310261653.LKIRqagq-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310261653.LKIRqagq-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/x86/entry/entry_64.S: Assembler messages:
->> arch/x86/entry/entry_64.S:454: Error: no such instruction: `alt_call_instr'
-   arch/x86/entry/entry_64.S:319:  Info: macro invoked from here
-   arch/x86/entry/entry_64.S:1138:   Info: macro invoked from here
-
-
-vim +454 arch/x86/entry/entry_64.S
-
-6368558c37107b Thomas Gleixner 2020-05-21  442  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  443  /**
-cfa82a00533f70 Thomas Gleixner 2020-02-25  444   * idtentry_mce_db - Macro to generate entry stubs for #MC and #DB
-cfa82a00533f70 Thomas Gleixner 2020-02-25  445   * @vector:		Vector number
-cfa82a00533f70 Thomas Gleixner 2020-02-25  446   * @asmsym:		ASM symbol for the entry point
-cfa82a00533f70 Thomas Gleixner 2020-02-25  447   * @cfunc:		C function to be called
-cfa82a00533f70 Thomas Gleixner 2020-02-25  448   *
-cfa82a00533f70 Thomas Gleixner 2020-02-25  449   * The macro emits code to set up the kernel context for #MC and #DB
-cfa82a00533f70 Thomas Gleixner 2020-02-25  450   *
-cfa82a00533f70 Thomas Gleixner 2020-02-25  451   * If the entry comes from user space it uses the normal entry path
-cfa82a00533f70 Thomas Gleixner 2020-02-25  452   * including the return to user space work and preemption checks on
-cfa82a00533f70 Thomas Gleixner 2020-02-25  453   * exit.
-cfa82a00533f70 Thomas Gleixner 2020-02-25 @454   *
-cfa82a00533f70 Thomas Gleixner 2020-02-25  455   * If hits in kernel mode then it needs to go through the paranoid
-cfa82a00533f70 Thomas Gleixner 2020-02-25  456   * entry as the exception can hit any random state. No preemption
-cfa82a00533f70 Thomas Gleixner 2020-02-25  457   * check on exit to keep the paranoid path simple.
-cfa82a00533f70 Thomas Gleixner 2020-02-25  458   */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  459  .macro idtentry_mce_db vector asmsym cfunc
-cfa82a00533f70 Thomas Gleixner 2020-02-25  460  SYM_CODE_START(\asmsym)
-4708ea14bef314 Josh Poimboeuf  2023-03-01  461  	UNWIND_HINT_IRET_ENTRY
-8f93402b92d443 Peter Zijlstra  2022-03-08  462  	ENDBR
-cfa82a00533f70 Thomas Gleixner 2020-02-25  463  	ASM_CLAC
-c64cc2802a784e Lai Jiangshan   2022-04-21  464  	cld
-cfa82a00533f70 Thomas Gleixner 2020-02-25  465  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  466  	pushq	$-1			/* ORIG_RAX: no syscall to restart */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  467  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  468  	/*
-cfa82a00533f70 Thomas Gleixner 2020-02-25  469  	 * If the entry is from userspace, switch stacks and treat it as
-cfa82a00533f70 Thomas Gleixner 2020-02-25  470  	 * a normal entry.
-cfa82a00533f70 Thomas Gleixner 2020-02-25  471  	 */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  472  	testb	$3, CS-ORIG_RAX(%rsp)
-cfa82a00533f70 Thomas Gleixner 2020-02-25  473  	jnz	.Lfrom_usermode_switch_stack_\@
-cfa82a00533f70 Thomas Gleixner 2020-02-25  474  
-c82965f9e53005 Chang S. Bae    2020-05-28  475  	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  476  	call	paranoid_entry
-cfa82a00533f70 Thomas Gleixner 2020-02-25  477  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  478  	UNWIND_HINT_REGS
-cfa82a00533f70 Thomas Gleixner 2020-02-25  479  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  480  	movq	%rsp, %rdi		/* pt_regs pointer */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  481  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  482  	call	\cfunc
-cfa82a00533f70 Thomas Gleixner 2020-02-25  483  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  484  	jmp	paranoid_exit
-cfa82a00533f70 Thomas Gleixner 2020-02-25  485  
-cfa82a00533f70 Thomas Gleixner 2020-02-25  486  	/* Switch to the regular task stack and use the noist entry point */
-cfa82a00533f70 Thomas Gleixner 2020-02-25  487  .Lfrom_usermode_switch_stack_\@:
-e2dcb5f1390715 Thomas Gleixner 2020-05-21  488  	idtentry_body noist_\cfunc, has_error_code=0
-cfa82a00533f70 Thomas Gleixner 2020-02-25  489  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+> =C2=A0drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 5 +++++
+> =C2=A0drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 ++
+> =C2=A02 files changed, 7 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> index ab944010fe14..592f9d726f2e 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> @@ -326,11 +326,14 @@ static enum vop2_data_format vop2_convert_format(u3=
+2
+> format)
+> =C2=A0	case DRM_FORMAT_NV16:
+> =C2=A0	case DRM_FORMAT_NV61:
+> =C2=A0		return VOP2_FMT_YUV422SP;
+> +	case DRM_FORMAT_NV20:
+> =C2=A0	case DRM_FORMAT_Y210:
+> =C2=A0		return VOP2_FMT_YUV422SP_10;
+> =C2=A0	case DRM_FORMAT_NV24:
+> =C2=A0	case DRM_FORMAT_NV42:
+> =C2=A0		return VOP2_FMT_YUV444SP;
+> +	case DRM_FORMAT_NV30:
+> +		return VOP2_FMT_YUV444SP_10;
+> =C2=A0	case DRM_FORMAT_YUYV:
+> =C2=A0	case DRM_FORMAT_YVYU:
+> =C2=A0		return VOP2_FMT_VYUY422;
+> @@ -415,6 +418,8 @@ static bool vop2_win_uv_swap(u32 format)
+> =C2=A0	case DRM_FORMAT_NV16:
+> =C2=A0	case DRM_FORMAT_NV24:
+> =C2=A0	case DRM_FORMAT_NV15:
+> +	case DRM_FORMAT_NV20:
+> +	case DRM_FORMAT_NV30:
+> =C2=A0	case DRM_FORMAT_YUYV:
+> =C2=A0	case DRM_FORMAT_UYVY:
+> =C2=A0		return true;
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+> b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+> index fdb48571efce..0b4280218a59 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+> @@ -48,8 +48,10 @@ static const uint32_t formats_rk356x_esmart[] =3D {
+> =C2=A0	DRM_FORMAT_NV15, /* yuv420_10bit linear mode, 2 plane, no padding
+> */
+> =C2=A0	DRM_FORMAT_NV16, /* yuv422_8bit linear mode, 2 plane */
+> =C2=A0	DRM_FORMAT_NV61, /* yuv422_8bit linear mode, 2 plane */
+> +	DRM_FORMAT_NV20, /* yuv422_10bit linear mode, 2 plane, no padding
+> */
+> =C2=A0	DRM_FORMAT_NV24, /* yuv444_8bit linear mode, 2 plane */
+> =C2=A0	DRM_FORMAT_NV42, /* yuv444_8bit linear mode, 2 plane */
+> +	DRM_FORMAT_NV30, /* yuv444_10bit linear mode, 2 plane, no padding
+> */
+> =C2=A0	DRM_FORMAT_YVYU, /* yuv422_8bit[YVYU] linear mode */
+> =C2=A0	DRM_FORMAT_VYUY, /* yuv422_8bit[VYUY] linear mode */
+> =C2=A0};
