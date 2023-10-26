@@ -2,292 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 964C77D884A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E16E7D8847
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjJZScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
+        id S230143AbjJZSce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZSck (ORCPT
+        with ESMTP id S229501AbjJZScc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:32:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338491BB
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698345158; x=1729881158;
-  h=date:from:to:cc:subject:message-id;
-  bh=tPazXVRT0hUX6KJ6OH9HIFpJmKD6c5/srsGwPo1Exw8=;
-  b=lMBFpKxOt3IbAa3SZk9CJSwS8iMQiP+jj3n/8UHvRzV4xUsU+unWwgq7
-   SAw3Bb4bp07vefWkTDx0O8IkmUDYp7pU9qTK5m1LQaNjpQujgsO31UoVV
-   i3Dmd4BHKpO4vcjthpZXCTOzmHbJbJ+XCLUrGgvNuRbQ5XuCZL/h/RtIB
-   7opNDSe7ZiOi33BLekcMWTBykqeHDbRcgCGFwgVHfcCBhaEypf3OBgcVj
-   9FPMEsIoWOH0Gm12p3HH54RrL9G/iMJdolon6NITjEBS18erou0c2I3QB
-   YLC4VkIO1B3dZjaQIUEjL/NwEdnemkHlptoCZOD1tJ8RRKPkljndNo5td
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="454084034"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="454084034"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 11:32:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="932833912"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="932833912"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 26 Oct 2023 11:32:36 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qw59l-000A2Z-2h;
-        Thu, 26 Oct 2023 18:32:33 +0000
-Date:   Fri, 27 Oct 2023 02:31:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 984ffb6a4366752c949f7b39640aecdce222607f
-Message-ID: <202310270240.HPow4zYY-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 26 Oct 2023 14:32:32 -0400
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C2A1AD
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:32:26 -0700 (PDT)
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1ea1c5774d2so1467834fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:32:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698345146; x=1698949946;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uH0iaPQL/qY+pxogylBAOj8akK6lTqnPteM1oOd1ZeE=;
+        b=n+BbGBkIL1S6xuLw7YyEqH8YMtiduiMdEn2LJoPRPBdFFGC4qru9s7SyL/txwVvm5D
+         qdNcN8fueELjJfMGAgu319zkhBu+6QzzwMC8Yd/KTS6OCJSlUwUAwyRdy3Kl3QbthATr
+         63BmLJK4uKIdlCtH0sScXMxTvMbG2yxFQxjpy9km68JNWcuhDOkf/7uQf9eLcWXhq7gH
+         tI8WFbh2Ra1FKeVy5D52VH7IE6af/K1EUg43GFzfh8H7CuqCNG8Aeenl3la8GF+DVItn
+         0mbrr0QqbkAeUZyyJ/tC0zUECZ1UYZOlUL0Z/x8uJJMxpDKineRUpnTR1er8a8/477sQ
+         A1CA==
+X-Gm-Message-State: AOJu0Yyn8+SMzXQ3nE2g/7MwzFNZ+vtRM1xKAMX6AkZ6b0o6wf5vAw9d
+        zwHvvdgH3rrh/9dPNg48g73GF+3LIdOmaW1Vi5ae3HXaBU0V
+X-Google-Smtp-Source: AGHT+IG0IozWYG8xiBxwgrSIIItH3/pnmPY/Mdpl4/1kn9EY9N/kPmT4/H3gH1Pl0OxbqgaTi6lH3J+eYvR4I02eqssZUwudUZ76
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:1cf:b0:1e9:bebf:3813 with SMTP id
+ n15-20020a05687001cf00b001e9bebf3813mr208395oad.9.1698345145893; Thu, 26 Oct
+ 2023 11:32:25 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 11:32:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000208dc20608a2cbb4@google.com>
+Subject: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in sk_msg_recvmsg
+From:   syzbot <syzbot+84f695756ed0c4bb3aba@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 984ffb6a4366752c949f7b39640aecdce222607f  sched/fair: Remove SIS_PROP
+Hello,
 
-elapsed time: 3455m
+syzbot found the following issue on:
 
-configs tested: 215
-configs skipped: 2
+HEAD commit:    7cf4bea77ab6 Merge tag 'for-6.6-rc6-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b76415680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4436b383d761e86
+dashboard link: https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1780cabd680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157c04fe680000
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-7cf4bea7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8097f65801fe/vmlinux-7cf4bea7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1824f0c42bd6/Image-7cf4bea7.gz.xz
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231024   gcc  
-arc                   randconfig-001-20231025   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            mps2_defconfig   gcc  
-arm                   randconfig-001-20231025   gcc  
-arm                   randconfig-001-20231026   gcc  
-arm                        spear6xx_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231024   gcc  
-i386         buildonly-randconfig-001-20231025   gcc  
-i386         buildonly-randconfig-001-20231026   gcc  
-i386         buildonly-randconfig-002-20231024   gcc  
-i386         buildonly-randconfig-002-20231025   gcc  
-i386         buildonly-randconfig-002-20231026   gcc  
-i386         buildonly-randconfig-003-20231024   gcc  
-i386         buildonly-randconfig-003-20231025   gcc  
-i386         buildonly-randconfig-003-20231026   gcc  
-i386         buildonly-randconfig-004-20231024   gcc  
-i386         buildonly-randconfig-004-20231025   gcc  
-i386         buildonly-randconfig-004-20231026   gcc  
-i386         buildonly-randconfig-005-20231024   gcc  
-i386         buildonly-randconfig-005-20231025   gcc  
-i386         buildonly-randconfig-005-20231026   gcc  
-i386         buildonly-randconfig-006-20231024   gcc  
-i386         buildonly-randconfig-006-20231025   gcc  
-i386         buildonly-randconfig-006-20231026   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231025   gcc  
-i386                  randconfig-001-20231026   gcc  
-i386                  randconfig-002-20231025   gcc  
-i386                  randconfig-002-20231026   gcc  
-i386                  randconfig-003-20231025   gcc  
-i386                  randconfig-003-20231026   gcc  
-i386                  randconfig-004-20231025   gcc  
-i386                  randconfig-004-20231026   gcc  
-i386                  randconfig-005-20231025   gcc  
-i386                  randconfig-005-20231026   gcc  
-i386                  randconfig-006-20231025   gcc  
-i386                  randconfig-006-20231026   gcc  
-i386                  randconfig-011-20231024   gcc  
-i386                  randconfig-011-20231025   gcc  
-i386                  randconfig-011-20231026   gcc  
-i386                  randconfig-012-20231024   gcc  
-i386                  randconfig-012-20231025   gcc  
-i386                  randconfig-012-20231026   gcc  
-i386                  randconfig-013-20231024   gcc  
-i386                  randconfig-013-20231025   gcc  
-i386                  randconfig-013-20231026   gcc  
-i386                  randconfig-014-20231024   gcc  
-i386                  randconfig-014-20231025   gcc  
-i386                  randconfig-014-20231026   gcc  
-i386                  randconfig-015-20231024   gcc  
-i386                  randconfig-015-20231025   gcc  
-i386                  randconfig-015-20231026   gcc  
-i386                  randconfig-016-20231024   gcc  
-i386                  randconfig-016-20231025   gcc  
-i386                  randconfig-016-20231026   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231024   gcc  
-loongarch             randconfig-001-20231025   gcc  
-loongarch             randconfig-001-20231026   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231024   gcc  
-riscv                 randconfig-001-20231025   gcc  
-riscv                 randconfig-001-20231026   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231024   gcc  
-s390                  randconfig-001-20231025   gcc  
-s390                  randconfig-001-20231026   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231024   gcc  
-sparc                 randconfig-001-20231025   gcc  
-sparc                 randconfig-001-20231026   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231024   gcc  
-x86_64       buildonly-randconfig-001-20231025   gcc  
-x86_64       buildonly-randconfig-001-20231026   gcc  
-x86_64       buildonly-randconfig-002-20231024   gcc  
-x86_64       buildonly-randconfig-002-20231025   gcc  
-x86_64       buildonly-randconfig-002-20231026   gcc  
-x86_64       buildonly-randconfig-003-20231024   gcc  
-x86_64       buildonly-randconfig-003-20231025   gcc  
-x86_64       buildonly-randconfig-003-20231026   gcc  
-x86_64       buildonly-randconfig-004-20231024   gcc  
-x86_64       buildonly-randconfig-004-20231025   gcc  
-x86_64       buildonly-randconfig-004-20231026   gcc  
-x86_64       buildonly-randconfig-005-20231024   gcc  
-x86_64       buildonly-randconfig-005-20231025   gcc  
-x86_64       buildonly-randconfig-005-20231026   gcc  
-x86_64       buildonly-randconfig-006-20231024   gcc  
-x86_64       buildonly-randconfig-006-20231025   gcc  
-x86_64       buildonly-randconfig-006-20231026   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231025   gcc  
-x86_64                randconfig-001-20231026   gcc  
-x86_64                randconfig-002-20231025   gcc  
-x86_64                randconfig-002-20231026   gcc  
-x86_64                randconfig-003-20231025   gcc  
-x86_64                randconfig-003-20231026   gcc  
-x86_64                randconfig-004-20231025   gcc  
-x86_64                randconfig-004-20231026   gcc  
-x86_64                randconfig-005-20231025   gcc  
-x86_64                randconfig-005-20231026   gcc  
-x86_64                randconfig-006-20231025   gcc  
-x86_64                randconfig-006-20231026   gcc  
-x86_64                randconfig-011-20231025   gcc  
-x86_64                randconfig-012-20231025   gcc  
-x86_64                randconfig-013-20231025   gcc  
-x86_64                randconfig-014-20231025   gcc  
-x86_64                randconfig-015-20231025   gcc  
-x86_64                randconfig-016-20231025   gcc  
-x86_64                randconfig-071-20231025   gcc  
-x86_64                randconfig-071-20231026   gcc  
-x86_64                randconfig-072-20231025   gcc  
-x86_64                randconfig-072-20231026   gcc  
-x86_64                randconfig-073-20231025   gcc  
-x86_64                randconfig-073-20231026   gcc  
-x86_64                randconfig-074-20231025   gcc  
-x86_64                randconfig-074-20231026   gcc  
-x86_64                randconfig-075-20231025   gcc  
-x86_64                randconfig-075-20231026   gcc  
-x86_64                randconfig-076-20231025   gcc  
-x86_64                randconfig-076-20231026   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                              defconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+84f695756ed0c4bb3aba@syzkaller.appspotmail.com
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+Mem abort info:
+  ESR = 0x0000000097c38006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x06: level 2 translation fault
+Data abort info:
+  Access size = 8 byte(s)
+  SSE = 0, SRT = 3
+  SF = 1, AR = 0
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+user pgtable: 4k pages, 48-bit VAs, pgdp=0000000046851000
+[0000000000000000] pgd=0800000047e00003, p4d=0800000047e00003, pud=080000004684b003, pmd=0000000000000000
+Internal error: Oops: 0000000097c38006 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 3098 Comm: syz-executor448 Not tainted 6.6.0-rc6-syzkaller-00045-g7cf4bea77ab6 #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+pc : page_kasan_tag include/linux/mm.h:1801 [inline]
+pc : lowmem_page_address include/linux/mm.h:2172 [inline]
+pc : kmap_local_page include/linux/highmem-internal.h:185 [inline]
+pc : copy_page_to_iter+0xb0/0x150 lib/iov_iter.c:479
+lr : sk_msg_recvmsg+0xf8/0x37c net/core/skmsg.c:437
+sp : ffff800082b43940
+x29: ffff800082b43940 x28: 0000000000000000 x27: fdff00000526c000
+x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+x23: 0000000000000000 x22: 0000040000000000 x21: ffff000000000000
+x20: 0000000000001000 x19: ffff800082b43d50 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000ffffdf150998
+x14: 000000000000012a x13: 000000000000012a x12: 0000000000000002
+x11: 0000000000000001 x10: b5bbc95fda8a2138 x9 : 9908e50d67e0cf7a
+x8 : f6ff000004f48f88 x7 : 0000000000000000 x6 : f9ff000004e6ed40
+x5 : 0000000000000001 x4 : 0000000000000000 x3 : ffff800082b43d50
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+Call trace:
+ arch_static_branch_jump arch/arm64/include/asm/jump_label.h:38 [inline]
+ kasan_enabled include/linux/kasan-enabled.h:13 [inline]
+ page_kasan_tag include/linux/mm.h:1800 [inline]
+ lowmem_page_address include/linux/mm.h:2172 [inline]
+ kmap_local_page include/linux/highmem-internal.h:185 [inline]
+ copy_page_to_iter+0xb0/0x150 lib/iov_iter.c:479
+ sk_msg_recvmsg+0xf8/0x37c net/core/skmsg.c:437
+ unix_bpf_recvmsg net/unix/unix_bpf.c:73 [inline]
+ unix_bpf_recvmsg+0x13c/0x4f0 net/unix/unix_bpf.c:50
+ unix_dgram_recvmsg+0x30/0x4c net/unix/af_unix.c:2457
+ sock_recvmsg_nosec net/socket.c:1044 [inline]
+ sock_recvmsg net/socket.c:1066 [inline]
+ sock_recvmsg net/socket.c:1062 [inline]
+ ____sys_recvmsg+0x1d0/0x268 net/socket.c:2777
+ ___sys_recvmsg+0x90/0xe8 net/socket.c:2819
+ do_recvmmsg+0xc8/0x2f4 net/socket.c:2913
+ __sys_recvmmsg net/socket.c:2992 [inline]
+ __do_sys_recvmmsg net/socket.c:3015 [inline]
+ __se_sys_recvmmsg net/socket.c:3008 [inline]
+ __arm64_sys_recvmmsg+0xd0/0xec net/socket.c:3008
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
+ el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x40/0x114 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:595
+Code: 8b160320 d346fc00 8b0032a0 d503201f (f9400323) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	8b160320 	add	x0, x25, x22
+   4:	d346fc00 	lsr	x0, x0, #6
+   8:	8b0032a0 	add	x0, x21, x0, lsl #12
+   c:	d503201f 	nop
+* 10:	f9400323 	ldr	x3, [x25] <-- trapping instruction
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
