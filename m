@@ -2,133 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5337D80D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297017D80DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbjJZKfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S230205AbjJZKgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234902AbjJZKfl (ORCPT
+        with ESMTP id S230405AbjJZKgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:35:41 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2075.outbound.protection.outlook.com [40.107.6.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABD518A;
-        Thu, 26 Oct 2023 03:35:35 -0700 (PDT)
+        Thu, 26 Oct 2023 06:36:20 -0400
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01on2092.outbound.protection.outlook.com [40.107.121.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225FD189;
+        Thu, 26 Oct 2023 03:36:17 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aOhzkhev2q+PsGykN9l7ifNnv30PyMZ9HCtZIvjc7ZrkbaPBQmclyxJG1Qq1cLPgHRzEPri7SBp+0Y7Mh2s/8pssvsmFvKTHL4bZsZtgKP4PbJ+901dt/BsKlcctt3UntE/eDzlhcksMtCV8NV9WKRiixxmY9jdWKyocrrt6x0m7GAk3vx7mGZR5Y3eoUnbq19QH2YRuimqBuw5H/QlOoytLQj2r7loD400Nt0hBkpJX7jUH5Z29nsc8UO6TT0E4BQVKFeSyuWitDS3ZfVyR4RoJadrTws1R+i7EOqzoHerDf6iJ/aJ9vseBlz7fjk2aRmc76785TDX6AKjhs/ZYPA==
+ b=mG0Fshx/Vhb6O/6MuRCRvPEG9hYyTIL+UHDynBeaNYzXAC0ZLwYZ9ZpGX/FlIn9+K0pHUh46CADlTgMi6GLi2aD+TjNB42zwN6M1aFOAwTZENbnbsrMnZaDijykP8oEt3Dj9CJant9s0E+oNTpLSVLfAsevWnK/pTE1vZZeE133WYNkH2dsOG8qznUZ/IYt3hbZLchT9Sq+p4Y9GjbMphsEbls7/WmBwypEUFLj/lR7u5gBR1gW9D7e8GK0cHgp2eReNgM7oNCF4VkDaCParUktcrI7yiW2VIRA4DEjOnNfYRgsByqSGFXv2bNg/bdqm8MogLQ9B3qg6YLySG1ZZAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ROhD7u63+9O38SKf9KOBAmIDM+B49aYYL50KeiQ0i0U=;
- b=YACbRHGkBNCbVbzAx4+vW42y76a25GtHg8hW6zVkkn9cW6c6kaiUtfwex8eoNcrCb1ZFpCfoAHhTUblApz3HEXdXgHSS6osF7KMd+Kj+c0zTamNfbmjGus6WLJbEXinzgqO1PCmJ6yUOb9qu+KrtvDuRFKS3lvfl+K/GaG4yoXaNQ0TAECVJ3+xReFGA4eSbCffzGOyRN7U3XAjimpDD+FmDS0ubLHfFU+TVGJHC/7+xv1tahfkWi6COsI3mYpx0hKDw9hKCxK6wX7BmOW7RfttH9usAWpfwOZbJ9T/q2bzAKonfjya9H1nAE/jvln+1D4O5BlZsVSbeWwRqEYpcQQ==
+ bh=vHfwMIwJc6un10nuK1mblB0eOJMlqa7OBIEYvuwUhdA=;
+ b=eX44g7P/QdxFk46yECytgYydkFAMGxyQ9KxVPoGuH0IXIKtDlHZLoEqLYongJjYD48d4Ocr+ZNnrrFmKmzo+Hx+x8CVCJZD3YzAPGsYPegSUkssJ8kKSm7bz+QTc0bhdAMjwYH18g0gJjdZRRs/DdOyWKLBlH72Otq6GbCtlVTSSf2aQO/Qsm1qPyGJBKMr5E88h3KFQkyh0wwv5+oYpZc4/Hd/GM2+4NPPAjqCv1Oc+PPiXtNsif38LYmv8AO/a5S7pjMS2aEi0CYLiUZUSk/kzsEDfVg5CHjhgTFQE8anWmBQN6z2gEzWyxNmt8YZSZwfCaJjzwXACrRIWddOTdQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ROhD7u63+9O38SKf9KOBAmIDM+B49aYYL50KeiQ0i0U=;
- b=rXNtloMHAsl71RS0VbhUDPCFxqjvLd+Fz1S/SjOC+fYJF/R4GOJvjJoNmS/PAfX9bZd1boSbcbaiBM5Cnij5LtcPU48taoY0dObsEBirvfGYyZV+ed22o58OydGsomyg+K8AstC7u+2iB5+iy04y9g9kckH1oK1VgNN2OhdmDZI=
+ bh=vHfwMIwJc6un10nuK1mblB0eOJMlqa7OBIEYvuwUhdA=;
+ b=qCamM+jR6okZA9mHUY3Y6e2PtWYXNPj2jo7pAAE4Bwr8u7DJFDBxLSIDsREa0YKogOW+ek2uG/eTthlZ2InubEAmBsUF5aji/CabGqvkOSQzwQQbREnCLkiTP4sWwMtLwOoFrUCIyO+tXV5LEa02U3PdeEz4+S3D7SCgrtQ6pfg=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PA6PR08MB10624.eurprd08.prod.outlook.com (2603:10a6:102:3d2::10) with
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by LO0P265MB5407.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:245::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
- 2023 10:35:32 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::a309:1d65:f5fb:436b]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::a309:1d65:f5fb:436b%6]) with mapi id 15.20.6933.019; Thu, 26 Oct 2023
- 10:35:32 +0000
-Message-ID: <94113169-710b-4088-a2d0-ad70842bb887@wolfvision.net>
-Date:   Thu, 26 Oct 2023 12:35:29 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
- property
-Content-Language: en-US
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
- <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
- <20231025222327c0b5d460@mail.local>
- <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
- <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
- <20231026005008b8255799@mail.local>
- <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
- <202310260956166bdcb845@mail.local>
- <d3dcb034-f589-41bb-8a67-1de8ce51db8c@wolfvision.net>
- <202310261021467b56f131@mail.local>
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <202310261021467b56f131@mail.local>
-Content-Type: text/plain; charset=UTF-8
+ 2023 10:36:14 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::6331:81d5:43cc:a9a2]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::6331:81d5:43cc:a9a2%6]) with mapi id 15.20.6933.019; Thu, 26 Oct 2023
+ 10:36:14 +0000
+Date:   Thu, 26 Oct 2023 11:36:10 +0100
+From:   Gary Guo <gary@garyguo.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        kent.overstreet@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        elver@google.com, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC] rust: types: Add read_once and write_once
+Message-ID: <20231026113610.1425be1b@eugeo>
+In-Reply-To: <20231026081345.GJ31411@noisy.programming.kicks-ass.net>
+References: <20231025195339.1431894-1-boqun.feng@gmail.com>
+        <20231026081345.GJ31411@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR04CA0050.eurprd04.prod.outlook.com
- (2603:10a6:802:2::21) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+X-ClientProxiedBy: LO4P123CA0552.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:319::14) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PA6PR08MB10624:EE_
-X-MS-Office365-Filtering-Correlation-Id: 80d3aea8-7288-4503-d7ba-08dbd60f4793
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO0P265MB5407:EE_
+X-MS-Office365-Filtering-Correlation-Id: c03f7c35-f11b-4491-9734-08dbd60f60f6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BVDB1WwtmYycKVvhmsc0bg8dLGpDoO0ErIN/nFHzYXWXAyuZ0UMH0vbdRgcEi8JJnsmKscEEJCeRAMiz4PvAFF+jZUJTcSfs5z69hnw3fgwQ37310ZY1vDNryCVmgn+E76Hgpo1h4+EvPKPyIJLK5FaiyudK5wEGPdvXypFgRZ/BQj5r7sjgxF5NKn3d4wCtrUz+9xQb/eKQNzYUUdnH5QemCdRS8WfZwJIVFTQBIRkUSPyYH0bjzg+HG0cldwZK9z/c0fTjAZLQGmMzyQkKLj3JBmdahhpFfEt/R3g4rbWQlO+EELDezNqQ95tsr0o+9TplarwkmWZLNoFn/OjmZ2J8dBtyLuklzh1byRfP+HEyf90bNfSa3tD1eMjgnWjwVjDTDr/WwBDtIJqYS3TScTpQKY72l8HXfIZctgZMMfhn1JfMMoRpP741+rqEtzS579vhqQBXrfLSxJpmj0fRbK1u9e/kdqhIBUC3FSIC8fVI2SjdGuPhrNASIzowrjf010wutTvL499nWzw3k6rCUNN701t0gSM8IBSxApOupQLKX9Og6mdfg0bp/lMWAcrjI9WX+FjAhYcVTgzRyUlLfTgiv7ndH+ZGFs3uZWGhZW8zIb+zotVa5OvfOG8Ik8/H+O2+MfpYYgkg4J2lb0zdOQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39850400004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(31686004)(5660300002)(38100700002)(2906002)(44832011)(41300700001)(31696002)(36756003)(86362001)(8676002)(8936002)(4326008)(478600001)(2616005)(6916009)(66556008)(6506007)(316002)(66476007)(6666004)(66946007)(54906003)(83380400001)(6486002)(53546011)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: qZPEXaGrl03SQklEBTw1rWSVoO6BPKV6EAxbL6+pnDd4oM7Cq/D0bBZYc2Zpwdv33usECNuKJVu9qanGuyh99ZG1llh6juGYFUAAcQS9nMondYFCex71BiAea6cwU+vO7R38CMKCNGtpeIK+piv6HFvexv1ww1w+xBNguFDQRBmhno3m+vLTPjkUmulZ2BxFlToe1ry8V6q14JJKo3Fv3QpAcJQWFhN3d1bdx4pzgLd3JDjP09ckLtQW+nU4Grs1MZ/PbFQ33Ahsh9gcifwMRHTsQ5qIo9JsTaS6CUq2nJsr2C7fop1mZQUOHES/druPOcUYcC27eYkWM95ytaaMtMqgayHt8cXxW48tM3sQUXu/krZVEgAv3Yf2yy7tz0dahlcr5/Szc89o8J9/osv63Pz1iTyatMwr6m5H9EiTWxfxVL67CmducE2levCPwZhU67LmkvdiZHWsIbmK09bPdRf3eMaQm8SLAF6Ho2hi9oezaILUuIUStbMQakWxnXhrgouZCSvc0eRwkPQIgtGOKHh/pWAT9CukqcSBpRd3KFkZDph/+QDP6n2Ppidm0tiQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(39830400003)(136003)(396003)(366004)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(41300700001)(8936002)(8676002)(6486002)(4326008)(7406005)(86362001)(7416002)(2906002)(478600001)(5660300002)(54906003)(66476007)(66946007)(316002)(66556008)(6916009)(33716001)(6512007)(26005)(1076003)(83380400001)(9686003)(38100700002)(6506007)(6666004);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cHNmblA3RzhBTk54elN1YUpRM2hENDBOMXcxaktXMUxkZ3hhaEo4aFNSL01m?=
- =?utf-8?B?OFVQY1JzaVFCUTNDcS83TkV5K25mQ0FnWGlMRndXQ0hULzd5QXU2d2FHc3pQ?=
- =?utf-8?B?NzVFb1JBVm5MckpDc1lUMllOMytBNTBycFE5TFVPemJKNDlOR3lPWXF2eTBl?=
- =?utf-8?B?ak1WdTJ3R3JhckpPUC9tM1VOOTNxS1RRQjgyMjNqVUduV0o0eTZ0Qjh1aHhO?=
- =?utf-8?B?TWszc2daWXJ2SW91cTIxM0Q0YlphTEZvc1VNYklpM2tVd0VrYnpvcTZkdnB0?=
- =?utf-8?B?aDA5eks2NVl0YVBsbDdNVk9hVDk0Y0R0K1hrQTBLdldNM1ppWnIybXdOU0VY?=
- =?utf-8?B?dFp1ang3SEY3MDN4SjVBWGxlaHRUb0ZiOFJZOGZaclFwVXhQbERGY01LM3Fz?=
- =?utf-8?B?U0xmckU5TFJvWmtNUU5oSjFaVjA3Smk0SStXWXdRbUN4OU5YMHhmQzFuMVkv?=
- =?utf-8?B?MHFBaUI4T2l1VzZ2d0s4bFhkV0JHK1NZVlh1emJGVldVQ0JsbFFJdTJjSTEz?=
- =?utf-8?B?bHVYTzJYU0NWMGQ3V0xOeVRVTEJ3RVovdUtVbmlTaWh3N2s1bDVrNU43NWJ4?=
- =?utf-8?B?NjF2VXlJOVEvRUsreERxVGk3Q1RZUjZXRGx0clpNSTc3aDdpYnhrWUVHWi9z?=
- =?utf-8?B?RGhpVWJRUmR5dnlPK2JZeGJJc25OU2UwVzA0WWZXc2JLSXhuUmFuLytvd0No?=
- =?utf-8?B?d3l4ejdqdER5dFAxWjQ2WERlNWE1TmtRVSs1Nk1GMGtwUlF6ZHZkQVQ5dTgr?=
- =?utf-8?B?SzZMYnlBZlZheFpiUW9SU3hXdnZmWDZPQlZXV0t4Wkc1MitncFVGU1FScDRD?=
- =?utf-8?B?VkUxZk1UNlBBVGpSRVNLbktwM2ttRWExdGJBUGJYM0pVdXRsald2a0JPY0tr?=
- =?utf-8?B?NitYMkpmZ2EweEF5bnRQaStCVXpXZnRSdTh6QlNxajlQdEU2TDJrVXR3ZXlu?=
- =?utf-8?B?b3MzWitCOVhBT1RZRzBmVDV0ZUdES2VPUy83SmRHTHlBMmJhaWVxNXVQYVNP?=
- =?utf-8?B?Q21EK3d6cmxpSk1kSENyNlVGQUJSSTFUKzJWdFUxRWxxNmM2eSs2VWlwUlF1?=
- =?utf-8?B?Wm92WFg0UkF1RnNJSEp3NDI2NURjdWwzNmZ6RzVIeXhGbHVMS1FVRk5BY0M3?=
- =?utf-8?B?Mnh2TTFudGwvL1c5UFZvbSt2VDMrbFZLdXB1dU1BYXVxL0pQNjVNbnlIclZL?=
- =?utf-8?B?UjcyUjNOQnBtR3p6dDhXYjlzYWsrdUlmNmJ0STh3ZEZmbzdhdlg2UkxvTUZs?=
- =?utf-8?B?TjB3OWNLZVlNVjBZZ21iZUpneXdXMHU2VWdteWxWOSt0WGQ4am5HLzlteGp1?=
- =?utf-8?B?YU9hQ1lHSjgrRStxRlJWaFFRaVZkM00rYWcvUFJXOE11dTdOUmRGczdhS1BJ?=
- =?utf-8?B?d20rUmxrOHJSOUduS1BvOHBaTDdISG5VcnRNRGRkY0R3cnVEOGxWMWRPcTBr?=
- =?utf-8?B?RllqYXVjSmp6U29PKzd0YUlmL0xia2M2NVpGMnYyRlZSbHkyS0hBV0xBUFNl?=
- =?utf-8?B?U0wxQ1NZdG5XbHp6UXoyeTU0a3MxSXh1UlZ3bHRaakVKdVV6dCtJZ2tNb3I5?=
- =?utf-8?B?M3Y3aFJ4SGw5U1MyRFBsYUd6aTluVmlGVVYyNHZWMXZ4Smh5UVlWWFdKWDVN?=
- =?utf-8?B?MnlLMzVqL01vckFhVmo0Qjd5d3JzRUZPdmJZYktrTjBGNUp1MmlISEJjRklD?=
- =?utf-8?B?OVpGWjhUUUNSQjFJUDZuLzg4SWhBVC93dE1yTStqdFdYbWVLendsSm1kUGUv?=
- =?utf-8?B?M25tM2dXZS9QQTd2L0FMM29oQk1wQXZRUDN5U3FUQmwyOEdpSU9YdUpvZ3Jl?=
- =?utf-8?B?OTFGMUJFc2lvYWM4c29NY3RhT2U1RUkvV3ZsNCtRV0Z2V29MODdab3BQUHMr?=
- =?utf-8?B?UzJoN2NqQnUveWM0ZytLT2tocG9ud1BmdkJzaEQyU3YrUGt2czFkYXQ5aXVx?=
- =?utf-8?B?YW9MR3RmZUpsbGo5NWpETSsxRWIrMkVLeTNXN2JWellsSWxZc01ZNmVsb1No?=
- =?utf-8?B?VVhHSVVZdmhxLzBVSVJDNWh4djhZYnY4UnRsK2pmdDFYNkRwQnRKYTYrZkwr?=
- =?utf-8?B?WUNNVWtKTjI2Q21qbkZiZnpLTjlnYU9ZS3dRbktKMFYxZ0hCT2gvbTBXM2Fa?=
- =?utf-8?B?MVA4T3VveTF1SXFSQ2lERjgwRG4vTHVkWVBSaEo1ZW5vaEtIelJDQThWWmZU?=
- =?utf-8?B?VG5reXVKMmd4VWk4N3gyaGdUSDVHUXpIZE1QbWhQWVMvUGhOcXJHOW1pZFdE?=
- =?utf-8?Q?Eaw3gSFcw2dtjUdAe5ChJefyD+IGAZjPUOG9Dnnk18=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80d3aea8-7288-4503-d7ba-08dbd60f4793
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1qm6QcojY0Pw4/OXoN7TPsgKSthuxNwSig/Dso/q8GEQIzFKtAf1qTAXrYal?=
+ =?us-ascii?Q?jFATVLiecR6sQ2t3tPXf68lAtoPkp10VZo2u3/3Xd/PAFYJ+7fDsCz/XVQ6J?=
+ =?us-ascii?Q?ztFiLvyTw4F37Ywz/lZ+g0sleFKv08pVhkHNCLZxY2dFOrZID3DRS/csJG5M?=
+ =?us-ascii?Q?iokkC0IVWf5Hvyd6acs8DVxWvvYz7L5KiKgooFmNXKzvxcEkdfvGMEeP7gI8?=
+ =?us-ascii?Q?1kewnQBY0c/D7GA90HvNXnU661oSsdcq5rxWjvOPWwyN4JFzTad8LUlyBBd3?=
+ =?us-ascii?Q?o+yi2pwdozRdLp8LPSuF05GE3iaz04C0+a7ejbrwyD9VVzGb8VdvoOg1WuSU?=
+ =?us-ascii?Q?BIRn4CSntKFFLDAIELH5GXGjnxZeSIBa/I25sZp6/zHiSn0xHk4KRFOYb0g4?=
+ =?us-ascii?Q?3qJJbhwMrr0NQvSaHIOtODFWEo9bFb8nhZHxjD3rJyaNHEhMXkq2EuUPdi5Z?=
+ =?us-ascii?Q?w6j/8eAsj+eQ/ayBoOUxJQrLXrhzk9VyhrLLUZboEKxp5FuQ4h42trJxhSBg?=
+ =?us-ascii?Q?+p7dbtkkxmw04LxWagAuvSAHKYLxKEAk2y0H293FfVfks7x7Z/bKK4cYNCPF?=
+ =?us-ascii?Q?ifkUe3oxUg0tNHhi9Ed55zKd/MFbYPq2jmshv0raKunz2LUl25N7yhpYttLq?=
+ =?us-ascii?Q?GlRm+Y5f0bM489daygaUHWv45B7IqUi72iMXLsgJ0csCENjpvM2cyhiryk6t?=
+ =?us-ascii?Q?0pKhEZs5F18ejGpomnwXuT+BmpcAEtTtENmSKZ6zHHoNE084zeSjkN0LNYCT?=
+ =?us-ascii?Q?kBMW/7xZRONd5HYdpIe/uulLKFUlRy19gCn8mxSbzUBZ5o6GZfgI3PMvCMiR?=
+ =?us-ascii?Q?PUBAT1uX+AI6jGRr+DNbA+SS9QnISQBiZn2U0PytikSN0ENK0OsEhOiKSmRQ?=
+ =?us-ascii?Q?Mu+UHEFIhVrIUuxK/fgDCxDmLze9/7Py0lWQ4cr3GJlunFGv8p5WB9re819x?=
+ =?us-ascii?Q?t43i3vkMku0AnfqhfluavIh7jPmtKhXRlQ2KpfSH9rpU6/LxlMVvTIeFfkdf?=
+ =?us-ascii?Q?LXkVwV8o5YBrHBeEg9zcQc80q8/Me/jFT/16rDxE/bBaoGmj8sxYDEGzjqjm?=
+ =?us-ascii?Q?3GODno99nzPWBR2A6nTfDlmdFHPXyMTYxUo24qSiGVCjkF8vNo3L77q0k+3U?=
+ =?us-ascii?Q?FHPhCb0sYDCVVRUp8/e4ghapkU2my8A7NszvW4b3KpUxoeWyCVhBvXFLSId9?=
+ =?us-ascii?Q?Jv2rst7LhQvB2UAO4U+sUDi5mdClAKLxxNbDeZxOe7e5oyWm6peJpoqohvpN?=
+ =?us-ascii?Q?IYrZbds4bKtmD552LiBnHZCXVJUp5CbttJzKTflLD8rCsnrLuWMADj+lSkzy?=
+ =?us-ascii?Q?rHkEhR3P2fkDUHrZf3u5b6i7YqhuJyXaCrElXur5Ya+sb+Z/j+CxvZvIfR/Z?=
+ =?us-ascii?Q?pRXntq/bNbMiFXtvttAjC85hVPBfk+uoyC1WMZwDRSzjAF3cL7zzi5jtt3Lq?=
+ =?us-ascii?Q?ac03Yh+QlN3U9rrds61sgtqGh2GIBUUiCnbMBMU56P9U4MmsNYZHRvNQk9rR?=
+ =?us-ascii?Q?q6Sb9R78NtvYOHlnQp6b6PBrIOMWY8xOwZejSP87828GkfzsH+kFK1zwQQfR?=
+ =?us-ascii?Q?TsX4PEjKhmTCs6XISXqFMojIXhd8DSgmbecEhw14?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: c03f7c35-f11b-4491-9734-08dbd60f60f6
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 10:35:31.9004
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 10:36:14.4023
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G4Rhuu2arZRweZJdcHGR9EcJJLJHnYGXk0frjc/Tc6ESD/7uLoCFkEMbER735f7TLnN4AuNZog6Wy3qVBQjYdte9+0QOCOvj92Yk3sEgbmQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA6PR08MB10624
+X-MS-Exchange-CrossTenant-UserPrincipalName: WR6BWMCcaeDvqz2Q09TunQlzzaef9xkLFCeOiOE3dyjVnuqPB8hrcjE4L3QlVNF7W5aQUCndce8sCggSy5eh2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB5407
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
@@ -139,36 +144,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.10.23 12:21, Alexandre Belloni wrote:
-> On 26/10/2023 12:13:23+0200, Javier Carrasco wrote:
->> I want to model the INTA pin as a clock source that only should run in
->> sleep mode because its clock is only used in that mode. Therefore I want
->> the pin to stay in hi-Z during normal operation.
+On Thu, 26 Oct 2023 10:13:45 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Wed, Oct 25, 2023 at 12:53:39PM -0700, Boqun Feng wrote:
+> > In theory, `read_volatile` and `write_volatile` in Rust can have UB in
+> > case of the data races [1]. However, kernel uses volatiles to implement
+> > READ_ONCE() and WRITE_ONCE(), and expects races on these marked accesses
+> > don't cause UB. And they are proven to have a lot of usages in kernel.
+> > 
+> > To close this gap, `read_once` and `write_once` are introduced, they
+> > have the same semantics as `READ_ONCE` and `WRITE_ONCE` especially
+> > regarding data races under the assumption that `read_volatile` and
+> > `write_volatile` have the same behavior as a volatile pointer in C from
+> > a compiler point of view.
+> > 
+> > Longer term solution is to work with Rust language side for a better way
+> > to implement `read_once` and `write_once`. But so far, it should be good
+> > enough.  
 > 
-> Can you disclose what is the user of the clock, do you have a driver for
-> this device?
+> So the whole READ_ONCE()/WRITE_ONCE() thing does two things we care
+> about (AFAIR):
 > 
-It is a Rockchip PMU through its CLK32K_IN pin. I can't disclose the
-exact model (yet) though, but the use case is that the PMU can run with
-the RTC clock connected to that pin in low-power modes.
-That pin is configured in the proper mode and maybe it could be
-configured differently with pinctrl in "default" mode, but the RTC INTA
-would still output the clock, which is what I want to avoid in this
-particular case.
-I just want to stop the clock at the RTC end i.e. write PIN_IO_INTA_HIZ
-into the PIN_IO_INTAPM.
->>
->> I do not want to get any interrupts from the INTA pin and the battery
->> mode indication is not relevant for me either. I do not know the CCF
->> mechanism in other RTCs though, but I think that the hi-Z mode
->> accomplishes exactly what I described.The assumption about the battery
->> mode is therefore beyond my knowledge, but my first reaction is that we
->> already have the hi-Z for that.
->>
->> So in the end I just need a mechanism to configure INTA as hi-Z, which
->> the driver still does not support. There is another application where
->> the clock output is not required even though it is physically connected,
->> so hi-Z is again an interesting mode and the battery mode would be
->> available if it ever becomes relevant for anyone.
->>
+>  - single-copy-atomicy; this can also be achieved using the C11
+>    __atomic_load_n(.memorder=__ATOMIC_RELAXED) /
+>    __atomic_store_n(.memorder=__ATOMIC_RELAXED) thingies.
 > 
+>  - the ONCE thing; that is inhibits re-materialization, and here I'm not
+>    sure C11 atomics help, they might since re-reading an atomic is
+>    definitely dodgy -- after all it could've changed.
+> 
+> Now, traditionally we've relied on the whole volatile thing simply
+> because there was no C11, or our oldest compiler didn't do C11. But
+> these days we actually *could*.
+> 
+> Now, obviously C11 has issues vs LKMM, but perhaps the load/store
+> semantics are near enough to be useful.  (IIRC this also came up in the
+> *very* long x86/percpu thread)
+> 
+> So is there any distinction between the volatile load/store and the C11
+> atomic load/store that we care about and could not Rust use the atomic
+> load/store to avoid their UB ?
+
+There's two reasons that we are using volatile read/write as opposed to
+relaxed atomic:
+* Rust lacks volatile atomics at the moment. Non-volatile atomics are
+  not sufficient because the compiler is allowed (although they
+  currently don't) optimise atomics. If you have two adjacent relaxed
+  loads, they could be merged into one.
+* Atomics only works for integer types determined by the platform. On
+  some 32-bit platforms you wouldn't be able to use 64-bit atomics at
+  all, and on x86 you get less optimal sequence since volatile load is
+  permitted to tear while atomic load needs to use LOCK CMPXCHG8B.
+* Atomics doesn't work for complex structs. Although I am not quite sure
+  of the value of supporting it.
+
