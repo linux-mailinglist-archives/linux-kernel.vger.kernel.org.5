@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAEF7D8573
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0717C7D8579
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345374AbjJZPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S1345356AbjJZPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbjJZPCd (ORCPT
+        with ESMTP id S1345381AbjJZPDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:02:33 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318FA187
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:02:31 -0700 (PDT)
-Received: from [127.0.0.1] (unknown [154.135.84.71])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id B3A986FB;
-        Thu, 26 Oct 2023 17:02:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1698332546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GIq7VKze7/YNlHMTHO1501ppnVinYDbNtzevWz67otA=;
-        b=mwnfwqBdp+eT/hf0Iro83+z7Ih6IJQ+4AipPLZq9fCEfdSLFl3IcdCH3GKmN08MRc7tEyH
-        D6k1GbUg197kRFHWWFZxbKngq9yCqQ1g+TageTzc2LUHrMN+UUdNZRVoXsKuB8uCf5MWul
-        T1prrv7QW1+Bzibu+6xgYJigWV9Sgt3RXVAcNHvb33J8pYFv7i7LtIwaB5zuOPGeNIREIn
-        Th1HNvaQ0ZIPChyUBWyveZmgGjvN+vYzi8wfbw0WuUkFSX3WqrdBa7kRHOUM03DNDQkpWR
-        iTbvF3Qhr0WcVpzij52oioK3rtNnAPh55T/VLTCkpNBEIsmASMXrVySB98oNww==
-Date:   Thu, 26 Oct 2023 18:02:20 +0300
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <pratyush@kernel.org>,
-        AceLan Kao <acelan.kao@canonical.com>
-CC:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <mafs0fs1xmrit.fsf@kernel.org>
-References: <20231026012017.518610-1-acelan.kao@canonical.com> <mafs0fs1xmrit.fsf@kernel.org>
-Message-ID: <8D87B330-8FA1-46BE-949E-5A8DFB8AACF3@walle.cc>
+        Thu, 26 Oct 2023 11:03:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A20C129
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9JXxaYRYmSkXZPyr8is9yL820vMXmViHhclzJzT9u/0=; b=gBpFbiWzvbN93E3gafQXCGxQBO
+        ZSRav/VBD5HLDT8ZoEjvC6BQx9M8rOSPOl3QEL2PxZUica4i+xwjVcn61jv2Jx2gZfK1q0foO3Lo3
+        Oiypa5M9U9YPf+fSJx49QNhrGHCSW4bZi3PDLdVfh1eP6sabdCH0WNYIoW/iplHVq31ZtUdXFe7ir
+        M3edVB7Rp+rv3K3V2yPu3pG8/v0iWRs7lui6RKLdd0ZNHVXDWnwfwcoWsFCYKh/FqvZzvC+1EZKja
+        L1LFoF4WrZX2K+RdI3adZpZsKsMB/6MVURIeoSKdNGqSQp5dSTJxdSHyuYxycLNdlEagrQyB+NcXP
+        hHT0qaPQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qw1tP-00HPi2-0s;
+        Thu, 26 Oct 2023 15:03:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E9257300473; Thu, 26 Oct 2023 17:03:26 +0200 (CEST)
+Date:   Thu, 26 Oct 2023 17:03:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+Cc:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        mst@redhat.com, michael.christie@oracle.com,
+        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
+        npiggin@gmail.com, shakeelb@google.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Oleg Nesterov <oleg@redhat.com>, dhowells@redhat.com
+Subject: Re: [PATCH] Fixing directly deferencing a __rcu pointer warning
+Message-ID: <20231026150326.GA33303@noisy.programming.kicks-ass.net>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+ <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026122748.359162-1-singhabhinav9051571833@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,41 +59,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 26=2E Oktober 2023 16:39:54 OESZ schrieb Pratyush Yadav <pratyush@kernel=
-=2Eorg>:
->On Thu, Oct 26 2023, AceLan Kao wrote:
->
->> From: "Chia-Lin Kao (AceLan)" <acelan=2Ekao@canonical=2Ecom>
->>
->> When the software reset command isn't supported, we now report it
->> as an informational message(dev_info) instead of a warning(dev_warn)=2E
->> This adjustment helps avoid unnecessary alarm and confusion regarding
->> software reset capabilities=2E
->
->I still think the soft reset command deserves a warn, and not an info=2E
->Because it _is_ a bad thing if you need to soft reset and are unable to
->do so=2E Your bootloader (or linux if you rmmod and modprobe again) might
->not be able to detect the flash mode and operate it properly=2E=20
 
-agreed=2E=2E but=2E=2E=20
+$Subject should indicate a subsystem, also you seem to have a somewhat
+random collection of Cc. It looks like dhowells is the cred guy and he's
+not on.
 
->I think we should just not unconditionally run this and instead only
->call it when the flash reset is not connected -- that is only call this
->under a check for SNOR_F_BROKEN_RESET, like we do for 4-byte addressing
->mode=2E
+On Thu, Oct 26, 2023 at 05:57:48PM +0530, Abhinav Singh wrote:
+> This patch fixes the warning about directly dereferencing a pointer
+> tagged with __rcu annotation.
+> 
+> Dereferencing the pointers tagged with __rcu directly should
+> always be avoided according to the docs. There is a rcu helper
+> functions rcu_dereference(...) to use when dereferencing a __rcu
+> pointer. This functions returns the non __rcu tagged pointer which
+> can be dereferenced just like a normal pointers.
+> 
+> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> ---
+>  kernel/fork.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 10917c3e1f03..802b7bbe3d92 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+>  
+>  	retval = -EAGAIN;
+>  	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+> -		if (p->real_cred->user != INIT_USER &&
+> +		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
+>  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+>  			goto bad_fork_cleanup_count;
+>  	}
 
-=2E=2E keep in mind that this is a restriction of the flash controller=2E =
-the Intel one seems to be the only affected one (for now) and it's doing a =
-reset (according to mika) on its own=2E=20
+This seems entirely misguided and only makes the code more confusing.
 
-snor_broken_reset is a property of the flash=2E=20
+AFAICT at this point @p is not life, we're constructing the new task,
+but it's not yet published, therefore no concurrency possible.
+Additionally we're not actually in an RCU critical section afaict.
 
+> @@ -2692,7 +2692,7 @@ __latent_entropy struct task_struct *copy_process(
+>  			 */
+>  			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+>  							 p->real_parent->signal->is_child_subreaper;
+> -			list_add_tail(&p->sibling, &p->real_parent->children);
+> +			list_add_tail(&p->sibling, &(rcu_dereference(p->real_parent)->children));
+>  			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+>  			attach_pid(p, PIDTYPE_TGID);
+>  			attach_pid(p, PIDTYPE_PGID);
 
->I don't have a strong opposition to this patch but I do think it is
->fixing the problem in the wrong place=2E
-
-if the flash controller doesn't let you issue a soft reset (or does so on =
-its own), what's the fix?
-
--michael=20
-
+As to the real_parent, we hold the tasklist lock, which is the write
+side lock for parent stuff, so rcu dereference is pointless here.
