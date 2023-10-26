@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB44F7D7D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9837D7D04
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbjJZGqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 02:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
+        id S1343564AbjJZGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 02:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbjJZGqf (ORCPT
+        with ESMTP id S229518AbjJZGrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 02:46:35 -0400
-Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD3A110E;
-        Wed, 25 Oct 2023 23:46:31 -0700 (PDT)
-Message-ID: <8441f987-cf40-b254-ed95-bd9a894ec6de@postmarketos.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
-        s=donut; t=1698302788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GdUw7FXJa1/MNHUyjI19mQt/B38JsgdBRy7vlg7v/Tg=;
-        b=IT1RxCxjqrnlgIM4wubSJx7mkzfP1vGFfPO3f6lxLEyIMOH9Wty7Rk9Y7RvD1zDF/avEti
-        x4reBqQ6smZprJVJiiPJm/64CMWiEr0+OJfg/vot8q6gtloDP+0XQGQra4UtZqK2BjcOhI
-        QTJYFRgZOTcsMAmFrMOjTyKilqrr9wI=
-Date:   Thu, 26 Oct 2023 09:46:27 +0300
+        Thu, 26 Oct 2023 02:47:37 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC79810E;
+        Wed, 25 Oct 2023 23:47:34 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39Q6lLEP103335;
+        Thu, 26 Oct 2023 01:47:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698302841;
+        bh=/vlzh3Yc/MucFOUR1SOQLgHkbnNGyX3rEQeGRfo0TiQ=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=UtbE3rnCXfJF2e4QegRDfHH4myXrP4lORPqqf4UxgmlU2J52OY9v8U8Iz2mf5Tssy
+         y/0oo3tnhTe6sDMHJhTftjYZ8Q98olP1KMPcrDnd5LDamDScLDoUdPalVJ+qYiN3Rv
+         O6D7jA+cfvkJSr4Sepz7cLBD/VeqXw/rR0gICCWs=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39Q6lLCd007285
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 26 Oct 2023 01:47:21 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 26
+ Oct 2023 01:47:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 26 Oct 2023 01:47:21 -0500
+Received: from [10.24.69.29] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39Q6lH6Q006204;
+        Thu, 26 Oct 2023 01:47:18 -0500
+Message-ID: <e8271648-e29f-80d2-4896-2d0d5c951c6f@ti.com>
+Date:   Thu, 26 Oct 2023 12:17:17 +0530
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ASoC: qcom: sc7180: Add support for qdsp6 baked sound
-To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231020-sc7180-qdsp-sndcard-v1-0-157706b7d06f@trvn.ru>
- <20231020-sc7180-qdsp-sndcard-v1-2-157706b7d06f@trvn.ru>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: boot: dts: ti: k3-am62a-main: Fix GPIO pin count
+ in DT nodes.
 Content-Language: en-US
-From:   Anton Bambura <jenneron@postmarketos.org>
-In-Reply-To: <20231020-sc7180-qdsp-sndcard-v1-2-157706b7d06f@trvn.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Nishanth Menon <nm@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231025110252.1089979-1-n-yadav@ti.com>
+ <20231025155743.nk7un6pvib7swtxg@decorator>
+From:   Nitin Yadav <n-yadav@ti.com>
+In-Reply-To: <20231025155743.nk7un6pvib7swtxg@decorator>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,324 +71,66 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 10/20/23 18:33, Nikita Travkin wrote:
-> Some sc7180 devices use audio adsp to play sound. The setup for this
-> adsp is similar to the dirrect lpass usage but requires the use of
-> different link ids and clocks.
->
-> This commit adds support for the qdsp based audio, reusing the common
-> parts like audio codec setup and jack creation.
->
-> Since the setup is mostly generic and codec specific setup is guarded
-> behind a check, a generic compatible is added, similar to other
-> platforms. Even though those changes target Acer Aspire 1 as the only
-> user of the adsp audio on this platform present upstream at the moment
-> of the commit, those changes should be either dirrectly compatible or
-> trivially expandable to the other devices that will be added in the
-> future.
->
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 
-Tested that sound still works on lazor chromebook
+On 25/10/23 21:27, Nishanth Menon wrote:
+> On 16:32-20231025, Nitin Yadav wrote:
+>> Fix number of gpio pins in main_gpio0 & main_gpio1 DT nodes according
+>> to AM62a SK datasheet. The Link of datasheet is in the following line:
+> 
+> SK? line?
+> 
+> Please rephrase above and just mention the section of the data sheet to
+> refer to.
+> 
+>>
+>> https://www.ti.com/lit/gpn/am62a3
+>>
+>> Section: 6.3.10 GPIO (Page No. 52-55)
+> 
+>>
+>> Fixes: '5fc6b1b62639c ("arm64: dts: ti: Introduce AM62A7 family of SoCs")'
+> 
+> What is the single quote for?
+> Also note the additional comment in the list to drop the extra EoL.
+> 
+> 
+> Did you check the MCU and WKUP GPIO count as well? if there are bugs
+> around it, fix it in a single commit please.
+yes, checked they are good.
+> 
+>>
+>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+>> index 3198af08fb9f..de36abb243f1 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+>> @@ -462,7 +462,7 @@ main_gpio0: gpio@600000 {
+>>  			     <193>, <194>, <195>;
+>>  		interrupt-controller;
+>>  		#interrupt-cells = <2>;
+>> -		ti,ngpio = <87>;
+>> +		ti,ngpio = <92>;
+>>  		ti,davinci-gpio-unbanked = <0>;
+>>  		power-domains = <&k3_pds 77 TI_SCI_PD_EXCLUSIVE>;
+>>  		clocks = <&k3_clks 77 0>;
+>> @@ -480,7 +480,7 @@ main_gpio1: gpio@601000 {
+>>  			     <183>, <184>, <185>;
+>>  		interrupt-controller;
+>>  		#interrupt-cells = <2>;
+>> -		ti,ngpio = <88>;
+>> +		ti,ngpio = <52>;
+>>  		ti,davinci-gpio-unbanked = <0>;
+>>  		power-domains = <&k3_pds 78 TI_SCI_PD_EXCLUSIVE>;
+>>  		clocks = <&k3_clks 78 0>;
+>> -- 
+>> 2.25.1
+>>
+> 
 
-Tested-by: Anton Bambura <jenneron@postmarketos.org>
-
-> ---
->   sound/soc/qcom/sc7180.c | 195 ++++++++++++++++++++++++++++++++++++++++++------
->   1 file changed, 173 insertions(+), 22 deletions(-)
->
-> diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-> index 8e433e309f77..b0320a74d508 100644
-> --- a/sound/soc/qcom/sc7180.c
-> +++ b/sound/soc/qcom/sc7180.c
-> @@ -5,6 +5,7 @@
->   // sc7180.c -- ALSA SoC Machine driver for SC7180
->   
->   #include <dt-bindings/sound/sc7180-lpass.h>
-> +#include <dt-bindings/sound/qcom,q6afe.h>
->   #include <linux/gpio.h>
->   #include <linux/gpio/consumer.h>
->   #include <linux/module.h>
-> @@ -19,8 +20,10 @@
->   #include "../codecs/rt5682.h"
->   #include "../codecs/rt5682s.h"
->   #include "common.h"
-> +#include "qdsp6/q6afe.h"
->   
->   #define DEFAULT_MCLK_RATE		19200000
-> +#define MI2S_BCLK_RATE			1536000
->   #define RT5682_PLL1_FREQ (48000 * 512)
->   
->   #define DRIVER_NAME "SC7180"
-> @@ -133,12 +136,28 @@ static int sc7180_init(struct snd_soc_pcm_runtime *rtd)
->   	return 0;
->   }
->   
-> -static int sc7180_snd_startup(struct snd_pcm_substream *substream)
-> +static int sc7180_qdsp_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_card *card = rtd->card;
-> -	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
->   	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +
-> +	switch (cpu_dai->id) {
-> +	case PRIMARY_MI2S_RX:
-> +		return sc7180_headset_init(rtd);
-> +	case PRIMARY_MI2S_TX:
-> +	case TERTIARY_MI2S_RX:
-> +		return 0;
-> +	case DISPLAY_PORT_RX:
-> +		return sc7180_hdmi_init(rtd);
-> +	default:
-> +		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-> +			cpu_dai->id);
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int sc7180_startup_realtek_codec(struct snd_soc_pcm_runtime *rtd)
-> +{
->   	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
->   	int pll_id, pll_source, pll_in, pll_out, clk_id, ret;
->   
-> @@ -154,8 +173,40 @@ static int sc7180_snd_startup(struct snd_pcm_substream *substream)
->   		clk_id = RT5682S_SCLK_S_PLL2;
->   		pll_out = RT5682_PLL1_FREQ;
->   		pll_in = DEFAULT_MCLK_RATE;
-> +	} else {
-> +		return 0;
-> +	}
-> +	snd_soc_dai_set_fmt(codec_dai,
-> +			    SND_SOC_DAIFMT_BC_FC |
-> +			    SND_SOC_DAIFMT_NB_NF |
-> +			    SND_SOC_DAIFMT_I2S);
-> +
-> +	/* Configure PLL1 for codec */
-> +	ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source,
-> +				  pll_in, pll_out);
-> +	if (ret) {
-> +		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> +		return ret;
->   	}
->   
-> +	/* Configure sysclk for codec */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, clk_id, pll_out,
-> +				     SND_SOC_CLOCK_IN);
-> +	if (ret)
-> +		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
-> +			ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sc7180_snd_startup(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +	int ret;
-> +
->   	switch (cpu_dai->id) {
->   	case MI2S_PRIMARY:
->   		if (++data->pri_mi2s_clk_count == 1) {
-> @@ -165,30 +216,66 @@ static int sc7180_snd_startup(struct snd_pcm_substream *substream)
->   					       SNDRV_PCM_STREAM_PLAYBACK);
->   		}
->   
-> -		snd_soc_dai_set_fmt(codec_dai,
-> -				    SND_SOC_DAIFMT_BC_FC |
-> -				    SND_SOC_DAIFMT_NB_NF |
-> -				    SND_SOC_DAIFMT_I2S);
-> -
-> -		/* Configure PLL1 for codec */
-> -		ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source,
-> -					  pll_in, pll_out);
-> -		if (ret) {
-> -			dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> +		ret = sc7180_startup_realtek_codec(rtd);
-> +		if (ret)
->   			return ret;
-> +
-> +		break;
-> +	case MI2S_SECONDARY:
-> +		break;
-> +	case LPASS_DP_RX:
-> +		break;
-> +	default:
-> +		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-> +			cpu_dai->id);
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int sc7180_qdsp_snd_startup(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
-> +	int ret;
-> +
-> +	switch (cpu_dai->id) {
-> +	case PRIMARY_MI2S_RX:
-> +	case PRIMARY_MI2S_TX:
-> +		if (++data->pri_mi2s_clk_count == 1) {
-> +			snd_soc_dai_set_sysclk(cpu_dai,
-> +					       Q6AFE_LPASS_CLK_ID_MCLK_1,
-> +					       DEFAULT_MCLK_RATE,
-> +					       SNDRV_PCM_STREAM_PLAYBACK);
-> +			snd_soc_dai_set_sysclk(cpu_dai,
-> +					       Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
-> +					       MI2S_BCLK_RATE,
-> +					       SNDRV_PCM_STREAM_PLAYBACK);
->   		}
->   
-> -		/* Configure sysclk for codec */
-> -		ret = snd_soc_dai_set_sysclk(codec_dai, clk_id, pll_out,
-> -					     SND_SOC_CLOCK_IN);
-> +		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_BP_FP);
-> +
-> +		ret = sc7180_startup_realtek_codec(rtd);
->   		if (ret)
-> -			dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
-> -				ret);
-> +			return ret;
->   
->   		break;
-> -	case MI2S_SECONDARY:
-> +	case TERTIARY_MI2S_RX:
-> +		snd_soc_dai_set_sysclk(cpu_dai,
-> +				       Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT,
-> +				       MI2S_BCLK_RATE,
-> +				       SNDRV_PCM_STREAM_PLAYBACK);
-> +
-> +		snd_soc_dai_set_fmt(codec_dai,
-> +				SND_SOC_DAIFMT_BC_FC |
-> +				SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_I2S);
-> +		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_BP_FP);
->   		break;
-> -	case LPASS_DP_RX:
-> +	case DISPLAY_PORT_RX:
->   		break;
->   	default:
->   		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-> @@ -246,6 +333,42 @@ static void sc7180_snd_shutdown(struct snd_pcm_substream *substream)
->   	}
->   }
->   
-> +static void sc7180_qdsp_snd_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +
-> +	switch (cpu_dai->id) {
-> +	case PRIMARY_MI2S_RX:
-> +	case PRIMARY_MI2S_TX:
-> +		if (--data->pri_mi2s_clk_count == 0) {
-> +			snd_soc_dai_set_sysclk(cpu_dai,
-> +					       Q6AFE_LPASS_CLK_ID_MCLK_1,
-> +					       0,
-> +					       SNDRV_PCM_STREAM_PLAYBACK);
-> +			snd_soc_dai_set_sysclk(cpu_dai,
-> +					       Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
-> +					       0,
-> +					       SNDRV_PCM_STREAM_PLAYBACK);
-> +		}
-> +		break;
-> +	case TERTIARY_MI2S_RX:
-> +		snd_soc_dai_set_sysclk(cpu_dai,
-> +				       Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT,
-> +				       0,
-> +				       SNDRV_PCM_STREAM_PLAYBACK);
-> +		break;
-> +	case DISPLAY_PORT_RX:
-> +		break;
-> +	default:
-> +		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-> +			cpu_dai->id);
-> +		break;
-> +	}
-> +}
-> +
->   static int sc7180_adau7002_init(struct snd_soc_pcm_runtime *rtd)
->   {
->   	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> @@ -294,11 +417,30 @@ static int sc7180_adau7002_snd_startup(struct snd_pcm_substream *substream)
->   	return 0;
->   }
->   
-> +static int sc7180_qdsp_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-> +				     struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_interval *rate = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_RATE);
-> +	struct snd_interval *channels = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_CHANNELS);
-> +
-> +	rate->min = rate->max = 48000;
-> +	channels->min = channels->max = 2;
-> +
-> +	return 0;
-> +}
-> +
->   static const struct snd_soc_ops sc7180_ops = {
->   	.startup = sc7180_snd_startup,
->   	.shutdown = sc7180_snd_shutdown,
->   };
->   
-> +static const struct snd_soc_ops sc7180_qdsp_ops = {
-> +	.startup = sc7180_qdsp_snd_startup,
-> +	.shutdown = sc7180_qdsp_snd_shutdown,
-> +};
-> +
->   static const struct snd_soc_ops sc7180_adau7002_ops = {
->   	.startup = sc7180_adau7002_snd_startup,
->   };
-> @@ -354,7 +496,7 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
->   	struct snd_soc_dai_link *link;
->   	int ret;
->   	int i;
-> -	bool no_headphone = false;
-> +	bool qdsp = false, no_headphone = false;
->   
->   	/* Allocate the private data */
->   	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> @@ -390,6 +532,8 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
->   		no_headphone = true;
->   		card->dapm_widgets = sc7180_adau7002_snd_widgets;
->   		card->num_dapm_widgets = ARRAY_SIZE(sc7180_adau7002_snd_widgets);
-> +	} else if (of_device_is_compatible(dev->of_node, "qcom,sc7180-qdsp6-sndcard")) {
-> +		qdsp = true;
->   	}
->   
->   	ret = qcom_snd_parse_of(card);
-> @@ -400,6 +544,12 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
->   		if (no_headphone) {
->   			link->ops = &sc7180_adau7002_ops;
->   			link->init = sc7180_adau7002_init;
-> +		} else if (qdsp) {
-> +			if (link->no_pcm == 1) {
-> +				link->ops = &sc7180_qdsp_ops;
-> +				link->be_hw_params_fixup = sc7180_qdsp_be_hw_params_fixup;
-> +				link->init = sc7180_qdsp_init;
-> +			}
->   		} else {
->   			link->ops = &sc7180_ops;
->   			link->init = sc7180_init;
-> @@ -412,6 +562,7 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
->   static const struct of_device_id sc7180_snd_device_id[]  = {
->   	{.compatible = "google,sc7180-trogdor"},
->   	{.compatible = "google,sc7180-coachz"},
-> +	{.compatible = "qcom,sc7180-qdsp6-sndcard"},
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, sc7180_snd_device_id);
->
+-- 
+Regards,
+Nitin
