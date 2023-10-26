@@ -2,77 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2646C7D7BDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 06:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D92F7D7BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 06:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjJZErI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 00:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
+        id S1344178AbjJZEte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 00:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZErG (ORCPT
+        with ESMTP id S233186AbjJZEta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 00:47:06 -0400
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [IPv6:2001:41d0:203:375::b1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4DD186
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 21:46:59 -0700 (PDT)
-Message-ID: <b81ae275-d3ac-4565-a09a-4a5ce38fadf1@monoid.al>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monoid.al; s=key1;
-        t=1698295616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dWQZkHYXLmutNyQ8PYxc+IjS1GTW1S8m/4JSjcGgWt8=;
-        b=mIek29YMPuCv3/CU8N/wj68n3+LJmA6uur7Ky7YrrEY6WZIlSiVVqYpzxvzEpcTDhGDTQb
-        EZi21mQhqEPJHULedHV+JQf7LCJWP2YZswdQoCrWbs+1Jn9SYitTGEG1WGhkY7bvZ+MeC7
-        kz7uJIskjpEloG8Xm50J9d4FcIo/Cu1lK2+H55nHFzOTc7iJ/nv2dCTwFnrqZuoHFpGU+E
-        ACRsYxm8cNlWIeQMfYh6lRewzPzW6m/bzO9JIpXzPPYFHiPN2JcCvfcXkozU3G+B/R0eLC
-        eHoLQf0SpeJuLFjhM+UmaR1Ht8KsOJ4GpFQV+YBUtlxmneN1cRzCsdFaQcCYVw==
-Date:   Thu, 26 Oct 2023 12:46:14 +0800
+        Thu, 26 Oct 2023 00:49:30 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92225186;
+        Wed, 25 Oct 2023 21:49:27 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q3QZAE025980;
+        Thu, 26 Oct 2023 04:48:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=hn7mI5XFOG6K7jwuqiR0Ffa6KjespaUDl8gFI+U8m5A=;
+ b=les9P+WuPjyeIKUADLKxK3l/09OfKF3PEzo2QZxA0L2uAF9BQU4LeCIG6sYGbeJ06baJ
+ 71rJQytzxd+JqConSvP66cXNEspbXBYxPpcLmPxbKFwVTmA5GgYY1sU1Q/0TgezZTzay
+ pQcpoMhXd2qN/KilxGLNwjqxRBPv/Se6/tKqxPFLW/nONAlfx+XhcA8uzjVjSTBi0m+y
+ RmDwdaESTf0A2w5Eqok6w55Rq2bt3UWy7bTIuH3z99aWMVfDZlbgdcY3NusFLtTYLSr+
+ +XLfRfDdK83n7765TGPT4EDXo66Iu2PLumiFJvBiFxyzhPvdA4z9hwb7QlYUh97+LjYI tw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyfm9g636-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 04:48:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39Q4muAc014492
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 04:48:56 GMT
+Received: from [10.216.34.174] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
+ 2023 21:48:49 -0700
+Message-ID: <ac44de13-f4e0-4bae-b06b-af90fadaa96c@quicinc.com>
+Date:   Thu, 26 Oct 2023 10:18:27 +0530
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Ellie Hermaszewska <kernel@monoid.al>
-Subject: Re: Re: [PATCH v2] hwmon: (asus-ec-sensors) add ROG Crosshair X670E
- Gene.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] dma-buf: heaps: Initialise MediaTek secure heap
+To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+ <20230911023038.30649-5-yong.wu@mediatek.com>
+ <5d806772-a2b4-4304-be45-7c2ed2930fcc@quicinc.com>
+ <c8bf01a083182fdc83742de8daad8c5ce8d56d5b.camel@mediatek.com>
 Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     eugene.shalygin@gmail.com, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAB95QAR-UbfVULOCaZMO4H1AgvzbiHEoSYk-DiYPY6Pg-i7Vag@mail.gmail.com>
- <20231019135640.434752-1-kernel@monoid.al>
- <d013e9a3-df0a-4b8f-a1f3-db3cbd32812f@roeck-us.net>
-In-Reply-To: <d013e9a3-df0a-4b8f-a1f3-db3cbd32812f@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+From:   Vijayanand Jitta <quic_vjitta@quicinc.com>
+In-Reply-To: <c8bf01a083182fdc83742de8daad8c5ce8d56d5b.camel@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pGxxlDuuSPDcqHECPGkRKbpmHIVzrNfa
+X-Proofpoint-GUID: pGxxlDuuSPDcqHECPGkRKbpmHIVzrNfa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_01,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 clxscore=1015 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310260038
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/23 03:35, Guenter Roeck wrote:
- > This is not an acceptable commit description.
 
-This is not acceptable feedback.
 
-I am unable to accept it because it is not clear to me what you think
-should be changed.
+On 10/20/2023 3:29 PM, Yong Wu (吴勇) wrote:
+> On Thu, 2023-10-19 at 10:15 +0530, Vijayanand Jitta wrote:
+>>  	 
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>  
+>>
+>> On 9/11/2023 8:00 AM, Yong Wu wrote:
+>>> Initialise a mtk_svp heap. Currently just add a null heap, Prepare
+>> for
+>>> the later patches.
+>>>
+>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>>> ---
+>>>  drivers/dma-buf/heaps/Kconfig           |  8 ++
+>>>  drivers/dma-buf/heaps/Makefile          |  1 +
+>>>  drivers/dma-buf/heaps/mtk_secure_heap.c | 99
+>> +++++++++++++++++++++++++
+>>>  3 files changed, 108 insertions(+)
+>>>  create mode 100644 drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>
+>>> diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-
+>> buf/heaps/Kconfig
+>>> index a5eef06c4226..729c0cf3eb7c 100644
+>>> --- a/drivers/dma-buf/heaps/Kconfig
+>>> +++ b/drivers/dma-buf/heaps/Kconfig
+>>> @@ -12,3 +12,11 @@ config DMABUF_HEAPS_CMA
+>>>    Choose this option to enable dma-buf CMA heap. This heap is
+>> backed
+>>>    by the Contiguous Memory Allocator (CMA). If your system has
+>> these
+>>>    regions, you should say Y here.
+>>> +
+>>> +config DMABUF_HEAPS_MTK_SECURE
+>>> +bool "DMA-BUF MediaTek Secure Heap"
+>>> +depends on DMABUF_HEAPS && TEE
+>>> +help
+>>> +  Choose this option to enable dma-buf MediaTek secure heap for
+>> Secure
+>>> +  Video Path. This heap is backed by TEE client interfaces. If in
+>>> +  doubt, say N.
+>>> diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-
+>> buf/heaps/Makefile
+>>> index 974467791032..df559dbe33fe 100644
+>>> --- a/drivers/dma-buf/heaps/Makefile
+>>> +++ b/drivers/dma-buf/heaps/Makefile
+>>> @@ -1,3 +1,4 @@
+>>>  # SPDX-License-Identifier: GPL-2.0
+>>>  obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)+= system_heap.o
+>>>  obj-$(CONFIG_DMABUF_HEAPS_CMA)+= cma_heap.o
+>>> +obj-$(CONFIG_DMABUF_HEAPS_MTK_SECURE)+= mtk_secure_heap.o
+>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c b/drivers/dma-
+>> buf/heaps/mtk_secure_heap.c
+>>> new file mode 100644
+>>> index 000000000000..bbf1c8dce23e
+>>> --- /dev/null
+>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>> @@ -0,0 +1,99 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * DMABUF mtk_secure_heap exporter
+>>> + *
+>>> + * Copyright (C) 2023 MediaTek Inc.
+>>> + */
+>>> +
+>>> +#include <linux/dma-buf.h>
+>>> +#include <linux/dma-heap.h>
+>>> +#include <linux/err.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/slab.h>
+>>> +
+>>> +/*
+>>> + * MediaTek secure (chunk) memory type
+>>> + *
+>>> + * @KREE_MEM_SEC_CM_TZ: static chunk memory carved out for
+>> trustzone.
+>>> + */
+>>> +enum kree_mem_type {
+>>> +KREE_MEM_SEC_CM_TZ = 1,
+>>> +};
+>>> +
+>>> +struct mtk_secure_heap_buffer {
+>>> +struct dma_heap*heap;
+>>> +size_tsize;
+>>> +};
+>>> +
+>>> +struct mtk_secure_heap {
+>>> +const char*name;
+>>> +const enum kree_mem_type mem_type;
+>>> +};
+>>> +
+>>> +static struct dma_buf *
+>>> +mtk_sec_heap_allocate(struct dma_heap *heap, size_t size,
+>>> +      unsigned long fd_flags, unsigned long heap_flags)
+>>> +{
+>>> +struct mtk_secure_heap_buffer *sec_buf;
+>>> +DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
+>>> +struct dma_buf *dmabuf;
+>>> +int ret;
+>>> +
+>>> +sec_buf = kzalloc(sizeof(*sec_buf), GFP_KERNEL);
+>>
+>> As we know, kzalloc can only allocate 4MB at max. So, secure heap has
+>> this limitation.
+>> can we have a way to allocate more memory in secure heap ? maybe
+>> similar to how system heap does?
+> 
+> This is just the size of a internal structure. I guess you mean the
+> secure memory size here. Regarding secure memory allocating flow, our
+> flow may be different with yours.
+> 
+> Let me explain our flow, we have two secure buffer types(heaps).
+> a) mtk_svp
+> b) mtk_svp_cma which requires the cma binding.
+> 
+> The memory management of both is inside the TEE. We only need to tell
+> the TEE which type and size of buffer we want, and then the TEE will
+> perform and return the memory handle to the kernel. The
+> kzalloc/alloc_pages is for the normal buffers.
+> 
+> Regarding the CMA buffer, we only call cma_alloc once, and its
+> management is also within the TEE.
+> 
 
-Is it because I misplaced the message to Eugene? Is it because of the
-Greek characters? Is is not descriptive enough of the change, or in the
-wrong tense, or has incorrect punctuation? Do I need to include my
-testing methodology?
+Thanks for the details.
 
-If it's only something minor, then please also feel free to correct it
-yourself before applying. If you can't or it's not something minor,
-then please let me know what ought to change and I can try to correct it.
+I see for mvp_svp, allocation is also specific to TEE, as TEE takes
+care of allocation as well. 
 
-If you don't let me know, then I will have to guess and possibly waste 
-everyone's time further.
+I was thinking if allocation path can also be made generic ? without having
+dependency on TEE.
+For eg : A case where we want to allocate from kernel and secure that memory,
+the current secure heap design can't be used. 
 
-Ellie
+Also i suppose TEE allocates contiguous memory for mtk_svp ? or does it support
+scattered memory ?
+
+>>
+>> Thanks,
+>> Vijay
+>>
