@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B457D81D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E997D81D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344802AbjJZLcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
+        id S1344806AbjJZLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZLcH (ORCPT
+        with ESMTP id S230322AbjJZLcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:32:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E771AA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698319885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=nJbwl958YvMAt8AOX88IKj5/m57DLKb+0w4F53bET/o=;
-        b=PHgjGQ0iqi2dXNgSlS0fxYzk5/fRqKBWyItO8WgcFayp1ncO65KDkUSPIswy584MaGktvZ
-        w45oCjo+HVYUqQQqfkQc7fQ4sf+/WD1M6lu36dUwhzn9yaxxkWcQQGn+yMvax7uZpuI9J1
-        pYgmR/kiJM4oAML/KYdgj7Sn01+z1Ps=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-382-wxelN0EVNUeqOSyCIXCWMw-1; Thu, 26 Oct 2023 07:31:17 -0400
-X-MC-Unique: wxelN0EVNUeqOSyCIXCWMw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DAC53811E7B;
-        Thu, 26 Oct 2023 11:31:16 +0000 (UTC)
-Received: from thuth-p1g4.redhat.com (unknown [10.39.195.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DB75492BE7;
-        Thu, 26 Oct 2023 11:31:15 +0000 (UTC)
-From:   Thomas Huth <thuth@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>, linux-hexagon@vger.kernel.org,
-        bcain@quicinc.com
-Cc:     linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH] hexagon: Remove CONFIG_HEXAGON_ARCH_VERSION from uapi header
-Date:   Thu, 26 Oct 2023 13:31:14 +0200
-Message-ID: <20231026113114.195854-1-thuth@redhat.com>
+        Thu, 26 Oct 2023 07:32:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A7E1BE
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698319941; x=1729855941;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=h5ApP6E4jqcaA/SORBcECnrNuDYb/izJkywcCwQJGys=;
+  b=R8XXdTUIDXnilpDCwfepGCGU2KHDNrWro+O+XMC0hpAKtaO5M3OByUiu
+   WNcIeKti4/1efu7bRZqq2tgGyuoXZEavWJnHaFp4ys7GDSOS35TyJZapT
+   HgFvDcc1T25Zhe9x/WwDBz6H+K3Sn68mKtD0nhTenytQW0j817WsqNzwe
+   rGTD7wcpolZ4ZtBIXYvhVWU86NS24/sW2Xcc8wHgtpPZSVg7U4lI5gecP
+   CRLreUyOwSq92ooDf7VNTA6qdKYXpbiCsMBwgI4BP4AqdEZLiWUyYIQLU
+   u/H+efE3t1Z6EKL4johBYNRUfaW5g0Lj6OrOKoOLHx1MCnCwsw/WQEKBy
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="332030"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="332030"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 04:32:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="7244087"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 26 Oct 2023 04:32:08 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvyb2-0009kA-0q;
+        Thu, 26 Oct 2023 11:32:16 +0000
+Date:   Thu, 26 Oct 2023 19:31:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: Re: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
+Message-ID: <202310261904.cWDKcVh8-lkp@intel.com>
+References: <20231026073440.6724-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+In-Reply-To: <20231026073440.6724-1-zajec5@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uapi headers should not expose CONFIG switches since they are not
-available in userspace. Fix it in arch/hexagon/include/uapi/asm/user.h
-by always defining the cs0 and cs1 entries instead of pad values.
+Hi Rafał,
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- Based-on: <20231025073802.117625-1-thuth@redhat.com>
+kernel test robot noticed the following build warnings:
 
- Compile tested only (with CONFIG_HEXAGON_ARCH_VERSION set to 2
- and with CONFIG_HEXAGON_ARCH_VERSION set to 4)
+[auto build test WARNING on soc/for-next]
+[also build test WARNING on linus/master v6.6-rc7 next-20231026]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- arch/hexagon/include/uapi/asm/user.h | 7 +------
- arch/hexagon/kernel/ptrace.c         | 7 +++++--
- scripts/headers_install.sh           | 1 -
- 3 files changed, 6 insertions(+), 9 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Rafa-Mi-ecki/nvmem-brcm_nvram-store-a-copy-of-NVRAM-content/20231026-153630
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20231026073440.6724-1-zajec5%40gmail.com
+patch subject: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310261904.cWDKcVh8-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310261904.cWDKcVh8-lkp@intel.com/reproduce)
 
-diff --git a/arch/hexagon/include/uapi/asm/user.h b/arch/hexagon/include/uapi/asm/user.h
-index 7327ec59b22f..abae6a4b5813 100644
---- a/arch/hexagon/include/uapi/asm/user.h
-+++ b/arch/hexagon/include/uapi/asm/user.h
-@@ -56,15 +56,10 @@ struct user_regs_struct {
- 	unsigned long pc;
- 	unsigned long cause;
- 	unsigned long badva;
--#if CONFIG_HEXAGON_ARCH_VERSION < 4
--	unsigned long pad1;  /* pad out to 48 words total */
--	unsigned long pad2;  /* pad out to 48 words total */
--	unsigned long pad3;  /* pad out to 48 words total */
--#else
-+	/* cs0 and cs1 are only available with HEXAGON_ARCH_VERSION >= 4 */
- 	unsigned long cs0;
- 	unsigned long cs1;
- 	unsigned long pad1;  /* pad out to 48 words total */
--#endif
- };
- 
- #endif
-diff --git a/arch/hexagon/kernel/ptrace.c b/arch/hexagon/kernel/ptrace.c
-index 125f19995b76..905b06790ab7 100644
---- a/arch/hexagon/kernel/ptrace.c
-+++ b/arch/hexagon/kernel/ptrace.c
-@@ -74,7 +74,7 @@ static int genregs_set(struct task_struct *target,
- 		   unsigned int pos, unsigned int count,
- 		   const void *kbuf, const void __user *ubuf)
- {
--	int ret;
-+	int ret, ignore_offset;
- 	unsigned long bucket;
- 	struct pt_regs *regs = task_pt_regs(target);
- 
-@@ -111,12 +111,15 @@ static int genregs_set(struct task_struct *target,
- #if CONFIG_HEXAGON_ARCH_VERSION >=4
- 	INEXT(&regs->cs0, cs0);
- 	INEXT(&regs->cs1, cs1);
-+	ignore_offset = offsetof(struct user_regs_struct, pad1);
-+#else
-+	ignore_offset = offsetof(struct user_regs_struct, cs0);
- #endif
- 
- 	/* Ignore the rest, if needed */
- 	if (!ret)
- 		user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
--			offsetof(struct user_regs_struct, pad1), -1);
-+					  ignore_offset, -1);
- 	else
- 		return ret;
- 
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index c3064ac31003..f7d9b114de8f 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
- arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
- arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
- arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
--arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
- arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310261904.cWDKcVh8-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'dev' not described in 'brcm_nvram'
+>> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'cells' not described in 'brcm_nvram'
+>> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'ncells' not described in 'brcm_nvram'
+
+
+vim +36 drivers/nvmem/brcm_nvram.c
+
+3fef9ed0627af3 Rafał Miłecki 2021-03-30  19  
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  20  /**
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  21   * struct brcm_nvram - driver state internal struct
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  22   *
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  23   * @nvmem_size:		Size of the whole space available for NVRAM
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  24   * @data:		NVRAM data copy stored to avoid poking underlaying flash controller
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  25   * @data_len:		NVRAM data size
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  26   * @padding_byte:	Padding value used to fill remaining space
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  27   */
+3fef9ed0627af3 Rafał Miłecki 2021-03-30  28  struct brcm_nvram {
+3fef9ed0627af3 Rafał Miłecki 2021-03-30  29  	struct device *dev;
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  30  	size_t nvmem_size;
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  31  	uint8_t *data;
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  32  	size_t data_len;
+6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  33  	uint8_t padding_byte;
+6e977eaa8280e9 Rafał Miłecki 2022-02-25  34  	struct nvmem_cell_info *cells;
+6e977eaa8280e9 Rafał Miłecki 2022-02-25  35  	int ncells;
+6e977eaa8280e9 Rafał Miłecki 2022-02-25 @36  };
+6e977eaa8280e9 Rafał Miłecki 2022-02-25  37  
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
