@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC9F7D8799
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892707D879B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbjJZReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
+        id S231127AbjJZRfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 13:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZRd7 (ORCPT
+        with ESMTP id S229649AbjJZRfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:33:59 -0400
+        Thu, 26 Oct 2023 13:35:51 -0400
 Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7348DC1;
-        Thu, 26 Oct 2023 10:33:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B39FC1;
+        Thu, 26 Oct 2023 10:35:49 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 05FAD735;
-        Thu, 26 Oct 2023 17:33:55 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 05FAD735
+        by ms.lwn.net (Postfix) with ESMTPSA id 2BD43735;
+        Thu, 26 Oct 2023 17:35:49 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2BD43735
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1698341636; bh=x58EWngCurg6BZuzfeiK9njHyHbP6dkg4xxTox6g3GQ=;
+        t=1698341749; bh=88tT+BSRKu9apz5iLOkI7cLfj6OUX7X+73QCF9M4/1g=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WjlT0kprjMdxOpD6IYawOkrnRKrDgKM+jKnE9/K2bI4rn5GSNGIbv6P/cSTiOyrWL
-         wwrOIf9WRnjLwG++XlBwleUpx1jUwsFzW418Ow+nX1X3bZETJWuTlnfCYc38S4BG3L
-         QhEtW22Pra5bRsTel0GAUQvcbn3D9g4RxhbGUsrb0hJqIyyewUP/breSOhDXLdN7iN
-         A95OSzvreDaAou1gmrCKjFuAEhKfmBmDrCPPDXJTIa2fMztc3964aDe8sYXtZ4vAHI
-         HD3fiYB84yqX3FqNjbc7/TWPTanGLKpeO2kEPjlx0BlEd6C6cxsYF7bbfz3Z0kmRS5
-         Lovh4dHr+ijuw==
+        b=FV9B7I4Z9w1LmrS6SpdN4Bf5vdgnYaII7isGI5tGdxoITKvTFd92durYJmC9J5Nyn
+         e5JNYjBkHOWUCoSnicccdsju0hC+Y/8hXKEoiWgj/JKCF9cwXw0PfZFtMV17n21+Vw
+         OzMd7PY05H9Ej1pHHplFQDf8ZVSQ9UTekNd7CHWsad2VdyVGlEIc//aMcF4Bc2+1IU
+         C18Waa85fBwxjm7TAyL3MZ0ahJyYxEGYBT8kkOGKOqQjivvxnd2Chd8koB485UAfZu
+         pphQy6guOeML6geJqvUo+Y4YYUzMpyUwLgxLyJ1m9ibomW5YJOOjTf0IeI2vlT2dzH
+         R7NuF5HO92YiA==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Tang Yizhou <yizhou.tang@shopee.com>, houtao1@huawei.com,
-        jack@suse.cz, bvanassche@acm.org, kch@nvidia.com
-Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yingfu.zhou@shopee.com, yizhou.tang@shopee.com,
-        chunguang.xu@shopee.com
-Subject: Re: [PATCH v2] doc: blk-ioprio: Bring the doc in line with the
- implementation
-In-Reply-To: <20231012024228.2161283-1-yizhou.tang@shopee.com>
-References: <20231012024228.2161283-1-yizhou.tang@shopee.com>
-Date:   Thu, 26 Oct 2023 11:33:55 -0600
-Message-ID: <87jzr970fw.fsf@meer.lwn.net>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] speakup: Document USB support
+In-Reply-To: <20231020181059.7rtj2csi7t6vorrm@begin>
+References: <20231020181059.7rtj2csi7t6vorrm@begin>
+Date:   Thu, 26 Oct 2023 11:35:48 -0600
+Message-ID: <87fs1x70cr.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -55,31 +50,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tang Yizhou <yizhou.tang@shopee.com> writes:
+Samuel Thibault <samuel.thibault@ens-lyon.org> writes:
 
-> From: Tang Yizhou <yizhou.tang@shopee.com>
+> Speakup has been supporting USB for a while already.
 >
-> Our system administrator have noted that the names 'rt-to-be' and
-> 'all-to-idle' in the I/O priority policies table appeared without
-> explanations, leading to confusion. Let's bring these names in line
-> with the naming in the 'attribute' section.
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 >
-> Additionally,
-> 1. Correct the interface name to 'io.prio.class'.
-> 2. Add a table entry of 'promote-to-rt' for consistency.
-> 3. Fix a typo of 'priority'.
->
-> Suggested-by: Yingfu Zhou <yingfu.zhou@shopee.com>
-> Reviewed-by: Hou Tao <houtao1@huawei.com>
-> Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
-> ---
-> v2:
-> Accept Bart's suggestion and rename the title of the patch.
-> Pick up Tao's Reviewed-by tag.
->
->  Documentation/admin-guide/cgroup-v2.rst | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+> diff --git a/Documentation/admin-guide/spkguide.txt b/Documentation/admin-guide/spkguide.txt
+> index 74ea7f391942..0d5965138f8f 100644
+> --- a/Documentation/admin-guide/spkguide.txt
+> +++ b/Documentation/admin-guide/spkguide.txt
+> @@ -7,7 +7,7 @@ Last modified on Mon Sep 27 14:26:31 2010
+>  Document version 1.3
+>  
+>  Copyright (c) 2005  Gene Collins
+> -Copyright (c) 2008  Samuel Thibault
+> +Copyright (c) 2008, 2023  Samuel Thibault
+>  Copyright (c) 2009, 2010  the Speakup Team
+>  
+>  Permission is granted to copy, distribute and/or modify this document
+> @@ -83,8 +83,7 @@ spkout -- Speak Out
+>  txprt -- Transport
+>  dummy -- Plain text terminal
+>  
+> -Note: Speakup does * NOT * support usb connections!  Speakup also does *
+> -NOT * support the internal Tripletalk!
+> +Note: Speakup does * NOT * support the internal Tripletalk!
+>  
+>  Speakup does support two other synthesizers, but because they work in
+>  conjunction with other software, they must be loaded as modules after
+> @@ -94,6 +93,12 @@ These are as follows:
+>  decpc -- DecTalk PC (not available at boot up)
+>  soft -- One of several software synthesizers (not available at boot up)
+>  
+> +By default speakup looks for the synthesizer on the ttyS0 serial port. This can
+> +be changed with the device parameter of the modules, for instance for
+> +DoubleTalk LT:
+> +
+> +speakup_ltlk.dev=ttyUSB0
+> +
 
-I've applied this, thanks.
+I've applied this.
+
+We *still* really need to fix the license for this document, though...
+
+Thanks,
 
 jon
