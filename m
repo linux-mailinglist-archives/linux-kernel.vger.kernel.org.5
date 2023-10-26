@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2C57D7AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4F17D7ABA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjJZCNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        id S233210AbjJZCOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZCNP (ORCPT
+        with ESMTP id S229518AbjJZCOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:13:15 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328BE12F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 19:13:13 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507c9305727so843e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 19:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698286391; x=1698891191; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z36Xa2wceQFeKAxpFjwnpPznj0rOATWn2poikjqJb14=;
-        b=fiC5zBi7bHqUzTOld+VUo3pP23dsdDPKsfPI9Xef/ysJt7OnriArzPUM7GeuVUmMuk
-         tTHetjZ6VYblt/jCWZaKHAEgqgtYW4Pb3eci12E3/xToU+STGgabl0tSxC7kcSiz9eTa
-         tdFIeChbiJhX06+Rw/jftG0YSvh2YBMVrb8Z9u5cj0CJiY9Tu9kcecH5tFzefW62jIJL
-         ee+wAYdGwC+lwre7gffRxLC5uyzuOwETq/ZQgCOXBQ4o4Tk9lJhiN6ZB2kJZAwiMvnrB
-         gXHL37/ZmkCV9XQ9m+W3r8Oxs5SoAJetCGCPPsv3GkhSNf4hQUqdg7sSYWGjKNlzSYBQ
-         mKYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698286391; x=1698891191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z36Xa2wceQFeKAxpFjwnpPznj0rOATWn2poikjqJb14=;
-        b=bIWFKj01wwd6mbfh1l9u8cjMYUBpP/I8n4lOB8gyLeiIaTCQNcPZSIIpkLX4mEpWXH
-         UPTx4GHfr5Sf0JRPhWQtlXkXIJSPbxSSM60C1MAN5NEc/E+2JOQ34H078fDwGIWj+b+A
-         lkwWa7F9GClwLDdm1e9HXxPtRyTH6U85bUxWX9ZteJAGYMnhO7F8n1QOuDByGKXptz5I
-         ci9xQnV1U/dL6yLEIjFc2g+taQ3vxd8JGyb4Ydgl3RHK3P/ASka6L22IklhHKv8R/DYV
-         qEelGp2HLRmZwb9vio0JiS53RETrsuebfYBST37MF56jSbTqWOmAviEq+nwFb3zvTUQK
-         S8xA==
-X-Gm-Message-State: AOJu0Yx/cO7E1cpComgadmx5FEEuu25adkN+BbRpcxUt4hmxotm0s0WR
-        aG70D11SL/rWRVWHRI6+ICXW8qTqLYwajtLWDlEfuQ==
-X-Google-Smtp-Source: AGHT+IG5GmQwT8V2g29sDvxBcL1bOCihBa+NoHO47hpk+1xkLuxcNIJVpGe8fOExfNxz0pS6yZOu6G4tP8z7Jw4pxQE=
-X-Received: by 2002:a05:6512:748:b0:505:715f:d36b with SMTP id
- c8-20020a056512074800b00505715fd36bmr118750lfs.5.1698286391229; Wed, 25 Oct
- 2023 19:13:11 -0700 (PDT)
+        Wed, 25 Oct 2023 22:14:05 -0400
+Received: from m1312.mail.163.com (m1312.mail.163.com [220.181.13.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F818AB;
+        Wed, 25 Oct 2023 19:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=seZH83F4azqunw1CHtHm1iBRG2ZBjHjECrPKVOCMNyo=; b=k
+        p2+tw2fDOQvaZFk64ApMAjfHq3GUGg7lFKf3SXmyw2mpiaw5Nki0Euaui0pQi1tO
+        NdRzziO6gfeMbzzsHYdo0Q1LXiahytodJ2HNRNPoMu0FtBEA6GCBnwzFkhnIbxVC
+        PCr6eKkjvkWmfEjG4ea144jjnEgrEBVCFqvcqJcweE=
+Received: from be286$163.com ( [171.83.45.213] ) by ajax-webmail-wmsvr12
+ (Coremail) ; Thu, 26 Oct 2023 10:13:24 +0800 (CST)
+X-Originating-IP: [171.83.45.213]
+Date:   Thu, 26 Oct 2023 10:13:24 +0800 (CST)
+From:   be286 <be286@163.com>
+To:     "Pavel Hofman" <pavel.hofman@ivitera.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH V2] usb: gadget: f_uac1: add adaptive sync support
+ for capture
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <d1e4e69d-ed5a-39f2-c79a-dbe0edd1d57a@ivitera.com>
+References: <20231018074739.1234394-1-be286@163.com>
+ <ff75dd5a-7c32-577b-9ac0-b2aecab3d02c@ivitera.com>
+ <58292dd5.6385.18b612da88f.Coremail.be286@163.com>
+ <d1e4e69d-ed5a-39f2-c79a-dbe0edd1d57a@ivitera.com>
+X-NTES-SC: AL_QuySCv6TuUwr4iGfZukWnkwahec9XsK3vPQi349TN5k0vynB+ys/fEdhHnv/3f6dJCyeiCCmfR5u6dZcVolqYZDyFD1uCXOnoKvzQ5pk4686
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-References: <20231025201626.3000228-1-kan.liang@linux.intel.com> <20231025201626.3000228-8-kan.liang@linux.intel.com>
-In-Reply-To: <20231025201626.3000228-8-kan.liang@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 25 Oct 2023 19:12:59 -0700
-Message-ID: <CAP-5=fUjVAk7+2EocoX5pvMKaQ2+Y_quW7p4840=L-mRT_CtXg@mail.gmail.com>
-Subject: Re: [PATCH V5 8/8] perf tools: Add branch counter knob
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, adrian.hunter@intel.com, ak@linux.intel.com,
-        eranian@google.com, alexey.v.bayduraev@linux.intel.com,
-        tinghao.zhang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Message-ID: <56660239.15d7.18b69c2024f.Coremail.be286@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: DMGowAAH9zhEyzllkp8cAA--.1469W
+X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiFR0U0l5mSC+RvQACs-
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,252 +58,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 1:16=E2=80=AFPM <kan.liang@linux.intel.com> wrote:
->
-> From: Kan Liang <kan.liang@linux.intel.com>
->
-> Add a new branch filter, "counter", for the branch counter option. It is
-> used to mark the events which should be logged in the branch. If it is
-> applied with the -j option, the counters of all the events should be
-> logged in the branch. If the legacy kernel doesn't support the new
-> branch sample type, switching off the branch counter filter.
->
-> The stored counter values in each branch are displayed right after the
-> regular branch stack information via perf report -D.
->
-> Usage examples:
->
-> perf record -e "{branch-instructions,branch-misses}:S" -j any,counter
->
-> Only the first event, branch-instructions, collect the LBR. Both
-> branch-instructions and branch-misses are marked as logged events.
-> The occurrences information of them can be found in the branch stack
-> extension space of each branch.
->
-> perf record -e "{cpu/branch-instructions,branch_type=3Dany/,
-> cpu/branch-misses,branch_type=3Dcounter/}"
->
-> Only the first event, branch-instructions, collect the LBR. Only the
-> branch-misses event is marked as a logged event.
->
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-
-Reviewed-by: Ian Rogers <irogers@google.com>
-
-Perhaps add a test somewhere like:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/tests/shell/record.sh
-for coverage when hardware supports the feature.
-
-Thanks,
-Ian
-
-> ---
->
-> No changes since V4
->
->  tools/perf/Documentation/perf-record.txt  |  4 +++
->  tools/perf/util/evsel.c                   | 31 ++++++++++++++++++++++-
->  tools/perf/util/evsel.h                   |  1 +
->  tools/perf/util/parse-branch-options.c    |  1 +
->  tools/perf/util/perf_event_attr_fprintf.c |  1 +
->  tools/perf/util/sample.h                  |  1 +
->  tools/perf/util/session.c                 | 15 +++++++++--
->  7 files changed, 51 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Docume=
-ntation/perf-record.txt
-> index d5217be012d7..b6afe7cc948d 100644
-> --- a/tools/perf/Documentation/perf-record.txt
-> +++ b/tools/perf/Documentation/perf-record.txt
-> @@ -442,6 +442,10 @@ following filters are defined:
->                      4th-Gen Xeon+ server), the save branch type is uncon=
-ditionally enabled
->                      when the taken branch stack sampling is enabled.
->         - priv: save privilege state during sampling in case binary is no=
-t available later
-> +       - counter: save occurrences of the event since the last branch en=
-try. Currently, the
-> +                  feature is only supported by a newer CPU, e.g., Intel =
-Sierra Forest and
-> +                  later platforms. An error out is expected if it's used=
- on the unsupported
-> +                  kernel or CPUs.
->
->  +
->  The option requires at least one branch type among any, any_call, any_re=
-t, ind_call, cond.
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index a8a5ff87cc1f..58a9b8c82790 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1831,6 +1831,8 @@ static int __evsel__prepare_open(struct evsel *evse=
-l, struct perf_cpu_map *cpus,
->
->  static void evsel__disable_missing_features(struct evsel *evsel)
->  {
-> +       if (perf_missing_features.branch_counters)
-> +               evsel->core.attr.branch_sample_type &=3D ~PERF_SAMPLE_BRA=
-NCH_COUNTERS;
->         if (perf_missing_features.read_lost)
->                 evsel->core.attr.read_format &=3D ~PERF_FORMAT_LOST;
->         if (perf_missing_features.weight_struct) {
-> @@ -1884,7 +1886,12 @@ bool evsel__detect_missing_features(struct evsel *=
-evsel)
->          * Must probe features in the order they were added to the
->          * perf_event_attr interface.
->          */
-> -       if (!perf_missing_features.read_lost &&
-> +       if (!perf_missing_features.branch_counters &&
-> +           (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COU=
-NTERS)) {
-> +               perf_missing_features.branch_counters =3D true;
-> +               pr_debug2("switching off branch counters support\n");
-> +               return true;
-> +       } else if (!perf_missing_features.read_lost &&
->             (evsel->core.attr.read_format & PERF_FORMAT_LOST)) {
->                 perf_missing_features.read_lost =3D true;
->                 pr_debug2("switching off PERF_FORMAT_LOST support\n");
-> @@ -2344,6 +2351,18 @@ u64 evsel__bitfield_swap_branch_flags(u64 value)
->         return new_val;
->  }
->
-> +static inline bool evsel__has_branch_counters(const struct evsel *evsel)
-> +{
-> +       struct evsel *cur, *leader =3D evsel__leader(evsel);
-> +
-> +       evlist__for_each_entry(evsel->evlist, cur) {
-> +               if ((leader =3D=3D evsel__leader(cur)) &&
-> +                   (cur->core.attr.branch_sample_type & PERF_SAMPLE_BRAN=
-CH_COUNTERS))
-> +                       return true;
-> +       }
-> +       return false;
-> +}
-> +
->  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->                         struct perf_sample *data)
->  {
-> @@ -2577,6 +2596,16 @@ int evsel__parse_sample(struct evsel *evsel, union=
- perf_event *event,
->
->                 OVERFLOW_CHECK(array, sz, max_size);
->                 array =3D (void *)array + sz;
-> +
-> +               if (evsel__has_branch_counters(evsel)) {
-> +                       OVERFLOW_CHECK_u64(array);
-> +
-> +                       data->branch_stack_cntr =3D (u64 *)array;
-> +                       sz =3D data->branch_stack->nr * sizeof(u64);
-> +
-> +                       OVERFLOW_CHECK(array, sz, max_size);
-> +                       array =3D (void *)array + sz;
-> +               }
->         }
->
->         if (type & PERF_SAMPLE_REGS_USER) {
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 848534ec74fa..85f24c986392 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -191,6 +191,7 @@ struct perf_missing_features {
->         bool code_page_size;
->         bool weight_struct;
->         bool read_lost;
-> +       bool branch_counters;
->  };
->
->  extern struct perf_missing_features perf_missing_features;
-> diff --git a/tools/perf/util/parse-branch-options.c b/tools/perf/util/par=
-se-branch-options.c
-> index fd67d204d720..f7f7aff3d85a 100644
-> --- a/tools/perf/util/parse-branch-options.c
-> +++ b/tools/perf/util/parse-branch-options.c
-> @@ -36,6 +36,7 @@ static const struct branch_mode branch_modes[] =3D {
->         BRANCH_OPT("stack", PERF_SAMPLE_BRANCH_CALL_STACK),
->         BRANCH_OPT("hw_index", PERF_SAMPLE_BRANCH_HW_INDEX),
->         BRANCH_OPT("priv", PERF_SAMPLE_BRANCH_PRIV_SAVE),
-> +       BRANCH_OPT("counter", PERF_SAMPLE_BRANCH_COUNTERS),
->         BRANCH_END
->  };
->
-> diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/=
-perf_event_attr_fprintf.c
-> index 2247991451f3..8f04d3b7f3ec 100644
-> --- a/tools/perf/util/perf_event_attr_fprintf.c
-> +++ b/tools/perf/util/perf_event_attr_fprintf.c
-> @@ -55,6 +55,7 @@ static void __p_branch_sample_type(char *buf, size_t si=
-ze, u64 value)
->                 bit_name(COND), bit_name(CALL_STACK), bit_name(IND_JUMP),
->                 bit_name(CALL), bit_name(NO_FLAGS), bit_name(NO_CYCLES),
->                 bit_name(TYPE_SAVE), bit_name(HW_INDEX), bit_name(PRIV_SA=
-VE),
-> +               bit_name(COUNTERS),
->                 { .name =3D NULL, }
->         };
->  #undef bit_name
-> diff --git a/tools/perf/util/sample.h b/tools/perf/util/sample.h
-> index c92ad0f51ecd..70b2c3135555 100644
-> --- a/tools/perf/util/sample.h
-> +++ b/tools/perf/util/sample.h
-> @@ -113,6 +113,7 @@ struct perf_sample {
->         void *raw_data;
->         struct ip_callchain *callchain;
->         struct branch_stack *branch_stack;
-> +       u64 *branch_stack_cntr;
->         struct regs_dump  user_regs;
->         struct regs_dump  intr_regs;
->         struct stack_dump user_stack;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 1e9aa8ed15b6..4a094ab0362b 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1150,9 +1150,13 @@ static void callchain__printf(struct evsel *evsel,
->                        i, callchain->ips[i]);
->  }
->
-> -static void branch_stack__printf(struct perf_sample *sample, bool callst=
-ack)
-> +static void branch_stack__printf(struct perf_sample *sample,
-> +                                struct evsel *evsel)
->  {
->         struct branch_entry *entries =3D perf_sample__branch_entries(samp=
-le);
-> +       bool callstack =3D evsel__has_branch_callstack(evsel);
-> +       u64 *branch_stack_cntr =3D sample->branch_stack_cntr;
-> +       struct perf_env *env =3D evsel__env(evsel);
->         uint64_t i;
->
->         if (!callstack) {
-> @@ -1194,6 +1198,13 @@ static void branch_stack__printf(struct perf_sampl=
-e *sample, bool callstack)
->                         }
->                 }
->         }
-> +
-> +       if (branch_stack_cntr) {
-> +               printf("... branch stack counters: nr:%" PRIu64 " (counte=
-r width: %u max counter nr:%u)\n",
-> +                       sample->branch_stack->nr, env->br_cntr_width, env=
-->br_cntr_nr);
-> +               for (i =3D 0; i < sample->branch_stack->nr; i++)
-> +                       printf("..... %2"PRIu64": %016" PRIx64 "\n", i, b=
-ranch_stack_cntr[i]);
-> +       }
->  }
->
->  static void regs_dump__printf(u64 mask, u64 *regs, const char *arch)
-> @@ -1355,7 +1366,7 @@ static void dump_sample(struct evsel *evsel, union =
-perf_event *event,
->                 callchain__printf(evsel, sample);
->
->         if (evsel__has_br_stack(evsel))
-> -               branch_stack__printf(sample, evsel__has_branch_callstack(=
-evsel));
-> +               branch_stack__printf(sample, evsel);
->
->         if (sample_type & PERF_SAMPLE_REGS_USER)
->                 regs_user__printf(sample, arch);
-> --
-> 2.35.1
->
+CkhpIFBhdmVsLAoKS2VlcCB0aGUgYWRhcHRpdmUgbW9kZSBhcyBkZWZhdWx0IGlzIGJldHRlci4K
+ClRoYW5rcy4KCkNoYXJsZXMgWWkKCgoKCgoKCgpBdCAyMDIzLTEwLTI1IDE0OjQ0OjQ5LCAiUGF2
+ZWwgSG9mbWFuIiA8cGF2ZWwuaG9mbWFuQGl2aXRlcmEuY29tPiB3cm90ZToKPkRuZSAyNC4gMTAu
+IDIzIHYgMTI6MTQgYmUyODYgbmFwc2FsKGEpOgo+PiAKPj4gSGkgUGF2ZWwsCj4+IAo+PiBGZWVk
+YmFjayBlbmRwb2ludCB3b3JrcyBmb3IgdWNhMSBjYXB0dXJlLCBtZWFucyAiRVBPVVRfRU4iLgo+
+PiAKPj4gICBDaGFybGVzIFlpCj4+IAo+SGkgQ2hhcmxlcywKPgo+U29ycnkgZm9yIG15IG1pc3Rh
+a2UsIEkgdGhvdWdodCB5b3Ugd2VyZSBpbXBsZW1lbnRpbmcgYWRhcHRpdmUgbW9kZSBmb3IgCj5F
+UC1JTi4KPgo+SUlVQyBub3cgeW91ciBwYXRjaCBhZGRzIGFzeW5jaHJvbm91cyBtb2RlIChub3Qg
+YWRhcHRpdmUgc3luYykgdG8gVUFDMSAKPkVQIE9VVCwgaW4gdGhlIHNhbWUgd2F5IGFzIGltcGxl
+bWVudGVkIGluIFVBQzIuCj4KPklJVUMgeW91ciBwYXRjaCBhbHNvIGNoYW5nZXMgdGhlIFVBQzEg
+RVAtT1VUIGRlZmF1bHQgbW9kZSBmcm9tIGFkYXB0aXZlIAo+dG8gYXN5bmNocm9ub3VzIHZpYQo+
+Cj4gICsjZGVmaW5lIFVBQzFfREVGX0NTWU5DCQlVU0JfRU5EUE9JTlRfU1lOQ19BU1lOQwo+Cj5U
+aGUgY3VycmVudCAodGhlIG9ubHkgc3VwcG9ydGVkKSBtb2RlIGlzIGFkYXB0aXZlIAo+aHR0cHM6
+Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL3VzYi9nYWRn
+ZXQvZnVuY3Rpb24vZl91YWMxLmMjTDIxNDoKPgo+LyogU3RhbmRhcmQgSVNPIE9VVCBFbmRwb2lu
+dCBEZXNjcmlwdG9yICovCj5zdGF0aWMgc3RydWN0IHVzYl9lbmRwb2ludF9kZXNjcmlwdG9yIGFz
+X291dF9lcF9kZXNjICA9IHsKPgkuYkxlbmd0aCA9CQlVU0JfRFRfRU5EUE9JTlRfQVVESU9fU0la
+RSwKPgkuYkRlc2NyaXB0b3JUeXBlID0JVVNCX0RUX0VORFBPSU5ULAo+CS5iRW5kcG9pbnRBZGRy
+ZXNzID0JVVNCX0RJUl9PVVQsCj4JLmJtQXR0cmlidXRlcyA9CQlVU0JfRU5EUE9JTlRfU1lOQ19B
+REFQVElWRQo+CQkJCXwgVVNCX0VORFBPSU5UX1hGRVJfSVNPQywKPgkud01heFBhY2tldFNpemUJ
+PQljcHVfdG9fbGUxNihVQUMxX09VVF9FUF9NQVhfUEFDS0VUX1NJWkUpLAo+CS5iSW50ZXJ2YWwg
+PQkJNCwKPn07Cj4KPklNTyB0aGUgcGF0Y2ggc2hvdWxkIGtlZXAgdGhlIGFkYXB0aXZlIG1vZGUg
+YXMgZGVmYXVsdCwgdG8gbWFpbnRhaW4gCj5jb21wYXRpYmlsaXR5IHdpdGggdXNlciBzZXR1cHMu
+Cj4KPldpdGggcmVnYXJkcywKPgo+UGF2ZWwuCj4KPj4gCj4+IAo+PiAKPj4gCj4+IAo+PiAKPj4g
+Cj4+IEF0IDIwMjMtMTAtMTggMTc6NTI6MjAsICJQYXZlbCBIb2ZtYW4iIDxwYXZlbC5ob2ZtYW5A
+aXZpdGVyYS5jb20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBEbmUgMTguIDEwLiAyMyB2IDk6NDcgQ2hh
+cmxlcyBZaSBuYXBzYWwoYSk6Cj4+Pj4gVUFDMSBoYXMgaXQncyBvd24gZnJlZXJ1bm5pbmcgY2xv
+Y2sgYW5kIGNhbiB1cGRhdGUgSG9zdCBhYm91dAo+Pj4+IHJlYWwgY2xvY2sgZnJlcXVlbmN5IHRo
+cm91Z2ggZmVlZGJhY2sgZW5kcG9pbnQgc28gSG9zdCBjYW4gYWxpZ24KPj4+PiBudW1iZXIgb2Yg
+c2FtcGxlcyBzZW50IHRvIHRoZSBVQUMxIHRvIHByZXZlbnQgb3ZlcnJ1bnMvdW5kZXJydW5zLgo+
+Pj4+Cj4+Pj4gQ2hhbmdlIFVBQzEgZHJpdmVyIHRvIG1ha2UgaXQgY29uZmlndXJhYmxlIHRocm91
+Z2ggYWRkaXRpb25hbAo+Pj4+ICdjX3N5bmMnIGNvbmZpZ2ZzIGZpbGUuCj4+Pj4KPj4+PiBEZWZh
+dWx0IHJlbWFpbnMgJ2FzeW5jaHJvbm91cycgd2l0aCBwb3NzaWJpbGl0eSB0byBzd2l0Y2ggaXQK
+Pj4+PiB0byAnYWRhcHRpdmUnLgo+Pj4KPj4+Cj4+PiBIaSBDaGFybGVzLAo+Pj4KPj4+IFBsZWFz
+ZSBjYW4geW91IGNsYXJpZnkgbW9yZSB0aGUgYWRhcHRpdmUgRVAgSU4gc2NlbmFyaW8/IEkgYW0g
+YXdhcmUgdGhhdAo+Pj4gdGhlIGZfdWFjMi5jIGFsc28gYWxsb3dzIGRlZmluaW5nIGNfc3luYyB0
+eXBlICh0aGF0J3Mgd2hhdCB5b3VyIHBhdGNoIGlzCj4+PiBiYXNlZCBvbikuCj4+Pgo+Pj4gSUlV
+QyB0aGUgZGF0YSBwcm9kdWN0aW9uIHJhdGUgb2YgYWRhcHRpdmUgc291cmNlIGVuZHBvaW50IChp
+LmUuIEVQIElOKQo+Pj4gaXMgY29udHJvbGxlZCBieSBmZWVkIGZvcndhcmQgbWVzc2FnZXMgZnJv
+bSB0aGUgaG9zdAo+Pj4gUXVvdGluZyBodHRwOi8vc2RwaGEyLnVjc2QuZWR1L0xhYl9FcXVpcF9N
+YW51YWxzL3VzYl8yMC5wZGYgcGFnZSA3MzoKPj4+Cj4+PiAiQWRhcHRpdmUgc291cmNlIGVuZHBv
+aW50cyBwcm9kdWNlIGRhdGEgYXQgYSByYXRlIHRoYXQgaXMgY29udHJvbGxlZCBieQo+Pj4gdGhl
+IGRhdGEgc2luay4gVGhlIHNpbmsgcHJvdmlkZXMgZmVlZGJhY2sgKHJlZmVyIHRvIFNlY3Rpb24g
+NS4xMi40LjIpIHRvCj4+PiB0aGUgc291cmNlLCB3aGljaCBhbGxvd3MgdGhlIHNvdXJjZSB0byBr
+bm93IHRoZSBkZXNpcmVkIGRhdGEgcmF0ZSBvZiB0aGUKPj4+IHNpbmsuIgo+Pj4KPj4+IFdoaWxl
+IHRoZSBjdXJyZW50IGZfdWFjMiBpbXBsZW1lbnRhdGlvbiBnZW5lcmF0ZXMgZmVlZGJhY2sgZm9y
+IEVQIE9VVAo+Pj4gYXN5bmMgKHVubGlrZSBmX3VhYzEpLCBJIGNhbm5vdCBmaW5kIGFueSBzdXBw
+b3J0IGZvciBpbmNvbWluZwo+Pj4gZmVlZC1mb3J3YXJkIG1lc3NhZ2VzIGZyb20gdGhlIGhvc3Qg
+Zm9yIEVQIElOIGFkYXB0aXZlIGNhc2UuIE5laXRoZXIgaW4KPj4+IGZfdWFjMSwgb2YgY291cnNl
+Lgo+Pj4KPj4+IEkgYW0gbm90IHN1cmUgaWYgbGludXggc3VwcG9ydHMgSU4gRVAgYWRhcHRpdmUs
+IGJ1dCB0aGUgTVMgVUFDMiBkcml2ZXIKPj4+IGRvZXMgbm90Cj4+PiBodHRwczovL2xlYXJuLm1p
+Y3Jvc29mdC5jb20vZW4tdXMvd2luZG93cy1oYXJkd2FyZS9kcml2ZXJzL2F1ZGlvL3VzYi0yLTAt
+YXVkaW8tZHJpdmVycyNhdWRpby1zdHJlYW1pbmc6Cj4+Pgo+Pj4gIkZvciB0aGUgQWRhcHRpdmUg
+SU4gY2FzZSB0aGUgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydCBhIGZlZWQgZm9yd2FyZAo+Pj4gZW5k
+cG9pbnQuIElmIHN1Y2ggYW4gZW5kcG9pbnQgaXMgcHJlc2VudCBpbiB0aGUgYWx0ZXJuYXRlIHNl
+dHRpbmcsIGl0Cj4+PiB3aWxsIGJlIGlnbm9yZWQuIFRoZSBkcml2ZXIgaGFuZGxlcyB0aGUgQWRh
+cHRpdmUgSU4gc3RyZWFtIGluIHRoZSBzYW1lCj4+PiB3YXkgYXMgYW4gQXN5bmNocm9ub3VzIElO
+IHN0cmVhbS4iCj4+Pgo+Pj4gSUlVQyAoYW5kIEkgbWF5IGJlIHdyb25nKSBhbGwgdGhlIGNfc3lu
+YyBwYXJhbSBkb2VzIGluIGZfdWFjMiAoYW5kCj4+PiBmX3VhYzEgaW4geW91ciBwYXRjaCkgaXMg
+anVzdCBjaGFuZ2luZyB0aGUgRVAgSU4gY29uZmlndXJhdGlvbiBmbGFnLCBidXQKPj4+IHRoZSBh
+Y3R1YWwgc3VwcG9ydCBmb3IgdHJ1bHkgYWRhcHRpdmUgRVAgSU4gaXMgbm90IGltcGxlbWVudGVk
+LiBJTU8KPj4+IHRoZXJlIGlzIG5vIGNvZGUgd2hpY2ggd291bGQgYWNjZXB0IHRoZSBmZWVkLWZv
+cndhcmQgbWVzc2FnZSBmcm9tIHRoZQo+Pj4gaG9zdCBhbmQgYWRqdXN0IHRoZSByYXRlIGF0IHdo
+aWNoIHNhbXBsZXMgYXJlIGNvbnN1bWVkIGZyb20gdGhlIGFsc2EKPj4+IGJ1ZmZlciB0byBFUCBJ
+TiBwYWNrZXRzIChtZXRob2QgdV9hdWRpb19pc29fY29tcGxldGUKPj4+IGh0dHBzOi8vZWxpeGly
+LmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0
+aW9uL3VfYXVkaW8uYyNMMTkzCj4+PiApCj4+Pgo+Pj4gVGhhdCBwZXJ0YWlucyBhIGJpdCB0byB0
+aGUgZmlyc3Qgc2VudGVuY2Ugb2YgeW91ciBwYXRjaCAtIElNTyBpdAo+Pj4gZGVzY3JpYmVzIEVQ
+IE9VVCBhc3luYywgYnV0IG5vdCBFUCBJTiBhZGFwdGl2ZS4KPj4+Cj4+PiBUaGFua3MgYSBsb3Qg
+Zm9yIGEgYml0IG9mIGNsYXJpZmljYXRpb24uCj4+Pgo+Pj4gUGF2ZWwuCj4+Pgo+Pj4KPj4+Pgo+
+Pj4+IENoYW5nZXMgaW4gVjI6Cj4+Pj4gLSBVcGRhdGVkIHRoZSBpbmRlbnRhdGlvbiBvZiBjb21t
+aXQgbWVzc2FnZS4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6IENoYXJsZXMgWWkgPGJlMjg2QDE2
+My5jb20+Cj4+Pj4gLS0tCj4+Pj4gICAgZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFj
+MS5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+Pj4+ICAgIGRyaXZlcnMvdXNi
+L2dhZGdldC9mdW5jdGlvbi91X3VhYzEuaCB8ICAyICsrCj4+Pj4gICAgMiBmaWxlcyBjaGFuZ2Vk
+LCAzMiBpbnNlcnRpb25zKCspCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2Fk
+Z2V0L2Z1bmN0aW9uL2ZfdWFjMS5jIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFj
+MS5jCj4+Pj4gaW5kZXggNmYwZTFkODAzZGMyLi43YTZmY2I0MGJiNDYgMTAwNjQ0Cj4+Pj4gLS0t
+IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFjMS5jCj4+Pj4gKysrIGIvZHJpdmVy
+cy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFjMS5jCj4+Pj4gQEAgLTMzLDYgKzMzLDggQEAKPj4+
+PiAgICAjZGVmaW5lIEZVT1VUX0VOKF9vcHRzKSAoKF9vcHRzKS0+Y19tdXRlX3ByZXNlbnQgXAo+
+Pj4+ICAgIAkJCXx8IChfb3B0cyktPmNfdm9sdW1lX3ByZXNlbnQpCj4+Pj4gICAgCj4+Pj4gKyNk
+ZWZpbmUgRVBPVVRfRkJBQ0tfSU5fRU4oX29wdHMpICgoX29wdHMpLT5jX3N5bmMgPT0gVVNCX0VO
+RFBPSU5UX1NZTkNfQVNZTkMpCj4+Pj4gKwo+Pj4+ICAgIHN0cnVjdCBmX3VhYzEgewo+Pj4+ICAg
+IAlzdHJ1Y3QgZ19hdWRpbyBnX2F1ZGlvOwo+Pj4+ICAgIAl1OCBhY19pbnRmLCBhc19pbl9pbnRm
+LCBhc19vdXRfaW50ZjsKPj4+PiBAQCAtMjI3LDYgKzIyOSwxNiBAQCBzdGF0aWMgc3RydWN0IHVh
+Y19pc29fZW5kcG9pbnRfZGVzY3JpcHRvciBhc19pc29fb3V0X2Rlc2MgPSB7Cj4+Pj4gICAgCS53
+TG9ja0RlbGF5ID0JCWNwdV90b19sZTE2KDEpLAo+Pj4+ICAgIH07Cj4+Pj4gICAgCj4+Pj4gK3N0
+YXRpYyBzdHJ1Y3QgdXNiX2VuZHBvaW50X2Rlc2NyaXB0b3IgYXNfZmJhY2tfZXBfZGVzYyA9IHsK
+Pj4+PiArCS5iTGVuZ3RoID0gVVNCX0RUX0VORFBPSU5UX1NJWkUsCj4+Pj4gKwkuYkRlc2NyaXB0
+b3JUeXBlID0gVVNCX0RUX0VORFBPSU5ULAo+Pj4+ICsKPj4+PiArCS5iRW5kcG9pbnRBZGRyZXNz
+ID0gVVNCX0RJUl9JTiwKPj4+PiArCS5ibUF0dHJpYnV0ZXMgPSBVU0JfRU5EUE9JTlRfWEZFUl9J
+U09DIHwgVVNCX0VORFBPSU5UX1VTQUdFX0ZFRURCQUNLLAo+Pj4+ICsJLndNYXhQYWNrZXRTaXpl
+ID0gY3B1X3RvX2xlMTYoMyksCj4+Pj4gKwkuYkludGVydmFsID0gMSwKPj4+PiArfTsKPj4+PiAr
+Cj4+Pj4gICAgc3RhdGljIHN0cnVjdCB1YWNfZm9ybWF0X3R5cGVfaV9kaXNjcmV0ZV9kZXNjcmlw
+dG9yIGFzX2luX3R5cGVfaV9kZXNjID0gewo+Pj4+ICAgIAkuYkxlbmd0aCA9CQkwLCAvKiBmaWxs
+ZWQgb24gcmF0ZSBzZXR1cCAqLwo+Pj4+ICAgIAkuYkRlc2NyaXB0b3JUeXBlID0JVVNCX0RUX0NT
+X0lOVEVSRkFDRSwKPj4+PiBAQCAtMjgwLDYgKzI5Miw3IEBAIHN0YXRpYyBzdHJ1Y3QgdXNiX2Rl
+c2NyaXB0b3JfaGVhZGVyICpmX2F1ZGlvX2Rlc2NbXSA9IHsKPj4+PiAgICAKPj4+PiAgICAJKHN0
+cnVjdCB1c2JfZGVzY3JpcHRvcl9oZWFkZXIgKikmYXNfb3V0X2VwX2Rlc2MsCj4+Pj4gICAgCShz
+dHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2lzb19vdXRfZGVzYywKPj4+PiArCShz
+dHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2ZiYWNrX2VwX2Rlc2MsCj4+Pj4gICAg
+Cj4+Pj4gICAgCShzdHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2luX2ludGVyZmFj
+ZV9hbHRfMF9kZXNjLAo+Pj4+ICAgIAkoc3RydWN0IHVzYl9kZXNjcmlwdG9yX2hlYWRlciAqKSZh
+c19pbl9pbnRlcmZhY2VfYWx0XzFfZGVzYywKPj4+PiBAQCAtMTEwNyw2ICsxMTIwLDkgQEAgc3Rh
+dGljIHZvaWQgc2V0dXBfZGVzY3JpcHRvcihzdHJ1Y3QgZl91YWMxX29wdHMgKm9wdHMpCj4+Pj4g
+ICAgCQlmX2F1ZGlvX2Rlc2NbaSsrXSA9IFVTQkRIRFIoJmFzX291dF90eXBlX2lfZGVzYyk7Cj4+
+Pj4gICAgCQlmX2F1ZGlvX2Rlc2NbaSsrXSA9IFVTQkRIRFIoJmFzX291dF9lcF9kZXNjKTsKPj4+
+PiAgICAJCWZfYXVkaW9fZGVzY1tpKytdID0gVVNCREhEUigmYXNfaXNvX291dF9kZXNjKTsKPj4+
+PiArCQlpZiAoRVBPVVRfRkJBQ0tfSU5fRU4ob3B0cykpIHsKPj4+PiArCQkJZl9hdWRpb19kZXNj
+W2krK10gPSBVU0JESERSKCZhc19mYmFja19lcF9kZXNjKTsKPj4+PiArCQl9Cj4+Pj4gICAgCX0K
+Pj4+PiAgICAJaWYgKEVQSU5fRU4ob3B0cykpIHsKPj4+PiAgICAJCWZfYXVkaW9fZGVzY1tpKytd
+ID0gVVNCREhEUigmYXNfaW5faW50ZXJmYWNlX2FsdF8wX2Rlc2MpOwo+Pj4+IEBAIC0xMzE3LDYg
+KzEzMzMsMTIgQEAgc3RhdGljIGludCBmX2F1ZGlvX2JpbmQoc3RydWN0IHVzYl9jb25maWd1cmF0
+aW9uICpjLCBzdHJ1Y3QgdXNiX2Z1bmN0aW9uICpmKQo+Pj4+ICAgIAkJYWNfaGVhZGVyX2Rlc2Mt
+PmJhSW50ZXJmYWNlTnJbYmFfaWZhY2VfaWQrK10gPSBzdGF0dXM7Cj4+Pj4gICAgCQl1YWMxLT5h
+c19vdXRfaW50ZiA9IHN0YXR1czsKPj4+PiAgICAJCXVhYzEtPmFzX291dF9hbHQgPSAwOwo+Pj4+
+ICsKPj4+PiArCQlpZiAoRVBPVVRfRkJBQ0tfSU5fRU4oYXVkaW9fb3B0cykpIHsKPj4+PiArCQkJ
+YXNfb3V0X2VwX2Rlc2MuYm1BdHRyaWJ1dGVzID0KPj4+PiArCQkJVVNCX0VORFBPSU5UX1hGRVJf
+SVNPQyB8IFVTQl9FTkRQT0lOVF9TWU5DX0FTWU5DOwo+Pj4+ICsJCQlhc19vdXRfaW50ZXJmYWNl
+X2FsdF8xX2Rlc2MuYk51bUVuZHBvaW50cysrOwo+Pj4+ICsJCX0KPj4+PiAgICAJfQo+Pj4+ICAg
+IAo+Pj4+ICAgIAlpZiAoRVBJTl9FTihhdWRpb19vcHRzKSkgewo+Pj4+IEBAIC0xMzU0LDYgKzEz
+NzYsMTIgQEAgc3RhdGljIGludCBmX2F1ZGlvX2JpbmQoc3RydWN0IHVzYl9jb25maWd1cmF0aW9u
+ICpjLCBzdHJ1Y3QgdXNiX2Z1bmN0aW9uICpmKQo+Pj4+ICAgIAkJCWdvdG8gZXJyX2ZyZWVfZnU7
+Cj4+Pj4gICAgCQlhdWRpby0+b3V0X2VwID0gZXA7Cj4+Pj4gICAgCQlhdWRpby0+b3V0X2VwLT5k
+ZXNjID0gJmFzX291dF9lcF9kZXNjOwo+Pj4+ICsJCWlmIChFUE9VVF9GQkFDS19JTl9FTihhdWRp
+b19vcHRzKSkgewo+Pj4+ICsJCQlhdWRpby0+aW5fZXBfZmJhY2sgPSB1c2JfZXBfYXV0b2NvbmZp
+ZyhnYWRnZXQsICZhc19mYmFja19lcF9kZXNjKTsKPj4+PiArCQkJaWYgKCFhdWRpby0+aW5fZXBf
+ZmJhY2spIHsKPj4+PiArCQkJCWdvdG8gZXJyX2ZyZWVfZnU7Cj4+Pj4gKwkJCX0KPj4+PiArCQl9
+Cj4+Pj4gICAgCX0KPj4+PiAgICAKPj4+PiAgICAJaWYgKEVQSU5fRU4oYXVkaW9fb3B0cykpIHsK
+Pj4+PiBAQCAtMTY4NSw2ICsxNzEzLDggQEAgc3RhdGljIHN0cnVjdCB1c2JfZnVuY3Rpb25faW5z
+dGFuY2UgKmZfYXVkaW9fYWxsb2NfaW5zdCh2b2lkKQo+Pj4+ICAgIAo+Pj4+ICAgIAlvcHRzLT5y
+ZXFfbnVtYmVyID0gVUFDMV9ERUZfUkVRX05VTTsKPj4+PiAgICAKPj4+PiArCW9wdHMtPmNfc3lu
+YyA9IFVBQzFfREVGX0NTWU5DOwo+Pj4+ICsKPj4+PiAgICAJc25wcmludGYob3B0cy0+ZnVuY3Rp
+b25fbmFtZSwgc2l6ZW9mKG9wdHMtPmZ1bmN0aW9uX25hbWUpLCAiQUMgSW50ZXJmYWNlIik7Cj4+
+Pj4gICAgCj4+Pj4gICAgCXJldHVybiAmb3B0cy0+ZnVuY19pbnN0Owo+Pj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmggYi9kcml2ZXJzL3VzYi9nYWRn
+ZXQvZnVuY3Rpb24vdV91YWMxLmgKPj4+PiBpbmRleCBmN2E2MTY3NjBlMzEuLmM2ZTIyNzFlOGNk
+ZCAxMDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmgK
+Pj4+PiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmgKPj4+PiBAQCAt
+MjcsNiArMjcsNyBAQAo+Pj4+ICAgICNkZWZpbmUgVUFDMV9ERUZfTUFYX0RCCQkwCQkvKiAwIGRC
+ICovCj4+Pj4gICAgI2RlZmluZSBVQUMxX0RFRl9SRVNfREIJCSgxKjI1NikJLyogMSBkQiAqLwo+
+Pj4+ICAgIAo+Pj4+ICsjZGVmaW5lIFVBQzFfREVGX0NTWU5DCQlVU0JfRU5EUE9JTlRfU1lOQ19B
+U1lOQwo+Pj4+ICAgIAo+Pj4+ICAgIHN0cnVjdCBmX3VhYzFfb3B0cyB7Cj4+Pj4gICAgCXN0cnVj
+dCB1c2JfZnVuY3Rpb25faW5zdGFuY2UJZnVuY19pbnN0Owo+Pj4+IEBAIC01Niw2ICs1Nyw3IEBA
+IHN0cnVjdCBmX3VhYzFfb3B0cyB7Cj4+Pj4gICAgCj4+Pj4gICAgCXN0cnVjdCBtdXRleAkJCWxv
+Y2s7Cj4+Pj4gICAgCWludAkJCQlyZWZjbnQ7Cj4+Pj4gKwlpbnQJCQkJY19zeW5jOwo+Pj4+ICAg
+IH07Cj4+Pj4gICAgCj4+Pj4gICAgI2VuZGlmIC8qIF9fVV9VQUMxX0ggKi8K
