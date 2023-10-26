@@ -2,265 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C54537D88EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED8C7D88F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjJZTbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S231766AbjJZTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjJZTbA (ORCPT
+        with ESMTP id S230143AbjJZTbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:31:00 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225FC196
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:30:57 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9f973d319so13514735ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:30:57 -0700 (PDT)
+        Thu, 26 Oct 2023 15:31:44 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F441AE
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:31:38 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507ac66a969so1579889e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698348656; x=1698953456; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O5l+1D3sMytKg497+LD3ZhVhuDQvT+m5NPnG8xfpJ8c=;
-        b=R8Dvk+JU2d5bBxse0HIEZrXlqO+fbya9HcK9Xs6+MGNsyYwhcdV9mBT3f9MAqNdeE5
-         qsHmU4j1EmU4gnH2hr+U3ET3DQG/43L2UrOsly8ZwPegiSYdFxH8kajpqRSpr4Q+J1Pv
-         j2fHryybNGuBMOzCg+IyY+pUlH6NYQw2k0whOs6LwRA3+cFZZ6R1hRyHScv3OZ47dTxj
-         QSOl8EF9VpbDGJOO/QfSWQ/6LPmvCuok1kpuptWmy4euzFj5UP/M41CST1LuRYwx95tm
-         IZLiIHs3SKdruuYR07wO/G0lv9ik/uxcnLCekfTdvuwNGALx8o6NM8NVddMYGpIKWSkC
-         Tbkg==
+        d=linaro.org; s=google; t=1698348696; x=1698953496; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ywy6fWVLvmJZckMh0b8tqYAFdaL2mApdB/loN0g2f0E=;
+        b=jy3P1kNY8nvwnGdsS33FAuuv9IH6Phd6MVXSvNePNuZonbZOVIfG5XECi7VFkiNgVl
+         qtf8tnEIuETTGTG6QQU1mYDLg1Y+M8QYF4T5FsyO+xFGs/8yS4oJQujREnK4CP7KDUuR
+         ifSGc8NIVC6mLZdNeGBLsp6VCHXYdL5hbFQD4XeDgSDkIkN/0P+GSU210Rb5tjBZfBEy
+         bUrDczpNRAKfBptS8E/1/c6ygUsBeKh1r5GkC8HD6mDk2k3v9DZcruB5NT1z8usZwzB6
+         bXrSL9Z4nEW8mEucO6kJpAhwPeKaaIr4UPc4Iq8WHVjAznFrCnulCIeSSx1mjuY1yDtn
+         hG9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698348656; x=1698953456;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O5l+1D3sMytKg497+LD3ZhVhuDQvT+m5NPnG8xfpJ8c=;
-        b=tV1EirM23YsspX5/2TFHXnprzTEH+AQEZ/I63h8kCK9XtSMWskYdorI8CGrdK7/XGA
-         j5d5qVkGRUv+hcS418XTb2TL1x/Tr20QvRoDIWLpw3+KIzSipCpdl5/k1xt7F4Ucu4if
-         OsSP/l5FNcNrWd7zQm04TiK+z6vXWyiwjXmlL+ehzhh/BevHjw2loTMqgJgbm8rsT6Sl
-         ACMK3h31W5J4wxa3O3kfnAPmbG9jZ+oggto2ZjukPgtx7JRDEwH99rpkGAZQut7lM1GV
-         ga9yeABVYSpRj8FwT0MTq6p/zvj9qlmHVyIG7EONrfC2Mdo0h5YOVzT0aEtRBj6yOvfN
-         r/ag==
-X-Gm-Message-State: AOJu0Ywaof16KuvoMGpKtITzm0YOMjtp3QHZhlYsYfwpsybBl5L0TRgD
-        ojiYDbMM7zE/Iwli/AtyY+uyfPwSPSI=
-X-Google-Smtp-Source: AGHT+IFn+fOXPmaZJeCK7AjG545QxMmcDvsis9yxD2lpW2WV10OCOWev5iRJZ98QgCF83lJBglZbCv5AGwE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ed41:b0:1cc:1813:3023 with SMTP id
- y1-20020a170902ed4100b001cc18133023mr7873plb.2.1698348656581; Thu, 26 Oct
- 2023 12:30:56 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 12:30:55 -0700
-In-Reply-To: <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com>
-Mime-Version: 1.0
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com> <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com>
-Message-ID: <ZTq-b0uVyf6KLNV0@google.com>
-Subject: Re: [PATCH  v3 6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1698348696; x=1698953496;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ywy6fWVLvmJZckMh0b8tqYAFdaL2mApdB/loN0g2f0E=;
+        b=eWlYJ/NjkWnI0meRix3e5Q0Oo15dElN55k01vK6I4xULWpOjHtCcAZ2NtIjciPvMEC
+         +wJy53b6ZSNvaS3g+zjAouJ6aj0UcX1sbDsruzR82LbCm4zq4u93ePpuwqGnx5JLxwyQ
+         OjX7vc0Clqt98sate3UbO4M55r9KjBCDah05GkOMQKZg5PKDnXriXgMDvF2AmcdGkr9N
+         z8UBEsPJZFtrhoJINXDO2MienfNBQPgs/0pU5T07wPMTsyDzWbF6IJYJKf5C3ILqnjYA
+         Up99r9FaHs54jd4dLuTwprlLdjPfhLrAJrBB8MqTH3fbshjfnWYEyPnjSqsGcjCR3ib8
+         /Wpg==
+X-Gm-Message-State: AOJu0Yy3ggcWeSSWdYvvHyGI//fG/dL/mFj6UQBaY41QiQS0gPoZ1H7a
+        NSPiPC3n8C1Jycx4KwZineugHQ==
+X-Google-Smtp-Source: AGHT+IFWDZS34rvspUgwbDHXK7kc9utTg6aVksJEARy6vQoLFoqbqsEj13cqR6sg0rLi/wgb+XBc2A==
+X-Received: by 2002:ac2:52b0:0:b0:507:a86d:89bb with SMTP id r16-20020ac252b0000000b00507a86d89bbmr226981lfm.23.1698348696571;
+        Thu, 26 Oct 2023 12:31:36 -0700 (PDT)
+Received: from [172.30.204.84] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id j19-20020a056512345300b0050336e38735sm3107145lfr.92.2023.10.26.12.31.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 12:31:36 -0700 (PDT)
+Message-ID: <3109efe2-120b-447b-ae7d-16f03e3dc3a6@linaro.org>
+Date:   Thu, 26 Oct 2023 21:31:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
+ version detection
+To:     Manivannan Sadhasivam <manivannanece23@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Can Guo <quic_cang@quicinc.com>, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
+ <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
+ <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com>
+ <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
+ <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
+ <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
+ <20230919120829.GB4732@thinkpad>
+ <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
+ <20230920102327.GH4732@thinkpad> <20231018124741.GA47321@thinkpad>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231018124741.GA47321@thinkpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023, Pawan Gupta wrote:
-> During VMentry VERW is executed to mitigate MDS. After VERW, any memory
-> access like register push onto stack may put host data in MDS affected
-> CPU buffers. A guest can then use MDS to sample host data.
+
+
+On 10/18/23 14:47, Manivannan Sadhasivam wrote:
+> On Wed, Sep 20, 2023 at 12:23:27PM +0200, Manivannan Sadhasivam wrote:
+>> On Wed, Sep 20, 2023 at 01:27:59AM +0300, Dmitry Baryshkov wrote:
+>>> On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> wrote:
+>>>>
+>>>> On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
+>>>>> On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc.com> wrote:
+>>>>>>
+>>>>>> On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
+>>>>>>> On 11.09.2023 11:42, Can Guo wrote:
+>>>>>>>> Hi Konrad,
+>>>>>>>>
+>>>>>>>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
+>>>>>>>>> On 11.09.2023 07:59, Can Guo wrote:
+>>>>>>>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+>>>>>>>>>>
+>>>>>>>>>> Retrieve UFS device version from UFS host controller's spare register
+>>>>>>>>>> which is populated by bootloader, and use the UFS device version together
+>>>>>>>>>> with host controller's HW version to decide the proper power modes which
+>>>>>>>>>> should be used to configure the UFS PHY.
+>>>>>>>>> That sounds a bit fishy.. is there no bootloader-independent
+>>>>>>>>> solution to that? Can't we bring in the code that the bootloader
+>>>>>>>>> uses to determine these values?
+>>>>>>>>>
+>>>>>>>>> Konrad
+>>>>>>>>
+>>>>>>>> Agree, it is.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> All these complexities come from one request from PHY design team - power saving.
+>>>>>>>>
+>>>>>>>> And to achieve power saving, Qualcomm UFS developers are requested to use the
+>>>>>>>>
+>>>>>>>> lowest hanging PHY settings which can sustain the Max agreed HS Gear (btw host
+>>>>>>>>
+>>>>>>>> and UFS device) during UFS's lifecycle in High Level OS,  whereas the power saving
+>>>>>>>>
+>>>>>>>> request does not apply to bootloader, which works for only a few seconds during
+>>>>>>>>
+>>>>>>>> bootup. Hence, there is no such version detect code in bootloader -  it just uses the
+>>>>>>>>
+>>>>>>>> highest PHY settings to configure PHY, boot up UFS and put UFS device version in this
+>>>>>>>>
+>>>>>>>> register.
+>>>>>>> First of all, your email client seems to be inserting 2 newlines
+>>>>>>> instead of 1. If you're using thunderbird, you may want to edit:
+>>>>>>>
+>>>>>>> mail.identity.(default or your mail identity idx).default.compose_html
+>>>>>>>
+>>>>>>> to `false`
+>>>>>>>
+>>>>>>> and add that to your internal wiki page, as I see many @quic folks having
+>>>>>>> this issue.
+>>>>>>>
+>>>>>>>
+>>>>>>> Going back to the main topic, I don't think we understood each other.
+>>>>>>> The commit message states:
+>>>>>>>
+>>>>>>>
+>>>>>>> "Retrieve UFS device version from UFS host controller's spare register
+>>>>>>> which is populated by bootloader"
+>>>>>>>
+>>>>>>>
+>>>>>>> Which means the bootloader is able to somehow determine the value
+>>>>>>> that's in the spare register and write it there.
+>>>>>>>
+>>>>>>> I'm asking whether we can take the logic behind this value and
+>>>>>>> move it to Linux so that we don't depend on the bootloader to
+>>>>>>> guarantee it (e.g. Chrome or some other devices with more exotic
+>>>>>>> fw may not work this way).
+>>>>>>>
+>>>>>>>
+>>>>>>> Konrad
+>>>>>>
+>>>>>>
+>>>>>> There is no logic behind this value at all in bootloader, as I explained, after bootloader
+>>>>>>
+>>>>>> initializes UFS, bootloader simply reads UFS's device version (the value you are referring)
+>>>>>>
+>>>>>> and write it to the register. But in Linux kernel, we need (or want to know) this value
+>>>>>>
+>>>>>> BEFORE we initialize UFS host controller (and UFS device).
+>>>>>
+>>>>> Depending on the bootloader behaviour is not an option. For example the kernel might be started via kexec. Or via u-boot. Or grub. Or any other bootloader. So please duplicate the logic to read the UFS version instead.
+>>>>>
+>>>>
+>>>> As Can said, there is no logic in the bootloader. What it does it, after doing
+>>>> the UFS initialization, it writes the agreed gear (between host and the device)
+>>>> to this register. And in linux, we use that value to initialize the device
+>>>> (i.e., not doing init based on the min gear).
+>>>>
+>>>> But the important factor here is that, we use this gear value to program the PHY
+>>>> init sequence. So if there is no hint from the bootloader, linux will program
+>>>> the min phy sequence (G3/G4) and then once the gear scaling happens, it will
+>>>> program the max phy sequence (G4/G5).
+>>>>
+>>>> Now on recent platforms, the init sequences are not compatible with each other
+>>>> i.e., once the min seq. is programmed, then before programming max seq. the
+>>>> registers not common to both seq. should be programmed to default value. In
+>>>> other words, min seq. specific registers should be reset to the default value.
+>>>> Otherwise, there will be stability issues in the PHY.
+>>>
+>>> I see nothing wrong with adding 'default' register programming to the
+>>> gear tables. If we have to reset them to the default values to switch
+>>> the PHY settings, these writes must be a part of the corresponding
+>>> tables.
+>>>
+>>
+>> Yep, that's what I initially proposed. But Qcom wanted to avoid the cost of
+>> programming the reset tables in the PHY driver.
+>>
+>> Can, could you please check if programming the additional sequence doesn't cause
+>> any power/performance effect?
+>>
 > 
-> Although likelihood of secrets surviving in registers at current VERW
-> callsite is less, but it can't be ruled out. Harden the MDS mitigation
-> by moving the VERW mitigation late in VMentry path.
+> I'd like to simplify this conversion as there has been some misunderstanding.
 > 
-> Note that VERW for MMIO Stale Data mitigation is unchanged because of
-> the complexity of per-guest conditional VERW which is not easy to handle
-> that late in asm with no GPRs available. If the CPU is also affected by
-> MDS, VERW is unconditionally executed late in asm regardless of guest
-> having MMIO access.
+> First of all in linux, while probing the UFS device by the host controller, it
+> needs to use _some_ gear. So far we were using HS_G2 as that gear and using the
+> PHY init sequence of G3/G4 depending on the SoC. We do not need to use G2 init
+> sequence because, there are only 2 init sequences available for any SoC and
+> since the init sequences are backwards compatible, we mostly use the min init
+> sequence, G3/G4. Even though this incurs slight power consumption during boot,
+> the ufs host controller after probing the device will switch to max gear
+> supported by both entities. If that max is G4/G5, then the respective init
+> sequence will be programmed again.
 > 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> ---
->  arch/x86/kvm/vmx/vmenter.S |  3 +++
->  arch/x86/kvm/vmx/vmx.c     | 10 +++++++---
->  2 files changed, 10 insertions(+), 3 deletions(-)
+> Now the issue is, for the automotive usecases, switching the gears 2 times
+> during boot is affecting the boot KPI (Key Performance Inidicator). So the UFS
+> team came with the idea of populating a spare register in the bootloader with
+> the max gear info that the bootloader has already found out and using the same
+> in the linux for first time itself. This helps linux in using a single gear
+> during probe time.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-> index b3b13ec04bac..139960deb736 100644
-> --- a/arch/x86/kvm/vmx/vmenter.S
-> +++ b/arch/x86/kvm/vmx/vmenter.S
-> @@ -161,6 +161,9 @@ SYM_FUNC_START(__vmx_vcpu_run)
->  	/* Load guest RAX.  This kills the @regs pointer! */
->  	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
->  
-> +	/* Clobbers EFLAGS.ZF */
-> +	CLEAR_CPU_BUFFERS
-> +
->  	/* Check EFLAGS.CF from the VMX_RUN_VMRESUME bit test above. */
->  	jnc .Lvmlaunch
->  
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 24e8694b83fc..2d149589cf5b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7226,13 +7226,17 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  
->  	guest_state_enter_irqoff();
->  
-> -	/* L1D Flush includes CPU buffer clear to mitigate MDS */
-> +	/*
-> +	 * L1D Flush includes CPU buffer clear to mitigate MDS, but VERW
-> +	 * mitigation for MDS is done late in VMentry and is still
-> +	 * executed inspite of L1D Flush. This is because an extra VERW
+> This is what this patch is doing. If for some reason, that register is not
+> populated, then we default to the existing G2 gear and do init twice as the
+> driver is doing currently.
+> 
+> I hope this clarifies the intention of this patch.
+Yes I understand this, but I am not sure if such tricks should make
+it upstream.. They depend on specific firmware (unrelated to the hw
+block itself) and only exist to improve boot times. If the firmware
+requirement was not at play, I would have no issues with this.
 
-in spite
-
-> +	 * should not matter much after the big hammer L1D Flush.
-> +	 */
->  	if (static_branch_unlikely(&vmx_l1d_should_flush))
->  		vmx_l1d_flush(vcpu);
-
-There's an existing bug here.  vmx_1ld_flush() is not guaranteed to do a flush in
-"conditional mode", and is not guaranteed to do a ucode-based flush (though I can't
-tell if it's possible for the VERW magic to exist without X86_FEATURE_FLUSH_L1D).
-
-If we care, something like the diff at the bottom is probably needed.
-
-> -	else if (cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
-> -		mds_clear_cpu_buffers();
->  	else if (static_branch_unlikely(&mmio_stale_data_clear) &&
->  		 kvm_arch_has_assigned_device(vcpu->kvm))
-> +		/* MMIO mitigation is mutually exclusive with MDS mitigation later in asm */
-
-Please don't put comments inside an if/elif without curly braces (and I don't
-want to add curly braces).  Though I think that's a moot point if we first fix
-the conditional L1D flush issue.  E.g. when the dust settles we can end up with:
-
-	/*
-	 * Note, a ucode-based L1D flush also flushes CPU buffers, i.e. the
-	 * manual VERW in __vmx_vcpu_run() to mitigate MDS *may* be redundant.
-	 * But an L1D Flush is not guaranteed for "conditional mode", and the
-	 * cost of an extra VERW after a full L1D flush is negligible.
-	 */
-	if (static_branch_unlikely(&vmx_l1d_should_flush))
-		cpu_buffers_flushed = vmx_l1d_flush(vcpu);
-
-	/*
-	 * The MMIO stale data vulnerability is a subset of the general MDS
-	 * vulnerability, i.e. this is mutually exclusive with the VERW that's
-	 * done just before VM-Enter.  The vulnerability requires the attacker,
-	 * i.e. the guest, to do MMIO, so this "clear" can be done earlier.
-	 */
-	if (static_branch_unlikely(&mmio_stale_data_clear) &&
-	    !cpu_buffers_flushed && kvm_arch_has_assigned_device(vcpu->kvm))
-		mds_clear_cpu_buffers();
-
->  		mds_clear_cpu_buffers();
->  
->  	vmx_disable_fb_clear(vmx);
-
-LOL, nice.  IIUC, setting FB_CLEAR_DIS is mutually exclusive with doing a late
-VERW, as KVM will never set FB_CLEAR_DIS if the CPU is susceptible to X86_BUG_MDS.
-But the checks aren't identical, which makes this _look_ sketchy.
-
-Can you do something like this to ensure we don't accidentally neuter the late VERW?
-
-static void vmx_update_fb_clear_dis(struct kvm_vcpu *vcpu, struct vcpu_vmx *vmx)
-{
-	vmx->disable_fb_clear = (host_arch_capabilities & ARCH_CAP_FB_CLEAR_CTRL) &&
-				!boot_cpu_has_bug(X86_BUG_MDS) &&
-				!boot_cpu_has_bug(X86_BUG_TAA);
-
-	if (vmx->disable_fb_clear &&
-	    WARN_ON_ONCE(cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF)))
-	    	vmx->disable_fb_clear = false;
-
-	...
-}
-
---
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6e502ba93141..cf6e06bb8310 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6606,8 +6606,11 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
-  * is not exactly LRU. This could be sized at runtime via topology
-  * information but as all relevant affected CPUs have 32KiB L1D cache size
-  * there is no point in doing so.
-+ *
-+ * Returns %true if CPU buffers were cleared, i.e. if a microcode-based L1D
-+ * flush was executed (which also clears CPU buffers).
-  */
--static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
-+static noinstr bool vmx_l1d_flush(struct kvm_vcpu *vcpu)
- {
-        int size = PAGE_SIZE << L1D_CACHE_ORDER;
- 
-@@ -6634,14 +6637,14 @@ static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
-                kvm_clear_cpu_l1tf_flush_l1d();
- 
-                if (!flush_l1d)
--                       return;
-+                       return false;
-        }
- 
-        vcpu->stat.l1d_flush++;
- 
-        if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
-                native_wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
--               return;
-+               return true;
-        }
- 
-        asm volatile(
-@@ -6665,6 +6668,8 @@ static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
-                :: [flush_pages] "r" (vmx_l1d_flush_pages),
-                    [size] "r" (size)
-                : "eax", "ebx", "ecx", "edx");
-+
-+       return false;
- }
- 
- static void vmx_update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
-@@ -7222,16 +7227,17 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
-                                        unsigned int flags)
- {
-        struct vcpu_vmx *vmx = to_vmx(vcpu);
-+       bool cpu_buffers_flushed = false;
- 
-        guest_state_enter_irqoff();
- 
--       /* L1D Flush includes CPU buffer clear to mitigate MDS */
-        if (static_branch_unlikely(&vmx_l1d_should_flush))
--               vmx_l1d_flush(vcpu);
--       else if (static_branch_unlikely(&mds_user_clear))
--               mds_clear_cpu_buffers();
--       else if (static_branch_unlikely(&mmio_stale_data_clear) &&
--                kvm_arch_has_assigned_device(vcpu->kvm))
-+               cpu_buffers_flushed = vmx_l1d_flush(vcpu);
-+
-+       if ((static_branch_unlikely(&mds_user_clear) ||
-+            (static_branch_unlikely(&mmio_stale_data_clear) &&
-+             kvm_arch_has_assigned_device(vcpu->kvm))) &&
-+           !cpu_buffers_flushed)
-                mds_clear_cpu_buffers();
- 
-        vmx_disable_fb_clear(vmx);
-
+Konrad
