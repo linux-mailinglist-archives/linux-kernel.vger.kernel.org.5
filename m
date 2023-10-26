@@ -2,203 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EF77D7CDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBB17D7CDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344023AbjJZG0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 02:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        id S1344014AbjJZG2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 02:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJZG0U (ORCPT
+        with ESMTP id S229518AbjJZG2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 02:26:20 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12736187;
-        Wed, 25 Oct 2023 23:26:18 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bd73395bceso391633b3a.0;
-        Wed, 25 Oct 2023 23:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698301577; x=1698906377; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGFAGOw1jMD4qW4ZS/5Zs1JohmRnxW/EBkFlBVus7WE=;
-        b=TVBgFX2siBkLnhqsU680SN5MHyEkZYJTrAYsho5DJMDiKrnGYLmN/do+B0re8/H5gi
-         KszNxjvPbLImN6HcJs6zH7Om8RygxM/fuTJqibDt82XsWynHMwOKnSObHybsSfzQszeZ
-         AaPjbQgir6B/s9gAVF1nyQccCNGXuHHt6iiV2++KKbXiXIQ3aZM22JHOLDr3PZ6hsbFN
-         h4kMBbhF12/pjJWlxEsbABV2qpGzy5KxjPLwI3G96fHMB7yE+U5mMYVX8XIK5MvbYgyf
-         7AlskJ/7gvFa5IMbuE6Q7s/VdJnxPQXojxEZDH8cTB20gL+nFWDSTF94pKNvfS/4pGTX
-         nXHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698301577; x=1698906377;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KGFAGOw1jMD4qW4ZS/5Zs1JohmRnxW/EBkFlBVus7WE=;
-        b=GBSeOr8eKQ7EHdrOQ0i7WrovnGjkbNCtQMed7xthRmI+6I82Cx95A66eH9m1hCubs7
-         N1/obMu7zNXGuZn2izAgZ3TQSHeM8OtfcX4AHTwQOoUTDojVuzGCMSHy/Ri8eCIqQUP5
-         Mdo0Ou9j53PLypwcY1jp1o8TutmfyHpxPwhIyre5yFqX9NgNqH21Xd9x0hrgcQ/tDIqU
-         FqCeNGAe13taDml9gzlfqWL91qpubvcm3hiP1NFHvyA4fCx6zkEOjUIKpie/7zqGk4Js
-         G14UlUXza6A9F3q8vomfpYsq19zbNiqKYXh+fUJd+mtD3rOPhlN4+RsfC49Ci/7D0bAD
-         tA7w==
-X-Gm-Message-State: AOJu0Yzi2P7tOBbzcvf9wvEYGBvN7CGanQ0nAe1PC4n8QuFTyx3GMe70
-        d7BaufaPI2Mz5W9xdnmo3CM=
-X-Google-Smtp-Source: AGHT+IFLmc+yJ/UAbI38jDjOnkPI+SS1Wbgv3/5Ir3Khrr/2t9WicUpIm1U7LXXAuOrkV8m/MhgemA==
-X-Received: by 2002:a05:6a00:280f:b0:692:6417:728a with SMTP id bl15-20020a056a00280f00b006926417728amr1844186pfb.14.1698301577369;
-        Wed, 25 Oct 2023 23:26:17 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:5393:ee8f:5738:b9c3])
-        by smtp.gmail.com with ESMTPSA id ca27-20020a056a00419b00b006c05374202dsm989282pfb.71.2023.10.25.23.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 23:26:16 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH] perf tools: Add -H short option for --hierarchy
-Date:   Wed, 25 Oct 2023 23:26:15 -0700
-Message-ID: <20231026062615.3096537-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+        Thu, 26 Oct 2023 02:28:09 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FBC187
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 23:28:05 -0700 (PDT)
+Received: from [127.0.0.1] (unknown [154.134.133.58])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id E67FC6FB;
+        Thu, 26 Oct 2023 08:28:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1698301683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IKIJ9pz/6EelcsD3a+FNse1RgjHqReUk/N6IeQ8agD0=;
+        b=QjfTdqrrPXwyDOeS0DcSV0WIao1R/jbdIkBMLxnP/rfGfwoj05rWZojGmqROIJv1nuBv4b
+        NalHvOgdtYzNI3YudfDrOWe9Icl5d5gXL+G5+QAMQGvksC4f+2vFkA+3ApDkeyI7aNR/O8
+        PaMIO5oSLmp1mgFA8ZIB0BmciV79cPC9GkzmNxD/w8wtolIiAwp5VNaZ0IZuKs6ZlwqAvJ
+        88TYAG+eBUcZA6nRayAq9AH+lYRYDjlE55M0uGwCtousTPH2vBrWej5CorUSILFfmi6Fob
+        slJzISECcy04LenBRnCEGoYPfSZ2p1lrucEHDtLwjMswblcEwXlcvXxRIIOKug==
+Date:   Thu, 26 Oct 2023 09:28:01 +0300
+From:   Michael Walle <michael@walle.cc>
+To:     AceLan Kao <acelan.kao@canonical.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20231026012017.518610-1-acelan.kao@canonical.com>
+References: <20231026012017.518610-1-acelan.kao@canonical.com>
+Message-ID: <F56F4D7D-1264-41E1-9CE7-5DA410A22D73@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found the hierarchy mode useful, but it's easy to make a typo when
-using it.  Let's add a short option for that.
+Am 26=2E Oktober 2023 04:20:17 OESZ schrieb AceLan Kao <acelan=2Ekao@canoni=
+cal=2Ecom>:
+>From: "Chia-Lin Kao (AceLan)" <acelan=2Ekao@canonical=2Ecom>
+>
+>When the software reset command isn't supported, we now report it
+>as an informational message(dev_info) instead of a warning(dev_warn)=2E
+>This adjustment helps avoid unnecessary alarm and confusion regarding
+>software reset capabilities=2E
+>
+>Signed-off-by: Chia-Lin Kao (AceLan) <acelan=2Ekao@canonical=2Ecom>
 
-Also update the documentation. :)
+NAK=2E You surely missed my comments on the previous version=2E=20
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Documentation/perf-report.txt | 29 ++++++++++++++++++++-
- tools/perf/Documentation/perf-top.txt    | 32 +++++++++++++++++++++++-
- tools/perf/builtin-report.c              |  2 +-
- tools/perf/builtin-top.c                 |  2 +-
- 4 files changed, 61 insertions(+), 4 deletions(-)
+-michael
 
-diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-index af068b4f1e5a..7d8916b2b7f7 100644
---- a/tools/perf/Documentation/perf-report.txt
-+++ b/tools/perf/Documentation/perf-report.txt
-@@ -528,8 +528,35 @@ include::itrace.txt[]
- --raw-trace::
- 	When displaying traceevent output, do not use print fmt or plugins.
- 
-+-H::
- --hierarchy::
--	Enable hierarchical output.
-+	Enable hierarchical output.  In the hierarchy mode, each sort key groups
-+	samples based on the criteria and then sub-divide it using the lower
-+	level sort key.
-+
-+	For example:
-+	In normal output:
-+
-+	  perf report -s dso,sym
-+	  # Overhead  Shared Object      Symbol
-+	      50.00%  [kernel.kallsyms]  [k] kfunc1
-+	      20.00%  perf               [.] foo
-+	      15.00%  [kernel.kallsyms]  [k] kfunc2
-+	      10.00%  perf               [.] bar
-+	       5.00%  libc.so            [.] libcall
-+
-+	In hierarchy output:
-+
-+	  perf report -s dso,sym --hierarchy
-+	  #   Overhead  Shared Object / Symbol
-+	      65.00%    [kernel.kallsyms]
-+	        50.00%    [k] kfunc1
-+	        15.00%    [k] kfunc2
-+	      30.00%    perf
-+	        20.00%    [.] foo
-+	        10.00%    [.] bar
-+	       5.00%    libc.so
-+	         5.00%    [.] libcall
- 
- --inline::
- 	If a callgraph address belongs to an inlined function, the inline stack
-diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
-index 3c202ec080ba..a754875fa5bb 100644
---- a/tools/perf/Documentation/perf-top.txt
-+++ b/tools/perf/Documentation/perf-top.txt
-@@ -261,8 +261,38 @@ Default is to monitor all CPUS.
- --raw-trace::
- 	When displaying traceevent output, do not use print fmt or plugins.
- 
-+-H::
- --hierarchy::
--	Enable hierarchy output.
-+	Enable hierarchical output.  In the hierarchy mode, each sort key groups
-+	samples based on the criteria and then sub-divide it using the lower
-+	level sort key.
-+
-+	For example, in normal output:
-+
-+	  perf report -s dso,sym
-+	  #
-+	  # Overhead  Shared Object      Symbol
-+	  # ........  .................  ...........
-+	      50.00%  [kernel.kallsyms]  [k] kfunc1
-+	      20.00%  perf               [.] foo
-+	      15.00%  [kernel.kallsyms]  [k] kfunc2
-+	      10.00%  perf               [.] bar
-+	       5.00%  libc.so            [.] libcall
-+
-+	In hierarchy output:
-+
-+	  perf report -s dso,sym --hierarchy
-+	  #
-+	  #   Overhead  Shared Object / Symbol
-+	  # ..........  ......................
-+	      65.00%    [kernel.kallsyms]
-+	        50.00%    [k] kfunc1
-+	        15.00%    [k] kfunc2
-+	      30.00%    perf
-+	        20.00%    [.] foo
-+	        10.00%    [.] bar
-+	       5.00%    libc.so
-+	         5.00%    [.] libcall
- 
- --overwrite::
- 	Enable this to use just the most recent records, which helps in high core count
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index ca8f2331795c..b16680d0f82c 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1392,7 +1392,7 @@ int cmd_report(int argc, const char **argv)
- 		    "only show processor socket that match with this filter"),
- 	OPT_BOOLEAN(0, "raw-trace", &symbol_conf.raw_trace,
- 		    "Show raw trace event output (do not use print fmt or plugins)"),
--	OPT_BOOLEAN(0, "hierarchy", &symbol_conf.report_hierarchy,
-+	OPT_BOOLEAN('H', "hierarchy", &symbol_conf.report_hierarchy,
- 		    "Show entries in a hierarchy"),
- 	OPT_CALLBACK_DEFAULT(0, "stdio-color", NULL, "mode",
- 			     "'always' (default), 'never' or 'auto' only applicable to --stdio mode",
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index ea8c7eca5eee..3cccb2a516dc 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1573,7 +1573,7 @@ int cmd_top(int argc, const char **argv)
- 		    "add last branch records to call history"),
- 	OPT_BOOLEAN(0, "raw-trace", &symbol_conf.raw_trace,
- 		    "Show raw trace event output (do not use print fmt or plugins)"),
--	OPT_BOOLEAN(0, "hierarchy", &symbol_conf.report_hierarchy,
-+	OPT_BOOLEAN('H', "hierarchy", &symbol_conf.report_hierarchy,
- 		    "Show entries in a hierarchy"),
- 	OPT_BOOLEAN(0, "overwrite", &top.record_opts.overwrite,
- 		    "Use a backward ring buffer, default: no"),
--- 
-2.42.0.758.gaed0368e0e-goog
+>---
+>v2=2E only lower the priority for the not supported failure
+>v3=2E replace ENOTSUPP with EOPNOTSUPP and check the first command only
+>v4=2E move the version information below the '---' line
+>---
+> drivers/mtd/spi-nor/core=2Ec | 5 ++++-
+> drivers/spi/spi-mem=2Ec      | 2 +-
+> 2 files changed, 5 insertions(+), 2 deletions(-)
+>
+>diff --git a/drivers/mtd/spi-nor/core=2Ec b/drivers/mtd/spi-nor/core=2Ec
+>index 1b0c6770c14e=2E=2E42e52af76289 100644
+>--- a/drivers/mtd/spi-nor/core=2Ec
+>+++ b/drivers/mtd/spi-nor/core=2Ec
+>@@ -3252,7 +3252,10 @@ static void spi_nor_soft_reset(struct spi_nor *nor=
+)
+>=20
+> 	ret =3D spi_mem_exec_op(nor->spimem, &op);
+> 	if (ret) {
+>-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+>+		if (ret =3D=3D -EOPNOTSUPP)
+>+			dev_info(nor->dev, "Software reset enable command doesn't support: %d=
+\n", ret);
+>+		else
+>+			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+> 		return;
+> 	}
+>=20
+>diff --git a/drivers/spi/spi-mem=2Ec b/drivers/spi/spi-mem=2Ec
+>index edd7430d4c05=2E=2E93b77ac0b798 100644
+>--- a/drivers/spi/spi-mem=2Ec
+>+++ b/drivers/spi/spi-mem=2Ec
+>@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct=
+ spi_mem_op *op)
+> 		return ret;
+>=20
+> 	if (!spi_mem_internal_supports_op(mem, op))
+>-		return -ENOTSUPP;
+>+		return -EOPNOTSUPP;
+>=20
+> 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->sp=
+i, 0)) {
+> 		ret =3D spi_mem_access_start(mem);
 
