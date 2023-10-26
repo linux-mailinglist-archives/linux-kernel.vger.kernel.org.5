@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A4D7D7985
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5687D7986
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbjJZAcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S234958AbjJZAc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjJZAcm (ORCPT
+        with ESMTP id S229877AbjJZAcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:32:42 -0400
+        Wed, 25 Oct 2023 20:32:43 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBE21AD
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:32:31 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86dac81f8fso256526276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:32:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8ACD44
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:32:33 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0737dcb26so234345276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:32:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698280350; x=1698885150; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698280352; x=1698885152; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4P4Ckt7g7gTNX776QqcLXSzZoxp2WVgO5XwUIxwuv+A=;
-        b=e1CGX+InIxqWtJDL5/FvJy3A5HP3RtrZA52tNmZ86kZtxOkwzO276YSlmdll3pL5Dx
-         +kiKGR54W/BHV0uTOpv/q27zMN9TOD0zRmscnue+GpmJE3l/3Im2h5MXvbGtEPRA3VVh
-         25+TC9Rw9atFTLOLRiUG6E9E399F6vwAeACJjv2TYzTOLJPpF9Ok+KdS93p9lNW4l2ZI
-         kwsSjEIhkCOfeLi3jRAgUSZT4smqmAM3iW+HergEnCEvPCEofRlV0V4pxKw+q2aFUMj+
-         /PtUmF7jLSaNXACFmLV/haPBqknxyWRxOJHhqQzJlVdhQy8CQofWikHdo6tdS0qrD6nV
-         +OZw==
+        bh=J7OBreGJUzqAMOgAvVj/rwBcf5+fRvTFtfbDZAV5mtY=;
+        b=ktmI7q1W3GD9oui9MNevESqh4QInA71eIpOiDDKZdio57uS5vPsiEsa4+mobobtSO5
+         wN0LD8gbxhlH2igYjvcZfPxvnTgvSjqVr/sg4sIDmun9YqgVLqpJOQziB8s/j9rbg4k/
+         qNhVZiHR7AVbxbVP6sLGmTlCclrL94Rvc0u6dHLn6Kip/eNNloPNcO226TTkvenz9z5i
+         dEj1yFLaaraflt5yQ94Fzkc5kqLW/pRQPDs1ra4R+cT5f6mnU91JlSNlLz67xAhL1Xgm
+         UP4EFGHNplA01ZYwKN6TaKm26NpsH8owxL4ExfulD8RbuTZfViIQxqM9YM8IQTKHwR79
+         zkag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698280350; x=1698885150;
+        d=1e100.net; s=20230601; t=1698280352; x=1698885152;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4P4Ckt7g7gTNX776QqcLXSzZoxp2WVgO5XwUIxwuv+A=;
-        b=sAIZytocRXkxEKE5sl+knsC+JhOe/GeqdV5kS9u4w/xJv7bolNHT6iZsw3JuE3weeB
-         MQMhPCpOfoFV+TA1JM85sIYAQbbSYObLVgwuj5LecDyn/aVkWSi1aLLon1nMOANnKMwv
-         DE9imdPKTA4GDfPDSDeZ2F7wh775o24fiALs4/mBq5ByR/fa5FRcVcUHOpfCF4Sgk+j/
-         gsMDNJ7j/Fm9Fj+MOujteuNVmvdv8b8GQzoXTEW1EzQQQ7PtjqyLjeIHYCDj5TtgSYy+
-         BkAAfMf0BfHpqqtEKw+qzW0NJaJ01tbCuHHA7Spvw+Y/H1EhNNLmDgSvt5/ISGQbS77X
-         Fs5Q==
-X-Gm-Message-State: AOJu0Yx2/PlZ6DQ0KDkqTHVhwO2mYkLYhJiklISYGmN3MuyGzXiRew4u
-        +CTrJLvaZyhW0+L9K8a4JHA45A+SyosP
-X-Google-Smtp-Source: AGHT+IEKM2WBSyG+hlRtFEqZP5bsLUwbk8vBV8YiICaKGHobmwXo31vK4KGKqNtEuib+kL0Rv4H42EEPc1qi
+        bh=J7OBreGJUzqAMOgAvVj/rwBcf5+fRvTFtfbDZAV5mtY=;
+        b=oHRCMPN0AjrlOsjlb83Vbodck9bTI3ozvzTsFMJB343SE75bnJkEIjO5aTxK1uclue
+         zDUDzguVTNbZRgKNf+xar5DNT0PpBDDF6f7+qkkLFi0nLbRt0vbdv2H+EV6scXwGXyUa
+         Lm7f5ExA+ST6f7KVkN2iOu5iTK+YPZGXca0PlQToaaVBg/ewENdauCapDHxGYGiKiQ0t
+         nxDHn88/0B7LImqnxXn8rgbEyF9ugncpWfv5dV/1DOuFgDJb0sG/+ZE7jSw1VNw00/fr
+         4kfRGSfWk60tVqrQ6diZkvzNWNb/LaMbnMRrbUaR4ghOp7rVzsBOuY1vpHG7irJTfkCw
+         9XJA==
+X-Gm-Message-State: AOJu0YyNtKmnVpaqAXFfLxVkJUcNpOmDJt87Ks1uDrYShu+JnPSBvgfn
+        Mvyb/kYO4MYi0eGqLSmoRO9sQYe36tPr
+X-Google-Smtp-Source: AGHT+IFDI9AFGQLlpSOOnrNi7Sz1UkkS4mcp+siEs/Ec9A0S0Op47syUrqdx7urODzP3eQWNa11IIZHIOLlu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:19cd:8b4f:c0f5:e803])
- (user=irogers job=sendgmr) by 2002:a25:297:0:b0:d9a:4c45:cfd0 with SMTP id
- 145-20020a250297000000b00d9a4c45cfd0mr297919ybc.2.1698280350215; Wed, 25 Oct
- 2023 17:32:30 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 17:31:47 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:105:b0:da0:3da9:ce08 with SMTP id
+ o5-20020a056902010500b00da03da9ce08mr137173ybh.10.1698280352413; Wed, 25 Oct
+ 2023 17:32:32 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 17:31:48 -0700
 In-Reply-To: <20231026003149.3287633-1-irogers@google.com>
-Message-Id: <20231026003149.3287633-7-irogers@google.com>
+Message-Id: <20231026003149.3287633-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20231026003149.3287633-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v1 7/9] perf vendor events intel: Update westmereex events to v4
+Subject: [PATCH v1 8/9] perf vendor events intel: Update bonnell version
+ number to v5
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,40 +81,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update westmereex events from v3 to v4 fixing a spelling issue.
+Spelling fixes were already incorporated in the Linux perf tree,
+update the version number to reflect this.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/arch/x86/mapfile.csv              | 2 +-
- tools/perf/pmu-events/arch/x86/westmereex/pipeline.json | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/pmu-events/arch/x86/mapfile.csv | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
-index 5b455739065b..0dee3de3187c 100644
+index 0dee3de3187c..e571683f59f3 100644
 --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
 +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
-@@ -35,7 +35,7 @@ GenuineIntel-6-86,v1.21,snowridgex,core
- GenuineIntel-6-8[CD],v1.13,tigerlake,core
- GenuineIntel-6-2C,v5,westmereep-dp,core
- GenuineIntel-6-25,v4,westmereep-sp,core
--GenuineIntel-6-2F,v3,westmereex,core
-+GenuineIntel-6-2F,v4,westmereex,core
- AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
- AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
- AuthenticAMD-25-([245][[:xdigit:]]|[[:xdigit:]]),v1,amdzen3,core
-diff --git a/tools/perf/pmu-events/arch/x86/westmereex/pipeline.json b/tools/perf/pmu-events/arch/x86/westmereex/pipeline.json
-index 1c61d18a4b5f..026236558d05 100644
---- a/tools/perf/pmu-events/arch/x86/westmereex/pipeline.json
-+++ b/tools/perf/pmu-events/arch/x86/westmereex/pipeline.json
-@@ -45,7 +45,7 @@
-         "UMask": "0x1"
-     },
-     {
--        "BriefDescription": "Early Branch Prediciton Unit clears",
-+        "BriefDescription": "Early Branch Prediction Unit clears",
-         "EventCode": "0xE8",
-         "EventName": "BPU_CLEARS.EARLY",
-         "SampleAfterValue": "2000000",
+@@ -1,7 +1,7 @@
+ Family-model,Version,Filename,EventType
+ GenuineIntel-6-(97|9A|B7|BA|BF),v1.23,alderlake,core
+ GenuineIntel-6-BE,v1.23,alderlaken,core
+-GenuineIntel-6-(1C|26|27|35|36),v4,bonnell,core
++GenuineIntel-6-(1C|26|27|35|36),v5,bonnell,core
+ GenuineIntel-6-(3D|47),v28,broadwell,core
+ GenuineIntel-6-56,v11,broadwellde,core
+ GenuineIntel-6-4F,v22,broadwellx,core
 -- 
 2.42.0.758.gaed0368e0e-goog
 
