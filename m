@@ -2,115 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156287D8778
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEC47D8776
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjJZRVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        id S231795AbjJZRVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 13:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZRVf (ORCPT
+        with ESMTP id S229815AbjJZRU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:21:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C255CA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698340845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5kLaQtEOk7UbV1uqygBEcoktd0GtHWmaS2i+eVzn0zA=;
-        b=Dt/R5TXJgdqWET+LJDJ+frQ2F2d3xhZronVe2NzUm3o9dIyxU/iWo4K9NJSIZjXtOx60Ix
-        M+Yhs0bqbaUdl3wnXBSm3RyIC89yIUWrKgZidwQ+prOpFdFvt8wKXxipfIwKiXyABvu6Tz
-        rb80uDxtP/4qwxmTv4FCd8KnGbn5r+c=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-FLfEon22N6GaKnWoSYrh2A-1; Thu, 26 Oct 2023 13:20:44 -0400
-X-MC-Unique: FLfEon22N6GaKnWoSYrh2A-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-507d2e150c2so1314119e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:20:43 -0700 (PDT)
+        Thu, 26 Oct 2023 13:20:59 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D7E1A6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:20:56 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1caa7597af9so9119785ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698340856; x=1698945656; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SLXTzOtavTM4dZPYG+XNWZHVk3Ib4e1r6kiIfRSr4qc=;
+        b=AVuzpXtwM12ujd6Ig2dGh9jvvF4/g456JbfTUBTQXvqdNBmDUtwa5DwVIx3GXX5mI5
+         lP99tikf+SnYjxxTEyldxsLk5gZZdz8qa1NZb1bX8B7vRw4mgxagYhuE4usDivmFgohE
+         jRyD9nj/J+hCyZm32eZb2jGoNJ5hvQPzxfehw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698340842; x=1698945642;
+        d=1e100.net; s=20230601; t=1698340856; x=1698945656;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5kLaQtEOk7UbV1uqygBEcoktd0GtHWmaS2i+eVzn0zA=;
-        b=t4q1bef1kqKWFrjHW3FyL2RYUQwmL8zALFtbJDRw0kXnSYbysSJHZj8ltcKxy+FT+l
-         /ecOhntATefEdLcoK/hD/397gRD3LLO7wcoJ7AUuBbvaxPXq5DaSo2ICn989rY5d56nX
-         dIxtLWvRBEgUo7QiLxD0oGKfA4QRtROt3Nqfm6VUf0GaTzXtjFDuW6y8y421hfIAKBjQ
-         NBSUSODvYu3SVVhMkz4Yk0u/Holu2+VKWNSJykJdX9KntZuTOFdJinhvVH+bQ+ppHDyn
-         SMC7AnBb33yVstRIYXuzKQ0VCx+87RgFbhQ5cCwcuFcosgiGg6m/ECTwuL+zNZr2sVHD
-         0ASQ==
-X-Gm-Message-State: AOJu0YxgEglhaYb3JOS/OwkdFLdSD4NFflagVJ+WMCgccxgT/8qq+zHR
-        LkomY7oPVw1xQ/Hiy0k5XGVoWABllZ0U8B09eS709xsqQDeeaJa6vEQwqs10Bqg147W5w4iVk3K
-        nunZbF/w1dIbMbvDducpd5OE/
-X-Received: by 2002:a19:771a:0:b0:507:9784:644c with SMTP id s26-20020a19771a000000b005079784644cmr13653lfc.26.1698340842620;
-        Thu, 26 Oct 2023 10:20:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFBuY88F57kBvZ8DBFENBLOEu6PPi0md4h+oiVlvlZqcMwMkNddTglwsedLiad4JyDOl/3LWg==
-X-Received: by 2002:a19:771a:0:b0:507:9784:644c with SMTP id s26-20020a19771a000000b005079784644cmr13641lfc.26.1698340842258;
-        Thu, 26 Oct 2023 10:20:42 -0700 (PDT)
-Received: from redhat.com ([2.52.26.119])
-        by smtp.gmail.com with ESMTPSA id r6-20020a5d6946000000b00318147fd2d3sm14569272wrw.41.2023.10.26.10.20.39
+        bh=SLXTzOtavTM4dZPYG+XNWZHVk3Ib4e1r6kiIfRSr4qc=;
+        b=nT37bHMMShKbb6soGDZDwURSpD8m/FESzUBlWqHQoGY4oJAm/WUMeqKS6M/Qk3YkY9
+         de7pbK0Rfnr3vm+meiFo16GA+HWkfk63m5m4v3/aG5YYBX8DtDWoh18i89SjqvGPeyuG
+         uRZirZdC1FNSu+UDvim7eHpk5HUA+yEeJj5tqR0uw/kWGpiisfoCFqgWbLi2CwQziAut
+         KS6ekFbVP7xWMp1ZTqgqss9gGrBx2GSyDBgJ+unFgbLhmOOkjGehDMyoPhsbDrG8gUXD
+         H18LCWef3PDHKNogMmtaRXgdRMBmTFqcgGll5ag7s1kgtxWLwYClKrYWLmwGM+9N3Abz
+         Kbwg==
+X-Gm-Message-State: AOJu0YxVyqmGoRUbgc9Zo8hGTh4+IwuudrvecmBPc17XQhSl2eMaedQf
+        6SGtGe1MGwTV2O/GTjNfmTwT7vD7XViXQMjxewQ=
+X-Google-Smtp-Source: AGHT+IHJSLmUKEy3dGDjKezIZa9WLzUAniS+YJWcgL2oDdL/ykmdEe2bZHw04Ac3YlnVoI5x7iOEJA==
+X-Received: by 2002:a17:902:e84c:b0:1c5:d0ba:429 with SMTP id t12-20020a170902e84c00b001c5d0ba0429mr178898plg.4.1698340856010;
+        Thu, 26 Oct 2023 10:20:56 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k11-20020a170902694b00b001b016313b1dsm11240816plt.86.2023.10.26.10.20.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 10:20:41 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 13:20:34 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH v2] virtio_pci: Switch away from deprecated
- irq_set_affinity_hint
-Message-ID: <20231026131830-mutt-send-email-mst@kernel.org>
-References: <20231025145319.380775-1-jakub@cloudflare.com>
- <87wmv91h3p.fsf@cloudflare.com>
+        Thu, 26 Oct 2023 10:20:55 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 10:20:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] wifi: brcm80211: replace deprecated strncpy with
+ strscpy
+Message-ID: <202310261020.2D4DB7177@keescook>
+References: <20231017-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v3-0-af780d74ae38@google.com>
+ <20231017-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v3-1-af780d74ae38@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wmv91h3p.fsf@cloudflare.com>
+In-Reply-To: <20231017-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v3-1-af780d74ae38@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 06:25:08PM +0200, Jakub Sitnicki wrote:
-> On Wed, Oct 25, 2023 at 04:53 PM +02, Jakub Sitnicki wrote:
-> > Since commit 65c7cdedeb30 ("genirq: Provide new interfaces for affinity
-> > hints") irq_set_affinity_hint is being phased out.
-> >
-> > Switch to new interfaces for setting and applying irq affinity hints.
-> >
-> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > ---
-> > v2:
-> >  - Leave cpumask_copy as is. We can't pass pointer to stack memory as hint.
-> >    Proposed a change to IRQ affinity interface to address this limitation:
-> >    https://lore.kernel.org/r/20231025141517.375378-1-jakub@cloudflare.com
+On Tue, Oct 17, 2023 at 08:11:28PM +0000, Justin Stitt wrote:
+> Let's move away from using strncpy and instead favor a less ambiguous
+> and more robust interface.
 > 
-> Just a note to the ^ - if we wanted to get rid of msix_affinity_masks,
-> we could call irq_set_affinity directly, instead of calling it through
-> irq_set_affinity[_and]_hint.
+> For ifp->ndev->name, we expect ifp->ndev->name to be NUL-terminated based
+> on its use in format strings within core.c:
+> 67 |       char *brcmf_ifname(struct brcmf_if *ifp)
+> 68 |       {
+> 69 |            if (!ifp)
+> 70 |                    return "<if_null>";
+> 71 |
+> 72 |            if (ifp->ndev)
+> 73 |                    return ifp->ndev->name;
+> 74 |
+> 75 |            return "<if_none>";
+> 76 |       }
+> ...
+> 288 |       static netdev_tx_t brcmf_netdev_start_xmit(struct sk_buff *skb,
+> 289 |                                              struct net_device *ndev) {
+> ...
+> 330 |       brcmf_dbg(INFO, "%s: insufficient headroom (%d)\n",
+> 331 |                 brcmf_ifname(ifp), head_delta);
+> ...
+> 336 |       bphy_err(drvr, "%s: failed to expand headroom\n",
+> 337 |                brcmf_ifname(ifp));
 > 
-> The hint wouldn't be available any more in /proc/irq/N/affinity_hint,
-> but the same information can be gathered from /proc/irq/N/smp_affinity.
+> For di->name, we expect di->name to be NUL-terminated based on its usage
+> with format strings:
+> |       brcms_dbg_dma(di->core,
+> |                     "%s: DMA64 tx doesn't have AE set\n",
+> |                     di->name);
 > 
-> [...]
+> Looking at its allocation we can see that it is already zero-allocated
+> which means NUL-padding is not required:
+> |       di = kzalloc(sizeof(struct dma_info), GFP_ATOMIC);
+> 
+> For wlc->modulecb[i].name, we expect each name in wlc->modulecb to be
+> NUL-terminated based on their usage with strcmp():
+> |       if (!strcmp(wlc->modulecb[i].name, name) &&
+> 
+> NUL-padding is not required as wlc is zero-allocated in:
+> brcms_c_attach_malloc() ->
+> |       wlc = kzalloc(sizeof(struct brcms_c_info), GFP_ATOMIC);
+> 
+> For all these cases, a suitable replacement is `strscpy` due to the fact
+> that it guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
+Good; this looks like standard direct replacements.
 
-So we are potentially breaking some userspace - what's the value we
-gain?  Is there some way we can make disable_irq/enable_irq work?
-That would have a lot of value.
-There is an actual need for that in virtio for coco but we can't use
-these APIs with affinity managed IRQs.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-MST
-
+Kees Cook
