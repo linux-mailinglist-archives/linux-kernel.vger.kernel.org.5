@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263517D7FC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0DF7D7FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjJZJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S1344628AbjJZJli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344616AbjJZJkk (ORCPT
+        with ESMTP id S229823AbjJZJlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:40:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ECA184;
-        Thu, 26 Oct 2023 02:40:36 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50802148be9so745786e87.2;
-        Thu, 26 Oct 2023 02:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698313235; x=1698918035; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=16C1WfT2DwpGvrfebh3jri2daMchrLPYq4YQrge37a8=;
-        b=elLNWVpZVMRaAiRJjSYDRNBaItDFGjUB0f13H6Ob5ymiFThwZD5C7dGTVYVbAPP2H/
-         KnhJITmC0DgdnIoBpo0WF3sHuo8XBAe8eFaYFd3nuxsFZwf4LFsSp8icpmihL7PqJBse
-         I8pDDMNg1f1eGROl7V1hptyTy8n7wP46ktLhct9oiNtLOEO9dYAtHe9uw8mEpjVCOkgA
-         HycXl4uLgxLn9vMOzNO/Y74XbVLb8o1+Yk5Lq2tobcPrMI+qIsR8owbTcSh4qYpivRem
-         gLTDV+RXgDmZ+MjG5GrWQ4rOX2EI1xB/CcDwPHE2N16mgoH0a0BA9gn9O0vwRC2c48mc
-         FMiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698313235; x=1698918035;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=16C1WfT2DwpGvrfebh3jri2daMchrLPYq4YQrge37a8=;
-        b=pomHkzS9FE7Sj6dFZRMA8zi69Pkn03upbnoGmnPARD9sxEcsj/f1hONuYEVmk6ps7T
-         kkxoag6sAI8GQP1AfiCnRisbNMP6kFVIcNGjHsNg0bRMEq4YQTCzfuTVUC93EddH4+1P
-         r2wUM2cByeprAMACL75pNrrtxdBn+SNkzGyAtGfrvbF/koDu9qxAE3C1CayNT/ppq7Ps
-         8o8GTTp/93w2XqUdX6+xDPNphQerWZq2RYrYBdWnR+lnnNx8X4LELuN3sLeY35TNgwNf
-         JGz4yYojgdf4g+MolSyrAie0ySmdsLck5j29S0I29Tm3mDPLI3NW1irh7lk6by7IH6x2
-         zkuw==
-X-Gm-Message-State: AOJu0YzuaxBcYgt8rqiOBCNpQFrohOVnFvVu6nqs1M6muoztbgBJCfaH
-        R8tUYQc5Q9rwuQWwmAFp2eE=
-X-Google-Smtp-Source: AGHT+IGlwr9dCU6ecQBIYTesn3xkLbGBkhX7LjmKR030UIvrvCcdj5ZXyGut84ci6KoZvBvRdraMrg==
-X-Received: by 2002:a05:6512:2352:b0:507:a5dc:6d3e with SMTP id p18-20020a056512235200b00507a5dc6d3emr13866269lfu.31.1698313234359;
-        Thu, 26 Oct 2023 02:40:34 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id l18-20020a5d5272000000b00323293bd023sm14028072wrc.6.2023.10.26.02.40.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 02:40:34 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 12:40:30 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v8 0/5] net: dsa: microchip: provide Wake on LAN
- support (part 2)
-Message-ID: <20231026094030.wyoz3rj2jiim7ptx@skbuf>
-References: <20231026051051.2316937-1-o.rempel@pengutronix.de>
+        Thu, 26 Oct 2023 05:41:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08684194;
+        Thu, 26 Oct 2023 02:41:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F74C433C9;
+        Thu, 26 Oct 2023 09:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698313293;
+        bh=QxFYe5c/XElEhgs94iEddJdQGcgkPEwi4At0UDjpW3s=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=D8Qcd0yw0e1bKprF3WY9/beM4PynUZcxc7qiLy+kDXAU5l3hcsS4Mim+vfWdBMmcg
+         evRtytNOqMHSiWa86KjruNGFbTypqfGfc+JfNGBGoNhFKQvjmRDY4AzLwRT9MN/GwT
+         MwQDD6YhBGEWONQP1eD2V9cCPxApJbE9GovocKzlG2NMZhal6BTZUxu+2rOYaRvdQy
+         gE3f6cCidYwxkdLUiMEN1FQhTnvj+rVnE2d8mkEW913UcUFccA4uK7VWOW4XVYOhMz
+         AqoKItcYNTa6KEU2tohytxe7qzEzklXKV6lMbvS/RCSr7plb6zYL9x2ZjNsk+hKiYL
+         tNstCpZgMxf8Q==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Witold Baryluk <witold.baryluk@gmail.com>
+Cc:     arnd@kernel.org, Larry.Finger@lwfinger.net,
+        alexandre.belloni@bootlin.com, arnd@arndb.de,
+        claudiu.beznea@tuxon.dev, davem@davemloft.net,
+        geert@linux-m68k.org, geoff@infradead.org,
+        gregkh@linuxfoundation.org, gregory.greenman@intel.com,
+        ilw@linux.intel.com, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, nicolas.ferre@microchip.com,
+        pavel@ucw.cz, quic_jjohnson@quicinc.com, stas.yakovlev@gmail.com,
+        stf_xl@wp.pl
+Subject: Re: [PATCH 10/10] [RFC] wifi: remove ipw2100/ipw2200 drivers
+References: <CAEGMnwo6RFqADPO5FRkRUNL=GfV6DY8UuwgsypEYOD3LTnXdJg@mail.gmail.com>
+Date:   Thu, 26 Oct 2023 12:41:27 +0300
+In-Reply-To: <CAEGMnwo6RFqADPO5FRkRUNL=GfV6DY8UuwgsypEYOD3LTnXdJg@mail.gmail.com>
+        (Witold Baryluk's message of "Wed, 25 Oct 2023 22:27:20 +0000")
+Message-ID: <87o7gld8l4.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026051051.2316937-1-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 07:10:46AM +0200, Oleksij Rempel wrote:
-> This patch series introduces extensive Wake on LAN (WoL) support for the
-> Microchip KSZ9477 family of switches, coupled with some code refactoring
-> and error handling enhancements. The principal aim is to enable and
-> manage Wake on Magic Packet and other PHY event triggers for waking up
-> the system, whilst ensuring that the switch isn't reset during a
-> shutdown if WoL is active.
-> 
-> The Wake on LAN functionality is optional and is particularly beneficial
-> if the PME pins are connected to the SoC as a wake source or to a PMIC
-> that can enable or wake the SoC.
-> 
-> changes v8:
-> - rebase on top of net-next and s/slave/user/
+Witold Baryluk <witold.baryluk@gmail.com> writes:
 
-I am stunned by what happened here. The timeline seems to be:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> These two drivers were used for the earliest "Centrino" branded Intel
+>> laptops during the late 32-bit Pentium-M era, roughly 2003 to 2005, which
+>> probably makes it the most modern platform that still uses the wireless
+>> extension interface instead of cfg80211. Unlike the other drivers that
+>> are suggested for removal, this one is still officially maintained.
+>>
+>> According to Johannes Berg, there was an effort to finish the move away
+>> from wext in the past, but the last evidence of this that I could find
+>> is from commit a3caa99e6c68f ("libipw: initiate cfg80211 API conversion
+>> (v2)") in 2009.
+>>
+>> Link: https://lore.kernel.org/all/87fs2fgals.fsf@kernel.org/
+>> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
+>> Cc: Linux Wireless <ilw@linux.intel.com>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>> I'm not convinced this should be in the same set of drivers as the
+>> rest, since this is clearly less obsolete than the other hardware
+>> that I would remove support for.
+>
+> I still use ipw2200 on Intel PRO/Wireless 2915ABG [Calexico2] Network
+> Connection card, in my IBM Thinkpad X41 (Pentium-M 1.73GHz, Centrino
+> platform). The laptop is rock solid, and I use it as a backup for my
+> other Thinkpad. In fact is sometimes preferable to more modern machines
+> (IMHO X41 itself is the best laptop ever made in terms of a design).
+>
+> Never had really issues with WiFi on it. In terms of speed it is neither
+> far or slow, but does the job anyway.
+>
+> Now, I do not use this laptop frequently, maybe once or twice a month.
+> But that is more because in I use laptops less in general these days. Not
+> because the machine is not usable. I have modern SSD in it, second hard
+> drive, two USB 3.0 ports via ExpressCard, high res 4:3 (1440x1050)
+> display, full disk encryption, etc.
+>
+> I would really like for this driver to stay in the mainline for another 5-10
+> years.
 
-- On the 23rd of October, you sent a 9-patch series constituting v7.
-- On the 25th of October, 4 of those patches were silently merged, as
-  follows:
+Thanks for the thorough report. By my calculations that's the third user
+report about ipw2x00 so clearly there are users still and we shouldn't
+remove the driver. I'm dropping this patch 10 from my queue now.
 
-93aa731e6133 Merge branch 'dsa-microchip-WoL-support'
-d264f24409b8 net: dsa: microchip: ksz9477: add Wake on LAN support
-aed7425d6510 net: dsa: microchip: use wakeup-source DT property to enable PME output
-4e1799ae84fc dt-bindings: net: dsa: microchip: add wakeup-source property
-02e987f52cf0 net: dsa: microchip: Add missing MAC address register offset for ksz8863
+> I might be interested in modernizing the driver, but I have no idea how
+> much effort it would be (in terms of changed fraction of code). 20k LOC is
+> neither small or big, and not obvious (a lot of it would be unchanged),
+> if it is a week of work, or months of work.
+>
+> I would not have an issue with removing it, and readding back if somebody
+> (or me) ports it, if not for re-review from scratch concerns. If I port
+> it, I would not be able to do re-review, 1) out of date coding standards,
+> 2) different reviewers, 3) I would only port needed parts, and keep rest
+> of the driver intact, so I would not be able to really provide much
+> insight. So, readding after porting might be harder than keeping and
+> porting.
 
- commit 93aa731e613399f5145166940b20224a8d116920
- Merge: e43e6d9582e0 d264f24409b8
- Author: David S. Miller <davem@davemloft.net>
- Date:   Wed Oct 25 08:47:33 2023 +0100
+It would be great if you could cleanup the driver and convert it to use
+mac80211. In the wiki link below there is more info how to contribute
+patches to the wireless subsystem. I always recommend starting with
+something small and going towards more complex patches with baby steps.
+Avoid patchbombing as much as possible!
 
-     Merge branch 'dsa-microchip-WoL-support'
+For example, I see lots of dead code under '#ifdef NOT_YET' and '#if 0',
+removing those is a good a start. Also converting the ugly debug_level
+procfs file to something more modern would be nice, maybe using just
+dev_dbg() throught the driver is a good option? Or maybe use a module
+parameter instead?
 
-with no further details as usual (cover letter becomes merge commit
-message), no patchwork bot notification, nothing.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-- Today you are sending the rest of 5 unmerged patches.
-- In parallel, Colin Ian King has sent a fixup for a review comment on
-  the first 4 patches from v7, which got silently applied without that
-  comment being addressed.
-
-So, given the circumstances, I see that you did the right thing. It's
-just that I'm starting to understand less and less of what the rules are
-supposed to be.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
