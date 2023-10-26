@@ -2,170 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F97D895C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0047D895D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 22:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjJZUCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 16:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        id S1344739AbjJZUC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 16:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZUCT (ORCPT
+        with ESMTP id S231841AbjJZUC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 16:02:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBF9129
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 13:02:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1EAC433C8;
-        Thu, 26 Oct 2023 20:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698350536;
-        bh=czHelUu63Qcb/7CFa/wjzYwxegwjY0q96Bz6H8eb0JI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=erBoNsW49lYlb649aajpNOZEeJ/Sr0WUNyesTIT7wyEepaRzs1rHUVmCZ7qoPlEN4
-         bpzW8wPu41MZjB/zi8ATP2rqUVPRq1FMrTlQycxX/oKpUpDIOj3R3xOTpvu00SJzGG
-         fkshws07lnwdC6MLctArf/BJDDtoVLTU8ul+4IkfhhrF6HwwGw4Un+XYWXkgpysTQy
-         ce2KXymv1YFCiCD/CsUVtZVvSQfo8+cnjlvgeFGT4i/yggbs0O3lW+jjuUFX5a9zWQ
-         T30nzpK3fx1xSm8OMkQJDKge2ONkty1y+Oh7YtTogeSOcdLTrjtiZffRgfk/4lDzDr
-         pibzmcC3trwiQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A19EC4035D; Thu, 26 Oct 2023 17:02:13 -0300 (-03)
-Date:   Thu, 26 Oct 2023 17:02:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf tools: Add -H short option for --hierarchy
-Message-ID: <ZTrFxazbxVx5G1N7@kernel.org>
-References: <20231026062615.3096537-1-namhyung@kernel.org>
- <5a153604-3e9c-4ae9-b216-64f24199efc4@intel.com>
+        Thu, 26 Oct 2023 16:02:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAC41B3;
+        Thu, 26 Oct 2023 13:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698350546; x=1729886546;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=wjSZygfJTLzc3CEGzIuqI0B49Tz5lLOHyJHjqouS46w=;
+  b=V3KiXJ/YNgh7JwSyWDIUJyLFVNNQXBMQyA1ycuYEKDN5PRJk6vKBEBfB
+   XD5CHA2iSfTUQDNhqw7YldjtPc2hkbFK1NBwBVd04JU0UnCIgPZ5RGLZE
+   bjH+zrnUO/kee3yyO8oeUGKhCF4IfM6ELqRmuE/8AS1GXGKq5plpJ2NoY
+   j5oCzzdP/KBzblS7EgiIHrK5glBoQTmbjUL0PKLqjHFoCZTK5H9soGvND
+   PMPe5PQsy8pkWoZZPpVCP46PwRUCRM03Zb6m4BJpR143Bl+yt8qcuWpz8
+   Y+HEPOb+dQYyBWH0x3uSvSIwiI5COnRiPrCjfOrHVeqSCZavWBSDCQsVW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="367850590"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="367850590"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 13:02:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="903034800"
+X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
+   d="scan'208";a="903034800"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:59:58 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v3] x86/resctrl: mba_MBps: Fall back to total b/w if local b/w unavailable
+Date:   Thu, 26 Oct 2023 13:02:14 -0700
+Message-ID: <20231026200214.16017-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231025235046.12940-1-tony.luck@intel.com>
+References: <20231025235046.12940-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a153604-3e9c-4ae9-b216-64f24199efc4@intel.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 26, 2023 at 09:46:02AM +0300, Adrian Hunter escreveu:
-> On 26/10/23 09:26, Namhyung Kim wrote:
-> > I found the hierarchy mode useful, but it's easy to make a typo when
-> > using it.  Let's add a short option for that.
+On Intel the various resource director technology (RDT) features are all
+orthogonal and independently enumerated. Thus it is possible to have
+a system that  provides "total" memory bandwidth measurements without
+providing "local" bandwidth measurements.
 
-> > Also update the documentation. :)
+If local bandwidth measurement is not available, do not give up on
+providing the "mba_MBps" feedback option completely, make the code fall
+back to using total bandwidth.
 
-> Perhaps it would also be possible to support bash-completions for
-> long options
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+Change since v2:
 
-It works:
+Babu doesn't like the global variable. So here's a version without it.
 
-  # . ~acme/git/linux/tools/perf/perf-completion.sh
-  # perf top --hi<TAB>
-  --hide_kernel_symbols  --hide_user_symbols    --hierarchy
-  #
+Note that my preference is still the v2 version. But as I tell newbies
+to Linux "Your job isn't to get YOUR patch upstream. You job is to get
+the problem fixed.".  So taking my own advice I don't really mind
+whether v2 or v3 is applied.
 
-And:
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 43 ++++++++++++++++++--------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  2 +-
+ 2 files changed, 31 insertions(+), 14 deletions(-)
 
-perf top --hie<ENTER>
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index f136ac046851..29e86310677d 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -418,6 +418,20 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+ 	return 0;
+ }
+ 
++/*
++ * For legacy compatibility use the local memory bandwidth to drive
++ * the mba_MBps feedback control loop. But on platforms that do not
++ * provide the local event fall back to use the total bandwidth event
++ * instead.
++ */
++static enum resctrl_event_id pick_mba_mbps_event(void)
++{
++	if (is_mbm_local_enabled())
++		return QOS_L3_MBM_LOCAL_EVENT_ID;
++
++	return QOS_L3_MBM_TOTAL_EVENT_ID;
++}
++
+ /*
+  * mbm_bw_count() - Update bw count from values previously read by
+  *		    __mon_event_count().
+@@ -431,9 +445,11 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+  */
+ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+ {
+-	struct mbm_state *m = &rr->d->mbm_local[rmid];
++	enum resctrl_event_id mba_mbps_evt_id = pick_mba_mbps_event();
+ 	u64 cur_bw, bytes, cur_bytes;
++	struct mbm_state *m;
+ 
++	m = get_mbm_state(rr->d, rmid, mba_mbps_evt_id);
+ 	cur_bytes = rr->val;
+ 	bytes = cur_bytes - m->prev_bw_bytes;
+ 	m->prev_bw_bytes = cur_bytes;
+@@ -518,6 +534,7 @@ void mon_event_count(void *info)
+  */
+ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ {
++	enum resctrl_event_id mba_mbps_evt_id = pick_mba_mbps_event();
+ 	u32 closid, rmid, cur_msr_val, new_msr_val;
+ 	struct mbm_state *pmbm_data, *cmbm_data;
+ 	u32 cur_bw, delta_bw, user_bw;
+@@ -526,14 +543,14 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	struct list_head *head;
+ 	struct rdtgroup *entry;
+ 
+-	if (!is_mbm_local_enabled())
++	if (!is_mbm_enabled())
+ 		return;
+ 
+ 	r_mba = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+ 
+ 	closid = rgrp->closid;
+ 	rmid = rgrp->mon.rmid;
+-	pmbm_data = &dom_mbm->mbm_local[rmid];
++	pmbm_data = get_mbm_state(dom_mbm, rmid, mba_mbps_evt_id);
+ 
+ 	dom_mba = get_domain_from_cpu(smp_processor_id(), r_mba);
+ 	if (!dom_mba) {
+@@ -553,7 +570,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	 */
+ 	head = &rgrp->mon.crdtgrp_list;
+ 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
+-		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
++		cmbm_data = get_mbm_state(dom_mbm, entry->mon.rmid, mba_mbps_evt_id);
+ 		cur_bw += cmbm_data->prev_bw;
+ 		delta_bw += cmbm_data->delta_bw;
+ 	}
+@@ -595,7 +612,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	 */
+ 	pmbm_data->delta_comp = true;
+ 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
+-		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
++		cmbm_data = get_mbm_state(dom_mbm, entry->mon.rmid, mba_mbps_evt_id);
+ 		cmbm_data->delta_comp = true;
+ 	}
+ }
+@@ -621,15 +638,15 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+ 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
+ 		rr.val = 0;
+ 		__mon_event_count(rmid, &rr);
+-
+-		/*
+-		 * Call the MBA software controller only for the
+-		 * control groups and when user has enabled
+-		 * the software controller explicitly.
+-		 */
+-		if (is_mba_sc(NULL))
+-			mbm_bw_count(rmid, &rr);
+ 	}
++
++	/*
++	 * Call the MBA software controller only for the
++	 * control groups and when user has enabled
++	 * the software controller explicitly.
++	 */
++	if (is_mba_sc(NULL))
++		mbm_bw_count(rmid, &rr);
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 69a1de92384a..0c4f8a1b8df0 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2294,7 +2294,7 @@ static bool supports_mba_mbps(void)
+ {
+ 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+ 
+-	return (is_mbm_local_enabled() &&
++	return (is_mbm_enabled() &&
+ 		r->alloc_capable && is_mba_linear());
+ }
+ 
+-- 
+2.41.0
 
-works as it is unambiguous (so far).
-
-What we don't have is a way to use hierachy by default, i.e. we should
-have:
-
-perf config top.hierarchy=1
-
-and then:
-
-perf top
-
-would always use the hierarchy view.
-
-tools/perf/Documentation/perf-config.txt has the options that can be
-set, like:
-
-# perf report | head -15
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 373K of event 'cycles:P'
-# Event count (approx.): 205365133495
-#
-# Overhead  Command          Shared Object                                     Symbol
-# ........  ...............  .................    ...................................
-#
-     3.17%  MediaDe~hine #6  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
-     2.31%  swapper          [kernel.vmlinux]     [k] psi_group_change
-     1.87%  MediaSu~sor #10  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
-     1.84%  MediaSu~isor #7  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
-#
-
-Then:
-
-# perf config report.sort_order=dso
-# perf report | head -15
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 373K of event 'cycles:P'
-# Event count (approx.): 205365133495
-#
-# Overhead  Shared Object                                 
-# ........  ..............................................
-#
-    59.52%  [kernel.vmlinux]                              
-    19.79%  libc.so.6                                     
-     8.07%  libxul.so                                     
-     5.25%  libopenh264.so.2.3.1                          
-#
-
-# cat ~/.perfconfig
-# this file is auto-generated.
-[report]
-	sort_order = dso
-[root@five ~]# perf config report.sort_order
-report.sort_order=dso
-#
-
-Right now 'perf top' has only:
-
-static int perf_top_config(const char *var, const char *value, void *cb __maybe_unused)
-{
-        if (!strcmp(var, "top.call-graph")) {
-                var = "call-graph.record-mode";
-                return perf_default_config(var, value, cb);
-        }
-        if (!strcmp(var, "top.children")) {
-                symbol_conf.cumulate_callchain = perf_config_bool(var, value);
-                return 0;
-        }
-
-        return 0;
-}
-
-This would be similar to what was done for --no-children on:
-
-https://git.kernel.org/torvalds/c/104ac991bd821773cba6f262f97a4a752ed76dd5
-
-$ git show --pretty=full 104ac991bd821773cba6f262f97a4a752ed76dd5 | head -5
-commit 104ac991bd821773cba6f262f97a4a752ed76dd5
-Author: Namhyung Kim <namhyung@kernel.org>
-Commit: Jiri Olsa <jolsa@kernel.org>
-
-    perf top: Add top.children config option
-
-- Arnaldo
