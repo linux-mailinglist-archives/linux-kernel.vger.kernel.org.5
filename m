@@ -2,165 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5573B7D8332
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F897D8334
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbjJZMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32868 "EHLO
+        id S1344971AbjJZM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjJZMzH (ORCPT
+        with ESMTP id S230330AbjJZM5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:55:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2ACAC;
-        Thu, 26 Oct 2023 05:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698324905; x=1729860905;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Hl8FaZTzUfLxFUNddJbFTntXpEPXqgat3oylaxVt9p8=;
-  b=Xps6oZCLu7ph7/3onDHo+dwF5amXGj5CYYC4qMJVfUFr20GuphDrySxF
-   wYRlJpMFq00T6Ku4qeAsQOv+5DZMLYlEOQ2wP7mqwQSgg2+okCDnKE/a4
-   I3XUkWQDry53x804NsiUDY6/MNYkjEQ903vQXh9tXA+rm2/0kMCCDxZF5
-   N7SPMhCrATtxr0l11o08yo8MUJAAjQ2rfLAdy5yFhorcjxrwMn7dAVkWK
-   lo4H9YA4I2y1uVz8e7xNN9kbSEKV2vLKxyg/P3H+pLeFl4e1gFzNtsRr7
-   6iZ+a9bYx24BXo0c/RVQEpu9LTq8ul5devrVbMcTDtlTWqWyPnLXEehTk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="366879697"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="366879697"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:55:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="709062075"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="709062075"
-Received: from ialvarez-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.120])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:55:00 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] x86/PCI: Name PCI BIOS error code & use FIELD_GET()
-Date:   Thu, 26 Oct 2023 15:54:52 +0300
-Message-Id: <20231026125453.25767-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 26 Oct 2023 08:57:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A21A191;
+        Thu, 26 Oct 2023 05:57:09 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 98e67ed59e1d1-27d5fe999caso693702a91.1;
+        Thu, 26 Oct 2023 05:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698325029; x=1698929829; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NAq/h84hoL+UwBKjrluHqm+iW3Vp6ePG/aMBZRWLHC0=;
+        b=WsrHlVcX97gZ26IwJlEBLHZDxFdQOjxlQs+3RCmOVsMzvax2Q19GbFPyEUYZKMoosc
+         88vIMtPnVy/vN+AxdQsh/D2p1THupDD3+XTPrDuGMbTlpLRYOeaeNQR0K4kMu40RyWnE
+         WXxTEVy/xUN4mAGqWqdcm2unZO7ew9ftP19tzJYqvj5o9ULn/ReCB4zSuYuOgpdOpjJC
+         NplywUJz1vpBmcKg/HeyeEtWBf5rqRrpYCLFOc5LmhaLrWvB3FmyqFyzt8cmUJ/m1LLz
+         FhxrhvUzgw8rn8k1Jv3qU9w/iRGeQyGDCzono5XUZNI7QCem/HGzOYdSrUYf4or4EmdP
+         I5ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698325029; x=1698929829;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NAq/h84hoL+UwBKjrluHqm+iW3Vp6ePG/aMBZRWLHC0=;
+        b=B+6ksZ4PL7lXnsbhwH8/Y3kklj/IHVQj7KoByMLlKrzgjJ2g1XriI4Z5SnBsj6bfhT
+         HHgFBzGG6JqyuTv+sL2zcPX5GrXKWptxDeU57Yqq3685Kgv6hPC/BEFXDBdR8rDCoUSB
+         MZmR1Q5eyCxc0bS5NYRFd7TZFJWPq/3k0BZBD+qoGkJPB6+JJYFTL7CaVgOn4lXmzvmL
+         cPQITNPSEal2mHii6W82qfboSz82f3KAThZFPv+ZSXyHQSujkz/IkpTQOclPtyA7fKVO
+         xaaKVaemW8yEZf4LWlr+akvdUWPlDx/0CsQAOFkvDBNgVNZQRshkMq0kBIrGx9AEuGN3
+         u8sg==
+X-Gm-Message-State: AOJu0YzOrLLhpVWnhHC9aEB3L0KR4JGNCwpwNCYcKrlAmuvOpuW7EK06
+        GGM9eevOiFZJGwjAkvR8DOcUpnflBc5OeQ==
+X-Google-Smtp-Source: AGHT+IF6Zjz6CCP32+qe+ctnaMcuAFd07y2irysyeokfPZ6D/F458guLdKgInFI2yQDBd2b73WDJ6A==
+X-Received: by 2002:a17:90b:5287:b0:27d:1c70:23d4 with SMTP id si7-20020a17090b528700b0027d1c7023d4mr14494564pjb.44.1698325028805;
+        Thu, 26 Oct 2023 05:57:08 -0700 (PDT)
+Received: from brag-vm.. ([2409:40f4:13:48d5:f085:e875:d528:fe4c])
+        by smtp.gmail.com with ESMTPSA id g2-20020a17090a714200b002777001ee76sm1565513pjs.18.2023.10.26.05.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 05:57:08 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     reiserfs-devel@vger.kernel.org
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+e5bb9eb00a5a5ed2a9a2@syzkaller.appspotmail.com
+Subject: [PATCH] reiserfs: UBSAN: array-index-out-of-bounds in direntry_create_vi
+Date:   Thu, 26 Oct 2023 18:26:16 +0530
+Message-Id: <20231026125616.1859-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI BIOS returns error code in AH register when carry flag is set. The
-extraction of the error code is currently set of masking and shifting
-which makes the code harder to understand than it needs to be.
+deh defined as an array of type __u16[], and issue is
+triggered when it's trying to access an element at
+index 1, which is out of bounds because the array
+has only one element at index 0.
 
-Name the PCI BIOS error code with a define and use FIELD_GET() to
-access it to improve code readability.
-
-In addition, rely on implicit cast to int and replace zero test
-with PCIBIOS_SUCCESSFUL.
-
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reported-by: syzbot+e5bb9eb00a5a5ed2a9a2@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=e5bb9eb00a5a5ed2a9a2
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 ---
- arch/x86/pci/pcbios.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ fs/reiserfs/item_ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/pci/pcbios.c b/arch/x86/pci/pcbios.c
-index 4f15280732ed..0515e0c05e10 100644
---- a/arch/x86/pci/pcbios.c
-+++ b/arch/x86/pci/pcbios.c
-@@ -3,6 +3,8 @@
-  * BIOS32 and PCI BIOS handling.
-  */
+diff --git a/fs/reiserfs/item_ops.c b/fs/reiserfs/item_ops.c
+index 3a5a752d96c7..ccf547c5e8e1 100644
+--- a/fs/reiserfs/item_ops.c
++++ b/fs/reiserfs/item_ops.c
+@@ -484,7 +484,7 @@ static int direntry_create_vi(struct virtual_node *vn,
+ 				  vn->vn_mode);
+ 		dir_u->entry_sizes[i] =
+ 		    (j ? deh_location(&deh[j - 1]) : ih_item_len(vi->vi_ih)) -
+-		    deh_location(&deh[j]) + DEH_SIZE;
++		    deh_location(&deh[j - 1]) + DEH_SIZE;
+ 	}
  
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/pci.h>
- #include <linux/init.h>
- #include <linux/slab.h>
-@@ -29,6 +31,12 @@
- #define PCIBIOS_HW_TYPE1_SPEC		0x10
- #define PCIBIOS_HW_TYPE2_SPEC		0x20
- 
-+/*
-+ * Returned in EAX:
-+ * - AH: return code
-+ */
-+#define PCIBIOS_RETURN_CODE			GENMASK(15, 8)
-+
- int pcibios_enabled;
- 
- /* According to the BIOS specification at:
-@@ -154,7 +162,7 @@ static int __init check_pcibios(void)
- 			: "memory");
- 		local_irq_restore(flags);
- 
--		status = (eax >> 8) & 0xff;
-+		status = FIELD_GET(PCIBIOS_RETURN_CODE, eax);
- 		hw_mech = eax & 0xff;
- 		major_ver = (ebx >> 8) & 0xff;
- 		minor_ver = ebx & 0xff;
-@@ -227,7 +235,7 @@ static int pci_bios_read(unsigned int seg, unsigned int bus,
- 
- 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
- 
--	return (int)((result & 0xff00) >> 8);
-+	return FIELD_GET(PCIBIOS_RETURN_CODE, result);
- }
- 
- static int pci_bios_write(unsigned int seg, unsigned int bus,
-@@ -269,7 +277,7 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
- 
- 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
- 
--	return (int)((result & 0xff00) >> 8);
-+	return FIELD_GET(PCIBIOS_RETURN_CODE, result);
- }
- 
- 
-@@ -354,6 +362,7 @@ struct irq_routing_table * pcibios_get_irq_routing_table(void)
- {
- 	struct irq_routing_options opt;
- 	struct irq_routing_table *rt = NULL;
-+	unsigned int error_code;
- 	int ret, map;
- 	unsigned long page;
- 
-@@ -385,8 +394,9 @@ struct irq_routing_table * pcibios_get_irq_routing_table(void)
- 		  "m" (opt)
- 		: "memory");
- 	DBG("OK  ret=%d, size=%d, map=%x\n", ret, opt.size, map);
--	if (ret & 0xff00)
--		printk(KERN_ERR "PCI: Error %02x when fetching IRQ routing table.\n", (ret >> 8) & 0xff);
-+	error_code = FIELD_GET(PCIBIOS_RETURN_CODE, ret);
-+	if (error_code)
-+		printk(KERN_ERR "PCI: Error %02x when fetching IRQ routing table.\n", error_code);
- 	else if (opt.size) {
- 		rt = kmalloc(sizeof(struct irq_routing_table) + opt.size, GFP_KERNEL);
- 		if (rt) {
-@@ -415,7 +425,7 @@ int pcibios_set_irq_routing(struct pci_dev *dev, int pin, int irq)
- 		  "b" ((dev->bus->number << 8) | dev->devfn),
- 		  "c" ((irq << 8) | (pin + 10)),
- 		  "S" (&pci_indirect));
--	return !(ret & 0xff00);
-+	return FIELD_GET(PCIBIOS_RETURN_CODE, ret) == PCIBIOS_SUCCESSFUL;
- }
- EXPORT_SYMBOL(pcibios_set_irq_routing);
- 
+ 	size += (dir_u->entry_count * sizeof(short));
 -- 
-2.30.2
+2.34.1
 
