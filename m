@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481CB7D88BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081857D88C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJZTHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        id S230172AbjJZTNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZTHp (ORCPT
+        with ESMTP id S229501AbjJZTNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:07:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938EE1A7;
-        Thu, 26 Oct 2023 12:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698347263; x=1729883263;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EudwDoXQoHWpwZgKKjX9dS2pYiAfR24L11Z2/3zbV8w=;
-  b=I7bwyw67MS/143mOrWdCXTROBUXP+2wztrsr9s+0RUjl7F79FQ/ZgV9t
-   uobgbfWGSoK2enaQWMWDZcfr2w6k/LCR485K1vDoEfxswsku/2T/M2+jP
-   r7Sb6Wr671IdmGkguFI/7p7lAF9K0POqZcNSVU4//xn0FCWGVgT32p2Tk
-   PXShy7PN+K6DfQZoLM32+NWh745nUgI0QpSQSeqmbmCn+49KhYv43Jbnt
-   h80YwvZzXUQMtf4smMLpCfq09cRXT+nFTtxwYbtUsrnWPzRB4rnx0gJ8o
-   2ACOU/lkX2CBAnEKr38eGOoT55eWlzx3mnZ14iVvsBybkAPQGuh4VOk6t
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="366977002"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="366977002"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:07:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="709184493"
-X-IronPort-AV: E=Sophos;i="6.03,254,1694761200"; 
-   d="scan'208";a="709184493"
-Received: from paseron-mobl4.amr.corp.intel.com (HELO desk) ([10.209.17.113])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 12:07:42 -0700
-Date:   Thu, 26 Oct 2023 12:07:41 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com
-Subject: Re: [PATCH v3 6/6] KVM: VMX: Move VERW closer to VMentry for MDS
- mitigation
-Message-ID: <20231026190741.vwpyvp3nvyrlcmsp@desk>
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com>
- <cb8d8ae8-edf6-42a2-8cdc-3bd7b7e0711e@suse.com>
+        Thu, 26 Oct 2023 15:13:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6323C1B1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:13:48 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565e54cb93aso1052730a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698347628; x=1698952428; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ch2xr7WSfAQsekJPDJjz2RgxrfMVUniFSWo5hCYQcEI=;
+        b=n7qqe6gZzYCPyI195Espv7qbePfOww7A/cLc7rG09RJfNZRMuy9olQ6JAaIq826TH8
+         p6iiMZKban+NjzK3t/zMQpPjNmmZwwGnTSVGo8irDbKdio7lVJTYOMWNxlGkRja5nXlI
+         Sqj+nR2IRV7acB5ubVRXkdf2Lwas0yU8WD6JU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698347628; x=1698952428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ch2xr7WSfAQsekJPDJjz2RgxrfMVUniFSWo5hCYQcEI=;
+        b=K/EaWisnPaziQ1W5b42w7D8QYI57juKqMeOxGDlb4gPvB7w2kk8cSjNVuyHifqWUM0
+         jAFDz4348FraOVV9yh12hE61Jh5y2DxZ3nZ5xfPwj3k0UsmHHoGIth74l1pA8HVxtnJ4
+         BeOMhdMmQDtNrJ8Nz9OdXD/Dr/lrfvBLssVXvQK3ziQVNEzUJRLD1Ugk3pHb26AaIMpQ
+         /hXXD6YiGYuvMHhHb3mUtCN5Gt+Wr1T422cgyGXS+843l0vfDbn9kuDH1Ss3+wudLi6N
+         Sgz887/cMHz7l+P/Lt8Abplz0LpHzJTje/b3pJH2JJAIIzC7fXEw0zFMlMFxZZw/Z8pC
+         r32A==
+X-Gm-Message-State: AOJu0YwyD6WQXvAqcfcV3UwyechNNGwyjOYhgrFswODQ/Fub+0cwy1Ci
+        Zk8i/ymXjAbOG65IIAb+1CXelQ==
+X-Google-Smtp-Source: AGHT+IHUqjqOZtBWong8vFEikEVD8olSnLJyI2zsl2FBwBwf0Fg0LjpZS1EX2gbS3zNjBHJCDytTbg==
+X-Received: by 2002:a17:90a:1957:b0:280:205:9ba2 with SMTP id 23-20020a17090a195700b0028002059ba2mr448867pjh.5.1698347627814;
+        Thu, 26 Oct 2023 12:13:47 -0700 (PDT)
+Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:f0fe:5c3b:1d70:d0bb])
+        by smtp.gmail.com with ESMTPSA id 22-20020a17090a031600b0027476c68cc3sm2183639pje.22.2023.10.26.12.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 12:13:47 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v4 0/7] Add a few mt8183 follower boards.
+Date:   Thu, 26 Oct 2023 12:09:09 -0700
+Message-ID: <20231026191343.3345279-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb8d8ae8-edf6-42a2-8cdc-3bd7b7e0711e@suse.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 07:14:18PM +0300, Nikolay Borisov wrote:
-> >   	if (static_branch_unlikely(&vmx_l1d_should_flush))
-> >   		vmx_l1d_flush(vcpu);
-> > -	else if (cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
-> > -		mds_clear_cpu_buffers();
-> >   	else if (static_branch_unlikely(&mmio_stale_data_clear) &&
-> >   		 kvm_arch_has_assigned_device(vcpu->kvm))
-> > +		/* MMIO mitigation is mutually exclusive with MDS mitigation later in asm */
-> 
-> Mutually exclusive implies that you have one or the other but not both,
-> whilst I think the right formulation here is redundant? Because if mmio is
-> enabled  mds_clear_cpu_buffers() will clear the buffers here  and later
-> they'll be cleared again, no ?
+Add makomo, pico, and katsu which are mt8183 followers.
 
-No, because when mmio_stale_data_clear is enabled,
-X86_FEATURE_CLEAR_CPU_BUF will not be set because of how mitigation is
-selected in mmio_select_mitigation():
+v4: based on https://lore.kernel.org/all/20231025093816.44327-1-angelogioacchino.delregno@collabora.com/
 
-mmio_select_mitigation()
-{
-...
-         /*
-          * Enable CPU buffer clear mitigation for host and VMM if also affected
-          * by MDS or TAA. Otherwise, enable mitigation for VMM only.
-          */
-         if (boot_cpu_has_bug(X86_BUG_MDS) || (boot_cpu_has_bug(X86_BUG_TAA) &&
-                                               boot_cpu_has(X86_FEATURE_RTM)))
-                 setup_force_cpu_cap(X86_FEATURE_CLEAR_CPU_BUF);
-         else
-                 static_branch_enable(&mmio_stale_data_clear);
+Hsin-Yi Wang (7):
+  arm64: dts: mt8183: kukui: Fix underscores in node names
+  dt-bindings: arm64: mediatek: Add mt8183-kukui-katsu
+  arm64: dts: mt8183: Add kukui katsu board
+  dt-bindings: arm64: mediatek: Add mt8183-kukui-jacuzzi-makomo
+  arm64: dts: mt8183: Add jacuzzi makomo board
+  dt-bindings: arm64: mediatek: Add mt8183-kukui-jacuzzi-pico
+  arm64: dts: mt8183: Add jacuzzi pico/pico6 board
 
-> Alternatively you might augment this check to only execute iff
-> X86_FEATURE_CLEAR_CPU_BUF is not set?
+ .../devicetree/bindings/arm/mediatek.yaml     |  21 ++++
+ arch/arm64/boot/dts/mediatek/Makefile         |   6 +
+ .../mt8183-kukui-jacuzzi-makomo-sku0.dts      |  24 ++++
+ .../mt8183-kukui-jacuzzi-makomo-sku1.dts      |  24 ++++
+ .../mediatek/mt8183-kukui-jacuzzi-pico.dts    |  36 ++++++
+ .../mediatek/mt8183-kukui-jacuzzi-pico6.dts   | 110 ++++++++++++++++++
+ .../dts/mediatek/mt8183-kukui-jacuzzi.dtsi    |   6 +-
+ .../mediatek/mt8183-kukui-kakadu-sku22.dts    |  18 +++
+ .../boot/dts/mediatek/mt8183-kukui-kakadu.dts |  18 +++
+ .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  14 +--
+ .../dts/mediatek/mt8183-kukui-katsu-sku32.dts |  36 ++++++
+ .../dts/mediatek/mt8183-kukui-katsu-sku38.dts |  40 +++++++
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  94 +++++++--------
+ 13 files changed, 384 insertions(+), 63 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-makomo-sku0.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-makomo-sku1.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku32.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku38.dts
 
-It already is like that due to the logic above. That is what the
-comment:
+-- 
+2.42.0.820.g83a721a137-goog
 
-	/* MMIO mitigation is mutually exclusive with MDS mitigation later in asm */
-
-... is trying to convey. Suggestions welcome to improve the comment.
