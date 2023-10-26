@@ -2,183 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEEC7D8365
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475D07D8366
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345046AbjJZNRJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 09:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
+        id S231276AbjJZNSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjJZNRH (ORCPT
+        with ESMTP id S230413AbjJZNSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:17:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44F4D54
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:17:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF0ECC433C9;
-        Thu, 26 Oct 2023 13:16:59 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 09:16:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
-Message-ID: <20231026091658.1dcf2106@gandalf.local.home>
-In-Reply-To: <20231026084402.GK31411@noisy.programming.kicks-ass.net>
-References: <20231025054219.1acaa3dd@gandalf.local.home>
-        <20231025102952.GG37471@noisy.programming.kicks-ass.net>
-        <20231025085434.35d5f9e0@gandalf.local.home>
-        <20231025135545.GG31201@noisy.programming.kicks-ass.net>
-        <20231025103105.5ec64b89@gandalf.local.home>
-        <20231026084402.GK31411@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 26 Oct 2023 09:18:38 -0400
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90512AB
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=fRkFsz1VlOEW5rFG9taE2bwY7cLjyhOQP6DO6wVaLOs=; b=jcx72dBMgetqtuU9SWncEF5Fyj
+        ZU735Xh9LToJXFg2iX3SW8f6cV74WXtOYHMIzzFea+1/mA1VJvN7n1jmOamiySSV5gyhPv+mgNxm0
+        w0FfRCE1sj1aROkiTIMJDOl9rNC3Y4uwoLFDTAQCE2Xm3rNsNUX9SANEf2gf/XdmaWFsnDI7g44go
+        hcKpYO5OeALjB0rJU1VU8ciRDMmagb+n08sVgwPPlrrdO20KgpEazICdeWLvhSzjlTr/ydj4MWfwO
+        hEDZFqO8idnYCpXV9UXPW9X/eY419U7Hr421oBr/yVWoKTAs/FzHxSMXEArwjmxwPH0iofGtjlnbt
+        35sVvZiw7IDT8PBcONxbJftRAbZiwZ13xWizDdZL2ORro11FMmzSSMndxib88AO5tA0A5JQJs6WD6
+        6ber8sRTD5s2GAQBIBa2K3ewYiOyB7Ctrp1owZ9XFHusHHzbZ+ellBD0/6sbz91eJyrLl/vxcApzO
+        +kBON3gVKBbi0eOgs6gJHo6H1U8Hz+XWEe/CH831F4tNHg4j6llotxOo4HZLqIGbZFLaihZKC18fh
+        y9q67KEHqNxbxaD0Qxgr/Nl8NTexgpQUpvMGdt5goebm0MRzZRmq9xLF7YkyYfUGraxHzrLuS7q4l
+        hbCoUDWQTp75bDwsqqHvQ/9l7sdiiC2krgkwtIz/k=;
+From:   Christian Schoenebeck <linux_oss@crudebyte.com>
+To:     Hangyu Hua <hbh25y@gmail.com>, asmadeus@codewreck.org
+Cc:     ericvh@kernel.org, lucho@ionkov.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jvrao@linux.vnet.ibm.com, v9fs@lists.linux.dev,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: 9p: fix possible memory leak in p9_check_errors()
+Date:   Thu, 26 Oct 2023 15:18:16 +0200
+Message-ID: <2383398.41Bra3A7bo@silver>
+In-Reply-To: <ZTpTU8-1zn_P22QX@codewreck.org>
+References: <20231026092351.30572-1-hbh25y@gmail.com> <ZTpTU8-1zn_P22QX@codewreck.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 10:44:02 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > Actually, it works with *any* system call. Not just sched_yield(). I just
-> > used that as it was the best one to annotate "the kernel asked me to
-> > schedule, I'm going to schedule". If you noticed, I did not modify
-> > sched_yield() in the patch. The NEED_RESCHED_LAZY is still set, and without
-> > the extend bit set, on return back to user space it will schedule.  
+On Thursday, October 26, 2023 1:53:55 PM CEST asmadeus@codewreck.org wrote:
 > 
-> So I fundamentally *HATE* you tie this hole thing to the
-> NEED_RESCHED_LAZY thing, that's 100% the wrong layer to be doing this
-> at.
+> Hangyu Hua wrote on Thu, Oct 26, 2023 at 05:23:51PM +0800:
+> > When p9pdu_readf is called with "s?d" attribute, it allocates a pointer
+> > that will store a string. But when p9pdu_readf() fails while handling "d"
+> > then this pointer will not be freed in p9_check_errors.
 > 
-> It very much means you're creating an interface that won't work for a
-> significant number of setups -- those that use the FULL preempt setting.
-
-And why can't the FULL preempt setting still use the NEED_RESCHED_LAZY?
-PREEMPT_RT does. The beauty about NEED_RESCHED_LAZY is that it tells you
-whether you *should* schedule, or you *must* schedule (NEED_RESCHED).
-
+> Right, that sounds correct to me.
 > 
-> > > > set this bit and leave it there for as long as you want, and it should not
-> > > > affect anything.    
-> > > 
-> > > It would affect the worst case interference terms of the system at the
-> > > very least.  
+> Out of curiosity how did you notice this? The leak shouldn't happen with
+> any valid server.
+> 
+> This cannot break anything so I'll push this to -next tomorrow and
+> submit to Linus next week
+> 
+> > Fixes: ca41bb3e21d7 ("[net/9p] Handle Zero Copy TREAD/RERROR case in !dotl case.")
+> 
+> This commit moves this code a bit, but the p9pdu_readf call predates
+> it -- in this case the Fixes tag is probably not useful; this affects
+> all maintained kernels.
+
+Looks like it exists since introduction of p9_check_errors(), therefore:
+
+Fixes: 51a87c552dfd ("9p: rework client code to use new protocol support functions")
+
+> > Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+> > ---
+> >  net/9p/client.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
 > > 
-> > If you are worried about that, it can easily be configurable to be turned
-> > off. Seriously, I highly doubt that this would be even measurable as
-> > interference. I could be wrong, I haven't tested that. It's something we
-> > can look at, but until it's considered a problem it should not be a show
-> > blocker.  
+> > diff --git a/net/9p/client.c b/net/9p/client.c
+> > index 86bbc7147fc1..6c7cd765b714 100644
+> > --- a/net/9p/client.c
+> > +++ b/net/9p/client.c
+> > @@ -540,12 +540,15 @@ static int p9_check_errors(struct p9_client *c, struct p9_req_t *req)
+> >  		return 0;
+> >  
+> >  	if (!p9_is_proto_dotl(c)) {
+> > -		char *ename;
+> > +		char *ename = NULL;
+> >  
+> >  		err = p9pdu_readf(&req->rc, c->proto_version, "s?d",
+> >  				  &ename, &ecode);
+> > -		if (err)
+> > +		if (err) {
+> > +			if (ename != NULL)
+> > +				kfree(ename);
 > 
-> If everybody sets the thing and leaves it on, you basically double the
-> worst case latency, no? And weren't you involved in a thread only last
-> week where the complaint was that Chrome was a pig^W^W^W latency was too
-> high?
+> Don't check for NULL before kfree - kfree does it.
+> If that's the only remark you get I can fix it when applying the commit
+> on my side.
 
-In my first email about this:
+With those two remarks addressed:
 
-  https://lore.kernel.org/all/20231024103426.4074d319@gandalf.local.home/
-
-I said:
-
-  If we are worried about abuse, we could even punish tasks that don't call
-  sched_yield() by the time its extended time slice is taken.
-
-To elaborate further on this punishment, if we find that it does become an
-issue if a bunch of tasks were to always have this bit set and not giving
-up the CPU in a timely manner, it could be flagged to ignore that bit
-and/or remove some of its eligibility.
-
-That is, it wouldn't take too long before the abuser gets whacked and is no
-longer able to abuse.
-
-But I figured we would look into that if EEVDF doesn't naturally take care
-of it.
+Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
 
 > 
-> > > > If you look at what Thomas's PREEMPT_AUTO.patch    
-> > > 
-> > > I know what it does, it also means your thing doesn't work the moment
-> > > you set things up to have the old full-preempt semantics back. It
-> > > doesn't work in the presence of RT/DL tasks, etc..  
-> > 
-> > Note, I am looking at ways to make this work with full preempt semantics.  
 > 
-> By not relying on the PREEMPT_AUTO stuff. If you noodle with the code
-> that actually sets preempt it should also work with preempt, but you're
-> working at the wrong layer.
-
-My guess is that NEED_RESCHED_LAZY will work with PREEMPT as well. That
-code is still a work in progress, and this code is dependent on that. Right
-now it depends on PREEMPT_AUTO because that's the only option that
-currently gives us NEED_RESCHED_LAZY. From reading the discussions from
-Thomas, it looks like NEED_RESCHED_LAZY will eventually be available in
-CONFIG_PREEMPT.
-
+> >  			goto out_err;
+> > +		}
+> >  
+> >  		if (p9_is_proto_dotu(c) && ecode < 512)
+> >  			err = -ecode;
 > 
-> Also see that old Oracle thread that got dug up.
-
-I'll go back and read that.
-
 > 
-> > > More importantly, it doesn't work for RT/DL tasks, so having the bit set
-> > > and not having OTHER policy is an error.  
-> > 
-> > It would basically be a nop.  
-> 
-> Well yes, but that is not a nice interface is it, run your task as RT/DL
-> and suddenly it behaves differently.
 
-User space spin locks would most definitely run differently in RT/DL today!
-
-That could cause them to easily deadlock.
-
-User space spin locks only make sense with SCHED_OTHER, otherwise great
-care needs to be taken to not cause unbounded priority inversion.
-Especially with FIFO.
-
-> > This is because these critical sections run much less than 8 atomic ops. And
-> > when you are executing these critical sections millions of times a second,
-> > that adds up quickly.  
-> 
-> But you wouldn't be doing syscalls on every section either. If syscalls
-> were free (0 cycles) and you could hand-wave any syscall you pleased,
-> how would you do this?
-> 
-> The typical futex like setup is you only syscall on contention, when
-> userspace is going to be spinning and wasting cycles anyhow. The current
-> problem is that futex_wait will instantly schedule-out / block, even if
-> the lock owner is currently one instruction away from releasing the lock.
-
-And that is what user space adaptive spin locks are to solve, which I'm
-100% all for! (I'm the one that talked André Almeida into working on this).
-
-But as my tests show, the speed up is from keeping the lock holder from
-being preempted. The same is true for why Thomas created NEED_RESCHED_LAZY
-for PREEMPT_RT when it already had adaptive spin locks.
-
--- Steve
 
