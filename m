@@ -2,161 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069B17D7D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B427D7DA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344411AbjJZH2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 03:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1344194AbjJZHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 03:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjJZH2v (ORCPT
+        with ESMTP id S229647AbjJZHan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 03:28:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DCA1A6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698305282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFAk/UX+mocmkaca8aE9iwm2NVVEyC9d5/N9h8Hr0Qk=;
-        b=RoGA5hllDYjs3+Ypz+skOCcepvy102HyFss2NMsd9LhCTkm16tManASPRBqH8tbRDd3qZH
-        yAQGOXYEZaeJB5y/8CBK3oR806v1I4u6UxMSdnYtIx4Y9kuZuqJhko4B/yOk++9rOPvvWA
-        K++NAHMT5RueE4U7NpIwA7hq1VOlBR8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-ovsmcGvsNGaVSC2N1kQI1A-1; Thu, 26 Oct 2023 03:27:49 -0400
-X-MC-Unique: ovsmcGvsNGaVSC2N1kQI1A-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40839252e81so4394545e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:27:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698305268; x=1698910068;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jFAk/UX+mocmkaca8aE9iwm2NVVEyC9d5/N9h8Hr0Qk=;
-        b=p9d9UQxpVUqblyfdz6yQIESUevzrVKvDDOVFCNN8gWRVL8pe74hlEBzyGcUMaIiABx
-         P/bAREPk1wDAtMaRz8pbgPMTLJJ71ER1LFAZ99r00W3fGcXlZCMjLu7942BaUqVdtDgf
-         KpXalcD+XrVMcBrcnAyOEM7+EooxB4SRHLHr+cxiJ16+xuIrxqD/Mjn++u8vRL8o09h7
-         Je7wt20T4kLug+AjnNGo7dr6xpL9tcJPsLeCdLSPpE4kpg3wjw7f+fdDLcogMQO04KPF
-         b5r9k4cCUw9PCWwTflW4+3mNKETWFqyBc6/G6ZaWVlHvP3tTirNsLkYfl4DhZLHgqP0W
-         qO2w==
-X-Gm-Message-State: AOJu0YyVr9P/QL1RVI0Ru62OGT4P6zzaaTSKLN05tq7KsSCGAEl1V0/H
-        rIEqKBu3XG5ynmp4m3u4JmbR6LfQ/tRWqv8EiTduyXw4AjqaYEPBaNQRvpQ/hU90oOmqDWDQwPe
-        sINQXLzcq3WdQxqy8uiJxD0i4IqEOq/kktiMBqA==
-X-Received: by 2002:a05:600c:5122:b0:403:272:4414 with SMTP id o34-20020a05600c512200b0040302724414mr13653836wms.0.1698305268313;
-        Thu, 26 Oct 2023 00:27:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEDmxe4z2Ra5Jw2xkZ3lS9zcLLaRq/+nM5ao37J48dzXRSejdwXRV3MKk8nh9wCEGGF4SoKdQ==
-X-Received: by 2002:a05:600c:5122:b0:403:272:4414 with SMTP id o34-20020a05600c512200b0040302724414mr13653825wms.0.1698305267881;
-        Thu, 26 Oct 2023 00:27:47 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f6:3c98:7fa5:a31:81ed:a5e2])
-        by smtp.gmail.com with ESMTPSA id f9-20020a7bc8c9000000b004054dcbf92asm1716144wml.20.2023.10.26.00.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 00:27:46 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 03:27:43 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     jasowang@redhat.com, eperezma@redhat.com, sgarzare@redhat.com,
-        dtatulea@nvidia.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/7] vdpa: decouple reset of iotlb mapping from device
- reset
-Message-ID: <20231026032713-mutt-send-email-mst@kernel.org>
-References: <1698304480-18463-1-git-send-email-si-wei.liu@oracle.com>
+        Thu, 26 Oct 2023 03:30:43 -0400
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D728BD6;
+        Thu, 26 Oct 2023 00:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1698305434; x=1698564634;
+        bh=axyZQ/iRfA1t2iV98gW5YxAJMui6/7akQHsAayWVQLo=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=Dlw9jrhGm+TIaNhBsvAuXjQ6r8zYlFFwdDelakVE8u/m8HqkXbUY7MM1QNf/3UUgN
+         qszlyh0YGy3MpDpXu/xAYf34BrmpRg6PLi+BsSx54cSWi6YAJ/5hHwS7SLMnsA+0SI
+         zbENVxSQCKDKMUCDnA5+yzptWZC9cHy0Ey/munrkbKC3+TYi4Ff0cJ8J4MpPSrcVee
+         9z//tRYuRPtGLog0mMGKeJv+gV7V++KQ4KeNJysLpjkNPvgyegG4RIMsWgWHm1UqjJ
+         FjoQpiJ00aL4aqZUZ0t4vsTGArVDEL47nG+RdgIeiYJwBYngJSZYsmRbJo6Mzdhesn
+         I9Cl+hasdd/Yw==
+Date:   Thu, 26 Oct 2023 07:30:23 +0000
+To:     Boqun Feng <boqun.feng@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        kent.overstreet@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        elver@google.com, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC] rust: types: Add read_once and write_once
+Message-ID: <lScQ1U0g-cF24r7MwhNpqeVAtKcrIbGJHza4a3dsrc67qpEid8czeB3Dgs5Zd3GPIf7woFEc1EkOEdEl63qsW20lSLi8o4tefv9LI5FfLho=@proton.me>
+In-Reply-To: <ZTmelWlSncdtExXp@boqun-archlinux>
+References: <20231025195339.1431894-1-boqun.feng@gmail.com> <VEhpQqgTM0U-aNYRUQ89ICIHW9Eehr66yw92DrmBZcZOah2mLqlz24HxEwDwYPVDOnaigDiZDEVl5mWqZJxoAtRheqTMjzpxuTKe0sr1uZs=@proton.me> <ZTmelWlSncdtExXp@boqun-archlinux>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1698304480-18463-1-git-send-email-si-wei.liu@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:14:33AM -0700, Si-Wei Liu wrote:
-> In order to reduce needlessly high setup and teardown cost
-> of iotlb mapping during live migration, it's crucial to
-> decouple the vhost-vdpa iotlb abstraction from the virtio
-> device life cycle, i.e. iotlb mappings should be left
-> intact across virtio device reset [1]. For it to work, the
-> on-chip IOMMU parent device could implement a separate
-> .reset_map() operation callback to restore 1:1 DMA mapping
-> without having to resort to the .reset() callback, the
-> latter of which is mainly used to reset virtio device state.
-> This new .reset_map() callback will be invoked only before
-> the vhost-vdpa driver is to be removed and detached from
-> the vdpa bus, such that other vdpa bus drivers, e.g. 
-> virtio-vdpa, can start with 1:1 DMA mapping when they
-> are attached. For the context, those on-chip IOMMU parent
-> devices, create the 1:1 DMA mapping at vdpa device creation,
-> and they would implicitly destroy the 1:1 mapping when
-> the first .set_map or .dma_map callback is invoked.
-> 
-> This patchset is rebased on top of the latest vhost tree.
-> 
-> [1] Reducing vdpa migration downtime because of memory pin / maps
-> https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
+On 26.10.23 01:02, Boqun Feng wrote:
+> On Wed, Oct 25, 2023 at 09:51:28PM +0000, Benno Lossin wrote:
+>>> In theory, `read_volatile` and `write_volatile` in Rust can have UB in
+>>> case of the data races [1]. However, kernel uses volatiles to implement
+>>
+>> I would not write "In theory", but rather state that data races involvin=
+g
+>> `read_volatile` is documented to still be UB.
+>>
+>=20
+> Good point.
+>=20
+>>> READ_ONCE() and WRITE_ONCE(), and expects races on these marked accesse=
+s
+>>
+>> Missing "`"?
+>>
+>=20
+> Yeah, but these are C macros, and here is the commit log, so I wasn't so
+> sure I want to add "`", but I guess it's good for consistency.
 
+I was just wondering if it was intentional, since you did it below.
 
-If this is just a squash of v4 with fixes then I already pushed it.
-Ignoring this for now.
+>>> don't cause UB. And they are proven to have a lot of usages in kernel.
+>>>
+>>> To close this gap, `read_once` and `write_once` are introduced, they
+>>> have the same semantics as `READ_ONCE` and `WRITE_ONCE` especially
+>>> regarding data races under the assumption that `read_volatile` and
+>>
+>> I would separate implementation from specification. We specify
+>> `read_once` and `write_once` to have the same semantics as `READ_ONCE`
+>> and `WRITE_ONCE`. But we implement them using
+>> `read_volatile`/`write_volatile`, so we might still encounter UB, but it
+>> is still a sort of best effort. As soon as we have the actual thing in
+>> Rust, we will switch the implementation.
+>>
+>=20
+> Sounds good, I will use this in the next version.
+>=20
+>>> `write_volatile` have the same behavior as a volatile pointer in C from
+>>> a compiler point of view.
+>>>
+>>> Longer term solution is to work with Rust language side for a better wa=
+y
+>>> to implement `read_once` and `write_once`. But so far, it should be goo=
+d
+>>> enough.
+>>>
+>>> Suggested-by: Alice Ryhl <aliceryhl@google.com>
+>>> Link: https://doc.rust-lang.org/std/ptr/fn.read_volatile.html#safety [1=
+]
+>>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+>>> ---
+>>>
+>>> Notice I also make the primitives only work on T: Copy, since I don't
+>>> think Rust side and C side will use a !Copy type to communicate, but we
+>>> can always remove that constrait later.
+>>>
+>>>
+>>>   rust/kernel/prelude.rs |  2 ++
+>>>   rust/kernel/types.rs   | 43 +++++++++++++++++++++++++++++++++++++++++=
++
+>>>   2 files changed, 45 insertions(+)
+>>>
+>>> diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
+>>> index ae21600970b3..351ad182bc63 100644
+>>> --- a/rust/kernel/prelude.rs
+>>> +++ b/rust/kernel/prelude.rs
+>>> @@ -38,3 +38,5 @@
+>>>   pub use super::init::{InPlaceInit, Init, PinInit};
+>>>
+>>>   pub use super::current;
+>>> +
+>>> +pub use super::types::{read_once, write_once};
+>>
+>> Do we really want people to use these so often that they should be in
+>> the prelude?
+>>
+>=20
+> The reason I prelude them is because that `READ_ONCE` and `WRITE_ONCE`
+> have total ~7000 users in kernel, but now think about it, maybe it's
+> better not.
 
-> ---
-> v5:
-> - Squashed two fixups to the clean map patch
-> 
-> v4:
-> - Rework compatibility using new .compat_reset driver op
-> 
-> v3:
-> - add .reset_map support to vdpa_sim
-> - introduce module parameter to provide bug-for-bug compatibility with older
->   userspace 
-> 
-> v2:
-> - improved commit message to clarify the intended csope of .reset_map API
-> - improved commit messages to clarify no breakage on older userspace
-> 
-> v1:
-> - rewrote commit messages to include more detailed description and background
-> - reword to vendor specific IOMMU implementation from on-chip IOMMU
-> - include parent device backend feautres to persistent iotlb precondition
-> - reimplement mlx5_vdpa patch on top of descriptor group series
-> 
-> RFC v3:
-> - fix missing return due to merge error in patch #4
-> 
-> RFC v2:
-> - rebased on top of the "[PATCH RFC v2 0/3] vdpa: dedicated descriptor table group" series:
->   https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com/
-> 
-> ---
-> 
-> Si-Wei Liu (7):
->   vdpa: introduce .reset_map operation callback
->   vhost-vdpa: reset vendor specific mapping to initial state in .release
->   vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
->   vdpa: introduce .compat_reset operation callback
->   vhost-vdpa: clean iotlb map during reset for older userspace
->   vdpa/mlx5: implement .reset_map driver op
->   vdpa_sim: implement .reset_map support
-> 
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
->  drivers/vdpa/mlx5/core/mr.c        | 17 ++++++++++
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 27 ++++++++++++++--
->  drivers/vdpa/vdpa_sim/vdpa_sim.c   | 52 ++++++++++++++++++++++++------
->  drivers/vhost/vdpa.c               | 52 +++++++++++++++++++++++++++---
->  drivers/virtio/virtio_vdpa.c       |  2 +-
->  include/linux/vdpa.h               | 30 +++++++++++++++--
->  include/uapi/linux/vhost_types.h   |  2 ++
->  8 files changed, 164 insertions(+), 19 deletions(-)
-> 
-> -- 
-> 2.39.3
+I think we should start out with it not in the prelude. Drivers should
+not need to call this often (I hope that only abstractions actually need
+this).
 
+>> Sure there will not really be any name conflicts, but I think an
+>> explicit import might make sense.
+>>
+>>> diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
+>>> index d849e1979ac7..b0872f751f97 100644
+>>> --- a/rust/kernel/types.rs
+>>> +++ b/rust/kernel/types.rs
+>>
+>> I don't think this should go into `types.rs`. But I do not have a good
+>> name for the new module.
+>>
+>=20
+> kernel::sync?
+
+I like that.
+
+>>> @@ -432,3 +432,46 @@ pub enum Either<L, R> {
+>>>       /// Constructs an instance of [`Either`] containing a value of ty=
+pe `R`.
+>>>       Right(R),
+>>>   }
+>>> +
+>>> +/// (Concurrent) Primitives to interact with C side, which are conside=
+red as marked access:
+>>> +///
+>>> +/// tools/memory-memory/Documentation/access-marking.txt
+>>> +
+>>
+>> Accidental empty line? Or is this meant as a comment for both
+>> functions?
+>>
+>=20
+> Right, it's the documentation for both functions.
+
+That will not work, it will just be rendered only on `read_once`.
+
+Maybe just copy it to both and also cross link the two functions.
+So `read_once` mentions the counterpart `write_once`.
+
+>>> +/// The counter part of C `READ_ONCE()`.
+>>> +///
+>>> +/// The semantics is exactly the same as `READ_ONCE()`, especially whe=
+n used for intentional data
+>>> +/// races.
+>>
+>> It would be great if these semantics are either linked or spelled out
+>> here. Ideally both.
+>>
+>=20
+> Actually I haven't found any document about `READ_ONCE()` races with
+> writes is not UB: we do have document saying `READ_ONCE()` will disable
+> KCSAN checks, but no document says (explicitly) that it's not a UB.
+>=20
+>>> +///
+>>> +/// # Safety
+>>> +///
+>>> +/// * `src` must be valid for reads.
+>>> +/// * `src` must be properly aligned.
+>>> +/// * `src` must point to a properly initialized value of value `T`.
+>>> +#[inline(always)]
+>>> +pub unsafe fn read_once<T: Copy>(src: *const T) -> T {
+>>
+>> Why only `T: Copy`?
+>>
+>=20
+> I actually explained this above, after "---" of the commit log, but
+
+Oh I missed that, sorry.
+
+> maybe it's worth its own documentation? The reason that it only works
+
+Yeah, lets document it. Otherwise I agree with your reasoning.
+
+> with `T: Copy`, is that these primitives should be mostly used for
+> C/Rust communication, and using a `T: !Copy` is probably wrong (or at
+> least complicated) for communication, since users need to handle which
+> one should be used after `read_once()`. This is in the same spirit as
+> `read_volatile` documentation:
+>=20
+> ```
+> Like read, read_volatile creates a bitwise copy of T, regardless of
+> whether T is Copy. If T is not Copy, using both the returned value and
+> the value at *src can violate memory safety. However, storing non-Copy
+> types in volatile memory is almost certainly incorrect.
+> ```
+>=20
+> I want to start with restrict usage.
+>=20
+>>> +    // SAFETY: the read is valid because of the function's safety requ=
+irement, plus the assumption
+>>> +    // here is that 1) a volatile pointer dereference in C and 2) a `r=
+ead_volatile` in Rust have the
+>>> +    // same semantics, so this function should have the same behavior =
+as `READ_ONCE()` regarding
+>>> +    // data races.
+>>
+>> I would explicitly state that we might have UB here due to data races.
+>> But that we have not seen any invalid codegen and thus assume there to
+>=20
+> I'd rather not claim this (no invalid codegen), not because it's not
+> true, but because it's not under our control. We have written doc in
+
+But it is under our control, we pin the compiler version and can always
+just check if the codegen is correct. If someone finds that it is not,
+we also want to be informed, so I think we should write that we rely on
+it here.
+
+> Rust says:
+>=20
+> ```
+> ... so the precise semantics of what =E2=80=9Cvolatile=E2=80=9D means her=
+e is subject
+> to change over time. That being said, the semantics will almost always
+> end up pretty similar to C11=E2=80=99s definition of volatile.
+> ```
+
+But this is not a guarantee, that they behave exactly the same as C11
+_now_.
+
+--=20
+Cheers,
+Benno
+
+> , so we have some confidence to say `read_volatile` equals to a volatile
+> read, and `write_volatile` equals to a volatile write. Therefore, we can
+> assume they have the same behaviors as `READ_ONCE()` and `WRITE_ONCE()`,
+> but that's it. Going futher to talk about codegen means we have more
+> guarantee from Rust compiler implementation.
+>=20
+> In other words, we are not saying racing `read_volatile`s don't have
+> UBs, we are saying racing `read_volatile`s behave the same as a volatile
+> read on UBs.
