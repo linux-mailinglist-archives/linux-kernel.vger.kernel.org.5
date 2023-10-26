@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4207D823A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD447D823E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344852AbjJZMFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
+        id S230406AbjJZMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZMFg (ORCPT
+        with ESMTP id S231287AbjJZMGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:05:36 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B67991
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:05:30 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6ce2988d62eso482857a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698321930; x=1698926730; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EOM36eG6x55qm5hFHiPcwx8zvGUUpSK0/o99XjcsvCc=;
-        b=cjR4vBpE6iysT32K/U0mxIiXSFGJNSDvCj00liuN/SC5nlmF8E/z2BEvz/A1mp0jPL
-         cym+S1MDe2hf0M6MkyCMGfoTYTF7Kmi3xacB0gTofkk6/9mmYjA0lhSP2aXhbHKnqq5L
-         Y/v2Z2O3NySdnCQnD10ipO63NrL4sl4x5LdU1gouK0cm/e3ZxUvDtc2sahOt1GeMclqH
-         aYfElKnZ6KZD0s3m62cfNVMCyv+q4ZOcHMaNv9xDeW3zf5QgF5OvMcs01UrZrXA0Cr5W
-         4LyfFQDRX5nlZTVz0EmXJS453Vlz1rP2wHCjyKRjnyP5j/0pCRqoDwYLoiMxn53Iv0wT
-         c0pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698321930; x=1698926730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EOM36eG6x55qm5hFHiPcwx8zvGUUpSK0/o99XjcsvCc=;
-        b=mpAc/LCv2/IudkHxpv300L6+mxHOqigfmac0ssRqPHpNkHwwSUoWAkvCFcWPzeOl3l
-         SKKoEIg3OTSi/2Mj5HgWzqSjUi27TnGsJqDKa507e2G0Qz+l199ghxFaEE8beziFOg0+
-         5TF8jJs6vncU8UappJnF5oJBrTnCxQIen2fvVxm/pQSiwJ7Jyz8peKep7b1wvYUYDFWF
-         Wwoeu2YA1oSNXDZnZLMMu+AhXKTU3IG1wxiCdRkTrDsY47PEroipnYUck9rDcc0m1S4x
-         3F8U+oMi3S6tOnlD6K+xxAIuVYq/VdCR1uEv9X6btdHzU5Gf73aILDw3pEvofvtDDbbl
-         mu6w==
-X-Gm-Message-State: AOJu0YxgfyW3hKLd/MBiy2oTEmGgvnMjBZpZFs5z8MVBEPQNAOZbXxWh
-        iG8KOLROYen6OZlhm2pFrbekqAkFbhIfjDJEMc4AdyWY7hcW5EQ7
-X-Google-Smtp-Source: AGHT+IHp7bO2FdByca9u/F+zGBfnvtRjJaEuzVSihY2H7X5qenrgr+SbRPtZDA0+9PYxr6YEPjR52xAFVK9l4nEKhl4=
-X-Received: by 2002:a05:6830:4117:b0:6c0:e5c3:40b5 with SMTP id
- w23-20020a056830411700b006c0e5c340b5mr22589652ott.6.1698321929778; Thu, 26
- Oct 2023 05:05:29 -0700 (PDT)
+        Thu, 26 Oct 2023 08:06:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA71B9;
+        Thu, 26 Oct 2023 05:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698321992; x=1729857992;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pfL3s1I3aKOjx8ccqmiD0Okk8hzwOsN0gZvCSpTmYgw=;
+  b=ItkDswBxB91ywWi2rnMe/1Mk86nP/mi25Jp4hPzxFI3iaLW90qQrWGQc
+   Y9f4XxNjtKHfpMQRgH9mxSkieUxGuKXfsD3qh577/oo9Xg2jqwKTZJmwl
+   bijXmXfvyfkvRq+/DUyklnMDBtuUEIxlNBiNA/7te+4j6RJVtK8s4jTYv
+   IBOHEEj29tr3j4HkkuFM1fy/yPI0G1afzDcwFtGIWHpgigRvYOga9egYC
+   JNMPwFkKLB8fZfFcsjMMlgB5Wx7WrKz+YXCjeH6msKtmxA4c3l8iDvuMF
+   6JcGjtSfkrXRMV/TKaqVAB/8SnkKgnx7w3JNWTRdBLhEXWWLamRzIwMOj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="391393717"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="391393717"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:06:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="794180501"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="794180501"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:06:12 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qvz7p-00000008qdG-2v6I;
+        Thu, 26 Oct 2023 15:06:09 +0300
+Date:   Thu, 26 Oct 2023 15:06:09 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com,
+        mika.westerberg@linux.intel.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+Message-ID: <ZTpWMVjti2JpAK4y@smile.fi.intel.com>
+References: <20231025053833.16014-1-raag.jadav@intel.com>
+ <ZTl7pDRypS3ZDIMy@smile.fi.intel.com>
+ <ZTnWSRIr1o7RLcOl@black.fi.intel.com>
 MIME-Version: 1.0
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com> <20231026-mbly-uart-v1-1-9258eea297d3@bootlin.com>
-In-Reply-To: <20231026-mbly-uart-v1-1-9258eea297d3@bootlin.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 26 Oct 2023 14:05:18 +0200
-Message-ID: <CACRpkdZgxjJMKgp+r3MZwEnYX2C3hvidaGYvdxV5rbQDCXfAPA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] tty: serial: amba: cleanup whitespace
-To:     =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTnWSRIr1o7RLcOl@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,20 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:41=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+On Thu, Oct 26, 2023 at 06:00:25AM +0300, Raag Jadav wrote:
+> On Wed, Oct 25, 2023 at 11:33:40PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 25, 2023 at 11:08:33AM +0530, Raag Jadav wrote:
 
-> Fix whitespace in include/linux/amba/serial.h to match current kernel
-> coding standards. Fixes about:
->
->  - CHECK: spaces preferred around that '|' (ctx:VxV)
->  - ERROR: code indent should use tabs where possible
->  - WARNING: Unnecessary space before function pointer arguments
->  - WARNING: please, no spaces at the start of a line
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+...
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > >  static void byt_pwm_setup(struct lpss_private_data *pdata)
+> > >  {
+> > > -	u64 uid;
+> > > -
+> > >  	/* Only call pwm_add_table for the first PWM controller */
+> > > -	if (acpi_dev_uid_to_integer(pdata->adev, &uid) || uid != 1)
+> > > +	if (!acpi_dev_uid_match(pdata->adev, "1"))
+> > 
+> > _UID by specification is a type of _string_. Yet, that string may represent an
+> > integer number. Now, how many variants of the strings can you imagine that may
+> > be interpreted as integer 1? I can tell about dozens.
+> > 
+> > With your change you restricted the all possible spectre of the 1
+> > representations to a single one. Have you checked ALL of the DSDTs
+> > for these platforms to say 'hey, all current tables uses "1" and
+> > this is not an issue'?
+> 
+> I'm not sure if I'm following you, this would basically invalidate every
+> usage of acpi_dev_hid_uid_match() helper across the driver.
 
-Yours,
-Linus Walleij
+It depends.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
