@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824087D7F19
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC157D7F1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344537AbjJZI5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        id S1344572AbjJZI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjJZI5S (ORCPT
+        with ESMTP id S229567AbjJZI5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:57:18 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE386129
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:15 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-189-oDjpJJgrPuajMzD05ByH3Q-1; Thu, 26 Oct 2023 09:57:12 +0100
-X-MC-Unique: oDjpJJgrPuajMzD05ByH3Q-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 26 Oct
- 2023 09:57:11 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 26 Oct 2023 09:57:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>
-CC:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "kernel@collabora.com" <kernel@collabora.com>
-Subject: RE: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-Thread-Topic: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-Thread-Index: AQHaB2rGM+Cp9N+qfkK9yv140Cm+RbBbwb/A
-Date:   Thu, 26 Oct 2023 08:57:11 +0000
-Message-ID: <055dd714f98f4e45b2add561b7663378@AcuMS.aculab.com>
-References: <20231024161931.78567-1-sebastian.reichel@collabora.com>
- <20231024161931.78567-2-sebastian.reichel@collabora.com>
- <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
- <CAHk-=wjO5ivM6k7iMiThO9JfxH0dhLe=mcC4TQwReU0nBCnWpg@mail.gmail.com>
- <your-ad-here.call-01698246313-ext-3263@work.hours>
- <CAHk-=wgs2DDdckcONG+YbB-GDH2QFCoZJ=Vm+YXxb1moZzuDgQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgs2DDdckcONG+YbB-GDH2QFCoZJ=Vm+YXxb1moZzuDgQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 26 Oct 2023 04:57:37 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA31AB
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:34 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81d09d883dso457641276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698310654; x=1698915454; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d15OUBlXoCJoUgZsOraHwb/V6/eE2WDwET5ZkyPx89I=;
+        b=VGdVAsYlb1hiv6kYyLytVrbDKNuOdBKi4pUjHe7VTA0caJu5yvrVqPQRJ4t1D1W3eM
+         KrRqxJbEzYlDOjvyawUifn1SAELQ0MzA1CNT+qdG7F41T8pZVVHyzMF4EK0XNDog02Kr
+         yHB54LgJiZAn+ymc813OAcm6xilxRpqujqgyvNY9llbMF81w10IFXKTJRjE9yAWpaIQp
+         XiAymVmXqElSI3X0gDuKN48mBnzthQxStmQ2YMj2TjTUKeV3NnqwTILbYfZzqCdtp4GB
+         ZEEU7F4ZK3yoFqKZPb4f9IUKM/OBhoKizEliZRLh0UwVOXP48ehxQWuWMdY5PNFq7M18
+         JyHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698310654; x=1698915454;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d15OUBlXoCJoUgZsOraHwb/V6/eE2WDwET5ZkyPx89I=;
+        b=wHkk0sdotN2OePsC3x98RtKfvO1S3y5G1MIlBtcKKp4tsY58+33tIzbHbR7LcwBApY
+         7kTNQdDf8GD6PaMvY0HFrt9jgMDxPtRiwTfiSIbDEQ/viqpFTzDGdF9+AvZ6R8KHPr9v
+         kNyFB2tlCtIRUURktPFjOKYXzH5rcZRMbMnIyMObdnQKKrvqkUFSY7ah4WASb6kcWphB
+         uNNZ1ukWf1w3DZAP/gWmcWU2/8BCa9bVoB4t91x5i0ZQIl7oPB/VbqUGKsBKaKoQ6Mdp
+         NwjmFJsoIUq6ieqCZM29DCGoBB9B+Se+x2Gg82klz7iopK3+2Nv2RahJGS3XFsES6iIO
+         E0mg==
+X-Gm-Message-State: AOJu0YzNQSmXLSL1gK1dikGMrtDZposwIN0n216tGiExIIbLoOnDRa+4
+        p69k1X5IUBUy9+Jav8OXzblSrg/QTvdCmnInkzr26g==
+X-Google-Smtp-Source: AGHT+IFhzh3jp3HfNlJ8La8+jINi5sy551LrNDFQM80H3MVmgkxMCbioFraPFHdJrZNwGJJzriw+6D047YqUbWdNHEc=
+X-Received: by 2002:a25:fb01:0:b0:da0:9735:b012 with SMTP id
+ j1-20020a25fb01000000b00da09735b012mr2234616ybe.11.1698310654073; Thu, 26 Oct
+ 2023 01:57:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
+ <20231025103957.3776-7-keith.zhao@starfivetech.com> <70805ff2-56a8-45e1-a31c-ffb0e84749e5@linaro.org>
+ <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
+In-Reply-To: <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 26 Oct 2023 11:57:22 +0300
+Message-ID: <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] drm/vs: Add hdmi driver
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,42 +87,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjUgT2N0b2JlciAyMDIzIDE4OjQ0DQo+IA0K
-PiBPbiBXZWQsIDI1IE9jdCAyMDIzIGF0IDA1OjA1LCBWYXNpbHkgR29yYmlrIDxnb3JAbGludXgu
-aWJtLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBZb3UgcHJvYmFibHkgd2FudA0KPiA+DQo+ID4gICNk
-ZWZpbmUgX19kaXZfcm91bmRfdXAobixkKSBfR2VuZXJpYygobikrKGQpLCAgICAgICAgICBcDQo+
-ID4gICAgICAgICB1bnNpZ25lZCBsb25nIGxvbmc6IF9fZGl2X3JvdW5kX3VwX3VsbCwgICAgICAg
-ICBcDQo+ID4gICAgICAgICBsb25nIGxvbmc6IF9fZGl2X3JvdW5kX3VwX2xsLCAgICAgICAgICAg
-ICAgICAgICBcDQo+ID4gICAgICAgICB1bnNpZ25lZCBsb25nOiBfX2Rpdl9yb3VuZF91cF91bCwg
-ICAgICAgICAgICAgICBcDQo+ID4gICAgICAgICBsb25nOiBfX2Rpdl9yb3VuZF91cF9sLCAgICAg
-ICAgICAgICAgICAgICAgICAgICBcDQo+ID4gICAgICAgICB1bnNpZ25lZCBpbnQ6IF9fZGl2X3Jv
-dW5kX3VwX3UsICAgICAgICAgICAgICAgICBcDQo+ID4gICAgICAgICBpbnQ6IF9fZGl2X3JvdW5k
-X3VwX2kpKG4sZCkNCj4gPg0KPiA+IHRvIGF2b2lkIGVhcmx5IHR5cGUtY2hlY2tpbmcgZm9yIGV4
-cHJlc3Npb25zIHRoYXQgd2lsbCBiZSBkaXNjYXJkZWQNCj4gPiBhbmQgcHJldmVudCBlcnJvcnMg
-bGlrZToNCj4gDQo+IEFjay4gSSBub3RpY2VkIHRoYXQgbGF0ZXIgd2hlbiBJIHRyaWVkIHRvIGRv
-IGEgYmlnZ2VyIGNvbmZpZyBidWlsZCAtDQo+IHRoZSBjb21waWxlciB3b3VsZCB3YXJuIGFib3V0
-IHRoZSBpbXBsaWNpdCB0cnVuY2F0aW9uIG9mIHRoZSBpbnRlZ2VyDQo+IGFyZ3VtZW50cyAoZm9y
-IHRoZSBjYXNlcyB3aGVyZSB0aGV5IHdlcmVuJ3QgdXNlZCkuDQo+IA0KPiA+IFBsdXMgdHlwb3Mg
-Zml4ZXMgYmVsb3cgcGFzc2VzIGFsbHllc2NvbmZpZyBmb3IgczM5MCwgMzItYml0IHg4NiBhbmQg
-YXJtLg0KPiANCj4gTG92ZWx5Lg0KPiANCj4gSXQgd291bGQgaGF2ZSBiZWVuIGV2ZW4gYmV0dGVy
-IGlmIHNvbWVib2R5IHRvbGQgbWUgdGhhdCBJIHdhcyBzdHVwaWQNCj4gYW5kIHRoZXJlIHdhcyBz
-b21lIG5pY2UgdHJpY2sgdG8gaXQsIGJ1dCBhdCBsZWFzdCB0aGUgX0dlbmVyaWMoKQ0KPiBhcHBy
-b2FjaCBkb2Vzbid0IHNlZW0gYnJva2VuIC0ganVzdCBhIGZldyB0d2Vha3MgbmVlZGVkLg0KDQpE
-b2Vzbid0IHRoYXQgdmVyc2lvbiBlbmQgdXAgY2FsbGluZyBpbmxpbmUgZnVuY3Rpb25zPw0KU28g
-d29uJ3QgYmUgdXNhYmxlIGluIHN0YXRpYyBpbml0aWFsaXNlcnMgLSB0aGUgc2FtZSBhcyBzdGF0
-ZW1lbnQgZnVuY3Rpb25zLg0KDQpXaWxsIHRoaXMgdHJpY2sgd29yazoNCiNkZWZpbmUgWkVST19V
-TkxFU1NfVFlQRSh4LCB0eXBlKSBfR2VuZXJpYyh4LCB0eXBlOiB4LCBkZWZhdWx0IDApDQojZGVm
-aW5lIGRpdl9ydSh0eXBlLCBmbiwgbiwgZCkgXA0KCXR5cGU6IGZuKFpFUk9fVU5MRVNTX1RZUEUo
-dHlwZSwgKG4pICsgKGQpLCBuKSwgWkVST19VTkxFU1NfVFlQRSh0eXBlLCAobikgKyAoZCksIGQp
-DQp0aGVuOg0KI2RlZmluZSBfX2Rpdl9yb3VuZF91cChuLCBkKSBfR2VuZXJpYygobikrKGQpLCAg
-ICAgICAgICBcDQoJZGl2X3J1KHVuc2lnbmVkIGxvbmcgbG9uZywgX19kaXZfcm91bmRfdXBfdWxs
-LCBuLCBkKSwNCgkuLi4NCg0KV2hpY2ggd291bGQgYWxsb3cgdGhlICdmdW5jdGlvbnMnIGJlICNk
-ZWZpbmVzLg0KDQpCdXQgaXQgc3RpbGwgaGFzIHRoZSBpc3N1ZXMgb2YgZG9pbmcgJ2JpZycgZGl2
-aXNpb25zLg0KQWx0aG91Z2ggdGhlIGNvbXBpbGVyIHdpbGwgdXNlIDMyYml0IChhbmQgNjQgYnkg
-MzIgYml0KSBkaXZpc2lvbnMNCmZvciA2NCBiaXQgdHlwZXMgaWYgaXQga25vd3MgdGhlIHZhbHVl
-cyBhcmUgc21hbGwuDQoNCmNsYW5nIHNlZW1zIHRvIGFkZCBjb25kaXRpb25hbHMgdG8gYXZvaWQg
-NjR4NjQgZGl2aWRlcy4NClByb2JhYmx5IHdvcnRoIGl0IGZvciBpbnRlbCB4ODYgY3B1LCBidXQg
-bm90IGZvciBhbWQgb25lcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
-c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
-Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Thu, 26 Oct 2023 at 11:07, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> On Thu, Oct 26, 2023 at 01:23:53AM +0300, Dmitry Baryshkov wrote:
+> > > +static int starfive_hdmi_register(struct drm_device *drm, struct starfive_hdmi *hdmi)
+> > > +{
+> > > +   struct drm_encoder *encoder = &hdmi->encoder;
+> > > +   struct device *dev = hdmi->dev;
+> > > +
+> > > +   encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
+> > > +
+> > > +   /*
+> > > +    * If we failed to find the CRTC(s) which this encoder is
+> > > +    * supposed to be connected to, it's because the CRTC has
+> > > +    * not been registered yet.  Defer probing, and hope that
+> > > +    * the required CRTC is added later.
+> > > +    */
+> > > +   if (encoder->possible_crtcs == 0)
+> > > +           return -EPROBE_DEFER;
+> > > +
+> > > +   drm_encoder_helper_add(encoder, &starfive_hdmi_encoder_helper_funcs);
+> > > +
+> > > +   hdmi->connector.polled = DRM_CONNECTOR_POLL_HPD;
+> > > +
+> > > +   drm_connector_helper_add(&hdmi->connector,
+> > > +                            &starfive_hdmi_connector_helper_funcs);
+> > > +   drmm_connector_init(drm, &hdmi->connector,
+> > > +                       &starfive_hdmi_connector_funcs,
+> > > +                       DRM_MODE_CONNECTOR_HDMIA,
+> >
+> > On an embedded device one can not be so sure. There can be MHL or HDMI
+> > Alternative Mode. Usually we use drm_bridge here and drm_bridge_connector.
+>
+> On an HDMI driver, it's far from being a requirement, especially given
+> the limitations bridges have.
 
+It's a blessing that things like MHL / HDMI-in-USB-C / HDMI-to-MyDP
+are not widely used in the wild and are mostly non-existing except
+several phones that preate wide DP usage.
+Using drm_connector directly prevents one from handling possible
+modifications on the board level. For example, with the DRM connector
+in place, handling a separate HPD GPIO will result in code duplication
+from the hdmi-connector driver. Handling any other variations in the
+board design (which are pretty common in the embedded world) will also
+require changing the driver itself. drm_bridge / drm_bridge_connector
+save us from those issues.
+
+BTW: what are the limitations of the drm_bridge wrt. HDMI output? I'm
+asking because we heavily depend on the bridge infrastructure for HDMI
+output. Maybe we are missing something there, which went unnoticed to
+me and my colleagues.
+
+-- 
+With best wishes
+Dmitry
