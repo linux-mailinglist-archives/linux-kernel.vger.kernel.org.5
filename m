@@ -2,134 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0DF7D7FCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CA17D7FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344628AbjJZJli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        id S230184AbjJZJmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjJZJlg (ORCPT
+        with ESMTP id S230257AbjJZJl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:41:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08684194;
-        Thu, 26 Oct 2023 02:41:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F74C433C9;
-        Thu, 26 Oct 2023 09:41:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698313293;
-        bh=QxFYe5c/XElEhgs94iEddJdQGcgkPEwi4At0UDjpW3s=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=D8Qcd0yw0e1bKprF3WY9/beM4PynUZcxc7qiLy+kDXAU5l3hcsS4Mim+vfWdBMmcg
-         evRtytNOqMHSiWa86KjruNGFbTypqfGfc+JfNGBGoNhFKQvjmRDY4AzLwRT9MN/GwT
-         MwQDD6YhBGEWONQP1eD2V9cCPxApJbE9GovocKzlG2NMZhal6BTZUxu+2rOYaRvdQy
-         gE3f6cCidYwxkdLUiMEN1FQhTnvj+rVnE2d8mkEW913UcUFccA4uK7VWOW4XVYOhMz
-         AqoKItcYNTa6KEU2tohytxe7qzEzklXKV6lMbvS/RCSr7plb6zYL9x2ZjNsk+hKiYL
-         tNstCpZgMxf8Q==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Witold Baryluk <witold.baryluk@gmail.com>
-Cc:     arnd@kernel.org, Larry.Finger@lwfinger.net,
-        alexandre.belloni@bootlin.com, arnd@arndb.de,
-        claudiu.beznea@tuxon.dev, davem@davemloft.net,
-        geert@linux-m68k.org, geoff@infradead.org,
-        gregkh@linuxfoundation.org, gregory.greenman@intel.com,
-        ilw@linux.intel.com, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, nicolas.ferre@microchip.com,
-        pavel@ucw.cz, quic_jjohnson@quicinc.com, stas.yakovlev@gmail.com,
-        stf_xl@wp.pl
-Subject: Re: [PATCH 10/10] [RFC] wifi: remove ipw2100/ipw2200 drivers
-References: <CAEGMnwo6RFqADPO5FRkRUNL=GfV6DY8UuwgsypEYOD3LTnXdJg@mail.gmail.com>
-Date:   Thu, 26 Oct 2023 12:41:27 +0300
-In-Reply-To: <CAEGMnwo6RFqADPO5FRkRUNL=GfV6DY8UuwgsypEYOD3LTnXdJg@mail.gmail.com>
-        (Witold Baryluk's message of "Wed, 25 Oct 2023 22:27:20 +0000")
-Message-ID: <87o7gld8l4.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 26 Oct 2023 05:41:57 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2041.outbound.protection.outlook.com [40.107.241.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CA6195;
+        Thu, 26 Oct 2023 02:41:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bxxa6neCJDPYZjLS1A5tppBlRNIjZoA2GHmlFCUq+wKEDVcyd5s/hb6IOYmWK4XZKjYYesDPTaItlalFNJmUJMFV5QF7JjXqcAQVqmKLI5WzLJt75uPWbI9gtLj0+Z8o+LVkpGPffifJQwkmkC8iGnEJdz67dwRkQHGdiq+cCSdKPsLoe8sNfIrDcgwY4HuAcuVhhbdADDDUJer75f01KMfx5Nizdzhv0iJF46r6zvZNWUizHvo0HlbrjAcOUc7lX3HhS1sLAoWNquAJ77KbIGKHLOKiunjSXUEc69vJG6ytyGLfXsjlJswEvV54WAQ8QlNiC7ZvnpZH3LfRFlMqow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ow5pvRSFci8FURhEb6dW8RZBuwo3nFVFJVsIf2pNDYQ=;
+ b=PnQFHXAVN/z8+3Q7jniCUUSJ2o7dkdjN9fcm0WotCSm4bN28CiWRbd3TFtbUmUObOQILIQX1fJ5GYI7dXT0UJqFA9GB+1g+Uy6DDOJYINPrRMlR4h3om5+co80pYzn8CKcjkli2C7sYvINiSse3XURtTAoVpRWL1lq0IMblJS2+XDlxqrH+W9L+vIdm/1aakxA0Cx5brONhtxmVchf0PR+0PzUgW4SGghLo/s/2Sjv5otSXcAGkGmolLCS5NJZDMUOzF8iyVq/TpJ49ogPoL7N5eZtMIz6n1UlTVskMMnbOEl/XgPixK9lexjbYjApwR3BY/LumYSGI7oZxra6F8NQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ow5pvRSFci8FURhEb6dW8RZBuwo3nFVFJVsIf2pNDYQ=;
+ b=YbtCQN7lGvNMX8ALIehCH9arZAAlLuw4lSo+mxaTxfOY5bZMXtYAEDSLjLw7n6mR2v6qOs0SYIdtxOqIHkRjsKA54ZmvxYqFT+bBqBe15e/J5+Tyb77g8/cQYTVr1CMgenpQSksM2B2o21hDjVZCLdsrvSXc7zM3qpNrwcI2OrQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by DU0PR08MB8929.eurprd08.prod.outlook.com (2603:10a6:10:464::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
+ 2023 09:41:50 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::a309:1d65:f5fb:436b]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::a309:1d65:f5fb:436b%6]) with mapi id 15.20.6933.019; Thu, 26 Oct 2023
+ 09:41:50 +0000
+Message-ID: <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
+Date:   Thu, 26 Oct 2023 11:41:47 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
+ property
+Content-Language: en-US
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
+ <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
+ <20231025222327c0b5d460@mail.local>
+ <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
+ <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
+ <20231026005008b8255799@mail.local>
+From:   Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <20231026005008b8255799@mail.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1PR08CA0253.eurprd08.prod.outlook.com
+ (2603:10a6:803:dc::26) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU0PR08MB8929:EE_
+X-MS-Office365-Filtering-Correlation-Id: d1853ed6-ff56-42e8-fcae-08dbd607c74c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3lhhLBGlVVt9vNbUL5ejobEF9c+r45qt0uozNMyauujWOHUcJqqik/5zvLqRGImNx2E38+LoclW4Pla1fbC1vZ5gXutBqFhSHO88zYj9kvg4Gvqb3bx2YI1kydLZAjwr+fSbtC1j13cOg+a7BkqFePlitENeO8XKUm658Ia7UnSgdprSd+lP55VmVnZdrWP7UVCdwlq/5aZ5kQQf2eEij6MPK+Mk50r6gbgdPPYIJP/VK3xz09qMWakFGQGb7n25/Bo8SrkbYR6rJ4FNcfY11UtX8LLutj9CPK1pWlknvbBpB9KbEjxXeTa+rc2Ne3Kz0JSDGIPMd8zwizVdXUrrHTyMLzV9par1tuFugqfTYPIgP55A09dXY/YPnkRamD1uXfvtOoQur8J9lXFButf9OnOpv45whKM9xxr40zjispsnApQb1M3XaU+iITHWr5RJq3BIVlxiTy+vhhEA2dfQqbj8keipttlbVn6POvpFC8phg4aq7MwWF4SRcWx2Pv69liUxmibs4YWHBfL4R81aX7QimGksQMeOks7kL73v6o5BzNA5ZEFH2xQeynK4xE+kWsTprI4F8lFyYJGFQTzit+54OqRfHSdeAmt7uaYHDLKTF3wswmyq24A+mJx2NKHfqp/cTj4kUu6GejFvP3ojRg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39850400004)(136003)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(66476007)(6486002)(66556008)(66946007)(478600001)(6916009)(316002)(54906003)(38100700002)(41300700001)(31686004)(86362001)(31696002)(5660300002)(8936002)(44832011)(8676002)(53546011)(66899024)(4326008)(2616005)(6506007)(6666004)(83380400001)(36756003)(2906002)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akd1dEJLWU5iRjdMS2EvYUgrWnY5bndOOFN6M3lzaFNlbXk1QU9waHRnMmFH?=
+ =?utf-8?B?L01pYlNacHM5WWFwTDV2TUxRdWhxTlZraW1SM0s0K3dQUjV0NS9vcXlNSWJy?=
+ =?utf-8?B?MUQ1eDdTVzk5SCsxc0JvVGdnakdBM2xXUHNkdmFDWHZFUHBmQnIyNnUyMWVI?=
+ =?utf-8?B?VXR2NkdTbStZVHJPVWFPY2hib0NSTGl3NWpqZjRoYW9qTGVXdkdZRGZhMGI0?=
+ =?utf-8?B?NWVwSExsRWtvODZ4U0gwZUJ0bVZ4azI5dmdRaU9CNmlQYXdhaHI3dHdOTllG?=
+ =?utf-8?B?T1g1dTY3L1JFdHVFMVh4eDJjUlVXZW9BVGRyTTU0MllaUWNSdGhnbFp1dVA1?=
+ =?utf-8?B?eElmMkQ1TG5DZ3lObGoyQ0RqblZmUyt4UDI0TzM3S1NtSHM2eHVSVEhlMDNa?=
+ =?utf-8?B?aGhJRjZQN0JwaUd1TTNYZEVWdG45SEZ0OTA1cWkwZ0tjenk5Z0tWZHhLOFNa?=
+ =?utf-8?B?aXhFaXZGcU10cTBOL1hhMmZSMUU0NldUNWEyQk1ySE42OSsxUTE0YWFiNitQ?=
+ =?utf-8?B?dEw1b0tHUWdqWVdRNm9nWjcwUHpmN254MnUzWmZiMTFiTHphampmZWpmTmZu?=
+ =?utf-8?B?c2MzcGVkTUV6NCtUZE5hbis5MHhoSDFFSTdXVlljREo4SnY2L1A4amNxVFBv?=
+ =?utf-8?B?NTNKU1VhRHcySkIzOGluOENzVjZWWjVydzcvNU9OTWNwajd3djlpWk1ncjUw?=
+ =?utf-8?B?bWdNajRhMkZadURvQisrb2xyOXZ4NW9XYzZiWXo3Yi8yZDZzMllOQ3ZweUNN?=
+ =?utf-8?B?UEdNd3M3NXkxanhuMW0xdjgxTnNKRXlUOFJmeXk5UnJCTjVwY2E3T1F5Mmxw?=
+ =?utf-8?B?MCt0SUVYRElxVVZ0OG01L1JXaFhkNGR5ZkxmeHF2UjNuZExHVk5vZ1QwSkg5?=
+ =?utf-8?B?a0VzR2hJaGplZEROSTB4T2thT05VVFdmVldESEU4amVKU1hNOUtQL2Jrd0d3?=
+ =?utf-8?B?Sm94cFdXREQyTWJVeklQNWMrWEtyMFN1T0dBVkpnN2loYjc3N0JpVjlFTlh5?=
+ =?utf-8?B?eGRXSkR4OWRkNmVBZlB1NzFiU1h4U2RVaVRLVUpaN2x3bXpzWlpybTlhWnFP?=
+ =?utf-8?B?VHJ6aWhVamh3aFAzUFFlakprMjhDVFkzdWZCY29zVFlkL0liMmpqRG4relZV?=
+ =?utf-8?B?NU9IQ1pJUWtWYVI5Q29KTEUyVXNrN0lzVXBZSGgrQXlHRUZyd1V4d2tpb3I2?=
+ =?utf-8?B?TnZmRVR1WUJFZFBzWWlEbjg0dWtFK0U5SVJ1TWxUbUEyQVN5Qk1kYzlFaEo3?=
+ =?utf-8?B?TTFUaGg4V3JJSjB2cFFOZmxNcTBZdUpweUR5YnRXVk9wck5aVUdVRnM4YTNL?=
+ =?utf-8?B?cGdCTXBQNEZ3TEVLeEpmMFJoSnV4dWU2RHI4Y3hTcm9uRE5aSE1GNWZFVHBV?=
+ =?utf-8?B?K1BpL1JaemFhaDFpTWdIQXFrNjNlOHRYR0tYOWVuZUpMSEtUUG9qM3R6RVRh?=
+ =?utf-8?B?QkRoZjRvTnVrVkxTQitYVnVaVzgycVJrc1hkNmFDazIwSVhpd0JpTFMxdDBK?=
+ =?utf-8?B?WC9sVjY2NnIvWEZrVTlGNEFHeE1MdnlVcU5uaUU3QUhJL0c5WmNXbmhHTGkx?=
+ =?utf-8?B?cEc4a3Znd1d0ZlJxajVCTlhZem9hY3JBL05JMklvcVM3R3FkdWlEdDdLOWVs?=
+ =?utf-8?B?aU53TS96WGV0TDNxNllZRmEzZkx0Si8zdU1rRis5MGxqb0RwRWtNRUQvYS90?=
+ =?utf-8?B?UzBwaytHTjZrQVExTUNyMjZzamJxY1REUVF1ZUdNZ3JCMlhsZWwxUFc4d2lY?=
+ =?utf-8?B?YkZteUNYTTlOY1pqNmlNbGU5WmxOdStSRUdMbWZYcG1BNjltQm56SEYxVG5t?=
+ =?utf-8?B?bHlndWxnOEZNWTlXTFA3QVdOUy8xQkI5OHJHcW1KYStuNkJDUHE5bHFFVkox?=
+ =?utf-8?B?QTdZcE0yaHdZMEdwV0E0QmVsd0lsMHdUU29PUGZYOVozOGF5YjZSWmJSdGNy?=
+ =?utf-8?B?RUZHSENKV3dmQ3BCbHpmbCthaFJSWFliKytqa3dzNXdyVmZiMWR4M09nNVhP?=
+ =?utf-8?B?TEluRlhmUWVkQkxHditDMENNMEtHVG1VS0dleWcramJoMWh6eFRuRGtScisz?=
+ =?utf-8?B?VkUyWFAzeUIzQllaZXN0QnhRMXVWc3BCZ1hxanh5Y25kTjdMbllQSXdxNHNT?=
+ =?utf-8?B?WXNRdUtFNnpxU3NRTm01SmhYWTh0TCtGVVZ3QzZZL1FFYUxFREJZSThoOURz?=
+ =?utf-8?B?SWM5eExWQ0tRRHBUOVNGSGFtM2M0T0ZQL1JucnV0Y00vZUNuNVF3bGZTMkNW?=
+ =?utf-8?Q?EKwLTQMzaW3+Jp/8dSw1TXRvWG6bBlwfMQU5X5IfWw=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1853ed6-ff56-42e8-fcae-08dbd607c74c
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:41:50.1593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7Xhz09IsqFQNgQbAT96iDN7YlQDJOvT5N5dfP5luRNhqQGBnBLE7xH8c2Sw6OoQk2qIqBZAetFjjN/PZzWl4jCUTbzsNu5n3B7pA4RqznFc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB8929
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Witold Baryluk <witold.baryluk@gmail.com> writes:
 
->> From: Arnd Bergmann <arnd@arndb.de>
+On 26.10.23 02:50, Alexandre Belloni wrote:
+> On 26/10/2023 01:23:21+0200, Javier Carrasco wrote:
+>>>>> +  hiz-output:
+>>>>> +    description:
+>>>>> +      Use enabled if the output should stay in high-impedance. This
+>>>>> +      mode will mask the output as an interrupt source.
+>>>>> +      Use sleep if the otuput should be only active in sleep mode.
+>>>>> +      This mode is compatible with any other output configuration.
+>>>>> +      The disabled value acts as if the property was not defined.
+>>>>> +    enum:
+>>>>> +      - enabled
+>>>>> +      - sleep
+>>>>> +      - disabled
+>>>>> +    default: disabled
+>>>>> +
+>>>>
+>>>> If instead of using a custom property, you consider this as what it
+>>>> actually is: pinmuxing, then everything else comes for free. With
+>>>> pinctrl, you can define different states for runtime and sleep and they
+>>>> will get applied automatically instead of open coding in the driver.
 >>
->> These two drivers were used for the earliest "Centrino" branded Intel
->> laptops during the late 32-bit Pentium-M era, roughly 2003 to 2005, which
->> probably makes it the most modern platform that still uses the wireless
->> extension interface instead of cfg80211. Unlike the other drivers that
->> are suggested for removal, this one is still officially maintained.
+>> I am not sure if your solution would cover all my needs:
 >>
->> According to Johannes Berg, there was an effort to finish the move away
->> from wext in the past, but the last evidence of this that I could find
->> is from commit a3caa99e6c68f ("libipw: initiate cfg80211 API conversion
->> (v2)") in 2009.
+>> 1.- With pinctrl I can model the SoC pins, right? That would not stop
+>> the RTC output though, so the 32 kHz signal would be generated anyways
+>> even though the SoC would ignore it. That is one of the things I want to
+>> avoid.
 >>
->> Link: https://lore.kernel.org/all/87fs2fgals.fsf@kernel.org/
->> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
->> Cc: Linux Wireless <ilw@linux.intel.com>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->> I'm not convinced this should be in the same set of drivers as the
->> rest, since this is clearly less obsolete than the other hardware
->> that I would remove support for.
->
-> I still use ipw2200 on Intel PRO/Wireless 2915ABG [Calexico2] Network
-> Connection card, in my IBM Thinkpad X41 (Pentium-M 1.73GHz, Centrino
-> platform). The laptop is rock solid, and I use it as a backup for my
-> other Thinkpad. In fact is sometimes preferable to more modern machines
-> (IMHO X41 itself is the best laptop ever made in terms of a design).
->
-> Never had really issues with WiFi on it. In terms of speed it is neither
-> far or slow, but does the job anyway.
->
-> Now, I do not use this laptop frequently, maybe once or twice a month.
-> But that is more because in I use laptops less in general these days. Not
-> because the machine is not usable. I have modern SSD in it, second hard
-> drive, two USB 3.0 ports via ExpressCard, high res 4:3 (1440x1050)
-> display, full disk encryption, etc.
->
-> I would really like for this driver to stay in the mainline for another 5-10
-> years.
+> 
+> No, you would model the INTA pin.
+I am sorry for insisting on this topic, but if I get you right, I would
+be modeling an interrupt pin (INTA) to keep it from generating a clock
+signal when the RTC itself offers a high-impedance mode i.e. avoiding to
+use the RTC feature.
 
-Thanks for the thorough report. By my calculations that's the third user
-report about ipw2x00 so clearly there are users still and we shouldn't
-remove the driver. I'm dropping this patch 10 from my queue now.
+Is that not a misuse of the INTA pin in the first place? If there was no
+other option, that would be an easy fix, but why would we not implement
+the hi-Z mode when it is available? If I see a pinctrl-* modeling an
+interrupt pin, it is not obvious that I am doing that to stop the clock
+signal and I would have to clarify it explicitly, especially if I am not
+interested in the interrupt.
 
-> I might be interested in modernizing the driver, but I have no idea how
-> much effort it would be (in terms of changed fraction of code). 20k LOC is
-> neither small or big, and not obvious (a lot of it would be unchanged),
-> if it is a week of work, or months of work.
->
-> I would not have an issue with removing it, and readding back if somebody
-> (or me) ports it, if not for re-review from scratch concerns. If I port
-> it, I would not be able to do re-review, 1) out of date coding standards,
-> 2) different reviewers, 3) I would only port needed parts, and keep rest
-> of the driver intact, so I would not be able to really provide much
-> insight. So, readding after porting might be harder than keeping and
-> porting.
-
-It would be great if you could cleanup the driver and convert it to use
-mac80211. In the wiki link below there is more info how to contribute
-patches to the wireless subsystem. I always recommend starting with
-something small and going towards more complex patches with baby steps.
-Avoid patchbombing as much as possible!
-
-For example, I see lots of dead code under '#ifdef NOT_YET' and '#if 0',
-removing those is a good a start. Also converting the ugly debug_level
-procfs file to something more modern would be nice, maybe using just
-dev_dbg() throught the driver is a good option? Or maybe use a module
-parameter instead?
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+I would rather implement and document the hi-Z mode the RTC offers
+instead of using another mode like INTA which actually can trigger
+interrupts. If the implementation must be different is of course another
+topic.
+> 
+>> 2.- What happens if the RTC output is a clock for an external device
+>> that is only required when the SoC is in sleep mode? In that case I
+>> would like the RTC driver to control the output with the modes it provides.
+> 
+> Even if I doubt this is a valid use case, this would be possible as long
+> as the external device node has the correct pinctrl-* properties.
+> 
+> 
+>>>>
+>>>> Also, how you define this property means that everyone currently using
+>>>> this RTC is going to have a new warning that they should just ignore.
+>>>>
+>>>>
+>>> Thanks for your reply. The warning can only be triggered if the property
+>>> is defined, so in principle no one could have that warning yet. Only the
+>>> ones who actually define it and use an invalid value would get the warning.
+>>>
+>>> On the other hand I did not consider your approach, which might make
+>>> this patch irrelevant. So I will have a look at it to make sure that it
+>>> achieves the same results.
+>>>
+>>> Thanks again and best regards,
+>>> Javier Carrasco
+>>>
+> 
