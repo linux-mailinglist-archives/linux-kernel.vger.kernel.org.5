@@ -2,67 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB0F7D7AD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A027D7ADB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbjJZCXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        id S233125AbjJZCYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjJZCXA (ORCPT
+        with ESMTP id S229596AbjJZCYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:23:00 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD892AC;
-        Wed, 25 Oct 2023 19:22:56 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id E873824DBFD;
-        Thu, 26 Oct 2023 10:22:35 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 26 Oct
- 2023 10:22:35 +0800
-Received: from [192.168.125.85] (183.27.99.126) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 26 Oct
- 2023 10:22:34 +0800
-Message-ID: <09f8a530-1bd0-4dc3-85a2-8d67fdcd0148@starfivetech.com>
-Date:   Thu, 26 Oct 2023 10:22:34 +0800
+        Wed, 25 Oct 2023 22:24:21 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1BD6D8;
+        Wed, 25 Oct 2023 19:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=q1Nvz
+        lz4m5YlXKgzOVfLPIxG3pjGCPz8pjWhlQCBR3s=; b=LujEJlb3QzRohqXLqpoTC
+        akb+/G41SkLeuP2rMsamojGbRXUInr/Gwn3HpzqRsHB8hkhegxn+cR734zsvUsBp
+        JxzsNwmWyDOQd5AHdifxSOvj+jRc23yr6RWF2eFfW5UTusgjWiVRf50mnZaXlg0Q
+        XuwlOWQStG2rroXNT3JsSs=
+Received: from localhost.localdomain (unknown [106.13.245.201])
+        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wCHLyrAzTll_Vn5BQ--.55683S2;
+        Thu, 26 Oct 2023 10:24:01 +0800 (CST)
+From:   gaoyusong <a869920004@163.com>
+To:     brauner@kernel.org, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND] fs: Fix typo in access_override_creds()
+Date:   Thu, 26 Oct 2023 02:23:59 +0000
+Message-Id: <20231026022359.258507-1-a869920004@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 14/20] PCI: microchip: Add get_events() callback
- function
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231020104341.63157-1-minda.chen@starfivetech.com>
- <20231020104341.63157-15-minda.chen@starfivetech.com>
- <20231025-lizard-prideful-5223384b2c27@spud>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20231025-lizard-prideful-5223384b2c27@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.99.126]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wCHLyrAzTll_Vn5BQ--.55683S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GFy7GFW3Kr43Zr43Zr4kCrg_yoWxCwc_Cw
+        4Iyr48Grs8tryIywn8WanYyF1Sg34FyF1rG34xJry3KryfZ3ZxuryDKrn7JrWUWr47K3s8
+        Xrn8ZFWDZF4I9jkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnTlk3UUUUU==
+X-Originating-IP: [106.13.245.201]
+X-CM-SenderInfo: zdywmmasqqiki6rwjhhfrp/xtbB0wcV6VXl10aJVAABsV
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,126 +51,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix typo in access_override_creds(), modify non-RCY to non-RCU.
 
+Signed-off-by: gaoyusong <a869920004@163.com>
+---
+ fs/open.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2023/10/25 18:44, Conor Dooley wrote:
-> Hey,
-> 
-> On Fri, Oct 20, 2023 at 06:43:35PM +0800, Minda Chen wrote:
->> PolarFire implements their own PCIe interrupts,
->> which added to global PCIe field for PLDA lack of
->> MSI controller, the interrupts to event num mapping
->> is different to PLDA local interrupts. So add
->> get_events() function pointer.
-> 
-> Just FYI, it's not the PLDA IP's lack of an MSI controller, it's the SoC
-> itself that doesn't have one. Last time I spoke to Daire about this, he
-> was surprised that you didn't need something similar. I might reword
-> this as
-> 
-> "PolarFire SoC implements its own PCIe interrupts, additional to the
-> regular PCIe interrupts, due to the lack of an MSI controller, so the
-> interrupt to event number mapping is different to the PLDA local
-> interrupts, necessitating a custom get_events() implementation."
-> 
->> Also add struct plda_event_ops function pointer structure
->> to struct plda_pcie_rp.
-> 
-> I'd probably also drop this, as it is evident from the diff.
-> 
-> Cheers,
-> Conor.
-> 
-OK. Thanks very much.
->> plda_handle_events() will call the get_events() callback
->> function pointer directly. For the robustness of codes,
->> add checking in plda_init_interrupts().
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> ---
->>  drivers/pci/controller/plda/pcie-microchip-host.c | 14 +++++++++++++-
->>  drivers/pci/controller/plda/pcie-plda.h           |  8 ++++++++
->>  2 files changed, 21 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
->> index e57827bdb4b3..5a8c134bf643 100644
->> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
->> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
->> @@ -652,7 +652,7 @@ static void plda_handle_event(struct irq_desc *desc)
->>  
->>  	chained_irq_enter(chip, desc);
->>  
->> -	events = mc_get_events(port);
->> +	events = port->event_ops->get_events(port);
->>  
->>  	for_each_set_bit(bit, &events, port->num_events)
->>  		generic_handle_domain_irq(port->event_domain, bit);
->> @@ -811,7 +811,12 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
->>  				0, event_cause[event].sym, plda);
->>  }
->>  
->> +static const struct plda_event_ops mc_event_ops = {
->> +	.get_events = mc_get_events,
->> +};
->> +
->>  static const struct plda_event mc_event = {
->> +	.event_ops         = &mc_event_ops,
->>  	.request_event_irq = mc_request_event_irq,
->>  	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
->>  	.msi_event         = EVENT_LOCAL_PM_MSI_INT_MSI,
->> @@ -925,6 +930,11 @@ static int plda_init_interrupts(struct platform_device *pdev,
->>  	int i, intx_irq, msi_irq, event_irq;
->>  	int ret;
->>  
->> +	if (!event->event_ops || !event->event_ops->get_events) {
->> +		dev_err(dev, "no get events ops\n");
->> +		return -EINVAL;
->> +	}
->> +
->>  	ret = plda_pcie_init_irq_domains(port);
->>  	if (ret) {
->>  		dev_err(dev, "failed creating IRQ domains\n");
->> @@ -935,6 +945,8 @@ static int plda_init_interrupts(struct platform_device *pdev,
->>  	if (irq < 0)
->>  		return -ENODEV;
->>  
->> +	port->event_ops = event->event_ops;
->> +
->>  	for (i = 0; i < port->num_events; i++) {
->>  		event_irq = irq_create_mapping(port->event_domain, i);
->>  		if (!event_irq) {
->> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
->> index fba7343f9a96..df1729095952 100644
->> --- a/drivers/pci/controller/plda/pcie-plda.h
->> +++ b/drivers/pci/controller/plda/pcie-plda.h
->> @@ -102,6 +102,12 @@
->>  #define EVENT_PM_MSI_INT_SYS_ERR		12
->>  #define NUM_PLDA_EVENTS				13
->>  
->> +struct plda_pcie_rp;
->> +
->> +struct plda_event_ops {
->> +	u32 (*get_events)(struct plda_pcie_rp *pcie);
->> +};
->> +
->>  struct plda_msi {
->>  	struct mutex lock;		/* Protect used bitmap */
->>  	struct irq_domain *msi_domain;
->> @@ -117,11 +123,13 @@ struct plda_pcie_rp {
->>  	struct irq_domain *event_domain;
->>  	raw_spinlock_t lock;
->>  	struct plda_msi msi;
->> +	const struct plda_event_ops *event_ops;
->>  	void __iomem *bridge_addr;
->>  	int num_events;
->>  };
->>  
->>  struct plda_event {
->> +	const struct plda_event_ops *event_ops;
->>  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
->>  				 int event_irq, int event);
->>  	int intx_event;
->> -- 
->> 2.17.1
->> 
+diff --git a/fs/open.c b/fs/open.c
+index 98f6601fbac6..72eb20a8256a 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -442,7 +442,7 @@ static const struct cred *access_override_creds(void)
+ 	 * 'get_current_cred()' function), that will clear the
+ 	 * non_rcu field, because now that other user may be
+ 	 * expecting RCU freeing. But normal thread-synchronous
+-	 * cred accesses will keep things non-RCY.
++	 * cred accesses will keep things non-RCU.
+ 	 */
+ 	override_cred->non_rcu = 1;
+ 
+-- 
+2.34.1
+
