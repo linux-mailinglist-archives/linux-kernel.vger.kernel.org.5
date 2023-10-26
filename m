@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9477D84AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1DB7D84BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbjJZO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        id S235057AbjJZO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345237AbjJZO14 (ORCPT
+        with ESMTP id S235036AbjJZO34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:27:56 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF811B9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698330470;
-        bh=+AVbEQ2cO0W9NNjiJtJkceR113CnWKAa4egRigHhpC8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=h6cR5JYN2ZWd9xnbjDhtTfiqFnYa7QwdfKSvUPHy2sPmCvLqnUWcTcYNzMcg+2QuQ
-         B7yAAh9KNG9PMgTSwpZDR7BSNH2ogrBNpVHMBnfh9kXusJbz1ED0sLguYX36OkdewS
-         DSpW/5oH06539YK83ggl+fQt8QRx7dOo/t2MQRUE=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 248311287229;
-        Thu, 26 Oct 2023 10:27:50 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id ZZkmk4Z3gm94; Thu, 26 Oct 2023 10:27:49 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698330469;
-        bh=+AVbEQ2cO0W9NNjiJtJkceR113CnWKAa4egRigHhpC8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Y6dY9H2Ag71Glx/YfwRdXuukMdycq0MxM73+lD+vaQqdcz4au5+rNKmd/9D7ptupA
-         QM7lQ0BOpVCJE2L0eyXBZA93gOyWaok2k8pGROHfh6X2YlIKXyQnqNYudbPqejHGVj
-         9iBvcEpE9yOctDEZApzyqJziWi6xU6Gayw/agEZQ=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 992DA1281005;
-        Thu, 26 Oct 2023 10:27:47 -0400 (EDT)
-Message-ID: <f6372ec20b47624799546130e9170bf9ff1d22a5.camel@HansenPartnership.com>
-Subject: Re: the nul-terminated string helper desk chair rearrangement
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Lunn <andrew@lunn.ch>, Christoph Hellwig <hch@lst.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, ksummit@lists.linux.dev
-Date:   Thu, 26 Oct 2023 10:27:45 -0400
-In-Reply-To: <c7445b16-27c9-4182-8b0a-4272ddd2d341@lunn.ch>
-References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
-         <20231019054642.GF14346@lst.de> <202310182248.9E197FFD5@keescook>
-         <20231020044645.GC11984@lst.de>
-         <CAFhGd8o8FaD-3rkBAhEXhc8XqpUk_cLqNwyfpndVuSxDOei_gA@mail.gmail.com>
-         <202310201127.DA7EDAFE4D@keescook> <20231026100148.GA26941@lst.de>
-         <c7445b16-27c9-4182-8b0a-4272ddd2d341@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Thu, 26 Oct 2023 10:29:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4CA1B2;
+        Thu, 26 Oct 2023 07:29:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48792C433C7;
+        Thu, 26 Oct 2023 14:29:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698330594;
+        bh=vv7qkD0QJgzQ4FzS0v5pjyrB4lFZ3kZFpqUdYHIgMWU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cx8czMtr5PWdUmPj1oRqxqB4FpzttWpHoZ1l/+7zDDjVxba8R+BUWpuBE+rmFO06v
+         KQMD0al+Sx4pnf1xlux4rx5cwI0dkKbgTqTrCRvVxuYGteZv1L330Rm1xgG+26HXgt
+         E/nsJ7E+4miaEK9ESLgYu7NFgr5TzZEQKOAl5/AihdKONUAxBwbHOdDrEBRT3IbALP
+         mvha/hTKMBMkqSIHNafrfOTVsHiDjXiUOzomRsRfpLjIcnAzvo02I1CTv9VHF9JUT3
+         Y7jsLmPWnyj12Hpl7CSR9ildgTe+9/FFZrSY5VlnO+W2IHICR+MwCB2AXmLh+AFs6Q
+         q2HluKGNrcgbA==
+Date:   Thu, 26 Oct 2023 15:29:50 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Richard Leitner <richard.leitner@linux.dev>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: ti,ina2xx: add ti,ina237
+Message-ID: <20231026-astrology-map-9d85a2df0177@spud>
+References: <20231026-ina237-v2-0-dec44811a3c9@linux.dev>
+ <20231026-ina237-v2-2-dec44811a3c9@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cgKijTrTyz901EHF"
+Content-Disposition: inline
+In-Reply-To: <20231026-ina237-v2-2-dec44811a3c9@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 15:44 +0200, Andrew Lunn wrote:
-> > > > [1]:
-> > > > https://elixir.bootlin.com/linux/v6.6-rc6/source/include/linux/fortify-string.h#L292
-> 
-> I found that https://elixir.bootlin.com/linux
 
-That's a 404, I think you mean
+--cgKijTrTyz901EHF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://elixir.bootlin.com/linux/latest/source
+On Thu, Oct 26, 2023 at 09:08:50AM +0200, Richard Leitner wrote:
+> Add ti,ina237 binding to ti,ina2xx as they are very similar and may
+> share the same properties.
+>=20
+> Signed-off-by: Richard Leitner <richard.leitner@linux.dev>
 
->  is the best way to find Documentation for functions and structures.
-> I would suggest try it first, and only when what fails to start using
-> grep.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-I just tried it with system_state and it doesn't even find the
-definition.  I think it might be because it has annotations which
-confuse the searcher (it's in init/main.c as
+Thanks,
+Conor.
 
- enum system_states system_state __read_mostly;
+> ---
+>  Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml b/Doc=
+umentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+> index 8648877d2d01..378d1f6aeeb3 100644
+> --- a/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+> @@ -26,6 +26,7 @@ properties:
+>        - ti,ina226
+>        - ti,ina230
+>        - ti,ina231
+> +      - ti,ina237
+>        - ti,ina238
+> =20
+>    reg:
+>=20
+> --=20
+> 2.40.1
+>=20
 
-).  If there's any meaningful doc about it, elixir also doesn't find
-it.
+--cgKijTrTyz901EHF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-James
- 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTp33QAKCRB4tDGHoIJi
+0nlIAP0Y62c1H1P0GZ4EpgrIIwA28NyyBMd65NgP2dqdiDEy2gEA55Xie9K+kT7f
+bJwPQpo31+5RqRNsYYLxs9dUXrbR+gE=
+=JjDE
+-----END PGP SIGNATURE-----
+
+--cgKijTrTyz901EHF--
