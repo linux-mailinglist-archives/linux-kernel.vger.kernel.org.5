@@ -2,117 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEA07D8022
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280057D802C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbjJZJ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        id S230405AbjJZKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZJ6K (ORCPT
+        with ESMTP id S229518AbjJZKA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:58:10 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE7A93;
-        Thu, 26 Oct 2023 02:58:07 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9bf0ac97fdeso108604466b.2;
-        Thu, 26 Oct 2023 02:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698314286; x=1698919086; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9KIvM94Zo8czLYhdT3nLKb2AOCp1EA16AmR4SZgO/t4=;
-        b=NEt5wwqImRgDWauETNXA/+jsOSV/bAbMRs4dBNT7cfzWdx6QEOBGMXqbrgyAjDGy/7
-         Hr9JirvRT5DeB6wZfZ6tFtvh9+aMKdz7LKsU/V/4veYb/hrLGwTOZcYx0j/J62qKbdCI
-         tgxAWfn0AcXuPISxqqeOb3c+A/drBmfflaVr8CIp8AsKrVmO4mKs0Qff6pZjy3qj5Ufx
-         akde5aojA3aLHl9v2oqO/xEY24bE5/MRAyy91q4GxUv6JkMl51fQvz7Cr7LM7t0FF4Ta
-         4oVAXDsKgxccPbXQUYIZJ88yjf8oQb3C0qjyh3wkkYFIj6pdg97BC+vfV2BLoa3OT7Ov
-         BGlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698314286; x=1698919086;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9KIvM94Zo8czLYhdT3nLKb2AOCp1EA16AmR4SZgO/t4=;
-        b=N6vRd4e+QkIhSCtbz710e7guKNQqMixRqqstFYofbnCo5PmPLUVkSrdVmab5CD043r
-         jVTqUZzOfniG8z6M0svhE2+9DL91aEwiF01MKwU0RV+OpS+6/jCaWDOEGssY5KYJppzd
-         miIfeWIchzju/tbiR7AXQa/BqMbhUBP7wL8JA3tD9preyX65pTf55SwbZuNoriSDTFck
-         jBBv358uk50rRhLvh+3F939MEMr2fFAUUY3d+KO5TOCnbGLc7xH2dxq7pSZUyRFYW76P
-         3tT3pucZESR8AC8LX/p8NInXjAqMcKyxSWjTgzBYiJsJnVwX5D1OIKNvz4vo6wuH+eWq
-         4aMQ==
-X-Gm-Message-State: AOJu0Yxsc9ddX5Qn72I2jkBotTlthOpTN9FGgWhvndp2QFmY6tN8Vb8b
-        JtdHVbuPOPbBMhlA4Ml+qU8=
-X-Google-Smtp-Source: AGHT+IFCQqAufKA0LjuOtRNshjlN3m4ejifcXJ3YvxW+ZdXdN/W0E5ZaHeHdmKDkFOFggdRCPQmqFw==
-X-Received: by 2002:a17:907:841:b0:9c7:3611:9e7c with SMTP id ww1-20020a170907084100b009c736119e7cmr13848003ejb.61.1698314286213;
-        Thu, 26 Oct 2023 02:58:06 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id n13-20020a170906088d00b0098ec690e6d7sm11396113eje.73.2023.10.26.02.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 02:58:05 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 12:58:03 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v8 1/5] net: dsa: microchip: ksz9477: Add Wake
- on Magic Packet support
-Message-ID: <20231026095803.a54uni73ugwm33sg@skbuf>
-References: <20231026051051.2316937-1-o.rempel@pengutronix.de>
- <20231026051051.2316937-1-o.rempel@pengutronix.de>
- <20231026051051.2316937-2-o.rempel@pengutronix.de>
- <20231026051051.2316937-2-o.rempel@pengutronix.de>
+        Thu, 26 Oct 2023 06:00:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5D0191;
+        Thu, 26 Oct 2023 03:00:56 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:b07:646b:e2:e4be:399f:af39:e0db])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: laura.nao)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 10EB86607355;
+        Thu, 26 Oct 2023 11:00:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698314454;
+        bh=0zvIs54+PRjllX9x3XurRLHuEuegL1M0PLHQ0nYXW18=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XlIqLy8KEXz7h0a36Mxj4EOtZN0xePqBpeqxfZUuDkaJOh3VO7uCXKdIWLDCUG6Pu
+         r3KgbgWbDlAPmrMgbtzHnOWlp2f4S8LM0gPzIMIS0HRAQku2vm5/FZ6xW9vmWK/Cbz
+         WVwhQdl7Cj7Nzi/s8+kUbQHea5rX7b8ocZQk09C2PSwzrfaKlJVIB/dCJSimaJrivD
+         Im59CpwRflcXRr8PSW7MYdUoyuAgDvozv4PYlK4C953moX7RPvL7v3GOQ42KqMK7I3
+         OZFYESqVEStEIeLeJV7RgeNyKCd7suqNZbjtAoDYTe6HkpFy7M7ivWuv9++db/Rm4q
+         wQF+VsQLRRPFQ==
+From:   Laura Nao <laura.nao@collabora.com>
+To:     laura.nao@collabora.com
+Cc:     broonie@kernel.org, groeck@chromium.org, kernel@collabora.com,
+        kernelci@lists.linux.dev, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, rafael@kernel.org,
+        robh+dt@kernel.org, shuah@kernel.org
+Subject: Re: [RFC PATCH 0/2]  Add a test to verify device probing on ACPI platforms
+Date:   Thu, 26 Oct 2023 12:00:50 +0200
+Message-Id: <20231026100050.30704-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230925155806.1812249-1-laura.nao@collabora.com>
+References: <20230925155806.1812249-1-laura.nao@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026051051.2316937-2-o.rempel@pengutronix.de>
- <20231026051051.2316937-2-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 07:10:47AM +0200, Oleksij Rempel wrote:
-> Introduce Wake on Magic Packet (WoL) functionality to the ksz9477
-> driver.
-> 
-> Major changes include:
-> 
-> 1. Extending the `ksz9477_handle_wake_reason` function to identify Magic
->    Packet wake events alongside existing wake reasons.
-> 
-> 2. Updating the `ksz9477_get_wol` and `ksz9477_set_wol` functions to
->    handle WAKE_MAGIC alongside the existing WAKE_PHY option, and to
->    program the switch's MAC address register accordingly when Magic
->    Packet wake-up is enabled. This change will prevent WAKE_MAGIC
->    activation if the related port has a different MAC address compared
->    to a MAC address already used by HSR or an already active WAKE_MAGIC
->    on another port.
-> 
-> 3. Adding a restriction in `ksz_port_set_mac_address` to prevent MAC
->    address changes on ports with active Wake on Magic Packet, as the
->    switch's MAC address register is utilized for this feature.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> ---
+Gentle ping to check if there are any feedback or comments on this series.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Thanks,
+Laura
