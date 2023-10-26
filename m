@@ -2,128 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DA67D8090
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D897D808A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbjJZKUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
+        id S234911AbjJZKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234946AbjJZKUD (ORCPT
+        with ESMTP id S229611AbjJZKTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:20:03 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2ACC1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:20:01 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QAHV5A032460;
-        Thu, 26 Oct 2023 10:19:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=JnO/NA+ZR+AtnAuPQAjm08Ha350cCweZK8Lo1qBEsRw=;
- b=QbSdkwBzG5vm1t9WqPVqUpz0WYzlHs1I64vGYLlmX8UQu0nT/rtFjDotLDuJV/AE4WZB
- 1+X+V8GJxb1+FGu/EGSVo5IR/dEN+bVHxXngiiU6yVOpd6VMvMkzNcSZZagVLe69KjxP
- Nw4ZigKH3YgHVldvRinZAuFvsKxyJRW8E4x4mHhCS1t3pJZBKJboCulM59ErOa111+f1
- Qid932FxxDoGIYN3+ofeXHFc7dmrFQGsFv5ogfMg9iRZ2pZJT6tvHLr/VPci4cc43FVc
- Bb/8yJ5jWAtVY7SDrImfRcmf5KN9HqVT6XgT9FWo2ZwqfG2keyu+wRCBlsosf3k8NBaR kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3typ7q061e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 10:19:47 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39QAHd2W000691;
-        Thu, 26 Oct 2023 10:19:43 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3typ7q05t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 10:19:43 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q8JXkX010218;
-        Thu, 26 Oct 2023 10:19:40 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbywj71-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 10:19:39 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QAJbnP28181132
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Oct 2023 10:19:37 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BE0C72007C;
-        Thu, 26 Oct 2023 10:19:37 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7BA6220063;
-        Thu, 26 Oct 2023 10:19:35 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.109.198.113])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Oct 2023 10:19:35 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: [PATCH v3 2/5] powerpc/smp: Disable MC domain for shared processor
-Date:   Thu, 26 Oct 2023 15:48:37 +0530
-Message-ID: <20231026101843.56784-3-srikar@linux.vnet.ibm.com>
+        Thu, 26 Oct 2023 06:19:38 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2493FDC;
+        Thu, 26 Oct 2023 03:19:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a6190af24aso119051766b.0;
+        Thu, 26 Oct 2023 03:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698315574; x=1698920374; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6xRovC9oM8uLuvwYTTHSjPfu/zUQK1EzagTxS/ZS6I=;
+        b=jqdC2gdQJ1hQzKmF7j1iUolY8F7BIEbVqFSo/M8VO//FAk15m0e9yKcer7rMKIpA4J
+         aox8XnW25dzP0h7jvRpbIwSbLGRHB93iY5lJHuuKZu0qLDOmFHgcOYevsfrIY5BLADmN
+         APJyAdTN6EYKvDwFLO0YciDnn/FcBLJN8c7jWDQjHsGu4F2YKl+jpF8WsbwTgGt7m0+I
+         BIPwGd/boaU4TVAWSStJdAsUX4ZLfsa1AuzHpNvKulBRwr/iqKdFCg4EMRck8358A22f
+         Ju/Df4pqvm1hOrQuUAEtqIUqX60OXZJvCCGpCxLv4QPei6vCWLrr9SNZIjhNJJfGtvxp
+         9B5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698315574; x=1698920374;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R6xRovC9oM8uLuvwYTTHSjPfu/zUQK1EzagTxS/ZS6I=;
+        b=jZBTuG2jdMP5yXGNSJkzdJf1iZvX7oCMPQkEI3qGRx/zChuiFXriy1kD7mnhiggUP4
+         rK3TJetAmxyLyQxV6w1pf8/MZf6IG9tEvfeLnHPow2is8t93sijS8Rn0/P5WqZFPoJB9
+         Um5+kl/ZE/OVRqZkfZQPAAu08ZpGxT328hA6GxG9GlcvxgYsePtXj4/ZmKV7hjI5xPUu
+         2v99ujkDNOys2p3pkQXtOV+keuIohwO5ThDd9O9B5gEkGaJ75IVyjungIoGzz/YPlqiE
+         TskSAbV10q5lA42g3A6PaLyWLLu30a7sHCM0gNuaCESMviOR8Suti4tQFcEC92KdE6Ck
+         vdIA==
+X-Gm-Message-State: AOJu0YxHV1BTGfdgPzkQBbTvwvt1p0UAxgahma2a8A24j7fUKI+ykpy7
+        I6Cp8OZmdyCM2oM9fXDS0EY=
+X-Google-Smtp-Source: AGHT+IFONz4Km/NGUBE/juLsEkByLkDuNJBDP7znncsLKTroN2coU2vhl00r8C/0cgDi630dR+GuEg==
+X-Received: by 2002:a17:907:608b:b0:9b2:9e44:222e with SMTP id ht11-20020a170907608b00b009b29e44222emr17653637ejc.19.1698315574319;
+        Thu, 26 Oct 2023 03:19:34 -0700 (PDT)
+Received: from fedora.. (cpezg-94-253-130-190-cbl.xnet.hr. [94.253.130.190])
+        by smtp.googlemail.com with ESMTPSA id jy20-20020a170907763400b009b97d9ae329sm11457552ejc.198.2023.10.26.03.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 03:19:33 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_tdas@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH] dt-bindings: clock: qcom,gcc-ipq6018: split to separate schema
+Date:   Thu, 26 Oct 2023 12:18:37 +0200
+Message-ID: <20231026101931.695497-1-robimarko@gmail.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231026101843.56784-1-srikar@linux.vnet.ibm.com>
-References: <20231026101843.56784-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _MgdXALJfIDNV4xIaZJu1frWygaY36za
-X-Proofpoint-ORIG-GUID: sja5BrUiQi7I2VE-sxoAkK99ZcZjT7nv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_08,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- bulkscore=0 malwarescore=0 spamscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260087
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like L2-cache info, coregroup information which is used to determine MC
-sched domains is only present on dedicated LPARs. i.e PowerVM doesn't
-export coregroup information for shared processor LPARs. Hence disable
-creating MC domains on shared LPAR Systems.
+The Qualcomm IPQ6018 GCC clock controller has clock inputs, thus existing
+gcc-other.yaml was not describing it fully so move it to a separate schema.
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Fully document the allowed and required XO and sleep clock inputs, as well
+as update the provided example.
+
+Signed-off-by: Robert Marko <robimarko@gmail.com>
 ---
- arch/powerpc/kernel/smp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../bindings/clock/qcom,gcc-ipq6018.yaml      | 57 +++++++++++++++++++
+ .../bindings/clock/qcom,gcc-other.yaml        |  3 -
+ 2 files changed, 57 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-ipq6018.yaml
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index dbf0a584804b..9fda012d9eca 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1052,6 +1052,10 @@ static struct cpumask *cpu_coregroup_mask(int cpu)
- 
- static bool has_coregroup_support(void)
- {
-+	/* Coregroup identification not available on shared systems */
-+	if (is_shared_processor())
-+		return 0;
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-ipq6018.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-ipq6018.yaml
+new file mode 100644
+index 0000000000000..af5d883cfdc86
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-ipq6018.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,gcc-ipq6018.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	return coregroup_enabled;
- }
++title: Qualcomm Global Clock & Reset Controller on IPQ6018
++
++maintainers:
++  - Stephen Boyd <sboyd@kernel.org>
++  - Taniya Das <quic_tdas@quicinc.com>
++  - Robert Marko <robimarko@gmail.com>
++
++description: |
++  Qualcomm global clock control module provides the clocks, resets and power
++  domains on IPQ6018.
++
++  See also::
++    include/dt-bindings/clock/qcom,gcc-ipq6018.h
++    include/dt-bindings/reset/qcom,gcc-ipq6018.h
++
++allOf:
++  - $ref: qcom,gcc.yaml#
++
++properties:
++  compatible:
++    const: qcom,gcc-ipq6018
++
++  clocks:
++    items:
++      - description: board XO clock
++      - description: sleep clock
++
++  clock-names:
++    items:
++      - const: xo
++      - const: sleep_clk
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    clock-controller@1800000 {
++      compatible = "qcom,gcc-ipq6018";
++      reg = <0x01800000 0x80000>;
++      clocks = <&xo>, <&sleep_clk>;
++      clock-names = "xo", "sleep_clk";
++      #clock-cells = <1>;
++      #power-domain-cells = <1>;
++      #reset-cells = <1>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-other.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-other.yaml
+index 559fc21435c8d..7d05f0f63cef2 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,gcc-other.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-other.yaml
+@@ -15,8 +15,6 @@ description: |
+   domains.
  
+   See also::
+-    include/dt-bindings/clock/qcom,gcc-ipq6018.h
+-    include/dt-bindings/reset/qcom,gcc-ipq6018.h
+     include/dt-bindings/clock/qcom,gcc-msm8953.h
+     include/dt-bindings/clock/qcom,gcc-mdm9607.h
+ 
+@@ -26,7 +24,6 @@ allOf:
+ properties:
+   compatible:
+     enum:
+-      - qcom,gcc-ipq6018
+       - qcom,gcc-mdm9607
+ 
+ required:
 -- 
-2.31.1
+2.41.0
 
