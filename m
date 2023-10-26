@@ -2,61 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF557D8B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F67D8B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbjJZWLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S1344887AbjJZWMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJZWLp (ORCPT
+        with ESMTP id S229649AbjJZWMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:11:45 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CAB116
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:11:42 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507973f3b65so2234438e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:11:42 -0700 (PDT)
+        Thu, 26 Oct 2023 18:12:14 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6E7192;
+        Thu, 26 Oct 2023 15:12:12 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32d80ae19f8so952711f8f.2;
+        Thu, 26 Oct 2023 15:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698358301; x=1698963101; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u7QyUigwL+AihRwuENBgL/lkTObabmHkjoTqFNGjpDU=;
-        b=JoVLho0Ry/Nc3mefIZkDvwTWG8RS8v7YxyhoZ0dOiN+JlESexiFIKGBD8wInQ2syjT
-         1EoHhhzQ3ZrM+uECf1iJIiJnHYOU7Sa/R2OrT22M6/HFk37TAiv4oMzt5KPwi1sYc5ze
-         96kKe1U2XO/ej3+T7baBKZmwt14e8AtCqimELAOgY2mstJZUr2t33tiuA8sLShWDN5Zn
-         GD80rlzyfDK7ii5/lQ3nKU4dSbsej3OQ8ih8G+gtNsrZw6Nx3FN4Jcr7heY6sebYwzfd
-         KeXKcB2Rz8cDEQZdvcl8rH2wZnBW+ue0RNJpTuKp5VpC9q2sL19ikPqagAjuLXYUco+S
-         TbEg==
+        d=gmail.com; s=20230601; t=1698358331; x=1698963131; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9dxV0z/KJX2jAtAYojUd4aHcjxi+u31o0EAgu6F7IwM=;
+        b=IN5f6ncj7iukrDUcd6JuT8NsgCZszbYS7mty/v/snDJSUB2IB0ESvl7hUhFP5PSqRo
+         GuS9UEF+L1ptgcPQJIW4JiKbJ8UxkKx9ri7Sudn7LmaL6HhOoXovNL60rMyNVm1IpWMA
+         MtBeaJNf8edBGkbY4GL+NBND/A6Oe27g1s8GQ0Bz8s89E3aVKtiPpKI/lZxhAnTn7klO
+         mRAu5OU44U7Ad8nNzQMDQVJGt9Qno6Xl2gTzeQu0FaGAOeOeQAbXtxVEzzo1iZo/nDOe
+         fdrzcysmRYYMIxpLQMNOecCKdtRt8Xli94unglZkeKjoTeBC4QSWqikr1up15yr1Snxd
+         eieQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698358301; x=1698963101;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u7QyUigwL+AihRwuENBgL/lkTObabmHkjoTqFNGjpDU=;
-        b=e0tOk6TWyfjU+0i2/bdnxv1NB/NEOLSsHT177KxB/U8dG0XWc7e2Sfc9ei9Qt8MJin
-         DgCPpj/XVmCEEHaj042QyE99Mt6dFNdq9SP03MYGYI9Fske8XAUzKAVAKCEBEeHXrPCU
-         L24ZOXD1ps8D6AoqVVFcayqp/x1hsU3/Jdb3dANwEeGBsHDVQCOdKBzEw0uZmG4rxn9F
-         60p8gCVcz9UK3De3COOQ1mKqLPSTx9AhokhSDB+FLqyFq6mhuYFnIU02mpkMdaW0BWwJ
-         xYwhxQMfOQtbDQMAKKUG2rxE3h4d6lo4Oy1trhyH+vNi9Y1Fa0zsr+wiL8oPcKkPVPIj
-         Q7KA==
-X-Gm-Message-State: AOJu0YyRPSadQEcOFzHrHfdqBylsIMipYuqfUouuQvr21hgd5CsodM/Y
-        EnAjm7yV9k9kokyxl9rZfkAicycjM5AbjBkDc1155g==
-X-Google-Smtp-Source: AGHT+IHf/4g0ckl88vh8B7NAaPWRBEPuiUqA7RhSF/OaNkq65RrrqAUENIJx47f8YuoL+1dF/Uae/bzIzQfZl027bkI=
-X-Received: by 2002:a19:ac0a:0:b0:4ff:a04c:8a5b with SMTP id
- g10-20020a19ac0a000000b004ffa04c8a5bmr431476lfc.47.1698358300700; Thu, 26 Oct
- 2023 15:11:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-1-0d67cbdd0538@google.com> <20231026220248.blgf7kgt5fkkbg7f@skbuf>
- <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
-In-Reply-To: <CAFhGd8rWOE8zGFCdjM6i8H3TP8q5BFFxMGCk0n-nmLmjHojefg@mail.gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 26 Oct 2023 15:11:28 -0700
-Message-ID: <CAFhGd8pJkdpF4BYDf_Ym-zsisAVzM06_4ba+_6Uca_2Xerp1Qg@mail.gmail.com>
-Subject: Re: [PATCH next v2 1/3] ethtool: Implement ethtool_puts()
-To:     Vladimir Oltean <olteanv@gmail.com>
+        d=1e100.net; s=20230601; t=1698358331; x=1698963131;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9dxV0z/KJX2jAtAYojUd4aHcjxi+u31o0EAgu6F7IwM=;
+        b=i6IjBNKzuaf/JE54QMtEZ1hr5p4bSRit5HuGsY3pq++18wO5DXYWvxIaKvFlXVNqgB
+         puBguRqP7goPCTiQvbgREn9Mo63wD3j6j3ywqw2XCrJ8E6cJ1oG4G/HBQlwOplAzFsZs
+         cS8wqk3OM56B4D3rGL63BN6Oe2pAgWqjb6KkkNuh15YUO2lasK05CMQCXN4gh9Z3WbGN
+         Y6DUvaEtJtSmotEOOAgCT1K1FsMC+Za+UIJosrAtlrmd+o7JL7Johj6O0HqMuU1Oo7En
+         k1J6Yjd97ls/xVPITQQI+2gUuUiSwbwmhyGY+zT9QRG7LWCRkopx0/1c46kUdc3AuvDd
+         SXiA==
+X-Gm-Message-State: AOJu0Yw9NbzDIvIt3GU7D2xLW9e2IMAuNnCoTsZ5DbUIZ1lRbK3rQvIS
+        +WkbvDKOiOBJATz2fcKSZnE=
+X-Google-Smtp-Source: AGHT+IEFBkpZiWpPOgBWSz7VhB+L8HEH65ute3OKtRNDPYBqco6PY6IhRvs9olvc+3J8je+BIT3EsA==
+X-Received: by 2002:a5d:5a06:0:b0:32d:a101:689d with SMTP id bq6-20020a5d5a06000000b0032da101689dmr886013wrb.56.1698358330949;
+        Thu, 26 Oct 2023 15:12:10 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id d16-20020adfef90000000b0032326908972sm358008wro.17.2023.10.26.15.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 15:12:10 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 01:12:06 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Justin Stitt <justinstitt@google.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -89,7 +84,7 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Hauke Mehrtens <hauke@hauke-m.de>,
         Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
         Daniel Golle <daniel@makrotopia.org>,
         Landen Chao <Landen.Chao@mediatek.com>,
         DENG Qingfang <dqfext@gmail.com>,
@@ -98,7 +93,7 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
         Wei Fang <wei.fang@nxp.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
@@ -121,125 +116,82 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
         linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH next v2 2/3] checkpatch: add ethtool_sprintf rules
+Message-ID: <20231026221206.52oge3a5w4uxkkd5@skbuf>
+References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+ <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 3:09=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> On Thu, Oct 26, 2023 at 3:02=E2=80=AFPM Vladimir Oltean <olteanv@gmail.co=
-m> wrote:
-> >
-> > Hi Justin,
-> >
-> > On Thu, Oct 26, 2023 at 09:56:07PM +0000, Justin Stitt wrote:
-> > > Use strscpy() to implement ethtool_puts().
-> > >
-> > > Functionally the same as ethtool_sprintf() when it's used with two
-> > > arguments or with just "%s" format specifier.
-> > >
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > >  include/linux/ethtool.h | 34 +++++++++++++++++++++++-----------
-> > >  net/ethtool/ioctl.c     |  7 +++++++
-> > >  2 files changed, 30 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-> > > index 226a36ed5aa1..7129dd2e227c 100644
-> > > --- a/include/linux/ethtool.h
-> > > +++ b/include/linux/ethtool.h
-> > > @@ -1053,22 +1053,34 @@ static inline int ethtool_mm_frag_size_min_to=
-_add(u32 val_min, u32 *val_add,
-> > >   */
-> > >  extern __printf(2, 3) void ethtool_sprintf(u8 **data, const char *fm=
-t, ...);
-> > >
-> > > +/**
-> > > + * ethtool_puts - Write string to ethtool string data
-> > > + * @data: Pointer to start of string to update
-> > > + * @str: String to write
-> > > + *
-> > > + * Write string to data. Update data to point at start of next
-> > > + * string.
-> > > + *
-> > > + * Prefer this function to ethtool_sprintf() when given only
-> > > + * two arguments or if @fmt is just "%s".
-> > > + */
-> > > +extern void ethtool_puts(u8 **data, const char *str);
-> > > +
-> > >  /* Link mode to forced speed capabilities maps */
-> > >  struct ethtool_forced_speed_map {
-> > > -     u32             speed;
-> > > +     u32 speed;
-> > >       __ETHTOOL_DECLARE_LINK_MODE_MASK(caps);
-> > >
-> > > -     const u32       *cap_arr;
-> > > -     u32             arr_size;
-> > > +     const u32 *cap_arr;
-> > > +     u32 arr_size;
-> > >  };
-> > >
-> > > -#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                     =
-         \
-> > > -{                                                                   =
- \
-> > > -     .speed          =3D SPEED_##value,                             =
-   \
-> > > -     .cap_arr        =3D prefix##_##value,                          =
-   \
-> > > -     .arr_size       =3D ARRAY_SIZE(prefix##_##value),              =
-   \
-> > > -}
-> > > +#define ETHTOOL_FORCED_SPEED_MAP(prefix, value)                     =
- \
-> > > +     {                                                            \
-> > > +             .speed =3D SPEED_##value, .cap_arr =3D prefix##_##value=
-, \
-> > > +             .arr_size =3D ARRAY_SIZE(prefix##_##value),            =
-\
-> > > +     }
-> > >
-> > > -void
-> > > -ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map *maps=
-, u32 size);
-> > > +void ethtool_forced_speed_maps_init(struct ethtool_forced_speed_map =
-*maps,
-> > > +                                 u32 size);
-> > >  #endif /* _LINUX_ETHTOOL_H */
-> >
-> > Maybe this is due to an incorrect rebase conflict resolution, but you
-> > shouldn't have touched any of the ethtool force speed maps.
->
-> Ah, I did have a conflict and resolved by simply moving the hunks
-> out of each other's way. Trivial resolution.
->
-> Should I undo this? I want my patch against next since it's targeting
-> some stuff in-flight over there. BUT, I also want ethtool_puts() to be
-> directly below ethtool_sprintf() in the source code. What to do?
+On Thu, Oct 26, 2023 at 09:56:08PM +0000, Justin Stitt wrote:
+> Add some warnings for using ethtool_sprintf() where a simple
+> ethtool_puts() would suffice.
+> 
+> The two cases are:
+> 
+> 1) Use ethtool_sprintf() with just two arguments:
+> |       ethtool_sprintf(&data, driver[i].name);
+> or
+> 2) Use ethtool_sprintf() with a standalone "%s" fmt string:
+> |       ethtool_sprintf(&data, "%s", driver[i].name);
+> 
+> The former may cause -Wformat-security warnings while the latter is just
+> not preferred. Both are safely in the category of warnings, not errors.
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  scripts/checkpatch.pl | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 25fdb7fda112..22f007131337 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -7011,6 +7011,25 @@ sub process {
+>  			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+>  		}
+>  
+> +# ethtool_sprintf uses that should likely be ethtool_puts
+> +		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
+> +			if(WARN("ETHTOOL_SPRINTF",
+> +			   "Prefer ethtool_puts over ethtool_sprintf with only two arguments\n" . $herecurr) &&
+> +         $fix) {
+> +         $fixed[$fixlinenr] =~ s/ethtool_sprintf\s*\(/ethtool_puts\(/;
+> +       }
+> +		}
+> +
+> +		# use $rawline because $line loses %s via sanitization and thus we can't match against it.
+> +		if ($rawline =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*\"\%s\"\s*,\s*$FuncArg\s*\)/) {
+> +			if(WARN("ETHTOOL_SPRINTF",
+> +			   "Prefer ethtool_puts over ethtool_sprintf with standalone \"%s\" specifier\n" . $herecurr) &&
+> +         $fix) {
+> +         $fixed[$fixlinenr] =~ s/ethtool_sprintf\s*\(\s*(.*?),.*?,(.*?)\)/ethtool_puts\($1,$2)/;
+> +       }
+> +		}
+> +
+> +
+>  # typecasts on min/max could be min_t/max_t
+>  		if ($perl_version_ok &&
+>  		    defined $stat &&
+> 
+> -- 
+> 2.42.0.820.g83a721a137-goog
+> 
 
-Oh, I just realized my auto formatter had a field day with that function.
-I will rectify this in a new version after waiting 24hrs for comments to
-trickle in as well.
-
->
-> >
-> > Please wait for at least 24 hours to pass before posting a new version,
-> > to allow for more comments to come in.
->
-> Ok :)
->
-> Thanks
-> Justin
-
-Thanks
-Justin
+I don't really know Perl, but does the indentation and coding style here
+conform to any rules, or is it just free-form? The rest of the script
+looks almost as you'd expect from C. This is unreadable to me.
