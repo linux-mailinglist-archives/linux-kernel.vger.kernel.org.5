@@ -2,148 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E792A7D809A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AFE7D809D
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjJZKVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
+        id S234964AbjJZKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235094AbjJZKVf (ORCPT
+        with ESMTP id S230330AbjJZKVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:21:35 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9592199;
-        Thu, 26 Oct 2023 03:21:27 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vuxb1G0_1698315681;
-Received: from 30.240.112.233(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vuxb1G0_1698315681)
-          by smtp.aliyun-inc.com;
-          Thu, 26 Oct 2023 18:21:23 +0800
-Message-ID: <8093ceb3-0857-4c36-8856-72a158e47b6c@linux.alibaba.com>
-Date:   Thu, 26 Oct 2023 18:21:19 +0800
+        Thu, 26 Oct 2023 06:21:51 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAF9183;
+        Thu, 26 Oct 2023 03:21:48 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7965AE000C;
+        Thu, 26 Oct 2023 10:21:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698315706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oGcZNXbWjy+iksWtqqJpAf6k6WVn04EIPNKOTg5UZUc=;
+        b=Pkwrrz23POBOjesBMT1sSYR9fFmwNbamTDO7MR+WlTut6bzE/Pp4qMKH/N1T+p5R5hYwU4
+        JgMPNXnd3Kw9EhTqcqd3lm0uG1EWFt+GzsHEwiN7Rf/aHw8/ijSToYg2y/hh3eOZZenaw0
+        sa50XlY4/6Bsvn2rjv1/JNyXZw7/kinL92rLyD+V6xOMUqfD0LypvdU7u2ZtqPSl+ok9Fs
+        +9mqCv5PY348oo9fufW6ySoa8hUtIDxUg0wZM/Xx/yRwNlk0uk9NXDdvPirJ6ExPK86Byf
+        DS8Atf9WpyhFJGZlK/xc47v1PfGIvGanZzOUobEYVxbjaLRnDzOUSoCI/DsUAg==
+Date:   Thu, 26 Oct 2023 12:21:46 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
+ property
+Message-ID: <202310261021467b56f131@mail.local>
+References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
+ <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
+ <20231025222327c0b5d460@mail.local>
+ <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
+ <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
+ <20231026005008b8255799@mail.local>
+ <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
+ <202310260956166bdcb845@mail.local>
+ <d3dcb034-f589-41bb-8a67-1de8ce51db8c@wolfvision.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 0/9] Use ERST for persistent storage of MCE and
- APEI errors
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        robert.moore@intel.com, linux-hardening@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org,
-        baolin.wang@linux.alibaba.com
-References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
- <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
- <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
-Content-Language: en-US
-In-Reply-To: <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3dcb034-f589-41bb-8a67-1de8ce51db8c@wolfvision.net>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/10/2023 12:13:23+0200, Javier Carrasco wrote:
+> I want to model the INTA pin as a clock source that only should run in
+> sleep mode because its clock is only used in that mode. Therefore I want
+> the pin to stay in hi-Z during normal operation.
 
+Can you disclose what is the user of the clock, do you have a driver for
+this device?
 
-On 2023/10/7 15:15, Shuai Xue wrote:
 > 
+> I do not want to get any interrupts from the INTA pin and the battery
+> mode indication is not relevant for me either. I do not know the CCF
+> mechanism in other RTCs though, but I think that the hi-Z mode
+> accomplishes exactly what I described.The assumption about the battery
+> mode is therefore beyond my knowledge, but my first reaction is that we
+> already have the hi-Z for that.
 > 
-> On 2023/9/28 22:43, Borislav Petkov wrote:
->> On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
->>> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
->>> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
->>> serialized MCE error record, of previous boot in persistent storage is not
->>> collected via APEI ERST.
->>
->> You lost me here. /dev/mcelog is deprecated but you can still use it and
->> apei_write_mce() still happens.
+> So in the end I just need a mechanism to configure INTA as hi-Z, which
+> the driver still does not support. There is another application where
+> the clock output is not required even though it is physically connected,
+> so hi-Z is again an interesting mode and the battery mode would be
+> available if it ever becomes relevant for anyone.
 > 
-> Yes, you are right. apei_write_mce() still happens so that MCE records are
-> written to persistent storage and the MCE records can be retrieved by
-> apei_read_mce(). Previously, the task was performed by the mcelog package.
-> However, it has been deprecated, some distributions like Arch kernels are
-> not even compiled with the necessary configuration option
-> CONFIG_X86_MCELOG_LEGACY.[1]
-> 
-> So, IMHO, it's better to add a way to retrieve MCE records through switching
-> to the new generation rasdaemon solution.
-> 
->>
->> Looking at your patches, you're adding this to ghes so how about you sit
->> down first and explain your exact use case and what exactly you wanna
->> do?
->>
->> Thx.
->>
-> 
-> Sorry for the poor cover letter. I hope the following response can clarify
-> the matter.
-> 
-> Q1: What is the exact problem?
-> 
-> Traditionally, fatal hardware errors will cause Linux print error log to
-> console, e.g. print_mce() or __ghes_print_estatus(), then reboot. With
-> Linux, the primary method for obtaining debugging information of a serious
-> error or fault is via the kdump mechanism. Kdump captures a wealth of
-> kernel and machine state and writes it to a file for post-mortem debugging.
-> 
-> In certain scenarios, ie. hosts/guests with root filesystems on NFS/iSCSI
-> where networking software and/or hardware fails, and thus kdump fails to
-> collect the hardware error context, leaving us unaware of what actually
-> occurred. In the public cloud scenario, multiple virtual machines run on a
-> single physical server, and if that server experiences a failure, it can
-> potentially impact multiple tenants. It is crucial for us to thoroughly
-> analyze the root causes of each instance failure in order to:
-> 
-> - Provide customers with a detailed explanation of the outage to reassure them.
-> - Collect the characteristics of the failures, such as ECC syndrome, to enable fault prediction.
-> - Explore potential solutions to prevent widespread outages.
-> 
-> In short, it is necessary to serialize hardware error information available
-> for post-mortem debugging.
-> 
-> Q2: What exactly I wanna do:
-> 
-> The MCE handler, do_machine_check(), saves the MCE record to persistent
-> storage and it is retrieved by mcelog. Mcelog has been deprecated when
-> kernel 4.12 released in 2017, and the help of the configuration option
-> CONFIG_X86_MCELOG_LEGACY suggest to consider switching to the new
-> generation rasdaemon solution. The GHES handler does not support APEI error
-> record now.
-> 
-> To serialize hardware error information available for post-mortem
-> debugging:
-> - add support to save APEI error record into flash via ERST before go panic,
-> - add support to retrieve MCE or APEI error record from the flash and emit
-> the related tracepoint after system boot successful again so that rasdaemon
-> can collect them
-> 
-> 
-> Best Regards,
-> Shuai
-> 
-> 
-> [1] https://wiki.archlinux.org/title/Machine-check_exception
 
-
-Hi, Borislav,
-
-I would like to inquire about your satisfaction with the motivation
-provided. If you have no objections, I am prepared to address Kees's
-comments, update the cover letter, and proceed with sending a new version.
-
-Thank you.
-
-Best Regards,
-Shuai
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
