@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 688F87D881F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEB77D8822
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbjJZSS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        id S231778AbjJZSSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjJZSS0 (ORCPT
+        with ESMTP id S231625AbjJZSSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:18:26 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F7E1BD
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:18:24 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9cc6c92d1e9so36040366b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698344303; x=1698949103; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vTA02l0ubFVwBtbEfhw+KExb6bkxv2C0e8twmLrMufI=;
-        b=J0NwBsvC9wBnqtFFoewVnsHvlxPqQTjLUnS6at9Dm+82kS3TWTMaeRLkBbEOzjIJUx
-         uRTWkFJWImp/8B5khUz+eP0cdU2kUqaNBQujCgU6VVKzKrjlgDe5xvCGqkPpnZRMPfAE
-         7eO5qLHR3wHF2KvkpvPnxP8sqWlX3Ap7g5vcENXnrev9FL4TDP8b24pOgONDJ1rLsj81
-         JAbS+kggMFHHCBCG0zke+vPToWOsvRsj4RIVX6it44/g3OaWHOU+7b8KWHX5HAC7O3yP
-         oHgPxgTRSmDVTm6BdNyna/erkm2nd4cYHvM132vpU9GmtCQpmK2EVCz2WZs7yKqfyubO
-         kqGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698344303; x=1698949103;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTA02l0ubFVwBtbEfhw+KExb6bkxv2C0e8twmLrMufI=;
-        b=cpW/uIIoA0cWPsSfEgOatRNXceb72QyKChMZxREj46OtGgh70ryGaQ7ZYwglI9UprT
-         ySaU/p7CXBDKtejBJV7aFwU9txD4gZppEEv9na6M7WgLGAx5y6KQxM8YeHhPKb1rBbec
-         HFDYwp3ZQDt8a0xe/PYIXvDtWn069KzJ7SxutulgphInbTMfRtuM5npFQVwktL/xl6BP
-         vP4J8MOUsa6LV+7Xb3E0F2rD1P80Eh1lAtElN5N/lHqm/pGM/TmAA66EuR/HGmXRmPFB
-         1EKDNPfkkERsk09SURbffp9vWe5Bqdzfeha7kWgOc/kjqguih9C85dRiNH/QnLZeDMp5
-         Zr0A==
-X-Gm-Message-State: AOJu0YxC/LbEX+o77DMYADcjbSSBY0S2f7ZYycHCucUsFQca3G7KgKs+
-        +KsvvBbEXF0jkpj3V4xNPvw=
-X-Google-Smtp-Source: AGHT+IGb0c8y+EU7pwRJSbuKmhoEYLvnT63W8kJwHC0nVjFBNZz0yidGLURr40R2g12EmezF/bBVmw==
-X-Received: by 2002:a17:907:2d27:b0:9c7:5db4:8080 with SMTP id gs39-20020a1709072d2700b009c75db48080mr348999ejc.7.1698344302945;
-        Thu, 26 Oct 2023 11:18:22 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id p6-20020a1709060e8600b0098e78ff1a87sm11985037ejf.120.2023.10.26.11.18.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 11:18:22 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 20:18:21 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] staging: rtl8192e: Fix line break issue at
- priv->rx_buf[priv->rx_idx]
-Message-ID: <20231026181821.GA21819@matrix-ESPRIMO-P710>
+        Thu, 26 Oct 2023 14:18:46 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2294192;
+        Thu, 26 Oct 2023 11:18:43 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QIEZ30017809;
+        Thu, 26 Oct 2023 18:18:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qVfPEdY12sude9qpb6x/6PCFbJmpKdpptoj/LQcqZfM=;
+ b=cFdLibiL/4C0OS+i048SwImrl+sFyn1g0PeqNmLQ4X1yGu04Rn8ZlIioz2G5jL5HVM84
+ lyPiw5kIrBFUjdXVMQW8M0rGlsATXna2NV380dH3k3RF4/EjPvfrYB4hEQ9WAbP1oxQX
+ M78CiWMz1R/RhUpnybYIH2UQBEUELrOpozi9plmGHePod1iCFsihf3XNt5UoqMHtuOww
+ 1Ah8nKUyFIL7JiDNfcsOYTeLy8ziuiWILUgKcdj4YIXNRQq4RbmRjuaxp4C0qMnH7giu
+ RDVuTo3ZGElQa9B7n1AHV6KVXk4YuGN42Jf6PuLhUW4uIn/MAoQWRR/VWTpS/J4OCIlG sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tyw7fr4mw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 18:18:42 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39QIFSE5023224;
+        Thu, 26 Oct 2023 18:18:42 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tyw7fr4mh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 18:18:42 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39QHUSVr026878;
+        Thu, 26 Oct 2023 18:18:41 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsyp7y0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 18:18:41 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39QIIehY64487752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Oct 2023 18:18:41 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9DD358056;
+        Thu, 26 Oct 2023 18:18:40 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17B2858052;
+        Thu, 26 Oct 2023 18:18:40 +0000 (GMT)
+Received: from [9.61.161.121] (unknown [9.61.161.121])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Oct 2023 18:18:39 +0000 (GMT)
+Message-ID: <425ba458-3eba-4742-930d-1248be2c2cd3@linux.ibm.com>
+Date:   Thu, 26 Oct 2023 14:18:39 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] s390/vfio-ap: improve reaction to response code 07
+ from PQAP(AQIC) command
+Content-Language: en-US
+To:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com
+References: <20231018133829.147226-1-akrowiak@linux.ibm.com>
+ <20231018133829.147226-4-akrowiak@linux.ibm.com>
+ <0bed3d29-7fb1-d56d-5f12-e2010ae7d97f@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <0bed3d29-7fb1-d56d-5f12-e2010ae7d97f@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sB2KYg-oJIwPyNuaaK5HFwsVLqWdNtpy
+X-Proofpoint-GUID: Qd7b1hmbPOGqG2axWloFvVZO9-_qCLyz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_16,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 clxscore=1015
+ impostorscore=0 suspectscore=0 phishscore=0 mlxlogscore=945
+ lowpriorityscore=0 mlxscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310260158
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix line break at priv->rx_buf[priv->rx_idx] to increase readability.
 
-Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
-Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
-Transferred this patch over wlan connection of rtl8192e.
----
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index d2a8a9543579..995daab906c9 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -1610,8 +1610,7 @@ static void _rtl92e_rx_normal(struct net_device *dev)
- 		skb = new_skb;
- 		skb->dev = dev;
- 
--		priv->rx_buf[priv->rx_idx] =
--								 skb;
-+		priv->rx_buf[priv->rx_idx] = skb;
- 		*((dma_addr_t *)skb->cb) = dma_map_single(&priv->pdev->dev,
- 							  skb_tail_pointer(skb),
- 							  priv->rxbuffersize, DMA_FROM_DEVICE);
--- 
-2.42.0
+On 10/26/23 10:15, Matthew Rosato wrote:
+> On 10/18/23 9:38 AM, Tony Krowiak wrote:
+>> Let's improve the vfio_ap driver's reaction to reception of response code
+>> 07 from the PQAP(AQIC) command when enabling interrupts on behalf of a
+>> guest:
+>>
+>> * Unregister the guest's ISC before the pages containing the notification
+>>    indicator bytes are unpinned.
+>>
+>> * Capture the return code from the kvm_s390_gisc_unregister function and
+>>    log a DBF warning if it fails.
+>>
+>> Suggested-by: Matthew Rosato <mjrosato@linux.ibm.com>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> 
+> Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> 
+> I went back-and-forth on whether this should be a stable/fixes candidate but I think no...  I happened to notice it while reviewing other code, I'm not aware that it's ever created a visible issue, and it's on a pretty immediate error path.  If anyone thinks it should be a stable candidate I have no objection but in that case would suggest to break the patch up to separate the new WARN from the fix.
 
+Nothing has ever been reported and is probably very unlikely to be 
+reported; so, I agree it should not be a stable/fixes candidate.
+
+> 
+> 
+> 
