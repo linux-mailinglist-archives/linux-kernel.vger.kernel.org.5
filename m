@@ -2,196 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366597D8767
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BA97D876A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbjJZRPc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 13:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S1345336AbjJZRRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 13:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZRPb (ORCPT
+        with ESMTP id S229668AbjJZRRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:15:31 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F55C10A;
-        Thu, 26 Oct 2023 10:15:29 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5841a3ffd50so174549eaf.1;
-        Thu, 26 Oct 2023 10:15:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698340528; x=1698945328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Up6fdmcUMJ09KM7otXvgcP25XHUs8+A2jrqzwBf5Mfw=;
-        b=GiZ70PA//Xb3hmuuc+VT3V7pxaaof34F/5fMS8rWBdcbqGEQ09fUpNX5M+9u13swjo
-         AVlP5M1cN5o0dqYpvhF687Q/9DXKAuijwgEmltQisUZr8vBFzCDyFrkFn9sBe6sVXx1K
-         JM8IxmcEpwHlAWDQXpjVptWThqCgTmPcE5WeLUGd2IplYDDooQ7CzGzGArBgcV6Niwzg
-         PT4x+UPsbmffQGP+FbOpyyB3cjI9ZKL++vaLOizvJk5gd6z6lmduwQTQ5ymQ8GS0mdf2
-         o4R8JWVtkP1m60lfuNaD1xioYvClnxYWbH9FwManStM+rJK5ycHsq8JvvThCcLHGjq+O
-         TIdQ==
-X-Gm-Message-State: AOJu0YyK7d17qm9+wpIr949ehtbEJZvgBI7KxTwMby7tAIpTRPpbU72B
-        /WDZX7CEclvh/91/lRD19iuwnOsQ5QtWzOnt8qE=
-X-Google-Smtp-Source: AGHT+IEFceGpeQGoC99bHruICVELRYth0GU0/hl0sLKa7uD4FQeT50X6SNAWxLLrIslty14tZw5AVDBGlRL6WncrRDM=
-X-Received: by 2002:a4a:d68a:0:b0:584:1080:f0a5 with SMTP id
- i10-20020a4ad68a000000b005841080f0a5mr75517oot.1.1698340528546; Thu, 26 Oct
- 2023 10:15:28 -0700 (PDT)
+        Thu, 26 Oct 2023 13:17:04 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605FA1A1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:17:02 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QDiARX001586;
+        Thu, 26 Oct 2023 17:16:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=5HK8VrtxHIRyYi2wUCbfDfVxMeUeSAxNXyijP+8R/4k=;
+ b=hd6yz7CQnXpk0iald2bfMwYTKBHjNO8tMOc+h0tN8ITXkmLo+lG8o0qLShdA/VdKCtiL
+ FQ9zbhX+VXbN64bk99vqrMON8OeLUSmYCzwuxIst2ytyODRJi4dSzgy731IludzluqEA
+ tcOYsegdIDP4dInbX0+K7M9WmUnb0vrBhoPzkILhQIDNiJiC+I/jyDkGrlw5LkmtNq/t
+ E+raDvgcG8FMKqC9iupbXRq1wghbVDLvb4Z94phrEHMfwBI9QDyWpNqO7vfr/4ZF9gZe
+ d/HN2gLeb7NQx8McJiShoMYAS/7w0dq0kOgXLfKQop4wprotir0Xu2DmIwPcqQPDuc0x lg== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv6pd3paa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Oct 2023 17:16:42 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39QFrZgb031147;
+        Thu, 26 Oct 2023 17:16:41 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tv53f0ta2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Oct 2023 17:16:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SOAWtmZlojZihhnSYNDRuHAPHi0FHc0p6Pqne+SJ3wvH9ml2cUr3HeDcUcVA77DlERIAC8xtCum6rtj8+ME/H0oMSEgHzjSIL/z7dJUk7q9v6EhZYdcOrHWqSaxHB1kjxdf/EKOJs8+xfUTBOSrvyKzEehMhDdNEyuquMT//A/V6HNg2wXEMJMX4A7/WENdLKC/PadZ4LVgeKym4NSGLQH7j4g1aQXddkYUHE1fM0xyEzgFu3vF5BuAD2CJ/EvpzIcIY5Gjy+Zmo5MYC4fTgh/hWtcee9SgFfFHeZHG/AxebMkerJG/ffgZaLx4aFYoLcCulYxar609193tQCLTbew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5HK8VrtxHIRyYi2wUCbfDfVxMeUeSAxNXyijP+8R/4k=;
+ b=Vrf8Nqp3E0Noa5TtBFyyhes1V5NNpRUpMJcTkRlI0MjaerBzgeJCP2YxTRNUaQB5qtje5/Rb18lABtlGbwRU0o3kG0dllhcvF3IKBkKJhmN/iHqmJRCDHucnl7/gt0/DB8Wew49hzqyawpK9rEpFbbk+KtHDthrSfsG+ShUMw/hpfTB52yL3ye0ocmGUwiE6Fw6sZNzX19RVFM3Y0tLmnZoUOVa5IGrn6iZu0qjKEsu3+tXwqdaUW9ytd0O3nFRSmBQJD206J58Rdnqysw440ebPHWoChA1HUcDd6Rw5xGPmYHxJkE7wBl3lY5aj5FRe1si0ad2RvM3MWGR8kIqzuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5HK8VrtxHIRyYi2wUCbfDfVxMeUeSAxNXyijP+8R/4k=;
+ b=b75AM3iI4bUqmzV6llhjWCayLu0PYnYy1J26GV0OhMw/gD5iXJKulyvc8BrXskzTw3TaHITO/xORXr2gWqPvWP47w5MBaUTxAtmake61HHyFWmJuB+U+J7riwI6mgNTqrGd16MixbHEido1EmaH9HPH53NsRUZVPzgrE+tzMedw=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by PH0PR10MB4485.namprd10.prod.outlook.com (2603:10b6:510:41::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
+ 2023 17:16:38 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6907.025; Thu, 26 Oct 2023
+ 17:16:38 +0000
+Date:   Thu, 26 Oct 2023 13:16:35 -0400
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] maple_tree: use preallocations in mas_store_gfp()
+Message-ID: <20231026171635.3xmpba2cuzjhkcxg@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231009201639.920512-3-sidhartha.kumar@oracle.com>
+ <202310251706.6e6f6c4a-oliver.sang@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202310251706.6e6f6c4a-oliver.sang@intel.com>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT1PR01CA0112.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::21) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
 MIME-Version: 1.0
-References: <20231026170330.4657-1-mario.limonciello@amd.com> <20231026170330.4657-2-mario.limonciello@amd.com>
-In-Reply-To: <20231026170330.4657-2-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 26 Oct 2023 19:15:17 +0200
-Message-ID: <CAJZ5v0hgvm17dsmf1Bv_k0+HdQ-NKGETx1P6heV5bBz_zMYUcg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] x86: Enable x2apic during resume from suspend if
- used previously
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|PH0PR10MB4485:EE_
+X-MS-Office365-Filtering-Correlation-Id: 261613a6-b912-4b9e-8df7-08dbd647502e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3oBd8TS6MKpgQfAafa314Ce7qbIZar2Z0wLecmfEnrIb2c3IWfeOa2UP1OhD+DONRa6AOFUuxP3BOIEm6bjDMYxDVHsPvbFqxeXNi2AAtu3I6SdaCjZrNh/9tlSuW1tRqnuiDltKy43H//NHSXY0pcR61f/LFymkOJitat/me8Mu8tfAbYXbbtUgzmRBMOG/NMUBc3L4r035KGsVV9vF6V0fZtCCmPuUt+5qY5J6Bq3vg+3S3nuftSZVAc+1NfMI4Hi/CJokPPDY3iHHfGN3o05pV6u8C7xH9991VNLyHyKQMyqZehI7HBOUPm5KQ45feO2YNFwZaiDUi8edRspu6EiKxxI5WvIulxTnsDEbWJMEKOPejiI6w6mTCjK0UqDfOdgnGlmcvyCZcT1yXLJNhsguyraMgNy7wOGooDo2+0tjDU2Lnjz/5ltfU405N+lFvdeMcmKD/zU5yBkWixl48XIvF09ynuwxoyTJIR6qOvowVyPumU1AtI7t2vFMtvKMaTbmEdG77QYEU5FSgDd5oka3lx5tSIkUiDZ9cdRicQlMAw7+Eb7THmqDSa81SJj4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(346002)(396003)(366004)(376002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(8936002)(8676002)(6486002)(4326008)(41300700001)(478600001)(66946007)(4744005)(2906002)(316002)(86362001)(66556008)(6916009)(66476007)(5660300002)(9686003)(33716001)(6666004)(6512007)(38100700002)(6506007)(26005)(83380400001)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zOl8njc70KH0D6OdmIsNzOZ4eumDD+uEw8tcFkFDUFspfeEL2H9Cw37QCc7y?=
+ =?us-ascii?Q?hOdrP+1FGk7w2cvPMLZAP/QPYSqRRfRSk16y4n9ofi8rkUo1r1B+xUPZBJB2?=
+ =?us-ascii?Q?H4uU6IllOPuqhI/P+pilJlt2d0jgZw+bMY1mj3KBpAaXBwaFAAWBw/YVGcAK?=
+ =?us-ascii?Q?ptWb8eufB1O/psciyJgWJ7y6Pe04ufrRTVnxbtkEpuE2pbcrpmYKiju7poRp?=
+ =?us-ascii?Q?kO11n8LKDJuhq1KWsoBQadXBkcJqOzzU/iFNGc6jlReTKJF8RiAtj0oth9cW?=
+ =?us-ascii?Q?w83nlYl0Y+njqJCZLgFLmTpkDj/DkdxyReqExaKv+nyLpxJVjmvKNWFKhHz7?=
+ =?us-ascii?Q?2G9c8Oj9OgnjJVs8TyDSAgzFkUPln8yeUliJdFBcvmMSNdOHyqE3EkKk+4rv?=
+ =?us-ascii?Q?oT5NV/59he6ubXF4xCPfd3OVRgzH6IIMdnOrLPFyaWkjkaCVTbS6wX3bgDJC?=
+ =?us-ascii?Q?9LTpGqnGwT48d2//vNovuIBhrt1sUhl/7ViBpC7eJsRdIHJpegOrOeQ6AcXj?=
+ =?us-ascii?Q?d6lnHIHNJPm8Q5MJVwmS2LzSGp6KwRPGbJuyTTF8xt08X4mwHePG1p+hGIUY?=
+ =?us-ascii?Q?9bb1qphK9qRXdgaB2JH7zRFf8UKngRiQHIJ0QqJYki1rR23bDTOLj6PIUier?=
+ =?us-ascii?Q?TOibYAfu6QsdizYDa/9vrbZpVmUgWcQJ/C7/mS67Sq8lGDzcS5TaifndOZmZ?=
+ =?us-ascii?Q?ZiXrG7Je1DAZfLPw/TljSxJW9A6hrKsKjch15sMLMOakNxXqeFXKFoNogrZr?=
+ =?us-ascii?Q?pMpXl8dF8ZJ5dEDJQLGt/qd6nQJVlFINIhYLcfX7konENoePj0765qg+2w96?=
+ =?us-ascii?Q?WyZ9NQSf9ZKi+kyjaAXbstXTgbKCszZoN7fAOKSC6/VuWeiw0emfRrhnmyyW?=
+ =?us-ascii?Q?BOla1qsMh34GUeKECvJBzMQklhqj3uiQ9gb/Ag/Cxuc3+EM3Y2ShEweSR6Cs?=
+ =?us-ascii?Q?jUZ2OxFFxvF3DoDH6zsSHyvs95sbAHtpZgeCebjPOsqiooH75+b0hmnzX1g2?=
+ =?us-ascii?Q?vHeceRX9KXNJNIOqG4FhLWMZeeqxX+dVYMbPEU1cTa07klT/ctTbxC3JoqjY?=
+ =?us-ascii?Q?WH3DmoZT9lgmD6gktuu5IEatyHIFABbXmMW29sytphAnGOxPPuDUCAOf1yTQ?=
+ =?us-ascii?Q?I5U/2LgcwLAgllyFldF+04Q9RVxi6ZTRNqIROKirt+qtmpsCIoVlh9jtK7yD?=
+ =?us-ascii?Q?P9KsDRyjklmsCfMv5gz2CqPn+US+GohhiguIuvRFOFbs+V7gJ7cb+mvwVd6S?=
+ =?us-ascii?Q?ZBHPX4onUpKfNgeJ7SwQxvzPd02cro8Oe5tEOzjEVWyiiU4KmPRUrjUUQ2Bn?=
+ =?us-ascii?Q?UO32R+9dCC2LKlPkQbbia1Pbk3Tla62YWlpW9Ypmox9atUEiJZU/c0kmibsv?=
+ =?us-ascii?Q?c5lAFC9cJkHxY759tTz9Q+fnCBafft0YoiAA+UAWbv0D7XXAWbJYp3bNsO2B?=
+ =?us-ascii?Q?rwwv2mQNasnctSAEp0lOsfm2ISNSgC01co1p7olWwO+xmUZ3PR003BCnWbqQ?=
+ =?us-ascii?Q?cuCnd8XAwr07uT+ZERYvt62KIBX6BrgliRRevIOMaX2RjnmNKIxlEgL6cfl2?=
+ =?us-ascii?Q?Pu91gPxZbrod6TWAet4elxGR7YXdSUcO322SXZHN?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: LpP5ihQGgjKIILbWTS0I0ZpS4/rTYBDgKRnrB8hx7blmjWgczj0+6xUPsmbnvwBQ12U0LybfDgTL5HiuM/PkKgSK2vy6r3NCgPaRhOzNRAWL70jlf70JU0T46G2/FKHm1dUoPTThUFouQuAlQMLQsm+FXnCKovpJuSrORS4qQ5tpmzqEB7sL4Scn1/UfvDOSuipdeyHNwQZ5bVfADsEblnrwNdMWa0BbWloI4Sx+jyPTvBMitejh/iQ9DMkoUjZzGQ0wBle5CsOxAczHiBFn2FRWqZ0u3m5e8e8tolAguH3qmXBr9pm7l/OrVJLQWLPXd6F0rUCZPCt+oAjoDx+iDUr27CY0czyODwDAAubeRQkr7tK9uzcgg/KU9jSl7oHdegGI8O/LzuV3wGjarFIXesBZVoCWAUvXCF53RR3urjvTnYQXg8dsQrqyWPkb3zbrBNZ5/Y963+Kqaib5sddKFS/DGtACnbq3w2CGkXaW4xgQz+7yukP5et1bBpuPgM34KDHKg0L9wbSW0meOtogu6FryNe/vTJ1fpdaQQ2y3KdHN8ZJoFB7WcuVtsQqOE6Z9l6qVMqk8S2jDaglx73mZ+4e6M/Gwv/6HOW270A1DlrtIG7b8jhFIE7SnqKL9eGH+pw3y/CuaYaatJPKZ5bBqRBjI+qL7rQ+ih9Ype+Mpyc1uBB5MW7hBrvoZMtz2QD5f8WilG1rV18ijB3iEb76HlAMlTgeR9Mys+3HOehFV7Kg3E6ehm42bHK8T8fL6ta40Ozxhp0gdM9zv+GhGMilGoznqUgG0lzWZWo+T/1/I9josBRk69BU4NYGWaHBkRtJ7y6baRtb1AUxmah6lD1d+NGVsRZvDbZfhvXAndUoz39mw04MnNVPiz5jXPVRmvY+5LpUqgCwtlxbumJq8GjD8sGsP1nC8l8cl9gYd3E8PSAA=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 261613a6-b912-4b9e-8df7-08dbd647502e
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 17:16:38.2472
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QeQvaKP3C5vnl0KFlCimNBA74xrV5d6hxgxY6WjLGw7GEK2+HKAmNY3iCEfx/r9q8yNfhfU1TIM5IfGemdJMaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4485
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_16,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 adultscore=0 mlxlogscore=556 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310260150
+X-Proofpoint-GUID: C7za1PVnMLLN_b64UA0LStv_rIxXPLjQ
+X-Proofpoint-ORIG-GUID: C7za1PVnMLLN_b64UA0LStv_rIxXPLjQ
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 7:03 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> If x2apic was enabled during boot with parallel startup
-> it will be needed during resume from suspend to ram as well.
->
-> Store whether to enable into the smpboot_control global variable
-> and during startup re-enable it if necessary.
->
-> This fixes resume from suspend on workstation CPUs with x2apic
-> enabled.
->
-> It will also work on systems with one maxcpus=1 but still using
-> x2apic since x2apic is also re-enabled in lapic_resume().
->
-> Cc: stable@vger.kernel.org # 6.5
-> Fixes: 0c7ffa32dbd6 ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and enable it")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+... Dropping direct Cc's in attempt to avoid even more noise.
 
-> ---
-> v1->v2:
->  * Clarify it's in workstations in commit message
->  * Fix style issues in comment and curly braces
-> ---
->  arch/x86/include/asm/smp.h   |  1 +
->  arch/x86/kernel/acpi/sleep.c | 13 +++++++++----
->  arch/x86/kernel/head_64.S    | 15 +++++++++++++++
->  3 files changed, 25 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index c31c633419fe..86584ffaebc3 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -190,6 +190,7 @@ extern unsigned long apic_mmio_base;
->  #endif /* !__ASSEMBLY__ */
->
->  /* Control bits for startup_64 */
-> +#define STARTUP_ENABLE_X2APIC  0x40000000
->  #define STARTUP_READ_APICID    0x80000000
->
->  /* Top 8 bits are reserved for control */
-> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> index 6dfecb27b846..10d8921b4bb8 100644
-> --- a/arch/x86/kernel/acpi/sleep.c
-> +++ b/arch/x86/kernel/acpi/sleep.c
-> @@ -11,6 +11,7 @@
->  #include <linux/dmi.h>
->  #include <linux/cpumask.h>
->  #include <linux/pgtable.h>
-> +#include <asm/apic.h>
->  #include <asm/segment.h>
->  #include <asm/desc.h>
->  #include <asm/cacheflush.h>
-> @@ -129,12 +130,16 @@ int x86_acpi_suspend_lowlevel(void)
->          */
->         current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
->         /*
-> -        * Ensure the CPU knows which one it is when it comes back, if
-> -        * it isn't in parallel mode and expected to work that out for
-> -        * itself.
-> +        * Ensure x2apic is re-enabled if necessary and the CPU knows which
-> +        * one it is when it comes back, if it isn't in parallel mode and
-> +        * expected to work that out for itself.
->          */
-> -       if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-> +       if (smpboot_control & STARTUP_PARALLEL_MASK) {
-> +               if (x2apic_enabled())
-> +                       smpboot_control |= STARTUP_ENABLE_X2APIC;
-> +       } else {
->                 smpboot_control = smp_processor_id();
-> +       }
->  #endif
->         initial_code = (unsigned long)wakeup_long64;
->         saved_magic = 0x123456789abcdef0L;
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index ea6995920b7a..300901af9fa3 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -237,9 +237,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
->          * CPU number is encoded in smpboot_control.
->          *
->          * Bit 31       STARTUP_READ_APICID (Read APICID from APIC)
-> +        * Bit 30       STARTUP_ENABLE_X2APIC (Enable X2APIC mode)
->          * Bit 0-23     CPU# if STARTUP_xx flags are not set
->          */
->         movl    smpboot_control(%rip), %ecx
-> +
-> +       testl   $STARTUP_ENABLE_X2APIC, %ecx
-> +       jnz     .Lenable_x2apic
-> +
->         testl   $STARTUP_READ_APICID, %ecx
->         jnz     .Lread_apicid
->         /*
-> @@ -249,6 +254,16 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
->         andl    $(~STARTUP_PARALLEL_MASK), %ecx
->         jmp     .Lsetup_cpu
->
-> +.Lenable_x2apic:
-> +       /* Enable X2APIC if disabled */
-> +       mov     $MSR_IA32_APICBASE, %ecx
-> +       rdmsr
-> +       testl   $X2APIC_ENABLE, %eax
-> +       jnz     .Lread_apicid_msr
-> +       orl     $X2APIC_ENABLE, %eax
-> +       wrmsr
-> +       jmp     .Lread_apicid_msr
-> +
->  .Lread_apicid:
->         /* Check whether X2APIC mode is already enabled */
->         mov     $MSR_IA32_APICBASE, %ecx
-> --
-> 2.34.1
->
+* kernel test robot <oliver.sang@intel.com> [231025 05:52]:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "BUG:sleeping_function_called_from_invalid_context_at_include/linux/sched/mm.h" on:
+...
+
+This patch set is being revised and discussed on how to make it a more
+complete solution.
+
+In the mean time, is there any way to stop the bot from emailing
+everyone and burning more power?
+
+Thank you,
+Liam
