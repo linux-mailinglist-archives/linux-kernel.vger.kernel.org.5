@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD36B7D85AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1DB7D85AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345396AbjJZPMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S1345407AbjJZPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbjJZPMO (ORCPT
+        with ESMTP id S1345390AbjJZPMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:12:14 -0400
+        Thu, 26 Oct 2023 11:12:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B431AA;
-        Thu, 26 Oct 2023 08:12:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28133C433C7;
-        Thu, 26 Oct 2023 15:12:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A251AB
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:12:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 124EFC433C8;
+        Thu, 26 Oct 2023 15:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698333132;
-        bh=cxODEnMO4778yY18WaIb5R8VLHNJEiwUh5aRzxmJgNc=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=At/OXXwcPSr7L5TiGR9U+5gydhYj7ahmCUdWL/Xstax0T8JOoqYsL243KzWxAG+zC
-         WqMB7ebYD2nV7xOVIXthxnYGCyoczvhy8i2slBEs04ZCpwc0oi7UAUeU/QdfYHBOOu
-         CSxn8/JWdvHg7B12oUUpJeuiGTg508YOVawrl0vNBkoZd8XYl4FxEKM+Us5GiytmM3
-         8bLUEx4xZHE0NDIBSJEsJz4P3AeNNvfOOESZO8ysbISeCQb09vqAJMEWPhwDOnv139
-         EH6m7u87kR8gEENrqAumKuLshQiC/UF6NHAGz93TilvoHXQIApdLCAGm0nRmdEuZ/Z
-         Q0rL2hTSpqB1A==
+        s=k20201202; t=1698333134;
+        bh=TI0/EViWn+QYi6nNh367rfBcGpgqIjH1+F4SEmPMVXo=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=RTAuC68CAyw810g+HHd7082URkfHzlAoB7K9N0r+Ru9YrD3GfZgYCAnb6XW2kv0Nl
+         BXYuEdJ8M29jGohBpmVqV51t8AOH5rnPTb3gNHsrmhniAOhAX62GKbtFZvnMh0X+m+
+         B/vhsYa4vpxY8ZFXpb72NI8Gzj+S93tN0HBaeNeYhR6hKsR2UaxkZHROoCyYyNdc7T
+         GkgknSV+M6F9Qrwv6i7qeaR0byCgDO4au34byi30hyUsnaCPeEpDCQzccf7Ha76P0r
+         md14bdq0BeXcXp+kyqkKiyr6DNNnhtcTUW46CPP9yAV0POgj5yBH+LCp84yzkhIysM
+         fbmsVEs1o6LTg==
 From:   Mark Brown <broonie@kernel.org>
-To:     cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
-        Su Hui <suhui@nfschina.com>
-Cc:     zhangyiqun@phytium.com.cn, amadeuszx.slawinski@linux.intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-In-Reply-To: <20231020092619.210520-1-suhui@nfschina.com>
-References: <20231020092619.210520-1-suhui@nfschina.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: add an error code check in
- skl_pcm_trigger
-Message-Id: <169833312844.133649.16742223419669591458.b4-ty@kernel.org>
-Date:   Thu, 26 Oct 2023 16:12:08 +0100
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231019144108.42853-1-krzysztof.kozlowski@linaro.org>
+References: <20231019144108.42853-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs: wcd938x: use defines for entries in
+ snd_soc_dai_driver array
+Message-Id: <169833313276.133649.3664120134410239820.b4-ty@kernel.org>
+Date:   Thu, 26 Oct 2023 16:12:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -56,11 +53,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 17:26:20 +0800, Su Hui wrote:
-> skl_decoupled_trigger() can return error code like -EPIPE if failed,
-> add check for this.
+On Thu, 19 Oct 2023 16:41:08 +0200, Krzysztof Kozlowski wrote:
+> snd_soc_dai_driver array in wcd938x driver has two entries whose order
+> must match order of wcd938x->sdw_priv array.  The wcd938x_bind() and
+> wcd938x_codec_set_sdw_stream() rely on this order.  wcd938x->sdw_priv
+> array is indexed by enum with AIF1_PB and AIF1_CAP, so use the same
+> defines instead of raw numners for snd_soc_dai_driver array.
+> No functional impact.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -68,8 +69,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Skylake: add an error code check in skl_pcm_trigger
-      commit: f5c7bc7a1fad4e1e8d3d29d71dd9f430a3350f42
+[1/1] ASoC: codecs: wcd938x: use defines for entries in snd_soc_dai_driver array
+      commit: 7618ab524935667699afed76fb83bc9bb38710ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
