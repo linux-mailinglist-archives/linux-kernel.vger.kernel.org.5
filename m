@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B95B7D7AB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C977D7AC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjJZCLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S234431AbjJZCQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZCLG (ORCPT
+        with ESMTP id S233152AbjJZCQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:11:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DD5132;
-        Wed, 25 Oct 2023 19:11:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2941BC433C7;
-        Thu, 26 Oct 2023 02:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698286264;
-        bh=R2ZbMNpdOpfJaB62Jul1L9JZ9xwhe/4teAKNNVrfx28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OyAHD95fdOd+HAODdk/x8mwrujgZx5m6WQ0k89PXxYbVg26EbQKU22QMamEBa+EES
-         EBYIVRCNxyEPKUGhy7VIB8VEvQ89wGVylsl4exapIO2q+2zmDfDFrEAVnV79jpmZ2a
-         zT3OxtWlNZ05dvR6MmyVfwfkNlwdPpnQVnE4s16bMo39M1/ulQSXjNnJBffcWDX5iV
-         V1lwX0dU26CjhMSDm4jdlqyEIyHCpsXW+CphcaTEPnB0ElzkZykAD6WCwA/eUUADRT
-         5uSddfKca0f1NMh6OOJZYBiwl/T/1wClk1pkTFJqZr9AWiTRbDDZF8vrNsWLTd+Mw0
-         wgNdX1Pk0FkWA==
-Date:   Wed, 25 Oct 2023 19:15:21 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>, agross@kernel.org,
-        conor+dt@kernel.org, dmitry.baryshkov@linaro.org,
-        jonathan@marek.ca, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        quic_tdas@quicinc.com, robh+dt@kernel.org,
-        vladimir.zapolskiy@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3.1 3/4] clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC
-Message-ID: <htdwp25oqvy6vmp6ff2z7ycmckvem2ejhitqonjgfzinqv5nds@rlfuary2ouc3>
-References: <20231023153821.189331-1-bryan.odonoghue@linaro.org>
- <20231023153821.189331-4-bryan.odonoghue@linaro.org>
- <aef93a48cf270d5078ccdc39d95113a4.sboyd@kernel.org>
- <866d5582-a4e2-4b98-a291-6e41939bd9f3@linaro.org>
+        Wed, 25 Oct 2023 22:16:39 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4C712F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 19:16:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=mengferry@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VuvzTZ6_1698286588;
+Received: from localhost(mailfrom:mengferry@linux.alibaba.com fp:SMTPD_---0VuvzTZ6_1698286588)
+          by smtp.aliyun-inc.com;
+          Thu, 26 Oct 2023 10:16:33 +0800
+From:   Ferry Meng <mengferry@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ferry Meng <mengferry@linux.alibaba.com>
+Subject: [PATCH 1/2] erofs: get rid of ROOT_NID()
+Date:   Thu, 26 Oct 2023 10:16:26 +0800
+Message-Id: <20231026021627.23284-1-mengferry@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <866d5582-a4e2-4b98-a291-6e41939bd9f3@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 10:40:04AM +0100, Bryan O'Donoghue wrote:
-> On 24/10/2023 01:34, Stephen Boyd wrote:
-> > Quoting Bryan O'Donoghue (2023-10-23 08:38:20)
-> > > diff --git a/drivers/clk/qcom/camcc-sc8280xp.c b/drivers/clk/qcom/camcc-sc8280xp.c
-> > > new file mode 100644
-> > > index 000000000000..0631bd5fad57
-> > > --- /dev/null
-> > > +++ b/drivers/clk/qcom/camcc-sc8280xp.c
-> > > @@ -0,0 +1,3048 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> > > + * Copyright (c) 2023, Linaro Ltd.
-> > > + */
-> > > +
-> > > +#include <linux/clk-provider.h>
-> > > +#include <linux/err.h>
-> > 
-> > Is this include used?
-> > 
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of_device.h>
-> > 
-> > Should be mod_devicetable.h instead?
-> > 
-> > > +#include <linux/of.h>
-> > 
-> > Is this include used?
-> > 
-> > > +#include <linux/pm_clock.h>
-> > > +#include <linux/pm_runtime.h>
-> > > +#include <linux/regmap.h>
-> > > +#include <linux/pm_runtime.h>
-> > 
-> > This got included twice.
-> > 
-> > > +
-> > > +#include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
-> > > +
-> > > +#include "clk-alpha-pll.h"
-> 
-> You're right, I didn't scrub the autogen headers.
-> 
-> Update sent as v3.2.
-> 
+Let's open code this helper for simplicity.
 
-Resubmitting one of the four patches as 3.2 confuses both me and the
-tools. Please send a v4 of all 4 patches instead.
+Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
+---
+ fs/erofs/internal.h | 2 --
+ fs/erofs/super.c    | 6 +++---
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-Regards,
-Bjorn
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 4ff88d0dd980..ca7d85958450 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -228,8 +228,6 @@ struct erofs_buf {
+ };
+ #define __EROFS_BUF_INITIALIZER	((struct erofs_buf){ .page = NULL })
+ 
+-#define ROOT_NID(sb)		((sb)->root_nid)
+-
+ #define erofs_blknr(sb, addr)	((addr) >> (sb)->s_blocksize_bits)
+ #define erofs_blkoff(sb, addr)	((addr) & ((sb)->s_blocksize - 1))
+ #define erofs_pos(sb, blk)	((erofs_off_t)(blk) << (sb)->s_blocksize_bits)
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 3700af9ee173..019229eb2ef6 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -724,13 +724,13 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	xa_init(&sbi->managed_pslots);
+ #endif
+ 
+-	inode = erofs_iget(sb, ROOT_NID(sbi));
++	inode = erofs_iget(sb, sbi->root_nid);
+ 	if (IS_ERR(inode))
+ 		return PTR_ERR(inode);
+ 
+ 	if (!S_ISDIR(inode->i_mode)) {
+ 		erofs_err(sb, "rootino(nid %llu) is not a directory(i_mode %o)",
+-			  ROOT_NID(sbi), inode->i_mode);
++			  sbi->root_nid, inode->i_mode);
+ 		iput(inode);
+ 		return -EINVAL;
+ 	}
+@@ -760,7 +760,7 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	if (err)
+ 		return err;
+ 
+-	erofs_info(sb, "mounted with root inode @ nid %llu.", ROOT_NID(sbi));
++	erofs_info(sb, "mounted with root inode @ nid %llu.", sbi->root_nid);
+ 	return 0;
+ }
+ 
+-- 
+2.19.1.6.gb485710b
+
