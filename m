@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E034A7D891C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FECA7D891F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjJZTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S1344764AbjJZTqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbjJZTqU (ORCPT
+        with ESMTP id S231889AbjJZTqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:46:20 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55871AA;
-        Thu, 26 Oct 2023 12:46:18 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d12b3b479so8460676d6.1;
-        Thu, 26 Oct 2023 12:46:18 -0700 (PDT)
+        Thu, 26 Oct 2023 15:46:40 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EAA1B9
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:46:37 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507c1936fd5so2783923e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698349578; x=1698954378; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9lSRSH0mhmv3CjgtXU9+F7JtvOpTShfmc4Bl2fP9hZQ=;
-        b=XB/H64jN68FxP+alhxrGgD+DtA19GZDLlspB5mMpIJ/+ENYRFxsOlgHEMTa9hUgyq7
-         MW3oIuZbuAbMbDIxypxkKRxQOw9bJ0BbCYMjrQVN0TILwb0z2w6gdslOLRDYx/5Lm/59
-         KV0yIu1IxYLJMGYY6BMRGeyyjZfBHJ/JDYsW/x06A65ziDheWWAAPfUF3mXkcz72Kpkl
-         hOBrRttO5pdyOjUlN2O1M8Y8N6YJAU7ACxEZBUaVpJx3GEYvd6FzjpUsuZ7ctcPA0VRR
-         3ASfHXmfSrfdFH8p2x2MfszE/p70WLmyONY2JSSY9OgC9xLkxm3vOsbNyKYpVO79BvSq
-         lZcg==
+        d=linaro.org; s=google; t=1698349596; x=1698954396; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jowQ11rUSpjVGyVsG2uzn3kgeh+2aiSTzmMO92O6Apw=;
+        b=WFz+R3+i2HwpbhhtQ5TGU2kyH2vrdkoAU5KjG6FBfp3eJQ7upmS20eHynyuUa6p4wN
+         4RGoqHYHhGZ5IdLEdG++E7uC7GEXnKNbnNkE436Zuq/CZHRqJhXAhfPLpTDPieguiVSW
+         BWsUM2XnPMvwzyOFuCOlVLyUIND8TJlgH1mNygl2CtnhMkHpbVH5oNWU1qz9gk1zyPtE
+         WwWo9YYQbdiVoSmJtnIdJcN3tfFD5sQpEeZtETPgCPTmJB4sPtBCyAGdyM7tHDhNvL6x
+         5fnTWFnXPz2mw7T4TTHAbZ0Y0+PGVT4o3dc4Z65d4ScmiKgN6Jcz8iosxgc0fSP4ngnh
+         4bTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698349578; x=1698954378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9lSRSH0mhmv3CjgtXU9+F7JtvOpTShfmc4Bl2fP9hZQ=;
-        b=T2m2Ke0JGvodiZt5pI3lsudOsMSjJLAu5VMtEQcoVCYeKnmawodEbJVcnw4BsmIbOU
-         0LQ1Y/hnu208xahRZ0fH53kGYT4e9pu/VNh1AHK57gaQMvYCw52vK4Y19Bx5yX7zhSDG
-         Dg3nxSl4RtEHf2UpMt3niuKrKA6TJL4syCFnI0S2ipCTpwALhRGxxEcdvtrTF7nLHXdk
-         5PPuJ1iR2cO2iUPW9QIULuuhnnBzKVcfR+E1Og9J1bLTcmeOj7vgmiy0MrcRXBEd/f2Z
-         63Y0ScJJXSsEsfXCAaiBkXk8TrHE8AwSuUEl7wKnIXTkWLvIpgQ1QGvISlBFZ81mg9CU
-         dAfg==
-X-Gm-Message-State: AOJu0YzRsQVYxYBAnFTeggkG40sTn7WJkStDcJhsHHO+r0j2Vgg4NMEH
-        ST00JTJnnEQ08BYj9A9Q4u8ez2Jul/9qrmlqGtU=
-X-Google-Smtp-Source: AGHT+IEmarWREXvrbH3L5dUOpWtP7gSzyuNeYnq08iLHmXqfKkFEOdq3D+0jdHX3ciukSyf5b8GXIdf93DsdpcigMP0=
-X-Received: by 2002:a05:6214:76d:b0:66d:1d3f:17d7 with SMTP id
- f13-20020a056214076d00b0066d1d3f17d7mr1004811qvz.8.1698349577784; Thu, 26 Oct
- 2023 12:46:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698349596; x=1698954396;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jowQ11rUSpjVGyVsG2uzn3kgeh+2aiSTzmMO92O6Apw=;
+        b=aXB6N2U+7GUomyfQwftDjaP/N+wc3XIle/1mMzd+lsmu/MaaFSCYMzN6vY/AQ2B9W6
+         cfcgGZ5eLahS+vlgR9XDJAY7Xl/riXRhmxm4vcvOka6w8RhFQmTSs4h7Q7hc8TGKQAws
+         umfybmtA5d3AJTyFajgP/IwrKs6fY1mnGwoiefTbUyBAX43ZC4YQa7fyXOVbmhWE03n3
+         jHB1937DlGzU9LJmsYrgRAGy3WIH3kIxDWap9nJINKmaL2s1k65u6GiaMlUC4KduKUGJ
+         iJR3NooaIGO65AqSPeIx+RKUqyBQDFOr4cAW+MDPcjCuFFE6gGlPQo7q8mFlyai1IFn2
+         4D6g==
+X-Gm-Message-State: AOJu0YxseC8omc6ubF1R5i/ba1dehBMfKu5Xz6nDjaJxioaU7XtWrQku
+        bmTUQGEKF3GeNcuWuCvdWty9cA==
+X-Google-Smtp-Source: AGHT+IEAXIVB5mbCR7PclkPeND1uvH3i5XJyIYmeyAfsCHXbf4KIgbyJXZJAdtdgFvw2zUI9zMphKg==
+X-Received: by 2002:ac2:5ecd:0:b0:507:96fd:e4a9 with SMTP id d13-20020ac25ecd000000b0050796fde4a9mr220274lfq.29.1698349596178;
+        Thu, 26 Oct 2023 12:46:36 -0700 (PDT)
+Received: from [172.30.204.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id s16-20020a056512315000b00507b1b8cef8sm3118728lfi.253.2023.10.26.12.46.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 12:46:35 -0700 (PDT)
+Message-ID: <aeaabcc9-0a7b-4325-851a-09383160ad0d@linaro.org>
+Date:   Thu, 26 Oct 2023 21:46:33 +0200
 MIME-Version: 1.0
-References: <20231026192830.21288-1-rdunlap@infradead.org>
-In-Reply-To: <20231026192830.21288-1-rdunlap@infradead.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 26 Oct 2023 22:46:06 +0300
-Message-ID: <CAOQ4uxhYiu+ou0SiwYsuSd-YayRq+1=zgUw_2G79L8SxkDQV7g@mail.gmail.com>
-Subject: Re: [PATCH] exportfs: handle CONFIG_EXPORTFS=m also
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] arm64: dts: qcom: Add USB3 and PHY support on
+ SDX75
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dmitry.baryshkov@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1696327472-21776-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1696327472-21776-3-git-send-email-quic_rohiagar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1696327472-21776-3-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,69 +79,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:28=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
->
-> When CONFIG_EXPORTFS=3Dm, there are multiple build errors due to
-> the header <linux/exportfs.h> not handling the =3Dm setting correctly.
-> Change the header file to check for CONFIG_EXPORTFS enabled at all
-> instead of just set =3Dy.
->
-> Fixes: dfaf653dc415 ("exportfs: make ->encode_fh() a mandatory method for=
- NFS export")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Chuck Lever <chuck.lever@oracle.com>
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Cc: linux-nfs@vger.kernel.org
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-fsdevel@vger.kernel.org
->
+
+
+On 10/3/23 12:04, Rohit Agarwal wrote:
+> Add devicetree nodes for enabling USB3 controller, Qcom QMP PHY and
+> HS PHY on SDX75.
+> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 > ---
->  include/linux/exportfs.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff -- a/include/linux/exportfs.h b/include/linux/exportfs.h
-> --- a/include/linux/exportfs.h
-> +++ b/include/linux/exportfs.h
-> @@ -314,7 +314,7 @@ extern struct dentry *exportfs_decode_fh
->  /*
->   * Generic helpers for filesystems.
->   */
-> -#ifdef CONFIG_EXPORTFS
-> +#if IS_ENABLED(CONFIG_EXPORTFS)
->  int generic_encode_ino32_fh(struct inode *inode, __u32 *fh, int *max_len=
-,
->                             struct inode *parent);
->  #else
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Thanks for the fix, but Arnd reported that this fix could cause a link
-issue in some configuration - I did not verify.
-
-I would much rather turn EXPORTFS into a bool config
-and avoid the unneeded build test matrix.
-
-See comparison to the amount of code of EXPORTFS
-to BUFFER_HEAD and FS_IOMAP code which are bool:
-
-~/src/linux$ wc -l fs/exportfs/*.c
-636 fs/exportfs/expfs.c
-
-~/src/linux$ wc -l fs/buffer.c fs/mpage.c
-  3164 fs/buffer.c
-   685 fs/mpage.c
-  3849 total
-
-~/src/linux$ wc -l fs/iomap/*.c
- 2002 fs/iomap/buffered-io.c
-  754 fs/iomap/direct-io.c
-  124 fs/iomap/fiemap.c
-   97 fs/iomap/iter.c
-  104 fs/iomap/seek.c
-  195 fs/iomap/swapfile.c
-   13 fs/iomap/trace.c
- 3289 total
-
-Thanks,
-Amir.
+Konrad
