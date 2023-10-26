@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89C87D7A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 03:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937F77D7A7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 03:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbjJZBzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 21:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        id S233132AbjJZBwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 21:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjJZBzq (ORCPT
+        with ESMTP id S229954AbjJZBwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 21:55:46 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B094E115;
-        Wed, 25 Oct 2023 18:55:43 -0700 (PDT)
-Received: from kwepemi500024.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SG80p2JlFzNpB9;
-        Thu, 26 Oct 2023 09:51:38 +0800 (CST)
-Received: from [10.174.179.163] (10.174.179.163) by
- kwepemi500024.china.huawei.com (7.221.188.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 26 Oct 2023 09:55:40 +0800
-Message-ID: <abb15757-cbe6-037f-e8d3-5df9fbbf6c04@huawei.com>
-Date:   Thu, 26 Oct 2023 09:55:39 +0800
+        Wed, 25 Oct 2023 21:52:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8997ABD;
+        Wed, 25 Oct 2023 18:52:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16ECBC433C7;
+        Thu, 26 Oct 2023 01:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698285124;
+        bh=uc68CtG1/PmB2c3+G1qYkLU0G3yZyhKP0af8C+0vViw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lxmqelvna5njSYvzoA0nLw61ngRwVaDSkKEMmQ31gysV354IuujhdYvsfxgjZQRtf
+         rQlsRWasYHtpjz1feinFQgQQGMzFv59do8v+sZGdHUjZJDQlyDQDLD4zdxmSAwYy0a
+         gmHmJaN7WuqWWVSLu4BIsRWvG6Grvp+2URDHBTsrcPbbcJnYRuWe3TnBPnrSfdDkfw
+         VEFT7ueeYf6/o5ln6/chIw8khcNno85bjI+0oTCoTfdcnA3/Gv6CEToqIOYdjo8XD8
+         fVRimjDudHv3U5/qZyjupXEi72XJh4aSjE7k9CmN3HvAbOY3O8/X9oykpCeet0SK8Z
+         NNcn8qoXT4WnQ==
+Date:   Wed, 25 Oct 2023 18:56:21 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     konrad.dybcio@linaro.org, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+Subject: Re: [PATCH 0/2] pinctrl: qcom: Introduce Pinctrl/GPIO for SC8380XP
+Message-ID: <faddmpsixivh3rfbsyvwpkt3mjaempkfdzqws2xjxlyhs5m5pm@7ss2k77rlryk>
+References: <20231025135058.11268-1-quic_sibis@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 3/3] cpufreq: CPPC: Eliminate the impact of cpc_read()
- latency error
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     <broonie@kernel.org>, <joey.gouly@arm.com>, <will@kernel.org>,
-        <amit.kachhap@arm.com>, <rafael@kernel.org>,
-        <catalin.marinas@arm.com>, <james.morse@arm.com>, <maz@kernel.org>,
-        <viresh.kumar@linaro.org>, <sumitg@nvidia.com>,
-        <yang@os.amperecomputing.com>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <wangxiongfeng2@huawei.com>, <xiexiuqi@huawei.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-References: <20231025093847.3740104-1-zengheng4@huawei.com>
- <20231025093847.3740104-4-zengheng4@huawei.com>
- <ZTj1fMsMj-Mekfn3@FVFF77S0Q05N>
-From:   Zeng Heng <zengheng4@huawei.com>
-In-Reply-To: <ZTj1fMsMj-Mekfn3@FVFF77S0Q05N>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.163]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500024.china.huawei.com (7.221.188.100)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025135058.11268-1-quic_sibis@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 25, 2023 at 07:20:56PM +0530, Sibi Sankar wrote:
+> This series adds pinctrl/gpio support for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
+> 
+> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+> 
 
-在 2023/10/25 19:01, Mark Rutland 写道:
-> On Wed, Oct 25, 2023 at 05:38:47PM +0800, Zeng Heng wrote:
->
-> The previous patch added this function, and calls it with smp_call_on_cpu(),
-> where it'll run in IRQ context with IRQs disabled...
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-smp_call_on_cpu() puts the work to the bind-cpu worker.
+Regards,
+Bjorn
 
-And this function will be called in task context, and IRQs is certainly enabled.
-
-
-Zeng Heng
-
->>   	struct fb_ctr_pair *fb_ctrs = val;
->>   	int cpu = fb_ctrs->cpu;
->>   	int ret;
->> +	unsigned long timeout;
->>   
->>   	ret = cppc_get_perf_ctrs(cpu, &fb_ctrs->fb_ctrs_t0);
->>   	if (ret)
->>   		return ret;
->>   
->> -	udelay(2); /* 2usec delay between sampling */
->> +	if (likely(!irqs_disabled())) {
->> +		/*
->> +		 * Set 1ms as sampling interval, but never schedule
->> +		 * to the idle task to prevent the AMU counters from
->> +		 * stopping working.
->> +		 */
->> +		timeout = jiffies + msecs_to_jiffies(1);
->> +		while (!time_after(jiffies, timeout))
->> +			cond_resched();
->> +
->> +	} else {
-> ... so we'll enter this branch of the if-else ...
->
->> +		pr_warn_once("CPU%d: Get rate in atomic context", cpu);
-> ... and pr_warn_once() for something that's apparently normal and outside of
-> the user's control?
->
-> That doesn't make much sense to me.
->
-> Mark.
->
->> +		udelay(2); /* 2usec delay between sampling */
->> +	}
->>   
->>   	return cppc_get_perf_ctrs(cpu, &fb_ctrs->fb_ctrs_t1);
->>   }
->> -- 
->> 2.25.1
->>
+> Rajendra Nayak (2):
+>   dt-bindings: pinctrl: qcom: Add SC8380XP pinctrl
+>   pinctrl: qcom: Add SC8380XP pinctrl driver
+> 
+>  .../bindings/pinctrl/qcom,sc8380xp-tlmm.yaml  |  143 ++
+>  drivers/pinctrl/qcom/Kconfig.msm              |   10 +
+>  drivers/pinctrl/qcom/Makefile                 |    1 +
+>  drivers/pinctrl/qcom/pinctrl-sc8380xp.c       | 1876 +++++++++++++++++
+>  4 files changed, 2030 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc8380xp-tlmm.yaml
+>  create mode 100644 drivers/pinctrl/qcom/pinctrl-sc8380xp.c
+> 
+> -- 
+> 2.17.1
+> 
