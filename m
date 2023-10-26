@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1C07D8BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93707D8BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 00:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345019AbjJZWzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 18:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S1345033AbjJZWzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 18:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjJZWzp (ORCPT
+        with ESMTP id S232276AbjJZWzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 18:55:45 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E100D40
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:43 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cac925732fso12126355ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:43 -0700 (PDT)
+        Thu, 26 Oct 2023 18:55:48 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70D7D45
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:45 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc1e1e74beso1195205ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 15:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698360943; x=1698965743; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1698360945; x=1698965745; darn=vger.kernel.org;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oDPjzqN0olGBDf5Q5ZIPAo/gpgTzA9Si8eDxt4dySas=;
-        b=CavR/FwurYeA85Aq6iodGp4jXhq5f5pmIUEfrXJtztjr50hkaF0ntc/MsJEd+SKh9f
-         Ld8ZtRKKZiUpqCGNACh3VtGCwji4SfIMkqyLh5skMfmLSVkYebi+LNIip3deo1UpA0Kr
-         nFQM0qe0lfxof3Gzg4BYWOJcTx7QUEp7cYj+k=
+        bh=yWsno77VfFe/SXS5Ge3nmxltf+3EhP3pP9+fbJ+Ogko=;
+        b=TGUdEUT/d+46vdIAY3t+5Y8IYmG48hIxPKrNJrQdXJj5KbtlnL0AHihZiJibm2UrMT
+         46GMCaIlx9svuOTYf66KYA4x26WctNCczCC/JRc8O3dU9jNqrsCbihpcU3gC8sYO3m7X
+         0c88EIfKqefc1zYgZYTklRLM7vNELLMx5xYsA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698360943; x=1698965743;
+        d=1e100.net; s=20230601; t=1698360945; x=1698965745;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oDPjzqN0olGBDf5Q5ZIPAo/gpgTzA9Si8eDxt4dySas=;
-        b=cZUSypg8sEw4p8fznqocHYMmInOJe7i6lsOI5V3T6sgEkopQHdFHRd/2dc9WqTmcxI
-         n5coEZVy18y8ATRrBF1vl/kyxp9LbH/F+M/93XfIi3301JVwyScPcLgo8iRsNsrNdYRC
-         PGBr/qI1wpNAat3Bx5bwKtXVgaeU/3Xm0mdQH705qyqwtYr/bREIXrIC6dXDbfVD6eIm
-         c1bxTuuoxBascyAUPqKkTDZn/c305u/xFE66rLoPbKvgOY5yXCB3oY2v/Fa688JIdknp
-         Wp0WFZmIYF1ZLSyaLao1NYJ322FJu5IgrRlH3Mz5caro5Mf+mXWXB1TImpXOjg0HLnKX
-         C2gw==
-X-Gm-Message-State: AOJu0Yx8IAD2+dHC8bl5fT6eVDVsBRdJwkU2iXxU03KK0eSCmi01t9jn
-        MhvMwCpBr32CLfQYkYZ7ZwDfMA==
-X-Google-Smtp-Source: AGHT+IG5L2uwMX10PCEPHxC1xLkEHNpI+SjwHHdW+/Nnmg4qB1uiCpao4Wf4Hb4GtCmDHy35jo6mGQ==
-X-Received: by 2002:a17:902:eb42:b0:1c9:c951:57f9 with SMTP id i2-20020a170902eb4200b001c9c95157f9mr884795pli.68.1698360943030;
-        Thu, 26 Oct 2023 15:55:43 -0700 (PDT)
+        bh=yWsno77VfFe/SXS5Ge3nmxltf+3EhP3pP9+fbJ+Ogko=;
+        b=EzfiYa34c0i8QU44sLYxv1SyuArMuSjWKTgMZtfavUJa0RZvTY3us/aEoVdJ/46zTN
+         GqGYee0Rq966M3Yw4kHczRnP50fSOdbU8w8OrGw2jD1nXEMAMfxpqDvL5iaiolBWQwvT
+         f5/rYNvb70S+Oabdx4Qteoo3O1ZyRxYeyK+IERa3/ZzhJHHvXNhKN6S5EMq0KKi3WLOD
+         KzBIaFFM8GdzeC6X+OCxK1oOJypJtthEo36EhrHkwo2MlcNm6cAb0ciEhbJwRq3UAKLM
+         HtYLJd1Y86LnVzFmZsXmmyZXhXBLZv1lP6wZ82yCeTsuzaNN+DvFbard2ByBgHosL4ko
+         floA==
+X-Gm-Message-State: AOJu0YyiEIX6cTe0b1EONLgAVdQOfVfWNVw092AA465zNlYc/VeDssUU
+        Fgj8df7aq5eQ8lLh5SB13tDDRg==
+X-Google-Smtp-Source: AGHT+IGYY11PucCwGeEShzOH1nZlFiFMqiJE1isxpz9V5nJdgXTPwovoJmuGeuErRORC2GCxqw37pg==
+X-Received: by 2002:a17:902:c942:b0:1c7:4ab6:b3cc with SMTP id i2-20020a170902c94200b001c74ab6b3ccmr1123354pla.54.1698360945299;
+        Thu, 26 Oct 2023 15:55:45 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b001c9b5b63e36sm206295plg.32.2023.10.26.15.55.40
+        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b001c9b5b63e36sm206295plg.32.2023.10.26.15.55.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 15:55:42 -0700 (PDT)
+        Thu, 26 Oct 2023 15:55:44 -0700 (PDT)
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 To:     netdev@vger.kernel.org
 Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -69,15 +69,15 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Jiri Pirko <jiri@resnulli.us>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2 3/5] net: phy: Add pluming for ethtool_{get,set}_rxnfc
-Date:   Thu, 26 Oct 2023 15:45:07 -0700
-Message-Id: <20231026224509.112353-4-florian.fainelli@broadcom.com>
+Subject: [PATCH net-next v2 4/5] net: phy: broadcom: Add support for WAKE_FILTER
+Date:   Thu, 26 Oct 2023 15:45:08 -0700
+Message-Id: <20231026224509.112353-5-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231026224509.112353-1-florian.fainelli@broadcom.com>
 References: <20231026224509.112353-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000bb65000608a6781c"
+        boundary="000000000000dea2730608a67873"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
@@ -88,82 +88,310 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000bb65000608a6781c
+--000000000000dea2730608a67873
 Content-Transfer-Encoding: 8bit
 
-Ethernet MAC drivers supporting Wake-on-LAN using programmable filters
-(WAKE_FILTER) typically configure such programmable filters using the
-ethtool::set_rxnfc API and with a sepcial RX_CLS_FLOW_WAKE to indicate
-the filter is also wake-up capable.
+Since the PHY is capable of matching any arbitrary Ethernet MAC
+destination as a programmable wake-up pattern, add support for doing
+that using the WAKE_FILTER and ethtool::rxnfc API. For instance, in
+order to wake-up from the Ethernet MAC address corresponding to the IPv4
+multicast IP address of 224.0.0.251 (e.g.: multicast DNS), one could do:
 
-In order to offer the same functionality for capable Ethernet PHY
-drivers, wire-up the ethtool::{get,set}_rxnfc APIs within the PHY
-library.
+  ethtool -N eth0 flow-type ether dst 01:00:5e:00:00:fb loc 0 action -2
+  ethtool -n eth0
+  Total 1 rules
+
+  Filter: 0
+          Flow Type: Raw Ethernet
+          Src MAC addr: 00:00:00:00:00:00 mask: FF:FF:FF:FF:FF:FF
+          Dest MAC addr: 01:00:5E:00:00:FB mask: 00:00:00:00:00:00
+          Ethertype: 0x0 mask: 0xFFFF
+          Action: Wake-on-LAN
+  ethtool -s eth0 wol f
 
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- drivers/net/phy/phy.c | 19 +++++++++++++++++++
- include/linux/phy.h   |  8 ++++++++
- 2 files changed, 27 insertions(+)
+ drivers/net/phy/bcm-phy-lib.c | 205 +++++++++++++++++++++++++++++++++-
+ drivers/net/phy/bcm-phy-lib.h |   5 +
+ drivers/net/phy/broadcom.c    |   2 +
+ 3 files changed, 211 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index a5fa077650e8..e2f2cc38ff31 100644
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -1740,3 +1740,22 @@ int phy_ethtool_nway_reset(struct net_device *ndev)
- 	return ret;
+diff --git a/drivers/net/phy/bcm-phy-lib.c b/drivers/net/phy/bcm-phy-lib.c
+index 876f28fd8256..5dfc1a5fde2e 100644
+--- a/drivers/net/phy/bcm-phy-lib.c
++++ b/drivers/net/phy/bcm-phy-lib.c
+@@ -827,7 +827,8 @@ EXPORT_SYMBOL_GPL(bcm_phy_cable_test_get_status_rdb);
+ 					 WAKE_MCAST | \
+ 					 WAKE_BCAST | \
+ 					 WAKE_MAGIC | \
+-					 WAKE_MAGICSECURE)
++					 WAKE_MAGICSECURE | \
++					 WAKE_FILTER)
+ 
+ int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+ {
+@@ -881,6 +882,21 @@ int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+ 	ctl &= ~BCM54XX_WOL_DIR_PKT_EN;
+ 	ctl &= ~(BCM54XX_WOL_SECKEY_OPT_MASK << BCM54XX_WOL_SECKEY_OPT_SHIFT);
+ 
++	/* For WAKE_FILTER, we have already programmed the desired MAC DA
++	 * and associated mask by the time we get there.
++	 */
++	if (wol->wolopts & WAKE_FILTER)
++		goto program_ctl;
++
++	/* Enabling options other than WAKE_FILTER nullifies the one and only
++	 * network rule that we support.
++	 */
++	if (!(wol->wolopts & WAKE_FILTER)) {
++		ret = bcm_phy_write_exp(phydev, BCM54XX_WOL_SEC_KEY_8B, 0);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	/* When using WAKE_MAGIC, we program the magic pattern filter to match
+ 	 * the device's MAC address and we accept any MAC DA in the Ethernet
+ 	 * frame.
+@@ -935,6 +951,7 @@ int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+ 			return ret;
+ 	}
+ 
++program_ctl:
+ 	if (wol->wolopts & WAKE_MAGICSECURE) {
+ 		ctl |= BCM54XX_WOL_SECKEY_OPT_6B <<
+ 		       BCM54XX_WOL_SECKEY_OPT_SHIFT;
+@@ -999,6 +1016,16 @@ void bcm_phy_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+ 	if (!(ctl & BCM54XX_WOL_EN))
+ 		return;
+ 
++	ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
++	if (ret < 0)
++		return;
++
++	/* Mutualy exclusive with other modes */
++	if (ret) {
++		wol->wolopts |= WAKE_FILTER;
++		return;
++	}
++
+ 	for (i = 0; i < sizeof(da) / 2; i++) {
+ 		ret = bcm_phy_read_exp(phydev,
+ 				       BCM54XX_WOL_MPD_DATA2(2 - i));
+@@ -1066,6 +1093,182 @@ int bcm_phy_led_brightness_set(struct phy_device *phydev,
  }
- EXPORT_SYMBOL(phy_ethtool_nway_reset);
-+
-+int phy_ethtool_get_rxnfc(struct phy_device *phydev,
-+			  struct ethtool_rxnfc *nfc, u32 *rule_locs)
-+{
-+	if (phydev->drv && phydev->drv->get_rxnfc)
-+		return phydev->drv->get_rxnfc(phydev, nfc, rule_locs);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL(phy_ethtool_get_rxnfc);
-+
-+int phy_ethtool_set_rxnfc(struct phy_device *phydev, struct ethtool_rxnfc *nfc)
-+{
-+	if (phydev->drv && phydev->drv->set_rxnfc)
-+		return phydev->drv->set_rxnfc(phydev, nfc);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL(phy_ethtool_set_rxnfc);
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 3cc52826f18e..03e7c6352aef 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -1077,6 +1077,10 @@ struct phy_driver {
- 	int (*get_sqi)(struct phy_device *dev);
- 	/** @get_sqi_max: Get the maximum signal quality indication */
- 	int (*get_sqi_max)(struct phy_device *dev);
-+	/* Used for WAKE_FILTER programming only */
-+	int (*get_rxnfc)(struct phy_device *dev,
-+			 struct ethtool_rxnfc *nfc, u32 *rule_locs);
-+	int (*set_rxnfc)(struct phy_device *dev, struct ethtool_rxnfc *nfc);
+ EXPORT_SYMBOL_GPL(bcm_phy_led_brightness_set);
  
- 	/* PLCA RS interface */
- 	/** @get_plca_cfg: Return the current PLCA configuration */
-@@ -1989,6 +1993,10 @@ int phy_ethtool_set_plca_cfg(struct phy_device *phydev,
- 			     struct netlink_ext_ack *extack);
- int phy_ethtool_get_plca_status(struct phy_device *phydev,
- 				struct phy_plca_status *plca_st);
-+int phy_ethtool_get_rxnfc(struct phy_device *phydev,
-+			  struct ethtool_rxnfc *nfc, u32 *rule_locs);
-+int phy_ethtool_set_rxnfc(struct phy_device *phydev,
-+			  struct ethtool_rxnfc *nfc);
++static int bcm_phy_get_rule(struct phy_device *phydev,
++			    struct ethtool_rxnfc *nfc,
++			    int loc)
++{
++	u8 da[ETH_ALEN];
++	unsigned int i;
++	int ret;
++
++	if (loc != 0)
++		return -EINVAL;
++
++	memset(nfc, 0, sizeof(*nfc));
++	nfc->flow_type = ETHER_FLOW;
++	nfc->fs.flow_type = ETHER_FLOW;
++
++	for (i = 0; i < sizeof(da) / 2; i++) {
++		ret = bcm_phy_read_exp(phydev,
++				       BCM54XX_WOL_MPD_DATA2(2 - i));
++		if (ret < 0)
++			return ret;
++
++		da[i * 2] = ret >> 8;
++		da[i * 2 + 1] = ret & 0xff;
++	}
++	ether_addr_copy(nfc->fs.h_u.ether_spec.h_dest, da);
++
++	for (i = 0; i < sizeof(da) / 2; i++) {
++		ret = bcm_phy_read_exp(phydev,
++				       BCM54XX_WOL_MASK(2 - i));
++		if (ret < 0)
++			return ret;
++
++		da[i * 2] = ~(ret >> 8);
++		da[i * 2 + 1] = ~(ret & 0xff);
++	}
++	ether_addr_copy(nfc->fs.m_u.ether_spec.h_dest, da);
++
++	ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_INNER_PROTO);
++	if (ret < 0)
++		return ret;
++
++	nfc->fs.h_u.ether_spec.h_proto = cpu_to_be16(ret);
++
++	nfc->fs.ring_cookie = RX_CLS_FLOW_WAKE;
++	nfc->fs.location = 0;
++
++	return 0;
++}
++
++static int bcm_phy_set_rule(struct phy_device *phydev,
++			    struct ethtool_rxnfc *nfc)
++{
++	int ret = -EOPNOTSUPP;
++	unsigned int i;
++	const u8 *da;
++	u16 h_proto;
++
++	/* We support only matching on the MAC DA with a custom mask and
++	 * optionally with a specific Ethernet type, reject anything else.
++	 */
++	if (nfc->fs.ring_cookie != RX_CLS_FLOW_WAKE ||
++	    (nfc->fs.location != 0 &&
++	     nfc->fs.location != RX_CLS_LOC_ANY &&
++	     nfc->fs.location != RX_CLS_LOC_FIRST) ||
++	    nfc->fs.flow_type != ETHER_FLOW ||
++	    !is_zero_ether_addr(nfc->fs.h_u.ether_spec.h_source) ||
++	    !is_zero_ether_addr(nfc->fs.m_u.ether_spec.h_source))
++		return ret;
++
++	ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
++	if (ret < 0)
++		return ret;
++
++	if (ret)
++		return -EBUSY;
++
++	if (nfc->fs.location == RX_CLS_LOC_ANY ||
++	    nfc->fs.location == RX_CLS_LOC_FIRST)
++		nfc->fs.location = 0;
++
++	da = nfc->fs.h_u.ether_spec.h_dest;
++	for (i = 0; i < ETH_ALEN / 2; i++) {
++		ret = bcm_phy_write_exp(phydev,
++					BCM54XX_WOL_MPD_DATA2(2 - i),
++					da[i * 2] << 8 | da[i * 2 + 1]);
++		if (ret < 0)
++			return ret;
++	}
++
++	da = nfc->fs.m_u.ether_spec.h_dest;
++	for (i = 0; i < ETH_ALEN / 2; i++) {
++		u16 mask = da[i * 2] << 8 | da[i * 2 + 1];
++		ret = bcm_phy_write_exp(phydev,
++					BCM54XX_WOL_MASK(2 - i),
++					~mask);
++		if (ret < 0)
++			return ret;
++	}
++
++	/* Restore default inner protocol field unless overridden by the flow
++	 * specification.
++	 */
++	h_proto = be16_to_cpu(nfc->fs.h_u.ether_spec.h_proto);
++	if (!h_proto)
++		h_proto = ETH_P_8021Q;
++
++	ret = bcm_phy_write_exp(phydev, BCM54XX_WOL_INNER_PROTO,
++				h_proto);
++	if (ret < 0)
++		return ret;
++
++	/* Use BCM54XX_WOL_SEC_KEY_8B as a scratch register to record
++	 * that we installed a filter rule.
++	 */
++	return bcm_phy_write_exp(phydev, BCM54XX_WOL_SEC_KEY_8B, 1);
++}
++
++int bcm_phy_get_rxnfc(struct phy_device *phydev,
++		      struct ethtool_rxnfc *cmd, u32 *rule_locs)
++{
++	int err = 0, rule_cnt = 0;
++
++	err = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
++	if (err < 0)
++		return err;
++
++	rule_cnt = err;
++	err = 0;
++
++	switch (cmd->cmd) {
++	case ETHTOOL_GRXCLSRLCNT:
++		cmd->rule_cnt = rule_cnt;
++		cmd->data = 1 | RX_CLS_LOC_SPECIAL;
++		break;
++	case ETHTOOL_GRXCLSRULE:
++		err = bcm_phy_get_rule(phydev, cmd, cmd->fs.location);
++		break;
++	case ETHTOOL_GRXCLSRLALL:
++		if (rule_cnt)
++			rule_locs[0] = 0;
++		cmd->rule_cnt = rule_cnt;
++		cmd->data = 1;
++		break;
++	default:
++		err = -EOPNOTSUPP;
++		break;
++	}
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(bcm_phy_get_rxnfc);
++
++int bcm_phy_set_rxnfc(struct phy_device *phydev,
++		      struct ethtool_rxnfc *cmd)
++{
++	int err = 0;
++
++	switch (cmd->cmd) {
++	case ETHTOOL_SRXCLSRLINS:
++		err = bcm_phy_set_rule(phydev, cmd);
++		break;
++	case ETHTOOL_SRXCLSRLDEL:
++		if (cmd->fs.location != 0)
++			return err;
++
++		err = bcm_phy_write_exp(phydev, BCM54XX_WOL_SEC_KEY_8B, 0);
++		break;
++	default:
++		err = -EOPNOTSUPP;
++		break;
++	}
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(bcm_phy_set_rxnfc);
++
+ MODULE_DESCRIPTION("Broadcom PHY Library");
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Broadcom Corporation");
+diff --git a/drivers/net/phy/bcm-phy-lib.h b/drivers/net/phy/bcm-phy-lib.h
+index b52189e45a84..7081edcec06b 100644
+--- a/drivers/net/phy/bcm-phy-lib.h
++++ b/drivers/net/phy/bcm-phy-lib.h
+@@ -121,4 +121,9 @@ irqreturn_t bcm_phy_wol_isr(int irq, void *dev_id);
+ int bcm_phy_led_brightness_set(struct phy_device *phydev,
+ 			       u8 index, enum led_brightness value);
  
- int __phy_hwtstamp_get(struct phy_device *phydev,
- 		       struct kernel_hwtstamp_config *config);
++int bcm_phy_get_rxnfc(struct phy_device *phydev,
++		      struct ethtool_rxnfc *nfc, u32 *rule_locs);
++int bcm_phy_set_rxnfc(struct phy_device *phydev,
++		      struct ethtool_rxnfc *nfc);
++
+ #endif /* _LINUX_BCM_PHY_LIB_H */
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 3a627105675a..6c2212bd2779 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -1107,6 +1107,8 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.get_wol	= bcm54xx_phy_get_wol,
+ 	.set_wol	= bcm54xx_phy_set_wol,
+ 	.led_brightness_set	= bcm_phy_led_brightness_set,
++	.get_rxnfc	= bcm_phy_get_rxnfc,
++	.set_rxnfc	= bcm_phy_set_rxnfc,
+ }, {
+ 	.phy_id		= PHY_ID_BCM5461,
+ 	.phy_id_mask	= 0xfffffff0,
 -- 
 2.34.1
 
 
---000000000000bb65000608a6781c
+--000000000000dea2730608a67873
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -234,14 +462,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFq4DqNGgCW1Pvxe
-JvBdn2YMihqXn7e+rZsCmFuFH05kMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAyNjIyNTU0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKoUaWOuATcEaSPy
+LsjXghBwW4EvJekDr8Ce2Wiocg17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAyNjIyNTU0NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCa+ckgPwav6JdaTU/5sxA/lutEKV21ykrx
-ljUzUeRCjTV1T/FY6s7w4iU/H2qWHXVQ90HINPjVnzD28OgqEN93tjCWkALnh4uYikDet5OEjidv
-o/9s4VFwzrrRxNswZCscXuBNwbNfV9wxoj+B1zuRnmpKIxyJd7KfGNJ+vR0H+fV9rNCCe0ZM85g5
-Xu+X6YDHg7EdMPSL0PUTzEUcASPzWpDgCQZLCrvMEfvac6qG9BzD7wr8lrij+HnvZoc+h11ywYxj
-58jtV5CEBhzBnUUlKeZq26n6Re7ZfrQgYjpKXXgaIgzLXec1xGXEFXIdiz2mAZU0OAcATXYJxc2o
-JfRD
---000000000000bb65000608a6781c--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAkYFATC14JhyJCVpXFJ9sEUp8l3dhdag53
+r/xN3CyFWXF8V5nK/kOx/hlhkco77+4SbZpvoyr92ROE9BfsSn+RdoMsiN/76De+qmVz89leTptS
+wrmAvwCyPS+vukC2mQytN5hp+gQxmBFaqOqB2jloHdpvi/g/mOBBsG5zK7NDAuD4LJjwGRDBRq2s
+otQnts8IrkFo7u4A9OHDaphbOmQlWkgpJbp6S9gwFX157jcH5dAr609gcXEI8rvDAGoLp4uyoHqE
+sv8vyaHTECYGrWkn5pjjrO8CbuQ3R5Tc4pswmK4oMjglwRZblCi2NHui/IGZzr5VO46ND5YwM6hR
+/w1f
+--000000000000dea2730608a67873--
