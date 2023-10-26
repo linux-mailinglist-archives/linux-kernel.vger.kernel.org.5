@@ -2,316 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992287D7BEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 06:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DAC7D7BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 06:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344119AbjJZEuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 00:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
+        id S1344165AbjJZEtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 00:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232329AbjJZEue (ORCPT
+        with ESMTP id S232398AbjJZEt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 00:50:34 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CBB93
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 21:50:31 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5b92b852390so208196a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 21:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698295830; x=1698900630; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zyw+tCacb0pesWXIiVE3DFUWnD0FKkDUZEIm1rsxoog=;
-        b=vHH1rohpRvkkdtD3NHS6sndE9qVDuR/ytRxaL40Ncod3k7FDkQCWJwD+QWB8OECOUZ
-         aL3Ayd0+ykQ8L9O/kt7vSMncAyYy4+5M47rLQzQUO4BRxAUIBFItgBJhWq/itzHe5Kb1
-         7H72JcmmGhmVPy9UhDvfzqsiQ0RFUnmjZpO74M+ICTMfVkgrEs2ykeNiGpCFIrs06AOt
-         +6dpvbpcd4wvLO6FkTmjcyLlEafYPEpowk8jOj2ox3y0NeQKYaKyCDEB2+UwfErzVHHN
-         aVhgAJqkEbX1gapTgiy/9PBuvecCjSHOxcKqBApu/tnper+x9QSYzw093pYrYNtLyE1K
-         heFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698295830; x=1698900630;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zyw+tCacb0pesWXIiVE3DFUWnD0FKkDUZEIm1rsxoog=;
-        b=qQ80wrVO58RfNZrXmg/vT+CPayY6RwY6mKyGNV2omYBV8mEG1CQb5VXiVfKw2QCVdc
-         5vPb28jSspmVI576YDdLkyqb6kK/O+lIe0gnlYQn4rDacSwkSYtEKXRUHKZ8pCmNpIYQ
-         Ipq6rFGnF44G6++q5kX7sMWnL7o5vFbrFlpss+0LL5bSYgLLGrHYiBLjV1Aqx4UQOUwp
-         QJUt11jYYOovt3BPq8jsbMmZIK8Nrk6IYgmL1pldmU3sCqByp523hfmoS7ic0Cx0OvQC
-         6HrI0UM9Guj1rb7sCl/2hQGgNVzFATJOMeum/Nyy8U0HK3Auzqf+2BWtS96poYusghE3
-         5x6A==
-X-Gm-Message-State: AOJu0YzgLGvmGv0Nfk3eb/Pb3UMn5yvYIzc3a//Mu4Csf9I6UzVm/tuf
-        ORJ5SEUB5maeHDm0mHTa/AbzJkwAaHD8dsClAw==
-X-Google-Smtp-Source: AGHT+IH0dhRidMhQSTgnbwk8LPrmRtaFDLXg4YO8o0Mu9UK5b5D0KSlXE2bAlCFTB2cZpvmkxxre+w==
-X-Received: by 2002:a05:6a21:9710:b0:172:eda5:36eb with SMTP id ub16-20020a056a21971000b00172eda536ebmr6384929pzb.55.1698295830463;
-        Wed, 25 Oct 2023 21:50:30 -0700 (PDT)
-Received: from localhost.localdomain ([103.28.246.120])
-        by smtp.gmail.com with ESMTPSA id lr13-20020a17090b4b8d00b0027cbc50b826sm718225pjb.17.2023.10.25.21.49.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 21:49:53 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     mhi@lists.linux.dev
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Alex Elder <elder@linaro.org>
-Subject: [PATCH v2] bus: mhi: ep: Use slab allocator where applicable
-Date:   Thu, 26 Oct 2023 10:19:32 +0530
-Message-Id: <20231026044932.11745-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 26 Oct 2023 00:49:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9161B93;
+        Wed, 25 Oct 2023 21:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698295767; x=1729831767;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=e/l/UTuwaDmpXCORgy0cza0/iyyj/m64ieDG52iM+is=;
+  b=exQAH9a635KPbMIKQozU7ShEKS1I2glRIt2hIpsZ+wEMPGImXMhqWzal
+   MBfppv+nQV6rNW4cBvbq3xzmUD5NlP2e02UapSj4VbZSlgRZM4KEMHp7b
+   fzqIHOuX2udk7WSLYuCjhKt+xru/LqQpJ6On4w3G0Rz3G73lS44jZQzPl
+   j5v9ltTxj+lYD5NO0exFfKVGtcyG8DtOawoYCMeVnCvXB39zOEEJ447PV
+   E3V8qcP50Wfyt08ydIaO0/fXhK4nJxCoUD95VbK8pnM8WGbLSS3cE/j9f
+   2OtlbZ8ycUyvy2zHif/2UuTl3KJqigXQTsiQY5sp/0rS38r79VW8Ov6pd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390317326"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="390317326"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 21:48:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752588181"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="752588181"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Oct 2023 21:48:22 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 25 Oct 2023 21:48:22 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 25 Oct 2023 21:48:22 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 25 Oct 2023 21:48:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZxZaXNWUvQ6SX4OzqCp4+kHim+miv9eanlwA+DLTw0NN18tADzz+uUEk7zsEY2T06rtk7WnLFwVO7viUY3IOuG7MnprwvhWcA7yrxfAuqZQJmbYBzF+GVUZBs9+YY+D3SdQpjMzsQ3pfA+NMs2ntMPVm1yaOpvMamB1NX1wwPXMqvsILh6XBWZlg1qylP+LIdvTFijhXvmZftEQ+tBPTbpe0z/62x6vfieR0nXiKh7pwdDJSKj9yPEKUt3K7qBtvu38PeJWxaMSfTzB95u5zq5R9YBu9HlFRX6Z+8cmggPyGVu8nfRUdOxjuCMAZ1Mn/kfGlgjb2DKuR3whG5+HtuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=veDGki2EueZmOU0bmuGwG9C88nhsK87dKwQdVvHibHM=;
+ b=I5+oAFdGI7lneggSXZQiGdVEk/Lpj5HZ7dAO0OaOwNYxKlXgS1WFNfEwHVsNbjgIuREaATHiMqdschIc6KjtXYNO/DcQyRhYOulftVggO9VVBN2eOMfK8oVnB5NysT6EFkfPMCpc9BasBgTz89F8i/VD3BXBXX6K302P+4GwfkKduN9bjvx5u0DwjewTs/+YZN34LkLGlrYM/tmAPm3DG3sHoah74cjE8SpAZLBJ4YnL0/Lx7vN07gfY8RC9E3lkqF/mcKQaIOQN2g3Wzc4hRsOvqINptn6LhsiLwMM1GWvcFM3Rzg3/mI7AdcwD8r6yAZryPG8unKQQh4PgY4VAvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by PH7PR11MB6031.namprd11.prod.outlook.com (2603:10b6:510:1d2::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
+ 2023 04:48:15 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6907.025; Thu, 26 Oct 2023
+ 04:48:14 +0000
+Message-ID: <629a1a42-92cf-4eb3-bc07-e664a6f36395@intel.com>
+Date:   Thu, 26 Oct 2023 12:50:41 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/8] Add Intel VT-d nested translation (part 1/2)
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
+References: <20231024151412.50046-1-yi.l.liu@intel.com>
+ <20231025120746.GZ3952@nvidia.com>
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <20231025120746.GZ3952@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0044.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::6) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|PH7PR11MB6031:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a4c72b5-895f-434e-638a-08dbd5dec337
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BQbgK/r5PEYpLgCmfcFu0EXFHmnlUQFQmdfMLKJbWbeQ2TQlVp0AO0ZDWCnJ3gEug1lyCijRuzPXOtsiDpZcswVr/XnOFtpCWPfAHwBDIJoQReZgidcD7MvH/STLoi1GA4o6je9CDgR00m8LWH9npLBe01Zf5cA/OcdO+Uy9OmpEFGdaQMTmgICrIdZT6gtbGm0AnmesvX9Sp+wneAldvj56zF2xiIa3bKMBIEZXoMZZn8jCB4asaohonzsD53DFYdg28syeyX2N9xqiE1dfi7CzwYXntzEW5wyBDMMnb0KOhfu7g8BKKDhc6mhGiY0WQP5v6Zmg4RHoZB9yfOp49xxNEH/XSZPG7Qt1TJX/6P7dnrcln6Jz4ukIdMTQkdPbNzf4r7gRmf1sGYVXAgryl3Lp/d491A6UENFZJnKaBwTDICkl11s8/UXiw0e9m1Uh9H8SlCw+z9mmeky5OvGdNdjDEaDle0LDsZCx2gItXLnewXwAIQvF+u7Bt6uUv/MkoHOzdDPKNq/znMVFDpW3yiWocVy/lCXlR6x+S3aKQRmox3esUdfqSpSdUKQ9XZ/HqhTr/SIEbjyfnXhfV+91B/3T9/HGUBH4rbLBNHfN3bk0jv78wLfAx1qm5wbYvaAA8o+u+yC/kf5WsP5Ga3NS0Sd7telsEqwZB2cl1tI27iUNCZNwqAgxPUDT9BLG4mfu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(36756003)(6512007)(316002)(66556008)(66476007)(31696002)(6916009)(2616005)(86362001)(38100700002)(66946007)(82960400001)(53546011)(2906002)(26005)(6506007)(6666004)(966005)(4744005)(478600001)(6486002)(7416002)(41300700001)(5660300002)(4326008)(8676002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czJmTy9YemJGR2RWdFdoR290WWpXS2lQM2plSU9lcXpsOUZIQ0tyd21WSzJy?=
+ =?utf-8?B?K2I1Tm1GUXB1MGpYYmhMZHpIZTNNMmlMZllhR1I1cVZVSm9YMklFenJLN2kx?=
+ =?utf-8?B?eE9oTm1yVkhTMTJWVEQ1WTY0QnRoUi95WnpZOXVnU29JSFBLV05aL0F2ZFBw?=
+ =?utf-8?B?QlI3NFVoVXJCWEQ4OE9zQUxCL0tmeDBWRUxHZEJwY21xKzR0akgzMkhGR0Zk?=
+ =?utf-8?B?ZjJ6Rk9paElyYS9GQmVjTHJobmFXZlJWQXdQRWt2SEloM2dEMzc1Nm9jOFlR?=
+ =?utf-8?B?NGUyMVloYjkvQlpZQ2RwRWhrNFBrN3VMdlRuMWg5WU9WSnFIcDdBK3l5dTJB?=
+ =?utf-8?B?VEx0bkdJYUFpYTBuM2lNd0sya1BNSlNvOFY3M2F6Y2VlT3gvNzZjY2o5VkVp?=
+ =?utf-8?B?Q1NleTRYZmlvUU5iTVArVytQTWZIMUtHeWwrcUM5cXJRUlJXbTdXeW9BZlVI?=
+ =?utf-8?B?Z1RRTzQ5OGJCSjhFYW5uL1lsUVJOQmVEbW12NjYzQmo3VCtsV0IwL2toL0JL?=
+ =?utf-8?B?anRrbWIyN1F6cGkrK01CbjI5dlY0dndPeHhtb0tNWWplRittbWhTd3N3eDlU?=
+ =?utf-8?B?ejRGSTJhZGNtcFM2bU5HbENpM0NvWm93bEpXY3dBSTU3NCtKekxIQ29DRjMw?=
+ =?utf-8?B?ZmNsVFVPYUM3MWVVOEhtRmN0VW1QN2Q1NjI3Mk1wUExkU2YrNXMxY0hzV0Ri?=
+ =?utf-8?B?YUNCaFkrR2FmUDBMS1NCZDd6eU50QURIN0s5cjBuQWlLTzhsY0pVL3FodWlS?=
+ =?utf-8?B?bGN1UmF3a0F4Y2xsWjNCYlJFcUhPak0rMFk3eUcwU3dIbFFYZ3ltZHJaUzVF?=
+ =?utf-8?B?enR1TWJuYXl2L0FiOVRyMTFuTE9HamZWUWVrcCt4UlVCWTR3SlZERmdtR1g3?=
+ =?utf-8?B?Ti9qM0tOZ1RTaXpKaC9hRFZpWDZ4L05ySUw1eTNBZE9RNUVEb1NSajdNY2d3?=
+ =?utf-8?B?NVllN1NHZFI0aE4raG1kNTBlUmVoeFlyN2pRWjNGRlBRVCtMZStGM3VJU3g2?=
+ =?utf-8?B?bXhlR2M2VXBOcUlTcjVhL04vNmppYjRKdlpJdnJGa3k3UjVHRVNlVmVZT3pj?=
+ =?utf-8?B?aitVc1pFVzQvQ3RLVDl6ckhmMGlBbVRTUDRxeWtJQWx1ZVlJSjZua0ZmRzlj?=
+ =?utf-8?B?SUlOSSttWTcwRjNjbnhSLzJRcDhMUGFFRWpEMEdvaEVSZWxVUVhpdlFsM2J2?=
+ =?utf-8?B?QXM4d2lnTkV0Q1I1bjBMSFB4Rk9lMjlPc2FVaFY2aWVMbmxqODAzWnQ0NUMv?=
+ =?utf-8?B?UlBjNDROYW9xcEV2TExZQi9NaDRMMUpMcXU3L3RsbEk2QmI3ODNENnduMG1J?=
+ =?utf-8?B?UnpwbjhVNFo3aWxYMno3S2M5R0ZFSmwzSHgxQTROaHkyMFV3cGpVaUF4U1VM?=
+ =?utf-8?B?ZzRJQnQvSDQ5OVVJTVp4MFMza0pPakdLWnp5bVZVVHFyc3ZrcjZ0ZGxjelYz?=
+ =?utf-8?B?QU45ek93dUJaa29XL0htbi9JNUZlQndrQ2lLQkVRdVcvTkdOVi8vL0dLSHlr?=
+ =?utf-8?B?c3IzZ2oyamRHbEdCNzUxK0Z0T1FPd01tb0xpUDJaZnQrVEV5NWZFRjlVMFk5?=
+ =?utf-8?B?c1V5Z1JuVVdxdlRCRkpGRjYwZFQrdStpNGNTM2hXdzlobzN0Y0pocmlzaE5z?=
+ =?utf-8?B?d0U2c2l5MHFNZnp2RG9malFJK0FxbEVyU2I5TDJqS0liZFZCVnFZK0MySGhE?=
+ =?utf-8?B?S1hzaFBGd3IyY0RqYWZPUEt2R2U3MW9ybVcrL2sveXNLdFJTaEM0WEFKTnYr?=
+ =?utf-8?B?aXFwZWpKbFRiU00vWnhydzM1cDA1Z3ozWnZDdmJ2RUpobFY2RXVwazNBbUNB?=
+ =?utf-8?B?TExhZUhGcHVhdnk1TUY0K2IrLy9vL21LNVBVR3RUL0p3MUdQTHVtSEZ6aXo1?=
+ =?utf-8?B?dDJMUXBoTEhxck8rOUdJSisvWUNaS0RGbGV6QVhHY3Fab21aVGE2TTlPM1p5?=
+ =?utf-8?B?RTdPYk5HREpRbVk5RzNaUVhuZEdwWE5aODczU3JDOHZiRlhianlwT2dZZmFl?=
+ =?utf-8?B?bVQ5OG9LQ2dJTWJOM3ZNbXVqbG9TTDZxVmZCME5iTzBva2ttQ2VOVTFvdjdY?=
+ =?utf-8?B?bXdPTmxLMGRVeXUvMGllaVdJR29aYit4SEdRTmNWdzBNbTRIMzJaK1d1L2Z5?=
+ =?utf-8?Q?pWe9Upxm1DwdcxiopGlRdK37u?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a4c72b5-895f-434e-638a-08dbd5dec337
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 04:48:14.0830
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1MXXsZcoaEj1kcyAmmu2TVQF+xeSfmbcYL0q6tmQ3JHNW+fx8jfzQp08wTs0vJvLqBB0M86gPZetdUbUfRz7MA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6031
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use slab allocator for allocating the memory for objects used frequently
-and are of fixed size. This reduces the overheard associated with
-kmalloc().
+On 2023/10/25 20:07, Jason Gunthorpe wrote:
+> On Tue, Oct 24, 2023 at 08:14:04AM -0700, Yi Liu wrote:
+> 
+>> Lu Baolu (5):
+>>    iommu/vt-d: Extend dmar_domain to support nested domain
+>>    iommu/vt-d: Add helper for nested domain allocation
+>>    iommu/vt-d: Add helper to setup pasid nested translation
+>>    iommu/vt-d: Add nested domain allocation
+>>    iommu/vt-d: Disallow read-only mappings to nest parent domain
+>>
+>> Yi Liu (3):
+>>    iommufd: Add data structure for Intel VT-d stage-1 domain allocation
+>>    iommu/vt-d: Make domain attach helpers to be extern
+>>    iommu/vt-d: Set the nested domain to a device
+> 
+> I put this in linux-next too
+> 
+> I think we will need a v8 on the list
 
-Suggested-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+yes, v8 is posted: 
+https://lore.kernel.org/linux-iommu/20231026044216.64964-1-yi.l.liu@intel.com/
 
-Changes in v2:
+along with a v7 of the iommufd nesting: 
+https://lore.kernel.org/linux-iommu/20231026043938.63898-1-yi.l.liu@intel.com/
 
-* Rebased on top of mhi-next.
-
- drivers/bus/mhi/ep/main.c | 70 +++++++++++++++++++++++++++++----------
- include/linux/mhi_ep.h    |  3 ++
- 2 files changed, 56 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
-index e2513f5f47a6..b5af23f0e65a 100644
---- a/drivers/bus/mhi/ep/main.c
-+++ b/drivers/bus/mhi/ep/main.c
-@@ -74,7 +74,8 @@ static int mhi_ep_send_completion_event(struct mhi_ep_cntrl *mhi_cntrl, struct m
- 	struct mhi_ring_element *event;
- 	int ret;
- 
--	event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	event = kmem_cache_zalloc(mhi_cntrl->ev_ring_el_cache,
-+				   GFP_KERNEL | GFP_DMA);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -83,7 +84,7 @@ static int mhi_ep_send_completion_event(struct mhi_ep_cntrl *mhi_cntrl, struct m
- 	event->dword[1] = MHI_TRE_EV_DWORD1(ring->ch_id, MHI_PKT_TYPE_TX_EVENT);
- 
- 	ret = mhi_ep_send_event(mhi_cntrl, ring->er_index, event, MHI_TRE_DATA_GET_BEI(tre));
--	kfree(event);
-+	kmem_cache_free(mhi_cntrl->ev_ring_el_cache, event);
- 
- 	return ret;
- }
-@@ -93,7 +94,8 @@ int mhi_ep_send_state_change_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_stat
- 	struct mhi_ring_element *event;
- 	int ret;
- 
--	event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	event = kmem_cache_zalloc(mhi_cntrl->ev_ring_el_cache,
-+				   GFP_KERNEL | GFP_DMA);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -101,7 +103,7 @@ int mhi_ep_send_state_change_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_stat
- 	event->dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_STATE_CHANGE_EVENT);
- 
- 	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
--	kfree(event);
-+	kmem_cache_free(mhi_cntrl->ev_ring_el_cache, event);
- 
- 	return ret;
- }
-@@ -111,7 +113,8 @@ int mhi_ep_send_ee_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_ee_type exec_e
- 	struct mhi_ring_element *event;
- 	int ret;
- 
--	event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	event = kmem_cache_zalloc(mhi_cntrl->ev_ring_el_cache,
-+				   GFP_KERNEL | GFP_DMA);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -119,7 +122,7 @@ int mhi_ep_send_ee_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_ee_type exec_e
- 	event->dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_EE_EVENT);
- 
- 	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
--	kfree(event);
-+	kmem_cache_free(mhi_cntrl->ev_ring_el_cache, event);
- 
- 	return ret;
- }
-@@ -130,7 +133,8 @@ static int mhi_ep_send_cmd_comp_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_e
- 	struct mhi_ring_element *event;
- 	int ret;
- 
--	event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	event = kmem_cache_zalloc(mhi_cntrl->ev_ring_el_cache,
-+				   GFP_KERNEL | GFP_DMA);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -139,7 +143,7 @@ static int mhi_ep_send_cmd_comp_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_e
- 	event->dword[1] = MHI_CC_EV_DWORD1(MHI_PKT_TYPE_CMD_COMPLETION_EVENT);
- 
- 	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
--	kfree(event);
-+	kmem_cache_free(mhi_cntrl->ev_ring_el_cache, event);
- 
- 	return ret;
- }
-@@ -451,7 +455,7 @@ static int mhi_ep_process_ch_ring(struct mhi_ep_ring *ring, struct mhi_ring_elem
- 		mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
- 	} else {
- 		/* UL channel */
--		result.buf_addr = kzalloc(len, GFP_KERNEL);
-+		result.buf_addr = kmem_cache_zalloc(mhi_cntrl->tre_buf_cache, GFP_KERNEL | GFP_DMA);
- 		if (!result.buf_addr)
- 			return -ENOMEM;
- 
-@@ -459,7 +463,7 @@ static int mhi_ep_process_ch_ring(struct mhi_ep_ring *ring, struct mhi_ring_elem
- 			ret = mhi_ep_read_channel(mhi_cntrl, ring, &result, len);
- 			if (ret < 0) {
- 				dev_err(&mhi_chan->mhi_dev->dev, "Failed to read channel\n");
--				kfree(result.buf_addr);
-+				kmem_cache_free(mhi_cntrl->tre_buf_cache, result.buf_addr);
- 				return ret;
- 			}
- 
-@@ -471,7 +475,7 @@ static int mhi_ep_process_ch_ring(struct mhi_ep_ring *ring, struct mhi_ring_elem
- 			/* Read until the ring becomes empty */
- 		} while (!mhi_ep_queue_is_empty(mhi_chan->mhi_dev, DMA_TO_DEVICE));
- 
--		kfree(result.buf_addr);
-+		kmem_cache_free(mhi_cntrl->tre_buf_cache, result.buf_addr);
- 	}
- 
- 	return 0;
-@@ -780,14 +784,14 @@ static void mhi_ep_ch_ring_worker(struct work_struct *work)
- 		if (ret) {
- 			dev_err(dev, "Error updating write offset for ring\n");
- 			mutex_unlock(&chan->lock);
--			kfree(itr);
-+			kmem_cache_free(mhi_cntrl->ring_item_cache, itr);
- 			continue;
- 		}
- 
- 		/* Sanity check to make sure there are elements in the ring */
- 		if (ring->rd_offset == ring->wr_offset) {
- 			mutex_unlock(&chan->lock);
--			kfree(itr);
-+			kmem_cache_free(mhi_cntrl->ring_item_cache, itr);
- 			continue;
- 		}
- 
-@@ -799,12 +803,12 @@ static void mhi_ep_ch_ring_worker(struct work_struct *work)
- 			dev_err(dev, "Error processing ring for channel (%u): %d\n",
- 				ring->ch_id, ret);
- 			mutex_unlock(&chan->lock);
--			kfree(itr);
-+			kmem_cache_free(mhi_cntrl->ring_item_cache, itr);
- 			continue;
- 		}
- 
- 		mutex_unlock(&chan->lock);
--		kfree(itr);
-+		kmem_cache_free(mhi_cntrl->ring_item_cache, itr);
- 	}
- }
- 
-@@ -860,7 +864,7 @@ static void mhi_ep_queue_channel_db(struct mhi_ep_cntrl *mhi_cntrl, unsigned lon
- 		u32 ch_id = ch_idx + i;
- 
- 		ring = &mhi_cntrl->mhi_chan[ch_id].ring;
--		item = kzalloc(sizeof(*item), GFP_ATOMIC);
-+		item = kmem_cache_zalloc(mhi_cntrl->ring_item_cache, GFP_ATOMIC);
- 		if (!item)
- 			return;
- 
-@@ -1407,6 +1411,29 @@ int mhi_ep_register_controller(struct mhi_ep_cntrl *mhi_cntrl,
- 		goto err_free_ch;
- 	}
- 
-+	mhi_cntrl->ev_ring_el_cache = kmem_cache_create("mhi_ep_event_ring_el",
-+							sizeof(struct mhi_ring_element), 0,
-+							SLAB_CACHE_DMA, NULL);
-+	if (!mhi_cntrl->ev_ring_el_cache) {
-+		ret = -ENOMEM;
-+		goto err_free_cmd;
-+	}
-+
-+	mhi_cntrl->tre_buf_cache = kmem_cache_create("mhi_ep_tre_buf", MHI_EP_DEFAULT_MTU, 0,
-+						      SLAB_CACHE_DMA, NULL);
-+	if (!mhi_cntrl->tre_buf_cache) {
-+		ret = -ENOMEM;
-+		goto err_destroy_ev_ring_el_cache;
-+	}
-+
-+	mhi_cntrl->ring_item_cache = kmem_cache_create("mhi_ep_ring_item",
-+							sizeof(struct mhi_ep_ring_item), 0,
-+							0, NULL);
-+	if (!mhi_cntrl->ev_ring_el_cache) {
-+		ret = -ENOMEM;
-+		goto err_destroy_tre_buf_cache;
-+	}
-+
- 	INIT_WORK(&mhi_cntrl->state_work, mhi_ep_state_worker);
- 	INIT_WORK(&mhi_cntrl->reset_work, mhi_ep_reset_worker);
- 	INIT_WORK(&mhi_cntrl->cmd_ring_work, mhi_ep_cmd_ring_worker);
-@@ -1415,7 +1442,7 @@ int mhi_ep_register_controller(struct mhi_ep_cntrl *mhi_cntrl,
- 	mhi_cntrl->wq = alloc_workqueue("mhi_ep_wq", 0, 0);
- 	if (!mhi_cntrl->wq) {
- 		ret = -ENOMEM;
--		goto err_free_cmd;
-+		goto err_destroy_ring_item_cache;
- 	}
- 
- 	INIT_LIST_HEAD(&mhi_cntrl->st_transition_list);
-@@ -1474,6 +1501,12 @@ int mhi_ep_register_controller(struct mhi_ep_cntrl *mhi_cntrl,
- 	ida_free(&mhi_ep_cntrl_ida, mhi_cntrl->index);
- err_destroy_wq:
- 	destroy_workqueue(mhi_cntrl->wq);
-+err_destroy_ring_item_cache:
-+	kmem_cache_destroy(mhi_cntrl->ring_item_cache);
-+err_destroy_ev_ring_el_cache:
-+	kmem_cache_destroy(mhi_cntrl->ev_ring_el_cache);
-+err_destroy_tre_buf_cache:
-+	kmem_cache_destroy(mhi_cntrl->tre_buf_cache);
- err_free_cmd:
- 	kfree(mhi_cntrl->mhi_cmd);
- err_free_ch:
-@@ -1495,6 +1528,9 @@ void mhi_ep_unregister_controller(struct mhi_ep_cntrl *mhi_cntrl)
- 
- 	free_irq(mhi_cntrl->irq, mhi_cntrl);
- 
-+	kmem_cache_destroy(mhi_cntrl->tre_buf_cache);
-+	kmem_cache_destroy(mhi_cntrl->ev_ring_el_cache);
-+	kmem_cache_destroy(mhi_cntrl->ring_item_cache);
- 	kfree(mhi_cntrl->mhi_cmd);
- 	kfree(mhi_cntrl->mhi_chan);
- 
-diff --git a/include/linux/mhi_ep.h b/include/linux/mhi_ep.h
-index f198a8ac7ee7..ce85d42b685d 100644
---- a/include/linux/mhi_ep.h
-+++ b/include/linux/mhi_ep.h
-@@ -128,6 +128,9 @@ struct mhi_ep_cntrl {
- 	struct work_struct reset_work;
- 	struct work_struct cmd_ring_work;
- 	struct work_struct ch_ring_work;
-+	struct kmem_cache *ring_item_cache;
-+	struct kmem_cache *ev_ring_el_cache;
-+	struct kmem_cache *tre_buf_cache;
- 
- 	void (*raise_irq)(struct mhi_ep_cntrl *mhi_cntrl, u32 vector);
- 	int (*alloc_map)(struct mhi_ep_cntrl *mhi_cntrl, u64 pci_addr, phys_addr_t *phys_ptr,
-
-base-commit: 12606ba1d46b34a241eb3d0956727e5379f0f626
 -- 
-2.25.1
-
+Regards,
+Yi Liu
