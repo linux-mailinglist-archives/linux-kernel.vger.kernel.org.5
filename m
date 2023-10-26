@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EF37D87E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5497D87ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbjJZR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        id S231872AbjJZR7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 13:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjJZR6r (ORCPT
+        with ESMTP id S230330AbjJZR7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:58:47 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233D3194;
-        Thu, 26 Oct 2023 10:58:45 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5820299b99cso1159757eaf.1;
-        Thu, 26 Oct 2023 10:58:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698343124; x=1698947924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 26 Oct 2023 13:59:30 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72351B6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:59:27 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso1866207a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 10:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698343166; x=1698947966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8z1yGiJBBI9AoK8qoFUV3Ia7kjAwo9PR+/1kimU+UtM=;
-        b=C01vKXbtdd0pPfC6htRJLm1kFZb8iLmGqvNOBgL7Widekr9iLjRCdMijknux4kI6X2
-         WNUfQ6WXRr9qPhx1EyrVE972MeeyLgt5p3Kdw2hh/EwryFXvbUcbFvuF2uacZUOCYMxk
-         g7WsVpbv+mZLTpiJRMOufuQMDTBMk7SzF7sdUS0SrgPBXNnd+BAERHTTMgrw1t35UrOb
-         KYTxsfuXYkW3KHcyn6RwM2g5arYSegFuhShUaQTPN6rRiRvpob+cojPqe7YQOQTRMLxH
-         +kMdtFf4b/oR47eQCkVAlf1T8KWMmjjongvXkMv2o2ErZmLMdOWZInX3nlBzl7/mBTER
-         VDag==
-X-Gm-Message-State: AOJu0YwuopFpRts1LbjxwYoYe7Bo/MMs6Udy5A6mKWfHerDsmqFurSsn
-        SN23qnw5TJvH2jJjJ94ggOYWG/ZaoQ==
-X-Google-Smtp-Source: AGHT+IHr9EOYODQ6j0BtriylyMdcCEFd57N1ORR/U0SxrpWPOj4Kh9FB988mGZIYTgeXUar4RzptMg==
-X-Received: by 2002:a05:6870:10d4:b0:1e9:eb35:c548 with SMTP id 20-20020a05687010d400b001e9eb35c548mr313657oar.6.1698343124249;
-        Thu, 26 Oct 2023 10:58:44 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id v24-20020a056830141800b006ce3241a7fasm2740604otp.72.2023.10.26.10.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 10:58:43 -0700 (PDT)
-Received: (nullmailer pid 4107072 invoked by uid 1000);
-        Thu, 26 Oct 2023 17:58:42 -0000
-Date:   Thu, 26 Oct 2023 12:58:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chancel Liu <chancel.liu@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] ASoC: dt-bindings: sound-card-common: List sound
- widgets ignoring system suspend
-Message-ID: <20231026175842.GA4101469-robh@kernel.org>
-References: <20231023020718.1276000-1-chancel.liu@nxp.com>
+        bh=1w/kSr2KveuTw8WecJoTR/o4YptbqW7cASbxPYo+p8w=;
+        b=lcnuQEzfrJlCi5aTZf89r9olWQZtS6LevgFq8d1qM1jQcZsOs7mTl7qbq1A3kh5mmb
+         0WfRy3uctfn0Z3We8qU0WLXb9//Jhhxsim991tv89jT6BfNv1ND9tR4LdTzAp+6Qx5UG
+         40Nv7+LooBaOIyZj/oVSLSEGp61YoX6eUFNlrqKX/4KqHqw1JiHrFuP9OklUNdZsYR2S
+         3/Itn8zDM3icWHCLX02gCU3KbXpRAm24OpePgPFItVAWqD97CldZ6NdT7XNEn3dn9jOH
+         7darBO2Mf29pBgPj56hdlneXawgwMInE2IN7wDBYpKCSwy01v4rVic3jjlM65KwmzsRs
+         VQNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698343166; x=1698947966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1w/kSr2KveuTw8WecJoTR/o4YptbqW7cASbxPYo+p8w=;
+        b=reIaibR+KFAwGsblx8YSEB/xoreqbKgAN43eeKOl+IzpqxY4EhpOc7qobVJHhyrvXR
+         5r03Fn44ar5pTnQJLgwP65ekdsNLj3r/heP/1YyV2NyVSFiqZ9SxBZxf1a4S21iT/k5F
+         45oXpE3OWOMMM1cPIhR1rkWyQiGnDY+rFKsJ5fdslMvzSeSxZZXUGy6n4lV6/76Kd1US
+         RMRuXq4qtvCBX4Xg2F/12/P4/RdhX0wDBPulWXwYBWb6PFVgLW/Hy8qujuNFlkFOUeKM
+         tg5B05HlhtMpBNjpHEyffv8UU4nA8tykLWzIPZLh+pQDAFxGzhaUvh2KOoQbMqkNaDUa
+         skWg==
+X-Gm-Message-State: AOJu0YyuSqSp1Sb0bJnFj4XfxAo+HOQ3IObym+pHCShzZvlYC4u0s9AM
+        iGpIrzKfJuC5y1zcWo36fXAwDB5h/g7VHoQ4l4I=
+X-Google-Smtp-Source: AGHT+IFmiMI0VxE+EbR2MK72Jy8+9lVzxV++f+9Bquqosr6csrgh7Be29B8y5UV2Wm+rSCNTL0v5Wpte9Pc/NHrdtNA=
+X-Received: by 2002:a50:9ecb:0:b0:53f:ef3b:adbb with SMTP id
+ a69-20020a509ecb000000b0053fef3badbbmr479225edf.2.1698343165868; Thu, 26 Oct
+ 2023 10:59:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023020718.1276000-1-chancel.liu@nxp.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-2-brgerst@gmail.com>
+In-Reply-To: <20231026160100.195099-2-brgerst@gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Thu, 26 Oct 2023 19:59:14 +0200
+Message-ID: <CAFULd4ZLBtdJSQb2wfq=xFPEWPYT4TX306qfeoUL7LJ3Naq3AA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/11] x86/stackprotector/32: Remove stack protector
+ test script
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 10:07:17AM +0800, Chancel Liu wrote:
-> Add a property to list audio sound widgets which are marked ignoring
-> system suspend. Paths between these endpoints are still active over
-> suspend of the main application processor that the current operating
-> system is running.
+On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
+te:
+>
+> Test for compiler support directly in Kconfig.
+>
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
 
-Perhaps it would be better to define components used for low power 
-audio rather than the OS mode that gets used. Isn't LPA just audio 
-handling that doesn't require the OS CPU to be involved? So the state of 
-the CPU is kind of orthogonal.
+Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
 
-Rob
+> ---
+>  arch/x86/Kconfig                          | 2 +-
+>  scripts/gcc-x86_32-has-stack-protector.sh | 8 --------
+>  2 files changed, 1 insertion(+), 9 deletions(-)
+>  delete mode 100755 scripts/gcc-x86_32-has-stack-protector.sh
+>
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 5ef081aa12ac..039872be1630 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -411,7 +411,7 @@ config PGTABLE_LEVELS
+>  config CC_HAS_SANE_STACKPROTECTOR
+>         bool
+>         default $(success,$(srctree)/scripts/gcc-x86_64-has-stack-protect=
+or.sh $(CC) $(CLANG_FLAGS)) if 64BIT
+> -       default $(success,$(srctree)/scripts/gcc-x86_32-has-stack-protect=
+or.sh $(CC) $(CLANG_FLAGS))
+> +       default $(cc-option,-mstack-protector-guard-reg=3Dfs -mstack-prot=
+ector-guard-symbol=3D__stack_chk_guard)
+>         help
+>           We have to make sure stack protector is unconditionally disable=
+d if
+>           the compiler produces broken code or if it does not let us cont=
+rol
+> diff --git a/scripts/gcc-x86_32-has-stack-protector.sh b/scripts/gcc-x86_=
+32-has-stack-protector.sh
+> deleted file mode 100755
+> index 825c75c5b715..000000000000
+> --- a/scripts/gcc-x86_32-has-stack-protector.sh
+> +++ /dev/null
+> @@ -1,8 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -# This requires GCC 8.1 or better.  Specifically, we require
+> -# -mstack-protector-guard-reg, added by
+> -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D81708
+> -
+> -echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0=
+ -fstack-protector -mstack-protector-guard-reg=3Dfs -mstack-protector-guard=
+-symbol=3D__stack_chk_guard - -o - 2> /dev/null | grep -q "%fs"
+> --
+> 2.41.0
+>
