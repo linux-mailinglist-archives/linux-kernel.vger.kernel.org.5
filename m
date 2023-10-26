@@ -2,207 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4F17D7ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4757D7AB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 04:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbjJZCOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 22:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
+        id S233199AbjJZCNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 22:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZCOF (ORCPT
+        with ESMTP id S229518AbjJZCNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 22:14:05 -0400
-Received: from m1312.mail.163.com (m1312.mail.163.com [220.181.13.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F818AB;
-        Wed, 25 Oct 2023 19:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=seZH83F4azqunw1CHtHm1iBRG2ZBjHjECrPKVOCMNyo=; b=k
-        p2+tw2fDOQvaZFk64ApMAjfHq3GUGg7lFKf3SXmyw2mpiaw5Nki0Euaui0pQi1tO
-        NdRzziO6gfeMbzzsHYdo0Q1LXiahytodJ2HNRNPoMu0FtBEA6GCBnwzFkhnIbxVC
-        PCr6eKkjvkWmfEjG4ea144jjnEgrEBVCFqvcqJcweE=
-Received: from be286$163.com ( [171.83.45.213] ) by ajax-webmail-wmsvr12
- (Coremail) ; Thu, 26 Oct 2023 10:13:24 +0800 (CST)
-X-Originating-IP: [171.83.45.213]
-Date:   Thu, 26 Oct 2023 10:13:24 +0800 (CST)
-From:   be286 <be286@163.com>
-To:     "Pavel Hofman" <pavel.hofman@ivitera.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH V2] usb: gadget: f_uac1: add adaptive sync support
- for capture
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <d1e4e69d-ed5a-39f2-c79a-dbe0edd1d57a@ivitera.com>
-References: <20231018074739.1234394-1-be286@163.com>
- <ff75dd5a-7c32-577b-9ac0-b2aecab3d02c@ivitera.com>
- <58292dd5.6385.18b612da88f.Coremail.be286@163.com>
- <d1e4e69d-ed5a-39f2-c79a-dbe0edd1d57a@ivitera.com>
-X-NTES-SC: AL_QuySCv6TuUwr4iGfZukWnkwahec9XsK3vPQi349TN5k0vynB+ys/fEdhHnv/3f6dJCyeiCCmfR5u6dZcVolqYZDyFD1uCXOnoKvzQ5pk4686
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Wed, 25 Oct 2023 22:13:38 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8C4182;
+        Wed, 25 Oct 2023 19:13:36 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-27d4b280e4eso266282a91.1;
+        Wed, 25 Oct 2023 19:13:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698286415; x=1698891215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PVtOucga/HOCt9RaToOcCBOddRstGXfEelwtCQYfWtQ=;
+        b=uF6j76JKI2s0JumJh2zTllze2Gv7+uVEmTTUqXjd9mdMZoqKTSZAfC9Rzf45ZqksZ+
+         /8eSSt9nDv+zyGBnz24I8Apnfr8JVr3wc4yT0wNT4VPTa1i1Wvb5oh8Zexk/NmVh8eOg
+         zrNwKz+4C5oUkkTjMZaJPGJF0Fe3h8q6UjHfiVyPFQkVBZUD7fZMiV0Lxv3UxWM4MXwT
+         h9sPgjWB4C0dRgEilwt+L7J8siSELVnJa1eP0FfCRdzixt4bAjhQRbMgQOmweDGUxTMi
+         F1HfCG0VhKbHgZQtCc9flLtK9qZeI9sRFKyyrw0rukcx92o8/RxwIrWTMFCe0lUnMuWX
+         qI1w==
+X-Gm-Message-State: AOJu0Yzg3IvRQwumPiHsvNbJLL9Th6ncGOu4dKOIK+q0syGbKm8IpOau
+        E2vW33Tm0I5UgVniEDI+syWqMigcl0imDTHTxsI=
+X-Google-Smtp-Source: AGHT+IEo66NaPcxTkpFcnyssE/3d/nqUYWfZ9BrDD1Op3sLt/qkKSANFyzcI2tFHw82vxrUDSRhjPKFM0wc4RhxkJa8=
+X-Received: by 2002:a17:90b:789:b0:27f:e51d:aab9 with SMTP id
+ l9-20020a17090b078900b0027fe51daab9mr1697980pjz.0.1698286415441; Wed, 25 Oct
+ 2023 19:13:35 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <56660239.15d7.18b69c2024f.Coremail.be286@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DMGowAAH9zhEyzllkp8cAA--.1469W
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiFR0U0l5mSC+RvQACs-
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231025173300.1776832-1-florian.fainelli@broadcom.com>
+ <20231025173300.1776832-5-florian.fainelli@broadcom.com> <CAMZ6RqJJXK5EyyOwXXbdA-bDTY=_JQ+xfKpoCHDJZqv+rNnASQ@mail.gmail.com>
+In-Reply-To: <CAMZ6RqJJXK5EyyOwXXbdA-bDTY=_JQ+xfKpoCHDJZqv+rNnASQ@mail.gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Thu, 26 Oct 2023 11:13:24 +0900
+Message-ID: <CAMZ6Rq+iBazJ+fM5yd5Tfa8==DEGV93iD-XojU=f1m3ScSGEww@mail.gmail.com>
+Subject: Re: [PATCH net-next 4/5] net: phy: broadcom: Add support for WAKE_FILTER
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Gal Pressman <gal@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Daniil Tatianin <d-tatianin@yandex-team.ru>,
+        Simon Horman <horms@kernel.org>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Ratheesh Kannoth <rkannoth@marvell.com>,
+        Joe Damato <jdamato@fastly.com>, Jiri Pirko <jiri@resnulli.us>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkhpIFBhdmVsLAoKS2VlcCB0aGUgYWRhcHRpdmUgbW9kZSBhcyBkZWZhdWx0IGlzIGJldHRlci4K
-ClRoYW5rcy4KCkNoYXJsZXMgWWkKCgoKCgoKCgpBdCAyMDIzLTEwLTI1IDE0OjQ0OjQ5LCAiUGF2
-ZWwgSG9mbWFuIiA8cGF2ZWwuaG9mbWFuQGl2aXRlcmEuY29tPiB3cm90ZToKPkRuZSAyNC4gMTAu
-IDIzIHYgMTI6MTQgYmUyODYgbmFwc2FsKGEpOgo+PiAKPj4gSGkgUGF2ZWwsCj4+IAo+PiBGZWVk
-YmFjayBlbmRwb2ludCB3b3JrcyBmb3IgdWNhMSBjYXB0dXJlLCBtZWFucyAiRVBPVVRfRU4iLgo+
-PiAKPj4gICBDaGFybGVzIFlpCj4+IAo+SGkgQ2hhcmxlcywKPgo+U29ycnkgZm9yIG15IG1pc3Rh
-a2UsIEkgdGhvdWdodCB5b3Ugd2VyZSBpbXBsZW1lbnRpbmcgYWRhcHRpdmUgbW9kZSBmb3IgCj5F
-UC1JTi4KPgo+SUlVQyBub3cgeW91ciBwYXRjaCBhZGRzIGFzeW5jaHJvbm91cyBtb2RlIChub3Qg
-YWRhcHRpdmUgc3luYykgdG8gVUFDMSAKPkVQIE9VVCwgaW4gdGhlIHNhbWUgd2F5IGFzIGltcGxl
-bWVudGVkIGluIFVBQzIuCj4KPklJVUMgeW91ciBwYXRjaCBhbHNvIGNoYW5nZXMgdGhlIFVBQzEg
-RVAtT1VUIGRlZmF1bHQgbW9kZSBmcm9tIGFkYXB0aXZlIAo+dG8gYXN5bmNocm9ub3VzIHZpYQo+
-Cj4gICsjZGVmaW5lIFVBQzFfREVGX0NTWU5DCQlVU0JfRU5EUE9JTlRfU1lOQ19BU1lOQwo+Cj5U
-aGUgY3VycmVudCAodGhlIG9ubHkgc3VwcG9ydGVkKSBtb2RlIGlzIGFkYXB0aXZlIAo+aHR0cHM6
-Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL3VzYi9nYWRn
-ZXQvZnVuY3Rpb24vZl91YWMxLmMjTDIxNDoKPgo+LyogU3RhbmRhcmQgSVNPIE9VVCBFbmRwb2lu
-dCBEZXNjcmlwdG9yICovCj5zdGF0aWMgc3RydWN0IHVzYl9lbmRwb2ludF9kZXNjcmlwdG9yIGFz
-X291dF9lcF9kZXNjICA9IHsKPgkuYkxlbmd0aCA9CQlVU0JfRFRfRU5EUE9JTlRfQVVESU9fU0la
-RSwKPgkuYkRlc2NyaXB0b3JUeXBlID0JVVNCX0RUX0VORFBPSU5ULAo+CS5iRW5kcG9pbnRBZGRy
-ZXNzID0JVVNCX0RJUl9PVVQsCj4JLmJtQXR0cmlidXRlcyA9CQlVU0JfRU5EUE9JTlRfU1lOQ19B
-REFQVElWRQo+CQkJCXwgVVNCX0VORFBPSU5UX1hGRVJfSVNPQywKPgkud01heFBhY2tldFNpemUJ
-PQljcHVfdG9fbGUxNihVQUMxX09VVF9FUF9NQVhfUEFDS0VUX1NJWkUpLAo+CS5iSW50ZXJ2YWwg
-PQkJNCwKPn07Cj4KPklNTyB0aGUgcGF0Y2ggc2hvdWxkIGtlZXAgdGhlIGFkYXB0aXZlIG1vZGUg
-YXMgZGVmYXVsdCwgdG8gbWFpbnRhaW4gCj5jb21wYXRpYmlsaXR5IHdpdGggdXNlciBzZXR1cHMu
-Cj4KPldpdGggcmVnYXJkcywKPgo+UGF2ZWwuCj4KPj4gCj4+IAo+PiAKPj4gCj4+IAo+PiAKPj4g
-Cj4+IEF0IDIwMjMtMTAtMTggMTc6NTI6MjAsICJQYXZlbCBIb2ZtYW4iIDxwYXZlbC5ob2ZtYW5A
-aXZpdGVyYS5jb20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBEbmUgMTguIDEwLiAyMyB2IDk6NDcgQ2hh
-cmxlcyBZaSBuYXBzYWwoYSk6Cj4+Pj4gVUFDMSBoYXMgaXQncyBvd24gZnJlZXJ1bm5pbmcgY2xv
-Y2sgYW5kIGNhbiB1cGRhdGUgSG9zdCBhYm91dAo+Pj4+IHJlYWwgY2xvY2sgZnJlcXVlbmN5IHRo
-cm91Z2ggZmVlZGJhY2sgZW5kcG9pbnQgc28gSG9zdCBjYW4gYWxpZ24KPj4+PiBudW1iZXIgb2Yg
-c2FtcGxlcyBzZW50IHRvIHRoZSBVQUMxIHRvIHByZXZlbnQgb3ZlcnJ1bnMvdW5kZXJydW5zLgo+
-Pj4+Cj4+Pj4gQ2hhbmdlIFVBQzEgZHJpdmVyIHRvIG1ha2UgaXQgY29uZmlndXJhYmxlIHRocm91
-Z2ggYWRkaXRpb25hbAo+Pj4+ICdjX3N5bmMnIGNvbmZpZ2ZzIGZpbGUuCj4+Pj4KPj4+PiBEZWZh
-dWx0IHJlbWFpbnMgJ2FzeW5jaHJvbm91cycgd2l0aCBwb3NzaWJpbGl0eSB0byBzd2l0Y2ggaXQK
-Pj4+PiB0byAnYWRhcHRpdmUnLgo+Pj4KPj4+Cj4+PiBIaSBDaGFybGVzLAo+Pj4KPj4+IFBsZWFz
-ZSBjYW4geW91IGNsYXJpZnkgbW9yZSB0aGUgYWRhcHRpdmUgRVAgSU4gc2NlbmFyaW8/IEkgYW0g
-YXdhcmUgdGhhdAo+Pj4gdGhlIGZfdWFjMi5jIGFsc28gYWxsb3dzIGRlZmluaW5nIGNfc3luYyB0
-eXBlICh0aGF0J3Mgd2hhdCB5b3VyIHBhdGNoIGlzCj4+PiBiYXNlZCBvbikuCj4+Pgo+Pj4gSUlV
-QyB0aGUgZGF0YSBwcm9kdWN0aW9uIHJhdGUgb2YgYWRhcHRpdmUgc291cmNlIGVuZHBvaW50IChp
-LmUuIEVQIElOKQo+Pj4gaXMgY29udHJvbGxlZCBieSBmZWVkIGZvcndhcmQgbWVzc2FnZXMgZnJv
-bSB0aGUgaG9zdAo+Pj4gUXVvdGluZyBodHRwOi8vc2RwaGEyLnVjc2QuZWR1L0xhYl9FcXVpcF9N
-YW51YWxzL3VzYl8yMC5wZGYgcGFnZSA3MzoKPj4+Cj4+PiAiQWRhcHRpdmUgc291cmNlIGVuZHBv
-aW50cyBwcm9kdWNlIGRhdGEgYXQgYSByYXRlIHRoYXQgaXMgY29udHJvbGxlZCBieQo+Pj4gdGhl
-IGRhdGEgc2luay4gVGhlIHNpbmsgcHJvdmlkZXMgZmVlZGJhY2sgKHJlZmVyIHRvIFNlY3Rpb24g
-NS4xMi40LjIpIHRvCj4+PiB0aGUgc291cmNlLCB3aGljaCBhbGxvd3MgdGhlIHNvdXJjZSB0byBr
-bm93IHRoZSBkZXNpcmVkIGRhdGEgcmF0ZSBvZiB0aGUKPj4+IHNpbmsuIgo+Pj4KPj4+IFdoaWxl
-IHRoZSBjdXJyZW50IGZfdWFjMiBpbXBsZW1lbnRhdGlvbiBnZW5lcmF0ZXMgZmVlZGJhY2sgZm9y
-IEVQIE9VVAo+Pj4gYXN5bmMgKHVubGlrZSBmX3VhYzEpLCBJIGNhbm5vdCBmaW5kIGFueSBzdXBw
-b3J0IGZvciBpbmNvbWluZwo+Pj4gZmVlZC1mb3J3YXJkIG1lc3NhZ2VzIGZyb20gdGhlIGhvc3Qg
-Zm9yIEVQIElOIGFkYXB0aXZlIGNhc2UuIE5laXRoZXIgaW4KPj4+IGZfdWFjMSwgb2YgY291cnNl
-Lgo+Pj4KPj4+IEkgYW0gbm90IHN1cmUgaWYgbGludXggc3VwcG9ydHMgSU4gRVAgYWRhcHRpdmUs
-IGJ1dCB0aGUgTVMgVUFDMiBkcml2ZXIKPj4+IGRvZXMgbm90Cj4+PiBodHRwczovL2xlYXJuLm1p
-Y3Jvc29mdC5jb20vZW4tdXMvd2luZG93cy1oYXJkd2FyZS9kcml2ZXJzL2F1ZGlvL3VzYi0yLTAt
-YXVkaW8tZHJpdmVycyNhdWRpby1zdHJlYW1pbmc6Cj4+Pgo+Pj4gIkZvciB0aGUgQWRhcHRpdmUg
-SU4gY2FzZSB0aGUgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydCBhIGZlZWQgZm9yd2FyZAo+Pj4gZW5k
-cG9pbnQuIElmIHN1Y2ggYW4gZW5kcG9pbnQgaXMgcHJlc2VudCBpbiB0aGUgYWx0ZXJuYXRlIHNl
-dHRpbmcsIGl0Cj4+PiB3aWxsIGJlIGlnbm9yZWQuIFRoZSBkcml2ZXIgaGFuZGxlcyB0aGUgQWRh
-cHRpdmUgSU4gc3RyZWFtIGluIHRoZSBzYW1lCj4+PiB3YXkgYXMgYW4gQXN5bmNocm9ub3VzIElO
-IHN0cmVhbS4iCj4+Pgo+Pj4gSUlVQyAoYW5kIEkgbWF5IGJlIHdyb25nKSBhbGwgdGhlIGNfc3lu
-YyBwYXJhbSBkb2VzIGluIGZfdWFjMiAoYW5kCj4+PiBmX3VhYzEgaW4geW91ciBwYXRjaCkgaXMg
-anVzdCBjaGFuZ2luZyB0aGUgRVAgSU4gY29uZmlndXJhdGlvbiBmbGFnLCBidXQKPj4+IHRoZSBh
-Y3R1YWwgc3VwcG9ydCBmb3IgdHJ1bHkgYWRhcHRpdmUgRVAgSU4gaXMgbm90IGltcGxlbWVudGVk
-LiBJTU8KPj4+IHRoZXJlIGlzIG5vIGNvZGUgd2hpY2ggd291bGQgYWNjZXB0IHRoZSBmZWVkLWZv
-cndhcmQgbWVzc2FnZSBmcm9tIHRoZQo+Pj4gaG9zdCBhbmQgYWRqdXN0IHRoZSByYXRlIGF0IHdo
-aWNoIHNhbXBsZXMgYXJlIGNvbnN1bWVkIGZyb20gdGhlIGFsc2EKPj4+IGJ1ZmZlciB0byBFUCBJ
-TiBwYWNrZXRzIChtZXRob2QgdV9hdWRpb19pc29fY29tcGxldGUKPj4+IGh0dHBzOi8vZWxpeGly
-LmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0
-aW9uL3VfYXVkaW8uYyNMMTkzCj4+PiApCj4+Pgo+Pj4gVGhhdCBwZXJ0YWlucyBhIGJpdCB0byB0
-aGUgZmlyc3Qgc2VudGVuY2Ugb2YgeW91ciBwYXRjaCAtIElNTyBpdAo+Pj4gZGVzY3JpYmVzIEVQ
-IE9VVCBhc3luYywgYnV0IG5vdCBFUCBJTiBhZGFwdGl2ZS4KPj4+Cj4+PiBUaGFua3MgYSBsb3Qg
-Zm9yIGEgYml0IG9mIGNsYXJpZmljYXRpb24uCj4+Pgo+Pj4gUGF2ZWwuCj4+Pgo+Pj4KPj4+Pgo+
-Pj4+IENoYW5nZXMgaW4gVjI6Cj4+Pj4gLSBVcGRhdGVkIHRoZSBpbmRlbnRhdGlvbiBvZiBjb21t
-aXQgbWVzc2FnZS4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6IENoYXJsZXMgWWkgPGJlMjg2QDE2
-My5jb20+Cj4+Pj4gLS0tCj4+Pj4gICAgZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFj
-MS5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+Pj4+ICAgIGRyaXZlcnMvdXNi
-L2dhZGdldC9mdW5jdGlvbi91X3VhYzEuaCB8ICAyICsrCj4+Pj4gICAgMiBmaWxlcyBjaGFuZ2Vk
-LCAzMiBpbnNlcnRpb25zKCspCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2Fk
-Z2V0L2Z1bmN0aW9uL2ZfdWFjMS5jIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFj
-MS5jCj4+Pj4gaW5kZXggNmYwZTFkODAzZGMyLi43YTZmY2I0MGJiNDYgMTAwNjQ0Cj4+Pj4gLS0t
-IGEvZHJpdmVycy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFjMS5jCj4+Pj4gKysrIGIvZHJpdmVy
-cy91c2IvZ2FkZ2V0L2Z1bmN0aW9uL2ZfdWFjMS5jCj4+Pj4gQEAgLTMzLDYgKzMzLDggQEAKPj4+
-PiAgICAjZGVmaW5lIEZVT1VUX0VOKF9vcHRzKSAoKF9vcHRzKS0+Y19tdXRlX3ByZXNlbnQgXAo+
-Pj4+ICAgIAkJCXx8IChfb3B0cyktPmNfdm9sdW1lX3ByZXNlbnQpCj4+Pj4gICAgCj4+Pj4gKyNk
-ZWZpbmUgRVBPVVRfRkJBQ0tfSU5fRU4oX29wdHMpICgoX29wdHMpLT5jX3N5bmMgPT0gVVNCX0VO
-RFBPSU5UX1NZTkNfQVNZTkMpCj4+Pj4gKwo+Pj4+ICAgIHN0cnVjdCBmX3VhYzEgewo+Pj4+ICAg
-IAlzdHJ1Y3QgZ19hdWRpbyBnX2F1ZGlvOwo+Pj4+ICAgIAl1OCBhY19pbnRmLCBhc19pbl9pbnRm
-LCBhc19vdXRfaW50ZjsKPj4+PiBAQCAtMjI3LDYgKzIyOSwxNiBAQCBzdGF0aWMgc3RydWN0IHVh
-Y19pc29fZW5kcG9pbnRfZGVzY3JpcHRvciBhc19pc29fb3V0X2Rlc2MgPSB7Cj4+Pj4gICAgCS53
-TG9ja0RlbGF5ID0JCWNwdV90b19sZTE2KDEpLAo+Pj4+ICAgIH07Cj4+Pj4gICAgCj4+Pj4gK3N0
-YXRpYyBzdHJ1Y3QgdXNiX2VuZHBvaW50X2Rlc2NyaXB0b3IgYXNfZmJhY2tfZXBfZGVzYyA9IHsK
-Pj4+PiArCS5iTGVuZ3RoID0gVVNCX0RUX0VORFBPSU5UX1NJWkUsCj4+Pj4gKwkuYkRlc2NyaXB0
-b3JUeXBlID0gVVNCX0RUX0VORFBPSU5ULAo+Pj4+ICsKPj4+PiArCS5iRW5kcG9pbnRBZGRyZXNz
-ID0gVVNCX0RJUl9JTiwKPj4+PiArCS5ibUF0dHJpYnV0ZXMgPSBVU0JfRU5EUE9JTlRfWEZFUl9J
-U09DIHwgVVNCX0VORFBPSU5UX1VTQUdFX0ZFRURCQUNLLAo+Pj4+ICsJLndNYXhQYWNrZXRTaXpl
-ID0gY3B1X3RvX2xlMTYoMyksCj4+Pj4gKwkuYkludGVydmFsID0gMSwKPj4+PiArfTsKPj4+PiAr
-Cj4+Pj4gICAgc3RhdGljIHN0cnVjdCB1YWNfZm9ybWF0X3R5cGVfaV9kaXNjcmV0ZV9kZXNjcmlw
-dG9yIGFzX2luX3R5cGVfaV9kZXNjID0gewo+Pj4+ICAgIAkuYkxlbmd0aCA9CQkwLCAvKiBmaWxs
-ZWQgb24gcmF0ZSBzZXR1cCAqLwo+Pj4+ICAgIAkuYkRlc2NyaXB0b3JUeXBlID0JVVNCX0RUX0NT
-X0lOVEVSRkFDRSwKPj4+PiBAQCAtMjgwLDYgKzI5Miw3IEBAIHN0YXRpYyBzdHJ1Y3QgdXNiX2Rl
-c2NyaXB0b3JfaGVhZGVyICpmX2F1ZGlvX2Rlc2NbXSA9IHsKPj4+PiAgICAKPj4+PiAgICAJKHN0
-cnVjdCB1c2JfZGVzY3JpcHRvcl9oZWFkZXIgKikmYXNfb3V0X2VwX2Rlc2MsCj4+Pj4gICAgCShz
-dHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2lzb19vdXRfZGVzYywKPj4+PiArCShz
-dHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2ZiYWNrX2VwX2Rlc2MsCj4+Pj4gICAg
-Cj4+Pj4gICAgCShzdHJ1Y3QgdXNiX2Rlc2NyaXB0b3JfaGVhZGVyICopJmFzX2luX2ludGVyZmFj
-ZV9hbHRfMF9kZXNjLAo+Pj4+ICAgIAkoc3RydWN0IHVzYl9kZXNjcmlwdG9yX2hlYWRlciAqKSZh
-c19pbl9pbnRlcmZhY2VfYWx0XzFfZGVzYywKPj4+PiBAQCAtMTEwNyw2ICsxMTIwLDkgQEAgc3Rh
-dGljIHZvaWQgc2V0dXBfZGVzY3JpcHRvcihzdHJ1Y3QgZl91YWMxX29wdHMgKm9wdHMpCj4+Pj4g
-ICAgCQlmX2F1ZGlvX2Rlc2NbaSsrXSA9IFVTQkRIRFIoJmFzX291dF90eXBlX2lfZGVzYyk7Cj4+
-Pj4gICAgCQlmX2F1ZGlvX2Rlc2NbaSsrXSA9IFVTQkRIRFIoJmFzX291dF9lcF9kZXNjKTsKPj4+
-PiAgICAJCWZfYXVkaW9fZGVzY1tpKytdID0gVVNCREhEUigmYXNfaXNvX291dF9kZXNjKTsKPj4+
-PiArCQlpZiAoRVBPVVRfRkJBQ0tfSU5fRU4ob3B0cykpIHsKPj4+PiArCQkJZl9hdWRpb19kZXNj
-W2krK10gPSBVU0JESERSKCZhc19mYmFja19lcF9kZXNjKTsKPj4+PiArCQl9Cj4+Pj4gICAgCX0K
-Pj4+PiAgICAJaWYgKEVQSU5fRU4ob3B0cykpIHsKPj4+PiAgICAJCWZfYXVkaW9fZGVzY1tpKytd
-ID0gVVNCREhEUigmYXNfaW5faW50ZXJmYWNlX2FsdF8wX2Rlc2MpOwo+Pj4+IEBAIC0xMzE3LDYg
-KzEzMzMsMTIgQEAgc3RhdGljIGludCBmX2F1ZGlvX2JpbmQoc3RydWN0IHVzYl9jb25maWd1cmF0
-aW9uICpjLCBzdHJ1Y3QgdXNiX2Z1bmN0aW9uICpmKQo+Pj4+ICAgIAkJYWNfaGVhZGVyX2Rlc2Mt
-PmJhSW50ZXJmYWNlTnJbYmFfaWZhY2VfaWQrK10gPSBzdGF0dXM7Cj4+Pj4gICAgCQl1YWMxLT5h
-c19vdXRfaW50ZiA9IHN0YXR1czsKPj4+PiAgICAJCXVhYzEtPmFzX291dF9hbHQgPSAwOwo+Pj4+
-ICsKPj4+PiArCQlpZiAoRVBPVVRfRkJBQ0tfSU5fRU4oYXVkaW9fb3B0cykpIHsKPj4+PiArCQkJ
-YXNfb3V0X2VwX2Rlc2MuYm1BdHRyaWJ1dGVzID0KPj4+PiArCQkJVVNCX0VORFBPSU5UX1hGRVJf
-SVNPQyB8IFVTQl9FTkRQT0lOVF9TWU5DX0FTWU5DOwo+Pj4+ICsJCQlhc19vdXRfaW50ZXJmYWNl
-X2FsdF8xX2Rlc2MuYk51bUVuZHBvaW50cysrOwo+Pj4+ICsJCX0KPj4+PiAgICAJfQo+Pj4+ICAg
-IAo+Pj4+ICAgIAlpZiAoRVBJTl9FTihhdWRpb19vcHRzKSkgewo+Pj4+IEBAIC0xMzU0LDYgKzEz
-NzYsMTIgQEAgc3RhdGljIGludCBmX2F1ZGlvX2JpbmQoc3RydWN0IHVzYl9jb25maWd1cmF0aW9u
-ICpjLCBzdHJ1Y3QgdXNiX2Z1bmN0aW9uICpmKQo+Pj4+ICAgIAkJCWdvdG8gZXJyX2ZyZWVfZnU7
-Cj4+Pj4gICAgCQlhdWRpby0+b3V0X2VwID0gZXA7Cj4+Pj4gICAgCQlhdWRpby0+b3V0X2VwLT5k
-ZXNjID0gJmFzX291dF9lcF9kZXNjOwo+Pj4+ICsJCWlmIChFUE9VVF9GQkFDS19JTl9FTihhdWRp
-b19vcHRzKSkgewo+Pj4+ICsJCQlhdWRpby0+aW5fZXBfZmJhY2sgPSB1c2JfZXBfYXV0b2NvbmZp
-ZyhnYWRnZXQsICZhc19mYmFja19lcF9kZXNjKTsKPj4+PiArCQkJaWYgKCFhdWRpby0+aW5fZXBf
-ZmJhY2spIHsKPj4+PiArCQkJCWdvdG8gZXJyX2ZyZWVfZnU7Cj4+Pj4gKwkJCX0KPj4+PiArCQl9
-Cj4+Pj4gICAgCX0KPj4+PiAgICAKPj4+PiAgICAJaWYgKEVQSU5fRU4oYXVkaW9fb3B0cykpIHsK
-Pj4+PiBAQCAtMTY4NSw2ICsxNzEzLDggQEAgc3RhdGljIHN0cnVjdCB1c2JfZnVuY3Rpb25faW5z
-dGFuY2UgKmZfYXVkaW9fYWxsb2NfaW5zdCh2b2lkKQo+Pj4+ICAgIAo+Pj4+ICAgIAlvcHRzLT5y
-ZXFfbnVtYmVyID0gVUFDMV9ERUZfUkVRX05VTTsKPj4+PiAgICAKPj4+PiArCW9wdHMtPmNfc3lu
-YyA9IFVBQzFfREVGX0NTWU5DOwo+Pj4+ICsKPj4+PiAgICAJc25wcmludGYob3B0cy0+ZnVuY3Rp
-b25fbmFtZSwgc2l6ZW9mKG9wdHMtPmZ1bmN0aW9uX25hbWUpLCAiQUMgSW50ZXJmYWNlIik7Cj4+
-Pj4gICAgCj4+Pj4gICAgCXJldHVybiAmb3B0cy0+ZnVuY19pbnN0Owo+Pj4+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmggYi9kcml2ZXJzL3VzYi9nYWRn
-ZXQvZnVuY3Rpb24vdV91YWMxLmgKPj4+PiBpbmRleCBmN2E2MTY3NjBlMzEuLmM2ZTIyNzFlOGNk
-ZCAxMDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmgK
-Pj4+PiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV91YWMxLmgKPj4+PiBAQCAt
-MjcsNiArMjcsNyBAQAo+Pj4+ICAgICNkZWZpbmUgVUFDMV9ERUZfTUFYX0RCCQkwCQkvKiAwIGRC
-ICovCj4+Pj4gICAgI2RlZmluZSBVQUMxX0RFRl9SRVNfREIJCSgxKjI1NikJLyogMSBkQiAqLwo+
-Pj4+ICAgIAo+Pj4+ICsjZGVmaW5lIFVBQzFfREVGX0NTWU5DCQlVU0JfRU5EUE9JTlRfU1lOQ19B
-U1lOQwo+Pj4+ICAgIAo+Pj4+ICAgIHN0cnVjdCBmX3VhYzFfb3B0cyB7Cj4+Pj4gICAgCXN0cnVj
-dCB1c2JfZnVuY3Rpb25faW5zdGFuY2UJZnVuY19pbnN0Owo+Pj4+IEBAIC01Niw2ICs1Nyw3IEBA
-IHN0cnVjdCBmX3VhYzFfb3B0cyB7Cj4+Pj4gICAgCj4+Pj4gICAgCXN0cnVjdCBtdXRleAkJCWxv
-Y2s7Cj4+Pj4gICAgCWludAkJCQlyZWZjbnQ7Cj4+Pj4gKwlpbnQJCQkJY19zeW5jOwo+Pj4+ICAg
-IH07Cj4+Pj4gICAgCj4+Pj4gICAgI2VuZGlmIC8qIF9fVV9VQUMxX0ggKi8K
+On Thu. 26 Oct. 2023 at 10:10, Vincent MAILHOL
+<mailhol.vincent@wanadoo.fr> wrote:
+> Hi Florian,
+>
+> On Thu. 26 Oct. 2023 at 02:32, Florian Fainelli
+> <florian.fainelli@broadcom.com> wrote:
+> > Since the PHY is capable of matching any arbitrary Ethernet MAC
+> > destination as a programmable wake-up pattern, add support for doing
+> > that using the WAKE_FILTER and ethtool::rxnfc API. For instance, in
+> > order to wake-up from the Ethernet MAC address corresponding to the IPv4
+> > multicast IP address of 224.0.0.251 (e.g.: multicast DNS), one could do:
+> >
+> > ethtool -N eth0 flow-type ether dst 01:00:5e:00:00:fb loc 0 action -2
+> > ethtool -n eth0
+> > Total 1 rules
+> >
+> > Filter: 0
+> >         Flow Type: Raw Ethernet
+> >         Src MAC addr: 00:00:00:00:00:00 mask: FF:FF:FF:FF:FF:FF
+> >         Dest MAC addr: 01:00:5E:00:00:FB mask: 00:00:00:00:00:00
+> >         Ethertype: 0x0 mask: 0xFFFF
+> >         Action: Wake-on-LAN
+> > ethtool -s eth0 wol f
+>
+> Nit: indent the commands and their output with two spaces.
+>
+> > Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > ---
+> >  drivers/net/phy/bcm-phy-lib.c | 195 +++++++++++++++++++++++++++++++++-
+> >  drivers/net/phy/bcm-phy-lib.h |   5 +
+> >  drivers/net/phy/broadcom.c    |   2 +
+> >  3 files changed, 201 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/phy/bcm-phy-lib.c b/drivers/net/phy/bcm-phy-lib.c
+> > index 876f28fd8256..cfbeedc5ee81 100644
+> > --- a/drivers/net/phy/bcm-phy-lib.c
+> > +++ b/drivers/net/phy/bcm-phy-lib.c
+> > @@ -827,7 +827,8 @@ EXPORT_SYMBOL_GPL(bcm_phy_cable_test_get_status_rdb);
+> >                                          WAKE_MCAST | \
+> >                                          WAKE_BCAST | \
+> >                                          WAKE_MAGIC | \
+> > -                                        WAKE_MAGICSECURE)
+> > +                                        WAKE_MAGICSECURE | \
+> > +                                        WAKE_FILTER)
+>
+> Nit: you may want to have the closing bracket on a newline to have a
+> cleaner diff for new future additions.
+>
+> >  int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+> >  {
+> > @@ -881,6 +882,12 @@ int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+> >         ctl &= ~BCM54XX_WOL_DIR_PKT_EN;
+> >         ctl &= ~(BCM54XX_WOL_SECKEY_OPT_MASK << BCM54XX_WOL_SECKEY_OPT_SHIFT);
+> >
+> > +       /* For WAKE_FILTER, we have already programmed the desired MAC DA
+> > +        * and associated mask by the time we get there.
+> > +        */
+> > +       if (wol->wolopts & WAKE_FILTER)
+> > +               goto program_ctl;
+> > +
+> >         /* When using WAKE_MAGIC, we program the magic pattern filter to match
+> >          * the device's MAC address and we accept any MAC DA in the Ethernet
+> >          * frame.
+> > @@ -935,6 +942,7 @@ int bcm_phy_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+> >                         return ret;
+> >         }
+> >
+> > +program_ctl:
+> >         if (wol->wolopts & WAKE_MAGICSECURE) {
+> >                 ctl |= BCM54XX_WOL_SECKEY_OPT_6B <<
+> >                        BCM54XX_WOL_SECKEY_OPT_SHIFT;
+> > @@ -999,6 +1007,16 @@ void bcm_phy_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
+> >         if (!(ctl & BCM54XX_WOL_EN))
+> >                 return;
+> >
+> > +       ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
+> > +       if (ret < 0)
+> > +               return;
+> > +
+> > +       /* Mutualy exclusive with other modes */
+> > +       if (ret) {
+> > +               wol->wolopts |= WAKE_FILTER;
+> > +               return;
+> > +       }
+> > +
+> >         for (i = 0; i < sizeof(da) / 2; i++) {
+> >                 ret = bcm_phy_read_exp(phydev,
+> >                                        BCM54XX_WOL_MPD_DATA2(2 - i));
+> > @@ -1066,6 +1084,181 @@ int bcm_phy_led_brightness_set(struct phy_device *phydev,
+> >  }
+> >  EXPORT_SYMBOL_GPL(bcm_phy_led_brightness_set);
+> >
+> > +static int bcm_phy_get_rule(struct phy_device *phydev,
+> > +                           struct ethtool_rxnfc *nfc,
+> > +                           int loc)
+> > +{
+> > +       u8 da[ETH_ALEN];
+> > +       unsigned int i;
+> > +       int ret;
+> > +
+> > +       if (loc != 0)
+> > +               return -EINVAL;
+> > +
+> > +       memset(nfc, 0, sizeof(*nfc));
+> > +       nfc->flow_type = ETHER_FLOW;
+> > +       nfc->fs.flow_type = ETHER_FLOW;
+> > +
+> > +       for (i = 0; i < sizeof(da) / 2; i++) {
+> > +               ret = bcm_phy_read_exp(phydev,
+> > +                                      BCM54XX_WOL_MPD_DATA2(2 - i));
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +
+> > +               da[i * 2] = ret >> 8;
+> > +               da[i * 2 + 1] = ret & 0xff;
+>
+> This looks like an endianness conversion (I can not tell if this is
+> big to little or the opposite)...
+
+Oopsy! On second look, this is an open coded cpu to big endian
+conversion. So the question I should have asked is:
+
+  why not use the put_unaligned_be16() helper here?
+
+Below comments still remain.
+
+> > +       }
+> > +       ether_addr_copy(nfc->fs.h_u.ether_spec.h_dest, da);
+> > +
+> > +       for (i = 0; i < sizeof(da) / 2; i++) {
+> > +               ret = bcm_phy_read_exp(phydev,
+> > +                                      BCM54XX_WOL_MASK(2 - i));
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +
+> > +               da[i * 2] = ~(ret >> 8);
+> > +               da[i * 2 + 1] = ~(ret & 0xff);
+> > +       }
+> > +       ether_addr_copy(nfc->fs.m_u.ether_spec.h_dest, da);
+> > +
+> > +       ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_INNER_PROTO);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       nfc->fs.h_u.ether_spec.h_proto = be16_to_cpu(ret);
+>
+> ... but here it is big endian to cpu endian? It does not look coherent.
+>
+> Also, did you run parse to check your endianness conversions?
+>
+>   https://www.kernel.org/doc/html/latest/dev-tools/sparse.html
+>
+> For example, I would have expected htons() (a.k.a. cpu_to_be16())
+> instead of be16_to_cpu().
+>
+> > +       nfc->fs.ring_cookie = RX_CLS_FLOW_WAKE;
+> > +       nfc->fs.location = 0;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int bcm_phy_set_rule(struct phy_device *phydev,
+> > +                           struct ethtool_rxnfc *nfc)
+> > +{
+> > +       int ret = -EOPNOTSUPP;
+> > +       unsigned int i;
+> > +       __be16 h_proto;
+> > +       const u8 *da;
+> > +
+> > +       /* We support only matching on the MAC DA with a custom mask and
+> > +        * optionally with a specific Ethernet type, reject anything else.
+> > +        */
+> > +       if (nfc->fs.ring_cookie != RX_CLS_FLOW_WAKE ||
+> > +           (nfc->fs.location != 0 &&
+> > +            nfc->fs.location != RX_CLS_LOC_ANY &&
+> > +            nfc->fs.location != RX_CLS_LOC_FIRST) ||
+> > +           nfc->fs.flow_type != ETHER_FLOW ||
+> > +           !is_zero_ether_addr(nfc->fs.h_u.ether_spec.h_source) ||
+> > +           !is_zero_ether_addr(nfc->fs.m_u.ether_spec.h_source))
+> > +               return ret;
+> > +
+> > +       ret = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       if (ret)
+> > +               return -EBUSY;
+> > +
+> > +       if (nfc->fs.location == RX_CLS_LOC_ANY ||
+> > +           nfc->fs.location == RX_CLS_LOC_FIRST)
+> > +               nfc->fs.location = 0;
+> > +
+> > +       da = nfc->fs.h_u.ether_spec.h_dest;
+> > +       for (i = 0; i < ETH_ALEN / 2; i++) {
+> > +               ret = bcm_phy_write_exp(phydev,
+> > +                                       BCM54XX_WOL_MPD_DATA2(2 - i),
+> > +                                       da[i * 2] << 8 | da[i * 2 + 1]);
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       da = nfc->fs.m_u.ether_spec.h_dest;
+> > +       for (i = 0; i < ETH_ALEN / 2; i++) {
+> > +               ret = bcm_phy_write_exp(phydev,
+> > +                                       BCM54XX_WOL_MASK(2 - i),
+> > +                                       da[i * 2] << 8 | da[i * 2 + 1]);
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       /* Restore default inner protocol field unless overridden by the flow
+> > +        * specification.
+> > +        */
+> > +       h_proto = be16_to_cpu(nfc->fs.h_u.ether_spec.h_proto);
+> > +       if (!h_proto)
+> > +               h_proto = ETH_P_8021Q;
+> > +
+> > +       ret = bcm_phy_write_exp(phydev, BCM54XX_WOL_INNER_PROTO,
+> > +                               h_proto);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       /* Use BCM54XX_WOL_SEC_KEY_8B as a scratch register to record
+> > +        * that we installed a filter rule.
+> > +        */
+> > +       return bcm_phy_write_exp(phydev, BCM54XX_WOL_SEC_KEY_8B, 1);
+> > +}
+> > +
+> > +int bcm_phy_get_rxnfc(struct phy_device *phydev,
+> > +                     struct ethtool_rxnfc *cmd, u32 *rule_locs)
+> > +{
+> > +       int err = 0, rule_cnt = 0;
+> > +
+> > +       err = bcm_phy_read_exp(phydev, BCM54XX_WOL_SEC_KEY_8B);
+> > +       if (err < 0)
+> > +               return err;
+> > +
+> > +       rule_cnt = err;
+> > +       err = 0;
+> > +
+> > +       switch (cmd->cmd) {
+> > +       case ETHTOOL_GRXCLSRLCNT:
+> > +               cmd->rule_cnt = rule_cnt;
+> > +               cmd->data = 1 | RX_CLS_LOC_SPECIAL;
+> > +               break;
+> > +       case ETHTOOL_GRXCLSRULE:
+> > +               err = bcm_phy_get_rule(phydev, cmd, cmd->fs.location);
+> > +               break;
+> > +       case ETHTOOL_GRXCLSRLALL:
+> > +               if (rule_cnt)
+> > +                       rule_locs[0] = 0;
+> > +               cmd->rule_cnt = rule_cnt;
+> > +               cmd->data = 1;
+> > +               break;
+> > +       default:
+> > +               err = -EOPNOTSUPP;
+> > +               break;
+> > +       }
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(bcm_phy_get_rxnfc);
+> > +
+> > +int bcm_phy_set_rxnfc(struct phy_device *phydev,
+> > +                     struct ethtool_rxnfc *cmd)
+> > +{
+> > +       int err = 0;
+> > +
+> > +       switch (cmd->cmd) {
+> > +       case ETHTOOL_SRXCLSRLINS:
+> > +               err = bcm_phy_set_rule(phydev, cmd);
+> > +               break;
+> > +       case ETHTOOL_SRXCLSRLDEL:
+> > +               if (cmd->fs.location != 0)
+> > +                       return err;
+> > +
+> > +               err = bcm_phy_write_exp(phydev, BCM54XX_WOL_SEC_KEY_8B, 0);
+> > +               break;
+> > +       default:
+> > +               err = -EOPNOTSUPP;
+> > +               break;
+> > +       }
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(bcm_phy_set_rxnfc);
+> > +
+> >  MODULE_DESCRIPTION("Broadcom PHY Library");
+> >  MODULE_LICENSE("GPL v2");
+> >  MODULE_AUTHOR("Broadcom Corporation");
+> > diff --git a/drivers/net/phy/bcm-phy-lib.h b/drivers/net/phy/bcm-phy-lib.h
+> > index b52189e45a84..7081edcec06b 100644
+> > --- a/drivers/net/phy/bcm-phy-lib.h
+> > +++ b/drivers/net/phy/bcm-phy-lib.h
+> > @@ -121,4 +121,9 @@ irqreturn_t bcm_phy_wol_isr(int irq, void *dev_id);
+> >  int bcm_phy_led_brightness_set(struct phy_device *phydev,
+> >                                u8 index, enum led_brightness value);
+> >
+> > +int bcm_phy_get_rxnfc(struct phy_device *phydev,
+> > +                     struct ethtool_rxnfc *nfc, u32 *rule_locs);
+> > +int bcm_phy_set_rxnfc(struct phy_device *phydev,
+> > +                     struct ethtool_rxnfc *nfc);
+> > +
+> >  #endif /* _LINUX_BCM_PHY_LIB_H */
+> > diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+> > index 3a627105675a..6c2212bd2779 100644
+> > --- a/drivers/net/phy/broadcom.c
+> > +++ b/drivers/net/phy/broadcom.c
+> > @@ -1107,6 +1107,8 @@ static struct phy_driver broadcom_drivers[] = {
+> >         .get_wol        = bcm54xx_phy_get_wol,
+> >         .set_wol        = bcm54xx_phy_set_wol,
+> >         .led_brightness_set     = bcm_phy_led_brightness_set,
+> > +       .get_rxnfc      = bcm_phy_get_rxnfc,
+> > +       .set_rxnfc      = bcm_phy_set_rxnfc,
+> >  }, {
+> >         .phy_id         = PHY_ID_BCM5461,
+> >         .phy_id_mask    = 0xfffffff0,
+> > --
+> > 2.34.1
+> >
