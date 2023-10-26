@@ -2,183 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6E67D890A
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54537D88EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjJZTkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        id S230406AbjJZTbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjJZTkX (ORCPT
+        with ESMTP id S230143AbjJZTbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:40:23 -0400
-X-Greylist: delayed 605 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 12:40:20 PDT
-Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [148.163.129.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8F2198
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:40:20 -0700 (PDT)
-Received: from dispatch1-us1.ppe-hosted.com (ip6-localhost [127.0.0.1])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 39DF428183E
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 19:30:15 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 21D85C0067
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 19:30:12 +0000 (UTC)
-Received: from [192.168.100.159] (50-251-239-81-static.hfc.comcastbusiness.net [50.251.239.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail3.candelatech.com (Postfix) with ESMTPSA id A20D813C2B0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:30:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com A20D813C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-        s=default; t=1698348611;
-        bh=li3xoh48UJwhDebRgzv2QBZBeaEojdUKiyD0CE6LCEk=;
-        h=Date:To:From:Subject:From;
-        b=PW4MUgPnofcJoXrqwKPbchn4qPN19YfATmcD7t9+R5vZaXDbve6kSikrnQTQb4LQ3
-         P3zLlUd3iAAKnjRjOslBv7h/YigyiIcGVnt9Ubpz8narB83K3742zGKnDv9q0CHkR/
-         pQZsxJe/R6UqfLoX2aETrq001r/D55dsDc6PytoY=
-Message-ID: <c89ce73b-ae3f-b24e-e515-5634e25d2eea@candelatech.com>
-Date:   Thu, 26 Oct 2023 12:30:11 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
-To:     LKML <linux-kernel@vger.kernel.org>
-From:   Ben Greear <greearb@candelatech.com>
-Subject: KASAN splat and crash related to remove_entity_load_avg,
- wireless-next tree
-Organization: Candela Technologies
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MDID: 1698348612-siakpkCJpGdd
-X-MDID-O: us5;ut7;1698348612;siakpkCJpGdd;<greearb@candelatech.com>;c71d53d8b4bf163c84f4470b0e4d7294
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 26 Oct 2023 15:31:00 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225FC196
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:30:57 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9f973d319so13514735ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698348656; x=1698953456; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5l+1D3sMytKg497+LD3ZhVhuDQvT+m5NPnG8xfpJ8c=;
+        b=R8Dvk+JU2d5bBxse0HIEZrXlqO+fbya9HcK9Xs6+MGNsyYwhcdV9mBT3f9MAqNdeE5
+         qsHmU4j1EmU4gnH2hr+U3ET3DQG/43L2UrOsly8ZwPegiSYdFxH8kajpqRSpr4Q+J1Pv
+         j2fHryybNGuBMOzCg+IyY+pUlH6NYQw2k0whOs6LwRA3+cFZZ6R1hRyHScv3OZ47dTxj
+         QSOl8EF9VpbDGJOO/QfSWQ/6LPmvCuok1kpuptWmy4euzFj5UP/M41CST1LuRYwx95tm
+         IZLiIHs3SKdruuYR07wO/G0lv9ik/uxcnLCekfTdvuwNGALx8o6NM8NVddMYGpIKWSkC
+         Tbkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698348656; x=1698953456;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5l+1D3sMytKg497+LD3ZhVhuDQvT+m5NPnG8xfpJ8c=;
+        b=tV1EirM23YsspX5/2TFHXnprzTEH+AQEZ/I63h8kCK9XtSMWskYdorI8CGrdK7/XGA
+         j5d5qVkGRUv+hcS418XTb2TL1x/Tr20QvRoDIWLpw3+KIzSipCpdl5/k1xt7F4Ucu4if
+         OsSP/l5FNcNrWd7zQm04TiK+z6vXWyiwjXmlL+ehzhh/BevHjw2loTMqgJgbm8rsT6Sl
+         ACMK3h31W5J4wxa3O3kfnAPmbG9jZ+oggto2ZjukPgtx7JRDEwH99rpkGAZQut7lM1GV
+         ga9yeABVYSpRj8FwT0MTq6p/zvj9qlmHVyIG7EONrfC2Mdo0h5YOVzT0aEtRBj6yOvfN
+         r/ag==
+X-Gm-Message-State: AOJu0Ywaof16KuvoMGpKtITzm0YOMjtp3QHZhlYsYfwpsybBl5L0TRgD
+        ojiYDbMM7zE/Iwli/AtyY+uyfPwSPSI=
+X-Google-Smtp-Source: AGHT+IFn+fOXPmaZJeCK7AjG545QxMmcDvsis9yxD2lpW2WV10OCOWev5iRJZ98QgCF83lJBglZbCv5AGwE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ed41:b0:1cc:1813:3023 with SMTP id
+ y1-20020a170902ed4100b001cc18133023mr7873plb.2.1698348656581; Thu, 26 Oct
+ 2023 12:30:56 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 12:30:55 -0700
+In-Reply-To: <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com>
+Mime-Version: 1.0
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com> <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com>
+Message-ID: <ZTq-b0uVyf6KLNV0@google.com>
+Subject: Re: [PATCH  v3 6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 25, 2023, Pawan Gupta wrote:
+> During VMentry VERW is executed to mitigate MDS. After VERW, any memory
+> access like register push onto stack may put host data in MDS affected
+> CPU buffers. A guest can then use MDS to sample host data.
+> 
+> Although likelihood of secrets surviving in registers at current VERW
+> callsite is less, but it can't be ruled out. Harden the MDS mitigation
+> by moving the VERW mitigation late in VMentry path.
+> 
+> Note that VERW for MMIO Stale Data mitigation is unchanged because of
+> the complexity of per-guest conditional VERW which is not easy to handle
+> that late in asm with no GPRs available. If the CPU is also affected by
+> MDS, VERW is unconditionally executed late in asm regardless of guest
+> having MMIO access.
+> 
+> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmenter.S |  3 +++
+>  arch/x86/kvm/vmx/vmx.c     | 10 +++++++---
+>  2 files changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> index b3b13ec04bac..139960deb736 100644
+> --- a/arch/x86/kvm/vmx/vmenter.S
+> +++ b/arch/x86/kvm/vmx/vmenter.S
+> @@ -161,6 +161,9 @@ SYM_FUNC_START(__vmx_vcpu_run)
+>  	/* Load guest RAX.  This kills the @regs pointer! */
+>  	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
+>  
+> +	/* Clobbers EFLAGS.ZF */
+> +	CLEAR_CPU_BUFFERS
+> +
+>  	/* Check EFLAGS.CF from the VMX_RUN_VMRESUME bit test above. */
+>  	jnc .Lvmlaunch
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 24e8694b83fc..2d149589cf5b 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7226,13 +7226,17 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>  
+>  	guest_state_enter_irqoff();
+>  
+> -	/* L1D Flush includes CPU buffer clear to mitigate MDS */
+> +	/*
+> +	 * L1D Flush includes CPU buffer clear to mitigate MDS, but VERW
+> +	 * mitigation for MDS is done late in VMentry and is still
+> +	 * executed inspite of L1D Flush. This is because an extra VERW
 
-While testing wifi today on a wireless-next + local hacks tree,
-I saw this splat and crash.
+in spite
 
-The wireless-next I'm using is based on 6.6.0-rc5.
+> +	 * should not matter much after the big hammer L1D Flush.
+> +	 */
+>  	if (static_branch_unlikely(&vmx_l1d_should_flush))
+>  		vmx_l1d_flush(vcpu);
 
-Let me know if you have any suggestions for debugging this further.  I think
-it is probably not directly related to wifi or networking, but system was under
-heavy network churn (wifi radios going up and down due to other issue)
-when it happened.
+There's an existing bug here.  vmx_1ld_flush() is not guaranteed to do a flush in
+"conditional mode", and is not guaranteed to do a ucode-based flush (though I can't
+tell if it's possible for the VERW magic to exist without X86_FEATURE_FLUSH_L1D).
 
-==================================================================
-BUG: KASAN: user-memory-access in remove_entity_load_avg+0x31/0x100
-Read of size 8 at addr 00000ff81e1bc400 by task swapper/4/0
+If we care, something like the diff at the bottom is probably needed.
 
-CPU: 4 PID: 0 Comm: swapper/4 Tainted: G        W          6.6.0-rc5+ #2
-Hardware name: Default string Default string/SKYBAY, BIOS 5.12 02/21/2023
-Call Trace:
-  <IRQ>
-  dump_stack_lvl+0x57/0x90
-  kasan_report+0xb9/0xf0
-  ? remove_entity_load_avg+0x31/0x100
-  remove_entity_load_avg+0x31/0x100
-  unregister_fair_sched_group+0x195/0x3c0
-  sched_unregister_group_rcu+0x14/0x30
-  ? rcu_core+0x52e/0xd70
-  rcu_core+0x56e/0xd70
-  ? rcu_core+0x52e/0xd70
-  ? rcu_gp_kthread+0x230/0x230
-  ? ktime_get+0x51/0xb0
-  ? mark_held_locks+0x24/0x90
-  __do_softirq+0x100/0x51c
-  __irq_exit_rcu+0x81/0xa0
-  irq_exit_rcu+0x5/0x10
-  sysvec_apic_timer_interrupt+0x6b/0x80
-  </IRQ>
-  <TASK>
-  asm_sysvec_apic_timer_interrupt+0x16/0x20
-RIP: 0010:cpuidle_enter_state+0x28c/0x320
-Code: 04 86 4c 8d 6c c5 18 41 f6 45 40 20 0f 84 d3 fd ff ff 8b 7b 04 e8 f4 d4 9f fe e9 c6 fd ff ff e8 0a 05 d0 fe fb 0f 1f 44 00 00 <e9> 3e fe ff ff e8 8a 6b
-RSP: 0018:ffff888112d17db8 EFLAGS: 00000202
-RAX: 000000000298b5e9 RBX: ffffe8ffffc00d30 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff826d55c6
-RBP: ffffffff83ad5a00 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff83f1ae57 R11: 0000000000000001 R12: 0000000000000004
-R13: 000002a8d053572f R14: 0000000000000004 R15: 0000000000000000
-  ? cpuidle_enter_state+0x286/0x320
-  ? cpuidle_enter_state+0x286/0x320
-  cpuidle_enter+0x37/0x60
-  do_idle+0x28b/0x2f0
-  ? arch_cpu_idle_exit+0x30/0x30
-  ? schedule_idle+0x32/0x40
-  cpu_startup_entry+0x2b/0x30
-  start_secondary+0x197/0x1c0
-  ? set_cpu_sibling_map+0xc20/0xc20
-  secondary_startup_64_no_verify+0x166/0x16b
-  </TASK>
-==================================================================
-BUG: unable to handle page fault for address: 00000ff81e1bc400
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 4 PID: 0 Comm: swapper/4 Tainted: G    B   W          6.6.0-rc5+ #2
-Hardware name: Default string Default string/SKYBAY, BIOS 5.12 02/21/2023
-RIP: 0010:remove_entity_load_avg+0x31/0x100
-Code: 48 89 fd 48 8d bf 98 00 00 00 53 e8 99 de 3a 00 48 8b 9d 98 00 00 00 48 8d bb 80 00 00 00 4c 8d b3 c0 00 00 00 e8 7f de 3a 00 <48> 8b bb 80 00 00 00 49
-RSP: 0018:ffff88841e009db0 EFLAGS: 00010286
-RAX: 0000000000000001 RBX: 00000ff81e1bc380 RCX: ffffffff811dcb11
-RDX: fffffbfff0922fc1 RSI: 0000000000000008 RDI: ffffffff84917e00
-RBP: ffff888129f77000 R08: 0000000000000001 R09: fffffbfff0922fc0
-R10: ffffffff84917e07 R11: fffffffffffe0f90 R12: ffff88813ce614b8
-R13: ffff888128ba8120 R14: 00000ff81e1bc440 R15: 0000000000000007
-FS:  0000000000000000(0000) GS:ffff88841e000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000ff81e1bc400 CR3: 0000000003696001 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  <IRQ>
-  ? __die+0x1a/0x60
-  ? page_fault_oops+0x1ea/0x550
-  ? remove_entity_load_avg+0x31/0x100
-  ? dump_pagetable+0x410/0x410
-  ? syslog_print+0x3c0/0x3c0
-  ? do_user_addr_fault+0x47f/0x8d0
-  ? exc_page_fault+0x5d/0xf0
-  ? asm_exc_page_fault+0x22/0x30
-  ? add_taint+0x21/0x90
-  ? remove_entity_load_avg+0x31/0x100
-  unregister_fair_sched_group+0x195/0x3c0
-  sched_unregister_group_rcu+0x14/0x30
-  ? rcu_core+0x52e/0xd70
-  rcu_core+0x56e/0xd70
-  ? rcu_core+0x52e/0xd70
-  ? rcu_gp_kthread+0x230/0x230
-  ? ktime_get+0x51/0xb0
-  ? mark_held_locks+0x24/0x90
-  __do_softirq+0x100/0x51c
-  __irq_exit_rcu+0x81/0xa0
-  irq_exit_rcu+0x5/0x10
-  sysvec_apic_timer_interrupt+0x6b/0x80
-  </IRQ>
-  <TASK>
-  asm_sysvec_apic_timer_interrupt+0x16/0x20
-RIP: 0010:cpuidle_enter_state+0x28c/0x320
-Code: 04 86 4c 8d 6c c5 18 41 f6 45 40 20 0f 84 d3 fd ff ff 8b 7b 04 e8 f4 d4 9f fe e9 c6 fd ff ff e8 0a 05 d0 fe fb 0f 1f 44 00 00 <e9> 3e fe ff ff e8 8a 6b
-RSP: 0018:ffff888112d17db8 EFLAGS: 00000202
-RAX: 000000000298b5e9 RBX: ffffe8ffffc00d30 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff826d55c6
-RBP: ffffffff83ad5a00 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff83f1ae57 R11: 0000000000000001 R12: 0000000000000004
+> -	else if (cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
+> -		mds_clear_cpu_buffers();
+>  	else if (static_branch_unlikely(&mmio_stale_data_clear) &&
+>  		 kvm_arch_has_assigned_device(vcpu->kvm))
+> +		/* MMIO mitigation is mutually exclusive with MDS mitigation later in asm */
 
-Thanks,
-Ben
+Please don't put comments inside an if/elif without curly braces (and I don't
+want to add curly braces).  Though I think that's a moot point if we first fix
+the conditional L1D flush issue.  E.g. when the dust settles we can end up with:
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+	/*
+	 * Note, a ucode-based L1D flush also flushes CPU buffers, i.e. the
+	 * manual VERW in __vmx_vcpu_run() to mitigate MDS *may* be redundant.
+	 * But an L1D Flush is not guaranteed for "conditional mode", and the
+	 * cost of an extra VERW after a full L1D flush is negligible.
+	 */
+	if (static_branch_unlikely(&vmx_l1d_should_flush))
+		cpu_buffers_flushed = vmx_l1d_flush(vcpu);
+
+	/*
+	 * The MMIO stale data vulnerability is a subset of the general MDS
+	 * vulnerability, i.e. this is mutually exclusive with the VERW that's
+	 * done just before VM-Enter.  The vulnerability requires the attacker,
+	 * i.e. the guest, to do MMIO, so this "clear" can be done earlier.
+	 */
+	if (static_branch_unlikely(&mmio_stale_data_clear) &&
+	    !cpu_buffers_flushed && kvm_arch_has_assigned_device(vcpu->kvm))
+		mds_clear_cpu_buffers();
+
+>  		mds_clear_cpu_buffers();
+>  
+>  	vmx_disable_fb_clear(vmx);
+
+LOL, nice.  IIUC, setting FB_CLEAR_DIS is mutually exclusive with doing a late
+VERW, as KVM will never set FB_CLEAR_DIS if the CPU is susceptible to X86_BUG_MDS.
+But the checks aren't identical, which makes this _look_ sketchy.
+
+Can you do something like this to ensure we don't accidentally neuter the late VERW?
+
+static void vmx_update_fb_clear_dis(struct kvm_vcpu *vcpu, struct vcpu_vmx *vmx)
+{
+	vmx->disable_fb_clear = (host_arch_capabilities & ARCH_CAP_FB_CLEAR_CTRL) &&
+				!boot_cpu_has_bug(X86_BUG_MDS) &&
+				!boot_cpu_has_bug(X86_BUG_TAA);
+
+	if (vmx->disable_fb_clear &&
+	    WARN_ON_ONCE(cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF)))
+	    	vmx->disable_fb_clear = false;
+
+	...
+}
+
+--
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6e502ba93141..cf6e06bb8310 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6606,8 +6606,11 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+  * is not exactly LRU. This could be sized at runtime via topology
+  * information but as all relevant affected CPUs have 32KiB L1D cache size
+  * there is no point in doing so.
++ *
++ * Returns %true if CPU buffers were cleared, i.e. if a microcode-based L1D
++ * flush was executed (which also clears CPU buffers).
+  */
+-static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
++static noinstr bool vmx_l1d_flush(struct kvm_vcpu *vcpu)
+ {
+        int size = PAGE_SIZE << L1D_CACHE_ORDER;
+ 
+@@ -6634,14 +6637,14 @@ static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
+                kvm_clear_cpu_l1tf_flush_l1d();
+ 
+                if (!flush_l1d)
+-                       return;
++                       return false;
+        }
+ 
+        vcpu->stat.l1d_flush++;
+ 
+        if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
+                native_wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
+-               return;
++               return true;
+        }
+ 
+        asm volatile(
+@@ -6665,6 +6668,8 @@ static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
+                :: [flush_pages] "r" (vmx_l1d_flush_pages),
+                    [size] "r" (size)
+                : "eax", "ebx", "ecx", "edx");
++
++       return false;
+ }
+ 
+ static void vmx_update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
+@@ -7222,16 +7227,17 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+                                        unsigned int flags)
+ {
+        struct vcpu_vmx *vmx = to_vmx(vcpu);
++       bool cpu_buffers_flushed = false;
+ 
+        guest_state_enter_irqoff();
+ 
+-       /* L1D Flush includes CPU buffer clear to mitigate MDS */
+        if (static_branch_unlikely(&vmx_l1d_should_flush))
+-               vmx_l1d_flush(vcpu);
+-       else if (static_branch_unlikely(&mds_user_clear))
+-               mds_clear_cpu_buffers();
+-       else if (static_branch_unlikely(&mmio_stale_data_clear) &&
+-                kvm_arch_has_assigned_device(vcpu->kvm))
++               cpu_buffers_flushed = vmx_l1d_flush(vcpu);
++
++       if ((static_branch_unlikely(&mds_user_clear) ||
++            (static_branch_unlikely(&mmio_stale_data_clear) &&
++             kvm_arch_has_assigned_device(vcpu->kvm))) &&
++           !cpu_buffers_flushed)
+                mds_clear_cpu_buffers();
+ 
+        vmx_disable_fb_clear(vmx);
 
