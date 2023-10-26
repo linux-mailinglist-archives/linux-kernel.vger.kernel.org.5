@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BED7D83B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5610D7D83BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345081AbjJZNik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        id S1345029AbjJZNkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjJZNii (ORCPT
+        with ESMTP id S230413AbjJZNj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:38:38 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD3918F
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:38:36 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a92782615dso7255267b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698327516; x=1698932316; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uW0IaiCDGPtfg501Nw8p6UpGLwS2ZUBRonlHE2LLZzs=;
-        b=x9+2I1elp0NtJ/7n3Lq5bsXDYJ22d7FQ3CIwYlL/bAWTq6Fly7DG+90wSXYHNibwno
-         M8SCWrBgF6P2wREpmxfuXu7puQfp3SurlxI9kTp36Np35XQrLX/FcW/gke59c5H7CISs
-         dTrAH2Twacm0j2ccQJRYGRRxCNgFtSTjya1GcTaI45mRoX1x4TmT9zeEdOxjvPhelVOA
-         Oj65dQQVGYW5gOPooEz1vz7ncNj9YROA797GPRlCSz8ofyimAy44wsvHMU4Mj0AYxSfV
-         eeyjrcpZjwrPNNWmnREcJ6QF1OnOOaj/1lTxZxOKuyzrk7J/1FvHngvKtZn29nsDWCHT
-         dQvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698327516; x=1698932316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uW0IaiCDGPtfg501Nw8p6UpGLwS2ZUBRonlHE2LLZzs=;
-        b=UPs0joLBnw0a4WQIQk1o2tv53G1IV1PCTOuY3nc9R6Xzlf6Cy6I61el0M+Jzy4Q8LC
-         GegVQ+UxXjPQdj3eBx9ErTGE4efshKLrs9OKwtkUbyJZnAFI8lSwwhHsWbci44moYEwq
-         5JSERvSwFIJhIlMOiUtli01B2G797JJ3sScAkSNI2Cbt/sj2ZRS/pmtqE9kIepEsXM5E
-         jB7A2NZjmtHdipW1lySofaNwSzO8F/5NeeoCk4mqzY7HGVLr7MNdGEPDIqOdC5iu6WED
-         5zBA1QPLOslLb6ZmrlMFT1MOK4T4kLYLgJpiSV/2AruJSzE32RMqT+yqrdcFvSrq2tbR
-         9FUg==
-X-Gm-Message-State: AOJu0YyOFen4c171A8+ohiPCvxcqKpCzBI/0cw/QTviNWe6jktDheTFJ
-        Xi+qgpx0kOqJpzbbzVYCYzQs1EBxCW/2FIM3eBT6oXndJgOP4l+E
-X-Google-Smtp-Source: AGHT+IGniiZ+KAxKfAUBm/LTzqfB6hvkLHRlM0D1QsLMcILZ735k3hAKAdypCFeMnj5XsdasrMZtYIBxfs4MJ1az3/I=
-X-Received: by 2002:a0d:e2c9:0:b0:5a8:286d:339e with SMTP id
- l192-20020a0de2c9000000b005a8286d339emr20086367ywe.4.1698327515767; Thu, 26
- Oct 2023 06:38:35 -0700 (PDT)
+        Thu, 26 Oct 2023 09:39:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03424BD
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:39:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32633C433C8;
+        Thu, 26 Oct 2023 13:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698327597;
+        bh=Yo1Jp9MQveisgDNa7SmJESLL8DTmwQjMaMUWrbBXxQ4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IdX7isk4NJaVOXcPxsCULZn8rikRNx7vqIfiZeABmRI621N7Cvlsn56W7+1HNsMrh
+         G/tm35NXAg7C4dXWXtbxzcgABqW4TqOyGhMWrR6fpjxS/Ngs9+O8ynCykZFW1FtrR+
+         R/ycI79jMq++DsW5LLDfVgarZpTC/6qsPRVR4T1/uRerxpXbOwOckF8KDct9ws50ac
+         mwZm1HUF6z4nCDJqJyusf6pwv5W5dX3I/4IjRPYJT5BWDlln55oLU1GhLFn2MdjehF
+         3JgrmVxs+r/cuINidO7zi5VxB7ix19gdcKzUtcltqPqcIjo5adLPEB8R1LqEIOXMUE
+         dd45wcEkfGtXg==
+From:   Pratyush Yadav <pratyush@kernel.org>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mtd: spi-nor: Improve reporting for software reset
+ failures
+In-Reply-To: <20231026012017.518610-1-acelan.kao@canonical.com> (AceLan Kao's
+        message of "Thu, 26 Oct 2023 09:20:17 +0800")
+References: <20231026012017.518610-1-acelan.kao@canonical.com>
+Date:   Thu, 26 Oct 2023 15:39:54 +0200
+Message-ID: <mafs0fs1xmrit.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-References: <20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com> <20231026-mbly-uart-v1-3-9258eea297d3@bootlin.com>
-In-Reply-To: <20231026-mbly-uart-v1-3-9258eea297d3@bootlin.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 26 Oct 2023 15:38:24 +0200
-Message-ID: <CACRpkdYant-8UGXMVFSTMxz-VRmD=iNiKiskAGbF1Bd-TyBMsA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] tty: serial: amba-pl011: cleanup driver
-To:     =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:41=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+On Thu, Oct 26 2023, AceLan Kao wrote:
 
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+>
+> When the software reset command isn't supported, we now report it
+> as an informational message(dev_info) instead of a warning(dev_warn).
+> This adjustment helps avoid unnecessary alarm and confusion regarding
+> software reset capabilities.
 
-> Follow recommandations from:
->
->     $ ./scripts/checkpatch.pl --strict --file \
->             drivers/tty/serial/amba-pl011.c
->
-> It does NOT fix alerts relative to TIOCMBIT which will be dealt with in
-> another patch. Fixes following alerts:
->
->     CHECK: Alignment should match open parenthesis
->     CHECK: Blank lines aren't necessary after an open brace '{'
->     CHECK: Comparison to NULL could be written [...]
->     CHECK: Lines should not end with a '('
->     CHECK: Please don't use multiple blank lines
->     CHECK: Please use a blank line after function/struct/union/enum decla=
-rations
->     CHECK: Prefer using the BIT macro
->     CHECK: Unbalanced braces around else statement
->     CHECK: Unnecessary parentheses around [...]
->     CHECK: braces {} should be used on all arms of this statement
->     CHECK: spaces preferred around that '/' (ctx:VxV)
->     CHECK: spaces preferred around that '|' (ctx:VxV)
->     ERROR: do not initialise statics to false
->     WARNING: Comparisons should place the constant on the right side of t=
-he test
->     WARNING: Possible unnecessary 'out of memory' message
->     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
->     WARNING: Prefer [subsystem eg: netdev]_info([subsystem]dev, ... then =
-dev_info(dev, ... then pr_info(...  to printk(KERN_INFO ...
->     WARNING: quoted string split across lines
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+I still think the soft reset command deserves a warn, and not an info.
+Because it _is_ a bad thing if you need to soft reset and are unable to
+do so. Your bootloader (or linux if you rmmod and modprobe again) might
+not be able to detect the flash mode and operate it properly.
 
-These look harmless enough to me.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I think we should just not unconditionally run this and instead only
+call it when the flash reset is not connected -- that is only call this
+under a check for SNOR_F_BROKEN_RESET, like we do for 4-byte addressing
+mode.
 
-Yours,
-Linus Walleij
+I don't have a strong opposition to this patch but I do think it is
+fixing the problem in the wrong place.
+
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
