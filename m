@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03287D8892
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B02E7D8896
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjJZSxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S231281AbjJZSyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjJZSxC (ORCPT
+        with ESMTP id S230143AbjJZSyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:53:02 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8B21A5
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:53:00 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507b9408c61so1782690e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:53:00 -0700 (PDT)
+        Thu, 26 Oct 2023 14:54:06 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B4E1A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:54:04 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507b18cf2e1so1755866e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:54:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698346378; x=1698951178; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698346442; x=1698951242; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cGBbFnVPmOFrjTHoEzH5J6H2Hqy+10FpHLwr0vLtfI4=;
-        b=ws76dRbcGrbVidpvwTMGfTv0Po8XM4dqUElpcxliVp67dzzMjAh34iXtxwN8MWm4hA
-         Gb9r1OUzihI3fvCzmDxwQ58kt37b+8/6RSCQXXj34+aZKrIluy+1311MlSL0JizPnQgb
-         pc0/KlbnQ8plP3G1yOpsWw+suqki/bicemffPMIkgDn8U9kLaZIRzppaRAmVnjtI8Sf5
-         b7VZYfS/D90nhaqBiAWqZFyTuo4taTlA5hv/OExEXSzNlmGFo+1R4llSzzGX07Fe/iyq
-         +49HgzA2ZMr6nPPT3fo1HGH2N49TQ3jDAII8MNrXAY9ZlT2dd4/TeQkUZ8rSvCYa3QF8
-         fP4Q==
+        bh=YN4RVHkxUHXpdD2Tu1w8w0WncGzqflUXO4856b5/210=;
+        b=FfBPuK+LEbFxll/KM9UaifqudMjDEYkvInRkTT0BW7Mf0s5xRQPqNkINswjREV9jdw
+         C9Y+Ks88ZL1DEJFiHHEFMmqapItWOban9DMCTaBlzLA7s/kDlI4+UqeySlYtR/bvunvQ
+         yPzsbtFRi2k15XtSNRoAL3NqD64Lhrk4dBFHWX6kwfUPi/DFn0FP+rYwNfKjEnqTwK9W
+         ICczBIODum5fW4q264eMYDGJAKs5HtyhVRYetsf3MbB++Pg6s/lrnmGhrn8DH+mgf4Tx
+         ygARfQEvO7Et4cNrYK+WOilo9lS99B1ndc1mGdrki2YD7FAcFEc1etSjTjgZhVO8eU4d
+         6y+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698346378; x=1698951178;
+        d=1e100.net; s=20230601; t=1698346442; x=1698951242;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cGBbFnVPmOFrjTHoEzH5J6H2Hqy+10FpHLwr0vLtfI4=;
-        b=qQBEqpGDiPBXGOGGbsGzmOq2rBeqtX1EkokS+XljBnxa00Ish2EOyc1v79cGAvoovY
-         y3pjcwY1/sf/yKya7kJvD0vNK8L0VFDFgpiDAmhqARieWbzPvCMrdBXA+RF+J2Ay4Ejf
-         heqF6eT2l3c2whSmUqeCr9uKnSKkqRCjJRMlBp+4ykYb7sBCaeZZmm0yVYE1AJNLJvpV
-         rjLk8yvMQIh0UFMOcNeLcMG+jDX4U8iRyBGupq8cmNsr6wAEsgz+6iel8Ux7Cv2UGyAF
-         n1nPEeAFN5c5sahm/zo3O/FOFHRW7kbhjzR4cPXlBshqdd8kXuN3yRsitCKIu5Me9rRP
-         cb2A==
-X-Gm-Message-State: AOJu0YyAyjpBGzlspWb5xvme48i7EZe6xCbEDhXSo4CFCw1a8hu7RF1/
-        AiAVhyWqPTJd6ZZVGMmcWAUfrw==
-X-Google-Smtp-Source: AGHT+IEaensjbTbZ95CdUwbV/cQYQV+gNN+JsxWtfhZGK66ZooXahenjpHcQYV4syUFfh6gXkr//ig==
-X-Received: by 2002:ac2:5a4d:0:b0:507:a6e9:fbba with SMTP id r13-20020ac25a4d000000b00507a6e9fbbamr159161lfn.63.1698346378301;
-        Thu, 26 Oct 2023 11:52:58 -0700 (PDT)
+        bh=YN4RVHkxUHXpdD2Tu1w8w0WncGzqflUXO4856b5/210=;
+        b=BCFZ+ojNAjHwUk1SaJDnqFF5D3oGWWbGZ7NNzKCep8klnP0xmFFumAnfZPZrokwdqW
+         ItwFVEAvBWYRepjzwIUXT5M4ZTSd/MiPXv2//gYwKlCEUxkge5tr+KzXuoaEdwLKGhQh
+         c5pho4bc51xaY+8WZm7Ab7D3kOeuVv+A9XkPY2QzpCvVI0je6q/zmjRMjSrG0s7B14bS
+         IeunW8x0gO5G39WN+3e7k1YoB/GFf0UdoliemGE7fCiFxnJDek4ecRrbMvSejCNYj4mP
+         0neM2RWpEmGCDzRV/YoYqoVeDOu2XJ462M3hdfLUTwSygS8NhWeAJoi1StgMaM1ZF+AR
+         Yx5A==
+X-Gm-Message-State: AOJu0YzrXvuBd3OK0UYCPCjjJMNBtb3pjFQ89fAezlv5jlr7lcWlC/7r
+        QH4srOcTY7pp1HncGnENAC1yvg==
+X-Google-Smtp-Source: AGHT+IElLwSk+F6Ttzd0DDTOv89uu1+MwsSejU2BrdRUTggcph0gtzc9myGEzhEVaMOVzTGyNim/5A==
+X-Received: by 2002:a19:434d:0:b0:503:655:12e7 with SMTP id m13-20020a19434d000000b00503065512e7mr170306lfj.62.1698346442358;
+        Thu, 26 Oct 2023 11:54:02 -0700 (PDT)
 Received: from [172.30.205.8] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id h28-20020a0565123c9c00b00507a96d17b3sm3057580lfv.237.2023.10.26.11.52.57
+        by smtp.gmail.com with ESMTPSA id h28-20020a0565123c9c00b00507a96d17b3sm3057580lfv.237.2023.10.26.11.54.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 11:52:57 -0700 (PDT)
-Message-ID: <0f4b901a-d907-4a10-aaa5-06eb9cb5eb32@linaro.org>
-Date:   Thu, 26 Oct 2023 20:52:56 +0200
+        Thu, 26 Oct 2023 11:54:01 -0700 (PDT)
+Message-ID: <f3c215a3-579a-4b4f-92bf-092c91234180@linaro.org>
+Date:   Thu, 26 Oct 2023 20:54:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq5018: add few more reserved memory
- regions
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: pm8916: Add BMS and charger
 Content-Language: en-US
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231025-ipq5018-misc-v1-1-7d14fde97fe7@quicinc.com>
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
+ <20231023-pm8916-dtsi-bms-lbc-v2-2-343e3dbf423e@trvn.ru>
+ <3dff444b-c439-4c40-9d21-1e390f449840@linaro.org>
+ <b9c7f8662e4c02a4f9f275d27469f3be@trvn.ru>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231025-ipq5018-misc-v1-1-7d14fde97fe7@quicinc.com>
+In-Reply-To: <b9c7f8662e4c02a4f9f275d27469f3be@trvn.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
@@ -82,23 +85,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/25/23 18:42, Kathiravan Thirumoorthy wrote:
-> Like all other IPQ SoCs, bootloader will collect the system RAM contents
-> upon crash for the post morterm analysis. If we don't reserve the memory
-> region used by bootloader, obviously linux will consume it and upon next
-> boot on crash, bootloader will be loaded in the same region, which will
-> lead to loose some of the data, sometimes we may miss out critical
-> information. So lets reserve the region used by the bootloader.
+On 10/24/23 11:29, Nikita Travkin wrote:
+> Konrad Dybcio писал(а) 24.10.2023 13:34:
+>> On 10/23/23 08:20, Nikita Travkin wrote:
+>>> pm8916 contains some hardware blocks for battery powered devices:
+>>>
+>>> - VM-BMS: Battery voltage monitoring block.
+>>> - LBC: Linear battery charger.
+>>>
+>>> Add them to the pmic dtsi so the devices that make use of those blocks
+>>> can enable them.
+>>>
+>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>>> ---
+>>>    arch/arm64/boot/dts/qcom/pm8916.dtsi | 48 ++++++++++++++++++++++++++++++++++++
+>>>    1 file changed, 48 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+>>> index f4de86787743..4b2e8fb47d2d 100644
+>>> --- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+>>> @@ -41,6 +41,35 @@ watchdog {
+>>>    			};
+>>>    		};
+>>>    +		pm8916_charger: charger@1000 {
+>>> +			compatible = "qcom,pm8916-lbc";
+>>> +			reg = <0x1000>, <0x1200>, <0x1300>, <0x1600>;
+>>> +			reg-names = "chgr", "bat_if", "usb", "misc";
+>>> +
+>>> +			interrupts = <0x0 0x10 0 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x10 5 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x10 6 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x10 7 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x12 0 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x12 1 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x13 0 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x13 1 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x13 2 IRQ_TYPE_EDGE_BOTH>,
+>>> +				     <0x0 0x13 4 IRQ_TYPE_EDGE_BOTH>;
+>>> +			interrupt-names = "vbat_det",
+>>> +					  "fast_chg",
+>>> +					  "chg_fail",
+>>> +					  "chg_done",
+>>> +					  "bat_pres",
+>>> +					  "temp_ok",
+>>> +					  "coarse_det",
+>>> +					  "usb_vbus",
+>> So, both the charger and the USBIN driver use the same irq? :/
+>>
 > 
-> Similarly SBL copies some data into the reserved region and it will be
-> used in the crash scenario. So reserve 1MB for SBL as well.
-> 
-> While at it, enable the SMEM support along with TCSR mutex.
-> 
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
-Bit of a "many things at once" but okay
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> AFAIU the usbin extcon driver pretty much just tracks the state
+> of the IRQ to report extcon. It happens to assume the same part
+> of the pmic though, yes, which also means there will be no user
+> that would enable both charger and vbus extcon, since charger
+> driver provides this functionality as well.
+So, should USBIN be removed from PM8916 dt since it's essentially
+a part of the charger block?
 
 Konrad
