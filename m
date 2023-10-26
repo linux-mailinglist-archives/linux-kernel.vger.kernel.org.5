@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78DA7D8287
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66337D8286
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344870AbjJZMWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S1344898AbjJZMWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZMWb (ORCPT
+        with ESMTP id S229642AbjJZMWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:22:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D42F1AA;
-        Thu, 26 Oct 2023 05:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698322949; x=1729858949;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XhkCuEPgG658NDvItUy3K7Wo+EY9Pgf5oTkmj458HrQ=;
-  b=n5my4YhYQT1qtaRDwqOl9sU9UcDxlpPY0XYQDaP+ZoF+0Ax1VUB+WVbD
-   /T5ui7N7ty+fu3oe8Msr2zynkP/BtbFDcKI0j5fwcGY6WvF2FLyLpoAEU
-   Be1XiMcw7lVPb/c0lgZZxUdaWU+3KnE+bw6s8DW8bt3h722JmVg75FivP
-   1NxdvaskaDtQ8bd1s3BviAm8fTe2PUcPBgn4CWkeRT9hMvnuSBRShJLrX
-   tOseAaEb+gh1pxP+ztGCcJMooxJBCjNTClzJJyCj3faS03JUUTSDxwegL
-   7ersEEo7/RtiyboT/HBxNPnM2AK4Aqs3qpHE4tWOyOqDehdTdRiXuBNyE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390391620"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="390391620"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:22:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902883942"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="902883942"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:20:01 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qvzNY-00000008qpQ-1OYO;
-        Thu, 26 Oct 2023 15:22:24 +0300
-Date:   Thu, 26 Oct 2023 15:22:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Michal Wilczynski <michal.wilczynski@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rafael.j.wysocki@intel.com, lenb@kernel.org
-Subject: Re: [PATCH v1 3/6] ACPI: acpi_video: Remove unnecessary driver_data
- clear
-Message-ID: <ZTpaAMfDcwaZYO7S@smile.fi.intel.com>
-References: <20231025111806.2416524-1-michal.wilczynski@intel.com>
- <20231025111806.2416524-4-michal.wilczynski@intel.com>
+        Thu, 26 Oct 2023 08:22:13 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28A01B9;
+        Thu, 26 Oct 2023 05:22:10 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5205B2F4;
+        Thu, 26 Oct 2023 05:22:51 -0700 (PDT)
+Received: from [10.57.81.157] (unknown [10.57.81.157])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D11B63F738;
+        Thu, 26 Oct 2023 05:22:08 -0700 (PDT)
+Message-ID: <ce8f1a13-b56f-4419-a954-8d987af44112@arm.com>
+Date:   Thu, 26 Oct 2023 13:22:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025111806.2416524-4-michal.wilczynski@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] Minor cleanup for thermal gov power allocator
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, rui.zhang@intel.com
+References: <20231025192225.468228-1-lukasz.luba@arm.com>
+ <CAJZ5v0gniBtFduwjhDku+OZzjvkCaFK7ew0uJTfW254XKTOyyw@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0gniBtFduwjhDku+OZzjvkCaFK7ew0uJTfW254XKTOyyw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 02:18:03PM +0300, Michal Wilczynski wrote:
-> Commit
-> 0d16710146a1 ("ACPI: bus: Set driver_data to NULL every time .add() fails")
-
-It's fine to wrap it here, it's just a restriction in the tag block that one
-tag == one line. Also I believe the form "The commit" sounds more English :-)
-as reader knows exact commit we are talking about.
-
-> introduced clearing driver_data every time probe fails, so it's not
-> necessary to clear it in the probe() callback.
-
-> Remove NULL assignment to driver_data in error path in
-> acpi_video_bus_add().
-
-This can be one line.
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
+On 10/26/23 09:54, Rafael J. Wysocki wrote:
+> On Wed, Oct 25, 2023 at 9:21 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi all,
+>>
+>> The patch set does some small clean up for Intelligent Power Allocator.
+>> Those changes are not expected to alter the general functionality. They just
+>> improve the code reading. Only patch 3/7 might improve the use case for
+>> binding the governor to thermal zone (very unlikely in real products, but
+>> it's needed for correctness).
+>>
+>> The changes are based on top of current PM thermal branch, so with the
+>> new trip points.
+>>
+>> Regards,
+>> Lukasz
+>>
+>> Lukasz Luba (7):
+>>    thermal: gov_power_allocator: Rename trip_max_desired_temperature
+>>    thermal: gov_power_allocator: Setup trip points earlier
+>>    thermal: gov_power_allocator: Check the cooling devices only for
+>>      trip_max
+>>    thermal: gov_power_allocator: Rearrange the order of variables
+>>    thermal: gov_power_allocator: Use shorter variable when possible
+>>    thermal: gov_power_allocator: Remove unneeded local variables
+>>    thermal: gov_power_allocator: Clean needed variables at the beginning
+>>
+>>   drivers/thermal/gov_power_allocator.c | 123 ++++++++++++++------------
+>>   1 file changed, 64 insertions(+), 59 deletions(-)
+>>
+>> --
+> 
+> The series looks good to me overall, but I'd prefer to make these
+> changes in the 6.8 cycle, because the 6.7 merge window is around the
+> corner and there is quite a bit of thermal material in this cycle
+> already.
+
+Thanks for having a look! Yes, I agree, we can wait after the
+merge window. It just have to be cleaned one day a bit and I postponed
+this a few times, so no rush ;)
