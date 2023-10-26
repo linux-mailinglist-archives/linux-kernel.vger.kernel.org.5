@@ -2,414 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FD07D8070
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3858D7D8075
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234854AbjJZKPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
+        id S234816AbjJZKQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjJZKPS (ORCPT
+        with ESMTP id S234902AbjJZKQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:15:18 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F244D199;
-        Thu, 26 Oct 2023 03:15:13 -0700 (PDT)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1c9d407bb15so6074805ad.0;
-        Thu, 26 Oct 2023 03:15:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698315313; x=1698920113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KI/1uKaPr2cYGg/k5jsesLMVul8Py7/i0JZvHiNOp9o=;
-        b=kXG+EnBbv/YRQiPlncPN6QXgC3H29RnGnxL+Hoy+RwpnSV1e3SHaafC2mjbrRmMoe+
-         /HBLmseMFVsHUxdDJUKPcou643+9XHLAYMg+U8PbeM6OgvjdjxogphdSTH9F0hIXXLfB
-         3CqOw/X+Znf/Oo0ssL/Svuj+BivTceT0MnCsyN27lJelXoY9ucSW0Rwhc5kp5BSN7Iqx
-         IJX94OZoB/EEKKWFj8ZMG4pDFUUy8JGWjHCL0a9QUlhLVVtmS3TuuzzBuiS10USQ4mET
-         fiip/kBuSWkTOq4XBBgjLjNFxRZqWb+pb1GEaqHZuDN0wOQNFXZMF2GecjavjBvDadVc
-         x/9Q==
-X-Gm-Message-State: AOJu0YypPoBqBv6o1rXVZFbRrHIF1vf7bh0ASKG/jqnZDROnlFGHthwz
-        f/U5MSxCwcOe1K7aFza0Pd4=
-X-Google-Smtp-Source: AGHT+IF/LGYB3Ys5VJ6GM+C9qrShNstAzE0OzlIyzRZKj3XuW74cCZh6EuDM9KEHiBz7g+30N0IGHw==
-X-Received: by 2002:a17:90a:195b:b0:27c:f845:3e3f with SMTP id 27-20020a17090a195b00b0027cf8453e3fmr18052475pjh.1.1698315313080;
-        Thu, 26 Oct 2023 03:15:13 -0700 (PDT)
-Received: from dev-linux.lan (cpe-70-95-21-110.san.res.rr.com. [70.95.21.110])
-        by smtp.gmail.com with ESMTPSA id ju1-20020a170903428100b001cc116a4467sm643191plb.103.2023.10.26.03.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 03:15:12 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 03:15:09 -0700
-From:   Sukrut Bellary <sukrut.bellary@linux.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
-        Nishanth Menon <nm@ti.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: adc: ti-adc128s052: Add lower resolution
- devices support
-Message-ID: <ZTo8LbMoj/q95CfC@dev-linux.lan>
-References: <20231022031203.632153-1-sukrut.bellary@linux.com>
- <20231022031203.632153-3-sukrut.bellary@linux.com>
- <20231022170048.289a1897@jic23-huawei>
- <ZThKqFN6l8HHSXGw@dev-linux.lan>
- <20231025152400.000013e4@Huawei.com>
+        Thu, 26 Oct 2023 06:16:07 -0400
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADAD199;
+        Thu, 26 Oct 2023 03:16:00 -0700 (PDT)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id BA8B652050D;
+        Thu, 26 Oct 2023 12:15:58 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Thu, 26 Oct
+ 2023 12:15:58 +0200
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <mathias.nyman@intel.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>
+Subject: [PATCH v6] usb: Reduce the 'SET_ADDRESS' request timeout with a new quirk
+Date:   Thu, 26 Oct 2023 12:15:51 +0200
+Message-ID: <20231026101551.36551-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
+References: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025152400.000013e4@Huawei.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 03:24:00PM +0100, Jonathan Cameron wrote:
-> On Tue, 24 Oct 2023 15:52:24 -0700
-> Sukrut Bellary <sukrut.bellary@linux.com> wrote:
-> 
-> > On Sun, Oct 22, 2023 at 05:00:48PM +0100, Jonathan Cameron wrote:
-> > > On Sat, 21 Oct 2023 20:12:03 -0700
-> > > Sukrut Bellary <sukrut.bellary@linux.com> wrote:
-> > >   
-> > > > The adcxx4s communicates with a host processor via an SPI/Microwire Bus
-> > > > interface. The device family responds with 12-bit data, of which the LSB
-> > > > bits are transmitted by the lower resolution devices as 0.
-> > > > The unavailable bits are 0 in LSB.
-> > > > Shift is calculated per resolution and used in scaling and
-> > > > raw data read.
-> > > > 
-> > > > Lets reuse the driver to support the family of devices with name
-> > > > ADC<bb><c>S<sss>, where
-> > > > * bb is the resolution in number of bits (8, 10, 12)
-> > > > * c is the number of channels (1, 2, 4, 8)
-> > > > * sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
-> > > > and 101 for 1 MSPS)
-> > > > 
-> > > > Complete datasheets are available at TI's website here:
-> > > > https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
-> > > > 
-> > > > Tested only with ti-adc102s051 on BegalePlay SBC.
-> > > > https://www.beagleboard.org/boards/beagleplay
-> > > > 
-> > > > arm64: dts: ti: k3-am625-beagleplay: Add adc102s051
-> > > > Add adc102s051 support.
-> > > > Tested on beaglePlay SBC
-> > > > https://www.beagleboard.org/boards/beagleplay
-> > > > 
-> > > > Co-developed-by: Nishanth Menon <nm@ti.com>
-> > > > Signed-off-by: Nishanth Menon <nm@ti.com>
-> > > > Signed-off-by: Sukrut Bellary <sukrut.bellary@linux.com>
-> > > > ---
-> > > > Changes in v2:
-> > > >         - Arranged of_device_id and spi_device_id in numeric order.
-> > > >         - Used enum to index into adc128_config.
-> > > >         - Reorder adc128_config in alphabetical.
-> > > >         - Include channel resolution information.
-> > > >         - Shift is calculated per resolution and used in scaling and 
-> > > >           raw data read.
-> > > > - Link to v1: https://lore.kernel.org/all/20220701042919.18180-3-nm@ti.com/
-> > > > ---
-> > > >  drivers/iio/adc/ti-adc128s052.c | 131 +++++++++++++++++++++++---------
-> > > >  1 file changed, 96 insertions(+), 35 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
-> > > > index a456ea78462f..61e3181b8daf 100644
-> > > > --- a/drivers/iio/adc/ti-adc128s052.c
-> > > > +++ b/drivers/iio/adc/ti-adc128s052.c
-> > > > @@ -7,6 +7,22 @@
-> > > >   * https://www.ti.com/lit/ds/symlink/adc128s052.pdf
-> > > >   * https://www.ti.com/lit/ds/symlink/adc122s021.pdf
-> > > >   * https://www.ti.com/lit/ds/symlink/adc124s021.pdf
-> > > > + *
-> > > > + * The adcxx4s communicates with a host processor via an SPI/Microwire Bus
-> > > > + * interface. This driver supports the whole family of devices with a name
-> > > > + * ADC<bb><c>S<sss>, where
-> > > > + * bb is the resolution in number of bits (8, 10, 12)
-> > > > + * c is the number of channels (1, 2, 4, 8)
-> > > > + * sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
-> > > > + * and 101 for 1 MSPS)
-> > > > + *
-> > > > + * Complete datasheets are available at TI's website here:
-> > > > + *   https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
-> > > > + *
-> > > > + * 8, 10, and 12 bits converters send 12-bit data with
-> > > > + * unavailable bits set to 0 in LSB.
-> > > > + * Shift is calculated per resolution and used in scaling and
-> > > > + * raw data read.
-> > > >   */
-> > > >  
-> > > >  #include <linux/err.h>
-> > > > @@ -53,7 +69,7 @@ static int adc128_adc_conversion(struct adc128 *adc, u8 channel)
-> > > >  	if (ret < 0)
-> > > >  		return ret;
-> > > >  
-> > > > -	return ((adc->buffer[0] << 8 | adc->buffer[1]) & 0xFFF);
-> > > > +	return (adc->buffer[0] << 8 | adc->buffer[1]);  
-> > > Firstly outer brackets don't add anything.
-> > > Secondly, this is an endian conversion.
-> > > 
-> > > return be16_to_cpu(adc->buffer);
-> > > 
-> > > should do the job as we know it's aligned enough for a be16.
-> > > 
-> > >  
-> > 
-> > Thanks for the review.
-> > Yes, I will use be16_to_cpu().
-> > 
-> > > >  }
-> > > >  
-> > > >  static int adc128_read_raw(struct iio_dev *indio_dev,
-> > > > @@ -70,7 +86,8 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
-> > > >  		if (ret < 0)
-> > > >  			return ret;
-> > > >  
-> > > > -		*val = ret;
-> > > > +		*val = (ret >> channel->scan_type.shift) &
-> > > > +			GENMASK(channel->scan_type.realbits - 1, 0);
-> > > >  		return IIO_VAL_INT;
-> > > >  
-> > > >  	case IIO_CHAN_INFO_SCALE:
-> > > > @@ -80,7 +97,7 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
-> > > >  			return ret;
-> > > >  
-> > > >  		*val = ret / 1000;
-> > > > -		*val2 = 12;
-> > > > +		*val2 = channel->scan_type.realbits;
-> > > >  		return IIO_VAL_FRACTIONAL_LOG2;
-> > > >  
-> > > >  	default:
-> > > > @@ -89,24 +106,34 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
-> > > >  
-> > > >  }
-> > > >  
-> > > > -#define ADC128_VOLTAGE_CHANNEL(num)	\
-> > > > -	{ \
-> > > > -		.type = IIO_VOLTAGE, \
-> > > > -		.indexed = 1, \
-> > > > -		.channel = (num), \
-> > > > -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW), \
-> > > > -		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) \
-> > > > +#define _ADC128_VOLTAGE_CHANNEL(num, real_bits, store_bits)		\
-> > > > +	{								\
-> > > > +		.type = IIO_VOLTAGE,					\
-> > > > +		.indexed = 1,						\
-> > > > +		.channel = (num),					\
-> > > > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
-> > > > +		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
-> > > > +		.scan_index = (num),					\
-> > > > +		.scan_type = {						\
-> > > > +			.sign = 'u',					\
-> > > > +			.realbits = (real_bits),			\
-> > > > +			.storagebits = (store_bits),			\
-> > > > +			.shift = (12 - real_bits),			\
-> > > > +		},							\
-> > > >  	}
-> > > >  
-> > > > -static const struct iio_chan_spec adc128s052_channels[] = {
-> > > > -	ADC128_VOLTAGE_CHANNEL(0),
-> > > > -	ADC128_VOLTAGE_CHANNEL(1),
-> > > > -	ADC128_VOLTAGE_CHANNEL(2),
-> > > > -	ADC128_VOLTAGE_CHANNEL(3),
-> > > > -	ADC128_VOLTAGE_CHANNEL(4),
-> > > > -	ADC128_VOLTAGE_CHANNEL(5),
-> > > > -	ADC128_VOLTAGE_CHANNEL(6),
-> > > > -	ADC128_VOLTAGE_CHANNEL(7),
-> > > > +#define ADC082_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 8, 16)
-> > > > +#define ADC102_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 10, 16)
-> > > > +#define ADC128_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 12, 16)
-> > > > +
-> > > > +static const struct iio_chan_spec adc082s021_channels[] = {
-> > > > +	ADC082_VOLTAGE_CHANNEL(0),
-> > > > +	ADC082_VOLTAGE_CHANNEL(1),
-> > > > +};
-> > > > +
-> > > > +static const struct iio_chan_spec adc102s021_channels[] = {
-> > > > +	ADC102_VOLTAGE_CHANNEL(0),
-> > > > +	ADC102_VOLTAGE_CHANNEL(1),
-> > > >  };
-> > > >  
-> > > >  static const struct iio_chan_spec adc122s021_channels[] = {
-> > > > @@ -121,10 +148,32 @@ static const struct iio_chan_spec adc124s021_channels[] = {
-> > > >  	ADC128_VOLTAGE_CHANNEL(3),
-> > > >  };
-> > > >  
-> > > > +static const struct iio_chan_spec adc128s052_channels[] = {
-> > > > +	ADC128_VOLTAGE_CHANNEL(0),
-> > > > +	ADC128_VOLTAGE_CHANNEL(1),
-> > > > +	ADC128_VOLTAGE_CHANNEL(2),
-> > > > +	ADC128_VOLTAGE_CHANNEL(3),
-> > > > +	ADC128_VOLTAGE_CHANNEL(4),
-> > > > +	ADC128_VOLTAGE_CHANNEL(5),
-> > > > +	ADC128_VOLTAGE_CHANNEL(6),
-> > > > +	ADC128_VOLTAGE_CHANNEL(7),
-> > > > +};
-> > > > +
-> > > >  static const struct adc128_configuration adc128_config[] = {
-> > > > -	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
-> > > > +	{ adc082s021_channels, ARRAY_SIZE(adc082s021_channels) },
-> > > > +	{ adc102s021_channels, ARRAY_SIZE(adc102s021_channels) },
-> > > >  	{ adc122s021_channels, ARRAY_SIZE(adc122s021_channels) },
-> > > >  	{ adc124s021_channels, ARRAY_SIZE(adc124s021_channels) },
-> > > > +	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
-> > > > +};
-> > > > +
-> > > > +/* Ensure match with adc128_config indices */  
-> > > 
-> > > Make sure that is the case by using them when setting it up.
-> > > 
-> > > static const struct adc128_configuration adc128_config[] {
-> > > 	[ADC128_CONFIG_INDEX_082S] = {
-> > > 		adc082s021_channels, ARRAY_SIZE(..) 
-> > > 	},
-> > > 	[ADC128_CONFIG_INDEX_102S] = ..
-> > > }
-> > >   
-> > 
-> > OK, I will use enum while setting it up
-> > 
-> > +static const struct adc128_configuration adc128_config[] = {
-> > +       [ADC128_CONFIG_INDEX_082S] = {
-> > +               .channels = adc082s021_channels,
-> > +               .num_channels = ARRAY_SIZE(adc082s021_channels)
-> > }
-> > 
-> > Use enum in spi_device_id[]
-> > 
-> > static const struct spi_device_id adc128_id[] = {
-> > +       { "adc082s021", (kernel_ulong_t)ADC128_CONFIG_INDEX_082S },
-> > +       { "adc082s051", (kernel_ulong_t)ADC128_CONFIG_INDEX_082S },
-> > 
-> > }
-> > 
-> > And use it in probe to extract the config for channels and num_channels using
-> > 
-> > config = &adc128_config[spi_get_device_id(spi)->driver_data];
-> > 
-> > since we are not using of_device_id for extracting config, I can remove
-> > the .data entry or need to type case it.
-> 
-> Please don't. That is much more fragile than preferring to get the data
-> from the firmware that we matched on.
-> 
-> We have some IIO drivers doing this but only because we haven't yet updated
-> them all yet.
-> 
-> Jonathan
->
+This patch introduces a new USB quirk,
+USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT, which modifies the timeout value
+for the 'SET_ADDRESS' request. The standard timeout for USB request/command
+is 5000 ms, as recommended in the USB 3.2 specification (section 9.2.6.1).
 
-OK, I will keep the of_device_id and spi_device_id as v2.
+However, certain scenarios, such as connecting devices through an APTIV
+hub, can lead to timeout errors when the device enumerates as full speed
+initially and later switches to high speed during chirp negotiation.
 
-static const struct of_device_id adc128_of_match[] = {
-+	{ .compatible = "ti,adc082s021", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ .compatible = "ti,adc082s051", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-}
+In such cases, USB analyzer logs reveal that the bus suspends for
+5 seconds due to incorrect chirp parsing and resumes only after two
+consecutive timeout errors trigger a hub driver reset.
 
-static const struct spi_device_id adc128_id[] = {
-+	{ "adc082s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ "adc082s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-}
+Packet(54) Dir(?) Full Speed J(997.100 us) Idle(  2.850 us)
+_______| Time Stamp(28 . 105 910 682)
+_______|_____________________________________________________________Ch0
+Packet(55) Dir(?) Full Speed J(997.118 us) Idle(  2.850 us)
+_______| Time Stamp(28 . 106 910 632)
+_______|_____________________________________________________________Ch0
+Packet(56) Dir(?) Full Speed J(399.650 us) Idle(222.582 us)
+_______| Time Stamp(28 . 107 910 600)
+_______|_____________________________________________________________Ch0
+Packet(57) Dir Chirp J( 23.955 ms) Idle(115.169 ms)
+_______| Time Stamp(28 . 108 532 832)
+_______|_____________________________________________________________Ch0
+Packet(58) Dir(?) Full Speed J (Suspend)( 5.347 sec) Idle(  5.366 us)
+_______| Time Stamp(28 . 247 657 600)
+_______|_____________________________________________________________Ch0
 
-Currently it uses spi_get_device_match_data() to extract config.
+This 5-second delay in device enumeration is undesirable, particularly
+in automotive applications where quick enumeration is crucial
+(ideally within 3 seconds).
 
-And in v3, I will use enum while setting up config.
+The newly introduced quirks provide the flexibility to align with a
+3-second time limit, as required in specific contexts like automotive
+applications.
 
-+static const struct adc128_configuration adc128_config[] = {
-+       [ADC128_CONFIG_INDEX_082S] = {
-+               .channels = adc082s021_channels,
-+               .num_channels = ARRAY_SIZE(adc082s021_channels)
-}
+By reducing the 'SET_ADDRESS' request timeout to 500 ms, the
+system can respond more swiftly to errors, initiate rapid recovery, and
+ensure efficient device enumeration. This change is vital for scenarios
+where rapid smartphone enumeration and screen projection are essential.
 
-> > 
-> > static const struct of_device_id adc128_of_match[] = {
-> > 	{ .compatible = "ti,adc082s021", },
-> > }
-> > 
-> > > Or I think you can make it irrelevant by not using an array at all.
-> > > static const struct ad128_configruation adc082s021_config = {
-> > > };
-> > > 
-> > > etc then just use the address of the right one directly.
-> > > 
-> > > In this driver, I suspect that is simpler than using the array.
-> > >   
-> > > > +enum adc128_configuration_index {
-> > > > +	ADC128_CONFIG_INDEX_082S,
-> > > > +	ADC128_CONFIG_INDEX_102S,
-> > > > +	ADC128_CONFIG_INDEX_122S,
-> > > > +	ADC128_CONFIG_INDEX_124S,
-> > > > +	ADC128_CONFIG_INDEX_128S,  
-> > >   
-> > > >  };
-> > > >  
-> > > >  static const struct iio_info adc128_info = {
-> > > > @@ -177,31 +226,43 @@ static int adc128_probe(struct spi_device *spi)
-> > > >  }
-> > > >  
-> > > >  static const struct of_device_id adc128_of_match[] = {
-> > > > -	{ .compatible = "ti,adc128s052", .data = &adc128_config[0] },
-> > > > -	{ .compatible = "ti,adc122s021", .data = &adc128_config[1] },
-> > > > -	{ .compatible = "ti,adc122s051", .data = &adc128_config[1] },
-> > > > -	{ .compatible = "ti,adc122s101", .data = &adc128_config[1] },
-> > > > -	{ .compatible = "ti,adc124s021", .data = &adc128_config[2] },
-> > > > -	{ .compatible = "ti,adc124s051", .data = &adc128_config[2] },
-> > > > -	{ .compatible = "ti,adc124s101", .data = &adc128_config[2] },
-> > > > +	{ .compatible = "ti,adc082s021", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ .compatible = "ti,adc082s051", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ .compatible = "ti,adc082s101", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ .compatible = "ti,adc102s021", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ .compatible = "ti,adc102s051", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ .compatible = "ti,adc102s101", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ .compatible = "ti,adc122s021", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ .compatible = "ti,adc122s051", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ .compatible = "ti,adc122s101", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ .compatible = "ti,adc124s021", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ .compatible = "ti,adc124s051", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ .compatible = "ti,adc124s101", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ .compatible = "ti,adc128s052", .data = &adc128_config[ADC128_CONFIG_INDEX_128S] },
-> > > >  	{ /* sentinel */ },
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(of, adc128_of_match);
-> > > >  
-> > > >  static const struct spi_device_id adc128_id[] = {
-> > > > -	{ "adc128s052", (kernel_ulong_t)&adc128_config[0] },
-> > > > -	{ "adc122s021",	(kernel_ulong_t)&adc128_config[1] },
-> > > > -	{ "adc122s051",	(kernel_ulong_t)&adc128_config[1] },
-> > > > -	{ "adc122s101",	(kernel_ulong_t)&adc128_config[1] },
-> > > > -	{ "adc124s021", (kernel_ulong_t)&adc128_config[2] },
-> > > > -	{ "adc124s051", (kernel_ulong_t)&adc128_config[2] },
-> > > > -	{ "adc124s101", (kernel_ulong_t)&adc128_config[2] },
-> > > > +	{ "adc082s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ "adc082s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ "adc082s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-> > > > +	{ "adc102s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ "adc102s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ "adc102s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-> > > > +	{ "adc122s021",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ "adc122s051",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ "adc122s101",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-> > > > +	{ "adc124s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ "adc124s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ "adc124s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > > +	{ "adc128s052", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_128S] },
-> > > >  	{ }
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(spi, adc128_id);
-> > > >  
-> > > >  static const struct acpi_device_id adc128_acpi_match[] = {
-> > > > -	{ "AANT1280", (kernel_ulong_t)&adc128_config[2] },
-> > > > +	{ "AANT1280", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-> > > >  	{ }
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(acpi, adc128_acpi_match);  
-> > >   
-> > 
-> 
+To use the quirk, please write "vendor_id:product_id:p" to
+/sys/bus/usb/drivers/hub/module/parameter/quirks
+
+For example,
+echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameters/quirks"
+
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+changes since version 1:
+	- implement quirk instead of new API in xhci driver
+
+changes since version 2:
+	- Add documentation for the new quirk.
+	- Define the timeout unit in milliseconds in variable names and function arguments.
+	- Change the xHCI command timeout from HZ (jiffies) to milliseconds.
+	- Add APTIV usb hub vendor and product ID in device quirk list
+	- Adding some other comments for clarity
+
+Changes since version 3:
+	- Add some comments for clarity.
+	- Minor indentation and sequence change.
+
+Changes since version 4:
+	- Changing the USB specification reference to version 3.2.
+    	- Enhancing the commit message to provide more details about the technical issue.
+    	- Improving the structure of function comments.
+
+Changes since version 5:
+	- Changed the terminology in USB core driver files from 'command' to 'request'
+	  as it is more commonly used. 
+	  It's important to note that USB specifications indicate these terms are interchangeable.
+	  For example, USB spec 3.2, section 9.2.6.1, uses the term 'command' in its text
+	  "USB sets an upper limit of 5 seconds for any command to be processed. "
+	- Change set_address to SET_ADDRESS.
+---
+ .../admin-guide/kernel-parameters.txt         |  3 +++
+ drivers/usb/core/hub.c                        | 22 ++++++++++++++++--
+ drivers/usb/core/quirks.c                     |  6 +++++
+ drivers/usb/host/xhci-mem.c                   |  2 ++
+ drivers/usb/host/xhci-ring.c                  | 11 +++++----
+ drivers/usb/host/xhci.c                       | 23 +++++++++++++------
+ drivers/usb/host/xhci.h                       |  9 ++++++--
+ include/linux/usb/hcd.h                       |  5 ++--
+ include/linux/usb/quirks.h                    |  3 +++
+ 9 files changed, 66 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0a1731a0f0ef..4aa3723d2eaf 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6817,6 +6817,9 @@
+ 					pause after every control message);
+ 				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
+ 					delay after resetting its port);
++				p = USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT (Reduce
++					timeout of the SET_ADDRESS request from
++					5000 ms to 500 ms)
+ 			Example: quirks=0781:5580:bk,0a5c:5834:gij
+ 
+ 	usbhid.mousepoll=
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 3c54b218301c..98db92af2cce 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -54,6 +54,19 @@
+ #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+ #define USB_PING_RESPONSE_TIME		400	/* ns */
+ 
++/*
++ * USB 3.2 spec, section 9.2.6.1
++ * USB sets an upper limit of 5000 ms for any command/request
++ * to be processed.
++ */
++#define USB_DEFAULT_REQUEST_TIMEOUT_MS	5000 /* ms */
++
++/*
++ * The SET_ADDRESS request timeout will be 500 ms when
++ * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
++ */
++#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
++
+ /* Protect struct usb_device->state and ->children members
+  * Note: Both are also protected by ->dev.sem, except that ->state can
+  * change to USB_STATE_NOTATTACHED even when the semaphore isn't held. */
+@@ -4626,7 +4639,12 @@ EXPORT_SYMBOL_GPL(usb_ep0_reinit);
+ static int hub_set_address(struct usb_device *udev, int devnum)
+ {
+ 	int retval;
++	unsigned int timeout_ms = USB_DEFAULT_REQUEST_TIMEOUT_MS;
+ 	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct usb_hub *hub = usb_hub_to_struct_hub(udev->parent);
++
++	if (hub->hdev->quirks & USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT)
++		timeout_ms = USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS;
+ 
+ 	/*
+ 	 * The host controller will choose the device address,
+@@ -4639,11 +4657,11 @@ static int hub_set_address(struct usb_device *udev, int devnum)
+ 	if (udev->state != USB_STATE_DEFAULT)
+ 		return -EINVAL;
+ 	if (hcd->driver->address_device)
+-		retval = hcd->driver->address_device(hcd, udev);
++		retval = hcd->driver->address_device(hcd, udev, timeout_ms);
+ 	else
+ 		retval = usb_control_msg(udev, usb_sndaddr0pipe(),
+ 				USB_REQ_SET_ADDRESS, 0, devnum, 0,
+-				NULL, 0, USB_CTRL_SET_TIMEOUT);
++				NULL, 0, timeout_ms);
+ 	if (retval == 0) {
+ 		update_devnum(udev, devnum);
+ 		/* Device now using proper address. */
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 15e9bd180a1d..815e71f8ec59 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -138,6 +138,9 @@ static int quirks_param_set(const char *value, const struct kernel_param *kp)
+ 			case 'o':
+ 				flags |= USB_QUIRK_HUB_SLOW_RESET;
+ 				break;
++			case 'p':
++				flags |= USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT;
++				break;
+ 			/* Ignore unrecognized flag characters */
+ 			}
+ 		}
+@@ -527,6 +530,9 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 
+ 	{ USB_DEVICE(0x2386, 0x350e), .driver_info = USB_QUIRK_NO_LPM },
+ 
++	/* APTIV AUTOMOTIVE HUB */
++	{ USB_DEVICE(0x2c48, 0x0132), .driver_info = USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT },
++
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
+ 
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 8714ab5bf04d..4a286136d1a8 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -1729,6 +1729,8 @@ struct xhci_command *xhci_alloc_command(struct xhci_hcd *xhci,
+ 	}
+ 
+ 	command->status = 0;
++	/* set default timeout to 5000 ms */
++	command->timeout_ms = XHCI_CMD_DEFAULT_TIMEOUT_MS;
+ 	INIT_LIST_HEAD(&command->cmd_list);
+ 	return command;
+ }
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 1dde53f6eb31..8f36c2914938 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -366,9 +366,10 @@ void xhci_ring_cmd_db(struct xhci_hcd *xhci)
+ 	readl(&xhci->dba->doorbell[0]);
+ }
+ 
+-static bool xhci_mod_cmd_timer(struct xhci_hcd *xhci, unsigned long delay)
++static bool xhci_mod_cmd_timer(struct xhci_hcd *xhci)
+ {
+-	return mod_delayed_work(system_wq, &xhci->cmd_timer, delay);
++	return mod_delayed_work(system_wq, &xhci->cmd_timer,
++			msecs_to_jiffies(xhci->current_cmd->timeout_ms));
+ }
+ 
+ static struct xhci_command *xhci_next_queued_cmd(struct xhci_hcd *xhci)
+@@ -412,7 +413,7 @@ static void xhci_handle_stopped_cmd_ring(struct xhci_hcd *xhci,
+ 	if ((xhci->cmd_ring->dequeue != xhci->cmd_ring->enqueue) &&
+ 	    !(xhci->xhc_state & XHCI_STATE_DYING)) {
+ 		xhci->current_cmd = cur_cmd;
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 		xhci_ring_cmd_db(xhci);
+ 	}
+ }
+@@ -1786,7 +1787,7 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
+ 	if (!list_is_singular(&xhci->cmd_list)) {
+ 		xhci->current_cmd = list_first_entry(&cmd->cmd_list,
+ 						struct xhci_command, cmd_list);
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 	} else if (xhci->current_cmd == cmd) {
+ 		xhci->current_cmd = NULL;
+ 	}
+@@ -4301,7 +4302,7 @@ static int queue_command(struct xhci_hcd *xhci, struct xhci_command *cmd,
+ 	/* if there are no other commands queued we start the timeout timer */
+ 	if (list_empty(&xhci->cmd_list)) {
+ 		xhci->current_cmd = cmd;
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 	}
+ 
+ 	list_add_tail(&cmd->cmd_list, &xhci->cmd_list);
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index e1b1b64a0723..d856c4717ca9 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -3997,12 +3997,18 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
+ 	return 0;
+ }
+ 
+-/*
+- * Issue an Address Device command and optionally send a corresponding
+- * SetAddress request to the device.
++/**
++ * xhci_setup_device - issues an Address Device command to assign a unique
++ *			USB bus address.
++ * @hcd: USB host controller data structure.
++ * @udev: USB dev structure representing the connected device.
++ * @setup: Enum specifying setup mode: address only or with context.
++ * @timeout_ms: Max wait time (ms) for the command operation to complete.
++ *
++ * Return: 0 if successful; otherwise, negative error code.
+  */
+ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+-			     enum xhci_setup_dev setup)
++			     enum xhci_setup_dev setup, unsigned int timeout_ms)
+ {
+ 	const char *act = setup == SETUP_CONTEXT_ONLY ? "context" : "address";
+ 	unsigned long flags;
+@@ -4059,6 +4065,7 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+ 	}
+ 
+ 	command->in_ctx = virt_dev->in_ctx;
++	command->timeout_ms = timeout_ms;
+ 
+ 	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->in_ctx);
+ 	ctrl_ctx = xhci_get_input_control_ctx(virt_dev->in_ctx);
+@@ -4185,14 +4192,16 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+ 	return ret;
+ }
+ 
+-static int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
++static int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev,
++			       unsigned int timeout_ms)
+ {
+-	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ADDRESS);
++	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ADDRESS, timeout_ms);
+ }
+ 
+ static int xhci_enable_device(struct usb_hcd *hcd, struct usb_device *udev)
+ {
+-	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ONLY);
++	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ONLY,
++				 XHCI_CMD_DEFAULT_TIMEOUT_MS);
+ }
+ 
+ /*
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 7e282b4522c0..c0ff6b399769 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -818,6 +818,8 @@ struct xhci_command {
+ 	struct completion		*completion;
+ 	union xhci_trb			*command_trb;
+ 	struct list_head		cmd_list;
++	/* xHCI command response timeout in milliseconds */
++	unsigned int			timeout_ms;
+ };
+ 
+ /* drop context bitmasks */
+@@ -1576,8 +1578,11 @@ struct xhci_td {
+ 	unsigned int		num_trbs;
+ };
+ 
+-/* xHCI command default timeout value */
+-#define XHCI_CMD_DEFAULT_TIMEOUT	(5 * HZ)
++/*
++ * xHCI command default timeout value in milliseconds.
++ * USB 3.2 spec, section 9.2.6.1
++ */
++#define XHCI_CMD_DEFAULT_TIMEOUT_MS	5000
+ 
+ /* command descriptor */
+ struct xhci_cd {
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index 61d4f0b793dc..d0e19ac3ba6c 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -372,8 +372,9 @@ struct hc_driver {
+ 		 * or bandwidth constraints.
+ 		 */
+ 	void	(*reset_bandwidth)(struct usb_hcd *, struct usb_device *);
+-		/* Returns the hardware-chosen device address */
+-	int	(*address_device)(struct usb_hcd *, struct usb_device *udev);
++		/* Set the hardware-chosen device address */
++	int	(*address_device)(struct usb_hcd *, struct usb_device *udev,
++				  unsigned int timeout_ms);
+ 		/* prepares the hardware to send commands to the device */
+ 	int	(*enable_device)(struct usb_hcd *, struct usb_device *udev);
+ 		/* Notifies the HCD after a hub descriptor is fetched.
+diff --git a/include/linux/usb/quirks.h b/include/linux/usb/quirks.h
+index eeb7c2157c72..59409c1fc3de 100644
+--- a/include/linux/usb/quirks.h
++++ b/include/linux/usb/quirks.h
+@@ -72,4 +72,7 @@
+ /* device has endpoints that should be ignored */
+ #define USB_QUIRK_ENDPOINT_IGNORE		BIT(15)
+ 
++/* short SET_ADDRESS request timeout */
++#define USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT	BIT(16)
++
+ #endif /* __LINUX_USB_QUIRKS_H */
+-- 
+2.17.1
+
