@@ -2,859 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 148327D8241
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1067D8245
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344874AbjJZMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S1344872AbjJZMIj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 08:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZMIO (ORCPT
+        with ESMTP id S229642AbjJZMIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:08:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE07F91
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:08:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62AF3C433C8
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698322090;
-        bh=+JdD8giu/Ny4rGhN/UiG/LthedqBx/qB47QZtikVHhE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aMg9byhtnZ06OwQiLgT+FwyBSFB1QuwgLr9BVCLTPaCHemBVbcQSADBlFqcwv/2/i
-         J957grhEabWGwCzQwRK3AdRGjgHhTU65G1hLvVALmy3g5uk9/LGOHw9UtGtgvDM5OU
-         v38yH1UDutRMrG3wVPl+cw3iZa5/TzqNv4ht/LvyxiNi+a9G1ALmyAWGHCaXuHnBfd
-         EKO4+FKU4br+AunGv5hceysyptohOUxFMzAzBJvXnPQIAqgc1MZR9Po/Mf+r34ySvJ
-         Mpl+seMCN3IV6BL6yXyPQSW2K/qpT8sMzhrNwmaHgdeKBYZ5Sz6P0nec6aGPKjn38X
-         qqUHcFWMK4AKA==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-507b9408c61so1096147e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:08:10 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyJQme1Ftu+7otRze6C8o7osEmSRax0heBjUyDTgCuhB1k8IWRA
-        HtxiycJoxzSkzOHSK1TTsPy3z5f/c7TSlOiJiPA=
-X-Google-Smtp-Source: AGHT+IHEgqAQTHH77xakxF33thjE9jdmdZytrVkl2TAu4eTysn11QcDfMXGc4hqPDMQClntLDimIu6Z04eC6xo+03uI=
-X-Received: by 2002:a05:6512:3c9a:b0:507:a766:ad27 with SMTP id
- h26-20020a0565123c9a00b00507a766ad27mr17384635lfv.16.1698322088452; Thu, 26
- Oct 2023 05:08:08 -0700 (PDT)
+        Thu, 26 Oct 2023 08:08:37 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4A21A6;
+        Thu, 26 Oct 2023 05:08:35 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a7a80a96dbso17192987b3.0;
+        Thu, 26 Oct 2023 05:08:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698322114; x=1698926914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3KKbxpaRdKQQQLvpY2x+Hdf2Y5BAYNzBsK+Et59KcX8=;
+        b=ADxCBZjkuPmbALPFjGI0cRx5TBP6YQYRzuMWM8y3VNYdibuyVDxwu/dZruIXPN0JlL
+         MDqmSV+lzBsKEKJQgmcVqrBfRbgsi36IroW3865gzKvSl1mYnLfbwduO+e/XyI04mHxT
+         Lig7rPWmRU8nphSuyqGl//Zb/tL8+x5aIv8OdogZKYLODd1AvE3z1cfFM2Sp3BkIVeYF
+         C3j3EFhm2N9w/dt0znjgvv5ygj2drJNwapnUaGlR2Y9ziAmbcb3HZ1AQSrKtydoaV8/8
+         mDbRofo+V0wF2o94fxMYphPxMc0h9XT+oWixewvyRROzG7WAct2Gejw3VSd4fdetzDHA
+         BgXQ==
+X-Gm-Message-State: AOJu0Yx1q4SuiDSOBfV+4DdCpbTGFTeDsFjuxad9ILP1980lfTfzeKfT
+        zFJbbb1206JmxdTdf7+TDWV/bB/Srk6FbQ==
+X-Google-Smtp-Source: AGHT+IGKOtB5Vdi4SScA8sBNSp1erZ9WAmvPnQ2C3ohONPE3QNZ6GzYGBtj5vdT5/zgcz9CsqJT+kg==
+X-Received: by 2002:a0d:e682:0:b0:5a7:dac8:2fa with SMTP id p124-20020a0de682000000b005a7dac802famr4070833ywe.24.1698322114027;
+        Thu, 26 Oct 2023 05:08:34 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id f5-20020a0ddc05000000b005a7bf2aff15sm5976139ywe.95.2023.10.26.05.08.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 05:08:33 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59e88a28b98so7109127b3.1;
+        Thu, 26 Oct 2023 05:08:33 -0700 (PDT)
+X-Received: by 2002:a81:eb04:0:b0:5a7:a896:3f54 with SMTP id
+ n4-20020a81eb04000000b005a7a8963f54mr3275652ywm.26.1698322113544; Thu, 26 Oct
+ 2023 05:08:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026114446.5932-1-huangpei@loongson.cn>
-In-Reply-To: <20231026114446.5932-1-huangpei@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 26 Oct 2023 20:07:56 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6Z+5aXKqr5CXORdSQef60hQ4TDezZSAVXiohpaeKMD3g@mail.gmail.com>
-Message-ID: <CAAhV-H6Z+5aXKqr5CXORdSQef60hQ4TDezZSAVXiohpaeKMD3g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] selftests/rseq: Add 64bit LoongArch support
-To:     Huang Pei <huangpei@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231009130126.697995596@linuxfoundation.org> <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
+ <ZSRe78MAQwbBdyFP@duo.ucw.cz> <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
+ <ZSU+GHl1q7T/TBp5@duo.ucw.cz> <ZSWg1fv3gOyV5t+h@shikoro> <2023101057-runny-pellet-8952@gregkh>
+ <ZTgZa1ic1iFbdaTM@duo.ucw.cz> <CAMuHMdXQApuOPfU1zNKcHKN5=fCuLBSDiLtF06U7e4Tx0+noyA@mail.gmail.com>
+ <CAMuHMdVrdmBgopnPnJK_ij52wz2WVBdYRHur2KfosFnT945ULw@mail.gmail.com>
+ <CAMuHMdWZvTGrFgx_o3g3usOwkDvD2rw5QH9_ibo=OKdw17sAzg@mail.gmail.com>
+ <CAMuHMdXvpiGQ7jqAG69Zo=10wV-E0bioC9AYUHwwhRGmLXygWA@mail.gmail.com>
+ <7d7a5a15-3349-adce-02cd-82b6cb4bebde@roeck-us.net> <CAMuHMdXbPZ0uz0NnE1xhUD=QtaAq+TinSW-PrWPMpGe4h=7Spg@mail.gmail.com>
+ <CAMuHMdXNjopzEFCFBxxuYNCFMmj4SvMQ2PmZ4hZDHLGZGUHf=w@mail.gmail.com>
+In-Reply-To: <CAMuHMdXNjopzEFCFBxxuYNCFMmj4SvMQ2PmZ4hZDHLGZGUHf=w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Oct 2023 14:08:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU7-5R4NkwMdbLxovBY4=ePtPDs2SYXjWeGc_Yz3JcjPg@mail.gmail.com>
+Message-ID: <CAMuHMdU7-5R4NkwMdbLxovBY4=ePtPDs2SYXjWeGc_Yz3JcjPg@mail.gmail.com>
+Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10 000/226]
+ 5.10.198-rc1 review
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        niklas.soderlund+renesas@ragnatech.se,
+        yoshihiro.shimoda.uh@renesas.com, biju.das.jz@bp.renesas.com,
+        Chris.Paterson2@renesas.com, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 25, 2023 at 11:26 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Wed, Oct 25, 2023 at 9:53 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Oct 25, 2023 at 8:39 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > On 10/25/23 10:05, Geert Uytterhoeven wrote:
+> > > > On Wed, Oct 25, 2023 at 2:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > >> On Wed, Oct 25, 2023 at 12:53 PM Geert Uytterhoeven
+> > > >> <geert@linux-m68k.org> wrote:
+> > > >>> On Wed, Oct 25, 2023 at 12:47 PM Geert Uytterhoeven
+> > > >>> <geert@linux-m68k.org> wrote:
+> > > >>>> On Tue, Oct 24, 2023 at 9:22 PM Pavel Machek <pavel@denx.de> wrote:
+> > > >>>>> But we still have failures on Renesas with 5.10.199-rc2:
+> > > >>>>>
+> > > >>>>> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1047368849
+> > > >>>>>
+> > > >>>>> And they still happed during MMC init:
+> > > >>>>>
+> > > >>>>>      2.638013] renesas_sdhi_internal_dmac ee100000.mmc: Got CD GPIO
+> > > >>>>> [    2.638846] INFO: trying to register non-static key.
+> > > >>>>> [    2.644192] ledtrig-cpu: registered to indicate activity on CPUs
+> > > >>>>> [    2.649066] The code is fine but needs lockdep annotation, or maybe
+> > > >>>>> [    2.649069] you didn't initialize this object before use?
+> > > >>>>> [    2.649071] turning off the locking correctness validator.
+> > > >>>>> [    2.649080] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.199-rc2-arm64-renesas-ge31b6513c43d #1
+> > > >>>>> [    2.649082] Hardware name: HopeRun HiHope RZ/G2M with sub board (DT)
+> > > >>>>> [    2.649086] Call trace:
+> > > >>>>> [    2.655106] SMCCC: SOC_ID: ARCH_SOC_ID not implemented, skipping ....
+> > > >>>>> [    2.661354]  dump_backtrace+0x0/0x194
+> > > >>>>> [    2.661361]  show_stack+0x14/0x20
+> > > >>>>> [    2.667430] usbcore: registered new interface driver usbhid
+> > > >>>>> [    2.672230]  dump_stack+0xe8/0x130
+> > > >>>>> [    2.672238]  register_lock_class+0x480/0x514
+> > > >>>>> [    2.672244]  __lock_acquire+0x74/0x20ec
+> > > >>>>> [    2.681113] usbhid: USB HID core driver
+> > > >>>>> [    2.687450]  lock_acquire+0x218/0x350
+> > > >>>>> [    2.687456]  _raw_spin_lock+0x58/0x80
+> > > >>>>> [    2.687464]  tmio_mmc_irq+0x410/0x9ac
+> > > >>>>> [    2.688556] renesas_sdhi_internal_dmac ee160000.mmc: mmc0 base at 0x00000000ee160000, max clock rate 200 MHz
+> > > >>>>> [    2.744936]  __handle_irq_event_percpu+0xbc/0x340
+> > > >>>>> [    2.749635]  handle_irq_event+0x60/0x100
+> > > >>>>> [    2.753553]  handle_fasteoi_irq+0xa0/0x1ec
+> > > >>>>> [    2.757644]  __handle_domain_irq+0x7c/0xdc
+> > > >>>>> [    2.761736]  efi_header_end+0x4c/0xd0
+> > > >>>>> [    2.765393]  el1_irq+0xcc/0x180
+> > > >>>>> [    2.768530]  arch_cpu_idle+0x14/0x2c
+> > > >>>>> [    2.772100]  default_idle_call+0x58/0xe4
+> > > >>>>> [    2.776019]  do_idle+0x244/0x2c0
+> > > >>>>> [    2.779242]  cpu_startup_entry+0x20/0x6c
+> > > >>>>> [    2.783160]  rest_init+0x164/0x28c
+> > > >>>>> [    2.786561]  arch_call_rest_init+0xc/0x14
+> > > >>>>> [    2.790565]  start_kernel+0x4c4/0x4f8
+> > > >>>>> [    2.794233] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000014
+> > > >>>>> [    2.803011] Mem abort info:
+> > > >>>>>
+> > > >>>>> from https://lava.ciplatform.org/scheduler/job/1025535
+> > > >>>>> from
+> > > >>>>> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/5360973735 .
+> > > >>>>>
+> > > >>>>> Is there something else missing?
+> > > >>
+> > > >> It seems to be an intermittent issue. Investigating...
+> > > >
+> > > > After spending too much time on bisecting, the bad guy turns out to
+> > > > be commit 6d3745bbc3341d3b ("mmc: renesas_sdhi: register irqs before
+> > > > registering controller") in v5.10.198.
+> > > >
+> > > > Adding debug information shows the lock is mmc_host.lock.
+> > > >
+> > > > It is definitely initialized:
+> > > >
+> > > >      renesas_sdhi_probe()
+> > > >      {
+> > > >          ...
+> > > >          tmio_mmc_host_alloc()
+> > > >              mmc_alloc_host
+> > > >                  spin_lock_init(&host->lock);
+>
+> Initializing mmc_host.lock.
+>
+> > > >          ...
+> > > >          devm_request_irq()
+> > > >          -> tmio_mmc_irq
+> > > >              tmio_mmc_cmd_irq()
+> > > >                  spin_lock(&host->lock);
+>
+> Locking tmio_mmc_host.lock, but ...
+>
+> > > >          ...
+> > > >      }
+> > > >
+> > > > That leaves us with a missing lockdep annotation?
+> > >
+> > > Is it possible that the lock initialization is overwritten ?
+> > > I seem to recall a recent case where this happens.
+> > >
+> > > Also, there is
+> > >         spin_lock_init(&_host->lock);
+> > > in tmio_mmc_host_probe(), and tmio_mmc_host_probe() is called after
+> > > devm_request_irq().
+> >
+> > Unless I am missing something, that is initializing tmio_mmc_host.lock,
+> > which is a different lock than mmc_host.lock?
+>
+> ... tmio_mmc_host.lock is initialized only here.
+>
+> Now the question remains why this is not triggered in mainline.
+> More investigation to do tomorrow...
 
-1, The two patches should be marked as [1/2] and [2/2], not [1/3] and [2/3]=
-.
-2, It is better to exchange the two patches' order.
-3, Please add some commit messages, don't leave empty.
+| --- a/drivers/mmc/host/renesas_sdhi_core.c
+| +++ b/drivers/mmc/host/renesas_sdhi_core.c
+| @@ -1011,6 +1011,8 @@ int renesas_sdhi_probe(struct platform_device *pdev,
+|                         renesas_sdhi_start_signal_voltage_switch;
+|                 host->sdcard_irq_setbit_mask = TMIO_STAT_ALWAYS_SET_27;
+|                 host->reset = renesas_sdhi_reset;
 
-Huacai
+host->sdcard_irq_mask_all is not initialized in this branch
 
-On Thu, Oct 26, 2023 at 7:45=E2=80=AFPM Huang Pei <huangpei@loongson.cn> wr=
-ote:
->
-> Signed-off-by: Huang Pei <huangpei@loongson.cn>
-> ---
->  tools/testing/selftests/rseq/param_test.c     |  20 +
->  .../selftests/rseq/rseq-loongarch-bits.h      | 463 ++++++++++++++++++
->  .../rseq/rseq-loongarch-thread-pointer.h      |  22 +
->  tools/testing/selftests/rseq/rseq-loongarch.h | 140 ++++++
->  .../selftests/rseq/rseq-thread-pointer.h      |   2 +
->  tools/testing/selftests/rseq/rseq.h           |   2 +
->  6 files changed, 649 insertions(+)
->  create mode 100644 tools/testing/selftests/rseq/rseq-loongarch-bits.h
->  create mode 100644 tools/testing/selftests/rseq/rseq-loongarch-thread-po=
-inter.h
->  create mode 100644 tools/testing/selftests/rseq/rseq-loongarch.h
->
-> diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/se=
-lftests/rseq/param_test.c
-> index bf951a490bb4..e930aa73c219 100644
-> --- a/tools/testing/selftests/rseq/param_test.c
-> +++ b/tools/testing/selftests/rseq/param_test.c
-> @@ -227,7 +227,27 @@ unsigned int yield_mod_cnt, nr_abort;
->         "bnez " INJECT_ASM_REG ", 222b\n\t"                     \
->         "333:\n\t"
->
-> +#elif defined(__loongarch__)
-> +#define RSEQ_INJECT_INPUT \
-> +       , [loop_cnt_1]"m"(loop_cnt[1]) \
-> +       , [loop_cnt_2]"m"(loop_cnt[2]) \
-> +       , [loop_cnt_3]"m"(loop_cnt[3]) \
-> +       , [loop_cnt_4]"m"(loop_cnt[4]) \
-> +       , [loop_cnt_5]"m"(loop_cnt[5]) \
-> +       , [loop_cnt_6]"m"(loop_cnt[6])
-> +
-> +#define INJECT_ASM_REG  "$r12"
-> +
-> +#define RSEQ_INJECT_CLOBBER \
-> +       , INJECT_ASM_REG
->
-> +#define RSEQ_INJECT_ASM(n)                                      \
-> +       "ld.w " INJECT_ASM_REG ", %[loop_cnt_" #n "]\n\t"         \
-> +       "beqz " INJECT_ASM_REG ", 333f\n\t"                     \
-> +       "222:\n\t"                                              \
-> +       "addi.w  " INJECT_ASM_REG "," INJECT_ASM_REG ", -1\n\t"   \
-> +       "bnez " INJECT_ASM_REG ", 222b\n\t"                     \
-> +       "333:\n\t"
->  #else
->  #error unsupported target
->  #endif
-> diff --git a/tools/testing/selftests/rseq/rseq-loongarch-bits.h b/tools/t=
-esting/selftests/rseq/rseq-loongarch-bits.h
-> new file mode 100644
-> index 000000000000..cf933c1a2100
-> --- /dev/null
-> +++ b/tools/testing/selftests/rseq/rseq-loongarch-bits.h
-> @@ -0,0 +1,463 @@
-> +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-> +/*
-> + * Author: Huang Pei <huangpei@loongson.cn>
-> + * (C) Copyright 2023 Loongson Technology Corporation Limited
-> + * (C) Copyright 2016-2022 - Mathieu Desnoyers <mathieu.desnoyers@effici=
-os.com>
-> + * (C) Copyright 2018 MIPS Tech LLC
-> + * (C) Copyright 2018 - Paul Burton <paul.burton@mips.com>
-> + */
-> +#include "rseq-bits-template.h"
-> +
-> +#if defined(RSEQ_TEMPLATE_MO_RELAXED) && \
-> +       (defined(RSEQ_TEMPLATE_CPU_ID) || defined(RSEQ_TEMPLATE_MM_CID))
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_cmpeqv_storev)(intptr_t *v, intptr_t e=
-xpect, intptr_t newv, int cpu)
-> +{
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[cmpfail])
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error2])
-> +#endif
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[cmpfail]\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, %l[error1])
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[error2]\n\t"
-> +#endif
-> +               /* final store */
-> +               LONG_S " %[newv], %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(5)
-> +               "b 5f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4, "", abort, 1b, 2b, 4f)
-> +               "5:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 [v]                   "m" (*v),
-> +                 [expect]              "r" (expect),
-> +                 [newv]                "r" (newv)
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort, cmpfail
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1, error2
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +cmpfail:
-> +       return 1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +error2:
-> +       rseq_bug("expected value comparison failed");
-> +#endif
-> +}
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_cmpnev_storeoffp_load)(intptr_t *v, in=
-tptr_t expectnot,
-> +                              long voffp, intptr_t *load, int cpu)
-> +{
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[cmpfail])
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error2])
-> +#endif
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "beq $r4, %[expectnot], %l[cmpfail]\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, %l[error1])
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "beq $r4, %[expectnot], %l[error2]\n\t"
-> +#endif
-> +               LONG_S " $r4, %[load]\n\t"
-> +               LONG_ADDI " $r4, $r4, %[voffp]\n\t"
-> +               LONG_L " $r4, $r4, 0\n\t"
-> +               /* final store */
-> +               LONG_S " $r4, %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(5)
-> +               "b 5f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4, "", abort, 1b, 2b, 4f)
-> +               "5:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 /* final store input */
-> +                 [v]                   "m" (*v),
-> +                 [expectnot]           "r" (expectnot),
-> +                 [voffp]               "Ir" (voffp),
-> +                 [load]                "m" (*load)
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort, cmpfail
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1, error2
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +cmpfail:
-> +       return 1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +error2:
-> +       rseq_bug("expected value comparison failed");
-> +#endif
-> +}
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_addv)(intptr_t *v, intptr_t count, int=
- cpu)
-> +{
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +#endif
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, %l[error1])
-> +#endif
-> +               LONG_L " $r4, %[v]\n\t"
-> +               LONG_ADDI " $r4, $r4, %[count]\n\t"
-> +               /* final store */
-> +               LONG_S " $r4, %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +               "b 5f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4, "", abort, 1b, 2b, 4f)
-> +               "5:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 [v]                   "m" (*v),
-> +                 [count]               "Ir" (count)
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +#endif
-> +}
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_cmpeqv_cmpeqv_storev)(intptr_t *v, int=
-ptr_t expect,
-> +                             intptr_t *v2, intptr_t expect2,
-> +                             intptr_t newv, int cpu)
-> +{
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[cmpfail])
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error2])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error3])
-> +#endif
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[cmpfail]\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +               LONG_L " $r4, %[v2]\n\t"
-> +               "bne $r4, %[expect2], %l[cmpfail]\n\t"
-> +               RSEQ_INJECT_ASM(5)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, %l[error1])
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[error2]\n\t"
-> +               LONG_L " $r4, %[v2]\n\t"
-> +               "bne $r4, %[expect2], %l[error3]\n\t"
-> +#endif
-> +               /* final store */
-> +               LONG_S " %[newv], %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(6)
-> +               "b 5f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4, "", abort, 1b, 2b, 4f)
-> +               "5:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 /* cmp2 input */
-> +                 [v2]                  "m" (*v2),
-> +                 [expect2]             "r" (expect2),
-> +                 /* final store input */
-> +                 [v]                   "m" (*v),
-> +                 [expect]              "r" (expect),
-> +                 [newv]                "r" (newv)
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort, cmpfail
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1, error2, error3
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +cmpfail:
-> +       return 1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +error2:
-> +       rseq_bug("1st expected value comparison failed");
-> +error3:
-> +       rseq_bug("2nd expected value comparison failed");
-> +#endif
-> +}
-> +
-> +#endif /* #if defined(RSEQ_TEMPLATE_MO_RELAXED) &&
-> +       (defined(RSEQ_TEMPLATE_CPU_ID) || defined(RSEQ_TEMPLATE_MM_CID)) =
-*/
-> +
-> +#if (defined(RSEQ_TEMPLATE_MO_RELAXED) || defined(RSEQ_TEMPLATE_MO_RELEA=
-SE)) && \
-> +       (defined(RSEQ_TEMPLATE_CPU_ID) || defined(RSEQ_TEMPLATE_MM_CID))
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_cmpeqv_trystorev_storev)(intptr_t *v, =
-intptr_t expect,
-> +                                intptr_t *v2, intptr_t newv2,
-> +                                intptr_t newv, int cpu)
-> +{
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[cmpfail])
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error2])
-> +#endif
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[cmpfail]\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, %l[error1])
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], %l[error2]\n\t"
-> +#endif
-> +               /* try store */
-> +               LONG_S " %[newv2], %[v2]\n\t"
-> +               RSEQ_INJECT_ASM(5)
-> +#ifdef RSEQ_TEMPLATE_MO_RELEASE
-> +               "dbar 0x12\n\t" /* store-release */
-> +#endif
-> +               /* final store */
-> +               LONG_S " %[newv], %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(6)
-> +               "b 5f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4, "", abort, 1b, 2b, 4f)
-> +               "5:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 /* try store input */
-> +                 [v2]                  "m" (*v2),
-> +                 [newv2]               "r" (newv2),
-> +                 /* final store input */
-> +                 [v]                   "m" (*v),
-> +                 [expect]              "r" (expect),
-> +                 [newv]                "r" (newv)
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort, cmpfail
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1, error2
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +cmpfail:
-> +       return 1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +error2:
-> +       rseq_bug("expected value comparison failed");
-> +#endif
-> +}
-> +
-> +static inline __attribute__((always_inline))
-> +int RSEQ_TEMPLATE_IDENTIFIER(rseq_cmpeqv_trymemcpy_storev)(intptr_t *v, =
-intptr_t expect,
-> +                                void *dst, void *src, size_t len,
-> +                                intptr_t newv, int cpu)
-> +{
-> +       uintptr_t rseq_scratch[3];
-> +
-> +       RSEQ_INJECT_C(9)
-> +
-> +       __asm__ __volatile__ goto (
-> +               RSEQ_ASM_DEFINE_TABLE(9, 1f, 2f, 4f) /* start, commit, ab=
-ort */
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[cmpfail])
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-> +               RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error2])
-> +#endif
-> +               LONG_S " %[src], %[rseq_scratch0]\n\t"
-> +               LONG_S "  %[dst], %[rseq_scratch1]\n\t"
-> +               LONG_S " %[len], %[rseq_scratch2]\n\t"
-> +               /* Start rseq by storing table entry pointer into rseq_cs=
-. */
-> +               RSEQ_ASM_STORE_RSEQ_CS(1, 3f, rseq_cs)
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 4f)
-> +               RSEQ_INJECT_ASM(3)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], 5f\n\t"
-> +               RSEQ_INJECT_ASM(4)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, 6f)
-> +               LONG_L " $r4, %[v]\n\t"
-> +               "bne $r4, %[expect], 7f\n\t"
-> +#endif
-> +               /* try memcpy */
-> +               "beqz %[len], 333f\n\t" \
-> +               "222:\n\t" \
-> +               "ld.b  $r4, %[src], 0\n\t" \
-> +               "st.b  $r4, %[dst], 0\n\t" \
-> +               LONG_ADDI " %[src], %[src], 1\n\t" \
-> +               LONG_ADDI " %[dst], %[dst], 1\n\t" \
-> +               LONG_ADDI " %[len], %[len], -1\n\t" \
-> +               "bnez %[len], 222b\n\t" \
-> +               "333:\n\t" \
-> +               RSEQ_INJECT_ASM(5)
-> +#ifdef RSEQ_TEMPLATE_MO_RELEASE
-> +               "dbar 0x12\n\t" /* store-release */
-> +#endif
-> +               /* final store */
-> +               LONG_S " %[newv], %[v]\n\t"
-> +               "2:\n\t"
-> +               RSEQ_INJECT_ASM(6)
-> +               /* teardown */
-> +               LONG_L " %[len], %[rseq_scratch2]\n\t"
-> +               LONG_L " %[dst], %[rseq_scratch1]\n\t"
-> +               LONG_L " %[src], %[rseq_scratch0]\n\t"
-> +               "b 8f\n\t"
-> +               RSEQ_ASM_DEFINE_ABORT(3, 4,
-> +                                     /* teardown */
-> +                                     LONG_L " %[len], %[rseq_scratch2]\n=
-\t"
-> +                                     LONG_L " %[dst], %[rseq_scratch1]\n=
-\t"
-> +                                     LONG_L " %[src], %[rseq_scratch0]\n=
-\t",
-> +                                     abort, 1b, 2b, 4f)
-> +               RSEQ_ASM_DEFINE_CMPFAIL(5,
-> +                                       /* teardown */
-> +                                       LONG_L " %[len], %[rseq_scratch2]=
-\n\t"
-> +                                       LONG_L " %[dst], %[rseq_scratch1]=
-\n\t"
-> +                                       LONG_L " %[src], %[rseq_scratch0]=
-\n\t",
-> +                                       cmpfail)
-> +#ifdef RSEQ_COMPARE_TWICE
-> +               RSEQ_ASM_DEFINE_CMPFAIL(6,
-> +                                       /* teardown */
-> +                                       LONG_L " %[len], %[rseq_scratch2]=
-\n\t"
-> +                                       LONG_L " %[dst], %[rseq_scratch1]=
-\n\t"
-> +                                       LONG_L " %[src], %[rseq_scratch0]=
-\n\t",
-> +                                       error1)
-> +               RSEQ_ASM_DEFINE_CMPFAIL(7,
-> +                                       /* teardown */
-> +                                       LONG_L " %[len], %[rseq_scratch2]=
-\n\t"
-> +                                       LONG_L " %[dst], %[rseq_scratch1]=
-\n\t"
-> +                                       LONG_L " %[src], %[rseq_scratch0]=
-\n\t",
-> +                                       error2)
-> +#endif
-> +               "8:\n\t"
-> +               : /* gcc asm goto does not allow outputs */
-> +               : [cpu_id]              "r" (cpu),
-> +                 [current_cpu_id]      "m" (rseq_get_abi()->RSEQ_TEMPLAT=
-E_CPU_ID_FIELD),
-> +                 [rseq_cs]             "m" (rseq_get_abi()->rseq_cs.arch=
-.ptr),
-> +                 /* final store input */
-> +                 [v]                   "m" (*v),
-> +                 [expect]              "r" (expect),
-> +                 [newv]                "r" (newv),
-> +                 /* try memcpy input */
-> +                 [dst]                 "r" (dst),
-> +                 [src]                 "r" (src),
-> +                 [len]                 "r" (len),
-> +                 [rseq_scratch0]       "m" (rseq_scratch[0]),
-> +                 [rseq_scratch1]       "m" (rseq_scratch[1]),
-> +                 [rseq_scratch2]       "m" (rseq_scratch[2])
-> +                 RSEQ_INJECT_INPUT
-> +               : "$r4", "memory"
-> +                 RSEQ_INJECT_CLOBBER
-> +               : abort, cmpfail
-> +#ifdef RSEQ_COMPARE_TWICE
-> +                 , error1, error2
-> +#endif
-> +       );
-> +       return 0;
-> +abort:
-> +       RSEQ_INJECT_FAILED
-> +       return -1;
-> +cmpfail:
-> +       return 1;
-> +#ifdef RSEQ_COMPARE_TWICE
-> +error1:
-> +       rseq_bug("cpu_id comparison failed");
-> +error2:
-> +       rseq_bug("expected value comparison failed");
-> +#endif
-> +}
-> +
-> +#endif /* #if (defined(RSEQ_TEMPLATE_MO_RELAXED) || defined(RSEQ_TEMPLAT=
-E_MO_RELEASE)) &&
-> +       (defined(RSEQ_TEMPLATE_CPU_ID) || defined(RSEQ_TEMPLATE_MM_CID)) =
-*/
-> +
-> +#include "rseq-bits-reset.h"
-> diff --git a/tools/testing/selftests/rseq/rseq-loongarch-thread-pointer.h=
- b/tools/testing/selftests/rseq/rseq-loongarch-thread-pointer.h
-> new file mode 100644
-> index 000000000000..7dc990687982
-> --- /dev/null
-> +++ b/tools/testing/selftests/rseq/rseq-loongarch-thread-pointer.h
-> @@ -0,0 +1,22 @@
-> +/* SPDX-License-Identifier: MIT */
-> +/* SPDX-FileCopyrightText: 2023 Huang Pei <huangpei@loongson.cn> */
-> +
-> +#ifndef _RSEQ_LOONGARCH_THREAD_POINTER
-> +#define _RSEQ_LOONGARCH_THREAD_POINTER
-> +
-> +#ifdef __cplusplus
-> +extern "C" {
-> +#endif
-> +
-> +static inline void *rseq_thread_pointer(void)
-> +{
-> +       register void *__result asm ("$2");
-> +       asm ("" : "=3Dr" (__result));
-> +       return __result;
-> +}
-> +
-> +#ifdef __cplusplus
-> +}
-> +#endif
-> +
-> +#endif
-> diff --git a/tools/testing/selftests/rseq/rseq-loongarch.h b/tools/testin=
-g/selftests/rseq/rseq-loongarch.h
-> new file mode 100644
-> index 000000000000..37aae463edde
-> --- /dev/null
-> +++ b/tools/testing/selftests/rseq/rseq-loongarch.h
-> @@ -0,0 +1,140 @@
-> +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-> +/*
-> + * Author: Huang Pei <huangpei@loongson.cn>
-> + * (C) Copyright 2023 Loongson Technology Corporation Limited
-> + * (C) Copyright 2016-2022 - Mathieu Desnoyers <mathieu.desnoyers@effici=
-os.com>
-> + * (C) Copyright 2018 MIPS Tech LLC
-> + * (C) Copyright 2018 - Paul Burton <paul.burton@mips.com>
-> + */
-> +
-> +/*
-> + * RSEQ_SIG use "break 0x10" instruction.
-> + */
-> +
-> +# define RSEQ_SIG      0x002a0010
-> +
-> +
-> +
-> +#define rseq_smp_mb()  __asm__ __volatile__ ("dbar 0x10" ::: "memory")
-> +#define rseq_smp_rmb() __asm__ __volatile__ ("dbar 0x15" ::: "memory")
-> +#define rseq_smp_wmb() __asm__ __volatile__ ("dbar 0x1a" ::: "memory")
-> +
-> +#define rseq_smp_load_acquire(p)                                       \
-> +__extension__ ({                                                       \
-> +       rseq_unqual_scalar_typeof(*(p)) ____p1 =3D RSEQ_READ_ONCE(*(p)); =
- \
-> +       __asm__ __volatile__("dbar 0x14" :::  "memory");                \
-> +       ____p1;                                                         \
-> +})
-> +
-> +#define rseq_smp_acquire__after_ctrl_dep()     rseq_smp_rmb()
-> +
-> +#define rseq_smp_store_release(p, v)                                   \
-> +do {                                                                   \
-> +       __asm__ __volatile__("dbar 0x12" :::  "memory");                \
-> +       RSEQ_WRITE_ONCE(*(p), v);                                       \
-> +} while (0)
-> +
-> +# define LONG                  ".dword"
-> +# define LONG_LA               "la.local"
-> +# define LONG_L                        "ld.d"
-> +# define LONG_S                        "st.d"
-> +# define LONG_ADDI             "addi.d"
-> +# define U32_U64_PAD(x)                x
-> +
-> +#define __RSEQ_ASM_DEFINE_TABLE(label, version, flags, start_ip, \
-> +                               post_commit_offset, abort_ip) \
-> +               ".pushsection __rseq_cs, \"aw\"\n\t" \
-> +               ".balign 32\n\t" \
-> +               __rseq_str(label) ":\n\t"                                =
-       \
-> +               ".word " __rseq_str(version) ", " __rseq_str(flags) "\n\t=
-" \
-> +               LONG " " U32_U64_PAD(__rseq_str(start_ip)) "\n\t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(post_commit_offset)) "\n\=
-t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(abort_ip)) "\n\t" \
-> +               ".popsection\n\t" \
-> +               ".pushsection __rseq_cs_ptr_array, \"aw\"\n\t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(label) "b") "\n\t" \
-> +               ".popsection\n\t"
-> +
-> +#define RSEQ_ASM_DEFINE_TABLE(label, start_ip, post_commit_ip, abort_ip)=
- \
-> +       __RSEQ_ASM_DEFINE_TABLE(label, 0x0, 0x0, start_ip, \
-> +                               (post_commit_ip - start_ip), abort_ip)
-> +/*
-> + * Exit points of a rseq critical section consist of all instructions ou=
-tside
-> + * of the critical section where a critical section can either branch to=
- or
-> + * reach through the normal course of its execution. The abort IP and th=
-e
-> + * post-commit IP are already part of the __rseq_cs section and should n=
-ot be
-> + * explicitly defined as additional exit points. Knowing all exit points=
- is
-> + * useful to assist debuggers stepping over the critical section.
-> + */
-> +#define RSEQ_ASM_DEFINE_EXIT_POINT(start_ip, exit_ip) \
-> +               ".pushsection __rseq_exit_point_array, \"aw\"\n\t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(start_ip)) "\n\t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(exit_ip)) "\n\t" \
-> +               ".popsection\n\t"
-> +
-> +#define RSEQ_ASM_STORE_RSEQ_CS(label, cs_label, rseq_cs) \
-> +               RSEQ_INJECT_ASM(1) \
-> +               LONG_LA " $r4, " __rseq_str(cs_label) "\n\t" \
-> +               LONG_S  " $r4, %[" __rseq_str(rseq_cs) "]\n\t" \
-> +               __rseq_str(label) ":\n\t"
-> +
-> +#define RSEQ_ASM_CMP_CPU_ID(cpu_id, current_cpu_id, label) \
-> +               RSEQ_INJECT_ASM(2) \
-> +               "ld.w  $r4, %[" __rseq_str(current_cpu_id) "]\n\t" \
-> +               "bne $r4, %[" __rseq_str(cpu_id) "], " __rseq_str(label) =
-"\n\t"
-> +
-> +#define __RSEQ_ASM_DEFINE_ABORT(table_label, label, teardown, \
-> +                               abort_label, version, flags, \
-> +                               start_ip, post_commit_offset, abort_ip) \
-> +               ".balign 32\n\t" \
-> +               __rseq_str(table_label) ":\n\t" \
-> +               ".word " __rseq_str(version) ", " __rseq_str(flags) "\n\t=
-" \
-> +               LONG " " U32_U64_PAD(__rseq_str(start_ip)) "\n\t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(post_commit_offset)) "\n\=
-t" \
-> +               LONG " " U32_U64_PAD(__rseq_str(abort_ip)) "\n\t" \
-> +               ".word " __rseq_str(RSEQ_SIG) "\n\t" \
-> +               __rseq_str(label) ":\n\t" \
-> +               teardown \
-> +               "b %l[" __rseq_str(abort_label) "]\n\t"
-> +
-> +#define RSEQ_ASM_DEFINE_ABORT(table_label, label, teardown, abort_label,=
- \
-> +                             start_ip, post_commit_ip, abort_ip) \
-> +       __RSEQ_ASM_DEFINE_ABORT(table_label, label, teardown, \
-> +                               abort_label, 0x0, 0x0, start_ip, \
-> +                               (post_commit_ip - start_ip), abort_ip)
-> +
-> +#define RSEQ_ASM_DEFINE_CMPFAIL(label, teardown, cmpfail_label) \
-> +               __rseq_str(label) ":\n\t" \
-> +               teardown \
-> +               "b %l[" __rseq_str(cmpfail_label) "]\n\t"
-> +
-> +/* Per-cpu-id indexing. */
-> +#define RSEQ_TEMPLATE_CPU_ID
-> +#define RSEQ_TEMPLATE_MO_RELAXED
-> +#include "rseq-loongarch-bits.h"
-> +#undef RSEQ_TEMPLATE_MO_RELAXED
-> +
-> +#define RSEQ_TEMPLATE_MO_RELEASE
-> +#include "rseq-loongarch-bits.h"
-> +#undef RSEQ_TEMPLATE_MO_RELEASE
-> +#undef RSEQ_TEMPLATE_CPU_ID
-> +
-> +/* Per-mm-cid indexing. */
-> +
-> +#define RSEQ_TEMPLATE_MM_CID
-> +#define RSEQ_TEMPLATE_MO_RELAXED
-> +#include "rseq-loongarch-bits.h"
-> +#undef RSEQ_TEMPLATE_MO_RELAXED
-> +
-> +#define RSEQ_TEMPLATE_MO_RELEASE
-> +#include "rseq-loongarch-bits.h"
-> +#undef RSEQ_TEMPLATE_MO_RELEASE
-> +#undef RSEQ_TEMPLATE_MM_CID
-> +
-> +/* APIs which are not based on cpu ids. */
-> +
-> +#define RSEQ_TEMPLATE_CPU_ID_NONE
-> +#define RSEQ_TEMPLATE_MO_RELAXED
-> +#include "rseq-loongarch-bits.h"
-> +#undef RSEQ_TEMPLATE_MO_RELAXED
-> +#undef RSEQ_TEMPLATE_CPU_ID_NONE
-> diff --git a/tools/testing/selftests/rseq/rseq-thread-pointer.h b/tools/t=
-esting/selftests/rseq/rseq-thread-pointer.h
-> index 977c25d758b2..b9c8fe7c4683 100644
-> --- a/tools/testing/selftests/rseq/rseq-thread-pointer.h
-> +++ b/tools/testing/selftests/rseq/rseq-thread-pointer.h
-> @@ -12,6 +12,8 @@
->  #include "rseq-x86-thread-pointer.h"
->  #elif defined(__PPC__)
->  #include "rseq-ppc-thread-pointer.h"
-> +#elif defined(__loongarch__)
-> +#include "rseq-loongarch-thread-pointer.h"
->  #else
->  #include "rseq-generic-thread-pointer.h"
->  #endif
-> diff --git a/tools/testing/selftests/rseq/rseq.h b/tools/testing/selftest=
-s/rseq/rseq.h
-> index d7364ea4d201..75c4bbe013d3 100644
-> --- a/tools/testing/selftests/rseq/rseq.h
-> +++ b/tools/testing/selftests/rseq/rseq.h
-> @@ -128,6 +128,8 @@ static inline struct rseq_abi *rseq_get_abi(void)
->  #include <rseq-s390.h>
->  #elif defined(__riscv)
->  #include <rseq-riscv.h>
-> +#elif defined(__loongarch__)
-> +#include <rseq-loongarch.h>
->  #else
->  #error unsupported target
->  #endif
-> --
-> 2.20.1
->
->
+| +       } else {
+| +               host->sdcard_irq_mask_all = TMIO_MASK_ALL;
+|         }
+
+|         /* Orginally registers were 16 bit apart, could be 32 or 64
+nowadays */
+| @@ -1098,9 +1100,7 @@ int renesas_sdhi_probe(struct platform_device *pdev,
+|                 host->ops.hs400_complete = renesas_sdhi_hs400_complete;
+|         }
+
+| -       ret = tmio_mmc_host_probe(host);
+| -       if (ret < 0)
+| -               goto edisclk;
+| +       sd_ctrl_write32_as_16_and_16(host, CTL_IRQ_MASK,
+host->sdcard_irq_mask_all);
+
+Fails to disable interrupts for real as host->sdcard_irq_mask_all is
+still zero.
+
+|         num_irqs = platform_irq_count(pdev);
+|         if (num_irqs < 0) {
+| @@ -1127,6 +1127,10 @@ int renesas_sdhi_probe(struct platform_device *pdev,
+|                         goto eirq;
+|         }
+
+| +       ret = tmio_mmc_host_probe(host);
+
+Initializes host->sdcard_irq_mask_all when needed and disables
+interrupts:
+
+        if (!_host->sdcard_irq_mask_all)
+                _host->sdcard_irq_mask_all = TMIO_MASK_ALL;
+        tmio_mmc_disable_mmc_irqs(_host, _host->sdcard_irq_mask_all);
+
+If the interrupt came in before, we have an issue.
+
+| +       if (ret < 0)
+| +               goto edisclk;
+| +
+|         dev_info(&pdev->dev, "%s base at %pa, max clock rate %u MHz\n",
+|                  mmc_hostname(host->mmc), &res->start,
+host->mmc->f_max / 1000000);
+
+The solution is to backport commit 9f12cac1bb88e329 ("mmc: renesas_sdhi:
+use custom mask for TMIO_MASK_ALL") in v5.13.
+As this doesn't backport cleanly, I'll submit a (tested) patch.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
