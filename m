@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E997D81D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BED47D81DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 13:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344806AbjJZLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 07:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        id S1344812AbjJZLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 07:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjJZLcX (ORCPT
+        with ESMTP id S230321AbjJZLe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 07:32:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A7E1BE
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 04:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698319941; x=1729855941;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=h5ApP6E4jqcaA/SORBcECnrNuDYb/izJkywcCwQJGys=;
-  b=R8XXdTUIDXnilpDCwfepGCGU2KHDNrWro+O+XMC0hpAKtaO5M3OByUiu
-   WNcIeKti4/1efu7bRZqq2tgGyuoXZEavWJnHaFp4ys7GDSOS35TyJZapT
-   HgFvDcc1T25Zhe9x/WwDBz6H+K3Sn68mKtD0nhTenytQW0j817WsqNzwe
-   rGTD7wcpolZ4ZtBIXYvhVWU86NS24/sW2Xcc8wHgtpPZSVg7U4lI5gecP
-   CRLreUyOwSq92ooDf7VNTA6qdKYXpbiCsMBwgI4BP4AqdEZLiWUyYIQLU
-   u/H+efE3t1Z6EKL4johBYNRUfaW5g0Lj6OrOKoOLHx1MCnCwsw/WQEKBy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="332030"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="332030"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 04:32:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="7244087"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 26 Oct 2023 04:32:08 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvyb2-0009kA-0q;
-        Thu, 26 Oct 2023 11:32:16 +0000
-Date:   Thu, 26 Oct 2023 19:31:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: Re: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
-Message-ID: <202310261904.cWDKcVh8-lkp@intel.com>
-References: <20231026073440.6724-1-zajec5@gmail.com>
+        Thu, 26 Oct 2023 07:34:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A781AA;
+        Thu, 26 Oct 2023 04:34:53 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QAmBFV024823;
+        Thu, 26 Oct 2023 11:34:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0RykzLAc2GcpRBB2lxRtT9xw9T54D6XSLPdU1P03Ecg=;
+ b=TUbPLcJRU3NeutpppwPr/hqOUndGtWyqtZHchUg2fabbywTsyxW8B99C7mgCpMzrNbIZ
+ dKhnFNYGtMhT60D5ZYxeqNgXEuvmpX9A23EOvRFASJbQ1ewVYmhos3ywrD9lNaz0h7xK
+ 1xtRZKMT5Cg0DsJtKNQEfvo3ylCuHQ3UASiRh13i7d/bvygPfZ9d7UojdHKByEq3FITY
+ ebT3JCUvSuHRnCXYweEBbcTxe9W6oBrUPT44ZARfj/Iy27KWYRTDeWagWbMJwh6gXG0o
+ ly4OEBtHmlLj+3IAyOf/Ndg+0tVl0XKIZ6J1tsKaorxlTLC+8uLoFjDgPrBtuPdoCjVI /Q== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tykw28gme-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 11:34:37 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39QBYaIs014795
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Oct 2023 11:34:36 GMT
+Received: from [10.216.45.182] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 26 Oct
+ 2023 04:34:27 -0700
+Message-ID: <b9fb5970-633b-07f0-4359-09fe8204bbf8@quicinc.com>
+Date:   Thu, 26 Oct 2023 17:04:24 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231026073440.6724-1-zajec5@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 4/5] PCI: epf-mhi: Add support for SA8775P
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
+        <dmitry.baryshkov@linaro.org>, <robh@kernel.org>,
+        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
+        <quic_parass@quicinc.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-phy@lists.infradead.org>
+References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
+ <1697715430-30820-5-git-send-email-quic_msarkar@quicinc.com>
+ <20231025075603.GD3648@thinkpad>
+ <610b0621-b140-ee9b-c450-0fec6862c4fc@quicinc.com>
+ <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: I9bXBXL35wkZTwKQbllTp6Iof-QEowRZ
+X-Proofpoint-GUID: I9bXBXL35wkZTwKQbllTp6Iof-QEowRZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_09,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=679 spamscore=0 suspectscore=0 bulkscore=0
+ phishscore=0 mlxscore=0 clxscore=1015 adultscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310260098
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,58 +96,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafał,
 
-kernel test robot noticed the following build warnings:
+On 10/26/2023 4:40 PM, Konrad Dybcio wrote:
+>
+>
+> On 10/26/23 07:30, Mrinmay Sarkar wrote:
+>>
+>> On 10/25/2023 1:26 PM, Manivannan Sadhasivam wrote:
+>>> On Thu, Oct 19, 2023 at 05:07:09PM +0530, Mrinmay Sarkar wrote:
+>>>> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
+>>>> SA8775P has the PID (0x0306) and supports HDMA. Currently, it has
+>>> Is the PID fixed? I thought you just want to reuse the SDXxx PID in the
+>>> meantime.
+>>>
+>>> - Mani
+>>
+>> The PID for SA8775p EP is not decided yet. So using 0x0306 PID meantime.
+> If it's not decided, why should it go upstream then? Would that
+> not break the hosts' expectations when the EP device is updated?
+>
+> Konrad
 
-[auto build test WARNING on soc/for-next]
-[also build test WARNING on linus/master v6.6-rc7 next-20231026]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I don't think it will break the host's functionality. In host side as 
+well we are reusing same 0x0306 for SA8775p
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Rafa-Mi-ecki/nvmem-brcm_nvram-store-a-copy-of-NVRAM-content/20231026-153630
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231026073440.6724-1-zajec5%40gmail.com
-patch subject: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310261904.cWDKcVh8-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310261904.cWDKcVh8-lkp@intel.com/reproduce)
+--Mrinmay
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310261904.cWDKcVh8-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'dev' not described in 'brcm_nvram'
->> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'cells' not described in 'brcm_nvram'
->> drivers/nvmem/brcm_nvram.c:36: warning: Function parameter or member 'ncells' not described in 'brcm_nvram'
-
-
-vim +36 drivers/nvmem/brcm_nvram.c
-
-3fef9ed0627af3 Rafał Miłecki 2021-03-30  19  
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  20  /**
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  21   * struct brcm_nvram - driver state internal struct
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  22   *
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  23   * @nvmem_size:		Size of the whole space available for NVRAM
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  24   * @data:		NVRAM data copy stored to avoid poking underlaying flash controller
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  25   * @data_len:		NVRAM data size
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  26   * @padding_byte:	Padding value used to fill remaining space
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  27   */
-3fef9ed0627af3 Rafał Miłecki 2021-03-30  28  struct brcm_nvram {
-3fef9ed0627af3 Rafał Miłecki 2021-03-30  29  	struct device *dev;
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  30  	size_t nvmem_size;
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  31  	uint8_t *data;
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  32  	size_t data_len;
-6bb6c90c7bc5bb Rafał Miłecki 2023-10-26  33  	uint8_t padding_byte;
-6e977eaa8280e9 Rafał Miłecki 2022-02-25  34  	struct nvmem_cell_info *cells;
-6e977eaa8280e9 Rafał Miłecki 2022-02-25  35  	int ncells;
-6e977eaa8280e9 Rafał Miłecki 2022-02-25 @36  };
-6e977eaa8280e9 Rafał Miłecki 2022-02-25  37  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
