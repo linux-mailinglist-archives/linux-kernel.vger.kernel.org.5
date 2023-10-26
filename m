@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3636D7D852B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F417D852A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbjJZOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 10:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S1345344AbjJZOsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 10:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbjJZOsn (ORCPT
+        with ESMTP id S235101AbjJZOsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 26 Oct 2023 10:48:43 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633C1B2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEE81B1
         for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 07:48:41 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1qw1es-0005Zo-2A; Thu, 26 Oct 2023 16:48:26 +0200
+        id 1qw1es-0005Zp-2C; Thu, 26 Oct 2023 16:48:26 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ore@pengutronix.de>)
-        id 1qw1er-004Qq2-HJ; Thu, 26 Oct 2023 16:48:25 +0200
+        id 1qw1er-004Qq3-Hs; Thu, 26 Oct 2023 16:48:25 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <ore@pengutronix.de>)
-        id 1qw1er-00H3XP-1X;
+        id 1qw1er-00H3XZ-1c;
         Thu, 26 Oct 2023 16:48:25 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
@@ -37,10 +37,12 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v4 0/5] regulator: add under-voltage support (part 2)
-Date:   Thu, 26 Oct 2023 16:48:19 +0200
-Message-Id: <20231026144824.4065145-1-o.rempel@pengutronix.de>
+Subject: [PATCH v4 1/5] regulator: dt-bindings: Add system-critical-regulator property
+Date:   Thu, 26 Oct 2023 16:48:20 +0200
+Message-Id: <20231026144824.4065145-2-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231026144824.4065145-1-o.rempel@pengutronix.de>
+References: <20231026144824.4065145-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -56,46 +58,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series add under-voltage and emergency shutdown for system critical
-regulators
+Introduce a new Device Tree property 'system-critical-regulator' for
+marking a regulator as crucial for system stability or functionality.
+This helps in distinguishing regulators that are vital for system
+operations and may require special handling in under-voltage scenarios.
 
-changes v4:
-- rebase against latest regulator/for-next
-- drop mainlined patches
-- rename regulator-uv-survival-time-ms to regulator-uv-less-critical-window-ms
-  to fit it to actual use case
-- avoid some of words in commit messages
-- us switch case to parse critical events
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ Documentation/devicetree/bindings/regulator/regulator.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-changes v3:
-- add system-critical-regulator property
-- add regulator-uv-survival-time-ms property
-- implement default policy for system critical uv events
-
-changes v2:
-- drop event forwarding support
-- use emergency shutdown directly instead of generating under-voltage
-  error event.
-- fix devicetree patch
-- drop interrupt-names support
-
-Oleksij Rempel (5):
-  regulator: dt-bindings: Add system-critical-regulator property
-  regulator: Introduce handling for system-critical under-voltage events
-  regulator: dt-bindings: Allow system-critical marking for
-    fixed-regulator
-  regulator: dt-bindings: Add 'regulator-uv-less-critical-window-ms'
-    property
-  regulator: Implement uv_survival_time for handling under-voltage
-    events
-
- .../bindings/regulator/fixed-regulator.yaml   |  2 +
- .../bindings/regulator/regulator.yaml         | 13 +++++++
- drivers/regulator/core.c                      | 38 +++++++++++++++++++
- drivers/regulator/of_regulator.c              |  9 +++++
- include/linux/regulator/machine.h             | 18 +++++++++
- 5 files changed, 80 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/regulator/regulator.yaml b/Documentation/devicetree/bindings/regulator/regulator.yaml
+index 9daf0fc2465f..5b8d55f7c43b 100644
+--- a/Documentation/devicetree/bindings/regulator/regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/regulator.yaml
+@@ -114,6 +114,11 @@ properties:
+     description: Enable pull down resistor when the regulator is disabled.
+     type: boolean
+ 
++  system-critical-regulator:
++    description: Set if the regulator is critical to system stability or
++      functionality.
++    type: boolean
++
+   regulator-over-current-protection:
+     description: Enable over current protection.
+     type: boolean
 -- 
 2.39.2
 
