@@ -2,214 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3FD7D8A30
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92717D8A2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 23:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344830AbjJZVXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 17:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S1344739AbjJZVXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 17:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZVXb (ORCPT
+        with ESMTP id S229501AbjJZVXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 17:23:31 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021007.outbound.protection.outlook.com [52.101.56.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419B31B1;
-        Thu, 26 Oct 2023 14:23:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XFBsTZF4C64DUehKcCYEEq38dL43G0UUokeIJUJzJ0eM1CvP2AajKO61YFzANuNiCobNQPyKwoUGMeDQ58wEV955B2pv8Fw4royKyBF1VJ1O1ZqvZUaxMmQdNWN9CgzCZUl/BPZOxXiuurIdIIbA+GzSayEq+s0vR1JSyFDMwDuQk7Jqzv7k5K38Is2Nd+QF7gNQhrYvzusicAIPsB2qZTQraE88cYtKrwDsBQEu7/ZFCD0yqHK/JfrNmwik7EF4dBAIH7azV2d6aH3/Q0qJZsnDqh2qjy6XjKv8G3M+6kIhxKXpJThaW2EdNWJzhUm0zOinNL6Qurg7l3ixF0p1mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ScO9MHjqFx9KLg4rtvI3RJfJbEafGC9U9HwhniT/Uro=;
- b=oKJoqu+m6R+duPSZAEEfn3PoQyIvHZNdsggRw66/brXDrVwuHuWjDVgpC+v7z+a8HQJEsrtluDfE8+1L8b5GDUzl7MvwBzs5BEYqnSrfy/oieh/LA4XdoDLJXWOjdeIacM+orDhRunz4LzgpKBiXRv7gQ1jsPf7/lHKBegklbOEhNkMktQIcVW82VtjBqWHYu8xHbrAv/yRAD+m7kItn4wAcqHiM6v515vyVAR/fLW3nYClqnB2oqlfX/Gb0E1nSNUU/dkNwEufZv95+W0cE4mnUjwvmby2Roq57Z1kJbC790+rZwlI8z3urI5lb/TQ3wwovcv3OZlqEUANaZnWqnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ScO9MHjqFx9KLg4rtvI3RJfJbEafGC9U9HwhniT/Uro=;
- b=R2l85sxx83pvGUOB+Mm8TqZgnNvfhUKxeBCcGlVHndlDYJdGv9i2TMgafmctnLf9tOc2qaizNwMTJFa6xVaOMXIcNY+NFar8RCctE8+tDHXsEUjySjOsSG27hIE0KzCZX90z1hkmCH+LtlthPaKaOMZ4ULsER6weZHreDAKMFrQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
- by CY5PR21MB3711.namprd21.prod.outlook.com (2603:10b6:930:2f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.9; Thu, 26 Oct
- 2023 21:23:26 +0000
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::c099:1450:81d3:61dd]) by BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::c099:1450:81d3:61dd%4]) with mapi id 15.20.6954.008; Thu, 26 Oct 2023
- 21:23:26 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
-Cc:     haiyangz@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF register_netdevice
-Date:   Thu, 26 Oct 2023 14:22:34 -0700
-Message-Id: <1698355354-12869-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0161.namprd03.prod.outlook.com
- (2603:10b6:303:8d::16) To BY5PR21MB1443.namprd21.prod.outlook.com
- (2603:10b6:a03:21f::18)
-MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|CY5PR21MB3711:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b76fab6-bfb3-446f-f7d2-08dbd669ca72
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uaAgxGsRluUNdB4dywq5SLON3jO4Dx8q9M68/zQXbMpHs53jBxMECMbkBX5Us0NWQR4/zhlyc35hDsWeGXTwUvt29hK7yzGiNloh7NOnZ7McvAkC8Kn/Okeh7D85cQXVBFHIMrOcFraDUQ0SiLHazj2UXgUub3aOBBO8S0A3Kf0fGniOwWI+d9Mzv7IEHzcYvBHHgRei6flYVecBEvZ6xUDshHcKSImLAWvgmmBjfpkEhgdWjciIy04dd7jhCvk6uNi9oyTK4e83K/BKV13Drmvq58X8pmlz/a3+lR1boPim9oOKPEFgSyk2ZV6XYf/zbSNZUKmJHFHYGtJw/xxKW/gi4/PRQWgxRwgWtK/lrykdmYS7n/HCYmXluy92LuXAmqTL2YWwxKZJjpv2IVHWja3jYnBqpc872yXsVAJfnRm0nMwX0NW3djCZUcG/NS1UKtPt0oADAorhsMMPYIn/yHfr2YvrRJDUL00+9WdWHMX/g4svpY+jSK0xeVCbjCXgeFPcIQjVgbz1iP6T+oBMe2k4+uuhBTaoFMheZ+3wfhZhgP+qM7yNQQq4ekYCJD+vCxlhZK5my+AE2eJNlAdTjg+w9DBfpr4tonXcdSkKZSqScPBiQllugEt3SCay0pM3ZPmCm7XBNqoPnvI0et9ciBMp+rrbl0fKQq+dSxxKEBA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(396003)(39860400002)(346002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(478600001)(6666004)(7846003)(6506007)(6512007)(2906002)(316002)(6486002)(38100700002)(5660300002)(10290500003)(82950400001)(82960400001)(52116002)(41300700001)(26005)(66899024)(66476007)(66556008)(66946007)(36756003)(83380400001)(2616005)(8676002)(38350700005)(4326008)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rsy03WKDh8FBUZDSoJg1MyyleRKf0A5rwL+u7QBPPzOV3Ad6SlBPTVKc1s6Q?=
- =?us-ascii?Q?7Ew27jDxs/6VaIEMyLiIm3nhgQ/5zpYvh1LZQuEfsuk38Hf0/UKf4wTvIMN7?=
- =?us-ascii?Q?50vCCxALrO7WnTsZnfllOhV6xlHjjFDRaSEcUtVvTllF4e+HbLPe82zbwVl3?=
- =?us-ascii?Q?Q/OsO/U+yTuAx3yGAcZpsXYvfEvHGyMjHG9/GwiRFomE/lAtGgST2VqhQmNJ?=
- =?us-ascii?Q?WNx2tkiMOzw+yhn+Hk2AtY3NnbcGfOdq/2md91peRRY6d2hUDG0aCEbFlpCF?=
- =?us-ascii?Q?HdAh+Jeoto6A0yPzRtNSK2ieyo8V1uCOspOLBGCapZtXYolavgGIbg0o0S5M?=
- =?us-ascii?Q?GHZNT4/HCW152gmJEttxdgCBYNTHu+Of1f4BfnflRPnmo8evgEDY4o+/MoAu?=
- =?us-ascii?Q?oaIE7+m4smsZu8JmfLrQoxHeAwarn3q4Hi1mt6zN50njuDdAZhn88hlwNXxY?=
- =?us-ascii?Q?U2o3fb2NcVDTjBf/6yUMCgtX23/A25TDE7BsfbQmdATbJz5mNA7ffXBWkC4/?=
- =?us-ascii?Q?hfpdE7kGKp/L2OGO6pc9/v88nYqX+aW+8cNtfXbCbU+2MSl3+Tr2YvF1cVPa?=
- =?us-ascii?Q?RO+wFi4sGIM7OnVJZWRmGosmxMESoDfvnpyCqatbsPx0CUQXDElofZyReIU6?=
- =?us-ascii?Q?Evv2rnPf+Qa17Qa+UtHb3pQJkLR9yccAsrahd2FY4fvtf0ffK+wM07KZQv00?=
- =?us-ascii?Q?4rxmPKgSwMJEO/Au22jtNzPlaIcPsRI1LdFHP7scOtuFCAwRT39sSZYE3Kwn?=
- =?us-ascii?Q?emRwSuHgbuA33hKjntw2jl2HZrtZ6Huwwtr2B7gZ3E5IMoQrt+ludp76ubuP?=
- =?us-ascii?Q?zKiZYPSv+WZb5SrpKI7gC/y2+jBdiZuoTaWv+X+1Yu/2c8ukOvTO85dz4Xg5?=
- =?us-ascii?Q?gvtfscTPgB0N2O9CqZmLYxlmL6U6YVUSLGXh65OFZLumslBw+cxFl8S/QxDE?=
- =?us-ascii?Q?hN73aZmxMjABI0gPs0jeVr/fO5jRIDb4b+ZU/UB+h5mkcnme3+WGKXq6Qykc?=
- =?us-ascii?Q?7KEgfGT0I7zFOVvlbFscefNQDDsHjtHiPXUfsdM6RX7jFeopZBekDPbrfb5j?=
- =?us-ascii?Q?CI8ynlxtSDEK8bhQBwdbPnT6/djz+2wsQbcjN7uuSfpNXNdlnljYmh2kYWLS?=
- =?us-ascii?Q?M5Pyw+ubfWlGpI5Qt/kHpd68INlnbtN2q5jnjTLKJpgG1Bklkfr58uDnNmAr?=
- =?us-ascii?Q?Tfwnj2A25nTR9BT5FkrbFvbgYGd+hChG7MpnlIWLSjK/N4mk1L0I/hY36tlx?=
- =?us-ascii?Q?U0x0ptlG6niJS1aRMzeDknK89sBgHvmcaYV1+9Kp4bqgCHUTCDzjxtHFhw5p?=
- =?us-ascii?Q?OmRVkKRc5cSAd0q0BdKWF1SOg91HB+xkuL1CuR4MC68Rf9LeC7aw6Eu0/5F+?=
- =?us-ascii?Q?u47STrrQ+xdiY7d7f5n5yq9PlaCfoRYPeRwGV+5oy3WvEJgO5e9AVgVRGMnS?=
- =?us-ascii?Q?poZRZTMEkh8ZXBRR2zOHS2nwGL72Wwkd5xtf0rK4/YYhpzdIyW27stvtb4CG?=
- =?us-ascii?Q?fJCy5r/mmFryFnjduOYEu86mdjwqIZxbQkDOeX1e3amJRfrUz9M6JRj9uy0Y?=
- =?us-ascii?Q?F5N8Agk+T7ujYb6k7XXiFN/EHwJwaCaQgtjPEfQb?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b76fab6-bfb3-446f-f7d2-08dbd669ca72
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 21:23:26.3377
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wzKEIOiGlK6aa2sA2LWR3gAyXbiIFXMR8Wm+Mw6EMC69xh8TN9sQy1b9kG441P6YGID4mMcw5tWikFsJLboRPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR21MB3711
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Thu, 26 Oct 2023 17:23:02 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1471AC
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a8ead739c3so12195647b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 14:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698355380; x=1698960180; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N16opPDMh2MtQdZI6n+iYWwhhV2tySRlDoDMCXghPSg=;
+        b=tW0tdpJCzDjqvaWkEgER1akFluzgDHehTSAqmh14T6/DYxAaMqvxfAGrhHs+Zm+f2L
+         nBv8f63/eJ2JvKwusuMNw3ydP5+P6acqjEkGZn8G7FSeTB9ip3xwHoqdx7iNrVLES5f4
+         +E8GeemIUIGUH/KF0GAU3daKfSia64wxG7X3VOLJPOYd70JfHg0Pf+uAg/jRX51ZOMub
+         s2K5zMuoDo7TTb/Kt3kLthtgpDSmd2NnmocIau78VzJ5y5LMCa7+Cb/heRmcRQkeggPR
+         6ZP1zh244175ZuQtMBUkB95DZ8Y6fCqPez4Qjhht37k47yAh6Ul4bIUoa1egYUqU8FTL
+         HKdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698355380; x=1698960180;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N16opPDMh2MtQdZI6n+iYWwhhV2tySRlDoDMCXghPSg=;
+        b=Ry1wt/efyPgIO2s4uLDLuOE+4U3xqyFnzBG5JM2UDh52pub8km+si6t1GemJkKOc7z
+         wmIdHkauqVnTboVmvtCaFYCprZDD8zRXnlVvqF5sKzxUvR+hL6BWqAZERmPqUqCMkH3R
+         VwBHnmieIA4fvnzCD//WCj8ZHjbBEEIkmJgEhG3I4G25bD37cBKI0J3ELT83SAnzVVdZ
+         I5McJNVPt3k8BmvdHPeNA8qgemYx8LXSAEbI7TdDbUTh4SbyC560SiaiEjxUcOcoOxZp
+         I+KxtsvKjrI8Ap6pRcZlyGBvviKf0a3PwbwuRNR0XJ/YADwn+uRuyNNAWZ0PrLdVTn0b
+         +Zpw==
+X-Gm-Message-State: AOJu0Yz6u1WBYQTaBHmJYEYnKRBuCvQ021PghCyQawHI9gQ1uWyh4att
+        Paj24BlIRFrlLuWw1+fo7XumsudQ/WA=
+X-Google-Smtp-Source: AGHT+IF/OE8Q5YRB4aDY0tUe8C3rqxSvK3ckwmqPiqpkJm2RHeMEZkjbXTXdwikBk2kuBbypqgWBiHzlcPg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d443:0:b0:5a8:6397:5bd6 with SMTP id
+ w64-20020a0dd443000000b005a863975bd6mr15531ywd.3.1698355380052; Thu, 26 Oct
+ 2023 14:23:00 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 14:22:58 -0700
+In-Reply-To: <20231026204810.chvljddk6noxsuqi@desk>
+Mime-Version: 1.0
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-6-52663677ee35@linux.intel.com> <ZTq-b0uVyf6KLNV0@google.com>
+ <20231026204810.chvljddk6noxsuqi@desk>
+Message-ID: <ZTrYsls7ya5yOdSV@google.com>
+Subject: Re: [PATCH  v3 6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtnl lock also needs to be held before rndis_filter_device_add()
-which advertises nvsp_2_vsc_capability / sriov bit, and triggers
-VF NIC offering and registering. If VF NIC finished register_netdev()
-earlier it may cause name based config failure.
+On Thu, Oct 26, 2023, Pawan Gupta wrote:
+> On Thu, Oct 26, 2023 at 12:30:55PM -0700, Sean Christopherson wrote:
+> > >  	if (static_branch_unlikely(&vmx_l1d_should_flush))
+> > >  		vmx_l1d_flush(vcpu);
+> > 
+> > There's an existing bug here.  vmx_1ld_flush() is not guaranteed to do a flush in
+> > "conditional mode", and is not guaranteed to do a ucode-based flush
+> 
+> AFAICT, it is based on the condition whether after a VMexit any
+> sensitive data could have been touched or not. If L1TF mitigation
+> doesn't consider certain data sensitive and skips L1D flush, executing
+> VERW isn't giving any protection, since that data can anyways be leaked
+> from L1D using L1TF.
 
-To fix this issue, move the call to rtnl_lock() before
-rndis_filter_device_add(), so VF will be registered later than netvsc
-/ synthetic NIC, and gets a name numbered (ethX) after netvsc.
+That assumes vcpu->arch.l1tf_flush_l1d is 100% precise and accurate, which is most
+definitely not the case.  You're also preventing the admin from choosing between
+being super paranoind (always flush L1D) and mostly paranoid (conditionally flush
+L1D, always flush CPU buffers).
 
-And, move register_netdevice_notifier() earlier, so the call back
-function is set before probing.
+AIUI, flushing the L1D is crazy expensive compared to flushing the CPU buffers,
+so it's entirely plausible for someone to want to choose the mostly paranoid
+option.
 
-Cc: stable@vger.kernel.org
-Fixes: e04e7a7bbd4b ("hv_netvsc: Fix a deadlock by getting rtnl lock earlier in netvsc_probe()")
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Side topic, isn't the NMI path missing a call to kvm_set_cpu_l1tf_flush_l1d()?
 
----
-v2:
-  Fix rtnl_unlock() in error handling as found by Wojciech Drewek.
----
- drivers/net/hyperv/netvsc_drv.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+> > 	/*
+> > 	 * The MMIO stale data vulnerability is a subset of the general MDS
+> > 	 * vulnerability, i.e. this is mutually exclusive with the VERW that's
+> > 	 * done just before VM-Enter.  The vulnerability requires the attacker,
+> > 	 * i.e. the guest, to do MMIO, so this "clear" can be done earlier.
+> > 	 */
+> > 	if (static_branch_unlikely(&mmio_stale_data_clear) &&
+> > 	    !cpu_buffers_flushed && kvm_arch_has_assigned_device(vcpu->kvm))
+> > 		mds_clear_cpu_buffers();
+> 
+> This is certainly better, but I don't know what scenario is this helping with.
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 3ba3c8fb28a5..1d1491da303b 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2531,15 +2531,6 @@ static int netvsc_probe(struct hv_device *dev,
- 		goto devinfo_failed;
- 	}
- 
--	nvdev = rndis_filter_device_add(dev, device_info);
--	if (IS_ERR(nvdev)) {
--		ret = PTR_ERR(nvdev);
--		netdev_err(net, "unable to add netvsc device (ret %d)\n", ret);
--		goto rndis_failed;
--	}
--
--	eth_hw_addr_set(net, device_info->mac_adr);
--
- 	/* We must get rtnl lock before scheduling nvdev->subchan_work,
- 	 * otherwise netvsc_subchan_work() can get rtnl lock first and wait
- 	 * all subchannels to show up, but that may not happen because
-@@ -2547,9 +2538,23 @@ static int netvsc_probe(struct hv_device *dev,
- 	 * -> ... -> device_add() -> ... -> __device_attach() can't get
- 	 * the device lock, so all the subchannels can't be processed --
- 	 * finally netvsc_subchan_work() hangs forever.
-+	 *
-+	 * The rtnl lock also needs to be held before rndis_filter_device_add()
-+	 * which advertises nvsp_2_vsc_capability / sriov bit, and triggers
-+	 * VF NIC offering and registering. If VF NIC finished register_netdev()
-+	 * earlier it may cause name based config failure.
- 	 */
- 	rtnl_lock();
- 
-+	nvdev = rndis_filter_device_add(dev, device_info);
-+	if (IS_ERR(nvdev)) {
-+		ret = PTR_ERR(nvdev);
-+		netdev_err(net, "unable to add netvsc device (ret %d)\n", ret);
-+		goto rndis_failed;
-+	}
-+
-+	eth_hw_addr_set(net, device_info->mac_adr);
-+
- 	if (nvdev->num_chn > 1)
- 		schedule_work(&nvdev->subchan_work);
- 
-@@ -2586,9 +2591,9 @@ static int netvsc_probe(struct hv_device *dev,
- 	return 0;
- 
- register_failed:
--	rtnl_unlock();
- 	rndis_filter_device_remove(dev, nvdev);
- rndis_failed:
-+	rtnl_unlock();
- 	netvsc_devinfo_put(device_info);
- devinfo_failed:
- 	free_percpu(net_device_ctx->vf_stats);
-@@ -2788,11 +2793,14 @@ static int __init netvsc_drv_init(void)
- 	}
- 	netvsc_ring_bytes = ring_size * PAGE_SIZE;
- 
-+	register_netdevice_notifier(&netvsc_netdev_notifier);
-+
- 	ret = vmbus_driver_register(&netvsc_drv);
--	if (ret)
-+	if (ret) {
-+		unregister_netdevice_notifier(&netvsc_netdev_notifier);
- 		return ret;
-+	}
- 
--	register_netdevice_notifier(&netvsc_netdev_notifier);
- 	return 0;
- }
- 
--- 
-2.25.1
+Heh, that's host I feel about moving VERW to just before VM-Enter.  I have a hard
+time believing there's meaningful sensitive that's accessed in __vmx_vcpu_run().
+The closest thing is probably CR2, but that's a very dubious vector since CR2 will
+hold a guest value for most VM-Enters.
 
+I'm not against moving VERW close to VM-Enter because it's relatively straightforward,
+but if we're going to be super paranoid, why not go all the way and not have to
+worry about what ifs?
