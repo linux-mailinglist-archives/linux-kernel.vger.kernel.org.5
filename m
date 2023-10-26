@@ -2,209 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CA17D7FCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085FB7D7FD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 11:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjJZJmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 05:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        id S1344648AbjJZJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 05:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbjJZJl5 (ORCPT
+        with ESMTP id S229611AbjJZJmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 05:41:57 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2041.outbound.protection.outlook.com [40.107.241.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CA6195;
-        Thu, 26 Oct 2023 02:41:54 -0700 (PDT)
+        Thu, 26 Oct 2023 05:42:37 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2066.outbound.protection.outlook.com [40.107.244.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFC0193;
+        Thu, 26 Oct 2023 02:42:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bxxa6neCJDPYZjLS1A5tppBlRNIjZoA2GHmlFCUq+wKEDVcyd5s/hb6IOYmWK4XZKjYYesDPTaItlalFNJmUJMFV5QF7JjXqcAQVqmKLI5WzLJt75uPWbI9gtLj0+Z8o+LVkpGPffifJQwkmkC8iGnEJdz67dwRkQHGdiq+cCSdKPsLoe8sNfIrDcgwY4HuAcuVhhbdADDDUJer75f01KMfx5Nizdzhv0iJF46r6zvZNWUizHvo0HlbrjAcOUc7lX3HhS1sLAoWNquAJ77KbIGKHLOKiunjSXUEc69vJG6ytyGLfXsjlJswEvV54WAQ8QlNiC7ZvnpZH3LfRFlMqow==
+ b=LywyxE01fiEJkGDqjVNR92GmUbkgtkIe3FuER3jCbo1sn6MkJxPNzPLT3Aflb3XOEXZKp9JHpfiZqukmOnQMnl8t5Pv68J00gVc0s5V51CSDARyP6aNCAf7IHpXtLdEv7Vs+nnZubQ5dnK4Rzs9fAN3ZPc3iyKFxqCoQg6EmCTl5npU4k92+LK0P5fgv2u79SUcFWcv+YoFBHqS5ShiwkOaNjXLzOtRdiYINC8Jo3LKwLPWOdQTxknXk1JU8YxHJId62qkMemycCjv8Ad1+TfK6uyujjEX/O3F8Sx7Am9M32wiBWlG/mUX+DjqTdYPizbnGNFqmXJzO9YIeiFReJUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ow5pvRSFci8FURhEb6dW8RZBuwo3nFVFJVsIf2pNDYQ=;
- b=PnQFHXAVN/z8+3Q7jniCUUSJ2o7dkdjN9fcm0WotCSm4bN28CiWRbd3TFtbUmUObOQILIQX1fJ5GYI7dXT0UJqFA9GB+1g+Uy6DDOJYINPrRMlR4h3om5+co80pYzn8CKcjkli2C7sYvINiSse3XURtTAoVpRWL1lq0IMblJS2+XDlxqrH+W9L+vIdm/1aakxA0Cx5brONhtxmVchf0PR+0PzUgW4SGghLo/s/2Sjv5otSXcAGkGmolLCS5NJZDMUOzF8iyVq/TpJ49ogPoL7N5eZtMIz6n1UlTVskMMnbOEl/XgPixK9lexjbYjApwR3BY/LumYSGI7oZxra6F8NQ==
+ bh=bx339yV9VKTNlA4VWh4k7ZTgLvfzrqCVENvZBBSgiRo=;
+ b=imswy8TmPqGIVE+jeecxbS0krsmiI2TIw9gUSpS6447ek3gKDXuYI4f5HC2Wy/hDEz3m0TR4uGdkMpXyVSEdigshobyHMYQ4PxurMU8gVv05L+8ldH9zacuLdNNWN5oww1QmecA4D0Il2prBmR6iRlz9mNIrsdAVO/2eGLLaet4C9EdWZpqvIeWaojWI1Ecf7qKzTrgne3ewJe96WIYNT2YIL01Gy8IZ1A5vwCK8acQw0i1B8BN1+Xtzw+0HbFSQJLsV9ST6wmQJHWoR2LpS3MdAF0GGLLCVarLz9lA15sp760I9purknfx+QtrfqUmzrlD8Ks/KKqVTLHJBAd9TNQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ow5pvRSFci8FURhEb6dW8RZBuwo3nFVFJVsIf2pNDYQ=;
- b=YbtCQN7lGvNMX8ALIehCH9arZAAlLuw4lSo+mxaTxfOY5bZMXtYAEDSLjLw7n6mR2v6qOs0SYIdtxOqIHkRjsKA54ZmvxYqFT+bBqBe15e/J5+Tyb77g8/cQYTVr1CMgenpQSksM2B2o21hDjVZCLdsrvSXc7zM3qpNrwcI2OrQ=
+ bh=bx339yV9VKTNlA4VWh4k7ZTgLvfzrqCVENvZBBSgiRo=;
+ b=jcvcUECWAekoQiPGdCiCOLRG3nAYVqZeeeeUMs/69AB1M420J5ZnN3+u2e52+7xwM4JiTc7DZ/EOfiKEDOC7R/vFIWhGrwE+zY4mnEjqsVxUn/xpAOl1aiuyFMzK0r3RrMMFJJofyOYWB43dTXrjpNATrmg0O1pSHc9y4j2c83w=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by DU0PR08MB8929.eurprd08.prod.outlook.com (2603:10a6:10:464::17) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH8PR12MB7325.namprd12.prod.outlook.com (2603:10b6:510:217::19)
+ by PH7PR12MB9204.namprd12.prod.outlook.com (2603:10b6:510:2e7::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 26 Oct
- 2023 09:41:50 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::a309:1d65:f5fb:436b]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::a309:1d65:f5fb:436b%6]) with mapi id 15.20.6933.019; Thu, 26 Oct 2023
- 09:41:50 +0000
-Message-ID: <8fec6c89-548b-43b5-8361-869663a58573@wolfvision.net>
-Date:   Thu, 26 Oct 2023 11:41:47 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: rtc: nxp,pcf8563: add hiz-output
- property
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Thu, 26 Oct
+ 2023 09:42:32 +0000
+Received: from PH8PR12MB7325.namprd12.prod.outlook.com
+ ([fe80::bd00:6f1a:9bd5:3b48]) by PH8PR12MB7325.namprd12.prod.outlook.com
+ ([fe80::bd00:6f1a:9bd5:3b48%6]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
+ 09:42:31 +0000
+Message-ID: <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
+Date:   Thu, 26 Oct 2023 15:12:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Content-Language: en-US
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231024-topic-pcf85363_hiz_output-v1-0-50908aff0e52@wolfvision.net>
- <20231024-topic-pcf85363_hiz_output-v1-2-50908aff0e52@wolfvision.net>
- <20231025222327c0b5d460@mail.local>
- <2f17c031-30f6-4242-b2a1-1628402b3091@wolfvision.net>
- <1c4a6185-fe09-45d1-900a-10abf48e3fc9@wolfvision.net>
- <20231026005008b8255799@mail.local>
-From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <20231026005008b8255799@mail.local>
-Content-Type: text/plain; charset=UTF-8
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+References: <20231025051455.101424-1-muralimk@amd.com>
+ <20231025051455.101424-2-muralimk@amd.com>
+ <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
+From:   "M K, Muralidhara" <muralimk@amd.com>
+Subject: Re: [PATCH v2 1/4] EDAC/mce_amd: Remove SMCA Extended Error code
+ descriptions
+In-Reply-To: <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR08CA0253.eurprd08.prod.outlook.com
- (2603:10a6:803:dc::26) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+X-ClientProxiedBy: BM1P287CA0020.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::23) To PH8PR12MB7325.namprd12.prod.outlook.com
+ (2603:10b6:510:217::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU0PR08MB8929:EE_
-X-MS-Office365-Filtering-Correlation-Id: d1853ed6-ff56-42e8-fcae-08dbd607c74c
+X-MS-TrafficTypeDiagnostic: PH8PR12MB7325:EE_|PH7PR12MB9204:EE_
+X-MS-Office365-Filtering-Correlation-Id: 41ac6d17-c39e-4ee9-f2e9-08dbd607dfca
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3lhhLBGlVVt9vNbUL5ejobEF9c+r45qt0uozNMyauujWOHUcJqqik/5zvLqRGImNx2E38+LoclW4Pla1fbC1vZ5gXutBqFhSHO88zYj9kvg4Gvqb3bx2YI1kydLZAjwr+fSbtC1j13cOg+a7BkqFePlitENeO8XKUm658Ia7UnSgdprSd+lP55VmVnZdrWP7UVCdwlq/5aZ5kQQf2eEij6MPK+Mk50r6gbgdPPYIJP/VK3xz09qMWakFGQGb7n25/Bo8SrkbYR6rJ4FNcfY11UtX8LLutj9CPK1pWlknvbBpB9KbEjxXeTa+rc2Ne3Kz0JSDGIPMd8zwizVdXUrrHTyMLzV9par1tuFugqfTYPIgP55A09dXY/YPnkRamD1uXfvtOoQur8J9lXFButf9OnOpv45whKM9xxr40zjispsnApQb1M3XaU+iITHWr5RJq3BIVlxiTy+vhhEA2dfQqbj8keipttlbVn6POvpFC8phg4aq7MwWF4SRcWx2Pv69liUxmibs4YWHBfL4R81aX7QimGksQMeOks7kL73v6o5BzNA5ZEFH2xQeynK4xE+kWsTprI4F8lFyYJGFQTzit+54OqRfHSdeAmt7uaYHDLKTF3wswmyq24A+mJx2NKHfqp/cTj4kUu6GejFvP3ojRg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39850400004)(136003)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(66476007)(6486002)(66556008)(66946007)(478600001)(6916009)(316002)(54906003)(38100700002)(41300700001)(31686004)(86362001)(31696002)(5660300002)(8936002)(44832011)(8676002)(53546011)(66899024)(4326008)(2616005)(6506007)(6666004)(83380400001)(36756003)(2906002)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: OncLR0zOVsDTwBe3SqbWTqh9HJiKbqGSU9E/Wo4LkqsQsL15GPX0bRektgHg8eQ/YzwwtP1HFvhFMu17ZHoi/+TB8CFnl0JRLV/l7BJf0Ou4BlOY+GRtS8fnm3FbMUrKNvgFIIA85qAtNEg/sNdqv+nXFklP5TJaVbEDkBnOY8koJOu2eAdC6A3gE7uvCV86/lY7mvnWuLYV9fRov0DB2yvXppLCpPjxK6Qjh8M+mv6b13dbYDXV+e+wF6t6LfbxSRK+XB/+V+OjhPV3NpGH3Nnanm8xL3hVqE3su+Z5Bp/16O+6nHUkvYFFhWS5KXq0I5ZfijV3gld9lS23jvQqyINjapKoMLIQsBhBIoLj/ddWmiHoUzABBqFwsblL7HmfOrCAag3Ugfbu/oh5K0jitsrM7jAIV4YIPpc+mytDcw6uji1H/qJX99YtGYAFUj1lIObix/fiWl51cwqnKiLlZHebRrfZ1GFGwjSxqjFsuR0uPyO9sj0Kfn/G68PUBoetX8uMj3rrzdJ+lYHAwZjVD5l9i6avs+6ucu0wPWvc7ye5A9tRyGXCUr0IL6/Bwm77oDabXD+46WtFvXLy4PuK94LQ6HH9uwLBVlEy7ud6Pdus+pgEmZPtsPcmyted2v/3eYAzpPErhaC0idc7q9oZ7IoUeixvH+JcCLp+5TMD4dT8r6sx5EeHCE7xq256Xhyi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB7325.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(376002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(54906003)(6512007)(2616005)(41300700001)(26005)(6506007)(6666004)(53546011)(83380400001)(8676002)(4326008)(966005)(6486002)(4001150100001)(2906002)(8936002)(478600001)(5660300002)(316002)(66556008)(38100700002)(66476007)(66946007)(6916009)(31696002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akd1dEJLWU5iRjdMS2EvYUgrWnY5bndOOFN6M3lzaFNlbXk1QU9waHRnMmFH?=
- =?utf-8?B?L01pYlNacHM5WWFwTDV2TUxRdWhxTlZraW1SM0s0K3dQUjV0NS9vcXlNSWJy?=
- =?utf-8?B?MUQ1eDdTVzk5SCsxc0JvVGdnakdBM2xXUHNkdmFDWHZFUHBmQnIyNnUyMWVI?=
- =?utf-8?B?VXR2NkdTbStZVHJPVWFPY2hib0NSTGl3NWpqZjRoYW9qTGVXdkdZRGZhMGI0?=
- =?utf-8?B?NWVwSExsRWtvODZ4U0gwZUJ0bVZ4azI5dmdRaU9CNmlQYXdhaHI3dHdOTllG?=
- =?utf-8?B?T1g1dTY3L1JFdHVFMVh4eDJjUlVXZW9BVGRyTTU0MllaUWNSdGhnbFp1dVA1?=
- =?utf-8?B?eElmMkQ1TG5DZ3lObGoyQ0RqblZmUyt4UDI0TzM3S1NtSHM2eHVSVEhlMDNa?=
- =?utf-8?B?aGhJRjZQN0JwaUd1TTNYZEVWdG45SEZ0OTA1cWkwZ0tjenk5Z0tWZHhLOFNa?=
- =?utf-8?B?aXhFaXZGcU10cTBOL1hhMmZSMUU0NldUNWEyQk1ySE42OSsxUTE0YWFiNitQ?=
- =?utf-8?B?dEw1b0tHUWdqWVdRNm9nWjcwUHpmN254MnUzWmZiMTFiTHphampmZWpmTmZu?=
- =?utf-8?B?c2MzcGVkTUV6NCtUZE5hbis5MHhoSDFFSTdXVlljREo4SnY2L1A4amNxVFBv?=
- =?utf-8?B?NTNKU1VhRHcySkIzOGluOENzVjZWWjVydzcvNU9OTWNwajd3djlpWk1ncjUw?=
- =?utf-8?B?bWdNajRhMkZadURvQisrb2xyOXZ4NW9XYzZiWXo3Yi8yZDZzMllOQ3ZweUNN?=
- =?utf-8?B?UEdNd3M3NXkxanhuMW0xdjgxTnNKRXlUOFJmeXk5UnJCTjVwY2E3T1F5Mmxw?=
- =?utf-8?B?MCt0SUVYRElxVVZ0OG01L1JXaFhkNGR5ZkxmeHF2UjNuZExHVk5vZ1QwSkg5?=
- =?utf-8?B?a0VzR2hJaGplZEROSTB4T2thT05VVFdmVldESEU4amVKU1hNOUtQL2Jrd0d3?=
- =?utf-8?B?Sm94cFdXREQyTWJVeklQNWMrWEtyMFN1T0dBVkpnN2loYjc3N0JpVjlFTlh5?=
- =?utf-8?B?eGRXSkR4OWRkNmVBZlB1NzFiU1h4U2RVaVRLVUpaN2x3bXpzWlpybTlhWnFP?=
- =?utf-8?B?VHJ6aWhVamh3aFAzUFFlakprMjhDVFkzdWZCY29zVFlkL0liMmpqRG4relZV?=
- =?utf-8?B?NU9IQ1pJUWtWYVI5Q29KTEUyVXNrN0lzVXBZSGgrQXlHRUZyd1V4d2tpb3I2?=
- =?utf-8?B?TnZmRVR1WUJFZFBzWWlEbjg0dWtFK0U5SVJ1TWxUbUEyQVN5Qk1kYzlFaEo3?=
- =?utf-8?B?TTFUaGg4V3JJSjB2cFFOZmxNcTBZdUpweUR5YnRXVk9wck5aVUdVRnM4YTNL?=
- =?utf-8?B?cGdCTXBQNEZ3TEVLeEpmMFJoSnV4dWU2RHI4Y3hTcm9uRE5aSE1GNWZFVHBV?=
- =?utf-8?B?K1BpL1JaemFhaDFpTWdIQXFrNjNlOHRYR0tYOWVuZUpMSEtUUG9qM3R6RVRh?=
- =?utf-8?B?QkRoZjRvTnVrVkxTQitYVnVaVzgycVJrc1hkNmFDazIwSVhpd0JpTFMxdDBK?=
- =?utf-8?B?WC9sVjY2NnIvWEZrVTlGNEFHeE1MdnlVcU5uaUU3QUhJL0c5WmNXbmhHTGkx?=
- =?utf-8?B?cEc4a3Znd1d0ZlJxajVCTlhZem9hY3JBL05JMklvcVM3R3FkdWlEdDdLOWVs?=
- =?utf-8?B?aU53TS96WGV0TDNxNllZRmEzZkx0Si8zdU1rRis5MGxqb0RwRWtNRUQvYS90?=
- =?utf-8?B?UzBwaytHTjZrQVExTUNyMjZzamJxY1REUVF1ZUdNZ3JCMlhsZWwxUFc4d2lY?=
- =?utf-8?B?YkZteUNYTTlOY1pqNmlNbGU5WmxOdStSRUdMbWZYcG1BNjltQm56SEYxVG5t?=
- =?utf-8?B?bHlndWxnOEZNWTlXTFA3QVdOUy8xQkI5OHJHcW1KYStuNkJDUHE5bHFFVkox?=
- =?utf-8?B?QTdZcE0yaHdZMEdwV0E0QmVsd0lsMHdUU29PUGZYOVozOGF5YjZSWmJSdGNy?=
- =?utf-8?B?RUZHSENKV3dmQ3BCbHpmbCthaFJSWFliKytqa3dzNXdyVmZiMWR4M09nNVhP?=
- =?utf-8?B?TEluRlhmUWVkQkxHditDMENNMEtHVG1VS0dleWcramJoMWh6eFRuRGtScisz?=
- =?utf-8?B?VkUyWFAzeUIzQllaZXN0QnhRMXVWc3BCZ1hxanh5Y25kTjdMbllQSXdxNHNT?=
- =?utf-8?B?WXNRdUtFNnpxU3NRTm01SmhYWTh0TCtGVVZ3QzZZL1FFYUxFREJZSThoOURz?=
- =?utf-8?B?SWM5eExWQ0tRRHBUOVNGSGFtM2M0T0ZQL1JucnV0Y00vZUNuNVF3bGZTMkNW?=
- =?utf-8?Q?EKwLTQMzaW3+Jp/8dSw1TXRvWG6bBlwfMQU5X5IfWw=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1853ed6-ff56-42e8-fcae-08dbd607c74c
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?elArUkFiRElGbWt5dGRxRkVHUWFBSkt3RWdYZUQ4TG9UYkNWWElnNDdwRnpu?=
+ =?utf-8?B?cm9sZHZURjBGY3lCVDdXK3EvTDA5dmYwYkt5ZGUyRTdjbU1MNDVIQWVpZGtz?=
+ =?utf-8?B?SU1VaU9SZmFQVDBSMEZLR25aUzRJOUcrb1VPZHNZTGxVNXhVU2liV244dG5m?=
+ =?utf-8?B?YStIZkl5MzRqZ2s5cTNjQUZvbHVyM1FONktkZFNqaHRnbUExZlNqbjk5Q3RJ?=
+ =?utf-8?B?R090elVwbnc0emI5OWhpT2dBODhuaUhiRHBaOCsvanBGL2liaW5PTXZuVmJ4?=
+ =?utf-8?B?S2puYUt0dm52bnM5UmlHNEhxL29vcVl0Z1E4ZDlNRk5adU52bmQzaHZmQ2h4?=
+ =?utf-8?B?aGR3Ym1HTkNydDZlS0Fnc2RnWndXa3UzOGNNbUdBMDMyTzdLYkZ5bC84dWlN?=
+ =?utf-8?B?QjFKcGFhRk9oUENaRVZRS05CbFlhRzlWaVdJRmxjLzV2L0ZudUFLeHZobGdw?=
+ =?utf-8?B?VEhIRGptNVlZWjlCN0tBZStveUtrY3huRnp0ajF2eHVCakNuSFpoTTA5MUta?=
+ =?utf-8?B?dzkrTjRhanloRFNnNE9mYy9jbHBZSktnb0c1cVJ6RUxRR0xNOFBYbnhIaEdt?=
+ =?utf-8?B?RFVKS0FLTGVyNXlwYUJWeWl6Q2FHY3Z3aTMzTkk2ZzI2OHhMcGNiRmpVR3Nr?=
+ =?utf-8?B?Zy9WK29DZlhOZXV5V3ZrNDZHc0VSb0FveFFxR2daVHZHbUtoaXBNakJnMThG?=
+ =?utf-8?B?dXRQR09WTFZjcXk1YksrSCtmRnk1bUxYdTQ4U2VGdUREMVZpbHRONGVybE9w?=
+ =?utf-8?B?N1doekpwaGovZGlSR3pvRW5NYXJmWDl1WWdWK0dTM2NjMU5FNmRlRTAwWnZw?=
+ =?utf-8?B?Zm1WTmcydnZENTV3bjRIY0xTd0w2NUVtd1BpRGJ2VjhFOUFYVDhlR0lQUGc4?=
+ =?utf-8?B?cmZTc0NGY0JmN3R2enU4TU5ZelNkeWl4di80ZFhZNmdyVFp6NlppL0s0SVdO?=
+ =?utf-8?B?cHBUdWN5cFpoNjlKbW1IRTJhaFAwK2RCUmMwalVhczJEZmJkbHdpZE5qOE9z?=
+ =?utf-8?B?cE9Bajd6dUNicFNkNEhoZ3YrY2xPMlFYYXZkUVk0NUNnbW4zWGJJcTJTRzVq?=
+ =?utf-8?B?NlE0MUhpOGdaY3R0THZRcVZmNFhZS3phT3F5c3dwOXZSc2RnaGRpUlVIcEpF?=
+ =?utf-8?B?T0tDVnA5clJHSnBZd3hIbml0Y1FHTG1qOSt0WGt4ZUQ3bEY1N2Iwb0R3SW5K?=
+ =?utf-8?B?Q2RlSTI3SWp0OWRLUEJqZFFKQ2hrUHZnc3picWprMXd4QmljdjBiVmhWbmda?=
+ =?utf-8?B?V25mQzNldkVmZC9EMlRVUGkvOVhNc2QzZHk2Y3U1ZTRIMnVETHhtallTK3Vz?=
+ =?utf-8?B?VzFYNzR6MHNZU1Y0TVoxQ0NFZnBvREF2WStidU80cXNabDR3dlBsekp3Ymxo?=
+ =?utf-8?B?eEo0MHFiOGZwTCttZ1NKVHJzZU5Gb2ZKMUhxOUZYTGpleERSZDVhb2VpbzFl?=
+ =?utf-8?B?SlRpQm9KNzVLQkV3WjhSU0JEWWtQTGNWQ3FYQ280SlhGOVZ1RkV1VmdrSlln?=
+ =?utf-8?B?NnlZUHFDbDZURUhMVGtmRHhGM2RaWDNuek5COVJ6VFlaSkJrZzJDY2ZDWDd5?=
+ =?utf-8?B?NE0vRmZVSDkrbXBaNllXRWJTMk1Xa2Z4WTBHTjZ6bSt6eXRxQkxYMTNBUWpn?=
+ =?utf-8?B?L1Jmang1WGhLQSt1TTZSL3ovSnYvNElZeTNzbTNFbk8waVFLL2h6TUkxTk1M?=
+ =?utf-8?B?UE52QmFZQk9zdHJEMDRuaW14YnBSWHNPeWJHSlJhdVZLQ2h6b3U4L1RXM0JP?=
+ =?utf-8?B?U1F4R2JVZEF4SlNFMzg4aU5FejNkL0FpSU41RXdBMEllNVlPTDFzL3UwUkls?=
+ =?utf-8?B?V1AySHo0MXhXajZpSng0MCtmN3hiTmpWTUt4c3pkcy82bzY0RURwd0V6VGNw?=
+ =?utf-8?B?VXdNTGtpclBJWHU1UnZBN1V0WnErUExNUW1SS3VLUW9xcStyUEpKbXQyWVEy?=
+ =?utf-8?B?a2lCRUZ6TDdHeWVFOFNEbG9WMWZVYkdqSVYzbUw5dVEwSUJrWVR6UXAraHJH?=
+ =?utf-8?B?ZjdFSWFtS3lXK3MxaURZZk1qTjBRSHhGNGVIQVFBUko5SFIrZFpKRUVVbE95?=
+ =?utf-8?B?ZjZ0QWRHemZUdU00Vk1tdjR2THBxVFpyVDR0M0thUVcyM08xQ2pZVTBseWVW?=
+ =?utf-8?Q?JkuhAtwbYJtFPU84ntdECGw+n?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41ac6d17-c39e-4ee9-f2e9-08dbd607dfca
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB7325.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:41:50.1593
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 09:42:31.4330
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7Xhz09IsqFQNgQbAT96iDN7YlQDJOvT5N5dfP5luRNhqQGBnBLE7xH8c2Sw6OoQk2qIqBZAetFjjN/PZzWl4jCUTbzsNu5n3B7pA4RqznFc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB8929
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: hEfSdFHrqYXaw+koxEisajMX/nezefl8z6SNY1rAmOcqNQOI1GRg+XkRPMYiMfmewLTSUS+RT1pjYNf1/XM/Jw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9204
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Boris,
 
-On 26.10.23 02:50, Alexandre Belloni wrote:
-> On 26/10/2023 01:23:21+0200, Javier Carrasco wrote:
->>>>> +  hiz-output:
->>>>> +    description:
->>>>> +      Use enabled if the output should stay in high-impedance. This
->>>>> +      mode will mask the output as an interrupt source.
->>>>> +      Use sleep if the otuput should be only active in sleep mode.
->>>>> +      This mode is compatible with any other output configuration.
->>>>> +      The disabled value acts as if the property was not defined.
->>>>> +    enum:
->>>>> +      - enabled
->>>>> +      - sleep
->>>>> +      - disabled
->>>>> +    default: disabled
->>>>> +
->>>>
->>>> If instead of using a custom property, you consider this as what it
->>>> actually is: pinmuxing, then everything else comes for free. With
->>>> pinctrl, you can define different states for runtime and sleep and they
->>>> will get applied automatically instead of open coding in the driver.
->>
->> I am not sure if your solution would cover all my needs:
->>
->> 1.- With pinctrl I can model the SoC pins, right? That would not stop
->> the RTC output though, so the 32 kHz signal would be generated anyways
->> even though the SoC would ignore it. That is one of the things I want to
->> avoid.
+On 10/26/2023 12:38 AM, Borislav Petkov wrote:
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> 
+> 
+> On Wed, Oct 25, 2023 at 05:14:52AM +0000, Muralidhara M K wrote:
+>> The SMCA error decoding already exists in rasdaemon and future bank decoding
+>> is supported from below patches merged in rasdaemon.
+>> https://github.com/mchehab/rasdaemon/commit/1f74a59ee33b7448b00d7ba13d5ecd4918b9853c rasdaemon: Add new MA_LLC, USR_DP, and USR_CP bank types
+>> https://github.com/mchehab/rasdaemon/commit/2d15882a0cbfce0b905039bebc811ac8311cd739 rasdaemon: Handle reassigned bit definitions for UMC bank
 >>
 > 
-> No, you would model the INTA pin.
-I am sorry for insisting on this topic, but if I get you right, I would
-be modeling an interrupt pin (INTA) to keep it from generating a clock
-signal when the RTC itself offers a high-impedance mode i.e. avoiding to
-use the RTC feature.
+> I'm still missing here the exact steps a user needs to do in order to
+> decode such an error.
+> 
+> Please inject an error, catch the error message and show me how one is
+> supposed to decode it with rasdaemon in case the daemon is not running
+> while the error happens or the error is fatal and the machine doesn't
+> even get to run userspace.
+> 
+> If that is not possible with rasdaemon yet, then this patch should not
+> remove the error descriptions but limit them only to the families for
+> which they're valid.
+> 
+> Bottom line is, I don't want to have the situation mcelog is in where
+> decoding errors with it is a total disaster.
+> 
+> IOW, I'd like error decoding on AMD to always work and be trivially easy
+> to do.
+> 
 
-Is that not a misuse of the INTA pin in the first place? If there was no
-other option, that would be an easy fix, but why would we not implement
-the hi-Z mode when it is available? If I see a pinctrl-* modeling an
-interrupt pin, it is not obvious that I am doing that to stop the clock
-signal and I would have to clarify it explicitly, especially if I am not
-interested in the interrupt.
+I have injected error, dmesg log below
 
-I would rather implement and document the hi-Z mode the RTC offers
-instead of using another mode like INTA which actually can trigger
-interrupts. If the implementation must be different is of course another
-topic.
+[ 3991.560180] mce: [Hardware Error]: Machine check events logged
+[ 3991.560195] [Hardware Error]: Corrected error, no action required.
+[ 3991.567119] [Hardware Error]: CPU:2 (19:90:0) 
+MC25_STATUS[Over|CE|MiscV|AddrV|-|-|SyndV|CECC|-|-|-]: 0xdc2040000000011b
+[ 3991.579205] [Hardware Error]: Error Addr: 0x0000000000000040
+[ 3991.585546] [Hardware Error]: PPIN: 0xabcdef0000000000
+[ 3991.591302] [Hardware Error]: IPID: 0x0000009600792f00, Syndrome: 
+0x000000000a000000
+[ 3991.599977] [Hardware Error]: Unified Memory Controller Ext. Error 
+Code: 0
+[ 3991.599985] [Hardware Error]: cache level: L3/GEN, tx: GEN, mem-tx: RD
+
+ From above logs, "Ext. Error Code: 0"  here we are printing only the 
+error code and from this patch error strings have been removed.
+User can refer the PPR to check what the error code refers to.
+or rasdaemon tool can print the respective error string for particular 
+error code.
+
+
+
+Executed rasdaemon:
+
+rasdaemon: Listening to events for cpus 0 to 191
+            <...>-1420  [002] ....     0.000399 mce_record 2023-10-26 
+04:28:37 -0500 Unified Memory Controller (bank=25), status= 
+dc2040000000011b, Corrected error, no action required., 
+mci=Error_overflow CECC, mca=DRAM On Die ECC error. Ext Err Code: 0 
+Memory Error 'mem-tx: generic read, tx: generic, level: L3/generic', 
+memory_die_id=0, cpu_type= AMD Scalable MCA, cpu= 2, socketid= 0, misc= 
+d01a000201000000, addr= 40, synd= a000000, ipid= 9600792f00, 
+mcgstatus=0, mcgcap= 140, apicid= 4
+
+ From logs,  We can see "DRAM On Die ECC error" which is for Ext Err Code: 0
+So, in rasdaemon Error strings are maintained.
+
+
+> Thx.
 > 
->> 2.- What happens if the RTC output is a clock for an external device
->> that is only required when the SoC is in sleep mode? In that case I
->> would like the RTC driver to control the output with the modes it provides.
+> --
+> Regards/Gruss,
+>      Boris.
 > 
-> Even if I doubt this is a valid use case, this would be possible as long
-> as the external device node has the correct pinctrl-* properties.
-> 
-> 
->>>>
->>>> Also, how you define this property means that everyone currently using
->>>> this RTC is going to have a new warning that they should just ignore.
->>>>
->>>>
->>> Thanks for your reply. The warning can only be triggered if the property
->>> is defined, so in principle no one could have that warning yet. Only the
->>> ones who actually define it and use an invalid value would get the warning.
->>>
->>> On the other hand I did not consider your approach, which might make
->>> this patch irrelevant. So I will have a look at it to make sure that it
->>> achieves the same results.
->>>
->>> Thanks again and best regards,
->>> Javier Carrasco
->>>
+> https://people.kernel.org/tglx/notes-about-netiquette
 > 
