@@ -2,119 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1DC7D885C
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97A37D8863
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjJZSde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S231181AbjJZSea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjJZSdc (ORCPT
+        with ESMTP id S229501AbjJZSe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:33:32 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FDB10D0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:33:24 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7af52ee31so9633117b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698345203; x=1698950003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rsh3dPt2/r73NgmaoP1t7gGhxASdUa0L8chPdmn23Qo=;
-        b=rTZGeXNSv39V7CDwWwbTtJTASQ2rK2BoAdrQCuFlLhh8yuAl3n4qHKdjNVN2ZqoB62
-         bEv3SsybLlla5R9YmiMvyzniT1p77RmjoumAu+mZA80D1jsWVuRyL9lby6Oko5k2Brje
-         /B4qDoaVO116OOmgyjlvXUtygLddZRd4pdsIoJpVkuPd2dhnI1sK9hABTLhRYwP90vN9
-         vvo/3fPIqeT7SoYTZjJaaaM9/3Wo9l6c2G+lbJbOfEydg2aB37+ZlEth+zEZEMW5M0Wj
-         iw2AaL5p+eEgxjCqadkYQ7jEbdBumr2S3Tm3OqgexNucK/zd9LFHXauLjpelg8RPBrFk
-         uhiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698345203; x=1698950003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rsh3dPt2/r73NgmaoP1t7gGhxASdUa0L8chPdmn23Qo=;
-        b=hypaRXulVu9/uLYngru9GFY1KtUXMRqoCeVZkm2y4LfkPsFwm37X38+Um/WIURl4h3
-         FjGmg6HQd7jKBFa4d04byr7rJJ0CEv0+VyI9ChCkUdF9rckx134U4CRNMfz8l5FUdBbq
-         biLDfecdLoYgUHdgBse9GloVXUSzlJZQn800hRsWZ82RxTSk1mgJF4IfQ000t5w3mwFB
-         7zc/M6AdOlElLaA4trtxlDij6GdGAzsLfguHbdD9wg5tfdAaAq0a9yzBPFvSsndel6yj
-         ZL17paAkbDlsrK8s+ywwjy2AtzrUf3PRJT0o9kowT1oBTWsgaAvnAhSdd3xgBl8rEi0A
-         orNw==
-X-Gm-Message-State: AOJu0Yw5oFQLgZL2ww5vNIH/vKBwAjiql0SvjipvbC6LYN4cW8nzzl5X
-        svw1dEc+3+MtIBvMVRs3Bd+ug3TMCE5RejjqIdhCxQ==
-X-Google-Smtp-Source: AGHT+IHBtVGuULaTsqSbWWfK0JktN//Yobr+i2oSyvtEqBPvfhvTvIyFXXQYxmpnW+pXruM/MrOawuspY0l3Z4zpy28=
-X-Received: by 2002:a25:74c5:0:b0:da0:46ad:fb46 with SMTP id
- p188-20020a2574c5000000b00da046adfb46mr114458ybc.41.1698345202763; Thu, 26
- Oct 2023 11:33:22 -0700 (PDT)
+        Thu, 26 Oct 2023 14:34:28 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9221E10A
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:34:23 -0700 (PDT)
+Received: (qmail 540575 invoked by uid 1000); 26 Oct 2023 14:34:22 -0400
+Date:   Thu, 26 Oct 2023 14:34:22 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        erosca@de.adit-jv.com
+Subject: Re: [PATCH v6] usb: Reduce the 'SET_ADDRESS' request timeout with a
+ new quirk
+Message-ID: <55a00749-7b9d-4fc8-a470-6eabdb93216f@rowland.harvard.edu>
+References: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
+ <20231026101551.36551-1-hgajjar@de.adit-jv.com>
 MIME-Version: 1.0
-References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-29-surenb@google.com>
- <87h6me620j.ffs@tglx>
-In-Reply-To: <87h6me620j.ffs@tglx>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 26 Oct 2023 18:33:09 +0000
-Message-ID: <CAJuCfpH1pG513-FUE_28MfJ7xbX=9O-auYUjkxKLmtve_6rRAw@mail.gmail.com>
-Subject: Re: [PATCH v2 28/39] timekeeping: Fix a circular include dependency
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
-        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-        willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-        void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-        ldufour@linux.ibm.com, catalin.marinas@arm.com, will@kernel.org,
-        arnd@arndb.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, vvvvvv@google.com,
-        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-        elver@google.com, dvyukov@google.com, shakeelb@google.com,
-        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-        minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026101551.36551-1-hgajjar@de.adit-jv.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 5:33=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Tue, Oct 24 2023 at 06:46, Suren Baghdasaryan wrote:
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> >
-> > This avoids a circular header dependency in an upcoming patch by only
-> > making hrtimer.h depend on percpu-defs.h
->
-> What's the actual dependency problem?
+On Thu, Oct 26, 2023 at 12:15:51PM +0200, Hardik Gajjar wrote:
+> This patch introduces a new USB quirk,
+> USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT, which modifies the timeout value
+> for the 'SET_ADDRESS' request. The standard timeout for USB request/command
+> is 5000 ms, as recommended in the USB 3.2 specification (section 9.2.6.1).
+> 
+> However, certain scenarios, such as connecting devices through an APTIV
+> hub, can lead to timeout errors when the device enumerates as full speed
+> initially and later switches to high speed during chirp negotiation.
+> 
+> In such cases, USB analyzer logs reveal that the bus suspends for
+> 5 seconds due to incorrect chirp parsing and resumes only after two
+> consecutive timeout errors trigger a hub driver reset.
+> 
+> Packet(54) Dir(?) Full Speed J(997.100 us) Idle(  2.850 us)
+> _______| Time Stamp(28 . 105 910 682)
+> _______|_____________________________________________________________Ch0
+> Packet(55) Dir(?) Full Speed J(997.118 us) Idle(  2.850 us)
+> _______| Time Stamp(28 . 106 910 632)
+> _______|_____________________________________________________________Ch0
+> Packet(56) Dir(?) Full Speed J(399.650 us) Idle(222.582 us)
+> _______| Time Stamp(28 . 107 910 600)
+> _______|_____________________________________________________________Ch0
+> Packet(57) Dir Chirp J( 23.955 ms) Idle(115.169 ms)
+> _______| Time Stamp(28 . 108 532 832)
+> _______|_____________________________________________________________Ch0
+> Packet(58) Dir(?) Full Speed J (Suspend)( 5.347 sec) Idle(  5.366 us)
+> _______| Time Stamp(28 . 247 657 600)
+> _______|_____________________________________________________________Ch0
+> 
+> This 5-second delay in device enumeration is undesirable, particularly
+> in automotive applications where quick enumeration is crucial
+> (ideally within 3 seconds).
+> 
+> The newly introduced quirks provide the flexibility to align with a
+> 3-second time limit, as required in specific contexts like automotive
+> applications.
+> 
+> By reducing the 'SET_ADDRESS' request timeout to 500 ms, the
+> system can respond more swiftly to errors, initiate rapid recovery, and
+> ensure efficient device enumeration. This change is vital for scenarios
+> where rapid smartphone enumeration and screen projection are essential.
+> 
+> To use the quirk, please write "vendor_id:product_id:p" to
+> /sys/bus/usb/drivers/hub/module/parameter/quirks
+> 
+> For example,
+> echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameters/quirks"
+> 
+> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> ---
 
-Sorry for the delay.
-When we instrument per-cpu allocations in [1] we need to include
-sched.h in percpu.h to be able to use alloc_tag_save(). sched.h
-includes hrtimer.h. So, without this change we end up with a circular
-inclusion: percpu.h->sched.h->hrtimer.h->percpu.h
+For the usbcore parts: A couple of very minor things can be improved.  
+Once those improvements have been made, you can add:
 
-[1] https://lore.kernel.org/all/20231024134637.3120277-32-surenb@google.com=
-/
+Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
 
->
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 0a1731a0f0ef..4aa3723d2eaf 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -6817,6 +6817,9 @@
+>  					pause after every control message);
+>  				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
+>  					delay after resetting its port);
+> +				p = USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT (Reduce
+> +					timeout of the SET_ADDRESS request from
+> +					5000 ms to 500 ms)
+
+To avoid going over the 80-column limit, move "(Reduce" to the next 
+line and reflow the text in parentheses.
+
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 3c54b218301c..98db92af2cce 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -54,6 +54,19 @@
+>  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+>  #define USB_PING_RESPONSE_TIME		400	/* ns */
+>  
+> +/*
+> + * USB 3.2 spec, section 9.2.6.1
+> + * USB sets an upper limit of 5000 ms for any command/request
+> + * to be processed.
+> + */
+> +#define USB_DEFAULT_REQUEST_TIMEOUT_MS	5000 /* ms */
+
+You don't need to define this macro at all.  Just use 
+USB_CTRL_SET_TIMEOUT (which is already defined to be 5000) as the 
+existing code already does.
+
+> +/*
+> + * The SET_ADDRESS request timeout will be 500 ms when
+> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
+> + */
+> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
+
+As remarked earlier, we don't need to have the "_MS" suffix on either 
+the macro name or the "timeout_ms" variable name.  Removing the suffix 
+will be more consistent with the USB_TP_TRANSMISSION_DELAY_MAX and 
+USB_PING_RESPONSE_TIME names you see above.
+
+> +
+> +/*
+> + * The SET_ADDRESS request timeout will be 500 ms when
+> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
+
+Change the second line to:
+
+ *  the USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT quirk flag is set.
+
+> + */
+> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
+
+Overall, I agree with Sergey that this would be cleaner if you split it 
+up into two patches.  The first should change the comment for the 
+set_address() callback function and the implementation in xhci-hcd.  The 
+second should add the quirk flag and make the corresponding changes to 
+the USB core.
+
+Alan Stern
