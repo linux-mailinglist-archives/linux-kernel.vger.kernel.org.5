@@ -2,130 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AE97D8410
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3566A7D8413
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345138AbjJZN6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S235031AbjJZN7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjJZN6r (ORCPT
+        with ESMTP id S235015AbjJZN7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:58:47 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF396183
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:58:44 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso140882066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1698328723; x=1698933523; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/KYa4HkxjjRaaNse5zZEBCRtWEDy9TvEZNCSQroKlA=;
-        b=OmRaJlt3h3pl7MI6mS0dHtDwDLhFscUlKG/I0p2L14uNCUXYP/uIiNVS/IIb54VzlQ
-         rtVbLQQgM17vGASinGX+XKUpbfkmM4PXahpGGWAchVQanhNIxYYpjE3bIXyxI9Dy1fSw
-         YiKeKr7EgiUWPQproy/AtMTfecv+3Gffgp+XI=
+        Thu, 26 Oct 2023 09:59:01 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33B11BD;
+        Thu, 26 Oct 2023 06:58:58 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so559583a34.0;
+        Thu, 26 Oct 2023 06:58:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698328723; x=1698933523;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f/KYa4HkxjjRaaNse5zZEBCRtWEDy9TvEZNCSQroKlA=;
-        b=WJfHNEf2l7ibBePDvkBz+7cRJ8HzP9lxmvyIq+Y4JCWmk4WarBS1Nxa7PqO6CKpNNv
-         C7ZbN+c5018npoVuVrVfpkhm/Yr6WdMeRHcaYmPMSONfBX4GNjanuT1Fy6jEhnQA36kN
-         pwi//2oUVoKjzyFS2KwY9t1prrF66lf+pnbDbDep12mPHpA1We3ljHs1Z4FkyTe6xAbE
-         8WPfEcqYKShrH1khhv/MvL+sATLiI2w4l30B6zujfM/VFIjXArNFHrvTTPBm3MPRsdRA
-         P7k84HtrYv0GhXLMeXpWGysIhlQ5mQ4dRktvoqCNKRQjnmSoDvpoY2x4XqjjQNIP8Jpk
-         gHwA==
-X-Gm-Message-State: AOJu0YzVlzjjXAuJG7QIxL8bik1tF/Wki93JoZA+zda9ctkJ0tbj74h7
-        /pMCF8NFjOcPI6CGHniXPnUxtQ==
-X-Google-Smtp-Source: AGHT+IF2rU6imsm+9/5fNEkBUbTI0NVZdVoGckX2Pddx8Q6ImRaSm5Kbk4+MvlMi/u+iolhDKI4lYA==
-X-Received: by 2002:a17:907:70a:b0:9b8:b683:5854 with SMTP id xb10-20020a170907070a00b009b8b6835854mr15025269ejb.61.1698328723124;
-        Thu, 26 Oct 2023 06:58:43 -0700 (PDT)
-Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id bm11-20020a170906c04b00b009a193a5acffsm11621069ejb.121.2023.10.26.06.58.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 06:58:42 -0700 (PDT)
-Message-ID: <37b334b2-c040-458d-9c1f-2546dc9b378d@citrix.com>
-Date:   Thu, 26 Oct 2023 14:58:41 +0100
+        d=1e100.net; s=20230601; t=1698328738; x=1698933538;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BN+qtvPSspseGb/uUMPDqoZhAWMErSRG57vJlzJzwzg=;
+        b=S9HsYFi7h+ZLNIKQ/eNQbvrcI54Bh+ZMleswTWAGdbmQvKbXlc98QMvnTWLPwiumxp
+         2CcVCureP2oAWTH3z0M6tA83FdDniXEfZtBhJLR2SnCluMR3ookj4VrDwFnEbNvbyTJC
+         WhmHwb5Yk89X+MKjEV0HOpm6B/zN/1s/h8mfEzOenbXmBAa3YY73L1d4M4CgfhiTinf1
+         dHgKEezNmcglnQGOlvK6NAJLtVj6SLTSAskYhydsEs509cBq/h9EwF0LJOCuUsUyYf4y
+         BcKETX4Z3WBZ7V1eCwWTKYEWEFymrOF/Ag6G2LC3/GZXv/JiFkEHZm2uWrPYSpjNoZk6
+         2YKQ==
+X-Gm-Message-State: AOJu0YxX4uZAtzA9jp+AX6i4YJLHK2QBwm5r/K/bUkz+Q8EXUH3RFSEK
+        AOTThrZhQKe9gDycUIbLlg==
+X-Google-Smtp-Source: AGHT+IGi0KrG1N1eZFWWL6FEyV23fFEYLOJ0fBtoIezsQ/ZaUeZSwF+NPXQ3XZkQjsEeXnG9KD557Q==
+X-Received: by 2002:a9d:7ac6:0:b0:6bb:1071:ea72 with SMTP id m6-20020a9d7ac6000000b006bb1071ea72mr18729961otn.36.1698328738112;
+        Thu, 26 Oct 2023 06:58:58 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id l18-20020a056830269200b006b8e8884f2fsm2652604otu.51.2023.10.26.06.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 06:58:57 -0700 (PDT)
+Received: (nullmailer pid 3570816 invoked by uid 1000);
+        Thu, 26 Oct 2023 13:58:56 -0000
+Date:   Thu, 26 Oct 2023 08:58:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 0/3] Fix DT based address translations
+Message-ID: <20231026135856.GA3567352-robh@kernel.org>
+References: <20231017110221.189299-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
-Content-Language: en-GB
-To:     Nikolay Borisov <nik.borisov@suse.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
- <1f756579-8f33-40ca-ae50-4db78c615f60@suse.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <1f756579-8f33-40ca-ae50-4db78c615f60@suse.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
+In-Reply-To: <20231017110221.189299-1-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,60 +73,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 2:44 pm, Nikolay Borisov wrote:
->
->
-> <snip>
->> +
->> +.pushsection .entry.text, "ax"
->> +
->> +.align L1_CACHE_BYTES, 0xcc
->> +SYM_CODE_START_NOALIGN(mds_verw_sel)
->> +    UNWIND_HINT_UNDEFINED
->> +    ANNOTATE_NOENDBR
->> +    .word __KERNEL_DS
->> +SYM_CODE_END(mds_verw_sel);
->> +/* For KVM */
->> +EXPORT_SYMBOL_GPL(mds_verw_sel);
->> +
->> +.popsection
->
-> <snip>
->
->> diff --git a/arch/x86/include/asm/nospec-branch.h
->> b/arch/x86/include/asm/nospec-branch.h
->> index c55cc243592e..005e69f93115 100644
->> --- a/arch/x86/include/asm/nospec-branch.h
->> +++ b/arch/x86/include/asm/nospec-branch.h
->> @@ -329,6 +329,21 @@
->>   #endif
->>   .endm
->>   +/*
->> + * Macros to execute VERW instruction that mitigate transient data
->> sampling
->> + * attacks such as MDS. On affected systems a microcode update
->> overloaded VERW
->> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
->> + *
->> + * Note: Only the memory operand variant of VERW clears the CPU
->> buffers.
->> + */
->> +.macro EXEC_VERW
->> +    verw _ASM_RIP(mds_verw_sel)
->> +.endm
->> +
->> +.macro CLEAR_CPU_BUFFERS
->> +    ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
->> +.endm
->
->
-> What happened with the first 5 bytes of a 7 byte nop being
-> complemented by __KERNEL_DS in order to handle VERW being executed
-> after user registers are restored and having its memory operand ?
+On Tue, Oct 17, 2023 at 01:02:15PM +0200, Herve Codina wrote:
+> Hi,
+> 
+> This patch series fixes a DT based address translation (translations
+> using the ranges property).
+> 
+> The issue is present with a ranges property made of a 3 cells child
+> address, a 3 cells parent address and a 2 cells child size.
+> This can happen with the recent addition of of_pci_prop_ranges() in
+> commit 407d1a51921e ("PCI: Create device tree node for bridge")
+> 
+> The issue description is fully described in the first patch commit log.
+> 
+> In this series,
+>   - The first patch fixes the issue.
+>   - The second patch avoids duplicated code.
+>   - The third patch adds unit tests related address translations.
+> 
+> I previously sent the first patch alone:
+>   https://lore.kernel.org/linux-kernel/20231003065236.121987-1-herve.codina@bootlin.com/
+> This series v2 has to be considered as the next iteration based on the
+> review done on my previous patch sent alone.
+> 
+> Best regards,
+> Herv�
+> 
+> Changes v1 -> v2
+> 
+>  - Patch 1
+>    Simplify of_bus_default_flags_map().
+>    Fix the commit log (pci-ep-bus ranges[0] size is 0x200_0000 instead
+>    of 0x2000_0000).
+> 
+>  - Patch 2 (new in v2)
+>    Remove duplicated code.
+> 
+>  - Patch 3 (new in v2)
+>    Add unit tests.
+> 
+> Herve Codina (3):
+>   of: address: Fix address translation when address-size is greater than
+>     2
+>   of: address: Remove duplicated functions
+>   of: unittest: Add tests for address translations
+> 
+>  drivers/of/address.c                        |  43 ++++++---
+>  drivers/of/unittest-data/tests-address.dtsi | 101 ++++++++++++++++++++
+>  drivers/of/unittest.c                       |  74 ++++++++++++++
+>  3 files changed, 205 insertions(+), 13 deletions(-)
 
-It was moved out of line (so no need to hide a constant in a nop),
-deduped, and renamed to mds_verw_sel.
+I've applied this. I sent out this series[1] of clean-ups to apply on 
+top.
 
-verw _ASM_RIP(mds_verw_sel) *is* the memory form.
+Rob
 
-~Andrew
+[1] https://lore.kernel.org/all/20231026135358.3564307-2-robh@kernel.org/
