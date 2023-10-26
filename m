@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 446F37D8274
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E117D8279
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 14:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjJZMTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 08:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
+        id S1344894AbjJZMTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 08:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbjJZMTV (ORCPT
+        with ESMTP id S234896AbjJZMTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:19:21 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668801B3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:19:16 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40837124e1cso82145e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 05:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698322754; x=1698927554; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mn9vwEQwhu04QoIQoViUo1uyYhhZK+omIbWYXKZt2G0=;
-        b=4vBAeB6+dWymdQ7lx+OaLwT/lkizkiOnU6+wLGKllSzf8B74PxqMH7t/8kcIe2oQ3d
-         Hpo0opEQuZ9MvERHrpkQToDoS91/pbXozZcviJWfSVbiOgKu3vNY8O8pACF+Se3GB23V
-         IXqXzDfs3aAdrl59UdgIhG4UC6elVK4HgMR8WpHRsvDaxhi3YltsoT7bbRlEIYYy4JMX
-         kMKPtzi7wp+NIlgxRmDyAh0WX24nlcfb2398cSjF8at3UIXqvhupHKJQD6e5fMJAl8Md
-         Z62zjmbADQLqY8BZEfC1shsWw7u8//+BAuHujn3yiiY3GmJmeyDDLDUqBHgwNf+X0e8g
-         twvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698322754; x=1698927554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mn9vwEQwhu04QoIQoViUo1uyYhhZK+omIbWYXKZt2G0=;
-        b=tpF+VSe8Da8DXIIQYMmA+HriNsSoYTgJdhQvRdQL77im/Ip7Lh/GLqFNprvyAxlE66
-         U93cpqkuptSvvau942oze44FSUdTWVVlSohT/b3Bq1FdMTZ7pqHnrK5MkqOBvEBlqVE4
-         BKWegX4j5NG7mwpeoTVUVh8tieaR1sMSpCX7ZNI+39sJ9WNlAUb5HP9G6zcOV+b+926a
-         hvAFm4KoUkokr8lvjLfNZcnAfSH2tx1yHo3tCtgLPGVcSpK8ECyDnMJyCZkiEaQ/NMXG
-         2TcpZKDDFXo2OeiZ6OFaEzFCb0U54G4C0m/eeiC0J3uwYIzRRVCBGot7TVzbtoBs1MyS
-         ZgiA==
-X-Gm-Message-State: AOJu0YzZi0T+pdae6OpWcetEJO290OkDFQpMJZBTctmbJ5+HseFhXL/6
-        n/aXNvovxhaGV/a8bqwGQ5bIcfs6BmusqXcIzMp1ww==
-X-Google-Smtp-Source: AGHT+IHFMPYOS4TQJcdWKAA3nE9+1HradjGomq6X4BQNrV+FIc9uYhsFJofMd+9S5E0v3J3FPDOYs7YXZRvjBChoa+I=
-X-Received: by 2002:a05:600c:3c96:b0:404:74f8:f47c with SMTP id
- bg22-20020a05600c3c9600b0040474f8f47cmr225576wmb.5.1698322754434; Thu, 26 Oct
- 2023 05:19:14 -0700 (PDT)
+        Thu, 26 Oct 2023 08:19:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309A4B9;
+        Thu, 26 Oct 2023 05:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698322776; x=1729858776;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=p+Gb2snRIkAb2gO0jCgy4vPKw4QvuWg0X9Z+93KecFo=;
+  b=fQ+ZZTTQnEOa5jU+7y8nGh0eo3MZVlZiPd+W8XaaY5G4YQEQTyQGCR30
+   TB3nGW1J0lCafhLzlJFJ1a70hIef/37o3DP0yuCXT9mQ7XnnBhAuVZ1Vs
+   Jxu5gTYiq+ld8zjvnEzOIBIOMpPZK5arirKnBrVI1ws27v3BPAm3Waf91
+   EyMAVQe83NcCznNG/K9oI6eYyWpOHQHnx2pS4qLTnQG6p7Do8eJ0A1TIr
+   ve9qetSdLuASy9+TiHSqemCdKV7v8t2q2faAniRFz1ncWgc59eqw+OojZ
+   qy0t6ZpL38j7mmHMkUPymIXdJZ1VCwQHPKNRVa+qw/gXxo+B/mhlHISD6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="390390969"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="390390969"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:19:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="1090589448"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="1090589448"
+Received: from ialvarez-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.120])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 05:19:33 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/2] PCI/ASPM: Simplify pcie_capability_clear_and_set_word() to ..._clear_word()
+Date:   Thu, 26 Oct 2023 15:19:23 +0300
+Message-Id: <20231026121924.2164-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
- <20231024075748.1675382-3-dapeng1.mi@linux.intel.com> <CALMp9eRqGr+5+C1OLhxv1i8Q=YVRmFxkZQJoh7HzWkPg2z=WoA@mail.gmail.com>
- <6132ba52-fdf1-4680-9e4e-5ea2fcb63b3c@linux.intel.com> <CALMp9eSX6OL9=9sgnKpNgRtuTV93A=G=u-5qT1_rpKFjL-dBNw@mail.gmail.com>
- <99684975-6317-4233-b87b-14ca731b335a@linux.intel.com>
-In-Reply-To: <99684975-6317-4233-b87b-14ca731b335a@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 26 Oct 2023 05:19:01 -0700
-Message-ID: <CALMp9eRdiyHQjiSRufKvBLHhXQ9LgTpNO8djETZ9tSYZR_FBFg@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch 2/5] x86: pmu: Change the minimum value of
- llc_misses event to 0
-To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 7:14=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.intel.=
-com> wrote:
->
->
-> On 10/25/2023 8:35 PM, Jim Mattson wrote:
-> > On Wed, Oct 25, 2023 at 4:23=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.in=
-tel.com> wrote:
-> >>
-> >> On 10/24/2023 9:03 PM, Jim Mattson wrote:
-> >>> On Tue, Oct 24, 2023 at 12:51=E2=80=AFAM Dapeng Mi <dapeng1.mi@linux.=
-intel.com> wrote:
-> >>>> Along with the CPU HW's upgrade and optimization, the count of LLC
-> >>>> misses event for running loop() helper could be 0 just like seen on
-> >>>> Sapphire Rapids.
-> >>>>
-> >>>> So modify the lower limit of possible count range for LLC misses
-> >>>> events to 0 to avoid LLC misses event test failure on Sapphire Rapid=
-s.
-> >>> I'm not convinced that these tests are really indicative of whether o=
-r
-> >>> not the PMU is working properly. If 0 is allowed for llc misses, for
-> >>> instance, doesn't this sub-test pass even when the PMU is disabled?
-> >>>
-> >>> Surely, we can do better.
-> >>
-> >> Considering the testing workload is just a simple adding loop, it's
-> >> reasonable and possible that it gets a 0 result for LLC misses and
-> >> branch misses events. Yeah, I agree the 0 count makes the results not =
-so
-> >> credible. If we want to avoid these 0 count values, we may have to
-> >> complicate the workload, such as adding flush cache instructions, or
-> >> something like that (I'm not sure if there are instructions which can
-> >> force branch misses). How's your idea about this?
-> > CLFLUSH is probably a good way to ensure cache misses. IBPB may be a
-> > good way to ensure branch mispredictions, or IBRS on parts without
-> > eIBRS.
->
->
-> Thanks Jim for the information. I'm not familiar with IBPB/IBRS
-> instructions, but just a glance, it looks there two instructions are
-> some kind of advanced instructions,  Not all Intel CPUs support these
-> instructions and not sure if AMD has similar instructions. It would be
-> better if there are more generic instruction to trigger branch miss.
-> Anyway I would look at the details and come back again.
+When set parameter is 0, pcie_capability_clear_and_set_word() can be
+turned into pcie_capability_clear_word() which makes the intent of the
+code slightly more obvious.
 
-IBPB and IBRS are not instructions. IBPB (indirect branch predictor
-barrier) is triggered by setting bit 0 of the IA32_PRED_CMD MSR. IBRS
-(indirect branch restricted speculation) is triggered by setting bit 0
-of the IA32_SPEC_CTRL MSR. It is true that the desired behavior of
-IBRS (causing branch mispredictions) is only exhibited by certain
-older parts. However, IBPB is now universally available, as it is
-necessary to mitigate many speculative execution attacks. For Intel
-documentation, see
-https://www.intel.com/content/www/us/en/developer/articles/technical/softwa=
-re-security-guidance/technical-documentation/cpuid-enumeration-and-architec=
-tural-msrs.html.
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/pci/pcie/aspm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-If you don't want to use these, you could train a branch to go one way
-prior to measurement, and then arrange for the branch under test go
-the other way.
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 1bf630059264..3b0508b47472 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -689,10 +689,10 @@ static void pcie_config_aspm_l1ss(struct pcie_link_state *link, u32 state)
+ 	 * in pcie_config_aspm_link().
+ 	 */
+ 	if (enable_req & (ASPM_STATE_L1_1 | ASPM_STATE_L1_2)) {
+-		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+-						   PCI_EXP_LNKCTL_ASPM_L1, 0);
+-		pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
+-						   PCI_EXP_LNKCTL_ASPM_L1, 0);
++		pcie_capability_clear_word(child, PCI_EXP_LNKCTL,
++					   PCI_EXP_LNKCTL_ASPM_L1);
++		pcie_capability_clear_word(parent, PCI_EXP_LNKCTL,
++					   PCI_EXP_LNKCTL_ASPM_L1);
+ 	}
+ 
+ 	val = 0;
+-- 
+2.30.2
 
-> >>>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> >>>> ---
-> >>>>    x86/pmu.c | 2 +-
-> >>>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/x86/pmu.c b/x86/pmu.c
-> >>>> index 0def28695c70..7443fdab5c8a 100644
-> >>>> --- a/x86/pmu.c
-> >>>> +++ b/x86/pmu.c
-> >>>> @@ -35,7 +35,7 @@ struct pmu_event {
-> >>>>           {"instructions", 0x00c0, 10*N, 10.2*N},
-> >>>>           {"ref cycles", 0x013c, 1*N, 30*N},
-> >>>>           {"llc references", 0x4f2e, 1, 2*N},
-> >>>> -       {"llc misses", 0x412e, 1, 1*N},
-> >>>> +       {"llc misses", 0x412e, 0, 1*N},
-> >>>>           {"branches", 0x00c4, 1*N, 1.1*N},
-> >>>>           {"branch misses", 0x00c5, 0, 0.1*N},
-> >>>>    }, amd_gp_events[] =3D {
-> >>>> --
-> >>>> 2.34.1
-> >>>>
