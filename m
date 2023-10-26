@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED8C7D88F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C169C7D88FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 21:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbjJZTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 15:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S231546AbjJZTee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 15:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjJZTbo (ORCPT
+        with ESMTP id S230143AbjJZTec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 15:31:44 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F441AE
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:31:38 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507ac66a969so1579889e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 12:31:38 -0700 (PDT)
+        Thu, 26 Oct 2023 15:34:32 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7647D187;
+        Thu, 26 Oct 2023 12:34:30 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-779f2718accso101852085a.1;
+        Thu, 26 Oct 2023 12:34:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698348696; x=1698953496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ywy6fWVLvmJZckMh0b8tqYAFdaL2mApdB/loN0g2f0E=;
-        b=jy3P1kNY8nvwnGdsS33FAuuv9IH6Phd6MVXSvNePNuZonbZOVIfG5XECi7VFkiNgVl
-         qtf8tnEIuETTGTG6QQU1mYDLg1Y+M8QYF4T5FsyO+xFGs/8yS4oJQujREnK4CP7KDUuR
-         ifSGc8NIVC6mLZdNeGBLsp6VCHXYdL5hbFQD4XeDgSDkIkN/0P+GSU210Rb5tjBZfBEy
-         bUrDczpNRAKfBptS8E/1/c6ygUsBeKh1r5GkC8HD6mDk2k3v9DZcruB5NT1z8usZwzB6
-         bXrSL9Z4nEW8mEucO6kJpAhwPeKaaIr4UPc4Iq8WHVjAznFrCnulCIeSSx1mjuY1yDtn
-         hG9w==
+        d=gmail.com; s=20230601; t=1698348869; x=1698953669; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dlx257uGBGuSd2Gloxav30tAY6VWTs4Trptnw4lRsxk=;
+        b=KLcJFSQMh1MZw7JIYwUCsfwOChOlPh3xMI9lfevAexH+lcEMavRMag9dVwOiQix8Wy
+         R80gV+UusDmeDGARJVOb8bzXGzF43DhO8EX8oKpImxEwW3ruYM2R6Y16rUMhmJ6aLHGa
+         GMBr9X+JHnj18O5MdVmkAasxukG38kLm61Dw6lMlL0zoG6AlHrzN0xkFNYBoZJkrAjIa
+         VTu7Oc4zfbHis7RP1DVYgEEnmGOEuxQKA/ug8ljnhNvPgB7762gUgGCluT16D1ZN8DWw
+         kYOULKm/zCxi1DZQCoyjWPEGDXXME6OYsxMIFt7u5TuHn7rKd3fCBe1XgFGV1Zf+O+4O
+         vLug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698348696; x=1698953496;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ywy6fWVLvmJZckMh0b8tqYAFdaL2mApdB/loN0g2f0E=;
-        b=eWlYJ/NjkWnI0meRix3e5Q0Oo15dElN55k01vK6I4xULWpOjHtCcAZ2NtIjciPvMEC
-         +wJy53b6ZSNvaS3g+zjAouJ6aj0UcX1sbDsruzR82LbCm4zq4u93ePpuwqGnx5JLxwyQ
-         OjX7vc0Clqt98sate3UbO4M55r9KjBCDah05GkOMQKZg5PKDnXriXgMDvF2AmcdGkr9N
-         z8UBEsPJZFtrhoJINXDO2MienfNBQPgs/0pU5T07wPMTsyDzWbF6IJYJKf5C3ILqnjYA
-         Up99r9FaHs54jd4dLuTwprlLdjPfhLrAJrBB8MqTH3fbshjfnWYEyPnjSqsGcjCR3ib8
-         /Wpg==
-X-Gm-Message-State: AOJu0Yy3ggcWeSSWdYvvHyGI//fG/dL/mFj6UQBaY41QiQS0gPoZ1H7a
-        NSPiPC3n8C1Jycx4KwZineugHQ==
-X-Google-Smtp-Source: AGHT+IFWDZS34rvspUgwbDHXK7kc9utTg6aVksJEARy6vQoLFoqbqsEj13cqR6sg0rLi/wgb+XBc2A==
-X-Received: by 2002:ac2:52b0:0:b0:507:a86d:89bb with SMTP id r16-20020ac252b0000000b00507a86d89bbmr226981lfm.23.1698348696571;
-        Thu, 26 Oct 2023 12:31:36 -0700 (PDT)
-Received: from [172.30.204.84] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id j19-20020a056512345300b0050336e38735sm3107145lfr.92.2023.10.26.12.31.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 12:31:36 -0700 (PDT)
-Message-ID: <3109efe2-120b-447b-ae7d-16f03e3dc3a6@linaro.org>
-Date:   Thu, 26 Oct 2023 21:31:31 +0200
+        d=1e100.net; s=20230601; t=1698348869; x=1698953669;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dlx257uGBGuSd2Gloxav30tAY6VWTs4Trptnw4lRsxk=;
+        b=Y71+Fr63Blnc+WJE/s+Mc59I24Lpi9OlaoJ6fCP0OwxjDS2BFdOzlnStkNz2ZzoDgo
+         QdpvTajpLGjMGZaA+UoWDY5AASVo+0sKV1ItOwwjtIoLxoO3lNtSLNsdw+5KwO7v9f1n
+         iEhRKsfW8AEvwNz2ckN3xME8I6qIVRf7hLGh3yDd1+pqMadZJO4J/mmnwkXNNqpm7E0t
+         4PVpO0/Sdedw+y7u9sh7CbuMsjUc5GqCHxGgD+8w0vi6psauTQWrZyj2V5ASd9oDvMGb
+         HS0JrQG6tmdak4pcuGDZApERMP5cyGJZ+8HTiG/+czXUs5mBrWdhZQ0ljLovArzNmJUW
+         iSnA==
+X-Gm-Message-State: AOJu0Yx05/I9o2GAFJ2dqnNVsx/BDgQCc25RC3roYC0NYkPS2c4Z/TNx
+        NsElrM6w+okPziZHt+TRvnnv7m2259A/iL6f6sskLTafJIY=
+X-Google-Smtp-Source: AGHT+IFa+a9Wkq0WM46wIhO/htxqSNYR6+vE26pYPjlFIxvtDnoXWFQQ67gzGR3SJ1/2Zn5PLRZUXSIs2u39F9GgLWY=
+X-Received: by 2002:a0c:e34c:0:b0:66d:55d9:9522 with SMTP id
+ a12-20020a0ce34c000000b0066d55d99522mr700958qvm.23.1698348869544; Thu, 26 Oct
+ 2023 12:34:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
- version detection
-To:     Manivannan Sadhasivam <manivannanece23@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Can Guo <quic_cang@quicinc.com>, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
- <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
- <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com>
- <31823dc4-6f50-435b-9a20-66471209ec31@linaro.org>
- <d34242f8-6e21-1549-b87d-3db2e825b7d5@quicinc.com>
- <1413119B-8B9C-4DE4-A086-476B2BAA60AD@linaro.org>
- <20230919120829.GB4732@thinkpad>
- <CAA8EJppwjzNDsPHZqUdmgQy3fAbP+AFnOo4+FTDCdpBEZp5S_w@mail.gmail.com>
- <20230920102327.GH4732@thinkpad> <20231018124741.GA47321@thinkpad>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231018124741.GA47321@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231026100157.735d7dee@canb.auug.org.au> <CAOQ4uxjmRena4AB3yMQhBJ58c6DRtkDJJrnTgFe=gWsadSdbQw@mail.gmail.com>
+ <20231026183539.cffe6uljmnjgacxq@moria.home.lan>
+In-Reply-To: <20231026183539.cffe6uljmnjgacxq@moria.home.lan>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 26 Oct 2023 22:34:18 +0300
+Message-ID: <CAOQ4uxhNDADk9CgSMxKc93qunDUD17AFaA+tuSni9AOsjkfPYw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
+ bcachefs tree
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,150 +76,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 9:35=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Thu, Oct 26, 2023 at 08:16:14AM +0300, Amir Goldstein wrote:
+> > On Thu, Oct 26, 2023 at 2:02=E2=80=AFAM Stephen Rothwell <sfr@canb.auug=
+.org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > Today's linux-next merge of the vfs-brauner tree got a conflict in:
+> > >
+> > >   include/linux/exportfs.h
+> > >
+> > > between commit:
+> > >
+> > >   85e95ca7cc48 ("bcachefs: Update export_operations for snapshots")
+> > >
+> > > from the bcachefs tree and commit:
+> > >
+> > >   2560fa66d2ac ("exportfs: define FILEID_INO64_GEN* file handle types=
+")
+> > >
+> > > from the vfs-brauner tree.
+> > >
+> > > I fixed it up (see below) and can carry the fix as necessary. This
+> > > is now fixed as far as linux-next is concerned, but any non trivial
+> > > conflicts should be mentioned to your upstream maintainer when your t=
+ree
+> > > is submitted for merging.  You may also want to consider cooperating
+> > > with the maintainer of the conflicting tree to minimise any particula=
+rly
+> > > complex conflicts.
+> > >
+> > > --
+> > > Cheers,
+> > > Stephen Rothwell
+> >
+> > [adding exportfs maintainers]
+> >
+> > >
+> > > diff --cc include/linux/exportfs.h
+> > > index be9900cc8786,21bae8bfeef1..000000000000
+> > > --- a/include/linux/exportfs.h
+> > > +++ b/include/linux/exportfs.h
+> > > @@@ -98,12 -98,17 +98,23 @@@ enum fid_type
+> > >          */
+> > >         FILEID_FAT_WITH_PARENT =3D 0x72,
+> > >
+> > >  +      /*
+> > >  +       * 64 bit inode number, 32 bit subvolume, 32 bit generation n=
+umber:
+> > >  +       */
+> > >  +      FILEID_BCACHEFS_WITHOUT_PARENT =3D 0x80,
+> > >  +      FILEID_BCACHEFS_WITH_PARENT =3D 0x81,
+> > >  +
+> > > +       /*
+> > > +        * 64 bit inode number, 32 bit generation number.
+> > > +        */
+> > >  -      FILEID_INO64_GEN =3D 0x81,
+> > > ++      FILEID_INO64_GEN =3D 0x82,
+> > > +
+> > > +       /*
+> > > +        * 64 bit inode number, 32 bit generation number,
+> > > +        * 64 bit parent inode number, 32 bit parent generation.
+> > > +        */
+> > >  -      FILEID_INO64_GEN_PARENT =3D 0x82,
+> > > ++      FILEID_INO64_GEN_PARENT =3D 0x83,
+> > > +
+> >
+> > This is wrong.
+> > Those are filesystem defined constants.
+> > Please don't change them.
+> >
+> > 0x81/0x82 have been used by xfs and fuse for years,
+> > even though neither defined a constant in this enum so far.
+>
+> Perhaps we could get that fixed...?
 
+commit 2560fa66d2ac ("exportfs: define FILEID_INO64_GEN*
+file handle types") fixes that for fuse.
+I may fix up xfs to use these constants later.
 
-On 10/18/23 14:47, Manivannan Sadhasivam wrote:
-> On Wed, Sep 20, 2023 at 12:23:27PM +0200, Manivannan Sadhasivam wrote:
->> On Wed, Sep 20, 2023 at 01:27:59AM +0300, Dmitry Baryshkov wrote:
->>> On Tue, 19 Sept 2023 at 15:08, Manivannan Sadhasivam <mani@kernel.org> wrote:
->>>>
->>>> On Fri, Sep 15, 2023 at 05:31:45AM +0300, Dmitry Baryshkov wrote:
->>>>> On 11 September 2023 13:02:50 GMT+03:00, Can Guo <quic_cang@quicinc.com> wrote:
->>>>>>
->>>>>> On 9/11/2023 5:46 PM, Konrad Dybcio wrote:
->>>>>>> On 11.09.2023 11:42, Can Guo wrote:
->>>>>>>> Hi Konrad,
->>>>>>>>
->>>>>>>> On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
->>>>>>>>> On 11.09.2023 07:59, Can Guo wrote:
->>>>>>>>>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
->>>>>>>>>>
->>>>>>>>>> Retrieve UFS device version from UFS host controller's spare register
->>>>>>>>>> which is populated by bootloader, and use the UFS device version together
->>>>>>>>>> with host controller's HW version to decide the proper power modes which
->>>>>>>>>> should be used to configure the UFS PHY.
->>>>>>>>> That sounds a bit fishy.. is there no bootloader-independent
->>>>>>>>> solution to that? Can't we bring in the code that the bootloader
->>>>>>>>> uses to determine these values?
->>>>>>>>>
->>>>>>>>> Konrad
->>>>>>>>
->>>>>>>> Agree, it is.
->>>>>>>>
->>>>>>>>
->>>>>>>> All these complexities come from one request from PHY design team - power saving.
->>>>>>>>
->>>>>>>> And to achieve power saving, Qualcomm UFS developers are requested to use the
->>>>>>>>
->>>>>>>> lowest hanging PHY settings which can sustain the Max agreed HS Gear (btw host
->>>>>>>>
->>>>>>>> and UFS device) during UFS's lifecycle in High Level OS,  whereas the power saving
->>>>>>>>
->>>>>>>> request does not apply to bootloader, which works for only a few seconds during
->>>>>>>>
->>>>>>>> bootup. Hence, there is no such version detect code in bootloader -  it just uses the
->>>>>>>>
->>>>>>>> highest PHY settings to configure PHY, boot up UFS and put UFS device version in this
->>>>>>>>
->>>>>>>> register.
->>>>>>> First of all, your email client seems to be inserting 2 newlines
->>>>>>> instead of 1. If you're using thunderbird, you may want to edit:
->>>>>>>
->>>>>>> mail.identity.(default or your mail identity idx).default.compose_html
->>>>>>>
->>>>>>> to `false`
->>>>>>>
->>>>>>> and add that to your internal wiki page, as I see many @quic folks having
->>>>>>> this issue.
->>>>>>>
->>>>>>>
->>>>>>> Going back to the main topic, I don't think we understood each other.
->>>>>>> The commit message states:
->>>>>>>
->>>>>>>
->>>>>>> "Retrieve UFS device version from UFS host controller's spare register
->>>>>>> which is populated by bootloader"
->>>>>>>
->>>>>>>
->>>>>>> Which means the bootloader is able to somehow determine the value
->>>>>>> that's in the spare register and write it there.
->>>>>>>
->>>>>>> I'm asking whether we can take the logic behind this value and
->>>>>>> move it to Linux so that we don't depend on the bootloader to
->>>>>>> guarantee it (e.g. Chrome or some other devices with more exotic
->>>>>>> fw may not work this way).
->>>>>>>
->>>>>>>
->>>>>>> Konrad
->>>>>>
->>>>>>
->>>>>> There is no logic behind this value at all in bootloader, as I explained, after bootloader
->>>>>>
->>>>>> initializes UFS, bootloader simply reads UFS's device version (the value you are referring)
->>>>>>
->>>>>> and write it to the register. But in Linux kernel, we need (or want to know) this value
->>>>>>
->>>>>> BEFORE we initialize UFS host controller (and UFS device).
->>>>>
->>>>> Depending on the bootloader behaviour is not an option. For example the kernel might be started via kexec. Or via u-boot. Or grub. Or any other bootloader. So please duplicate the logic to read the UFS version instead.
->>>>>
->>>>
->>>> As Can said, there is no logic in the bootloader. What it does it, after doing
->>>> the UFS initialization, it writes the agreed gear (between host and the device)
->>>> to this register. And in linux, we use that value to initialize the device
->>>> (i.e., not doing init based on the min gear).
->>>>
->>>> But the important factor here is that, we use this gear value to program the PHY
->>>> init sequence. So if there is no hint from the bootloader, linux will program
->>>> the min phy sequence (G3/G4) and then once the gear scaling happens, it will
->>>> program the max phy sequence (G4/G5).
->>>>
->>>> Now on recent platforms, the init sequences are not compatible with each other
->>>> i.e., once the min seq. is programmed, then before programming max seq. the
->>>> registers not common to both seq. should be programmed to default value. In
->>>> other words, min seq. specific registers should be reset to the default value.
->>>> Otherwise, there will be stability issues in the PHY.
->>>
->>> I see nothing wrong with adding 'default' register programming to the
->>> gear tables. If we have to reset them to the default values to switch
->>> the PHY settings, these writes must be a part of the corresponding
->>> tables.
->>>
->>
->> Yep, that's what I initially proposed. But Qcom wanted to avoid the cost of
->> programming the reset tables in the PHY driver.
->>
->> Can, could you please check if programming the additional sequence doesn't cause
->> any power/performance effect?
->>
-> 
-> I'd like to simplify this conversion as there has been some misunderstanding.
-> 
-> First of all in linux, while probing the UFS device by the host controller, it
-> needs to use _some_ gear. So far we were using HS_G2 as that gear and using the
-> PHY init sequence of G3/G4 depending on the SoC. We do not need to use G2 init
-> sequence because, there are only 2 init sequences available for any SoC and
-> since the init sequences are backwards compatible, we mostly use the min init
-> sequence, G3/G4. Even though this incurs slight power consumption during boot,
-> the ufs host controller after probing the device will switch to max gear
-> supported by both entities. If that max is G4/G5, then the respective init
-> sequence will be programmed again.
-> 
-> Now the issue is, for the automotive usecases, switching the gears 2 times
-> during boot is affecting the boot KPI (Key Performance Inidicator). So the UFS
-> team came with the idea of populating a spare register in the bootloader with
-> the max gear info that the bootloader has already found out and using the same
-> in the linux for first time itself. This helps linux in using a single gear
-> during probe time.
-> 
-> This is what this patch is doing. If for some reason, that register is not
-> populated, then we default to the existing G2 gear and do init twice as the
-> driver is doing currently.
-> 
-> I hope this clarifies the intention of this patch.
-Yes I understand this, but I am not sure if such tricks should make
-it upstream.. They depend on specific firmware (unrelated to the hw
-block itself) and only exist to improve boot times. If the firmware
-requirement was not at play, I would have no issues with this.
+>
+> > Conflicting with FILEID_BCACHEFS_WITH_PARENT is not
+> > a serious issue, but I encourage Kent to pick different constants
+> > for bcachefs or keep the bcachefs constants out of this enum.
+>
+> Happy to do so. Since it seems this enum doesn't have all the constants
+> I'd need to avoid conflicting with, I might need some help here :)
+>
 
-Konrad
+Technically, you don't *need* to avoid conflicting with fileid types
+of other filesystems and you do not *need* to define your constant
+in this enum. It serves no real purpose unless your constant
+declares a fileid format that other filesystems also use.
+
+See the comment at the top of the enum.
+
+> > It is a slight inconvenience for users that have bcachefs exported
+> > to NFS clients and upgrade their server, but maybe that is acceptable.
+> > In overlayfs, we encoded type OVL_FILEID_V0 and switched to encoding
+> > type OVL_FILEID_V1, but we still accept decoding of both types, neither
+> > of which are listed in this enum BTW.
+> >
+> > Adding fid types to this enum is not required.
+> > This enum is a place to standardize and for different fs to share the s=
+ame
+> > fid type/encoding as is the case with  FILEID_INO{32,64}_GEN*.
+> > IMO, the bcachefs constant do not follow the convention in this
+> > enum and their format is unlikely to be used by other fs, so
+> > they should not be added to this enum at all.
+>
+> Eh?
+>
+> Most of the constants here appear to be completely filesystem specific -
+> I see UDF, nilfs, btrfs, fat...
+>
+
+There is no good reason for those to be in the enum either
+other than documentation.
+
+> And since you also don't want conflicts with fid_types that aren't
+> defined here, it seems like they really should all be here.
+
+If you define your constants internally in bcachefs, I don't care
+about conflicts, but if I were you, I would avoid conflicts with
+the known types.
+
+If you want to define your constants in this enum please choose
+any vacant 0x?{1,2} values. 0xb{1,2}?
+
+Thanks,
+Amir.
