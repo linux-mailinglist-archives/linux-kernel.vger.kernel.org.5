@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19A17D7F12
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722667D7ED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344527AbjJZI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        id S1344496AbjJZItD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbjJZI4L (ORCPT
+        with ESMTP id S1344700AbjJZItB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:56:11 -0400
-X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 01:56:05 PDT
-Received: from outboundhk.mxmail.xiaomi.com (outboundhk.mxmail.xiaomi.com [207.226.244.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ECD0D183
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 01:56:05 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.03,253,1694707200"; 
-   d="scan'208";a="94429981"
-Date:   Thu, 26 Oct 2023 16:48:13 +0800
-From:   Fang Xiang <fangxiang3@xiaomi.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] irqchip/gic-v3-its: Fix the coherent issue in
- its_setup_baser() when shr = 0.
-Message-ID: <ZTonzQvHedqa7Uj9@oa-fangxiang3.localdomain>
-References: <20231026020116.4238-1-fangxiang3@xiaomi.com>
- <87sf5x6cdu.wl-maz@kernel.org>
+        Thu, 26 Oct 2023 04:49:01 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BDB129;
+        Thu, 26 Oct 2023 01:48:59 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so992690a12.2;
+        Thu, 26 Oct 2023 01:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698310138; x=1698914938; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E7ze34EchX/27SSwpayDxZBsZvdn030bpVJnYH1TN7c=;
+        b=ebky1cqYTdlTIu0LpyldbaL/y5WJFR/8ASKi9avgOlHyzoaVdCPdGlSCPyc1st4t/v
+         CHQEvLvBXUz88vblFspm/wPJi7kNGAzEawsjU9Eqax1R4vSbYwuPOY1Euf/y/R/Aebrg
+         zK/8nLKKiOwo6XMWRByriJLOIfX7U6pLj9WMe1vg6Pn4rlPMQYD2E6BOrWmESqbQ33H4
+         EKHjzO+DAxnVd3CCmsLMqA+vD1qyToSKjfOBni7Ull8UgowmBlqsgbbfR0ib2beimD3n
+         ECBkT8PJTYLi+B8piH1Jw2Wgm/U1H2t8EcUK8b+MfJbEtJXFIZPp46M8CZ8NqK65InkH
+         PoNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698310138; x=1698914938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E7ze34EchX/27SSwpayDxZBsZvdn030bpVJnYH1TN7c=;
+        b=B6f9NdArYwms4/qfuwhY2wvG57TLVSMZotNA0kTp6v+GykIFH6lteEdtF9/BrCP2z4
+         4Aq1vU08qVJymPZ5yTBO69nR97ZdpJxixccHhPQLZexGUxAVZoQ3Kqc6BAxng4gwh3+p
+         Sq+WPCHu9Z1QTV9h8bTksvLuuRWm41WedaMkYRP6BAl9f3EGhXLIaVUGkeKIHSpMLY6J
+         Gl74XkE/vIKkwdH8Gchea8sGoMZdqEk+yNyoR2TYNrAmGwlLnL/fUoyLXFYtMvJCZwjr
+         wWSbtQ3NHUD3mKSeMJ+SnaDvnWRMp37V9Xt341/UZ6xh3rvcyJcl27+eV947Woq9Gouo
+         D8Tw==
+X-Gm-Message-State: AOJu0YzDzz1OCx+M2CGBTJCvCSizwu+94rswuj6VOtCZbfKs4+Vb2yUs
+        cIRbZkuox+sz7RFMR95MEQ6AMZxReMdgAQ==
+X-Google-Smtp-Source: AGHT+IELWK/AXGrWy9ydyRdEnqCeROKTMQt9o+/7nV3eJfjMQmTC5ijntEY7PFCGAparxz0sgFH69Q==
+X-Received: by 2002:a05:6402:3552:b0:540:b95b:6ecf with SMTP id f18-20020a056402355200b00540b95b6ecfmr5292807edd.7.1698310137941;
+        Thu, 26 Oct 2023 01:48:57 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id if5-20020a0564025d8500b0053f10da1105sm10936161edb.87.2023.10.26.01.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 01:48:57 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 11:48:55 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] net: dsa: microchip: ksz9477: Fix spelling mistake
+ "Enery" -> "Energy"
+Message-ID: <20231026084855.mfrqnzfk3uulwy5o@skbuf>
+References: <20231026065408.1087824-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sf5x6cdu.wl-maz@kernel.org>
-X-Originating-IP: [10.237.8.11]
-X-ClientProxiedBy: BJ-MBX14.mioffice.cn (10.237.8.134) To BJ-MBX15.mioffice.cn
- (10.237.8.135)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231026065408.1087824-1-colin.i.king@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 09:01:17AM +0100, Marc Zyngier wrote:
-> On Thu, 26 Oct 2023 03:01:16 +0100,
-> Fang Xiang <fangxiang3@xiaomi.com> wrote:
-> > 
-> > The table would not be flushed if the input parameter shr = 0 in
-> > its_setup_baser() and it would cause a coherent problem.
+Colin,
+
+On Thu, Oct 26, 2023 at 07:54:08AM +0100, Colin Ian King wrote:
+> There is a spelling mistake in a dev_dbg message. Fix it.
 > 
-> Would? Or does? I'm asking, as you have previously indicated that this
-> workaround was working for you.
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+
+If the patch is 1 day old, please also copy the original patch author.
+
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+>  drivers/net/dsa/microchip/ksz9477.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Have you actually observed a problem? Or is that by inspection?
-> 
-I actually observed this problem on my device. GIC get a dirty table
-because CPU did not flush the clean one to memory.
-> > 
-> > Signed-off-by: Fang Xiang <fangxiang3@xiaomi.com>
-> > ---
-> >  drivers/irqchip/irq-gic-v3-its.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> > index 75a2dd550625..58a9f24ccfa7 100644
-> > --- a/drivers/irqchip/irq-gic-v3-its.c
-> > +++ b/drivers/irqchip/irq-gic-v3-its.c
-> > @@ -2394,13 +2394,15 @@ static int its_setup_baser(struct its_node *its, struct its_baser *baser,
-> >  		 * non-cacheable as well.
-> >  		 */
-> >  		shr = tmp & GITS_BASER_SHAREABILITY_MASK;
-> > -		if (!shr) {
-> > +		if (!shr)
-> >  			cache = GITS_BASER_nC;
-> > -			gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
-> > -		}
-> > +
-> >  		goto retry_baser;
-> >  	}
-> >  
-> > +	if (!shr)
-> > +		gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
-> > +
-> 
-> This is wrong. You're doing the cache clean *after* the register has
-> been programmed with its final value, and the ITS is perfectly allowed
-> to prefetch anything it wants as soon as you program the register. The
-> clean must thus happen before the write. Yes, it was wrong before, but
-> you are now making it wrong always.
-Sorry for that. But on my device, GIC would not read the table before
-ITS enable(GITS_CTLR.Enabled == 1). When ITS is disabled, the prefetch
-happens ever in other platforms?
-> 
-> >  	if (val != tmp) {
-> >  		pr_err("ITS@%pa: %s doesn't stick: %llx %llx\n",
-> >  		       &its->phys_base, its_base_type_string[type],
-> 
-> Overall, I think we need a slightly better fix. Since non-coherent
-> ITSs are quickly becoming the common case, we can save ourselves some
-> effort and hoist the quirked attributes early.
-> 
-> Does the hack below work for you?
-> 
-> 	M.
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 75a2dd550625..d76d44ea2de1 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -2379,12 +2379,12 @@ static int its_setup_baser(struct its_node *its, struct its_baser *baser,
->  		break;
->  	}
+> diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
+> index 2534c3d122e4..b102a27960e1 100644
+> --- a/drivers/net/dsa/microchip/ksz9477.c
+> +++ b/drivers/net/dsa/microchip/ksz9477.c
+> @@ -83,7 +83,7 @@ static int ksz9477_handle_wake_reason(struct ksz_device *dev, int port)
 >  
-> +	if (!shr)
-> +		gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
-> +
->  	its_write_baser(its, baser, val);
->  	tmp = baser->val;
+>  	dev_dbg(dev->dev, "Wake event on port %d due to:%s%s\n", port,
+>  		pme_status & PME_WOL_LINKUP ? " \"Link Up\"" : "",
+> -		pme_status & PME_WOL_ENERGY ? " \"Enery detect\"" : "");
+> +		pme_status & PME_WOL_ENERGY ? " \"Energy detect\"" : "");
 >  
-> -	if (its->flags & ITS_FLAGS_FORCE_NON_SHAREABLE)
-> -		tmp &= ~GITS_BASER_SHAREABILITY_MASK;
-> -
->  	if ((val ^ tmp) & GITS_BASER_SHAREABILITY_MASK) {
->  		/*
->  		 * Shareability didn't stick. Just use
-> @@ -2394,10 +2394,9 @@ static int its_setup_baser(struct its_node *its, struct its_baser *baser,
->  		 * non-cacheable as well.
->  		 */
->  		shr = tmp & GITS_BASER_SHAREABILITY_MASK;
-> -		if (!shr) {
-> +		if (!shr)
->  			cache = GITS_BASER_nC;
-> -			gic_flush_dcache_to_poc(base, PAGE_ORDER_TO_SIZE(order));
-> -		}
-> +
->  		goto retry_baser;
->  	}
->  
-> @@ -2609,6 +2608,11 @@ static int its_alloc_tables(struct its_node *its)
->  		/* erratum 24313: ignore memory access type */
->  		cache = GITS_BASER_nCnB;
->  
-> +	if (its->flags & ITS_FLAGS_FORCE_NON_SHAREABLE) {
-> +		cache = GITS_BASER_nC;
-> +		shr = 0;
-> +	}
-> +
->  	for (i = 0; i < GITS_BASER_NR_REGS; i++) {
->  		struct its_baser *baser = its->tables + i;
->  		u64 val = its_read_baser(its, baser);
-> 
-There maybe a risk in this patch above when non-shareable attibute indicated
-by hardware, the table would not be flushed ever.
+>  	return ksz_pwrite8(dev, port, REG_PORT_PME_STATUS, pme_status);
+>  }
 > -- 
-> Without deviation from the norm, progress is not possible.
+> 2.39.2
+> 
