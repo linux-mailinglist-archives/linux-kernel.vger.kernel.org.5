@@ -2,80 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA417D833D
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EF87D8340
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344988AbjJZNAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
+        id S1344969AbjJZNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjJZNAd (ORCPT
+        with ESMTP id S230177AbjJZNFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:00:33 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B4512A;
-        Thu, 26 Oct 2023 06:00:30 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507cd62472dso2330116e87.0;
-        Thu, 26 Oct 2023 06:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698325229; x=1698930029; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1FJ+d0g9WKmWzmLDpzY4/SwDygYny0dVwrh16DQQLso=;
-        b=ErXOM6BSslu9If+SeJBGMGDgxDMSmolOMAQE8sUqkLzPgv/ZzxAV4RJE3gUDYA9L/F
-         tvq9Qz/WdTO3nbZe86jYuExEBJu6jV9VXMrjOQUzY5pvElBwLgOJUfTzvPtyQ192xXcU
-         rl/AoIvD3yBPDWohydlj14mpSAlN7/OpJfg5lZjgn7kd2k35KiHlq5LEZh7BrQGAfZyq
-         HVqpmK5/pGQdGzDD5lUST6HcFKqFMAxB8rbrH4eeW6j9oq5v3ARpS0kIIs5TXycKl9su
-         gUAV1TmvNuF1UK+QBtOV+MAaf3G2pJFdfjA3rSRz1k+B4DuQpxV6nNWFnx1Y9qz5N1r8
-         65Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698325229; x=1698930029;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1FJ+d0g9WKmWzmLDpzY4/SwDygYny0dVwrh16DQQLso=;
-        b=JOTg0IJcoW3z7RlhSJZJZRs1C4IHBivW7ySy3LLlkPOzmlsplFpYAAbf3FP6NSQ3+M
-         sCBmYgArOcyNdJCmN7Mvz/MEWMZTML70zrRCLyNNZv0sAZ2ZdH6UC6GhKA0S1vAtgUsT
-         JMvGo3dfrECbeYt4zP1ChXID/8JLRg8CZFvMDVAvdesggH3vkJ42c6gRMg1ZTmD3qwoH
-         b0lgESTuhnVWL9u+Wiwa+KU5XK1yFun7VekM0b/XFde27Xj2DEKG5umj9v61YE+oDPmn
-         g+ZlGVYcuUvsE4KPAWZax7aPIaoibRsy5V2Ro/Jo26oX8AZuBQi1unRktSrnlKV5Yx2c
-         D/GA==
-X-Gm-Message-State: AOJu0YxKQqk4ApncJHghvdpFqLZ8ADn0PzjVzSGlr6jcXhkJb+1Kf7z2
-        2dGX354wRrRkIPrTXhKt6lQ=
-X-Google-Smtp-Source: AGHT+IGBIofRmeNzSWP4ypEAoHZp8jMWkD7Nd93LrAtANLqerrDEELi2L8AwGzU64g7eOsa9+YTF0g==
-X-Received: by 2002:ac2:47ec:0:b0:507:9a87:289b with SMTP id b12-20020ac247ec000000b005079a87289bmr938808lfp.10.1698325228460;
-        Thu, 26 Oct 2023 06:00:28 -0700 (PDT)
-Received: from pc636 (host-90-235-24-197.mobileonline.telia.com. [90.235.24.197])
-        by smtp.gmail.com with ESMTPSA id t10-20020a19910a000000b005079fe27ec8sm3025800lfd.85.2023.10.26.06.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 06:00:28 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 26 Oct 2023 15:00:25 +0200
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZTpi6diP4h84PtWE@pc636>
-References: <20231025140915.590390-1-urezki@gmail.com>
- <20231025140915.590390-2-urezki@gmail.com>
- <ZTkwl0bzTTCy8g5N@localhost.localdomain>
+        Thu, 26 Oct 2023 09:05:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2895412A
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:05:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69DCCC433C7;
+        Thu, 26 Oct 2023 13:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698325530;
+        bh=cNusDpyZxnvyLEqSRhYFk1jLbzQXc/rViNGZhUcC+Tg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ni2zlJ6nxjzV+09ncyfuuZhW0x88pV07KMAWYut+At+GVo7aJMuDQYHhOn8iP2z3b
+         X9mn4oNGuCevgbkh4S6kdojtLKRNCQkvW5JlRJvbSlMe9HO1sdLy5jdSdCugZryuwu
+         b4qUWA8hYzMgug5LLhM78AZ6MUPiEcTzJ8KOU+FebQFch2JbYm+CvpUH4is/kykIBq
+         zCglek5l/ECJvHKn7C/pjUc63Gobe+ghT+BpGaEqM2/wzJ/VKAjdDViZMRq4a+8pX5
+         euNUheIkyxc8JZ2NgjVClP8ooV+FDbvA2LXa06yceghcXSTMjKaDg7Q1eSpWgH2D8I
+         fh3V6L6RdR76g==
+Date:   Thu, 26 Oct 2023 14:05:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        johan+linaro@kernel.org, steev@kali.org,
+        dmitry.baryshkov@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 3/4] ASoC: codecs: wsa883x: mute/unmute PA in correct
+ sequence
+Message-ID: <9c622323-6b94-4622-840f-5f126942ae96@sirena.org.uk>
+References: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+ <20230323164403.6654-4-srinivas.kandagatla@linaro.org>
+ <ff3eb88a-6941-4303-a4ba-17cad3842b88@sirena.org.uk>
+ <2a0aabf5-41a3-cc07-3203-9b0bca6b71aa@linaro.org>
+ <ZTjKWHAAfSYfc5px@hovoldconsulting.com>
+ <6df45f92-5fe6-4b44-af04-c528d540ac06@sirena.org.uk>
+ <ZTkNcHAzgnL5xpAO@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="S8PzKVa+OunEe76B"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTkwl0bzTTCy8g5N@localhost.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZTkNcHAzgnL5xpAO@hovoldconsulting.com>
+X-Cookie: I'm also against BODY-SURFING!!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,71 +61,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 05:13:27PM +0200, Frederic Weisbecker wrote:
-> Le Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) a écrit :
-> > +/*
-> > + * Helper function for rcu_gp_cleanup().
-> > + */
-> > +static void rcu_sr_normal_gp_cleanup(void)
-> > +{
-> > +	struct llist_node *head, *tail, *pos;
-> > +	int i = 0;
-> > +
-> > +	tail = READ_ONCE(sr.wait_tail);
-> > +	head = llist_del_all(&sr.wait);
-> 
-> This could be llist_empty() first to do a quick
-> cheap check. And then __llist_del_all() here because
-> it appears nothing else than gp kthread can touch sr.wait.
-> 
-No problem i can fix it. Initially i had a check first!
 
-> > +
-> > +	llist_for_each_safe(pos, head, head) {
-> 
-> Two times head intended here? There should be some
-> temporary storage in the middle.
-> 
-Yes. It is intentially done. The head is updated, i.e. shifted to a next,
-because we directly process users from a GP. The number is limited to 5
-all the rest is deferred.
+--S8PzKVa+OunEe76B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > +		rcu_sr_normal_complete(pos);
-> > +
-> > +		if (++i == MAX_SR_WAKE_FROM_GP) {
-> > +			/* If last, process it also. */
-> > +			if (head && !head->next)
-> > +				continue;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	if (head) {
-> > +		/* Can be not empty. */
-> > +		llist_add_batch(head, tail, &sr.done);
-> > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> 
-> So you can have:
-> 
-> * Queue to sr.curr is atomic fully ordered
-> * Check and move from sr.curr to sr.wait is atomic fully ordered
-> * Check from sr.wait can have a quick unatomic unordered
->   llist_empty() check. Then extract unatomic unordered as well.
-> * If too many, move atomic/ordered to sr.done.
-> 
-> Am I missing something?
->
-If too many move to done and kick the helper. The sr.wait can not
-be touched until the rcu_sr_normal_gp_cleanup() is completed, i.e.:
+On Wed, Oct 25, 2023 at 02:43:28PM +0200, Johan Hovold wrote:
+> On Wed, Oct 25, 2023 at 01:36:14PM +0100, Mark Brown wrote:
+> > On Wed, Oct 25, 2023 at 09:57:12AM +0200, Johan Hovold wrote:
 
-<snip>
-GP-kthread(same and one task context):
-    rcu_sr_normal_gp_cleanup();
-    wait for a grace period;
-    rcu_sr_normal_gp_cleanup();
-<snip>
+> > > I understand Srini has looked at this but has not yet been able to come
+> > > up with a generic implementation. Would it be possible to merge the two
+> > > codec fixes as an interim workaround for 6.7?
 
-Am i missing your point?
+> > You're talking about two fixes here but this is a 4 patch series...
 
---
-Uladzislau Rezki
+> Yes, sorry, I should have been more clear. I was talking about the codec
+> fixes so that's patch 3 and 4.
+
+> I believe the first two have already been applied.
+
+So, having gone and fished the series out of lore to look at what the
+patches are I'm pretty surprised here, it's been about six months since
+the original discussion and I'd not have expected this to be such a
+difficult thing to do, or at least that any issues would have been
+flagged up by now.  What are the issues that have been encountered here?
+
+--S8PzKVa+OunEe76B
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU6ZBQACgkQJNaLcl1U
+h9CoWwf/czxazVwv2xOxm4GAYE1nhKBy3faZlKBN3zJKj7ZEcDHorF/p0Ob+LAIY
+r64OiYQnPRzuZ93XOK9aos+ApK9V/RyVG9oX1Txq+Lyf0p0MseB2VuGadmpZx+19
+rBD2eG61ZFh0TCcLCNSe52bF4pb7NOQLKolFnb29wVkFyoNJhBq82uJko1Gr5uMc
+q+F/eh9pQNKLrtF5XNBS9rib4+M2tMYx/TcoB66Fn0pYDaAdoKoYfR+E701q7CbJ
+JiQY/nT9i2MOHnGXBCM2SR7FFvTBJdvGKac07khIQN8l1HBnbK4RF2xEhZq59D6a
+wbFNvuIebxfncim9pbFNF4bCSZABuw==
+=tHu5
+-----END PGP SIGNATURE-----
+
+--S8PzKVa+OunEe76B--
