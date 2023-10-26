@@ -2,123 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AFA7D8627
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FC07D862C
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345473AbjJZPrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        id S1345477AbjJZPsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjJZPrW (ORCPT
+        with ESMTP id S230105AbjJZPsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:47:22 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4621A6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:47:19 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27e0c1222d1so857469a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698335239; x=1698940039; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xlBcWVOwKivgAn0UMjWC0U1b/ad+4cMpTB3lolYhGNU=;
-        b=YTLOXLcJyFyr5vU+nhB/v0MyiIeUegIRMB0yjXlK3hclQb8HGnkdsvHGZd7MHCqBL3
-         bC1RAG+f9mf2o4HcHKv7jeaISlqhUlayDQx5EgSSxT6s6FFAjUukRAjDEMDCn37HvzOe
-         zxm7MbFTo3wuRvkK4B/VhjNUxAWl+dO/EU+KA=
+        Thu, 26 Oct 2023 11:48:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A9C198
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698335249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fk2PSPwJDmK9xnue8X0u8askj/ho1m46L6G3QWm1uws=;
+        b=DlDuIC86QgYi0tKvV8viWte9iTILKCx5p3bdaFqio0GcB2wYvl2utJWbfXyOs6mB08ySfq
+        V0qlMboWrJts07Bm8V0/rkO4mMVSK/Z9QSAdzgPop11tfci2NNJQRkoqXFNCUl826pWF00
+        eBRUTyg9XZzRci/aqIGbgxaBJ4WXWNs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-606-0QmUYM2iP5--oPkt3hkRbA-1; Thu, 26 Oct 2023 11:47:27 -0400
+X-MC-Unique: 0QmUYM2iP5--oPkt3hkRbA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9b2cf504e3aso75294166b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:47:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698335239; x=1698940039;
+        d=1e100.net; s=20230601; t=1698335245; x=1698940045;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xlBcWVOwKivgAn0UMjWC0U1b/ad+4cMpTB3lolYhGNU=;
-        b=i62k7McCIKDhtG3VGvK1Ej+CyFmmcTRhwFjZ/AbxOvgDR+VsXgIUpUUbBZcDncG5SG
-         HjCEWe8u0RS1fCTHvSiJYPCwF3st6FjQqgWQwNyTR5I9KkZPRMuUtCCb+4Z81ZbsJ4DK
-         DT0wqO10z0BiOpOW2JGf1deyIyFqVxvWVkABy2m8ydAlgzoYupMs3glRTApiXjxSrlwD
-         /+cIsFtLTtfjH0A6ghCaGMrK2w8U3BQhuXQHcQkmTWUqkEo8OQgTCdO9ADtO1B0NmHPZ
-         mD4ahIoICQ77rm9wOb/qnV2WiNHA09M1hjp8zC3Giohf5RHKbDILEMft9CmabrcEeuuS
-         ISEA==
-X-Gm-Message-State: AOJu0YyP9ZwTYMUgwKjEElwRyGLwGmXH5WL/7aFUonBR/iR+ZaVD9Tqr
-        1+R4h+vTFlyXtL0TDRlv5hH46Q==
-X-Google-Smtp-Source: AGHT+IE+QPVJnhPXypHjhY8uvISBKpa7dbbm+rvilNnSdebvclKGppTYd6ACyZS9wBGFhF/d0zryLA==
-X-Received: by 2002:a17:90a:e38a:b0:27d:36df:8472 with SMTP id b10-20020a17090ae38a00b0027d36df8472mr15374711pjz.27.1698335239138;
-        Thu, 26 Oct 2023 08:47:19 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 30-20020a17090a195e00b0027cfd582b51sm2008331pjh.3.2023.10.26.08.47.17
+        bh=fk2PSPwJDmK9xnue8X0u8askj/ho1m46L6G3QWm1uws=;
+        b=P7T/w7vf0+Gr4PRWqy+DCme72Z0i2EbRGu5owkVRqfxZSMkFaJkLIgs64MA6RrS1zQ
+         e2o6yMrqlu6fxaLQZSvoAlMATw87LipybnubFFVIw2WtRe+XU4er7lcW+6w03pH5QtHR
+         sINOqNnhYftm2DKDuAYXeYvC35ryJMk2+n98zvi6lqJaNpDYWyNWGrIQA/mekFRI5SdY
+         dodFP69OjHhkJNt4+tDZXIMSQdx3O+LasgLGGd0QfpPH0AscgTicfqC0Cc1LaJhS1rIH
+         cIoFvPpYWvjJK7mLDs6hq56jvTeC2Ff8qrAmCXZUZlsGdyPW+clw98fR7hdLpL8lnorx
+         ED0g==
+X-Gm-Message-State: AOJu0Yw2h46sPfgAJ9L4HGeTdHrFk6v+HX6eb68ceRCJtQv1oNau/L7D
+        MVtOTB8KRmFrFYTUl+EkxT34/pV7pWpJ6Uw9ROkgXwfh3eBKUI5PftUrqd0YD3trCFZi/EeF8sO
+        oC+Z3QC76ILrce9LjJeExqH6b
+X-Received: by 2002:a17:907:804:b0:9ba:65e:750e with SMTP id wv4-20020a170907080400b009ba065e750emr69504ejb.32.1698335245335;
+        Thu, 26 Oct 2023 08:47:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFIzu0aS0oc/2eHVO/DT6wawL1gzMdNRmV1kFde8qwDfqO5GBCHprOwhqQcajFXJJ0yJKHm2g==
+X-Received: by 2002:a17:907:804:b0:9ba:65e:750e with SMTP id wv4-20020a170907080400b009ba065e750emr69495ejb.32.1698335245019;
+        Thu, 26 Oct 2023 08:47:25 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:17b:37eb:8e1f:4b3b:22c7:7722])
+        by smtp.gmail.com with ESMTPSA id dn22-20020a05640222f600b005401a4184ddsm8499249edb.27.2023.10.26.08.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 08:47:18 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 08:47:17 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 0/3] ethtool: Add ethtool_puts()
-Message-ID: <202310260845.B2AEF3166@keescook>
-References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
+        Thu, 26 Oct 2023 08:47:24 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 11:47:18 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, akpm@linux-foundation.org,
+        brauner@kernel.org, surenb@google.com, michael.christie@oracle.com,
+        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
+        shakeelb@google.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
+Message-ID: <20231026114632-mutt-send-email-mst@kernel.org>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+ <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
+ <20231026091222-mutt-send-email-mst@kernel.org>
+ <CAGudoHFXH_FDgKRaJvVgQ3W8wD2TC=8yhiNm1NECApnQ-CNAZQ@mail.gmail.com>
+ <20231026110925-mutt-send-email-mst@kernel.org>
+ <dc028fd0-b188-435e-9dc3-f5de53dd9686@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
+In-Reply-To: <dc028fd0-b188-435e-9dc3-f5de53dd9686@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 11:40:31PM +0000, Justin Stitt wrote:
-> @replace_2_args@
-> identifier BUF;
-> expression VAR;
-> @@
-> 
-> -       ethtool_sprintf
-> +       ethtool_puts
->         (&BUF, VAR)
+On Thu, Oct 26, 2023 at 09:07:46PM +0530, Abhinav Singh wrote:
+> On 10/26/23 20:47, Michael S. Tsirkin wrote:
+> > On Thu, Oct 26, 2023 at 04:06:24PM +0200, Mateusz Guzik wrote:
+> > > On 10/26/23, Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > On Thu, Oct 26, 2023 at 05:46:21PM +0530, Abhinav Singh wrote:
+> > > > > This patch fixes the warning about directly dereferencing a pointer
+> > > > > tagged with __rcu annotation.
+> > > > > 
+> > > > > Dereferencing the pointers tagged with __rcu directly should
+> > > > > always be avoided according to the docs. There is a rcu helper
+> > > > > functions rcu_dereference(...) to use when dereferencing a __rcu
+> > > > > pointer. This functions returns the non __rcu tagged pointer which
+> > > > > can be dereferenced just like a normal pointers.
+> > > > > 
+> > > > > Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> > > > 
+> > > > Well yes but these need to be called under rcu_read_lock.
+> > > > Who does it here?
+> > > > If no one then maybe you found an actual bug and we need to
+> > > > fix it not paper over it.
+> > > > 
+> > > 
+> > > There is no bug here.
+> > > 
+> > > p is the newly created thread, ->real_cred was initialized just prior
+> > > to this code and there is nobody to whack the creds from under it.
+> > > 
+> > > Second bit in the patch changes one real_parent deref, but leaves 2
+> > > others just above it. Once more no bug since the entire thing happens
+> > > under tasklist_lock, but the patch should either sort all these cases
+> > > or none.
+> Sparse reported 3 similar dereferencing warning this patch contains 2 fixes
+> for 2, but yeah I should fixed all 3 of them.
+> > > 
+> > > I think it would help if the submitter had shown warnings they see.
+> The warning message :- warning: dereference of noderef expression
+> > 
+> > Yes, and this must be tested under lockdep, which I think would
+> > spit out warnings for this patch.
+> Not sure, but I tested this with sparse (make C=2) and after the above
+> changes I dont get the warning.
 
-I think cocci will do a better job at line folding if we adjust this
-rule like I had to adjust the next rule: completely remove and re-add
-the arguments:
+sparse is a static analysis tool. You should also actually
+test your patch.
 
--       ethtool_sprintf(&BUF, VAR)
-+       ethtool_puts(&BUF, VAR)
+> > 
+> > What should be used here I'm not sure. IIUC rcu_dereference_protected(p, 1)
+> > is discouraged now?
+> > 
+> Not sure but I read that, rcu_dereference should be prefered when reading
+> and rcu_dereference_protected should when writing.
 
-Then I think the handful of weird line wraps in the treewide patch will
-go away.
-
--- 
-Kees Cook
