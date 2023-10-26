@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 042457D7960
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F03C7D795F
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 02:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjJZAZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 20:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S230190AbjJZA0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 20:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJZAZg (ORCPT
+        with ESMTP id S229638AbjJZA0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 20:25:36 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AFADC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:25:31 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-778927f2dd3so23163985a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:25:30 -0700 (PDT)
+        Wed, 25 Oct 2023 20:26:00 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F4A128
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:25:58 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-66d09b6d007so2273606d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 17:25:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1698279930; x=1698884730; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1698279957; x=1698884757; darn=vger.kernel.org;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2b/ku1+Sw3xOizaYywQ3EvRci43aeTLTqJr9EggU0M=;
-        b=SqA+5NJNep8eERi7yi07l7+HkIh9F34MMMwLjVkEzNWFgrMlTZTVXoZP8GuPSyTIxy
-         KQys4ageYVBb6O4cUb2tOmXEvwXfqobA2M3cp0EmlVpgGYEMFlJt+wiSOCvH9m2tmA2O
-         RMkHdZVZX/9Uld7ZPfeV91L8JpjdxJndjxykw=
+        bh=nriEf44MP/PJv7eBP0spp1rrEKYbrn8BNGiPtaHqeUA=;
+        b=Uk5ylMLL7eTfKQ1iIK5ByB2z/LTxyt89vCsA11+Yzi8xCFbnaB+eXPwZeWYBhjL9BU
+         XnVXdOACZVLx86Qc/KNCD9NzIkbcqeKn5Avh3D1gO16fHucPOn8fsHeFURQuYwiBZ0bB
+         GzejzNhCBmNOHi5BrTKEeO8S+D7m4LdLPjas0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698279930; x=1698884730;
+        d=1e100.net; s=20230601; t=1698279957; x=1698884757;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a2b/ku1+Sw3xOizaYywQ3EvRci43aeTLTqJr9EggU0M=;
-        b=J8tjeO0PAvLGmYRy80z6r5B81wKgy/V4jSOZjSaTy+2lpyNFtlyhls4ITKjpU7HKuV
-         7oV7uauxS3VtBMhm+R1Pe04+Av3w/tHCk0J8Kywa74l2mfrT8bh6rPdqgIzg0dGzHmR7
-         e43QUp0tWtYwoQXDwed6UokmlS0vzS23Tu3e0dMIThRB4EQHSQAsyyWVKCYczbVf2W6X
-         RzVEXM/Jdca/+meSsBq2lXySaI9wLjrEGOEXfb8v1c4mz2PL8GHKo4Pz+fgs+j4py4ya
-         hRLAiV/hMw0yoFbAzDULJsIcFTd2ToidXUWgWgNjZnlHa4odCdNb+Y0tDNmwmuZ5h97g
-         Crwg==
-X-Gm-Message-State: AOJu0Yw7MPxtdhXnNKrv3j3xzNr2Thdew6dRRED3oiSfhBmKEjNIijeo
-        l2h2CTgkTJYiK+MDrGfBUKQBXA==
-X-Google-Smtp-Source: AGHT+IESD2GYwNqM3LnSq8FW1oBWodGUGywL/zCAMUNVVYRQy6OcnTHQSXCbaYiA41h1XO+4KSQq0w==
-X-Received: by 2002:a05:620a:2444:b0:774:2c5c:557e with SMTP id h4-20020a05620a244400b007742c5c557emr15060750qkn.1.1698279930096;
-        Wed, 25 Oct 2023 17:25:30 -0700 (PDT)
+        bh=nriEf44MP/PJv7eBP0spp1rrEKYbrn8BNGiPtaHqeUA=;
+        b=xFdvejwUIfajJhsOz2uwo3tlHxYVEMYdB7wQkEPmLrVyV0wPPMfbgGJsyRRerMmzBR
+         RVWQJKMMfbLPWcXIzPoMOctIxVABeq+jG/+VNdvGdX+9MIeGv9tBqaWtpwSntbiaeMbg
+         0Kwpck1xNdw1YNSE29sJy1L6R9jn+SqZ+enRD3zN24YjPSeV/KIsXdt5c6jCYNXPsUJs
+         0Q56eZXfupxAj5oXXwV4JzQIxxORdwj8eEgi/rxoKpc/obmeWDK3JciQIafjVm8rV8BI
+         qTIVbXTZCymlo6ZIL8LflnJK6lsqZv6r//IULV/wHjLz0Pi23P6eGGn1h87+NyPV4fTD
+         PAnw==
+X-Gm-Message-State: AOJu0Yybv31ZdOIqn8v3xc60BbHI8Y6FWSQP+is3aJ5LCxobdAO6Pxqo
+        sFGchNwd42zU/61whk5PzGHEzg==
+X-Google-Smtp-Source: AGHT+IH5fT8AJ70z2neztHHCVL9FeH8YGH4d5BtgfZqHuGESSo0lvq8XsHyE69gpq6gJ9Tfn5nkK2g==
+X-Received: by 2002:a05:6214:2262:b0:65b:ed3:9a02 with SMTP id gs2-20020a056214226200b0065b0ed39a02mr21597728qvb.17.1698279957589;
+        Wed, 25 Oct 2023 17:25:57 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id c6-20020a05620a11a600b007756f60bcacsm4598340qkk.79.2023.10.25.17.25.27
+        by smtp.gmail.com with ESMTPSA id x15-20020a05620a0ecf00b0076ce061f44dsm4604964qkm.25.2023.10.25.17.25.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Oct 2023 17:25:29 -0700 (PDT)
-Subject: Re: [PATCH v4 1/4] mtd: rawnand: Add destructive operation
+        Wed, 25 Oct 2023 17:25:57 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] mtd: rawnand: NAND controller write protect
 To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
         rafal@milecki.pl, joel.peshkin@broadcom.com,
@@ -56,26 +56,27 @@ To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         kdasu.kdev@gmail.com, JaimeLiao <jaimeliao.tw@gmail.com>,
         Adam Borowski <kilobyte@angband.pl>
 References: <20231023171444.322311-1-dregan@broadcom.com>
+ <20231023171444.322311-2-dregan@broadcom.com>
 From:   William Zhang <william.zhang@broadcom.com>
-Message-ID: <15d09a16-249b-55a9-55ab-8bfa66c7e4de@broadcom.com>
-Date:   Wed, 25 Oct 2023 17:25:15 -0700
+Message-ID: <de782a8e-27bb-fe9b-8100-cd2c1526005b@broadcom.com>
+Date:   Wed, 25 Oct 2023 17:25:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20231023171444.322311-1-dregan@broadcom.com>
+In-Reply-To: <20231023171444.322311-2-dregan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fa9cbe0608939bf1"
+        boundary="0000000000009f0f740608939d26"
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000fa9cbe0608939bf1
+--0000000000009f0f740608939d26
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,31 +84,28 @@ Content-Transfer-Encoding: 7bit
 
 
 On 10/23/2023 10:14 AM, dregan@broadcom.com wrote:
-> From: Boris Brezillon <bbrezillon@kernel.org>
+> From: David Regan <dregan@broadcom.com>
 > 
-> Erase and program operations need the write protect (wp) pin to be
-> de-asserted to take effect. Add the concept of destructive
-> operation and pass the information to exec_op() so controllers know
-> when they should de-assert this pin without having to decode
-> the command opcode.
+> Allow NAND controller to be responsible for write protect pin
+> handling during fast path and exec_op destructive operation
+> when controller_wp flag is set.
 > 
-> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 > Signed-off-by: David Regan <dregan@broadcom.com>
 > ---
 > Changes in v4: none
 > 
-> Changes in v3: updated comments and email address
+> Changes in v3: update comments
 > 
-> Changes in v2: gave credit to Boris Brezillon
+> Changes in v2: none
 > ---
->   drivers/mtd/nand/raw/nand_base.c | 6 ++++--
->   include/linux/mtd/rawnand.h      | 9 +++++++++
->   2 files changed, 13 insertions(+), 2 deletions(-)
+>   drivers/mtd/nand/raw/nand_base.c | 4 ++++
+>   include/linux/mtd/rawnand.h      | 2 ++
+>   2 files changed, 6 insertions(+)
 > 
 
 Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
---000000000000fa9cbe0608939bf1
+--0000000000009f0f740608939d26
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -178,13 +176,13 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMeHTW6pX5QJcusNlSsWxTfqjnDy
-Yio8nF0Gw8mVfVxqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MTAyNjAwMjUzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO6PhEIkMT0zPL6fWO0mTgOj2SLg
+eDJ1Zm3qCLNdt87+MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MTAyNjAwMjU1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBZSPFXWSocNNd9YdflYjKyNLg6pzFWRSOSrrXdLvdPJLqO
-FezH8z0ofu4ItdGewBXhCqZMbtISbday3aRjUQfQ6q1C5HVl9W8cKSZ+ZhUCbLMc6/OCwTq2Qra0
-V/uzW2Z6PeHLK92eSSQWkxZFWdlDMz1QQe63XtunM5nPx3942acf2SwlGMoIIEcf1lWHvZq7y9+P
-njLNmgW41JppX3b9VcG2WdJznfgP/NgmpWz8MAfbqAXWYc1SpBJQ3a+Z/X5VlvufJPi4RiwXsf40
-d0+mSbl/JFVTyDeNhuYMXtESBDcaS4IaWQOW8WkNyJKYrgLLDFaSzjWeH+W1KA2oMx1O
---000000000000fa9cbe0608939bf1--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBm0zV2rl4Q0JVR2BO//SOtsC8GXrqVzMW3yHIDNDFEVH2k
+GpY3IAIetpxYGM87GsK5WLZO/H6QTmWAZUU7P3krai7Fkw6JNiEyb2SPH9v4iCRPlNcz5B/ztEvS
+fa3BLfUaP3sO3vEcnEAylnDWAsw3tWdkEz6lZeuaLarToA+JVENQf6I9Ec80lZ/CyOAM8sCQCbEU
+qbtilMCR6eLZXVIxmewOrLLdqzUpxLe65dqQamPmG0eO6Qn1kOJH/EIk6qqABOf/JnepDW7HNapD
+ZSj3dqsl/COqpd0GHTcOHJ9K9kmrVgQVs6Q2M5kVy4QFezNxP5239eB1oHzgClo5rlHV
+--0000000000009f0f740608939d26--
