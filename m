@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10BC7D875B
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45317D8760
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 19:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbjJZRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 13:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
+        id S1345376AbjJZRM4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 26 Oct 2023 13:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345480AbjJZRLa (ORCPT
+        with ESMTP id S229815AbjJZRMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 13:11:30 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6216D55;
-        Thu, 26 Oct 2023 10:11:26 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68fb85afef4so1094238b3a.1;
-        Thu, 26 Oct 2023 10:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698340286; x=1698945086; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d4Hz68yI660ipLu+CvI0RKlL1QB9xvpcH1iNo665HDk=;
-        b=Qv5+DA2y0IsfYTsN8CG0HGSi2OTHa1IXRpEKtnaKGVqNW42SHBhspDRnisJS/jxyZP
-         zxbzCV33vF4uV5epB1LncBg6h+g7kTFIMOcJjT/eJFhqdc+4SI7lDBpeAdsG2M4FRLku
-         UEe0AJ/jRv6GxTmeWOGUB+a9vHMOFhq4epdGGmknk+1S4Ia2zmbAm48byJOmkZ4MPLPU
-         MryZoIYiclkNjCgKDwo3+SvG1foAELpL8yeN7od/GSZeIE48v7B20gjR3BQWhga0ou7Q
-         7AnwquKrrpu+wGf+KrrynjT92DGZxv/OzJdy6RBiIuUjGFNI5bmeX79DJ5sjkM47ginM
-         1dJg==
+        Thu, 26 Oct 2023 13:12:55 -0400
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D7791;
+        Thu, 26 Oct 2023 10:12:53 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-578b407045bso974905a12.0;
+        Thu, 26 Oct 2023 10:12:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698340286; x=1698945086;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:sender:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=d4Hz68yI660ipLu+CvI0RKlL1QB9xvpcH1iNo665HDk=;
-        b=fJcukXlMazFMmkWx0zZiEZ+kY63wSD71N5fn3MXiPJplgOoI2OvivSdkTF+t1otWOz
-         JC5/dIb3+yRL431STKKyeTedae9dslRTk3oCbYdEvUR3GEn2Y96FNdni2JLk2+JLyDyp
-         gNikfZYPWZSpIuuii9/01AKPntWJKVc0iN96Mffusw47/PM5TM1pCxgrAGuz4lhvzfk2
-         AJ4NG+y31G1Z3GEEpAIAf/JmcbvRuUWCvlYfUHjFVw41DubdPPOTBeDEB7xpmoZyHxnZ
-         e0tQVnnA7sU5Pc/6Q9xhq1/vze9d+zxekTP+AyXYs/X4DP6ou+/0Y6ZJUxObg8RQwp4R
-         Lqbg==
-X-Gm-Message-State: AOJu0YwXMkSACAZ1OOg0grsD3ljq0Ihha/bi9x0BDwmi05ehn4BTeSx/
-        3f8edVZoj+dF92MZydLRqtg=
-X-Google-Smtp-Source: AGHT+IEkQ2kARqa/dlXjvPVpOC4YCNNY/e4UPZDHmu9VPne5KKX6ea12A7c0Zbn9R1W+Ovy5RezpSA==
-X-Received: by 2002:a05:6a00:2284:b0:6be:5367:2131 with SMTP id f4-20020a056a00228400b006be53672131mr128978pfe.24.1698340286275;
-        Thu, 26 Oct 2023 10:11:26 -0700 (PDT)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2a3:200:ec51:cb82:a169:2ada])
-        by smtp.gmail.com with ESMTPSA id k15-20020aa7998f000000b00688965c5227sm11356315pfh.120.2023.10.26.10.11.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 10:11:26 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     jolsa@kernel.org, irogers@google.com, mingo@redhat.com,
-        mark.rutland@arm.com, peterz@infradead.org,
-        linux-perf-users@vger.kernel.org,
-        alexander.shishkin@linux.intel.com, linux-kernel@vger.kernel.org,
-        adrian.hunter@intel.com, Yang Jihong <yangjihong1@huawei.com>,
-        acme@kernel.org
-Subject: Re: [PATCH] perf evsel: Rename evsel__increase_rlimit to rlimit__increase_nofile
-Date:   Thu, 26 Oct 2023 10:11:14 -0700
-Message-ID: <169833996386.1181734.1116022702370415307.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-In-Reply-To: <20231023033144.1011896-1-yangjihong1@huawei.com>
-References: <20231023033144.1011896-1-yangjihong1@huawei.com>
+        d=1e100.net; s=20230601; t=1698340373; x=1698945173;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1xjTyS1vijo1P94Xy5yA9q6MBSGAauw3ddDa3HKjOR8=;
+        b=ZdupCeIIfIz8LS0ixTkXUiNGP8wP8LZXEp29vXYQVMPSIkwIQUJ7Sh5d772Ewa2fy8
+         3rI/lthZR+jw0PU6bLqW8//eT1SQ1ahgEFGpI3Aqveya0yE9xlYKe1PZPtG6Tgx+OOoG
+         Z98rOjel6ynzE5vY4azGV+E2Nyu9OUtdVsomXbkEG4HSenecmy6FnTKSuQxRiLf0oVTI
+         hCNg54fwFsbKMhbB4kno13KBrvD/sGam8Dx50c8ZK1UE/YMCHxEvGsc23t7FlKHrU/ZX
+         wyoXs07DtXl0YsB1hAF8EzkdR9Eqno49fl04W3rs6aHsxS8IAV6D8YX8vFYx1XnleWOj
+         MTKQ==
+X-Gm-Message-State: AOJu0Yyb0L3O0+k5ys01mCd537AcFzCpSnQk7ldzT8pFeg6pJJ+ENzLq
+        P6oMwu/l8pfBkb50HAgqOOkAk+ryZRz7ttEen8g=
+X-Google-Smtp-Source: AGHT+IHgjiNg1j1AhPBDzyo+qnZt0ax/qeDt64bMszF4TiTN8l0zH/l+Ioyx4kvSmwxe1ddF5dX/pBFnee/lAMF6vQM=
+X-Received: by 2002:a17:90b:3117:b0:280:c0:9d3f with SMTP id
+ gc23-20020a17090b311700b0028000c09d3fmr48309pjb.34.1698340373235; Thu, 26 Oct
+ 2023 10:12:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230926205948.1399594-1-irogers@google.com> <8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com>
+ <CAP-5=fWk12jKjVmV+aJ_U5A=ao7L1ha-wOHaM+ytO9oF0nP9zA@mail.gmail.com>
+ <CAP-5=fURbve928P5CGi-dQ7Y8mZhxRmi9wucFc_gP+aDGMftYw@mail.gmail.com> <CAP-5=fU5W=97NFvL1yUKw+rrbBrcd8c-S_y3=86SYv+pszNjmQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fU5W=97NFvL1yUKw+rrbBrcd8c-S_y3=86SYv+pszNjmQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 26 Oct 2023 10:12:41 -0700
+Message-ID: <CAM9d7cjRac8i9+VWYNfWxNr5iz3bUUxc0-Phfcbk0RdfwXqr6w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] perf vendor events intel: Fix broadwellde
+ tma_info_system_dram_bw_use metric
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Liang, Kan" <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 03:31:44 +0000, Yang Jihong wrote:
-> evsel__increase_rlimit() helper does nothing with evsel, and description
-> of the functionality is inaccurate, rename it and move to util/rlimit.c.
-> 
-> By the way, fix a checkppatch warning about misplaced license tag:
-> 
->   WARNING: Misplaced SPDX-License-Identifier tag - use line 1 instead
->   #160: FILE: tools/perf/util/rlimit.h:3:
->   /* SPDX-License-Identifier: LGPL-2.1 */
-> 
-> [...]
+Hi Ian,
 
-Applied to perf-tools-next, thanks!
+On Wed, Oct 25, 2023 at 9:20 PM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Oct 25, 2023 at 2:56 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Thu, Oct 5, 2023 at 3:16 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Wed, Sep 27, 2023 at 6:47 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 2023-09-26 4:59 p.m., Ian Rogers wrote:
+> > > > > Broadwell-de has a consumer core and server uncore. The uncore_arb PMU
+> > > > > isn't present and the broadwellx style cbox PMU should be used
+> > > > > instead. Fix the tma_info_system_dram_bw_use metric to use the server
+> > > > > metric rather than client.
+> > > > >
+> > > > > The associated converter script fix is in:
+> > > > > https://github.com/intel/perfmon/pull/111
+> > > > >
+> > > > > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell variant events/metrics")
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > >
+> > > > Thanks Ian. The whole patch series looks good to me.
+> > > >
+> > > > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> > >
+> > > Would be good to pick this up in perf-tools-next.
+> > >
+> > > Thanks,
+> > > Ian
+> >
+> > Ping.
+>
+> Thanks Namhyung for picking this up. There were two other patches in
+> the v2 patch set that Kan reviewed:
+> https://lore.kernel.org/all/8a6b9556-c82c-4253-a4c1-74d696ad26df@linux.intel.com/
+> that I don't see in perf-tools-next.
+
+Sorry about that.  I'll take care of them too.
+
+Thanks,
+Namhyung
