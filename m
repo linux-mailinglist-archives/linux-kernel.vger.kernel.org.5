@@ -2,148 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0BD7D7DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27687D7DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344393AbjJZHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 03:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
+        id S1344406AbjJZHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 03:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjJZHcQ (ORCPT
+        with ESMTP id S229715AbjJZHfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 03:32:16 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2106.outbound.protection.outlook.com [40.107.255.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A052ED6;
-        Thu, 26 Oct 2023 00:32:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kcqi83r3kweh9VWfJ3V1pdYEXiFrH63axBohtGZc3o+yflZUqXWvd81GMqr4lz8CU1W5MQ0aGAvTwPoSaUStsPWyUYZkGPlMJuoth2FvrwOS0BJ9AvEntk0s1WS2Pe9IBJC316Rk3XwPDt1cCUUu8vKmebh+3LoT+DIUrjDEpV/YjbaVp+QfO1gml77/GCHi03pE7PEdtEt3YXMVoWDHa3ayTcoaMWDVYwq9Vjtn3tWSWGVIQ42ZWC8LEkKTl/Wvp08wD/Mq0GVnpfcTKL7zXBo/0/IPZRLPVFWm+MI3tVqxvPPFHcjHgylHAOIL1LdT720yF/S8aus4ZA8yGLfTkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JSuAmrgINoomT7mtpfOd4wzBPE8um33FG/NO4SM8q+w=;
- b=QW+2KGkmL2B7uo0jVpqOvFRrZYQjPdVzySIZ4tHdgL0z2l7Ht0mldnTqJ2NQJzgVbg2OuaPNYj9sE1G7jJSTeahkhDfEnghYpucbZyLEDXnmEwbPMhVkQRj92gG7LYavmI+ZBNjsfxys4J52GVEr29hGq9MYebuGiOSdsl1CRPA1ECvaIAPExddnjMWPv5tmoFZn/pNMBY7OQ6/VIEZTPcc0QTVVKCpN3q2aIaAjd9nvs68lL+sNCMqYRuSRQtj/j3nFDah1fbc8uzUjlHk7FMyXV3vDN1R/evgruCUW+FFlGyQeNuKRPH/Y1BBrH5GBqaughtqh3k70iHg9l9z6KQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
- dkim=pass header.d=amlogic.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JSuAmrgINoomT7mtpfOd4wzBPE8um33FG/NO4SM8q+w=;
- b=M0NVIrGHnFrZezb9MwjiRnitXV1OZ2ck/7jxqvENfC+rOg2V/9+g/HhNFMgiTWjfgZmRpVeNsQt6TVvUyJ/Od86XCf5eyzobbjFRpiZ3+xVw54XcfS0ha5yWWJEJqkf2lLtyMdUSKLOdPDn9YSAZg2bRmrYfhYcdtBqJphVi8lAJ+OG8vA+6rSAbODBzYP3JH57+SN5Qn84yE0yu1U/d1npWs4KHJMU/hFpe/bmydxo615ZfDAPWqnuc26ZxIaojoooyuZNRFcB2iuEtK8gvWIaojN1pxRo85nDHp5crJlOHCP4Dvw7TeI7GYE2hZzI9P8q+HHKT8eJxhQZSyf7bdA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amlogic.com;
-Received: from TYZPR03MB5939.apcprd03.prod.outlook.com (2603:1096:400:126::12)
- by SI2PR03MB5830.apcprd03.prod.outlook.com (2603:1096:4:142::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Thu, 26 Oct
- 2023 07:32:10 +0000
-Received: from TYZPR03MB5939.apcprd03.prod.outlook.com
- ([fe80::4011:f41:f71f:355c]) by TYZPR03MB5939.apcprd03.prod.outlook.com
- ([fe80::4011:f41:f71f:355c%5]) with mapi id 15.20.6907.032; Thu, 26 Oct 2023
- 07:32:09 +0000
-From:   "Rong.Chen" <rong.chen@amlogic.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rong Chen <rong.chen@amlogic.com>
-Subject: [PATCH v2] mmc: meson-gx: Remove setting of CMD_CFG_ERROR
-Date:   Thu, 26 Oct 2023 15:31:56 +0800
-Message-ID: <20231026073156.2868310-1-rong.chen@amlogic.com>
-X-Mailer: git-send-email 2.42.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0044.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:29d::17) To TYZPR03MB5939.apcprd03.prod.outlook.com
- (2603:1096:400:126::12)
+        Thu, 26 Oct 2023 03:35:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4ABD6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:35:09 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50816562320so707470e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698305707; x=1698910507; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hJZ6wfm0bTuqieUHXEKtRuJrDeks5L6l8rWKf4hHJEo=;
+        b=TngL/zmJZaURwMCP5/htZ/7voWYDEOowQiXsB8tTuyJ3UI/XnY9l+Scx0H+Ysob/eN
+         fHV5RM48QhHLB19dO6dBztAiBb6+0k36Qt8bVN4fs0zoDwTLsER8PBfn4GxhJiOigBpN
+         EHa4Gq42phQscmDcZwgtF/0Z+dUnsRhsXS9UjmLQLt2pBDfttbc7w6mtCmoZNYTqkecV
+         xesBWS9DWXrlIkb0pWCZukOKDTSWd5vi4Ey5ORDmiNBnc8VJECG0K49h+65jZsAH/LXK
+         mejDYL3Y+n7kO9dZhEUEvXtaneyMUyZr6PzW0oYZDpYp/4aQm3TgFekYItXpsiHdEe9T
+         m4CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698305707; x=1698910507;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hJZ6wfm0bTuqieUHXEKtRuJrDeks5L6l8rWKf4hHJEo=;
+        b=rr0TCZRwkeazKBZLIWHQsbyduqCZo91GIhqYk5O/zq83GbBTYJCiZAOGemybfl0Dpv
+         HtvElYt/gw/8Qgna/NswwKJHlCvboKD3SULPfn5E/uINzdsOXelrbYv4FWu6jYPxsR11
+         OW9LD+enZ7g8tKrvu3/jI550zfPucW6QOcbGPqYT4/P0l5DZEWaNKvBAp29EO2Ws7XwO
+         4pQttUJKslp5dDgD2pDr3ysg3WInggacVhRX7G1M0IC28m/j7GDdz9NH+ZO3fmsyp7Is
+         NXaWCBGNjzI8jzoqWbQ/1oAkW3TCR7kMaHe/U6LN4KXfkHJG6T1JMGLk85kGmlUFva3V
+         hotw==
+X-Gm-Message-State: AOJu0Yy4uPYkfhonHTwUlydGSu0dHJA7N9l4wfJ6ev75VVi0rwT/OBmy
+        ZTK/Gbe2wvmNF8TN29NenJA=
+X-Google-Smtp-Source: AGHT+IF1kDUFN0AdnY4R0HavPdl604V/76H23E4wqzAPj8PJLLQTSSq1movSs/LWlTbRJ2bShRj4gg==
+X-Received: by 2002:a05:6512:3d29:b0:507:ba28:1bc5 with SMTP id d41-20020a0565123d2900b00507ba281bc5mr15172418lfv.3.1698305707045;
+        Thu, 26 Oct 2023 00:35:07 -0700 (PDT)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id x12-20020a056512078c00b00507a4661f76sm2895189lfr.145.2023.10.26.00.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 00:35:06 -0700 (PDT)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH V2] nvmem: brcm_nvram: store a copy of NVRAM content
+Date:   Thu, 26 Oct 2023 09:34:40 +0200
+Message-Id: <20231026073440.6724-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR03MB5939:EE_|SI2PR03MB5830:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd02db07-2199-4393-357a-08dbd5f5a8a0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2ZFSRJrRu82HINap/O57WscdPBLTXutd4ZhDcJDrQHc/kjKzik+thcRB1At9/cobRHUCf9kyjqqUbtt0M4W9PxoGJ4VKZmpR25torWvrB37M8RuiWkRhYFZ9GmOt+2QafyOD98BTN7cy15ILpkfQqL+jiBtLPEyEEChX0KGwPCZMZ/C+TGN6gBWfRK32WfGUrNMRjgj2IMeJn34gxpJUPknU13UvWjOuiptQ1UVUznoI9R8hGj4nYbDg8tOGEk6kFTFBan3ZEtBzG+G4M/t0Q49zQ9OPxCUfAS9d1WvN05zJttvHfLpaLc+6fugeFsLGmHzoI1EWj5zkd2lWxCG14Tau6ny/q4gL+cd6EMbCKbghXoRKlJUBDqc5iVevaBYY8BhLkue8q6a6OPzOiKqvVFjaJEYjFlgKuTUjo+fnh5IID4eVTaicMD2Z3WxGLasJzZ8n3LFoKnvFNT3EvOkspmbEKfTdgEjoarI2SmwKDoTLgdvyyOplHCURMfJzsl4Mu1qOlQ353vL4oz1w0ZHDd0pitAO13A7oiHz8swLDK2d15M5JTAN5qS8rJwCMPgtNvfcJ5C6M8tuMIzvd36XMVibmTEMzgVc+FCV2S8OhPIsgySLvHpuZPJPAUrtj1dkwpq2sPEpIQ5XP3gwXcgyabyTBuEuoMJZWN4BLNESa/ls=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB5939.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(366004)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(8936002)(110136005)(66946007)(8676002)(316002)(5660300002)(6512007)(66476007)(66556008)(6506007)(6666004)(4326008)(478600001)(2906002)(36756003)(41300700001)(86362001)(38100700002)(6486002)(26005)(2616005)(107886003)(52116002)(1076003)(83380400001)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sb/egRTSWN2tuvHtqV2hu7yWgnY0F+drAWI78vJ/5ezVZA8eYR7aPJ67uzNq?=
- =?us-ascii?Q?IZjPtkjivd2cl350UXGGG7vZLXEM+5zGEgo/suIo04hn2v5m+iUAouXT0pux?=
- =?us-ascii?Q?OCOneJ9QlpwNlRGVc0Sw6J1FiBu2Szr7FCJNCkdVzkYki23Xme1wvBONnH5i?=
- =?us-ascii?Q?B5hWxYrW6xwIyNT/gn1WVN9pdgB0SdYW+zxzT+5wkFW3cfYhTgzD1lYfPUA7?=
- =?us-ascii?Q?rvwIoAhvDeteW4Sy2kit0RzlX83z0V8vsu1JLczt/MiP+YAygDiMHxeB5nd/?=
- =?us-ascii?Q?qMbGRFXVM+Fpyfjr+ZoW2yvw6Zrw6bJnSfmZEtCsCH11QTwKMbO3N4dcI+59?=
- =?us-ascii?Q?SQ9yGE/jcYIFyAN0hilqVclccAXhG1RCCTo5sdZzmQQLt85s9MASksANqDTJ?=
- =?us-ascii?Q?yXlwUFDih3hgjPNlcVBTwDMSZ8bMWiCsDKSc1vMlcgAI4F3uHThRJ0mzoMDs?=
- =?us-ascii?Q?hv/vHixw/IMurw0rR9QDD8CsMib9AwVm3KQkq42L9k0p+l+xwJbvqnkpUMLi?=
- =?us-ascii?Q?XGqwyiR6x/8gt8BEcRedJJwTlBuAdy6oiTdeSgnLYTkcjpfXMy7y2+UuoJ8j?=
- =?us-ascii?Q?OvZrF0KzvVlU4jG8FJx2wgjtks9Q0O8imsKALQcr1DMfup7bDRVARtxGgzNT?=
- =?us-ascii?Q?fIa1lWwOcoHWETxFyPrdaAllg20WsMyZi0+1f9LaGTn/J2XqJU97bvcl35o2?=
- =?us-ascii?Q?JoLhWiLCrdRERHmvOXhtb8gZrFf23IA5qQN/+n2m8yyhuImNxlblVjgk2ukG?=
- =?us-ascii?Q?RPrFd5ekhXMbDArHmF5i6XpZ12DlnroGmEVNPKPireBVtwQpSM6ejW+IL3eh?=
- =?us-ascii?Q?DLJpYw5mIfHXtbrgMIUpU0RveUcknPWJj21PZI8HgrNKjkwGE8ViW9Dyrmy2?=
- =?us-ascii?Q?Act+RzLMs5H0i+N7aS1HukvW68vGzC8oy5HL3h8timUSC5lQ6bsOgQrqQLwC?=
- =?us-ascii?Q?7R9zuV7AHVVF+Pn2vgI1xyPGEl6diToakYCSyzCamPO3FFA9m9B/90mpwQvz?=
- =?us-ascii?Q?o1oshlrL6yR3ojbOLH+jMVE+WBZvJHvdSr8S5BlTgJtwssWrDJOutYCIDW/S?=
- =?us-ascii?Q?o1Yoz8dGFQq15N5i/ZIxTWRIg/lKE5hgq+/f5CNvChYtp5WLjRsCDDncZtae?=
- =?us-ascii?Q?wYRayrUzGHqUBrh5bIBoHPhlG0AFvJ4rsxtDpqmno7ljmgaT/Mc46gTQNcFS?=
- =?us-ascii?Q?0vTjCuF3i0Vuhe5yTAfYcslEuoJu5WBMHxB7EgPo+vQ44JR2l+S7U/bAPfmN?=
- =?us-ascii?Q?7X5LKRZ5RhTtnwTN9vFHBrWpDH1+UqQhX+s4pf9VQ7KC4rLKv6ARgHgzIbq5?=
- =?us-ascii?Q?Pg20RVUxDU0K8RPWcnuncm7/1jnb2BwgcOw+ev2dxjB3gp1hDkuhXEhW/KFK?=
- =?us-ascii?Q?SWwQxJtDR7ViOIXVNIMRIOcG5byzmUhKeermAayktw9kzdGRsHyJ2k+rlbgQ?=
- =?us-ascii?Q?5wpzgD1YbymNG8Dd0H+Sj/+GX0znTxsYXi9Q9Oc7z28OQo8Dj9OUO5KLm74a?=
- =?us-ascii?Q?PSWg8jYmPLbcpYtfBwa2S8P7sdto/SgE5nFpHxxEzMCKyRfj85z7MijxMY7h?=
- =?us-ascii?Q?10uvuHjjXa0aE98CPSQiuQu5pLWF9Rzf42chVWEFRy0gKBoMXYYKxkcvMYaG?=
- =?us-ascii?Q?rA=3D=3D?=
-X-OriginatorOrg: amlogic.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd02db07-2199-4393-357a-08dbd5f5a8a0
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB5939.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 07:32:08.5250
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yCslIWsvkbIswQOIbvlGsROXFg/pJngLA6PPgXB8sHlBH+Snhf3yEd5p02HYV03b4fAPe9X/Ug+/2M1eNNAW9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB5830
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Chen <rong.chen@amlogic.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-For the t7 and older SoC families, the CMD_CFG_ERROR has no effect.
-Starting from SoC family C3, setting this bit without SG LINK data
-address will cause the controller to generate an IRQ and stop working.
+This driver uses MMIO access for reading NVRAM from a flash device.
+Underneath there is a flash controller that reads data and provides
+mapping window.
 
-To fix it, don't set the bit CMD_CFG_ERROR anymore.
+Using MMIO interface affects controller configuration and may break real
+controller driver. It was reported by multiple users of devices with
+NVRAM stored on NAND.
 
-Fixes: 18f92bc02f17 ("mmc: meson-gx: make sure the descriptor is stopped on errors")
-Signed-off-by: Rong Chen <rong.chen@amlogic.com>
+Modify driver to read & cache NVRAM content during init and use that
+copy to provide NVMEM data when requested. On NAND flashes due to their
+alignment NVRAM partitions can be quite big (1 MiB and more) while
+actual NVRAM content stays quite small (usually 16 to 32 KiB). To avoid
+allocating so much memory check for actual data length.
+
+Link: https://lore.kernel.org/linux-mtd/CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com/
+Fixes: 3fef9ed0627a ("nvmem: brcm_nvram: new driver exposing Broadcom's NVRAM")
+Cc: Arınç ÜNAL <arinc.unal@arinc9.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Scott Branden <scott.branden@broadcom.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- drivers/mmc/host/meson-gx-mmc.c | 1 -
- 1 file changed, 1 deletion(-)
+V2: Minialize amount of allocated memory (check for actual data length)
 
-diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-index 9837dab096e6..c7c067b9415a 100644
---- a/drivers/mmc/host/meson-gx-mmc.c
-+++ b/drivers/mmc/host/meson-gx-mmc.c
-@@ -801,7 +801,6 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+ drivers/nvmem/brcm_nvram.c | 131 ++++++++++++++++++++++++++-----------
+ 1 file changed, 91 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
+index 9737104f3b76..fbd133732bba 100644
+--- a/drivers/nvmem/brcm_nvram.c
++++ b/drivers/nvmem/brcm_nvram.c
+@@ -17,9 +17,20 @@
  
- 	cmd_cfg |= FIELD_PREP(CMD_CFG_CMD_INDEX_MASK, cmd->opcode);
- 	cmd_cfg |= CMD_CFG_OWNER;  /* owned by CPU */
--	cmd_cfg |= CMD_CFG_ERROR; /* stop in case of error */
+ #define NVRAM_MAGIC			"FLSH"
  
- 	meson_mmc_set_response_bits(cmd, &cmd_cfg);
++/**
++ * struct brcm_nvram - driver state internal struct
++ *
++ * @nvmem_size:		Size of the whole space available for NVRAM
++ * @data:		NVRAM data copy stored to avoid poking underlaying flash controller
++ * @data_len:		NVRAM data size
++ * @padding_byte:	Padding value used to fill remaining space
++ */
+ struct brcm_nvram {
+ 	struct device *dev;
+-	void __iomem *base;
++	size_t nvmem_size;
++	uint8_t *data;
++	size_t data_len;
++	uint8_t padding_byte;
+ 	struct nvmem_cell_info *cells;
+ 	int ncells;
+ };
+@@ -36,10 +47,47 @@ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+ 			   size_t bytes)
+ {
+ 	struct brcm_nvram *priv = context;
+-	u8 *dst = val;
++	size_t to_copy;
++
++	if (offset + bytes > priv->data_len)
++		to_copy = max_t(ssize_t, (ssize_t)priv->data_len - offset, 0);
++	else
++		to_copy = bytes;
++
++	memcpy(val, priv->data + offset, to_copy);
++
++	memset((uint8_t *)val + to_copy, priv->padding_byte, bytes - to_copy);
++
++	return 0;
++}
++
++static int brcm_nvram_copy_data(struct brcm_nvram *priv, struct platform_device *pdev)
++{
++	struct resource *res;
++	void __iomem *base;
++
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	priv->nvmem_size = resource_size(res);
++
++	priv->padding_byte = readb(base + priv->nvmem_size - 1);
++	for (priv->data_len = priv->nvmem_size;
++	     priv->data_len;
++	     priv->data_len--) {
++		if (readb(base + priv->data_len - 1) != priv->padding_byte)
++			break;
++	}
++	WARN(priv->data_len > SZ_128K, "Unexpected (big) NVRAM size: %zu B\n", priv->data_len);
++
++	priv->data = devm_kzalloc(priv->dev, priv->data_len, GFP_KERNEL);
++	if (!priv->data)
++		return -ENOMEM;
++
++	memcpy_fromio(priv->data, base, priv->data_len);
  
+-	while (bytes--)
+-		*dst++ = readb(priv->base + offset++);
++	bcm47xx_nvram_init_from_iomem(base, priv->data_len);
+ 
+ 	return 0;
+ }
+@@ -67,8 +115,13 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ 				size_t len)
+ {
+ 	struct device *dev = priv->dev;
+-	char *var, *value, *eq;
++	char *var, *value;
++	uint8_t tmp;
+ 	int idx;
++	int err = 0;
++
++	tmp = priv->data[len - 1];
++	priv->data[len - 1] = '\0';
+ 
+ 	priv->ncells = 0;
+ 	for (var = data + sizeof(struct brcm_nvram_header);
+@@ -78,67 +131,68 @@ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+ 	}
+ 
+ 	priv->cells = devm_kcalloc(dev, priv->ncells, sizeof(*priv->cells), GFP_KERNEL);
+-	if (!priv->cells)
+-		return -ENOMEM;
++	if (!priv->cells) {
++		err = -ENOMEM;
++		goto out;
++	}
+ 
+ 	for (var = data + sizeof(struct brcm_nvram_header), idx = 0;
+ 	     var < (char *)data + len && *var;
+ 	     var = value + strlen(value) + 1, idx++) {
++		char *eq, *name;
++
+ 		eq = strchr(var, '=');
+ 		if (!eq)
+ 			break;
+ 		*eq = '\0';
++		name = devm_kstrdup(dev, var, GFP_KERNEL);
++		*eq = '=';
++		if (!name) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 		value = eq + 1;
+ 
+-		priv->cells[idx].name = devm_kstrdup(dev, var, GFP_KERNEL);
+-		if (!priv->cells[idx].name)
+-			return -ENOMEM;
++		priv->cells[idx].name = name;
+ 		priv->cells[idx].offset = value - (char *)data;
+ 		priv->cells[idx].bytes = strlen(value);
+ 		priv->cells[idx].np = of_get_child_by_name(dev->of_node, priv->cells[idx].name);
+-		if (!strcmp(var, "et0macaddr") ||
+-		    !strcmp(var, "et1macaddr") ||
+-		    !strcmp(var, "et2macaddr")) {
++		if (!strcmp(name, "et0macaddr") ||
++		    !strcmp(name, "et1macaddr") ||
++		    !strcmp(name, "et2macaddr")) {
+ 			priv->cells[idx].raw_len = strlen(value);
+ 			priv->cells[idx].bytes = ETH_ALEN;
+ 			priv->cells[idx].read_post_process = brcm_nvram_read_post_process_macaddr;
+ 		}
+ 	}
+ 
+-	return 0;
++out:
++	priv->data[len - 1] = tmp;
++	return err;
+ }
+ 
+ static int brcm_nvram_parse(struct brcm_nvram *priv)
+ {
++	struct brcm_nvram_header *header = (struct brcm_nvram_header *)priv->data;
+ 	struct device *dev = priv->dev;
+-	struct brcm_nvram_header header;
+-	uint8_t *data;
+ 	size_t len;
+ 	int err;
+ 
+-	memcpy_fromio(&header, priv->base, sizeof(header));
+-
+-	if (memcmp(header.magic, NVRAM_MAGIC, 4)) {
++	if (memcmp(header->magic, NVRAM_MAGIC, 4)) {
+ 		dev_err(dev, "Invalid NVRAM magic\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	len = le32_to_cpu(header.len);
+-
+-	data = kzalloc(len, GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
+-
+-	memcpy_fromio(data, priv->base, len);
+-	data[len - 1] = '\0';
+-
+-	err = brcm_nvram_add_cells(priv, data, len);
+-	if (err) {
+-		dev_err(dev, "Failed to add cells: %d\n", err);
+-		return err;
++	len = le32_to_cpu(header->len);
++	if (len > priv->nvmem_size) {
++		dev_err(dev, "NVRAM length (%zd) exceeds mapped size (%zd)\n", len,
++			priv->nvmem_size);
++		return -EINVAL;
+ 	}
+ 
+-	kfree(data);
++	err = brcm_nvram_add_cells(priv, priv->data, len);
++	if (err)
++		dev_err(dev, "Failed to add cells: %d\n", err);
+ 
+ 	return 0;
+ }
+@@ -150,7 +204,6 @@ static int brcm_nvram_probe(struct platform_device *pdev)
+ 		.reg_read = brcm_nvram_read,
+ 	};
+ 	struct device *dev = &pdev->dev;
+-	struct resource *res;
+ 	struct brcm_nvram *priv;
+ 	int err;
+ 
+@@ -159,21 +212,19 @@ static int brcm_nvram_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	priv->dev = dev;
+ 
+-	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+-	if (IS_ERR(priv->base))
+-		return PTR_ERR(priv->base);
++	err = brcm_nvram_copy_data(priv, pdev);
++	if (err)
++		return err;
+ 
+ 	err = brcm_nvram_parse(priv);
+ 	if (err)
+ 		return err;
+ 
+-	bcm47xx_nvram_init_from_iomem(priv->base, resource_size(res));
+-
+ 	config.dev = dev;
+ 	config.cells = priv->cells;
+ 	config.ncells = priv->ncells;
+ 	config.priv = priv;
+-	config.size = resource_size(res);
++	config.size = priv->nvmem_size;
+ 
+ 	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
+ }
 -- 
-2.42.0
+2.35.3
 
