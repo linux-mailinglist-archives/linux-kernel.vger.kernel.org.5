@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767137D8584
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A3C7D8596
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 17:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345330AbjJZPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 11:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
+        id S235070AbjJZPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 11:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbjJZPGa (ORCPT
+        with ESMTP id S235160AbjJZPIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 11:06:30 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663A8129;
-        Thu, 26 Oct 2023 08:06:28 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39QF2DtX011762;
-        Thu, 26 Oct 2023 10:06:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=P2RZ5FPl+x4KIbUrLBvQodtbr+Kus6IGLLMqcPJmaeY=; b=
-        KvitG4L1GV+7ZfKxNWN2mxEFrAf1OxqyEMvuS2j5d10rTK1ttAjT3if8guwQUEhe
-        FkjQtu8KLhfeaxBAgW1FqV9zYmxn7ZB+FLDM+3v9zy9GKFjOUWEGoICZjrS7b/Hn
-        upRUgOYVed7K/ng/GW2nEieN/ogKDH5I1jL0ugy4GqZzi2pY9YFerD21lt1j26ci
-        ZsIuyd/VlsZy2ObrDfTN3jw9vdDDZx6CUknvTvTDfRqhbsijaW8ZfRo5l9TKWe+n
-        ywRvJrvOsDVKU8y3X/4myxbO8iH+727YGY2pYv+/0IXGBnYVuqTXGcav+AvtzN9o
-        M8haN7gnf6lXFB2XWkqcbg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3tvb2j6tep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 10:06:11 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 26 Oct
- 2023 16:06:09 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Thu, 26 Oct 2023 16:06:09 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.177])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 681BF11AA;
-        Thu, 26 Oct 2023 15:06:09 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "Mark Brown" <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 8/8] ASoC: cs35l41: Detect CSPL errors when sending CSPL commands
-Date:   Thu, 26 Oct 2023 16:05:58 +0100
-Message-ID: <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
-References: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
+        Thu, 26 Oct 2023 11:08:01 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C310F7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:07:54 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-57e40f0189aso565377eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 08:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698332873; x=1698937673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VVZOgV4TaU7C0kwXpqOjxAK7iXfSpgYkTcenW5IXZCQ=;
+        b=Ystq3Hh5JeLfSjjbRpDvjFVwwC/prIdM2A0lA0q4ziu7Q9VFgSYprW0WvxXBKTpsJj
+         yOK0fsiLOeHwes+HCGiPXcCxg9KaAdXnR0QfUyZJLdTZ5hxUHvVrgF5oNIbvkY9B9fWZ
+         qm7KyfySEmkfTg4HixGPIVVHNHwX2RXdDF53jyahz8/y7wn+9Y8MWxsiIPn3ySB1jYgz
+         yjI+4UZLOSz7BZbtf7Au3acPQgI39M/7quwjhrfVooErOSGeQinUK1E/as+YhcktCOMU
+         Um1DijYOgbh/lT3J21lD7eZXQDWo+EfPU42g+sCEiBqbmoYioNGT10I4olzJZW2p3Ilp
+         JeFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698332873; x=1698937673;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VVZOgV4TaU7C0kwXpqOjxAK7iXfSpgYkTcenW5IXZCQ=;
+        b=iK8hmjdrorHx+QY9fZTN6dEB8xSF/ps6atJ7QVApxSrZgLW4AwJWb+WISlBq+Y5IRr
+         1w0e45H+YAaHN2ROT6JJphECdrVKpcL+ee9H4mR5v4eWxV4J6cm7r4t5gX8EdB8t0q+o
+         tAYOnmqjhR8EPQh7DvVGOxR0OVRdMi/+le9EPMjNCjp3d5jT17tXQuFd+Qd2SoMqrauI
+         AInYl8XLFEM1IDOZGVy1Nlg4WdT+G+yUtSzJYdIM8fR3Ut25NBii0HAusoB7iVEKIA1v
+         0IwitGibZDDbygihy5HT6PeHmmCOAR0ilE9TjSV887zHiZv06+pdO63T35IKxJabKnnQ
+         jrYQ==
+X-Gm-Message-State: AOJu0YxGENmtKBXzOXxFoM8RXvgg2APaYq5rS9zfvnrN80eMCO6TqLmy
+        YKd2fAuxOhodiY9iwasZIbaGryQIJ0dBuQixEKw=
+X-Google-Smtp-Source: AGHT+IHLUFJBwxSSzLEhcDelbU5shJZAeiSRkaxAOjkWV6IZG8ga8EyA3fKdt8864gXDPzN4c7ZVovuKUSAhi22VkH8=
+X-Received: by 2002:a4a:d032:0:b0:57b:7e41:9f11 with SMTP id
+ w18-20020a4ad032000000b0057b7e419f11mr18552571oor.2.1698332873236; Thu, 26
+ Oct 2023 08:07:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 2mnMNV1ezLHzUEslcCyFHivS6CNyn6IL
-X-Proofpoint-ORIG-GUID: 2mnMNV1ezLHzUEslcCyFHivS6CNyn6IL
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ac9:6fcb:0:b0:4f0:1250:dd51 with HTTP; Thu, 26 Oct 2023
+ 08:07:52 -0700 (PDT)
+In-Reply-To: <b0654dab-eb43-444e-a820-db169812e1ba@efficios.com>
+References: <20231025165002.64ab92e6d55d204b66e055f4@linux-foundation.org>
+ <20231026121621.358388-1-singhabhinav9051571833@gmail.com>
+ <20231026091222-mutt-send-email-mst@kernel.org> <CAGudoHFXH_FDgKRaJvVgQ3W8wD2TC=8yhiNm1NECApnQ-CNAZQ@mail.gmail.com>
+ <b0654dab-eb43-444e-a820-db169812e1ba@efficios.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Thu, 26 Oct 2023 17:07:52 +0200
+Message-ID: <CAGudoHEfjSAim6Hh-qYPY+qi8nbLx7J3YdpGgFwSvD7xbeYR3w@mail.gmail.com>
+Subject: Re: [PATCH v2] Fixing directly deferencing a __rcu pointer warning
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, npiggin@gmail.com,
+        shakeelb@google.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing code checks for the correct state transition after sending
-a command. However, it is possible for the message box to return -1,
-which indicates an error, if an error has occurred in the firmware.
-We can detect if the error has occurred, and return a different error.
-In addition, there is no recovering from a CSPL error, so the retry
-mechanism is not needed in this case, and we can return immediately.
+On 10/26/23, Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> Drive-by comment: perhaps use rcu_dereference_protected() ?
+>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- include/sound/cs35l41.h        | 2 ++
- sound/soc/codecs/cs35l41-lib.c | 5 +++++
- 2 files changed, 7 insertions(+)
+Definitely.
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 80df80fe31e2..043f8ac65dbf 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -816,6 +816,8 @@ struct cs35l41_otp_map_element_t {
- };
- 
- enum cs35l41_cspl_mbox_status {
-+	CSPL_MBOX_STS_ERROR = U32_MAX,
-+	CSPL_MBOX_STS_ERROR2 = 0x00ffffff, // firmware not always sign-extending 24-bit value
- 	CSPL_MBOX_STS_RUNNING = 0,
- 	CSPL_MBOX_STS_PAUSED = 1,
- 	CSPL_MBOX_STS_RDY_FOR_REINIT = 2,
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index ddedb7e63cb6..4569e4f7cf7e 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -1474,6 +1474,11 @@ int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
- 			continue;
- 		}
- 
-+		if (sts == CSPL_MBOX_STS_ERROR || sts == CSPL_MBOX_STS_ERROR2) {
-+			dev_err(dev, "CSPL Error Detected\n");
-+			return -EINVAL;
-+		}
-+
- 		if (!cs35l41_check_cspl_mbox_sts(cmd, sts))
- 			dev_dbg(dev, "[%u] cmd %u returned invalid sts %u", i, cmd, sts);
- 		else
+But as I mentioned even after applying the patch there are uses which
+should have been reported (and consequently sorted out). If one is to
+bother with any of this at least the entire file should be covered.
+
 -- 
-2.34.1
-
+Mateusz Guzik <mjguzik gmail.com>
