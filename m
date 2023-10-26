@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF407D8664
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97F57D865B
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 18:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345574AbjJZQB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 12:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S1345496AbjJZQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 12:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbjJZQBg (ORCPT
+        with ESMTP id S230105AbjJZQBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 12:01:36 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE52D1B9
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:01:33 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so781315276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 09:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698336092; x=1698940892; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CzZdKB+Rr9L94zIvXHTcozK/pzpYFPssH1Oc3UCmsKk=;
-        b=Fcf0Oq1pfPBzz2o8bl8grY8jviFMstrp+uPSTxy7Xb44AzhuFLaXOBD9O1SO8KLc1G
-         uZ13zf2dHK2Aqw7T0jnJ581hidyggXfNdkWezUDGdY6wcs27szYszH4j5A7jjNspJzfo
-         QYLHDzVBbNVi2E4g/WyyVAAnl2Z92CQmowQM+5p8bRSNogQEg9UJEDMO6diq0YBZ1opR
-         9yiWWzutnMLVY5sXqlhLMGMTtgPUr/NJdnMxvL+O1HjUl0yeZMb01w5/vHLld9DU8/Zk
-         41jmK/OvHQJ4NUg+WmsNHNrJbevryi+Br7Yjs7QJLxCwCMHAbe9apLWFZ7hE61rJ1yYU
-         t0vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698336092; x=1698940892;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CzZdKB+Rr9L94zIvXHTcozK/pzpYFPssH1Oc3UCmsKk=;
-        b=PJI0w7hHUqF9SOj1RNXVqVvAJmW9/R/Fq3rg8RScxQj9ceiP0SRQ6zzwCTZzq5uJ47
-         FcRj3mStdUdI6yFcS4hdEfnZybk8KLeCW9yqIYFo2eWuWzSzpwsWp7kLxv5OWyvcS7ZS
-         6D3MismLRkSdrnzN4i/QA2l02Jj4pkC18I1oNyRwqmrfToqj0jiREorpJhVl6S2jPt6a
-         frfbWY+AXgAuZoUCy0MslW1VuRoAFfw5IalyV1p5KuiSd6O9H3NZt/2q/HnMFTDBG4PV
-         c+hCtNldHR8CWLkfJoiSZjba/jyurPK56DYGLpA8L7E5SSTf2azGjMm3TgHpzNfqQINx
-         /how==
-X-Gm-Message-State: AOJu0Yx2/0viEH9oUF+Y6eMa3lS5AFtqC+rj2Dx32eiwIkXveY2uGgSF
-        Ni9UiM1kutY59a9l/MSOpAbuCfwEHw==
-X-Google-Smtp-Source: AGHT+IH9FE3qq8naQuR5Pwqxamh3WOxbv1i6lmug4mYAjy3ER2KjIHtRyNUV1pNGMQtfhiNa4m+ckw==
-X-Received: by 2002:a81:7354:0:b0:5a8:1973:190a with SMTP id o81-20020a817354000000b005a81973190amr21056414ywc.8.1698336092476;
-        Thu, 26 Oct 2023 09:01:32 -0700 (PDT)
-Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id a71-20020a0dd84a000000b005a20ab8a184sm6130129ywe.31.2023.10.26.09.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 09:01:32 -0700 (PDT)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v2 07/11] x86/percpu/64: Use relative percpu offsets
-Date:   Thu, 26 Oct 2023 12:00:56 -0400
-Message-ID: <20231026160100.195099-8-brgerst@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231026160100.195099-1-brgerst@gmail.com>
-References: <20231026160100.195099-1-brgerst@gmail.com>
+        Thu, 26 Oct 2023 12:01:11 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446E61A2;
+        Thu, 26 Oct 2023 09:01:09 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.74.108) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 26 Oct
+ 2023 19:00:58 +0300
+Subject: Re: [PATCH v6] usb: Reduce the 'SET_ADDRESS' request timeout with a
+ new quirk
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <mathias.nyman@intel.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>
+References: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
+ <20231026101551.36551-1-hgajjar@de.adit-jv.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <cd598ae5-6eae-8e0b-8295-d98fa5c4b2fd@omp.ru>
+Date:   Thu, 26 Oct 2023 19:00:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231026101551.36551-1-hgajjar@de.adit-jv.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.74.108]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/26/2023 15:43:12
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180928 [Oct 26 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.108 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.108 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.108
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/26/2023 15:46:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/26/2023 2:32:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,206 +86,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The percpu section is currently linked at virtual address 0, because
-older compilers hardcoded the stack protector canary value at a fixed
-offset from the start of the GS segment.  Now that the canary is a
-normal percpu variable, the percpu section can be linked normally.
-This means that x86-64 will calculate percpu offsets like most other
-architectures, as the delta between the initial percpu address and the
-dynamically allocated memory.
+Hello!
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/kernel/head_64.S      |  6 ------
- arch/x86/kernel/setup_percpu.c | 12 ++----------
- arch/x86/kernel/vmlinux.lds.S  | 24 +-----------------------
- arch/x86/platform/pvh/head.S   |  6 ------
- arch/x86/tools/relocs.c        | 10 +++-------
- arch/x86/xen/xen-head.S        |  6 ------
- init/Kconfig                   |  2 +-
- 7 files changed, 7 insertions(+), 59 deletions(-)
+   Please don't post the patches as a reply to the other thread, start a new
+thread with a new patch version (I thought others would tell you that but nobody
+has so far).
+   And how about changing the wording of the subject to s/th like below?
 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index f2453eb38417..b35f74e58dd7 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -72,14 +72,8 @@ SYM_CODE_START_NOALIGN(startup_64)
- 
- 	/* Setup GSBASE to allow stack canary access for C code */
- 	movl	$MSR_GS_BASE, %ecx
--#ifdef CONFIG_SMP
--	leaq	__per_cpu_load(%rip), %rdx
--	movl	%edx, %eax
--	shrq	$32,  %rdx
--#else
- 	xorl	%eax, %eax
- 	xorl	%edx, %edx
--#endif
- 	wrmsr
- 
- 	call	startup_64_setup_env
-diff --git a/arch/x86/kernel/setup_percpu.c b/arch/x86/kernel/setup_percpu.c
-index 2c97bf7b56ae..8707dd07b9ce 100644
---- a/arch/x86/kernel/setup_percpu.c
-+++ b/arch/x86/kernel/setup_percpu.c
-@@ -23,18 +23,10 @@
- #include <asm/cpumask.h>
- #include <asm/cpu.h>
- 
--#ifdef CONFIG_X86_64
--#define BOOT_PERCPU_OFFSET ((unsigned long)__per_cpu_load)
--#else
--#define BOOT_PERCPU_OFFSET 0
--#endif
--
--DEFINE_PER_CPU_READ_MOSTLY(unsigned long, this_cpu_off) = BOOT_PERCPU_OFFSET;
-+DEFINE_PER_CPU_READ_MOSTLY(unsigned long, this_cpu_off);
- EXPORT_PER_CPU_SYMBOL(this_cpu_off);
- 
--unsigned long __per_cpu_offset[NR_CPUS] __ro_after_init = {
--	[0 ... NR_CPUS-1] = BOOT_PERCPU_OFFSET,
--};
-+unsigned long __per_cpu_offset[NR_CPUS] __ro_after_init;
- EXPORT_SYMBOL(__per_cpu_offset);
- 
- /*
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index e6126cd21615..efa4885060b5 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -103,12 +103,6 @@ const_pcpu_hot = pcpu_hot;
- PHDRS {
- 	text PT_LOAD FLAGS(5);          /* R_E */
- 	data PT_LOAD FLAGS(6);          /* RW_ */
--#ifdef CONFIG_X86_64
--#ifdef CONFIG_SMP
--	percpu PT_LOAD FLAGS(6);        /* RW_ */
--#endif
--	init PT_LOAD FLAGS(7);          /* RWE */
--#endif
- 	note PT_NOTE FLAGS(0);          /* ___ */
- }
- 
-@@ -224,21 +218,7 @@ SECTIONS
- 		__init_begin = .; /* paired with __init_end */
- 	}
- 
--#if defined(CONFIG_X86_64) && defined(CONFIG_SMP)
--	/*
--	 * percpu offsets are zero-based on SMP.  PERCPU_VADDR() changes the
--	 * output PHDR, so the next output section - .init.text - should
--	 * start another segment - init.
--	 */
--	PERCPU_VADDR(INTERNODE_CACHE_BYTES, 0, :percpu)
--	ASSERT(SIZEOF(.data..percpu) < CONFIG_PHYSICAL_START,
--	       "per-CPU data too large - increase CONFIG_PHYSICAL_START")
--#endif
--
- 	INIT_TEXT_SECTION(PAGE_SIZE)
--#ifdef CONFIG_X86_64
--	:init
--#endif
- 
- 	/*
- 	 * Section for code used exclusively before alternatives are run. All
-@@ -368,9 +348,7 @@ SECTIONS
- 		EXIT_DATA
- 	}
- 
--#if !defined(CONFIG_X86_64) || !defined(CONFIG_SMP)
- 	PERCPU_SECTION(INTERNODE_CACHE_BYTES)
--#endif
- 
- 	. = ALIGN(PAGE_SIZE);
- 
-@@ -508,7 +486,7 @@ SECTIONS
-  * Per-cpu symbols which need to be offset from __per_cpu_load
-  * for the boot processor.
-  */
--#define INIT_PER_CPU(x) init_per_cpu__##x = ABSOLUTE(x) + __per_cpu_load
-+#define INIT_PER_CPU(x) init_per_cpu__##x = ABSOLUTE(x)
- INIT_PER_CPU(gdt_page);
- INIT_PER_CPU(irq_stack_backing_store);
- 
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index d215b16bf89f..4bd925b23436 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -96,14 +96,8 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
- 1:
- 	/* Set base address in stack canary descriptor. */
- 	mov $MSR_GS_BASE,%ecx
--#ifdef CONFIG_SMP
--	lea __per_cpu_load(%rip), %rdx
--	mov %edx, %eax
--	shr $32, %rdx
--#else
- 	xor %eax, %eax
- 	xor %edx, %edx
--#endif
- 	wrmsr
- 
- 	call xen_prepare_pvh
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 3ccd9d4fcf9c..01efbfdd3eb3 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -815,12 +815,7 @@ static void percpu_init(void)
-  */
- static int is_percpu_sym(ElfW(Sym) *sym, const char *symname)
- {
--	int shndx = sym_index(sym);
--
--	return (shndx == per_cpu_shndx) &&
--		strcmp(symname, "__init_begin") &&
--		strcmp(symname, "__per_cpu_load") &&
--		strncmp(symname, "init_per_cpu_", 13);
-+	return 0;
- }
- 
- 
-@@ -1043,7 +1038,8 @@ static int cmp_relocs(const void *va, const void *vb)
- 
- static void sort_relocs(struct relocs *r)
- {
--	qsort(r->offset, r->count, sizeof(r->offset[0]), cmp_relocs);
-+	if (r->count)
-+		qsort(r->offset, r->count, sizeof(r->offset[0]), cmp_relocs);
- }
- 
- static int write32(uint32_t v, FILE *f)
-diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-index 9ce0d9d268bb..c1d9c92b417a 100644
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -57,14 +57,8 @@ SYM_CODE_START(startup_xen)
- 	 * the per cpu areas are set up.
- 	 */
- 	movl	$MSR_GS_BASE,%ecx
--#ifdef CONFIG_SMP
--	leaq	__per_cpu_load(%rip), %rdx
--	movl	%edx, %eax
--	shrq	$32, %rdx
--#else
- 	xorl	%eax, %eax
- 	xorl	%edx, %edx
--#endif
- 	wrmsr
- 
- 	mov	%rsi, %rdi
-diff --git a/init/Kconfig b/init/Kconfig
-index 6d35728b94b2..1af31b23e376 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1718,7 +1718,7 @@ config KALLSYMS_ALL
- config KALLSYMS_ABSOLUTE_PERCPU
- 	bool
- 	depends on KALLSYMS
--	default X86_64 && SMP
-+	default n
- 
- config KALLSYMS_BASE_RELATIVE
- 	bool
--- 
-2.41.0
+usb: new quirk to reduce the SET_ADDRESS request timeout
 
+On 10/26/23 1:15 PM, Hardik Gajjar wrote:
+
+> This patch introduces a new USB quirk,
+> USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT, which modifies the timeout value
+> for the 'SET_ADDRESS' request. The standard timeout for USB request/command
+
+   The upper case is enough of the emphasis, I don't think the apostrophes
+are needed arounnd SET_ADDRESS...
+
+[...]
+
+> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> ---
+[...]
+> Changes since version 5:
+> 	- Changed the terminology in USB core driver files from 'command' to 'request'
+> 	  as it is more commonly used. 
+> 	  It's important to note that USB specifications indicate these terms are interchangeable.
+
+   Didn't know that... tried to find the proof in the USB specs but haven't
+managed to do it...
+
+> 	  For example, USB spec 3.2, section 9.2.6.1, uses the term 'command' in its text
+> 	  "USB sets an upper limit of 5 seconds for any command to be processed. "
+
+   Hm, indeed; and this wording is even inherited from USB 1.1...
+
+[...]
+
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 3c54b218301c..98db92af2cce 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -54,6 +54,19 @@
+>  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+>  #define USB_PING_RESPONSE_TIME		400	/* ns */
+>  
+> +/*
+> + * USB 3.2 spec, section 9.2.6.1
+> + * USB sets an upper limit of 5000 ms for any command/request
+> + * to be processed.
+> + */
+> +#define USB_DEFAULT_REQUEST_TIMEOUT_MS	5000 /* ms */
+> +
+> +/*
+> + * The SET_ADDRESS request timeout will be 500 ms when
+> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
+> + */
+> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
+
+   I don'ts see the _MS-like suffixes in the other timeout #define's there...
+
+[...]
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index e1b1b64a0723..d856c4717ca9 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -3997,12 +3997,18 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
+>  	return 0;
+>  }
+>  
+> -/*
+> - * Issue an Address Device command and optionally send a corresponding
+> - * SetAddress request to the device.
+> +/**
+> + * xhci_setup_device - issues an Address Device command to assign a unique
+> + *			USB bus address.
+> + * @hcd: USB host controller data structure.
+> + * @udev: USB dev structure representing the connected device.
+> + * @setup: Enum specifying setup mode: address only or with context.
+> + * @timeout_ms: Max wait time (ms) for the command operation to complete.
+> + *
+> + * Return: 0 if successful; otherwise, negative error code.
+
+   I still think the above change should be a separate follow-up (or even
+a preceding) patch...
+
+[...]
+
+MBR, Sergey
