@@ -2,162 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97A37D8863
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894747D886A
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJZSea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S231171AbjJZSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZSe2 (ORCPT
+        with ESMTP id S230456AbjJZSfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:34:28 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9221E10A
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:34:23 -0700 (PDT)
-Received: (qmail 540575 invoked by uid 1000); 26 Oct 2023 14:34:22 -0400
-Date:   Thu, 26 Oct 2023 14:34:22 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v6] usb: Reduce the 'SET_ADDRESS' request timeout with a
- new quirk
-Message-ID: <55a00749-7b9d-4fc8-a470-6eabdb93216f@rowland.harvard.edu>
-References: <20231025164019.GA121292@vmlxhi-118.adit-jv.com>
- <20231026101551.36551-1-hgajjar@de.adit-jv.com>
+        Thu, 26 Oct 2023 14:35:48 -0400
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CD11BE
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:35:45 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 14:35:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698345343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UuVoNTYhbITUfFOGLvMFeLczeQvlcN8jPRyBtSles1Q=;
+        b=fQEEVZqFoU8NZaXy/Q3Sb10MB7uODDWX3ry14+4fQtoxLJwdxRRTitEP3k6UZcFjmEFkWY
+        bnx53winRLGLAP+SlZpKKuKvyQjErJNFq2GJXwmulVumv7hY80LK6bzEAvInp/R/GntvH3
+        OXKYODWHDU7+lWX7e1uxxUS7EFULJIY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
+ bcachefs tree
+Message-ID: <20231026183539.cffe6uljmnjgacxq@moria.home.lan>
+References: <20231026100157.735d7dee@canb.auug.org.au>
+ <CAOQ4uxjmRena4AB3yMQhBJ58c6DRtkDJJrnTgFe=gWsadSdbQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231026101551.36551-1-hgajjar@de.adit-jv.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxjmRena4AB3yMQhBJ58c6DRtkDJJrnTgFe=gWsadSdbQw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:15:51PM +0200, Hardik Gajjar wrote:
-> This patch introduces a new USB quirk,
-> USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT, which modifies the timeout value
-> for the 'SET_ADDRESS' request. The standard timeout for USB request/command
-> is 5000 ms, as recommended in the USB 3.2 specification (section 9.2.6.1).
+On Thu, Oct 26, 2023 at 08:16:14AM +0300, Amir Goldstein wrote:
+> On Thu, Oct 26, 2023 at 2:02 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > Today's linux-next merge of the vfs-brauner tree got a conflict in:
+> >
+> >   include/linux/exportfs.h
+> >
+> > between commit:
+> >
+> >   85e95ca7cc48 ("bcachefs: Update export_operations for snapshots")
+> >
+> > from the bcachefs tree and commit:
+> >
+> >   2560fa66d2ac ("exportfs: define FILEID_INO64_GEN* file handle types")
+> >
+> > from the vfs-brauner tree.
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
 > 
-> However, certain scenarios, such as connecting devices through an APTIV
-> hub, can lead to timeout errors when the device enumerates as full speed
-> initially and later switches to high speed during chirp negotiation.
+> [adding exportfs maintainers]
 > 
-> In such cases, USB analyzer logs reveal that the bus suspends for
-> 5 seconds due to incorrect chirp parsing and resumes only after two
-> consecutive timeout errors trigger a hub driver reset.
+> >
+> > diff --cc include/linux/exportfs.h
+> > index be9900cc8786,21bae8bfeef1..000000000000
+> > --- a/include/linux/exportfs.h
+> > +++ b/include/linux/exportfs.h
+> > @@@ -98,12 -98,17 +98,23 @@@ enum fid_type
+> >          */
+> >         FILEID_FAT_WITH_PARENT = 0x72,
+> >
+> >  +      /*
+> >  +       * 64 bit inode number, 32 bit subvolume, 32 bit generation number:
+> >  +       */
+> >  +      FILEID_BCACHEFS_WITHOUT_PARENT = 0x80,
+> >  +      FILEID_BCACHEFS_WITH_PARENT = 0x81,
+> >  +
+> > +       /*
+> > +        * 64 bit inode number, 32 bit generation number.
+> > +        */
+> >  -      FILEID_INO64_GEN = 0x81,
+> > ++      FILEID_INO64_GEN = 0x82,
+> > +
+> > +       /*
+> > +        * 64 bit inode number, 32 bit generation number,
+> > +        * 64 bit parent inode number, 32 bit parent generation.
+> > +        */
+> >  -      FILEID_INO64_GEN_PARENT = 0x82,
+> > ++      FILEID_INO64_GEN_PARENT = 0x83,
+> > +
 > 
-> Packet(54) Dir(?) Full Speed J(997.100 us) Idle(  2.850 us)
-> _______| Time Stamp(28 . 105 910 682)
-> _______|_____________________________________________________________Ch0
-> Packet(55) Dir(?) Full Speed J(997.118 us) Idle(  2.850 us)
-> _______| Time Stamp(28 . 106 910 632)
-> _______|_____________________________________________________________Ch0
-> Packet(56) Dir(?) Full Speed J(399.650 us) Idle(222.582 us)
-> _______| Time Stamp(28 . 107 910 600)
-> _______|_____________________________________________________________Ch0
-> Packet(57) Dir Chirp J( 23.955 ms) Idle(115.169 ms)
-> _______| Time Stamp(28 . 108 532 832)
-> _______|_____________________________________________________________Ch0
-> Packet(58) Dir(?) Full Speed J (Suspend)( 5.347 sec) Idle(  5.366 us)
-> _______| Time Stamp(28 . 247 657 600)
-> _______|_____________________________________________________________Ch0
+> This is wrong.
+> Those are filesystem defined constants.
+> Please don't change them.
 > 
-> This 5-second delay in device enumeration is undesirable, particularly
-> in automotive applications where quick enumeration is crucial
-> (ideally within 3 seconds).
+> 0x81/0x82 have been used by xfs and fuse for years,
+> even though neither defined a constant in this enum so far.
+
+Perhaps we could get that fixed...?
+
+> Conflicting with FILEID_BCACHEFS_WITH_PARENT is not
+> a serious issue, but I encourage Kent to pick different constants
+> for bcachefs or keep the bcachefs constants out of this enum.
+
+Happy to do so. Since it seems this enum doesn't have all the constants
+I'd need to avoid conflicting with, I might need some help here :)
+
+> It is a slight inconvenience for users that have bcachefs exported
+> to NFS clients and upgrade their server, but maybe that is acceptable.
+> In overlayfs, we encoded type OVL_FILEID_V0 and switched to encoding
+> type OVL_FILEID_V1, but we still accept decoding of both types, neither
+> of which are listed in this enum BTW.
 > 
-> The newly introduced quirks provide the flexibility to align with a
-> 3-second time limit, as required in specific contexts like automotive
-> applications.
-> 
-> By reducing the 'SET_ADDRESS' request timeout to 500 ms, the
-> system can respond more swiftly to errors, initiate rapid recovery, and
-> ensure efficient device enumeration. This change is vital for scenarios
-> where rapid smartphone enumeration and screen projection are essential.
-> 
-> To use the quirk, please write "vendor_id:product_id:p" to
-> /sys/bus/usb/drivers/hub/module/parameter/quirks
-> 
-> For example,
-> echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameters/quirks"
-> 
-> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> ---
+> Adding fid types to this enum is not required.
+> This enum is a place to standardize and for different fs to share the same
+> fid type/encoding as is the case with  FILEID_INO{32,64}_GEN*.
+> IMO, the bcachefs constant do not follow the convention in this
+> enum and their format is unlikely to be used by other fs, so
+> they should not be added to this enum at all.
 
-For the usbcore parts: A couple of very minor things can be improved.  
-Once those improvements have been made, you can add:
+Eh?
 
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+Most of the constants here appear to be completely filesystem specific -
+I see UDF, nilfs, btrfs, fat...
 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0a1731a0f0ef..4aa3723d2eaf 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6817,6 +6817,9 @@
->  					pause after every control message);
->  				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
->  					delay after resetting its port);
-> +				p = USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT (Reduce
-> +					timeout of the SET_ADDRESS request from
-> +					5000 ms to 500 ms)
-
-To avoid going over the 80-column limit, move "(Reduce" to the next 
-line and reflow the text in parentheses.
-
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 3c54b218301c..98db92af2cce 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -54,6 +54,19 @@
->  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
->  #define USB_PING_RESPONSE_TIME		400	/* ns */
->  
-> +/*
-> + * USB 3.2 spec, section 9.2.6.1
-> + * USB sets an upper limit of 5000 ms for any command/request
-> + * to be processed.
-> + */
-> +#define USB_DEFAULT_REQUEST_TIMEOUT_MS	5000 /* ms */
-
-You don't need to define this macro at all.  Just use 
-USB_CTRL_SET_TIMEOUT (which is already defined to be 5000) as the 
-existing code already does.
-
-> +/*
-> + * The SET_ADDRESS request timeout will be 500 ms when
-> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
-> + */
-> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
-
-As remarked earlier, we don't need to have the "_MS" suffix on either 
-the macro name or the "timeout_ms" variable name.  Removing the suffix 
-will be more consistent with the USB_TP_TRANSMISSION_DELAY_MAX and 
-USB_PING_RESPONSE_TIME names you see above.
-
-> +
-> +/*
-> + * The SET_ADDRESS request timeout will be 500 ms when
-> + * USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT enable.
-
-Change the second line to:
-
- *  the USB_QUIRK_SHORT_SET_ADDRESS_REQ_TIMEOUT quirk flag is set.
-
-> + */
-> +#define USB_SHORT_SET_ADDRESS_REQ_TIMEOUT_MS	500  /* ms */
-
-Overall, I agree with Sergey that this would be cleaner if you split it 
-up into two patches.  The first should change the comment for the 
-set_address() callback function and the implementation in xhci-hcd.  The 
-second should add the quirk flag and make the corresponding changes to 
-the USB core.
-
-Alan Stern
+And since you also don't want conflicts with fid_types that aren't
+defined here, it seems like they really should all be here.
