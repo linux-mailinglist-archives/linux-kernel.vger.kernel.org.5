@@ -2,256 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D587D883E
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC427D8842
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 20:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbjJZS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 14:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
+        id S231148AbjJZS2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 14:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJZS2Q (ORCPT
+        with ESMTP id S229815AbjJZS2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 14:28:16 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF07B192
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:28:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so2066792a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 11:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698344892; x=1698949692; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XZ6bZAXWn2psM4cxF+sbyroKbw59hu5E6zNsriOTEGo=;
-        b=BYmuQlJcZxA3Z3XF56WWISzLbW87+Zm2HKx2j6XTu0q2rfuvwHlOuSGfxEBEnCUoJq
-         K02y6rGBWxympI1N3ehlAjhlcBYqN+puJ4cibmt89XsInIV6j8QwLWQRcqn7glY4Z1nC
-         Z4ihKmgbwgFuiT6UfFz/qBr9aGL+nDAltIqRuhEa7KOHzvWPnUUH2plpKSEo6iU09QaZ
-         84fU2F12ZJwMfqydHnUt8sgeHvn10T3+KeCqEnN5iWegxgrI50711EMnn5WJcmTZ0H9s
-         9w8cZIU5n5laEWGM1iaZxAIc11YWdWfRvSm5GH2DSVAFd0kazDnXy7JHAkIUKbPWyOhF
-         PQeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698344892; x=1698949692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XZ6bZAXWn2psM4cxF+sbyroKbw59hu5E6zNsriOTEGo=;
-        b=vTNWQpYblpD92RIGPhw2DXWZngdsRJA3dxrWAQaM6uLttmfazrYS1EQgK3qGDAS58p
-         sFrZFdkaFb7n8Rir+Ywb0spbbW/rDiWqRBU7vM1Vtxw6gmL8XLS/gjn0Q9yr+u8vkhAy
-         phnYYtWojMibDfTOZsbs9iCIz79QQfMp1YHe4x6vlGJRuYsQ84CDzFKesclMa9LmgsgP
-         buXHOPz765G8J1CZfwWwZ62CBAhdm2F68uakWWfItPI3CRyCUWDA7Cs7Ttg9TUwa/uM3
-         2NZqyOUOTrSI81CsVInFGlLuh2tqofsjErrnamYlouYLMxu1+jCNcyRXccjs8AKQwjJ1
-         1hWA==
-X-Gm-Message-State: AOJu0YxYi9jofgdNC/Zs8lu0rvIyA3spMERKeVdJ8HsTrn/H3Ed8c+Ec
-        aNtQPo8XQ8cShIqlcWJbQhHaEh3D9f3WK+RqP6/0DNjJbN16+Ede
-X-Google-Smtp-Source: AGHT+IGzhJ7cQdpWhKCC7B4d91JiA0+427hHhjSHDrj6O30kwf8hpJE3/t4m7aqKTD6Qe84QUoi5Dofx4tYxF9tBYWA=
-X-Received: by 2002:a50:f68d:0:b0:53d:b7e7:301b with SMTP id
- d13-20020a50f68d000000b0053db7e7301bmr410638edn.24.1698344891696; Thu, 26 Oct
- 2023 11:28:11 -0700 (PDT)
+        Thu, 26 Oct 2023 14:28:48 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2054.outbound.protection.outlook.com [40.107.94.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B877192;
+        Thu, 26 Oct 2023 11:28:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iKQFbS77apq99tTOiHalZC0vpXNmNPDZbm4LncNiAc+WkmuViIyeD6YSPt6fPRGYJTBd0U8BeLOaQi+XgYp4mxGnF8AqSPThJfjTeN2N1F1imDIZtEMLbR2/OuIcbmD41/Mt4cJLYMIDWNt6SiyvvUatnkvVA+SiQIpAp94rEKQIExAlHREopNil1UF1EAgRcR7oEqLAd6v6WnukhRsvH1R6u5HwM834BoJ4AhmMuf50Z34+OuRZ42EVS5Nw3mMksg9nOLJBihXnokVJSSU9I8cKrXzlwB8vZerBjsjV6CfL+A5+0sou2ybt6eDzn2EzwakTjbJ6UBiUwVlDF3Kt9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yvt4AxRp0YOZYUUyEC6uDhVDSCEbs2JZ0PZsIqymznk=;
+ b=Hmh+BmJkvWxVMManaGLJL4Ixl2ZP2nHNYhPRMmwhYNRrKqCJC4YOrqLIA/aUeHF6sj5ejbQg0LMTP+ST5qPxSSSwQg7f/SjHYeIdao3RAGIjv/f7PVkvb+JzdO9DnLKyOXhtQjz1R3jDINFLMJXUgiVCC9qO8j1sfeHbURcxCRhiKwLRlgJco834JpRp2No85ezSDdvnEynPvuM7UY0J5b6xGKo5QDVPgMS8dPtS+wILOZRB6K/kgA0fd80Kpri7h6KHRlol3eWIxNu0hYWxmMW9VeKI9uQ39uRaSZy3NIFAqNSAHu2lcCB0qTyTe9J+8UvWFVeOu1cv3Z2+04/3KA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yvt4AxRp0YOZYUUyEC6uDhVDSCEbs2JZ0PZsIqymznk=;
+ b=QzUdLHjxmqhkYpehdqYy989EspwwYYuAY5RxAABtBA//TId8MqzSgaKXNvKzh59nG3XRjk9GSbWooaZZ7EoO64F1APMSjndb0fxgas4ydjUrT0n6b/Cpv8DHAF+Y8PoY+iMtG88PginMTH3Sb3bAuR938r/IwoPZNlDj0EXEOoGIJoncXMCSFYlHRDlpiOQmS6hFKDyIUra7XzfG0W02XLXsincMyLpHncjFxViWoZxnNTzfUmgFQ8TuKnJCupw0BWlejgIXne7hkrRW6Cn4IUQbMvy9+9thbZ7DoRabSXrXwj0YtxeHt76PXTO0sw4KrfGEUZ6Nc8UvMCEUYj54tg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH0PR12MB7094.namprd12.prod.outlook.com (2603:10b6:510:21d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Thu, 26 Oct
+ 2023 18:28:42 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::11a1:b0c7:7c88:9480]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::11a1:b0c7:7c88:9480%4]) with mapi id 15.20.6933.022; Thu, 26 Oct 2023
+ 18:28:42 +0000
+Date:   Thu, 26 Oct 2023 15:28:41 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
+        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com
+Subject: Re: [PATCH v7 00/10] iommufd: Add nesting infrastructure (part 1/2)
+Message-ID: <20231026182841.GR3952@nvidia.com>
+References: <20231026043938.63898-1-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026043938.63898-1-yi.l.liu@intel.com>
+X-ClientProxiedBy: SN6PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:805:de::43) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-7-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-7-brgerst@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Thu, 26 Oct 2023 20:28:00 +0200
-Message-ID: <CAFULd4aToAROKLNrj9uSD1ZonOFf+gH5y7J3M4Fvc4OWtYLUDg@mail.gmail.com>
-Subject: Re: [PATCH v2 06/11] x86/percpu/64: Remove fixed_percpu_data
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB7094:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b06d299-7d82-4c79-8f73-08dbd65161e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mUSpQfgmo6y0zVQ4lv2Ik1ljxZIanRP3X02nh4NVKqzfyYC8RPEIBL2Z1FgURs67hwmR2i/jK0PNn146rC4WXNTf8mqEMbCQoJA8vOGO4bBJ4vyWmrYuRsnBLm2PvT39YTm3SX1Ku+SIE5e+wAWqh3tGx2jaZrOX3z90852sTOp4AvOt42IRiwPhjVZedvlu6owE6DujRVmtz8xSuLCacFy1MJXvBDsutTrUd0G/9ra+RjEMmVnPtiVYrbw96jWs07NqFIe+GiIqU6ke0gXHINReoNFbdKitamI3llusveNTVNAA0Z2B9HJccm2LKBDy+EYliJo610tnzXbYdosw+0gLx88jYJk+JA3O4XWKCNo0xHPiU2bj83MMsjwI3ax82szn1Ku/WVMlGdIYoxPCCz5LxMTXOqDR8gvp1FIZ9tJn0oB2qUa89sCXVWWpPhFIEUnBiJYo1uuhFKg7U8dk3ij0VDY8OW3/Xe8lucbUBvJcFnfOeOyQQteZSt2G3OyJnm3XzYtwIbfDIu1tm2reu+oK48wyV7jitUHS48AkTZdkp2+KembOeXXW6s7koRqM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(366004)(396003)(136003)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(6512007)(2616005)(1076003)(26005)(36756003)(33656002)(38100700002)(86362001)(83380400001)(6916009)(8936002)(316002)(66556008)(66476007)(66946007)(4744005)(2906002)(41300700001)(5660300002)(7416002)(8676002)(4326008)(6506007)(478600001)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DkryHO4WtrHosTPoeWstLMrhKp6j8l5B9BNOB1/M6xxbw7zeAn3OT1wmTBY3?=
+ =?us-ascii?Q?VLUKRRIEmelxq7SRCz5Xtf5PR4n3kKG3lsssh27r8h0jHRhP1/EXFlWDiO6r?=
+ =?us-ascii?Q?fuhMI35SVibjhdOeUu+TiUQjWDiIlmmNE8SdRRZGNqb+JiKuBcSa6aa8pEnl?=
+ =?us-ascii?Q?IligODp3sh0g3txRkCDoBY2CNKfSrESeI1UX56DI/saifZbHk9FMiU4zQcYV?=
+ =?us-ascii?Q?6ZUmy3NkWWLVSsO9gfNdVGJ6gNyO83DiB7Ag8t+4uoc6BND27EUfnu9k9x86?=
+ =?us-ascii?Q?GN7vGXMLzCrUPqnxnpU3yCpGxUGErDal8C/GXfzAbsSVA9DFagtMSnXA5VkV?=
+ =?us-ascii?Q?Vv5hgj3EqKQQJRnmACl+fTgCnGoM2JRpyZzjAZZj/yCanv/fSxLC+ToIhP7w?=
+ =?us-ascii?Q?RpAbkteCBXf3dm/jjM8eg+QoFqG2FzSnNnQbY0jrSyd/Ju/Dkqq/EkE0rPVd?=
+ =?us-ascii?Q?bZCzTVX43na90RmWZfa3uhzDweIyYNPaXAoufM4V5CY0akOufdMQaq+Kr0uc?=
+ =?us-ascii?Q?8zFmLy06Op3m0sV8ROaeMVHgX2qh4v8Sv8HZlDi8pz9+EoD2tOf9irsiVg0r?=
+ =?us-ascii?Q?HbK56QcXfFnqZUtejGlHQHMEDjjfNOkyVMAfhc5O8aH+YJRmxeolkjlS07rk?=
+ =?us-ascii?Q?PU+oFQejLxVuSvVBMKIRinVKiZd0URvKTdJl77nLJkXoP+D6wNyIk6kJdoVC?=
+ =?us-ascii?Q?GLnxnC3dW1Zo+aqI/zatzUnEyKhzgBNhMkYkC42fwhxICpmnP+tQuoLInuan?=
+ =?us-ascii?Q?lfWt8Mb9ovBpSY7bGGfSZkn9ajVAfkDq4Hha/lnYHh3lhu0G4+N/P3DcNl/i?=
+ =?us-ascii?Q?gjtkU5TpC8x0iiVlXmH/v+3hNNCoHKksSBd+u9Gw9EEaBY22e42MqZ+dcemc?=
+ =?us-ascii?Q?554bUlgaU9xo7JsPUdpxbq6akt5Y+TlDOZiW406rPFUJS5vDTDWZG36h1fKF?=
+ =?us-ascii?Q?WNwjyM1qqU8LpYbjfg5Pw7NktiAZvzHGarJrsTNt2e2yo3i09UJmSJ2zym5e?=
+ =?us-ascii?Q?QWx9zlQbsuAlNPCiOzqXN6Mx0EWD5ePxAEUkMQ69rXGYCdPiYmVi08TC5UHP?=
+ =?us-ascii?Q?6CkvHUNcAYnO7i1HPdzqN5YZTYIG20+tkMKL2okxmW5EpgtyrjALE/oht9aV?=
+ =?us-ascii?Q?ztP9XOOudUO3CsW12dIrPzVI9TD+s1gcxL72VUXhg76vT4TSnznzu5ZtsrNi?=
+ =?us-ascii?Q?ursTjNK9b/W9RScX1WacaFdl7gdbWjTpcYQV+5iGfuiqs36PzhXbRPOt2kWp?=
+ =?us-ascii?Q?JeeTSv1y+Mg7PE8Jc3cVKMBvM6CkzNJsAKjUgstFV8IKMC2Ezic4POiHhi6M?=
+ =?us-ascii?Q?T15Kw2kyOfcf7ivIMcFmTA309LqKEQx7sfjN4jkmko3GiXi+T0As6xg0DRmE?=
+ =?us-ascii?Q?gsz1vo+8ICvvgBXCPRt8Qjg8XKykYeFVuEE5lSU58wFjJrKZkxyEb2/C0XVW?=
+ =?us-ascii?Q?h4tti3YTzSmOZQvRIFiI4hBqC6zN8F7i4KJapbcRvdkDUpvQGiTACXYEQEKC?=
+ =?us-ascii?Q?GmSd4aR9aWZSIk/4PbUQtltWVvHJa1x4tOulsq/F9fYTDqXv1LMJN6OdBZ9Q?=
+ =?us-ascii?Q?MmH8qPPvj3Dv4Z6aYZs=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b06d299-7d82-4c79-8f73-08dbd65161e3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 18:28:42.7779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JdWRBqxIjq8FgwLvGsEKdHufvfBtNaH4Kv/6btJENvMrEw2EQZKybmoBOMafaqbr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7094
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
->
-> Now that the stack protector canary value is a normal percpu variable,
-> fixed_percpu_data is unused and can be removed.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+On Wed, Oct 25, 2023 at 09:39:28PM -0700, Yi Liu wrote:
 
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
+> Jason Gunthorpe (2):
+>   iommufd: Rename IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING
+>   iommufd/device: Wrap IOMMUFD_OBJ_HWPT_PAGING-only configurations
+> 
+> Lu Baolu (1):
+>   iommu: Add IOMMU_DOMAIN_NESTED
+> 
+> Nicolin Chen (6):
+>   iommufd: Derive iommufd_hwpt_paging from iommufd_hw_pagetable
+>   iommufd: Share iommufd_hwpt_alloc with IOMMUFD_OBJ_HWPT_NESTED
+>   iommufd: Add a nested HW pagetable object
+>   iommu: Add iommu_copy_struct_from_user helper
+>   iommufd/selftest: Add nested domain allocation for mock domain
+>   iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
+> 
+> Yi Liu (1):
+>   iommu: Pass in parent domain with user_data to domain_alloc_user op
 
-> ---
->  arch/x86/include/asm/processor.h | 13 +++++--------
->  arch/x86/kernel/cpu/common.c     |  4 ----
->  arch/x86/kernel/head_64.S        | 11 ++++++-----
->  arch/x86/kernel/vmlinux.lds.S    |  6 ------
->  arch/x86/platform/pvh/head.S     |  7 ++++++-
->  arch/x86/tools/relocs.c          |  1 -
->  arch/x86/xen/xen-head.S          | 11 ++++++++---
->  7 files changed, 25 insertions(+), 28 deletions(-)
->
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/proc=
-essor.h
-> index 2b6531d90273..d5a4044dba8f 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -393,16 +393,13 @@ struct irq_stack {
->  } __aligned(IRQ_STACK_SIZE);
->
->  #ifdef CONFIG_X86_64
-> -struct fixed_percpu_data {
-> -       char            gs_base[40];
-> -};
-> -
-> -DECLARE_PER_CPU_FIRST(struct fixed_percpu_data, fixed_percpu_data) __vis=
-ible;
-> -DECLARE_INIT_PER_CPU(fixed_percpu_data);
-> -
->  static inline unsigned long cpu_kernelmode_gs_base(int cpu)
->  {
-> -       return (unsigned long)per_cpu(fixed_percpu_data.gs_base, cpu);
-> +#ifdef CONFIG_SMP
-> +       return per_cpu_offset(cpu);
-> +#else
-> +       return 0;
-> +#endif
->  }
->
->  extern asmlinkage void entry_SYSCALL32_ignore(void);
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index fb8f0371ffc3..32ae76cf4508 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -2052,10 +2052,6 @@ EXPORT_PER_CPU_SYMBOL(pcpu_hot);
->  EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
->
->  #ifdef CONFIG_X86_64
-> -DEFINE_PER_CPU_FIRST(struct fixed_percpu_data,
-> -                    fixed_percpu_data) __aligned(PAGE_SIZE) __visible;
-> -EXPORT_PER_CPU_SYMBOL_GPL(fixed_percpu_data);
-> -
->  static void wrmsrl_cstar(unsigned long val)
->  {
->         /*
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index 0d94d2a091fe..f2453eb38417 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -72,9 +72,14 @@ SYM_CODE_START_NOALIGN(startup_64)
->
->         /* Setup GSBASE to allow stack canary access for C code */
->         movl    $MSR_GS_BASE, %ecx
-> -       leaq    INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-> +#ifdef CONFIG_SMP
-> +       leaq    __per_cpu_load(%rip), %rdx
->         movl    %edx, %eax
->         shrq    $32,  %rdx
-> +#else
-> +       xorl    %eax, %eax
-> +       xorl    %edx, %edx
-> +#endif
->         wrmsr
->
->         call    startup_64_setup_env
-> @@ -345,14 +350,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
-_L_GLOBAL)
->
->         /* Set up %gs.
->          *
-> -        * The base of %gs always points to fixed_percpu_data.
->          * Note that, on SMP, the boot cpu uses init data section until
->          * the per cpu areas are set up.
->          */
->         movl    $MSR_GS_BASE,%ecx
-> -#ifndef CONFIG_SMP
-> -       leaq    INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-> -#endif
->         movl    %edx, %eax
->         shrq    $32, %rdx
->         wrmsr
-> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.=
-S
-> index 1239be7cc8d8..e6126cd21615 100644
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -510,14 +510,8 @@ SECTIONS
->   */
->  #define INIT_PER_CPU(x) init_per_cpu__##x =3D ABSOLUTE(x) + __per_cpu_lo=
-ad
->  INIT_PER_CPU(gdt_page);
-> -INIT_PER_CPU(fixed_percpu_data);
->  INIT_PER_CPU(irq_stack_backing_store);
->
-> -#ifdef CONFIG_SMP
-> -. =3D ASSERT((fixed_percpu_data =3D=3D 0),
-> -           "fixed_percpu_data is not at start of per-cpu area");
-> -#endif
-> -
->  #ifdef CONFIG_CPU_UNRET_ENTRY
->  . =3D ASSERT((retbleed_return_thunk & 0x3f) =3D=3D 0, "retbleed_return_t=
-hunk not cacheline-aligned");
->  #endif
-> diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-> index be8d973c0528..d215b16bf89f 100644
-> --- a/arch/x86/platform/pvh/head.S
-> +++ b/arch/x86/platform/pvh/head.S
-> @@ -96,9 +96,14 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
->  1:
->         /* Set base address in stack canary descriptor. */
->         mov $MSR_GS_BASE,%ecx
-> -       lea INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-> +#ifdef CONFIG_SMP
-> +       lea __per_cpu_load(%rip), %rdx
->         mov %edx, %eax
->         shr $32, %rdx
-> +#else
-> +       xor %eax, %eax
-> +       xor %edx, %edx
-> +#endif
->         wrmsr
->
->         call xen_prepare_pvh
-> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-> index d30949e25ebd..3ccd9d4fcf9c 100644
-> --- a/arch/x86/tools/relocs.c
-> +++ b/arch/x86/tools/relocs.c
-> @@ -811,7 +811,6 @@ static void percpu_init(void)
->   *     __per_cpu_load
->   *
->   * The "gold" linker incorrectly associates:
-> - *     init_per_cpu__fixed_percpu_data
->   *     init_per_cpu__gdt_page
->   */
->  static int is_percpu_sym(ElfW(Sym) *sym, const char *symname)
-> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-> index 30f27e757354..9ce0d9d268bb 100644
-> --- a/arch/x86/xen/xen-head.S
-> +++ b/arch/x86/xen/xen-head.S
-> @@ -53,13 +53,18 @@ SYM_CODE_START(startup_xen)
->
->         /* Set up %gs.
->          *
-> -        * The base of %gs always points to fixed_percpu_data.
->          * Note that, on SMP, the boot cpu uses init data section until
->          * the per cpu areas are set up.
->          */
->         movl    $MSR_GS_BASE,%ecx
-> -       movq    $INIT_PER_CPU_VAR(fixed_percpu_data),%rax
-> -       cdq
-> +#ifdef CONFIG_SMP
-> +       leaq    __per_cpu_load(%rip), %rdx
-> +       movl    %edx, %eax
-> +       shrq    $32, %rdx
-> +#else
-> +       xorl    %eax, %eax
-> +       xorl    %edx, %edx
-> +#endif
->         wrmsr
->
->         mov     %rsi, %rdi
-> --
-> 2.41.0
->
+Updated, thanks
+
+Jason
