@@ -2,245 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F310A7D7DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237897D7DCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 09:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344194AbjJZHrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 03:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S1344393AbjJZHu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 03:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJZHrT (ORCPT
+        with ESMTP id S229638AbjJZHu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 03:47:19 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F6AA1;
-        Thu, 26 Oct 2023 00:47:17 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q7DBrI017974;
-        Thu, 26 Oct 2023 07:47:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Nlz74d/1GvcLdqKD3c2msBQ0no2S2Exe23d/V0iKX/k=;
- b=g0wFMs7+BEXpKGnF6e3juuq2iah5oFG/1Vvd+II8I/GVYjuqNV4ZmiR7mNF6y8g4LnEa
- ihpLlAP+QFj05lMoqBJAjCpGI216Sc7BoNypcZe5BCHPBV7K9wcquFeepAQwLs+KwYtP
- kjXFmSXUU09/uYWkQOyHYUBYtyDn/vaq30PhYPk5FRAMmS0ihE8ZiihL8dPpN8Uv3K26
- dd5diLlMU86BVbxOH++GArzYDiVPHFbXFqIOd+QGsCapRG8R8ywsun5XBkVljpJJgv0M
- Zji3xFKDvLmrq4B043HLqS2Mjkxz7VNDYfpAwQfcxK5ee3cJ2qFNYxtBhZ2DLJKJ79o4 pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tykde1awu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 07:47:07 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39Q7iXEH018357;
-        Thu, 26 Oct 2023 07:47:07 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tykde1awc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 07:47:07 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39Q7KRqt024403;
-        Thu, 26 Oct 2023 07:47:06 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvu6kc8bd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Oct 2023 07:47:06 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39Q7l3Ft24052286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Oct 2023 07:47:04 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4B1C20049;
-        Thu, 26 Oct 2023 07:47:03 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B292820040;
-        Thu, 26 Oct 2023 07:47:03 +0000 (GMT)
-Received: from [9.152.212.65] (unknown [9.152.212.65])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 26 Oct 2023 07:47:03 +0000 (GMT)
-Message-ID: <41b5ad2b-0b9e-a624-9ab3-43ad264076a6@linux.ibm.com>
-Date:   Thu, 26 Oct 2023 09:47:03 +0200
+        Thu, 26 Oct 2023 03:50:27 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19156CE
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:50:25 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b5354da665so456602a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 00:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698306624; x=1698911424; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4oF7/sp9r8tFN/7q4wIyKyAjM4HjrtS/MA/+IaxCrIo=;
+        b=l/XxJ5kRaKh86hRhSYl0tQCyoCxgvrm4u3Wv734g9LGKxfrsJQNhJ2PpN5Udt69vXP
+         fMDGE2RAGouOyWIyh2D3pa2DDiqkXeyiehDVY1dGhSAR/+HTn1Iu7cNXTVvdZqAgvGid
+         RRb3po81EiquX0NgQonlc1d5Dcz+ll5RtJWRQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698306624; x=1698911424;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4oF7/sp9r8tFN/7q4wIyKyAjM4HjrtS/MA/+IaxCrIo=;
+        b=GAixJMy900e6IfumY4hxVL5VCTOW6ULJH9Sd7eGsuLPuuvnsb/KzMU4Dc1gFGitNM7
+         Er4nygDMcrCWXnX/4UkRHlxybb++bsobmktC15L6enYFF4cOggBQwkliZNbVwfO+myt3
+         PQnNFoJudCtvekBgHCNA1HB3hE3fO7HMkNdoN5AnY0osi2nf885TzSMyg34lcGuqH1Hd
+         r5+jZj/l5rlh1P3xJXh+e2FcfnQJjRAyfOxnzcwTjoobnpUv2tsrLiuU4ruwuyfzuSlG
+         5gUNuYpUzygiVwkrzGNTwmhrfM/Q1LkrqhgoIolf56O9l0lD4Iq6BJWZ5RMBq563V9kN
+         YTdQ==
+X-Gm-Message-State: AOJu0YwlX92jbbeIPxSr5xVkDXorgzHDe2uBsVDTnAUcQzlixmRweZ5v
+        nHn1ak9ZAJHgr/kzz+3wxrDn9w==
+X-Google-Smtp-Source: AGHT+IEjhrgzbd6xxkUfyhfvIL+VYNKXZWIwdhaq2GkkASkOOL6jU4CP1v1Uh6uOkz0lGvT4bbSvtw==
+X-Received: by 2002:a17:90a:df8f:b0:27d:237b:558b with SMTP id p15-20020a17090adf8f00b0027d237b558bmr15773440pjv.5.1698306624531;
+        Thu, 26 Oct 2023 00:50:24 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:f228:3a07:1e7f:b38f])
+        by smtp.gmail.com with ESMTPSA id n20-20020a17090ade9400b0027d1366d113sm1028327pjv.43.2023.10.26.00.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 00:50:24 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 16:50:16 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20231026075016.GC15694@google.com>
+References: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+ <87edj64rj1.fsf@oracle.com>
+ <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <20231024103426.4074d319@gandalf.local.home>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] perf report: Add s390 raw data interpretation for PAI
- counters
-To:     Namhyung Kim <namhyung@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, svens@linux.ibm.com, gor@linux.ibm.com,
-        sumanthk@linux.ibm.com, hca@linux.ibm.com
-References: <20231024091729.4180034-1-tmricht@linux.ibm.com>
- <CAM9d7cgzDrO-mU9A6twYqgZ1JFaU1Lj-RC+Lmz3gpxU7gFUr=g@mail.gmail.com>
-Content-Language: en-US
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <CAM9d7cgzDrO-mU9A6twYqgZ1JFaU1Lj-RC+Lmz3gpxU7gFUr=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bb0S97yFBd3X6kSSX23QhcD6T1iv5gJG
-X-Proofpoint-ORIG-GUID: KIxaedPIOMLpV3j7oLAdG_VfpG24U5ER
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-26_05,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 adultscore=0
- clxscore=1015 mlxscore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310260064
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024103426.4074d319@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/23 19:00, Namhyung Kim wrote:
-> Hello,
+On (23/10/24 10:34), Steven Rostedt wrote:
+> On Tue, 19 Sep 2023 01:42:03 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> On Tue, Oct 24, 2023 at 2:17 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
->>
->> commit 1bf54f32f525 ("s390/pai: Add support for cryptography counters")
->> added support for Processor Activity Instrumentation Facility (PAI)
->> counters.  These counters values are added as raw data with the perf
->> sample during perf record.
->> Now add support to display these counters in perf report command.
->> The counter number, its assigned name and value is now printed in
->> addition to the hexadecimal output.
->>
->> Output before:
->>  # perf report -D
->>
->>  6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
->>                                 303977/303977: 0 period: 1 addr: 0
->>  ... thread: paitest:303977
->>  ...... dso: <not found>
->>
->>  0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
->>  .
->>  . ... raw event: size 72 bytes
->>  . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
->>  . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
->>  . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
->>  . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
->>  . 0040:  00 00 00 53 96 af 00 00                          ...S....
->>
->> Output after:
->>  # perf report -D
->>
->>  6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
->>                                 303977/303977: 0 period: 1 addr: 0
->>  ... thread: paitest:303977
->>  ...... dso: <not found>
->>
->>  0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
->>  .
->>  . ... raw event: size 72 bytes
->>  . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
->>  . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
->>  . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
->>  . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
->>  . 0040:  00 00 00 53 96 af 00 00                          ...S....
->>
->>         Counter:007 km_aes_128 Value:0x00000000005396af     <--- new
->>
->> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
->> ---
->>  tools/perf/util/s390-cpumcf-kernel.h |  2 +
->>  tools/perf/util/s390-sample-raw.c    | 89 ++++++++++++++++++++++++++--
->>  2 files changed, 85 insertions(+), 6 deletions(-)
->>
->> diff --git a/tools/perf/util/s390-cpumcf-kernel.h b/tools/perf/util/s390-cpumcf-kernel.h
->> index f55ca07f3ca1..74b36644e384 100644
->> --- a/tools/perf/util/s390-cpumcf-kernel.h
->> +++ b/tools/perf/util/s390-cpumcf-kernel.h
->> @@ -12,6 +12,8 @@
->>  #define        S390_CPUMCF_DIAG_DEF    0xfeef  /* Counter diagnostic entry ID */
->>  #define        PERF_EVENT_CPUM_CF_DIAG 0xBC000 /* Event: Counter sets */
->>  #define PERF_EVENT_CPUM_SF_DIAG        0xBD000 /* Event: Combined-sampling */
->> +#define PERF_EVENT_PAI_CRYPTO_ALL      0x1000 /* Event: CRYPTO_ALL */
->> +#define PERF_EVENT_PAI_NNPA_ALL        0x1800 /* Event: NNPA_ALL */
->>
->>  struct cf_ctrset_entry {       /* CPU-M CF counter set entry (8 byte) */
->>         unsigned int def:16;    /* 0-15  Data Entry Format */
->> diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
->> index 115b16edb451..f360aed3bf0a 100644
->> --- a/tools/perf/util/s390-sample-raw.c
->> +++ b/tools/perf/util/s390-sample-raw.c
->> @@ -125,6 +125,9 @@ static int get_counterset_start(int setnr)
->>                 return 128;
->>         case CPUMF_CTR_SET_MT_DIAG:             /* Diagnostic counter set */
->>                 return 448;
->> +       case PERF_EVENT_PAI_NNPA_ALL:           /* PAI NNPA counter set */
->> +       case PERF_EVENT_PAI_CRYPTO_ALL:         /* PAI CRYPTO counter set */
->> +               return setnr;
->>         default:
->>                 return -1;
->>         }
->> @@ -212,27 +215,101 @@ static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sample *sample)
->>         }
->>  }
->>
->> +/*
->> + * Check for consistency of PAI_CRYPTO/PAI_NNPA raw data.
->> + */
->> +struct pai_data {              /* Event number and value */
->> +       u16 event_nr;
->> +       u64 event_val;
->> +} __packed;
->> +
->> +/*
->> + * Test for valid raw data. At least one PAI event should be in the raw
->> + * data section.
->> + */
->> +static bool s390_pai_all_test(struct perf_sample *sample)
->> +{
->> +       unsigned char *buf = sample->raw_data;
->> +       size_t len = sample->raw_size;
->> +
->> +       if (len < 0xa || !buf)
->> +               return false;
->> +       return true;
->> +}
->> +
->> +static void s390_pai_all_dump(struct evsel *evsel, struct perf_sample *sample)
->> +{
->> +       size_t len = sample->raw_size, offset = 0;
->> +       unsigned char *p = sample->raw_data;
->> +       const char *color = PERF_COLOR_BLUE;
->> +       struct pai_data pai_data;
->> +       char *ev_name;
->> +
->> +       evsel->pmu = perf_pmus__find_by_type(evsel->core.attr.type);
+> >    2) When the scheduler wants to set NEED_RESCHED due it sets
+> >       NEED_RESCHED_LAZY instead which is only evaluated in the return to
+> >       user space preemption points.
+> > 
+> >       As NEED_RESCHED_LAZY is not folded into the preemption count the
+> >       preemption count won't become zero, so the task can continue until
+> >       it hits return to user space.
+> > 
+> >       That preserves the existing behaviour.
 > 
-> Does it need to find evsel->pmu everytime?
+> I'm looking into extending this concept to user space and to VMs.
 > 
-> Thanks,
-> Namhyung
+> I'm calling this the "extended scheduler time slice" (ESTS pronounced "estis")
 > 
+> The ideas is this. Have VMs/user space share a memory region with the
+> kernel that is per thread/vCPU. This would be registered via a syscall or
+> ioctl on some defined file or whatever. Then, when entering user space /
+> VM, if NEED_RESCHED_LAZY (or whatever it's eventually called) is set, it
+> checks if the thread has this memory region and a special bit in it is
+> set, and if it does, it does not schedule. It will treat it like a long
+> kernel system call.
+> 
+> The kernel will then set another bit in the shared memory region that will
+> tell user space / VM that the kernel wanted to schedule, but is allowing it
+> to finish its critical section. When user space / VM is done with the
+> critical section, it will check the bit that may be set by the kernel and
+> if it is set, it should do a sched_yield() or VMEXIT so that the kernel can
+> now schedule it.
+> 
+> What about DOS you say? It's no different than running a long system call.
+> No task can run forever. It's not a "preempt disable", it's just "give me
+> some more time". A "NEED_RESCHED" will always schedule, just like a kernel
+> system call that takes a long time. The goal is to allow user space to get
+> out of critical sections that we know can cause problems if they get
+> preempted. Usually it's a user space / VM lock is held or maybe a VM
+> interrupt handler that needs to wake up a task on another vCPU.
+> 
+> If we are worried about abuse, we could even punish tasks that don't call
+> sched_yield() by the time its extended time slice is taken. Even without
+> that punishment, if we have EEVDF, this extension will make it less
+> eligible the next time around.
+> 
+> The goal is to prevent a thread / vCPU being preempted while holding a lock
+> or resource that other threads / vCPUs will want. That is, prevent
+> contention, as that's usually the biggest issue with performance in user
+> space and VMs.
 
-Function evlist__s390_sample_raw() is assigned to member
-  evlist::trace_event_sample_raw
-as call back in function evlist__init_trace_event_sample_raw()
-only after it has been verified that the perf.data file was created
-on s390 platform.  Function evlist__s390_sample_raw() is only invoked
-when investigating a perf data file created on a s390.
+I think some time ago we tried to check guest's preempt count on each vm-exit
+and we'd vm-enter if guest exited from a critical section (those that bump
+preempt count) so that it can hopefully finish whatever is was going to
+do and vmexit again. We didn't look into covering guest's RCU read-side
+critical sections.
 
-Debugging revealed that member evsel::pmu was set to NULL on
-function entry. Setting evsel::pmu to the PMU retrieves the counter
-names. If the PMU is not found, the NULL pointer remains and
-no counter names are displayed. Same behavior as before.
-
-I hope the clearifies the patch....
-
-Thanks.
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Gregor Pillen
-Geschäftsführung: David Faller
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
-
+Can you educate me, is your PoC significantly different from guest preempt
+count check?
