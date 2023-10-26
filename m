@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B21087D7C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D717D7C54
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 07:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbjJZFjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 01:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
+        id S232431AbjJZFl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 01:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJZFjV (ORCPT
+        with ESMTP id S229554AbjJZFl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:39:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB851115;
-        Wed, 25 Oct 2023 22:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=b3TZe4+33zPofg5TBxkNYMDXDP3VgfP6XYFLcWONn6E=; b=NQIwHCoi229PR2hFsF1HUxuf+p
-        mchbBWzenhNv6nLu24kNfumlHsbrnuCkBCXrlSDe7j49nmJV5/Yu6mzXaF3bxYF9hcKEryeg2bPOZ
-        ys44y7Uh0o9N0b+XA2fuPht3WRBn9E2fYjt6COnTrgS+5roSfpvrZCE6l4u/A6ZPT69+KQoBmBAfG
-        hhgezQ5UBwmmtKV+rbkWqNbXBGNNaXd6WkVkXSGe/Ei1Av1GcboyqTmlVuf5f0RFX1+kFLUX0p7U5
-        xhZcGbUn7mZJuETgAy65kXa575jD2/XrW6wQiDCvyrnzQFbK+qGw2i+JP85ranlz2LS41zopmgJ8o
-        sdzOGedg==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvt5T-00DiU7-1V;
-        Thu, 26 Oct 2023 05:39:19 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
-Subject: [PATCH] i2c: axxia: eliminate kernel-doc warnings
-Date:   Wed, 25 Oct 2023 22:39:18 -0700
-Message-ID: <20231026053918.17347-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Thu, 26 Oct 2023 01:41:56 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2704513A;
+        Wed, 25 Oct 2023 22:41:49 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a6190af24aso80311666b.0;
+        Wed, 25 Oct 2023 22:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698298907; x=1698903707; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v88cIuoMfKK/xscvmw4mP2AX4C1KpNxy9EGTFm/wXII=;
+        b=SYXJHRoIVN0by8Qyi+kKq59ReFb3FcWFRWDzTtkCCQD6rZNjUkUuBS2qZdRWhr/I0t
+         ct6T+zW+Xy6GhzFUVQ2Ub6QJsQA4RPMVIZ9flFd8BIPLGhicsyuly/EH8dqsA1vdwAYq
+         9C8nFmVa4YcHNmOtey6uqrNq6jb0X/i7SUDyGXLIuquKktViRoO/lcRfuXCihk15Ejsj
+         7vn4sHMKLDmkujl8x4PrVs74pMEfCHZruaiE2Lu2h1a4jvRArG6/r8fJnyeTlssle4oT
+         zTvxKJop7HNmwyrJFjj/wqgHwCpBjmnIEBivWynVF/DtLg8x8iEbcxl+q4212OMelXGt
+         3TBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698298907; x=1698903707;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=v88cIuoMfKK/xscvmw4mP2AX4C1KpNxy9EGTFm/wXII=;
+        b=jVCOh/CN3htLwF6HnyOqwIJgEhkh718Kk6wm9HgQ7U8+aYUn35YTKVK8HquGVZCsrd
+         aaEGD1hOsWB8VSObZliYb9zrs0pi8Oh09POQV8Vlis5EAmgoFJJTXYGRSJokxO4vTA9F
+         GVD+4UkEUhWHIX6vJ5iPx1iZotnn5+FvnWrEm+Lf4MFLO2ygFpVmpRl663D+R0tDNfGU
+         KQP7rFqmH9I8eZ7GGfr3RkDUgVYar6rkgFnVsS/c2lg5Y13/37psl13FccHtbWl5v8wz
+         7QfBMcsoUAkT4+dSWPZP3xLDl6QlMNSbKVN33qpE1nQaG3tTen+rWxzhh6+owvF0MlpO
+         y4hA==
+X-Gm-Message-State: AOJu0Yz50FSgvG/+xY7KnHftJ9JKmebdwL0hguPUko8nJypG3JC3vJYk
+        MwEbSQEidSzYl4p+88TicAM=
+X-Google-Smtp-Source: AGHT+IE/n0OoxifurTDgldQZqpLM8AuCp+gQ7fUFj2/TTGB+7QsX1WZ+ulAcFK2YO66Nv03gm0DH7A==
+X-Received: by 2002:a17:907:9286:b0:9b9:facb:d950 with SMTP id bw6-20020a170907928600b009b9facbd950mr13315954ejc.72.1698298907263;
+        Wed, 25 Oct 2023 22:41:47 -0700 (PDT)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id h11-20020a1709063b4b00b009b9aa8fffdasm10997701ejf.131.2023.10.25.22.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 22:41:46 -0700 (PDT)
+Message-ID: <c44c8c13a91a695d758154335b38488c71de1d1c.camel@gmail.com>
+Subject: Re: [RFT PATCH 02/17] ASoC: codecs: adau1373: Handle component name
+ prefix
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
+Date:   Thu, 26 Oct 2023 07:41:45 +0200
+In-Reply-To: <20231023095428.166563-3-krzysztof.kozlowski@linaro.org>
+References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
+         <20231023095428.166563-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kernel-doc for 'slave' and 'irq' in struct axxia_i2c_dev.
-Drop kernel-doc notation ("/**") for static functions since they
-are not usually documented with kernel-doc.
+On Mon, 2023-10-23 at 11:54 +0200, Krzysztof Kozlowski wrote:
+> Use snd_soc_dapm_widget_name_cmp() helper when comparing widget names,
+> to include also the component's name prefix.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-Prevents these kernel-doc warnings:
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-i2c-axxia.c:150: warning: Function parameter or member 'slave' not described in 'axxia_i2c_dev'
-i2c-axxia.c:150: warning: Function parameter or member 'irq' not described in 'axxia_i2c_dev'
-i2c-axxia.c:172: warning: Function parameter or member 'ns' not described in 'ns_to_clk'
-i2c-axxia.c:172: warning: Function parameter or member 'clk_mhz' not described in 'ns_to_clk'
-i2c-axxia.c:172: warning: No description found for return value of 'ns_to_clk'
-i2c-axxia.c:271: warning: Function parameter or member 'idev' not described in 'axxia_i2c_empty_rx_fifo'
-i2c-axxia.c:271: warning: No description found for return value of 'axxia_i2c_empty_rx_fifo'
-i2c-axxia.c:303: warning: Function parameter or member 'idev' not described in 'axxia_i2c_fill_tx_fifo'
+> =C2=A0sound/soc/codecs/adau1373.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+> index b0ab0a69b207..3582c4b968a0 100644
+> --- a/sound/soc/codecs/adau1373.c
+> +++ b/sound/soc/codecs/adau1373.c
+> @@ -834,7 +834,7 @@ static int adau1373_check_aif_clk(struct snd_soc_dapm=
+_widget
+> *source,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0clk =3D "SYSCLK2";
+> =C2=A0
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return strcmp(source->name, cl=
+k) =3D=3D 0;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return snd_soc_dapm_widget_nam=
+e_cmp(source, clk) =3D=3D 0;
+> =C2=A0}
+> =C2=A0
+> =C2=A0static int adau1373_check_src(struct snd_soc_dapm_widget *source,
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/all/202310181049.Vo62moV1-lkp@intel.com/
-Cc: Krzysztof Adamski <krzysztof.adamski@nokia.com>
-Cc: Andi Shyti <andi.shyti@kernel.org>
-Cc: Wolfram Sang <wsa@kernel.org>
-Cc: linux-i2c@vger.kernel.org
----
- drivers/i2c/busses/i2c-axxia.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff -- a/drivers/i2c/busses/i2c-axxia.c b/drivers/i2c/busses/i2c-axxia.c
---- a/drivers/i2c/busses/i2c-axxia.c
-+++ b/drivers/i2c/busses/i2c-axxia.c
-@@ -131,6 +131,8 @@
-  * @i2c_clk: clock reference for i2c input clock
-  * @bus_clk_rate: current i2c bus clock rate
-  * @last: a flag indicating is this is last message in transfer
-+ * @slave: associated &i2c_client
-+ * @irq: platform device IRQ number
-  */
- struct axxia_i2c_dev {
- 	void __iomem *base;
-@@ -165,7 +167,7 @@ static void i2c_int_enable(struct axxia_
- 	writel(int_en | mask, idev->base + MST_INT_ENABLE);
- }
- 
--/**
-+/*
-  * ns_to_clk - Convert time (ns) to clock cycles for the given clock frequency.
-  */
- static u32 ns_to_clk(u64 ns, u32 clk_mhz)
-@@ -263,7 +265,7 @@ static int i2c_m_recv_len(const struct i
- 	return (msg->flags & I2C_M_RECV_LEN) != 0;
- }
- 
--/**
-+/*
-  * axxia_i2c_empty_rx_fifo - Fetch data from RX FIFO and update SMBus block
-  * transfer length if this is the first byte of such a transfer.
-  */
-@@ -295,7 +297,7 @@ static int axxia_i2c_empty_rx_fifo(struc
- 	return 0;
- }
- 
--/**
-+/*
-  * axxia_i2c_fill_tx_fifo - Fill TX FIFO from current message buffer.
-  * @return: Number of bytes left to transfer.
-  */
