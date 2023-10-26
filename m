@@ -2,267 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3C57D7E31
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9D17D7E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 10:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344553AbjJZIOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 04:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S1344497AbjJZIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 04:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344444AbjJZIOl (ORCPT
+        with ESMTP id S229567AbjJZIPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:14:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA442B8;
-        Thu, 26 Oct 2023 01:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698308078; x=1729844078;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MFaMMnglpoDnzneeiuDNtTRmMj3rXcOLeCMqZ4UP8s4=;
-  b=YAnEEhXzVo7A+Dno6tUEBnE0R4LBZAH9Qap7ccBZjGQ572KqKjY/tlWW
-   SaVsILfzULfri+ykymwGuLzzKiIPuxvKy35mGzYQAlLO7T6WRCZwJeYk7
-   1/tUDzBnMxh31waR+J6Xv2dSSM4bc3dsMDK5iL6SvvKsIDG+G9qBCi8SJ
-   J2dAV/MFB3inAfnY/lRlUNNTiP1m7qQeuMoOQInhwuCCMwzfou/N8h2wJ
-   MIYwb7z9rtiZzHIm1C8U+jJH4ZJ2Husdonk7J1o7uvodQCF0tyH/TUgpk
-   TnaRZfoybiYhJuRF8IWlAQDdpI0kxBGG/keOIBb40P7/TuYLs07Gr3iAm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="384692660"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="384692660"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 01:14:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708985716"
-X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
-   d="scan'208";a="708985716"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.211.218])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 01:14:26 -0700
-Message-ID: <cf207da8-8ec4-4b9c-8f01-00e1a8a46238@intel.com>
-Date:   Thu, 26 Oct 2023 11:14:22 +0300
+        Thu, 26 Oct 2023 04:15:31 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2061.outbound.protection.outlook.com [40.107.117.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A266CE;
+        Thu, 26 Oct 2023 01:15:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aBfokeLiZoHOHlwnx3Ig/qtT2QpjyunjByTglqQB0gju0D8XReiJmMINt62JN5O0z28/jvCNt+f7LeaMCg6gJgoRPGmrQ6PZYxZqm3dDnZ+lE8ScF2NMyeJcUlTIcMqTolwX3TtH433ALQ3cn2IzK167seTNFwyqNlnDBjIulFy660PjYWQWiAqe8El9PTDLweJXR8yWHyEq4g+j1bsddWtf6hODDgIbHmyGvqvbsVtEscpQbE/TSk7meh4E7+v5GGHufKjbXd7m7/b+MYRh+yqXuN8wnQXn36USUWH19OCEDtKt3ToD08U1wExWXt8xbtWefrd8mSlJhfX/G0+Gvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=41FOP7tGP3V4A+/Xspp259P7cwuIEzHK2Yug8mkoLow=;
+ b=UfkrfqJYhR4E5b07W4i8NNdBVBNI9TIN1sdie568mD6CZbrAi8OvePrGCQzzmyWZzN140FDv1hCYZCvtJqs53q1bYDE0yoBDcDmuS01SLwaCUL5GjpzOxys6tIFgm3jleWQUsda9YBVVE6fnhpJW4fowtf2pt4LbIJyT+buJ1VZlnCHbzvv1EekakxZHa92/MnQjc81vnc0JyDIwim0roPN643bMbRfnBdPJRHQrZT04SB9OQ6p9Fewz1hTvYw1WcYgacBzwCq3u3oKRKtnsaPF8yA2bXJxzUPfqhnLfQR+pvYyOU6YHSzEN5cRjO4ZWPqvp5ZlnLEMGdwNytGUNQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=41FOP7tGP3V4A+/Xspp259P7cwuIEzHK2Yug8mkoLow=;
+ b=X0z3UkgQk5aDHVvNonWgSTStnDOdb30qDXluTFoLV+q4birwFw9LAlicj/KWdckufaG1V2ml6Vf1PZtXvksTZ57A1u7URcvRNeALZRVgxUQ96rvjHkEUrO/vqWvsUwFLHNB3utWOG4yAR37WR9/tw8tQpRUJT+o7PC71ZjX0eYy+NXt1BKrWfrnqQJkrR6AxvMw2msUpSAQREonqnzWCmfRrWTeXG4wTNfCELl3PWS1bNt7M507U7JawYIRVbVwLJwT94jcSIZZRFUwT2/v5osbhG9izs9DXNQvQsJ51YKH3dnPm740hbpSQF+RLdmMXfjNDm3eSmo4clVM9LyRWUA==
+Received: from KL1PR0401CA0030.apcprd04.prod.outlook.com (2603:1096:820:e::17)
+ by SEZPR04MB6355.apcprd04.prod.outlook.com (2603:1096:101:cb::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Thu, 26 Oct
+ 2023 08:15:20 +0000
+Received: from HK2PEPF00006FB0.apcprd02.prod.outlook.com
+ (2603:1096:820:e:cafe::d6) by KL1PR0401CA0030.outlook.office365.com
+ (2603:1096:820:e::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.34 via Frontend
+ Transport; Thu, 26 Oct 2023 08:15:19 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=Wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=Wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of Wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK2PEPF00006FB0.mail.protection.outlook.com (10.167.8.6) with Microsoft SMTP
+ Server id 15.20.6838.22 via Frontend Transport; Thu, 26 Oct 2023 08:15:19
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v2 0/2] LTC4286 and LTC4287 driver support
+Date:   Thu, 26 Oct 2023 16:15:10 +0800
+Message-Id: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: cqhci: Be more verbose in error irq handler
-Content-Language: en-US
-To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>, upstream@semihalf.com
-References: <20231016095610.1095084-1-korneld@chromium.org>
- <613c51f0-c32e-4de5-9627-525d92fb06ed@intel.com>
- <CAD=NsqybNrf-=9=5wvoj+9MT3xK3SbX7nDk3N3VLBMyA_u3KTQ@mail.gmail.com>
- <78bb4ad2-853a-4ed4-9998-c4e1122545b6@intel.com>
- <CAD=NsqxDA=usDRa-KV48RkeEROARsw8JqBF5vyJcEEV5r_Fg1w@mail.gmail.com>
- <f0aecb28-6f82-456e-a319-8d13a2e313b6@intel.com>
- <CAD=NsqyJHv4nrtrqU4igtaMR=u6xmUtCpoYk66XzarLpu95idA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAD=NsqyJHv4nrtrqU4igtaMR=u6xmUtCpoYk66XzarLpu95idA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB0:EE_|SEZPR04MB6355:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 8de9bb05-959c-4e6d-2250-08dbd5fbb16a
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d2L1iVrANtie0MzbUkzvFKTA26EfwqtcYANAaSX5Fp9eTethzuDReTXKNvZL4Nie7L6XmkuOquwJ4tNRVegRjH3NAxSnPWXKAvMHymvXn6gEE3xi+/YYjyPljDwuodwP5hNrU3reVeD+D0iEgEk2B+fg8mz1vNMa1Ctal6EvUj3O/3NxEifuSswQCBHTGosE2q56rUm7ssLI2ysYly3Y4sXzcV3n7lsR+y7zdDHlJ83pY/ihRk7gbDfwMeW5wk3XUmA2NSB4aLdr6R0MJr2l8xgzP+mSoa4z4t+vy0DRtvdpKexZv5nY9bhfo3wKT41c/UNU2gIQAeh9oasShBh2qCsGhmZWNXvDx79FaoEprYl5l2o+7i/CxNFVxczwhdGhw6LKjnOtZe5BjERuddY5d08Ib/5Ez8zJtfUvIkEuZMFY6Z3UZ339WH4/S74bpq+tY6dcPtxxvRszucOELvWvO8qKbkWOaSbAGEbfNRzn/rbeTjUpprlw/jprh89kXuZTK8fVc0kjFEjiSuHI0EmiIT/ByR0sxiXyuvwNMvawHLR/VO25/UPE5dgui0rRkxB/neFTGQmL4aCifFDRLtYcCQITXQnoGbVma+xIFyF4ugNaQEW1JA2ztIJDPMEuZuTWKcXRdmjixBNRzgdW54Pz1jNL1NRbCa4/ZhtduF9EXvZzz4W220Q+sHjtoT2PlP0jYHfrlT4SCmw1MH0Qkr7Anw==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(376002)(136003)(346002)(396003)(186009)(1800799009)(451199024)(64100799003)(82310400011)(46966006)(36840700001)(40480700001)(6506007)(478600001)(54906003)(2616005)(70586007)(70206006)(956004)(6512007)(1076003)(6666004)(316002)(36756003)(6916009)(86362001)(9316004)(6486002)(47076005)(36860700001)(336012)(81166007)(82740400003)(26005)(356005)(8676002)(8936002)(4326008)(36736006)(7416002)(5660300002)(2906002)(4744005)(41300700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2023 08:15:19.0431
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8de9bb05-959c-4e6d-2250-08dbd5fbb16a
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: HK2PEPF00006FB0.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB6355
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/23 10:56, Kornel Dulęba wrote:
-> On Thu, Oct 26, 2023 at 8:25 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 25/10/23 11:01, Kornel Dulęba wrote:
->>> On Mon, Oct 23, 2023 at 1:38 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>
->>>> On 20/10/23 11:53, Kornel Dulęba wrote:
->>>>> On Fri, Oct 20, 2023 at 9:41 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>>>
->>>>>> On 16/10/23 12:56, Kornel Dulęba wrote:
->>>>>>> There are several reasons for controller to generate an error interrupt.
->>>>>>> They include controller<->card timeout, and CRC mismatch error.
->>>>>>> Right now we only get one line in the logs stating that CQE recovery was
->>>>>>> triggered, but with no information about what caused it.
->>>>>>> To figure out what happened be more verbose and dump the registers from
->>>>>>> irq error handler logic.
->>>>>>> This matches the behaviour of the software timeout logic, see
->>>>>>> cqhci_timeout.
->>>>>>>
->>>>>>> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
->>>>>>> ---
->>>>>>>  drivers/mmc/host/cqhci-core.c | 5 +++--
->>>>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
->>>>>>> index b3d7d6d8d654..33abb4bd53b5 100644
->>>>>>> --- a/drivers/mmc/host/cqhci-core.c
->>>>>>> +++ b/drivers/mmc/host/cqhci-core.c
->>>>>>> @@ -700,8 +700,9 @@ static void cqhci_error_irq(struct mmc_host *mmc, u32 status, int cmd_error,
->>>>>>>
->>>>>>>       terri = cqhci_readl(cq_host, CQHCI_TERRI);
->>>>>>>
->>>>>>> -     pr_debug("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d TERRI: 0x%08x\n",
->>>>>>> -              mmc_hostname(mmc), status, cmd_error, data_error, terri);
->>>>>>> +     pr_warn("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d\n",
->>>>>>> +              mmc_hostname(mmc), status, cmd_error, data_error);
->>>>>>> +     cqhci_dumpregs(cq_host);
->>>>>>
->>>>>> For debugging, isn't dynamic debug seems more appropriate?
->>>>>
->>>>> Dynamic debug is an option, but my personal preference would be to
->>>>> just log more info in the error handler.
->>>>
->>>> Interrupt handlers can get called very rapidly, so some kind of rate
->>>> limiting should be used if the message is unconditional.  Also you need
->>>> to provide actual reasons for your preference.
->>>>
->>>> For dynamic debug of the register dump, something like below is
->>>> possible.
->>>>
->>>> #define cqhci_dynamic_dumpregs(cqhost) \
->>>>         _dynamic_func_call_no_desc("cqhci_dynamic_dumpregs", cqhci_dumpregs, cqhost)
->>>>
->>> Fair point.
->>> The reason I'm not a fan of using dynamic debug for this is that my
->>> goal here is to improve the warning/error logging information that we
->>> get from systems running in production.
->>> I.e. if we get a lot of "running CQE recovery" messages, at the very
->>> least I'd like to know what is causing them.
->>
->> So you are saying you want to collect debug information from production
->> systems, but don't want to use dynamic debug to do it?
->>
->>>>> To give you some background.
->>>>> We're seeing some "running CQE recovery" lines in the logs, followed
->>>>> by a dm_verity mismatch error.
->>>>> The reports come from the field, with no feasible way to reproduce the
->>>>> issue locally.
->>>>
->>>> If it is a software error, some kind of error injection may well
->>>> reproduce it.  Also if it is a hardware error that only happens
->>>> during recovery, error injection could increase the likelihood of
->>>> reproducing it.
->>>
->>> We tried software injection and it didn't yield any results.
->>> We're currently looking into "injecting" hw errors by using a small
->>> burst field generator to interfere with transfers on the data line
->>> directly.
->>
->> I just tried instrumenting a driver to inject CRC errors and it
->> revealed several CQE recovery issues, including spurious TCN for
->> tag 31.  I will send some patches when they are ready.
-> 
-> Sorry, what I meant by it didn't yield results is that Ii didn't
-> trigger the dm-verity error that we're seeing on production.
-> With SW injection there are two potential issues that come to my mind:
-> 
-> 1. In the cqhci_error_irq when TERRI is not valid only a single,
-> "random" task is marked as bad.
-> Then in cqhci_recover_mrq we're marking all pending requests as done.
-> For data transfers this is somewhat bening as it will return with
-> bytes_xfered=0.
-> IIUC this will then cause the upper layer to re-enqueue this request.
+v2 - Add LTC4286 and LTC4287 binding document
+   - Add LTC4286 and LTC4287 driver
 
-Yes
+Delphine CC Chiu (2):
+  dt-bindings: hwmon: Add lltc ltc4286 driver bindings
+  hwmon: pmbus: Add ltc4286 driver
 
-> The bigger problem is a CMD only mrq, which will be mistakenly marked
-> as completed successfully.
+ .../bindings/hwmon/lltc,ltc4286.yaml          |  50 ++++++
+ Documentation/hwmon/ltc4286.rst               |  79 +++++++++
+ MAINTAINERS                                   |  10 ++
+ drivers/hwmon/pmbus/Kconfig                   |   9 +
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/ltc4286.c                 | 160 ++++++++++++++++++
+ 6 files changed, 309 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+ create mode 100644 Documentation/hwmon/ltc4286.rst
+ create mode 100644 drivers/hwmon/pmbus/ltc4286.c
 
-I noticed that also.  Notably the only non-data CMD is cache flush.
-
-There are several other issues, but patches will describe
-them better.
-
-> 
-> 2. As for the spurious task completion warning.
-> I initially thought that it was bening.
-> The check for !mrq is done before checking if we're currently doing recovery.
-> So if it's called just right at the end of recovery, right after the
-> cqhci_recover_mrqs is executed that would explain it.
-> With that being said if that irq handler is run right after the
-> recovery is finished we'll end up with a race where a new request,
-> that was just enqueued, might be mistakenly marked as done.
-> This would explain the dm-verity errors we're seeing.
-> 
->>
->>>>
->>>>>
->>>>> I'd argue that logging only the info that CQE recovery was executed is
->>>>> not particularly helpful for someone looking into those logs.
->>>>
->>>> As the comment says, that message is there because recovery reduces
->>>> performance, it is not to aid debugging per se.
->>>>
->>>>> Ideally we would have more data about the state the controller was in
->>>>> when the error happened, or at least what caused the recovery to be
->>>>> triggered.
->>>>> The question here is how verbose should we be in this error scenario.
->>>>> Looking at other error scenarios, in the case of a software timeout
->>>>> we're dumping the controller registers. (cqhci_timeout)
->>>>
->>>> Timeout means something is broken - either the driver, the cq engine
->>>> or the card.  On the other hand, an error interrupt is most likely a
->>>> CRC error which is not unexpected occasionally, due to thermal drift
->>>> or perhaps interference.
->>>
->>> Right, but my point is that we don't know what triggered CQE recovery.
->>
->> True, although probably a CRC error.
->>
->>>
->>>>
->>>>> Hence I thought that I'd be appropriate to match that and do the same
->>>>> in CQE recovery logic.
->>>>
->>>> It needs to be consistent. There are other pr_debugs, such as:
->>>>
->>>>                 pr_debug("%s: cqhci: Failed to clear tasks\n",
->>>>                 pr_debug("%s: cqhci: Failed to halt\n", mmc_hostname(mmc));
->>>>                 pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname(mmc));
->>>>
->>>> which should perhaps be treated the same.
->>>>
->>>> And there are no messages for errors from the commands in
->>>> mmc_cqe_recovery().
->>>
->>> How about this.
->>> As a compromise would it be okay to just do a single pr_warn directly
->>> from cqhci_error_irq.
->>
->> Sure, printk_ratelimited() or __ratelimit()
->>
->>> We could simply promote the existing pr_debug to pr_warn at the
->>> beginning of that function.
->>> This would tell us what triggered the recovery. (controller timeout,
->>> CRC mismatch)
->>> We can also consider removing the "running CQE recovery" print for the
->>> sake of brevity.
->>
->> No, that serves a different purpose.
->>
->>> The only downside of this that I can see is that we'd be running the
->>> logic from the interrupt handler directly, but I can't see an easy way
->>> around that.
->>> What do you think?
->>
->> Should be OK with rate limiting.
-> 
-> OK, I'll look into the rate limiting and will send a v2.
-> 
->>
->>>>
->>>>>
->>>>>>
->>>>>>>
->>>>>>>       /* Forget about errors when recovery has already been triggered */
->>>>>>>       if (cq_host->recovery_halt)
->>>>>>
->>>>
->>
+-- 
+2.25.1
 
