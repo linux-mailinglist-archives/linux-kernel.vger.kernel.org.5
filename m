@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B757D83BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0B87D83BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 15:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345076AbjJZNke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 09:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S1345102AbjJZNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 09:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjJZNkd (ORCPT
+        with ESMTP id S231216AbjJZNko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 09:40:33 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8DCBD;
-        Thu, 26 Oct 2023 06:40:28 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 12EAD40E0173;
-        Thu, 26 Oct 2023 13:40:27 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RzOIqalLTNoT; Thu, 26 Oct 2023 13:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1698327624; bh=sIsfuwJgDJcV/k4vTzcoZvNnZV1daWQEdSBGoijJNEg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A8ZOE908YEMIJ6YwwxI39IPnCp8e5Fu/A/1QxuZ+SMc2i7aoaJkW7KhggYFcUfnZj
-         lrnZVbQSlhoqOz4NLW3C4A1jaPGprtmIWIc6E21x65Db1f8BnkQrCeMNOMNmlYvE+i
-         P82nVdjh/M9VJl7HTHf31n80SMOiROwACb3nZDv7rtVaaIG64C83JSgL5raXGBufK0
-         7Cw3JlbKzAmpGHpILdYw4J5qmUoJU7bm8UlnQHr0fOf/swR3CNWrPCcvZ9uROuHrod
-         e7Zlc4Mgj7EjYyNnAmDvTwoQuBeuGKssbMnx1TPCZjP+Bg6E1dY7gFkCj2l5rfiN2K
-         NFznbpK+aFdZIp8h48mxUtHmxoUbN4UQbypDSjV4lq9cMgyRvE9ZQnhmpwL7o33Kvb
-         VA3e1y8HmhUffTLpIIjRrGiUtZRjGQp6rNXLQjqGyhKF6h/CH9Z1uwDQqIMokI6/KU
-         ycHwg8uZX4UTyu86OoBoJwvJvFH36eoYmsRvg2MlzMm+4sUMzWiDlSZtBy2meWwCkr
-         yNRUjTvNbdl7BpV/B1PAT18Q7p/BV++3LqP5ec1EpIw9n+XUsYnWFvGI4SOFnT/HK1
-         syGF78r7dMpfCzCEDxSSqIc4RXRg1XR+ga/fLoBytR1oErjwTqrGGw2AfOb0PXnBw5
-         MfYg+8ysRKFHInAjqywNj2ms=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C8AE340E0171;
-        Thu, 26 Oct 2023 13:40:17 +0000 (UTC)
-Date:   Thu, 26 Oct 2023 15:40:16 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     "M K, Muralidhara" <muralimk@amd.com>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        Muralidhara M K <muralidhara.mk@amd.com>,
-        Avadhut Naik <Avadhut.Naik@amd.com>
-Subject: Re: [PATCH v2 1/4] EDAC/mce_amd: Remove SMCA Extended Error code
- descriptions
-Message-ID: <20231026134016.GDZTpsQDYU4Ll6sAA3@fat_crate.local>
-References: <20231025051455.101424-1-muralimk@amd.com>
- <20231025051455.101424-2-muralimk@amd.com>
- <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
- <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
- <20231026111448.GAZTpKKLI6LG1/COFE@fat_crate.local>
- <850a3e78-f663-c696-2141-7aefb043b6da@amd.com>
- <20231026123754.GBZTpdojw+pNuZMyJy@fat_crate.local>
- <dd13363e-fd7e-4e88-8c23-91cfffe11dc3@amd.com>
+        Thu, 26 Oct 2023 09:40:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E62F1B6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 06:40:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E5FFC433C7;
+        Thu, 26 Oct 2023 13:40:38 +0000 (UTC)
+Date:   Thu, 26 Oct 2023 09:40:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
+Message-ID: <20231026094035.213e3744@gandalf.local.home>
+In-Reply-To: <20231026085414.GL31411@noisy.programming.kicks-ass.net>
+References: <20231025054219.1acaa3dd@gandalf.local.home>
+        <20231025102952.GG37471@noisy.programming.kicks-ass.net>
+        <20231025085434.35d5f9e0@gandalf.local.home>
+        <20231025135545.GG31201@noisy.programming.kicks-ass.net>
+        <20231025103105.5ec64b89@gandalf.local.home>
+        <884e4603-4d29-41ae-8715-a070c43482c4@efficios.com>
+        <20231025162435.ibhdktcshhzltr3r@f>
+        <20231025131731.48461873@gandalf.local.home>
+        <20231026085414.GL31411@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <dd13363e-fd7e-4e88-8c23-91cfffe11dc3@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 09:05:51AM -0400, Yazen Ghannam wrote:
-> Post-processing is one of the features that Avadhut implemented.
+On Thu, 26 Oct 2023 10:54:14 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> > No, I wouldn't say it's the same as priority inheritance, which is to help
+> > with determinism and not performance. PI adds overhead but removes
+> > unbounded latency. On average, a non PI mutex is faster than PI mutex, but
+> > can suffer from unbounded priority inversion.  
 > 
-> https://github.com/mchehab/rasdaemon/commit/932118b04a04104dfac6b8536419803f236e6118
+> Matheusz is right though, what you're asking for is a (limited) priority
+> ceiling, which is a very primitive form of PI, which itself is a very
+> specific case of proxy execution :-)
+> 
+> Note that in kernel spinners have this priority ceiling by means of
+> preempt_disable().
+> 
+> > For this code, I took off my RT hat, and put on my performance hat.  
+> 
+> Seems to me you took the brain along with the hat.
+> 
+> You're confusing cost of implementation with concept. Yes full blown PI
+> is fairly expensive, but the concept is still valid. Priority ceilings
+> were always an approximation.
 
-Yes, now try to decode the error with rasdaemon this way, by supplying
-the fields.
+It's a very weak priority ceiling, and why I didn't associate it, as I
+would with preempt_disable() in the kernel (and I have mentioned in several
+of my talks that preempt_disable() is a PI, as it makes the running task
+the highest priority task on the CPU).
 
-Then explain step-by-step what you've done in the commit message and in
-a documentation file in Documentation/ras/ so that people can find it
-and can actually do the decoding themselves.
+The major difference is that this is time sensitive. That is, the kernel
+gives it an arbitrary amount of time to finish up. Priority ceiling is
+usually associated to an entire critical section. Not the start of it and
+if you don't finish it in time we take away that ceiling.
 
-It needs to be absolutely easy to decode those errors. Not tell people:
-"go look for the error description in the PPR".
+Even proxy execution doesn't work that way.
 
-Thx.
+Hence, why I don't want to associate this with priority inheritance. The
+time constraint is a fundamental difference.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-- Steve
