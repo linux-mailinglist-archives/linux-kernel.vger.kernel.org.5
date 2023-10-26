@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2A67D8107
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457517D810E
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 12:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJZKoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 06:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S1344628AbjJZKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 06:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZKoK (ORCPT
+        with ESMTP id S230285AbjJZKrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 06:44:10 -0400
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F4A18D
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:44:08 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monoid.al; s=key1;
-        t=1698317045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eejMsKVQmTdeCnFDIvmbidoqLiFeEJxUu7JLELUtPa0=;
-        b=hsokOoR1og4Hss0rkcmft0ZlDGBVavls+hUlrusjrNg7RQ0V1HLWrNs19aA7o8dqVaLb/b
-        cHI66O6dud8OM0K9Kvw3RoWS+1kXTZlyPkdczduvmFweo5/RwsNbeDs7CPiNv3S8Zb2sQs
-        PZnO9mT387EebUGt0sd3AjXYAu4Ju39IXJELMv0tS7AByNSuTor/KNsWA5MPLQR4L2sqv6
-        U9317AhPisf//nDWKg7inQZmfA5DD7v7v7rF7GzAXCSetgKKQzjMXfceZtygD+NjeatCfA
-        aSzT0gzIamWaieKGSuz9CLaWKF75HRu4wn+nhNREF2+wnnpuMWvxmImtvztZQQ==
-From:   Ellie Hermaszewska <kernel@monoid.al>
-To:     kernel@monoid.al
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eugene Shalygin <eugene.shalygin@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] hwmon: (asus-ec-sensors) add ROG Crosshair X670E Gene.
-Date:   Thu, 26 Oct 2023 18:43:22 +0800
-Message-ID: <20231026104332.906357-1-kernel@monoid.al>
-In-Reply-To: <df22c0f4-671f-4108-85a0-d1667ec1da77@monoid.al>
-References: <df22c0f4-671f-4108-85a0-d1667ec1da77@monoid.al>
+        Thu, 26 Oct 2023 06:47:39 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D63B19D
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:47:35 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so10048721fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 03:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698317253; x=1698922053; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zARtYhe8iofTNi9oUIWhel0XKe8pA8fsGQ6TZX749AM=;
+        b=h/kI//wpeIXTKh9Yxbd7z7B3SptYh7FLI7bpeO2DBb+ZRX50IXHgU1nuo7PyozAFma
+         NeRc5NWVI6rJBzLdH3zERIxeaJ0m8jZzX5uILNDaENwXx3DyBL+9ZDzhcPQUO2CVU/JM
+         l2gPXcYizmz7qS7y/kgmVqV/E4tj73kvsieo30eOHvWkKG4h11w1zQgztfEQWH61qmHi
+         eD3/mAulkztQx1ZsgrZKmjqCERq1X1ZCeMVf5KHuEI4EFDy+Pu00qSLAsmbmXPHi89sz
+         q9nSIDSSX2hfIVOAVYQbVynoRjvpqhcGj1iw4SYZddGBy0XcsDOIFYSUeG7oIBboVjOY
+         DPTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698317253; x=1698922053;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zARtYhe8iofTNi9oUIWhel0XKe8pA8fsGQ6TZX749AM=;
+        b=RN5c8tzuzLPklJ4M1+pGdo+fZZ05NNQrdTsbPrLwaOA1aYfmYPzZEQpxGCKhDf1uLS
+         n43NnXgROWzRbEXEKO+QQczS0uNgVY57tZ7MKxfehGxe2YWD3MTNtvJ78hyKAeJpnnPm
+         CJbnqePNLGbO2rLK5ehssH7XdOEWPKohfV+BXj4ShqFwn79WPha/eSkHRMyG9uh51lV9
+         15lqznb+2q7vJ0FXIbPPo/VRFdkr50Pvh0Ddw1e2+mxCumtUB3wxrkfDQxsw7Vy2bB5f
+         K9ZMs+uc6LXWNl1cMLZN2uBMP5jMAEOmTF6wK3MXxATpRyjwKDESMJ4v/poHI4SCV70E
+         KK1w==
+X-Gm-Message-State: AOJu0YyyImPxi5+HLvAeCX4sYNn1MWJ5tGRatDoqK/rgAS0jI+1jCsB1
+        UuI85X5tdVpSS7XBsh8kNkrl60YbNXalo1e1PRm/Lw==
+X-Google-Smtp-Source: AGHT+IGmxzfDQpaW9n6+VyxCuLkhAmG3EoFq/lPNhAkHV71yn+1V0RyR8hD7hkbdqONXHHeDunN5Vg==
+X-Received: by 2002:a05:651c:1038:b0:2c5:1bd9:f95c with SMTP id w24-20020a05651c103800b002c51bd9f95cmr11798854ljm.53.1698317253615;
+        Thu, 26 Oct 2023 03:47:33 -0700 (PDT)
+Received: from mutt (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id t13-20020a2e8e6d000000b002c4faf47378sm2822174ljk.28.2023.10.26.03.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 03:47:33 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 12:47:31 +0200
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     D Scott Phillips <scott@os.amperecomputing.com>,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        Darren Hart <darren@os.amperecomputing.com>,
+        patches@amperecomputing.com, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: hotplug: Add extension driver for Ampere
+ Altra hotplug LED control
+Message-ID: <20231026104731.GA1296512@mutt>
+References: <86ttqe4n1h.fsf@scott-ph-mail.amperecomputing.com>
+ <20231025180627.GA1756475@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231025180627.GA1756475@bhelgaas>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,TO_EQ_FM_DIRECT_MX,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only the temp sensors that I can verify are present.
+On 2023-10-25 13:06, Bjorn Helgaas wrote:
+> On Wed, Oct 25, 2023 at 10:41:46AM -0700, D Scott Phillips wrote:
+> > Bjorn Helgaas <helgaas@kernel.org> writes:
+> > 
+> > > On Fri, Sep 29, 2023 at 05:20:36PM -0700, D Scott Phillips wrote:
+> > >> On Ampere Altra, PCIe hotplug is handled through ACPI. A side interface is
+> > >> also present to request system firmware control of attention LEDs. Add an
+> > >> ACPI PCI Hotplug companion driver to support attention LED control.
+> > >> ...
+> > >
+> > >> +	arm_smccc_smc(REQUEST, LED_CMD, led_status(status), LED_ATTENTION,
+> > >> +		      pci_domain_nr(bus) | (PCI_SLOT(root_port->devfn) << 4), 0, 0,
+> > >
+> > > pci_domain_nr() returns "int" (normally 32 bits), but since this is an
+> > > ACPI system, the domain comes from _SEG, which is defined to be 16
+> > > bits (ACPI r6.5, sec 6.5.6).
+> > >
+> > > So it looks like ORing in the "slot << 4" clobbers the upper 12 bits
+> > > of _SEG.
+> > >
+> > > Is this code doing the right thing?
+> > 
+> > Hi Bjorn,
+> > 
+> > on these Altra platforms _SEG is limited within 0-11. I can add an `&
+> > 0xf` to pci_domain_nr() to make it clear that the segment number is
+> > encoded down into 4 bits in the smc request.
+> 
+> If the following looks OK, we're all set.  I put these on pci/hotplug
+> for v6.7, thanks!
+> 
+> +static int set_attention_status(struct hotplug_slot *slot, u8 status)
+> +{
+> +	struct arm_smccc_res res;
+> +	struct pci_bus *bus;
+> +	struct pci_dev *root_port;
+> +	unsigned long flags;
+> +	u32 handle;
+> +	int ret = 0;
+> +
+> +	bus = slot->pci_slot->bus;
+> +	root_port = pcie_find_root_port(bus->self);
+> +	if (!root_port)
+> +		return -ENODEV;
+> +
+> +	local_irq_save(flags);
+> +	arm_smccc_smc(HANDLE_OPEN, led_service_id[0], led_service_id[1],
+> +		      led_service_id[2], led_service_id[3], 0, 0, 0, &res);
+> +	if (res.a0) {
+> +		ret = -ENODEV;
+> +		goto out;
+> +	}
+> +	handle = res.a1 & 0xffff0000;
+> +
+> +	arm_smccc_smc(REQUEST, LED_CMD, led_status(status), LED_ATTENTION,
+> +		     PCI_SLOT(root_port->devfn) << 4 | pci_domain_nr(bus) & 0xf,
+> +		     0, 0, handle, &res);
+> +	if (res.a0)
+> +		ret = -ENODEV;
+> +
+> +	arm_smccc_smc(HANDLE_CLOSE, handle, 0, 0, 0, 0, 0, 0, &res);
+> +
+> + out:
+> +	local_irq_restore(flags);
+> +	return ret;
+> +}
 
-T_Sensor is the temperature reading of a 10kΩ β=3435K NTC thermistor
-optionally connected to the T_SENSOR header.
+Hi,
 
-The other sensors are as found on the X670E Hero.
+Building todays linux-next tag next-20231026 for arm64 with
+CONFIG_HOTPLUG_PCI_ACPI_AMPERE_ALTRA=m I see the following build error.
 
-Signed-off-by: Ellie Hermaszewska <kernel@monoid.al>
----
- Documentation/hwmon/asus_ec_sensors.rst |  1 +
- drivers/hwmon/asus-ec-sensors.c         | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
+drivers/pci/hotplug/acpiphp_ampere_altra.c: In function 'set_attention_status':
+drivers/pci/hotplug/acpiphp_ampere_altra.c:63:75: error: suggest parentheses around arithmetic in operand of '|' [-Werror=parentheses]
+   63 |                      PCI_SLOT(root_port->devfn) << 4 | pci_domain_nr(bus) & 0xf,
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~
+include/linux/arm-smccc.h:382:44: note: in definition of macro 'arm_smccc_smc'
+  382 | #define arm_smccc_smc(...) __arm_smccc_smc(__VA_ARGS__, NULL)
+      |                                            ^~~~~~~~~~~
+cc1: all warnings being treated as errors
+make[6]: *** [scripts/Makefile.build:243: drivers/pci/hotplug/acpiphp_ampere_altra.o] Error 1
 
-diff --git a/Documentation/hwmon/asus_ec_sensors.rst b/Documentation/hwmon/asus_ec_sensors.rst
-index 7e3cd5b6686f..0bf99ba406dd 100644
---- a/Documentation/hwmon/asus_ec_sensors.rst
-+++ b/Documentation/hwmon/asus_ec_sensors.rst
-@@ -15,6 +15,7 @@ Supported boards:
-  * ROG CROSSHAIR VIII HERO
-  * ROG CROSSHAIR VIII IMPACT
-  * ROG CROSSHAIR X670E HERO
-+ * ROG CROSSHAIR X670E GENE
-  * ROG MAXIMUS XI HERO
-  * ROG MAXIMUS XI HERO (WI-FI)
-  * ROG STRIX B550-E GAMING
-diff --git a/drivers/hwmon/asus-ec-sensors.c b/drivers/hwmon/asus-ec-sensors.c
-index 51f9c2db403e..36f9e38000d5 100644
---- a/drivers/hwmon/asus-ec-sensors.c
-+++ b/drivers/hwmon/asus-ec-sensors.c
-@@ -244,6 +244,8 @@ static const struct ec_sensor_info sensors_family_amd_600[] = {
- 	EC_SENSOR("Motherboard", hwmon_temp, 1, 0x00, 0x32),
- 	[ec_sensor_temp_vrm] =
- 		EC_SENSOR("VRM", hwmon_temp, 1, 0x00, 0x33),
-+	[ec_sensor_temp_t_sensor] =
-+		EC_SENSOR("T_Sensor", hwmon_temp, 1, 0x00, 0x36),
- 	[ec_sensor_temp_water_in] =
- 		EC_SENSOR("Water_In", hwmon_temp, 1, 0x01, 0x00),
- 	[ec_sensor_temp_water_out] =
-@@ -344,6 +346,14 @@ static const struct ec_board_info board_info_crosshair_x670e_hero = {
- 	.family = family_amd_600_series,
- };
- 
-+static const struct ec_board_info board_info_crosshair_x670e_gene = {
-+	.sensors = SENSOR_TEMP_CPU | SENSOR_TEMP_CPU_PACKAGE |
-+		SENSOR_TEMP_T_SENSOR |
-+		SENSOR_TEMP_MB | SENSOR_TEMP_VRM,
-+	.mutex_path = ACPI_GLOBAL_LOCK_PSEUDO_PATH,
-+	.family = family_amd_600_series,
-+};
-+
- static const struct ec_board_info board_info_crosshair_viii_dark_hero = {
- 	.sensors = SENSOR_SET_TEMP_CHIPSET_CPU_MB |
- 		SENSOR_TEMP_T_SENSOR |
-@@ -490,6 +500,8 @@ static const struct dmi_system_id dmi_table[] = {
- 					&board_info_crosshair_viii_hero),
- 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR X670E HERO",
- 					&board_info_crosshair_x670e_hero),
-+	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR X670E GENE",
-+					&board_info_crosshair_x670e_gene),
- 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG MAXIMUS XI HERO",
- 					&board_info_maximus_xi_hero),
- 	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG MAXIMUS XI HERO (WI-FI)",
--- 
-2.42.0
+Looks like this is the problematic patch
+13ba8a09c4f6 ("PCI: hotplug: Add Ampere Altra Attention Indicator extension driver")
 
+Cheers,
+Anders
