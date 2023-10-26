@@ -2,220 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98237D7CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CED7D7CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 08:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343922AbjJZGCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 02:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
+        id S1344014AbjJZGCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 02:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjJZGCI (ORCPT
+        with ESMTP id S234338AbjJZGC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 02:02:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3BEDD137
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 23:02:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64E852F4;
-        Wed, 25 Oct 2023 23:02:46 -0700 (PDT)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F41F43F64C;
-        Wed, 25 Oct 2023 23:02:01 -0700 (PDT)
-Message-ID: <b4e80296-c541-43f5-b7ad-f80fb34fb1f3@arm.com>
-Date:   Thu, 26 Oct 2023 11:31:59 +0530
+        Thu, 26 Oct 2023 02:02:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79D7192
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 23:02:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698300147; x=1729836147;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RpV5tiEQXcsp7xAk6InD/tYd82u0eWzjxZbIhp2hf+M=;
+  b=mFybrtMYLe7bjpB9l7NsZNd7scE78E1JTADadsNxHMOQCX3I8T2iUN8J
+   kvFKGZVKNv4BJ+LwnznCy4ll6Ggma0nul2oC2U8fwc7Q2Pq0k/NLz9FZi
+   HiTuyh39cJeTg73CiYZw7bBUvA5V7hzU16u8fVLgZbUOevovjASzLLr6Q
+   N9QHLZhdBUajFGrF5fdtxCzNyJOPuhoxN7t9FA+JR8dQRDvgm8zVR8Jfo
+   VN2dw3VRP3wLY9m8MRQM2DSQKe+rngP/Gd65sIUatnAE72D0eeFyFBZmi
+   DA2vwCemXqY/07e4/dZfGE3cwFyfjYeAFFk7FG/tSqHJ9hTwVAzWXnOhB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="9023482"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="9023482"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 23:02:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708948563"
+X-IronPort-AV: E=Sophos;i="6.03,253,1694761200"; 
+   d="scan'208";a="708948563"
+Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 23:02:24 -0700
+Date:   Thu, 26 Oct 2023 08:02:22 +0200
+From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] accel/ivpu: Delete the TODO file
+Message-ID: <20231026060222.GA1024364@linux.intel.com>
+References: <ZTAucrOT69/tQK2o@runicha.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-Content-Language: en-US
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <2f55f62b-cae2-4eee-8572-1b662a170880@arm.com>
- <CAGsJ_4xuH_mftf_8fV12o_Xuvp9gG8ySQq_P0JAyZH=6c66hEA@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <CAGsJ_4xuH_mftf_8fV12o_Xuvp9gG8ySQq_P0JAyZH=6c66hEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTAucrOT69/tQK2o@runicha.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 19, 2023 at 12:43:54AM +0530, Deepak R Varma wrote:
+> The work items listed in the TODO file of this driver file are either
+> completed or dropped. The file is no more significant according
+> to the maintainers. Hence removing it from the sources.
+> 
+> Suggested-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> Signed-off-by: Deepak R Varma <drv@mailo.com>
+Applied to drm-misc-next
 
+Thanks
+Stanislaw
 
-On 10/26/23 11:24, Barry Song wrote:
-> On Thu, Oct 26, 2023 at 12:55 PM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->>
->>
->> On 10/24/23 18:26, Baolin Wang wrote:
->>> Now ptep_clear_flush_young() is only called by folio_referenced() to
->>> check if the folio was referenced, and now it will call a tlb flush on
->>> ARM64 architecture. However the tlb flush can be expensive on ARM64
->>> servers, especially for the systems with a large CPU numbers.
->>
->> TLB flush would be expensive on *any* platform with large CPU numbers ?
->>
->>>
->>> Similar to the x86 architecture, below comments also apply equally to
->>> ARM64 architecture. So we can drop the tlb flush operation in
->>> ptep_clear_flush_young() on ARM64 architecture to improve the performance.
->>> "
->>> /* Clearing the accessed bit without a TLB flush
->>>  * doesn't cause data corruption. [ It could cause incorrect
->>>  * page aging and the (mistaken) reclaim of hot pages, but the
->>>  * chance of that should be relatively low. ]
->>>  *
->>>  * So as a performance optimization don't flush the TLB when
->>>  * clearing the accessed bit, it will eventually be flushed by
->>>  * a context switch or a VM operation anyway. [ In the rare
->>>  * event of it not getting flushed for a long time the delay
->>>  * shouldn't really matter because there's no real memory
->>>  * pressure for swapout to react to. ]
->>>  */
->>
->> If always true, this sounds generic enough for all platforms, why only
->> x86 and arm64 ?
->>
->>> "
->>> Running the thpscale to show some obvious improvements for compaction
->>> latency with this patch:
->>>                              base                   patched
->>> Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%*
->>> Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%*
->>> Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%*
->>> Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%*
->>> Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%*
->>> Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%*
->>> Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%*
->>> Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%*
->>> Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%*
->>>                        base       patched
->>> Duration User         167.78      161.03
->>> Duration System      1836.66     1673.01
->>> Duration Elapsed     2074.58     2059.75
->>
->> Could you please point to the test repo you are running ?
->>
->>>
->>> Barry Song submitted a similar patch [1] before, that replaces the
->>> ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
->>> folio_referenced_one(). However, I'm not sure if removing the tlb flush
->>> operation is applicable to every architecture in kernel, so dropping
->>> the tlb flush for ARM64 seems a sensible change.
->>
->> The reasoning provided here sounds generic when true, hence there seems
->> to be no justification to keep it limited just for arm64 and x86. Also
->> what about pmdp_clear_flush_young_notify() when THP is enabled. Should
->> that also not do a TLB flush after clearing access bit ? Although arm64
->> does not enable __HAVE_ARCH_PMDP_CLEAR_YOUNG_FLUSH, rather depends on
->> the generic pmdp_clear_flush_young() which also does a TLB flush via
->> flush_pmd_tlb_range() while clearing the access bit.
->>
->>>
->>> Note: I am okay for both approach, if someone can help to ensure that
->>> all architectures do not need the tlb flush when clearing the accessed
->>> bit, then I also think Barry's patch is better (hope Barry can resend
->>> his patch).
->>
->> This paragraph belongs after the '----' below and not part of the commit
->> message.
->>
->>>
->>> [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gmail.com/
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>> ---
->>>  arch/arm64/include/asm/pgtable.h | 31 ++++++++++++++++---------------
->>>  1 file changed, 16 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>> index 0bd18de9fd97..2979d796ba9d 100644
->>> --- a/arch/arm64/include/asm/pgtable.h
->>> +++ b/arch/arm64/include/asm/pgtable.h
->>> @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
->>>  static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->>>                                        unsigned long address, pte_t *ptep)
->>>  {
->>> -     int young = ptep_test_and_clear_young(vma, address, ptep);
->>> -
->>> -     if (young) {
->>> -             /*
->>> -              * We can elide the trailing DSB here since the worst that can
->>> -              * happen is that a CPU continues to use the young entry in its
->>> -              * TLB and we mistakenly reclaim the associated page. The
->>> -              * window for such an event is bounded by the next
->>> -              * context-switch, which provides a DSB to complete the TLB
->>> -              * invalidation.
->>> -              */
->>> -             flush_tlb_page_nosync(vma, address);
->>> -     }
->>> -
->>> -     return young;
->>> +     /*
->>> +      * This comment is borrowed from x86, but applies equally to ARM64:
->>> +      *
->>> +      * Clearing the accessed bit without a TLB flush doesn't cause
->>> +      * data corruption. [ It could cause incorrect page aging and
->>> +      * the (mistaken) reclaim of hot pages, but the chance of that
->>> +      * should be relatively low. ]
->>> +      *
->>> +      * So as a performance optimization don't flush the TLB when
->>> +      * clearing the accessed bit, it will eventually be flushed by
->>> +      * a context switch or a VM operation anyway. [ In the rare
->>> +      * event of it not getting flushed for a long time the delay
->>> +      * shouldn't really matter because there's no real memory
->>> +      * pressure for swapout to react to. ]
->>> +      */
->>> +     return ptep_test_and_clear_young(vma, address, ptep);
->>>  }
->>>
->>>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>
->> There are three distinct concerns here
->>
->> 1) What are the chances of this misleading existing hot page reclaim process
->> 2) How secondary MMU such as SMMU adapt to change in mappings without a flush
->> 3) Could this break the architecture rule requiring a TLB flush after access
->>    bit clear on a page table entry
+> ---
+>  drivers/accel/ivpu/TODO | 11 -----------
+>  1 file changed, 11 deletions(-)
+>  delete mode 100644 drivers/accel/ivpu/TODO
 > 
-> In terms of all of above concerns,  though 2 is different, which is an
-> issue between
-> cpu and non-cpu,
-> i feel kernel has actually dropped tlb flush at least for mglru, there
-> is no flush in
-> lru_gen_look_around(),
+> diff --git a/drivers/accel/ivpu/TODO b/drivers/accel/ivpu/TODO
+> deleted file mode 100644
+> index 9077217ae10f..000000000000
+> --- a/drivers/accel/ivpu/TODO
+> +++ /dev/null
+> @@ -1,11 +0,0 @@
+> -- Move to threaded_irqs to mitigate potential infinite loop in ivpu_ipc_irq_handler()
+> -- Implement support for BLOB IDs
+> -- Add debugfs support to improve debugging and testing
+> -- Add tracing events for performance debugging
+> -- Implement HW based scheduling support
+> -- Use syncobjs for submit/sync
+> -- Refactor IPC protocol to improve message latency
+> -- Implement BO cache and MADVISE IOCTL
+> -- Add support for user allocated buffers using prime import and dma-buf heaps
+> -- Refactor struct ivpu_bo to use struct drm_gem_shmem_object
+> -- Add driver/device documentation
+> --
+> 2.39.2
 > 
-> static bool folio_referenced_one(struct folio *folio,
->                 struct vm_area_struct *vma, unsigned long address, void *arg)
-> {
->         ...
 > 
->                 if (pvmw.pte) {
->                         if (lru_gen_enabled() &&
->                             pte_young(ptep_get(pvmw.pte))) {
->                                 lru_gen_look_around(&pvmw);
->                                 referenced++;
->                         }
 > 
->                         if (ptep_clear_flush_young_notify(vma, address,
->                                                 pvmw.pte))
->                                 referenced++;
->                 }
-> 
->         return true;
-> }
-> 
-> and so is in walk_pte_range() of vmscan.  linux has been surviving with
-> all above concerns for a while, believing it or not :-)
-
-Although the first two concerns could be worked upon in the SW, kernel surviving
-after breaking arch rules explicitly is not a correct state to be in IMHO.
