@@ -2,359 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1D87D96E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685BA7D96E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjJ0Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S1345761AbjJ0LsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbjJ0Lru (ORCPT
+        with ESMTP id S231631AbjJ0LsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:47:50 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B4C1;
-        Fri, 27 Oct 2023 04:47:48 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2AE09669;
-        Fri, 27 Oct 2023 13:47:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698407253;
-        bh=G9r7QGFX6v2q8NjkHkEgv1R11Sfoumoslww8TSiFsEs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iYZ6Tq04XS7/F2uQF/VwJ5tbdWNclttDlMJTh1SBukw7eDXNSTwNDJMks62nHw9il
-         nyat0Mz4+lszpXCPXJ+E+EXwf4A5ZvRZbfERP1camOM0Ik4j+tyenIpll6GS4+t461
-         u78u5tgTH62kjdRbP5i9hVXY/JzpjhLKEXG06nxE=
-Date:   Fri, 27 Oct 2023 14:47:52 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michael Grzeschik <mgr@pengutronix.de>
-Cc:     Jayant Chowdhary <jchowdhary@google.com>,
-        Thinh.Nguyen@synopsys.com, arakesh@google.com, etalvala@google.com,
-        dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2] usb:gadget:uvc Do not use worker thread to pump usb
- requests
-Message-ID: <20231027114752.GB12144@pendragon.ideasonboard.com>
-References: <ZToOJhyOFeGCGUFj@pengutronix.de>
- <20231026215635.2478767-1-jchowdhary@google.com>
- <20231027075117.GJ26306@pendragon.ideasonboard.com>
- <ZTuanepgXLXRoSMW@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 27 Oct 2023 07:48:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D45CC1;
+        Fri, 27 Oct 2023 04:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698407286; x=1729943286;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=pIwtqXDZ8MIW96KphHoeCyYq4Ndrtotu13FQGs+c+MA=;
+  b=HSUUTr9QBN+JmXIfcFfmhljepJDLM7VRz9xrQmC3PIqSHO1ZGeB/cn84
+   pxc9QQYFK64lb+E8v4O5apZNc1Sd1EW5ykB6/c5KIiXdxArl+NjxGy+J/
+   nZAQbxmucYPHlfkGKXJutZdqCX0r/pkqkGlvRnyaoIpHNlXF3gx+ttiAi
+   UhzOxJlFVquYKqIeGBRUyvCMiGs4waSSvHh4NeHXiqLZaXxum/ubiq7K0
+   oY9DChZd1uEu/2MuLRdZqZRMTXeKm1sCcn6qkSJdqqQ/x24TkcwizGiTY
+   DlJvLKitO6AgxUG4I5CetkE6fq2rQjgggf0m3T+KKQCMaSxsr3Jp8B7SO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="9299286"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="9299286"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 04:48:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="763192466"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="763192466"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Oct 2023 04:48:05 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 27 Oct 2023 04:48:05 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 27 Oct 2023 04:48:05 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Fri, 27 Oct 2023 04:48:05 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Fri, 27 Oct 2023 04:48:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QbbUMPzeuqqBDF+fMYoeCZqmNVKNxbDIW9IOMQoLZsGc24nEwC5wMPLBSqy89dzkTpQ17f3Xhhz07SUr7zImo/v7cajxJOu+WHKMVrHiOOYFWd9MTvAMrn5q0zvwPiDNWlONXL8L8lIG+1YDgqx8gfvMRJw4NC638pYQNOO2cVtvqPNWkmz01gRt6pYPuLX2nlOGJYtJTYXUgHDgRTxpltBlqKQk7bSW0Jc5KmpUo5I4SpOyBBerkPwTbg9932f99rGjBsFKfADB7TnfoM2ze+GFO9zzowJumRtXO/YpRph9FvHWR/DQBsm91q36rToM3B6hRUVFxtD/cCrLXic0pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VPoey5XJkHI7BS+ukmw5F+nMXsii9+165dEykTZgSEs=;
+ b=lY0vjdZg5gGnalFj8Lr9YGIQOBjd1lIjHI4MCpZyO58xuj6cgSTWIAzyvuR/ip/L1Z7I8gG6H+GYl1jXkTWjxAQkabm+cwlRlEWU+hPaRFVMWFqvKgvzqa8gfHEEQjCXW8Q/ikcGjvYbKMIPGZ5i81lMRnZFSCm6juls9CYfzP/Ux0B5gKAr7DKhbTP0rDnJzwZkeJ4k3jX4SZjiaSJARX2GdKFmJYcz6L5p7AYGDoBmamTCjscjRw9ZplYg0iyHwdySOvcqE0Ed1hD7LbVKZkus6ZeJU9rsb6bD5Ab9jaIHUFAaEvW2LrPiZo5JDXP1Kd0pHr9OoeMH6ODhV0pSvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by PH7PR11MB6905.namprd11.prod.outlook.com (2603:10b6:510:201::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Fri, 27 Oct
+ 2023 11:48:03 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::f4b7:72ae:86f6:450a]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::f4b7:72ae:86f6:450a%4]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
+ 11:48:03 +0000
+Date:   Fri, 27 Oct 2023 13:47:58 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-kselftest@vger.kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 13/24] selftests/resctrl: Convert perf related globals to
+ locals
+Message-ID: <f6b5e7eqjxyt2fcpeub2iusxdpnfkmvaiudgthwmowmgdmc6gt@uaxdzdwj3fg7>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+ <20231024092634.7122-14-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <ZTuanepgXLXRoSMW@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231024092634.7122-14-ilpo.jarvinen@linux.intel.com>
+X-ClientProxiedBy: WA1P291CA0020.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:19::24) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|PH7PR11MB6905:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3ccc402-9a0f-47e1-0160-08dbd6e29374
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O/sSerH9yMr4aOZaqJ0iLnk6LH3e4JwG/eRnv+GQsHbnpE8lU9b5o0J0XNNjNk7zDTh6RKSTwEclod7k3lel9EQIk/rJKUJnsiGTpwlKpFocE3zKUbhdnH/IqzePvtKfsKLxXRpuUDIAJJ9SM5RnWyoTf7KPJtTwBNsWwVS6eh8AoEJcjZOra2hsntID5pQFLgJTJVBm1Yzj4oK9MWN4hVUFMuleI2maxzIB4fWVLZNENJIbaD3lM4JyiTrpIbgmDPUpYw044gl1k+alT/RPz89ocyr72ElVaPR0wIGZimChyZKfjeXYlxGcL3CDI2bfK5frucAybeSuIf7A7iDfjR8jUAgj4dUw3+9XgeoN+6Yz+SyLC9QcfgLS7kSSgUx2JQl/U0xTYggnLFRP26vDXSL9dO6AXixgwRJGjePNzs2GlnXeoemg8AuADjx1kt3A8wltFp1mnsIk10J/l7HlrWZWhmcony1jqtQdmjdIm1d9Lpw62faUtGpkF2pg6k4PXZz+nbXmGo3IeMTHKtsZpbNATYKBELPU6Tewjq4/X17l7sLJ3f0uRJ9fuM8m8IR2
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(346002)(136003)(39860400002)(366004)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(4001150100001)(66946007)(2906002)(4744005)(8936002)(5660300002)(41300700001)(316002)(54906003)(66556008)(66476007)(478600001)(6486002)(53546011)(6916009)(6506007)(8676002)(4326008)(6666004)(26005)(66574015)(6512007)(9686003)(83380400001)(82960400001)(86362001)(38100700002)(33716001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?gK1y/Tig3AtylfvB961+skxlIR9IAzre10EEK+LGDf5d9hn+Yaps/XZ30D?=
+ =?iso-8859-1?Q?q9eEU9dNoqbaXiibVi6Akr6UeoY3c48W0pUbhMBruCGeWNKGc7oecZzVWV?=
+ =?iso-8859-1?Q?ODB3VEN+JSj+MDK6ISTPJH6UP8qYewQLAZIlP4jpycybTzTTVdN77t0MmZ?=
+ =?iso-8859-1?Q?JjBEBESlwvqHYWfUCBKKqOR/Kt2Gks7mEL1TnxWNbpJ0eQd8PyLZ+CwyG0?=
+ =?iso-8859-1?Q?F8EFblvFYoKJxcZNTjRbIMim2sXLFbWQE8WSW1FAVE9Gb4fePCiXCI4mI2?=
+ =?iso-8859-1?Q?e61ZZ8hqb7SzjC89p5D1+znhZhDllW7+Ay+2TvoYY/PPYC1ihoT4pnqh8e?=
+ =?iso-8859-1?Q?bHsui3wVOPYySW2336w+XJOn0P0wFI3nwh5ujVlWPhl/+GtMPYlLRFKg03?=
+ =?iso-8859-1?Q?zfMmAVjlr+19SFtuS+eBSycj621WYpW4A3U5cmivtkxkGMKFtpEWEm0aRT?=
+ =?iso-8859-1?Q?GADuSK/wfOEDW8dr6otl05QLnQxBec70rx2USZDpS3XJ0SUK3PxfUaQf5T?=
+ =?iso-8859-1?Q?rhlU1wyZiCcmPQBSt+0fHFd6uaXMoUbyP1naQuRG2KsXUnPrhsyvOZgHkT?=
+ =?iso-8859-1?Q?d0H/FolJ5kxZwNuWPjB5K6pwTXnUvqp/IbCsycSognsJqVZPGnOK1mnvfu?=
+ =?iso-8859-1?Q?LEB/CUW6hNLpZyv1L8S21wHErPuqct3vP7EcKmwOrmZI/HC3+xdv1+AQE3?=
+ =?iso-8859-1?Q?M9gmtVlHCnTn+i9oGQ3p5KBPd3iKH6hPQHLewFaNI0DpcNAGWOLqfR2C1W?=
+ =?iso-8859-1?Q?FvYhWXpdbWc63aSv06co70Ln4bkShurP2j7kfoBt2yV+PKJfYCXClx6QyX?=
+ =?iso-8859-1?Q?pl9nwFCPZGES3UodY6V58at1GfQSlzxR3sv71exLfT64W9oA551E/PvLqo?=
+ =?iso-8859-1?Q?hixbzxC+7CRpbOKoyJJkw08zvvp6LfrPYmEXij5CODpP11vsqvSH4C7E31?=
+ =?iso-8859-1?Q?0Vh84OWqMgVAqb8uUtKNtkFwqCB8nee3rExysXYAVjqjkZ0L+bw17ewAOQ?=
+ =?iso-8859-1?Q?1FtvHudpTIKMh0tBazrxNKfyZ8qN6p1GO7SR2wVdovrfyIr0K/WlgorMmA?=
+ =?iso-8859-1?Q?AQnT67ODZqHTTC++oYNxrKvj71mKGfrmisdauOWZ+WBeegDRwngKmTWdqJ?=
+ =?iso-8859-1?Q?DbXghT6FGii0wshIAl/emzTU3BQz/sA6mZCxUm+mUxqB8dGs9gusMZenLq?=
+ =?iso-8859-1?Q?gfmY3coEhmVYhUotNqUOBqa4Si87u48rizSui7bs0G8FR5AUI75kR0jNRc?=
+ =?iso-8859-1?Q?6SMyK20oyaT6uI5LhbKXohsMZWYN4G0nS0cM1xpxNC9reqaRsJb4Q8z4KW?=
+ =?iso-8859-1?Q?PTjMLVYylHh8By7qC3w1Rn6A6YTViKC57820jSpUSqWas6ElZ4yB1FzdUJ?=
+ =?iso-8859-1?Q?1SVckWksUwd4lDfqPwjGjjSruy4eI0ebErTbGoWECEkjCV4qROkRBahDAJ?=
+ =?iso-8859-1?Q?Q6bAaSp7nIkxiJh1cWsyjsH/KFPBgCf9SkuL0K79wkOcghlYoPHHHg/Qsy?=
+ =?iso-8859-1?Q?vUjzROkAEJh1alALzp6f3IvRyvEGNWB9wPsiHSZZaQztuXOhUGrcd9OFyD?=
+ =?iso-8859-1?Q?PkL26Zz0JGRBb9WWdPqyBDwYM0FyBPydqF7cCVlTujn8uDSI+274CNKi39?=
+ =?iso-8859-1?Q?L5H74JoH2PLsEtPURfXmQBhYgdFWINlsARccSglHkbM8nAtFEej46DN43Q?=
+ =?iso-8859-1?Q?u6xKcaP5pvTvx9l/hOU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3ccc402-9a0f-47e1-0160-08dbd6e29374
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 11:48:02.9802
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mZyG0+SH+3uTNr2Lj7GODgl/ztkK6yCcMjnhj2IQGqRGMZDja9sIbkxZnglc5XDFrlAQtW1eD96rOTzhdiDYR4QnBlAywLDP/BTA2Dmn7YY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6905
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 01:10:21PM +0200, Michael Grzeschik wrote:
-> On Fri, Oct 27, 2023 at 10:51:17AM +0300, Laurent Pinchart wrote:
-> > On Thu, Oct 26, 2023 at 09:56:35PM +0000, Jayant Chowdhary wrote:
-> >> This patch is based on top of
-> >> https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google.com/T/#t:
-> >>
-> >> When we use an async work queue to perform the function of pumping
-> >> usb requests to the usb controller, it is possible that thread scheduling
-> >> affects at what cadence we're able to pump requests. This could mean usb
-> >> requests miss their uframes - resulting in video stream flickers on the host
-> >> device.
-> >>
-> >> In this patch, we move the pumping of usb requests to
-> >> 1) uvcg_video_complete() complete handler for both isoc + bulk
-> >>    endpoints. We still send 0 length requests when there is no uvc buffer
-> >>    available to encode.
-> >
-> > This means you will end up copying large amounts of data in interrupt
-> > context. The work queue was there to avoid exactly that, as it will
-> > introduce delays that can affect other parts of the system. I think this
-> > is a problem.
-> 
-> Regarding Thin's argument about possible scheduling latency that is already
-> introducing real errors, this seemed like a good solution.
-> 
-> But sure, this potential latency introduced in the interrupt context can
-> trigger other side effects.
-> 
-> However I think we need some compromise since both arguments are very valid.
+On 2023-10-24 at 12:26:23 +0300, Ilpo Järvinen wrote:
+>Perf related variables pea_llc_miss, pe_read, and pe_fd are globals in
+>cache.c.
+>
+>Convert them to locals for better scoping and make pea_llc_miss simpler
+>by renaming it to pea. Make close(pe_fd) handling easier to understand
+>by doing it inside cat_val().
+>
+>Make also sizeof()s use safer way determine the right struct.
 
-Agreed.
+"use safer way determine" -> "use safer way to determine"?
 
-> Any ideas, how to solve this?
-
-I'm afraid not.
-
-> >> 2) uvc_v4l2_qbuf - only for bulk endpoints since it is not legal to send
-> >>    0 length requests.
-> >>
-> >> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> >> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
-> >> Suggested-by: Jayant Chowdhary <jchowdhary@google.com>
-> >> Suggested-by: Avichal Rakesh <arakesh@google.com>
-> >> Tested-by: Jayant Chowdhary <jchowdhary@google.com>
-> >> ---
-> >>  v1->v2: Fix code style and add self Signed-off-by
-> >>
-> >>  drivers/usb/gadget/function/f_uvc.c     |  4 --
-> >>  drivers/usb/gadget/function/uvc.h       |  4 +-
-> >>  drivers/usb/gadget/function/uvc_v4l2.c  |  5 +-
-> >>  drivers/usb/gadget/function/uvc_video.c | 71 ++++++++++++++++---------
-> >>  drivers/usb/gadget/function/uvc_video.h |  2 +
-> >>  5 files changed, 51 insertions(+), 35 deletions(-)
-> >>
-> >> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-> >> index ae08341961eb..53cb2539486d 100644
-> >> --- a/drivers/usb/gadget/function/f_uvc.c
-> >> +++ b/drivers/usb/gadget/function/f_uvc.c
-> >> @@ -959,14 +959,10 @@ static void uvc_function_unbind(struct usb_configuration *c,
-> >>  {
-> >>  	struct usb_composite_dev *cdev = c->cdev;
-> >>  	struct uvc_device *uvc = to_uvc(f);
-> >> -	struct uvc_video *video = &uvc->video;
-> >>  	long wait_ret = 1;
-> >>
-> >>  	uvcg_info(f, "%s()\n", __func__);
-> >>
-> >> -	if (video->async_wq)
-> >> -		destroy_workqueue(video->async_wq);
-> >> -
-> >>  	/*
-> >>  	 * If we know we're connected via v4l2, then there should be a cleanup
-> >>  	 * of the device from userspace either via UVC_EVENT_DISCONNECT or
-> >> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
-> >> index be0d012aa244..498f344fda4b 100644
-> >> --- a/drivers/usb/gadget/function/uvc.h
-> >> +++ b/drivers/usb/gadget/function/uvc.h
-> >> @@ -88,9 +88,6 @@ struct uvc_video {
-> >>  	struct uvc_device *uvc;
-> >>  	struct usb_ep *ep;
-> >>
-> >> -	struct work_struct pump;
-> >> -	struct workqueue_struct *async_wq;
-> >> -
-> >>  	/* Frame parameters */
-> >>  	u8 bpp;
-> >>  	u32 fcc;
-> >> @@ -116,6 +113,7 @@ struct uvc_video {
-> >>  	/* Context data used by the completion handler */
-> >>  	__u32 payload_size;
-> >>  	__u32 max_payload_size;
-> >> +	bool is_bulk;
-> >
-> >This should be introduced in a separate patch.
-> >
-> >>
-> >>  	struct uvc_video_queue queue;
-> >>  	unsigned int fid;
-> >> diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
-> >> index f4d2e24835d4..678ea6df7b5c 100644
-> >> --- a/drivers/usb/gadget/function/uvc_v4l2.c
-> >> +++ b/drivers/usb/gadget/function/uvc_v4l2.c
-> >> @@ -414,10 +414,7 @@ uvc_v4l2_qbuf(struct file *file, void *fh, struct v4l2_buffer *b)
-> >>  	ret = uvcg_queue_buffer(&video->queue, b);
-> >>  	if (ret < 0)
-> >>  		return ret;
-> >> -
-> >> -	if (uvc->state == UVC_STATE_STREAMING)
-> >> -		queue_work(video->async_wq, &video->pump);
-> >> -
-> >> +	uvcg_video_pump_qbuf(video);
-> >>  	return ret;
-> >>  }
-> >>
-> >> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-> >> index ab3f02054e85..0fcd8e5edbac 100644
-> >> --- a/drivers/usb/gadget/function/uvc_video.c
-> >> +++ b/drivers/usb/gadget/function/uvc_video.c
-> >> @@ -24,6 +24,8 @@
-> >>   * Video codecs
-> >>   */
-> >>
-> >> +static void uvcg_video_pump(struct uvc_video *video);
-> >> +
-> >>  static int
-> >>  uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
-> >>  		u8 *data, int len)
-> >> @@ -329,7 +331,9 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
-> >>  	 */
-> >>  	if (video->is_enabled) {
-> >>  		list_add_tail(&req->list, &video->req_free);
-> >> -		queue_work(video->async_wq, &video->pump);
-> >> +		spin_unlock_irqrestore(&video->req_lock, flags);
-> >> +		uvcg_video_pump(video);
-> >> +		return;
-> >>  	} else {
-> >>  		uvc_video_free_request(ureq, ep);
-> >>  	}
-> >> @@ -409,20 +413,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
-> >>   * Video streaming
-> >>   */
-> >>
-> >> +void uvcg_video_pump_qbuf(struct uvc_video *video)
-> >> +{
-> >> +	/*
-> >> +	 * Only call uvcg_video_pump() from qbuf, for bulk eps since
-> >> +	 * for isoc, the complete handler will call uvcg_video_pump()
-> >> +	 * consistently. Calling it for isoc eps, while correct
-> >> +	 * will increase contention for video->req_lock since the
-> >> +	 * complete handler will be called more often.
-> >> +	*/
-> >> +	if (video->is_bulk)
-> >> +		uvcg_video_pump(video);
-> >
-> > Am I the only one to see the *major* race condition that this patch
-> > introduces ?
-> 
-> Possible that you are. Please elaborate.
-
-uvcg_video_pump() can now run multiple times in parallel on multiple
-CPUs. Look at the while() loop in the function, and consider what will
-happen when run on two CPUs concurrently. See below for an additional
-comment on this.
-
-> >> +}
-> >> +
-> >>  /*
-> >>   * uvcg_video_pump - Pump video data into the USB requests
-> >>   *
-> >>   * This function fills the available USB requests (listed in req_free) with
-> >>   * video data from the queued buffers.
-> >>   */
-> >> -static void uvcg_video_pump(struct work_struct *work)
-> >> +static void uvcg_video_pump(struct uvc_video *video)
-> >>  {
-> >> -	struct uvc_video *video = container_of(work, struct uvc_video, pump);
-> >>  	struct uvc_video_queue *queue = &video->queue;
-> >> -	/* video->max_payload_size is only set when using bulk transfer */
-> >> -	bool is_bulk = video->max_payload_size;
-> >>  	struct usb_request *req = NULL;
-> >> -	struct uvc_buffer *buf;
-> >> +	struct uvc_request *ureq = NULL;
-> >> +	struct uvc_buffer *buf = NULL, *last_buf = NULL;
-> >>  	unsigned long flags;
-> >>  	bool buf_done;
-> >>  	int ret;
-> >> @@ -455,7 +470,8 @@ static void uvcg_video_pump(struct work_struct *work)
-> >>  		if (buf != NULL) {
-> >>  			video->encode(req, video, buf);
-> >>  			buf_done = buf->state == UVC_BUF_STATE_DONE;
-> >> -		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) && !is_bulk) {
-> >> +		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) &&
-> >> +				!video->is_bulk) {
-> >>  			/*
-> >>  			 * No video buffer available; the queue is still connected and
-> >>  			 * we're transferring over ISOC. Queue a 0 length request to
-> >> @@ -500,18 +516,30 @@ static void uvcg_video_pump(struct work_struct *work)
-> >>  			req->no_interrupt = 1;
-> >>  		}
-> >>
-> >> -		/* Queue the USB request */
-> >> -		ret = uvcg_video_ep_queue(video, req);
-> >>  		spin_unlock_irqrestore(&queue->irqlock, flags);
-> >> -
-
-Here's one problematic point. The code above may have run on CPU A,
-which releases IRQ lock. CPU B may then run the same code to encode the
-next chunk of data in a request, and proceed to the code below before
-CPU A. The requests will then be queued in the wrong order.
-
-In the next iteration of this patch, I would like to see a clear
-explanation in the commit message of why there is no race condition
-(after fixing the existing ones, of course). Writing it down forces
-going through the mental exercise of thinking about the race conditions,
-which should help catching them.
-
-> >> +		spin_lock_irqsave(&video->req_lock, flags);
-> >> +		if (video->is_enabled) {
-> >> +			/* Queue the USB request */
-> >> +			ret = uvcg_video_ep_queue(video, req);
-> >> +			/* Endpoint now owns the request */
-> >> +			req = NULL;
-> >> +			video->req_int_count++;
-> >> +		} else {
-> >> +			ret =  -ENODEV;
-> >> +			ureq = req->context;
-> >> +			last_buf = ureq->last_buf;
-> >> +			ureq->last_buf = NULL;
-> >> +		}
-> >> +		spin_unlock_irqrestore(&video->req_lock, flags);
-> >>  		if (ret < 0) {
-> >> +			if (last_buf != NULL) {
-> >> +				// Return the buffer to the queue in the case the
-> >> +				// request was not queued to the ep.
-> >
-> > Wrong comment style.
-> >
-> >> +				uvcg_complete_buffer(&video->queue, last_buf);
-> >> +			}
-> >>  			uvcg_queue_cancel(queue, 0);
-> >>  			break;
-> >>  		}
-> >> -
-> >> -		/* Endpoint now owns the request */
-> >> -		req = NULL;
-> >> -		video->req_int_count++;
-> >>  	}
-> >>
-> >>  	if (!req)
-> >> @@ -556,7 +584,6 @@ uvcg_video_disable(struct uvc_video *video)
-> >>  	}
-> >>  	spin_unlock_irqrestore(&video->req_lock, flags);
-> >>
-> >> -	cancel_work_sync(&video->pump);
-> >>  	uvcg_queue_cancel(&video->queue, 0);
-> >>
-> >>  	spin_lock_irqsave(&video->req_lock, flags);
-> >> @@ -626,14 +653,16 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
-> >>  	if (video->max_payload_size) {
-> >>  		video->encode = uvc_video_encode_bulk;
-> >>  		video->payload_size = 0;
-> >> -	} else
-> >> +		video->is_bulk = true;
-> >> +	} else {
-> >>  		video->encode = video->queue.use_sg ?
-> >>  			uvc_video_encode_isoc_sg : uvc_video_encode_isoc;
-> >> +		video->is_bulk = false;
-> >> +	}
-> >>
-> >>  	video->req_int_count = 0;
-> >>
-> >> -	queue_work(video->async_wq, &video->pump);
-> >> -
-> >> +	uvcg_video_pump(video);
-> >>  	return ret;
-> >>  }
-> >>
-> >> @@ -646,12 +675,6 @@ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
-> >>  	INIT_LIST_HEAD(&video->ureqs);
-> >>  	INIT_LIST_HEAD(&video->req_free);
-> >>  	spin_lock_init(&video->req_lock);
-> >> -	INIT_WORK(&video->pump, uvcg_video_pump);
-> >> -
-> >> -	/* Allocate a work queue for asynchronous video pump handler. */
-> >> -	video->async_wq = alloc_workqueue("uvcgadget", WQ_UNBOUND | WQ_HIGHPRI, 0);
-> >> -	if (!video->async_wq)
-> >> -		return -EINVAL;
-> >>
-> >>  	video->uvc = uvc;
-> >>  	video->fcc = V4L2_PIX_FMT_YUYV;
-> >> diff --git a/drivers/usb/gadget/function/uvc_video.h b/drivers/usb/gadget/function/uvc_video.h
-> >> index 03adeefa343b..29c6b9a2e9c3 100644
-> >> --- a/drivers/usb/gadget/function/uvc_video.h
-> >> +++ b/drivers/usb/gadget/function/uvc_video.h
-> >> @@ -18,4 +18,6 @@ int uvcg_video_enable(struct uvc_video *video, int enable);
-> >>
-> >>  int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc);
-> >>
-> >> +void uvcg_video_pump_qbuf(struct uvc_video *video);
-> >> +
-> >>  #endif /* __UVC_VIDEO_H__ */
+>
+>Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
 -- 
-Regards,
-
-Laurent Pinchart
+Kind regards
+Maciej Wieczór-Retman
