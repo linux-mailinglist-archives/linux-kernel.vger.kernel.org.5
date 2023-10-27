@@ -2,105 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862067D93C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1767D93C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345680AbjJ0Jcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        id S1345655AbjJ0Jcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345622AbjJ0Jci (ORCPT
+        with ESMTP id S1345511AbjJ0Jcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:32:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5761A7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698399108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i5tK4NsSAMVwjRdwU7wyEET86Ne+WP2XLYS+WWydcWk=;
-        b=Sgvk9H2xvBT2DLHy0pfixyAp8tYRdSMhJmqmf3FhuGTln2SgPvDmT/ExG9ALItx7gkCcm7
-        7k2+hAAYChfBg6L1Xwpld9Q+mBRySOl/ge6Ots3gGaKIwl6isqhPXACQTzcI/YA9r6hLry
-        3mvZEO6FO5E8nNkHetaoH0dLjgyC0mQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-ZDxDjHaBML-A5ayFFYlVDQ-1; Fri, 27 Oct 2023 05:31:47 -0400
-X-MC-Unique: ZDxDjHaBML-A5ayFFYlVDQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d8d17dcbaso962496f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:31:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698399106; x=1699003906;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5tK4NsSAMVwjRdwU7wyEET86Ne+WP2XLYS+WWydcWk=;
-        b=dZojstezK9/d6zu+IVwDgmuygrbzOxyEicMXNavQYQi3UXiAxQCnSeDHkw7Q1XxFRo
-         90PgxQ7XCCs28kOsAGc8Qc0uPc+lKKv+bJi5gupQ7Ve38Coi+NDtWIB65m3z+9+nqv4J
-         r4Fmo3NpxWYWTdewYPsvaJR93uxZ6/7TxAR8EC9p6m/KZwU2RhCGxY6QFIJm/eNs9S1C
-         mEcgILKHud1u0E/Vb3FFFeK1IQjnbu/Irw2BTfqZAVq0R8wjFMymYHWLR8NSqSxsLRES
-         D3zI1+Q2pJUkIuSofvI77Joj9t9IHjWBVfmSA9srAIGMQMWJiz+dTPbcrXOUQyzrCWG6
-         DAlA==
-X-Gm-Message-State: AOJu0YxMGVclBzPwqjzbvtEDdseKGRZ3t+h94bPCDe5cmjb+sKV/fEaq
-        Wg5tAxs5Z4aBXL2Fqvms/5YbjrSoVbQCZnfy3FZNpWUnSXddWpsLSG7Mo/7UGtsnTT8C8dGLQ/X
-        rXyJqaDDNhOSjrZEfNGFQ6eeK
-X-Received: by 2002:adf:ec52:0:b0:32d:a405:b6b7 with SMTP id w18-20020adfec52000000b0032da405b6b7mr1728466wrn.32.1698399106370;
-        Fri, 27 Oct 2023 02:31:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF4GTSZ5mevbLNAhGTl6ibJEtqheMFk0mh+g9KjS0o00s6f7UUrHkcef0JX6jVsVgS7HiPf/A==
-X-Received: by 2002:adf:ec52:0:b0:32d:a405:b6b7 with SMTP id w18-20020adfec52000000b0032da405b6b7mr1728454wrn.32.1698399106098;
-        Fri, 27 Oct 2023 02:31:46 -0700 (PDT)
-Received: from localhost ([212.80.183.76])
-        by smtp.gmail.com with ESMTPSA id j15-20020adfb30f000000b0032d8eecf901sm1369948wrd.3.2023.10.27.02.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 02:31:45 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Jocelyn Falempe <jfalempe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] drm/ssd130x: Fix possible uninitialized usage of
- crtc_state variable
-In-Reply-To: <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
-References: <20231020225338.1686974-1-javierm@redhat.com>
- <b048247c-75e9-488e-a4f3-b227a38bca5e@redhat.com>
-Date:   Fri, 27 Oct 2023 11:31:45 +0200
-Message-ID: <87v8aso1ha.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 27 Oct 2023 05:32:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD19D6;
+        Fri, 27 Oct 2023 02:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698399150; x=1729935150;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=E5RwqO+lO0TO4TDIUVo/1+XGPWCyYovWfbx2RtbtqoA=;
+  b=JiZGn+7Xc/3Oh3tyWrcUQM3XVQNTkM7lsXECospTDbAPWWZ5vUZAW6I6
+   R3NcT9+/F9L0eIlW+0rWxN+ynDyWwswqTOe0xJvx0VaTWhYRilMLGTBnH
+   upl67LDl+5jJH7A68DuXfcZM6eXQuMh6SX8c3xdmYXGyJm/1wNcq9YHuk
+   Qgfvl4SMlxMa2diZNh0bk0/vS0KF716toG61fhbaKZazhNINHlrlywmcu
+   7C3vPLz5vlG4ovEARXcPR/bo3+4d74oX4BlHf2HBUEseFHwS2slFC4Whp
+   7rjtR2YIfosAP8vuRd4ORZDORCWfVjVB3/fagLY4W/7Dy+2MeXesX3poi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="372791950"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="372791950"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 02:32:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="781882"
+Received: from amyachev-mobl3.ccr.corp.intel.com (HELO localhost) ([10.252.49.46])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 02:31:54 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 1/1] x86/PCI: Clean up open-coded return code mangling
+Date:   Fri, 27 Oct 2023 12:31:58 +0300
+Message-Id: <20231027093158.19171-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jocelyn Falempe <jfalempe@redhat.com> writes:
+PCI BIOS gives a return code in 8 bits of eax register which is
+extracted by open-coded masks and shifting.
 
-> Hi,
->
-> On 21/10/2023 00:52, Javier Martinez Canillas wrote:
->> Avoid a possible uninitialized use of the crtc_state variable in function
->> ssd132x_primary_plane_atomic_check() and avoid the following Smatch warn:
->> 
->>      drivers/gpu/drm/solomon/ssd130x.c:921 ssd132x_primary_plane_atomic_check()
->>      error: uninitialized symbol 'crtc_state'.
->
-> That looks trivial, so you can add:
->
-> Acked-by: Jocelyn Falempe <jfalempe@redhat.com>
->
+Name the return code bits with a define and introduce
+pcibios_get_return_code() helper to extract the return code to improve
+code readability. In addition, replace a zero test with
+PCIBIOS_SUCCESSFUL.
 
-Pushed to drm-misc (drm-misc-next). Thanks!
+No function changes intended.
 
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+
+v2:
+- Improve changelog
+- Add helper to avoid repeating FIELD_GET()
+- Reuse existing ret variable in pcibios_get_irq_routing_table()
+
+ arch/x86/pci/pcbios.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/pci/pcbios.c b/arch/x86/pci/pcbios.c
+index 4f15280732ed..01c94ac2fb70 100644
+--- a/arch/x86/pci/pcbios.c
++++ b/arch/x86/pci/pcbios.c
+@@ -3,6 +3,8 @@
+  * BIOS32 and PCI BIOS handling.
+  */
+ 
++#include <linux/bits.h>
++#include <linux/bitfield.h>
+ #include <linux/pci.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+@@ -29,8 +31,19 @@
+ #define PCIBIOS_HW_TYPE1_SPEC		0x10
+ #define PCIBIOS_HW_TYPE2_SPEC		0x20
+ 
++/*
++ * Returned in EAX:
++ * - AH: return code
++ */
++#define PCIBIOS_RETURN_CODE			GENMASK(15, 8)
++
+ int pcibios_enabled;
+ 
++static u8 pcibios_get_return_code(u32 eax)
++{
++	return FIELD_GET(PCIBIOS_RETURN_CODE, eax);
++}
++
+ /* According to the BIOS specification at:
+  * http://members.datafast.net.au/dft0802/specs/bios21.pdf, we could
+  * restrict the x zone to some pages and make it ro. But this may be
+@@ -154,7 +167,7 @@ static int __init check_pcibios(void)
+ 			: "memory");
+ 		local_irq_restore(flags);
+ 
+-		status = (eax >> 8) & 0xff;
++		status = pcibios_get_return_code(eax);
+ 		hw_mech = eax & 0xff;
+ 		major_ver = (ebx >> 8) & 0xff;
+ 		minor_ver = ebx & 0xff;
+@@ -227,7 +240,7 @@ static int pci_bios_read(unsigned int seg, unsigned int bus,
+ 
+ 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
+ 
+-	return (int)((result & 0xff00) >> 8);
++	return pcibios_get_return_code(result);
+ }
+ 
+ static int pci_bios_write(unsigned int seg, unsigned int bus,
+@@ -269,7 +282,7 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
+ 
+ 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
+ 
+-	return (int)((result & 0xff00) >> 8);
++	return pcibios_get_return_code(result);
+ }
+ 
+ 
+@@ -385,8 +398,9 @@ struct irq_routing_table * pcibios_get_irq_routing_table(void)
+ 		  "m" (opt)
+ 		: "memory");
+ 	DBG("OK  ret=%d, size=%d, map=%x\n", ret, opt.size, map);
+-	if (ret & 0xff00)
+-		printk(KERN_ERR "PCI: Error %02x when fetching IRQ routing table.\n", (ret >> 8) & 0xff);
++	ret = pcibios_get_return_code(ret);
++	if (ret)
++		printk(KERN_ERR "PCI: Error %02x when fetching IRQ routing table.\n", ret);
+ 	else if (opt.size) {
+ 		rt = kmalloc(sizeof(struct irq_routing_table) + opt.size, GFP_KERNEL);
+ 		if (rt) {
+@@ -415,7 +429,7 @@ int pcibios_set_irq_routing(struct pci_dev *dev, int pin, int irq)
+ 		  "b" ((dev->bus->number << 8) | dev->devfn),
+ 		  "c" ((irq << 8) | (pin + 10)),
+ 		  "S" (&pci_indirect));
+-	return !(ret & 0xff00);
++	return pcibios_get_return_code(ret) == PCIBIOS_SUCCESSFUL;
+ }
+ EXPORT_SYMBOL(pcibios_set_irq_routing);
+ 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+2.30.2
 
