@@ -2,78 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C006B7D9AFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4937D9B00
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346094AbjJ0OQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        id S1346102AbjJ0ORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbjJ0OQp (ORCPT
+        with ESMTP id S231302AbjJ0ORU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:16:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE07C0;
-        Fri, 27 Oct 2023 07:16:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE65FC433C7;
-        Fri, 27 Oct 2023 14:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698416203;
-        bh=rt6iDJRCHvBEr6OPA/0g+VB2YEYymvC+/8ZKBH0cI2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lwg9oMo88AJIPFjibSHk1yo11rAeMmAxNPLgZ1P3c6vDMHAE+JSG/AxkioM0jGEA7
-         M/YnVpLjjs/xH+5e4HMEuJvytFmLg6LrCBfFU5TkSNw9iFlcXUbfVur0NRub5+IR9R
-         DvBW3NqSwjoak/rQk4qVBMM2rCUZ/j40bgiT6DGg=
-Date:   Fri, 27 Oct 2023 16:16:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     VAMSHI GAJJELA <vamshigajjela@google.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, ilpo.jarvinen@linux.intel.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manugautam@google.com, Subhash Jadavani <sjadavani@google.com>,
-        Channa Kadabi <kadabi@google.com>
-Subject: Re: [PATCH v3 3/3] serial: core: Update uart_poll_timeout() function
- to return unsigned long
-Message-ID: <2023102753-headcount-fragrant-c532@gregkh>
-References: <20231026135628.2800617-1-vamshigajjela@google.com>
- <2023102712-frolic-bush-3d67@gregkh>
- <CAMTSyjpzrwnbzcjm1nO9Zi7sn7yOGb8sxMjEJGgZoQLgDCx99g@mail.gmail.com>
+        Fri, 27 Oct 2023 10:17:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF99B8;
+        Fri, 27 Oct 2023 07:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698416239; x=1729952239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m6+aEYMf/hf5+wuZDssl5y6BUg7UjE4UJ94L84yPyfU=;
+  b=NCmaTBSLn3CXBGPIloavGadDw0yXeeo3hGMHhIWLfo/HMYn3GjMICybY
+   XkrYKjrXTPoMO3I4HU2smNpkvs6YWZHLwCFjnLfXj4KPlb/QR8q72CssT
+   LDG6wewEqmhISY3EMCsBxIgW6LHOeGiXO5vNLpQK0PlYLhIIEjNURAlXC
+   tT8Vvk69bNHVl9JfSsY/eb44lhtzn7vZ6mRjVUv1sgWv4IB+DxIMlGkY6
+   WYKwoP3ZT9BB+5820JWwfhAoI59OyOUquoc9/fPlPw+yAYkAU4X1GHVy2
+   LkEFUEIdfyTUjl2WViDDCgkzln1Xt0axbUXHzr+LsREQ2n8oR8XXSpt9p
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="602552"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="602552"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:17:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="794588821"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="794588821"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:17:15 -0700
+Date:   Fri, 27 Oct 2023 17:17:12 +0300
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com,
+        andriy.shevchenko@linux.intel.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+Message-ID: <ZTvGaNZmGWpsM-yw@black.fi.intel.com>
+References: <20231026083335.12551-1-raag.jadav@intel.com>
+ <20231027081855.GK3208943@black.fi.intel.com>
+ <ZTuMo2qDO6Aqq3D_@black.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMTSyjpzrwnbzcjm1nO9Zi7sn7yOGb8sxMjEJGgZoQLgDCx99g@mail.gmail.com>
+In-Reply-To: <ZTuMo2qDO6Aqq3D_@black.fi.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 07:28:12PM +0530, VAMSHI GAJJELA wrote:
-> On Fri, Oct 27, 2023 at 12:13 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Oct 26, 2023 at 07:26:28PM +0530, Vamshi Gajjela wrote:
-> > > From: VAMSHI GAJJELA <vamshigajjela@google.com>
-> >
-> > Please use lower case letters like I think you mean to?
-> Sure, I will update.
-> >
-> > Also, where are patches 1/3 and 2/3 of this series?  I can't do anything
-> > without them as well.
-> 1/3 is dropped:
-> https://lore.kernel.org/lkml/CAMTSyjqc118-by6LRHaSN7k8fOcR6K0kmYXdthPD7rqJuYOaVw@mail.gmail.com/
-> 2/3 is a clean up:
-> https://lore.kernel.org/lkml/CAMTSyjpiz_LVtVAzaNpD-xThtp6sKNy-Uvkr+CaH9b10VRYD9A@mail.gmail.com/
-> for 2/3 waiting on response from Ilpo Järvinen
+On Fri, Oct 27, 2023 at 01:12:02PM +0300, Raag Jadav wrote:
+> On Fri, Oct 27, 2023 at 11:18:55AM +0300, Mika Westerberg wrote:
+> > On Thu, Oct 26, 2023 at 02:03:35PM +0530, Raag Jadav wrote:
+> > > Now that we have a standard ACPI helper, we can use acpi_dev_uid_match()
+> > > for matching _UID as per the original logic before commit 2a036e489eb1
+> > > ("ACPI: LPSS: Refactor _UID handling to use acpi_dev_uid_to_integer()"),
+> > > instead of treating it as an integer.
+> > > 
+> > > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > > Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > 
+> > The change still looks good to me, however I wonder if we could maybe
+> > improve acpi_dev_uid_match() to support both data types possible for
+> > _UID? This of course is separate patch (unless there are objections).
+> > 
+> > There is the _Generic() thing and I think that can be used to make
+> > 
+> >   acpi_dev_uid_match()
+> > 
+> > which takes either u64 (or maybe even unsigned int) or const char * and
+> > based on that picks the correct implementation. Not sure if that's
+> > possible, did not check but it would allow us to use one function
+> > everywhere instead of acpi_dev_uid_to_integer() and
+> > acpi_dev_uid_match().
+> 
+> The way I see it, acpi_dev_uid_to_integer() is useful when drivers want to
+> parse _UID and store it in their private data, so that it is available for
+> making various decisions throughout the lifetime of the driver, as opposed
+> to acpi_dev_uid_match() which is more useful for oneshot comparisons in my
+> opinion.
+> 
+> So I'm a bit conflicted about merging them into a single helper, unless
+> ofcourse there is a way to serve both purposes.
 
-But I see no threading of anything here, please submit things so that we
-have a chance to know what is going on.  What would you do if you got a
-patch that only said 3/3 to review?
+Or perhaps something like,
 
-thanks,
+bool acpi_dev_uid_match(struct acpi_device *adev, const void *uid2, enum uid_type type)
+{
+        u64 uid1_d, uid2_d;
 
-greg k-h
+        if (type == UID_TYPE_STR) {
+                char *uid2_s = (char *)uid2;
+                if (!(uid2_s && !kstrtou64(uid2_s, 0, &uid2_d)))
+                        return false;
+        } else if (type == UID_TYPE_INT) {
+                u64 *uid2_p;
+                uid2_p = (u64 *)uid2;
+                uid2_d = *uid2_p;
+        } else {
+                return false;
+        }
+
+        if (!acpi_dev_uid_to_integer(adev, &uid1_d) && uid1_d == uid2_d)
+                return true;
+        else
+                return false;
+}
+
+Although this looks unnecessarily hideous.
+
+Raag
