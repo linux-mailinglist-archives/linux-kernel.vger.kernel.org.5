@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67BE7D8E7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4498B7D8E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345200AbjJ0GJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S230361AbjJ0GJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJ0GJX (ORCPT
+        with ESMTP id S229633AbjJ0GJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:09:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E090D1AD
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:09:20 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so2823321a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698386959; x=1698991759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2uT19wDjBNDXIT18whelaViyd9NALExyuPmq5fccLKI=;
-        b=ZxhzF903rEtCcQdhGGVjmU+LjEIcaX/s2naYHreZLPs5RQyx2DD/plxO45m6ddzRLD
-         UFlVwNqz31QKmyHkEc2AoKmgk7xVZx+W8C+BkJ8OkvgTPYNMiLAGKCYIBK+XU/jSqP66
-         I/QB+9c86B7M778TOJkdgTAtetUGxdBAK40Bv3SyLbX22AMShaJwJ7gkAb9pmSgIbWQo
-         3ZQOy/4GmSy4cbBE5qCNcbBD4GcCiIpkmzgBm1KocUrZo/67H64d+0MHXLCj0XMhXxQ5
-         n3xQ8+ZH7AfsEhF+iSDqQMbYtJhAoQtd4TYCFw+/lFQGtFv5pZO+bRS5TwCMoZvdWLrn
-         Z/RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698386959; x=1698991759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2uT19wDjBNDXIT18whelaViyd9NALExyuPmq5fccLKI=;
-        b=trzcqRw+pK+fNjO2oznvA58m5PmpdISykZylxFl6F40SctWm1AuwweoBshbliM4KdQ
-         0Gxy13PXTO/tPxCVa61hSACYQcztd26Q5SIexaaRVDGp40PTViHFtHVcKyvsd8JvdXit
-         6bvZ1tDUhlxZ2h41/OkyDUBR5BV9xapsZmdG26Dewhm5Yw6LHpiYuMPQI48hIsT7QKFE
-         F6PFFOmi441NQjU7pId01xOVr7koe6DekBZpF3p1520lLEzhsvbUf5AygyKrP4JNcXIS
-         Yk+gnFtv+KTmSNDh124PsNwZc1PcuPhUVo458g2FuV6ACZT4N1f2B0I9lG6AIUiQb09k
-         ePEw==
-X-Gm-Message-State: AOJu0Yw1iX1xyYZ0dTdowk83xN9nH2RPd0c18KQpb7UIT7vkhHEisU5G
-        UGybJ00EYav54pv6ZWTZ0O/sWzcj0rInGVapwPY=
-X-Google-Smtp-Source: AGHT+IH7H9IBZcNg8hAIdE4Fd6UlaSN/PQyWiY63vd21Cpx1nHV/uIHQvLNej+0+Z+LWmiVxhV4LC1bprfX3jzBpwIs=
-X-Received: by 2002:a05:6402:124e:b0:53e:1375:33ce with SMTP id
- l14-20020a056402124e00b0053e137533cemr1508179edw.30.1698386959120; Thu, 26
- Oct 2023 23:09:19 -0700 (PDT)
+        Fri, 27 Oct 2023 02:09:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EB41B2;
+        Thu, 26 Oct 2023 23:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698386954; x=1729922954;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+DrVyO/lmmzNiD355grMg157EiJ4H0MKLPJHIYM0VSM=;
+  b=Hekwgo6jRGDrzcq2saqRM+zqvUIqGMPoYzpyIbMmqbpVLIgLeWr1H5nr
+   pneDqZWAWgR/r6D5BxyPFCRNB0tlu+CDx+k/0mvOBusG46FR7rX9IQelS
+   FS3D1zLWTuVU9wJ55oDA62BLVaDJeaZXbYAfC7XmoCQtcX4nV50xljYLV
+   yhs0aDd961PgIKs4vrp8iV6XkI0+yIGrm/wS5aDe+Lta26qzT0jD1wv5Q
+   CxWEWNOkZjFV/+tWedHMKCY4Pl8PRCaeruxzQPEMR2ITfgS7Nwd65TzBr
+   YgBsctdovK7a2+zU7M0goKeJUtRUugRR5SN6K4NI6A0NYve70ytf1Xxme
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418823669"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="418823669"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 23:09:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="708126"
+Received: from jiaqingh-mobl.ccr.corp.intel.com (HELO [10.93.11.63]) ([10.93.11.63])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 23:08:35 -0700
+Message-ID: <bf2dbc64-a6b6-4763-b497-80f0f1675366@intel.com>
+Date:   Fri, 27 Oct 2023 14:09:11 +0800
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <20231026160100.195099-8-brgerst@gmail.com>
- <CAFULd4ZSzJGzckYLGuh-uVXqpk4E7bxnen0_y5HqFiPkr_36PA@mail.gmail.com> <CAMzpN2h+5FvMhDMWBf8H80mMAMYTOBMBFM4nSr92QRJLA0gqJw@mail.gmail.com>
-In-Reply-To: <CAMzpN2h+5FvMhDMWBf8H80mMAMYTOBMBFM4nSr92QRJLA0gqJw@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Fri, 27 Oct 2023 08:09:07 +0200
-Message-ID: <CAFULd4aMo5c-34rHaoNPpF08o28TG_OgAxw+_rxwZmHti9WD=w@mail.gmail.com>
-Subject: Re: [PATCH v2 07/11] x86/percpu/64: Use relative percpu offsets
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] iommu: Introduce a rb_tree for looking up device
+Content-Language: en-US
+To:     Baolu Lu <baolu.lu@linux.intel.com>, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Cc:     jacob.jun.pan@linux.intel.com, kevin.tian@intel.com,
+        yi.y.sun@intel.com, kvm@vger.kernel.org
+References: <20231024084124.11155-1-jiaqing.huang@intel.com>
+ <5a4c169d-8e42-4609-87db-8b68f04bb0fe@linux.intel.com>
+From:   "Huang, Jiaqing" <jiaqing.huang@intel.com>
+In-Reply-To: <5a4c169d-8e42-4609-87db-8b68f04bb0fe@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 4:09=E2=80=AFAM Brian Gerst <brgerst@gmail.com> wro=
-te:
+On 10/24/2023 7:58 PM, Baolu Lu wrote:
+
+> On 2023/10/24 16:41, Huang Jiaqing wrote:
+>> The existing IO page fault handler locates the PCI device by calling
+>> pci_get_domain_bus_and_slot(), which searches the list of all PCI
+>> devices until the desired PCI device is found. This is inefficient
+>> because the algorithm efficiency of searching a list is O(n). In the
+>> critical path of handling an IO page fault, this is not performance
+>> friendly given that I/O page fault handling patch is performance
+>> critical, and parallel heavy dsa_test may cause cpu stuck due to
+>> the low efficiency and lock competition in current path.
+>>
+>> To improve the performance of the IO page fault handler, replace
+>> pci_get_domain_bus_and_slot() with a local red-black tree. A red-black
+>> tree is a self-balancing binary search tree, which means that the
+>> average time complexity of searching a red-black tree is O(log(n)). This
+>> is significantly faster than O(n), so it can significantly improve the
+>> performance of the IO page fault handler.
+>>
+>> In addition, we can only insert the affected devices (those that have IO
+>> page fault enabled) into the red-black tree. This can further improve
+>> the performance of the IO page fault handler.
+>>
+>> This series depends on "deliver page faults to user space" patch-set:
+>> https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
+>>
 >
-> On Thu, Oct 26, 2023 at 2:47=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> w=
-rote:
-> >
-> > On Thu, Oct 26, 2023 at 6:01=E2=80=AFPM Brian Gerst <brgerst@gmail.com>=
- wrote:
-> > >
-> > > The percpu section is currently linked at virtual address 0, because
-> > > older compilers hardcoded the stack protector canary value at a fixed
-> > > offset from the start of the GS segment.  Now that the canary is a
-> > > normal percpu variable, the percpu section can be linked normally.
-> > > This means that x86-64 will calculate percpu offsets like most other
-> > > architectures, as the delta between the initial percpu address and th=
-e
-> > > dynamically allocated memory.
-> >
-> > The comments above MSR_GS_BASE setup should be reviewed or removed. I
-> > don't think they need to be set up to access stack canary, they are
-> > just clearing MSR now.
->
-> GSBASE is deliberately set to zero offset on SMP for boot because we
-> want any percpu accesses (including stack protector) to use the
-> initial percpu area until the full percpu memory is allocated.  It's
-> possible that more stack protector checks could sneak back into the
-> early boot code, and after the conversion to relative percpu offsets
-> they would work properly again.  I just didn't reenable them because
-> they are unnecessary that early.
+> The note above is not part of the commit message, and should be placed
+> below the tear line or in the cover letter, if there is one.
 
-Thanks for the explanation, perhaps this non-obvious fact should be
-mentioned in the comment .
+Will fix, thanks for catching!
 
-Thanks,
-Uros.
-
-> Brian Gerst
+BRs,
+Jiaqing
