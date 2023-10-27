@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02657D949C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581267D94BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjJ0KDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        id S1345692AbjJ0KI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 06:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjJ0KDK (ORCPT
+        with ESMTP id S1345674AbjJ0KI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:03:10 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691AD194
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:03:08 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a82c2eb50cso14499567b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698400987; x=1699005787; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXE7lgarxwuv4Xl7UQk0cudPQAILR43rhjN5/cXQAig=;
-        b=qlMKTcoMuz2ascR0kUAJFi8oBCTlpoi3kS1ibXH0Nmy/tbs1bgkQvLSGIaQcD5BWOQ
-         Ub9MWQZYofB+qZdC7F+5+raVfyHzlcxcNk0+QIxokLaxiAZ/RBodjT14k70UgrthLiD3
-         ZqFHeGCmIQD7RBceA+A+aeH534GwNdGTMBf/3il1aI7RJk269zH5o6pTgJtHBuCllY3v
-         46AI6oa07c5F0LGiif2aJ3jyXlIxT5+Jhq6gPy6EQaZEgkNbF/dYPJJrnFwIY1/CYhsw
-         /cnyJZlAAUevS1LrSqLTuyh/w5yAuLTlb5LxVFDm9YuNyd11TWvn/i4Gu6JkkgyDpD7i
-         Hzcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698400987; x=1699005787;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YXE7lgarxwuv4Xl7UQk0cudPQAILR43rhjN5/cXQAig=;
-        b=eIXCrw7rkBLZKG160abbyOxyRCgfz49uhtrQQ9/ofAgEugccc6DLKCVEYF5MbiAxKt
-         +N2BZ9/m8O6PvbGIK5lKSlHywzZY3gOR6yUoU3AMnE3Njle0UeLmuc2ktSy7xPBMEPxG
-         0nyimpIZElIjrbEuRzEBHDui9K/me4GvdL7WDRO5uyfJI7Q7+0QNBMOljyENq7IIz053
-         H9wZGfjSf/KccONfYeKHwaRUeyRPjCCNe8wGDyBRP59YLm19GgpUM061hjXYGFBLm7x/
-         3Dlj7ltfNVLtSucZwDjTwVDiTjxwPrUUH31SyfwlfwDIkrI8FuMk+Ez03iwV1rN7a84m
-         GxTg==
-X-Gm-Message-State: AOJu0YziTsdvp8wFFKxt/4EhQ2ia/NbkuA8aqAIsc29xgnfqgS3CTgxX
-        VTbsKzvi4Pz4e+YgSDd/fK2284hOwWg+z8UQNdazDQ==
-X-Google-Smtp-Source: AGHT+IFYbP/Q1oQDF4bp5AJQ1qmGH7ABvag64Mb4Rq9m8K4E0PNVBVrXn6fERnyi6wwBkU+O2mWw4VNUzTnB2t4ERAQ=
-X-Received: by 2002:a81:c80a:0:b0:5a8:5824:b953 with SMTP id
- n10-20020a81c80a000000b005a85824b953mr2187884ywi.8.1698400987537; Fri, 27 Oct
- 2023 03:03:07 -0700 (PDT)
+        Fri, 27 Oct 2023 06:08:26 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51121B3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:08:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1698401296;
+        bh=30OBHWUfyQHjnBWbrlGeUaI2WXMNAW9Re3MJ+2tSPpc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=i8BMO8t6Y4KHqTx8aUV5Zw4npGWR8icDA0Xv/4pqRaVRUM03VA16MiLOb78fabd3C
+         AiKl8545U4Tepu0sA+VFzcWMD+xuN9/a7cZUWexLo2Izbu9sGvj53Ad5n8deRgubs2
+         vKE2jyhylRvMPvluSCFHjt/H8z7dNm/MN6U5lA86pmpiWo7ZjYBL6ld9xZwkIgzHzl
+         elosUl/zMPN5EfPwD9QLl29qPlMLGuBLfR8+PUSkntuXDhS6xwytpFctYPPNQZoHis
+         A+pnoAvAoo5JPFPQiy6HGIYbQGs3MnF0EGFYMI9x4GhbLqcwdg3rzvnuyEu3ODysto
+         4XJeiC5kSdKTg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGyzN2hTPz4xVb;
+        Fri, 27 Oct 2023 21:08:16 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        "Christopher M . Riedl" <cmr@bluescreens.de>
+In-Reply-To: <e88b154eaf2efd9ff177d472d3411dcdec8ff4f5.1696675567.git.christophe.leroy@csgroup.eu>
+References: <e88b154eaf2efd9ff177d472d3411dcdec8ff4f5.1696675567.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/code-patching: Perform hwsync in __patch_instruction() in case of failure
+Message-Id: <169840079684.2701453.17093858702248932899.b4-ty@ellerman.id.au>
+Date:   Fri, 27 Oct 2023 20:59:56 +1100
 MIME-Version: 1.0
-References: <20231026073156.2868310-1-rong.chen@amlogic.com>
-In-Reply-To: <20231026073156.2868310-1-rong.chen@amlogic.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 27 Oct 2023 12:02:31 +0200
-Message-ID: <CAPDyKFr_NkZYEHN-9BPTQT1K9nMA30_vyry-6pz+G_iAw4uB0g@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: meson-gx: Remove setting of CMD_CFG_ERROR
-To:     "Rong.Chen" <rong.chen@amlogic.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,40 +55,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 09:32, Rong.Chen <rong.chen@amlogic.com> wrote:
->
-> From: Rong Chen <rong.chen@amlogic.com>
->
-> For the t7 and older SoC families, the CMD_CFG_ERROR has no effect.
-> Starting from SoC family C3, setting this bit without SG LINK data
-> address will cause the controller to generate an IRQ and stop working.
->
-> To fix it, don't set the bit CMD_CFG_ERROR anymore.
->
-> Fixes: 18f92bc02f17 ("mmc: meson-gx: make sure the descriptor is stopped on errors")
-> Signed-off-by: Rong Chen <rong.chen@amlogic.com>
+On Sat, 07 Oct 2023 12:46:19 +0200, Christophe Leroy wrote:
+> Commit c28c15b6d28a ("powerpc/code-patching: Use temporary mm for
+> Radix MMU") added a hwsync for when __patch_instruction() fails,
+> we results in a quite odd unbalanced logic.
+> 
+> Instead of calling mb() when __patch_instruction() returns an error,
+> call mb() in the __patch_instruction()'s error path directly.
+> 
+> [...]
 
-Applied for fixes and by adding a stable tag, thanks!
+Applied to powerpc/next.
 
-Kind regards
-Uffe
+[1/1] powerpc/code-patching: Perform hwsync in __patch_instruction() in case of failure
+      https://git.kernel.org/powerpc/c/74726fda9fe306f848088ef73ec266cae0470d5b
 
-> ---
->  drivers/mmc/host/meson-gx-mmc.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-> index 9837dab096e6..c7c067b9415a 100644
-> --- a/drivers/mmc/host/meson-gx-mmc.c
-> +++ b/drivers/mmc/host/meson-gx-mmc.c
-> @@ -801,7 +801,6 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->
->         cmd_cfg |= FIELD_PREP(CMD_CFG_CMD_INDEX_MASK, cmd->opcode);
->         cmd_cfg |= CMD_CFG_OWNER;  /* owned by CPU */
-> -       cmd_cfg |= CMD_CFG_ERROR; /* stop in case of error */
->
->         meson_mmc_set_response_bits(cmd, &cmd_cfg);
->
-> --
-> 2.42.0
->
+cheers
