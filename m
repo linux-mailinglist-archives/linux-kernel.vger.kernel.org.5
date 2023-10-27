@@ -2,167 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE77F7DA1A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC547DA1AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346350AbjJ0UM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S1346387AbjJ0UUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0UM1 (ORCPT
+        with ESMTP id S230451AbjJ0UUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:12:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11310E5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:12:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698437545; x=1729973545;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+StNUvMt2MbRGlfFkrMTi4YqqZDHYxl6hV6BoaalDBY=;
-  b=RZdIJTMhiiV1YEIo/gt7hLhUQom1EJk34JHmUMVLf/ZDxP7MX0PHIgR3
-   YM8MTs3c8dMCvpj2hONzNxlP0vwhitekuDhGBxFzQKfDcGXRSPC7gWmkI
-   tmtQlCvwTlhl+CP30p0cBW7700c+rCgURTzmZwuFEgGplb+0LokQn3zb7
-   RLzwoD6paukm7HFg0QQF+IVcokPHwX/DdZuomM3315VYG86QzX8kbU/NM
-   WQz0qgjDx5BFbhU1yJ4EZoNLCJQCPoYQ9vud/qfnBO/NvbFHWNSXGwE/o
-   PWAhnXHm3+WHt2Jxc1Q2v6/pzoj3muPRaoZYxcbCMNLcFNMPN17+arEGi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="390707575"
-X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
-   d="scan'208";a="390707575"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 13:12:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="794684805"
-X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
-   d="scan'208";a="794684805"
-Received: from hannahwo-mobl1.amr.corp.intel.com (HELO [10.209.35.60]) ([10.209.35.60])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 13:12:23 -0700
-Message-ID: <3d1a8f13-be8e-42a4-93f7-0ae59b7f0505@intel.com>
-Date:   Fri, 27 Oct 2023 13:12:23 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] x86/entry: Avoid redundant CR3 write on paranoid
- returns
-Content-Language: en-US
-To:     Brendan Jackman <jackmanb@google.com>, luto@kernel.org,
-        tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        laijs@linux.alibaba.com, yosryahmed@google.com, reijiw@google.com,
-        oweisse@google.com, peterz@infradead.org
-References: <20230920150443.1789000-1-jackmanb@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20230920150443.1789000-1-jackmanb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Fri, 27 Oct 2023 16:20:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5031AA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:20:05 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da1176f3d96so1003835276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698438005; x=1699042805; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ep/ELVWkKr4CeruSxLnrkZQE2W1VuCadmVO/eYOPMRk=;
+        b=Oy5ULI1xCGvq5/en2OQihjQfOfkMVL/ir4JroB3PvAbiXYSRxKBdvYwrL6iFL0u1wf
+         XJe+1MuOP0DmfK+XCpRNuhfTwjjpDP2lmFEcvVnb+plCbDIr3O5pCpZbrAx3Xf10wVkU
+         mo/durMepm5yw1gTYpkxov2+HhW5bc1nFSxkbExN5xT6s5UbtElRXtybrrgKpjCJ7AGJ
+         hi6+4kJpIvK4GW8rkIws9joNEv8K4fIXHCCcofB9pTvICi16s5GrMVU6kOwVROqUp+J3
+         ZNdDMtM1+aDjcOIOMi1L/i9I4avSlilZ3M/rof0Hei0YkR7PeTpsmKEPqifivzydF+b9
+         Qo2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698438005; x=1699042805;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ep/ELVWkKr4CeruSxLnrkZQE2W1VuCadmVO/eYOPMRk=;
+        b=YYdPu8FJLL70tlEYicg3RvKJbofs1eKyyONtOsqv4PUvQgKr1fLcvku+yfSVQAXHqn
+         KuYl5Lyq2NomBRRn3oVzIl5v9vqfc58jDYrfNn/5zIiiQtYvQcVn77vnXu4wEdDviIYU
+         UE+6AH5+sZgJEs/fIXrUJUbhMRXWAvQjYymhoyU8oVgXNQ9lNSyxTlkCu/o49gET0WaR
+         Ju4tz5aBR5W6ztHXhiItH1+LHfS/eN9TGgpiPy/jmQW+drv7CRYTwtv+lmVATUfS6RbE
+         Ja6l5ayNH0X53N/RlLywkxkW1otCexEUZ667QGt2jwMaPN4AwE6ie0MBdbJKPyOrKNpU
+         O4hw==
+X-Gm-Message-State: AOJu0YxEfsVFUtfdlt+K3a6XFWaOWhoyWMR7a7crVwO+qYkRWjYjLs14
+        gSAMlp/TGF1fSyLI9OzpaMtSn6hOFEzt
+X-Google-Smtp-Source: AGHT+IFB9G9q7Is4pJEknHTJS5eFPTHHnCkwDLKEwYWeFgLBRgi/NQCBEbrnfQhOGzei2olRAPf/peqV0McJ
+X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
+ (user=arakesh job=sendgmr) by 2002:a25:cfca:0:b0:d9a:556d:5f8a with SMTP id
+ f193-20020a25cfca000000b00d9a556d5f8amr67456ybg.12.1698438005024; Fri, 27 Oct
+ 2023 13:20:05 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 13:19:56 -0700
+In-Reply-To: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+Mime-Version: 1.0
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027201959.1869181-1-arakesh@google.com>
+Subject: [PATCH v9 1/4] usb: gadget: uvc: prevent use of disabled endpoint
+From:   Avichal Rakesh <arakesh@google.com>
+To:     arakesh@google.com, dan.scally@ideasonboard.com
+Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.grzeschik@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/23 08:04, Brendan Jackman wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> This path gets used called from:
-> 
-> 1. #NMI return.
-> 2. paranoid_exit (i.e. #MCE, #VC, #DB and #DF return)
-> 
-> Contrary to the implication in commit 21e94459110252 ("x86/mm: Optimize
-> RESTORE_CR3"), we never modify CR3 in any of these exceptions, except
-> for switching from user to kernel pagetables under PTI. That means that
-> most of the time when returning from an exception that interrupted the
-> kernel no CR3 restore is necessary. Writing CR3 is expensive on some
-> machines, so this commit avoids redundant writes.
+Currently the set_alt callback immediately disables the endpoint and queues
+the v4l2 streamoff event. However, as the streamoff event is processed
+asynchronously, it is possible that the video_pump thread attempts to queue
+requests to an already disabled endpoint.
 
-Please avoid "we's" in changelogs.
+This change moves disabling usb endpoint to the end of streamoff event
+callback. As the endpoint's state can no longer be used, video_pump is
+now guarded by uvc->state as well. To be consistent with the actual
+streaming state, uvc->state is now toggled between CONNECTED and STREAMING
+from the v4l2 event callback only.
 
-One thing that I think is key to this patch, but which is muddled up in
-that changelog:
+Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
+Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Signed-off-by: Avichal Rakesh <arakesh@google.com>
+---
+v1 -> v2: Rebased to ToT and reworded commit message.
+v2 -> v3: Fix email threading goof-up
+v3 -> v4: Address review comments & re-rebase to ToT
+v4 -> v5: Add Reviewed-by & Tested-by
+v5 -> v6: No change
+v6 -> v7: No change
+v7 -> v8: No change. Getting back in review queue
+v8 -> v9: Fix typo. No functional change.
 
-	RESTORE_CR3 is *ONLY* used when returning to the kernel.
-	It must handle user CR3 values because the kernel can run in the
-	entry/exit code with user CR3 values.  That means that restoring
-        user CR3 values is important functionally but is actually rare
-	in practice.
+ drivers/usb/gadget/function/f_uvc.c     | 11 +++++------
+ drivers/usb/gadget/function/f_uvc.h     |  2 +-
+ drivers/usb/gadget/function/uvc.h       |  2 +-
+ drivers/usb/gadget/function/uvc_v4l2.c  | 20 +++++++++++++++++---
+ drivers/usb/gadget/function/uvc_video.c |  3 ++-
+ 5 files changed, 26 insertions(+), 12 deletions(-)
 
-That's _not_ obvious from just glancing at RESTORE_CR3 call sites or
-reading your changelog.  It also makes it obvious why this patch is
-worth it: it optimizes the overwhelmingly common case.
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index faa398109431..ae08341961eb 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+ 	return 0;
+ }
 
-> I said "most of the time" because we might have interrupted the kernel
-> entry before the user->kernel CR3 switch or the exit after the
-> kernel->user switch. In the former case skipping the restore might
-> actually be be fine, but definitely not the latter. So we do still need
-> to check the saved CR3 and restore it if it's a user CR3.
-> 
-> To reflect the new behaviour RESTORE_CR3 is given a longer name, and a
-> comment that was describing its behaviour at the call site is removed.
-> We can also simplify the code around the SET_NOFLUSH_BIT invocation
-> as we no longer need to branch to it from above.
-Also, I don't feel _that_ strongly about the naming, but I'd kinda
-rather it be:
+-void uvc_function_setup_continue(struct uvc_device *uvc)
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+ {
+ 	struct usb_composite_dev *cdev = uvc->func.config->cdev;
 
-	PARANOID_RESTORE_CR3
++	if (disable_ep && uvc->video.ep)
++		usb_ep_disable(uvc->video.ep);
++
+ 	usb_composite_setup_continue(cdev);
+ }
 
-That would at least label it explicitly for these paranoid exit cases.
-Sure, this _can_ get used in other contexts theoretically, but it's
-really only suitable for the two paranoid exit paths.
+@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
+ 		if (uvc->state != UVC_STATE_STREAMING)
+ 			return 0;
 
-It also avoids confusion about whether the "USER" refers to the context
-or the CR3 value.
+-		if (uvc->video.ep)
+-			usb_ep_disable(uvc->video.ep);
+-
+ 		memset(&v4l2_event, 0, sizeof(v4l2_event));
+ 		v4l2_event.type = UVC_EVENT_STREAMOFF;
+ 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
 
-I would probably also give this CR3 function a declared purpose:
+-		uvc->state = UVC_STATE_CONNECTED;
+-		return 0;
++		return USB_GADGET_DELAYED_STATUS;
 
-/* Restore CR3 from a kernel context.  May restore a user CR3 value. */
+ 	case 1:
+ 		if (uvc->state != UVC_STATE_CONNECTED)
+diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
+index 1db972d4beeb..083aef0c65c6 100644
+--- a/drivers/usb/gadget/function/f_uvc.h
++++ b/drivers/usb/gadget/function/f_uvc.h
+@@ -11,7 +11,7 @@
+
+ struct uvc_device;
+
+-void uvc_function_setup_continue(struct uvc_device *uvc);
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+
+ void uvc_function_connect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 6751de8b63ad..989bc6b4e93d 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -177,7 +177,7 @@ struct uvc_file_handle {
+  * Functions
+  */
+
+-extern void uvc_function_setup_continue(struct uvc_device *uvc);
++extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+ extern void uvc_function_connect(struct uvc_device *uvc);
+ extern void uvc_function_disconnect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+index 3f0a9795c0d4..7cb8d027ff0c 100644
+--- a/drivers/usb/gadget/function/uvc_v4l2.c
++++ b/drivers/usb/gadget/function/uvc_v4l2.c
+@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	 * Complete the alternate setting selection setup phase now that
+ 	 * userspace is ready to provide video frames.
+ 	 */
+-	uvc_function_setup_continue(uvc);
++	uvc_function_setup_continue(uvc, 0);
+ 	uvc->state = UVC_STATE_STREAMING;
+
+ 	return 0;
+@@ -463,11 +463,18 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct uvc_device *uvc = video_get_drvdata(vdev);
+ 	struct uvc_video *video = &uvc->video;
++	int ret = 0;
+
+ 	if (type != video->queue.queue.type)
+ 		return -EINVAL;
+
+-	return uvcg_video_enable(video, 0);
++	uvc->state = UVC_STATE_CONNECTED;
++	ret = uvcg_video_enable(video, 0);
++	if (ret < 0)
++		return ret;
++
++	uvc_function_setup_continue(uvc, 1);
++	return 0;
+ }
+
+ static int
+@@ -500,6 +507,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+ static void uvc_v4l2_disable(struct uvc_device *uvc)
+ {
+ 	uvc_function_disconnect(uvc);
++	/*
++	 * Drop uvc->state to CONNECTED if it was streaming before.
++	 * This ensures that the usb_requests are no longer queued
++	 * to the controller.
++	 */
++	if (uvc->state == UVC_STATE_STREAMING)
++		uvc->state = UVC_STATE_CONNECTED;
++
+ 	uvcg_video_enable(&uvc->video, 0);
+ 	uvcg_free_buffers(&uvc->video.queue);
+ 	uvc->func_connected = false;
+@@ -647,4 +662,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
+ 	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
+ #endif
+ };
+-
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 91af3b1ef0d4..c334802ac0a4 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -384,13 +384,14 @@ static void uvcg_video_pump(struct work_struct *work)
+ 	struct uvc_video_queue *queue = &video->queue;
+ 	/* video->max_payload_size is only set when using bulk transfer */
+ 	bool is_bulk = video->max_payload_size;
++	struct uvc_device *uvc = video->uvc;
+ 	struct usb_request *req = NULL;
+ 	struct uvc_buffer *buf;
+ 	unsigned long flags;
+ 	bool buf_done;
+ 	int ret;
+
+-	while (video->ep->enabled) {
++	while (uvc->state == UVC_STATE_STREAMING && video->ep->enabled) {
+ 		/*
+ 		 * Retrieve the first available USB request, protected by the
+ 		 * request lock.
+--
+2.42.0.820.g83a721a137-goog
