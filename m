@@ -2,261 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D574F7D9D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE2A7D9DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346321AbjJ0P4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
+        id S1346336AbjJ0P5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345780AbjJ0P4q (ORCPT
+        with ESMTP id S1346224AbjJ0P5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:56:46 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60EC129
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b44befac59so2489490b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698422200; x=1699027000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=40fyXIZLWl6t+j1qK/ww8o7e/vmz8aWuQu+nEtghbIE=;
-        b=CRPn1o7AzPXlGW0pjH0nQAzz0oyjEmn+qQWozrq8tZ6viB0qSGdxO7QdNUgAxPT41S
-         +lVIeXVzXYi8eFN0yQXsVZe9MfK4Ro0HfHxGErb53v9gEMkvHeBOZJlRVTlE1kzB6Ts5
-         ow5Ud3NZ65gn+fT6CGIMW2EAV2YJElVMnCjRc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698422200; x=1699027000;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=40fyXIZLWl6t+j1qK/ww8o7e/vmz8aWuQu+nEtghbIE=;
-        b=rX+YKd0/VkeWCW/QTna3sN9VzCuvHfbIAEn19J85da4gUwBlwSHg/2PTPigD/OS296
-         O7FTbt2WzUr2ebHXb17/9iVzy6BMUIzIrrV1OGjnV98GmxwVcGL0X4nMAYHCVLFH9fIl
-         OLoAHfy5KKxfBDCMOibVdslLqKVMthA1dHUQ6QMy3FQfklrSzBSTBN2v+1XK2vqyLrfN
-         CsxouX48UJUhfY9nxdqPYECLtd93nCc36kccnAX4US5Yrcg9n/q7Yis5WcM3aivzHeRl
-         vnRgx+vkryYcQMxGIS2vCHcA7ooNz/ga1kq4FOJ3yRuqV/KufgwA1lGWP2aFBe/qHtF/
-         Wwqg==
-X-Gm-Message-State: AOJu0YzUTXc5B3W5v3gzNhp7RMB6ZGONBDEE2l98wM7epJbA7InWQAMR
-        R7AC3NBQInJjEQaOSCrSRK8U7w==
-X-Google-Smtp-Source: AGHT+IENI6l4x0rUhXCb0++j2mRLJ+co5f7HRnxct20HokNEjgiWTI/oZ8VdjqfhoUx6oXd5jnCZ+A==
-X-Received: by 2002:a05:6a21:32aa:b0:17b:2c56:70bc with SMTP id yt42-20020a056a2132aa00b0017b2c5670bcmr4314236pzb.10.1698422200183;
-        Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006be484e5b9asm1545611pfu.188.2023.10.27.08.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 08:56:39 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v3] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
-Date:   Fri, 27 Oct 2023 08:56:38 -0700
-Message-Id: <20231027155634.make.260-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 27 Oct 2023 11:57:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30E0CE
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:57:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F7DC433C7;
+        Fri, 27 Oct 2023 15:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698422253;
+        bh=5aHvOf/tPDGqmnSNEmdIU3zX9wqQNMOGtumjnNW/4ho=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gFHt6fdOWWMG2TsxZ3ZP6RfUP+obHXohj5L35F+DACm6plNeJUbrW5WWhtr2vcWb/
+         Bo81e6lCaBK64uOYIDNNqPRZJ8vSiNrOmKuneRymRqYg6kZID32g5qRdiwj1r2jNit
+         RlJkYSHIGfc+4kHqbCJXBQ24B8A4I9WImOgIoObpEEGeBe3hP8G8sUNB8tSTQ7/9HG
+         7w4XIhIQLa2RwQDGKApwMng72Q6ufhRzAiX5t8EBEt6NaAE+4bbTdgu3d0c1SCDvy4
+         2enM6cMM/iaRjS5L5NS4TKB7Zb+A94kOxukyvLIrdSqLJwQf4lWTMFxypxk9dY7GpT
+         ehIqH3WGbHGcw==
+Message-ID: <db468c1c-fec9-46e7-b01f-413b539664fa@kernel.org>
+Date:   Fri, 27 Oct 2023 17:57:25 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4859; i=keescook@chromium.org;
- h=from:subject:message-id; bh=3QgU2GLPGx9pQtjcPqO6cwYESMY3mYmV87vQL0flhSk=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlO922vKn2ZbYda/N+2eCxBpz/i6JD9BxvPlHI+
- EYOwNQvs8uJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZTvdtgAKCRCJcvTf3G3A
- JmNwD/9KM3Ah0jhY/I4rtDSfk6VKAxNnDNfdAb6bwxkU6i4DwTDv2m9bkpEJ8tOYI17VJM08pQP
- dqiHbBRsnaXTcjX7qSYYZkiEyvtaz1aqEqfESlMMsQlG5nm3p5ydAJ0HCTNgPsRCmqWXg7ngHkw
- U7AKCvYa8/k77glsBe2DNvwJG/iV8SxHewOBIX/RMMjXxejGUnJwcTu7WDaAoBalJSF4B6V4O+j
- TRX9ttk89GcOeEcpA86CtE4W+PPDeatAy3KkfNM3yH9dzWtryIvODc6fenHLhc5Wzfae72h5CoW
- 0oxEf4bfFEjxene1jXHBMNrro16JWBcSKXnbTxFcVG8wnbMnILi+338L74Pu04ADedq7T1GOSNp
- eRO4uwHrqbLV3FN6gfdLdVtDcuSzg7JzSh1ea9jba2TmOUxv2yCgimfAAeTAH8hKV2xYbgrA853
- hLA+F1AG58hsyZ57S3wJ5VAoXaEXaxRMozLDG+VyMp3z3729+n8oRBpfM9d+RMYm8mfi0LjoVfd
- 1Sy0aMBBB5fKUYpLuqkSTeIy1jtimZFYyTAZyBJQASoPKrmY4RXNhm+0AJ4bGB/bXDQPrw3QQl1
- BtG3KwDfQIQyK/1Bny3W7k4GSD9HheeC3xRVhJoya0NIYmUvNJj6A7wYgPPi6o/qjg+tU5+e9EX
- jZhI4NB wPewSiBQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
+ use case
+Content-Language: en-US
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+        arungopal.kondaveeti@amd.com, mastan.katragadda@amd.com,
+        juan.martinez@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
+ <20231021145110.478744-9-Syed.SabaKareem@amd.com>
+ <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
+ <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
+ <f8f8017c-4e76-4d70-918f-d7cb45186184@kernel.org>
+ <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Solve two ergonomic issues with struct seq_buf;
+On 27/10/2023 17:54, Mario Limonciello wrote:
+> On 10/27/2023 10:51, Krzysztof Kozlowski wrote:
+>> On 27/10/2023 17:28, Mario Limonciello wrote:
+>>> On 10/27/2023 03:49, Krzysztof Kozlowski wrote:
+>>>> On 21/10/2023 16:50, Syed Saba Kareem wrote:
+>>>>> add pdm use case machine driver support
+>>>>>
+>>>>> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+>>>>> ---
+>>>>
+>>>>
+>>>>>    	dmi_id = dmi_first_match(acp_quirk_table);
+>>>>>    	if (dmi_id && dmi_id->driver_data)
+>>>>> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
+>>>>>    		.name = "rmb-rt5682s-rt1019",
+>>>>>    		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
+>>>>>    	},
+>>>>> +	{
+>>>>> +		.name = "acp-pdm-mach",
+>>>>> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
+>>>>> +	},
+>>>>>    	{ }
+>>>>>    };
+>>>>>    static struct platform_driver acp_asoc_audio = {
+>>>>> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
+>>>>>    MODULE_ALIAS("platform:acp3x-es83xx");
+>>>>>    MODULE_ALIAS("platform:rmb-nau8825-max");
+>>>>>    MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
+>>>>> +MODULE_ALIAS("platform:acp-pdm-mach");
+>>>>
+>>>> Please stop growing the aliases. Module alias is not a substitute for
+>>>> missing MODULE_DEVICE_TABLE.
+>>>>
+>>>> Best regards,
+>>>> Krzysztof
+>>>>
+>>>
+>>> I thought the way that this works is that top level ACP driver (IE
+>>> acp-pci.c) will have MODULE_DEVICE_TABLE.  This is how that module gets
+>>> loaded.
+>>>
+>>> Then it creates platform devices based on the detected needs for the
+>>> situation and the creation of those platform devices triggers a uevent
+>>> which due to MODULE_ALIAS will get appropriate other platform drivers
+>>> like this one loaded.
+>>
+>> And why you cannot use MODULE_DEVICE_TABLE here? IOW, why do you need to
+>> manually duplicate entire table and re-invent MODULE_DEVICE_TABLE with
+>> MODULE_ALIAS?
+> 
+> What would actually go into MODULE_DEVICE_TABLE?
 
-1) Too much boilerplate is required to initialize:
+The table you have few lines above aliases.
 
-	struct seq_buf s;
-	char buf[32];
+> 
+> The platform devices created are contingent upon what was found during 
+> the top level ACP driver probe.  You don't want all the "child" platform 
+> drivers to load unless they're needed.
 
-	seq_buf_init(s, buf, sizeof(buf));
+How static alias differs here from static device ID table? Both are
+built into the module and always there. I don't even understand what
+does it mean by "loading child platform drivers". Why would unneeded
+driver be loaded?
 
-Instead, we can build this directly on the stack. Provide
-DECLARE_SEQ_BUF() macro to do this:
-
-	DECLARE_SEQ_BUF(s, 32);
-
-2) %NUL termination is fragile and requires 2 steps to get a valid
-   C String (and is a layering violation exposing the "internals" of
-   seq_buf):
-
-	seq_buf_terminate(s);
-	do_something(s->buffer);
-
-Instead, we can just return s->buffer directly after terminating it in
-the refactored seq_buf_terminate(), now known as seq_buf_str():
-
-	do_something(seq_buf_str(s));
-
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Justin Stitt <justinstitt@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Yun Zhou <yun.zhou@windriver.com>
-Cc: Jacob Keller <jacob.e.keller@intel.com>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: linux-trace-kernel@vger.kernel.org
-Link: https://lore.kernel.org/r/20231026194033.it.702-kees@kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v3
- - fix commit log typos
- - improve code style for DECLARE_SEQ_BUF (shevchenko)
- - const-ify seq_bug_str() return (rostedt)
-v2 - https://lore.kernel.org/lkml/20231026194033.it.702-kees@kernel.org
-v1 - https://lore.kernel.org/lkml/20231026170722.work.638-kees@kernel.org
----
- include/linux/seq_buf.h | 21 +++++++++++++++++----
- kernel/trace/trace.c    | 11 +----------
- lib/seq_buf.c           |  4 +---
- 3 files changed, 19 insertions(+), 17 deletions(-)
-
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index 8483e4b2d0d2..5fb1f12c33f9 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -21,9 +21,18 @@ struct seq_buf {
- 	size_t			len;
- };
- 
-+#define DECLARE_SEQ_BUF(NAME, SIZE)			\
-+	char __ ## NAME ## _buffer[SIZE] = "";		\
-+	struct seq_buf NAME = {				\
-+		.buffer = &__ ## NAME ## _buffer,	\
-+		.size = SIZE,				\
-+	}
-+
- static inline void seq_buf_clear(struct seq_buf *s)
- {
- 	s->len = 0;
-+	if (s->size)
-+		s->buffer[0] = '\0';
- }
- 
- static inline void
-@@ -69,8 +78,8 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
- }
- 
- /**
-- * seq_buf_terminate - Make sure buffer is nul terminated
-- * @s: the seq_buf descriptor to terminate.
-+ * seq_buf_str - get %NUL-terminated C string from seq_buf
-+ * @s: the seq_buf handle
-  *
-  * This makes sure that the buffer in @s is nul terminated and
-  * safe to read as a string.
-@@ -81,16 +90,20 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
-  *
-  * After this function is called, s->buffer is safe to use
-  * in string operations.
-+ *
-+ * Returns @s->buf after making sure it is terminated.
-  */
--static inline void seq_buf_terminate(struct seq_buf *s)
-+static inline const char *seq_buf_str(struct seq_buf *s)
- {
- 	if (WARN_ON(s->size == 0))
--		return;
-+		return "";
- 
- 	if (seq_buf_buffer_left(s))
- 		s->buffer[s->len] = 0;
- 	else
- 		s->buffer[s->size - 1] = 0;
-+
-+	return s->buffer;
- }
- 
- /**
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index d629065c2383..2539cfc20a97 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3828,15 +3828,6 @@ static bool trace_safe_str(struct trace_iterator *iter, const char *str,
- 	return false;
- }
- 
--static const char *show_buffer(struct trace_seq *s)
--{
--	struct seq_buf *seq = &s->seq;
--
--	seq_buf_terminate(seq);
--
--	return seq->buffer;
--}
--
- static DEFINE_STATIC_KEY_FALSE(trace_no_verify);
- 
- static int test_can_verify_check(const char *fmt, ...)
-@@ -3976,7 +3967,7 @@ void trace_check_vprintf(struct trace_iterator *iter, const char *fmt,
- 		 */
- 		if (WARN_ONCE(!trace_safe_str(iter, str, star, len),
- 			      "fmt: '%s' current_buffer: '%s'",
--			      fmt, show_buffer(&iter->seq))) {
-+			      fmt, seq_buf_str(&iter->seq.seq))) {
- 			int ret;
- 
- 			/* Try to safely read the string */
-diff --git a/lib/seq_buf.c b/lib/seq_buf.c
-index b7477aefff53..23518f77ea9c 100644
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -109,9 +109,7 @@ void seq_buf_do_printk(struct seq_buf *s, const char *lvl)
- 	if (s->size == 0 || s->len == 0)
- 		return;
- 
--	seq_buf_terminate(s);
--
--	start = s->buffer;
-+	start = seq_buf_str(s);
- 	while ((lf = strchr(start, '\n'))) {
- 		int len = lf - start + 1;
- 
--- 
-2.34.1
+Best regards,
+Krzysztof
 
