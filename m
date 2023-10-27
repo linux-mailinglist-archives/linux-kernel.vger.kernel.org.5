@@ -2,101 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0645E7D9CE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119BC7D9CEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346220AbjJ0P0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
+        id S1346263AbjJ0P20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbjJ0P0l (ORCPT
+        with ESMTP id S231995AbjJ0P2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:26:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22259186
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:26:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE0F1C433C8;
-        Fri, 27 Oct 2023 15:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698420398;
-        bh=RxaYtqGr2+GxYO6xhl6ZJJP1os+XOSBfgC7UHEbUye0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QQRAlRCtgdel7XpyAAQMZUYi0rbo4jkuK7LtpPJewjmbSzpBVZ3brHDPORY01iu+x
-         2otGvxIXE/9aLVuQ8bTPEjSZcxkMtZGF2RKNabJiJh4ZD+sbsBT5NiU+C43/OWhPxF
-         3+iaHWEZgbx0QvB535iE0ssAUTipyab/mODrRRTQGNNUutvJfnwitMnyRm5shBII5K
-         oPmMsNPhNfXkvWeNhrprqhc7/eFTMqYmY3Sdtxy3zsI8qySpFv2gx0YOAx+tL40MH7
-         0T8eVesi1/TapgMZY7BugocSbki5ny8dU8aeC5Hx5xWE7KVVEZhBZuHPwlpL2oVVAl
-         7uNNFOM/bx4ZA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Karol Wachowski <karol.wachowski@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krystian Pradzynski <krystian.pradzynski@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] accel/ivpu: avoid build failure with CONFIG_PM=n
-Date:   Fri, 27 Oct 2023 17:26:23 +0200
-Message-Id: <20231027152633.528490-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Fri, 27 Oct 2023 11:28:25 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DF618F
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:28:21 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c50906f941so32940231fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698420500; x=1699025300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pNsl5MInPLJ8RSTN609h9x1G8bOqBML3/WHWrkX2PGU=;
+        b=iRNlwOt/QoKpaCq6XxLrF0wXdv5Jy1DZzQLa+O9FPjAtqhZHpeAsOBBOnJUEpUoHkb
+         jPBdwRVtq7uhfs1DnIMszqyK6ZuqHjlFPbYx6F8YhmKaa9d2zoGdydpWBd8gwTHkktic
+         h+lkMhvRcnwrq1roygwA6d4kVZkWsM8uDzIi5CB1yiBEqlBb7pncDjXeH/gs9oCCyak3
+         oc9GtNzTYGaLv+TTk8G3rKDwbJe+oiQw+X5kMmqLa+J3gvhrUMxO+Auy7P8vDQNE8qIj
+         WNSgZwSxNbvGOF2bWDisnIHP2Yg9nYLvMAfQ6SjzR8dfplstJXuPBV34aoocJw3/k/hj
+         YKgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698420500; x=1699025300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pNsl5MInPLJ8RSTN609h9x1G8bOqBML3/WHWrkX2PGU=;
+        b=j0s4mluekjnkrp2fk4+hO5qnKzyI73149Xks7QENG5T/Yg9U577wXYATJmxEawyp7n
+         0IA9ZTJWIhvFcMreeOu9hBGMMbZCMr+L6DWDg9pU6fNwfoc1tdRSN8BhPyCrN1kix5ff
+         BODCy+An+ONjRD4fgV6CDarh037ISuJ4DR6ImmaJQV2ZRBC6pW3USQ4//uph7F5XxqHn
+         e813VeEHzm3eJxkIuFr0kivVjHQx6/xv2Lh24krSuh5POQ7t6Qux1PcNWkHcIEno1PS+
+         Ei96jBdVh5ebckQBantsMy41KMBsrmtYP9vIOL9shNKYCeuYyNc/LCerjA/nbA+qSHkx
+         mzEQ==
+X-Gm-Message-State: AOJu0YxiLakDEnXcndwC4Pshl+241HhoM6ZsdAEDDKKV9WWazrypxOiI
+        eyuI0WEhJe02aHVP5Q0g8S2zaPO7/RiV4bptxps10Q==
+X-Google-Smtp-Source: AGHT+IHhztclk1FNuTavfV09vRrRQcRnx6lXYSGYBX+I6vgMiVsYpEDbYR5+xRzUeW2IFeyne8V1kWZ8Fus2muopy04=
+X-Received: by 2002:a05:651c:1070:b0:2c5:47f:8ff7 with SMTP id
+ y16-20020a05651c107000b002c5047f8ff7mr2161033ljm.18.1698420499387; Fri, 27
+ Oct 2023 08:28:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-29-surenb@google.com>
+ <87h6me620j.ffs@tglx> <CAJuCfpH1pG513-FUE_28MfJ7xbX=9O-auYUjkxKLmtve_6rRAw@mail.gmail.com>
+ <87jzr93rxv.ffs@tglx> <20231026235433.yuvxf7opxg74ncmd@moria.home.lan> <b20fe713-28c6-4ca8-b64a-df017f161524@app.fastmail.com>
+In-Reply-To: <b20fe713-28c6-4ca8-b64a-df017f161524@app.fastmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 27 Oct 2023 08:28:08 -0700
+Message-ID: <CAKwvOdnKwGnxZnnDW-miaUO+M5AN_Np1A0fmj18Mz1AV2aQPzg@mail.gmail.com>
+Subject: Re: [PATCH v2 28/39] timekeeping: Fix a circular include dependency
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Mel Gorman <mgorman@suse.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, void@manifault.com,
+        Peter Zijlstra <peterz@infradead.org>, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        peterx@redhat.com, David Hildenbrand <david@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, dennis@kernel.org,
+        Tejun Heo <tj@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, Yu Zhao <yuzhao@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Kees Cook <keescook@chromium.org>, vvvvvv@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Biggers <ebiggers@google.com>, ytcoode@gmail.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        bsegall@google.com, bristot@redhat.com, vschneid@redhat.com,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Jason Baron <jbaron@akamai.com>,
+        David Rientjes <rientjes@google.com>, minchan@google.com,
+        kaleshsingh@google.com, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Oct 26, 2023 at 11:35=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrot=
+e:
+>
+> On Fri, Oct 27, 2023, at 01:54, Kent Overstreet wrote:
+> > On Fri, Oct 27, 2023 at 01:05:48AM +0200, Thomas Gleixner wrote:
+> >> On Thu, Oct 26 2023 at 18:33, Suren Baghdasaryan wrote:
+> >> > On Wed, Oct 25, 2023 at 5:33=E2=80=AFPM Thomas Gleixner <tglx@linutr=
+onix.de> wrote:
+> >> >> > This avoids a circular header dependency in an upcoming patch by =
+only
+> >> >> > making hrtimer.h depend on percpu-defs.h
+> >> >>
+> >> >> What's the actual dependency problem?
+> >> >
+> >> > Sorry for the delay.
+> >> > When we instrument per-cpu allocations in [1] we need to include
+> >> > sched.h in percpu.h to be able to use alloc_tag_save(). sched.h
+> >>
+> >> Including sched.h in percpu.h is fundamentally wrong as sched.h is the
+> >> initial place of all header recursions.
+> >>
+> >> There is a reason why a lot of funtionalitiy has been split out of
+> >> sched.h into seperate headers over time in order to avoid that.
+> >
+> > Yeah, it's definitely unfortunate. The issue here is that
+> > alloc_tag_save() needs task_struct - we have to pull that in for
+> > alloc_tag_save() to be inline, which we really want.
+> >
+> > What if we moved task_struct to its own dedicated header? That might be
+> > good to do anyways...
+>
+> Yes, I agree that is the best way to handle it. I've prototyped
+> a more thorough header cleanup with good results (much improved
+> build speed) in the past, and most of the work to get there is
+> to seperate out structures like task_struct, mm_struct, net_device,
+> etc into headers that only depend on the embedded structure
+> definitions without needing all the inline functions associated
+> with them.
 
-The usage count of struct dev_pm_info is an implementation detail that
-is only available if CONFIG_PM is enabled, so printing it in a debug message
-causes a build failure in configurations without PM:
-
-In file included from include/linux/device.h:15,
-                 from include/linux/pci.h:37,
-                 from drivers/accel/ivpu/ivpu_pm.c:8:
-drivers/accel/ivpu/ivpu_pm.c: In function 'ivpu_rpm_get_if_active':
-drivers/accel/ivpu/ivpu_pm.c:254:51: error: 'struct dev_pm_info' has no member named 'usage_count'
-  254 |                  atomic_read(&vdev->drm.dev->power.usage_count));
-      |                                                   ^
-include/linux/dev_printk.h:129:48: note: in definition of macro 'dev_printk'
-  129 |                 _dev_printk(level, dev, fmt, ##__VA_ARGS__);            \
-      |                                                ^~~~~~~~~~~
-drivers/accel/ivpu/ivpu_drv.h:75:17: note: in expansion of macro 'dev_dbg'
-   75 |                 dev_dbg((vdev)->drm.dev, "[%s] " fmt, #type, ##args);          \
-      |                 ^~~~~~~
-drivers/accel/ivpu/ivpu_pm.c:253:9: note: in expansion of macro 'ivpu_dbg'
-  253 |         ivpu_dbg(vdev, RPM, "rpm_get_if_active count %d\n",
-      |         ^~~~~~~~
-
-The print message does not seem essential, so the easiest workaround is
-to just remove it.
-
-Fixes: c39dc15191c4 ("accel/ivpu: Read clock rate only if device is up")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/accel/ivpu/ivpu_pm.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/accel/ivpu/ivpu_pm.c b/drivers/accel/ivpu/ivpu_pm.c
-index 0ace218783c8..e9b16cbc26f4 100644
---- a/drivers/accel/ivpu/ivpu_pm.c
-+++ b/drivers/accel/ivpu/ivpu_pm.c
-@@ -250,9 +250,6 @@ int ivpu_rpm_get_if_active(struct ivpu_device *vdev)
- {
- 	int ret;
- 
--	ivpu_dbg(vdev, RPM, "rpm_get_if_active count %d\n",
--		 atomic_read(&vdev->drm.dev->power.usage_count));
--
- 	ret = pm_runtime_get_if_active(vdev->drm.dev, false);
- 	drm_WARN_ON(&vdev->drm, ret < 0);
- 
--- 
-2.39.2
-
+This is something I'll add to our automation todos which I plan to
+talk about at plumbers; I feel like it should be possible to write a
+script that given a header and identifier can split whatever
+declaration out into a new header, update the old header, then add the
+necessary includes for the newly created header to each dependent
+(optional).
+--=20
+Thanks,
+~Nick Desaulniers
