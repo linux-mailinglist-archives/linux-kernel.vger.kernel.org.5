@@ -2,165 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F55D7D9198
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCC87D91B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235036AbjJ0Ic3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        id S1345504AbjJ0Ihs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0Ic1 (ORCPT
+        with ESMTP id S230101AbjJ0Ihq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:32:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EFBFA;
-        Fri, 27 Oct 2023 01:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698395544; x=1729931544;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=j5JdL0JhDPE1qf2jcF+jt7NERWD/QscJA3GN/POMpvg=;
-  b=Snl03ME5osuqFkjpdpAa0qOpwFfA4zpHv8RnIDYwpV+oZnsYmug29vDl
-   Loc0/QxJ9P7T/nAc+jkVYmVXmWu6WajAAOncMHLDlRmGnJM86htZFX5Mc
-   41HiXfzWv3wYzQjYFyJFlWarhpOV1EexBgdy4KH3z2Xwy1Y2PimvZN+6c
-   hbGQgYarxkkeqC1YY8AhSNHc23oh+zxeSmKyeRYdybvQrDaGBy2Vs5e1V
-   AQgZaTdDpUcifVkrnUT6FzLssoj8YxCoTiUHW5Ry52tNxPWoSupsgSupw
-   Zm4094omwwgCTBgrRiJXiBhUqQEwoqiZDsfsrXCDI13Ww+Kv5y1jTNUtD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="367078434"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="367078434"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 01:32:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="738231"
-Received: from jhajducz-mobl.ger.corp.intel.com (HELO localhost) ([10.252.34.19])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 01:31:41 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Alex Shi <alexs@kernel.org>, Armin Wolf <W_Armin@gmx.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        gaochao <gaochao49@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hu Haowen <src.res.211@gmail.com>,
-        Iwona Winiarska <iwona.winiarska@intel.com>,
-        Julien Panis <jpanis@baylibre.com>,
-        Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rui Li <me@lirui.org>, SeongJae Park <sj@kernel.org>,
-        Stephan Mueller <smueller@chronox.de>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: Re: [PATCH RFC 00/11] use toctree :caption: for ToC headings
-In-Reply-To: <20231027081830.195056-1-vegard.nossum@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231027081830.195056-1-vegard.nossum@oracle.com>
-Date:   Fri, 27 Oct 2023 11:32:12 +0300
-Message-ID: <874jic79f7.fsf@intel.com>
+        Fri, 27 Oct 2023 04:37:46 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E827106;
+        Fri, 27 Oct 2023 01:37:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SGwgg2ZWrz9xqcl;
+        Fri, 27 Oct 2023 16:24:31 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwCX8JGqdjtlDvIBAw--.29710S2;
+        Fri, 27 Oct 2023 09:37:13 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v4 00/23] security: Move IMA and EVM to the LSM infrastructure
+Date:   Fri, 27 Oct 2023 10:35:35 +0200
+Message-Id: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwCX8JGqdjtlDvIBAw--.29710S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKF4xKr18uw15CrWrAr47Arb_yoW3XFW8pF
+        saga15A34DJFy7KrZ3AF4xu3WSgFZ5WrWUXr9xGry8A3Z0yr1FqFWjkryruryrGFWrXr10
+        q3ZFv3s8ur1qyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQADBF1jj5WUHAABsr
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023, Vegard Nossum <vegard.nossum@oracle.com> wrote:
-> Hi,
->
-> This patch series replaces some instances of 'class:: toc-title' with
-> toctree's :caption: attribute, see the last patch in the series for
-> some more rationale/explanation.
->
-> There are some dependencies here: the first patch is necessary for the
-> headings in following patches to be styled correctly with the alabaster
-> theme (rtd_sphinx already has it), and the last patch depends on most
-> of the previous patches to not use the old .toc-title class anymore.
->
-> Assuming people agree with the general direction, I thought maybe the
-> easiest thing would be to collect maintainer acks in this round and
-> then for me to resubmit everything to the documentation tree/maintainer
-> in one go.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Patch 1 is a matter of taste, I guess. I'll leave it to Jon.
+IMA and EVM are not effectively LSMs, especially due to the fact that in
+the past they could not provide a security blob while there is another LSM
+active.
 
-Everything else LGTM.
+That changed in the recent years, the LSM stacking feature now makes it
+possible to stack together multiple LSMs, and allows them to provide a
+security blob for most kernel objects. While the LSM stacking feature has
+some limitations being worked out, it is already suitable to make IMA and
+EVM as LSMs.
 
-For the benefit of others, the toctree directive gained the "caption"
-option in Sphinx 1.3 [1].
+In short, while this patch set is big, it does not make any functional
+change to IMA and EVM. IMA and EVM functions are called by the LSM
+infrastructure in the same places as before (except ima_post_path_mknod()),
+rather being hardcoded calls, and the inode metadata pointer is directly
+stored in the inode security blob rather than in a separate rbtree.
 
-BR,
-Jani.
+To avoid functional changes, it was necessary to keep the 'integrity' LSM
+in addition to the newly introduced 'ima' and 'evm' LSMs, despite there is
+no LSM ID assigned to it. There are two reasons: first, IMA and EVM still
+share the same inode metadata, and thus cannot directly reserve space in
+the security blob for it; second, someone needs to initialize 'ima' and
+'evm' exactly in this order, as the LSM infrastructure cannot guarantee
+that.
 
+The patch set is organized as follows.
 
-[1] https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
+Patches 1-9 make IMA and EVM functions suitable to be registered to the LSM
+infrastructure, by aligning function parameters.
 
+Patches 10-18 add new LSM hooks in the same places where IMA and EVM
+functions are called, if there is no LSM hook already.
 
->
->
-> Vegard
->
-> ---
->
-> Vegard Nossum (11):
->   docs: style toctree captions as headings
->   doc: userspace-api: properly format ToC headings
->   media: admin-guide: properly format ToC heading
->   crypto: doc: properly format ToC headings
->   Documentation: dev-tools: properly format ToC headingss
->   docs: driver-api: properly format ToC headings
->   input: docs: properly format ToC headings
->   doc: misc-device: properly format ToC heading
->   media: doc: properly format ToC headings
->   docs: use toctree :caption: and move introduction
->   docs: remove .toc-title class
->
->  Documentation/admin-guide/media/index.rst     | 10 +---------
->  Documentation/crypto/api.rst                  |  5 +----
->  Documentation/crypto/index.rst                |  5 +----
->  Documentation/dev-tools/index.rst             |  5 +----
->  Documentation/driver-api/index.rst            |  5 +----
->  Documentation/driver-api/media/index.rst      |  7 +------
->  Documentation/driver-api/mei/index.rst        |  7 +------
->  Documentation/driver-api/pci/index.rst        |  5 +----
->  Documentation/input/input_kapi.rst            |  5 +----
->  Documentation/input/input_uapi.rst            |  5 +----
->  Documentation/input/joydev/index.rst          |  5 +----
->  Documentation/misc-devices/index.rst          |  5 +----
->  Documentation/process/development-process.rst | 19 +++++++++----------
->  Documentation/sphinx-static/custom.css        |  3 +++
->  .../sphinx-static/theme_overrides.css         |  5 -----
->  .../it_IT/process/development-process.rst     | 19 +++++++++----------
->  .../translations/zh_CN/dev-tools/index.rst    |  5 +----
->  .../zh_CN/driver-api/gpio/index.rst           |  3 +--
->  .../translations/zh_CN/driver-api/index.rst   |  5 +----
->  .../zh_CN/process/development-process.rst     |  5 ++---
->  .../zh_CN/userspace-api/index.rst             |  5 +----
->  .../zh_TW/process/development-process.rst     |  5 ++---
->  Documentation/userspace-api/index.rst         |  5 +----
->  .../userspace-api/media/cec/cec-api.rst       |  7 +------
->  .../userspace-api/media/drivers/index.rst     |  7 +------
->  .../userspace-api/media/dvb/dvbapi.rst        |  7 +------
->  Documentation/userspace-api/media/index.rst   |  7 +------
->  .../media/mediactl/media-controller.rst       |  7 +------
->  .../media/rc/remote_controllers.rst           |  7 +------
->  .../userspace-api/media/v4l/v4l2.rst          |  7 +------
->  30 files changed, 49 insertions(+), 148 deletions(-)
+Patches 19-22 do the bulk of the work, introduce the new LSMs 'ima' and
+'evm', and move hardcoded calls to IMA, EVM and integrity functions to
+those LSMs. In addition, they reserve one slot for the 'evm' LSM to supply
+an xattr with the inode_init_security hook.
+
+Finally, patch 23 removes the rbtree used to bind integrity metadata to the
+inodes, and instead reserves a space in the inode security blob to store
+the pointer to that metadata. This also brings performance improvements due
+to retrieving metadata in constant time, as opposed to logarithmic.
+
+The patch set applies on top of lsm/next-queue, commit 0310640b00d2 ("lsm:
+don't yet account for IMA in LSM_CONFIG_COUNT calculation"), plus commits
+in linux-integrity/next-integrity-testing up to bc4532e9cd3b ("ima: detect
+changes to the backing overlay file").
+
+Changelog:
+
+v3:
+ - Drop 'ima: Align ima_post_path_mknod() definition with LSM
+   infrastructure' and 'ima: Align ima_post_create_tmpfile() definition
+   with LSM infrastructure', define the new LSM hooks with the same
+   IMA parameters instead (suggested by Mimi)
+ - Do IS_PRIVATE() check in security_path_post_mknod() and
+   security_inode_post_create_tmpfile() on the new inode rather than the
+   parent directory (in the post method it is available)
+ - Don't export ima_file_check() (suggested by Stefan)
+ - Remove redundant check of file mode in ima_post_path_mknod() (suggested
+   by Mimi)
+ - Mention that ima_post_path_mknod() is now conditionally invoked when
+   CONFIG_SECURITY_PATH=y (suggested by Mimi)
+ - Mention when a LSM hook will be introduced in the IMA/EVM alignment
+   patches (suggested by Mimi)
+ - Simplify the commit messages when introducing a new LSM hook
+ - Still keep the 'extern' in the function declaration, until the
+   declaration is removed (suggested by Mimi)
+ - Improve documentation of security_file_pre_free()
+ - Register 'ima' and 'evm' as standalone LSMs (suggested by Paul)
+ - Initialize the 'ima' and 'evm' LSMs from 'integrity', to keep the
+   original ordering of IMA and EVM functions as when they were hardcoded
+ - Return the IMA and EVM LSM IDs to 'integrity' for registration of the
+   integrity-specific hooks
+ - Reserve an xattr slot from the 'evm' LSM instead of 'integrity'
+ - Pass the LSM ID to init_ima_appraise_lsm()
+
+v2:
+ - Add description for newly introduced LSM hooks (suggested by Casey)
+ - Clarify in the description of security_file_pre_free() that actions can
+   be performed while the file is still open
+
+v1:
+ - Drop 'evm: Complete description of evm_inode_setattr()', 'fs: Fix
+   description of vfs_tmpfile()' and 'security: Introduce LSM_ORDER_LAST',
+   they were sent separately (suggested by Christian Brauner)
+ - Replace dentry with file descriptor parameter for
+   security_inode_post_create_tmpfile()
+ - Introduce mode_stripped and pass it as mode argument to
+   security_path_mknod() and security_path_post_mknod()
+ - Use goto in do_mknodat() and __vfs_removexattr_locked() (suggested by
+   Mimi)
+ - Replace __lsm_ro_after_init with __ro_after_init
+ - Modify short description of security_inode_post_create_tmpfile() and
+   security_inode_post_set_acl() (suggested by Stefan)
+ - Move security_inode_post_setattr() just after security_inode_setattr()
+   (suggested by Mimi)
+ - Modify short description of security_key_post_create_or_update()
+   (suggested by Mimi)
+ - Add back exported functions ima_file_check() and
+   evm_inode_init_security() respectively to ima.h and evm.h (reported by
+   kernel robot)
+ - Remove extern from prototype declarations and fix style issues
+ - Remove unnecessary include of linux/lsm_hooks.h in ima_main.c and
+   ima_appraise.c
+
+Roberto Sassu (23):
+  ima: Align ima_inode_post_setattr() definition with LSM infrastructure
+  ima: Align ima_file_mprotect() definition with LSM infrastructure
+  ima: Align ima_inode_setxattr() definition with LSM infrastructure
+  ima: Align ima_inode_removexattr() definition with LSM infrastructure
+  ima: Align ima_post_read_file() definition with LSM infrastructure
+  evm: Align evm_inode_post_setattr() definition with LSM infrastructure
+  evm: Align evm_inode_setxattr() definition with LSM infrastructure
+  evm: Align evm_inode_post_setxattr() definition with LSM
+    infrastructure
+  security: Align inode_setattr hook definition with EVM
+  security: Introduce inode_post_setattr hook
+  security: Introduce inode_post_removexattr hook
+  security: Introduce file_post_open hook
+  security: Introduce file_pre_free_security hook
+  security: Introduce path_post_mknod hook
+  security: Introduce inode_post_create_tmpfile hook
+  security: Introduce inode_post_set_acl hook
+  security: Introduce inode_post_remove_acl hook
+  security: Introduce key_post_create_or_update hook
+  ima: Move to LSM infrastructure
+  ima: Move IMA-Appraisal to LSM infrastructure
+  evm: Move to LSM infrastructure
+  integrity: Move integrity functions to the LSM infrastructure
+  integrity: Switch from rbtree to LSM-managed blob for
+    integrity_iint_cache
+
+ fs/attr.c                             |   5 +-
+ fs/file_table.c                       |   3 +-
+ fs/namei.c                            |  12 +-
+ fs/nfsd/vfs.c                         |   3 +-
+ fs/open.c                             |   1 -
+ fs/posix_acl.c                        |   5 +-
+ fs/xattr.c                            |   9 +-
+ include/linux/evm.h                   | 103 ----------
+ include/linux/ima.h                   | 142 --------------
+ include/linux/integrity.h             |  26 ---
+ include/linux/lsm_hook_defs.h         |  20 +-
+ include/linux/security.h              |  59 ++++++
+ include/uapi/linux/lsm.h              |   2 +
+ security/integrity/evm/evm_main.c     | 138 ++++++++++++--
+ security/integrity/iint.c             | 113 +++++------
+ security/integrity/ima/ima.h          |  11 ++
+ security/integrity/ima/ima_appraise.c |  37 +++-
+ security/integrity/ima/ima_main.c     |  96 ++++++++--
+ security/integrity/integrity.h        |  58 +++++-
+ security/keys/key.c                   |  10 +-
+ security/security.c                   | 261 ++++++++++++++++----------
+ security/selinux/hooks.c              |   3 +-
+ security/smack/smack_lsm.c            |   4 +-
+ 23 files changed, 614 insertions(+), 507 deletions(-)
 
 -- 
-Jani Nikula, Intel
+2.34.1
+
