@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975AF7D9614
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F857D963D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345745AbjJ0LND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
+        id S1345834AbjJ0LQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345549AbjJ0LNB (ORCPT
+        with ESMTP id S1345859AbjJ0LQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:13:01 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17537129
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:12:59 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507b96095abso2814750e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:12:58 -0700 (PDT)
+        Fri, 27 Oct 2023 07:16:07 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAD626AF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:15:38 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507ad511315so2868710e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698405177; x=1699009977; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698405336; x=1699010136; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gzS3xtRaYXApZ+3kIqeVQrGG8Ns+4rxD5VoBS9jMb0o=;
-        b=Nuu8NJfZy0Bq73AysLIZJWEXZEEGWjdEcTajUU5wFcjtnCFX6OXoniPa5eb2jAl2ou
-         AAt0yFHN7IWDOiLUVJa3jr5GnFy9REO9Paf9hSJVZODdGSpe7K8GZej+G50mgOnt4nCJ
-         NI3FQ94MqV6KyO6HicHdY8yE3wkKIPtKovxCEHeCr07XB+sUWB+sN3SPXfcaFup5ngb8
-         eSyxUqDxf5sB2kUjR+1e+ezoP1UYO5STj5NlbalSQ1h5f65zGDNztCoAQfLcN1vhuj7/
-         R65ltxabIiSfnMMOfunJ+APEZYdYYk3RFTr0wFcqX7vu2XdiTgn+k0Y9mubNe3QNe2no
-         zMCw==
+        bh=UzJNCQE9lIWs8QWU4r4wyUtYu55wpx8s4OSbjSYDFgI=;
+        b=dVnpA5EGU/L88g8Ra/eknMmltQw4tYYRPtOPTZGRCeghsSfDmGc82yq149q/pmsERE
+         3dhj+rKE0ijFcGiXHfkMxfv0Y4GIG57QhIgk5Wd0pybMygHSSvbsoMnQzQwOWz5R2q9G
+         9vJcyVcsY2tb4/j3D727juvXUUhYifeGsE7m1/N93zR1Zd92WTD6Ntvcmj17hdaX0cn/
+         bCWvofHAROCsohslFM3GFkCNMch9XDNa+Z+wPoNsaKucSIHi7nvrCK0WlwMiZ7n4Oi/3
+         CssuGr62aDx9uGsBWd6CvSsUAyAICtFEoO2jTP+1+P4Xzi380usK/qv3UAGxU8mK5BIA
+         rW6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698405177; x=1699009977;
+        d=1e100.net; s=20230601; t=1698405336; x=1699010136;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gzS3xtRaYXApZ+3kIqeVQrGG8Ns+4rxD5VoBS9jMb0o=;
-        b=c0eThHOReoDF/kM7X/bIktcFT7rr30g1Ge+xOxoEO7QISirdNZ9C9ApW3x3I3gAd1p
-         bpWVXBkBB8Cpwft2xJjKyASiG4rJYNpC6v/5yEFdlwuYZmleVDBOEcYyqlma1ijckTtq
-         4/GG9Idu3lbsrX4eJs1U2M+ZEx+iSWCRI8HVmxGN9Cn0LhtXs9zbSPcI0/Rhrg9WYspV
-         qhO09Hala1p9zQSnBZDcZqxeWG1hHRXXFqAKz9HSDg/NL1AI6BYTWagUv2/8nQuvc+ZH
-         khpzixse+O8cilOHS0+/FHhflcX4s6FGY+eoHg//qmWMYAGZJrjSJw9vY4WO6ROtSsK7
-         4OLg==
-X-Gm-Message-State: AOJu0YzTMH3XAdCieP9QHHKibNjno+TU91ynXkAvR6hzsuimZGK5tV0L
-        OLUUgJGeoeLvAjYlwmKJezr51w==
-X-Google-Smtp-Source: AGHT+IEH3lgoUuBsJBBZA/euKnydpc/GAWK4n64r/DYsrpsTtloPfH9jTmBUZHg9xvVfd8zFxgw6Wg==
-X-Received: by 2002:ac2:54a7:0:b0:507:9628:1082 with SMTP id w7-20020ac254a7000000b0050796281082mr1638858lfk.58.1698405177147;
-        Fri, 27 Oct 2023 04:12:57 -0700 (PDT)
+        bh=UzJNCQE9lIWs8QWU4r4wyUtYu55wpx8s4OSbjSYDFgI=;
+        b=e5DDvmoZAg+Y+A19FjchslpG2jPjEH4/anYkoonQiLFOUA/jAgFJLuukZPjwSfqdJp
+         k0R02vNA+VXExZXac2duQjv1Q6/cz5czZf4o0dJFkis6ivQOheDqT8rc9i7yqG+uJk6K
+         wpwyDgrdPgqIe/GRDNfiFPlL1l9fm8JKhiaSBZ5cMJ2x+fyVseB8MYQ6JBlcJUTlzWnE
+         DWwfDid4qfbxccG8YXYqqvNVkxWzTEXICSpFNPgkCV43Pi9lcLqoahou+YCKb8njG5lg
+         yYa/15qqHKu2FgIPpX6klEGOxmiJUwM6kh/oudYHsrpnijs8uiiaHEWPAcE6M5BMfvbm
+         QTmw==
+X-Gm-Message-State: AOJu0YzCazNyt6Ikr6fj31QDI0c8xQpg3ZzmFk7vuJ0mrPGcKobxklnv
+        nLow3eEKxVl2hJI959Uccke3Uw==
+X-Google-Smtp-Source: AGHT+IHFnKZSrWhQ7TE5pG9aEy7GL96hHyfmiRDxAvTEvxLTDH4iZ+Eme18F80+H0CtBkdZu3bAwDw==
+X-Received: by 2002:a05:6512:457:b0:508:21c8:92e3 with SMTP id y23-20020a056512045700b0050821c892e3mr1598700lfk.9.1698405336081;
+        Fri, 27 Oct 2023 04:15:36 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id dw9-20020a0565122c8900b00502fd9110ffsm238611lfb.294.2023.10.27.04.12.55
+        by smtp.gmail.com with ESMTPSA id k7-20020ac257c7000000b00507cf5fa20esm242640lfo.97.2023.10.27.04.15.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 04:12:56 -0700 (PDT)
-Message-ID: <3168e245-797a-4f30-bb48-8b88993691a6@linaro.org>
-Date:   Fri, 27 Oct 2023 13:12:55 +0200
+        Fri, 27 Oct 2023 04:15:35 -0700 (PDT)
+Message-ID: <2baad576-2775-4566-b6d8-a03319112431@linaro.org>
+Date:   Fri, 27 Oct 2023 13:15:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] arm64: dts: cn913x: add device trees for COM
- Express boards
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm64: dts: add dt-bindings for ac5x
+ rd carrier
 Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>, Elad Nachman <enachman@marvell.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, gregory.clement@bootlin.com,
+To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, gregory.clement@bootlin.com,
         sebastian.hesselbarth@gmail.com, pali@kernel.org,
         mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        cyuval@marvell.com
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     cyuval@marvell.com
 References: <20231026084735.3595944-1-enachman@marvell.com>
- <20231026084735.3595944-2-enachman@marvell.com>
- <2f7ab700-cd87-42f2-870d-950a4c75b17d@lunn.ch>
+ <20231026084735.3595944-3-enachman@marvell.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,52 +111,33 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <2f7ab700-cd87-42f2-870d-950a4c75b17d@lunn.ch>
+In-Reply-To: <20231026084735.3595944-3-enachman@marvell.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 19:32, Andrew Lunn wrote:
->> +#include "cn9131-db-comexpress.dtsi"
->> +
->> +/ {
->> +	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board";
->> +	compatible = "marvell,ac5x_rd_carrier", "marvell,cn9131", "marvell,cn9130",
-
-Except wrong naming for compatible, I really do not understand what you
-want to add here. If AC5X is the carrier, what is the model name of
-entire product? If AC5X is not the carrier, where it the carrier?
-
->> +		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
+On 26/10/2023 10:47, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
 > 
-> This is really a question to the DT Maintainers. This is a carrier
-> board for a standardised Com express type 7 board. In theory, you
-> should be able to plug any Com Express module into it, not just
-> Marvells. So should the compatible list just have a compatible for the
-> carrier itself? Not the module which would normally be mounted in it?
-
-Yes, because there are some common parts of the carrier board.
-
+> Add dt bindings for AC5X RD COM Express Type 7 carrier board.
+> This board will Accept a CN9131 COM Express Type 7 CPU module.
 > 
-> Should the carrier have a .dtsi file describing it? And then we have a
-> .dts file which combines the module .dtsi and the carrier .dtsi?
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Depends, how this is organized depends on possible re-usage etc. Usually
-answer is: yes, carrier board should have DTSI.
+Please order your patches correctly, so bindings come before their
+users. You cannot have other way.
 
-> 
-> Sorry i did not ask this earlier, i was thinking more about SolidRuns
-> systems, which tend to have custom SOMs and customs carriers, so you
-> can only really mount one particular SOM into one particular
-> carrier. But that is not true here.
+> ---
+>  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml     | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 Best regards,
 Krzysztof
 
