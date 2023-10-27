@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFDF7DA09D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC8E7DA0D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbjJ0Sg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        id S1346440AbjJ0SqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbjJ0Sgh (ORCPT
+        with ESMTP id S232582AbjJ0SqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:36:37 -0400
+        Fri, 27 Oct 2023 14:46:20 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8A62D59;
-        Fri, 27 Oct 2023 11:23:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4941D62;
+        Fri, 27 Oct 2023 11:23:50 -0700 (PDT)
 Date:   Fri, 27 Oct 2023 18:23:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698430994;
+        s=2020; t=1698430995;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EDpOKTGssvtlgulzL3UG8va0ENAs6cD4R4PLxN1EhHg=;
-        b=1nNdkb34AYxs9/HSYiW2eq+VTgZ/4XWgML8FqVi7iUI155g7GK4uFBvgSYB6+oQ58WsGso
-        tUG0wNS+Qdd7B3hu9N0Qdm2ngdEKCwdCoYVqGo3cQRuNIhGzPGcQtF/ZZDqF5nhBXyRl+W
-        X9u0OXGVYdmjpQ6zRXKPtUadk+v/LZ0+niSI/NOXYo73MYxOiQybKu0ctMqEFPYPH1D3dG
-        w24IWeX92zlkE4CZ4pBYO3mWKXx58nM2q6tk/q2PcQrl/Sy+2hWhyFg7L3UchzRmL9Sp2R
-        jLqJ9yj11h+C1AG7nuEbN8Jof+/ztnjbD+ZuynbApmtZGuO3liW/MSFFhzEokw==
+        bh=3SZc2h5spUaSzuUIS3s9W0OgoU45rIU179H+nuFSIYQ=;
+        b=k8ln5JgrDABOP2HMs5ntDx2a4as6ZJJZR79Grl8TGHyrHG6fnA4djSVr2Blf5DWm4C5VGs
+        tzcLftX69XOrrKV6+0Iz1OiUgW2eeZqxt7vZmclw3RxOYdSShxapi23/qGwIefsFKOrb3i
+        hSb8BLwnyNjZVBircyK4ttALVMHmkrrDbTLG0ZHF64nJeULBbEXhs/l/cRx0U5MwEu64zT
+        lTIfGHaTjl7fGzykNtVj0Xss5au5jNDyjr7JzvJU5Yk63IDJYeXO84GALWoNqf9PTqcVgs
+        L8BfRO3KpgzCbySMTPQ0/MCb6GPAaqCUEkrt7u6O/CyiwdCZKAbsLhMYT6ZmBg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698430994;
+        s=2020e; t=1698430995;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EDpOKTGssvtlgulzL3UG8va0ENAs6cD4R4PLxN1EhHg=;
-        b=1q3Wd+qS3kFXWSC1eIbfjv4zWx7I5T5cmxBx4iMpkwwtqMHx2ZaAG5533ZzqGoTukVMnAY
-        cTZ7BN3gVJhzF4CQ==
+        bh=3SZc2h5spUaSzuUIS3s9W0OgoU45rIU179H+nuFSIYQ=;
+        b=DzDSw+qvheB4zZhJBXgz4xA48w9u6iD+riW0iUeCvlUHbh4pfCYJHahofQQMPPzyPQU7np
+        LXNe+klDEJo4TQAQ==
 From:   "tip-bot2 for Biju Das" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] dt-bindings: timer: renesas,rz-mtu3: Improve documentation
-Cc:     Pavel Machek <pavel@denx.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
+Subject: [tip: timers/core] dt-bindings: timer: renesas,rz-mtu3: Fix
+ overflow/underflow interrupt names
+Cc:     stable@kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
         Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230727081848.100834-3-biju.das.jz@bp.renesas.com>
-References: <20230727081848.100834-3-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20230727081848.100834-2-biju.das.jz@bp.renesas.com>
+References: <20230727081848.100834-2-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
-Message-ID: <169843099400.3135.4989763347351372533.tip-bot2@tip-bot2>
+Message-ID: <169843099454.3135.14190168056733834940.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,104 +70,127 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     b121e7881b8975cf8dc24d9bd71a5af81ed8a6b1
-Gitweb:        https://git.kernel.org/tip/b121e7881b8975cf8dc24d9bd71a5af81ed8a6b1
+Commit-ID:     b7a8f1f7a8a25e09aaefebb6251a77f44cda638b
+Gitweb:        https://git.kernel.org/tip/b7a8f1f7a8a25e09aaefebb6251a77f44cda638b
 Author:        Biju Das <biju.das.jz@bp.renesas.com>
-AuthorDate:    Thu, 27 Jul 2023 09:18:45 +01:00
+AuthorDate:    Thu, 27 Jul 2023 09:18:44 +01:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
 CommitterDate: Wed, 11 Oct 2023 09:03:54 +02:00
 
-dt-bindings: timer: renesas,rz-mtu3: Improve documentation
+dt-bindings: timer: renesas,rz-mtu3: Fix overflow/underflow interrupt names
 
-Fix the documentation issues pointed by Pavel while backporting
-it to 6.1.y-cip.
- - Replace '32- bit'->'32-bit'
- - Consistently remove '.' at the end of line for the specifications
- - Replace '          (excluding MTU8)'-> '(excluding MTU8)'
+As per R01UH0914EJ0130 Rev.1.30 HW manual the MTU3 overflow/underflow
+interrupt names starts with 'tci' instead of 'tgi'.
 
-Reported-by: Pavel Machek <pavel@denx.de>
-Closes: https://lore.kernel.org/all/ZH79%2FUjgYg+0Ruiu@duo.ucw.cz
+Fix this documentation issue by replacing below overflow/underflow
+interrupt names:
+ - tgiv0->tciv0
+ - tgiv1->tciv1
+ - tgiu1->tciu1
+ - tgiv2->tciv2
+ - tgiu2->tciu2
+ - tgiv3->tciv3
+ - tgiv4->tciv4
+ - tgiv6->tciv6
+ - tgiv7->tciv7
+ - tgiv8->tciv8
+ - tgiu8->tciu8
+
+Fixes: 0a9d6b54297e ("dt-bindings: timer: Document RZ/G2L MTU3a bindings")
+Cc: stable@kernel.org
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20230727081848.100834-3-biju.das.jz@bp.renesas.com
+Link: https://lore.kernel.org/r/20230727081848.100834-2-biju.das.jz@bp.renesas.com
 ---
- Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml | 28 +++----
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml | 38 +++----
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml b/Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml
-index fbac40b..670a2eb 100644
+index bffdab0..fbac40b 100644
 --- a/Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml
 +++ b/Documentation/devicetree/bindings/timer/renesas,rz-mtu3.yaml
-@@ -11,8 +11,8 @@ maintainers:
+@@ -169,27 +169,27 @@ properties:
+       - const: tgib0
+       - const: tgic0
+       - const: tgid0
+-      - const: tgiv0
++      - const: tciv0
+       - const: tgie0
+       - const: tgif0
+       - const: tgia1
+       - const: tgib1
+-      - const: tgiv1
+-      - const: tgiu1
++      - const: tciv1
++      - const: tciu1
+       - const: tgia2
+       - const: tgib2
+-      - const: tgiv2
+-      - const: tgiu2
++      - const: tciv2
++      - const: tciu2
+       - const: tgia3
+       - const: tgib3
+       - const: tgic3
+       - const: tgid3
+-      - const: tgiv3
++      - const: tciv3
+       - const: tgia4
+       - const: tgib4
+       - const: tgic4
+       - const: tgid4
+-      - const: tgiv4
++      - const: tciv4
+       - const: tgiu5
+       - const: tgiv5
+       - const: tgiw5
+@@ -197,18 +197,18 @@ properties:
+       - const: tgib6
+       - const: tgic6
+       - const: tgid6
+-      - const: tgiv6
++      - const: tciv6
+       - const: tgia7
+       - const: tgib7
+       - const: tgic7
+       - const: tgid7
+-      - const: tgiv7
++      - const: tciv7
+       - const: tgia8
+       - const: tgib8
+       - const: tgic8
+       - const: tgid8
+-      - const: tgiv8
+-      - const: tgiu8
++      - const: tciv8
++      - const: tciu8
  
- description: |
-   This hardware block consists of eight 16-bit timer channels and one
--  32- bit timer channel. It supports the following specifications:
--    - Pulse input/output: 28 lines max.
-+  32-bit timer channel. It supports the following specifications:
-+    - Pulse input/output: 28 lines max
-     - Pulse input 3 lines
-     - Count clock 11 clocks for each channel (14 clocks for MTU0, 12 clocks
-       for MTU2, and 10 clocks for MTU5, four clocks for MTU1-MTU2 combination
-@@ -23,11 +23,11 @@ description: |
-         - Input capture function (noise filter setting available)
-         - Counter-clearing operation
-         - Simultaneous writing to multiple timer counters (TCNT)
--          (excluding MTU8).
-+          (excluding MTU8)
-         - Simultaneous clearing on compare match or input capture
--          (excluding MTU8).
-+          (excluding MTU8)
-         - Simultaneous input and output to registers in synchronization with
--          counter operations           (excluding MTU8).
-+          counter operations (excluding MTU8)
-         - Up to 12-phase PWM output in combination with synchronous operation
-           (excluding MTU8)
-     - [MTU0 MTU3, MTU4, MTU6, MTU7, and MTU8]
-@@ -40,26 +40,26 @@ description: |
-     - [MTU3, MTU4, MTU6, and MTU7]
-         - Through interlocked operation of MTU3/4 and MTU6/7, the positive and
-           negative signals in six phases (12 phases in total) can be output in
--          complementary PWM and reset-synchronized PWM operation.
-+          complementary PWM and reset-synchronized PWM operation
-         - In complementary PWM mode, values can be transferred from buffer
-           registers to temporary registers at crests and troughs of the timer-
-           counter values or when the buffer registers (TGRD registers in MTU4
--          and MTU7) are written to.
--        - Double-buffering selectable in complementary PWM mode.
-+          and MTU7) are written to
-+        - Double-buffering selectable in complementary PWM mode
-     - [MTU3 and MTU4]
-         - Through interlocking with MTU0, a mode for driving AC synchronous
-           motors (brushless DC motors) by using complementary PWM output and
-           reset-synchronized PWM output is settable and allows the selection
--          of two types of waveform output (chopping or level).
-+          of two types of waveform output (chopping or level)
-     - [MTU5]
--        - Capable of operation as a dead-time compensation counter.
-+        - Capable of operation as a dead-time compensation counter
-     - [MTU0/MTU5, MTU1, MTU2, and MTU8]
-         - 32-bit phase counting mode specifiable by combining MTU1 and MTU2 and
--          through interlocked operation with MTU0/MTU5 and MTU8.
-+          through interlocked operation with MTU0/MTU5 and MTU8
-     - Interrupt-skipping function
-         - In complementary PWM mode, interrupts on crests and troughs of counter
-           values and triggers to start conversion by the A/D converter can be
--          skipped.
-+          skipped
-     - Interrupt sources: 43 sources.
-     - Buffer operation:
-         - Automatic transfer of register data (transfer from the buffer
-@@ -68,9 +68,9 @@ description: |
-         - A/D converter start triggers can be generated
-         - A/D converter start request delaying function enables A/D converter
-           to be started with any desired timing and to be synchronized with
--          PWM output.
-+          PWM output
-     - Low power consumption function
--        - The MTU3a can be placed in the module-stop state.
-+        - The MTU3a can be placed in the module-stop state
- 
-     There are two phase counting modes. 16-bit phase counting mode in which
-     MTU1 and MTU2 operate independently, and cascade connection 32-bit phase
+   clocks:
+     maxItems: 1
+@@ -285,16 +285,16 @@ examples:
+                    <GIC_SPI 211 IRQ_TYPE_EDGE_RISING>,
+                    <GIC_SPI 212 IRQ_TYPE_EDGE_RISING>,
+                    <GIC_SPI 213 IRQ_TYPE_EDGE_RISING>;
+-      interrupt-names = "tgia0", "tgib0", "tgic0", "tgid0", "tgiv0", "tgie0",
++      interrupt-names = "tgia0", "tgib0", "tgic0", "tgid0", "tciv0", "tgie0",
+                         "tgif0",
+-                        "tgia1", "tgib1", "tgiv1", "tgiu1",
+-                        "tgia2", "tgib2", "tgiv2", "tgiu2",
+-                        "tgia3", "tgib3", "tgic3", "tgid3", "tgiv3",
+-                        "tgia4", "tgib4", "tgic4", "tgid4", "tgiv4",
++                        "tgia1", "tgib1", "tciv1", "tciu1",
++                        "tgia2", "tgib2", "tciv2", "tciu2",
++                        "tgia3", "tgib3", "tgic3", "tgid3", "tciv3",
++                        "tgia4", "tgib4", "tgic4", "tgid4", "tciv4",
+                         "tgiu5", "tgiv5", "tgiw5",
+-                        "tgia6", "tgib6", "tgic6", "tgid6", "tgiv6",
+-                        "tgia7", "tgib7", "tgic7", "tgid7", "tgiv7",
+-                        "tgia8", "tgib8", "tgic8", "tgid8", "tgiv8", "tgiu8";
++                        "tgia6", "tgib6", "tgic6", "tgid6", "tciv6",
++                        "tgia7", "tgib7", "tgic7", "tgid7", "tciv7",
++                        "tgia8", "tgib8", "tgic8", "tgid8", "tciv8", "tciu8";
+       clocks = <&cpg CPG_MOD R9A07G044_MTU_X_MCK_MTU3>;
+       power-domains = <&cpg>;
+       resets = <&cpg R9A07G044_MTU_X_PRESET_MTU3>;
