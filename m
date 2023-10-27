@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A857DA0FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B2C7DA07F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjJ0Sro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        id S235211AbjJ0Sbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346476AbjJ0SrK (ORCPT
+        with ESMTP id S235203AbjJ0Sbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:47:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE74510F3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698431029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f1GFRFSXrJZnqwU7bWQb2Id5cyqADGdT0GyV9+GmOAk=;
-        b=hmCpIiJmxOdLA6LPh8hkpLWRHEpLbQdEzACS93bAI/3TOOZCWiCJT+5fSU5W/SVcZyuubo
-        6/kM5lzTdseJDpkuIs81yxKpiphyYy4X9vwRzVNT2hVDZbt5HNxdu2c6Ep5JmvvOgqTG53
-        7OLWVTzXx2qD7l7s2aEg4tjrTHgg85Q=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-Ig0bKLJ5MMCEtupVBmhczQ-1; Fri, 27 Oct 2023 14:23:47 -0400
-X-MC-Unique: Ig0bKLJ5MMCEtupVBmhczQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b83bc7c7b4so1861968a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:23:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698431026; x=1699035826;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f1GFRFSXrJZnqwU7bWQb2Id5cyqADGdT0GyV9+GmOAk=;
-        b=B1aL2VBLpgmd4CBwsyFZ84tb3zItWRLJ/gynC2T35YadaCcOOqzsAp1BitvlZJymEE
-         HPctGxa5+9HCD1LaaSj6DRTQAUDF6IMnr2lsEC2jQQ+lhOJT4EJZTQaSg2Eg4xQlVyoM
-         h2kuwnyAVL0uYNgVD9eRZBNPyJtQRPX/EJQc4LO7DhXXr4vwiKQRU+VVFhBnQE6XiA/r
-         v56t0N9kqtguZEOVTp21zrOxDjskqy+Pr91k9Lt+eGgc67rdF2jjIfIGHsZDwvTONLRR
-         BTKz7vOKm/6nMYxcmL+Iy0YvKN0mKtj9dXkwvIZrSbInC+0RYg/pVbqQS+T3+4YNMAHt
-         lDoQ==
-X-Gm-Message-State: AOJu0YxwdtihD/SVRUKvegYBw7e/wInDag3T105n5XDm34PVvJcjeZ8j
-        i2Bn7pi1GR3XUJx9dDcGRw2VkZ3o6NrgxKHs8RQBLFFg+utTVclrw6xYTtrpcrunYSjBs9yD28r
-        X11ZgCToxJy5qA8BNAb4jGVLkyLKkJJrL0jg1SqzU
-X-Received: by 2002:a17:90b:3644:b0:280:1508:fbbb with SMTP id nh4-20020a17090b364400b002801508fbbbmr1868678pjb.23.1698431026277;
-        Fri, 27 Oct 2023 11:23:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG50FlCwAd54tu9bXNQ2lOanyMl7ApDN5fYTheNDi/qcr0Q8FcDhYQnCfYRD6hGz6A5X4B1bh6MAyLWI8uU85M=
-X-Received: by 2002:a17:90b:3644:b0:280:1508:fbbb with SMTP id
- nh4-20020a17090b364400b002801508fbbbmr1868659pjb.23.1698431026001; Fri, 27
- Oct 2023 11:23:46 -0700 (PDT)
+        Fri, 27 Oct 2023 14:31:37 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2063.outbound.protection.outlook.com [40.107.101.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5AB30E3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:24:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cCRxLfHLVy8BIm0i5UY1QS7bDIGs9RUaYZnvyGh5jIXGPduyeWn+owDuTnXolBMbIfEVd4JHndFYPPrKXfONOTIkRwd43bWagPpZ2Rm9jX7Y14v9O1eoVOcTZArpKqHhih2dZlhDMsxtykto4uttUtDuYohSb44plEyaEbvh2z/Ik3pUU7Xawx5A0mQs8RFYNVpNqFy74LZOV4f3EtSt5dZMVG+3eTn0L+YX7t8SZKEznuwEHluSTh9GGpWsfeVXWfLDgtR1e3OBWZ861FcNqlJnAuAIaPdOSs5OELQbE2RiRRTjStTaj+OLt//yzOipu0l2zJwlbcSu5EH5oq1dEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BMA+UxbfldUCe8PPWe408b1BXD1IHlFnVLXiFtKPcKo=;
+ b=SB0eicxoQkJhsqEWFI6j4or+9/Dsn/sjPS+4DD9d2z0o+AgMgCVRJaW6zSBr8PJ/+XJ6lTrnS1y9fCnW26n4XuW4/iXOv1m4bozu6gGQaBnGIEmuIGoMVudz3T+r/uNpeWt1ImngJmDeirOSq92qV41p4VwQYDBmZFT1AnzsdgfRoJHNLnU0K/jOHLOoaSFoxbQ62IZ3WZYePJTVs+RUWLceb6biLJupG282hNnejtvd38UWTtwtX2JW2QIWnlTCKDNB+gWEANXIffXQ0cFltoY67ViDaE2nUlqs6k7MAIO7gArNoy5/Xsuosu109JehotkRyspDYK3/LrLtcPHFYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=xilinx.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BMA+UxbfldUCe8PPWe408b1BXD1IHlFnVLXiFtKPcKo=;
+ b=kUsb+VC1miNsy7dzgIdmOpaKuOtqwn8V8cwDYsq8uc+1GiYBlYZPw3XJ+ZIBoVAelwIT1/GNvdvLtngDupHugtJ9kpCyTsIRanPyywVa9/5T2fq/wRSz9TNPTT7tW1Q7axBDiV+tkQFjrNPUkru+zFisxU46mZVQjxrvVF2MDXw=
+Received: from CH2PR08CA0009.namprd08.prod.outlook.com (2603:10b6:610:5a::19)
+ by SA0PR12MB4560.namprd12.prod.outlook.com (2603:10b6:806:97::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.24; Fri, 27 Oct
+ 2023 18:24:09 +0000
+Received: from DS3PEPF000099D9.namprd04.prod.outlook.com
+ (2603:10b6:610:5a:cafe::d) by CH2PR08CA0009.outlook.office365.com
+ (2603:10b6:610:5a::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22 via Frontend
+ Transport; Fri, 27 Oct 2023 18:24:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099D9.mail.protection.outlook.com (10.167.17.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6933.15 via Frontend Transport; Fri, 27 Oct 2023 18:24:09 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 27 Oct
+ 2023 13:24:08 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 27 Oct
+ 2023 13:24:07 -0500
+Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
+ Transport; Fri, 27 Oct 2023 13:24:05 -0500
+From:   Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+To:     <abhyuday.godhasara@xilinx.com>, <michal.simek@amd.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@amd.com>,
+        Tanmay Shah <tanmay.shah@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Subject: [PATCH] soc: xilinx: fix unhandled SGI warning message
+Date:   Fri, 27 Oct 2023 23:53:59 +0530
+Message-ID: <1698431039-2734260-1-git-send-email-radhey.shyam.pandey@amd.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-References: <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com> <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
- <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com> <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
- <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info> <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
- <2023102731-wobbly-glimpse-97f5@gregkh> <CAOssrKfNkMmHB2oHHO8gWbzDX27vS--e9dZoh_Mjv-17mSUTBw@mail.gmail.com>
- <2023102740-think-hatless-ab87@gregkh> <CAOssrKd-O1JKEPzvnM1VkQ0-oTpDv0RfY6B5oF5p63AtQ4HoqA@mail.gmail.com>
- <2023102757-cornflake-pry-e788@gregkh>
-In-Reply-To: <2023102757-cornflake-pry-e788@gregkh>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Fri, 27 Oct 2023 20:23:34 +0200
-Message-ID: <CAOssrKc6zpsTox58CMvWHAU7EhM1REEk6J9SbV5DaBzurpmr5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the FUSE_INIT_EXT"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        Alessio Balsini <balsini@android.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Bernd Schubert <bschubert@ddn.com>,
-        =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D9:EE_|SA0PR12MB4560:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83bbf8d7-c6ad-4c2d-8485-08dbd719e964
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RvHop7bqCr+zJKKtsVMo2JuNt4MzWcE2pP7ONCcuzILQfGeQMHOl/ypqK5drui2q3m2hgO9aDTZIkrqQp0Hs8Pp1FBhDLBx7ztjEYhyJqUS/Nj/UxOmo/UAO4cD8X5tHXsUuEpceRJhcdYSBwP5VwRwVJrx9yX/J1CGJlm7PKoOH3QDNea4KY1fB368CqrnHptevnYVdemwWxljuToS/hE8AOtsfnoRO1qvEf+GLXOf4BLPsbkub6wFUFGK5lkylJ7Av+OvdQWFVVL6gJvE4Pi4I2klExqj9NinG1LnmyXlVprJSFiYJTOb7haj48zYPeeZaibJDkE/iq+2v/UepbcKjHqQT/5Jr522X71hdh8yYnEcWK//6Ao+XWXMkEUh46UfakR7E9hzg8l/FK3EMB1decglwfKRTXd/39d+9hIfhst6obruBUD7Yr/37ytqJgOFZHL8Pa8wT226MTDr4r8fgYWSks3i69XN89KlBJvghVSnPk7l8ajM4Wl4SCnCZo33pRHRRmr2tHnSkAQv2axV2DTDBf9t1eokCQyfPVCtJ5WasCt14vPR0Hpcop74gN+u3u381SgYEzvoeDgbE2fY+ogqQYTDanYIBVHPdENpVT4l47lJvaVqij4t2FRGCS+8HqWrmsmacR2crLkTgoM4yMl8UcZe6MClW0SLMnayjXbnR5n3FuG3/u8APq06HdgKHUlxb2p7A8mT/9yurb7Y2479G/Rg408bOGj+zmGlMBBIGcIt7WSGbHYIrnhEqAZS0gmBZysgvY+GRB+aK6Q==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799009)(36840700001)(46966006)(40470700004)(41300700001)(5660300002)(6636002)(54906003)(316002)(478600001)(2906002)(8676002)(4326008)(70586007)(70206006)(110136005)(8936002)(6666004)(40460700003)(2616005)(26005)(40480700001)(336012)(426003)(83380400001)(47076005)(36860700001)(82740400003)(86362001)(356005)(81166007)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 18:24:09.2109
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83bbf8d7-c6ad-4c2d-8485-08dbd719e964
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D9.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4560
+X-Spam-Status: No, score=1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 3:12=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+From: Tanmay Shah <tanmay.shah@xilinx.com>
 
-> So because Android userspace is sending a flag value that is not in the
-> upstream table, this breakage is ok?  Or do you mean something else, I'm
-> getting confused.
+Xen broadcasts SGI to each VM when multiple VMs run on Xen hypervisor. In
+such case spurious SGI is expected if one event is registered by one VM and
+not registered by another VM. We let users know that Unhandled SGI is not
+error and expected if kernel is running on Xen hypervisor.
 
-From my POV the regression in the Android kernel was due to the
-Android patch that added those flags.
+Signed-off-by: Tanmay Shah <tanmay.shah@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+---
+ drivers/soc/xilinx/xlnx_event_manager.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not all flags are equal, some applications use a specific set of flags
-and another set of applications use another set.  Non-Android apps
-won't use the flag that Android added, for obvious reasons.
-
-I still don't see why we'd need to revert this patch due to
-regressions in Android.  Maybe I'm really dumb, but I just don't get
-it.
-
-Thanks,
-Miklos
+diff --git a/drivers/soc/xilinx/xlnx_event_manager.c b/drivers/soc/xilinx/xlnx_event_manager.c
+index 86a048a10a13..6356b80ce57b 100644
+--- a/drivers/soc/xilinx/xlnx_event_manager.c
++++ b/drivers/soc/xilinx/xlnx_event_manager.c
+@@ -477,7 +477,7 @@ static void xlnx_call_notify_cb_handler(const u32 *payload)
+ 		}
+ 	}
+ 	if (!is_callback_found)
+-		pr_warn("Didn't find any registered callback for 0x%x 0x%x\n",
++		pr_warn("Unhandled SGI node 0x%x event 0x%x. Expected with Xen hypervisor\n",
+ 			payload[1], payload[2]);
+ }
+ 
+-- 
+2.1.1
 
