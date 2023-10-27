@@ -2,109 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18CE7D97A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A01F7D97B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345789AbjJ0MSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
+        id S1345837AbjJ0MT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345689AbjJ0MSP (ORCPT
+        with ESMTP id S1345796AbjJ0MTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:18:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B47A121;
-        Fri, 27 Oct 2023 05:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698409093; x=1729945093;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=6l46F4HRC2paRPeWRlB0FMlwAAK+TWqvJ+qzgL9f2nU=;
-  b=oKzb+qqUfAP1ttmkzOkYN32QZuk1A+qM3+Wsfi6fRLgf8J3DEUZsLvO0
-   K7zcPiFtzMls+qoVZj3Cv8C5QBAqnV7iYHMySUFRNuztWYeaeJ8mT1eyc
-   JtpUTPpgTfyk7PxXLCt2+r0peGBu8FALzvKDbMtahwPQ8I/wDPV+KuB0g
-   G+6+fux4rQiCyeS/E7/joqjv6+CEWuzLNH8SEkCMrtc5XlA9dLWyhOBFx
-   vXwVqGaNgTdVxcwPb13XkiKmQBHpvwLLo/SmJCb1AmZW+/JQOj45smkRX
-   BAjRpm3ucuS7NoU2yeOVZ7OoEaP27doe/I3koerRJldBHgs8u1LKmL3cJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="384972813"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="384972813"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 05:18:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="759577201"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="759577201"
-Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 05:18:10 -0700
-Date:   Fri, 27 Oct 2023 15:18:08 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-cc:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 14/24] selftests/resctrl: Move cat_val() to cat_test.c
- and rename to cat_test()
-In-Reply-To: <5x3wlnejagee5hbigjo6dpvbc5453gnaab4ue6doplneumfgzd@q7yo3j3prh2h>
-Message-ID: <84d4d30-72f6-f09d-95bc-8861b6686a81@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-15-ilpo.jarvinen@linux.intel.com> <5x3wlnejagee5hbigjo6dpvbc5453gnaab4ue6doplneumfgzd@q7yo3j3prh2h>
+        Fri, 27 Oct 2023 08:19:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F54121;
+        Fri, 27 Oct 2023 05:19:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD6EC433C9;
+        Fri, 27 Oct 2023 12:19:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698409163;
+        bh=NKiYgbA3r0s+9hx1fHFamy9t0uf76ZTKQZG6f+4qCnQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=puLdL/mEhrpvSvhZHNUzcPmGXn3bGdDebNi3QBIEaaS6oqMbeH3ljMAa/IFDva0mm
+         XCcIhYMNd2yNZM8YdD2v0NyKKnp7Dw8vqWyYCzd3+3gvcq9LKQTFEJhK0V1AkxQtBJ
+         IS7ZLHoCduzA5GHJxsCKYgevqC1BZnSr958E7e0dHdvSRE0pzM4fO+XKeJz5ENkv8j
+         QjZuaFQjkZlu74r0Tmimgy+Vh6Rmm5RveY9nmQ06mqFVN/HCPeT1+JwRnvbAZHrOHn
+         pbX8XFVvd4w3IoJY6PuwxgxG0D53drlCM9d1tLQ3FvpQBZHgzkEs09NKnzdKBOHVG9
+         L5P1GyFyvR8bA==
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-457c134a702so751467137.1;
+        Fri, 27 Oct 2023 05:19:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzFmqozkrxM6cE8NcB4bf3Fl3T8/v9ZrauEx59Bu90Tns18JPdu
+        KxD5YYkUQJMJnmgKzJAGme6key2UU50+vyuNprY=
+X-Google-Smtp-Source: AGHT+IGIBVvNTFoDmJPC4Jjd8cfXxyr3m7iIcEUhOoG6TuDsbnyGjkH/909qIeCXqgKroKvi/X4sLy/RmXiBZ23So1Q=
+X-Received: by 2002:a67:ab4a:0:b0:44d:3d29:4940 with SMTP id
+ k10-20020a67ab4a000000b0044d3d294940mr1688008vsh.35.1698409162622; Fri, 27
+ Oct 2023 05:19:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1936397613-1698409092=:2740"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu> <20231023-imx214-v1-1-b33f1bbd1fcf@apitzsch.eu>
+In-Reply-To: <20231023-imx214-v1-1-b33f1bbd1fcf@apitzsch.eu>
+From:   Ricardo Ribalda Delgado <ribalda@kernel.org>
+Date:   Fri, 27 Oct 2023 14:19:04 +0200
+X-Gmail-Original-Message-ID: <CAPybu_3tJPuaS7P9FShQp6rrGJtbPVjS3G3UeYhAWDJsTT5s5Q@mail.gmail.com>
+Message-ID: <CAPybu_3tJPuaS7P9FShQp6rrGJtbPVjS3G3UeYhAWDJsTT5s5Q@mail.gmail.com>
+Subject: Re: [PATCH 1/4] media: i2c: imx214: Explain some magic numbers
+To:     git@apitzsch.eu
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Andr=C3=A9
 
---8323329-1936397613-1698409092=:2740
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Thanks for your patch!
 
-On Fri, 27 Oct 2023, Maciej Wieczór-Retman wrote:
+I usually do not care about creating a define for something that I use
+only once... but if you think this is more clear, let it be :)
 
-> On 2023-10-24 at 12:26:24 +0300, Ilpo Järvinen wrote:
-> >diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> >index 2106cc3601d9..e71690a9bbb3 100644
-> >--- a/tools/testing/selftests/resctrl/cat_test.c
-> >+++ b/tools/testing/selftests/resctrl/cat_test.c
-> >@@ -111,6 +111,77 @@ void cat_test_cleanup(void)
-> > 	remove(RESULT_FILE_NAME2);
-> > }
-> > 
-> >+/*
-> >+ * cat_test:	execute CAT benchmark and measure LLC cache misses
-> >+ * @param:	parameters passed to cat_test()
-> >+ * @span:	buffer size for the benchmark
-> >+ *
-> >+ * Return:	0 on success. non-zero on failure.
-> >+ */
-> >+static int cat_test(struct resctrl_val_param *param, size_t span)
-> >+{
-> >+	int memflush = 1, operation = 0, ret = 0;
-> >+	char *resctrl_val = param->resctrl_val;
-> >+	static struct perf_event_read pe_read;
-> 
-> Is there a reason why this struct is declared as static?
 
-Good catch.
 
-I'll change the earlier patch which made the global -> local var move and 
-failed to remove the static keyword.
+On Mon, Oct 23, 2023 at 11:49=E2=80=AFPM Andr=C3=A9 Apitzsch <git@apitzsch.=
+eu> wrote:
+>
+> Code refinement, no functional changes.
+>
+> Signed-off-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu>
 
--- 
- i.
-
---8323329-1936397613-1698409092=:2740--
+Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/i2c/imx214.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
+> index 4f77ea02cc27..9218c149d4c8 100644
+> --- a/drivers/media/i2c/imx214.c
+> +++ b/drivers/media/i2c/imx214.c
+> @@ -19,12 +19,23 @@
+>  #include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-subdev.h>
+>
+> +#define IMX214_REG_MODE_SELECT         0x0100
+> +#define IMX214_MODE_STANDBY            0x00
+> +#define IMX214_MODE_STREAMING          0x01
+> +
+>  #define IMX214_DEFAULT_CLK_FREQ        24000000
+>  #define IMX214_DEFAULT_LINK_FREQ 480000000
+>  #define IMX214_DEFAULT_PIXEL_RATE ((IMX214_DEFAULT_LINK_FREQ * 8LL) / 10=
+)
+>  #define IMX214_FPS 30
+>  #define IMX214_MBUS_CODE MEDIA_BUS_FMT_SRGGB10_1X10
+>
+> +/* Exposure control */
+> +#define IMX214_REG_EXPOSURE            0x0202
+> +#define IMX214_EXPOSURE_MIN            0
+> +#define IMX214_EXPOSURE_MAX            3184
+> +#define IMX214_EXPOSURE_STEP           1
+> +#define IMX214_EXPOSURE_DEFAULT                0x0c70
+> +
+>  static const char * const imx214_supply_name[] =3D {
+>         "vdda",
+>         "vddd",
+> @@ -665,7 +676,7 @@ static int imx214_set_ctrl(struct v4l2_ctrl *ctrl)
+>         case V4L2_CID_EXPOSURE:
+>                 vals[1] =3D ctrl->val;
+>                 vals[0] =3D ctrl->val >> 8;
+> -               ret =3D regmap_bulk_write(imx214->regmap, 0x202, vals, 2)=
+;
+> +               ret =3D regmap_bulk_write(imx214->regmap, IMX214_REG_EXPO=
+SURE, vals, 2);
+>                 if (ret < 0)
+>                         dev_err(imx214->dev, "Error %d\n", ret);
+>                 ret =3D 0;
+> @@ -743,7 +754,7 @@ static int imx214_start_streaming(struct imx214 *imx2=
+14)
+>                 dev_err(imx214->dev, "could not sync v4l2 controls\n");
+>                 goto error;
+>         }
+> -       ret =3D regmap_write(imx214->regmap, 0x100, 1);
+> +       ret =3D regmap_write(imx214->regmap, IMX214_REG_MODE_SELECT, IMX2=
+14_MODE_STREAMING);
+>         if (ret < 0) {
+>                 dev_err(imx214->dev, "could not sent start table %d\n", r=
+et);
+>                 goto error;
+> @@ -761,7 +772,7 @@ static int imx214_stop_streaming(struct imx214 *imx21=
+4)
+>  {
+>         int ret;
+>
+> -       ret =3D regmap_write(imx214->regmap, 0x100, 0);
+> +       ret =3D regmap_write(imx214->regmap, IMX214_REG_MODE_SELECT, IMX2=
+14_MODE_STANDBY);
+>         if (ret < 0)
+>                 dev_err(imx214->dev, "could not sent stop table %d\n",  r=
+et);
+>
+> @@ -991,9 +1002,12 @@ static int imx214_probe(struct i2c_client *client)
+>          *
+>          * Yours sincerely, Ricardo.
+>          */
+> -       imx214->exposure =3D v4l2_ctrl_new_std(&imx214->ctrls, &imx214_ct=
+rl_ops,
+> +       imx214->exposure =3D v4l2_ctrl_new_std(ctrl_hdlr, &imx214_ctrl_op=
+s,
+>                                              V4L2_CID_EXPOSURE,
+> -                                            0, 3184, 1, 0x0c70);
+> +                                            IMX214_EXPOSURE_MIN,
+> +                                            IMX214_EXPOSURE_MAX,
+> +                                            IMX214_EXPOSURE_STEP,
+> +                                            IMX214_EXPOSURE_DEFAULT);
+>
+>         imx214->unit_size =3D v4l2_ctrl_new_std_compound(&imx214->ctrls,
+>                                 NULL,
+>
+> --
+> 2.42.0
+>
