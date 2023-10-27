@@ -2,55 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA1A7D97F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9236B7D9803
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345796AbjJ0M0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
+        id S1345825AbjJ0M1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0M0r (ORCPT
+        with ESMTP id S229503AbjJ0M12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:26:47 -0400
+        Fri, 27 Oct 2023 08:27:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B36710A;
-        Fri, 27 Oct 2023 05:26:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17739C433C8;
-        Fri, 27 Oct 2023 12:26:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3603DFA;
+        Fri, 27 Oct 2023 05:27:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C11E8C433CA;
+        Fri, 27 Oct 2023 12:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698409605;
-        bh=0QBZJYhDj4i9wPC5H3bgFCd3c49bNMRjHNHFhr9slBw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tyhY6muhq/Id+QUzwY4YRLltk8slV/xon2beeX5chm+U3dQD4iHJXzKmcPeeFJTVv
-         kH83eMrwHYfSF79aKDGR4JK4d6LOm0d53dTC/1lrvrQglF6Tp4SLKth4Ri+D49qlDr
-         4Ji7Nsv1bt2wP3v/S0vgs9gQn2BNQCPwfVn6JhqpP4M3E/JqlzEWTfXPHgCPpJdOzQ
-         aL69rFG21yU8sf60V5vV1XTJyp7NG6jNryjcwYmVwkYDVS2Xq/EhQx664fuzta1i3z
-         fqsOZJmjhBvdZuxNj+RrjjNSclOerx7JUdSYC5XiwwkR48uNRbMMvU/LN/8j/FYUZx
-         K26krnTv/9Tvw==
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-457cb7f53afso916978137.3;
-        Fri, 27 Oct 2023 05:26:45 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw8tGVISrGGdOjIivJXiOYnoZUAkaKtY13ZrQaLkcNZ/WqLBCzq
-        /kv2gsPBrDJpZbmLPMn3V3VTSlPE18moIGNVbhU=
-X-Google-Smtp-Source: AGHT+IGj3bRHtOnD0QGoA7J7kdYUFLwbsUZlI0dAtDJ+TnHqWfhmLogridmHSknNjm1dJW1mT1iLntR5AwDor9Ado3w=
-X-Received: by 2002:a67:c199:0:b0:452:7f81:1502 with SMTP id
- h25-20020a67c199000000b004527f811502mr2616635vsj.26.1698409604180; Fri, 27
- Oct 2023 05:26:44 -0700 (PDT)
+        s=k20201202; t=1698409645;
+        bh=erg1rYgP74To6KDDM1KXYV8FQqFk+IL93d/OT4RF8Iw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ta10opSzgCPzK+RJbeKtJ7EMbjSh54GhTiZuuIcrhdyLroX493IECvCcpfvb7tmQG
+         qk2JfMz57us1lj28G4ln6dH9FnssPpgunuDN12rQl541JYJdJL2J87Wkvyc9DyBvrm
+         7fVfO7+iYSNcJSfOkcWnpglQISSkfjmlfD/P3VRyobo2OqU3tcsz0Zjh/Uhv3Fb/Uq
+         IK1Q0KN3Y3cvlCHKKU70/zP6YqhdndEkKNAS4WkdynltFe0fVootg5Bg+pIi5xVlCK
+         2xvXBkcDqJkOCkpPrjaENfuPjqgnmZpe2ebi1jrMhwU3z0p/S8rhl9UPtgh1VTj2/4
+         prrA0FqagnZMw==
+Date:   Fri, 27 Oct 2023 17:57:11 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, quic_shazhuss@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
+        robh@kernel.org, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v3 4/5] PCI: epf-mhi: Add support for SA8775P
+Message-ID: <20231027122711.GB17527@thinkpad>
+References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
+ <1697715430-30820-5-git-send-email-quic_msarkar@quicinc.com>
+ <20231025075603.GD3648@thinkpad>
+ <610b0621-b140-ee9b-c450-0fec6862c4fc@quicinc.com>
+ <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
 MIME-Version: 1.0
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu> <20231023-imx214-v1-3-b33f1bbd1fcf@apitzsch.eu>
-In-Reply-To: <20231023-imx214-v1-3-b33f1bbd1fcf@apitzsch.eu>
-From:   Ricardo Ribalda Delgado <ribalda@kernel.org>
-Date:   Fri, 27 Oct 2023 14:26:26 +0200
-X-Gmail-Original-Message-ID: <CAPybu_0ggxLOjf+yxvPJisg-6AJ2Cu9_tjZ8=zN58czNEFTGoQ@mail.gmail.com>
-Message-ID: <CAPybu_0ggxLOjf+yxvPJisg-6AJ2Cu9_tjZ8=zN58czNEFTGoQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] media: i2c: imx214: Read orientation and rotation
- from system firmware
-To:     git@apitzsch.eu
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fb0647b5-67c4-4558-ac41-ee2b21446ee2@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -61,11 +68,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:49=E2=80=AFPM Andr=C3=A9 Apitzsch <git@apitzsch.=
-eu> wrote:
->
-> Obtain rotation and orientation information from system firmware and
-> register the appropriate controls.
->
-> Signed-off-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu>
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+On Thu, Oct 26, 2023 at 01:10:00PM +0200, Konrad Dybcio wrote:
+> 
+> 
+> On 10/26/23 07:30, Mrinmay Sarkar wrote:
+> > 
+> > On 10/25/2023 1:26 PM, Manivannan Sadhasivam wrote:
+> > > On Thu, Oct 19, 2023 at 05:07:09PM +0530, Mrinmay Sarkar wrote:
+> > > > Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
+> > > > SA8775P has the PID (0x0306) and supports HDMA. Currently, it has
+> > > Is the PID fixed? I thought you just want to reuse the SDXxx PID in the
+> > > meantime.
+> > > 
+> > > - Mani
+> > 
+> > The PID for SA8775p EP is not decided yet. So using 0x0306 PID meantime.
+> If it's not decided, why should it go upstream then? Would that
+> not break the hosts' expectations when the EP device is updated?
+> 
+
+No, it won't. If the device uses existing PID, then the existing host drivers
+matching the PID will be used for this device. When the PID gets changed, then
+the host drivers need to be updated too.
+
+- Mani
+
+> Konrad
+
+-- 
+மணிவண்ணன் சதாசிவம்
