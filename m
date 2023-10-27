@@ -2,139 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5D57D8E9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C367D8E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345216AbjJ0GZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
+        id S1345144AbjJ0GYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjJ0GZt (ORCPT
+        with ESMTP id S229604AbjJ0GYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:25:49 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2073.outbound.protection.outlook.com [40.107.117.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FB0121;
-        Thu, 26 Oct 2023 23:25:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K6aH1JZ9z8bBnrPnLA/UCs6d4JAnG+oTqZ5lUbdN2cJninSPy6Wm9Kz8d4tBvVYnPIsy0Kv1IGhxh5PcS5WZH+Ws/pR/pwHIUcc6MRHuc+KSD3jw1lkuqpWrkVPF56MDaBC+i407Cf2b6lX4/53Hb8v9vYQPsc4ifPmPkKwx6GKYI97TWh1zI3uDWH1hK4ZHL9+8iqYeRXqgKckViSKInG4cdTu07Fg7xf6OWQ3LGapM69UoFv+ZwEYeEdPJnHohSNGCE2SSj0Mu37S6cB5G2HmbmRVYEseOKUaJtUj94CC/2bxk1ExxVcn47nK0m3ey/tDq0FVfgv1vpCGOC5gBJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5oXRh1JtlstSnwEHdFnMmHmRRa30AF4fRI800i86Rxk=;
- b=Ha0Knr2E3X3YKG6IkI4mo/fYJddhkPXYWe8ttdPzQBiGP9JRpoOX17Z50UpKYLqwQD/pfudU5t68GdceyoTU84kRyNiPiQbXDO58EI2nnWddqz7stwp9D1JCCdxsszE/iP4wfytK5fPEZSEUuf3U93o1rTjWvGTOsesIfrKYJdxGAivhCU2vK/rmw+LI0/GTMxox1tLTcOiamdqrzqAwEFq1veWPONdU7wg/bmxrCI+ML7uM5rWNPzKH5V7iFa5Ox1a1NUfb7b4/awKamlq1UM/xBX0D6WdkeVA6QO8wdR88tYLveRqCLXfOlwfV8CHFifrtU7FBAZERqziL2zbuhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
- dkim=pass header.d=moxa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5oXRh1JtlstSnwEHdFnMmHmRRa30AF4fRI800i86Rxk=;
- b=bioFJrwgDn2TCSqjESifXEpZq3ZPsblwaWvq8hFj/vfnKUkoDFWiOZsLDo67P5R6QW9tikadqwBgDOw0YIrHQS4OZNMWyYc4nnqMBAEDEWSd2xXiw+CG91Ag92+f5j6thyM1GKYfzq1Vj2ufIeSB/IgEuCad9ge3rzEoreAlE+c=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=moxa.com;
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14) by KL1PR01MB5545.apcprd01.prod.exchangelabs.com
- (2603:1096:820:cd::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
- 2023 06:25:41 +0000
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::7723:9ad4:633e:fe0d]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::7723:9ad4:633e:fe0d%5]) with mapi id 15.20.6907.032; Fri, 27 Oct 2023
- 06:25:41 +0000
-From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-Subject: [PATCH 0/2] tty: serial: 8250: Adjustments of MOXA PCIe boards serial interface
-Date:   Fri, 27 Oct 2023 14:24:38 +0800
-Message-Id: <20231027062440.7749-1-crescentcy.hsieh@moxa.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYAPR01CA0119.jpnprd01.prod.outlook.com
- (2603:1096:404:2a::35) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14)
+        Fri, 27 Oct 2023 02:24:46 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CE11B2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:24:42 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2800dfa0dd6so216946a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698387882; x=1698992682; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m/1+2Org+HUdzphpjgQxHya0pQZCLqwEr7eM4fM+ags=;
+        b=Fszx3KzqcpVLQdhy+UcFX1BQTfOMFDNjQ8l18Y6+FWJ+4hNk4yiH6XxUM+NrtYQiQs
+         yc2ZW2W3m9NnCOVt7+MonVa+WzlfHRVI5WdsVEaRd1aUIZrs1ORfiQU1NDOKL7fFjUjo
+         I9uuPiR7BZjEtf7UamvmYncEBxm2qHwtnF+9eVBGIrSIYDQKSxkFKaL3jjtu5z/TYP5Y
+         HxjRZpp3MONtY8GOUF+sfcdJ/aO/7IPgjSkmO5j6bCyMCLh9i/3k6YQnotB2mLZpCfmZ
+         v5EEloGBMRXcbm+qrsrG7IEV6agneV/c+eipMIbZ6qmYFyPYQrirr5PdFHJP9tZuJMbc
+         ntEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698387882; x=1698992682;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m/1+2Org+HUdzphpjgQxHya0pQZCLqwEr7eM4fM+ags=;
+        b=kyGKkfW6cSsZJivHbcWFAWZzuAk0k01QPO69d6h3J4l+MmOUsvB9p+pLCDRJ70PYR7
+         8CDvRotmL+Fv63srn4zmWsh/a/otGY8wf2nT3TxRi7YQ2iz+iyWtAY30YYJAgELiU8Ve
+         yaf+7lr5waS/g6iepW4Bay7Cdaf5lbq4fIovN+YxUo9FCsB38mjoql4ntXR5/sYAtsuP
+         Zm3FShUev9loGGKVJfK2JJcM8I97nZiFVhsj2YozNBnr5q2fvk2i0s44PeWp3hfH31L3
+         q9QbxJpzovNZf8bMXZXc1/GgJytDurbU2GgZtpT2tz0S7UCB/rVqjsrKHfUTTMBvsFjo
+         e8Dw==
+X-Gm-Message-State: AOJu0YxokV7X0YQUcqtJ9oCHPmdjkOF9ZrGoSpC9PAFIwF0DDeduY8C0
+        RvD+z5FDRf4FkcKX2ExUpiq4OA==
+X-Google-Smtp-Source: AGHT+IEXpMoigp46bv/9xLednIkJmxXn1P+zuqlkPr25L8zeynBTmjXMBJzy7BK0AeO0D4RAUb1CyQ==
+X-Received: by 2002:a17:90a:7525:b0:27d:247b:2c3c with SMTP id q34-20020a17090a752500b0027d247b2c3cmr1831073pjk.23.1698387881994;
+        Thu, 26 Oct 2023 23:24:41 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:6a7f:e823:958a:bc95])
+        by smtp.gmail.com with ESMTPSA id 30-20020a17090a195e00b0027cfd582b51sm2909553pjh.3.2023.10.26.23.24.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 23:24:41 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 23:24:39 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Xiao Wang <xiao.w.wang@intel.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, ardb@kernel.org, anup@brainfault.org,
+        haicheng.li@intel.com, ajones@ventanamicro.com,
+        yujie.liu@intel.com, linux-riscv@lists.infradead.org,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] riscv: Optimize bitops with Zbb extension
+Message-ID: <ZTtXp/jhzvjGqBTT@ghost>
+References: <20230926094655.3102758-1-xiao.w.wang@intel.com>
+ <20230926094655.3102758-3-xiao.w.wang@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|KL1PR01MB5545:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5e07228-3998-4aa6-37ac-08dbd6b58abb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XXGZLcbCOs0GQ7r8A0srKpCKZ/Bubkmur0n+sDeh5T6DS5CGaxHVeW4sn4TdZ+J1JIexaiYNiic9pUGWTOwlRMoce3EUzLBRFGPw0y+4N+lwzulobmJ7whRFZMT123j5xahUoJ3bD1NvAorXgNNqjAhBhVRchB7zeWN4u3zjRQQysUJH46W1CRHPa34vVS3UNwdmw8/zHeixDjIQRhkeWD8PQQvXs7yBi42xYcXIflO/BOhae0Z6sG8XPHkU3kGoOwatw7oUPas1cp8W7KAdTIwh7skMiPxTaa5LH5AtW7ndxV/YQ8Hj83+rwXXYWCLIR1MbfvG9erPjpKpahe94lRHNO0IQA6nSKxz/xlmzBnwCwmyxBC7lcaN45Fh49309hDHmyqHAE2nq7S7LVyetnE85q9/tqR89/bKtZfwBjgvugRwpm+QitMwQ9X510Zx9o0ucpQJ1gOCsROhMyUsMGDJiaFSzvUCb80uigO3qP1g8bgqxrPa+1Lcczd8YH9Tbhso348Ffh6lN3WFDY6fFVIMLyTADZ3M1ku9F7pkh/hadWTNVaNUx7SQIvBt1Wd5JLn7saJsXUwho97WdqICVsWKK63L7Ibg/Xx5qjHixITMkqT9PwTCktEcJjSxfW1HP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(41300700001)(38100700002)(4744005)(52116002)(83380400001)(4326008)(36756003)(8936002)(8676002)(2906002)(86362001)(5660300002)(66556008)(66476007)(66946007)(316002)(26005)(1076003)(2616005)(107886003)(110136005)(38350700005)(6512007)(478600001)(6666004)(6486002)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/aIONdxucr7awQkyjcg20KHD1a2WxrNiFNW8OQqSxVoJTIhSoeGmDaoNj5/P?=
- =?us-ascii?Q?8prXo3yK5g63zipl9PIfmjVhnQAHT2eRkvRNCTqRIOuz8Zw979FvQMcqPjcq?=
- =?us-ascii?Q?Bc7Q+cccDGlV0Hw1ixD025fzr1HFHLzZOn9SaH7vK494ieURfvHWehpbIiui?=
- =?us-ascii?Q?TXYgC92G9gV2ufQPLSkae1pj1uhu/xdS5GQYYWT+65lLBBvgcmiAw4z7UYZ5?=
- =?us-ascii?Q?IbkXHRN8E6zQ6pNlUYVeL6QxowCLscY0ddGD2dIhN7g79KKjpi7ilPGQCv2B?=
- =?us-ascii?Q?yMilmYpxMhDCCK+zDfOmrYKvLbZy8BNoroAjyluxKwjAasqveJxytNEU+fXo?=
- =?us-ascii?Q?Q741Ui76njm60Gn0uAO4qjNU388l3G5qouKl9Vvtd8XB2MsrrhCZUkhBajpu?=
- =?us-ascii?Q?y9XFFhkAXm0jYP7JE1Z5KrIk3rAVrv8dWvJks/lOTk0HXgpG2/Dr1fuvjCT3?=
- =?us-ascii?Q?wFew5UhRdY0PiRqkwd+fgsku8l8s+YQKjKCnCbgLRhFY8z9296DuPjblC+3E?=
- =?us-ascii?Q?3sLrg88RJhMPTi8J/lNbybpi9Nr2uQIC8Tfaley39hTPBMs4zj/9MycnGzsf?=
- =?us-ascii?Q?TK4rTpSJbL2GSBOiikI0gDaNU2lAKD7LaVbCDbwuPPQ1nZlohx4YHaYAbIeV?=
- =?us-ascii?Q?Cenfyv65cKYsqDfz2RfbHlU26j0F5LEYrii2pcyStyxILMbJVvCVRhS8vEj5?=
- =?us-ascii?Q?hjI8tPOTsQXp8krt6i4VAetWhE+wYSmlkGy42q9Ht5KinC9HxssAEChDNXUe?=
- =?us-ascii?Q?P9xX4fivByzl0gBTJHIQCllckyIb96tWxL/xVlvvhRJrxlHBIePum7kqMF57?=
- =?us-ascii?Q?eKtGkDJ7/zFULxpPjIPzrLHWXpC/giThJLdEglqTqzxqoIARLWJsDt9ovDze?=
- =?us-ascii?Q?LhEWaHZm6Kb7G5z86pn1lshjnWFRdkYeOs2eIJtEpVGxbKXcySjVECryFgsM?=
- =?us-ascii?Q?xzkx+HcL6oDJj6Tci4lJv1/QyHxrqLq5Cuqktyw765ly5lUQxG4JbErl0rqZ?=
- =?us-ascii?Q?0YGxAP5kDi9BC57IDJNiWny4aoNXD217jVtFvTCkkg8XnL78MvdaGBMnr7bt?=
- =?us-ascii?Q?rXGczGE9HdQdlk2x2VBaSi3/zM2iP7iRUXUihDm3fmSX/AMHeMVVzGyexoDm?=
- =?us-ascii?Q?L+6/YVEAQudDBBBzJRH8C9UBDTZvm+jrKcU4Ob2Q1YS/U7olyptDbMftR1js?=
- =?us-ascii?Q?dtmesKv6YizdG4Evts1Nl7SrQ/cA3mvEbaGd/NeB9ghNHRzjxJ1nPn/kCOU3?=
- =?us-ascii?Q?5dVwYy9aPfzCvEcw97dYbUwN9RmPvfEgyTR2uj+MZo09vjukrXeYuQJo5fTL?=
- =?us-ascii?Q?3jL0945BfCEDZFU8SsKg8j9Rr94fTKBqjisA1W4uH7JSUl7SZhB6r5KypvlP?=
- =?us-ascii?Q?eC/IziBa5DVyzCYhXPQei8TF8Pwdwmy6rEqYk28MLVdlabK5m7VLzWDXIqiL?=
- =?us-ascii?Q?3WtScpxSLLdgF+ynTkU2MgKA8fDkExFRHi/wyrFjgTO7fPdZFJ9H1TLg0Wgq?=
- =?us-ascii?Q?M74BSvyaoYrEISK2XXxhwd/dyz6kxNcbvT3PKv9Zx1C1E/Iwe4MyzcMJGHMT?=
- =?us-ascii?Q?ympfQTG56RNSrj9+xHSLTb4y5Pa+QRNOVu8e0cRtTzf7BIbMPJ9uihee2APe?=
- =?us-ascii?Q?QA=3D=3D?=
-X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5e07228-3998-4aa6-37ac-08dbd6b58abb
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 06:25:41.0318
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ql9WAxra5s/RPHRjsKrdFQ3+ytLIDbi0o6KAs2oncRDbumnPqfpirjdedb05769s/cGcSvfiK58qzw/65k+v+/XajqGF1x36xuZ6RS5PBLg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR01MB5545
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926094655.3102758-3-xiao.w.wang@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series do some adjustments about serial interface of MOXA
-PCIe boards including:
+On Tue, Sep 26, 2023 at 05:46:55PM +0800, Xiao Wang wrote:
+> This patch leverages the alternative mechanism to dynamically optimize
+> bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
+> Zbb ext is not supported by the runtime CPU, legacy implementation is
+> used. If Zbb is supported, then the optimized variants will be selected
+> via alternative patching.
+> 
+> The legacy bitops support is taken from the generic C implementation as
+> fallback.
+> 
+> If the parameter is a build-time constant, we leverage compiler builtin to
+> calculate the result directly, this approach is inspired by x86 bitops
+> implementation.
+> 
+> EFI stub runs before the kernel, so alternative mechanism should not be
+> used there, this patch introduces a macro NO_ALTERNATIVE for this purpose.
+> 
+> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> ---
+>  arch/riscv/include/asm/bitops.h       | 266 +++++++++++++++++++++++++-
+>  drivers/firmware/efi/libstub/Makefile |   2 +-
+>  2 files changed, 264 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bitops.h
+> index 3540b690944b..c97e774cb647 100644
+> --- a/arch/riscv/include/asm/bitops.h
+> +++ b/arch/riscv/include/asm/bitops.h
+> @@ -15,13 +15,273 @@
+>  #include <asm/barrier.h>
+>  #include <asm/bitsperlong.h>
+>  
+> +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
+>  #include <asm-generic/bitops/__ffs.h>
+> -#include <asm-generic/bitops/ffz.h>
+> -#include <asm-generic/bitops/fls.h>
+>  #include <asm-generic/bitops/__fls.h>
+> +#include <asm-generic/bitops/ffs.h>
+> +#include <asm-generic/bitops/fls.h>
+> +
+> +#else
+> +#include <asm/alternative-macros.h>
+> +#include <asm/hwcap.h>
+> +
+> +#if (BITS_PER_LONG == 64)
+> +#define CTZW	"ctzw "
+> +#define CLZW	"clzw "
+> +#elif (BITS_PER_LONG == 32)
+> +#define CTZW	"ctz "
+> +#define CLZW	"clz "
+> +#else
+> +#error "Unexpected BITS_PER_LONG"
+> +#endif
+> +
+> +static __always_inline unsigned long variable__ffs(unsigned long word)
+> +{
+> +	int num;
+> +
+> +	asm_volatile_goto(
+> +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> +		: : : : legacy);
+> +
+> +	asm volatile (
+> +		".option push\n"
+> +		".option arch,+zbb\n"
+> +		"ctz %0, %1\n"
+> +		".option pop\n"
+> +		: "=r" (word) : "r" (word) :);
+> +
+> +	return word;
 
-- Fix MOXA RS422/RS485 PCIe boards not function by default
-- Add support for MOXA PCIe boards to switch serial interface
+That's so clean!
 
-The second patch depends on the first patch because the first patch
-introduces a function called pci_moxa_set_interface() to set serial
-interface and second patch utilize it with ioctl command "TIOCSRS485" to
-switch serial interfaces.
+> +
+> +legacy:
+> +	num = 0;
+> +#if BITS_PER_LONG == 64
+> +	if ((word & 0xffffffff) == 0) {
+> +		num += 32;
+> +		word >>= 32;
+> +	}
+> +#endif
+> +	if ((word & 0xffff) == 0) {
+> +		num += 16;
+> +		word >>= 16;
+> +	}
+> +	if ((word & 0xff) == 0) {
+> +		num += 8;
+> +		word >>= 8;
+> +	}
+> +	if ((word & 0xf) == 0) {
+> +		num += 4;
+> +		word >>= 4;
+> +	}
+> +	if ((word & 0x3) == 0) {
+> +		num += 2;
+> +		word >>= 2;
+> +	}
+> +	if ((word & 0x1) == 0)
+> +		num += 1;
+> +	return num;
+> +}
+> +
+> +/**
+> + * __ffs - find first set bit in a long word
+> + * @word: The word to search
+> + *
+> + * Undefined if no set bit exists, so code should check against 0 first.
+> + */
+> +#define __ffs(word)				\
+> +	(__builtin_constant_p(word) ?		\
+> +	 (unsigned long)__builtin_ctzl(word) :	\
+> +	 variable__ffs(word))
+> +
+> +static __always_inline unsigned long variable__fls(unsigned long word)
+> +{
+> +	int num;
+> +
+> +	asm_volatile_goto(
+> +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> +		: : : : legacy);
+> +
+> +	asm volatile (
+> +		".option push\n"
+> +		".option arch,+zbb\n"
+> +		"clz %0, %1\n"
+> +		".option pop\n"
+> +		: "=r" (word) : "r" (word) :);
+> +
+> +	return BITS_PER_LONG - 1 - word;
+> +
+> +legacy:
+> +	num = BITS_PER_LONG - 1;
+> +#if BITS_PER_LONG == 64
+> +	if (!(word & (~0ul << 32))) {
+> +		num -= 32;
+> +		word <<= 32;
+> +	}
+> +#endif
+> +	if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
+> +		num -= 16;
+> +		word <<= 16;
+> +	}
+> +	if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
+> +		num -= 8;
+> +		word <<= 8;
+> +	}
+> +	if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
+> +		num -= 4;
+> +		word <<= 4;
+> +	}
+> +	if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
+> +		num -= 2;
+> +		word <<= 2;
+> +	}
+> +	if (!(word & (~0ul << (BITS_PER_LONG-1))))
+> +		num -= 1;
+> +	return num;
+> +}
+> +
+> +/**
+> + * __fls - find last set bit in a long word
+> + * @word: the word to search
+> + *
+> + * Undefined if no set bit exists, so code should check against 0 first.
+> + */
+> +#define __fls(word)							\
+> +	(__builtin_constant_p(word) ?					\
+> +	 (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :	\
+> +	 variable__fls(word))
+> +
+> +static __always_inline int variable_ffs(int x)
+> +{
+> +	int r;
+> +
+> +	asm_volatile_goto(
+> +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> +		: : : : legacy);
+> +
+> +	asm volatile (
+> +		".option push\n"
+> +		".option arch,+zbb\n"
+> +		"bnez %1, 1f\n"
+> +		"li %0, 0\n"
+> +		"j 2f\n"
+> +		"1:\n"
+> +		CTZW "%0, %1\n"
+> +		"addi %0, %0, 1\n"
+> +		"2:\n"
+> +		".option pop\n"
+> +		: "=r" (r) : "r" (x) :);
+> +
+> +	return r;
+> +
 
-Crescent CY Hsieh (2):
-  tty: serial: 8250: Fix MOXA RS422/RS485 PCIe boards not work by
-    default
-  tty: serial: 8250: Add support for MOXA PCIe boards to switch
-    interface
+I generally like to move as much code out of asm as possible. You are
+also able to remove one of the branches if you rearrange as follows:
 
- drivers/tty/serial/8250/8250_pci.c | 102 ++++++++++++++++++++++++++++-
- drivers/tty/serial/serial_core.c   |  21 +++++-
- include/uapi/linux/serial.h        |   4 ++
- 3 files changed, 123 insertions(+), 4 deletions(-)
+if (!x)
+	return 0;
 
--- 
-2.34.1
+asm volatile (
+	".option push\n"
+        ".option arch,+zbb\n"
+        CTZW "%0, %1\n"
+        ".option pop\n"
+        : "=r" (r) : "r" (x) :);
 
+return r + 1;
+
+You could then also extract out the "if (!x)" at the beginning of the
+legacy section at put it at the top of the function.
+
+> +legacy:
+> +	r = 1;
+> +	if (!x)
+> +		return 0;
+> +	if (!(x & 0xffff)) {
+> +		x >>= 16;
+> +		r += 16;
+> +	}
+> +	if (!(x & 0xff)) {
+> +		x >>= 8;
+> +		r += 8;
+> +	}
+> +	if (!(x & 0xf)) {
+> +		x >>= 4;
+> +		r += 4;
+> +	}
+> +	if (!(x & 3)) {
+> +		x >>= 2;
+> +		r += 2;
+> +	}
+> +	if (!(x & 1)) {
+> +		x >>= 1;
+> +		r += 1;
+> +	}
+> +	return r;
+> +}
+> +
+> +/**
+> + * ffs - find first set bit in a word
+> + * @x: the word to search
+> + *
+> + * This is defined the same way as the libc and compiler builtin ffs routines.
+> + *
+> + * ffs(value) returns 0 if value is 0 or the position of the first set bit if
+> + * value is nonzero. The first (least significant) bit is at position 1.
+> + */
+> +#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_ffs(x))
+> +
+> +static __always_inline int variable_fls(unsigned int x)
+> +{
+> +	int r;
+> +
+> +	asm_volatile_goto(
+> +		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
+> +		: : : : legacy);
+> +
+> +	asm volatile (
+> +		".option push\n"
+> +		".option arch,+zbb\n"
+> +		"bnez %1, 1f\n"
+> +		"li %0, 0\n"
+> +		"j 2f\n"
+> +		"1:\n"
+> +		CLZW "%0, %1\n"
+> +		"neg %0, %0\n"
+> +		"addi %0, %0, 32\n"
+> +		"2:\n"
+> +		".option pop\n"
+> +		: "=r" (r) : "r" (x) :);
+> +
+> +	return r;
+> +
+
+Same comment as above but with appropriate changes.
+
+> +legacy:
+> +	r = 32;
+> +	if (!x)
+> +		return 0;
+> +	if (!(x & 0xffff0000u)) {
+> +		x <<= 16;
+> +		r -= 16;
+> +	}
+> +	if (!(x & 0xff000000u)) {
+> +		x <<= 8;
+> +		r -= 8;
+> +	}
+> +	if (!(x & 0xf0000000u)) {
+> +		x <<= 4;
+> +		r -= 4;
+> +	}
+> +	if (!(x & 0xc0000000u)) {
+> +		x <<= 2;
+> +		r -= 2;
+> +	}
+> +	if (!(x & 0x80000000u)) {
+> +		x <<= 1;
+> +		r -= 1;
+> +	}
+> +	return r;
+> +}
+> +
+> +/**
+> + * fls - find last set bit in a word
+> + * @x: the word to search
+> + *
+> + * This is defined in a similar way as ffs, but returns the position of the most
+> + * significant set bit.
+> + *
+> + * fls(value) returns 0 if value is 0 or the position of the last set bit if
+> + * value is nonzero. The last (most significant) bit is at position 32.
+> + */
+> +#define fls(x)								\
+> +	(__builtin_constant_p(x) ?					\
+> +	 (int)(((x) != 0) ?						\
+> +	  (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :		\
+> +	 variable_fls(x))
+> +
+> +#endif
+
+As a nit, it's nice when large #ifdef blocks have a comment like
+
+/* !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE) */
+
+Overall great changes, just that small optimization to get rid of the
+jump.
+
+- Charlie
+
+> +
+> +#include <asm-generic/bitops/ffz.h>
+>  #include <asm-generic/bitops/fls64.h>
+>  #include <asm-generic/bitops/sched.h>
+> -#include <asm-generic/bitops/ffs.h>
+>  
+>  #include <asm-generic/bitops/hweight.h>
+>  
+> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> index a1157c2a7170..d68cacd4e3af 100644
+> --- a/drivers/firmware/efi/libstub/Makefile
+> +++ b/drivers/firmware/efi/libstub/Makefile
+> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)		+= -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
+>  				   -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
+>  				   -DEFI_HAVE_STRCMP -fno-builtin -fpic \
+>  				   $(call cc-option,-mno-single-pic-base)
+> -cflags-$(CONFIG_RISCV)		+= -fpic
+> +cflags-$(CONFIG_RISCV)		+= -fpic -DNO_ALTERNATIVE
+>  cflags-$(CONFIG_LOONGARCH)	+= -fpie
+>  
+>  cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)	+= -I$(srctree)/scripts/dtc/libfdt
+> -- 
+> 2.25.1
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
