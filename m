@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8767D9DB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626E47D9DB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345851AbjJ0P7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        id S1345581AbjJ0P75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjJ0P7f (ORCPT
+        with ESMTP id S1346247AbjJ0P7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:59:35 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB318CE
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:59:33 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b9390d6bd3so1011419a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698422373; x=1699027173; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xIpZiRguR5ztX72Jx9GSG1nVMOc1X7wxd/73UnubI+4=;
-        b=XmMbTyk06xcZR+tb63HhYGNsnuXyNpdeD+oxiGcYlEBWG7Y8w2DJoGlW5jlDrdV51d
-         Ibj+XFKXfgG3v09VjMIpfVdZMwqxXTjJd5vgUMkjVLl8G7OaivxHRFT4X6z1Cvh+IBw5
-         HGjzV7wMw6apQn30K/22vXi6/UE3nkrKEe4DA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698422373; x=1699027173;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xIpZiRguR5ztX72Jx9GSG1nVMOc1X7wxd/73UnubI+4=;
-        b=Q9lLdPuEmyCdeKiOIqmVr+jbK/RsqW7KsKLxZfuYp1kZFqQWeA3IKDdefR+08YLrTN
-         DAusSMxnYr1+15No10UIZccfp2Fwf7vVI/+IqQ/WrwZAqqn9kZrE50dCbN81eR+7QU3k
-         OwHnbpgn8x0WlrbaBtL6kyJVx9b9SpqnVcsZHqxsHcDZCwIxSoWZNX9XDvEA6uZfxc0A
-         Je1Y2Cij3cF2KKVxla6ZgR54kyKzLxM0r/2Wj+jU75a1UmOzm0eLxT4RWaN1+ouVkPHw
-         WsViFrVzAykIO0W47BrVNZPKNSS1lqKYXvXmYWDR6DLLAF3fsUzQHHMHf5HXjj5lk2bQ
-         xf1g==
-X-Gm-Message-State: AOJu0Yx94C0rbMsruSQYx6KKiTNjnrEZiYnSNzlDIKJ1N35wxeCpHcof
-        Ww8+nfA1tvsD9krTBlYZmZjziA==
-X-Google-Smtp-Source: AGHT+IHCPZdNAcRG+t1M2xwWBMvbdltKNplZZ5qGLIJGn/zQD7Qk2n9PkgKPFNuyQusVj5VdP5iidg==
-X-Received: by 2002:a17:90a:4ca5:b0:274:7db1:f50f with SMTP id k34-20020a17090a4ca500b002747db1f50fmr3784895pjh.15.1698422373079;
-        Fri, 27 Oct 2023 08:59:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q2-20020a17090a2e0200b002749a99318csm1376715pjd.26.2023.10.27.08.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 08:59:32 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 08:59:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] airo: replace deprecated strncpy with strscpy_pad
-Message-ID: <202310270859.8EB5599A@keescook>
-References: <20231026-strncpy-drivers-net-wireless-cisco-airo-c-v2-1-413427249e47@google.com>
+        Fri, 27 Oct 2023 11:59:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB14CE
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6o4rbLFYNUp9YJOxgeaoUrnihGTZ1EBKCFaYlv7pvHU=; b=LeKd3dZSt3bfsY/3NaA8gkWnHj
+        SeZYAPIQtkWwGBuFPrSBKrIkCsQAa8ub/tbnVKF6RFCcBsU4w7Vs6KDHOSpe4/ZjXTSRQRqMBJbAR
+        KwGHFDyEvmUiahxUhpOMqhGdQuMCgx2ZkOY2yrLMN3lliJS2NP+fSGq3+w6BcspFeW8QDB3pW2Y9C
+        0KeZ3wd00h4+EFw0Ng8HsKH8m+1RGtNM58+5VRiI129jhIk+LEJWCkM6m9M+Y5fbrN2PUH2dZAnvR
+        xTmzUQLwr26u4BtQx2Fc82EjMB+LlL8f/TkX0U18XB8u//kLq3BRxfobuVUbmQ0mrmhC2Wbd09dcI
+        V/i9Hhwg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qwPFW-004FZK-BM; Fri, 27 Oct 2023 15:59:50 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 07CB9300392; Fri, 27 Oct 2023 17:59:50 +0200 (CEST)
+Date:   Fri, 27 Oct 2023 17:59:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Ingo Molnar <mingo@redhat.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: lockdep: holding locks across syscall boundaries
+Message-ID: <20231027155949.GA26550@noisy.programming.kicks-ass.net>
+References: <a99a7fbe-ec31-4e31-87c7-1b7ae1dd1a5a@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026-strncpy-drivers-net-wireless-cisco-airo-c-v2-1-413427249e47@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <a99a7fbe-ec31-4e31-87c7-1b7ae1dd1a5a@kernel.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 11:19:18PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Fri, Oct 27, 2023 at 09:14:53AM -0600, Jens Axboe wrote:
+> Hi,
 > 
-> `extra` is clearly supposed to be NUL-terminated which is evident by the
-> manual NUL-byte assignment as well as its immediate usage with strlen().
-> 
-> Moreover, let's NUL-pad since there is deliberate effort (48 instances)
-> made elsewhere to zero-out buffers in these getters and setters:
-> 6050 | memset(local->config.nodeName, 0, sizeof(local->config.nodeName));
-> 6130 | memset(local->config.rates, 0, 8);
-> 6139 | memset(local->config.rates, 0, 8);
-> 6414 | memset(key.key, 0, MAX_KEY_SIZE);
-> 6497 | memset(extra, 0, 16);
-> (to be clear, strncpy also NUL-padded -- we are matching that behavior)
-> 
-> Considering the above, a suitable replacement is `strscpy_pad` due to
-> the fact that it guarantees both NUL-termination and NUL-padding on the
-> destination buffer.
-> 
-> We can also replace the hard-coded size of "16" to IW_ESSID_MAX_SIZE
-> because this function is a wext handler.
-> 
-> In wext-core.c we have:
-> static const struct iw_ioctl_description standard_ioctl[] = {
-> ...
->         [IW_IOCTL_IDX(SIOCGIWNICKN)] = {
->                 .header_type    = IW_HEADER_TYPE_POINT,
->                 .token_size     = 1,
->                 .max_tokens     = IW_ESSID_MAX_SIZE,
->         },
-> 
-> So the buffer size is (strangely) IW_ESSID_MAX_SIZE
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Normally we'd expect locking state to be clean and consistent across
+> syscall entry and exit, as that is always the case for sync syscalls.
 
-Looks good; thanks!
+> We currently have a work-around for holding a lock from aio, see
+> kiocb_start_write(), which pretends to drop the lock from lockdeps
+> perspective, as it's held from submission to until kiocb_end_write() is
+> called at completion time.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I was not aware of this, the only such hack I knew about was the
+filesystem freezer thing.
 
--- 
-Kees Cook
+The problem with holding locks past the end of a syscall is that you'll
+nest whatever random lock hierarchies possibly by every other syscall
+under that lock.
+
+> This is a bit of an ugly work-around, and defeats the purpose of
+> lockdep.
+> 
+> Since I've now got another case where I want to hold a resource across
+> syscalls, is there a better way to do this?
+> 
+> This is for inode_dio_start(), which increments an inode int count, and
+> inode_dio_end() which decrements it. If a task is doing
+> inode_dio_start() and then inode_dio_wait(), I want to trigger this. I
+> have a hack that does this, but it disables lockdep_sys_exit() as
+> otherwise I just get that warning rather than the more useful one.
+
+Suppose syscall-a returns with your kiocb thing held, call it lock A
+Suppose syscall-b returns with your inode thing held, call it lock B
+
+Then userspace does:
+
+	syscall-a
+	syscall-b
+
+while it also does:
+
+	syscall-b
+	syscall-a
+
+and we're up a creek, no?
