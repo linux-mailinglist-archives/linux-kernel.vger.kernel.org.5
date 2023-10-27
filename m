@@ -2,41 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976F77D9F5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A0A7D9F4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbjJ0SHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S1346191AbjJ0SDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjJ0SHG (ORCPT
+        with ESMTP id S231560AbjJ0SD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:07:06 -0400
-X-Greylist: delayed 545 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 11:07:03 PDT
-Received: from gentwo.org (gentwo.org [62.72.0.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDA9AC
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:07:03 -0700 (PDT)
-Received: by gentwo.org (Postfix, from userid 1003)
-        id BD2E348F4E; Fri, 27 Oct 2023 10:57:56 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id BC6E9489FB;
-        Fri, 27 Oct 2023 10:57:56 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 10:57:56 -0700 (PDT)
-From:   Christoph Lameter <cl@linux.com>
-To:     chengming.zhou@linux.dev
-cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        Fri, 27 Oct 2023 14:03:29 -0400
+Received: from alln-iport-2.cisco.com (alln-iport-2.cisco.com [173.37.142.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14659F4;
+        Fri, 27 Oct 2023 11:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1929; q=dns/txt; s=iport;
+  t=1698429807; x=1699639407;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bfN4RnDRd/wQBtbHZU4sV3kl2Zo449NxAVA6sUVHsHA=;
+  b=jDWjJT2FxPLfbxF/kaM68Nfhp405IBl4FnfATC4+XOE1RWI2v/yYv99N
+   PXUWytMjslA20tqKFPkvjbKoroK+24lAUhBJBVc2ATUU5zoQhT2YlcdDf
+   dQa4jXZBXLXILuQiYOzopUqIWL8FGKfBve60Dn5Zm+0lHficpK5U9y/HD
+   A=;
+X-CSE-ConnectionGUID: 4Mikn+5vR5qwsfm/TH5KCA==
+X-CSE-MsgGUID: YGTu7XepRTexKHPfGlcJ2w==
+X-IronPort-AV: E=Sophos;i="6.03,256,1694736000"; 
+   d="scan'208";a="179058432"
+Received: from rcdn-core-11.cisco.com ([173.37.93.147])
+  by alln-iport-2.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 18:03:24 +0000
+Received: from localhost.cisco.com ([10.193.101.253])
+        (authenticated bits=0)
+        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39RI39Od029226
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 27 Oct 2023 18:03:23 GMT
+From:   Karan Tilak Kumar <kartilak@cisco.com>
+To:     sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [RFC PATCH v3 0/7] slub: Delay freezing of CPU partial slabs
-In-Reply-To: <20231024093345.3676493-1-chengming.zhou@linux.dev>
-Message-ID: <d5e40e42-ad02-e53d-c38f-09a4fdf1be88@linux.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
+        Karan Tilak Kumar <kartilak@cisco.com>
+Subject: [PATCH v2 01/13] scsi: fnic: Modify definitions to sync with VIC firmware
+Date:   Fri, 27 Oct 2023 11:02:50 -0700
+Message-Id: <20231027180302.418676-2-kartilak@cisco.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231027180302.418676-1-kartilak@cisco.com>
+References: <20231027180302.418676-1-kartilak@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Authenticated-User: kartilak@cisco.com
+X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
+X-Outbound-Node: rcdn-core-11.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,50 +65,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023, chengming.zhou@linux.dev wrote:
+VIC firmware has updated definitions.
+Modify structure and definitions to sync with the latest VIC firmware.
 
-> 2. Solution
-> ===========
-> We solve these problems by leaving slabs unfrozen when moving out of
-> the node partial list and on CPU partial list, so "frozen" bit is 0.
->
-> These partial slabs won't be manipulate concurrently by alloc path,
-> the only racer is free path, which may manipulate its list when !inuse.
-> So we need to introduce another synchronization way to avoid it, we
-> reuse PG_workingset to keep track of whether the slab is on node partial
-> list or not, only in that case we can manipulate the slab list.
->
-> The slab will be delay frozen when it's picked to actively use by the
-> CPU, it becomes full at the same time, in which case we still need to
-> rely on "frozen" bit to avoid manipulating its list. So the slab will
-> be frozen only when activate use and be unfrozen only when deactivate.
+Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+---
+ drivers/scsi/fnic/vnic_scsi.h | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-I think we have to clear our terminology a bit about what a "frozen" slab 
-is.
-
-Before this patch a frozen slab is not on the node partial list and 
-therefore its state on the list does not have to be considered during 
-freeing and other operations. The frozen slab could be actively allocated 
-from.
-
-From the source:
-
-*   Frozen slabs
-  *
-  *   If a slab is frozen then it is exempt from list management. It is not
-  *   on any list except per cpu partial list. The processor that froze the
-  *   slab is the one who can perform list operations on the slab. Other
-  *   processors may put objects onto the freelist but the processor that
-  *   froze the slab is the only one that can retrieve the objects from the
-  *   slab's freelist.
-  *
-
-
-After this patch the PG_workingset indicates the state of being on 
-the partial lists.
-
-What does "frozen slab" then mean? The slab is being allocated from? Is 
-that information useful or can we drop the frozen flag?
-
-Update the definition?
+diff --git a/drivers/scsi/fnic/vnic_scsi.h b/drivers/scsi/fnic/vnic_scsi.h
+index 4e12f7b32d9d..f715f7942bfe 100644
+--- a/drivers/scsi/fnic/vnic_scsi.h
++++ b/drivers/scsi/fnic/vnic_scsi.h
+@@ -26,7 +26,7 @@
+ #define VNIC_FNIC_RATOV_MAX                 255000
+ 
+ #define VNIC_FNIC_MAXDATAFIELDSIZE_MIN      256
+-#define VNIC_FNIC_MAXDATAFIELDSIZE_MAX      2112
++#define VNIC_FNIC_MAXDATAFIELDSIZE_MAX      2048
+ 
+ #define VNIC_FNIC_FLOGI_RETRIES_MIN         0
+ #define VNIC_FNIC_FLOGI_RETRIES_MAX         0xffffffff
+@@ -55,7 +55,7 @@
+ #define VNIC_FNIC_PORT_DOWN_IO_RETRIES_MAX  255
+ 
+ #define VNIC_FNIC_LUNS_PER_TARGET_MIN       1
+-#define VNIC_FNIC_LUNS_PER_TARGET_MAX       1024
++#define VNIC_FNIC_LUNS_PER_TARGET_MAX       4096
+ 
+ /* Device-specific region: scsi configuration */
+ struct vnic_fc_config {
+@@ -79,10 +79,19 @@ struct vnic_fc_config {
+ 	u16 ra_tov;
+ 	u16 intr_timer;
+ 	u8 intr_timer_type;
++	u8 intr_mode;
++	u8 lun_queue_depth;
++	u8 io_timeout_retry;
++	u16 wq_copy_count;
+ };
+ 
+ #define VFCF_FCP_SEQ_LVL_ERR	0x1	/* Enable FCP-2 Error Recovery */
+ #define VFCF_PERBI		0x2	/* persistent binding info available */
+ #define VFCF_FIP_CAPABLE	0x4	/* firmware can handle FIP */
+ 
++#define VFCF_FC_INITIATOR         0x20    /* FC Initiator Mode */
++#define VFCF_FC_TARGET            0x40    /* FC Target Mode */
++#define VFCF_FC_NVME_INITIATOR    0x80    /* FC-NVMe Initiator Mode */
++#define VFCF_FC_NVME_TARGET       0x100   /* FC-NVMe Target Mode */
++
+ #endif /* _VNIC_SCSI_H_ */
+-- 
+2.31.1
 
