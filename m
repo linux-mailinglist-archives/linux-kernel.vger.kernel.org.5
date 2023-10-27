@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFBB7D9E0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DBD7D9E14
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjJ0Qfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        id S232245AbjJ0Qgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbjJ0Qfo (ORCPT
+        with ESMTP id S232079AbjJ0Qgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:35:44 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC7ECA
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1698424541;
-        bh=QWdx6DFVQZind8QLaT2jE8xtG7kdYVYQ+z2J3UzCR6E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=v3LVu9xF93x0G9KkuMjo1xbghtWV5AJI2/xDZIzZhG0FIqmXMWLSh4OhUXMLceOZS
-         3ECnssUtl3jEof3LrweXU+FozM1qVBQpgII5viwZhccQog9DfnjkrDCeyWAvl8LZUu
-         ZB5Dtbqk5C1RmwmrtL+mFXJwnzMXfpoh3zGVyA4yjeQJhYggUeupHPVFqpEljRwbdb
-         MYfqKJA/imvCyzzKkWMwORsO4VgL7+lfJWGp8BkuhuUTC6RdFNZWJMPiBAMoC8N5/v
-         q7PpB1aWQzv+zGPPr85R+s42JYsv8P0HbBTsX07bTfCUZ6t7h7VrJ0sWz9+EnRB0cz
-         S45DZ+sul1jFw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SH7ZN6LHgz1ZmM;
-        Fri, 27 Oct 2023 12:35:40 -0400 (EDT)
-Message-ID: <f0741a5b-229a-429a-8451-8af17261be9e@efficios.com>
-Date:   Fri, 27 Oct 2023 12:35:56 -0400
+        Fri, 27 Oct 2023 12:36:46 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007261B8;
+        Fri, 27 Oct 2023 09:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1698424571; x=1699029371; i=linosanfilippo@gmx.de;
+        bh=kNVdYZ2EFg6vPMD/14ZIDqR7eDilLs0wpKwk3at+TcI=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=r1cDzx3ZFCtSPeWldV/MU5jKLg2ytkgEpBn9oVXlnhaPG8xNdqKiT6s0GHdbhcsX
+         xi+LYim+h4cw5/iovOw1DOWHGyzQS2ayZn4PRzZoV4VSl7ntgdeicfG16+RUDLkk9
+         5miIvX7i0uON31rFe/NDWjk4l846WgCf6ckWAA3QIlakoz/8l/HrBwKJ6WXCGYCRd
+         PN2qbuC35UCNPVp0PCgR2M6kvGk8r9YFfxxHjHUz8iN/UZkr8fnm1wXKQQR2xoQ96
+         +Cyo3phA0jFAXZsYBNRspU+G8ARWdX76w62qz9wfEaUlNu8pJAre6B84jdvxjaGaq
+         XvjxfB7iukpobTMsew==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSt8Q-1r3Snl2Vna-00UKWa; Fri, 27
+ Oct 2023 18:36:11 +0200
+Message-ID: <419580ec-1f0d-43c9-ab94-fdd5dee361c3@gmx.de>
+Date:   Fri, 27 Oct 2023 18:36:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
+Subject: Re: [PATCH v4 0/7] Fixes and improvements for RS485
 Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>, linux-mm@kvack.org,
-        x86@kernel.org, akpm@linux-foundation.org, luto@kernel.org,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-References: <20231025235413.597287e1@gandalf.local.home>
- <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
- <20231026071413.4ed47b0e@gandalf.local.home>
- <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
- <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
- <7871472b-a0c4-4475-9671-69a3244f956d@efficios.com>
- <20231026164549.14d45c60@gandalf.local.home>
- <644da047-2f7a-4d55-a339-f2dc28d2c852@efficios.com>
- <20231027122442.5c76dd62@gandalf.local.home>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231027122442.5c76dd62@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
+        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        lukas@wunner.de, p.rosenberger@kunbus.com
+References: <20231018174840.28977-1-l.sanfilippo@kunbus.com>
+ <2023102707-customer-nastiness-9c80@gregkh>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <2023102707-customer-nastiness-9c80@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:K1CllYVjeScIFMGk286f+sV62fTPhsGVrRlbqdHvEdunyo+taPY
+ +Nvc2o+ikbB0z1ITSeZTS5jT0hSvFYvGt3xHWB7CzRGNnFigi/GKme1N9FbNLquFY59sMMP
+ PeaWeW7sXl3FR9nUsQDVi+8jM7mP6JD3qvJObYhL6Ot2Sdus/VubMsyxNimH7h1DWV9TC1f
+ gilD8Wo03mP20cb7u/2Bw==
+UI-OutboundReport: notjunk:1;M01:P0:ApHgyRWuDhg=;P56l4QqN0wNflEAlpyS1iogJMS5
+ Ek0I02XXOCYUbPQBA2GD9RBBi/bPjp6UgP9k8m14f0i2iaOFKmEk7omRxlyWZ9s7o6kUiDj7l
+ Uvi458gWGvdqv8310Xy6xDde9Aqoa7oDP5zrymhfhMIS0aRar7A6yZnX52Z/ywkD1Efjy3pbQ
+ Ln5xd4VY8xsKGQ5ijRsOcFz8jmQGV3VCIIPHXjLo5FySJ9HZJHt+frzt6PDvJRvp/I2VdfvOe
+ g+ejUicx4zqup7H+J+KGSIv3DpkK/HWxV6ntEtI1f1fkn3shShJrarBNAiybO+OB+Sc9yU0Zw
+ vDDSXFpiFbji8uQTA7RIZFTtqxCjCoVKkpQkcAIJJBNosYodZGl5p/GqaJoOcV1R5/v+hZfZx
+ vZjdJ8iQQ3pcRcwXikz+87zoEa8sPnXLGDxoHTAY8AITPrepxoUXBWVh9LwALGHYM1eXcxEUx
+ /if46S5k2A5zT2iF1H5r6LYC3LiS8Wtt+IPS8oxERmJRE/bchrD7O/vsXSUDokgGeIDw9jfT3
+ 0f/3jKTvH3mesmkZeGGV6IbH4XnseuSv8rMvhobxVelwePaM/ae5YLBpDvtzPSaKusqx0qKFA
+ eze9Kj9FKLLJjmUzfJ6J2mcxcjDoHzcgbPhbb2lwLbQm4rOpbCafQJrS5tBO4QbZ0pKW19D7l
+ ZuFFLPU1IpsXRM3Wy0827gMmDwNJjhh6UxuNQF6gq9UqIUZcD9YwJr5f3fO4dRpJRmW+2nI+C
+ YVmXGi/mV2zeTAoxVvMH73qxbY74bfAdNGuOOCLdXNQCjmrw72IVOe9f9fXt4NHW2wquVbRLK
+ XHgty5B1TmbI0M+RRsSujWc59yKpjnhL5O8dLu02aEfZLdwXTJU4oj/hbAdxNYQo46Ki7lVg4
+ e2P8w+6pEcrZOXLsbfNN42iz0MH4+L04MKtfP+XgscLb1fsA0kzrd/zNEEO8QdUE8XHcbUEE0
+ TRKmbg==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-27 12:24, Steven Rostedt wrote:
-> On Fri, 27 Oct 2023 12:09:56 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->>> I need to clear one bit while seeing if another bit is set. I could also
->>> use subl, as that would also atomically clear the bit.
+
+On 27.10.23 13:03, Greg KH wrote:
+> On Wed, Oct 18, 2023 at 07:48:33PM +0200, Lino Sanfilippo wrote:
+>> The following series includes some fixes and improvements around RS485 =
+in
+>> the serial core and UART drivers:
 >>
->> Ah ok, I did not get that you needed to test for a different bit than
->> the one you clear.
-> 
-> Yeah, maybe I'm not articulating the implementation as well.
-> 
->    bit 0: Set by user space to tell the kernel it's in a critical section
-> 
->    bit 1: Set by kernel that it gave user space extend time slice
-> 
-> Bit 1 will only be set by the kernel if bit 0 is set.
-> 
-> When entering a critical section, user space will set bit 0. When it leaves
-> the critical section, it needs to clear bit 0, but also needs to handle the
-> race condition from where it clears the bit and where the kernel could
-> preempt it and set bit 1. Thus it needs an atomic operation to clear bit 0
-> without affecting bit 1. Once bit 0 is cleared, it does not need to worry
-> about bit 1 being set after that as the kernel will only set bit 1 if it
-> sees that bit 0 was set. After user space clears bit 0, it must check bit 1
-> to see if it should now schedule. And it's also up to user space to clear
-> bit 1, but it can do that at any time with bit 0 cleared.
-> 
->   extend() {
-> 	cr_flags = 1;
->   }
-> 
->   unextend() {
-> 	cr_flags &= ~1;  /* Must be atomic */
-> 	if (cr_flags & 2) {
-> 		cr_flags = 0;  /* May not be necessary as it gets cleared by extend() */
-> 		sched_yield();
-> 	}
->   }
-> 
-> Does that make more sense?
+>> Patch 1: Do not hold the port lock when setting rx-during-tx GPIO
+>> Patch 2: set missing supported flag for RX during TX GPIO
+>> Patch 3: fix sanitizing check for RTS settings
+>> Patch 4: make sure RS485 is cannot be enabled when it is not supported
+>> Patch 5: imx: do not set RS485 enabled if it is not supported
+>> Patch 6: omap: do not override settings for rs485 support
+>> Patch 7: exar: set missing RS485 supported flag
+>>
+>> Changes in v4:
+>> - add comment for function uart_set_rs485_gpios after hint from Hugo
+>> - correct commit message as pointed out by Hugo
+>> - rephrase commit messages
+>> - add patch 7 after discussion with Ilpo
+>
+> There's a lot of fuzz for this series against my current tree, so much
+> so I don't feel comfortable taking it right now.  Can you resend it
+> after 6.7-rc1 is out and you have rebased it against that?  If these
+> really are all bugfixes, we can still get them into 6.7-final then.
+Yes, no problem, will do so.
 
-Not really.
-
-Please see my other email about the need for a reference count here, for
-nested locks use-cases.
-
-By "atomic" operation I suspect you only mean "single instruction" which can
-alter the state of the field and keep its prior content in a register, not a
-lock-prefixed atomic operation, right ?
-
-The only reason why you have this asm trickiness is because both states
-are placed into different bits from the same word, which is just an
-optimization. You could achieve the same much more simply by splitting
-this state in two different words, e.g.:
-
-extend() {
-   WRITE_ONCE(__rseq_abi->cr_nest, __rseq_abi->cr_nest + 1);
-   barrier()
-}
-
-unextend() {
-   barrier()
-   WRITE_ONCE(__rseq_abi->cr_nest, __rseq_abi->cr_nest - 1);
-   if (READ_ONCE(__rseq_abi->must_yield)) {
-     WRITE_ONCE(__rseq_abi->must_yield, 0);
-     sched_yield();
-   }
-}
-
-Or am I missing something ?
-
-Thanks,
-
-Mathieu
-   
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+BR,
+Lino
