@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2637D9900
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6102C7D9904
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjJ0Myj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
+        id S1345518AbjJ0MzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0Myi (ORCPT
+        with ESMTP id S231305AbjJ0MzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:54:38 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DF410E
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:54:35 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-45853ab5556so904536137.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:54:35 -0700 (PDT)
+        Fri, 27 Oct 2023 08:55:16 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D96E129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:55:14 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6be840283ceso2001482b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698411275; x=1699016075; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DwNfFFS57QhT5eEqPbXTCH8wXRCZS40xeP0h1OwCxS4=;
-        b=tv1vLeGnXlb957cOI6Et6F+jXA08XWVBnR+R4+w7VdFHcj2pjUaoFlYLMrbyfe/hdt
-         ElG8Esn522M/ft4KKqBmexhM1x1jbYC/zmR1DFwJ2MQxvZTcsrkPkiB/NI/pLTQFsCL7
-         4BFLe4zvvorKhv3Ql5ty1u3trEyR6XL04ckqk+6S5WmBIiJUBWNsyAcHNae3++W2f6uM
-         WWxqGxFuTdCONHYQ144ebauRzwDnNo8ne3YR3QFNgLybo1IjJYS+V1xdPG4MNk8BP7M0
-         1eNeaM2Do+04QpVRbrPe1VBBdETlaxh148xsAQyFXoDn85AJR1CwII4XJY9CqlNC2a24
-         RyyA==
+        d=ventanamicro.com; s=google; t=1698411314; x=1699016114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NtR5YHlVvuHvzI/nsFjHhzkEP3xQ5iNgT/02AgGSWcY=;
+        b=eaaagx6NDkfQFgJo9sUQQmAQNfajIGMpoXKob72Poy79+Ux5Ksmp1ACsWi5q04olmg
+         4H6DQtFNdYdYKNljv++MNGOgGL7lntA58GKdrN3WI+AIz5EIn8VQ+WGhNWmlUG2Y+OlJ
+         qK8lfyKbpgYWvNVXCceHQ311fa9K/4So1K0Olvdxx8hzecyqNjh6YO7HJ62LXKubO9xb
+         GyTLR8h5sArH7U81tKasS0PdncPEiOkMnWyUsrT36i60PN1EDQO6tySOVTw3va7JvRn/
+         GtgXG2YtFEhYLmbS56xu4hdctI3FLs9PO8DZdp8nEzmqkHQB36NAxYG7xNgj4hWK8AKF
+         7U7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698411275; x=1699016075;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DwNfFFS57QhT5eEqPbXTCH8wXRCZS40xeP0h1OwCxS4=;
-        b=vy/a1rbqe083GicMUG+0NnTL/eF3gijxyhHvUq4XbCf2mEZ+NHjLM/P8p3aVmN0pOM
-         t6ZZE10/j7NBokHY6lfzR5nAkUCIdwqdBb+65Xvvfl3nOmMTI5nTZp7Tj2vQDtPYgn7I
-         /WSYQzTHNX2MJAxXH2PZa0ooC+2yint/04MYuu+Lij1ZChyI6QmX0d9gdqvPxWa2JUD6
-         lJYwEHeR6Qv8ssg7mv/nhOQomJp0Y3nvsXhV5EFrWDwL+nxcAHI14qzpQYtbm0oxIjQ1
-         mcsUxkqXkqGm4CAdvLxzwd0CZ5vgmJlwizbkKiPAxptMTeg6hUESE8dO34AnJ89EhdX4
-         tbTQ==
-X-Gm-Message-State: AOJu0Yz+1mkjcWR5MJYoCmvN63rtlcLpAZ2ofpm/zp1ctZu+HAqNEE+Q
-        0PH6yiZ1wZSGVcYkcd9eTLyLavlGD9Qr1wox7g6jRgXk7DCxr5jezL4LnQ==
-X-Google-Smtp-Source: AGHT+IFJW/N/eTG3DhZ2NqbTWczs0MEgD82mmIOFNMTB4e/tuhe2d1asQ4lqR6etCsZ9wnurBGLX9/VoLXj72BpBH6Y=
-X-Received: by 2002:a67:c105:0:b0:44d:4a41:893f with SMTP id
- d5-20020a67c105000000b0044d4a41893fmr2921932vsj.9.1698411274739; Fri, 27 Oct
- 2023 05:54:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698411314; x=1699016114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NtR5YHlVvuHvzI/nsFjHhzkEP3xQ5iNgT/02AgGSWcY=;
+        b=pb3Ev7OFHTGxu3UrpiRBq7THttEu6mfbKYPUFLeBZ7k4WXsGFObrlCjLW0dxVp6/LN
+         jZLfosNis0rrhTacX8NUL6MmCqfG+F6Wx4r/L4sxm8+j18/btK6QpbUnWlEAhCLsQ2B4
+         DnGxaeLGwmFWHHLBVQDO18CDnQgBflCMfBCNqvgtK6zYM98X0Ub/b/utJiegNZK6tmY4
+         NuE1vYfgDDPn5X/vjiPNyUEig1hii29bA1uwz7OG7vmxWvJFIJa5huIznF0cE4vjLbtU
+         HooTa6PAo3/TmYT738uSXUKUVZwIkdXcI+tH7KvP0pnUdLn2YsN+tfEHl0+bJ43O+poh
+         Llig==
+X-Gm-Message-State: AOJu0Yyj88tfGtSwXkCka0V5j2YMsuye9KaZQ6IfZCvb3CvYzqzy3swD
+        jJ4GWr+hVT1elpd1nvazc8ugpQ==
+X-Google-Smtp-Source: AGHT+IFhOP7YUnwDjtkHfZaRuwApUBuBpo87R1Ao7f/FkzvpRDYjh5UpMDOWwDtBZTINnRMBGE38uw==
+X-Received: by 2002:a05:6a21:a5a8:b0:174:129d:3978 with SMTP id gd40-20020a056a21a5a800b00174129d3978mr3501864pzc.32.1698411313970;
+        Fri, 27 Oct 2023 05:55:13 -0700 (PDT)
+Received: from sunil-laptop ([106.51.188.78])
+        by smtp.gmail.com with ESMTPSA id bu22-20020a632956000000b00528db73ed70sm1053268pgb.3.2023.10.27.05.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 05:55:13 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 18:25:03 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>
+Subject: Re: [RFC PATCH v2 06/21] RISC-V: Kconfig: Select deferred GSI probe
+ for ACPI systems
+Message-ID: <ZTuzJ1nsicZYp+uh@sunil-laptop>
+References: <20231025202344.581132-7-sunilvl@ventanamicro.com>
+ <20231026170408.GA1825378@bhelgaas>
 MIME-Version: 1.0
-References: <e237a31ef7ca6213c46f87e4609bd7d3eb48fedf.1698351974.git.andreyknvl@google.com>
-In-Reply-To: <e237a31ef7ca6213c46f87e4609bd7d3eb48fedf.1698351974.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 27 Oct 2023 14:53:57 +0200
-Message-ID: <CANpmjNOrKpkV3aEPsTZSuL6Nb7R5NyiBh84xkbxM-802nzDtBg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] lib/stackdepot: print disabled message only if truly disabled
-To:     andrey.konovalov@linux.dev
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026170408.GA1825378@bhelgaas>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 22:28, <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Currently, if stack_depot_disable=off is passed to the kernel
-> command-line after stack_depot_disable=on, stack depot prints a message
-> that it is disabled, while it is actually enabled.
->
-> Fix this by moving printing the disabled message to
-> stack_depot_early_init. Place it before the
-> __stack_depot_early_init_requested check, so that the message is printed
-> even if early stack depot init has not been requested.
->
-> Also drop the stack_table = NULL assignment from disable_stack_depot,
-> as stack_table is NULL by default.
->
-> Fixes: e1fdc403349c ("lib: stackdepot: add support to disable stack depot")
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+On Thu, Oct 26, 2023 at 12:04:08PM -0500, Bjorn Helgaas wrote:
+> On Thu, Oct 26, 2023 at 01:53:29AM +0530, Sunil V L wrote:
+> > On RISC-V platforms, apart from root interrupt controllers (which
+> > provide local interrupts and IPI), other interrupt controllers in the
+> > hierarchy are probed late. Enable this select this CONFIG option for
+> > RISC-V platforms so that device drivers which connect to deferred
+> > interrupt controllers can take appropriate action.
+> 
+> Quite a bit of this series seems related to the question of interrupt
+> controllers being probed "late".
+> 
+> I don't see anything specific about *how* late this might be, but from
+> the use of -EPROBE_DEFER in individual drivers (8250_pnp explicitly,
+> and acpi_register_gsi() and pnp_irq() and acpi_pci_irq_enable(), which
+> are called from driver .probe() paths) it seems like interrupt
+> controllers might be detected even after devices that use them.
+> 
+> That seems like a fairly invasive change to the driver probe flow.
+> If we really need to do that, I think it might merit a little more
+> background as justification since we haven't had to do it for any
+> other arch yet.
+> 
 
-Reviewed-by: Marco Elver <elver@google.com>
+Hi Bjorn,
 
-for the change here, but there's a way to make it simpler (see below).
+In RISC-V, the APLIC can be a converter from wired (GSI) to MSI interrupts.
+Hence, especially in this mode, it has to be a platform device to use
+device MSI domain. Also, according to Marc Zyngier there is no reason to
+probe interrupt controllers early apart from root controller. So, the
+device drivers which use wired interrupts need to be probed after APLIC.
 
-> ---
->  lib/stackdepot.c | 24 +++++++++++++++---------
->  1 file changed, 15 insertions(+), 9 deletions(-)
->
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 2f5aa851834e..0eeaef4f2523 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -101,14 +101,7 @@ static int next_pool_required = 1;
->
->  static int __init disable_stack_depot(char *str)
->  {
-> -       int ret;
-> -
-> -       ret = kstrtobool(str, &stack_depot_disabled);
-> -       if (!ret && stack_depot_disabled) {
-> -               pr_info("disabled\n");
-> -               stack_table = NULL;
-> -       }
-> -       return 0;
-> +       return kstrtobool(str, &stack_depot_disabled);
->  }
->  early_param("stack_depot_disable", disable_stack_depot);
->
-> @@ -130,6 +123,15 @@ int __init stack_depot_early_init(void)
->                 return 0;
->         __stack_depot_early_init_passed = true;
->
-> +       /*
-> +        * Print disabled message even if early init has not been requested:
-> +        * stack_depot_init() will not print one.
-> +        */
-> +       if (stack_depot_disabled) {
-> +               pr_info("disabled\n");
-> +               return 0;
-> +       }
-> +
->         /*
->          * If KASAN is enabled, use the maximum order: KASAN is frequently used
->          * in fuzzing scenarios, which leads to a large number of different
-> @@ -138,7 +140,11 @@ int __init stack_depot_early_init(void)
->         if (kasan_enabled() && !stack_bucket_number_order)
->                 stack_bucket_number_order = STACK_BUCKET_NUMBER_ORDER_MAX;
+The PNP devices and PCI INTx GSI links use either
+acpi_dev_resource_interrupt() (PNP) or acpi_register_gsi() directly
+(PCI). The approach taken here is to follow the example of
+acpi_irq_get() which is enhanced to return EPROBE_DEFER and several
+platform device drivers which use platform_get_irq() seem to be handling
+this already.
 
-stack_bucket_number_order seems like a redundant variable, that should
-at least be __ro_after_init. All code that does "if
-(stack_bucket_number_order) ..." could just do "if (kasan_enabled())
-..." and use STACK_BUCKET_NUMBER_ORDER_MAX constant directly instead.
+Using ResourceSource dependency (mbigen uses) in the namespace as part of
+Extended Interrupt Descriptor will not ensure the order since PNP/INTx
+GSI devices don't work with that.
 
-The code here could be simplified if it was removed. No idea why it
-was introduced in the first place. I think f9987921cb541 introduced it
-and there it said "complemented with a boot-time kernel parameter",
-but that never happened.
+Is there any other better way to create dependency between IO devices
+and the interrupt controllers when interrupt controller itself is a
+platform device? While using core_initcall() for interrupt controllers
+seem to work which forces the interrupt controller to be probed first,
+Marc is not in favor of that approach since it is fragile.
 
-So I'd be in favor of removing that variable, which will also simplify
-this code.
+Thanks a lot for your help with review and feedback!
+
+Sunil
+
