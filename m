@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CAA7D95F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529C47D95F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345732AbjJ0LFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        id S1345737AbjJ0LGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345730AbjJ0LFB (ORCPT
+        with ESMTP id S229633AbjJ0LGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:05:01 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D741B3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:04:58 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507bd644a96so2827930e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:04:58 -0700 (PDT)
+        Fri, 27 Oct 2023 07:06:14 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B20129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:06:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507cd62472dso3500591e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698404697; x=1699009497; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698404770; x=1699009570; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jRkJ6GS582054m9pI45O51aDerW3nLmo4KswUySiPic=;
-        b=pJ32eCzzExWlb1RiphKAvTp8PWpK+UHU4A/xalywPniYvugZw1WQ5lZdaKmgPj5TTQ
-         23Yxdj3h9MlVwK/ha+LjfHBm7ZigchXts7mgVCr0M94v8RSPQLxTj1wW4c6qTQeoJxt1
-         Jtmmu9yta2AuEaoDCblMqBrYEpgFZ1R2SjsW6aOJ0m+xCYl2Njgl+9gP00PoEpEe4S4r
-         jx0zkASSmDJL7ZS8aBzj45FHYJMTyd81RDcSzbzpJXb8DA6HR5CUvD4KoRy56XepsxGh
-         +us2KYIvpcMlzcCwOtmdkWDvbJHjXQ2/DXpiHJkh1SfAvkzTIbBhvBj7eVkfWrO7w02C
-         zSzw==
+        bh=Sn0SkupVcdj5VcJbVKdeh9E9I20fBSBNAsJMfpC8QzU=;
+        b=VXIwC/39geDwm82VjN7fyVA3XM8mR27ICzmWzGMZuk1myencm7TYB9ZamuZgCDeqH1
+         9TbdVoMaRxwx/FISJ4PpLBK7TKqkrFuZhPdvv7/l6Hd31j2PF/lYmIaiLw/C78mqEzVe
+         xJqxcuM6DGbm5rRoH02d0P82dVNl8dVgoHAZ5ROBvjYDt5Sjas0xWf9aIG9VoZ7toecR
+         rzbXxF9gYomRuV/O8Py51ognxIOdfmMbLyiEB4RH+l5Pt9sJ3A45YDw/bC5BUM8rPNBh
+         MK4wSY/F+LhoW6Tg8dpYdrIhw1TLo1fc3kcnb0EnPp9tLVd05HHvyuE6MIpMUgSSD4RL
+         /RZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698404697; x=1699009497;
+        d=1e100.net; s=20230601; t=1698404770; x=1699009570;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jRkJ6GS582054m9pI45O51aDerW3nLmo4KswUySiPic=;
-        b=GbqJ7Cc3pOzl62071VTAyGN4cdcoOPXSAP88bUNNPKoWakC/4/H8pLkC8NT6MOR/II
-         DWlgImXbeIKErMXjxs86cha/pE8miWgtODkyrypT3T2HPeLonymSLbqHY9wABugYq9Of
-         +AcIBORXDDzzszEceLFyfF4nNYzFXeW28YfKGqq2tnETnvknt/QmTlDQLmvoO4NdLRIm
-         EqrarwPE9DYC9Ghg6b9Jp+5dmgP87xw0m6+G5jc0MJnLorx8GBej/1szfwaWSUfrSBRX
-         tbyPXxKIhagui9zGItp/PzTx7NSECJo6smo7FJ0pfjWHG6LPxHUHfvZk4g8AnIosFKZE
-         L1Ow==
-X-Gm-Message-State: AOJu0YzNy26kmwQmaieDum/1DczreDln7jtCEg2uqwzecclo5qHaxv8t
-        QPvuKEvsgefLnUgZFbU1KJU/Tg==
-X-Google-Smtp-Source: AGHT+IEPWfXGUeU8hS/PvM7tZ2QoMuLgsUYr9KPgsryrM7sCZhJ5EmFNfyN/ngHo9L1v2/UM5PX+Dw==
-X-Received: by 2002:a05:6512:4850:b0:507:97ca:ec60 with SMTP id ep16-20020a056512485000b0050797caec60mr1538133lfb.3.1698404696831;
-        Fri, 27 Oct 2023 04:04:56 -0700 (PDT)
+        bh=Sn0SkupVcdj5VcJbVKdeh9E9I20fBSBNAsJMfpC8QzU=;
+        b=BoSyt8JDW6v1YD+z5M/pvaNoMQGhL2hIX6zvCiXRajPTvNg8WtQ2XAGkIj1hq79AUK
+         zY5KQmK+rh8vViHF9TWuUamkmbOTsh08C0krxbA4CJKIyQVPC/AxWsNa4j781jf8LO+a
+         zS8uuX8WGzSJsVecP836b56YcW9zm87uMmB7CeOforyEGdgpZpCxAK8icP07HZ2MY3S9
+         PQeWi8l9zHThqa0eGVZA0JTDv7z4Jo7/5lt36EQkS/UQZgiPSESuZtGA6FfGwCX85YF/
+         t4EQJJxSBG3RdWVxr8oyV3RE7HOSqIcaJhIcpsidPKYhpMdS2d1mLKEtnJmiT8gh1Qae
+         V+gQ==
+X-Gm-Message-State: AOJu0YzrRa+NNDcxmJfWawSUhfvzE1/njR30QbaB3mV2Wi1BMvT9RoWh
+        eBB3AJ0VFo+cJB/kInMcPHWVTQ==
+X-Google-Smtp-Source: AGHT+IF74fDPSxKudSJkG37lyKSSBlG5zZ/3h4KAaX7dR24ge5dvrd17j6I8JxYr/cShylumwVfgFA==
+X-Received: by 2002:a05:6512:4010:b0:507:9b69:6028 with SMTP id br16-20020a056512401000b005079b696028mr938671lfb.24.1698404770157;
+        Fri, 27 Oct 2023 04:06:10 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id m28-20020ac24adc000000b00507d478c211sm237468lfp.76.2023.10.27.04.04.55
+        by smtp.gmail.com with ESMTPSA id m28-20020ac24adc000000b00507d478c211sm237468lfp.76.2023.10.27.04.06.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 04:04:56 -0700 (PDT)
-Message-ID: <ebcf3e9f-2bc2-4d91-8b5c-51405236e4ab@linaro.org>
-Date:   Fri, 27 Oct 2023 13:04:55 +0200
+        Fri, 27 Oct 2023 04:06:09 -0700 (PDT)
+Message-ID: <1f9aa42d-6269-4dd0-a048-3e91266bf135@linaro.org>
+Date:   Fri, 27 Oct 2023 13:06:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
+Subject: Re: [PATCH v2 2/2] dt-bindings: mtd: partitions: Document special
+ values
 Content-Language: en-US
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gazzillo <paul@pgazz.com>
-Cc:     Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
- <d7ba077d-6bcd-4e04-b678-51e4bbc935ca@linaro.org>
- <9e55b561-a0ad-4503-9f20-b7c98507afa0@tweaklogic.com>
+To:     Edward Chow <equu@openmail.cc>, Rob Herring <robh+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lech Perczak <lech.perczak@camlingroup.com>
+References: <20231025052937.830813-1-equu@openmail.cc>
+ <20231027094610.1022114-1-equu@openmail.cc>
+ <20231027094610.1022114-3-equu@openmail.cc>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,34 +113,62 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <9e55b561-a0ad-4503-9f20-b7c98507afa0@tweaklogic.com>
+In-Reply-To: <20231027094610.1022114-3-equu@openmail.cc>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 10:42, Subhajit Ghosh wrote:
-> 4. Conor reviewed the patch and said that it would be better that I handle all
->     these operations in apds9306 driver (this) patch series rather than submitting
->     a new patch.
->     "Ahh apologies then. The best course of action would likely be to include
->      the patch merging the two bindings in your series adding the third user."
-> 5. As per this patch series -- RFC->v0->v1-v2
-
-RFC was the first version sent to mailing list. So after RFC there is
-second version - v2. This is v4.
-
+On 27/10/2023 11:46, Edward Chow wrote:
+> Add examples for special values in linux/mtd/partitions.h.
 > 
-> I have formatted the commit messages wrongly which might be the source of all the
-> confusion. I'll fix it. Please let me know the best course of action, I am not well
-> versed with this process. Thank you for reviewing.
+> Signed-off-by: Edward Chow <equu@openmail.cc>
+> ---
+>  .../mtd/partitions/fixed-partitions.yaml      | 30 +++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> index 331e564f29dc..e7bf466c395f 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> @@ -164,3 +164,33 @@ examples:
+>              read-only;
+>          };
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/mtd/partitions.h>
+> +    partitions {
+> +        compatible = "fixed-partitions";
+> +        #address-cells = <2>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +            label = "bootloader";
+> +            reg = <0 0x000000 0x020000>;
+> +            read-only;
+> +        };
+> +
+> +        firmware@1 {
+> +            label = "firmware";
+> +            /* From the end of the last partition, occupying as mush
+
+This is a friendly reminder during the review process.
+
+It seems my or other reviewer's previous comments were not fully
+addressed. Maybe the feedback got lost between the quotes, maybe you
+just forgot to apply it. Please go back to the previous discussion and
+either implement all requested changes or keep discussing them.
+
+Thank you.
+
 
 Best regards,
 Krzysztof
