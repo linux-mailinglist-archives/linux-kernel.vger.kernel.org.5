@@ -2,224 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0817DA102
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187027DA0FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346538AbjJ0Ss2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S1346510AbjJ0SsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346540AbjJ0SsE (ORCPT
+        with ESMTP id S235194AbjJ0Sro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:48:04 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E60B10C3;
-        Fri, 27 Oct 2023 11:47:36 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-66fbcaf03c6so5839106d6.1;
-        Fri, 27 Oct 2023 11:47:36 -0700 (PDT)
+        Fri, 27 Oct 2023 14:47:44 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC9019B9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:47:21 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32d9d8284abso1536218f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698432455; x=1699037255; darn=vger.kernel.org;
+        d=9elements.com; s=google; t=1698432439; x=1699037239; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/a0tTu9/JPEdXuV8EJT0RD0nNZ+OkcyleZ2EfTC0bM=;
-        b=ZVaYQ2iqIz9F5TFk7CLpbyBMbcXcwvexEV7SoDSi72/eGV4GwTaRcSyJANW1O+k8VW
-         k6ESSNi9IFwfo3c7OWITAlbfsNjwaVUgANzXBvmYNUsOyzpZe4tLFB9rx/uOvDJN7sOq
-         zbdAT3BlSo3zWO0VAth8FV4YaB1DDi3QlX4cP1vnLQleLsuMjaG9QcVA8QR7Ljexn5nb
-         URA1tRjZbz3zJ0Ho4eYC0xSPTWwGjydtrMst3eDR39pfVAZxu1wS6afI3/qEmHxFEayX
-         ZIrJo5Lf9aG4IDp1VTWc9lNkFZEbUGnLB108DjRQQ5UBLYJYH5aQklHexKrFEbAXpXPy
-         uuuQ==
+        bh=eNQIp/KBXkssBnXnURnyXEtwPP/esZe3h0yYIlPjhVo=;
+        b=QeNtJAt/rdAhVrhvVRHNzf+dYPFLSSlLB1aEaI4Z6ZhcB6zUdTFKAuJ4iZmA9m7y30
+         4XBDnhfk1R9O4BYjV5TjvXzl+iDXoYQkjucAvEsutBB0i68PkAQfuyDIdiObltYosgEJ
+         ZWNXquJ6HrJFbq2QW1q13kfPcOINXDT+lNtWYpgOJGvR+Ar4mdV0t4uzwPbNqpQxL2T6
+         ExrEJd6WxC9eSx97KwLythW1xTRlI6qoJQf/63TD5pDk4xpa9PIWA199TvR78a3snvMZ
+         /ouScNJG8gRR6V746eV5FFE2Jx3W6RRzKaOxwwff4WsZMaPp3N6XkeKnH24dMLKi6lAj
+         xM3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698432455; x=1699037255;
+        d=1e100.net; s=20230601; t=1698432439; x=1699037239;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s/a0tTu9/JPEdXuV8EJT0RD0nNZ+OkcyleZ2EfTC0bM=;
-        b=oALmuctOrMLAKK3sbCrxeWHy7T7K7Fjyx+wIkGLDVTNEzLxPpGV74GeZM3Cfun0quA
-         uhd8NXfejxRs355hf3yul9uE6rLIziSlUkQTxpeFpLXHaifB8e2o1Hg4fyHb1Bt0WYZw
-         R9+TfbXHv9OfC/MtCkcAiUaV/idezdQ3DkaoC3rwQJ/AeNCmaiT8/DaqJD5u3T8uKO5S
-         zo1SOS3N8GomtrRyOYL3R21OD6qwRI6Ln/o+k9UwnZCPnwngpe4/1GD8nmWN/+0y1u0u
-         wG5k2r6bFAZ+GJATtygB9+IDlGLvX+0tkBY1fcJY12/TWEQc9TsY5rxlDZ+YWflEAQi5
-         sJ3A==
-X-Gm-Message-State: AOJu0YzPdyVyqlCGahuX9w6ztODtEaVCFIVSeHtbo6x3ibmlsKXRDQGG
-        EMdNdqZbCc3MCwiAgwkXKQ==
-X-Google-Smtp-Source: AGHT+IH4eVOUIF76haowlEtb/fcEKTnFPVsn6mTG+2WQozJbnW3yB6tp9L86bBH9YWLUnz06tElP5w==
-X-Received: by 2002:a05:6214:21aa:b0:66d:12c7:bf85 with SMTP id t10-20020a05621421aa00b0066d12c7bf85mr4456312qvc.31.1698432455054;
-        Fri, 27 Oct 2023 11:47:35 -0700 (PDT)
-Received: from n191-129-154.byted.org ([130.44.215.123])
-        by smtp.gmail.com with ESMTPSA id o1-20020a05620a110100b0076d25b11b62sm773944qkk.38.2023.10.27.11.47.34
+        bh=eNQIp/KBXkssBnXnURnyXEtwPP/esZe3h0yYIlPjhVo=;
+        b=YRMSzRU0vVvOpanL3xmpC14iVWu4v+MsbH/3k1lhUxKNcW7FM6gTPAnabK9KaNT6no
+         oBu/IXZih9XO02deGWaTBh6+CutE853FfblCTiP2hpvKa1AD5ljrr2/4fbxPphOCGPRW
+         8rob+ylwt2fI4ZNwyXNy/EOlnPZLiKyNZZC1NVArxyQyaV9RUe3uSrOXghV0IYB6ws5o
+         lshgw5TBaT9e/LF5V4BszRobejn/DQZri42tPqgC+1XyEd66YdO6PG/4WngmJcDmJYuI
+         /GsSVg0/AAyL16wmat6Kx48Yw2UCxfTicDOU9LrTGr6zGlemS8Vv1eo/HteWuUOQF/pV
+         JYgA==
+X-Gm-Message-State: AOJu0YwBF7cur21vv1nJ8pElb6ofWSz/QRUWVtJakW1Yyy7Ql2nEOdgC
+        +gSTv1VQK25AG6ocdaL/eQsMdw==
+X-Google-Smtp-Source: AGHT+IEvA2K/8e37Llc60+TgJ1tU9QqM7b5P36PhoN+eWvM81UvJpQDoYjKsJZcLO6J4djyErmX9YA==
+X-Received: by 2002:a05:6000:10c5:b0:32d:9a17:2a70 with SMTP id b5-20020a05600010c500b0032d9a172a70mr2605651wrx.68.1698432439392;
+        Fri, 27 Oct 2023 11:47:19 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id j12-20020adfe50c000000b0032d893d8dc8sm2298527wrm.2.2023.10.27.11.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 11:47:34 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Cc:     Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Youlun Zhang <zhangyoulun@bytedance.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
-Date:   Fri, 27 Oct 2023 18:46:57 +0000
-Message-Id: <20231027184657.83978-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 27 Oct 2023 11:47:18 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+To:     Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     robh@kernel.org, Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: i2c: pca954x: Add custom properties for MAX7357
+Date:   Fri, 27 Oct 2023 18:47:07 +0000
+Message-ID: <20231027184709.1541375-1-naresh.solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Traffic redirected by bpf_redirect_peer() (used by recent CNIs like
-Cilium) is not accounted for in the RX stats of veth devices, confusing
-user space metrics collectors such as cAdvisor [1], as reported by
-Youlun.
+Maxim Max7357 has a configuration register to enable additional
+features. These features aren't enabled by default & its up to
+board designer to enable the same as it may have unexpected side effects.
 
-Currently veth devices use the @lstats per-CPU counters, which only
-cover TX traffic.  veth_get_stats64() actually collects RX stats of a
-veth device from its peer's TX (@lstats) counters, based on the
-assumption that a veth device can _only_ receive packets from its peer,
-which is no longer true.
+These should be validated for proper functioning & detection of devices
+in secondary bus as sometimes it can cause secondary bus being disabled.
 
-Instead, use @tstats to maintain both per-CPU RX and TX traffic counters
-for each veth device, and count bpf_redirect_peer() traffic in
-skb_do_redirect().
+Add booleans for:
+ - maxim,isolate-stuck-channel
+ - maxim,send-flush-out-sequence
+ - maxim,preconnection-wiggle-test-enable
 
-veth_stats_rx() might need a name change (perhaps to "veth_stats_xdp()")
-for less confusion, but let's leave it to a separate patch to keep this
-fix minimal.
-
-[1] Specifically, the "container_network_receive_{byte,packet}s_total"
-    counters are affected.
-
-Reported-by: Youlun Zhang <zhangyoulun@bytedance.com>
-Fixes: 9aa1206e8f48 ("bpf: Add redirect_peer helper")
-Cc: Jiang Wang <jiang.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/net/veth.c | 36 ++++++++++++++----------------------
- net/core/filter.c  |  1 +
- 2 files changed, 15 insertions(+), 22 deletions(-)
+Changes in V4:
+- Drop max7358.
+Changes in V3:
+- Update commit message
+Changes in V2:
+- Update properties.
+---
+ .../bindings/i2c/i2c-mux-pca954x.yaml         | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 9980517ed8b0..df7a7c21a46d 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -373,7 +373,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 	skb_tx_timestamp(skb);
- 	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
- 		if (!use_napi)
--			dev_lstats_add(dev, length);
-+			dev_sw_netstats_tx_add(dev, 1, length);
- 		else
- 			__veth_xdp_flush(rq);
- 	} else {
-@@ -387,14 +387,6 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+index 2d7bb998b0e9..9aa0585200c9 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+@@ -71,6 +71,23 @@ properties:
+     description: A voltage regulator supplying power to the chip. On PCA9846
+       the regulator supplies power to VDD2 (core logic) and optionally to VDD1.
  
--static u64 veth_stats_tx(struct net_device *dev, u64 *packets, u64 *bytes)
--{
--	struct veth_priv *priv = netdev_priv(dev);
--
--	dev_lstats_read(dev, packets, bytes);
--	return atomic64_read(&priv->dropped);
--}
--
- static void veth_stats_rx(struct veth_stats *result, struct net_device *dev)
- {
- 	struct veth_priv *priv = netdev_priv(dev);
-@@ -432,24 +424,24 @@ static void veth_get_stats64(struct net_device *dev,
- 	struct veth_priv *priv = netdev_priv(dev);
- 	struct net_device *peer;
- 	struct veth_stats rx;
--	u64 packets, bytes;
- 
--	tot->tx_dropped = veth_stats_tx(dev, &packets, &bytes);
--	tot->tx_bytes = bytes;
--	tot->tx_packets = packets;
-+	tot->tx_dropped = atomic64_read(&priv->dropped);
-+	dev_fetch_sw_netstats(tot, dev->tstats);
- 
- 	veth_stats_rx(&rx, dev);
- 	tot->tx_dropped += rx.xdp_tx_err;
- 	tot->rx_dropped = rx.rx_drops + rx.peer_tq_xdp_xmit_err;
--	tot->rx_bytes = rx.xdp_bytes;
--	tot->rx_packets = rx.xdp_packets;
-+	tot->rx_bytes += rx.xdp_bytes;
-+	tot->rx_packets += rx.xdp_packets;
- 
- 	rcu_read_lock();
- 	peer = rcu_dereference(priv->peer);
- 	if (peer) {
--		veth_stats_tx(peer, &packets, &bytes);
--		tot->rx_bytes += bytes;
--		tot->rx_packets += packets;
-+		struct rtnl_link_stats64 tot_peer = {};
++  maxim,isolate-stuck-channel:
++    type: boolean
++    description: Allows to use non faulty channels while a stuck channel is
++      isolated from the upstream bus. If not set all channels are isolated from
++      the upstream bus until the fault is cleared.
 +
-+		dev_fetch_sw_netstats(&tot_peer, peer->tstats);
-+		tot->rx_bytes += tot_peer.tx_bytes;
-+		tot->rx_packets += tot_peer.tx_packets;
++  maxim,send-flush-out-sequence:
++    type: boolean
++    description: Send a flush-out sequence to stuck auxiliary buses
++      automatically after a stuck channel is being detected.
++
++  maxim,preconnection-wiggle-test-enable:
++    type: boolean
++    description: Send a STOP condition to the auxiliary buses when the switch
++      register activates a channel to detect a stuck high fault. On fault the
++      channel is isolated from the upstream bus.
++
+ required:
+   - compatible
+   - reg
+@@ -95,6 +112,19 @@ allOf:
+         "#interrupt-cells": false
+         interrupt-controller: false
  
- 		veth_stats_rx(&rx, peer);
- 		tot->tx_dropped += rx.peer_tq_xdp_xmit_err;
-@@ -1508,13 +1500,13 @@ static int veth_dev_init(struct net_device *dev)
- {
- 	int err;
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              enum:
++                - maxim,max7357
++    then:
++      properties:
++        maxim,isolate-stuck-channel: false
++        maxim,send-flush-out-sequence: false
++        maxim,preconnection-wiggle-test-enable: false
++
+ unevaluatedProperties: false
  
--	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
--	if (!dev->lstats)
-+	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
-+	if (!dev->tstats)
- 		return -ENOMEM;
- 
- 	err = veth_alloc_queues(dev);
- 	if (err) {
--		free_percpu(dev->lstats);
-+		free_percpu(dev->tstats);
- 		return err;
- 	}
- 
-@@ -1524,7 +1516,7 @@ static int veth_dev_init(struct net_device *dev)
- static void veth_dev_free(struct net_device *dev)
- {
- 	veth_free_queues(dev);
--	free_percpu(dev->lstats);
-+	free_percpu(dev->tstats);
- }
- 
- #ifdef CONFIG_NET_POLL_CONTROLLER
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 21d75108c2e9..7aca28b7d0fd 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
- 			     net_eq(net, dev_net(dev))))
- 			goto out_drop;
- 		skb->dev = dev;
-+		dev_sw_netstats_rx_add(dev, skb->len);
- 		return -EAGAIN;
- 	}
- 	return flags & BPF_F_NEIGH ?
+ examples:
+
+base-commit: 9b156db7e479ac996ae9dc93a0cce3b3df3d0307
 -- 
-2.20.1
+2.41.0
 
