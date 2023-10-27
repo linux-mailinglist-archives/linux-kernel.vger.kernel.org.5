@@ -2,188 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DAC7DA299
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48F67DA29D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346601AbjJ0VrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S1346613AbjJ0Vri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235117AbjJ0VrT (ORCPT
+        with ESMTP id S1346611AbjJ0Vrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:47:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26791BF;
-        Fri, 27 Oct 2023 14:47:16 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698443235;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XFlGYGD96K+5LkGjpYByN6tWVT7HSksJ2vFMkU/hCVk=;
-        b=JeCfrHiP2URhMWgqY2LRJ3yKPlrz+LtQdJaiJtOhcev0MmT4dMSpgHagCq9PkzmlifoXfk
-        yEaFKvVFPGg7hmjbM8LGxncodNCdAe6R5E0MXZeDhavYvXjnnEMhjbN1p/U01vq1bH1pcq
-        bCmPepD936IfMqCpeG5xCvPECVbgmZylJtUfz79tz2YIKTAPwzlSVIyyIGvg1BiCz78lKs
-        /R2RDcQNvy31L1mbdIoC5YBs3a6dPscIhhNTGbvO+pla7cdYiOVVqMV4rqZRyhWwUGC5wX
-        JQCwROPkA4uZCmiAnejX+JKGZ+4oqfFZWT1f79agg5bFTC1rBf8J9CGKAqjNvQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698443235;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XFlGYGD96K+5LkGjpYByN6tWVT7HSksJ2vFMkU/hCVk=;
-        b=6YOjVs+CWd3e07l5jHIA3i1LafzO49eA6loOma8U+G7v57V4zNB+fGVi1G/cVvmu5MkAmG
-        p3EsIAo3PwkSeSCQ==
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v2 2/2] perf/x86/amd: Stop calling amd_pmu_cpu_reset()
- from amd_pmu_cpu_dead()
-In-Reply-To: <20231026170330.4657-3-mario.limonciello@amd.com>
-References: <20231026170330.4657-1-mario.limonciello@amd.com>
- <20231026170330.4657-3-mario.limonciello@amd.com>
-Date:   Fri, 27 Oct 2023 23:47:15 +0200
-Message-ID: <87ttqb20ws.ffs@tglx>
+        Fri, 27 Oct 2023 17:47:33 -0400
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F57D7F;
+        Fri, 27 Oct 2023 14:47:30 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1c9d407bb15so23198555ad.0;
+        Fri, 27 Oct 2023 14:47:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698443250; x=1699048050;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9C2uMQY3gPOITkkV1qWxC4PQ2GSEW3yaZLRSMMWF1E=;
+        b=THftEffewox/CkCSvQ/YjCyDh9abAt2IKARS0nU40rBOgf6RlMeQvZASvPuQKZHa8N
+         AU7uxG2r6/77z1wQlmvaiVaRZAI7Wd4r0GqUqWO1TH034j8FKtfDBXQk9zJ7Grfv5cAa
+         H8tYdkexvWXzsUVJk/hYwJJpfwA9Bu2EXaxYsEyWYS77K5gSVdFK4cEJLxgWDqEShD6n
+         uh/oCt9bdRsWpUpQog6vT2QM+FU12Mw2LjrdktGnb0yd1n2us+PbT/a1V7tp5273mKO3
+         QnDqwXVA0v6b7/K4QJNNtdp2U2tPxjxO2uTZfByTGrtYxTEqJQW9fCcLRMbEJdLcwBI5
+         bFdA==
+X-Gm-Message-State: AOJu0YzMf/cinpN+6Y/s98jRKHSSgNLWApmOEFzVOfiW7kI7XhEhoCoF
+        Lg/Tzdv6RRNT0x/LbabrxyQ=
+X-Google-Smtp-Source: AGHT+IG0JuujmHuhY30rCBEAwB9oCDpz6rvc3u2cXhre2PDbE+vOXqqiFVzKsYTNPxIuBO/udNrTRg==
+X-Received: by 2002:a17:902:f54c:b0:1c9:cc88:5029 with SMTP id h12-20020a170902f54c00b001c9cc885029mr4548420plf.32.1698443249670;
+        Fri, 27 Oct 2023 14:47:29 -0700 (PDT)
+Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
+        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001b9f032bb3dsm2084436pln.3.2023.10.27.14.47.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 14:47:29 -0700 (PDT)
+Message-ID: <7f568746-5de3-4de7-b367-9cc869cab0a2@acm.org>
+Date:   Fri, 27 Oct 2023 14:47:28 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 2/2] RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
+Content-Language: en-US
+To:     Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com
+References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+ <20231027054154.2935054-2-lizhijian@fujitsu.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231027054154.2935054-2-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26 2023 at 12:03, Mario Limonciello wrote:
+On 10/26/23 22:41, Li Zhijian wrote:
+> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> index d2f57ead78ad..b1cf1e1c0ce1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> @@ -38,7 +38,7 @@ static inline enum ib_mtu eth_mtu_int_to_enum(int mtu)
+>   /* default/initial rxe device parameter settings */
+>   enum rxe_device_param {
+>   	RXE_MAX_MR_SIZE			= -1ull,
+> -	RXE_PAGE_SIZE_CAP		= 0xfffff000,
+> +	RXE_PAGE_SIZE_CAP		= PAGE_SIZE,
+>   	RXE_MAX_QP_WR			= DEFAULT_MAX_VALUE,
+>   	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
+>   					| IB_DEVICE_BAD_QKEY_CNTR
 
-> During suspend testing on a workstation CPU a preemption BUG was
-> reported.
-
-How is this related to a workstation CPU? Laptop CPUs and server CPUs
-are magically not affected, right?
-
-Also how is this related to suspend?
-
-This clearly affects any CPU down operation whether in the context of
-suspend or initiated via sysfs, no?
-
-Just because you observed it during suspend testing does not magically
-make it a suspend related problem....
-
-> BUG: using smp_processor_id() in preemptible [00000000] code: rtcwake/2960
-> caller is amd_pmu_lbr_reset+0x19/0xc0
-> CPU: 104 PID: 2960 Comm: rtcwake Not tainted 6.6.0-rc6-00002-g3e2c7f3ac51f
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x44/0x60
->  check_preemption_disabled+0xce/0xf0
->  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
->  amd_pmu_lbr_reset+0x19/0xc0
->  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
->  amd_pmu_cpu_reset.constprop.0+0x51/0x60
->  amd_pmu_cpu_dead+0x3e/0x90
->  x86_pmu_dead_cpu+0x13/0x20
->  cpuhp_invoke_callback+0x169/0x4b0
->  ? __pfx_virtnet_cpu_dead+0x10/0x10
->  __cpuhp_invoke_callback_range+0x76/0xe0
->  _cpu_down+0x112/0x270
->  freeze_secondary_cpus+0x8e/0x280
->  suspend_devices_and_enter+0x342/0x900
->  pm_suspend+0x2fd/0x690
->  state_store+0x71/0xd0
->  kernfs_fop_write_iter+0x128/0x1c0
->  vfs_write+0x2db/0x400
->  ksys_write+0x5f/0xe0
->  do_syscall_64+0x59/0x90
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? count_memcg_events.constprop.0+0x1a/0x30
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? handle_mm_fault+0x1e9/0x340
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? preempt_count_add+0x4d/0xa0
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? up_read+0x38/0x70
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? do_user_addr_fault+0x343/0x6b0
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? exc_page_fault+0x74/0x170
->  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> RIP: 0033:0x7f32f8d14a77
-> Code: 10 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa
-> 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff
-> 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> RSP: 002b:00007ffdc648de18 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f32f8d14a77
-> RDX: 0000000000000004 RSI: 000055b2fc2a5670 RDI: 0000000000000004
-> RBP: 000055b2fc2a5670 R08: 0000000000000000 R09: 000055b2fc2a5670
-> R10: 00007f32f8e1a2f0 R11: 0000000000000246 R12: 0000000000000004
-> R13: 000055b2fc2a2480 R14: 00007f32f8e16600 R15: 00007f32f8e15a00
->  </TASK>
-
-How much of that backtrace is actually substantial information?
-
-At max 5 lines out of ~50. See:
-
-  https://www.kernel.org/doc/html/latest/process/submitting-patches.html#backtraces
-
-> This bug shows that there is a mistake with the flow used for offlining
-
-This bug shows nothing than a calltrace. Please explain the context and
-the fail in coherent sentences. The bug backtrace is just for
-illustration.
-
-> a CPU.  Calling amd_pmu_cpu_reset() from the dead callback is
-> problematic
-
-It's not problematic. It's simply wrong.
-
-> because this doesn't run on the actual CPU being offlined.  The intent of
-> the function is to reset MSRs local to that CPU.
->
-> Move the call into the dying callback which is actually run on the local
-> CPU.
-
-...
-
-> +static void amd_pmu_cpu_dying(int cpu)
-> +{
-> +	amd_pmu_cpu_reset(cpu);
-> +}
-
-You clearly can spare that wrapper which wraps a function with the signature
-
-     void fn(int)
-
-into a function with the signature
-
-     void fn(int)
-
-by just assigning amd_pmu_cpu_reset() to the cpu_dying callback, no?
-
-Thanks,
-
-        tglx
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
