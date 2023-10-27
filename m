@@ -2,109 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CB57D9D69
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3FA7D9D6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346174AbjJ0Puv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
+        id S231899AbjJ0PvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjJ0Pus (ORCPT
+        with ESMTP id S231799AbjJ0PvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:50:48 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9768CE
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:50:46 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6bd73395bceso1636718b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698421846; x=1699026646; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XAYQa3ufeYpImNNDp7qPpU7hHfY982hDiKyd9DINVw=;
-        b=G9PlaRf190e9ZoCeBEdFIcQvKCnRCcxb3iXxMOzH7hNkn6yW6sDMMuraO/1+2BP8Cd
-         nv54el58uu6RQ0M4gJNHUKP2zUAFtTA1+HhTRsbN6Ok1TbuQDfgaWlhlQCtLwlpKjWqs
-         ByTR4qOuW5J5lFsZIxElNvRqwsy2ti76Z7avQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698421846; x=1699026646;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XAYQa3ufeYpImNNDp7qPpU7hHfY982hDiKyd9DINVw=;
-        b=bFi+1atS3bcKuLWvOhbbQrf9rEUlbwLuTz5aAK1mOY1tG8Dsll1GZs9MlVMfCuXdnx
-         OgCnQPZ9s7gvNRYQ0WVbaGeELtLlca34r+qgdSauTU0YDzIp9fGlFiBjdjxhRjYSEfuN
-         wnqxq45sEtYypz5rjqeEI5Gb66qe07BeYJ1hHxtkqCRc271gupZ8LMMF4Ca5SUg+r/zW
-         9i8Q7AE3JQ/DBYcCzsnj5wHHtWucku2aQQY4h5UAvia99t2g5uNHXljyY4Aq7wxKBO8x
-         aiJTRWsJB01qqpKxMKGe5miTrLxJsY96RDyWSMaXQ07k7JxcieqLYFyRZhxY5rZD0n2w
-         ovcg==
-X-Gm-Message-State: AOJu0YyLPgT9FDwB/67lLz+AWeHsJUgVD8uNRyZsY+YLUHNC+V3z1aJe
-        EhCYg7koq0FsTed4geZ1egtOeQ==
-X-Google-Smtp-Source: AGHT+IHLDmn+AjLaF61rtsmuDfAYVnkIvtlWqCwVQhYl6dmEc/RCPXxVQIOdEbbpEEe95zK+/gUeVw==
-X-Received: by 2002:a05:6a00:28c9:b0:6b3:80f8:7e91 with SMTP id ci9-20020a056a0028c900b006b380f87e91mr6843699pfb.9.1698421846306;
-        Fri, 27 Oct 2023 08:50:46 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h15-20020a63384f000000b0056c2f1a2f6bsm1249776pgn.41.2023.10.27.08.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 08:50:45 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 08:50:45 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
-Message-ID: <202310270849.14B83B56D@keescook>
-References: <20231026194033.it.702-kees@kernel.org>
- <20231027045451.GA7838@lst.de>
+        Fri, 27 Oct 2023 11:51:11 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F9F196;
+        Fri, 27 Oct 2023 08:51:07 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 3BDDA6019B;
+        Fri, 27 Oct 2023 17:51:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+        t=1698421865; bh=bcp2l66R6isCMuWqZZo9LM2yUuFsYZafsOLfI4eojr8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=p2dSKeLx0S15csZSw5jy516VWtCZLVCvznNMWujGKxr5mdRaGGzDlGsFXxhTaX7Rc
+         b/85ePFXxgoGX7TQNkekh5uq8cl6r68MaqzO1knOhP02Vpbxoa70uP8AXVPhnVZBII
+         qtpZmzlXmOQdepXmKKn5z6t4ybsNyNErIUOBWcjSFUdgU3geH/Ncy+k+9UT8Jrqv23
+         mf2wxWAs7/o1jj0l+9PpO0wgXJ5Q1YBXWu7VMB7lof9G88vUbpkOqjC7+4KGD4ccT9
+         ARH6Oh3/z0HahT1ZbGFMbcofKMqfM6J4V0tsGnrDTuo29BNCcsMW4ael9vACEtTC/X
+         Gq26bwOc4DXlA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id F2S1zlzVpZyA; Fri, 27 Oct 2023 17:51:02 +0200 (CEST)
+Received: from [IPV6:2001:b68:2:2600:646f:d9a1:a315:536c] (unknown [IPv6:2001:b68:2:2600:646f:d9a1:a315:536c])
+        by domac.alu.hr (Postfix) with ESMTPSA id 0754660197;
+        Fri, 27 Oct 2023 17:51:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698421862; bh=bcp2l66R6isCMuWqZZo9LM2yUuFsYZafsOLfI4eojr8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=vXyuycejpXwyGdwPS3vAJpQK8MRuc057Pqjh0f1kuS1WYzID6KOGPYFp3nWnHpEj9
+         TUXmaJNf7WwuMDhWAwehw7+nqapnDWhW+F9suBMbpyw59q7gSMjCzI7a5Ph4HAhZ90
+         P8F2g1wLi8+bBxBTNcEYANE79lsQVp8eijwcGo7YVz7UVnbMie/6BxKE8qIeC8Jddo
+         praGi3VAjTWooGVFiNUczXb4yMCrt7Vm0FL88sIsKT163ikI4gr/5Z/fRweMA58ABf
+         lyg0IG4JNkFTKf/pH50lUAvE0zfAj3tuH4joL7RSVI1RZTxqExtIXRMr0jZH1I3yra
+         c9A0gxwSnmWmQ==
+Message-ID: <1e976d6e-b685-4adb-8bfb-6f7f910e5baf@alu.unizg.hr>
+Date:   Fri, 27 Oct 2023 17:51:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027045451.GA7838@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] lib/find: Make functions safe on changing bitmaps
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     kernel test robot <oliver.sang@intel.com>, Jan Kara <jack@suse.cz>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+References: <202310251458.48b4452d-oliver.sang@intel.com>
+ <374465d3-dceb-43b1-930e-dd4e9b7322d2@rasmusvillemoes.dk>
+ <ZTszoD6fhLvCewXn@yury-ThinkPad>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <ZTszoD6fhLvCewXn@yury-ThinkPad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 06:54:51AM +0200, Christoph Hellwig wrote:
-> On Thu, Oct 26, 2023 at 12:40:37PM -0700, Kees Cook wrote:
-> > Solve two ergonomic issues with struct seq_buf;
-> > 
-> > 1) Too much boilerplate is required to initialize:
-> > 
-> > 	struct seq_buf s;
-> > 	char buf[32];
-> > 
-> > 	seq_buf_init(s, buf, sizeof(buf));
-> > 
-> > Instead, we can build this directly on the stack. Provide
-> > DECLARE_SEQ_BUF() macro to do this:
-> > 
-> > 	DECLARE_SEQ_BUF(s, 32);
+On 10/27/2023 5:51 AM, Yury Norov wrote:
+> On Wed, Oct 25, 2023 at 10:18:00AM +0200, Rasmus Villemoes wrote:
+>> On 25/10/2023 09.18, kernel test robot wrote:
+>>>
+>>>
+>>> Hello,
+>>>
+>>> kernel test robot noticed a 3.7% improvement of will-it-scale.per_thread_ops on:
+>>
+>> So with that, can we please just finally say "yeah, let's make the
+>> generic bitmap library functions correct
 > 
-> DECLARE_SEQ_BUF_ONSTACK maybe?  But otherwise this looks like a good
-> concept.
+> They are all correct already.
+> 
+>> and usable in more cases"
+> 
+> See below.
+> 
+>> instead of worrying about random micro-benchmarks that just show
+>> you-win-some-you-lose-some.
+> 
+> That's I agree. I don't worry about either +2% or -3% benchmark, and
+> don't think that they alone can or can't justificate such a radical
+> change like making all find_bit functions volatile, and shutting down
+> a newborn KCSAN.
+> 
+> Keeping that in mind, my best guess is that Jan's and Misrad's test
+> that shows +2% was against stable bitmaps; and what robot measured
+> is most likely against heavily concurrent access to some bitmap in
+> the kernel.
+> 
+> I didn't look at both tests sources, but that at least makes some
+> sense, because if GCC optimizes code against properly described
+> memory correctly, this is exactly what we can expect.
+> 
+>> Yes, users will have to treat results from the find routines carefully
+>> if their bitmap may be concurrently modified. They do. Nobody wins if
+>> those users are forced to implement their own bitmap routines for their
+>> lockless algorithms.
+> 
+> Again, I agree with this point, and I'm trying to address exactly this.
+> 
+> I'm working on a series that introduces lockless find_bit functions
+> based on existing FIND_BIT() engine. It's not ready yet, but I hope
+> I'll submit it in the next merge window.
+> 
+> https://github.com/norov/linux/commits/find_and_bit
+> 
+> Now that we've got a test that presumably works faster if find_bit()
+> functions are all switched to be volatile, it would be great if we get
+> into details and understand:
+>   - what find_bit function or functions gives that gain in performance;
+>   - on what bitmap(s);
 
-It's usable for globals too... also it's a shorter name as-is. :)
+I am positive that your test_and_clear_bit() loop per bit wouldn't 
+improve performance. No insult, but it has to:
 
--- 
-Kees Cook
+- LOCK the bus
+- READ the (byte/word/longword/quadword) from memory
+- TEST the bit and remember the result in FLAGS
+- CLEAR the bit
+- WRITE back the entire byte/word/longword/quadword
+
+So, instead of speeding up, you'd end up reading 64 times in the worst 
+case where only the last bit in the quadword is set.
+
+What we need is this ffs() that expands to assembly instruction BSF
+(bit scan forward)
+
+  [1] https://www.felixcloutier.com/x86/bsf
+
+followed by a BTR (bit test and reset)
+
+  [2] https://www.felixcloutier.com/x86/btr
+
+Ideally, we'd have an instruction that does both, and atomic, or a way 
+to LOCK the bus for two instructions. But bad guys could use that to 
+stall all cores indefinitely:
+
+DON'T DO THIS!
+-----------------------------
+      LOCK
+loop:
+      BSF r16, m16/m32/m64
+      BTR m16/m32/m64, r16
+      JMP loop
+      UNLOCK
+-----------------------------
+
+This would better work with the hardware-assisted CAM locking device, 
+than stopping all cores from reading and writing on each memory barrier.
+
+But this is a long story.
+
+>   - is the reason in concurrent memory access (guess yes), and if so,
+>   - can we refactor the code to use lockless find_and_bit() functions
+>     mentioned above;
+>   - if not, how else can we address this.
+> 
+> If you or someone else have an extra time slot to get deeper into
+> that, I'll be really thankful.
+
+I don't know if the Linux kernel uses any advantage of a trasnactional 
+memory device if it finds one?
+
+The idea of each mutex() or even user-space futex() stalling all cores 
+to "asm LOCK CMPXCHG m8/m16/m32/m64, r8/r16/r32/r64" simply doesn't 
+scale well with i.e. 128 cores that have to wait for one long 
+read-modify-write cycle that bypasses cache and talks to very slow memory.
+
+I see some progress with per-CPU variables.
+
+[3] 
+https://stackoverflow.com/questions/58664496/locking-on-per-cpu-variable/67997961#67997961
+
+For multiprocessor system and to protect percpu variables, we can just 
+disable preemption and do local_irq_save. This way we avoid taking the 
+spinlock. Spinlock requires atomicity across multiple CPU's. With per 
+cpu variables it shall not be required.
+
+	local_irq_save(flags);
+	preempt_disable();
+	-- Modify the percpu variable
+	preempt_enable();
+	local_irq_restore(flags);
+
+That compiles roughly to:
+
+	unsigned long flags;
+
+	asm volatile("cli": : :"memory");
+	asm volatile(
+		"mrs	%0, " IRQMASK_REG_NAME_R " @local_save_flags"
+		: "=r" (flags) : : "memory", "cc");
+	preempt_count_inc();
+	__asm__ __volatile__("": : :"memory")  // barrier()
+	--- your stuff here ---
+	if (!(!(flags & X86_EFLAGS_IF))
+		asm volatile("sti": : :"memory");
+	__asm__ __volatile__("": : :"memory")  // barrier()
+	preempt_count_dec();
+
+With this code other CPUs can work in parallel. None of the CPU spins.
+
+If we take spinlock then we modify an atomic variable also other CPU 
+comes then it has to wait/spin if spinlock is acquired.
+
+Best regards,
+Mirsad
+
+
+> Thanks,
+> Yury
