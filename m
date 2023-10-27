@@ -2,50 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614427D9A15
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8310F7D9A0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345964AbjJ0Ngh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
+        id S1346032AbjJ0NgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345996AbjJ0NgC (ORCPT
+        with ESMTP id S235154AbjJ0Nft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:36:02 -0400
-Received: from mta-65-227.siemens.flowmailer.net (mta-65-227.siemens.flowmailer.net [185.136.65.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EB510F7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:35:45 -0700 (PDT)
-Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 202310271334427166bf601c6e338f16
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 27 Oct 2023 15:34:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=jan.kiszka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=7c2mWS3F93AM6SkJnd8UYheoA+Ehx15s7XTf+937SM0=;
- b=dKpY8l8UJ932pSykrSDMAYcX070nAFZCCkftUuoCUD3Iur3Y8z1jxZsp1TvRYjhRiMnk27
- oP5joYWBWfysC+sBWE2w6hDEGc61K0jHRAVfDbYawZI1zd38PbVU9meqcN60mMUcDmjatQH0
- NXANMW/WIRaH4BbYFZM69nZ5iSQAg=;
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Benedikt Niedermayr <benedikt.niedermayr@siemens.com>
-Subject: [PATCH 7/7] arm64: dts: ti: iot2050: Add icssg-prueth nodes for PG2 devices
-Date:   Fri, 27 Oct 2023 15:34:38 +0200
-Message-Id: <b6a4dcecb2408c804106a2677ed070dab081aaac.1698413678.git.jan.kiszka@siemens.com>
-In-Reply-To: <cover.1698413678.git.jan.kiszka@siemens.com>
-References: <cover.1698413678.git.jan.kiszka@siemens.com>
+        Fri, 27 Oct 2023 09:35:49 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8017AD6F;
+        Fri, 27 Oct 2023 06:35:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ksw/cxhu88UxI7RS632Ix3d4I0TtJnCii3cvfNBjugv2H5I6ENXuPr0pJMvgM68XNVYvzB/FrVtWfxTeUO3eTN2WqivoN6GWGXwdZUfqpDd06VW5AJQpBbKkoWOxFndco1PqSAj7hf4KQypKbncwJNwI/sVO0rg/xv1/Cxn4DleOOu5ifZ7NVCJCCzhsnm5NxPTHWSf6KDkYgdToeU4ZvtKyWmwgStACP7RA61YzYhNmebf/yfBd909CiF3niXZPmNqhL3CAuCSDPLQglB+vWVRHGdR20phQQItptARlbRd4oav7ostzUMLT0EWVRCcmn/faPfpK5jsS1uX4HewHIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KjeuTRIgz7UTs/9IQgWogw4RwLRprK8MGq6rWQmRkd8=;
+ b=U6bwaPJ0BURSZsE83YyZLTf3sMFVLiU6ak03xFoSRICCjQxPpwavsLAQWcfesabSqL8XyOU2mpxuhwpTUjmu97ezDZXuoYswP6Fec3ngL+CKbmqTKTfDrFsvu6WwtRa4SwSYC8LzyTxEEVnVn0S3enFWBQoTEZjRHFrMqvRVH7obSmZo8YRCkuj+MwzyTCChUyxGMZeMPLvcVNXHCGz63YH01SdEoezulAEdlIlNeGBCLaMFpT7Ghcr/go0b+P74UeWuQ180E6hFui1Lozf6MBeo4zRZqnI873SS7arBeMIvFagdAjqhFniZ2JxMaGNU3Lm5RF+fROEB5yiMBoJ4jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KjeuTRIgz7UTs/9IQgWogw4RwLRprK8MGq6rWQmRkd8=;
+ b=L+/jfT0ph+EnE8aam6ykMUXonIiAb6gjtBDj3HAO2opUaCsXsXM1JP+wERxomyYu0Wc2bcm0Hu3rx/9DJn5sSL+/ruPpFs3GMc4Jbwj4vvGY6X/7PD5mXBWsljBOpXyLZaDMJ7mNpHbix5eGAK00YYItKiVUabVuCT43d9ywYYk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SA1PR12MB8641.namprd12.prod.outlook.com (2603:10b6:806:388::18)
+ by CO6PR12MB5395.namprd12.prod.outlook.com (2603:10b6:303:13a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22; Fri, 27 Oct
+ 2023 13:35:23 +0000
+Received: from SA1PR12MB8641.namprd12.prod.outlook.com
+ ([fe80::9b29:df63:fce7:8b3e]) by SA1PR12MB8641.namprd12.prod.outlook.com
+ ([fe80::9b29:df63:fce7:8b3e%2]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
+ 13:35:22 +0000
+Message-ID: <94059f5c-10dd-4d75-a69c-76b21ff49546@amd.com>
+Date:   Fri, 27 Oct 2023 19:05:17 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] crypto: ccp - Add function to allocate and free
+ memory using DMA APIs
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     thomas.lendacky@amd.com, john.allen@amd.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jens.wiklander@linaro.org, sumit.garg@linaro.org,
+        jarkko.nikula@linux.intel.com, mario.limonciello@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        Mythri.Pandeshwarakrishna@amd.com, Devaraj.Rangasamy@amd.com,
+        Rijo-john.Thomas@amd.com, nimesh.easow@amd.com
+References: <20231025065700.1556152-1-JESHWANTHKUMAR.NK@amd.com>
+ <20231025065700.1556152-2-JESHWANTHKUMAR.NK@amd.com>
+ <ZTtJdU5a/P4kg/Ss@infradead.org>
+From:   "NK, JESHWANTHKUMAR" <jeshwanthkumar.nk@amd.com>
+In-Reply-To: <ZTtJdU5a/P4kg/Ss@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0015.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:25::20) To SA1PR12MB8641.namprd12.prod.outlook.com
+ (2603:10b6:806:388::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-294854:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR12MB8641:EE_|CO6PR12MB5395:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2eaf54b2-e79a-4ded-688d-08dbd6f191ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TxcdRdqus47etqK83lZOnxW33uQ2Lgry83TU0O3Bqj3gfP1E+fgXUuS8gOGH8/X0ZPwwfMnTNOD9ZazPgiMrxD3XVeGsYm+G+893kPIl86MBjtxwLrwybszyKC7YkyraF9sXtEs/ZwGxmyQAHtmGSkJ9/xVX3yotdStIR3pbB3n+e6DpMpGsq6UCx8kfv7d7bJGyHK7NoRdeVk9fEylhsYoE7rYXb2b3fVTC+VLXOpc+UeVraa5/sFuuK5HJl3jWiDnbw58R/aeZo2f56nsNgZjhlt1f2SUcY5BBp+Bgq0eIrYxzi1uRUJi6K5bGovi4pUf0v/00ce32/03fnqF+BNi2lzMDiVAIVNc2OYfoSILK88/FbuOY6WRXpA66R9PmjYLT1Bcz5lQwXC9MjNNhPA1JV9uD+APgthZoWpdcMzzW/iefqVaqaXBpb2/5hmDgSsvQM0TWfGUcqonMu+IEZbcSZhiyxIUqETcgpaOdniYUijAHcrKKHsTwfiTGy7NWv47LfJt7MfluETzqR3t6lTvfGvkqtveYWWSr0as3/5ugW26jVl2kOCACBf0denplWsdK5KjYXMjP/b8OSbFjuXeYJu/6S/Dt+Qx/mvcESo/kgKsvEgeJ6bDtvxw2DwSyLvu4dCwTJDZw025GC4/cAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB8641.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(39860400002)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6512007)(2616005)(41300700001)(5660300002)(6486002)(26005)(8676002)(966005)(8936002)(4326008)(478600001)(66556008)(66476007)(316002)(6916009)(66946007)(36756003)(6506007)(53546011)(6666004)(86362001)(38100700002)(2906002)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cjdrNCsvV3d3MVY2NEZZZ0dIWms4aGdJb2tRMmxHbUM4d1pJL2ZKT2w3dndj?=
+ =?utf-8?B?bGM2eTNWSjFWTXlIZHNFMURvSVRhSmVURTVPTE1ibjVOR0F5QWVRZ3ZDelAr?=
+ =?utf-8?B?cDdCK09FRkJnRzhlblpKUzgxTXlCTVRuNERwRmovQnB5VXRJRTlrZ3ZwajBH?=
+ =?utf-8?B?K3hXRzJ2dTkzS05LNi9LdEpoK2hpeHk4ZWwvNzlra1NIdURyd00vZmxVcUhr?=
+ =?utf-8?B?SjJnUDRoSStpN0QxbCtzOGl4Y3pZMWtGeGlwc0g1Z0x4eVJxMWVlWXBNUFQ2?=
+ =?utf-8?B?K09nQ0l1WmxaRzgxV3BpVEJENnN0SXhld2EzNVBkY0NUek5xcU5ERU83RU4x?=
+ =?utf-8?B?UzJ3ejdWbkpJdGFBT1BQVUpYRGdVOHJmWFdFUGdzeTYrbFhQNWIrYmpodnRj?=
+ =?utf-8?B?NG14NXNTNzQvbFhhTjlRT1pEcTM1dW81LzRVWFcyMWQzMDhYbzRVWnlOTWUy?=
+ =?utf-8?B?Mmg0d0pzK1hIc1RxVWIyN0JyVFdVZDRpc1p1NThrZ2JpTGYvdjB1aVZQSktn?=
+ =?utf-8?B?V3B6dDBjQ24rN1FKUWIvZlJkVko4b1JOd282ajVwRTllanJpTVBkdzd4Nitv?=
+ =?utf-8?B?QzBpQi9DNENUMTNTcExaL00wbGp3VENZbENTOGxsMEgxREdSNlBqTndEUHAw?=
+ =?utf-8?B?azNPS08ra25DYVozYkRwSzVZYnAxaXp1cnM4emU4ek9ReTlXbmZLT1BMTzRz?=
+ =?utf-8?B?NGFaaExIREVrbXc2dklzQksyc0REN0w0WjAvbGJHZFZDTHBFanRDcWVWZjB3?=
+ =?utf-8?B?bkZpQitzRVdleU5IdFRtUFUvcklRV2doS1NnV1cxakM5MjlZNkFqNFNTdG94?=
+ =?utf-8?B?dWFYYjV0UVlaaG9wZGllUHJha3UrNGtxM3pGMTAxNHZXWFBGUzlXTFBpTENr?=
+ =?utf-8?B?RmtVNDI3V1VUZU1FY1BZcjVJZDRjK1ZrVjBaZkhYU3I5MGNpeDgxc3VOMzk4?=
+ =?utf-8?B?MEZVWENPenRVdmJrcEYwU0JONzQrSmFKaGdrb0ZCNEZ3aFZwSnpwZlpTVzZr?=
+ =?utf-8?B?RTExWDZPVGpKaFFCTXlKNkFUYXQ5K091M1Q0SWFNR3dqSS8xcFYrUjhkTU82?=
+ =?utf-8?B?ZnQxcHpuTjIweTdnR3JaV0Q3bytMVERzdFFWZVp5QXhxRWprMGwwMmtkcjVr?=
+ =?utf-8?B?d2FPVWxBU0dqYktoMXJUQ2doK1pwd3IwQVE2NkdqdzR3N3paN2FEOXRsSjJB?=
+ =?utf-8?B?RDRKbndobTNUKzZ4dlM2ODdsbUxoR205Y1RyOVh4SHp4VXh0RHBMZkZ2U0Nr?=
+ =?utf-8?B?eEp1R2hDOEFqaTBlZk40M3pCM3BoUWluUXF2REVVVVd2TFFTYmpTajdIdUVl?=
+ =?utf-8?B?Sk5yblNKOXFhdW1MRHk0UVlWc0J0OURFYm1PeWt1UTNjMWZIZXh3bFhGTFhj?=
+ =?utf-8?B?SkQ2NTA3WmVOb1VDNW9qZG5rM1RkZ20rMS9hZmo5emUvRW9xNU9UUFBpYmZq?=
+ =?utf-8?B?UmNkUjdVVmZiWXJmNDNGYU9QdFZjWXc1WEtpUE9BV3p1VllYUVJQcklkK0lz?=
+ =?utf-8?B?T0RodDdLN1BERDd2ZzlER29XSHkvUzFKdlVwZUxPdkp4T3ZUa3owNVpDUUJj?=
+ =?utf-8?B?SW1jYVI1c3lFQVk1ZE4xelNSUlNnTThra1RKd0V3NjJLZkdTQ003RjBIbUl1?=
+ =?utf-8?B?UGZkbk9YclRnZXBCZWlnRFZ0ZDZEbkFDZGdxcUVZNWx0REhRRkdTdDUzcWJa?=
+ =?utf-8?B?c3ZOMWt1S0tlTHgzd1BSekNaSC94VzFWZzRlSU9LeW1DZ1FlYTMxQ0dCcUJO?=
+ =?utf-8?B?ZGUzSWlHTHh4WFpvK2JER3J6NWRGNjZPdW11S1gyNHowQlVmOVNkQTZEU2Rz?=
+ =?utf-8?B?ektMeks0Wk5FQ0FKRTVxNE1oUkRNMkFRSjR1ekZxYmtIaldsamJST3YwVmtq?=
+ =?utf-8?B?ZXNMYnFEMmIzdktWVHpid1VlNU9JMFdyT2NIS2t4S0dmQ2xrMHFwbnpBNkJh?=
+ =?utf-8?B?aFlZMEVaNVhvWUV3eXEvRnVjNXBlYnVPdTUvMThCSnBscy8zcWpveWorcWps?=
+ =?utf-8?B?RlpMWjhieFNsY0ROMXhnVEErZzlwU25Ud2Jja09HVVExY1lxY2NRWlkrVzB5?=
+ =?utf-8?B?cDdTeUxNU2h4TjZjdDMwME9mZjNYTGM2cW90aU00VEVpNElETEI4Tk1NMUhs?=
+ =?utf-8?Q?WtXnpnERyhhIknZc651YJas3J?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eaf54b2-e79a-4ded-688d-08dbd6f191ac
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB8641.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 13:35:22.6666
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +d2v3A7NpxHhFDDpDc0sC3wq77GKjCny8L2lijq9Tir1UtjHDVTLH1X9krRCQnccg9GZb0UKEnbQAJWrD1dZXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5395
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_FILL_THIS_FORM_SHORT,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,211 +133,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
 
-Add the required nodes to enable ICSSG SR2.0 based prueth networking.
+On 27-Oct-23 10:54 AM, Christoph Hellwig wrote:
+> On Wed, Oct 25, 2023 at 12:26:58PM +0530, jeshwank wrote:
+>> +	tee_buf->vaddr = dma_alloc_coherent(psp->dev, size, &tee_buf->dma, gfp);
+>> +	if (!tee_buf->vaddr || !tee_buf->dma) {
+>> +		kfree(tee_buf);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	tee_buf->size = size;
+>> +
+>> +	/* Check whether IOMMU is present. If present, translate IOVA
+>> +	 * to physical address, else the dma handle is the physical
+>> +	 * address.
+>> +	 */
+>> +	dom = iommu_get_domain_for_dev(psp->dev);
+>> +	if (dom)
+>> +		tee_buf->paddr = iommu_iova_to_phys(dom, tee_buf->dma);
+>> +	else
+> No, you can't mix the DMA API and iommu API.  You need to stick to one
+> or the other.
 
-As the driver still needs to be extended for SR1.0 support, keep related
-nodes disabled on PG1 devices.
+Can you please elaborate a bit more? Is it because in the presence of IOMMU,
+a contiguous DMA or bus-address-space "buffer" may be mapped non-contiguously
+into the physical address space? As a result, for buffers larger than a page
+size, when PSP tries to map the physical address into it's address space, the
+PSP Trusted OS will not be able to read back the entire buffer data.
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- .../dts/ti/k3-am65-iot2050-common-pg1.dtsi    |  10 +-
- .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 132 ++++++++++++++++++
- 2 files changed, 141 insertions(+), 1 deletion(-)
+                CPU                  CPU                  Bus
+              Virtual              Physical             Address
+              Address              Address               Space
+               Space                Space
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-index 51f902fa35a7..1d1979859583 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Copyright (c) Siemens AG, 2021
-+ * Copyright (c) Siemens AG, 2021-2023
-  *
-  * Authors:
-  *   Jan Kiszka <jan.kiszka@siemens.com>
-@@ -44,3 +44,11 @@ &tx_pru2_0 {
- &tx_pru2_1 {
- 	status = "disabled";
- };
-+
-+&icssg0_eth {
-+	status = "disabled";
-+};
-+
-+&icssg0_mdio {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index bc77ba58d8f9..1a558851ea96 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -11,6 +11,7 @@
- 
- #include "k3-am654.dtsi"
- #include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/net/ti-dp83867.h>
- 
- / {
- 	aliases {
-@@ -27,6 +28,8 @@ aliases {
- 		spi0 = &mcu_spi0;
- 		mmc0 = &sdhci1;
- 		mmc1 = &sdhci0;
-+		ethernet1 = &icssg0_emac0;
-+		ethernet2 = &icssg0_emac1;
- 	};
- 
- 	chosen {
-@@ -111,6 +114,80 @@ dp_refclk: clock {
- 		#clock-cells = <0>;
- 		clock-frequency = <19200000>;
- 	};
-+
-+	/* Dual Ethernet application node on PRU-ICSSG0 */
-+	icssg0_eth: icssg0-eth {
-+		compatible = "ti,am654-icssg-prueth";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg0_rgmii_pins_default>;
-+		sram = <&msmc_ram>;
-+
-+		ti,prus = <&pru0_0>, <&rtu0_0>, <&tx_pru0_0>,
-+			<&pru0_1>, <&rtu0_1>, <&tx_pru0_1>;
-+		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-+
-+		ti,pruss-gp-mux-sel = <2>,      /* MII mode */
-+				      <2>,
-+				      <2>,
-+				      <2>,	/* MII mode */
-+				      <2>,
-+				      <2>;
-+
-+		ti,mii-g-rt = <&icssg0_mii_g_rt>;
-+		ti,mii-rt = <&icssg0_mii_rt>;
-+		ti,iep = <&icssg0_iep0>,  <&icssg0_iep1>;
-+
-+		interrupt-parent = <&icssg0_intc>;
-+		interrupts = <24 0 2>, <25 1 3>;
-+		interrupt-names = "tx_ts0", "tx_ts1";
-+
-+		dmas = <&main_udmap 0xc100>, /* egress slice 0 */
-+		       <&main_udmap 0xc101>, /* egress slice 0 */
-+		       <&main_udmap 0xc102>, /* egress slice 0 */
-+		       <&main_udmap 0xc103>, /* egress slice 0 */
-+		       <&main_udmap 0xc104>, /* egress slice 1 */
-+		       <&main_udmap 0xc105>, /* egress slice 1 */
-+		       <&main_udmap 0xc106>, /* egress slice 1 */
-+		       <&main_udmap 0xc107>, /* egress slice 1 */
-+
-+		       <&main_udmap 0x4100>, /* ingress slice 0 */
-+		       <&main_udmap 0x4101>, /* ingress slice 1 */
-+		       <&main_udmap 0x4102>, /* mgmnt rsp slice 0 */
-+		       <&main_udmap 0x4103>; /* mgmnt rsp slice 1 */
-+		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-+			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-+			    "rx0", "rx1",
-+			    "rxmgm0", "rxmgm1";
-+
-+		ethernet-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			icssg0_emac0: port@0 {
-+				reg = <0>;
-+				phy-handle = <&icssg0_eth0_phy>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
-+				ti,half-duplex-capable;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+
-+			icssg0_emac1: port@1 {
-+				reg = <1>;
-+				phy-handle = <&icssg0_eth1_phy>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
-+				ti,half-duplex-capable;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+		};
-+	};
- };
- 
- &wkup_pmx0 {
-@@ -944,6 +1021,43 @@ AM65X_IOPAD(0x0074, PIN_INPUT,  5)  /* (T27) I2C2_SCL */
- 			AM65X_IOPAD(0x0070, PIN_INPUT,  5)  /* (R25) I2C2_SDA */
- 		>;
- 	};
-+
-+	icssg0_mdio_pins_default: icssg0-mdio-pins-default {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0294, PIN_INPUT, 0) /* (AE26) PRG0_MDIO0_MDIO */
-+			AM65X_IOPAD(0x0298, PIN_OUTPUT, 0) /* (AE28) PRG0_MDIO0_MDC */
-+		>;
-+	};
-+
-+	icssg0_rgmii_pins_default: icssg0-rgmii-pins-default {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0244, PIN_INPUT, 2) /* (AB28) PRG0_PRU1_GPO0.PRG0_RGMII2_RD0 */
-+			AM65X_IOPAD(0x0248, PIN_INPUT, 2) /* (AC28) PRG0_PRU1_GPO1.PRG0_RGMII2_RD1 */
-+			AM65X_IOPAD(0x024c, PIN_INPUT, 2) /* (AC27) PRG0_PRU1_GPO2.PRG0_RGMII2_RD2 */
-+			AM65X_IOPAD(0x0250, PIN_INPUT, 2) /* (AB26) PRG0_PRU1_GPO3.PRG0_RGMII2_RD3 */
-+			AM65X_IOPAD(0x0274, PIN_OUTPUT, 2) /* (AC25) PRG0_PRU1_GPO12.PRG0_RGMII2_TD0 */
-+			AM65X_IOPAD(0x0278, PIN_OUTPUT, 2) /* (AD25) PRG0_PRU1_GPO13.PRG0_RGMII2_TD1 */
-+			AM65X_IOPAD(0x027c, PIN_OUTPUT, 2) /* (AD24) PRG0_PRU1_GPO14.PRG0_RGMII2_TD2 */
-+			AM65X_IOPAD(0x0280, PIN_OUTPUT, 2) /* (AE27) PRG0_PRU1_GPO15.PRG0_RGMII2_TD3 */
-+			AM65X_IOPAD(0x0284, PIN_INPUT, 2) /* (AC24) PRG0_PRU1_GPO16.PRG0_RGMII2_TXC */
-+			AM65X_IOPAD(0x0270, PIN_OUTPUT, 2) /* (AB24) PRG0_PRU1_GPO11.PRG0_RGMII2_TX_CTL */
-+			AM65X_IOPAD(0x025c, PIN_INPUT, 2) /* (AB27) PRG0_PRU1_GPO6.PRG0_RGMII2_RXC */
-+			AM65X_IOPAD(0x0254, PIN_INPUT, 2) /* (AA25) PRG0_PRU1_GPO4.PRG0_RGMII2_RX_CTL */
-+
-+			AM65X_IOPAD(0x01f4, PIN_INPUT, 2) /* (V24) PRG0_PRU0_GPO0.PRG0_RGMII1_RD0 */
-+			AM65X_IOPAD(0x01f8, PIN_INPUT, 2) /* (W25) PRG0_PRU0_GPO1.PRG0_RGMII1_RD1 */
-+			AM65X_IOPAD(0x01fc, PIN_INPUT, 2) /* (W24) PRG0_PRU0_GPO2.PRG0_RGMII1_RD2 */
-+			AM65X_IOPAD(0x0200, PIN_INPUT, 2) /* (AA27) PRG0_PRU0_GPO3.PRG0_RGMII1_RD3 */
-+			AM65X_IOPAD(0x0224, PIN_OUTPUT, 2) /* (AD27) PRG0_PRU0_GPO12.PRG0_RGMII1_TD0 */
-+			AM65X_IOPAD(0x0228, PIN_OUTPUT, 2) /* (AC26) PRG0_PRU0_GPO13.PRG0_RGMII1_TD1 */
-+			AM65X_IOPAD(0x022c, PIN_OUTPUT, 2) /* (AD26) PRG0_PRU0_GPO14.PRG0_RGMII1_TD2 */
-+			AM65X_IOPAD(0x0230, PIN_OUTPUT, 2) /* (AA24) PRG0_PRU0_GPO15.PRG0_RGMII1_TD3 */
-+			AM65X_IOPAD(0x0234, PIN_INPUT, 2) /* (AD28) PRG0_PRU0_GPO16.PRG0_RGMII1_TXC */
-+			AM65X_IOPAD(0x0220, PIN_OUTPUT, 2) /* (AB25) PRG0_PRU0_GPO11.PRG0_RGMII1_TX_CTL */
-+			AM65X_IOPAD(0x020c, PIN_INPUT, 2) /* (Y25) PRG0_PRU0_GPO6.PRG0_RGMII1_RXC */
-+			AM65X_IOPAD(0x0204, PIN_INPUT, 2) /* (Y24) PRG0_PRU0_GPO4.PRG0_RGMII1_RX_CTL */
-+		>;
-+	};
- };
- 
- &main_pmx1 {
-@@ -1322,3 +1436,21 @@ &mcu_r5fss0_core1 {
- 			<&mcu_r5fss0_core1_memory_region>;
- 	mboxes = <&mailbox0_cluster1>, <&mbox_mcu_r5fss0_core1>;
- };
-+
-+&icssg0_mdio {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg0_mdio_pins_default>;
-+
-+	icssg0_eth0_phy: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+
-+	icssg0_eth1_phy: ethernet-phy@1 {
-+		reg = <1>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+};
--- 
-2.35.3
+             +-------+             +------+             +------+
+             |       |             |MMIO  |   Offset    |      |
+             |       |  Virtual    |Space |   applied   |      |
+           C +-------+ --------> B +------+ ----------> +------+ A
+             |       |  mapping    |      |   by host   |      |
+   +-----+   |       |             |      |   bridge    |      |   +--------+
+   |     |   |       |             +------+             |      |   |        |
+   | CPU |   |       |             | RAM  |             |      |   | Device |
+   |     |   |       |             |      |             |      |   |        |
+   +-----+   +-------+             +------+             +------+   +--------+
+             |       |  Virtual    |Buffer|   Mapping   |      |
+           X +-------+ --------> Y +------+ <---------- +------+ Z
+             |       |  mapping    | RAM  |   by IOMMU
+             |       |             |      |
+             |       |             |      |
+             +-------+             +------+
 
+Reference diagram from: 
+https://www.kernel.org/doc/Documentation/DMA-API-HOWTO.txt
+
+
+Regards,
+
+Jeshwanth
+
+>
