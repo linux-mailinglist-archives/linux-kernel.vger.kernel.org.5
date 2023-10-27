@@ -2,286 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED89D7DA188
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01E67DA191
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbjJ0T7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
+        id S1346345AbjJ0UAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjJ0T7v (ORCPT
+        with ESMTP id S232518AbjJ0UAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:59:51 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96A21AA;
-        Fri, 27 Oct 2023 12:59:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6be1bc5aa1cso2438980b3a.3;
-        Fri, 27 Oct 2023 12:59:48 -0700 (PDT)
+        Fri, 27 Oct 2023 16:00:44 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C651B3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:00:38 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso3940595a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698436788; x=1699041588; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=weKHPjc4wxBWhrJPXw89N+hZ6eKctWfsrLxKNLkb6ls=;
-        b=VYSPSBNuOJHJKjmv3GatUEGUveVDUbkM4V2YgZQu5XlCuGhPt7wD2ZI5Mluwi2Pqhh
-         tWa+5YST4KJKYF4T2Q7Y5h1VRi/AGNr1fkzs5EFhdTrz5SEl7IpHo30H52BSx4F5C5gV
-         cwFOTmUJp3fOahwWVO4f/OJR4LP5k3H9oFqqXGagSX4BPxkZGQsdPJvJvBGmuQZWLOOC
-         2YNqNYFtEpABPlq8YPtKj80WtQW6VGlhDJiE9bMeyvic29WQBBryD0vleGAN32q5MLHG
-         5mkIKE//hXyUbs0LHXTQCkwkmWCbQNCmpU7GoCqJm3x2/4ZaqAkuHT2HZ6zswAIAAMh7
-         dGLw==
+        d=google.com; s=20230601; t=1698436837; x=1699041637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yobZYiTROnZbnWt97aXOIqRoozVbekmuSyrI2D0DmEQ=;
+        b=21cD94GlI92fGvgrGKcZWzvwaqs7PFcDB/jLm5qg3U87N6CWwVlL2jA1+CWwv6VkEo
+         fu7zZizsT/KJQUjYKGR3IQsGs3/VNDmYx/BzRIWinePzsG08t4DeJOIduR62HQyccEeb
+         mmlziFc44tTQgjXOxXpmTSxmVf74fMnQdbm1APu+LqCB77ZYgbECTNdNnnx2eR3CybU1
+         wtv8iOtQMD+aZqjfWE5eXxtmom3JMkEoXZnEGsRFFpSEy7UPIl6E5vtRQ5nutrUBC8IN
+         RhlspDw8v5pTpzCHoSzxCLZxLYgq1rHYwZBrMNwkD5iFaP+N2QNxlXFVGt+BccjG+Yv5
+         YZ/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698436788; x=1699041588;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=weKHPjc4wxBWhrJPXw89N+hZ6eKctWfsrLxKNLkb6ls=;
-        b=F5tl63Vkq5aOS4gTmzN9or0XM+QGy5s3ThuDoJbXzcDEVzh+kI9Ix9QIFKvcUIqm1F
-         JkY3A6Vwlo7y6Dpuy6Z4VlmVd/TSScFByO/0UKytQXn/78Jt1SG5BD9RoyK5O+8jBD/4
-         zDIhADF8nCIofCxFDGgA2tNSgO3twTfLaU4UCpPMkwTH+6pVzf4RUjT08BABP4l4Oda4
-         a6WNcD27sDLSQce5SXSnH3vtNQRNzdP0awVuz2vzBQt6cC5DJU72yzlAbryppR50fxxG
-         SdT7z6ba8LIGxy/kSd05TisvN8LoJYOfJhpQwxVxCb7HPy1TFWBUliCflUP0D48MVwdh
-         eENw==
-X-Gm-Message-State: AOJu0YwUcw+o/NUiVy+dRAlM91PJtUp0G1tD4BJ1iXt7bxdPmNLPGefV
-        25zvph/cKNF7Xx1zhukXkCE=
-X-Google-Smtp-Source: AGHT+IFk+gtYxQ8LAHDWpcgS3J28W2XTK3gk8wUOAryTEz+QmMB12fhIgtRqvCcN8KMIyoepBHQlrg==
-X-Received: by 2002:a05:6a21:3388:b0:15c:c381:f65e with SMTP id yy8-20020a056a21338800b0015cc381f65emr4783548pzb.34.1698436787831;
-        Fri, 27 Oct 2023 12:59:47 -0700 (PDT)
-Received: from [192.168.1.7] ([159.192.237.220])
-        by smtp.googlemail.com with ESMTPSA id fj40-20020a056a003a2800b0068fe7c4148fsm1745550pfb.57.2023.10.27.12.59.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 12:59:47 -0700 (PDT)
-Message-ID: <103aa944-073a-4dd0-8d58-8c9123dc2352@gmail.com>
-Date:   Sat, 28 Oct 2023 02:59:42 +0700
+        d=1e100.net; s=20230601; t=1698436837; x=1699041637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yobZYiTROnZbnWt97aXOIqRoozVbekmuSyrI2D0DmEQ=;
+        b=FbNWW4vHjEeki+TgFWA5+8vysZHve6ztfspwKT4JdV9QunWSD6+MUIMltPoogCfB+l
+         nZ1sHMlfxMWg1BL+hsk6KomemRxCWjDS6MLaBDIs4AT9weYlFBLJNRJ8m60ZxI7iG17Z
+         Gh/QntfG6lGDX2OD06lFz5u1+u3is5eTTvW2faWbhyW2URCcCvuPg5ww+xaEi9KZMdVC
+         bXb9jwasD9SqVe3dCIJM+9h/vhqcG4ojAB1+xOC7aAIsWC/IsPsD1PNuMrWGiuGN7NUT
+         M2xTKvTfMuXgDqmeEt07XIohaCtOe3gBjGHsqw9/7CZLtNhj5+i+OoWngcDStGA7oO4p
+         a/Tw==
+X-Gm-Message-State: AOJu0YyUZ0IDYNJvuZgSKdMZFmvUZy4WJRJZvhLn+4VAaesXkYRShOXs
+        YdtCbsc5FawgXNjSgmcVvGrsfmh9Oy5uj93TMaA9XA==
+X-Google-Smtp-Source: AGHT+IEECTHllrJmzv5sahl44qlCGaWHzkN+S8KPH5915KPk6hOjL1gjxgKo6qnIhYlrpIN54Jh1oJ+0er/1gULQ1H4=
+X-Received: by 2002:a17:907:26c9:b0:9c7:6fa7:586e with SMTP id
+ bp9-20020a17090726c900b009c76fa7586emr3499260ejc.1.1698436837160; Fri, 27 Oct
+ 2023 13:00:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: serial: option: add Fibocom L7xx modules
-Content-Language: en-US
-To:     Victor Fragoso <victorffs@hotmail.com>,
-        "johan@kernel.org" <johan@kernel.org>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <9315051ae981aaad1d46724641defc6e5f79d12b.camel@hotmail.com>
- <84a78bb8-fd85-4ee5-9c92-859e8450a587@gmail.com>
- <94477736e69cc76eaaef8584d7e1aa5078a0611e.camel@hotmail.com>
-From:   Lars Melin <larsm17@gmail.com>
-In-Reply-To: <94477736e69cc76eaaef8584d7e1aa5078a0611e.camel@hotmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231026-strncpy-drivers-scsi-hpsa-c-v2-1-2fe2d05122fd@google.com>
+ <202310270901.B49F63CD5@keescook>
+In-Reply-To: <202310270901.B49F63CD5@keescook>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Fri, 27 Oct 2023 13:00:25 -0700
+Message-ID: <CAFhGd8ooYaPBXyWLTKD94-jiR0Na4qnyRT602R1tzjdF9W3BWg@mail.gmail.com>
+Subject: Re: [PATCH v2] scsi: hpsa: replace deprecated strncpy
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Don Brace <don.brace@microchip.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        storagedev@microchip.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/2023 0:55, Victor Fragoso wrote:
-> On Thu, 2023-10-26 at 20:13 +0700, Lars Melin wrote:
->> On 10/26/2023 8:24, Victor Fragoso wrote:
->>> Add support for Fibocom L7xx module series and variants.
->>>
->>> L716-EU-60 (ECM):
->>> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 17 Spd=480  MxCh= 0
->>> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
->>> P:  Vendor=19d2 ProdID=0579 Rev= 1.00
->>> S:  Manufacturer=Fibocom,Incorporated
->>> S:  Product=Fibocom Mobile Boardband
->>> S:  SerialNumber=1234567890ABCDEF
->>> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
->>> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
->>> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
->>> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
->>> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
->>> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>>
->>> L716-EU-60 (RNDIS):
->>> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 21 Spd=480  MxCh= 0
->>> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
->>> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
->>> S:  Manufacturer=Fibocom,Incorporated
->>> S:  Product=Fibocom Mobile Boardband
->>> S:  SerialNumber=1234567890ABCDEF
->>> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
->>> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
->>> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
->>> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
->>> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
->>> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>>
->>> L716-EU-10 (ECM):
->>> T:  Bus=03 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#= 21 Spd=480  MxCh= 0
->>> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
->>> P:  Vendor=2cb7 ProdID=0001 Rev= 1.00
->>> S:  Manufacturer=Fibocom,Incorporated
->>> S:  Product=Fibocom Mobile Boardband
->>> S:  SerialNumber=1234567890ABCDEF
->>> C:* #Ifs= 7 Cfg#= 1 Atr=e0 MxPwr=500mA
->>> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
->>> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
->>> E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
->>> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
->>> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
->>> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
->>> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
->>>
->>> Signed-off-by: Victor Fragoso <victorffs@hotmail.com>
->>> ---
->>>    drivers/usb/serial/option.c | 5 +++++
->>>    1 file changed, 5 insertions(+)
->>>
->>> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
->>> index 45dcfaadaf98..4ba3dc352d65 100644
->>> --- a/drivers/usb/serial/option.c
->>> +++ b/drivers/usb/serial/option.c
->>> @@ -2262,6 +2262,11 @@ static const struct usb_device_id option_ids[] =
->>> {
->>>    	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a2, 0xff)
->>> },			/* Fibocom FM101-GL (laptop MBIM) */
->>>    	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a4,
->>> 0xff),			/* Fibocom FM101-GL (laptop MBIM) */
->>>    	  .driver_info = RSVD(4) },
->>> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0001, 0xff, 0xff,
->>> 0xff) },	/* Fibocom L71x */
->>> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0001, 0x0a, 0x00,
->>> 0xff) },	/* Fibocom L71x */
->>> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x0100, 0xff, 0xff,
->>> 0xff) },	/* Fibocom L71x */
->>> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0256, 0xff, 0xff,
->>> 0xff) },	/* Fibocom L71x */
->>> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0579, 0xff, 0xff,
->>> 0xff) },	/* Fibocom L71x */
->>>    	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff)
->>> },			/* LongSung M5710 */
->>>    	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff)
->>> },			/* GosunCn GM500 RNDIS */
->>>    	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff)
->>> },			/* GosunCn GM500 MBIM */
->>
->>
->> Hi Victor, thanks for the patch, there is unfortunately the following
->> errors in it:
->> The device list is sorted in ascending order based on vid:pid, you have
->> inserted all of your added Id's in the wrong place.
->>
->> 19d2:0579 is a ZTE device Id and should be placed among the other 19d2
->> devices.
->>
->> You have not included usb-devices output for 19d2:0256 and 2cb7:0100,
->> and I have strong reasons to believe that they should not be included in
->> the option driver.
->> If you are of another opinion then please show the usb-devices output
->> for them, otherwise remove them from the patch.
->>
->> You have added support for an interface with the attributes 0a/00/ff ,
->> there is no such interface in your provided usb-devices listing,
->> interface Class 0a does not even belong to the option driver.
->>
->> Thanks
->> Lars
-> 
-> Hi Lars, sorry about the wrong order, I will correct it.
-> 
-> But about the ZTE device ID, I belive that we should insert among
-> Fibocom drivers because we are talking about a Fibocom module that is
-> using an ZTE Chipset.
-> So, this is exactly the same situation from Fibocom L610 IDs (0x1782,
-> 0x4d10 / 0x1782, 0x4d11) that is using the Unisoc Chipset but were
-> inserted among Fibocom drivers.
-> 
-> And about the usb-devices output, let me explain better:
-> I am a Field Application Enginner at Fibocom Brazil and I am using the
-> IDs from our internal and official documentation.
-> On this documents its suggested to add all this IDs because it will
-> guarantee that can be used on all the variants devices from L71x series
-> (that can change according to different part number, region support or
-> network protocol).
-> Unfortunately, I don't have all the modules variations available with
-> me right now to test and share all the outputs.
-> 
-> Can we continue with all the IDs that I have inserted?
-> Or do you prefer to keep just the devices that I tested by myself until
-> now?
-> 
-> Victor Fragoso
+On Fri, Oct 27, 2023 at 9:04=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Thu, Oct 26, 2023 at 11:13:41PM +0000, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > Instances of strncpy()'ing a string into a buffer and manually
+> > NUL-terminating followed by sccanf with just "%d" as the format
+> > specifier can be accomplished by strscpy() and kstrtoint().
+> >
+> > strscpy() guarantees NUL-termination on the destination buffer and
+> > kstrtoint is better way of getting strings turned into ints.
+> >
+> > For the last two strncpy() use cases in init_driver_version(), we can
+> > actually drop this function entirely.
+> >
+> > Firstly, we are kmalloc()'ing driver_version. Then, we are calling
+> > init_driver_version() which memset's it to 0 followed by a strncpy().
+> > The pattern is 1) allocating memory for a string, 2) setting all bytes
+> > to NUL, 3) copy bytes from another string + ensure NUL-padded.
+> >
+> > For these, we can just stack allocate driver_version and
+> > old_driver_version. This simplifies the code greatly as we don't have
+> > any malloc/free or strncpy's.
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Changes in v2:
+> > - use stack for buffers (thanks Kees)
+> > - use kstrtoint (thanks Kees)
+> > - Link to v1: https://lore.kernel.org/r/20231026-strncpy-drivers-scsi-h=
+psa-c-v1-1-75519d7a191b@google.com
+> > ---
+> > Note: build-tested only.
+> >
+> > Found with: $ rg "strncpy\("
+> > ---
+> >  drivers/scsi/hpsa.c | 53 ++++++++++++++++++++-------------------------=
+--------
+> >  1 file changed, 20 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
+> > index af18d20f3079..4d42fbb071cf 100644
+> > --- a/drivers/scsi/hpsa.c
+> > +++ b/drivers/scsi/hpsa.c
+> > @@ -452,18 +452,18 @@ static ssize_t host_store_hp_ssd_smart_path_statu=
+s(struct device *dev,
+> >                                        struct device_attribute *attr,
+> >                                        const char *buf, size_t count)
+> >  {
+> > -     int status, len;
+> > +     int status;
+> >       struct ctlr_info *h;
+> >       struct Scsi_Host *shost =3D class_to_shost(dev);
+> >       char tmpbuf[10];
+> >
+> >       if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SYS_RAWIO))
+> >               return -EACCES;
+> > -     len =3D count > sizeof(tmpbuf) - 1 ? sizeof(tmpbuf) - 1 : count;
+> > -     strncpy(tmpbuf, buf, len);
+> > -     tmpbuf[len] =3D '\0';
+> > -     if (sscanf(tmpbuf, "%d", &status) !=3D 1)
+> > +
+> > +     strscpy(tmpbuf, buf, sizeof(tmpbuf));
+> > +     if (kstrtoint(tmpbuf, 0, &status))
+>
+> I actually meant:
+>
+>         if (kstrtoint(buf, 0, &status))
 
-Johan may have a different opinion from mine and he is the one to 
-decide, my take is that there is no value in having a minor part of the 
-list grouped by mfgr and the major part of the list sorted by USB Id.
-We have also seen in the past that when a mfgr1 buys a chipset from 
-mfgr2 and then sells his product with mfgr2 Id instead of using one of 
-his own Id's then there is also not uncommon that mfgr3 is also buying 
-the same chipset without changing Id. Hence "Manufacturer name" is not 
-unique but the vid is..
+How do we know `buf` is NUL-terminated as kstrtoint() demands:
 
-The list should not be seen or used as a cross reference between 
-mfgr:product name and vid:pid, anyone who needs to search the driver 
-source to see if a device is supported ought to know its vid:pid so can 
-search on those and that works much better if the list is sorted by 
-vid:pid in ascending order. Personally I'd rather see a source without 
-all the unnecessary defines, only vid:pid based and with the 
-mfgr/product as an optional comment.
+/**
+ * kstrtoint - convert a string to an int
+ * @s: The start of the string. The string must be null-terminated, and may=
+ also
+ *  include a single newline before its terminating null. The first charact=
+er
+ *  may also be a plus sign or a minus sign.
+...
 
-When adding Id's to the driver it is you who should know the devices you 
-are adding, don't add Id's if you have not personally confirmed their 
-interface composition and usage.
-Those who told you add these Id's apparently also told you that there 
-are two versions of 2cb7:0001, one with ECM interfaces and one with 
-RNDIS interfaces but your usb-devices output show both to be identical.. 
-There is no RNDIS interface in your listings, both of them will load
-the cdc_ether driver.
+>
+> I don't see any reason for "tmpbuf" at all.
+>
+> > @@ -7234,25 +7234,15 @@ static int hpsa_controller_hard_reset(struct pc=
+i_dev *pdev,
+> >       return 0;
+> >  }
+> >
+> > -static void init_driver_version(char *driver_version, int len)
+> > -{
+> > -     memset(driver_version, 0, len);
+> > -     strncpy(driver_version, HPSA " " HPSA_DRIVER_VERSION, len - 1);
+> > -}
+> > -
+> >  static int write_driver_ver_to_cfgtable(struct CfgTable __iomem *cfgta=
+ble)
+> >  {
+> > -     char *driver_version;
+> >       int i, size =3D sizeof(cfgtable->driver_version);
+> > +     char driver_version[sizeof(cfgtable->driver_version)] =3D
+> > +                                             HPSA " " HPSA_DRIVER_VERS=
+ION;
+> >
+> > -     driver_version =3D kmalloc(size, GFP_KERNEL);
+> > -     if (!driver_version)
+> > -             return -ENOMEM;
+> > -
+> > -     init_driver_version(driver_version, size);
+> >       for (i =3D 0; i < size; i++)
+> >               writeb(driver_version[i], &cfgtable->driver_version[i]);
+> > -     kfree(driver_version);
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -7268,21 +7258,18 @@ static void read_driver_ver_from_cfgtable(struc=
+t CfgTable __iomem *cfgtable,
+> >  static int controller_reset_failed(struct CfgTable __iomem *cfgtable)
+> >  {
+> >
+> > -     char *driver_ver, *old_driver_ver;
+> > -     int rc, size =3D sizeof(cfgtable->driver_version);
+> > -
+> > -     old_driver_ver =3D kmalloc_array(2, size, GFP_KERNEL);
+> > -     if (!old_driver_ver)
+> > -             return -ENOMEM;
+> > -     driver_ver =3D old_driver_ver + size;
+> > +     char driver_ver[sizeof(cfgtable->driver_version)] =3D "";
+> > +     char old_driver_ver[sizeof(cfgtable->driver_version)] =3D
+> > +                                             HPSA " " HPSA_DRIVER_VERS=
+ION;
+> > +     int rc;
+> >
+> >       /* After a reset, the 32 bytes of "driver version" in the cfgtabl=
+e
+> >        * should have been changed, otherwise we know the reset failed.
+> >        */
+> > -     init_driver_version(old_driver_ver, size);
+> >       read_driver_ver_from_cfgtable(cfgtable, driver_ver);
+> > -     rc =3D !memcmp(driver_ver, old_driver_ver, size);
+> > -     kfree(old_driver_ver);
+> > +     rc =3D !memcmp(driver_ver, old_driver_ver,
+> > +                  sizeof(cfgtable->driver_version));
+> > +
+> >       return rc;
+> >  }
+> >  /* This does a hard reset of the controller using PCI power management
+>
+> These two look good now; thanks!
 
-br
-Lars
+Woot!
 
+>
+> -Kees
+>
+> --
+> Kees Cook
+
+Thanks
+Justin
