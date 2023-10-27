@@ -2,407 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97457D8DE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 06:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109F87D8DE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 06:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjJ0ErH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 00:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S230101AbjJ0Ex5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 00:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0ErE (ORCPT
+        with ESMTP id S229501AbjJ0Exz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 00:47:04 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1D8186;
-        Thu, 26 Oct 2023 21:47:01 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39R4eESi011634;
-        Fri, 27 Oct 2023 04:46:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=JEai+xYL0exRitVg/sATL2GEvvL4tkPSvlWMqOUgntY=;
- b=dB1w85NRza8q4TQFBD6c1fhco5ZuA47jT/zpxL3JQpAlJja3c7yM1HgCHOjC0wQwUW1c
- 2vDmTReo1cNVQm83Mg5cygelEoBPA+hVKjxjrpsMYCsvYWSy/Ghr17Umd6OOc3J9e9uk
- FXYLhP5v4feGJI5mBONjBAd6qnntZb37fem0JE4ic6zt52Ag9EGhyRCKosO4nSIiHNYr
- /JDOInYgUmVgdQ+9BMUELLX502MgXFsroipIRes77rAHzwDgMadgm8Luyu3+QYH7ljIU
- qlC6lN5lABVzQrfBNXU65D+j/lS9flwcTc+4Uvs8MN2K1UhEIyjMZK5Cl+wtvVw/9uxO Gw== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u06cjr2c5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 04:46:39 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39R4Swhf025046;
-        Fri, 27 Oct 2023 04:43:49 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tywqrtpaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 04:43:49 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39R4hn4V36831614
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Oct 2023 04:43:49 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E37E858055;
-        Fri, 27 Oct 2023 04:43:48 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C644F58043;
-        Fri, 27 Oct 2023 04:43:48 +0000 (GMT)
-Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 27 Oct 2023 04:43:48 +0000 (GMT)
-Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
-        id 2D012740051; Thu, 26 Oct 2023 23:43:48 -0500 (CDT)
-From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-To:     joel@jms.id.au, andrew@aj.id.au, eajames@linux.ibm.com,
-        ninad@linux.ibm.com, linux@roeck-us.net, jdelvare@suse.com
-Cc:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] hwmon: (pmbus/max31785) Add delay between bus accesses
-Date:   Thu, 26 Oct 2023 23:43:46 -0500
-Message-Id: <20231027044346.2167548-1-lakshmiy@us.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 27 Oct 2023 00:53:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924471A5
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 21:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698382433; x=1729918433;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=huQdfmv4RAlE6agN1ox97fjjq4rCy8uyOU1Wk51RW30=;
+  b=DFttywXP+YBLXNyOea+Ty+0xHYV2TTYTSbrlWrrPf5tZUrL2M16kvbNI
+   18pl8/+fvToEyuBwAEASaNLRUcBkqoez8UqqYHNcVyFVd+NFM8xAQQUzd
+   bECkLDG00JsYPwEnzMkyN04u0RKMzRJtEONoeQ97lXkhbAsRpXrLem8Mv
+   kCoPaOjaBE/Ip5TjMkTazlWVY+mDV3arSTE/r1j8FesANBuQWvZ3UhXeN
+   gw5QSXniQ0I/w1Tu5vL3ttU/hC42KmcKsdU0IQ3hs9b9cGkePvCDlSmJn
+   HZCInH0hmPT/X+UahwKZopRkJr6qYAxZ5cGMhW4HoiZWIKIPw6rgOWc3Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="9247690"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="9247690"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 21:53:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="763080962"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
+   d="scan'208";a="763080962"
+Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
+  by fmsmga007.fm.intel.com with ESMTP; 26 Oct 2023 21:53:49 -0700
+From:   Yi Sun <yi.sun@intel.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org
+Cc:     kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, kai.huang@intel.com,
+        nik.borisov@suse.com, linux-kernel@vger.kernel.org,
+        heng.su@intel.com, yi.sun@linux.intel.com,
+        Yi Sun <yi.sun@intel.com>,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+Subject: [PATCH v7] x86/tdx: Dump TDX Version During TD Bootup
+Date:   Fri, 27 Oct 2023 12:52:34 +0800
+Message-Id: <20231027045234.1371846-1-yi.sun@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: okRMIwo0kr5tdEnefdEozrK6s3joAzUG
-X-Proofpoint-ORIG-GUID: okRMIwo0kr5tdEnefdEozrK6s3joAzUG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-27_02,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310270040
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MAX31785 has shown erratic behaviour across multiple system
-designs, unexpectedly clock stretching and NAKing transactions.
+Different versions of TDX have significant differences, as stated in the
+"Intel® TDX Module Incompatibilities between v1.0 and v1.5" reference.
 
-Experimentation shows that this seems to be triggered by a register access
-directly back to back with a previous register write. Experimentation also
-shows that inserting a small delay after register writes makes the issue go
-away.
+It would be useful for TD users to be aware of the vendor and version of
+the current TDX in use. Users could expect different results when checking
+CPIUD or reading MSR in the user space, depending on the TDX version.
+Additionally, refer to the TDX version when reporting issues.
 
-Use a similar solution to what the max15301 driver does to solve the same
-problem. Create a custom set of bus read and write functions that make sure
-that the delay is added.
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
+Signed-off-by: Yi Sun <yi.sun@intel.com>
 
-Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
 ---
-V4 -> V5: Changed udelay() to usleep_range() 
-V3 -> V4: Fixed warnings related to this commit
-V2 -> V3: Fixed the commit message
-V1 -> V2:
-- Changed the max31785_wait macro to a function, following the conventions
-  used in other drivers that had the same issue.
-- Changed the function names from max31785_i2c_smbus* to max31785_i2c_* and
-  from max31785_pmbus_* to _max31785_*, making them more concise.
+V6 -> V7:
+	- Reduce unnecessary variable initializations and improve the dump
+	information. (Kuppuswamy Sathyanarayanan)
 
- drivers/hwmon/pmbus/max31785.c | 188 +++++++++++++++++++++++++++++----
- 1 file changed, 167 insertions(+), 21 deletions(-)
+V5 -> V6:
+	- Remove random warnings at every step. Print the error in common
+	code. (Dave Hansen)
 
-diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
-index f9aa576495a5..5d13bbfc8f47 100644
---- a/drivers/hwmon/pmbus/max31785.c
-+++ b/drivers/hwmon/pmbus/max31785.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2017 IBM Corp.
-  */
+	- Remove useless assignment and cast. Re-zeroed the input args
+	between tdcalls. Refine the comments. (Dave Hansen)
+
+V4 -> V5:
+	- Print the version info inside the function detect_tdx_version, but
+	not tdx_early_init(). Remove the structure tdg_sys_info, but have 3
+	local variables instead. (Huang, Kai)
+
+V3 -> V4: 
+	- Rebase the patch on top of the latest tip tree. (Huang, Kai)
+	- Change the return value of function tdg_get_sysinfo as void, and
+	zero out tdg_sys_info when error occurs. (Kuppuswamy Sathyanarayanan)
+
+V2 -> V3: 
+	- Move the allocation of struct tdg_sys_info on stack inside
+	tdx_early_init() and pass down to tdg_get_sysinfo() to fill.
+	(Kirill Shutemov)
+
+V1 -> V2: 
+	- Move the defination of field IDs and the struct tdg_sys_info to tdx.c.
+	(Kuppuswamy Sathyanarayanan)
+
+
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 2f27ae1e2c6b..66e020e3bb48 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -37,6 +37,15 @@
  
-+#include <linux/delay.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-@@ -23,19 +24,119 @@ enum max31785_regs {
+ #define TDREPORT_SUBTYPE_0	0
  
- #define MAX31785_NR_PAGES		23
- #define MAX31785_NR_FAN_PAGES		6
-+#define MAX31785_WAIT_DELAY_US		250
- 
--static int max31785_read_byte_data(struct i2c_client *client, int page,
--				   int reg)
-+struct max31785_data {
-+	ktime_t access;			/* Chip access time */
-+	struct pmbus_driver_info info;
-+};
-+
-+#define to_max31785_data(x)  container_of(x, struct max31785_data, info)
-+
 +/*
-+ * MAX31785 Driver Workaround
-+ *
-+ * The MAX31785 fan controller occasionally exhibits communication issues.
-+ * These issues are not indicated by the device itself, except for occasional
-+ * NACK responses during master transactions. No error bits are set in STATUS_BYTE.
-+ *
-+ * To address this, we introduce a delay of 250us between consecutive accesses
-+ * to the fan controller. This delay helps mitigate communication problems by
-+ * allowing sufficient time between accesses.
++ * TDX metadata base field id, used by TDCALL TDG.SYS.RD
++ * See TDX ABI Spec Global Metadata Fields
 + */
-+static inline void max31785_wait(const struct max31785_data *data)
++#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
++#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
++#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
++#define TDX_VENDOR_INTEL		0x8086
++
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+ noinstr void __noreturn __tdx_hypercall_failed(void)
  {
--	if (page < MAX31785_NR_PAGES)
--		return -ENODATA;
-+	s64 delta = ktime_us_delta(ktime_get(), data->access);
-+
-+	if (delta < MAX31785_WAIT_DELAY_US)
-+		usleep_range(MAX31785_WAIT_DELAY_US - delta,
-+			     MAX31785_WAIT_DELAY_US);
-+}
-+
-+static int max31785_i2c_write_byte_data(struct i2c_client *client,
-+					struct max31785_data *driver_data,
-+					int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = i2c_smbus_write_byte_data(client, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int max31785_i2c_read_word_data(struct i2c_client *client,
-+				       struct max31785_data *driver_data,
-+				       int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = i2c_smbus_read_word_data(client, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_read_byte_data(struct i2c_client *client,
-+				    struct max31785_data *driver_data,
-+				    int page, int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_read_byte_data(client, page, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_write_byte_data(struct i2c_client *client,
-+				     struct max31785_data *driver_data,
-+				     int page, int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_write_byte_data(client, page, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_read_word_data(struct i2c_client *client,
-+				    struct max31785_data *driver_data,
-+				    int page, int phase, int command)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_read_word_data(client, page, phase, command);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int _max31785_write_word_data(struct i2c_client *client,
-+				     struct max31785_data *driver_data,
-+				     int page, int command, u16 data)
-+{
-+	int rc;
-+
-+	max31785_wait(driver_data);
-+	rc = pmbus_write_word_data(client, page, command, data);
-+	driver_data->access = ktime_get();
-+	return rc;
-+}
-+
-+static int max31785_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 
- 	switch (reg) {
- 	case PMBUS_VOUT_MODE:
- 		return -ENOTSUPP;
- 	case PMBUS_FAN_CONFIG_12:
--		return pmbus_read_byte_data(client, page - MAX31785_NR_PAGES,
--					    reg);
-+		return _max31785_read_byte_data(client, driver_data,
-+						page - MAX31785_NR_PAGES,
-+						reg);
- 	}
- 
- 	return -ENODATA;
-@@ -102,16 +203,19 @@ static int max31785_get_pwm(struct i2c_client *client, int page)
- 	return rv;
+@@ -800,6 +809,55 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 	return true;
  }
  
--static int max31785_get_pwm_mode(struct i2c_client *client, int page)
-+static int max31785_get_pwm_mode(struct i2c_client *client,
-+				 struct max31785_data *driver_data, int page)
- {
- 	int config;
- 	int command;
- 
--	config = pmbus_read_byte_data(client, page, PMBUS_FAN_CONFIG_12);
-+	config = _max31785_read_byte_data(client, driver_data, page,
-+					  PMBUS_FAN_CONFIG_12);
- 	if (config < 0)
- 		return config;
- 
--	command = pmbus_read_word_data(client, page, 0xff, PMBUS_FAN_COMMAND_1);
-+	command = _max31785_read_word_data(client, driver_data, page, 0xff,
-+					   PMBUS_FAN_COMMAND_1);
- 	if (command < 0)
- 		return command;
- 
-@@ -129,6 +233,8 @@ static int max31785_get_pwm_mode(struct i2c_client *client, int page)
- static int max31785_read_word_data(struct i2c_client *client, int page,
- 				   int phase, int reg)
- {
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 	u32 val;
- 	int rv;
- 
-@@ -157,7 +263,7 @@ static int max31785_read_word_data(struct i2c_client *client, int page,
- 		rv = max31785_get_pwm(client, page);
- 		break;
- 	case PMBUS_VIRT_PWM_ENABLE_1:
--		rv = max31785_get_pwm_mode(client, page);
-+		rv = max31785_get_pwm_mode(client, driver_data, page);
- 		break;
- 	default:
- 		rv = -ENODATA;
-@@ -188,8 +294,36 @@ static inline u32 max31785_scale_pwm(u32 sensor_val)
- 	return (sensor_val * 100) / 255;
- }
- 
--static int max31785_pwm_enable(struct i2c_client *client, int page,
--				    u16 word)
-+static int max31785_update_fan(struct i2c_client *client,
-+			       struct max31785_data *driver_data, int page,
-+			       u8 config, u8 mask, u16 command)
++/*
++ * Detect TDX Module version info from TDG.SYS.RD TDCALL
++ */
++static void detect_tdx_version(void)
 +{
-+	int from, rv;
-+	u8 to;
++	struct tdx_module_args args = {};
++	u16 major_version, minor_version;
++	u32 vendor_id;
++	u64 ret;
 +
-+	from = _max31785_read_byte_data(client, driver_data, page,
-+					PMBUS_FAN_CONFIG_12);
-+	if (from < 0)
-+		return from;
++	args.rdx = TDX_SYS_VENDOR_ID_FID;
++	ret = __tdcall_ret(TDG_SYS_RD, &args);
++	if (ret)
++		goto err_out;
 +
-+	to = (from & ~mask) | (config & mask);
++	vendor_id = args.r8;
 +
-+	if (to != from) {
-+		rv = _max31785_write_byte_data(client, driver_data, page,
-+					       PMBUS_FAN_CONFIG_12, to);
-+		if (rv < 0)
-+			return rv;
-+	}
++	memset(&args, 0, sizeof(args));
++	args.rdx = TDX_SYS_MAJOR_FID;
++	ret = __tdcall_ret(TDG_SYS_RD, &args);
++	if (ret)
++		goto err_out;
 +
-+	rv = _max31785_write_word_data(client, driver_data, page,
-+				       PMBUS_FAN_COMMAND_1, command);
++	major_version = args.r8;
 +
-+	return rv;
++	memset(&args, 0, sizeof(args));
++	args.rdx = TDX_SYS_MINOR_FID;
++	ret = __tdcall_ret(TDG_SYS_RD, &args);
++	if (ret)
++		goto err_out;
++
++	minor_version = args.r8;
++
++	pr_info("Guest detected. version:%u.%u VendorID:%x\n",
++		major_version, minor_version, vendor_id);
++
++	return;
++
++err_out:
++	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
++		pr_info("TDG.SYS.RD not available\n");
++	else
++		pr_info("TDG.SYS.RD unknown error (%llu), reading field %llu\n",
++			ret, args.rdx);
++
++	pr_info("Assuming TDX version:1.x (x<5) VendorID:%x\n",
++		TDX_VENDOR_INTEL);
 +}
 +
-+static int max31785_pwm_enable(struct i2c_client *client,
-+			       struct max31785_data *driver_data, int page,
-+			       u16 word)
+ void __init tdx_early_init(void)
  {
- 	int config = 0;
- 	int rate;
-@@ -217,18 +351,23 @@ static int max31785_pwm_enable(struct i2c_client *client, int page,
- 		return -EINVAL;
- 	}
+ 	struct tdx_module_args args = {
+@@ -870,5 +928,5 @@ void __init tdx_early_init(void)
+ 	 */
+ 	x86_cpuinit.parallel_bringup = false;
  
--	return pmbus_update_fan(client, page, 0, config, PB_FAN_1_RPM, rate);
-+	return max31785_update_fan(client, driver_data, page, config,
-+				   PB_FAN_1_RPM, rate);
+-	pr_info("Guest detected\n");
++	detect_tdx_version();
  }
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index f74695dea217..10b6c61e835e 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -17,6 +17,8 @@
+ #define TDG_MR_REPORT			4
+ #define TDG_MEM_PAGE_ACCEPT		6
+ #define TDG_VM_WR			8
++/* The TDCALL TDG.SYS.RD originates from TDX version 1.5 */
++#define TDG_SYS_RD			11
  
- static int max31785_write_word_data(struct i2c_client *client, int page,
- 				    int reg, u16 word)
- {
-+	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-+	struct max31785_data *driver_data = to_max31785_data(info);
-+
- 	switch (reg) {
- 	case PMBUS_VIRT_PWM_1:
--		return pmbus_update_fan(client, page, 0, 0, PB_FAN_1_RPM,
--					max31785_scale_pwm(word));
-+		return max31785_update_fan(client, driver_data, page, 0,
-+					   PB_FAN_1_RPM,
-+					   max31785_scale_pwm(word));
- 	case PMBUS_VIRT_PWM_ENABLE_1:
--		return max31785_pwm_enable(client, page, word);
-+		return max31785_pwm_enable(client, driver_data, page, word);
- 	default:
- 		break;
- 	}
-@@ -303,13 +442,16 @@ static int max31785_configure_dual_tach(struct i2c_client *client,
- {
- 	int ret;
- 	int i;
-+	struct max31785_data *driver_data = to_max31785_data(info);
- 
- 	for (i = 0; i < MAX31785_NR_FAN_PAGES; i++) {
--		ret = i2c_smbus_write_byte_data(client, PMBUS_PAGE, i);
-+		ret = max31785_i2c_write_byte_data(client, driver_data,
-+						   PMBUS_PAGE, i);
- 		if (ret < 0)
- 			return ret;
- 
--		ret = i2c_smbus_read_word_data(client, MFR_FAN_CONFIG);
-+		ret = max31785_i2c_read_word_data(client, driver_data,
-+						  MFR_FAN_CONFIG);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -329,6 +471,7 @@ static int max31785_probe(struct i2c_client *client)
- {
- 	struct device *dev = &client->dev;
- 	struct pmbus_driver_info *info;
-+	struct max31785_data *driver_data;
- 	bool dual_tach = false;
- 	int ret;
- 
-@@ -337,13 +480,16 @@ static int max31785_probe(struct i2c_client *client)
- 				     I2C_FUNC_SMBUS_WORD_DATA))
- 		return -ENODEV;
- 
--	info = devm_kzalloc(dev, sizeof(struct pmbus_driver_info), GFP_KERNEL);
--	if (!info)
-+	driver_data = devm_kzalloc(dev, sizeof(struct max31785_data), GFP_KERNEL);
-+	if (!driver_data)
- 		return -ENOMEM;
- 
-+	info = &driver_data->info;
-+	driver_data->access = ktime_get();
- 	*info = max31785_info;
- 
--	ret = i2c_smbus_write_byte_data(client, PMBUS_PAGE, 255);
-+	ret = max31785_i2c_write_byte_data(client, driver_data,
-+					   PMBUS_PAGE, 255);
- 	if (ret < 0)
- 		return ret;
- 
+ /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+ #define TDCS_NOTIFY_ENABLES		0x9100000000000010
 -- 
-2.39.2
-
+2.34.1
