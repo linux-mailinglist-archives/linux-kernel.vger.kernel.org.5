@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B2F7D9E04
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B187D9E0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbjJ0QcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
+        id S232155AbjJ0Qfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbjJ0QcF (ORCPT
+        with ESMTP id S231843AbjJ0Qfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:32:05 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8576211B
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:32:03 -0700 (PDT)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 93F406607323;
-        Fri, 27 Oct 2023 17:32:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698424322;
-        bh=cdST41zz4Xh7cdHsxvEEbk6c5k5UXnNOVUkeHyEAKjY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P3vWQcsRrCviL0oMUJmcK53bzDSKtPhCZ0M/VqOKWMZl+UP5peJ+Bha8ncbvUNz/w
-         89TGVnmVl4rInQPWzFpGai/Er/93bUwynpxlj9gYSROMc+SaZ46eEvOTLz2qojh+yl
-         2U9Paw7jmPF7dcDtuffefm1tMFUVI8qbJWOflIUvbh+J5XxlDoM9MrqPzaZTAlZB1q
-         ZfN8bntBWol7ImsK0EpcRSeL7+JwAGnvM/yFwgkNGs91GkT5/28EtJD6h/HvAWzvto
-         xjQkh6qQGTDaCxqto5Cl22hx3mKB6zUoDZRGKlpYLTBKiKHYEusans3OB1K39u6jck
-         3OzE8Nwcv4qaA==
-Date:   Fri, 27 Oct 2023 18:31:58 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        christian.koenig@amd.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Message-ID: <20231027183158.2dc4cce4@collabora.com>
-In-Reply-To: <8e117f9f-a01c-4242-8781-b2ed4969513b@redhat.com>
-References: <20231026161431.5934-1-dakr@redhat.com>
-        <20231027102516.0e4b00ef@collabora.com>
-        <8e117f9f-a01c-4242-8781-b2ed4969513b@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 27 Oct 2023 12:35:46 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19B593;
+        Fri, 27 Oct 2023 09:35:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DF2C3240003;
+        Fri, 27 Oct 2023 16:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698424539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ypzr29bYsfto7zJdkTiCmiQMxRqBdoXZjILJ3Cdczu4=;
+        b=jzL9fFbAcpLhIm4Kqq5eXAeAeebXHy7V89wLncM3opOJrDAH5R6z0ztYpj0NE8FK7Gh8/j
+        B4a9Zj6+7nKSKkkE37bBouPdlv7uDhylqJLdOxmuXo+lx4nMzfzde1RE2Mvcv22TZ1CJgd
+        rVK7cQpNPvGh57TU9Falu7t8toB9g3m30Je6T6Ho+m6FYfa3IWBL5X8ejawPeC0yhZPu5v
+        YiM9U7OBc8z8CNKRpdod6e763MQ5KBegsYPjpKBMgEjhsExxA8n2f8TaS7gf4TLitHG6Ax
+        6WwXtsJnzKWZs2BtU/E3sUMLEElzcNtBnwo80Y2qO+zMZ4y+4pqHIG/7AxMDmw==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        vladimir.kondratiev@intel.com,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 0/5] MIPS: Fix kernel in XKPHYS
+In-Reply-To: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
+References: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
+Date:   Fri, 27 Oct 2023 18:35:38 +0200
+Message-ID: <875y2s81lx.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 16:23:24 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+Hello Jiaxun,
 
-> On 10/27/23 10:25, Boris Brezillon wrote:
-> > Hi Danilo,
-> > 
-> > On Thu, 26 Oct 2023 18:13:00 +0200
-> > Danilo Krummrich <dakr@redhat.com> wrote:
-> >   
-> >> Currently, job flow control is implemented simply by limiting the number
-> >> of jobs in flight. Therefore, a scheduler is initialized with a credit
-> >> limit that corresponds to the number of jobs which can be sent to the
-> >> hardware.
-> >>
-> >> This implies that for each job, drivers need to account for the maximum
-> >> job size possible in order to not overflow the ring buffer.
-> >>
-> >> However, there are drivers, such as Nouveau, where the job size has a
-> >> rather large range. For such drivers it can easily happen that job
-> >> submissions not even filling the ring by 1% can block subsequent
-> >> submissions, which, in the worst case, can lead to the ring run dry.
-> >>
-> >> In order to overcome this issue, allow for tracking the actual job size
-> >> instead of the number of jobs. Therefore, add a field to track a job's
-> >> credit count, which represents the number of credits a job contributes
-> >> to the scheduler's credit limit.
-> >>
-> >> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> >> ---
-> >> Changes in V2:
-> >> ==============
-> >>    - fixed up influence on scheduling fairness due to consideration of a job's
-> >>      size
-> >>      - If we reach a ready entity in drm_sched_select_entity() but can't actually
-> >>        queue a job from it due to size limitations, just give up and go to sleep
-> >>        until woken up due to a pending job finishing, rather than continue to try
-> >>        other entities.
-> >>    - added a callback to dynamically update a job's credits (Boris)  
-> > 
-> > This callback seems controversial. I'd suggest dropping it, so the
-> > patch can be merged.  
-> 
-> I don't think we should drop it just for the sake of moving forward. If there are objections
-> we'll discuss them. I've seen good reasons why the drivers you are working on require this,
-> while, following the discussion, I have *not* seen any reasons to drop it. It helps simplifying
-> driver code and doesn't introduce any complexity or overhead to existing drivers.
 
-Up to you. I'm just saying, moving one step in the right direction is
-better than being stuck, and it's not like adding this callback in a
-follow-up patch is super complicated either. If you're confident that
-we can get all parties to agree on keeping this hook, fine by me.
+> Hi all,
+>
+> This series fixes support for loading kernel to XKPHYS space.
+> It is derived from "MIPS: use virtual addresses from xkphys for MIPS64" [1].
+>
+> Boot tested on boston and QEMU with loading address set to 0xa800000090000000.
+> QEMU patch on the way.
+>
+> Gregory and Vladimir, do let me know if I missed anything.
+
+Thanks for this series, I reviewed it and tested it on my platform, so
+you can add for all the patches:
+
+Reviewed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+
+However I add to fix the patch " MIPS: Handle mips_cps_core_entry within
+lower 4G", I think you missed a case. I will comment on it.
+
+Gregory
+
+
+>
+> Thanks
+> - Jiaxun
+>
+> [1]: https://lore.kernel.org/lkml/20231004161038.2818327-3-gregory.clement@bootlin.com/
+>
+> Jiaxun Yang (5):
+>   MIPS: Export higher/highest relocation functions in uasm
+>   MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+>   MIPS: Fix set_uncached_handler for ebase in XKPHYS
+>   MIPS: Handle mips_cps_core_entry within lower 4G
+>   MIPS: Allow kernel base to be set from Kconfig for all platforms
+>
+>  arch/mips/Kconfig               | 18 +++++++++++++----
+>  arch/mips/include/asm/mips-cm.h |  1 +
+>  arch/mips/include/asm/uasm.h    |  2 ++
+>  arch/mips/kernel/genex.S        | 19 +++++++++++++----
+>  arch/mips/kernel/smp-cps.c      | 27 +++++++++++++++++++------
+>  arch/mips/kernel/traps.c        | 36 +++++++++++++++++++++++----------
+>  arch/mips/mm/uasm.c             |  6 ++++--
+>  7 files changed, 82 insertions(+), 27 deletions(-)
+>
+> -- 
+> 2.34.1
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
