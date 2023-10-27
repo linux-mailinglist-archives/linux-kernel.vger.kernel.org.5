@@ -2,181 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC6A7D9CF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F267D9CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235144AbjJ0P3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
+        id S1346279AbjJ0PaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbjJ0P27 (ORCPT
+        with ESMTP id S1346167AbjJ0PaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:28:59 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968AEC1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:28:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IzYd2vvcFeuVO4JK4qg/zKIeaU4s73T5WFIHDdg0Bxvw42hdMXXk7pzg6TaQE2/E49mkorC++jehGOuEFHZGrE6yRZMNmgRoFnVWHje6JWrNJ2jGVypdXLDfQdErdTFThllERKeQpyPjKw2lVLpskVelUga5u8OVQL5QE9l1XggyZi6e5MjI9Gt0WbUXUnvhr/BGdiEW3xGy46CyYqcsO/6/0MrMod4ymVCZbRLPxG7vI/RxONCwDjA6JG4K4sebA+6wS6/Hbaej57njUanvFUrBmzItNHz9QrgIqaBHWzGV8laCYrz/1XM9uMoeAW9uHDsYsNkru0xVK8kBD6blbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jtbOVlXbosrTtuuTZ7N8irtajcdeLKvZNATHCl8fr64=;
- b=Z8LNMdUVfbBpkDt+yJAI/+0O1MmcEsHIM19/DAP914xu8cEIWHK7U+1VedSP7S1I4CgcQ4qouUnUk0Qr0dUXikfmqu7BbCKAGiHWAwizNmPjqoalPU1lJQmoE7IxfOhkj/jUTplmZ2R53OKUzbk1Asfo+pvAhZKy3WsxlMdIQIeBISotZkxx6sTkNd/9Ua9CqFfp/DosNttK5+GLdVHhBd5ckr4xAgXbPLtyrX1oPK3dtLMPI+/H6mv+CINKaIyKGpExl1SQokex5zCPkjMtpEaabhwmGBXsC4p4KXaLpU/Ejb9JogfD7YU67kJjpM5buu31qxQnFfy/Up8A8RZLuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jtbOVlXbosrTtuuTZ7N8irtajcdeLKvZNATHCl8fr64=;
- b=Lrdv3qU2MloMZ6g/uLTqm6b3toSSmUkrry94/yJRjuy6JgqwNu3wMsXrftDfk8piKVQL/CeA4rx13YF/DpQDa9+WARJNzAZIwUNm3BVQDUNdLFl5EMbZDTVAmiHXwczwswb+zzIo2+bWpvn4M9yhewHQVKi73vMmdTQIMBXsna0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by PH0PR12MB8821.namprd12.prod.outlook.com (2603:10b6:510:28d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Fri, 27 Oct
- 2023 15:28:53 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
- 15:28:53 +0000
-Message-ID: <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
-Date:   Fri, 27 Oct 2023 10:28:49 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
- use case
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
-        arungopal.kondaveeti@amd.com, mastan.katragadda@amd.com,
-        juan.martinez@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <20231021145110.478744-9-Syed.SabaKareem@amd.com>
- <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0187.namprd03.prod.outlook.com
- (2603:10b6:5:3b6::12) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Fri, 27 Oct 2023 11:30:13 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28691AF;
+        Fri, 27 Oct 2023 08:30:10 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39REugfc015711;
+        Fri, 27 Oct 2023 15:29:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=y+U9W/JHLYARpBMFCoQXnpc1aJF1e4944L+Jfilc+OI=;
+ b=ppuZ1DbsyatG7wa0NCR/vZr/u7R5Ce4ete3lOaUVzR0iDBDlN/9qhULTHjJZi92OotPu
+ Uu02B6kyC0VNKGkyEQPdoHr4zR6rFBBJDJZdYYDF6AJGYU/Ms1d2JxDLxAZcHUmgQBQ2
+ m2c0fxELx19ejWNwBq1C0YA2d//fm+Jeze9bYK4oXgGGtyQUepGpyox6tlBEN7t3sgnl
+ wsBD2/DKRqY7Q79EBpKfMoR3xDwiKSnrUjcd73ELDeGIcVdrh4HURTaf7E4b0Gll03uQ
+ O+Nsglw7zNcchCyer/57V8FyueHHH4Eq8xraI5/9Q7EXFmf8/QXVGz0si760oZGka9s4 mw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyxbvadmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 15:29:09 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39RFT8Xw002309
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 15:29:08 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 27 Oct
+ 2023 08:29:07 -0700
+Message-ID: <baf17652-e2e8-0083-459e-a6ea4372466b@quicinc.com>
+Date:   Fri, 27 Oct 2023 09:29:06 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH0PR12MB8821:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fec81c8-1949-46e4-331f-08dbd7016d48
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 43Q8tRZUaZSDFQ7gihyJ69+DIocLJJizfS/Cv9Mq8j0M6UYHHqbEUygRdNo2/sR+z1pZ+gD4WX9tYDIWFccibgsU/K/WR5CsPIZstVa4L1BAjhPUteXxDyKtMFdCEmmAD/oLMM8BPMRqAyuFuXS8o3tKtsw2LwCiQ/GxGhFSRmWCrdGZ8bQigsl8yyIqLfhg6ynE8JyyfJufriEAnpMsbcftoI03Y1O8nV+DtfTtfUSrGAsBJQNDOV18992+bbioLJjrSZTvWwjE6oCozwe2m1hGzqzhPmWi1AJsYClpWMu0r0ezLf0TYWRjxM4xiWhPAsGpQgPjnjeSWIqdMhfxsA5JCP+jNmqJ+XrcGFRAo7aGQdCN7bHpe4icu8yFTpKFuPqa5Ws1Sji0C2U5wqGZshObAiTjshUuWKtHX6kg81vSFW6w6/o30j3SbgUbNSEV594Ibh1Bii5V49zOTg3yiP3VfXtmibNMVE5V64gs2E4CRmjmFe2tXZFrpk/F2QdDRtcfQF6bjRdki6il27lYaLOHhpmf+Xdg09sP5QMbaMtvMvBZqErp/Z3Es7TLXgGfDnRQix6ZjTwzOszzpcT6qCJC0GyjIRUxdTtbLmvDiAJLJiNuId+mXylxP3GpK7YqIG7U9oHNR+85Qa+sn2EOAg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(396003)(366004)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(26005)(31686004)(41300700001)(38100700002)(2906002)(6506007)(44832011)(5660300002)(31696002)(7416002)(4326008)(36756003)(86362001)(8676002)(8936002)(478600001)(2616005)(54906003)(66946007)(110136005)(66556008)(6666004)(66476007)(83380400001)(6486002)(316002)(53546011)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RzJQNzRkTEovZUlRbEEvL2pNK3BDRXMxTkp5Mml5aUU0cStWcVhjWDVUbXFB?=
- =?utf-8?B?L0p5VnNyMk1pbnhMS2kzOXRlbFZQZzVuZkx3ODZ1d2JpUXl5Qi93QWw0aTVx?=
- =?utf-8?B?alg2SFNQVlVTeDB6cU50aWFLZ21zWEw0Znk2VHkzaEpqVzNFbmpKdzRUK2NP?=
- =?utf-8?B?ZEdmUkdqODR6RkxhZDd1YXVGU0o1WmdiSUE2MDJHR29wUXQxaWw2MExWUHFR?=
- =?utf-8?B?ZXBjUkdzL2lBOENXTkY2bGcyVnJ6US93am05V2VtZ1pwNkdxUEI2SFhqRmhh?=
- =?utf-8?B?R0FyT0NSS05jZHRSSklEcW05cGF0c3dFeldxSk56Rzdia0haLzk4ckxtMzhi?=
- =?utf-8?B?bVZVVEh6S1VyMTNQdWtLU3B6VWJiUFhEaGFzWEpRYWRnNnFkUWVsa3hEUDhi?=
- =?utf-8?B?ZHU0U2Uyd2MrZGthUnFGbHVWSjdKU0xTbFdVMTgweGt0Z2dRMFJEVlJWbER6?=
- =?utf-8?B?bUVzMnFvSXdiN0tWNWp0UFRvQ2VaeVRvOVRGdHN4dlBPNTlYaklxbHY2NzlI?=
- =?utf-8?B?SkJZK05UZzVaVmNVSFFDalpvU2FaYU93MnVLMW55eUlDcTFzM2tUMG9TMnNp?=
- =?utf-8?B?SXdkK2czdllwazQxS3ZRMUYzUzNVM2ljbmRCSUhxOWdId3UrcnZXYnF1S3VJ?=
- =?utf-8?B?UXh3UEJJMDRNTnhYYkpmeTNhbThKT3ZGaGh4NkZhRnhiV1QvOGd3dVcyWnNq?=
- =?utf-8?B?UHU2TXF3Y1hsM2JGS29zVTBHenovcW9xV25tdjVDWFljWlZ4VjUreS9uczg0?=
- =?utf-8?B?M2EvV3EvTThMQlZGUEN5UHJVUDJTSks2RThZUzJjQU5RUVJ3dWRJQWNTeEpH?=
- =?utf-8?B?WVp1czhxM0txcWdhQTY1TGo4S3NDb0xSc2N6YlVYaXo2WjlzOVpEOXNHdExi?=
- =?utf-8?B?ZUM4NXpMaWZqK2phdFlTWGRITTd6Tmw4MEt2c2JiUC9iVDE1WVZXemhkWWcy?=
- =?utf-8?B?NWM1QlVWbnlDT3J2eWtjVFN2ZkY3QlducjR2WllqZGF3WXJSVEw0cmpoNUE5?=
- =?utf-8?B?TXRURU90ZVRwR1N1VkthTm9hSmFvOEJ0aDhqaUdMMXk5Rmw5dkF0N08zeE1v?=
- =?utf-8?B?N2VKQXRNSVQ3NUtrWnRUdnhhOUV4K1RhUnRGY0RBb2owc2JaOHV6Tzd5MnA1?=
- =?utf-8?B?TkV5SG9BOUs3Y0krVmpaRFQ2RUFQZGY3ci8rUjlNTitlNDJuTWVFc1A0blpM?=
- =?utf-8?B?NDl1QUZZcU9DUEQzbkt4ZUpUYTBJRWc2R0RGbnpxdzZIQm10M1Q3cTNzVmZG?=
- =?utf-8?B?c3RQMkhRUVpiWWlyeHJHTm45TlJsUWVyWDdNbjJtS2s4cnh2UnBaSHdEc3RD?=
- =?utf-8?B?Q1RMVVZBQml5dmFWQ3lMNDlpUjNTRHBTNGtvOWtuVGIvKytrMlB5bXM4TjQy?=
- =?utf-8?B?bFpWYUI1Y0VhOGdEZ1kvb216OUdDNWt0Zk8yMHlCRitxMWVtNmUvaU4remR5?=
- =?utf-8?B?Rll1eFpqLy9JQ1JJcVQ1dW00OTI0NXZjTG95UXpIak55SVd2U3BzampKVEJi?=
- =?utf-8?B?UFhBRjNSUEVHMlloZ3JjZHNla1EydUorSjRMekI2bXJaVmxYMU04Tzk1cVJM?=
- =?utf-8?B?eVNpNUdDRE5NTkEzWkUxUEVRWDRya1hyUjFKb3kwRXNPQ2FlTHJiUlNOTkZV?=
- =?utf-8?B?VXduZDdYcUF3YWF3QjRVNHlVV3lEWkc1ZmR0aW43T05NS25rcksxNjVSTSt3?=
- =?utf-8?B?NnhiaDdXcmkrQXRBaXJ5THpWUlptSUR1Y3kwL1h3SmJmNTRuZGl3aHZVYzlq?=
- =?utf-8?B?ZkJMSnBtWEdkV0VNZ244R3dEckl1UDFYdHl5OG5qT0UwVnY1M2tYU05qbTRs?=
- =?utf-8?B?SFQvVkJzeWYvZmNIR0tCV0FpeHBQZURNRVdSQXlsYkVaT2dYcFFHdTlRZzQr?=
- =?utf-8?B?ZmVUMXkxczU4bklDNk5ueFd5YzI4bWhQZ1hQODljZXBLY21rNGt0WDhHSmpF?=
- =?utf-8?B?YmtOZE05S1BSbkxUOXVSK2JDRGJQWFdNWVR1c0EzSEthRXBpeGVPQlpydGNW?=
- =?utf-8?B?VFJiSzFiNWI2cmROQ3J0UlI1OU5Ram1qMkhKYVVvdE9MQjVSWm03TXc3eC8x?=
- =?utf-8?B?aXVGa0VWR2RlUEZtazUzZWhkV2cySllhVHllcldWK0t2WG5BTWZTOVA4QWlu?=
- =?utf-8?Q?8+B2PwqN0aVarbSoaV7zp/LuE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fec81c8-1949-46e4-331f-08dbd7016d48
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 15:28:53.3127
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +GrzFqG411qxpjGQCpTZGC8L1+guKLUPppUbG4UhXGCD/0/0T0ZW9u58Ea6nGOenhm6s+G+FOwN8plmgErJ3qA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8821
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v2] bus: mhi: host: Add tracing support
+Content-Language: en-US
+To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        "Manivannan Sadhasivam" <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
+ <9216f694-cce0-2b95-df34-e5b60538644a@quicinc.com>
+ <ab9367fa-53e7-36d1-cac5-a3c1e28df4b3@quicinc.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <ab9367fa-53e7-36d1-cac5-a3c1e28df4b3@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kt-Z5ZEX-BG9MnBBUiS0qE6Tk0gpb4ik
+X-Proofpoint-GUID: kt-Z5ZEX-BG9MnBBUiS0qE6Tk0gpb4ik
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_12,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 impostorscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310270133
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/2023 03:49, Krzysztof Kozlowski wrote:
-> On 21/10/2023 16:50, Syed Saba Kareem wrote:
->> add pdm use case machine driver support
+On 10/23/2023 1:11 AM, Krishna Chaitanya Chundru wrote:
+> 
+> On 10/20/2023 8:33 PM, Jeffrey Hugo wrote:
+>> On 10/13/2023 3:52 AM, Krishna chaitanya chundru wrote:
+>>> This change adds ftrace support for following functions which
+>>> helps in debugging the issues when there is Channel state & MHI
+>>> state change and also when we receive data and control events:
+>>> 1. mhi_intvec_threaded_handler
+>>> 2. mhi_process_data_event_ring
+>>> 3. mhi_process_ctrl_ev_ring
+>>> 4. mhi_gen_tre
+>>> 5. mhi_update_channel_state
+>>> 6. mhi_tryset_pm_state
+>>> 7. mhi_pm_st_worker
+>>>
+>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>> ---
+>>> Changes in v2:
+>>> - Passing the raw state into the trace event and using 
+>>> __print_symbolic() as suggested by bjorn.
+>>> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+>>> - Fixed the kernel test rebot issues.
+>>> - Link to v1: 
+>>> https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com 
+>>>
+>>> ---
+>>>   MAINTAINERS                     |   1 +
+>>>   drivers/bus/mhi/host/init.c     |   3 +
+>>>   drivers/bus/mhi/host/internal.h |   1 +
+>>>   drivers/bus/mhi/host/main.c     |  32 +++--
+>>>   drivers/bus/mhi/host/pm.c       |   6 +-
+>>>   include/trace/events/mhi_host.h | 287 
+>>> ++++++++++++++++++++++++++++++++++++++++
+>>>   6 files changed, 317 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 35977b269d5e..4339c668a6ab 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -13862,6 +13862,7 @@ F:    Documentation/mhi/
+>>>   F:    drivers/bus/mhi/
+>>>   F:    drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>>   F:    include/linux/mhi.h
+>>> +F:    include/trace/events/mhi_host.h
+>>>     MICROBLAZE ARCHITECTURE
+>>>   M:    Michal Simek <monstr@monstr.eu>
+>>> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+>>> index f78aefd2d7a3..3afa90a204fd 100644
+>>> --- a/drivers/bus/mhi/host/init.c
+>>> +++ b/drivers/bus/mhi/host/init.c
+>>> @@ -20,6 +20,9 @@
+>>>   #include <linux/wait.h>
+>>>   #include "internal.h"
+>>>   +#define CREATE_TRACE_POINTS
+>>> +#include <trace/events/mhi_host.h>
 >>
->> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
->> ---
+>> This feels redundant to me.  A few lines ago we included internal.h, 
+>> and internal.h includes trace/events/mhi_host.h
 > 
-> 
->>   	dmi_id = dmi_first_match(acp_quirk_table);
->>   	if (dmi_id && dmi_id->driver_data)
->> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
->>   		.name = "rmb-rt5682s-rt1019",
->>   		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
->>   	},
->> +	{
->> +		.name = "acp-pdm-mach",
->> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
->> +	},
->>   	{ }
->>   };
->>   static struct platform_driver acp_asoc_audio = {
->> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
->>   MODULE_ALIAS("platform:acp3x-es83xx");
->>   MODULE_ALIAS("platform:rmb-nau8825-max");
->>   MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
->> +MODULE_ALIAS("platform:acp-pdm-mach");
-> 
-> Please stop growing the aliases. Module alias is not a substitute for
-> missing MODULE_DEVICE_TABLE.
-> 
-> Best regards,
-> Krzysztof
-> 
+> As Steve mentioned, this is mandatory step for creating trace points & 
+> trace events.
 
-I thought the way that this works is that top level ACP driver (IE 
-acp-pci.c) will have MODULE_DEVICE_TABLE.  This is how that module gets 
-loaded.
+I understand this creates the trace points, and that needs to be done in 
+C code.  It dtill seems redundant because we are including the header 
+twice (and I am aware trace has the special multi-header read 
+functionality for this).
 
-Then it creates platform devices based on the detected needs for the 
-situation and the creation of those platform devices triggers a uevent 
-which due to MODULE_ALIAS will get appropriate other platform drivers 
-like this one loaded.
+The duplicate include still feels weird, but I have not come up with a 
+better way to structure this.
+
+> 
+>>
+>>> +
+>>>   static DEFINE_IDA(mhi_controller_ida);
+>>>     const char * const mhi_ee_str[MHI_EE_MAX] = {
+>>> diff --git a/drivers/bus/mhi/host/internal.h 
+>>> b/drivers/bus/mhi/host/internal.h
+>>> index 2e139e76de4c..a80a317a59a9 100644
+>>> --- a/drivers/bus/mhi/host/internal.h
+>>> +++ b/drivers/bus/mhi/host/internal.h
+>>> @@ -7,6 +7,7 @@
+>>>   #ifndef _MHI_INT_H
+>>>   #define _MHI_INT_H
+>>>   +#include <trace/events/mhi_host.h>
+>>>   #include "../common.h"
+>>>     extern struct bus_type mhi_bus_type;
+>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>> index dcf627b36e82..fcdb728ba49f 100644
+>>> --- a/drivers/bus/mhi/host/main.c
+>>> +++ b/drivers/bus/mhi/host/main.c
+>>> @@ -246,6 +246,11 @@ static void *mhi_to_virtual(struct mhi_ring 
+>>> *ring, dma_addr_t addr)
+>>>       return (addr - ring->iommu_base) + ring->base;
+>>>   }
+>>>   +dma_addr_t mhi_to_physical(struct mhi_ring *ring, void *addr)
+>>> +{
+>>> +    return (addr - ring->base) + ring->iommu_base;
+>>> +}
+>>
+>> This seems to be poorly named since we are using the iommu_base which 
+>> suggests we are converting to an IOVA.
+>>
+>> Why do we need this though?  This seems like it might be a security 
+>> issue, or at the very least, not preferred, and I'm struggling to 
+>> figure out what value this provides to you are I when looking at the log.
+>>
+> I will rename the function to reflect it is converting to IOVA.
+> 
+> We MHI TRE we write the IOVA address, to correlate between TRE events in 
+> the MHI ring and event we are processing  we want to log the IOVA address.
+> 
+> As we are logging only IOVA address which is provided in the devicetree 
+> and not the original physical address we are not expecting any security 
+> issues here.
+> 
+> Correct me if I was wrong.
+
+The IOVA is not provided by DT, it is a runtime allocated value provided 
+by the IOMMU, if present.  If not present, then it is a physical address.
+
+Remember, x86 does not use devicetree.
+
+While the IOVA (with an iommu) is not technically a physical address, 
+but is treated as such by the device.  I can imagine an attacker doing 
+bad things if they get a hold of the value.
+
+Still, you haven't indicated why this is useful.
+
+> 
+>>> +
+>>>   static void mhi_add_ring_element(struct mhi_controller *mhi_cntrl,
+>>>                    struct mhi_ring *ring)
+>>>   {
+>>> @@ -491,11 +496,9 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>>> irq_number, void *priv)
+>>>         state = mhi_get_mhi_state(mhi_cntrl);
+>>>       ee = mhi_get_exec_env(mhi_cntrl);
+>>> -    dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+>>> -        TO_MHI_EXEC_STR(mhi_cntrl->ee),
+>>> -        mhi_state_str(mhi_cntrl->dev_state),
+>>> -        TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+>>>   + trace_mhi_intvec_threaded_handler(mhi_cntrl->mhi_dev->name, 
+>>> mhi_cntrl->ee,
+>>> +                      mhi_cntrl->dev_state, ee, state);
+>>
+>> Why are we removing the debug message when adding this trace?  The 
+>> commit text doesn't say.  (Looks like you do this several times, 
+>> assume this comment applies to all isntances)
+> 
+> I will add this in the commit text in my next patch.
+> 
+> Just a query is recommended to keep both debug message and trace events. 
+> If yes we will not remove the debug messages.
+
+I think it would be preferred to have one mechanism or the other, not 
+both.  It seems like you are doing an incomplete conversion.
+
+> 
+>>
+>>>       if (state == MHI_STATE_SYS_ERR) {
+>>>           dev_dbg(dev, "System error detected\n");
+>>>           pm_state = mhi_tryset_pm_state(mhi_cntrl,
+>>> @@ -832,6 +835,12 @@ int mhi_process_ctrl_ev_ring(struct 
+>>> mhi_controller *mhi_cntrl,
+>>>       while (dev_rp != local_rp) {
+>>>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>>>   + trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name,
+>>> +                           mhi_to_physical(ev_ring, local_rp),
+>>> +                           local_rp->ptr, local_rp->dword[0],
+>>> +                           local_rp->dword[1],
+>>> +                           MHI_TRE_GET_EV_STATE(local_rp));
+>>
+>> Why not just pass in the local_rp as a single parameter and have the 
+>> trace implementation decode it?  (Looks like you do this several 
+>> times, assume this comment applies to all isntances)
+> 
+> MHI_TRE_GET_EV_STATE definition is present in drivers/bus/mhi/common.h 
+> which is common for both EP & MHI driver.
+> 
+> If we keep this macro definition again in mhi_host.h it will be 
+> redundant one.
+
+What is wrong with including the right header over in the trace to get 
+the definition?  I didn't ask for it to be redefined.
+
+If the struct definition for local_rp changes, it will probably break 
+this, which will require changes to the definition and use of 
+trace_mhi_process_ctrl_ev_ring().  If trace_mhi_process_ctrl_ev_ring() 
+just takes the struct and decodes it, the decode logic just needs to be 
+updated (in one place) when the struct definition changes.
+
+> 
+> And we are only using this way only for this trace log. So we are using 
+> the macro to get the state information.
+
+No, you do the same thing for trace_mhi_process_data_event_ring() and 
+trace_mhi_gen_tre().
+
