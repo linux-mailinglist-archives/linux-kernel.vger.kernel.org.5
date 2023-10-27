@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9B97D8EE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257867D8EED
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbjJ0GrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        id S1345123AbjJ0Gtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0GrM (ORCPT
+        with ESMTP id S229590AbjJ0Gtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:47:12 -0400
-X-Greylist: delayed 193 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 23:47:07 PDT
-Received: from cmccmta2.chinamobile.com (cmccmta4.chinamobile.com [111.22.67.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE08E116
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:46:57 -0700 (PDT)
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-        by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee8653b5c256a6-4ffb2;
-        Fri, 27 Oct 2023 14:43:50 +0800 (CST)
-X-RM-TRANSID: 2ee8653b5c256a6-4ffb2
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.108.79.98])
-        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee5653b5c24402-686c7;
-        Fri, 27 Oct 2023 14:43:49 +0800 (CST)
-X-RM-TRANSID: 2ee5653b5c24402-686c7
-From:   zhaimingbing <zhaimingbing@cmss.chinamobile.com>
-To:     willy@infradead.org, James.Bottomley@hansenpartnership.com,
-        rdunlap@infradead.org
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        zhaimingbing <zhaimingbing@cmss.chinamobile.com>
-Subject: [PATCH] mm: fix multiple typos in multiple files
-Date:   Fri, 27 Oct 2023 14:43:45 +0800
-Message-Id: <20231027064345.2434-1-zhaimingbing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 27 Oct 2023 02:49:31 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E301A1;
+        Thu, 26 Oct 2023 23:49:28 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39R6nCns098288;
+        Fri, 27 Oct 2023 01:49:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698389352;
+        bh=psfOJgM1N9Kdx7TFXRYbjR43AtXKlFrDFTccUJHBzkM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=XWlzjriIm1RdExjRuP9OE0NdFVJxoWTgKOjc72zS0705WbD2D6dZAPBUXPL0WopI5
+         Sl7rrfT8sg5cgvb7Nas62ZKgHzfVlkGK8mV3onsOp2zngKVLSwDU0ZLzLnmaEHdEQX
+         fPTIwG7m0PeiTHcN9WYG1NAy6NzWrrQ6TVwlmrVc=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39R6nC5a069544
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 27 Oct 2023 01:49:12 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 27
+ Oct 2023 01:49:11 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 27 Oct 2023 01:49:11 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39R6nB3G127815;
+        Fri, 27 Oct 2023 01:49:11 -0500
+Date:   Fri, 27 Oct 2023 01:49:11 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Nitin Yadav <n-yadav@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arm64: boot: dts: ti: k3-am62a-main: Fix GPIO pin
+ count in DT nodes.
+Message-ID: <20231027064911.tn7nillbelz463fu@manlike>
+References: <20231027061833.1185703-1-n-yadav@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231027061833.1185703-1-n-yadav@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	nommu.c: Fix typo 'privatize'
-	io-mapping.c: Fix typo 'pre-validation'
+On 11:48-20231027, Nitin Yadav wrote:
+> Fix number of gpio pins in main_gpio0 & main_gpio1 DT nodes according
+> to AM62A SK datasheet[0].
 
-Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
----
- mm/io-mapping.c | 2 +-
- mm/nommu.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Looks like you didn't get the hint from my review comment in v1.. so
+here goes:
 
-diff --git a/mm/io-mapping.c b/mm/io-mapping.c
-index 01b362799..486598ba4 100644
---- a/mm/io-mapping.c
-+++ b/mm/io-mapping.c
-@@ -21,7 +21,7 @@ int io_mapping_map_user(struct io_mapping *iomap, struct vm_area_struct *vma,
- 	if (WARN_ON_ONCE((vma->vm_flags & expected_flags) != expected_flags))
- 		return -EINVAL;
- 
--	/* We rely on prevalidation of the io-mapping to skip track_pfn(). */
-+	/* We rely on pre-validation of the io-mapping to skip track_pfn(). */
- 	return remap_pfn_range_notrack(vma, addr, pfn, size,
- 		__pgprot((pgprot_val(iomap->prot) & _PAGE_CACHE_MASK) |
- 			 (pgprot_val(vma->vm_page_prot) & ~_PAGE_CACHE_MASK)));
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 7f9e9e5a0..40842b080 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -776,7 +776,7 @@ static int validate_mmap_request(struct file *file,
- 			if (!(capabilities & NOMMU_MAP_DIRECT))
- 				return -ENODEV;
- 
--			/* we mustn't privatise shared mappings */
-+			/* we mustn't privatize shared mappings */
- 			capabilities &= ~NOMMU_MAP_COPY;
- 		} else {
- 			/* we're going to read the file into private memory we
+AM62A is a SoC and AM62A SK is a board. datasheet is for AM62A. Drop the "SK"
+
+btw, Use AM62A7 as it the specific device (as used in the buggy
+commit).
+
+> 
+> [0]https://www.ti.com/lit/gpn/am62a3 Section: 6.3.10 GPIO (Page No. 52-55)
+> 
+> Fixes: 5fc6b1b62639c ("arm64: dts: ti: Introduce AM62A7 family of SoCs")
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+> ---
+> 
+> v2:
+>  - Updated commit msge to include links.
+>  - Updated fixes tag
+> 
+> v1: https://lore.kernel.org/all/20231025110252.1089979-1-n-yadav@ti.com/
+>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> index 3198af08fb9f..de36abb243f1 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+> @@ -462,7 +462,7 @@ main_gpio0: gpio@600000 {
+>  			     <193>, <194>, <195>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <2>;
+> -		ti,ngpio = <87>;
+> +		ti,ngpio = <92>;
+>  		ti,davinci-gpio-unbanked = <0>;
+>  		power-domains = <&k3_pds 77 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 77 0>;
+> @@ -480,7 +480,7 @@ main_gpio1: gpio@601000 {
+>  			     <183>, <184>, <185>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <2>;
+> -		ti,ngpio = <88>;
+> +		ti,ngpio = <52>;
+>  		ti,davinci-gpio-unbanked = <0>;
+>  		power-domains = <&k3_pds 78 TI_SCI_PD_EXCLUSIVE>;
+>  		clocks = <&k3_clks 78 0>;
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.33.0
-
-
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
