@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CEF7DA332
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FF87DA32B
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346654AbjJ0WL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 18:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S1346637AbjJ0WLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 18:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346636AbjJ0WLV (ORCPT
+        with ESMTP id S1346583AbjJ0WLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 18:11:21 -0400
+        Fri, 27 Oct 2023 18:11:19 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66AF1B8;
-        Fri, 27 Oct 2023 15:11:19 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 665E932008FB;
-        Fri, 27 Oct 2023 18:11:11 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18181B6;
+        Fri, 27 Oct 2023 15:11:17 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id D0BC43200930;
+        Fri, 27 Oct 2023 18:11:13 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 27 Oct 2023 18:11:11 -0400
+  by compute1.internal (MEProxy); Fri, 27 Oct 2023 18:11:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1698444670; x=1698531070; bh=+pfzMKfDeQ
-        MzwHOXJDWiQZICV087zj2gVTi0fZPI8qs=; b=DlDiXG06ZTpS7+rF7PHhLhBPke
-        vPw3vAnkgNQvrzJJ5/tZAf7oOe9Ae/yoYrQoJorQXD3ah8Hvmw4oanD95umtHXqK
-        geRq4C6Ou4QRinj6vZ27OqYwAjTtcREVEjel1WNdUubtsnp1lbseHdf4knYiNHv7
-        lVDaGypXMLK8nIdnTvDHMSe7SkYxuUdQMA/oN2sAA7EnW+xV1GlBWT57VVUXUopm
-        sVZOHTymsWdAAT4BL9lZZzOmgSnqGcUTatVh5wstIdMGK8jrtKt9VhDIvMlUX7yo
-        EIVWGQv0YfmgCpbT+VJti/CuY3RGKz3plE/R6qN7x+/ZOzKeEi9SeUTVDIfA==
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444673; x=
+        1698531073; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=U
+        5qTKlfx1FZYPNAKnzlTeLKGKoofCV7h76mwVgJ50l/M6yFvDiBQrVIRc3F3UIamy
+        RNdQTuGM3mqjx+YXckktQGhOPZy0iggxdsf59DjA8s2e29ANS/6kMEEfoOiOQEIi
+        I0C+R/BuYbWM/InhMq1Y9ZTH8awtTpJG9tgUcySj7KuTFnJlAns2fLgbUnz/RXCk
+        xV0Z1vsKuHqotYnHQWDnsCKOL9/6GBvhzmaPeSTTvmn61/gx6VteF2wTx49AErHQ
+        J3meEd9xI2tsXBX+0CqLVKzZdLXQd90xrmovm5tBi/kdQDd/dfiDAbw+0pXu9rws
+        knnY8gcrDNT2F2kqA+F2A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698444670; x=1698531070; bh=+pfzMKfDeQMzw
-        HOXJDWiQZICV087zj2gVTi0fZPI8qs=; b=s9Q/EuMYvqX25dUrxABgywfoOe0jZ
-        /KS0NViMkVHM6vuY92nZ4O7J3JHZ2sns3pPAUsEKZNkEpvv7X+ytq56Il0UTiXzz
-        V00oikWpuKDlA1ip4iypQQaEsNKZwqpAL2ioEi7D0VN8zfJjTVAZtVWbmSJNSuaW
-        NNpaeJOxZmEMSTgeyC8FDAqacenUnVllaoW1wFJ88da3zGQu+K9ECo2JiMDdZKPe
-        5xmi4lSLZmMSTZGmgadHcarkAYWKCTJFPtZfFdIRpiGgMTmABx+DXPbTMrUqjnK6
-        jPkBvARayTKj4gBa4IWNTzVRlNIZEtmLkql58suPlf/LUDZCPJP1yCE1A==
-X-ME-Sender: <xms:fjU8ZViwRGx-FfAbbZgaAlAPckfOfDD4vHEBaXNS13H13mF5NwxxXA>
-    <xme:fjU8ZaBBxPiCTCSlGeLEUrSDnxiH9gIl6MEMnJ-lpIGpZWcgtRMdEkQ8Zp-OgQZxy
-    lLchyNyJU_KaHgVilU>
-X-ME-Received: <xmr:fjU8ZVEJZnWqv4aLbhhl710OAfGvBlFS7E3huGuDo4Av0N7s6xpSQlZoaluG36O1LmNsGJwobLs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtiecutefuodetggdotefrodftvf
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444673; x=
+        1698531073; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=e
+        cq6gFaFi5FoZ0T12bdQZf0URDU0JWp3hUeKNP5Ien5CVyaSgB+YaR3JdtEy179cg
+        ZIPpHfRnST41jiFW9SbwYbObuhqVbHdYRFTMIB9mOqRCk5NqN+Jjx9KUyhHtS2rO
+        eOpQBo5ROzqDAlkwbwZse46nHo1WiCcN+wshDLtlkGI2jWA3OyVrpN1OINqmthI6
+        Zxp3guM85S8wVpsIZ8Jtfum+0uXb1Mii4+5GIooKn/SrSrj6/av54t7VsIYft6kG
+        VeGr2xSZWfvuynaAkROFIOd3ML7wd7U5TjaKHYb1d/BO9T+lxgYqw1s/UuiJKMtg
+        waHNVGX1XEZ+zl4gBfV3g==
+X-ME-Sender: <xms:gTU8ZSHlf4PqSKbeUEEOBoXPB0wsw2Hrsi4XnAQp64iSfaKINQb6ZA>
+    <xme:gTU8ZTVRsgV6PtZhpsoa9X57xIfbTGh6Ludj3FUPFIOR-U-TOcYJSP1GCfT20A-lg
+    pVBL8cXvQqTIC2qLaA>
+X-ME-Received: <xmr:gTU8ZcKJHmxBhf7_nMSt6qUu6ujs4tsImd6DtLSB8BeEak7OvNO24sIznmiwM2R7e_WDRABeYMA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehf
-    lhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpedvueetkeeluedugfeuteehtd
-    dutdfhtdelffeghfeiheefieegvddtueevteeiudenucffohhmrghinhepkhgvrhhnvghl
-    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:fjU8ZaQpYMJjw5T9BfqZvYuudFxOCSLCytLt_K6YD1bdBZw-9ADNTw>
-    <xmx:fjU8ZSzXzv8b-v7JnYrNCjH4XEEEUkuf3NS7Ee42H6t5t0df-VsyKw>
-    <xmx:fjU8ZQ7C2cX9FUtP30SkcF1tbSKEJw9rbC9WO6asv2MtVuTuKJT9yQ>
-    <xmx:fjU8ZcsH1PnJsa5UlmxXlTsKidy5ZiU9TpjY4TzjDDP3n5udum9XOw>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvuedvvd
+    egkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
+    horghtrdgtohhm
+X-ME-Proxy: <xmx:gTU8ZcFfgPhCGYE75ffg29uz6mziHFBYyQkek3Dnym9bYLLm9xGk_w>
+    <xmx:gTU8ZYXv3wSEja2EBiKibohJlQzpA2AgwLqyi07FoK1dxC9QR7922A>
+    <xmx:gTU8ZfMVDepWTGGip1mGByHWLEMA_ZdGgCNWDd_BXw2iQfBqHaTZ1A>
+    <xmx:gTU8ZWxtOOw48qHAeo89s3ESXTeCgLVLwY5JIB7pkaq3vp_53C_CdQ>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 18:11:09 -0400 (EDT)
+ 27 Oct 2023 18:11:12 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 00/10] MIPS: Fix kernel in XKPHYS
-Date:   Fri, 27 Oct 2023 23:10:56 +0100
-Message-Id: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 01/10] MIPS: Export higher/highest relocation functions in uasm
+Date:   Fri, 27 Oct 2023 23:10:57 +0100
+Message-Id: <20231027221106.405666-2-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,72 +86,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Export uasm_rel_{higher,highest} functions.
+Those functions can be helpful in dealing with 64bit immediates.
 
-This series fixes support for loading kernel to XKPHYS space.
-It is derived from "MIPS: use virtual addresses from xkphys for MIPS64" [1].
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/include/asm/uasm.h | 2 ++
+ arch/mips/mm/uasm.c          | 6 ++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-Boot tested on boston and QEMU with loading address set to 0xa800000090000000.
-QEMU patch on the way.
-
-For EyeQ5's memory layout, I think you just need to write devicetree memory
-node as:
-
-memory@0 {
-	device_type = "memory";
-	reg = < 0x0 0x08000000 0x0 0x08000000
-		0x8 0x08000000 0x0 0x78000000>;
-};
-
-And set kernel load addesss to somewhere in RAM, everything should work.
-
-It makes me a little bit confused that in EyeQ5 enablement patch, you set
-load address to:
-> +else
-> +load-$(CONFIG_MIPS_GENERIC)	+= 0xa800000080100000
-> +endif
-Where does not have memory aviailable.
-
-I guess you might want to set it to 0xa800000800100000?
-Though I would suggest you to set it to 0xa800000808000000, to avoid
-collisions with low mem and reserved mem.
-
-Gregory and Vladimir, do let me know if I missed anything.
-
-Thanks
-- Jiaxun
-
-[1]: https://lore.kernel.org/lkml/20231004161038.2818327-3-gregory.clement@bootlin.com/
-
-Jiaxun Yang (10):
-  MIPS: Export higher/highest relocation functions in uasm
-  MIPS: spaces: Define a couple of handy macros
-  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
-  MIPS: Fix set_uncached_handler for ebase in XKPHYS
-  MIPS: Refactor mips_cps_core_entry implementation
-  MIPS: Allow kernel base to be set from Kconfig for all platforms
-  MIPS: traps: Handle CPU with non standard vint offset
-  MIPS: Avoid unnecessary reservation of exception space
-  MIPS: traps: Enhance memblock ebase allocation process
-  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-
- arch/mips/Kconfig                           |  27 ++--
- arch/mips/include/asm/addrspace.h           |   5 +
- arch/mips/include/asm/mach-generic/spaces.h |   5 +-
- arch/mips/include/asm/mips-cm.h             |   1 +
- arch/mips/include/asm/smp-cps.h             |   4 +-
- arch/mips/include/asm/traps.h               |   1 -
- arch/mips/include/asm/uasm.h                |   2 +
- arch/mips/kernel/cps-vec.S                  | 110 +++++--------
- arch/mips/kernel/cpu-probe.c                |   5 -
- arch/mips/kernel/cpu-r3k-probe.c            |   2 -
- arch/mips/kernel/genex.S                    |  19 ++-
- arch/mips/kernel/head.S                     |   7 +-
- arch/mips/kernel/smp-cps.c                  | 167 +++++++++++++++++---
- arch/mips/kernel/traps.c                    |  85 +++++++---
- arch/mips/mm/uasm.c                         |   6 +-
- 15 files changed, 293 insertions(+), 153 deletions(-)
-
+diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
+index 296bcf31abb5..12db6d2fca07 100644
+--- a/arch/mips/include/asm/uasm.h
++++ b/arch/mips/include/asm/uasm.h
+@@ -196,6 +196,8 @@ void uasm_build_label(struct uasm_label **lab, u32 *addr,
+ #ifdef CONFIG_64BIT
+ int uasm_in_compat_space_p(long addr);
+ #endif
++int uasm_rel_highest(long val);
++int uasm_rel_higher(long val);
+ int uasm_rel_hi(long val);
+ int uasm_rel_lo(long val);
+ void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
+diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
+index 125140979d62..6846bf2084c5 100644
+--- a/arch/mips/mm/uasm.c
++++ b/arch/mips/mm/uasm.c
+@@ -425,7 +425,7 @@ int uasm_in_compat_space_p(long addr)
+ }
+ UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
+ 
+-static int uasm_rel_highest(long val)
++int uasm_rel_highest(long val)
+ {
+ #ifdef CONFIG_64BIT
+ 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
+@@ -433,8 +433,9 @@ static int uasm_rel_highest(long val)
+ 	return 0;
+ #endif
+ }
++UASM_EXPORT_SYMBOL(uasm_rel_highest);
+ 
+-static int uasm_rel_higher(long val)
++int uasm_rel_higher(long val)
+ {
+ #ifdef CONFIG_64BIT
+ 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
+@@ -442,6 +443,7 @@ static int uasm_rel_higher(long val)
+ 	return 0;
+ #endif
+ }
++UASM_EXPORT_SYMBOL(uasm_rel_higher);
+ 
+ int uasm_rel_hi(long val)
+ {
 -- 
 2.34.1
 
