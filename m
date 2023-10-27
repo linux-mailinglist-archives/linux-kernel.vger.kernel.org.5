@@ -2,230 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999957D8CC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 03:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC39F7D8CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 03:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345069AbjJ0BXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 21:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S1345076AbjJ0BaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 21:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJ0BXI (ORCPT
+        with ESMTP id S229437AbjJ0BaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 21:23:08 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2098.outbound.protection.outlook.com [40.107.244.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0A31B4
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 18:23:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S/bVIQexgX/04qb36AFonteju23qc9iduO3xI34jqbsjujGz01oVyziosl7hTeJ4qiRUoTwc5iWoVWgaB7kNQRrPoAizIEFOZaXbrWrciB/WyhPm5xOwgDIlCHFL5SeM6Ls2alPJrdei+NMxedabvrQEIDBrqqCRECIOe90drtARH0NNh7ZEtVFQkrMvFEY2GNEcCuhYbDKXdKv+ka2iImt/cfr9yPD6+mAZsXy5pGo/BqRm/+r9rMnS6G83LStxs404uENiFhWz8efOXZAOD1c7TVt31RNOPFDvA/ENOxBEKJV/8DcoiMBhmdnZ4TJfjWKGNasMTfPc86jmisieGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a3HeYLNsxEjgnDVfctMyPxYIzkdHA5mSuwdTpaJX3Dk=;
- b=gFORoS/Cit+2goNVwPpykhScYHSBvudjR5Wg1auSQw37NYM99Tq0UH9TDISnb7MJO1XuZrzEGdpra81cyEw58AuxjDcg1qM71aRCp+ekoV958gnLxsAUiM0ZHNE1LvvGQdz8R5z45TzvhSQaUF1DlHqBlOOfaF65NgHbCHra8zpdRJ4dV26JUNx6O988ZoKjpQ81fdwrM7vlZ0wxHJ2UMAoTnWN8ldDxN1ngI4xUwgTre6t/rAoqUGliDR7JHK1Ro2OREtrnpi5tapsJDRutEA0copcBkI9PeKQJK/KUeugcNYbhfK8z3kH1fN9aBUaPM2y864rOEoBFzK/QXZ8HlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a3HeYLNsxEjgnDVfctMyPxYIzkdHA5mSuwdTpaJX3Dk=;
- b=YP6EWVEnsU2q62HyEEPk/7QqtfHfTMLxfTYqC1ftQv45hAmZOkooJnj53shQmebn3Nd6FeGhklJGEAD4r7/Kp/ZGc6rDaORfFIQrkogFOd3vkpyiemJMN5i/5TCghKzf/dJxJsApqv+6xTKIppNfd8AwmmmmPkU0R68S7I8snvE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- SA1PR01MB6527.prod.exchangelabs.com (2603:10b6:806:187::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.19; Fri, 27 Oct 2023 01:23:00 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::f7a2:1a96:ba3f:d70f]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::f7a2:1a96:ba3f:d70f%4]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
- 01:23:00 +0000
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Zaid Al-Bassam <zalbassam@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64/arm: perf: Don't discard upper 32 bits from PMCEID0/1 registers
-Date:   Thu, 26 Oct 2023 18:22:43 -0700
-Message-ID: <20231027012243.111070-1-ilkka@os.amperecomputing.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH0PR04CA0088.namprd04.prod.outlook.com
- (2603:10b6:610:74::33) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+        Thu, 26 Oct 2023 21:30:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879AD1B6
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 18:30:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0828C433C8;
+        Fri, 27 Oct 2023 01:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698370211;
+        bh=YOWD4N121xIJhA9vwpTTpOpv0xx0mse7znzmlAJoBog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wj4A3uMGS3yFDPXYQ8aIxkhnakLmR0yyl6SHkfJlU+TNpqqH8xLB6Ub9zwuAZQsFg
+         zkVYmO/TxqN8r2sYYe7tSJalSIE3/9g2PrUaKvMKX7mNw5PPew2rr6orVBaDLFXrla
+         kG91GUJVBpf+wpGxcDl6LPa5N3xDbX3uj+T8ayKYzQMCF566Q8CdkStqx0Q7CXYx0B
+         iKjue9Azn2JUy0EUdUGiSujP8TgxFkOzbgoOoRXWi10N//0f8v2zQQoi68NIXVdVPX
+         /vPXm3/mj7Imz9k4Q2DQ5eHlWmYyPdpYMOXy6wnhF1LyqpduzPU9pZUGdx5SGI6P5x
+         sPdI21GPo96FQ==
+Date:   Fri, 27 Oct 2023 09:30:01 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb:cdnsp: remove TRB_FLUSH_ENDPOINT command
+Message-ID: <20231027013001.GA1669606@nchen-desktop>
+References: <20231026073737.165450-1-pawell@cadence.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SA1PR01MB6527:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5707fc74-16a5-4dc0-dd5b-08dbd68b4248
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZQ8t8RIv/P+fzastk94T/pk6no3dHs/JDfP0I9OLl382JOxPm1H3KuxfbeA5DPkDlfJuLfnZtpq0s/uPtbnJkxwFR6OXwXABznzp36uFCmAq4kG4AUJZhYkvquCHP9th8r0+maaQpCH9hSoVrYXhSGzRDshZidOpUAAvwL8uM9Weugi5KsPPcebuintomqkE39Y553CHAfNSdhyd19xjQrF6V/qCK2uCcnn0VBn3akbWk7SUlXo8K4e5XJ21Lr5ZiPB6Piw/lzUEDom5Flve+tWUmqfjTgpuErJKnOgFoIYgm7J/5Xm6Mnik8yYtjMymbezrm4fOgu52t/CPRQhiUTclePCRcRt5dJf8636EA8OG+EuZka35c69LAD8dzscd2YtfmKSPGwsizoW9ILVx+KiU2I1a5z3mvrLRxH4UrJUyZG87HNlzmhJAz4SD0gPKltCqaqBG9oH+nV8dXtFTClmjLNmbfwtC+kzZcms2xOk8JgEzIF9CiVvuDEGlWV4037SJFca1X6gqcjphF+1FQSmZK+s2GGIn/q7z4cU3tf7XLJOjVSSGJmJpyIE/kw2wdbN6opMVjY3CeydCbxXZ7XNMvNv/0zSqkmj/3+1HgY4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(136003)(396003)(366004)(346002)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(52116002)(6506007)(478600001)(966005)(2616005)(66556008)(66476007)(6512007)(110136005)(1076003)(6666004)(86362001)(6486002)(66946007)(316002)(26005)(38100700002)(8676002)(83380400001)(8936002)(4326008)(5660300002)(2906002)(41300700001)(38350700005)(7049001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J2556IXvtoMiN7ShZDYjYd8BKGROXqbGFDZHn+2tsSEAL9YkXf7cYNB4iDvN?=
- =?us-ascii?Q?myntSqtiWbp/fYwdKoKUB7erZYh3gOQ+pg/nEcATp9rxcp2rXzZgC2Yw+l4P?=
- =?us-ascii?Q?u4Mn+FIkiFzl43LBHehzpwtaXPBzu7pxAJeCdCbh71qQwh3ajRveN+sEU/c1?=
- =?us-ascii?Q?3S6IjDQxA9gA3/7dLZ9ODZ2N6RPQf4Izrkc3I+eG8aObv79Zwx/NRk748EK4?=
- =?us-ascii?Q?uIWIqJn2I6rcPabdXJT0aYzxnDrTMCjdNfYcpsJz++VylUmVIpJSy+eWNRMR?=
- =?us-ascii?Q?tLtoX7wgUrbV4eCnvP7aq4PgU2VXIa/7kb5VaLJh7g/6mEqLDM+A0NtuWBBD?=
- =?us-ascii?Q?dQhGy0YBoX1qNRKQUq8udfiD5+SFBUNuZkZdd4Tc+1Rul4Kab2osUYVBW7zR?=
- =?us-ascii?Q?ocyiBog7PG7nCyowMT3MJb5tc0WGpEJPa2U71ee8GXE2Opn3z1rbnf5KuDd3?=
- =?us-ascii?Q?0AyOZ1eqog9wL6dZAz5a7ddDp5IGaR69QRNzZWQ0qd+ITOoHN2BV+hCFMQqd?=
- =?us-ascii?Q?An3b+Mr5BbqsyWefl0+TrQXXbn5aLM+Im+QGtOH19bMQU2/Yqzx2xTf9k+k4?=
- =?us-ascii?Q?jOHYCRoe76257LxPyVsCO9G6N7AE4CeRuEWE19YpazhOk8UFkfZlM3U18iYg?=
- =?us-ascii?Q?iWxy4AWaF71fLFZtxKS9ascSsMxrljrzgLAetOZ4UOhRawo0PrklucHG3Hr4?=
- =?us-ascii?Q?i3TXB5tD1gNB1NMWwOHvBOVgISej10ntKlFcRAA+GN+ZkQr038KKixKgnHn7?=
- =?us-ascii?Q?ZSO9DDXTQRj02AyWuzTtq+oPqTq0A/YcEBi8YwKkdDAX8oXKVDBthwoVHbIp?=
- =?us-ascii?Q?4v7mR5CgyvFoBbN1MaDAe+hZ5DxSo4MIVpcDejZ9a6YOTUO74ST7GaL/HqEh?=
- =?us-ascii?Q?YqdzAJIjxEE56iWvAeDCJbNRe9lPjKrAdOwsBkn4aLTpZ5tyfqjfrqSDh8/j?=
- =?us-ascii?Q?hjyOZrI1LTTS7fSQDEtDH4n66FN9AKJFoPtOQNQEShxXEDxorCNVgC2FeQRG?=
- =?us-ascii?Q?h1SUtdCBPqk0LJXITRvK7u27gHX3G7a1FXvNmbz5Tt9KRx8sBEe/DY9kxQOd?=
- =?us-ascii?Q?Vet4MqSLQQOZQdrGZYkNtaF/zTZGP5j87Y9VL/dwYpjOEYApsh/6lhhUWluW?=
- =?us-ascii?Q?48KxC3D5AraHOpSL1V0iWhXLFWrXWgOJ2wxCTNaS2H60l2fZwOTMD4EOZ6cp?=
- =?us-ascii?Q?Mnj+gOayBymnw68AGdj0oqeK124j1/5bIcDxti07vHnugfaLllQJ+jBKYrVl?=
- =?us-ascii?Q?Z58aF+dwRyhPZ2bKTFGxchB5dEto0YpHtobGDBre5LutXkaPHijZVeALolkg?=
- =?us-ascii?Q?AFZobCyu6XVO1rKflTql1ds8JySaIoy2E2nP3KxCe8wq803oWOdrNfKWyho0?=
- =?us-ascii?Q?nKwMwDyUxHiThX5VDTkDLCoKrf9UTlLUuYVjn4P7rYK2e6WCMW476cI2kYJt?=
- =?us-ascii?Q?8i1yPvy+ku3Aq9/F9zw7zJ//iQDOYvRjf5X/vmrjqipOtZhwrBLrMIEsM3yZ?=
- =?us-ascii?Q?8ox6PtNe6Aa0lBim43A4iVoOaP+5+QpSGa9WPdlnWgh2wyJLCNz5Pn8jIMWt?=
- =?us-ascii?Q?v9BQkYYQs9JO+I3IEFdASZ8eJ3fS+lXyvqcpoZWxhSgL9BRpc11NxOJ1ghh9?=
- =?us-ascii?Q?xlLUbPLoNfixu6j0Yf2hxTw=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5707fc74-16a5-4dc0-dd5b-08dbd68b4248
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 01:23:00.7499
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GtnN2vNsu/HPSO0u6w34CW8kHD9IowUQ+397z0EGKlOAXYn/1xJuZAUs2yVLIdHoKTpss+vvemnEkBZl0oBFHzrjSFOKi5SCF0bOKUZwRlxnB+7x4btlVfvJ73H0H0oI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6527
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026073737.165450-1-pawell@cadence.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The upper 32 bits of PMCEID[n] registers are used to describe whether
-architectural and microarchitectural events in range 0x4000-0x401f
-exist. Due to discarding the bits, the driver made the events invisible,
-even if they existed.
+On 23-10-26 09:37:37, Pawel Laszczak wrote:
+> Patch removes TRB_FLUSH_ENDPOINT command from driver.
+> This command is not supported by controller and
+> USBSSP returns TRB Error completion code for it.
+> 
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 
-Fixes: df29ddf4f04b ("arm64: perf: Abstract system register accesses away")
-Reported-by: Carl Worth <carl@os.amperecomputing.com>
-Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
----
+Acked-by: Peter Chen <peter.chen@kernel.org>
 
-Changes since v1:
+Peter
+> ---
+>  drivers/usb/cdns3/cdnsp-debug.h  |  3 ---
+>  drivers/usb/cdns3/cdnsp-gadget.c |  6 +-----
+>  drivers/usb/cdns3/cdnsp-gadget.h |  5 -----
+>  drivers/usb/cdns3/cdnsp-ring.c   | 24 ------------------------
+>  4 files changed, 1 insertion(+), 37 deletions(-)
+> 
+> diff --git a/drivers/usb/cdns3/cdnsp-debug.h b/drivers/usb/cdns3/cdnsp-debug.h
+> index f0ca865cce2a..ad617b7455b9 100644
+> --- a/drivers/usb/cdns3/cdnsp-debug.h
+> +++ b/drivers/usb/cdns3/cdnsp-debug.h
+> @@ -131,8 +131,6 @@ static inline const char *cdnsp_trb_type_string(u8 type)
+>  		return "Endpoint Not ready";
+>  	case TRB_HALT_ENDPOINT:
+>  		return "Halt Endpoint";
+> -	case TRB_FLUSH_ENDPOINT:
+> -		return "FLush Endpoint";
+>  	default:
+>  		return "UNKNOWN";
+>  	}
+> @@ -328,7 +326,6 @@ static inline const char *cdnsp_decode_trb(char *str, size_t size, u32 field0,
+>  		break;
+>  	case TRB_RESET_EP:
+>  	case TRB_HALT_ENDPOINT:
+> -	case TRB_FLUSH_ENDPOINT:
+>  		ret = snprintf(str, size,
+>  			       "%s: ep%d%s(%d) ctx %08x%08x slot %ld flags %c",
+>  			       cdnsp_trb_type_string(type),
+> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
+> index 4b67749edb99..4a3f0f958256 100644
+> --- a/drivers/usb/cdns3/cdnsp-gadget.c
+> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
+> @@ -1024,10 +1024,8 @@ static int cdnsp_gadget_ep_disable(struct usb_ep *ep)
+>  	pep->ep_state |= EP_DIS_IN_RROGRESS;
+>  
+>  	/* Endpoint was unconfigured by Reset Device command. */
+> -	if (!(pep->ep_state & EP_UNCONFIGURED)) {
+> +	if (!(pep->ep_state & EP_UNCONFIGURED))
+>  		cdnsp_cmd_stop_ep(pdev, pep);
+> -		cdnsp_cmd_flush_ep(pdev, pep);
+> -	}
+>  
+>  	/* Remove all queued USB requests. */
+>  	while (!list_empty(&pep->pending_list)) {
+> @@ -1424,8 +1422,6 @@ static void cdnsp_stop(struct cdnsp_device *pdev)
+>  {
+>  	u32 temp;
+>  
+> -	cdnsp_cmd_flush_ep(pdev, &pdev->eps[0]);
+> -
+>  	/* Remove internally queued request for ep0. */
+>  	if (!list_empty(&pdev->eps[0].pending_list)) {
+>  		struct cdnsp_request *req;
+> diff --git a/drivers/usb/cdns3/cdnsp-gadget.h b/drivers/usb/cdns3/cdnsp-gadget.h
+> index e1b5801fdddf..dbee6f085277 100644
+> --- a/drivers/usb/cdns3/cdnsp-gadget.h
+> +++ b/drivers/usb/cdns3/cdnsp-gadget.h
+> @@ -1128,8 +1128,6 @@ union cdnsp_trb {
+>  #define TRB_HALT_ENDPOINT	54
+>  /* Doorbell Overflow Event. */
+>  #define TRB_DRB_OVERFLOW	57
+> -/* Flush Endpoint Command. */
+> -#define TRB_FLUSH_ENDPOINT	58
+>  
+>  #define TRB_TYPE_LINK(x)	(((x) & TRB_TYPE_BITMASK) == TRB_TYPE(TRB_LINK))
+>  #define TRB_TYPE_LINK_LE32(x)	(((x) & cpu_to_le32(TRB_TYPE_BITMASK)) == \
+> @@ -1539,8 +1537,6 @@ void cdnsp_queue_configure_endpoint(struct cdnsp_device *pdev,
+>  void cdnsp_queue_reset_ep(struct cdnsp_device *pdev, unsigned int ep_index);
+>  void cdnsp_queue_halt_endpoint(struct cdnsp_device *pdev,
+>  			       unsigned int ep_index);
+> -void cdnsp_queue_flush_endpoint(struct cdnsp_device *pdev,
+> -				unsigned int ep_index);
+>  void cdnsp_force_header_wakeup(struct cdnsp_device *pdev, int intf_num);
+>  void cdnsp_queue_reset_device(struct cdnsp_device *pdev);
+>  void cdnsp_queue_new_dequeue_state(struct cdnsp_device *pdev,
+> @@ -1574,7 +1570,6 @@ void cdnsp_irq_reset(struct cdnsp_device *pdev);
+>  int cdnsp_halt_endpoint(struct cdnsp_device *pdev,
+>  			struct cdnsp_ep *pep, int value);
+>  int cdnsp_cmd_stop_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep);
+> -int cdnsp_cmd_flush_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep);
+>  void cdnsp_setup_analyze(struct cdnsp_device *pdev);
+>  int cdnsp_status_stage(struct cdnsp_device *pdev);
+>  int cdnsp_reset_device(struct cdnsp_device *pdev);
+> diff --git a/drivers/usb/cdns3/cdnsp-ring.c b/drivers/usb/cdns3/cdnsp-ring.c
+> index 07f6068342d4..af981778382d 100644
+> --- a/drivers/usb/cdns3/cdnsp-ring.c
+> +++ b/drivers/usb/cdns3/cdnsp-ring.c
+> @@ -2123,19 +2123,6 @@ int cdnsp_cmd_stop_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep)
+>  	return ret;
+>  }
+>  
+> -int cdnsp_cmd_flush_ep(struct cdnsp_device *pdev, struct cdnsp_ep *pep)
+> -{
+> -	int ret;
+> -
+> -	cdnsp_queue_flush_endpoint(pdev, pep->idx);
+> -	cdnsp_ring_cmd_db(pdev);
+> -	ret = cdnsp_wait_for_cmd_compl(pdev);
+> -
+> -	trace_cdnsp_handle_cmd_flush_ep(pep->out_ctx);
+> -
+> -	return ret;
+> -}
+> -
+>  /*
+>   * The transfer burst count field of the isochronous TRB defines the number of
+>   * bursts that are required to move all packets in this TD. Only SuperSpeed
+> @@ -2465,17 +2452,6 @@ void cdnsp_queue_halt_endpoint(struct cdnsp_device *pdev, unsigned int ep_index)
+>  			    EP_ID_FOR_TRB(ep_index));
+>  }
+>  
+> -/*
+> - * Queue a flush endpoint request on the command ring.
+> - */
+> -void  cdnsp_queue_flush_endpoint(struct cdnsp_device *pdev,
+> -				 unsigned int ep_index)
+> -{
+> -	cdnsp_queue_command(pdev, 0, 0, 0, TRB_TYPE(TRB_FLUSH_ENDPOINT) |
+> -			    SLOT_ID_FOR_TRB(pdev->slot_id) |
+> -			    EP_ID_FOR_TRB(ep_index));
+> -}
+> -
+>  void cdnsp_force_header_wakeup(struct cdnsp_device *pdev, int intf_num)
+>  {
+>  	u32 lo, mid;
+> -- 
+> 2.25.1
+> 
 
-  * Took arm32 specific code from Marc Zyngier's review comment
-  * Fixed a couple of typos in the commit message
-
-I have tested the patch on Arm64. However, what comes to Arm32 part, I have
-only compared the code with Arm32 specification and cross compiled it.
-
-v1: https://lore.kernel.org/all/20231025200815.104017-1-ilkka@os.amperecomputing.com/
-
----
-
- arch/arm/include/asm/arm_pmuv3.h   | 33 +++++++++++++++++++++---------
- arch/arm64/include/asm/arm_pmuv3.h |  4 ++--
- 2 files changed, 25 insertions(+), 12 deletions(-)
-
-diff --git a/arch/arm/include/asm/arm_pmuv3.h b/arch/arm/include/asm/arm_pmuv3.h
-index 72529f5e2bed..90841cb7ce43 100644
---- a/arch/arm/include/asm/arm_pmuv3.h
-+++ b/arch/arm/include/asm/arm_pmuv3.h
-@@ -23,6 +23,8 @@
- #define PMUSERENR		__ACCESS_CP15(c9,  0, c14, 0)
- #define PMINTENSET		__ACCESS_CP15(c9,  0, c14, 1)
- #define PMINTENCLR		__ACCESS_CP15(c9,  0, c14, 2)
-+#define PMCEID2			__ACCESS_CP15(c9,  0, c14, 4)
-+#define PMCEID3			__ACCESS_CP15(c9,  0, c14, 5)
- #define PMMIR			__ACCESS_CP15(c9,  0, c14, 6)
- #define PMCCFILTR		__ACCESS_CP15(c14, 0, c15, 7)
- 
-@@ -205,16 +207,6 @@ static inline void write_pmuserenr(u32 val)
- 	write_sysreg(val, PMUSERENR);
- }
- 
--static inline u32 read_pmceid0(void)
--{
--	return read_sysreg(PMCEID0);
--}
--
--static inline u32 read_pmceid1(void)
--{
--	return read_sysreg(PMCEID1);
--}
--
- static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
- static inline void kvm_clr_pmu_events(u32 clr) {}
- static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
-@@ -231,6 +223,7 @@ static inline void kvm_vcpu_pmu_resync_el0(void) {}
- 
- /* PMU Version in DFR Register */
- #define ARMV8_PMU_DFR_VER_NI        0
-+#define ARMV8_PMU_DFR_VER_V3P1      0x4
- #define ARMV8_PMU_DFR_VER_V3P4      0x5
- #define ARMV8_PMU_DFR_VER_V3P5      0x6
- #define ARMV8_PMU_DFR_VER_IMP_DEF   0xF
-@@ -251,4 +244,24 @@ static inline bool is_pmuv3p5(int pmuver)
- 	return pmuver >= ARMV8_PMU_DFR_VER_V3P5;
- }
- 
-+static inline u64 read_pmceid0(void)
-+{
-+	u64 val = read_sysreg(PMCEID0);
-+
-+	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
-+		val |= (u64)read_sysreg(PMCEID2) << 32;
-+
-+	return val;
-+}
-+
-+static inline u64 read_pmceid1(void)
-+{
-+	u64 val = read_sysreg(PMCEID1);
-+
-+	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
-+		val |= (u64)read_sysreg(PMCEID3) << 32;
-+
-+	return val;
-+}
-+
- #endif
-diff --git a/arch/arm64/include/asm/arm_pmuv3.h b/arch/arm64/include/asm/arm_pmuv3.h
-index 18dc2fb3d7b7..3e92b7cb57a4 100644
---- a/arch/arm64/include/asm/arm_pmuv3.h
-+++ b/arch/arm64/include/asm/arm_pmuv3.h
-@@ -126,12 +126,12 @@ static inline void write_pmuserenr(u32 val)
- 	write_sysreg(val, pmuserenr_el0);
- }
- 
--static inline u32 read_pmceid0(void)
-+static inline u64 read_pmceid0(void)
- {
- 	return read_sysreg(pmceid0_el0);
- }
- 
--static inline u32 read_pmceid1(void)
-+static inline u64 read_pmceid1(void)
- {
- 	return read_sysreg(pmceid1_el0);
- }
 -- 
-2.41.0
 
+Thanks,
+Peter Chen
