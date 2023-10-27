@@ -2,56 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D31207D8F8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84507D8F90
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjJ0HSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        id S1345363AbjJ0HUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235010AbjJ0HSI (ORCPT
+        with ESMTP id S231233AbjJ0HUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:18:08 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59F61BD
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:18:00 -0700 (PDT)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B1EB066072FC;
-        Fri, 27 Oct 2023 08:17:58 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698391079;
-        bh=w/e9oob7hOM84wZctGqMXlvAjyoXB4ZayuMpg1DFtoo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iYXmJ00v795Yr+zDHJDGbHzhx2cS3to1OcLA4ajP8OjGJia2t36WLicmzsOY9p5Ki
-         c4FwassYWQTyjXskC82OSEDK8xt6l4/fAbJX/6K8klh8vvSQ0+fV8sLD8tJpbuo8Wu
-         JmXD4xnw/9ZOJmgrUyow6JTLDWwTcd+aOSSPmSUSUB87xm9CZrwfRVwUTrazg9TXkc
-         MxGXHnG3mobJzWqN4nUd68XGJlMOM+Ty5rI9YBol5/BQC5UhYTj/PYoV2rOpFFKLZa
-         Ef0ROodFZJb4+CC35AvtD2cL+0B8R5W3gbKd1h0aYO/VpxTcsHGEGEAwLcZLBH2m2D
-         tS7n10mQNpzmw==
-Date:   Fri, 27 Oct 2023 09:17:55 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        christian.koenig@amd.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Message-ID: <20231027091755.3635be36@collabora.com>
-In-Reply-To: <20231026161431.5934-1-dakr@redhat.com>
-References: <20231026161431.5934-1-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 27 Oct 2023 03:20:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7291B3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=knFFWaxiSZ20rjITXNXLCDkayOSwhys26Z492Thl3YA=; b=Rdt2ooQ3LndpAFYw0vgpBfYpeH
+        vr/ZMSBLCnJ8he0mHI03vJ4WAp22Epk/eKWPlAKzKa2/1VtFzDowgxBd3pQZbtvhXmuo7em4sf4KK
+        OQ+pQiWH0htQsz4/D43QU998IxwbtItYQmLxGewlgjIYTrGh1h/bq39HDy3lmnrEu4wLqPzwMW7uF
+        IbX7oy1U0QE3rfKmrcRn8NWIkVEnQTJ6wWtS041I3G1m853AzREy7Ew20bYXKpReXGcnpFTtQ2z+G
+        vyR2mx0zrpOikvTdrrGT3pHlZycdHOoDMnVST7mj3Mlp0cxoOtlU1iU+ONFccKY5f44XXWDrAaaik
+        l8SzZ2GQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qwH8M-00Fm2m-0e;
+        Fri, 27 Oct 2023 07:19:54 +0000
+Message-ID: <e969ed08-3492-4bac-8f4f-a7e3a59da6f0@infradead.org>
+Date:   Fri, 27 Oct 2023 00:19:53 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: fix multiple typos in multiple files
+Content-Language: en-US
+To:     zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
+        willy@infradead.org, James.Bottomley@hansenpartnership.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231027064345.2434-1-zhaimingbing@cmss.chinamobile.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231027064345.2434-1-zhaimingbing@cmss.chinamobile.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,45 +54,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Danilo,
+Hi--
 
-On Thu, 26 Oct 2023 18:13:00 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+On 10/26/23 23:43, zhaimingbing wrote:
+> 	nommu.c: Fix typo 'privatize'
+> 	io-mapping.c: Fix typo 'pre-validation'
+> 
+> Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
+> ---
+>  mm/io-mapping.c | 2 +-
+>  mm/nommu.c      | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/io-mapping.c b/mm/io-mapping.c
+> index 01b362799..486598ba4 100644
+> --- a/mm/io-mapping.c
+> +++ b/mm/io-mapping.c
+> @@ -21,7 +21,7 @@ int io_mapping_map_user(struct io_mapping *iomap, struct vm_area_struct *vma,
+>  	if (WARN_ON_ONCE((vma->vm_flags & expected_flags) != expected_flags))
+>  		return -EINVAL;
+>  
+> -	/* We rely on prevalidation of the io-mapping to skip track_pfn(). */
+> +	/* We rely on pre-validation of the io-mapping to skip track_pfn(). */
 
-> +
-> +	/**
-> +	 * @update_job_credits: Called once the scheduler is considering this
-> +	 * job for execution.
-> +	 *
-> +	 * Drivers may use this to update the job's submission credits, which is
-> +	 * useful to e.g. deduct the number of native fences which have been
-> +	 * signaled meanwhile.
-> +	 *
-> +	 * The callback must either return the new number of submission credits
-> +	 * for the given job, or zero if no update is required.
-> +	 *
-> +	 * This callback is optional.
-> +	 */
-> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job);
+Not needed. The hyphen seems to be optional from what I see on the internet.
 
-I'm copying my late reply to v2 here so it doesn't get lost:
+>  	return remap_pfn_range_notrack(vma, addr, pfn, size,
+>  		__pgprot((pgprot_val(iomap->prot) & _PAGE_CACHE_MASK) |
+>  			 (pgprot_val(vma->vm_page_prot) & ~_PAGE_CACHE_MASK)));
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 7f9e9e5a0..40842b080 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -776,7 +776,7 @@ static int validate_mmap_request(struct file *file,
+>  			if (!(capabilities & NOMMU_MAP_DIRECT))
+>  				return -ENODEV;
+>  
+> -			/* we mustn't privatise shared mappings */
+> +			/* we mustn't privatize shared mappings */
 
-I keep thinking it'd be simpler to make this a void function that
-updates s_job->submission_credits directly. I also don't see the
-problem with doing a sanity check on job->submission_credits. I mean,
-if the driver is doing something silly, you can't do much to prevent it
-anyway, except warn the user that something wrong has happened. If you
-want to
+We accept British spellings. :)
 
-	WARN_ON(job->submission_credits == 0 ||
-		job->submission_credits > job_old_submission_credits);
+>  			capabilities &= ~NOMMU_MAP_COPY;
+>  		} else {
+>  			/* we're going to read the file into private memory we
 
-that's fine. But none of this sanity checking has to do with the
-function prototype/semantics, and I'm still not comfortable with this 0
-=> no-change. If there's no change, we should just leave  
-job->submission_credits unchanged (or return job->submission_credits)
-instead of inventing a new special case.
-
-Regards,
-
-Boris
+Thanks.
+-- 
+~Randy
