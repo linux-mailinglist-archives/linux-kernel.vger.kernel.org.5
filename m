@@ -2,189 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C357DA285
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DB57DA289
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346555AbjJ0VfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S235052AbjJ0Vfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0VfM (ORCPT
+        with ESMTP id S230451AbjJ0Vfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:35:12 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021006.outbound.protection.outlook.com [52.101.56.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B96B0;
-        Fri, 27 Oct 2023 14:35:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b6u7doVB/kd9doDw4SwcSNaLEWRzO7tHQbjzD2P0Th7qx0CCS9ijl9CEhn0E8Y3W3FjaGLQJHaa0V5K+xL3jvyghB79LAheZSdZGrrK1jBBHhq1I/0fmdLJ16H+4d4rFMLIbpKN25rqfhyoPR7tooLFpK0qyYVzko9yWM0OfQ5Jef2/NxnYfdA/Kz5U9J8aBOyeHmHnBUD81jRvX1Z9W5D/Y+p7YPVvgTEQglq7aUsBfcj1cfHN9mcaxU04g+fGPybLbdmrhLhCBHMM9g9aDZg8p75pXnR84n2gH13dv9amhywtG1raiaY4U4l3XH/XVE1flxKUIwC/M5tJCEWd95A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qTs7Fp42ZygZg/ikiO5/CnbruF0SW2MN+e1NREjDenQ=;
- b=fBwsYf4bwZ6ljzfAZa9BP8o4kauNkm6WrZ97OMQWS4hVPhy2EKfn/0bMCsvVo9+JKfCVz2q1VBX/bfvQadsgQDDVhhAsLOHSBRUQn+7v+Ya6Vgo1uYPcT1L8MolISN1pK4vJUQMRQ92mpTIQ1G0/UD0Z4BP6E+kZkcSWlSbpnTNRdkmcFsTkyApHlY52ckIIFtI2N02zKCoXSpKozrc4Y0ichelQML8wHvjTHFYsJ0ivtpM9sL6xTX73q3+WYH/ASsBTbkZyo9K25MJezaq9luchTGrwVlhweK/nR2XmcfJNUacqgWDy7HCBULecYLWcL/O50ipMdBRNIDfq2dbMaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qTs7Fp42ZygZg/ikiO5/CnbruF0SW2MN+e1NREjDenQ=;
- b=Eb09xeSJFeu9dhwusN+t/pBVtylYPfPWH0VFST5tUv1ZO6ywAKckOVbjEOTKs6m7hr3Rrpsk6JKgw1XIHRGmMASzMa7IONK6RAoN2ZXYcBWlRNgB+a6j0mzbYJGY+JzPLk7z9cyKbFVcsHNs8fliHrfVZtBMHby/gUwXCFEsiOo=
-Received: from MN0PR21MB3264.namprd21.prod.outlook.com (2603:10b6:208:37c::19)
- by PH0PR21MB2064.namprd21.prod.outlook.com (2603:10b6:510:aa::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.5; Fri, 27 Oct
- 2023 21:35:05 +0000
-Received: from MN0PR21MB3264.namprd21.prod.outlook.com
- ([fe80::9f51:f462:e8d2:d242]) by MN0PR21MB3264.namprd21.prod.outlook.com
- ([fe80::9f51:f462:e8d2:d242%5]) with mapi id 15.20.6954.005; Fri, 27 Oct 2023
- 21:35:05 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Ajay Sharma <sharmaajay@microsoft.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
-Thread-Topic: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
-Thread-Index: AQHaAH3QKoiDSqFL1EOXA9O+c+9Ua7BXuxIAgAM/awCAAz6OIA==
-Date:   Fri, 27 Oct 2023 21:35:05 +0000
-Message-ID: <MN0PR21MB32641E489F378F0C5B357795CEDCA@MN0PR21MB3264.namprd21.prod.outlook.com>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1697494322-26814-6-git-send-email-sharmaajay@linuxonhyperv.com>
- <20231023182332.GL691768@ziepe.ca>
- <MN0PR21MB36067E337A53C3BAF8B648E5D6DEA@MN0PR21MB3606.namprd21.prod.outlook.com>
-In-Reply-To: <MN0PR21MB36067E337A53C3BAF8B648E5D6DEA@MN0PR21MB3606.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f66c6187-e4ae-4c1e-b328-36065610560a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-25T19:58:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR21MB3264:EE_|PH0PR21MB2064:EE_
-x-ms-office365-filtering-correlation-id: 4a9015b2-fdef-4ae0-9e10-08dbd73495fb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: N4djry/HjGlz6PW8MM9Oxv/aYueGzQptSlC/uS7DbLG/VsCV/GBKZyxLMoOHT1/qag7BSZOdkaQJ0HbBjwm3fyxsr2FR57ck2EL+GLnWM5mrFODTNv7MBChYRLO0Hdy9XaC+5/yUYR0sZL6RwZMw9r37Fe3jjvRhMz6iqDQaSIkKO/mp0r3n9aGmnTgV7dRyxI6o2pZ8zdjqp6NWS1OxX3/LlQfTlrM7Ym7LCav6t7dAfh2sZooiYoqQkn2okLAgHQkWfXIBtaXw6VBT+mPxT3xnP1I9OJ2CvOwGAFNSGx0EDDupBoQ45i9z08MHZVVMvrMoeznnzctYxeAMIZZLEPBbytdE0l7nLbd6qyMi2SySk1T3B3bopDMzS50QeikD5fUjse9jT3ibw6iCakJmGR63BZw7FyGl7VZXBRrJinvdoeU17n8e8fzIH3QtZz1HFsnQDlvp1+GpCPr/JvjQDIKnqMyUsT+b1lDCxYoZZx4SyngZ704aqvFqxW88Vta6xpcw9PDdMU1ADF9UCS+DDmiXwcFi/JUMfpHvxTpLLpVTpBSmgQkKIDReNau82ztmyUyHuAZ76/M+CBZgtPg7wckJKG5td8Mh0cawYXx/4wrLclAoy1E2VMrZ5ldwvvnbbZNFk/qvKGvXhCVi0tH6Z1A+u6DKe1wLBCnk2/bqNHPLvNTxodKTtry+25wYKJ6bsPTts7hgmjGE7opaktPjQg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3264.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(366004)(346002)(230173577357003)(230273577357003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(53546011)(52536014)(7696005)(55016003)(9686003)(86362001)(478600001)(6506007)(66556008)(66476007)(83380400001)(38100700002)(71200400001)(64756008)(110136005)(66446008)(76116006)(54906003)(66946007)(10290500003)(316002)(4326008)(122000001)(41300700001)(8936002)(8676002)(82960400001)(2906002)(7416002)(82950400001)(8990500004)(38070700009)(5660300002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ivxBtTqTb26GHTOctLOcWl1ntaQh2gFPViRKztKhKYVFyHSLy53rg4stIGAL?=
- =?us-ascii?Q?OSm5qJOsIJhH51gzf7Hxx9EhHFJkO+pEk1ZgTPBQEoH3YxsUjVbLU1uQ5cAz?=
- =?us-ascii?Q?7ISZ0MzDI2ZMMzRqytqKUUGnZUMa349KNNx5XOAgf245m9GBsUJRvE6/MF7K?=
- =?us-ascii?Q?en6pd4voIM8BTKI7FuzAuz/IFMwu8BYqXJ99vhLp79UYNzvO3Cs7LNOgCa+b?=
- =?us-ascii?Q?hMW/tnBunqelDLyiisFYAxMpxbPpSIdEeAkbMKUsO4oFsDni39ftDhWWZWIq?=
- =?us-ascii?Q?kZtj07vW6C/ehMWL1hDPEl3TUiUoM81H/JhmVxEPQDW1l1BZo4KBK2z0k5CN?=
- =?us-ascii?Q?7h/uzzR99iiEKXv8EE5cTV5IJeMxiVxRghtRsukBgv7MvvqJXrCDyYoxJahm?=
- =?us-ascii?Q?ca73a+VERMDk+02wOG8yEKyzzEoG92OIIelgQ1a28pXKZHkGS0sue3nJdWd+?=
- =?us-ascii?Q?Y6W5rkGf6/zRzUdUdezv0UdLYkoZbyLU7AaqDjhYHrpsf16fYqCclsUG1t2I?=
- =?us-ascii?Q?f7ceLQiv229Rrx/lvLAPLkh8Eja5mAWtf3ftsP8faxYZ/euwsn7CbZ9Gk48o?=
- =?us-ascii?Q?Y9wO/FtKpzjPFNNlb4crVXGqU/t/4O+4sEiAS3RcXHqTXmt5HG9IgCbOMM4V?=
- =?us-ascii?Q?bq/zzqoYlodQm4lhAxavY9wrGaaFe/iHcIUmEYd6xVfqn7dz50wsQGgSYLuv?=
- =?us-ascii?Q?nZJnfJ2W8rqo/BYz5iH0e382rtSdylkuVWwRixpRXvyxsdwUcmeVc3ifntCO?=
- =?us-ascii?Q?Jytxp5VKhjrAc86KZa6mub7Qf1QawmEKTufZydrMSBA/LJayj+FyxpCieh4s?=
- =?us-ascii?Q?mYGivSFdCKcrPpyVEfD1mNyyfPtV1qhZ18w9XP7XuE6GgXVCC/Q9sglAkcGg?=
- =?us-ascii?Q?WITnVAnVi7uYNFEdygptNFmOUNka9cA/KpwOXw9DwgJdWQNQvEQjq5NVViOl?=
- =?us-ascii?Q?n0iI69872+iNWrPWsM0t8GqLh9ferQSaNXxkDMDtHLAH/7cp/7LZAR1P4bEu?=
- =?us-ascii?Q?upHS92QflNeoEN3B9UgD9JO9d6Pr0338Nhzb4OWs8/EpZ3eAc7q+NVZsJT2w?=
- =?us-ascii?Q?3QSGUWyAPbdFSVqzZN3dlEBKm3CggV5hfF13OgNPgMfgYZGmh6WvY3zqnmLV?=
- =?us-ascii?Q?vYD9QsFeoywvn4cmMO0spcnpct6kXrvC0jTHsTSM0ftAWO0y486AFKfRD1nP?=
- =?us-ascii?Q?URch6vN0/lXr8eUikP2LVAvBU2zf0kqe2ZJ5NwO285jyLA1voBv8ioE3U7dg?=
- =?us-ascii?Q?4ePDlamvbSsmNEOs3TWUkStsEq01/DrZw6D7ebY5Wd5FYmuTFwBcI5xQrW7B?=
- =?us-ascii?Q?oanGnoXCFB4AeuFSvC9fZr6OnE0rbo3VMYOsdPEpIj6RHMJz86C9t8CvmdQL?=
- =?us-ascii?Q?2Ap0napIPO4vPt0AGGD6obw6Hlh2WVHoJszfwSs+LNK2IxsDUNyhQdyMBq+o?=
- =?us-ascii?Q?uHpXyIBm41sUYtLiJTsk+twOmOMIA1oeb90Uyd/RNgCv0BcAikCjQLnAXUzB?=
- =?us-ascii?Q?Az8xbo9BFCfL+HqwI0zFEeiu5RoBViIqwZ81rLTPklmrNbtG3Af3vslW1G+e?=
- =?us-ascii?Q?kekkSYQKaYfEk0b7czCq4R7wiNZDpizKH89+IBxGfaEvp21BLG06bU/Tvd+G?=
- =?us-ascii?Q?NxhX0QuuImmFqLczKmhD355GMQ4r9hY/2c8cfkW1VACM?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 27 Oct 2023 17:35:47 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE78A129;
+        Fri, 27 Oct 2023 14:35:45 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-581f78a0206so1381989eaf.2;
+        Fri, 27 Oct 2023 14:35:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698442545; x=1699047345;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S01/m+UkdNRB6iMJPFGQoMRsSYHCWIY0UEsdJKSaDcE=;
+        b=TXMaaiKx8JABdH5L70p3xHUQQRyG879VnQqmRvld2hqggsXrGaubnFPCcrK5J2iLOL
+         DulAJ+BBSAfqOn6b4SkHqsOaUBnDgI4oAcOVN10Qbh0LFHxTbjzPEjDBDRY4pP/2jzgR
+         FUJrXnNbHkR4G97zRXt3K3zeU1xJT8Ym43l9bbfG6cM0LkzxCS+QklkGHyNEsZW9U8Ds
+         P92IytWNTYVrenMA/MZcJIFaflMcqIMeNsLjSJC5IlZjKelXa/5vS2un+6nIs6qXMFGi
+         ydrw8ZpsjzmYxo0+bh7OTTm4qmZPhYqmBwiqQgYno8k/D/RgE+pbdhZ5P9//Tx5aGiYB
+         rFcQ==
+X-Gm-Message-State: AOJu0YzsVJZI3F6bFFpVAc+C7JwjTL/MspdbYuY/WvwXBEUTeXg94Vpu
+        KniljzJ+k8OkSOe49Rgv/ANIdTLgBQ==
+X-Google-Smtp-Source: AGHT+IHC3Ocx06EeQtGzauTEivlJu9qRN/UWQolL0W2b0N/emKZ2p5F/Qqyuf0mOd25BGAXFc+0TQw==
+X-Received: by 2002:a4a:eace:0:b0:586:b79f:b0ee with SMTP id s14-20020a4aeace000000b00586b79fb0eemr4106284ooh.5.1698442545087;
+        Fri, 27 Oct 2023 14:35:45 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id c4-20020a4aacc4000000b00581eb0bc164sm526287oon.0.2023.10.27.14.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 14:35:44 -0700 (PDT)
+Received: (nullmailer pid 3412526 invoked by uid 1000);
+        Fri, 27 Oct 2023 21:35:43 -0000
+Date:   Fri, 27 Oct 2023 16:35:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Seven Lee <wtli@nuvoton.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        conor+dt@kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
+        CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com,
+        supercraig0719@gmail.com, dardar923@gmail.com
+Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate
+ selection
+Message-ID: <20231027213543.GA3405817-robh@kernel.org>
+References: <20231027082144.639369-1-wtli@nuvoton.com>
+ <20231027082144.639369-2-wtli@nuvoton.com>
+ <20231027-pronto-prideful-2cf3415a9d87@spud>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3264.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a9015b2-fdef-4ae0-9e10-08dbd73495fb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2023 21:35:05.7465
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +o6VxhrYRTK0yLNrE0svAML+Gh/5LuAPih4ZGBKp831KAJrUUkX1Igtn8rc2HJVvWqLH3+TVgQLo2YiAd+Yccg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB2064
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027-pronto-prideful-2cf3415a9d87@spud>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: RE: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
->=20
->=20
-> > -----Original Message-----
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Monday, October 23, 2023 11:24 AM
-> > To: sharmaajay@linuxonhyperv.com
-> > Cc: Long Li <longli@microsoft.com>; Leon Romanovsky <leon@kernel.org>;
-> > Dexuan Cui <decui@microsoft.com>; Wei Liu <wei.liu@kernel.org>; David S=
-.
-> > Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
-> > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> > linux- rdma@vger.kernel.org; linux-hyperv@vger.kernel.org;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Ajay Sharma
-> > <sharmaajay@microsoft.com>
-> > Subject: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
-> >
-> > On Mon, Oct 16, 2023 at 03:12:02PM -0700,
-> sharmaajay@linuxonhyperv.com
-> > wrote:
-> >
-> > > diff --git a/drivers/infiniband/hw/mana/qp.c
-> > > b/drivers/infiniband/hw/mana/qp.c index ef3275ac92a0..19fae28985c3
-> > > 100644
-> > > --- a/drivers/infiniband/hw/mana/qp.c
-> > > +++ b/drivers/infiniband/hw/mana/qp.c
-> > > @@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp
-> > *ibqp, struct ib_pd *pd,
-> > >  		wq->id =3D wq_spec.queue_index;
-> > >  		cq->id =3D cq_spec.queue_index;
-> > >
-> > > +		xa_store(&mib_dev->rq_to_qp_lookup_table, wq->id, qp,
-> > GFP_KERNEL);
-> > > +
-> >
-> > A store with no erase?
-> >
-> > A load with no locking?
-> >
-> > This can't be right
-> >
-> > Jason
->=20
-> This wq->id is assigned from the HW and is guaranteed to be unique. May b=
-e I
-> am not following why do we need a lock here. Can you please explain ?
-> Ajay
+On Fri, Oct 27, 2023 at 03:11:35PM +0100, Conor Dooley wrote:
+> Hey,
+> 
+> On Fri, Oct 27, 2023 at 04:21:43PM +0800, Seven Lee wrote:
+> > Add input with DMIC slew rate selection
+> > 
+> > Signed-off-by: Seven Lee <wtli@nuvoton.com>
+> > ---
+> >  .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> > index 3e54abd4ca74..01028b7ff85c 100644
+> > --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> > +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> > @@ -89,6 +89,13 @@ properties:
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> >      default: 3072000
+> >  
+> > +  nuvoton,dmic-slew-rate-selection:
+> > +    description: the number from 0 to 7 that sets the DMIC slew rate.
+> > +        The unit is mV/ns. 0 is the slowest, and 7 is the fastest.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    maximum: 7
+> > +    default: 0
+> 
+> I meant make the property in terms of the unit, so
+> nuvoton,dmic-slew-rate-volt-per-sec (or similar, Rob would likely know
+> better how he likes the unit suffix for a more complex unit like this
+> one) and then make it an enum with possible values corresponding to
+> the real values that putting 0, 1, 2, 3 etc into the register produces.
 
-I think we need to check the return value of xa_store(), and call xa_erase(=
-) in mana_ib_destroy_qp().
+From what I've seen, you often don't know what units the h/w settings 
+correspond to. Often it's just fast, medium, slow or something. And 
+here, 0 doesn't make sense if the units really are mV/ns. 
 
-wq->id is generated by the hardware. If we believe in hardware always behav=
-es in good manner, we don't need a lock.
+So I'd just drop '-selection' and be done with it. (And clear up the 
+units part).
 
-Thanks,
+> 
+> Cheers,
+> Conor.
+> 
+> > +
+> >    nuvoton,left-input-single-end:
+> >      description: Enable left input with single-ended settings if set.
+> >          For the headset mic application, the single-ended control is
+> > @@ -127,6 +134,7 @@ examples:
+> >              nuvoton,jack-insert-debounce = <7>;
+> >              nuvoton,jack-eject-debounce = <0>;
+> >              nuvoton,dmic-clk-threshold = <3072000>;
+> > +            nuvoton,dmic-slew-rate-selection= <0>;
+> >              #sound-dai-cells = <0>;
+> >          };
+> >      };
+> > -- 
+> > 2.25.1
+> > 
 
-Long
+
