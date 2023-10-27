@@ -2,53 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03477D9A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E277D9A1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346108AbjJ0Ngp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
+        id S1346019AbjJ0Ngr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346036AbjJ0NgQ (ORCPT
+        with ESMTP id S1345978AbjJ0NgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:36:16 -0400
+        Fri, 27 Oct 2023 09:36:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FE0D4A
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:36:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82214C433C8;
-        Fri, 27 Oct 2023 13:36:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B589D6A;
+        Fri, 27 Oct 2023 06:36:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69C3CC433C9;
+        Fri, 27 Oct 2023 13:36:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698413761;
-        bh=zr+piGqNha8SH1IgRkyvQsYXO7OF+ckvJNeJmO5jOgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sjahxqQVlenRUlHbdEbRVeGC1IIxhJZXdbkEzZB+2dJ4sI1mqDmg12r+yjOkvhZAE
-         8Toj5bz3pGv7l1ta8LJTF/zIVNf/6+LWyyCm/KN8THS85QDI2QoCLaHk1QouEWcSu0
-         TQXjiSE+KOiLPNb4O+dwyc5INnDIiuBJKDQoYxPUeO0vCLEGk6H+3rarxbwYDSK+7L
-         Grlb1msx2GIbUbFwNL/DWDZAS94G51BexlAaR1RGi/8I9NHLEH1SMXKusp3OLyUbOQ
-         f85jJP7riZKW9BuXiUPRt1PJsAlFMIwrO8gtR6vHca1WawHXRFBJAiqE5rKV67DipI
-         P4PzGMTdlNVdQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8203F4035D; Fri, 27 Oct 2023 10:35:55 -0300 (-03)
-Date:   Fri, 27 Oct 2023 10:35:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, peterz@infradead.org,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf evsel: Rename evsel__increase_rlimit to
- rlimit__increase_nofile
-Message-ID: <ZTu8u3bgNCOhTx8U@kernel.org>
-References: <20231023033144.1011896-1-yangjihong1@huawei.com>
- <ZTrCS5Z3PZAmfPdV@kernel.org>
- <CAM9d7cjhSSV+18ZCHLdTFpMM+MmpoDkYSGjUa5JKZp02Kx9XRw@mail.gmail.com>
- <3458c302-8c43-51e5-f45b-c18657fa7015@huawei.com>
+        s=k20201202; t=1698413762;
+        bh=0xd7P4qYVmXOKMAZZhnxdTAzptuC3esnYUCmJULyCB8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kdr9xBX/kVeoUGv0I2qU4a9zqQb7P/6SbXYTGPU6CxbiOzYbxWkQHsNaJcRVFujoF
+         U0hjXSHePCG+09skR+SGHmFydgCkUuZY96ngHKMSarHPmP4lK7aEyKKwrynYU8h+m3
+         /KDNuGlLsUGWxuLTYPWb1urXHF1gbpyh/fg/VO/duWGc7gwk3R3HTLXe4EQm1s+avX
+         rwvuSnqPM4cRF0x+eIWMH92xZAqAB0SV9bckKz3hNyaEVQ54L4FVj455UZBfleB6xd
+         VQPXHbTEJ9XRX12x2214sI6LAkNjylDNAkUCvXSU7hoSSEdeAUCyMXys1HynEklUiu
+         ciSQwbc2OTpRw==
+Date:   Fri, 27 Oct 2023 14:36:00 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>, lars@metafoo.de,
+        jean-baptiste.maneyrol@tdk.com, chenhuiz@axis.com,
+        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 2/2] phy: mapphone-mdm6600: fix an error code problem in
+ inv_mpu6050_read_raw
+Message-ID: <20231027143600.2dd74f78@jic23-huawei>
+In-Reply-To: <bccca54f-5eb8-83ba-17ad-6cb312aa6ea5@nfschina.com>
+References: <7f81d365-0440-de01-8be4-9c8d3ab9d69c@nfschina.com>
+        <bccca54f-5eb8-83ba-17ad-6cb312aa6ea5@nfschina.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3458c302-8c43-51e5-f45b-c18657fa7015@huawei.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -59,30 +54,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Oct 27, 2023 at 10:43:32AM +0800, Yang Jihong escreveu:
-> Sorry, only rename helper and no function change.
-> I didn't consider the scenario that might affect test python.
- 
-> I've submitted a fix that can be used if needed:
- 
-> https://lore.kernel.org/lkml/20231027023028.1106441-1-yangjihong1@huawei.com/
- 
-> Also, can we consider identifying this problem at the stage of compiling the
-> perf tool?
+On Mon, 23 Oct 2023 11:29:30 +0800
+Su Hui <suhui@nfschina.com> wrote:
 
-Yes, I have:
+> On 2023/10/23 09:33, Su Hui wrote:
+> > On 2023/10/20 23:55, Jonathan Cameron wrote: =20
+> >> I'm not sure why inv_mpu6050_sensor_show() doesn't return
+> >> the actual error code from the regmap_bulk_read() and instead=20
+> >> replaces it
+> >> with -EINVAL.=C2=A0 Given you are tidying up this related issues perha=
+ps=20
+> >> change
+> >> that as well?
+> >>
+> >> static int inv_mpu6050_sensor_show(struct inv_mpu6050_state *st, int=20
+> >> reg,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int axis, int *val)
+> >> {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0int ind, result;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0__be16 d;
+> >>
+> >> =C2=A0=C2=A0=C2=A0=C2=A0ind =3D (axis - IIO_MOD_X) * 2;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0result =3D regmap_bulk_read(st->map, reg + ind=
+, &d, sizeof(d));
+> >> =C2=A0=C2=A0=C2=A0=C2=A0if (result)
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >> //Make this return result; =20
+> >
+> > Sure, I will tidy up this, Thanks for your suggestion! =20
+>=20
+> I'm not sure=C2=A0 whether the caller could handler this=C2=A0 when retur=
+n=20
+> 'result' rather than '-EINVAL'.
+>=20
+> This is not a big problem, maybe we shouldn't modify this code.
 
-$ alias m='rm -rf ~/libexec/perf-core/ ; make -k CORESIGHT=1 O=/tmp/build/$(basename $PWD) -C tools/perf install-bin && perf test python'
- 
-And use the 'm' alias to build perf.
+If the ultimate caller (userspace in this case) doesn't handle other
+error codes it won't work with lots of other devices and is broken.
 
-I also run 'perf test' before sending patches upstream, in addition to:
+So I doubt any code is that fragile. If we get a report of a regression
+we can look into whether it's sensible to resolve it.
 
-make -C tools/perf build-test
+So fine to change this, but could be a separate patch.
 
-I encourage everybody to do the same.
+J
+>=20
+> Su Hui
+>=20
 
-Additionally I run a long list of container tests on dozens of distros,
-but those should really be running on some CI system :-\
-
-- Arnaldo
