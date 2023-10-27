@@ -2,148 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F24027D90BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4B17D90C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbjJ0IKA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 04:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S235105AbjJ0IKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0IJ5 (ORCPT
+        with ESMTP id S229503AbjJ0IKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:09:57 -0400
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA4E111;
-        Fri, 27 Oct 2023 01:09:54 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7aae07e7ba4so728466241.1;
-        Fri, 27 Oct 2023 01:09:54 -0700 (PDT)
+        Fri, 27 Oct 2023 04:10:04 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D923A1AA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:10:01 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so2002523e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698394200; x=1698999000; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8CisSnqNXXaiB1DfortBil1ZVqBYfAwXV4ZqWoC5H5M=;
+        b=pT6Hc4QC6RMUtYIw3kLtV01p/JqqqiFW7hlBVfsupuKZL9L84832pTKMMcEEmsDKR9
+         imZxW9cO4unsAIB3VTw8lxP3nHtHXlI+2QNkg2uEm3gtEUwLb8g3NGLu1E+7pTykpV04
+         QYpN8FpD76mfpNtncI17niCk5r9z/Yo2Hi8JzRQSLl1BBVR6d53ZUCVM/eiH2AJ5G6Vf
+         5cvAdF0Vs/q5oLCj0H9eeOIQ2FTCjNQPlFOVGbEZqV7VJdQgjEsISSFyuwhFhAKVU9bb
+         pTRHmIyQ9as+e3ecWbQf4SaQbwtVOmS9Hik1dxcJ0tuT2dzdbKWBvocMRWX78awRu9Fs
+         txwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698394193; x=1698998993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YXz17VD25GWoAf0H7NxnM2SjBWk5BeAkDDQxS4QDQmU=;
-        b=IkAcp/xTbdKSGw2Cl78ckOl9BxBh4fmouyQPbXiG+eRaSSXoTb9xayK+RdQhddNtHl
-         uXuF7pE/swNtKeICPMeYEWi5ZuCm+fZvAWXviPBuvaqwIRTPsk2a3bUT5wXiJ8e5YH4X
-         4exkVPPYDYw5fW+st9LxYEyvmeM9xFyH0ncrfKY5Ltprk935t1ojK7GkTTslNvqUEZtI
-         J5D1QXX6JDVIAYyJDSG8SvAWYf85q6qbUSgHLQxnEBOyd1eC0Q7EEaBF3rG233t78sTU
-         soESU6PNpR4muePAXVDn/nlHRrx5/OXWF8xJtGp3HKDaU9ejcs75lWvc4NOJXxN6s0R4
-         k1qw==
-X-Gm-Message-State: AOJu0YzQiJVmOkpLUuY4H80lxbRjLRQfnPbO5hCLXdsX0NaUd7ev32hq
-        NgzrZjoY47bS48SrQHO2JMvKoWclkVWFxg==
-X-Google-Smtp-Source: AGHT+IEwvnSdOsGKN4x0g+weDlDKku373Nr0W6R1+kmlKTzfLeFDb4XYt0Zki8OUcBWwAYNsrRNOqw==
-X-Received: by 2002:a05:6102:3d8c:b0:45a:b396:a44 with SMTP id h12-20020a0561023d8c00b0045ab3960a44mr2199594vsv.25.1698394193414;
-        Fri, 27 Oct 2023 01:09:53 -0700 (PDT)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id c26-20020a056102319a00b004546c2bfd2bsm132465vsh.13.2023.10.27.01.09.52
+        d=1e100.net; s=20230601; t=1698394200; x=1698999000;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CisSnqNXXaiB1DfortBil1ZVqBYfAwXV4ZqWoC5H5M=;
+        b=SNz0Z4pJDTY8ifcMSyqDIwXbRDJFxLWVPgc+A9R4QddTfTWzrwqfWsLjSRDYRlNEQW
+         qNhGe0vnQxK1aGsPt950cMX8G7OdLzw5bjMZC2qhd3stFjWI6vR0yQTWWN27Q4PUiNGt
+         PjYV8dkduuWEoIN59RF9rox7VCfoWvYTtEOxs1+W6HJ9XJaEJ8KH52qgisqLaEqB+5SR
+         6/hkrykO8T70+vWhBd95u2gd4k2q+PPvyCvuwuG/Cp6IOmECD13qAox6YlR5TDzNsUwN
+         dsioglpgMKOLUp246EY5tIfMaM+R1VicuhN/5xW5/3xfFZAO+R7aHxftmMealB226vix
+         YA5g==
+X-Gm-Message-State: AOJu0YycfKfu9LhsOSMN3FrSmiUFo5/F9WP+F19bAu0YRWNLEiZ9DJsa
+        +YY4VQ2C2kTbP8oeBMhXmFZeCA==
+X-Google-Smtp-Source: AGHT+IF9aUdjHt6JkayY4+H85es/07yOQGSeUFu5/clUd/dVrf/THmJdgTPyLmlFmzfhbp+AW/uiqA==
+X-Received: by 2002:a05:6512:3986:b0:504:3464:b4a1 with SMTP id j6-20020a056512398600b005043464b4a1mr1649133lfu.22.1698394200129;
+        Fri, 27 Oct 2023 01:10:00 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id f21-20020a05651232d500b005079a8b0f19sm181280lfg.62.2023.10.27.01.09.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 01:09:52 -0700 (PDT)
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-49ab0641e77so805104e0c.0;
-        Fri, 27 Oct 2023 01:09:52 -0700 (PDT)
-X-Received: by 2002:a1f:178c:0:b0:49e:2145:1654 with SMTP id
- 134-20020a1f178c000000b0049e21451654mr2148085vkx.7.1698394192303; Fri, 27 Oct
- 2023 01:09:52 -0700 (PDT)
+        Fri, 27 Oct 2023 01:09:59 -0700 (PDT)
+Message-ID: <063acbcc-81db-457e-bc4d-c572c8e4b10f@linaro.org>
+Date:   Fri, 27 Oct 2023 10:09:58 +0200
 MIME-Version: 1.0
-References: <cover.1694767208.git.geert+renesas@glider.be> <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
- <CAMuHMdUF61V5qNyKbrTGxZfEJvCVuLO7q2R5MqZYkzRC_cNr0w@mail.gmail.com> <CAMuHMdXTpMYqdFzro3kX-3wXYC8N6z2abiMTiXXpV9xn1ohj0Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdXTpMYqdFzro3kX-3wXYC8N6z2abiMTiXXpV9xn1ohj0Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 27 Oct 2023 10:09:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWdRCzy7_RnBh7bqpURxx8qeWaC6ARMt7XWsbRv8FYnjw@mail.gmail.com>
-Message-ID: <CAMuHMdWdRCzy7_RnBh7bqpURxx8qeWaC6ARMt7XWsbRv8FYnjw@mail.gmail.com>
-Subject: Re: [GIT PULL v2] drm: renesas: shmobile: Atomic conversion + DT
- support (was: Re: [PATCH v4 00/41] drm: renesas: shmobile: Atomic conversion
- + DT support)
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 0/3] Add APSS clock driver support for IPQ5018
+Content-Language: en-US
+To:     Gokul Sriram P <quic_gokulsri@quicinc.com>,
+        dmitry.baryshkov@linaro.org, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, jassisinghbrar@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_varada@quicinc.com, quic_srichara@quicinc.com
+References: <20230925102826.405446-1-quic_gokulsri@quicinc.com>
+ <544f270e-ad62-6b15-13e6-72ca32d46d31@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <544f270e-ad62-6b15-13e6-72ca32d46d31@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David, Daniel,
+On 27/10/2023 10:02, Gokul Sriram P wrote:
+> Hi everyone, a gentle remainder to review and acknowledge the change.
 
-On Tue, Oct 24, 2023 at 12:08 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Oct 16, 2023 at 11:59 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > The following changes since commit 389af786f92ecdff35883551d54bf4e507ffcccb:
-> >
-> >   Merge tag 'drm-intel-next-2023-09-29' of
-> > git://anongit.freedesktop.org/drm/drm-intel into drm-next (2023-10-04
-> > 13:55:19 +1000)
-> >
-> > are available in the Git repository at:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-> > tags/shmob-drm-atomic-dt-tag2
-> >
-> > for you to fetch changes up to 1399ebacbf590dfbac4fbba181dd1595b2fa10ba:
-> >
-> >   drm: renesas: shmobile: Add DT support (2023-10-16 11:47:48 +0200)
-> >
-> > ----------------------------------------------------------------
-> > drm: renesas: shmobile: Atomic conversion + DT support
-> >
-> > Currently, there are two drivers for the LCD controller on Renesas
-> > SuperH-based and ARM-based SH-Mobile and R-Mobile SoCs:
-> >   1. sh_mobile_lcdcfb, using the fbdev framework,
-> >   2. shmob_drm, using the DRM framework.
-> > However, only the former driver is used, as all platform support
-> > integrates the former.  None of these drivers support DT-based systems.
-> >
-> > Convert the SH-Mobile DRM driver to atomic modesetting, and add DT
-> > support, complemented by the customary set of fixes and improvements.
-> >
-> > Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Link: https://lore.kernel.org/r/cover.1694767208.git.geert+renesas@glider.be/
-> >
-> > Changes compared to v1:
-> >   - Rebase to drm-next,
-> >   - Add Acked-by.
-> >
-> > Thanks for pulling!
->
-> Ping?
-> Thanks!
+Really everyone? So what do you miss from me? Any why do you think that
+I did not perform my duties?
 
-Please note that this is a hard dependency for adding shmobile-lcdc
-device nodes to DTS files, which is in turn a hard dependency for
-removing drivers/staging/board/, and for removing legacy clkdev
-registration from various clock drivers.
+Best regards,
+Krzysztof
 
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
