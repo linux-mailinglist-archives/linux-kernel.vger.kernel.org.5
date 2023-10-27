@@ -2,50 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2147D9CE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6A77D9CE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345880AbjJ0PZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        id S1346258AbjJ0P1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbjJ0PZY (ORCPT
+        with ESMTP id S231690AbjJ0P1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:25:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A4D186;
-        Fri, 27 Oct 2023 08:25:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D593C433C8;
-        Fri, 27 Oct 2023 15:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698420322;
-        bh=VROuko5K8q97+Xwgq8pAwl1aEf0SQdloFO2Kq63UPCM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FS1BPOe8kPw9vWm002m0NPlWlCIzQa1WXJIZaqIy2w4KexEWvx+qvn1cN/AcCD72X
-         m/x4GMIiYQFdhqiFVkaTWM8dV+W0SQPvw2BU2N6qiN63Ahf2yK7FpzKvOHqxTfV7pi
-         5VWZkD0yM44aHrzcnQroEPD7HZZBuSYRhomHmLcy1IvicwMuqx5K17D8WVLAwsxioV
-         O9EKb3U5m1MO7rye7UpD+SOQaacVopt5hR/qjwtVcfkeQR/nvc3R7q72d60xlO6EIb
-         hm/zUZBhHLIkWkO0vvaA6I9gZB5fxWwtCMwlE9l0B9z+TSrTXu4OQOx2x/XvJA4fPR
-         m5KEhVIbL6LWQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda: cs35l41: mark cs35l41_verify_id() static
-Date:   Fri, 27 Oct 2023 17:25:09 +0200
-Message-Id: <20231027152515.482411-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Fri, 27 Oct 2023 11:27:39 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E97BAC;
+        Fri, 27 Oct 2023 08:27:37 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RFRWKS020602;
+        Fri, 27 Oct 2023 15:27:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aTofS//6lM+7vOdImDA4rxnNot16RvEWBnEbVQegqtE=;
+ b=OkEvk8ZSe/eVkZtxonJ1CUi7Ypip6vRGcq8uGV3mEogA6GHdSPXztBhsaAAer6qhc6Ei
+ s2B+ilOdagwVy53if+BNKabPiaONwd91DZhJfak6ZQJHZn2wunkYnbdKIuP3ERX4Rt2+
+ sXkdh7tUr0b2OyX1ypiFtR3Zebzg3uynvyS75JZKR0PGI2uPONzAm5p4Z7NicTRWFv4x
+ w6j01bluGDf8XhHBMqw58Z3fTd9ACiaxum1YHF+w7+htI5PeqXTKRXrvH7dRyVmxlvEO
+ J8MvyXrSIAmEmUfTtvTyeBOGrN+bnUNGQ/tnOEGggTq5dszTXjqMvgMu0Uv5dyK02kLZ SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u0fqb0bdg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 15:27:36 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39RFHddn017470;
+        Fri, 27 Oct 2023 15:27:35 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u0fqb0ahu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 15:27:33 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39RDP75T025010;
+        Fri, 27 Oct 2023 15:26:00 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tywqrww41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 15:26:00 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39RFPwrv12518028
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Oct 2023 15:25:59 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7F065805E;
+        Fri, 27 Oct 2023 15:25:58 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0019D58051;
+        Fri, 27 Oct 2023 15:25:57 +0000 (GMT)
+Received: from [9.61.163.200] (unknown [9.61.163.200])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 27 Oct 2023 15:25:57 +0000 (GMT)
+Message-ID: <7fe05c94-06ae-4e40-8894-95ad0b21a4a9@linux.ibm.com>
+Date:   Fri, 27 Oct 2023 11:25:57 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] s390/vfio-ap: set status response code to 06 on
+ gisc registration failure
+Content-Language: en-US
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com,
+        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com, mjrosato@linux.ibm.com
+References: <20231026183250.254432-1-akrowiak@linux.ibm.com>
+ <20231026183250.254432-3-akrowiak@linux.ibm.com>
+ <20231027131904.165c7ad6.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <20231027131904.165c7ad6.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xsa4torbGIfr5LiTVNH6-vM4L4Y433dc
+X-Proofpoint-GUID: nITYVzzeQ1SHCxO7Guegs83rVdJAUTLD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_13,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ mlxlogscore=921 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2310270133
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,33 +97,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-The newly introduced function is global but only called in this one
-file and has no extern prototype, so it should probably be static:
 
-sound/pci/hda/cs35l41_hda.c:733:5: error: no previous prototype for 'cs35l41_verify_id' [-Werror=missing-prototypes]
-  733 | int cs35l41_verify_id(struct cs35l41_hda *cs35l41, unsigned int *regid, unsigned int *reg_revid)
+On 10/27/23 07:19, Halil Pasic wrote:
+> On Thu, 26 Oct 2023 14:32:44 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> 
+>> Since this scenario is very unlikely to happen and there is no status
+>> response code to indicate an invalid ISC value, let's set the
+> 
+> Again invalid ISC won't happen except for hypervisor messes up.
 
-Fixes: 881b7bce0c25 ("ALSA: hda: cs35l41: Run boot process during resume callbacks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/hda/cs35l41_hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Again, that is one of the checks performed by the kvm_s390_gisc_register
+function; however, I get your point and will remove reference in the 
+comment.
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 496ff6a9d300..98a5123e9f50 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -730,7 +730,7 @@ static int cs35l41_hda_channel_map(struct device *dev, unsigned int tx_num, unsi
- 				    rx_slot);
- }
- 
--int cs35l41_verify_id(struct cs35l41_hda *cs35l41, unsigned int *regid, unsigned int *reg_revid)
-+static int cs35l41_verify_id(struct cs35l41_hda *cs35l41, unsigned int *regid, unsigned int *reg_revid)
- {
- 	unsigned int mtl_revid, chipid;
- 	int ret;
--- 
-2.39.2
+> 
+>> response code to 06 indicating 'Invalid address of AP-queue notification
+>> byte'. While this is not entirely accurate, it is better than indicating
+>> that the ZONE/GISA designation is invalid which is something the guest
+>> can do nothing about since those values are set by the hypervisor.
+> 
+> And more importantly AP_RESPONSE_INVALID_GISA is not valid for G2 in
+> the given scenario, since G2 is not trying to set up interrupts on behalf
+> of the G3 with a G3 GISA, but G2 is trying to set up interrupts for
+> itself. And then AP_RESPONSE_INVALID_GISA is architecturally simply not
+> a valid RC!
 
+Got it.
+
+> 
+>>
+>> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
+>> Suggested-by: Halil Pasic <pasic@linux.ibm.com>
+> 
+> Except for the explanation in the commit message, the patch is good. It
+> is up to you if you want to fix the commit message or not.
+> 
+
+I'll fix the commit message.
+
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
