@@ -2,132 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBDF7DA097
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BCA7DA09E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346313AbjJ0SfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
+        id S235300AbjJ0ShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235286AbjJ0SfI (ORCPT
+        with ESMTP id S1346431AbjJ0ShI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:35:08 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23110BD
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:34:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da13698a6d3so863451276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698431691; x=1699036491; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z2KQL5mvly38v1BFhse+1fz0BAqnm18zxyTLFh/7tsk=;
-        b=Z5ILT5hvKkDIHkefyZ7DIbBIF4l+w7ELSsLPK5m/QuyaiH5Aw4BbDIsLkqFnnFA3TB
-         4Fv/axwSRpcfIKikQYYzcPYcM5mhIGd7cT8dvN18RQjgxCIHQxeQXDxfw5ih6bFTvI1a
-         dp8lsS19F67GlMSvqFtbIU+owE7wY/WB6rmv+WG/LosTg3PLLncwFyKk98j6HU1toKRX
-         yh9ZGH06yCf2KOkXRcK/WFCXc88PdlO3vua+PPrukDveeKhed+rs1ARycDwM5HnLdmEJ
-         lbyBWXBoH5jtUlzy6JMj1QJ62nVcto3fPQy5btlPoY2DMdfpIpDxiWWXkaAhbyUy07/p
-         bHTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698431691; x=1699036491;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z2KQL5mvly38v1BFhse+1fz0BAqnm18zxyTLFh/7tsk=;
-        b=HrXLZKKqdl24btimw0e9tko4pLJM7520EBlytnVJ8DfSUnuoZNTY6g8EwuHUgG5nhF
-         zy9+Pat1uAYLcpaw1foXjtO0v2V+3ube8Qu6pUWCE1wfq0Nu8NQn42ErQo9G16RI4u7W
-         I+vq/eTX0fhXqUd0LsyCsd0hA87vEccRHhEhSEO+yVaJhev0z5roh4SWCsYKdagImXmc
-         HxOlKebiN4ddzOfdI4P1kk9dgdYeZBWEvx7Vs6ZwG/Xvxx6+DRAKfiIM8Gqm7DwgUfil
-         PyhZu5CNVvuBZCeCeOQ3rwPjMxw8rcwsedeeWSYR+aqkF/VpL9yLJds4JIUjrAk+NNXd
-         3uLQ==
-X-Gm-Message-State: AOJu0YyldEK8pV5PEAjoIZ5Nlkvmw4IHJj8xGoCwvckY5OWPaIB/Ti+U
-        FtGa5rnpEVOksTvuwrYXlgzlfURu/5aD4Wff7Q==
-X-Google-Smtp-Source: AGHT+IHO7TfvuhqtaNPamSWCx8oIFoDkAauEh146HYvDhEqkkJsUEpXQ/mGMMdFvo6VFXYCnA+3y2HxsYhlkjW1YXQ==
-X-Received: from shuzhenwang.mtv.corp.google.com ([2620:15c:211:201:c5e7:1675:d0d:2a4c])
- (user=shuzhenwang job=sendgmr) by 2002:a05:6902:565:b0:da0:c979:fd70 with
- SMTP id a5-20020a056902056500b00da0c979fd70mr70535ybt.9.1698431691381; Fri,
- 27 Oct 2023 11:34:51 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 11:34:40 -0700
-In-Reply-To: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
-Mime-Version: 1.0
-References: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231027183440.1994315-1-shuzhenwang@google.com>
-Subject: [PATCH v2] usb: gadget: uvc: Add missing initialization of ssp config descriptor
-From:   Shuzhen Wang <shuzhenwang@google.com>
-To:     shuzhenwang@google.com, gregkh@linuxfoundation.org
-Cc:     balbi@kernel.org, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 27 Oct 2023 14:37:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5871A5;
+        Fri, 27 Oct 2023 11:36:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC3AC433C8;
+        Fri, 27 Oct 2023 18:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698431797;
+        bh=+KCiqcUxhGzJk+V3uKLhq3+C5BdyzVXPbI2bbWul+qs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMKhNzgHmvIFPnWw1Oj9ftPpTFIBtViMuPxR0m1P9FvW5JBwQExMqHwosZMROkd8D
+         EsEc9Osf2Q6VpdNnDrQPtKp0oSf0bvEbh2ygddlSAo2SoX17kCiiOtlpu/9IEEfX+l
+         sE9CdDoKEJ5OdfUmCd4Ow0hnSwLWyb2WmBrAIq8cvX3eEFb/R/W2K3Oc6oLdpsE1JP
+         mhBHTeHzk8O0atk4gYpFBODSTYXxFz/4SNpR2ghM+m9ZKfuKPRRZdwVx3CbmprnUhs
+         Gjm3AX6OXDZ5Uy7fyLAWwT5aa2eVUyz2eYydrLT9KrAqoVPW+pgoAQvLQo/Hex7AyJ
+         NTlFZt3FqFexw==
+Date:   Fri, 27 Oct 2023 11:36:36 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <20231027183636.GA11382@frogsfrogsfrogs>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f>
+ <20231019155958.7ek7oyljs6y44ah7@f>
+ <ZTJmnsAxGDnks2aj@dread.disaster.area>
+ <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+ <ZTYAUyiTYsX43O9F@dread.disaster.area>
+ <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the uvc gadget is super speed plus, the corresponding config
-descriptor wasn't initialized. As a result, the host will not recognize
-the devices when using super speed plus connection.
+On Fri, Oct 27, 2023 at 07:13:11PM +0200, Mateusz Guzik wrote:
+> On 10/23/23, Dave Chinner <david@fromorbit.com> wrote:
+> > On Fri, Oct 20, 2023 at 07:49:18PM +0200, Mateusz Guzik wrote:
+> >> On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
+> >> > On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
+> >> >> > To be clear there is no urgency as far as I'm concerned, but I did
+> >> >> > run
+> >> >> > into something which is primarily bottlenecked by inode hash lock
+> >> >> > and
+> >> >> > looks like the above should sort it out.
+> >> >> >
+> >> >> > Looks like the patch was simply forgotten.
+> >> >> >
+> >> >> > tl;dr can this land in -next please
+> >> >>
+> >> >> In case you can't be arsed, here is something funny which may convince
+> >> >> you to expedite. ;)
+> >> >>
+> >> >> I did some benching by running 20 processes in parallel, each doing
+> >> >> stat
+> >> >> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000
+> >> >> files,
+> >> >> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
+> >> >>
+> >> >> Best times:
+> >> >> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+> >> >> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+> >> >> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+> >> >> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+> >> >> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
+> >> >>
+> >> >> NetBSD failed to complete the run, OOM-killing workers:
+> >> >> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+> >> >> OpenBSD is shafted by a big kernel lock, so no surprise it takes a
+> >> >> long
+> >> >> time.
+> >> >>
+> >> >> So what I find funny is that Linux needed more time than OmniosCE (an
+> >> >> Illumos variant, fork of Solaris).
+> >> >>
+> >> >> It also needed more time than FreeBSD, which is not necessarily funny
+> >> >> but not that great either.
+> >> >>
+> >> >> All systems were mostly busy contending on locks and in particular
+> >> >> Linux
+> >> >> was almost exclusively busy waiting on inode hash lock.
+> >> >
+> >> > Did you bother to test the patch, or are you just complaining
+> >> > that nobody has already done the work for you?
+> >>
+> >> Why are you giving me attitude?
+> >
+> > Look in the mirror, mate.
+> >
+> > Starting off with a derogatory statement like:
+> >
+> > "In case you can't be arsed, ..."
+> >
+> > is a really good way to start a fight.
+> >
+> > I don't think anyone working on this stuff couldn't be bothered to
+> > get their lazy arses off their couches to get it merged. Though you
+> > may not have intended it that way, that's exactly what "can't be
+> > arsed" means.
+> >
+> > I have not asked for this code to be merged because I'm not ready to
+> > ask for it to be merged. I'm trying to be careful and cautious about
+> > changing core kernel code that every linux installation out there
+> > uses because I care about this code being robust and stable. That's
+> > the exact opposite of "can't be arsed"....
+> >
+> > Further, you have asked for code that is not ready to be merged to
+> > be merged without reviewing it or even testing it to see if it
+> > solved your reported problem. This is pretty basic stuff - it you
+> > want it merged, then *you also need to put effort into getting it
+> > merged* regardless of who wrote the code. TANSTAAFL.
+> >
+> > But you've done neither - you've just made demands and thrown
+> > hypocritical shade implying busy people working on complex code are
+> > lazy arses.
+> >
+> 
+> So I took few days to take a look at this with a fresh eye and I see
+> where the major disconnect is coming from, albeit still don't see how
+> it came to be nor why it persists.
+> 
+> To my understanding your understanding is that I demand you carry the
+> hash bl patch over the finish line and I'm rude about it as well.
+> 
+> That is not my position here though.
+> 
+> For starters my opening e-mail was to Christian, not you. You are
+> CC'ed as the patch author. It is responding to an e-mail which claimed
+> the patch would land in -next, which to my poking around did not
+> happen (and I checked it's not in master either). Since there was no
+> other traffic about it that I could find, I figured it was probably
+> forgotten. You may also notice the e-mail explicitly states:
+> 1. I have a case which runs into inode hash being a problem
+> 2. *there is no urgency*, I'm just asking what's up with the patch not
+> getting anywhere.
+> 
+> The follow up including a statement about "being arsed" once more was
+> to Christian, not you and was rather "tongue in cheek".
 
-This patch initializes them to super speed descriptors.
+I thought that was a very rude way to address Christian.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Shuzhen Wang <shuzhenwang@google.com>
----
- v2: fix patch formatting
+Notice how he hasn't even given you a response?
 
- drivers/usb/gadget/function/f_uvc.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+"Hello, this patch improves performance for me on _______ workload.
+What needs to be done to get this ready for merging?  I'd like to
+take on that work."
 
-diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-index faa398109431..786379f1b7b7 100644
---- a/drivers/usb/gadget/function/f_uvc.c
-+++ b/drivers/usb/gadget/function/f_uvc.c
-@@ -516,6 +516,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 	void *mem;
- 
- 	switch (speed) {
-+	case USB_SPEED_SUPER_PLUS:
- 	case USB_SPEED_SUPER:
- 		uvc_control_desc = uvc->desc.ss_control;
- 		uvc_streaming_cls = uvc->desc.ss_streaming;
-@@ -564,7 +565,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 		bytes += uvc_interrupt_ep.bLength + uvc_interrupt_cs_ep.bLength;
- 		n_desc += 2;
- 
--		if (speed == USB_SPEED_SUPER) {
-+		if (speed == USB_SPEED_SUPER ||
-+		    speed == USB_SPEED_SUPER_PLUS) {
- 			bytes += uvc_ss_interrupt_comp.bLength;
- 			n_desc += 1;
- 		}
-@@ -619,7 +621,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
- 
- 	if (uvc->enable_interrupt_ep) {
- 		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_ep);
--		if (speed == USB_SPEED_SUPER)
-+		if (speed == USB_SPEED_SUPER ||
-+		    speed == USB_SPEED_SUPER_PLUS)
- 			UVC_COPY_DESCRIPTOR(mem, dst, &uvc_ss_interrupt_comp);
- 
- 		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_cs_ep);
-@@ -795,6 +798,13 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
- 		goto error;
- 	}
- 
-+	f->ssp_descriptors = uvc_copy_descriptors(uvc, USB_SPEED_SUPER_PLUS);
-+	if (IS_ERR(f->ssp_descriptors)) {
-+		ret = PTR_ERR(f->ssp_descriptors);
-+		f->ssp_descriptors = NULL;
-+		goto error;
-+	}
-+
- 	/* Preallocate control endpoint request. */
- 	uvc->control_req = usb_ep_alloc_request(cdev->gadget->ep0, GFP_KERNEL);
- 	uvc->control_buf = kmalloc(UVC_MAX_REQUEST_SIZE, GFP_KERNEL);
--- 
-2.42.0.820.g83a721a137-goog
+--D
 
+> If you know about Illumos, it is mostly slow and any serious
+> performance work stopped there when Oracle closed the codebase over a
+> decade ago. Or to put it differently, one has to be doing something
+> really bad to not be faster today. And there was this bad -- the inode
+> hash. I found it amusing and decided to share in addition to asking
+> about the patch.
+> 
+> So no Dave, I'm not claiming the patch is not in because anyone is lazy.
+> 
+> Whether the patch is ready for reviews and whatnot is your call to
+> make as the author.
+> 
+> To repeat from my previous e-mail I note the lock causes real problems
+> in a real-world setting, it's not just microbenchmarks, but I'm in no
+> position to test it against the actual workload (only the part I
+> carved out into a benchmark, where it does help -- gets rid of the
+> nasty back-to-back lock acquire, first to search for the inode and
+> then to insert a new one).
+> 
+> If your assessment is that more testing is needed, that makes sense
+> and is again your call to make. I repeat again I can't help with this
+> bit though. And if you don't think the effort is justified at the
+> moment (or there are other things with higher priority), so be it.
+> 
+> It may be I'll stick around in general and if so it may be I'm going
+> to run into you again.
+> With this in mind:
+> 
+> > Perhaps you should consider your words more carefully in future?
+> >
+> 
+> On that front perhaps you could refrain from assuming someone is
+> trying to call you names or whatnot. But more importantly if you
+> consider an e-mail to be rude, you can call it out instead of
+> escalating or responding in what you consider to be the same tone.
+> 
+> All that said I'm bailing from this patchset.
+> 
+> Cheers,
+> -- 
+> Mateusz Guzik <mjguzik gmail.com>
+> 
