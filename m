@@ -2,155 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B2C7D9604
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6801D7D9607
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345707AbjJ0LKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        id S1345688AbjJ0LKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJ0LKE (ORCPT
+        with ESMTP id S1345539AbjJ0LKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:10:04 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFB1129
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:10:02 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5079f9675c6so2988471e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698405000; x=1699009800; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=blp+a0MlGD5pzk7JAdwHfntPsuGSRfQeCbROVp8O9Yw=;
-        b=XdEgu8YcqOxJbecfv2maKzwJ/MvMDIIt285oxPukkKnVjyYg+g0bG+t6m60Mt/Nx/2
-         VauTVpeSjukXoTJ6pa/HgvUBRe9Qf7lyQ1mMrzLyNrWw2f0DMk3HwDVXIbS7WHtseFe2
-         hD+Az2Q47sH1p9kDxOia8fymvwHWhoqwZuhcDrQT16DqKDYjI9YziaWO3c2LHk6PnNaN
-         NzSvZj3of8vX7JU7vTHzwnBjuBgXZ+K2zTonemTC1SeFHeVyRCylnQI/FJExq8xRm4Wz
-         hj7KC7aHgoijVqAgOenjHHOYPxG72zvDg6tWaykATUPe8HUtz1SSq8dGPlv7mWcIWS9z
-         GopA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698405000; x=1699009800;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=blp+a0MlGD5pzk7JAdwHfntPsuGSRfQeCbROVp8O9Yw=;
-        b=HjAI0a30hf30dS0CYQ3UVdiMHyI+Y2JvMy+RscSDjNd2KJeeQrDkBvaKDo0T3QCgjC
-         Dwunz82hTmUkIV2Wywx24vzevcd5Z8pSPX1vY3aZ0zCbTm7LoPG4ANaQf7VXgH8rlm3b
-         mH0IyxkKqNchs0AzIbI4rJytE5eGyb5AOKAy6MM2F6knWBGxWd+/ggHIi+mhWtsGzPxY
-         9JdTa1H+R6lmgEX35aDXFwL2qasCPDf1FHRSSq42XSVnFA21hbhhO5RXKmmLAhbrhNPD
-         gXeyMmWSFt2KCszQVu5giWuSQl96zNVv30dEGFv7baN+08rDb4YcGHJGsyCr0WbYir2q
-         ZoDQ==
-X-Gm-Message-State: AOJu0YzUfeYn22mhgQv+RX+X33kvVxBCsUtTFS534MqPD1xA1yXapBrh
-        4vL2svKnhHkVs3WsT2RN9AQSmg==
-X-Google-Smtp-Source: AGHT+IEwb+QM+OJ39rKZGDpUKH/caPyYLN3FberZMUEbfs0yjZByTHzsFSGlDak1X0ymQenG7Ryk4w==
-X-Received: by 2002:ac2:5a02:0:b0:504:31a0:f9e2 with SMTP id q2-20020ac25a02000000b0050431a0f9e2mr1554435lfn.58.1698405000213;
-        Fri, 27 Oct 2023 04:10:00 -0700 (PDT)
-Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id g21-20020ac25395000000b00507d219596dsm238408lfh.268.2023.10.27.04.09.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 04:09:59 -0700 (PDT)
-Message-ID: <1075eedc-3e7e-4070-8cf2-ae63513fd764@linaro.org>
-Date:   Fri, 27 Oct 2023 13:09:58 +0200
+        Fri, 27 Oct 2023 07:10:31 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4149C
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:10:27 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qwKjO-0003sL-Gn; Fri, 27 Oct 2023 13:10:22 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qwKjN-004cvt-AO; Fri, 27 Oct 2023 13:10:21 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1qwKjN-00BpOW-0k; Fri, 27 Oct 2023 13:10:21 +0200
+Date:   Fri, 27 Oct 2023 13:10:21 +0200
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jayant Chowdhary <jchowdhary@google.com>,
+        Thinh.Nguyen@synopsys.com, arakesh@google.com, etalvala@google.com,
+        dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] usb:gadget:uvc Do not use worker thread to pump usb
+ requests
+Message-ID: <ZTuanepgXLXRoSMW@pengutronix.de>
+References: <ZToOJhyOFeGCGUFj@pengutronix.de>
+ <20231026215635.2478767-1-jchowdhary@google.com>
+ <20231027075117.GJ26306@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm64: dts: add dt-bindings for ac5x
- rd carrier
-Content-Language: en-US
-To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     cyuval@marvell.com
-References: <20231026084735.3595944-1-enachman@marvell.com>
- <20231026084735.3595944-3-enachman@marvell.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231026084735.3595944-3-enachman@marvell.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rK6yFqwEgMhrDLfI"
+Content-Disposition: inline
+In-Reply-To: <20231027075117.GJ26306@pendragon.ideasonboard.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 10:47, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
-> 
-> Add dt bindings for AC5X RD COM Express Type 7 carrier board.
-> This board will Accept a CN9131 COM Express Type 7 CPU module.
-> 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-> ---
->  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml     | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> index 52d78521e412..71bc94047d1b 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> @@ -60,4 +60,12 @@ properties:
->            - const: marvell,armada-ap807-quad
->            - const: marvell,armada-ap807
->  
-> +      - description: AC5X RD COM Express Carrier for Armada CN9131 SoC with one external CP
-> +        items:
-> +          - const: marvell,ac5x_rd_carrier
 
-No underscores in compatibles. Do you see them anywhere? Please use
-existing, recent code as start of your contributions, not something
-buggy 5 years old.
+--rK6yFqwEgMhrDLfI
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Fri, Oct 27, 2023 at 10:51:17AM +0300, Laurent Pinchart wrote:
+>Thank you for the patch.
+>
+>On Thu, Oct 26, 2023 at 09:56:35PM +0000, Jayant Chowdhary wrote:
+>> This patch is based on top of
+>> https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google=
+=2Ecom/T/#t:
+>>
+>> When we use an async work queue to perform the function of pumping
+>> usb requests to the usb controller, it is possible that thread scheduling
+>> affects at what cadence we're able to pump requests. This could mean usb
+>> requests miss their uframes - resulting in video stream flickers on the =
+host
+>> device.
+>>
+>> In this patch, we move the pumping of usb requests to
+>> 1) uvcg_video_complete() complete handler for both isoc + bulk
+>>    endpoints. We still send 0 length requests when there is no uvc buffer
+>>    available to encode.
+>
+>This means you will end up copying large amounts of data in interrupt
+>context. The work queue was there to avoid exactly that, as it will
+>introduce delays that can affect other parts of the system. I think this
+>is a problem.
 
+Regarding Thin's argument about possible scheduling latency that is already
+introducing real errors, this seemed like a good solution.
+
+But sure, this potential latency introduced in the interrupt context can
+trigger other side effects.
+
+However I think we need some compromise since both arguments are very valid.
+
+Any ideas, how to solve this?
+
+>> 2) uvc_v4l2_qbuf - only for bulk endpoints since it is not legal to send
+>>    0 length requests.
+>>
+>> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
+>> Suggested-by: Jayant Chowdhary <jchowdhary@google.com>
+>> Suggested-by: Avichal Rakesh <arakesh@google.com>
+>> Tested-by: Jayant Chowdhary <jchowdhary@google.com>
+>> ---
+>>  v1->v2: Fix code style and add self Signed-off-by
+>>
+>>  drivers/usb/gadget/function/f_uvc.c     |  4 --
+>>  drivers/usb/gadget/function/uvc.h       |  4 +-
+>>  drivers/usb/gadget/function/uvc_v4l2.c  |  5 +-
+>>  drivers/usb/gadget/function/uvc_video.c | 71 ++++++++++++++++---------
+>>  drivers/usb/gadget/function/uvc_video.h |  2 +
+>>  5 files changed, 51 insertions(+), 35 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/fu=
+nction/f_uvc.c
+>> index ae08341961eb..53cb2539486d 100644
+>> --- a/drivers/usb/gadget/function/f_uvc.c
+>> +++ b/drivers/usb/gadget/function/f_uvc.c
+>> @@ -959,14 +959,10 @@ static void uvc_function_unbind(struct usb_configu=
+ration *c,
+>>  {
+>>  	struct usb_composite_dev *cdev =3D c->cdev;
+>>  	struct uvc_device *uvc =3D to_uvc(f);
+>> -	struct uvc_video *video =3D &uvc->video;
+>>  	long wait_ret =3D 1;
+>>
+>>  	uvcg_info(f, "%s()\n", __func__);
+>>
+>> -	if (video->async_wq)
+>> -		destroy_workqueue(video->async_wq);
+>> -
+>>  	/*
+>>  	 * If we know we're connected via v4l2, then there should be a cleanup
+>>  	 * of the device from userspace either via UVC_EVENT_DISCONNECT or
+>> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/func=
+tion/uvc.h
+>> index be0d012aa244..498f344fda4b 100644
+>> --- a/drivers/usb/gadget/function/uvc.h
+>> +++ b/drivers/usb/gadget/function/uvc.h
+>> @@ -88,9 +88,6 @@ struct uvc_video {
+>>  	struct uvc_device *uvc;
+>>  	struct usb_ep *ep;
+>>
+>> -	struct work_struct pump;
+>> -	struct workqueue_struct *async_wq;
+>> -
+>>  	/* Frame parameters */
+>>  	u8 bpp;
+>>  	u32 fcc;
+>> @@ -116,6 +113,7 @@ struct uvc_video {
+>>  	/* Context data used by the completion handler */
+>>  	__u32 payload_size;
+>>  	__u32 max_payload_size;
+>> +	bool is_bulk;
+>
+>This should be introduced in a separate patch.
+>
+>>
+>>  	struct uvc_video_queue queue;
+>>  	unsigned int fid;
+>> diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget=
+/function/uvc_v4l2.c
+>> index f4d2e24835d4..678ea6df7b5c 100644
+>> --- a/drivers/usb/gadget/function/uvc_v4l2.c
+>> +++ b/drivers/usb/gadget/function/uvc_v4l2.c
+>> @@ -414,10 +414,7 @@ uvc_v4l2_qbuf(struct file *file, void *fh, struct v=
+4l2_buffer *b)
+>>  	ret =3D uvcg_queue_buffer(&video->queue, b);
+>>  	if (ret < 0)
+>>  		return ret;
+>> -
+>> -	if (uvc->state =3D=3D UVC_STATE_STREAMING)
+>> -		queue_work(video->async_wq, &video->pump);
+>> -
+>> +	uvcg_video_pump_qbuf(video);
+>>  	return ret;
+>>  }
+>>
+>> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadge=
+t/function/uvc_video.c
+>> index ab3f02054e85..0fcd8e5edbac 100644
+>> --- a/drivers/usb/gadget/function/uvc_video.c
+>> +++ b/drivers/usb/gadget/function/uvc_video.c
+>> @@ -24,6 +24,8 @@
+>>   * Video codecs
+>>   */
+>>
+>> +static void uvcg_video_pump(struct uvc_video *video);
+>> +
+>>  static int
+>>  uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
+>>  		u8 *data, int len)
+>> @@ -329,7 +331,9 @@ uvc_video_complete(struct usb_ep *ep, struct usb_req=
+uest *req)
+>>  	 */
+>>  	if (video->is_enabled) {
+>>  		list_add_tail(&req->list, &video->req_free);
+>> -		queue_work(video->async_wq, &video->pump);
+>> +		spin_unlock_irqrestore(&video->req_lock, flags);
+>> +		uvcg_video_pump(video);
+>> +		return;
+>>  	} else {
+>>  		uvc_video_free_request(ureq, ep);
+>>  	}
+>> @@ -409,20 +413,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
+>>   * Video streaming
+>>   */
+>>
+>> +void uvcg_video_pump_qbuf(struct uvc_video *video)
+>> +{
+>> +	/*
+>> +	 * Only call uvcg_video_pump() from qbuf, for bulk eps since
+>> +	 * for isoc, the complete handler will call uvcg_video_pump()
+>> +	 * consistently. Calling it for isoc eps, while correct
+>> +	 * will increase contention for video->req_lock since the
+>> +	 * complete handler will be called more often.
+>> +	*/
+>> +	if (video->is_bulk)
+>> +		uvcg_video_pump(video);
+>
+>Am I the only one to see the *major* race condition that this patch
+>introduces ?
+
+Possible that you are. Please elaborate.
+
+>> +}
+>> +
+>>  /*
+>>   * uvcg_video_pump - Pump video data into the USB requests
+>>   *
+>>   * This function fills the available USB requests (listed in req_free) =
+with
+>>   * video data from the queued buffers.
+>>   */
+>> -static void uvcg_video_pump(struct work_struct *work)
+>> +static void uvcg_video_pump(struct uvc_video *video)
+>>  {
+>> -	struct uvc_video *video =3D container_of(work, struct uvc_video, pump);
+>>  	struct uvc_video_queue *queue =3D &video->queue;
+>> -	/* video->max_payload_size is only set when using bulk transfer */
+>> -	bool is_bulk =3D video->max_payload_size;
+>>  	struct usb_request *req =3D NULL;
+>> -	struct uvc_buffer *buf;
+>> +	struct uvc_request *ureq =3D NULL;
+>> +	struct uvc_buffer *buf =3D NULL, *last_buf =3D NULL;
+>>  	unsigned long flags;
+>>  	bool buf_done;
+>>  	int ret;
+>> @@ -455,7 +470,8 @@ static void uvcg_video_pump(struct work_struct *work)
+>>  		if (buf !=3D NULL) {
+>>  			video->encode(req, video, buf);
+>>  			buf_done =3D buf->state =3D=3D UVC_BUF_STATE_DONE;
+>> -		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) && !is_bulk) {
+>> +		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) &&
+>> +				!video->is_bulk) {
+>>  			/*
+>>  			 * No video buffer available; the queue is still connected and
+>>  			 * we're transferring over ISOC. Queue a 0 length request to
+>> @@ -500,18 +516,30 @@ static void uvcg_video_pump(struct work_struct *wo=
+rk)
+>>  			req->no_interrupt =3D 1;
+>>  		}
+>>
+>> -		/* Queue the USB request */
+>> -		ret =3D uvcg_video_ep_queue(video, req);
+>>  		spin_unlock_irqrestore(&queue->irqlock, flags);
+>> -
+>> +		spin_lock_irqsave(&video->req_lock, flags);
+>> +		if (video->is_enabled) {
+>> +			/* Queue the USB request */
+>> +			ret =3D uvcg_video_ep_queue(video, req);
+>> +			/* Endpoint now owns the request */
+>> +			req =3D NULL;
+>> +			video->req_int_count++;
+>> +		} else {
+>> +			ret =3D  -ENODEV;
+>> +			ureq =3D req->context;
+>> +			last_buf =3D ureq->last_buf;
+>> +			ureq->last_buf =3D NULL;
+>> +		}
+>> +		spin_unlock_irqrestore(&video->req_lock, flags);
+>>  		if (ret < 0) {
+>> +			if (last_buf !=3D NULL) {
+>> +				// Return the buffer to the queue in the case the
+>> +				// request was not queued to the ep.
+>
+>Wrong comment style.
+>
+>> +				uvcg_complete_buffer(&video->queue, last_buf);
+>> +			}
+>>  			uvcg_queue_cancel(queue, 0);
+>>  			break;
+>>  		}
+>> -
+>> -		/* Endpoint now owns the request */
+>> -		req =3D NULL;
+>> -		video->req_int_count++;
+>>  	}
+>>
+>>  	if (!req)
+>> @@ -556,7 +584,6 @@ uvcg_video_disable(struct uvc_video *video)
+>>  	}
+>>  	spin_unlock_irqrestore(&video->req_lock, flags);
+>>
+>> -	cancel_work_sync(&video->pump);
+>>  	uvcg_queue_cancel(&video->queue, 0);
+>>
+>>  	spin_lock_irqsave(&video->req_lock, flags);
+>> @@ -626,14 +653,16 @@ int uvcg_video_enable(struct uvc_video *video, int=
+ enable)
+>>  	if (video->max_payload_size) {
+>>  		video->encode =3D uvc_video_encode_bulk;
+>>  		video->payload_size =3D 0;
+>> -	} else
+>> +		video->is_bulk =3D true;
+>> +	} else {
+>>  		video->encode =3D video->queue.use_sg ?
+>>  			uvc_video_encode_isoc_sg : uvc_video_encode_isoc;
+>> +		video->is_bulk =3D false;
+>> +	}
+>>
+>>  	video->req_int_count =3D 0;
+>>
+>> -	queue_work(video->async_wq, &video->pump);
+>> -
+>> +	uvcg_video_pump(video);
+>>  	return ret;
+>>  }
+>>
+>> @@ -646,12 +675,6 @@ int uvcg_video_init(struct uvc_video *video, struct=
+ uvc_device *uvc)
+>>  	INIT_LIST_HEAD(&video->ureqs);
+>>  	INIT_LIST_HEAD(&video->req_free);
+>>  	spin_lock_init(&video->req_lock);
+>> -	INIT_WORK(&video->pump, uvcg_video_pump);
+>> -
+>> -	/* Allocate a work queue for asynchronous video pump handler. */
+>> -	video->async_wq =3D alloc_workqueue("uvcgadget", WQ_UNBOUND | WQ_HIGHP=
+RI, 0);
+>> -	if (!video->async_wq)
+>> -		return -EINVAL;
+>>
+>>  	video->uvc =3D uvc;
+>>  	video->fcc =3D V4L2_PIX_FMT_YUYV;
+>> diff --git a/drivers/usb/gadget/function/uvc_video.h b/drivers/usb/gadge=
+t/function/uvc_video.h
+>> index 03adeefa343b..29c6b9a2e9c3 100644
+>> --- a/drivers/usb/gadget/function/uvc_video.h
+>> +++ b/drivers/usb/gadget/function/uvc_video.h
+>> @@ -18,4 +18,6 @@ int uvcg_video_enable(struct uvc_video *video, int ena=
+ble);
+>>
+>>  int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc);
+>>
+>> +void uvcg_video_pump_qbuf(struct uvc_video *video);
+>> +
+>>  #endif /* __UVC_VIDEO_H__ */
+>
+>--=20
+>Regards,
+>
+>Laurent Pinchart
+>
+
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--rK6yFqwEgMhrDLfI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmU7mpoACgkQC+njFXoe
+LGRqwRAAlDi4ZhZK2mUJZ3FxTxk/cdfL8vicTdleB4E0D/FnGLw+PPMsX/eDEbhP
+0o3pqPpj9CgRowtw1zc0vrfoRjW/oLAwf7YK3LZaMnn0ZtRyLpiHvvIPq/FvMe5b
+fLFFAPTsJxqDNYBi0q0VIL2VarYu9Rl6sXaS4Eb+hgRlDbkXVpyFaUt7RHLSGW63
+eZePSohL/7za4GdOsSu+F7RFAgwfxj1e811NhC3+RUNkWwt/rnSGjYM1fIKYVgkW
+1PRJwvviEO8/xslA/tCduCumFBxmJnepuZzwHrWklbZeRJgKU/n97ZiCSxM6LHex
+m0mZEf6zSnkhShixWxdjN5CeOTX1gu82wn3KL/Ti3WH+PbgQfsnOwd5KmCma59nS
+y8tJYo3qdMuGbaCtvtHQ29d0iy5WNRbHbHCU8YuWg3Titk/Qon/GjsyYinmlPM6w
+2airqbJTnQtkm45Ff2kEpKwpSjU9wwt/eWljtGqsLYH/+ca6XypsJn4//DiPLisX
+DGSUFW36zi21mTP8Lzm0o+78/vxKivL8XG/nMrodSfL/Sdm10aaVvowbOKodvdDL
+VqY5M0825MXJOxlNE8u8qbbdWWrz6C4X5Wt2aph47ztvQQrsbZgjuuDptxDPqziq
+PsmUe3blO9smw6BGKBKU9IMPDP+53f4jqlCTUswqwbe1bsEBmxw=
+=TjpE
+-----END PGP SIGNATURE-----
+
+--rK6yFqwEgMhrDLfI--
