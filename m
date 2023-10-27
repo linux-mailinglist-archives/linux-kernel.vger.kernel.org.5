@@ -2,187 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E27C07DA1A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE77F7DA1A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346380AbjJ0UJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        id S1346350AbjJ0UM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjJ0UJK (ORCPT
+        with ESMTP id S230451AbjJ0UM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:09:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF400187
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:09:07 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-542d3e46ee7so86694a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1698437346; x=1699042146; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qaSlgJixsmWlo+e2Cx7W2WmJWF+pgDHnH66BKZ3dK2Q=;
-        b=UgHRp6kTVWQqPTAOFfrYOYgr3eWW1yPkPMQI/1MJiZM0BPfSLWzzeayC3mKQ8Fu3f0
-         KODBjZJ3Kg5c5SU82jRldu+Q3tUi8MwsLr+oMdH7Z896+wZcKmSjjuUaORwIyYL45Rez
-         FG9mbthO/T5OidyBuuX20XLnEwiz5x40eaRgg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698437346; x=1699042146;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qaSlgJixsmWlo+e2Cx7W2WmJWF+pgDHnH66BKZ3dK2Q=;
-        b=aK1pxO1m2zpOMepCBxjY62lE6SPh/Pf3/GNeIXE5/Rti6tkWluJYt11r/RVB4SS8fM
-         a1msXj9ErdjrS+HGfLaLC6clNY1wil4ALjV8JC/7K1LtWGLL20dfRAzCZEefhdxrRdR/
-         RldXvJic2yThy/2lpDOWI2aoGdsCDcjVYyYi4HMdqaiEXtYiZp4AiSNpMyrSSaFX3fMo
-         +QjFIlZxc6a7+bS2P1VRaOoCejCsWu+0KtG4XK0sY9cXY3mihbxpvC4snvvgsIdRirXx
-         0kOW0OW1GFDJ+SVZX6pd59pnW5wgteWg2qgZHlp4AakhJ9e7TI4xRnpgg+3Xpl9GGiV7
-         oKCw==
-X-Gm-Message-State: AOJu0YzDdk71/rlIyDTQnInPfHSjYV2J1gMO+u8cLFOmU7xfiFQ5T1Mj
-        Qk+/gaZTEuwK2qBDd4BTaQ7s1w==
-X-Google-Smtp-Source: AGHT+IHp0yh7EJgDeAhPZnw5KMQGBu1JAz5Jcq8nYbdnDioi5wqHAtcfMjckXODC4+dNTl1MjoWt5w==
-X-Received: by 2002:aa7:ccce:0:b0:53e:6db7:ea63 with SMTP id y14-20020aa7ccce000000b0053e6db7ea63mr3169337edt.14.1698437346242;
-        Fri, 27 Oct 2023 13:09:06 -0700 (PDT)
-Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id i9-20020a50fc09000000b0053e88c4d004sm1658198edr.66.2023.10.27.13.09.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 13:09:06 -0700 (PDT)
-Message-ID: <3c56e807-945c-4996-9ac1-3205a23248ab@citrix.com>
-Date:   Fri, 27 Oct 2023 21:09:05 +0100
+        Fri, 27 Oct 2023 16:12:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11310E5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698437545; x=1729973545;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+StNUvMt2MbRGlfFkrMTi4YqqZDHYxl6hV6BoaalDBY=;
+  b=RZdIJTMhiiV1YEIo/gt7hLhUQom1EJk34JHmUMVLf/ZDxP7MX0PHIgR3
+   YM8MTs3c8dMCvpj2hONzNxlP0vwhitekuDhGBxFzQKfDcGXRSPC7gWmkI
+   tmtQlCvwTlhl+CP30p0cBW7700c+rCgURTzmZwuFEgGplb+0LokQn3zb7
+   RLzwoD6paukm7HFg0QQF+IVcokPHwX/DdZuomM3315VYG86QzX8kbU/NM
+   WQz0qgjDx5BFbhU1yJ4EZoNLCJQCPoYQ9vud/qfnBO/NvbFHWNSXGwE/o
+   PWAhnXHm3+WHt2Jxc1Q2v6/pzoj3muPRaoZYxcbCMNLcFNMPN17+arEGi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="390707575"
+X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
+   d="scan'208";a="390707575"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 13:12:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="794684805"
+X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
+   d="scan'208";a="794684805"
+Received: from hannahwo-mobl1.amr.corp.intel.com (HELO [10.209.35.60]) ([10.209.35.60])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 13:12:23 -0700
+Message-ID: <3d1a8f13-be8e-42a4-93f7-0ae59b7f0505@intel.com>
+Date:   Fri, 27 Oct 2023 13:12:23 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] x86/barrier: Do not serialize MSR accesses on AMD
-Content-Language: en-GB
-To:     Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>,
-        Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230622095212.20940-1-bp@alien8.de>
- <20230703125419.GJ4253@hirez.programming.kicks-ass.net>
- <20230704074631.GAZKPOV/9BfqP0aU8v@fat_crate.local>
- <20230704090132.GP4253@hirez.programming.kicks-ass.net>
- <20230704092222.GBZKPkzgdM8rbPe7zA@fat_crate.local>
- <20231027153327.GKZTvYR3qslaTUjtCT@fat_crate.local>
- <20231027153458.GMZTvYou1tlK6HD8/Y@fat_crate.local>
- <20231027185641.GE26550@noisy.programming.kicks-ass.net>
- <20231027191633.GRZTwMkaiW1nyvnzzO@fat_crate.local>
- <20231027192907.GSZTwPg8v7NF6+Zn0w@fat_crate.local>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20231027192907.GSZTwPg8v7NF6+Zn0w@fat_crate.local>
+Subject: Re: [PATCH v2] x86/entry: Avoid redundant CR3 write on paranoid
+ returns
+Content-Language: en-US
+To:     Brendan Jackman <jackmanb@google.com>, luto@kernel.org,
+        tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        laijs@linux.alibaba.com, yosryahmed@google.com, reijiw@google.com,
+        oweisse@google.com, peterz@infradead.org
+References: <20230920150443.1789000-1-jackmanb@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20230920150443.1789000-1-jackmanb@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 8:29 pm, Borislav Petkov wrote:
-> On Fri, Oct 27, 2023 at 09:16:33PM +0200, Borislav Petkov wrote:
->> Thus the more conservative approach here.
-> And on a second thought, I don't need any of that new stuff - I simply
-> need a synthetic flag which says "MSRs need fencing" and set it on
-> everything but AMD and Hygon. And we've solved this type of issue
-> gazillion times already - why am I reinventing the wheel?!
+On 9/20/23 08:04, Brendan Jackman wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> This path gets used called from:
+> 
+> 1. #NMI return.
+> 2. paranoid_exit (i.e. #MCE, #VC, #DB and #DF return)
+> 
+> Contrary to the implication in commit 21e94459110252 ("x86/mm: Optimize
+> RESTORE_CR3"), we never modify CR3 in any of these exceptions, except
+> for switching from user to kernel pagetables under PTI. That means that
+> most of the time when returning from an exception that interrupted the
+> kernel no CR3 restore is necessary. Writing CR3 is expensive on some
+> machines, so this commit avoids redundant writes.
 
-Quoteth the APM (rev 3.41, June 2023):
+Please avoid "we's" in changelogs.
 
-16.11.2 WRMSR / RDMSR serialization for x2APIC Register
+One thing that I think is key to this patch, but which is muddled up in
+that changelog:
 
-The WRMSR instruction is used to write the APIC register set in x2APIC
-mode. Normally WRMSR is
-a serializing instruction, however when accessing x2APIC registers, the
-serializing aspect of WRMSR
-is relaxed to allow for more efficient access to those registers.
-Consequently, a WRMSR write to an
-x2APIC register may complete before older store operations are complete
-and have become globally
-visible. When strong ordering of an x2APIC write access is required with
-respect to preceding memory
-operations, software can insert a serializing instruction (such as
-MFENCE) before the WRMSR
-instruction.
+	RESTORE_CR3 is *ONLY* used when returning to the kernel.
+	It must handle user CR3 values because the kernel can run in the
+	entry/exit code with user CR3 values.  That means that restoring
+        user CR3 values is important functionally but is actually rare
+	in practice.
 
-So which is right?  This commit message, or the APM?  (and yes, if
-you're waiting on an APM update then the commit message should at least
-note that one is coming.)
+That's _not_ obvious from just glancing at RESTORE_CR3 call sites or
+reading your changelog.  It also makes it obvious why this patch is
+worth it: it optimizes the overwhelmingly common case.
 
+> I said "most of the time" because we might have interrupted the kernel
+> entry before the user->kernel CR3 switch or the exit after the
+> kernel->user switch. In the former case skipping the restore might
+> actually be be fine, but definitely not the latter. So we do still need
+> to check the saved CR3 and restore it if it's a user CR3.
+> 
+> To reflect the new behaviour RESTORE_CR3 is given a longer name, and a
+> comment that was describing its behaviour at the call site is removed.
+> We can also simplify the code around the SET_NOFLUSH_BIT invocation
+> as we no longer need to branch to it from above.
+Also, I don't feel _that_ strongly about the naming, but I'd kinda
+rather it be:
 
-But, to the issue at hand.
+	PARANOID_RESTORE_CR3
 
-There are other non-serialising MSRs on AMD CPUs, including the FS/GS
-base MSRs on more modern parts which is enumerated in 8000_0021.eax[1].
+That would at least label it explicitly for these paranoid exit cases.
+Sure, this _can_ get used in other contexts theoretically, but it's
+really only suitable for the two paranoid exit paths.
 
-So there isn't a boolean "MSRs need fencing, yes/no".  It is vendor
-*and* model specific as to whether a particular MSR is serialising or
-non-serialising.
+It also avoids confusion about whether the "USER" refers to the context
+or the CR3 value.
 
-*And* it's vendor specific as to what the fencing sequence is.  Intel
-require mfence;lfence, while on AMD, mfence suffices.
+I would probably also give this CR3 function a declared purpose:
 
-Most MSR writes don't want to be architecturally serialising, and Intel
-are introducing WRMSRNS for this purpose.  But ICR writes *do* need to
-be ordered with respect to stores becoming globally visible, and it was
-an error for MSR_X2APIC_ICR to be specified as non-serialising.
-
-
-The only sanity-preserving (pseudo) API for this is something like:
-
-vendor_msr_fence = { mfence;lfence (Intel) | mfence (AMD, Hygon) | ... }
-
-and for each MSR separately, something like:
-
-ALTERNATIVE("", vendor_msr_fence, $VENDOR_NEEDS_MSR_$X_FENCE);
-
-because that's the only one which properly separates "what fence to use"
-and "do I need to fence this MSR on the current vendor".
-
-~Andrew
+/* Restore CR3 from a kernel context.  May restore a user CR3 value. */
