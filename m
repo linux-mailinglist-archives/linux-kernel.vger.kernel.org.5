@@ -2,105 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9637D990C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2297D990D
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345735AbjJ0Mzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S1345558AbjJ0M4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345541AbjJ0Mzp (ORCPT
+        with ESMTP id S1345616AbjJ0M4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:55:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D161B1;
-        Fri, 27 Oct 2023 05:55:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D6DC433CC;
-        Fri, 27 Oct 2023 12:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698411340;
-        bh=wSX3hZkZaTrYS5zn46sQAvcYVUlw291hdHsmheCFw7A=;
+        Fri, 27 Oct 2023 08:56:13 -0400
+Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [IPv6:2001:1600:3:17::42af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43871AA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:56:07 -0700 (PDT)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4SH2j11TNVzMqTT5;
+        Fri, 27 Oct 2023 12:56:05 +0000 (UTC)
+Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4SH2hz6f9bzMpnyv;
+        Fri, 27 Oct 2023 14:56:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1698411365;
+        bh=QLUOoYYvr+Bp0vOk4oq52t6xX//eg65+2Kt6Rrj+F80=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T3uPk2WaIv4i+lUBOQtRXwUHb6Q58T0/wvONVvtFSn1Maj2zynMwpNQLYcJMhojwb
-         m4OF8V5DmUPf5d9ZqiJvGGXq1kmX0DYJhYCkDy8aOYjXbpOisO7srwSCXzBgOKt8Y7
-         cuG6nloPsP8cLC46m9ETXxE4Q2kfi03LdjvVovY/QfoQoTiWHILg0XA1pMsnBvHcpz
-         bSCYynI2H3pxPJ9goZ81qdQrFgDxJqSvn/ARGKbLQGp+tepha+6nJVrzD9agmDzh0f
-         USBH9Ou1z9sp2GZDdfEnonBMQhPzlmnxvxohAj/G8Huch9rDMnltoNcnWRILfLMQin
-         1wXMMhIWCtpqQ==
-Date:   Fri, 27 Oct 2023 14:55:37 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        gregory.clement@bootlin.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Mark Brown <broonie@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] i2c: mv64xxx: add an optional bus-reset-gpios
- property
-Message-ID: <20231027125537.5d5cu3wc4r4c2yb4@zenone.zhora.eu>
-References: <20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz>
- <20231027033104.1348921-3-chris.packham@alliedtelesis.co.nz>
- <65911ec0-e073-435f-846a-c5501dd5d3a9@linaro.org>
- <9eebec9b-e6fd-4a22-89ea-b434f446e061@linaro.org>
+        b=YzqdC0uHeFaE/RAqamsgM3tIr2OvFxlVcZuqCExgD/dc6aTQT1bNtoZOxCJnlIBZ8
+         u86WcEql0uIWVHlhJ1Cm30u13gnXd5iiuE6m+nZ0NNUfkE9CkddK6EEPWG4Kydns4l
+         77wmyvAubvUdJaUV594E5b95euoekVDz1muoDMrw=
+Date:   Fri, 27 Oct 2023 14:56:00 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the landlock tree
+Message-ID: <20231027.Soon0Gee4xul@digikod.net>
+References: <20231027163400.5764d549@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9eebec9b-e6fd-4a22-89ea-b434f446e061@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231027163400.5764d549@canb.auug.org.au>
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Thanks Stephen, your patch is good! I tested it with the merge of my
+branch and LSM/dev-staging.
 
-On Fri, Oct 27, 2023 at 01:37:05PM +0200, Krzysztof Kozlowski wrote:
-> On 27/10/2023 13:27, Krzysztof Kozlowski wrote:
-> > On 27/10/2023 05:31, Chris Packham wrote:
-> >> Some hardware designs have a GPIO used to control the reset of all the
-> >> devices on and I2C bus. It's not possible for every child node to
-> >> declare a reset-gpios property as only the first device probed would be
-> >> able to successfully request it (the others will get -EBUSY). Represent
-> 
-> Cc: Mark,
-> 
-> Also this part is not true. If the bus is non-discoverable, then it is
-> possible to have reset-gpios in each probed device. You can share GPIOs,
-> so no problem with -EBUSY at all.
-> 
-> The problem is doing reset:
-> 1. in proper moment for all devices
-> 2. without affecting other devices when one unbinds/remove()
+The new Landlock changes (tested in -next for a few weeks) add a new
+call to security_add_hooks() which gets a new signature with commit
+9b09f11320db ("LSM: Identify modules by more than name") from
+the LSM/dev-staging branch [1].
 
-yes, I thought that we could get to this point, but I did not
-object the patch as I didn't see an immediate better solution. I
-would still be OK to merge it until we develop something better.
+I plan to send a PR with my branch in the next merge window (for
+v6.7-rc1).
 
-Let me mull this over and will be back to the topic.
+We should squash Stephen's patch in commit 9b09f11320db ("LSM:
+Identify modules by more than name") but it would not be possible
+without my branch. I see two solutions:
+* keep Stephen's patch in -next only, or
+* rebase LSM/dev-staging on my branch now, and rebase it later on
+  v6.7-rc1 once my branch is merged (which is the workflow described in
+  [1]).
 
-Thanks, Krzysztof!
-Andi
+Paul, what do you think?
 
-> The (2) above is not solveable easy in kernel and we already had nice
-> talks about it just few days ago:
-> 1. Apple case:
-> https://social.treehouse.systems/@marcan/111268780311634160
+[1] https://lore.kernel.org/r/CAHC9VhS1wwgH6NNd+cJz4MYogPiRV8NyPDd1yj5SpaxeUB4UVg@mail.gmail.com
+
+On Fri, Oct 27, 2023 at 04:34:00PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> 2. my WSA884x:
-> https://lore.kernel.org/alsa-devel/84f9f1c4-0627-4986-8160-b4ab99469b81@linaro.org/
+> After merging the landlock tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> Last,
-> I would like to apologize to you Chris. I understand that bringing such
-> feedback at v5 is not that good. I had plenty of time to say something
-> earlier, so this is not really professional from my side. I am sorry,
-> just my brain did not connect all these topics together.
+> In file included from security/landlock/net.c:14:
+> security/landlock/net.c: In function 'landlock_add_net_hooks':
+> security/landlock/common.h:12:23: error: passing argument 3 of 'security_add_hooks' from incompatible pointer type [-Werror=incompatible-pointer-types]
+>    12 | #define LANDLOCK_NAME "landlock"
+>       |                       ^~~~~~~~~~
+>       |                       |
+>       |                       char *
+> security/landlock/net.c:199:28: note: in expansion of macro 'LANDLOCK_NAME'
+>   199 |                            LANDLOCK_NAME);
+>       |                            ^~~~~~~~~~~~~
+> In file included from security/landlock/setup.h:12,
+>                  from security/landlock/cred.h:17,
+>                  from security/landlock/net.c:15:
+> include/linux/lsm_hooks.h:120:53: note: expected 'const struct lsm_id *' but argument is of type 'char *'
+>   120 |                                const struct lsm_id *lsmid);
+>       |                                ~~~~~~~~~~~~~~~~~~~~~^~~~~
 > 
-> I apologize.
+> Caused by commit
 > 
-> Best regards,
-> Krzysztof
+>   fff69fb03dde ("landlock: Support network rules with TCP bind and connect")
+> 
+> interacting with commit
+> 
+>   9b09f11320db ("LSM: Identify modules by more than name")
+> 
+> from the security tree.
+> 
+> I have applied the following merge resolution patch.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Fri, 27 Oct 2023 16:13:32 +1100
+> Subject: [PATCH] fixup for "landlock: Support network rules with TCP bind and
+>  connect"
+> 
+> interacting with "LSM: Identify modules by more than name"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  security/landlock/net.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/landlock/net.c b/security/landlock/net.c
+> index aaa92c2b1f08..efa1b644a4af 100644
+> --- a/security/landlock/net.c
+> +++ b/security/landlock/net.c
+> @@ -196,5 +196,5 @@ static struct security_hook_list landlock_hooks[] __ro_after_init = {
+>  __init void landlock_add_net_hooks(void)
+>  {
+>  	security_add_hooks(landlock_hooks, ARRAY_SIZE(landlock_hooks),
+> -			   LANDLOCK_NAME);
+> +			   &landlock_lsmid);
+>  }
+> -- 
+> 2.40.1
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
