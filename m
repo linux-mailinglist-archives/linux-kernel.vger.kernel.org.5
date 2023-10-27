@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBD47D9837
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497707D9840
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345834AbjJ0Mbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
+        id S1345856AbjJ0McT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345420AbjJ0Mbm (ORCPT
+        with ESMTP id S1345852AbjJ0McQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:31:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBB2129;
-        Fri, 27 Oct 2023 05:31:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47DB2C433CC;
-        Fri, 27 Oct 2023 12:31:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698409899;
-        bh=AcMSafgikuw0QDyO06n+uZljx9TSL1PuVKSPh0RB4Og=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YXPd5is5+RQIvKnCK/8PpgTaXHBwPVeKYqBRMKl0KC/SBZQjgC8G4bAjW/wFEQqly
-         Hm7If3WAqhzHtmrP8f/U4c/YSL83ewnD/cfMcBYeNl9lQ+2Mj1t2Ttti2SlCWGU8dy
-         yG3SMedBeYlUVuboANt3CpegrTZuMnFEKKxv5UoZelpF/OaS2zRNr7Q/l5/pPOXIZ5
-         bkCk7+3dbcK2TNEolNzGvkwFNZjeyFSVPEvfeolQim7sgvd8vOAxDoVealQMR3dqOq
-         yuXNE8+anr0uHBQHT3y8FyGYez0G8EMaenJ3Ph5U5FvI6DVZIzKCvxYijSQ1XzKtaj
-         x56tnB/J3nsDg==
-Date:   Fri, 27 Oct 2023 18:01:25 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
+        Fri, 27 Oct 2023 08:32:16 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23ADEC0;
+        Fri, 27 Oct 2023 05:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=bs28ALhgw+SsGrD8IZNzd1kcl11K+aTCog1cdlerQt0=; b=PviAyZWxwetshaA7PLZ/MU5rdM
+        kz5PV/y28YoGancChzHxeYO9WAbGodXtMiiuYbxFfCxo5RAPEyEQvGWvz+D58QCLDErfvstdKyQ4r
+        CysbFn+2Xl3eVN2POpTPdvDrzwCw94b8PL6JhNrANQYKN6E+uQr/EOxhOhjS6INROB8A=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qwM0O-000L1r-Km; Fri, 27 Oct 2023 14:32:00 +0200
+Date:   Fri, 27 Oct 2023 14:32:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Parthiban.Veerasooran@microchip.com
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, quic_shazhuss@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 2/5] PCI: qcom-ep: Add support for SA8775P SOC
-Message-ID: <20231027123125.GC17527@thinkpad>
-References: <1697715430-30820-1-git-send-email-quic_msarkar@quicinc.com>
- <1697715430-30820-3-git-send-email-quic_msarkar@quicinc.com>
- <20231025075317.GC3648@thinkpad>
- <adbca084-a74b-51be-67b5-a3b9e45da506@quicinc.com>
- <20231026061035.GA4915@thinkpad>
- <23f3f2a8-dcbd-6764-195b-49bcec451084@quicinc.com>
+        corbet@lwn.net, Steen.Hegelund@microchip.com,
+        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com
+Subject: Re: [PATCH net-next v2 4/9] dt-bindings: net: add OPEN Alliance
+ 10BASE-T1x MAC-PHY Serial Interface
+Message-ID: <d6377de8-603f-4ac1-a691-b79c46a5057b@lunn.ch>
+References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
+ <20231023154649.45931-5-Parthiban.Veerasooran@microchip.com>
+ <fd7f7d62-7921-4aac-9359-ff09449fd20c@lunn.ch>
+ <acfb97fa-54f8-4381-bb82-db8f85fa86db@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <23f3f2a8-dcbd-6764-195b-49bcec451084@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <acfb97fa-54f8-4381-bb82-db8f85fa86db@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:29:30PM +0530, Mrinmay Sarkar wrote:
-> 
-> On 10/26/2023 11:40 AM, Manivannan Sadhasivam wrote:
-> > On Thu, Oct 26, 2023 at 11:08:03AM +0530, Mrinmay Sarkar wrote:
-> > > On 10/25/2023 1:23 PM, Manivannan Sadhasivam wrote:
-> > > > On Thu, Oct 19, 2023 at 05:07:07PM +0530, Mrinmay Sarkar wrote:
-> > > > > Add support for SA8775P SoC to the Qualcomm PCIe Endpoint Controller
-> > > > > driver. There will be some change specific to SA8775P so adding new
-> > > > > compatible string.
-> > > > > 
-> > > > What are those specific changes?
-> > > > 
-> > > > - Mani
-> > > Need to enable cache snooping logic for SA8775P only.
-> > > 
-> > Then you can add the compatible to the driver at that time and use the fallback
-> > till then i.e., just document the SA8775P compatible in bindings and use both
-> > SA8775P and SM8450 compatibles in the dts where the latter will act as a
-> > fallback.
+> > Device tree described hardware. Its not supposed to be used to
+> > describe configuration. So it is not clear to me if any of these are
+> > valid in DT.
 > > 
-> > - Mani
+> > It seems to me, the amount of control transfers should be very small
+> > compared to data transfers. So why not just set protection enable to
+> > be true?
+> Yes having protection enabled for control transfer doesn't hurt 
+> anything. The only intention for keeping this as configurable is, it is 
+> defined in the OPEN Alliance specification to enable/disable.
+
+Standards often have options which nobody ever use, or are only useful
+in particular niches. Its often best to keep it simple, get the basic
+feature working, and then add these optional features if anybody
+actually needs them.
+
+> > What is the effect of chunk payload size ? Is there a reason to use a
+> > lower value than the default 64? I assume smaller sizes make data
+> > transfer more expensive, since you need more DMA setup and completion
+> > handing etc.
+> Again the intention for keeping this as configurable is, it is defined 
+> in the OPEN Alliance specification as user configurable. They can be 8, 
+> 16, 32 and 64. And the default is 64. Also Microchip's LAN8650 supports 
+> for 32 and 64.
+
+Do you have any idea why the standard has different sizes? Why would
+you want to use 32? If you can answer this, it helps decide how
+important it is to support multiple sizes, or just hard code it to 64.
+
+There are plenty of old research on Ethernet frame sizes, but they are
+for LAN/Internet usage. You typically see two peeks, one around 64-80
+bytes, and other around the full frame size. The small packets are TCP
+ACKS, and the rest is TCP data. However, this is a T1S device for
+automotive. I personally have no idea if the same traffic distribution
+is seen in that application?
+
+Are there protocols running which use a lot of frames smaller than 64
+bytes? If so, 64 byte chunk size i assume could be wasteful, if there
+are lots of 32 byte frames.
+
+The other potential issue is latency and the way the SPI bus
+works. Its a synchronised bi-directional bus. You can receive and
+transmit at the same time, but you have to setup the transfer to do
+that. If you are busy doing a receive only, and there is a new packet
+to send, you have to wait for the chunk transfer to complete before
+you can start a bi-directional chunk transfer. So a 32 byte chunk
+might make your link more efficient if you have heavy but bursty
+traffic. However, you have to consider the overheads of setting up the
+transfer and running the completion handler afterwards. This can be
+costly.
+
+Do you have real use cases for using different chunks sizes? If not, i
+probably would just hard code it to 64, until somebody comes along
+needing something else.
+
+> > An Ethernet driver is allowed to have driver specific private
+> > flags. See ethtool(1) --show-priv-flags and --set-priv-flags You could
+> > maybe use these to configure cut through?
+> So you mean, we have to implement the support in the ethtool interface 
+> to enable/disable tx/rx cut through feature, isn't it?
 > 
-> I am getting below error in dtb checking if I add SM8450 as fallback
-> compatible in dtsi. As both has different set of clocks.
-> 
+> If you feel like the above configurations are not needed, so by keeping 
+> protection true always, chunk payload size (cps) 64 always and moving 
+> tx/rx cut through to ethtool, we can get rid of this DT bindings?
 
-Ok. I didn't realize that the clocks are different. In that case, you need to
-mention it in the commit message to make it clear and introduce a new
-compatible.
+Again, do you have a real use case for cut through? Or maybe flip it
+around, Why would you not use cut through?
 
-- Mani
-
-> //local/mnt/workspace/Mrinmay/new_lemans/next-20231018/linux-next/out/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb:
-> pcie-ep@1c00000: compatible: 'oneOf' conditional failed, one must be
-> fixed://
-> //        ['qcom,sa8775p-pcie-ep', 'qcom,sm8450-pcie-ep'] is too long//
-> //        'qcom,sdx65-pcie-ep' was expected//
-> //        'qcom,sdx55-pcie-ep' was expected//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> ///local/mnt/workspace/Mrinmay/new_lemans/next-20231018/linux-next/out/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb:
-> pcie-ep@1c00000: clocks: [[31, 66], [31, 68], [31, 69], [31, 78], [31, 79]]
-> is too short//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> ///local/mnt/workspace/Mrinmay/new_lemans/next-20231018/linux-next/out/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb:
-> pcie-ep@1c00000: clock-names: ['aux', 'cfg', 'bus_master', 'bus_slave',
-> 'slave_q2a'] is too short/
-> 
-> > > --Mrinmay
-> > > 
-> > > > > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> > > > > ---
-> > > > >    drivers/pci/controller/dwc/pcie-qcom-ep.c | 1 +
-> > > > >    1 file changed, 1 insertion(+)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > > index 32c8d9e..4c01c34 100644
-> > > > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > > @@ -858,6 +858,7 @@ static void qcom_pcie_ep_remove(struct platform_device *pdev)
-> > > > >    }
-> > > > >    static const struct of_device_id qcom_pcie_ep_match[] = {
-> > > > > +	{ .compatible = "qcom,sa8775p-pcie-ep", },
-> > > > >    	{ .compatible = "qcom,sdx55-pcie-ep", },
-> > > > >    	{ .compatible = "qcom,sm8450-pcie-ep", },
-> > > > >    	{ }
-> > > > > -- 
-> > > > > 2.7.4
-> > > > > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+	Andrew
