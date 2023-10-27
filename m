@@ -2,53 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D87147D9B70
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6A27D9B6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345996AbjJ0Oa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
+        id S1346014AbjJ0OaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345952AbjJ0Oa1 (ORCPT
+        with ESMTP id S1346021AbjJ0OaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:30:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3982C0;
-        Fri, 27 Oct 2023 07:30:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AE59C4339A;
-        Fri, 27 Oct 2023 14:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698417024;
-        bh=HqA0zfbW9VztCySYiMvQ/vRTrEs3pyPe0tuGpgEOlvI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FobtRAFdGyRTe4PRYmikUDCGdyCGTYC1ReQnrjPLjXFCM8cHB5oQy1TXboO3KZ1Rw
-         29IRmuAyY5INuMLwujSD2CxHnnomBmFbla++4xJjx2jcCr4zhcjIE6di7309O+rS11
-         +OFWiYCzDPI22HNKZr7rx2oqQHEr9bQBLo8i3BToEFAtAvkwhq2Nwa7ycR1QlnuwIL
-         98ZW1/tw2DSm4WbDHHz7NbUdHxm4oKuvghVm2dYnNe6f3/VJlhuLy9lXuzLKPsr8f+
-         j4MmsJcW2nBI0RVi2+R/XfiZMivrgpucwA480zAAmLwwFmIltMDmFWXWoCR18pS3LT
-         E74I7nd5DzX+w==
-Date:   Fri, 27 Oct 2023 15:29:51 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc:     Marius.Cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
-        conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: adc: adding support for pac193x
-Message-ID: <20231027152951.52a4627f@jic23-huawei>
-In-Reply-To: <b29594464415af0ea56b6d5431744982fa1385ee.camel@gmail.com>
-References: <20231025134404.131485-1-marius.cristea@microchip.com>
-        <20231025134404.131485-3-marius.cristea@microchip.com>
-        <d914069815f76245ef91b6b7b0c6b382b054b562.camel@gmail.com>
-        <02ea54ae3a2ab4f0a19232a4df494f71b1de3b00.camel@microchip.com>
-        <b29594464415af0ea56b6d5431744982fa1385ee.camel@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 10:30:00 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA8310E;
+        Fri, 27 Oct 2023 07:29:57 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1477027276.1;
+        Fri, 27 Oct 2023 07:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698416997; x=1699021797; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=DsECeWRXR89HquHY2eBzhSO85aem0sul0hD01HYxWCs=;
+        b=HckviKaMtdRcX28oeuBNPjBnX6JfZBtnjIiSyUhL3PKNGWj27kD34JKgZ81jqyIo9x
+         fWOoIqJyjAPr4KeH/rDW0D+R8nHrsXSA5x3FkdiWTKEQ8VoQJq5h0bP3XC+T55BotZt9
+         aCO42SBCEOsFK7RhI5caSa9GUY8HF3pNSFSSJ2cGL11cr2m69LbI6uq+9tUv8kBknUQP
+         ZpBnRoftU1HR/XSecR+FYWFLIn9i9rhyuHel0ht2vw2A2uMy+SUkQgzlXT37KoBUdFKy
+         3x4/mpeShlu1vITJLykuu/4BTDBYAUGu8LKF4+UgZNvOUmILoOUXE5jSPaQAiOinYOIm
+         lxYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698416997; x=1699021797;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DsECeWRXR89HquHY2eBzhSO85aem0sul0hD01HYxWCs=;
+        b=lx/wZhqiX9Nel25kC7fwnQVVKtje4EdYEolJBWORHk0EHTwAiHL6DKE5wmp2ET0PvG
+         2/Ou7d61hx+Au4KmGQ2nf5gxwQ8wFzU90IIuODbF3eiQ7lQ7fMWe6GN19Jl5DHMubsnG
+         r456Ocr6jSdn04LCnjdSw8m7KUFl0BHeDn0/TE5/25dv2EcVgGLDRfV5ErJ+jmbeJ3hw
+         is/igCYG/BMWwyzcGEeq5/L1zFIX66MEbGar5C4Q1AuM2Yurj7YzI9sKPcCC7kpfDktL
+         3hCjO5c/sZYVGQtoD7InYKo9EXMjQ4l4pr+mSVSSHB26HYSJJDxPQFv3yturLPE1PXVR
+         aORg==
+X-Gm-Message-State: AOJu0YyONR/rIs7H+p/2UZ6gsuF/HnE/3Ku9ok+yqqnBv1rnS22H4Rwt
+        V8aNNsHsT1LBTpHs9cwxZ70=
+X-Google-Smtp-Source: AGHT+IE+e7aahuYfkt8PuZLyOBf8LvAfP9OR+nHTcDMy4WWLm+0UB+YDT6d/Ux5sTeabyzZQ8Mns3w==
+X-Received: by 2002:a25:f81e:0:b0:da2:8250:9725 with SMTP id u30-20020a25f81e000000b00da282509725mr557698ybd.12.1698416996952;
+        Fri, 27 Oct 2023 07:29:56 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o189-20020a2573c6000000b00da0c63aa9f1sm697470ybc.20.2023.10.27.07.29.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 07:29:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <84252d01-6fee-26f9-d127-8b344108fc43@roeck-us.net>
+Date:   Fri, 27 Oct 2023 07:29:54 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V3 1/3] dt-bindings: watchdog: Add support for Amlogic C3
+ and S4 SoCs
+Content-Language: en-US
+To:     Huqiang Qin <huqiang.qin@amlogic.com>, wim@linux-watchdog.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231027104358.342861-1-huqiang.qin@amlogic.com>
+ <20231027104358.342861-2-huqiang.qin@amlogic.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20231027104358.342861-2-huqiang.qin@amlogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,76 +85,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 10:40:21 +0200
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+On 10/27/23 03:43, Huqiang Qin wrote:
+> Update dt-binding document for watchdog of Amlogic C3 and S4 SoCs.
+> 
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
 
-> On Thu, 2023-10-26 at 15:03 +0000, Marius.Cristea@microchip.com wrote:
-> > Hi Nuno S=C3=A1,
-> >=20
-> > =C2=A0 Thanks for looking over the patch.
-> >=20
-> > On Wed, 2023-10-25 at 16:38 +0200, Nuno S=C3=A1 wrote: =20
-> > > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > > know the content is safe
-> > >=20
-> > > On Wed, 2023-10-25 at 16:44 +0300,
-> > > marius.cristea@microchip.com=C2=A0wrote: =20
-> > > > From: Marius Cristea <marius.cristea@microchip.com>
-> > > >=20
-> > > > This is the iio driver for Microchip
-> > > > PAC193X series of Power Monitor with Accumulator chip family.
-> > > >=20
-> > > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> > > > --- =20
-> > >=20
-> > > Hi Marius,
-> > >=20
-> > > I'll be honest and I just looked at this for 5min. But I'm seeing
-> > > things like
-> > > shunt resistors, vsense, power, energy... This seems to me that it
-> > > belong to
-> > > drivers/hwmon. Any special reason for IIO?
-> > >  =20
-> >=20
-> > =C2=A0 Yes, this device is at the boundary between IIO and HWMON if you=
- are
-> > looking just at the "shunt resistors, vsense, power, energy". The
-> > device also has ADC internaly that can measure voltages (up to 4
-> > channels) and also currents (up to 4 channels). Current is measured as
-> > voltage across the shunt_resistor.
-> >  =20
->=20
-> I think this alone is not justification but...
->=20
-> > =C2=A0 As I said before: I was thinking to start with a simple driver (=
-this
-> > one that is more apropiate to be a HWMON) and add more functionality
-> > later (like data buffering that is quite important for example if
-> > someone wants to profile power consumtion of the procesor itself, or a
-> > pheriperic, or a battery, this kind of functionality was requested by
-> > our customers).
-> >  =20
->=20
-> having buffering support already makes a case for IIO, yes.
->=20
-> Hmm, I'm also just realizing this is v2 and indeed you already justified =
-the very
-> same question in v1. Sorry for noise!
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-I'd suggest adding some text to the cover letter to explain this so you
-can hopefully avoid being asked on v3 :)
-
-Also for cases like this that sit at the boundary we tend to also
-cc the hwmon maintainers so they are aware.  It can help us to make more
-consistent decisions on where a future device belongs.
-
-I'm not against having this in IIO, but nice to work by consensus and
-avoid anyone getting a surprise.
-
-Jonathan
-
->=20
-> - Nuno S=C3=A1
-> >  =20
->=20
+> ---
+>   .../bindings/watchdog/amlogic,meson-gxbb-wdt.yaml    | 12 +++++++++---
+>   1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> index 443e2e7ab467..69845ec32e81 100644
+> --- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> @@ -15,9 +15,15 @@ allOf:
+>   
+>   properties:
+>     compatible:
+> -    enum:
+> -      - amlogic,meson-gxbb-wdt
+> -      - amlogic,t7-wdt
+> +    oneOf:
+> +      - enum:
+> +          - amlogic,meson-gxbb-wdt
+> +          - amlogic,t7-wdt
+> +      - items:
+> +          - enum:
+> +              - amlogic,c3-wdt
+> +              - amlogic,s4-wdt
+> +          - const: amlogic,t7-wdt
+>   
+>     reg:
+>       maxItems: 1
 
