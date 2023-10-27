@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D591C7D9EA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFFC7D9EA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbjJ0RNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 13:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        id S231891AbjJ0RNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 13:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232292AbjJ0RN2 (ORCPT
+        with ESMTP id S229454AbjJ0RNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 13:13:28 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50078262
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 10:13:25 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53f98cbcd76so492a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 10:13:25 -0700 (PDT)
+        Fri, 27 Oct 2023 13:13:15 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD94F61B6;
+        Fri, 27 Oct 2023 10:13:12 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-581e5a9413bso1263509eaf.1;
+        Fri, 27 Oct 2023 10:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698426804; x=1699031604; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uflhsKfvfbwjHaS6RjFEsCiPUfIOoxhNzB+wL9eWIuk=;
-        b=fjIX1UlL8G6KBtvFdvkO5QILXtQk2lTF2ge4R3FmTkR1vyYEseFolQrPhMt6GHGSmR
-         vLEcltcmduKsB64xN8ZtDm+hiS5lbog6jusQ/7R9rMT6K1pf096wtNbqMXnqE2fA+OfY
-         EELkoo0g2pWDpvk5v+Y6n4ibBP74ircVleDP+O8qXDLpAu6K19NCIDp8NuR0eNnNQ98C
-         5z6rBMxLFoSgud7lTbAmOarmqn16sLP3XNMmOQsYPbL9rLTNLpNIOA+5RcXJG2II3BBE
-         ScvfFmId1KbK1+/xVgsRQ0+fcvG25zI12C2rTEAtNVSzd6rwR+TqvmIqoC/iHYzyyqeE
-         mhzg==
+        d=gmail.com; s=20230601; t=1698426792; x=1699031592; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=71KOnyhZFDvXLA/+wyHasn62dseja88kJnuT02RkV8w=;
+        b=P31qe6HfNILHItlsazKmFKaLTvd51KcfvYbviKaI3DYNSflR7ig5z+r4bdma/gCfur
+         wUB8AI8GkoK7MYyo2V0ijmt2wemwceePO+Ih8iJNDsKwzNllLXxcIHCSX8VEbgrt6OdU
+         NpAm6PSWl2aJ4QUCZzdkj04jJdRFUlqh/eI/vO7yXv8C7NfJFBtTU+voafFK4vEoi1Sg
+         ihLgc16dl5NPgaW3AGyn5lB/jLUYuTtxAFHNln1013hzWpT4Ok9GAUVu4No8AdNqOUG1
+         nnM8hJ3CrW+thUh/mfuC4VYNntP3+Hl1n3inT3QiWRbcFsphSslLA+/fnixsipnkrHkI
+         09XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698426804; x=1699031604;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uflhsKfvfbwjHaS6RjFEsCiPUfIOoxhNzB+wL9eWIuk=;
-        b=ky/nUP3zQeOk56MtQOGSsQjEkxH9a64/QSqhuxd+otFyKHOvjw/WckTTpM/BRtUAvP
-         hS9O20rc6/quTx2LsD1SSqqo4XO6GFtPQ4iR1D1zL0i+iD0Za4xp/rf7t+OAhw4OyhfK
-         yGgsqGw/x/lSX4uSD9y8i/MFajbYYLQaQlcojuScOETU8NDKkoEKy+kFExYO0argZntR
-         E1xvFbsm/YpxfmNOU6Xi3dXRpGdX+NbW1j45wwfImbKCSSvSE9mKvanwCtXZHSoxDwKw
-         2zJwDXZT77ZZ6DLokfcqytPPeTi6RfpYL7PS5GcRj0yZ3689SxSIfp3+2grcR7wEWqzP
-         7H3w==
-X-Gm-Message-State: AOJu0YylBaII94qVQwGq8xJ3x01teuP3YERuB+Hs/5WJdQkZN10q4geU
-        EDJeo6c5+qY5eqRVgkKYGBm21ij20sWhPFy9BQPrvQ==
-X-Google-Smtp-Source: AGHT+IHOvFL9mA8YBWOthCUpt1ZhxYvIdt/6fYMiYEU9KLiquQGWtbEsl36bprL2FV1Qgbf78c900cT1sfmkon2Wajg=
-X-Received: by 2002:a50:c101:0:b0:540:e46c:5c7e with SMTP id
- l1-20020a50c101000000b00540e46c5c7emr12155edf.0.1698426804082; Fri, 27 Oct
- 2023 10:13:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698426792; x=1699031592;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=71KOnyhZFDvXLA/+wyHasn62dseja88kJnuT02RkV8w=;
+        b=Zm5860mP2+OFxGbGi/yw1/zdGgRGQcTgck6Vn+toiV9jq9toS72JwvPB5pDvVeSu7W
+         K8FLDGi7J/qg6DskLaEWer1hDMoRwWzq6HJtV7C1rNAzC89mRgoipBJZZ6S+Xl7rl224
+         RjlyGt4flLr+FtJOvxCCn5qx9iG8ViS6Zoz+UqCyRFvaGkoLZ/TrcNCvVFibUGq5uPlp
+         JJIMl/u7fa1qUE5kX4tDvspy9uLG2hR3npN5/F7nnmNVrCnfPE8xJCNJrQltBRF9vhJn
+         4gELKTE7VjxJjXajSkrq59frC0UbcvsMqWMQubvnA413hix+uWoUd/G9911qC141xtWw
+         SZuQ==
+X-Gm-Message-State: AOJu0YyHkAvy4BvAnNewBckuEG/2/InTuYFzimSn+4MWFAjiXBgSHpUU
+        z7U29IFPW8PQIIvCINjWqsl3CMTUZoj8sd0BjqxlTDqI
+X-Google-Smtp-Source: AGHT+IH0oEA9gnYXSOWLyXkcdEfgSrXgIZ2fTX7JjiGKkr8RIbG5RB11MUCuTNwj+iO9h8dO3iDeSwxaVeMndjOVj7Y=
+X-Received: by 2002:a05:6820:1a08:b0:56c:d297:164c with SMTP id
+ bq8-20020a0568201a0800b0056cd297164cmr3825808oob.4.1698426791893; Fri, 27 Oct
+ 2023 10:13:11 -0700 (PDT)
 MIME-Version: 1.0
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 27 Oct 2023 19:12:46 +0200
-Message-ID: <CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com>
-Subject: BPF: bpf_d_path() can be invoked on "struct path" not holding proper
- references, resulting in kernel memory corruption
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, KP Singh <kpsingh@google.com>,
-        Matt Bobrowski <mattbobrowski@google.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+Received: by 2002:a05:6802:48a:b0:4f0:1250:dd51 with HTTP; Fri, 27 Oct 2023
+ 10:13:11 -0700 (PDT)
+In-Reply-To: <ZTYAUyiTYsX43O9F@dread.disaster.area>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f>
+ <ZTJmnsAxGDnks2aj@dread.disaster.area> <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+ <ZTYAUyiTYsX43O9F@dread.disaster.area>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Fri, 27 Oct 2023 19:13:11 +0200
+Message-ID: <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,68 +77,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 10/23/23, Dave Chinner <david@fromorbit.com> wrote:
+> On Fri, Oct 20, 2023 at 07:49:18PM +0200, Mateusz Guzik wrote:
+>> On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
+>> > On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
+>> >> > To be clear there is no urgency as far as I'm concerned, but I did
+>> >> > run
+>> >> > into something which is primarily bottlenecked by inode hash lock
+>> >> > and
+>> >> > looks like the above should sort it out.
+>> >> >
+>> >> > Looks like the patch was simply forgotten.
+>> >> >
+>> >> > tl;dr can this land in -next please
+>> >>
+>> >> In case you can't be arsed, here is something funny which may convince
+>> >> you to expedite. ;)
+>> >>
+>> >> I did some benching by running 20 processes in parallel, each doing
+>> >> stat
+>> >> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000
+>> >> files,
+>> >> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
+>> >>
+>> >> Best times:
+>> >> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+>> >> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+>> >> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+>> >> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+>> >> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
+>> >>
+>> >> NetBSD failed to complete the run, OOM-killing workers:
+>> >> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+>> >> OpenBSD is shafted by a big kernel lock, so no surprise it takes a
+>> >> long
+>> >> time.
+>> >>
+>> >> So what I find funny is that Linux needed more time than OmniosCE (an
+>> >> Illumos variant, fork of Solaris).
+>> >>
+>> >> It also needed more time than FreeBSD, which is not necessarily funny
+>> >> but not that great either.
+>> >>
+>> >> All systems were mostly busy contending on locks and in particular
+>> >> Linux
+>> >> was almost exclusively busy waiting on inode hash lock.
+>> >
+>> > Did you bother to test the patch, or are you just complaining
+>> > that nobody has already done the work for you?
+>>
+>> Why are you giving me attitude?
+>
+> Look in the mirror, mate.
+>
+> Starting off with a derogatory statement like:
+>
+> "In case you can't be arsed, ..."
+>
+> is a really good way to start a fight.
+>
+> I don't think anyone working on this stuff couldn't be bothered to
+> get their lazy arses off their couches to get it merged. Though you
+> may not have intended it that way, that's exactly what "can't be
+> arsed" means.
+>
+> I have not asked for this code to be merged because I'm not ready to
+> ask for it to be merged. I'm trying to be careful and cautious about
+> changing core kernel code that every linux installation out there
+> uses because I care about this code being robust and stable. That's
+> the exact opposite of "can't be arsed"....
+>
+> Further, you have asked for code that is not ready to be merged to
+> be merged without reviewing it or even testing it to see if it
+> solved your reported problem. This is pretty basic stuff - it you
+> want it merged, then *you also need to put effort into getting it
+> merged* regardless of who wrote the code. TANSTAAFL.
+>
+> But you've done neither - you've just made demands and thrown
+> hypocritical shade implying busy people working on complex code are
+> lazy arses.
+>
 
-bpf_d_path() can be invoked on a "struct path" that results from
-following a pointer chain involving pointers that can concurrently
-change; this can lead to stuff like use-after-free in d_path().
+So I took few days to take a look at this with a fresh eye and I see
+where the major disconnect is coming from, albeit still don't see how
+it came to be nor why it persists.
 
-For example, the BPF verifier permits stuff like
-bpf_d_path(&current->mm->exe_file->f_path, ...), which is not actually
-safe in many contexts:
+To my understanding your understanding is that I demand you carry the
+hash bl patch over the finish line and I'm rude about it as well.
 
-current->mm->exe_file can concurrently change; so by the time
-bpf_d_path() is called, the file's refcount might have gone to zero,
-and __fput() may have already mostly torn down the file. "struct file"
-currently has some limited RCU lifetime, but that is supposed to be an
-implementation detail that BPF shouldn't be relying on, and "struct
-file" will soon have even less RCU lifetime than before (see
-<https://lore.kernel.org/all/20230930-glitzer-errungenschaft-b86880c177c4@brauner/>).
+That is not my position here though.
 
-When __fput() tears down a file, it drops the references held by
-file->f_path.mnt and file->f_path.dentry. "struct vfsmount" has some
-kind of RCU lifetime, but "struct dentry" will be freed directly in
-dentry_free() if it has DCACHE_NORCU set, which is the case if it was
-allocated via d_alloc_pseudo(), which is how memfd files are
-allocated.
+For starters my opening e-mail was to Christian, not you. You are
+CC'ed as the patch author. It is responding to an e-mail which claimed
+the patch would land in -next, which to my poking around did not
+happen (and I checked it's not in master either). Since there was no
+other traffic about it that I could find, I figured it was probably
+forgotten. You may also notice the e-mail explicitly states:
+1. I have a case which runs into inode hash being a problem
+2. *there is no urgency*, I'm just asking what's up with the patch not
+getting anywhere.
 
-So the following race is possible, if we start in a situation where
-current->mm->exe_file points to a memfd:
+The follow up including a statement about "being arsed" once more was
+to Christian, not you and was rather "tongue in cheek".
 
-thread A            thread B
-========            ========
-begin RCU section
-begin BPF program
-compute path = &current->mm->exe_file->f_path
+If you know about Illumos, it is mostly slow and any serious
+performance work stopped there when Oracle closed the codebase over a
+decade ago. Or to put it differently, one has to be doing something
+really bad to not be faster today. And there was this bad -- the inode
+hash. I found it amusing and decided to share in addition to asking
+about the patch.
 
-                    prctl(PR_SET_MM, PR_SET_MM_MAP, ...)
-                      updates current->mm->exe_file
-                      calls fput() on old ->exe_file
-                    __fput() runs
-                      dput(dentry);
-                      mntput(mnt)
+So no Dave, I'm not claiming the patch is not in because anyone is lazy.
 
-invoke helper bpf_d_path(path, ...)
-  d_path()
-    reads path->dentry->d_op  *** UAF read ***
-    reads path->dentry->d_op->d_dname  *** read through wild pointer ***
-    path->dentry->d_op->d_dname(...) *** wild pointer call ***
+Whether the patch is ready for reviews and whatnot is your call to
+make as the author.
 
-So if an attacker managed to reallocate the old "struct dentry" with
-attacker-controlled data, they could probably get the kernel to call
-an attacker-provided function pointer, eventually letting an attacker
-gain kernel privileges.
+To repeat from my previous e-mail I note the lock causes real problems
+in a real-world setting, it's not just microbenchmarks, but I'm in no
+position to test it against the actual workload (only the part I
+carved out into a benchmark, where it does help -- gets rid of the
+nasty back-to-back lock acquire, first to search for the inode and
+then to insert a new one).
 
-Obviously this is not a bug an unprivileged attacker can just hit
-directly on a system where no legitimate BPF programs are already
-running, because loading tracing BPF programs requires privileges; but
-if a privileged process loads a tracing BPF program that does
-something unsafe like "bpf_d_path(&current->mm->exe_file->f_path,
-...)", an attacker might be able to leverage that.
+If your assessment is that more testing is needed, that makes sense
+and is again your call to make. I repeat again I can't help with this
+bit though. And if you don't think the effort is justified at the
+moment (or there are other things with higher priority), so be it.
 
+It may be I'll stick around in general and if so it may be I'm going
+to run into you again.
+With this in mind:
 
-If BPF wants to be able to promise that buggy BPF code can't crash the
-kernel (or, worse, introduce privilege escalation vulnerabilities in
-the kernel), then I think BPF programs must not be allowed to follow
-any pointer chain and pass the object at the end of it into BPF
-helpers.
+> Perhaps you should consider your words more carefully in future?
+>
+
+On that front perhaps you could refrain from assuming someone is
+trying to call you names or whatnot. But more importantly if you
+consider an e-mail to be rude, you can call it out instead of
+escalating or responding in what you consider to be the same tone.
+
+All that said I'm bailing from this patchset.
+
+Cheers,
+-- 
+Mateusz Guzik <mjguzik gmail.com>
