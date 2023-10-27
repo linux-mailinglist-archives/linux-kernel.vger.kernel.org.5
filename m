@@ -2,175 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C17B7D9E1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786727D9E21
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbjJ0Qie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S232282AbjJ0QjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjJ0Qic (ORCPT
+        with ESMTP id S231721AbjJ0QjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:38:32 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5434F11B;
-        Fri, 27 Oct 2023 09:38:29 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5A50320004;
-        Fri, 27 Oct 2023 16:38:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698424706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ek39OqwYg/m1N32pN0YWnCrzQoTlfIvGPB8z1vPcH9U=;
-        b=XZCStyDItBJ3g1+fgkCjgTheffh86nF9+NLQRxokdrBwqUShLOjLBtqpa5JvzZ1di84h+W
-        MFoQK8xc+VhPiBPHrUa5EEq+BHPIlv5N2I/dwYabGlBke+j24N+Dx4QBV0K/oQ4wDQPE+u
-        dRcDSVegF/TlOarhM8xV5LMrlA9uJ1TOVr4XZZhLMMeQ6CsjNL7bEuji60Xn2K+BLtjtCm
-        UbK7B6YKgCJpmLdZVb1bWCqHVKQMYIh4o6M1otyFgSSNFHT2K5T2A52OyounUzf6q0b5JC
-        AUjrkPE0ed9+4AAgK2dSsL9P8SKuX62/b85H/PW6sIMdh1CiSb3N1U+yZHXFvA==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        vladimir.kondratiev@intel.com,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH 4/5] MIPS: Handle mips_cps_core_entry within lower 4G
-In-Reply-To: <20231023191400.170052-5-jiaxun.yang@flygoat.com>
-References: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
- <20231023191400.170052-5-jiaxun.yang@flygoat.com>
-Date:   Fri, 27 Oct 2023 18:38:26 +0200
-Message-ID: <8734xw81h9.fsf@BL-laptop>
+        Fri, 27 Oct 2023 12:39:18 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B66910A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:39:15 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a680e6a921so24638439f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1698424755; x=1699029555; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7kdmvgTdy/g1PBhSvm6d233+JuZBABCykzPO40F6Sb0=;
+        b=WpbP58SL1YsZcQ28IaLr6XChr451hr3yIBwZY+cs0kNE+0PqIitjFDVUpKCSowo5eu
+         37zAdNnzeUJLb43Um1n5qJxbDq2MzX7XNl0CB8SvSPsub+dPqAq8RoEYhEQcVZPKXheB
+         Hq3jWEe4JgRMxeW3ekmbSMx0YJXno50rm7OPznqVEYrDRBOzMQDOu9+iNCT7nTyc/TBp
+         512w3Cin1+WSapmi8TfJDhNYod8gB8nd/B7Gfep19FtZdotGxj9fHDAPd88KeC04ew+h
+         7hmOctf5G1O+bPaKCTkkDBlxFBRhsQ1t3h/dOSxWt84FWusg7IORs3GoEO6/ur/qr71W
+         dqtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698424755; x=1699029555;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7kdmvgTdy/g1PBhSvm6d233+JuZBABCykzPO40F6Sb0=;
+        b=uOpHAZj9/PoaPmxFoE0lh5mwsn1ucsniiTcDZKda2DEK8as1+6JiIGPD2naVdzaIQj
+         fIZ6XI5UM+OvewfURHZj/BJBf1hUaRoOUFBF2Vajdfp35zn0q0P17NOfUoGOGzwnVg99
+         4ANukE0BRVGT89CVYTt8Aa/lnnM0qS+MIV9x5YIAYYRHAeBEXWSg8VwI7g67NqLB13Z8
+         O3wOJEt+uAGOPe+hszownM0nB/NrTt7V66OXGhYb6Bn0IHqgZhJML8HWwVxuLjKlBbyH
+         ihtDrfD0YUVWUR84rcFOePgGH4k4SGodGUboj5GRjLcykKGpf/Q3n+1x4wNJDUPZ1ASq
+         KKVQ==
+X-Gm-Message-State: AOJu0YwbyrGZg/bctoDETaBBNjwBuOfxNJH34sl3/XfAn0LWv/XTzw3H
+        8/+OifgEMQUMoYywtm7UFoJu6A==
+X-Google-Smtp-Source: AGHT+IHyvDg4e354FvKor58bSKB5yMzHQ5KKCOjphtgOLxoK7nsxBckMk0zNCusiKkEXByx7djxxXg==
+X-Received: by 2002:a6b:5c10:0:b0:790:958e:a667 with SMTP id z16-20020a6b5c10000000b00790958ea667mr3344208ioh.2.1698424754862;
+        Fri, 27 Oct 2023 09:39:14 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id r8-20020a6b5d08000000b0077e3566a801sm592681iob.29.2023.10.27.09.39.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 09:39:14 -0700 (PDT)
+Message-ID: <2d15edac-0227-415a-b12c-922c6873ae04@kernel.dk>
+Date:   Fri, 27 Oct 2023 10:39:13 -0600
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: lockdep: holding locks across syscall boundaries
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, LKML <linux-kernel@vger.kernel.org>
+References: <a99a7fbe-ec31-4e31-87c7-1b7ae1dd1a5a@kernel.dk>
+ <20231027155949.GA26550@noisy.programming.kicks-ass.net>
+ <ed3c5450-3dce-4f6a-9a8c-04fcdba1cbf2@kernel.dk>
+ <20231027161235.GB26550@noisy.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231027161235.GB26550@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiaxun Yang <jiaxun.yang@flygoat.com> writes:
+On 10/27/23 10:12 AM, Peter Zijlstra wrote:
+> The difference is that in this case the full lock order is determined by
+> kernel code (under our full control), while in the earlier example, the
+> lock order is determined by syscall order -- out of our control.
 
-> Set CM_GCR_Cx_RESET_BASE_MODE and use XKPHYS base address for
-> core_entry for 64bit CM when mips_cps_core_entry is beyond
-> KSEG1.
->
-> Also disable SMP and warn user if mips_cps_core_entry is
-> unsuitable as reset vector.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> Note: IMO it does not solve the problem of MobileEye,
-> which have mips_cps_core_entry beyond lower 4G,
-> it just enables me to test kernel in XKPHYS on boston.
-> ---
->  arch/mips/include/asm/mips-cm.h |  1 +
->  arch/mips/kernel/smp-cps.c      | 27 +++++++++++++++++++++------
->  2 files changed, 22 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-> index 23c67c0871b1..15d8d69de455 100644
-> --- a/arch/mips/include/asm/mips-cm.h
-> +++ b/arch/mips/include/asm/mips-cm.h
-> @@ -311,6 +311,7 @@ GCR_CX_ACCESSOR_RW(32, 0x018, other)
->  /* GCR_Cx_RESET_BASE - Configure where powered up cores will fetch from */
->  GCR_CX_ACCESSOR_RW(32, 0x020, reset_base)
->  #define CM_GCR_Cx_RESET_BASE_BEVEXCBASE		GENMASK(31, 12)
-> +#define CM_GCR_Cx_RESET_BASE_MODE		BIT(1)
->  
->  /* GCR_Cx_ID - Identify the current core */
->  GCR_CX_ACCESSOR_RO(32, 0x028, id)
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index dd55d59b88db..623dfd05585b 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -26,6 +26,7 @@
->  #include <asm/uasm.h>
->  
->  static DECLARE_BITMAP(core_power, NR_CPUS);
-> +static uint32_t core_entry_reg;
->  
->  struct core_boot_config *mips_cps_core_bootcfg;
->  
-> @@ -37,7 +38,6 @@ static unsigned __init core_vpe_count(unsigned int cluster, unsigned core)
->  static void __init cps_smp_setup(void)
->  {
->  	unsigned int nclusters, ncores, nvpes, core_vpes;
-> -	unsigned long core_entry;
->  	int cl, c, v;
->  
->  	/* Detect & record VPE topology */
-> @@ -94,10 +94,20 @@ static void __init cps_smp_setup(void)
->  	/* Make core 0 coherent with everything */
->  	write_gcr_cl_coherence(0xff);
->  
-> -	if (mips_cm_revision() >= CM_REV_CM3) {
-> -		core_entry = CKSEG1ADDR((unsigned long)mips_cps_core_entry);
-> -		write_gcr_bev_base(core_entry);
-> -	}
-> +	/*
-> +	 * Set up the core entry address
-> +	 * If accessible in KSEG1 just use KSEG1
-> +	 */
-> +	if (__pa_symbol(mips_cps_core_entry) < SZ_512M)
-> +		core_entry_reg =  CKSEG1ADDR(__pa_symbol(mips_cps_core_entry));
-> +
-> +	/* If CM is 64bit and with-in low 4G just use XKPHYS */
-> +	if (mips_cm_is64 && __pa_symbol(mips_cps_core_entry) < SZ_4G)
-> +		core_entry_reg =  __pa_symbol(mips_cps_core_entry) |
-> +					CM_GCR_Cx_RESET_BASE_MODE;
-> +
-> +	if (core_entry_reg && mips_cm_revision() >= CM_REV_CM3)
-> +		write_gcr_bev_base(core_entry_reg);
->  
->  #ifdef CONFIG_MIPS_MT_FPAFF
->  	/* If we have an FPU, enroll ourselves in the FPU-full mask */
-> @@ -114,6 +124,11 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
->  
->  	mips_mt_set_cpuoptions();
->  
-> +	if (!core_entry_reg) {
-> +		pr_err("core_entry address unsuitable, disabling smp-cps\n");
-> +		goto err_out;
-> +	}
-> +
->  	/* Detect whether the CCA is unsuited to multi-core SMP */
->  	cca = read_c0_config() & CONF_CM_CMASK;
->  	switch (cca) {
-> @@ -213,7 +228,7 @@ static void boot_core(unsigned int core, unsigned int vpe_id)
->  	mips_cm_lock_other(0, core, 0, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
->  
->  	/* Set its reset vector */
-> -	write_gcr_co_reset_base(CKSEG1ADDR((unsigned long)mips_cps_core_entry));
-> +	write_gcr_co_reset_base(core_entry_reg);
->  
->  	/* Ensure its coherency is disabled */
->  	write_gcr_co_coherence(0);
+Ah yes, good point - this seems like the key concept here. I think we're
+better off doing this seperately and just return -EDEADLK or something
+like that if it's being violated, rather than spew complaints.
 
-For my point of view the following chunk is missing, and in my tests it
-was needed to have this part to fully boot.
-Maybe you don't have VP core in tour hardware.
-
-@@ -349,8 +355,8 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
- 
-        if (cpu_has_vp) {
-                mips_cm_lock_other(0, core, vpe_id, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
--               core_entry = CKSEG1ADDR((unsigned long)mips_cps_core_entry);
--               write_gcr_co_reset_base(core_entry);
-+               write_gcr_co_reset_base(core_entry_reg);
-+
-                mips_cm_unlock_other();
-        }
-
-
-> -- 
-> 2.34.1
->
+Thanks!
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Jens Axboe
+
