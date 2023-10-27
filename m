@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E699B7DA142
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97987DA146
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjJ0TY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S231484AbjJ0T3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 15:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0TYz (ORCPT
+        with ESMTP id S230451AbjJ0T3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:24:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E036B1A6;
-        Fri, 27 Oct 2023 12:24:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698434691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y6gnZpsQuWc7QehQoZvEcvl+2gz1FD+UGg7ogB7c+Mw=;
-        b=fztehdxZgXdYiuafxUo0BfgKIezeZzAeY128OpSvoDNhdoFlFLazsML0vZRHoiZJ40ArvJ
-        qhAaZCKvSnVJFErH+aU9kf1ojRtZSV2wjicVOm6U+YExMn7l3Dp7PkgY1I4/IVur/tAvgw
-        4qIM+LPr/fO9o0l9VDxjAUlLE46OLJ/0OibI2idTKI4CiDl8PG00saEEwtehr6/wPdUtnx
-        J0xQVNOVZEmKVv9sTYKCWpGuB4UXrYQnO0KQQ4ERF1AztZBKy7w5zBZKEsLcH86cUtvUC6
-        3M9ii5AywCRefRvANIAiT8DKV3Zz1Ox548hXrrjdTYNm7kfsUAZvrrEcTTDt8A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698434691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y6gnZpsQuWc7QehQoZvEcvl+2gz1FD+UGg7ogB7c+Mw=;
-        b=pv7w3r2F7uuzJtN4Rc2L0gETerL1TJKOQDhA0+r2uQg45RN0nmClkiMNs/zJXDADeCU6L2
-        2jym8hNyfoJFKeCA==
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v2 0/2] Fixes for s3 with parallel bootup
-In-Reply-To: <20231026170330.4657-1-mario.limonciello@amd.com>
-References: <20231026170330.4657-1-mario.limonciello@amd.com>
-Date:   Fri, 27 Oct 2023 21:24:51 +0200
-Message-ID: <87zg0327i4.ffs@tglx>
+        Fri, 27 Oct 2023 15:29:22 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD517E5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:29:20 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 205A740E018F;
+        Fri, 27 Oct 2023 19:29:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FeXw8_sEkfdh; Fri, 27 Oct 2023 19:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698434956; bh=xbxovbWtvS5eUVU7qTa2e3X1XxpP9O0TH7iacPYNpeg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HqFjx8cwjFdeZKQXtZlqXtDA+1oLEoIhAt0zNaDVoYGFbWWgaKaA1X/TyI/teERfy
+         Nu4zziBp8DwkjLOWSHQtltFppG0zKCWcvUgfY4ztsADPxDC9kFTXSsdRpDOG2a1yyI
+         UuVYsS9R+37+fUxt8IqimJpsdy3/85j1kx3MPc5hZ3xu+VfX2UwDknCoZrBEjpTLOK
+         rROXF0kiH9XPkRytUlTxJ8zCGVgbmevLoujDZqr8CWgj3NHFP3Xn/n9fhYiw7cGYcS
+         K8f0fiVj4+jIIaB5mzBz3I5cW6TrNnYVDoZK27VwsMFnPrLvXp1K1XJKUoR9rC+xC/
+         ARf0P99Ic/aQDNDG+drt/h4U+xTQOgH5fWfrczAqUeuqOeujj6wRRklxNbrGX2Sd1i
+         d8239NLo3w8mZzo/kcbjrjHvVDFF2mRQSUDw0gPff+RfXSYKtlXHBOE/NboAMGzcj4
+         d+kSxJTHHCVvVlIpDJl34QaHSHi1pVweuf536cAV8BdGudR9UPksW1m8NaEjNnyCq9
+         vJIK04IpN8IEDWa+9T0gFhUeurMXVQiikQEyqnb+1Q2A+EZSPcWzWGvRBcznHckscf
+         c2/x10CSiMHVWFbUyaRF/ryuD6vdTweo50Q9LNMYxmCaygxgdCruGd5mZHh+SkytFb
+         OTtTSpWUtMiiSUQqGo18t8ig=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 959E540E0173;
+        Fri, 27 Oct 2023 19:29:12 +0000 (UTC)
+Date:   Fri, 27 Oct 2023 21:29:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>,
+        Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/barrier: Do not serialize MSR accesses on AMD
+Message-ID: <20231027192907.GSZTwPg8v7NF6+Zn0w@fat_crate.local>
+References: <20230622095212.20940-1-bp@alien8.de>
+ <20230703125419.GJ4253@hirez.programming.kicks-ass.net>
+ <20230704074631.GAZKPOV/9BfqP0aU8v@fat_crate.local>
+ <20230704090132.GP4253@hirez.programming.kicks-ass.net>
+ <20230704092222.GBZKPkzgdM8rbPe7zA@fat_crate.local>
+ <20231027153327.GKZTvYR3qslaTUjtCT@fat_crate.local>
+ <20231027153458.GMZTvYou1tlK6HD8/Y@fat_crate.local>
+ <20231027185641.GE26550@noisy.programming.kicks-ass.net>
+ <20231027191633.GRZTwMkaiW1nyvnzzO@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231027191633.GRZTwMkaiW1nyvnzzO@fat_crate.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -76,11 +75,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26 2023 at 12:03, Mario Limonciello wrote:
-> Parallel bootup on systems that use x2apic broke suspend to ram.
-> This series ensures x2apic is re-enabled at startup and fixes an exposed
-> pre-emption issue.
+On Fri, Oct 27, 2023 at 09:16:33PM +0200, Borislav Petkov wrote:
+> Thus the more conservative approach here.
 
-The PMU issue has absolutely nothing to do with parallel bootup.
+And on a second thought, I don't need any of that new stuff - I simply
+need a synthetic flag which says "MSRs need fencing" and set it on
+everything but AMD and Hygon. And we've solved this type of issue
+gazillion times already - why am I reinventing the wheel?!
 
-Can you please describe stuff coherently?
+:-\
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
