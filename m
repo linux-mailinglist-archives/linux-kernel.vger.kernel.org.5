@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF0A7DA0BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A847DA075
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346429AbjJ0SmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S232791AbjJ0SbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235251AbjJ0Sls (ORCPT
+        with ESMTP id S235142AbjJ0Sa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:41:48 -0400
+        Fri, 27 Oct 2023 14:30:59 -0400
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87843C30;
-        Fri, 27 Oct 2023 11:29:52 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id A98093200A19;
-        Fri, 27 Oct 2023 14:27:07 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D503AA9;
+        Fri, 27 Oct 2023 11:30:23 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id BDEBA3200A13;
+        Fri, 27 Oct 2023 14:27:10 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 27 Oct 2023 14:27:08 -0400
+  by compute2.internal (MEProxy); Fri, 27 Oct 2023 14:27:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698431227; x=
-        1698517627; bh=yIBHHJoeBZonb5tndpSrM+X2Yc5Shk4jUNpLuZRp3To=; b=n
-        aUfD8yEGmPxYxKacatPB3aokAcd/AHtxWtRn1xZnTh5e/5RDVCjSlw8ynDpaXER/
-        f0ja4+MPIolnmtCwb1MZQi+cbpehap6itUwhMYMqaLAtKjkvHOxSKg3c3dlzXvPy
-        PghO6Ko0s7gpSvzichGNLyBv2aGvqNL84zEuADPBf7sVnYBoQxkk5ZBMVAhIuKF3
-        MteufCcnpGzydQEpct2+cuubjxfLBI2i0vtd78m8XAjqliF1Z7EIWyHbc/QucT3v
-        VuX7xuZ6vmNnsyR36arpSH7LN/ObhMpNL+tPRl5zrUCVySt8PIfCNeSqHSiVbQI3
-        /xMxZvSxwfGWPUpItLM4Q==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698431230; x=
+        1698517630; bh=SX5fl+EhwuJvuJSgszNvKWpCysGddZbGyxPGegx2anM=; b=j
+        FRAXDUuK2CFPQX5/xA0kUTtyU567S0snECMD+OHTNcU8aQCUTpOb9inZjuSuKJvd
+        zGvLRA1OFzH1Y5NZTXse/wulq+xgRyWzBvnmxITUUOlJBAMIhCAlECE/qu6ntzrn
+        F3nY1dvVHx3m+YB6DaLmW5xNJvPmZbMyTTC8fxLv5OOqqgWywO3ANEftOLW22kIm
+        HS+QPnl8cxWrGk5zgI9JYpIk2cy6/Opf/ecV0oQ1otlikweEgKE+esZRqbId3BSW
+        iWdp0imEGPBt+5DXXDOfksjtacbFfWqY3hwRRyEHKUVx1Iej+fBhdFRfjlggETmx
+        F1E86efsjDfbTsD4hvixg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698431227; x=
-        1698517627; bh=yIBHHJoeBZonb5tndpSrM+X2Yc5Shk4jUNpLuZRp3To=; b=V
-        Ly4xBC6UZz6S/C6L8cTheRblnlcx0MvsV0hA8rrS3Mhu5FFtMoBxjS3GELvF3Q3I
-        /4M05QUTC9ygq66jB7zkjJEFiJodXBMlyVa2LnTissAPxH6J291LXSCLveQZkGpG
-        TMF0J6pMGSePeAbVksg4Vysy4bJGw4r2mKANmX41lg2wzYgen8ZvJZNvudojd03+
-        AZB61cfwF3IJvi+f57HCUVHuszjE4R4nrtgoeWCaFG6TGnLDj//LLP5MweuWUdTQ
-        OuYhgw/xomF3dOFqMyTDuLc2D4fpxfT+00R3JtTvanAEz9rBmnxaRfp/57GZqzDE
-        MZSvb7BhdJqyBH9NjZKgw==
-X-ME-Sender: <xms:-gA8ZdpBUTCppmZZqxevIRFRxWNd14tlWZHqpNoNMOCRVt9sgHAVlA>
-    <xme:-gA8ZfoBsZzY9PnyZRgw_cX8-0pYnEl3ECZqoEbP6lCsaSxRhEf_ztMg85MDMm4bD
-    QYi0GtJkuVruK6aPuc>
-X-ME-Received: <xmr:-gA8ZaPL_FQrhuqXhTEIoYhi3tMB8hk2Pxb1J4T_SogHa_fD6WQkt3xo8ktXcsgeLsaQLWttbIY>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698431230; x=
+        1698517630; bh=SX5fl+EhwuJvuJSgszNvKWpCysGddZbGyxPGegx2anM=; b=F
+        wk4pn7WFZEFlB6XbJ3pn0TwDefOr50L7wsw59vOtX4b5fWI0awk4sVgWYr4DMKyC
+        +uDiOBSgBZxlPTTMXSvtslyXP+FptDNdGSrS89LvFb5OdfmGZ9boOsiZDskflHSM
+        erxHbOOQaVebV/950eJ0A2jhVhlXce95GQddvpTsNn7F5qkZIsv3W8d0fcqTA1zk
+        R4U35v+iZwkLAqN2fkk3lXnx4dwEyniCY1mEwiq6v+PtMGq1bdsXP2D5CWkNNu3W
+        0lrbF8+fXDvEc/WT7e+EQQV6QW+QDN1iSZNQXtEO9NkrYQChkVDaWL/ptnExaKM3
+        hJLNelkDszevOZcTWlBmw==
+X-ME-Sender: <xms:_QA8ZccQ54tfTkmXKGJqd5XrTcy1n7ePLwL0MX2Cx7XNDwDP0eshdQ>
+    <xme:_QA8ZeMK33uPp_jWvnlkJOOuOoM9xlzZtuSYqyGGM38VS5-1rzTDe0m9oPIPGOExU
+    5uIwd4DhpUyYZ8Ri3A>
+X-ME-Received: <xmr:_QA8ZdjsY_xYP_gQPeu4H7g8CmOimDWAQACyxQZV9MS1uXT0cPqPTrpWsPySR0resaAqCVp8CG4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggdduvdeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -56,21 +56,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggdduvdeiucetufdoteggod
     dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
     vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
     hgohgrthdrtghomh
-X-ME-Proxy: <xmx:-wA8ZY6SvqfNxlHgqCYpP2YQ6BW2aYNRPQ2BRUZFpV8uNFHapB1_4w>
-    <xmx:-wA8Zc6--x7ouRpE9-uTiwNmk9HhS2TEZzi0mJwuwD8qTLf4JvWDzA>
-    <xmx:-wA8ZQjua2ml0OMBdnCKj1DgTdzvcpZwsUdNcbm4MW-HtsZwr17h6g>
-    <xmx:-wA8ZWTeNAv6mFgVUFzhfu5Oq6YIFpHRhHz5ugRqKC2PI2oDSGI9Bg>
+X-ME-Proxy: <xmx:_QA8ZR9UWSkqkTO8VVe1_lN1OTFffYAUdcFkx7wJ91BEl_-dGquWZg>
+    <xmx:_QA8ZYtvdIcWLPKsXwpLfb_mAvxtQ4TnDKxd2okYHyeI5bO_ZAbnMA>
+    <xmx:_QA8ZYH81Cc6ovOM7V6e4U-R9iqN2sv00WTqq-D_Uhb3ZWPP8-wG6g>
+    <xmx:_gA8ZSW70abzJYYV1_K4QNmwZ00aAPcDdo4VFm4q273IneEapd3Gag>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 14:27:05 -0400 (EDT)
+ 27 Oct 2023 14:27:08 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         tsbogend@alpha.franken.de, gregkh@linuxfoundation.org,
         jirislaby@kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 3/3] serial: Add an earlycon driver for MIPS UHI semihosting
-Date:   Fri, 27 Oct 2023 19:26:46 +0100
-Message-Id: <20231027182650.281405-4-jiaxun.yang@flygoat.com>
+Subject: [PATCH 0/3] serial, MIPS: Add MIPS UHI semihosting support
+Date:   Fri, 27 Oct 2023 19:26:47 +0100
+Message-Id: <20231027182650.281405-5-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231027182650.281405-1-jiaxun.yang@flygoat.com>
 References: <20231027182650.281405-1-jiaxun.yang@flygoat.com>
@@ -86,147 +86,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UHI is MIPS's implementation of semihosting.
-Add an earlycon driver to help with debugging on boot.
+Hi all,
 
-This driver is capable for print log using UHI's "Plog" or interact
-with KGDB using UHI's stdio function.
+This patchset adds support for MIPS UHI semihosting.
+It has been implemented on many debugers such as MIPS CodeScape debugger
+and OpenOCD.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- drivers/tty/serial/Kconfig             | 13 ++++
- drivers/tty/serial/Makefile            |  1 +
- drivers/tty/serial/earlycon-mips-uhi.c | 85 ++++++++++++++++++++++++++
- 3 files changed, 99 insertions(+)
+It is also supported by QEMU's -semihosting option.
+
+I didn't add MAINTAINERS entry for this driver because I find other
+simple earlycon drivers don't have one either. Do let me know if it
+should be added.
+
+Thanks
+Jiaxun
+
+Jiaxun Yang (3):
+  MIPS: Add header for UHI semihosting defines
+  MIPS: zboot: Add UHI semihosting debug print support
+  serial: Add an earlycon driver for MIPS UHI semihosting
+
+ arch/mips/Kconfig.debug                |  11 +
+ arch/mips/boot/compressed/Makefile     |   1 +
+ arch/mips/boot/compressed/dbg-uhi.c    |  11 +
+ arch/mips/boot/compressed/dbg.c        |   4 +-
+ arch/mips/boot/compressed/decompress.c |   4 +
+ arch/mips/include/asm/uhi.h            | 309 +++++++++++++++++++++++++
+ drivers/tty/serial/Kconfig             |  13 ++
+ drivers/tty/serial/Makefile            |   1 +
+ drivers/tty/serial/earlycon-mips-uhi.c |  85 +++++++
+ 9 files changed, 437 insertions(+), 2 deletions(-)
+ create mode 100644 arch/mips/boot/compressed/dbg-uhi.c
+ create mode 100644 arch/mips/include/asm/uhi.h
  create mode 100644 drivers/tty/serial/earlycon-mips-uhi.c
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index bdc568a4ab66..04c62c6b45cd 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -85,6 +85,19 @@ config SERIAL_EARLYCON_SEMIHOST
- 	  This is enabled with "earlycon=smh" on the kernel command line.
- 	  The console is enabled when early_param is processed.
- 
-+config SERIAL_EARLYCON_UHI
-+	bool "Early console using MIPS UHI semihosting"
-+	depends on MIPS
-+	select SERIAL_CORE
-+	select SERIAL_CORE_CONSOLE
-+	select SERIAL_EARLYCON
-+	help
-+	  Support for early debug console using UHI semihosting.
-+	  This enables the console before standard serial driver is probed.
-+	  This is enabled with "earlycon=uhi" or "earlycon=uhi_stdio" on the
-+	  kernel command line.
-+	  The console is enabled when early_param is processed.
-+
- config SERIAL_EARLYCON_RISCV_SBI
- 	bool "Early console using RISC-V SBI"
- 	depends on RISCV_SBI_V01
-diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index f6b8c220dcfb..ef5e9c87aea1 100644
---- a/drivers/tty/serial/Makefile
-+++ b/drivers/tty/serial/Makefile
-@@ -9,6 +9,7 @@ serial_base-y := serial_core.o serial_base_bus.o serial_ctrl.o serial_port.o
- obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
- obj-$(CONFIG_SERIAL_EARLYCON_SEMIHOST) += earlycon-semihost.o
- obj-$(CONFIG_SERIAL_EARLYCON_RISCV_SBI) += earlycon-riscv-sbi.o
-+obj-$(CONFIG_SERIAL_EARLYCON_MIPS_UHI) += earlycon-mips-uhi.o
- 
- # These Sparc drivers have to appear before others such as 8250
- # which share ttySx minor node space.  Otherwise console device
-diff --git a/drivers/tty/serial/earlycon-mips-uhi.c b/drivers/tty/serial/earlycon-mips-uhi.c
-new file mode 100644
-index 000000000000..002bb2c37064
---- /dev/null
-+++ b/drivers/tty/serial/earlycon-mips-uhi.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * MIPS UHI semihosting based earlycon
-+ *
-+ * Copyright (C) 2023 Jiaxun Yang <jiaxun.yang@flygoat.com>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <linux/init.h>
-+#include <linux/serial_core.h>
-+#include <asm/uhi.h>
-+
-+static int stdin_fd = -1;
-+static int stdout_fd = -1;
-+
-+static void uhi_plog_write(struct console *con, const char *s, unsigned int n)
-+{
-+	uhi_plog(s, 0);
-+}
-+
-+static void uhi_stdout_write(struct console *con, const char *s, unsigned int n)
-+{
-+	if (stdout_fd < 0)
-+		return;
-+
-+	uhi_write(stdout_fd, s, n);
-+}
-+
-+#ifdef CONFIG_CONSOLE_POLL
-+static int uhi_stdin_read(struct console *con, char *s, unsigned int n)
-+{
-+	if (stdin_fd < 0)
-+		return 0;
-+
-+	return uhi_read(stdin_fd, s, n);
-+}
-+#endif
-+
-+static int uhi_stdio_fd_open(struct console *co, char *options)
-+{
-+	/*
-+	 * You have to open both stdin and stdout to get console work
-+	 * properly on some old CodeScape debugger.
-+	 */
-+	stdin_fd = uhi_open("/dev/stdin", UHI_O_RDONLY, 0);
-+	stdout_fd = uhi_open("/dev/stdout", UHI_O_WRONLY, 0);
-+
-+	return (stdin_fd < 0 || stdout_fd < 0) ? -ENODEV : 0;
-+}
-+
-+static int uhi_stdio_fd_close(struct console *co)
-+{
-+	int ret1 = 0, ret2 = 0;
-+
-+	if (stdin_fd >= 0)
-+		ret1 = uhi_close(stdin_fd);
-+	if (stdout_fd >= 0)
-+		ret2 = uhi_close(stdout_fd);
-+
-+	return (ret1 < 0 || ret2 < 0) ? -ENODEV : 0;
-+}
-+
-+static int
-+__init early_uhi_setup(struct earlycon_device *device, const char *opt)
-+{
-+	device->con->write = uhi_plog_write;
-+	return 0;
-+}
-+
-+static int
-+__init early_uhi_stdio_setup(struct earlycon_device *device, const char *opt)
-+{
-+
-+	device->con->setup = uhi_stdio_fd_open;
-+	device->con->exit = uhi_stdio_fd_close;
-+	device->con->write = uhi_stdout_write;
-+#ifdef CONFIG_CONSOLE_POLL
-+	device->con->read = uhi_stdin_read;
-+#endif
-+	return 0;
-+}
-+
-+EARLYCON_DECLARE(uhi, early_uhi_setup);
-+EARLYCON_DECLARE(uhi_stdio, early_uhi_stdio_setup);
 -- 
 2.34.1
 
