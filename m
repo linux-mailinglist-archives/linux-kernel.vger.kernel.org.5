@@ -2,46 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61AC7D8E3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3837D8E3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjJ0Flc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 01:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
+        id S1345160AbjJ0FmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjJ0Fl3 (ORCPT
+        with ESMTP id S229590AbjJ0FmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 01:41:29 -0400
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 22:41:25 PDT
-Received: from mta-65-225.siemens.flowmailer.net (mta-65-225.siemens.flowmailer.net [185.136.65.225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047BF1AA
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:41:25 -0700 (PDT)
-Received: by mta-65-225.siemens.flowmailer.net with ESMTPSA id 202310270540212c492c79708ef8c715
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 27 Oct 2023 07:40:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=daniel.starke@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=/KZ/e7ZMbAbly9okDCQ6zH4k2JlUxSD/DyA86W16Z+k=;
- b=qIxsC0d8D+pXUIy5HcRwCfSS1WpXHiH8s3D6Ak5jTZ7MpK2O05CQDZGIvX9MQNm5RyRrYJ
- CrR0NQK5q0lyRT46rCCdw7VD9/DwUjUIHHZbcgCSpxD5ptxYZpnrzWnU00xV3+JZJsCsMM8e
- 9BgUVbVIhmm6lEYXrOXJj1YSkv8ak=;
-From:   "D. Starke" <daniel.starke@siemens.com>
-To:     linux-serial@vger.kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Starke <daniel.starke@siemens.com>
-Subject: [PATCH 1/1] tty: n_gsm: add copyright Siemens Mobility GmbH
-Date:   Fri, 27 Oct 2023 07:39:03 +0200
-Message-Id: <20231027053903.1886-1-daniel.starke@siemens.com>
+        Fri, 27 Oct 2023 01:42:21 -0400
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com [207.54.90.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAAC1A7;
+        Thu, 26 Oct 2023 22:42:19 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="137517268"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694703600"; 
+   d="scan'208";a="137517268"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 14:42:11 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 7D2C1D6186;
+        Fri, 27 Oct 2023 14:42:08 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id AF8D5D3F3B;
+        Fri, 27 Oct 2023 14:42:07 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+        by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 43BD72007471E;
+        Fri, 27 Oct 2023 14:42:07 +0900 (JST)
+Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
+        by edo.cn.fujitsu.com (Postfix) with ESMTP id 682921A0070;
+        Fri, 27 Oct 2023 13:42:06 +0800 (CST)
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com, bvanassche@acm.org,
+        Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+Date:   Fri, 27 Oct 2023 13:41:53 +0800
+Message-ID: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-314044:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27960.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27960.005
+X-TMASE-Result: 10--2.709700-10.000000
+X-TMASE-MatchedRID: 362T4rQL1OeMCPk/lvFUOp13aYUE0ivy2FA7wK9mP9dHpEd1UrzmFcyY
+        +KNsy3oNEtuR7TIdaKXplZ0MI+xAXtAy2LXTI7g3EXjPIvKd74BMkOX0UoduuZBz1ZAU7t9T5s7
+        uzWaKyAzi8zVgXoAltr8hWd4lAsFlC24oEZ6SpSmcfuxsiY4QFAusc5H1417CXea3jCa2pjxA+d
+        r4vevoQ6AYfsZo2EAGB3zb8qgE6aUTkfXrC6tp/rLvgdRTF0C9JtAM880Fc9lxfsHyeP4fXJsNE
+        GpLafrrLM/nEDLP056e+TDiyH/49wxfkLAfkNNSaAZk0sEcY14=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,60 +64,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Starke <daniel.starke@siemens.com>
+mr->page_list only encodes *page without page offset, when
+page_size != PAGE_SIZE, we cannot restore the address with a wrong
+page_offset.
 
-More than 1/3 of the n_gsm code has been contributed by us in the last
-1.5 years, completing conformance with the standard and stabilizing the
-driver:
-- added UI (unnumbered information) frame support
-- added PN (parameter negotiation) message handling and function support
-- added optional keep-alive control link supervision via test messages
-- added TIOCM_OUT1 and TIOCM_OUT2 to allow responder to operate as modem
-- added TIOCMIWAIT support on virtual ttys
-- added additional ioctls and parameters to configure the new functions
-- added overall locking mechanism to avoid data race conditions
-- added outgoing data flow to decouple physical from virtual tty handling
-  for better performance and to avoid dead-locks
-- fixed advanced option mode implementation
-- fixed convergence layer type 2 implementation
-- fixed handling of CLD (multiplexer close down) messages
-- fixed broken muxer close down procedure
-- and many more bug fixes
+Note that this patch will break some ULPs that try to register 4K
+MR when PAGE_SIZE is not 4K.
+SRP and nvme over RXE is known to be impacted.
 
-With this most of our initial RFC has been implemented. It gives the driver
-a quality boost unseen in the decade before.
-
-Add a copyright notice to the n_gsm files to highlight this contribution.
-
-Link: https://lore.kernel.org/all/20220225080758.2869-1-daniel.starke@siemens.com/
-Signed-off-by: Daniel Starke <daniel.starke@siemens.com>
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- drivers/tty/n_gsm.c         | 1 +
- include/uapi/linux/gsmmux.h | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 1f3aba607cd5..647e06b656bf 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -2,6 +2,7 @@
- /*
-  * n_gsm.c GSM 0710 tty multiplexor
-  * Copyright (c) 2009/10 Intel Corporation
-+ * Copyright (c) 2022/23 Siemens Mobility GmbH
-  *
-  *	* THIS IS A DEVELOPMENT SNAPSHOT IT IS NOT A FINAL RELEASE *
-  *
-diff --git a/include/uapi/linux/gsmmux.h b/include/uapi/linux/gsmmux.h
-index 4c878d84dbda..3a93f17ca943 100644
---- a/include/uapi/linux/gsmmux.h
-+++ b/include/uapi/linux/gsmmux.h
-@@ -1,4 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/* Copyright (c) 2022/23 Siemens Mobility GmbH */
- #ifndef _LINUX_GSMMUX_H
- #define _LINUX_GSMMUX_H
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index f54042e9aeb2..61a136ea1d91 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
+ 	struct rxe_mr *mr = to_rmr(ibmr);
+ 	unsigned int page_size = mr_page_size(mr);
  
++	if (page_size != PAGE_SIZE) {
++		rxe_info_mr(mr, "Unsupported MR with page_size %u, expect %lu\n",
++			   page_size, PAGE_SIZE);
++		return -EOPNOTSUPP;
++	}
++
+ 	mr->nbuf = 0;
+ 	mr->page_shift = ilog2(page_size);
+ 	mr->page_mask = ~((u64)page_size - 1);
 -- 
-2.34.1
+2.41.0
 
