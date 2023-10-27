@@ -2,202 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C047D8F62
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B267D8F5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345342AbjJ0HOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
+        id S235010AbjJ0HOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjJ0HO2 (ORCPT
+        with ESMTP id S234901AbjJ0HOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:14:28 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2067.outbound.protection.outlook.com [40.107.104.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA6AD40;
-        Fri, 27 Oct 2023 00:14:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hICSTo7jNMsGE+SaanM3xC9lCqAbdxmMJekh5KHC5+gR704/EiUB5DlUAw35VCGtDtMguhoDMyD//HQyO9Smti3AhL5+LQgId6kahDO2MegP7imIcfSq+gpx0Y0VoNJtzOWc1LedXM2a/oIZE/ujWdK4d0fGrHXp90oNltOWa8JE8tdQuLCmGs/NKK6NNHbcR+T/ixe9l6K0oaFfNU3a7+0mSabuKlIikBwD6IlSY7ezrJip79Dv3qQGF+8UBjtziq9v76YMavb01+h0bz1gUUqKeLVybnBlae/O4DoZmAsr1BCfVPHH3shQqMZpIzzvkCx/dJtBWFXRIrFnFpGn9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i9Db+43y38xWAC0XJGLnR0RRLbmc/igu04EO36lgYT8=;
- b=jml8MbQIkb7JGdaNeZsvtGTEBrL+GaYYLJz6Qk6Y8SWOv/824yZQvWMVusJPI0xA55rE7l8Oo6N0wNijm1N+1aIfGivfBunCBMcYbXpoqJwdkFqIxrhHLWUar9rYyHlpoWiIpgAxWXLi5DaCqAy6ua0VV18rCkPguP42J186N5OGw9R57Pa4Gg2dNzM/BAqJo4Ufv0WLvWfrud5qU6e/WXlfR1xa/iT5S68zA2ivt1GUA/oyhB4LNDW8vutQqLf8Fi49yNo//9hr7gWmpOdZ21gS0ioy9+12sTaQU/7S3d5BbYE7XgF8PWkdKWngTDl3qy5Xmo+YghwCbypTNL4jMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9Db+43y38xWAC0XJGLnR0RRLbmc/igu04EO36lgYT8=;
- b=0xDJGdeT6BxTLkjpnAuX7tlJGSnho0+8MvOvzIosVDWx/phXhWP7EpTSghq0qw+IcPcZdx4I6zTcCBTHGbAgnSEGM+G9ssVwHP5ZO6o/SU/BkeNROOeUt9ea5UiL1BS9d0J4JFrmY5ygMGAMWXRbO8hrHWYVH2l8KORKhcEQy5mQayqaZkpMXRMWfTv6Q2cFcD+t3IVm751DBAORciyKE8A7bGBRSqAq+IzmWEZ8e24vzupTA4JEiGAbOKQpFxtaSH5jZu20h286fuMEaJ9VFrWfSb7mz8yKcHWYa7E5+gWWByNfESPrQE82hfxpMOQZLds52BdxVFAka9eEphWzVQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
- by DU0PR04MB9493.eurprd04.prod.outlook.com (2603:10a6:10:350::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
- 2023 07:14:21 +0000
-Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c]) by AS8PR04MB9510.eurprd04.prod.outlook.com
- ([fe80::9f3e:3b47:5ccd:c47c%6]) with mapi id 15.20.6954.008; Fri, 27 Oct 2023
- 07:14:21 +0000
-Date:   Fri, 27 Oct 2023 15:14:10 +0800
-From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix check_stack_write_fixed_off() to
- correctly spill imm
-Message-ID: <ZTtjQlqRQWCWwmHx@u94a>
-References: <20231026-fix-check-stack-write-v1-0-6b325ef3ce7e@gmail.com>
- <20231026-fix-check-stack-write-v1-1-6b325ef3ce7e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231026-fix-check-stack-write-v1-1-6b325ef3ce7e@gmail.com>
-X-ClientProxiedBy: FR4P281CA0158.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::15) To AS8PR04MB9510.eurprd04.prod.outlook.com
- (2603:10a6:20b:44a::11)
+        Fri, 27 Oct 2023 03:14:16 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CE41B4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:14:13 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5082a874098so355105e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698390852; x=1698995652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+px//zDue0QlLsQmg7awV4cRdW/dHUa3REcXtXS90qk=;
+        b=dsMTyWZyJwN9HSJiuxRI1VjImPIftNx+j12PSCgHhyRp0J0JI179uf1b1dOsm/gEun
+         313NsMFsSAGVGQLYirAL4FAajhoUml9XOykuMXa61raGK4qaQq6C3PgAGyr2nRgMJnci
+         YZrBvagMrRBcv5aymqJ+bkia5TrG3CTkcBRC8pDm/z0ZhebfMCY2f5HTVabqX2FytAm6
+         1AwQcpRNUlc1mNQRXzV8V11qytI366igo7/PwJUm+FsfPJ0bcIYLnYqNRUHVTHipCtTn
+         9xB8838l2pDzyo/li//nwCBBP9dZwCB3+TxhwPBbuUPwAMPjen30y70dNhRywGz261gF
+         SdHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698390852; x=1698995652;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+px//zDue0QlLsQmg7awV4cRdW/dHUa3REcXtXS90qk=;
+        b=lvIWrSI1ia2LJXS4Fme3drejOf6o2GwQCE4lkCMce6ASORSsW70Ilk/IB8dqRHwEEQ
+         LcuIN5xhklwbFKj6qfBCDBYQBpRBcfy7C0hEW/+jtTLG5pPFAF2apt5S+5xHb7zLr3Wz
+         Y10+qg2+wpxU0N0svpAAEoHgIDID/AWwQgY2Loz9jYF8IClxeZ1H47EaU2rDCv7rDCMd
+         2S2Rk+bru4ok7odd8uCGarr68FOZG2R1B/LqZKs40t/dxj0S77gdj1EfNv6AfTP34Gy5
+         15+fyKVW+lXhN/YYZMsDuJYJTzbBNcF8TzVXjS9wwDx26+P5TqEm+t+bKDc2+RWM1s1F
+         aztQ==
+X-Gm-Message-State: AOJu0YxO8hi/apm7iUDt/O6rAd+oP7dnPKDRMRvbhL/qggY26OlERq6P
+        4+JS+if8k8v+Vq7+wwSe9MmXUQ==
+X-Google-Smtp-Source: AGHT+IFsd13t6vzLiUy8DGtEdNHSaRHNkAgJmsB1iqmeU5GA9aPjvvJZKCXRwFwMNqevAXWrxZZkJA==
+X-Received: by 2002:a19:6d03:0:b0:507:c763:27a5 with SMTP id i3-20020a196d03000000b00507c76327a5mr1031747lfc.62.1698390851726;
+        Fri, 27 Oct 2023 00:14:11 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id m28-20020ac24adc000000b00507d478c211sm161204lfp.76.2023.10.27.00.14.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 00:14:11 -0700 (PDT)
+Message-ID: <baf3fc7e-9d0d-47cc-a53f-4c6fe6878381@linaro.org>
+Date:   Fri, 27 Oct 2023 09:14:10 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|DU0PR04MB9493:EE_
-X-MS-Office365-Filtering-Correlation-Id: 83f9c4f1-2098-4e52-5162-08dbd6bc57ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VSnqQoYNSBRD9WYehCGCblBlEqhqARxZrhUl/E9h2JPEeZqOQvNs+VYGKTmQQ/XpEp6RnHUyyTsQA24iDCurTJHJvBuHaUzI+P7uUdvW/pvgNTxJuUrbH7AwUBeUMHJ2QYWtBZqK0minBKZItcl02MMyH9L0dCxksOJP7tIbIf2qd6kxvSbW63aO8pycUQvQG7Wl/VX7bZTf6NJJ6lYJWhNBWF0eTq0RWJWHc6e+C8spy9nvbLmlBp9ts+Yq4BckHY4lFPdOe7NeH+S2ZGybWmZGWCkk2OnbIK6LNOdpf4Kd5Aab9+Bjcg4l0F3MUZeB3/ODsMDFF7BDx10h1JzJLAXx21EjI1uKgl9gpsblJA9uthfkHbAduA1Tkg4p2i8DtGgcKdDQuzj2MqFtGqkdacLX43H3VMfZxCaCtVENML5UBgfanhJhJ0UFBAYNmXwZ71lgnfeLLPGyf7bdgQ5BltPNUvGk7V19KB/i6V3BzQUK1lSSzEYCPNrRa1ZPy/TDWpcIn2lFfsQ5A4unQBaPwnwAwitdBCxz/4j4cRKgGheBkC1oYY9hXCtHGG84FmEd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(376002)(396003)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(41300700001)(5660300002)(66946007)(7416002)(2906002)(316002)(6916009)(8936002)(8676002)(4326008)(6506007)(54906003)(6486002)(478600001)(33716001)(6666004)(9686003)(66476007)(26005)(83380400001)(66556008)(38100700002)(86362001)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2pFS01QZkxZVkhhRWVva3VKSHNQV21Kbm1yc0lpejZjZS9xdTdnRG9DTVg2?=
- =?utf-8?B?Skg0bXJGYnlTbkt1R3VldFUzUUFzeE1NV1c2dFR2aFBva0d4Sm83NUtEbUtw?=
- =?utf-8?B?WGJPNCtrUytpTC9vODVyRXBHSlZiVVF4dXI5RE1YRmZudWs3TnI5NXRVei9K?=
- =?utf-8?B?UW1WT1JnajVpbGtrRjJodlRtZDhUTUovVzlSNTlNNCtMdHJ3VTkzL2FkazBS?=
- =?utf-8?B?NXhUUEE4ak1mNURSL0RoSTFaMkJjcVViM1ZDVnJjSGQ0NGpFWFI4Z2t1a2RH?=
- =?utf-8?B?V2pGcm41TGJSRFp5eFVCeTRsQ1BGRnROcUVJTzR0WlJQNisxTEtDNXhGRXZi?=
- =?utf-8?B?eGNBQk1ibEtJTjFwK2JXd3h6a0c0VlFwWDJsbUhDRXd2V0pKbjhveVdlVkRC?=
- =?utf-8?B?bkZVbVcvMXROZlN6QlpRWjdoc1hFR0ZZamY1YTRsZVloR0pZUlIzTzN5YkVB?=
- =?utf-8?B?d2lFMVltcnJhak9zMVF6cGhyTHg5Tm1XSzJHOTlHN0hEN1BHdmNMN3JSbHRS?=
- =?utf-8?B?VHZvNDg3dmdwNmlqemZudmlXcnkveHcvcXRVNEwxL0RmZW1wNzNkMi9IR2tP?=
- =?utf-8?B?ZVVDNnU2cHZpRjRGM2VWS3ZjdlpoSWNVY1JqTlJzT0VzVTcwblBELzVXRGMz?=
- =?utf-8?B?c2RZYUQ0djN6bWpOUmhxQVBVNkR4U1VheGdYVm9VN2ROTG93QWU1RUpHQmRh?=
- =?utf-8?B?UnNEN0VaTVZ4ZVJkMndxUG5zQlBBeEgxNldkYko5VWsvQVZsdWxlVHA2NkpR?=
- =?utf-8?B?dS9tMnFyYmdubm5QNnl1KzdmRk5qSmNpV3dyR3VmUVdEZ3dHaUhUdytqZEk4?=
- =?utf-8?B?RW5qUkRBakdWT05FYWRNc1ZXNUs0ZFRHNHYzYUY4Ym1mT3ZQbk5uMVpwMTh5?=
- =?utf-8?B?djU3cWZvK09uN3RvaG9aVStjenNFdUYzU3p2TU9LSHREcHJSMzJnRlQrdFNB?=
- =?utf-8?B?U1U0T3g5bGw3NVQ1RWllelIxNUhhalRjUTNiSzdVMnlsQUcwOTlSeFlYNzlp?=
- =?utf-8?B?aHRJNnArT2EvUm1pOThpekZsZnNuOTFhQ3Q3TmdlN1VDQ0I0WGNWNnVYdmV3?=
- =?utf-8?B?T1dmK1BXYTJRS3VSaUVCZ3UwSTRRN0xuMTNPakc0WUdaZ1FveWExK0gwbk83?=
- =?utf-8?B?ZUJLdmtJZkxOWWFnUTJqVkJucXBBNFhJQVUvQ0hmMjVELzBVRmlqL0NFdkdx?=
- =?utf-8?B?b0Qyc2VGeEpPYmFyR0kyZkN2ZEFiNGNVclZYWjdpUDlobE5WeTZVakFLczJr?=
- =?utf-8?B?aXdYT2hBSmRRMlFpayszMzdJVkpVWjk3Wk9oUlBTNHE3dHNWN3VNU3UraUZN?=
- =?utf-8?B?N0RPc0Vaamo0cUNycG5obTFVdnFMc2lWZ0FXcTUyaW5nZjZVS3grRGtXWGRR?=
- =?utf-8?B?d3BQaHdjRmxiWmZuU0tIVHo1dm4zL2V1bnlrVlo2b3o1bkNFQmtQQnRQcE5i?=
- =?utf-8?B?OXFFckt2QzdjdDEyVitnbHZtUW9tb1JHMTRHSEh2ZldOZXAwMXFYTzZ5eHJ2?=
- =?utf-8?B?aXV6NFF3V1RNTG9ERFhCUXlncFhPMmpwR1QxcUlMdDlxaWtXUkJlVUxmbnNT?=
- =?utf-8?B?cnlncDkyY2NMZlBDZlRFendQRDZwN0VXa0hwYXAzV0pKaXJVTXVrTVlRdXFp?=
- =?utf-8?B?L01Oc3R5TkgxdHRmMFkzNFMreE8xT2JNeWxUNjZqOEhadjRMdnpPck5DTEF0?=
- =?utf-8?B?WFQzVkl5UGRyRzlCVWZPNU9iSkxjTjBWN0JES1RZd1ZrbkZvY0ZranRrS2cz?=
- =?utf-8?B?SFZwQ1RrREpHMHd5Y3M4L1o2TmU3QXhPRG1qWVVZbHpDMU8yUkowNnpHNWJj?=
- =?utf-8?B?NG1OOGZVWCtsYzNWazJGQUFydkwzNEdmZzBUWm9EVHY0aGM4WE9ObnJRQzdC?=
- =?utf-8?B?eWVDWHdaS3FHMXBwQ3I5ZU1wMVN6dVlWVU5VQVhEZFFuWU9rM2NJQjdyT2Fq?=
- =?utf-8?B?MXgzSWNhNFZMeHRlM2JYU1RmaU5Fa08xeFYzcWtlWXBKTGh5RUd5MDRKZlVJ?=
- =?utf-8?B?MWVNc2lraU1ja2htNHEwaWdRZVcrNkNBeWJMTjBHU2lQSm5EODZWQlRoOXk4?=
- =?utf-8?B?a3NSb045Z3NHc21SU2l0aHphdERlTFAySCtmRVovS1RNS29IMC9oUWNwUEpT?=
- =?utf-8?Q?dwargCUkgTxDrvuxGT/6KNLzG?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83f9c4f1-2098-4e52-5162-08dbd6bc57ad
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 07:14:21.7237
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5w6HomUJ8PXCcSWAR4112oK9y6I+WFXdQdwngbgYYKWDJGH8OtO5SPSEsbrOsSarYJiF7WQni0ZxbfV1NEgJ/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9493
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916
+ vm-bms and lbc
+Content-Language: en-US
+To:     Nikita Travkin <nikita@trvn.ru>, Lee Jones <lee@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
+ <20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru>
+ <169808265626.861066.13083505051202182067.robh@kernel.org>
+ <53474576e3c860a1bb93f811cfe3964a@trvn.ru> <20231025122124.GO8909@google.com>
+ <eaa4a6e2d8539a0a772286f7f13ccc2c@trvn.ru>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <eaa4a6e2d8539a0a772286f7f13ccc2c@trvn.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 05:13:10PM +0200, Hao Sun wrote:
-> In check_stack_write_fixed_off(), imm value is cast to u32 before being
-> spilled to the stack. Therefore, the sign information is lost, and the
-> range information is incorrect when load from the stack again.
+On 25/10/2023 14:57, Nikita Travkin wrote:
+> Lee Jones писал(а) 25.10.2023 17:21:
+>> On Tue, 24 Oct 2023, Nikita Travkin wrote:
+>>
+>>> Rob Herring писал(а) 23.10.2023 22:40:
+>>>> On Mon, 23 Oct 2023 11:20:32 +0500, Nikita Travkin wrote:
+>>>>> PM8916 (and probably some other similar pmics) have hardware blocks for
+>>>>> battery monitoring and charging. Add patterns for respecive nodes so the
+>>>>> devicetree for those blocks can be validated properly.
+>>>>>
+>>>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
+>>>>>  1 file changed, 6 insertions(+)
+>>>>>
+>>>>
+>>>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>>>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>>>>
+>>>> yamllint warnings/errors:
+>>>>
+>>>> dtschema/dtc warnings/errors:
+>>>> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml:
+>>>> Error in referenced schema matching $id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml
+>>>>
+>>>> doc reference errors (make refcheckdocs):
+>>>>
+>>>> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru
+>>>>
+>>>> The base for the series is generally the latest rc1. A different dependency
+>>>> should be noted in *this* patch.
+>>>>
+>>>
+>>> Somehow I missed the memo and thought it tracks -next...
+>>>
+>>> This patch depends on 7f590e3831 and 5cee843d56 in linux-next.git
+>>> They were applied in [1].
+>>>
+>>> I'm wondering if the bot just bails out when the "depend" is present
+>>> or there is some more sophisticated logic to suggest the base to it?
+>>
+>> So is this good to go, or not?
 > 
-> For the following prog:
-> 0: r2 = r10
-> 1: *(u64*)(r2 -40) = -44
-> 2: r0 = *(u64*)(r2 - 40)
-> 3: if r0 s<= 0xa goto +2
-> 4: r0 = 1
-> 5: exit
-> 6: r0  = 0
-> 7: exit
-> 
-> The verifier gives:
-> func#0 @0
-> 0: R1=ctx(off=0,imm=0) R10=fp0
-> 0: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
-> 1: (7a) *(u64 *)(r2 -40) = -44        ; R2_w=fp0 fp-40_w=4294967252
-> 2: (79) r0 = *(u64 *)(r2 -40)         ; R0_w=4294967252 R2_w=fp0
-> fp-40_w=4294967252
-> 3: (c5) if r0 s< 0xa goto pc+2
-> mark_precise: frame0: last_idx 3 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=r0 stack= before 2: (79) r0 = *(u64 *)(r2 -40)
-> 3: R0_w=4294967252
-> 4: (b7) r0 = 1                        ; R0_w=1
-> 5: (95) exit
-> verification time 7971 usec
-> stack depth 40
-> processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
-> 
-> So remove the incorrect cast, since imm field is declared as s32, and
-> __mark_reg_known() takes u64, so imm would be correctly sign extended
-> by compiler.
-> 
-> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> IMO this patch should be good, it passes the check on today's linux-next
+> on my end.
 
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+It's not the next which matters, but maintainers tree.
 
-The acked-by applies to future version of the patchset as well.
+> 
+> The only concern might be that if someone runs dt_binding_check on
+> for-mfd-next, it would skip that file with an error since there is no
+> dependency yet.
 
-FWIW I think we'd also need the same treatment for the (BPF_ALU | BPF_MOV |
-BPF_K) case in check_alu_op().
+Eee, so this has dependency on some other tree? Then no, it is not good
+to go.
 
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 857d76694517..44af69ce1301 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4674,7 +4674,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
->  		   insn->imm != 0 && env->bpf_capable) {
->  		struct bpf_reg_state fake_reg = {};
->  
-> -		__mark_reg_known(&fake_reg, (u32)insn->imm);
-> +		__mark_reg_known(&fake_reg, insn->imm);
->  		fake_reg.type = SCALAR_VALUE;
->  		save_register_state(state, spi, &fake_reg, size);
->  	} else if (reg && is_spillable_regtype(reg->type)) {
-> 
-> -- 
-> 2.34.1
-> 
+
+
+Best regards,
+Krzysztof
+
