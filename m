@@ -2,136 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1462F7D93BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A617D93C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345585AbjJ0Jcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S1345616AbjJ0Jch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjJ0Jcb (ORCPT
+        with ESMTP id S1345488AbjJ0Jcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:32:31 -0400
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC65CAF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1698399144; x=1698658344;
-        bh=qX0sYQ68NldqQzH0zn7TigorKLiFCKmIhJbiP6fSiqI=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=IL+7giNUcJyqpQUi2c2jyzZTSiUh18R83I751zNBpFaBvZK0UOYMQdvjSCEbbvCq8
-         iWNtNmjTTHPAot/8NL1ZmWZRHW9p22nfl9Zz5HM60Unzs0GFMhkvt/cRGHyiqLeM9E
-         0d+ySgq8T1PdZ3cch52qpUJsq6o4S181eOIIkMYO29hFaOdM/Zqir5Pnpull9Ca5QK
-         Dzt99S1ewo+UVrgOl0neWh+f4zN6tmRsOpZ06gudneKIU+JbV3fSAz+aWKa6ucKBpg
-         rswgWAhIh6zls1CcROfLWWE0t1m8SkuZZKa86Lge/raK1tNSX5l8/XjGbphSLXBWvB
-         2i8PJymaG8aWg==
-Date:   Fri, 27 Oct 2023 09:32:19 +0000
-To:     "Ariel Miculas (amiculas)" <amiculas@cisco.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Asahi Lina <lina@asahilina.net>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Viktor Garske <viktor@v-gar.de>, Finn Behrens <me@kloenk.dev>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] rust: macros: improve `#[vtable]` documentation
-Message-ID: <f5526059-66b1-4e28-aae2-b1cc1532ade0@proton.me>
-In-Reply-To: <au3adook2dsnveqlz3i7inmbzx7b5sel7qg2cn7efcacicthiy@fm5io4kam3s2>
-References: <20231026201855.1497680-1-benno.lossin@proton.me> <au3adook2dsnveqlz3i7inmbzx7b5sel7qg2cn7efcacicthiy@fm5io4kam3s2>
-Feedback-ID: 71780778:user:proton
+        Fri, 27 Oct 2023 05:32:32 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56443E5;
+        Fri, 27 Oct 2023 02:32:30 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso3082968a12.3;
+        Fri, 27 Oct 2023 02:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698399149; x=1699003949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4TGQezb/2UwSSANsvO0wTZNbBZ1J9wDNV1NfnwhXP5Y=;
+        b=LnrjxLDcxJUIt9Yq9IFd8Be4bKDxWY1xHSmYzyB03O/fNZ+2oef85H077PBcnCpEVy
+         qY9TJ/zIt9IrNcMDScdjMaBkcq3Vt9iwdjFjxmPKLrjQcO7SASLg6jF38QI+2+YGaYZ/
+         LsvrmQCss/64PmEC4YkKSPs9Pp/M2hFo/kSCDDKLWLqRu0UzNDodf0khzPr/JZMJfwcK
+         Rhs4YZ7fVHm03D8tQxNrkFnY32GNocZdqFt+sd/BDfGeBfey4oaN0k4afdPP9d3+zJjQ
+         UUo7WOVYVRCNBccayWSATSL7/dUU3hZpvP9frL4JBcxdvHVnwEkEY9waFWfqQV90VZ8u
+         HqYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698399149; x=1699003949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4TGQezb/2UwSSANsvO0wTZNbBZ1J9wDNV1NfnwhXP5Y=;
+        b=RXbA0+VbjvZUItglNRH8nDWTs+K4xdtwjyXZD3cD/BFeAS3dB84WX/U24RPWZDSJd8
+         nAcRjNrnIftlBHIuZr8Wu2BjfUQAY4td/VCMpRhLfi4YULYYirKedQiNWWOAUcxH/0Yd
+         kWShPh+X/16Ryse4CIuCvu/4QEV4kbdEuzKFP1zGUv9BpH1TaUhJ/Nj6bcKe9EMDpAm7
+         EvtenXM7evARZrvwnlg6iCwPrhA/84VBY4MYOIqJ/2pRI/1xaGv13sFHHzhmCOOOFFSx
+         16e3In+emmhnJVpepn2PAKuQ9BOodM4XqWoC/RtnkHd/D4cjQcABAx8DnB2esRMoPFLr
+         5jVg==
+X-Gm-Message-State: AOJu0YxOiPG9bPHwbrJ6vMYfV8E/YuxHYJbb+uKcNUkHKdT7Dx6Did38
+        QYjIrQpeQCjMzIX35ecVV7o=
+X-Google-Smtp-Source: AGHT+IFYRkZzQF178l+CBBj5nIhjyDKrHzuo7UGw35x0uc/25E+HLUFEyY65L95Wmew2k9xBvyg6eg==
+X-Received: by 2002:a17:907:60cd:b0:9be:45b3:3116 with SMTP id hv13-20020a17090760cd00b009be45b33116mr1857989ejc.71.1698399148573;
+        Fri, 27 Oct 2023 02:32:28 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id o26-20020a17090637da00b0099293cdbc98sm915781ejc.145.2023.10.27.02.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 02:32:27 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 27 Oct 2023 11:32:24 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Subject: Re: [PATCH v4 0/7] consolidate and cleanup CPU capacity
+Message-ID: <ZTuDqCFL6uM3tqDd@gmail.com>
+References: <20231027080400.56703-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027080400.56703-1-vincent.guittot@linaro.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/23 23:12, Ariel Miculas (amiculas) wrote:
-> On 23/10/26 08:19PM, Benno Lossin wrote:
->> Traits marked with `#[vtable]` need to provide default implementations
->> for optional functions. The C side represents these with `NULL` in the
->> vtable, so the default functions are never actually called. We do not
->> want to replicate the default behavior from C in Rust, because that is
->> not maintainable. Therefore we should use `build_error` in those default
->> implementations. The error message for that is provided at
->> `kernel::error::VTABLE_DEFAULT_ERROR`.
->>
->> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
->> ---
->> v2 -> v3:
->> - don't hide the import of the constant in the example
->> - fixed "function" typo
->> - improve paragraph about optional functions
->> - do not remove the `Send + Sync + Sized` bounds on the example
->>
->> v1 -> v2:
->> - removed imperative mode in the paragraph describing optional
->>   functions.
->>
->>  rust/kernel/error.rs |  4 ++++
->>  rust/macros/lib.rs   | 37 ++++++++++++++++++++++++++++++-------
->>  2 files changed, 34 insertions(+), 7 deletions(-)
->>
->> diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
->> index 05fcab6abfe6..1373cde025ef 100644
->> --- a/rust/kernel/error.rs
->> +++ b/rust/kernel/error.rs
->> @@ -335,3 +335,7 @@ pub(crate) fn from_result<T, F>(f: F) -> T
->>          Err(e) =3D> T::from(e.to_errno() as i16),
->>      }
->>  }
->> +
->> +/// Error message for calling a default function of a [`#[vtable]`](mac=
-ros::vtable) trait.
->> +pub const VTABLE_DEFAULT_ERROR: &str =3D
->> +    "This function must not be called, see the #[vtable] documentation.=
-";
->> diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
->> index c42105c2ff96..917a51183c23 100644
->> --- a/rust/macros/lib.rs
->> +++ b/rust/macros/lib.rs
->> @@ -87,27 +87,48 @@ pub fn module(ts: TokenStream) -> TokenStream {
->>  /// implementation could just return `Error::EINVAL`); Linux typically =
-use C
->>  /// `NULL` pointers to represent these functions.
->>  ///
->> -/// This attribute is intended to close the gap. Traits can be declared=
- and
->> -/// implemented with the `#[vtable]` attribute, and a `HAS_*` associate=
-d constant
->> -/// will be generated for each method in the trait, indicating if the i=
-mplementor
->> -/// has overridden a method.
->> +/// This attribute closes that gap. A trait can be annotated with the `=
-#[vtable]` attribute.
->> +/// Implementers of the trait will then also have to annotate the trait=
- with `#[vtable]`. This
->> +/// attribute generates a `HAS_*` associated constant bool for each met=
-hod in the trait that is set
->> +/// to true if the implementer has overridden the associated method.
->=20
-> The above paragraph seems to be wrapped at 100 characters while the
-> paragraph below seems to be wrapped at 80 characters.
 
-Oh I forgot about that. Miguel, would it be reasonable for you to fix
-this when picking the patch?
+* Vincent Guittot <vincent.guittot@linaro.org> wrote:
 
---=20
-Cheers,
-Benno
+> Vincent Guittot (7):
+>   topology: add a new arch_scale_freq_reference
+>   cpufreq: use the fixed and coherent frequency for scaling capacity
+>   cpufreq/schedutil: use a fixed reference frequency
+>   energy_model: use a fixed reference frequency
+>   cpufreq/cppc: move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
+>   cpufreq/cppc: set the frequency used for computing the capacity
+>   arm64/amu: use capacity_ref_freq to set AMU ratio
 
+Just a general comment wrt. titles: please capitalize the verb, as we'd do 
+in a proper sentence. Saves maintainers one more thing to fix when applying 
+patches.
+
+Thanks,
+
+	Ingo
