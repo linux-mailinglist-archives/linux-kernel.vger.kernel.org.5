@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7EB7DA33B
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C341D7DA33D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346738AbjJ0WL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 18:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S235217AbjJ0WMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 18:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346685AbjJ0WLt (ORCPT
+        with ESMTP id S1346695AbjJ0WLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 18:11:49 -0400
+        Fri, 27 Oct 2023 18:11:51 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F40010CB;
-        Fri, 27 Oct 2023 15:11:30 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 043923200917;
-        Fri, 27 Oct 2023 18:11:28 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72FC10FD;
+        Fri, 27 Oct 2023 15:11:33 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 743653200930;
+        Fri, 27 Oct 2023 18:11:31 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 27 Oct 2023 18:11:29 -0400
+  by compute1.internal (MEProxy); Fri, 27 Oct 2023 18:11:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444688; x=
-        1698531088; bh=GQtOu2SP23PEZmWtQVCsoCbcovZ67XlhJHkFJBQ+htw=; b=d
-        PUABwfkYjJ8KyexOxaDKxq6pLkPvSXI30MC8tsKixqPCMFpBqmfzsY8dbopgfqbP
-        HPgeKeeXL+nCzC5E/JsjaP73LEbauuqPxyWEou9PQe0ZuOjG7xMAJ0FAgwNJ0V4g
-        6iBPV8jCPwhqXfa/NtQy+BLHwgq8m+nSeV0A0jqqYn1mDMdCzEGn7bYWZTRYBu9b
-        amflf48Cxp7PIpR1fnKoIVT0Nyl6O+shMLg6qyOBzFJg3tadK79Ia6wf9pt3T+X2
-        oW2kOjjkbJEbYKkxUxOZxShD1UC39U4fqdJqWnYRT/m/5fkYswQSRwr+20+tFKvw
-        H4tVA4Q54JUv/M0C97zJw==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444690; x=
+        1698531090; bh=GfLwAORI6DxI0P9SZsCprbtQo1SdXn/VrLRSxzuwQR4=; b=n
+        YG6TLE93W20ZgxBA9/Dos/YhIY0YVVd8oVDdwWSEA7ZjYAJKv6+F741kEGJNM7cu
+        gLwWSDNZ/UKNcv99cnU01CpJW0/xottYJIMzJsJ/oMAiQO/IwZvOEDu9xAryc10+
+        iqHtWEcvUMqMHVqXzWzDPT0GV7LsEJXUfs2vOnbd7vEL/Ys7H1Bcxz60b7SQqMcY
+        P4yBl+plaV+y0dsckCzB9k4yeLxKuJ6GF9LkCFfQmIcpT590lDw4hZH+J8Pn4651
+        GdBxLFM634rAPCD2FSgTtyfpvpN6fjkZjGsZfGx/p53AfbGNZJzakSSr22Yw7GUL
+        xp9JsD03HeTw3BYGOATyA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444688; x=
-        1698531088; bh=GQtOu2SP23PEZmWtQVCsoCbcovZ67XlhJHkFJBQ+htw=; b=t
-        XtfXF8aRtxStrvk6+Ycyb5bEKE5893VEyJUcYWCfNSTIR3pT3eSAzeK4SEOwcLYX
-        0CdOvEAhGyc/T9tnwh9J3b8NFkHphDBO3VJy70EzVI+L7YHZI/odEpzwbNsDc6tv
-        067fwzX6/9m2BUF4j9bu+l2ajSgxT0WHb9xOm7XoRk2jP2RvN+eBgzW1+Ta26yO0
-        WMoGE/Hz6pWHu7IFwVRVeaI1V5A/zP0gugUsVOyKWBKZxLJ7qN3zA1+rZ1+g5j/O
-        p6biZ3vqctJeq84e0hIWddAkGM/ApZrFZlnyjtJ9oG5A5a1k3hGnl/otMi2Ket8I
-        G/O7HDnNjIgg7vEWNmq9A==
-X-ME-Sender: <xms:kDU8ZQSk_2sGNL9K167Tn7fdu9pqSg4MZpPcguZuQqk29_RtHBRVUA>
-    <xme:kDU8ZdyJ2py_1pUSyi1pfCswmQnJQeYUKAXMUMX7nP43scTMtLIeCrKnwRTpLoLgg
-    dc53eL4gprKBBCs9Is>
-X-ME-Received: <xmr:kDU8Zd2yGPfWQaXzquZAn6hDlv_ud_ARchAEMOyfdHriY6p-59xex7F-Dj0HjQq8gVY_5GyvuYY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtiecutefuodetggdotefrodftvf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444690; x=
+        1698531090; bh=GfLwAORI6DxI0P9SZsCprbtQo1SdXn/VrLRSxzuwQR4=; b=M
+        EdwpHWMA7reyomXBT6TJojaPnVxpChevCW3Gzk6MqX1OxezkX1jMWly9yaLymdao
+        SNMVk7xMOeM/pYrmmg9Yxj+qARw6ahUn0wdYmuXhjD+ePukz2akoDWSoJONMNLo1
+        2kmQ9wClXRB91T8b8Mj4Al36SoEJRNJ3DKTr8ByWfcL6e5f4QMWNEm5UdQAycII1
+        urJ4c3Lx92LEMoLBSsVaCoThrhZeVwkpYf+kq5hmOsRK6LlfFf6Tf1ObAeBVZraC
+        M0XkTy/90xAd/sXWRigBvXPDzPsB5fj7FJFGamBHc24PEAKqy0q8T1Fm6lK+UEju
+        W+FX/O39Pfb50UkayReZA==
+X-ME-Sender: <xms:kjU8ZfrbBnqC9Ie7vsVOQY-XRho3yE2Tg6eXSgYrILn3ku4NdbZkJQ>
+    <xme:kjU8ZZph_PyMkCJVXszhi5HkLtsqz6XgN9mWPKg6Y-VeiF4DcxoMULi1jJqtOZuaZ
+    qKYcFAE7XCkgRl2W5Y>
+X-ME-Received: <xmr:kjU8ZcNCfvS1mK1m94Rf-q2hJHBXLazEkR9lomf5tr25lHi5ryEiMP07Yk7ywPG1d0vfHEpTFjo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
     sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvuedvvd
     egkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
+    peefnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
     horghtrdgtohhm
-X-ME-Proxy: <xmx:kDU8ZUAi1jRGtUBsYw4vhHlDfP8Dild4seoeLKI2T7xNstFdAmoeBw>
-    <xmx:kDU8ZZjZNTGo-wybZDOw1oMz_FYFrpkJdGtKcqjbCpaHDxxNe_7rIw>
-    <xmx:kDU8ZQrScj77abc4rokVCXQGOzo4fl6zwYqdkYoC27jASdA-YVCXmQ>
-    <xmx:kDU8ZZc7aK1tdhCA5GbrUOcFHSbHE4iuM5zo-epmV9NtOlL0J-PtQg>
+X-ME-Proxy: <xmx:kjU8ZS4LZXTU-lKRmmTIzHk96klL5Ep72Ip8TRRDuSRI7TTF-h6Kwg>
+    <xmx:kjU8Ze7avMX3JVD8ZeRGbvqvSwhQe9DB02swUo7vlrK0xz2V1LuPUg>
+    <xmx:kjU8ZainaZYLvFWJs6q1HQ_LavVb61Kpb_SljCsimuK4zAeSXXwrww>
+    <xmx:kjU8ZZ2mE33NcLywpO1BJWYr6oPMorxppW1DzIt5wQB85cMTKK3_lQ>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 18:11:27 -0400 (EDT)
+ 27 Oct 2023 18:11:29 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 07/10] MIPS: traps: Handle CPU with non standard vint offset
-Date:   Fri, 27 Oct 2023 23:11:03 +0100
-Message-Id: <20231027221106.405666-8-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 08/10] MIPS: Avoid unnecessary reservation of exception space
+Date:   Fri, 27 Oct 2023 23:11:04 +0100
+Message-Id: <20231027221106.405666-9-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
 References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
@@ -86,93 +86,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some BMIPS cpus has none standard start offset for vector interrupts.
+Nowadays we allocate exception base from memblock for r2_r6,
+so we don't need to reverse exception space at the start of
+the memory for r2_r6 processors.
 
-Handle those CPUs in vector size calculation and handler setup process.
+For older processors the reservation is moved to traps_init
+where we have knowledge of exact size we need. We also add
+a sanity check to detect possible overlap with kernel.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/kernel/traps.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ arch/mips/include/asm/traps.h    |  1 -
+ arch/mips/kernel/cpu-probe.c     |  5 -----
+ arch/mips/kernel/cpu-r3k-probe.c |  2 --
+ arch/mips/kernel/traps.c         | 12 +++++++-----
+ 4 files changed, 7 insertions(+), 13 deletions(-)
 
+diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+index 15cde638b407..d3dddd1c083a 100644
+--- a/arch/mips/include/asm/traps.h
++++ b/arch/mips/include/asm/traps.h
+@@ -24,7 +24,6 @@ extern void (*board_ebase_setup)(void);
+ extern void (*board_cache_error_setup)(void);
+ 
+ extern int register_nmi_notifier(struct notifier_block *nb);
+-extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
+ extern char except_vec_nmi[];
+ 
+ #define VECTORSPACING 0x100	/* for EI/VI mode */
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b406d8bfb15a..54e8b0fd4a2a 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1570,7 +1570,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 		c->cputype = CPU_BMIPS3300;
+ 		__cpu_name[cpu] = "Broadcom BMIPS3300";
+ 		set_elf_platform(cpu, "bmips3300");
+-		reserve_exception_space(0x400, VECTORSPACING * 64);
+ 		break;
+ 	case PRID_IMP_BMIPS43XX: {
+ 		int rev = c->processor_id & PRID_REV_MASK;
+@@ -1581,7 +1580,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS4380";
+ 			set_elf_platform(cpu, "bmips4380");
+ 			c->options |= MIPS_CPU_RIXI;
+-			reserve_exception_space(0x400, VECTORSPACING * 64);
+ 		} else {
+ 			c->cputype = CPU_BMIPS4350;
+ 			__cpu_name[cpu] = "Broadcom BMIPS4350";
+@@ -1598,7 +1596,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS5000";
+ 		set_elf_platform(cpu, "bmips5000");
+ 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
+-		reserve_exception_space(0x1000, VECTORSPACING * 64);
+ 		break;
+ 	}
+ }
+@@ -1996,8 +1993,6 @@ void cpu_probe(void)
+ 	if (cpu == 0)
+ 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+ #endif
+-
+-	reserve_exception_space(0, 0x1000);
+ }
+ 
+ void cpu_report(void)
+diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
+index be93469c0e0e..05410b743e57 100644
+--- a/arch/mips/kernel/cpu-r3k-probe.c
++++ b/arch/mips/kernel/cpu-r3k-probe.c
+@@ -137,8 +137,6 @@ void cpu_probe(void)
+ 		cpu_set_fpu_opts(c);
+ 	else
+ 		cpu_set_nofpu_opts(c);
+-
+-	reserve_exception_space(0, 0x400);
+ }
+ 
+ void cpu_report(void)
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index ea59d321f713..651c9ec6265a 100644
+index 651c9ec6265a..b6e94654f621 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -74,7 +74,6 @@
- 
- #include "access-helper.h"
- 
--#define MAX(a, b) ((a) >= (b) ? (a) : (b))
- 
- extern void check_wait(void);
- extern asmlinkage void rollback_handle_int(void);
-@@ -2005,6 +2004,7 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
- unsigned long ebase;
- EXPORT_SYMBOL_GPL(ebase);
- unsigned long exception_handlers[32];
-+static unsigned long vi_vecbase;
+@@ -2007,10 +2007,6 @@ unsigned long exception_handlers[32];
+ static unsigned long vi_vecbase;
  unsigned long vi_handlers[64];
  
- void reserve_exception_space(phys_addr_t addr, unsigned long size)
-@@ -2074,7 +2074,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
- 		handler = (unsigned long) addr;
- 	vi_handlers[n] = handler;
+-void reserve_exception_space(phys_addr_t addr, unsigned long size)
+-{
+-	memblock_reserve(addr, size);
+-}
  
--	b = (unsigned char *)(ebase + 0x200 + n*VECTORSPACING);
-+	b = (unsigned char *)(vi_vecbase + n*VECTORSPACING);
+ void __init *set_except_vector(int n, void *addr)
+ {
+@@ -2394,7 +2390,13 @@ void __init trap_init(void)
+ 	}
  
- 	if (srs >= srssets)
- 		panic("Shadow register set %d not supported", srs);
-@@ -2370,20 +2370,33 @@ void __init trap_init(void)
- 	extern char except_vec3_generic;
- 	extern char except_vec4;
- 	extern char except_vec3_r4000;
--	unsigned long i, vec_size;
-+	unsigned long i, vec_size, vi_vec_offset;
- 	phys_addr_t ebase_pa;
- 
- 	check_wait();
- 
-+	if (cpu_has_veic || cpu_has_vint) {
-+		switch (current_cpu_type()) {
-+		case CPU_BMIPS3300:
-+		case CPU_BMIPS4380:
-+			vi_vec_offset = 0x400;
-+			break;
-+		case CPU_BMIPS5000:
-+			vi_vec_offset = 0x1000;
-+			break;
-+		default:
-+			vi_vec_offset = 0x200;
-+			break;
-+		}
-+		vec_size = vi_vec_offset + VECTORSPACING*64;
-+	} else {
-+		vec_size = 0x400;
-+	}
-+
  	if (!cpu_has_mips_r2_r6) {
- 		ebase = CAC_BASE;
--		vec_size = 0x400;
+-		ebase = CAC_BASE;
++		ebase_pa = 0x0;
++		ebase = CKSEG0ADDR(ebase_pa);
++
++		if (__pa_symbol(_stext) < (ebase_pa + vec_size))
++			pr_err("Insufficient space for exception vectors\n");
++
++		memblock_reserve(ebase_pa, vec_size);
  	} else {
--		if (cpu_has_veic || cpu_has_vint)
--			vec_size = 0x200 + VECTORSPACING*64;
--		else
--			vec_size = PAGE_SIZE;
--
-+		vec_size = max(vec_size, PAGE_SIZE);
+ 		vec_size = max(vec_size, PAGE_SIZE);
  		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
- 		if (!ebase_pa)
- 			panic("%s: Failed to allocate %lu bytes align=0x%x\n",
-@@ -2450,6 +2463,7 @@ void __init trap_init(void)
- 	 * Initialise interrupt handlers
- 	 */
- 	if (cpu_has_veic || cpu_has_vint) {
-+		vi_vecbase = ebase + vi_vec_offset;
- 		int nvec = cpu_has_veic ? 64 : 8;
- 		for (i = 0; i < nvec; i++)
- 			set_vi_handler(i, NULL);
 -- 
 2.34.1
 
