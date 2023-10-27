@@ -2,38 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6192B7D929D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8076F7D929F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345542AbjJ0IuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
+        id S1345606AbjJ0IuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbjJ0IuE (ORCPT
+        with ESMTP id S1345352AbjJ0IuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:50:04 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B05BD
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:50:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vv-KCG0_1698396586;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vv-KCG0_1698396586)
-          by smtp.aliyun-inc.com;
-          Fri, 27 Oct 2023 16:49:55 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     Liam.Howlett@oracle.com
-Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] maple_tree: Remove unused function
-Date:   Fri, 27 Oct 2023 16:49:44 +0800
-Message-Id: <20231027084944.24888-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Fri, 27 Oct 2023 04:50:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CCA186
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:50:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99858C433C8;
+        Fri, 27 Oct 2023 08:50:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698396606;
+        bh=r/XEoP5xabsr7W5IjvJfZyAKCFZBiRcab7tUjBCnzlI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MJNTU6JteHSTVDi4xI0pJl7Cr7R5Pz/yxZUr0kY9rpRtOy+3I9ZttOCi3uAJ3vaED
+         yAjYtGFv0Tkl0ibJO7h0Cgsk/j+3Im6JD5et1VLryr/vrcQ/FHQQSuwj+jDkPtta5N
+         mLOvsTlKQBRZ4woLldAXbB2ANhvENxlf8cokYyLB5vhtCHyLDR5/QYt+h42KVmiJv8
+         rtNeLW8sSEHZvMTLYXr+LayBdQV3/4XTg37SX5i+F9cpi1NzSnkYa0q1WW4qyv1seS
+         NxdM0E2cWswjCVPnY8N/GDeZk9UgbJdU03cbSwiANpKkToV1IMwVw2RTsSidVKaMlK
+         DjQWQD6hHsf4A==
+Message-ID: <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
+Date:   Fri, 27 Oct 2023 10:49:58 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
+ use case
+Content-Language: en-US
+To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
+        venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
+        mastan.katragadda@amd.com, juan.martinez@amd.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
+ <20231021145110.478744-9-Syed.SabaKareem@amd.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20231021145110.478744-9-Syed.SabaKareem@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,58 +108,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function are defined in the maple_tree.c file, but not called
-elsewhere, so delete the unused function.
+On 21/10/2023 16:50, Syed Saba Kareem wrote:
+> add pdm use case machine driver support
+> 
+> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+> ---
 
-lib/maple_tree.c:689:29: warning: unused function 'mas_pivot'.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7064
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- lib/maple_tree.c | 29 -----------------------------
- 1 file changed, 29 deletions(-)
+>  	dmi_id = dmi_first_match(acp_quirk_table);
+>  	if (dmi_id && dmi_id->driver_data)
+> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
+>  		.name = "rmb-rt5682s-rt1019",
+>  		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
+>  	},
+> +	{
+> +		.name = "acp-pdm-mach",
+> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
+> +	},
+>  	{ }
+>  };
+>  static struct platform_driver acp_asoc_audio = {
+> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
+>  MODULE_ALIAS("platform:acp3x-es83xx");
+>  MODULE_ALIAS("platform:rmb-nau8825-max");
+>  MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
+> +MODULE_ALIAS("platform:acp-pdm-mach");
 
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index bb24d84a4922..cf889aaa0011 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -679,35 +679,6 @@ static inline unsigned long *ma_gaps(struct maple_node *node,
- 	return NULL;
- }
- 
--/*
-- * mas_pivot() - Get the pivot at @piv of the maple encoded node.
-- * @mas: The maple state.
-- * @piv: The pivot.
-- *
-- * Return: the pivot at @piv of @mn.
-- */
--static inline unsigned long mas_pivot(struct ma_state *mas, unsigned char piv)
--{
--	struct maple_node *node = mas_mn(mas);
--	enum maple_type type = mte_node_type(mas->node);
--
--	if (MAS_WARN_ON(mas, piv >= mt_pivots[type])) {
--		mas_set_err(mas, -EIO);
--		return 0;
--	}
--
--	switch (type) {
--	case maple_arange_64:
--		return node->ma64.pivot[piv];
--	case maple_range_64:
--	case maple_leaf_64:
--		return node->mr64.pivot[piv];
--	case maple_dense:
--		return 0;
--	}
--	return 0;
--}
--
- /*
-  * mas_safe_pivot() - get the pivot at @piv or mas->max.
-  * @mas: The maple state
--- 
-2.20.1.7.g153144c
+Please stop growing the aliases. Module alias is not a substitute for
+missing MODULE_DEVICE_TABLE.
+
+Best regards,
+Krzysztof
 
