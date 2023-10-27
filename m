@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855BF7D97EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354D67D97F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345420AbjJ0MZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
+        id S1345740AbjJ0MZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0MZ3 (ORCPT
+        with ESMTP id S1345735AbjJ0MZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:25:29 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8081B10A;
-        Fri, 27 Oct 2023 05:25:26 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vv-ygIX_1698409518;
-Received: from 30.240.112.233(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vv-ygIX_1698409518)
-          by smtp.aliyun-inc.com;
-          Fri, 27 Oct 2023 20:25:21 +0800
-Message-ID: <3b2f8b0f-ca94-400f-ae13-ac1de84591b1@linux.alibaba.com>
-Date:   Fri, 27 Oct 2023 20:25:16 +0800
+        Fri, 27 Oct 2023 08:25:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA4B129;
+        Fri, 27 Oct 2023 05:25:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B93D1C433C8;
+        Fri, 27 Oct 2023 12:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698409549;
+        bh=MYEyUUlsJs+iZgGeLmTbL5xofgyQMNOOT9INtcAOOjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JFVirIHauXlFphEwwzwy1n45Ac8RgLlrM4OavdZx4EQ3WLxm686kL7tjZMwFC8MJ5
+         jsInj/eZiC3y39ii8Z1egcQjEmBaS89V1Omf09kv6DvZc2aIc1E9rdPX+pXIULl228
+         aywtQ1H3UgY3qU7GL3NaVTA/DlMxzOAv+VaUoo4k=
+Date:   Fri, 27 Oct 2023 14:25:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.10 000/199] 5.10.199-rc2 review
+Message-ID: <2023102728-gigantic-favorable-71a6@gregkh>
+References: <20231024083326.219645073@linuxfoundation.org>
+ <6413ac66-2608-cd76-1b3c-5a185fe6d88d@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Content-Language: en-US
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Will Deacon <will@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Yicong Yang <yangyicong@huawei.com>,
-        chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
- <20231020134230.53342-4-xueshuai@linux.alibaba.com>
- <20231023123202.GA3515@willie-the-truck>
- <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
- <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
- <20231026144428.00005db8@Huawei.com>
- <8f8a2e42-f6ed-4328-9457-5f986d761224@arm.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <8f8a2e42-f6ed-4328-9457-5f986d761224@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6413ac66-2608-cd76-1b3c-5a185fe6d88d@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/27 00:52, Robin Murphy wrote:
-> On 26/10/2023 2:44 pm, Jonathan Cameron wrote:
->> On Tue, 24 Oct 2023 17:29:34 +0800
->> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
->>
->>> + Will, Jonathan, Bjorn and Yicong for probe and hotplug handing.
->>>
-...
->>>>>> +
->>>>>> +    dwc_pcie_pmu_hp_state = ret;
->>>>>> +
->>>>>> +    ret = platform_driver_register(&dwc_pcie_pmu_driver);
->>>>>> +    if (ret)
->>>>>> +        goto platform_driver_register_err;
->>>>>> +
->>>>>> +    dwc_pcie_pmu_dev = platform_device_register_simple(
->>>>>> +                "dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
->>>>>> +    if (IS_ERR(dwc_pcie_pmu_dev)) {
->>>>>> +        ret = PTR_ERR(dwc_pcie_pmu_dev);
->>>>>> +        goto platform_device_register_error;
->>>>>> +    }
->>>>>
->>>>> I'm a bit confused as to why you're having to create a platform device
->>>>> for a PCI device -- is this because the main designware driver has already
->>>>> bound to it? A comment here explaining why you need to do this would be
->>>>> very helpful. In particular, is there any dependency on another driver
->>>>> to make sure that e.g. config space accesses work properly? If so, we
->>>>> probably need to enforce module load ordering or something like that.
->>>>
->>>> AFAICS the platform device/driver serve no purpose other than being a hilariously roundabout way to run the for_each_pci_dev() loop in dwc_pcie_pmu_probe() upon module init, and to save explicitly freeing the PMU name/data. Furthermore the devres action for dwc_pcie_pmu_remove_cpuhp_instance() is apparently going for even more style points at module exit by not even relying on the corresponding .remove callback of the tenuous platform driver to undo what its .probe did, but (ab)using the device's devres list to avoid having to keep track of an explicit list of PMU instances at all.
->>>
->>> You are right.
->>
->> Also provides a (potential) parent for the PMU devices which is something
->> we were trying to clean up for existing PMUs (which end up in the
->> wrong directly in sysfs because they typically don't have parents).
+On Wed, Oct 25, 2023 at 08:07:26AM -0700, Guenter Roeck wrote:
+> On 10/24/23 01:36, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.199 release.
+> > There are 199 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 26 Oct 2023 08:32:45 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> Surely the relevant PCI device would be an even more appropriate parent, though, since that's the true topology?
+> Build reference: v5.10.198-200-ge31b6513c43d
+> Compiler version: x86_64-linux-gcc (GCC) 11.4.0
+> Assembler version: GNU assembler (GNU Binutils) 2.40
 > 
+> Building x86_64:defconfig ... passed
+> Building x86_64:allyesconfig ... failed
+> --------------
+> Error log:
+> Unsupported relocation type: unknown type rel type name (-1940038754)
+> make[3]: *** [arch/x86/boot/compressed/Makefile:122: arch/x86/boot/compressed/vmlinux.relocs] Error 1
+> make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
+> make[3]: *** Waiting for unfinished jobs....
+> x86_64-linux-objcopy: vmlinux: unsupported relocation type 0x9e
+> x86_64-linux-objcopy: vmlinux[.text]: relocation count is negative: bad value
+> make[3]: *** [arch/x86/boot/compressed/Makefile:114: arch/x86/boot/compressed/vmlinux.bin] Error 1
+> make[2]: *** [arch/x86/boot/Makefile:115: arch/x86/boot/compressed/vmlinux] Error 2
+> make[1]: *** [arch/x86/Makefile:274: bzImage] Error 2
+> make: *** [Makefile:192: __sub-make] Error 2
+> 
+> No idea what is causing it, but it is persistent. Something odd between
+> compiler/binutils/objcopy.
+> 
+> Guess it doesn't matter since the release is out already.
 
-I see, I will add its parent.
+If the commit that causes this can be figured out, we can revert it.
 
-Thank you.
-Best Regards,
-Shuai
+thanks,
+
+greg k-h
