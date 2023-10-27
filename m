@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 722817D969F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536B67D96B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345773AbjJ0L3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
+        id S231791AbjJ0LdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345735AbjJ0L3e (ORCPT
+        with ESMTP id S231770AbjJ0LdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:29:34 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60418128
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:29:32 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27d129e2e7cso1708293a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698406172; x=1699010972; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vI28YtitrNIniIpGPiCXYWH3fIICBsHFcX18SbMwXaI=;
-        b=FkLUCTFaZcySOAam9iz6DHlyvMFgwb0dciaQzfdEKzSevC6tu7bXghqDN03SvNdfXI
-         TpVwftwoRNylOP52CRKkfEd+HY6JOQtmKcnBIu1bAyG/Ld23VYJTHCS830eXVN/+1WBM
-         kaAWuFHIbGb+5FObTqY8EYp0t1xctpoP6eFlbLuTew1V6TZOKIBp1igLyRcrviXNXMzZ
-         sLDZszDFDI7J368kdHkZ+dvHbQnlRjH9r8pmTeCi5gny46waklCU9d/weTWNNrqjP2wr
-         EkuRxqDu1n98QeIm87t0zIce4WfpuNi1WOKztgx7E1VzD51Vg5wY81r+AEulrqMDvYHq
-         c9aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698406172; x=1699010972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vI28YtitrNIniIpGPiCXYWH3fIICBsHFcX18SbMwXaI=;
-        b=NA+D1M6sXq4PzZt6mZ4UVVOgOAC8FZfLHS4uRjY9S0jx44kDZTnXTEgPV4hK/mgW8p
-         RN0Zs/6FiMb5SogI+NDC+ND86zG4gZpcQt8tLQU8//ZhLG8wX/jSsNBiRIs9m2tMChKR
-         ATe7jMv0oAwe3Pw3Ny03JQ6BhH/YoxQ+brW2Vl6t2xL+YP2NGK/uvTve56l8mmM6uQoE
-         UQn4kgfae5kJ6kG96jhaX35TXfGXeZRuunaOdLkIpnovoDe5SUgSsCsBsW1KIeZOcv1Z
-         y6qnY3Om1TFD+LEsXqielH3Z4nHOzW2TpuMt6jqIKfBRlK5uzYJ18VpLmLgGiVupGMz+
-         Hjyg==
-X-Gm-Message-State: AOJu0Ywd83THoqR117xOrubykGE70v+/7iHsey/jONtE8YGFvRaI5xB6
-        thssy+GVB4F5FrRFTPhv8tLA7w==
-X-Google-Smtp-Source: AGHT+IG13tL5qlADUCcZnk0Slm9dLAj/0ICfwInuvtA89OSHyk/VCX3hGHfCAQFvPk1ScgHB/OgdWA==
-X-Received: by 2002:a17:90b:100b:b0:27d:1051:83c4 with SMTP id gm11-20020a17090b100b00b0027d105183c4mr2196967pjb.12.1698406171798;
-        Fri, 27 Oct 2023 04:29:31 -0700 (PDT)
-Received: from sunil-laptop ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id r65-20020a17090a43c700b0028018af8dc2sm252642pjg.23.2023.10.27.04.29.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 04:29:31 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 16:59:19 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Haibo Xu <haibo1.xu@intel.com>
-Subject: Re: [RFC PATCH v2 13/21] irqchip: riscv-intc: Add ACPI support for
- AIA
-Message-ID: <ZTufD/InY/gwpE+Q@sunil-laptop>
-References: <20231025202344.581132-14-sunilvl@ventanamicro.com>
- <20231026165150.GA1825130@bhelgaas>
+        Fri, 27 Oct 2023 07:33:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA3F1AC;
+        Fri, 27 Oct 2023 04:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698406385; x=1729942385;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dRYmGR3I5MgS4CYaxSz229MI2vtrH0ER7fq+BA+NuSw=;
+  b=IRq+7+iuLpp+aOuNLs8AoySMCizgMlrwWTnLCfAp4d4ZSi0sfsxrd6/q
+   iGJ3Rt1jtyBJt1TCEt/b/3fHWttX7pt+gCkHoWoCPF+BF5FmsW4d4KpWq
+   kffNMXUd5l3VOKNt2zoiv9774lNm3zSgIBdgqHsNbhee9+A8jlygMW77O
+   ipGGDspjxvimZ5kPTy1GeqPdZ8uP9tNwoTkbqKPG73Zol8oF5KBQP4KuV
+   0tD+pLM/Vf7fRXKS0UbtXGgxE3YadFpF1JOccUh1fd2ff30HBwPCcQbxP
+   9mQzEVr//INsQMr9Rb4F8iG163Swz/t4neLZxrhOravlIf3g5xnfnBRGl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="9297396"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="9297396"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 04:33:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="825314891"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="825314891"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 04:33:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qwL1o-0000000988M-2LVq;
+        Fri, 27 Oct 2023 14:29:24 +0300
+Date:   Fri, 27 Oct 2023 14:29:24 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linhua Xu <Linhua.xu@unisoc.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        lh xu <xulh0829@gmail.com>,
+        Zhirong Qiu <zhirong.qiu@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH V3 1/6] pinctrl: sprd: Modify pull-up parameters
+Message-ID: <ZTufFGSJM+041nO6@smile.fi.intel.com>
+References: <20231027071426.17724-1-Linhua.xu@unisoc.com>
+ <20231027071426.17724-2-Linhua.xu@unisoc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026165150.GA1825130@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231027071426.17724-2-Linhua.xu@unisoc.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On Thu, Oct 26, 2023 at 11:51:50AM -0500, Bjorn Helgaas wrote:
-> On Thu, Oct 26, 2023 at 01:53:36AM +0530, Sunil V L wrote:
-> > The RINTC subtype structure in MADT also has information about other
-> > interrupt controllers like MMIO. So, save those information and provide
-> > interfaces to retrieve them when required by corresponding drivers.
+On Fri, Oct 27, 2023 at 03:14:21PM +0800, Linhua Xu wrote:
+> From: Linhua Xu <Linhua.Xu@unisoc.com>
 > 
-> > @@ -218,7 +306,19 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
-> 
-> > +	 * MSI controller (IMSIC) in RISC-V is optional. So, unless
-> > +	 * IMSIC is discovered, set system wide MSI support as
-> > +	 * unsupported. Once IMSIC is probed, MSI support will be set.
-> > +	 */
-> > +	pci_no_msi();
-> 
-> It doesn't seem like we should have to tell the PCI core about
-> functionality we *don't* have.
-> 
-> I would think IMSIC would be detected before enumerating PCI devices
-> that might use it, and if we *haven't* found an IMSIC by the time we
-> get to pci_register_host_bridge(), would/should we set
-> PCI_BUS_FLAGS_NO_MSI there?
->
-The check in pci_register_host_bridge() is like below.
+> For UNISOC pin controller, there are three different configurations of
+> pull-up drive current. Modify the 20K pull-up resistor configuration and
+> add the 1.8K pull-up resistor configuration.
 
-if (bridge->msi_domain && !dev_get_msi_domain(&bus->dev) &&
-            !pci_host_of_has_msi_map(parent))
-                bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+> Fixes:<1fb4b907e808> ("pinctrl: sprd: Add Spreadtrum pin control driver")
+> 
+> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
 
-When there is no IMSIC, bridge->msi_domain is 0 and hence
-PCI_BUS_FLAGS_NO_MSI will never be set. Do you recommend to set
-PCI_BUS_FLAGS_NO_MSI if bridge->msi_domain is 0? Let me know if I am
-missing something.
+I guess I already pointed out that there must not be blank lines in the tag
+block, besides that read "Submitting Patches" document to see how properly
+format the Fixes: tag.
 
-Thanks,
-Sunil
+...
+
+> -#define PULL_UP_4_7K			(BIT(12) | BIT(7))
+> +#define PULL_UP_1_8K			(BIT(12) | BIT(7))
+> +#define PULL_UP_4_7K			BIT(12)
+>  #define PULL_UP_20K			BIT(7)
+
+>  #define PULL_UP_MASK			0x21
+>  #define PULL_UP_SHIFT			7
+
+Basically these two repeat the above 1.8K case.
+But I see that you try to take care in the next patch about them.
+Still, the better is to use those _MASKs and _SHIFTs in the code.
+See below.
+
+...
+
+>  			if ((reg & (SLEEP_PULL_DOWN | SLEEP_PULL_UP)) ||
+> -			    (reg & (PULL_DOWN | PULL_UP_4_7K | PULL_UP_20K)))
+> +			    (reg & (PULL_DOWN | PULL_UP_4_7K | PULL_UP_20K | PULL_UP_1_8K)))
+
+			if ((reg & (SLEEP_PULL_DOWN | SLEEP_PULL_UP)) ||
+			    (reg & (PULL_DOWN | (PULL_UP_MASK << PULL_UP_SHIFT))))
+
+>  				return -EINVAL;
+
+...
+
+>  					mask = PULL_DOWN | PULL_UP_20K |
+> -						PULL_UP_4_7K;
+> +						PULL_UP_4_7K | PULL_UP_1_8K;
+
+					mask = PULL_DOWN | (PULL_UP_MASK << PULL_UP_SHIFT);
+
+Ditto.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
