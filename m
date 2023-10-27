@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA457D9E07
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B2F7D9E04
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbjJ0Qcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        id S231688AbjJ0QcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbjJ0Qc3 (ORCPT
+        with ESMTP id S231721AbjJ0QcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:32:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33484128;
-        Fri, 27 Oct 2023 09:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698424347; x=1729960347;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5IcXRoptUEcVDpArktnOALVLCfO+5LN/wy4M44e5nIE=;
-  b=RudKEyFE54qe2k4ieI/u7o3X/OrgZPuYdJyxP+7Ljhexz3GVHtFm7+uM
-   tvYtPjucivomJfxeY4xeBxceXCBsk5HJR8+lkTLyJCc46VXch/pcZMBoC
-   wBCn7Ht/hxk/OW/8l/ox38/pIlP0/f/Y6o5CzwsbLf6gyVZv1TFviDWJt
-   JYfNt5jtCHIQ10YF9LYOTPBx+nAKBMoh7n+YK9sGu4E+4w8hsv1yCLdg0
-   x0Excs0nAtUhOfwPQtrLdNKiwID5rPjokpzxOks6V1/F66YD/zVuxVoni
-   FNY2QOgdDhEummEHI6Oebcoj6PFAK9zbBBSDMxaIP9Ur1pu0D7sMx4Y2I
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="368020368"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="368020368"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 09:30:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="903316290"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="903316290"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 09:28:10 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 3322E11F830;
-        Fri, 27 Oct 2023 19:30:36 +0300 (EEST)
-Date:   Fri, 27 Oct 2023 16:30:36 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Fri, 27 Oct 2023 12:32:05 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8576211B
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:32:03 -0700 (PDT)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 93F406607323;
+        Fri, 27 Oct 2023 17:32:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698424322;
+        bh=cdST41zz4Xh7cdHsxvEEbk6c5k5UXnNOVUkeHyEAKjY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P3vWQcsRrCviL0oMUJmcK53bzDSKtPhCZ0M/VqOKWMZl+UP5peJ+Bha8ncbvUNz/w
+         89TGVnmVl4rInQPWzFpGai/Er/93bUwynpxlj9gYSROMc+SaZ46eEvOTLz2qojh+yl
+         2U9Paw7jmPF7dcDtuffefm1tMFUVI8qbJWOflIUvbh+J5XxlDoM9MrqPzaZTAlZB1q
+         ZfN8bntBWol7ImsK0EpcRSeL7+JwAGnvM/yFwgkNGs91GkT5/28EtJD6h/HvAWzvto
+         xjQkh6qQGTDaCxqto5Cl22hx3mKB6zUoDZRGKlpYLTBKiKHYEusans3OB1K39u6jck
+         3OzE8Nwcv4qaA==
+Date:   Fri, 27 Oct 2023 18:31:58 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        christian.koenig@amd.com, faith@gfxstrand.net,
+        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] GC0308 Camera Sensor
-Message-ID: <ZTvlrJK8nwvFbUhU@kekkonen.localdomain>
-References: <20231027011417.2174658-1-sre@kernel.org>
+Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <20231027183158.2dc4cce4@collabora.com>
+In-Reply-To: <8e117f9f-a01c-4242-8781-b2ed4969513b@redhat.com>
+References: <20231026161431.5934-1-dakr@redhat.com>
+        <20231027102516.0e4b00ef@collabora.com>
+        <8e117f9f-a01c-4242-8781-b2ed4969513b@redhat.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027011417.2174658-1-sre@kernel.org>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+On Fri, 27 Oct 2023 16:23:24 +0200
+Danilo Krummrich <dakr@redhat.com> wrote:
 
-On Fri, Oct 27, 2023 at 03:12:00AM +0200, Sebastian Reichel wrote:
-> Hi,
+> On 10/27/23 10:25, Boris Brezillon wrote:
+> > Hi Danilo,
+> > 
+> > On Thu, 26 Oct 2023 18:13:00 +0200
+> > Danilo Krummrich <dakr@redhat.com> wrote:
+> >   
+> >> Currently, job flow control is implemented simply by limiting the number
+> >> of jobs in flight. Therefore, a scheduler is initialized with a credit
+> >> limit that corresponds to the number of jobs which can be sent to the
+> >> hardware.
+> >>
+> >> This implies that for each job, drivers need to account for the maximum
+> >> job size possible in order to not overflow the ring buffer.
+> >>
+> >> However, there are drivers, such as Nouveau, where the job size has a
+> >> rather large range. For such drivers it can easily happen that job
+> >> submissions not even filling the ring by 1% can block subsequent
+> >> submissions, which, in the worst case, can lead to the ring run dry.
+> >>
+> >> In order to overcome this issue, allow for tracking the actual job size
+> >> instead of the number of jobs. Therefore, add a field to track a job's
+> >> credit count, which represents the number of credits a job contributes
+> >> to the scheduler's credit limit.
+> >>
+> >> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> >> ---
+> >> Changes in V2:
+> >> ==============
+> >>    - fixed up influence on scheduling fairness due to consideration of a job's
+> >>      size
+> >>      - If we reach a ready entity in drm_sched_select_entity() but can't actually
+> >>        queue a job from it due to size limitations, just give up and go to sleep
+> >>        until woken up due to a pending job finishing, rather than continue to try
+> >>        other entities.
+> >>    - added a callback to dynamically update a job's credits (Boris)  
+> > 
+> > This callback seems controversial. I'd suggest dropping it, so the
+> > patch can be merged.  
 > 
-> I did the following tests done by me on an i.MX6ULL based system [0]:
-> 
->  * v4l2-compliance -u /dev/v4l-subdev1
->    - v4l2-compliance 1.24.1, 32 bits, 32-bit time_t
->      (from Debian testing)
->    - Total for device /dev/v4l-subdev1: 44, Succeeded: 44
->  * Using gstreamer + v4l2-ctl
->    - Tried 640x480, 320x240, 160x120 YUYV8_2X8 formats
->    - Tested effect of all exposed user controls
->  * checkpatch does not report any driver issues
->  * dt_binding_check does not report anything
-> 
-> Note, that there is another patchset adding GC2145, which
-> adds the same vendor prefix. I just included it for completeness,
-> since it's needed to avoid checkpatch and dt_binding_check
-> warnings.
+> I don't think we should drop it just for the sake of moving forward. If there are objections
+> we'll discuss them. I've seen good reasons why the drivers you are working on require this,
+> while, following the discussion, I have *not* seen any reasons to drop it. It helps simplifying
+> driver code and doesn't introduce any complexity or overhead to existing drivers.
 
-Thanks for the update.
-
-There's a spelling error I noticed which I'll fix while applying but
-otherwise I'm looking forward to have Jacopo's comments on the patch. It
-seems good to me.
-
--- 
-Kind regards,
-
-Sakari Ailus
+Up to you. I'm just saying, moving one step in the right direction is
+better than being stuck, and it's not like adding this callback in a
+follow-up patch is super complicated either. If you're confident that
+we can get all parties to agree on keeping this hook, fine by me.
