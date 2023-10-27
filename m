@@ -2,167 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0CF7D8FEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959037D8FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235014AbjJ0HfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S1345327AbjJ0Hfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0HfN (ORCPT
+        with ESMTP id S234999AbjJ0Hfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:35:13 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A9B0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:35:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dAvZhkjmpmtNImx+wnBbKduc2GgrltJ7YrmU1lNYUUV3GLv+tJo4KYYLCIKOqpNnDlAeplCxURCroybwOR2E+6z9Ahic2Gcb9/1DYe/1R4gzt8YrtMfZsLXYcP1/dJp5XU/1bMzWUvvPPnGfMA2ZEe5VJXdyOSUtf3EAUmfsNAJ7jEuXfHkQnEWsmTqSacEWJy8jr6iPQhcD01LaL0NSVcnCJr5dDaXEnOtdG2UqwpA8T+RDqb6UdKTDbhheTnCTovJuQgDpszrRkDtSLzphR3yzTSOmC8fEKsNkIBKHCt/uJliuC9fS0Hgi+FweiPPZRehRxTkAgNnhUii3/ksGTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1SBj+1AKaz4GaE1BEr44plcmOemA6HSJ8t/HX/MYlEw=;
- b=BmIk5mkLhsjrECnwTH3yvVm2wFIDfObxoaxolOywcepLbfwbUkp8UaJQzDH6Q/kDkjg06ATt4aaYZ/qeNwA0OK6Av3B+ScNVTRcxqX6YIJ2wYdO+6PBnKmg+KhrQfOFDogKOoTm+nZ66d+uf+GxglChpsGRQUbn5aXyo88wYkhDoy5kuF/SKRnhV0g9PuSNLkCab7GMirHThdjJNx49FYmOw9NDGKa2pPLTQHF3nrt7y2YePFk+EPxchTnq+aG8LkpdEO7JWYu8FaulTdiGJjB7vPUglq7AJ9x6ZvX15+mRIPafVi+T9b5njg2m9FgtmXkt2BziExpoHM7tttRKVfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1SBj+1AKaz4GaE1BEr44plcmOemA6HSJ8t/HX/MYlEw=;
- b=F5KE6Fm6ePzNK6p2IYXT1HbqutpHn7utwJt0ZxuMBkENuh1eYKOSuWemlQ08YOQ28CIhCkIqpxzxAVArt/VFglU3sYlBYm0TK1rtT3AwwRa6RqCPmM0qbCQlHZeOKVGyFu9Bksy1HM6b2hisysPQZNmBiTEt1nQv/WBfiB2A8Jo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by LV8PR12MB9261.namprd12.prod.outlook.com (2603:10b6:408:1ed::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 27 Oct
- 2023 07:35:05 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::af19:f731:8846:68ba]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::af19:f731:8846:68ba%6]) with mapi id 15.20.6907.032; Fri, 27 Oct 2023
- 07:35:05 +0000
-Message-ID: <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
-Date:   Fri, 27 Oct 2023 09:35:01 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231026161431.5934-1-dakr@redhat.com>
- <0bc79ae3-04fe-4e85-9fd0-e8b281148390@amd.com>
- <20231027093238.2ff8172e@collabora.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20231027093238.2ff8172e@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0018.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a::28) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Fri, 27 Oct 2023 03:35:42 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74891AD;
+        Fri, 27 Oct 2023 00:35:37 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F1DB566071F1;
+        Fri, 27 Oct 2023 08:35:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698392136;
+        bh=xEpYiK0xVyTMBqOzwCeP5X9IsjLo0irTTedERKnouYY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ChUL4J3GS/pemysY8XC4YUYZuFod0r27a1ChKWKer+wPyr3TuR+AYU+dq7j3MylKg
+         FbREfXUA2L3gTz0UOXcOYtcK+7j680gh2eSluw0p48KiRQzOK6b/svolYVNxuaxXQs
+         1Ip1eDmvfbTlK7gM2hnwdl37bdYOdvR0WGt+eYVLES87Zns91OWW4Jz+hQFruYtcaZ
+         3Usn3bzZTyZXnGkTr7acCkXtkvWLG4/VOhYOWjc4ele4HI5N0Eb3ARCoTID9SRnadK
+         Qvk5qVe5o2EL5MI0OR/EwwiHUEDLATW4FUCW0L57HC8/WXyrsUsy8oXAl4Phz1nh1U
+         I5YJoWzYC7unQ==
+Message-ID: <9e446cfc-c99c-4e26-8315-357d5ee160ab@collabora.com>
+Date:   Fri, 27 Oct 2023 09:35:32 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|LV8PR12MB9261:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a9faf5d-d29e-4b41-56d4-08dbd6bf3d2a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KeMUI7Cpi/VF1rpWapNzk5kRTl7G+kjdcuqv6P8bXghwiSx9KIO/4KqDhu2ZLA8zjzJbEM40bDEwrKxus/+prxd/d99dJzAkpxrUzERjZ4hcgmjsaDOR9goBVLxqWnLqI/phvLsuFbj9aRaEXogmHoRQJNwqz92DC+1tSwUN9P2io4eOxDQQUVNY8pcU9Pu2vIqukqb6PxGQMojazLNtZU8+JYfq/asA+1araDAypfdtglLvqOgCyJEws3BwwL4DvqPk9f3iofA46qltKQyrbdIa7cChTcosj7BuGNwxZH52tQkbqOTDPuSokDUhrbdjJHaS2s2Nq3SnXSZYFM1I854uFj0pQVsBNy9a7OQ9SZ3cxC/D4FzROGUfkTr4mSWd+a/7PekZhlS9CvVyOGF2L4SNgkXxnI0TSdlk8h0GxbgO03Dq0pXNNdO1VUHG7oRzO+V1WiCxIiXqrmZ6DhCJ/wg0IGi0MtH6qzWJDN0FUz5NWMHyVoTgUMjaCk6snGtCEf+5xdYNfyZwkNRJRcfghURI9ez+yboQ6UuQq7uEUeDlv7cCNoaLWGOBeGDmSrbBFKO3LY3MTJf/Hy3kJsqzzcUIsQDyGyyKTzvkmM6l7rEs1wzKCS6dSK7RfEQC9FBOSawxckenAg/wpLCN+tVpmA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(31686004)(36756003)(316002)(86362001)(6506007)(31696002)(38100700002)(66574015)(2906002)(2616005)(6916009)(26005)(478600001)(66556008)(6666004)(83380400001)(6486002)(8936002)(66476007)(6512007)(66946007)(5660300002)(8676002)(41300700001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkEwaVFpZWRYaFE4OHY4M1VpdjhNd2VNQ1JEdmE4a08vR0M4cFJxa3liTGdn?=
- =?utf-8?B?WE9kelh1cHZsdnpaM1lSaEYyMHplUXhjbEgzdERnMENXZzZtMXFLaVRFMmhE?=
- =?utf-8?B?aFphK0tWQ2FOcFVQM1l4UDB6SEl1NnBYbTc1Nm1jWGRrZndkTHRwU204RVQ2?=
- =?utf-8?B?cHZ6cy9obDYvR01ocHppZkhLRkxzODQyWWhLQjdSNUhhWDJleEVTQUJrWGIr?=
- =?utf-8?B?V3hrM0JQSy9yaXpTNm5GMXlSRTVwNUZ4VFdVK0lNaEQ0VFZxTytISW9ZREwr?=
- =?utf-8?B?TExacTlxUERoT256RlpHaHlpRE1MNTFTbWJ1UzRkYUxSRmpka0RRVCtiNEJP?=
- =?utf-8?B?d0hMTUNhWjY2S2dJbHhSRzhNOW9yaWxyZGhWUEt0TlF0SmxBZWhIbCtyd2NE?=
- =?utf-8?B?T2hMTVFSc1o4VSticHZLRkl3TzVnd285Mm4xQW5JMmNWZEdMM3lSb2UrMkRp?=
- =?utf-8?B?MVkydzFRcE16QTdoQjZHUWNFOUE3RWFhTGZ5cWZpR0xTV05XWmJ1aFBvMWRD?=
- =?utf-8?B?TzdqR0xLTG04cWJjdlNMY1R0bGF4dHZtN2VzbGJqa1F6UEtVSFo2OW1XcW40?=
- =?utf-8?B?NUNBMEtPR0FuQkRrSkNadEpEK01JWWQ5NGVOc3p6bGRNbCtidkIxdzFoS2d1?=
- =?utf-8?B?RVVTZTR1RnBTcjVEeWpIVFF1UzBZeVpxWm5rcHlleXpRTW1kY2xhaEYxL2hB?=
- =?utf-8?B?YWFpSGIzRXRLcTEySXFMWkxFamFWU2pSVDMrT2Z2ZFg5aHpza0lzT005bUdI?=
- =?utf-8?B?NDF1Q2dmNlova096SXYzRlhuaDFYU2lYMm9HWFhMc0M2SUI4U2F5SDZsZExy?=
- =?utf-8?B?WmRQd2U5b0M0TkZrd0xWWVZpQUZTQlVXUllqdllJQ3hHTHNzZy9scytqMXVB?=
- =?utf-8?B?SkNTeXdURCtsYXViN0ZyOGZxZm41NW5LU1U5M2R2KzZJdXNOSk9RM2svdEdF?=
- =?utf-8?B?eThkdmxGQVg1QUdrWmU3WTZCYVB6SUtYZjlDRkdzbzREQ3h3R3dMdmk2KzNL?=
- =?utf-8?B?WURoMmkyTHlSeUZRVVJYc1phc0gxdWprZEZOdmMrcWJSZGtPWG1peWFuOXJa?=
- =?utf-8?B?WndrVzZUZU8yZEpPeXE0a28wT21FcWN1N1M5ZW1OSnlacjYxUTF5Vit6L3hu?=
- =?utf-8?B?TkU2VjYrZmk0UkVsSGFONUsxTFFZeGRQb0xLY3dRNjAzbmxVVnRKMVB6Zk1V?=
- =?utf-8?B?dEZmaEJpMkpCeHYxNzJYSVRMc2VQTmgzcFZrOGl2aGdRRTJ3Z2RiRzh0VDZp?=
- =?utf-8?B?TGx5UVJhQStoZ0JrbDR6WTd6SS9MbmVBeklES0o4d2hBV2lVaWNDMEpiVnI0?=
- =?utf-8?B?MEJUMEJERjJLM3ZZVmJJYUIxY2Q2bEIwckVheEpIeXg0TWRKUXB2OVJGaVBR?=
- =?utf-8?B?SStZdkNwQUM2ZFI1M0g0TmM5VGIvb0VUbmQ1ZHl3SmM0TS9iYU9CR0ZvRFM3?=
- =?utf-8?B?dnYvRWt4bm1WVzEvOVdmVmExdkZubnRneDBEWVBJL3VVRXBLUXY3RDY1NXRX?=
- =?utf-8?B?bC82STgwUlA4eGs2dEgvTFNsWFhkQjhYQVl1U1pOZVZjRy9PdUhPTUNvQUFS?=
- =?utf-8?B?R3dyTS8rVlBVYjBZeDRRTE9vS0VVMERVbXFXYjY1ZkRzeGNVMFN5UEVCM2NU?=
- =?utf-8?B?WktpUHVBd2JZemR4RXZnYjg3OEdvWDQ1b2orWmh5K3hITXRPU3FPNFRmUlZa?=
- =?utf-8?B?dUdibWg3VXFYaDNVNGZxVFdrQWljV1dCY045TmJpSW5aUTJZNzJMWk5PeEYr?=
- =?utf-8?B?NEZSS1lQa05Hd0NyM3NSOHZoU1MzQzErNE9velhpSlN0R0NNNC9FQm9YanJq?=
- =?utf-8?B?V05QdHRYcm54dHM2Nm1ENkhLOE5aUE9zUHVVbnJNMEFPWHNrK3IrdW9LcnhL?=
- =?utf-8?B?ME14MTZHK0tEcGU0aW5Xa2FiQzlWMlVUYkpWVUYzY2xJcDlKQnFJZU8yL21m?=
- =?utf-8?B?WGlCRGxqVEZrQm41QXFNV1VPQjUzekJ0NWpOV0tqYXdFRjN0NVBCWm5Odzlq?=
- =?utf-8?B?Z2lxRXJPRlMwbXZSVk1tU0xwMWQyeEFoQTZCV3JOcUZUektuVWRIeFVRMFdW?=
- =?utf-8?B?bWp6NmNOamRzamdoNkdHSlZiTjFGRi9sT3ZtcFlrdlpSTnB6QmEyd2E0WkxC?=
- =?utf-8?Q?6oroCqqe9DzJ39FR0yxoqxVl7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a9faf5d-d29e-4b41-56d4-08dbd6bf3d2a
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 07:35:05.8072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WPMrYfznBarPBScv2h2cSoTCeh9W/nznQL1Mdwv2oH5giw9YwVbf97rYGGK/yWlU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9261
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/7] arm64: dts: mt8183: Add kukui katsu board
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
+        <nfraprado@collabora.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231026191343.3345279-1-hsinyi@chromium.org>
+ <20231026191343.3345279-4-hsinyi@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20231026191343.3345279-4-hsinyi@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 27.10.23 um 09:32 schrieb Boris Brezillon:
-> On Fri, 27 Oct 2023 09:22:12 +0200
-> Christian König <christian.koenig@amd.com> wrote:
->
->>> +
->>> +	/**
->>> +	 * @update_job_credits: Called once the scheduler is considering this
->>> +	 * job for execution.
->>> +	 *
->>> +	 * Drivers may use this to update the job's submission credits, which is
->>> +	 * useful to e.g. deduct the number of native fences which have been
->>> +	 * signaled meanwhile.
->>> +	 *
->>> +	 * The callback must either return the new number of submission credits
->>> +	 * for the given job, or zero if no update is required.
->>> +	 *
->>> +	 * This callback is optional.
->>> +	 */
->>> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job);
->> Why do we need an extra callback for this?
->>
->> Just document that prepare_job() is allowed to reduce the number of
->> credits the job might need.
-> ->prepare_job() is called only once if the returned fence is NULL, but
-> we need this credit-update to happen every time a job is considered for
-> execution by the scheduler.
+Il 26/10/23 21:09, Hsin-Yi Wang ha scritto:
+> katsu is also known as ASUS Chromebook Detachable CZ1.
+> 
+> Let katsu and kakadu set its own touchscreen and panel compatible. Remove
+> these setting from the common dtsi for readability.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-But the job is only considered for execution once. How do you see that 
-this is called multiple times?
-
-Regards,
-Christian.
-
-> If you're saying this control-flow should
-> be implemented with a dma_fence that's signaled when enough space is
-> available, I fear Danilo's work won't be that useful to the PowerVR
-> driver, unfortunately.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
