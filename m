@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FCF7D9E9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9987D9E9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346358AbjJ0RDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 13:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S1345987AbjJ0REj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 13:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346337AbjJ0RBo (ORCPT
+        with ESMTP id S235163AbjJ0REY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 13:01:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD8BD6A;
-        Fri, 27 Oct 2023 10:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698426101; x=1729962101;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rp7C9TZkUzJPsNhPFEIC2B+5Ox/xRqY6xhnZVuHn0yI=;
-  b=FAjSJBjUqzICuPgU+fF0Nevl+H6P2gd9wl7xPd5BTTI57ruSJ3IOmQTY
-   cBsyUiSfvx3hYWLUw2HtfMcO9bgVq/hH8CGvDX9ITfv7PmxBeURZwrzEW
-   ClblfP5GMfQwGzhFzrB08rOfcnMGWjr0apPipmA3mei1Dk/6eNnQ7nsYJ
-   PTFt7HMvFOR2VzngPtZL4iOvND+EweGBC/yo2s3AkaicJduX3k9oY1QAf
-   /Z5YrF/LCClkeyEQdPQcHvTK1l0BouP1bSnEemvAa4siRDrbQp7UnI6Do
-   As+S/1bW/gNUC399a4YU2QXSLlzWYk3v4yTCp9G7N7bb1cVWCy3TzOGja
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="612150"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="612150"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 10:01:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="1090988252"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="1090988252"
-Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 10:01:21 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     jgg@nvidia.com, yishaih@nvidia.com,
-        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
-        alex.williamson@redhat.com
-Cc:     kvm@vger.kernel.org, dave.jiang@intel.com, jing2.liu@intel.com,
-        ashok.raj@intel.com, fenghua.yu@intel.com,
-        tom.zanussi@linux.intel.com, reinette.chatre@intel.com,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: [RFC PATCH V3 26/26] vfio/pci: Support IMS cookie modification
-Date:   Fri, 27 Oct 2023 10:00:58 -0700
-Message-Id: <5a118965e4ae827c28c2b1de6fa791e9ebfd5958.1698422237.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1698422237.git.reinette.chatre@intel.com>
-References: <cover.1698422237.git.reinette.chatre@intel.com>
+        Fri, 27 Oct 2023 13:04:24 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3891BDA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 10:02:05 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 678E840E01A3;
+        Fri, 27 Oct 2023 17:02:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id g0nH9nqICLaQ; Fri, 27 Oct 2023 17:02:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698426120; bh=VNcaD+xaD/Uk3iWKHp15XINecKx7gQw9fD75w7hCSpM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Wx9nBDdfeWXS0kRwqhz6bU3UZlcc7p++HGp4OpM41HCHJxS/4q9wRsgQ5LwZUw8XJ
+         sx57ziARKv/OiMBwCBRDVAjtylvwkNlSjGDjsMq9eVBbNHh60NZIR51YuRMEpS75k7
+         95OPIiNRcOpnxrhygmPic/XwJtXimd1RbN9eycRrkL2hc8406G7lyr1ESRGw1rxyCG
+         hZUxZOUdZYcQOYbS4hP4MjqZKY34jaIGkqcrY98tTAUHJ1t5qwDTYrQh5cFuABTElg
+         Yu6kORGDM426caDuDKlD9+pPvdWSVWdK42CTrN1vt488NzgHj9a0FggnJImF0q7ECE
+         f36exhJPM0AIMEuV5rti6MKoEbhIGYxt7F6aIzThx8BkppVF/j6C1TLO1t+1kVjhQL
+         QJ8xlPj607dlGTjt9obP3uok0/LvDzxeDlOBpjjfoJaeJ3RNiM7dco2griSW8vaRtB
+         qeccuF0P02Vln7m5P3/YqCf0W7ccP3DUAgbDcPJcSIOX/sPyuRK7gdD9SVg+08QPdM
+         Jxy7oC9uhQEFcSldxAeh2o0/k3NltucWAk4+ULZ+17LL78FoXHhZ1FwM+SaYgaFQj7
+         +eQLKlvM3ABRspKmJb30+Hl6uT22Q82yXTtZA5QNRwTiAQ908grYJUAxHLWJ92/1MF
+         8+1yZ7/PpWZxwSlI4tRYrLM0=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 35BE940E01A4;
+        Fri, 27 Oct 2023 17:01:57 +0000 (UTC)
+Date:   Fri, 27 Oct 2023 19:01:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/cpu for v6.7
+Message-ID: <20231027170151.GOZTvs/wR/47ib4+qe@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMS supports an implementation specific cookie that is associated
-with each interrupt. By default the IMS interrupt allocation backend
-will assign a default cookie to a new interrupt instance.
+Hi Linus,
 
-Add support for a virtual device driver to set the interrupt instance
-specific cookie. For example, the virtual device driver may intercept
-the guest's MMIO write that configuresa a new PASID for a particular
-interrupt. Calling vfio_pci_ims_set_cookie() with the new PASID value
-as IMS cookie enables subsequent interrupts to be allocated with
-accurate data.
+please pull some x86/cpu updates for 6.7.
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Thx.
+
 ---
-No changes since RFC V2.
 
- drivers/vfio/pci/vfio_pci_intrs.c | 53 +++++++++++++++++++++++++++++++
- include/linux/vfio_pci_core.h     |  3 ++
- 2 files changed, 56 insertions(+)
+The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 32ebc8fec4c4..5dc22dd9390e 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -1188,6 +1188,59 @@ int vfio_pci_ims_hwirq(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector)
- }
- EXPORT_SYMBOL_GPL(vfio_pci_ims_hwirq);
- 
-+/*
-+ * vfio_pci_ims_set_cookie() - Set unique cookie for vector.
-+ * @intr_ctx:	Interrupt context.
-+ * @vector:	Vector.
-+ * @icookie:	New cookie for @vector.
-+ *
-+ * When new IMS interrupt is allocated for @vector it will be
-+ * assigned @icookie.
-+ */
-+int vfio_pci_ims_set_cookie(struct vfio_pci_intr_ctx *intr_ctx,
-+			    unsigned int vector,
-+			    union msi_instance_cookie *icookie)
-+{
-+	struct vfio_pci_irq_ctx *ctx;
-+	int ret = -EINVAL;
-+
-+	mutex_lock(&intr_ctx->igate);
-+
-+	if (!intr_ctx->ims_backed_irq)
-+		goto out_unlock;
-+
-+	ctx = vfio_irq_ctx_get(intr_ctx, vector);
-+	if (ctx) {
-+		if (WARN_ON_ONCE(ctx->emulated)) {
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+		ctx->icookie = *icookie;
-+		ret = 0;
-+		goto out_unlock;
-+	}
-+
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL_ACCOUNT);
-+	if (!ctx) {
-+		ret = -ENOMEM;
-+		goto out_unlock;
-+	}
-+
-+	ctx->icookie = *icookie;
-+	ret = xa_insert(&intr_ctx->ctx, vector, ctx, GFP_KERNEL_ACCOUNT);
-+	if (ret) {
-+		kfree(ctx);
-+		goto out_unlock;
-+	}
-+
-+	ret = 0;
-+
-+out_unlock:
-+	mutex_unlock(&intr_ctx->igate);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(vfio_pci_ims_set_cookie);
-+
- int vfio_pci_set_irqs_ioctl(struct vfio_pci_intr_ctx *intr_ctx, uint32_t flags,
- 			    unsigned int index, unsigned int start,
- 			    unsigned int count, void *data)
-diff --git a/include/linux/vfio_pci_core.h b/include/linux/vfio_pci_core.h
-index dbc77839ef26..b989b533e852 100644
---- a/include/linux/vfio_pci_core.h
-+++ b/include/linux/vfio_pci_core.h
-@@ -181,6 +181,9 @@ int vfio_pci_set_irqs_ioctl(struct vfio_pci_intr_ctx *intr_ctx, uint32_t flags,
- 			    unsigned int index, unsigned int start,
- 			    unsigned int count, void *data);
- int vfio_pci_ims_hwirq(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector);
-+int vfio_pci_ims_set_cookie(struct vfio_pci_intr_ctx *intr_ctx,
-+			    unsigned int vector,
-+			    union msi_instance_cookie *icookie);
- void vfio_pci_send_signal(struct vfio_pci_intr_ctx *intr_ctx, unsigned int vector);
- int vfio_pci_set_emulated(struct vfio_pci_intr_ctx *intr_ctx,
- 			  unsigned int start, unsigned int count);
+  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cpu_for_6.7_rc1
+
+for you to fetch changes up to b5034c63858d8cb44587bb1ce5a0790a1b4e4a05:
+
+  x86/cpu/amd: Remove redundant 'break' statement (2023-09-29 11:24:09 +0200)
+
+----------------------------------------------------------------
+- Make sure the "svm" feature flag is cleared from /proc/cpuinfo when
+  virtualization support is disabled in the BIOS on AMD and Hygon
+  platforms
+
+- A minor cleanup
+
+----------------------------------------------------------------
+Baolin Liu (1):
+      x86/cpu/amd: Remove redundant 'break' statement
+
+Paolo Bonzini (1):
+      x86/cpu: Clear SVM feature if disabled by BIOS
+
+ arch/x86/include/asm/msr-index.h |  6 +++++-
+ arch/x86/include/asm/svm.h       |  6 ------
+ arch/x86/kernel/cpu/amd.c        | 11 ++++++++++-
+ arch/x86/kernel/cpu/hygon.c      | 10 ++++++++++
+ arch/x86/kvm/svm/svm.c           |  8 --------
+ 5 files changed, 25 insertions(+), 16 deletions(-)
+
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
