@@ -2,217 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E4D7D9D95
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D574F7D9D99
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346242AbjJ0P4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S1346321AbjJ0P4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346249AbjJ0Pz5 (ORCPT
+        with ESMTP id S1345780AbjJ0P4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:55:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603F8121;
-        Fri, 27 Oct 2023 08:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698422156; x=1729958156;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=cuaMUbtl3GmUnHY0iGj/fC0kxNEoSSt24nilv7hZgvM=;
-  b=DrysAPq1Pmmx23PN8Et78RUiB0qD3tAZ497tqNFxCETiSUdpahhOvPo/
-   MzOZWe83YJQ/H1VzEPclNV7k4oDswA73kZCNN/yQPIFVKarwoAW2NhaEQ
-   MCezP0bsOx2yrHrGdNYK4ppLym2zf6m0LJRrA/3OKwarpVPhnYTIQ7ttZ
-   OrNSLpoJQfqVgcUvg5wAWWrIqeXL7yZKzp4Iymx4keqD6Xc9aKxFzX5Bw
-   UJk8u/2P5MQw3YUWJv3V7qJQW6Rfb01GY9yKTvoRSvYraTGXk4eYm22Op
-   zDelt5IY8rUZMRh9yJ6xIm/O2VSqQZu1s8CsjZ5SLItIsJj8+XnCO8qRR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="626423"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="626423"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 08:55:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="788847980"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="788847980"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Oct 2023 08:55:54 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 08:55:53 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 08:55:53 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 27 Oct 2023 08:55:53 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 27 Oct 2023 08:55:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hV2NEGzmAkuhEzLzAXUyZaOuhQvatfDpftJLUsKunJ54vtiG7ryYdPQ6HYuLcsjX4ojfiFDqwxtpGN6DVfjDzl1uz646i7VpZbyGmcAn1PSQG/6qnjWP0Iro98H9wy2xPrNDFRwZ7xBhn8aIOaEvDKLLxD/58i0B7vqmgedIybnrR6/4KxKuHVIR1Sb/D1DiJorzhTCGB4G6+qiTHxBGEtRghF7/pBau5Ujybiaj2yMOsWkLHkr/GOSOJLA5FZ03OheV3CKtA6ty/rCB2qmFZO1OoWOwYC/JnTqORb78KUM6eMNZl9iKbdgwGdu978y/zhw1UJAyVljRwey/DCR3Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cuaMUbtl3GmUnHY0iGj/fC0kxNEoSSt24nilv7hZgvM=;
- b=bO01B67KrK+g+hgKtLsRb/DWVxVwwKHvwMDFE981XB39W8BQ846c+PMB0dldg2EC9J+UQZqGrwu6iB3Wjsqw9mHHl1XjfsVyr8d+sMTWyoE072U0PXWewuCLSQgRz7njzXfIKEVSLfoIk0z/SA6fSInvbyO74mpJ1ZQnsiSfrXqc7H64HDqTk6uIWDjMzJHbSxlrtBZwC5y4Tt4ot31MZBMQxLYXvw4tQ61eXwoNSiHN2Q6h9Di0K/CDEaEFRLwEcNyPI+3Qw0NBqBh7ngC27fLlWJf84ANmfVPgriQhePpZxpsO/iF9sGBR2yRgjOeinNHmgoDs61RZqrOM6FYsJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CY8PR11MB7059.namprd11.prod.outlook.com (2603:10b6:930:51::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Fri, 27 Oct
- 2023 15:55:51 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::4d44:dbfa:a7b4:b7c1]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::4d44:dbfa:a7b4:b7c1%4]) with mapi id 15.20.6907.028; Fri, 27 Oct 2023
- 15:55:51 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>
-CC:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
-Subject: Re: [PATCH RFC RFT 2/5] fork: Add shadow stack support to clone3()
-Thread-Topic: [PATCH RFC RFT 2/5] fork: Add shadow stack support to clone3()
-Thread-Index: AQHaBbRTBvR+3Qu63E+MwFOmoT8P7rBXkZMAgAAhcgCABKBHAIAAC/yAgAAupoCAAP4VgIAARLEA
-Date:   Fri, 27 Oct 2023 15:55:51 +0000
-Message-ID: <b2ae41fd9a9f05269c7ffcd10565942acbab2c16.camel@intel.com>
-References: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
-         <20231023-clone3-shadow-stack-v1-2-d867d0b5d4d0@kernel.org>
-         <dc9a3dd544bbf859142c5582011a924b1c1bf6ed.camel@intel.com>
-         <8b0c9332-ba56-4259-a71f-9789d28391f1@sirena.org.uk>
-         <2ec0be71ade109873445a95f3f3c107711bb0943.camel@intel.com>
-         <807a8142-7a8e-4563-9859-8e928156d7e5@sirena.org.uk>
-         <ZTrOw97NFjUpANMg@debug.ba.rivosinc.com> <ZTuj565SqIb9KjQr@arm.com>
-In-Reply-To: <ZTuj565SqIb9KjQr@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CY8PR11MB7059:EE_
-x-ms-office365-filtering-correlation-id: f1c8b395-4841-49a1-4aff-08dbd70531f9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XHRYiri3H2vlzLIzx0sztu85PRYS6I0uZxCQunnTZASmALUgOVPqi0XSSQVppD1vs1t0tvjkoGPk7JyZ6/rZ+I8ohnLuFNQdjsosEI4OWwFWR8P8hlcJ+jXrPJUaLBlsJo8ejbpqRsyMEZeRXBpuGcMgenzRFdkhSJNQTt0TN9Gag+etLuTg6gLlQcxrhJl6FO1PSDZ96MlrQqtDLPh+/ncN3RfLEfl1Y9BY7IlpS7saLH6bGdIf08t9x0SlodR9dtiXQL69TDJpq/xlW+ApkkLhrij9eXn4IUMJ15dQ6OMOPtrMm9quGKwghru31OBnFC2CcV0XLHxzKBYU6RE6jws6csFmmWZNKJwh6cliBmMvafOTzJ6mrq/hznIKuEIrZmkQ2HuG3nd458Ako6QqtOjlhjO/8Qg+5Xyu+p0KibWiOCBAOyEa1ChCaFPZQPSPlhZXv/cXUaOEkJHk+iRheQs6gjizbeJvRgtQRsKUxBI/EFC4/8p9jjWQdmbS32U1AX7K+vWTZ+Dh+dB6cb9eNDwTXzM7I8hx7d/TbcGQP8EwWGSJom8igu18V/oURh8x+sEGt7+DCy12pAVCanU+yRcMDqvC6dp8qe+qvq0GnViuSrGzEQRC3g+PCdKrLsLG
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(82960400001)(76116006)(91956017)(86362001)(6486002)(4001150100001)(2906002)(110136005)(64756008)(26005)(66476007)(36756003)(66556008)(66946007)(316002)(7416002)(66446008)(122000001)(38100700002)(54906003)(5660300002)(6512007)(38070700009)(2616005)(6506007)(41300700001)(8936002)(8676002)(478600001)(4326008)(71200400001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YnJjc2xTaXplR3lxS2VzVlBoTTkwVW54T0xxMUpaQWkyNENwRk9VLzh6eVpN?=
- =?utf-8?B?WHRaUE5UbmQzeHM0M2xqODFjYmRMeGVmaitMZ2UxQlA5VW1yZEszemkwdVFN?=
- =?utf-8?B?UEw0dHlRVC9JN0lnME9POUMyeVFxRFlQaEkvUkw2aVE5UW4ybm1kaW1HUFE1?=
- =?utf-8?B?VnRCVnU0MmpKU1NhR012SDlzUXAwSHRNSEEyRTlnYktWa3dpamIydXd0cVhz?=
- =?utf-8?B?NWNhcGpRVmFKQXRQemhFYkJwVnd0dE5zdUh3SXlRbEJnN1FCRG1JcythTExK?=
- =?utf-8?B?bzFJTVZXKzlZdm9aWG96akdBZlZHdzdSMTVjcjB5YmJKeTNUcDN0T3FySkYr?=
- =?utf-8?B?QjlUcG5YeVMrTHJaYlc4bCt3SHEvbEw0RG92aUcwbFBvc3N6R3dYU0s1TnRj?=
- =?utf-8?B?bVFCenEvbkRiVWtKclROUVp2RzhsUUsxZlVlamhQM1IrUVlWY1BPaGZidmVT?=
- =?utf-8?B?NjFIVmQ0RU9MNUFGZ3hobTU0YUFTOW84MWxKNjVxTkRoT1BwUHJoL3pxbGdC?=
- =?utf-8?B?b2drRFlDLzhQdEVjTDVEVUNrUGhtMXcxV3JoRWVQdlZ1L1RQVk9vMWpnSjVO?=
- =?utf-8?B?bU0rZ1RBdEZ5N1FNWmdCWVU1WklMYWtQRnV0dHVLWTdab2s1TUhKalhFdjF3?=
- =?utf-8?B?YktZNlppS1h2dlhNbDFFWDFkVStta0drYmloZ3lxVUc3TC9odUpOS205aXlE?=
- =?utf-8?B?N0ZZZ1p2MkpzWXEyc0t2bnc3RWMvSElUODVVVUVmSmc5UmpKdTQ4WXlITjd2?=
- =?utf-8?B?Uk5mSDlnUGVJQ252NE1UeFBVSXdvaVl0TlYxSlpGaW5DZWZrQWE1SjhtekQw?=
- =?utf-8?B?V0pXMlJleDdrYTZFMFFyTGtvRGtHNXdvUmNHeTdEMUtQWnhqTjN0RnViTVp3?=
- =?utf-8?B?eUw5d0RxSG5Yc05hVjM3ald3KzVDWG1td21uNjNGR3RlWXhJd2ZHNVBPcjI4?=
- =?utf-8?B?clBFSHJYVkFScWlBR2MyajIvZThYVE5iZWdUTUxNamNrcXdpV0o0dFZhTk54?=
- =?utf-8?B?YnIxandUclNaZlZtbU9GV3diNGQ4MnFndmhhVzBYdm4rR3A0M2dURDI1Ry90?=
- =?utf-8?B?UlpzK0FLWXRyamxPOU1jcjlGZUN0alBzTXY4NU5Pb3JsT2FYL1F4a0czanlr?=
- =?utf-8?B?ay9ad05zbzBvMERnQjF6amQyei8xR0NrRVd4Nk9xcEVxdnRvK0ljNmNMa0hU?=
- =?utf-8?B?YWtjYnBOekc5NGJDVFFCbWlBcjE2eEE3enl6RmVCbGVmaU1QT1RLb3RDalQz?=
- =?utf-8?B?YWZjVXFlc1BZMTFNUW1EdDZydUx0R2NGeEJDeEhTQ2xZbEhFSUxObVdGYW00?=
- =?utf-8?B?cnp5eG5NeGN4TE8zV254VzQ1Y1l5VkswNEJodWV6ajVLQjVUL1ZQS0wvOTc2?=
- =?utf-8?B?b2UvbDJMOUs2ckhGOEZGZkhOOEtZcHVPSXF1K01NWjBJeWFvUUI5cEhVdFMr?=
- =?utf-8?B?OWVjTStHMmF5UWdLVXNFLzExUnBJUGxFVi96SlpES09HQlgxczUyMENXQXor?=
- =?utf-8?B?UGlTeXBSMVdrSjJISnNrRy8ySjdSbExMZ0MrNnU4N2VvNVQ5LzZkV3FhY3l5?=
- =?utf-8?B?a24rZVBWY0xhUzBTMlcvQUdQaFYwdWx3RUJzeCtDbVhJcTljTGtuRmNmSTJi?=
- =?utf-8?B?UzdEQkVURmt5UkhVa0pxRFZRdTdyUDY0YjFDWlI4RzZyRWtZMEdKTUtodTZm?=
- =?utf-8?B?cFdJR0FnNkVqaEVEOHZPekdMVHY4TWVHczNFMUppVzZVcXlIWDhoY1paSUgz?=
- =?utf-8?B?QUV2T0tLVWNveHk1aURvSjE1SFR1M2ZvMVF3ZHk1Q0ZsZFUxUk9lbytGZ08z?=
- =?utf-8?B?RHhDWUtDM2JxdXRuMlduWU90Vi9TVjlEM3VVS1UvMGtIYnVOamZKQXZDOTZ5?=
- =?utf-8?B?WkVOL05jRW5nbGlSUGhwMUtFZkFEazFGcTZ2UzFNa2ltRk94Q2lvZUV0NnJD?=
- =?utf-8?B?ODVvYVZvRFU3bTdkcHlkOGRQb29scEZFa2JaR1V2anU1NEpsRXIzbTYzRDNo?=
- =?utf-8?B?MVJCcXc5a1ZEZ3o2RVNSR3ZLSjQ4WFo4V0prRVJiRFlKdlZDMmlFeitnVjRO?=
- =?utf-8?B?d1NxWVR4bW1OZ0ZUNnZzQWJxbFcxRFlKenJ5VVNQMDRQdVFOd1VPamM4WGxv?=
- =?utf-8?B?MnphckFwTTQxcEp5RTd1SkdHbVdpaEt5M1VZS3lvNkxXWWlnTnJaU1pVcHVn?=
- =?utf-8?B?QXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <828389483393C54283C6ADB8BFA04305@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 27 Oct 2023 11:56:46 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60EC129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b44befac59so2489490b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698422200; x=1699027000; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=40fyXIZLWl6t+j1qK/ww8o7e/vmz8aWuQu+nEtghbIE=;
+        b=CRPn1o7AzPXlGW0pjH0nQAzz0oyjEmn+qQWozrq8tZ6viB0qSGdxO7QdNUgAxPT41S
+         +lVIeXVzXYi8eFN0yQXsVZe9MfK4Ro0HfHxGErb53v9gEMkvHeBOZJlRVTlE1kzB6Ts5
+         ow5Ud3NZ65gn+fT6CGIMW2EAV2YJElVMnCjRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698422200; x=1699027000;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=40fyXIZLWl6t+j1qK/ww8o7e/vmz8aWuQu+nEtghbIE=;
+        b=rX+YKd0/VkeWCW/QTna3sN9VzCuvHfbIAEn19J85da4gUwBlwSHg/2PTPigD/OS296
+         O7FTbt2WzUr2ebHXb17/9iVzy6BMUIzIrrV1OGjnV98GmxwVcGL0X4nMAYHCVLFH9fIl
+         OLoAHfy5KKxfBDCMOibVdslLqKVMthA1dHUQ6QMy3FQfklrSzBSTBN2v+1XK2vqyLrfN
+         CsxouX48UJUhfY9nxdqPYECLtd93nCc36kccnAX4US5Yrcg9n/q7Yis5WcM3aivzHeRl
+         vnRgx+vkryYcQMxGIS2vCHcA7ooNz/ga1kq4FOJ3yRuqV/KufgwA1lGWP2aFBe/qHtF/
+         Wwqg==
+X-Gm-Message-State: AOJu0YzUTXc5B3W5v3gzNhp7RMB6ZGONBDEE2l98wM7epJbA7InWQAMR
+        R7AC3NBQInJjEQaOSCrSRK8U7w==
+X-Google-Smtp-Source: AGHT+IENI6l4x0rUhXCb0++j2mRLJ+co5f7HRnxct20HokNEjgiWTI/oZ8VdjqfhoUx6oXd5jnCZ+A==
+X-Received: by 2002:a05:6a21:32aa:b0:17b:2c56:70bc with SMTP id yt42-20020a056a2132aa00b0017b2c5670bcmr4314236pzb.10.1698422200183;
+        Fri, 27 Oct 2023 08:56:40 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006be484e5b9asm1545611pfu.188.2023.10.27.08.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 08:56:39 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-trace-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v3] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
+Date:   Fri, 27 Oct 2023 08:56:38 -0700
+Message-Id: <20231027155634.make.260-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1c8b395-4841-49a1-4aff-08dbd70531f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2023 15:55:51.5771
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5C1MFrDed7Uf9Ss3OaTq0Uwn4Al+Dkm6N1SgO0Noe7hlk8BHg64LnoCPuRyHCbvmG/Su2MODTd1k8SFXPI2JRNemj0Sq3np7WB4mGO5nyGo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7059
-X-OriginatorOrg: intel.com
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4859; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=3QgU2GLPGx9pQtjcPqO6cwYESMY3mYmV87vQL0flhSk=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlO922vKn2ZbYda/N+2eCxBpz/i6JD9BxvPlHI+
+ EYOwNQvs8uJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZTvdtgAKCRCJcvTf3G3A
+ JmNwD/9KM3Ah0jhY/I4rtDSfk6VKAxNnDNfdAb6bwxkU6i4DwTDv2m9bkpEJ8tOYI17VJM08pQP
+ dqiHbBRsnaXTcjX7qSYYZkiEyvtaz1aqEqfESlMMsQlG5nm3p5ydAJ0HCTNgPsRCmqWXg7ngHkw
+ U7AKCvYa8/k77glsBe2DNvwJG/iV8SxHewOBIX/RMMjXxejGUnJwcTu7WDaAoBalJSF4B6V4O+j
+ TRX9ttk89GcOeEcpA86CtE4W+PPDeatAy3KkfNM3yH9dzWtryIvODc6fenHLhc5Wzfae72h5CoW
+ 0oxEf4bfFEjxene1jXHBMNrro16JWBcSKXnbTxFcVG8wnbMnILi+338L74Pu04ADedq7T1GOSNp
+ eRO4uwHrqbLV3FN6gfdLdVtDcuSzg7JzSh1ea9jba2TmOUxv2yCgimfAAeTAH8hKV2xYbgrA853
+ hLA+F1AG58hsyZ57S3wJ5VAoXaEXaxRMozLDG+VyMp3z3729+n8oRBpfM9d+RMYm8mfi0LjoVfd
+ 1Sy0aMBBB5fKUYpLuqkSTeIy1jtimZFYyTAZyBJQASoPKrmY4RXNhm+0AJ4bGB/bXDQPrw3QQl1
+ BtG3KwDfQIQyK/1Bny3W7k4GSD9HheeC3xRVhJoya0NIYmUvNJj6A7wYgPPi6o/qjg+tU5+e9EX
+ jZhI4NB wPewSiBQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTEwLTI3IGF0IDEyOjQ5ICswMTAwLCBTemFib2xjcy5OYWd5QGFybS5jb20g
-d3JvdGU6DQo+IG5vLiB0aGUgbGlmZXRpbWUgaXMgdGhlIGlzc3VlOiBhIHN0YWNrIGluIHByaW5j
-aXBsZSBjYW4gb3V0bGl2ZQ0KPiBhIHRocmVhZCBhbmQgcmVzdW1lZCBldmVuIGFmdGVyIHRoZSBv
-cmlnaW5hbCB0aHJlYWQgZXhpdGVkLg0KPiBmb3IgdGhhdCB0byB3b3JrIHRoZSBzaGFkb3cgc3Rh
-Y2sgaGFzIHRvIG91dGxpdmUgdGhlIHRocmVhZCB0b28uDQoNCkhtbSwgdGhpcyBtYWtlcyBtZSB0
-aGluayBhYm91dCB0aGUgdHJhY2luZyB1c2FnZXMuDQoNCj4gDQo+IChvciB0aGUgb3RoZXIgd2F5
-IGFyb3VuZDogYSBzdGFjayBjYW4gYmUgZnJlZWQgYmVmb3JlIHRoZSB0aHJlYWQNCj4gZXhpdHMs
-IGlmIHRoZSB0aHJlYWQgcGl2b3RzIGF3YXkgZnJvbSB0aGF0IHN0YWNrLikNCj4gDQo+IHBvc2l4
-IHRocmVhZHMgZXRjLiBkb24ndCBhbGxvdyB0aGlzLCBidXQgdGhlIGxpbnV4IHN5c2NhbGwgYWJp
-DQo+IChjbG9uZSkgZG9lcyBhbGxvdyBpdC4NCj4gDQo+IGkgdGhpbmsgaXQgaXMgcmVhc29uYWJs
-ZSB0byB0aWUgdGhlIHNoYWRvdyBzdGFjayBsaWZldGltZSB0byB0aGUNCj4gdGhyZWFkIGxpZmV0
-aW1lLCBidXQgdGhpcyBjbGVhcmx5IGludHJvZHVjZXMgYSBsaW1pdGF0aW9uIG9uIGhvdw0KPiB0
-aGUgY2xvbmUgYXBpIGNhbiBiZSB1c2VkLiBzdWNoIGNvbnN0cmFpbnQgb24gdGhlIHVzZXJzcGFj
-ZQ0KPiBwcm9ncmFtbWluZyBtb2RlbCBpcyBub3JtYWxseSBhIGJhZCBkZWNpc2lvbiwgYnV0IGdp
-dmVuIHRoYXQgbW9zdA0KPiBzb2Z0d2FyZSAoaW5jbHVkaW5nIGFsbCBwb3NpeCBjb25mb3JtaW5n
-IGNvZGUpIGlzIG5vdCBhZmZlY3RlZCwNCj4gaSB0aGluayBpdCBpcyBhY2NlcHRhYmxlIGZvciBh
-biBvcHQtaW4gZmVhdHVyZSBsaWtlIHNoYWRvdyBzdGFjay4NCg0KRG8geW91IGhhdmUgYW55IHVw
-ZGF0ZWQgcGxhbnMgdG8gc2hhcmUgYXJvdW5kIHlvdXIgZWFybGllciBpZGVhcyBmb3INCnRva2Vu
-IHNjaGVtZXMgdGhhdCB0cnkgdG8gc2hvb3QgZm9yIG1vcmUgY29tcGF0aWJpbGl0eSBvciBzZWN1
-cml0eT8NCg==
+Solve two ergonomic issues with struct seq_buf;
+
+1) Too much boilerplate is required to initialize:
+
+	struct seq_buf s;
+	char buf[32];
+
+	seq_buf_init(s, buf, sizeof(buf));
+
+Instead, we can build this directly on the stack. Provide
+DECLARE_SEQ_BUF() macro to do this:
+
+	DECLARE_SEQ_BUF(s, 32);
+
+2) %NUL termination is fragile and requires 2 steps to get a valid
+   C String (and is a layering violation exposing the "internals" of
+   seq_buf):
+
+	seq_buf_terminate(s);
+	do_something(s->buffer);
+
+Instead, we can just return s->buffer directly after terminating it in
+the refactored seq_buf_terminate(), now known as seq_buf_str():
+
+	do_something(seq_buf_str(s));
+
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Yun Zhou <yun.zhou@windriver.com>
+Cc: Jacob Keller <jacob.e.keller@intel.com>
+Cc: Zhen Lei <thunder.leizhen@huawei.com>
+Cc: linux-trace-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/20231026194033.it.702-kees@kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v3
+ - fix commit log typos
+ - improve code style for DECLARE_SEQ_BUF (shevchenko)
+ - const-ify seq_bug_str() return (rostedt)
+v2 - https://lore.kernel.org/lkml/20231026194033.it.702-kees@kernel.org
+v1 - https://lore.kernel.org/lkml/20231026170722.work.638-kees@kernel.org
+---
+ include/linux/seq_buf.h | 21 +++++++++++++++++----
+ kernel/trace/trace.c    | 11 +----------
+ lib/seq_buf.c           |  4 +---
+ 3 files changed, 19 insertions(+), 17 deletions(-)
+
+diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
+index 8483e4b2d0d2..5fb1f12c33f9 100644
+--- a/include/linux/seq_buf.h
++++ b/include/linux/seq_buf.h
+@@ -21,9 +21,18 @@ struct seq_buf {
+ 	size_t			len;
+ };
+ 
++#define DECLARE_SEQ_BUF(NAME, SIZE)			\
++	char __ ## NAME ## _buffer[SIZE] = "";		\
++	struct seq_buf NAME = {				\
++		.buffer = &__ ## NAME ## _buffer,	\
++		.size = SIZE,				\
++	}
++
+ static inline void seq_buf_clear(struct seq_buf *s)
+ {
+ 	s->len = 0;
++	if (s->size)
++		s->buffer[0] = '\0';
+ }
+ 
+ static inline void
+@@ -69,8 +78,8 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
+ }
+ 
+ /**
+- * seq_buf_terminate - Make sure buffer is nul terminated
+- * @s: the seq_buf descriptor to terminate.
++ * seq_buf_str - get %NUL-terminated C string from seq_buf
++ * @s: the seq_buf handle
+  *
+  * This makes sure that the buffer in @s is nul terminated and
+  * safe to read as a string.
+@@ -81,16 +90,20 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
+  *
+  * After this function is called, s->buffer is safe to use
+  * in string operations.
++ *
++ * Returns @s->buf after making sure it is terminated.
+  */
+-static inline void seq_buf_terminate(struct seq_buf *s)
++static inline const char *seq_buf_str(struct seq_buf *s)
+ {
+ 	if (WARN_ON(s->size == 0))
+-		return;
++		return "";
+ 
+ 	if (seq_buf_buffer_left(s))
+ 		s->buffer[s->len] = 0;
+ 	else
+ 		s->buffer[s->size - 1] = 0;
++
++	return s->buffer;
+ }
+ 
+ /**
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index d629065c2383..2539cfc20a97 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3828,15 +3828,6 @@ static bool trace_safe_str(struct trace_iterator *iter, const char *str,
+ 	return false;
+ }
+ 
+-static const char *show_buffer(struct trace_seq *s)
+-{
+-	struct seq_buf *seq = &s->seq;
+-
+-	seq_buf_terminate(seq);
+-
+-	return seq->buffer;
+-}
+-
+ static DEFINE_STATIC_KEY_FALSE(trace_no_verify);
+ 
+ static int test_can_verify_check(const char *fmt, ...)
+@@ -3976,7 +3967,7 @@ void trace_check_vprintf(struct trace_iterator *iter, const char *fmt,
+ 		 */
+ 		if (WARN_ONCE(!trace_safe_str(iter, str, star, len),
+ 			      "fmt: '%s' current_buffer: '%s'",
+-			      fmt, show_buffer(&iter->seq))) {
++			      fmt, seq_buf_str(&iter->seq.seq))) {
+ 			int ret;
+ 
+ 			/* Try to safely read the string */
+diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+index b7477aefff53..23518f77ea9c 100644
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -109,9 +109,7 @@ void seq_buf_do_printk(struct seq_buf *s, const char *lvl)
+ 	if (s->size == 0 || s->len == 0)
+ 		return;
+ 
+-	seq_buf_terminate(s);
+-
+-	start = s->buffer;
++	start = seq_buf_str(s);
+ 	while ((lf = strchr(start, '\n'))) {
+ 		int len = lf - start + 1;
+ 
+-- 
+2.34.1
+
