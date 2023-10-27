@@ -2,194 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1AC7DA232
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB177DA258
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346518AbjJ0VLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        id S1346521AbjJ0VUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbjJ0VLh (ORCPT
+        with ESMTP id S230451AbjJ0VUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:11:37 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56C01B4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:11:33 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1e9bc53c828so3376966fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:11:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698441093; x=1699045893;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oNoZbYOlIv4dyVECabePIdfIGgk1r4UtAtMGjjVpRNw=;
-        b=b2bJx/ariEFmrNNP4gbgi9Ba39cN38cFKboz9vxBpnE0N+7BRg8MDPvm6Rkf5NkzqS
-         xxl9KWhtMAb23hInXV7yLLtJl/XgzoCNLrlU7u+p1B2mN+EK6OEGYd9crBfwbqcQf79z
-         NEpN5zqZo2x48k/ybMwUrcdZbiXr+BH5UbnKfSzBfC/sc32BkGMcCCqPfqlC0hSmpzA4
-         qGcCQ3ZEgyaSYBwrgz/Qu7EyYhonDqkbzvg7BJCg4D4cgxyUy8zL0DGS3tf9LwaUJMqX
-         zRMFO2nqFqgqVBd134DuEUJ57LWWaIGqrceZNDHneCY0G7ILfM/IncRtZbuuel1F2fGT
-         ilvw==
-X-Gm-Message-State: AOJu0YyIPiKIcDuBYaEX0ASFIJqhniwww390Qp5py2W2i8oWv8v0ifnV
-        +EWc5zx9twaOjsxew4UyOl8m1lAuA4vZp3hp9eFJwNZpIbby
-X-Google-Smtp-Source: AGHT+IH06TV5SQyMqhA2mNC4y+hknxuwnXBpa/QpZXKpAS9AmewD3C85Wv4DRshK3H2WdohHy6Vkol6zFWtyvveMauf8dbuIzWlC
+        Fri, 27 Oct 2023 17:20:21 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8957A1AA;
+        Fri, 27 Oct 2023 14:20:17 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 0A6DF60197;
+        Fri, 27 Oct 2023 23:20:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698441615; bh=x2nsCMOA2aqqotqUxWmGIzp0ZhXlFsMbVvvqRMSeGrE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=slFNV10orbsT/e1d171zZD6qlvFv6Ek639Y481GMXwafvMmY/ua7ikbSS7kZIO5aM
+         jgUebpWJUVvRzUgqVbI4pSl/85FFSgrb0Orz6gkOTKg14OwtbQxanpxVahbzH4m0z5
+         JOGkNqDAF8Us8XZAup3bUfJKPWy3M6D3jHBsNcD/Xrv2/UW50vejQCkLU6pQ9TExfq
+         NXOUbicoD608FjaZHr3iQHk3f1tX8BangmCbU2ubYPalSNlIiA4WHo+ve+/CSYhFJJ
+         9EfK0fzCujpkE6JEE5dFNI0a2ceocj1A9a52JvZ1doYvUX1IFhObndRVtgAY2e7rpj
+         KxasyIwiB2y4g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YgvryUMb_Up7; Fri, 27 Oct 2023 23:20:11 +0200 (CEST)
+Received: from defiant.home (78-0-114-144.adsl.net.t-com.hr [78.0.114.144])
+        by domac.alu.hr (Postfix) with ESMTPSA id 5792860182;
+        Fri, 27 Oct 2023 23:20:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698441611; bh=x2nsCMOA2aqqotqUxWmGIzp0ZhXlFsMbVvvqRMSeGrE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hkSbHf93BKhmIRPs9T1gIxDyU3nE00nZzsBVEriHztyFekl1phSulprvI8jQyHC34
+         oI8Zpxtr7Wm3dlnKyitbVpAun4w0PzNl5UwyHlLRXCDqdoNTDoDyxxd75lCAQFFrNi
+         pehDVDZvQpIdm3+4wg9wk9HotMoAK10EDoCQkUfjmRBWL1juo+9MDuIOIeJEAd+X4F
+         LRj+xt7K3mEp1qA3OjShTq/Hcj+ynYs9RLZXRV7a5fY4otDX8+JIkYrCpm1sz0DwzE
+         fCjYpzB2NiL+s+L9n73KiRkHs9qybUCMx9HXsXYmZk4r1gww0jKhvjiUSOo8455VGL
+         B0te5tCrcWpIw==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     nic_swsd@realtek.com, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Marco Elver <elver@google.com>
+Subject: [RFC PATCH v1 1/1] r8169: Coalesce RTL8411b register recovery programming instructions to reduce spinlock stalls
+Date:   Fri, 27 Oct 2023 23:17:29 +0200
+Message-Id: <20231027211728.680691-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:304d:b0:1c0:e7d3:3b2d with SMTP id
- u13-20020a056870304d00b001c0e7d33b2dmr1720601oau.7.1698441093050; Fri, 27 Oct
- 2023 14:11:33 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 14:11:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005f6aa0608b9220f@google.com>
-Subject: [syzbot] [iommu?] divide error in iommufd_test
-From:   syzbot <syzbot+25dc7383c30ecdc83c38@syzkaller.appspotmail.com>
-To:     iommu@lists.linux.dev, jgg@nvidia.com, jgg@ziepe.ca,
-        joao.m.martins@oracle.com, joro@8bytes.org, kevin.tian@intel.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        robin.murphy@arm.com, shuah@kernel.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On RTL8411b the RX unit gets confused if the PHY is powered-down.
+This was reported in [0] and confirmed by Realtek. Realtek provided
+a sequence to fix the RX unit after PHY wakeup.
 
-syzbot found the following issue on:
+A series of about 130 r8168_mac_ocp_write() calls is performed to
+program the RTL registers for recovery.
 
-HEAD commit:    e8361b005d7c Add linux-next specific files for 20231023
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e4cb83680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=75e8fc3570ec9a74
-dashboard link: https://syzkaller.appspot.com/bug?extid=25dc7383c30ecdc83c38
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119bad5d680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1062e393680000
+	static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
+	{
+		if (rtl_ocp_reg_failure(reg))
+			return;
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e28a7944599e/disk-e8361b00.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7dd355dbe055/vmlinux-e8361b00.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7b2a9050635d/bzImage-e8361b00.xz
+		RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
+	}
 
-The issue was bisected to:
+	static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
+	{
+		unsigned long flags;
 
-commit 5e054083ce6929b567c6aadbf8bf627b0f028353
-Author: Joao Martins <joao.m.martins@oracle.com>
-Date:   Fri Oct 20 22:28:02 2023 +0000
+		raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
+		__r8168_mac_ocp_write(tp, reg, data);
+		raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+	}
 
-    iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP
+Register programming is done through RTL_W32() macro which expands into
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a49a35680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a49a35680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a49a35680000
+	#define RTL_W32(tp, reg, val32)	writel((val32), tp->mmio_addr + (reg))
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+25dc7383c30ecdc83c38@syzkaller.appspotmail.com
-Fixes: 5e054083ce69 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP")
+which is further:
 
-divide error: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5053 Comm: syz-executor178 Not tainted 6.6.0-rc6-next-20231023-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:iommufd_test_dirty drivers/iommu/iommufd/selftest.c:1098 [inline]
-RIP: 0010:iommufd_test+0x1fd/0x35c0 drivers/iommu/iommufd/selftest.c:1203
-Code: 04 02 48 89 4c 24 28 84 c0 74 09 3c 03 7f 05 e8 69 ac 2f fd 48 8b 04 24 31 d2 31 ff 48 8b 5c 24 20 44 8b 68 08 48 8b 44 24 28 <48> f7 f3 48 89 d5 48 89 d6 e8 85 cf d8 fc 48 85 ed 0f 85 ce 22 00
-RSP: 0018:ffffc90003937cb0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff84affaf2 RDI: 0000000000000000
-RBP: 000000000000000d R08: 0000000000000005 R09: 000000000000000d
-R10: 000000000000000d R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffc90003937e40 R15: ffffc90003937e00
-FS:  00005555560d7380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020006000 CR3: 0000000075a85000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- iommufd_fops_ioctl+0x35a/0x4e0 drivers/iommu/iommufd/main.c:404
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f5fb02172e9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd74d26068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd74d26238 RCX: 00007f5fb02172e9
-RDX: 0000000020000140 RSI: 0000000000003ba0 RDI: 0000000000000003
-RBP: 00007f5fb028a610 R08: 0000000000000000 R09: 00007ffd74d26238
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffd74d26228 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:iommufd_test_dirty drivers/iommu/iommufd/selftest.c:1098 [inline]
-RIP: 0010:iommufd_test+0x1fd/0x35c0 drivers/iommu/iommufd/selftest.c:1203
-Code: 04 02 48 89 4c 24 28 84 c0 74 09 3c 03 7f 05 e8 69 ac 2f fd 48 8b 04 24 31 d2 31 ff 48 8b 5c 24 20 44 8b 68 08 48 8b 44 24 28 <48> f7 f3 48 89 d5 48 89 d6 e8 85 cf d8 fc 48 85 ed 0f 85 ce 22 00
-RSP: 0018:ffffc90003937cb0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff84affaf2 RDI: 0000000000000000
-RBP: 000000000000000d R08: 0000000000000005 R09: 000000000000000d
-R10: 000000000000000d R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffc90003937e40 R15: ffffc90003937e00
-FS:  00005555560d7380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020006000 CR3: 0000000075a85000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	04 02                	add    $0x2,%al
-   2:	48 89 4c 24 28       	mov    %rcx,0x28(%rsp)
-   7:	84 c0                	test   %al,%al
-   9:	74 09                	je     0x14
-   b:	3c 03                	cmp    $0x3,%al
-   d:	7f 05                	jg     0x14
-   f:	e8 69 ac 2f fd       	call   0xfd2fac7d
-  14:	48 8b 04 24          	mov    (%rsp),%rax
-  18:	31 d2                	xor    %edx,%edx
-  1a:	31 ff                	xor    %edi,%edi
-  1c:	48 8b 5c 24 20       	mov    0x20(%rsp),%rbx
-  21:	44 8b 68 08          	mov    0x8(%rax),%r13d
-  25:	48 8b 44 24 28       	mov    0x28(%rsp),%rax
-* 2a:	48 f7 f3             	div    %rbx <-- trapping instruction
-  2d:	48 89 d5             	mov    %rdx,%rbp
-  30:	48 89 d6             	mov    %rdx,%rsi
-  33:	e8 85 cf d8 fc       	call   0xfcd8cfbd
-  38:	48 85 ed             	test   %rbp,%rbp
-  3b:	0f                   	.byte 0xf
-  3c:	85 ce                	test   %ecx,%esi
-  3e:	22 00                	and    (%rax),%al
+	extern inline void writel(u32 b, volatile void __iomem *addr)
+	{
+		mb();
+		__raw_writel(b, addr);
+	}
 
+mb() expands into this on x86_64:
 
+	#define mb()	asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+
+This means a whole lot of memory bus stalls: for spin_lock_irqsave(),
+memory barrier, writel(), and spin_unlock_irqrestore().
+
+With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
+a lock storm that will stall all of the cores and CPUs on the same memory controller
+for certain time I/O takes to finish.
+
+In a sequential case of RTL register programming, the writes to RTL registers
+can be coalesced under a same raw spinlock. This can dramatically decrease the
+number of bus stalls in a multicore or multi-CPU system:
+
+        unsigned long flags;
+        raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
+        __r8168_mac_ocp_write(tp, 0xFC28, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC2A, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC2C, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC2E, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC30, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC32, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC34, 0x0000);
+        __r8168_mac_ocp_write(tp, 0xFC36, 0x0000);
+        raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+
+We were using the raw version of the ocp write function __r8168_mac_ocp_write and
+coalesced them under spinlocks.
+
+Note that the original reason for the introduction of the commit fe4e8db0392a6
+was to enable recovery of the RX unit on the RTL8411b which was confused by the
+powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
+into a series of about 520 memory bus locks, most waiting for the main memory read,
+modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
+the programming sequence to reach RTL NIC registers.
+
+Fixes: fe4e8db0392a6 ("r8169: fix issue with confused RX unit after PHY power-down on RTL8411b")
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: nic_swsd@realtek.com
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/ethernet/realtek/r8169_main.c | 260 +++++++++++-----------
+ 1 file changed, 134 insertions(+), 126 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 361b90007148..2c83d54320f2 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -3100,6 +3100,8 @@ static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
+ 		{ 0x1d, 0x0000,	0x4000 },
+ 	};
+ 
++	unsigned long flags;
++
+ 	rtl_hw_start_8168g(tp);
+ 
+ 	rtl_ephy_init(tp, e_info_8411_2);
+@@ -3107,138 +3109,144 @@ static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
+ 	/* The following Realtek-provided magic fixes an issue with the RX unit
+ 	 * getting confused after the PHY having been powered-down.
+ 	 */
+-	r8168_mac_ocp_write(tp, 0xFC28, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC2A, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC2C, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC2E, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC30, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC32, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC34, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xFC36, 0x0000);
++	raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
++	__r8168_mac_ocp_write(tp, 0xFC28, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC2A, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC2C, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC2E, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC30, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC32, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC34, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xFC36, 0x0000);
++	raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+ 	mdelay(3);
+ 	r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
+ 
+-	r8168_mac_ocp_write(tp, 0xF800, 0xE008);
+-	r8168_mac_ocp_write(tp, 0xF802, 0xE00A);
+-	r8168_mac_ocp_write(tp, 0xF804, 0xE00C);
+-	r8168_mac_ocp_write(tp, 0xF806, 0xE00E);
+-	r8168_mac_ocp_write(tp, 0xF808, 0xE027);
+-	r8168_mac_ocp_write(tp, 0xF80A, 0xE04F);
+-	r8168_mac_ocp_write(tp, 0xF80C, 0xE05E);
+-	r8168_mac_ocp_write(tp, 0xF80E, 0xE065);
+-	r8168_mac_ocp_write(tp, 0xF810, 0xC602);
+-	r8168_mac_ocp_write(tp, 0xF812, 0xBE00);
+-	r8168_mac_ocp_write(tp, 0xF814, 0x0000);
+-	r8168_mac_ocp_write(tp, 0xF816, 0xC502);
+-	r8168_mac_ocp_write(tp, 0xF818, 0xBD00);
+-	r8168_mac_ocp_write(tp, 0xF81A, 0x074C);
+-	r8168_mac_ocp_write(tp, 0xF81C, 0xC302);
+-	r8168_mac_ocp_write(tp, 0xF81E, 0xBB00);
+-	r8168_mac_ocp_write(tp, 0xF820, 0x080A);
+-	r8168_mac_ocp_write(tp, 0xF822, 0x6420);
+-	r8168_mac_ocp_write(tp, 0xF824, 0x48C2);
+-	r8168_mac_ocp_write(tp, 0xF826, 0x8C20);
+-	r8168_mac_ocp_write(tp, 0xF828, 0xC516);
+-	r8168_mac_ocp_write(tp, 0xF82A, 0x64A4);
+-	r8168_mac_ocp_write(tp, 0xF82C, 0x49C0);
+-	r8168_mac_ocp_write(tp, 0xF82E, 0xF009);
+-	r8168_mac_ocp_write(tp, 0xF830, 0x74A2);
+-	r8168_mac_ocp_write(tp, 0xF832, 0x8CA5);
+-	r8168_mac_ocp_write(tp, 0xF834, 0x74A0);
+-	r8168_mac_ocp_write(tp, 0xF836, 0xC50E);
+-	r8168_mac_ocp_write(tp, 0xF838, 0x9CA2);
+-	r8168_mac_ocp_write(tp, 0xF83A, 0x1C11);
+-	r8168_mac_ocp_write(tp, 0xF83C, 0x9CA0);
+-	r8168_mac_ocp_write(tp, 0xF83E, 0xE006);
+-	r8168_mac_ocp_write(tp, 0xF840, 0x74F8);
+-	r8168_mac_ocp_write(tp, 0xF842, 0x48C4);
+-	r8168_mac_ocp_write(tp, 0xF844, 0x8CF8);
+-	r8168_mac_ocp_write(tp, 0xF846, 0xC404);
+-	r8168_mac_ocp_write(tp, 0xF848, 0xBC00);
+-	r8168_mac_ocp_write(tp, 0xF84A, 0xC403);
+-	r8168_mac_ocp_write(tp, 0xF84C, 0xBC00);
+-	r8168_mac_ocp_write(tp, 0xF84E, 0x0BF2);
+-	r8168_mac_ocp_write(tp, 0xF850, 0x0C0A);
+-	r8168_mac_ocp_write(tp, 0xF852, 0xE434);
+-	r8168_mac_ocp_write(tp, 0xF854, 0xD3C0);
+-	r8168_mac_ocp_write(tp, 0xF856, 0x49D9);
+-	r8168_mac_ocp_write(tp, 0xF858, 0xF01F);
+-	r8168_mac_ocp_write(tp, 0xF85A, 0xC526);
+-	r8168_mac_ocp_write(tp, 0xF85C, 0x64A5);
+-	r8168_mac_ocp_write(tp, 0xF85E, 0x1400);
+-	r8168_mac_ocp_write(tp, 0xF860, 0xF007);
+-	r8168_mac_ocp_write(tp, 0xF862, 0x0C01);
+-	r8168_mac_ocp_write(tp, 0xF864, 0x8CA5);
+-	r8168_mac_ocp_write(tp, 0xF866, 0x1C15);
+-	r8168_mac_ocp_write(tp, 0xF868, 0xC51B);
+-	r8168_mac_ocp_write(tp, 0xF86A, 0x9CA0);
+-	r8168_mac_ocp_write(tp, 0xF86C, 0xE013);
+-	r8168_mac_ocp_write(tp, 0xF86E, 0xC519);
+-	r8168_mac_ocp_write(tp, 0xF870, 0x74A0);
+-	r8168_mac_ocp_write(tp, 0xF872, 0x48C4);
+-	r8168_mac_ocp_write(tp, 0xF874, 0x8CA0);
+-	r8168_mac_ocp_write(tp, 0xF876, 0xC516);
+-	r8168_mac_ocp_write(tp, 0xF878, 0x74A4);
+-	r8168_mac_ocp_write(tp, 0xF87A, 0x48C8);
+-	r8168_mac_ocp_write(tp, 0xF87C, 0x48CA);
+-	r8168_mac_ocp_write(tp, 0xF87E, 0x9CA4);
+-	r8168_mac_ocp_write(tp, 0xF880, 0xC512);
+-	r8168_mac_ocp_write(tp, 0xF882, 0x1B00);
+-	r8168_mac_ocp_write(tp, 0xF884, 0x9BA0);
+-	r8168_mac_ocp_write(tp, 0xF886, 0x1B1C);
+-	r8168_mac_ocp_write(tp, 0xF888, 0x483F);
+-	r8168_mac_ocp_write(tp, 0xF88A, 0x9BA2);
+-	r8168_mac_ocp_write(tp, 0xF88C, 0x1B04);
+-	r8168_mac_ocp_write(tp, 0xF88E, 0xC508);
+-	r8168_mac_ocp_write(tp, 0xF890, 0x9BA0);
+-	r8168_mac_ocp_write(tp, 0xF892, 0xC505);
+-	r8168_mac_ocp_write(tp, 0xF894, 0xBD00);
+-	r8168_mac_ocp_write(tp, 0xF896, 0xC502);
+-	r8168_mac_ocp_write(tp, 0xF898, 0xBD00);
+-	r8168_mac_ocp_write(tp, 0xF89A, 0x0300);
+-	r8168_mac_ocp_write(tp, 0xF89C, 0x051E);
+-	r8168_mac_ocp_write(tp, 0xF89E, 0xE434);
+-	r8168_mac_ocp_write(tp, 0xF8A0, 0xE018);
+-	r8168_mac_ocp_write(tp, 0xF8A2, 0xE092);
+-	r8168_mac_ocp_write(tp, 0xF8A4, 0xDE20);
+-	r8168_mac_ocp_write(tp, 0xF8A6, 0xD3C0);
+-	r8168_mac_ocp_write(tp, 0xF8A8, 0xC50F);
+-	r8168_mac_ocp_write(tp, 0xF8AA, 0x76A4);
+-	r8168_mac_ocp_write(tp, 0xF8AC, 0x49E3);
+-	r8168_mac_ocp_write(tp, 0xF8AE, 0xF007);
+-	r8168_mac_ocp_write(tp, 0xF8B0, 0x49C0);
+-	r8168_mac_ocp_write(tp, 0xF8B2, 0xF103);
+-	r8168_mac_ocp_write(tp, 0xF8B4, 0xC607);
+-	r8168_mac_ocp_write(tp, 0xF8B6, 0xBE00);
+-	r8168_mac_ocp_write(tp, 0xF8B8, 0xC606);
+-	r8168_mac_ocp_write(tp, 0xF8BA, 0xBE00);
+-	r8168_mac_ocp_write(tp, 0xF8BC, 0xC602);
+-	r8168_mac_ocp_write(tp, 0xF8BE, 0xBE00);
+-	r8168_mac_ocp_write(tp, 0xF8C0, 0x0C4C);
+-	r8168_mac_ocp_write(tp, 0xF8C2, 0x0C28);
+-	r8168_mac_ocp_write(tp, 0xF8C4, 0x0C2C);
+-	r8168_mac_ocp_write(tp, 0xF8C6, 0xDC00);
+-	r8168_mac_ocp_write(tp, 0xF8C8, 0xC707);
+-	r8168_mac_ocp_write(tp, 0xF8CA, 0x1D00);
+-	r8168_mac_ocp_write(tp, 0xF8CC, 0x8DE2);
+-	r8168_mac_ocp_write(tp, 0xF8CE, 0x48C1);
+-	r8168_mac_ocp_write(tp, 0xF8D0, 0xC502);
+-	r8168_mac_ocp_write(tp, 0xF8D2, 0xBD00);
+-	r8168_mac_ocp_write(tp, 0xF8D4, 0x00AA);
+-	r8168_mac_ocp_write(tp, 0xF8D6, 0xE0C0);
+-	r8168_mac_ocp_write(tp, 0xF8D8, 0xC502);
+-	r8168_mac_ocp_write(tp, 0xF8DA, 0xBD00);
+-	r8168_mac_ocp_write(tp, 0xF8DC, 0x0132);
++	raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
++	__r8168_mac_ocp_write(tp, 0xF800, 0xE008);
++	__r8168_mac_ocp_write(tp, 0xF802, 0xE00A);
++	__r8168_mac_ocp_write(tp, 0xF804, 0xE00C);
++	__r8168_mac_ocp_write(tp, 0xF806, 0xE00E);
++	__r8168_mac_ocp_write(tp, 0xF808, 0xE027);
++	__r8168_mac_ocp_write(tp, 0xF80A, 0xE04F);
++	__r8168_mac_ocp_write(tp, 0xF80C, 0xE05E);
++	__r8168_mac_ocp_write(tp, 0xF80E, 0xE065);
++	__r8168_mac_ocp_write(tp, 0xF810, 0xC602);
++	__r8168_mac_ocp_write(tp, 0xF812, 0xBE00);
++	__r8168_mac_ocp_write(tp, 0xF814, 0x0000);
++	__r8168_mac_ocp_write(tp, 0xF816, 0xC502);
++	__r8168_mac_ocp_write(tp, 0xF818, 0xBD00);
++	__r8168_mac_ocp_write(tp, 0xF81A, 0x074C);
++	__r8168_mac_ocp_write(tp, 0xF81C, 0xC302);
++	__r8168_mac_ocp_write(tp, 0xF81E, 0xBB00);
++	__r8168_mac_ocp_write(tp, 0xF820, 0x080A);
++	__r8168_mac_ocp_write(tp, 0xF822, 0x6420);
++	__r8168_mac_ocp_write(tp, 0xF824, 0x48C2);
++	__r8168_mac_ocp_write(tp, 0xF826, 0x8C20);
++	__r8168_mac_ocp_write(tp, 0xF828, 0xC516);
++	__r8168_mac_ocp_write(tp, 0xF82A, 0x64A4);
++	__r8168_mac_ocp_write(tp, 0xF82C, 0x49C0);
++	__r8168_mac_ocp_write(tp, 0xF82E, 0xF009);
++	__r8168_mac_ocp_write(tp, 0xF830, 0x74A2);
++	__r8168_mac_ocp_write(tp, 0xF832, 0x8CA5);
++	__r8168_mac_ocp_write(tp, 0xF834, 0x74A0);
++	__r8168_mac_ocp_write(tp, 0xF836, 0xC50E);
++	__r8168_mac_ocp_write(tp, 0xF838, 0x9CA2);
++	__r8168_mac_ocp_write(tp, 0xF83A, 0x1C11);
++	__r8168_mac_ocp_write(tp, 0xF83C, 0x9CA0);
++	__r8168_mac_ocp_write(tp, 0xF83E, 0xE006);
++	__r8168_mac_ocp_write(tp, 0xF840, 0x74F8);
++	__r8168_mac_ocp_write(tp, 0xF842, 0x48C4);
++	__r8168_mac_ocp_write(tp, 0xF844, 0x8CF8);
++	__r8168_mac_ocp_write(tp, 0xF846, 0xC404);
++	__r8168_mac_ocp_write(tp, 0xF848, 0xBC00);
++	__r8168_mac_ocp_write(tp, 0xF84A, 0xC403);
++	__r8168_mac_ocp_write(tp, 0xF84C, 0xBC00);
++	__r8168_mac_ocp_write(tp, 0xF84E, 0x0BF2);
++	__r8168_mac_ocp_write(tp, 0xF850, 0x0C0A);
++	__r8168_mac_ocp_write(tp, 0xF852, 0xE434);
++	__r8168_mac_ocp_write(tp, 0xF854, 0xD3C0);
++	__r8168_mac_ocp_write(tp, 0xF856, 0x49D9);
++	__r8168_mac_ocp_write(tp, 0xF858, 0xF01F);
++	__r8168_mac_ocp_write(tp, 0xF85A, 0xC526);
++	__r8168_mac_ocp_write(tp, 0xF85C, 0x64A5);
++	__r8168_mac_ocp_write(tp, 0xF85E, 0x1400);
++	__r8168_mac_ocp_write(tp, 0xF860, 0xF007);
++	__r8168_mac_ocp_write(tp, 0xF862, 0x0C01);
++	__r8168_mac_ocp_write(tp, 0xF864, 0x8CA5);
++	__r8168_mac_ocp_write(tp, 0xF866, 0x1C15);
++	__r8168_mac_ocp_write(tp, 0xF868, 0xC51B);
++	__r8168_mac_ocp_write(tp, 0xF86A, 0x9CA0);
++	__r8168_mac_ocp_write(tp, 0xF86C, 0xE013);
++	__r8168_mac_ocp_write(tp, 0xF86E, 0xC519);
++	__r8168_mac_ocp_write(tp, 0xF870, 0x74A0);
++	__r8168_mac_ocp_write(tp, 0xF872, 0x48C4);
++	__r8168_mac_ocp_write(tp, 0xF874, 0x8CA0);
++	__r8168_mac_ocp_write(tp, 0xF876, 0xC516);
++	__r8168_mac_ocp_write(tp, 0xF878, 0x74A4);
++	__r8168_mac_ocp_write(tp, 0xF87A, 0x48C8);
++	__r8168_mac_ocp_write(tp, 0xF87C, 0x48CA);
++	__r8168_mac_ocp_write(tp, 0xF87E, 0x9CA4);
++	__r8168_mac_ocp_write(tp, 0xF880, 0xC512);
++	__r8168_mac_ocp_write(tp, 0xF882, 0x1B00);
++	__r8168_mac_ocp_write(tp, 0xF884, 0x9BA0);
++	__r8168_mac_ocp_write(tp, 0xF886, 0x1B1C);
++	__r8168_mac_ocp_write(tp, 0xF888, 0x483F);
++	__r8168_mac_ocp_write(tp, 0xF88A, 0x9BA2);
++	__r8168_mac_ocp_write(tp, 0xF88C, 0x1B04);
++	__r8168_mac_ocp_write(tp, 0xF88E, 0xC508);
++	__r8168_mac_ocp_write(tp, 0xF890, 0x9BA0);
++	__r8168_mac_ocp_write(tp, 0xF892, 0xC505);
++	__r8168_mac_ocp_write(tp, 0xF894, 0xBD00);
++	__r8168_mac_ocp_write(tp, 0xF896, 0xC502);
++	__r8168_mac_ocp_write(tp, 0xF898, 0xBD00);
++	__r8168_mac_ocp_write(tp, 0xF89A, 0x0300);
++	__r8168_mac_ocp_write(tp, 0xF89C, 0x051E);
++	__r8168_mac_ocp_write(tp, 0xF89E, 0xE434);
++	__r8168_mac_ocp_write(tp, 0xF8A0, 0xE018);
++	__r8168_mac_ocp_write(tp, 0xF8A2, 0xE092);
++	__r8168_mac_ocp_write(tp, 0xF8A4, 0xDE20);
++	__r8168_mac_ocp_write(tp, 0xF8A6, 0xD3C0);
++	__r8168_mac_ocp_write(tp, 0xF8A8, 0xC50F);
++	__r8168_mac_ocp_write(tp, 0xF8AA, 0x76A4);
++	__r8168_mac_ocp_write(tp, 0xF8AC, 0x49E3);
++	__r8168_mac_ocp_write(tp, 0xF8AE, 0xF007);
++	__r8168_mac_ocp_write(tp, 0xF8B0, 0x49C0);
++	__r8168_mac_ocp_write(tp, 0xF8B2, 0xF103);
++	__r8168_mac_ocp_write(tp, 0xF8B4, 0xC607);
++	__r8168_mac_ocp_write(tp, 0xF8B6, 0xBE00);
++	__r8168_mac_ocp_write(tp, 0xF8B8, 0xC606);
++	__r8168_mac_ocp_write(tp, 0xF8BA, 0xBE00);
++	__r8168_mac_ocp_write(tp, 0xF8BC, 0xC602);
++	__r8168_mac_ocp_write(tp, 0xF8BE, 0xBE00);
++	__r8168_mac_ocp_write(tp, 0xF8C0, 0x0C4C);
++	__r8168_mac_ocp_write(tp, 0xF8C2, 0x0C28);
++	__r8168_mac_ocp_write(tp, 0xF8C4, 0x0C2C);
++	__r8168_mac_ocp_write(tp, 0xF8C6, 0xDC00);
++	__r8168_mac_ocp_write(tp, 0xF8C8, 0xC707);
++	__r8168_mac_ocp_write(tp, 0xF8CA, 0x1D00);
++	__r8168_mac_ocp_write(tp, 0xF8CC, 0x8DE2);
++	__r8168_mac_ocp_write(tp, 0xF8CE, 0x48C1);
++	__r8168_mac_ocp_write(tp, 0xF8D0, 0xC502);
++	__r8168_mac_ocp_write(tp, 0xF8D2, 0xBD00);
++	__r8168_mac_ocp_write(tp, 0xF8D4, 0x00AA);
++	__r8168_mac_ocp_write(tp, 0xF8D6, 0xE0C0);
++	__r8168_mac_ocp_write(tp, 0xF8D8, 0xC502);
++	__r8168_mac_ocp_write(tp, 0xF8DA, 0xBD00);
++	__r8168_mac_ocp_write(tp, 0xF8DC, 0x0132);
++	raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+ 
+ 	r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
+ 
+-	r8168_mac_ocp_write(tp, 0xFC2A, 0x0743);
+-	r8168_mac_ocp_write(tp, 0xFC2C, 0x0801);
+-	r8168_mac_ocp_write(tp, 0xFC2E, 0x0BE9);
+-	r8168_mac_ocp_write(tp, 0xFC30, 0x02FD);
+-	r8168_mac_ocp_write(tp, 0xFC32, 0x0C25);
+-	r8168_mac_ocp_write(tp, 0xFC34, 0x00A9);
+-	r8168_mac_ocp_write(tp, 0xFC36, 0x012D);
++	raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
++	__r8168_mac_ocp_write(tp, 0xFC2A, 0x0743);
++	__r8168_mac_ocp_write(tp, 0xFC2C, 0x0801);
++	__r8168_mac_ocp_write(tp, 0xFC2E, 0x0BE9);
++	__r8168_mac_ocp_write(tp, 0xFC30, 0x02FD);
++	__r8168_mac_ocp_write(tp, 0xFC32, 0x0C25);
++	__r8168_mac_ocp_write(tp, 0xFC34, 0x00A9);
++	__r8168_mac_ocp_write(tp, 0xFC36, 0x012D);
++	raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+ }
+ 
+ static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
+-- 
+2.34.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
