@@ -2,210 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FFE7DA166
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733F27DA171
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbjJ0Tk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
+        id S232608AbjJ0TqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 15:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjJ0Tk5 (ORCPT
+        with ESMTP id S231302AbjJ0TqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:40:57 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4901B4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:40:53 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c3aec5f326so747733666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:40:53 -0700 (PDT)
+        Fri, 27 Oct 2023 15:46:02 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6024F1B3;
+        Fri, 27 Oct 2023 12:45:52 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc30bf9e22so791085ad.1;
+        Fri, 27 Oct 2023 12:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698435651; x=1699040451; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xzKQXsJ9PPJ95N5huUjFyALdgbkkeZmKhRTaQ99Yt+o=;
-        b=wKZpW2fww82ttWeUy1lpz4jS6QO+dMf2wi5uMBR4ioUAJkaxBwfJwDdylta/HtSNzr
-         wf6eDWx+upBsAk32+pi0zevJDyYABjRG8JU1jwfr0CBpKZYT1U+d0VaM2NitjhGiUpwW
-         VeBSmfIjP/dVTwSUreGHdvuIGNtp8TvrjhgbGCgeraQyTlSl3onoR1GJkyWRCD9jXxhD
-         x/dVJyenJeaoAwSCEWqvB4hCxajNDdXyFyrMJxNJQ8JEqKdQxbbtt1rJfX9MKZviWayz
-         z77uLsAOK4RL6x9uhNLlBG0tsHf7ypU9mY/lkL7wFBAx3Uxfz0zO3qw6ke/EJsOlxu11
-         /hyA==
+        d=gmail.com; s=20230601; t=1698435952; x=1699040752; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cy6IbgFuL135BKR91oRxByMVAKgGs/1dk+ALnWKFvUw=;
+        b=HGKTSDKaWPM7mggPNjkCr7OQfEvrAzv5qv48/iZgooWEogyEdQpJ8SQJIrOzNSjT3I
+         jjFCLmhm7DFn1n2LU0ZGMT5S+EMjC/VuNJgq4xVXDoakw8SJv8hp6PX5y3/axCvCqNFS
+         Iav+LuAeieQnamuNdJ545/lr09GqZHmUe8vN8C6j8Ha0zb8UR6Wd0XfXa/uCDPOwaRgH
+         U9S63RH3BC3i77cFFff37ZcdVeqhQuRY9U9nqGXeUBnmFcy5rjI1+htraGrNIp2fQ6Z+
+         ZzXaUwfIPzhvAFaWHLmjjVScEAeL/CRSQsftsyrVE0BWSjfISnM/NNIkvM0SYFnZeSNI
+         1Y2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698435651; x=1699040451;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xzKQXsJ9PPJ95N5huUjFyALdgbkkeZmKhRTaQ99Yt+o=;
-        b=D2y7EonRC4FdgbZ6f1NrIhYOWqv7AysbwhMbu4YBBXaiVVrWBxmMy0Mo/GV7he+8Vw
-         dfkzpNt8cO9lXkcrRzz2AUiK1OfH6TnSLnbaKGFUHKd5Z469VzYd3PQrFflr1fwamWeU
-         5p9jzzBsbRZxJWPzQUECkkXPz+Cs4jdp+Q1GwL75qx90vM9s6iF+qc3y/12QtXC2aLy8
-         TIypGc7/RRs9hbCjUJlnT9lwW5g39x8ODyfu3s0Ac0LTpLQ5WlJbESGlU+yjp5abqlCD
-         ZQMiWLKeia10SBLOV4D7NEGltUlrCP7y2KYVUlaXnybYb3xCIELdcsiwRPKvl7+nVsDD
-         5J8w==
-X-Gm-Message-State: AOJu0YyWSHo27i932MiJMrzpDjrbWAgcGkOeSZP/EEJwR+BG3mPM9DZ3
-        kYajIsXTxUjyuJ3UWMm1pw2VIoaQyVPOAbfYe76AmA==
-X-Google-Smtp-Source: AGHT+IEPfEM/trnfZm6cOr0U7cu+iGr19zJct2V4K5qR5GqFK9SelPMa/Z/9udzIJpJO7oi3U+zFq2t/7LTPw2L/vcI=
-X-Received: by 2002:a17:907:2da3:b0:9c3:97d7:2c67 with SMTP id
- gt35-20020a1709072da300b009c397d72c67mr3978966ejc.25.1698435651329; Fri, 27
- Oct 2023 12:40:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698435952; x=1699040752;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cy6IbgFuL135BKR91oRxByMVAKgGs/1dk+ALnWKFvUw=;
+        b=cHFJnUoQlB7qckgcIR2juc7qfZC1gXwG4E2IZh0bfOgYmKI12o87BwElA/Jo9h5JMg
+         oIBn1HPO4TQWcbjZBOKcKQM45JfGhttp8PBDfhj9QLrr9doH/4mP7RV/hA4q4nZ7bLs8
+         NFTOrlnvcvTJPHxliPVaKf0Y31tjJH0Rg6KJ45KuFsCfEQRgMH4imW7zEQzagUp1O2bq
+         B6w90SfGm93K2+TXLxSMSVAY5D+hlGo2I3/eDGzOERoPzCIocf2kZ9W5CrQzfWVg1K4S
+         f4XYmLVQPcaf+AQlXVXjon/la8OlOqcq5zoPbVYr/5X6Ue0ni8QsX1ZRc1WtkUtgOYSN
+         q99Q==
+X-Gm-Message-State: AOJu0YwEgmvwXLyj7/CMjPH0GvUMNp3V1oVvD3WL9tOnyBeWG4sODqik
+        8jlnFJOpQnmyfJuqVjS2pFA=
+X-Google-Smtp-Source: AGHT+IGNfpLwVZYgsKfstsi00o+X3315W5bkhk4p0g9uo4d8PBR1FrlLIhgEKv8mSqdIInkoZ6Tvyg==
+X-Received: by 2002:a17:902:e74e:b0:1cb:fcfb:61af with SMTP id p14-20020a170902e74e00b001cbfcfb61afmr8280487plf.30.1698435951704;
+        Fri, 27 Oct 2023 12:45:51 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id ju19-20020a170903429300b001ae0152d280sm1944708plb.193.2023.10.27.12.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 12:45:50 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/gem: Add metadata
+Date:   Fri, 27 Oct 2023 12:45:37 -0700
+Message-ID: <20231027194537.408922-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
- <20231026-ethtool_puts_impl-v2-2-0d67cbdd0538@google.com> <8521c712250bcffce5c71e8d2b2574de786d4572.camel@perches.com>
-In-Reply-To: <8521c712250bcffce5c71e8d2b2574de786d4572.camel@perches.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 27 Oct 2023 12:40:39 -0700
-Message-ID: <CAFhGd8p9ytqbRuqgWmKe=zCg7Nhft0NMvbuuEyjAQHNAcBedaQ@mail.gmail.com>
-Subject: Re: [PATCH next v2 2/3] checkpatch: add ethtool_sprintf rules
-To:     Joe Perches <joe@perches.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 3:39=E2=80=AFPM Joe Perches <joe@perches.com> wrote=
-:
->
-> On Thu, 2023-10-26 at 21:56 +0000, Justin Stitt wrote:
-> > Add some warnings for using ethtool_sprintf() where a simple
-> > ethtool_puts() would suffice.
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -7011,6 +7011,25 @@ sub process {
-> >                            "Prefer strscpy, strscpy_pad, or __nonstring=
- over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr=
-);
-> >               }
-> >
-> > +# ethtool_sprintf uses that should likely be ethtool_puts
-> > +             if ($line =3D~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$=
-FuncArg\s*\)/) {
-> > +                     if(WARN("ETHTOOL_SPRINTF",
-> > +                        "Prefer ethtool_puts over ethtool_sprintf with=
- only two arguments\n" . $herecurr) &&
-> > +         $fix) {
-> > +         $fixed[$fixlinenr] =3D~ s/ethtool_sprintf\s*\(/ethtool_puts\(=
-/;
-> > +       }
-> > +             }
-> > +
-> > +             # use $rawline because $line loses %s via sanitization an=
-d thus we can't match against it.
-> > +             if ($rawline =3D~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\=
-s*\"\%s\"\s*,\s*$FuncArg\s*\)/) {
-> > +                     if(WARN("ETHTOOL_SPRINTF",
-> > +                        "Prefer ethtool_puts over ethtool_sprintf with=
- standalone \"%s\" specifier\n" . $herecurr) &&
-> > +         $fix) {
-> > +         $fixed[$fixlinenr] =3D~ s/ethtool_sprintf\s*\(\s*(.*?),.*?,(.=
-*?)\)/ethtool_puts\($1,$2)/;
->
-> Thanks, but:
->
-> This fix wouldn't work if the first argument was itself a function
-> with multiple arguments.
->
-> And this is whitespace formatted incorrectly.
->
-> It:
->
-> o needs a space after if
-> o needs a space after the comma in the fix
-> o needs to use the appropriate amount and tabs for indentation
-> o needs alignment to open parentheses
-> o the backslashes are not required in the fix block
->
-> Do you want me to push what I wrote in the link below?
-> https://lore.kernel.org/lkml/7eec92d9e72d28e7b5202f41b02a383eb28ddd26.cam=
-el@perches.com/
+From: Rob Clark <robdclark@chromium.org>
 
-Ah, I didn't see you provided a diff in previous thread.
+The EXT_external_objects extension is a bit awkward as it doesn't pass
+explicit modifiers, leaving the importer to guess with incomplete
+information.  In the case of vk (turnip) exporting and gl (freedreno)
+importing, the "OPTIMAL_TILING_EXT" layout depends on VkImageCreateInfo
+flags (among other things), which the importer does not know.  Which
+unfortunately leaves us with the need for a metadata back-channel.
 
-Yeah you can push it but it's not really a standalone so perhaps I'll
-just steal the diff and
-wrap into v3?
+The contents of the metadata are defined by userspace.  The
+EXT_external_objects extension is only required to work between
+compatible versions of gl and vk drivers, as defined by device and
+driver UUIDs.
 
->
-> > +       }
-> > +             }
-> > +
-> > +
-> >  # typecasts on min/max could be min_t/max_t
-> >               if ($perl_version_ok &&
-> >                   defined $stat &&
-> >
->
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_drv.c | 59 +++++++++++++++++++++++++++++++++--
+ drivers/gpu/drm/msm/msm_gem.h |  4 +++
+ include/uapi/drm/msm_drm.h    |  2 ++
+ 3 files changed, 63 insertions(+), 2 deletions(-)
 
-Thanks
-Justin
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index b61ccea05327..8fe2677ea37a 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -37,9 +37,10 @@
+  * - 1.9.0 - Add MSM_SUBMIT_FENCE_SN_IN
+  * - 1.10.0 - Add MSM_SUBMIT_BO_NO_IMPLICIT
+  * - 1.11.0 - Add wait boost (MSM_WAIT_FENCE_BOOST, MSM_PREP_BOOST)
++ * - 1.12.0 - Add MSM_INFO_SET_METADATA and MSM_INFO_GET_METADATA
+  */
+ #define MSM_VERSION_MAJOR	1
+-#define MSM_VERSION_MINOR	10
++#define MSM_VERSION_MINOR	12
+ #define MSM_VERSION_PATCHLEVEL	0
+ 
+ static void msm_deinit_vram(struct drm_device *ddev);
+@@ -566,6 +567,8 @@ static int msm_ioctl_gem_info(struct drm_device *dev, void *data,
+ 		break;
+ 	case MSM_INFO_SET_NAME:
+ 	case MSM_INFO_GET_NAME:
++	case MSM_INFO_SET_METADATA:
++	case MSM_INFO_GET_METADATA:
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -618,7 +621,7 @@ static int msm_ioctl_gem_info(struct drm_device *dev, void *data,
+ 		break;
+ 	case MSM_INFO_GET_NAME:
+ 		if (args->value && (args->len < strlen(msm_obj->name))) {
+-			ret = -EINVAL;
++			ret = -ETOOSMALL;
+ 			break;
+ 		}
+ 		args->len = strlen(msm_obj->name);
+@@ -627,6 +630,58 @@ static int msm_ioctl_gem_info(struct drm_device *dev, void *data,
+ 					 msm_obj->name, args->len))
+ 				ret = -EFAULT;
+ 		}
++		break;
++	case MSM_INFO_SET_METADATA:
++		/* Impose a moderate upper bound on metadata size: */
++		if (args->len > 128) {
++			ret = -EOVERFLOW;
++			break;
++		}
++
++		ret = msm_gem_lock_interruptible(obj);
++		if (ret)
++			break;
++
++		msm_obj->metadata =
++			krealloc(msm_obj->metadata, args->len, GFP_KERNEL);
++		msm_obj->metadata_size = args->len;
++
++		if (copy_from_user(msm_obj->metadata, u64_to_user_ptr(args->value),
++				   args->len)) {
++			msm_obj->metadata_size = 0;
++			ret = -EFAULT;
++		}
++
++		msm_gem_unlock(obj);
++
++		break;
++	case MSM_INFO_GET_METADATA:
++		if (!args->value) {
++			/*
++			 * Querying the size is inherently racey, but
++			 * EXT_external_objects expects the app to confirm
++			 * via device and driver UUIDs that the exporter and
++			 * importer versions match.  All we can do from the
++			 * kernel side is check the length under obj lock
++			 * when userspace tries to retrieve the metadata
++			 */
++			args->len = msm_obj->metadata_size;
++			break;
++		}
++
++		ret = msm_gem_lock_interruptible(obj);
++		if (ret)
++			break;
++
++		if (args->len < msm_obj->metadata_size) {
++			ret = -ETOOSMALL;
++		} else if (copy_to_user(u64_to_user_ptr(args->value),
++					msm_obj->metadata, args->len)) {
++			ret = -EFAULT;
++		}
++
++		msm_gem_unlock(obj);
++
+ 		break;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+index 7f34263048a3..8d414b072c29 100644
+--- a/drivers/gpu/drm/msm/msm_gem.h
++++ b/drivers/gpu/drm/msm/msm_gem.h
+@@ -109,6 +109,10 @@ struct msm_gem_object {
+ 
+ 	char name[32]; /* Identifier to print for the debugfs files */
+ 
++	/* userspace metadata backchannel */
++	void *metadata;
++	u32 metadata_size;
++
+ 	/**
+ 	 * pin_count: Number of times the pages are pinned
+ 	 *
+diff --git a/include/uapi/drm/msm_drm.h b/include/uapi/drm/msm_drm.h
+index 6c34272a13fd..6f2a7ad04aa4 100644
+--- a/include/uapi/drm/msm_drm.h
++++ b/include/uapi/drm/msm_drm.h
+@@ -139,6 +139,8 @@ struct drm_msm_gem_new {
+ #define MSM_INFO_GET_NAME	0x03   /* get debug name, returned by pointer */
+ #define MSM_INFO_SET_IOVA	0x04   /* set the iova, passed by value */
+ #define MSM_INFO_GET_FLAGS	0x05   /* get the MSM_BO_x flags */
++#define MSM_INFO_SET_METADATA	0x06   /* set userspace metadata */
++#define MSM_INFO_GET_METADATA	0x07   /* get userspace metadata */
+ 
+ struct drm_msm_gem_info {
+ 	__u32 handle;         /* in */
+-- 
+2.41.0
+
