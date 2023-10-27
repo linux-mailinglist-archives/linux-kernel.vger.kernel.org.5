@@ -2,173 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5747D9263
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F78B7D9275
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjJ0Inr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S1345708AbjJ0Iog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235105AbjJ0Inb (ORCPT
+        with ESMTP id S1345584AbjJ0IoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:43:31 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBD61BCC;
-        Fri, 27 Oct 2023 01:42:26 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39R8g4WH124179;
-        Fri, 27 Oct 2023 03:42:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1698396124;
-        bh=WGO6hjkMHMtX7U62PjVv9kWlUZJFjcfJsN4vTr8Xu5o=;
-        h=From:To:CC:Subject:Date;
-        b=gvdGeey7NVse+nim+ro0tvPZy5DGZBMZlL4eFZPT8yUdStQJjEHd7myi6UlzhVX/P
-         2nZBkiP1PbvIrTsiEAvcYA9sNlMPB66jcLUQxJLVGCDPGnbDsggJ+ARoc9r//3V3eg
-         UTmWgRDlC5q3AupyNUJ2dfgSVYGk/m8oJMPFzhS0=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39R8g4i9004917
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 27 Oct 2023 03:42:04 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 27
- Oct 2023 03:42:04 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 27 Oct 2023 03:42:04 -0500
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39R8fxTB012713;
-        Fri, 27 Oct 2023 03:42:00 -0500
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>, <u.kleine-koenig@pengutronix.de>
-CC:     <fancer.lancer@gmail.com>, <helgaas@kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [RFC PATCH] PCI: keystone: Refactor ks_pcie_v3_65_add_bus() functionality
-Date:   Fri, 27 Oct 2023 14:11:59 +0530
-Message-ID: <20231027084159.4166188-1-s-vadapalli@ti.com>
+        Fri, 27 Oct 2023 04:44:16 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3985719A2;
+        Fri, 27 Oct 2023 01:43:48 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SGwlT2rj0z9xGYP;
+        Fri, 27 Oct 2023 16:27:49 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDnP5EaeDtl3AMCAw--.27269S2;
+        Fri, 27 Oct 2023 09:43:19 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v4 20/23] ima: Move IMA-Appraisal to LSM infrastructure
+Date:   Fri, 27 Oct 2023 10:42:31 +0200
+Message-Id: <20231027084234.485243-1-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+References: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwDnP5EaeDtl3AMCAw--.27269S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3GF4UGFyxCF1kKrW8AF1xuFg_yoWDJw4DpF
+        s5K3WkC34rXFy7Wry0yFWDuwsa9ryYgry7X3y0g3ZayFn3Jr1jqFyftFy2yry5CrW0gF1v
+        qF4qqrnxCr15tr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlIx
+        AIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E
+        87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQADBF1jj5WUdwABsA
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .add_bus() callback "ks_pcie_v3_65_add_bus()" exists to setup BAR0 for
-MSI configuration. This method is expected to be invoked after the
-enumeration of endpoints for the v3.65a DWC PCIe IP Controller.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Based on the discussion at [0], the contents of "ks_pcie_v3_65_add_bus()"
-can be moved to the .host_init callback "ks_pcie_host_init()" and the
-.add_bus callback within "struct pci_ops ks_pcie_ops" is no longer
-required.
+Do the registration of IMA-Appraisal functions separately from the rest of
+IMA functions, as appraisal is a separate feature not necessarily enabled
+in the kernel configuration.
 
-Hence, for the v3.65a DWC PCIe IP Controllers (!ks_pcie->is_am6), perform
-the MSI specific configuration of BAR0 within "ks_pcie_host_init()"
-itself.
+Reuse the same approach as for other IMA functions, move hardcoded calls
+from various places in the kernel to the LSM infrastructure. Declare the
+functions as static and register them as hook implementations in
+init_ima_appraise_lsm(), called by init_ima_lsm().
 
-[0] https://lore.kernel.org/r/20231019220847.GA1413474@bhelgaas/
-
-Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 ---
-Hello,
+ fs/attr.c                             |  2 -
+ include/linux/ima.h                   | 55 ---------------------------
+ security/integrity/ima/ima.h          |  5 +++
+ security/integrity/ima/ima_appraise.c | 38 +++++++++++++-----
+ security/integrity/ima/ima_main.c     |  1 +
+ security/security.c                   | 13 -------
+ 6 files changed, 35 insertions(+), 79 deletions(-)
 
-This patch is based on linux-next tagged next-20231027.
-This patch depends on the patch at:
-https://lore.kernel.org/r/20231019081330.2975470-1-s-vadapalli@ti.com/
-
-Regards,
-Siddharth.
-
- drivers/pci/controller/dwc/pci-keystone.c | 51 ++++++++---------------
- 1 file changed, 17 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index e9245b7632c5..369f5e556df3 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -447,44 +447,10 @@ static struct pci_ops ks_child_pcie_ops = {
- 	.write = pci_generic_config_write,
- };
+diff --git a/fs/attr.c b/fs/attr.c
+index ebd8d61a3b8b..20c144874076 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -17,7 +17,6 @@
+ #include <linux/filelock.h>
+ #include <linux/security.h>
+ #include <linux/evm.h>
+-#include <linux/ima.h>
  
--/**
-- * ks_pcie_v3_65_add_bus() - keystone add_bus post initialization
-- * @bus: A pointer to the PCI bus structure.
-- *
-- * This sets BAR0 to enable inbound access for MSI_IRQ register
-- */
--static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
+ #include "internal.h"
+ 
+@@ -503,7 +502,6 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	if (!error) {
+ 		fsnotify_change(dentry, ia_valid);
+ 		security_inode_post_setattr(idmap, dentry, ia_valid);
+-		ima_inode_post_setattr(idmap, dentry, ia_valid);
+ 		evm_inode_post_setattr(idmap, dentry, ia_valid);
+ 	}
+ 
+diff --git a/include/linux/ima.h b/include/linux/ima.h
+index 23ae24b60ecf..0bae61a15b60 100644
+--- a/include/linux/ima.h
++++ b/include/linux/ima.h
+@@ -92,66 +92,11 @@ static inline void ima_add_kexec_buffer(struct kimage *image)
+ 
+ #ifdef CONFIG_IMA_APPRAISE
+ extern bool is_ima_appraise_enabled(void);
+-extern void ima_inode_post_setattr(struct mnt_idmap *idmap,
+-				   struct dentry *dentry, int ia_valid);
+-extern int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+-			      const char *xattr_name, const void *xattr_value,
+-			      size_t xattr_value_len, int flags);
+-extern int ima_inode_set_acl(struct mnt_idmap *idmap,
+-			     struct dentry *dentry, const char *acl_name,
+-			     struct posix_acl *kacl);
+-static inline int ima_inode_remove_acl(struct mnt_idmap *idmap,
+-				       struct dentry *dentry,
+-				       const char *acl_name)
 -{
--	struct dw_pcie_rp *pp = bus->sysdata;
--	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+-	return ima_inode_set_acl(idmap, dentry, acl_name, NULL);
+-}
 -
--	if (!pci_is_root_bus(bus))
--		return 0;
+-extern int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+-				 const char *xattr_name);
+ #else
+ static inline bool is_ima_appraise_enabled(void)
+ {
+ 	return 0;
+ }
 -
--	/* Configure and set up BAR0 */
--	ks_pcie_set_dbi_mode(ks_pcie);
+-static inline void ima_inode_post_setattr(struct mnt_idmap *idmap,
+-					  struct dentry *dentry, int ia_valid)
+-{
+-	return;
+-}
 -
--	/* Enable BAR0 */
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
+-static inline int ima_inode_setxattr(struct mnt_idmap *idmap,
+-				     struct dentry *dentry,
+-				     const char *xattr_name,
+-				     const void *xattr_value,
+-				     size_t xattr_value_len,
+-				     int flags)
+-{
+-	return 0;
+-}
 -
--	ks_pcie_clear_dbi_mode(ks_pcie);
--
--	 /*
--	  * For BAR0, just setting bus address for inbound writes (MSI) should
--	  * be sufficient.  Use physical address to avoid any conflicts.
--	  */
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
+-static inline int ima_inode_set_acl(struct mnt_idmap *idmap,
+-				    struct dentry *dentry, const char *acl_name,
+-				    struct posix_acl *kacl)
+-{
 -
 -	return 0;
 -}
 -
- static struct pci_ops ks_pcie_ops = {
- 	.map_bus = dw_pcie_own_conf_map_bus,
- 	.read = pci_generic_config_read,
- 	.write = pci_generic_config_write,
--	.add_bus = ks_pcie_v3_65_add_bus,
- };
+-static inline int ima_inode_removexattr(struct mnt_idmap *idmap,
+-					struct dentry *dentry,
+-					const char *xattr_name)
+-{
+-	return 0;
+-}
+-
+-static inline int ima_inode_remove_acl(struct mnt_idmap *idmap,
+-				       struct dentry *dentry,
+-				       const char *acl_name)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_IMA_APPRAISE */
  
- static struct pci_ops ks_pcie_am6_ops = {
-@@ -834,6 +800,23 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
- 	if (ret < 0)
+ #if defined(CONFIG_IMA_APPRAISE) && defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index c0412100023e..a27fc10f84f7 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -334,6 +334,7 @@ enum hash_algo ima_get_hash_algo(const struct evm_ima_xattr_data *xattr_value,
+ 				 int xattr_len);
+ int ima_read_xattr(struct dentry *dentry,
+ 		   struct evm_ima_xattr_data **xattr_value, int xattr_len);
++void __init init_ima_appraise_lsm(const struct lsm_id *lsmid);
+ 
+ #else
+ static inline int ima_check_blacklist(struct integrity_iint_cache *iint,
+@@ -385,6 +386,10 @@ static inline int ima_read_xattr(struct dentry *dentry,
+ 	return 0;
+ }
+ 
++static inline void __init init_ima_appraise_lsm(const struct lsm_id *lsmid)
++{
++}
++
+ #endif /* CONFIG_IMA_APPRAISE */
+ 
+ #ifdef CONFIG_IMA_APPRAISE_MODSIG
+diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+index 36abc84ba299..076451109637 100644
+--- a/security/integrity/ima/ima_appraise.c
++++ b/security/integrity/ima/ima_appraise.c
+@@ -636,8 +636,8 @@ void ima_update_xattr(struct integrity_iint_cache *iint, struct file *file)
+  * This function is called from notify_change(), which expects the caller
+  * to lock the inode's i_mutex.
+  */
+-void ima_inode_post_setattr(struct mnt_idmap *idmap,
+-			    struct dentry *dentry, int ia_valid)
++static void ima_inode_post_setattr(struct mnt_idmap *idmap,
++				   struct dentry *dentry, int ia_valid)
+ {
+ 	struct inode *inode = d_backing_inode(dentry);
+ 	struct integrity_iint_cache *iint;
+@@ -750,9 +750,9 @@ static int validate_hash_algo(struct dentry *dentry,
+ 	return -EACCES;
+ }
+ 
+-int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+-		       const char *xattr_name, const void *xattr_value,
+-		       size_t xattr_value_len, int flags)
++static int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
++			      const char *xattr_name, const void *xattr_value,
++			      size_t xattr_value_len, int flags)
+ {
+ 	const struct evm_ima_xattr_data *xvalue = xattr_value;
+ 	int digsig = 0;
+@@ -781,8 +781,8 @@ int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	return result;
+ }
+ 
+-int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+-		      const char *acl_name, struct posix_acl *kacl)
++static int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
++			     const char *acl_name, struct posix_acl *kacl)
+ {
+ 	if (evm_revalidate_status(acl_name))
+ 		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
+@@ -790,8 +790,8 @@ int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	return 0;
+ }
+ 
+-int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+-			  const char *xattr_name)
++static int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
++				 const char *xattr_name)
+ {
+ 	int result;
+ 
+@@ -803,3 +803,23 @@ int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	}
+ 	return result;
+ }
++
++static int ima_inode_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
++				const char *acl_name)
++{
++	return ima_inode_set_acl(idmap, dentry, acl_name, NULL);
++}
++
++static struct security_hook_list ima_appraise_hooks[] __ro_after_init = {
++	LSM_HOOK_INIT(inode_post_setattr, ima_inode_post_setattr),
++	LSM_HOOK_INIT(inode_setxattr, ima_inode_setxattr),
++	LSM_HOOK_INIT(inode_set_acl, ima_inode_set_acl),
++	LSM_HOOK_INIT(inode_removexattr, ima_inode_removexattr),
++	LSM_HOOK_INIT(inode_remove_acl, ima_inode_remove_acl),
++};
++
++void __init init_ima_appraise_lsm(const struct lsm_id *lsmid)
++{
++	security_add_hooks(ima_appraise_hooks, ARRAY_SIZE(ima_appraise_hooks),
++			   lsmid);
++}
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index f923ff5c6524..9aabbc37916c 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -1161,6 +1161,7 @@ const struct lsm_id *ima_get_lsm_id(void)
+ void __init init_ima_lsm(void)
+ {
+ 	security_add_hooks(ima_hooks, ARRAY_SIZE(ima_hooks), &ima_lsmid);
++	init_ima_appraise_lsm(&ima_lsmid);
+ }
+ 
+ /* Introduce a dummy function as 'ima' init method (it cannot be NULL). */
+diff --git a/security/security.c b/security/security.c
+index d962c2eaf2a2..99224de42ce0 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -20,7 +20,6 @@
+ #include <linux/kernel_read_file.h>
+ #include <linux/lsm_hooks.h>
+ #include <linux/integrity.h>
+-#include <linux/ima.h>
+ #include <linux/evm.h>
+ #include <linux/fsnotify.h>
+ #include <linux/mman.h>
+@@ -2301,9 +2300,6 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+ 
+ 	if (ret == 1)
+ 		ret = cap_inode_setxattr(dentry, name, value, size, flags);
+-	if (ret)
+-		return ret;
+-	ret = ima_inode_setxattr(idmap, dentry, name, value, size, flags);
+ 	if (ret)
  		return ret;
- 
-+	if (!ks_pcie->is_am6) {
-+		/* Configure and set up BAR0 */
-+		ks_pcie_set_dbi_mode(ks_pcie);
-+
-+		/* Enable BAR0 */
-+		dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
-+		dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
-+
-+		ks_pcie_clear_dbi_mode(ks_pcie);
-+
-+		/*
-+		 * For BAR0, just setting bus address for inbound writes (MSI) should
-+		 * be sufficient.  Use physical address to avoid any conflicts.
-+		 */
-+		dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
-+	}
-+
- #ifdef CONFIG_ARM
- 	/*
- 	 * PCIe access errors that result into OCP errors are caught by ARM as
+ 	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
+@@ -2331,9 +2327,6 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
+ 		return 0;
+ 	ret = call_int_hook(inode_set_acl, 0, idmap, dentry, acl_name,
+ 			    kacl);
+-	if (ret)
+-		return ret;
+-	ret = ima_inode_set_acl(idmap, dentry, acl_name, kacl);
+ 	if (ret)
+ 		return ret;
+ 	return evm_inode_set_acl(idmap, dentry, acl_name, kacl);
+@@ -2394,9 +2387,6 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
+ 	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+ 		return 0;
+ 	ret = call_int_hook(inode_remove_acl, 0, idmap, dentry, acl_name);
+-	if (ret)
+-		return ret;
+-	ret = ima_inode_remove_acl(idmap, dentry, acl_name);
+ 	if (ret)
+ 		return ret;
+ 	return evm_inode_remove_acl(idmap, dentry, acl_name);
+@@ -2496,9 +2486,6 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+ 	ret = call_int_hook(inode_removexattr, 1, idmap, dentry, name);
+ 	if (ret == 1)
+ 		ret = cap_inode_removexattr(idmap, dentry, name);
+-	if (ret)
+-		return ret;
+-	ret = ima_inode_removexattr(idmap, dentry, name);
+ 	if (ret)
+ 		return ret;
+ 	return evm_inode_removexattr(idmap, dentry, name);
 -- 
 2.34.1
 
