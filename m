@@ -2,20 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD6E7D95D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF29D7D95DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345637AbjJ0K7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S1345705AbjJ0LA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0K7e (ORCPT
+        with ESMTP id S1345585AbjJ0LAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:59:34 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 03:59:30 PDT
+        Fri, 27 Oct 2023 07:00:24 -0400
 Received: from mail-sh.amlogic.com (unknown [58.32.228.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BBF9C;
-        Fri, 27 Oct 2023 03:59:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39091D6;
+        Fri, 27 Oct 2023 03:59:33 -0700 (PDT)
 Received: from rd02-sz.amlogic.software (10.28.11.83) by mail-sh.amlogic.com
  (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Fri, 27 Oct 2023
  18:44:25 +0800
@@ -30,10 +29,12 @@ CC:     <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-amlogic@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Huqiang Qin <huqiang.qin@amlogic.com>
-Subject: [PATCH V3 0/3] Add watchdog support for Amlogic C3 and S4 SoCs
-Date:   Fri, 27 Oct 2023 18:43:55 +0800
-Message-ID: <20231027104358.342861-1-huqiang.qin@amlogic.com>
+Subject: [PATCH V3 1/3] dt-bindings: watchdog: Add support for Amlogic C3 and S4 SoCs
+Date:   Fri, 27 Oct 2023 18:43:56 +0800
+Message-ID: <20231027104358.342861-2-huqiang.qin@amlogic.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231027104358.342861-1-huqiang.qin@amlogic.com>
+References: <20231027104358.342861-1-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -47,28 +48,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic C3 and S4 has the same watchdog controller as Amlogic T7.
+Update dt-binding document for watchdog of Amlogic C3 and S4 SoCs.
 
-Changes since V2 [2]:
-- Modified yaml document to ensure that dtbs_check passes.
-- Added a patch for watchdog support for S4.
-
-Changes since V1 [1]:
-- Added C3 compatibles, with T7 compatibles list as fallback.
-
-[1]: https://lore.kernel.org/all/20230925090641.1185942-1-huqiang.qin@amlogic.com/
-[2]: https://lore.kernel.org/all/20230926055512.2355390-1-huqiang.qin@amlogic.com/
-
-Huqiang Qin (3):
-  dt-bindings: watchdog: Add support for Amlogic C3 and S4 SoCs
-  arm64: dts: Add watchdog node for Amlogic C3 SoCs
-  arm64: dts: Add watchdog node for Amlogic S4 SoCs
-
+Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+---
  .../bindings/watchdog/amlogic,meson-gxbb-wdt.yaml    | 12 +++++++++---
- arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi          |  6 ++++++
- arch/arm64/boot/dts/amlogic/meson-s4.dtsi            |  6 ++++++
- 3 files changed, 21 insertions(+), 3 deletions(-)
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+index 443e2e7ab467..69845ec32e81 100644
+--- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+@@ -15,9 +15,15 @@ allOf:
+ 
+ properties:
+   compatible:
+-    enum:
+-      - amlogic,meson-gxbb-wdt
+-      - amlogic,t7-wdt
++    oneOf:
++      - enum:
++          - amlogic,meson-gxbb-wdt
++          - amlogic,t7-wdt
++      - items:
++          - enum:
++              - amlogic,c3-wdt
++              - amlogic,s4-wdt
++          - const: amlogic,t7-wdt
+ 
+   reg:
+     maxItems: 1
 -- 
 2.42.0
 
