@@ -2,82 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6A27D9B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D777D9B74
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346014AbjJ0OaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        id S1346076AbjJ0ObJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346021AbjJ0OaA (ORCPT
+        with ESMTP id S1345952AbjJ0ObG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:30:00 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA8310E;
-        Fri, 27 Oct 2023 07:29:57 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1477027276.1;
-        Fri, 27 Oct 2023 07:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698416997; x=1699021797; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=DsECeWRXR89HquHY2eBzhSO85aem0sul0hD01HYxWCs=;
-        b=HckviKaMtdRcX28oeuBNPjBnX6JfZBtnjIiSyUhL3PKNGWj27kD34JKgZ81jqyIo9x
-         fWOoIqJyjAPr4KeH/rDW0D+R8nHrsXSA5x3FkdiWTKEQ8VoQJq5h0bP3XC+T55BotZt9
-         aCO42SBCEOsFK7RhI5caSa9GUY8HF3pNSFSSJ2cGL11cr2m69LbI6uq+9tUv8kBknUQP
-         ZpBnRoftU1HR/XSecR+FYWFLIn9i9rhyuHel0ht2vw2A2uMy+SUkQgzlXT37KoBUdFKy
-         3x4/mpeShlu1vITJLykuu/4BTDBYAUGu8LKF4+UgZNvOUmILoOUXE5jSPaQAiOinYOIm
-         lxYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698416997; x=1699021797;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DsECeWRXR89HquHY2eBzhSO85aem0sul0hD01HYxWCs=;
-        b=lx/wZhqiX9Nel25kC7fwnQVVKtje4EdYEolJBWORHk0EHTwAiHL6DKE5wmp2ET0PvG
-         2/Ou7d61hx+Au4KmGQ2nf5gxwQ8wFzU90IIuODbF3eiQ7lQ7fMWe6GN19Jl5DHMubsnG
-         r456Ocr6jSdn04LCnjdSw8m7KUFl0BHeDn0/TE5/25dv2EcVgGLDRfV5ErJ+jmbeJ3hw
-         is/igCYG/BMWwyzcGEeq5/L1zFIX66MEbGar5C4Q1AuM2Yurj7YzI9sKPcCC7kpfDktL
-         3hCjO5c/sZYVGQtoD7InYKo9EXMjQ4l4pr+mSVSSHB26HYSJJDxPQFv3yturLPE1PXVR
-         aORg==
-X-Gm-Message-State: AOJu0YyONR/rIs7H+p/2UZ6gsuF/HnE/3Ku9ok+yqqnBv1rnS22H4Rwt
-        V8aNNsHsT1LBTpHs9cwxZ70=
-X-Google-Smtp-Source: AGHT+IE+e7aahuYfkt8PuZLyOBf8LvAfP9OR+nHTcDMy4WWLm+0UB+YDT6d/Ux5sTeabyzZQ8Mns3w==
-X-Received: by 2002:a25:f81e:0:b0:da2:8250:9725 with SMTP id u30-20020a25f81e000000b00da282509725mr557698ybd.12.1698416996952;
-        Fri, 27 Oct 2023 07:29:56 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o189-20020a2573c6000000b00da0c63aa9f1sm697470ybc.20.2023.10.27.07.29.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 07:29:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <84252d01-6fee-26f9-d127-8b344108fc43@roeck-us.net>
-Date:   Fri, 27 Oct 2023 07:29:54 -0700
+        Fri, 27 Oct 2023 10:31:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B31010A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:31:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E3C5C433C7;
+        Fri, 27 Oct 2023 14:31:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698417063;
+        bh=JYQ1485ecBidH5KSEpi5oHr1PrJU9Tal5XPzYUOFl2g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qePow6h6E0Mg0JTmplXfP1n5tl41zPyBvs2B+a1eQKi5UJHDO/rngUDh8+NVWOg6d
+         qT+tYx9RwmggP9XYTNqqqed69hpT8qz5IawjivyiJHHesNf8P5DUnb67Bc07exz3ee
+         tuDlCRmjosEWk+YyuUGwQmW9MzuljWgr20IthywAxTIu/tYdb3ECZ/KVglRnafXKFW
+         gtGXOGpKnIVzptPScSQuP7RpBlZ6CoHOP5BS9nvFvBmCUVORouHSTOcl58TfVjVUPo
+         INHdlZusUNPQVh6p88fdiqFP7jlSw8YsptFSXptNY4QN9zKSzkoWpFxWGOiXr+trO3
+         X99y2q//AHEqA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL for v6.7] vfs misc updates
+Date:   Fri, 27 Oct 2023 16:30:46 +0200
+Message-Id: <20231027-vfs-misc-7ebef2b5a462@brauner>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V3 1/3] dt-bindings: watchdog: Add support for Amlogic C3
- and S4 SoCs
-Content-Language: en-US
-To:     Huqiang Qin <huqiang.qin@amlogic.com>, wim@linux-watchdog.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, neil.armstrong@linaro.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231027104358.342861-1-huqiang.qin@amlogic.com>
- <20231027104358.342861-2-huqiang.qin@amlogic.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20231027104358.342861-2-huqiang.qin@amlogic.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11286; i=brauner@kernel.org; h=from:subject:message-id; bh=JYQ1485ecBidH5KSEpi5oHr1PrJU9Tal5XPzYUOFl2g=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRan4xX/2h1Irbu2sbmDrYy5mr1pORvnNVuxo9btjceViv7 sbqxo5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCLvCxj+cIXWquhxezpumt/J+OvyP5 mE2I1VqrPPLO76srHqsGbCXYbfrKYfF8X2WHNWLb6uvJDHgOnu5Fn5xwSrvp40PTT5eNhCRgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,38 +50,255 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/23 03:43, Huqiang Qin wrote:
-> Update dt-binding document for watchdog of Amlogic C3 and S4 SoCs.
-> 
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+Hey Linus,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+/* Summary */
+This contains the usual miscellaneous features, cleanups, and fixes for
+vfs and individual fses.
 
-> ---
->   .../bindings/watchdog/amlogic,meson-gxbb-wdt.yaml    | 12 +++++++++---
->   1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> index 443e2e7ab467..69845ec32e81 100644
-> --- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> @@ -15,9 +15,15 @@ allOf:
->   
->   properties:
->     compatible:
-> -    enum:
-> -      - amlogic,meson-gxbb-wdt
-> -      - amlogic,t7-wdt
-> +    oneOf:
-> +      - enum:
-> +          - amlogic,meson-gxbb-wdt
-> +          - amlogic,t7-wdt
-> +      - items:
-> +          - enum:
-> +              - amlogic,c3-wdt
-> +              - amlogic,s4-wdt
-> +          - const: amlogic,t7-wdt
->   
->     reg:
->       maxItems: 1
+Features
+========
 
+* Rename and export helpers that get write access to a mount. They are
+  used in overlayfs to get write access to the upper mount.
+* Print the pretty name of the root device on boot failure. This helps
+  in scenarios where we would usually only print "unknown-block(1,2)".
+* Add an internal SB_I_NOUMASK flag. This is another part in the endless
+  POSIX ACL saga in a way.
+
+  When POSIX ACLs are enabled via SB_POSIXACL the vfs cannot strip the
+  umask because if the relevant inode has POSIX ACLs set it might take
+  the umask from there. But if the inode doesn't have any POSIX ACLs
+  set then we apply the umask in the filesytem itself. So we end up with:
+
+  (1) no SB_POSIXACL -> strip umask in vfs
+  (2) SB_POSIXACL    -> strip umask in filesystem
+
+  The umask semantics associated with SB_POSIXACL allowed filesystems
+  that don't even support POSIX ACLs at all to raise SB_POSIXACL purely
+  to avoid umask stripping. That specifically means NFS v4 and
+  Overlayfs. NFS v4 does it because it delegates this to the server and
+  Overlayfs because it needs to delegate umask stripping to the upper
+  filesystem, i.e., the filesystem used as the writable layer.
+
+  This went so far that SB_POSIXACL is raised eve on kernels that don't
+  even have POSIX ACL support at all.
+
+  Stop this blatant abuse and add SB_I_NOUMASK which is an internal
+  superblock flag that filesystems can raise to opt out of umask
+  handling. That should really only be the two mentioned above. It's not
+  that we want any filesystems to do this. Ideally we have all umask
+  handling always in the vfs.
+* Make overlayfs use SB_I_NOUMASK too.
+* Now that we have SB_I_NOUMASK, stop checking for SB_POSIXACL in
+  IS_POSIXACL() if the kernel doesn't have support for it. This is a
+  very old patch but it's only possible to do this now with the wider
+  cleanup that was done.
+* Follow-up work on fake path handling from last cycle. Citing mostly
+  from Amir:
+
+  When overlayfs was first merged, overlayfs files of regular files and
+  directories, the ones that are installed in file table, had a "fake"
+  path, namely, f_path is the overlayfs path and f_inode is the "real"
+  inode on the underlying filesystem.
+
+  In v6.5, we took another small step by introducing of the backing_file
+  container and the file_real_path() helper.  This change allowed vfs
+  and filesystem code to get the "real" path of an overlayfs backing
+  file. With this change, we were able to make fsnotify work correctly
+  and report events on the "real" filesystem objects that were accessed
+  via overlayfs.
+
+  This method works fine, but it still leaves the vfs vulnerable to new
+  code that is not aware of files with fake path.  A recent example is
+  commit db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the
+  i_version"). This commit uses direct referencing to f_path in IMA code
+  that otherwise uses file_inode() and file_dentry() to reference the
+  filesystem objects that it is measuring.
+
+  This pull request contains work to switch things around: instead of
+  having filesystem code opt-in to get the "real" path, have generic
+  code opt-in for the "fake" path in the few places that it is needed.
+
+  Is it far more likely that new filesystems code that does not use the
+  file_dentry() and file_real_path() helpers will end up causing crashes
+  or averting LSM/audit rules if we keep the "fake" path exposed by
+  default.
+
+  This change already makes file_dentry() moot, but for now we did not
+  change this helper just added a WARN_ON() in ovl_d_real() to catch if
+  we have made any wrong assumptions.
+
+  After the dust settles on this change, we can make file_dentry() a
+  plain accessor and we can drop the inode argument to ->d_real().
+* Switch struct file to SLAB_TYPESAFE_BY_RCU. This looks
+  like a small change but it really isn't and I would like to see
+  everyone on their tippie toes for any possible bugs from this work.
+
+  Essentially we've been doing most of what SLAB_TYPESAFE_BY_RCU for
+  files since a very long time because of the nasty interactions between
+  the SCM_RIGHTS file descriptor garbage collection. So extending it
+  makes a lot of sense but it is a subtle change. There are almost no
+  places that fiddle with file rcu semantics directly and the ones that
+  did mess around with struct file internal under rcu have been made to
+  stop doing that because it really was always dodgy.
+
+  I forgot to put in the link tag for this change and the
+  discussion in the commit so adding it into the merge message:
+  https://lore.kernel.org/r/20230926162228.68666-1-mjguzik@gmail.com
+
+Cleanups
+========
+
+* Various smaller pipe cleanups including the removal of a spin lock
+  that was only used to protect against writes without pipe_lock() from
+  O_NOTIFICATION_PIPE aka watch queues. As that was never implemented
+  remove the additional locking from pipe_write().
+* Annotate struct watch_filter with the new __counted_by attribute.
+* Clarify do_unlinkat() cleanup so that it doesn't look like an extra
+  iput() is done that would cause issues.
+* Simplify file cleanup when the file has never been opened.
+* Use module helper instead of open-coding it.
+* Predict error unlikely for stale retry.
+* Use WRITE_ONCE() for mount expiry field instead of just commenting
+  that one hopes the compiler doesn't get smart.
+
+Fixes
+=====
+
+* Fix readahead on block devices.
+* Fix writeback when layztime is enabled and inodes whose timestamp is
+  the only thing that changed reside on wb->b_dirty_time. This caused
+  excessively large zombie memory cgroup when lazytime was enabled as
+  such inodes weren't handled fast enough.
+* Convert BUG_ON() to WARN_ON_ONCE() in open_last_lookups().
+
+/* Testing */
+clang: Debian clang version 16.0.6 (16)
+gcc: gcc (Debian 13.2.0-5) 13.2.0
+
+All patches are based on v6.6-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+
+## Merge Conflicts with other trees
+
+[1] linux-next: manual merge of the integrity tree with the vfs-brauner tree
+    https://lore.kernel.org/r/20231027131137.3051da98@canb.auug.org.au
+
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflicts showed up doing a test-merge with
+current mainline.
+
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.7.misc
+
+for you to fetch changes up to 61d4fb0b349ec1b33119913c3b0bd109de30142c:
+
+  file, i915: fix file reference for mmap_singleton() (2023-10-25 22:17:04 +0200)
+
+Please consider pulling these changes from the signed vfs-6.7.misc tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.7.misc
+
+----------------------------------------------------------------
+Amir Goldstein (5):
+      fs: rename __mnt_{want,drop}_write*() helpers
+      fs: export mnt_{get,put}_write_access() to modules
+      fs: get mnt_writers count for an open backing file's real path
+      fs: create helper file_user_path() for user displayed mapped file path
+      fs: store real path instead of fake path in backing file f_path
+
+Bernd Schubert (1):
+      vfs: Convert BUG_ON to WARN_ON_ONCE in open_last_lookups
+
+Christian Brauner (5):
+      file: convert to SLAB_TYPESAFE_BY_RCU
+      io_uring: use files_lookup_fd_locked()
+      backing file: free directly
+      ovl: rely on SB_I_NOUMASK
+      file, i915: fix file reference for mmap_singleton()
+
+Jeff Layton (1):
+      fs: add a new SB_I_NOUMASK flag
+
+Jianyong Wu (1):
+      init/mount: print pretty name of root device when panics
+
+Jingbo Xu (1):
+      writeback, cgroup: switch inodes with dirty timestamps to release dying cgwbs
+
+Kees Cook (1):
+      watch_queue: Annotate struct watch_filter with __counted_by
+
+Luís Henriques (1):
+      fs: simplify misleading code to remove ambiguity regarding ihold()/iput()
+
+Mateusz Guzik (3):
+      vfs: shave work on failed file open
+      vfs: predict the error in retry_estale as unlikely
+      vfs: stop counting on gcc not messing with mnt_expiry_mark if not asked
+
+Max Kellermann (5):
+      pipe: reduce padding in struct pipe_inode_info
+      fs/pipe: move check to pipe_has_watch_queue()
+      fs/pipe: remove unnecessary spinlock from pipe_write()
+      fs/pipe: use spinlock in pipe_read() only if there is a watch_queue
+      fs: fix umask on NFS with CONFIG_FS_POSIX_ACL=n
+
+Reuben Hawkins (1):
+      vfs: fix readahead(2) on block devices
+
+Uwe Kleine-König (1):
+      chardev: Simplify usage of try_module_get()
+
+ Documentation/filesystems/files.rst          |  53 +++++-----
+ arch/arc/kernel/troubleshoot.c               |   6 +-
+ arch/powerpc/platforms/cell/spufs/coredump.c |  11 +-
+ drivers/gpu/drm/i915/gem/i915_gem_mman.c     |   6 +-
+ fs/char_dev.c                                |   2 +-
+ fs/file.c                                    | 153 +++++++++++++++++++++++----
+ fs/file_table.c                              |  49 +++++----
+ fs/fs-writeback.c                            |  41 ++++---
+ fs/gfs2/glock.c                              |  11 +-
+ fs/init.c                                    |   6 +-
+ fs/inode.c                                   |   8 +-
+ fs/internal.h                                |  22 ++--
+ fs/namei.c                                   |  31 ++----
+ fs/namespace.c                               |  40 +++----
+ fs/nfs/super.c                               |   2 +-
+ fs/notify/dnotify/dnotify.c                  |   6 +-
+ fs/open.c                                    |  52 ++++++---
+ fs/overlayfs/super.c                         |  24 ++++-
+ fs/pipe.c                                    |  64 ++++++-----
+ fs/proc/base.c                               |   2 +-
+ fs/proc/fd.c                                 |  11 +-
+ fs/proc/nommu.c                              |   2 +-
+ fs/proc/task_mmu.c                           |   4 +-
+ fs/proc/task_nommu.c                         |   2 +-
+ include/linux/fdtable.h                      |  17 +--
+ include/linux/fs.h                           |  35 +++---
+ include/linux/fsnotify.h                     |   3 +-
+ include/linux/mount.h                        |   4 +-
+ include/linux/namei.h                        |  26 ++++-
+ include/linux/pipe_fs_i.h                    |  22 +++-
+ include/linux/watch_queue.h                  |   2 +-
+ init/do_mounts.c                             |   2 +-
+ io_uring/openclose.c                         |   9 +-
+ kernel/acct.c                                |   4 +-
+ kernel/bpf/task_iter.c                       |   4 +-
+ kernel/fork.c                                |   4 +-
+ kernel/kcmp.c                                |   4 +-
+ kernel/trace/trace_output.c                  |   2 +-
+ mm/readahead.c                               |   3 +-
+ 39 files changed, 479 insertions(+), 270 deletions(-)
