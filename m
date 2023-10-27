@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997BB7D90AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292CF7D90B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235012AbjJ0IGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        id S235028AbjJ0IG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbjJ0IGm (ORCPT
+        with ESMTP id S235036AbjJ0IGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:06:42 -0400
+        Fri, 27 Oct 2023 04:06:55 -0400
 Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183CFD9
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:40 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507bd64814fso2481793e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4751B3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:52 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507ad511315so2639029e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698393998; x=1698998798; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698394010; x=1698998810; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fgULfd/BQf3rXOb2Liur3bE6zxBSiYu9TNmtJmWbpCs=;
-        b=Nr2WRBxuxdZCEyStn5AKTqJwjukjUD+Rw6WZ3yJPnrTbJ2F1L/8f3XUL57CTC/DB32
-         4dRzDd4aatK4ErHKupCBaLkT3gbLSNILfQ3sbzwvcqnWgdUdNgZwEMUWNggmvkxdqr1l
-         plC1t17dATm+8cCnuWl609h8NMJk4Wwu1jSj7i0Z1PdFxoYZYQyXo2DjYAJAuetRJKea
-         e99nsyezk1c+uKELhkRHKLm74pybmpe+0XQmt30KMuRZRntann+Mgbj75zUwuPuc7Du4
-         r+bncny7KsKAVcPK6smojdA8g4vYDvKmGCJEvHpG9UWuQ6MClwqF7VYEvScQk84pdfDb
-         aOdQ==
+        bh=L1Crc/3KLznU3hcItc5onmdG+ywsdJtNXgnylnU7cp8=;
+        b=kE0NKeISHSt7f1JerF3BAhoNFoYbRm95R7QAEiVBEgZosNdI555Xw1IGZ5tM3n4aqn
+         zSM9qsX5at0z9uZFDFk8kCKS3aDYkYHLemdpZuY1YO23eM2ahraschPjAmIMEYAoS0IY
+         TAgUzSENRgNeJd9yAQWo5XAvHJFA15iYiKOgEgILtOmCoHPdQlyunkhl6NxmUD8vOfoM
+         wEN+mu/2TWa7yH5yFIRXpLRKH6nrHvyTXyWyPAlkZxXeh2HFgL+ZX7PHBoP6y7fzss70
+         IybVGLIZ5t39I6ECloirLeHrzjCeVdl4euzIQ1PDQHvtysAkeIplw871EphZzfPEtwRf
+         xmCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698393998; x=1698998798;
+        d=1e100.net; s=20230601; t=1698394011; x=1698998811;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fgULfd/BQf3rXOb2Liur3bE6zxBSiYu9TNmtJmWbpCs=;
-        b=PB8zTU/qQ4sBc8z0JSC4E5ZTQGFQVlUIslh7+pC+IrJfa0aT3Fdksm502Z6KHrQld1
-         wEjayqBbIS0DigPnbJxaEA7+fYmkTXlF0UDTJb2a4gqobDSwW9V6ELuQdlH6lzLxi+56
-         ovCTCfVwSyfpIKBh8vuOoPSMH/ZbrUu7vTSB9j9S7MesPntsN9l3i/l7OXT8K6G9m2QY
-         W6idvoMfYd72SghqX2QwD63UvM/cvmJ+JWawLqnSnxbMUYR5WU8D3wM34l7UK0K2nA9I
-         bEONGwAGdHN3/3Q4Q/X15itE4/xvAtyobdNk9rx2iO8CzeKMfQVOtQdFjzFdydLRI2y3
-         MgJQ==
-X-Gm-Message-State: AOJu0YzC7S/9ZHjQ79WcA1zAxk9NoIiDpjBQLtZsjwJ05yAjAbo+W3nW
-        0mzCfaEsM8CyKF7PwDxUyagS0Q==
-X-Google-Smtp-Source: AGHT+IEJFfYsTI78D03/L8NvageWyWtEeZq1rR3P3kFq9t3sgonnO4xsQxqYrk7ZOTDAfXzejtcLEA==
-X-Received: by 2002:ac2:5935:0:b0:503:1be5:24eb with SMTP id v21-20020ac25935000000b005031be524ebmr1190179lfi.50.1698393998333;
-        Fri, 27 Oct 2023 01:06:38 -0700 (PDT)
+        bh=L1Crc/3KLznU3hcItc5onmdG+ywsdJtNXgnylnU7cp8=;
+        b=gz1UBy2vopGdzpQYtVW38ASvmaYzyoSLkiD7Gx/HtTlq0BHJk1QCWDb2B2I4VLMxI0
+         qwS4qVxQtyaEXPJSroTSbClVk0yBhBYjPT6gS74NR4vfz3tTmMpl3xhnjPqD5B4UGgaO
+         8D4I/00Qdr2Lav6fFh6X1p6SwkuojUE2anBDpCIPcBGbY/y1taDs4pMs/PkQoOZQ0rzZ
+         41vO2qBuoaHt0huGmn/oUGtkWAIVrAcfZILfZN+a7/h3aBKyAw3uE6jHjnRAegq13zcz
+         Nj6qVevDnzfBmAkYhn5M4FuUx31W81ltol/rSoGfHRt7ES9ui40ei8lEo4H3+myTK88c
+         YUFw==
+X-Gm-Message-State: AOJu0YzJdxKDPrbXRMMXXA0Gbm4iTJhRytL5liNau57iAiMM3T70CwGs
+        +gMEwnLWtpLabuOIcDUmG3otCg==
+X-Google-Smtp-Source: AGHT+IFC/nDSxDDDw+03nTNwVuVuvn11AW8GifWLprDkY86khS+3P+ixnyN9Jf/pLtTQDjZDE8a/eQ==
+X-Received: by 2002:a05:6512:3d8f:b0:507:b099:749d with SMTP id k15-20020a0565123d8f00b00507b099749dmr1388959lfv.15.1698394010819;
+        Fri, 27 Oct 2023 01:06:50 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id be11-20020a056512250b00b005081a25b095sm180122lfb.246.2023.10.27.01.06.37
+        by smtp.gmail.com with ESMTPSA id be11-20020a056512250b00b005081a25b095sm180122lfb.246.2023.10.27.01.06.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 01:06:37 -0700 (PDT)
-Message-ID: <f7b90711-015b-4261-b044-a63396e78c9f@linaro.org>
-Date:   Fri, 27 Oct 2023 10:06:36 +0200
+        Fri, 27 Oct 2023 01:06:50 -0700 (PDT)
+Message-ID: <d7a11fb3-8de2-4889-b5d5-f4584a7f77cb@linaro.org>
+Date:   Fri, 27 Oct 2023 10:06:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
+Subject: Re: [PATCH] PCI: exynos: Change macro names to exynos specific
 Content-Language: en-US
 To:     Shradha Todi <shradha.t@samsung.com>, jingoohan1@gmail.com,
         lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
@@ -62,9 +62,9 @@ To:     Shradha Todi <shradha.t@samsung.com>, jingoohan1@gmail.com,
 Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         pankaj.dubey@samsung.com
-References: <CGME20231009062222epcas5p36768b75c13c7c79965b5863521361a64@epcas5p3.samsung.com>
- <20231009062216.6729-1-shradha.t@samsung.com>
- <0b4801da08a0$18877110$49965330$@samsung.com>
+References: <CGME20231009062058epcas5p4dc1fb50210c920137ac906b0bdf99e1b@epcas5p4.samsung.com>
+ <20231009062052.5407-1-shradha.t@samsung.com>
+ <0b4701da089f$d930d790$8b9286b0$@samsung.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,20 +110,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0b4801da08a0$18877110$49965330$@samsung.com>
+In-Reply-To: <0b4701da089f$d930d790$8b9286b0$@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 08:37, Shradha Todi wrote:
+On 27/10/2023 08:35, Shradha Todi wrote:
 > Gentle reminder to review this patch. Thanks in advance!
 > 
 
