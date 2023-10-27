@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D49E7D90CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD91C7D90D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235014AbjJ0ILt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
+        id S229633AbjJ0INO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0ILr (ORCPT
+        with ESMTP id S229604AbjJ0INL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:11:47 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A32D42
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:11:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507cee17b00so2604146e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:11:44 -0700 (PDT)
+        Fri, 27 Oct 2023 04:13:11 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDDD9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:13:09 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507ad511315so2646471e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698394303; x=1698999103; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698394387; x=1698999187; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ezp3xOLXhQ+1ymBhBqFKu7/uhMveGEMfKhSkjLXeOZU=;
-        b=yuOgG2Tdv5Qy3gx2kszPO/szssRH2hkkaLMeqagW4j7iFSv2tFNfMMSF0K/xVc9rzE
-         68C/4S8e7Tx9G9qhrV80KxAXifIv3tLKUjTRNV+sYut9yfdb2WOFyOO08brdVHk/5PGn
-         Ngj3NZMJrfg4adfbhcjShrueRgupn9kBtenGgTg4ofsJpgyAFnOAGCYLSDFVVIdUsUUH
-         wYM1nj71hHRKVVNE0bQRrwPZpphHs6GCgdobagD/jEwplhUPrm8eW62ki5RLBH9WRoAW
-         fYBPzjValjrhAz5tRTg6n5p/rdds0zw+cUayx9bDlC/VpUN1JLj64oKiBZzo3gwivCJS
-         a2nQ==
+        bh=WaU+VzqqAMvguWmnxiwuxYmqBvrom9QacJqWkrVVdu8=;
+        b=wUZulFrPTLEtH8kYqbDi9xU28WxME80O/JuEFVGyjOlPGvY9wQVnZFjba2AbppH1Ge
+         ARKZ0GuRYEh74Nv8jsTIeMkrB8aPprS+8Gtef4fcnBFnIvN3N76gpXxqFQSdXeR6HOuX
+         tsTbTEx48KjinyswaTZGH20m90Hdvzlz1MDO8A/Qv5B8pVmQwh0nmeZDntAocEpogZvN
+         Kce5R/v96FgJ71h3hu8y/Cq1IK1k92374GB9eqXO6yPikxiU1LSDic1WcfJhZMnLb59h
+         nW6NN06r8eZQ4JeWWTtYngMmR4WbOp63EP+OrjLbouu9Wz2jzg/taJ1iqmaxgPYEyJPj
+         /6yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698394303; x=1698999103;
+        d=1e100.net; s=20230601; t=1698394387; x=1698999187;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ezp3xOLXhQ+1ymBhBqFKu7/uhMveGEMfKhSkjLXeOZU=;
-        b=HgosFbDIRuC97284kWtj36NnrBLeRT0ByvXmvVCr+fFT9FjKJhaR/U1ddKZTKdQr7F
-         2ln8FZiT/UnD5biLCovEYteEul1hpF4Ol0O9Q27nj5xULrCXOuDL2op+v0vh0T+TcIPV
-         JFX8XoqShpMr3slMw665Nqn2F9S3k4lrMiO1esHipFMOj9uELKc/HeCCeiRjeZS0v03t
-         Xjc6lrRyhzA3RNzKsWcFGVDa5eNwFLcXkuBoO/8CcLpHF6Ar4EnhGlFjm0QVxgM81Qhf
-         uC3Fx7ebfeON3gukGsERUJS3s+sruEH6KoqKvQ2vm10ickFIaXHbH7GY7o42Ap+0fStn
-         sPrA==
-X-Gm-Message-State: AOJu0YyBOVYzRqbmkwR1F07/dnopDV1Uj/Bv4kEclQsir2WmAf1N0mBB
-        UXiLaHG2Ym1OOF0834G3iW18itXvUSkhuUHsMMQ=
-X-Google-Smtp-Source: AGHT+IFDBfAI8KcZD/ya+f6uxZ1P9bMX0/bFkkg2hqJluLwD/0h7LCKsZoi960FK9jSaNiA5kGhxzA==
-X-Received: by 2002:ac2:4575:0:b0:500:79f7:1738 with SMTP id k21-20020ac24575000000b0050079f71738mr1169834lfm.17.1698394302691;
-        Fri, 27 Oct 2023 01:11:42 -0700 (PDT)
+        bh=WaU+VzqqAMvguWmnxiwuxYmqBvrom9QacJqWkrVVdu8=;
+        b=vDYyH21fTZXnwVatJosZFqil5o9RFPtTC+u30Oe41Vv0bNqJFa0+b/lp8g1QO0+Awo
+         bMp4hWhp5D58MiWrwzPcfOnp3M2RALlLpaxrbbRy7qnJamC6s2KXJ5SQJK7aSYrMw6me
+         QGvfZ0LyqYNVDcc5nI9UzfAFRmEvLk8+W34gBNxo1bob4AiUKaMJri9/OHhDGMSuc6SY
+         476b4I5CIILiTmjli8oolzjv9g+LV35ePkv2VYXB+hJL6QbCbh85TJOrmWV+YdmUXnum
+         54D3SoJHkjp4Z3X4htXwKarl1fBdoURQmAiE9TZF5ns1RwX9Coc+mLkLPkJ0nOyyNcDI
+         Si9g==
+X-Gm-Message-State: AOJu0Ywk+d2Nl3BC13khIl2gv4R+e2eB2OK4gvG/KGpxpYrD4a5QI0xi
+        rQ9b53DdGtexoPbrH8FmWs5f2Q==
+X-Google-Smtp-Source: AGHT+IFsoHXfD9HiDoMksyk4QuQG3CdhxxjXj1bwBFtrS+/O2I4qHfwp3VCpzZW96b3jw1Ae9XZE6Q==
+X-Received: by 2002:ac2:4f13:0:b0:503:18c3:d874 with SMTP id k19-20020ac24f13000000b0050318c3d874mr1724309lfr.45.1698394387314;
+        Fri, 27 Oct 2023 01:13:07 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id y5-20020ac24e65000000b00505713722b9sm181142lfs.38.2023.10.27.01.11.41
+        by smtp.gmail.com with ESMTPSA id y5-20020ac24e65000000b00505713722b9sm181142lfs.38.2023.10.27.01.13.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 01:11:42 -0700 (PDT)
-Message-ID: <b030cb0a-7a15-4497-9b0f-75615694dc04@linaro.org>
-Date:   Fri, 27 Oct 2023 10:11:41 +0200
+        Fri, 27 Oct 2023 01:13:06 -0700 (PDT)
+Message-ID: <d7ba077d-6bcd-4e04-b678-51e4bbc935ca@linaro.org>
+Date:   Fri, 27 Oct 2023 10:13:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: light: Avago APDS9306
+Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
 Content-Language: en-US
 To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
         Jonathan Cameron <jic23@kernel.org>,
@@ -70,7 +70,7 @@ Cc:     Matt Ranostay <matt@ranostay.sg>,
         linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
- <20231027074545.6055-2-subhajit.ghosh@tweaklogic.com>
+ <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,7 +116,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231027074545.6055-2-subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -130,74 +130,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27/10/2023 09:45, Subhajit Ghosh wrote:
+> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor with als
+> and clear channels with i2c interface. Hardware interrupt configuration is
+> optional. It is a low power device with 20 bit resolution and has
+> configurable adaptive interrupt mode and interrupt persistence mode.
+> The device also features inbuilt hardware gain, multiple integration time
+> selection options and sampling frequency selection options.
+> 
 > v1 -> v2
-> - No change
-> 
+> - Renamed probe_new to probe
+> - Removed module id table
 
-
-Missing commit msg.
-
-> v0 -> v1
-> - Squashing Avago (Broadcom) APDS9300 and APDS9960 schemas into one as
->   they look similar
-> - Adding support for APDS9306 in the same schema file
-> - Adding mandatory interrupt property requirement for APDS9960 as per the
->   driver's probe method which fails if interrupt bindings are not defined.
->   Both APDS9300 and APDS9306 (this patch set) supports sensors with and
->   without hardware interrupt bindings
-> - In the device tree example, replacing interrupt type number with macro
->   from irq.h
-> - Updated the vin to vdd which is the same for all the three sensors
-> - Used proper "Datasheet:" tags
-
-This is changelog, so after ---.
-
-> 
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> ---
->  .../bindings/iio/light/avago,apds9300.yaml    | 35 ++++++++++++---
->  .../bindings/iio/light/avago,apds9960.yaml    | 44 -------------------
->  2 files changed, 30 insertions(+), 49 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> index 206af44f2c43..7a24a97d0594 100644
-> --- a/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9300.yaml
-> @@ -4,17 +4,26 @@
->  $id: http://devicetree.org/schemas/iio/light/avago,apds9300.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Avago APDS9300 ambient light sensor
-> +title: Avago Gesture, RGB, ALS and Proximity sensors
->  
->  maintainers:
->    - Jonathan Cameron <jic23@kernel.org>
-> +  - Matt Ranostay <matt@ranostay.sg>
-> +  - Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
->  
->  description: |
-> -  Datasheet at https://www.avagotech.com/docs/AV02-1077EN
-> +  Avago (Broadcom) optical and proximity sensors with I2C interfaces.
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-1077EN
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-4191EN
-> +  Datasheet: https://docs.broadcom.com/doc/AV02-4755EN
->  
->  properties:
->    compatible:
-> -    const: avago,apds9300
-> +    oneOf:
-
-Drop
-
-> +      - enum:
-> +          - avago,apds9300
-> +          - avago,apds9306
-> +          - avago,apds9960
-
-I don't understand what is happening here. At all. Some compatibles are
-moved, some are added, nothing explains why you are doing it.
-
+This is fourth version of this patchset, not second, so v4.
 
 Best regards,
 Krzysztof
