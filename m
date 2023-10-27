@@ -2,157 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5787DA148
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926837DA14C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbjJ0T3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        id S1345989AbjJ0TbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 15:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbjJ0T3g (ORCPT
+        with ESMTP id S231351AbjJ0TbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:29:36 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2082.outbound.protection.outlook.com [40.107.220.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD3AE5;
-        Fri, 27 Oct 2023 12:29:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L1X9hoisDyGuKMd1jesGW8vcnMJ7o/s/nAzH2nxZ0GKVQ8Dsd6J1x9JZWsL+krV8HZ9UodlKfqpiIs3NavhEOnJD6e+keubDM6VdYlpkOZiGMu74mof+oNjfWr+5X4RT5m6NJZVL/KQHbvoZ+7+d800dyggMihlAsQULC7xR52KW9Sj7AMOA7supAN/AoYJHuMkc5fcqFGXP3WRSdN7A2XgfdpG4iQiGdWFXUrolAXgp8ROxSqcagh54xXbzrk++467w2ys1DRMDdtqLFWiehkRddoY0Nw3+eG3g3XRw0XETnNnLPq90/uNTPOBSqHq7pXK2fUJVFoDhKbhfzVlnqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OoVizyMtY2Ru5f5wUScmsX3uS1X1zDrwbb4DoOMZnw0=;
- b=hf4kgwznm5iDkjuU9wysfQrA2L1iA95ZZIPkEwgsnqkymhPf1LmnyRTkftioxLamQI5VD8YyE6xGA51rEKA7tNJZaNS7L3lRRCvCdqtGtU8qReNVqp1NhbVDZ85UeBOQg6j6FTSDVjuWG05aEN8hZCDX4LseuW/b8Jl2UqCFpDucK/WExSsaWZzmSS2m8OPGH/T2ODgkQ8580JsJ0HkObUhmVJJMhnewoohk9C+CrclPej4dGIMmByhNBV4W+XK7upr8F+6hZ9MHuNemzQi3S0IzKSTq2GGtbTCf2pQEsv836FSTSiF31QUPjyl7/8/2zm0RxLrGllAkoBb7GuJ0aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OoVizyMtY2Ru5f5wUScmsX3uS1X1zDrwbb4DoOMZnw0=;
- b=T2GoiDfUR6VojzxkS83NIyOm+gTA3SUzpxy3RhWLESKxKvuVfT2ElGohMU53HN6ak0ccafELY2G99qxbBq5izwGA8LnrmOKyu9SCbr0gG7LpWiQi3XBRiA0RvBJTj9GLpHDtPpkFpTF8aGH6ZNom6z3ujTXzs2X+Al7CFdky8nw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MN6PR12MB8514.namprd12.prod.outlook.com (2603:10b6:208:474::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Fri, 27 Oct
- 2023 19:29:30 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
- 19:29:28 +0000
-Message-ID: <de56ddad-ee57-4ff0-b384-522c05e88c91@amd.com>
-Date:   Fri, 27 Oct 2023 14:29:24 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Fixes for s3 with parallel bootup
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>
-References: <20231026170330.4657-1-mario.limonciello@amd.com>
- <87zg0327i4.ffs@tglx>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <87zg0327i4.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR03CA0003.namprd03.prod.outlook.com
- (2603:10b6:5:40::16) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Fri, 27 Oct 2023 15:31:10 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13DD1A1;
+        Fri, 27 Oct 2023 12:31:07 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RIdX4Q003871;
+        Fri, 27 Oct 2023 19:30:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=ItvClyjMB8L/p4AE5umpCbZyCJ10SEmY05g80Zcee8s=;
+ b=BLC8llJqpU8EtO0M2IvUJ++pOLkkpHYMfZ739vI+DuiOAzV0yBFWJkIJ1mSQWsiFCzjX
+ XYlTczzljSKdRAS1ym43e8r+c0S3BiWi4Z31PSUt9FrrN/wwCJ7qe+7GQSOilNaHfBg5
+ fHbcfeC7euWQwJP8Micip+bI9NF5x70P8JT9eC4MGlZIY02gowVriis+z2CJsBj4LjHw
+ 5IWizoMgL3ObhujCM1Ehvqr/tvRCqv8bXSmpVDgn0lQjJsFdR8B6p+S3ElaeOx+sp0XE
+ aU+p6wgd1ySsLRHGU6ET8usTseuDXix0Cactxl2Ndk3edc+LXddrbD+MftiLGEzIqr8N Eg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyww72ynx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 19:30:37 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39RJUa8p019817
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 19:30:36 GMT
+Received: from hu-johmoo-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 27 Oct 2023 12:30:34 -0700
+From:   John Moon <quic_johmoo@quicinc.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     John Moon <quic_johmoo@quicinc.com>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Matthias Maennich <maennich@google.com>,
+        Giuliano Procida <gprocida@google.com>,
+        <kernel-team@android.com>, <libabigail@sourceware.org>,
+        Dodji Seketeli <dodji@redhat.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Jordan Crouse <jorcrous@amazon.com>
+Subject: [PATCH v6 0/3] Validating UAPI backwards compatibility
+Date:   Fri, 27 Oct 2023 12:30:13 -0700
+Message-ID: <20231027193016.27516-1-quic_johmoo@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MN6PR12MB8514:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf6247f3-c09b-454d-9ae7-08dbd723091a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LgnB5Id12XBw9iRaNkPZQe0dbZu28flyG5wWPZgB017MH+blTSHQscbf4rEnidgEdm2Mt1iKsgTpyvJAaftLJVtAWP4huROBn/rmP5uZXGRE8Av2XL+gccqLWgs7/aBniL/TliPU+E425KwkYpnmWYrQengKliNGA3diK/ZXfKzme3rlmW0wIzHqrq7lMMkIsfvUqwFYsp1jl2BDoCZjGtQRBN27skTxMbDHP6QGDB+oZZ/Sgqncl6sv5URGPDDMyUrjGmBqiaUXH8frw/D89TswnlFQxV1eM2+WblVZyjd73ttWd28rvmGnX5IVxUzBVqZewdENu5f6sjpReu1qxBfI7PwAw7EqbUJnlmhyYBx6UI3bYG4ArNEuMSZiZCfupcqV/5ILsQ8+sDcwaWyDMSiBtnLi6JggO5GLN9WW7aYWGEWwNXCKFooFsu4VtcXEoPqKnvY+1zUwAcvcV8JbH+mIiGNLaxrapBGeiTDpAR8xUuxoSDQVkfb5JuboV/LtlH3Fnjkri/a5HHY3YghHEMGF/C0mN5yCRk3SpcOMI8Yj01B64BjHOEFJ+z+AgKLF5ZLXw09B3ZxTzvq3xP5H+nuRcFhJhILGcAA7cdhm9fJMvP8InjB6tb3JrlXak4TXzMz5NYgDxtp30jT0Bhoe3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(346002)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(8936002)(44832011)(8676002)(2906002)(41300700001)(4326008)(4744005)(7416002)(5660300002)(6486002)(26005)(2616005)(6666004)(36756003)(53546011)(6512007)(6506007)(38100700002)(31686004)(83380400001)(66946007)(31696002)(54906003)(316002)(110136005)(66476007)(86362001)(66556008)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXE1RGRmaXB0eERRWEU0djhiL3JMRWFXV09GLzlzSUwzMS9uWDhuVkNOTWV1?=
- =?utf-8?B?U1pXT0tVd2dJaW00aFZsQmpNbnJBQTcxUUIwNGRuMVJmYTR0UkZXMkhwT0FY?=
- =?utf-8?B?V1E2UmxhOEFKQkdoOEd5aU14U2M4Z05GZmNvZlAzMEJWWkxwdTBQYjRYWDQ3?=
- =?utf-8?B?Q0ZTRUlBS0VSdFoxbkltZkhPL2VTYnJYdUo0dHA2dElvQS8wR1FicHBHNXE4?=
- =?utf-8?B?Y1hQdWhFS0ZjMTZHT3VDYWtRVFQ5bFVQRm5nR2I0dm9yeUxRbDZFYWdad3pw?=
- =?utf-8?B?MGlZQ01pWFpDeUJ2MFhkbTIxczlpL05zSzNGblo3d0dFYXpQTEdmNFhJSzdI?=
- =?utf-8?B?QnVHYlErMUFrRDJZWFZoOG1YVkUwQ2VtMVlYUEo5d2NkZXBUYzl4NlA2dVFD?=
- =?utf-8?B?QUlqcDQzOVdCUXY1T2pHRWhzeUZZMXpSeWwyS1lMYnJLbEN2TGJJaEpJYTdB?=
- =?utf-8?B?T1k3Z2I1Yko1NWlZdnVxa3ZkZUhFNHNGcFFHTHlhU1ROd3NMMlAxV2dHQnN2?=
- =?utf-8?B?OVplU1FRaEpQeE5mMC84S293YUZLN1l4SEIxYjAycjJjblZJNDB3VG9hVWJT?=
- =?utf-8?B?WkZyc2RTbjdBaUdvQzBqdms0SUR4R29oakkwVEVxNXQyVFJWSmNMc1J3b2Vu?=
- =?utf-8?B?TXJpSGcwWkRkSjZZODNhKzZ0OThCNlRIdy92cURiMndYL3J2b0pXU3pLUXBV?=
- =?utf-8?B?Y0czY1RkUUJEQzVKMTJmZm1YU0doWXBwQkdiTWh4QktsQnVTWnNub3Z6YjZj?=
- =?utf-8?B?NmpObFZDVVRaVW8zcUNxQUVQWVZqYm1tOXpwR2t1SU9vdFlvUDM2NFNUUDNm?=
- =?utf-8?B?LzBlVmd5MXFMcXZ3TUx3TTF2ZFovRE5PSkdmUElEMFRsVVBrRlJiWUpKMGli?=
- =?utf-8?B?Q25xV00rZUtEOTRqSktlUXpMa1Jpc0hDVTgzUGpycEJBRjdEbEUva0h4aGU5?=
- =?utf-8?B?NTJOSEphanh0RUlRdkY4R1A2K1JlWUUyT3hwV0R1d3RwMzdSV1ZMNWNyUWRX?=
- =?utf-8?B?bmk2dXVpS1JWSGx3TVdzTXRHKzE0MUF4VjQ2UVVhTkxiZEdveVhTbTFZUGJJ?=
- =?utf-8?B?c0VpUWQzeFVQNXRMMVdOMGJXQ3JTMjgzRi9WYlNNTGd1a0RDN2RvQlJOL0lk?=
- =?utf-8?B?elYzVDJmdVNXOFpKc2tFQzRpWUsyeFRENU9MMkhCUkRKbExOT2dQeEM4Mkhn?=
- =?utf-8?B?Qlp4QWpiaG5OdE5LWHUxd0swaFhOdDgzTkpOckx5QkhuV2JlcDhCanJ5VFRy?=
- =?utf-8?B?NjJCeExTUkhkYVA4Yzc2a1Z5Vlg5SFg0UjZvdy9VUlNkY2tPbWRRT2czT1pJ?=
- =?utf-8?B?ZHk1Mk1UazIvT1IyV3hpTTJRMThZSVc1YU5aenpnMVA2NUVJcThwaFBBam0w?=
- =?utf-8?B?b3Zsb3kzOGFqK2RzQjU5WmVieEVNRjF0dlY0TDhNbzhtMVA1dHQzTUI2TWNJ?=
- =?utf-8?B?OFVqMVRZMDMvbU5UR2RreUY4T1FoenFTOWpCbXpvbEtHUzQ3UlJocUxMSUdx?=
- =?utf-8?B?cGtKQWoyTGFWVU5CbFpWRzBmVkVaM0d6ZldVYkRjMmFvZ2RoSWp2cDRMYlp0?=
- =?utf-8?B?NjkrOW9LQVZOdUw2eUJ2cjNPKzJZUTNlMUtYd3M5bUJCZjZCT3Q5NXFUeW82?=
- =?utf-8?B?M1R1ZWRJS1ZlSzhSTCt0QlFnaGxZcThENkxMaW9Vd2FaTVpCRkdpdDh1RXlH?=
- =?utf-8?B?Vmc2c2hlSVhFMUFYTFVPOVZyK2N5b0RjQ1ZieDBtT24vSFRJcjFhMWNuLzVN?=
- =?utf-8?B?S3Q5SENEajRwUUhwWExVWUFDYVBXQTY0VkFBblhNNk85c2lZQk1QT3FwR0NV?=
- =?utf-8?B?bUFCeWZYeEZ4dHd4RHdOVU9TWWRDSUFaenAveEZ4TGdyWkhLTUNEZUp0anE3?=
- =?utf-8?B?RVMvSlBQcFFOd25XZ0pXS0UydmxtYWZrMElQUzZNQ2x2czBNVUZLTmFYdFJD?=
- =?utf-8?B?c1JaK0ZsNC9EQWlPWjJ0VDlCNmd4Z1NHUHQ0Mk13SGF4cmFKcy9rTURHUmY1?=
- =?utf-8?B?S3dlSnFMOTQvdXdoVmNaU0dUVVFIV01IOWpYOUc5SVVrVThwM2JSaWpERmR2?=
- =?utf-8?B?TmFsTzFoMGlkRU9NRUNwenJUeFMzYW9FR1lpZVllS1Zha05lZm94dWR4N3F2?=
- =?utf-8?Q?N5Q8VIDipS9dNMp1k+f8ypUEH?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf6247f3-c09b-454d-9ae7-08dbd723091a
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 19:29:28.1398
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5hEhsVnVAd1/rfxa5mBaUxxcfeAw3lEPr8i/k/FGNSJuxDXV+hMF30ISLmUx97gGerbO4sPzwa3y3DEDDI/H4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8514
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6yv5s9wwUnZ92wTiCEbL017xmpNgKZV5
+X-Proofpoint-GUID: 6yv5s9wwUnZ92wTiCEbL017xmpNgKZV5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_18,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=925 priorityscore=1501
+ bulkscore=0 clxscore=1011 phishscore=0 adultscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310270169
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/2023 14:24, Thomas Gleixner wrote:
-> On Thu, Oct 26 2023 at 12:03, Mario Limonciello wrote:
->> Parallel bootup on systems that use x2apic broke suspend to ram.
->> This series ensures x2apic is re-enabled at startup and fixes an exposed
->> pre-emption issue.
-> 
-> The PMU issue has absolutely nothing to do with parallel bootup.
-> 
-> Can you please describe stuff coherently?
+The kernel community has rigorously enforced a policy of backwards
+compatibility in its userspace interfaces for a long time. This has
+allowed user applications to enjoy stability across kernel upgrades
+without recompiling. Our goal is to add tooling and documentation to
+help kernel developers maintain this stability.
 
-They are both issues found with S3 testing.
-The PMU issue wasn't being observed with cpuhp.parallel=0.
+In terms of tooling, I've attached a couple of shell scripts we've been
+internally to validate backwards compatibility of our UAPI headers.
+
+The check-uapi.sh script uses libabigail's[1] tool abidiff[2] to compare a
+modified header's ABI before and after a patch is applied. If an existing
+UAPI is modified in a way that's not backwards compatibile, the script
+exits non-zero. We use this script in our continuous integration system
+to block changes that fail the check.
+
+It generates output like this when a backwards incompatible change is
+made to a UAPI header:
+
+ABI differences detected in include/uapi/linux/bpf.h from HEAD~1 -> HEAD
+    [C] 'struct bpf_insn' changed:
+      type size hasn't changed
+      2 data member changes:
+        '__u8 dst_reg' offset changed from 8 to 12 (in bits) (by +4 bits)
+        '__u8 src_reg' offset changed from 12 to 8 (in bits) (by -4 bits)
+
+The check-module-params.sh script is quite a bit simpler. It basically
+greps for module_param.* calls and compares their arguments before/after
+a change is applied.
+
+We wanted to share these scripts with the community and hopefully also
+receive general feedback when it comes to tooling/policy surrounding
+UAPI stability.
+
+In the previous version of this patchset, we received feedback that there
+were too many false positives flagged by the check-uapi.sh script. To
+improve the situation, we've been working with Dodji Seketeli from
+the libabigail team to add additional suppressions which filter out
+many of the flags which were raised before. To take advantage of these
+suppressions, we've raised the minimum abidiff version requirement to
+2.4 which was recently released[3].
+
+Big thanks to Dodji and the libabigail team for working on this use case
+with us!
+
+Previous discussion on v5 of this patch can be found here[4].
+
+[1] https://sourceware.org/libabigail/manual/libabigail-overview.html
+[2] https://sourceware.org/libabigail/manual/abidiff.html
+[3] http://mirrors.kernel.org/sourceware/libabigail/libabigail-2.4.tar.xz
+[4] https://lore.kernel.org/lkml/20230407203456.27141-1-quic_johmoo@quicinc.com/
+
+P.S. While at Qualcomm, Jordan Crouse <jorcrous@amazon.com> authored the
+original version of the UAPI checker script. Thanks Jordan!
+
+John Moon (3):
+  check-uapi: Introduce check-uapi.sh
+  docs: dev-tools: Add UAPI checker documentation
+  check-module-params: Introduce check-module-params.sh
+
+ Documentation/dev-tools/checkuapi.rst | 477 +++++++++++++++++++++
+ Documentation/dev-tools/index.rst     |   1 +
+ scripts/check-module-params.sh        | 295 +++++++++++++
+ scripts/check-uapi.sh                 | 585 ++++++++++++++++++++++++++
+ 4 files changed, 1358 insertions(+)
+ create mode 100644 Documentation/dev-tools/checkuapi.rst
+ create mode 100755 scripts/check-module-params.sh
+ create mode 100755 scripts/check-uapi.sh
+
+
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+--
+2.17.1
+
