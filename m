@@ -2,222 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFFC7D9EA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201707D9EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjJ0RNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 13:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        id S231745AbjJ0RN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 13:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ0RNP (ORCPT
+        with ESMTP id S231649AbjJ0RNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 13:13:15 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD94F61B6;
-        Fri, 27 Oct 2023 10:13:12 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-581e5a9413bso1263509eaf.1;
-        Fri, 27 Oct 2023 10:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698426792; x=1699031592; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=71KOnyhZFDvXLA/+wyHasn62dseja88kJnuT02RkV8w=;
-        b=P31qe6HfNILHItlsazKmFKaLTvd51KcfvYbviKaI3DYNSflR7ig5z+r4bdma/gCfur
-         wUB8AI8GkoK7MYyo2V0ijmt2wemwceePO+Ih8iJNDsKwzNllLXxcIHCSX8VEbgrt6OdU
-         NpAm6PSWl2aJ4QUCZzdkj04jJdRFUlqh/eI/vO7yXv8C7NfJFBtTU+voafFK4vEoi1Sg
-         ihLgc16dl5NPgaW3AGyn5lB/jLUYuTtxAFHNln1013hzWpT4Ok9GAUVu4No8AdNqOUG1
-         nnM8hJ3CrW+thUh/mfuC4VYNntP3+Hl1n3inT3QiWRbcFsphSslLA+/fnixsipnkrHkI
-         09XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698426792; x=1699031592;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=71KOnyhZFDvXLA/+wyHasn62dseja88kJnuT02RkV8w=;
-        b=Zm5860mP2+OFxGbGi/yw1/zdGgRGQcTgck6Vn+toiV9jq9toS72JwvPB5pDvVeSu7W
-         K8FLDGi7J/qg6DskLaEWer1hDMoRwWzq6HJtV7C1rNAzC89mRgoipBJZZ6S+Xl7rl224
-         RjlyGt4flLr+FtJOvxCCn5qx9iG8ViS6Zoz+UqCyRFvaGkoLZ/TrcNCvVFibUGq5uPlp
-         JJIMl/u7fa1qUE5kX4tDvspy9uLG2hR3npN5/F7nnmNVrCnfPE8xJCNJrQltBRF9vhJn
-         4gELKTE7VjxJjXajSkrq59frC0UbcvsMqWMQubvnA413hix+uWoUd/G9911qC141xtWw
-         SZuQ==
-X-Gm-Message-State: AOJu0YyHkAvy4BvAnNewBckuEG/2/InTuYFzimSn+4MWFAjiXBgSHpUU
-        z7U29IFPW8PQIIvCINjWqsl3CMTUZoj8sd0BjqxlTDqI
-X-Google-Smtp-Source: AGHT+IH0oEA9gnYXSOWLyXkcdEfgSrXgIZ2fTX7JjiGKkr8RIbG5RB11MUCuTNwj+iO9h8dO3iDeSwxaVeMndjOVj7Y=
-X-Received: by 2002:a05:6820:1a08:b0:56c:d297:164c with SMTP id
- bq8-20020a0568201a0800b0056cd297164cmr3825808oob.4.1698426791893; Fri, 27 Oct
- 2023 10:13:11 -0700 (PDT)
+        Fri, 27 Oct 2023 13:13:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C97825B;
+        Fri, 27 Oct 2023 10:13:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE27C433C8;
+        Fri, 27 Oct 2023 17:13:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698426831;
+        bh=KPuRo2bnfsBHo258rZKMPIKg4rb/dKZ3sHungljB//Y=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Psc4K6DkTgjU7sQjh0LKAgyBoU4EP44IST1Qj8iM1j2SrrfQB/IZcy1PuxIaRqId0
+         ET8plrgucvcgH2OoPjDkVdOdFWy8oqrzVtKvEjAyOSy0viUrKnnbBpoLasmhTI7afJ
+         81dJQvRBwnLSP5GBjAViUFg+3oB8wmaXkht8b28T6dkUB/ko4u3vOXqsFipahmIA1m
+         7i7kiG0W85z0IND+5c0CsZU0exVTJ5jU4whCcgNsiWYnq1fxieeHDxyoflgDF0eJOZ
+         TvD3SlhkwbCumwhXxUaiuSLyogvvgi2u/GSmPzioZqGfsLtzsqNDG08AQ1/kl68ezH
+         u41JYh4npAOHg==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] airo: replace deprecated strncpy with strscpy_pad
+References: <20231026-strncpy-drivers-net-wireless-cisco-airo-c-v2-1-413427249e47@google.com>
+        <202310270859.8EB5599A@keescook>
+Date:   Fri, 27 Oct 2023 20:13:48 +0300
+In-Reply-To: <202310270859.8EB5599A@keescook> (Kees Cook's message of "Fri, 27
+        Oct 2023 08:59:32 -0700")
+Message-ID: <87h6mcvvhv.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Received: by 2002:a05:6802:48a:b0:4f0:1250:dd51 with HTTP; Fri, 27 Oct 2023
- 10:13:11 -0700 (PDT)
-In-Reply-To: <ZTYAUyiTYsX43O9F@dread.disaster.area>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
- <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f>
- <ZTJmnsAxGDnks2aj@dread.disaster.area> <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
- <ZTYAUyiTYsX43O9F@dread.disaster.area>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Fri, 27 Oct 2023 19:13:11 +0200
-Message-ID: <CAGudoHGzX2H4pUuDNYzYOf8s-HaZuAi7Dttpg_SqtXAgTw8tiw@mail.gmail.com>
-Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23, Dave Chinner <david@fromorbit.com> wrote:
-> On Fri, Oct 20, 2023 at 07:49:18PM +0200, Mateusz Guzik wrote:
->> On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
->> > On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
->> >> > To be clear there is no urgency as far as I'm concerned, but I did
->> >> > run
->> >> > into something which is primarily bottlenecked by inode hash lock
->> >> > and
->> >> > looks like the above should sort it out.
->> >> >
->> >> > Looks like the patch was simply forgotten.
->> >> >
->> >> > tl;dr can this land in -next please
->> >>
->> >> In case you can't be arsed, here is something funny which may convince
->> >> you to expedite. ;)
->> >>
->> >> I did some benching by running 20 processes in parallel, each doing
->> >> stat
->> >> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000
->> >> files,
->> >> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
->> >>
->> >> Best times:
->> >> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
->> >> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
->> >> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
->> >> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
->> >> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
->> >>
->> >> NetBSD failed to complete the run, OOM-killing workers:
->> >> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
->> >> OpenBSD is shafted by a big kernel lock, so no surprise it takes a
->> >> long
->> >> time.
->> >>
->> >> So what I find funny is that Linux needed more time than OmniosCE (an
->> >> Illumos variant, fork of Solaris).
->> >>
->> >> It also needed more time than FreeBSD, which is not necessarily funny
->> >> but not that great either.
->> >>
->> >> All systems were mostly busy contending on locks and in particular
->> >> Linux
->> >> was almost exclusively busy waiting on inode hash lock.
->> >
->> > Did you bother to test the patch, or are you just complaining
->> > that nobody has already done the work for you?
->>
->> Why are you giving me attitude?
+Kees Cook <keescook@chromium.org> writes:
+
+> On Thu, Oct 26, 2023 at 11:19:18PM +0000, Justin Stitt wrote:
 >
-> Look in the mirror, mate.
+>> strncpy() is deprecated for use on NUL-terminated destination strings
+>> [1] and as such we should prefer more robust and less ambiguous string
+>> interfaces.
+>> 
+>> `extra` is clearly supposed to be NUL-terminated which is evident by the
+>> manual NUL-byte assignment as well as its immediate usage with strlen().
+>> 
+>> Moreover, let's NUL-pad since there is deliberate effort (48 instances)
+>> made elsewhere to zero-out buffers in these getters and setters:
+>> 6050 | memset(local->config.nodeName, 0, sizeof(local->config.nodeName));
+>> 6130 | memset(local->config.rates, 0, 8);
+>> 6139 | memset(local->config.rates, 0, 8);
+>> 6414 | memset(key.key, 0, MAX_KEY_SIZE);
+>> 6497 | memset(extra, 0, 16);
+>> (to be clear, strncpy also NUL-padded -- we are matching that behavior)
+>> 
+>> Considering the above, a suitable replacement is `strscpy_pad` due to
+>> the fact that it guarantees both NUL-termination and NUL-padding on the
+>> destination buffer.
+>> 
+>> We can also replace the hard-coded size of "16" to IW_ESSID_MAX_SIZE
+>> because this function is a wext handler.
+>> 
+>> In wext-core.c we have:
+>> static const struct iw_ioctl_description standard_ioctl[] = {
+>> ...
+>>         [IW_IOCTL_IDX(SIOCGIWNICKN)] = {
+>>                 .header_type    = IW_HEADER_TYPE_POINT,
+>>                 .token_size     = 1,
+>>                 .max_tokens     = IW_ESSID_MAX_SIZE,
+>>         },
+>> 
+>> So the buffer size is (strangely) IW_ESSID_MAX_SIZE
+>> 
+>> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+>> Link: https://github.com/KSPP/linux/issues/90
+>> Cc: linux-hardening@vger.kernel.org
+>> Signed-off-by: Justin Stitt <justinstitt@google.com>
 >
-> Starting off with a derogatory statement like:
+> Looks good; thanks!
 >
-> "In case you can't be arsed, ..."
->
-> is a really good way to start a fight.
->
-> I don't think anyone working on this stuff couldn't be bothered to
-> get their lazy arses off their couches to get it merged. Though you
-> may not have intended it that way, that's exactly what "can't be
-> arsed" means.
->
-> I have not asked for this code to be merged because I'm not ready to
-> ask for it to be merged. I'm trying to be careful and cautious about
-> changing core kernel code that every linux installation out there
-> uses because I care about this code being robust and stable. That's
-> the exact opposite of "can't be arsed"....
->
-> Further, you have asked for code that is not ready to be merged to
-> be merged without reviewing it or even testing it to see if it
-> solved your reported problem. This is pretty basic stuff - it you
-> want it merged, then *you also need to put effort into getting it
-> merged* regardless of who wrote the code. TANSTAAFL.
->
-> But you've done neither - you've just made demands and thrown
-> hypocritical shade implying busy people working on complex code are
-> lazy arses.
->
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-So I took few days to take a look at this with a fresh eye and I see
-where the major disconnect is coming from, albeit still don't see how
-it came to be nor why it persists.
+BTW most likely next week this driver and a bunch of other ancient
+drivers will removed:
 
-To my understanding your understanding is that I demand you carry the
-hash bl patch over the finish line and I'm rude about it as well.
+https://patchwork.kernel.org/project/linux-wireless/list/?series=795639&state=*&order=date
 
-That is not my position here though.
+So to avoid unnecessary work on already removed drivers I recommend
+using wireless-next as the baseline for wireless patches. Though I'm
+still planning to apply this patch in case we ever add the driver back
+(I hope not).
 
-For starters my opening e-mail was to Christian, not you. You are
-CC'ed as the patch author. It is responding to an e-mail which claimed
-the patch would land in -next, which to my poking around did not
-happen (and I checked it's not in master either). Since there was no
-other traffic about it that I could find, I figured it was probably
-forgotten. You may also notice the e-mail explicitly states:
-1. I have a case which runs into inode hash being a problem
-2. *there is no urgency*, I'm just asking what's up with the patch not
-getting anywhere.
-
-The follow up including a statement about "being arsed" once more was
-to Christian, not you and was rather "tongue in cheek".
-
-If you know about Illumos, it is mostly slow and any serious
-performance work stopped there when Oracle closed the codebase over a
-decade ago. Or to put it differently, one has to be doing something
-really bad to not be faster today. And there was this bad -- the inode
-hash. I found it amusing and decided to share in addition to asking
-about the patch.
-
-So no Dave, I'm not claiming the patch is not in because anyone is lazy.
-
-Whether the patch is ready for reviews and whatnot is your call to
-make as the author.
-
-To repeat from my previous e-mail I note the lock causes real problems
-in a real-world setting, it's not just microbenchmarks, but I'm in no
-position to test it against the actual workload (only the part I
-carved out into a benchmark, where it does help -- gets rid of the
-nasty back-to-back lock acquire, first to search for the inode and
-then to insert a new one).
-
-If your assessment is that more testing is needed, that makes sense
-and is again your call to make. I repeat again I can't help with this
-bit though. And if you don't think the effort is justified at the
-moment (or there are other things with higher priority), so be it.
-
-It may be I'll stick around in general and if so it may be I'm going
-to run into you again.
-With this in mind:
-
-> Perhaps you should consider your words more carefully in future?
->
-
-On that front perhaps you could refrain from assuming someone is
-trying to call you names or whatnot. But more importantly if you
-consider an e-mail to be rude, you can call it out instead of
-escalating or responding in what you consider to be the same tone.
-
-All that said I'm bailing from this patchset.
-
-Cheers,
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
