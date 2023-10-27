@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFDC7DA159
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305E57DA161
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346140AbjJ0Tck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S1345982AbjJ0TgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 15:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0Tcj (ORCPT
+        with ESMTP id S230451AbjJ0TgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:32:39 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486261A5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:32:36 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9c41e95efcbso343242066b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698435155; x=1699039955; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZWT6rg+UcGuVHCGktF1X9nMLt5S5rmKf4Xsx5qvsANI=;
-        b=Qb8MCI/SE2t09YH08xsRPe7xvIDqvL4YihTNMkSt2rdMW/Dpmkj7WvvfbWvactJv1w
-         mra5/BgWYRmmcK4QXvh8DDvCBQ1YtH+UHMMvnXaIq2T1sNqsnHZXsLru1aFepAOPfxna
-         DTNH668VklYK5WsqmObTVftG6fYPibXxN06+C157bBpeQtKiePh5ITJsTg8S/Y9lOc2K
-         SLcjr3gY2S2eO3BdkSuc9qU5yANyRJ4bf3VQmokP6P2nq059gFycvmOU+bx9alwG6hnZ
-         q0lBMgpJLY8wfPjIhtmRnVmw1miRlhuy3CKN+TKb8U/k9LFvBhPNY4idEgAf4b147jSy
-         KmVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698435155; x=1699039955;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZWT6rg+UcGuVHCGktF1X9nMLt5S5rmKf4Xsx5qvsANI=;
-        b=ib3ZIJFye0kVWu68Mgy8XbD0gfw1t0t7Bfx+5I6s7HWx3AbiSN+sXYxTc6sKY+7FUt
-         FqIs7FCfBzz3Ubekag5jafI13LmRzgszligaWtphi2vvnQL85aR6JnDKKnlVhSrHfkOC
-         M5xa0/JUlXXHh/dF1R+OVV5jjpFJV7jYrYjd2ATyyvB0kN+8iCIl9NgbzleCJZn5g0hh
-         f3N0MmTupWT/5QzX6pVChOwyJrSMUcRjV4yrum5lwtDbD03UzHkcGA077MJAr8LqafUS
-         517lkyQERBblAduMIvRAKSrSiAodM6sx7BEdJhQ8Uri2szouXtxqyHkCN2zMY2kc3AiF
-         0HIA==
-X-Gm-Message-State: AOJu0YzPBOpC1TBps7GOnDf/x8N36ZnVxIbY7HSceJjnO4CVxXi1+Zvk
-        px2sNNWYYgmaFV3rX/1I1SuFQJEiJEnYwsk1IjonIQ==
-X-Google-Smtp-Source: AGHT+IHAODo9hINKXNlQvGgAqxNPpRnNjd4AA89Jgp1KLx343fQyHwwoszpkk3UnOGcXvbD6V54sQTKCIm/OR/KX2/4=
-X-Received: by 2002:a17:907:a0a:b0:9bf:b129:5984 with SMTP id
- bb10-20020a1709070a0a00b009bfb1295984mr2459494ejc.77.1698435154557; Fri, 27
- Oct 2023 12:32:34 -0700 (PDT)
+        Fri, 27 Oct 2023 15:36:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1C71A5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698435317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LKsc88pkZHoqAPKfroQrH7c1N9Kl+C8Sx8ZuUjs9qsY=;
+        b=Im5H04wdhdN7T63+k2WzqukyTE6xiRUuC8G/49LxymvT1HubhzBMRdzEiPYh2ZBYS+Zp2O
+        nRmMZq0MaEZPeyOo+hDWMYsGuWYNXobEqXle12DkVtpNknzzwpVWgsqDtaT3Y0LsLZLPTh
+        SWWIFGFHP4TgBJn4Gzf6yIi6zAOCgqM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-549-kITnugaPMLiuURBJCApRtw-1; Fri,
+ 27 Oct 2023 15:35:04 -0400
+X-MC-Unique: kITnugaPMLiuURBJCApRtw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0FBE42810D6C;
+        Fri, 27 Oct 2023 19:35:04 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.76])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C18C7502E;
+        Fri, 27 Oct 2023 19:35:01 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 27 Oct 2023 21:34:03 +0200 (CEST)
+Date:   Fri, 27 Oct 2023 21:34:00 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfsd_copy_write_verifier: use read_seqbegin() rather
+ than read_seqbegin_or_lock()
+Message-ID: <20231027193359.GB24128@redhat.com>
+References: <20231025163006.GA8279@redhat.com>
+ <20231026145018.GA19598@redhat.com>
+ <ZTvc0Z6DJEYXI/TL@tissot.1015granger.net>
 MIME-Version: 1.0
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com> <eda2f651-93f7-46c5-be7e-e8295903cc1e@lunn.ch>
-In-Reply-To: <eda2f651-93f7-46c5-be7e-e8295903cc1e@lunn.ch>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 27 Oct 2023 12:32:22 -0700
-Message-ID: <CAFhGd8rSw7RRXTh0XE6EekPKeka34k5RT93gzqvP8s=PntCdsA@mail.gmail.com>
-Subject: Re: [PATCH next v2 0/3] ethtool: Add ethtool_puts()
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTvc0Z6DJEYXI/TL@tissot.1015granger.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 5:25=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+On 10/27, Chuck Lever wrote:
 >
-> > Changes in v2:
-> > - wrap lines better in replacement (thanks Joe, Kees)
-> > - add --fix to checkpatch (thanks Joe)
-> > - clean up checkpatch formatting (thanks Joe, et al.)
-> > - rebase against next
+> On Thu, Oct 26, 2023 at 04:50:18PM +0200, Oleg Nesterov wrote:
+> > The usage of read_seqbegin_or_lock() in nfsd_copy_write_verifier()
+> > is wrong. "seq" is always even and thus "or_lock" has no effect,
+> > this code can never take ->writeverf_lock for writing.
+> >
+> > I guess this is fine, nfsd_copy_write_verifier() just copies 8 bytes
+> > and nfsd_reset_write_verifier() is supposed to be very rare operation
+> > so we do not need the adaptive locking in this case.
+> >
+> > Yet the code looks wrong and sub-optimal, it can use read_seqbegin()
+> > without changing the behaviour.
 >
-> Please could you explain the rebase against next? As Vladimir pointed
-> out, all the patches are to drivers/net, so anything in flight should
-> be in net-next, merged by the netdev Maintainers.
+> I was debating whether to add Fixes/Cc-stable, but if the behavior
+> doesn't change, this doesn't need a backport.
 
-OK, should v3 be against net-next? I opted for next as a catch-all.
+Yes, yes, sorry for confusion. This code is not buggy. Just a) it looks
+confusing because read_seqbegin_or_lock() doesn't do what it is supposed
+to do, and b) I am going to change the semantics of done_seqretry() to
+enforce the locking on the 2nd pass.
 
->
->     Andrew
+Chuck, I can reword the changelog to make it more clear and send V2 if
+you think this makes sense.
 
-Thanks
-Justin
+Thanks,
+
+Oleg.
+
