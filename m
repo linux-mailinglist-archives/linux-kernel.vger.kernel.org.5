@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605D77D8F37
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6627D8F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345330AbjJ0HII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S1345312AbjJ0HIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0HIG (ORCPT
+        with ESMTP id S229590AbjJ0HIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:08:06 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BABD1B6
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:08:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c1936fd5so3254354e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:08:03 -0700 (PDT)
+        Fri, 27 Oct 2023 03:08:42 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA791B3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:08:40 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507a0907896so2519708e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698390482; x=1698995282; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698390518; x=1698995318; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=urLRjT67mysNruRgtTA98xvabmDzFVJeJQAoYCD+d9c=;
-        b=Uu6bNJeb/yoV3ghgZPaQIq26jJKepuH0igRhuL+3fTG63cUWA/TO7Oi1mkxwn9T635
-         eLGWGEPcZg2fTr6WVxZ2bxlRzrTfiULxUaZXC9Asvo3KIkFNFPKqB9Gv0bXN1eN3vudm
-         uCiHJBF/oFenIU0IipNNvzUysn1wWFHwwS1ixNVjHNtb9tGoqkLtwhXTk9bHv9y7zIi7
-         Kq7+GNMPEXcnZroCNA8MYy8chVq/wE2ScIhCMHO4hKtKJF+00H4xzqdZDnQSXTewcP1Q
-         nkL/MKJVbsF6V5dPoSAJLf20ZQ8IfNnhLfXnkwagZrsQzt+cg7/l0A+ef/wDpvQ56nA8
-         4o4Q==
+        bh=pGGG79biS/bXjvs5nJ13XfUAnXb9tl5DOwzTwMDkK9c=;
+        b=Z99DrmcFCRtqqV0mskQrgPQQQFiUzhi4byt5oQBrPPf2bA2sPbeWo73UwF2504Nx4X
+         OtYQWAncGB+oDhI5rYtmukUv1xWlQGnh2vKrR891g9yis2HOZ8AD8fatTGXkOtwblUMm
+         3YsYymYN7JNBzOHY4AIkXQF+yIfOM0qXpE5LklPvhvrTM7uC/nOQcMEQayGpO6V9q3b1
+         tkxOQX/UqgjGDHkvIj5xvaq8t8tqzv6uz7IAAbr6wqtdc4CTTkY2fI6quNbmA6E8rsW0
+         VP+Pcihesylkw+A4LoEa1joyFofFRIckiPv6X7HbjKXkvcCEcjz3nvliJxIpdzB7ZvMd
+         bpgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698390482; x=1698995282;
+        d=1e100.net; s=20230601; t=1698390518; x=1698995318;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=urLRjT67mysNruRgtTA98xvabmDzFVJeJQAoYCD+d9c=;
-        b=jhEw5DKmLP6bnvMuJ5mrGy0sZR19PMwKMqgi7u2MHv5UWilm9gYAe0qBs3kqXeEC+X
-         47cN2b3g8FW4oWd9mWPkRk6OVc8lpY+cLXrVFqMqjQmeyEvUCdosTNr0LzeODGVym390
-         MVesB/sJAvFv5DW3NQupUkviDL1gOh426KZuQdJTLz9xgG4OM0goYEd0AQpRubcYUtIu
-         ISWropJQRLZf7IW7qz/xkdQhmRMj2VDr8273mScLp5iApjOFGTHK+7+sCZAzUzQsSSpK
-         YWYu8JRU5NglXxqoyVjbASqPR0gNdCfDYhWKjPW46rwymdElkguUDnKJ8WkZAYqBFmd6
-         yzeg==
-X-Gm-Message-State: AOJu0YxcJVbCqhSFD4vWFU0F7JajfeZvXLZkR1WyK8tk4lFU/5xx14oj
-        PzRZwHfD86uuiBgHX3t9/OPxtw==
-X-Google-Smtp-Source: AGHT+IHzAyrffD+chcntZ1VoMHRzrzQI9sibr5bOPp7+P51DrRvJi2f3wyPGPWM99AmPyt4b8+feHQ==
-X-Received: by 2002:a05:6512:33d1:b0:507:c7b7:3189 with SMTP id d17-20020a05651233d100b00507c7b73189mr1745879lfg.33.1698390481188;
-        Fri, 27 Oct 2023 00:08:01 -0700 (PDT)
+        bh=pGGG79biS/bXjvs5nJ13XfUAnXb9tl5DOwzTwMDkK9c=;
+        b=e/BNy2eYldv7oQCcpvH9UfMjO6timNRujF/6GPyIiGaOcLRdepuaG+f39lkbiVFwRT
+         8W/HIqqWnD0VNzIcVSTX448lmnrlQx/IrG1qj/QvL/jsNaliBH04j8jtmDMvr2ZF2Q6n
+         uxLTldTnDkFXbRMePDDQNc0v0jfDjyWXcaSlyhoH0mI3br+Tbhk9i3hw3i6MCpFIR1+Y
+         5rOo4zizVe8FGGCfPPykrg3Ox+86GZSkYi37nL4TE0ACX3qMiSCVSwJ9+59Z3vW/bLlk
+         f+/8dLik45FYocWV3ODRNpQnrMQ1y8qIerFrKYovtlpEGBgqgbOnsE9ieZZitqY5vGJl
+         ueGg==
+X-Gm-Message-State: AOJu0YxR2o705qqFXWLgjrFThRlt14OuqwFbGTmVyvAXNobwVm3pgCzX
+        ZqxI+fGsRUa8XBNiNFSGy5ozag==
+X-Google-Smtp-Source: AGHT+IH2i+lTdqPGeGcoKIWd2Mn53W0ospb+lmde3lFlupPPvRC1QcoXnOF3LtZlfOBY0qCipIopGQ==
+X-Received: by 2002:a05:6512:24b:b0:507:a908:4a93 with SMTP id b11-20020a056512024b00b00507a9084a93mr1130670lfo.61.1698390518373;
+        Fri, 27 Oct 2023 00:08:38 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id f15-20020a19380f000000b00505684dd2f4sm162646lfa.84.2023.10.27.00.07.59
+        by smtp.gmail.com with ESMTPSA id f15-20020a19380f000000b00505684dd2f4sm162646lfa.84.2023.10.27.00.08.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 00:08:00 -0700 (PDT)
-Message-ID: <5eaee04b-249b-4d95-ad62-22a7fa928656@linaro.org>
-Date:   Fri, 27 Oct 2023 09:07:58 +0200
+        Fri, 27 Oct 2023 00:08:37 -0700 (PDT)
+Message-ID: <55e8b0e6-6fc9-4e85-9644-75b5d35b310a@linaro.org>
+Date:   Fri, 27 Oct 2023 09:08:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
- codec IP support
+Subject: Re: [EXT] Re: [PATCH v6 02/11] dt-bindings: arm: fsl: add imx-se-fw
+ binding doc
 Content-Language: en-US
-To:     Sebastian Fricke <sebastian.fricke@collabora.com>
-Cc:     Devarsh Thakkar <devarsht@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Darren Etheridge <detheridge@ti.com>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>,
-        "Raghavendra, Vignesh" <vigneshr@ti.com>,
-        "Bhatia, Aradhya" <a-bhatia1@ti.com>,
-        "Luthra, Jai" <j-luthra@ti.com>,
-        "Brnich, Brandon" <b-brnich@ti.com>,
-        "Pothukuchi, Vijay" <vijayp@ti.com>
-References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
- <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
- <4c557cbd-33e9-a0df-3431-04ade12b6f07@ti.com>
- <7d40c242-7779-45de-83c5-06db9983dae1@linaro.org>
- <20231026163339.n6ngsleiycsn4jyw@basti-XPS-13-9310>
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>, Rob Herring <robh@kernel.org>
+Cc:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "clin@suse.com" <clin@suse.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
+        Varun Sethi <V.Sethi@nxp.com>
+References: <20230927175401.1962733-1-pankaj.gupta@nxp.com>
+ <20230927175401.1962733-3-pankaj.gupta@nxp.com>
+ <20230928185159.GA1035361-robh@kernel.org>
+ <DU2PR04MB8630FF5994D65A5404E8B9B095CBA@DU2PR04MB8630.eurprd04.prod.outlook.com>
+ <95ce1ef5-dad6-4014-8aec-44adec5b6435@linaro.org>
+ <DU2PR04MB863004DCF8AEC09BCB809BD495DDA@DU2PR04MB8630.eurprd04.prod.outlook.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,44 +127,40 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231026163339.n6ngsleiycsn4jyw@basti-XPS-13-9310>
+In-Reply-To: <DU2PR04MB863004DCF8AEC09BCB809BD495DDA@DU2PR04MB8630.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 18:33, Sebastian Fricke wrote:
-
-> required:
->    - compatible
->    - reg
->    - clocks
->    - interrupts
+On 26/10/2023 13:23, Pankaj Gupta wrote:
+>>>>> +additionalProperties: false
+>>>>> +
+>>>>> +examples:
+>>>>> +  - |
+>>>>> +    ele_fw: se-fw {
+>>>>
+>>>> Drop unused labels.
+>>> I am sorry, if I am not able to understand your point here.
+>>> But, all the below labels are getting used.
+>>> I can remove the fsl,mu-id. Will do it in V7.
+>>
+>> Comment was about labels, not properties.
+> The label "ele_fw", is needed to be placed in different DTSI file.
 > 
-> Is it possible to make it required later on for certain SoC by adding
-> something along the lines of:
+> For instance, node is added in i.mx93.dtsi.
+> Using label, the memory-region property dependent on size of DDR on the platform, is placed in:
 > 
-> allOf:
->    - if:
->        properties:
->          compatible:
->            contains:
->              enum:
->                - soc_compatible...
->                ...
->      then:
->        properties:
->          interrupts: true
+> - imx93-11x11-evk.dts
 
-See example schema:
-https://elixir.bootlin.com/linux/v5.19/source/Documentation/devicetree/bindings/example-schema.yaml#L212
+And how is this related to this patch?
 
 Best regards,
 Krzysztof
