@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A967D9A3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E44E7D9A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345949AbjJ0Nlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S1345981AbjJ0NnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345688AbjJ0Nl3 (ORCPT
+        with ESMTP id S229503AbjJ0NnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:41:29 -0400
+        Fri, 27 Oct 2023 09:43:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57FF1A6;
-        Fri, 27 Oct 2023 06:41:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85B61C433C7;
-        Fri, 27 Oct 2023 13:41:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA09E9D;
+        Fri, 27 Oct 2023 06:43:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64EC8C433C7;
+        Fri, 27 Oct 2023 13:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698414086;
-        bh=AL3A8bFN1zfoMmZfMsDpi1qxeV1lBiHx1wsVJN9VdIo=;
+        s=k20201202; t=1698414193;
+        bh=2lyY381zzNPtoFlyJnJ0cgITdp0/j4yyQ9Zy+/UO6Vw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jpLAygDXnUNrH++Dpobibdj2orfeCfr77EE3/iX1VC8SH7eNbZIE5JAP+IC+Cgv0M
-         G6iUq4xTR0pRUANjJ3mEzrkvpf1FG4gUw9w2DzzYWlD7P0QcCsneb2ZJxTPMfdMRmA
-         dfb26dlhak1AeYbK0OFC69mvxlHXTxzg6sPe4/u5fKKzzJw+KQBBnhDiL2tqAo2fcP
-         O2ndD8YcniCRxaEyixkF0mPH2P+fO60ErePd2WOW+KQ6eDpvuN1IkcsYjXclNGmp6R
-         5b7MkSOtK/cECaGTl5q1OyeTx5V9uS2yI76tPtkGqXQqyUO0Z2fH5PzIuupjhSBA4L
-         41VNhsZb29RUg==
-Date:   Fri, 27 Oct 2023 14:41:23 +0100
+        b=IUeuPoSRcLmjOiSXNXQ5M1H66ul/DWaFzzsrVN1u1Vni8q3U4QU2znPxToUSeSgmI
+         LE5fxDNHJfAfUwlTJShJVjvWTjnF1XZqkv8/R7eTBPp3yeYmVtbV7HDpc6mrvWeC5M
+         ovNCwjuQogdV+yTvFmDNQBepylvNHkZao5ee5ag9RYW8aJv17x9i2xVGz9KAhYN0ER
+         /DGal3IKUNnevHwwVhJMChJnJneagZfUObF0Q3YYlHMCHI7blZDnKgyuhwsfLUjQuI
+         hvzwFQb3jKDvmBoQHHvbN5GBuXvOvPrF7J22fQMnpZhqneRHXxsk9RjUzU+CJ910cZ
+         uS025uVMLtW7w==
+Date:   Fri, 27 Oct 2023 14:42:34 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Angel Iglesias <ang.iglesiasg@gmail.com>,
+        linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
         Phil Elwell <phil@raspberrypi.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5p?= =?UTF-8?B?Zw==?= 
         <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v2 3/5] iio: pressure: bmp280: Rearrange vars in reverse
- xmas tree order
-Message-ID: <20231027144123.4d371a33@jic23-huawei>
-In-Reply-To: <bb63a996eb9c4555bf83471770f0169d2627e79c.1697994521.git.ang.iglesiasg@gmail.com>
+Subject: Re: [PATCH v2 4/5] iio: pressure: bmp280: Allow multiple chips id
+ per family of devices
+Message-ID: <20231027144234.0ad6c7b6@jic23-huawei>
+In-Reply-To: <ZTZYNjq/1X95ijXh@smile.fi.intel.com>
 References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
-        <bb63a996eb9c4555bf83471770f0169d2627e79c.1697994521.git.ang.iglesiasg@gmail.com>
+        <eade22d11e9de4405ea19fdaa5a8249143ae94df.1697994521.git.ang.iglesiasg@gmail.com>
+        <ZTZYNjq/1X95ijXh@smile.fi.intel.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -58,61 +58,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Oct 2023 19:22:19 +0200
-Angel Iglesias <ang.iglesiasg@gmail.com> wrote:
+On Mon, 23 Oct 2023 14:25:42 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> Small cleanup reordering local variable declarations following reverse
-> christmas tree convention.
+> On Sun, Oct 22, 2023 at 07:22:20PM +0200, Angel Iglesias wrote:
+> > Improve device detection in certain chip families known to have various
+> > chip ids.
+> > When no known ids match, gives a warning but follows along what device
+> > said on the firmware and tries to configure it.  
 > 
-> Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Applied patches 1-3 to the togreg branch of iio.git.
-I'll be rebasing that on rc1 once available.  In meantime, pushed out
-as testing for 0-day to take a poke at it.
+> I would rephrase it a bit:
+> 
+> "Improve device detection in certain chip families known to have
+> various chip IDs. When no ID matches, give a warning but follow
+> along what device said on the firmware side and try to configure
+> it."
+> 
+> ...
+> 
+> > +	for (i = 0; i < data->chip_info->num_chip_id; i++) {
+> > +		if (chip_id == data->chip_info->chip_id[i]) {
+> > +			dev_info(dev, "0x%x is a known chip id for %s\n", chip_id, name);
+> > +			break;
+> > +		}  
+> 
+> > +		dev_warn(dev, "chip id 0x%x does not match known id 0x%x\n",
+> > +			 chip_id, data->chip_info->chip_id[i]);  
+> 
+> If the matching ID is not the first one, user will have an unneeded warning here.
 
-Thanks,
+Could be a dev_dbg() but I'd just drop it entirely.
 
-Jonathan
 
 > 
-> diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp280-i2c.c
-> index b3e069730f97..34e3bc758493 100644
-> --- a/drivers/iio/pressure/bmp280-i2c.c
-> +++ b/drivers/iio/pressure/bmp280-i2c.c
-> @@ -7,9 +7,9 @@
->  
->  static int bmp280_i2c_probe(struct i2c_client *client)
->  {
-> -	struct regmap *regmap;
-> -	const struct bmp280_chip_info *chip_info;
->  	const struct i2c_device_id *id = i2c_client_get_device_id(client);
-> +	const struct bmp280_chip_info *chip_info;
-> +	struct regmap *regmap;
->  
->  	chip_info = i2c_get_match_data(client);
->  
-> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
-> index 2eed483a8cc4..433d6fac83c4 100644
-> --- a/drivers/iio/pressure/bmp280-spi.c
-> +++ b/drivers/iio/pressure/bmp280-spi.c
-> @@ -14,8 +14,7 @@
->  static int bmp280_regmap_spi_write(void *context, const void *data,
->                                     size_t count)
->  {
-> -	struct device *dev = context;
-> -	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_device *spi = to_spi_device(context);
->  	u8 buf[2];
->  
->  	memcpy(buf, data, 2);
-> @@ -31,8 +30,7 @@ static int bmp280_regmap_spi_write(void *context, const void *data,
->  static int bmp280_regmap_spi_read(void *context, const void *reg,
->                                    size_t reg_size, void *val, size_t val_size)
->  {
-> -	struct device *dev = context;
-> -	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_device *spi = to_spi_device(context);
->  
->  	return spi_write_then_read(spi, reg, reg_size, val, val_size);
->  }
+> >  	}  
+> 
 
