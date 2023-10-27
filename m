@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376E17D9289
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6B27D9295
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345488AbjJ0Iqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S1345544AbjJ0Isi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbjJ0Iqj (ORCPT
+        with ESMTP id S234963AbjJ0Ish (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:46:39 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168F31B9;
-        Fri, 27 Oct 2023 01:46:37 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso25284861fa.3;
-        Fri, 27 Oct 2023 01:46:36 -0700 (PDT)
+        Fri, 27 Oct 2023 04:48:37 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F3DC4;
+        Fri, 27 Oct 2023 01:48:35 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6bee11456baso1732929b3a.1;
+        Fri, 27 Oct 2023 01:48:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698396395; x=1699001195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dLCn7UHp+SZUNn49syvJKwh2mLvcGW4KGz1Fbc7fgO0=;
-        b=Y9UFPyOUUCFiKkZ0Yu3kcYGITrQ3CpII+GjF4ASQ4tYkcQ4mhMseAt90beAayKQyGJ
-         5vW06bv7YLC2UHu/CMIBk7B8loESczPjbKH9gmUgvEQZ4HFGjCwVUjtmWJpJP+k3cOp7
-         lkyNGzZxwBAQMi7BLSeyfpYxhtRfXKZAy3XPZejlpEuyIday2d5WH7R51MNdo0axctnF
-         Xb93GiuFVrp81rWG8OC5N13GzwusuPVuiYdF2AkJuxwP+5QxewSkiLWSBvp2Gsy98ETR
-         LuYkzH0DI5mRXvipRrEwzIFRI6XMDzG0bXIeBFIMHfhsp50AyrI6VvIEQl0kbUu/a3qJ
-         Mejg==
+        d=gmail.com; s=20230601; t=1698396514; x=1699001314; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nvOPHwGJQebkrMEWHUin3lPRoZdTkotFVHLS8/2H+/s=;
+        b=fuvom1zTlz+Rvjuo3K0pg83kKLjTEwICewWV0nchTcM8gliC2IvFzEbMLlgdz981iC
+         eOWFqctq+7iHYHFtBZ9A9WeVtaHQ/Fz+y73SpXgK8yiT3SFUI33aZvcILiSQsBlO/A8X
+         3QSyYApjLR7QIH5xIG+VizDFhR5vnKXMY4BrOwqMEvVFt8YxeXSskq2jDLyrShSs7CGp
+         0VsGD5OkAufcGc5Q/du0mKAGUMdZmUH8QzL2z2dTtLwUJeRQnTfcHI5263qR7rQY5KBd
+         /7/bYguXMHeJKlPggge8pmIUO/rCCKrvIjLCmEhv3qsEreZ3vjounfF3ulcVgpvu/mnI
+         RxcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698396395; x=1699001195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698396514; x=1699001314;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dLCn7UHp+SZUNn49syvJKwh2mLvcGW4KGz1Fbc7fgO0=;
-        b=b9lq8YAHF/3bi9tqp/fDXSTxBEtuuvUA/z1LvEvBgm66xMTkGRK6NbWXs4hkf+cNAQ
-         LTPJW2pCKbjcOj21ym4m1kdI3nmDlu5pJHReGVOAR08Gagbgghzanu45TjP6aMporvBT
-         4SKDpuzhQjjejJAFLLkndHYFeW+lmUaYQIyd52RwDNntxHXcR/P8hnpFEPRuCsk+78Pr
-         PScO60yUahavUbR5MaJnD6zxnMetOtHqTe/OzD6sNh+F2vyvgr7mHT3KlB9hczCty4RU
-         leRF3DMHH3QdByipigiwRWQVGadMqCQgm4eSWet8jOol+D74/vARZg5Ox/OtcYz/89p1
-         0Xbw==
-X-Gm-Message-State: AOJu0YxpFvxjS+YdOMXkzKua4mqgE25bfN4sNq2IkxXJZcxfZF+q3sxj
-        yBK3E6FR9cC+cIpnh6Vc/zA=
-X-Google-Smtp-Source: AGHT+IGUvjJGJ/lC22QiIWWvXgmA6P40WDl5e/vGTz779cMSodx/zSxvFWrbY6bA4N1hQYBuTMfdGA==
-X-Received: by 2002:a05:651c:2211:b0:2c5:6c7:9e73 with SMTP id y17-20020a05651c221100b002c506c79e73mr1776256ljq.48.1698396394942;
-        Fri, 27 Oct 2023 01:46:34 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id f14-20020a05600c4e8e00b003fc0505be19sm1077344wmq.37.2023.10.27.01.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 01:46:34 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] perf callchain: Fix spelling mistake "statisitcs" -> "statistics"
-Date:   Fri, 27 Oct 2023 09:46:33 +0100
-Message-Id: <20231027084633.1167530-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        bh=nvOPHwGJQebkrMEWHUin3lPRoZdTkotFVHLS8/2H+/s=;
+        b=g1K7wzHh4yrPKxPeNZVXpUnn+S2D4f0dGZ6sXzriyhOYGR5IQZiy8VeilelA4vWSnf
+         UUza/cOI8GT0RZx/yHeJcRn07kMVP+o9M+DPFsSM21afgwOGQxVOTivMaY4XZlteN5c1
+         rWQMfexhXr4QYm3BBAj5sV3TffLIM8KWEYLjRYq8hmMMomQvprUzPqVRtwU+z4uIDhL3
+         mmIjCkDzdu1vtrr5CPkdnRcvXWoxVoC4xJqXbBOeEmVu4TmMEIXDOBcwmCPHl1VrAVig
+         5eXR1I9C0bg7LLdXS4jqVrptzZ0vzDynaNvKK3I6GFVq4aAUx1c7oyz331uEjqIL6PCZ
+         f+/g==
+X-Gm-Message-State: AOJu0YynXrtFN8488NuH83mHfJ/Mr00jtWNRLQzXTX1SkT7jl++3T83l
+        DZXosmi1ZPHxFOa0ndkJ9zcJFgowhZPTEdARiTA=
+X-Google-Smtp-Source: AGHT+IEPjsu0T5+FwEyTwM9n0U+omys2gq3u41JIwN/UvpWdbPS/4nRe4abawxvVWdlF+P6OxrHSTyQYByprePhJgZs=
+X-Received: by 2002:a05:6a20:7489:b0:174:2286:81f4 with SMTP id
+ p9-20020a056a20748900b00174228681f4mr2266082pzd.14.1698396514550; Fri, 27 Oct
+ 2023 01:48:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20231025104457.628109-1-robimarko@gmail.com> <20231025104457.628109-2-robimarko@gmail.com>
+ <77314fe2-2936-4f89-a347-4eb288507c47@linaro.org> <1b99abed-6572-4550-98cc-56667a507883@linaro.org>
+In-Reply-To: <1b99abed-6572-4550-98cc-56667a507883@linaro.org>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Fri, 27 Oct 2023 10:48:22 +0200
+Message-ID: <CAOX2RU7gXAJM8xYOc2G__2HSQCQKuy5sUcXoyr_a8WKndD1yLg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,35 +71,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a couple of spelling mistakes in perror messages. Fix them.
+On Thu, 26 Oct 2023 at 20:45, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+>
+>
+> On 10/26/23 20:42, Konrad Dybcio wrote:
+> >
+> >
+> > On 10/25/23 12:44, Robert Marko wrote:
+> >> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
+> >> and drop the curent code that is de-asserting the USB GDSC-s as part of
+> >> the GCC probe.
+> >>
+> >> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >> ---
+> > Applying patches 1 and 3 without this one breaks usb, no?
+> Sorry, my hands don't keep up with my brain - that's almost another
+> speculative execution vulnerability!
+>
+> What I meant to say is:
+>
+> applying patches 1 and 2 breaks USB
+>
+> but
+>
+> the solution here would be to apply patch 1 and patch 3, followed
+> by patch 2 (unless it will make the USB defer, IDK, it's probably
+> easier to just test than to dive deep into the code)
+>
+> with Bjorn taking both subsystems, we can make that work I think
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/perf/util/callchain.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
+Applying patches 1 and 3 without patch 2 will make USB fail with:
+# [   11.351681] dwc3-qcom 8af8800.usb: deferred probe timeout,
+ignoring dependency
+[   11.351729] dwc3-qcom: probe of 8af8800.usb failed with error -110
 
-diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-index 99cce43ba152..8262f69118db 100644
---- a/tools/perf/util/callchain.c
-+++ b/tools/perf/util/callchain.c
-@@ -605,7 +605,7 @@ fill_node(struct callchain_node *node, struct callchain_cursor *cursor)
- 				if (!call->brtype_stat) {
- 					call->brtype_stat = zalloc(sizeof(*call->brtype_stat));
- 					if (!call->brtype_stat) {
--						perror("not enough memory for the code path branch statisitcs");
-+						perror("not enough memory for the code path branch statistics");
- 						free(call->brtype_stat);
- 						return -ENOMEM;
- 					}
-@@ -774,7 +774,7 @@ static enum match_result match_chain(struct callchain_cursor_node *node,
- 			if (!cnode->brtype_stat) {
- 				cnode->brtype_stat = zalloc(sizeof(*cnode->brtype_stat));
- 				if (!cnode->brtype_stat) {
--					perror("not enough memory for the code path branch statisitcs");
-+					perror("not enough memory for the code path branch statistics");
- 					return MATCH_ERROR;
- 				}
- 			}
--- 
-2.39.2
+And yes, applying patches 1 and 2 without patch 3 will also break USB.
+That is why I sent this as a series.
 
+Regards,
+Robert
+
+>
+> Konrad
