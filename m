@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FE97DA1BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9867DA1C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346408AbjJ0U2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        id S1346384AbjJ0UaU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 16:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0U2e (ORCPT
+        with ESMTP id S229712AbjJ0UaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:28:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AEB1AA;
-        Fri, 27 Oct 2023 13:28:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12176C433C7;
-        Fri, 27 Oct 2023 20:28:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698438511;
-        bh=CHg2FCXQg1uLVbCPEvYlaMw0GzG2eevfyBDReT+5JuE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=quJuJNRdjuob8boA983k4FOnreDfGAbL6gqlB1tiJNds7qyczUFBsCwBzJKEe9ty3
-         kE4cjREP4EG+ScDAKsfQlX8hP/1ind1IJXMbrxbYX7vpKD5Zznj3wV2CPhW/sAyDzH
-         C9oFIFM48XI/Nk0CESVq1CxkevR3S7rDQO5C1wcouqcSxzktnxjsQCzjpbsXzXX8Wg
-         iDZkyOTlVpDHennrlOuWkmnAFnPXw611oYu3VtOuD/9hjBWiuwPQZT9dBOfgi/Bxul
-         QQ9QG3eJcq/KKmnHzef3g2FBibBnoovV6LqDusemjxOnEVfSsL0wH/4JL01Xz16kuR
-         5qW3apIL89EJg==
-Message-ID: <702fe81a44d3526cd2ec87bf8cd79741ac0d0782.camel@kernel.org>
-Subject: Re: [PATCH] nfsd_copy_write_verifier: use read_seqbegin() rather
- than read_seqbegin_or_lock()
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 27 Oct 2023 16:28:29 -0400
-In-Reply-To: <20231026145018.GA19598@redhat.com>
-References: <20231025163006.GA8279@redhat.com>
-         <20231026145018.GA19598@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 27 Oct 2023 16:30:19 -0400
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696541B5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:30:15 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id EBDE8608890D;
+        Fri, 27 Oct 2023 22:30:12 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id G447C4Tn4azn; Fri, 27 Oct 2023 22:30:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 2EF69622F591;
+        Fri, 27 Oct 2023 22:30:12 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id YQUC60C59djK; Fri, 27 Oct 2023 22:30:12 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id C747B608890D;
+        Fri, 27 Oct 2023 22:30:11 +0200 (CEST)
+Date:   Fri, 27 Oct 2023 22:30:10 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     ZhaoLong Wang <wangzhaolong1@huawei.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+        dpervushin <dpervushin@embeddedalley.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        chengzhihao1 <chengzhihao1@huawei.com>,
+        yi zhang <yi.zhang@huawei.com>,
+        yangerkun <yangerkun@huawei.com>
+Message-ID: <174426702.13324.1698438610904.JavaMail.zimbra@nod.at>
+In-Reply-To: <20231027194026.1bc32dfe@xps-13>
+References: <20231027012033.50280-1-wangzhaolong1@huawei.com> <20231027194026.1bc32dfe@xps-13>
+Subject: Re: [PATCH v3] mtd: Fix gluebi NULL pointer dereference caused by
+ ftl notifier
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Fix gluebi NULL pointer dereference caused by ftl notifier
+Thread-Index: 9idq5YltiezeBp0v4nFqPZqAKQMSSA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 16:50 +0200, Oleg Nesterov wrote:
-> The usage of read_seqbegin_or_lock() in nfsd_copy_write_verifier()
-> is wrong. "seq" is always even and thus "or_lock" has no effect,
-> this code can never take ->writeverf_lock for writing.
->=20
-> I guess this is fine, nfsd_copy_write_verifier() just copies 8 bytes
-> and nfsd_reset_write_verifier() is supposed to be very rare operation
-> so we do not need the adaptive locking in this case.
->=20
-> Yet the code looks wrong and sub-optimal, it can use read_seqbegin()
-> without changing the behaviour.
->=20
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->  fs/nfsd/nfssvc.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> index c7af1095f6b5..094b765c5397 100644
-> --- a/fs/nfsd/nfssvc.c
-> +++ b/fs/nfsd/nfssvc.c
-> @@ -359,13 +359,12 @@ static bool nfsd_needs_lockd(struct nfsd_net *nn)
->   */
->  void nfsd_copy_write_verifier(__be32 verf[2], struct nfsd_net *nn)
->  {
-> -	int seq =3D 0;
-> +	unsigned seq;
-> =20
->  	do {
-> -		read_seqbegin_or_lock(&nn->writeverf_lock, &seq);
-> +		seq =3D read_seqbegin(&nn->writeverf_lock);
->  		memcpy(verf, nn->writeverf, sizeof(nn->writeverf));
-> -	} while (need_seqretry(&nn->writeverf_lock, seq));
-> -	done_seqretry(&nn->writeverf_lock, seq);
-> +	} while (read_seqretry(&nn->writeverf_lock, seq));
->  }
-> =20
->  static void nfsd_reset_write_verifier_locked(struct nfsd_net *nn)
+----- Ursprüngliche Mail -----
+> Von: "Miquel Raynal" <miquel.raynal@bootlin.com>
+>> Detailed reproduction information available at the link[1],
+>> 
+>> The solution for the gluebi module is to run jffs2 on the UBI
+>> volume without considering working with ftl or mtdblock.[2].
+> 
+> I am sorry but ftl, gluebi, mtdblock, jffs2 and ubi in the same report
+> seem a little bit fuzzy. Are you sure about this sentence?
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+ZhaoLong Wang found an interesting bug while stacking various MTD components.
+I suggested to just deny mtdblock on top of gluebi to avoid the whole
+problem class instead of adding more duct tape.
+
+Thanks,
+//richard
+
+The issue reminds me of one of my favorite Monty Python sketches, https://www.youtube.com/watch?v=LFrdqQZ8FFc
+;-)
