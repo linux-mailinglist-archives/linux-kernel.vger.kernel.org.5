@@ -2,159 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06B47D8DEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 06:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AF77D8DF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjJ0Ezf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 00:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        id S1345039AbjJ0FFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbjJ0Eza (ORCPT
+        with ESMTP id S229501AbjJ0FFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 00:55:30 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606081A7;
-        Thu, 26 Oct 2023 21:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698382525;
-        bh=pn/MK2PwSd3NO/fy5gAheuSGiNydeLRHOjVKL3rZO80=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NNRNq9VHCi50Uxd6ixpXE2LmG03uRZB/+Jp9sF6I02bJByTdcDGHdn1G8lvl6MQu4
-         uGA2jj/q9GdWDSJDfK5rUAw0MVlvJnXu6oJcYIR89HbruuU8Klou+wZI5qxSRnpR6w
-         IE3SBgqsa8qJ4cCJf+JbMUqRrCumKHasOg+HerI7NB83Xji5Mp6gG20GdnNWHzYxGv
-         0d9Wgtbw2xXMxfrdFW79wZYYfW5nrEnzt2PF3lLZk4O+D8bpa316fEk4UhX4MMbwPU
-         oAdz7qjfjqO2r+j1GwWphcodvpZbSnT8m24gwLmi2RlAQzybFB1MWhdx+FRCArePqa
-         66Wy2zOPoPWzg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGr2M4MzDz4wd1;
-        Fri, 27 Oct 2023 15:55:23 +1100 (AEDT)
-Date:   Fri, 27 Oct 2023 15:55:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
-Subject: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20231027155522.6b2863a4@canb.auug.org.au>
+        Fri, 27 Oct 2023 01:05:31 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB03F1AC
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:05:26 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-581f31b7327so3254791eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:05:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698383126; x=1698987926;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rh0KXsNpRxx6btHgAIMOlmjDzMCaNEDaLetNUfJyvkc=;
+        b=mvHqht3jJIWsg/0J2mTZZaacviQgWuMVP2q7LCYZ2l4mxt1Jx3tfrh8+JRteL4q+BX
+         h1L7RESSD5EgK4X3B/iIoxQpaZ9WTajqtMgyAm1iY4k8RW2Mgces36ZxrnY+pGgKLJfK
+         oCY6DqlfJEHAHkgm0MnNml1graPRG6EOBQ1ptZI0LcpiT5T2hPGIP0ga1jkBtd5rgQLx
+         9V//Yn44H+4BzicIsTDKSfYpbYdGRNLelZTd2gGaTvgH3Rbqb8TFicLPjvK1zuJ0QAyA
+         N6LbMnwPmIBFqsQoP13VoKQv30p5U0VGQB4MbRLv1g16++j3aKnWvnM80tPWlNG4RTuP
+         f6rA==
+X-Gm-Message-State: AOJu0YyQvS8EtnUBu2//dLMsn/OX2v4HcLPZLrKlSTXl3E7i822/DiRG
+        PQn3fJHomJtoqvY5i1g3uv1L/hhN71GafaPi2kScQG4VEvZU
+X-Google-Smtp-Source: AGHT+IE+QWJTonndZGFf6jRDgdN8ovDhbsrDw5KU3d9PVED1jDX7UN40eqEyHwiV2ofZDEhCzZ5xYr/AYnjZgtPhv2DnIt3put66
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bmNe/dKWE5QI_gaZUeETryt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:c599:b0:1e9:880f:340d with SMTP id
+ ba25-20020a056870c59900b001e9880f340dmr2278393oab.5.1698383126293; Thu, 26
+ Oct 2023 22:05:26 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 22:05:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef757e0608aba23d@google.com>
+Subject: [syzbot] [ext4?] general protection fault in locks_remove_posix
+From:   syzbot <syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bmNe/dKWE5QI_gaZUeETryt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-Today's linux-next merge of the iommufd tree got a conflict in:
+HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e75739680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
+dashboard link: https://syzkaller.appspot.com/bug?extid=ba2c35eb32f5a85137f8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125607f5680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a22e93680000
 
-  drivers/iommu/iommufd/selftest.c
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/disk-20305791.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinux-20305791.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/bzImage-20305791.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/81394ce5859f/mount_0.gz
 
-between commits:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com
 
-  1c68cbc64fe6 ("iommu: Add IOMMU_DOMAIN_PLATFORM")
-  13fbceb1b8e9 ("iommufd: Convert to alloc_domain_paging()")
+general protection fault, probably for non-canonical address 0xdffffc001ffff11a: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x00000000ffff88d0-0x00000000ffff88d7]
+CPU: 1 PID: 5052 Comm: udevd Not tainted 6.6.0-rc6-next-20231020-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:list_empty include/linux/list.h:373 [inline]
+RIP: 0010:locks_remove_posix+0x100/0x510 fs/locks.c:2555
+Code: 4d 8b ae 20 02 00 00 4d 85 ed 0f 84 0c 02 00 00 e8 15 60 7d ff 49 8d 55 50 48 b9 00 00 00 00 00 fc ff df 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f 85 ae 03 00 00 49 8b 45 50 48 39 c2 0f 84 db 01 00
+RSP: 0018:ffffc90003d6f948 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff8880271cca00 RCX: dffffc0000000000
+RDX: 00000000ffff88d0 RSI: 000000001ffff11a RDI: ffff8880796982e0
+RBP: 1ffff920007adf2b R08: 0000000000000003 R09: 0000000000004000
+R10: 0000000000000000 R11: dffffc0000000000 R12: ffffc90003d6f988
+R13: 00000000ffff8880 R14: ffff8880796980c0 R15: ffff8880271ccb90
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc227c3e000 CR3: 000000002000e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ filp_flush+0x11b/0x1a0 fs/open.c:1554
+ filp_close+0x1c/0x30 fs/open.c:1563
+ close_files fs/file.c:432 [inline]
+ put_files_struct fs/file.c:447 [inline]
+ put_files_struct+0x1df/0x360 fs/file.c:444
+ exit_files+0x82/0xb0 fs/file.c:464
+ do_exit+0xa51/0x2ac0 kernel/exit.c:866
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1021
+ get_signal+0x2391/0x2760 kernel/signal.c:2904
+ arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11c/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x4b/0x110 arch/x86/entry/common.c:88
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fc2276be3cd
+Code: Unable to access opcode bytes at 0x7fc2276be3a3.
+RSP: 002b:00007ffd929ccc20 EFLAGS: 00000246 ORIG_RAX: 00000000000000ea
+RAX: 0000000000000000 RBX: 00007fc227b0bc80 RCX: 00007fc2276be3cd
+RDX: 0000000000000006 RSI: 00000000000013bc RDI: 00000000000013bc
+RBP: 00000000000013bc R08: 0000000000000000 R09: 0000000000000002
+R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000006
+R13: 00007ffd929cce30 R14: 0000000000001000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+----------------
+Code disassembly (best guess):
+   0:	4d 8b ae 20 02 00 00 	mov    0x220(%r14),%r13
+   7:	4d 85 ed             	test   %r13,%r13
+   a:	0f 84 0c 02 00 00    	je     0x21c
+  10:	e8 15 60 7d ff       	call   0xff7d602a
+  15:	49 8d 55 50          	lea    0x50(%r13),%rdx
+  19:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+  20:	fc ff df
+  23:	48 89 d6             	mov    %rdx,%rsi
+  26:	48 c1 ee 03          	shr    $0x3,%rsi
+* 2a:	80 3c 0e 00          	cmpb   $0x0,(%rsi,%rcx,1) <-- trapping instruction
+  2e:	0f 85 ae 03 00 00    	jne    0x3e2
+  34:	49 8b 45 50          	mov    0x50(%r13),%rax
+  38:	48 39 c2             	cmp    %rax,%rdx
+  3b:	0f                   	.byte 0xf
+  3c:	84 db                	test   %bl,%bl
+  3e:	01 00                	add    %eax,(%rax)
 
-from the iommu tree and commits:
 
-  408663619fcf ("iommufd/selftest: Add domain_alloc_user() support in iommu=
- mock")
-  266ce58989ba ("iommufd/selftest: Test IOMMU_HWPT_ALLOC_DIRTY_TRACKING")
-  7adf267d66d1 ("iommufd/selftest: Test IOMMU_HWPT_SET_DIRTY_TRACKING")
-  a9af47e382a4 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP")
-  0795b305da89 ("iommufd/selftest: Test IOMMU_HWPT_GET_DIRTY_BITMAP_NO_CLEA=
-R flag")
-  65fe32f7a447 ("iommufd/selftest: Add nested domain allocation for mock do=
-main")
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-from the iommufd tree.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
---=20
-Cheers,
-Stephen Rothwell
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-diff --cc drivers/iommu/iommufd/selftest.c
-index ee6079847091,6684ab4cdc7a..000000000000
---- a/drivers/iommu/iommufd/selftest.c
-+++ b/drivers/iommu/iommufd/selftest.c
-@@@ -272,9 -435,28 +430,20 @@@ static phys_addr_t mock_domain_iova_to_
- =20
-  static bool mock_domain_capable(struct device *dev, enum iommu_cap cap)
-  {
-- 	return cap =3D=3D IOMMU_CAP_CACHE_COHERENCY;
-+ 	struct mock_dev *mdev =3D container_of(dev, struct mock_dev, dev);
-+=20
-+ 	switch (cap) {
-+ 	case IOMMU_CAP_CACHE_COHERENCY:
-+ 		return true;
-+ 	case IOMMU_CAP_DIRTY_TRACKING:
-+ 		return !(mdev->flags & MOCK_FLAGS_DEVICE_NO_DIRTY);
-+ 	default:
-+ 		break;
-+ 	}
-+=20
-+ 	return false;
-  }
- =20
- -static void mock_domain_set_plaform_dma_ops(struct device *dev)
- -{
- -	/*
- -	 * mock doesn't setup default domains because we can't hook into the
- -	 * normal probe path
- -	 */
- -}
- -
-  static struct iommu_device mock_iommu_device =3D {
-  };
- =20
-@@@ -293,8 -469,10 +462,9 @@@ static const struct iommu_ops mock_ops=20
-  	.owner =3D THIS_MODULE,
-  	.pgsize_bitmap =3D MOCK_IO_PAGE_SIZE,
-  	.hw_info =3D mock_domain_hw_info,
- -	.domain_alloc =3D mock_domain_alloc,
- +	.domain_alloc_paging =3D mock_domain_alloc_paging,
-+ 	.domain_alloc_user =3D mock_domain_alloc_user,
-  	.capable =3D mock_domain_capable,
- -	.set_platform_dma_ops =3D mock_domain_set_plaform_dma_ops,
-  	.device_group =3D generic_device_group,
-  	.probe_device =3D mock_probe_device,
-  	.default_domain_ops =3D
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
---Sig_/bmNe/dKWE5QI_gaZUeETryt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU7QroACgkQAVBC80lX
-0GxGOwf9HDp0uSETtsl+pIsSYroDiWAMzI2zLn/AINQgJL8FkdeLQLdAzKr5KoL+
-e5SRXhXHhGUrS6K3FSA9MkjOElYIsZmljZxXqfhXAReMy4Tw0r5x2NYApPK+zHrr
-h54ny8Lzkn9tTTl6Xdu8rqWxuPmIybuerq9Oi3/j9i1kIWpFHY1/IV/IR63suWhc
-SoU+jf7Hwu5ypr6OQDEqHzQ6yDhQSK2LxUtHz/CkM7xFBGbH2e1jS9OhGRJ0Wsmi
-mAtX80/BGolXw7H9MBA0KIUb7BVAp2AlzjXhFGyTFJ9kEFysJXI9YblfD7/70x2y
-T7qigIL88gApYW3jCqCcS7EI8eHKwg==
-=76VA
------END PGP SIGNATURE-----
-
---Sig_/bmNe/dKWE5QI_gaZUeETryt--
+If you want to undo deduplication, reply with:
+#syz undup
