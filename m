@@ -2,276 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1356A7D9032
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085C57D9035
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345480AbjJ0HrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S1345404AbjJ0HrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjJ0HrO (ORCPT
+        with ESMTP id S1345505AbjJ0HrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:47:14 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3852DB0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:47:11 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso2711787a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:47:11 -0700 (PDT)
+        Fri, 27 Oct 2023 03:47:19 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F331A5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:47:17 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507d7b73b74so2441133e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698392829; x=1698997629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3s+HmKQBO5YfN5uxNe8jCr2D05b202XxgDdt3GiR2tw=;
-        b=ajdqXw7BGT2zGQurdXewScLavincvIzqmW0zdD13h4f1k3mEXUhwBRM/NScKzzOHVw
-         nBRK655s8nNZNjjc2UZqDBVtwHOvXOmrJ3lhsk3iyxHvS+fRqBaUMUV80vZcJApuLbEI
-         LRZdAsAvIgSpBfgobGzQUvjA4Bi/PR6lH02nYlNPnjvbOpB/ToHl44jKAwj7khsMwCZo
-         jkHJK925xCVkeSY9pydwFnV0tcAj9iGpLy1CsvH3BAL2B3Ijw7zmsgCNGipjy4spD8ZM
-         Sfk+tSachhi74HB/ZKHaLJiplR0lLH1xit0h7qFOte7xN9OPOAEs4gHycHhddk2fC0Md
-         DHdQ==
+        d=linaro.org; s=google; t=1698392835; x=1698997635; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fdPoPykwVMD9RZG4snFdAmpNaz4E+pHELiVqG6ZVCtk=;
+        b=SovH/3oaWDvWyl0okRY5ZRxDYVlMovAHxsSZk9WImv11mamiVbfgOumv7KqGQocJHa
+         yTolE6C6mquZxc47Ue81sk33oqw89oynMAcEv6i94H4H5kHIfMQSTD/SS9Xq7Llx/KtF
+         oZCozS3K5X7l/Ks4nMQZpy6lN2Q9Iip/lyCbOf07q1MCVidtqznEFLG9rko7rzdx2Pnr
+         q+FjJWiER5qkLu1v/8iwVVM34OkaVwLkzAAh0+GRNAazfe9xeB6H+k8zq993B5H3vUfM
+         z4giSsGRAeemGH/YmPKTCkiBYI62Hj9wI/OAtLBxv+IVVcn3awscL/1EWpVYlNI/Jr11
+         Izkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698392829; x=1698997629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3s+HmKQBO5YfN5uxNe8jCr2D05b202XxgDdt3GiR2tw=;
-        b=LL7kUtdKykHsInctJgMtD3yAZLQMGA9dJy0V4Sqr8N96pW3ZxO/Z6jk9lzSQmMTzgC
-         zjS2kzdY9EgtbfE8C00mhvVQM7FWft2WesP4+H3mzmt3HzKAzjHd38mfo5/p9J6FkBGd
-         fv8sNeN7LaJDW2MhAzvGuDOi+cBw9poofmHTRF8XE9j0K8Z2pRagZCHmR09/hXxhVXXo
-         pUaG9zoxB0u6jP5F3mXX7OtFvgfPZzarxmKK0ADWsmJmV+a9zFbWJeR2Cy7j5ozU1l/T
-         Lw/vQtc0FnO2dvXZlNaPLqL/evY2dGEi/+93wXgdPQUGfFDWWjiIhJ84h5C5zZzQ8c7e
-         R/DA==
-X-Gm-Message-State: AOJu0YzmSB7fCo5SgTLQgOEdNXIoce7723yxIhGy4Sd91K2yu/D+mm9V
-        XjhheAYJDDTKBdR0xNAK+RJFOu/Ln1rxC+NOoNY=
-X-Google-Smtp-Source: AGHT+IF2EbroTERLNWDfIZy8UmyVaispBEdtqSni14/t1Q/S3VfJpxBhkKhxbpzhHHNeGhqRLGuOfwp2PBOarTDAPYQ=
-X-Received: by 2002:aa7:c982:0:b0:53d:a727:3846 with SMTP id
- c2-20020aa7c982000000b0053da7273846mr1650215edt.20.1698392829471; Fri, 27 Oct
- 2023 00:47:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698392835; x=1698997635;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fdPoPykwVMD9RZG4snFdAmpNaz4E+pHELiVqG6ZVCtk=;
+        b=msP22AGcLeCL7PYMCgrh6OwfwKJc3lVy/PZD81Li7yy5/5AWjoXkHifKyVU/C9lDfX
+         kjorL4FaOsP0dDa5VGw1V6cYZVlha32Z6QbEKVs3RKyNY8Myt7bsG2PtrH/rou7jh6Uc
+         z9SsicurxCzfekpmB6o/PfN6FaV8JJ6+VUqWqx+l3vS2mFUQKN9xTfpBQgjLZkfucGOQ
+         WLuAmMNYyzQvGMDv/Nb+PSn+LzIkzpmcQQGN+ccbPO7kyiBETm584lYsOUoik6cpetWq
+         UdmWg6jrGE6vXmG+2s9F/1/gpBOTtPB+TvI+VGz4sydTVk1XO72ctnsHw00gh9NDNZ8x
+         WjOA==
+X-Gm-Message-State: AOJu0YynUwUj/tVXvsRhl72cybmaGPty08U5jemcH07+IuGZ2u9pOlP3
+        cqGuvy15aAx3F+SbCCIKm9PwDA==
+X-Google-Smtp-Source: AGHT+IGuA7AynijTmGBZmQHcC28fXB76OvPh+wKhEQqg7mAx4aesCy3ptC2gcex9SVq5c3DZT9We5Q==
+X-Received: by 2002:ac2:5e86:0:b0:507:9702:c11d with SMTP id b6-20020ac25e86000000b005079702c11dmr1127936lfq.64.1698392835202;
+        Fri, 27 Oct 2023 00:47:15 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id i18-20020a056512341200b004fdde1db756sm176358lfr.26.2023.10.27.00.47.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 00:47:14 -0700 (PDT)
+Message-ID: <6e01468f-9023-47ed-b5f9-afaef58b03de@linaro.org>
+Date:   Fri, 27 Oct 2023 09:47:13 +0200
 MIME-Version: 1.0
-References: <202310270909.QBAOkiZP-lkp@intel.com>
-In-Reply-To: <202310270909.QBAOkiZP-lkp@intel.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Fri, 27 Oct 2023 09:46:58 +0200
-Message-ID: <CAFULd4YbDKr-R5GOS44q+e=1qJNJXgBbvJ_gy1hA8G1VxzgVrA@mail.gmail.com>
-Subject: Re: [tip:x86/percpu 21/22] arch/x86/include/asm/processor.h:522:24:
- sparse: sparse: dereference of noderef expression
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Nadav Amit <namit@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: clock: qcom,gcc-ipq6018: split to separate
+ schema
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_tdas@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026101931.695497-1-robimarko@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231026101931.695497-1-robimarko@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 4:01=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/p=
-ercpu
-> head:   0548eb067ed664b93043e033295ca71e3e706245
-> commit: ed2f752e0e0a21d941ca0ee539ef3d4cd576bc5e [21/22] x86/percpu: Intr=
-oduce const-qualified const_pcpu_hot to micro-optimize code generation
-> config: x86_64-randconfig-122-20231027 (https://download.01.org/0day-ci/a=
-rchive/20231027/202310270909.QBAOkiZP-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231027/202310270909.QBAOkiZP-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310270909.QBAOkiZP-lkp=
-@intel.com/
+On 26/10/2023 12:18, Robert Marko wrote:
+> The Qualcomm IPQ6018 GCC clock controller has clock inputs, thus existing
+> gcc-other.yaml was not describing it fully so move it to a separate schema.
+> 
+> Fully document the allowed and required XO and sleep clock inputs, as well
+> as update the provided example.
+> 
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 
-Already fixed in [1].
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[1] https://lore.kernel.org/lkml/20231024142830.3226-1-ubizjak@gmail.com/
+Best regards,
+Krzysztof
 
-Thanks,
-Uros.
-
->
-> sparse warnings: (new ones prefixed by >>)
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    kernel/entry/common.c: note: in included file (through arch/x86/includ=
-e/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/threa=
-d_info.h, ...):
-> >> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference o=
-f noderef expression
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    kernel/entry/common.c: note: in included file (through arch/x86/includ=
-e/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/threa=
-d_info.h, ...):
-> >> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference o=
-f noderef expression
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    kernel/entry/common.c: note: in included file (through arch/x86/includ=
-e/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/threa=
-d_info.h, ...):
-> >> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference o=
-f noderef expression
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    kernel/entry/common.c: note: in included file (through arch/x86/includ=
-e/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/threa=
-d_info.h, ...):
-> >> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference o=
-f noderef expression
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    kernel/entry/common.c: note: in included file (through arch/x86/includ=
-e/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/threa=
-d_info.h, ...):
-> >> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference o=
-f noderef expression
->    kernel/entry/common.c: note: in included file (through include/linux/s=
-ched.h, include/linux/context_tracking.h):
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->    arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of n=
-oderef expression
->
-> vim +522 arch/x86/include/asm/processor.h
->
->    513
->    514  static __always_inline unsigned long current_top_of_stack(void)
->    515  {
->    516          /*
->    517           *  We can't read directly from tss.sp0: sp0 on x86_32 is=
- special in
->    518           *  and around vm86 mode and sp0 on x86_64 is special bec=
-ause of the
->    519           *  entry trampoline.
->    520           */
->    521          if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
->  > 522                  return pcpu_hot.top_of_stack;
->    523
->    524          return this_cpu_read_stable(pcpu_hot.top_of_stack);
->    525  }
->    526
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
