@@ -2,216 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80C77D8EC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381667D8EC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345144AbjJ0GdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
+        id S1345273AbjJ0Gfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjJ0GdQ (ORCPT
+        with ESMTP id S229604AbjJ0Gfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:33:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D531B1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698388345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SxDkgS0LFdb0zrxOK5z/6YMxINonlxbWmMRbtDHv7CM=;
-        b=ODuodmcSIP1skji2BUgU1YBhNcEZql7o9VscOuRFjhiBB4Q/9maAoEF6X+3GTq+jMYtt8j
-        iWuhsPF4dGMlS1tGBdoKNyxGqQT1r2Nz9Oarx/Di4X7UeXtaQlTSrbYXAP07t933HjF5lB
-        hO1oCygMPG52SJAIaYuGyyGkGDmaSjc=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-512-iPiiBQb-MlyJv0aUOz6TJw-1; Fri, 27 Oct 2023 02:32:08 -0400
-X-MC-Unique: iPiiBQb-MlyJv0aUOz6TJw-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-507bd5f4b2dso1892943e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:32:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698388327; x=1698993127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SxDkgS0LFdb0zrxOK5z/6YMxINonlxbWmMRbtDHv7CM=;
-        b=CvLD0B08bO3I/LSFrcuLeTtpuXgAJe+WEa8w7/sQII5yOPE2nBZv8u0NhMXg5TWajX
-         kDToedhCOVHUealqBSZVY2P5WcDX+JsE7RekviDgbhvPds7Bom6qeWvAqMcIpAW34wN0
-         2oWiWe9ujKWvnpyfifY536MzvAOvyYezNzb9fL9ID5aQZswiN8/QKDOaiispkUFHGYQS
-         g/5sM6QCQKYc24Cc2aWAu7jnP2m6KdODA9GrVm5iW30vR9J313TPq9onRJgEEjfQdopp
-         Wbpyi0EBAQ69r2KmGtuyqeWAPl54J8ENnIWYnPVa9tx1hAuGLSjtN6zV59Z8oeyYfGdS
-         FRRA==
-X-Gm-Message-State: AOJu0YzrhQzr5S2mK+4kES2eW/X8et3O8wjf2V4A1+xvSZoibFraB7PV
-        8VEVFUNGdkTZSAPOv3c5rx4M56Us6IbvLnOgfPwyYqTwHER7ouAYKsULtmzpGk1SJyD06Uor8CK
-        uek8lMtwBTb0+5fVT5uAwCtR5sOjYOxThnQPFQ30x
-X-Received: by 2002:a19:ac01:0:b0:507:b15b:8b88 with SMTP id g1-20020a19ac01000000b00507b15b8b88mr1178195lfc.65.1698388327383;
-        Thu, 26 Oct 2023 23:32:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHYiELfA5C7GIEPjiLdoikmssHWmewGe+r2BT1FO6KFjk37oJ/xRsKtzheJyFQ2V4ExxBcUM65fs6HpyHCi300=
-X-Received: by 2002:a19:ac01:0:b0:507:b15b:8b88 with SMTP id
- g1-20020a19ac01000000b00507b15b8b88mr1178176lfc.65.1698388327046; Thu, 26 Oct
- 2023 23:32:07 -0700 (PDT)
+        Fri, 27 Oct 2023 02:35:31 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35570121;
+        Thu, 26 Oct 2023 23:35:29 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 8216B3200BB7;
+        Fri, 27 Oct 2023 02:35:26 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 27 Oct 2023 02:35:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698388526; x=1698474926; bh=ijn9LKOmAMUGBGwJHsN1qvv5KR6XAd5/U4/
+        K/UeLB/A=; b=HPKdp0vu6TQo9nOWnMSMnIsbdPaZo/7QxPk1qO5P7/ePiud9XNC
+        skjx9DUvtpBsAd0Ih/52W5KSD4URW9BYr+TAOXUl88vhxZubblKMBVK2mLWWfwxc
+        HpsyOeriLtbdSnNA7T8seXSUHpDI8FZny9u5QRzPWUJ8yNsoKlKD9C7uSIz3x1Vl
+        Usj7X9E+jKDiMVxrUdBoxts2Id7TrfennhJghV5WdENLEqCxk4+bAHDi1tTzbJsZ
+        0nH9AktgGqkSWK+QWJUx5vezWn3uGrniIuxSS0t9up1l8Xf+qQYG5yuwr6vdbkO6
+        qRWnD+Zi524JBvNB+FbcLjqq+kJVs3PbvOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698388526; x=1698474926; bh=ijn9LKOmAMUGBGwJHsN1qvv5KR6XAd5/U4/
+        K/UeLB/A=; b=DiBX4/I27Pvac9t3zmkmnSuXducX4QdxI55QsQfLCc0oUP94wqU
+        S4N1jNnKzpLFqwEDSflmoanuUwm8qhoteciYVEM5uCcoOl2FE8cUza2uyti3r23U
+        KRGZzdVDZ3rLhfb7FaFUi2qpSSRAdprbjhvbQ2SGGmNCWBABnwSWAskDkG4Unlr3
+        cd1Le2H8YMJtotYKOQ0brC2U8kSZbUdN6pHecluADE8TCJAhydBJL0Lq4L4WLJpl
+        Y5lDYak4Q2Gm/4+20+3UZ3WJrCcjUB3aoTpdVIRqgOFXeRBIucijI4jsgzoBKapG
+        7DeMt420YltBYeydd36vxVQN1rvCntZPodw==
+X-ME-Sender: <xms:LVo7ZQ6naWEKuEyMOQq660epet943q1h01vGW-KmyI0dg5UN3uj1GQ>
+    <xme:LVo7ZR7R8NK55WtpitWZzUtLaGVF0VNS6xVTAWaG1NqY9vzR6sq3Z1Gc1HrHWU1Jl
+    o7SY_if_xfRWlkhdDY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleefgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:LVo7ZfdVcu-vGdHfCefrnYG8R69mHw15q8WT0mI2gvIvU_kKxEiTrg>
+    <xmx:LVo7ZVLwgWPJ00SMrQfWzZG09vy87ahNqCajtYU7jUfBjb0ZSS3h3g>
+    <xmx:LVo7ZULDGADAQ-oxLktDijlM3YRiRIOiXnRmSjHIzQQYgnCAg6xzbQ>
+    <xmx:Llo7ZZitSH1LYdKDpuInMAFiXYyHNbaR7uHyDqe2YJEuLiCxRJKiow>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F0DD6B60089; Fri, 27 Oct 2023 02:35:24 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
-References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 27 Oct 2023 14:31:56 +0800
-Message-ID: <CACGkMEuO6o3Ys9NcHJpa9w5EiS-ugsiaBbBKEHKHpPSrKBKJow@mail.gmail.com>
-Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
-To:     Steve Sistare <steven.sistare@oracle.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <b20fe713-28c6-4ca8-b64a-df017f161524@app.fastmail.com>
+In-Reply-To: <20231026235433.yuvxf7opxg74ncmd@moria.home.lan>
+References: <20231024134637.3120277-1-surenb@google.com>
+ <20231024134637.3120277-29-surenb@google.com> <87h6me620j.ffs@tglx>
+ <CAJuCfpH1pG513-FUE_28MfJ7xbX=9O-auYUjkxKLmtve_6rRAw@mail.gmail.com>
+ <87jzr93rxv.ffs@tglx> <20231026235433.yuvxf7opxg74ncmd@moria.home.lan>
+Date:   Fri, 27 Oct 2023 08:35:03 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Kent Overstreet" <kent.overstreet@linux.dev>,
+        "Thomas Gleixner" <tglx@linutronix.de>
+Cc:     "Suren Baghdasaryan" <surenb@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Roman Gushchin" <roman.gushchin@linux.dev>,
+        "Mel Gorman" <mgorman@suse.de>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, void@manifault.com,
+        "Peter Zijlstra" <peterz@infradead.org>, juri.lelli@redhat.com,
+        ldufour@linux.ibm.com, "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+        peterx@redhat.com, "David Hildenbrand" <david@redhat.com>,
+        "Jens Axboe" <axboe@kernel.dk>,
+        "Luis Chamberlain" <mcgrof@kernel.org>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        "Nathan Chancellor" <nathan@kernel.org>, dennis@kernel.org,
+        "Tejun Heo" <tj@kernel.org>, "Muchun Song" <muchun.song@linux.dev>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, pasha.tatashin@soleen.com,
+        yosryahmed@google.com, "Yu Zhao" <yuzhao@google.com>,
+        "David Howells" <dhowells@redhat.com>,
+        "Hugh Dickins" <hughd@google.com>,
+        "Andrey Konovalov" <andreyknvl@gmail.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>, vvvvvv@google.com,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Eric Biggers" <ebiggers@google.com>, ytcoode@gmail.com,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, "Steven Rostedt" <rostedt@goodmis.org>,
+        bsegall@google.com, bristot@redhat.com, vschneid@redhat.com,
+        "Christoph Lameter" <cl@linux.com>,
+        "Pekka Enberg" <penberg@kernel.org>,
+        "Joonsoo Kim" <iamjoonsoo.kim@lge.com>,
+        "Hyeonggon Yoo" <42.hyeyoo@gmail.com>,
+        "Alexander Potapenko" <glider@google.com>,
+        "Marco Elver" <elver@google.com>,
+        "Dmitry Vyukov" <dvyukov@google.com>,
+        "Shakeel Butt" <shakeelb@google.com>,
+        "Muchun Song" <songmuchun@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "David Rientjes" <rientjes@google.com>, minchan@google.com,
+        kaleshsingh@google.com, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 28/39] timekeeping: Fix a circular include dependency
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 4:07=E2=80=AFAM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
+On Fri, Oct 27, 2023, at 01:54, Kent Overstreet wrote:
+> On Fri, Oct 27, 2023 at 01:05:48AM +0200, Thomas Gleixner wrote:
+>> On Thu, Oct 26 2023 at 18:33, Suren Baghdasaryan wrote:
+>> > On Wed, Oct 25, 2023 at 5:33=E2=80=AFPM Thomas Gleixner <tglx@linut=
+ronix.de> wrote:
+>> >> > This avoids a circular header dependency in an upcoming patch by=
+ only
+>> >> > making hrtimer.h depend on percpu-defs.h
+>> >>
+>> >> What's the actual dependency problem?
+>> >
+>> > Sorry for the delay.
+>> > When we instrument per-cpu allocations in [1] we need to include
+>> > sched.h in percpu.h to be able to use alloc_tag_save(). sched.h
+>>=20
+>> Including sched.h in percpu.h is fundamentally wrong as sched.h is the
+>> initial place of all header recursions.
+>>=20
+>> There is a reason why a lot of funtionalitiy has been split out of
+>> sched.h into seperate headers over time in order to avoid that.
 >
-> mlx5_vdpa does not preserve userland's view of vring base for the control
-> queue in the following sequence:
+> Yeah, it's definitely unfortunate. The issue here is that
+> alloc_tag_save() needs task_struct - we have to pull that in for
+> alloc_tag_save() to be inline, which we really want.
 >
-> ioctl VHOST_SET_VRING_BASE
-> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
->   mlx5_vdpa_set_status()
->     setup_cvq_vring()
->       vringh_init_iotlb()
->         vringh_init_kern()
->           vrh->last_avail_idx =3D 0;
-> ioctl VHOST_GET_VRING_BASE
->
-> To fix, restore the value of cvq->vring.last_avail_idx after calling
-> vringh_init_iotlb.
->
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
->  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
->  include/linux/vringh.h            |  2 ++
->  3 files changed, 38 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index 946488b8989f..f64758143115 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *=
-mvdev)
->         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
->         int err =3D 0;
->
-> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
-> +
->                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_feat=
-ures,
->                                         MLX5_CVQ_MAX_ENT, false,
->                                         (struct vring_desc *)(uintptr_t)c=
-vq->desc_addr,
->                                         (struct vring_avail *)(uintptr_t)=
-cvq->driver_addr,
->                                         (struct vring_used *)(uintptr_t)c=
-vq->device_addr);
->
-> +               if (!err)
-> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_idx=
-);
+> What if we moved task_struct to its own dedicated header? That might be
+> good to do anyways...
 
-Btw, vringh_set_base_iotlb() deserves an independent patch and it
-seems it is not specific to IOTLB, so we probably need an indirection
-to have vringh_set_base() first.
+Yes, I agree that is the best way to handle it. I've prototyped
+a more thorough header cleanup with good results (much improved
+build speed) in the past, and most of the work to get there is
+to seperate out structures like task_struct, mm_struct, net_device,
+etc into headers that only depend on the embedded structure
+definitions without needing all the inline functions associated
+with them.
 
-Or I wonder if it's better to just introduce a new parameter to
-vringh_init_iotlb()...
-
-Thanks
-
-> +       }
->         return err;
->  }
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index 7b8fd977f71c..799762c83007 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct vr=
-ingh *vrh,
->         }
->  }
->
-> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
-> +                           int (*putu16)(const struct vringh *vrh,
-> +                               __virtio16 *p, u16 val))
-> +{
-> +    int ret;
-> +
-> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
-> +    if (ret)
-> +        return ret;
-> +
-> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
-> +    if (ret)
-> +        return ret;
-> +
-> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
-> +    return 0;
-> +}
-> +
->  /* Userspace access helpers: in this case, addresses are really userspac=
-e. */
->  static inline int getu16_user(const struct vringh *vrh, u16 *val, const =
-__virtio16 *p)
->  {
-> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struct v=
-host_iotlb *iotlb,
->  }
->  EXPORT_SYMBOL(vringh_set_iotlb);
->
-> +/**
-> + * vringh_set_base_iotlb - set avail_idx and used_idx
-> + * @vrh: the vring
-> + * @idx: the value to set
-> + */
-> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
-> +{
-> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
-> +}
-> +EXPORT_SYMBOL(vringh_set_base_iotlb);
-> +
-> +
->  /**
->   * vringh_getdesc_iotlb - get next available descriptor from ring with
->   * IOTLB.
-> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> index c3a8117dabe8..e9b8af4e6a5e 100644
-> --- a/include/linux/vringh.h
-> +++ b/include/linux/vringh.h
-> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 feat=
-ures,
->                          struct vring_avail *avail,
->                          struct vring_used *used);
->
-> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
-> +
->  int vringh_getdesc_iotlb(struct vringh *vrh,
->                          struct vringh_kiov *riov,
->                          struct vringh_kiov *wiov,
-> --
-> 2.39.3
->
-
+      Arnd
