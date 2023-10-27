@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FAC7DA202
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE62A7DA201
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbjJ0UuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S1346590AbjJ0UuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346513AbjJ0Utv (ORCPT
+        with ESMTP id S235085AbjJ0UuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:49:51 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC051D47
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:47 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a90d6ab944so25227827b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:47 -0700 (PDT)
+        Fri, 27 Oct 2023 16:50:00 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F90B10D1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:49 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afbcffe454so13533137b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698439786; x=1699044586; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698439788; x=1699044588; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=f1ReUtUHakvXxrTTVPsvLxhNP/KZhPScACaGU9TuGJw=;
-        b=TQx1+u8fPhIp9iPerUK8qDODmu3Ow5OuxQT+wXMahiZ9aj20lS5y1PBqvndUtKPX/W
-         YMWbUOunZLXdZNgPrjPGSr8AVRnXtpqyu7zLkA19CvR0/d5CAIPRzHAx5nQ3vMn2fXSY
-         n71+nZXI6LCShyCt9pbQV2wgYHMAyOX7BAOO+H/PBu7MZhQ5cNHBWB0OT+jInBaBRRR2
-         yU9r9PseSQg+eS7Zz6oUH0zlZyKnuskp/RhCgGfepio4AHZUPswB86krG+tRUI0h5hEE
-         VlTtwbSpqJaZgewRMZ2WoJhOqJ/tzHnCYMnwqhM0ci9ZMq+zwC8sEewMBJW84QoJZZ5j
-         66Vg==
+        bh=Ojvpxtx2aV2Xt8Hg6l62FzxVHJA7YGTaVrWAGxNmS6o=;
+        b=D+P5yXyPg3ZrbqNVnHi5iLvsS6UKb+Kvz+LiNqItDFI9NyY5uRPT6XkQ1PLnmN8qKo
+         0P1W5JC2YnpCxaZjP6JGctx5uPPUs2Hm9Jcq0/1KwoMsYaAR38qhgfuD7pQzLyKTmt/c
+         LJ0Ngrxk4nw/DhetWd42rji1b9uVPaYupLc8UXbzLD24toQtpMztvQBzHJzyGgCHQAnw
+         WhKIA08RS6BYWJqb+eZVE7CrvrjKknw49Tqfj+IQlm90ZUWH64oX6HRkNqYWAJZxo1+F
+         TzavwaKwYT8ftLxAoI8h78e5+MDxjE3tV9sGPipzYQHZAbiJDqmzFvWbl8aKU/SzuCit
+         Ae2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698439786; x=1699044586;
+        d=1e100.net; s=20230601; t=1698439788; x=1699044588;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=f1ReUtUHakvXxrTTVPsvLxhNP/KZhPScACaGU9TuGJw=;
-        b=Da05Z0NGdAZCFpn1CVR4xxwWWVyHn23twf6qJRVkUyY3b7Y46tBl1Pp+itxZaD5qub
-         1/wnvv6B97M9qH1vsbCULBl27XqQMd3A/TYSQlj4PqxvohoWpETO5qH1+JKUlZJDLqe4
-         E7sGKKXX/XIsue0ljwAzYePueIWfpo//gQSQl+cBv82ld4h9af9CPrpeR/GyeGiavBXg
-         iE9XgdpbruVXibpsMgd/uHlyMPAlXCqXM0cDSLUKRKCbYLUB6UqNm50mI5rNZ+nCntbx
-         SK/Eim1nVLN/r3CSBecrb2KhaR6x298dCroi2RBtF8SjED7QZbDX1bwBHoT0gCA5YQRG
-         x1Ew==
-X-Gm-Message-State: AOJu0YxOJu0Ds/o/oDPiDPD+UhPiDfRG8/Nb0AbBY9kPRSNHASckIWwT
-        S6vBdJ5RVlT/vTPPJMW6xZbB+ApQnRQ=
-X-Google-Smtp-Source: AGHT+IHTdW2tfl2nMaJGKat407EBX+WX4aVSCqNaQF4Ri9AlCie9Lxzi32ECryW9qGQSsuc1S1DJUQX5yDU=
+        bh=Ojvpxtx2aV2Xt8Hg6l62FzxVHJA7YGTaVrWAGxNmS6o=;
+        b=NNJIHnQGAv+o1co8XB/5S4zMa1Kgs8RstVlsuGDFCtBz2DfC8q2D0TqZw+4TFxKFaY
+         MutDNtpttRM9Nhtbx4/Ie6G3Iy3+F8QSdDRa73KCUny0vIS1L1VwnN/DRnAT8Nc/GHgq
+         oScvoihuPbgGYer0YosVXxEeqHDIWyYKjEjzlD8a/HPByf1e0PAMHjRCus+oAPAvhwEV
+         LQaKIBOTYZEir7xrsuG+gG7c41nPSWiROOmiN2qPOrgLB/i2i4b25rH1KrIsdQneuPq2
+         mEisrG30mxW4f1E6M9+avJDAbGgNPCkbj1Sc/dyWSTnzPcKfg9896gKHWuBbSKySaH2Y
+         NchA==
+X-Gm-Message-State: AOJu0YxRx7poKKlXoB96JTO/k+VfkgSb7v2yQkmNHWZ0eVk/MIdNS/c9
+        7NrqEfH1dAL867HooZIlHSUB1Ezu5Jw=
+X-Google-Smtp-Source: AGHT+IF1vLRlyaNxV61h2dtpxOd0pPI/GiI6ZWJtmq7UmqZkhjAXHn70a29yPEb6Xyw6LFpyTFC85TQGEAg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:9214:0:b0:5a7:bbdb:6b39 with SMTP id
- j20-20020a819214000000b005a7bbdb6b39mr76039ywg.3.1698439786542; Fri, 27 Oct
- 2023 13:49:46 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:a046:0:b0:58c:b45f:3e94 with SMTP id
+ x67-20020a81a046000000b0058cb45f3e94mr72219ywg.8.1698439788736; Fri, 27 Oct
+ 2023 13:49:48 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 27 Oct 2023 13:49:29 -0700
+Date:   Fri, 27 Oct 2023 13:49:30 -0700
 In-Reply-To: <20231027204933.3651381-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231027204933.3651381-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231027204933.3651381-6-seanjc@google.com>
-Subject: [GIT PULL] KVM: x86: PMU change for 6.7
+Message-ID: <20231027204933.3651381-7-seanjc@google.com>
+Subject: [GIT PULL] KVM: x86: SVM changes for 6.7
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -63,41 +63,50 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A single PMU change for 6.7.  Note, this _just_ got rebased because I had a
-brain fart and used kvm-x86/next as the base when recreating the "pmu" branch
-after the fixes for 6.6 were merged.  The commit has been in -next since October
-16th as 4b09cc132a59.  This is not at all urgent and can definitely be deferred
-to 6.8 if the late rebase is an issue.
+An enhancement to help userspace deal with SEV-ES guest crashes, and cleanups
+related to not being able to do "skip" emulation for SEV guests.
 
-The following changes since commit 2b3f2325e71f09098723727d665e2e8003d455dc:
+The following changes since commit 5804c19b80bf625c6a9925317f845e497434d6d3:
 
-  Merge tag 'kvm-x86-selftests-6.6-fixes' of https://github.com/kvm-x86/linux into HEAD (2023-10-15 08:25:18 -0400)
+  Merge tag 'kvm-riscv-fixes-6.6-1' of https://github.com/kvm-riscv/linux into HEAD (2023-09-23 05:35:55 -0400)
 
 are available in the Git repository at:
 
-  https://github.com/kvm-x86/linux.git tags/kvm-x86-pmu-6.7
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-svm-6.7
 
-for you to fetch changes up to fad505b2cb838fb52cb72fa22830824c80330f2f:
+for you to fetch changes up to 00682995409696866fe43984c74c8688bdf8f0a5:
 
-  KVM: x86: Service NMI requests after PMI requests in VM-Enter path (2023-10-27 13:20:29 -0700)
-
-----------------------------------------------------------------
-KVM PMU change for 6.7:
-
- - Handle NMI/SMI requests after PMU/PMI requests so that a PMI=>NMI doesn't
-   require redoing the entire run loop due to the NMI not being detected until
-   the final kvm_vcpu_exit_request() check before entering the guest.
+  KVM: SVM: Treat all "skip" emulation for SEV guests as outright failures (2023-10-04 15:08:53 -0700)
 
 ----------------------------------------------------------------
-Mingwei Zhang (1):
-      KVM: x86: Service NMI requests after PMI requests in VM-Enter path
+KVM SVM changes for 6.7:
 
- arch/x86/kvm/x86.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ - Report KVM_EXIT_SHUTDOWN instead of EINVAL if KVM intercepts SHUTDOWN while
+   running an SEV-ES guest.
+
+ - Clean up handling "failures" when KVM detects it can't emulate the "skip"
+   action for an instruction that has already been partially emulated.  Drop a
+   hack in the SVM code that was fudging around the emulator code not giving
+   SVM enough information to do the right thing.
+
+----------------------------------------------------------------
+Peter Gonda (1):
+      KVM: SVM: Update SEV-ES shutdown intercepts with more metadata
+
+Sean Christopherson (2):
+      KVM: x86: Refactor can_emulate_instruction() return to be more expressive
+      KVM: SVM: Treat all "skip" emulation for SEV guests as outright failures
+
+ arch/x86/include/asm/kvm-x86-ops.h |  2 +-
+ arch/x86/include/asm/kvm_host.h    |  4 +--
+ arch/x86/kvm/svm/svm.c             | 50 ++++++++++++++++----------------------
+ arch/x86/kvm/vmx/vmx.c             | 12 ++++-----
+ arch/x86/kvm/x86.c                 | 22 +++++++++++------
+ 5 files changed, 45 insertions(+), 45 deletions(-)
