@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F0A7D9C85
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533A47D9C8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346212AbjJ0PFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
+        id S232283AbjJ0PHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346173AbjJ0PFk (ORCPT
+        with ESMTP id S231830AbjJ0PHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:05:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5880C4;
-        Fri, 27 Oct 2023 08:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698419138; x=1729955138;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ih1/FvjaAtODxSz8/KkvT2j4WuoO2ecH6jCbepamajw=;
-  b=eU7BPMbSC+ntD7w1Zxp7sFMYHIDNEHNwMdS0V9ov7OOYZ7cSFDCN3sBN
-   XmwBj9F6op5Wpj8vcZbcsmWI/G5hUiA2TGW4RgVAOx92fCY6TAUSTOTx6
-   c6Npto4wmSrCQGYoPStporM0fQAIpJD1AFlJM0neXwp93NjPKL36ENXf5
-   2TLWswpWLZUys0759BYKb2PEC4hPhYaDD6k0C6yjIarQvKHSLuF667qG6
-   kL8qjgmDfiAAywbGpGJQ2onRpzmZ2iWElTouoN4p3R3eG1zyBed5Q6gPz
-   gNlcrgZnxX5oV6gR9bIi+oKd1oNGCPyAnfJ8BdYuGw+igjxZFFz9bPOiL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="384994166"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="384994166"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 08:05:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="850985"
-Received: from dmnassar-mobl.amr.corp.intel.com (HELO desk) ([10.212.203.39])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 08:05:25 -0700
-Date:   Fri, 27 Oct 2023 08:05:35 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alyssa Milburn <alyssa.milburn@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v4 0/6] Delay VERW
-Message-ID: <20231027150535.s4nlkppsvzeahm7t@desk>
-References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
- <20231027144848.GGZTvN0AtGIQ9kBtkA@fat_crate.local>
+        Fri, 27 Oct 2023 11:07:08 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFABD10E;
+        Fri, 27 Oct 2023 08:07:04 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7c95b8d14so16733867b3.3;
+        Fri, 27 Oct 2023 08:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698419224; x=1699024024; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=mo3O0p+CzwKWAWB1pfHPZ/CuSeHzf50SCiiPDlGgfRM=;
+        b=ZPul4VaLKoLQ3ZJmVGjPrmuuU2BupRz/YrvbZ5R/sUcDJOUV41/tTILqbEKkNBWf4R
+         7qYzUQBSs4R+gX0V+4H6Ge3r/hI2E8IBYVQU2puUX2gYw0ICxlKN1kfUNxJR+FB8DDYi
+         nI23AY+mzlpWaPQkjxy0UaL6FyaVqVXYrj8T9H2HyaPs8DeXqWssnt8FZg9+pLr3pv0u
+         35cNh3YJ7LrTENfCaxZnYR7P3rajCYynkqYM48SRTX6+pVmXiW+bTEnZKIxKeaVtuTqO
+         7o2jDB28yYtjY3glafn7RjZkPh9yNo8fP5RT5plQrVKsgT4NwLQgrRAtAWLk3CG3EwyQ
+         pw3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698419224; x=1699024024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mo3O0p+CzwKWAWB1pfHPZ/CuSeHzf50SCiiPDlGgfRM=;
+        b=qbpLnORwVh1AUhkCbafZQbawafeDLQsa2dLphUeG2xvxo/uc/PvkdW7HYka/l1920U
+         aqQDKg79DCrZE+Ph5H7a9BcvQkSNOtjioQHizJvyKjbe0Zn4NbaoVgIpxpQd5zlkEEuY
+         ms4NEY0kMzXTqeZIjlbjkh7SqC+kB/7M4zTaX0/JNHqTj9HhEki1ohU+7aJb8ngOyWR2
+         qWpu7f9ef/Mk3PLJtoXn+DS998lD6lA3bsyxkopDI4u1X6ed4SgqZOyeIm02Xk+Xe47W
+         KpO9YFAGqmEneEfgRNzzJPqi6AahUKw9mIgKADhmxvunLJrZ+abDVT+RHJGEUQ+k3V3o
+         57Bw==
+X-Gm-Message-State: AOJu0YylKMuASQaNECjmzVvfWos1mXlgXCyf+3yPcq4R6KviqAl1CcEr
+        5puorlyLs+RQoiWANeQOFHg=
+X-Google-Smtp-Source: AGHT+IEUA15s9csObhGY1VaWPXTJtNoAaDlDKUPl616L6wjUxkjVM3XBSTS10OJ6jaS8PfKdZ/8TuQ==
+X-Received: by 2002:a05:690c:f88:b0:593:47ff:bd7 with SMTP id df8-20020a05690c0f8800b0059347ff0bd7mr3474380ywb.46.1698419223770;
+        Fri, 27 Oct 2023 08:07:03 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u84-20020a818457000000b005af9da2225bsm753862ywf.20.2023.10.27.08.07.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 08:07:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <22b4d0d7-ee50-2b64-ef0a-745b166230ea@roeck-us.net>
+Date:   Fri, 27 Oct 2023 08:07:01 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027144848.GGZTvN0AtGIQ9kBtkA@fat_crate.local>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/2] watchdog: aspeed: Add support for aspeed,reset-mask
+ DT property
+Content-Language: en-US
+To:     Zev Weiss <zev@bewilderbeest.net>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        "Milton D. Miller II" <mdmii@outlook.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, openbmc@lists.ozlabs.org
+Cc:     Eddie James <eajames@linux.ibm.com>,
+        Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>
+References: <20230922104231.1434-4-zev@bewilderbeest.net>
+ <20230922104231.1434-6-zev@bewilderbeest.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230922104231.1434-6-zev@bewilderbeest.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 04:48:48PM +0200, Borislav Petkov wrote:
-> On Fri, Oct 27, 2023 at 07:38:34AM -0700, Pawan Gupta wrote:
-> > v4:
+On 9/22/23 03:42, Zev Weiss wrote:
+> This property allows the device-tree to specify how the Aspeed
+> watchdog timer's reset mask register(s) should be set, so that
+> peripherals can be individually exempted from (or opted in to) being
+> reset when the watchdog timer expires.
 > 
-> Why are you spamming people with your patchset? You've sent it 4 times
-> in a week:
-> 
-> Oct 20               Pawan Gupta ( :  75|) [PATCH 0/6] Delay VERW
-> Oct 24               Pawan Gupta ( :7.3K|) [PATCH v2 0/6] Delay VERW
-> Oct 25               Pawan Gupta ( :7.5K|) [PATCH v3 0/6] Delay VERW
-> Oct 27               Pawan Gupta ( :8.8K|) [PATCH v4 0/6] Delay VERW
-> 
-> Is this something urgent or can you take your time like everyone else?
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-I am going on a long vacation next week, I won't be working for the rest
-of the year. So I wanted to get this in a good shape quickly. This
-patchset addresses some security issues (although theoretical). So there
-is some sense of urgency. Sorry for spamming, I'll take you off the To:
-list.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>   drivers/watchdog/aspeed_wdt.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> index b72a858bbac7..b4773a6aaf8c 100644
+> --- a/drivers/watchdog/aspeed_wdt.c
+> +++ b/drivers/watchdog/aspeed_wdt.c
+> @@ -79,6 +79,8 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
+>   #define   WDT_TIMEOUT_STATUS_BOOT_SECONDARY	BIT(1)
+>   #define WDT_CLEAR_TIMEOUT_STATUS	0x14
+>   #define   WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
+> +#define WDT_RESET_MASK1		0x1c
+> +#define WDT_RESET_MASK2		0x20
+>   
+>   /*
+>    * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
+> @@ -402,6 +404,8 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   
+>   	if ((of_device_is_compatible(np, "aspeed,ast2500-wdt")) ||
+>   		(of_device_is_compatible(np, "aspeed,ast2600-wdt"))) {
+> +		u32 reset_mask[2];
+> +		size_t nrstmask = of_device_is_compatible(np, "aspeed,ast2600-wdt") ? 2 : 1;
+>   		u32 reg = readl(wdt->base + WDT_RESET_WIDTH);
+>   
+>   		reg &= wdt->cfg->ext_pulse_width_mask;
+> @@ -419,6 +423,13 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   			reg |= WDT_OPEN_DRAIN_MAGIC;
+>   
+>   		writel(reg, wdt->base + WDT_RESET_WIDTH);
+> +
+> +		ret = of_property_read_u32_array(np, "aspeed,reset-mask", reset_mask, nrstmask);
+> +		if (!ret) {
+> +			writel(reset_mask[0], wdt->base + WDT_RESET_MASK1);
+> +			if (nrstmask > 1)
+> +				writel(reset_mask[1], wdt->base + WDT_RESET_MASK2);
+> +		}
+>   	}
+>   
+>   	if (!of_property_read_u32(np, "aspeed,ext-pulse-duration", &duration)) {
+
