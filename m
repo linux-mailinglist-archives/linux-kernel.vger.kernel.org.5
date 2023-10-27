@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 793577D9B89
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF247D9B92
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346109AbjJ0Oet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
+        id S1346107AbjJ0OiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346059AbjJ0Oer (ORCPT
+        with ESMTP id S231424AbjJ0OiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:34:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D3A1AA
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:34:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E74FC433C8;
-        Fri, 27 Oct 2023 14:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698417285;
-        bh=IX8RQzfBXRS9SUhkV0bs9/Q66pPOiW3I4YrGYJ4QTi4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MSNOWnU3uKVPyR9/AeEL+cASKCWc5sEWV65CK2AIxppGvtI1HLwZ+mj/JgpJUozbT
-         qp9vEkP1R7cJrzzQ8o5g8JSYCbBiYAdtqDUjs0nNdFMrOFwYmVE9Yo3BRbp0AUJcPj
-         RFN8N4JOfMLJQBQFFKQ2XyCXedfjsNhx/Y3D0sQVK8NYJ2CpzaL0LDm9ro4VoWT9Io
-         tN6iXe1i8PVTx/3Ul3n3vSeaMW6YBgXHJPIX3+JhFIXjQV0lC04V+TqL7cv7KvWBNW
-         gMreM2ugfaI4spL8pThxH9IGDp1WT3UH0434bxK65AEshve5DJteIOjFcFxYZzTZvi
-         UYxN35m08995w==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2c5629fdbf8so30427401fa.0;
-        Fri, 27 Oct 2023 07:34:45 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwVHgP6AOBeDyh/dPKmyGRZavTqR7BkGKx2yg7ASoqBPOSiCMqu
-        F2saVX8RyZ9vOv47bCD6ycJJdYm2/coW3q4t1w==
-X-Google-Smtp-Source: AGHT+IEwPs4ftLrpjangHs/vILf+n9YLkbRAd9hunvQjilnJqxRLp2SDdGkmA9zsKNV+D+MgGagRugSfBzhct3Ayc0k=
-X-Received: by 2002:ac2:4850:0:b0:507:a089:caf4 with SMTP id
- 16-20020ac24850000000b00507a089caf4mr1962824lfy.60.1698417283688; Fri, 27 Oct
- 2023 07:34:43 -0700 (PDT)
+        Fri, 27 Oct 2023 10:38:24 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A9FC4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6253F1FEF4;
+        Fri, 27 Oct 2023 14:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698417500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GcxaSeqkCqbDEGJ3KChrTM3TW8Y9uOZhrvKJt8xkhgo=;
+        b=hjtiRAovlw0PHu4CBR62UvQmqu4/fwmF/88cH84jgQ0YH7dT842SjuxWky/1aZcejfczFl
+        mTcRU8HjTRgfMaOI27KiaVYvSa87iVtyLgneYL519Cq2VSH1m6tDhpKskmYP2UE7gS0SW2
+        B5I+O9yr7eKk0viPOWHm+KKgwzUyONM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698417500;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GcxaSeqkCqbDEGJ3KChrTM3TW8Y9uOZhrvKJt8xkhgo=;
+        b=gLtR4+jt93eFd77ilr0us9HvpDrgPnHk1Iy20T7dUeBpWLv9HZirjosg8yoPqwsrxG9uyB
+        P/F8sG4L+bKnUQCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3188213524;
+        Fri, 27 Oct 2023 14:38:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rgBlC1zLO2UdAgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 27 Oct 2023 14:38:20 +0000
+Message-ID: <7f4cd48e-492c-24f7-6fef-e3b50eace6ba@suse.cz>
+Date:   Fri, 27 Oct 2023 16:38:19 +0200
 MIME-Version: 1.0
-References: <cover.1698328110.git.geert+renesas@glider.be>
-In-Reply-To: <cover.1698328110.git.geert+renesas@glider.be>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 27 Oct 2023 09:34:31 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKqtGWYD=eJ2CWJ2MxcGfYVJ6roVsyDou6p6GLeyDti4g@mail.gmail.com>
-Message-ID: <CAL_JsqKqtGWYD=eJ2CWJ2MxcGfYVJ6roVsyDou6p6GLeyDti4g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] scripts: dt_to_config: Fix nul-separated compatible values
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        David Gibson <david@gibson.dropbear.id.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: [GIT PULL] slab updates for 6.7
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jay Patel <jaypatel@linux.ibm.com>
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+David G
+Hi Linus,
 
-On Thu, Oct 26, 2023 at 8:55=E2=80=AFAM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
->         Hi all,
->
-> Due to a not-so-recent change in dtc, the dt_to_config script no longer
-> works well when used on a DTB instead of on a DTS file.  The first patch
-> fixes that, the second patch fixes the rather odd spacing in that
-> script.
+once the merge window opens, please pull the latest slab updates from:
 
-I just sent a fix[1] for dtc to restore the prior behavior. I'm fine
-with applying this too though.
+  git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.7
 
-Rob
+Thanks,
+Vlastimil
 
-[1] https://lore.kernel.org/devicetree-compiler/20231027142901.2536622-1-ro=
-bh@kernel.org/
+======================================
+
+* SLUB: slab order calculation refactoring (Vlastimil Babka, Feng Tang)
+
+  Recent proposals to tune the slab order calculations have prompted us to
+  look at the current code and refactor it to make it easier to follow and
+  eliminate some odd corner cases. The refactoring is mostly non-functional
+  changes, but should make the actual tuning easier to implement and review.
+
+----------------------------------------------------------------
+Feng Tang (1):
+      mm/slub: add sanity check for slub_min/max_order cmdline setup
+
+Vlastimil Babka (4):
+      mm/slub: simplify the last resort slab order calculation
+      mm/slub: remove min_objects loop from calculate_order()
+      mm/slub: attempt to find layouts up to 1/2 waste in calculate_order()
+      mm/slub: refactor calculate_order() and calc_slab_order()
+
+ mm/slub.c | 73 +++++++++++++++++++++++++++++++--------------------------------
+ 1 file changed, 36 insertions(+), 37 deletions(-)
