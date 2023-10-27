@@ -2,327 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA2A7D9012
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00D37D900C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345500AbjJ0HkR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 03:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S1345453AbjJ0Hjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345405AbjJ0HkN (ORCPT
+        with ESMTP id S234963AbjJ0Hju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:40:13 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99FE1B1;
-        Fri, 27 Oct 2023 00:40:08 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id EC5D924E29A;
-        Fri, 27 Oct 2023 15:40:04 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
- 2023 15:40:04 +0800
-Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
- 2023 15:39:54 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Nikita Shubin" <n.shubin@yadro.com>
-CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>
-Subject: [PATCH v2] perf vendor events riscv: add StarFive Dubhe-90 JSON file
-Date:   Fri, 27 Oct 2023 15:39:25 +0800
-Message-ID: <20231027073925.1523843-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 27 Oct 2023 03:39:50 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7700194
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:39:48 -0700 (PDT)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0152666071F1;
+        Fri, 27 Oct 2023 08:39:46 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698392387;
+        bh=j45biqkfxRiKG00fpgi7uRwnU46+FHWSLAeTKnn0EII=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VcHWNHOXH+xh8+ZPNn4nQ3e2lFSd1AAuIZeXgZv4WMZVx/R1JOdoAB9PsQMtESjju
+         wxwaSWYeCYciC0jijwlw98b7551TGzfOC07JpyqfHSMoBNqi55pzBfpf8er5ge+2NJ
+         7PBGMRsJztf5fmUoJFFM28rNGCfOUELnLt0/3ygXbfksf2JmZF8FSQY+zGicvoYh3r
+         DrNa5Tmz4hQDh0oCVEftINMYQwxMH2bs0SBQd2iSpJ7LSFQYMYH1GTuSx4E+W2urTX
+         sr+qiIo6SfVvb0a/pPoYKtEW5v8OboTv4LCZKpJSkvVPj/NlvGVmdgUfWc9cGNpym8
+         yKeAjgAVANyQQ==
+Date:   Fri, 27 Oct 2023 09:39:43 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
+        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <20231027093943.3f0ae992@collabora.com>
+In-Reply-To: <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
+References: <20231026161431.5934-1-dakr@redhat.com>
+        <0bc79ae3-04fe-4e85-9fd0-e8b281148390@amd.com>
+        <20231027093238.2ff8172e@collabora.com>
+        <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-StarFive Dubhe-90 supports raw event id 0x00 - 0x22.
-The raw events are enabled through PMU node of the DT binding.
+On Fri, 27 Oct 2023 09:35:01 +0200
+Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
 
-Example of PMU DT node:
-pmu {
-	compatible = "riscv,pmu";
-	riscv,raw-event-to-mhpmcounters =
-		/* Event ID 1-31 */
-		<0x00 0x00 0xFFFFFFFF 0xFFFFFFE0 0x00007FF8>,
-		/* Event ID 32-33 */
-		<0x00 0x20 0xFFFFFFFF 0xFFFFFFFE 0x00007FF8>,
-		/* Event ID 34 */
-		<0x00 0x22 0xFFFFFFFF 0xFFFFFF22 0x00007FF8>;
-};
+> Am 27.10.23 um 09:32 schrieb Boris Brezillon:
+> > On Fri, 27 Oct 2023 09:22:12 +0200
+> > Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+> > =20
+> >>> +
+> >>> +	/**
+> >>> +	 * @update_job_credits: Called once the scheduler is considering th=
+is
+> >>> +	 * job for execution.
+> >>> +	 *
+> >>> +	 * Drivers may use this to update the job's submission credits, whi=
+ch is
+> >>> +	 * useful to e.g. deduct the number of native fences which have been
+> >>> +	 * signaled meanwhile.
+> >>> +	 *
+> >>> +	 * The callback must either return the new number of submission cre=
+dits
+> >>> +	 * for the given job, or zero if no update is required.
+> >>> +	 *
+> >>> +	 * This callback is optional.
+> >>> +	 */
+> >>> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job); =20
+> >> Why do we need an extra callback for this?
+> >>
+> >> Just document that prepare_job() is allowed to reduce the number of
+> >> credits the job might need.
+> > ->prepare_job() is called only once if the returned fence is NULL, but =
+=20
+> > we need this credit-update to happen every time a job is considered for
+> > execution by the scheduler. =20
+>=20
+> But the job is only considered for execution once. How do you see that=20
+> this is called multiple times?
 
-Perf stat output:
-[root@user]# perf stat -a \
-	-e access_mmu_stlb \
-	-e miss_mmu_stlb \
-	-e access_mmu_pte_c \
-	-e rob_flush \
-	-e btb_prediction_miss \
-	-e itlb_miss \
-	-e sync_del_fetch_g \
-	-e icache_miss \
-	-e bpu_br_retire \
-	-e bpu_br_miss \
-	-e ret_ins_retire \
-	-e ret_ins_miss \
-	-- openssl speed rsa2048
-Doing 2048 bits private rsa's for 10s: 39 2048 bits private RSA's in
-10.03s
-Doing 2048 bits public rsa's for 10s: 1469 2048 bits public RSA's in
-9.47s
-version: 3.0.10
-built on: Tue Aug  1 13:47:24 2023 UTC
-options: bn(64,64)
-CPUINFO: N/A
-                  sign    verify    sign/s verify/s
-rsa 2048 bits 0.257179s 0.006447s      3.9    155.1
-
- Performance counter stats for 'system wide':
-
-           3112882      access_mmu_stlb
-             10550      miss_mmu_stlb
-             18251      access_mmu_pte_c
-            274765      rob_flush
-          22470560      btb_prediction_miss
-           3035839      itlb_miss
-         643549060      sync_del_fetch_g
-            133013      icache_miss
-          62982796      bpu_br_retire
-            287548      bpu_br_miss
-           8935910      ret_ins_retire
-              8308      ret_ins_miss
-
-      20.656182600 seconds time elapsed
-
-Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
----
-Changelog:
-v1 -> v2:
-- Rename 'Starfive Dubhe' to 'StarFive Dubhe-90' in commit message.
-- Rename 'starfive/dubhe' pmu-events folder to 'starfive/dubhe-90'
-- Update MARCHID to 0x80000000db000090 in mapfile.csv
----
- tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
- .../arch/riscv/starfive/dubhe-90/common.json  | 172 ++++++++++++++++++
- 2 files changed, 173 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
-
-diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv b/tools/perf/pmu-events/arch/riscv/mapfile.csv
-index c61b3d6ef616..a884eb59a5de 100644
---- a/tools/perf/pmu-events/arch/riscv/mapfile.csv
-+++ b/tools/perf/pmu-events/arch/riscv/mapfile.csv
-@@ -15,3 +15,4 @@
- #
- #MVENDORID-MARCHID-MIMPID,Version,Filename,EventType
- 0x489-0x8000000000000007-0x[[:xdigit:]]+,v1,sifive/u74,core
-+0x67e-0x80000000db000090-0x[[:xdigit:]]+,v1,starfive/dubhe-90,core
-diff --git a/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
-new file mode 100644
-index 000000000000..fbffcacb2ace
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
-@@ -0,0 +1,172 @@
-+[
-+  {
-+    "EventName": "ACCESS_MMU_STLB",
-+    "EventCode": "0x1",
-+    "BriefDescription": "access MMU STLB"
-+  },
-+  {
-+    "EventName": "MISS_MMU_STLB",
-+    "EventCode": "0x2",
-+    "BriefDescription": "miss MMU STLB"
-+  },
-+  {
-+    "EventName": "ACCESS_MMU_PTE_C",
-+    "EventCode": "0x3",
-+    "BriefDescription": "access MMU PTE-Cache"
-+  },
-+  {
-+    "EventName": "MISS_MMU_PTE_C",
-+    "EventCode": "0x4",
-+    "BriefDescription": "miss MMU PTE-Cache"
-+  },
-+  {
-+    "EventName": "ROB_FLUSH",
-+    "EventCode": "0x5",
-+    "BriefDescription": "ROB flush (all kinds of exceptions)"
-+  },
-+  {
-+    "EventName": "BTB_PREDICTION_MISS",
-+    "EventCode": "0x6",
-+    "BriefDescription": "BTB prediction miss"
-+  },
-+  {
-+    "EventName": "ITLB_MISS",
-+    "EventCode": "0x7",
-+    "BriefDescription": "ITLB miss"
-+  },
-+  {
-+    "EventName": "SYNC_DEL_FETCH_G",
-+    "EventCode": "0x8",
-+    "BriefDescription": "SYNC delivery a fetch-group"
-+  },
-+  {
-+    "EventName": "ICACHE_MISS",
-+    "EventCode": "0x9",
-+    "BriefDescription": "ICache miss"
-+  },
-+  {
-+    "EventName": "BPU_BR_RETIRE",
-+    "EventCode": "0xA",
-+    "BriefDescription": "condition branch instruction retire"
-+  },
-+  {
-+    "EventName": "BPU_BR_MISS",
-+    "EventCode": "0xB",
-+    "BriefDescription": "condition branch instruction miss"
-+  },
-+  {
-+    "EventName": "RET_INS_RETIRE",
-+    "EventCode": "0xC",
-+    "BriefDescription": "return instruction retire"
-+  },
-+  {
-+    "EventName": "RET_INS_MISS",
-+    "EventCode": "0xD",
-+    "BriefDescription": "return instruction miss"
-+  },
-+  {
-+    "EventName": "INDIRECT_JR_MISS",
-+    "EventCode": "0xE",
-+    "BriefDescription": "indirect JR instruction miss (inlcude without target)"
-+  },
-+  {
-+    "EventName": "IBUF_VAL_ID_NORDY",
-+    "EventCode": "0xF",
-+    "BriefDescription": "IBUF valid while ID not ready"
-+  },
-+  {
-+    "EventName": "IBUF_NOVAL_ID_RDY",
-+    "EventCode": "0x10",
-+    "BriefDescription": "IBUF not valid while ID ready"
-+  },
-+  {
-+    "EventName": "REN_INT_PHY_REG_NORDY",
-+    "EventCode": "0x11",
-+    "BriefDescription": "REN integer physical register file is not ready"
-+  },
-+  {
-+    "EventName": "REN_FP_PHY_REG_NORDY",
-+    "EventCode": "0x12",
-+    "BriefDescription": "REN floating point physical register file is not ready"
-+  },
-+  {
-+    "EventName": "REN_CP_NORDY",
-+    "EventCode": "0x13",
-+    "BriefDescription": "REN checkpoint is not ready"
-+  },
-+  {
-+    "EventName": "DEC_VAL_ROB_NORDY",
-+    "EventCode": "0x14",
-+    "BriefDescription": "DEC is valid and ROB is not ready"
-+  },
-+  {
-+    "EventName": "OOD_FLUSH_LS_DEP",
-+    "EventCode": "0x15",
-+    "BriefDescription": "out of order flush due to load/store dependency"
-+  },
-+  {
-+    "EventName": "BRU_RET_IJR_INS",
-+    "EventCode": "0x16",
-+    "BriefDescription": "BRU retire an IJR instruction"
-+  },
-+  {
-+    "EventName": "ACCESS_DTLB",
-+    "EventCode": "0x17",
-+    "BriefDescription": "access DTLB"
-+  },
-+  {
-+    "EventName": "MISS_DTLB",
-+    "EventCode": "0x18",
-+    "BriefDescription": "miss DTLB"
-+  },
-+  {
-+    "EventName": "LOAD_INS_DCACHE",
-+    "EventCode": "0x19",
-+    "BriefDescription": "load instruction access DCache"
-+  },
-+  {
-+    "EventName": "LOAD_INS_MISS_DCACHE",
-+    "EventCode": "0x1A",
-+    "BriefDescription": "load instruction miss DCache"
-+  },
-+  {
-+    "EventName": "STORE_INS_DCACHE",
-+    "EventCode": "0x1B",
-+    "BriefDescription": "store/amo instruction access DCache"
-+  },
-+  {
-+    "EventName": "STORE_INS_MISS_DCACHE",
-+    "EventCode": "0x1C",
-+    "BriefDescription": "store/amo instruction miss DCache"
-+  },
-+  {
-+    "EventName": "LOAD_SCACHE",
-+    "EventCode": "0x1D",
-+    "BriefDescription": "load access SCache"
-+  },
-+  {
-+    "EventName": "STORE_SCACHE",
-+    "EventCode": "0x1E",
-+    "BriefDescription": "store access SCache"
-+  },
-+  {
-+    "EventName": "LOAD_MISS_SCACHE",
-+    "EventCode": "0x1F",
-+    "BriefDescription": "load miss SCache"
-+  },
-+  {
-+    "EventName": "STORE_MISS_SCACHE",
-+    "EventCode": "0x20",
-+    "BriefDescription": "store miss SCache"
-+  },
-+  {
-+    "EventName": "L2C_PF_REQ",
-+    "EventCode": "0x21",
-+    "BriefDescription": "L2C data-prefetcher request"
-+  },
-+  {
-+    "EventName": "L2C_PF_HIT",
-+    "EventCode": "0x22",
-+    "BriefDescription": "L2C data-prefetcher hit"
-+  }
-+]
--- 
-2.25.1
-
+Nope, it's not. If drm_sched_can_queue() returns false, the scheduler
+will go look for another entity that has a job ready for execution, and
+get back to this entity later, and test drm_sched_can_queue() again.
+Basically, any time drm_sched_can_queue() is called, the job credits
+update should happen, so we have an accurate view of how many credits
+this job needs.
