@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3047D98C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F387D98C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345929AbjJ0Moc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S1345934AbjJ0MpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345887AbjJ0Moa (ORCPT
+        with ESMTP id S1345787AbjJ0Mo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:44:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E7A121
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:44:27 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c5071165d5so25348401fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:44:27 -0700 (PDT)
+        Fri, 27 Oct 2023 08:44:58 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804861BC
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:44:55 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c59a4dcdacso32955961fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698410666; x=1699015466; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698410693; x=1699015493; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lsT9S2hpmqi+HKwmlZPo+n/GTFRXcyFxJ1tXHlA5H1M=;
-        b=FbFcR9WyAw7jGl+2TdZrkrD4ADrjYwfs53oiZwI91srYwjV8VviPXIEmmnsKv9tIHq
-         y7oOHgznKwUTO/kj9sSqbYsTE42kPALnD8kfLsSsa362uuCplGnbGftC2a0uddoALdgT
-         /9Tnlku9jJ/dP1qMGplT7uZUCbYyBxEEtIvwNdgLgUhJncb0CbRCtx/TycNnjD+jj7Qn
-         n3Mszc7WU0YYhyYtDev9ffAVD5w3CiexgD3Vb5onC7XeOk0PuyHEpBzBkJKB7mRYtyQK
-         NVfuZuJH3RXOrRBBhWGycBshQL5LPZBCF8R0jrSIsaZJvU2sAXhKS6TwoEMH4y2sS6+Y
-         yHUA==
+        bh=ZS9PS+CF/4xZ1zqno7t5BWpuYg3372vzFkNwrPm7LPc=;
+        b=KxrTfut21otVadIuShVbkG3XMv3nth6ovEMKs0qE01mS130j13NlEM9REW9ac1jydm
+         1A87UUguEw1N+ugzFQwwYPCwIMf6249nZ8lOoaV5waESzfjRR2DZWRqwBhPMcfEomj4k
+         KQmcMg1T/4fNollKaRRWFv2K1ulP0pGFoA4CxjASEWMonfDZgG8u6hn6GsmI2JNmYuCM
+         qhi3cixfz2LjEz0yi4rm3kJA/Lgz7IMYdEYamLY0k7/A0i4tauK5iegkEQcj7UZyKaCa
+         yEAEqCf6dbO4ywCHWXORhe0XaVpwXhbIFBapnq4/xrfYV/+1x1NtF13fZYCW0kbaPryK
+         ypDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698410666; x=1699015466;
+        d=1e100.net; s=20230601; t=1698410693; x=1699015493;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lsT9S2hpmqi+HKwmlZPo+n/GTFRXcyFxJ1tXHlA5H1M=;
-        b=Jq9QWntxsFrdXi5bFybYTmNlBAyEwkmoOTb/XWut+VASjnaTRHrrrgliytywu5aDHu
-         DucfS6HACl+rzAuojRHaxhsxA9ssQGlY0sWwfeo8v5xuTBNnacJ3UI2nA7DiUDC29Cqf
-         +5clFPzivU0xgYu88J4CKdPoGVOifcEdSDeyFAaljqJZ8dT5PH4PHEkXy6JnLKbb0frm
-         GsCFGD3EEsQqYxty5yHAcBqihPAIOLFNoWAEF9NG+zgNJMpMSCNGRfLUkuy1cnWAvZLU
-         SbJOpru/EPjUKooDWUGtJqtRQ8YlLP3qnxe4cXCE+OVfsGXZLuzbXe8T2ezhDntPT4T2
-         oIsQ==
-X-Gm-Message-State: AOJu0Ywsx9IM9t7Xfn4GpZA3K0tgF/JnKB13OnirZ1szxDZX+EDWqaL4
-        5UiDAJttCWmjF5VLB3zHbUs3iA==
-X-Google-Smtp-Source: AGHT+IGaglDc6HUSSy0KpkIAV2aUhT/i9Wqb1XRjOOYiZi4nh8rq5WfM9ki4vtY0Yn5RzOiWDDN8gQ==
-X-Received: by 2002:a2e:bb86:0:b0:2b6:ea3b:f082 with SMTP id y6-20020a2ebb86000000b002b6ea3bf082mr1699611lje.38.1698410665786;
-        Fri, 27 Oct 2023 05:44:25 -0700 (PDT)
+        bh=ZS9PS+CF/4xZ1zqno7t5BWpuYg3372vzFkNwrPm7LPc=;
+        b=EfMWwBbzKw/dcWMk+WT/qF2voemHDlxpaYfKZV8yPJCtVIpkyhap0p//BZ+Q5ZWYHR
+         +AmFh4QaIQ7pnqstzKoFXslXncKKeRn+2B74Su6pGPDyV3XMUOMm+17nYl3tgiMnFRWD
+         YLLXFhh8PGM188VzP7ubBhgdhP5b2UDhUjYUq3qOKLPM2jQJ/kXZKEaPJY5GGmpBJAjc
+         wXt2K+HggBKe3iYhbtRfT6pZBI4BVuWw7WYpxg1XP0p1Ow17mdj/ubxMabIvdtVM5w5f
+         Z0Ch3vQMXtHiQzLhnaoXa6jJdHbEWSS6L0UDq5CYlGoJN5jVit3RcMq250AiN6CnwFXR
+         EQ6A==
+X-Gm-Message-State: AOJu0YwD2CfNz99h2z+ieemZ/YxSPa86hIHdhH0TFX4GvgzOtugV9K5C
+        aGT6DsDtbipOfzRYa/ZP93s4Fw==
+X-Google-Smtp-Source: AGHT+IEtIHMYMr499Pz6qTmz8fDASvhs3CzdDBLFRf/FaIWBcVv4jmXzAkxmQhhC6RUbWx+Vprh7Ig==
+X-Received: by 2002:a2e:988e:0:b0:2c5:38d:f80b with SMTP id b14-20020a2e988e000000b002c5038df80bmr1964583ljj.6.1698410693742;
+        Fri, 27 Oct 2023 05:44:53 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id z24-20020a2e3518000000b002bc3fbe9fd5sm267914ljz.55.2023.10.27.05.44.24
+        by smtp.gmail.com with ESMTPSA id z24-20020a2e3518000000b002bc3fbe9fd5sm267914ljz.55.2023.10.27.05.44.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 05:44:25 -0700 (PDT)
-Message-ID: <244a23af-1025-4b1e-b776-185b3dde5ae5@linaro.org>
-Date:   Fri, 27 Oct 2023 14:44:24 +0200
+        Fri, 27 Oct 2023 05:44:53 -0700 (PDT)
+Message-ID: <eaae79e5-b8d4-4ae3-bd17-08be86a4a328@linaro.org>
+Date:   Fri, 27 Oct 2023 14:44:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] dt-bindings: display: msm-dsi-controller-main:
- document the SM8650 DSI Controller
+Subject: Re: [PATCH 3/8] dt-bindings: display: msm: document the SM8650 DPU
 Content-Language: en-US
 To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Rob Clark <robdclark@gmail.com>,
@@ -77,7 +76,7 @@ Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
         freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231025-topic-sm8650-upstream-mdss-v1-0-bb219b8c7a51@linaro.org>
- <20231025-topic-sm8650-upstream-mdss-v1-2-bb219b8c7a51@linaro.org>
+ <20231025-topic-sm8650-upstream-mdss-v1-3-bb219b8c7a51@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,13 +122,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025-topic-sm8650-upstream-mdss-v1-2-bb219b8c7a51@linaro.org>
+In-Reply-To: <20231025-topic-sm8650-upstream-mdss-v1-3-bb219b8c7a51@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -137,10 +136,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25/10/2023 09:35, Neil Armstrong wrote:
-> Document the DSI Controller on the SM8650 Platform.
+> Document the DPU Display Controller on the SM8650 Platform.
 > 
 > Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-
+> ---
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
