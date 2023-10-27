@@ -2,142 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2780B7D9186
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5F77D918B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345535AbjJ0I3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S1345530AbjJ0I3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345530AbjJ0I32 (ORCPT
+        with ESMTP id S235012AbjJ0I3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:29:28 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63421A7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:29:25 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50802148be9so2231432e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698395364; x=1699000164; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sa7k+kRCObLaUmV2GRBfkKq0wj93V4tnf7QBOCyvDGM=;
-        b=nI56LBR1B8Cgi5fttdo8ZSrLhEq5xMB1wO75N9vGCW2gW027zLgPp1VHRwUvXBRwfz
-         2EIjWimQ0M9KpeEHzgeE+P5NtGyfe9BlAgadSDqNTRijv/urx6Uk/Ke8XpiefF/uCExz
-         ho+euuMx+kPXxVP/uvVsMxA41/Or+mxWYzEKx8m+FCj/OFmouXLGPUW+eDxFHSd9FGpN
-         vq81UE7meG8OblXt5/S0Cu4PG2ljn05DgDtO5Wo0dGmzvMFUMVsA7GLY632KEdPyhxtZ
-         xEiNVCbxjFvTAxMCrubmML5h6nHdiDgqYjcJ+1kIH63KsOVp4C2Vl0UkN80umE35s8+S
-         /U8g==
+        Fri, 27 Oct 2023 04:29:46 -0400
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288801BE;
+        Fri, 27 Oct 2023 01:29:42 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2c5071165d5so22086461fa.0;
+        Fri, 27 Oct 2023 01:29:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698395364; x=1699000164;
+        d=1e100.net; s=20230601; t=1698395380; x=1699000180;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sa7k+kRCObLaUmV2GRBfkKq0wj93V4tnf7QBOCyvDGM=;
-        b=Hx29elg/fS+ptofSq1NJ4xyRpelw/byW8JQ75j5Cdv5UK6hLSBjonV2jUOp2ZbfAiv
-         uGaMpogkyDqFDCJfLwCHMmJCG2Q9/Pm0a8LVCIBi7k1h1RRQcTy2wJPkgXUAMQweY9Qg
-         lDS83SxKQyGRuW/K9fFzyIhphwXWzbq2JiBWiUOTKpRnATCWDiyMBpzYmBwMD/UMoI/9
-         FYbLmWJq++9QCniZt20C9ps8+9vlhRJTn9Cykc9HpCwVZxwK2O+Htcb6/Ft0HUNJhTuZ
-         ug4sB7d4wTfjYymtogHIWw2WzRodAJ9pAYbUfiJmGe/KsAH/8vp7J4YzFyZ6NW5LeTqo
-         J2fA==
-X-Gm-Message-State: AOJu0YwjvYtk7Z0QkQAcvu9R3Yyz6UhZc87/qGYkMsUGJIDnKeqRD3Bn
-        ebvxDA4fk41a78kCvrG9ydTSzg==
-X-Google-Smtp-Source: AGHT+IE6DL3pZfPbJeyGKttk+fT9vqmgjTIjmq5QUoR6thhZhPiMEBObwYge9KxzSGFqnOnUeJAAlQ==
-X-Received: by 2002:ac2:414a:0:b0:507:a9b7:f071 with SMTP id c10-20020ac2414a000000b00507a9b7f071mr1094121lfi.1.1698395364198;
-        Fri, 27 Oct 2023 01:29:24 -0700 (PDT)
-Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id i14-20020a056512340e00b00502ae64f46asm184429lfr.126.2023.10.27.01.29.22
+        bh=stJbb23w3VUqP0eHkdL98f2jZhQvcq9EYPxztKnA6VY=;
+        b=VPrAr06OoUv+izTP6JFnd3aqFzGoVfW+XFE9VaWIESad/uJ7ubM0+aipB4mkgbbAZp
+         Pe/HnQtd1MYaiozDbFQXj/d151ir7J1uSBf2BeNKrRYb+x7cKkJaWgVGxGyM9eA6sieA
+         FvD+TVuZxgw644eb+XXoVWLToRgI4KXPLuhfJOMNkaES+UhPtxmqo1SPdgsInhVed2kL
+         iZJKWyrL5KkhALmKCw6khebstE5c5b6sd0rUTJalzyhpnYWuDWyzjAZl17mv/KDYlWTg
+         5E6M3f/lye24dY6nQp93kKF3xRegFxeSJM1bgOuBQQ7n7geFwYkNVMZthbIBey0iTjYp
+         HwaQ==
+X-Gm-Message-State: AOJu0YznJjuttF6XYwSL+PLxImspFlVwn7mk4axFmjwbz4aBOy9D0A2W
+        eeCotNCXIvDoUr19eNLd1eI=
+X-Google-Smtp-Source: AGHT+IFAj3Y6IG4ZWvAYqebBD+zyEarmRzLf/EZHCsiRr1qFHDFKzdzKc6zpyG0CGQgWF/u5ROm9aQ==
+X-Received: by 2002:a2e:a167:0:b0:2c5:12ae:adb3 with SMTP id u7-20020a2ea167000000b002c512aeadb3mr1517585ljl.44.1698395380014;
+        Fri, 27 Oct 2023 01:29:40 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id bg9-20020a05600c3c8900b004063cd8105csm4602183wmb.22.2023.10.27.01.29.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 01:29:23 -0700 (PDT)
-Message-ID: <e09e122e-712f-4c07-8fec-0c39452677a8@linaro.org>
-Date:   Fri, 27 Oct 2023 10:29:22 +0200
+        Fri, 27 Oct 2023 01:29:39 -0700 (PDT)
+Message-ID: <37a5e055-93b5-4f05-bcca-4caa5ed6f97f@kernel.org>
+Date:   Fri, 27 Oct 2023 10:29:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] dt-bindings: firmware: qcom,scm: document SCM on
- SC8380XP SoCs
+Subject: Re: [PATCH 2/2] tty: serial: 8250: Add support for MOXA PCIe boards
+ to switch interface
 Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, will@kernel.org, robin.murphy@arm.com,
-        joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     agross@kernel.org, vkoul@kernel.org, quic_gurus@quicinc.com,
-        conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
-        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-References: <20231025140640.22601-1-quic_sibis@quicinc.com>
- <20231025140640.22601-4-quic_sibis@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025140640.22601-4-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231027062440.7749-1-crescentcy.hsieh@moxa.com>
+ <20231027062440.7749-3-crescentcy.hsieh@moxa.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231027062440.7749-3-crescentcy.hsieh@moxa.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 16:06, Sibi Sankar wrote:
-> Document scm compatible for SC8380XP SoCs.
+On 27. 10. 23, 8:24, Crescent CY Hsieh wrote:
+> MOXA PCIe boards have 4 serial interfaces and don't require additional
+> stuff to switch between interfaces:
 > 
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> - RS232
+> - RS422
+> - RS485_2W (half-duplex)
+> - RS485_4W (full-duplex)
 > 
+> By using ioctl command "TIOCRS485", it can switch between default
+> interface and RS485 if supported.
+> 
+> That means, for RS422/RS485 board, it can switch between RS422 and
+> RS485 by setting the flags within struct serial_rs485.
+> 
+> However, for the RS232/RS422/RS485 board, it can only switch between
+> RS232 and RS485, there's no flag for switching interface into RS422.
+> 
+> This patch adds a flag call "SER_RS422_ENALBED" in serial.h and modifies
 
-No interconnects?
+It's not "ENALBED".
 
-Best regards,
-Krzysztof
+Anyway, I am afraid you have to split the patch into two:
+1) add the flag and core support (but wait a bit for others if they 
+agree with this approach)
+2) add the support for moxa.
+
+> serial_core.c to make it possible to switch interface between RS232,
+> RS422 and RS485.
+...
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+
+> @@ -2032,6 +2036,37 @@ static int pci_moxa_set_interface(const struct pci_dev *dev,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * MOXA PCIe boards support switching the serial interface using the ioctl
+> + * command "TIOCSRS485".
+> + *
+> + *	RS232			= (no flags are set)
+> + *	RS422			= SER_RS422_ENABLED
+> + *	RS485_2W (half-duplex)	= SER_RS485_ENABLED
+> + *	RS485_4W (full-duplex)	= SER_RS485_ENABLED | SER_RS485_RX_DURING_TX
+> + */
+> +static int pci_moxa_rs485_config(struct uart_port *port,
+> +				 struct ktermios *termios,
+> +				 struct serial_rs485 *rs485)
+> +{
+> +	struct pci_dev *dev = to_pci_dev(port->dev);
+> +	u8 mode = MOXA_RS232;
+> +
+> +	if (rs485->flags & SER_RS485_ENABLED) {
+> +		if (rs485->flags & SER_RS485_RX_DURING_TX)
+> +			mode = MOXA_RS485_4W;
+> +		else
+> +			mode = MOXA_RS485_2W;
+> +	} else if (rs485->flags & SER_RS422_ENABLED) {
+> +		mode = MOXA_RS422;
+> +	} else {
+> +		if (!(pci_moxa_supported_rs(dev) & MOXA_SUPP_RS232))
+> +			return -ENODEV;
+> +	}
+> +
+> +	return pci_moxa_set_interface(dev, port->port_id, mode);
+
+Looks good to me now.
+
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -1305,7 +1305,7 @@ static int uart_get_icount(struct tty_struct *tty,
+>   
+>   #define SER_RS485_LEGACY_FLAGS	(SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | \
+>   				 SER_RS485_RTS_AFTER_SEND | SER_RS485_RX_DURING_TX | \
+> -				 SER_RS485_TERMINATE_BUS)
+> +				 SER_RS485_TERMINATE_BUS | SER_RS422_ENABLED)
+>   
+>   static int uart_check_rs485_flags(struct uart_port *port, struct serial_rs485 *rs485)
+>   {
+> @@ -1371,11 +1371,26 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
+>   {
+>   	u32 supported_flags = port->rs485_supported.flags;
+>   
+> -	if (!(rs485->flags & SER_RS485_ENABLED)) {
+> +	if (!(rs485->flags & SER_RS485_ENABLED) && !(rs485->flags & SER_RS422_ENABLED)) {
+
+maybe easier:
+   if (!(rs485->flags & (SER_RS485_ENABLED | SER_RS422_ENABLED))) {
+?
+
+>   		memset(rs485, 0, sizeof(*rs485));
+>   		return;
+>   	}
+>   
+> +	/* Pick sane setting if the user enables both interfaces */
+> +	if (rs485->flags & SER_RS485_ENABLED && rs485->flags & SER_RS422_ENABLED) {
+> +		dev_warn_ratelimited(port->dev,
+> +			"%s (%d): Invalid serial interface setting, using RS485 instead\n",
+> +			port->name, port->line);
+> +		rs485->flags &= ~(SER_RS422_ENABLED);
+
+No need for parens.
+
+> +	}
+> +
+> +	/* Clear other bits and return if enable RS422 */
+
+"if RS422 is enabled"
+or
+"if enabling RS422"
+
+> +	if (rs485->flags & SER_RS422_ENABLED) {
+> +		memset(rs485, 0, sizeof(*rs485));
+> +		rs485->flags |= SER_RS422_ENABLED;
+> +		return;
+> +	}
+> +
+>   	/* Pick sane settings if the user hasn't */
+>   	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND)) &&
+>   	    !(rs485->flags & SER_RS485_RTS_ON_SEND) ==
+> @@ -1400,7 +1415,7 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
+>   static void uart_set_rs485_termination(struct uart_port *port,
+>   				       const struct serial_rs485 *rs485)
+>   {
+> -	if (!(rs485->flags & SER_RS485_ENABLED))
+> +	if (!(rs485->flags & SER_RS485_ENABLED) && !(rs485->flags & SER_RS422_ENABLED))
+
+if (!(rs485->flags & (SER_RS485_ENABLED | SER_RS422_ENABLED))) {
+
+thanks,
+-- 
+js
+suse labs
 
