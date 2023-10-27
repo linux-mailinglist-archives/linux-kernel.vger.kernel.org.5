@@ -2,287 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B63F7D9A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B3B7D9A85
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346034AbjJ0Nxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S1346003AbjJ0Nz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345989AbjJ0Nxe (ORCPT
+        with ESMTP id S1345943AbjJ0NzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:53:34 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B7918F
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:53:32 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b36e1fcea0so1953839b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698414811; x=1699019611; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RPwG2QcwboihMKc7vz66bqzH6hNuU2qBnSDnXgA9jsQ=;
-        b=Bh4UsKhGuYPWpigmnJYJvCeJy8RjJI7noqKQ+7SL2wqVRJm8H9owThUNsOQMsMoe8d
-         UkgC0H/a+4QPmy8gopVivMoT+GBSLw+cEF582TvpTlUIQxICJX8buFnjmBpP8tqGGmA9
-         nklEQv5F1/FR/0q0uaxh2IELG6RCMWQLTzaht8Jnxnr6/4tAUB694gTjztmSFCd69Zrp
-         Q0y20+yoDjkEr96p8rfXzETitgkcinUBS7TgFBoLk2CVcYuoqgM2OSStLbMcl0hwa6dp
-         IubOR3k0uyPSyzafPDd5qI+U9v/YU9YyHvLTGFQRlaMObpRycjeBmhlbshho3ZOnNWj6
-         wxyg==
+        Fri, 27 Oct 2023 09:55:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB0BC0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698414878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=hy9ASv0VMyxyTx5ycKNQ4ht5ekQ9TAA9ltCXTwU9SXk=;
+        b=BgxSZCFPNEtE9R+mYoxtdohvTe6D8iT0C4Ldi6CjlFz8Yn/y8Ww/LEeCvK78muuABq2og3
+        8kGyqPO8ZxxTpYpDEK1ovety4ZWxaTnud/vc9JFcEqsB/EyC3hWebgypIoi3oVOMeG9e3W
+        iXzHem1IWTzXYVVwwzXGCoJpVzxW/aI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-361-dafNZVbNPHqSGfpxgjHWPg-1; Fri, 27 Oct 2023 09:54:27 -0400
+X-MC-Unique: dafNZVbNPHqSGfpxgjHWPg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32dd782e2d1so1162690f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:54:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698414811; x=1699019611;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RPwG2QcwboihMKc7vz66bqzH6hNuU2qBnSDnXgA9jsQ=;
-        b=HxkAGK15eSSA7IeS5FTc/PDDyTKTFMs0x5FD2ltTh/SDLNAWhAvYkRQNGyGXYL0xKS
-         6p2SlPW8HyDH9C4647gi+jxgqlnCdyXyDs73B6XJniI5s0r+3rjeheXcp/mb+hGH/EOz
-         5RGnRvqDy9hiQAA9rRFyW28bm37m9ncfEvQL6kvtXkoKxU6VDMJIR/IY4+/DyXUC5zwh
-         grGgIo/1b1d3UUiOXTg9PhrMciBRvavT05Z2IQF5RggyviwXZ/t+MO1sNN76evQEDuwj
-         SwZ6/idgAlPfQdL1AEyEFwvkrj+baHsaa7cjG8oJ7v1+x/ERchxU8/ubYPNqwBWnb54G
-         0RxA==
-X-Gm-Message-State: AOJu0Yx2ldMFgBicyFe+yQNKrjaO4r8Ggi7xRw8yWrKFEPzpgraHf9hO
-        MQYOwur9pBAIXsKkrgjlfaQz
-X-Google-Smtp-Source: AGHT+IHFERWxa0DWPsFP/6ZVX0E8T/43L76IsFNz5+4AXW7mzc2yvPbKGP8rugKLwa+l8LoMrWvx6g==
-X-Received: by 2002:a05:6a21:7989:b0:161:3120:e888 with SMTP id bh9-20020a056a21798900b001613120e888mr3140556pzc.46.1698414811168;
-        Fri, 27 Oct 2023 06:53:31 -0700 (PDT)
-Received: from thinkpad ([120.138.12.43])
-        by smtp.gmail.com with ESMTPSA id s21-20020a056a00195500b0069309cbc220sm1379599pfk.121.2023.10.27.06.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 06:53:29 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 19:23:24 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     jingoohan1@gmail.com, lpieralisi@kernel.org, kw@linux.com,
-        robh@kernel.org, bhelgaas@google.com,
-        krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pankaj.dubey@samsung.com
-Subject: Re: [PATCH] PCI: exynos: Change macro names to exynos specific
-Message-ID: <20231027135324.GB23716@thinkpad>
-References: <CGME20231009062058epcas5p4dc1fb50210c920137ac906b0bdf99e1b@epcas5p4.samsung.com>
- <20231009062052.5407-1-shradha.t@samsung.com>
+        d=1e100.net; s=20230601; t=1698414866; x=1699019666;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hy9ASv0VMyxyTx5ycKNQ4ht5ekQ9TAA9ltCXTwU9SXk=;
+        b=gkFcZUkz5xAL+SK/ZA80mPN9vIGG2gAhyL8QUNkyOKUZYKZS2c23Kq2xKnDShNlJMI
+         q4Yc4Zyw/UaAi5Ngxss+Yihn6cqaNorHp7X8Sb1227x8GytSN0TeEbhzIFh2yQpaHh/y
+         hyTzSo1MvwO/cT7hnsOaYsq5FzT/bvWVX+3auRBhH0OVD+sLtXmYEoMJVg5PRLllSe13
+         Zcy02U9Lmwgt6zprdsWLHAOWNLFbHRiwSPmgXKr+mUyYYcrplhfNA7LFk+j8NzpE1gFK
+         2nrOBmfllm51XIQ3byoCTVopISHm6Hy0p2jrYeo7XhkPtky601M1tU/R48ZBtojXMz/J
+         lgOg==
+X-Gm-Message-State: AOJu0YxiUIgaJ/GQOWy3zxEtm3OLzdejyebNOG4x0c1447VxCOMGKv8S
+        QUsbdQ982Z1Fr9bVwWIGkhbVqRqI98cAtXPHOBp7k1S6CmG58AR8r3Jne5CWbNGJhg6TsLVFG78
+        zbUyJN/hFkSREc0i9hKYwkMK9
+X-Received: by 2002:a5d:570f:0:b0:32d:9787:53b6 with SMTP id a15-20020a5d570f000000b0032d978753b6mr2014569wrv.44.1698414866366;
+        Fri, 27 Oct 2023 06:54:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFl7zeZVnx8FGwUy89ZC/egYT6gDW91Ny/6sL/sc2pDc2DN5LKEUrZN7EVytLFPLbxDX8BVfg==
+X-Received: by 2002:a5d:570f:0:b0:32d:9787:53b6 with SMTP id a15-20020a5d570f000000b0032d978753b6mr2014557wrv.44.1698414865993;
+        Fri, 27 Oct 2023 06:54:25 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71a:c000:811f:68f2:1ecb:4e2d? (p200300cbc71ac000811f68f21ecb4e2d.dip0.t-ipconnect.de. [2003:cb:c71a:c000:811f:68f2:1ecb:4e2d])
+        by smtp.gmail.com with ESMTPSA id h22-20020adfa4d6000000b0032dc74c093dsm1810443wrb.103.2023.10.27.06.54.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 06:54:25 -0700 (PDT)
+Message-ID: <43181f18-7cae-4736-8e47-adc23ab62a6e@redhat.com>
+Date:   Fri, 27 Oct 2023 15:54:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009062052.5407-1-shradha.t@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: page_alloc: check the order of compound page even
+ when the order is zero
+Content-Language: en-US
+To:     Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     Vishal Moola <vishal.moola@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <CGME20231023084301epcas2p2de7cdc5cb6795d409a183aae43ce8c13@epcas2p2.samsung.com>
+ <20231023083217.1866451-1-hyesoo.yu@samsung.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231023083217.1866451-1-hyesoo.yu@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 11:50:52AM +0530, Shradha Todi wrote:
-> Prefix macro names in exynos file with the term "EXYNOS" as the current
-> macro names seem to be generic to PCIe.
+On 23.10.23 10:32, Hyesoo Yu wrote:
+> For compound pages, the head sets the PG_head flag and
+> the tail sets the compound_head to indicate the head page.
+> If a user allocates a compound page and frees it with a different
+> order, the compound page information will not be properly
+> initialized. To detect this problem, compound_order(page) and
+> the order argument are compared, but this is not checked
+> when the order argument is zero. That error should be checked
+> regardless of the order.
 > 
-> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+> Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
 > ---
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
->  drivers/pci/controller/dwc/pci-exynos.c | 116 ++++++++++++------------
->  1 file changed, 58 insertions(+), 58 deletions(-)
+>   mm/page_alloc.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
-> index 6319082301d6..9e42cfcd99cc 100644
-> --- a/drivers/pci/controller/dwc/pci-exynos.c
-> +++ b/drivers/pci/controller/dwc/pci-exynos.c
-> @@ -26,30 +26,30 @@
->  #define to_exynos_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  /* PCIe ELBI registers */
-> -#define PCIE_IRQ_PULSE			0x000
-> -#define IRQ_INTA_ASSERT			BIT(0)
-> -#define IRQ_INTB_ASSERT			BIT(2)
-> -#define IRQ_INTC_ASSERT			BIT(4)
-> -#define IRQ_INTD_ASSERT			BIT(6)
-> -#define PCIE_IRQ_LEVEL			0x004
-> -#define PCIE_IRQ_SPECIAL		0x008
-> -#define PCIE_IRQ_EN_PULSE		0x00c
-> -#define PCIE_IRQ_EN_LEVEL		0x010
-> -#define PCIE_IRQ_EN_SPECIAL		0x014
-> -#define PCIE_SW_WAKE			0x018
-> -#define PCIE_BUS_EN			BIT(1)
-> -#define PCIE_CORE_RESET			0x01c
-> -#define PCIE_CORE_RESET_ENABLE		BIT(0)
-> -#define PCIE_STICKY_RESET		0x020
-> -#define PCIE_NONSTICKY_RESET		0x024
-> -#define PCIE_APP_INIT_RESET		0x028
-> -#define PCIE_APP_LTSSM_ENABLE		0x02c
-> -#define PCIE_ELBI_RDLH_LINKUP		0x074
-> -#define PCIE_ELBI_XMLH_LINKUP		BIT(4)
-> -#define PCIE_ELBI_LTSSM_ENABLE		0x1
-> -#define PCIE_ELBI_SLV_AWMISC		0x11c
-> -#define PCIE_ELBI_SLV_ARMISC		0x120
-> -#define PCIE_ELBI_SLV_DBI_ENABLE	BIT(21)
-> +#define EXYNOS_PCIE_IRQ_PULSE			0x000
-> +#define EXYNOS_IRQ_INTA_ASSERT			BIT(0)
-> +#define EXYNOS_IRQ_INTB_ASSERT			BIT(2)
-> +#define EXYNOS_IRQ_INTC_ASSERT			BIT(4)
-> +#define EXYNOS_IRQ_INTD_ASSERT			BIT(6)
-> +#define EXYNOS_PCIE_IRQ_LEVEL			0x004
-> +#define EXYNOS_PCIE_IRQ_SPECIAL		0x008
-> +#define EXYNOS_PCIE_IRQ_EN_PULSE		0x00c
-> +#define EXYNOS_PCIE_IRQ_EN_LEVEL		0x010
-> +#define EXYNOS_PCIE_IRQ_EN_SPECIAL		0x014
-> +#define EXYNOS_PCIE_SW_WAKE			0x018
-> +#define EXYNOS_PCIE_BUS_EN			BIT(1)
-> +#define EXYNOS_PCIE_CORE_RESET			0x01c
-> +#define EXYNOS_PCIE_CORE_RESET_ENABLE		BIT(0)
-> +#define EXYNOS_PCIE_STICKY_RESET		0x020
-> +#define EXYNOS_PCIE_NONSTICKY_RESET		0x024
-> +#define EXYNOS_PCIE_APP_INIT_RESET		0x028
-> +#define EXYNOS_PCIE_APP_LTSSM_ENABLE		0x02c
-> +#define EXYNOS_PCIE_ELBI_RDLH_LINKUP		0x074
-> +#define EXYNOS_PCIE_ELBI_XMLH_LINKUP		BIT(4)
-> +#define EXYNOS_PCIE_ELBI_LTSSM_ENABLE		0x1
-> +#define EXYNOS_PCIE_ELBI_SLV_AWMISC		0x11c
-> +#define EXYNOS_PCIE_ELBI_SLV_ARMISC		0x120
-> +#define EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE	BIT(21)
->  
->  struct exynos_pcie {
->  	struct dw_pcie			pci;
-> @@ -105,49 +105,49 @@ static void exynos_pcie_sideband_dbi_w_mode(struct exynos_pcie *ep, bool on)
->  {
->  	u32 val;
->  
-> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_AWMISC);
-> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_ELBI_SLV_AWMISC);
->  	if (on)
-> -		val |= PCIE_ELBI_SLV_DBI_ENABLE;
-> +		val |= EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
->  	else
-> -		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_AWMISC);
-> +		val &= ~EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_ELBI_SLV_AWMISC);
->  }
->  
->  static void exynos_pcie_sideband_dbi_r_mode(struct exynos_pcie *ep, bool on)
->  {
->  	u32 val;
->  
-> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_ARMISC);
-> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_ELBI_SLV_ARMISC);
->  	if (on)
-> -		val |= PCIE_ELBI_SLV_DBI_ENABLE;
-> +		val |= EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
->  	else
-> -		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_ARMISC);
-> +		val &= ~EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_ELBI_SLV_ARMISC);
->  }
->  
->  static void exynos_pcie_assert_core_reset(struct exynos_pcie *ep)
->  {
->  	u32 val;
->  
-> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
-> -	val &= ~PCIE_CORE_RESET_ENABLE;
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_STICKY_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_NONSTICKY_RESET);
-> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_CORE_RESET);
-> +	val &= ~EXYNOS_PCIE_CORE_RESET_ENABLE;
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_CORE_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_STICKY_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_NONSTICKY_RESET);
->  }
->  
->  static void exynos_pcie_deassert_core_reset(struct exynos_pcie *ep)
->  {
->  	u32 val;
->  
-> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
-> -	val |= PCIE_CORE_RESET_ENABLE;
-> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_CORE_RESET);
-> +	val |= EXYNOS_PCIE_CORE_RESET_ENABLE;
->  
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_STICKY_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_NONSTICKY_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_APP_INIT_RESET);
-> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_APP_INIT_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_CORE_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 1, EXYNOS_PCIE_STICKY_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 1, EXYNOS_PCIE_NONSTICKY_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 1, EXYNOS_PCIE_APP_INIT_RESET);
-> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_APP_INIT_RESET);
->  }
->  
->  static int exynos_pcie_start_link(struct dw_pcie *pci)
-> @@ -155,21 +155,21 @@ static int exynos_pcie_start_link(struct dw_pcie *pci)
->  	struct exynos_pcie *ep = to_exynos_pcie(pci);
->  	u32 val;
->  
-> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_SW_WAKE);
-> -	val &= ~PCIE_BUS_EN;
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_SW_WAKE);
-> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_SW_WAKE);
-> +	val &= ~EXYNOS_PCIE_BUS_EN;
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_SW_WAKE);
->  
->  	/* assert LTSSM enable */
-> -	exynos_pcie_writel(ep->elbi_base, PCIE_ELBI_LTSSM_ENABLE,
-> -			  PCIE_APP_LTSSM_ENABLE);
-> +	exynos_pcie_writel(ep->elbi_base, EXYNOS_PCIE_ELBI_LTSSM_ENABLE,
-> +			  EXYNOS_PCIE_APP_LTSSM_ENABLE);
->  	return 0;
->  }
->  
->  static void exynos_pcie_clear_irq_pulse(struct exynos_pcie *ep)
->  {
-> -	u32 val = exynos_pcie_readl(ep->elbi_base, PCIE_IRQ_PULSE);
-> +	u32 val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_IRQ_PULSE);
->  
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_PULSE);
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_IRQ_PULSE);
->  }
->  
->  static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg)
-> @@ -182,12 +182,12 @@ static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg)
->  
->  static void exynos_pcie_enable_irq_pulse(struct exynos_pcie *ep)
->  {
-> -	u32 val = IRQ_INTA_ASSERT | IRQ_INTB_ASSERT |
-> -		  IRQ_INTC_ASSERT | IRQ_INTD_ASSERT;
-> +	u32 val = EXYNOS_IRQ_INTA_ASSERT | EXYNOS_IRQ_INTB_ASSERT |
-> +		  EXYNOS_IRQ_INTC_ASSERT | EXYNOS_IRQ_INTD_ASSERT;
->  
-> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_EN_PULSE);
-> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_LEVEL);
-> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_SPECIAL);
-> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_IRQ_EN_PULSE);
-> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_IRQ_EN_LEVEL);
-> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_IRQ_EN_SPECIAL);
->  }
->  
->  static u32 exynos_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
-> @@ -244,9 +244,9 @@ static struct pci_ops exynos_pci_ops = {
->  static int exynos_pcie_link_up(struct dw_pcie *pci)
->  {
->  	struct exynos_pcie *ep = to_exynos_pcie(pci);
-> -	u32 val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_RDLH_LINKUP);
-> +	u32 val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_ELBI_RDLH_LINKUP);
->  
-> -	return (val & PCIE_ELBI_XMLH_LINKUP);
-> +	return (val & EXYNOS_PCIE_ELBI_XMLH_LINKUP);
->  }
->  
->  static int exynos_pcie_host_init(struct dw_pcie_rp *pp)
-> -- 
-> 2.17.1
-> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 95546f376302..fc92ac93c7c8 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1078,6 +1078,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>   	int bad = 0;
+>   	bool skip_kasan_poison = should_skip_kasan_poison(page, fpi_flags);
+>   	bool init = want_init_on_free();
+> +	bool compound = PageCompound(page);
+>   
+>   	VM_BUG_ON_PAGE(PageTail(page), page);
+>   
+> @@ -1096,16 +1097,15 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>   		return false;
+>   	}
+>   
+> +	VM_BUG_ON_PAGE(compound && compound_order(page) != order, page);
+> +
+>   	/*
+>   	 * Check tail pages before head page information is cleared to
+>   	 * avoid checking PageCompound for order-0 pages.
+>   	 */
+>   	if (unlikely(order)) {
+> -		bool compound = PageCompound(page);
+>   		int i;
+>   
+> -		VM_BUG_ON_PAGE(compound && compound_order(page) != order, page);
+> -
+>   		if (compound)
+>   			page[1].flags &= ~PAGE_FLAGS_SECOND;
+>   		for (i = 1; i < (1 << order); i++) {
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Cheers,
+
+David / dhildenb
+
