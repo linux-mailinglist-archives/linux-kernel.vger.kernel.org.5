@@ -2,161 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCE97D9D70
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F2C7D9D74
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346236AbjJ0Pv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S1346245AbjJ0Pvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346274AbjJ0PvY (ORCPT
+        with ESMTP id S231953AbjJ0Pve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:51:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2D51BC
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:51:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F1AEC433C7;
-        Fri, 27 Oct 2023 15:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698421878;
-        bh=9LESantvGa36X9UTxAyjuw0E0XhnbkhNMzj6IsnbuOQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GMucPj/bOCaCaHnAV0pHug9sQvx3J4KElm4GJAgbHIpWW0ljfbd9NHXONJQJeoAiu
-         qIS6Cza/STUROd9jN7b/or8n0XeVfhWvZgEAKtZvUAKxdBT9dlhDv87dQ3ioEjDWhV
-         dyCl1RXMCYoenxflrPBkG4mfGnIn6XJ4ZawpdDt8LpK6ryCv8va2IjjRF4PRYWWqfE
-         WJIN7u3mUHa3gxqQsTW6eStXdgK5S2hL2MZK9nt5mc2lBou+vOJdFC5KqHpLZPXiTu
-         FEmKuGwXEJmnWnCHCVXig4HBbJ8a29rFTJhsKEGsWdyWdNgx64ZVrllThqF7TD9QCY
-         Xrv7IaCCQB0ag==
-Message-ID: <f8f8017c-4e76-4d70-918f-d7cb45186184@kernel.org>
-Date:   Fri, 27 Oct 2023 17:51:11 +0200
+        Fri, 27 Oct 2023 11:51:34 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6594D42;
+        Fri, 27 Oct 2023 08:51:30 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9a58aa4983so1640664276.0;
+        Fri, 27 Oct 2023 08:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698421890; x=1699026690; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wzy57PUf9orHh4OjGzjzAp13qnWwnh2HAAT0JBgqrrs=;
+        b=HOL033eEc/DKMO5D+Mc1XNZ7y/TX68zSWpNFoyyd0xmI9v4DpdJYU4jWLF3+qzZdH9
+         nBTyjX314fbnC8naO/UqGwh1iiMyC+RKn8p93TUF2g9HB0Hl2JefGbzXKcbQKLMkXru/
+         MyzS65x6OD5Ft5L4vXHKMIJy/JgKqCM9Plq3yzpcbFOdUEn7s1vs+yHjiI2lVfg6BiAe
+         OEFiti0/zLc3gFkjRK74qD+Upi3IppUYQpxwi2HuDz7n65a1xzS19BC9BdmuxoU15bzl
+         OlFA5PtBWQreywWnGdDrjzb5SdTqx/Izmbjd7GYIWX4na/4VRYCA9NrQWieJvttQYLXJ
+         lvbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698421890; x=1699026690;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wzy57PUf9orHh4OjGzjzAp13qnWwnh2HAAT0JBgqrrs=;
+        b=mF/5dpJ6vo0LetZw2Pt7HfFVQLqXUURHrzAZGnqlQWSSD13MAyl0okCzIWW6KhCgn5
+         YPoDtNAzdmSCj4o6yjcziEcERl2IKn85L0ZXbVFRkHNHTKSnrJkb3rQF0BM/LrpXWQI2
+         EgZUjgEj7KsfkMi7PA86PeKal3sXYPgLyU9arbrkCfWQ6tpATbGBW9IeBuLGnoe4GVhE
+         x/bAtEJ5Y2o3pDQI5E9fUPtjxFJVhL+rUGnIWK84i72KQ+9JG7TycYwxOIKoKGiTwKdG
+         3khkAb7qrGqOBDZoOIST3O83ofzTuQQXnS/bsb1AZ768P9XEa6NNIo9KXphHX/ErKdhL
+         P6RA==
+X-Gm-Message-State: AOJu0YwxgN+1CtefLw61UG/skX7uDcTIWxowhEEjB++1DLm2KgJOiNIS
+        6WUxMLUU/qdQEKUqEjCjdQ8=
+X-Google-Smtp-Source: AGHT+IHz6K8imb2cUy5vfXE7RsDkyWqKz9BYYAMj2LUiJAbmdb/AnRNSz7B3Rc1gcFGGTebIcHJEMA==
+X-Received: by 2002:a25:cf02:0:b0:da0:3535:41f4 with SMTP id f2-20020a25cf02000000b00da0353541f4mr3375675ybg.7.1698421889667;
+        Fri, 27 Oct 2023 08:51:29 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p136-20020a25748e000000b00d9cce349877sm751262ybc.16.2023.10.27.08.51.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 08:51:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d67c0bf1-beae-d93f-994c-3a937e2047a0@roeck-us.net>
+Date:   Fri, 27 Oct 2023 08:51:27 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
- use case
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
 Content-Language: en-US
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
-        arungopal.kondaveeti@amd.com, mastan.katragadda@amd.com,
-        juan.martinez@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <20231021145110.478744-9-Syed.SabaKareem@amd.com>
- <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
- <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
-Content-Type: text/plain; charset=UTF-8
+To:     "Matyas, Daniel" <Daniel.Matyas@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231026144405.546822-1-daniel.matyas@analog.com>
+ <20231026144405.546822-2-daniel.matyas@analog.com>
+ <fe99431e-3245-484c-bf26-928048500ec6@roeck-us.net>
+ <PH0PR03MB67712B3C063B794442F6D58A89DCA@PH0PR03MB6771.namprd03.prod.outlook.com>
+ <84252c5e-9a39-91bd-b7da-2bdea1b2aff6@roeck-us.net>
+ <PH0PR03MB6771E74E7C5CC2FB1DD0EB1989DCA@PH0PR03MB6771.namprd03.prod.outlook.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v5 2/4] hwmon: max31827: Add support for max31828 and
+ max31829
+In-Reply-To: <PH0PR03MB6771E74E7C5CC2FB1DD0EB1989DCA@PH0PR03MB6771.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 17:28, Mario Limonciello wrote:
-> On 10/27/2023 03:49, Krzysztof Kozlowski wrote:
->> On 21/10/2023 16:50, Syed Saba Kareem wrote:
->>> add pdm use case machine driver support
+On 10/27/23 08:05, Matyas, Daniel wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+>> Sent: Friday, October 27, 2023 5:52 PM
+>> To: Matyas, Daniel <Daniel.Matyas@analog.com>
+>> Cc: Jean Delvare <jdelvare@suse.com>; Jonathan Corbet
+>> <corbet@lwn.net>; linux-hwmon@vger.kernel.org; linux-
+>> doc@vger.kernel.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH v5 2/4] hwmon: max31827: Add support for
+>> max31828 and max31829
+>>
+>> [External]
+>>
+>> On 10/27/23 06:00, Matyas, Daniel wrote:
+>> [ ... ]
+>>
+>>>> I also don't understand why that would be chip specific. I don't see
+>>>> anything along that line in the datasheet.
+>>>>
+>>>> Ah, wait ... I guess that is supposed to reflect the chip default.
+>>>> I don't see why the chip default makes a difference - a well defined
+>>>> default must be set either way. Again, there is no guarantee that the
+>>>> chip is in its default state when the driver is loaded.
 >>>
->>> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
->>> ---
+>>> The well defined default was set in v4, but I deleted it, because the
+>> default value in hex for max31827 and max31828 alarm polarity, and
+>> max31827 fault queue is 0x0. I had 2 #defines for these values, but you
+>> said:
+>>> " Since MAX31827_ALRM_POL_LOW is 0, this code doesn't really do
+>> anything and just pollutes the code."
+>>>
+>>> So, I thought I should remove it altogether, since res is set to 0 in the
+>> beginning and the default value of these chips (i.e. 0) is implicitly set.
+>>>
+>>>>
+>>>> Also, why are the default values added in this patch and not in the
+>>>> previous patch ?
+>>>>
+>>>
+>>> In v4 these default values were set in the previous patch.
+>>>
 >>
+>> I asked you (or meant to ask you) to stop overwriting 0 with 0 in a
+>> variable. I didn't mean to ask you (if I did) to stop writing the default value
+>> into the chip. Sorry if I did; if so, that was a misunderstanding.
 >>
->>>   	dmi_id = dmi_first_match(acp_quirk_table);
->>>   	if (dmi_id && dmi_id->driver_data)
->>> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
->>>   		.name = "rmb-rt5682s-rt1019",
->>>   		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
->>>   	},
->>> +	{
->>> +		.name = "acp-pdm-mach",
->>> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
->>> +	},
->>>   	{ }
->>>   };
->>>   static struct platform_driver acp_asoc_audio = {
->>> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
->>>   MODULE_ALIAS("platform:acp3x-es83xx");
->>>   MODULE_ALIAS("platform:rmb-nau8825-max");
->>>   MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
->>> +MODULE_ALIAS("platform:acp-pdm-mach");
->>
->> Please stop growing the aliases. Module alias is not a substitute for
->> missing MODULE_DEVICE_TABLE.
->>
->> Best regards,
->> Krzysztof
->>
+>> Guenter
 > 
-> I thought the way that this works is that top level ACP driver (IE 
-> acp-pci.c) will have MODULE_DEVICE_TABLE.  This is how that module gets 
-> loaded.
+> Well, writing the default value into res, would just overwrite 0 with 0. Should I still do it?
 > 
-> Then it creates platform devices based on the detected needs for the 
-> situation and the creation of those platform devices triggers a uevent 
-> which due to MODULE_ALIAS will get appropriate other platform drivers 
-> like this one loaded.
 
-And why you cannot use MODULE_DEVICE_TABLE here? IOW, why do you need to
-manually duplicate entire table and re-invent MODULE_DEVICE_TABLE with
-MODULE_ALIAS?
+No, that is not correct. You don't know what is in the chip register.
+It may not be the chip default.
 
-Best regards,
-Krzysztof
+Guenter
 
