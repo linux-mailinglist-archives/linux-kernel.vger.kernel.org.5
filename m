@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1707D8F4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AA77D8F56
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345376AbjJ0HMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        id S234963AbjJ0HNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345356AbjJ0HMJ (ORCPT
+        with ESMTP id S229590AbjJ0HND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:12:09 -0400
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4E131B4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:12:06 -0700 (PDT)
-Received: from 8bytes.org (p4ffe149c.dip0.t-ipconnect.de [79.254.20.156])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id AED201A55A7;
-        Fri, 27 Oct 2023 09:12:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1698390725;
-        bh=fnEddc84wKlKs4bN2NS+++YG0UQjdLnpekj2LzCOah0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y1KIJPTAM1c60H1OtbNcgkyZJ5Yccbtkfyy/5i9+AXNxTQzSzShENsCCiuWbAtqkj
-         1Gk8LA3o9+wt3pzqsGZA48EuwdN6BYHOApYfmrFB9t0Jj9QX9o0i2vUjx64Fjh6fuJ
-         W34BXp/JZUURZAeICk22PKjbd+swrakeH6tNdBlGxu48C40BXblqevpvho3O4i6o7P
-         rfx2Bi+OXTJL0pledqlpNdj/X6lV8xkfYQvO/t+VP/XWJK+lOpVHbI95RDFjE8tnPF
-         /zHpHdpaBnnw8s8IZqo8Cv/KD8DIcUgBMjhXq2yO21pGzv8GlNwMTryrmGgvA8vBeR
-         6WXJnVz+2plww==
-Date:   Fri, 27 Oct 2023 09:12:04 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Tina Zhang <tina.zhang@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Michael Shavit <mshavit@google.com>,
-        Vasant Hegde <vasant.hegde@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 1/6] iommu: Change kconfig around IOMMU_SVA
-Message-ID: <ZTtixEgSkBI-TRro@8bytes.org>
-References: <20231027000525.1278806-1-tina.zhang@intel.com>
- <20231027000525.1278806-2-tina.zhang@intel.com>
+        Fri, 27 Oct 2023 03:13:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F94A1AA;
+        Fri, 27 Oct 2023 00:13:01 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698390779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=48pzFigEfE7Y5axy5bcPf8T1YrV6Mt9jdZdUUrCruyY=;
+        b=XCkoYDbbxdX8izcFbwr8Eqjrpz/IiZy9OFMLMIUw7C3IcXXWldxRkgIF+qkBVvurs9azkC
+        VRBfNjf3U2uU3Jr8NS35HosDFVl2KEJOdkmzgT9QALLmizg63zjmrVpQKRGlgpTY4frTm8
+        tGyF8vIaxbs1mBQcAqrBDz1DsKqhfOd66TLWMZ6oamJ34XQm3KEY8iOPyKm4cS5VgSpi7A
+        JOLEKuh3/xAr+LDy+DBDr/iitqpzDIOye3l2r0AWUbvyp9HkLKdOwyuM7rr9EeGLVwxoaM
+        Qn2NGk7BqG3q0DvssdOQ+/CSlNLrYVOhnNTxhmYe6VpKA27BQW0zdYsOBVQ0/A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698390779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=48pzFigEfE7Y5axy5bcPf8T1YrV6Mt9jdZdUUrCruyY=;
+        b=0GPEJyc9w2S/lUYqu7AA2vKxe6BhOXt+9gTUXhCjKjqqzZFEPd3MBo+FLJYfoWdVvHFdQ4
+        OUu9Wdk8ZnijuBDQ==
+To:     Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
+        adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
+        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
+        jolsa@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterlin@andestech.com,
+        peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
+        sunilvl@ventanamicro.com, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com
+Subject: Re: [RFC PATCH v3 RESEND 02/13] irqchip/riscv-intc: Allow large
+ non-standard hwirq number
+In-Reply-To: <20231023004100.2663486-3-peterlin@andestech.com>
+References: <20231023004100.2663486-1-peterlin@andestech.com>
+ <20231023004100.2663486-3-peterlin@andestech.com>
+Date:   Fri, 27 Oct 2023 09:12:59 +0200
+Message-ID: <87a5s44jyc.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027000525.1278806-2-tina.zhang@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tina,
+On Mon, Oct 23 2023 at 08:40, Yu Chien Peter Lin wrote:
+> Currently, the implementation of the RISC-V INTC driver uses the
+> interrupt cause as hwirq and has a limitation of supporting a
+> maximum of 64 hwirqs. However, according to the privileged spec,
+> interrupt causes >= 16 are defined for platform use.
+>
+> This limitation prevents us from fully utilizing the available
+> local interrupt sources. Additionally, the hwirqs used on RISC-V
+> are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
+> or T-Head's PMU irq) being currently used for supervisor mode.
+>
+> The patch switches to using irq_domain_create_tree() which
 
-On Fri, Oct 27, 2023 at 08:05:20AM +0800, Tina Zhang wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> Linus suggested that the kconfig here is confusing:
+git grep "This patch" Documentation/process/
 
-While this patch looks decent to me, you forgot to Cc Linus on it. In
-general, given that it touches a couple of core files, I'd like to wait
-for some more people to have a look at it and not rushing anything in.
-> 
-> https://lore.kernel.org/all/CAHk-=wgUiAtiszwseM1p2fCJ+sC4XWQ+YN4TanFhUgvUqjr9Xw@mail.gmail.com/
-> 
-> Let's break it into three kconfigs controlling distinct things:
-> 
->  - CONFIG_IOMMU_MM_DATA controls if the mm_struct has the additional
->    fields for the IOMMU. Currently only PASID, but later patches store
->    a struct iommu_mm_data *
-> 
->  - CONFIG_ARCH_HAS_CPU_PASID controls if the arch needs the scheduling bit
->    for keeping track of the ENQCMD instruction. x86 will select this if
->    IOMMU_SVA is enabled
-> 
->  - IOMMU_SVA controls if the IOMMU core compiles in the SVA support code
->    for iommu driver use and the IOMMU exported API
-> 
-> This way ARM will not enable CONFIG_ARCH_HAS_CPU_PASID
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> creates the radix tree map, allowing us to handle a larger
+> number of hwirqs.
 
-If you send it, you also need to add your Signed-off-by.
+Who is 'us'? We are not part of the chip and please write out 'hardware
+interrupts'
 
-Regards,
+> @@ -24,10 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+>  {
+>  	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+>  
+> -	if (unlikely(cause >= BITS_PER_LONG))
+> -		panic("unexpected interrupt cause");
+> -
+> -	generic_handle_domain_irq(intc_domain, cause);
+> +	if (generic_handle_domain_irq(intc_domain, cause))
+> +		pr_warn("Failed to handle interrupt (cause: %ld)\n", cause);
 
-	Joerg
+pr_warn_once() or at least pr_warn_ratelimited().
+
+>  }
+>  
+>  /*
+> @@ -117,8 +115,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+>  {
+>  	int rc;
+>  
+> -	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
+> -					       &riscv_intc_domain_ops, NULL);
+> +	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
+> +					     NULL);
+
+Put it into one line. Linebreaking arguments is really only required
+when the line length is exceedingly long. This one is not.
+
