@@ -2,221 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ADB7D9B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5F77D9B55
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345942AbjJ0O0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
+        id S1345935AbjJ0O1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345934AbjJ0O0b (ORCPT
+        with ESMTP id S1345907AbjJ0O1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:26:31 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D13D7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:26:28 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507c8316abcso2724147e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698416786; x=1699021586; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ziy+hDit/33rDQvA9Pj8jeQpZiJtdj7ZUvgfQi/0pS4=;
-        b=EAFQlb3oH9MQnFszCW5meMTs0moxUlLT4W894ygT9togQQ/03ErfCBff22BnxviEBD
-         God1WpLPhlFN26IF96qyWwqv2WVS3TL1ZlSkYNFzVyVIjJ5q2KdwagiZIyog3mGut3H0
-         ETxbLq+K0Mm59reD9udea2jjQXLC+bt14QswZbmyvouhsAIZ3J21ao/ABT8UMDLJiUTr
-         bny2Sx3AdurdM+XLmQpuBv/IORo/gzUpOaQsMn4x1HaVXCsyfVZoqEO0FKfBrA9zp/FV
-         4Brfen1jdOPh35NWps49r5iG9bcMcQDnQsnMDZ4nKMwBCZq3VMF2FYu6N5nEzkw4dBOU
-         waiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698416786; x=1699021586;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ziy+hDit/33rDQvA9Pj8jeQpZiJtdj7ZUvgfQi/0pS4=;
-        b=AWALTuK/2ijv8Y+Sxh47/4w0zoUs0Bs8nO/h4klLKH9+/zZ5tQUFj0XadjFlMiUgWK
-         ZBWpW7el3RD4VZyamAUldEOh3RO25r2H4wMBmwFUKqmhQ+0kWhUhSODwMSm5+zSsknSZ
-         jXBaCa50KYVOswH0bOsYM7BvI5pnubJNYH3H2hQ7OmcvuLdFQdlq2uXg+B3t5FbEnZD3
-         ggJajDRvriS7myMkNiMVmFmV43WyT379BnijXxno6OcdlrNQokNNBb6LtsfjeN01vFWp
-         S1Ahw0DxI8KcrwsxahG2XjWU54bu1CBq7dygcNNggqvFtTEnyD/Hblw1hCHn+oy0ACDM
-         lnbw==
-X-Gm-Message-State: AOJu0Yz3NV4nQRvPayPrJ1iic/y6KkuuEPgUgCii+ZF+UC+nU2xnZPv8
-        KW9OJXejCyOjyuYkQz70ETZDG3uvFA==
-X-Google-Smtp-Source: AGHT+IHe/82GatF388jAduX2K2rRwyDt7TK9JdHSSo0WNw321PAdNS5mONW0mcCH+weUP8EA0rrfCA==
-X-Received: by 2002:ac2:4546:0:b0:507:9fe7:f321 with SMTP id j6-20020ac24546000000b005079fe7f321mr1974991lfm.54.1698416786100;
-        Fri, 27 Oct 2023 07:26:26 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id l25-20020a1709060e1900b009c65e13c33dsm1235812eji.122.2023.10.27.07.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 07:26:25 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 17:26:24 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-Subject: [PATCH 2/2] proc: test ProtectionKey in proc-empty-vm test
-Message-ID: <ac05efa7-d2a0-48ad-b704-ffdd5450582e@p183>
-References: <76f42cce-b1ab-45ec-b6b2-4c64f0dccb90@p183>
+        Fri, 27 Oct 2023 10:27:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FA3187;
+        Fri, 27 Oct 2023 07:26:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBA12C433C9;
+        Fri, 27 Oct 2023 14:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698416819;
+        bh=5YYMO0sV98SaBaoxX5bGhoOITg6bwSmCh29MACI1GyE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HtZYQvNyGiDjSYb0MB5r3gav2CkvU/ekyxQQYaiudFp7pzJwlF8LV+r8nejXUNUar
+         vuRWqDXAQ73RtcgWwhuztzWyE6s4HJNODj9uU0mfZSdBCCsykfnBhaLwD7HTr8ffKQ
+         1WNN5+aX7JqTckQCES3Jdnce0cBZJ5wuwYvU5rc5ZLhnhkBE1gpuW7wRYUwznPnZAp
+         htHAOFL/xKItAr3RF/9IlqiqQwFUDa9TC90y2MH28zQmSz8XmTNmIZcdfcda73QrAB
+         uCRxqqZJm93VqbMq89TUtS++il460DuUKaNAGSHGx1C+EFVXzTtrLBDZV5OE8dbMaB
+         w3/IUTxL+1s4w==
+Date:   Fri, 27 Oct 2023 15:26:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Marius.Cristea@microchip.com, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, lars@metafoo.de,
+        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding dt-bindings for
+ PAC193X
+Message-ID: <20231027152625.44b26d80@jic23-huawei>
+In-Reply-To: <20231026-perkiness-financial-55313e297230@spud>
+References: <20231025134404.131485-1-marius.cristea@microchip.com>
+        <20231025134404.131485-2-marius.cristea@microchip.com>
+        <20231025-cheddar-tucking-b2ea777ed4f9@spud>
+        <937af3ec4012c6ec1d66285660d8c56dcf356703.camel@microchip.com>
+        <20231026-perkiness-financial-55313e297230@spud>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <76f42cce-b1ab-45ec-b6b2-4c64f0dccb90@p183>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+On Thu, 26 Oct 2023 17:08:07 +0100
+Conor Dooley <conor@kernel.org> wrote:
 
-Check ProtectionKey field in /proc/*/smaps output, if system supports
-protection keys feature.
+> On Thu, Oct 26, 2023 at 03:23:46PM +0000, Marius.Cristea@microchip.com wr=
+ote:
+> > Hi Conor,
+> >=20
+> > On Wed, 2023-10-25 at 16:08 +0100, Conor Dooley wrote: =20
+> > > Hey Marius,
+> > >=20
+> > > On Wed, Oct 25, 2023 at 04:44:03PM +0300,
+> > > marius.cristea@microchip.com=C2=A0wrote: =20
+> > > > From: Marius Cristea <marius.cristea@microchip.com>
+> > > >=20
+> > > > This is the device tree schema for iio driver for
+> > > > Microchip PAC193X series of Power Monitors with Accumulator.
+> > > >=20
+> > > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+> > > > ---
+> > > > =C2=A0.../bindings/iio/adc/microchip,pac1934.yaml=C2=A0=C2=A0 | 146
+> > > > ++++++++++++++++++
+> > > > =C2=A01 file changed, 146 insertions(+)
+> > > > =C2=A0create mode 100644
+> > > > Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > >=20
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > > b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..837053ed8a71
+> > > > --- /dev/null
+> > > > +++
+> > > > b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
+> > > > @@ -0,0 +1,146 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Microchip PAC1934 Power Monitors with Accumulator
+> > > > +
+> > > > +maintainers:
+> > > > +=C2=A0 - Marius Cristea <marius.cristea@microchip.com>
+> > > > +
+> > > > +description: |
+> > > > +=C2=A0 Bindings for the Microchip family of Power Monitors with
+> > > > Accumulator.
+> > > > +=C2=A0 The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can=
+ be
+> > > > found here:
+> > > > +=C2=A0=C2=A0=C2=A0
+> > > > https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/Prod=
+uctDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
+> > > > +
+> > > > +properties:
+> > > > +=C2=A0 compatible:
+> > > > +=C2=A0=C2=A0=C2=A0 enum:
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - microchip,pac1931
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - microchip,pac1932
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - microchip,pac1933
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - microchip,pac1934
+> > > > +
+> > > > +=C2=A0 reg:
+> > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > +
+> > > > +=C2=A0 "#address-cells":
+> > > > +=C2=A0=C2=A0=C2=A0 const: 1
+> > > > +
+> > > > +=C2=A0 "#size-cells":
+> > > > +=C2=A0=C2=A0=C2=A0 const: 0
+> > > > +
+> > > > +=C2=A0 interrupts:
+> > > > +=C2=A0=C2=A0=C2=A0 description: IRQ line of the ADC
+> > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > +
+> > > > +=C2=A0 drive-open-drain:
+> > > > +=C2=A0=C2=A0=C2=A0 description: The IRQ signal is configured as op=
+en-drain.
+> > > > +=C2=A0=C2=A0=C2=A0 type: boolean
+> > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > +
+> > > > +=C2=A0 microchip,slow-io:
+> > > > +=C2=A0=C2=A0=C2=A0 type: boolean
+> > > > +=C2=A0=C2=A0=C2=A0 description: |
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 A GPIO used to trigger a change is =
+sampling rate (lowering
+> > > > the chip power consumption).
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In default mode, if this pin is for=
+ced high, sampling rate
+> > > > is forced to eight
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 samples/second. When it is forced l=
+ow, the sampling rate is
+> > > > 1024 samples/second unless
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a different sample rate has been pr=
+ogrammed. =20
+> > >=20
+> > > This description doesn't really make sense to me - if a GPIO is used
+> > > to
+> > > drive the pin low or high, why do we need a property? A DT property
+> > > implies that this is a static configuration depending on the board,
+> > > but
+> > > reading the description this seems to be something that can be
+> > > toggled
+> > > at runtime.
+> > > I do note though, that this GPIO is not documented in the binding, so
+> > > I
+> > > suppose what really needs to happen here is document the gpio so that
+> > > the driver can determine at runtime what state this pin is in?
+> > >=20
+> > > Also, you say "In default mode", but don't mention what the non-
+> > > default
+> > > mode is. What happens in the other mode? =20
+>=20
+> > This is a "double function" pin. On the PAC193x there is the SLOW/ALERT
+> > pin. At runtime this pin could be configured as an input to the PAC and
+> > the functionality will be "SLOW" that means if it is forced high, the
+> > PAC will work in low power mode by changing the sample rate to 8 SPS.
+> > If it's forced low the PAC will work at it's full sample rate. =20
+>=20
+> Since this is a runtime thing, it doesn't make sense to have a property
+> that is set at dts creation time that decides what mode the pin is in.
+>=20
+> > "SLOW" is the default function of the pin but it may be programmed to
+> > function as ALERT pin (Open Collector when functioning as ALERT,
+> > requires pull-up resistor to VDD I/O). This time the pin will be set as
+> > output from PAC (ALERT functionality) to trigger an interrupt to the
+> > system (this is covered by the interrupts and drive-open-drain). =20
+>=20
+> Hmm, at the risk of getting out of my depth with what the GPIO subsystem
+> is capable of doing, I would expect to see something like
+>=20
+> sampling-rate-gpios:
+>   description:
+>     <what you have above>
+>   maxItems: 1
+>=20
+> Which would allow the driver to either drive this pin via the gpio
+> subsystem, or to use the interrupt property to use it as an interrupt
+> instead.
+>=20
+> Perhaps Jonathan etc knows better for these sort of dual mode pins.
 
-[test support in the beginning of the program,
- use syscall, not glibc pkey_alloc(3) which may not compile,
- --adobriyan]
+Beyond them being a pain? The fun is they may get wired to interrupt
+controllers that are also GPIOs or they may not (and the other way around
+with them wired to GPIO pins that aren't interrupt pins).
 
-Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+I don't understand the usecase for the SLOW control.
+Given it seems software can override the use for SLOW I'd be tempted to
+always do that.=20
+Thus making this pin useable only as an optional interrupt.
 
- tools/testing/selftests/proc/proc-empty-vm.c |   79 ++++++++++++++++++++-------
- 1 file changed, 61 insertions(+), 18 deletions(-)
+If someone hard wires it to high or low that is harmless if we aren't
+letting it control anything.
 
---- a/tools/testing/selftests/proc/proc-empty-vm.c
-+++ b/tools/testing/selftests/proc/proc-empty-vm.c
-@@ -23,6 +23,9 @@
-  *	/proc/${pid}/smaps
-  *	/proc/${pid}/smaps_rollup
-  */
-+#undef _GNU_SOURCE
-+#define _GNU_SOURCE
-+
- #undef NDEBUG
- #include <assert.h>
- #include <errno.h>
-@@ -34,6 +37,7 @@
- #include <sys/mman.h>
- #include <sys/ptrace.h>
- #include <sys/resource.h>
-+#include <sys/syscall.h>
- #include <sys/types.h>
- #include <sys/wait.h>
- #include <unistd.h>
-@@ -42,6 +46,43 @@
- #define TEST_VSYSCALL
- #endif
- 
-+#if defined __amd64__
-+	#ifndef SYS_pkey_alloc
-+		#define SYS_pkey_alloc 330
-+	#endif
-+	#ifndef SYS_pkey_free
-+		#define SYS_pkey_free 331
-+	#endif
-+#elif defined __i386__
-+	#ifndef SYS_pkey_alloc
-+		#define SYS_pkey_alloc 381
-+	#endif
-+	#ifndef SYS_pkey_free
-+		#define SYS_pkey_free 382
-+	#endif
-+#else
-+	#error "SYS_pkey_alloc"
-+#endif
-+
-+static int g_protection_key_support;
-+
-+static int protection_key_support(void)
-+{
-+	long rv = syscall(SYS_pkey_alloc, 0, 0);
-+	if (rv > 0) {
-+		syscall(SYS_pkey_free, (int)rv);
-+		return 1;
-+	} else if (rv == -1 && errno == ENOSYS) {
-+		return 0;
-+	} else if (rv == -1 && errno == EINVAL) {
-+		// ospke=n
-+		return 0;
-+	} else {
-+		fprintf(stderr, "%s: error: rv %ld, errno %d\n", __func__, rv, errno);
-+		exit(EXIT_FAILURE);
-+	}
-+}
-+
- /*
-  * 0: vsyscall VMA doesn't exist	vsyscall=none
-  * 1: vsyscall VMA is --xp		vsyscall=xonly
-@@ -84,10 +125,6 @@ static const char proc_pid_smaps_vsyscall_1[] =
- "SwapPss:               0 kB\n"
- "Locked:                0 kB\n"
- "THPeligible:           0\n"
--/*
-- * "ProtectionKey:" field is conditional. It is possible to check it as well,
-- * but I don't have such machine.
-- */
- ;
- 
- static const char proc_pid_smaps_vsyscall_2[] =
-@@ -115,10 +152,6 @@ static const char proc_pid_smaps_vsyscall_2[] =
- "SwapPss:               0 kB\n"
- "Locked:                0 kB\n"
- "THPeligible:           0\n"
--/*
-- * "ProtectionKey:" field is conditional. It is possible to check it as well,
-- * but I'm too tired.
-- */
- ;
- 
- static void sigaction_SIGSEGV(int _, siginfo_t *__, void *___)
-@@ -240,19 +273,27 @@ static int test_proc_pid_smaps(pid_t pid)
- 		}
- 		perror("open /proc/${pid}/smaps");
- 		return EXIT_FAILURE;
-+	}
-+	ssize_t rv = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	assert(0 <= rv);
-+	assert(rv <= sizeof(buf));
-+
-+	if (g_vsyscall == 0) {
-+		assert(rv == 0);
- 	} else {
--		ssize_t rv = read(fd, buf, sizeof(buf));
--		close(fd);
--		if (g_vsyscall == 0) {
--			assert(rv == 0);
--		} else {
--			size_t len = strlen(g_proc_pid_smaps_vsyscall);
--			/* TODO "ProtectionKey:" */
--			assert(rv > len);
--			assert(memcmp(buf, g_proc_pid_smaps_vsyscall, len) == 0);
-+		size_t len = strlen(g_proc_pid_smaps_vsyscall);
-+		assert(rv > len);
-+		assert(memcmp(buf, g_proc_pid_smaps_vsyscall, len) == 0);
-+
-+		if (g_protection_key_support) {
-+#define PROTECTION_KEY "ProtectionKey:         0\n"
-+			assert(memmem(buf, rv, PROTECTION_KEY, strlen(PROTECTION_KEY)));
- 		}
--		return EXIT_SUCCESS;
- 	}
-+
-+	return EXIT_SUCCESS;
- }
- 
- static const char g_smaps_rollup[] =
-@@ -419,6 +460,8 @@ int main(void)
- 		abort();
- 	}
- 
-+	g_protection_key_support = protection_key_support();
-+
- 	pid_t pid = fork();
- 	if (pid == -1) {
- 		perror("fork");
+>=20
+> > The system could work fine without this pin. The driver doesn't use
+> > interrupt at this time, but it could be extended. =20
+>=20
+> Cheers,
+> Conor.
+
