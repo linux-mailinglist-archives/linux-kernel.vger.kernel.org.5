@@ -2,176 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F377DA411
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 01:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0A57DA424
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 01:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbjJ0XY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 19:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S235062AbjJ0Xld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 19:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJ0XY0 (ORCPT
+        with ESMTP id S229943AbjJ0Xlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 19:24:26 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8231BC
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b3f55e1bbbso1669181b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698449062; x=1699053862; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2GtWOmDm2DZyVdf43Y6zUW3QwX9tZvbKVx3zn9eClIU=;
-        b=dFfBhWoAfkYspAeKLN/WHyQm1h9wxF5ua3i2/K4XyWfPfITPZBkicxp15Eu62EWoqq
-         0caL+xZSzUHLs+X9MImT7JaNHcVB0azPj6m3xdNNtYhmqSWe5wCGGS0JOtTyCbd8vQSL
-         S9GF5NHqM0/qyJMVbdY87vRwrawcO2VnkwRZ7lEOiGzEnZ55noC0YAuSOb53U6dPHrsl
-         kdvl+XoN+lF3bfFZXeRuqE3ha2NbQF4WemnQFM/wyaAjGKymaVUpH3jKXY2Ch1twpXFD
-         lYnn6CgibYJ+YYeYpg9Qc1KFNd1UYGskVmJ3vSbDF6c8S/GPLlBrqZR2D4J2Yk2YhqwL
-         zE7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698449062; x=1699053862;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2GtWOmDm2DZyVdf43Y6zUW3QwX9tZvbKVx3zn9eClIU=;
-        b=YRaL9fPPi5VvfUOfw+jbiMALlkaMKzI8kkA6nKCvgRNLjsjWSRpwGxQssLAUsCLeT9
-         zgDMHu0oLHxNADIbkymAdrm6dSNHSoAqmnZuDcKNWijEa5Lq7dJGHrlFkOq3XNC/rbxB
-         U5lSVYVP53oO2qQ/zOmcrgtxVjjGAe+cE6z1hQC9CpvMq+4bM+Tlv94Suqcw8EEq6O+C
-         xTIPDIgzp1LGLb4pTs+daDC/oQ+3PNfzzT4GY05MmLU0R0fWchMmEfYKM1mvmY0YHyTF
-         /uHqZVoub269BMTmef6i1liC7rxvFKPZud8XpjvY9UwruQiDNIy1KZ4nKBwNwLjO2n1Q
-         IPgA==
-X-Gm-Message-State: AOJu0Yzdzy9BrUq9FG0o+iPPFEM7Dt6v3AWCWZrKISRLdSPqkZjtGnG0
-        DK7H7o6Ccz91fm9CjXWExYZW9A==
-X-Google-Smtp-Source: AGHT+IFMyRSJAPNgriqDeeQrdkYIrXs02lA19ewIsskrs6McU9uDM2J+60eUBgzLzs/rD9gBsdq/oA==
-X-Received: by 2002:a05:6808:1141:b0:3b2:ec06:7061 with SMTP id u1-20020a056808114100b003b2ec067061mr5059285oiu.14.1698449062187;
-        Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id bp2-20020a056808238200b003af638fd8e4sm476791oib.55.2023.10.27.16.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 16:24:21 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 16:24:18 -0700
-From:   Deepak Gupta <debug@rivosinc.com>
-To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
-Subject: Re: [PATCH RFC RFT 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <ZTxGovqKdhA5hYMz@debug.ba.rivosinc.com>
-References: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
- <20231023-clone3-shadow-stack-v1-2-d867d0b5d4d0@kernel.org>
- <dc9a3dd544bbf859142c5582011a924b1c1bf6ed.camel@intel.com>
- <8b0c9332-ba56-4259-a71f-9789d28391f1@sirena.org.uk>
- <2ec0be71ade109873445a95f3f3c107711bb0943.camel@intel.com>
- <807a8142-7a8e-4563-9859-8e928156d7e5@sirena.org.uk>
- <ZTrOw97NFjUpANMg@debug.ba.rivosinc.com>
- <ZTuj565SqIb9KjQr@arm.com>
+        Fri, 27 Oct 2023 19:41:31 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0589A1A6;
+        Fri, 27 Oct 2023 16:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=09k1FMNrHa5VTgFlKbdaRb+SPhW1H9zw7ovrSs4UjdY=; b=ZWWyy5xd7cYU1YZ3Y63aEvxcCe
+        XQojUHYnvygF02KsdPuzUdj1VFkZLk423VqEViU6D6EUA8zRI1RlDd9z9zEMQlcl3eakNA+l8SUu/
+        KY2ZYQOI4FngifBT+l6rvBDcfWaH1qI4+eb0e3aX0Q5nFF4Q55qVR0t8cxpOmlH7ruCg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qwWRA-000Nnw-Px; Sat, 28 Oct 2023 01:40:20 +0200
+Date:   Sat, 28 Oct 2023 01:40:20 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 3/3] net: Convert some ethtool_sprintf() to
+ ethtool_puts()
+Message-ID: <8f0e55ea-1c24-4d6b-9398-0cbc2bb58907@lunn.ch>
+References: <20231027-ethtool_puts_impl-v3-0-3466ac679304@google.com>
+ <20231027-ethtool_puts_impl-v3-3-3466ac679304@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTuj565SqIb9KjQr@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231027-ethtool_puts_impl-v3-3-3466ac679304@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 12:49:59PM +0100, Szabolcs.Nagy@arm.com wrote:
->The 10/26/2023 13:40, Deepak Gupta wrote:
->> On Thu, Oct 26, 2023 at 06:53:37PM +0100, Mark Brown wrote:
->> > I'm not sure placement control is essential but the other bit of it is
->> > the freeing of the shadow stack, especially if userspace is doing stack
->> > switches the current behaviour where we free the stack when the thread
->> > is exiting doesn't feel great exactly.  It's mainly an issue for
->> > programs that pivot stacks which isn't the common case but it is a
->> > general sharp edge.
->>
->> In general, I am assuming such placement requirements emanate because
->> regular stack holds data (local args, etc) as well and thus software may
->> make assumptions about how stack frame is prepared and may worry about
->> layout and such. In case of shadow stack, it can only hold return
->
->no. the lifetime is the issue: a stack in principle can outlive
->a thread and resumed even after the original thread exited.
->for that to work the shadow stack has to outlive the thread too.
->
+On Fri, Oct 27, 2023 at 10:05:35PM +0000, Justin Stitt wrote:
+> This patch converts some basic cases of ethtool_sprintf() to
+> ethtool_puts().
+> 
+> The conversions are used in cases where ethtool_sprintf() was being used
+> with just two arguments:
+> |       ethtool_sprintf(&data, buffer[i].name);
+> or when it's used with format string: "%s"
+> |       ethtool_sprintf(&data, "%s", buffer[i].name);
+> which both now become:
+> |       ethtool_puts(&data, buffer[i].name);
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-I understand an application can pre-allocate a pool of stack and re-use
-them whenever it's spawning new threads using clone3 system call.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-However, once a new thread has been spawned how can it resume?
-By resume I mean consume the callstack context from an earlier thread.
-Or you meant something else by `resume` here?
-
-Can you give an example of such an application or runtime where a newly
-created thread consumes callstack context created by going away thread?
-
->(or the other way around: a stack can be freed before the thread
->exits, if the thread pivots away from that stack.)
-
-This is simply a thread saying that I am moving to a different stack.
-Again, interested in learning why would a thread do that. If I've to
-speculate on reasons, I could think of user runtime managing it's own
-pool of worker items (some people call them green threads) or current
-stack became too small.
-
-JIT runtimes (and such stuff like go routines) do such things but in
-those cases, kernel has no idea about it. From kernel's perspective
-there is a main thread stack (hosting thread for JIT) and then main
-thread can take a decision switching stack to execute JITted code.
-But in that case all it needs is a shadow stack and managing lifetime of
-such shadow stack using `clone` wouldn't be helpful and perhaps
-`map_shadow_stack` should be used to create on the fly shadow stack.
-
-Another case I can think of for a thread to move to a different stack
-when current stack was too small and it wants larger memory. In such
-cases as well, I imagine that particular thread would be issuing `mmap`
-to allocate larger memory and thus that particular thread can very well
-issue `map_shadow_stack`
-
-In both of these cases, a stack free actually means thread (application)
-issuing a system call to free the going away stack memory. It can free up
-going away shadow stack memory in same way using `unmap_shadow_stack`
-
-Let me know if I misunderstood something or missing some other usecase of
-a stack being freed before the thread exits.
-
->
->posix threads etc. don't allow this, but the linux syscall abi
->(clone) does allow it.
->
->i think it is reasonable to tie the shadow stack lifetime to the
->thread lifetime, but this clearly introduces a limitation on how
->the clone api can be used. such constraint on the userspace
->programming model is normally a bad decision, but given that most
->software (including all posix conforming code) is not affected,
->i think it is acceptable for an opt-in feature like shadow stack.
->
->IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
+    Andrew
