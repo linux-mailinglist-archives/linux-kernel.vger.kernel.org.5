@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCCD7D999F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE71A7D999E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345946AbjJ0NUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S1345913AbjJ0NUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345780AbjJ0NUe (ORCPT
+        with ESMTP id S1345512AbjJ0NUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 27 Oct 2023 09:20:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFDB1AC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE16818A
         for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:20:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 61E81C43397;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3DE13C433CC;
         Fri, 27 Oct 2023 13:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1698412829;
-        bh=hr3/COcgEw+89OqrvziCdCmvz2DT31kmq5qDZAF6bjs=;
+        bh=uaH9oSE8hSkKDrtZ+0k6LRDnVc9OxcoK0ehE0l5U8ek=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BnfQyt8ZK4tvIVAVFVhZHSAraYk1Zot+yRpqUX7Jy3AxDYSCEA+eYd7tdxcXbbGD7
-         j8zbjUAuyzTjd2tsFn5lhQEBydWwVQGG8+Fw3Xjvgb7g93G2oIJunjX65Gw27cYc56
-         gf9zIa59kjnZ2XothHO7G//sVoPMar3OIs3QHTWuVeNz/Yxsn9BWkuIR/eR/wwTW6l
-         Ypcu09wTIPjO73Y6WWQ8bswO6I3L8aJUeYv9yxT/MQcaSiHIjqgQXnFf+qUvMrnnA0
-         9y/XP32t+acU1flFyrlRxJ1PSrEDJqH8NSQZ9wlNMm5qlz6l+FDtZv7b0o13QgQseK
-         OJ7HmrFXIWRcg==
+        b=ZJsomzOASmPMdOTc2TIYX2q1MNQgkY7nBHCDWAyDyDl+kFMaSfgJitYqGJaUfRqsx
+         bqE8LgStwd4vG1/+rAL1v+Q5Jnq97fW0qQTHKu0oqJdmdbLj7XgNCgzGmtNpyrY9p8
+         SHZ3A5T/mpRZZe88g3U681OnxeXidQ5nZULw3jLTsd3J31dGGUzcvfrGV6L4bQxIbR
+         WvgAItRJ1abxHPUKPt/YQ4lIVHMiJLwbSLBieDE6ogNmZJRoXZxsEfWfaaeVNlSTYO
+         ghQKqF+5BXl9XUQSytlDYhkm/ex0PaOdyOa19ht6ZpT47bk+xCmZ7uFCAODUYq/4G8
+         i92lIqCuQhTww==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3EDFAE1C280;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D0FDC41620;
         Fri, 27 Oct 2023 13:20:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] riscv: mm: Update the comment of CONFIG_PAGE_OFFSET
+Subject: Re: [PATCH v4 -next 0/4] RISC-V: ACPI improvements
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169841282925.15670.8161471949460416104.git-patchwork-notify@kernel.org>
+Message-Id: <169841282911.15670.16781297228669817220.git-patchwork-notify@kernel.org>
 Date:   Fri, 27 Oct 2023 13:20:29 +0000
-References: <20230809031023.3575407-1-songshuaishuai@tinylab.org>
-In-Reply-To: <20230809031023.3575407-1-songshuaishuai@tinylab.org>
-To:     Song Shuai <songshuaishuai@tinylab.org>
-Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, ajones@ventanamicro.com,
-        alexghiti@rivosinc.com, anup@brainfault.org, guoren@kernel.org,
-        samuel@sholland.org, rppt@kernel.org, suagrfillet@gmail.com,
-        panqinglin2020@iscas.ac.cn, linux-kernel@vger.kernel.org
+References: <20231018124007.1306159-1-sunilvl@ventanamicro.com>
+In-Reply-To: <20231018124007.1306159-1-sunilvl@ventanamicro.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, apatel@ventanamicro.com,
+        aou@eecs.berkeley.edu, rafael@kernel.org,
+        conor.dooley@microchip.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, ajones@ventanamicro.com, lenb@kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,23 +57,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to riscv/linux.git (for-next)
+This series was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Wed,  9 Aug 2023 11:10:23 +0800 you wrote:
-> From: Song Shuai <suagrfillet@gmail.com>
+On Wed, 18 Oct 2023 18:10:03 +0530 you wrote:
+> This series is a set of patches which were originally part of RFC v1 series
+> [1] to add ACPI support in RISC-V interrupt controllers. Since these
+> patches are independent of the interrupt controllers, creating this new
+> series which helps to merge instead of waiting for big series.
 > 
-> Since the commit 011f09d12052 set sv57 as default for CONFIG_64BIT,
-> the comment of CONFIG_PAGE_OFFSET should be updated too.
-> 
-> Fixes: 011f09d12052 ("riscv: mm: Set sv57 on defaultly")
-> Signed-off-by: Song Shuai <suagrfillet@gmail.com>
+> This set of patches primarily adds support below ECR [2] which is approved
+> by the ASWG and adds below features.
 > 
 > [...]
 
 Here is the summary with links:
-  - riscv: mm: Update the comment of CONFIG_PAGE_OFFSET
-    https://git.kernel.org/riscv/c/d42469b616b1
+  - [v4,-next,1/4] RISC-V: ACPI: Enhance acpi_os_ioremap with MMIO remapping
+    https://git.kernel.org/riscv/c/e8065df5b0c4
+  - [v4,-next,2/4] RISC-V: ACPI: Update the return value of acpi_get_rhct()
+    https://git.kernel.org/riscv/c/a06835227280
+  - [v4,-next,3/4] RISC-V: ACPI: RHCT: Add function to get CBO block sizes
+    https://git.kernel.org/riscv/c/9ca87564190c
+  - [v4,-next,4/4] RISC-V: cacheflush: Initialize CBO variables on ACPI systems
+    https://git.kernel.org/riscv/c/2960f371f165
 
 You are awesome, thank you!
 -- 
