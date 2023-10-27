@@ -2,61 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F96D7D914D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23B97D9154
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345517AbjJ0IXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        id S230502AbjJ0IYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345492AbjJ0IWp (ORCPT
+        with ESMTP id S231372AbjJ0IYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:22:45 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E86510CB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:22:42 -0700 (PDT)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        Fri, 27 Oct 2023 04:24:04 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0641FA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1698395039;
+        bh=Xf78J3V/nXWymNnOwH36m1SnWDgSk7e+g5wPMMWhq5c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nOB1Bm2cpfX6gPBREdr+tWLK2o9fhlDyjCa9EyhyoECPthDo58JkBkP2hJ4o3gewk
+         1eCQG1kuXeehLbAZxJlXDh7zoGujS8fNOTg+iPfhO4bJONcbysFeNFV8/zfmeh7dSK
+         pTHdIVa+6M2rICmtDEGj057/sZYcwJDG56e1/INscYP8Kc2HM1XWs2tOwN37WrgnGr
+         /y/JcW/0DJFtbaSedl4r528qqqyBbuKM7rR4h/7ZlCKTje7uT2cj1ixUPVbbaITT8n
+         4H/RSvj1NG2MmE1J3rSiIZ7O2/g/8hSOhJMe1WJQqXl+IuzBmiz4ZmO9ANu3U0qvx1
+         PxWfcx3r1fh9g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 31DB666072FC;
-        Fri, 27 Oct 2023 09:22:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698394960;
-        bh=CXETlEvRgv2L/Tp9RviTmDGHkICt3aBol0oF6zd6BP8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DbIm5g5z5kdA/lxGLKSTtYN8atKFb3s6GvXKvWp31LXIGGMxVkwafkeOzVCBVV2XZ
-         9oZ9XHtzzb5BP5N9KcGnQBKbS0fnJJjtirdkZKwzuJxaxNCZll3l9NKmV+WJ8eRULr
-         Mwshdi3fJfxoihUmqPOXefJWMmuQSnM+2TzuoYXFfEhBc/OqbxuwmKzmRgQfp5qfgD
-         oPocHKWLgZEKfTj9N9l56y+/J+VhkJJGLkcoA0phToE5mXJOPFCEFnW4TEWVnMXbnX
-         9ICnUbxxX6bou82iTnR2AWbb2iCQJMWnNEpcDn+4YIiGRglrxTb32RomCRX3zdatXP
-         /aFE+Q1mIB7qQ==
-Date:   Fri, 27 Oct 2023 10:22:37 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Message-ID: <20231027102237.0cdb85af@collabora.com>
-In-Reply-To: <98988459-25a8-4ee0-89d4-cb816cbc5bef@amd.com>
-References: <20231026161431.5934-1-dakr@redhat.com>
-        <0bc79ae3-04fe-4e85-9fd0-e8b281148390@amd.com>
-        <20231027093238.2ff8172e@collabora.com>
-        <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
-        <20231027093943.3f0ae992@collabora.com>
-        <98988459-25a8-4ee0-89d4-cb816cbc5bef@amd.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGwg35nyqz4xPM;
+        Fri, 27 Oct 2023 19:23:59 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     aneesh.kumar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-6 tag
+Date:   Fri, 27 Oct 2023 19:23:43 +1100
+Message-ID: <87edhgv5gw.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,75 +50,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 09:44:13 +0200
-Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-> Am 27.10.23 um 09:39 schrieb Boris Brezillon:
-> > On Fri, 27 Oct 2023 09:35:01 +0200
-> > Christian K=C3=B6nig<christian.koenig@amd.com>  wrote:
-> > =20
-> >> Am 27.10.23 um 09:32 schrieb Boris Brezillon: =20
-> >>> On Fri, 27 Oct 2023 09:22:12 +0200
-> >>> Christian K=C3=B6nig<christian.koenig@amd.com>  wrote:
-> >>>    =20
-> >>>>> +
-> >>>>> +	/**
-> >>>>> +	 * @update_job_credits: Called once the scheduler is considering =
-this
-> >>>>> +	 * job for execution.
-> >>>>> +	 *
-> >>>>> +	 * Drivers may use this to update the job's submission credits, w=
-hich is
-> >>>>> +	 * useful to e.g. deduct the number of native fences which have b=
-een
-> >>>>> +	 * signaled meanwhile.
-> >>>>> +	 *
-> >>>>> +	 * The callback must either return the new number of submission c=
-redits
-> >>>>> +	 * for the given job, or zero if no update is required.
-> >>>>> +	 *
-> >>>>> +	 * This callback is optional.
-> >>>>> +	 */
-> >>>>> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job); =20
-> >>>> Why do we need an extra callback for this?
-> >>>>
-> >>>> Just document that prepare_job() is allowed to reduce the number of
-> >>>> credits the job might need.
-> >>> ->prepare_job() is called only once if the returned fence is NULL, bu=
-t =20
-> >>> we need this credit-update to happen every time a job is considered f=
-or
-> >>> execution by the scheduler. =20
-> >> But the job is only considered for execution once. How do you see that
-> >> this is called multiple times? =20
-> > Nope, it's not. If drm_sched_can_queue() returns false, the scheduler
-> > will go look for another entity that has a job ready for execution, and
-> > get back to this entity later, and test drm_sched_can_queue() again.
-> > Basically, any time drm_sched_can_queue() is called, the job credits
-> > update should happen, so we have an accurate view of how many credits
-> > this job needs. =20
->=20
-> Well, that is the handling which I already rejected because it creates=20
-> unfairness between processes. When you consider the credits needed=20
-> *before* scheduling jobs with a lower credit count are always preferred=20
-> over jobs with a higher credit count.
+Hi Linus,
 
-My bad, it doesn't pick another entity when an entity with a
-ready job that doesn't fit the queue is found, it just bails out from
-drm_sched_rq_select_entity_rr() and returns NULL (AKA: no ready entity
-found). But we still want to update the job credits before checking if
-the job fits or not (next time this entity is tested).
+Please pull some final powerpc fixes for 6.6:
 
-> What you can do is to look at the credits of a job *after* it was picked=
-=20
-> up for scheduling so that you can scheduler more jobs.
+The following changes since commit f9bc9bbe8afdf83412728f0b464979a72a3b9ec2:
 
-Sure, but then you might further delay your job if something made it
-smaller (ie. native fences got signaled) between ->prepare_job() and
-drm_sched_can_queue(). And any new drm_sched_can_queue() test would
-just see the old credits value.
+  powerpc/qspinlock: Fix stale propagated yield_cpu (2023-10-18 21:07:21 +1100)
 
-Out of curiosity, what are you worried about with this optional
-->update_job_credits() call in the drm_sched_can_queue() path? Is the
-if (sched->update_job_credits) overhead considered too high for drivers
-that don't need it?
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-6
+
+for you to fetch changes up to 47b8def9358c5eb888e78b24b7e5b7f2e2e97b8e:
+
+  powerpc/mm: Avoid calling arch_enter/leave_lazy_mmu() in set_ptes (2023-10-25 16:08:46 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 6.6 #6
+
+ - Fix boot crash with FLATMEM since set_ptes() introduction.
+
+ - Avoid calling arch_enter/leave_lazy_mmu() in set_ptes().
+
+Thanks to: Aneesh Kumar K.V, Erhard Furtner.
+
+- ------------------------------------------------------------------
+Aneesh Kumar K.V (1):
+      powerpc/mm: Avoid calling arch_enter/leave_lazy_mmu() in set_ptes
+
+Michael Ellerman (1):
+      powerpc/mm: Fix boot crash with FLATMEM
+
+
+ arch/powerpc/kernel/setup-common.c |  2 ++
+ arch/powerpc/mm/mem.c              |  1 -
+ arch/powerpc/mm/pgtable.c          | 32 ++++++++++++++------
+ 3 files changed, 24 insertions(+), 11 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmU7ctsACgkQUevqPMjh
+pYDD2xAAiDTlWc3AszHLgr/jj3hN++r/D6kso8sMbPPdqdLJ0Cumn41JdeOP3hO4
+oEcr5L9ing1LG4KLDy94LCq/V5A7RmAIzOd0Dm6az35TL8J/LyLEFoncHaAG9O0F
+mhGeuREsideLCwkeFosXONHPsf+yKpeVDi2yOCHO5wGkGAThgudvhhedVcSLBmco
+2MbwuT0IOFhxDZjWUNZR/wslK9CGnOKVtHla7Kg3XX6NxCMKqRSFfO9lPXrBgPTP
+EgV5B6aLHdb2JmC2vCNnYpHtkoXs4hotrzLXccFM1APtwbTKz2RYZpjmAtcupcj/
+GDzG/n1hK72M1hFVRG9G09n+DLI0RZGOtNkp4F+078AbSMBdyzIMnudmX4b/N1kF
+RLFYFri8N9HsYVar+x8jPcm3GV/GGAcFCuVJWKozoaEkojdpk+RZYAipjbQRKyeP
+uW5/vfffFp2xNen7poMB/yxXosIW71YiHLtEq6LOOOKF9sioNK85qlJfMfYz6wXw
+LRSJj4d3ZZJBZ8gXLN5EaGQ/uweUtqVpekaMW9c+J4cg+qhgoagYnzPoLp2KsDON
+1Kr2aSTkX/YpR2d9jANSsO01m4hvoM0DAMTPVZS2EeIRGgNrxzLL9DkHalT4sGq1
+tjSS3NV/uLd8OAYGkFqL3Ldcn6PX0tj5yWbYp9yzEAYx9yOgdOI=
+=Rmou
+-----END PGP SIGNATURE-----
