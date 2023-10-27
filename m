@@ -2,162 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67E97D951F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE35F7D9528
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjJ0KWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S1345638AbjJ0KYJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 06:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjJ0KWk (ORCPT
+        with ESMTP id S231345AbjJ0KYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:22:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A49DC;
-        Fri, 27 Oct 2023 03:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698402156; x=1729938156;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=yOHq12nOlsyCy+iSr3O2V+EnN+9CYniMqTBYox+Ruuo=;
-  b=FpDJ6hM7H0IqKMnybhRqjYu+Dlbws8RMgoYwTCOx9wvYAaOZZTLK+oWl
-   okkMRNnRfIB+0rKEi7rS09RjaDlGM8oELkXUHiRlTjT/fvK7fbD1T+q8K
-   Q8nlJeQCRDMC6vsUy7xBxcmfD2Mxq14ySGjUJE2Z7Dek8B/CP69WuH6sV
-   Jfy0egirWtDTZBJSaQKJvuIUUXiUuMLcmlSwHhq9fkrU98kpe00VS2eEx
-   I3h27Dti0WfYTO6Lrg4dYUi+oqFVTkGzfzkA6PU5Y38I57nvgHJXZtb9e
-   I3+2gDnlVWLp457IyHuynvVX6bA9aC6cvs84ggaR39t+RUYlT6G0tLE5O
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="391623985"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="391623985"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 03:22:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="758773"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Oct 2023 03:22:00 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 03:22:35 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 03:22:34 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 27 Oct 2023 03:22:34 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 27 Oct 2023 03:22:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h9ykvvgSjW6rXKoDDNfG9ibm80gLR3JLjgc363p1JUiuqoTRKGlRpnPGqr+WwxVB2Q2WjkY13+k+r8Wo1VnHTFhOUkbXc9/vGqyeJdYfwsrTBgoYPpxOpXw0s5tRZ56zafgXq3ftstFhqwUVPBJAoG6RVq4C7l00k68HgmO5x0UCvb6/9QUPsGwiH0w1kOKrXXUFHJWhE6fEZfKYCFyUAEcFHwGQ86zDqb3O3DzIofD18Oifsfk9l8/b/fFBxXGWO6ewIoJqOaC9z/Jnz94manImgyPOgSE4JlXCaYN/dUCu+ZN6iYPE2ehRPQfxV+gD0G6FKCu5nCsYvDJCtNG++g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JSiiY1hsI7rE+8w8PHV/zJ6cN+g95+1grS2Ui6NPepg=;
- b=RrQK2o8lfXQLQZJeiTk3UDR9IO678aCa/4srgli4klwLOIOPbH+jImucsm+y1vZDNOGPDn1ajByIlgtr8sC1AcNuR5YcSTOw5rbiTYDkDyO1yrSDAj4WIthQopmEWHFWOWiEjoJevUl2MncpHF4JbBJv26dmmLRGvBo2CVjERRIndAEn2uMwc1tHo6V/bXmQL2gmZ64ogrtSxZElZkDjV6oWYKliHyvgyhFJzChXMULx6ihJSNyUD4S/Q97LZ8XDZp3nHv/KTdkLyhcAttwIJkvAVKDhUqR5wdbtrNSg6Q52BFHPlIvPzHy3qjhGHXKuaec3XJs5cLEvdrEhYh+jFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
- by SA1PR11MB8318.namprd11.prod.outlook.com (2603:10b6:806:373::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Fri, 27 Oct
- 2023 10:21:32 +0000
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::71a7:70c4:9046:9b8a]) by MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::71a7:70c4:9046:9b8a%4]) with mapi id 15.20.6907.032; Fri, 27 Oct 2023
- 10:21:32 +0000
-Message-ID: <ce888f7b-70c2-4139-8f18-1cbb3fede9cd@intel.com>
-Date:   Fri, 27 Oct 2023 12:21:25 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
- register_netdevice
-Content-Language: en-US
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        <linux-hyperv@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <kys@microsoft.com>, <wei.liu@kernel.org>, <decui@microsoft.com>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <1698355354-12869-1-git-send-email-haiyangz@microsoft.com>
-From:   Wojciech Drewek <wojciech.drewek@intel.com>
-In-Reply-To: <1698355354-12869-1-git-send-email-haiyangz@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0430.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d1::20) To MW4PR11MB5776.namprd11.prod.outlook.com
- (2603:10b6:303:183::9)
+        Fri, 27 Oct 2023 06:24:08 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD760D7;
+        Fri, 27 Oct 2023 03:24:03 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 70B0724DBFD;
+        Fri, 27 Oct 2023 18:24:01 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
+ 2023 18:24:01 +0800
+Received: from [192.168.120.47] (171.223.208.138) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
+ 2023 18:24:00 +0800
+Message-ID: <e3faaa46-896a-405d-ac5f-97587e81fba4@starfivetech.com>
+Date:   Fri, 27 Oct 2023 18:23:58 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|SA1PR11MB8318:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d8fca6c-1333-46e8-1822-08dbd6d67d75
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q3VEt3Nmkw1mpwss7dNo+de2w21r/ZTGSQGXM5gGVXhyb08RIQJpdX+zXvAYz1+24R4Uo4AydppN9KwIqAc5CWAZh8ofd0JLPD8GnUIjdxXUsTa6kyLrIoEyPF/u3xs4/IyRsrIKz3N+/TkeCfec5TNhZJDBuf+B13PPFH+Mm9F10OfvIf4SGJLeBzBztdFdD9FNAyMz6PwLSUbwxywZD6g477+5p2uH+yK+69cg5AXzJhHesNQOyIjUENvRymnarsn4Mb07wpcm5qEW7ACa2nLRxpgPhFG9iCLxDj6P7clcrU8gwYdHE7z2PllBcJsjwprf4HFVxzI3I3wMI5y/tC4SfqB9SA+A0uVjhaSfuJAsQ8Rcr4iRi5H22sQlQT8DGpWKRuHviNAx3mM0gGOb/96X+fBmS4LSTfJ0UAO1pL4OF6EJLMo1DgDwE/SQDZ9HiTrxq7WQNCjplEX4B+MxHuRiBW/VGp33uqd+BKFThx4DQhUB60OYn0b7HzTU5JzLC6xCBpyJef7qoV/Myuopyo0ri89zyuEtUUWkoYSZTvoF76AnNURewTGovwXMQJ3QWJWpQ4/U4Pm9Q8zZixhJyLsvvjx7Ou/ocLuUHNRYRH1K5h14jqsCmHt6PXw0aITqPlXx29XwS/ox/KiPafUrcA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(346002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(26005)(31686004)(66899024)(38100700002)(5660300002)(36756003)(2906002)(44832011)(41300700001)(31696002)(86362001)(316002)(82960400001)(8936002)(4326008)(7416002)(8676002)(6506007)(478600001)(53546011)(66476007)(2616005)(66556008)(66946007)(45080400002)(83380400001)(6486002)(6666004)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dENtT2kzUHdSOXErd1Q1YVFNSkVvQUk5YzVBTWpKaFZVMmM1UEg4SjdXY1I4?=
- =?utf-8?B?cGdYMmdIa292a0RwR280SlNCa2o1WkcyVjIzWVg4MzVyMk1YR01yZG9DS00z?=
- =?utf-8?B?TUF3SXFxRGhFbmYzWjZXRkZnZDNvS21YaWQ5MjM4QmtLN1J2YnRraG1sbnla?=
- =?utf-8?B?NGloWjdwUFZaTnkzSWhjYXh5NXJORTZmVWpSMk4zOTdlQlR3amtiSVVCVDZK?=
- =?utf-8?B?SHJyN25vUVBVV1JkQWxMOGk0RVpFdXNSTGF4TDNVenlDREhYZDFTbS92MUNB?=
- =?utf-8?B?SnErRUxaZm5FeEltV1Q4ZFVFY2IyUG5vL0NKVWpGODArQ0QyeEZGOTNKd0xE?=
- =?utf-8?B?ZzFnaGtkNzhFNFEyeUJxREIvRHZhT2xSb21OTEdxaDZaZDN3YTdKdjRiMDJP?=
- =?utf-8?B?d0hGZHpuV21jL1U0STZuVWllZXVjYzZYMVJDSnVqNGhFbGZnMkxFV3NPTWlB?=
- =?utf-8?B?SlkrcnRNK2cvbzBRMFRyakVVWGh1Nm8wK3hoOEtkdHI0YVFGVjlvZjhGREdt?=
- =?utf-8?B?OU9iUldud2Q0ZWVUdkk3MHl2dEdJZ1JOMnpwK05vak1tUENVWDNRUjR3dnZ1?=
- =?utf-8?B?Smh2MGx2M0IyL0E4Z3Y0OU51dVg3QW03MUxEQldENFRjOVIzKzlRTjJUL2NF?=
- =?utf-8?B?UkNyMURGa1JiSkYwNlJkeGY0N0RnSU5GeHl6SkI4OWpkS2FmR2p0ZVZ4Zmlv?=
- =?utf-8?B?bXRQSHQrMWJFN2kwRUZJVXcvY01wQmNTNzhGYWRHQzJUdXVzY05KbURucHhK?=
- =?utf-8?B?Nk8wUGZWVFhZUDEycjJ6bjNQczFrUy9nSXhWVUpUczZkd1JLYkxWanRDQTd6?=
- =?utf-8?B?Qk5CcnVkZWZBK2VhMmRabnBkdmc0S2xXdG51NHlqNjJQZHg2c0xSb2ljRkVm?=
- =?utf-8?B?dmIzNEluTzlRbUUyMGdWdnBrNjdTWTd6MHBXYmZCb05RZmJBeThISE5MUXB5?=
- =?utf-8?B?Sk12VXRSTmVMYXVhQW9ZQmUwOWtqRG5vS2o0SGJDc3NCOTJzVEdBdDRaYnFE?=
- =?utf-8?B?Y25LbUY4WHZ2bXZiZ3cwUkNHM2lsU25GT05NZEdsUWVLWEVCcGN6KzRRRjhn?=
- =?utf-8?B?ZVBaUVRXTU1EMS9VUE1Za0F1UmRUMi9wdVZNcEdsczVYZ2NoZlk2eDVvczdB?=
- =?utf-8?B?b2xDU05DbEpRRG0rcXY1RG85YWlGUmM0aWRCS2NZNjJ3U2ZabStPL1lZWUw5?=
- =?utf-8?B?UE1SZWwxby8rRzhrbkxHSk5UN2VXOVNPNDF2VnZMbnZOaWQ1OEIyNllacHlY?=
- =?utf-8?B?cmx5eWtwbkJ4bDZQaXV2OXZQdURMMUphVGsvVVJidkJGTVRZZ2p4d0RuM05Q?=
- =?utf-8?B?RmhiMjQzQVBpOFJVdUVWSWRjb292OHFXV0I5QWR4a0R0a0NFMGtJeldXWUpn?=
- =?utf-8?B?dW4zNTBISFR2SVJ5RHZ2eWRzd3RlOG5hUExEWk54bHlQSmkwcWZ5MTYzdlZ1?=
- =?utf-8?B?T3pLQ1pYdlBERUM2dGlOMXMzLy9iQ0FxaVV5RnlzcFNQNlkxYmVhVVlZUXAw?=
- =?utf-8?B?VWg2b0l2a1ZnQTlXbHZhcm40SDlYMWk4dGNHbHIyWVE4NTQwTmNoaW5ObEZB?=
- =?utf-8?B?WFhZYzA2U3VBUkszdkM4U013Sy82RWd5bEQyWnJ6TFpQcmJVSjl6eHE4bkdQ?=
- =?utf-8?B?dDJEM0VveTJaZm5oQm5RTXVhZHBlNXpvTW5CU2g2OEFscFIyajhVQlFQL1c3?=
- =?utf-8?B?eGZhbmhzYmFwbTlrM0R6TFUrVElVMVhXVFdmS2lrbm1oTFllOEQ1Q0ZrNE9u?=
- =?utf-8?B?eTRzdFJleDdkQ1ZxL0lUaXlvcnZKemQxSDlmaTAybUZOWiswNUtGcnZPTDZs?=
- =?utf-8?B?TWdiUjVDaWl5NDdzSnBDaVUwNTRmTmxMeWE2MitjY2N1R2k2WnFsaCtRakNj?=
- =?utf-8?B?RHgvNExaL0pSMzFXbHhxa1JOZWhUTEZub0ZUUmc0d3FnR3hETm9TNWpRK3Ur?=
- =?utf-8?B?ekkvNDl0RGxteGVWQnVyamJSZXo5a0tWQU9ZSDcrWHBWUWMxVmd4dCtvVWxr?=
- =?utf-8?B?VHY5TnNIdDhCVFdhSDlLcmdqL0NtNEVEdTFINGNMR2FGMEV2d21WSStueUtC?=
- =?utf-8?B?ak9SODFjTWRkMmx2U1dRVmNXRGRpcE5yaFVrT0p6QVVWT1c1bFJYYURZc3lV?=
- =?utf-8?B?VDRKY0VPVVlObG16Z1NTdDR0dWhMdXJaR0NrRlhBUUZtOFRITTJyaEVHVFFj?=
- =?utf-8?B?Q2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d8fca6c-1333-46e8-1822-08dbd6d67d75
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 10:21:32.1457
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GdpSvyUVB8Vle7rsBDrL4K6CwqUEFGO2QCepLSpliuhm2tRzmuwWYrJFtMBvdK/r4SiFw+RnLZNJlM7iXB0vIvurAE97Cj9i0hGcICZC2DA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8318
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/4] pwm: opencores: Add PWM driver support
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20231020103741.557735-1-william.qiu@starfivetech.com>
+ <20231020103741.557735-3-william.qiu@starfivetech.com>
+ <20231020112539.gctx5uj2rrhryulo@pengutronix.de>
+ <b2ef7299-5d5a-4ef7-89fd-04b6130cb227@starfivetech.com>
+ <20231024114545.73ljfceuon2blkxz@pengutronix.de>
+Content-Language: en-US
+From:   William Qiu <william.qiu@starfivetech.com>
+In-Reply-To: <20231024114545.73ljfceuon2blkxz@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -166,102 +68,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 26.10.2023 23:22, Haiyang Zhang wrote:
-> The rtnl lock also needs to be held before rndis_filter_device_add()
-> which advertises nvsp_2_vsc_capability / sriov bit, and triggers
-> VF NIC offering and registering. If VF NIC finished register_netdev()
-> earlier it may cause name based config failure.
+On 2023/10/24 19:45, Uwe Kleine-König wrote:
+> Hello William,
 > 
-> To fix this issue, move the call to rtnl_lock() before
-> rndis_filter_device_add(), so VF will be registered later than netvsc
-> / synthetic NIC, and gets a name numbered (ethX) after netvsc.
+> On Tue, Oct 24, 2023 at 05:16:49PM +0800, William Qiu wrote:
+>> On 2023/10/20 19:25, Uwe Kleine-König wrote:
+>> > Hello,
+>> > 
+>> > On Fri, Oct 20, 2023 at 06:37:39PM +0800, William Qiu wrote:
+>> >> Add Pulse Width Modulation driver support for OpenCores.
+>> >> 
+>> >> Co-developed-by: Hal Feng <hal.feng@starfivetech.com>
+>> >> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+>> >> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+>> >> ---
+>> >>  MAINTAINERS              |   7 ++
+>> >>  drivers/pwm/Kconfig      |  11 ++
+>> >>  drivers/pwm/Makefile     |   1 +
+>> >>  drivers/pwm/pwm-ocores.c | 211 +++++++++++++++++++++++++++++++++++++++
+>> >>  4 files changed, 230 insertions(+)
+>> >>  create mode 100644 drivers/pwm/pwm-ocores.c
+>> >> 
+>> >> diff --git a/MAINTAINERS b/MAINTAINERS
+>> >> index 6c4cce45a09d..321af8fa7aad 100644
+>> >> --- a/MAINTAINERS
+>> >> +++ b/MAINTAINERS
+>> >> @@ -16003,6 +16003,13 @@ F:	Documentation/i2c/busses/i2c-ocores.rst
+>> >>  F:	drivers/i2c/busses/i2c-ocores.c
+>> >>  F:	include/linux/platform_data/i2c-ocores.h
+>> >> 
+>> >> +OPENCORES PWM DRIVER
+>> >> +M:	William Qiu <william.qiu@starfivetech.com>
+>> >> +M:	Hal Feng <hal.feng@starfivetech.com>
+>> >> +S:	Supported
+>> >> +F:	Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml
+>> >> +F:	drivers/pwm/pwm-ocores.c
+>> >> +
+>> >>  OPENRISC ARCHITECTURE
+>> >>  M:	Jonas Bonn <jonas@southpole.se>
+>> >>  M:	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+>> >> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+>> >> index 8ebcddf91f7b..cbfbf227d957 100644
+>> >> --- a/drivers/pwm/Kconfig
+>> >> +++ b/drivers/pwm/Kconfig
+>> >> @@ -434,6 +434,17 @@ config PWM_NTXEC
+>> >>  	  controller found in certain e-book readers designed by the original
+>> >>  	  design manufacturer Netronix.
+>> >> 
+>> >> +config PWM_OCORES
+>> >> +	tristate "Opencores PWM support"
+>> >> +	depends on HAS_IOMEM && OF
+>> >> +	depends on COMMON_CLK && RESET_CONTROLLER
+>> > 
+>> > Would it make sense to add something like:
+>> > 
+>> > 	depends on ARCH_SOMETHING || COMPILE_TEST
+>> > 
+>> > here?
+>> > 
+>> But there is no mention of architectural limitations in the OpenCores's
+>> specification.
 > 
-> And, move register_netdevice_notifier() earlier, so the call back
-> function is set before probing.
+> I already guessed that. Still it probably makes no sense to enable that
+> option on most machines. The PWM device found in i.MX SoCs can
+> theoretically also be implemented on AT91 or S390x. In practice it
+> isn't, so there is a dependency on ARCH_MXC || COMPILE_TEST.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: e04e7a7bbd4b ("hv_netvsc: Fix a deadlock by getting rtnl lock earlier in netvsc_probe()")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Consider the role of someone who does a kernel bump for a certain
+> machine (on one end of the spectrum) or a distribution kernel (on the
+> other end).
+> 
+> If you take a 6.5 x86_64 allmodconfig + COMPILE_TEST=n and upgrade to
+> v6.6-rc7 and do an oldconfig, you get 90 questions[1].
+> 
+> Just looking quickly through this list, among them are:
+> 
+> 	DRM support for Loongson Graphics (DRM_LOONGSON) [N/m/?] (NEW) 
+> 	Xilinx AXI DMAS Engine (XILINX_DMA) [N/m/y/?] (NEW)
+> 	Clock driver for Renesas VersaClock 3 devices (COMMON_CLK_VC3) [N/m/y/?] (NEW)
+> 	Realtek RT1017 SDCA Codec - SDW (SND_SOC_RT1017_SDCA_SDW) [N/m/?] (NEW)
+> 
+> I didn't check in detail and maybe one or the other is valid on x86_64,
+> but I'd be surprised if you find two that are sensible to enable on
+> x86_64 to support a real machine.
+> 
+> While I think Kconfig cannot be held responsible to only allow
+> generating "real world sensible" configurations, we should work a bit
+> harder to rule out the obvious violators and make it easy for people
+> configuring the kernel where sensible.
+> 
+> In my book it's better to have a too strong dependency at first for a
+> new driver (but allow it with COMPILE_TEST). Someone who as a device
+> needing that driver will find it out and speak up. However if you allow
+> to enable the driver everywhere, many people will disable the driver
+> (maybe using yes '' | make oldconfig), some will spend time to research
+> about this option to find which machines actually have such a device and
+> if the machine(s) they care about are in this set. This is a waste of
+> time and opportunities. (And note, this isn't only about people spending
+> time to decide if they enable or disable PWM_OCORES, this is also about
+> people who use yes '' because there are too many questions and so they
+> might miss the handful of useful ones.)
+> 
+> Best regards
+> Uwe
+> 
+> [1] measured using
+> 
+> 	yes '' | make oldconfig
+> 
+> and counting the occurrences of "(NEW)".
+> 
+I see, I'll think about it.
+Maybe depend on STARFIVE'S SoCs first?
 
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-
-> 
-> ---
-> v2:
->   Fix rtnl_unlock() in error handling as found by Wojciech Drewek.
-> ---
->  drivers/net/hyperv/netvsc_drv.c | 32 ++++++++++++++++++++------------
->  1 file changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-> index 3ba3c8fb28a5..1d1491da303b 100644
-> --- a/drivers/net/hyperv/netvsc_drv.c
-> +++ b/drivers/net/hyperv/netvsc_drv.c
-> @@ -2531,15 +2531,6 @@ static int netvsc_probe(struct hv_device *dev,
->  		goto devinfo_failed;
->  	}
->  
-> -	nvdev = rndis_filter_device_add(dev, device_info);
-> -	if (IS_ERR(nvdev)) {
-> -		ret = PTR_ERR(nvdev);
-> -		netdev_err(net, "unable to add netvsc device (ret %d)\n", ret);
-> -		goto rndis_failed;
-> -	}
-> -
-> -	eth_hw_addr_set(net, device_info->mac_adr);
-> -
->  	/* We must get rtnl lock before scheduling nvdev->subchan_work,
->  	 * otherwise netvsc_subchan_work() can get rtnl lock first and wait
->  	 * all subchannels to show up, but that may not happen because
-> @@ -2547,9 +2538,23 @@ static int netvsc_probe(struct hv_device *dev,
->  	 * -> ... -> device_add() -> ... -> __device_attach() can't get
->  	 * the device lock, so all the subchannels can't be processed --
->  	 * finally netvsc_subchan_work() hangs forever.
-> +	 *
-> +	 * The rtnl lock also needs to be held before rndis_filter_device_add()
-> +	 * which advertises nvsp_2_vsc_capability / sriov bit, and triggers
-> +	 * VF NIC offering and registering. If VF NIC finished register_netdev()
-> +	 * earlier it may cause name based config failure.
->  	 */
->  	rtnl_lock();
->  
-> +	nvdev = rndis_filter_device_add(dev, device_info);
-> +	if (IS_ERR(nvdev)) {
-> +		ret = PTR_ERR(nvdev);
-> +		netdev_err(net, "unable to add netvsc device (ret %d)\n", ret);
-> +		goto rndis_failed;
-> +	}
-> +
-> +	eth_hw_addr_set(net, device_info->mac_adr);
-> +
->  	if (nvdev->num_chn > 1)
->  		schedule_work(&nvdev->subchan_work);
->  
-> @@ -2586,9 +2591,9 @@ static int netvsc_probe(struct hv_device *dev,
->  	return 0;
->  
->  register_failed:
-> -	rtnl_unlock();
->  	rndis_filter_device_remove(dev, nvdev);
->  rndis_failed:
-> +	rtnl_unlock();
->  	netvsc_devinfo_put(device_info);
->  devinfo_failed:
->  	free_percpu(net_device_ctx->vf_stats);
-> @@ -2788,11 +2793,14 @@ static int __init netvsc_drv_init(void)
->  	}
->  	netvsc_ring_bytes = ring_size * PAGE_SIZE;
->  
-> +	register_netdevice_notifier(&netvsc_netdev_notifier);
-> +
->  	ret = vmbus_driver_register(&netvsc_drv);
-> -	if (ret)
-> +	if (ret) {
-> +		unregister_netdevice_notifier(&netvsc_netdev_notifier);
->  		return ret;
-> +	}
->  
-> -	register_netdevice_notifier(&netvsc_netdev_notifier);
->  	return 0;
->  }
->  
+Best regards,
+William
