@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF087D92BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376E17D9289
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345753AbjJ0IyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        id S1345488AbjJ0Iqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235235AbjJ0IyI (ORCPT
+        with ESMTP id S234963AbjJ0Iqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:54:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948111BFF;
-        Fri, 27 Oct 2023 01:44:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A51EEC433C8;
-        Fri, 27 Oct 2023 08:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698396258;
-        bh=wgzu0sG0HQO9abh+06GqmHlYhzIzgF0rR09STDXJa+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sKC9uYsW/bygDHiEZEB5iEiorIx1ZqWEw279MJv5UJ5LmBxjcaf8XCdC9GazMUgp3
-         CGtlsyVRIE08rrKs+xrLmXmChuAA2xh57s24KwBTpV8elZ5Jg0l96RZzjXYcV8SyRD
-         a8Uxmqfu9WfdXSckJHEQAZbyeHHFUSnz/jIRfH5Y=
-Date:   Fri, 27 Oct 2023 10:44:15 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] misc: rtsx: add to support new card reader rts5264
-Message-ID: <2023102726-voucher-chimp-d798@gregkh>
-References: <121ced554a9e4f4791018e8f6a72d586@realtek.com>
- <2023102153-paramedic-washboard-29e3@gregkh>
- <b31f74462ce240a18652643224e285dd@realtek.com>
- <2023102514-unleash-italics-37ae@gregkh>
- <ff32ebcd6a1b41d5bd23a028f1a3f88b@realtek.com>
+        Fri, 27 Oct 2023 04:46:39 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168F31B9;
+        Fri, 27 Oct 2023 01:46:37 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso25284861fa.3;
+        Fri, 27 Oct 2023 01:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698396395; x=1699001195; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dLCn7UHp+SZUNn49syvJKwh2mLvcGW4KGz1Fbc7fgO0=;
+        b=Y9UFPyOUUCFiKkZ0Yu3kcYGITrQ3CpII+GjF4ASQ4tYkcQ4mhMseAt90beAayKQyGJ
+         5vW06bv7YLC2UHu/CMIBk7B8loESczPjbKH9gmUgvEQZ4HFGjCwVUjtmWJpJP+k3cOp7
+         lkyNGzZxwBAQMi7BLSeyfpYxhtRfXKZAy3XPZejlpEuyIday2d5WH7R51MNdo0axctnF
+         Xb93GiuFVrp81rWG8OC5N13GzwusuPVuiYdF2AkJuxwP+5QxewSkiLWSBvp2Gsy98ETR
+         LuYkzH0DI5mRXvipRrEwzIFRI6XMDzG0bXIeBFIMHfhsp50AyrI6VvIEQl0kbUu/a3qJ
+         Mejg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698396395; x=1699001195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dLCn7UHp+SZUNn49syvJKwh2mLvcGW4KGz1Fbc7fgO0=;
+        b=b9lq8YAHF/3bi9tqp/fDXSTxBEtuuvUA/z1LvEvBgm66xMTkGRK6NbWXs4hkf+cNAQ
+         LTPJW2pCKbjcOj21ym4m1kdI3nmDlu5pJHReGVOAR08Gagbgghzanu45TjP6aMporvBT
+         4SKDpuzhQjjejJAFLLkndHYFeW+lmUaYQIyd52RwDNntxHXcR/P8hnpFEPRuCsk+78Pr
+         PScO60yUahavUbR5MaJnD6zxnMetOtHqTe/OzD6sNh+F2vyvgr7mHT3KlB9hczCty4RU
+         leRF3DMHH3QdByipigiwRWQVGadMqCQgm4eSWet8jOol+D74/vARZg5Ox/OtcYz/89p1
+         0Xbw==
+X-Gm-Message-State: AOJu0YxpFvxjS+YdOMXkzKua4mqgE25bfN4sNq2IkxXJZcxfZF+q3sxj
+        yBK3E6FR9cC+cIpnh6Vc/zA=
+X-Google-Smtp-Source: AGHT+IGUvjJGJ/lC22QiIWWvXgmA6P40WDl5e/vGTz779cMSodx/zSxvFWrbY6bA4N1hQYBuTMfdGA==
+X-Received: by 2002:a05:651c:2211:b0:2c5:6c7:9e73 with SMTP id y17-20020a05651c221100b002c506c79e73mr1776256ljq.48.1698396394942;
+        Fri, 27 Oct 2023 01:46:34 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id f14-20020a05600c4e8e00b003fc0505be19sm1077344wmq.37.2023.10.27.01.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 01:46:34 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] perf callchain: Fix spelling mistake "statisitcs" -> "statistics"
+Date:   Fri, 27 Oct 2023 09:46:33 +0100
+Message-Id: <20231027084633.1167530-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff32ebcd6a1b41d5bd23a028f1a3f88b@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 08:25:06AM +0000, Ricky WU wrote:
-> > On Mon, Oct 23, 2023 at 03:31:24AM +0000, Ricky WU wrote:
-> > > > > In order to support new chip rts5264, the definitions of some
-> > > > > internal registers and workflow have to be modified.
-> > > >
-> > > > That is fine, but that should be a single patch, right?
-> > > >
-> > >
-> > > Sorry maybe about misunderstand, The modifications mentioned here, it
-> > > talk about some judgment expressions add "PID 5264" to make judgement
-> > > in rtsx_pcr.c, so only about 30 line modified in rtsx_pcr.c
-> > >
-> > > > > Added rts5264.c rts5264.h for independent functions of the new
-> > > > > chip rts5264
-> > > >
-> > > > And then add new support in a new patch, this is still too big as
-> > > > one patch to attempt to review it properly.  Would you like to
-> > > > review this as-is?
-> > > >
-> > >
-> > > Yes, thank you
-> > > Because rts5264.c rts5264.h only for rts5264 (new chip).
-> > > The past architecture of this driver was like this, and it will good
-> > > for us to maintain the driver different chip maybe has different
-> > > functions and register definitions we used to separate different .c .h
-> > 
-> > Sorry, I don't think I was clear, this needs to be broken up into smaller pieces to
-> > be able for us to review it properly.  Please do so and resend a new version of
-> > the patch series.
-> > 
-> 
-> Hi Greg k-h，
-> 
-> I want to confirm with you first
-> I will have a new version for this patch, separate it into:
-> 1. 2 new file and Makefile for new chip function and definition 
-> 2. rtsx_pcr.c and rtsx_pcr.h for driver judgement to call new chip function  
-> 3. mmc part
-> 
-> It is ok for you?
+There are a couple of spelling mistakes in perror messages. Fix them.
 
-That's a good start, try it and see what that looks like.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/perf/util/callchain.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Again, create patch series that you yourself would like to be able to
-review.  Take some time to think about the reviewer's side of this as
-that's the most limited resource we currently have.
+diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+index 99cce43ba152..8262f69118db 100644
+--- a/tools/perf/util/callchain.c
++++ b/tools/perf/util/callchain.c
+@@ -605,7 +605,7 @@ fill_node(struct callchain_node *node, struct callchain_cursor *cursor)
+ 				if (!call->brtype_stat) {
+ 					call->brtype_stat = zalloc(sizeof(*call->brtype_stat));
+ 					if (!call->brtype_stat) {
+-						perror("not enough memory for the code path branch statisitcs");
++						perror("not enough memory for the code path branch statistics");
+ 						free(call->brtype_stat);
+ 						return -ENOMEM;
+ 					}
+@@ -774,7 +774,7 @@ static enum match_result match_chain(struct callchain_cursor_node *node,
+ 			if (!cnode->brtype_stat) {
+ 				cnode->brtype_stat = zalloc(sizeof(*cnode->brtype_stat));
+ 				if (!cnode->brtype_stat) {
+-					perror("not enough memory for the code path branch statisitcs");
++					perror("not enough memory for the code path branch statistics");
+ 					return MATCH_ERROR;
+ 				}
+ 			}
+-- 
+2.39.2
 
-thanks,
-
-greg k-h
