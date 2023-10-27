@@ -2,308 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1106D7D96DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1D87D96E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345585AbjJ0Lrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
+        id S231519AbjJ0Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0Lre (ORCPT
+        with ESMTP id S231463AbjJ0Lru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:47:34 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DB3AC
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:47:31 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7b9ff6d89e6so158509241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698407250; x=1699012050; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cz8tL+/ZScku0Dlnsowhcp/n/F3CxkTXbBTziMCrUYQ=;
-        b=YlSG72/BqUjVbcAJXboQBc7w6twACPVXOuSKtEASAl/wcX4FJlSjgv2sy/oaAyv7r8
-         ZyS1dlw03IawgY9I6XtPyFCI9nT0exWjosBL8E6p2Wd4PHtPdHWYuQnGGl1S7x35RIb0
-         vKXQenvE+gGbei12Bc1dJBuhTyyUqGfUvScMFL1Pb3seb9DBsAuxTVg6GmQeStWkqcUy
-         mPQ1U12lSNEdHUPFHf+ILJDvgL/q8wO6121fmr0MD7SN//O/QfXhO59WjaQHfS8JXP5+
-         FX/zsXVHHorfWei28t99jJgCQyuvpLEduUt4S1PoSm9a+prK94EPMeLMr34Ir+5h88Dz
-         fg0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698407250; x=1699012050;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cz8tL+/ZScku0Dlnsowhcp/n/F3CxkTXbBTziMCrUYQ=;
-        b=f8l38Zs2nNNC/u6EBvGHPJOFQmBp/Hui7svVBWU7JD47cNGk4RTbyyJO75KHN1eAcz
-         x68G1b50Ajm77UapaWRWiHNfv2sduZOWdwk1TmXqQET9POdHfVDpEncNI1hLTtc2ftAm
-         1Zl9toNxyinFBvj0+xzuKvIg9uxdRviDjCH7me4hVWA0qAVTuirg95+Dq3lMqax1Uurc
-         5qGfgcB9N2I3JFqHZP/rlmPRZIOwRUOOV5j/cvjsV8f+9p5pK3JBt54/tX43drkRGM0f
-         yGCNEj873CJFJshYhWMjGFv0v3WpGVdDBx2fiXEJBCwBFfLZ6n1J1lh0bv9kf5Mce4dz
-         p0mQ==
-X-Gm-Message-State: AOJu0YxE0a9TKmf/QuzSITGGA8HsbdMsHnp2q4kRFCfhEISq5XzNdI7+
-        3Yu3r0qmh8k24rl8kKurjFTv6MW8W+qzSILWhl+N3Q==
-X-Google-Smtp-Source: AGHT+IHfyecaO9s/+PZZMhHZd0+oaFqNbDRPBLtgFfqI192yBSoKNlHVWO5bjAH8CaykpNyKHz0snj39GEypdWxLS1A=
-X-Received: by 2002:a67:c11a:0:b0:457:cd8b:57b6 with SMTP id
- d26-20020a67c11a000000b00457cd8b57b6mr2640162vsj.31.1698407250089; Fri, 27
- Oct 2023 04:47:30 -0700 (PDT)
+        Fri, 27 Oct 2023 07:47:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B4C1;
+        Fri, 27 Oct 2023 04:47:48 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2AE09669;
+        Fri, 27 Oct 2023 13:47:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698407253;
+        bh=G9r7QGFX6v2q8NjkHkEgv1R11Sfoumoslww8TSiFsEs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iYZ6Tq04XS7/F2uQF/VwJ5tbdWNclttDlMJTh1SBukw7eDXNSTwNDJMks62nHw9il
+         nyat0Mz4+lszpXCPXJ+E+EXwf4A5ZvRZbfERP1camOM0Ik4j+tyenIpll6GS4+t461
+         u78u5tgTH62kjdRbP5i9hVXY/JzpjhLKEXG06nxE=
+Date:   Fri, 27 Oct 2023 14:47:52 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     Jayant Chowdhary <jchowdhary@google.com>,
+        Thinh.Nguyen@synopsys.com, arakesh@google.com, etalvala@google.com,
+        dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] usb:gadget:uvc Do not use worker thread to pump usb
+ requests
+Message-ID: <20231027114752.GB12144@pendragon.ideasonboard.com>
+References: <ZToOJhyOFeGCGUFj@pengutronix.de>
+ <20231026215635.2478767-1-jchowdhary@google.com>
+ <20231027075117.GJ26306@pendragon.ideasonboard.com>
+ <ZTuanepgXLXRoSMW@pengutronix.de>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 27 Oct 2023 17:17:19 +0530
-Message-ID: <CA+G9fYt6pY+tMZEOg=SoEywQOe19fGP3uR15SGowkdK+_X85Cg@mail.gmail.com>
-Subject: selftests: ftrace: RIP: 0010:__lock_acquire (kernel/locking/lockdep.c:5005)
-To:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleg Nesterov <oleg@redhat.com>, Dave Jones <davej@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sasha Levin <sasha.levin@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Ajay Kaher <akaher@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZTuanepgXLXRoSMW@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following kernel crash noticed on x86_64 while running selftests ftracetests
-running 6.6.0-rc7-next-20231026.
+On Fri, Oct 27, 2023 at 01:10:21PM +0200, Michael Grzeschik wrote:
+> On Fri, Oct 27, 2023 at 10:51:17AM +0300, Laurent Pinchart wrote:
+> > On Thu, Oct 26, 2023 at 09:56:35PM +0000, Jayant Chowdhary wrote:
+> >> This patch is based on top of
+> >> https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google.com/T/#t:
+> >>
+> >> When we use an async work queue to perform the function of pumping
+> >> usb requests to the usb controller, it is possible that thread scheduling
+> >> affects at what cadence we're able to pump requests. This could mean usb
+> >> requests miss their uframes - resulting in video stream flickers on the host
+> >> device.
+> >>
+> >> In this patch, we move the pumping of usb requests to
+> >> 1) uvcg_video_complete() complete handler for both isoc + bulk
+> >>    endpoints. We still send 0 length requests when there is no uvc buffer
+> >>    available to encode.
+> >
+> > This means you will end up copying large amounts of data in interrupt
+> > context. The work queue was there to avoid exactly that, as it will
+> > introduce delays that can affect other parts of the system. I think this
+> > is a problem.
+> 
+> Regarding Thin's argument about possible scheduling latency that is already
+> introducing real errors, this seemed like a good solution.
+> 
+> But sure, this potential latency introduced in the interrupt context can
+> trigger other side effects.
+> 
+> However I think we need some compromise since both arguments are very valid.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Agreed.
 
-log:
------
-# ok 44 ftrace - test for function traceon/off triggers
-# ok 45 ftrace - test tracing error log support
-# ok 46 Test creation and deletion of trace instances while setting an event
-[ 1402.419605] BUG: kernel NULL pointer dereference, address: 0000000000000097
-[ 1402.426574] #PF: supervisor read access in kernel mode
-[ 1402.431715] #PF: error_code(0x0000) - not-present page
-[ 1402.436852] PGD 0 P4D 0
-[ 1402.439393] Oops: 0000 [#1] PREEMPT SMP PTI
-[ 1402.443578] CPU: 0 PID: 18196 Comm: ls Not tainted 6.6.0-rc7-next-20231026 #1
-[ 1402.450711] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.7 12/07/2021
-[ 1402.458102] RIP: 0010:__lock_acquire (kernel/locking/lockdep.c:5005)
-[ 1402.462722] Code: 4d d4 53 45 85 f6 0f 84 a5 06 00 00 44 8b 2d 8d
-c2 bf 02 45 89 c2 49 89 fb 89 f3 41 89 d6 45 89 c8 45 85 ed 0f 84 ca
-02 00 00 <48> 81 3f c0 2b f1 af 44 0f 44 d0 83 fb 01 0f 86 c2 02 00 00
-31 d2
-All code
-========
-   0: 4d d4                rex.WRB (bad)
-   2: 53                    push   %rbx
-   3: 45 85 f6              test   %r14d,%r14d
-   6: 0f 84 a5 06 00 00    je     0x6b1
-   c: 44 8b 2d 8d c2 bf 02 mov    0x2bfc28d(%rip),%r13d        # 0x2bfc2a0
-  13: 45 89 c2              mov    %r8d,%r10d
-  16: 49 89 fb              mov    %rdi,%r11
-  19: 89 f3                mov    %esi,%ebx
-  1b: 41 89 d6              mov    %edx,%r14d
-  1e: 45 89 c8              mov    %r9d,%r8d
-  21: 45 85 ed              test   %r13d,%r13d
-  24: 0f 84 ca 02 00 00    je     0x2f4
-  2a:* 48 81 3f c0 2b f1 af cmpq   $0xffffffffaff12bc0,(%rdi) <--
-trapping instruction
-  31: 44 0f 44 d0          cmove  %eax,%r10d
-  35: 83 fb 01              cmp    $0x1,%ebx
-  38: 0f 86 c2 02 00 00    jbe    0x300
-  3e: 31 d2                xor    %edx,%edx
+> Any ideas, how to solve this?
 
-Code starting with the faulting instruction
-===========================================
-   0: 48 81 3f c0 2b f1 af cmpq   $0xffffffffaff12bc0,(%rdi)
-   7: 44 0f 44 d0          cmove  %eax,%r10d
-   b: 83 fb 01              cmp    $0x1,%ebx
-   e: 0f 86 c2 02 00 00    jbe    0x2d6
-  14: 31 d2                xor    %edx,%edx
-[ 1402.481497] RSP: 0018:ffff9b3041327998 EFLAGS: 00010002
-[ 1402.486719] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-[ 1402.493843] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000097
-[ 1402.500967] RBP: ffff9b3041327a38 R08: 0000000000000000 R09: 0000000000000000
-[ 1402.508092] R10: 0000000000000001 R11: 0000000000000097 R12: ffff8de420f38040
-[ 1402.515225] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-[ 1402.522348] FS:  00007f52d72a1d00(0000) GS:ffff8de767a00000(0000)
-knlGS:0000000000000000
-[ 1402.530438] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1402.536224] CR2: 0000000000000097 CR3: 000000012201e005 CR4: 00000000003706f0
-[ 1402.543354] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 1402.550479] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 1402.557602] Call Trace:
-[ 1402.560049]  <TASK>
-[ 1402.562153] ? show_regs (arch/x86/kernel/dumpstack.c:479)
-[ 1402.565559] ? __die (arch/x86/kernel/dumpstack.c:421
-arch/x86/kernel/dumpstack.c:434)
-[ 1402.568611] ? page_fault_oops (arch/x86/mm/fault.c:707)
-[ 1402.572711] ? __lock_acquire (kernel/locking/lockdep.c:186
-kernel/locking/lockdep.c:3872 kernel/locking/lockdep.c:5136)
-[ 1402.576811] ? do_user_addr_fault (arch/x86/mm/fault.c:1264)
-[ 1402.581170] ? exc_page_fault (arch/x86/include/asm/irqflags.h:26
-arch/x86/include/asm/irqflags.h:67 arch/x86/include/asm/irqflags.h:127
-arch/x86/mm/fault.c:1513 arch/x86/mm/fault.c:1561)
-[ 1402.585094] ? asm_exc_page_fault (arch/x86/include/asm/idtentry.h:570)
-[ 1402.589283] ? __lock_acquire (kernel/locking/lockdep.c:5005)
-[ 1402.593296] ? lock_acquire (kernel/locking/lockdep.c:467
-(discriminator 4) kernel/locking/lockdep.c:5755 (discriminator 4)
-kernel/locking/lockdep.c:5718 (discriminator 4))
-[ 1402.597045] ? create_dir_dentry.part.0
-(fs/tracefs/event_inode.c:357 (discriminator 1))
-[ 1402.601928] lock_acquire (kernel/locking/lockdep.c:467
-(discriminator 4) kernel/locking/lockdep.c:5755 (discriminator 4)
-kernel/locking/lockdep.c:5718 (discriminator 4))
-[ 1402.605503] ? d_invalidate (fs/dcache.c:1725 (discriminator 1))
-[ 1402.609170] ? lock_release (kernel/locking/lockdep.c:5429
-kernel/locking/lockdep.c:5773)
-[ 1402.612923] ? create_dir_dentry.part.0 (fs/tracefs/event_inode.c:387)
-[ 1402.617803] _raw_spin_lock (include/linux/spinlock_api_smp.h:134
-kernel/locking/spinlock.c:154)
-[ 1402.621467] ? d_invalidate (fs/dcache.c:1725 (discriminator 1))
-[ 1402.625126] d_invalidate (fs/dcache.c:1725 (discriminator 1))
-[ 1402.628619] create_dir_dentry.part.0 (fs/tracefs/event_inode.c:390)
-[ 1402.633324] dcache_dir_open_wrapper (fs/tracefs/event_inode.c:586)
-[ 1402.637945] ? __pfx_dcache_dir_open_wrapper (fs/tracefs/event_inode.c:536)
-[ 1402.643081] do_dentry_open (fs/open.c:948)
-[ 1402.646924] vfs_open (fs/open.c:1083)
-[ 1402.650069] path_openat (fs/namei.c:3623 fs/namei.c:3779)
-[ 1402.653648] do_filp_open (fs/namei.c:3810 (discriminator 2))
-[ 1402.657233] do_sys_openat2 (fs/open.c:1441 (discriminator 1))
-[ 1402.660911] __x64_sys_openat (fs/open.c:1466)
-[ 1402.664749] do_syscall_64 (arch/x86/entry/common.c:51
-arch/x86/entry/common.c:82)
-[ 1402.668328] ? syscall_exit_to_user_mode (kernel/entry/common.c:299)
-[ 1402.673120] ? do_syscall_64 (arch/x86/entry/common.c:101)
-[ 1402.676864] ? do_syscall_64 (arch/x86/entry/common.c:101)
-[ 1402.680607] ? do_syscall_64 (arch/x86/entry/common.c:101)
-[ 1402.684352] ? syscall_exit_to_user_mode (kernel/entry/common.c:299)
-[ 1402.689136] ? do_syscall_64 (arch/x86/entry/common.c:101)
-[ 1402.692880] ? syscall_exit_to_user_mode (kernel/entry/common.c:299)
-[ 1402.697666] ? do_syscall_64 (arch/x86/entry/common.c:101)
-[ 1402.701440] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
-[ 1402.706512] RIP: 0033:0x7f52d7439df1
-[ 1402.710082] Code: 44 24 18 31 c0 41 83 e2 40 75 3e 89 f0 25 00 00
-41 00 3d 00 00 41 00 74 30 89 f2 b8 01 01 00 00 48 89 fe bf 9c ff ff
-ff 0f 05 <48> 3d 00 f0 ff ff 77 3f 48 8b 54 24 18 64 48 2b 14 25 28 00
-00 00
-All code
-========
-   0: 44 24 18              rex.R and $0x18,%al
-   3: 31 c0                xor    %eax,%eax
-   5: 41 83 e2 40          and    $0x40,%r10d
-   9: 75 3e                jne    0x49
-   b: 89 f0                mov    %esi,%eax
-   d: 25 00 00 41 00        and    $0x410000,%eax
-  12: 3d 00 00 41 00        cmp    $0x410000,%eax
-  17: 74 30                je     0x49
-  19: 89 f2                mov    %esi,%edx
-  1b: b8 01 01 00 00        mov    $0x101,%eax
-  20: 48 89 fe              mov    %rdi,%rsi
-  23: bf 9c ff ff ff        mov    $0xffffff9c,%edi
-  28: 0f 05                syscall
-  2a:* 48 3d 00 f0 ff ff    cmp    $0xfffffffffffff000,%rax <--
-trapping instruction
-  30: 77 3f                ja     0x71
-  32: 48 8b 54 24 18        mov    0x18(%rsp),%rdx
-  37: 64 48 2b 14 25 28 00 sub    %fs:0x28,%rdx
-  3e: 00 00
+I'm afraid not.
 
-Code starting with the faulting instruction
-===========================================
-   0: 48 3d 00 f0 ff ff    cmp    $0xfffffffffffff000,%rax
-   6: 77 3f                ja     0x47
-   8: 48 8b 54 24 18        mov    0x18(%rsp),%rdx
-   d: 64 48 2b 14 25 28 00 sub    %fs:0x28,%rdx
-  14: 00 00
-[ 1402.728821] RSP: 002b:00007fff2270ba90 EFLAGS: 00000287 ORIG_RAX:
-0000000000000101
-[ 1402.736388] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f52d7439df1
-[ 1402.743520] RDX: 0000000000090800 RSI: 0000558fb3992090 RDI: 00000000ffffff9c
-[ 1402.750651] RBP: 0000000000000000 R08: 0000000000000007 R09: 0000558fb3992250
-[ 1402.757775] R10: 0000000000000000 R11: 0000000000000287 R12: 00007f52d72a1b98
-[ 1402.764900] R13: 00007fff2270bee0 R14: 0000558fb3992090 R15: 0000558fb28aafc8
-[ 1402.772027]  </TASK>
-[ 1402.774216] Modules linked in: x86_pkg_temp_thermal fuse configfs
-[last unloaded: trace_printk]
-[ 1402.782908] CR2: 0000000000000097
-[ 1402.786220] ---[ end trace 0000000000000000 ]---
-[ 1402.790839] RIP: 0010:__lock_acquire (kernel/locking/lockdep.c:5005)
-[ 1402.795468] Code: 4d d4 53 45 85 f6 0f 84 a5 06 00 00 44 8b 2d 8d
-c2 bf 02 45 89 c2 49 89 fb 89 f3 41 89 d6 45 89 c8 45 85 ed 0f 84 ca
-02 00 00 <48> 81 3f c0 2b f1 af 44 0f 44 d0 83 fb 01 0f 86 c2 02 00 00
-31 d2
-All code
-========
-   0: 4d d4                rex.WRB (bad)
-   2: 53                    push   %rbx
-   3: 45 85 f6              test   %r14d,%r14d
-   6: 0f 84 a5 06 00 00    je     0x6b1
-   c: 44 8b 2d 8d c2 bf 02 mov    0x2bfc28d(%rip),%r13d        # 0x2bfc2a0
-  13: 45 89 c2              mov    %r8d,%r10d
-  16: 49 89 fb              mov    %rdi,%r11
-  19: 89 f3                mov    %esi,%ebx
-  1b: 41 89 d6              mov    %edx,%r14d
-  1e: 45 89 c8              mov    %r9d,%r8d
-  21: 45 85 ed              test   %r13d,%r13d
-  24: 0f 84 ca 02 00 00    je     0x2f4
-  2a:* 48 81 3f c0 2b f1 af cmpq   $0xffffffffaff12bc0,(%rdi) <--
-trapping instruction
-  31: 44 0f 44 d0          cmove  %eax,%r10d
-  35: 83 fb 01              cmp    $0x1,%ebx
-  38: 0f 86 c2 02 00 00    jbe    0x300
-  3e: 31 d2                xor    %edx,%edx
+> >> 2) uvc_v4l2_qbuf - only for bulk endpoints since it is not legal to send
+> >>    0 length requests.
+> >>
+> >> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> >> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
+> >> Suggested-by: Jayant Chowdhary <jchowdhary@google.com>
+> >> Suggested-by: Avichal Rakesh <arakesh@google.com>
+> >> Tested-by: Jayant Chowdhary <jchowdhary@google.com>
+> >> ---
+> >>  v1->v2: Fix code style and add self Signed-off-by
+> >>
+> >>  drivers/usb/gadget/function/f_uvc.c     |  4 --
+> >>  drivers/usb/gadget/function/uvc.h       |  4 +-
+> >>  drivers/usb/gadget/function/uvc_v4l2.c  |  5 +-
+> >>  drivers/usb/gadget/function/uvc_video.c | 71 ++++++++++++++++---------
+> >>  drivers/usb/gadget/function/uvc_video.h |  2 +
+> >>  5 files changed, 51 insertions(+), 35 deletions(-)
+> >>
+> >> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+> >> index ae08341961eb..53cb2539486d 100644
+> >> --- a/drivers/usb/gadget/function/f_uvc.c
+> >> +++ b/drivers/usb/gadget/function/f_uvc.c
+> >> @@ -959,14 +959,10 @@ static void uvc_function_unbind(struct usb_configuration *c,
+> >>  {
+> >>  	struct usb_composite_dev *cdev = c->cdev;
+> >>  	struct uvc_device *uvc = to_uvc(f);
+> >> -	struct uvc_video *video = &uvc->video;
+> >>  	long wait_ret = 1;
+> >>
+> >>  	uvcg_info(f, "%s()\n", __func__);
+> >>
+> >> -	if (video->async_wq)
+> >> -		destroy_workqueue(video->async_wq);
+> >> -
+> >>  	/*
+> >>  	 * If we know we're connected via v4l2, then there should be a cleanup
+> >>  	 * of the device from userspace either via UVC_EVENT_DISCONNECT or
+> >> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+> >> index be0d012aa244..498f344fda4b 100644
+> >> --- a/drivers/usb/gadget/function/uvc.h
+> >> +++ b/drivers/usb/gadget/function/uvc.h
+> >> @@ -88,9 +88,6 @@ struct uvc_video {
+> >>  	struct uvc_device *uvc;
+> >>  	struct usb_ep *ep;
+> >>
+> >> -	struct work_struct pump;
+> >> -	struct workqueue_struct *async_wq;
+> >> -
+> >>  	/* Frame parameters */
+> >>  	u8 bpp;
+> >>  	u32 fcc;
+> >> @@ -116,6 +113,7 @@ struct uvc_video {
+> >>  	/* Context data used by the completion handler */
+> >>  	__u32 payload_size;
+> >>  	__u32 max_payload_size;
+> >> +	bool is_bulk;
+> >
+> >This should be introduced in a separate patch.
+> >
+> >>
+> >>  	struct uvc_video_queue queue;
+> >>  	unsigned int fid;
+> >> diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+> >> index f4d2e24835d4..678ea6df7b5c 100644
+> >> --- a/drivers/usb/gadget/function/uvc_v4l2.c
+> >> +++ b/drivers/usb/gadget/function/uvc_v4l2.c
+> >> @@ -414,10 +414,7 @@ uvc_v4l2_qbuf(struct file *file, void *fh, struct v4l2_buffer *b)
+> >>  	ret = uvcg_queue_buffer(&video->queue, b);
+> >>  	if (ret < 0)
+> >>  		return ret;
+> >> -
+> >> -	if (uvc->state == UVC_STATE_STREAMING)
+> >> -		queue_work(video->async_wq, &video->pump);
+> >> -
+> >> +	uvcg_video_pump_qbuf(video);
+> >>  	return ret;
+> >>  }
+> >>
+> >> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+> >> index ab3f02054e85..0fcd8e5edbac 100644
+> >> --- a/drivers/usb/gadget/function/uvc_video.c
+> >> +++ b/drivers/usb/gadget/function/uvc_video.c
+> >> @@ -24,6 +24,8 @@
+> >>   * Video codecs
+> >>   */
+> >>
+> >> +static void uvcg_video_pump(struct uvc_video *video);
+> >> +
+> >>  static int
+> >>  uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
+> >>  		u8 *data, int len)
+> >> @@ -329,7 +331,9 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+> >>  	 */
+> >>  	if (video->is_enabled) {
+> >>  		list_add_tail(&req->list, &video->req_free);
+> >> -		queue_work(video->async_wq, &video->pump);
+> >> +		spin_unlock_irqrestore(&video->req_lock, flags);
+> >> +		uvcg_video_pump(video);
+> >> +		return;
+> >>  	} else {
+> >>  		uvc_video_free_request(ureq, ep);
+> >>  	}
+> >> @@ -409,20 +413,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
+> >>   * Video streaming
+> >>   */
+> >>
+> >> +void uvcg_video_pump_qbuf(struct uvc_video *video)
+> >> +{
+> >> +	/*
+> >> +	 * Only call uvcg_video_pump() from qbuf, for bulk eps since
+> >> +	 * for isoc, the complete handler will call uvcg_video_pump()
+> >> +	 * consistently. Calling it for isoc eps, while correct
+> >> +	 * will increase contention for video->req_lock since the
+> >> +	 * complete handler will be called more often.
+> >> +	*/
+> >> +	if (video->is_bulk)
+> >> +		uvcg_video_pump(video);
+> >
+> > Am I the only one to see the *major* race condition that this patch
+> > introduces ?
+> 
+> Possible that you are. Please elaborate.
 
-Code starting with the faulting instruction
-===========================================
-   0: 48 81 3f c0 2b f1 af cmpq   $0xffffffffaff12bc0,(%rdi)
-   7: 44 0f 44 d0          cmove  %eax,%r10d
-   b: 83 fb 01              cmp    $0x1,%ebx
-   e: 0f 86 c2 02 00 00    jbe    0x2d6
-  14: 31 d2                xor    %edx,%edx
-[ 1402.814213] RSP: 0018:ffff9b3041327998 EFLAGS: 00010002
-[ 1402.819439] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-[ 1402.826587] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000097
-[ 1402.833711] RBP: ffff9b3041327a38 R08: 0000000000000000 R09: 0000000000000000
-[ 1402.840836] R10: 0000000000000001 R11: 0000000000000097 R12: ffff8de420f38040
-[ 1402.847959] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-[ 1402.855083] FS:  00007f52d72a1d00(0000) GS:ffff8de767a00000(0000)
-knlGS:0000000000000000
-[ 1402.863161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1402.868897] CR2: 0000000000000097 CR3: 000000012201e005 CR4: 00000000003706f0
-[ 1402.876023] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 1402.883154] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 1402.890280] Kernel panic - not syncing: Fatal exception
-[ 1402.895543] Kernel Offset: 0x2b000000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[ 1402.906322] ---[ end Kernel panic - not syncing: Fatal exception ]---
+uvcg_video_pump() can now run multiple times in parallel on multiple
+CPUs. Look at the while() loop in the function, and consider what will
+happen when run on two CPUs concurrently. See below for an additional
+comment on this.
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231026/testrun/20823466/suite/log-parser-test/tests/
- - https://lkft.validation.linaro.org/scheduler/job/6974183#L5240
+> >> +}
+> >> +
+> >>  /*
+> >>   * uvcg_video_pump - Pump video data into the USB requests
+> >>   *
+> >>   * This function fills the available USB requests (listed in req_free) with
+> >>   * video data from the queued buffers.
+> >>   */
+> >> -static void uvcg_video_pump(struct work_struct *work)
+> >> +static void uvcg_video_pump(struct uvc_video *video)
+> >>  {
+> >> -	struct uvc_video *video = container_of(work, struct uvc_video, pump);
+> >>  	struct uvc_video_queue *queue = &video->queue;
+> >> -	/* video->max_payload_size is only set when using bulk transfer */
+> >> -	bool is_bulk = video->max_payload_size;
+> >>  	struct usb_request *req = NULL;
+> >> -	struct uvc_buffer *buf;
+> >> +	struct uvc_request *ureq = NULL;
+> >> +	struct uvc_buffer *buf = NULL, *last_buf = NULL;
+> >>  	unsigned long flags;
+> >>  	bool buf_done;
+> >>  	int ret;
+> >> @@ -455,7 +470,8 @@ static void uvcg_video_pump(struct work_struct *work)
+> >>  		if (buf != NULL) {
+> >>  			video->encode(req, video, buf);
+> >>  			buf_done = buf->state == UVC_BUF_STATE_DONE;
+> >> -		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) && !is_bulk) {
+> >> +		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) &&
+> >> +				!video->is_bulk) {
+> >>  			/*
+> >>  			 * No video buffer available; the queue is still connected and
+> >>  			 * we're transferring over ISOC. Queue a 0 length request to
+> >> @@ -500,18 +516,30 @@ static void uvcg_video_pump(struct work_struct *work)
+> >>  			req->no_interrupt = 1;
+> >>  		}
+> >>
+> >> -		/* Queue the USB request */
+> >> -		ret = uvcg_video_ep_queue(video, req);
+> >>  		spin_unlock_irqrestore(&queue->irqlock, flags);
+> >> -
 
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git_sha: 2ef7141596eed0b4b45ef18b3626f428a6b0a822
-  git_describe: next-20231026
-  kernel-config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2XHt24sNSdog7DYY3FLKFZpZmjG/config
-  artifact-location:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2XHt24sNSdog7DYY3FLKFZpZmjG/
-  toolchain: gcc-13
+Here's one problematic point. The code above may have run on CPU A,
+which releases IRQ lock. CPU B may then run the same code to encode the
+next chunk of data in a request, and proceed to the code below before
+CPU A. The requests will then be queued in the wrong order.
 
+In the next iteration of this patch, I would like to see a clear
+explanation in the commit message of why there is no race condition
+(after fixing the existing ones, of course). Writing it down forces
+going through the mental exercise of thinking about the race conditions,
+which should help catching them.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+> >> +		spin_lock_irqsave(&video->req_lock, flags);
+> >> +		if (video->is_enabled) {
+> >> +			/* Queue the USB request */
+> >> +			ret = uvcg_video_ep_queue(video, req);
+> >> +			/* Endpoint now owns the request */
+> >> +			req = NULL;
+> >> +			video->req_int_count++;
+> >> +		} else {
+> >> +			ret =  -ENODEV;
+> >> +			ureq = req->context;
+> >> +			last_buf = ureq->last_buf;
+> >> +			ureq->last_buf = NULL;
+> >> +		}
+> >> +		spin_unlock_irqrestore(&video->req_lock, flags);
+> >>  		if (ret < 0) {
+> >> +			if (last_buf != NULL) {
+> >> +				// Return the buffer to the queue in the case the
+> >> +				// request was not queued to the ep.
+> >
+> > Wrong comment style.
+> >
+> >> +				uvcg_complete_buffer(&video->queue, last_buf);
+> >> +			}
+> >>  			uvcg_queue_cancel(queue, 0);
+> >>  			break;
+> >>  		}
+> >> -
+> >> -		/* Endpoint now owns the request */
+> >> -		req = NULL;
+> >> -		video->req_int_count++;
+> >>  	}
+> >>
+> >>  	if (!req)
+> >> @@ -556,7 +584,6 @@ uvcg_video_disable(struct uvc_video *video)
+> >>  	}
+> >>  	spin_unlock_irqrestore(&video->req_lock, flags);
+> >>
+> >> -	cancel_work_sync(&video->pump);
+> >>  	uvcg_queue_cancel(&video->queue, 0);
+> >>
+> >>  	spin_lock_irqsave(&video->req_lock, flags);
+> >> @@ -626,14 +653,16 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+> >>  	if (video->max_payload_size) {
+> >>  		video->encode = uvc_video_encode_bulk;
+> >>  		video->payload_size = 0;
+> >> -	} else
+> >> +		video->is_bulk = true;
+> >> +	} else {
+> >>  		video->encode = video->queue.use_sg ?
+> >>  			uvc_video_encode_isoc_sg : uvc_video_encode_isoc;
+> >> +		video->is_bulk = false;
+> >> +	}
+> >>
+> >>  	video->req_int_count = 0;
+> >>
+> >> -	queue_work(video->async_wq, &video->pump);
+> >> -
+> >> +	uvcg_video_pump(video);
+> >>  	return ret;
+> >>  }
+> >>
+> >> @@ -646,12 +675,6 @@ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+> >>  	INIT_LIST_HEAD(&video->ureqs);
+> >>  	INIT_LIST_HEAD(&video->req_free);
+> >>  	spin_lock_init(&video->req_lock);
+> >> -	INIT_WORK(&video->pump, uvcg_video_pump);
+> >> -
+> >> -	/* Allocate a work queue for asynchronous video pump handler. */
+> >> -	video->async_wq = alloc_workqueue("uvcgadget", WQ_UNBOUND | WQ_HIGHPRI, 0);
+> >> -	if (!video->async_wq)
+> >> -		return -EINVAL;
+> >>
+> >>  	video->uvc = uvc;
+> >>  	video->fcc = V4L2_PIX_FMT_YUYV;
+> >> diff --git a/drivers/usb/gadget/function/uvc_video.h b/drivers/usb/gadget/function/uvc_video.h
+> >> index 03adeefa343b..29c6b9a2e9c3 100644
+> >> --- a/drivers/usb/gadget/function/uvc_video.h
+> >> +++ b/drivers/usb/gadget/function/uvc_video.h
+> >> @@ -18,4 +18,6 @@ int uvcg_video_enable(struct uvc_video *video, int enable);
+> >>
+> >>  int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc);
+> >>
+> >> +void uvcg_video_pump_qbuf(struct uvc_video *video);
+> >> +
+> >>  #endif /* __UVC_VIDEO_H__ */
+
+-- 
+Regards,
+
+Laurent Pinchart
