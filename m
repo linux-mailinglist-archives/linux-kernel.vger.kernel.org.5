@@ -2,1711 +2,900 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2127D8F25
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC837D8F2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345330AbjJ0HDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        id S234993AbjJ0HEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345266AbjJ0HDP (ORCPT
+        with ESMTP id S234963AbjJ0HEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:03:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7837116
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:03:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3789FC433CB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698390189;
-        bh=yhK3Z6F1DDwTC4n7DtVG/n9cNAPIM5KSGR+JttOkg3o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hI8wRWeZeax1ZVvfakKEwTeJ+bpAr1DMs9sg1G7qmFytjLI8e8EQ2rOGKiBgLdB4g
-         NmOvUs4bbNHu88CXewm7YXmMK875MDvK0Ds3ACCVOICVEHXQWWHJpNw/7yIPWNnqeI
-         +pBjLFMPwhgCocnugjnc4RZbwp7KwOUSt1ri9Q61R9JVLSOcO3788FcBzgeu3XX2JM
-         1EaTstxff+E+8GpAeyBZobuSBxGhWkRg4UDFKEo4eEVbxiNdF5DuP80WIYDDVJ2bre
-         Oie2zW1jc9ClDat/3wnMKPJUUtVFvC5HsWEUDB7+67TbmlnCMFrx+CmzmxF44Y1/ob
-         NU15Jhyxd3toA==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so2902402a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:03:09 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw1qs25wX4Qd/PJpDK/WMtbb2e0VlM5IM5See6g2NiFn8KWM+dN
-        GdCXxvkemryIR70vbCf6qZwHlHoovZWSGlPN7xc=
-X-Google-Smtp-Source: AGHT+IHd+mR49XiDTYP1LdkdOzCNfL41RDORxjqT7kmtl3jntrO7m6JGsDua/VvPcPnjEwar9E86WnP719cJglaqJaw=
-X-Received: by 2002:a50:baa7:0:b0:533:97c:8414 with SMTP id
- x36-20020a50baa7000000b00533097c8414mr1785652ede.7.1698390186496; Fri, 27 Oct
- 2023 00:03:06 -0700 (PDT)
+        Fri, 27 Oct 2023 03:04:41 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D84116;
+        Fri, 27 Oct 2023 00:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698390270;
+        bh=8+GKTKJyJCafrc+DqDF3WgoG3aXjTqZ5r9xeX5TOUy4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eE5GnN9CrOgLpYTrWOeUFgrmsMsaSPWJ+fg3USkp/DRUEergdcaAcDcPvgmky3hqz
+         beTOW0ls/KbSeEk/R4sdTHIY4oxdi20TxV9STld5BU1dzm5+o4oI/ay57PcOjvfcvn
+         fQAmNh+WRqZjzTNEeZyB3BVlWah2BxyxlRH7+wtuLj6no0iRCnYYCklzHbiMwV0qDN
+         uVjoQsrC4Llge9xI6DxvD4t7DHpkEMwxuRlsCYoXWmi/ni2SAAfSoQUlgxLRBxXnzP
+         Xq48sX2SAaMhGNcTPYbrwdgFVX+5KkC2LioaX5HZnaK+R+tLkJvsgb3CNKB4AM3rTw
+         apEY0LpxGgcvw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGtvL1xSqz4xF4;
+        Fri, 27 Oct 2023 18:04:30 +1100 (AEDT)
+Date:   Fri, 27 Oct 2023 18:04:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Oct 27
+Message-ID: <20231027180429.5f718601@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1698048691-19521-1-git-send-email-yangtiezhu@loongson.cn> <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 27 Oct 2023 15:02:52 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7yYYtBQ8=oxSjdn=Jnne8mUK17n_S6c6O1bLC4B7VVcg@mail.gmail.com>
-Message-ID: <CAAhV-H7yYYtBQ8=oxSjdn=Jnne8mUK17n_S6c6O1bLC4B7VVcg@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] LoongArch: Add ORC stack unwinder support
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/SVatX9hzEj=GR00fmLTFyf9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,LOCALPART_IN_SUBJECT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3 works in most cases, v4 cannot work completely (stop at show_stack), why=
-?
+--Sig_/SVatX9hzEj=GR00fmLTFyf9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-[   61.412528] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.6.0-rc7+ #1157
-[   61.419017] Hardware name: Loongson
-Loongson-3A5000-7A1000-1w-CRB/Loongson-LS3A5000-7A1000-1w-CRB, BIOS
-vUDK2018-LoongArch-V2.0.0-prebeta9 10/21/2022
-[   61.432328] pc 9000000002ad14c0 ra 9000000003d759c8 tp
-90000001001e4000 sp 90000001001e7e40
-[   61.440629] a0 0000000000000005 a1 0000000000000001 a2
-90000001001e4000 a3 9000000003d7cdf4
-[   61.448930] a4 900000010bb1f940 a5 0000000000000000 a6
-0000000000000000 a7 000000000000239c
-[   61.457229] t0 0000000000000000 t1 0000000000022c34 t2
-4000000000000000 t3 0000000000000001
-[   61.465530] t4 4000000000000000 t5 00000000000000b0 t6
-0000000000000004 t7 0000000000000000
-[   61.473830] t8 0000000000000000 u0 0000000000000004 s9
-9000000004caa940 s0 0000000000000004
-[   61.482130] s1 900000000427aa38 s2 0000000000000004 s3
-0000000000000000 s4 900000000427b000
-[   61.490429] s5 00000000000f0000 s6 0000000000000004 s7
-000000000000039b s8 0000000000000004
-[   61.498730]    ra: 9000000003d759c8 arch_cpu_idle+0x1c/0x34
-[   61.504270]   ERA: 9000000002ad14c0 __arch_cpu_idle+0x20/0x24
-[   61.509979]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=3DCC -WE)
-[   61.516134]  PRMD: 00000004 (PPLV0 +PIE -PWE)
-[   61.520465]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-[   61.525230]  ECFG: 00071c1c (LIE=3D2-4,10-12 VS=3D7)
-[   61.529820] ESTAT: 00001000 [INT] (IS=3D12 ECode=3D0 EsubCode=3D0)
-[   61.535446]  PRID: 0014c010 (Loongson-64bit, Loongson-3A5000)
-[   61.541154] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.6.0-rc7+ #1157
-[   61.547640] Hardware name: Loongson
-Loongson-3A5000-7A1000-1w-CRB/Loongson-LS3A5000-7A1000-1w-CRB, BIOS
-vUDK2018-LoongArch-V2.0.0-prebeta9 10/21/2022
-[   61.560952] Stack : 0000000000000000 ffffffffffffffff
-9000000003d73848 90000001001e4000
-[   61.568914]         900000010006fca0 0000000000000000
-900000010006fca8 9000000004108e10
-[   61.576875]         9000000004363958 9000000004363950
-900000010006fbc0 0000000000000001
-[   61.584837]         0000000000000001 83899b396b7be748
-00000000069f0000 9000000100177080
-[   61.592798]         0000000000000000 372d303030354133
-0000000000000001 0000000000000003
-[   61.600759]         6f4c203a656d616e 0000000000085b38
-00000000069f0000 9000000004caa940
-[   61.608721]         9000000004279000 9000000004108e10
-0000000000000004 0000000000000000
-[   61.616682]         90000000042833f0 90000001001e7d00
-0000000000000000 0000000000000001
-[   61.624644]         0000000000000004 900000010006fbf0
-9000000002ad3808 00007fffec50f0f0
-[   61.632605]         00000000000000b0 0000000000000004
-0000000000000000 0000000000071c1c
-[   61.640566]         ...
-[   61.642993] Call Trace:
-[   61.642995] [<9000000002ad3808>] show_stack+0x40/0x17c
+Hi all,
 
-Huacai
+Changes since 20231026:
 
-On Mon, Oct 23, 2023 at 4:11=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> The kernel CONFIG_UNWINDER_ORC option enables the ORC unwinder, which is
-> similar in concept to a DWARF unwinder. The difference is that the format
-> of the ORC data is much simpler than DWARF, which in turn allows the ORC
-> unwinder to be much simpler and faster.
->
-> The ORC data consists of unwind tables which are generated by objtool.
-> They contain out-of-band data which is used by the in-kernel ORC unwinder=
-.
-> Objtool generates the ORC data by first doing compile-time stack metadata
-> validation (CONFIG_STACK_VALIDATION). After analyzing all the code paths
-> of a .o file, it determines information about the stack state at each
-> instruction address in the file and outputs that information to the
-> .orc_unwind and .orc_unwind_ip sections.
->
-> The per-object ORC sections are combined at link time and are sorted and
-> post-processed at boot time. The unwinder uses the resulting data to
-> correlate instruction addresses with their stack states at run time.
->
-> Most of the logic are similar with x86, in order to get ra info before ra
-> is saved into stack, add ra_reg and ra_offset into orc_entry. At the same
-> time, modify some arch-specific code to silence the objtool warnings.
->
-> Co-developed-by: Jinyang He <hejinyang@loongson.cn>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/loongarch/Kconfig                    |   2 +
->  arch/loongarch/Kconfig.debug              |  11 +
->  arch/loongarch/Makefile                   |  19 ++
->  arch/loongarch/include/asm/Kbuild         |   2 +
->  arch/loongarch/include/asm/bug.h          |   1 +
->  arch/loongarch/include/asm/exception.h    |   2 +
->  arch/loongarch/include/asm/module.h       |   7 +
->  arch/loongarch/include/asm/orc_header.h   |  18 ++
->  arch/loongarch/include/asm/orc_lookup.h   |  31 ++
->  arch/loongarch/include/asm/orc_types.h    |  58 ++++
->  arch/loongarch/include/asm/stackframe.h   |   3 +
->  arch/loongarch/include/asm/unwind.h       |  19 +-
->  arch/loongarch/include/asm/unwind_hints.h |  28 ++
->  arch/loongarch/kernel/Makefile            |   4 +
->  arch/loongarch/kernel/entry.S             |   5 +
->  arch/loongarch/kernel/genex.S             |   4 +
->  arch/loongarch/kernel/module.c            |  22 +-
->  arch/loongarch/kernel/relocate_kernel.S   |   2 +
->  arch/loongarch/kernel/setup.c             |   2 +
->  arch/loongarch/kernel/stacktrace.c        |   1 +
->  arch/loongarch/kernel/traps.c             |  42 ++-
->  arch/loongarch/kernel/unwind_orc.c        | 513 ++++++++++++++++++++++++=
-++++++
->  arch/loongarch/kernel/vmlinux.lds.S       |   3 +
->  arch/loongarch/lib/Makefile               |   2 +
->  arch/loongarch/mm/tlb.c                   |  27 +-
->  arch/loongarch/mm/tlbex.S                 |   9 +
->  arch/loongarch/vdso/Makefile              |   1 +
->  include/linux/compiler.h                  |   9 +
->  scripts/Makefile                          |   7 +-
->  29 files changed, 818 insertions(+), 36 deletions(-)
->  create mode 100644 arch/loongarch/include/asm/orc_header.h
->  create mode 100644 arch/loongarch/include/asm/orc_lookup.h
->  create mode 100644 arch/loongarch/include/asm/orc_types.h
->  create mode 100644 arch/loongarch/include/asm/unwind_hints.h
->  create mode 100644 arch/loongarch/kernel/unwind_orc.c
->
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index e14396a..21ef3bb 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -131,6 +131,7 @@ config LOONGARCH
->         select HAVE_KRETPROBES
->         select HAVE_MOD_ARCH_SPECIFIC
->         select HAVE_NMI
-> +       select HAVE_OBJTOOL if AS_HAS_EXPLICIT_RELOCS
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> @@ -141,6 +142,7 @@ config LOONGARCH
->         select HAVE_SAMPLE_FTRACE_DIRECT
->         select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
->         select HAVE_SETUP_PER_CPU_AREA if NUMA
-> +       select HAVE_STACK_VALIDATION if HAVE_OBJTOOL
->         select HAVE_STACKPROTECTOR
->         select HAVE_SYSCALL_TRACEPOINTS
->         select HAVE_TIF_NOHZ
-> diff --git a/arch/loongarch/Kconfig.debug b/arch/loongarch/Kconfig.debug
-> index 8d36aab..98d6063 100644
-> --- a/arch/loongarch/Kconfig.debug
-> +++ b/arch/loongarch/Kconfig.debug
-> @@ -26,4 +26,15 @@ config UNWINDER_PROLOGUE
->           Some of the addresses it reports may be incorrect (but better t=
-han the
->           Guess unwinder).
->
-> +config UNWINDER_ORC
-> +       bool "ORC unwinder"
-> +       select OBJTOOL
-> +       help
-> +         This option enables the ORC (Oops Rewind Capability) unwinder f=
-or
-> +         unwinding kernel stack traces.  It uses a custom data format wh=
-ich is
-> +         a simplified version of the DWARF Call Frame Information standa=
-rd.
-> +
-> +         Enabling this option will increase the kernel's runtime memory =
-usage
-> +         by roughly 2-4MB, depending on your kernel config.
-> +
->  endchoice
-> diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
-> index fb0fada..93ebdc3 100644
-> --- a/arch/loongarch/Makefile
-> +++ b/arch/loongarch/Makefile
-> @@ -25,6 +25,18 @@ endif
->  32bit-emul             =3D elf32loongarch
->  64bit-emul             =3D elf64loongarch
->
-> +ifdef CONFIG_UNWINDER_ORC
-> +orc_hash_h :=3D arch/$(SRCARCH)/include/generated/asm/orc_hash.h
-> +orc_hash_sh :=3D $(srctree)/scripts/orc_hash.sh
-> +targets +=3D $(orc_hash_h)
-> +quiet_cmd_orc_hash =3D GEN     $@
-> +      cmd_orc_hash =3D mkdir -p $(dir $@); \
-> +                    $(CONFIG_SHELL) $(orc_hash_sh) < $< > $@
-> +$(orc_hash_h): $(srctree)/arch/loongarch/include/asm/orc_types.h $(orc_h=
-ash_sh) FORCE
-> +       $(call if_changed,orc_hash)
-> +archprepare: $(orc_hash_h)
-> +endif
-> +
->  ifdef CONFIG_DYNAMIC_FTRACE
->  KBUILD_CPPFLAGS +=3D -DCC_USING_PATCHABLE_FUNCTION_ENTRY
->  CC_FLAGS_FTRACE :=3D -fpatchable-function-entry=3D2
-> @@ -78,6 +90,13 @@ KBUILD_AFLAGS_MODULE         +=3D -Wa,-mla-global-with=
--abs
->  KBUILD_CFLAGS_MODULE           +=3D -fplt -Wa,-mla-global-with-abs,-mla-=
-local-with-abs
->  endif
->
-> +KBUILD_AFLAGS                  +=3D $(call cc-option,-mthin-add-sub) $(c=
-all cc-option,-Wa$(comma)-mthin-add-sub)
-> +KBUILD_CFLAGS                  +=3D $(call cc-option,-mthin-add-sub) $(c=
-all cc-option,-Wa$(comma)-mthin-add-sub)
-> +
-> +ifdef CONFIG_OBJTOOL
-> +KBUILD_CFLAGS                  +=3D -fno-optimize-sibling-calls -fno-jum=
-p-tables -falign-functions=3D4
-> +endif
-> +
->  ifeq ($(CONFIG_RELOCATABLE),y)
->  KBUILD_CFLAGS_KERNEL           +=3D -fPIE
->  LDFLAGS_vmlinux                        +=3D -static -pie --no-dynamic-li=
-nker -z notext
-> diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/a=
-sm/Kbuild
-> index 93783fa..a97c0ed 100644
-> --- a/arch/loongarch/include/asm/Kbuild
-> +++ b/arch/loongarch/include/asm/Kbuild
-> @@ -1,4 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
-> +generated-y +=3D orc_hash.h
-> +
->  generic-y +=3D dma-contiguous.h
->  generic-y +=3D mcs_spinlock.h
->  generic-y +=3D parport.h
-> diff --git a/arch/loongarch/include/asm/bug.h b/arch/loongarch/include/as=
-m/bug.h
-> index d4ca3ba..0838887 100644
-> --- a/arch/loongarch/include/asm/bug.h
-> +++ b/arch/loongarch/include/asm/bug.h
-> @@ -44,6 +44,7 @@
->  do {                                                           \
->         instrumentation_begin();                                \
->         __BUG_FLAGS(BUGFLAG_WARNING|(flags));                   \
-> +       annotate_reachable();                                   \
->         instrumentation_end();                                  \
->  } while (0)
->
-> diff --git a/arch/loongarch/include/asm/exception.h b/arch/loongarch/incl=
-ude/asm/exception.h
-> index af74a3f..c6d2073 100644
-> --- a/arch/loongarch/include/asm/exception.h
-> +++ b/arch/loongarch/include/asm/exception.h
-> @@ -6,6 +6,8 @@
->  #include <asm/ptrace.h>
->  #include <linux/kprobes.h>
->
-> +extern void *exception_table[];
-> +
->  void show_registers(struct pt_regs *regs);
->
->  asmlinkage void cache_parity_error(void);
-> diff --git a/arch/loongarch/include/asm/module.h b/arch/loongarch/include=
-/asm/module.h
-> index 2ecd82b..f33f3fd 100644
-> --- a/arch/loongarch/include/asm/module.h
-> +++ b/arch/loongarch/include/asm/module.h
-> @@ -6,6 +6,7 @@
->  #define _ASM_MODULE_H
->
->  #include <asm/inst.h>
-> +#include <asm/orc_types.h>
->  #include <asm-generic/module.h>
->
->  #define RELA_STACK_DEPTH 16
-> @@ -21,6 +22,12 @@ struct mod_arch_specific {
->         struct mod_section plt;
->         struct mod_section plt_idx;
->
-> +#ifdef CONFIG_UNWINDER_ORC
-> +       unsigned int num_orcs;
-> +       int *orc_unwind_ip;
-> +       struct orc_entry *orc_unwind;
-> +#endif
-> +
->         /* For CONFIG_DYNAMIC_FTRACE */
->         struct plt_entry *ftrace_trampolines;
->  };
-> diff --git a/arch/loongarch/include/asm/orc_header.h b/arch/loongarch/inc=
-lude/asm/orc_header.h
-> new file mode 100644
-> index 0000000..f9d509c
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/orc_header.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +
-> +#ifndef _ORC_HEADER_H
-> +#define _ORC_HEADER_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/compiler.h>
-> +#include <asm/orc_hash.h>
-> +
-> +/*
-> + * The header is currently a 20-byte hash of the ORC entry definition; s=
-ee
-> + * scripts/orc_hash.sh.
-> + */
-> +#define ORC_HEADER                                     \
-> +       __used __section(".orc_header") __aligned(4)    \
-> +       static const u8 orc_header[] =3D { ORC_HASH }
-> +
-> +#endif /* _ORC_HEADER_H */
-> diff --git a/arch/loongarch/include/asm/orc_lookup.h b/arch/loongarch/inc=
-lude/asm/orc_lookup.h
-> new file mode 100644
-> index 0000000..b02e635
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/orc_lookup.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef _ORC_LOOKUP_H
-> +#define _ORC_LOOKUP_H
-> +
-> +/*
-> + * This is a lookup table for speeding up access to the .orc_unwind tabl=
-e.
-> + * Given an input address offset, the corresponding lookup table entry
-> + * specifies a subset of the .orc_unwind table to search.
-> + *
-> + * Each block represents the end of the previous range and the start of =
-the
-> + * next range.  An extra block is added to give the last range an end.
-> + *
-> + * The block size should be a power of 2 to avoid a costly 'div' instruc=
-tion.
-> + *
-> + * A block size of 256 was chosen because it roughly doubles unwinder
-> + * performance while only adding ~5% to the ORC data footprint.
-> + */
-> +#define LOOKUP_BLOCK_ORDER     8
-> +#define LOOKUP_BLOCK_SIZE      (1 << LOOKUP_BLOCK_ORDER)
-> +
-> +#ifndef LINKER_SCRIPT
-> +
-> +extern unsigned int orc_lookup[];
-> +extern unsigned int orc_lookup_end[];
-> +
-> +#define LOOKUP_START_IP                (unsigned long)_stext
-> +#define LOOKUP_STOP_IP         (unsigned long)_etext
-> +
-> +#endif /* LINKER_SCRIPT */
-> +
-> +#endif /* _ORC_LOOKUP_H */
-> diff --git a/arch/loongarch/include/asm/orc_types.h b/arch/loongarch/incl=
-ude/asm/orc_types.h
-> new file mode 100644
-> index 0000000..caf1f71
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/orc_types.h
-> @@ -0,0 +1,58 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef _ORC_TYPES_H
-> +#define _ORC_TYPES_H
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * The ORC_REG_* registers are base registers which are used to find oth=
-er
-> + * registers on the stack.
-> + *
-> + * ORC_REG_PREV_SP, also known as DWARF Call Frame Address (CFA), is the
-> + * address of the previous frame: the caller's SP before it called the c=
-urrent
-> + * function.
-> + *
-> + * ORC_REG_UNDEFINED means the corresponding register's value didn't cha=
-nge in
-> + * the current frame.
-> + *
-> + * The most commonly used base registers are SP and FP -- which the prev=
-ious SP
-> + * is usually based on -- and PREV_SP and UNDEFINED -- which the previou=
-s FP is
-> + * usually based on.
-> + *
-> + * The rest of the base registers are needed for special cases like entr=
-y code
-> + * and GCC realigned stacks.
-> + */
-> +#define ORC_REG_UNDEFINED              0
-> +#define ORC_REG_PREV_SP                        1
-> +#define ORC_REG_SP                     2
-> +#define ORC_REG_FP                     3
-> +#define ORC_REG_MAX                    4
-> +
-> +#define ORC_TYPE_UNDEFINED             0
-> +#define ORC_TYPE_END_OF_STACK          1
-> +#define ORC_TYPE_CALL                  2
-> +#define ORC_TYPE_REGS                  3
-> +#define ORC_TYPE_REGS_PARTIAL          4
-> +
-> +#ifndef __ASSEMBLY__
-> +/*
-> + * This struct is more or less a vastly simplified version of the DWARF =
-Call
-> + * Frame Information standard.  It contains only the necessary parts of =
-DWARF
-> + * CFI, simplified for ease of access by the in-kernel unwinder.  It tel=
-ls the
-> + * unwinder how to find the previous SP and FP (and sometimes entry regs=
-) on
-> + * the stack for a given code address.  Each instance of the struct corr=
-esponds
-> + * to one or more code locations.
-> + */
-> +struct orc_entry {
-> +       s16             sp_offset;
-> +       s16             fp_offset;
-> +       s16             ra_offset;
-> +       unsigned int    sp_reg:4;
-> +       unsigned int    fp_reg:4;
-> +       unsigned int    ra_reg:4;
-> +       unsigned int    type:3;
-> +       unsigned int    signal:1;
-> +};
-> +#endif /* __ASSEMBLY__ */
-> +
-> +#endif /* _ORC_TYPES_H */
-> diff --git a/arch/loongarch/include/asm/stackframe.h b/arch/loongarch/inc=
-lude/asm/stackframe.h
-> index 4fb1e64..45b507a 100644
-> --- a/arch/loongarch/include/asm/stackframe.h
-> +++ b/arch/loongarch/include/asm/stackframe.h
-> @@ -13,6 +13,7 @@
->  #include <asm/asm-offsets.h>
->  #include <asm/loongarch.h>
->  #include <asm/thread_info.h>
-> +#include <asm/unwind_hints.h>
->
->  /* Make the addition of cfi info a little easier. */
->         .macro cfi_rel_offset reg offset=3D0 docfi=3D0
-> @@ -162,6 +163,7 @@
->         li.w    t0, CSR_CRMD_WE
->         csrxchg t0, t0, LOONGARCH_CSR_CRMD
->  #endif
-> +       UNWIND_HINT_REGS
->         .endm
->
->         .macro  SAVE_ALL docfi=3D0
-> @@ -219,6 +221,7 @@
->
->         .macro  RESTORE_SP_AND_RET docfi=3D0
->         cfi_ld  sp, PT_R3, \docfi
-> +       UNWIND_HINT_FUNC
->         ertn
->         .endm
->
-> diff --git a/arch/loongarch/include/asm/unwind.h b/arch/loongarch/include=
-/asm/unwind.h
-> index b9dce87..c7f52d4 100644
-> --- a/arch/loongarch/include/asm/unwind.h
-> +++ b/arch/loongarch/include/asm/unwind.h
-> @@ -16,6 +16,7 @@
->  enum unwinder_type {
->         UNWINDER_GUESS,
->         UNWINDER_PROLOGUE,
-> +       UNWINDER_ORC,
->  };
->
->  struct unwind_state {
-> @@ -24,7 +25,7 @@ struct unwind_state {
->         struct task_struct *task;
->         bool first, error, reset;
->         int graph_idx;
-> -       unsigned long sp, pc, ra;
-> +       unsigned long sp, fp, pc, ra;
->  };
->
->  bool default_next_frame(struct unwind_state *state);
-> @@ -34,6 +35,14 @@ void unwind_start(struct unwind_state *state,
->  bool unwind_next_frame(struct unwind_state *state);
->  unsigned long unwind_get_return_address(struct unwind_state *state);
->
-> +#ifdef CONFIG_UNWINDER_ORC
-> +void unwind_init(void);
-> +void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_=
-size, void *orc, size_t orc_size);
-> +#else
-> +static inline void unwind_init(void) {}
-> +static inline void unwind_module_init(struct module *mod, void *orc_ip, =
-size_t orc_ip_size, void *orc, size_t orc_size) {}
-> +#endif
-> +
->  static inline bool unwind_done(struct unwind_state *state)
->  {
->         return state->stack_info.type =3D=3D STACK_TYPE_UNKNOWN;
-> @@ -61,14 +70,17 @@ static __always_inline void __unwind_start(struct unw=
-ind_state *state,
->                 state->sp =3D regs->regs[3];
->                 state->pc =3D regs->csr_era;
->                 state->ra =3D regs->regs[1];
-> +               state->fp =3D regs->regs[22];
->         } else if (task && task !=3D current) {
->                 state->sp =3D thread_saved_fp(task);
->                 state->pc =3D thread_saved_ra(task);
->                 state->ra =3D 0;
-> +               state->fp =3D 0;
->         } else {
->                 state->sp =3D (unsigned long)__builtin_frame_address(0);
->                 state->pc =3D (unsigned long)__builtin_return_address(0);
->                 state->ra =3D 0;
-> +               state->fp =3D 0;
->         }
->         state->task =3D task;
->         get_stack_info(state->sp, state->task, &state->stack_info);
-> @@ -77,6 +89,9 @@ static __always_inline void __unwind_start(struct unwin=
-d_state *state,
->
->  static __always_inline unsigned long __unwind_get_return_address(struct =
-unwind_state *state)
->  {
-> -       return unwind_done(state) ? 0 : state->pc;
-> +       if (unwind_done(state))
-> +               return 0;
-> +
-> +       return __kernel_text_address(state->pc) ? state->pc : 0;
->  }
->  #endif /* _ASM_UNWIND_H */
-> diff --git a/arch/loongarch/include/asm/unwind_hints.h b/arch/loongarch/i=
-nclude/asm/unwind_hints.h
-> new file mode 100644
-> index 0000000..82443fe
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/unwind_hints.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_LOONGARCH_UNWIND_HINTS_H
-> +#define _ASM_LOONGARCH_UNWIND_HINTS_H
-> +
-> +#include <linux/objtool.h>
-> +#include <asm/orc_types.h>
-> +
-> +#ifdef __ASSEMBLY__
-> +
-> +.macro UNWIND_HINT_UNDEFINED
-> +       UNWIND_HINT type=3DUNWIND_HINT_TYPE_UNDEFINED
-> +.endm
-> +
-> +.macro UNWIND_HINT_EMPTY
-> +       UNWIND_HINT sp_reg=3DORC_REG_UNDEFINED type=3DUNWIND_HINT_TYPE_CA=
-LL
-> +.endm
-> +
-> +.macro UNWIND_HINT_REGS
-> +       UNWIND_HINT sp_reg=3DORC_REG_SP type=3DUNWIND_HINT_TYPE_REGS
-> +.endm
-> +
-> +.macro UNWIND_HINT_FUNC
-> +       UNWIND_HINT sp_reg=3DORC_REG_SP type=3DUNWIND_HINT_TYPE_CALL
-> +.endm
-> +
-> +#endif /* __ASSEMBLY__ */
-> +
-> +#endif /* _ASM_LOONGARCH_UNWIND_HINTS_H */
-> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makef=
-ile
-> index 4fcc168..ac47e11 100644
-> --- a/arch/loongarch/kernel/Makefile
-> +++ b/arch/loongarch/kernel/Makefile
-> @@ -3,6 +3,8 @@
->  # Makefile for the Linux/LoongArch kernel.
->  #
->
-> +OBJECT_FILES_NON_STANDARD_head.o :=3D y
-> +
->  extra-y                :=3D vmlinux.lds
->
->  obj-y          +=3D head.o cpu-probe.o cacheinfo.o env.o setup.o entry.o=
- genex.o \
-> @@ -21,6 +23,7 @@ obj-$(CONFIG_ARCH_STRICT_ALIGN)       +=3D unaligned.o
->
->  CFLAGS_module.o                +=3D $(call cc-option,-Wno-override-init,=
-)
->  CFLAGS_syscall.o       +=3D $(call cc-option,-Wno-override-init,)
-> +CFLAGS_traps.o         +=3D $(call cc-option,-Wno-override-init,)
->  CFLAGS_perf_event.o    +=3D $(call cc-option,-Wno-override-init,)
->
->  ifdef CONFIG_FUNCTION_TRACER
-> @@ -62,6 +65,7 @@ obj-$(CONFIG_CRASH_DUMP)      +=3D crash_dump.o
->
->  obj-$(CONFIG_UNWINDER_GUESS)   +=3D unwind_guess.o
->  obj-$(CONFIG_UNWINDER_PROLOGUE) +=3D unwind_prologue.o
-> +obj-$(CONFIG_UNWINDER_ORC)     +=3D unwind_orc.o
->
->  obj-$(CONFIG_PERF_EVENTS)      +=3D perf_event.o perf_regs.o
->  obj-$(CONFIG_HAVE_HW_BREAKPOINT)       +=3D hw_breakpoint.o
-> diff --git a/arch/loongarch/kernel/entry.S b/arch/loongarch/kernel/entry.=
-S
-> index 1ec8e4c..48e7e34 100644
-> --- a/arch/loongarch/kernel/entry.S
-> +++ b/arch/loongarch/kernel/entry.S
-> @@ -14,11 +14,13 @@
->  #include <asm/regdef.h>
->  #include <asm/stackframe.h>
->  #include <asm/thread_info.h>
-> +#include <asm/unwind_hints.h>
->
->         .text
->         .cfi_sections   .debug_frame
->         .align  5
->  SYM_CODE_START(handle_syscall)
-> +       UNWIND_HINT_UNDEFINED
->         csrrd           t0, PERCPU_BASE_KS
->         la.pcrel        t1, kernelsp
->         add.d           t1, t1, t0
-> @@ -57,6 +59,7 @@ SYM_CODE_START(handle_syscall)
->         cfi_st          fp, PT_R22
->
->         SAVE_STATIC
-> +       UNWIND_HINT_REGS
->
->  #ifdef CONFIG_KGDB
->         li.w            t1, CSR_CRMD_WE
-> @@ -75,6 +78,7 @@ SYM_CODE_END(handle_syscall)
->  _ASM_NOKPROBE(handle_syscall)
->
->  SYM_CODE_START(ret_from_fork)
-> +       UNWIND_HINT_REGS
->         bl              schedule_tail           # a0 =3D struct task_stru=
-ct *prev
->         move            a0, sp
->         bl              syscall_exit_to_user_mode
-> @@ -84,6 +88,7 @@ SYM_CODE_START(ret_from_fork)
->  SYM_CODE_END(ret_from_fork)
->
->  SYM_CODE_START(ret_from_kernel_thread)
-> +       UNWIND_HINT_REGS
->         bl              schedule_tail           # a0 =3D struct task_stru=
-ct *prev
->         move            a0, s1
->         jirl            ra, s0, 0
-> diff --git a/arch/loongarch/kernel/genex.S b/arch/loongarch/kernel/genex.=
-S
-> index 2bb3aa2..3f18e3b 100644
-> --- a/arch/loongarch/kernel/genex.S
-> +++ b/arch/loongarch/kernel/genex.S
-> @@ -32,6 +32,7 @@ SYM_FUNC_START(__arch_cpu_idle)
->  SYM_FUNC_END(__arch_cpu_idle)
->
->  SYM_CODE_START(handle_vint)
-> +       UNWIND_HINT_UNDEFINED
->         BACKUP_T0T1
->         SAVE_ALL
->         la_abs  t1, __arch_cpu_idle
-> @@ -49,6 +50,7 @@ SYM_CODE_START(handle_vint)
->  SYM_CODE_END(handle_vint)
->
->  SYM_CODE_START(except_vec_cex)
-> +       UNWIND_HINT_UNDEFINED
->         b       cache_parity_error
->  SYM_CODE_END(except_vec_cex)
->
-> @@ -67,6 +69,7 @@ SYM_CODE_END(except_vec_cex)
->         .macro  BUILD_HANDLER exception handler prep
->         .align  5
->         SYM_CODE_START(handle_\exception)
-> +       UNWIND_HINT_UNDEFINED
->         666:
->         BACKUP_T0T1
->         SAVE_ALL
-> @@ -94,6 +97,7 @@ SYM_CODE_END(except_vec_cex)
->         BUILD_HANDLER reserved reserved none    /* others */
->
->  SYM_CODE_START(handle_sys)
-> +       UNWIND_HINT_UNDEFINED
->         la_abs  t0, handle_syscall
->         jr      t0
->  SYM_CODE_END(handle_sys)
-> diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/modul=
-e.c
-> index b13b285..c7d0338 100644
-> --- a/arch/loongarch/kernel/module.c
-> +++ b/arch/loongarch/kernel/module.c
-> @@ -20,6 +20,7 @@
->  #include <linux/kernel.h>
->  #include <asm/alternative.h>
->  #include <asm/inst.h>
-> +#include <asm/unwind.h>
->
->  static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rel=
-a_stack_top)
->  {
-> @@ -515,15 +516,28 @@ static void module_init_ftrace_plt(const Elf_Ehdr *=
-hdr,
->  int module_finalize(const Elf_Ehdr *hdr,
->                     const Elf_Shdr *sechdrs, struct module *mod)
->  {
-> -       const Elf_Shdr *s, *se;
->         const char *secstrs =3D (void *)hdr + sechdrs[hdr->e_shstrndx].sh=
-_offset;
-> +       const Elf_Shdr *s, *alt =3D NULL, *orc =3D NULL, *orc_ip =3D NULL=
-, *ftrace =3D NULL;
->
-> -       for (s =3D sechdrs, se =3D sechdrs + hdr->e_shnum; s < se; s++) {
-> +       for (s =3D sechdrs; s < sechdrs + hdr->e_shnum; s++) {
->                 if (!strcmp(".altinstructions", secstrs + s->sh_name))
-> -                       apply_alternatives((void *)s->sh_addr, (void *)s-=
->sh_addr + s->sh_size);
-> +                       alt =3D s;
-> +               if (!strcmp(".orc_unwind", secstrs + s->sh_name))
-> +                       orc =3D s;
-> +               if (!strcmp(".orc_unwind_ip", secstrs + s->sh_name))
-> +                       orc_ip =3D s;
->                 if (!strcmp(".ftrace_trampoline", secstrs + s->sh_name))
-> -                       module_init_ftrace_plt(hdr, s, mod);
-> +                       ftrace =3D s;
->         }
->
-> +       if (alt)
-> +               apply_alternatives((void *)alt->sh_addr, (void *)alt->sh_=
-addr + alt->sh_size);
-> +
-> +       if (orc && orc_ip)
-> +               unwind_module_init(mod, (void *)orc_ip->sh_addr, orc_ip->=
-sh_size, (void *)orc->sh_addr, orc->sh_size);
-> +
-> +       if (ftrace)
-> +               module_init_ftrace_plt(hdr, ftrace, mod);
-> +
->         return 0;
->  }
-> diff --git a/arch/loongarch/kernel/relocate_kernel.S b/arch/loongarch/ker=
-nel/relocate_kernel.S
-> index f49f6b0..bcc191d 100644
-> --- a/arch/loongarch/kernel/relocate_kernel.S
-> +++ b/arch/loongarch/kernel/relocate_kernel.S
-> @@ -15,6 +15,7 @@
->  #include <asm/addrspace.h>
->
->  SYM_CODE_START(relocate_new_kernel)
-> +       UNWIND_HINT_UNDEFINED
->         /*
->          * a0: EFI boot flag for the new kernel
->          * a1: Command line pointer for the new kernel
-> @@ -90,6 +91,7 @@ SYM_CODE_END(relocate_new_kernel)
->   * then start at the entry point from LOONGARCH_IOCSR_MBUF0.
->   */
->  SYM_CODE_START(kexec_smp_wait)
-> +       UNWIND_HINT_UNDEFINED
->  1:     li.w            t0, 0x100                       /* wait for init =
-loop */
->  2:     addi.w          t0, t0, -1                      /* limit mailbox =
-access */
->         bnez            t0, 2b
-> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.=
-c
-> index aed65915..613f04d 100644
-> --- a/arch/loongarch/kernel/setup.c
-> +++ b/arch/loongarch/kernel/setup.c
-> @@ -48,6 +48,7 @@
->  #include <asm/sections.h>
->  #include <asm/setup.h>
->  #include <asm/time.h>
-> +#include <asm/unwind.h>
->
->  #define SMBIOS_BIOSSIZE_OFFSET         0x09
->  #define SMBIOS_BIOSEXTERN_OFFSET       0x13
-> @@ -606,6 +607,7 @@ static void __init prefill_possible_map(void)
->  void __init setup_arch(char **cmdline_p)
->  {
->         cpu_probe();
-> +       unwind_init();
->
->         init_environ();
->         efi_init();
-> diff --git a/arch/loongarch/kernel/stacktrace.c b/arch/loongarch/kernel/s=
-tacktrace.c
-> index 92270f1..9848d42 100644
-> --- a/arch/loongarch/kernel/stacktrace.c
-> +++ b/arch/loongarch/kernel/stacktrace.c
-> @@ -29,6 +29,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_ent=
-ry, void *cookie,
->                         regs->csr_era =3D thread_saved_ra(task);
->                 }
->                 regs->regs[1] =3D 0;
-> +               regs->regs[22] =3D 0;
->         }
->
->         for (unwind_start(&state, task, regs);
-> diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.=
-c
-> index aebfc37..f9f4eb0 100644
-> --- a/arch/loongarch/kernel/traps.c
-> +++ b/arch/loongarch/kernel/traps.c
-> @@ -53,6 +53,32 @@
->
->  #include "access-helper.h"
->
-> +void *exception_table[EXCCODE_INT_START] =3D {
-> +       [0 ... EXCCODE_INT_START - 1] =3D handle_reserved,
-> +
-> +       [EXCCODE_TLBI]          =3D handle_tlb_load,
-> +       [EXCCODE_TLBL]          =3D handle_tlb_load,
-> +       [EXCCODE_TLBS]          =3D handle_tlb_store,
-> +       [EXCCODE_TLBM]          =3D handle_tlb_modify,
-> +       [EXCCODE_TLBNR]         =3D handle_tlb_protect,
-> +       [EXCCODE_TLBNX]         =3D handle_tlb_protect,
-> +       [EXCCODE_TLBPE]         =3D handle_tlb_protect,
-> +       [EXCCODE_ADE]           =3D handle_ade,
-> +       [EXCCODE_ALE]           =3D handle_ale,
-> +       [EXCCODE_BCE]           =3D handle_bce,
-> +       [EXCCODE_SYS]           =3D handle_sys,
-> +       [EXCCODE_BP]            =3D handle_bp,
-> +       [EXCCODE_INE]           =3D handle_ri,
-> +       [EXCCODE_IPE]           =3D handle_ri,
-> +       [EXCCODE_FPDIS]         =3D handle_fpu,
-> +       [EXCCODE_LSXDIS]        =3D handle_lsx,
-> +       [EXCCODE_LASXDIS]       =3D handle_lasx,
-> +       [EXCCODE_FPE]           =3D handle_fpe,
-> +       [EXCCODE_WATCH]         =3D handle_watch,
-> +       [EXCCODE_BTDIS]         =3D handle_lbt,
-> +};
-> +EXPORT_SYMBOL_GPL(exception_table);
-> +
->  static void show_backtrace(struct task_struct *task, const struct pt_reg=
-s *regs,
->                            const char *loglvl, bool user)
->  {
-> @@ -1150,19 +1176,9 @@ void __init trap_init(void)
->         for (i =3D EXCCODE_INT_START; i <=3D EXCCODE_INT_END; i++)
->                 set_handler(i * VECSIZE, handle_vint, VECSIZE);
->
-> -       set_handler(EXCCODE_ADE * VECSIZE, handle_ade, VECSIZE);
-> -       set_handler(EXCCODE_ALE * VECSIZE, handle_ale, VECSIZE);
-> -       set_handler(EXCCODE_BCE * VECSIZE, handle_bce, VECSIZE);
-> -       set_handler(EXCCODE_SYS * VECSIZE, handle_sys, VECSIZE);
-> -       set_handler(EXCCODE_BP * VECSIZE, handle_bp, VECSIZE);
-> -       set_handler(EXCCODE_INE * VECSIZE, handle_ri, VECSIZE);
-> -       set_handler(EXCCODE_IPE * VECSIZE, handle_ri, VECSIZE);
-> -       set_handler(EXCCODE_FPDIS * VECSIZE, handle_fpu, VECSIZE);
-> -       set_handler(EXCCODE_LSXDIS * VECSIZE, handle_lsx, VECSIZE);
-> -       set_handler(EXCCODE_LASXDIS * VECSIZE, handle_lasx, VECSIZE);
-> -       set_handler(EXCCODE_FPE * VECSIZE, handle_fpe, VECSIZE);
-> -       set_handler(EXCCODE_BTDIS * VECSIZE, handle_lbt, VECSIZE);
-> -       set_handler(EXCCODE_WATCH * VECSIZE, handle_watch, VECSIZE);
-> +       /* Set exception vector handler */
-> +       for (i =3D EXCCODE_ADE; i <=3D EXCCODE_BTDIS; i++)
-> +               set_handler(i * VECSIZE, exception_table[i], VECSIZE);
->
->         cache_error_setup();
->
-> diff --git a/arch/loongarch/kernel/unwind_orc.c b/arch/loongarch/kernel/u=
-nwind_orc.c
-> new file mode 100644
-> index 0000000..9be5cead
-> --- /dev/null
-> +++ b/arch/loongarch/kernel/unwind_orc.c
-> @@ -0,0 +1,513 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/objtool.h>
-> +#include <linux/module.h>
-> +#include <linux/sort.h>
-> +#include <asm/exception.h>
-> +#include <asm/orc_header.h>
-> +#include <asm/orc_lookup.h>
-> +#include <asm/orc_types.h>
-> +#include <asm/ptrace.h>
-> +#include <asm/setup.h>
-> +#include <asm/stacktrace.h>
-> +#include <asm/tlb.h>
-> +#include <asm/unwind.h>
-> +
-> +ORC_HEADER;
-> +
-> +#define orc_warn(fmt, ...) \
-> +       printk_deferred_once(KERN_WARNING "WARNING: " fmt, ##__VA_ARGS__)
-> +
-> +extern int __start_orc_unwind_ip[];
-> +extern int __stop_orc_unwind_ip[];
-> +extern struct orc_entry __start_orc_unwind[];
-> +extern struct orc_entry __stop_orc_unwind[];
-> +
-> +static bool orc_init __ro_after_init;
-> +static unsigned int lookup_num_blocks __ro_after_init;
-> +
-> +/* Fake frame pointer entry -- used as a fallback for generated code */
-> +static struct orc_entry orc_fp_entry =3D {
-> +       .sp_reg         =3D ORC_REG_FP,
-> +       .sp_offset      =3D 16,
-> +       .fp_reg         =3D ORC_REG_PREV_SP,
-> +       .fp_offset      =3D -16,
-> +       .ra_reg         =3D ORC_REG_PREV_SP,
-> +       .ra_offset      =3D -8,
-> +       .type           =3D ORC_TYPE_CALL
-> +};
-> +
-> +/*
-> + * If we crash with IP=3D=3D0, the last successfully executed instructio=
-n
-> + * was probably an indirect function call with a NULL function pointer,
-> + * and we don't have unwind information for NULL.
-> + * This hardcoded ORC entry for IP=3D=3D0 allows us to unwind from a NUL=
-L function
-> + * pointer into its parent and then continue normally from there.
-> + */
-> +static struct orc_entry orc_null_entry =3D {
-> +       .sp_reg         =3D ORC_REG_SP,
-> +       .sp_offset      =3D sizeof(long),
-> +       .fp_reg         =3D ORC_REG_UNDEFINED,
-> +       .type           =3D ORC_TYPE_CALL
-> +};
-> +
-> +static inline unsigned long orc_ip(const int *ip)
-> +{
-> +       return (unsigned long)ip + *ip;
-> +}
-> +
-> +static struct orc_entry *__orc_find(int *ip_table, struct orc_entry *u_t=
-able,
-> +                                   unsigned int num_entries, unsigned lo=
-ng ip)
-> +{
-> +       int *first =3D ip_table;
-> +       int *mid =3D first, *found =3D first;
-> +       int *last =3D ip_table + num_entries - 1;
-> +
-> +       if (!num_entries)
-> +               return NULL;
-> +
-> +       /*
-> +        * Do a binary range search to find the rightmost duplicate of a =
-given
-> +        * starting address.  Some entries are section terminators which =
-are
-> +        * "weak" entries for ensuring there are no gaps.  They should be
-> +        * ignored when they conflict with a real entry.
-> +        */
-> +       while (first <=3D last) {
-> +               mid =3D first + ((last - first) / 2);
-> +
-> +               if (orc_ip(mid) <=3D ip) {
-> +                       found =3D mid;
-> +                       first =3D mid + 1;
-> +               } else
-> +                       last =3D mid - 1;
-> +       }
-> +
-> +       return u_table + (found - ip_table);
-> +}
-> +
-> +#ifdef CONFIG_MODULES
-> +static struct orc_entry *orc_module_find(unsigned long ip)
-> +{
-> +       struct module *mod;
-> +
-> +       mod =3D __module_address(ip);
-> +       if (!mod || !mod->arch.orc_unwind || !mod->arch.orc_unwind_ip)
-> +               return NULL;
-> +
-> +       return __orc_find(mod->arch.orc_unwind_ip, mod->arch.orc_unwind, =
-mod->arch.num_orcs, ip);
-> +}
-> +#else
-> +static struct orc_entry *orc_module_find(unsigned long ip)
-> +{
-> +       return NULL;
-> +}
-> +#endif
-> +
-> +#ifdef CONFIG_DYNAMIC_FTRACE
-> +static struct orc_entry *orc_find(unsigned long ip);
-> +
-> +/*
-> + * Ftrace dynamic trampolines do not have orc entries of their own.
-> + * But they are copies of the ftrace entries that are static and
-> + * defined in ftrace_*.S, which do have orc entries.
-> + *
-> + * If the unwinder comes across a ftrace trampoline, then find the
-> + * ftrace function that was used to create it, and use that ftrace
-> + * function's orc entry, as the placement of the return code in
-> + * the stack will be identical.
-> + */
-> +static struct orc_entry *orc_ftrace_find(unsigned long ip)
-> +{
-> +       struct ftrace_ops *ops;
-> +       unsigned long tramp_addr, offset;
-> +
-> +       ops =3D ftrace_ops_trampoline(ip);
-> +       if (!ops)
-> +               return NULL;
-> +
-> +       /* Set tramp_addr to the start of the code copied by the trampoli=
-ne */
-> +       if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
-> +               tramp_addr =3D (unsigned long)ftrace_regs_caller;
-> +       else
-> +               tramp_addr =3D (unsigned long)ftrace_caller;
-> +
-> +       /* Now place tramp_addr to the location within the trampoline ip =
-is at */
-> +       offset =3D ip - ops->trampoline;
-> +       tramp_addr +=3D offset;
-> +
-> +       /* Prevent unlikely recursion */
-> +       if (ip =3D=3D tramp_addr)
-> +               return NULL;
-> +
-> +       return orc_find(tramp_addr);
-> +}
-> +#else
-> +static struct orc_entry *orc_ftrace_find(unsigned long ip)
-> +{
-> +       return NULL;
-> +}
-> +#endif
-> +
-> +static struct orc_entry *orc_find(unsigned long ip)
-> +{
-> +       static struct orc_entry *orc;
-> +
-> +       if (ip =3D=3D 0)
-> +               return &orc_null_entry;
-> +
-> +       /* For non-init vmlinux addresses, use the fast lookup table: */
-> +       if (ip >=3D LOOKUP_START_IP && ip < LOOKUP_STOP_IP) {
-> +               unsigned int idx, start, stop;
-> +
-> +               idx =3D (ip - LOOKUP_START_IP) / LOOKUP_BLOCK_SIZE;
-> +
-> +               if (unlikely((idx >=3D lookup_num_blocks-1))) {
-> +                       orc_warn("WARNING: bad lookup idx: idx=3D%u num=
-=3D%u ip=3D%pB\n",
-> +                                idx, lookup_num_blocks, (void *)ip);
-> +                       return NULL;
-> +               }
-> +
-> +               start =3D orc_lookup[idx];
-> +               stop =3D orc_lookup[idx + 1] + 1;
-> +
-> +               if (unlikely((__start_orc_unwind + start >=3D __stop_orc_=
-unwind) ||
-> +                            (__start_orc_unwind + stop > __stop_orc_unwi=
-nd))) {
-> +                       orc_warn("WARNING: bad lookup value: idx=3D%u num=
-=3D%u start=3D%u stop=3D%u ip=3D%pB\n",
-> +                                idx, lookup_num_blocks, start, stop, (vo=
-id *)ip);
-> +                       return NULL;
-> +               }
-> +
-> +               return __orc_find(__start_orc_unwind_ip + start,
-> +                                 __start_orc_unwind + start, stop - star=
-t, ip);
-> +       }
-> +
-> +       /* vmlinux .init slow lookup: */
-> +       if (is_kernel_inittext(ip))
-> +               return __orc_find(__start_orc_unwind_ip, __start_orc_unwi=
-nd,
-> +                                 __stop_orc_unwind_ip - __start_orc_unwi=
-nd_ip, ip);
-> +
-> +       /* Module lookup: */
-> +       orc =3D orc_module_find(ip);
-> +       if (orc)
-> +               return orc;
-> +
-> +       return orc_ftrace_find(ip);
-> +}
-> +
-> +#ifdef CONFIG_MODULES
-> +
-> +static DEFINE_MUTEX(sort_mutex);
-> +static int *cur_orc_ip_table =3D __start_orc_unwind_ip;
-> +static struct orc_entry *cur_orc_table =3D __start_orc_unwind;
-> +
-> +static void orc_sort_swap(void *_a, void *_b, int size)
-> +{
-> +       int delta =3D _b - _a;
-> +       int *a =3D _a, *b =3D _b, tmp;
-> +       struct orc_entry *orc_a, *orc_b;
-> +
-> +       /* Swap the .orc_unwind_ip entries: */
-> +       tmp =3D *a;
-> +       *a =3D *b + delta;
-> +       *b =3D tmp - delta;
-> +
-> +       /* Swap the corresponding .orc_unwind entries: */
-> +       orc_a =3D cur_orc_table + (a - cur_orc_ip_table);
-> +       orc_b =3D cur_orc_table + (b - cur_orc_ip_table);
-> +       swap(*orc_a, *orc_b);
-> +}
-> +
-> +static int orc_sort_cmp(const void *_a, const void *_b)
-> +{
-> +       const int *a =3D _a, *b =3D _b;
-> +       unsigned long a_val =3D orc_ip(a);
-> +       unsigned long b_val =3D orc_ip(b);
-> +       struct orc_entry *orc_a;
-> +
-> +       if (a_val > b_val)
-> +               return 1;
-> +       if (a_val < b_val)
-> +               return -1;
-> +
-> +       /*
-> +        * The "weak" section terminator entries need to always be first
-> +        * to ensure the lookup code skips them in favor of real entries.
-> +        * These terminator entries exist to handle any gaps created by
-> +        * whitelisted .o files which didn't get objtool generation.
-> +        */
-> +       orc_a =3D cur_orc_table + (a - cur_orc_ip_table);
-> +
-> +       return orc_a->type =3D=3D ORC_TYPE_UNDEFINED ? -1 : 1;
-> +}
-> +
-> +void unwind_module_init(struct module *mod, void *_orc_ip, size_t orc_ip=
-_size,
-> +                       void *_orc, size_t orc_size)
-> +{
-> +       int *orc_ip =3D _orc_ip;
-> +       struct orc_entry *orc =3D _orc;
-> +       unsigned int num_entries =3D orc_ip_size / sizeof(int);
-> +
-> +       WARN_ON_ONCE(orc_ip_size % sizeof(int) !=3D 0 ||
-> +                    orc_size % sizeof(*orc) !=3D 0 ||
-> +                    num_entries !=3D orc_size / sizeof(*orc));
-> +
-> +       /*
-> +        * The 'cur_orc_*' globals allow the orc_sort_swap() callback to
-> +        * associate an .orc_unwind_ip table entry with its corresponding
-> +        * .orc_unwind entry so they can both be swapped.
-> +        */
-> +       mutex_lock(&sort_mutex);
-> +       cur_orc_ip_table =3D orc_ip;
-> +       cur_orc_table =3D orc;
-> +       sort(orc_ip, num_entries, sizeof(int), orc_sort_cmp, orc_sort_swa=
-p);
-> +       mutex_unlock(&sort_mutex);
-> +
-> +       mod->arch.orc_unwind_ip =3D orc_ip;
-> +       mod->arch.orc_unwind =3D orc;
-> +       mod->arch.num_orcs =3D num_entries;
-> +}
-> +#endif
-> +
-> +void __init unwind_init(void)
-> +{
-> +       int i;
-> +       size_t orc_size =3D (void *)__stop_orc_unwind - (void *)__start_o=
-rc_unwind;
-> +       size_t orc_ip_size =3D (void *)__stop_orc_unwind_ip - (void *)__s=
-tart_orc_unwind_ip;
-> +       size_t num_entries =3D orc_ip_size / sizeof(int);
-> +       struct orc_entry *orc;
-> +
-> +       if (!num_entries || orc_ip_size % sizeof(int) !=3D 0 ||
-> +           orc_size % sizeof(struct orc_entry) !=3D 0 ||
-> +           num_entries !=3D orc_size / sizeof(struct orc_entry)) {
-> +               orc_warn("WARNING: Bad or missing .orc_unwind table.  Dis=
-abling unwinder.\n");
-> +               return;
-> +       }
-> +
-> +       /*
-> +        * Note, the orc_unwind and orc_unwind_ip tables were already
-> +        * sorted at build time via the 'sorttable' tool.
-> +        * It's ready for binary search straight away, no need to sort it=
-.
-> +        */
-> +
-> +       /* Initialize the fast lookup table: */
-> +       lookup_num_blocks =3D orc_lookup_end - orc_lookup;
-> +       for (i =3D 0; i < lookup_num_blocks-1; i++) {
-> +               orc =3D __orc_find(__start_orc_unwind_ip, __start_orc_unw=
-ind,
-> +                                num_entries, LOOKUP_START_IP + (LOOKUP_B=
-LOCK_SIZE * i));
-> +               if (!orc) {
-> +                       orc_warn("WARNING: Corrupt .orc_unwind table.  Di=
-sabling unwinder.\n");
-> +                       return;
-> +               }
-> +
-> +               orc_lookup[i] =3D orc - __start_orc_unwind;
-> +       }
-> +
-> +       /* Initialize the ending block: */
-> +       orc =3D __orc_find(__start_orc_unwind_ip, __start_orc_unwind, num=
-_entries, LOOKUP_STOP_IP);
-> +       if (!orc) {
-> +               orc_warn("WARNING: Corrupt .orc_unwind table.  Disabling =
-unwinder.\n");
-> +               return;
-> +       }
-> +       orc_lookup[lookup_num_blocks-1] =3D orc - __start_orc_unwind;
-> +
-> +       orc_init =3D true;
-> +}
-> +
-> +static inline bool on_stack(struct stack_info *info, unsigned long addr,=
- size_t len)
-> +{
-> +       unsigned long begin =3D info->begin;
-> +       unsigned long end   =3D info->end;
-> +
-> +       return (info->type !=3D STACK_TYPE_UNKNOWN &&
-> +               addr >=3D begin && addr < end && addr + len > begin && ad=
-dr + len <=3D end);
-> +}
-> +
-> +static bool stack_access_ok(struct unwind_state *state, unsigned long ad=
-dr, size_t len)
-> +{
-> +       struct stack_info *info =3D &state->stack_info;
-> +
-> +       if (on_stack(info, addr, len))
-> +               return true;
-> +
-> +       return (get_stack_info(addr, state->task, info) =3D=3D 0);
-> +}
-> +
-> +unsigned long unwind_get_return_address(struct unwind_state *state)
-> +{
-> +       return __unwind_get_return_address(state);
-> +}
-> +EXPORT_SYMBOL_GPL(unwind_get_return_address);
-> +
-> +void unwind_start(struct unwind_state *state, struct task_struct *task,
-> +                   struct pt_regs *regs)
-> +{
-> +       __unwind_start(state, task, regs);
-> +       state->type =3D UNWINDER_ORC;
-> +       if (!unwind_done(state) && !__kernel_text_address(state->pc))
-> +               unwind_next_frame(state);
-> +}
-> +EXPORT_SYMBOL_GPL(unwind_start);
-> +
-> +static bool is_entry_func(unsigned long addr)
-> +{
-> +       extern u32 kernel_entry;
-> +       extern u32 kernel_entry_end;
-> +
-> +       return addr >=3D (unsigned long)&kernel_entry && addr < (unsigned=
- long)&kernel_entry_end;
-> +}
-> +
-> +static inline unsigned long bt_address(unsigned long ra)
-> +{
-> +       extern unsigned long eentry;
-> +
-> +       if (__kernel_text_address(ra))
-> +               return ra;
-> +
-> +       if (__module_text_address(ra))
-> +               return ra;
-> +
-> +       if (ra >=3D eentry && ra < eentry +  EXCCODE_INT_END * VECSIZE) {
-> +               unsigned long func;
-> +               unsigned long type =3D (ra - eentry) / VECSIZE;
-> +               unsigned long offset =3D (ra - eentry) % VECSIZE;
-> +
-> +               switch (type) {
-> +               case 0 ... EXCCODE_INT_START - 1:
-> +                       func =3D (unsigned long)exception_table[type];
-> +                       break;
-> +               case EXCCODE_INT_START ... EXCCODE_INT_END:
-> +                       func =3D (unsigned long)handle_vint;
-> +                       break;
-> +               default:
-> +                       func =3D (unsigned long)handle_reserved;
-> +                       break;
-> +               }
-> +
-> +               return func + offset;
-> +       }
-> +
-> +       return ra;
-> +}
-> +
-> +bool unwind_next_frame(struct unwind_state *state)
-> +{
-> +       unsigned long *p, pc;
-> +       struct pt_regs *regs;
-> +       struct orc_entry *orc;
-> +       struct stack_info *info =3D &state->stack_info;
-> +
-> +       if (unwind_done(state))
-> +               return false;
-> +
-> +       /* Don't let modules unload while we're reading their ORC data. *=
-/
-> +       preempt_disable();
-> +
-> +       if (is_entry_func(state->pc))
-> +               goto end;
-> +
-> +       orc =3D orc_find(state->pc);
-> +       if (!orc) {
-> +               orc =3D &orc_fp_entry;
-> +               state->error =3D true;
-> +       }
-> +
-> +       switch (orc->sp_reg) {
-> +       case ORC_REG_SP:
-> +               state->sp =3D state->sp + orc->sp_offset;
-> +               break;
-> +       case ORC_REG_FP:
-> +               state->sp =3D state->fp;
-> +               break;
-> +       default:
-> +               orc_warn("unknown SP base reg %d at %pB\n", orc->sp_reg, =
-(void *)state->pc);
-> +               goto err;
-> +       }
-> +
-> +       switch (orc->fp_reg) {
-> +       case ORC_REG_PREV_SP:
-> +               p =3D (unsigned long *)(state->sp + orc->fp_offset);
-> +               if (!stack_access_ok(state, (unsigned long)p, sizeof(unsi=
-gned long)))
-> +                       goto err;
-> +
-> +               state->fp =3D *p;
-> +               break;
-> +       case ORC_REG_UNDEFINED:
-> +               /* Nothing. */
-> +               break;
-> +       default:
-> +               orc_warn("unknown FP base reg %d at %pB\n", orc->fp_reg, =
-(void *)state->pc);
-> +               goto err;
-> +       }
-> +
-> +       switch (orc->type) {
-> +       case ORC_TYPE_CALL:
-> +               if (orc->ra_reg =3D=3D ORC_REG_PREV_SP) {
-> +                       p =3D (unsigned long *)(state->sp + orc->ra_offse=
-t);
-> +                       if (!stack_access_ok(state, (unsigned long)p, siz=
-eof(unsigned long)))
-> +                               goto err;
-> +
-> +                       pc =3D unwind_graph_addr(state, *p, state->sp);
-> +                       pc -=3D LOONGARCH_INSN_SIZE;
-> +               } else if (orc->ra_reg =3D=3D ORC_REG_UNDEFINED) {
-> +                       if (!state->ra || state->ra =3D=3D state->pc)
-> +                               goto err;
-> +
-> +                       pc =3D unwind_graph_addr(state, state->ra, state-=
->sp);
-> +                       pc -=3D  LOONGARCH_INSN_SIZE;
-> +                       state->ra =3D 0;
-> +               } else {
-> +                       orc_warn("unknown ra base reg %d at %pB\n", orc->=
-ra_reg, (void *)state->pc);
-> +                       goto err;
-> +               }
-> +               break;
-> +       case ORC_TYPE_REGS:
-> +               if (state->stack_info.type =3D=3D STACK_TYPE_IRQ && state=
-->sp =3D=3D info->end)
-> +                       regs =3D (struct pt_regs *)info->next_sp;
-> +               else
-> +                       regs =3D (struct pt_regs *)state->sp;
-> +
-> +               if (!stack_access_ok(state, (unsigned long)regs, sizeof(*=
-regs)))
-> +                       goto err;
-> +
-> +               if ((info->end =3D=3D (unsigned long)regs + sizeof(*regs)=
-) &&
-> +                   !regs->regs[3] && !regs->regs[1])
-> +                       goto end;
-> +
-> +               if (user_mode(regs))
-> +                       goto end;
-> +
-> +               pc =3D regs->csr_era;
-> +               if (!__kernel_text_address(pc))
-> +                       goto err;
-> +
-> +               state->sp =3D regs->regs[3];
-> +               state->ra =3D regs->regs[1];
-> +               state->fp =3D regs->regs[22];
-> +               get_stack_info(state->sp, state->task, info);
-> +
-> +               break;
-> +       default:
-> +               orc_warn("unknown .orc_unwind entry type %d at %pB\n", or=
-c->type, (void *)state->pc);
-> +               goto err;
-> +       }
-> +
-> +       state->pc =3D bt_address(pc);
-> +       if (!state->pc) {
-> +               pr_err("cannot find unwind pc at %pK\n", (void *)pc);
-> +               goto err;
-> +       }
-> +
-> +       if (!__kernel_text_address(state->pc))
-> +               goto err;
-> +
-> +       preempt_enable();
-> +       return true;
-> +
-> +err:
-> +       state->error =3D true;
-> +
-> +end:
-> +       preempt_enable();
-> +       state->stack_info.type =3D STACK_TYPE_UNKNOWN;
-> +       return false;
-> +}
-> +EXPORT_SYMBOL_GPL(unwind_next_frame);
-> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kernel/=
-vmlinux.lds.S
-> index bb2ec86..eaa7a91 100644
-> --- a/arch/loongarch/kernel/vmlinux.lds.S
-> +++ b/arch/loongarch/kernel/vmlinux.lds.S
-> @@ -2,6 +2,7 @@
->  #include <linux/sizes.h>
->  #include <asm/asm-offsets.h>
->  #include <asm/thread_info.h>
-> +#include <asm/orc_lookup.h>
->
->  #define PAGE_SIZE _PAGE_SIZE
->  #define RO_EXCEPTION_TABLE_ALIGN       4
-> @@ -122,6 +123,8 @@ SECTIONS
->         }
->  #endif
->
-> +       ORC_UNWIND_TABLE
-> +
->         .sdata : {
->                 *(.sdata)
->         }
-> diff --git a/arch/loongarch/lib/Makefile b/arch/loongarch/lib/Makefile
-> index a77bf160..e3023d9 100644
-> --- a/arch/loongarch/lib/Makefile
-> +++ b/arch/loongarch/lib/Makefile
-> @@ -3,6 +3,8 @@
->  # Makefile for LoongArch-specific library files.
->  #
->
-> +OBJECT_FILES_NON_STANDARD :=3D y
-> +
->  lib-y  +=3D delay.o memset.o memcpy.o memmove.o \
->            clear_user.o copy_user.o csum.o dump_tlb.o unaligned.o
->
-> diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
-> index 2c0a411..f01172a 100644
-> --- a/arch/loongarch/mm/tlb.c
-> +++ b/arch/loongarch/mm/tlb.c
-> @@ -9,8 +9,9 @@
->  #include <linux/hugetlb.h>
->  #include <linux/export.h>
->
-> -#include <asm/cpu.h>
->  #include <asm/bootinfo.h>
-> +#include <asm/cpu.h>
-> +#include <asm/exception.h>
->  #include <asm/mmu_context.h>
->  #include <asm/pgtable.h>
->  #include <asm/tlb.h>
-> @@ -266,24 +267,20 @@ static void setup_tlb_handler(int cpu)
->         setup_ptwalker();
->         local_flush_tlb_all();
->
-> +       if (cpu_has_ptw) {
-> +               exception_table[EXCCODE_TLBI] =3D handle_tlb_load_ptw;
-> +               exception_table[EXCCODE_TLBL] =3D handle_tlb_load_ptw;
-> +               exception_table[EXCCODE_TLBS] =3D handle_tlb_store_ptw;
-> +               exception_table[EXCCODE_TLBM] =3D handle_tlb_modify_ptw;
-> +       }
-> +
->         /* The tlb handlers are generated only once */
->         if (cpu =3D=3D 0) {
->                 memcpy((void *)tlbrentry, handle_tlb_refill, 0x80);
->                 local_flush_icache_range(tlbrentry, tlbrentry + 0x80);
-> -               if (!cpu_has_ptw) {
-> -                       set_handler(EXCCODE_TLBI * VECSIZE, handle_tlb_lo=
-ad, VECSIZE);
-> -                       set_handler(EXCCODE_TLBL * VECSIZE, handle_tlb_lo=
-ad, VECSIZE);
-> -                       set_handler(EXCCODE_TLBS * VECSIZE, handle_tlb_st=
-ore, VECSIZE);
-> -                       set_handler(EXCCODE_TLBM * VECSIZE, handle_tlb_mo=
-dify, VECSIZE);
-> -               } else {
-> -                       set_handler(EXCCODE_TLBI * VECSIZE, handle_tlb_lo=
-ad_ptw, VECSIZE);
-> -                       set_handler(EXCCODE_TLBL * VECSIZE, handle_tlb_lo=
-ad_ptw, VECSIZE);
-> -                       set_handler(EXCCODE_TLBS * VECSIZE, handle_tlb_st=
-ore_ptw, VECSIZE);
-> -                       set_handler(EXCCODE_TLBM * VECSIZE, handle_tlb_mo=
-dify_ptw, VECSIZE);
-> -               }
-> -               set_handler(EXCCODE_TLBNR * VECSIZE, handle_tlb_protect, =
-VECSIZE);
-> -               set_handler(EXCCODE_TLBNX * VECSIZE, handle_tlb_protect, =
-VECSIZE);
-> -               set_handler(EXCCODE_TLBPE * VECSIZE, handle_tlb_protect, =
-VECSIZE);
-> +
-> +               for (int i =3D EXCCODE_TLBL; i <=3D EXCCODE_TLBPE; i++)
-> +                       set_handler(i * VECSIZE, exception_table[i], VECS=
-IZE);
->         }
->  #ifdef CONFIG_NUMA
->         else {
-> diff --git a/arch/loongarch/mm/tlbex.S b/arch/loongarch/mm/tlbex.S
-> index d5d682f..a44387b 100644
-> --- a/arch/loongarch/mm/tlbex.S
-> +++ b/arch/loongarch/mm/tlbex.S
-> @@ -18,6 +18,7 @@
->
->         .macro tlb_do_page_fault, write
->         SYM_CODE_START(tlb_do_page_fault_\write)
-> +       UNWIND_HINT_UNDEFINED
->         SAVE_ALL
->         csrrd           a2, LOONGARCH_CSR_BADV
->         move            a0, sp
-> @@ -32,6 +33,7 @@
->         tlb_do_page_fault 1
->
->  SYM_CODE_START(handle_tlb_protect)
-> +       UNWIND_HINT_UNDEFINED
->         BACKUP_T0T1
->         SAVE_ALL
->         move            a0, sp
-> @@ -44,6 +46,7 @@ SYM_CODE_START(handle_tlb_protect)
->  SYM_CODE_END(handle_tlb_protect)
->
->  SYM_CODE_START(handle_tlb_load)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, EXCEPTION_KS0
->         csrwr           t1, EXCEPTION_KS1
->         csrwr           ra, EXCEPTION_KS2
-> @@ -190,6 +193,7 @@ nopage_tlb_load:
->  SYM_CODE_END(handle_tlb_load)
->
->  SYM_CODE_START(handle_tlb_load_ptw)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, LOONGARCH_CSR_KS0
->         csrwr           t1, LOONGARCH_CSR_KS1
->         la_abs          t0, tlb_do_page_fault_0
-> @@ -197,6 +201,7 @@ SYM_CODE_START(handle_tlb_load_ptw)
->  SYM_CODE_END(handle_tlb_load_ptw)
->
->  SYM_CODE_START(handle_tlb_store)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, EXCEPTION_KS0
->         csrwr           t1, EXCEPTION_KS1
->         csrwr           ra, EXCEPTION_KS2
-> @@ -346,6 +351,7 @@ nopage_tlb_store:
->  SYM_CODE_END(handle_tlb_store)
->
->  SYM_CODE_START(handle_tlb_store_ptw)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, LOONGARCH_CSR_KS0
->         csrwr           t1, LOONGARCH_CSR_KS1
->         la_abs          t0, tlb_do_page_fault_1
-> @@ -353,6 +359,7 @@ SYM_CODE_START(handle_tlb_store_ptw)
->  SYM_CODE_END(handle_tlb_store_ptw)
->
->  SYM_CODE_START(handle_tlb_modify)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, EXCEPTION_KS0
->         csrwr           t1, EXCEPTION_KS1
->         csrwr           ra, EXCEPTION_KS2
-> @@ -500,6 +507,7 @@ nopage_tlb_modify:
->  SYM_CODE_END(handle_tlb_modify)
->
->  SYM_CODE_START(handle_tlb_modify_ptw)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, LOONGARCH_CSR_KS0
->         csrwr           t1, LOONGARCH_CSR_KS1
->         la_abs          t0, tlb_do_page_fault_1
-> @@ -507,6 +515,7 @@ SYM_CODE_START(handle_tlb_modify_ptw)
->  SYM_CODE_END(handle_tlb_modify_ptw)
->
->  SYM_CODE_START(handle_tlb_refill)
-> +       UNWIND_HINT_UNDEFINED
->         csrwr           t0, LOONGARCH_CSR_TLBRSAVE
->         csrrd           t0, LOONGARCH_CSR_PGD
->         lddir           t0, t0, 3
-> diff --git a/arch/loongarch/vdso/Makefile b/arch/loongarch/vdso/Makefile
-> index 5c97d1463..997f41c 100644
-> --- a/arch/loongarch/vdso/Makefile
-> +++ b/arch/loongarch/vdso/Makefile
-> @@ -3,6 +3,7 @@
->
->  KASAN_SANITIZE :=3D n
->  KCOV_INSTRUMENT :=3D n
-> +OBJECT_FILES_NON_STANDARD :=3D y
->
->  # Include the generic Makefile to check the built vdso.
->  include $(srctree)/lib/vdso/Makefile
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index d7779a1..df29ddb 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -116,6 +116,14 @@ void ftrace_likely_update(struct ftrace_likely_data =
-*f, int val,
->   */
->  #define __stringify_label(n) #n
->
-> +#define __annotate_reachable(c) ({                                     \
-> +       asm volatile(__stringify_label(c) ":\n\t"                       \
-> +                       ".pushsection .discard.reachable\n\t"           \
-> +                       ".long " __stringify_label(c) "b - .\n\t"       \
-> +                       ".popsection\n\t");                             \
-> +})
-> +#define annotate_reachable() __annotate_reachable(__COUNTER__)
-> +
->  #define __annotate_unreachable(c) ({                                   \
->         asm volatile(__stringify_label(c) ":\n\t"                       \
->                      ".pushsection .discard.unreachable\n\t"            \
-> @@ -128,6 +136,7 @@ void ftrace_likely_update(struct ftrace_likely_data *=
-f, int val,
->  #define __annotate_jump_table __section(".rodata..c_jump_table")
->
->  #else /* !CONFIG_OBJTOOL */
-> +#define annotate_reachable()
->  #define annotate_unreachable()
->  #define __annotate_jump_table
->  #endif /* CONFIG_OBJTOOL */
-> diff --git a/scripts/Makefile b/scripts/Makefile
-> index 576cf64..e4cca53 100644
-> --- a/scripts/Makefile
-> +++ b/scripts/Makefile
-> @@ -31,9 +31,12 @@ HOSTLDLIBS_sign-file =3D $(shell $(HOSTPKG_CONFIG) --l=
-ibs libcrypto 2> /dev/null |
->
->  ifdef CONFIG_UNWINDER_ORC
->  ifeq ($(ARCH),x86_64)
-> -ARCH :=3D x86
-> +SRCARCH :=3D x86
->  endif
-> -HOSTCFLAGS_sorttable.o +=3D -I$(srctree)/tools/arch/x86/include
-> +ifeq ($(ARCH),loongarch)
-> +SRCARCH :=3D loongarch
-> +endif
-> +HOSTCFLAGS_sorttable.o +=3D -I$(srctree)/tools/arch/$(SRCARCH)/include
->  HOSTCFLAGS_sorttable.o +=3D -DUNWINDER_ORC_ENABLED
->  endif
->
-> --
-> 2.1.0
->
+The vfs-brauner tree gained a conflict against the ext3 tree.
+
+The security tree gained conflicts against the asm-generic, block and
+tip trees.
+
+The apparmor tree gained a conflict against the security tree.
+
+The integrity tree gained a conflict against the vfs-brauner tree.
+
+The ftrace tree lost its build failure.
+
+The landlock tree gained a semantic conflict against the security tree.
+
+The iommufd tree gained conflicts against the iommu tree.
+
+Non-merge commits (relative to Linus' tree): 14336
+ 11805 files changed, 771670 insertions(+), 277842 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There is also the merge.log file in the Next
+directory.  Between each merge, the tree was built with a ppc64_defconfig
+for powerpc, an allmodconfig for x86_64, a multi_v7_defconfig for arm
+and a native build of tools/perf. After the final fixups (if any), I do
+an x86_64 modules_install followed by builds for x86_64 allnoconfig,
+powerpc allnoconfig (32 and 64 bit), ppc44x_defconfig, allyesconfig
+and pseries_le_defconfig and i386, arm64, s390, sparc and sparc64
+defconfig and htmldocs. And finally, a simple boot test of the powerpc
+pseries_le_defconfig kernel in qemu (with and without kvm enabled).
+
+Below is a summary of the state of the merge.
+
+I am currently merging 369 trees (counting Linus' and 105 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+$ git checkout master
+$ git reset --hard stable
+Merging origin/master (3a568e3a961b Merge tag 'soc-fixes-6.7-3' of git://gi=
+t.kernel.org/pub/scm/linux/kernel/git/soc/soc)
+Merging fixes/fixes (2dde18cd1d8f Linux 6.5)
+Merging mm-hotfixes/mm-hotfixes-unstable (47043ca3af1c mm/damon/sysfs: remo=
+ve requested targets when online-commit inputs)
+Merging kbuild-current/fixes (8a749fd1a872 Linux 6.6-rc4)
+Merging arc-current/for-curr (0bb80ecc33a8 Linux 6.6-rc1)
+Merging arm-current/fixes (2dde18cd1d8f Linux 6.5)
+Merging arm64-fixes/for-next/fixes (4785aa802853 cpuidle, ACPI: Evaluate LP=
+I arch_flags for broadcast timer)
+Merging arm-soc-fixes/arm/fixes (736a4aad8a9f Merge tag 'renesas-fixes-for-=
+v6.6-tag3' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-d=
+evel into arm/fixes)
+Merging davinci-current/davinci/for-current (06c2afb862f9 Linux 6.5-rc1)
+Merging drivers-memory-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging tee-fixes/fixes (ceaa837f96ad Linux 6.2-rc8)
+Merging m68k-current/for-linus (eb1e6ccdcf78 zorro: Include zorro.h in name=
+s.c)
+Merging powerpc-fixes/fixes (47b8def9358c powerpc/mm: Avoid calling arch_en=
+ter/leave_lazy_mmu() in set_ptes)
+Merging s390-fixes/fixes (c1ae1c59c8c6 s390/pci: fix iommu bitmap allocatio=
+n)
+Merging sparc/master (2d2b17d08bfc sparc: Unbreak the build)
+Merging fscrypt-current/for-current (4bcf6f827a79 fscrypt: check for NULL k=
+eyring in fscrypt_put_master_key_activeref())
+Merging fsverity-current/for-current (a075bacde257 fsverity: don't drop pag=
+ecache at end of FS_IOC_ENABLE_VERITY)
+Merging net/main (c17cda15cc86 Merge tag 'net-6.6-rc8' of git://git.kernel.=
+org/pub/scm/linux/kernel/git/netdev/net)
+Merging bpf/master (cd8892c07876 Merge branch 'gtp-tunnel-driver-fixes')
+Merging ipsec/master (de5724ca38fd xfrm: fix a data-race in xfrm_lookup_wit=
+h_ifid())
+Merging netfilter/main (53798666648a iavf: in iavf_down, disable queues whe=
+n removing the driver)
+Merging ipvs/main (a63b6622120c net/sched: act_ct: additional checks for ou=
+tdated flows)
+Merging wireless/for-next (91535613b609 wifi: mac80211: don't drop all unpr=
+otected public action frames)
+Merging wpan/master (2d1c882d4434 Merge tag 'mlx5-fixes-2023-10-12' of git:=
+//git.kernel.org/pub/scm/linux/kernel/git/saeed/linux)
+Merging rdma-fixes/for-rc (94f6f0550c62 Linux 6.6-rc5)
+Merging sound-current/for-linus (99248c8902f5 ALSA: usb-audio: add quirk fl=
+ag to enable native DSD for McIntosh devices)
+Merging sound-asoc-fixes/for-linus (168d97844a61 ASoC: Intel: Skylake: Fix =
+mem leak when parsing UUIDs fails)
+Merging regmap-fixes/for-linus (0ec7731655de regmap: Ensure range selector =
+registers are updated after cache sync)
+Merging regulator-fixes/for-linus (bc00d9f3813a regulator: qcom-rpmh: Fix s=
+mps4 regulator for pm8550ve)
+Merging spi-fixes/for-linus (c3aa5cb264a3 spi: nxp-fspi: use the correct io=
+remap function)
+Merging pci-current/for-linus (0bb80ecc33a8 Linux 6.6-rc1)
+Merging driver-core.current/driver-core-linus (8a749fd1a872 Linux 6.6-rc4)
+Merging tty.current/tty-linus (58720809f527 Linux 6.6-rc6)
+Merging usb.current/usb-linus (05d3ef8bba77 Linux 6.6-rc7)
+Merging usb-serial-fixes/usb-linus (52480e1f1a25 USB: serial: option: add F=
+ibocom to DELL custom modem FM101R-GL)
+Merging phy/fixes (05d3ef8bba77 Linux 6.6-rc7)
+Merging staging.current/staging-linus (0bb80ecc33a8 Linux 6.6-rc1)
+Merging iio-fixes/fixes-togreg (bee448390e51 iio: afe: rescale: Accept only=
+ offset channels)
+Merging counter-current/counter-current (58720809f527 Linux 6.6-rc6)
+Merging char-misc.current/char-misc-linus (28926daf731f fpga: Fix memory le=
+ak for fpga_region_test_class_find())
+Merging soundwire-fixes/fixes (58720809f527 Linux 6.6-rc6)
+Merging thunderbolt-fixes/fixes (ec4405ed9203 thunderbolt: Call tb_switch_p=
+ut() once DisplayPort bandwidth request is finished)
+Merging input-current/for-linus (5c15c60e7be6 Input: powermate - fix use-af=
+ter-free in powermate_config_complete)
+Merging crypto-current/master (b11950356c4b KEYS: asymmetric: Fix sign/veri=
+fy on pkcs1pad without a hash)
+Merging vfio-fixes/for-linus (c777b11d34e0 vfio/mdev: Fix a null-ptr-deref =
+bug for mdev_unregister_parent())
+Merging kselftest-fixes/fixes (cf5a103c98a6 selftests/user_events: Fix abi_=
+test for BE archs)
+Merging modules-fixes/modules-linus (f412eef03938 Documentation: livepatch:=
+ module-elf-format: Remove local klp_modinfo definition)
+Merging dmaengine-fixes/fixes (58720809f527 Linux 6.6-rc6)
+Merging backlight-fixes/for-backlight-fixes (88603b6dc419 Linux 6.2-rc2)
+Merging mtd-fixes/mtd/fixes (f6ca3fb6978f mtd: rawnand: Ensure the nand chi=
+p supports cached reads)
+Merging mfd-fixes/for-mfd-fixes (88603b6dc419 Linux 6.2-rc2)
+Merging v4l-dvb-fixes/fixes (c46f16f156ac media: i2c: ov8858: Don't set fwn=
+ode in the driver)
+Merging reset-fixes/reset/fixes (3a2390c6777e reset: uniphier-glue: Fix pos=
+sible null-ptr-deref)
+Merging mips-fixes/mips-fixes (8a749fd1a872 Linux 6.6-rc4)
+Merging at91-fixes/at91-fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging omap-fixes/fixes (0b9a4a67c60d clk: ti: Fix missing omap5 mcbsp fun=
+ctional clock and aliases)
+Merging kvm-fixes/master (2b3f2325e71f Merge tag 'kvm-x86-selftests-6.6-fix=
+es' of https://github.com/kvm-x86/linux into HEAD)
+Merging kvms390-fixes/master (f87ef5723536 KVM: s390: fix gisa destroy oper=
+ation might lead to cpu stalls)
+Merging hwmon-fixes/hwmon (d621a46d0510 Revert "hwmon: (sch56xx-common) Add=
+ automatic module loading on supported devices")
+Merging nvdimm-fixes/libnvdimm-fixes (33908660e814 ACPI: NFIT: Fix incorrec=
+t calculation of idt size)
+Merging cxl-fixes/fixes (f2f39c016c0e tools/testing/cxl: Slow down the mock=
+ firmware transfer)
+Merging btrfs-fixes/next-fixes (7a444b6e7de2 Merge branch 'misc-6.6' into n=
+ext-fixes)
+Merging vfs-fixes/fixes (bcdf926af448 ceph_wait_on_conflict_unlink(): grab =
+reference before dropping ->d_lock)
+Merging dma-mapping-fixes/for-linus (d5090484b021 swiotlb: do not try to al=
+locate a TLB bigger than MAX_ORDER pages)
+Merging drivers-x86-fixes/fixes (99c09c985e59 platform/mellanox: mlxbf-tmfi=
+fo: Fix a warning message)
+Merging samsung-krzk-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging pinctrl-samsung-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging devicetree-fixes/dt/linus (19007c629c63 dt-bindings: trivial-device=
+s: Fix MEMSIC MXC4005 compatible string)
+Merging dt-krzk-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging scsi-fixes/fixes (097c06394c83 scsi: qla2xxx: Fix double free of ds=
+d_list during driver load)
+Merging drm-fixes/drm-fixes (05d3ef8bba77 Linux 6.6-rc7)
+Merging drm-intel-fixes/for-linux-next-fixes (4cbed7702eb7 drm/i915/pmu: Ch=
+eck if pmu is closed before stopping event)
+Merging mmc-fixes/fixes (84ee19bffc93 mmc: core: Capture correct oemid-bits=
+ for eMMC cards)
+Merging rtc-fixes/rtc-fixes (08279468a294 rtc: sunplus: fix format string f=
+or printing resource)
+Merging gnss-fixes/gnss-linus (58720809f527 Linux 6.6-rc6)
+Merging hyperv-fixes/hyperv-fixes (42999c904612 hv/hv_kvp_daemon:Support fo=
+r keyfile based connection profile)
+Merging soc-fsl-fixes/fix (06c2afb862f9 Linux 6.5-rc1)
+Merging risc-v-fixes/fixes (3fec323339a4 drivers: perf: Fix panic in riscv =
+SBI mmap support)
+Merging riscv-dt-fixes/riscv-dt-fixes (cf98fe6b579e riscv: dts: starfive: v=
+isionfive 2: correct spi's ss pin)
+Merging riscv-soc-fixes/riscv-soc-fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging fpga-fixes/fixes (03d4bf9ff34a fpga: Fix memory leak for fpga_regio=
+n_test_class_find())
+Merging spdx/spdx-linus (8a749fd1a872 Linux 6.6-rc4)
+Merging gpio-brgl-fixes/gpio/for-current (479ac419206b gpiolib: acpi: Add m=
+issing memset(0) to acpi_get_gpiod_from_data())
+Merging gpio-intel-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging pinctrl-intel-fixes/fixes (2d325e54d9e2 pinctrl: baytrail: fix debo=
+unce disable case)
+Merging erofs-fixes/fixes (3048102d9d68 erofs: update documentation)
+Merging kunit-fixes/kunit-fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging ubifs-fixes/fixes (2241ab53cbb5 Linux 6.2-rc5)
+Merging memblock-fixes/fixes (55122e0130e5 memblock tests: fix warning =E2=
+=80=98struct seq_file=E2=80=99 declared inside parameter list)
+Merging nfsd-fixes/nfsd-fixes (0d32a6bbb8e7 NFSD: Fix zero NFSv4 READ resul=
+ts when RQ_SPLICE_OK is not set)
+Merging irqchip-fixes/irq/irqchip-fixes (b673fe1a6229 MAINTAINERS: Remove m=
+yself from the general IRQ subsystem maintenance)
+Merging renesas-fixes/fixes (9eab43facdad soc: renesas: ARCH_R9A07G043 depe=
+nds on !RISCV_ISA_ZICBOM)
+Merging broadcom-fixes/fixes (9abf2313adc1 Linux 6.1-rc1)
+Merging perf-current/perf-tools (4fa008a2db48 tools build: Fix llvm feature=
+ detection, still used by bpftool)
+Merging efi-fixes/urgent (c03d21f05e76 Merge 3rd batch of EFI fixes into ef=
+i/urgent)
+Merging zstd-fixes/zstd-linus (f064f4e5ecb1 zstd: Fix array-index-out-of-bo=
+unds UBSAN warning)
+Merging battery-fixes/fixes (8894b4325488 power: supply: qcom_battmgr: fix =
+enable request endianness)
+Merging uml-fixes/fixes (73a23d771033 um: harddog: fix modular build)
+Merging asahi-soc-fixes/asahi-soc/fixes (568035b01cfb Linux 6.0-rc1)
+Merging iommufd-fixes/for-rc (0bb80ecc33a8 Linux 6.6-rc1)
+Merging rust-fixes/rust-fixes (cfd96726e611 rust: docs: fix logo replacemen=
+t)
+Merging v9fs-fixes/fixes/next (2dde18cd1d8f Linux 6.5)
+Merging w1-fixes/fixes (0bb80ecc33a8 Linux 6.6-rc1)
+Merging pmdomain-fixes/fixes (374de39d38f9 pmdomain: imx: Make imx pgc powe=
+r domain also set the fwnode)
+Merging overlayfs-fixes/ovl-fixes (beae836e9c61 ovl: temporarily disable ap=
+pending lowedirs)
+Merging drm-misc-fixes/for-linux-next-fixes (101c9f637efa drm/syncobj: fix =
+DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE)
+Merging mm-stable/mm-stable (88c91dc58582 mempolicy: migration attempt to m=
+atch interleave nodes)
+Merging mm-nonmm-stable/mm-nonmm-stable (5176140c5094 ocfs2: fix a typo in =
+a comment)
+Merging mm/mm-everything (6788380ff123 Merge branch 'mm-nonmm-unstable' int=
+o mm-everything)
+Merging kbuild/for-next (7715d094a5c3 kbuild: unify no-compiler-targets and=
+ no-sync-config-targets)
+Merging clang-format/clang-format (5d0c230f1de8 Linux 6.5-rc4)
+Merging perf/perf-tools-next (3779416eed25 perf vendor events intel: Fix br=
+oadwellde tma_info_system_dram_bw_use metric)
+Merging compiler-attributes/compiler-attributes (5d0c230f1de8 Linux 6.5-rc4)
+Merging dma-mapping/for-next (36d91e851598 dma-debug: Fix a typo in a debug=
+ging eye-catcher)
+Merging asm-generic/master (550087a0ba91 hexagon: Remove unusable symbols f=
+rom the ptrace.h uapi)
+CONFLICT (modify/delete): arch/ia64/include/asm/cpu.h deleted in asm-generi=
+c/master and modified in HEAD.  Version HEAD of arch/ia64/include/asm/cpu.h=
+ left in tree.
+CONFLICT (modify/delete): arch/ia64/kernel/setup.c deleted in asm-generic/m=
+aster and modified in HEAD.  Version HEAD of arch/ia64/kernel/setup.c left =
+in tree.
+CONFLICT (modify/delete): arch/ia64/kernel/topology.c deleted in asm-generi=
+c/master and modified in HEAD.  Version HEAD of arch/ia64/kernel/topology.c=
+ left in tree.
+$ git rm -f arch/ia64/kernel/setup.c arch/ia64/include/asm/cpu.h arch/ia64/=
+kernel/topology.c
+Merging arc/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging arm/for-next (c7368ddba2ff ARM: 9326/1: make <linux/uaccess.h> self=
+-contained for ARM)
+Merging arm64/for-next/core (14dcf78a6c04 Merge branch 'for-next/cpus_have_=
+const_cap' into for-next/core)
+Merging arm-perf/for-next/perf (b805cafc604b perf: hisi: Fix use-after-free=
+ when register pmu fails)
+Merging arm-soc/for-next (c56a333324dc soc: document merges)
+Merging amlogic/for-next (996fc07dce79 Merge branch 'v6.7/defconfig' into f=
+or-next)
+Merging asahi-soc/asahi-soc/for-next (eaf935fa48ec soc: apple: mailbox: Ren=
+ame config symbol to APPLE_MAILBOX)
+CONFLICT (content): Merge conflict in drivers/soc/apple/Makefile
+Merging aspeed/for-next (3be891e01a89 Merge branches 'defconfig-for-v6.7', =
+'dt-for-v6.7' and 'soc-for-v6.7' into for-next)
+Merging at91/at91-next (3cec9514911c ARM: dts: at91: sam9x60_curiosity: Add=
+ mandatory dt property for RTT)
+Merging broadcom/next (62a3c97f8167 Merge branch 'devicetree/next' into nex=
+t)
+Merging davinci/davinci/for-next (06c2afb862f9 Linux 6.5-rc1)
+Merging drivers-memory/for-next (09de3691daab memory: Use device_get_match_=
+data())
+Merging imx-mxs/for-next (fa81543ef854 Merge branch 'imx/defconfig' into fo=
+r-next)
+Merging mediatek/for-next (9802b60bd6d8 Merge branch 'v6.6-next/soc' into f=
+or-next)
+Merging mvebu/for-next (93e6b023e552 Merge branch 'mvebu/dt64' into mvebu/f=
+or-next)
+Merging omap/for-next (cb1114df7bb0 Merge branch 'fixes' into for-next)
+Merging qcom/for-next (2b05c2dc230b Merge branches 'arm64-defconfig-for-6.7=
+', 'arm64-fixes-for-6.6', 'arm64-for-6.7', 'clk-for-6.7', 'drivers-for-6.7'=
+ and 'dts-for-6.7' into for-next)
+Merging renesas/next (fb39831a07ec Merge branch 'renesas-fixes-for-v6.6' in=
+to renesas-next)
+Merging reset/reset/next (417a3a5ae44a reset: ti: syscon: remove unneeded c=
+all to platform_set_drvdata())
+Merging rockchip/for-next (fd1299bf9ce8 Merge branch 'v6.7-armsoc/dts64' in=
+to for-next)
+Merging samsung-krzk/for-next (b7df1b3a7a1b Merge branch 'next/dt' into for=
+-next)
+Merging scmi/for-linux-next (269024fecd16 Merge branch 'for-next/ffa/fixes'=
+ of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into f=
+or-linux-next)
+Merging stm32/stm32-next (1aeb02d3f2c5 ARM: dts: stm32: add SDIO pinctrl sl=
+eep support on stm32f7 boards)
+Merging sunxi/sunxi/for-next (c3f7c14856eb riscv: dts: allwinner: convert i=
+sa detection to new properties)
+Merging tee/next (6a8b7e801054 tee: optee: Use kmemdup() to replace kmalloc=
+ + memcpy)
+Merging tegra/for-next (650220c2b474 Merge branch for-6.7/arm64/dt into for=
+-next)
+Merging ti/ti-next (2234981539e7 Merge branch 'ti-k3-dts-next' into ti-next)
+Merging xilinx/for-next (7d2da28125ce Merge branch 'zynqmp/dt' into for-nex=
+t)
+Merging clk/clk-next (661487899769 Merge branch 'clk-mediatek' into clk-nex=
+t)
+Merging clk-imx/for-next (2838820800dc clk: imx: imx8qm/qxp: add more resou=
+rces to whitelist)
+Merging clk-renesas/renesas-clk (4bce4bedbe6d clk: renesas: r9a08g045: Add =
+clock and reset support for SDHI1 and SDHI2)
+Merging csky/linux-next (5195c35ac4f0 csky: Fixup compile error)
+Merging loongarch/loongarch-next (2c10cda4b777 LoongArch: KVM: Add maintain=
+ers for LoongArch KVM)
+Merging m68k/for-next (03191fb3db3d m68k: lib: Include <linux/libgcc.h> for=
+ __muldi3())
+Merging m68knommu/for-next (2508b608f402 m68k: 68000: fix warning in timer =
+code)
+Merging microblaze/next (65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of gi=
+t://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2)
+Merging mips/mips-next (4b7d3ab44565 MIPS: AR7: remove platform)
+Merging openrisc/for-next (c289330331eb openrisc: Remove kernel-doc marker =
+from ioremap comment)
+Merging parisc-hd/for-next (09bf42f3fe4e parisc: Show default CPU PSW.W set=
+ting as reported by PDC)
+Merging powerpc/next (36e826b568e4 powerpc/vmcore: Add MMU information to v=
+mcoreinfo)
+Merging soc-fsl/next (fb9c384625dd bus: fsl-mc: fsl-mc-allocator: Drop a wr=
+ite-only variable)
+Merging risc-v/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging riscv-dt/riscv-dt-for-next (b99df6281891 riscv: dts: sophgo: remove=
+ address-cells from intc node)
+Merging riscv-soc/riscv-soc-for-next (22dedf8f4570 soc/microchip: mpfs-sys-=
+controller: Convert to platform remove callback returning void)
+Merging s390/for-next (8445432611b4 Merge branch 'features' into for-next)
+Merging sh/for-next (78a96c86a0ff Documentation: kernel-parameters: Add ear=
+lyprintk=3Dbios on SH)
+Merging uml/next (974b808d85ab um: virt-pci: fix missing declaration warnin=
+g)
+Merging xtensa/xtensa-for-next (a83a72730c33 xtensa: import ESP32S3 core va=
+riant)
+Merging bcachefs/for-next (b827ac419721 exportfs: Change bcachefs fid_type =
+enum to avoid conflicts)
+Applying: bcachefs: convert to dynamically allocated shrinkers
+Merging pidfd/for-next (a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git:/=
+/git.kernel.org/pub/scm/fs/xfs/xfs-linux)
+Merging fscrypt/for-next (15baf55481de fscrypt: track master key presence s=
+eparately from secret)
+Merging afs/afs-next (0a278bc196e7 afs: Automatically generate trace tag en=
+ums)
+Merging btrfs/for-next (c6e8f898f56f btrfs: open code timespec64 in struct =
+btrfs_inode)
+Merging ceph/master (07bb00ef00ac ceph: fix type promotion bug on 32bit sys=
+tems)
+Merging cifs/for-next (0bf9d90e55da smb3: fix creating FIFOs when mounting =
+with "sfu" mount option)
+Merging configfs/for-next (4425c1d9b44d configfs: improve item creation per=
+formance)
+Merging ecryptfs/next (a3d78fe3e1ae fs: ecryptfs: comment typo fix)
+Merging erofs/dev (3120ee29695a erofs: tidy up redundant includes)
+Merging exfat/dev (b3a62a988600 exfat: support create zero-size directory)
+Merging ext3/for_next (7f680e5f256f Pull ext2 conversion of directory code =
+to folios.)
+Merging ext4/dev (c388da1dad59 ext4: properly sync file size update after O=
+_SYNC direct IO)
+Merging f2fs/dev (1e7bef5f90ed f2fs: finish previous checkpoints before ret=
+urning from remount)
+Merging fsverity/for-next (919dc320956e fsverity: skip PKCS#7 parser when k=
+eyring is empty)
+Merging fuse/for-next (ae3024a4c499 docs/fuse-io: Document the usage of DIR=
+ECT_IO_ALLOW_MMAP)
+Merging gfs2/for-next (26ad55ecccd5 gfs2: fs: derive f_fsid from s_uuid)
+Merging jfs/jfs-next (a779ed754e52 jfs: define xtree root and page independ=
+ently)
+Merging ksmbd/ksmbd-for-next (0c180317c654 ksmbd: add support for surrogate=
+ pair conversion)
+Merging nfs/linux-next (05d3ef8bba77 Linux 6.6-rc7)
+Merging nfs-anna/linux-next (379e4adfddd6 NFSv4.1: fixup use EXCHGID4_FLAG_=
+USE_PNFS_DS for DS server)
+Merging nfsd/nfsd-next (3fd2ca5be07f svcrdma: Fix tracepoint printk format)
+Merging ntfs3/master (e4494770a5ca fs/ntfs3: Avoid possible memory leak)
+Merging orangefs/for-next (31720a2b109b orangefs: Fix kmemleak in orangefs_=
+{kernel,client}_debug_init())
+Merging overlayfs/overlayfs-next (0b41c33dd34b ovl: Add documentation on ne=
+sting of overlayfs mounts)
+Merging ubifs/next (017c73a34a66 ubi: Refuse attaching if mtd's erasesize i=
+s 0)
+Merging v9fs/9p-next (ec82aa59a121 9p/net: fix possible memory leak in p9_c=
+heck_errors())
+Merging v9fs-ericvh/ericvh/for-next (2dde18cd1d8f Linux 6.5)
+Merging xfs/for-next (cbc06310c36f xfs: reinstate the old i_version counter=
+ as STATX_CHANGE_COOKIE)
+Merging zonefs/for-next (8812387d0569 zonefs: set FMODE_CAN_ODIRECT instead=
+ of a dummy direct_IO method)
+Merging iomap/iomap-for-next (3ac974796e5d iomap: fix short copy in iomap_w=
+rite_iter())
+Merging djw-vfs/vfs-for-next (ce85a1e04645 xfs: stabilize fs summary counte=
+rs for online fsck)
+Merging file-locks/locks-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6-=
+mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
+Merging iversion/iversion-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6=
+-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
+Merging vfs-brauner/vfs.all (46af9de45cb5 Merge branch 'vfs.f_fsid' into vf=
+s.all)
+CONFLICT (content): Merge conflict in fs/ext2/dir.c
+CONFLICT (content): Merge conflict in fs/xfs/xfs_buf.c
+Applying: bcachefs: convert to new timestamp accessors
+Merging vfs/for-next (1aee9158bc97 nfsd: lock_rename() needs both directori=
+es to live on the same fs)
+Merging printk/for-next (fbddff2e98cf Merge branch 'for-6.7' into for-next)
+Merging pci/next (fcc8f17de035 Merge branch 'pci/misc')
+Merging pstore/for-next/pstore (a19d48f7c5d5 pstore/platform: Add check for=
+ kstrdup)
+Merging hid/for-next (776d67be3770 Merge branch 'for-6.7/nintendo' into for=
+-next)
+Merging i2c/i2c/for-next (9b156db7e479 Merge branch 'i2c/for-mergewindow' i=
+nto i2c/for-next)
+Merging i3c/i3c/next (57ec42b9a1b7 i3c: Fix typo "Provisional ID" to "Provi=
+sioned ID")
+Merging dmi/dmi-for-next (13a0ac816d22 firmware: dmi: Fortify entry point l=
+ength checks)
+Merging hwmon-staging/hwmon-next (5421af83a43b drivers: hwmon: max31827: ha=
+ndle vref regulator)
+Merging jc_docs/docs-next (e7abea958b7f docs: backporting: address feedback)
+Merging v4l-dvb/master (94e27fbeca27 media: cec: meson: always include meso=
+n sub-directory in Makefile)
+Merging v4l-dvb-next/master (48016737a9af media: platform: cadence: select =
+MIPI_DPHY dependency)
+Merging pm/linux-next (3335ef03ad81 Merge branch 'pm' into linux-next)
+Merging cpufreq-arm/cpufreq/arm/linux-next (6aa2f7738c6d cpufreq: qcom-nvme=
+m: add support for IPQ8074)
+Merging cpupower/cpupower (6feb1a964119 cpupower: fix reference to nonexist=
+ent document)
+Merging devfreq/devfreq-next (8f0cd531ee18 dt-bindings: devfreq: event: roc=
+kchip,dfi: Add rk3588 support)
+Merging pmdomain/next (2050c9bc4f7b pmdomain: qcom: rpmhpd: Add SC8380XP po=
+wer domains)
+CONFLICT (content): Merge conflict in drivers/soc/apple/Kconfig
+Merging opp/opp/linux-next (35e0964e4876 dt-bindings: opp: opp-v2-kryo-cpu:=
+ Document named opp-microvolt property)
+Merging thermal/thermal/linux-next (9618efe343ea thermal/qcom/tsens: Drop o=
+ps_v0_1)
+Merging dlm/next (eb53c01873ca MAINTAINERS: Update dlm maintainer and web p=
+age)
+Merging rdma/for-next (7a1c2abf9a2b RDMA/core: Remove NULL check before dev=
+_{put, hold})
+CONFLICT (content): Merge conflict in drivers/infiniband/hw/mlx5/mr.c
+Merging net-next/main (ea23fbd2a8f7 netlink: make range pointers in policie=
+s const)
+Merging bpf-next/for-next (ea41b880cc85 netkit: Remove explicit active/peer=
+ ptr initialization)
+Merging ipsec-next/master (53a5b4f2ea85 xfrm Fix use after free in __xfrm6_=
+udp_encap_rcv.)
+Merging mlx5-next/mlx5-next (82f9378c443c net/mlx5: Handle IPsec steering u=
+pon master unbind/bind)
+Merging netfilter-next/main (ef113733c288 bareudp: use ports to lookup rout=
+e)
+Merging ipvs-next/main (9cdee0634769 netfilter: nf_tables: Carry reset bool=
+ean in nft_set_dump_ctx)
+Merging bluetooth/master (0783375f2c56 Bluetooth: ISO: Allow binding a PA s=
+ync socket)
+Merging wireless-next/for-next (1002f8171d96 wifi: ray_cs: Remove unnecessa=
+ry (void*) conversions)
+Merging wpan-next/master (18b849f12dcc ieee802154: ca8210: Remove stray gpi=
+od_unexport() call)
+Merging wpan-staging/staging (18b849f12dcc ieee802154: ca8210: Remove stray=
+ gpiod_unexport() call)
+Merging mtd/mtd/next (6135e730f81d mtd: Use device_get_match_data())
+Merging nand/nand/next (6dc597401cf5 mtd: rawnand: Remove unused of_gpio.h =
+inclusion)
+Merging spi-nor/spi-nor/next (6823a8383420 mtd: spi-nor: micron-st: use SFD=
+P table for mt25qu512a)
+Merging crypto/master (a2786e8bdd02 crypto: qcom-rng - Add missing dependen=
+cy on hw_random)
+Merging drm/drm-next (5258dfd4a6ad usb: typec: altmodes/displayport: fixup =
+drm internal api change vs new user.)
+CONFLICT (modify/delete): arch/ia64/include/asm/fb.h deleted in HEAD and mo=
+dified in drm/drm-next.  Version drm/drm-next of arch/ia64/include/asm/fb.h=
+ left in tree.
+CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/msm_drv.c
+$ git rm -f arch/ia64/include/asm/fb.h
+Merging drm-ci/topic/drm-ci (ad6bfe1b66a5 drm: ci: docs: fix build warning =
+- add missing escape)
+Merging drm-misc/for-linux-next (b70438004a14 drm/amdgpu: move buffer funcs=
+ setting up a level)
+Merging amdgpu/drm-next (edb423e91309 drm/amd: Explicitly disable ASPM when=
+ dynamic switching disabled)
+Merging drm-intel/for-linux-next (b662c19654ca drm/i915/display: Reset mess=
+age bus after each read/write operation)
+Merging drm-tegra/for-next (2429b3c529da drm/tegra: Avoid potential 32-bit =
+integer overflow)
+Merging drm-msm/msm-next (b08d26dac1a1 drm/msm/a7xx: actually use a7xx stat=
+e registers)
+Merging drm-msm-lumag/msm-next-lumag (d3b4075b173f drm/msm/dp: use correct =
+lifetime device for devm_drm_bridge_add)
+Merging etnaviv/etnaviv/next (925b10728f20 drm/etnaviv: disable MLCG and pu=
+lse eater on GPU reset)
+Merging fbdev/for-next (147de49d6ead fbdev: offb: Simplify offb_init_fb())
+Merging regmap/for-next (798ee4f7ce56 Merge remote-tracking branch 'regmap/=
+for-6.7' into regmap-next)
+Merging sound/for-next (76c121821a31 ASoC: cs35l41: Detect CSPL errors when=
+ sending CSPL commands)
+Merging ieee1394/for-next (a464d2f75fa1 firewire: Annotate struct fw_node w=
+ith __counted_by)
+Merging sound-asoc/for-next (00236a89602f Merge remote-tracking branch 'aso=
+c/for-6.7' into asoc-next)
+Merging modules/modules-next (3111add7f414 module: Annotate struct module_n=
+otes_attrs with __counted_by)
+CONFLICT (content): Merge conflict in scripts/mod/modpost.c
+Applying: fix up for "module: Make is_valid_name() return bool"
+Merging input/next (6cd256694afe Input: tegra-kbc - use device_get_match_da=
+ta())
+Merging block/for-next (8aa6053114f3 Merge branch 'for-6.7/block' into for-=
+next)
+CONFLICT (content): Merge conflict in arch/alpha/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/arm/tools/syscall.tbl
+CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd.h
+CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd32.h
+CONFLICT (modify/delete): arch/ia64/kernel/syscalls/syscall.tbl deleted in =
+HEAD and modified in block/for-next.  Version block/for-next of arch/ia64/k=
+ernel/syscalls/syscall.tbl left in tree.
+CONFLICT (content): Merge conflict in arch/m68k/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/microblaze/kernel/syscalls/sysca=
+ll.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n32=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n64=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_o32=
+.tbl
+CONFLICT (content): Merge conflict in arch/parisc/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in arch/powerpc/kernel/syscalls/syscall.=
+tbl
+CONFLICT (content): Merge conflict in arch/s390/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/sh/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/sparc/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_32.tbl
+CONFLICT (content): Merge conflict in arch/xtensa/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in drivers/nvme/target/tcp.c
+CONFLICT (content): Merge conflict in include/uapi/asm-generic/unistd.h
+$ git rm -f arch/ia64/kernel/syscalls/syscall.tbl
+Merging device-mapper/for-next (bb59301c1737 dm: respect REQ_NOWAIT flag in=
+ normal bios issued to DM)
+Merging libata/for-next (0e533cba3801 dt-bindings: ata: tegra: Disallow und=
+efined properties)
+Merging pcmcia/pcmcia-next (4f733de8b78a pcmcia: tcic: remove unneeded "&" =
+in call to setup_timer())
+Merging mmc/next (07e78e215188 MAINTAINERS: mmc: take over as maintainer of=
+ MCI & SDHCI MICROCHIP DRIVERS)
+Merging mfd/for-mfd-next (e9aec86e211e dt-bindings: mfd: qcom,spmi-pmic: Ad=
+d pm8916 vm-bms and lbc)
+Merging backlight/for-backlight-next (d5272d39995f dt-bindings: backlight: =
+Add brightness-levels related common properties)
+Merging battery/for-next (469d31745b9f power: reset: vexpress: Use device_g=
+et_match_data())
+Merging regulator/for-next (e95d9ba0eb4e Merge remote-tracking branch 'regu=
+lator/for-6.7' into regulator-next)
+Merging security/next (82ed980d6f5d Automated merge of 'dev-staging' into '=
+next')
+CONFLICT (content): Merge conflict in arch/alpha/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/arm/tools/syscall.tbl
+CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd.h
+CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd32.h
+CONFLICT (modify/delete): arch/ia64/kernel/syscalls/syscall.tbl deleted in =
+HEAD and modified in security/next.  Version security/next of arch/ia64/ker=
+nel/syscalls/syscall.tbl left in tree.
+CONFLICT (content): Merge conflict in arch/m68k/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/microblaze/kernel/syscalls/sysca=
+ll.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n32=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n64=
+.tbl
+CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_o32=
+.tbl
+CONFLICT (content): Merge conflict in arch/parisc/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in arch/powerpc/kernel/syscalls/syscall.=
+tbl
+CONFLICT (content): Merge conflict in arch/s390/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/sh/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/sparc/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_32.tbl
+CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_64.tbl
+CONFLICT (content): Merge conflict in arch/xtensa/kernel/syscalls/syscall.t=
+bl
+CONFLICT (content): Merge conflict in include/uapi/asm-generic/unistd.h
+$ git rm -f arch/ia64/kernel/syscalls/syscall.tbl
+Merging apparmor/apparmor-next (6cede10161be apparmor: Fix some kernel-doc =
+comments)
+CONFLICT (content): Merge conflict in security/apparmor/lsm.c
+Merging integrity/next-integrity (bc4532e9cd3b ima: detect changes to the b=
+acking overlay file)
+CONFLICT (content): Merge conflict in fs/overlayfs/super.c
+Merging safesetid/safesetid-next (64b634830c91 LSM: SafeSetID: add setgroup=
+s() testing to selftest)
+Merging selinux/next (f5bbdeda34c6 Automated merge of 'dev' into 'next')
+Merging smack/next (3ad49d37cf57 smackfs: Prevent underflow in smk_set_cips=
+o())
+Merging tomoyo/master (0bb80ecc33a8 Linux 6.6-rc1)
+Merging tpmdd/next (03acb9ccec3f keys: Remove unused extern declarations)
+Merging watchdog/master (db7673e6d578 Watchdog: marvell_gti_wdt: Remove red=
+undant dev_err_probe() for platform_get_irq())
+Merging iommu/next (fc8a0820fc33 Merge branches 'arm/tegra', 'arm/smmu', 'v=
+irtio', 'x86/vt-d', 'x86/amd', 'core' and 's390' into next)
+CONFLICT (content): Merge conflict in drivers/iommu/Kconfig
+Merging audit/next (47846d51348d audit: don't take task_lock() in audit_exe=
+_compare() code path)
+Merging devicetree/for-next (a31226cdc877 dt-bindings: watchdog: cnxt,cx927=
+55-wdt: convert txt to yaml)
+Merging dt-krzk/for-next (d896029c9726 Merge branch 'next/dt64' into for-ne=
+xt)
+Merging mailbox/mailbox-for-next (a493208079e2 mailbox: qcom-ipcc: fix inco=
+rrect num_chans counting)
+Merging spi/for-next (f6218c7e590f Merge remote-tracking branch 'spi/for-6.=
+7' into spi-next)
+Merging tip/master (1d23b9e1d5e2 Merge branch into tip/master: 'x86/tdx')
+CONFLICT (content): Merge conflict in arch/alpha/kernel/syscalls/syscall.tbl
+CONFLICT (content): Merge conflict in include/linux/pci_ids.h
+Merging clockevents/timers/drivers/next (0a8b07c77ea0 clocksource: Explicit=
+ly include correct DT includes)
+Merging edac/edac-for-next (6f15b178cd63 EDAC/versal: Add a Xilinx Versal m=
+emory controller driver)
+Merging irqchip/irq/irqchip-next (19b5a44bee16 irqchip: Add support for Aml=
+ogic-C3 SoCs)
+Merging ftrace/for-next (c7cda5f2ae07 Merge probes/for-next)
+CONFLICT (content): Merge conflict in tools/testing/selftests/user_events/a=
+bi_test.c
+Merging rcu/rcu/next (5df10099418f srcu: Explain why callbacks invocations =
+can't run concurrently)
+Merging kvm/next (2b3f2325e71f Merge tag 'kvm-x86-selftests-6.6-fixes' of h=
+ttps://github.com/kvm-x86/linux into HEAD)
+Merging kvm-arm/next (dfad6c40b4be Merge branch kvm-arm64/nv-trap-fixes int=
+o kvmarm/next)
+CONFLICT (content): Merge conflict in arch/arm64/kvm/arm.c
+Merging kvms390/next (70fea3019516 KVM: s390: add tracepoint in gmap notifi=
+er)
+Merging kvm-ppc/topic/ppc-kvm (b7bce570430e powerpc/kvm: Force cast endiann=
+ess of KVM shared regs)
+CONFLICT (file location): Documentation/powerpc/kvm-nested.rst added in kvm=
+-ppc/topic/ppc-kvm inside a directory that was renamed in HEAD, suggesting =
+it should perhaps be moved to Documentation/arch/powerpc/kvm-nested.rst.
+Merging kvm-riscv/riscv_kvm_next (d9c00f44e5de KVM: riscv: selftests: Add S=
+BI DBCN extension to get-reg-list test)
+Merging kvm-x86/next (c076acf10c78 Merge branches 'lam', 'misc', 'mmu' and =
+'pmu')
+Merging xen-tip/linux-next (2c269f42d0f3 xen-pciback: Consider INTx disable=
+d when MSI/MSI-X is enabled)
+Merging percpu/for-next (3fcf62f24c80 Merge branch 'for-6.6' into for-next)
+Merging workqueues/for-next (d5ce8f4ed90b Merge branch 'for-6.7' into for-n=
+ext)
+Merging drivers-x86/for-next (ac9bc85c49ff platform/x86: wmi: Decouple WMI =
+device removal from wmi_block_list)
+Merging chrome-platform/for-next (466f70fb1b10 platform/chrome: kunit: make=
+ EC protocol tests independent)
+Merging chrome-platform-firmware/for-firmware-next (0bb80ecc33a8 Linux 6.6-=
+rc1)
+Merging hsi/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging leds/for-next (1b929c02afd3 Linux 6.2-rc1)
+Merging leds-lj/for-leds-next (13f0ccb77e98 leds: lp5521: Add an error chec=
+k in lp5521_post_init_device)
+Merging ipmi/for-next (b00839ca4cca ipmi: refactor deprecated strncpy)
+Merging driver-core/driver-core-next (0217f3944aeb Documentation: security-=
+bugs.rst: linux-distros relaxed their rules)
+Merging usb/usb-next (ec0989703642 Revert "dt-bindings: usb: Add bindings f=
+or multiport properties on DWC3 controller")
+CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/usb=
+/ti,tps6598x.yaml
+CONFLICT (content): Merge conflict in arch/arm64/boot/dts/rockchip/rk3588s.=
+dtsi
+Merging thunderbolt/next (a558892b3456 thunderbolt: Fix one kernel-doc comm=
+ent)
+Merging usb-serial/usb-next (8a749fd1a872 Linux 6.6-rc4)
+Merging tty/tty-next (6f699743aebf serial: core: Fix runtime PM handling fo=
+r pending tx)
+CONFLICT (modify/delete): arch/ia64/kernel/setup.c deleted in HEAD and modi=
+fied in tty/tty-next.  Version tty/tty-next of arch/ia64/kernel/setup.c lef=
+t in tree.
+CONFLICT (modify/delete): drivers/firmware/pcdp.c deleted in HEAD and modif=
+ied in tty/tty-next.  Version tty/tty-next of drivers/firmware/pcdp.c left =
+in tree.
+$ git rm -f arch/ia64/kernel/setup.c drivers/firmware/pcdp.c
+Merging char-misc/char-misc-next (421359cbdbdc parport: Drop even more unne=
+eded NULL or 0 assignments)
+Merging accel/habanalabs-next (08057253366d Merge tag 'drm-habanalabs-next-=
+2023-10-10' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linu=
+x into drm-next)
+Merging coresight/next (fa55e63584f2 Documentation: coresight: fix `make re=
+fcheckdocs` warning)
+Merging fastrpc/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging fpga/for-next (d79eed22ba97 fpga: versal: Add support for 44-bit DM=
+A operations)
+Merging icc/icc-next (d4c720a19e9a Merge branch 'icc-platform-remove' into =
+icc-next)
+Merging iio/togreg (89e2233386a5 iio: proximity: sx9324: Switch to device_p=
+roperty_match_property_string())
+Merging phy-next/next (d688c8264b8e phy: Remove duplicated include in phy-r=
+alink-usb.c)
+CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/phy=
+/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+Merging soundwire/next (4ea2b6d3128e soundwire: dmi-quirks: update HP Omen =
+match)
+Merging extcon/extcon-next (b3edc3463d64 extcon: realtek: add the error han=
+dler for nvmem_cell_read)
+Merging gnss/gnss-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging vfio/next (2b88119e35b0 vfio/mtty: Enable migration support)
+Merging w1/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging staging/staging-next (5d9f6f26ec66 staging: vt6655: Rename variable=
+ byEIFS)
+CONFLICT (modify/delete): drivers/staging/qlge/qlge_devlink.c deleted in st=
+aging/staging-next and modified in HEAD.  Version HEAD of drivers/staging/q=
+lge/qlge_devlink.c left in tree.
+$ git rm -f drivers/staging/qlge/qlge_devlink.c
+Merging counter-next/counter-next (7904cdf1397c counter: chrdev: remove a t=
+ypo in header file comment)
+Merging mux/for-next (44c026a73be8 Linux 6.4-rc3)
+Merging dmaengine/next (03f25d53b145 dmaengine: stm32-mdma: correct desc pr=
+ep when channel running)
+Merging cgroup/for-next (b9a477034b11 Merge branch 'for-6.7' into for-next)
+Merging scsi/for-next (e76fe87efdfb Merge branch 'misc' into for-next)
+Merging scsi-mkp/for-next (a75a16c62a25 scsi: ufs: core: Leave space for 'M=
+erging vhost/linux-next (276d5784878e vdpa_sim: implement .reset_map suppor=
+t)
+Merging rpmsg/for-next (6dc66a309673 Merge branches 'hwspinlock-next', 'rpm=
+sg-next' and 'rproc-next' into for-next)
+Merging gpio/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging gpio-brgl/gpio/for-next (9bc633117d6a hte: tegra194: add GPIOLIB de=
+pendency)
+CONFLICT (content): Merge conflict in drivers/gpio/gpio-ljca.c
+CONFLICT (content): Merge conflict in drivers/gpio/gpio-vf610.c
+Merging gpio-intel/for-next (0bb80ecc33a8 Linux 6.6-rc1)
+Merging pinctrl/for-next (e2b0bac1aae4 dt-bindings: pinctrl: qcom,sa8775p-t=
+lmm: add missing wakeup-parent)
+Merging pinctrl-intel/for-next (8d751da9f1d7 pinctrl: intel: fetch communit=
+y only when we need it)
+Merging pinctrl-renesas/renesas-pinctrl (583d80732055 pinctrl: renesas: rzn=
+1: Convert to platform remove callback returning void)
+Merging pinctrl-samsung/for-next (8aec97decfd0 pinctrl: samsung: do not off=
+set pinctrl numberspaces)
+Merging pwm/for-next (4bb36d126cb3 pwm: samsung: Document new member .chann=
+el in struct samsung_pwm_chip)
+Merging userns/for-next (05bd6e0242b4 Merge of unpriv-ipc-sysctls-for-v6.2,=
+ and fix-atomic_lock_inc_below-for-v6.2 for testing in linux-next)
+Merging ktest/for-next (7dc8e24f0e09 ktest: Restore stty setting at first i=
+n dodie)
+Merging kselftest/next (5247e6dbed00 selftests/resctrl: Fix MBM test failur=
+e when MBA unavailable)
+CONFLICT (content): Merge conflict in tools/testing/selftests/clone3/clone3=
+.c
+Merging kunit/test (0bb80ecc33a8 Linux 6.6-rc1)
+Merging kunit-next/kunit (8040345fdae4 kunit: test: Fix the possible memory=
+ leak in executor_test)
+Merging livepatching/for-next (602bf1830798 Merge branch 'for-6.7' into for=
+-next)
+Merging rtc/rtc-next (cfb67623ce28 dt-bindings: rtc: Add Mstar SSD202D RTC)
+Merging nvdimm/libnvdimm-for-next (9ea459e477dc libnvdimm: remove kernel-do=
+c warnings:)
+Merging at24/at24/for-next (3774740fb221 eeprom: at24: add ST M24C64-D Addi=
+tional Write lockable page support)
+Merging ntb/ntb-next (9341b37ec17a ntb_perf: Fix printk format)
+Merging seccomp/for-next/seccomp (31c65705a8cf perf/benchmark: fix seccomp_=
+unotify benchmark for 32-bit)
+Merging fsi/next (f04d61a379d6 fsi: fix some spelling mistakes in comment)
+Merging slimbus/for-next (06c2afb862f9 Linux 6.5-rc1)
+Merging nvmem/for-next (ca7384334d9b Revert "nvmem: add new config option")
+Merging xarray/main (2a15de80dd0f idr: fix param name in idr_alloc_cyclic()=
+ doc)
+Merging hyperv/hyperv-next (ce9ecca0238b Linux 6.6-rc2)
+Merging auxdisplay/auxdisplay (35b464e32c8b auxdisplay: hd44780: move curso=
+r home after clear display command)
+Merging kgdb/kgdb/for-next (dd712d3d4580 kgdb: Flush console before enterin=
+g kgdb on panic)
+Merging hmm/hmm (0bb80ecc33a8 Linux 6.6-rc1)
+Merging cfi/cfi/next (06c2afb862f9 Linux 6.5-rc1)
+Merging mhi/mhi-next (12606ba1d46b bus: mhi: ep: Do not allocate event ring=
+ element on stack)
+Merging memblock/for-next (0f5e4adb608c memblock: report failures when memb=
+lock_can_resize is not set)
+Merging cxl/next (fe77cc2e5a6a cxl: Fix one kernel-doc comment)
+Merging zstd/zstd-next (2aa14b1ab2c4 zstd: import usptream v1.5.2)
+Merging efi/next (5329aa5101f7 efivarfs: Add uid/gid mount options)
+Merging unicode/for-next (b500d6d7243d unicode: Handle memory allocation fa=
+ilures in mkutf8data)
+Merging slab/slab/for-next (e050a704f3c3 Merge branch 'slab/for-6.6/hotfixe=
+s' into slab/for-next)
+Merging random/master (512dee0c00ad Merge tag 'x86-urgent-2023-01-04' of gi=
+t://git.kernel.org/pub/scm/linux/kernel/git/tip/tip)
+Merging landlock/next (51442e8d64bc landlock: Document network support)
+Applying: fixup for "landlock: Support network rules with TCP bind and conn=
+ect"
+Merging rust/rust-next (3857af38e57a docs: rust: add "The Rust experiment" =
+section)
+Merging sysctl/sysctl-next (ccee9a2a8c00 intel drm: Remove now superfluous =
+sentinel element from ctl_table array)
+Merging execve/for-next/execve (21ca59b365c0 binfmt_misc: enable sandboxed =
+mounts)
+Merging bitmap/bitmap-for-next (bdcb37a5d8de buildid: reduce header file de=
+pendencies for module)
+Merging hte/for-next (091ac92dc79e hte: tegra194: Switch to LATE_SIMPLE_DEV=
+_PM_OPS())
+CONFLICT (content): Merge conflict in drivers/hte/Kconfig
+Merging kspp/for-next/kspp (9cca73d7b4bf hwmon: (acpi_power_meter) replace =
+open-coded kmemdup_nul)
+Merging kspp-gustavo/for-next/kspp (4d8cbf6dbcda fs: omfs: Use flexible-arr=
+ay member in struct omfs_extent)
+Merging nolibc/nolibc (0bb80ecc33a8 Linux 6.6-rc1)
+Merging tsm/tsm-next (f4738f56d1dc virt: tdx-guest: Add Quote generation su=
+pport using TSM_REPORTS)
+Merging iommufd/for-next (03476e687eb0 iommu/vt-d: Disallow read-only mappi=
+ngs to nest parent domain)
+CONFLICT (content): Merge conflict in drivers/iommu/iommufd/selftest.c
+CONFLICT (content): Merge conflict in include/linux/iommu.h
+
+--Sig_/SVatX9hzEj=GR00fmLTFyf9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU7YP0ACgkQAVBC80lX
+0Gya0gf/a0fXvMc9wDgirwC2eSR+GXYkbI5IQAXZGOYxF+VAeWFUFIBFNv7g3B7S
+oCISxTIQYlJLzZMgHvwM0C2JeSX4GZ35OAwcCO6n+yHMHo2rBycPI+Kp2ny0XdXl
+ULJLvhOmxo7uqnzqiNOL4fmmqEs42aRIgdaL6oIx5C4pSU/+tmvCwXtyCwFCTecv
+UtVa3cXE248tPDBkl4d9G7feej1IGMpGvsHGw0yhWf12Vvf+kdW/1ZWfUtw6pcYF
+rijep04DCnNQzp/1D9kKY/hJwFiDTQfJuqAx5mZP9Upfm5qov+vGrGa/iKUAuBRz
+cFIjCWMGautRzPS3s9J8FNqaTqT/KA==
+=cFtW
+-----END PGP SIGNATURE-----
+
+--Sig_/SVatX9hzEj=GR00fmLTFyf9--
