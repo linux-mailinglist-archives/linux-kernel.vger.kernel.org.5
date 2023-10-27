@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6057D9571
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD6E7D95D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbjJ0Kn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S1345637AbjJ0K7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 06:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJ0Kny (ORCPT
+        with ESMTP id S230101AbjJ0K7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:43:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4FC18A;
-        Fri, 27 Oct 2023 03:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZP5aSdt++PfYBmmXR7K0cUYLNkK40CzBkOiwfwjBGMU=; b=Gla8Ilgri2R/a3Tls4SvnHYOiG
-        DzVhJ/dOhJFnVlcfZcoAMa4hR8UIv0lOY44zzjRvmjpBKNBx02s/+lEZ/WUdX6maSCnIQ7og+KGEq
-        XK79QIlVHoH5lmU3ujrun4sQOTe55xHj8AYv5J5cnnXZThRnPQpno/McORFnbYm3QHmHprxPpTesl
-        W8Cc41HrK+w6lbaSiOf4GeQ4ljY6kWAs73EpCFYEc7doYygVpdOUcAbl9Ya2dTM9cUCJKXwkmvKhY
-        U+/JuoiCS4m1QCwCnpznISxaDsT0sf3LXTLvKgE7EmVzqopSg8L6w+6Va2yDrfJR6y30X9qorb5Th
-        RmWQ0dhA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qwKJ7-002xG8-VC; Fri, 27 Oct 2023 10:43:14 +0000
-Date:   Fri, 27 Oct 2023 11:43:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_cstr()
-Message-ID: <ZTuUQZSrjhXnEaT/@casper.infradead.org>
-References: <20231026170722.work.638-kees@kernel.org>
- <20231026133850.138d5415@gandalf.local.home>
- <202310261050.A621A7F121@keescook>
+        Fri, 27 Oct 2023 06:59:34 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 03:59:30 PDT
+Received: from mail-sh.amlogic.com (unknown [58.32.228.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BBF9C;
+        Fri, 27 Oct 2023 03:59:30 -0700 (PDT)
+Received: from rd02-sz.amlogic.software (10.28.11.83) by mail-sh.amlogic.com
+ (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Fri, 27 Oct 2023
+ 18:44:25 +0800
+From:   Huqiang Qin <huqiang.qin@amlogic.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>
+CC:     <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Huqiang Qin <huqiang.qin@amlogic.com>
+Subject: [PATCH V3 0/3] Add watchdog support for Amlogic C3 and S4 SoCs
+Date:   Fri, 27 Oct 2023 18:43:55 +0800
+Message-ID: <20231027104358.342861-1-huqiang.qin@amlogic.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310261050.A621A7F121@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.28.11.83]
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:54:26AM -0700, Kees Cook wrote:
-> > > 	do_soemthing(seq_buf_cstr(s));
-> > 
-> > Do we really need to call it _cstr? Why not just have seq_buf_str() ?
-> > 
-> > I mean, this is C, do we need to state that in the name too?
-> 
-> I'm fine either way. I did that just to make the distinction between our
-> length-managed string of characters interface (seq_buf), and the
-> %NUL-terminated string of characters (traditionally called "C String" in
-> other languages). And it was still shorter than "seq_buf_terminate(s);
-> s->buffer" ;)
+Amlogic C3 and S4 has the same watchdog controller as Amlogic T7.
 
-'cstr' might be short for 'counted string' ...
+Changes since V2 [2]:
+- Modified yaml document to ensure that dtbs_check passes.
+- Added a patch for watchdog support for S4.
+
+Changes since V1 [1]:
+- Added C3 compatibles, with T7 compatibles list as fallback.
+
+[1]: https://lore.kernel.org/all/20230925090641.1185942-1-huqiang.qin@amlogic.com/
+[2]: https://lore.kernel.org/all/20230926055512.2355390-1-huqiang.qin@amlogic.com/
+
+Huqiang Qin (3):
+  dt-bindings: watchdog: Add support for Amlogic C3 and S4 SoCs
+  arm64: dts: Add watchdog node for Amlogic C3 SoCs
+  arm64: dts: Add watchdog node for Amlogic S4 SoCs
+
+ .../bindings/watchdog/amlogic,meson-gxbb-wdt.yaml    | 12 +++++++++---
+ arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi          |  6 ++++++
+ arch/arm64/boot/dts/amlogic/meson-s4.dtsi            |  6 ++++++
+ 3 files changed, 21 insertions(+), 3 deletions(-)
+
+-- 
+2.42.0
+
