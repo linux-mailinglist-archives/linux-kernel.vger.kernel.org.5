@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AA77D8F56
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC1E7D8F5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbjJ0HNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
+        id S1345351AbjJ0HOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0HND (ORCPT
+        with ESMTP id S229590AbjJ0HOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:13:03 -0400
+        Fri, 27 Oct 2023 03:14:03 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F94A1AA;
-        Fri, 27 Oct 2023 00:13:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCE8116;
+        Fri, 27 Oct 2023 00:14:01 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698390779;
+        s=2020; t=1698390839;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=48pzFigEfE7Y5axy5bcPf8T1YrV6Mt9jdZdUUrCruyY=;
-        b=XCkoYDbbxdX8izcFbwr8Eqjrpz/IiZy9OFMLMIUw7C3IcXXWldxRkgIF+qkBVvurs9azkC
-        VRBfNjf3U2uU3Jr8NS35HosDFVl2KEJOdkmzgT9QALLmizg63zjmrVpQKRGlgpTY4frTm8
-        tGyF8vIaxbs1mBQcAqrBDz1DsKqhfOd66TLWMZ6oamJ34XQm3KEY8iOPyKm4cS5VgSpi7A
-        JOLEKuh3/xAr+LDy+DBDr/iitqpzDIOye3l2r0AWUbvyp9HkLKdOwyuM7rr9EeGLVwxoaM
-        Qn2NGk7BqG3q0DvssdOQ+/CSlNLrYVOhnNTxhmYe6VpKA27BQW0zdYsOBVQ0/A==
+        bh=eJVMpiIeVpk7seuFKZfSHdhPh2uWAHUcs45v1cNLNhw=;
+        b=yjRTcK/3HzHdJlxf+rNLkpWCvE+GXuLsHOqzK4Eoe2oksmgDWddVwYQ+fRSjo1D7616Vry
+        H4jCeZX3g6FIrk7Ti3uYeH3csx+mDg2gIY71hddUSUKpaDaDmZiua8tN8vYicUoNFpJJqf
+        /nPyz3FpKLh+DHdfUcvr57/Pqy2cDt++xhw2bS1slf4UT2gl04Fkiijq7Pxv5DjrN1bD5Q
+        V6SUkXxWBUteuUGs8r2abdiJQ/X+4575r39Bz+2p/p0Ht8bdJeWJky8L6tuppJDtInX8fU
+        cBZLUuHUrg9beMho6ba/v7/JIXYylayjZl88T3tDvskyWI4zsqi4YPrDq/l8GA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698390779;
+        s=2020e; t=1698390839;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=48pzFigEfE7Y5axy5bcPf8T1YrV6Mt9jdZdUUrCruyY=;
-        b=0GPEJyc9w2S/lUYqu7AA2vKxe6BhOXt+9gTUXhCjKjqqzZFEPd3MBo+FLJYfoWdVvHFdQ4
-        OUu9Wdk8ZnijuBDQ==
+        bh=eJVMpiIeVpk7seuFKZfSHdhPh2uWAHUcs45v1cNLNhw=;
+        b=jHx8e7bHfbKM/IOLO1Lz2Zfw896ficoDWczCWdGHFlQrzI5neRSnnei4Nv8xLffuOdJRSI
+        NpyHrax2awuojpBQ==
 To:     Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
         adrian.hunter@intel.com, ajones@ventanamicro.com,
         alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
@@ -56,13 +56,13 @@ To:     Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
         rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
         sunilvl@ventanamicro.com, tim609@andestech.com, uwu@icenowy.me,
         wens@csie.org, will@kernel.org, ycliang@andestech.com
-Subject: Re: [RFC PATCH v3 RESEND 02/13] irqchip/riscv-intc: Allow large
- non-standard hwirq number
-In-Reply-To: <20231023004100.2663486-3-peterlin@andestech.com>
+Subject: Re: [RFC PATCH v3 RESEND 03/13] irqchip/riscv-intc: Introduce Andes
+ IRQ chip
+In-Reply-To: <20231023004100.2663486-4-peterlin@andestech.com>
 References: <20231023004100.2663486-1-peterlin@andestech.com>
- <20231023004100.2663486-3-peterlin@andestech.com>
-Date:   Fri, 27 Oct 2023 09:12:59 +0200
-Message-ID: <87a5s44jyc.ffs@tglx>
+ <20231023004100.2663486-4-peterlin@andestech.com>
+Date:   Fri, 27 Oct 2023 09:13:59 +0200
+Message-ID: <877cn84jwo.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,51 +75,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Oct 23 2023 at 08:40, Yu Chien Peter Lin wrote:
-> Currently, the implementation of the RISC-V INTC driver uses the
-> interrupt cause as hwirq and has a limitation of supporting a
-> maximum of 64 hwirqs. However, according to the privileged spec,
-> interrupt causes >= 16 are defined for platform use.
->
-> This limitation prevents us from fully utilizing the available
-> local interrupt sources. Additionally, the hwirqs used on RISC-V
-> are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
-> or T-Head's PMU irq) being currently used for supervisor mode.
->
-> The patch switches to using irq_domain_create_tree() which
+> +
+> +	if (strcmp(cp, "riscv,cpu-intc") == 0)
+> +		chip = &riscv_intc_chip;
+> +	else if (strcmp(cp, "andestech,cpu-intc") == 0)
+> +		chip = &andes_intc_chip;
+> +	else
+> +		return -ENXIO;
 
-git grep "This patch" Documentation/process/
-
-> creates the radix tree map, allowing us to handle a larger
-> number of hwirqs.
-
-Who is 'us'? We are not part of the chip and please write out 'hardware
-interrupts'
-
-> @@ -24,10 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
->  {
->  	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
->  
-> -	if (unlikely(cause >= BITS_PER_LONG))
-> -		panic("unexpected interrupt cause");
-> -
-> -	generic_handle_domain_irq(intc_domain, cause);
-> +	if (generic_handle_domain_irq(intc_domain, cause))
-> +		pr_warn("Failed to handle interrupt (cause: %ld)\n", cause);
-
-pr_warn_once() or at least pr_warn_ratelimited().
-
->  }
->  
->  /*
-> @@ -117,8 +115,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
->  {
->  	int rc;
->  
-> -	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
-> -					       &riscv_intc_domain_ops, NULL);
-> +	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
-> +					     NULL);
-
-Put it into one line. Linebreaking arguments is really only required
-when the line length is exceedingly long. This one is not.
+See the other reply.
 
