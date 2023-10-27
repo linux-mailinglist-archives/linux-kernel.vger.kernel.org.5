@@ -2,179 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE2A7D9DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C17D9DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346336AbjJ0P5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S1346334AbjJ0P55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346224AbjJ0P5f (ORCPT
+        with ESMTP id S1346331AbjJ0P5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:57:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30E0CE
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:57:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F7DC433C7;
-        Fri, 27 Oct 2023 15:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698422253;
-        bh=5aHvOf/tPDGqmnSNEmdIU3zX9wqQNMOGtumjnNW/4ho=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gFHt6fdOWWMG2TsxZ3ZP6RfUP+obHXohj5L35F+DACm6plNeJUbrW5WWhtr2vcWb/
-         Bo81e6lCaBK64uOYIDNNqPRZJ8vSiNrOmKuneRymRqYg6kZID32g5qRdiwj1r2jNit
-         RlJkYSHIGfc+4kHqbCJXBQ24B8A4I9WImOgIoObpEEGeBe3hP8G8sUNB8tSTQ7/9HG
-         7w4XIhIQLa2RwQDGKApwMng72Q6ufhRzAiX5t8EBEt6NaAE+4bbTdgu3d0c1SCDvy4
-         2enM6cMM/iaRjS5L5NS4TKB7Zb+A94kOxukyvLIrdSqLJwQf4lWTMFxypxk9dY7GpT
-         ehIqH3WGbHGcw==
-Message-ID: <db468c1c-fec9-46e7-b01f-413b539664fa@kernel.org>
-Date:   Fri, 27 Oct 2023 17:57:25 +0200
-MIME-Version: 1.0
+        Fri, 27 Oct 2023 11:57:54 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2088.outbound.protection.outlook.com [40.107.223.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FB618F
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:57:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nYOcwkFf28AGqYZO9WnsAvILLE6rHnMlE4VwOCiG3yHdfwN6Q1VWZHfFlUJ1xsIbIXT34km88DpVRb0DJDHa0sJZA8EwsFjx/woJnmhTL5kaS6++R4tuvHDSZjMW74IndOggE4hbSIppemDIzB0U01WIssWtLmcNFdlsJFuZ3hN3NaVe2uNcjZ9WBZYkpcz4x+VwIFUypnDoHc0ktQUL6zYEFJAPAOF+63eML/lKmLr6Yfz6hrmJGFICg3lSdoP3nTdfqtGdjTvbqqa+e0/KVz6AxF5S+f8fDNjHg24l1nfs+c61r16DOjNJp0FJdprtn0qtTGvLCYyPpwsCNVCDCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i1TfIPt1cbjW3DLMs2D2GJ99nbyoR1htOI41It5+/e8=;
+ b=Y0OJAAltMVbl/sBl1nK28twFCPdUyMkZPXz34xj7YhIy4v8mg5WfoIJd8pAUczqy0KPKQc9NFKKznTA1hsAfdrtvMBpC1VlwAnQZy9CbdTtLvTnfHfORgwvNjVDTWeAPsVISoYZ/UAFfuHjpRfesuPdP+3RW6UQ0+sKRgVWj5mWKJg60OJEmhhnjKiNDGQ/Pnt6c9FwCB2GmTN/CfJKPhaRuvv61yHf7skTcQDVe52+4Tw+enme6x15HOrbAweH3aOpYR87IOIcB+m7gqC/01cqiA+MTN6HVbMRX9CLhDUWNVI+TKd2Ylz2thv51aBA6lpTEROnYkiGO544Qr3OC7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i1TfIPt1cbjW3DLMs2D2GJ99nbyoR1htOI41It5+/e8=;
+ b=UCQz0TQp6Zu9BV18Ce3iLa0Nex1w4UhA8Q2KCxpZkbnhplfbRkQVhnlSNBAtZ6E3SWu6Vv8Al8SaKRhf2YE27+vYqRT1I2enZZ9qS1129ltuZ/G8AqG6fO5aH7miYRCCPVLoGKPQ0SKhwe5Qmaf5KdbichcZk6xffmAFzPpTSOE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ SJ0PR12MB5673.namprd12.prod.outlook.com (2603:10b6:a03:42b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 15:57:49 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466%7]) with mapi id 15.20.6933.024; Fri, 27 Oct 2023
+ 15:57:49 +0000
+Message-ID: <39ab34ec-209d-4176-b271-1a02e2976497@amd.com>
+Date:   Fri, 27 Oct 2023 11:57:45 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
- use case
+Subject: Re: [PATCH] drm/amdgpu: Fixes uninitialized variable usage in
+ amdgpu_dm_setup_replay
 Content-Language: en-US
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
-        arungopal.kondaveeti@amd.com, mastan.katragadda@amd.com,
-        juan.martinez@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <20231021145110.478744-9-Syed.SabaKareem@amd.com>
- <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
- <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
- <f8f8017c-4e76-4d70-918f-d7cb45186184@kernel.org>
- <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     "Lakha, Bhawanpreet" <Bhawanpreet.Lakha@amd.com>,
+        Yuran Pereira <yuran.pereira@hotmail.com>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>
+References: <DB3PR10MB683590457246A6625BAA6102E8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+ <dc2242cd-6522-4073-b376-edc2a9abc3d9@amd.com>
+ <PH8PR12MB727953EE85D593EF25650454F9DCA@PH8PR12MB7279.namprd12.prod.outlook.com>
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <PH8PR12MB727953EE85D593EF25650454F9DCA@PH8PR12MB7279.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQXP288CA0024.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c00:41::32) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SJ0PR12MB5673:EE_
+X-MS-Office365-Filtering-Correlation-Id: 541d9933-34a8-4d4e-15a1-08dbd705780f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nAZyN5C/+YrxEVURsQrU7kvEK6MuK9dWC3Nds77KH58Ddc5p6oGO1o1MoQ9/8FFjKQsAQy2EbuWilWyDk1eA6Tj+ndWfbZMLxPhN2vpBWi9x9TaIzEpUzI3Oq5YJkV+iSkc7y9AI54USX/x0f2zu6Zxx4U1o5Vr2Ylh85UB2u5arX5+A5U2wzox+plL6yu1UYwgqKQBY2jZMvQ7ifVoGH7mOsjAQZQw9WsUQ5E+NrkNdM0zMI9oq6+hrrT+GTAqghIB96/MdHgzJO6eaHb5bVDnNrEgEACgd0zqKtpYQn9PCeXggCpyGEK5lEL3GmwOpDGhDAp1lm/Y91VqC6yAQO8oB5mh70D5INOM6Byog09fCclD/7GNcPGKM8685Ryzg9dmRihcENDfOj0GUOy/10tfD66HsnCp/GdWiK3cqQXkYi8p7dETQ+EEAAL8b2CQCUcUtt9NO76WxIzNZdDTb5w2o9xSkh+obm1S/156WoTeITUTj3jmL7X9gwrYmRc4CEcskJwb3ibu6A9jHyQ/R0CMZklMDne8bJPuxCC+y7b0bxUsTxpwtvw+G9cbUSKdngF9JQgkLy8rHOShkNoWz6xItcqkmzCaaI/ysyJ0ipvmssdG88n9tBK8aEBz+PE8p2gOKXI9rWf/odgMiiWspeQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2616005)(110136005)(66476007)(66946007)(66556008)(54906003)(26005)(316002)(478600001)(6666004)(6486002)(6506007)(45080400002)(6512007)(53546011)(44832011)(41300700001)(31686004)(38100700002)(31696002)(2906002)(86362001)(5660300002)(36756003)(4326008)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXV0bXdNdHJQcEJLTEIvcEU4ZExqa2YxN1RRSnVCUUpBSUIvL0d5dnp5aFBV?=
+ =?utf-8?B?OGxHbXNZSWZsMVRGc1Z3MEU4UWFSVXdSZVJNU0ZQNTZRa2pDVE12c0dYNzFq?=
+ =?utf-8?B?VzhLRG5lSVFqc0F1THQ0MGZGdDczYVRmNW9uTy90dGtVTVNvMHZSWTg1NkIw?=
+ =?utf-8?B?eVZKTXNwRmpTT2RKR0VxWmF6SXhKdUZWZlpKMmErYk9PaDZ6YTBKOUQzaVZv?=
+ =?utf-8?B?UGZhY2FCWi96VUp0Q211ckJXWEQxYzhkV3ZBYTcvdTZSaFR0VGEzZURhTHpM?=
+ =?utf-8?B?LzZLQ2lsVkRjS3hKOGxIdWJoWkJTWlB5T1Q4ZWFmOFl2dmNkQjhacmtvTkVK?=
+ =?utf-8?B?NE1WUFNyclE2Wk9ZNWQraGQ1dGFqSUFCSWRTamFtMHFaYUtQSkpabFFER1p0?=
+ =?utf-8?B?QXZNaEt4TWJyNG5GYWtRelQ4cmw5akNwQ3d5TzJxY0xuQTN2OTkxSUJmQzVa?=
+ =?utf-8?B?UVZrUXNtNWt4YWIzbnFKdUpPMm9ncmRoK05BNHNmUTdLbVlEbGJCWnRJOHV3?=
+ =?utf-8?B?MEJnTmNRZE5JV3JGNkFUY1UwckxndVhnT0xnVDRXZHFNTEl5cis2S2x4di83?=
+ =?utf-8?B?NnhNVDFGMlNuNEd3L0N4VzB4S1hYNFlrNUo5Z2N0UlJJVjkrRVhMMm1qTmF5?=
+ =?utf-8?B?RkFmK2FQVk16aUxQMWIwT3laakhXemxDMWZabkJ4RDRnV1J1VmNqeHJzT3Yv?=
+ =?utf-8?B?UnZOc080bWFKdTliZlJFSFB4dHhEejkrTFl5S3BTR2FXcTc3dng0QjM0MUph?=
+ =?utf-8?B?SkNxdkJaQUFxMTlEcUJLM0tqZkt1RFNTeE5zbzN3K3VORkdjRzhqUjRmZ3kz?=
+ =?utf-8?B?OU55aE9zem1XNmZpeGZucXpUY1g5R2FwOG5NQ2VWeWlQQkhNeDFGMjhXWFBh?=
+ =?utf-8?B?T1J4MGJUK1U5SlRWeVVnRFpxTmdyc1o5NHRJTEpRTmIwY2htNm95bm9ZcTNq?=
+ =?utf-8?B?RzR6WHYvWjFNUXRKbVkybDNyenhzYUpNZU9MNTh3SGNJYldxZVlwV2NlcUY2?=
+ =?utf-8?B?TnQ4M1lwNUNyZGwwcDJ5bVFpZVBLU1dLWnB1QkYwZzVWV0xaMUtmZmN6ZE5h?=
+ =?utf-8?B?aUVEV29BbkNRVi9jeGJkNHFqR3I1RlZxRWNvQTdyV3QrTGZSRnRjdEU1cE1p?=
+ =?utf-8?B?TWNMRUpNY0Mxdng4dmxNNVVpVFg5WmZ2VVg4UzdRTXlGcnVOTjJzVEZWZjF6?=
+ =?utf-8?B?RWRYTk8wUWNKK2EvSDNlUXU0MzJuMXlRd0ZHQzJINURiMkx0aWNCY2R5SFVn?=
+ =?utf-8?B?enZYT01nNjJISy9jZnpqOE83c0ZMWU9ZcHZpRHMzV3IrY3dVc1ZFN290TExv?=
+ =?utf-8?B?eUJZTVpVdnFHVitpZ1AyeDdTbzYxWVVDOTljMzdLSjc2bUNLK2pYMmJCSXpJ?=
+ =?utf-8?B?dCthcFJKd2VxVkJCaStlcWZJUW9DcStWRDZMVjkxU25kaGFKWXJpMlZoY1hL?=
+ =?utf-8?B?QzBkY0xZMXhBVitlcFY1T2ovOVJPM0hnRTFsRVkyMmc0WnZ1WkRqTlRlRENz?=
+ =?utf-8?B?Y0k0aVdSUmgwZE5sRnFtSERZUUxJYXZxMXBERnQrREg1YzJUMURJS1JBa2Yr?=
+ =?utf-8?B?czdIOUxteDh6VkVPSlB6VVduU2ZNN0hGdHpVZjhHYmhSbmFycks0Mkk5UWhJ?=
+ =?utf-8?B?aGxwVTI1cG5hUlcrOC9QZTdEZnc4OXRad1FTVVlmM1V1K0sva3d1U29ibkY4?=
+ =?utf-8?B?YnFLNnFmZEdrVTRycXVkTm5JSVBkVlVJeWJFUEw1aUxpMS95QzRnaFV5OHIw?=
+ =?utf-8?B?ZTRJcFIyd0NZcTJoNmpaOGtsdGhHWUd1d3Qrak1QNU5NMmlXYWlpNkFueEhu?=
+ =?utf-8?B?K0hTRC9Henp0NDBaZnJnVGY1L3MwakRaTkdkOGVvWnNjT2xYTVMyeXNLaGlU?=
+ =?utf-8?B?QStYekxYUnJTZEs2WFJ1M2hRMG1yOVVwcG9pd1VMM3ljWkdPY3JLTlM1WmZZ?=
+ =?utf-8?B?bXpVSktPa1RqK3BONUZFSTJ5aEpaNTkwc01PNk5GM0xpZEprSkdRL1FocHNn?=
+ =?utf-8?B?bVNWZzk2bVlXWEtLSlZuV3B4RUVsRjA2VHV2QUdqVE90K0Zvb25MbGJiUE0w?=
+ =?utf-8?B?OGNhRENCbER5c1Erd01rcklPQmVBdGNHTVRIZS9zZ1RxeVRISjRpSHR1ekNW?=
+ =?utf-8?Q?FTMhWhV0kz7xLKvNMvI/aXf9b?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 541d9933-34a8-4d4e-15a1-08dbd705780f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 15:57:49.3393
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ANAGuT+5wNusWTathOgj8fxwDbSjagMlfKylVUTbR64aC9pPjJyQ0+J9gtUv+/KqH4/0MnvBhIzdTNfmkee2tA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5673
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 17:54, Mario Limonciello wrote:
-> On 10/27/2023 10:51, Krzysztof Kozlowski wrote:
->> On 27/10/2023 17:28, Mario Limonciello wrote:
->>> On 10/27/2023 03:49, Krzysztof Kozlowski wrote:
->>>> On 21/10/2023 16:50, Syed Saba Kareem wrote:
->>>>> add pdm use case machine driver support
->>>>>
->>>>> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
->>>>> ---
->>>>
->>>>
->>>>>    	dmi_id = dmi_first_match(acp_quirk_table);
->>>>>    	if (dmi_id && dmi_id->driver_data)
->>>>> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
->>>>>    		.name = "rmb-rt5682s-rt1019",
->>>>>    		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
->>>>>    	},
->>>>> +	{
->>>>> +		.name = "acp-pdm-mach",
->>>>> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
->>>>> +	},
->>>>>    	{ }
->>>>>    };
->>>>>    static struct platform_driver acp_asoc_audio = {
->>>>> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
->>>>>    MODULE_ALIAS("platform:acp3x-es83xx");
->>>>>    MODULE_ALIAS("platform:rmb-nau8825-max");
->>>>>    MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
->>>>> +MODULE_ALIAS("platform:acp-pdm-mach");
->>>>
->>>> Please stop growing the aliases. Module alias is not a substitute for
->>>> missing MODULE_DEVICE_TABLE.
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>>
->>>
->>> I thought the way that this works is that top level ACP driver (IE
->>> acp-pci.c) will have MODULE_DEVICE_TABLE.  This is how that module gets
->>> loaded.
->>>
->>> Then it creates platform devices based on the detected needs for the
->>> situation and the creation of those platform devices triggers a uevent
->>> which due to MODULE_ALIAS will get appropriate other platform drivers
->>> like this one loaded.
->>
->> And why you cannot use MODULE_DEVICE_TABLE here? IOW, why do you need to
->> manually duplicate entire table and re-invent MODULE_DEVICE_TABLE with
->> MODULE_ALIAS?
+On 10/27/23 11:55, Lakha, Bhawanpreet wrote:
+> [AMD Official Use Only - General]
 > 
-> What would actually go into MODULE_DEVICE_TABLE?
+> 
+> 
+> There was a consensus to use memset instead of {0}. I remember making 
+> changes related to that previously.
 
-The table you have few lines above aliases.
+Hm, seems like it's used rather consistently in the DM and in DC
+though.
 
 > 
-> The platform devices created are contingent upon what was found during 
-> the top level ACP driver probe.  You don't want all the "child" platform 
-> drivers to load unless they're needed.
-
-How static alias differs here from static device ID table? Both are
-built into the module and always there. I don't even understand what
-does it mean by "loading child platform drivers". Why would unneeded
-driver be loaded?
-
-Best regards,
-Krzysztof
+> Bhawan
+> 
+> ------------------------------------------------------------------------
+> *From:* Mahfooz, Hamza <Hamza.Mahfooz@amd.com>
+> *Sent:* October 27, 2023 11:53 AM
+> *To:* Yuran Pereira <yuran.pereira@hotmail.com>; airlied@gmail.com 
+> <airlied@gmail.com>
+> *Cc:* Li, Sun peng (Leo) <Sunpeng.Li@amd.com>; Lakha, Bhawanpreet 
+> <Bhawanpreet.Lakha@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; Siqueira, 
+> Rodrigo <Rodrigo.Siqueira@amd.com>; linux-kernel@vger.kernel.org 
+> <linux-kernel@vger.kernel.org>; amd-gfx@lists.freedesktop.org 
+> <amd-gfx@lists.freedesktop.org>; dri-devel@lists.freedesktop.org 
+> <dri-devel@lists.freedesktop.org>; Deucher, Alexander 
+> <Alexander.Deucher@amd.com>; Koenig, Christian 
+> <Christian.Koenig@amd.com>; 
+> linux-kernel-mentees@lists.linuxfoundation.org 
+> <linux-kernel-mentees@lists.linuxfoundation.org>
+> *Subject:* Re: [PATCH] drm/amdgpu: Fixes uninitialized variable usage in 
+> amdgpu_dm_setup_replay
+> On 10/26/23 17:25, Yuran Pereira wrote:
+>> Since `pr_config` is not initialized after its declaration, the
+>> following operations with `replay_enable_option` may be performed
+>> when `replay_enable_option` is holding junk values which could
+>> possibly lead to undefined behaviour
+>> 
+>> ```
+>>      ...
+>>      pr_config.replay_enable_option |= pr_enable_option_static_screen;
+>>      ...
+>> 
+>>      if (!pr_config.replay_timing_sync_supported)
+>>          pr_config.replay_enable_option &= ~pr_enable_option_general_ui;
+>>      ...
+>> ```
+>> 
+>> This patch initializes `pr_config` after its declaration to ensure that
+>> it doesn't contain junk data, and prevent any undefined behaviour
+>> 
+>> Addresses-Coverity-ID: 1544428 ("Uninitialized scalar variable")
+>> Fixes: dede1fea4460 ("drm/amd/display: Add Freesync Panel DM code")
+>> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+>> ---
+>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
+>> index 32d3086c4cb7..40526507f50b 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
+>> @@ -23,6 +23,7 @@
+>>    *
+>>    */
+>>   
+>> +#include <linux/string.h>
+>>   #include "amdgpu_dm_replay.h"
+>>   #include "dc.h"
+>>   #include "dm_helpers.h"
+>> @@ -74,6 +75,8 @@ bool amdgpu_dm_setup_replay(struct dc_link *link, struct amdgpu_dm_connector *ac
+>>        struct replay_config pr_config;
+> 
+> I would prefer setting pr_config = {0};
+> 
+>>        union replay_debug_flags *debug_flags = NULL;
+>>   
+>> +     memset(&pr_config, 0, sizeof(pr_config));
+>> +
+>>        // For eDP, if Replay is supported, return true to skip checks
+>>        if (link->replay_settings.config.replay_supported)
+>>                return true;
+> -- 
+> Hamza
+> 
+-- 
+Hamza
 
