@@ -2,126 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A63FD7D9AE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AAB7D9AE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346089AbjJ0OLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
+        id S1346069AbjJ0OMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346076AbjJ0OLn (ORCPT
+        with ESMTP id S231626AbjJ0OMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:11:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A32C18F
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:11:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAAD3C433C9;
-        Fri, 27 Oct 2023 14:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698415900;
-        bh=qiPK2+5bbIvnFZbVVqos1S/u2AdHxbqykbMWZHHXeiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E+h2mAlTeznQyw9FEZ6q7a/Yc4daSJLb373j7XfWgfwt4u6pT/QB7I7r26Uvy6l1v
-         jeLTaV9iB8eXeABbaFc78yp3zyZoVcYj3phgewglZpGrTZV2hg3WFPadlQ3Bv3XxgJ
-         mTaH6IWdx5I4wF6mskwkrrmp0Z3Li1M2m/48WkmYRzWtT8JYVM3xEZNnNiVNJ1Eq3B
-         xFWdWhVtkPTu0wVIEh/avYTQwxwtiiK7B5orqm0IGXzm4wHDfZLqc7jwwh/heSLTi1
-         Ry9ucEsKi1dPYYO4LiM80iGu5cH4sq5QMTt9juk96LdVv4uIHk/oKQhjGIxJXjTnYR
-         s7ukr0I9mrMSg==
-Date:   Fri, 27 Oct 2023 15:11:35 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Seven Lee <wtli@nuvoton.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
-        CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com,
-        supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate
- selection
-Message-ID: <20231027-pronto-prideful-2cf3415a9d87@spud>
-References: <20231027082144.639369-1-wtli@nuvoton.com>
- <20231027082144.639369-2-wtli@nuvoton.com>
+        Fri, 27 Oct 2023 10:12:49 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0C0B8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:12:47 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so3213899a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1698415966; x=1699020766; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=VO9vu7bmoU2J/IF2eJaU7O8plpGP9TRcwNE4oVJ9DFc=;
+        b=qE4Uoj1ZTvUv8XdszrAUjCECP7MfseoU3Je07Hj/42HKVLVpo3jHoZKnwcrpkdNYKK
+         BpKgwamPIQuOAipkXu6erU2r4iygAxtyg8S4FVLBg4EqEZAhUXkP7SArfsOx/Cbc2rDh
+         0pHIAQGHAhlDZYXMNeBaGLyzpz5ZYYbYdLsAg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698415966; x=1699020766;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VO9vu7bmoU2J/IF2eJaU7O8plpGP9TRcwNE4oVJ9DFc=;
+        b=BMFsSXKIkxtWL+n7ciKr4RtslHVI4yJwMG+viNdmGGLi6HcPI0tr3vfv/y1s8N99O5
+         vRsQuCruQpf57S9hJ7UcfkSi56QLkxfkxHL+FeksDtjO+Q8MDbSZ0T7qU3VD39zoHGay
+         koM9qro3IoGq0I9bWJFztZdQg7klsDoId8/QblKwznbK/AocZn3ixGi70bVd4y3FkG26
+         X0ArW+I5rTFIwKyOnCvlVZuMORDkD1vfXRlPVGBgMHvMcoDpX1B5gHzuS7iqvgLhkHAm
+         a6fb49uPnfSKDCb8iuGuiQTcP2ExPQa3Oly8dHysv2DU1/RIPri78zeyro0U7Je9lPno
+         63rg==
+X-Gm-Message-State: AOJu0YzS7Ee90J+vZRhRg7fntBPzRrftADfH8pd8BdM8ZYZBY1eoEDdV
+        J1/beyhW6MDEYqwdC8480raxLw==
+X-Google-Smtp-Source: AGHT+IFSHG58+AB4IT0GIx1QrSUz2BPwoei9v/Hnb704CnVCEbd6aiQIPLTxAFzHjjPdG/zCJPfOQA==
+X-Received: by 2002:a05:6402:134f:b0:522:4dd0:de72 with SMTP id y15-20020a056402134f00b005224dd0de72mr2385437edw.27.1698415965900;
+        Fri, 27 Oct 2023 07:12:45 -0700 (PDT)
+Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id g16-20020a056402321000b0053dda7926fcsm1270193eda.60.2023.10.27.07.12.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 07:12:45 -0700 (PDT)
+Message-ID: <cecd13f6-6d46-4a88-a30b-ce244d8fcd80@citrix.com>
+Date:   Fri, 27 Oct 2023 15:12:45 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Utulr+me0/RPd4KV"
-Content-Disposition: inline
-In-Reply-To: <20231027082144.639369-2-wtli@nuvoton.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-GB
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+ <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
+ <20231025220735.gpopnng76klkbuu3@desk>
+ <0ee3e3cd-01b2-4662-ba08-d137663f1699@citrix.com>
+ <20231027134829.7ehdjwf5pfcqr6xp@desk>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20231027134829.7ehdjwf5pfcqr6xp@desk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/10/2023 2:48 pm, Pawan Gupta wrote:
+> On the bright-side, I am seeing even better perf with VERW operand
+> out-of-line:
+> 
+> Baseline: v6.6-rc5
+> 
+> | Test               | Configuration          | v1   | v3   |
+> | ------------------ | ---------------------- | ---- | ---- |
+> | build-linux-kernel | defconfig              | 1.00 | 1.00 |
+> | hackbench          | 32 - Process           | 1.02 | 1.06 |
+> | nginx              | Short Connection - 500 | 1.01 | 1.04 |
+> 
+> Disclaimer: These are collected by a stupid dev who knows nothing about
+> perf, please take this with a grain of salt.
 
---Utulr+me0/RPd4KV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+:)
 
-Hey,
+Almost as if it's a good idea to follow the advice of the Optimisation
+Guide on mixing code and data, which is "don't".
 
-On Fri, Oct 27, 2023 at 04:21:43PM +0800, Seven Lee wrote:
-> Add input with DMIC slew rate selection
->=20
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml=
- b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> index 3e54abd4ca74..01028b7ff85c 100644
-> --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> @@ -89,6 +89,13 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      default: 3072000
-> =20
-> +  nuvoton,dmic-slew-rate-selection:
-> +    description: the number from 0 to 7 that sets the DMIC slew rate.
-> +        The unit is mV/ns. 0 is the slowest, and 7 is the fastest.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 7
-> +    default: 0
-
-I meant make the property in terms of the unit, so
-nuvoton,dmic-slew-rate-volt-per-sec (or similar, Rob would likely know
-better how he likes the unit suffix for a more complex unit like this
-one) and then make it an enum with possible values corresponding to
-the real values that putting 0, 1, 2, 3 etc into the register produces.
-
-Cheers,
-Conor.
-
-> +
->    nuvoton,left-input-single-end:
->      description: Enable left input with single-ended settings if set.
->          For the headset mic application, the single-ended control is
-> @@ -127,6 +134,7 @@ examples:
->              nuvoton,jack-insert-debounce =3D <7>;
->              nuvoton,jack-eject-debounce =3D <0>;
->              nuvoton,dmic-clk-threshold =3D <3072000>;
-> +            nuvoton,dmic-slew-rate-selection=3D <0>;
->              #sound-dai-cells =3D <0>;
->          };
->      };
-> --=20
-> 2.25.1
->=20
-
---Utulr+me0/RPd4KV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTvFFwAKCRB4tDGHoIJi
-0oU8AQCj7pUfn9S1XRtqy6D5OsCQmxBVTCNuJ1c20C0wtxBy1AD+O3vJBYzE6iVc
-BMhcpZ436Z5tHhcVPq+K0vt37JpUTwo=
-=y/dP
------END PGP SIGNATURE-----
-
---Utulr+me0/RPd4KV--
+~Andrew
