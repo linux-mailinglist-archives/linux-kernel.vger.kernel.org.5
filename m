@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A757DA336
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93567DA330
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346647AbjJ0WLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 18:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
+        id S1346667AbjJ0WLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 18:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346620AbjJ0WLU (ORCPT
+        with ESMTP id S1346630AbjJ0WLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 18:11:20 -0400
+        Fri, 27 Oct 2023 18:11:22 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C9F1B8;
-        Fri, 27 Oct 2023 15:11:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4651B9;
+        Fri, 27 Oct 2023 15:11:20 -0700 (PDT)
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 8C4283200920;
-        Fri, 27 Oct 2023 18:11:16 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 0D05E3200930;
+        Fri, 27 Oct 2023 18:11:18 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 27 Oct 2023 18:11:17 -0400
+  by compute4.internal (MEProxy); Fri, 27 Oct 2023 18:11:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444676; x=
-        1698531076; bh=1fai2oRGpMFX3YIWYq1Mi7aFvcDk/EldREaoCLVKnm8=; b=u
-        G36gus0VIZHOXP3fwTFfvT3ycUKwtH5ZLDdCGSBGl6DxvWwVQm8/EZOFRphNk1xS
-        c9eEtEXSBQCjvYJKn2LoWwFmkSzvMCidHvfTV24VvkWOtdKumP+SnMsJZgEIIsB4
-        LLQQK+9M89X9eCwT5eGZLFdKkzvbRkierTdZWB7Ho/k+8B559kXzdxVRA96+OnVI
-        rdyg20bGCht5R5kUKzmXcpi8v0ThkgEtOZCqN9N5Lt+LYxNhpUPTmqHJ7pdkPtZQ
-        OueaGVygxQjqw8gszR5cf5p8wvbPgkLVJMhJOegSLhxY9f0p2eDSIG8yFgCrypTE
-        JiX09lEgdH60vKnysHBMQ==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444678; x=
+        1698531078; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=I
+        HoYk5b3fVp4rsN5Fq+3FfYElLjRacfsGjWAOBn+q/4r9URgWVxABRQAHygc7PKm8
+        BBz11S7wsWLaZ79RrRf9Jk5AGQ2sShaMD2oMGfSzGE5BpvLdKZrnpWiig3GFjMXn
+        CNRsksMOv1eA/AHxozvixxATwtzNKsezZl7q2Zw2Ra3Xo7USVEmmSYU6YRhV5klh
+        gyRG9TMjnKukgbuHxp6MfRlPXS5OwNwaIhMgu31Of9ljT66o9SpiBxiFtWQT78vD
+        T7zpQ9ICItVdoDCovppnkDKSBo0ocp25NemDmjl+kfALb4x1yx8ScUuGjYlw+xox
+        WYWgzVTvCu5Ue6V7cvcTg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444676; x=
-        1698531076; bh=1fai2oRGpMFX3YIWYq1Mi7aFvcDk/EldREaoCLVKnm8=; b=D
-        HgNU1kpNAtcmxwitIsmeJFO57dKln7LUPtmUHQdsJoZ1c/GN02odMs4Vqdd9kIZm
-        U6ltcSugIIlpLA3nKbgIIJ46Ea5OumSb1db14KVEViHvQUEh225MWSvqfrj53zG1
-        pymSbzHD/MosKxvlLlbuBFmpbArwdXBfYz0BZ1YHSmiXOB06xLHMstmvpuwOf/cU
-        M9i5wDn5NpHM47FHDz5ncGlOJpO0kQL3zTAZBjc/YiFvR1Xmh7kFFrjI819n7FIA
-        CDk4J+d+a59MbY6SMqY/mvYdJ/7bKU1y1/Bgj9dNF1zI7Q5B4WwgIbo2PjPtv0LL
-        4ojA0/tShbd265TRdtqfw==
-X-ME-Sender: <xms:gzU8ZVWcxf9P31PQD4jvcLAocd8CsvBJiI0rPTtvVl16a92g-uCqVg>
-    <xme:gzU8ZVkK6o2ygnPDafTD9exwpzP-joENt_EPp9_FMP0b1U2mSJtTkqBdhHrIlrW4G
-    zlvVOkhOABs8uX86Qw>
-X-ME-Received: <xmr:gzU8ZRa2XmH0ea_WvQX1k9Un5D8wfAey9xxj1urthaUx8FLUgRw272ClKTSd4QDA9avvEQZoPDs>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444678; x=
+        1698531078; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=n
+        929qJ+dflF17rVICz5mADaJbZqcxuvXiB0RCM2k2fdJAcIAYlUXgO/D6RfVpZiX1
+        Q6+RtWMBnkXXc/ykAmUy0MF/GOD4yhKru5dlRRJRdOMt1FEL1ROcTHublV1ym+fy
+        evMECJZ/92eLmr819kD1QJZLGMOHiOyuZDbSHfBVNQ9YBpNhsTKrpozsk6xOOsHZ
+        sq+Bt8deQUtJ4N7NVzy4++ehVwoZO7aRS0VkgZHuoo/twh3F2LDjDesI3M0hxRiE
+        LPVJCNsru+vGIlB+n29aChgelrg5pHSWkny5cXJE5F7cJOuLnspjx7fASjsO46dV
+        Dv8jdUdUJ6T6+FmTzVdFg==
+X-ME-Sender: <xms:hjU8ZfX1wAcfzAM5BrJij1f1-clfrsxiIowA8K_zYWq7abjBoI_4Tg>
+    <xme:hjU8ZXnz9CUYe5vncjW6tVhDbV11ha7mkjUSWN9lRev9PH36BEu--YmIikq5T3O3u
+    hHGJc1DWGEs1WbeafU>
+X-ME-Received: <xmr:hjU8Zba49pQ2EHyTuE5RnuaKBA-5Q2G9d0WhKKtx5zaaEqW7-kRr9ZG35bOmxnwZ3tdEEKK1CFY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
-    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvuedvvd
-    egkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
-    horghtrdgtohhm
-X-ME-Proxy: <xmx:gzU8ZYW3FsKR-txlmqOEbrJgbGYlrhURONl5i9el3-IosGZuy238tA>
-    <xmx:gzU8Zfllbc1VNjGDRFkrDE8su7bJ8Jv5ifC9ODudtkCS_SXWkkWh0w>
-    <xmx:gzU8ZVe9pDFEIgrUpRDvNn8HTXMAnF4ZDXQYH1BkaRPKLBs1JzWLjg>
-    <xmx:hDU8ZYAp5RN9PRTiO26iVykUq2_6iJ2PNgg7juf5WqUl_kP7rBykvQ>
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeeiveekveegleffhfeufe
+    egteekheffffdutddvleeigeehvdehgeekvdduledthfenucffohhmrghinhepghgvnhgv
+    gidrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:hjU8ZaWVq3elbVQgOnqmWMUQLQ-833NeADM36gnINraD0GYHg8JZDw>
+    <xmx:hjU8ZZm54GJMT8rivhYO1ldTSw3VupL-5T-h7eibsmiZfI0LFn4RkQ>
+    <xmx:hjU8ZXcYYUiX-qWVb-beprrNa8UmWEcFVEZye_O8oHGAUudTYcW75g>
+    <xmx:hjU8ZSCqHwltXOHE62-ww2sqYdG7sPjbKO6gH3Ko9WLpT4kBRFPj9g>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 18:11:14 -0400 (EDT)
+ 27 Oct 2023 18:11:17 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 02/10] MIPS: spaces: Define a couple of handy macros
-Date:   Fri, 27 Oct 2023 23:10:58 +0100
-Message-Id: <20231027221106.405666-3-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 03/10] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date:   Fri, 27 Oct 2023 23:10:59 +0100
+Message-Id: <20231027221106.405666-4-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
 References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
@@ -86,53 +86,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KSEGX_SIZE is defined to size of each KSEG segment.
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
-TO_CAC and TO_UNCAC are brought to 32bit builds as well,
-TO_PHYS remains to be 64bit only as we want people to
-use __pa to avoid mixup compat address space.
-
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/include/asm/addrspace.h           | 5 +++++
- arch/mips/include/asm/mach-generic/spaces.h | 5 +++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
-index 59a48c60a065..03a5e2c8b5dc 100644
---- a/arch/mips/include/asm/addrspace.h
-+++ b/arch/mips/include/asm/addrspace.h
-@@ -47,6 +47,11 @@
-  */
- #define KSEGX(a)		((_ACAST32_(a)) & _ACAST32_(0xe0000000))
- 
-+/*
-+ * Gives the size of each kernel segment
-+ */
-+#define KSEGX_SIZE		0x20000000
-+
- /*
-  * Returns the physical address of a CKSEGx / XKPHYS address
-  */
-diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
-index b247575c5e69..05db19521e81 100644
---- a/arch/mips/include/asm/mach-generic/spaces.h
-+++ b/arch/mips/include/asm/mach-generic/spaces.h
-@@ -79,11 +79,12 @@
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd..fd765ad9ecac 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b0261..60c513c51684 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
  #endif
- 
- #define TO_PHYS(x)		(	      ((x) & TO_PHYS_MASK))
--#define TO_CAC(x)		(CAC_BASE   | ((x) & TO_PHYS_MASK))
--#define TO_UNCAC(x)		(UNCAC_BASE | ((x) & TO_PHYS_MASK))
- 
- #endif /* CONFIG_64BIT */
- 
-+#define TO_CAC(x)		(CAC_BASE   | ((x) & TO_PHYS_MASK))
-+#define TO_UNCAC(x)		(UNCAC_BASE | ((x) & TO_PHYS_MASK))
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
 +
- /*
-  * This handles the memory map.
-  */
+ 		const int handler_len = except_vec_vi_end - vec_start;
+ 
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
+ #endif
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.34.1
 
