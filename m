@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDAF7D8E01
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162227D8E02
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbjJ0FK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 01:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S1345118AbjJ0FLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJ0FKy (ORCPT
+        with ESMTP id S234902AbjJ0FLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 01:10:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEDC1B6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:10:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ACFE7C433C9;
-        Fri, 27 Oct 2023 05:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698383450;
-        bh=EKNbDWtfaUD3WEEOAPnInrFXHTHRnJmKszb1TwkoXAQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FPfW6VUEDtCgms3wTS/NoQn0bTjAIhf2rT7LmcfiFZnnUma4vH+s7AcQpJTqhFzDf
-         5PqWXdvs9Ky0kYM4yQmAk9aSg+fFDA+cLXoxaibFqwMnY7DG2DcnUFySn4s/P64AG4
-         ncwhkO6LdnpDZTVaFG8xfOrw8NV2Iatk9Q9JqGraB3a1ifJ5aV/mZw7m7XLGV0GT+x
-         KdlNG47mzhgXBVv11NqfWNJsHsxJEgBQUTVWAJAVbD3H/xA4StIIO/PycItxBOkMvN
-         UVDGQiQ7zFUoRddAD1SumpMCe+ip8WqJYyP6tg/4CFM0D+XPFVuaOxBIJgD30YQQWF
-         LQDvohJDt6IrA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8A4D1C39563;
-        Fri, 27 Oct 2023 05:10:50 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 27 Oct 2023 01:11:08 -0400
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3EBD48
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:11:05 -0700 (PDT)
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-581df11b5b4so2407803eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:11:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698383464; x=1698988264;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BYRbdaBgJS+wSJ4gmYrUGgqbPKYTSmw6Nqiyq4u7xTs=;
+        b=sxXCIjrjVQonWIxfRnPHsbDZcvprhDmBFHcMrwzq7ZlMuZDJC00EHU5VlT9jSMD/2P
+         bTaGQxGWNQIP6LCIi5xbq2FIauDXcPqYzQ/wGh2FJ+JmSQr1ZJjcyFYYqEeHmapGha5m
+         wbprJPWysJrRP7x7o2VkGy6+RlIgbq5N8Wh4hs7oK99BwqJUBknUstN+yIWz4P3Bbvn5
+         NUwkDGPyBGlNaNI5Edderncp3AA3gDraZ7g5MfW58+uguCxpYDrrU3ZMWiRmb34FJhae
+         1rGGZO15TQnSs/E6KbFn8r+7fZOe0D/7in9o4PlVqaRtNCvBp86x5/n0GkzPkVxWNhL8
+         Km7A==
+X-Gm-Message-State: AOJu0YyHZ1opInkWTXie9T0FKx3O22jm5OKS8G3e2rBO1aysac8Bl5Eu
+        r2B8UcWa5gW9hDArZ6HjMATUvnoAFAO1oe4tJZIPTgjYpW0X
+X-Google-Smtp-Source: AGHT+IFdDepfBdz8j2YWRcZSFB2dfFx87KPOrv4q6e9N8Ug/QH/LE98GYKgHIneccbhlUkeKjg1dLUe+WtPm2/q9DIqUn81hzVTW
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] MAINTAINERS: Maintainer change for ptp_vmw driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169838345055.10513.2288095940504010073.git-patchwork-notify@kernel.org>
-Date:   Fri, 27 Oct 2023 05:10:50 +0000
-References: <20231025231931.76842-1-amakhalov@vmware.com>
-In-Reply-To: <20231025231931.76842-1-amakhalov@vmware.com>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com, jsipek@vmware.com, akaher@vmware.com,
-        deep@dshah.net, pv-drivers@vmware.com, sdeep@vmware.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:ea4a:0:b0:581:e2d5:a088 with SMTP id
+ j10-20020a4aea4a000000b00581e2d5a088mr478614ooe.0.1698383464607; Thu, 26 Oct
+ 2023 22:11:04 -0700 (PDT)
+Date:   Thu, 26 Oct 2023 22:11:04 -0700
+In-Reply-To: <000000000000f3aeec05f025c6b8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019b7280608abb7f8@google.com>
+Subject: Re: [syzbot] [ntfs3?] BUG: unable to handle kernel NULL pointer
+ dereference in unlock_page (2)
+From:   syzbot <syzbot+9d014e6e0df70d97c103@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org,
+        almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, n.zhandarovich@fintech.ru,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+syzbot suspects this issue was fixed by commit:
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+commit 013ff63b649475f0ee134e2c8d0c8e65284ede50
+Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Date:   Fri Jun 30 12:17:02 2023 +0000
 
-On Wed, 25 Oct 2023 16:19:31 -0700 you wrote:
-> Deep has decided to transfer the maintainership of the VMware virtual
-> PTP clock driver (ptp_vmw) to Jeff. Update the MAINTAINERS file to
-> reflect this change.
-> 
-> Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-> Acked-by: Deep Shah <sdeep@vmware.com>
-> Acked-by: Jeff Sipek <jsipek@vmware.com>
-> 
-> [...]
+    fs/ntfs3: Add more attributes checks in mi_enum_attr()
 
-Here is the summary with links:
-  - MAINTAINERS: Maintainer change for ptp_vmw driver
-    https://git.kernel.org/netdev/net-next/c/cc33a80b8164
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10677ddb680000
+start commit:   18940c888c85 Merge tag 'sched_urgent_for_v6.3_rc4' of git:..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=acdb62bf488a8fe5
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d014e6e0df70d97c103
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bf0adec80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1391fcd5c80000
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs/ntfs3: Add more attributes checks in mi_enum_attr()
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
