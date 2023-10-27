@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EEC7D9E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3B27D9E4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345884AbjJ0Q7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S1345911AbjJ0Q7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ0Q7Q (ORCPT
+        with ESMTP id S229454AbjJ0Q7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:59:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF01411B;
-        Fri, 27 Oct 2023 09:59:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2800ab6fa66so881705a91.3;
-        Fri, 27 Oct 2023 09:59:14 -0700 (PDT)
+        Fri, 27 Oct 2023 12:59:19 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB42B128;
+        Fri, 27 Oct 2023 09:59:16 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5b8c39a2dceso1807122a12.2;
+        Fri, 27 Oct 2023 09:59:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698425954; x=1699030754; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l2XOiyO7ELntzgtLuOwOBKhVQExybEKPgHk4URVDgho=;
-        b=TaXdggCfuxcnoE3f7wujFBb8G5rfCzEQXCsOLdMruV4SRYxEXcbMj2mXFEfSUMKS94
-         ES82gfraay+Ip729LlK8pgOjUOSmJTTlLMhI0XOJYo6m3kXjGeTQ4Fya+po6VKM+8lHA
-         Lhv42BDhXWMOQaXeK3wtgdSW2Mk2hCntYfMi6oTdR52TsLfep3BNky17LU8tWBrrOBim
-         6j1H9yhv7jCDq8IpzbFa7oorOQYUN2WN1pmXDsmi+pxe3lxegRE47LkLVCFphGhamhMU
-         wRwmM80i1n7/sNtJUQ8dkPB7Cuy1UUydS2Cm9Ja21l04cQ4tU9+9IpE02Zt2UsQohU7f
-         oGcw==
+        d=gmail.com; s=20230601; t=1698425956; x=1699030756; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5R6dnp6JYl9GTg3p8/cfLvJpZVQTPFVKn1Jc3rRbi2Y=;
+        b=KagQFQXObISaEISU+45Xa5HA+1ctecJbfNQDuigNAdrSELcbIDNH5PX+ovC4OIZr63
+         Tl2MofT8FPkRB4ti8e0X3Ur5/ySrxhuxYEaQZOYpGOBOdrwDaa0DSR0eUQMSA6yHFTZp
+         QMVAQxEwwng6A9hRPSVQNPRg7SMZGX4poU4BU2Djh4JLU9ehYzL1e3zKNIIimygtndlX
+         PrJDiTe/BMfonnOXE2wFdW/BRnetG7uYTqlyFqMe+Xwkseoy3qXZ0P6wQR1AKRTuN48t
+         AkQwgO2fwoyrfwxF8DZMteNQZovcUowGabIauZGehVrMStrK0MpTSWtwDSF8DtJJ8GTZ
+         6oPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698425954; x=1699030754;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l2XOiyO7ELntzgtLuOwOBKhVQExybEKPgHk4URVDgho=;
-        b=sfyj5tpvP/Tk+pndESDBUiDtTx4oXu3nBDODEPpF7V54MbKUaxtktueyvfqi/Uf6qU
-         tdsyVqw/Q3qWI+i1331B3rRN3/L94c2R/QLKWTVVjGbd+WYAbP4EyeoHiBtVgZe+SiTo
-         wWsDajLzwg0vuJp+J63HnXpKlwXFEPcsmry05hS69rZh+KUXM1F71row3XYvLHyFSCTW
-         dBFN6V/277qdy4axvo3dq5KB666IxdPByCVnyPtOgey/LZge3qaAlsQP4vmbrt/sMM57
-         ANbo7L3pYtktJ+sVJ8xuy4M3ZrMEgPIw7DCo/wMxXKfnvDnuDZcXPSznIYGXceuDj2ek
-         MO+Q==
-X-Gm-Message-State: AOJu0YxqKPNwGlZSjyPWA8mJKV+rwho6vHkl1KnCLPYOJJjoEjC2/RIX
-        SbkcRjIjOk6Xg/oMc9EUCJc=
-X-Google-Smtp-Source: AGHT+IGmj0N9Vkha046UwwcpchKPTTZ+UtBOMnjmz7YeYZi5yoFGRN7OlD9zVh2noyVB62tlU/Jayw==
-X-Received: by 2002:a17:90a:1a0b:b0:280:1022:f00e with SMTP id 11-20020a17090a1a0b00b002801022f00emr1807988pjk.29.1698425954002;
-        Fri, 27 Oct 2023 09:59:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698425956; x=1699030756;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5R6dnp6JYl9GTg3p8/cfLvJpZVQTPFVKn1Jc3rRbi2Y=;
+        b=mAgRPxlG5wZNMW+x13WaP+kS2iAjceLANveb+KparvCaVxGv0SEA6/wcDtKeJjvzSb
+         C6XCYxZxeo+m3NWm/9UX80Yyiyo64pXtMGbamMR9Co/GRnFGm0tosM85wIQSxq2CmCTx
+         ncSCPF7Oyi3Cg7SRsB/pGIRYYdVUgyLFBJD4Y8qNKQlxI+5d/W3TVxW2+g229gZ4r9rL
+         KVlJLQ4ktWtuXF3z6aDaMCtKPPL6B2HF9DvCxoGY25rFrrpGDndeOG/EfcBW0wjDvTaK
+         iWX0EJOmTqMR3scOn/7w8EAhnVQHk3Up3gzgKURGEhTmLDpruaOCbKZ9mYeCL/JT7dtQ
+         +T1Q==
+X-Gm-Message-State: AOJu0YxCC/G6h+rkWMTajjUkX0/tgG5gAje1mdTDP4QAjZt4Kj+6zUCP
+        QNlpRBKc5dJcG+1o/MPuXpY=
+X-Google-Smtp-Source: AGHT+IGKn3WMc6OBc8kKe4JkxH8X2ZWrozRHWu6T+6S+ZBzTtDZM8a8mjcxLZWnStYmHSFiQ1ePvig==
+X-Received: by 2002:a17:90b:3781:b0:27d:d36:763b with SMTP id mz1-20020a17090b378100b0027d0d36763bmr3013167pjb.31.1698425956153;
+        Fri, 27 Oct 2023 09:59:16 -0700 (PDT)
 Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id s31-20020a17090a2f2200b0028017a2a8fasm733629pjd.3.2023.10.27.09.59.13
+        by smtp.gmail.com with ESMTPSA id pj1-20020a17090b4f4100b00273744e6eccsm1446083pjb.12.2023.10.27.09.59.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 09:59:13 -0700 (PDT)
+        Fri, 27 Oct 2023 09:59:15 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dong Chenchen <dongchenchen2@huawei.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Jack Xiao <Jack.Xiao@amd.com>, James Zhu <James.Zhu@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>, Lang Yu <Lang.Yu@amd.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-pm@vger.kernel.org (open list:SUSPEND TO RAM),
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), Philip Yang <Philip.Yang@amd.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Sean Paul <sean@poorly.run>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Subject: [PATCH 0/7] drm/msm/gem: drm_exec conversion
-Date:   Fri, 27 Oct 2023 09:58:34 -0700
-Message-ID: <20231027165859.395638-1-robdclark@gmail.com>
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/7] drm/msm/gem: Remove "valid" tracking
+Date:   Fri, 27 Oct 2023 09:58:35 -0700
+Message-ID: <20231027165859.395638-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231027165859.395638-1-robdclark@gmail.com>
+References: <20231027165859.395638-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -92,37 +82,167 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-Simplify the exec path (removing a legacy optimization) and convert to
-drm_exec.  One drm_exec patch to allow passing in the expected # of GEM
-objects to avoid re-allocation.
+This was a small optimization for pre-soft-pin userspace.  But mesa
+switched to soft-pin nearly 5yrs ago.  So lets drop the optimization
+and simplify the code.
 
-I'd be a bit happier if I could avoid the extra objects table allocation
-in drm_exec in the first place, but wasn't really happy with any of the
-things I tried to get rid of that.
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.h        |  2 --
+ drivers/gpu/drm/msm/msm_gem_submit.c | 44 +++++-----------------------
+ 2 files changed, 8 insertions(+), 38 deletions(-)
 
-Rob Clark (7):
-  drm/msm/gem: Remove "valid" tracking
-  drm/msm/gem: Remove submit_unlock_unpin_bo()
-  drm/msm/gem: Don't queue job to sched in error cases
-  drm/msm/gem: Split out submit_unpin_objects() helper
-  drm/msm/gem: Cleanup submit_cleanup_bo()
-  drm/exec: Pass in initial # of objects
-  drm/msm/gem: Convert to drm_exec
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c  |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c |   4 +-
- drivers/gpu/drm/drm_exec.c              |  15 +-
- drivers/gpu/drm/msm/Kconfig             |   1 +
- drivers/gpu/drm/msm/msm_gem.h           |  13 +-
- drivers/gpu/drm/msm/msm_gem_submit.c    | 197 ++++++------------------
- drivers/gpu/drm/msm/msm_ringbuffer.c    |   3 +-
- drivers/gpu/drm/nouveau/nouveau_exec.c  |   2 +-
- drivers/gpu/drm/nouveau/nouveau_uvmm.c  |   2 +-
- include/drm/drm_exec.h                  |   2 +-
- 12 files changed, 79 insertions(+), 170 deletions(-)
-
+diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+index 8ddef5443140..c36c1c1fa222 100644
+--- a/drivers/gpu/drm/msm/msm_gem.h
++++ b/drivers/gpu/drm/msm/msm_gem.h
+@@ -271,7 +271,6 @@ struct msm_gem_submit {
+ 	struct msm_gpu_submitqueue *queue;
+ 	struct pid *pid;    /* submitting process */
+ 	bool fault_dumped;  /* Limit devcoredump dumping to one per submit */
+-	bool valid;         /* true if no cmdstream patching needed */
+ 	bool in_rb;         /* "sudo" mode, copy cmds into RB */
+ 	struct msm_ringbuffer *ring;
+ 	unsigned int nr_cmds;
+@@ -288,7 +287,6 @@ struct msm_gem_submit {
+ 	} *cmd;  /* array of size nr_cmds */
+ 	struct {
+ /* make sure these don't conflict w/ MSM_SUBMIT_BO_x */
+-#define BO_VALID	0x8000	/* is current addr in cmdstream correct/valid? */
+ #define BO_LOCKED	0x4000	/* obj lock is held */
+ #define BO_PINNED	0x2000	/* obj (pages) is pinned and on active list */
+ 		uint32_t flags;
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index 6d8ec1337e8b..996274ef32a6 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -150,8 +150,6 @@ static int submit_lookup_objects(struct msm_gem_submit *submit,
+ 
+ 		submit->bos[i].handle = submit_bo.handle;
+ 		submit->bos[i].flags = submit_bo.flags;
+-		/* in validate_objects() we figure out if this is true: */
+-		submit->bos[i].iova  = submit_bo.presumed;
+ 	}
+ 
+ 	spin_lock(&file->table_lock);
+@@ -278,9 +276,6 @@ static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
+ {
+ 	unsigned cleanup_flags = BO_PINNED | BO_LOCKED;
+ 	submit_cleanup_bo(submit, i, cleanup_flags);
+-
+-	if (!(submit->bos[i].flags & BO_VALID))
+-		submit->bos[i].iova = 0;
+ }
+ 
+ /* This is where we make sure all the bo's are reserved and pin'd: */
+@@ -390,8 +385,6 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+ 	struct msm_drm_private *priv = submit->dev->dev_private;
+ 	int i, ret = 0;
+ 
+-	submit->valid = true;
+-
+ 	for (i = 0; i < submit->nr_bos; i++) {
+ 		struct drm_gem_object *obj = submit->bos[i].obj;
+ 		struct msm_gem_vma *vma;
+@@ -407,14 +400,7 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+ 		if (ret)
+ 			break;
+ 
+-		if (vma->iova == submit->bos[i].iova) {
+-			submit->bos[i].flags |= BO_VALID;
+-		} else {
+-			submit->bos[i].iova = vma->iova;
+-			/* iova changed, so address in cmdstream is not valid: */
+-			submit->bos[i].flags &= ~BO_VALID;
+-			submit->valid = false;
+-		}
++		submit->bos[i].iova = vma->iova;
+ 	}
+ 
+ 	/*
+@@ -451,7 +437,7 @@ static void submit_attach_object_fences(struct msm_gem_submit *submit)
+ }
+ 
+ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+-		struct drm_gem_object **obj, uint64_t *iova, bool *valid)
++		struct drm_gem_object **obj, uint64_t *iova)
+ {
+ 	if (idx >= submit->nr_bos) {
+ 		SUBMIT_ERROR(submit, "invalid buffer index: %u (out of %u)\n",
+@@ -463,8 +449,6 @@ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+ 		*obj = submit->bos[idx].obj;
+ 	if (iova)
+ 		*iova = submit->bos[idx].iova;
+-	if (valid)
+-		*valid = !!(submit->bos[idx].flags & BO_VALID);
+ 
+ 	return 0;
+ }
+@@ -477,9 +461,6 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 	uint32_t *ptr;
+ 	int ret = 0;
+ 
+-	if (!nr_relocs)
+-		return 0;
+-
+ 	if (offset % 4) {
+ 		SUBMIT_ERROR(submit, "non-aligned cmdstream buffer: %u\n", offset);
+ 		return -EINVAL;
+@@ -500,7 +481,6 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 		struct drm_msm_gem_submit_reloc submit_reloc = relocs[i];
+ 		uint32_t off;
+ 		uint64_t iova;
+-		bool valid;
+ 
+ 		if (submit_reloc.submit_offset % 4) {
+ 			SUBMIT_ERROR(submit, "non-aligned reloc offset: %u\n",
+@@ -519,13 +499,10 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 			goto out;
+ 		}
+ 
+-		ret = submit_bo(submit, submit_reloc.reloc_idx, NULL, &iova, &valid);
++		ret = submit_bo(submit, submit_reloc.reloc_idx, NULL, &iova);
+ 		if (ret)
+ 			goto out;
+ 
+-		if (valid)
+-			continue;
+-
+ 		iova += submit_reloc.reloc_offset;
+ 
+ 		if (submit_reloc.shift < 0)
+@@ -879,8 +856,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 		struct drm_gem_object *obj;
+ 		uint64_t iova;
+ 
+-		ret = submit_bo(submit, submit->cmd[i].idx,
+-				&obj, &iova, NULL);
++		ret = submit_bo(submit, submit->cmd[i].idx, &obj, &iova);
+ 		if (ret)
+ 			goto out;
+ 
+@@ -894,17 +870,13 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 
+ 		submit->cmd[i].iova = iova + (submit->cmd[i].offset * 4);
+ 
+-		if (submit->valid)
++		if (likely(!submit->cmd[i].nr_relocs))
+ 			continue;
+ 
+ 		if (!gpu->allow_relocs) {
+-			if (submit->cmd[i].nr_relocs) {
+-				SUBMIT_ERROR(submit, "relocs not allowed\n");
+-				ret = -EINVAL;
+-				goto out;
+-			}
+-
+-			continue;
++			SUBMIT_ERROR(submit, "relocs not allowed\n");
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+ 		ret = submit_reloc(submit, obj, submit->cmd[i].offset * 4,
 -- 
 2.41.0
 
