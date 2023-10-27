@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8287D9324
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74CF7D932B
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbjJ0JKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        id S1345598AbjJ0JKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjJ0JKF (ORCPT
+        with ESMTP id S1345535AbjJ0JK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:10:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AF893;
-        Fri, 27 Oct 2023 02:10:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09CB0C433C8;
-        Fri, 27 Oct 2023 09:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698397801;
-        bh=UlnJ7ybGRiYreh3nfZGSzzF+l2lR/9JOQF1TpzUa/ds=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VafXryuBonCNfDfOwpSgK59Lcnu5KPZux97nafwBkvjz9FhzmOj7Pv1xN7LdnujyD
-         z3FGK3jCrOfhOba8q1pc203WyhUjFZFCmnHbYtJGjUwS95Aebq1wpQm++d3k5IRifh
-         ki7fmSasShS/q68V0i0GmeH/JaxawXkxv2DLqyhyajznIkDJSNAkMEMSBO8GPUYt7N
-         L9K2Tm0/1npVrjDJCw/J8wdx4bnIxd6Eo1IWEVBHz4dbMwJ9kLjHpdOAgO47LW/EKq
-         BvqdA1pt8gWardtk8NVoe3Vwl+p4mTNpTc2/PXmRBGYdBWQFSCy+lhkoRXZx1iPfdW
-         C8QqAJnjY3bGw==
-Date:   Fri, 27 Oct 2023 11:09:58 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, conor+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: i2c: mv64xxx: add bus-reset-gpios
- property
-Message-ID: <ZTt+ZgNe5Y35E/C2@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        krzysztof.kozlowski+dt@linaro.org, gregory.clement@bootlin.com,
-        andi.shyti@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz>
- <20231027033104.1348921-2-chris.packham@alliedtelesis.co.nz>
+        Fri, 27 Oct 2023 05:10:28 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A7A187
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:10:26 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40859c466efso14222105e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698397825; x=1699002625; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GuqStbbcE98g0Qsufd7xFmYWScwY7cbL2ixdMjl3DG0=;
+        b=ilQhxrmDoYfEmWuABHo0qqhMgCt8o9EfCk2zcr1vAVtFlkv6mJkdypvwsbo6nRVcRB
+         PUC63XCQR1KfGDc1bs6SEWDDCKVLOQvwpd6SlrsYUFyUduixYjGgSZFswDIzuCZMVY6P
+         IUQXyMN1XV8zK7EQmQrXqoJSQ0m9587NwywYkzGJGfQRZFA9+CnvXy7LiaYpxokEBq2m
+         JxErPEOfH37igV9GCWyR7D+Pan1wregv4JDW0cCFMa8kl0a/rXhpp57g2M1VbqE2euSy
+         ANUYkoKjne1FQEx09HCJ9qaL1aRq8GdoIT0fMQ+IwnGB0GtGJihOyGseF1yhNvm/K541
+         8oew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698397825; x=1699002625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GuqStbbcE98g0Qsufd7xFmYWScwY7cbL2ixdMjl3DG0=;
+        b=brZpHcz3rUdt+J4vO+D10MlrBc/sCUf2av3DnfPu+yxuPw46cOcabcFwm/gCYbxWNX
+         r0ncd8U8muwqZAAboOqn4Yc7ayHGcVCfX6BcFhxQ+uldJobTjo6cC7gO5ws8QgalJha4
+         GhW677Py2UdoLZlL9eWVCdetG1gL2R+iljpdo1qIe70gABh5eIYTqkXUnSv08Ue/432d
+         BScukEY2xih3f6axaxna2yCLtzGtChWMdtu8N747L7etf9BqQhSUiBacMcpHNwCHriTa
+         DcQN9Z8YrGwI9F/NsvDP3mShOH7hxyYMA9BG/jFp4+iQv4uOKKasIyqe8Y0QMWJHQ2eV
+         0+uA==
+X-Gm-Message-State: AOJu0YwW6pTehHgtpV9QnfCtZ8gN3oeWtEaN9OD/F9TUfnCK/1W21n7R
+        tXVk85ZXA6bDEHq4dec0fHKrCZeVGjaHFG6f12/XLw==
+X-Google-Smtp-Source: AGHT+IGI7FPB/kli90gdnpa/qqhlm2HWGrOwpxkcIW2HjaeY9UEfdlauSJHS2Y4k+g69ULN6tYOd/Q==
+X-Received: by 2002:a05:600c:4454:b0:407:7e5f:ffb9 with SMTP id v20-20020a05600c445400b004077e5fffb9mr1768819wmn.9.1698397824819;
+        Fri, 27 Oct 2023 02:10:24 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id t3-20020a1c7703000000b004042dbb8925sm4544384wmi.38.2023.10.27.02.10.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 02:10:24 -0700 (PDT)
+Message-ID: <9fec3a90-b3dd-4b2e-bb7f-27890ad2b4e0@linaro.org>
+Date:   Fri, 27 Oct 2023 10:10:23 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MC18m8lzniOpRcOB"
-Content-Disposition: inline
-In-Reply-To: <20231027033104.1348921-2-chris.packham@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] media: qcom: camss: Convert to per-VFE pointer for
+ power-domain linkages
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, rfoss@kernel.org,
+        todor.too@gmail.com, andersson@kernel.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026155042.551731-1-bryan.odonoghue@linaro.org>
+ <20231026155042.551731-3-bryan.odonoghue@linaro.org>
+ <8a36e61a-5397-4513-ae0d-eb68ccd8e584@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <8a36e61a-5397-4513-ae0d-eb68ccd8e584@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/10/2023 21:08, Konrad Dybcio wrote:
+>> +    if (vfe->id >= camss->res->vfe_num)
+>>           return 0;
+> P.S. this seems better suited for some warning, I think
 
---MC18m8lzniOpRcOB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Noo this indicates VFE lite !
 
-On Fri, Oct 27, 2023 at 04:31:03PM +1300, Chris Packham wrote:
-> Add bus-reset-gpios and bus-reset-duration-us properties to the
-> marvell,mv64xxx-i2c binding. These can be used to describe hardware
-> where a common reset GPIO is connected to all downstream devices on and
-> I2C bus. This reset will be asserted then released before the downstream
-> devices on the bus are probed.
->=20
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+power-domains = <VFE_0>,
+                 <VFE_1>,
+                 <TITAN_TOP>; // the controller pd
 
-Krzysztof, are you fine with this change?
+vfe-set = <VFE_0>, // has its own PD vfe->id = 0
+           <VFE_1>, // has its own PD vfe->id = 1
+           <VFE_LITE_N>; // has no PD vfe->id = 2
 
-> ---
->=20
-> Notes:
->     Changes in v5:
->     - Rename reset-gpios and reset-duration-us to bus-reset-gpios and
->       bus-reset-duration-us as requested by Wolfram
->     Changes in v4:
->     - Add r-by from Krzysztof
->     Changes in v3:
->     - Rename reset-delay-us to reset-duration-us to better reflect its
->       purpose
->     - Add default: for reset-duration-us
->     - Add description: for reset-gpios
->     Changes in v2:
->     - Update commit message
->     - Add reset-delay-us property
->=20
->  .../devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml   | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.ya=
-ml b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> index 461d1c9ee3f7..b165d1c4f0b1 100644
-> --- a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> @@ -70,6 +70,16 @@ properties:
->    resets:
->      maxItems: 1
-> =20
-> +  bus-reset-gpios:
-> +    description:
-> +      GPIO pin providing a common reset for all downstream devices. This=
- GPIO
-> +      will be asserted then released before the downstream devices are p=
-robed.
-> +    maxItems: 1
-> +
-> +  bus-reset-duration-us:
-> +    description: Reset duration in us.
-> +    default: 1
-> +
->    dmas:
->      items:
->        - description: RX DMA Channel
-> --=20
-> 2.42.0
->=20
+The basic problem this series fixes is magic indexing.
 
---MC18m8lzniOpRcOB
-Content-Type: application/pgp-signature; name="signature.asc"
+In the first instance, using named power-domains so that the ordering of 
+declaration doesn't matter and we don't have funky code inferring if a 
+power-domain belongs to the TOP or not.
 
------BEGIN PGP SIGNATURE-----
+Secondly though, which is what the first patch in the series does - is 
+as I rebased I realised the VFE/VFE Lite thing was still there.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU7fmEACgkQFA3kzBSg
-Kbb6ow//Uv8Eg3AFUhPmr2ffnMT2OIGd31B8REfzNbJrn9mS+HcXjLqMzy5eiViS
-2P4amlnhQ+bRE+8hZ6gQCWOpB5fr+7/16w6H7TsLQ97HIhFIewdgM4WYvPmyOkyd
-L1tLEO6DeVPdu2m9xwvq3zR41LFNUFn44fiN3d5xUbQDuhsUkBI4QMhQM3NbhnUb
-tNE74ilZou7QV4uXRd9VdVYSp0NQEccY+nN2T7hA1YIFUN2vDRtfzrtIO8S+wLZA
-lKpgBArCcYHWjkdRpDoXH3n1z14toiB2/LPpbbiS4OAxJU4V+D0sUTm+TkhuIuTR
-1TBP9GNoSgWERk4WshVEArmekKuUEdbFCHglZu2/bfPUow23Ds2yqlUd4OS3+Gsu
-1qtGnITopQJkeIGJ8pXwlBCO0bA92otJSHcAju3vGePnn671R3xHMqiX08aJj/aY
-W9++xZKIa7mDluq7kO05sjXx0DmJs9sdFsD/7fOAygF2wa/awuMp88WbFDB+5gg9
-VAGxU489H1fvc+1udm1pbKt4aXE38CsEFQE9uJ438ou85zTaMtdLJasuILcjq8QB
-LO8eHpYDC9Q7MSToOLBWGQLMpp7yYVg9r4MLMvVxifVPF81NdQT4//joF38wjTai
-jBKADM+Vq8uqojAUvqyGZ6HhM8wiMpBwxTihEskqzHPscxhAeEw=
-=V58g
------END PGP SIGNATURE-----
+what vfe->id >= camss->res->vfe_num does is checks to see if the vfe->id 
+<= a VFE not a VFE Lite id.
 
---MC18m8lzniOpRcOB--
+in other words we have yet another magic indexing problem requiring 
+VFE_LITE_N to always be declared after VFE.
+
+The solution here is
+
+1. Make the driver support not caring about indexes any more
+    This series.
+2. Name the power-domains in the various dtsis
+    Populating the struct resources in CAMSS to match
+    Next series
+3. Gate new SoCs to _require_ named pds
+    Deprecate the legacy indexing support of 'n' kernel releases
+4. Profit
+
+So yeah the check above is I'm sorry to say not an error at all it 
+implies VFE Lite...
+
+---
+bod
