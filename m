@@ -2,268 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DA27D9853
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D337D9856
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345868AbjJ0MdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S1345823AbjJ0MdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345867AbjJ0MdJ (ORCPT
+        with ESMTP id S1345869AbjJ0MdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:33:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E1D10DD;
-        Fri, 27 Oct 2023 05:33:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698409983; x=1729945983;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=AF9FZzvp/D0GMVEQqKkwvatt27bentPedEfI8Ls3Dls=;
-  b=OXekoXg0mbTpRgHYRBkGlpgZOn8tlJm8O4+yusXqihZ+TvDS+KP2Zyit
-   jvzPNhgxJdOQVhRo5ERN6sbp7zdXDz+q0vf8UiwFX7tmiAKdLQYkaVtOE
-   LXGB6ZyW6kc0C4St4HgZ08smfzv9k+pckUC5/pYPAPsyC5hRo9mWnvmpD
-   a1f5q0T5u11HrPiqaVAQnnGhkwpV4i0mj6spVVkjMnC3qHgUaXpty94uC
-   tEzl2aH936Wzq8+A1cj5kClRPSL1tcyrFlXCcJ794msmfXzaer+1BpQsE
-   wuFEw1W+LfHnqxzaLEHqhkXHrwlyPpSJy17YfUmJWc1+KkjEB0rlai4DE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418877337"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="418877337"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 05:33:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="709398419"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="709398419"
-Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 05:33:00 -0700
-Date:   Fri, 27 Oct 2023 15:32:58 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-cc:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/24] selftests/resctrl: Rewrite Cache Allocation
- Technology (CAT) test
-In-Reply-To: <kq6qds2hgcg3vlgokgyr4lukm7weuj3thvl7p2panfmk72ovpy@nshm6iva5wfr>
-Message-ID: <fb5e1a50-ba7-1ee8-8bf2-bb8b64b27b1@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-17-ilpo.jarvinen@linux.intel.com> <kq6qds2hgcg3vlgokgyr4lukm7weuj3thvl7p2panfmk72ovpy@nshm6iva5wfr>
+        Fri, 27 Oct 2023 08:33:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA0A129;
+        Fri, 27 Oct 2023 05:33:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4245DC433C9;
+        Fri, 27 Oct 2023 12:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698409998;
+        bh=L1NgQ+lOsj1FZuylqSXQYNW0clvBdBZDo0bmir2uXYw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=W/yWJygHz+/Hjxx/56at5iYXbXWsNL4vC1sZE84doO0B2iePYWOAzyujR+35JoDdi
+         BcyGhfcpfRzW3FV5LhWAa65nOR+H4jaLZii/F234kHYgW8cPiEJA+N2k6aRsW31hM7
+         sL2Vfa+aTKo+yK/3ofuKzw8qeOM/o08Gm3sNOIOo//+b0rHA0KZFm0qFrsDAqKtq+J
+         gbBkjPdHFBGM/fJQOK/x38N0x59CRe1UOk2C6CCY8BdFbhUzAgfJudJXIhA988J0ZM
+         H5jS0BQGa7eqCyn8i5bkJSk7+zLUh+u3gH4UsP7m+Pkc2h3ZqVnS8OdR6iUpvUSNt7
+         DcPKTUblP8vWg==
+Message-ID: <0642c432-87ba-49e9-90bf-b20bbfcb5b42@kernel.org>
+Date:   Fri, 27 Oct 2023 14:33:13 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-828398-1698409982=:2740"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: hwmon: lm87: convert to YAML
+Content-Language: en-US
+To:     Li peiyu <579lpy@gmail.com>, jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <caa50763-74be-4c40-9d8d-7f1f64ce5144@kernel.org>
+ <20231026080226.52170-1-579lpy@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231026080226.52170-1-579lpy@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-828398-1698409982=:2740
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 27 Oct 2023, Maciej Wieczór-Retman wrote:
-
-> On 2023-10-24 at 12:26:26 +0300, Ilpo Järvinen wrote:
-> >CAT test spawns two processes into two different control groups with
-> >exclusive schemata. Both the processes alloc a buffer from memory
-> >matching their allocated LLC block size and flush the entire buffer out
-> >of caches. Since the processes are reading through the buffer only once
-> >during the measurement and initially all the buffer was flushed, the
-> >test isn't testing CAT.
-> >
-> >Rewrite the CAT test to allocate a buffer sized to half of LLC. Then
-> >perform a sequence of tests with different LLC alloc sizes starting
-> >from half of the CBM bits down to 1-bit CBM. Flush the buffer before
-> >each test and read the buffer twice. Observe the LLC misses on the
-> >second read through the buffer. As the allocated LLC block gets smaller
-> >and smaller, the LLC misses will become larger and larger giving a
-> >strong signal on CAT working properly.
-> >
-> >The new CAT test is using only a single process because it relies on
-> >measured effect against another run of itself rather than another
-> >process adding noise. The rest of the system is allocated the CBM bits
-> >not used by the CAT test to keep the test isolated.
-> >
-> >Replace count_bits() with count_contiguous_bits() to get the first bit
-> >position in order to be able to calculate masks based on it.
-> >
-> >This change has been tested with a number of systems from different
-> >generations.
-> >
-> >Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-> >Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> >---
-> > tools/testing/selftests/resctrl/cat_test.c  | 286 +++++++++-----------
-> > tools/testing/selftests/resctrl/fill_buf.c  |   6 +-
-> > tools/testing/selftests/resctrl/resctrl.h   |   5 +-
-> > tools/testing/selftests/resctrl/resctrlfs.c |  44 +--
-> > 4 files changed, 137 insertions(+), 204 deletions(-)
-> >
-> >diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> >index e71690a9bbb3..7518c520c5cc 100644
-> >--- a/tools/testing/selftests/resctrl/cat_test.c
-> >+++ b/tools/testing/selftests/resctrl/cat_test.c
-> >@@ -11,65 +11,68 @@
-> > #include "resctrl.h"
-> > #include <unistd.h>
-> > 
-> >-#define RESULT_FILE_NAME1	"result_cat1"
-> >-#define RESULT_FILE_NAME2	"result_cat2"
-> >+#define RESULT_FILE_NAME	"result_cat"
-> > #define NUM_OF_RUNS		5
-> >-#define MAX_DIFF_PERCENT	4
-> >-#define MAX_DIFF		1000000
-> > 
-> > /*
-> >- * Change schemata. Write schemata to specified
-> >- * con_mon grp, mon_grp in resctrl FS.
-> >- * Run 5 times in order to get average values.
-> >+ * Minimum difference in LLC misses between a test with n+1 bits CBM mask to
-> >+ * the test with n bits. With e.g. 5 vs 4 bits in the CBM mask, the minimum
-> >+ * difference must be at least MIN_DIFF_PERCENT_PER_BIT * (4 - 1) = 3 percent.
-> >+ *
-> >+ * The relationship between number of used CBM bits and difference in LLC
-> >+ * misses is not expected to be linear. With a small number of bits, the
-> >+ * margin is smaller than with larger number of bits. For selftest purposes,
-> >+ * however, linear approach is enough because ultimately only pass/fail
-> >+ * decision has to be made and distinction between strong and stronger
-> >+ * signal is irrelevant.
-> >  */
-> >-static int cat_setup(struct resctrl_val_param *p)
-> >-{
-> >-	char schemata[64];
-> >-	int ret = 0;
-> >-
-> >-	/* Run NUM_OF_RUNS times */
-> >-	if (p->num_of_runs >= NUM_OF_RUNS)
-> >-		return END_OF_TESTS;
-> >-
-> >-	if (p->num_of_runs == 0) {
-> >-		sprintf(schemata, "%lx", p->mask);
-> >-		ret = write_schemata(p->ctrlgrp, schemata, p->cpu_no,
-> >-				     p->resctrl_val);
-> >-	}
-> >-	p->num_of_runs++;
-> >-
-> >-	return ret;
-> >-}
-> >+#define MIN_DIFF_PERCENT_PER_BIT	1
-> > 
-> > static int show_results_info(__u64 sum_llc_val, int no_of_bits,
-> >-			     unsigned long cache_span, unsigned long max_diff,
-> >-			     unsigned long max_diff_percent, unsigned long num_of_runs,
-> >-			     bool platform)
-> >+			     unsigned long cache_span, long min_diff_percent,
-> >+			     unsigned long num_of_runs, bool platform,
-> >+			     __s64 *prev_avg_llc_val)
-> > {
-> > 	__u64 avg_llc_val = 0;
-> >-	float diff_percent;
-> >-	int ret;
-> >+	float avg_diff;
-> >+	int ret = 0;
-> > 
-> > 	avg_llc_val = sum_llc_val / num_of_runs;
-> >-	diff_percent = ((float)cache_span - avg_llc_val) / cache_span * 100;
-> >+	if (*prev_avg_llc_val) {
-> >+		float delta = (__s64)(avg_llc_val - *prev_avg_llc_val);
-> > 
-> >-	ret = platform && abs((int)diff_percent) > max_diff_percent;
-> >+		avg_diff = delta / *prev_avg_llc_val;
-> >+		ret = platform && (avg_diff * 100) < (float)min_diff_percent;
-> > 
-> >-	ksft_print_msg("%s Check cache miss rate within %lu%%\n",
-> >-		       ret ? "Fail:" : "Pass:", max_diff_percent);
-> >+		ksft_print_msg("%s Check cache miss rate changed more than %.1f%%\n",
-> >+			       ret ? "Fail:" : "Pass:", (float)min_diff_percent);
+On 26/10/2023 10:02, Li peiyu wrote:
+> Convert the lm87 hwmon sensor bindings to DT schema
 > 
-> Shouldn't "Fail" and "Pass" be flipped in the ternary operator? Or the condition
-> sign above "<" should be ">"?
-
-I must not touch ret ? "Fail:" : "Pass:" logic, it's the correct way 
-around. If I'd touch it, it'd break what the calling code assumes about 
-the return value.
-
-(More explanation below).
-
-> Now it looks like if (avg_diff * 100) is smaller than the min_diff_percent the
-> test is supposed to fail but the text suggests it's the other way around.
->
-> I also ran this selftest and that's the output:
+> Signed-off-by: Li peiyu <579lpy@gmail.com>
+> ---
+> Changes for v2:
+> - replace node name lm87 with sensor
+> - replace character '\t' with spaces
 > 
-> # Pass: Check cache miss rate changed more than 3.0%
-> # Percent diff=45.8
-> # Number of bits: 4
-> # Average LLC val: 322489
-> # Cache span (lines): 294912
-> # Pass: Check cache miss rate changed more than 2.0%
-> # Percent diff=38.0
-> # Number of bits: 3
-> # Average LLC val: 445005
-> # Cache span (lines): 221184
-> # Pass: Check cache miss rate changed more than 1.0%
-> # Percent diff=27.2
-> # Number of bits: 2
-> # Average LLC val: 566145
-> # Cache span (lines): 147456
-> # Pass: Check cache miss rate changed more than 0.0%
-> # Percent diff=18.3
-> # Number of bits: 1
-> # Average LLC val: 669657
-> # Cache span (lines): 73728
-> ok 1 CAT: test
-> 
-> The diff percentages are much larger than the thresholds they're supposed to
-> be within and the test is passed.
+>  .../devicetree/bindings/hwmon/lm87.txt        | 30 ----------
+>  .../devicetree/bindings/hwmon/lm87.yaml       | 59 +++++++++++++++++++
 
-No, the whole test logic is changed dramatically by this patch and 
-failure logic is reverse now because of it. Note how I also altered these 
-things:
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC (and consider --no-git-fallback argument). It might
+happen, that command when run on an older kernel, gives you outdated
+entries. Therefore please be sure you base your patches on recent Linux
+kernel.
 
-- MAX_DIFF_PERCENT -> MIN_DIFF_PERCENT_PER_BIT
-- max_diff_percent -> min_diff_percent
-- "cache miss rate within" -> "cache miss rate changed more than"
+Best regards,
+Krzysztof
 
-The new CAT test measures the # of cache misses (or in case of L2 CAT 
-test, LLC accesses which is used as a proxy for L2 misses). Then it takes 
-one bit away from the allocation mask and repeats the measurement.
-
-If the # of LLC misses changes more than min_diff_precent when the 
-number of bits in the allocation was changed, it is a strong indicator CAT 
-is working like it should. Based on your numbers above, I'm extremely 
-confident CAT works as expected!
-
-I know for a fact that when the selftest is bound to a wrong resource id 
-(which actually occurs on broadwell's with CoD enabled without one of the 
-later patches in this series), this test is guaranteed to fail 100%, 
-there's no noticeable difference measured in LLC misses in that case.
-
-> >@@ -143,54 +168,64 @@ static int cat_test(struct resctrl_val_param *param, size_t span)
-> > 	if (ret)
-> > 		return ret;
-> > 
-> >+	buf = alloc_buffer(span, 1);
-> >+	if (buf == NULL)
-> 
-> Similiar to patch 01/24, wouldn't this:
-> 	if (!buf)
-> be better?
-
-I've already changed this based on the comment you made against 1/24 :-).
-
--- 
- i.
-
---8323329-828398-1698409982=:2740--
