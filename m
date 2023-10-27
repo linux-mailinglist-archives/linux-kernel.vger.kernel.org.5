@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AF47D8F82
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8D57D8F87
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345543AbjJ0HQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        id S1345504AbjJ0HRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345517AbjJ0HQk (ORCPT
+        with ESMTP id S234981AbjJ0HRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:16:40 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951F8D64
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:16:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b95622c620so277409666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ncf.edu; s=google; t=1698390987; x=1698995787; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ddgeFEbz6IlrCxVYwXYFwysgYH7+uLRZ36rsStSaFs=;
-        b=ZI2RVfhuEZzJ/JoL0Xpdcsw7msBbgNhfcgZOGbKeJVv+w9xbeFYiwWBibCvvraKfs1
-         D5YFRIqLDSeSAZnp08wY1G27bsklWxYpPZpT4zCIS2U/MLHHIRgoDti5yx7rBTotw3hv
-         NJ36ehXDgM51ZM9YsftT6NO8HuYO2IzRGcG/6aqEZKKOHfiI/YUHvvNI+WkQZ++7WdaA
-         r71pp5YhDZH4g48/QUYkyl6XvW5PbxoxIXoQk1IqW/kyGRjfaowL7FM/DJKN93oNnQmz
-         DTv9oCis0JkVOH4p0NyFj0L0YWg68dh57/wyjaEjvptZbW3ACsvmUDBYtSZWJ2F5fgly
-         aPEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698390987; x=1698995787;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ddgeFEbz6IlrCxVYwXYFwysgYH7+uLRZ36rsStSaFs=;
-        b=m7m+sKz8Nv4v1Iz60kCKTMZH2VT1B1SnRK+d97inSdnVQs63VHJzCTtZL/IqvZBO1d
-         MY3EGeoAUGIoi8OMrYfgAtK3gvwl/ktqrWGOg6MarkdzbVALVhOo0xWRFloX8hlckKQC
-         DQ4XE7AY2JKkXrl1kf44yyZgm7Ove5YtChLyR2+zXaS5rCk10f4sGbFBBfMhaUD5lrgi
-         JRY+34Ibm9kze/kSjHYnjS9QYQnIXBApsGjYymhbaFpATYi4Mj2NzSctCwWHY4OSPr8Y
-         G1LJALMgcAGhL8SgFWRDVKy+IUjwTFSyQO1KkxjFsBTuq6kX82pZBT/omrFOguk2lvic
-         CGQw==
-X-Gm-Message-State: AOJu0Yy7MWVTB97xiMRprzRfH6vyGf2jYY9doztm2RbG3ul8e/oWaYkA
-        DCDxzdCzOr+S6VP77yzvvtNDmP54LuU42Nztl4a4ig==
-X-Google-Smtp-Source: AGHT+IE8Eg+gl1oUKbvd40VC6iGtzQrs1ua9ZwoVLBt3jaZI183+rzT7zw+HfCSU4qDQDGAb5C1GjDHUNXLe5IpaIQs=
-X-Received: by 2002:a17:907:2910:b0:9c6:724:fa1f with SMTP id
- eq16-20020a170907291000b009c60724fa1fmr1128697ejc.66.1698390986930; Fri, 27
- Oct 2023 00:16:26 -0700 (PDT)
+        Fri, 27 Oct 2023 03:17:02 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C214619A0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:16:47 -0700 (PDT)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0929A66071F1;
+        Fri, 27 Oct 2023 08:16:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698391004;
+        bh=cpBdTYW8vHHYaVRuft26NXdFNW0X6taMn5s0dkeghr0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XV7EOtiCj+jXbWgQuAIqK7tQkPkfD/wcbgCuaGN+A4N81pwivLmkZhO6vt9Tg84zX
+         2Yb1tlz9FrK+wkyGh8LvxUcsfBudWa5zaC8ECo5K3o2wofveD5wttcfhExd5b1St2p
+         59DC/fdsVtTAc5f35vV1Pz+/sPSjUTxUTPEZ0+UKURX7SFS5aYo5e9XwqTH6AU5ki+
+         nQkxA6S8RU+OltsBSOxS7rP5FKiwO+NVMYTipi0o0yR8ng7u8FnB9WwHuiaSg6BN9p
+         R8O+BGcUKxaUTeIf+su1bh+w7gZ3eC2K0p6zlueCx8nmwaW8kgkyGAl+4fKsFSAQsj
+         hSWlF8uXZ9b4A==
+Date:   Fri, 27 Oct 2023 09:16:40 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com,
+        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v2] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <20231027091640.50d68251@collabora.com>
+In-Reply-To: <ZTb6azSfTV+LRGYu@pollux>
+References: <20231009223554.11846-1-dakr@redhat.com>
+        <20231010094151.4c116058@collabora.com>
+        <ZTb6azSfTV+LRGYu@pollux>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231027041023.16681-1-hunter.chasens18@ncf.edu> <4257cc2a-c116-4a5a-8c4e-422e67258525@infradead.org>
-In-Reply-To: <4257cc2a-c116-4a5a-8c4e-422e67258525@infradead.org>
-From:   Hunter Chasens <hunter.chasens18@ncf.edu>
-Date:   Fri, 27 Oct 2023 03:16:15 -0400
-Message-ID: <CAFJe6O1UWXm-yhr+q2bT_Zt1wH8W-=XcvJsCV1JZo9irrL+hNw@mail.gmail.com>
-Subject: Re: [PATCH] docs: admin-guide: Update bootloader and installation instructions
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     corbet@lwn.net, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the catch. v2, has just been sent.
+Hi Danilo,
 
-On Fri, Oct 27, 2023 at 12:41=E2=80=AFAM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
->
->
->
-> On 10/26/23 21:10, Hunter Chasens wrote:
-> > Updates the bootloader and installation instructions in admin-guide/REA=
-DME.rst
-> > to align with modern practices.
-> >
-> > Details of Changes:
-> >
-> >  - Added guidance on using EFISTUB for UEFI/EFI systems.
-> >  - Noted that LILO is no longer in active development and provides
-> >    alternatives.
-> >  - Kept LILO instructions but marked as Legacy LILO Instructions.
-> >    Suggest removal in future patch.
-> >
-> > Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
-> > ---
-> >  Documentation/admin-guide/README.rst | 71 ++++++++++++++++++----------
-> >  1 file changed, 46 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/README.rst b/Documentation/admin=
--guide/README.rst
-> > index 9a969c0157f1..fba66f909f98 100644
-> > --- a/Documentation/admin-guide/README.rst
-> > +++ b/Documentation/admin-guide/README.rst
-> > @@ -252,7 +252,7 @@ Configuring the kernel
-> >      - The "kernel hacking" configuration details usually result in a
-> >        bigger or slower kernel (or both), and can even make the kernel
-> >        less stable by configuring some routines to actively try to
-> > -      break bad code to find kernel problems (kmalloc()).  Thus you
->
-> I don't see a problem with the above notation.
->
-> > +      break bad code to find kernel problems (kmalloc()().  Thus you
->
-> This way has unmatched parens.
->
-> >        should probably answer 'n' to the questions for "development",
-> >        "experimental", or "debugging" features.
-> >
->
->
-> --
-> ~Randy
+On Tue, 24 Oct 2023 00:57:47 +0200
+Danilo Krummrich <dakr@redhat.com> wrote:
+
+> > > +
+> > > +	/**
+> > > +	 * @update_job_credits: Called once the scheduler is considering this
+> > > +	 * job for execution.
+> > > +	 *
+> > > +	 * Drivers may use this to update the job's submission credits, which is
+> > > +	 * useful to e.g. deduct the number of native fences which have been
+> > > +	 * signaled meanwhile.
+> > > +	 *
+> > > +	 * The callback must either return the new number of submission credits
+> > > +	 * for the given job, or zero if no update is required.  
+> > 
+> > Any reason for having this special zero-means-no-update case? I mean,
+> > drivers could just return sched_job->submission_credits if nothing
+> > changed, and that would simplify the semantics IMHO. Another option, if  
+> 
+> I think I just did this because I thought it's a clever way to get rid of the
+> need to deal with zero-sized jobs, which do not make much sense. In
+> drm_sched_job_init() passing a zero job size defaults to one, which I think is
+> reasonable. Doing the same thing here is more likely to hide a bug. However, the
+> same is probably true for 'zero means no update' though. Maybe we should just
+> WARN() in such a case.
+> 
+> > we want to avoid the sched_job->submission_credits assignment when
+> > nothing changes would be to make it a void function and let it update
+> > the sched_job->submission_credits directly.  
+> 
+> Sure, that's an option as well. However, I'd probably prefer the new job size to
+> be the return value. Having to sanity check job->submission_credits afterwards
+> isn't that nice either.
+
+Uh, sorry for the late reply, I see you've sent a v3 already :-/. I keep
+thinking it'd be simpler to make this a void function that updates
+s_job->submission_credits directly. I also don't see the problem with
+doing a sanity check on job->submission_credits. I mean, if the driver
+is doing something silly, you can't do much to prevent it anyway,
+except warn the user that something wrong has happened. If you want to
+
+	WARN_ON(job->submission_credits == 0 ||
+		job->submission_credits > job_old_submission_credits);
+
+that's fine. But none of this sanity checking has to do with the
+function prototype/semantics, and I'm still not comfortable with this 0
+=> no-change. If there's no change, we should just leave
+job->submission_credits unchanged (or return job->submission_credits)
+instead of inventing a new special case.
+
+Regards,
+
+Boris
