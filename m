@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 004887D8EB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2667D8EBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345302AbjJ0G2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
+        id S1345321AbjJ0G3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345249AbjJ0G2j (ORCPT
+        with ESMTP id S1345324AbjJ0G2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:28:39 -0400
+        Fri, 27 Oct 2023 02:28:54 -0400
 Received: from mx0b-0039f301.pphosted.com (mx0b-0039f301.pphosted.com [148.163.137.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC761B2;
-        Thu, 26 Oct 2023 23:28:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864C21B9;
+        Thu, 26 Oct 2023 23:28:39 -0700 (PDT)
 Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
-        by mx0b-0039f301.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QL6OQT007652;
+        by mx0b-0039f301.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QL6OQS007652;
         Fri, 27 Oct 2023 06:28:18 GMT
 Received: from eur04-he1-obe.outbound.protection.outlook.com (mail-he1eur04lp2050.outbound.protection.outlook.com [104.47.13.50])
-        by mx0b-0039f301.pphosted.com (PPS) with ESMTPS id 3tywqm92ds-5
+        by mx0b-0039f301.pphosted.com (PPS) with ESMTPS id 3tywqm92ds-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 06:28:18 +0000
+        Fri, 27 Oct 2023 06:28:17 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XPk6tD0JuYSTyzzwnF7lT9yxbSYWaOXRus/c4s5dQTnMrXUkRUhysGBfRaMla86FbZafuQc5ASAXXsOFg1vvmMRnT2UvQFW9lOP4b7iClLouwiSqIrLPYUNna3408C/1gtCMnKdThES6P+JJaC1bJNWHeGPUZqNtBQ43JiJ7vt5unQF2q/A3oeNwCo0qTtzA/TcUlmBy+m1IG6e5X47G+QsuN3xGRlC+qqDroe/ZVbf0h2adti/68LhR9HThr3MJOpjNVmMUtttKXZwQTcOVIazTHFlnjlu2P6CNetzUd6F36ysLaWVrEsgTSh8BGKma2op1KBOQCF8cH3qAZzo18w==
+ b=B2EWMHc+VrDkkK9+vEbeJY6FgZU64Tr7ZGyW53P1nzHRnRBpC6Sc0D0TkDYqRY/ePLhDHHGiq90z9j0C6Xd496RZvGlHejborz1JzqMNoWkqIYgZGkw2lV0gEueRovTQ6LAiQTQWxlezlKfL5rxPiJlbL/mJIHXzgnfQRthGXHTQecn9FMs0BVddOLVuTk3HNckeTnKWuPKDGiTG6Z5HBowDg19N8Ohc7+wM8+T0tCcjwCi85fUvbxpkTPFty7J04/G4H8x9v7ihFJqpYpwi2fyJRwvhJKjO/mDfxLnNz3hI2y3saAyVQm1GX+gkGW+92jLT2ymu4W29S1zsKZcy9w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NiJhqbJDGb5nQk51MEC4+J959pM4bvnOjwcGaqiFbII=;
- b=Qw7qnbdkrbisYji/o2ixQaXlf5UhpwGWNUYlWPC/RkmkcFtD9UmaQT+OJOqRgH0GVsfpSAYzlpRSxeCKc/+ZVZp9weCiXvWc7nLOwAIyGDwCvBtPIeuNaMstN4XSfPMUnsMB2gxBBSAHbaMP/ym2HJEiyulavqYrhGGyQhPik2JTXsGfsrO/ots1SLf7VthsEa+oX/1NpADJRBPzFkIMjb2jsLv7nAHv+iZwH5hfYQDB4/lsCCPtSCkFKhXekgOrWHlWA4EodFX9tskVnZ9PnOH29DXZP1NWYqzp57wGDEN7dA/57TOB1XKG7+e4qOaEHbV4YZoA4fZMV2lfqTWrYA==
+ bh=RlSc8K3Mmr5EybySHWrf4kp5jxQCbevJVvJG2oBM9FI=;
+ b=XgjF2FSoL05CNs1kUf/zwep0+uT7TzFpphdI3iBuC4El84l54Tctph3kre5nqylsrnKNigUW9ORzzj2pqkOVrR6cAy6KGlJp5cZUBmYM6musbjKhR3GMcmx7Q9v8S9038lVhLAosPba9bqfPtMEuqbdLB26IytUsAXhZNNfx86u8pOB/vWYt+TeVSRrhqLHITqJ0wzX9P+eAB+e17U648aeTW1s8qpzFgR8QYzM8nK6fJtHm98jJ+wCJAM559fZTpDctIpWNx9jef1VT95rcAw30UDwuTy/sVm6286NwLL+0qb3Xg6MNYsGU0iJRpopTteIRG20qOWRR0yHDd5iQzg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
  dkim=pass header.d=epam.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NiJhqbJDGb5nQk51MEC4+J959pM4bvnOjwcGaqiFbII=;
- b=roA+LWqxK6NCgzaBhnIFe4exr7GinjON7ZaAPolgsZARqrHgUOIpVunI4tAbZl93OD+h8Ups89KlmwGyVkeY1tHECYpsscrJOqd1Sp9T4EuCsoiDmjPM3ctjY39NVIYIBucswdgybIxuNFEEaPhXmXGV2jMEnLyibsOAJ7fvqEEBz8IdmwKkk5OjC0yQCW/B4rK8m7LV53L15mQEbSPprxE/WOeqttf/4DJNgUfVoShrMOWwisxaI+ga2gbGVNgE6JTmgSA0TcYN0dUOUSGJJG98px3XPt7SzlH6luL7yVCtSc+OkmiLWj3JF8xLQQf20E3Fc8NtFHwnR6LSJ4jR8Q==
+ bh=RlSc8K3Mmr5EybySHWrf4kp5jxQCbevJVvJG2oBM9FI=;
+ b=mR/jDq1VATR/vYmXo2fpJA7La5xxuOrh6uuTMhoAlPBg4Bw+F87bjXdH5VEIXVY91EbgZHDwOEbSiX6QE/IP57+b6AA4lgiHw+r/BmCD/baMJu1ChE/RzsJfxo4KD4Eg/xlwjrzP4s+1l6VSpFBJWe8F4t5xKIEgfKoO/5R5BV1NV4bexJMeANFOU2zAkHmC0ladeHNcrnHbaK+IQlHQ+0UUCjsfcgV1HcpafrabYygcFRoRNiCUmPJf+q9YINraQmExh/ArzT6Iz4TMHlNT6+NUBpCM0TtuKYA5IK4BHVE/UH8S6dAUgRvEDyqBOnxHgbnWXrlpx6RY+eckfrj5Bw==
 Received: from PA4PR03MB7136.eurprd03.prod.outlook.com (2603:10a6:102:ea::23)
  by GV2PR03MB8876.eurprd03.prod.outlook.com (2603:10a6:150:c0::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.23; Fri, 27 Oct
- 2023 06:28:10 +0000
+ 2023 06:28:11 +0000
 Received: from PA4PR03MB7136.eurprd03.prod.outlook.com
  ([fe80::2211:9053:228e:4e40]) by PA4PR03MB7136.eurprd03.prod.outlook.com
  ([fe80::2211:9053:228e:4e40%3]) with mapi id 15.20.6933.022; Fri, 27 Oct 2023
- 06:28:10 +0000
+ 06:28:11 +0000
 From:   Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 To:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>
 CC:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
@@ -58,13 +58,13 @@ CC:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
         "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: [RFC v5 3/5] firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol
- basic support
-Thread-Topic: [RFC v5 3/5] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Thread-Index: AQHaCJ7BHuNsuhxPVE26Nd9OsaeoYw==
-Date:   Fri, 27 Oct 2023 06:28:10 +0000
-Message-ID: <7300b8804396075d2ae565f46de51a980ce846e6.1698353854.git.oleksii_moisieiev@epam.com>
+Subject: [RFC v5 4/5] pinctrl: Implementation of the generic scmi-pinctrl
+ driver
+Thread-Topic: [RFC v5 4/5] pinctrl: Implementation of the generic scmi-pinctrl
+ driver
+Thread-Index: AQHaCJ7BvsPs7k1mWECVtUOTfrRG8A==
+Date:   Fri, 27 Oct 2023 06:28:11 +0000
+Message-ID: <18df975e571e0d81fc38b55626e8c4afbcf6a647.1698353854.git.oleksii_moisieiev@epam.com>
 References: <cover.1698353854.git.oleksii_moisieiev@epam.com>
 In-Reply-To: <cover.1698353854.git.oleksii_moisieiev@epam.com>
 Accept-Language: en-US
@@ -73,41 +73,41 @@ X-MS-Has-Attach:
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: PA4PR03MB7136:EE_|GV2PR03MB8876:EE_
-x-ms-office365-filtering-correlation-id: 3443c274-c8c9-408f-3cbe-08dbd6b5e42c
+x-ms-office365-filtering-correlation-id: 0644f366-69c3-404b-eb08-08dbd6b5e45b
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LSKWE6Od/PCXC2NHcsB3Cq4pueSyqojBjpekLJKOavYVJtSe8zlRY70BXMh5nIij+KQs7CsfzsCvssE5bzSJemFOOOByVtvBtYAQvojj8L34bswonLotndOmtK/Zc5fjCrsya0U+9AXTPyRGwB9Gl60tZLPPaWXQGT29L8JdW9lUTm07O46skavMLK9uQ+4l3ha/yJsgMqq0YQz2A2Q0MVWBQFlS7xNPlQ/sHCaL3TW7tXki+flr63y70LMo/DPLUqtK7Fu+0xuOhS/T5WviS9pOArwu3GlFS2/iR0INaIjVhz4Wrvo97e6ECtRBBZfb7oGUjcMfPP5+FW8oNs6TNqIU1UF6Ky+5UKhyW6nYnBXNMFsXyZtw+Bk7uRqjR9Ow0g7oI7QNqrIpEHYZ//3Kpy8cINzg/51h6eai8TWKH3NUj/WfVfQoi2DGm3bO7VW7zH+43mhhozWkUu5YQ5mDEdKiy9gZATsjrHrJBEEaM2BcJlAIWcFA09tPxjfmE8RMt9ZmFjdpePZxm3UY/t588WbTGzT16aDpfn7E89uAMdGwA4VwwoHKtF0aagzK07tyKDDhuhW1P7AyRXTHU/9EwXM4SpZFsG+BX8oOkE8z2TUyvxbsnyj4e8oMO4ZMF+wS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR03MB7136.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(2906002)(478600001)(6486002)(83380400001)(36756003)(86362001)(8936002)(7416002)(4326008)(30864003)(8676002)(26005)(5660300002)(38070700009)(41300700001)(2616005)(66476007)(66556008)(66446008)(64756008)(66946007)(54906003)(91956017)(6916009)(316002)(76116006)(38100700002)(6512007)(122000001)(71200400001)(6506007)(559001)(579004);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: YRNi0ewaOy55iTCw4YndKw7VsgkT7xquUt83+chdoRtqfQtlEEdI9m9GxRsTZKvTRCX3xxZyH4HwV+eQlC9de1Hq/iw2wbVl21xqqA3jYq73ojSO/aE3/79zTg+IvKZfxRVdZwmlE69s5GoUCISGfgdmPF1K8bwsR7ma+M9IlYfnWpw6e9nwBwcqiDn9RrgP23KmrpMmlEhFwsB+e88LtGpRAt4g64RTkJCPQROgqfDMvw4oB9Ui4Zu2TeTdtiUgb4qUBEgVVMvQtnG/a850qw5mNPPTfF0HItbFQ2z5rupNd593WixQUn4CZs0syCMOrHeKnmxhqKF3eG3RMCl2m++w4QanQ7U7spvBbolhmxYN2KniOV56pRjqbshUwKBaG666vuGq0MVDFv3SkubnCpsVoW61i4x4qeAAun+E1aIe0NUQw97Guy+TkCiOyG72XKhRaB3m8gROkm2kpy/ZVg1yI7DfBSrIM5iN2J7ni+3o7okfQxwLqDYwffjhtVoON3J1RuQdYLcD7wU9JPJXl8ifXuFWm7UpNlWDMl+KZeJgMbb8TGtxRLpqqhbhdlTQGwQwpRpbBucuQwAj9kAYpxMLz4JG6IlfAle2u5hF+0NsJkfXcyN90YscvXfBj5bbljHD4jlmsVoscp+LBkoUlQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR03MB7136.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(2906002)(478600001)(6486002)(83380400001)(36756003)(86362001)(8936002)(7416002)(4326008)(30864003)(8676002)(26005)(5660300002)(38070700009)(41300700001)(2616005)(66476007)(66556008)(66446008)(64756008)(66946007)(54906003)(91956017)(6916009)(316002)(76116006)(38100700002)(6512007)(122000001)(71200400001)(6506007)(41533002);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?HiAcH20lHWYph71Dn1RWveBdjE3Urv3oE6WvUwbUJej5A86+CcsP6Jss/Z?=
- =?iso-8859-1?Q?czuquO+INZQB3PQPaFQny2kNYy9BwAAt4kQqrNqN3UQ9neNS8sF8MsYuv2?=
- =?iso-8859-1?Q?sr67b6VNlC+6Kt87k9snqv83KZ9fqoN3jYQLyHcsmCz7YlRpMhittoimMZ?=
- =?iso-8859-1?Q?hT1Y/gG7KxgwqqCKZki0cNlHhgBW+zBHjVjWQQEGduz0SbZ865NPxDWbjm?=
- =?iso-8859-1?Q?SYMZ7bDjY4qV594ZUVmuAKCDDc0hkHvfQske7c6xYhIcSVsMRjWQccOYdM?=
- =?iso-8859-1?Q?uAh4Qj/+kx72MkaLirgvaApoiMk3fWcgEmPiVhrsFZMf2eOIm5MlhjoJON?=
- =?iso-8859-1?Q?NUDFpDlfgestNKltaOWl9utyu3gZzCDA4LDO18PC7z2Z7FnK5j77C9IUAd?=
- =?iso-8859-1?Q?MKWpd0f2dvAqvN7jLsbj7qdm2wpK1yvJHuFgEEu/fJ/tNWLwLvSI1fvnqE?=
- =?iso-8859-1?Q?SAu3y3iThnyd8Cth18Dal4fEaSWr6oaKFRpU53FvMHg6S3DZKN5q+Gx0YF?=
- =?iso-8859-1?Q?S+f0fPrD1qSwQ80/ZnbOm3WW+2nSk/TU8RuW7jez15cKpQsNWWsDkOPFGu?=
- =?iso-8859-1?Q?NlZq3kH3MOo5TPV0F+PWZJavEbwoqoasu3ITFRFz31R5yI8oamRR3jWcgl?=
- =?iso-8859-1?Q?p0gfr7NlEQivp3AvRDdEdyVUR4FuPnaIb2sMozK59zhKOVFtOfbTygXrAx?=
- =?iso-8859-1?Q?Ofk3l28i44Ey9COpzrKKlXrEk8F132PSeYiEYpQLImkXII5WWxMC668IWB?=
- =?iso-8859-1?Q?MpgbHG6cvapCTGSTsQrrWZkq79EORNgaO1ieerf/B/4waPp6j/TohVWNrJ?=
- =?iso-8859-1?Q?IoZ9x/B/rtup+0FQIV0GhSqlt9v/tV/cmCzBpOnAHO2MROhY9cKaPmjfaC?=
- =?iso-8859-1?Q?F1PZZsI0Ogdd1K3nuBMt2wAO1ZyfTcuI7q43DAXMT6O+6hseJciS5lRWLr?=
- =?iso-8859-1?Q?Yimd6WbH24vMHrPEE6e1qnuSqjUDS87G779PXus04KHc8k4MKfBAKtaYJj?=
- =?iso-8859-1?Q?OH55eswSp+RXsS6FYyWLvhWPD1U5+Pyvi0AD+13oCl1v6jhvYGs/4i/3tL?=
- =?iso-8859-1?Q?DRNUIW7OIkf2oDCtE5KGJJKp63/Uhu7CopzxcSE7tvlnCmrOMRPYt58Cj8?=
- =?iso-8859-1?Q?KVUk5L4qNVlsOax/ibcmBK8VQcFEzzZ+t9DbYNYkVSIz3Ig5IUXhOwpQnn?=
- =?iso-8859-1?Q?J2qq/TZg5so8aLVbR5u6g0ZZZCoA16b46Yd4cRxPtL8EZdghJaI6C/3vlT?=
- =?iso-8859-1?Q?l7vb93mU7XuUeLxPUaM4FeOJrb89zxzOnuZdO899iqiO2O8BY9mn2HbM+p?=
- =?iso-8859-1?Q?jWrZpQ3JKTz5eW+Gcv3xqClxPrwsFE83DXUTNRK5Kkx/EblpwPcvA7uytl?=
- =?iso-8859-1?Q?DrzpfkI74MVEgAJw0XfythKFxTYkNN4ilZoWk/EziQcefS3JNtDGIlASYt?=
- =?iso-8859-1?Q?F//ZkAVqNh217GDTd634pgfhfAQxwMDZfPGEAV5xXzkjuuyKLJBggUq3JI?=
- =?iso-8859-1?Q?XS143rX1T9iiZJx5wk4nwicOu+9LmvpinMJ4iUxmp9AKRUW3RQnPllm+VB?=
- =?iso-8859-1?Q?EdbsEVflftcuDsP9QnOoJdS8nnMGsIip855aMmXghyU3pL0sYGR25an5Yj?=
- =?iso-8859-1?Q?j86FCAmJvufheYb3aM/JOGJFFRwdqaMdrMZV6X4+4zoOh0NC6QH2svwA?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?KHgq4xaFDyw35BYcTiGOATcsctSKqjxqOgGQF2E67+YjRRHy7n+58+zGUP?=
+ =?iso-8859-1?Q?ksmeDtwlnc/FUWqkVzs56Xa2aIQ9JzLcHaQQUQ/nNDUBougoAcv/EMK4Ap?=
+ =?iso-8859-1?Q?r74I4ER7Tw258OFPv54mrbnvDwGPHCX6srV9kxZhxNR2bx4Q9U2rMDgR71?=
+ =?iso-8859-1?Q?bGdlaScBcuwa5vFQ4uaryMAaFE+TRjrAG+7lZbcDFdGzByQPtVq0RVeWWx?=
+ =?iso-8859-1?Q?1ZdpuNvQ5aSnOH2cJnr87/Ox859dkAkkjfeVDIer9T6b4LFmzK7jisiZob?=
+ =?iso-8859-1?Q?gr0KpMpYP23PW2gZqZ2igK0aUx2Y/683W8KNbB49jAaxfKUrYZ6vKT1YG8?=
+ =?iso-8859-1?Q?ULcu2y4UO/c13swxq7it/W4dT5cXtkBwciDz60WqMmfkH6Vw44dEEgKdzI?=
+ =?iso-8859-1?Q?iU3Oxsy5RvbM0zcgWjvA1PQnsymMvqhe9IKRrQpGGqBBr7ij+TmtiYO/Un?=
+ =?iso-8859-1?Q?7lNGUz2KJik2YLysNCeg45i1s283t1CFJTjU+vY3mPhlEOpyiIRKLTO8hR?=
+ =?iso-8859-1?Q?p5GjEKA3mN4Ki9UI5UoV0unZaFpExFwWG0j8AyfJT9p9yoM3C64xlYTe+P?=
+ =?iso-8859-1?Q?hPP2WYYlfmR4LyFD7ajfge/12Rw/la8aVe+CnRbxeIMvl1fRqUaXGPs5xx?=
+ =?iso-8859-1?Q?iKAaVU3AkISn0SxB67cFTmLiEloGte/etS6vJpuiAW5+FtGOZtegMqVluF?=
+ =?iso-8859-1?Q?88B+DSTe0rwm61gxxclHDoiYQhsg2z3XsaRqJifHlgbYnrjYU25+a77UG9?=
+ =?iso-8859-1?Q?LAzbNXt/0coRa5ObbtxbU86TsxctPA/fIJjcAWfQjcC3ks25Xkt/M7nJv1?=
+ =?iso-8859-1?Q?+Cuq16Bfc4Xo/t8Cqoud40FHQzMMu17yAGEMprfvvNTFxZod41/oAT/XVF?=
+ =?iso-8859-1?Q?edvHemNZzblleyawLvsTBSW8kxkswYAILS04HEN3Y9C/UJJzsfDrnCicTd?=
+ =?iso-8859-1?Q?EyBmxDVtX2Pn6EPScTo5TaIhSxITaPPmO4NOiPnN3oqI1OcVxS36zYe9Pb?=
+ =?iso-8859-1?Q?GN+1XTynf1boaR9h0RZh0gLUYcRkM/H5H1WCtGcPeGJREMiw3EX39zCLyH?=
+ =?iso-8859-1?Q?xBB1JkjeNCkUBAbfm+FTrBhofC3+INGokl9jLMWY99Msdo/GWlo1q7Hp1r?=
+ =?iso-8859-1?Q?RG8FMmqNU61SaE2rrtjKC4R9IkrqeQRWzlr4C0TgY0/1EYZ+4m4eR5OuKw?=
+ =?iso-8859-1?Q?WhrxK+LqvJBOl0skxSFCfI1pNr8zM5xVCj3oUJL4ONHHV1Z9ESvQf9crs9?=
+ =?iso-8859-1?Q?XTasRubDSOqOcfNhDA94pG7oO2pp1h787r6gm88CgVSt7GMHjDGUWGN/5z?=
+ =?iso-8859-1?Q?4auvFeYnVmb1shD+mTbpflILi/yDCIruWJEAuEJaW+7tugoBvy3XCUOuDx?=
+ =?iso-8859-1?Q?KZ0swYYWc50OxcBiD88E2WFU76S5pCx7N3DoZEFHtCYW6VohoOE40zNpzA?=
+ =?iso-8859-1?Q?mYyhIC4GUjqI2X1PgVVl8tRw7vANbHKFZ+3VNEFFg74ibUBPJCcbxAznSn?=
+ =?iso-8859-1?Q?iN8EmeWD10uHwJCJZsgBZF+EMD6JImSWVEgq7oCNKpZumu+tTB299TqBE9?=
+ =?iso-8859-1?Q?gd2yVPwDdnun16H/6xzcogyAxnk3NG5Z4FC/SLooLfO9FkS9YCbsx9TsrS?=
+ =?iso-8859-1?Q?CnWfl+Jr27YcZ0SYhWN0h/Dd1DAQ0+uMqeFon2+0IjGUnpxCzCbRQ24Q?=
  =?iso-8859-1?Q?=3D=3D?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -115,16 +115,16 @@ MIME-Version: 1.0
 X-OriginatorOrg: epam.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PA4PR03MB7136.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3443c274-c8c9-408f-3cbe-08dbd6b5e42c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2023 06:28:10.8481
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0644f366-69c3-404b-eb08-08dbd6b5e45b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2023 06:28:11.1704
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WuhZRD4/s4TCmqEBCgMXp3ZSyB4PN+fwp3ox6m9cJUbTJvaqIovx86fpGeZOyxpIM8fshjGpcWEgi7vRY7uW1FiIkqmqXv3nDNMg3/rYwvM=
+X-MS-Exchange-CrossTenant-userprincipalname: mOykIjIEze7ZBQzhn9z8jMiWtZbFyRmH1qw8QEuPkYjuq8N0LWrNDvkhZQWrztp/gsy5c7TcaJb7+s3/+CrVTSG9ERaaRcnd/CntkM2Ot14=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR03MB8876
-X-Proofpoint-ORIG-GUID: kpNVAHKMbdirEcqjvrVdS02FZJUlmP5g
-X-Proofpoint-GUID: kpNVAHKMbdirEcqjvrVdS02FZJUlmP5g
+X-Proofpoint-ORIG-GUID: 8TIgnljtwuUq-O5H7OhR19eBWKl8rZ3o
+X-Proofpoint-GUID: 8TIgnljtwuUq-O5H7OhR19eBWKl8rZ3o
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-27_03,2023-10-26_01,2023-05-22_02
@@ -143,1124 +143,543 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic implementation of the SCMI v3.2 pincontrol protocol.
+scmi-pinctrl driver implements pinctrl driver interface and using
+SCMI protocol to redirect messages from pinctrl subsystem SDK to
+SCMI platform firmware, which does the changes in HW.
 
 Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
 ---
-Changes v4 -> v5
-  - add new calls to scmi_protocol description for config_{get,set}
 Changes v3 -> v4
-  - Fixed MAINTAINERS file description
-  - adjusted pinctrl ops position and callback names
-  - add trailing coma in scmi_protocol list
-  - removed unneeded pi checks
-  - corrected selector check
-  - resource allocation refactoring
-  - scmi_*_info swap params to generate better code
-  - style, add trailing coma in definitions
-
+  - ordered config option alphabetically
+  - ordered object file alphabetically
+  - rephrased PINCTRL_SCMI config description
+  - formatting fixes, removed blank lines after get_drvdata call
+  - code style adjustments
+  - add set_drvdata call
+  - removed goto label
+  - refactoring of the devm resource management
+  - removed pctldev !=3D NULL check
+  - fix parameter name in pinconf-group-get
+  - probe function refactoring
+  - removed unneeded pmx checks
 ---
- MAINTAINERS                           |   6 +
- drivers/firmware/arm_scmi/Makefile    |   2 +-
- drivers/firmware/arm_scmi/driver.c    |   2 +
- drivers/firmware/arm_scmi/pinctrl.c   | 922 ++++++++++++++++++++++++++
- drivers/firmware/arm_scmi/protocols.h |   1 +
- include/linux/scmi_protocol.h         |  47 ++
- 6 files changed, 979 insertions(+), 1 deletion(-)
- create mode 100644 drivers/firmware/arm_scmi/pinctrl.c
+ MAINTAINERS                    |   1 +
+ drivers/pinctrl/Kconfig        |  11 +
+ drivers/pinctrl/Makefile       |   1 +
+ drivers/pinctrl/pinctrl-scmi.c | 445 +++++++++++++++++++++++++++++++++
+ 4 files changed, 458 insertions(+)
+ create mode 100644 drivers/pinctrl/pinctrl-scmi.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 0dab9737ec16..2d81d00e5f4f 100644
+index 2d81d00e5f4f..c4e36f955e53 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20522,6 +20522,12 @@ F:	include/linux/sc[mp]i_protocol.h
- F:	include/trace/events/scmi.h
- F:	include/uapi/linux/virtio_scmi.h
+@@ -20527,6 +20527,7 @@ M:	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+ L:	linux-arm-kernel@lists.infradead.org
+ S:	Maintained
+ F:	drivers/firmware/arm_scmi/pinctrl.c
++F:	drivers/pinctrl/pinctrl-scmi.c
 =20
-+PINCTRL DRIVER FOR SYSTEM CONTROL MANAGEMENT INTERFACE (SCMI)
-+M:	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-+L:	linux-arm-kernel@lists.infradead.org
-+S:	Maintained
-+F:	drivers/firmware/arm_scmi/pinctrl.c
-+
  SYSTEM RESET/SHUTDOWN DRIVERS
  M:	Sebastian Reichel <sre@kernel.org>
- L:	linux-pm@vger.kernel.org
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi=
-/Makefile
-index b31d78fa66cc..603430ec0bfe 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -10,7 +10,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) +=3D smc.=
-o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) +=3D msg.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) +=3D virtio.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) +=3D optee.o
--scmi-protocols-y =3D base.o clock.o perf.o power.o reset.o sensors.o syste=
-m.o voltage.o powercap.o
-+scmi-protocols-y =3D base.o clock.o perf.o power.o reset.o sensors.o syste=
-m.o voltage.o powercap.o pinctrl.o
- scmi-module-objs :=3D $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transpor=
-t-y)
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index 5787c579dcf6..956cfe76fbc6 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -428,6 +428,17 @@ config PINCTRL_ROCKCHIP
+ 	help
+           This support pinctrl and GPIO driver for Rockchip SoCs.
 =20
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) +=3D scmi-core.o
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi=
-/driver.c
-index f15e9b2b21f3..31a0da37eeb3 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -3040,6 +3040,7 @@ static int __init scmi_driver_init(void)
- 	scmi_voltage_register();
- 	scmi_system_register();
- 	scmi_powercap_register();
-+	scmi_pinctrl_register();
-=20
- 	return platform_driver_register(&scmi_driver);
- }
-@@ -3057,6 +3058,7 @@ static void __exit scmi_driver_exit(void)
- 	scmi_voltage_unregister();
- 	scmi_system_unregister();
- 	scmi_powercap_unregister();
-+	scmi_pinctrl_unregister();
-=20
- 	scmi_transports_exit();
-=20
-diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scm=
-i/pinctrl.c
++config PINCTRL_SCMI
++	tristate "Pinctrl driver using SCMI protocol interface"
++	depends on ARM_SCMI_PROTOCOL || COMPILE_TEST
++	select PINMUX
++	select GENERIC_PINCONF
++	help
++	  This driver provides support for pinctrl which is controlled
++	  by firmware that implements the SCMI interface.
++	  It uses SCMI Message Protocol to interact with the
++	  firmware providing all the pinctrl controls.
++
+ config PINCTRL_SINGLE
+ 	tristate "One-register-per-pin type device tree based pinctrl driver"
+ 	depends on OF
+diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
+index e196c6e324ad..25d67bac9ee0 100644
+--- a/drivers/pinctrl/Makefile
++++ b/drivers/pinctrl/Makefile
+@@ -44,6 +44,7 @@ obj-$(CONFIG_PINCTRL_PIC32)	+=3D pinctrl-pic32.o
+ obj-$(CONFIG_PINCTRL_PISTACHIO)	+=3D pinctrl-pistachio.o
+ obj-$(CONFIG_PINCTRL_RK805)	+=3D pinctrl-rk805.o
+ obj-$(CONFIG_PINCTRL_ROCKCHIP)	+=3D pinctrl-rockchip.o
++obj-$(CONFIG_PINCTRL_SCMI)	+=3D pinctrl-scmi.o
+ obj-$(CONFIG_PINCTRL_SINGLE)	+=3D pinctrl-single.o
+ obj-$(CONFIG_PINCTRL_ST) 	+=3D pinctrl-st.o
+ obj-$(CONFIG_PINCTRL_STMFX) 	+=3D pinctrl-stmfx.o
+diff --git a/drivers/pinctrl/pinctrl-scmi.c b/drivers/pinctrl/pinctrl-scmi.=
+c
 new file mode 100644
-index 000000000000..e5cbd976b6ae
+index 000000000000..4d16f3c10eef
 --- /dev/null
-+++ b/drivers/firmware/arm_scmi/pinctrl.c
-@@ -0,0 +1,922 @@
++++ b/drivers/pinctrl/pinctrl-scmi.c
+@@ -0,0 +1,445 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * System Control and Management Interface (SCMI) Pinctrl Protocol
++ * System Control and Power Interface (SCMI) Protocol based pinctrl driver
 + *
 + * Copyright (C) 2023 EPAM
 + */
 +
++#include <linux/device.h>
++#include <linux/err.h>
 +#include <linux/module.h>
++#include <linux/seq_file.h>
 +#include <linux/scmi_protocol.h>
 +#include <linux/slab.h>
 +
-+#include "common.h"
-+#include "protocols.h"
++#include <linux/pinctrl/machine.h>
++#include <linux/pinctrl/pinconf.h>
++#include <linux/pinctrl/pinconf-generic.h>
++#include <linux/pinctrl/pinctrl.h>
++#include <linux/pinctrl/pinmux.h>
 +
-+#define REG_TYPE_BITS GENMASK(9, 8)
-+#define REG_CONFIG GENMASK(7, 0)
++#include "pinctrl-utils.h"
++#include "core.h"
++#include "pinconf.h"
 +
-+#define GET_GROUPS_NR(x)	le32_get_bits((x), GENMASK(31, 16))
-+#define GET_PINS_NR(x)		le32_get_bits((x), GENMASK(15, 0))
-+#define GET_FUNCTIONS_NR(x)	le32_get_bits((x), GENMASK(15, 0))
++#define DRV_NAME "scmi-pinctrl"
 +
-+#define EXT_NAME_FLAG(x)	le32_get_bits((x), BIT(31))
-+#define NUM_ELEMS(x)		le32_get_bits((x), GENMASK(15, 0))
++static const struct scmi_pinctrl_proto_ops *pinctrl_ops;
 +
-+#define REMAINING(x)		le32_get_bits((x), GENMASK(31, 16))
-+#define RETURNED(x)		le32_get_bits((x), GENMASK(11, 0))
-+
-+enum scmi_pinctrl_protocol_cmd {
-+	PINCTRL_ATTRIBUTES =3D 0x3,
-+	PINCTRL_LIST_ASSOCIATIONS =3D 0x4,
-+	PINCTRL_CONFIG_GET =3D 0x5,
-+	PINCTRL_CONFIG_SET =3D 0x6,
-+	PINCTRL_FUNCTION_SELECT =3D 0x7,
-+	PINCTRL_REQUEST =3D 0x8,
-+	PINCTRL_RELEASE =3D 0x9,
-+	PINCTRL_NAME_GET =3D 0xa,
-+	PINCTRL_SET_PERMISSIONS =3D 0xb
++struct scmi_pinctrl_funcs {
++	unsigned int num_groups;
++	const char **groups;
 +};
 +
-+struct scmi_msg_conf_set {
-+	__le32 identifier;
-+	__le32 attributes;
-+	__le32 configs[];
-+};
-+
-+struct scmi_msg_conf_get {
-+	__le32 identifier;
-+	__le32 attributes;
-+};
-+
-+struct scmi_resp_conf_get {
-+	__le32 num_configs;
-+	__le32 configs[];
-+};
-+
-+struct scmi_msg_pinctrl_protocol_attributes {
-+	__le32 attributes_low;
-+	__le32 attributes_high;
-+};
-+
-+struct scmi_msg_pinctrl_attributes {
-+	__le32 identifier;
-+	__le32 flags;
-+};
-+
-+struct scmi_resp_pinctrl_attributes {
-+	__le32 attributes;
-+	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
-+};
-+
-+struct scmi_msg_pinctrl_list_assoc {
-+	__le32 identifier;
-+	__le32 flags;
-+	__le32 index;
-+};
-+
-+struct scmi_resp_pinctrl_list_assoc {
-+	__le32 flags;
-+	__le16 array[];
-+};
-+
-+struct scmi_msg_func_set {
-+	__le32 identifier;
-+	__le32 function_id;
-+	__le32 flags;
-+};
-+
-+struct scmi_msg_request {
-+	__le32 identifier;
-+	__le32 flags;
-+};
-+
-+struct scmi_group_info {
-+	char name[SCMI_MAX_STR_SIZE];
-+	bool present;
-+	unsigned int *group_pins;
++struct scmi_pinctrl {
++	struct device *dev;
++	struct scmi_protocol_handle *ph;
++	struct pinctrl_dev *pctldev;
++	struct pinctrl_desc pctl_desc;
++	struct scmi_pinctrl_funcs *functions;
++	unsigned int nr_functions;
++	char **groups;
++	unsigned int nr_groups;
++	struct pinctrl_pin_desc *pins;
 +	unsigned int nr_pins;
 +};
 +
-+struct scmi_function_info {
-+	char name[SCMI_MAX_STR_SIZE];
-+	bool present;
-+	unsigned int *groups;
-+	unsigned int nr_groups;
-+};
++static int pinctrl_scmi_get_groups_count(struct pinctrl_dev *pctldev)
++{
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+struct scmi_pin_info {
-+	char name[SCMI_MAX_STR_SIZE];
-+	bool present;
-+};
++	return pinctrl_ops->count_get(pmx->ph, GROUP_TYPE);
++}
 +
-+struct scmi_pinctrl_info {
-+	u32 version;
-+	int nr_groups;
-+	int nr_functions;
-+	int nr_pins;
-+	struct scmi_group_info *groups;
-+	struct scmi_function_info *functions;
-+	struct scmi_pin_info *pins;
-+};
-+
-+static int scmi_pinctrl_attributes_get(const struct scmi_protocol_handle *=
-ph,
-+				       struct scmi_pinctrl_info *pi)
++static const char *pinctrl_scmi_get_group_name(struct pinctrl_dev *pctldev=
+, unsigned int selector)
 +{
 +	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_pinctrl_protocol_attributes *attr;
++	const char *name;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+	ret =3D ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES, 0, sizeof(*attr)=
-, &t);
-+	if (ret)
-+		return ret;
-+
-+	attr =3D t->rx.buf;
-+
-+	ret =3D ph->xops->do_xfer(ph, t);
-+	if (!ret) {
-+		pi->nr_functions =3D GET_FUNCTIONS_NR(attr->attributes_high);
-+		pi->nr_groups =3D GET_GROUPS_NR(attr->attributes_low);
-+		pi->nr_pins =3D GET_PINS_NR(attr->attributes_low);
++	ret =3D pinctrl_ops->name_get(pmx->ph, selector, GROUP_TYPE, &name);
++	if (ret) {
++		dev_err(pmx->dev, "get name failed with err %d", ret);
++		return NULL;
 +	}
 +
-+	ph->xops->xfer_put(ph, t);
-+	return ret;
++	return name;
 +}
 +
-+static int scmi_pinctrl_count_get(const struct scmi_protocol_handle *ph,
-+				  enum scmi_pinctrl_selector_type type)
++static int pinctrl_scmi_get_group_pins(struct pinctrl_dev *pctldev,
++				       unsigned int selector,
++				       const unsigned int **pins,
++				       unsigned int *num_pins)
 +{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+	switch (type) {
-+	case PIN_TYPE:
-+		return pi->nr_pins;
-+	case GROUP_TYPE:
-+		return pi->nr_groups;
-+	case FUNCTION_TYPE:
-+		return pi->nr_functions;
-+	default:
-+		return -EINVAL;
-+	}
++	return pinctrl_ops->group_pins_get(pmx->ph, selector, pins, num_pins);
 +}
 +
-+static int scmi_pinctrl_validate_id(const struct scmi_protocol_handle *ph,
-+				    u32 identifier,
-+				    enum scmi_pinctrl_selector_type type)
++#ifdef CONFIG_OF
++static int pinctrl_scmi_dt_node_to_map(struct pinctrl_dev *pctldev,
++				       struct device_node *np_config,
++				       struct pinctrl_map **map,
++				       u32 *num_maps)
 +{
-+	int value;
-+
-+	value =3D scmi_pinctrl_count_get(ph, type);
-+	if (value < 0)
-+		return value;
-+
-+	if (identifier >=3D value)
-+		return -EINVAL;
-+
-+	return 0;
++	return pinconf_generic_dt_node_to_map(pctldev, np_config, map, num_maps,
++					      PIN_MAP_TYPE_INVALID);
 +}
 +
-+static int scmi_pinctrl_attributes(const struct scmi_protocol_handle *ph,
-+				   enum scmi_pinctrl_selector_type type,
-+				   u32 selector, char *name,
-+				   unsigned int *n_elems)
++static void pinctrl_scmi_dt_free_map(struct pinctrl_dev *pctldev, struct p=
+inctrl_map *map,
++				     u32 num_maps)
 +{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_pinctrl_attributes *tx;
-+	struct scmi_resp_pinctrl_attributes *rx;
-+
-+	if (!name)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-+	if (ret)
-+		return ret;
-+
-+	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES, sizeof(*tx), size=
-of(*rx), &t);
-+	if (ret)
-+		return ret;
-+
-+	tx =3D t->tx.buf;
-+	rx =3D t->rx.buf;
-+	tx->identifier =3D cpu_to_le32(selector);
-+	tx->flags =3D cpu_to_le32(type);
-+
-+	ret =3D ph->xops->do_xfer(ph, t);
-+	if (!ret) {
-+		if (n_elems)
-+			*n_elems =3D NUM_ELEMS(rx->attributes);
-+
-+		strscpy(name, rx->name, SCMI_SHORT_NAME_MAX_SIZE);
-+	}
-+
-+	ph->xops->xfer_put(ph, t);
-+
-+	/*
-+	 * If supported overwrite short name with the extended one;
-+	 * on error just carry on and use already provided short name.
-+	 */
-+	if (!ret && EXT_NAME_FLAG(rx->attributes))
-+		ph->hops->extended_name_get(ph, PINCTRL_NAME_GET, selector,
-+					    (u32 *)&type, name,
-+					    SCMI_MAX_STR_SIZE);
-+	return ret;
++	kfree(map);
 +}
 +
-+struct scmi_pinctrl_ipriv {
-+	u32 selector;
-+	enum scmi_pinctrl_selector_type type;
-+	unsigned int *array;
++#endif /* CONFIG_OF */
++
++static const struct pinctrl_ops pinctrl_scmi_pinctrl_ops =3D {
++	.get_groups_count =3D pinctrl_scmi_get_groups_count,
++	.get_group_name =3D pinctrl_scmi_get_group_name,
++	.get_group_pins =3D pinctrl_scmi_get_group_pins,
++#ifdef CONFIG_OF
++	.dt_node_to_map =3D pinctrl_scmi_dt_node_to_map,
++	.dt_free_map =3D pinctrl_scmi_dt_free_map,
++#endif
 +};
 +
-+static void iter_pinctrl_assoc_prepare_message(void *message,
-+					       unsigned int desc_index,
-+					       const void *priv)
++static int pinctrl_scmi_get_functions_count(struct pinctrl_dev *pctldev)
 +{
-+	struct scmi_msg_pinctrl_list_assoc *msg =3D message;
-+	const struct scmi_pinctrl_ipriv *p =3D priv;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+	msg->identifier =3D cpu_to_le32(p->selector);
-+	msg->flags =3D cpu_to_le32(p->type);
-+	/* Set the number of OPPs to be skipped/already read */
-+	msg->index =3D cpu_to_le32(desc_index);
++	return pinctrl_ops->count_get(pmx->ph, FUNCTION_TYPE);
 +}
 +
-+static int iter_pinctrl_assoc_update_state(struct scmi_iterator_state *st,
-+					   const void *response, void *priv)
-+{
-+	const struct scmi_resp_pinctrl_list_assoc *r =3D response;
-+
-+	st->num_returned =3D RETURNED(r->flags);
-+	st->num_remaining =3D REMAINING(r->flags);
-+
-+	return 0;
-+}
-+
-+static int
-+iter_pinctrl_assoc_process_response(const struct scmi_protocol_handle *ph,
-+				    const void *response,
-+				    struct scmi_iterator_state *st, void *priv)
-+{
-+	const struct scmi_resp_pinctrl_list_assoc *r =3D response;
-+	struct scmi_pinctrl_ipriv *p =3D priv;
-+
-+	p->array[st->desc_index + st->loop_idx] =3D
-+		le16_to_cpu(r->array[st->loop_idx]);
-+
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_list_associations(const struct scmi_protocol_handl=
-e *ph,
-+					  u32 selector,
-+					  enum scmi_pinctrl_selector_type type,
-+					  u16 size, unsigned int *array)
++static const char *pinctrl_scmi_get_function_name(struct pinctrl_dev *pctl=
+dev,
++						  unsigned int selector)
 +{
 +	int ret;
-+	void *iter;
-+	struct scmi_iterator_ops ops =3D {
-+		.prepare_message =3D iter_pinctrl_assoc_prepare_message,
-+		.update_state =3D iter_pinctrl_assoc_update_state,
-+		.process_response =3D iter_pinctrl_assoc_process_response,
-+	};
-+	struct scmi_pinctrl_ipriv ipriv =3D {
-+		.selector =3D selector,
-+		.type =3D type,
-+		.array =3D array,
-+	};
++	const char *name;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+	if (!array || !size || type =3D=3D PIN_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-+	if (ret)
-+		return ret;
-+
-+	iter =3D ph->hops->iter_response_init(ph, &ops, size,
-+					    PINCTRL_LIST_ASSOCIATIONS,
-+					    sizeof(struct scmi_msg_pinctrl_list_assoc),
-+					    &ipriv);
-+
-+	if (IS_ERR(iter))
-+		return PTR_ERR(iter);
-+
-+	return ph->hops->iter_response_run(iter);
-+}
-+
-+struct scmi_conf_get_ipriv {
-+	u32 selector;
-+	enum scmi_pinctrl_selector_type type;
-+	u8 all;
-+	u8 *config_types;
-+	unsigned long *config_values;
-+};
-+
-+static void iter_pinctrl_conf_get_prepare_message(void *message,
-+						  unsigned int desc_index,
-+						  const void *priv)
-+{
-+	struct scmi_msg_conf_get *msg =3D message;
-+	const struct scmi_conf_get_ipriv *p =3D priv;
-+	u32 attributes;
-+
-+	msg->identifier =3D cpu_to_le32(p->selector);
-+	attributes =3D FIELD_PREP(BIT(18), p->all) |
-+		     FIELD_PREP(GENMASK(17, 16), p->type);
-+
-+	if (p->all)
-+		attributes |=3D FIELD_PREP(GENMASK(15, 8), desc_index);
-+	else
-+		attributes |=3D FIELD_PREP(GENMASK(7, 0), p->config_types[0]);
-+
-+	msg->attributes =3D cpu_to_le32(attributes);
-+	msg->identifier =3D cpu_to_le32(p->selector);
-+}
-+
-+static int iter_pinctrl_conf_get_update_state(struct scmi_iterator_state *=
-st,
-+					      const void *response, void *priv)
-+{
-+	const struct scmi_resp_conf_get *r =3D response;
-+
-+	st->num_returned =3D le32_get_bits(r->num_configs, GENMASK(7, 0));
-+	st->num_remaining =3D le32_get_bits(r->num_configs, GENMASK(31, 24));
-+
-+	return 0;
-+}
-+
-+static int iter_pinctrl_conf_get_process_response(const struct scmi_protoc=
-ol_handle *ph,
-+						  const void *response,
-+						  struct scmi_iterator_state *st, void *priv)
-+{
-+	const struct scmi_resp_conf_get *r =3D response;
-+	struct scmi_conf_get_ipriv *p =3D priv;
-+
-+	if (!p->all) {
-+		if (p->config_types[0] !=3D
-+		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
-+			return -EINVAL;
-+	} else {
-+		p->config_types[st->desc_index + st->loop_idx] =3D
-+			le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0));
++	ret =3D pinctrl_ops->name_get(pmx->ph, selector, FUNCTION_TYPE, &name);
++	if (ret) {
++		dev_err(pmx->dev, "get name failed with err %d", ret);
++		return NULL;
 +	}
 +
-+	p->config_values[st->desc_index + st->loop_idx] =3D
-+		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
-+
-+	return 0;
++	return name;
 +}
 +
-+static int scmi_pinctrl_config_get(const struct scmi_protocol_handle *ph,
-+				   u32 selector,
-+				   enum scmi_pinctrl_selector_type type,
-+				   u8 config_type, unsigned long *config_value)
++static int pinctrl_scmi_get_function_groups(struct pinctrl_dev *pctldev,
++					    unsigned int selector,
++					    const char * const **groups,
++					    unsigned int * const num_groups)
 +{
-+	int ret;
-+	void *iter;
-+	struct scmi_iterator_ops ops =3D {
-+		.prepare_message =3D iter_pinctrl_conf_get_prepare_message,
-+		.update_state =3D iter_pinctrl_conf_get_update_state,
-+		.process_response =3D iter_pinctrl_conf_get_process_response,
-+	};
-+	struct scmi_conf_get_ipriv ipriv =3D {
-+		.selector =3D selector,
-+		.type =3D type,
-+		.all =3D 0,
-+		.config_types =3D &config_type,
-+		.config_values =3D config_value,
-+	};
-+
-+	if (!config_value || type =3D=3D FUNCTION_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-+	if (ret)
-+		return ret;
-+
-+	iter =3D ph->hops->iter_response_init(ph, &ops, 1, PINCTRL_CONFIG_GET,
-+					    sizeof(struct scmi_msg_conf_get),
-+					    &ipriv);
-+
-+	if (IS_ERR(iter))
-+		return PTR_ERR(iter);
-+
-+	return ph->hops->iter_response_run(iter);
-+}
-+
-+static int scmi_pinctrl_config_get_all(const struct scmi_protocol_handle *=
-ph,
-+				       u32 selector,
-+				       enum scmi_pinctrl_selector_type type,
-+				       u16 size, u8 *config_types,
-+				       unsigned long *config_values)
-+{
-+	int ret;
-+	void *iter;
-+	struct scmi_iterator_ops ops =3D {
-+		.prepare_message =3D iter_pinctrl_conf_get_prepare_message,
-+		.update_state =3D iter_pinctrl_conf_get_update_state,
-+		.process_response =3D iter_pinctrl_conf_get_process_response,
-+	};
-+	struct scmi_conf_get_ipriv ipriv =3D {
-+		.selector =3D selector,
-+		.type =3D type,
-+		.all =3D 1,
-+		.config_types =3D config_types,
-+		.config_values =3D config_values,
-+	};
-+
-+	if (!config_values || !config_types || type =3D=3D FUNCTION_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-+	if (ret)
-+		return ret;
-+
-+	iter =3D ph->hops->iter_response_init(ph, &ops, size, PINCTRL_CONFIG_GET,
-+					    sizeof(struct scmi_msg_conf_get),
-+					    &ipriv);
-+
-+	if (IS_ERR(iter))
-+		return PTR_ERR(iter);
-+
-+	return ph->hops->iter_response_run(iter);
-+}
-+
-+static int scmi_pinctrl_config_set(const struct scmi_protocol_handle *ph,
-+				   u32 selector,
-+				   enum scmi_pinctrl_selector_type type,
-+				   unsigned int nr_configs, u8 *config_types,
-+				   unsigned long *config_values)
-+{
-+	struct scmi_xfer *t;
-+	struct scmi_msg_conf_set *tx;
-+	u32 attributes;
++	const unsigned int *group_ids;
 +	int ret, i;
-+	unsigned int configs_in_chunk, conf_num =3D 0;
-+	unsigned int chunk;
-+	int max_msg_size =3D scmi_get_max_msg_size(ph);
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
 +
-+	if (!config_types || !config_values || type =3D=3D FUNCTION_TYPE)
++	if (!groups || !num_groups)
 +		return -EINVAL;
 +
-+	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-+	if (ret)
-+		return ret;
-+
-+	configs_in_chunk =3D (max_msg_size - sizeof(*tx)) / (sizeof(unsigned long=
-) * 2);
-+	while (conf_num < nr_configs) {
-+		chunk =3D (nr_configs - conf_num > configs_in_chunk) ? configs_in_chunk =
-:
-+			nr_configs - conf_num;
-+
-+		ret =3D ph->xops->xfer_get_init(ph, PINCTRL_CONFIG_SET,
-+					      sizeof(*tx) + chunk * 2 * sizeof(unsigned long),
-+					      0, &t);
-+		if (ret)
-+			return ret;
-+
-+		tx =3D t->tx.buf;
-+		tx->identifier =3D cpu_to_le32(selector);
-+		attributes =3D FIELD_PREP(GENMASK(1, 0), type) |
-+			FIELD_PREP(GENMASK(9, 2), chunk);
-+		tx->attributes =3D cpu_to_le32(attributes);
-+
-+		for (i =3D 0; i < chunk; i++) {
-+			tx->configs[i * 2] =3D cpu_to_le32(config_types[i]);
-+			tx->configs[i * 2 + 1] =3D cpu_to_le32(config_values[i]);
-+		}
-+
-+		ret =3D ph->xops->do_xfer(ph, t);
-+
-+		ph->xops->xfer_put(ph, t);
-+
-+		if (ret)
-+			break;
-+
-+		conf_num +=3D chunk;
++	if (selector < pmx->nr_functions &&
++	    pmx->functions[selector].num_groups) {
++		*groups =3D (const char * const *)pmx->functions[selector].groups;
++		*num_groups =3D pmx->functions[selector].num_groups;
++		return 0;
 +	}
 +
-+	return ret;
-+}
-+
-+static int scmi_pinctrl_function_select(const struct scmi_protocol_handle =
-*ph,
-+					u32 identifier,
-+					enum scmi_pinctrl_selector_type type,
-+					u32 function_id)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_func_set *tx;
-+
-+	if (type =3D=3D FUNCTION_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, identifier, type);
-+	if (ret)
++	ret =3D pinctrl_ops->function_groups_get(pmx->ph, selector,
++					       &pmx->functions[selector].num_groups,
++					       &group_ids);
++	if (ret) {
++		dev_err(pmx->dev, "Unable to get function groups, err %d", ret);
 +		return ret;
-+
-+	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_FUNCTION_SELECT, sizeof(*tx),=
- 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	tx =3D t->tx.buf;
-+	tx->identifier =3D cpu_to_le32(identifier);
-+	tx->function_id =3D cpu_to_le32(function_id);
-+	tx->flags =3D cpu_to_le32(type);
-+
-+	ret =3D ph->xops->do_xfer(ph, t);
-+	ph->xops->xfer_put(ph, t);
-+
-+	return ret;
-+}
-+
-+static int scmi_pinctrl_request(const struct scmi_protocol_handle *ph,
-+				u32 identifier,
-+				enum scmi_pinctrl_selector_type type)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_request *tx;
-+
-+	if (type =3D=3D FUNCTION_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, identifier, type);
-+	if (ret)
-+		return ret;
-+
-+	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_REQUEST, sizeof(*tx), 0, &t);
-+
-+	tx =3D t->tx.buf;
-+	tx->identifier =3D cpu_to_le32(identifier);
-+	tx->flags =3D cpu_to_le32(type);
-+
-+	ret =3D ph->xops->do_xfer(ph, t);
-+	ph->xops->xfer_put(ph, t);
-+
-+	return ret;
-+}
-+
-+static int scmi_pinctrl_pin_request(const struct scmi_protocol_handle *ph,
-+				    u32 pin)
-+{
-+	return scmi_pinctrl_request(ph, pin, PIN_TYPE);
-+}
-+
-+static int scmi_pinctrl_free(const struct scmi_protocol_handle *ph,
-+			     u32 identifier,
-+			     enum scmi_pinctrl_selector_type type)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_request *tx;
-+
-+	if (type =3D=3D FUNCTION_TYPE)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_validate_id(ph, identifier, type);
-+	if (ret)
-+		return ret;
-+
-+	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_RELEASE, sizeof(*tx), 0, &t);
-+
-+	tx =3D t->tx.buf;
-+	tx->identifier =3D cpu_to_le32(identifier);
-+	tx->flags =3D cpu_to_le32(type);
-+
-+	ret =3D ph->xops->do_xfer(ph, t);
-+	ph->xops->xfer_put(ph, t);
-+
-+	return ret;
-+}
-+
-+static int scmi_pinctrl_pin_free(const struct scmi_protocol_handle *ph, u3=
-2 pin)
-+{
-+	return scmi_pinctrl_free(ph, pin, PIN_TYPE);
-+}
-+
-+static int scmi_pinctrl_get_group_info(const struct scmi_protocol_handle *=
-ph,
-+				       u32 selector,
-+				       struct scmi_group_info *group)
-+{
-+	int ret;
-+
-+	if (!group)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_attributes(ph, GROUP_TYPE, selector,
-+				      group->name,
-+				      &group->nr_pins);
-+	if (ret)
-+		return ret;
-+
-+	if (!group->nr_pins) {
-+		dev_err(ph->dev, "Group %d has 0 elements", selector);
-+		return -ENODATA;
 +	}
 +
-+	group->group_pins =3D kmalloc_array(group->nr_pins, sizeof(*group->group_=
-pins), GFP_KERNEL);
-+	if (!group->group_pins)
++	*num_groups =3D pmx->functions[selector].num_groups;
++	if (!*num_groups)
++		return -EINVAL;
++
++	pmx->functions[selector].groups =3D
++		devm_kcalloc(pmx->dev, *num_groups, sizeof(*pmx->functions[selector].gro=
+ups),
++			     GFP_KERNEL);
++	if (!pmx->functions[selector].groups)
 +		return -ENOMEM;
 +
-+	ret =3D scmi_pinctrl_list_associations(ph, selector, GROUP_TYPE,
-+					     group->nr_pins, group->group_pins);
-+	if (ret) {
-+		kfree(group->group_pins);
++	for (i =3D 0; i < *num_groups; i++) {
++		pmx->functions[selector].groups[i] =3D
++			pinctrl_scmi_get_group_name(pmx->pctldev,
++						    group_ids[i]);
++		if (!pmx->functions[selector].groups[i]) {
++			ret =3D -ENOMEM;
++			goto err_free;
++		}
++	}
++
++	*groups =3D (const char * const *)pmx->functions[selector].groups;
++
++	return 0;
++
++err_free:
++	devm_kfree(pmx->dev, pmx->functions[selector].groups);
++
++	return ret;
++}
++
++static int pinctrl_scmi_func_set_mux(struct pinctrl_dev *pctldev, unsigned=
+ int selector,
++				     unsigned int group)
++{
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++
++	return pinctrl_ops->mux_set(pmx->ph, selector, group);
++}
++
++static int pinctrl_scmi_request(struct pinctrl_dev *pctldev, unsigned int =
+offset)
++{
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++
++	return pinctrl_ops->pin_request(pmx->ph, offset);
++}
++
++static int pinctrl_scmi_free(struct pinctrl_dev *pctldev, unsigned int off=
+set)
++{
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++
++	return pinctrl_ops->pin_free(pmx->ph, offset);
++}
++
++static const struct pinmux_ops pinctrl_scmi_pinmux_ops =3D {
++	.request =3D pinctrl_scmi_request,
++	.free =3D pinctrl_scmi_free,
++	.get_functions_count =3D pinctrl_scmi_get_functions_count,
++	.get_function_name =3D pinctrl_scmi_get_function_name,
++	.get_function_groups =3D pinctrl_scmi_get_function_groups,
++	.set_mux =3D pinctrl_scmi_func_set_mux,
++};
++
++static int pinctrl_scmi_pinconf_get(struct pinctrl_dev *pctldev, unsigned =
+int _pin,
++				    unsigned long *config)
++{
++	int ret;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++	enum pin_config_param config_type;
++	unsigned long config_value;
++
++	if (!config)
++		return -EINVAL;
++
++	config_type =3D pinconf_to_config_param(*config);
++
++	ret =3D pinctrl_ops->config_get(pmx->ph, _pin, PIN_TYPE, config_type, &co=
+nfig_value);
++	if (ret)
 +		return ret;
-+	}
 +
-+	group->present =3D true;
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_get_group_name(const struct scmi_protocol_handle *=
-ph,
-+				       u32 selector, const char **name)
-+{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
-+
-+	if (!name)
-+		return -EINVAL;
-+
-+	if (selector >=3D pi->nr_groups)
-+		return -EINVAL;
-+
-+	if (!pi->groups[selector].present) {
-+		int ret;
-+
-+		ret =3D scmi_pinctrl_get_group_info(ph, selector,
-+						  &pi->groups[selector]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	*name =3D pi->groups[selector].name;
++	*config =3D pinconf_to_config_packed(config_type, config_value);
 +
 +	return 0;
 +}
 +
-+static int scmi_pinctrl_group_pins_get(const struct scmi_protocol_handle *=
-ph,
-+				       u32 selector, const unsigned int **pins,
-+				       unsigned int *nr_pins)
++static int pinctrl_scmi_pinconf_set(struct pinctrl_dev *pctldev,
++				    unsigned int _pin,
++				    unsigned long *configs,
++				    unsigned int num_configs)
 +{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
++	int i, ret;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++	enum pin_config_param config_type;
++	unsigned long config_value;
++
++	if (!configs || num_configs =3D=3D 0)
++		return -EINVAL;
++
++	for (i =3D 0; i < num_configs; i++) {
++		config_type =3D pinconf_to_config_param(configs[i]);
++		config_value =3D pinconf_to_config_argument(configs[i]);
++
++		ret =3D pinctrl_ops->config_set(pmx->ph, _pin, PIN_TYPE,
++					      num_configs, (u8 *)&config_type,
++					      &config_value);
++		if (ret) {
++			dev_err(pmx->dev, "Error parsing config %ld\n",
++				configs[i]);
++			break;
++		}
++	}
++
++	return ret;
++}
++
++static int pinctrl_scmi_pinconf_group_set(struct pinctrl_dev *pctldev,
++					  unsigned int group,
++					  unsigned long *configs,
++					  unsigned int num_configs)
++{
++	int i, ret;
++	struct scmi_pinctrl *pmx =3D  pinctrl_dev_get_drvdata(pctldev);
++	enum pin_config_param config_type;
++	unsigned long config_value;
++
++	if (!configs || num_configs =3D=3D 0)
++		return -EINVAL;
++
++	for (i =3D 0; i < num_configs; i++) {
++		config_type =3D pinconf_to_config_param(configs[i]);
++		config_value =3D pinconf_to_config_argument(configs[i]);
++
++		ret =3D pinctrl_ops->config_set(pmx->ph, group, GROUP_TYPE,
++					      num_configs, (u8 *)&config_type,
++					      &config_value);
++		if (ret) {
++			dev_err(pmx->dev, "Error parsing config =3D %ld",
++				configs[i]);
++			break;
++		}
++	}
++
++	return ret;
++};
++
++static int pinctrl_scmi_pinconf_group_get(struct pinctrl_dev *pctldev,
++					  unsigned int group,
++					  unsigned long *config)
++{
++	int ret;
++	struct scmi_pinctrl *pmx =3D pinctrl_dev_get_drvdata(pctldev);
++	enum pin_config_param config_type;
++	unsigned long config_value;
++
++	if (!config)
++		return -EINVAL;
++
++	config_type =3D pinconf_to_config_param(*config);
++
++	ret =3D pinctrl_ops->config_get(pmx->ph, group, GROUP_TYPE, config_type, =
+&config_value);
++	if (ret)
++		return ret;
++
++	*config =3D pinconf_to_config_packed(config_type, config_value);
++
++	return 0;
++}
++
++static const struct pinconf_ops pinctrl_scmi_pinconf_ops =3D {
++	.is_generic =3D true,
++	.pin_config_get =3D pinctrl_scmi_pinconf_get,
++	.pin_config_set =3D pinctrl_scmi_pinconf_set,
++	.pin_config_group_set =3D pinctrl_scmi_pinconf_group_set,
++	.pin_config_group_get =3D pinctrl_scmi_pinconf_group_get,
++	.pin_config_config_dbg_show =3D pinconf_generic_dump_config,
++};
++
++static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
++				 unsigned int *nr_pins,
++				 const struct pinctrl_pin_desc **pins)
++{
++	int ret, i;
 +
 +	if (!pins || !nr_pins)
 +		return -EINVAL;
 +
-+	if (selector >=3D pi->nr_groups)
-+		return -EINVAL;
-+
-+	if (!pi->groups[selector].present) {
-+		int ret;
-+
-+		ret =3D scmi_pinctrl_get_group_info(ph, selector,
-+						  &pi->groups[selector]);
-+		if (ret)
-+			return ret;
++	if (pmx->nr_pins) {
++		*pins =3D pmx->pins;
++		*nr_pins =3D pmx->nr_pins;
++		return 0;
 +	}
 +
-+	*pins =3D pi->groups[selector].group_pins;
-+	*nr_pins =3D pi->groups[selector].nr_pins;
++	*nr_pins =3D pinctrl_ops->count_get(pmx->ph, PIN_TYPE);
 +
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_get_function_info(const struct scmi_protocol_handl=
-e *ph,
-+					  u32 selector,
-+					  struct scmi_function_info *func)
-+{
-+	int ret;
-+
-+	if (!func)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_attributes(ph, FUNCTION_TYPE, selector,
-+				      func->name,
-+				      &func->nr_groups);
-+	if (ret)
-+		return ret;
-+
-+	if (!func->nr_groups) {
-+		dev_err(ph->dev, "Function %d has 0 elements", selector);
-+		return -ENODATA;
-+	}
-+
-+	func->groups =3D kmalloc_array(func->nr_groups, sizeof(*func->groups), GF=
-P_KERNEL);
-+	if (!func->groups)
++	pmx->nr_pins =3D *nr_pins;
++	pmx->pins =3D devm_kmalloc_array(pmx->dev, *nr_pins, sizeof(*pmx->pins), =
+GFP_KERNEL);
++	if (!pmx->pins)
 +		return -ENOMEM;
 +
-+	ret =3D scmi_pinctrl_list_associations(ph, selector, FUNCTION_TYPE,
-+					     func->nr_groups, func->groups);
-+	if (ret) {
-+		kfree(func->groups);
-+		return ret;
-+	}
-+
-+	func->present =3D true;
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_get_function_name(const struct scmi_protocol_handl=
-e *ph,
-+					  u32 selector, const char **name)
-+{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
-+
-+	if (!name)
-+		return -EINVAL;
-+
-+	if (selector >=3D pi->nr_functions)
-+		return -EINVAL;
-+
-+	if (!pi->functions[selector].present) {
-+		int ret;
-+
-+		ret =3D scmi_pinctrl_get_function_info(ph, selector,
-+						     &pi->functions[selector]);
-+		if (ret)
++	for (i =3D 0; i < *nr_pins; i++) {
++		pmx->pins[i].number =3D i;
++		ret =3D pinctrl_ops->name_get(pmx->ph, i, PIN_TYPE, &pmx->pins[i].name);
++		if (ret) {
++			dev_err(pmx->dev, "Can't get name for pin %d: rc %d", i, ret);
++			pmx->nr_pins =3D 0;
 +			return ret;
++		}
 +	}
 +
-+	*name =3D pi->functions[selector].name;
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_function_groups_get(const struct scmi_protocol_han=
-dle *ph,
-+					    u32 selector,
-+					    unsigned int *nr_groups,
-+					    const unsigned int **groups)
-+{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
-+
-+	if (!groups || !nr_groups)
-+		return -EINVAL;
-+
-+	if (selector >=3D pi->nr_functions)
-+		return -EINVAL;
-+
-+	if (!pi->functions[selector].present) {
-+		int ret;
-+
-+		ret =3D scmi_pinctrl_get_function_info(ph, selector,
-+						     &pi->functions[selector]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	*groups =3D pi->functions[selector].groups;
-+	*nr_groups =3D pi->functions[selector].nr_groups;
++	*pins =3D pmx->pins;
++	dev_dbg(pmx->dev, "got pins %d", *nr_pins);
 +
 +	return 0;
 +}
 +
-+static int scmi_pinctrl_mux_set(const struct scmi_protocol_handle *ph,
-+				u32 selector, u32 group)
-+{
-+	return scmi_pinctrl_function_select(ph, group, GROUP_TYPE,
-+					    selector);
-+}
-+
-+static int scmi_pinctrl_get_pin_info(const struct scmi_protocol_handle *ph=
-,
-+				     u32 selector, struct scmi_pin_info *pin)
-+{
-+	int ret;
-+
-+	if (!pin)
-+		return -EINVAL;
-+
-+	ret =3D scmi_pinctrl_attributes(ph, PIN_TYPE, selector,
-+				      pin->name, NULL);
-+	if (ret)
-+		return ret;
-+
-+	pin->present =3D true;
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_get_pin_name(const struct scmi_protocol_handle *ph=
-,
-+				     u32 selector, const char **name)
-+{
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
-+
-+	if (!name)
-+		return -EINVAL;
-+
-+	if (selector >=3D pi->nr_pins)
-+		return -EINVAL;
-+
-+	if (!pi->pins[selector].present) {
-+		int ret;
-+
-+		ret =3D scmi_pinctrl_get_pin_info(ph, selector,
-+						&pi->pins[selector]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	*name =3D pi->pins[selector].name;
-+
-+	return 0;
-+}
-+
-+static int scmi_pinctrl_name_get(const struct scmi_protocol_handle *ph,
-+				 u32 selector,
-+				 enum scmi_pinctrl_selector_type type,
-+				 const char **name)
-+{
-+	switch (type) {
-+	case PIN_TYPE:
-+		return scmi_pinctrl_get_pin_name(ph, selector, name);
-+	case GROUP_TYPE:
-+		return scmi_pinctrl_get_group_name(ph, selector, name);
-+	case FUNCTION_TYPE:
-+		return scmi_pinctrl_get_function_name(ph, selector, name);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct scmi_pinctrl_proto_ops pinctrl_proto_ops =3D {
-+	.count_get =3D scmi_pinctrl_count_get,
-+	.name_get =3D scmi_pinctrl_name_get,
-+	.group_pins_get =3D scmi_pinctrl_group_pins_get,
-+	.function_groups_get =3D scmi_pinctrl_function_groups_get,
-+	.mux_set =3D scmi_pinctrl_mux_set,
-+	.config_get =3D scmi_pinctrl_config_get,
-+	.config_get_all =3D scmi_pinctrl_config_get_all,
-+	.config_set =3D scmi_pinctrl_config_set,
-+	.pin_request =3D scmi_pinctrl_pin_request,
-+	.pin_free =3D scmi_pinctrl_pin_free,
++static const struct scmi_device_id scmi_id_table[] =3D {
++	{ SCMI_PROTOCOL_PINCTRL, "pinctrl" },
++	{ }
 +};
++MODULE_DEVICE_TABLE(scmi, scmi_id_table);
 +
-+static int scmi_pinctrl_protocol_init(const struct scmi_protocol_handle *p=
-h)
++static int scmi_pinctrl_probe(struct scmi_device *sdev)
 +{
 +	int ret;
-+	u32 version;
-+	struct scmi_pinctrl_info *pinfo;
++	struct device *dev =3D &sdev->dev;
++	struct scmi_pinctrl *pmx;
++	const struct scmi_handle *handle;
++	struct scmi_protocol_handle *ph;
 +
-+	ret =3D ph->xops->version_get(ph, &version);
++	if (!sdev || !sdev->handle)
++		return -EINVAL;
++
++	handle =3D sdev->handle;
++
++	pinctrl_ops =3D handle->devm_protocol_get(sdev, SCMI_PROTOCOL_PINCTRL, &p=
+h);
++	if (IS_ERR(pinctrl_ops))
++		return PTR_ERR(pinctrl_ops);
++
++	pmx =3D devm_kzalloc(dev, sizeof(*pmx), GFP_KERNEL);
++	if (!pmx)
++		return -ENOMEM;
++
++	pmx->ph =3D ph;
++
++	pmx->dev =3D dev;
++	pmx->pctl_desc.name =3D DRV_NAME;
++	pmx->pctl_desc.owner =3D THIS_MODULE;
++	pmx->pctl_desc.pctlops =3D &pinctrl_scmi_pinctrl_ops;
++	pmx->pctl_desc.pmxops =3D &pinctrl_scmi_pinmux_ops;
++	pmx->pctl_desc.confops =3D &pinctrl_scmi_pinconf_ops;
++
++	ret =3D pinctrl_scmi_get_pins(pmx, &pmx->pctl_desc.npins,
++				    &pmx->pctl_desc.pins);
 +	if (ret)
 +		return ret;
 +
-+	dev_dbg(ph->dev, "Pinctrl Version %d.%d\n",
-+		PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-+
-+	pinfo =3D devm_kzalloc(ph->dev, sizeof(*pinfo), GFP_KERNEL);
-+	if (!pinfo)
-+		return -ENOMEM;
-+
-+	ret =3D scmi_pinctrl_attributes_get(ph, pinfo);
++	ret =3D devm_pinctrl_register_and_init(dev, &pmx->pctl_desc, pmx, &pmx->p=
+ctldev);
 +	if (ret)
-+		return ret;
++		return dev_err_probe(dev, ret, "Failed to register pinctrl\n");
 +
-+	pinfo->pins =3D devm_kcalloc(ph->dev, pinfo->nr_pins,
-+				   sizeof(*pinfo->pins),
-+				   GFP_KERNEL);
-+	if (!pinfo->pins)
-+		return -ENOMEM;
++	pmx->nr_functions =3D pinctrl_scmi_get_functions_count(pmx->pctldev);
++	pmx->nr_groups =3D pinctrl_scmi_get_groups_count(pmx->pctldev);
 +
-+	pinfo->groups =3D devm_kcalloc(ph->dev, pinfo->nr_groups,
-+				     sizeof(*pinfo->groups),
++	if (pmx->nr_functions) {
++		pmx->functions =3D
++			devm_kcalloc(dev, pmx->nr_functions, sizeof(*pmx->functions),
 +				     GFP_KERNEL);
-+	if (!pinfo->groups)
-+		return -ENOMEM;
-+
-+	pinfo->functions =3D devm_kcalloc(ph->dev, pinfo->nr_functions,
-+					sizeof(*pinfo->functions),
-+					GFP_KERNEL);
-+	if (!pinfo->functions)
-+		return -ENOMEM;
-+
-+	pinfo->version =3D version;
-+
-+	return ph->set_priv(ph, pinfo);
-+}
-+
-+static int scmi_pinctrl_protocol_deinit(const struct scmi_protocol_handle =
-*ph)
-+{
-+	int i;
-+	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
-+
-+	for (i =3D 0; i < pi->nr_groups; i++) {
-+		if (pi->groups[i].present) {
-+			kfree(pi->groups[i].group_pins);
-+			pi->groups[i].present =3D false;
-+		}
++		if (!pmx->functions)
++			return -ENOMEM;
 +	}
 +
-+	for (i =3D 0; i < pi->nr_functions; i++) {
-+		if (pi->functions[i].present) {
-+			kfree(pi->functions[i].groups);
-+			pi->functions[i].present =3D false;
-+		}
++	if (pmx->nr_groups) {
++		pmx->groups =3D
++			devm_kcalloc(dev, pmx->nr_groups, sizeof(*pmx->groups), GFP_KERNEL);
++		if (!pmx->groups)
++			return -ENOMEM;
 +	}
 +
-+	return 0;
++	return pinctrl_enable(pmx->pctldev);
 +}
 +
-+static const struct scmi_protocol scmi_pinctrl =3D {
-+	.id =3D SCMI_PROTOCOL_PINCTRL,
-+	.owner =3D THIS_MODULE,
-+	.instance_init =3D &scmi_pinctrl_protocol_init,
-+	.instance_deinit =3D &scmi_pinctrl_protocol_deinit,
-+	.ops =3D &pinctrl_proto_ops,
++static struct scmi_driver scmi_pinctrl_driver =3D {
++	.name =3D DRV_NAME,
++	.probe =3D scmi_pinctrl_probe,
++	.id_table =3D scmi_id_table,
 +};
++module_scmi_driver(scmi_pinctrl_driver);
 +
-+DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(pinctrl, scmi_pinctrl)
-diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_s=
-cmi/protocols.h
-index b3c6314bb4b8..674f949354f9 100644
---- a/drivers/firmware/arm_scmi/protocols.h
-+++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -346,5 +346,6 @@ DECLARE_SCMI_REGISTER_UNREGISTER(sensors);
- DECLARE_SCMI_REGISTER_UNREGISTER(voltage);
- DECLARE_SCMI_REGISTER_UNREGISTER(system);
- DECLARE_SCMI_REGISTER_UNREGISTER(powercap);
-+DECLARE_SCMI_REGISTER_UNREGISTER(pinctrl);
-=20
- #endif /* _SCMI_PROTOCOLS_H */
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 0ce5746a4470..a9f5398ea4cc 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -676,6 +676,52 @@ struct scmi_powercap_proto_ops {
- 					  u32 *power_thresh_high);
- };
-=20
-+enum scmi_pinctrl_selector_type {
-+	PIN_TYPE =3D 0,
-+	GROUP_TYPE,
-+	FUNCTION_TYPE,
-+};
-+
-+/**
-+ * struct scmi_pinctrl_proto_ops - represents the various operations provi=
-ded
-+ * by SCMI Pinctrl Protocol
-+ *
-+ * @count_get: returns count of the registered elements in given type
-+ * @name_get: returns name by index of given type
-+ * @group_pins_get: returns the set of pins, assigned to the specified gro=
-up
-+ * @function_groups_get: returns the set of groups, assigned to the specif=
-ied
-+ *	function
-+ * @mux_set: set muxing function for groups of pins
-+ * @config_get: returns configuration parameter for pin or group
-+ * @config_set: sets the configuration parameter for pin or group
-+ * @pin_request: aquire pin before selecting mux setting
-+ * @pin_free: frees pin, acquired by request_pin call
-+ */
-+struct scmi_pinctrl_proto_ops {
-+	int (*count_get)(const struct scmi_protocol_handle *ph,
-+			 enum scmi_pinctrl_selector_type type);
-+	int (*name_get)(const struct scmi_protocol_handle *ph, u32 selector,
-+			enum scmi_pinctrl_selector_type type, const char **name);
-+	int (*group_pins_get)(const struct scmi_protocol_handle *ph, u32 selector=
-,
-+			      const unsigned int **pins, unsigned int *nr_pins);
-+	int (*function_groups_get)(const struct scmi_protocol_handle *ph, u32 sel=
-ector,
-+				   unsigned int *nr_groups, const unsigned int **groups);
-+	int (*mux_set)(const struct scmi_protocol_handle *ph, u32 selector, u32 g=
-roup);
-+	int (*config_get)(const struct scmi_protocol_handle *ph, u32 selector,
-+			  enum scmi_pinctrl_selector_type type,
-+			  u8 config_type, unsigned long *config_value);
-+	int (*config_get_all)(const struct scmi_protocol_handle *ph,
-+			      u32 selector,
-+			      enum scmi_pinctrl_selector_type type, u16 size,
-+			      u8 *config_types, unsigned long *config_values);
-+	int (*config_set)(const struct scmi_protocol_handle *ph, u32 selector,
-+			  enum scmi_pinctrl_selector_type type,
-+			  unsigned int nr_configs, u8 *config_type,
-+			  unsigned long *config_value);
-+	int (*pin_request)(const struct scmi_protocol_handle *ph, u32 pin);
-+	int (*pin_free)(const struct scmi_protocol_handle *ph, u32 pin);
-+};
-+
- /**
-  * struct scmi_notify_ops  - represents notifications' operations provided=
- by
-  * SCMI core
-@@ -783,6 +829,7 @@ enum scmi_std_protocol {
- 	SCMI_PROTOCOL_RESET =3D 0x16,
- 	SCMI_PROTOCOL_VOLTAGE =3D 0x17,
- 	SCMI_PROTOCOL_POWERCAP =3D 0x18,
-+	SCMI_PROTOCOL_PINCTRL =3D 0x19,
- };
-=20
- enum scmi_system_events {
++MODULE_AUTHOR("Oleksii Moisieiev <oleksii_moisieiev@epam.com>");
++MODULE_DESCRIPTION("ARM SCMI pin controller driver");
++MODULE_LICENSE("GPL");
 --=20
 2.25.1
