@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EBF7DA217
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F157DA219
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346487AbjJ0UzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        id S1346501AbjJ0Uza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0UzQ (ORCPT
+        with ESMTP id S235052AbjJ0Uz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:55:16 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC2C106
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:55:14 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9bc9e6a89so22701715ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698440113; x=1699044913; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ONx5P+u41AFQig13/rFYqh/7sU4tfrNPS3sVnIzMbM=;
-        b=sjbmNdFup6m/yOleW7YhMzcMHGCh0XF3bh/pnNIueqkred6vJWp4yJ5fkSuD3Tc0xc
-         HP+msDVgqOBIws+uLCHC3JyuAnbKTPsvmkh9C3O8gnmSXz7el8UHd147tk+DkYGHTcha
-         dRJAtKsw7D5N7lGld6PgpbTwtcOqrN7k3+CD5Uzd6+cSnefZO0UwU91SL9DSQUUZYiKg
-         Qt4f87eDbMVvvarucmXBW0QFcbOoWmjNZcHbnzz+XiUa7/184adM/3nSANpcAPrglaCj
-         jrJDqk7aLHUNgpM2CRhQ8bZUM60yqVDlEPlw3f+6wdBducEHbEX1xAdv7h6Lv+6gdfHd
-         TcKg==
+        Fri, 27 Oct 2023 16:55:29 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38591BD;
+        Fri, 27 Oct 2023 13:55:25 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1cbf47fa563so21857335ad.2;
+        Fri, 27 Oct 2023 13:55:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698440113; x=1699044913;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+        d=1e100.net; s=20230601; t=1698440125; x=1699044925;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ONx5P+u41AFQig13/rFYqh/7sU4tfrNPS3sVnIzMbM=;
-        b=FLEC5RaWOHutorI7vKo50RN0B/EXaC6utISWpTbfCl2v6L6Zo7kjczBrAbPeFgZUOI
-         aNg58Nn+rHka6Ur3srxS5fbsDcV3vovrIgrp2iMDXZrxVpaMHRfMzHlumMkeMJ48Vl9j
-         3wqG+0w5QSIJMcVZOAmPOV9EX7drarqgZJSp+2NwC+S3ssbCYGR+Ah16rcumnTsZ7axH
-         iLFg9rMVvqBxz0aSIO67lEHtg8ofpKjqfBE73IKRDLqxyKKpuPFaZG8cegmYpgvgyvRh
-         bMIqoy615+Ea9nAzsvmruFoi0jn4xGnVe+li/1FJZZ1yb8KPx3c7ZvriFxqSFR2Egme2
-         uFxw==
-X-Gm-Message-State: AOJu0YyZL6u8sNsBcUbu/si3TM1kA/IyaCLNLkyK+hAau1nyqTPFB9Je
-        1Qw1PaC05hMQVrmPTU9vp6qX1F2MgZ8=
-X-Google-Smtp-Source: AGHT+IHRWdgGJSXOxv6UW7flVpbOejAdc9Fw9CL7CXJgWEYcb6xxsyK//crY2ta23k8rS/UOu2shny/XOxQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ed4d:b0:1ca:220:ce4f with SMTP id
- y13-20020a170902ed4d00b001ca0220ce4fmr67727plb.4.1698440113667; Fri, 27 Oct
- 2023 13:55:13 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 13:55:11 -0700
-In-Reply-To: <20231023234000.2499267-7-seanjc@google.com>
-Mime-Version: 1.0
-References: <20231023234000.2499267-1-seanjc@google.com> <20231023234000.2499267-7-seanjc@google.com>
-Message-ID: <ZTwjrxDodKVMK3PI@google.com>
-Subject: Re: [PATCH 6/6] KVM: x86/pmu: Track emulated counter events instead
- of previous counter
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
-        Roman Kagan <rkagan@amazon.de>,
-        Jim Mattson <jmattson@google.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Like Xu <like.xu.linux@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=2YiqrRPa09XwcSO6dmunATjOVHB3FZKY8V49FUoXNpc=;
+        b=wIlhq3RWFhfWgOduwrJNS1mC3ptMuJxZfyhP7FDZY2sZEGA6VjBlX23mkvPTeAdqUy
+         lepjhAYXcbrI85+0fMJN7NZjh4qO6YV78CqSiIqkHx/NgLWIGIw6x+iVv1rDgnsGqJzP
+         FBpBd38aXSMLBOjMk8UN1UhiI6u3F4UVxkfGe81D7E0SWKJa5JGgkK7Q6nw21pls95eN
+         /ZLyB5zBliagmW8zbAEA0V2VDHGb7QsKUvuOPAvDutC64mkxtG/NZ42yFBF2F8tdRJWw
+         VnTltxERWAb4dc9Fx03yDRVgb5jjPFVZ3h+siFcprEpeuiQwqTEoP0rBgRtW2vVdZBpA
+         SBCw==
+X-Gm-Message-State: AOJu0YyXhSMSQDxQ8cA1viniWuvv3Qzto0rO3EIMG+tZSkznyJMY3hu2
+        DjqQAWHpd/Nvjqd/6DBrnzE=
+X-Google-Smtp-Source: AGHT+IFNnAI4aHBm8o7jUz2CjwqbUusBVaJvM6IjEzdEXUT4v8V/PYR/KGKCPVaC1ihakvXkyE1mxg==
+X-Received: by 2002:a17:90a:1954:b0:27d:98f3:21a5 with SMTP id 20-20020a17090a195400b0027d98f321a5mr3469818pjh.24.1698440124610;
+        Fri, 27 Oct 2023 13:55:24 -0700 (PDT)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
+        by smtp.gmail.com with ESMTPSA id 30-20020a17090a01de00b002794fe14cabsm4068946pjd.12.2023.10.27.13.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 13:55:23 -0700 (PDT)
+Message-ID: <a16dc8ba-ca3b-4dd6-a8b5-dbb3ac7a49a5@acm.org>
+Date:   Fri, 27 Oct 2023 13:55:20 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] ufs: core: Add host quirk
+ QUIRK_MCQ_EXPAND_QUEUE_SLOT
+Content-Language: en-US
+To:     =?UTF-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?= 
+        <Chun-hung.Wu@mediatek.com>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "quic_nguyenb@quicinc.com" <quic_nguyenb@quicinc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "quic_asutoshd@quicinc.com" <quic_asutoshd@quicinc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "Arthur.Simchaev@wdc.com" <Arthur.Simchaev@wdc.com>,
+        "keosung.park@samsung.com" <keosung.park@samsung.com>,
+        "mani@kernel.org" <mani@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "quic_cang@quicinc.com" <quic_cang@quicinc.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "yang.lee@linux.alibaba.com" <yang.lee@linux.alibaba.com>
+Cc:     =?UTF-8?B?UGV0ZXIgV2FuZyAo546L5L+h5Y+LKQ==?= 
+        <peter.wang@mediatek.com>,
+        =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= 
+        <eddie.huang@mediatek.com>,
+        =?UTF-8?B?SmlhamllIEhhbyAo6YOd5Yqg6IqCKQ==?= 
+        <jiajie.hao@mediatek.com>,
+        =?UTF-8?B?Q0MgQ2hvdSAo5ZGo5b+X5p2wKQ==?= <cc.chou@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QWxpY2UgQ2hhbyAo6LaZ54+u5Z2HKQ==?= 
+        <Alice.Chao@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        =?UTF-8?B?Q2FzcGVyIExpICjmnY7kuK3mpq4p?= <casper.li@mediatek.com>,
+        =?UTF-8?B?VHVuLXl1IFl1ICjmuLjmlabogb8p?= <Tun-yu.Yu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        =?UTF-8?B?TGluIEd1aSAo5qGC5p6XKQ==?= <Lin.Gui@mediatek.com>,
+        =?UTF-8?B?Q2hhb3RpYW4gSmluZyAo5LqV5pyd5aSpKQ==?= 
+        <Chaotian.Jing@mediatek.com>,
+        =?UTF-8?B?UG93ZW4gS2FvICjpq5jkvK/mlocp?= <Powen.Kao@mediatek.com>,
+        =?UTF-8?B?TmFvbWkgQ2h1ICjmnLHoqaDnlLAp?= <Naomi.Chu@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        =?UTF-8?B?UWlsaW4gVGFuICjosK3pupLpup8p?= <Qilin.Tan@mediatek.com>,
+        "kernel-team@android.com" <kernel-team@android.com>
+References: <20231025085656.10848-1-chun-hung.wu@mediatek.com>
+ <20231025085656.10848-2-chun-hung.wu@mediatek.com>
+ <3056c6d8-1e54-4954-9141-e0760a0d935a@acm.org>
+ <53d7d12bc12237e5f86522faf09876ab08ef7592.camel@mediatek.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <53d7d12bc12237e5f86522faf09876ab08ef7592.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023, Sean Christopherson wrote:
-> @@ -226,13 +226,19 @@ static int pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type, u64 config,
->  
->  static void pmc_pause_counter(struct kvm_pmc *pmc)
->  {
-> -	u64 counter = pmc->counter;
-> +	/*
-> +	 * Accumulate emulated events, even if the PMC was already paused, e.g.
-> +	 * if KVM emulated an event after a WRMSR, but before reprogramming, or
-> +	 * if KVM couldn't create a perf event.
-> +	 */
-> +	u64 counter = pmc->counter + pmc->emulated_counter;
->  
-> -	if (!pmc->perf_event || pmc->is_paused)
-> -		return;
-> +	pmc->emulated_counter = 0;
+On 10/26/23 20:27, Chun-Hung Wu (巫駿宏) wrote:
+> From UFSHCI 4.0 spec "When the head and tail doorbells are equal, the
+> queue is empty. *Nothe that this definition means there will always be
+> one empty queue entry"
+> One of our platform does not keep one empty queue
+> entry for CQ full
+> case, that's  why we need this patch to fix this corner case.
 
-As pointed by Mingwei, who _very_ patiently explained to me what is broken, the
-snapshot used to detect overflow due to emulated_counter events needs to be taken
-_after_ pausing the perf event, i.e. the count from the perf event needs to be
-excluded.  If overflow happens from pmc->counter => pmc->counter + pmc->perf_event,
-then hardware (via perf) will detect overflow.  I.e. KVM is only responsible for
-detecting overflow solely due to emulated_counter.  Include the count from the
-perf event can lead to KVM generating multiple overflow events, where architecturally
-only one should occur.
+The UFSHCI driver should make sure that there is always one empty queue
+entry. Does "platform" in the above text refer to the SoC that includes
+the UFSHCI controller?
 
->  	/* update counter, reset event value to avoid redundant accumulation */
-> -	counter += perf_event_pause(pmc->perf_event, true);
-> +	if (pmc->perf_event && !pmc->is_paused)
-> +		counter += perf_event_pause(pmc->perf_event, true);
-> +
->  	pmc->counter = counter & pmc_bitmask(pmc);
->  	pmc->is_paused = true;
->  }
+What is totally unclear to me is why the following code depends on the
+UFSHCI controller type:
+
++		if (ufshcd_is_mcq_expand_queue_slot(hba))
++			hwq->max_entries = hba->nutrs + 1;
++		else
++			hwq->max_entries = hba->nutrs;
+
+Shouldn't hwq->max_entries = hba->nutrs + 1 be used for all UFSHCI 4.0
+controllers?
+
+Thanks,
+
+Bart.
+
