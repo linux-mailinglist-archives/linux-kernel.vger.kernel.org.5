@@ -2,108 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FDD7D9B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF9C7D9B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345979AbjJ0Oik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        id S1345845AbjJ0OjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbjJ0Oij (ORCPT
+        with ESMTP id S1345871AbjJ0OjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:38:39 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D241D191
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:36 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5859a7d6556so1839305a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698417516; x=1699022316; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=55I45Qtlplt+aIkb3uw3RfeEyoBtnIxw2UGzAOCPdDY=;
-        b=Wc9yZqFyEFXH4zn/PSLKQ/HOqrf0AoU2UFslouG08QDJqMelIZEnrsHC02ddkxZ8uP
-         8nHshG8bhaR42c6RDsFT7/zNmYgI3eEFA8jy3S1RUQ/2phKYFGN/LUBsOGXR1MTK3puc
-         QNX3fQrW/PeDDcaRqbxA8/WedSrL34SjPJ+W/Y1yEz6tVcJeO9PxxUWStQxZFjf95WOs
-         m0mDZPAlJ29u17K9cvcpRUBdVEtq9m3nde73g4z1NzBR2mts44iJhBCdgz8xEbAqJEcJ
-         MJxC+OuHN1PITAU/SmNfNy+jV33G8ZCQJOC4e5HpsZXNcu+MC1mb0d+X3hRfd+GGgzXq
-         Tj9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698417516; x=1699022316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=55I45Qtlplt+aIkb3uw3RfeEyoBtnIxw2UGzAOCPdDY=;
-        b=ei+dz9dfsHxFtXdgUF51Qr6iCzV84IJyrKqNUKlHZ7UhAZu9fd1bt1K4pdvL3HwrTW
-         Hp58yXUFeht7JckeIbuB/MTCQofzYfxqe99Ho5SBusw5HMrrGMSEevS5WXpHsVw9a8xS
-         PmW+xSfPrsEaeZcDKrUzkOpc9SP/y801N02+ZhJpz9uvf28aOK6gTiRcInP9Xj2FveE5
-         pFOI+uKGPTA38LPapzbrdB8WdXDNzAzKCVQR/k1Eh0Wx7Ye8WE8/t+NwEaERJLvLqBZj
-         Jw+dYqJ+yvwdsd0z/B475/p3IuOJUl8x9gx6JyQf3TTzLs17m1IDgCVx4NhGOx7hE7hJ
-         EYsw==
-X-Gm-Message-State: AOJu0Yy/pOEnPtMihWYfL2Rv/3jNbgROHyg1VqiQ9k+wa5nf8BcFBvrd
-        RBrjG72UGh6x3OGfbSpMzhVEGhH5DcrBkza7D++6ZQ==
-X-Google-Smtp-Source: AGHT+IEJ07q1D5+4KgTEUidlRWDjPLhaZTGEoCul8Ylb8bU0eDcjf2kvbdOo0yKFuk4wmgeVVBFcvoZPzXSIbNI0bKk=
-X-Received: by 2002:a17:90a:6e48:b0:27d:3c75:db02 with SMTP id
- s8-20020a17090a6e4800b0027d3c75db02mr2979762pjm.32.1698417516000; Fri, 27 Oct
- 2023 07:38:36 -0700 (PDT)
+        Fri, 27 Oct 2023 10:39:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EA187;
+        Fri, 27 Oct 2023 07:38:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698417537; x=1729953537;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=15oAMppkHxqFcvZpRQVCeqFUeFGfKOHfvAhV5S36eVA=;
+  b=IeIjOmNy4vvJu8wRXRympgWFH5OTXazFsTJ8FAsnHeTidex6aw0sTExf
+   gbK0XJF3Ceaw+xi034Vsbl3lopiJVyVntJa+UQWQD6bmmWSIR+tjzo5VM
+   cW+akqnaruIiSeNh/GnlYDuum80YR9J2AJgKYnc2ZwKKIjxSic79K6okG
+   +F7Ub1OpJnl02ozUn+hdSEJOvxMUr6JVvcJxl0s8MlX91jGgPWstn+k2W
+   ewy5qroj06250duHhMeFFBt/4Q+8YH9DUS4uIvzplaTF+qYXJrEIlT0nf
+   ubKDdqgXA6oanSiG0Yxz/Zs8PAeywIuyivuA8DbZV8mji3YvJeBj8TPmj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="386670100"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="386670100"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:38:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="812616"
+Received: from dmnassar-mobl.amr.corp.intel.com (HELO desk) ([10.212.203.39])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:37:59 -0700
+Date:   Fri, 27 Oct 2023 07:38:34 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Alyssa Milburn <alyssa.milburn@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH v4 0/6] Delay VERW
+Message-ID: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIABTEO2UC/23MTQ6CMBhF0a2Yji3pf4sj92EcYPkqTRBMwQoh7
+ N2mTiA6fDd5Z0EDBA8DOh0WFCD6wfddGuJ4QLapujtgX6eNGGGcEkpxDW014wjhjWsitCiNujH
+ LUTo8Azg/ZeyC0DWVxg9jH+asR5r7F2JkC0WKCbbOSUFKxZmqz63vXlPhuxHawvaPjEW2BcQOY
+ Alw1BjKBbGG6P8A3wJyB/AESKYUV1oDcPkLrOv6AXtbl6wuAQAA
+X-Mailer: b4 0.12.3
 MIME-Version: 1.0
-References: <20231025142820.390238-1-apatel@ventanamicro.com>
- <20231025142820.390238-2-apatel@ventanamicro.com> <87y1fo3383.ffs@tglx>
-In-Reply-To: <87y1fo3383.ffs@tglx>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Fri, 27 Oct 2023 20:08:24 +0530
-Message-ID: <CAK9=C2WC7N-9LgrtpfeWCT08iToqMevgvR0rkjEvdJFPzNDkMQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] RISC-V: Don't fail in riscv_of_parent_hartid() for
- disabled HARTs
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.3 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 1:29=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Wed, Oct 25 2023 at 19:58, Anup Patel wrote:
-> > The riscv_of_processor_hartid() used by riscv_of_parent_hartid() fails
-> > for HARTs disabled in the DT. This results in the following warning
-> > thrown by the RISC-V INTC driver for the E-core on SiFive boards:
-> >
-> > [    0.000000] riscv-intc: unable to find hart id for /cpus/cpu@0/inter=
-rupt-controller
-> >
-> > The riscv_of_parent_hartid() is only expected to read the hartid from
-> > the DT so we should directly call of_get_cpu_hwid() instead of calling
->
-> We should? Or maybe not?
->
-> Please write precise changelogs and use imperative wording as documented
-> in Documentation/process.
+v4:
+- Fill unused part of mds_verw_sel cacheline with int3. (Andrew)
+- Fix the formatting in documentation (0-day CI).
+- s/inspite/in spite/ (Sean).
+- Explicitly skip FB_CLEAR optimization when MDS affected (Sean).
 
-Sure, I will update the wording in the commit description.
+v3: https://lore.kernel.org/r/20231025-delay-verw-v3-0-52663677ee35@linux.intel.com
+- Use .entry.text section for VERW memory operand. (Andrew/PeterZ)
+- Fix the duplicate header inclusion. (Chao)
 
+v2: https://lore.kernel.org/r/20231024-delay-verw-v2-0-f1881340c807@linux.intel.com
+- Removed the extra EXEC_VERW macro layers. (Sean)
+- Move NOPL before VERW. (Sean)
+- s/USER_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh/Dave)
+- Removed the comments before CLEAR_CPU_BUFFERS. (Josh)
+- Remove CLEAR_CPU_BUFFERS from NMI returning to kernel and document the
+  reason. (Josh/Dave)
+- Reformat comment in md_clear_update_mitigation(). (Josh)
+- Squash "x86/bugs: Cleanup mds_user_clear" patch. (Nikolay)
+- s/GUEST_CLEAR_CPU_BUFFERS/CLEAR_CPU_BUFFERS/. (Josh)
+- Added a patch from Sean to use CFLAGS.CF for VMLAUNCH/VMRESUME
+  selection. This facilitates a single CLEAR_CPU_BUFFERS location for both
+  VMLAUNCH and VMRESUME. (Sean)
+
+v1: https://lore.kernel.org/r/20231020-delay-verw-v1-0-cff54096326d@linux.intel.com
+
+Hi,
+
+Legacy instruction VERW was overloaded by some processors to clear
+micro-architectural CPU buffers as a mitigation of CPU bugs. This series
+moves VERW execution to a later point in exit-to-user path. This is
+needed because in some cases it may be possible for kernel data to be
+accessed after VERW in arch_exit_to_user_mode(). Such accesses may put
+data into MDS affected CPU buffers, for example:
+
+  1. Kernel data accessed by an NMI between VERW and return-to-user can
+     remain in CPU buffers (since NMI returning to kernel does not
+     execute VERW to clear CPU buffers).
+  2. Alyssa reported that after VERW is executed,
+     CONFIG_GCC_PLUGIN_STACKLEAK=y scrubs the stack used by a system
+     call. Memory accesses during stack scrubbing can move kernel stack
+     contents into CPU buffers.
+  3. When caller saved registers are restored after a return from
+     function executing VERW, the kernel stack accesses can remain in
+     CPU buffers(since they occur after VERW).
+
+Although these cases are less practical to exploit, moving VERW closer
+to ring transition reduces the attack surface.
+
+Overview of the series:
+
+Patch 1: Prepares VERW macros for use in asm.
+Patch 2: Adds macros to 64-bit entry/exit points.
+Patch 3: Adds macros to 32-bit entry/exit points.
+Patch 4: Enables the new macros.
+Patch 5: Uses CFLAGS.CF for VMLAUNCH/VMRESUME selection.
+Patch 6: Adds macro to VMenter.
+
+Below is some performance data collected on a Skylake client
+compared with previous implementation:
+
+Baseline: v6.6-rc5
+
+| Test               | Configuration          | v1   | v3   |
+| ------------------ | ---------------------- | ---- | ---- |
+| build-linux-kernel | defconfig              | 1.00 | 1.00 |
+| hackbench          | 32 - Process           | 1.02 | 1.06 |
+| nginx              | Short Connection - 500 | 1.01 | 1.04 |
+
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: kvm@vger.kernel.org
+Cc: Alyssa Milburn <alyssa.milburn@linux.intel.com>
+Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Cc: antonio.gomez.iglesias@linux.intel.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+To: Ingo Molnar <mingo@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+To: x86@kernel.org
+To: "H. Peter Anvin" <hpa@zytor.com>
+To: Peter Zijlstra <peterz@infradead.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Andy Lutomirski <luto@kernel.org>
+To: Jonathan Corbet <corbet@lwn.net>
+To: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+To: tony.luck@intel.com
+To: ak@linux.intel.com
+To: tim.c.chen@linux.intel.com
+To: Andrew Cooper <andrew.cooper3@citrix.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+Pawan Gupta (5):
+      x86/bugs: Add asm helpers for executing VERW
+      x86/entry_64: Add VERW just before userspace transition
+      x86/entry_32: Add VERW just before userspace transition
+      x86/bugs: Use ALTERNATIVE() instead of mds_user_clear static key
+      KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+
+Sean Christopherson (1):
+      KVM: VMX: Use BT+JNC, i.e. EFLAGS.CF to select VMRESUME vs. VMLAUNCH
+
+ Documentation/arch/x86/mds.rst       | 38 +++++++++++++++++++++++++-----------
+ arch/x86/entry/entry.S               | 17 ++++++++++++++++
+ arch/x86/entry/entry_32.S            |  3 +++
+ arch/x86/entry/entry_64.S            | 11 +++++++++++
+ arch/x86/entry/entry_64_compat.S     |  1 +
+ arch/x86/include/asm/cpufeatures.h   |  2 +-
+ arch/x86/include/asm/entry-common.h  |  1 -
+ arch/x86/include/asm/nospec-branch.h | 27 +++++++++++++------------
+ arch/x86/kernel/cpu/bugs.c           | 15 ++++++--------
+ arch/x86/kernel/nmi.c                |  2 --
+ arch/x86/kvm/vmx/run_flags.h         |  7 +++++--
+ arch/x86/kvm/vmx/vmenter.S           |  9 ++++++---
+ arch/x86/kvm/vmx/vmx.c               | 19 +++++++++++++-----
+ 13 files changed, 106 insertions(+), 46 deletions(-)
+---
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+change-id: 20231011-delay-verw-d0474986b2c3
+
+Best regards,
+-- 
 Thanks,
-Anup
+Pawan
+
+
