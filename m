@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3217D9E25
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76657D9E28
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjJ0QlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S1345549AbjJ0Qly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbjJ0QlR (ORCPT
+        with ESMTP id S231461AbjJ0Qlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:41:17 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4325E128;
-        Fri, 27 Oct 2023 09:41:15 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 968FEFF806;
-        Fri, 27 Oct 2023 16:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698424873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YDwZ/D783hZpHUTxyWo8uzzbNmWM8NcPjgEWVvEEako=;
-        b=DNrWGMessoxhVg7xnqd8tUEPfepPu0KPkEFW56MkmCexLtJnFa90eWYDFOvgkUfEb24Ig5
-        hBgncSqlKInZXIANXon/JKnScU2mWXunQVNziicq5U/QWJnZF38lxBXZ/SQXoqnnBTyTHw
-        HBnHCOxbmGBHYZZKo5c8EFnm2/6HCbfhzC8otjYbTfBDQbtE7LglEn1SjemVL0SLE9ucnB
-        AbRj6eegfB+QqjJRjUjbqFlwbvzhBlID4rY0xNgrz8LdihZ3SmqdfBCPgfl7r0dwSfaL5u
-        5wHdIIh85RVtq7jB/krQqW/Itdo3spWhFcWYx3Yu2CovwHZ2pryTawpLmu8z3A==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        vladimir.kondratiev@intel.com,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH 0/5] MIPS: Fix kernel in XKPHYS
-In-Reply-To: <875y2s81lx.fsf@BL-laptop>
-References: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
- <875y2s81lx.fsf@BL-laptop>
-Date:   Fri, 27 Oct 2023 18:41:12 +0200
-Message-ID: <87zg046ms7.fsf@BL-laptop>
+        Fri, 27 Oct 2023 12:41:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981EA128
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:41:49 -0700 (PDT)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D00E56607323;
+        Fri, 27 Oct 2023 17:41:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698424908;
+        bh=P25vIC4Jmsa+/+Zny338mcD8gopPQmErUVkYqQQqo54=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bLZHldPhuO1SWfWuMRNQggv8Bl6sdvou/aVJLtcswAgWOfpf4JdQH+APpttVal6jB
+         3yPhX4fHbcwxhrMwOT8eDsZAs1riDAOMRjjsU6NJlW+oLNmclQpdCjFq4xrEeEztrj
+         dEZwYiopI9PXaO5Ikj1CdVMX5XThg0wZieN60KJ9sApe29Mpo+t2uE5AMze+f9WPaJ
+         o4lk7H9cgjoTzvvvVgQL8pKpTE+RO6QtfTsQyG4OANS8pN6HXtYR8fpdK1BJt5ev2i
+         eScgi71C5fHJQYHJD3qzq08mMiKVNajVTyM5tzhsb2mA0D5aZRFacdj1vik2wRSr6K
+         CktTbBXSMWS7Q==
+Date:   Fri, 27 Oct 2023 18:41:43 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Luben Tuikov <ltuikov89@gmail.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>, matthew.brost@intel.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        faith@gfxstrand.net, luben.tuikov@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
+ control
+Message-ID: <20231027184143.4427edb8@collabora.com>
+In-Reply-To: <a9215c37-61cd-4fbc-9f80-217daacd96bd@gmail.com>
+References: <20231026161431.5934-1-dakr@redhat.com>
+        <20231027102516.0e4b00ef@collabora.com>
+        <a9215c37-61cd-4fbc-9f80-217daacd96bd@gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gregory CLEMENT <gregory.clement@bootlin.com> writes:
+On Fri, 27 Oct 2023 10:32:52 -0400
+Luben Tuikov <ltuikov89@gmail.com> wrote:
 
-> Hello Jiaxun,
->
->
->> Hi all,
->>
->> This series fixes support for loading kernel to XKPHYS space.
->> It is derived from "MIPS: use virtual addresses from xkphys for MIPS64" [1].
->>
->> Boot tested on boston and QEMU with loading address set to 0xa800000090000000.
->> QEMU patch on the way.
->>
->> Gregory and Vladimir, do let me know if I missed anything.
->
-> Thanks for this series, I reviewed it and tested it on my platform, so
-> you can add for all the patches:
->
-> Reviewed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
->
-> However I add to fix the patch " MIPS: Handle mips_cps_core_entry within
-> lower 4G", I think you missed a case. I will comment on it.
->
-> Gregory
+> On 2023-10-27 04:25, Boris Brezillon wrote:
+> > Hi Danilo,
+> > 
+> > On Thu, 26 Oct 2023 18:13:00 +0200
+> > Danilo Krummrich <dakr@redhat.com> wrote:
+> >   
+> >> Currently, job flow control is implemented simply by limiting the number
+> >> of jobs in flight. Therefore, a scheduler is initialized with a credit
+> >> limit that corresponds to the number of jobs which can be sent to the
+> >> hardware.
+> >>
+> >> This implies that for each job, drivers need to account for the maximum
+> >> job size possible in order to not overflow the ring buffer.
+> >>
+> >> However, there are drivers, such as Nouveau, where the job size has a
+> >> rather large range. For such drivers it can easily happen that job
+> >> submissions not even filling the ring by 1% can block subsequent
+> >> submissions, which, in the worst case, can lead to the ring run dry.
+> >>
+> >> In order to overcome this issue, allow for tracking the actual job size
+> >> instead of the number of jobs. Therefore, add a field to track a job's
+> >> credit count, which represents the number of credits a job contributes
+> >> to the scheduler's credit limit.
+> >>
+> >> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> >> ---
+> >> Changes in V2:
+> >> ==============
+> >>   - fixed up influence on scheduling fairness due to consideration of a job's
+> >>     size
+> >>     - If we reach a ready entity in drm_sched_select_entity() but can't actually
+> >>       queue a job from it due to size limitations, just give up and go to sleep
+> >>       until woken up due to a pending job finishing, rather than continue to try
+> >>       other entities.
+> >>   - added a callback to dynamically update a job's credits (Boris)  
+> > 
+> > This callback seems controversial. I'd suggest dropping it, so the
+> > patch can be merged.  
+> 
+> Sorry, why is it controversial? (I did read back-and-forth above, but it wasn't clear
+> why it is /controversial/.)
 
-I forgot to say that if your series is not merged in 6.7, then I would
-like to bring it in my series as I have to change some part of the code
-to add support for the memory aliasing workaround.
+That's a question for Christian, I guess. I didn't quite get what he
+was worried about, other than this hook introducing a new way for
+drivers to screw things up by returning funky/invalid credits (which we
+can report with WARN_ON()s). But let's be honest, there's probably a
+hundred different ways (if not more) drivers can shoot themselves in the
+foot with drm_sched already...
 
-Thanks,
+> 
+> I believe only drivers are privy to changes in the credit availability as their
+> firmware and hardware executes new jobs and finishes others, and so this "update"
+> here is essential--leaving it only to prepare_job() wouldn't quite fulfill the vision
+> of why the credit mechanism introduced by this patch in the first place.
 
-Gregory
-
-
->
->
->>
->> Thanks
->> - Jiaxun
->>
->> [1]: https://lore.kernel.org/lkml/20231004161038.2818327-3-gregory.clement@bootlin.com/
->>
->> Jiaxun Yang (5):
->>   MIPS: Export higher/highest relocation functions in uasm
->>   MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
->>   MIPS: Fix set_uncached_handler for ebase in XKPHYS
->>   MIPS: Handle mips_cps_core_entry within lower 4G
->>   MIPS: Allow kernel base to be set from Kconfig for all platforms
->>
->>  arch/mips/Kconfig               | 18 +++++++++++++----
->>  arch/mips/include/asm/mips-cm.h |  1 +
->>  arch/mips/include/asm/uasm.h    |  2 ++
->>  arch/mips/kernel/genex.S        | 19 +++++++++++++----
->>  arch/mips/kernel/smp-cps.c      | 27 +++++++++++++++++++------
->>  arch/mips/kernel/traps.c        | 36 +++++++++++++++++++++++----------
->>  arch/mips/mm/uasm.c             |  6 ++++--
->>  7 files changed, 82 insertions(+), 27 deletions(-)
->>
->> -- 
->> 2.34.1
->>
->
-> -- 
-> Gregory Clement, Bootlin
-> Embedded Linux and Kernel engineering
-> http://bootlin.com
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+I kinda agree with you, even if I wouldn't so pessimistic as to how
+useful this patch would be without the ->update_job_credits() hook
+(it already makes the situation a lot better for Nouveau and probably
+other drivers too).
