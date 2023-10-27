@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821E87D9A55
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033797D9A5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345974AbjJ0NrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        id S1345992AbjJ0Nsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345458AbjJ0NrH (ORCPT
+        with ESMTP id S1345458AbjJ0Nse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:47:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E0A9D;
-        Fri, 27 Oct 2023 06:47:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EECC433C9;
-        Fri, 27 Oct 2023 13:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698414425;
-        bh=PDM2diCGxCnhLmpepTocuodFEgpq+efi5FyxfOqLlW8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ILaqQ5REhAvAcZ/orSI/QjL66UWXtUG1zWKgw1N0/oszAW0XiPQ0iMLP3pxQISF1F
-         Zpp7EymGwHkfciz+HE4AMLusqZqIW3IUmTHtf2oX745uC5rK3AghcJgJ11vLSDxdsg
-         Rgiti8ozzeL7LMEzFTc9g4up+vExyQPx7Get3sSUhkwXpXb6orDLqOe+O/SEDMwqyD
-         diawqTyvMWwFpxQXfiC8dsE12MjL58AQcZbJ1kEshcKetZqRrCc0C3Ch6QnCI75vTW
-         Y6ju76hbVDBCyoAxwngQUfx6gneLqi+HsikcLuLX4oiAiyolSxNB1eKY6Wn/3xmtQs
-         mogEUvtb6bG6g==
-Date:   Fri, 27 Oct 2023 14:46:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Angel Iglesias <ang.iglesiasg@gmail.com>,
-        linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5p?= =?UTF-8?B?Zw==?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v2 4/5] iio: pressure: bmp280: Allow multiple chips id
- per family of devices
-Message-ID: <20231027144625.36cc694c@jic23-huawei>
-In-Reply-To: <20231027144234.0ad6c7b6@jic23-huawei>
-References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
-        <eade22d11e9de4405ea19fdaa5a8249143ae94df.1697994521.git.ang.iglesiasg@gmail.com>
-        <ZTZYNjq/1X95ijXh@smile.fi.intel.com>
-        <20231027144234.0ad6c7b6@jic23-huawei>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 09:48:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31E818A;
+        Fri, 27 Oct 2023 06:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698414512; x=1729950512;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=FT3SYkcDyStolkfc5gH/ZZusESEYmy+fhjCdCEwgFao=;
+  b=m+NrMq5x8XTO8B+y5VFoGpoFawbGMxON/uXoytD3lQz+q37nH29B8WNw
+   gT8vZRZYo3r0Ya4bOdfkv003Z5uMLE2+WWz+DztOzqPln7dg+WEsBUM6i
+   8IUzagthItg5fclMLZUb0Bnb6UHTodX6LvjY6dNawgeB4atNH+4oftbl3
+   pger6YfOtxbJKMfmj9UHGNF9mY4cAGlVeoaocfqgP1tcTVNby0L+Lvenl
+   1+/d4GM5sQ5gZaL5ddgbnAPwzdcniYuaIu6IUmqlaY7bMJv5AMCIVAE0V
+   aDavWdX8lQRT+eJy5qGW+0t1VvWregmm/4l3UAFxOcdCKMYK/UZAq3TAS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="384983499"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="384983499"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:48:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="838066"
+Received: from dmnassar-mobl.amr.corp.intel.com (HELO desk) ([10.212.203.39])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:48:19 -0700
+Date:   Fri, 27 Oct 2023 06:48:29 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231027134829.7ehdjwf5pfcqr6xp@desk>
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+ <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
+ <20231025220735.gpopnng76klkbuu3@desk>
+ <0ee3e3cd-01b2-4662-ba08-d137663f1699@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ee3e3cd-01b2-4662-ba08-d137663f1699@citrix.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 14:42:34 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
-
-> On Mon, 23 Oct 2023 14:25:42 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Oct 25, 2023 at 11:13:46PM +0100, Andrew Cooper wrote:
+> On 25/10/2023 11:07 pm, Pawan Gupta wrote:
+> > On Wed, Oct 25, 2023 at 10:10:41PM +0100, Andrew Cooper wrote:
+> >>> +.align L1_CACHE_BYTES, 0xcc
+> >>> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> >>> +	UNWIND_HINT_UNDEFINED
+> >>> +	ANNOTATE_NOENDBR
+> >>> +	.word __KERNEL_DS
+> >> You need another .align here.  Otherwise subsequent code will still
+> >> start in this cacheline and defeat the purpose of trying to keep it
+> >> separate.
+> > Right.
+> >
+> >>> +SYM_CODE_END(mds_verw_sel);
+> >> Thinking about it, should this really be CODE and not a data entry?
+> > Would that require adding a data equivalent of .entry.text and update
+> > KPTI to keep it mapped? Or is there an easier option?
 > 
-> > On Sun, Oct 22, 2023 at 07:22:20PM +0200, Angel Iglesias wrote:  
-> > > Improve device detection in certain chip families known to have various
-> > > chip ids.
-> > > When no known ids match, gives a warning but follows along what device
-> > > said on the firmware and tries to configure it.    
-> > 
-> > I would rephrase it a bit:
-> > 
-> > "Improve device detection in certain chip families known to have
-> > various chip IDs. When no ID matches, give a warning but follow
-> > along what device said on the firmware side and try to configure
-> > it."
-> > 
-> > ...
-> >   
-> > > +	for (i = 0; i < data->chip_info->num_chip_id; i++) {
-> > > +		if (chip_id == data->chip_info->chip_id[i]) {
-> > > +			dev_info(dev, "0x%x is a known chip id for %s\n", chip_id, name);
-> > > +			break;
-> > > +		}    
-> >   
-> > > +		dev_warn(dev, "chip id 0x%x does not match known id 0x%x\n",
-> > > +			 chip_id, data->chip_info->chip_id[i]);    
-> > 
-> > If the matching ID is not the first one, user will have an unneeded warning here.  
-> 
-> Could be a dev_dbg() but I'd just drop it entirely.
-> 
-Given that was all that came up, I've hopefully saved us all time by
-dropping the bring and changing the patch description as Andy suggested.
+> Leave it right here in .entry.text , but try using SYM_DATA() and
+> friends.  See whether objtool vomits over the result or not.
 
-With that done, applied.
+objtool still complaints when using SYM_DATA*() without the annotations:
 
-Jonathan
+ vmlinux.o: warning: objtool: mds_verw_sel+0x0: unreachable instruction
+ vmlinux.o: warning: objtool: .altinstr_replacement+0x2c: relocation to !ENDBR: mds_verw_sel+0x0
 
-> 
-> >   
-> > >  	}    
-> >   
-> 
+> And if objtool does vomit over the result, then leaving it as it is in
+> this patch with SYM_CODE() is good enough.
 
+Settling with SYM_CODE().
+
+On the bright-side, I am seeing even better perf with VERW operand
+out-of-line:
+
+Baseline: v6.6-rc5
+
+| Test               | Configuration          | v1   | v3   |
+| ------------------ | ---------------------- | ---- | ---- |
+| build-linux-kernel | defconfig              | 1.00 | 1.00 |
+| hackbench          | 32 - Process           | 1.02 | 1.06 |
+| nginx              | Short Connection - 500 | 1.01 | 1.04 |
+
+Disclaimer: These are collected by a stupid dev who knows nothing about
+perf, please take this with a grain of salt.
+
+I will be sending v4 soon.
