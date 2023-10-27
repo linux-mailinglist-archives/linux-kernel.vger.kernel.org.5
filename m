@@ -2,194 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 237707D93C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EF27D93C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345511AbjJ0Jcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S1345595AbjJ0Jds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345614AbjJ0Jch (ORCPT
+        with ESMTP id S229503AbjJ0Jdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:32:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CFC11F;
-        Fri, 27 Oct 2023 02:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698399154; x=1729935154;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=+AOCww2g2ORukZIWy/CuUf+TR2KpuFLjfTzg/hAqCA0=;
-  b=LE3/HYaDySfwwF2ZZN/TOOhnVfj/RErFtP919QTb+OlWBS+4T+IsYMRb
-   FH6Maafq2R+sncRAlHRirsLs27AWoCSNKiw0hl2g8vRfbK35zhWZ8IY7Q
-   X+tjMyFUyDF0ERbiKVHgFcWHNofDNtZmtxIXkauJxlw9J97+pFXl1Ifr4
-   Yys/Da72JB+mseBTjp1rok4iDSG+CamfzSDZLdmz377LZgiHGgNdsdki9
-   49t46UrptavB2oF19PaktXISFZowBrhfHWw4Rmk0gJ3SD6shD/ocfhzKX
-   mMOGz5UNYsWVYyo/lKwFbi2TndEloe7OK4++zaL9taSgm1E117jCdIpqS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="367951408"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="367951408"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 02:32:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="788782318"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="788782318"
-Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 02:32:31 -0700
-Date:   Fri, 27 Oct 2023 12:32:28 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-pci@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] x86/PCI: Name PCI BIOS error code & use
- FIELD_GET()
-In-Reply-To: <476692ae-81e5-4b65-93e9-eb303bc4b80d@intel.com>
-Message-ID: <40e4acda-cf3f-1852-8064-c46b578553c@linux.intel.com>
-References: <20231026125453.25767-1-ilpo.jarvinen@linux.intel.com> <476692ae-81e5-4b65-93e9-eb303bc4b80d@intel.com>
+        Fri, 27 Oct 2023 05:33:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0CDD57
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698399171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=kErByrtybkXy+qsIgVSS1Zc/twwVH7oA03pKyu56CcU=;
+        b=CLBSR+mjCgPSfrk0RPyEgzMFRxuui0iYiHvIIxuCrecLHUHeYOeB035raz+g95bmLbtfH5
+        f/puYuxvPM1GhuKUb4qGITDIwzof/2zlWIdizupLb7dP6613myexq+yrV5Xh7U4c5zR4DI
+        r7CyDtRGRzPTkJoj4to4wDL5AyIoZ5g=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-479-ih90cJOpPImvo8_zhBf1TA-1; Fri, 27 Oct 2023 05:32:49 -0400
+X-MC-Unique: ih90cJOpPImvo8_zhBf1TA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507a0904cdbso2328214e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:32:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698399167; x=1699003967;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kErByrtybkXy+qsIgVSS1Zc/twwVH7oA03pKyu56CcU=;
+        b=dOVQPFnjQlThn1A0Hbhe/ldXdou918gnge5P1f8ofea9fB4jmhFClMHTPRA3dOBrAP
+         xClN7Psc8XIsu8qwd1fFpXKAMTSBBL3dGeLG+5XKCFx0g1I1cWvVPwlFA+xEzoUtEW3j
+         l5B0FlS3RjVBKK/Ki6AdfcSK1FXcGVtzq23xYB8B1/EOk15D0v/emZMWtbEvsHLLtJhq
+         OHUXrRsvGPzDnP10PmzngyMgepTCfMZXIITNxjhTKv48ZR7XvJuMkhJCfXDIBremWz7g
+         JtU9LVGQIOYITjJksvc1rmbu1DTZX6+P+jH0KtYDMmrJMpCfzfy9qiCTiQUHa25Y8wYi
+         8psw==
+X-Gm-Message-State: AOJu0YwipwFyYy2VS5Ku2mS4tKNjTlptYQvdV+UuY862kqOcyd7Ce9F+
+        xO/rHRCx0+YGhL5FHUtHpQEI8fbp+Dwde5AxyocZjHp1sTNhwXs9lPAIk/ZcgQ28Jqdf+CFV/G7
+        5Y7+srl+ulK/uCm+l+9L6CSWV
+X-Received: by 2002:a05:6512:48d0:b0:503:15a5:b368 with SMTP id er16-20020a05651248d000b0050315a5b368mr1542633lfb.16.1698399167357;
+        Fri, 27 Oct 2023 02:32:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPdNMQiqanQK3mwDCQINDl0E95dF5V67xitFEVSVMFm+K6ZCKgFMTSaUGJdYAFuIYvc9QNXA==
+X-Received: by 2002:a05:6512:48d0:b0:503:15a5:b368 with SMTP id er16-20020a05651248d000b0050315a5b368mr1542613lfb.16.1698399166912;
+        Fri, 27 Oct 2023 02:32:46 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71a:c000:811f:68f2:1ecb:4e2d? (p200300cbc71ac000811f68f21ecb4e2d.dip0.t-ipconnect.de. [2003:cb:c71a:c000:811f:68f2:1ecb:4e2d])
+        by smtp.gmail.com with ESMTPSA id x3-20020a5d54c3000000b0031f3ad17b2csm1350835wrv.52.2023.10.27.02.32.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 02:32:46 -0700 (PDT)
+Message-ID: <78a98a32-6238-4881-bfbc-0e7888aea7b1@redhat.com>
+Date:   Fri, 27 Oct 2023 11:32:45 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-774251317-1698399153=:2740"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] maple_tree: Remove unused function
+Content-Language: en-US
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Liam.Howlett@oracle.com
+Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20231027084944.24888-1-jiapeng.chong@linux.alibaba.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231027084944.24888-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-774251317-1698399153=:2740
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 26 Oct 2023, Dave Hansen wrote:
-
-> TOn 10/26/23 05:54, Ilpo Järvinen wrote:
-> > PCI BIOS returns error code in AH register when carry flag is set. The
-> > extraction of the error code is currently set of masking and shifting
-> > which makes the code harder to understand than it needs to be.
+On 27.10.23 10:49, Jiapeng Chong wrote:
+> The function are defined in the maple_tree.c file, but not called
+> elsewhere, so delete the unused function.
 > 
-> That's a really convoluted way of saying that "The error code is in the
-> high 8 bits of EAX".  The fact that 'AH' is an alias for the same
+> lib/maple_tree.c:689:29: warning: unused function 'mas_pivot'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7064
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   lib/maple_tree.c | 29 -----------------------------
+>   1 file changed, 29 deletions(-)
+> 
+> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+> index bb24d84a4922..cf889aaa0011 100644
+> --- a/lib/maple_tree.c
+> +++ b/lib/maple_tree.c
+> @@ -679,35 +679,6 @@ static inline unsigned long *ma_gaps(struct maple_node *node,
+>   	return NULL;
+>   }
+>   
+> -/*
+> - * mas_pivot() - Get the pivot at @piv of the maple encoded node.
+> - * @mas: The maple state.
+> - * @piv: The pivot.
+> - *
+> - * Return: the pivot at @piv of @mn.
+> - */
+> -static inline unsigned long mas_pivot(struct ma_state *mas, unsigned char piv)
+> -{
+> -	struct maple_node *node = mas_mn(mas);
+> -	enum maple_type type = mte_node_type(mas->node);
+> -
+> -	if (MAS_WARN_ON(mas, piv >= mt_pivots[type])) {
+> -		mas_set_err(mas, -EIO);
+> -		return 0;
+> -	}
+> -
+> -	switch (type) {
+> -	case maple_arange_64:
+> -		return node->ma64.pivot[piv];
+> -	case maple_range_64:
+> -	case maple_leaf_64:
+> -		return node->mr64.pivot[piv];
+> -	case maple_dense:
+> -		return 0;
+> -	}
+> -	return 0;
+> -}
+> -
+>   /*
+>    * mas_safe_pivot() - get the pivot at @piv or mas->max.
+>    * @mas: The maple state
 
-"high 8 bits" should odd to me since AH is not exactly at the highest end 
-of eax register. But I'll try to figure out something along the lines of 
-your suggestion.
+Think the last user was removed with c2aa6f5328b9 ("maple_tree: drop 
+mas_{rev_}alloc() and mas_fill_gap()").
 
-> logical thing or that BIOS doesn't fill it in when !CF are rather
-> irrelevant to this patch.  In fact, that makes this changelog actively
-> confusing because there's no carry flag logic to be seen.  'eax' (the
-> variable) universally has a valid error code, it's just zero when
-> there's no error.
-> 
-> > Name the PCI BIOS error code with a define and use FIELD_GET() to
-> > access it to improve code readability.
-> > 
-> > In addition, rely on implicit cast to int and replace zero test
-> > with PCIBIOS_SUCCESSFUL.
-> 
-> It would be really nice if this was something like:
-> 
-> 	Subject: x86/PCI: Clean up open-coded error code mangling
-> 
-> That makes it clear that this is a cleanup.  It's kinda obvious from the
-> code that it uses FIELD_GET().  You don't need to tell us in the subject.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-Okay, I'll try to adapt the rest of the changelog to your suggestions
-and make other changes you suggested.
 
 -- 
- i.
+Cheers,
 
+David / dhildenb
 
-> >  arch/x86/pci/pcbios.c | 22 ++++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/pci/pcbios.c b/arch/x86/pci/pcbios.c
-> > index 4f15280732ed..0515e0c05e10 100644
-> > --- a/arch/x86/pci/pcbios.c
-> > +++ b/arch/x86/pci/pcbios.c
-> > @@ -3,6 +3,8 @@
-> >   * BIOS32 and PCI BIOS handling.
-> >   */
-> >  
-> > +#include <linux/bits.h>
-> > +#include <linux/bitfield.h>
-> >  #include <linux/pci.h>
-> >  #include <linux/init.h>
-> >  #include <linux/slab.h>
-> > @@ -29,6 +31,12 @@
-> >  #define PCIBIOS_HW_TYPE1_SPEC		0x10
-> >  #define PCIBIOS_HW_TYPE2_SPEC		0x20
-> >  
-> > +/*
-> > + * Returned in EAX:
-> > + * - AH: return code
-> > + */
-> > +#define PCIBIOS_RETURN_CODE			GENMASK(15, 8)
-> > +
-> >  int pcibios_enabled;
-> >  
-> >  /* According to the BIOS specification at:
-> > @@ -154,7 +162,7 @@ static int __init check_pcibios(void)
-> >  			: "memory");
-> >  		local_irq_restore(flags);
-> >  
-> > -		status = (eax >> 8) & 0xff;
-> > +		status = FIELD_GET(PCIBIOS_RETURN_CODE, eax);
-> 
-> Nit: This:
-> 
-> 	FIELD_GET(PCIBIOS_RETURN_CODE, foo)
-> 
-> pattern is repeated for *EVERY* use of PCIBIOS_RETURN_CODE.  This would
-> actually look nicer if you just did a helper like:
-> 
-> 	static inline u32 get_return_code(u32 eax)
-> 	{
-> 		return FIELD_GET(PCIBIOS_RETURN_CODE, eax);
-> 	}
-> 
-> although I'm not 100% sure what types you actually want there.
->
-> >  		hw_mech = eax & 0xff;
-> >  		major_ver = (ebx >> 8) & 0xff;
-> >  		minor_ver = ebx & 0xff;
-> > @@ -227,7 +235,7 @@ static int pci_bios_read(unsigned int seg, unsigned int bus,
-> >  
-> >  	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
-> >  
-> > -	return (int)((result & 0xff00) >> 8);
-> > +	return FIELD_GET(PCIBIOS_RETURN_CODE, result);
-> >  }
-> >  
-> >  static int pci_bios_write(unsigned int seg, unsigned int bus,
-> > @@ -269,7 +277,7 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
-> >  
-> >  	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
-> >  
-> > -	return (int)((result & 0xff00) >> 8);
-> > +	return FIELD_GET(PCIBIOS_RETURN_CODE, result);
-> >  }
-> 
-> For a cleanup like this, it's also nice to add the blurb:
-> 
-> 	"No functional changes intended."
-> 
-> Or even (if it's true):
-> 
-> 	"New code compiles the exact same code as the old code."
-> 
-
-
-
---8323329-774251317-1698399153=:2740--
