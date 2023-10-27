@@ -2,236 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 549E57DA399
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96E17DA39D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346698AbjJ0Wh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 18:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S1346685AbjJ0Whm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 18:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346679AbjJ0WhW (ORCPT
+        with ESMTP id S1346645AbjJ0Whh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 18:37:22 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212D1D5A;
-        Fri, 27 Oct 2023 15:37:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gfa3StTcB0wllZcxF0RTWea1a1jlTOYuMINAlLKSM8CXkxDvfhtnYfDqwusJQi8MZryzRPhioFaf2o0bytR7hEpSStOrh2wMhqCeV7+TmouzvcAXJT6t8t2fhMsOas2Jnuqikrgctky+Yp87g5acFubRudeosH3xubRORRdBSr4TCZ0soeVZXaX01syUZx5q4y1QonfA20fZyhw0uZk1ZQC+JecR4Emv3lBNiTacyzkgaHQo/1g1Ys3K/qD9yWtXPZtkMkioSkZHezwr2DVT1JREQv6SnyAg/Yhdf8WNWti8L19WkjL8Kd0vgJgwAP4YX4dJV6ST+zyinCtL/e1qWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EN71fTh2dXtXpXyjwz92agvLN/VbKrupxTEAZxyx2/s=;
- b=Ptrheumnrgle6/nC6t373GxGr9mV68eSxzNoBjYI6UWhIUYGU3XiU49tdbbtms/hL3XBuxVKM3heIf9sMEQeYc12yNq8j3RtwTTJnTpvFMeP23jyqz0oS96hQAH2CYd5Cg0ej/JmMmIZ2dFVsErqtpamBrSRRsfx7DoNjYaGaPLR1HqSeFWZEfvT3FQII0ibAtcMho4G7V8boyI6YAXv+zRnpdNJvzpRSGRTnb/j8VSV3sXyCgjW06/ExC4ewuG0A2z+hS1qLbRCsYgfryvxterINKbbOTcqRiycTq8SeQDGImKQ3e+1gIJN+EmXpQLNqkL6lJtfwre5u2+8hH9Mzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EN71fTh2dXtXpXyjwz92agvLN/VbKrupxTEAZxyx2/s=;
- b=NrtiiY0Ub04ofHORadL0S1MgRwDCjTW5rZyc+U0erY+S/nX3S0KTQyOX3ZzXz9Dw8BOFdKKOtNAf4oUgXR2tqMVRJ41mebdUnCCW8jJ4Al1Aq6p2BJLAV2jiEypNKqP3A4dxYYr6GHOEDH88RrplJNvJdZKjfvP4FKhkvbyLiiA=
-Received: from BLAPR03CA0169.namprd03.prod.outlook.com (2603:10b6:208:32f::21)
- by SA0PR12MB4544.namprd12.prod.outlook.com (2603:10b6:806:70::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
- 2023 22:37:15 +0000
-Received: from BL6PEPF0001AB4E.namprd04.prod.outlook.com
- (2603:10b6:208:32f:cafe::7f) by BLAPR03CA0169.outlook.office365.com
- (2603:10b6:208:32f::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22 via Frontend
- Transport; Fri, 27 Oct 2023 22:37:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4E.mail.protection.outlook.com (10.167.242.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Fri, 27 Oct 2023 22:37:14 +0000
-Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 27 Oct
- 2023 17:37:11 -0500
-From:   Brett Creeley <brett.creeley@amd.com>
-To:     <jgg@ziepe.ca>, <yishaih@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
-        <alex.williamson@redhat.com>, <dan.carpenter@linaro.org>
-CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <brett.creeley@amd.com>, <shannon.nelson@amd.com>
-Subject: [PATCH v3 vfio 3/3] pds/vfio: Fix possible sleep while in atomic context
-Date:   Fri, 27 Oct 2023 15:36:51 -0700
-Message-ID: <20231027223651.36047-4-brett.creeley@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231027223651.36047-1-brett.creeley@amd.com>
-References: <20231027223651.36047-1-brett.creeley@amd.com>
+        Fri, 27 Oct 2023 18:37:37 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3F610CC;
+        Fri, 27 Oct 2023 15:37:29 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RLAsCT025520;
+        Fri, 27 Oct 2023 22:37:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=NCUz9b0iLJo3KMc94SNgX60olJEN+JVhP2GDvDALu+Y=;
+ b=eg9AOA4ueeVVQEs+Qf2DTgz+U2jurzpnTlqrHc7CT7r/vz/0VKdC/rPP6jOgIl3yV+/+
+ 6dL2FO/8tCNBiMyUIKHqag51mJOTf07sxULXv5nzhoEDAVAF1Dd1xAAk77OX7F0eCDBA
+ 0ZNvwiASfJfamIs29Gcm0shhbdAcmNg2SE8fSwLu+u8WyCD09dh0nHuNg8rDdy44GP7U
+ DDVXSgT/gXrm75Ri3oTW2hNoxPd9sefJW3qhsxvfZaV+fLgLIh8wQARRZ97ntOoNmG6F
+ IHuhMOFhNrwVfI4qzWBRtgD99Py7w8BUZoZFXLCLFm3Q+Ah1RsRgreAu8pGtiQituZdH cw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tywvtb906-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 22:37:26 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39RMbPfm002402
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 22:37:25 GMT
+Received: from hu-gurus-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 27 Oct 2023 15:37:22 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+Date:   Fri, 27 Oct 2023 15:37:21 -0700
+Subject: [PATCH] firmware: qcom-scm: Support multiple waitq contexts
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4E:EE_|SA0PR12MB4544:EE_
-X-MS-Office365-Filtering-Correlation-Id: 077bb8db-83f4-4e1d-8f4a-08dbd73d44b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vRaASS9oNSz46FSUPAU0HtJA91OXOyNix1JJDJSG7lryMhpGqZdwDma78ko8H1rcRJZyVjxprS1iI/SNp1zrsk1agOrkAroQVVpetNLr8dtVuQ/nzZIOkwnQNcQD/a4vdpGtGLBammUIQCVOLb2dsg2Hjc/Idiu55V/c7HqW1mZ9OL43lW5eafxnPtC8quONmf0YaJeYSD5ScvVOqFR0TIkwTsa5lQZtdubJA1W7X9Hczx6L7Up/++gxNN3CsnsR7N6P3UuBVlxV8iqvZEu7ATVPTWyk74UDNpJQJA43UjESe6hXPEtuAkBAdOKjstiU2awmQ52HiABtvhN8+JlusDLyLD4Gmyrnqj2yr0pXjCXFVo0JPSVv+kIYblyfNR2SOMLsIvuCnyjlYTu4t+4ccBFBkEoLg1hIZms2drkWSG+u+zMPYQhuj4nE9I4FsyBWh+LSGRPARXKXRrJ14xzD6JH8iSpkHcar4HDp3sZ9mkB73p8FdMYOasNgJEEnqsvebP227JbLOytzLosVr/NhmezLGGy8KMdr9cM25kfJZfcBG+M+F1YW+7lVvUmK64FhrneqrwA4Ie1Jb1UVgvKvngNCadtFs0fJgXppl3LxSaADfo564xnVweKFP1IsiZxUoF1/lFe1P8j4jvUfBYGjVjMBkG871n858bjj0aLER8EoA2SdrmE+tz1mc2wQ9vI4GH4mYt39ts3dbtI7m3BOcwVKuN6XArzpSSR4ahlqs7EsfjwPoJg9p22uxpF3/+cU
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(346002)(376002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(82310400011)(40470700004)(46966006)(36840700001)(40480700001)(5660300002)(356005)(6666004)(44832011)(41300700001)(40460700003)(26005)(16526019)(1076003)(83380400001)(336012)(426003)(36756003)(2616005)(81166007)(47076005)(82740400003)(36860700001)(2906002)(86362001)(966005)(478600001)(110136005)(70586007)(316002)(70206006)(54906003)(4326008)(8936002)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 22:37:14.8052
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 077bb8db-83f4-4e1d-8f4a-08dbd73d44b1
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4E.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4544
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231027-multi-wqs-v1-1-d47cd7f3590f@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAKA7PGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDAyNz3dzSnJJM3fLCYl2LJAvztGSDFOMkU2MloPqCotS0zAqwWdGxtbU
+ AMja7r1sAAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, Guru Das Srinagesh <quic_gurus@quicinc.com>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wR6iWLX86-h-FkZ7ALV2wssWloxWZ1Or
+X-Proofpoint-ORIG-GUID: wR6iWLX86-h-FkZ7ALV2wssWloxWZ1Or
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_21,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310270193
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver could possibly sleep while in atomic context resulting
-in the following call trace while CONFIG_DEBUG_ATOMIC_SLEEP=y is
-set:
+Currently, only a single waitqueue context is supported (zero). Firmware
+now supports multiple waitqueue contexts, so add support to dynamically
+create and support as many unique waitqueue contexts as firmware returns
+to the driver.
 
-BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 2817, name: bash
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-Call Trace:
- <TASK>
- dump_stack_lvl+0x36/0x50
- __might_resched+0x123/0x170
- mutex_lock+0x1e/0x50
- pds_vfio_put_lm_file+0x1e/0xa0 [pds_vfio_pci]
- pds_vfio_put_save_file+0x19/0x30 [pds_vfio_pci]
- pds_vfio_state_mutex_unlock+0x2e/0x80 [pds_vfio_pci]
- pci_reset_function+0x4b/0x70
- reset_store+0x5b/0xa0
- kernfs_fop_write_iter+0x137/0x1d0
- vfs_write+0x2de/0x410
- ksys_write+0x5d/0xd0
- do_syscall_64+0x3b/0x90
- entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+This is done by using the idr framework to create a hash table for
+associating a unique wq_ctx with a struct completion variable for easy
+lookup.
 
-This can happen if pds_vfio_put_restore_file() and/or
-pds_vfio_put_save_file() grab the mutex_lock(&lm_file->lock)
-while the spin_lock(&pds_vfio->reset_lock) is held, which can
-happen during while calling pds_vfio_state_mutex_unlock().
-
-Fix this by changing the reset_lock to reset_mutex so there are no such
-conerns. Also, make sure to destroy the reset_mutex in the driver specific
-VFIO device release function.
-
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/kvm/1f9bc27b-3de9-4891-9687-ba2820c1b390@moroto.mountain/
-Signed-off-by: Brett Creeley <brett.creeley@amd.com>
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
 ---
- drivers/vfio/pci/pds/pci_drv.c  |  4 ++--
- drivers/vfio/pci/pds/vfio_dev.c | 15 ++++++++-------
- drivers/vfio/pci/pds/vfio_dev.h |  2 +-
- 3 files changed, 11 insertions(+), 10 deletions(-)
+This series is based on the tip of linux-next because a couple of SCM
+driver-related patches are still in-flight in Bjorn's tree.
+---
+ drivers/firmware/qcom/qcom_scm-smc.c |  7 ++-
+ drivers/firmware/qcom/qcom_scm.c     | 90 +++++++++++++++++++++++++++---------
+ drivers/firmware/qcom/qcom_scm.h     |  3 +-
+ 3 files changed, 77 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/vfio/pci/pds/pci_drv.c b/drivers/vfio/pci/pds/pci_drv.c
-index ab4b5958e413..caffa1a2cf59 100644
---- a/drivers/vfio/pci/pds/pci_drv.c
-+++ b/drivers/vfio/pci/pds/pci_drv.c
-@@ -55,10 +55,10 @@ static void pds_vfio_recovery(struct pds_vfio_pci_device *pds_vfio)
- 	 * VFIO_DEVICE_STATE_RUNNING.
+diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
+index 16cf88acfa8e..80083e3615b1 100644
+--- a/drivers/firmware/qcom/qcom_scm-smc.c
++++ b/drivers/firmware/qcom/qcom_scm-smc.c
+@@ -103,7 +103,12 @@ static int __scm_smc_do_quirk_handle_waitq(struct device *dev, struct arm_smccc_
+ 			wq_ctx = res->a1;
+ 			smc_call_ctx = res->a2;
+ 
+-			ret = qcom_scm_wait_for_wq_completion(wq_ctx);
++			if (!dev) {
++				/* Protect the dev_get_drvdata() call that follows */
++				return -EPROBE_DEFER;
++			}
++
++			ret = qcom_scm_wait_for_wq_completion(dev_get_drvdata(dev), wq_ctx);
+ 			if (ret)
+ 				return ret;
+ 
+diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+index 520de9b5633a..70f0c35beb16 100644
+--- a/drivers/firmware/qcom/qcom_scm.c
++++ b/drivers/firmware/qcom/qcom_scm.c
+@@ -10,6 +10,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/export.h>
+ #include <linux/firmware/qcom/qcom_scm.h>
++#include <linux/idr.h>
+ #include <linux/init.h>
+ #include <linux/interconnect.h>
+ #include <linux/interrupt.h>
+@@ -27,13 +28,18 @@
+ static bool download_mode = IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MODE_DEFAULT);
+ module_param(download_mode, bool, 0);
+ 
++struct qcom_scm_waitq {
++	struct idr idr;
++	spinlock_t idr_lock;
++};
++
+ struct qcom_scm {
+ 	struct device *dev;
+ 	struct clk *core_clk;
+ 	struct clk *iface_clk;
+ 	struct clk *bus_clk;
+ 	struct icc_path *path;
+-	struct completion waitq_comp;
++	struct qcom_scm_waitq waitq;
+ 	struct reset_controller_dev reset;
+ 
+ 	/* control access to the interconnect path */
+@@ -1742,42 +1748,76 @@ bool qcom_scm_is_available(void)
+ }
+ EXPORT_SYMBOL_GPL(qcom_scm_is_available);
+ 
+-static int qcom_scm_assert_valid_wq_ctx(u32 wq_ctx)
++static struct completion *qcom_scm_get_completion(struct qcom_scm *scm, u32 wq_ctx)
+ {
+-	/* FW currently only supports a single wq_ctx (zero).
+-	 * TODO: Update this logic to include dynamic allocation and lookup of
+-	 * completion structs when FW supports more wq_ctx values.
++	struct completion *wq;
++	unsigned long flags;
++	int err;
++
++	spin_lock_irqsave(&scm->waitq.idr_lock, flags);
++	wq = idr_find(&scm->waitq.idr, wq_ctx);
++	if (wq) {
++		/*
++		 * Valid struct completion *wq found corresponding to
++		 * given wq_ctx. We're done here.
++		 */
++		goto out;
++	}
++
++	/*
++	 * If a struct completion *wq does not exist for wq_ctx, create it. FW
++	 * only uses a finite number of wq_ctx values, so we will be reaching
++	 * here only a few times right at the beginning of the device's uptime
++	 * and then early-exit from idr_find() above subsequently.
  	 */
- 	if (deferred_reset_needed) {
--		spin_lock(&pds_vfio->reset_lock);
-+		mutex_lock(&pds_vfio->reset_mutex);
- 		pds_vfio->deferred_reset = true;
- 		pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_ERROR;
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
+-	if (wq_ctx != 0) {
+-		dev_err(__scm->dev, "Firmware unexpectedly passed non-zero wq_ctx\n");
+-		return -EINVAL;
++	wq = devm_kzalloc(scm->dev, sizeof(*wq), GFP_ATOMIC);
++	if (!wq) {
++		wq = ERR_PTR(-ENOMEM);
++		goto out;
  	}
+ 
+-	return 0;
++	init_completion(wq);
++
++	err = idr_alloc_u32(&scm->waitq.idr, wq, &wq_ctx, wq_ctx, GFP_ATOMIC);
++	if (err < 0) {
++		/* Don't wait for driver to be unloaded to free wq */
++		devm_kfree(scm->dev, wq);
++		wq = ERR_PTR(err);
++	}
++
++out:
++	spin_unlock_irqrestore(&scm->waitq.idr_lock, flags);
++	return wq;
  }
  
-diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-index 306b1c25f016..4c351c59d05a 100644
---- a/drivers/vfio/pci/pds/vfio_dev.c
-+++ b/drivers/vfio/pci/pds/vfio_dev.c
-@@ -29,7 +29,7 @@ struct pds_vfio_pci_device *pds_vfio_pci_drvdata(struct pci_dev *pdev)
- void pds_vfio_state_mutex_unlock(struct pds_vfio_pci_device *pds_vfio)
+-int qcom_scm_wait_for_wq_completion(u32 wq_ctx)
++int qcom_scm_wait_for_wq_completion(struct qcom_scm *scm, u32 wq_ctx)
  {
- again:
--	spin_lock(&pds_vfio->reset_lock);
-+	mutex_lock(&pds_vfio->reset_mutex);
- 	if (pds_vfio->deferred_reset) {
- 		pds_vfio->deferred_reset = false;
- 		if (pds_vfio->state == VFIO_DEVICE_STATE_ERROR) {
-@@ -39,23 +39,23 @@ void pds_vfio_state_mutex_unlock(struct pds_vfio_pci_device *pds_vfio)
- 		}
- 		pds_vfio->state = pds_vfio->deferred_reset_state;
- 		pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_RUNNING;
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
- 		goto again;
- 	}
- 	mutex_unlock(&pds_vfio->state_mutex);
--	spin_unlock(&pds_vfio->reset_lock);
-+	mutex_unlock(&pds_vfio->reset_mutex);
+-	int ret;
++	struct completion *wq;
+ 
+-	ret = qcom_scm_assert_valid_wq_ctx(wq_ctx);
+-	if (ret)
+-		return ret;
++	wq = qcom_scm_get_completion(scm, wq_ctx);
++	if (IS_ERR(wq)) {
++		pr_err("Unable to wait on invalid waitqueue for wq_ctx %d: %ld\n",
++				wq_ctx, PTR_ERR(wq));
++		return PTR_ERR(wq);
++	}
+ 
+-	wait_for_completion(&__scm->waitq_comp);
++	wait_for_completion(wq);
+ 
+ 	return 0;
  }
  
- void pds_vfio_reset(struct pds_vfio_pci_device *pds_vfio)
+ static int qcom_scm_waitq_wakeup(struct qcom_scm *scm, unsigned int wq_ctx)
  {
--	spin_lock(&pds_vfio->reset_lock);
-+	mutex_lock(&pds_vfio->reset_mutex);
- 	pds_vfio->deferred_reset = true;
- 	pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_RUNNING;
- 	if (!mutex_trylock(&pds_vfio->state_mutex)) {
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
- 		return;
- 	}
--	spin_unlock(&pds_vfio->reset_lock);
-+	mutex_unlock(&pds_vfio->reset_mutex);
- 	pds_vfio_state_mutex_unlock(pds_vfio);
+-	int ret;
++	struct completion *wq;
+ 
+-	ret = qcom_scm_assert_valid_wq_ctx(wq_ctx);
+-	if (ret)
+-		return ret;
++	wq = qcom_scm_get_completion(scm, wq_ctx);
++	if (IS_ERR(wq)) {
++		pr_err("Unable to wake up invalid waitqueue for wq_ctx %d: %ld\n",
++				wq_ctx, PTR_ERR(wq));
++		return PTR_ERR(wq);
++	}
+ 
+-	complete(&__scm->waitq_comp);
++	complete(wq);
+ 
+ 	return 0;
+ }
+@@ -1854,10 +1894,13 @@ static int qcom_scm_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	platform_set_drvdata(pdev, scm);
++
+ 	__scm = scm;
+ 	__scm->dev = &pdev->dev;
+ 
+-	init_completion(&__scm->waitq_comp);
++	spin_lock_init(&__scm->waitq.idr_lock);
++	idr_init(&__scm->waitq.idr);
+ 
+ 	irq = platform_get_irq_optional(pdev, 0);
+ 	if (irq < 0) {
+@@ -1905,8 +1948,13 @@ static int qcom_scm_probe(struct platform_device *pdev)
+ 
+ static void qcom_scm_shutdown(struct platform_device *pdev)
+ {
++	struct qcom_scm *scm;
++
++	scm = platform_get_drvdata(pdev);
++
+ 	/* Clean shutdown, disable download mode to allow normal restart */
+ 	qcom_scm_set_download_mode(false);
++	idr_destroy(&scm->waitq.idr);
  }
  
-@@ -156,7 +156,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
- 	pds_vfio->vf_id = vf_id;
+ static const struct of_device_id qcom_scm_dt_match[] = {
+diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
+index 4532907e8489..d54df5a2b690 100644
+--- a/drivers/firmware/qcom/qcom_scm.h
++++ b/drivers/firmware/qcom/qcom_scm.h
+@@ -62,7 +62,8 @@ struct qcom_scm_res {
+ 	u64 result[MAX_QCOM_SCM_RETS];
+ };
  
- 	mutex_init(&pds_vfio->state_mutex);
--	spin_lock_init(&pds_vfio->reset_lock);
-+	mutex_init(&pds_vfio->reset_mutex);
+-int qcom_scm_wait_for_wq_completion(u32 wq_ctx);
++struct qcom_scm;
++int qcom_scm_wait_for_wq_completion(struct qcom_scm *scm, u32 wq_ctx);
+ int scm_get_wq_ctx(u32 *wq_ctx, u32 *flags, u32 *more_pending);
  
- 	vdev->migration_flags = VFIO_MIGRATION_STOP_COPY | VFIO_MIGRATION_P2P;
- 	vdev->mig_ops = &pds_vfio_lm_ops;
-@@ -178,6 +178,7 @@ static void pds_vfio_release_device(struct vfio_device *vdev)
- 			     vfio_coredev.vdev);
- 
- 	mutex_destroy(&pds_vfio->state_mutex);
-+	mutex_destroy(&pds_vfio->reset_mutex);
- 	vfio_pci_core_release_dev(vdev);
- }
- 
-diff --git a/drivers/vfio/pci/pds/vfio_dev.h b/drivers/vfio/pci/pds/vfio_dev.h
-index b8f2d667608f..e7b01080a1ec 100644
---- a/drivers/vfio/pci/pds/vfio_dev.h
-+++ b/drivers/vfio/pci/pds/vfio_dev.h
-@@ -18,7 +18,7 @@ struct pds_vfio_pci_device {
- 	struct pds_vfio_dirty dirty;
- 	struct mutex state_mutex; /* protect migration state */
- 	enum vfio_device_mig_state state;
--	spinlock_t reset_lock; /* protect reset_done flow */
-+	struct mutex reset_mutex; /* protect reset_done flow */
- 	u8 deferred_reset;
- 	enum vfio_device_mig_state deferred_reset_state;
- 	struct notifier_block nb;
+ #define SCM_SMC_FNID(s, c)	((((s) & 0xFF) << 8) | ((c) & 0xFF))
+
+---
+base-commit: 2ef7141596eed0b4b45ef18b3626f428a6b0a822
+change-id: 20231027-multi-wqs-8b87fc0d3b53
+
+Best regards,
 -- 
-2.17.1
+Guru Das Srinagesh <quic_gurus@quicinc.com>
 
