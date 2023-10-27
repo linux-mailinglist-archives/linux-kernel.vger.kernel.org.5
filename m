@@ -2,273 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF27D9E63
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763A27D9EAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346083AbjJ0Q7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
+        id S232740AbjJ0RO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 13:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346009AbjJ0Q7g (ORCPT
+        with ESMTP id S235048AbjJ0ROs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:59:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510871B1;
-        Fri, 27 Oct 2023 09:59:32 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b26a3163acso2164942b3a.2;
-        Fri, 27 Oct 2023 09:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698425971; x=1699030771; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q8RmDco3yC3v+3yvrh6eYN9grmgq77s+0DKqGNckmlM=;
-        b=ltEdMVFE/6sXDL6JICWsN75SXCoNKuR6sBsCp853LGHhqPwD26PzFtjcrU4kt1Wr1K
-         2ZAurTgEPFX2DQi78tEgeCKqWaFD3pZOSYge38+W70ZMavBlHgxAtoPsaYzm8xQfbZU+
-         51aspuNQRdMnjFrMpgVDMwqMkT3G0gRlIllKvDbIY0stkXKet/jnGiFMt36ycI3M62is
-         3P8aUdHQGua2sjOl47KISvswBnBdhEnk4negcYoMIsD0zUVXZu0IxaopgLiIvYbzhF5S
-         ODcVU6jtT42wC0M8IGwY3/PYeqjz/Qwr/qhZoW6Xi05RnndPBsSSwldRQRPsM7SZmo8c
-         a+0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698425971; x=1699030771;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q8RmDco3yC3v+3yvrh6eYN9grmgq77s+0DKqGNckmlM=;
-        b=l0IveqAsyaEYL5ifPQqFsokvDpTTTCMtKi/8r35ninFeGXn/cNE/Y9+29Zz1JAWV9k
-         hjZLYpCsBTVDtVZvI7/mD+iKuvulaGYD20Y7F6ltR344odd3J/UkDiIRHzq7SXCL8xhJ
-         BrN/rIN2yQGkcfqiWpsjZUHYwM2dNGgtQHrr47g7wyZizIScOovt6/xLzBWUXaX4FiPa
-         EV6+RMTSXvTl+pR48yVKVbOW2N+NM6DtDI+UA1zQNOLSs3BNWXYrXLT5Jvub2Egje0Kp
-         ecFsaJB5/uKBxilzw3t0BWbQrDKIbPvwIzj9g/V/wovQmMJVDZs9bBYSULfcD3IcNSk+
-         ytuA==
-X-Gm-Message-State: AOJu0YzKvHtmKagFdwPsnjeLAfM8avlMwAGSEB7OaIkh/dFWzneRSH9R
-        jYb+mZqQNCOHwbjDFb2DuJ4=
-X-Google-Smtp-Source: AGHT+IGcCDjD1BW09esItqwaRO3LZ9+ZgRLPW1fpZoKAd4lXmN90PAUSB93jicmG79kEPwmifa05mw==
-X-Received: by 2002:a05:6a00:2356:b0:6b1:bf32:4fb5 with SMTP id j22-20020a056a00235600b006b1bf324fb5mr3294581pfj.28.1698425971178;
-        Fri, 27 Oct 2023 09:59:31 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id r8-20020aa78b88000000b006b4ca26f3c9sm1605609pfd.74.2023.10.27.09.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 09:59:30 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Dong Chenchen <dongchenchen2@huawei.com>,
-        Philip Yang <Philip.Yang@amd.com>, Lang Yu <Lang.Yu@amd.com>,
-        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Jack Xiao <Jack.Xiao@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list),
-        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS)
-Subject: [PATCH 6/7] drm/exec: Pass in initial # of objects
-Date:   Fri, 27 Oct 2023 09:58:40 -0700
-Message-ID: <20231027165859.395638-7-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231027165859.395638-1-robdclark@gmail.com>
-References: <20231027165859.395638-1-robdclark@gmail.com>
+        Fri, 27 Oct 2023 13:14:48 -0400
+X-Greylist: delayed 417 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 10:06:05 PDT
+Received: from 19.mo581.mail-out.ovh.net (19.mo581.mail-out.ovh.net [178.33.251.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A1255B9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 10:06:04 -0700 (PDT)
+Received: from director4.ghost.mail-out.ovh.net (unknown [10.108.4.4])
+        by mo581.mail-out.ovh.net (Postfix) with ESMTP id 9288B27F91
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:59:05 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-n8d75 (unknown [10.110.103.249])
+        by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 061331FE54;
+        Fri, 27 Oct 2023 16:59:01 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.101])
+        by ghost-submission-6684bf9d7b-n8d75 with ESMTPSA
+        id pa9KNVXsO2UawRwALik0sA
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Fri, 27 Oct 2023 16:59:01 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-101G0047a28fc11-c499-4ec3-92a5-e176a9ed5b22,
+                    6EA7455F4EB1655ECB7B12A758CDE0513BDBD0DD) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 82.203.164.171
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] drm/radeon: replace 1-element arrays with flexible-array members
+Date:   Fri, 27 Oct 2023 19:58:41 +0300
+Message-Id: <20231027165841.71810-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Ovh-Tracer-Id: 17030643469941515942
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggddutdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpedtudethfeghfegfffhtdeuhedukeduudeuieeiteegkedtudegvdektefftedvffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdekvddrvddtfedrudeigedrudejuddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekuddpmhhouggvpehsmhhtphhouhht
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Reported by coccinelle, the following patch will move the
+following 1 element arrays to flexible arrays.
 
-In cases where the # is known ahead of time, it is silly to do the table
-resize dance.
+drivers/gpu/drm/radeon/atombios.h:5523:32-48: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:5545:32-48: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:5461:34-44: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4447:30-40: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4236:30-41: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7044:24-37: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7054:24-37: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7095:28-45: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7553:8-17: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7559:8-17: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:3896:27-37: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:5443:16-25: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:5454:34-43: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4603:21-32: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:6299:32-44: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4628:32-46: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:6285:29-39: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4296:30-36: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4756:28-36: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:4064:22-35: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7327:9-24: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7332:32-53: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:6030:8-17: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7362:26-41: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7369:29-44: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7349:24-32: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/gpu/drm/radeon/atombios.h:7355:27-35: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c  |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c |  4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c |  4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c |  4 ++--
- drivers/gpu/drm/drm_exec.c              | 15 ++++++++++++---
- drivers/gpu/drm/nouveau/nouveau_exec.c  |  2 +-
- drivers/gpu/drm/nouveau/nouveau_uvmm.c  |  2 +-
- include/drm/drm_exec.h                  |  2 +-
- 8 files changed, 22 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/radeon/atombios.h | 54 +++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-index efdb1c48f431..d27ca8f61929 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-@@ -65,7 +65,7 @@ static int amdgpu_cs_parser_init(struct amdgpu_cs_parser *p,
- 	}
- 
- 	amdgpu_sync_create(&p->sync);
--	drm_exec_init(&p->exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
-+	drm_exec_init(&p->exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-index 720011019741..796fa6f1420b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c
-@@ -70,7 +70,7 @@ int amdgpu_map_static_csa(struct amdgpu_device *adev, struct amdgpu_vm *vm,
- 	struct drm_exec exec;
- 	int r;
- 
--	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
-+	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		r = amdgpu_vm_lock_pd(vm, &exec, 0);
- 		if (likely(!r))
-@@ -110,7 +110,7 @@ int amdgpu_unmap_static_csa(struct amdgpu_device *adev, struct amdgpu_vm *vm,
- 	struct drm_exec exec;
- 	int r;
- 
--	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
-+	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		r = amdgpu_vm_lock_pd(vm, &exec, 0);
- 		if (likely(!r))
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index ca4d2d430e28..16f1715148ad 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@ -203,7 +203,7 @@ static void amdgpu_gem_object_close(struct drm_gem_object *obj,
- 	struct drm_exec exec;
- 	long r;
- 
--	drm_exec_init(&exec, DRM_EXEC_IGNORE_DUPLICATES);
-+	drm_exec_init(&exec, DRM_EXEC_IGNORE_DUPLICATES, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		r = drm_exec_prepare_obj(&exec, &bo->tbo.base, 1);
- 		drm_exec_retry_on_contention(&exec);
-@@ -739,7 +739,7 @@ int amdgpu_gem_va_ioctl(struct drm_device *dev, void *data,
- 	}
- 
- 	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
--		      DRM_EXEC_IGNORE_DUPLICATES);
-+		      DRM_EXEC_IGNORE_DUPLICATES, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		if (gobj) {
- 			r = drm_exec_lock_obj(&exec, gobj);
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
-index b6015157763a..3c351941701e 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c
-@@ -1105,7 +1105,7 @@ int amdgpu_mes_ctx_map_meta_data(struct amdgpu_device *adev,
- 
- 	amdgpu_sync_create(&sync);
- 
--	drm_exec_init(&exec, 0);
-+	drm_exec_init(&exec, 0, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		r = drm_exec_lock_obj(&exec,
- 				      &ctx_data->meta_data_obj->tbo.base);
-@@ -1176,7 +1176,7 @@ int amdgpu_mes_ctx_unmap_meta_data(struct amdgpu_device *adev,
- 	struct drm_exec exec;
- 	long r;
- 
--	drm_exec_init(&exec, 0);
-+	drm_exec_init(&exec, 0, 0);
- 	drm_exec_until_all_locked(&exec) {
- 		r = drm_exec_lock_obj(&exec,
- 				      &ctx_data->meta_data_obj->tbo.base);
-diff --git a/drivers/gpu/drm/drm_exec.c b/drivers/gpu/drm/drm_exec.c
-index 5d2809de4517..27d11c20d148 100644
---- a/drivers/gpu/drm/drm_exec.c
-+++ b/drivers/gpu/drm/drm_exec.c
-@@ -69,16 +69,25 @@ static void drm_exec_unlock_all(struct drm_exec *exec)
-  * drm_exec_init - initialize a drm_exec object
-  * @exec: the drm_exec object to initialize
-  * @flags: controls locking behavior, see DRM_EXEC_* defines
-+ * @nr: the initial # of objects
-  *
-  * Initialize the object and make sure that we can track locked objects.
-+ *
-+ * If nr is non-zero then it is used as the initial objects table size.
-+ * In either case, the table will grow (be re-allocated) on demand.
-  */
--void drm_exec_init(struct drm_exec *exec, uint32_t flags)
-+void drm_exec_init(struct drm_exec *exec, uint32_t flags, unsigned nr)
+diff --git a/drivers/gpu/drm/radeon/atombios.h b/drivers/gpu/drm/radeon/atombios.h
+index 8a6621f1e82c..7fa1606be92c 100644
+--- a/drivers/gpu/drm/radeon/atombios.h
++++ b/drivers/gpu/drm/radeon/atombios.h
+@@ -3893,7 +3893,7 @@ typedef struct _ATOM_GPIO_PIN_ASSIGNMENT
+ typedef struct _ATOM_GPIO_PIN_LUT
  {
-+	size_t sz = PAGE_SIZE;
-+
-+	if (nr)
-+		sz = (size_t)nr * sizeof(void *);
-+
- 	exec->flags = flags;
--	exec->objects = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	exec->objects = kmalloc(sz, GFP_KERNEL);
+   ATOM_COMMON_TABLE_HEADER  sHeader;
+-  ATOM_GPIO_PIN_ASSIGNMENT	asGPIO_Pin[1];
++  ATOM_GPIO_PIN_ASSIGNMENT	asGPIO_Pin[];
+ }ATOM_GPIO_PIN_LUT;
  
- 	/* If allocation here fails, just delay that till the first use */
--	exec->max_objects = exec->objects ? PAGE_SIZE / sizeof(void *) : 0;
-+	exec->max_objects = exec->objects ? sz / sizeof(void *) : 0;
- 	exec->num_objects = 0;
- 	exec->contended = DRM_EXEC_DUMMY;
- 	exec->prelocked = NULL;
-diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.c b/drivers/gpu/drm/nouveau/nouveau_exec.c
-index 19024ce21fbb..f5930cc0b3fb 100644
---- a/drivers/gpu/drm/nouveau/nouveau_exec.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_exec.c
-@@ -103,7 +103,7 @@ nouveau_exec_job_submit(struct nouveau_job *job)
+ /****************************************************************************/	
+@@ -4061,7 +4061,7 @@ typedef struct _ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT         //usSrcDstTableOffset
+   UCHAR               ucNumberOfSrc;
+   USHORT              usSrcObjectID[1];
+   UCHAR               ucNumberOfDst;
+-  USHORT              usDstObjectID[1];
++  USHORT              usDstObjectID[];
+ }ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT;
  
- 	nouveau_uvmm_lock(uvmm);
- 	drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
--			    DRM_EXEC_IGNORE_DUPLICATES);
-+			    DRM_EXEC_IGNORE_DUPLICATES, 0);
- 	drm_exec_until_all_locked(exec) {
- 		struct drm_gpuva *va;
  
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-index aae780e4a4aa..3a9331a1c830 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-@@ -1288,7 +1288,7 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- 	}
+@@ -4233,7 +4233,7 @@ typedef struct  _ATOM_CONNECTOR_DEVICE_TAG_RECORD
+   ATOM_COMMON_RECORD_HEADER   sheader;
+   UCHAR                       ucNumberOfDevice;
+   UCHAR                       ucReserved;
+-  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[1];         //This Id is same as "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
++  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[];          //This Id is same as "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
+ }ATOM_CONNECTOR_DEVICE_TAG_RECORD;
  
- 	drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
--			    DRM_EXEC_IGNORE_DUPLICATES);
-+			    DRM_EXEC_IGNORE_DUPLICATES, 0);
- 	drm_exec_until_all_locked(exec) {
- 		list_for_each_op(op, &bind_job->ops) {
- 			struct drm_gpuva_op *va_op;
-diff --git a/include/drm/drm_exec.h b/include/drm/drm_exec.h
-index b5bf0b6da791..f1a66c048721 100644
---- a/include/drm/drm_exec.h
-+++ b/include/drm/drm_exec.h
-@@ -135,7 +135,7 @@ static inline bool drm_exec_is_contended(struct drm_exec *exec)
- 	return !!exec->contended;
- }
  
--void drm_exec_init(struct drm_exec *exec, uint32_t flags);
-+void drm_exec_init(struct drm_exec *exec, uint32_t flags, unsigned nr);
- void drm_exec_fini(struct drm_exec *exec);
- bool drm_exec_cleanup(struct drm_exec *exec);
- int drm_exec_lock_obj(struct drm_exec *exec, struct drm_gem_object *obj);
+@@ -4293,7 +4293,7 @@ typedef struct  _ATOM_OBJECT_GPIO_CNTL_RECORD
+   ATOM_COMMON_RECORD_HEADER   sheader;
+   UCHAR                       ucFlags;                // Future expnadibility
+   UCHAR                       ucNumberOfPins;         // Number of GPIO pins used to control the object
+-  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[1];              // the real gpio pin pair determined by number of pins ucNumberOfPins
++  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[];               // the real gpio pin pair determined by number of pins ucNumberOfPins
+ }ATOM_OBJECT_GPIO_CNTL_RECORD;
+ 
+ //Definitions for GPIO pin state 
+@@ -4444,7 +4444,7 @@ typedef struct  _ATOM_BRACKET_LAYOUT_RECORD
+   UCHAR                       ucWidth;
+   UCHAR                       ucConnNum;
+   UCHAR                       ucReserved;
+-  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[1];
++  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[];
+ }ATOM_BRACKET_LAYOUT_RECORD;
+ 
+ /****************************************************************************/	
+@@ -4600,7 +4600,7 @@ typedef struct  _ATOM_I2C_VOLTAGE_OBJECT_V3
+    UCHAR    ucVoltageControlAddress;
+    UCHAR    ucVoltageControlOffset;	 	
+    ULONG    ulReserved;
+-   VOLTAGE_LUT_ENTRY asVolI2cLut[1];        // end with 0xff
++   VOLTAGE_LUT_ENTRY asVolI2cLut[];         // end with 0xff
+ }ATOM_I2C_VOLTAGE_OBJECT_V3;
+ 
+ // ATOM_I2C_VOLTAGE_OBJECT_V3.ucVoltageControlFlag
+@@ -4625,7 +4625,7 @@ typedef struct  _ATOM_LEAKAGE_VOLTAGE_OBJECT_V3
+    UCHAR    ucLeakageEntryNum;           // indicate the entry number of LeakageId/Voltage Lut table
+    UCHAR    ucReserved[2];               
+    ULONG    ulMaxVoltageLevel;
+-   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[1];   
++   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[];
+ }ATOM_LEAKAGE_VOLTAGE_OBJECT_V3;
+ 
+ 
+@@ -4753,7 +4753,7 @@ typedef struct _ATOM_POWER_SOURCE_INFO
+ {
+ 		ATOM_COMMON_TABLE_HEADER		asHeader;
+ 		UCHAR												asPwrbehave[16];
+-		ATOM_POWER_SOURCE_OBJECT		asPwrObj[1];
++		ATOM_POWER_SOURCE_OBJECT		asPwrObj[];
+ }ATOM_POWER_SOURCE_INFO;
+ 
+ 
+@@ -5440,7 +5440,7 @@ typedef struct _ATOM_FUSION_SYSTEM_INFO_V2
+ typedef struct _ATOM_I2C_DATA_RECORD
+ {
+   UCHAR         ucNunberOfBytes;                                              //Indicates how many bytes SW needs to write to the external ASIC for one block, besides to "Start" and "Stop"
+-  UCHAR         ucI2CData[1];                                                 //I2C data in bytes, should be less than 16 bytes usually
++  UCHAR         ucI2CData[];                                                  //I2C data in bytes, should be less than 16 bytes usually
+ }ATOM_I2C_DATA_RECORD;
+ 
+ 
+@@ -5451,14 +5451,14 @@ typedef struct _ATOM_I2C_DEVICE_SETUP_INFO
+   UCHAR		                        ucSSChipID;             //SS chip being used
+   UCHAR		                        ucSSChipSlaveAddr;      //Slave Address to set up this SS chip
+   UCHAR                           ucNumOfI2CDataRecords;  //number of data block
+-  ATOM_I2C_DATA_RECORD            asI2CData[1];  
++  ATOM_I2C_DATA_RECORD            asI2CData[];
+ }ATOM_I2C_DEVICE_SETUP_INFO;
+ 
+ //==========================================================================================
+ typedef struct  _ATOM_ASIC_MVDD_INFO
+ {
+   ATOM_COMMON_TABLE_HEADER	      sHeader; 
+-  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[1];
++  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[];
+ }ATOM_ASIC_MVDD_INFO;
+ 
+ //==========================================================================================
+@@ -5520,7 +5520,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO
+ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V2
+ {
+   ATOM_COMMON_TABLE_HEADER	      sHeader; 
+-  ATOM_ASIC_SS_ASSIGNMENT_V2		  asSpreadSpectrum[1];      //this is point only. 
++  ATOM_ASIC_SS_ASSIGNMENT_V2		  asSpreadSpectrum[];       //this is point only.
+ }ATOM_ASIC_INTERNAL_SS_INFO_V2;
+ 
+ typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3
+@@ -5542,7 +5542,7 @@ typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3
+ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V3
+ {
+   ATOM_COMMON_TABLE_HEADER	      sHeader; 
+-  ATOM_ASIC_SS_ASSIGNMENT_V3		  asSpreadSpectrum[1];      //this is pointer only. 
++  ATOM_ASIC_SS_ASSIGNMENT_V3		  asSpreadSpectrum[];       //this is pointer only.
+ }ATOM_ASIC_INTERNAL_SS_INFO_V3;
+ 
+ 
+@@ -6027,7 +6027,7 @@ typedef struct _ENABLE_SCALER_PARAMETERS
+   UCHAR ucScaler;            // ATOM_SCALER1, ATOM_SCALER2
+   UCHAR ucEnable;            // ATOM_SCALER_DISABLE or ATOM_SCALER_CENTER or ATOM_SCALER_EXPANSION
+   UCHAR ucTVStandard;        // 
+-  UCHAR ucPadding[1];
++  UCHAR ucPadding[];
+ }ENABLE_SCALER_PARAMETERS; 
+ #define ENABLE_SCALER_PS_ALLOCATION ENABLE_SCALER_PARAMETERS 
+ 
+@@ -6282,7 +6282,7 @@ typedef union _ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
+ 
+ typedef struct _ATOM_MEMORY_SETTING_DATA_BLOCK{
+ 	ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS			ulMemoryID;
+-	ULONG															        aulMemData[1];
++	ULONG															        aulMemData[];
+ }ATOM_MEMORY_SETTING_DATA_BLOCK;
+ 
+ 
+@@ -6296,7 +6296,7 @@ typedef struct _ATOM_INIT_REG_BLOCK{
+ 	USHORT													usRegIndexTblSize;													//size of asRegIndexBuf
+ 	USHORT													usRegDataBlkSize;														//size of ATOM_MEMORY_SETTING_DATA_BLOCK
+ 	ATOM_INIT_REG_INDEX_FORMAT			asRegIndexBuf[1];
+-	ATOM_MEMORY_SETTING_DATA_BLOCK	asRegDataBuf[1];
++	ATOM_MEMORY_SETTING_DATA_BLOCK	asRegDataBuf[];
+ }ATOM_INIT_REG_BLOCK;
+ 
+ #define END_OF_REG_INDEX_BLOCK  0x0ffff
+@@ -7041,7 +7041,7 @@ typedef struct _ATOM_DISP_OUT_INFO
+ 	USHORT ptrTransmitterInfo;
+ 	USHORT ptrEncoderInfo;
+ 	ASIC_TRANSMITTER_INFO  asTransmitterInfo[1];
+-	ASIC_ENCODER_INFO      asEncoderInfo[1];
++	ASIC_ENCODER_INFO      asEncoderInfo[];
+ }ATOM_DISP_OUT_INFO;
+ 
+ typedef struct _ATOM_DISP_OUT_INFO_V2
+@@ -7051,7 +7051,7 @@ typedef struct _ATOM_DISP_OUT_INFO_V2
+ 	USHORT ptrEncoderInfo;
+   USHORT ptrMainCallParserFar;                  // direct address of main parser call in VBIOS binary. 
+ 	ASIC_TRANSMITTER_INFO  asTransmitterInfo[1];
+-	ASIC_ENCODER_INFO      asEncoderInfo[1];
++	ASIC_ENCODER_INFO      asEncoderInfo[];
+ }ATOM_DISP_OUT_INFO_V2;
+ 
+ 
+@@ -7092,7 +7092,7 @@ typedef struct _ATOM_DISP_OUT_INFO_V3
+   UCHAR  ucCoreRefClkSource;                    // value of CORE_REF_CLK_SOURCE
+   UCHAR  ucDispCaps;
+   UCHAR  ucReserved[2];
+-  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[1];     // for alligment only
++  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[];      // for alligment only
+ }ATOM_DISP_OUT_INFO_V3;
+ 
+ //ucDispCaps
+@@ -7324,12 +7324,12 @@ typedef struct _CLOCK_CONDITION_SETTING_ENTRY{
+   USHORT usMaxClockFreq;
+   UCHAR  ucEncodeMode;
+   UCHAR  ucPhySel;
+-  ULONG  ulAnalogSetting[1];
++  ULONG  ulAnalogSetting[];
+ }CLOCK_CONDITION_SETTING_ENTRY;
+ 
+ typedef struct _CLOCK_CONDITION_SETTING_INFO{
+   USHORT usEntrySize;
+-  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[1];
++  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[];
+ }CLOCK_CONDITION_SETTING_INFO;
+ 
+ typedef struct _PHY_CONDITION_REG_VAL{
+@@ -7346,27 +7346,27 @@ typedef struct _PHY_CONDITION_REG_VAL_V2{
+ typedef struct _PHY_CONDITION_REG_INFO{
+   USHORT usRegIndex;
+   USHORT usSize;
+-  PHY_CONDITION_REG_VAL asRegVal[1];
++  PHY_CONDITION_REG_VAL asRegVal[];
+ }PHY_CONDITION_REG_INFO;
+ 
+ typedef struct _PHY_CONDITION_REG_INFO_V2{
+   USHORT usRegIndex;
+   USHORT usSize;
+-  PHY_CONDITION_REG_VAL_V2 asRegVal[1];
++  PHY_CONDITION_REG_VAL_V2 asRegVal[];
+ }PHY_CONDITION_REG_INFO_V2;
+ 
+ typedef struct _PHY_ANALOG_SETTING_INFO{
+   UCHAR  ucEncodeMode;
+   UCHAR  ucPhySel;
+   USHORT usSize;
+-  PHY_CONDITION_REG_INFO  asAnalogSetting[1];
++  PHY_CONDITION_REG_INFO  asAnalogSetting[];
+ }PHY_ANALOG_SETTING_INFO;
+ 
+ typedef struct _PHY_ANALOG_SETTING_INFO_V2{
+   UCHAR  ucEncodeMode;
+   UCHAR  ucPhySel;
+   USHORT usSize;
+-  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[1];
++  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[];
+ }PHY_ANALOG_SETTING_INFO_V2;
+ 
+ typedef struct _GFX_HAVESTING_PARAMETERS {
+@@ -7550,13 +7550,13 @@ typedef struct _ATOM_TMDS_INFO
+ typedef struct _ATOM_ENCODER_ANALOG_ATTRIBUTE
+ {
+   UCHAR ucTVStandard;     //Same as TV standards defined above, 
+-  UCHAR ucPadding[1];
++  UCHAR ucPadding[];
+ }ATOM_ENCODER_ANALOG_ATTRIBUTE;
+ 
+ typedef struct _ATOM_ENCODER_DIGITAL_ATTRIBUTE
+ {
+   UCHAR ucAttribute;      //Same as other digital encoder attributes defined above
+-  UCHAR ucPadding[1];		
++  UCHAR ucPadding[];
+ }ATOM_ENCODER_DIGITAL_ATTRIBUTE;
+ 
+ typedef union _ATOM_ENCODER_ATTRIBUTE
 -- 
-2.41.0
+2.39.2
 
