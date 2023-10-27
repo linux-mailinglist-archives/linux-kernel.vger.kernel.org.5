@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6437D90F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0680E7D916E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbjJ0IRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S1345511AbjJ0I0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJ0IRj (ORCPT
+        with ESMTP id S1345505AbjJ0I0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:17:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755A91A5;
-        Fri, 27 Oct 2023 01:17:37 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 08:17:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698394655;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Fri, 27 Oct 2023 04:26:35 -0400
+X-Greylist: delayed 510 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 01:26:32 PDT
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAEB1B8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:26:32 -0700 (PDT)
+Message-ID: <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698394680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vA788SE7Noptz4+WSt8tuziUT4TBDJvVXqWFU9PxDEg=;
-        b=wj1Y3IVme6Am94VhHc64GpPt3JUPS8c8mScILGrQQEgCK9dE3ciCKRjRP0o3WRY66VbbL/
-        pwYWEnv/mCsCsly3rYfOV8s5+3F9/BNBQpkSGMP7tDxeAsfdCmAH5hndixy3gLbYyjgdsY
-        lpcSVJ5LXB61dbrRdG7/eRqRbF1wxm7uGEgq9EylgoESOIaAgUWYb7uBIUkbbaC0FKJD9d
-        qz9xHokF8H+Sr4xyYwLUm6duk1Xuv2XgogPiQ/4LwYKSO1WAT69V1WRdi8o9T6sepJaeUE
-        yJBIf3Jvy0/G/6p2WVtuNxq5dCMIwnTUeV7ybEhAxG32XvP53hMysVUO0BkuiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698394655;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vA788SE7Noptz4+WSt8tuziUT4TBDJvVXqWFU9PxDEg=;
-        b=z3GGGKhPmiHgj9sccLvo4Wl4Gx5TzcTCwpiIagdgQcgSkmX0Ve5h99Ajz57mPSfH8WJK6j
-        VNXhYhkfCdfCT8CA==
-From:   "tip-bot2 for Anup Patel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/sifive-plic: Fix syscore registration for
- multi-socket systems
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231025142820.390238-4-apatel@ventanamicro.com>
-References: <20231025142820.390238-4-apatel@ventanamicro.com>
+        bh=cdou9Hk0U8eWsNWSfaIsEXBZ0PmjOPDEb5pe3jgkQTw=;
+        b=T4QQCqnqZv2Akii99keI8aXZ4xhlsoZ2lKV5HG7n/KP8YJ4FxVISSUnTrmfIJ4SPXpidk+
+        QnhkkpuwdjXefx0vztz6SW16PCi0aRdjQ7mMv9pPcr1xNcsvMf2owxXjWb5R9F3aXrtvRa
+        2GydmeMmoVRTd7zYGxlNx4kqf9qceCI=
+Date:   Fri, 27 Oct 2023 16:17:42 +0800
 MIME-Version: 1.0
-Message-ID: <169839465507.3135.1764002917624211334.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+To:     Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com, bvanassche@acm.org
+References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+在 2023/10/27 13:41, Li Zhijian 写道:
+> mr->page_list only encodes *page without page offset, when
+> page_size != PAGE_SIZE, we cannot restore the address with a wrong
+> page_offset.
+> 
+> Note that this patch will break some ULPs that try to register 4K
+> MR when PAGE_SIZE is not 4K.
+> SRP and nvme over RXE is known to be impacted.
 
-Commit-ID:     f99b926f6543faeadba1b4524d8dc9c102489135
-Gitweb:        https://git.kernel.org/tip/f99b926f6543faeadba1b4524d8dc9c102489135
-Author:        Anup Patel <apatel@ventanamicro.com>
-AuthorDate:    Wed, 25 Oct 2023 19:58:20 +05:30
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 27 Oct 2023 10:09:15 +02:00
+When ULP uses folio or compound page, ULP can not work well with RXE 
+after this commit is applied.
 
-irqchip/sifive-plic: Fix syscore registration for multi-socket systems
+Perhaps removing page_size set in RXE is a good solution because 
+page_size is set twice, firstly page_size is set in infiniband/core, 
+secondly it is set in RXE.
 
-Multi-socket systems have a separate PLIC in each socket, so __plic_init()
-is invoked for each PLIC. __plic_init() registers syscore operations, which
-obviously fails on the second invocation.
+When folio or compound page is used in ULP, it is very possible that 
+page_size in infiniband/core is different from the page_size in RXE.
 
-Move it into the already existing condition for installing the CPU hotplug
-state so it is only invoked once when the first PLIC is initialized.
+Not sure what problem this difference will cause.
 
-[ tglx: Massaged changelog ]
+Zhu Yanjun
 
-Fixes: e80f0b6a2cf3 ("irqchip/irq-sifive-plic: Add syscore callbacks for hibernation")
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20231025142820.390238-4-apatel@ventanamicro.com
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index f54042e9aeb2..61a136ea1d91 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
+>   	struct rxe_mr *mr = to_rmr(ibmr);
+>   	unsigned int page_size = mr_page_size(mr);
+>   
+> +	if (page_size != PAGE_SIZE) {
+> +		rxe_info_mr(mr, "Unsupported MR with page_size %u, expect %lu\n",
+> +			   page_size, PAGE_SIZE);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+>   	mr->nbuf = 0;
+>   	mr->page_shift = ilog2(page_size);
+>   	mr->page_mask = ~((u64)page_size - 1);
 
----
- drivers/irqchip/irq-sifive-plic.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index e148490..5b7bc4f 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -532,17 +532,18 @@ done:
- 	}
- 
- 	/*
--	 * We can have multiple PLIC instances so setup cpuhp state only
--	 * when context handler for current/boot CPU is present.
-+	 * We can have multiple PLIC instances so setup cpuhp state
-+	 * and register syscore operations only when context handler
-+	 * for current/boot CPU is present.
- 	 */
- 	handler = this_cpu_ptr(&plic_handlers);
- 	if (handler->present && !plic_cpuhp_setup_done) {
- 		cpuhp_setup_state(CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
- 				  "irqchip/sifive/plic:starting",
- 				  plic_starting_cpu, plic_dying_cpu);
-+		register_syscore_ops(&plic_irq_syscore_ops);
- 		plic_cpuhp_setup_done = true;
- 	}
--	register_syscore_ops(&plic_irq_syscore_ops);
- 
- 	pr_info("%pOFP: mapped %d interrupts with %d handlers for"
- 		" %d contexts.\n", node, nr_irqs, nr_handlers, nr_contexts);
