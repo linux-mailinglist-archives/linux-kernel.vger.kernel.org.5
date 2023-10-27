@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8757D9D07
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF677D9D09
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346328AbjJ0Pc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
+        id S1346296AbjJ0Pdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346291AbjJ0Pcw (ORCPT
+        with ESMTP id S1346277AbjJ0Pdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:32:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CACAC;
-        Fri, 27 Oct 2023 08:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698420769; x=1729956769;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DjuX/wAHbc+xCWejQxL14B3DRyOZ9EdymSlvm/og6O4=;
-  b=LoKjxhWauxx39vnxRa7y0tWQ9oAkY+lfxxfbK1/YvbUDDx+uUkQLyRkB
-   PVTxUeMD6t3bq9yPodmd4cEfllnrtLCGc1Q7MdpulsaJgrrU2fulW6mAp
-   rWY/PH/6FXp8JqhYsHhHUjkDtnTx1Ce7AW3WN74+9jNRPcJeBdKH4uEJP
-   cE6XgI07G2N7aQMPlL2PBQ14bEvWqS3Kpf1CKZ8KXjJqJkesE4kqgxfQI
-   6Wws0uWLN+YKirieli7LwLOQW7lwZVAQQWC95umudHQO2MDvSjjrrN+P3
-   C97TXaF/r0h9HbnJ1b7GHrF9lco6veuHgps4OzQsgq4U7ongrsFdBG5gL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="474035579"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="474035579"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 08:32:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="753150122"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="753150122"
-Received: from dmnassar-mobl.amr.corp.intel.com (HELO desk) ([10.212.203.39])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 08:32:44 -0700
-Date:   Fri, 27 Oct 2023 08:32:42 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alyssa Milburn <alyssa.milburn@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v4 0/6] Delay VERW
-Message-ID: <20231027153242.ruabpxxywhq5upc7@desk>
-References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
- <20231027144848.GGZTvN0AtGIQ9kBtkA@fat_crate.local>
- <20231027150535.s4nlkppsvzeahm7t@desk>
- <20231027151226.GIZTvTWuQUXdsmt6v3@fat_crate.local>
+        Fri, 27 Oct 2023 11:33:38 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5ABB8
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:33:36 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B269F40E0173;
+        Fri, 27 Oct 2023 15:33:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id H-th4CV3RACo; Fri, 27 Oct 2023 15:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698420812; bh=gH1kGJW0H+Ql6cmbGG3S9bXgwseObYu3GOaSMnhwaIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LsGQB2Bj+r4IDFoCCx04vffocr2pg+oiLi1PMbT5u1yRH2kP3EKC9Oh6ehwvrnmdp
+         vQ5ueen79s0QBnS9mNb1y/wNxCdEBXM3rkhOtUJphmj2TVdC99e4bYXZN4WQvC/RQr
+         RTWAA3CiAXo7/zUo3qtUTwVhkoANFbW3odT4+z3QEp8fCmsb5f/v2/ZuqWAO9mZGOR
+         o+aebCYt+amp/+YqTcphVOXHvWOXVPvJglQrcSrD6HrLUZotrg5XXKOpwZxou8KsUx
+         m0u8I9YxrDw2T/E3gmwB8EYa3h8du7wIyTMPXXqpBkvpjRo2ejY7daVddDiofNwInL
+         saqiE9AeoUgCbbhLRvcB+kqbUd+/kB11EF9h32TYn1jRB0jFDhTX6metq2OTU8+EHZ
+         TgXO93PLq/tCiEyWLzo/0LGXrQipzt7vcpboePEMM4V3GzaX0kz3oVWjbuTUwRJmyp
+         IaSfzMPYifeCZqSzfBrQnUFFxkjLyYjqxA8YKNnM5RnFbekmtzh6XtFaZCrbELjz2Y
+         tXPfAzrsiUIlnuZVyPrUYRXYNNf3vh7PJqSupl1etKZ9+CNj13zbpopwEybUAnBmSE
+         Xtu+2hRNmz4sGGHnF48qWCQXCzr8m6iNc2gfJw4gBTXLjPzf/u3UxDsvuYYhii0eR/
+         YuSVHj7xdj1SesimBJGfI03I=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C828940E0171;
+        Fri, 27 Oct 2023 15:33:28 +0000 (UTC)
+Date:   Fri, 27 Oct 2023 17:33:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>,
+        Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/barrier: Do not serialize MSR accesses on AMD
+Message-ID: <20231027153327.GKZTvYR3qslaTUjtCT@fat_crate.local>
+References: <20230622095212.20940-1-bp@alien8.de>
+ <20230703125419.GJ4253@hirez.programming.kicks-ass.net>
+ <20230704074631.GAZKPOV/9BfqP0aU8v@fat_crate.local>
+ <20230704090132.GP4253@hirez.programming.kicks-ass.net>
+ <20230704092222.GBZKPkzgdM8rbPe7zA@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231027151226.GIZTvTWuQUXdsmt6v3@fat_crate.local>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230704092222.GBZKPkzgdM8rbPe7zA@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 05:12:26PM +0200, Borislav Petkov wrote:
-> On Fri, Oct 27, 2023 at 08:05:35AM -0700, Pawan Gupta wrote:
-> > I am going on a long vacation next week, I won't be working for the rest
-> > of the year. So I wanted to get this in a good shape quickly. This
-> > patchset addresses some security issues (although theoretical). So there
-> > is some sense of urgency. Sorry for spamming, I'll take you off the To:
-> > list.
+On Tue, Jul 04, 2023 at 11:22:22AM +0200, Borislav Petkov wrote:
+> I'm wondering if we could make:
 > 
-> Even if you're leaving for vacation, I'm sure some colleague of yours or
-> dhansen will take over this for you. So there's no need to keep sending
-> this every day. Imagine everyone who leaves for vacation would start
-> doing that...
+> 	alternative("mfence; lfence;", "", X86_VENDOR_AMD);
+> 
+> work...
 
-I can imagine the amount emails maintainers get. I'll take care of this
-in future. But, its good to get some idea on how much is too much,
-specially for a security issue?
+Seems to work in my guest here and it don't look half as bad. See
+replies to this message.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
