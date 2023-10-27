@@ -2,55 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD17D9363
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3127D93AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235048AbjJ0JUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S235094AbjJ0J3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345577AbjJ0JT7 (ORCPT
+        with ESMTP id S229503AbjJ0J3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:19:59 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE9CA11F;
-        Fri, 27 Oct 2023 02:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=x7fiv
-        BQJq72nSMKux0IKJcpLOEh/ZK4DVTpIIvCRjkA=; b=OWIxMHlnmEetMmBrF5wNU
-        iet7mM3/6axuVHUu3jZFNsHOXrsp3S/VMOPP91EA/7OGOW1vfuOg4lGzPHZ8O033
-        /rHAIxiNMDBr4lwpT8LaVY3j2FeWV8laEfkO7c4V97x9T1h0WgNl0B3v2P0kty8b
-        vk6rDiF5DKyGBqGlQOlDYI=
-Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wBnD_ZrgDtlHuRqBg--.47942S2;
-        Fri, 27 Oct 2023 17:18:35 +0800 (CST)
-From:   Zheng Wang <zyytlz.wz@163.com>
-To:     dmitry.osipenko@collabora.com
-Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, hackerzheng666@gmail.com,
-        1395428693sheep@gmail.com, alex000young@gmail.com,
-        amergnat@baylibre.com, wenst@chromium.org,
-        Zheng Wang <zyytlz.wz@163.com>, stable@vger.kernel.org
-Subject: [PATCH 2/2] media: mtk-jpeg: Fix timeout schedule error in mtk_jpegdec_worker.
-Date:   Fri, 27 Oct 2023 17:18:32 +0800
-Message-Id: <20231027091832.39082-1-zyytlz.wz@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBnD_ZrgDtlHuRqBg--.47942S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ar15uF1rKrW5Gr4xtw4Dtwb_yoW8Cw1kpF
-        Z3K3yqkrW5Wrs8tF4UA3W7ZFy5G3s0gr47WF43Wws3J343XF47tryjya4xtFWIyFy2ka4F
-        vF4vg34xJFsFyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziiIDxUUUUU=
-X-Originating-IP: [111.206.145.21]
-X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/1tbiXA4WU1Xl75dK2QAAsM
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 27 Oct 2023 05:29:43 -0400
+X-Greylist: delayed 606 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 02:29:40 PDT
+Received: from s01.bc.larksuite.com (s01.bc.larksuite.com [209.127.230.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD9AAF
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=dingdao-com.20200927.dkim.feishu.cn; t=1698398370;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=TV5y0friYH6HbXqokPo9rMztc3feSByAfx6Q6GDDtx0=;
+ b=t8dCWO16iW+U4zgIxZbRsNc/FJKvjfXlglhcPPOsNMmWwH1gt92vhnMrmx34M/dG+/aQkc
+ 24UXLNZrFCAkNDYN8HztMQNONHPwsqrakm7Iw7tKi5bqM8fctfNFreexE/RkiBoMVNmsSJ
+ 2byTCFfaqiuttwn5j2bUE3o4L22Pf/1sFRwswyizetMu7/7Gjqnqb06jpk4JakaBXMzAVu
+ e546m8lmJHJ225+JJTuQXX2UOvEo72wzLP0x2NmZfOOVfvhl1vEgHYjKWSEN4Sndo0B4yn
+ upf0PdrYPmJtVg9BWYGJbRf+bZdha888lY/bbdSiXqj5z9yiE6x5Ok4YjZXCpg==
+Subject: [PATCH] gpu/drm/drm_framebuffer.c: Add judgement for return value of drm_get_format_info().
+X-Original-From: Peng Hao <penghao@dingdao.com>
+Cc:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <penghao@dingdao.com>
+From:   "Peng Hao" <penghao@dingdao.com>
+X-Lms-Return-Path: <lba+2653b80a1+0262e2+vger.kernel.org+penghao@dingdao.com>
+Message-Id: <20231027091912.1244107-1-penghao@dingdao.com>
+Content-Transfer-Encoding: 7bit
+To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>
+Content-Type: text/plain; charset=UTF-8
+X-Mailer: git-send-email 2.37.1
+Date:   Fri, 27 Oct 2023 17:19:12 +0800
+Mime-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,47 +49,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mtk_jpegdec_worker, if error occurs in mtk_jpeg_set_dec_dst, it
-will start the timeout worker and invoke v4l2_m2m_job_finish at
-the same time. This will break the logic of design for there should
-be only one function to call v4l2_m2m_job_finish. But now the timeout
-handler and mtk_jpegdec_worker will both invoke it.
+Since drm_get_format_info() may return NULL, so a judgement of return
+value is needed to add.
 
-Fix it by start the worker only if mtk_jpeg_set_dec_dst successfully
-finished.
-
-Fixes: da4ede4b7fd6 ("media: mtk-jpeg: move data/code inside CONFIG_OF blocks")
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Peng Hao <penghao@dingdao.com>
 ---
- drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_framebuffer.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-index 7194f88edc0f..d099a9b67930 100644
---- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-+++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-@@ -1750,9 +1750,6 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 	v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
- 	v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
+diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+index aff3746dedfb..be7dd1998c04 100644
+--- a/drivers/gpu/drm/drm_framebuffer.c
++++ b/drivers/gpu/drm/drm_framebuffer.c
+@@ -194,6 +194,10 @@ static int framebuffer_check(struct drm_device *dev,
  
--	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
--			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
--
- 	mtk_jpeg_set_dec_src(ctx, &src_buf->vb2_buf, &bs);
- 	if (mtk_jpeg_set_dec_dst(ctx,
- 				 &jpeg_src_buf->dec_param,
-@@ -1762,6 +1759,9 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 		goto setdst_end;
- 	}
+ 	/* now let the driver pick its own format info */
+ 	info = drm_get_format_info(dev, r);
++	if (!info) {
++		drm_dbg_kms(dev, "no matched format info\n");
++		return -EFAULT;
++	}
  
-+	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
-+			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
-+
- 	spin_lock_irqsave(&comp_jpeg[hw_id]->hw_lock, flags);
- 	ctx->total_frame_num++;
- 	mtk_jpeg_dec_reset(comp_jpeg[hw_id]->reg_base);
+ 	for (i = 0; i < info->num_planes; i++) {
+ 		unsigned int width = fb_plane_width(r->width, info, i);
 -- 
-2.25.1
-
+2.37.1
