@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC377D9D40
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCDD7D9D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346195AbjJ0Ppd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S1346232AbjJ0PqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345780AbjJ0Ppb (ORCPT
+        with ESMTP id S1346175AbjJ0PqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:45:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60072B8;
-        Fri, 27 Oct 2023 08:45:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E8BC433CA;
-        Fri, 27 Oct 2023 15:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698421529;
-        bh=Baa+A2T9pHR5w9mQAEwQT8AFlDHNCPYd0F88xPPlOYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HqbfePkCiqTz1f9wsXZyWvhrGUUm/uK6IPStBxduVBkMvO4wqIB1eCbcCzl+XRWtE
-         Eyh5JmRTcCmuq2eQdsleFkkFd3u5n2VKkboI1hwL4Yn9T+TYGekG41brcbROjMAq6K
-         nVkKT4Nigxf5FF8vAaZCFhzaL80aCTqiB85SmDTIbj2LNnkdXWB/DhmMaifVqF8S1j
-         fuVS5XjofWd4zMvNgu4ZNJP8qRm8VGO0SNFARgCF/a51ENc4SoHGna+gJSyv1TZvKL
-         C7X/BWnVRP5/GPhKINtt3etTqw/1hV3cFU2CyKL1Pvhkt0rEmErz8DnIxO7dWBIDci
-         /Hx6ffRr2M0cQ==
-Date:   Fri, 27 Oct 2023 16:45:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Stoll, Eberhard" <eberhard.stoll@kontron.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Eberhard Stoll <estl@gmx.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "Schrempf, Frieder" <frieder.schrempf@kontron.de>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: AW: [PATCH 1/4] spi: Add parameter for clock to rx delay
-Message-ID: <ZTvbFc+kFMotVUkh@finisterre.sirena.org.uk>
-References: <20231026152316.2729575-1-estl@gmx.net>
- <20231026152316.2729575-2-estl@gmx.net>
- <20231027005643.4b95f17e@xps-13>
- <DB9PR10MB82468A8BD333B12D3FCB3C43F1DCA@DB9PR10MB8246.EURPRD10.PROD.OUTLOOK.COM>
- <ZTujIs2O+GYKIPlU@smile.fi.intel.com>
+        Fri, 27 Oct 2023 11:46:20 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E22ECC
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:46:18 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1caa7597af9so17734445ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698421577; x=1699026377; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bXwiHUF+X9lySsU8pvLVICiNMeHED6d+bcuJHhpa7Ew=;
+        b=P237PelidtcWw8WiXDkwPUhlrhdZvIsGVzdAkchjolKTLfuy0roDgRVGXmpTGvtNER
+         yO6DAxx7ehFFcsiAZUJWt4Hsii1U/+m9NMfontED91+8zliv9y/7Uul6Ba4IvMWpg+u5
+         0w1zrF7mOYMIroDDH+tSMEHYMzGKpaDXTM65Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698421577; x=1699026377;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bXwiHUF+X9lySsU8pvLVICiNMeHED6d+bcuJHhpa7Ew=;
+        b=OE7HyXV+GxZOO0SGLzfCbXL292UJyvnihbZgvoRkIEMhL4dGMv0Z9wZqlA8DmoQUpq
+         xTeR4pvX0smSt8aCfd6oUAke6CLyJQ0vNVLot3BxOHNYNbYEQtb0O9+TLtYZP4vANjH+
+         FYn11teMV0gQ5ltujRuHx5i/ufCSZ5rRc0xegbHgDtw+Or2TYH9/7w5h+q562WikrBLC
+         f1GYr/xgXAt6EzomNEGt13SFa0iUQQ1ZGp5RyJt0uHPFNEn2oVxa9zjxDmjsZbzPit2B
+         JB4G5m3GPGVefBw4kR93Rwp02SPhYgLkEbZviJQU2Tn7dITOHHD0td0S1Z5P0CRAR3tk
+         4Yew==
+X-Gm-Message-State: AOJu0YxMpQPRD/SqC4QEG0zrfTXKvcpZUY5rC+UiZwHiQN5zx+Dgwz4N
+        p9XmYYv/hSPIZU1zenv7IIZriw==
+X-Google-Smtp-Source: AGHT+IGhmY9j5VDtwlDB7WV8OTyFMND/UgkMHgO5ObwArE+J9934qQxf7biq0pExELauYnurCtkMEw==
+X-Received: by 2002:a17:903:2448:b0:1c9:b2c1:13a3 with SMTP id l8-20020a170903244800b001c9b2c113a3mr3650635pls.49.1698421577533;
+        Fri, 27 Oct 2023 08:46:17 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h9-20020a170902f7c900b001b8a3e2c241sm1746323plw.14.2023.10.27.08.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 08:46:17 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 08:46:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-trace-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
+Message-ID: <202310270845.3D1EB44@keescook>
+References: <20231026194033.it.702-kees@kernel.org>
+ <20231026154459.1603d750@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t+iyWvYvU8cBITVd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTujIs2O+GYKIPlU@smile.fi.intel.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231026154459.1603d750@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 26, 2023 at 03:44:59PM -0400, Steven Rostedt wrote:
+> On Thu, 26 Oct 2023 12:40:37 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > @@ -81,16 +88,20 @@ static inline unsigned int seq_buf_used(struct seq_buf *s)
+> >   *
+> >   * After this function is called, s->buffer is safe to use
+> >   * in string operations.
+> > + *
+> > + * Returns @s->buf after making sure it is terminated.
+> >   */
+> > -static inline void seq_buf_terminate(struct seq_buf *s)
+> > +static inline char *seq_buf_str(struct seq_buf *s)
+> 
+> Looking at show_buffer() (below), I wonder if this should be:
+> 
+> static inline const char *seq_buf_str() ?
+> 
+> I mean, it can be modified, but do we want to allow that?
 
---t+iyWvYvU8cBITVd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, good idea. I've updated this for v3.
 
-On Fri, Oct 27, 2023 at 02:46:42PM +0300, Andy Shevchenko wrote:
-
-> So, to me sounds like device tree source issue. I.e. you need to provide
-> different DT(b)s depending on the platform (and how it should be).
-> The cleanest solution (as I see not the first time people I trying quirks like
-> this to be part of the subsystems / drivers) is to make DT core (OF) to have
-> conditionals or boot-time modifications allowed.
-
-> This, what you are doing, does not scale and smells like an ugly hack.
-
-No, this seems like an entirely reasonable thing to have - it's just a
-property of the device, we don't need to add a DT property for it, and
-the maximum speed that the device can run at is going to vary depending
-on the ability of the controller to control the sampling point.
-
-As people have been saying there's a particularly clear case for this
-with SPI flash which is probed at runtime and is readily substituted at
-the hardware level.
-
---t+iyWvYvU8cBITVd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU72w4ACgkQJNaLcl1U
-h9AzXAf/U69EcDG6BKh7GvxVDQ45r9zmTFIm3xM7WXD0qH+qxx0fMewR3y/JF0LA
-qMH/a2wPo8djtZBJOz5RM80PaIf4/2K9uj3D1m5iuWKuHIicML+KE6FCMmeSvXBo
-TFd2RgKSOFkLoZXmcfJbTMN1oMw0DL/j8ZENCnexMxSF7hrCBFxlpRj3bcKyBp9n
-wUhXhfew3/aZNffqWAj2e9HaixbJEqyTV/YYAldTFblGgLYZOdpHsV6br86mXdRv
-H83PyiLZzWj/w/1If3GLEROsnzISxyoSuf+U28gGNEJlHrY4bANXEcFJUpnlDj8y
-Y6ZrCknBoHrHpxc8xsL7ABl8Vk45Mw==
-=atJr
------END PGP SIGNATURE-----
-
---t+iyWvYvU8cBITVd--
+-- 
+Kees Cook
