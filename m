@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 705BD7D9178
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1936B7D917C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345418AbjJ0I2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
+        id S1345505AbjJ0I2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235057AbjJ0I2R (ORCPT
+        with ESMTP id S231429AbjJ0I2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:28:17 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE03196
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:28:14 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5079f6efd64so2443592e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:28:14 -0700 (PDT)
+        Fri, 27 Oct 2023 04:28:38 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3E51A1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:28:36 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5082a874098so436383e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698395292; x=1699000092; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698395314; x=1699000114; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CdvFf3ams25ZNVupsH8Hd0PeWv3PdwL+ysnV+Zf6KyQ=;
-        b=QCRmSY77CSI/V9bquXVwC5sND64xlyxLz4ZKh9r7sB8zQTtonmBN6fCn4RULDYJFjw
-         uQeXmlHWdBMZr26/xr6a+/xv7gde5WYnO7gSA1WU5MtqSV5b9/8d+lFopI80dkB9W7n/
-         oESaAhzkTLWmo3LVxg91BigIJiFqozo5aOtGmpBQUL2OHG+jP6FhD5zUBYoYgcdRPsCG
-         HReLOH8JyVyatwYZIetYveuIfoBJBknqlD8VMSiS5dCFiMZzRNlxaQTjQLiSaf/zqFA3
-         gnd4nO0g7TJydYicHyqO28YNdMeEGyVeWtc6gAKBH43fpJwYIYqhbvpxUBqrbOMjBv2A
-         1ybA==
+        bh=LcMlteiqyP+3VxtwJC6BsZU2OpQMRBZIHtS76WSCVj0=;
+        b=YY8mZKe6BHtKCSTu1DMQG3FqdSLUg6BJWBwrcRsPJ9CYBHC/xv3S5dVJ4DXFrd/hQY
+         cJTaM+QpM59XjKyMTKOQQL4wgOQM3EeS4a1i5u1EIt7wMvQISTNQOpnEt77qqDK+EqPP
+         c+pImBgwiYBTwUC3euqduKBc3+XVdYU6eO8XwZj2zuht8WMOUNxQ+gtfZH/fHok8mjVS
+         X6rgJLedKf4aPrC+d02Hw1c+0haoTatlk6uAo2vLsnOW1CX5GeN656S/gGBBehBfOafZ
+         K4geremK13ThDf7WfVJRhl5VmW2iCz8pqG5pXF+Yz2Q4sgBJySXyA4yJ3xSAuOSYZwoK
+         ShMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698395292; x=1699000092;
+        d=1e100.net; s=20230601; t=1698395314; x=1699000114;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdvFf3ams25ZNVupsH8Hd0PeWv3PdwL+ysnV+Zf6KyQ=;
-        b=wbYA7Zu/zwaGsiVmR17tzLcUdGDbIIFzRgQCsQfNeIhTb+3n8ng0ZqEkBTu/8BMAr7
-         jwav+Pr6YuQnPcNXw663J/OGnYw44DJ0JTK66XJ8iIGPqhOQtA0PLotLC18GCgTDtyGa
-         nGt84zxMnwqbcAiSrYJ4OQVxTfEluQsnjFobNxsxL36hxOdz1I/o60zdbeePfTSf68W1
-         K/LRjSYI4JEJdg5XxwLNsisgZViXQHG4dhISIQf33SETtoCCRQiQA0ro8qpDFjcb2KTH
-         LXsuTy+hbNtk4fN4sdDtHsqAwinPiT6bwbKk2X37h/7GzmjnOcWuZ8YJRh7Aez9Fm7VZ
-         sQZg==
-X-Gm-Message-State: AOJu0YwHULPnAPhYpM2167xpAkGagIPa4+ye5a00TvLcn9kIp9Y8VEpk
-        ebg+Y+B33yABp1sRTXS32/vnJw==
-X-Google-Smtp-Source: AGHT+IH5IVSfiG8xM5pF33YT10hSCjbWAPyj2HyJQyCCY/fWpg4E9FgDm2pfbpMnMP6PwOwq7Ysh6w==
-X-Received: by 2002:a05:6512:3d8e:b0:507:9854:3b95 with SMTP id k14-20020a0565123d8e00b0050798543b95mr1618998lfv.14.1698395292669;
-        Fri, 27 Oct 2023 01:28:12 -0700 (PDT)
+        bh=LcMlteiqyP+3VxtwJC6BsZU2OpQMRBZIHtS76WSCVj0=;
+        b=PJKGDWfuRYs25Wfoo6fcHGg4JdIyWYK2vy/Tnl/B3q4oToqb3metqrUaNPZrs8OmkT
+         yIf+Gfer9T3OreOda4iOCON7wqBZymbeTwDShhXq+lcZj0eVOaO6vmUQgaPVg2CSpqBu
+         jDr19vYhU9BLZWA6IX8m36i7HdaOzDETqiUMoYNjTG66oQMWV+ov26YB4dZ4GXAbaxqR
+         QsE840stUdbjON/9PySpXWBawYT51txvugPwKZZckxwwTOcUVec69pvOxg+296ydZN+U
+         ZZ/02za+LpWNG6oynar/GVLvK6zs6Rmrz3NLUyjfrZv8zx++v/7m7Kt/MdELEj06ZT4D
+         uvbA==
+X-Gm-Message-State: AOJu0Yz1eyLZk3g97RIm8/ACuCbvKzCrpPBX/1ltWM3siZXfFz9kyPjx
+        jNt5J0n9/D5mvc/gqYCGZ9Ri1Q==
+X-Google-Smtp-Source: AGHT+IEsqujoz+JZsbJ/VnqIWfFqNlaxSDTvzvfGgXggATrnLJJGTYETFKkAzu0XhzcFRu2Lss3EUg==
+X-Received: by 2002:a05:6512:1388:b0:500:b53f:fbc2 with SMTP id fc8-20020a056512138800b00500b53ffbc2mr1455503lfb.26.1698395314249;
+        Fri, 27 Oct 2023 01:28:34 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id i14-20020a056512340e00b00502ae64f46asm184429lfr.126.2023.10.27.01.28.11
+        by smtp.gmail.com with ESMTPSA id i14-20020a056512340e00b00502ae64f46asm184429lfr.126.2023.10.27.01.28.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 01:28:12 -0700 (PDT)
-Message-ID: <9f1e39cf-ae7f-47b4-be90-fe8b1a57394c@linaro.org>
-Date:   Fri, 27 Oct 2023 10:28:11 +0200
+        Fri, 27 Oct 2023 01:28:32 -0700 (PDT)
+Message-ID: <b1440bdb-664d-477d-9e24-ba9d2c1c7ca7@linaro.org>
+Date:   Fri, 27 Oct 2023 10:28:31 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: arm-smmu: Add compatible for SC8380XP
- SoC
+Subject: Re: [PATCH 2/3] dt-bindings: dma: qcom: gpi: add compatible for
+ SC8380XP
 Content-Language: en-US
 To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
         konrad.dybcio@linaro.org, will@kernel.org, robin.murphy@arm.com,
@@ -68,7 +68,7 @@ Cc:     agross@kernel.org, vkoul@kernel.org, quic_gurus@quicinc.com,
         dmaengine@vger.kernel.org, iommu@lists.linux.dev,
         quic_tsoni@quicinc.com, neil.armstrong@linaro.org
 References: <20231025140640.22601-1-quic_sibis@quicinc.com>
- <20231025140640.22601-2-quic_sibis@quicinc.com>
+ <20231025140640.22601-3-quic_sibis@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,13 +114,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025140640.22601-2-quic_sibis@quicinc.com>
+In-Reply-To: <20231025140640.22601-3-quic_sibis@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -128,13 +128,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25/10/2023 16:06, Sibi Sankar wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+> The Qualcomm SC8380XP uses GPI DMA for its GENI interface. Add a compatible
+> string for it in the documentation by using the SM6350 as fallback.
 > 
-> Add the SoC specific compatible for SC8380XP implementing arm,mmu-500.
-> 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
 > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 > ---
+>  Documentation/devicetree/bindings/dma/qcom,gpi.yaml | 1 +
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
