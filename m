@@ -2,269 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4A17D8CB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 03:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F39B7D8CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 03:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345039AbjJ0BH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 21:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
+        id S1345092AbjJ0BO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 21:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJ0BH5 (ORCPT
+        with ESMTP id S229437AbjJ0BOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 21:07:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B022D1B6
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 18:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698368874; x=1729904874;
-  h=date:from:to:cc:subject:message-id;
-  bh=pZJDDTXUEp1LKN21Vs5t1a7jBve5sNeHFbm4VvrrY44=;
-  b=LnYGXoJ0ag9G2J6E//MjWcNtMAiZU9aNY9Bqgwbu4mYhkBj93IFYhXoe
-   25TRUOY5oEtbz4unSogzfWNkU0Vk4r5WE2FRywnJsRJHm62qBhda9zNnC
-   eplQ7H0OH/xKIPqu7o1zaHYIut89V2SW4zxz8PvnIGJJYht01CBDC0XLU
-   NjupE2fEVsx3YUktG+0DqHPNBLonGWGAwYODuDTeVSe/1stuudunMrQ2V
-   wKDrueyOtyMM+7pahVgt59K7/8210uOBxyjNOYIVrZaytUMBUvyEjAmLG
-   yS8mviqKkPuHuJqChI3DJZhyqu45pPgl1ei7VlDdDPHrX2FlmpIKcW+/9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="372737323"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="372737323"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 18:07:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="709270064"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="709270064"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 26 Oct 2023 18:07:53 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwBKI-000AIV-2f;
-        Fri, 27 Oct 2023 01:07:50 +0000
-Date:   Fri, 27 Oct 2023 09:06:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- a0b0bad10587ae2948a7c36ca4ffc206007fbcf3
-Message-ID: <202310270947.1ZOOEnCi-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Thu, 26 Oct 2023 21:14:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04371BC;
+        Thu, 26 Oct 2023 18:14:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F40FAC433CA;
+        Fri, 27 Oct 2023 01:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698369261;
+        bh=jyK9XMtPWsaT4FQrOBuiO6PcqdC1YHVnaagZqHZXO2k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q+3GG61vCp+3gEbDSZ/PtoSW04hHLXz8BGqdVw9WBlxIINoxt+hTD5QuD8i2cLKTg
+         NaUFonXvSB601rNQVlL2U0b62EszxG51y1KTXdKxxRrVKc/euenF3yHgJap6b2npGz
+         fp4UlobLjNYJkmBkMIw/9e6F2g42tC4oyBe6Py1tYeIysz9wWmQELEJfNDiGGLLuzS
+         tgK9wmApfmxnrW27zjfJGOcgsBjwiEGeq/gw/mNsJV5k5kp1tgYRiaYPSnw/9PJZyf
+         7W/5QEiwFjIO4Fu4RAryYHcuv1R9b4+JaoeA1xcOOQNz22WLgIxWYTc9sLJl+/YYYo
+         74KIfhMvSQypA==
+Received: by mercury (Postfix, from userid 1000)
+        id 3F8E6106057B; Fri, 27 Oct 2023 03:14:18 +0200 (CEST)
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] GC0308 Camera Sensor
+Date:   Fri, 27 Oct 2023 03:12:00 +0200
+Message-ID: <20231027011417.2174658-1-sre@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: a0b0bad10587ae2948a7c36ca4ffc206007fbcf3  genirq/matrix: Exclude managed interrupts in irq_matrix_allocated()
+Hi,
 
-elapsed time: 2018m
+I did the following tests done by me on an i.MX6ULL based system [0]:
 
-configs tested: 193
-configs skipped: 2
+ * v4l2-compliance -u /dev/v4l-subdev1
+   - v4l2-compliance 1.24.1, 32 bits, 32-bit time_t
+     (from Debian testing)
+   - Total for device /dev/v4l-subdev1: 44, Succeeded: 44
+ * Using gstreamer + v4l2-ctl
+   - Tried 640x480, 320x240, 160x120 YUYV8_2X8 formats
+   - Tested effect of all exposed user controls
+ * checkpatch does not report any driver issues
+ * dt_binding_check does not report anything
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Note, that there is another patchset adding GC2145, which
+adds the same vendor prefix. I just included it for completeness,
+since it's needed to avoid checkpatch and dt_binding_check
+warnings.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231026   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            mps2_defconfig   gcc  
-arm                   randconfig-001-20231026   gcc  
-arm                         s3c6400_defconfig   gcc  
-arm                        spear6xx_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231026   gcc  
-i386         buildonly-randconfig-002-20231026   gcc  
-i386         buildonly-randconfig-003-20231026   gcc  
-i386         buildonly-randconfig-004-20231026   gcc  
-i386         buildonly-randconfig-005-20231026   gcc  
-i386         buildonly-randconfig-006-20231026   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231026   gcc  
-i386                  randconfig-002-20231026   gcc  
-i386                  randconfig-003-20231026   gcc  
-i386                  randconfig-004-20231026   gcc  
-i386                  randconfig-005-20231026   gcc  
-i386                  randconfig-006-20231026   gcc  
-i386                  randconfig-011-20231026   gcc  
-i386                  randconfig-011-20231027   gcc  
-i386                  randconfig-012-20231026   gcc  
-i386                  randconfig-012-20231027   gcc  
-i386                  randconfig-013-20231026   gcc  
-i386                  randconfig-013-20231027   gcc  
-i386                  randconfig-014-20231026   gcc  
-i386                  randconfig-014-20231027   gcc  
-i386                  randconfig-015-20231026   gcc  
-i386                  randconfig-015-20231027   gcc  
-i386                  randconfig-016-20231026   gcc  
-i386                  randconfig-016-20231027   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231026   gcc  
-loongarch             randconfig-001-20231027   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         apollo_defconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
-m68k                        mvme147_defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                     loongson1b_defconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-mips                        maltaup_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      ppc44x_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231026   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231026   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7724_defconfig   gcc  
-sh                           se7750_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231026   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           alldefconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231025   gcc  
-x86_64       buildonly-randconfig-001-20231026   gcc  
-x86_64       buildonly-randconfig-001-20231027   gcc  
-x86_64       buildonly-randconfig-002-20231025   gcc  
-x86_64       buildonly-randconfig-002-20231026   gcc  
-x86_64       buildonly-randconfig-002-20231027   gcc  
-x86_64       buildonly-randconfig-003-20231025   gcc  
-x86_64       buildonly-randconfig-003-20231026   gcc  
-x86_64       buildonly-randconfig-003-20231027   gcc  
-x86_64       buildonly-randconfig-004-20231025   gcc  
-x86_64       buildonly-randconfig-004-20231026   gcc  
-x86_64       buildonly-randconfig-004-20231027   gcc  
-x86_64       buildonly-randconfig-005-20231025   gcc  
-x86_64       buildonly-randconfig-005-20231026   gcc  
-x86_64       buildonly-randconfig-005-20231027   gcc  
-x86_64       buildonly-randconfig-006-20231025   gcc  
-x86_64       buildonly-randconfig-006-20231026   gcc  
-x86_64       buildonly-randconfig-006-20231027   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231026   gcc  
-x86_64                randconfig-001-20231027   gcc  
-x86_64                randconfig-002-20231026   gcc  
-x86_64                randconfig-002-20231027   gcc  
-x86_64                randconfig-003-20231026   gcc  
-x86_64                randconfig-003-20231027   gcc  
-x86_64                randconfig-004-20231026   gcc  
-x86_64                randconfig-004-20231027   gcc  
-x86_64                randconfig-005-20231026   gcc  
-x86_64                randconfig-005-20231027   gcc  
-x86_64                randconfig-006-20231026   gcc  
-x86_64                randconfig-006-20231027   gcc  
-x86_64                randconfig-011-20231026   gcc  
-x86_64                randconfig-012-20231026   gcc  
-x86_64                randconfig-013-20231026   gcc  
-x86_64                randconfig-014-20231026   gcc  
-x86_64                randconfig-015-20231026   gcc  
-x86_64                randconfig-016-20231026   gcc  
-x86_64                randconfig-071-20231026   gcc  
-x86_64                randconfig-072-20231026   gcc  
-x86_64                randconfig-073-20231026   gcc  
-x86_64                randconfig-074-20231026   gcc  
-x86_64                randconfig-075-20231026   gcc  
-x86_64                randconfig-076-20231026   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                              defconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa                          iss_defconfig   gcc  
+[0] https://embedded-recipes.org/2023/schedule/running-foss-thermal-camera/
+
+Changes since PATCHv2:
+ * https://lore.kernel.org/all/20231024010355.1877523-1-sre@kernel.org/
+ * Simplify Kconfig dependencies
+ * Do not store code/resolution; which is available from subdev state
+ * Store register values for mode settings to avoid second lookup in
+   s_stream
+ * Reduce power_on sleep times
+ * remove debug dev_err() print, that I accidently added in v2
+ * add missing format check in gc0308_enum_frame_size()
+ * do not PM resume in gc0308_s_ctrl()
+ * enable and use runtime PM autosuspend
+ * add .init_cfg() PAD op
+ * use CCI helper instead of raw regmap
+ * cluster both flip controls
+   (that's not just a performance optimization, but fixes an issue,
+   that register update is slow, so fast sequential setting of VFLIP/HFLIP
+   override each other without this)
+ * simplify gc0308_set_power_line_freq
+ * free control handler on probe error
+ * use first format by default
+ * expose V4L2_CID_HBLANK, V4L2_CID_VBLANK, V4L2_CID_PIXEL_RATE
+ * remove incorrect support for framerate and instead add a comment
+
+Changes since PATCHv1:
+ * https://lore.kernel.org/all/20231023002547.1754190-1-sre@kernel.org/
+ * Update binding: i2c0 -> i2c
+ * Update binding: make GC0309 use GC0308 as fallback compatible
+ * Add regulator handling in power_on/power_off
+ * Fix alignment of regmap_multi_reg_write arguments
+ * Fix useless extra return
+ * Do not check for pad in gc0308_enum_frame_size()
+ * Drop get_mbus_config implementation
+ * Use V4L2_CID_AUTO_EXPOSURE_BIAS instead of V4L2_CID_EXPOSURE
+ * Drop gc0308_get_format in favour of v4l2_subdev_get_fmt
+ * Replace open-coded v4l2_find_nearest_size() logic
+ * check clock rate instead of setting it
+ * use fwnode_graph_get_endpoint_by_id()
+ * power off device when probe errors out after power on
+ * replace mutex with sub-device state
+ * add Galaxycore to generic camera sensors section in MAINTAINERS
+ * add GC0308 entry in MAINTAINERS
+
+Greetings,
+
+-- Sebastian
+
+Sebastian Reichel (4):
+  dt-bindings: vendor-prefixes: add GalaxyCore
+  media: dt-bindings: gc0308: add binding
+  media: MAINTAINERS: Add GalaxyCore in camera sensor section
+  media: i2c: gc0308: new driver
+
+ .../bindings/media/i2c/galaxycore,gc0308.yaml |  108 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    8 +
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc0308.c                    | 1437 +++++++++++++++++
+ 6 files changed, 1566 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml
+ create mode 100644 drivers/media/i2c/gc0308.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
