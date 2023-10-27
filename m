@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0745B7D8C89
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 02:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28B97D8C8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 02:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjJ0AZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 20:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S230101AbjJ0AdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 20:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJ0AZv (ORCPT
+        with ESMTP id S229437AbjJ0AdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 20:25:51 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6308129;
-        Thu, 26 Oct 2023 17:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=jIyiqB62ftZdGgQlboBjKJDIEuAQba9l17H9K2s+tSw=; b=IffGrwP5oG4aEAFxxaf2PqzcQZ
-        ORjncm0hfUgItjHBd8VcirWOJpA2PvES3CqmknoYTaP/DYJke8dcpVx28cgfsAwqKQWDLMtZzCdee
-        2nCT6DyH2m4LWzZXYAhZLUYXehzsR1HI7TBLO8F6DD27oJPkQxCzvGn4/yG2cMQWjL/A=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qwAeU-000ILa-L7; Fri, 27 Oct 2023 02:24:38 +0200
-Date:   Fri, 27 Oct 2023 02:24:38 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH next v2 0/3] ethtool: Add ethtool_puts()
-Message-ID: <eda2f651-93f7-46c5-be7e-e8295903cc1e@lunn.ch>
-References: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+        Thu, 26 Oct 2023 20:33:08 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4AA1B5;
+        Thu, 26 Oct 2023 17:33:05 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39R0NVSQ025993;
+        Fri, 27 Oct 2023 00:33:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0s13OFv2F6fjlgVjY49htr9zsLYqUerU5cHUE6R3sKw=;
+ b=RmdH0JRrFD2LipC3Nsbl8k5KdkFhiw7up3o73DWr3XQilFA6UhiA0tl6HWuYKuWiv1nZ
+ oCu7Pt4PIwO6XaA7Bkkh4mYnZTMyOi3F+gjZmox1/lmaHjcWs1km//YD5sgabXSTGR2H
+ 9KE3XAHSaXaWuKtZbc/GhBp9Wemml+vD/5hX2Vs3o5tJUh4mlBzYl1ITQbuPGPjDtFwx
+ CvxPqNOeYpu4ZKS6nusqSdjV88qhc1bhi6W7Xh+zEXd+oCjyTIzT8Xr7eEx2p0p69V0J
+ MXEM2AhgrESYGjukzXZIJIRaXsdL/NjbQZBjsIcgjGmoS1fbQ4YeiVESetME/syBey1x lg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyx3u8mb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 00:33:00 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39R0WxZq025199
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 00:32:59 GMT
+Received: from [10.48.246.67] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 26 Oct
+ 2023 17:32:59 -0700
+Message-ID: <37dec5a3-01b7-49e5-95ee-091d19e7e807@quicinc.com>
+Date:   Thu, 26 Oct 2023 17:32:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026-ethtool_puts_impl-v2-0-0d67cbdd0538@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] airo: replace deprecated strncpy with strscpy_pad
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>,
+        Kalle Valo <kvalo@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <20231026-strncpy-drivers-net-wireless-cisco-airo-c-v2-1-413427249e47@google.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231026-strncpy-drivers-net-wireless-cisco-airo-c-v2-1-413427249e47@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qblieAJ7RQUPr4Vcgtl7-_zYRWfRfiXF
+X-Proofpoint-GUID: qblieAJ7RQUPr4Vcgtl7-_zYRWfRfiXF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-26_22,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ mlxlogscore=950 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310270003
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,14 +79,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Changes in v2:
-> - wrap lines better in replacement (thanks Joe, Kees)
-> - add --fix to checkpatch (thanks Joe)
-> - clean up checkpatch formatting (thanks Joe, et al.)
-> - rebase against next
+On 10/26/2023 4:19 PM, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> `extra` is clearly supposed to be NUL-terminated which is evident by the
+> manual NUL-byte assignment as well as its immediate usage with strlen().
+> 
+> Moreover, let's NUL-pad since there is deliberate effort (48 instances)
+> made elsewhere to zero-out buffers in these getters and setters:
+> 6050 | memset(local->config.nodeName, 0, sizeof(local->config.nodeName));
+> 6130 | memset(local->config.rates, 0, 8);
+> 6139 | memset(local->config.rates, 0, 8);
+> 6414 | memset(key.key, 0, MAX_KEY_SIZE);
+> 6497 | memset(extra, 0, 16);
+> (to be clear, strncpy also NUL-padded -- we are matching that behavior)
+> 
+> Considering the above, a suitable replacement is `strscpy_pad` due to
+> the fact that it guarantees both NUL-termination and NUL-padding on the
+> destination buffer.
+> 
+> We can also replace the hard-coded size of "16" to IW_ESSID_MAX_SIZE
+> because this function is a wext handler.
+> 
+> In wext-core.c we have:
+> static const struct iw_ioctl_description standard_ioctl[] = {
+> ...
+>          [IW_IOCTL_IDX(SIOCGIWNICKN)] = {
+>                  .header_type    = IW_HEADER_TYPE_POINT,
+>                  .token_size     = 1,
+>                  .max_tokens     = IW_ESSID_MAX_SIZE,
+>          },
+> 
+> So the buffer size is (strangely) IW_ESSID_MAX_SIZE
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Please could you explain the rebase against next? As Vladimir pointed
-out, all the patches are to drivers/net, so anything in flight should
-be in net-next, merged by the netdev Maintainers.
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-    Andrew
