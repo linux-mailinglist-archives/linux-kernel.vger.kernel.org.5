@@ -2,276 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0057D9613
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975AF7D9614
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345754AbjJ0LMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        id S1345745AbjJ0LND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjJ0LMb (ORCPT
+        with ESMTP id S1345549AbjJ0LNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:12:31 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D4D1AC;
-        Fri, 27 Oct 2023 04:12:27 -0700 (PDT)
-Received: from ideasonboard.com (unknown [IPv6:2001:b07:5d2e:52c9:bc36:5a6f:d67a:959d])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E52C669;
-        Fri, 27 Oct 2023 13:12:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698405132;
-        bh=qK/u2PyICgAhXMtgGn2WzUIKTFV4F20sf/ClvuieuFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NnAu6ExTuvrmWBa7A3fAR8jp6vVNnDoErr1t93pNRVhvzIfUIPun831Y7xzW7jNDY
-         1GKHuO0PlpAIo8biWafxWzOZw6H812DCdGz271HDs55wBFt/dzCkcmH/IJpTRPFNxf
-         ImJS2IPNp1MATmBtT69OzL3Slzvq13U26q09DI9A=
-Date:   Fri, 27 Oct 2023 13:12:22 +0200
-From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        =?utf-8?B?QW5kcsOp?= Apitzsch <git@apitzsch.eu>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 4/4] media: i2c: imx214: Add sensor's pixel matrix size
-Message-ID: <san47wekkcw24q34dx2sagph3kkxqaqayxzsd5v6iodp34yc5v@rpkxeirikc4e>
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
- <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
- <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
- <f5475c4f90e52817349e4842984bb3657b1e500d.camel@apitzsch.eu>
- <3opzxxkqa4p6wxddx7bdf2dixphfuo4xunaaiqibvtppmyz6gr@vjxbtjjqiqvy>
- <CAPY8ntC4TNkxuG9S8Lo-fmMcCSF39tCT_W2oO1KHHj5Fg6B0VQ@mail.gmail.com>
+        Fri, 27 Oct 2023 07:13:01 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17537129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:12:59 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507b96095abso2814750e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698405177; x=1699009977; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gzS3xtRaYXApZ+3kIqeVQrGG8Ns+4rxD5VoBS9jMb0o=;
+        b=Nuu8NJfZy0Bq73AysLIZJWEXZEEGWjdEcTajUU5wFcjtnCFX6OXoniPa5eb2jAl2ou
+         AAt0yFHN7IWDOiLUVJa3jr5GnFy9REO9Paf9hSJVZODdGSpe7K8GZej+G50mgOnt4nCJ
+         NI3FQ94MqV6KyO6HicHdY8yE3wkKIPtKovxCEHeCr07XB+sUWB+sN3SPXfcaFup5ngb8
+         eSyxUqDxf5sB2kUjR+1e+ezoP1UYO5STj5NlbalSQ1h5f65zGDNztCoAQfLcN1vhuj7/
+         R65ltxabIiSfnMMOfunJ+APEZYdYYk3RFTr0wFcqX7vu2XdiTgn+k0Y9mubNe3QNe2no
+         zMCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698405177; x=1699009977;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gzS3xtRaYXApZ+3kIqeVQrGG8Ns+4rxD5VoBS9jMb0o=;
+        b=c0eThHOReoDF/kM7X/bIktcFT7rr30g1Ge+xOxoEO7QISirdNZ9C9ApW3x3I3gAd1p
+         bpWVXBkBB8Cpwft2xJjKyASiG4rJYNpC6v/5yEFdlwuYZmleVDBOEcYyqlma1ijckTtq
+         4/GG9Idu3lbsrX4eJs1U2M+ZEx+iSWCRI8HVmxGN9Cn0LhtXs9zbSPcI0/Rhrg9WYspV
+         qhO09Hala1p9zQSnBZDcZqxeWG1hHRXXFqAKz9HSDg/NL1AI6BYTWagUv2/8nQuvc+ZH
+         khpzixse+O8cilOHS0+/FHhflcX4s6FGY+eoHg//qmWMYAGZJrjSJw9vY4WO6ROtSsK7
+         4OLg==
+X-Gm-Message-State: AOJu0YzTMH3XAdCieP9QHHKibNjno+TU91ynXkAvR6hzsuimZGK5tV0L
+        OLUUgJGeoeLvAjYlwmKJezr51w==
+X-Google-Smtp-Source: AGHT+IEH3lgoUuBsJBBZA/euKnydpc/GAWK4n64r/DYsrpsTtloPfH9jTmBUZHg9xvVfd8zFxgw6Wg==
+X-Received: by 2002:ac2:54a7:0:b0:507:9628:1082 with SMTP id w7-20020ac254a7000000b0050796281082mr1638858lfk.58.1698405177147;
+        Fri, 27 Oct 2023 04:12:57 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id dw9-20020a0565122c8900b00502fd9110ffsm238611lfb.294.2023.10.27.04.12.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 04:12:56 -0700 (PDT)
+Message-ID: <3168e245-797a-4f30-bb48-8b88993691a6@linaro.org>
+Date:   Fri, 27 Oct 2023 13:12:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPY8ntC4TNkxuG9S8Lo-fmMcCSF39tCT_W2oO1KHHj5Fg6B0VQ@mail.gmail.com>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] arm64: dts: cn913x: add device trees for COM
+ Express boards
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>, Elad Nachman <enachman@marvell.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        cyuval@marvell.com
+References: <20231026084735.3595944-1-enachman@marvell.com>
+ <20231026084735.3595944-2-enachman@marvell.com>
+ <2f7ab700-cd87-42f2-870d-950a4c75b17d@lunn.ch>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <2f7ab700-cd87-42f2-870d-950a4c75b17d@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave
+On 26/10/2023 19:32, Andrew Lunn wrote:
+>> +#include "cn9131-db-comexpress.dtsi"
+>> +
+>> +/ {
+>> +	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board";
+>> +	compatible = "marvell,ac5x_rd_carrier", "marvell,cn9131", "marvell,cn9130",
 
-On Fri, Oct 27, 2023 at 11:29:11AM +0100, Dave Stevenson wrote:
-> Hi Jacopo
->
-> On Fri, 27 Oct 2023 at 09:57, Jacopo Mondi
-> <jacopo.mondi@ideasonboard.com> wrote:
-> >
-> > Hi Andre'
-> >
-> > On Wed, Oct 25, 2023 at 11:26:00PM +0200, André Apitzsch wrote:
-> > > Hi Jacopo,
-> > >
-> > > Am Dienstag, dem 24.10.2023 um 09:52 +0200 schrieb Jacopo Mondi:
-> > > > Hi Andre'
-> > > >
-> > > > On Mon, Oct 23, 2023 at 11:47:53PM +0200, André Apitzsch wrote:
-> > > > > Set effictive and active sensor pixel sizes as shown in product
-> > > >
-> > > > s/effictive/effective
-> > > >
-> > > > > brief[1].
-> > > > >
-> > > > > [1]:
-> > > > > https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428-1289331.pdf
-> > > > >
-> > > > > Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> > > > > ---
-> > > > >  drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++--
-> > > > > -----
-> > > > >  1 file changed, 32 insertions(+), 7 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/media/i2c/imx214.c
-> > > > > b/drivers/media/i2c/imx214.c
-> > > > > index bef8dc36e2d0..a2d441cd8dcd 100644
-> > > > > --- a/drivers/media/i2c/imx214.c
-> > > > > +++ b/drivers/media/i2c/imx214.c
-> > > > > @@ -36,6 +36,14 @@
-> > > > >  #define IMX214_EXPOSURE_STEP             1
-> > > > >  #define IMX214_EXPOSURE_DEFAULT          0x0c70
-> > > > >
-> > > > > +/* IMX214 native and active pixel array size */
-> > > > > +#define IMX214_NATIVE_WIDTH              4224U
-> > > > > +#define IMX214_NATIVE_HEIGHT             3136U
-> > > > > +#define IMX214_PIXEL_ARRAY_LEFT          8U
-> > > > > +#define IMX214_PIXEL_ARRAY_TOP           8U
-> > > > > +#define IMX214_PIXEL_ARRAY_WIDTH 4208U
-> > > > > +#define IMX214_PIXEL_ARRAY_HEIGHT        3120U
-> > > > > +
-> > > >
-> > > > I do get slightly different numbers from the datasheet version I have
-> > > >
-> > > > The sensor is said to have 4224x3208 total pixels of which 4208x3120
-> > > > are active ones.
-> > > >
-> > > > The pixel array diagram shows 64 "OPB" (optically black ?) lines,
-> > > > followed by 8 dummy lines, followed by 3120 valid lines. There are 8
-> > > > dummy columns at each side of the 4208 valid ones.
-> > > >
-> > > > Now, NATIVE which represents the full pixel array size seems to be
-> > > > 4224x3208 (other parts of the datasheet only report 3200 lines
-> > > > though)
-> > > >
-> > > > BOUNDS represents the readabale array area, which I presume
-> > > > corresponds to what is named as 'effective area' by the datasheet. It
-> > > > excludes the OPB lines at the top of the image and seems to be
-> > > > represented by (0, 64, 4224, 3160).
-> > > >
-> > > > CROP_DEFAULT represents the default crop rectangle which covers the
-> > > > active pixel area, so it excludes 8 more lines of dummy pixels and 8
-> > > > dummy columns, which gives a rectangle (8, 72, 4208, 3120)
-> > > >
-> > > > Also note that the driver always reports a TGT_CROP rectangle with
-> > > > top/left points set to 0. If my understanding is correct, V4L2
-> > > > selection targets are defined from the most external target
-> > > > (TGT_NATIVE in this case), and the driver should be corrected to
-> > > > initialize the crop rectangle with a top-left corner at (8, 72).
-> > > >
-> > > > Does this make sense ?
-> > >
-> > > As far as I understood, only the effective and active sizes of three
-> > > sizes provided in the datasheet (total, effective and active) matter.
-> > > By comparing the values used in imx219.c (and imx415.c) with the ones
-> > > in the corresponding datasheets [1,2] I assume, that "effective"
-> > > matches "NATIVE_SIZE", "active" matches "CROP_DEFAULT" and "total" is
-> > > ignored.
-> >
-> > imx219 driver indeed does not consider the OPB areas in the definition
-> > of the rectangles...
-> >
+Except wrong naming for compatible, I really do not understand what you
+want to add here. If AC5X is the carrier, what is the model name of
+entire product? If AC5X is not the carrier, where it the carrier?
 
-I know it sounds ridiculous as I've been the one adding selection
-support to imx219, but I presume we discussed it somewhen in the past:
-do you happen to remember why we left the OPB area out from the native
-sizes ? (Does OPB stand for "Optically black" ? )
+>> +		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
+> 
+> This is really a question to the DT Maintainers. This is a carrier
+> board for a standardised Com express type 7 board. In theory, you
+> should be able to plug any Com Express module into it, not just
+> Marvells. So should the compatible list just have a compatible for the
+> carrier itself? Not the module which would normally be mounted in it?
 
+Yes, because there are some common parts of the carrier board.
 
-> > Also looking at the X/Y_ADDR_START value assigned in the register tables
-> > for full resolution mode (3280x2462) they have value of 0, indeed
-> > meaning the active area is the only readable one.
-> >
-> > Then yes, you're right, for imx219
-> > NATIVE = effective
-> > CROP_DEFAULT = BOUND = active
-> >
+> 
+> Should the carrier have a .dtsi file describing it? And then we have a
+> .dts file which combines the module .dtsi and the carrier .dtsi?
 
-I presume you can confirm this, right ?
+Depends, how this is organized depends on possible re-usage etc. Usually
+answer is: yes, carrier board should have DTSI.
 
-> > > The commit message of 1ed36ecd1459b653cced8929bfb37dba94b64c5d ("media:
-> > > i2c: imx219: Selection compliance fixes") seems to support me here:
-> >
-> > >
-> > > > The top/left crop coordinates of the TGT_CROP rectangle were set to
-> > > > (0, 0) instead of (8, 8) which is the offset from the larger physical
-> > > > pixel array rectangle.
-> > >
-> > > This (8, 8) is half the difference between number of effective and
-> > > active pixels of imx219[1].
-> > >
-> > > Together with the 8 dummy lines and 8 dummy columns you mentioned, I
-> > > still think my values are right. But I've just started working with
-> > > V4L2, so I might be wrong.
-> >
-> > To actually verify if the 'effective area' is readable or not, we
-> > should know what register controls the X/Y_ADDR_START value, and
-> > that's an information I don't have in my version of the datasheet.
->
-> I happen to have an IMX214 datasheet.
-> X_ADDR_START is 0x0344/5 (set in multiples of 2)
-> Y_ADDR_START is 0x0346/7 (set in multiples of 4)
-> X_ADDR_END is 0x0348/9 (set in multiples of 2)
-> Y_ADDR_END is 0x034a/b (set in multiples of 4)
-> X_OUTPUT_SIZE 0x034c/d
-> Y_OUTPUT_SIZE 0x034e/f
->
-> X direction are 13bit values, Y direction are 12 bit.
-> [12:8] or [11:8] in the low bits of the first register, [7:0] in the
-> second register.
+> 
+> Sorry i did not ask this earlier, i was thinking more about SolidRuns
+> systems, which tend to have custom SOMs and customs carriers, so you
+> can only really mount one particular SOM into one particular
+> carrier. But that is not true here.
+Best regards,
+Krzysztof
 
-AH thanks! Unfortunately the largest imx214 mode is cropped from full
-pixel array it seems, so not that helpful :(
-
->
->   Dave
->
-> > It's however plausible that it behaves the same as imx219, as the
-> > driver's register sequences seems to program the crop sizes in
-> > register 0x034c and 0x034e and there's not programmed top-left corner
-> > there.
-> >
-> > Ok then, let's be consistent and do the same as imx219 as you're doing
-> > here.
-> >
-> > Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-> >
-> > >
-> > > Could you share the imx214 datasheet with me?
-> > >
-> > > Best regards,
-> > > André
-> > >
-> > > [1] https://www.arducam.com/downloads/modules/RaspberryPi_camera/IMX219DS.PDF
-> > > [2] https://www.sony-semicon.com/files/62/pdf/p-12_IMX415-AAQR_AAMR_Flyer.pdf
-> > > >
-> > > > Thanks
-> > > >   j
-> > > >
-> > > >
-> > > > >  static const char * const imx214_supply_name[] = {
-> > > > >   "vdda",
-> > > > >   "vddd",
-> > > > > @@ -634,14 +642,31 @@ static int imx214_get_selection(struct
-> > > > > v4l2_subdev *sd,
-> > > > >  {
-> > > > >   struct imx214 *imx214 = to_imx214(sd);
-> > > > >
-> > > > > - if (sel->target != V4L2_SEL_TGT_CROP)
-> > > > > -         return -EINVAL;
-> > > > > + switch (sel->target) {
-> > > > > + case V4L2_SEL_TGT_CROP:
-> > > > > +         mutex_lock(&imx214->mutex);
-> > > > > +         sel->r = *__imx214_get_pad_crop(imx214, sd_state,
-> > > > > sel->pad,
-> > > > > +                                         sel->which);
-> > > > > +         mutex_unlock(&imx214->mutex);
-> > > > > +         return 0;
-> > > > >
-> > > > > - mutex_lock(&imx214->mutex);
-> > > > > - sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel-
-> > > > > >pad,
-> > > > > -                                 sel->which);
-> > > > > - mutex_unlock(&imx214->mutex);
-> > > > > - return 0;
-> > > > > + case V4L2_SEL_TGT_NATIVE_SIZE:
-> > > > > +         sel->r.top = 0;
-> > > > > +         sel->r.left = 0;
-> > > > > +         sel->r.width = IMX214_NATIVE_WIDTH;
-> > > > > +         sel->r.height = IMX214_NATIVE_HEIGHT;
-> > > > > +         return 0;
-> > > > > +
-> > > > > + case V4L2_SEL_TGT_CROP_DEFAULT:
-> > > > > + case V4L2_SEL_TGT_CROP_BOUNDS:
-> > > > > +         sel->r.top = IMX214_PIXEL_ARRAY_TOP;
-> > > > > +         sel->r.left = IMX214_PIXEL_ARRAY_LEFT;
-> > > > > +         sel->r.width = IMX214_PIXEL_ARRAY_WIDTH;
-> > > > > +         sel->r.height = IMX214_PIXEL_ARRAY_HEIGHT;
-> > > > > +         return 0;
-> > > > > + }
-> > > > > +
-> > > > > + return -EINVAL;
-> > > > >  }
-> > > > >
-> > > > >  static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
-> > > > >
-> > > > > --
-> > > > > 2.42.0
-> > > > >
-> > >
