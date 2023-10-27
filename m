@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5847DA25E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606317DA25F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346489AbjJ0VWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        id S1346529AbjJ0VXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjJ0VWx (ORCPT
+        with ESMTP id S232518AbjJ0VXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:22:53 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742A41B4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:22:51 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6ce532451c7so1634828a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:22:51 -0700 (PDT)
+        Fri, 27 Oct 2023 17:23:20 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CB6129;
+        Fri, 27 Oct 2023 14:23:16 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2021946a12.3;
+        Fri, 27 Oct 2023 14:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698441771; x=1699046571; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xl4zXkHeuFWcpQhNv8s/3dbQRenrc7EurtmB89vaheY=;
-        b=NnRhdUqmFvEbncJOszNYxC+TzAmy8lf+FxlVYFom8vwas9FHwo82kaqjvWvAZ3mkOx
-         Sjh2J9i3I1o8Ks1KrcGbmlgkWt7tnUlAha3nyNCp3u3r3AOVryhhEvCYH1V6xIwiHYRo
-         /n358h0aKVIfKZbRC3TASX5gQ1oQIqSw9cTwg=
+        d=gmail.com; s=20230601; t=1698441796; x=1699046596; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4Q8nuDM9k/u/LkEVyOR5WiT5bOMm5Q+OB4cIkeRtaU=;
+        b=cmhlaWbN1TGM8ws9BFqH5zPVIf7v18ASDhEzHwt7V41QZxn+4AjnATuM/ebrDhwob6
+         R76iOK4rJSa82QRaPnrhH2duIPcc/1A0RcX7IKInGXWwYmvOkiMda73BPV76waQILJdL
+         +zqe2/IMTqvIGzQ+vjIzNvS7nIwU/NJlNuSasZ9vvLFVJ2aZ35tGake3DOi0WnAdZ9wE
+         cRNo/20r3aLJEJyoOM0tlcYnNiXwT+hvauEYXz/rAy5xucUMXPjlBOagAXGcWbf5N1MM
+         Wr/Cgl4mFGP8ruSfFOOXaLoatwqVtgPNeUsNdQdD5zMgg3LQRP11c4nzCfhTej6G3+qq
+         x19w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698441771; x=1699046571;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xl4zXkHeuFWcpQhNv8s/3dbQRenrc7EurtmB89vaheY=;
-        b=WzsXQ8K0NFsxwkbJuTyewUCeJ1EMkK20BqzWgBcXaju3HAUy2cihGQC5WDqDnI+RNP
-         DWd1O179RU/WPreMTjrwPCUXrX+UkJYHAJqMiJlOqvcDTerYCcmE5/BfHYef4PP3z25t
-         dT/E2wKk3bKjl1Y0XJ5GQhIvRbx84jgXyBVlQ3bzeeIJm17CUSWegwBOsfL04JPQd+Wt
-         qLKdkVbc4kznThTZMkoyWidCPGCWGw3Coai9MKsi5x5KgfYvzpS3sle8EFRVKHZ1CgzG
-         xtJX5sTtNAFxxe4x1A0FCMyNr7YUWh/a6BQTIx8Jb2cBIrOTTngr9692XacRtHfK6/U9
-         y1og==
-X-Gm-Message-State: AOJu0Yzci82b49EVVzcl9FEXtc20YybdalpaRhsnDEezHWQyE+fsg9P+
-        UKzK4uE+/TYZjf49c1uZx95bw+7ttfKMxFfwCHSJOprmD8u0fXYE+fk=
-X-Google-Smtp-Source: AGHT+IGtyxsQVIElVPhn4PwChycLoUO0IBnOpJTJJlENkGw49YyMfxoENC/+K3LcbH4aiI2vBYPF62ksN+R8KRRbXAw=
-X-Received: by 2002:a9d:7499:0:b0:6bc:8afe:8a15 with SMTP id
- t25-20020a9d7499000000b006bc8afe8a15mr4025416otk.38.1698441770745; Fri, 27
- Oct 2023 14:22:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698441796; x=1699046596;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4Q8nuDM9k/u/LkEVyOR5WiT5bOMm5Q+OB4cIkeRtaU=;
+        b=oGJltj/dtRtw5faMumG1coWGEfUViIj5K5WqDrvuSFdKH4dBp7E9sZugTgWyzy3o2k
+         rqUPDcJJQT4BcWuXL7Lkkdi8QUfAHOAmc1B74AsCOLhpVwYHlLhWZyDiRr1J+MRETnJi
+         6cY08Zjck/iiAt/imglO/ygcGRZOXJ4AL1ebknDrwrt2f3FJvbS4+Y8EJcR+KkxKqXL1
+         vjoigxZV5Zck16L4v7pqxdKoPxkbV+ogW+cyvl14mLyrmaZ0SrxgUwOtXIRyuuhnvKUR
+         QWRh7xsJ+6vtkpP0Kac1KMZ58rPVJy0Em0vD1gJSY023sD5YRcjbpLshGJNsfrStQN90
+         Kz7w==
+X-Gm-Message-State: AOJu0YxHzgNLTIiXSlvYQ1NOKwM2CNqQsq7+1FCdUpCRjdZ6WP/yhuUU
+        z0gBv2stbWDqh0q4VvlzMtU=
+X-Google-Smtp-Source: AGHT+IHOo+0S/yy4dCT4+non5a027LK29puQBNN6VplAOiPcx9hoopgfc8N7HSD0Q+p+5xmzhH/UxQ==
+X-Received: by 2002:a17:90b:103:b0:27d:9b67:7fa6 with SMTP id p3-20020a17090b010300b0027d9b677fa6mr3543660pjz.3.1698441796212;
+        Fri, 27 Oct 2023 14:23:16 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id p1-20020a17090a0e4100b0027768cd88d7sm5171675pja.1.2023.10.27.14.23.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 14:23:15 -0700 (PDT)
+Message-ID: <95f324af-88de-4692-966f-588287305e09@gmail.com>
+Date:   Fri, 27 Oct 2023 14:23:13 -0700
 MIME-Version: 1.0
-References: <20231026191343.3345279-1-hsinyi@chromium.org> <7b737537-38f2-4404-b469-c67005cdaf83@linaro.org>
-In-Reply-To: <7b737537-38f2-4404-b469-c67005cdaf83@linaro.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Fri, 27 Oct 2023 14:22:25 -0700
-Message-ID: <CAJMQK-jQUHz8-hEx4DzNU3cOnN59JG1xFBPH5mUndLV-rbk+Jg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] Add a few mt8183 follower boards.
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 4:17=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 26/10/2023 21:09, Hsin-Yi Wang wrote:
-> > Add makomo, pico, and katsu which are mt8183 followers.
-> >
-> > v4: based on https://lore.kernel.org/all/20231025093816.44327-1-angelog=
-ioacchino.delregno@collabora.com/
-> >
->
-> Where is the changelog? It's already v4 and still no changelog...
->
+You would want your subject to be:
 
-v3:https://patchwork.kernel.org/project/linux-mediatek/cover/20231025215517=
-.1388735-1-hsinyi@chromium.org/
-v2:https://patchwork.kernel.org/project/linux-mediatek/cover/20231024212618=
-.1079676-1-hsinyi@chromium.org/
-v1:https://patchwork.kernel.org/project/linux-mediatek/cover/20231024000724=
-.57714-1-hsinyi@chromium.org/
+net: dsa: tag_rtl4_a: Bump min packet size
 
-changelog with previous version are in each of the patchset. eg:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20231025215517.13=
-88735-5-hsinyi@chromium.org/
+On 10/27/23 13:21, Linus Walleij wrote:
+> It was reported that the "LuCI" web UI was not working properly
+> with a device using the RTL8366RB switch. Disabling the egress
+> port tagging code made the switch work again, but this is not
+> a good solution as we want to be able to direct traffic to a
+> certain port.
+> 
+> It turns out that sometimes, but not always, small packets are
+> dropped by the switch for no reason.
 
-> Best regards,
-> Krzysztof
->
+And we are positive that the Ethernet MAC is also properly padding 
+frames before having them ingress the switch?
+
+> 
+> If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
+> (1518 bytes) everything starts working fine.
+
+That is quite unprecedented, either the switch is very bogus or there is 
+something else we do not fully understand...
+-- 
+Florian
+
