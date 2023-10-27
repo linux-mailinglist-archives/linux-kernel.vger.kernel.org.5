@@ -2,149 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5D67D9D60
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D208D7D9D62
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbjJ0Ptg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
+        id S1346188AbjJ0Ptq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbjJ0Pte (ORCPT
+        with ESMTP id S1346174AbjJ0Pto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:49:34 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299BD192
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:49:31 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so2135744b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:49:31 -0700 (PDT)
+        Fri, 27 Oct 2023 11:49:44 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F99CE
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:49:39 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc2f17ab26so1041425ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698421770; x=1699026570; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IHk29Z1bkPqek7gCeEpQVU54722xNK+qdY6dXvgVPY8=;
-        b=ATrAPvCKwjonLFj9lKdIZimwFmb/SqMTIRYvQbpVDoFLonCY9KcVaQtgjLVByQuja+
-         bB1VuSHXg/oDB1txQKVm9Rykz6n/kY4YMs8c9p2RnIkJcPpEda1IVNCoAtUKHZuURHwt
-         SM3vpwr16qmbnv+z8SIkzmxBtV5hsZNyabth0=
+        d=gmail.com; s=20230601; t=1698421779; x=1699026579; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cTGZ3m1qe87c+NuEwbcQd6GcZq/RTlx8NPY386XZ8A4=;
+        b=i4xLrZVVZtOJFcD8m06YQWcTY5+aLIxQvjsrQApqEr5Lrji5c0tic5egNl10g+9PK4
+         nKbsUELnSFbIOeb/xURs8ZozeIIM9+ZKrD65A03NsiTKDPSxDOZBo/VQfzdwWBZGXF5A
+         Q1znqinCaCaZcwXxzq4N36wcYJU5Qca8BBDpfyvTlu2qRNvG0OF7U+XrJL0k7fugUiIC
+         4iUDJLhetqOatQk4Bg0X0xWmxUj2pQSI8VrkXi2pVf6EncXCVf3Th8Uut+Wa9pDGF08L
+         3yM4klzgiW/kfYicD5kNpt6ND/0mMGWyn+04ttokaNIQbZnY3lLi8AbTWfzHmqakfb4f
+         0L2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698421770; x=1699026570;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IHk29Z1bkPqek7gCeEpQVU54722xNK+qdY6dXvgVPY8=;
-        b=nmmEf8mNqjfHP/CATtI+Lnq3jhJSTJKzwG+ENdwAORKgU3VMW+4lNAL3hkBW/oniqY
-         a/+Xqo4/Vhi5tKXoEBUNLQ8dTPGTLNFzDX6Ma0qnQQ/9RKHLtXm5g4LYJI+lSVfi2Wjh
-         G9rY61jYdBczJT3L+QNEy0/W158gG++rl0fHSkUo1PwspagQs6CIFB/qU4z5BQNIWyL9
-         0LImgQ97yEbXUOnUpup+OyNhVB3w3zaCYJS9YUqrV+Trep7pW6lkmur0WNSCxbrmeWBn
-         1UIAEjTKNn6Hw37NdDbSJD7NCJRPOhzigfJTG0eQ0r40XeL/z4jQpuRUKt3R+M2khTNt
-         v4Ng==
-X-Gm-Message-State: AOJu0YwuVat6eHZmv1KTeuWzNd8K02v3OomD8a9xixi/Jv8F4o6d8eDx
-        b6e7Vm7++OR3U6h6SwS82Ts6kA==
-X-Google-Smtp-Source: AGHT+IG8CGn3LR7gwK8EOywQp5gX/Xh8ODsLfMiXAYGBvX9k7hXCAhY6wBTnbVquWb7hZb55GSET8g==
-X-Received: by 2002:a05:6a00:814:b0:6b2:2a2d:7a26 with SMTP id m20-20020a056a00081400b006b22a2d7a26mr3566629pfk.28.1698421770505;
-        Fri, 27 Oct 2023 08:49:30 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g5-20020a056a00078500b006930db1e6cfsm1556618pfu.62.2023.10.27.08.49.28
+        d=1e100.net; s=20230601; t=1698421779; x=1699026579;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cTGZ3m1qe87c+NuEwbcQd6GcZq/RTlx8NPY386XZ8A4=;
+        b=EX5JVNKJMsFslKw0mStaIbENzPNVR39qEBzr8AKS4dvysmLFATnrHCe7SsP4JsH0wq
+         I9uuNjR3zQSNcKOGlur4Wrh3m0FCp6SaW2Wv5mj84aOGxl/HuQ50KZ324F9cd1/IlSRM
+         VShwtW1/2SGa+tbMXZteCrgGAsUzjyhbJSMs+IRb1d+BxqEFsqVsHheBzPNo71pkSum8
+         Dydh8q6ddKBnZarHf9n7np6W/flgi0eWOD6XeMoloaAuGlJHKy1IqmTZI80aovvXR0gP
+         pLwuwyI5mB6XJ79T5Gx6tMGPB+Pd95Fq57j39mEe38aTWbVzAzhAEd8YIu+Z01xgl9vk
+         EmTw==
+X-Gm-Message-State: AOJu0YzVBig2/iCoBK+54KBJaOaVPLixIvNx12Xg83Uf45IvASP8hX0D
+        1f6DsnviigJN8MJ7ylJs2f+qoP1BVQg=
+X-Google-Smtp-Source: AGHT+IEi2mKIu8CCQHQRZ4LhWQcFaEGyhRuU7oh3I4TTx3LqUhmfNK9pivak29Z0ZfsUW2WYTdREXA==
+X-Received: by 2002:a17:902:f990:b0:1cc:1ee2:d41d with SMTP id ky16-20020a170902f99000b001cc1ee2d41dmr2091834plb.39.1698421778702;
+        Fri, 27 Oct 2023 08:49:38 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:d9fe:c408:7e52:ad85])
+        by smtp.gmail.com with ESMTPSA id ij27-20020a170902ab5b00b001ca4c20003dsm1761412plb.69.2023.10.27.08.49.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 08:49:28 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 08:49:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Justin Stitt <justinstitt@google.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-trace-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] seq_buf: Introduce DECLARE_SEQ_BUF and seq_buf_str()
-Message-ID: <202310270847.87B9B46EE@keescook>
-References: <20231026194033.it.702-kees@kernel.org>
- <ZTrJ/5Jrzz5D62hh@smile.fi.intel.com>
+        Fri, 27 Oct 2023 08:49:38 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs-tools: do not put CP_UMOUNT_FLAG for roll forward recovery
+Date:   Fri, 27 Oct 2023 08:49:35 -0700
+Message-ID: <20231027154935.1384979-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTrJ/5Jrzz5D62hh@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 11:20:15PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 26, 2023 at 12:40:37PM -0700, Kees Cook wrote:
-> > Solve two ergonomic issues with struct seq_buf;
-> > 
-> > 1) Too much boilerplate is required to initialize:
-> > 
-> > 	struct seq_buf s;
-> > 	char buf[32];
-> > 
-> > 	seq_buf_init(s, buf, sizeof(buf));
-> > 
-> > Instead, we can build this directly on the stack. Provide
-> > DECLARE_SEQ_BUF() macro to do this:
-> > 
-> > 	DECLARE_SEQ_BUF(s, 32);
-> > 
-> > 2) %NUL termination is fragile and requires 2 steps to get a valid
-> >    C String (and is a layering violation exposing the "internals" of
-> >    seq_buf):
-> > 
-> > 	seq_buf_terminate(s);
-> > 	do_something(s->buffer);
-> > 
-> > Instead, we can just return s->buffer direction after terminating it
-> > in refactored seq_buf_terminate(), now known as seq_buf_str():
-> > 
-> > 	do_soemthing(seq_buf_str(s));
-> 
-> ...
-> 
-> > +#define DECLARE_SEQ_BUF(NAME, SIZE)					\
-> > +	char __ ## NAME ## _buffer[SIZE] = "";				\
-> > +	struct seq_buf NAME = { .buffer = &__ ## NAME ## _buffer,	\
-> > +				.size = SIZE }
-> 
-> Hmm... Wouldn't be more readable to have it as
-> 
-> #define DECLARE_SEQ_BUF(NAME, SIZE)			\
-> 	char __ ## NAME ## _buffer[SIZE] = "";		\
-> 	struct seq_buf NAME = {				\
-> 		.buffer = &__ ## NAME ## _buffer,	\
-> 		.size = SIZE,				\
-> 	}
-> 
-> ?
+From: Daeho Jeong <daehojeong@google.com>
 
-Yes, I don't know why I did it the smooshed way. Fixed for v3.
+If we write CP_UMOUNT_FLAG in fsck, f2fs will not do foll forward recovery
+even though it has to do.
 
-> > +static inline char *seq_buf_str(struct seq_buf *s)
-> >  {
-> >  	if (WARN_ON(s->size == 0))
-> > -		return;
-> > +		return "";
-> 
-> I'm wondering why it's a problem to have an empty string?
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ fsck/fsck.c       | 3 ++-
+ fsck/mount.c      | 5 ++++-
+ include/f2fs_fs.h | 1 +
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-Well, it's a pathological case where "size" is 0 -- it shouldn't happen
-(hence the warn), but it's more robust to return an empty .data string
-pointer than a NULL s->buffer or an s->buffer that isn't intended to be
-used (i.e. the size == 0).
-
+diff --git a/fsck/fsck.c b/fsck/fsck.c
+index f1a55db..126458c 100644
+--- a/fsck/fsck.c
++++ b/fsck/fsck.c
+@@ -2526,7 +2526,8 @@ static void fix_checkpoint(struct f2fs_sb_info *sbi)
+ 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
+ 	struct f2fs_checkpoint *cp = F2FS_CKPT(sbi);
+ 	unsigned long long cp_blk_no;
+-	u32 flags = c.alloc_failed ? CP_FSCK_FLAG: CP_UMOUNT_FLAG;
++	u32 flags = c.alloc_failed ? CP_FSCK_FLAG :
++			(c.roll_forward ? 0 : CP_UMOUNT_FLAG);
+ 	block_t orphan_blks = 0;
+ 	block_t cp_blocks;
+ 	u32 i;
+diff --git a/fsck/mount.c b/fsck/mount.c
+index 3b02d73..805671c 100644
+--- a/fsck/mount.c
++++ b/fsck/mount.c
+@@ -3218,7 +3218,7 @@ void write_checkpoint(struct f2fs_sb_info *sbi)
+ 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
+ 	block_t orphan_blks = 0;
+ 	unsigned long long cp_blk_no;
+-	u32 flags = CP_UMOUNT_FLAG;
++	u32 flags = c.roll_forward ? 0 : CP_UMOUNT_FLAG;
+ 	int i, ret;
+ 	uint32_t crc = 0;
+ 
+@@ -3837,6 +3837,9 @@ static int record_fsync_data(struct f2fs_sb_info *sbi)
+ 	if (ret)
+ 		goto out;
+ 
++	if (c.func == FSCK && inode_list.next != &inode_list)
++		c.roll_forward = 1;
++
+ 	ret = late_build_segment_manager(sbi);
+ 	if (ret < 0) {
+ 		ERR_MSG("late_build_segment_manager failed\n");
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index abd5abf..faa5d6b 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -1513,6 +1513,7 @@ struct f2fs_configuration {
+ 	unsigned int feature;			/* defined features */
+ 	unsigned int quota_bits;	/* quota bits */
+ 	time_t fixed_time;
++	int roll_forward;
+ 
+ 	/* mkfs parameters */
+ 	int fake_seed;
 -- 
-Kees Cook
+2.42.0.820.g83a721a137-goog
+
