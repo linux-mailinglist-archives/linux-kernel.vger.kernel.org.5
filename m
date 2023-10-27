@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84507D8F90
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475287D8F8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345363AbjJ0HUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
+        id S1345333AbjJ0HUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjJ0HUF (ORCPT
+        with ESMTP id S231233AbjJ0HUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:20:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7291B3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=knFFWaxiSZ20rjITXNXLCDkayOSwhys26Z492Thl3YA=; b=Rdt2ooQ3LndpAFYw0vgpBfYpeH
-        vr/ZMSBLCnJ8he0mHI03vJ4WAp22Epk/eKWPlAKzKa2/1VtFzDowgxBd3pQZbtvhXmuo7em4sf4KK
-        OQ+pQiWH0htQsz4/D43QU998IxwbtItYQmLxGewlgjIYTrGh1h/bq39HDy3lmnrEu4wLqPzwMW7uF
-        IbX7oy1U0QE3rfKmrcRn8NWIkVEnQTJ6wWtS041I3G1m853AzREy7Ew20bYXKpReXGcnpFTtQ2z+G
-        vyR2mx0zrpOikvTdrrGT3pHlZycdHOoDMnVST7mj3Mlp0cxoOtlU1iU+ONFccKY5f44XXWDrAaaik
-        l8SzZ2GQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qwH8M-00Fm2m-0e;
-        Fri, 27 Oct 2023 07:19:54 +0000
-Message-ID: <e969ed08-3492-4bac-8f4f-a7e3a59da6f0@infradead.org>
-Date:   Fri, 27 Oct 2023 00:19:53 -0700
+        Fri, 27 Oct 2023 03:20:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E90194
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:19:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7146FC433C7;
+        Fri, 27 Oct 2023 07:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698391197;
+        bh=eAzGncuNN+h/nEmL0ZN/dcXM9fGW6dn1TaiHf0175Cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nOPH7MxC1fgBZD4Sr2OY9INWba7SOjh03byjzEY0Hg3jA6SPPpqqHDuT4zAnESK0o
+         STR/y3RVFPBeVW+1Gu7xEUbXIGNhlWS/0jsqyKjR2j2QvR9z999NEiYDcuEdQFSlcv
+         gURLO0OKq7yCHZDh3THAX4hJIsBmzZD3aqYa+BI0=
+Date:   Fri, 27 Oct 2023 09:19:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jayant Chowdhary <jchowdhary@google.com>
+Cc:     mgr@pengutronix.de, Thinh.Nguyen@synopsys.com, arakesh@google.com,
+        etalvala@google.com, dan.scally@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH v2] usb:gadget:uvc Do not use worker thread to pump usb
+ requests
+Message-ID: <2023102739-reproach-salute-0d22@gregkh>
+References: <ZToOJhyOFeGCGUFj@pengutronix.de>
+ <20231026215635.2478767-1-jchowdhary@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: fix multiple typos in multiple files
-Content-Language: en-US
-To:     zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
-        willy@infradead.org, James.Bottomley@hansenpartnership.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231027064345.2434-1-zhaimingbing@cmss.chinamobile.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231027064345.2434-1-zhaimingbing@cmss.chinamobile.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026215635.2478767-1-jchowdhary@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On Thu, Oct 26, 2023 at 09:56:35PM +0000, Jayant Chowdhary wrote:
+> This patch is based on top of
+> https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google.com/T/#t:
 
-On 10/26/23 23:43, zhaimingbing wrote:
-> 	nommu.c: Fix typo 'privatize'
-> 	io-mapping.c: Fix typo 'pre-validation'
+That doesn't work in the changelog of a patch at all, it goes below the
+--- line p lease.
+
 > 
-> Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
+> When we use an async work queue to perform the function of pumping
+> usb requests to the usb controller, it is possible that thread scheduling
+> affects at what cadence we're able to pump requests. This could mean usb
+> requests miss their uframes - resulting in video stream flickers on the host
+> device.
+> 
+> In this patch, we move the pumping of usb requests to
+> 1) uvcg_video_complete() complete handler for both isoc + bulk
+>    endpoints. We still send 0 length requests when there is no uvc buffer
+>    available to encode.
+> 2) uvc_v4l2_qbuf - only for bulk endpoints since it is not legal to send
+>    0 length requests.
+> 
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Signed-off-by: Jayant Chowdhary <jchowdhary@google.com>
+> Suggested-by: Jayant Chowdhary <jchowdhary@google.com>
+> Suggested-by: Avichal Rakesh <arakesh@google.com>
+> Tested-by: Jayant Chowdhary <jchowdhary@google.com>
 > ---
->  mm/io-mapping.c | 2 +-
->  mm/nommu.c      | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/io-mapping.c b/mm/io-mapping.c
-> index 01b362799..486598ba4 100644
-> --- a/mm/io-mapping.c
-> +++ b/mm/io-mapping.c
-> @@ -21,7 +21,7 @@ int io_mapping_map_user(struct io_mapping *iomap, struct vm_area_struct *vma,
->  	if (WARN_ON_ONCE((vma->vm_flags & expected_flags) != expected_flags))
->  		return -EINVAL;
->  
-> -	/* We rely on prevalidation of the io-mapping to skip track_pfn(). */
-> +	/* We rely on pre-validation of the io-mapping to skip track_pfn(). */
+>  v1->v2: Fix code style and add self Signed-off-by
 
-Not needed. The hyphen seems to be optional from what I see on the internet.
+Great, but as signed-off-by kind of implies you tested it, no need for
+the tested-by now, right?  Not a big deal, and normally I'd ignore it
+but I know you at least have to do one more version of this based on the
+above problem...
 
->  	return remap_pfn_range_notrack(vma, addr, pfn, size,
->  		__pgprot((pgprot_val(iomap->prot) & _PAGE_CACHE_MASK) |
->  			 (pgprot_val(vma->vm_page_prot) & ~_PAGE_CACHE_MASK)));
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 7f9e9e5a0..40842b080 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -776,7 +776,7 @@ static int validate_mmap_request(struct file *file,
->  			if (!(capabilities & NOMMU_MAP_DIRECT))
->  				return -ENODEV;
->  
-> -			/* we mustn't privatise shared mappings */
-> +			/* we mustn't privatize shared mappings */
+thanks,
 
-We accept British spellings. :)
-
->  			capabilities &= ~NOMMU_MAP_COPY;
->  		} else {
->  			/* we're going to read the file into private memory we
-
-Thanks.
--- 
-~Randy
+greg k-h
