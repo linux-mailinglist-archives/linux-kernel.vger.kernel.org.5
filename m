@@ -2,125 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B96F7D8FC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB357D8FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345433AbjJ0H0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        id S1345418AbjJ0H1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345394AbjJ0H0U (ORCPT
+        with ESMTP id S231296AbjJ0H1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:26:20 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B65198
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:26:17 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a62d4788so2724798e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:26:17 -0700 (PDT)
+        Fri, 27 Oct 2023 03:27:04 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A673192
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:27:02 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2800dfa0dd6so253968a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 00:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698391576; x=1698996376; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b3l5eiPgjqB3yPgjpBs4NrKU8xun61Csjfy/N/87VvY=;
-        b=Kl5Ib74hBoQbIL/RGpaYJbfno48eZzSg/fyMWwPZlzJE429kWbTN9vWzoxoTxamhfH
-         Q/696F/Qkp7GrOWIPLvz0vuqtCA0EHxXvsbT7FLNCN4uLacXElS4pTp765YAur9iuCvA
-         ogmBdkAOdztkYzgjix+WiSUiA0uquPGJfAI4955KVIlDcfwSGRmKV1qb4w1LVGVJA4ie
-         1ASxYAODv7G4Ne8OfBz9AGdi3X8HrRPJAHVm75QODR7fL++uumJ0EYQq0UnvVsHl5XUE
-         pe8sWDauUUyz4JQrd+oGRoNNurBjwuk6SO88nPNkzdE2zCXW/LJZ/hiEyi042CU7fIB7
-         KyEA==
+        d=linaro.org; s=google; t=1698391621; x=1698996421; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=58u3hL7CWznGApXZAFRx1yH6mLt0u2d4Caaa5jYtwE8=;
+        b=g7LQDJ9Meg+uYLPej/GoVI3B5LrpohPOPFB4M0ltll9MZIYM+O5G6OqJvjHHph8ZCN
+         wQ+WVlvQgmgN7ocg0x9r7DJ0fIcH6Mjx4ah/Jm8IfPLqSXd7fCbDiLQAJCui1VNcnG/Y
+         XMhHKdh9x5BnDs5Ky1XSBe7cXxVHr+99dH5WdpVkGglPQtIPlGBh1ry/hwVJPt9YNfJh
+         g/fMh6WcVdj5cYLTo/OhmmCfKzgyMbuS4ffjULHIfpQYofptZA7svOakwYOl36kChf7r
+         tAMRGDvipTascDkSqq2qSC2OtdLwIxpT3qW99567xLbm+zb5X5JaZAOpPvWzW/XkCqFQ
+         buIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698391576; x=1698996376;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b3l5eiPgjqB3yPgjpBs4NrKU8xun61Csjfy/N/87VvY=;
-        b=MwpedFcNDvtEtgvRxYi7W480qI+KPUnYV2Q+YnMeGpY/0EcAyoQqElPiFsH+TrFhb3
-         HEDzhLXWacCMnq+QGWmG1PKf1jwRpux6VJ6RYXjCnztxgPg7QgIyRe7Lrr8Eas4Es5W2
-         3+HIx8coqiuNMmS9Vg0XiWp1rxrlUHawNVRC1Io/PmpbYvUw/Pd50DOTqome7Flnl7hK
-         QJWPcB6H4ijC+Xa4kLqaiKqfYjbUKQYbjUWdXKSjcfszI7sWPismDq3DA6R44cgJwBDW
-         tx6ubXQh2/vVNgQcn+vjEBhBihQAxOpk4NKW7wrqiGtK+FbT526FnEaU+fH87yoF54m6
-         wyJw==
-X-Gm-Message-State: AOJu0YzoxSwfg3MbrZV7PEk8qOBwJt+NnVLBhsWcr2vHSyjnGM+qT3XJ
-        MCglnYEVbHflm01Ex5T/+JrrJg==
-X-Google-Smtp-Source: AGHT+IFMzxnf4rd5M9vQsSI4tCRtG7+f/honwpysf1uGKvUDWFMbso896OZUP0fbZcUDmtL0ELW/dA==
-X-Received: by 2002:a05:6512:e92:b0:504:7bb0:9d7e with SMTP id bi18-20020a0565120e9200b005047bb09d7emr1398577lfb.27.1698391576091;
-        Fri, 27 Oct 2023 00:26:16 -0700 (PDT)
-Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id k4-20020ac24f04000000b00507b0b9145fsm164790lfr.177.2023.10.27.00.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 00:26:15 -0700 (PDT)
-Message-ID: <f4bbe0e4-9905-4f24-9363-bc4e35a3d0f5@linaro.org>
-Date:   Fri, 27 Oct 2023 09:26:14 +0200
+        d=1e100.net; s=20230601; t=1698391621; x=1698996421;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=58u3hL7CWznGApXZAFRx1yH6mLt0u2d4Caaa5jYtwE8=;
+        b=dszdH2wxFSPOw9w2lhMjtJLjEUIam7RKprXcvStqIQ0weU9U+LAfD7HI4txIA/0E81
+         e6k6++ydLpSZb69Ub7/XauUeFlzgBHZ5wtgHWWv2uZj5EXKIlsMCCPYLI6uMFd4Agkd2
+         nCfnZHJvSByLacA1hnS9OecpDXjAS5b6MvJrynYsG2Zo4prRgNjJ9Bu9X3VlfT+Ql2sW
+         aPeM/yjXBhl/v/G+RFHboYH18hTm21CNTUHHzkonNssK1mOF3juk99vsqb9Vw3T/7Nn5
+         vvaG1RSg+eOL2DZ2xcOAhOhw/njklsQvge+kwx8Hvb4C0y11/v0PYqhvF5azVRVjEZcG
+         Dldw==
+X-Gm-Message-State: AOJu0YyyRjySZPFqUN0/p8SMnX6U5RnABdM4rfVy0PKnc+2kFRETByh7
+        pMaprrdZqnStEJ4TCAAgoAaygVS5UGqUJCow8snnWw==
+X-Google-Smtp-Source: AGHT+IHyCv2Ya3XYbS1wbdukSecdQ9PPjuAGO07974SCybUpb3kFZxqttmAIypgdmGXrwZelU4icWdFKtWH7vyoMg4Q=
+X-Received: by 2002:a17:90b:1a8d:b0:27d:3968:8366 with SMTP id
+ ng13-20020a17090b1a8d00b0027d39688366mr1838181pjb.8.1698391621475; Fri, 27
+ Oct 2023 00:27:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: thermal: qcom-tsens: document the SM8650
- Temperature Sensor
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231025-topic-sm8650-upstream-bindings-tsens-v2-1-5add2ac04943@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025-topic-sm8650-upstream-bindings-tsens-v2-1-5add2ac04943@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231013074540.8980-1-masahisa.kojima@linaro.org> <ZS_C7ej5jDNICLkA@hera>
+In-Reply-To: <ZS_C7ej5jDNICLkA@hera>
+From:   Masahisa Kojima <masahisa.kojima@linaro.org>
+Date:   Fri, 27 Oct 2023 16:26:50 +0900
+Message-ID: <CADQ0-X8fEUw2pkeWRKGsYs8cNfDnyM=ibj9emZ5Q0zL9btdz=A@mail.gmail.com>
+Subject: Re: [PATCH v9 0/6] introduce tee-based EFI Runtime Variable Service
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -131,15 +74,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 10:24, Neil Armstrong wrote:
-> Document the Temperature Sensor (TSENS) on the SM8650 Platform.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-> For convenience, a regularly refreshed linux-next based git tree containing
+Hi Ilias,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Wed, 18 Oct 2023 at 20:35, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Kojima-san,
+>
+> I found some time to do some extended testing here's what I found
+>
+> Switching the permissions from RO->RW when the supplicant is started works
+> correctly
+> # mount | grep efiv
+> efivarfs on /sys/firmware/efi/efivars type efivarfs (ro,nosuid,nodev,noexec,relatime)
+> # tee-supplicant -d
+> [   77.374878] efivars: Unregistered efivars operations
+> [   77.381604] Use tee-based EFI runtime variable services
+> [   77.386862] efivars: Registered efivars operations
+> # mount | grep efiv
+> efivarfs on /sys/firmware/efi/efivars type efivarfs (rw,nosuid,nodev,noexec,relatime)
+> I didn't test unbinding yet, but I assume it's going to work fine and
+> remove the efivar ops.
+>
+> Reading an writing non-authenticated EFI variables seems to work fine.
+> I verified this with U-Boot and the BootOrder changed correctly.
+> # efibootmgr -o 0001,0002,0000
+> BootCurrent: 0002
+> BootOrder: 0001,0002,0000
+> Boot0000* nvme 0:1
+> Boot0001* nvme 0:2
+> Boot0002* debian
+> # efibootmgr -o 0002,0000,0001
+> BootCurrent: 0002
+> BootOrder: 0002,0000,0001
+> Boot0000* nvme 0:1
+> Boot0001* nvme 0:2
+> Boot0002* debian
+>
+> Writing authenticated EFI variables works the first time.
+> I also dumped those variables from both Linux and U-Boot and they matched
+> # efi-updatevar -f PK.auth PK
+> # efi-updatevar -f KEK.auth KEK
+> # efi-updatevar -f db.auth db
+>
+> But removing the PK at runtime fails.
+> # efi-updatevar -f noPK.auth PK
+> # Failed to update PK: Operation not permitted
+> My guess is that the EDK2 code prohibits that, but we need to check why
+> this is happening.  I also got similar failures trying to update KEK and db.
 
-Best regards,
-Krzysztof
+"# efi-updatevar -f noPK.auth PK" does not reach the kernel efivarfs code.
+With strace, error occurs when efi-updatevar tries to open
+/sys/firmware/efi/efivars/KEK-*** file.
+I guess O_TRUNC option in open() is not required?
 
+openat(AT_FDCWD,
+"/sys/firmware/efi/efivars/KEK-8be4df61-93ca-11d2-aa0d-00e098032b8c",
+O_RDWR|O_CREAT|O_TRUNC, 0644) = -1 EPERM (Operation not permitted)
+write(2, "Failed to update KEK: ", 22Failed to update KEK: )  = 22
+write(2, "Operation not permitted\n", 24Operation not permitted
+) = 24
+exit_group(1)                           = ?
++++ exited with 1 +++
+
+We can use "efivar" instead to remove the keys. It also works for KEK and db.
+# efi-updatevar -f PK.auth PK
+# efi-updatevar -f noPK.auth PK     <--- it does not work
+# efivar -w -n 8be4df61-93ca-11d2-aa0d-00e098032b8c-PK -f noPK.auth
+<--- it works
+
+>
+> But the most worrying thing is this. From Linux program KEK and db
+> # efi-updatevar -f KEK.auth KEK
+> # efi-updatevar -f db.auth db
+>
+> Reboot the machine and U-Boot complains when it tries to populate the
+> runtime vars with:
+> Loading Linux 6.6.0-rc2-00654-g82a013b37495 ...
+> Loading initial ramdisk ...
+> EFI stub: Booting Linux Kernel...
+> EFI stub: Using DTB from configuration table
+> EFI stub: Exiting boot services...
+> Can't populate EFI variables. No runtime variables will be available <-- This
+
+I could not reproduce this issue.
+I tried the following command then reboot the board. Linux boots fine.
+ # efi-updatevar -f KEK.auth KEK
+ # efi-updatevar -f db.auth db
+
+I also enroll the PK, then UEFI secure boot works.
+Signed grub and signed kernel boot in UEFI secure boot enabled.
+
+Are there any additional steps to reproduce?
+
+Thanks,
+Masahisa Kojima
+
+>
+> If you rewrite those vars from the U-Boot shell everything seems to come
+> back to normal
+> => tftp  $loadaddr 192.168.49.5:noKEK.auth && setenv -e -nv -bs -rt -at -i $loadaddr:$filesize KEK
+> => tftp  $loadaddr 192.168.49.5:nodb.auth && setenv -e -nv -bs -rt -at -i $loadaddr:$filesize db
+> => tftp  $loadaddr 192.168.49.5:KEK.auth && setenv -e -nv -bs -rt -at -i $loadaddr:$filesize KEK
+> => tftp  $loadaddr 192.168.49.5:db.auth && setenv -e -nv -bs -rt -at -i $loadaddr:$filesize db
+>
+> Loading Linux 6.6.0-rc2-00654-g82a013b37495 ...
+> Loading initial ramdisk ...
+> EFI stub: Booting Linux Kernel...
+> EFI stub: Using DTB from configuration table
+> EFI stub: Exiting boot services...
+>
+> Let me know if you need any more information
+>
+> Regards
+> /Ilias
+> On Fri, Oct 13, 2023 at 04:45:33PM +0900, Masahisa Kojima wrote:
+> > This series introduces the tee based EFI Runtime Variable Service.
+> >
+> > The eMMC device is typically owned by the non-secure world(linux in
+> > this case). There is an existing solution utilizing eMMC RPMB partition
+> > for EFI Variables, it is implemented by interacting with
+> > OP-TEE, StandaloneMM(as EFI Variable Service Pseudo TA), eMMC driver
+> > and tee-supplicant. The last piece is the tee-based variable access
+> > driver to interact with OP-TEE and StandaloneMM.
+> >
+> > Changelog:
+> > v8 -> v9
+> > - patch #6 "tee: optee: restore efivars ops when tee-supplicant stops"
+> >   is newly added
+> > - remove !EFI_VARS_PSTORE Kconfig dependency, we have added a non-blocking
+> >   set_variable and it just returns EFI_UNSUPPORTED.
+> > - remove obvious comments
+> >
+> > v7 -> v8
+> > Only patch #3 "efi: Add tee-based EFI variable driver" is updated.
+> > - fix typos
+> > - refactor error handling, direct return if applicable
+> > - use devm_add_action_or_reset() for closing of tee context/session
+> > - remove obvious comment
+> >
+> > v6 -> v7
+> > Patch #1-#4 are not updated.
+> > Patch #5 is added into this series, original patch is here:
+> > https://lore.kernel.org/all/20230609094532.562934-1-ilias.apalodimas@linaro.org/
+> >
+> > There are two issues in the v6 series and v7 series addresses those.
+> >
+> > 1) efivar ops is not restored when the tee-supplicant daemon terminates.
+> >  -> As the following patch says, user must remove the device before
+> >     terminating tee-supplicant daemon.
+> >     https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
+> >
+> > 2) cause panic when someone remounts the efivarfs as RW even if
+> > SetVariable is not supported
+> >  -> The fifth patch addresses this issue.
+> >    "[PATCH v7 5/5] efivarfs: force RO when remounting if SetVariable is
+> >     not supported"
+> >
+> > v5 -> v6
+> > - new patch #4 is added in this series, #1-#3 patches are unchanged.
+> >   automatically update super block flag when the efivarops support
+> >   SetVariable runtime service, so that user does not need to manually
+> >   remount the efivarfs as RW.
+> >
+> > v4 -> v5
+> > - rebase to efi-next based on v6.4-rc1
+> > - set generic_ops.query_variable_info, it works as expected as follows.
+> > $ df -h /sys/firmware/efi/efivars/
+> > Filesystem      Size  Used Avail Use% Mounted on
+> > efivarfs         16K  1.3K   15K   8% /sys/firmware/efi/efivars
+> >
+> > v3 -> v4:
+> > - replace the reference from EDK2 to PI Specification
+> > - remove EDK2 source code reference comments
+> > - prepare nonblocking variant of set_variable, it just returns
+> >   EFI_UNSUPPORTED
+> > - remove redundant buffer size check
+> > - argument name change in mm_communicate
+> > - function interface changes in setup_mm_hdr to remove (void **) cast
+> >
+> > v2 -> v3:
+> > - add CONFIG_EFI dependency to TEE_STMM_EFI
+> > - add missing return code check for tee_client_invoke_func()
+> > - directly call efivars_register/unregister from tee_stmm_efi.c
+> >
+> > rfc v1 -> v2:
+> > - split patch into three patches, one for drivers/tee,
+> >   one for include/linux/efi.h, and one for the driver/firmware/efi/stmm
+> > - context/session management into probe() and remove() same as other tee
+> > client driver
+> > - StMM variable driver is moved from driver/tee/optee to driver/firmware/efi
+> > - use "tee" prefix instead of "optee" in driver/firmware/efi/stmm/tee_stmm_efi.c,
+> >   this file does not contain op-tee specific code, abstracted by tee layer and
+> >   StMM variable driver will work on other tee implementation.
+> > - PTA_STMM_CMD_COMMUNICATE -> PTA_STMM_CMD_COMMUNICATE
+> > - implement query_variable_store() but currently not used
+> > - no use of TEEC_SUCCESS, it is defined in driver/tee/optee/optee_private.h.
+> >   Other tee client drivers use 0 instead of using TEEC_SUCCESS
+> > - remove TEEC_ERROR_EXCESS_DATA status, it is referred just to output
+> > error message
+> >
+> > Ilias Apalodimas (1):
+> >   efivarfs: force RO when remounting if SetVariable is not supported
+> >
+> > Masahisa Kojima (5):
+> >   efi: expose efivar generic ops register function
+> >   efi: Add EFI_ACCESS_DENIED status code
+> >   efi: Add tee-based EFI variable driver
+> >   efivarfs: automatically update super block flag
+> >   tee: optee: restore efivars ops when tee-supplicant stops
+> >
+> >  drivers/firmware/efi/Kconfig                 |  15 +
+> >  drivers/firmware/efi/Makefile                |   1 +
+> >  drivers/firmware/efi/efi.c                   |  18 +
+> >  drivers/firmware/efi/stmm/mm_communication.h | 236 +++++++
+> >  drivers/firmware/efi/stmm/tee_stmm_efi.c     | 617 +++++++++++++++++++
+> >  drivers/firmware/efi/vars.c                  |   8 +
+> >  drivers/tee/optee/supp.c                     |   4 +
+> >  fs/efivarfs/super.c                          |  45 ++
+> >  include/linux/efi.h                          |  13 +
+> >  9 files changed, 957 insertions(+)
+> >  create mode 100644 drivers/firmware/efi/stmm/mm_communication.h
+> >  create mode 100644 drivers/firmware/efi/stmm/tee_stmm_efi.c
+> >
+> >
+> > base-commit: b691118f2c44d16b84fc65b8147b33620eb18cac
+> > --
+> > 2.30.2
+> >
