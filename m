@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8613B7DA278
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B427DA27A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346567AbjJ0VaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        id S1346566AbjJ0VbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbjJ0VaA (ORCPT
+        with ESMTP id S232330AbjJ0VbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:30:00 -0400
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAD0B0;
-        Fri, 27 Oct 2023 14:29:58 -0700 (PDT)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1e9c9d181d6so1574394fac.0;
-        Fri, 27 Oct 2023 14:29:58 -0700 (PDT)
+        Fri, 27 Oct 2023 17:31:04 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD83129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:31:02 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id af79cd13be357-7789577b582so327192585a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 14:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698442261; x=1699047061; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MI6bVykQDbdW2vz2XrrMq2PILwHbTFu4swv4LXOgVcU=;
+        b=LPn2ZPffMCHMox3HmP/ORTuk/8Sxy5SmqjaZJ69oCfFDoN8BHzU7XUUKYHNeMQSImb
+         Usg0TiCIDUv4fjlRepJ8yvfi+8zBUtbOSmFPnqBrMOOXVKIJApLwkxumREkQodbbLzbN
+         ZkUqrOazlgfvCPvIiG3ReOdgFcWzKh7E/G8yJtiYd3q9K9FbdM68TnjlM8n4WT5mJLGN
+         r0rs57Cw2ffstCeKWqBnfay54SGU14URJXJv//bpcOwBrY2PrJ2NHxBtpEmcJqUW3v5H
+         CPPw0h7PwajUtZ/eJRClN9zBg1J/7EQPgwrToT+H30rdSuKa/T3PR6gGuEPE1i43ZFe2
+         o8lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698442198; x=1699046998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kNGJKvEldoT9PmYXR0BTbSqlmq0sSRwAAORJfa42T8Q=;
-        b=LVNKf/LKBZ+l4UiE1atmI9AZ8nPUl1jRjDfiIk/t+L3nzSNDGt2MSEiDwKU5LnWbxJ
-         MoF0DcXXlbUs1oHUEyG+gLnU1w3nemRbqXk8v4iNpOg7I4u2l81ELtryXAPaur5+WFIA
-         pHHTW5+/JXhmPIwD60Y3f1ccUKitLtcbx8D4XK44beIbljdFLyuvpRbVxTskmmgBRwH/
-         PSZuAc3VGPrMbg0uKKboQIsD+vdhPInmd0ukMzgJrI+MK0exJt6AVYPeGHCv0bEacxak
-         RQSOtBPSoifGf6EG98aQhOKE8uCvIDYPLAHjWPfmxzzZD1P6IXSmOSrHUiNnhxTrYB5Q
-         kINQ==
-X-Gm-Message-State: AOJu0Yy5bT2JEt90IJm+e+9hIsU4HEybQNZx+f3TEqywzwHIjJe91QDY
-        +mqQyhn+yzHzbvxcvzoNvA==
-X-Google-Smtp-Source: AGHT+IGuKz3y2T4ah9nZVE2uj6UueeplwSlnm5Su8lnIY0Azaoq7IaEILJphqDhnUBYiQtTwQFuTGA==
-X-Received: by 2002:a05:6870:1712:b0:1e9:8a35:863a with SMTP id h18-20020a056870171200b001e98a35863amr5036395oae.20.1698442198089;
-        Fri, 27 Oct 2023 14:29:58 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id n40-20020a056870822800b001dd5857e243sm460947oae.14.2023.10.27.14.29.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 14:29:56 -0700 (PDT)
-Received: (nullmailer pid 3404725 invoked by uid 1000);
-        Fri, 27 Oct 2023 21:29:55 -0000
-Date:   Fri, 27 Oct 2023 16:29:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: vendor-prefixes: add GalaxyCore
-Message-ID: <169844219487.3404665.10937682775716979340.robh@kernel.org>
-References: <20231027011417.2174658-1-sre@kernel.org>
- <20231027011417.2174658-2-sre@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027011417.2174658-2-sre@kernel.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698442261; x=1699047061;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MI6bVykQDbdW2vz2XrrMq2PILwHbTFu4swv4LXOgVcU=;
+        b=hocke+BtIbj+lOjzaTp2siU+uNPd0Ukxr0x27FJRdS0mcT/PjdbHhOKxA+lf13/M+U
+         itihYPFnqcFGKiuaKnkcmSnJTNk+vbIbXbTizeeEdCjry+xT2WHUoo7l8qVWeuAfcrjk
+         jeURpwDtR4IPQLIbstaPkOs15oQKyGVtsijAsl3TlwJNKZv7EuUn/hFUXpLzmujfVjwe
+         pxbToZtcYOnCvKy0Txpm86PJOc6skejMRPEApblqAz1YC0VGXXXxPrN+xrAMLx6xG3ca
+         PgjtDF80sA3aMq92bxOd1Yie+DFn8UjMdI/5wqipz2JIjqZKugJqfNDCyeVobA22yGrw
+         1BJg==
+X-Gm-Message-State: AOJu0YwymzxWGLqdPwTSXuNDqV5DvX0d24s+3VY6FWoWlB7cYmsHvJiO
+        byo+TBj+UpA1oPHbxfbB0CxKr/Y=
+X-Google-Smtp-Source: AGHT+IH+BodIS3bugVCcaCTLSCmmzfoQjCJIIIJk2spYzrwsSlmhh+RC/6RAolXSm+aXzaR1ikiI634=
+X-Received: from ptf16.nyc.corp.google.com ([2620:0:1003:314:7908:dc2a:2e54:fd31])
+ (user=ptf job=sendgmr) by 2002:ae9:e207:0:b0:777:f69:557 with SMTP id
+ c7-20020ae9e207000000b007770f690557mr64327qkc.15.1698442261542; Fri, 27 Oct
+ 2023 14:31:01 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 17:30:55 -0400
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027213059.3550747-1-ptf@google.com>
+Subject: [PATCH v2] net: r8169: Disable multicast filter for RTL_GIGA_MAC_VER_46
+From:   Patrick Thompson <ptf@google.com>
+To:     netdev@vger.kernel.org
+Cc:     Patrick Thompson <ptf@google.com>, Chun-Hao Lin <hau@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        nic_swsd@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+MAC_VER_46 ethernet adapters fail to detect eapol packets unless
+allmulti is enabled. Add exception for VER_46 in the same way VER_35
+has an exception.
 
-On Fri, 27 Oct 2023 03:12:01 +0200, Sebastian Reichel wrote:
-> GalaxyCore Shanghai Limited Corporation manufacturers
-> CMOS Image Sensor and Display Driver IC.
-> 
-> Signed-off-by: Sebastian Reichel <sre@kernel.org>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
+Signed-off-by: Patrick Thompson <ptf@google.com>
+---
 
-Acked-by: Rob Herring <robh@kernel.org>
+Changes in v2:
+- add Fixes tag
+- add net annotation
+- update description
+
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 361b90007148b..a775090650e3a 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -2584,7 +2584,8 @@ static void rtl_set_rx_mode(struct net_device *dev)
+ 		rx_mode |= AcceptAllPhys;
+ 	} else if (netdev_mc_count(dev) > MC_FILTER_LIMIT ||
+ 		   dev->flags & IFF_ALLMULTI ||
+-		   tp->mac_version == RTL_GIGA_MAC_VER_35) {
++		   tp->mac_version == RTL_GIGA_MAC_VER_35 ||
++		   tp->mac_version == RTL_GIGA_MAC_VER_46) {
+ 		/* accept all multicasts */
+ 	} else if (netdev_mc_empty(dev)) {
+ 		rx_mode &= ~AcceptMulticast;
+-- 
+2.42.0.820.g83a721a137-goog
 
