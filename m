@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D756D7DA130
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA847DA135
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 21:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjJ0TQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 15:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
+        id S232394AbjJ0TSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 15:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjJ0TQt (ORCPT
+        with ESMTP id S231302AbjJ0TSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 15:16:49 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A31E186
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:16:47 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3DEA940E01A4;
-        Fri, 27 Oct 2023 19:16:45 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nvavM3pzjMvK; Fri, 27 Oct 2023 19:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1698434203; bh=UnIge0ffhkOTRMdWX6K4/KwMZhRuw1YbXABtEkjEz7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GIbJbgjKPWbSwwkBOpUacSdHK+O6d9Qp45vCknNYxjCkYrDmTWAoJv8npmzBvozol
-         8yMlWxSRYYGxYOFIDxuaXcLOrMf+E8V9+akHmL53ZEyzPECyPNx9tI95vcXq9uugmx
-         QPBvKaTqDNmfmwsQMJJsfkvjPgFDPp/6pmf+aUDGHJRHl7EMDIiz41YlBfJjl7KZ1+
-         NuAQyW2k7xq/6A5NOq9du/409ypEbnaAOKA9nmysS+sBDmU7NUIGj1KG2UCoCZIxDa
-         cEbXUnx8wamHDWgUGRY9ksau5Nkf1D1pXyZ075r93xF5MAu2hoAbE4pvl4xQgfZrTj
-         9e1fwc5tcASMO2J4LwaqeAWqntgndrMqq74qoqrfgE5bi5VwHVDNSEx7hn2iRjurJq
-         QQ0jYUcoyEQ8TsRTMA6HTO4MDtkI2SORAfNImAlEqVUL5JXgYVtP1Y5H2ua1Oyl1pq
-         xXiexJ2/KTFIqzb3nVn/K/gB1R7lyjWUAkbXMJxkntjuJHbM8duCJijk1e2JPrZfj3
-         g4O4wJ/vlyD9nXfRc5t+3khUDbAwDIXbreqWWJw3cE48p7DKgrwcPCjv86Oi/fjvyk
-         EVxCgUS9AcNl3FkBsiUbasYjDr0NwVGW/U+HnFtTCwMmHSx2TM0BnWghliytUShnxb
-         83PWK1rKFXEaH1AtUdVYIhSo=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DB15640E018F;
-        Fri, 27 Oct 2023 19:16:38 +0000 (UTC)
-Date:   Fri, 27 Oct 2023 21:16:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>,
-        Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/barrier: Do not serialize MSR accesses on AMD
-Message-ID: <20231027191633.GRZTwMkaiW1nyvnzzO@fat_crate.local>
-References: <20230622095212.20940-1-bp@alien8.de>
- <20230703125419.GJ4253@hirez.programming.kicks-ass.net>
- <20230704074631.GAZKPOV/9BfqP0aU8v@fat_crate.local>
- <20230704090132.GP4253@hirez.programming.kicks-ass.net>
- <20230704092222.GBZKPkzgdM8rbPe7zA@fat_crate.local>
- <20231027153327.GKZTvYR3qslaTUjtCT@fat_crate.local>
- <20231027153458.GMZTvYou1tlK6HD8/Y@fat_crate.local>
- <20231027185641.GE26550@noisy.programming.kicks-ass.net>
+        Fri, 27 Oct 2023 15:18:04 -0400
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4A918A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:17:17 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7789577b53fso173300385a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 12:17:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698434237; x=1699039037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NJT7fPV2gPr266dgHb6wRFTeUO0bh/e9lQXSKG8KwCw=;
+        b=LFlAfun5UgJAojMfE0PU+biHuMKM3aIpckGDKT0H2QFhePwZTtzf1qHCUZwzgOeagC
+         np9zN3x1v1X/4lOBVjXnuhU5nSkDRTMOb/E1IADH1BFEfdWt+kCEBeLnOLW+wiIcCjlf
+         zMH6OTMSmFgPgSWA+XXUt/mQ1gW6nOcHhuxyTihwRsWnEN8wj6viL0bAowgsuQqv1qNH
+         upk8OmtQj5BSRiJiqbQ3LLCbYPGx0x8Y4ao6XyiZRO4wTcyHlx/BN10IZ6beVqY7Bq7l
+         yJ2DIg4Ms38yCqPV6vDbXzVtpQy2xoKQee5xXtilFnvqDSPLTohSj5BBYf3KlWQo8jYH
+         1PlA==
+X-Gm-Message-State: AOJu0YylynKkAH6Zpfqc513Bq1FJQAZxZd3hQA+T6dEnPIcyFflKWXZx
+        ixJ9dtx6rvNRzNcAowGB626q
+X-Google-Smtp-Source: AGHT+IGLmN8n1FQeybzaJrhM20MOqQA9u1RvtdEKFrTtEQePlgVuP5hPnD3wvPLymT3W9A53TRS8SA==
+X-Received: by 2002:a05:620a:4514:b0:775:7d81:f8bb with SMTP id t20-20020a05620a451400b007757d81f8bbmr4690750qkp.11.1698434237078;
+        Fri, 27 Oct 2023 12:17:17 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id l21-20020a05620a28d500b007743446efd1sm806006qkp.35.2023.10.27.12.17.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 12:17:16 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 15:17:15 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Christian Loehle <christian.loehle@arm.com>
+Cc:     dm-devel@lists.linux.dev, agk@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: dm: delay: use kthread instead of timers and wq
+Message-ID: <ZTwMu5uHcKnShoKU@redhat.com>
+References: <7aab63e2-b133-49ec-ab8b-36ebec685de2@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027185641.GE26550@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <7aab63e2-b133-49ec-ab8b-36ebec685de2@arm.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 08:56:41PM +0200, Peter Zijlstra wrote:
-> Well, you see, AFAICT the non-serializing MSRs thing is an Intel thing,
-> so everything !Intel wants this gone, no?
+On Fri, Oct 20 2023 at  7:46P -0400,
+Christian Loehle <christian.loehle@arm.com> wrote:
+
+> The current design of timers and wq to realize the delays
+> is insufficient especially for delays below ~50ms.
+> The design is enhanced with a kthread to flush the expired delays,
+> trading some CPU time (in some cases) for better delay accuracy and
+> delays closer to what the user requested for smaller delays.
+> The new design is chosen as long as all the delays are below 50ms.
 > 
-> Definitely the Hygon thing wants this right along with AMD, because
-> that's basically AMD, no?
+> Since bios can't be completed in interrupt context using a kthread
+> is probably the most reasonable way to approach this.
+> 
+> Testing with
+> echo "0 2097152 zero" | dmsetup create dm-zeros
+> for i in $(seq 0 20);
+> do
+>   echo "0 2097152 delay /dev/mapper/dm-zeros 0 $i" | dmsetup create dm-delay-${i}ms;
+> done
+> 
+> Some performance numbers for comparison
+> beaglebone black (single core) CONFIG_HZ_1000=y:
+> fio --name=1msread --rw=randread --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-1ms
+> Theoretical maximum: 1000 IOPS
+> Previous: 250 IOPS
+> Kthread: 500 IOPS
+> fio --name=10msread --rw=randread --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms
+> Theoretical maximum: 100 IOPS
+> Previous: 45 IOPS
+> Kthread: 50 IOPS
+> fio --name=1mswrite --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-1ms
+> Theoretical maximum: 1000 IOPS
+> Previous: 498 IOPS
+> Kthread: 1000 IOPS
+> fio --name=10mswrite --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms
+> Theoretical maximum: 100 IOPS
+> Previous: 90 IOPS
+> Kthread: 100 IOPS
+> fio --name=10mswriteasync --rw=randwrite --direct=1 --bs=4k --runtime=60 --time_based --filename=/dev/mapper/dm-delay-10ms --numjobs=32 --iodepth=64 --ioengine=libaio --group_reporting
+> Previous: 13.3k IOPS
+> Kthread: 13.3k IOPS
+> (This one is just to prove the new design isn't impacting throughput,
+> not really about delays)
+> 
+> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+> ---
+> v2:
+> 	- Keep the timer wq and delay design for longer delays
+> 	- Address the rest of Mike's minor comments
 
-Because of
 
-ce4e240c279a ("x86: add x2apic_wrmsr_fence() to x2apic flush tlb paths")
+Hi,
 
-and it being there since 2009 and getting called unconditionally.
+I've picked this up.  But I fixed various issues along the way.
 
-Hygon sure, but the other vendors? I can't even test on some.
+Please see the staged commit here:
+https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/commit/?h=dm-6.7&id=c1fce71d29b2a48fd6788f9555561fda0f0c1863
 
-Thus the more conservative approach here.
+Issues ranged from whitespace, to removing needless forward
+declaration, to removing stray changes (restoring 'continue;' in
+flush_delayed_bios), actually using a bool for bool params, fixed
+missing mutex_init, and use max() rather than opencode comparisons in
+the ctr.  I might be forgetting some other code change. ;)
 
--- 
-Regards/Gruss,
-    Boris.
+I also tweaked the commit header for whitespace (line wrapping, etc).
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Mike
