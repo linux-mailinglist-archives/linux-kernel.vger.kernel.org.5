@@ -2,105 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE3D7D9804
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F087D9805
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345837AbjJ0M1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S1345802AbjJ0M1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345823AbjJ0M13 (ORCPT
+        with ESMTP id S1345859AbjJ0M1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:27:29 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7184010A
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:27:27 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso15184405e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698409646; x=1699014446; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ShpExnipWNoGHM8TmERMpEvZiu9LbbtWo0359LRRBpg=;
-        b=j7i09mvVrP6uvJKoVM2fT157c9ImZp0ywtrWtWTOUw7oRcJscil1EtyUuTAdtn9PpQ
-         c+9Wkt+wnl0uAIFK1WLrgFIKNLe2j5uRoyDvESvu6G0T/j4FwJCefk8ZsS32eaqdfPXE
-         UEomSITjvCtVi8stGgZEalvBFaxecJYo/hcLShS4d06obLsO7qZMVyUXuaxMBvglF5ZZ
-         RhYDenhtv+sXLUehQXF+0kpi1yeI20nAwQAjcFVFRALb2VOuDxDMGk8NSHjAkZoxAVug
-         2Vf78CuUnofK7HOsB9eGemrf/q/ScbiaEebFetcTspFrHwRDDtfJj1fP0XlGRRMw84Ow
-         DVrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698409646; x=1699014446;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ShpExnipWNoGHM8TmERMpEvZiu9LbbtWo0359LRRBpg=;
-        b=gKuT4hNe+SAqwERIkC4qYSRJ7CVnnnM0Q9YNgQr9f1W2W8czs8t+qGvpRqJY4bP324
-         TWFsu311cV2vNH8NHBD/V6ir0qrBgOci5VWs8h/c38/rOEAXKr8Es/APlePJV83qWbfu
-         IIfhagRBsPK4ChQxkJRzal4ZENF8/1mAqt4XvCWeivBw4pdotAqlzMfnumk7dFtkp9pz
-         KdAdehU65nnt9fGC5X3Nssg2eYg/CJifVWDwFDoMXKN4KII+Ni/dExUecRq42VL0adcx
-         GHDA9JMOMngOa8zzPOkqDo/jVWqZO1PhyxrEUyf3YPsyi5DNq78GWMPLoz+myhI78K/V
-         S69g==
-X-Gm-Message-State: AOJu0YwWg5u0XyozA8ZtvfVYKap0BNoOsW1fdxQOWiSfXB+zOKEEgo/F
-        3zU5DWbbgr3VYfxUadbtdMLTvg==
-X-Google-Smtp-Source: AGHT+IGePza+z4TfX66FZcDIf8/JNx8JVqKKHGbjY0Df9benTN6EIO45xrAYlVcVOsPga6unZ62FpA==
-X-Received: by 2002:a05:600c:474f:b0:405:359a:c965 with SMTP id w15-20020a05600c474f00b00405359ac965mr2195472wmo.4.1698409645782;
-        Fri, 27 Oct 2023 05:27:25 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id v10-20020a05600c444a00b00401d8181f8bsm4981081wmn.25.2023.10.27.05.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 05:27:25 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 15:27:23 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Joey Jiao <quic_jiangenj@quicinc.com>,
-        linux-modules@vger.kernel.org
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        quic_likaid@quicinc.com, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] module: Add CONFIG_MODULE_DISABLE_INIT_FREE option
-Message-ID: <a57e4eb8-329b-4503-bcd8-892ef44d8194@kadam.mountain>
-References: <20231013062711.28852-1-quic_jiangenj@quicinc.com>
- <b2b20956-d80e-462c-8261-a41802996197@kadam.mountain>
+        Fri, 27 Oct 2023 08:27:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C3CE81B1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:27:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFD751424;
+        Fri, 27 Oct 2023 05:28:12 -0700 (PDT)
+Received: from [10.57.70.251] (unknown [10.57.70.251])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89BBC3F738;
+        Fri, 27 Oct 2023 05:27:28 -0700 (PDT)
+Message-ID: <644b1519-b44f-4128-8e5e-52ee5e02b404@arm.com>
+Date:   Fri, 27 Oct 2023 13:27:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2b20956-d80e-462c-8261-a41802996197@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
+ <a7781f13-21ca-48c7-99c4-22beef0400f9@arm.com>
+ <fcbe9179-dcd9-4bf8-b1d1-82201880527e@arm.com>
+ <a2e11353-fad8-475c-a4d1-dc1de22dde11@redhat.com>
+ <CAOUHufa9CyfRaMFXWtFWPG22Z9Zf9hZZWbZdTke6THimtbPzRQ@mail.gmail.com>
+ <ce723223-9751-4d57-af2d-86d30b2dd16a@arm.com>
+ <f83b6fcd-71d8-442f-87d9-f95dd2ab2344@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <f83b6fcd-71d8-442f-87d9-f95dd2ab2344@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 03:00:00PM +0300, Dan Carpenter wrote:
-> 607c543f939d8c kernel/module.c      Andrii Nakryiko  2020-11-20  2579  #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> 607c543f939d8c kernel/module.c      Andrii Nakryiko  2020-11-20  2580  	/* .BTF is not SHF_ALLOC and will get removed, so sanitize pointer */
-> 607c543f939d8c kernel/module.c      Andrii Nakryiko  2020-11-20  2581  	mod->btf_data = NULL;
-> 607c543f939d8c kernel/module.c      Andrii Nakryiko  2020-11-20  2582  #endif
-> c749637909eea5 kernel/module.c      Rusty Russell    2015-01-20  2583  	/*
-> c749637909eea5 kernel/module.c      Rusty Russell    2015-01-20  2584  	 * We want to free module_init, but be aware that kallsyms may be
-> 0be964be0d4508 kernel/module.c      Peter Zijlstra   2015-05-27  2585  	 * walking this with preempt disabled.  In all the failure paths, we
-> cb2f55369d3a9e kernel/module.c      Paul E. McKenney 2018-11-06  2586  	 * call synchronize_rcu(), but we don't want to slow down the success
-> 1a7b7d9220819a kernel/module.c      Rick Edgecombe   2019-04-25  2587  	 * path. module_memfree() cannot be called in an interrupt, so do the
-> 1a7b7d9220819a kernel/module.c      Rick Edgecombe   2019-04-25  2588  	 * work and call synchronize_rcu() in a work queue.
-> 1a7b7d9220819a kernel/module.c      Rick Edgecombe   2019-04-25  2589  	 *
-> ae646f0b9ca135 kernel/module.c      Jeffrey Hugo     2018-05-11  2590  	 * Note that module_alloc() on most architectures creates W+X page
-> ae646f0b9ca135 kernel/module.c      Jeffrey Hugo     2018-05-11  2591  	 * mappings which won't be cleaned up until do_free_init() runs.  Any
-> ae646f0b9ca135 kernel/module.c      Jeffrey Hugo     2018-05-11  2592  	 * code such as mark_rodata_ro() which depends on those mappings to
-> ae646f0b9ca135 kernel/module.c      Jeffrey Hugo     2018-05-11  2593  	 * be cleaned up needs to sync with the queued work - ie
-> cb2f55369d3a9e kernel/module.c      Paul E. McKenney 2018-11-06  2594  	 * rcu_barrier()
-> c749637909eea5 kernel/module.c      Rusty Russell    2015-01-20  2595  	 */
-> 36022a47582048 kernel/module/main.c Joey Jiao        2023-10-13  2596  	if (!IS_ENABLED(CONFIG_MODULE_DISABLE_INIT_FREE) &&
-> 36022a47582048 kernel/module/main.c Joey Jiao        2023-10-13  2597  	    llist_add(&freeinit->node, &init_free_list))
+On 26/10/2023 16:19, David Hildenbrand wrote:
+> [...]
 > 
-> Let's not allocate freeinit if CONFIG_MODULE_DISABLE_INIT_FREE is not
-> enabled.
+>>>> Hi,
+>>>>
+>>>> I wanted to remind people in the THP cabal meeting, but that either
+>>>> didn't happen or zoomed decided to not let me join :)
+>>
+>> I didn't make it yesterday either - was having to juggle child care.
+> 
+> I think it didn't happen, or started quite late (>20 min).
+> 
+>>
+>>>>
+>>>>>
+>>>>> It's been a week since the mm alignment meeting discussion we had around
+>>>>> prerequisites and the ABI. I haven't heard any further feedback on the ABI
+>>>>> proposal, so I'm going to be optimistic and assume that nobody has found any
+>>>>> fatal flaws in it :).
+>>>>
+>>>> After saying in the call probably 10 times that people should comment
+>>>> here if there are reasonable alternatives worth discussing, call me
+>>>> "optimistic" as well; but, it's only been a week and people might still
+>>>> be thinking about this/
+>>>>
+>>>> There were two things discussed in the call:
+>>>>
+>>>> * Yu brought up "lists" so we can have priorities. As briefly discussed
+>>>>     in the  call, this (a) might not be needed right now in an initial
+>>>>     version;  (b) the kernel might be able to handle that (or many cases)
+>>>>     automatically, TBD. Adding lists now would kind-of set the semantics
+>>>>     of that interface in stone. As you describe below, the approach
+>>>>     discussed here could easily be extended to cover priorities, if need
+>>>>     be.
+>>>
+>>> I want to expand on this: the argument that "if you could allocate a
+>>> higher order you should use it" is too simplistic. There are many
+>>> reasons in addition to the one above that we want to "fall back" to
+>>> higher orders, e.g., those higher orders are not on PCP or from the
+>>> local node. When we consider the sequence of orders to try, user
+>>> preference is just one of the parameters to the cost function. The
+>>> bottom line is that I think we should all agree that there needs to be
+>>> a cost function down the road, whatever it looks like. Otherwise I
+>>> don't know how we can make "auto" happen.
+> 
+> I agree that there needs to be a cost function, and as pagecache showed that's
+> independent of initial enablement.
+> 
+>>
+>> I don't dispute that this sounds like it could be beneficial, but I see it as
+>> research to happen further down the road (as you say), and we don't know what
+>> that research might conclude. Also, I think the scope of this is bigger than
+>> anonymous memory - you would also likely want to look at the policy for page
+>> cache folio order too, since today that's based solely on readahead. So I see it
+>> as an optimization that is somewhat orthogonal to small-sized THP.
+> 
+> Exactly my thoughts.
+> 
+> The important thing is that we should plan ahead that we still have the option
+> to let the admin configure if we cannot make this work automatically in the kernel.
+> 
+> What we'll need, nobody knows. Maybe it's a per-size priority, maybe it's a
+> single global toggle.
+> 
+>>
+>> The proposed interface does not imply any preference order - it only states
+>> which sizes the user wants the kernel to select from, so I think there is lots
+>> of freedom to change this down the track if the kernel wants to start using the
+>> buddy allocator's state as a signal to make its decisions.
+> 
+> Yes.
+> 
+> [..]
+> 
+>>>> Jup, same opinion here. But again, I'm very happy to hear other
+>>>> alternatives and why they are better.
+>>>
+>>> I'm not against David's proposal but I want to hear a lot more about
+>>> "lots of flexibility for growth" before I'm fully convinced.
+>>
+>> My point was that in an abstract sense, there are properties a user may wish to
+>> apply individually to a size, which is catered for by having a per-size
+>> directory into which we can add more files if/when requirements for new per-size
+>> properties arise. There are also properties that may be applied globally, for
+>> which we have the top-level transparent_hugepage directory where properties can
+>> be extended or added.
+> 
+> Exactly, well said.
+> 
+>>
+>> For your case around tighter integration with the buddy allocator, I could
+>> imagine a per-size file allowing the user to specify if the kernel should allow
+>> splitting a higher order to make a THP of that size (I'm not suggesting that's a
+>> good idea, I'm just pointing out that this sort of thing is possible with the
+>> interface). And we have discussed how the global enabled prpoerty could be
+>> extended to support "auto" [1].
+>>
+>> But perhaps what we really need are lots more ideas for future directions for
+>> small-sized THP to allow us to evaluate this interface more widely.
+> 
+> David R. motivated a future size-aware setting of the defrag option. As
+> discussed we might want something similar to shmem_enable. What will happen with
+> khugepaged, nobody knows yet :)
+> 
+> I could imagine exposing per-size boolean read-only properties like
+> "native-hw-size" (PMD, cont-pte). But these things require much more thought.
 
-Wait.  It's the other way around actually.  freeinit isn't used if
-CONFIG_MODULE_DISABLE_INIT_FREE is enabled.
+FWIW, the reason I opted for the "recommend" special case in the v5 posting was
+because that felt like an easy thing to also add to the command line in future.
+Having a separate file, native-hw-size, that the user has to read then enable
+through another file is not very command-line friendly, if you want the
+hw-preferred size(s) enabled from boot.
 
-regards,
-dan carpenter
+Maybe the wider observation is "how does the proposed interface translate to the
+kernel command line if needed in future?".
+
+
 
