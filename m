@@ -2,78 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F181E7DA3F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 01:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F377DA411
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 01:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346666AbjJ0XLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 19:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S232812AbjJ0XY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 19:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0XK6 (ORCPT
+        with ESMTP id S231569AbjJ0XY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 19:10:58 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6780C1AA;
-        Fri, 27 Oct 2023 16:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Aiw3atUCBnwgKNjOyjIprjoAJkJHCnLAHdffktGkr7w=; b=jEeP1VubOumA8I5tSAeXitLq9S
-        XIjPJuii+LyAYcPZzu/YyatcPaREiQsauZJpKoDR8tKyT6Ry5XSpXFU7MnpsF5aF0pnga1UiB12O9
-        blIxP8KjQ8abli6qVNuqcpd09O9gvHbqO8ADxmPKJHqhfeQwjvX6vWeOXcBBJDfx0PH8yWGzHxfna
-        09cFAhe45cuJAfv31j2naLwl81N6OvJLVjsbZDDdY96DlRwu7uSWsqY7A/SIDbx6dNUI+8Fmwsq2I
-        3A0oRt+eyWSv5DJs6Jvslfb/QF96Kyg4bbcmV1c9fz9cl9p25bnoedefZPNeN6OAosGDVOzuw6ZHx
-        UdsrziBg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qwVyO-006mQG-2S;
-        Fri, 27 Oct 2023 23:10:36 +0000
-Date:   Sat, 28 Oct 2023 00:10:36 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        Xiao Wang <xiao.w.wang@intel.com>,
-        Evan Green <evan@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v8 1/5] asm-generic: Improve csum_fold
-Message-ID: <20231027231036.GM800259@ZenIV>
-References: <20231027-optimize_checksum-v8-0-feb7101d128d@rivosinc.com>
- <20231027-optimize_checksum-v8-1-feb7101d128d@rivosinc.com>
+        Fri, 27 Oct 2023 19:24:26 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8231BC
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b3f55e1bbbso1669181b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698449062; x=1699053862; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GtWOmDm2DZyVdf43Y6zUW3QwX9tZvbKVx3zn9eClIU=;
+        b=dFfBhWoAfkYspAeKLN/WHyQm1h9wxF5ua3i2/K4XyWfPfITPZBkicxp15Eu62EWoqq
+         0caL+xZSzUHLs+X9MImT7JaNHcVB0azPj6m3xdNNtYhmqSWe5wCGGS0JOtTyCbd8vQSL
+         S9GF5NHqM0/qyJMVbdY87vRwrawcO2VnkwRZ7lEOiGzEnZ55noC0YAuSOb53U6dPHrsl
+         kdvl+XoN+lF3bfFZXeRuqE3ha2NbQF4WemnQFM/wyaAjGKymaVUpH3jKXY2Ch1twpXFD
+         lYnn6CgibYJ+YYeYpg9Qc1KFNd1UYGskVmJ3vSbDF6c8S/GPLlBrqZR2D4J2Yk2YhqwL
+         zE7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698449062; x=1699053862;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2GtWOmDm2DZyVdf43Y6zUW3QwX9tZvbKVx3zn9eClIU=;
+        b=YRaL9fPPi5VvfUOfw+jbiMALlkaMKzI8kkA6nKCvgRNLjsjWSRpwGxQssLAUsCLeT9
+         zgDMHu0oLHxNADIbkymAdrm6dSNHSoAqmnZuDcKNWijEa5Lq7dJGHrlFkOq3XNC/rbxB
+         U5lSVYVP53oO2qQ/zOmcrgtxVjjGAe+cE6z1hQC9CpvMq+4bM+Tlv94Suqcw8EEq6O+C
+         xTIPDIgzp1LGLb4pTs+daDC/oQ+3PNfzzT4GY05MmLU0R0fWchMmEfYKM1mvmY0YHyTF
+         /uHqZVoub269BMTmef6i1liC7rxvFKPZud8XpjvY9UwruQiDNIy1KZ4nKBwNwLjO2n1Q
+         IPgA==
+X-Gm-Message-State: AOJu0Yzdzy9BrUq9FG0o+iPPFEM7Dt6v3AWCWZrKISRLdSPqkZjtGnG0
+        DK7H7o6Ccz91fm9CjXWExYZW9A==
+X-Google-Smtp-Source: AGHT+IFMyRSJAPNgriqDeeQrdkYIrXs02lA19ewIsskrs6McU9uDM2J+60eUBgzLzs/rD9gBsdq/oA==
+X-Received: by 2002:a05:6808:1141:b0:3b2:ec06:7061 with SMTP id u1-20020a056808114100b003b2ec067061mr5059285oiu.14.1698449062187;
+        Fri, 27 Oct 2023 16:24:22 -0700 (PDT)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id bp2-20020a056808238200b003af638fd8e4sm476791oib.55.2023.10.27.16.24.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 16:24:21 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 16:24:18 -0700
+From:   Deepak Gupta <debug@rivosinc.com>
+To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
+Subject: Re: [PATCH RFC RFT 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <ZTxGovqKdhA5hYMz@debug.ba.rivosinc.com>
+References: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
+ <20231023-clone3-shadow-stack-v1-2-d867d0b5d4d0@kernel.org>
+ <dc9a3dd544bbf859142c5582011a924b1c1bf6ed.camel@intel.com>
+ <8b0c9332-ba56-4259-a71f-9789d28391f1@sirena.org.uk>
+ <2ec0be71ade109873445a95f3f3c107711bb0943.camel@intel.com>
+ <807a8142-7a8e-4563-9859-8e928156d7e5@sirena.org.uk>
+ <ZTrOw97NFjUpANMg@debug.ba.rivosinc.com>
+ <ZTuj565SqIb9KjQr@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20231027-optimize_checksum-v8-1-feb7101d128d@rivosinc.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZTuj565SqIb9KjQr@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 03:43:51PM -0700, Charlie Jenkins wrote:
->  /*
->   * computes the checksum of a memory block at buff, length len,
->   * and adds in "sum" (32-bit)
-> @@ -31,9 +33,7 @@ extern __sum16 ip_fast_csum(const void *iph, unsigned int ihl);
->  static inline __sum16 csum_fold(__wsum csum)
->  {
->  	u32 sum = (__force u32)csum;
-> -	sum = (sum & 0xffff) + (sum >> 16);
-> -	sum = (sum & 0xffff) + (sum >> 16);
-> -	return (__force __sum16)~sum;
-> +	return (__force __sum16)((~sum - ror32(sum, 16)) >> 16);
->  }
+On Fri, Oct 27, 2023 at 12:49:59PM +0100, Szabolcs.Nagy@arm.com wrote:
+>The 10/26/2023 13:40, Deepak Gupta wrote:
+>> On Thu, Oct 26, 2023 at 06:53:37PM +0100, Mark Brown wrote:
+>> > I'm not sure placement control is essential but the other bit of it is
+>> > the freeing of the shadow stack, especially if userspace is doing stack
+>> > switches the current behaviour where we free the stack when the thread
+>> > is exiting doesn't feel great exactly.  It's mainly an issue for
+>> > programs that pivot stacks which isn't the common case but it is a
+>> > general sharp edge.
+>>
+>> In general, I am assuming such placement requirements emanate because
+>> regular stack holds data (local args, etc) as well and thus software may
+>> make assumptions about how stack frame is prepared and may worry about
+>> layout and such. In case of shadow stack, it can only hold return
+>
+>no. the lifetime is the issue: a stack in principle can outlive
+>a thread and resumed even after the original thread exited.
+>for that to work the shadow stack has to outlive the thread too.
+>
 
-Will (~(sum + ror32(sum, 16))>>16 produce worse code than that?
-Because at least with recent gcc this will generate the exact thing
-you get from arm inline asm...
+I understand an application can pre-allocate a pool of stack and re-use
+them whenever it's spawning new threads using clone3 system call.
+
+However, once a new thread has been spawned how can it resume?
+By resume I mean consume the callstack context from an earlier thread.
+Or you meant something else by `resume` here?
+
+Can you give an example of such an application or runtime where a newly
+created thread consumes callstack context created by going away thread?
+
+>(or the other way around: a stack can be freed before the thread
+>exits, if the thread pivots away from that stack.)
+
+This is simply a thread saying that I am moving to a different stack.
+Again, interested in learning why would a thread do that. If I've to
+speculate on reasons, I could think of user runtime managing it's own
+pool of worker items (some people call them green threads) or current
+stack became too small.
+
+JIT runtimes (and such stuff like go routines) do such things but in
+those cases, kernel has no idea about it. From kernel's perspective
+there is a main thread stack (hosting thread for JIT) and then main
+thread can take a decision switching stack to execute JITted code.
+But in that case all it needs is a shadow stack and managing lifetime of
+such shadow stack using `clone` wouldn't be helpful and perhaps
+`map_shadow_stack` should be used to create on the fly shadow stack.
+
+Another case I can think of for a thread to move to a different stack
+when current stack was too small and it wants larger memory. In such
+cases as well, I imagine that particular thread would be issuing `mmap`
+to allocate larger memory and thus that particular thread can very well
+issue `map_shadow_stack`
+
+In both of these cases, a stack free actually means thread (application)
+issuing a system call to free the going away stack memory. It can free up
+going away shadow stack memory in same way using `unmap_shadow_stack`
+
+Let me know if I misunderstood something or missing some other usecase of
+a stack being freed before the thread exits.
+
+>
+>posix threads etc. don't allow this, but the linux syscall abi
+>(clone) does allow it.
+>
+>i think it is reasonable to tie the shadow stack lifetime to the
+>thread lifetime, but this clearly introduces a limitation on how
+>the clone api can be used. such constraint on the userspace
+>programming model is normally a bad decision, but given that most
+>software (including all posix conforming code) is not affected,
+>i think it is acceptable for an opt-in feature like shadow stack.
+>
+>IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
