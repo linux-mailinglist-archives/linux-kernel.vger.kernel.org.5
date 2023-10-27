@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99197D9927
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587AE7D9931
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345609AbjJ0M7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
+        id S231675AbjJ0NBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJ0M7U (ORCPT
+        with ESMTP id S229503AbjJ0NBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:59:20 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151E0129
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:59:18 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cbf47fa563so17719595ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1698411557; x=1699016357; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OnVvDYzrOiXXcLBIXZo998leFWypinKwSwwBh9B0Bhc=;
-        b=YLuYvjPEiR+LNZoGyjZcHy5a7qZZTOCaR51sxH/HkChShJOcKfAgTBGPPlJTyYo063
-         KTh1iDH0pPmb5nc8h4L+85XleWpIMz2JH38u2BLU1/QiEZadZbRocDnW0lI3gNdDouUD
-         6ZKRTQe/CqSW/Id7ohrV/B3WphxTT3NPYnl3mWeK+K/H/EfyCgoYDPMUROisq2/FoRaz
-         +YkrxRrgdg5xP3CwuAgxp2DpRGzP8toCBU9d5Vrl652wY3QIt/zgjlDdakpB1COOv6hf
-         d39ms9DI7uWCe1TvZKg+Pxs9m7ZRZJJynjRjGsA3Wi9zLydQle5loZQ286vyKGHicVt6
-         i1dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698411557; x=1699016357;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OnVvDYzrOiXXcLBIXZo998leFWypinKwSwwBh9B0Bhc=;
-        b=B+uNJvcFGnYixqFUHPmI6icwkMI6dkFj5QAxXO0zKFxdcaclGni++Tc0KAz+Q3jdOY
-         uXtfzwC1SL0epsHOYX5U3LwZNxSECLIJzy8aBauEUWIV9khyVHvh5XgVqabP4FPdUeZc
-         luczfBXYjA41CNUu+rQjLed+TqaOkDd/VfiRTd4AK2s6u3yRQJmHqaOceyRQZXO5YcAB
-         TOz7EUoZPZrleNqpFhUf8VBY0ah6d6m5Op7yDE9OVQDjGXC+j2+jHcLSOYgKgunPJCx7
-         7sT/R20DriOU9wTvCcK6OF6132nPyPH+KtA4TH30WrL4G7X5Z5TG1llHeRP9vxcVYiRJ
-         6TRg==
-X-Gm-Message-State: AOJu0Yy5S0QDcaCecFVYGFNPANY++WCTHX/4iPrQauweyJDzpFzfkYIF
-        FE2AXbAykaaBuWtX8BAlkUcdoQ==
-X-Google-Smtp-Source: AGHT+IE/y41xbQGeI5wjC1sLH+pq9yHPsk4f4rnVQlyHxT5L0fSSnli72s6diRvbt22YhudFLgevQw==
-X-Received: by 2002:a17:903:2306:b0:1c6:2f59:8c4d with SMTP id d6-20020a170903230600b001c62f598c4dmr2929514plh.28.1698411557571;
-        Fri, 27 Oct 2023 05:59:17 -0700 (PDT)
-Received: from ?IPV6:2403:580d:82f4:0:c232:f53e:32d4:5510? (2403-580d-82f4-0-c232-f53e-32d4-5510.ip6.aussiebb.net. [2403:580d:82f4:0:c232:f53e:32d4:5510])
-        by smtp.gmail.com with ESMTPSA id z13-20020a1709027e8d00b001b9da42cd7dsm1515657pla.279.2023.10.27.05.59.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 05:59:17 -0700 (PDT)
-Message-ID: <7524a9ef-c1c4-462e-8f9d-fc03c29ca092@tweaklogic.com>
-Date:   Fri, 27 Oct 2023 23:29:08 +1030
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] iio: light: Add support for APDS9306 Light Sensor
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Paul Gazzillo <paul@pgazz.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Fri, 27 Oct 2023 09:01:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDD810E
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698411708; x=1729947708;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jySUg5BBj2x92b+aCarRimTae0InN/QCh5etMPoVNIM=;
+  b=g+qB4383mhSo7FfuWR97q+PZQwHvmzp2ro9m9dHGqrjImuauOkuryg1i
+   K9yL9YKsMm7SVSiuuXPxAY8r4YNTU2PO2F6jMuwlcsQ/X731pQEqc9qZO
+   RQRDHyIJaCm6DMZu66wQcPkeZvvP4zTDnfMt35ReGckQKlsEyG9DKkLLM
+   ZfbOihc5a3V4ctkGCI/FafnyYVAlRUeiKm3mHY9NK6kvCCH2oMK7Bvtl3
+   8UpZD6fH9/V0ff1r0hR3nd99tV5YrOTk3tWuIdXB5XPdOK6ZsdjhBEflE
+   5yU98WG7iTmPmyB4wbegbNXW0+avQJBSSbtrcsvZnAppvt9+QcXxbB2oe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="9309468"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="9309468"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:01:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="736080004"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="736080004"
+Received: from nirmoyda-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.213.108])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:01:42 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 5FA5210A210; Fri, 27 Oct 2023 16:01:39 +0300 (+03)
+Date:   Fri, 27 Oct 2023 16:01:39 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org
-References: <20231026143532.39660-1-subhajit.ghosh@tweaklogic.com>
- <20231026143532.39660-3-subhajit.ghosh@tweaklogic.com>
- <ZTuuUl0PBklbVjb9@smile.fi.intel.com>
-Content-Language: en-US
-From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <ZTuuUl0PBklbVjb9@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Subject: Re: [PATCHv2 11/13] x86/acpi: Do not attempt to bring up secondary
+ CPUs in kexec case
+Message-ID: <20231027130139.iqvjpu2rizmsxxz7@box.shutemov.name>
+References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
+ <20231020151242.1814-12-kirill.shutemov@linux.intel.com>
+ <ebd7c9e8-8bed-423a-a23b-fb93c173cd1b@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ebd7c9e8-8bed-423a-a23b-fb93c173cd1b@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,14 +80,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/23 23:04, Andy Shevchenko wrote:
-> This will benefit from guard() or scoped_guard().
-> And many other functions in your driver.
-> I believe ~15% of LoCs can be dropped with help of cleanup.h.
-Acknowledging all other comments. Jonathan commented earlier on using guard() and cleanup.h
-Unfortunately I missed it. Like GTS, it will again be a brand new thing to understand!
-Thank you for reviewing.
+On Tue, Oct 24, 2023 at 06:59:58AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> 
+> 
+> On 10/20/2023 8:12 AM, Kirill A. Shutemov wrote:
+> > ACPI MADT doesn't allow to offline CPU after it got woke up. It limits
+> > kexec: the second kernel won't be able to use more than one CPU.
+> > 
+> > Now acpi_mp_wake_mailbox_paddr already has the mailbox address.
+> > The acpi_wakeup_cpu() will use it to bring up secondary cpus.
+> > 
+> > Zero out mailbox address in the ACPI MADT wakeup structure to indicate
+> > that the mailbox is not usable.  This prevents the kexec()-ed kernel
+> > from reading a vaild mailbox, which in turn makes the kexec()-ed kernel
+> > only be able to use the boot CPU.
+> > 
+> > This is Linux-specific protocol and not reflected in ACPI spec.
+> > 
+> > Booting the second kernel with signle CPU is enough to cover the most
+> > common case for kexec -- kdump.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  arch/x86/kernel/acpi/madt_wakeup.c | 22 ++++++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
+> > index 4bc1d5106afd..9bbe829737e7 100644
+> > --- a/arch/x86/kernel/acpi/madt_wakeup.c
+> > +++ b/arch/x86/kernel/acpi/madt_wakeup.c
+> > @@ -13,6 +13,11 @@ static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+> >  
+> >  static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+> >  {
+> > +	if (!acpi_mp_wake_mailbox_paddr) {
+> > +		pr_warn_once("No MADT mailbox: cannot bringup secondary CPUs. Booting with kexec?\n");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> >  	/*
+> >  	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
+> >  	 *
+> > @@ -78,6 +83,23 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+> >  
+> >  	cpu_hotplug_disable_offlining();
+> >  
+> > +	/*
+> > +	 * ACPI MADT doesn't allow to offline CPU after it got woke up.
+> > +	 * It limits kexec: the second kernel won't be able to use more than
+> > +	 * one CPU.
+> > +	 *
+> > +	 * Now acpi_mp_wake_mailbox_paddr already has the mailbox address.
+> > +	 * The acpi_wakeup_cpu() will use it to bring up secondary cpus.
+> > +	 *
+> > +	 * Zero out mailbox address in the ACPI MADT wakeup structure to
+> > +	 * indicate that the mailbox is not usable.  This prevents the
+> > +	 * kexec()-ed kernel from reading a vaild mailbox, which in turn
+> > +	 * makes the kexec()-ed kernel only be able to use the boot CPU.
+> > +	 *
+> > +	 * This is Linux-specific protocol and not reflected in ACPI spec.
+> > +	 */
+> > +	mp_wake->base_address = 0;
+> 
+> Is there any way to skip secondary CPU bring-up for kexec case instead of
+> returning error in ->wakeup_secondary_cpu_64()?
 
-Regards,
-Subhajit Ghosh
+I have not found a cleaner way. Do you have ideas?
 
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
