@@ -2,71 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1017D99B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07347D99C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345904AbjJ0N0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S1345942AbjJ0N1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345458AbjJ0N0g (ORCPT
+        with ESMTP id S1345939AbjJ0N12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:26:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEEFE5;
-        Fri, 27 Oct 2023 06:26:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71ED5C433C7;
-        Fri, 27 Oct 2023 13:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698413194;
-        bh=NxFd9nO3ucmlh23SRQn9ZpC46HILj4aPbNXF73EekQo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m7b2Oyd9zhPJtcjMUZofdXh2MMnITOJlLsMsFBdBxY4mhu4WPX8wELATU36R22R8p
-         iWPIOsH9G7S6Jr9nQ6fTS57qXLHvvvp195gx1oFnx7lrdwHeViDBSWu8nQ9SJ1Cmsh
-         v+3l9vQMLKADLk0sYfap6YFrdeU5wFZI41QZs9KW2yk9/d79KQHZ8W58pccMasBcag
-         iAEYrMDoSTd6pIAbtimJspKgE8mJC7wDPqIy/Spx/9ZXGbBzVNpWW6RCxdPE1jLFyQ
-         u0JxB2PHNF1c9tAmAVg9HPrXpHdX6gl5Rnp1dH54do4V/8OYz/UY0o8pNw0Un4R4ex
-         RRBDrxHnQeoAg==
-Date:   Fri, 27 Oct 2023 14:26:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     <agross@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <Jonathan.Cameron@huawei.com>, <sboyd@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_subbaram@quicinc.com>,
-        <quic_collinsd@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <marijn.suijten@somainline.org>,
-        <andriy.shevchenko@linux.intel.com>,
-        <krzysztof.kozlowski@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        "Mike Looijmans" <mike.looijmans@topic.nl>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        "Ibrahim Tilki" <Ibrahim.Tilki@analog.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Lee Jones <lee@kernel.org>,
-        Leonard =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>,
-        Haibo Chen <haibo.chen@nxp.com>, <linux-iio@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>
-Subject: Re: [PATCH 07/11] iio: adc: Add support for QCOM PMIC5 Gen3 ADC
-Message-ID: <20231027142512.37358c60@jic23-huawei>
-In-Reply-To: <13d5dee2-1da4-2ad0-91f8-a53b43adba2b@quicinc.com>
-References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
-        <20230708072835.3035398-8-quic_jprakash@quicinc.com>
-        <20230708165955.08c1159c@jic23-huawei>
-        <13d5dee2-1da4-2ad0-91f8-a53b43adba2b@quicinc.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 09:27:28 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1DE1BC
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:27:25 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qwMru-0002hh-B6; Fri, 27 Oct 2023 15:27:18 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qwMrt-004eXB-HF; Fri, 27 Oct 2023 15:27:17 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qwMrt-007LTa-7c; Fri, 27 Oct 2023 15:27:17 +0200
+Date:   Fri, 27 Oct 2023 15:27:17 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     JunYi Zhao <junyi.zhao@amlogic.com>, thierry.reding@gmail.com
+Cc:     neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 RESEND] pwm: meson: add pwm support for S4
+Message-ID: <20231027132717.braretixsumdnrgd@pengutronix.de>
+References: <20231016052457.1191838-1-junyi.zhao@amlogic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="h33tp4yjyqfzxjra"
+Content-Disposition: inline
+In-Reply-To: <20231016052457.1191838-1-junyi.zhao@amlogic.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,54 +56,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +  
-> >> +static const struct iio_info adc5_gen3_info = {
-> >> +	.read_raw = adc5_gen3_read_raw,
-> >> +	.fwnode_xlate = adc5_gen3_fwnode_xlate,
-> >> +};  
-> > ...  
-> 
-> 
-> Did you mean to leave any comment here...?
 
-Nope ... is a cut mark to indicate I dropped a load of quoted text.
+--h33tp4yjyqfzxjra
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On that note, don't bother replying to say you'll do things suggested
-by reviewers - we assume you will unless you say otherwise :)
+On Mon, Oct 16, 2023 at 01:24:57PM +0800, JunYi Zhao wrote:
+> From: "junyi.zhao" <junyi.zhao@amlogic.com>
 
-If you want to add a boilerplate message alongside comments on the
-bits that need further discussion, along the lines of 
-"All other comments accepted." That's fine but it's not really necessary.
+Is this a valid variant to write your name?
 
-...
+> Support PWM for S4 soc.
+> Now the PWM clock input is done in independent CLKCTRL registers.
+> And no more in the PWM registers.
+> PWM needs to obtain an external clock source.
+>=20
+> Signed-off-by: junyi.zhao <junyi.zhao@amlogic.com>
 
-> >> +
-> >> +static int adc5_gen3_exit(struct platform_device *pdev)
-> >> +{  
-> > As you are mixing devm manged cleanup and the explicit sort the
-> > result is that you remove the userspace interfaces 'after' you run
-> > everything in here. I'm thinking disabling the channels at least
-> > isn't a good idea in that case.
-> >
-> > If you want to use devm (which is good) then you need to work out how
-> > to register additional callbacks during probe to tear down everything in
-> > the right order (typically the reverse of what happens in probe)
-> > devm_add_action_or_reset() is the way to add those extra callbacks.
-> >
-> > If not, just don't use devm for at least those bits that will end up
-> > running out of order (such as iio_device_register()) and manually call their
-> > cleanup routines instead.  
-> 
-> 
-> I checked some other examples in the iio/adc/ folder, I think I see what 
-> you mean here. It looks like drivers with a remove callback always use 
-> iio_device_register and iio_device_unregister instead of the devm_* 
-> variant, due to the issue with sysfs removal as you said.
-> 
-> I'll update the probe and remove functions similarly, to do explicit 
-> cleanups as required, avoiding devm_ usage for places where it should be 
-> avoided.
+@Thierry: This patch didn't made it into patchwork. I didn't check
+systematically, but that's at least the 2nd one that doesn't make it in
+in the recent past. (The other was my pull request to you.)
 
-Better to go the other way as Dmitry suggested.  Make everything you can
-devm managed.
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--h33tp4yjyqfzxjra
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmU7urQACgkQj4D7WH0S
+/k54EwgAktP5P0KpgjtvveUVf3G2IJPv300KQsqESC6NkuM0W6mG119Q8Z2yaxO1
+cnyhrUzAfg2qDsyef2f52qh+PUZ0gOM7vxtImaLgqOrnjVoTtCdjo5Dpy3iq6n+K
+3KYcau+6yQaq9Ls3qWb+StBwfiQBpEV6v+w3gd+hIpEPnpprd2yma8s+ViWvEtCu
+F7ZCD3QgpVoYpPYDFjzMBAqx2qWIYybnOUTybrl45MHg1asQ+NPOVkDC8SmBBaIh
+s+V7giMwpnVxtmDuqvSlJ5VVRDUUQSWOCDPLRoWfGvONotK5oJETUVXN0+TgfW0k
+0MCT2Tco3DFM+zMBnj8H4Wicgy3wkg==
+=w3u2
+-----END PGP SIGNATURE-----
+
+--h33tp4yjyqfzxjra--
