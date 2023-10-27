@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFB67D9AC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1037D9AC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346098AbjJ0OE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        id S1346113AbjJ0OF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346076AbjJ0OEw (ORCPT
+        with ESMTP id S1346093AbjJ0OFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:04:52 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635A1C0;
-        Fri, 27 Oct 2023 07:04:50 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39RB1Gma028823;
-        Fri, 27 Oct 2023 10:04:20 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tyx01pa89-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 10:04:20 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39RE4I3q048300
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 27 Oct 2023 10:04:18 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 27 Oct
- 2023 10:04:17 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Fri, 27 Oct 2023 10:04:17 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.174])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39RE40hc022983;
-        Fri, 27 Oct 2023 10:04:09 -0400
-From:   Ramona Gradinariu <ramona.gradinariu@analog.com>
-To:     <jic23@kernel.org>, <nuno.sa@analog.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 3/3] dt-bindings: adis16460: Add 'spi-cs-inactive-delay-ns' property
-Date:   Fri, 27 Oct 2023 17:03:58 +0300
-Message-ID: <20231027140358.328699-4-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231027140358.328699-1-ramona.gradinariu@analog.com>
-References: <20231027140358.328699-1-ramona.gradinariu@analog.com>
+        Fri, 27 Oct 2023 10:05:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA31D4C;
+        Fri, 27 Oct 2023 07:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698415520; x=1729951520;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=j5QA2qOS1gB5A/qToSJm+3DvK0o2Ul47Gc43OEH4rmo=;
+  b=bKkUWunhARIRYLcaW0wVnDk2LtzXXbTvQorBsmnTsNuB4/kgTBgmzyxU
+   n242n/+U88Kh8xbFiJH3gAlCd/T+DIimvrW5kE52aMA0Ry7qAOqOT7jYa
+   LsLTHKbJ2ANg3DAAX+AJH8vsrFeG4xyX0AWR6unYFYMTzQ+XywPBG707T
+   cbWjySLrxeGRVK+YJYOyQR9Hmb7piCmsvq3Ov+RmteqFurFGOylrEZGqZ
+   yyEYrNxWqOh/hTCRup41iO3xcFdjsBUnCD//LHB8PwoUI+s2LnOt6hjF1
+   +VgCWG2gi2x2VY4nS8/7fyK7S0jkBIEMRQR7SV46HcBK6bARY+e95PAUy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="390637449"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="390637449"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:05:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="850246312"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="850246312"
+Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 07:05:17 -0700
+Date:   Fri, 27 Oct 2023 17:05:15 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     VAMSHI GAJJELA <vamshigajjela@google.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, manugautam@google.com,
+        Subhash Jadavani <sjadavani@google.com>,
+        Channa Kadabi <kadabi@google.com>
+Subject: Re: [PATCH v3 3/3] serial: core: Update uart_poll_timeout() function
+ to return unsigned long
+In-Reply-To: <CAMTSyjpzrwnbzcjm1nO9Zi7sn7yOGb8sxMjEJGgZoQLgDCx99g@mail.gmail.com>
+Message-ID: <3698d22b-857f-b6de-bf4a-913ac2317f46@linux.intel.com>
+References: <20231026135628.2800617-1-vamshigajjela@google.com> <2023102712-frolic-bush-3d67@gregkh> <CAMTSyjpzrwnbzcjm1nO9Zi7sn7yOGb8sxMjEJGgZoQLgDCx99g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: i09VU6HRxbq9GHHEBk8fb73x9FrSS4iJ
-X-Proofpoint-GUID: i09VU6HRxbq9GHHEBk8fb73x9FrSS4iJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-27_12,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- clxscore=1015 phishscore=0 suspectscore=0 mlxlogscore=982 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2310240000 definitions=main-2310270121
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-136478428-1698415519=:2740"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adis16460 device requires a stall time between SPI
-transactions (during which the chip select is inactive),
-with a minimum value equal to 16 microseconds.
-This commit adds 'spi-cs-inactive-delay-ns' property, which should
-indicate the stall time between consecutive SPI transactions.
-The specified minimum time may not be sufficient for all
-configurations.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
-changes in v3:
- - removed description
- - updated commit message
- Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+--8323329-136478428-1698415519=:2740
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-index 4e43c80e5119..4cacc9948726 100644
---- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-+++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-@@ -25,6 +25,10 @@ properties:
+On Fri, 27 Oct 2023, VAMSHI GAJJELA wrote:
 
-   spi-cpol: true
+> On Fri, Oct 27, 2023 at 12:13 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 07:26:28PM +0530, Vamshi Gajjela wrote:
+> > > From: VAMSHI GAJJELA <vamshigajjela@google.com>
+> >
+> > Please use lower case letters like I think you mean to?
+> Sure, I will update.
+> >
+> > Also, where are patches 1/3 and 2/3 of this series?  I can't do anything
+> > without them as well.
+> 1/3 is dropped:
+> https://lore.kernel.org/lkml/CAMTSyjqc118-by6LRHaSN7k8fOcR6K0kmYXdthPD7rqJuYOaVw@mail.gmail.com/
+> 2/3 is a clean up:
+> https://lore.kernel.org/lkml/CAMTSyjpiz_LVtVAzaNpD-xThtp6sKNy-Uvkr+CaH9b10VRYD9A@mail.gmail.com/
+> for 2/3 waiting on response from Ilpo Järvinen
 
-+  spi-cs-inactive-delay-ns:
-+    minimum: 16000
-+    default: 16000
-+
-   interrupts:
-     maxItems: 1
+I didn't realize you were waiting for some input.
 
---
-2.34.1
+You can do that rename if you want. Now that I looked again that patch, I 
+was considering that perhaps the local frame_time variable could also be 
+dropped in that function.
 
+-- 
+ i.
+
+--8323329-136478428-1698415519=:2740--
