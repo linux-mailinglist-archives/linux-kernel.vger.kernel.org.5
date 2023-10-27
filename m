@@ -2,45 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4665D7D90A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997BB7D90AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbjJ0IFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+        id S235012AbjJ0IGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235175AbjJ0IFi (ORCPT
+        with ESMTP id S231340AbjJ0IGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:05:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED72198A
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:05:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 942DCC433C8;
-        Fri, 27 Oct 2023 08:05:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698393922;
-        bh=ewMMbWlU4/Nmrn6PiahmId3D6QqeOBzMX4RkRLmIpts=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=nyJ0lzbzs+ehaAxhV2/IAt+pUoqzE3PbDed8ZvcJxLHnXqOvv20eNkKEhQyRjJuFE
-         1Vpgq/mJoXh/mhdSnxpLg0qzytIcDgFCWrbxAGSawpd5E2iZeayuAwI6IutWxTAxL6
-         ENY0Otl7XJl8s7JORRn11hEp04WIcDQT9ra3uUx6hb8aSQKeRloB8b2ool9b3Bvn0W
-         aAcKPlhHBiSzUPqZI1jfZafQ7z6j74nfzQC0gXAoc24enuR8enG4DBgdkbNVyw4vEQ
-         MgRXxKVNVUcfHuGTfbejozQCh9wq6SLtEo21KABoA47JtKFsq/0ICrbbvfXZ3wc9/x
-         pKOAx0rfokmyw==
-Message-ID: <dc0852dc-8207-4195-a6ad-41792357aeda@kernel.org>
-Date:   Fri, 27 Oct 2023 10:05:18 +0200
+        Fri, 27 Oct 2023 04:06:42 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183CFD9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:40 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507bd64814fso2481793e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698393998; x=1698998798; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fgULfd/BQf3rXOb2Liur3bE6zxBSiYu9TNmtJmWbpCs=;
+        b=Nr2WRBxuxdZCEyStn5AKTqJwjukjUD+Rw6WZ3yJPnrTbJ2F1L/8f3XUL57CTC/DB32
+         4dRzDd4aatK4ErHKupCBaLkT3gbLSNILfQ3sbzwvcqnWgdUdNgZwEMUWNggmvkxdqr1l
+         plC1t17dATm+8cCnuWl609h8NMJk4Wwu1jSj7i0Z1PdFxoYZYQyXo2DjYAJAuetRJKea
+         e99nsyezk1c+uKELhkRHKLm74pybmpe+0XQmt30KMuRZRntann+Mgbj75zUwuPuc7Du4
+         r+bncny7KsKAVcPK6smojdA8g4vYDvKmGCJEvHpG9UWuQ6MClwqF7VYEvScQk84pdfDb
+         aOdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698393998; x=1698998798;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fgULfd/BQf3rXOb2Liur3bE6zxBSiYu9TNmtJmWbpCs=;
+        b=PB8zTU/qQ4sBc8z0JSC4E5ZTQGFQVlUIslh7+pC+IrJfa0aT3Fdksm502Z6KHrQld1
+         wEjayqBbIS0DigPnbJxaEA7+fYmkTXlF0UDTJb2a4gqobDSwW9V6ELuQdlH6lzLxi+56
+         ovCTCfVwSyfpIKBh8vuOoPSMH/ZbrUu7vTSB9j9S7MesPntsN9l3i/l7OXT8K6G9m2QY
+         W6idvoMfYd72SghqX2QwD63UvM/cvmJ+JWawLqnSnxbMUYR5WU8D3wM34l7UK0K2nA9I
+         bEONGwAGdHN3/3Q4Q/X15itE4/xvAtyobdNk9rx2iO8CzeKMfQVOtQdFjzFdydLRI2y3
+         MgJQ==
+X-Gm-Message-State: AOJu0YzC7S/9ZHjQ79WcA1zAxk9NoIiDpjBQLtZsjwJ05yAjAbo+W3nW
+        0mzCfaEsM8CyKF7PwDxUyagS0Q==
+X-Google-Smtp-Source: AGHT+IEJFfYsTI78D03/L8NvageWyWtEeZq1rR3P3kFq9t3sgonnO4xsQxqYrk7ZOTDAfXzejtcLEA==
+X-Received: by 2002:ac2:5935:0:b0:503:1be5:24eb with SMTP id v21-20020ac25935000000b005031be524ebmr1190179lfi.50.1698393998333;
+        Fri, 27 Oct 2023 01:06:38 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id be11-20020a056512250b00b005081a25b095sm180122lfb.246.2023.10.27.01.06.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 01:06:37 -0700 (PDT)
+Message-ID: <f7b90711-015b-4261-b044-a63396e78c9f@linaro.org>
+Date:   Fri, 27 Oct 2023 10:06:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] drivers: misc: Add support for TPS65224 pfsm
- driver
+Subject: Re: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
 Content-Language: en-US
-To:     Gairuboina Sirisha <sirisha.gairuboina@Ltts.com>,
-        linux-kernel@vger.kernel.org
-Cc:     lee@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org
-References: <20231026133226.290040-1-sirisha.gairuboina@Ltts.com>
- <20231026133226.290040-4-sirisha.gairuboina@Ltts.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
+To:     Shradha Todi <shradha.t@samsung.com>, jingoohan1@gmail.com,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, alim.akhtar@samsung.com
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pankaj.dubey@samsung.com
+References: <CGME20231009062222epcas5p36768b75c13c7c79965b5863521361a64@epcas5p3.samsung.com>
+ <20231009062216.6729-1-shradha.t@samsung.com>
+ <0b4801da08a0$18877110$49965330$@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
  JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
@@ -50,142 +76,61 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  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
- 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 fv0=
-In-Reply-To: <20231026133226.290040-4-sirisha.gairuboina@Ltts.com>
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <0b4801da08a0$18877110$49965330$@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 15:32, Gairuboina Sirisha wrote:
-> From: Gairuboina Sirisha <sirisha.gairuboina@ltts.com>
-> 
-> Added support for pmic nvm set FSM_I2C_TRIGGER functions driver,
-> state control driver, Makefile and Kconfig
+On 27/10/2023 08:37, Shradha Todi wrote:
+> Gentle reminder to review this patch. Thanks in advance!
 > 
 
-...
+Please relax, and help out by reviewing other patches on the mailing
+lists in order to relieve the burden of maintainers and move your
+patches higher up the list.
 
-> +
-> +static int tps65224_pfsm_probe(struct platform_device *pdev)
-> +{
-> +	struct tps65224_pfsm *pfsm;
-> +	struct tps65224 *tps = dev_get_drvdata(pdev->dev.parent);
-> +	struct device *dev = &pdev->dev;
-> +	int irq;
-> +	int ret;
-> +	int i;
-> +
-> +	pfsm = devm_kzalloc(dev, sizeof(struct tps65224_pfsm), GFP_KERNEL);
-
-sizeof(*)
-
-> +	if (!pfsm)
-> +		return -ENOMEM;
-> +
-> +	pfsm->regmap = tps->regmap;
-> +
-> +	pfsm->miscdev.minor = MISC_DYNAMIC_MINOR;
-> +	pfsm->miscdev.name = devm_kasprintf(dev, GFP_KERNEL, "pfsm-%ld-0x%02x",
-> +						tps->chip_id, tps->reg);
-> +	pfsm->miscdev.fops = &tps65224_pfsm_fops;
-> +	pfsm->miscdev.parent = dev->parent;
-> +
-> +	for (i = 0 ; i < pdev->num_resources ; i++) {
-> +		irq = platform_get_irq_byname(pdev, pdev->resource[i].name);
-> +		if (irq < 0)
-> +			return dev_err_probe(dev, irq, "Failed to get %s irq\n",
-> +						 pdev->resource[i].name);
-> +
-> +		ret = devm_request_threaded_irq(dev, irq, NULL,
-> +						tps65224_pfsm_isr, IRQF_ONESHOT,
-> +						pdev->resource[i].name, pdev);
-> +		if (ret)
-> +			return dev_err_probe(dev, ret, "Failed to request irq\n");
-> +	}
-> +
-> +	platform_set_drvdata(pdev, pfsm);
-> +
-> +	return misc_register(&pfsm->miscdev);
-> +}
-> +
-> +static void tps65224_pfsm_remove(struct platform_device *pdev)
-> +{
-> +	struct tps65224_pfsm *pfsm = platform_get_drvdata(pdev);
-> +
-> +	misc_deregister(&pfsm->miscdev);
-> +}
-> +
-> +static struct platform_driver tps65224_pfsm_driver = {
-> +	.driver	= {
-> +		.name = "tps65224-pfsm",
-> +	},
-> +	.probe = tps65224_pfsm_probe,
-> +	.remove_new = tps65224_pfsm_remove,
-> +};
-> +
-> +module_platform_driver(tps65224_pfsm_driver);
-> +
-> +MODULE_ALIAS("platform:tps65224-pfsm");
-
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong.
-
-
-> +MODULE_AUTHOR("Gairuboina Sirisha <sirisha.gairuboina@ltts.com>");
-> +MODULE_DESCRIPTION("TPS65224 Pre-configurable Finite State Machine Driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/uapi/linux/tps65224_pfsm.h b/include/uapi/linux/tps65224_pfsm.h
-> new file mode 100644
-> index 000000000000..c0a135903b5d
-> --- /dev/null
-> +++ b/include/uapi/linux/tps65224_pfsm.h
-> @@ -0,0 +1,36 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Userspace ABI for TPS65224 PMIC Pre-configurable Finite State Machine
-> + *
-> + * Copyright (C) 2015 Texas Instruments Incorporated - https://www.ti.com/
-> + */
 
 Best regards,
 Krzysztof
