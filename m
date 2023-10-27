@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8D37D8E27
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7BD7D8E2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345123AbjJ0FaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 01:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        id S1345160AbjJ0Fae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJ0FaI (ORCPT
+        with ESMTP id S229501AbjJ0Faa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 01:30:08 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8511AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:30:03 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b8a88038b4so2151627a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698384603; x=1698989403; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDCChaj1gissqjEBEAMXe/0tc+K9t0+uAP8/ShNGqvA=;
-        b=LNADWBZAnh8NUreCJD4I3fKYf5PCkPmAYq4KJbAXktmFrV16Xe+gaZJc7z+MOenP19
-         ydXLRRg4bS7Xar3tZ5Zgv728l50zfg7wf4VITMa8oz9+U5yMRj8XxSysI4rhsf8zmoRH
-         nOMT5ketnzbVFbd33vGWI6UGGC8E96WgZewF3N6Sicf19QycYvHQElk9fZpPtIIgUHok
-         ZDiQFsyU9lbm7xbvIYNlPveyd+FzxpgAxAzXGZenE/RpFLNNdbm6Z7VhacumYmvP8AiR
-         KAPrnJWD0Nc0X+Fmzkw6MDEify8v8BhRUtsNZZcVxyc+R6WRRf6JvmZXy18WCi905bPj
-         mTOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698384603; x=1698989403;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EDCChaj1gissqjEBEAMXe/0tc+K9t0+uAP8/ShNGqvA=;
-        b=TJdFUkVcKd1MZBeVjWiQGCfDYogsRDu20A5Gwkm/qmkaqqjCWJ4u5IT+WpNWSdarog
-         UhjzLWpQwKv+tkHvXeCckdPRh8OM4wWrimeiSBBHgYvARzb9nA/MQWziscu+Li92dYwL
-         It2+bRsGk+NVZfeUWIxcyY1HXQ8V+K/DPFIQxynMtYxw6BNXXWMxdaBRdzfS3z3jWsmN
-         Tdjijn6MeEngB0O0HcJ0bWU3OD/9+3XXx5LeL0zHjKEZ7Pa9fiH7R/dTnpSxTztvNq6s
-         sKOIpQaiAqKW/0eC9HZX7IgXrAaI0EkYG4JCil4Rpf8amN8n2RlE+Ivje4hM3PAGsiLW
-         ywgg==
-X-Gm-Message-State: AOJu0YyXt8uucRt8r+q/POdy6HE/REZkGQWYHulX6Uk8Xhse/b0GwwWg
-        Rv6GQxJvEoEXBJ5gnePDQNlIaw==
-X-Google-Smtp-Source: AGHT+IEDdiUnBtNGv3NqKyoW3hwNthvCCMtRZ9osKz/+i+r83pEqPvuYCWs+QgwVReFiGJCBLU3PzA==
-X-Received: by 2002:a17:90b:3a90:b0:277:5cd5:6f80 with SMTP id om16-20020a17090b3a9000b002775cd56f80mr5789495pjb.16.1698384603045;
-        Thu, 26 Oct 2023 22:30:03 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id so3-20020a17090b1f8300b0027d0a60b9c9sm2554765pjb.28.2023.10.26.22.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 22:30:02 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 11:00:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: cpufreq: qcom-hw: document SM8560 CPUFREQ
- Hardware
-Message-ID: <20231027053000.hitqlo4a6lusdgzw@vireshk-i7>
-References: <20231025-topic-sm8650-upstream-bindings-cpufreq-v1-1-31dec4887d14@linaro.org>
+        Fri, 27 Oct 2023 01:30:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F0D1A7
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:30:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D2292C433C9;
+        Fri, 27 Oct 2023 05:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698384627;
+        bh=4CWjoHhCr3X2E7xAcEv+eOauN9xR9PQxvGnRuz2M7f8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Rvo5n6JlM9HkL9tiR+YtYBZ8lPs+RHHIi0KI1Vi/29KjTcfOxA0s2CFZr1Kk3Y6Be
+         MRR/kaTyZxgB+8oS2X6GtY68YMPIehmu0rLdQq4c0A8W2maXBwEwmTq3iigujAsFy0
+         2I+BT31EfZ8YT45VBR4SZAlWRz5T/i2wQA3Tx0Tieou+aqYfzvWtwDyP0SJmITdIWQ
+         /E2yN5wQiDkUv4D0ThQzW30pl4NzX19jmE+HWgXQLh7WoZrGTn9dUscIVSJvS8QZq9
+         Mp4vedvUz1sP5zQmuY6Xa2IpSt/poUBrNjLdgRBZ6OQU/smRloj1ixTQNLgtnh05dt
+         QlCQVeLp9/r4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA816E4CC0F;
+        Fri, 27 Oct 2023 05:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025-topic-sm8650-upstream-bindings-cpufreq-v1-1-31dec4887d14@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] MAINTAINERS: Remove linuxwwan@intel.com mailing list
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169838462775.19664.12297909147407168362.git-patchwork-notify@kernel.org>
+Date:   Fri, 27 Oct 2023 05:30:27 +0000
+References: <20231025130332.67995-2-bagasdotme@gmail.com>
+In-Reply-To: <20231025130332.67995-2-bagasdotme@gmail.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
+        johannes@sipsolutions.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        horms@kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-23, 09:25, Neil Armstrong wrote:
-> Document the CPUFREQ Hardware on the SM8650 Platform.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-> For convenience, a regularly refreshed linux-next based git tree containing
-> all the SM8650 related work is available at:
-> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
-> ---
->  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> index 0177d1ef0bf9..56fc71d6a081 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-> @@ -43,6 +43,7 @@ properties:
->                - qcom,sm8350-cpufreq-epss
->                - qcom,sm8450-cpufreq-epss
->                - qcom,sm8550-cpufreq-epss
-> +              - qcom,sm8650-cpufreq-epss
->            - const: qcom,cpufreq-epss
->  
->    reg:
+Hello:
 
-Applied. Thanks.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Wed, 25 Oct 2023 20:03:32 +0700 you wrote:
+> Messages submitted to the ML bounce (address not found error). In
+> fact, the ML was mistagged as person maintainer instead of mailing
+> list.
+> 
+> Remove the ML to keep Cc: lists a bit shorter and not to spam
+> everyone's inbox with postmaster notifications.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3] MAINTAINERS: Remove linuxwwan@intel.com mailing list
+    https://git.kernel.org/netdev/net-next/c/cc54d2e2c58a
+
+You are awesome, thank you!
 -- 
-viresh
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
