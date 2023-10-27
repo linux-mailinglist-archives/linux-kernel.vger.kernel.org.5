@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA897D9EBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47497D9EC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjJ0RTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 13:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        id S1345907AbjJ0RUJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 13:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjJ0RTC (ORCPT
+        with ESMTP id S232781AbjJ0RUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 13:19:02 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A3A1B3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 10:18:59 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 03F5A40E01A4;
-        Fri, 27 Oct 2023 17:18:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HllBJUNr44Gr; Fri, 27 Oct 2023 17:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1698427135; bh=qDm3DudrZTAKns1U0BwDxZt3S4WMxDrw0oPKVGLRADY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jXNJU0evbHc96bLz+TYpIUlCi2+cNm3qNFckh4MgA642e1wNTkmzs6lbRPt4qum17
-         Cx1AHaefc6aGdbi9eRwDnSg1fq0u5y+Y+xm9YhsmXpq0mdujf3FcmbktnV+BSaXtCJ
-         +sjrH4BLHo/D/gFxNLLVwD+puVohyMH9O+SK+NI7r0bAXNI/aiTdixa/vXUkCl87oK
-         TSgNPqRAzqTfP1azLWGKBGd4hAMgo4+WzL78hoR2NsCpu1P36wP7dq/gP9SQ8K5MP2
-         wDbmVdK850I6G/40bzt1geLQr9nQ5slliFJ/SKbWZ4+vJTI9Yb/jzuYe2ZXWJXEpXD
-         jaGEI2w+o489Djn+Ep75yHPrGjlxjnbUFRkm+DJ5R6ysV3HwVBVTjs2ZzPlbgiukfN
-         J2xMEFS2WtONX3HeY/Ig39p88/tesEkDImRwDcB3T02mpdkqLLzL6nWDRyytfEJpaB
-         mx9kmOHgETBawZJKBewLFDqE9XrfemZ46epev5XzK9c6gcAQ15lFiu81EUvXyu/lqJ
-         /VVHeMbzYHwYG6vfFT62IayjI+T4zjfs+mlYpCCiQIExcny8D2OdQVoF/eemfAZyWj
-         UAcfO648DUeqtpYH7IcPI/RuPvOc7K8MGthZoVWLj6eCMFB6czywJAyuhZo04vI8n3
-         jJ5ztMT/baq5zAgTteCYMWJk=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A8AD340E018F;
-        Fri, 27 Oct 2023 17:18:52 +0000 (UTC)
-Date:   Fri, 27 Oct 2023 19:18:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/platform for v6.7
-Message-ID: <20231027171846.GPZTvw9k7KBkOXXONF@fat_crate.local>
+        Fri, 27 Oct 2023 13:20:06 -0400
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F89128;
+        Fri, 27 Oct 2023 10:20:01 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-57f137dffa5so298908eaf.1;
+        Fri, 27 Oct 2023 10:20:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698427200; x=1699032000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5AStNFe6wJs0Em1n6/3g792uBA5JpFkSsw8YocrKn8w=;
+        b=Cva7tRbjzJe4Km7Zh/mWL+yU7NRune2ybcpGY8RUdaCJFdM+xncyHlBsxR3O2kWas4
+         6m954i4r78O8oVU1wGCavkmPnaT8Y76regSOWvKcARV/IJf9b63qckw3d6g4SLvQJXb7
+         2dc41yJnYVWPeHYEGXhY9uVpuG+erIg5zbK4Vw3San1TSmb8sf3V4b3ciG3XgMDouoTp
+         FLsKwMIl4rsLEnkybFpQsZKIZdgsAJJTRcsqksiXJQVq7fJQNNXZ7ZQsjaqOzf9mpkRK
+         xZK+MWg7jdPxHTcnpoCk/Iycn1QCbNlIYNMwsNachNUBs8mLBjwXmJBqApUYYKgowdaw
+         xjIg==
+X-Gm-Message-State: AOJu0YyW62m3SnCbpHYjP7oNFjIJPI+AHegD0S7OJPH390CTytxlVLOz
+        j+0USL3V4UvJiJOkXcUEFjyR6IplHWznCiy0eqA=
+X-Google-Smtp-Source: AGHT+IEnXHCS3D+uVxFVTEqni2SKA3ep1nI5wWXs/L9Fl6BbY/lCs8bMTxxhZjIi9+46bSyv0CUH4gjB3QbplFb5d3A=
+X-Received: by 2002:a4a:d743:0:b0:584:17d0:de3d with SMTP id
+ h3-20020a4ad743000000b0058417d0de3dmr3482378oot.1.1698427200507; Fri, 27 Oct
+ 2023 10:20:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231026083335.12551-1-raag.jadav@intel.com> <20231027081855.GK3208943@black.fi.intel.com>
+ <ZTuMo2qDO6Aqq3D_@black.fi.intel.com> <ZTvGaNZmGWpsM-yw@black.fi.intel.com>
+ <20231027142856.GL3208943@black.fi.intel.com> <ZTvqYwFWm9PQeKIU@black.fi.intel.com>
+In-Reply-To: <ZTvqYwFWm9PQeKIU@black.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 27 Oct 2023 19:19:49 +0200
+Message-ID: <CAJZ5v0hkB6Lm82ie6hfzFVDaqEj7DYxnYxD5NRQNXZxKZjL+xg@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        rafael@kernel.org, len.brown@intel.com,
+        andriy.shevchenko@linux.intel.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Oct 27, 2023 at 6:51 PM Raag Jadav <raag.jadav@intel.com> wrote:
+>
+> On Fri, Oct 27, 2023 at 05:28:56PM +0300, Mika Westerberg wrote:
+> > On Fri, Oct 27, 2023 at 05:17:12PM +0300, Raag Jadav wrote:
+> > > Or perhaps something like,
+> > >
+> > > bool acpi_dev_uid_match(struct acpi_device *adev, const void *uid2, enum uid_type type)
+> > > {
+> > >         u64 uid1_d, uid2_d;
+> > >
+> > >         if (type == UID_TYPE_STR) {
+> > >                 char *uid2_s = (char *)uid2;
+> > >                 if (!(uid2_s && !kstrtou64(uid2_s, 0, &uid2_d)))
+> > >                         return false;
+> > >         } else if (type == UID_TYPE_INT) {
+> > >                 u64 *uid2_p;
+> > >                 uid2_p = (u64 *)uid2;
+> > >                 uid2_d = *uid2_p;
+> > >         } else {
+> > >                 return false;
+> > >         }
+> > >
+> > >         if (!acpi_dev_uid_to_integer(adev, &uid1_d) && uid1_d == uid2_d)
+> > >                 return true;
+> > >         else
+> > >                 return false;
+> > > }
+> > >
+> > > Although this looks unnecessarily hideous.
+> >
+> > Indeed, but using the _Generic() you should be able to have
+> > a single acpi_dev_uid_match() to work for either type so:
+> >
+> > acpi_dev_uid_match(adev, "1")
+> >
+> > and
+> >
+> > acpi_dev_uid_match(adev, 1)
+> >
+> > would both work with type checkings etc.
+> >
+> > Not sure if this is worth the trouble though.
+>
+> Well, in that case we can probably try both and hope for the best ;)
+>
+> bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+> {
+>         const char *uid1 = acpi_device_uid(adev);
+>         u64 uid1_d;
+>
+>         return uid1 && uid2 && (!strcmp(uid1, uid2) ||
+>                (!kstrtou64(uid1, 0, &uid1_d) && uid1_d == (u64)uid2));
+> }
+>
+> But I'm guessing the compiler wouldn't be very happy about this.
 
-please pull a bunch of x86/platform updates for 6.7.
+IMO it would be better to use the observation that if the uid2 string
+can be successfully cast to an int and the device's unique_id string
+can't be cast to an int (or the other way around), there is no match.
 
-Thx.
+If they both can be cast to an int, they match as long as the casting
+results are equal.
 
----
-
-The following changes since commit f0b0d403eabbe135d8dbb40ad5e41018947d336c:
-
-  Merge tag 'kbuild-fixes-v6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild (2023-09-16 15:27:00 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_platform_for_6.7_rc1
-
-for you to fetch changes up to 2a565258b3f4bbdc7a3c09cd02082cb286a7bffc:
-
-  x86/amd_nb: Use Family 19h Models 60h-7Fh Function 4 IDs (2023-10-03 11:25:01 +0200)
-
-----------------------------------------------------------------
-- Make sure PCI function 4 IDs of AMD family 0x19, models 0x60-0x7f are
-  actually used in the amd_nb.c enumeration
-
-- Add support for extracting NUMA information from devicetree for
-  Hyper-V usages
-
-- Add PCI device IDs for the new AMD MI300 AI accelerators
-
-- Annotate an array in struct uv_rtc_timer_head with the new
-  __counted_by attribute
-
-- Rework UV's NMI action parameter handling
-
-----------------------------------------------------------------
-Hans de Goede (1):
-      x86/platform/uv: Rework NMI "action" modparam handling
-
-Kees Cook (1):
-      x86/platform/uv: Annotate struct uv_rtc_timer_head with __counted_by
-
-Muralidhara M K (1):
-      x86/amd_nb: Add AMD Family MI300 PCI IDs
-
-Saurabh Sengar (2):
-      x86/of: Move the x86_flattree_get_config() call out of x86_dtb_init()
-      x86/numa: Add Devicetree support
-
-Yazen Ghannam (1):
-      x86/amd_nb: Use Family 19h Models 60h-7Fh Function 4 IDs
-
- arch/x86/Kconfig               |   1 +
- arch/x86/include/asm/prom.h    |   5 ++
- arch/x86/kernel/amd_nb.c       |   8 ++++
- arch/x86/kernel/devicetree.c   |   6 +--
- arch/x86/kernel/setup.c        |   2 +
- arch/x86/mm/numa.c             |   3 ++
- arch/x86/platform/uv/uv_nmi.c  | 104 ++++++++++++++++++++++-------------------
- arch/x86/platform/uv/uv_time.c |   2 +-
- include/linux/pci_ids.h        |   1 +
- 9 files changed, 79 insertions(+), 53 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+If none of them can be cast to an int,  they need to be compared as strings.
