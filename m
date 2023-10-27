@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E377D9E4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F407D9E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345942AbjJ0Q7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        id S1346079AbjJ0Q7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345900AbjJ0Q7U (ORCPT
+        with ESMTP id S232192AbjJ0Q7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:59:20 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CB4E1;
-        Fri, 27 Oct 2023 09:59:18 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9bf22fe05so18345035ad.2;
-        Fri, 27 Oct 2023 09:59:18 -0700 (PDT)
+        Fri, 27 Oct 2023 12:59:22 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C971A5;
+        Fri, 27 Oct 2023 09:59:21 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5ac865d1358so1909468a12.3;
+        Fri, 27 Oct 2023 09:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698425958; x=1699030758; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698425960; x=1699030760; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iCHqUpshEkU4uWbTOdbsyvXx4BZI7LlABnlafBr9UIc=;
-        b=Y2D3Dev0YxhSuZG7DQue0kJbsaTscjpE8ecYc9xzg6gjvPc/vaB3SvTa5Hdbwx++6M
-         onswnAMpneOB+pP50r21w48VMq0IuMyji38Sd7mxtearc8e9SM5hzl1khdIccAkUR9CJ
-         TUloYaROz9CVUpmO+3jBcs647220Ncwb66onAQz89LCug9Cwn0pE9D7WK+YoinkfPLCd
-         3UW4t0oDjo3byqzuK9y+Vj0m0NRYYYUuDSk/y9afDHkaLQ/kZlMVtlZSGWj1ZjtbQhPt
-         5Qv71FBO6509bwKAf+c5wKDsjMSeyjpCwyOqV8L7j4S9x3UdFbbE7/Nfrw3OpBDMxGKL
-         GXZQ==
+        bh=hu1FhjWQAAQQu/erPFOwuagpkPUc4fNsZ+YMm7C14LI=;
+        b=Z8Px8FgQIUfLikDfmRD+S+Ca7zUkT2G3MvDc3Er6y2m2MQ+ngRbFsTtXlmofrc26vd
+         nc24McslOsK7fWtBVfkJwYbSLGPetHBHV09phZ64Mu/OkFdMvrC/t+xSnAA6q8A8rBuL
+         fmUaKqthzl6zBJv2A4aRWPNrvUKs6NtUFTLbQQy3wpInTikdZ8nxT6vsL7HKPIqdREpD
+         kw3Mb9EDZZU4lR+HgtZUbVKaktkbDYfsg7CCzKcYWCNgw/s0H2uvlJ4iT6srig6clmxk
+         mSTPek9De1+FEGi6/aKk4aWWGcrk8aSYUotPW73QNPrW0r3Yt931XYsbS+i39bzmwpAp
+         ur/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698425958; x=1699030758;
+        d=1e100.net; s=20230601; t=1698425960; x=1699030760;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iCHqUpshEkU4uWbTOdbsyvXx4BZI7LlABnlafBr9UIc=;
-        b=T217RI5MlvPkCt/D93bt+eJZTP2eBqHcszPNkPCLcwuTpdrkpSxcvVcFhLejMO41AS
-         XKS+D6daH+hVe1m1AHqTzFJ4//ixVrRAI6yrmq9wHURoOxmfkqkwSWwF/DpbmkWt/1Wf
-         1sk/JQG9EGfPW30+2nISD7fNo3YORCe23pOfcIFqbQRsAERwZYF98QxOEVY6LmLT+7zD
-         7cKfvbEcZxXMb2kB8FCcWFPAzj8kJddUjU0UEB5QHa9i32pSjVQCqmUws39e0KD1N2Tm
-         VGbkhxZ9V9ocKHjgdQQbqPCOI2k+GWTsFzIfM5Oo+MEua4KwlQDKEgzTpdcvv8TyBFd9
-         AhKA==
-X-Gm-Message-State: AOJu0Yzn0pp6aJ37DICfxCoYMFXZtiMY6wrHjptTjYU1ai2EInzF4/xR
-        /ZZERE2p1qgPaEi6dpO6lJc=
-X-Google-Smtp-Source: AGHT+IE1CRcZ68zfn23VeMoSQ6OlsNc9UY4jVYsIdmVtGSYUiW5fTt9cYVK7YDD7M/nHh0YLWuRTjA==
-X-Received: by 2002:a17:902:f34d:b0:1ca:e4b:148d with SMTP id q13-20020a170902f34d00b001ca0e4b148dmr2584344ple.65.1698425958278;
-        Fri, 27 Oct 2023 09:59:18 -0700 (PDT)
+        bh=hu1FhjWQAAQQu/erPFOwuagpkPUc4fNsZ+YMm7C14LI=;
+        b=f2IGeS3g4HCMOParykFikm4JosohtcmPTMRGTCYEIp1gjJyiPRXZx//aj7IQZGg2P4
+         r/ihpjje2q6MMQaYrLNJUIz096ZdCp9YJdgsl5eeUYZaHfM5dwPquDK3FBJFlKSHIDXD
+         pS+R2bVG3I8wheHZV2qOap9msu1YnUzIo5mx6QbvznG/aJmJOFpi3MrUwi3BgwtcNv9+
+         32qOworrJ+mIkvWmAD6Oky+W3lVgCNt81X36epehCONg2UQZAW0bCJzqLcx9aOt8UXhr
+         stf5I+1QoWk6d5lctXuoQ6psU9EuiZ1CJfJrOr2kexJ93HfkWAoalneoNV5TlHIgLhyx
+         DkEg==
+X-Gm-Message-State: AOJu0YzpUjgCtCrLuhiNHNnVmumsMSUaSLm2Cs66sL8wkFaYQWSjRUfn
+        qq5gscFLm3dVriyBu8sDcVQ=
+X-Google-Smtp-Source: AGHT+IGq/OT51OWFTDYcHIvbMyrTngDK3vmX2a/+eGD+RvH40j5mBW0SCq03abTpvLoM4Y/jLrb/8A==
+X-Received: by 2002:a17:90a:77c2:b0:27d:5cca:9b69 with SMTP id e2-20020a17090a77c200b0027d5cca9b69mr3056136pjs.45.1698425960498;
+        Fri, 27 Oct 2023 09:59:20 -0700 (PDT)
 Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id w9-20020a170902e88900b001b7fd27144dsm1797802plg.40.2023.10.27.09.59.17
+        by smtp.gmail.com with ESMTPSA id x5-20020a17090abc8500b002800eeafd79sm1301858pjr.52.2023.10.27.09.59.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 09:59:17 -0700 (PDT)
+        Fri, 27 Oct 2023 09:59:19 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
@@ -62,9 +62,9 @@ Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/7] drm/msm/gem: Remove submit_unlock_unpin_bo()
-Date:   Fri, 27 Oct 2023 09:58:36 -0700
-Message-ID: <20231027165859.395638-3-robdclark@gmail.com>
+Subject: [PATCH 3/7] drm/msm/gem: Don't queue job to sched in error cases
+Date:   Fri, 27 Oct 2023 09:58:37 -0700
+Message-ID: <20231027165859.395638-4-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231027165859.395638-1-robdclark@gmail.com>
 References: <20231027165859.395638-1-robdclark@gmail.com>
@@ -82,45 +82,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-The only point it is called is before pinning objects, so the "unpin"
-part of the name is fiction.  Just remove call submit_cleanup_bo()
-directly.
+We shouldn't be running the job in error cases.  This also avoids having
+to think too hard about where the objs get unpinned (and if necessary,
+the resv takes over tracking that the obj is busy).. ie. error cases it
+always happens synchronously, and normal cases it happens from scheduler
+job_run() callback.
 
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/gpu/drm/msm/msm_gem_submit.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/msm/msm_gem_submit.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index 996274ef32a6..2d5527dc3e1a 100644
+index 2d5527dc3e1a..786b48a55309 100644
 --- a/drivers/gpu/drm/msm/msm_gem_submit.c
 +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -272,12 +272,6 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
- 		dma_resv_unlock(obj->resv);
- }
- 
--static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
--{
--	unsigned cleanup_flags = BO_PINNED | BO_LOCKED;
--	submit_cleanup_bo(submit, i, cleanup_flags);
--}
--
- /* This is where we make sure all the bo's are reserved and pin'd: */
- static int submit_lock_objects(struct msm_gem_submit *submit)
- {
-@@ -313,10 +307,10 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+@@ -946,6 +946,9 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 		}
  	}
  
- 	for (; i >= 0; i--)
--		submit_unlock_unpin_bo(submit, i);
-+		submit_cleanup_bo(submit, i, BO_LOCKED);
++	if (ret)
++		goto out;
++
+ 	submit_attach_object_fences(submit);
  
- 	if (slow_locked > 0)
--		submit_unlock_unpin_bo(submit, slow_locked);
-+		submit_cleanup_bo(submit, slow_locked, BO_LOCKED);
- 
- 	if (ret == -EDEADLK) {
- 		struct drm_gem_object *obj = submit->bos[contended].obj;
+ 	/* The scheduler owns a ref now: */
 -- 
 2.41.0
 
