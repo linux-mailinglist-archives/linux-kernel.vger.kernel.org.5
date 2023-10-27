@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00407D95FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA457D95FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345726AbjJ0LGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S1345637AbjJ0LHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbjJ0LGi (ORCPT
+        with ESMTP id S230101AbjJ0LHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:06:38 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05601AA
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:06:35 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507ad511315so2857462e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:06:35 -0700 (PDT)
+        Fri, 27 Oct 2023 07:07:16 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEAD129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:07:14 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507bd64814fso2708478e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698404794; x=1699009594; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698404832; x=1699009632; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QjFnua1NuNprcnVPcdRFEVjvawhhfFX2Q//0zt+xqMo=;
-        b=wyslFgI8vOcdhwCFgF9Yg98DUb6vXJGMfZMsziObdT38MyIUjYqFCjWSKFnjZwSFJY
-         E/XP4z/j2vCpBHFWVAsPushgi7f458rnlxXdKnEi4qO6RKLsFD8jwxUnw9CWhVK14GjJ
-         rhCYk+xq06l2Y/9relFob3ClwQbj4SrMF0IQ8VDpGUa35FS+GmmuITa9h2uv0tPWweRr
-         pegte7xodkq6Uln6BNGiyfe110rnsdDxTrSRNfJay70MYfbbrSmrL33zHUcxKk811A6J
-         bheCw6rH0ZozGS9mHBcep9ATMTqqYputFeG2417fHo1zOfynBaSXLwnHYAW+ZXy4UIxk
-         Bu2w==
+        bh=dYmoAZ6D1Y5eAnBhMuhr3K3LD3rxWA06Ac0Boy3nzSY=;
+        b=isqkL3Npj11JsIQAGcdBZQn33gM+5+0ws0Yemf9FMt9h7aCKpiq3hSSGqRQrpH9Eem
+         3keZ3JJU6aQ1RvNDox9ZCC2WbMKTskqZJXPCNVIPaVDAieYsHQaZ6wHCGqrdA11Qrd8v
+         npIBq9M0ya++zNiNkZztBVFRkRfoG70vrwyfe3BNw4KsmH5o7h4w4OiKk8gPsjR5xyi3
+         w7uiGSBvkpITtnT8+tcUZhDq1X478t1YVXWDCspPA4MU4wHIeu8Tnq6kZ9Gpjswv1oAY
+         XqpmRJTRMcO4nTKY8ZM1MdfQ7Do1aQ5/wFV/vieuFqJriMx+PGL5QWvarDZkE3S+CVFi
+         iYgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698404794; x=1699009594;
+        d=1e100.net; s=20230601; t=1698404832; x=1699009632;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QjFnua1NuNprcnVPcdRFEVjvawhhfFX2Q//0zt+xqMo=;
-        b=HXWBz/EW/T13fgO6RLL6HwMNKixlo0WXSFXkyzdQqHl3ojObgNXxl0j1S1cufNfOu3
-         eXlZN/cZRI7LyBljKElsLxgwv6j5KFCmisyRUxx6ddDlEawEoBC9XA9vy56VrpxqOjPy
-         ml+1p9SxV96VKwPB0ykZPNaZQ5pTGzJIhUDZWMyecM3N6WsLzdwNkN016Au1YbmFNttT
-         kUxWEc7TAswgCvtZY0j2pVg4gmWYg+SR78oEfL4dexaNiRVkZ8Z+pxyRINAW+/DhN1Zk
-         JSdscS3Ok/mpiJ7eDt9k/w1GT6foQflfbxRuEtp5XKDdaFT3kAbonv0zT5tNIfaYE4gi
-         5Ldw==
-X-Gm-Message-State: AOJu0YwEon6DVuXjjyhihUOdQx0kAL5kp7b/JQlESAjP8zQkMmmZJNF/
-        YYx4zUP6Goek5vn1rUyvTdxZmw==
-X-Google-Smtp-Source: AGHT+IGiVp3irsSJHWwCE8sYrw+Y+bBWhl9tUkAy3aT41B69HbU+ku1ZCqQmn7+3VoDn14ey9kSULQ==
-X-Received: by 2002:a19:f70c:0:b0:503:3278:3221 with SMTP id z12-20020a19f70c000000b0050332783221mr1515372lfe.69.1698404793963;
-        Fri, 27 Oct 2023 04:06:33 -0700 (PDT)
+        bh=dYmoAZ6D1Y5eAnBhMuhr3K3LD3rxWA06Ac0Boy3nzSY=;
+        b=kY5xu6OfFqqaVDMtCxRjKN1LWZ8a9JUopAR63RrHxwJyjROVRrcFuZhXIHk/TgCDdK
+         v1NUUmdX3oyxDg85/ezNHgPfIku+CQRISXW/W6Y9SFvSWEdW3JLi6lom238xirU4rZUb
+         oMrBcyC4bmpigt9QLFxNazmkQ/13ZJfTLgtqHnVNzCqbkMnkVA0RCNM0PTCjQ0MZvrJp
+         EEEyPQKZceR0Clx7KOp5If6RHpCcfaXOxC8ie8yLZEYQJaw2noAK8VDKC9OykorVdDSe
+         izaNlpMJmulTJXErGlXSM8uU6LR8z3ANz/64Su/SAau87wmSGE3g/qbdi+kbPfZPTpuA
+         PJ4A==
+X-Gm-Message-State: AOJu0YyTCQwtXnWZlsrVpvGFCWvyoyW9VOL6SMRV98u41toZWt5XADA5
+        tq1ZpidlJrRGNBguIGXbUWTL1g==
+X-Google-Smtp-Source: AGHT+IEBrFm+KVtNdv3CB/7mtFROOKhgAd+2YAmBTZ5w+j8ciDOBe2NnWi2KyUsWnfm5fLKQQSXaTw==
+X-Received: by 2002:ac2:4f13:0:b0:505:7276:8a5f with SMTP id k19-20020ac24f13000000b0050572768a5fmr2084938lfr.2.1698404832269;
+        Fri, 27 Oct 2023 04:07:12 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id m28-20020ac24adc000000b00507d478c211sm237468lfp.76.2023.10.27.04.06.32
+        by smtp.gmail.com with ESMTPSA id m28-20020ac24adc000000b00507d478c211sm237468lfp.76.2023.10.27.04.07.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 04:06:33 -0700 (PDT)
-Message-ID: <682e25ca-fb03-45a4-a9a8-bdf4247e027b@linaro.org>
-Date:   Fri, 27 Oct 2023 13:06:32 +0200
+        Fri, 27 Oct 2023 04:07:11 -0700 (PDT)
+Message-ID: <7b7068b0-886d-4964-bb53-2658ec84faeb@linaro.org>
+Date:   Fri, 27 Oct 2023 13:07:11 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 0/2] dt-bindings: mtd: partitions: Export special
@@ -117,8 +117,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -129,9 +129,15 @@ On 27/10/2023 11:46, Edward Chow wrote:
 > There are special "offset" and "size" values defined and documented in
 > linux/mtd/partitions.h:
 > 
+> /* consume as much as possible, leaving size after the end of partition. */
+>  #define MTDPART_OFS_RETAIN (uint64_t)(-3)
+> 
 
+Also:
 
-Missing changelog. I already see you ignored my comments :/
+Do not attach (thread) your patchsets to some other threads (unrelated
+or older versions). This buries them deep in the mailbox and might
+interfere with applying entire sets.
 
 Best regards,
 Krzysztof
