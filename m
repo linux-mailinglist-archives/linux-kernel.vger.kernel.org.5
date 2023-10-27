@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 427717D8ED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5548C7D8ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345216AbjJ0Ghl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S1345244AbjJ0Gh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0Ghj (ORCPT
+        with ESMTP id S229604AbjJ0Gh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:37:39 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E627E1BD
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:37:36 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc13149621so2864425ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:37:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698388656; x=1698993456; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SzSfttDbr69NJfAH/KFCN3jVkR7G3r+bHSvK7He6Rw8=;
-        b=MBCI807YAzzmqA0wdG+axJWEAbb1J9VYs8gNpiTOT8LGn8SPjc38Ew4UgdvdtbRsLl
-         MX6c/wNCjG4VLdUYVsP2rVhX+lfIayfz+GAxNoiw5NxxyluLEKsXCre+0kH7CCHI6kte
-         I5rct+bQTkk/ueyBmblE5v9/EU12mt/SFPGwxHt2hFFMoG9aAwPoxZ+0Ec5U6DWhr0Rt
-         Nu3ZxgKsMOruiJK3KA2TnSgyGW9NMyCjgW4uWtimlqzVUmp+9AY5hVFtzd6m1ls1SyfI
-         moa3s2YohLe4TlZ6Ni1lshqlyI3H5PWTsnXsJyC9ryFb5StFvlDvczkt+6rXa1/Dz8bY
-         NPTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698388656; x=1698993456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzSfttDbr69NJfAH/KFCN3jVkR7G3r+bHSvK7He6Rw8=;
-        b=MW/g/lBb/d1O1U3Ekf0MVuZSWy2IDi5JkPsTzBND9Y2VeSYIg5hU/i0UU1uMiNXbv2
-         dpw4VEWiH2vaT3sxN0Y9Xjr6+6n2ac/EHNi4BpQDX9iZ9E8k08EezXTBdaYwqsO1bsjL
-         eaV6+S3comFVx6jYmKPBWUUGLIL5KuzNbLgg5sjod11E0XqErsvKLNssjsgf1+dQyZfV
-         zwjKH9BHcqdmfNFjJbCdYHsAeYxdO7S3RaF3P9h7/qLAwaRcVNPf0L4KC0Tk3qoU1sR9
-         3R40inKSKTHWESDXWJhVRFi/EHWXbgeEU9gG29rFbYERfCdodoc3QZqhkTzB62iMDhul
-         kPvg==
-X-Gm-Message-State: AOJu0Yzl1+srZI/mo3JdL2YQ00AyWbok9IhaZMeBiyt6iQyd+z5xlFWD
-        LDlrzSe4pgVJuiuh5wsfPEE=
-X-Google-Smtp-Source: AGHT+IH9cSlLevIWT6YZkinJxKgWDc1KwsWHT9iUrhTAkvOQBUVFy6ss4UVZnuJKaQun311Ybn/MiA==
-X-Received: by 2002:a05:6a20:3c8d:b0:17b:170c:2d11 with SMTP id b13-20020a056a203c8d00b0017b170c2d11mr2283271pzj.6.1698388656266;
-        Thu, 26 Oct 2023 23:37:36 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.208])
-        by smtp.gmail.com with ESMTPSA id h7-20020aa796c7000000b006b2dff03b3csm632673pfq.113.2023.10.26.23.37.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 23:37:35 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        mst@redhat.com, michael.christie@oracle.com,
-        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
-        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH v3] Fixing directly deferencing a __rcu pointer warning
-Date:   Fri, 27 Oct 2023 12:07:13 +0530
-Message-Id: <20231027063713.1018624-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231026114632-mutt-send-email-mst@kernel.org>
-References: <20231026114632-mutt-send-email-mst@kernel.org>
+        Fri, 27 Oct 2023 02:37:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAE5121
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:37:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37ED2C433C8;
+        Fri, 27 Oct 2023 06:37:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698388643;
+        bh=iTtuERV2GGYkyPX4sdPoambzqvDILTxFvFsnlUuWTEs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Xha9T82PS3pmzm0UIVeMCGsm2lj7BEV83PPvtrPif94MJYHU+mWsTCpnnPRAVJNov
+         w9mUwd+MZUQqkrkY9vL/l7E4Zglp4e6aZVW5dVf5IRNq8YJpDpdvYOOj8dU7Um98cR
+         9B/VNSB8DWM7xBL3LBIf/d4zYR/esLLntEV8N+yxGm1r3LiUIdfveiCaC+jKpFVkUx
+         Snibywkb+xrFkL+2XLQjybVPpzuNocDh6dhNR1eRi6FPLgl37YoklJWshA4WyKepvZ
+         jBz5TAB7ZaBIRZIWypyoTbB72W5QiTSyU1cu5kTRt5Dz0FwsbDPNKFJCbJoNk7EVpJ
+         c1uzmAAAP/+/Q==
+Message-ID: <09707469-193b-43c5-8503-b75f97ba1fbf@kernel.org>
+Date:   Fri, 27 Oct 2023 09:37:17 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] usb: dwc3: Modify runtime pm ops to handle bus
+ suspend
+Content-Language: en-US
+To:     Elson Serrao <quic_eserrao@quicinc.com>,
+        gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-4-quic_eserrao@quicinc.com>
+ <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+ <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+ <0dee3bec-d49f-4808-a2f8-7a4205303e1f@kernel.org>
+ <c7fc7bc2-1a84-e6b5-5198-1b8cc602d738@quicinc.com>
+ <bd74947f-8827-4539-a590-9c53d5ddd02d@kernel.org>
+ <ceb0f48f-8db9-40ae-769a-08e36373b922@quicinc.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <ceb0f48f-8db9-40ae-769a-08e36373b922@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the warning about directly dereferencing a pointer
-tagged with __rcu annotation.
-
-Dereferencing the pointers tagged with __rcu directly should
-always be avoided according to the docs. There is a rcu helper
-functions rcu_dereference(...) to use when dereferencing a __rcu
-pointer. This functions returns the non __rcu tagged pointer which
-can be dereferenced just like a normal pointers.
 
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
----
- kernel/fork.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 27/10/2023 03:07, Elson Serrao wrote:
+> 
+> 
+> 
+>>>>>>
+>>>>>> While this takes care of runtime suspend case, what about system_suspend?
+>>>>>> Should this check be moved to dwc3_suspend_common() instead?
+>>>>>>
+>>>>>
+>>>>> Sure I can move these checks to dwc3_suspend_common to make it generic.
+>>>>
+>>>> Before you do that let's first decide how we want the gadget driver to behave
+>>>> in system_suspend case.
+>>>>
+>>>> Current behavior is to Disconnect from the Host.
+>>>>
+>>>> Earlier I was thinking on the lines that we prevent system suspend if
+>>>> we are not already in USB suspend. But I'm not sure if that is the right
+>>>> thing to do anymore. Mainly because, system suspend is a result of user
+>>>> request and it may not be nice to not to meet his/her request.
+>>>
+>>> Agree. Irrespective of whether USB is suspended or not it is better to honor the system suspend request from user.
+>>>
+>>>> Maybe best to leave this policy handling to user space?
+>>>> i.e. if user wants USB gadget operation to be alive, he will not issue
+>>>> system suspend?
+>>>>
+>>>
+>>> Sure. So below two cases
+>>>
+>>> Case1: User doesn't care if gadget operation is alive and triggers system suspend irrespective of USB suspend. Like you mentioned, current behavior already takes care of this and initiates a DISCONNECT
+>>>
+>>> Case2:  User wants gadget to stay alive and hence can trigger system suspend only when USB is suspended (there are already user space hooks that read cdev->suspended bit to tell whether USB is suspended or not for user to decide). Attempts to request system suspend when USB is not suspended, would result in a DISCONNECT.
+>>>
+>>> For supporting Case2 from gadget driver point of view, we need to extend this series by having relevant checks in suspend_common()
+>>>
+>>> Also, is it better to provide separate flags to control the gadget driver behavior for runtime suspend Vs system suspend when USB is suspended ? For example, what if we want to enable bus suspend handling for runtime suspend only and not for system suspend (Case1).
+>>
+>> But you mentioned that for Case1, USB gadget would disconnect from Host. So USB will be in disconnected state and USB controller can be fully de-activated? Except maybe wakeup handling to bring system out of suspend on a USB plug/unplug event?
+>> Why do we need separate flags for?
+>>
+> 
+> Sorry let me clarify. This is in reference to deciding how we want the dwc3 driver to behave in system_suspend case.
+> 
+> One option is to continue with the existing behavior where USB gadget would disconnect from Host irrespective of bus suspend state. We dont need any modification in this case and we can leave this series limited to runtime suspend only.
+> 
+> Second option is to stay connected IF we are in bus suspend state (U3/L2) otherwise DISCONNECT IF we are not in bus suspend state. The main motivation is to preserve the ongoing usb session
+> without going through a re-enumeration (ofcourse true only if we are in bus suspend state). This would need relevant checks in suspend_common().
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..e78649974669 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
- 
- 	retval = -EAGAIN;
- 	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
--		if (p->real_cred->user != INIT_USER &&
-+		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
- 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
- 			goto bad_fork_cleanup_count;
- 	}
-@@ -2690,9 +2690,9 @@ __latent_entropy struct task_struct *copy_process(
- 			 * tasklist_lock with adding child to the process tree
- 			 * for propagate_has_child_subreaper optimization.
- 			 */
--			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
--							 p->real_parent->signal->is_child_subreaper;
--			list_add_tail(&p->sibling, &p->real_parent->children);
-+			p->signal->has_child_subreaper = rcu_dereference(p->real_parent)->signal->has_child_subreaper ||
-+							rcu_dereference(p->real_parent)->signal->is_child_subreaper;
-+			list_add_tail(&p->sibling, &rcu_dereference(p->real_parent)->children);
- 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
- 			attach_pid(p, PIDTYPE_TGID);
- 			attach_pid(p, PIDTYPE_PGID);
+The catch here is, what to do if the USB device is not in bus suspend state but user wants to put the system in suspend state? Do we still disconnect?
+
+You might also want to refer to the discussion in [1]
+
+[1] - https://lore.kernel.org/all/Y+z9NK6AyhvTQMir@rowland.harvard.edu/
+
+> 
+> Which option do you think is more suitable? IMO option2 is better. For example if we are in a scenario where there is a network session (over USB) open between Host and the device and usb bus is suspended due to data inactivity. Option2 would preserve the session whereas Option1 we would terminate this session when a system_suspend happens.
+> 
+> Thanks
+> Elson
+
 -- 
-2.39.2
-
+cheers,
+-roger
