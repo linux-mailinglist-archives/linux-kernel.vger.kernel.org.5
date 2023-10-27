@@ -2,75 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3127D93AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77467D935E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 11:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbjJ0J3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 05:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S1345502AbjJ0JTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 05:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0J3n (ORCPT
+        with ESMTP id S230101AbjJ0JTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 05:29:43 -0400
-X-Greylist: delayed 606 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 Oct 2023 02:29:40 PDT
-Received: from s01.bc.larksuite.com (s01.bc.larksuite.com [209.127.230.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD9AAF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 02:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=dingdao-com.20200927.dkim.feishu.cn; t=1698398370;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=TV5y0friYH6HbXqokPo9rMztc3feSByAfx6Q6GDDtx0=;
- b=t8dCWO16iW+U4zgIxZbRsNc/FJKvjfXlglhcPPOsNMmWwH1gt92vhnMrmx34M/dG+/aQkc
- 24UXLNZrFCAkNDYN8HztMQNONHPwsqrakm7Iw7tKi5bqM8fctfNFreexE/RkiBoMVNmsSJ
- 2byTCFfaqiuttwn5j2bUE3o4L22Pf/1sFRwswyizetMu7/7Gjqnqb06jpk4JakaBXMzAVu
- e546m8lmJHJ225+JJTuQXX2UOvEo72wzLP0x2NmZfOOVfvhl1vEgHYjKWSEN4Sndo0B4yn
- upf0PdrYPmJtVg9BWYGJbRf+bZdha888lY/bbdSiXqj5z9yiE6x5Ok4YjZXCpg==
-Subject: [PATCH] gpu/drm/drm_framebuffer.c: Add judgement for return value of drm_get_format_info().
-X-Original-From: Peng Hao <penghao@dingdao.com>
-Cc:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <penghao@dingdao.com>
-From:   "Peng Hao" <penghao@dingdao.com>
-X-Lms-Return-Path: <lba+2653b80a1+0262e2+vger.kernel.org+penghao@dingdao.com>
-Message-Id: <20231027091912.1244107-1-penghao@dingdao.com>
-Content-Transfer-Encoding: 7bit
-To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>
-Content-Type: text/plain; charset=UTF-8
-X-Mailer: git-send-email 2.37.1
-Date:   Fri, 27 Oct 2023 17:19:12 +0800
-Mime-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 27 Oct 2023 05:19:49 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4810C0;
+        Fri, 27 Oct 2023 02:19:47 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9c5a1b87bso14768975ad.3;
+        Fri, 27 Oct 2023 02:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698398387; x=1699003187; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lgS/jv4cYftJ2VLUevuTOfk+YPF/Cr+9ApUFZyAn5kY=;
+        b=E9Kr8zGzE1teTKllp+omg0ouqFAcCURJePI/9VSGJ+Y65S2mFrydD9z3NzGdke4YUj
+         fziuA4OTc/LWg7fGUgS4iQ1N4MB+SG9gJlvcmsX8FdHzS2/M82nJkmJTxSKs1KhVWwFF
+         WCM5WEdOfEEBgjawi24l/po6cMLKszuiNhW4aRtuktd+jBkulnv9Ev2k0XquHnAR9DnE
+         HgVRstd9MOYFbHTRFZCSLY0yfvszwEba2AZ6Q4nHMX6eQB0IYE7kBioN+h+G/icLsw+q
+         vzo33ZRXlk3OVVOFPkBSUh9saUHmJ7d2ZONbXy8Sruie/mGz7Swm08TKy8ywYDOIrUAs
+         O2qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698398387; x=1699003187;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lgS/jv4cYftJ2VLUevuTOfk+YPF/Cr+9ApUFZyAn5kY=;
+        b=rsx4mnljWs2zL1I7O4NyiY8ZnpISgKqywI/ktvUkhAL89UPnJTIU1o/0gHSUZJvPWc
+         RYgs6jnXxcDDR1dDJPrh0D6CKr+wYcIOzQym5xjMPyeEWTZLTgg97i1DRjVAv5Dinx6h
+         m2y+T15snaB8ivU8FRoUlA77PEKiNz1mb/0ntRJB8fCZFgtehmmHcnk3jHHk21XO9DNY
+         KjJoRpp/p38HoySIFzOCwaq66O7uWdxFSmJ00a5EqbkewoK8uRNcnq2u0P/fLuyAeSaT
+         U2l7FCS2GqNa27pw4ODJBQZKuVjrw0XmfB+Izx2mv5fmM1Wb4aFkkqyMbmUeW004bzQy
+         0eqw==
+X-Gm-Message-State: AOJu0YxlDPrnV3eqq9INJuWp8mSZdFBYBcnQ2jZMi8Xi6B9qv91LQijw
+        RVnjwmQ88ft9Sgrz9iMrJFa0534LOKw=
+X-Google-Smtp-Source: AGHT+IFyLx0K5l+UJCFp4j2n94XOj6IorEXPbv6ik/fLme4I9EoaFoND6iGxyz1U1qz/lqHAnlOSaA==
+X-Received: by 2002:a17:902:e2d1:b0:1cc:2a23:cbb4 with SMTP id l17-20020a170902e2d100b001cc2a23cbb4mr50155plc.35.1698398387235;
+        Fri, 27 Oct 2023 02:19:47 -0700 (PDT)
+Received: from ?IPV6:2409:40f4:13:48d5:c971:7c89:5be7:c8a2? ([2409:40f4:13:48d5:c971:7c89:5be7:c8a2])
+        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001b392bf9192sm1081387plx.145.2023.10.27.02.19.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 02:19:46 -0700 (PDT)
+Message-ID: <641f90da-332a-4021-869e-fdbcff435d90@gmail.com>
+Date:   Fri, 27 Oct 2023 14:49:41 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iio/imu: inv_icm42600: Use max() helper macros
+To:     Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>
+Cc:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231025113544.4954-1-bragathemanick0908@gmail.com>
+ <FR3P281MB1757821128DD28BD9F2742A6CEDCA@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+In-Reply-To: <FR3P281MB1757821128DD28BD9F2742A6CEDCA@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since drm_get_format_info() may return NULL, so a judgement of return
-value is needed to add.
 
-Signed-off-by: Peng Hao <penghao@dingdao.com>
----
- drivers/gpu/drm/drm_framebuffer.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On 27/10/23 14:24, Jean-Baptiste Maneyrol wrote:
+> Hello,
+>
+> thanks for this patch.
+>
+> The same computation is also done inside inv_icm42600_gyro. Can you do a patch that is updating both files to use max?
+>
+> Thanks a lot,
+> JB
+Hi Jean,
 
-diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-index aff3746dedfb..be7dd1998c04 100644
---- a/drivers/gpu/drm/drm_framebuffer.c
-+++ b/drivers/gpu/drm/drm_framebuffer.c
-@@ -194,6 +194,10 @@ static int framebuffer_check(struct drm_device *dev,
- 
- 	/* now let the driver pick its own format info */
- 	info = drm_get_format_info(dev, r);
-+	if (!info) {
-+		drm_dbg_kms(dev, "no matched format info\n");
-+		return -EFAULT;
-+	}
- 
- 	for (i = 0; i < info->num_planes; i++) {
- 		unsigned int width = fb_plane_width(r->width, info, i);
--- 
-2.37.1
+Same computation can be included in both inv_icm42600_gyro and 
+inv_icm42600_buffer.
+Will make those changes and send a new patch.
+
+Thanks,
+Bragathe
+>
+> From: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> Sent: Wednesday, October 25, 2023 13:35
+> To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>; jic23@kernel.org <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>
+> Cc: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>; linux-iio@vger.kernel.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Subject: [PATCH] iio/imu: inv_icm42600: Use max() helper macros
+>   
+> Use the standard max() helper macros instead of direct variable comparison using if/else blocks or ternary operator. Change identified using minmax. cocci Coccinelle semantic patch. Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@ gmail. com>
+> ZjQcmQRYFpfptBannerStart
+> This Message Is From an Untrusted Sender
+> You have not previously corresponded with this sender.
+>   
+> ZjQcmQRYFpfptBannerEnd
+> Use the standard max() helper macros instead of direct
+> variable comparison using if/else blocks or ternary
+> operator. Change identified using minmax.cocci
+> Coccinelle semantic patch.
+>
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> ---
+>   drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> index b1e4fde27d25..f67bd5a39beb 100644
+> --- a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+> @@ -137,10 +137,7 @@ static int inv_icm42600_accel_update_scan_mode(struct iio_dev *indio_dev,
+>   out_unlock:
+>   	mutex_unlock(&st->lock);
+>   	/* sleep maximum required time */
+> -	if (sleep_accel > sleep_temp)
+> -		sleep = sleep_accel;
+> -	else
+> -		sleep = sleep_temp;
+> +	sleep = max(sleep_accel, sleep_temp);
+>   	if (sleep)
+>   		msleep(sleep);
+>   	return ret;
