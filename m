@@ -2,168 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1EC7D9CC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C8C7D9CC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 17:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346306AbjJ0PSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 11:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
+        id S1346319AbjJ0PTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 11:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346302AbjJ0PSp (ORCPT
+        with ESMTP id S1346302AbjJ0PTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:18:45 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87E11A1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:18:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 066E11FDF3;
-        Fri, 27 Oct 2023 15:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698419921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HwE0ZStLbRjJE3iyZ3Dw9rRbnaHu1wJnEb27z8r+e8g=;
-        b=li6hS+hfRz7Md7RFzXZkF44zwzsgtbfG1OtiRFY+fFg2WHQ+P6qAX7HfJ9zyJ3i8Do+0WU
-        zbteD2Uv8Z6F5tF74TiqJuYNJ0mzYBs61h54Vi1i7U8c1W1EMdAV8MpDBv5g8VFzoYIZCM
-        adfFsX5llVCrrEk4+bzRZvWuH4I4e9c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698419921;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HwE0ZStLbRjJE3iyZ3Dw9rRbnaHu1wJnEb27z8r+e8g=;
-        b=EJbqdv8ckiwAt86OBzUyILHLHy5BXniL9i7FmKBNNxUQ2/G/pOX/dVMEwcjZfv8qFegO4h
-        QDI1secq6EMG/HAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C23051358C;
-        Fri, 27 Oct 2023 15:18:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fWO3LtDUO2WTFgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 27 Oct 2023 15:18:40 +0000
-Message-ID: <43da5c9a-aeff-1bff-81a8-4611470c2514@suse.cz>
-Date:   Fri, 27 Oct 2023 17:18:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v3 2/7] slub: Prepare __slab_free() for unfrozen
- partial slab out of node partial list
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, cl@linux.com, penberg@kernel.org
-Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
- <20231024093345.3676493-3-chengming.zhou@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231024093345.3676493-3-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.60
-X-Spamd-Result: default: False [-5.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FREEMAIL_CC(0.00)[google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 27 Oct 2023 11:19:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0211BC
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 08:18:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2076C433C7;
+        Fri, 27 Oct 2023 15:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698419934;
+        bh=mUJaJGba7J9D0yFE4m1RnIDC3Qo7wGyubKtBLd9i95Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kVxQ4n/RhmFy/ssOVTCAHmpcrcEj4g2A2anYQO2K23N8jDBEFyRQkkqIyRfSe1JK8
+         AoZydSwcy34sn43NU8BARVxFVLBg9Vy+QKkLuHhzhvqiR+2YEmb3W1lTgDaqFcqBY0
+         nP4O8cbK+S2NksbC5Ow7ukDmuVxrS/73VmHdVrW1++UNTInLKWYUSn5MqGvXUXkk37
+         sh7zPQgt1qUomFdreDBHJvIQiVTXSzjCtik9ih/TCgPTK5HwHzwlB3IJFSD83VIgYz
+         7GmD3k/Rsz3bMGO2/SpR0LNwJUYrq9/c+TvbufqorhXHqiobQ4jOmAzEo0imjEJEU6
+         iEAvZfi3LV3xA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qwObs-008Eq4-BC;
+        Fri, 27 Oct 2023 16:18:52 +0100
+Date:   Fri, 27 Oct 2023 16:18:51 +0100
+Message-ID: <864jic3xgk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Fang Xiang <fangxiang3@xiaomi.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] irqchip/gic-v3-its: Flush ITS tables before writing GITS_BASER<n> registers in non-coherent GIC designs.
+In-Reply-To: <87v8as32fa.ffs@tglx>
+References: <20231027031007.2088-1-fangxiang3@xiaomi.com>
+        <87v8as32fa.ffs@tglx>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, fangxiang3@xiaomi.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 11:33, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Fri, 27 Oct 2023 09:16:57 +0100,
+Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> Now the partial slub will be frozen when taken out of node partial list,
-
-	  partially empty slab
-
-> so the __slab_free() will know from "was_frozen" that the partial slab
-> is not on node partial list and is used by one kmem_cache_cpu.
-
-				... is a cpu or cpu partial slab of some cpu.
-
-> But we will change this, make partial slabs leave the node partial list
-> with unfrozen state, so we need to change __slab_free() to use the new
-> slab_test_node_partial() we just introduced.
+> On Fri, Oct 27 2023 at 11:10, Fang Xiang wrote:
+> > In non-coherent GIC design, ITS tables should be clean and flushed
+> > to the PoV of the ITS before writing GITS_BASER<n> registers. And
+> > hoist the quirked non-shareable attributes earlier to save effort
+> > in tables setup.
+> >
+> > Signed-off-by: Fang Xiang <fangxiang3@xiaomi.com>
 > 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/slub.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> Seriously? You claim authorship for a patch which was written by Marc:
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3fad4edca34b..f568a32d7332 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3610,6 +3610,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  	unsigned long counters;
->  	struct kmem_cache_node *n = NULL;
->  	unsigned long flags;
-> +	bool on_node_partial;
->  
->  	stat(s, FREE_SLOWPATH);
->  
-> @@ -3657,6 +3658,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  				 */
->  				spin_lock_irqsave(&n->list_lock, flags);
->  
-> +				on_node_partial = slab_test_node_partial(slab);
->  			}
->  		}
->  
-> @@ -3685,6 +3687,15 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  		return;
->  	}
->  
-> +	/*
-> +	 * This slab was partial but not on the per-node partial list,
+>    https://lore.kernel.org/all/87sf5x6cdu.wl-maz@kernel.org
+> 
+> without even the courtesy of giving him credit via 'Originally-by' ?
+> 
+> That's not how it works.
 
-This slab was partially empty ...
+Even better, some testing results on this patch, as it is what was
+promised. Meh...
 
-Otherwise LGTM!
+	M.
 
-> +	 * in which case we shouldn't manipulate its list, just return.
-> +	 */
-> +	if (prior && !on_node_partial) {
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +		return;
-> +	}
-> +
->  	if (unlikely(!new.inuse && n->nr_partial >= s->min_partial))
->  		goto slab_empty;
->  
-
+-- 
+Without deviation from the norm, progress is not possible.
