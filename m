@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95707D8F9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8237D8FA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345374AbjJ0HVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S1345388AbjJ0HWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 03:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbjJ0HVU (ORCPT
+        with ESMTP id S230369AbjJ0HWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:21:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2E6194;
-        Fri, 27 Oct 2023 00:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698391278; x=1729927278;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rxlH5HwmCqZqMfavoFfoGzozPhjQGaJre4NyNPdtwOc=;
-  b=d/qH66dfNj839STjPsvi+5B/ZVbJO75+yt0XsYet5hkDw4DoDxYF98L4
-   GuvCLHzN/THL9zQyJJXmyQIdgtp2S6ZbOLVsOESOravnBvh3wnXxvK7uS
-   0HVVVpgqpcWkDc8rw1UFv3fYr3Y3OS4ifklFZn2o9K8xiRX8GKtDQgvPN
-   1sQukPo2sr1LoshNh3STE/tCaQcp67hCginlKp+24deLKtCltjEQUsfG4
-   9ftZ2tpImEvgnIUqJTKp2JtCpZ0Z2OXsh+e8yYh2/WG4koo4Np70XaoJL
-   cPFR/Owh8ZZstXTlZ+3RCOUvov5vMAz9Y6qid3iJl5Y7zpwvdA1C3cKsS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="378093016"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="378093016"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 00:21:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="829886894"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="829886894"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Oct 2023 00:21:14 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwH9c-000Aak-2D;
-        Fri, 27 Oct 2023 07:21:12 +0000
-Date:   Fri, 27 Oct 2023 15:20:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
-        linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
- bindings
-Message-ID: <202310271540.4uI1Fgxe-lkp@intel.com>
-References: <20231026081514.3610343-2-Delphine_CC_Chiu@Wiwynn.com>
+        Fri, 27 Oct 2023 03:22:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CFE1AC;
+        Fri, 27 Oct 2023 00:22:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69AF7C433C8;
+        Fri, 27 Oct 2023 07:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698391324;
+        bh=Qg4YTpWg2YhUPY+UM5NUghA/FNgriO1WcVRTdtepE0g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wXGY6vb4/zA35H4eUGZmPVpMsKXmZU9dd5cAz2aTp+nx1+2heJyN+8yOXVM6jTz/3
+         QoWc21EtM2aPLnRYMC86f6ZKzUhDmrij9U6yslpqNCGGJxfTI8PMhIYHnW+p2CBkDG
+         n9NttdeSqo+XFSS7mxBqQtAg1vbNGqMaux50bvrw=
+Date:   Fri, 27 Oct 2023 09:22:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "D. Starke" <daniel.starke@siemens.com>
+Cc:     linux-serial@vger.kernel.org, jirislaby@kernel.org,
+        ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] tty: n_gsm: add copyright Siemens Mobility GmbH
+Message-ID: <2023102726-divided-improving-efb2@gregkh>
+References: <20231027053903.1886-1-daniel.starke@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026081514.3610343-2-Delphine_CC_Chiu@Wiwynn.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231027053903.1886-1-daniel.starke@siemens.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Delphine,
+On Fri, Oct 27, 2023 at 07:39:03AM +0200, D. Starke wrote:
+> From: Daniel Starke <daniel.starke@siemens.com>
+> 
+> More than 1/3 of the n_gsm code has been contributed by us in the last
+> 1.5 years, completing conformance with the standard and stabilizing the
+> driver:
+> - added UI (unnumbered information) frame support
+> - added PN (parameter negotiation) message handling and function support
+> - added optional keep-alive control link supervision via test messages
+> - added TIOCM_OUT1 and TIOCM_OUT2 to allow responder to operate as modem
+> - added TIOCMIWAIT support on virtual ttys
+> - added additional ioctls and parameters to configure the new functions
+> - added overall locking mechanism to avoid data race conditions
+> - added outgoing data flow to decouple physical from virtual tty handling
+>   for better performance and to avoid dead-locks
+> - fixed advanced option mode implementation
+> - fixed convergence layer type 2 implementation
+> - fixed handling of CLD (multiplexer close down) messages
+> - fixed broken muxer close down procedure
+> - and many more bug fixes
+> 
+> With this most of our initial RFC has been implemented. It gives the driver
+> a quality boost unseen in the decade before.
+> 
+> Add a copyright notice to the n_gsm files to highlight this contribution.
+> 
+> Link: https://lore.kernel.org/all/20220225080758.2869-1-daniel.starke@siemens.com/
+> Signed-off-by: Daniel Starke <daniel.starke@siemens.com>
+> ---
+>  drivers/tty/n_gsm.c         | 1 +
+>  include/uapi/linux/gsmmux.h | 1 +
+>  2 files changed, 2 insertions(+)
 
-kernel test robot noticed the following build warnings:
+Nit, you didn't include what changed from v1 below the --- line.
 
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.6-rc7 next-20231026]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I'll take this now, but be more careful in the future.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Delphine-CC-Chiu/dt-bindings-hwmon-Add-lltc-ltc4286-driver-bindings/20231026-161739
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20231026081514.3610343-2-Delphine_CC_Chiu%40Wiwynn.com
-patch subject: [PATCH v2 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver bindings
-reproduce: (https://download.01.org/0day-ci/archive/20231027/202310271540.4uI1Fgxe-lkp@intel.com/reproduce)
+thanks,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310271540.4uI1Fgxe-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/hwmon/ltc4286.rst
->> MAINTAINERS:27681: WARNING: unknown document: ../devicetree/bindings/hwmon/ltc4286
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+greg k-h
