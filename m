@@ -2,203 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE5B7D9AF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5707D9AF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345991AbjJ0OOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        id S1346088AbjJ0OPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjJ0OOi (ORCPT
+        with ESMTP id S1345998AbjJ0OPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:14:38 -0400
+        Fri, 27 Oct 2023 10:15:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE4FDE;
-        Fri, 27 Oct 2023 07:14:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 667A1C433C9;
-        Fri, 27 Oct 2023 14:14:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1657B8;
+        Fri, 27 Oct 2023 07:15:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3B57C433CA;
+        Fri, 27 Oct 2023 14:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698416075;
-        bh=CbkKydCIGPDLCe+45cMey/d5S+QwoAAmRoHQEvlUMtA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ecF+1Ji8+LIiXPTTMg2TTEgHLQikYo4DwWhtqLYOY+dg1Ks1yhSsjdyqwtCW05lFx
-         bI3kg0xCDtfYE648J/YtD8mUqdUjfmWXjwi24yD1SRyGVWDtqJAfKSqXx0ZLFDPfHj
-         fG0lzF8C8WIOV0Ut+lxWhrOVEolZSekD9+iX89XdildENp4i6kKpoctCV5WfNwJKAZ
-         SbOAWvkanZttVglDVm7Pod5lqYoNQUmXm2RknhkWQMJBZKB6tquCCiMjlsou4saRt7
-         GMGkRZCwXSXfGb8uGPu1berWbIRQMCvm9tPE83sF7+ZpsqoFhLZxQKmUaYKCPWcMub
-         ZGs1XpcIR8JiQ==
-Date:   Fri, 27 Oct 2023 15:14:31 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Nik Bune <n2h9z4@gmail.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        skhan@linuxfoundation.org, afd@ti.com,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dt-bindings: watchdog: davinci-wdt: convert txt to
- yaml
-Message-ID: <20231027-antennae-aftermath-b11ede90737f@spud>
-References: <20231026195313.76756-1-n2h9z4@gmail.com>
+        s=k20201202; t=1698416129;
+        bh=FeoSFjBClAtXEms1dJG9FSmvqhaVOV5FqfpXbkM0l+E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AQBhfqtnIqkANUon/plWcETuTbIxuFHYTXOC5YnH0l4iAG3UAWgwc+jGQJafTzoHD
+         owYdNx1V9LVHi3u6T42PHTalE3Z7yN+6R2FnWRuZovcHePHByCkmqu5QRZo+NNxOdA
+         oPTWYWapwlTXh4lqBpOqmUbt/CukWRfDq8815V63CGJmcFZ9oPU0XIhGSWF4Vu7CKr
+         W6ozmZ3IRISu+lRG7NAB+H/hm1YQ3tQEt4RAHcY6ZLDwHnZFdpaFRYMQWcd+v8ynYi
+         5EEh0ujBTx/bE6A3BsbX3hBPN0d79bew+/UweWV66whdtWVsNv9HRJb9dtSYlmdW6y
+         NfiCEPiSeZKpg==
+Date:   Fri, 27 Oct 2023 15:15:07 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc:     Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: tmag5273: fix temperature offset
+Message-ID: <20231027151507.2eac395c@jic23-huawei>
+In-Reply-To: <20231023-topic-tmag5273x1_temp_offset-v1-1-983dca43292c@wolfvision.net>
+References: <20231023-topic-tmag5273x1_temp_offset-v1-1-983dca43292c@wolfvision.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ixTGx6tVsBXIMcLW"
-Content-Disposition: inline
-In-Reply-To: <20231026195313.76756-1-n2h9z4@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 23 Oct 2023 11:50:02 +0200
+Javier Carrasco <javier.carrasco@wolfvision.net> wrote:
 
---ixTGx6tVsBXIMcLW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The current offset has the scale already applied to it. The ABI
+> documentation defines the offset parameter as "offset to be added
+> to <type>[Y]_raw prior to scaling by <type>[Y]_scale in order to
+> obtain value in the <type> units as specified in <type>[Y]_raw
+> documentation"
+> 
+> The right value is obtained at 0 degrees Celsius by the formula provided
+> in the datasheet:
+> 
+> T = Tsens_t0 + (Tadc_t - Tadc_t0) / Tadc_res
 
-Hey,
+So base units for temperature are milli degrees celsius. 
+T = 1000 * (25 + (adc - 17508) / 60.1)
 
-On Thu, Oct 26, 2023 at 09:53:13PM +0200, Nik Bune wrote:
-> Convert txt file to yaml.
-> Add maintainers list.
-> Mark clock as required property, by reviewer's suggestion.
-> Add power-domains as optional property, by reviewer's suggestion.=20
->=20
-> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+T =  1000/60.1 * (25 * 60.1 + adc - 17508)
+T = 10000/601 * (-16005.5 + adc)  
+So I think the maths is a little off..
+> 
+> where:
+> T = 0 degrees Celsius
+> Tsens_t0 (reference temperature) = 25 degrees Celsius
+> Tadc_t0 (16-bit format for Tsens_t0) = 17508
+> Tadc_res = 60.1 LSB/degree Celsius
+> 
+> The resulting offset is 16605.5, which has been truncated to 16005 to
+Interesting - the truncated value you have looks good to be but that's
+not matching with the resulting offset or the value below...
+
+> provide an integer value with a precision loss smaller than the 1-LSB
+> measurement precision.
+> 
+> Fix the offset to apply its value prior to scaling.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 > ---
->=20
-> Changes in 3 (according to review comments):
-> - Added Andrew Davis <afd@ti.com> into maintainers list.
-> - Added power-domains property.
->=20
-> v2 patch: https://lore.kernel.org/all/20231024195839.49607-1-n2h9z4@gmail=
-=2Ecom/
->=20
->=20
->  .../bindings/watchdog/davinci-wdt.txt         | 24 ---------
->  .../bindings/watchdog/ti,davinci-wdt.yaml     | 52 +++++++++++++++++++
->  2 files changed, 52 insertions(+), 24 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/watchdog/davinci-wd=
-t.txt
->  create mode 100644 Documentation/devicetree/bindings/watchdog/ti,davinci=
--wdt.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b=
-/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
-> deleted file mode 100644
-> index aa10b8ec36e2..000000000000
-> --- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
-> +++ /dev/null
-> @@ -1,24 +0,0 @@
-> -Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
-> -
-> -Required properties:
-> -- compatible : Should be "ti,davinci-wdt", "ti,keystone-wdt"
-> -- reg : Should contain WDT registers location and length
-> -
-> -Optional properties:
-> -- timeout-sec : Contains the watchdog timeout in seconds
-> -- clocks : the clock feeding the watchdog timer.
-> -	   Needed if platform uses clocks.
-> -	   See clock-bindings.txt
-> -
-> -Documentation:
-> -Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
-> -Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
-> -
-> -Examples:
-> -
-> -wdt: wdt@2320000 {
-> -	compatible =3D "ti,davinci-wdt";
-> -	reg =3D <0x02320000 0x80>;
-> -	timeout-sec =3D <30>;
-> -	clocks =3D <&clkwdtimer0>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.ya=
-ml b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
-> new file mode 100644
-> index 000000000000..17c824f2fc7d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/ti,davinci-wdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
-> +
-> +description: |
-> +  Documentation:
-> +  Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
-> +  Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a
-> +
-> +maintainers:
-> +  - Andrew Davis <afd@ti.com>
-> +
-> +allOf:
-> +  - $ref: watchdog.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,davinci-wdt
-> +      - ti,keystone-wdt
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    description:
-> +      A phandle and PM domain specifier as defined by bindings of=20
-> +      the power controller specified by phandle.=20
-> +      See Documentation/devicetree/bindings/power/power-domain.yaml for =
-details.
+>  drivers/iio/magnetometer/tmag5273.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/magnetometer/tmag5273.c b/drivers/iio/magnetometer/tmag5273.c
+> index c5e5c4ad681e..d22ca39007b6 100644
+> --- a/drivers/iio/magnetometer/tmag5273.c
+> +++ b/drivers/iio/magnetometer/tmag5273.c
+> @@ -356,7 +356,7 @@ static int tmag5273_read_raw(struct iio_dev *indio_dev,
+>  	case IIO_CHAN_INFO_OFFSET:
+>  		switch (chan->type) {
+>  		case IIO_TEMP:
+> -			*val = -266314;
+> +			*val = -16605;
+>  			return IIO_VAL_INT;
+>  		default:
+>  			return -EINVAL;
+> 
+> ---
+> base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+> change-id: 20231023-topic-tmag5273x1_temp_offset-17774cbce961
+> 
+> Best regards,
 
-I think you missed Rob's comment in reply to Andrew, about constraining
-and ordering the power-domains:
-https://lore.kernel.org/all/20231026203037.GA327324-robh@kernel.org/
-
-Cheers,
-Conor.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    watchdog@2320000 {
-> +        compatible =3D "ti,davinci-wdt";
-> +        reg =3D <0x02320000 0x80>;
-> +        timeout-sec =3D <30>;
-> +        clocks =3D <&clkwdtimer0>;
-> +    };
-> --=20
-> 2.34.1
->=20
-
---ixTGx6tVsBXIMcLW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTvFxgAKCRB4tDGHoIJi
-0g/NAQDyI6k3NfH6Gtz3jrfdKhsERSZfTUEuPaRJugULbfqFNwEArZQ+vTqb22CM
-WH8KAtU7U7Nr3wFy8r2rpTGo6CGRBQg=
-=9UY6
------END PGP SIGNATURE-----
-
---ixTGx6tVsBXIMcLW--
