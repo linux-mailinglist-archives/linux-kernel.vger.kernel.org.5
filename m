@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2717D8E8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB19B7D8E80
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345160AbjJ0GQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S231261AbjJ0GLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0GP6 (ORCPT
+        with ESMTP id S229590AbjJ0GLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:15:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F4E1B1;
-        Thu, 26 Oct 2023 23:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698387356; x=1729923356;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RzxknOAHxhYQy517vTA+5JreFWE2tbMpxk8ZOQ6gyW0=;
-  b=cWfSHQFj1f9YPlsrzzwgMWStoey8sg1NqQzcnoN6M4jUjdo6VZLStxZR
-   BS51Z2zFqpWxs9FeOZd1Iwa5XuJt4V+txZM34UqjMwY9Xf+7DxC1gTmAU
-   1epKuWlkvZ96yGsNNVvzSQ7YCTQgQ9BKUc37PekkNeXXia1WRN74guJM2
-   m9XYNM5frPDRlbOazvm5WjRU/fxcHcbij3ZNdWLkb6ZXIWe8mMPPAafA3
-   wXmmP3AzFFyncRzAWAfmU50fsZapN/BVj7BkZk/yOaeeTNClv5i/NftBx
-   /MH4V7klG9JYbajAj9qb3XbmU1GvbU00W3FYSk901TkJA3m1qcovhcbNe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="473958859"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="473958859"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 23:14:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="735995360"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="735995360"
-Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
-  by orsmga006.jf.intel.com with ESMTP; 26 Oct 2023 23:14:21 -0700
-From:   Gan Yi Fang <yi.fang.gan@intel.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Gan Yi Fang <yi.fang.gan@intel.com>
-Subject: [PATCH net-next 1/1] net: stmmac: check CBS input values before configuration
-Date:   Fri, 27 Oct 2023 14:11:14 +0800
-Message-Id: <20231027061114.3792619-1-yi.fang.gan@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 27 Oct 2023 02:11:45 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1631AD;
+        Thu, 26 Oct 2023 23:11:42 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39R6Bb6C010971;
+        Fri, 27 Oct 2023 01:11:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698387097;
+        bh=NA4L4brfJcyEh6tN4VGt18esOxDUl5IjCG/PrXygxBE=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=YMxH9GITElSn2Do/BU+meNMI6xdntssDoCvl+bwlrO8fOAQJEIzWht1084M1HNynW
+         wgWeKOMG8L8+7FQsbCIwApyg6jg4nRy3ZZlaPkHVTtO/dHx8ENfThPTscHYE+cVVxt
+         BSiV1xrQ+gu2GQVcQshd2aRIjCH9ftMWLwE4ZvUU=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39R6Bb34029277
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 27 Oct 2023 01:11:37 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 27
+ Oct 2023 01:11:36 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 27 Oct 2023 01:11:36 -0500
+Received: from [10.24.69.29] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39R6BYbE120724;
+        Fri, 27 Oct 2023 01:11:35 -0500
+Message-ID: <7054b3bb-de99-3fb0-5f17-78249f31c53f@ti.com>
+Date:   Fri, 27 Oct 2023 11:41:34 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mmc: sdhci_am654: fix start loop index for TAP value
+ parsing
+Content-Language: en-US
+To:     Adrian Hunter <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231026061458.1116276-1-n-yadav@ti.com>
+ <8b7f948d-316c-4135-875a-de455ff4849c@intel.com>
+ <8148dae9-e3fc-4589-ba57-a3f7a3e63b80@intel.com>
+From:   Nitin Yadav <n-yadav@ti.com>
+In-Reply-To: <8148dae9-e3fc-4589-ba57-a3f7a3e63b80@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Hi Adrian,
 
-Add check for below conditions before proceeding to configuration.
-A message will be prompted if the input value is invalid.
+On 26/10/23 12:33, Adrian Hunter wrote:
+> On 26/10/23 10:00, Adrian Hunter wrote:
+>> On 26/10/23 09:14, Nitin Yadav wrote:
+>>> ti,otap-del-sel-legacy/ti,itap-del-sel-legacy passed from DT
+>>> are currently ignored for all SD/MMC and eMMC modes. Fix this
+>>> by making start loop index to MMC_TIMING_LEGACY.
+>>>
+>>> Fixes: 8ee5fc0e0b3be ("mmc: sdhci_am654: Update OTAPDLY writes")
+>>>
+>>
+>> There isn't usually a blank line here
+>>
+>> Perhaps a Cc: stable@vger.kernel.org tag?
+>>
+>>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+>>
+>> Nevertheless:
+>>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> Sorry, sent that prematurely - see comment below
+> 
+>>
+>>
+>>> ---
+>>>  drivers/mmc/host/sdhci_am654.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+>>> index 544aaaf5cb0f..aae9d255c6a1 100644
+>>> --- a/drivers/mmc/host/sdhci_am654.c
+>>> +++ b/drivers/mmc/host/sdhci_am654.c
+>>> @@ -606,7 +606,7 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
+>>>  		return 0;
+>>>  	}
+>>>  
+> 
+> Isn't the MMC_TIMING_LEGACY information read at the top of
+> sdhci_am654_get_otap_delay()?
+Loop also take care of ITAP. Looks like at some point single property
+ti,otap-del-sel was used for all modes and then we moved to one property
+per mode:
+https://lore.kernel.org/r/20200108150920.14547-3-faiz_abbas@ti.com
+(since v5.7)
+> 
+>>> -	for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
+>>> +	for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
+>>>  
+>>>  		ret = device_property_read_u32(dev, td[i].otap_binding,
+>>>  					       &sdhci_am654->otap_del_sel[i]);
+>>
+> 
 
-Idleslope minus sendslope should equal speed_div.
-Idleslope is always a positive value.
-Sendslope is always a negative value.
-Hicredit is always a positive value.
-Locredit is always a negative value.
-
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index ac41ef4cbd2f..e8a079946f84 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -381,6 +381,11 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if ((qopt->idleslope - qopt->sendslope != speed_div) ||
-+	    qopt->idleslope < 0 || qopt->sendslope > 0 ||
-+	    qopt->hicredit < 0 || qopt->locredit > 0)
-+		return -EINVAL;
-+
- 	mode_to_use = priv->plat->tx_queues_cfg[queue].mode_to_use;
- 	if (mode_to_use == MTL_QUEUE_DCB && qopt->enable) {
- 		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_AVB);
 -- 
-2.34.1
-
+Regards,
+Nitin
