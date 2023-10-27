@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9D27D9DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02587D9DF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 18:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjJ0QY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 12:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
+        id S232302AbjJ0QZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 12:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjJ0QYY (ORCPT
+        with ESMTP id S231793AbjJ0QYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 12:24:24 -0400
+        Fri, 27 Oct 2023 12:24:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF31E5;
-        Fri, 27 Oct 2023 09:24:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A6AC433C7;
-        Fri, 27 Oct 2023 16:24:16 +0000 (UTC)
-Date:   Fri, 27 Oct 2023 17:24:12 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
-        x86@kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sven Schnelle <svens@linux.ibm.com>,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0224E10A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 09:24:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A892C433C7;
+        Fri, 27 Oct 2023 16:24:44 +0000 (UTC)
+Date:   Fri, 27 Oct 2023 12:24:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 4/5] kbuild: unify vdso_install rules
-Message-ID: <ZTvkLIVmC3fnxX9p@arm.com>
-References: <20231009124210.1064021-1-masahiroy@kernel.org>
- <20231009124210.1064021-4-masahiroy@kernel.org>
+        Ankur Arora <ankur.a.arora@oracle.com>, linux-mm@kvack.org,
+        x86@kernel.org, akpm@linux-foundation.org, luto@kernel.org,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: Re: [POC][RFC][PATCH v2] sched: Extended Scheduler Time Slice
+Message-ID: <20231027122442.5c76dd62@gandalf.local.home>
+In-Reply-To: <644da047-2f7a-4d55-a339-f2dc28d2c852@efficios.com>
+References: <20231025235413.597287e1@gandalf.local.home>
+        <20231026105944.GJ33965@noisy.programming.kicks-ass.net>
+        <20231026071413.4ed47b0e@gandalf.local.home>
+        <f5b0fffa-423a-4571-be6c-383399274328@efficios.com>
+        <CAHk-=whnyt2TccpDaWGTbDsVkKApL3c2FtDPMEwuTmeu_cEL8Q@mail.gmail.com>
+        <7871472b-a0c4-4475-9671-69a3244f956d@efficios.com>
+        <20231026164549.14d45c60@gandalf.local.home>
+        <644da047-2f7a-4d55-a339-f2dc28d2c852@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009124210.1064021-4-masahiroy@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -63,14 +62,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:42:09PM +0900, Masahiro Yamada wrote:
-> Currently, there is no standard implementation for vdso_install,
-> leading to various issues:
-[...]
->  arch/arm64/Makefile                    |  9 ++----
->  arch/arm64/kernel/vdso/Makefile        | 10 ------
->  arch/arm64/kernel/vdso32/Makefile      | 10 ------
+On Fri, 27 Oct 2023 12:09:56 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-For arm64:
+> > I need to clear one bit while seeing if another bit is set. I could also
+> > use subl, as that would also atomically clear the bit.  
+> 
+> Ah ok, I did not get that you needed to test for a different bit than 
+> the one you clear.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Yeah, maybe I'm not articulating the implementation as well.
+
+  bit 0: Set by user space to tell the kernel it's in a critical section
+
+  bit 1: Set by kernel that it gave user space extend time slice
+
+Bit 1 will only be set by the kernel if bit 0 is set.
+
+When entering a critical section, user space will set bit 0. When it leaves
+the critical section, it needs to clear bit 0, but also needs to handle the
+race condition from where it clears the bit and where the kernel could
+preempt it and set bit 1. Thus it needs an atomic operation to clear bit 0
+without affecting bit 1. Once bit 0 is cleared, it does not need to worry
+about bit 1 being set after that as the kernel will only set bit 1 if it
+sees that bit 0 was set. After user space clears bit 0, it must check bit 1
+to see if it should now schedule. And it's also up to user space to clear
+bit 1, but it can do that at any time with bit 0 cleared.
+
+ extend() {
+	cr_flags = 1;
+ }
+
+ unextend() {
+	cr_flags &= ~1;  /* Must be atomic */
+	if (cr_flags & 2) {
+		cr_flags = 0;  /* May not be necessary as it gets cleared by extend() */
+		sched_yield();
+	}
+ }
+
+Does that make more sense?
+
+-- Steve
+ 
