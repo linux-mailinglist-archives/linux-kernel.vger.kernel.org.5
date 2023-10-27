@@ -2,191 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EDD7D8E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5D57D8E9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjJ0GX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
+        id S1345216AbjJ0GZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjJ0GXw (ORCPT
+        with ESMTP id S229604AbjJ0GZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:23:52 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346C61B1
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:23:50 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39R4twnC027386;
-        Fri, 27 Oct 2023 06:23:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0iTK/vTDBmCOsmHkHos2KY4HPWv2LOjspH3e3JNTlGs=;
- b=cdTtVcz2KMkObwwmeNzuw+jivAA6bd7pisAm/h6/cQUgFdS2ihPHf0bQoLGxEglXQ6nV
- gL4U2EsFS/ciIraM5dpM37CPtuREVBCY8Io6sXc4pIrAUn1Pu+YjQqw0UomG6BqAicw8
- JV6wiAKUAQF7e7nEixIWQpSWfS2GyYJoLwmUyqpjFLJW4UohHoAYV80avNVBjgZdhkfl
- AgnXuyJ1qpwxAARgdf78JJTEdPCfzoB+LT5voVsOfAyE6SZG21iAFZLW3CTa09gfRgVJ
- 9V7IvJYxaWLHWB1Qb03r5LMJybJcR9wdn5I95yyXkXKPoEw9gHFowXxqK7cOfE1mec8q JQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyx3018sw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 06:23:44 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39R6NhWV014585
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 06:23:43 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 26 Oct
- 2023 23:23:38 -0700
-Message-ID: <c1add351-f132-60d5-7ed8-cba1061d98b1@quicinc.com>
-Date:   Fri, 27 Oct 2023 11:53:35 +0530
+        Fri, 27 Oct 2023 02:25:49 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2073.outbound.protection.outlook.com [40.107.117.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FB0121;
+        Thu, 26 Oct 2023 23:25:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K6aH1JZ9z8bBnrPnLA/UCs6d4JAnG+oTqZ5lUbdN2cJninSPy6Wm9Kz8d4tBvVYnPIsy0Kv1IGhxh5PcS5WZH+Ws/pR/pwHIUcc6MRHuc+KSD3jw1lkuqpWrkVPF56MDaBC+i407Cf2b6lX4/53Hb8v9vYQPsc4ifPmPkKwx6GKYI97TWh1zI3uDWH1hK4ZHL9+8iqYeRXqgKckViSKInG4cdTu07Fg7xf6OWQ3LGapM69UoFv+ZwEYeEdPJnHohSNGCE2SSj0Mu37S6cB5G2HmbmRVYEseOKUaJtUj94CC/2bxk1ExxVcn47nK0m3ey/tDq0FVfgv1vpCGOC5gBJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5oXRh1JtlstSnwEHdFnMmHmRRa30AF4fRI800i86Rxk=;
+ b=Ha0Knr2E3X3YKG6IkI4mo/fYJddhkPXYWe8ttdPzQBiGP9JRpoOX17Z50UpKYLqwQD/pfudU5t68GdceyoTU84kRyNiPiQbXDO58EI2nnWddqz7stwp9D1JCCdxsszE/iP4wfytK5fPEZSEUuf3U93o1rTjWvGTOsesIfrKYJdxGAivhCU2vK/rmw+LI0/GTMxox1tLTcOiamdqrzqAwEFq1veWPONdU7wg/bmxrCI+ML7uM5rWNPzKH5V7iFa5Ox1a1NUfb7b4/awKamlq1UM/xBX0D6WdkeVA6QO8wdR88tYLveRqCLXfOlwfV8CHFifrtU7FBAZERqziL2zbuhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5oXRh1JtlstSnwEHdFnMmHmRRa30AF4fRI800i86Rxk=;
+ b=bioFJrwgDn2TCSqjESifXEpZq3ZPsblwaWvq8hFj/vfnKUkoDFWiOZsLDo67P5R6QW9tikadqwBgDOw0YIrHQS4OZNMWyYc4nnqMBAEDEWSd2xXiw+CG91Ag92+f5j6thyM1GKYfzq1Vj2ufIeSB/IgEuCad9ge3rzEoreAlE+c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by KL1PR01MB5545.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:cd::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 06:25:41 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::7723:9ad4:633e:fe0d]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::7723:9ad4:633e:fe0d%5]) with mapi id 15.20.6907.032; Fri, 27 Oct 2023
+ 06:25:41 +0000
+From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: [PATCH 0/2] tty: serial: 8250: Adjustments of MOXA PCIe boards serial interface
+Date:   Fri, 27 Oct 2023 14:24:38 +0800
+Message-Id: <20231027062440.7749-1-crescentcy.hsieh@moxa.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR01CA0119.jpnprd01.prod.outlook.com
+ (2603:1096:404:2a::35) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
- devcd device
-Content-Language: en-US
-To:     Yu Wang <quic_yyuwang@quicinc.com>, <johannes@sipsolutions.net>,
-        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ONiNyO4hvb4Z3ic_8fGsqrv8iOwiOXxI
-X-Proofpoint-ORIG-GUID: ONiNyO4hvb4Z3ic_8fGsqrv8iOwiOXxI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-27_03,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 clxscore=1015 phishscore=0
- suspectscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310270056
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|KL1PR01MB5545:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5e07228-3998-4aa6-37ac-08dbd6b58abb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XXGZLcbCOs0GQ7r8A0srKpCKZ/Bubkmur0n+sDeh5T6DS5CGaxHVeW4sn4TdZ+J1JIexaiYNiic9pUGWTOwlRMoce3EUzLBRFGPw0y+4N+lwzulobmJ7whRFZMT123j5xahUoJ3bD1NvAorXgNNqjAhBhVRchB7zeWN4u3zjRQQysUJH46W1CRHPa34vVS3UNwdmw8/zHeixDjIQRhkeWD8PQQvXs7yBi42xYcXIflO/BOhae0Z6sG8XPHkU3kGoOwatw7oUPas1cp8W7KAdTIwh7skMiPxTaa5LH5AtW7ndxV/YQ8Hj83+rwXXYWCLIR1MbfvG9erPjpKpahe94lRHNO0IQA6nSKxz/xlmzBnwCwmyxBC7lcaN45Fh49309hDHmyqHAE2nq7S7LVyetnE85q9/tqR89/bKtZfwBjgvugRwpm+QitMwQ9X510Zx9o0ucpQJ1gOCsROhMyUsMGDJiaFSzvUCb80uigO3qP1g8bgqxrPa+1Lcczd8YH9Tbhso348Ffh6lN3WFDY6fFVIMLyTADZ3M1ku9F7pkh/hadWTNVaNUx7SQIvBt1Wd5JLn7saJsXUwho97WdqICVsWKK63L7Ibg/Xx5qjHixITMkqT9PwTCktEcJjSxfW1HP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(41300700001)(38100700002)(4744005)(52116002)(83380400001)(4326008)(36756003)(8936002)(8676002)(2906002)(86362001)(5660300002)(66556008)(66476007)(66946007)(316002)(26005)(1076003)(2616005)(107886003)(110136005)(38350700005)(6512007)(478600001)(6666004)(6486002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/aIONdxucr7awQkyjcg20KHD1a2WxrNiFNW8OQqSxVoJTIhSoeGmDaoNj5/P?=
+ =?us-ascii?Q?8prXo3yK5g63zipl9PIfmjVhnQAHT2eRkvRNCTqRIOuz8Zw979FvQMcqPjcq?=
+ =?us-ascii?Q?Bc7Q+cccDGlV0Hw1ixD025fzr1HFHLzZOn9SaH7vK494ieURfvHWehpbIiui?=
+ =?us-ascii?Q?TXYgC92G9gV2ufQPLSkae1pj1uhu/xdS5GQYYWT+65lLBBvgcmiAw4z7UYZ5?=
+ =?us-ascii?Q?IbkXHRN8E6zQ6pNlUYVeL6QxowCLscY0ddGD2dIhN7g79KKjpi7ilPGQCv2B?=
+ =?us-ascii?Q?yMilmYpxMhDCCK+zDfOmrYKvLbZy8BNoroAjyluxKwjAasqveJxytNEU+fXo?=
+ =?us-ascii?Q?Q741Ui76njm60Gn0uAO4qjNU388l3G5qouKl9Vvtd8XB2MsrrhCZUkhBajpu?=
+ =?us-ascii?Q?y9XFFhkAXm0jYP7JE1Z5KrIk3rAVrv8dWvJks/lOTk0HXgpG2/Dr1fuvjCT3?=
+ =?us-ascii?Q?wFew5UhRdY0PiRqkwd+fgsku8l8s+YQKjKCnCbgLRhFY8z9296DuPjblC+3E?=
+ =?us-ascii?Q?3sLrg88RJhMPTi8J/lNbybpi9Nr2uQIC8Tfaley39hTPBMs4zj/9MycnGzsf?=
+ =?us-ascii?Q?TK4rTpSJbL2GSBOiikI0gDaNU2lAKD7LaVbCDbwuPPQ1nZlohx4YHaYAbIeV?=
+ =?us-ascii?Q?Cenfyv65cKYsqDfz2RfbHlU26j0F5LEYrii2pcyStyxILMbJVvCVRhS8vEj5?=
+ =?us-ascii?Q?hjI8tPOTsQXp8krt6i4VAetWhE+wYSmlkGy42q9Ht5KinC9HxssAEChDNXUe?=
+ =?us-ascii?Q?P9xX4fivByzl0gBTJHIQCllckyIb96tWxL/xVlvvhRJrxlHBIePum7kqMF57?=
+ =?us-ascii?Q?eKtGkDJ7/zFULxpPjIPzrLHWXpC/giThJLdEglqTqzxqoIARLWJsDt9ovDze?=
+ =?us-ascii?Q?LhEWaHZm6Kb7G5z86pn1lshjnWFRdkYeOs2eIJtEpVGxbKXcySjVECryFgsM?=
+ =?us-ascii?Q?xzkx+HcL6oDJj6Tci4lJv1/QyHxrqLq5Cuqktyw765ly5lUQxG4JbErl0rqZ?=
+ =?us-ascii?Q?0YGxAP5kDi9BC57IDJNiWny4aoNXD217jVtFvTCkkg8XnL78MvdaGBMnr7bt?=
+ =?us-ascii?Q?rXGczGE9HdQdlk2x2VBaSi3/zM2iP7iRUXUihDm3fmSX/AMHeMVVzGyexoDm?=
+ =?us-ascii?Q?L+6/YVEAQudDBBBzJRH8C9UBDTZvm+jrKcU4Ob2Q1YS/U7olyptDbMftR1js?=
+ =?us-ascii?Q?dtmesKv6YizdG4Evts1Nl7SrQ/cA3mvEbaGd/NeB9ghNHRzjxJ1nPn/kCOU3?=
+ =?us-ascii?Q?5dVwYy9aPfzCvEcw97dYbUwN9RmPvfEgyTR2uj+MZo09vjukrXeYuQJo5fTL?=
+ =?us-ascii?Q?3jL0945BfCEDZFU8SsKg8j9Rr94fTKBqjisA1W4uH7JSUl7SZhB6r5KypvlP?=
+ =?us-ascii?Q?eC/IziBa5DVyzCYhXPQei8TF8Pwdwmy6rEqYk28MLVdlabK5m7VLzWDXIqiL?=
+ =?us-ascii?Q?3WtScpxSLLdgF+ynTkU2MgKA8fDkExFRHi/wyrFjgTO7fPdZFJ9H1TLg0Wgq?=
+ =?us-ascii?Q?M74BSvyaoYrEISK2XXxhwd/dyz6kxNcbvT3PKv9Zx1C1E/Iwe4MyzcMJGHMT?=
+ =?us-ascii?Q?ympfQTG56RNSrj9+xHSLTb4y5Pa+QRNOVu8e0cRtTzf7BIbMPJ9uihee2APe?=
+ =?us-ascii?Q?QA=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5e07228-3998-4aa6-37ac-08dbd6b58abb
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 06:25:41.0318
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ql9WAxra5s/RPHRjsKrdFQ3+ytLIDbi0o6KAs2oncRDbumnPqfpirjdedb05769s/cGcSvfiK58qzw/65k+v+/XajqGF1x36xuZ6RS5PBLg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR01MB5545
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series do some adjustments about serial interface of MOXA
+PCIe boards including:
 
+- Fix MOXA RS422/RS485 PCIe boards not function by default
+- Add support for MOXA PCIe boards to switch serial interface
 
-On 10/27/2023 11:25 AM, Yu Wang wrote:
-> With sample code as below, it may hit use-after-free issue when
-> releasing devcd device.
-> 
->      struct my_coredump_state {
->          struct completion dump_done;
->          ...
->      };
-> 
->      static void my_coredump_free(void *data)
->      {
->          struct my_coredump_state *dump_state = data;
->          ...
->          complete(&dump_state->dump_done);
->      }
-> 
->      static void my_dev_release(struct device *dev)
->      {
->          kfree(dev);
->      }
-> 
->      static void my_coredump()
->      {
->          struct my_coredump_state dump_state;
->          struct device *new_device =
->              kzalloc(sizeof(*new_device), GFP_KERNEL);
-> 
->          ...
->          new_device->release = my_dev_release;
->          device_initialize(new_device);
->          ...
->          device_add(new_device);
->          ...
->          init_completion(&dump_state.dump_done);
->          dev_coredumpm(new_device, NULL, &dump_state, datalen, GFP_KERNEL,
->                        my_coredump_read, my_coredump_free);
->          wait_for_completion(&dump_state.dump_done);
->          device_del(new_device);
->          put_device(new_device);
->      }
-> 
-> In devcoredump framework, devcd_dev_release() will be called when
-> releasing the devcd device, it will call the free() callback first
-> and try to delete the symlink in sysfs directory of the failing device.
-> Eventhough it has checked 'devcd->failing_dev->kobj.sd' before that,
-> there is no mechanism to ensure it's still available when accessing
-> it in kernfs_find_ns(), refer to the diagram as below:
-> 
->      Thread A was waiting for 'dump_state.dump_done' at #A-1-2 after
->      calling dev_coredumpm().
->      When thread B calling devcd->free() at #B-2-1, it wakes up
->      thread A from point #A-1-2, which will call device_del() to
->      delete the device.
->      If #B-2-2 comes before #A-3-1, but #B-4 comes after #A-4, it
->      will hit use-after-free issue when trying to access
->      'devcd->failing_dev->kobj.sd'.
-> 
->      #A-1-1: dev_coredumpm()
->        #A-1-2: wait_for_completion(&dump_state.dump_done)
->        #A-1-3: device_del()
->          #A-2: kobject_del()
->            #A-3-1: sysfs_remove_dir() --> set kobj->sd=NULL
->            #A-3-2: kernfs_put()
->              #A-4: kmem_cache_free() --> free kobj->sd
-> 
->      #B-1: devcd_dev_release()
->        #B-2-1: devcd->free(devcd->data)
->        #B-2-2: check devcd->failing_dev->kobj.sd
->        #B-2-3: sysfs_delete_link()
->          #B-3: kernfs_remove_by_name_ns()
->            #B-4: kernfs_find_ns() --> access devcd->failing_dev->kobj.sd
-> 
-> To fix this issue, put operations on devcd->failing_dev before
-> calling the free() callback in devcd_dev_release().
-> 
-> Signed-off-by: Yu Wang <quic_yyuwang@quicinc.com>
-> ---
->   drivers/base/devcoredump.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-> index 91536ee05f14..35c704ddfeae 100644
-> --- a/drivers/base/devcoredump.c
-> +++ b/drivers/base/devcoredump.c
-> @@ -83,9 +83,6 @@ static void devcd_dev_release(struct device *dev)
->   {
->   	struct devcd_entry *devcd = dev_to_devcd(dev);
->   
-> -	devcd->free(devcd->data);
-> -	module_put(devcd->owner);
-> -
->   	/*
->   	 * this seems racy, but I don't see a notifier or such on
->   	 * a struct device to know when it goes away?
+The second patch depends on the first patch because the first patch
+introduces a function called pci_moxa_set_interface() to set serial
+interface and second patch utilize it with ioctl command "TIOCSRS485" to
+switch serial interfaces.
 
-Does this comment became obsolete now ?
+Crescent CY Hsieh (2):
+  tty: serial: 8250: Fix MOXA RS422/RS485 PCIe boards not work by
+    default
+  tty: serial: 8250: Add support for MOXA PCIe boards to switch
+    interface
 
--Mukesh
+ drivers/tty/serial/8250/8250_pci.c | 102 ++++++++++++++++++++++++++++-
+ drivers/tty/serial/serial_core.c   |  21 +++++-
+ include/uapi/linux/serial.h        |   4 ++
+ 3 files changed, 123 insertions(+), 4 deletions(-)
 
-> @@ -95,6 +92,8 @@ static void devcd_dev_release(struct device *dev)
->   				  "devcoredump");
->   
->   	put_device(devcd->failing_dev);
-> +	devcd->free(devcd->data);
-> +	module_put(devcd->owner);
->   	kfree(devcd);
->   }
->   
+-- 
+2.34.1
+
