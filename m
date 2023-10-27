@@ -2,85 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC0E7D99D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DFA7D99D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345941AbjJ0NaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        id S1345935AbjJ0Nar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345926AbjJ0NaP (ORCPT
+        with ESMTP id S1345688AbjJ0Nap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:30:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA9718F;
-        Fri, 27 Oct 2023 06:30:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93F8C433C9;
-        Fri, 27 Oct 2023 13:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698413412;
-        bh=WhLHybGvjXg6KH83VHDPsIL/bPZh52vmPBOUFL8UsHM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G/BKEHw8qA2TK0n5/ruuZBbJ39DIAXA/pZJGtcKodXPkNfp8T8woPEed/iVvjuxD2
-         uSdWJ7Ee8yA6kBr7f33+5hBjsF2JXMcIbcEbqlcOF15fRwHFflunwNLvPPIrf4KlpW
-         8V0oh4uITqpT2sD+O3FybSwgjCWK62cUrpRrx1Yn16PezmPdr3Ry3aOo+nCHtIjjMJ
-         qIp2r2Dt+xI7svCU8jGGcyrKrCiQubkbgVfMgveEDuHXx5I4NEG37d3o6zja2vPeUe
-         vwArUo0kZDtjdXVdrbQLH7dVEORrFZbJvbxT0TYsKEfdwJuAt3s2Xm7Tfh1g3mM4t6
-         xO9knVzOskiMg==
-Date:   Fri, 27 Oct 2023 14:30:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jagath Jog J <jagathjog1996@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: correct file entry in BOSCH SENSORTEC
- BMI323 IMU IIO DRIVER
-Message-ID: <20231027143010.2d49c82d@jic23-huawei>
-In-Reply-To: <CAM+2Eu+yjguvkZLzAw6u+Y3PxT5JDuOEWtJSfv-U-C5mdmvL+Q@mail.gmail.com>
-References: <20231025091550.21052-1-lukas.bulwahn@gmail.com>
-        <CAM+2Eu+yjguvkZLzAw6u+Y3PxT5JDuOEWtJSfv-U-C5mdmvL+Q@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 09:30:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E762CC9;
+        Fri, 27 Oct 2023 06:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698413442; x=1729949442;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=QCDoj2tqsubRZPmLxziPZaPfWsoY1N+hG+KAi9DSmew=;
+  b=erdwTc4jdJWcHDkizPryviQfbnJY/J50pYNwh3v167MeFEooQC8MgNlV
+   X8hK7tpUjuQr/xmvVSem5Ojo1DDY6NpqU9qs8G0dwcaMyNrEJ4JNr92Nb
+   UrPMUtEBvwhTirIM8sBKITvtvNaZA1OmZMWezeAqOdTdgZRIuclclTPvP
+   rM/PQa3nvTPOr5y3ZwqTbVqsYuDfEWQkreMQiAqYOrcNuDHnu7elybOeN
+   OqY0w4S/j8uvDi/Njp2hR+Zy2A/FFjsvSSLtZ+PF+LeCtJ2gTTSM9FXEW
+   GCYO7fro9KOcQnf7W92AWaEDLaN5mCqwz7kg8ITMHVZVWTufxKvZfgS9f
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="387588301"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="387588301"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:30:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="825338480"
+X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
+   d="scan'208";a="825338480"
+Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 06:30:40 -0700
+Date:   Fri, 27 Oct 2023 16:30:38 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+cc:     linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 21/24] selftests/resctrl: Get resource id from cache id
+In-Reply-To: <cb2ctfignowlom7lb2t5zhdgtm4s2jlzlvtumlnvxecwwtjk34@ysgepmgkv6bb>
+Message-ID: <ab4c6aa5-ea49-363a-ff7b-2215665f185d@linux.intel.com>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-22-ilpo.jarvinen@linux.intel.com> <cb2ctfignowlom7lb2t5zhdgtm4s2jlzlvtumlnvxecwwtjk34@ysgepmgkv6bb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1571728692-1698412161=:2740"
+Content-ID: <966c938-5a3a-e5ed-cbb-b79630fb836a@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 01:19:51 +0530
-Jagath Jog J <jagathjog1996@gmail.com> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> On Wed, Oct 25, 2023 at 2:45=E2=80=AFPM Lukas Bulwahn <lukas.bulwahn@gmai=
-l.com> wrote:
-> >
-> > Commit b512c767e7bc ("iio: imu: Add driver for BMI323 IMU") adds the
-> > MAINTAINERS section BOSCH SENSORTEC BMI323 IMU IIO DRIVER and refers to=
- a
-> > non-existing device-tree file.
-> >
-> > Probably, this mistake was introduced by copying from the BOSCH SENSORT=
-EC
-> > BMA400 ACCELEROMETER IIO DRIVER section and missing to adjust the file
-> > entry properly. This is however easily caught, as the script
-> > ./scripts/get_maintainer.pl --self-test=3Dpatterns complains about a br=
-oken
-> > reference.
-> >
-> > The related commit 77583938740e ("dt-bindings: iio: imu: Add Bosch BMI3=
-23")
-> > adds bosch,bmi323.yaml, so refer to that intended file instead. =20
->=20
-> My apologies for the silly mistake, and thank you for fixing it.
-> Reviewed-by: Jagath Jog J <jagathjog1996@gmail.com>
->=20
-Applied to the togreg branch of iio.git and pushed out as testing.
+--8323329-1571728692-1698412161=:2740
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <a6d0bdae-c091-16e4-f178-c374f5edad8b@linux.intel.com>
 
-Thanks,
+On Fri, 27 Oct 2023, Maciej Wieczór-Retman wrote:
 
+> On 2023-10-24 at 12:26:31 +0300, Ilpo Järvinen wrote:
+> >Resource id is acquired differently depending on CPU. AMD tests use id
+> >from L3 cache, whereas CPUs from other vendors base the id on topology
+> >package id. In order to support L2 CAT test, this has to be
+> >generalized.
+> >
+> >The driver side code seems to get the resource ids from cache ids so
+> >the approach used by the AMD branch seems to match the kernel-side
+> >code. It will also work with L2 resource IDs as long as the cache level
+> >is generalized.
+> >
+> >Using the topology id was always fragile due to mismatch with the
+> >kernel-side way to acquire the resource id. It got incorrect resource
+> >id, e.g., when Cluster-on-Die (CoD) is enabled for CPU (but CoD is not
+> >well suited for resctrl in the first place so it has not been a big
+> >issues if test don't work correctly with it).
+> 
+> "not been a big issues" -> "not been a big issue"?
+> 
+> "if test don't work correctly" -> "if test doesn't work correctly" / "if tests
+> don't work correctly"?
+> 
+> >
+> >Taking all the above into account, generalize the resource id
+> >calculation by taking it from the cache id and do not hard-code the
+> >cache level.
+> 
+> In x86/resctrl files group of CPUs sharing a resctrl resource is called a
+> domain. Because of that I think "resource id" terms should be substituted with
+> "domain id" to match core resctrl code.
+
+Okay, I was just using the terminology which pre-existed in the selftest 
+code.
+
+I've really tried to look how I should call it but things were quite 
+inconsistent. The selftest uses resource id and reads it from cache id.
+Documentation uses "instances of that resource" or "cache id" or "domain 
+x".
+
+
+Documentation/arch/x86/resctrl.rst is very misleading btw and should be 
+IMHO updated:
+
+Memory bandwidth Allocation (default mode)
+------------------------------------------
+
+Memory b/w domain is L3 cache.
+::
+
+        MB:<cache_id0>=bandwidth0;<cache_id1>=bandwidth1;...
+
+It claims "domain" is L3 cache (and the value we're talking about is 
+called "cache_id" here which is what you just called "domain id"). I 
+suppose it should say "b/w resource is L3 cache"?
+
+
+-- 
+ i.
+--8323329-1571728692-1698412161=:2740--
