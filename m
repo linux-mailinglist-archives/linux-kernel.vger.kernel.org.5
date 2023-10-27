@@ -2,170 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AF77D8DF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C606C7D8DF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345039AbjJ0FFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 01:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        id S1345104AbjJ0FFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJ0FFb (ORCPT
+        with ESMTP id S234816AbjJ0FFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 01:05:31 -0400
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB03F1AC
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:05:26 -0700 (PDT)
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-581f31b7327so3254791eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:05:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698383126; x=1698987926;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rh0KXsNpRxx6btHgAIMOlmjDzMCaNEDaLetNUfJyvkc=;
-        b=mvHqht3jJIWsg/0J2mTZZaacviQgWuMVP2q7LCYZ2l4mxt1Jx3tfrh8+JRteL4q+BX
-         h1L7RESSD5EgK4X3B/iIoxQpaZ9WTajqtMgyAm1iY4k8RW2Mgces36ZxrnY+pGgKLJfK
-         oCY6DqlfJEHAHkgm0MnNml1graPRG6EOBQ1ptZI0LcpiT5T2hPGIP0ga1jkBtd5rgQLx
-         9V//Yn44H+4BzicIsTDKSfYpbYdGRNLelZTd2gGaTvgH3Rbqb8TFicLPjvK1zuJ0QAyA
-         N6LbMnwPmIBFqsQoP13VoKQv30p5U0VGQB4MbRLv1g16++j3aKnWvnM80tPWlNG4RTuP
-         f6rA==
-X-Gm-Message-State: AOJu0YyQvS8EtnUBu2//dLMsn/OX2v4HcLPZLrKlSTXl3E7i822/DiRG
-        PQn3fJHomJtoqvY5i1g3uv1L/hhN71GafaPi2kScQG4VEvZU
-X-Google-Smtp-Source: AGHT+IE+QWJTonndZGFf6jRDgdN8ovDhbsrDw5KU3d9PVED1jDX7UN40eqEyHwiV2ofZDEhCzZ5xYr/AYnjZgtPhv2DnIt3put66
+        Fri, 27 Oct 2023 01:05:48 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2049.outbound.protection.outlook.com [40.107.95.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092831B3;
+        Thu, 26 Oct 2023 22:05:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dmy2a8nknQvP8nv+DdpkhdQgXQFO6yqY62DjBY+TZ9m7P336pG6c7t/nTNjCf2Q0ZNtZ8kLmdQ3/6xu5M8qF18+hhrwG3QL20xnoZCpj4VuhzcRkXK7tjp2bksp4x4i1iVpf/m/pA+SLAb8GP/onGBwOXP4H+IOEJQKoCfMJ/8xNZN8E7biuygFq/2lZz37iPjGtzoAcywPslNq2i3TwCugJXAOLYbaMJTn1GWCNxDeGSp7AYqcr+8a3x9mO/EOaXRzwivwMwojaGito1MSmg5z4VYC0092haJvYROiJqhCbg0NuiMEGzoViT05Lfx4+09HvAWhwxAy1nx/c+ftzKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f2K6gj88dBi8ehtgGrg7VZ4FwTXBqyhc65RMvhTbS08=;
+ b=b7Suzhl6LgfSd4l/jb80RAOiI0T3U+2XLPnMuo6+Exc9qj7d4s4OqvlPC308JVvWNUJIpUWi34L1KyQXksuihDt3MX7wP+zYTRdHnu2GwSkIPcLjZYPZQwcZUV+ky6wV/t4JNDduALDwAiy1t78GxTTI7Ha/uLrJVSiLi2foVQ7xBKRA40HBTARkM8CEw/wq2J2xMQEQwFuEDB/HIJ6ebnKTRTCxJreCHNbMCaSaFp26kWLZ7+TtwpH9pHpJOUjlx6VKZ6VNjFyQSGTUS3P/y8N1cXX9BJEU51lRY5q38mIAXpSTkA6RV2tuhBS+R+qeHU4GclRZyXbd+sBzk5d95w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f2K6gj88dBi8ehtgGrg7VZ4FwTXBqyhc65RMvhTbS08=;
+ b=ENfzeKQkxI1Hva39P1xlK2o7CUMsXS43Z0hF0MO6aCYqcY+H8T9endlDfeD5tTeu/b3952uJICoLfgfbW47nN18a5CsqODvHbliA/UVcFfge67xEcVffqq2B4jX3wA9ymgKrATa/16qZHceZhj1DqVkCYXIEuKlgyzNME/zWHqs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH8PR12MB7325.namprd12.prod.outlook.com (2603:10b6:510:217::19)
+ by DM4PR12MB6662.namprd12.prod.outlook.com (2603:10b6:8:b5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 05:05:43 +0000
+Received: from PH8PR12MB7325.namprd12.prod.outlook.com
+ ([fe80::bd00:6f1a:9bd5:3b48]) by PH8PR12MB7325.namprd12.prod.outlook.com
+ ([fe80::bd00:6f1a:9bd5:3b48%6]) with mapi id 15.20.6907.032; Fri, 27 Oct 2023
+ 05:05:43 +0000
+Message-ID: <ba6eea97-116a-4678-7800-d24692c65cd6@amd.com>
+Date:   Fri, 27 Oct 2023 10:35:33 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
+        Avadhut Naik <Avadhut.Naik@amd.com>
+References: <20231025051455.101424-1-muralimk@amd.com>
+ <20231025051455.101424-2-muralimk@amd.com>
+ <20231025190818.GDZTlnomnaT8zxnbxX@fat_crate.local>
+ <b3b21eaa-226f-e78f-14e3-09e2e02e38d6@amd.com>
+ <20231026111448.GAZTpKKLI6LG1/COFE@fat_crate.local>
+ <850a3e78-f663-c696-2141-7aefb043b6da@amd.com>
+ <20231026123754.GBZTpdojw+pNuZMyJy@fat_crate.local>
+ <dd13363e-fd7e-4e88-8c23-91cfffe11dc3@amd.com>
+ <20231026134016.GDZTpsQDYU4Ll6sAA3@fat_crate.local>
+From:   "M K, Muralidhara" <muralimk@amd.com>
+Subject: Re: [PATCH v2 1/4] EDAC/mce_amd: Remove SMCA Extended Error code
+ descriptions
+In-Reply-To: <20231026134016.GDZTpsQDYU4Ll6sAA3@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0037.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:22::12) To PH8PR12MB7325.namprd12.prod.outlook.com
+ (2603:10b6:510:217::19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c599:b0:1e9:880f:340d with SMTP id
- ba25-20020a056870c59900b001e9880f340dmr2278393oab.5.1698383126293; Thu, 26
- Oct 2023 22:05:26 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 22:05:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef757e0608aba23d@google.com>
-Subject: [syzbot] [ext4?] general protection fault in locks_remove_posix
-From:   syzbot <syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB7325:EE_|DM4PR12MB6662:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0e5af5b-37b5-4f2d-cb50-08dbd6aa5eba
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6kuOlfboQRiQTtxWbjQC4ZxPVG2Ynr3TJXvk6YhHUvNjspaPQDmkIqkAp9fR+HZr0YXLl1i/Dgt2YM1/RTHuC+l4KA6hGfqx8FjxsSq9SxKvxDdu6pD2OX8Rnm+X0DS9ENIZssKk5mCcKgZyinOUYgma8j1kpvtZGNAipTsVztEJc8UszzB1iYm/dL3PlvQ9rM6SAqKfAm+gsGz3QVhfpnlcQNqJ6yzpmeHD8t8NHn+Y5AdEAdnAfjpWUAXA0ttvhzTviRxPesXmJfSRwofAblrJX/XnHTZ/coCQ2Xh6GV78iesA5rAbS7U/cSdiuKIsvVKWJL3fH3LrMGWrsooFbSTr5Edm7Kuv4DmbI8f0H0ujIHJDuW+GB86ziPLOb3GMjdobBWWKDfK2ojajUnrNlifbWgOlJDZNyZHMXvEb0uVPw9aVud4m7fu6NGPO95EERhYCPoOui6B0QECmcon46xPqpbDYvPil9Qqq0tq7ge2JihqBXKOaB0kZXpLBi2tpN5ChrKS1FWCcacz06UJXAW52ed9Sd/5NQBNOJn0d9obOFggGypueg7Gzu/iuAYGFdPB8UFcQrcs9rovEp6YGFnaht3h9y61YhiU2dlS6QqVhcrSBTpiPU1ovux3GunmtbZf3imEZj4N0JY1ShaDPAK0ip21ymk4GEPsJ6xFOFzqfZ/v3i+9o1OzMTjNiWPi7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB7325.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(136003)(346002)(366004)(230173577357003)(230922051799003)(230273577357003)(1800799009)(186009)(64100799003)(451199024)(31686004)(41300700001)(31696002)(38100700002)(53546011)(83380400001)(4326008)(36756003)(8676002)(8936002)(4001150100001)(2906002)(5660300002)(54906003)(66556008)(66476007)(66946007)(6636002)(316002)(26005)(2616005)(110136005)(6512007)(478600001)(6666004)(6486002)(966005)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVVtZnRLZWhDZkxWL0tvYnUzclg1MThjbkpKSXVad2cxS3REenhkNmNuenRk?=
+ =?utf-8?B?MzQxZW5jcmhmVEZwbC85UklUcW5iVSt0aHZKS3B4R1dtdkdzUGhDZlMwMVpD?=
+ =?utf-8?B?azY1SjRtV1Q5and6SksrczZnNEFqNkFNZDM0MEw2RWRYeG1mNGFVUUdpL2hV?=
+ =?utf-8?B?eG1NTkJaSWFSekpDaXdGa3ZZWlNob291cWpZZUVZOEZSUXVncHQyRzZMMnVj?=
+ =?utf-8?B?bitUeEdXQ1ZEU050Z21uMTVTcU85blY5L2E3UGRhNXBVOWJYV09MZzBkaTlh?=
+ =?utf-8?B?RU9tc09yOXFWVzBFc0hHK2dtblZ3VzJ0MFliUXY4TFk5VWJsY1I4dG5Mc2VN?=
+ =?utf-8?B?QlBwZlJhVVU1N0NaZnhhdE92bXJML2VaaUJ2VHZTYmhJQ08vc1ZDRjlpL0Nq?=
+ =?utf-8?B?d01JYnNMWjFUVHJsZEQ3SGw1TzhScW00ZERmcWtpUElBTzNJUTA1VXQ5ZHpZ?=
+ =?utf-8?B?VzFBNzdqdzdadFNIb0Q4bHQ5MjJRR3B6Vmk4REhYVDNldk1Rb0hTbmMxQ0Jn?=
+ =?utf-8?B?NlgrcHlWaDhxYXpWbWwyWUltZTBTTUh6NkUvUERCQU1ZbGdXRTFlTlBLa2N5?=
+ =?utf-8?B?cUdENXFTL0V0OVhtbjcyUjhkQzFoYUR1dkdWSGQxNGpuL3lSZ3BUV0dENFBa?=
+ =?utf-8?B?TGdQL3dWUnBMalpYclgyeHlCQXVab29UakNNbVo0VkpoY0FiTEpkTmRzYmpB?=
+ =?utf-8?B?VUw4WWVPL3FWeWE1VTd3R1FqOVNHRXBKNmNvZ3IxcHBxd0xXcDhUTnh1Rnoz?=
+ =?utf-8?B?c1VvMU9lOStNZTV3SWtmMEk5NDdSQmpYdHgrczEzaUNrd2FTMUNmeWdLR0Nv?=
+ =?utf-8?B?Vlozd0Q5WndmQ0tyMHJLRVBZamdGeTFVdGV5aVh5cStycTF0MnU4eURHTTNQ?=
+ =?utf-8?B?V1NjTjZWNkFvdUlQd0tUL2JLczNwZmRYSkVQWVQzV1pDeFBnYlA4VmhQanRx?=
+ =?utf-8?B?Rk1pMkZ2ZWdhd1lEQmVjQ3JLR2hFNzlIc2sxQ0JUYktCQitPM3EzSXI3NFdP?=
+ =?utf-8?B?d1RTdTdSb0tDL1h1ZVo0b1dLZlpEc0lxeW1PUGdZT2VtQnAxR2ZjTFBzOXo0?=
+ =?utf-8?B?eEZRaTRlelQwZHg4QzRKMCtxR3BVWnU5VG40eWM3K2VCUFF4dFZUNlYyZGZk?=
+ =?utf-8?B?clUwY0RTOEtodUpXdTlHRmU5aFE3dnNtbGJoRktFMXowSURzVHhuVHRvcS9v?=
+ =?utf-8?B?WTJwRDQvbFN4OVJtRnRxUUtaMDdvSG9meSs2Rkt5UnNRbks3SGR6c0JsNHAw?=
+ =?utf-8?B?YjA1R1BscTJOVHQrT2tyRlJDQ1NrY2VBSlE0a25zMUtHUHVKbENoUXdDUktH?=
+ =?utf-8?B?cVpaTkNNd3U5eXkvd0tqNGhtb2RvTXRtVUFWL2w0eUtxVlJocnkrVWJjeStm?=
+ =?utf-8?B?WFI2aXQ4U2hZai9ackdWVmdNSTFJVGcvZEdJMXYxbmRtZVJNU2hQNEJNL0Y5?=
+ =?utf-8?B?cCtISU1GYUl3UmV4dHZNbXFzQjF0TWZTUmhneTBXZUpXcmltVmxzVUlORTc0?=
+ =?utf-8?B?TDFzUlRCL0lTTWVidXBoYWNxbjN0QkpXTWViWmtqRi8wb0ZCWkQ0TUJlVXpz?=
+ =?utf-8?B?b0hLTHBNb29GT0xHaFNMb2ZIRFl0N3VhUW9USno4WklodGlaRnFrQVZpRzRS?=
+ =?utf-8?B?bFIwUGZ2YUhrWDEzRnIvaHk1MjdleXo1ZEREZVBrdVhzcWNmTDZUZ1Zrcnow?=
+ =?utf-8?B?OFYzUUNUUDRETjhRL0VZT0R4ZDQzOWoxTTNTbjhlOW95Y3hUK1FtN29rVitv?=
+ =?utf-8?B?SjY0ZjdhZ0xnMnZ0NjRRYXM0a0FnVlhNd3pzWjAzeHhpa245dUJUbnY2Q3Zt?=
+ =?utf-8?B?Nm5vbDlhOVhJb3ZTZ2lIcEJlWlFWd3BQUjFVY3M5M1h2NlE1Umt6aEtwWHJi?=
+ =?utf-8?B?bHU5aHNrMzJZMjFmOU9HSGFlZGNIeEppcWFXMVNkbHBJekUwWTZ4Z1RTdWNh?=
+ =?utf-8?B?NkFEY2pDZEtPRkUxYlJIZ1Mza2xpS1BBZWhOTzExMmFpekZwQ3ZwSUJyVFEv?=
+ =?utf-8?B?WlRwT1p5d05PUTlMMEUwWEwwVmltN1Nlb3lhOU5FdnZTMWdSWHZabW5yTGVq?=
+ =?utf-8?B?citXeWFNaTEwL1RiRDRYUG8rS0JOcDc0OUw0SWExNDZrS21XUW5HamRNQXU5?=
+ =?utf-8?Q?N91+irnSLiXW19UlgAa8HTNIP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0e5af5b-37b5-4f2d-cb50-08dbd6aa5eba
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB7325.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 05:05:42.8920
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4zgPL3EBmE35ps3ND5/ih5Eb+pZcTvZLMY0pBLlZ/smTWrLgAK0PNHIdoRyPiE0E4UlbCpHQSXpzD7olG6coZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6662
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e75739680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba2c35eb32f5a85137f8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125607f5680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a22e93680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/disk-20305791.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinux-20305791.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/bzImage-20305791.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/81394ce5859f/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc001ffff11a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x00000000ffff88d0-0x00000000ffff88d7]
-CPU: 1 PID: 5052 Comm: udevd Not tainted 6.6.0-rc6-next-20231020-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:list_empty include/linux/list.h:373 [inline]
-RIP: 0010:locks_remove_posix+0x100/0x510 fs/locks.c:2555
-Code: 4d 8b ae 20 02 00 00 4d 85 ed 0f 84 0c 02 00 00 e8 15 60 7d ff 49 8d 55 50 48 b9 00 00 00 00 00 fc ff df 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f 85 ae 03 00 00 49 8b 45 50 48 39 c2 0f 84 db 01 00
-RSP: 0018:ffffc90003d6f948 EFLAGS: 00010202
-RAX: 0000000000000000 RBX: ffff8880271cca00 RCX: dffffc0000000000
-RDX: 00000000ffff88d0 RSI: 000000001ffff11a RDI: ffff8880796982e0
-RBP: 1ffff920007adf2b R08: 0000000000000003 R09: 0000000000004000
-R10: 0000000000000000 R11: dffffc0000000000 R12: ffffc90003d6f988
-R13: 00000000ffff8880 R14: ffff8880796980c0 R15: ffff8880271ccb90
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc227c3e000 CR3: 000000002000e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- filp_flush+0x11b/0x1a0 fs/open.c:1554
- filp_close+0x1c/0x30 fs/open.c:1563
- close_files fs/file.c:432 [inline]
- put_files_struct fs/file.c:447 [inline]
- put_files_struct+0x1df/0x360 fs/file.c:444
- exit_files+0x82/0xb0 fs/file.c:464
- do_exit+0xa51/0x2ac0 kernel/exit.c:866
- do_group_exit+0xd3/0x2a0 kernel/exit.c:1021
- get_signal+0x2391/0x2760 kernel/signal.c:2904
- arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11c/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x4b/0x110 arch/x86/entry/common.c:88
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fc2276be3cd
-Code: Unable to access opcode bytes at 0x7fc2276be3a3.
-RSP: 002b:00007ffd929ccc20 EFLAGS: 00000246 ORIG_RAX: 00000000000000ea
-RAX: 0000000000000000 RBX: 00007fc227b0bc80 RCX: 00007fc2276be3cd
-RDX: 0000000000000006 RSI: 00000000000013bc RDI: 00000000000013bc
-RBP: 00000000000013bc R08: 0000000000000000 R09: 0000000000000002
-R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000006
-R13: 00007ffd929cce30 R14: 0000000000001000 R15: 0000000000000000
- </TASK>
-Modules linked in:
-----------------
-Code disassembly (best guess):
-   0:	4d 8b ae 20 02 00 00 	mov    0x220(%r14),%r13
-   7:	4d 85 ed             	test   %r13,%r13
-   a:	0f 84 0c 02 00 00    	je     0x21c
-  10:	e8 15 60 7d ff       	call   0xff7d602a
-  15:	49 8d 55 50          	lea    0x50(%r13),%rdx
-  19:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
-  20:	fc ff df
-  23:	48 89 d6             	mov    %rdx,%rsi
-  26:	48 c1 ee 03          	shr    $0x3,%rsi
-* 2a:	80 3c 0e 00          	cmpb   $0x0,(%rsi,%rcx,1) <-- trapping instruction
-  2e:	0f 85 ae 03 00 00    	jne    0x3e2
-  34:	49 8b 45 50          	mov    0x50(%r13),%rax
-  38:	48 39 c2             	cmp    %rax,%rdx
-  3b:	0f                   	.byte 0xf
-  3c:	84 db                	test   %bl,%bl
-  3e:	01 00                	add    %eax,(%rax)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 10/26/2023 7:10 PM, Borislav Petkov wrote:
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> 
+> 
+> On Thu, Oct 26, 2023 at 09:05:51AM -0400, Yazen Ghannam wrote:
+>> Post-processing is one of the features that Avadhut implemented.
+>>
+>> https://github.com/mchehab/rasdaemon/commit/932118b04a04104dfac6b8536419803f236e6118
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hi Yazen, Thanks for pointing to this commit. Yes I do remember.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> Yes, now try to decode the error with rasdaemon this way, by supplying
+> the fields.
+> 
+> Then explain step-by-step what you've done in the commit message and in
+> a documentation file in Documentation/ras/ so that people can find it
+> and can actually do the decoding themselves.
+> 
+> It needs to be absolutely easy to decode those errors. Not tell people:
+> "go look for the error description in the PPR".
+> 
+Yes, we have offline decoding option in rasdaemon
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+For example:
+$ rasdaemon -p --status 0xdc2040000000011b --ipid 0x0000609600092f00 --smca
+2023-10-26 23:51:34 -0500, Unified Memory Controller (bank=0), mca: DRAM 
+ECC error. Ext Err Code: 0 Memory Error 'mem-tx: generic read, tx: 
+generic, level: L3/generic', mci: Error_overflow CECC, Locn: 
+memory_channel=0,csrow=0, Error Msg: Corrected error, no action required.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+Observed the error string "mca: DRAM ECC error. Ext Err Code: 0"
 
-If you want to undo deduplication, reply with:
-#syz undup
+
+Also, we can pass particular family/model to decode, Ex:for MI300A
+
+$ rasdaemon -p --status 0xdc2040000000011b --ipid 0x0000609600092f00 
+--smca --family 0x19 --model 0x90 --bank 19
+2023-10-26 23:52:09 -0500, Unified Memory Controller (bank=19), mca: 
+DRAM On Die ECC error. Ext Err Code: 0 Memory Error 'mem-tx: generic 
+read, tx: generic, level: L3/generic', mci: Error_overflow CECC, Locn: 
+memory_die_id=1, Error Msg: Corrected error, no action required.
+
+Observed the error string as "mca: DRAM On Die ECC error. Ext Err Code: 0"
+
+Thanks for the inputs. I will add the steps in commit message and in 
+Documentation as well.
+
+
+> Thx.
+> 
+> --
+> Regards/Gruss,
+>      Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
