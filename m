@@ -2,105 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8076F7D929F
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0677D92A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345606AbjJ0IuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        id S1345588AbjJ0IvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345352AbjJ0IuJ (ORCPT
+        with ESMTP id S1345526AbjJ0IvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:50:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CCA186
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:50:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99858C433C8;
-        Fri, 27 Oct 2023 08:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698396606;
-        bh=r/XEoP5xabsr7W5IjvJfZyAKCFZBiRcab7tUjBCnzlI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MJNTU6JteHSTVDi4xI0pJl7Cr7R5Pz/yxZUr0kY9rpRtOy+3I9ZttOCi3uAJ3vaED
-         yAjYtGFv0Tkl0ibJO7h0Cgsk/j+3Im6JD5et1VLryr/vrcQ/FHQQSuwj+jDkPtta5N
-         mLOvsTlKQBRZ4woLldAXbB2ANhvENxlf8cokYyLB5vhtCHyLDR5/QYt+h42KVmiJv8
-         rtNeLW8sSEHZvMTLYXr+LayBdQV3/4XTg37SX5i+F9cpi1NzSnkYa0q1WW4qyv1seS
-         NxdM0E2cWswjCVPnY8N/GDeZk9UgbJdU03cbSwiANpKkToV1IMwVw2RTsSidVKaMlK
-         DjQWQD6hHsf4A==
-Message-ID: <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
-Date:   Fri, 27 Oct 2023 10:49:58 +0200
+        Fri, 27 Oct 2023 04:51:07 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AAB106
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:51:03 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53f98cbcd76so7076a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698396662; x=1699001462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HeqtBdHG7bcobHfiIzbFtER/jGjT7rW2oiFAlRzp+Fo=;
+        b=aecwCwC7wf/tavm+WylLt3U8VkiIEbpWvvGDxdWAp0CbGBAB4PzKDneD/+wKYDMcmf
+         c3PnY149u4AEiGXwjeyGFFjwwZ+opC5bGfdtzokdBHOJlRkNGNBwsJS06zMylomoB2Dh
+         0tYzpzhHLNd7m4CPrvPZkqJi+qIQpQOqO0U/TRa9sxDxQUE9R8S/oY7sCgyJ+TDf6afl
+         jaJiX+GcZQpXbnS576AcAY4/iA8YbUWd8kjU0AsBM0eya4PndPjDbFO1eEHGdHGOgo8x
+         pdCPGcRo8DVn9o8W4+qaX34h5CbjsZVWsmNC9fGZNzD50AW5vdqWRskhCy/UnBzykCEy
+         Sm0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698396662; x=1699001462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HeqtBdHG7bcobHfiIzbFtER/jGjT7rW2oiFAlRzp+Fo=;
+        b=FrbEzTZ0OR9Z/V2PNsSRTg3Hpc+pwAsJeavD5ujHY3VDhSzqEvRO0R0ocvlg9VGyrB
+         HMpmNdg/chDreBOldfX1CAADma+9O8bR+O1mPSwJwJKTxNOsjZsE2u0j009vZ/xiIkVE
+         blSYUJlIF+mzah7boGrK3jLo4n73RTYzXy3pAr/J/iXz14oeBXLwFD6QR55XtSWPx3zL
+         wAzQ7xpYKkvJJivstLBkRYzGSw5aQpc2Uwmr6r52dGDvquo9MQQ+a805IRC5XdGql0J/
+         a1s/S8jLtw+jCYU5ZCkN7aNA+1mulXyns4ITzG3nnBquvLYvBwTIVLKxioj1N4lt/bep
+         D8Yg==
+X-Gm-Message-State: AOJu0YxhNfnUmo2UXpo7qipYL5SwMHRbn5hH8snwqXCATMyhfFZtP7W4
+        l2CqhBMOjwmXYxnrAmxUE/x9piB7uMM9CoXmQdq5RQ==
+X-Google-Smtp-Source: AGHT+IFvUCi8G9mJodwaUlpN52nvS3mxM+qvmz88O1RwQ5Ycz5R9sMlyRakPCmCG9bOH2sGbrwHeNmqH0tVfiIAg3Ks=
+X-Received: by 2002:a50:9ead:0:b0:53f:91cb:6904 with SMTP id
+ a42-20020a509ead000000b0053f91cb6904mr105371edf.4.1698396661879; Fri, 27 Oct
+ 2023 01:51:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
- use case
-Content-Language: en-US
-To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
-        venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
-        mastan.katragadda@amd.com, juan.martinez@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <20231021145110.478744-9-Syed.SabaKareem@amd.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231021145110.478744-9-Syed.SabaKareem@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231026150154.3536433-1-syoshida@redhat.com> <waodmdtiiq6qcdj4pwys5pod7eyveqkfq6fwqy5hqptzembcxf@siitwagevn2f>
+ <CAGxU2F6VAzdi4-Qs6DmabpPx+JKVHtCP1FJ2sSZ9730Kq-KLuQ@mail.gmail.com>
+In-Reply-To: <CAGxU2F6VAzdi4-Qs6DmabpPx+JKVHtCP1FJ2sSZ9730Kq-KLuQ@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 27 Oct 2023 10:50:50 +0200
+Message-ID: <CANn89i+Y1_GesZ+Afh3SXkYR_Bux-HUALkoh6WJ47YkGHgZaRg@mail.gmail.com>
+Subject: Re: [PATCH net] virtio/vsock: Fix uninit-value in virtio_transport_recv_pkt()
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Shigeru Yoshida <syoshida@redhat.com>, stefanha@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bobby.eshleman@bytedance.com, bobbyeshleman@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,35 +74,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2023 16:50, Syed Saba Kareem wrote:
-> add pdm use case machine driver support
-> 
-> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-> ---
+On Fri, Oct 27, 2023 at 10:18=E2=80=AFAM Stefano Garzarella <sgarzare@redha=
+t.com> wrote:
+>
+> On Fri, Oct 27, 2023 at 10:01=E2=80=AFAM Stefano Garzarella <sgarzare@red=
+hat.com> wrote:
+> >
+> > On Fri, Oct 27, 2023 at 12:01:54AM +0900, Shigeru Yoshida wrote:
+> > >KMSAN reported the following uninit-value access issue:
+> > >
+> > >=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > >BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1dfb/0x26a0 ne=
+t/vmw_vsock/virtio_transport_common.c:1421
+> > > virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transpor=
+t_common.c:1421
+> > > vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+> > > process_one_work kernel/workqueue.c:2630 [inline]
+> > > process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+> > > worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+> > > kthread+0x3cc/0x520 kernel/kthread.c:388
+> > > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+> > > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> > >
+> > >Uninit was stored to memory at:
+> > > virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c=
+:1274 [inline]
+> > > virtio_transport_recv_pkt+0x1ee8/0x26a0 net/vmw_vsock/virtio_transpor=
+t_common.c:1415
+> > > vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+> > > process_one_work kernel/workqueue.c:2630 [inline]
+> > > process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+> > > worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+> > > kthread+0x3cc/0x520 kernel/kthread.c:388
+> > > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+> > > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> > >
+> > >Uninit was created at:
+> > > slab_post_alloc_hook+0x105/0xad0 mm/slab.h:767
+> > > slab_alloc_node mm/slub.c:3478 [inline]
+> > > kmem_cache_alloc_node+0x5a2/0xaf0 mm/slub.c:3523
+> > > kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:559
+> > > __alloc_skb+0x2fd/0x770 net/core/skbuff.c:650
+> > > alloc_skb include/linux/skbuff.h:1286 [inline]
+> > > virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
+> > > virtio_transport_alloc_skb+0x90/0x11e0 net/vmw_vsock/virtio_transport=
+_common.c:58
+> > > virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.=
+c:957 [inline]
+> > > virtio_transport_recv_pkt+0x1279/0x26a0 net/vmw_vsock/virtio_transpor=
+t_common.c:1387
+> > > vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+> > > process_one_work kernel/workqueue.c:2630 [inline]
+> > > process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+> > > worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+> > > kthread+0x3cc/0x520 kernel/kthread.c:388
+> > > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+> > > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> > >
+> > >CPU: 1 PID: 10664 Comm: kworker/1:5 Not tainted 6.6.0-rc3-00146-g9f3eb=
+bef746f #3
+> > >Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.f=
+c38 04/01/2014
+> > >Workqueue: vsock-loopback vsock_loopback_work
+> > >=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > >
+> > >The following simple reproducer can cause the issue described above:
+> > >
+> > >int main(void)
+> > >{
+> > >  int sock;
+> > >  struct sockaddr_vm addr =3D {
+> > >    .svm_family =3D AF_VSOCK,
+> > >    .svm_cid =3D VMADDR_CID_ANY,
+> > >    .svm_port =3D 1234,
+> > >  };
+> > >
+> > >  sock =3D socket(AF_VSOCK, SOCK_STREAM, 0);
+> > >  connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+> > >  return 0;
+> > >}
+> > >
+> > >This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
+> > >`struct virtio_vsock_hdr` are not initialized when a new skb is alloca=
+ted
+> > >in `virtio_transport_alloc_skb()`. This patch resolves the issue by
+> > >initializing these fields during allocation.
+> > >
+> > >Fixes: 71dc9ec9ac7d ("virtio/vsock: replace virtio_vsock_pkt with sk_b=
+uff")
+> >
+> > CCin Bobby, the original author, for any additional comments/checks.
+> >
+> > Yeah, I see, before that commit we used kzalloc() to allocate the
+> > header so we forgot to reset these 2 fields, and checking they are
+> > the only 2 missing.
+> >
+> > I was thinking of putting a memset(hdr, 0, sizeof(*hdr)) in
+> > virtio_vsock_alloc_skb() but I think it's just extra unnecessary work,
+> > since here we set all the fields (thanks to this fix), in vhost/vsock.c
+> > we copy all the header we receive from the guest and in
+> > virtio_transport.c we already set it all to 0 because we are
+> > preallocating the receive buffers.
+> >
+> > So I'm fine with this fix!
+> >
+> > >Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> > >---
+> > > net/vmw_vsock/virtio_transport_common.c | 2 ++
+> > > 1 file changed, 2 insertions(+)
+> > >
+> > >diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/v=
+irtio_transport_common.c
+> > >index 352d042b130b..102673bef189 100644
+> > >--- a/net/vmw_vsock/virtio_transport_common.c
+> > >+++ b/net/vmw_vsock/virtio_transport_common.c
+> > >@@ -68,6 +68,8 @@ virtio_transport_alloc_skb(struct virtio_vsock_pkt_i=
+nfo *info,
+> > >       hdr->dst_port   =3D cpu_to_le32(dst_port);
+> > >       hdr->flags      =3D cpu_to_le32(info->flags);
+> > >       hdr->len        =3D cpu_to_le32(len);
+> > >+      hdr->buf_alloc  =3D cpu_to_le32(0);
+> > >+      hdr->fwd_cnt    =3D cpu_to_le32(0);
+> > >
+> > >       if (info->msg && len > 0) {
+> > >               payload =3D skb_put(skb, len);
+> > >--
+> > >2.41.0
+> > >
+> >
+> > Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>
+> syzbot just reported the same [1], should we add the following tag?
+>
+> Reported-by: syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
+>
+> [1] https://lore.kernel.org/netdev/00000000000008b2940608ae3ce9@google.co=
+m/
 
+Yes, I was about to add this tag as well, but you were fast ;)
 
->  	dmi_id = dmi_first_match(acp_quirk_table);
->  	if (dmi_id && dmi_id->driver_data)
-> @@ -214,6 +221,10 @@ static const struct platform_device_id board_ids[] = {
->  		.name = "rmb-rt5682s-rt1019",
->  		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_rmb_data,
->  	},
-> +	{
-> +		.name = "acp-pdm-mach",
-> +		.driver_data = (kernel_ulong_t)&acp_dmic_data,
-> +	},
->  	{ }
->  };
->  static struct platform_driver acp_asoc_audio = {
-> @@ -235,4 +246,5 @@ MODULE_ALIAS("platform:acp3xalc5682s1019");
->  MODULE_ALIAS("platform:acp3x-es83xx");
->  MODULE_ALIAS("platform:rmb-nau8825-max");
->  MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
-> +MODULE_ALIAS("platform:acp-pdm-mach");
-
-Please stop growing the aliases. Module alias is not a substitute for
-missing MODULE_DEVICE_TABLE.
-
-Best regards,
-Krzysztof
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
