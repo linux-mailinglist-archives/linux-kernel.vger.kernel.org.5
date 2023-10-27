@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A92C7DA08D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBDF7DA097
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbjJ0SdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        id S1346313AbjJ0SfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235278AbjJ0Sc6 (ORCPT
+        with ESMTP id S235286AbjJ0SfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:32:58 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DA626B0;
-        Fri, 27 Oct 2023 11:32:28 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99357737980so380635066b.2;
-        Fri, 27 Oct 2023 11:32:28 -0700 (PDT)
+        Fri, 27 Oct 2023 14:35:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23110BD
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:34:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da13698a6d3so863451276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 11:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698431547; x=1699036347; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wL6rsP27kyhBgPNjGAE37z4bXgSpgcwn8+JkklueuV4=;
-        b=TfeI/fScNFSOqMUaSTf5jAQmfJLPSzNfPgYyKiDwaBL67ZJcmj9YL0kO2rCbeK92Bj
-         InDKkgD8+fMj0wfFwiJtBZYmVLBYHCfITWaudfXiYQeOMk8wFPPuQBZfQDGWbQBmOk8K
-         7DiVDvNvJHl8dBFEFxgVN6eUYqxvoXrjCRwrFNShaPSMDVGdr8w+f1UKOw1/J1RpbSln
-         MMyKQrC7cZYyE3X5tXVhYcQ51T8bVfp/n2GdFu1eBcxGGWAhUCZxWsU6Ljl0ZeY4uxud
-         B5FQdfNu+XMHLtjmFkoeERnz1Us6ppM8dTm/BIZvsV48t19VSf4hIT15M7BwCi4A6HwY
-         D1BQ==
+        d=google.com; s=20230601; t=1698431691; x=1699036491; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z2KQL5mvly38v1BFhse+1fz0BAqnm18zxyTLFh/7tsk=;
+        b=Z5ILT5hvKkDIHkefyZ7DIbBIF4l+w7ELSsLPK5m/QuyaiH5Aw4BbDIsLkqFnnFA3TB
+         4Fv/axwSRpcfIKikQYYzcPYcM5mhIGd7cT8dvN18RQjgxCIHQxeQXDxfw5ih6bFTvI1a
+         dp8lsS19F67GlMSvqFtbIU+owE7wY/WB6rmv+WG/LosTg3PLLncwFyKk98j6HU1toKRX
+         yh9ZGH06yCf2KOkXRcK/WFCXc88PdlO3vua+PPrukDveeKhed+rs1ARycDwM5HnLdmEJ
+         lbyBWXBoH5jtUlzy6JMj1QJ62nVcto3fPQy5btlPoY2DMdfpIpDxiWWXkaAhbyUy07/p
+         bHTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698431547; x=1699036347;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wL6rsP27kyhBgPNjGAE37z4bXgSpgcwn8+JkklueuV4=;
-        b=v2xVIO/cDaBBMsEZFiBuhceoJgHajP/zAerWjxLKRFlaRXLSuir3P4naWNof9lHq+r
-         Lk9JR6QwyPVW4/uAE5Y0585uqUD+joUHguJGe8nkwSn7pnh/icos/hV8sjDGGcYPgbRx
-         0eUmuu+fFmxnWRxc29kxe91lQLdo6AdcnU24tpJBgMXlly/mDd5IlyjuOwrw2+gChdMT
-         /BC80vkjsLM1yHA8bNlg6SYg0tbDIzZOu7HhfMj2FE6jQP+bhYnka7Z9hFFiAEXq4Flw
-         4FbAj871N5cp1zTd5aKzxIlFVUAJte7KrKEYRVi1T2dVqJ3DG8IyF39L5Hd29YEt4efj
-         OJ9Q==
-X-Gm-Message-State: AOJu0YyIA189FwmlcU14kZ3ZfiS5Cwr5hNOu25XwDlCMqyJgBhxI/3Sk
-        Y44HG4AY/uPEk7j7CLn9XQ==
-X-Google-Smtp-Source: AGHT+IEseHwXORBr9sJ631o9racXkSS0mpkOkeFDiKUjuXjwWnaaKLPyzrP3KLBhmO4nUsL9dB9gVw==
-X-Received: by 2002:a17:907:31c1:b0:9bd:a165:7822 with SMTP id xf1-20020a17090731c100b009bda1657822mr2862145ejb.47.1698431546635;
-        Fri, 27 Oct 2023 11:32:26 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id gt11-20020a170906f20b00b009bd9ac83a9fsm1571360ejb.152.2023.10.27.11.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 11:32:26 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 21:32:24 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, ksummit@lists.linux.dev
-Subject: Re: the nul-terminated string helper desk chair rearrangement
-Message-ID: <c9dd71ba-bb29-4e2d-b8cc-d49d493ffb32@p183>
-References: <20231018-strncpy-drivers-nvme-host-fabrics-c-v1-1-b6677df40a35@google.com>
- <20231019054642.GF14346@lst.de>
- <202310182248.9E197FFD5@keescook>
- <20231020044645.GC11984@lst.de>
- <CAFhGd8o8FaD-3rkBAhEXhc8XqpUk_cLqNwyfpndVuSxDOei_gA@mail.gmail.com>
- <202310201127.DA7EDAFE4D@keescook>
- <20231026100148.GA26941@lst.de>
- <710149630eb010b18b69e161d02502bc3b648173.camel@HansenPartnership.com>
- <20231026095235.760f5546@gandalf.local.home>
- <CAMuHMdV9CcjGkpF=FGe_U5XtbF08bKTEYkPSxArO1zBwnug0Wg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdV9CcjGkpF=FGe_U5XtbF08bKTEYkPSxArO1zBwnug0Wg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698431691; x=1699036491;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z2KQL5mvly38v1BFhse+1fz0BAqnm18zxyTLFh/7tsk=;
+        b=HrXLZKKqdl24btimw0e9tko4pLJM7520EBlytnVJ8DfSUnuoZNTY6g8EwuHUgG5nhF
+         zy9+Pat1uAYLcpaw1foXjtO0v2V+3ube8Qu6pUWCE1wfq0Nu8NQn42ErQo9G16RI4u7W
+         I+vq/eTX0fhXqUd0LsyCsd0hA87vEccRHhEhSEO+yVaJhev0z5roh4SWCsYKdagImXmc
+         HxOlKebiN4ddzOfdI4P1kk9dgdYeZBWEvx7Vs6ZwG/Xvxx6+DRAKfiIM8Gqm7DwgUfil
+         PyhZu5CNVvuBZCeCeOQ3rwPjMxw8rcwsedeeWSYR+aqkF/VpL9yLJds4JIUjrAk+NNXd
+         3uLQ==
+X-Gm-Message-State: AOJu0YyldEK8pV5PEAjoIZ5Nlkvmw4IHJj8xGoCwvckY5OWPaIB/Ti+U
+        FtGa5rnpEVOksTvuwrYXlgzlfURu/5aD4Wff7Q==
+X-Google-Smtp-Source: AGHT+IHO7TfvuhqtaNPamSWCx8oIFoDkAauEh146HYvDhEqkkJsUEpXQ/mGMMdFvo6VFXYCnA+3y2HxsYhlkjW1YXQ==
+X-Received: from shuzhenwang.mtv.corp.google.com ([2620:15c:211:201:c5e7:1675:d0d:2a4c])
+ (user=shuzhenwang job=sendgmr) by 2002:a05:6902:565:b0:da0:c979:fd70 with
+ SMTP id a5-20020a056902056500b00da0c979fd70mr70535ybt.9.1698431691381; Fri,
+ 27 Oct 2023 11:34:51 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 11:34:40 -0700
+In-Reply-To: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
+Mime-Version: 1.0
+References: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027183440.1994315-1-shuzhenwang@google.com>
+Subject: [PATCH v2] usb: gadget: uvc: Add missing initialization of ssp config descriptor
+From:   Shuzhen Wang <shuzhenwang@google.com>
+To:     shuzhenwang@google.com, gregkh@linuxfoundation.org
+Cc:     balbi@kernel.org, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 03:59:28PM +0200, Geert Uytterhoeven wrote:
-> Hi Steven,
-> 
-> On Thu, Oct 26, 2023 at 3:52 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > On Thu, 26 Oct 2023 07:39:44 -0400
-> > James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
-> >
-> > > While it's nice in theory to have everything documented, it's not much
-> > > use if no one can actually find the information ...
-> >
-> > Does kerneldoc provide an automated index? That is, if we had a single file
-> > that had every function in the kernel that is documented, with the path to
-> > the file that documents it, it would make finding documentation much
-> > simpler.
-> >
-> > Maybe it already does? Which would mean we need a way to find the index too!
-> 
-> ctags?
+In case the uvc gadget is super speed plus, the corresponding config
+descriptor wasn't initialized. As a result, the host will not recognize
+the devices when using super speed plus connection.
 
-ctags is a tool from previous century. It doesn't help that "make tags"
-is single-threaded. It needs constant babysitting (loop-like macros,
-ignore attibute annotations which masquerade as identifiers). I think
-"make tags" became much slower because ignore-list is one giant regexp
-which only grows bigger.
+This patch initializes them to super speed descriptors.
 
-> Although "git grep" is faster (assumed you use the "correct" search
-> pattern, which can sometimes be challenging, indeed).
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Shuzhen Wang <shuzhenwang@google.com>
+---
+ v2: fix patch formatting
 
-I tried QT Creator indexing at some point (which is parallel), it needs
-to be told that headers are C not C++. I didn't find a way to tell it
-that .c files are C too but F2 jumped to definitions quite well.
-Also hovering over identifier/name works (being IDE it understands
-popular doc styles).
+ drivers/usb/gadget/function/f_uvc.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-It can be made to work reasonably well provided that you did "make
-allmodconfig" and added few header locations. clangd parses like compiler,
-not like human and kernel uses a lot of CONFIG defines so some config
-must be chosen.
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index faa398109431..786379f1b7b7 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -516,6 +516,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
+ 	void *mem;
+ 
+ 	switch (speed) {
++	case USB_SPEED_SUPER_PLUS:
+ 	case USB_SPEED_SUPER:
+ 		uvc_control_desc = uvc->desc.ss_control;
+ 		uvc_streaming_cls = uvc->desc.ss_streaming;
+@@ -564,7 +565,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
+ 		bytes += uvc_interrupt_ep.bLength + uvc_interrupt_cs_ep.bLength;
+ 		n_desc += 2;
+ 
+-		if (speed == USB_SPEED_SUPER) {
++		if (speed == USB_SPEED_SUPER ||
++		    speed == USB_SPEED_SUPER_PLUS) {
+ 			bytes += uvc_ss_interrupt_comp.bLength;
+ 			n_desc += 1;
+ 		}
+@@ -619,7 +621,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
+ 
+ 	if (uvc->enable_interrupt_ep) {
+ 		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_ep);
+-		if (speed == USB_SPEED_SUPER)
++		if (speed == USB_SPEED_SUPER ||
++		    speed == USB_SPEED_SUPER_PLUS)
+ 			UVC_COPY_DESCRIPTOR(mem, dst, &uvc_ss_interrupt_comp);
+ 
+ 		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_cs_ep);
+@@ -795,6 +798,13 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
+ 		goto error;
+ 	}
+ 
++	f->ssp_descriptors = uvc_copy_descriptors(uvc, USB_SPEED_SUPER_PLUS);
++	if (IS_ERR(f->ssp_descriptors)) {
++		ret = PTR_ERR(f->ssp_descriptors);
++		f->ssp_descriptors = NULL;
++		goto error;
++	}
++
+ 	/* Preallocate control endpoint request. */
+ 	uvc->control_req = usb_ep_alloc_request(cdev->gadget->ep0, GFP_KERNEL);
+ 	uvc->control_buf = kmalloc(UVC_MAX_REQUEST_SIZE, GFP_KERNEL);
+-- 
+2.42.0.820.g83a721a137-goog
 
-But I need to recheck all this stuff now that new version was propagated
-to distros. It should be better (and less segfaulty :-)
