@@ -2,100 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3F27D9EDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E627D9EE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 19:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346012AbjJ0R2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 13:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        id S231305AbjJ0R2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 13:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjJ0R16 (ORCPT
+        with ESMTP id S229454AbjJ0R2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 13:27:58 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8060AB;
-        Fri, 27 Oct 2023 10:27:56 -0700 (PDT)
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3b2df2fb611so1518254b6e.0;
-        Fri, 27 Oct 2023 10:27:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698427676; x=1699032476;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lT09sGgTrEuTUf24HSAV5+mSvhXBl77PVqX+x8VkCqU=;
-        b=nnQy3h0GkEN2++N0hg/xm0slgWt+/AhNMX0Oe//JI6QRJW+q5104+d1nt/UTw4U+Zt
-         wt3eMPFMj2TbKwdXcnxpVX8jQ+6/G8K6ewAkszLYWdRLuVHU+TyzO8yNdLn4Ne+rZi7X
-         mMWocA5xUMElUtB3X8gq7rPhNJXv80ViWfGxZpNv4x3Ne4RrIcqm7kx1ZXiyQdT3+Qaf
-         ZI1tjB2J8UqF0bt6zEiyxKbOGe3QCoYJ2H3coTjb6GBFhq2ktMI6z3Sepf79NxwG6lEF
-         iBz5DS/D1Rupmi6NvYlYZuux0dibefZkVxg9FtBToKg58pQaoyhruH6SKho4JNlnuPsy
-         HizQ==
-X-Gm-Message-State: AOJu0YzIX4/aJPChp/H2D8kjV0WtlP5HCbnp9q3nz0nfvHw3h+9uhs4M
-        enGK/rCLQCc2e/M0e0XhUw==
-X-Google-Smtp-Source: AGHT+IHrGTnQFkC61PIza6vsczaA9W1Gzyuq3CCjBuzoKftsPrt/l9cqVYYDl7cqKInXkPJDSawjww==
-X-Received: by 2002:a54:4690:0:b0:3a8:432a:ea13 with SMTP id k16-20020a544690000000b003a8432aea13mr3693298oic.46.1698427676117;
-        Fri, 27 Oct 2023 10:27:56 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id l18-20020a056808021200b003ae165739bbsm361155oie.7.2023.10.27.10.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 10:27:54 -0700 (PDT)
-Received: (nullmailer pid 2844872 invoked by uid 1000);
-        Fri, 27 Oct 2023 17:27:53 -0000
-Date:   Fri, 27 Oct 2023 12:27:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@gmail.com>,
+        Fri, 27 Oct 2023 13:28:37 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136AEAB;
+        Fri, 27 Oct 2023 10:28:36 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RDUqcs003218;
+        Fri, 27 Oct 2023 17:28:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=p6dG+kpIoF/iHNddbsnwUE/KqqM8kV5CcnouCGK8hBU=;
+ b=Bp2Q1BlhhhGbGtG3BjikUSLR5Td8ZbvJnA2TfXnULo5XNdIxZN8L/QLUDO5QMBww/y17
+ 4bPzRPsCXfkS0UB6GHBZP7+YvA8aTbwPPaEEAC23lYGHcgSkl+le5Fy4SfFH4qSpjv0z
+ vPRi1dxmvykedH5kUI5Nl70flPsXZEYGdReJqzdrae+TFqqvcQU+xkCkOsbsR2epfvd2
+ QzH643nEQPLH8nMJbY2VvxLQ6Q5vCBQtibGzEjvcsiTkPQdYUGMPqrzStK2DpjtmL1pN
+ +ibOOxzD7zskENtPTwsWHZqR9PZQBsiUlkFEAA6nhAOR5M+NRm2xiZD+8vToAHdmHA+u Sg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tyxmv9y5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Oct 2023 17:28:31 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39RHLsa2025874;
+        Fri, 27 Oct 2023 17:28:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tywqmh4ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Oct 2023 17:28:29 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39RHSTKR010403;
+        Fri, 27 Oct 2023 17:28:29 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tywqmh4bk-1;
+        Fri, 27 Oct 2023 17:28:29 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] dt-bindings: display: ssd132x: Remove '-' before
- compatible enum
-Message-ID: <20231027172753.GA2834192-robh@kernel.org>
-References: <20231020223029.1667190-1-javierm@redhat.com>
- <169801218855.747717.5658253186246322717.robh@kernel.org>
- <87y1foo1in.fsf@minerva.mail-host-address-is-not-set>
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: [PATCH v2] i915/perf: Fix NULL deref bugs with drm_dbg() calls
+Date:   Fri, 27 Oct 2023 10:28:22 -0700
+Message-ID: <20231027172822.2753059-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1foo1in.fsf@minerva.mail-host-address-is-not-set>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_16,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2310270151
+X-Proofpoint-GUID: kaDHCum3BgONr6fRSNERLsTiL3rM08tv
+X-Proofpoint-ORIG-GUID: kaDHCum3BgONr6fRSNERLsTiL3rM08tv
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 11:30:56AM +0200, Javier Martinez Canillas wrote:
-> Rob Herring <robh@kernel.org> writes:
-> 
-> > On Sat, 21 Oct 2023 00:30:17 +0200, Javier Martinez Canillas wrote:
-> >> This is a leftover from when the binding schema had the compatible string
-> >> property enum as a 'oneOf' child and the '-' was not removed when 'oneOf'
-> >> got dropped during the binding review process.
-> >> 
-> >> Reported-by: Rob Herring <robh@kernel.org>
-> >> Closes: https://lore.kernel.org/dri-devel/CAL_Jsq+h8DcnpKqhokQOODCc8+Qi3M0PrxRFKz_Y4v37yMJvvA@mail.gmail.com/
-> >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> >> ---
-> >> 
-> >>  .../devicetree/bindings/display/solomon,ssd132x.yaml      | 8 ++++----
-> >>  1 file changed, 4 insertions(+), 4 deletions(-)
-> >> 
-> >
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> >
-> 
-> Pushed to drm-misc (drm-misc-next). Thanks!
+When i915 perf interface is not available dereferencing it will lead to
+NULL dereferences.
 
-Given what introduced this is before the drm-misc-next-2023-10-19 tag, 
-isn't it going into 6.7 and needs to be in the fixes branch? Though that 
-doesn't exist yet for 6.7 fixes. I don't understand why that's not done 
-as part of the last tag for a cycle. But drm-misc is special.
+As returning -ENOTSUPP is pretty clear return when perf interface is not
+available.
 
-Rob
+Fixes: 2fec539112e8 ("i915/perf: Replace DRM_DEBUG with driver specific drm_dbg call")
+Suggested-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+v1 --> v2: Remove the debug calls as they don't add much value and
+-ENOTSUPP is a good enough return value.
+---
+ drivers/gpu/drm/i915/i915_perf.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
+index 2f3ecd7d4804..7b1c8de2f9cb 100644
+--- a/drivers/gpu/drm/i915/i915_perf.c
++++ b/drivers/gpu/drm/i915/i915_perf.c
+@@ -4227,11 +4227,8 @@ int i915_perf_open_ioctl(struct drm_device *dev, void *data,
+ 	u32 known_open_flags;
+ 	int ret;
+ 
+-	if (!perf->i915) {
+-		drm_dbg(&perf->i915->drm,
+-			"i915 perf interface not available for this system\n");
++	if (!perf->i915)
+ 		return -ENOTSUPP;
+-	}
+ 
+ 	known_open_flags = I915_PERF_FLAG_FD_CLOEXEC |
+ 			   I915_PERF_FLAG_FD_NONBLOCK |
+@@ -4607,11 +4604,8 @@ int i915_perf_add_config_ioctl(struct drm_device *dev, void *data,
+ 	struct i915_oa_reg *regs;
+ 	int err, id;
+ 
+-	if (!perf->i915) {
+-		drm_dbg(&perf->i915->drm,
+-			"i915 perf interface not available for this system\n");
++	if (!perf->i915)
+ 		return -ENOTSUPP;
+-	}
+ 
+ 	if (!perf->metrics_kobj) {
+ 		drm_dbg(&perf->i915->drm,
+@@ -4773,11 +4767,8 @@ int i915_perf_remove_config_ioctl(struct drm_device *dev, void *data,
+ 	struct i915_oa_config *oa_config;
+ 	int ret;
+ 
+-	if (!perf->i915) {
+-		drm_dbg(&perf->i915->drm,
+-			"i915 perf interface not available for this system\n");
++	if (!perf->i915)
+ 		return -ENOTSUPP;
+-	}
+ 
+ 	if (i915_perf_stream_paranoid && !perfmon_capable()) {
+ 		drm_dbg(&perf->i915->drm,
+-- 
+2.39.3
+
