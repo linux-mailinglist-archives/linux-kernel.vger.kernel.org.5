@@ -2,69 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF127DA35D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0C67DA38A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 00:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346620AbjJ0WXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 18:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
+        id S1346716AbjJ0We3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 18:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0WXa (ORCPT
+        with ESMTP id S1346664AbjJ0WeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 18:23:30 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C55B1A5;
-        Fri, 27 Oct 2023 15:23:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0F2331FEF4;
-        Fri, 27 Oct 2023 22:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1698445406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IbyuAI8nWTQaFyKEs2hMMCmDe8XjY6AQ2mGWmMDjEsA=;
-        b=ZBFmCKN8uR+Sf0t3PwU0QNWLICKcMHTv9x6zafFrToso/kd7NaEsF+39/j4bJbzxEwYLhu
-        A5jb3zEvFKbuAuteSkEZMJW3uPwWGIbRihq50grokLzc/Arvu4XXbWjOH6LtD3aujuJYMe
-        M1URGcPUPDC8GwnBTS2V+lQlpaAD1t4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1698445406;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IbyuAI8nWTQaFyKEs2hMMCmDe8XjY6AQ2mGWmMDjEsA=;
-        b=Tp3YiueaztvEvf21Wb5QXtA8pZOfZ57XaQqgy17IOS1tcM8kgm36Q5gKVzvIzDNRjqNFD+
-        LjSIp0yY2nPlX8DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3BEE1358C;
-        Fri, 27 Oct 2023 22:23:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id v0AoJVo4PGV1PAAAMHmgww
-        (envelope-from <neilb@suse.de>); Fri, 27 Oct 2023 22:23:22 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 27 Oct 2023 18:34:00 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5741A5;
+        Fri, 27 Oct 2023 15:33:57 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RMOofD014709;
+        Fri, 27 Oct 2023 22:33:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=IVSgnbVn4IWEHCHOJhI1Xe4fA4H+uME0vzG2xVGm5EA=;
+ b=LzN+aDKa0d7pwH+VVdgc+Sf6HZ5+StB4iN9yRg3hWqBCdQwK8HyroIulwVzhbj7i5NJL
+ NQBZbYVclSJztr0Hb7kYdyxAEJ3ChpNJAEHjLrFlU1HgpG4Nrlfaej/ewhbniQ1s+ZnP
+ f64j01PTVUANWonpe+h61rrliuNYb4WxBO7QaKCII+zYvJN24R2IYG714otk+BNixhRP
+ tDLsErM0GsyAwoHnJ5jyV5YAY1xUveMaO44FCWk7q1VL5dKkoFBZt6t7SElTXFRqMHKJ
+ nz89ieMQsC634cqz873yxdGWtFV1xPZFxgnOzfhGFEXJ3zAmsiJGQNPX8+JSpWZKRYpA tg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0bnr1efk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 22:33:27 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39RMXQxV024534
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 22:33:26 GMT
+Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 27 Oct 2023 15:33:25 -0700
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+Subject: [PATCH RFC v7 00/10] Support for Solid Fill Planes
+Date:   Fri, 27 Oct 2023 15:32:50 -0700
+Message-ID: <20231027-solid-fill-v7-0-780188bfa7b2@quicinc.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Zhi Li" <yieli@redhat.com>, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH] nfsd: ensure the nfsd_serv pointer is cleared when svc is
- torn down
-In-reply-to: <20231027-kdevops-v1-1-73711c16186c@kernel.org>
-References: <20231027-kdevops-v1-1-73711c16186c@kernel.org>
-Date:   Sat, 28 Oct 2023 09:23:19 +1100
-Message-id: <169844539954.20306.1375894928598489617@noble.neil.brown.name>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJI6PGUC/2XOTU7DMBAF4KtUXuNq/JuUFRISB2CLEHLsMXGVO
+ GCXqFDl7jjeRG2Xb0bfvLmQjClgJo+7C0k4hxymWELzsCO2N/ETaXAlEw5cgARJ8zQER30YBgo
+ KmGaNcp3QpIDOZKRdMtH2KxnzSCOeT+vqK6EP59rzRl5fnsl7GfYhn6b0W7tnVle1hoHkQoLQe
+ y00ZfT7J9iPI+b8Vz56WlOIdm+nsV6Z5SZvHpwlBeolWrDGNJK7e6w23PD2CquCQQnXoTcHONh
+ 7rDfc3mBdsGk5oLcWW8Wv8bIs/yQOoj56AQAA
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>
+CC:     <quic_abhinavk@quicinc.com>, <ppaalanen@gmail.com>,
+        <contact@emersion.fr>, <laurent.pinchart@ideasonboard.com>,
+        <sebastian.wick@redhat.com>, <ville.syrjala@linux.intel.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
+        <wayland-devel@lists.freedesktop.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sebastian Wick <sebastian@sebastianwick.net>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+X-Mailer: b4 0.13-dev-26615
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698446005; l=7871;
+ i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
+ bh=irNSlABl/Ci/u6a6mjL5ayw/DtkArxNEW6cYRSrac5c=;
+ b=kxnARyFdt8mvLEpO9ZMPGeieO3duKOARCiZ6MNH0oqX3UPtI8+0Cha1K1OJobDWKRqSgHpko1
+ 5IarejfVy6UBhqMRvPgj1Ggiu5KmTpr5WpklCIqjNkOEj72Ch2XliN+
+X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
+ pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: OdZNGk8RKjnEmeu38NQQ8wnI2KzI9AnB
+X-Proofpoint-ORIG-GUID: OdZNGk8RKjnEmeu38NQQ8wnI2KzI9AnB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_21,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310270193
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -75,303 +103,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023, Jeff Layton wrote:
-> Zhi Li reported a refcount_t use-after-free when bringing up nfsd.
->=20
-> We set the nn->nfsd_serv pointer in nfsd_create_serv, but it's only ever
-> cleared in nfsd_last_thread. When setting up a new socket, if there is
-> an error, this can leave nfsd_serv pointer set after it has been freed.
-> We need to better couple the existence of the object with the value of
-> the nfsd_serv pointer.
->=20
-> Since we always increment and decrement the svc_serv references under
-> mutex, just test for whether the next put will destroy it in nfsd_put,
-> and clear the pointer beforehand if so. Add a new nfsd_get function for
-> better clarity and so that we can enforce that the mutex is held via
-> lockdep. Remove the clearing of the pointer from nfsd_last_thread.
-> Finally, change all of the svc_get and svc_put calls to use the updated
-> wrappers.
->=20
-> Reported-by: Zhi Li <yieli@redhat.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> When using their test harness, the RHQA folks would sometimes see the
-> nfsv3 portmapper registration fail with -ERESTARTSYS, and that would
-> trigger this bug. I could never reproduce that easily on my own, but I
-> was able to validate this by hacking some fault injection into
-> svc_register.
+Some drivers support hardware that have optimizations for solid fill
+planes. This series aims to expose these capabilities to userspace as
+some compositors have a solid fill flag (ex. SOLID_COLOR in the Android
+hardware composer HAL) that can be set by apps like the Android Gears
+test app.
 
-Maybe you could share that fault-injection with us?
+In order to expose this capability to userspace, this series will:
 
-> ---
->  fs/nfsd/nfsctl.c |  4 ++--
->  fs/nfsd/nfsd.h   |  8 ++-----
->  fs/nfsd/nfssvc.c | 72 ++++++++++++++++++++++++++++++++++++----------------=
-----
->  3 files changed, 51 insertions(+), 33 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> index 7ed02fb88a36..f8c0fed99c7f 100644
-> --- a/fs/nfsd/nfsctl.c
-> +++ b/fs/nfsd/nfsctl.c
-> @@ -706,7 +706,7 @@ static ssize_t __write_ports_addfd(char *buf, struct ne=
-t *net, const struct cred
-> =20
->  	if (err >=3D 0 &&
->  	    !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-> -		svc_get(nn->nfsd_serv);
-> +		nfsd_get(net);
-> =20
->  	nfsd_put(net);
->  	return err;
-> @@ -745,7 +745,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct =
-net *net, const struct cr
->  		goto out_close;
-> =20
->  	if (!nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-> -		svc_get(nn->nfsd_serv);
-> +		nfsd_get(net);
-> =20
->  	nfsd_put(net);
->  	return 0;
-> diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-> index 11c14faa6c67..c9cb70bf2a6d 100644
-> --- a/fs/nfsd/nfsd.h
-> +++ b/fs/nfsd/nfsd.h
-> @@ -96,12 +96,8 @@ int		nfsd_pool_stats_open(struct inode *, struct file *);
->  int		nfsd_pool_stats_release(struct inode *, struct file *);
->  void		nfsd_shutdown_threads(struct net *net);
-> =20
-> -static inline void nfsd_put(struct net *net)
-> -{
-> -	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> -
-> -	svc_put(nn->nfsd_serv);
-> -}
-> +struct svc_serv	*nfsd_get(struct net *net);
-> +void		nfsd_put(struct net *net);
-> =20
->  bool		i_am_nfsd(void);
-> =20
-> diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> index c7af1095f6b5..4c00478c28dd 100644
-> --- a/fs/nfsd/nfssvc.c
-> +++ b/fs/nfsd/nfssvc.c
-> @@ -66,7 +66,7 @@ static __be32			nfsd_init_request(struct svc_rqst *,
->   * ->sv_pools[].
->   *
->   * Each active thread holds a counted reference on nn->nfsd_serv, as does
-> - * the nn->keep_active flag and various transient calls to svc_get().
-> + * the nn->keep_active flag and various transient calls to nfsd_get().
->   *
->   * Finally, the nfsd_mutex also protects some of the global variables that=
- are
->   * accessed when nfsd starts and that are settable via the write_* routine=
-s in
-> @@ -477,6 +477,39 @@ static void nfsd_shutdown_net(struct net *net)
->  }
-> =20
->  static DEFINE_SPINLOCK(nfsd_notifier_lock);
-> +
-> +struct svc_serv *nfsd_get(struct net *net)
-> +{
-> +	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> +	struct svc_serv *serv =3D nn->nfsd_serv;
-> +
-> +	lockdep_assert_held(&nfsd_mutex);
-> +	if (serv)
-> +		svc_get(serv);
-> +	return serv;
-> +}
+- Introduce solid_fill and pixel_source properties to allow userspace to
+  toggle between FB and solid fill sources
+- Loosen NULL FB checks within the DRM atomic commit callstack to allow
+  for NULL FB when solid fill is enabled.
+- Add NULL FB checks in methods where FB was previously assumed to be
+  non-NULL
+- Have MSM DPU driver use drm_plane_state.solid_fill instead of
+  dpu_plane_state.color_fill
 
-As far as I can tell, the addition of nfsd_get() is pure noise here.
-Maybe it is a useful abstraction to add, but it makes the patch so noisy
-that I cannot see where the actual fix is.
+Note: The solid fill planes feature depends on both the solid_fill *and*
+pixel_source properties.
 
-> +
-> +void nfsd_put(struct net *net)
-> +{
-> +	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> +	struct svc_serv *serv =3D nn->nfsd_serv;
-> +
-> +	/*
-> +	 * The notifiers expect that if the nfsd_serv pointer is
-> +	 * set that it's safe to access, so we must clear that
-> +	 * pointer first before putting the last reference. Because
-> +	 * we always increment and decrement the refcount under the
-> +	 * mutex, it's safe to determine this via kref_read.
-> +	 */
-> +	lockdep_assert_held(&nfsd_mutex);
-> +	if (kref_read(&serv->sv_refcnt) =3D=3D 1) {
+To use this feature, userspace can set the solid_fill property to a blob
+containing the solid fill color (in RGB323232 format) and and setting the
+pixel_source property to DRM_PLANE_PIXEL_SOURCE_SOLID_FILL. This will
+disable memory fetch and the resulting plane will display the color
+specified by the solid_fill blob.
 
-This is horrible.  Using kref_read() is OK for debug messages, but
-almost always wrong anywhere else.
-In this case it is actually safe but only because the use of kref has
-become pointless.  We now ONLY change sv_refcnt while holding a mutex so
-we may as well make it a simple integer (which I'd been thinking of
-doing, but hadn't got to yet).  So this isn't wrong, but it looks wrong.
+In order to disable a solid fill plane, the user must set the pixel_source
+to NONE. A plane with a pixel_source of "solid_fill" and a NULL solid_fill
+blob will cause an error on commit.
 
-Also I think we should only have one place where we special-case
-sv_refcnt going from 1 to 0.  nfsd_last_thread() must be called at that
-time.  So if we are going to have nfsd_put() like this, it should be
-calling nfsd_last_thread().
+Currently, there's only one version of the solid_fill blob property.
+However if other drivers want to support a similar feature, but require
+more than just the solid fill color, they can extend this feature by
+extending the pixel_source enum and adding another solid fill blob property.
 
-I'm certainly open to the possibility that these are still bugs here.  I
-don't think patch helps me be confident that there are fewer.  Sorry.
+This 2 property approach was chosen because passing in a special 1x1 FB
+with the necessary color information would have unecessary overhead that
+does not reflect the behavior of the solid fill feature. In addition,
+assigning the solid fill blob to FB_ID would require loosening some core
+drm_property checks that might cause unwanted side effects elsewhere.
 
-NeilBrown
+---
+Changes in v7:
+- Updated cover letter (Sebastian)
+- Updated the uAPI documentation (Sebastian, Pekka)
+- Specify that padding must be set to zero in drm_mode_solid_fill
+  documentation (Pekka)
+- Use %08x format when printing solid fill info in plane state dump (Pekka)
+- Use new_plane_state->fb directly in drm_atomic_plane_check() (Dmitry)
+- Dropped documentation for alpha for _dpu_plane_color_fill() (Dmitry)
+- Defined DPU_SOLID_FILL_FORMAT macro (Dmitry)
+- Fixed some necessary checks being skipped in the DPU atomic
+  commit path (Dmitry)
+- Rebased to tip of msm-next
+- Picked up Acked-by and Reviewed-by tags
 
+Changes in v6:
+- Have _dpu_plane_color_fill() take in a single ABGR8888 color instead
+  of having separate alpha and BGR color parameters (Dmitry)
+- Drop plane->state->pixel_source != DRM_PLANE_PIXEL_SOURCE_FB check
+  in SetPlane ioctl (Dmitry)
+- Add DRM_PLANE_PIXEL_SOURCE_NONE as a default pixel source (Sebastian)
+- Dropped versioning from solid fill property blob (Dmitry)
+- Use DRM_ENUM_NAME_FN (Dmitry)
+- Use drm_atomic_replace_property_blob_from_id() (Dmitry)
+- drm_atomic_check_fb -> drm_atomic_plane_check_fb (Dmitry)
+- Group redundant NULL FB checks (Dmitry)
+- Squashed drm_plane_needs_disable() implementation with 
+  DRM_PLANE_PIXEL_SOURCE_NONE declaration (Sebastian)
+- Add comment to support RGBA solid fill color in the future (Dmitry)
+- Link to v5: https://lore.kernel.org/r/20230728-solid-fill-v5-0-053dbefa909c@quicinc.com
 
+Changes in v5:
+- Added support for PIXEL_SOURCE_NONE (Sebastian)
+- Added WARN_ON() in drm_plane_has_visible_data() if pixel_source isn't
+  set (Dmitry)
+- Added debugfs support for both properties (Dmitry)
+- Corrected u32 to u8 conversion (Pekka)
+- Moved drm_solid_fill_info struct and related documentation to
+  include/uapi (Pekka)
+- Changed drm_solid_fill_info.version to __u32 for data alignment (Pekka)
+- Added more detailed UAPI and kernel documentation (Pekka)
+- Reordered patch series so that the pixel_source property is introduced
+  before solid_fill (Dmitry)
+- Fixed inconsistent ABGR8888/RGBA8888 format declaration (Pekka)
+- Reset pixel_source to FB in drm_mode_setplane() (Dmitry)
+- Rename supported_sources to extra_sources (Dmitry)
+- Only destroy old solid_fill blob state if new state is valid (Pekka)
+- Link to v4: https://lore.kernel.org/r/20230404-solid-fill-v4-0-f4ec0caa742d@quicinc.com
 
-> +		spin_lock(&nfsd_notifier_lock);
-> +		nn->nfsd_serv =3D NULL;
-> +		spin_unlock(&nfsd_notifier_lock);
-> +	}
-> +	svc_put(serv);
-> +}
-> +
->  static int nfsd_inetaddr_event(struct notifier_block *this, unsigned long =
-event,
->  	void *ptr)
->  {
-> @@ -547,10 +580,6 @@ static void nfsd_last_thread(struct net *net)
->  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
->  	struct svc_serv *serv =3D nn->nfsd_serv;
-> =20
-> -	spin_lock(&nfsd_notifier_lock);
-> -	nn->nfsd_serv =3D NULL;
-> -	spin_unlock(&nfsd_notifier_lock);
-> -
->  	/* check if the notifier still has clients */
->  	if (atomic_dec_return(&nfsd_notifier_refcount) =3D=3D 0) {
->  		unregister_inetaddr_notifier(&nfsd_inetaddr_notifier);
-> @@ -638,21 +667,19 @@ static int nfsd_get_default_max_blksize(void)
-> =20
->  void nfsd_shutdown_threads(struct net *net)
->  {
-> -	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
->  	struct svc_serv *serv;
-> =20
->  	mutex_lock(&nfsd_mutex);
-> -	serv =3D nn->nfsd_serv;
-> +	serv =3D nfsd_get(net);
->  	if (serv =3D=3D NULL) {
->  		mutex_unlock(&nfsd_mutex);
->  		return;
->  	}
-> =20
-> -	svc_get(serv);
->  	/* Kill outstanding nfsd threads */
->  	svc_set_num_threads(serv, NULL, 0);
->  	nfsd_last_thread(net);
-> -	svc_put(serv);
-> +	nfsd_put(net);
->  	mutex_unlock(&nfsd_mutex);
->  }
-> =20
-> @@ -663,15 +690,13 @@ bool i_am_nfsd(void)
-> =20
->  int nfsd_create_serv(struct net *net)
->  {
-> -	int error;
->  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
->  	struct svc_serv *serv;
-> +	int error;
-> =20
-> -	WARN_ON(!mutex_is_locked(&nfsd_mutex));
-> -	if (nn->nfsd_serv) {
-> -		svc_get(nn->nfsd_serv);
-> +	serv =3D nfsd_get(net);
-> +	if (serv)
->  		return 0;
-> -	}
->  	if (nfsd_max_blksize =3D=3D 0)
->  		nfsd_max_blksize =3D nfsd_get_default_max_blksize();
->  	nfsd_reset_versions(nn);
-> @@ -731,8 +756,6 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net=
- *net)
->  	int err =3D 0;
->  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> =20
-> -	WARN_ON(!mutex_is_locked(&nfsd_mutex));
-> -
->  	if (nn->nfsd_serv =3D=3D NULL || n <=3D 0)
->  		return 0;
-> =20
-> @@ -766,7 +789,7 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net=
- *net)
->  		nthreads[0] =3D 1;
-> =20
->  	/* apply the new numbers */
-> -	svc_get(nn->nfsd_serv);
-> +	nfsd_get(net);
->  	for (i =3D 0; i < n; i++) {
->  		err =3D svc_set_num_threads(nn->nfsd_serv,
->  					  &nn->nfsd_serv->sv_pools[i],
-> @@ -774,7 +797,7 @@ int nfsd_set_nrthreads(int n, int *nthreads, struct net=
- *net)
->  		if (err)
->  			break;
->  	}
-> -	svc_put(nn->nfsd_serv);
-> +	nfsd_put(net);
->  	return err;
->  }
-> =20
-> @@ -826,8 +849,8 @@ nfsd_svc(int nrservs, struct net *net, const struct cre=
-d *cred)
->  out_put:
->  	/* Threads now hold service active */
->  	if (xchg(&nn->keep_active, 0))
-> -		svc_put(serv);
-> -	svc_put(serv);
-> +		nfsd_put(net);
-> +	nfsd_put(net);
->  out:
->  	mutex_unlock(&nfsd_mutex);
->  	return error;
-> @@ -1067,14 +1090,14 @@ bool nfssvc_encode_voidres(struct svc_rqst *rqstp, =
-struct xdr_stream *xdr)
->  int nfsd_pool_stats_open(struct inode *inode, struct file *file)
->  {
->  	int ret;
-> +	struct net *net =3D inode->i_sb->s_fs_info;
->  	struct nfsd_net *nn =3D net_generic(inode->i_sb->s_fs_info, nfsd_net_id);
-> =20
->  	mutex_lock(&nfsd_mutex);
-> -	if (nn->nfsd_serv =3D=3D NULL) {
-> +	if (nfsd_get(net) =3D=3D NULL) {
->  		mutex_unlock(&nfsd_mutex);
->  		return -ENODEV;
->  	}
-> -	svc_get(nn->nfsd_serv);
->  	ret =3D svc_pool_stats_open(nn->nfsd_serv, file);
->  	mutex_unlock(&nfsd_mutex);
->  	return ret;
-> @@ -1082,12 +1105,11 @@ int nfsd_pool_stats_open(struct inode *inode, struc=
-t file *file)
-> =20
->  int nfsd_pool_stats_release(struct inode *inode, struct file *file)
->  {
-> -	struct seq_file *seq =3D file->private_data;
-> -	struct svc_serv *serv =3D seq->private;
-> +	struct net *net =3D inode->i_sb->s_fs_info;
->  	int ret =3D seq_release(inode, file);
-> =20
->  	mutex_lock(&nfsd_mutex);
-> -	svc_put(serv);
-> +	nfsd_put(net);
->  	mutex_unlock(&nfsd_mutex);
->  	return ret;
->  }
->=20
-> ---
-> base-commit: 80eea12811ab8b32e3eac355adff695df5b4ba8e
-> change-id: 20231026-kdevops-3c18d260bf7c
->=20
-> Best regards,
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
->=20
+Changes in v4:
+- Rebased onto latest kernel
+- Reworded cover letter for clarity (Dmitry)
+- Reworded commit messages for clarity
+- Split existing changes into smaller commits
+- Added pixel_source enum property (Dmitry, Pekka, Ville)
+- Updated drm-kms comment docs with pixel_source and solid_fill
+  properties (Dmitry)
+- Inlined drm_atomic_convert_solid_fill_info() (Dmitry)
+- Passed in plane state alpha value to _dpu_plane_color_fill_pipe()
+- Link to v3: https://lore.kernel.org/r/20230104234036.636-1-quic_jesszhan@quicinc.com
+
+Changes in v3:
+- Fixed some logic errors in atomic checks (Dmitry)
+- Introduced drm_plane_has_visible_data() and drm_atomic_check_fb() helper
+  methods (Dmitry)
+- Fixed typo in drm_solid_fill struct documentation
+- Created drm_plane_has_visible_data() helper and corrected CRTC and FB
+  NULL-check logic (Dmitry)
+- Merged `if (fb)` blocks in drm_atomic_plane_check() and abstracted
+  them into helper method (Dmitry)
+- Inverted `if (solid_fill_enabled) else if (fb)` check order (Dmitry)
+- Fixed indentation (Dmitry)
+
+Changes in v2:
+- Dropped SOLID_FILL_FORMAT property (Simon)
+- Switched to implementing solid_fill property as a blob (Simon, Dmitry)
+- Added drm_solid_fill and drm_solid_fill_info structs (Simon)
+- Changed to checks for if solid_fill_blob is set (Dmitry)
+- Abstracted (plane_state && !solid_fill_blob) checks to helper method
+  (Dmitry)
+- Removed DPU_PLANE_COLOR_FILL_FLAG
+- Fixed whitespace and indentation issues (Dmitry)
+- Changed to checks for if solid_fill_blob is set (Dmitry)
+- Abstracted (plane_state && !solid_fill_blob) checks to helper method
+  (Dmitry)
+- Fixed dropped 'const' warning
+- Added helper to convert color fill to BGR888 (Rob)
+- Fixed indentation issue (Dmitry)
+- Added support for solid fill on planes of varying sizes
+
+---
+Jessica Zhang (10):
+      drm: Introduce pixel_source DRM plane property
+      drm: Introduce solid fill DRM plane property
+      drm: Add solid fill pixel source
+      drm/atomic: Add pixel source to plane state dump
+      drm/atomic: Add solid fill data to plane state dump
+      drm/atomic: Move framebuffer checks to helper
+      drm/atomic: Loosen FB atomic checks
+      drm/msm/dpu: Allow NULL FBs in atomic commit
+      drm/msm/dpu: Use DRM solid_fill property
+      drm/msm/dpu: Add solid fill and pixel source properties
+
+ drivers/gpu/drm/drm_atomic.c              | 148 +++++++++++++++++-------------
+ drivers/gpu/drm/drm_atomic_helper.c       |  39 ++++----
+ drivers/gpu/drm/drm_atomic_state_helper.c |  10 ++
+ drivers/gpu/drm/drm_atomic_uapi.c         |  30 ++++++
+ drivers/gpu/drm/drm_blend.c               | 133 +++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_crtc_internal.h       |   1 +
+ drivers/gpu/drm/drm_plane.c               |  27 +++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c  |   9 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c |  75 ++++++++++-----
+ include/drm/drm_atomic_helper.h           |   4 +-
+ include/drm/drm_blend.h                   |   3 +
+ include/drm/drm_plane.h                   |  90 ++++++++++++++++++
+ include/uapi/drm/drm_mode.h               |  24 +++++
+ 13 files changed, 481 insertions(+), 112 deletions(-)
+---
+base-commit: b08d26dac1a1075c874f40ee02ec8ddc39e20146
+change-id: 20230404-solid-fill-05016175db36
+
+Best regards,
+-- 
+Jessica Zhang <quic_jesszhan@quicinc.com>
 
