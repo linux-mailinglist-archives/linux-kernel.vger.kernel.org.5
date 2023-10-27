@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C217D9091
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABFD7D9098
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbjJ0IDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S235027AbjJ0IEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbjJ0IDQ (ORCPT
+        with ESMTP id S235026AbjJ0IEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:03:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F31BD;
-        Fri, 27 Oct 2023 01:03:11 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20AA6669;
-        Fri, 27 Oct 2023 10:02:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698393776;
-        bh=XBUsbRDaPiyitopG0DEbk3R5O/2FPzd2BnU2ptaoZPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EQZwmdMUSDW0XXeU9cMmkQdVq93futIpC+O3rvEz084T6zswzJWyxuh44A7+620NS
-         aLc5HB0p5v5X2Z5MGHwkxoE/JpFpThV3N8Th2oqk6PYhEvdJF1eH/9477cpAHCx5dZ
-         8ewJAsoI1fMBzjRRcLjW9PQEPC1yD3phZGqSs71g=
-Date:   Fri, 27 Oct 2023 11:03:15 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Shuzhen Wang <shuzhenwang@google.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: uvc: Add missing initialization of ssp
- config descriptor
-Message-ID: <20231027080315.GK26306@pendragon.ideasonboard.com>
-References: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
+        Fri, 27 Oct 2023 04:04:00 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD2B1A1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:03:58 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7788f513872so137715885a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698393837; x=1698998637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nrlLD9BQJAsTiZgds5zkaHdkPR/+w81GfdeLQRMW4mo=;
+        b=PTr6hv/TYcArxfqe49/+8UaqrhPeFk/T7wAfX1qBOuTXW4q39QEt0PjTIm/8dMMcoY
+         3ez0A2MHDUksC6eONfzV0eCodg1BCrokylr7iGrX5oV7Eqfa01lFM/OYRgzshrH7MDuD
+         mfEWtkxNhss3PH68HmhEQV1P7CbdXBzBHwvsfrqWMN3RrCj61QJ+q17O0FTAvGL3GBku
+         aaORfVUSuEnGeJSuEDC6nE3TacFoIlR4sJkgIY8uv+9TbMuNuSdt3R2aixacCiu+2fBs
+         NaOI441nFMWL1klWSMeKWI/KCB2b6h3qrUAQUBHPENpiLtANr6Hn+0iAb3/VPjhlUJqL
+         NbPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698393837; x=1698998637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nrlLD9BQJAsTiZgds5zkaHdkPR/+w81GfdeLQRMW4mo=;
+        b=wYRP0xQZ7kX/MXqJJiJI8gzhCYe2UtKXpfphk5zC3F1f+zqzDowGM9XhfDS199SLqq
+         STyxNvFGsavv3NOcZXLP7+dxEgDptTbdEAWhxn/cYtmO/WRaP4ScIpG7anwlGn29yIzT
+         2RLQWgp1FF6lIKmA9zsvqCSFuDq5GI/FbjxQyLxi6GGZXvkeCSMl4RJnODxwIzRjSmZR
+         jwi7j2ed4iZ2QsuvLs7M4qxiDdjyX9IE9Rslyg0Dp2nIumS+1/f3OjieVg0GqI89QoCe
+         Wfma61Ow5Iz/UQP0sbAQR3xqdTmCu2xKb0D+HxRpSquEIvziwXV+6ntQNGaichjTZpmT
+         gZ4w==
+X-Gm-Message-State: AOJu0YzcqegTtQ7lz6h2gkiT6mTw6tzqsgy9AUX2dRTBfPjcled6Q7vw
+        IcDco4SvYXeIChladxX7wd8fjpPD9r0TlL1h33n1pA==
+X-Google-Smtp-Source: AGHT+IHfDH5GA9cWwLCgjFyYYNIMC7atlAq/q5CkJVPWpsP6HtAVrZ41WnbMLoAldHT6EsV1+z4Mfa/t0u+fB4f6EpA=
+X-Received: by 2002:a05:620a:372a:b0:76c:992e:1b2f with SMTP id
+ de42-20020a05620a372a00b0076c992e1b2fmr1929306qkb.13.1698393837441; Fri, 27
+ Oct 2023 01:03:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <14ceb63f-1769-4025-ad90-c38112dfec79@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231026135912.1214302-1-glider@google.com> <ZTp2oLST3nR9AZk4@smile.fi.intel.com>
+ <CAG_fn=VSYNk=k1kqKo1vQ7Bd87x9evy6GQBfjdNatOp51x8DZQ@mail.gmail.com> <ZTrIoaFE+c5XQXFs@smile.fi.intel.com>
+In-Reply-To: <ZTrIoaFE+c5XQXFs@smile.fi.intel.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 27 Oct 2023 10:03:20 +0200
+Message-ID: <CAG_fn=U0hJ5fJ2D4gz=exhwn01XoytzhE=h9XWBr8RFp7P_E3Q@mail.gmail.com>
+Subject: Re: [PATCH v10 1/2] lib/bitmap: add bitmap_{read,write}()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shuzhen,
-
-Thank you for the patch.
-
-On Thu, Oct 26, 2023 at 12:29:02PM -0700, Shuzhen Wang wrote:
-> In case the uvc gadget is super speed plus, the corresponding config
-> descriptor wasn't initialized. As a result, the host will not recognize
-> the devices when using super speed plus connection.
-> 
-> This patch initializes them to super speed descriptors.
-> 
-> Signed-off-by: Shuzhen Wang <shuzhenwang@google.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->   drivers/usb/gadget/function/f_uvc.c | 14 ++++++++++++--
->   1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
-> index faa398109431..786379f1b7b7 100644
-> --- a/drivers/usb/gadget/function/f_uvc.c
-> +++ b/drivers/usb/gadget/function/f_uvc.c
-> @@ -516,6 +516,7 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
->   	void *mem;
->   
->   	switch (speed) {
-> +	case USB_SPEED_SUPER_PLUS:
->   	case USB_SPEED_SUPER:
->   		uvc_control_desc = uvc->desc.ss_control;
->   		uvc_streaming_cls = uvc->desc.ss_streaming;
-> @@ -564,7 +565,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
->   		bytes += uvc_interrupt_ep.bLength + uvc_interrupt_cs_ep.bLength;
->   		n_desc += 2;
->   
-> -		if (speed == USB_SPEED_SUPER) {
-> +		if (speed == USB_SPEED_SUPER ||
-> +		    speed == USB_SPEED_SUPER_PLUS) {
->   			bytes += uvc_ss_interrupt_comp.bLength;
->   			n_desc += 1;
->   		}
-> @@ -619,7 +621,8 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
->   
->   	if (uvc->enable_interrupt_ep) {
->   		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_ep);
-> -		if (speed == USB_SPEED_SUPER)
-> +		if (speed == USB_SPEED_SUPER ||
-> +		    speed == USB_SPEED_SUPER_PLUS)
->   			UVC_COPY_DESCRIPTOR(mem, dst, &uvc_ss_interrupt_comp);
->   
->   		UVC_COPY_DESCRIPTOR(mem, dst, &uvc_interrupt_cs_ep);
-> @@ -795,6 +798,13 @@ uvc_function_bind(struct usb_configuration *c, struct usb_function *f)
->   		goto error;
->   	}
->   
-> +	f->ssp_descriptors = uvc_copy_descriptors(uvc, USB_SPEED_SUPER_PLUS);
-> +	if (IS_ERR(f->ssp_descriptors)) {
-> +		ret = PTR_ERR(f->ssp_descriptors);
-> +		f->ssp_descriptors = NULL;
-> +		goto error;
-> +	}
-> +
->   	/* Preallocate control endpoint request. */
->   	uvc->control_req = usb_ep_alloc_request(cdev->gadget->ep0, GFP_KERNEL);
->   	uvc->control_buf = kmalloc(UVC_MAX_REQUEST_SIZE, GFP_KERNEL);
-
--- 
-Regards,
-
-Laurent Pinchart
+On Thu, Oct 26, 2023 at 10:14=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Oct 26, 2023 at 04:48:46PM +0200, Alexander Potapenko wrote:
+>
+> ...
+>
+> > > > +static inline void bitmap_write(unsigned long *map,
+> > > > +                             unsigned long value,
+> > > > +                             unsigned long start, unsigned long nb=
+its)
+> > >
+> > > While noticing strange indentation (you have space for the parameter =
+on
+> > > the previous line,
+> >
+> > I believe I do not, maybe that's something on your side?
+> > There are tabs in the source, and in the original email.
+>
+> I meant that you can use 2 lines instead of 3:
+>
+> static inline void bitmap_write(unsigned long *map, unsigned long value,
+>                                 unsigned long start, unsigned long nbits)
+>
+> > > I realized that this is a counter-intuitive interface.
+> > > Can you actually make value the last parameter?
+> >
+> > It is consistent with bitmap_set_value8(map, value, start), and in all
+> > the functions above @nbits is the last parameter.
+Oh, I see. Let me fix that.
