@@ -2,229 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7971B7D8EB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80C77D8EC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 08:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbjJ0G2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 02:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        id S1345144AbjJ0GdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 02:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234917AbjJ0G2h (ORCPT
+        with ESMTP id S229604AbjJ0GdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 02:28:37 -0400
-Received: from mx0b-0039f301.pphosted.com (mx0b-0039f301.pphosted.com [148.163.137.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC1E1B3;
-        Thu, 26 Oct 2023 23:28:34 -0700 (PDT)
-Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
-        by mx0b-0039f301.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39QL6OQR007652;
-        Fri, 27 Oct 2023 06:28:17 GMT
-Received: from eur04-he1-obe.outbound.protection.outlook.com (mail-he1eur04lp2050.outbound.protection.outlook.com [104.47.13.50])
-        by mx0b-0039f301.pphosted.com (PPS) with ESMTPS id 3tywqm92ds-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 06:28:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CTZtOfn/K3Upb3PyYNhM+r/1fErsyufRwBZWpXiu1Uw12rDkVJ1VjwJzse0213UpPuvnUrS79QTUt8Bg4/vsZHwCJ/B6ztLvcQhq6v4LtFJNCM4OrPPAelWMaR64H36wkpefusO66Eito5K5D8XEu2lIh2cWCwBlxasYOJQkiObbFxNalLf41sfyMyiO/tUfUGfrlEATyghIO3pAyLROesw1tsTvXX8PT5fcPSgB6YNrFGECgeZO/JjkE8HVvbbls0OPOwckeKcktANvHnVk5EH4XaLMTPaadN3Fr2bZ0T/sCcLfkQBZt4/1RWKt0TOGUcttJjBA3T9iHFLWrehbsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sqS/pUjPpEVLV51qYi6Phg2ZHA1nXvh5Cg65k9pOJy8=;
- b=UT3IV1iA9ylzq+V7AHEV8X9qfDrNvDi3sgUJ0kxUKQoK4vPqUMe9AwwuXneWl2CXJ2a/4WZUqAo5/hbzLGXp77U71+eW9NFvjFUzd3MOyiUxSoIxLcHWU1GUpiuUF3ZMBW/KtxIWcMcxbxaKl7w+GOgadPXB8dd5NNRMdg+UEUPVPKZ0gbmmnm2D94NXzU+azgFxvDN8TNGjf77j4HCkfqWBxUWeCcd1QTvF41IskJjwGapajokspRFyIhSO8oJBq/5TkMw12WWZdAQ2EZ8IbvfZ0WyzQma5flLOGRtmEW1GOzzsbrxMzcm61K4HeK2X1WMNVjwtSoh5D2Zq56uBmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sqS/pUjPpEVLV51qYi6Phg2ZHA1nXvh5Cg65k9pOJy8=;
- b=W3KhZCyquzzTHy/VRPnP+9MFM7HDHpBz+Z7nFQjh6jcHwWh65mzYSq2rC93A30K48Gz8wofwCjVVcg72wkJZ5dfbo00LLiPwz/s6f2HD3yJkU23iGxzjcPup8V3oWKuMOwJLZ7DPcEVHAN6Sf3juwzIoubyysEWzIIM1bxJ/HYiSxI9U1der9Dz1Q+x7qXq6/5KKy/+Qzx4aHq0P6nVEX0LvIIM9eVyV6wFpKVWXzEhZts2+rVp3BgcqqoWlHWjCvUqe+27gCyPwDL42v+hR2fLiL6H0nAxshcEv9oqbpf/FKjmfcOPDxAEVnNuycjjNmgT5oxx9qjtugbZLKir6wg==
-Received: from PA4PR03MB7136.eurprd03.prod.outlook.com (2603:10a6:102:ea::23)
- by GV2PR03MB8876.eurprd03.prod.outlook.com (2603:10a6:150:c0::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.23; Fri, 27 Oct
- 2023 06:28:11 +0000
-Received: from PA4PR03MB7136.eurprd03.prod.outlook.com
- ([fe80::2211:9053:228e:4e40]) by PA4PR03MB7136.eurprd03.prod.outlook.com
- ([fe80::2211:9053:228e:4e40%3]) with mapi id 15.20.6933.022; Fri, 27 Oct 2023
- 06:28:11 +0000
-From:   Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-To:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>
-CC:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: [RFC v5 5/5] dt-bindings: firmware: arm,scmi: Add support for pinctrl
- protocol
-Thread-Topic: [RFC v5 5/5] dt-bindings: firmware: arm,scmi: Add support for
- pinctrl protocol
-Thread-Index: AQHaCJ7CNWHZc0R0IUas1KWQRTDeQw==
-Date:   Fri, 27 Oct 2023 06:28:11 +0000
-Message-ID: <e9285b4377242e4d888391be987cbb99caf8c573.1698353854.git.oleksii_moisieiev@epam.com>
-References: <cover.1698353854.git.oleksii_moisieiev@epam.com>
-In-Reply-To: <cover.1698353854.git.oleksii_moisieiev@epam.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PA4PR03MB7136:EE_|GV2PR03MB8876:EE_
-x-ms-office365-filtering-correlation-id: 577086e1-406b-4be6-5fcd-08dbd6b5e490
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fzszHZeY9DfXxv03C4j84o1yiU5+1kLXRdEq8dJfnWL4p9Obfs9fB69PdJmBgck1wMEt64Wl0IETodU+ZRjG1NWo0K8wRM4Nfw0b2n3iYWVVRBl96I+oKpJVuiwQ8RxR+N7vC11A3zs2cq+OYvyQ4MYBF7sO86QI6ql9LMPVy8R67vzGgKMpP2CmeEF8kHECRSNeMTfd6nG3t9ovZKSElrHCk0kR0p+ovJUA0H+q68M8WTX/cthgxxSbNIcVN/ey2YnX2iXvY3B3ZopfaG1TcQX8jq6nlBV0fjTiaBV9kuDD79U829G1XM6NqhQtJ/lQpqAEfPduER2l2msI9kFniRPmMEI5qACRZkZO8SOIpROdOW1RMEehnrW7smutDjBvWVT5gpeRWRsFlkqy9zb8mySUtP/ECZHFNLDf7rR92gRRVAZt0PmaPar1ZbnYWuDj1JquBeZUVDvd84tXOA2to91+ZrKnUbg8fnq6Cce8SKtitB9nUsiR4qUDZCl1jKRte42ig2pXrhKYxiF2IhllubvROhNNq5X1R39dvpj20F5w0NZ64QkUSU+AQknQ5QB8BEKrnfWsnriPx+GFX5liDcmGdNw9PYmcvExvLudzngch8ezCrVLZHdxGbyvdc2FA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR03MB7136.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(2906002)(478600001)(6486002)(36756003)(86362001)(8936002)(7416002)(4326008)(8676002)(26005)(5660300002)(38070700009)(41300700001)(2616005)(66476007)(66556008)(66446008)(64756008)(66946007)(54906003)(91956017)(6916009)(316002)(76116006)(38100700002)(6512007)(122000001)(71200400001)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?OsK5GtJvzI9Tst3cplm2SQELgmbgkjgVuDONXkOYutPvFHC8/MllV5JIFD?=
- =?iso-8859-1?Q?4vPH8mYI9iFhEdUhrKAFFgKdX9Uk4p5Q/B32yeqfREjzosixyvv6jfEFg3?=
- =?iso-8859-1?Q?gqmo2MJ1BD6nG/SvIG3HMOheCsB6HK5dXr3Nhkw8nG/i/HBtz4Xooas95d?=
- =?iso-8859-1?Q?ouDMn3jfNXvn29QKN64BUjWzquI5ni/E7T2zEg3aHkzf0Nh9Qtsbknx/RV?=
- =?iso-8859-1?Q?LTYxTHYLp6zJqJYzSO6IZhRhlgGOsLBYBpPwzCWLhHgvSNQTl/X2dLaLn1?=
- =?iso-8859-1?Q?DbtxcAk5Oqiw2pulOFj/cUsMAt2OCanLtB0cldaFColN4TmWvGcLsr0X+q?=
- =?iso-8859-1?Q?uvgEwBYO4Ks4BQwgYR1VmnXeT7VjGV/SaqZIhOICmqXjGYN0sFqDl6+pXp?=
- =?iso-8859-1?Q?9OJs3YXncHbuavew1snxY4FJDmO4e4S5PC49AJPD3MNM+l+m+JA8O7ivJK?=
- =?iso-8859-1?Q?7LF09c5Pbrn8bQ7KVEFwjxx2KEC0cpNoiZQRvMuvz341Vpp8yHcNBzd55O?=
- =?iso-8859-1?Q?O+K0U8Tzh1GQO7npKvSj7VdwTXBF82JthaQ5x7Ar6QcTMtcAr4AfgUS8in?=
- =?iso-8859-1?Q?EiUQe11QNH+MbcOKkKenvnl4ZsN2lmARt/zdKs/Fsmphv7HannLOHJCiZD?=
- =?iso-8859-1?Q?0tT2bbdD3Vg7CXZhDu9zPPJmpDlOGrgyrs731acTbP+p6RkNC63pfMjiu9?=
- =?iso-8859-1?Q?H5JUKEXK+G1xqsQGFuPO5gcS0MLEAvj9gxIhT/GEBH6Z2srIcDtQW8Zj59?=
- =?iso-8859-1?Q?Tf4D5VWd6A0euSZrc5ynX6U6B55lIeGSvmLPPFKRNfkBxz03h1pHZXQ26u?=
- =?iso-8859-1?Q?6TEtbPnQdlOJ1xdEZxYOiaPDxItpo1cJKrk5sul++SNKhFc9SLYOKa6ijM?=
- =?iso-8859-1?Q?FiIRqYezKbpFnhjg9SFdwRe+bVFCfjT/BR0RDU0dAt4kNtn1q1J6TXpHLj?=
- =?iso-8859-1?Q?GFub/YwCbk2Auvxaz+JarlcVqVtlCTG/bxHdnASnqIsxII0OarCrf3hBkH?=
- =?iso-8859-1?Q?A/xyASAXtr8v9ZJQabU9F5h9QUij6lK79TfncHTxAUiwNzk1dxyTjeoUer?=
- =?iso-8859-1?Q?wzV8uKI1wGIDwhPVpHu05CGlYneKB961mDl1zeQM3JuEWDHQXpcPYdiist?=
- =?iso-8859-1?Q?RRBaJ+ls9+8QPuc15yyZS7JjsmsXkjpHUzUH0QbGHJJkoJhg8W7K0Isc+G?=
- =?iso-8859-1?Q?zuMlt09teoFxVenzifemma7hG8m8GLU+Dyj6PGDR4UjgTFXe/UHXW3/ChH?=
- =?iso-8859-1?Q?SuiTFBuf1oWx9GVSln+UYhEtsSf2ptSn/Iqno61DFJC4+p50YeIEqtZ9Pi?=
- =?iso-8859-1?Q?v+sqwEaD0sXt/o3QTOc05lmlKDLYYYtBmOgVjcieNU4pxASqxilcq23PHf?=
- =?iso-8859-1?Q?K86eOadJlx+ZETsDnyNbKewcakcsJn+7qP7UdjqKXySuYY0a/MiVEpnc5w?=
- =?iso-8859-1?Q?od5hcabTpiLDiEY84hLGwArQvxskjPY4pk7zmIJiDIbMBXFPnN2qyekDyw?=
- =?iso-8859-1?Q?h+XPwI8iWxWlsT1zP3xtChw0l1Bqp5kPdEg5nynNv5uo8vLvAMjc6ed6UD?=
- =?iso-8859-1?Q?s5gvClziizoVU3EMtmKj5PMslzK/iNFTbjtY/HM1lwfLLOVZJUUi1lBkqA?=
- =?iso-8859-1?Q?lRDkTn7dPGZ74lfRK6STvCkbQ6IiexUEgga5ktyyXnatJJ7G4xq/b7Ag?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 27 Oct 2023 02:33:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D531B1
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698388345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SxDkgS0LFdb0zrxOK5z/6YMxINonlxbWmMRbtDHv7CM=;
+        b=ODuodmcSIP1skji2BUgU1YBhNcEZql7o9VscOuRFjhiBB4Q/9maAoEF6X+3GTq+jMYtt8j
+        iWuhsPF4dGMlS1tGBdoKNyxGqQT1r2Nz9Oarx/Di4X7UeXtaQlTSrbYXAP07t933HjF5lB
+        hO1oCygMPG52SJAIaYuGyyGkGDmaSjc=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-512-iPiiBQb-MlyJv0aUOz6TJw-1; Fri, 27 Oct 2023 02:32:08 -0400
+X-MC-Unique: iPiiBQb-MlyJv0aUOz6TJw-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-507bd5f4b2dso1892943e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 23:32:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698388327; x=1698993127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SxDkgS0LFdb0zrxOK5z/6YMxINonlxbWmMRbtDHv7CM=;
+        b=CvLD0B08bO3I/LSFrcuLeTtpuXgAJe+WEa8w7/sQII5yOPE2nBZv8u0NhMXg5TWajX
+         kDToedhCOVHUealqBSZVY2P5WcDX+JsE7RekviDgbhvPds7Bom6qeWvAqMcIpAW34wN0
+         2oWiWe9ujKWvnpyfifY536MzvAOvyYezNzb9fL9ID5aQZswiN8/QKDOaiispkUFHGYQS
+         g/5sM6QCQKYc24Cc2aWAu7jnP2m6KdODA9GrVm5iW30vR9J313TPq9onRJgEEjfQdopp
+         Wbpyi0EBAQ69r2KmGtuyqeWAPl54J8ENnIWYnPVa9tx1hAuGLSjtN6zV59Z8oeyYfGdS
+         FRRA==
+X-Gm-Message-State: AOJu0YzrhQzr5S2mK+4kES2eW/X8et3O8wjf2V4A1+xvSZoibFraB7PV
+        8VEVFUNGdkTZSAPOv3c5rx4M56Us6IbvLnOgfPwyYqTwHER7ouAYKsULtmzpGk1SJyD06Uor8CK
+        uek8lMtwBTb0+5fVT5uAwCtR5sOjYOxThnQPFQ30x
+X-Received: by 2002:a19:ac01:0:b0:507:b15b:8b88 with SMTP id g1-20020a19ac01000000b00507b15b8b88mr1178195lfc.65.1698388327383;
+        Thu, 26 Oct 2023 23:32:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHYiELfA5C7GIEPjiLdoikmssHWmewGe+r2BT1FO6KFjk37oJ/xRsKtzheJyFQ2V4ExxBcUM65fs6HpyHCi300=
+X-Received: by 2002:a19:ac01:0:b0:507:b15b:8b88 with SMTP id
+ g1-20020a19ac01000000b00507b15b8b88mr1178176lfc.65.1698388327046; Thu, 26 Oct
+ 2023 23:32:07 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR03MB7136.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 577086e1-406b-4be6-5fcd-08dbd6b5e490
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2023 06:28:11.4209
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vAS49Q2enD6bhHMgDQqMMucAV9f1DhwFhgKls24Oa4dUUU9/lqtLPD+2otb8Tljd9lOS4uRes5CJFm6w6lBZXoPc9jtWbM3Np12zDH0kORc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR03MB8876
-X-Proofpoint-ORIG-GUID: SfDDq3WxAfKPn_Qc-AP54mvIQ2SEanoS
-X-Proofpoint-GUID: SfDDq3WxAfKPn_Qc-AP54mvIQ2SEanoS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-27_03,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0
- impostorscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2310270057
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
+In-Reply-To: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 27 Oct 2023 14:31:56 +0800
+Message-ID: <CACGkMEuO6o3Ys9NcHJpa9w5EiS-ugsiaBbBKEHKHpPSrKBKJow@mail.gmail.com>
+Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
+To:     Steve Sistare <steven.sistare@oracle.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Dragos Tatulea <dtatulea@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new SCMI v3.2 pinctrl protocol bindings definitions and example.
+On Fri, Oct 27, 2023 at 4:07=E2=80=AFAM Steve Sistare <steven.sistare@oracl=
+e.com> wrote:
+>
+> mlx5_vdpa does not preserve userland's view of vring base for the control
+> queue in the following sequence:
+>
+> ioctl VHOST_SET_VRING_BASE
+> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
+>   mlx5_vdpa_set_status()
+>     setup_cvq_vring()
+>       vringh_init_iotlb()
+>         vringh_init_kern()
+>           vrh->last_avail_idx =3D 0;
+> ioctl VHOST_GET_VRING_BASE
+>
+> To fix, restore the value of cvq->vring.last_avail_idx after calling
+> vringh_init_iotlb.
+>
+> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
+>  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
+>  include/linux/vringh.h            |  2 ++
+>  3 files changed, 38 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 946488b8989f..f64758143115 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *=
+mvdev)
+>         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
+>         int err =3D 0;
+>
+> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
+> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
+> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
+> +
+>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_feat=
+ures,
+>                                         MLX5_CVQ_MAX_ENT, false,
+>                                         (struct vring_desc *)(uintptr_t)c=
+vq->desc_addr,
+>                                         (struct vring_avail *)(uintptr_t)=
+cvq->driver_addr,
+>                                         (struct vring_used *)(uintptr_t)c=
+vq->device_addr);
+>
+> +               if (!err)
+> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_idx=
+);
 
-Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Btw, vringh_set_base_iotlb() deserves an independent patch and it
+seems it is not specific to IOTLB, so we probably need an indirection
+to have vringh_set_base() first.
 
----
-Changes v3 -> v4
-  - reworked protocol@19 format
----
- .../bindings/firmware/arm,scmi.yaml           | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
+Or I wonder if it's better to just introduce a new parameter to
+vringh_init_iotlb()...
 
-diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Doc=
-umentation/devicetree/bindings/firmware/arm,scmi.yaml
-index 5824c43e9893..5318fe72354e 100644
---- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-+++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-@@ -233,6 +233,39 @@ properties:
-       reg:
-         const: 0x18
-=20
-+  protocol@19:
-+    type: object
-+    allOf:
-+      - $ref: "#/$defs/protocol-node"
-+      - $ref: "../pinctrl/pinctrl.yaml"
-+    unevaluatedProperties: false
-+
-+    properties:
-+      reg:
-+        const: 0x19
-+
-+      '#pinctrl-cells':
-+        const: 0
-+
-+    patternProperties:
-+      '-pins$':
-+        type: object
-+        allOf:
-+          - $ref: "../pinctrl/pincfg-node.yaml#"
-+          - $ref: "../pinctrl/pinmux-node.yaml#"
-+        unevaluatedProperties: false
-+
-+        description:
-+          A pin multiplexing sub-node describe how to configure a
-+          set of pins is some desired function.
-+          A single sub-node may define several pin configurations.
-+          This sub-node is using default pinctrl bindings to configure
-+          pin multiplexing and using SCMI protocol to apply specified
-+          configuration using SCMI protocol.
-+
-+    required:
-+      - reg
-+
- additionalProperties: false
-=20
- $defs:
-@@ -384,6 +417,26 @@ examples:
-             scmi_powercap: protocol@18 {
-                 reg =3D <0x18>;
-             };
-+
-+            scmi_pinctrl: protocol@19 {
-+                reg =3D <0x19>;
-+                #pinctrl-cells =3D <0>;
-+
-+                i2c2-pins {
-+                    groups =3D "i2c2_a", "i2c2_b";
-+                    function =3D "i2c2";
-+                };
-+
-+                mdio-pins {
-+                    groups =3D "avb_mdio";
-+                    drive-strength =3D <24>;
-+                };
-+
-+                keys_pins: keys-pins {
-+                    pins =3D "GP_5_17", "GP_5_20", "GP_5_22", "GP_2_1";
-+                    bias-pull-up;
-+                };
-+            };
-         };
-     };
-=20
---=20
-2.25.1
+Thanks
+
+> +       }
+>         return err;
+>  }
+>
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 7b8fd977f71c..799762c83007 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct vr=
+ingh *vrh,
+>         }
+>  }
+>
+> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
+> +                           int (*putu16)(const struct vringh *vrh,
+> +                               __virtio16 *p, u16 val))
+> +{
+> +    int ret;
+> +
+> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
+> +    if (ret)
+> +        return ret;
+> +
+> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
+> +    if (ret)
+> +        return ret;
+> +
+> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
+> +    return 0;
+> +}
+> +
+>  /* Userspace access helpers: in this case, addresses are really userspac=
+e. */
+>  static inline int getu16_user(const struct vringh *vrh, u16 *val, const =
+__virtio16 *p)
+>  {
+> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struct v=
+host_iotlb *iotlb,
+>  }
+>  EXPORT_SYMBOL(vringh_set_iotlb);
+>
+> +/**
+> + * vringh_set_base_iotlb - set avail_idx and used_idx
+> + * @vrh: the vring
+> + * @idx: the value to set
+> + */
+> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
+> +{
+> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
+> +}
+> +EXPORT_SYMBOL(vringh_set_base_iotlb);
+> +
+> +
+>  /**
+>   * vringh_getdesc_iotlb - get next available descriptor from ring with
+>   * IOTLB.
+> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
+> index c3a8117dabe8..e9b8af4e6a5e 100644
+> --- a/include/linux/vringh.h
+> +++ b/include/linux/vringh.h
+> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 feat=
+ures,
+>                          struct vring_avail *avail,
+>                          struct vring_used *used);
+>
+> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
+> +
+>  int vringh_getdesc_iotlb(struct vringh *vrh,
+>                          struct vringh_kiov *riov,
+>                          struct vringh_kiov *wiov,
+> --
+> 2.39.3
+>
+
