@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE0D7DA1F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361737DA1F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 22:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346498AbjJ0Utn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 16:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
+        id S1346554AbjJ0Utr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 16:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0Utk (ORCPT
+        with ESMTP id S1346506AbjJ0Utm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 16:49:40 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEECE1B5
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:38 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-28014ce75d5so639230a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:38 -0700 (PDT)
+        Fri, 27 Oct 2023 16:49:42 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5EA1AA
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:40 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b8d4a559ddso2051737a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 13:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698439778; x=1699044578; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698439780; x=1699044580; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=F0GgFwBHDaTkhQsg7B4id3Q1Dy4NRZ9lf/HDP2O5wKQ=;
-        b=4UU0kYxJU/gcwcZtgIEeV4omjd28k7PIOCuOzCahFGPL7LFmNPf2v6+VeFoEpICQZZ
-         SrugI0r2PvFe5ZkukvzebzWezH4u1X1plKCgnbjTunQi0KWqAqqTYJ1EH7a8V4vb+4oU
-         w3SqS0J0++Vx0bZZIerqluwl+I145Ae/behAj8hDnDv2uIk7NKCFxEReZg3JZvf5JXlj
-         4peW3aaAwqlRHCAm5XBMwxhST0P4ingyCJia9blXWI7HtTVtH4cOUgHiV4ryrPr4kXPT
-         voGLGSjNFpCYmidj1xWyCQL+wv3w4tX4btyVPtetuOweyQNdGuY5vPwo227X2H1mJM+k
-         apOQ==
+        bh=q924ZKafcGMtYjaz9067ugqgo78NK3y25v5Mf4ZhCmY=;
+        b=A19CJkNL+R6BQ3FSzy9dskrnQ21J/FjnmTzxbB6h058aRZ20Q2zk6MIQ2m02Ve+ruR
+         dbDIO3mXZpqb58qGdpukOF9j4y9RBl4xOHPf8CJkTPJFjRwkIwDty2CQVMXJYplb+VFr
+         6KETSt5406snSFOrlJvT+802FUIUqYSP/WTjVYOK/KLn1nBHPm3qIVPEgcKO5xdSb2OX
+         ayQvmaTwaUFEDD/h2u3oHWQSohIf8rk1JAQUcCtuCG2Akg048m2fkVenz4jyol5oFHhy
+         etMVLoLz3zURNXJS6VE57Ez6taiweVjOpVEF5MvuZfwVNU/X2Gszbg6RRxkmiaRs4yHm
+         FbkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698439778; x=1699044578;
+        d=1e100.net; s=20230601; t=1698439780; x=1699044580;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=F0GgFwBHDaTkhQsg7B4id3Q1Dy4NRZ9lf/HDP2O5wKQ=;
-        b=Pyk4srsiP5H9MPQlE/pkYLpSkhHTUf4zQu0BJIgiJUgHxs7husn34V90LrBZXdZDEJ
-         nCruL7upIKQZpfFsdt4lLCjlMML+xDadHWksquG4F/bYhm6oSl9WoTPzx+eCJ9thqc6d
-         3ZAtoQ2BfuP4KUpzN37tS9tOIo1i6FplpcLWUKLoWntzJKlzNvavFXBPOFr7AWyBZZU0
-         3/ElVL4eOqso4EaYpUoOat7P8Rm0G2XYSaYRmHV/J6F0lPmo1M4X9Whz7VWg724q1YTN
-         YO4KS1Z7tvDeI3ugL52j6NZKEBYapIa7rFL222+61qeBWALZtOsa2+R3YgZNNo/PeFDW
-         kBDA==
-X-Gm-Message-State: AOJu0Yyhz9OhPI/6h8sbwxC0hXRsfJRJ0+imvxEe23yhQBC5B3RGFF3x
-        wudVJf6SZi1rIUfFOXSz45zGnpN1NZ4=
-X-Google-Smtp-Source: AGHT+IHvGAQmtaofLW4fDTeQIJezLNbav66mMWrYOSqZpO65GYDrU2z5z+HQvsLGFfVloL3gqz7a5wuX1RI=
+        bh=q924ZKafcGMtYjaz9067ugqgo78NK3y25v5Mf4ZhCmY=;
+        b=WMRCGCZbV6IyUZFPyvuN1cGvuW77cykVIfE5hkf5r1qfKSiTQnl9xBAZEEwkcKS5EA
+         DObMqZ3q44Vl9vJDmLpQTsc2ID/qDl84YQccfVg+wDvg3jlpmegYJQXHlbMgdqGa3GaF
+         62QQXly3xqQUKiZ0DfRLA3Tc2/0EH3u1IFj9GlMmtV0cWPwf0T8ngkQwDKpDviISgFCa
+         KnZuUKFmRyPy5tZyORho5U4ahav6sgckXFgccDm75MmoEIl3ikCqAbV9tXNJOVNy6dhV
+         vKvg6FSfEJaHqE7it/kQWYSg4yhi2Q21SCZmdAYsxUw4itNhui7xp2B7rmZALCYjov3S
+         xrZA==
+X-Gm-Message-State: AOJu0YyY6SeIKG2zpRrpO4bxVyWGQ0Q3NSwXIEwi9KBu8TSZEUT9TkUb
+        QK8cfQNijDCtp4A+GDpHIvz6zAKe7vk=
+X-Google-Smtp-Source: AGHT+IEj4bAb8dK2BzVGD39zdLbuAwlui3krRgA4EDUmXaajvJ7+6XJkqRDRYH7+AfAiD2c5ji90qocVmGw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:fb81:b0:27d:a0b:bff with SMTP id
- cp1-20020a17090afb8100b0027d0a0b0bffmr74124pjb.2.1698439778215; Fri, 27 Oct
- 2023 13:49:38 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a63:3c43:0:b0:5ad:e23f:3e18 with SMTP id
+ i3-20020a633c43000000b005ade23f3e18mr65252pgn.10.1698439780372; Fri, 27 Oct
+ 2023 13:49:40 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 27 Oct 2023 13:49:25 -0700
+Date:   Fri, 27 Oct 2023 13:49:26 -0700
 In-Reply-To: <20231027204933.3651381-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231027204933.3651381-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231027204933.3651381-2-seanjc@google.com>
-Subject: [GIT PULL] KVM: x86: APIC changes for 6.7
+Message-ID: <20231027204933.3651381-3-seanjc@google.com>
+Subject: [GIT PULL] KVM: x86: Documentation updates for 6.7
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -70,7 +70,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two small APIC changes for 6.7, both specific to Intel's APICv.
+Doc updates for 6.7.  The bulk is a cleanup of the kvm_mmu_page docs, which are
+sadly already stale because I neglected to update the docs when removing the
+TDP MMU's async root zapping :-(
 
 The following changes since commit 5804c19b80bf625c6a9925317f845e497434d6d3:
 
@@ -78,32 +80,39 @@ The following changes since commit 5804c19b80bf625c6a9925317f845e497434d6d3:
 
 are available in the Git repository at:
 
-  https://github.com/kvm-x86/linux.git tags/kvm-x86-apic-6.7
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-docs-6.7
 
-for you to fetch changes up to 629d3698f6958ee6f8131ea324af794f973b12ac:
+for you to fetch changes up to b35babd3abea081de0611ce0d5b85281c18c52c7:
 
-  KVM: x86: Clear bit12 of ICR after APIC-write VM-exit (2023-09-28 10:42:16 -0700)
-
-----------------------------------------------------------------
-KVM x86 APIC changes for 6.7:
-
- - Purge VMX's posted interrupt descriptor *before* loading APIC state when
-   handling KVM_SET_LAPIC.  Purging the PID after loading APIC state results in
-   lost APIC timer IRQs as the APIC timer can be armed as part of loading APIC
-   state, i.e. can immediately pend an IRQ if the expiry is in the past.
-
- - Clear the ICR.BUSY bit when handling trap-like x2APIC writes to suppress a
-   WARN due to KVM expecting the BUSY bit to be cleared when sending IPIs.
+  KVM: x86/pmu: Add documentation for fixed ctr on PMU filter (2023-09-27 14:23:51 -0700)
 
 ----------------------------------------------------------------
-Haitao Shan (1):
-      KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
+KVM x86 Documentation updates for 6.7:
 
-Tao Su (1):
-      KVM: x86: Clear bit12 of ICR after APIC-write VM-exit
+ - Fix various typos, notably a confusing reference to the non-existent
+   "struct kvm_vcpu_event" (the actual structure is kvm_vcpu_events, plural).
 
- arch/x86/include/asm/kvm-x86-ops.h |  1 +
- arch/x86/include/asm/kvm_host.h    |  1 +
- arch/x86/kvm/lapic.c               | 30 +++++++++++++++++-------------
- arch/x86/kvm/vmx/vmx.c             |  4 ++--
- 4 files changed, 21 insertions(+), 15 deletions(-)
+ - Update x86's kvm_mmu_page documentation to bring it closer to the code
+   (this raced with the removal of async zapping and so the documentation is
+   already stale; my bad).
+
+ - Document the behavior of x86 PMU filters on fixed counters.
+
+----------------------------------------------------------------
+Jinrong Liang (1):
+      KVM: x86/pmu: Add documentation for fixed ctr on PMU filter
+
+Michal Luczaj (1):
+      KVM: Correct kvm_vcpu_event(s) typo in KVM API documentation
+
+Mingwei Zhang (6):
+      KVM: Documentation: Add the missing description for guest_mode in kvm_mmu_page_role
+      KVM: Documentation: Update the field name gfns and its description in kvm_mmu_page
+      KVM: Documentation: Add the missing description for ptep in kvm_mmu_page
+      KVM: Documentation: Add the missing description for tdp_mmu_root_count into kvm_mmu_page
+      KVM: Documentation: Add the missing description for mmu_valid_gen into kvm_mmu_page
+      KVM: Documentation: Add the missing description for tdp_mmu_page into kvm_mmu_page
+
+ Documentation/virt/kvm/api.rst     | 36 +++++++++++++++++++++++--------
+ Documentation/virt/kvm/x86/mmu.rst | 43 ++++++++++++++++++++++++++++++--------
+ 2 files changed, 61 insertions(+), 18 deletions(-)
