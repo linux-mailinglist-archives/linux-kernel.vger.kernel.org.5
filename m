@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F857D963D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD67D9646
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345834AbjJ0LQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
+        id S1345637AbjJ0LRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345859AbjJ0LQH (ORCPT
+        with ESMTP id S1345734AbjJ0LRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:16:07 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAD626AF
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:15:38 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507ad511315so2868710e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:15:38 -0700 (PDT)
+        Fri, 27 Oct 2023 07:17:30 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFA1D7D
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:17:11 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507b18cf2e1so2714733e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698405336; x=1699010136; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698405429; x=1699010229; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UzJNCQE9lIWs8QWU4r4wyUtYu55wpx8s4OSbjSYDFgI=;
-        b=dVnpA5EGU/L88g8Ra/eknMmltQw4tYYRPtOPTZGRCeghsSfDmGc82yq149q/pmsERE
-         3dhj+rKE0ijFcGiXHfkMxfv0Y4GIG57QhIgk5Wd0pybMygHSSvbsoMnQzQwOWz5R2q9G
-         9vJcyVcsY2tb4/j3D727juvXUUhYifeGsE7m1/N93zR1Zd92WTD6Ntvcmj17hdaX0cn/
-         bCWvofHAROCsohslFM3GFkCNMch9XDNa+Z+wPoNsaKucSIHi7nvrCK0WlwMiZ7n4Oi/3
-         CssuGr62aDx9uGsBWd6CvSsUAyAICtFEoO2jTP+1+P4Xzi380usK/qv3UAGxU8mK5BIA
-         rW6Q==
+        bh=eVx+hYNTtyPTCrkTEuuWNFgk6rRa3E+X6uh7DImui/I=;
+        b=V3dtfsyRMRjMTwL+UEml+EnGUBoO/1pjhp7i0qiYAf2GimC9mq77wHaImqsHZ77IMD
+         TCRQJ1+x441lOMupvms2TefIuQgFTV6Y5e5CiZ6JH9lw3GwjF93CWDka+bGyvEgJLAxj
+         7khJpkwABTfc1RAQQpPQ6epQNrOn8Pa1beSRFyarZ2YU7DWIdePnbrU74lS17lOogal5
+         tJlKMNR+azUeT4HZtLndlkHp1Cs6XdhOjXPj1u02LkXt785WHXG5WOd/aAVVZLM4BMKX
+         4fXuE1tuAlATp7YTpv51pLQirMvY3DGQiJITZ0bDc68o3jxuh7llTYWQbKwDkXtRXwiq
+         ZxpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698405336; x=1699010136;
+        d=1e100.net; s=20230601; t=1698405429; x=1699010229;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UzJNCQE9lIWs8QWU4r4wyUtYu55wpx8s4OSbjSYDFgI=;
-        b=e5DDvmoZAg+Y+A19FjchslpG2jPjEH4/anYkoonQiLFOUA/jAgFJLuukZPjwSfqdJp
-         k0R02vNA+VXExZXac2duQjv1Q6/cz5czZf4o0dJFkis6ivQOheDqT8rc9i7yqG+uJk6K
-         wpwyDgrdPgqIe/GRDNfiFPlL1l9fm8JKhiaSBZ5cMJ2x+fyVseB8MYQ6JBlcJUTlzWnE
-         DWwfDid4qfbxccG8YXYqqvNVkxWzTEXICSpFNPgkCV43Pi9lcLqoahou+YCKb8njG5lg
-         yYa/15qqHKu2FgIPpX6klEGOxmiJUwM6kh/oudYHsrpnijs8uiiaHEWPAcE6M5BMfvbm
-         QTmw==
-X-Gm-Message-State: AOJu0YzCazNyt6Ikr6fj31QDI0c8xQpg3ZzmFk7vuJ0mrPGcKobxklnv
-        nLow3eEKxVl2hJI959Uccke3Uw==
-X-Google-Smtp-Source: AGHT+IHFnKZSrWhQ7TE5pG9aEy7GL96hHyfmiRDxAvTEvxLTDH4iZ+Eme18F80+H0CtBkdZu3bAwDw==
-X-Received: by 2002:a05:6512:457:b0:508:21c8:92e3 with SMTP id y23-20020a056512045700b0050821c892e3mr1598700lfk.9.1698405336081;
-        Fri, 27 Oct 2023 04:15:36 -0700 (PDT)
+        bh=eVx+hYNTtyPTCrkTEuuWNFgk6rRa3E+X6uh7DImui/I=;
+        b=Y5ONc2nqcTg/SoqBtLmXBiMKiut9ORE2QnyJ4W78jBMnYAaBzZHe8r8BNfGG+LLTQW
+         99h8PsGJZMXg0KVubVQAJi79EVhW2kx7rpXZztgQkWwmeiTmYaUbthki8U4qHOZJ7Gfn
+         nnbJP+Jyybd1+QoA5Vsl+la7r4Ah7aajYQfXBAthWk2QVou90WiIkFDvBnjhudOgZHQB
+         ReoXPI5FfMoKXR1P5unTVhWK4w47nm769qaYykL3FdJL4RGJkam5GjOB/RvEca6wny15
+         3Tlg2CGhblEdmFCUg1uO/PrDJWz/8hGknQKZZLvdIkuI2YInz4PO/Lpr+qkcyQ6ZSctW
+         +CNw==
+X-Gm-Message-State: AOJu0YzoKBOk2iJc/+5qpjCkx0kiyrnLwHnnlhFkdEIKTMXh+oK6FXXa
+        B+zUW+G7VrVPpYSCQ34iNQz8sw==
+X-Google-Smtp-Source: AGHT+IEMw3t90pzSxHESpsQBZhlJyfLR1+5UJIopkkpQj31SvHvRYHgUmtoRjHxB4MH+E57o1ZrXKw==
+X-Received: by 2002:ac2:5390:0:b0:500:91ac:c0b5 with SMTP id g16-20020ac25390000000b0050091acc0b5mr1640589lfh.30.1698405429258;
+        Fri, 27 Oct 2023 04:17:09 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id k7-20020ac257c7000000b00507cf5fa20esm242640lfo.97.2023.10.27.04.15.34
+        by smtp.gmail.com with ESMTPSA id k7-20020ac257c7000000b00507cf5fa20esm242640lfo.97.2023.10.27.04.17.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 04:15:35 -0700 (PDT)
-Message-ID: <2baad576-2775-4566-b6d8-a03319112431@linaro.org>
-Date:   Fri, 27 Oct 2023 13:15:34 +0200
+        Fri, 27 Oct 2023 04:17:08 -0700 (PDT)
+Message-ID: <7b737537-38f2-4404-b469-c67005cdaf83@linaro.org>
+Date:   Fri, 27 Oct 2023 13:17:08 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm64: dts: add dt-bindings for ac5x
- rd carrier
+Subject: Re: [PATCH v4 0/7] Add a few mt8183 follower boards.
 Content-Language: en-US
-To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     cyuval@marvell.com
-References: <20231026084735.3595944-1-enachman@marvell.com>
- <20231026084735.3595944-3-enachman@marvell.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
+        <nfraprado@collabora.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231026191343.3345279-1-hsinyi@chromium.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,7 +116,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231026084735.3595944-3-enachman@marvell.com>
+In-Reply-To: <20231026191343.3345279-1-hsinyi@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,20 +129,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 10:47, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
+On 26/10/2023 21:09, Hsin-Yi Wang wrote:
+> Add makomo, pico, and katsu which are mt8183 followers.
 > 
-> Add dt bindings for AC5X RD COM Express Type 7 carrier board.
-> This board will Accept a CN9131 COM Express Type 7 CPU module.
+> v4: based on https://lore.kernel.org/all/20231025093816.44327-1-angelogioacchino.delregno@collabora.com/
 > 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Please order your patches correctly, so bindings come before their
-users. You cannot have other way.
+Where is the changelog? It's already v4 and still no changelog...
 
-> ---
->  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml     | 8 ++++++++
->  1 file changed, 8 insertions(+)
 Best regards,
 Krzysztof
 
