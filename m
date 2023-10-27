@@ -2,165 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD6E7D9166
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4112C7D9169
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbjJ0I0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S1345492AbjJ0I0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345539AbjJ0I0C (ORCPT
+        with ESMTP id S234901AbjJ0I0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:26:02 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422891AD;
-        Fri, 27 Oct 2023 01:25:59 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39R85X43005432;
-        Fri, 27 Oct 2023 08:25:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
- from : to : cc : subject : reply-to : in-reply-to : references :
- message-id : content-type : content-transfer-encoding; s=pp1;
- bh=Ydc/j18p3b7EHQ/VYDnN7DJ8GH9rECYSsKAj2yxuRrQ=;
- b=k66R5I553ezE4knFNEcqmh3oSuHjdXdaM3AV1isaoW7CI+h3BK+kPzpAIfH53POJxwH3
- NjcTuA+WbcO9n0ceR/qnTYltbHI5Ts25YeyqeIaq3e+Z7blpiqyyyiqkoYfGzFy1aMfX
- 8AavoLfekBiyM+NqyJ2rbkNdYEVA4JERyQkOhGAhi/T2zM9DEE1DUG2023j6bIQSlSxH
- 5ywAWepNFTaIib4UFh3nSdErfzUmVicq7ojh3T2wkp1WWVWx94Ox2p2QiTkCIAzIzn/u
- 4rrTLBJ/ynUuviRDTUW132NDGcM+8wgKQuRvXwUkhur3kWf0mzapg3JJuD0NXldo97+F Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u09cyrnmk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 08:25:58 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39R85VFS005360;
-        Fri, 27 Oct 2023 08:25:57 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u09cyrnkx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 08:25:57 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39R7phEO021554;
-        Fri, 27 Oct 2023 08:25:57 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tywqrbrbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Oct 2023 08:25:57 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39R8PtYd8651374
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 27 Oct 2023 08:25:56 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B090058055;
-        Fri, 27 Oct 2023 08:25:55 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C16225803F;
-        Fri, 27 Oct 2023 08:25:54 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 27 Oct 2023 08:25:54 +0000 (GMT)
+        Fri, 27 Oct 2023 04:26:07 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745B81B4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:26:03 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50797cf5b69so2524997e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698395161; x=1698999961; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JAiUQPIj6XvXdsJ8sex9FFR7/iXSZ6mEb2rhINi8UXA=;
+        b=WY7QdvMbkk3W2iuSWWXSapGn2HL1/2ysCn97rE31N52hPUMvAkIjNdKt7rdl4UgKz/
+         U7KmG0wGMmGnGivVO7T8rOOFrDE6e6cq93WLteX5i8ELF0vgaRNnwQHrHThCj2DgWLNe
+         sa6/ooZqGPzKIZgKCaetfMKVN08FlfgNsq4o0C94NO7Mn/Zxl/iJ8m3XdS3p33XStssr
+         vaFHgBtYzWmoLDLIvLSgBxq/xYxlrEYipIIlnEUkFYXV1z6xJ7S65r0xLsmoy4j3vhwC
+         We51evCHXrBt7bMhnmfCixyKhE3nNaiJFoKaG8NgZbKjG0yfzEr8k0yEfWCVxhN87qzD
+         aD9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698395161; x=1698999961;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JAiUQPIj6XvXdsJ8sex9FFR7/iXSZ6mEb2rhINi8UXA=;
+        b=kyDSs4GeVBjPhmSVyaeIZP53B4MeEat2l5pho3ZrahTwPS5R9pY4Oqsba5zGs06nxh
+         suoLEhdz0pFQMuQL0uXid3cv1xpkhKjvYG34aia90w7LdNHuBgIAEH1PBra7PS58V2k5
+         OJyaUmauM852KNmvFSudwDL4JdYLHX2pkVsF+6XnEItmA74QgCYcS9uyVctOgk8iMm2t
+         6H8WVw07hv+xkPeE0rHPARklUNnWJCpI68G+KUSJ7WoYNfiVAuMIA6xRQlJK/B9WNd5n
+         0INn+w2pxZrgEwy0wNJG3/JyITyBwtDR7cRmMqAjY2UPfh2XRO7j26nyOlA+dM2FC+rw
+         IkaQ==
+X-Gm-Message-State: AOJu0YwvkgYo64DOCOLrwOoZuloTEdAviRpaGOmiddM2217HD61zapki
+        e+r2i8UPpQA4v4ZX4ykfp6wHBA==
+X-Google-Smtp-Source: AGHT+IG6Eiugk2ayTbTzS+F+32W4mjROEw6zmLue2PGUNd4MTJ/S/Jf0rI0J4twP7JpU2l6wxBUEBQ==
+X-Received: by 2002:a05:6512:6cd:b0:503:3644:4a98 with SMTP id u13-20020a05651206cd00b0050336444a98mr1497836lff.2.1698395161519;
+        Fri, 27 Oct 2023 01:26:01 -0700 (PDT)
+Received: from [192.168.0.22] ([78.10.206.168])
+        by smtp.gmail.com with ESMTPSA id i14-20020a056512340e00b00502ae64f46asm184429lfr.126.2023.10.27.01.26.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 01:26:01 -0700 (PDT)
+Message-ID: <c987222a-9ce7-4adb-aae8-0ae016e7c7d3@linaro.org>
+Date:   Fri, 27 Oct 2023 10:25:59 +0200
 MIME-Version: 1.0
-Date:   Fri, 27 Oct 2023 10:25:54 +0200
-From:   Harald Freudenberger <freude@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com, mjrosato@linux.ibm.com
-Subject: Re: [PATCH v3 2/3] s390/vfio-ap: set status response code to 06 on
- gisc registration failure
-Reply-To: freude@linux.ibm.com
-Mail-Reply-To: freude@linux.ibm.com
-In-Reply-To: <20231026183250.254432-3-akrowiak@linux.ibm.com>
-References: <20231026183250.254432-1-akrowiak@linux.ibm.com>
- <20231026183250.254432-3-akrowiak@linux.ibm.com>
-Message-ID: <b1ef49cb13547f9c51e47534d3f18e2a@linux.ibm.com>
-X-Sender: freude@linux.ibm.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SC8380XP pinctrl
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231025135058.11268-1-quic_sibis@quicinc.com>
+ <20231025135058.11268-2-quic_sibis@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025135058.11268-2-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WK9z_048pRAA6Uu47XJJisIS8aaRAfUM
-X-Proofpoint-ORIG-GUID: CkPyB9-wDSfB82hIVAlCbVBQIlDjRrQf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-27_06,2023-10-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 impostorscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310270071
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-26 20:32, Tony Krowiak wrote:
-> From: Anthony Krowiak <akrowiak@linux.ibm.com>
+On 25/10/2023 15:50, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 > 
-> The interception handler for the PQAP(AQIC) command calls the
-> kvm_s390_gisc_register function to register the guest ISC with the 
-> channel
-> subsystem. If that call fails, the status response code 08 - indicating
-> Invalid ZONE/GISA designation - is returned to the guest. This response
-> code does not make sense because the non-zero return code from the
-> kvm_s390_gisc_register function can be due one of two things: Either 
-> the
-> ISC passed as a parameter by the guest to the PQAP(AQIC) command is 
-> greater
-> than the maximum ISC value allowed, or the guest is not using a GISA.
+> Add device tree binding Documentation details for Qualcomm SC8380XP TLMM
+> device
 > 
-> Since this scenario is very unlikely to happen and there is no status
-> response code to indicate an invalid ISC value, let's set the
-> response code to 06 indicating 'Invalid address of AP-queue 
-> notification
-> byte'. While this is not entirely accurate, it is better than 
-> indicating
-> that the ZONE/GISA designation is invalid which is something the guest
-> can do nothing about since those values are set by the hypervisor.
-> 
-> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
-> Suggested-by: Halil Pasic <pasic@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c
-> b/drivers/s390/crypto/vfio_ap_ops.c
-> index 9cb28978c186..25d7ce2094f8 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -393,8 +393,8 @@ static int ensure_nib_shared(unsigned long addr,
-> struct gmap *gmap)
->   * Register the guest ISC to GIB interface and retrieve the
->   * host ISC to issue the host side PQAP/AQIC
->   *
-> - * Response.status may be set to AP_RESPONSE_INVALID_ADDRESS in case 
-> the
-> - * vfio_pin_pages failed.
-> + * status.response_code may be set to AP_RESPONSE_INVALID_ADDRESS in 
-> case the
-> + * vfio_pin_pages or kvm_s390_gisc_register failed.
->   *
->   * Otherwise return the ap_queue_status returned by the ap_aqic(),
->   * all retry handling will be done by the guest.
-> @@ -458,7 +458,7 @@ static struct ap_queue_status
-> vfio_ap_irq_enable(struct vfio_ap_queue *q,
->  				 __func__, nisc, isc, q->apqn);
-> 
->  		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
-> -		status.response_code = AP_RESPONSE_INVALID_GISA;
-> +		status.response_code = AP_RESPONSE_INVALID_ADDRESS;
->  		return status;
->  	}
 
-Interesting ... The INVALID_GISA is handled in the default arm of the 
-switch
-in ap_queue.c but the INVALID_ADDRESS is handled as irq enablement 
-failed.
-So this change fits more to the current AP bus code. Thanks
 
-Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    tlmm: pinctrl@f100000 {
+> +        compatible = "qcom,sc8380xp-tlmm";
+> +        reg = <0x0f100000 0xf00000>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        gpio-ranges = <&tlmm 0 0 239>;
+
+Is the 239 number a mistake or do you include here UFS reset?
+
+Best regards,
+Krzysztof
+
