@@ -2,164 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A17F7D9AED
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE5B7D9AF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346043AbjJ0OOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        id S1345991AbjJ0OOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbjJ0OOE (ORCPT
+        with ESMTP id S231302AbjJ0OOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:14:04 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679AAFA
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:14:02 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9d10972e63eso17802766b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698416041; x=1699020841; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lp1+7YjGbDfdS0f0bEXkOm+6Hu4+gGbqezgHyNjvf+s=;
-        b=iaCzi8PufDrBJdH+/UqKgny6/v3FLqMP+OYyJxVJljZ/QPeXnxAiiJ9dzGi0hyABi+
-         YM5paK3Ru87L3pv8PzYEii55LDnh71FFGQvQJHnUzfw60zavNp105SIBT5jx9rHqQvZO
-         kAr2TQG6t53Pb3kHNpxKu/E7TNpRRkIN2gSx9Z782JnlPIJo55heX5ZeIh4r5AeykOTM
-         AKHpfeGnOtYSFvA9+GhUBtdQBP5xtrLPfn7E/8H7VWbECd+a6uCb51n345nHuulire/h
-         urNc0EgjGeeXDU8HO9TxevEHOBwOThn94RW9U4xnmO9+F+GFoD7HfbyRiBns8Flf7Evu
-         EwoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698416041; x=1699020841;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lp1+7YjGbDfdS0f0bEXkOm+6Hu4+gGbqezgHyNjvf+s=;
-        b=ll0rfK6EJcynn3L6+eVwXy+BsTBqyXhM0sgEMOmLPYAC1eixZBf6V/RDxN3WszoYw4
-         Ul4Pc7TW/d2p2nQ+Bt8yemAythIo/MLuAC5al+FNjr4aGPEFQlCuFhycFCAP9uVKC5Gn
-         EL4fDWlQI28WuxlC8i93j/thYYKwXr9Pnu1dPgtlZc1KqGaXZgwPX9m8c22GX0L78GL2
-         vhZulMBwIQhh7O66iCGSfzkhwLRpEs9IsfCwNXtfT98Sx5QfQ22anst9azxpRyQGV3La
-         GDssjzRawhEd3Co4LpXWOHFfMFi1jJYtI8/yADScB6Qh8u8zjLszgXq2W/afpIXWt/29
-         m5eQ==
-X-Gm-Message-State: AOJu0YzOfDsSuIV4Nvf/jBKccaP8fCtz/WtVHiEhU8MsQ0gpaEw13f0j
-        ncfSK7gZkFOQBrQNQQXAcgva85u/7w==
-X-Google-Smtp-Source: AGHT+IFm2sqord7670qVo/SBS/wQ388v7E/lsVwGsFlgEu3zbX2xntvIVXxrtka76KpR+Djidwfb+A==
-X-Received: by 2002:a17:907:26c4:b0:9b2:aa2f:ab69 with SMTP id bp4-20020a17090726c400b009b2aa2fab69mr2157182ejc.30.1698416040533;
-        Fri, 27 Oct 2023 07:14:00 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id ox9-20020a170907100900b009b65b2be80bsm1250046ejb.76.2023.10.27.07.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 07:14:00 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 17:13:58 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Fri, 27 Oct 2023 10:14:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE4FDE;
+        Fri, 27 Oct 2023 07:14:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 667A1C433C9;
+        Fri, 27 Oct 2023 14:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698416075;
+        bh=CbkKydCIGPDLCe+45cMey/d5S+QwoAAmRoHQEvlUMtA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ecF+1Ji8+LIiXPTTMg2TTEgHLQikYo4DwWhtqLYOY+dg1Ks1yhSsjdyqwtCW05lFx
+         bI3kg0xCDtfYE648J/YtD8mUqdUjfmWXjwi24yD1SRyGVWDtqJAfKSqXx0ZLFDPfHj
+         fG0lzF8C8WIOV0Ut+lxWhrOVEolZSekD9+iX89XdildENp4i6kKpoctCV5WfNwJKAZ
+         SbOAWvkanZttVglDVm7Pod5lqYoNQUmXm2RknhkWQMJBZKB6tquCCiMjlsou4saRt7
+         GMGkRZCwXSXfGb8uGPu1berWbIRQMCvm9tPE83sF7+ZpsqoFhLZxQKmUaYKCPWcMub
+         ZGs1XpcIR8JiQ==
+Date:   Fri, 27 Oct 2023 15:14:31 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Nik Bune <n2h9z4@gmail.com>
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, afd@ti.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] vsprintf: uninline simple_strntoull(), reorder arguments
-Message-ID: <82a2af6e-9b6c-4a09-89d7-ca90cc1cdad1@p183>
+Subject: Re: [PATCH v3] dt-bindings: watchdog: davinci-wdt: convert txt to
+ yaml
+Message-ID: <20231027-antennae-aftermath-b11ede90737f@spud>
+References: <20231026195313.76756-1-n2h9z4@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ixTGx6tVsBXIMcLW"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231026195313.76756-1-n2h9z4@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* uninline simple_strntoull(),
-  gcc overinlines and this function is not performance critical
 
-* reorder arguments, so that appending INT_MAX as 4th argument
-  generates very efficient tail call
+--ixTGx6tVsBXIMcLW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Space savings:
+Hey,
 
-	add/remove: 1/0 grow/shrink: 0/3 up/down: 27/-179 (-152)
-	Function                            old     new   delta
-	simple_strntoll                       -      27     +27
-	simple_strtoull                      15      10      -5
-	simple_strtoll                       41       7     -34
-	vsscanf                            1930    1790    -140
+On Thu, Oct 26, 2023 at 09:53:13PM +0200, Nik Bune wrote:
+> Convert txt file to yaml.
+> Add maintainers list.
+> Mark clock as required property, by reviewer's suggestion.
+> Add power-domains as optional property, by reviewer's suggestion.=20
+>=20
+> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+> ---
+>=20
+> Changes in 3 (according to review comments):
+> - Added Andrew Davis <afd@ti.com> into maintainers list.
+> - Added power-domains property.
+>=20
+> v2 patch: https://lore.kernel.org/all/20231024195839.49607-1-n2h9z4@gmail=
+=2Ecom/
+>=20
+>=20
+>  .../bindings/watchdog/davinci-wdt.txt         | 24 ---------
+>  .../bindings/watchdog/ti,davinci-wdt.yaml     | 52 +++++++++++++++++++
+>  2 files changed, 52 insertions(+), 24 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/watchdog/davinci-wd=
+t.txt
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/ti,davinci=
+-wdt.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b=
+/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+> deleted file mode 100644
+> index aa10b8ec36e2..000000000000
+> --- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+> +++ /dev/null
+> @@ -1,24 +0,0 @@
+> -Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
+> -
+> -Required properties:
+> -- compatible : Should be "ti,davinci-wdt", "ti,keystone-wdt"
+> -- reg : Should contain WDT registers location and length
+> -
+> -Optional properties:
+> -- timeout-sec : Contains the watchdog timeout in seconds
+> -- clocks : the clock feeding the watchdog timer.
+> -	   Needed if platform uses clocks.
+> -	   See clock-bindings.txt
+> -
+> -Documentation:
+> -Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+> -Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
+> -
+> -Examples:
+> -
+> -wdt: wdt@2320000 {
+> -	compatible =3D "ti,davinci-wdt";
+> -	reg =3D <0x02320000 0x80>;
+> -	timeout-sec =3D <30>;
+> -	clocks =3D <&clkwdtimer0>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.ya=
+ml b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+> new file mode 100644
+> index 000000000000..17c824f2fc7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/ti,davinci-wdt.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
+> +
+> +description: |
+> +  Documentation:
+> +  Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+> +  Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a
+> +
+> +maintainers:
+> +  - Andrew Davis <afd@ti.com>
+> +
+> +allOf:
+> +  - $ref: watchdog.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,davinci-wdt
+> +      - ti,keystone-wdt
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    description:
+> +      A phandle and PM domain specifier as defined by bindings of=20
+> +      the power controller specified by phandle.=20
+> +      See Documentation/devicetree/bindings/power/power-domain.yaml for =
+details.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+I think you missed Rob's comment in reply to Andrew, about constraining
+and ordering the power-domains:
+https://lore.kernel.org/all/20231026203037.GA327324-robh@kernel.org/
 
- lib/vsprintf.c |   25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+Cheers,
+Conor.
 
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -60,7 +60,8 @@
- bool no_hash_pointers __ro_after_init;
- EXPORT_SYMBOL_GPL(no_hash_pointers);
- 
--static noinline unsigned long long simple_strntoull(const char *startp, size_t max_chars, char **endp, unsigned int base)
-+noinline
-+static unsigned long long simple_strntoull(const char *startp, char **endp, unsigned int base, size_t max_chars)
- {
- 	const char *cp;
- 	unsigned long long result = 0ULL;
-@@ -95,7 +96,7 @@ static noinline unsigned long long simple_strntoull(const char *startp, size_t m
- noinline
- unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
- {
--	return simple_strntoull(cp, INT_MAX, endp, base);
-+	return simple_strntoull(cp, endp, base, INT_MAX);
- }
- EXPORT_SYMBOL(simple_strtoull);
- 
-@@ -130,8 +131,8 @@ long simple_strtol(const char *cp, char **endp, unsigned int base)
- }
- EXPORT_SYMBOL(simple_strtol);
- 
--static long long simple_strntoll(const char *cp, size_t max_chars, char **endp,
--				 unsigned int base)
-+noinline
-+static long long simple_strntoll(const char *cp, char **endp, unsigned int base, size_t max_chars)
- {
- 	/*
- 	 * simple_strntoull() safely handles receiving max_chars==0 in the
-@@ -140,9 +141,9 @@ static long long simple_strntoll(const char *cp, size_t max_chars, char **endp,
- 	 * and the content of *cp is irrelevant.
- 	 */
- 	if (*cp == '-' && max_chars > 0)
--		return -simple_strntoull(cp + 1, max_chars - 1, endp, base);
-+		return -simple_strntoull(cp + 1, endp, base, max_chars - 1);
- 
--	return simple_strntoull(cp, max_chars, endp, base);
-+	return simple_strntoull(cp, endp, base, max_chars);
- }
- 
- /**
-@@ -155,7 +156,7 @@ static long long simple_strntoll(const char *cp, size_t max_chars, char **endp,
-  */
- long long simple_strtoll(const char *cp, char **endp, unsigned int base)
- {
--	return simple_strntoll(cp, INT_MAX, endp, base);
-+	return simple_strntoll(cp, endp, base, INT_MAX);
- }
- EXPORT_SYMBOL(simple_strtoll);
- 
-@@ -3648,13 +3649,11 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
- 			break;
- 
- 		if (is_sign)
--			val.s = simple_strntoll(str,
--						field_width >= 0 ? field_width : INT_MAX,
--						&next, base);
-+			val.s = simple_strntoll(str, &next, base,
-+						field_width >= 0 ? field_width : INT_MAX);
- 		else
--			val.u = simple_strntoull(str,
--						 field_width >= 0 ? field_width : INT_MAX,
--						 &next, base);
-+			val.u = simple_strntoull(str, &next, base,
-+						 field_width >= 0 ? field_width : INT_MAX);
- 
- 		switch (qualifier) {
- 		case 'H':	/* that's 'hh' in format */
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    watchdog@2320000 {
+> +        compatible =3D "ti,davinci-wdt";
+> +        reg =3D <0x02320000 0x80>;
+> +        timeout-sec =3D <30>;
+> +        clocks =3D <&clkwdtimer0>;
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--ixTGx6tVsBXIMcLW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTvFxgAKCRB4tDGHoIJi
+0g/NAQDyI6k3NfH6Gtz3jrfdKhsERSZfTUEuPaRJugULbfqFNwEArZQ+vTqb22CM
+WH8KAtU7U7Nr3wFy8r2rpTGo6CGRBQg=
+=9UY6
+-----END PGP SIGNATURE-----
+
+--ixTGx6tVsBXIMcLW--
