@@ -2,177 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AB97D9919
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99197D9927
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345772AbjJ0M5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        id S1345609AbjJ0M7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345839AbjJ0M5k (ORCPT
+        with ESMTP id S230451AbjJ0M7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:57:40 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095B3D40;
-        Fri, 27 Oct 2023 05:57:37 -0700 (PDT)
-Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AFFBB74A;
-        Fri, 27 Oct 2023 14:57:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698411443;
-        bh=8VrJNrWOa95xV2Iroh66gI/oAAPtNl5Fu9bL0m3Jo8o=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dPZFmJR1cugE8JK3jycpJofPTHSnvh9ytyUDFCxFopqBebaDq+4hexzWiXyvJwEFW
-         zySwarcyihwxcpDrkOIPpZ6Go5dp/L1l/JYbxilaZreg1xXEhwMZuvVGCrB2UnG5LN
-         iL+yFTCyJj54RXtU3p/ULeFx3x8Yj/IM9kqXI0HY=
-Message-ID: <8532c020-013b-48a4-9a72-1a583ca945d1@ideasonboard.com>
-Date:   Fri, 27 Oct 2023 13:57:35 +0100
+        Fri, 27 Oct 2023 08:59:20 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151E0129
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:59:18 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cbf47fa563so17719595ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:59:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1698411557; x=1699016357; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OnVvDYzrOiXXcLBIXZo998leFWypinKwSwwBh9B0Bhc=;
+        b=YLuYvjPEiR+LNZoGyjZcHy5a7qZZTOCaR51sxH/HkChShJOcKfAgTBGPPlJTyYo063
+         KTh1iDH0pPmb5nc8h4L+85XleWpIMz2JH38u2BLU1/QiEZadZbRocDnW0lI3gNdDouUD
+         6ZKRTQe/CqSW/Id7ohrV/B3WphxTT3NPYnl3mWeK+K/H/EfyCgoYDPMUROisq2/FoRaz
+         +YkrxRrgdg5xP3CwuAgxp2DpRGzP8toCBU9d5Vrl652wY3QIt/zgjlDdakpB1COOv6hf
+         d39ms9DI7uWCe1TvZKg+Pxs9m7ZRZJJynjRjGsA3Wi9zLydQle5loZQ286vyKGHicVt6
+         i1dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698411557; x=1699016357;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OnVvDYzrOiXXcLBIXZo998leFWypinKwSwwBh9B0Bhc=;
+        b=B+uNJvcFGnYixqFUHPmI6icwkMI6dkFj5QAxXO0zKFxdcaclGni++Tc0KAz+Q3jdOY
+         uXtfzwC1SL0epsHOYX5U3LwZNxSECLIJzy8aBauEUWIV9khyVHvh5XgVqabP4FPdUeZc
+         luczfBXYjA41CNUu+rQjLed+TqaOkDd/VfiRTd4AK2s6u3yRQJmHqaOceyRQZXO5YcAB
+         TOz7EUoZPZrleNqpFhUf8VBY0ah6d6m5Op7yDE9OVQDjGXC+j2+jHcLSOYgKgunPJCx7
+         7sT/R20DriOU9wTvCcK6OF6132nPyPH+KtA4TH30WrL4G7X5Z5TG1llHeRP9vxcVYiRJ
+         6TRg==
+X-Gm-Message-State: AOJu0Yy5S0QDcaCecFVYGFNPANY++WCTHX/4iPrQauweyJDzpFzfkYIF
+        FE2AXbAykaaBuWtX8BAlkUcdoQ==
+X-Google-Smtp-Source: AGHT+IE/y41xbQGeI5wjC1sLH+pq9yHPsk4f4rnVQlyHxT5L0fSSnli72s6diRvbt22YhudFLgevQw==
+X-Received: by 2002:a17:903:2306:b0:1c6:2f59:8c4d with SMTP id d6-20020a170903230600b001c62f598c4dmr2929514plh.28.1698411557571;
+        Fri, 27 Oct 2023 05:59:17 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:c232:f53e:32d4:5510? (2403-580d-82f4-0-c232-f53e-32d4-5510.ip6.aussiebb.net. [2403:580d:82f4:0:c232:f53e:32d4:5510])
+        by smtp.gmail.com with ESMTPSA id z13-20020a1709027e8d00b001b9da42cd7dsm1515657pla.279.2023.10.27.05.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 05:59:17 -0700 (PDT)
+Message-ID: <7524a9ef-c1c4-462e-8f9d-fc03c29ca092@tweaklogic.com>
+Date:   Fri, 27 Oct 2023 23:29:08 +1030
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 3/4] usb: gadget: uvc: move video disable logic to its
- own function
+Subject: Re: [PATCH v1 2/2] iio: light: Add support for APDS9306 Light Sensor
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Paul Gazzillo <paul@pgazz.com>,
+        Matt Ranostay <matt@ranostay.sg>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231026143532.39660-1-subhajit.ghosh@tweaklogic.com>
+ <20231026143532.39660-3-subhajit.ghosh@tweaklogic.com>
+ <ZTuuUl0PBklbVjb9@smile.fi.intel.com>
 Content-Language: en-US
-To:     Avichal Rakesh <arakesh@google.com>, gregkh@linuxfoundation.org,
-        laurent.pinchart@ideasonboard.com
-Cc:     etalvala@google.com, jchowdhary@google.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        m.grzeschik@pengutronix.de
-References: <20231019185319.2714000-1-arakesh@google.com>
- <20231024183605.908253-1-arakesh@google.com>
- <20231024183605.908253-3-arakesh@google.com>
-From:   Dan Scally <dan.scally@ideasonboard.com>
-Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231024183605.908253-3-arakesh@google.com>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <ZTuuUl0PBklbVjb9@smile.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avichal
+On 27/10/23 23:04, Andy Shevchenko wrote:
+> This will benefit from guard() or scoped_guard().
+> And many other functions in your driver.
+> I believe ~15% of LoCs can be dropped with help of cleanup.h.
+Acknowledging all other comments. Jonathan commented earlier on using guard() and cleanup.h
+Unfortunately I missed it. Like GTS, it will again be a brand new thing to understand!
+Thank you for reviewing.
 
-On 24/10/2023 19:36, Avichal Rakesh wrote:
-> This patch refactors the video disable logic in uvcg_video_enable
-> into its own separate function 'uvcg_video_disable'.
-In that case, can we just replace any calls to uvcg_video_enable(video, 0) with calls to 
-uvcg_video_disable() directly and drop the enable argument from uvcg_video_enable()?
-> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> Signed-off-by: Avichal Rakesh <arakesh@google.com>
-> ---
-> v6: Introduced this patch to make the next one easier to review
-> v6 -> v7: Add Suggested-by
-> v7 -> v8: No change. Getting back in review queue
->
->   drivers/usb/gadget/function/uvc_video.c | 37 +++++++++++++++----------
->   1 file changed, 23 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-> index c180866c8e34..80b8eaea2d39 100644
-> --- a/drivers/usb/gadget/function/uvc_video.c
-> +++ b/drivers/usb/gadget/function/uvc_video.c
-> @@ -493,13 +493,33 @@ static void uvcg_video_pump(struct work_struct *work)
->   	return;
->   }
->
-> +/*
-> + * Disable video stream
-> + */
-> +static int
-> +uvcg_video_disable(struct uvc_video *video)
-> +{
-> +	struct uvc_request *ureq;
-> +
-> +	cancel_work_sync(&video->pump);
-> +	uvcg_queue_cancel(&video->queue, 0);
-> +
-> +	list_for_each_entry(ureq, &video->ureqs, list) {
-> +		if (ureq->req)
-> +			usb_ep_dequeue(video->ep, ureq->req);
-> +	}
-> +
-> +	uvc_video_free_requests(video);
-> +	uvcg_queue_enable(&video->queue, 0);
-> +	return 0;
-> +}
-> +
->   /*
->    * Enable or disable the video stream.
->    */
->   int uvcg_video_enable(struct uvc_video *video, int enable)
->   {
->   	int ret;
-> -	struct uvc_request *ureq;
->
->   	if (video->ep == NULL) {
->   		uvcg_info(&video->uvc->func,
-> @@ -507,19 +527,8 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
->   		return -ENODEV;
->   	}
->
-> -	if (!enable) {
-> -		cancel_work_sync(&video->pump);
-> -		uvcg_queue_cancel(&video->queue, 0);
-> -
-> -		list_for_each_entry(ureq, &video->ureqs, list) {
-> -			if (ureq->req)
-> -				usb_ep_dequeue(video->ep, ureq->req);
-> -		}
-> -
-> -		uvc_video_free_requests(video);
-> -		uvcg_queue_enable(&video->queue, 0);
-> -		return 0;
-> -	}
-> +	if (!enable)
-> +		return uvcg_video_disable(video);
->
->   	if ((ret = uvcg_queue_enable(&video->queue, 1)) < 0)
->   		return ret;
-> --
-> 2.42.0.758.gaed0368e0e-goog
+Regards,
+Subhajit Ghosh
+
