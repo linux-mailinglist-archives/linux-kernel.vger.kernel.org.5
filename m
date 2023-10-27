@@ -2,176 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 213077D96D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B23E7D96D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345767AbjJ0Llq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        id S1345740AbjJ0LmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345740AbjJ0Llo (ORCPT
+        with ESMTP id S1345585AbjJ0LmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:41:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29935192;
-        Fri, 27 Oct 2023 04:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698406902; x=1729942902;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Qn6YR15Bmkgy5ebgPTMxFjFtqQ8cI5zB/vWtuqUqkNc=;
-  b=V+ezcjJHgNNRQpOVYaUOvrmwYFxDcOz0SGRxA9vx2I3seLgrBAtc5Du+
-   1iIGTo0mwLdTielHHRIz5ZsDX3a4fsryM/nD8tPJfHDtjtXDvkVhhaCeP
-   ZWH9wDp3ZmklWdot3OBQcJUhBmpNa1tgirOI5/xwjjgFDhG5FTXkjH8k3
-   ZWyAt/jnpFAGg9Sro5IuK/mdo9pu27vP0HVf6yJHUm46/F+cDGBQ8ZHc4
-   yfP/ofwKBmfOd8rnQX1enlw5Tsbhsy9WQkkTq/ASQpieIO0uej5mw2xXY
-   irucuUIl3KFn9J/7xNXuWzyLubGDqEg5KDOYMVA7K4akFlMk9hbvKni7o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="473999329"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="473999329"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 04:41:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="794557792"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200"; 
-   d="scan'208";a="794557792"
-Received: from scoltan-mobl.ger.corp.intel.com ([10.252.33.159])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 04:41:39 -0700
-Date:   Fri, 27 Oct 2023 14:41:36 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-cc:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 02/24] selftests/resctrl: Refactor fill_buf functions
-In-Reply-To: <v5jdxr2sayffhq5sslyn2f5x6ogynosuhjxgdmfwzwdpvejngu@aahvjgz3sqcp>
-Message-ID: <3a73f8e0-4482-679-d197-6a67c9e23f0@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-3-ilpo.jarvinen@linux.intel.com> <v5jdxr2sayffhq5sslyn2f5x6ogynosuhjxgdmfwzwdpvejngu@aahvjgz3sqcp>
+        Fri, 27 Oct 2023 07:42:23 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F2010A
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:42:19 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6bd73395bceso1446428b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1698406939; x=1699011739; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ui+0X6RaOuqdgWAsDjJ4EPnCuY3qudStVnPGxxdS4w8=;
+        b=Y18zZWQpSkvMLu0XXlyA6JQoWdUREYAxQDTsdJNFo3Tq/+VDNUIaOvVVJOdO1MmLEr
+         ndVDcNmK3RieV7zzy6ezk/H7kub7nEYjx/fRLkH1+YOXxrWBzEtuFhycdMPlPSIr0o8H
+         i68slCGay+rBE5gacmWSta6+h9uCCD8obwrBEEs7qYSPV9Q6I3zEbKt1HQjGpW/h+KVK
+         bmgZ3KbjYIaV8UsR9eHsMO4q+asXhPwjlkqLDfyQv2Jwv+i3LwFOJ+zpEKtM63neh2Sz
+         X9EyJKFSDL/Y4ap1ygwOL/0jpOk1ihEHXvZj3u+gb4iCfBx91Q0sRtlZAj8AamjE1JYm
+         NT4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698406939; x=1699011739;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ui+0X6RaOuqdgWAsDjJ4EPnCuY3qudStVnPGxxdS4w8=;
+        b=a/4YxzDDtJXhrkUDwF6Wm1PMb2grtVeFPfxobJj5gr12EUGr+qp2Ta3n4OpuLMx7cq
+         7OxuHQUymtzJVfitdINCOB+2m2JHo1j+yvZIj5dmVNFHAK4/WPTgrSWsRkAJ55KkRYxH
+         yPbJBMS6ja97a1rc1Vf59J25gYsD2MlrrVZf//pCgHK0KOWnNIBntM7jhoW10lqpk2JM
+         c3GKyM36qly/uyvop2duDZceunM70sHQAwvPuWjvBS0Whm9DxWmWTNg1e9gwVLE35w6q
+         STmrMbCsSNWdj2q7VwpSyeMJe/pCPbJMGuGMjNZU2684I9+31uLAgsDhcs/U0SI3wpCW
+         KibA==
+X-Gm-Message-State: AOJu0YyAhKgbpVKmxyUSzX2DOhA1a9rQijm67y6V6RI9QA8F6IIH14hm
+        HFhdLG6LJfgs/wskafahj4DI/A==
+X-Google-Smtp-Source: AGHT+IGGyKRa3hQHUhJilPpV747GjhOTRZGEgbsYmHh2pSPtU1N4qqaDf2+sIRpTV6aCdutQx9ddqg==
+X-Received: by 2002:a05:6a00:230d:b0:68c:44ed:fb6 with SMTP id h13-20020a056a00230d00b0068c44ed0fb6mr3387285pfh.16.1698406939330;
+        Fri, 27 Oct 2023 04:42:19 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:c232:f53e:32d4:5510? (2403-580d-82f4-0-c232-f53e-32d4-5510.ip6.aussiebb.net. [2403:580d:82f4:0:c232:f53e:32d4:5510])
+        by smtp.gmail.com with ESMTPSA id e21-20020aa78c55000000b0069ee4242f89sm1228768pfd.13.2023.10.27.04.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 04:42:19 -0700 (PDT)
+Message-ID: <ab671f50-7a0f-4e72-98a0-fa4d5f2ed889@tweaklogic.com>
+Date:   Fri, 27 Oct 2023 22:12:11 +1030
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-126731212-1698406901=:2740"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paul Gazzillo <paul@pgazz.com>
+Cc:     Matt Ranostay <matt@ranostay.sg>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
+ <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
+ <d7ba077d-6bcd-4e04-b678-51e4bbc935ca@linaro.org>
+ <9e55b561-a0ad-4503-9f20-b7c98507afa0@tweaklogic.com>
+ <ebcf3e9f-2bc2-4d91-8b5c-51405236e4ab@linaro.org>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <ebcf3e9f-2bc2-4d91-8b5c-51405236e4ab@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-126731212-1698406901=:2740
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 27 Oct 2023, Maciej Wieczór-Retman wrote:
-
-> On 2023-10-24 at 12:26:12 +0300, Ilpo Järvinen wrote:
-> >There are unnecessary nested calls in fill_buf.c:
-> >  - run_fill_buf() calls fill_cache()
-> >  - alloc_buffer() calls malloc_and_init_memory()
-> >
-> >Simplify the code flow and remove those unnecessary call levels by
-> >moving the called code inside the calling function.
-> >
-> >Resolve the difference in run_fill_buf() and fill_cache() parameter
-> >name into 'buf_size' which is more descriptive than 'span'.
-> >
-> >Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> >---
-> > tools/testing/selftests/resctrl/fill_buf.c | 58 +++++++---------------
-> > tools/testing/selftests/resctrl/resctrl.h  |  2 +-
-> > 2 files changed, 20 insertions(+), 40 deletions(-)
-> >
-> >diff --git a/tools/testing/selftests/resctrl/fill_buf.c b/tools/testing/selftests/resctrl/fill_buf.c
-> >index f9893edda869..9d0b0bf4b85a 100644
-> >--- a/tools/testing/selftests/resctrl/fill_buf.c
-> >+++ b/tools/testing/selftests/resctrl/fill_buf.c
-> >@@ -51,29 +51,6 @@ static void mem_flush(unsigned char *buf, size_t buf_size)
-> > 	sb();
-> > }
-> > 
-> >-static void *malloc_and_init_memory(size_t buf_size)
-> >-{
-> >-	void *p = NULL;
-> >-	uint64_t *p64;
-> >-	size_t s64;
-> >-	int ret;
-> >-
-> >-	ret = posix_memalign(&p, PAGE_SIZE, buf_size);
-> >-	if (ret < 0)
-> >-		return NULL;
-> >-
-> >-	p64 = (uint64_t *)p;
-> >-	s64 = buf_size / sizeof(uint64_t);
-> >-
-> >-	while (s64 > 0) {
-> >-		*p64 = (uint64_t)rand();
-> >-		p64 += (CL_SIZE / sizeof(uint64_t));
-> >-		s64 -= (CL_SIZE / sizeof(uint64_t));
-> >-	}
-> >-
-> >-	return p;
-> >-}
-> >-
-> > static int fill_one_span_read(unsigned char *buf, size_t buf_size)
-> > {
-> > 	unsigned char *end_ptr = buf + buf_size;
-> >@@ -137,20 +114,33 @@ static int fill_cache_write(unsigned char *buf, size_t buf_size, bool once)
-> > 
-> > static unsigned char *alloc_buffer(size_t buf_size, int memflush)
-> > {
-> >-	unsigned char *buf;
-> >+	void *p = NULL;
+On 27/10/23 21:34, Krzysztof Kozlowski wrote:
+> On 27/10/2023 10:42, Subhajit Ghosh wrote:
+>> 4. Conor reviewed the patch and said that it would be better that I handle all
+>>      these operations in apds9306 driver (this) patch series rather than submitting
+>>      a new patch.
+>>      "Ahh apologies then. The best course of action would likely be to include
+>>       the patch merging the two bindings in your series adding the third user."
+>> 5. As per this patch series -- RFC->v0->v1-v2
 > 
-> Is this initialization doing anything? "p" seems to be either overwritten or in
-> case of an error never accessed.
+> RFC was the first version sent to mailing list. So after RFC there is
+> second version - v2. This is v4.
 
-I'm aware of that but the compiler is too stupid to know that p is 
-initialized if there's no error and spits out a warning so I'll have to 
-keep the unnecessary initialization.
+Acknowledging all your other comments. Appreciate your time and effort in reviewing
+this. One last question on this - So what version should I use for the patchset
+which I will submit next - "v3" or "v5" in the Subject of the emails?
 
-> >+	uint64_t *p64;
-> >+	size_t s64;
-> >+	int ret;
-> > 
-> >-	buf = malloc_and_init_memory(buf_size);
-> >-	if (!buf)
-> >+	ret = posix_memalign(&p, PAGE_SIZE, buf_size);
-> >+	if (ret < 0)
-> > 		return NULL;
-> > 
-> >+	/* Initialize the buffer */
-> >+	p64 = (uint64_t *)p;
-> >+	s64 = buf_size / sizeof(uint64_t);
-> >+
-> >+	while (s64 > 0) {
-> >+		*p64 = (uint64_t)rand();
-> >+		p64 += (CL_SIZE / sizeof(uint64_t));
-> >+		s64 -= (CL_SIZE / sizeof(uint64_t));
-> >+	}
-> >+
-> > 	/* Flush the memory before using to avoid "cache hot pages" effect */
-> > 	if (memflush)
-> >-		mem_flush(buf, buf_size);
-> >+		mem_flush(p, buf_size);
-> 
-> Wouldn't renaming "p" to "buf" keep this relationship with "buf_size" more
-> explicit?
+Regards,
+Subhajit Ghosh
 
-I'll change it to buf. This patch has a long history which preceeds the 
-change where I made the buffer ptr naming more consistent and I didn't 
-realize I departed here again from the consistent naming until you now 
-pointed it out.
-
--- 
- i.
-
---8323329-126731212-1698406901=:2740--
