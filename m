@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF247D9B92
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FDD7D9B94
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346107AbjJ0OiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S1345979AbjJ0Oik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbjJ0OiY (ORCPT
+        with ESMTP id S231649AbjJ0Oij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:38:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A9FC4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6253F1FEF4;
-        Fri, 27 Oct 2023 14:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698417500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GcxaSeqkCqbDEGJ3KChrTM3TW8Y9uOZhrvKJt8xkhgo=;
-        b=hjtiRAovlw0PHu4CBR62UvQmqu4/fwmF/88cH84jgQ0YH7dT842SjuxWky/1aZcejfczFl
-        mTcRU8HjTRgfMaOI27KiaVYvSa87iVtyLgneYL519Cq2VSH1m6tDhpKskmYP2UE7gS0SW2
-        B5I+O9yr7eKk0viPOWHm+KKgwzUyONM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698417500;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GcxaSeqkCqbDEGJ3KChrTM3TW8Y9uOZhrvKJt8xkhgo=;
-        b=gLtR4+jt93eFd77ilr0us9HvpDrgPnHk1Iy20T7dUeBpWLv9HZirjosg8yoPqwsrxG9uyB
-        P/F8sG4L+bKnUQCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3188213524;
-        Fri, 27 Oct 2023 14:38:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rgBlC1zLO2UdAgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 27 Oct 2023 14:38:20 +0000
-Message-ID: <7f4cd48e-492c-24f7-6fef-e3b50eace6ba@suse.cz>
-Date:   Fri, 27 Oct 2023 16:38:19 +0200
+        Fri, 27 Oct 2023 10:38:39 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D241D191
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:36 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5859a7d6556so1839305a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1698417516; x=1699022316; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=55I45Qtlplt+aIkb3uw3RfeEyoBtnIxw2UGzAOCPdDY=;
+        b=Wc9yZqFyEFXH4zn/PSLKQ/HOqrf0AoU2UFslouG08QDJqMelIZEnrsHC02ddkxZ8uP
+         8nHshG8bhaR42c6RDsFT7/zNmYgI3eEFA8jy3S1RUQ/2phKYFGN/LUBsOGXR1MTK3puc
+         QNX3fQrW/PeDDcaRqbxA8/WedSrL34SjPJ+W/Y1yEz6tVcJeO9PxxUWStQxZFjf95WOs
+         m0mDZPAlJ29u17K9cvcpRUBdVEtq9m3nde73g4z1NzBR2mts44iJhBCdgz8xEbAqJEcJ
+         MJxC+OuHN1PITAU/SmNfNy+jV33G8ZCQJOC4e5HpsZXNcu+MC1mb0d+X3hRfd+GGgzXq
+         Tj9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698417516; x=1699022316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=55I45Qtlplt+aIkb3uw3RfeEyoBtnIxw2UGzAOCPdDY=;
+        b=ei+dz9dfsHxFtXdgUF51Qr6iCzV84IJyrKqNUKlHZ7UhAZu9fd1bt1K4pdvL3HwrTW
+         Hp58yXUFeht7JckeIbuB/MTCQofzYfxqe99Ho5SBusw5HMrrGMSEevS5WXpHsVw9a8xS
+         PmW+xSfPrsEaeZcDKrUzkOpc9SP/y801N02+ZhJpz9uvf28aOK6gTiRcInP9Xj2FveE5
+         pFOI+uKGPTA38LPapzbrdB8WdXDNzAzKCVQR/k1Eh0Wx7Ye8WE8/t+NwEaERJLvLqBZj
+         Jw+dYqJ+yvwdsd0z/B475/p3IuOJUl8x9gx6JyQf3TTzLs17m1IDgCVx4NhGOx7hE7hJ
+         EYsw==
+X-Gm-Message-State: AOJu0Yy/pOEnPtMihWYfL2Rv/3jNbgROHyg1VqiQ9k+wa5nf8BcFBvrd
+        RBrjG72UGh6x3OGfbSpMzhVEGhH5DcrBkza7D++6ZQ==
+X-Google-Smtp-Source: AGHT+IEJ07q1D5+4KgTEUidlRWDjPLhaZTGEoCul8Ylb8bU0eDcjf2kvbdOo0yKFuk4wmgeVVBFcvoZPzXSIbNI0bKk=
+X-Received: by 2002:a17:90a:6e48:b0:27d:3c75:db02 with SMTP id
+ s8-20020a17090a6e4800b0027d3c75db02mr2979762pjm.32.1698417516000; Fri, 27 Oct
+ 2023 07:38:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: [GIT PULL] slab updates for 6.7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, patches@lists.linux.dev,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jay Patel <jaypatel@linux.ibm.com>
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231025142820.390238-1-apatel@ventanamicro.com>
+ <20231025142820.390238-2-apatel@ventanamicro.com> <87y1fo3383.ffs@tglx>
+In-Reply-To: <87y1fo3383.ffs@tglx>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 27 Oct 2023 20:08:24 +0530
+Message-ID: <CAK9=C2WC7N-9LgrtpfeWCT08iToqMevgvR0rkjEvdJFPzNDkMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] RISC-V: Don't fail in riscv_of_parent_hartid() for
+ disabled HARTs
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Oct 27, 2023 at 1:29=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Wed, Oct 25 2023 at 19:58, Anup Patel wrote:
+> > The riscv_of_processor_hartid() used by riscv_of_parent_hartid() fails
+> > for HARTs disabled in the DT. This results in the following warning
+> > thrown by the RISC-V INTC driver for the E-core on SiFive boards:
+> >
+> > [    0.000000] riscv-intc: unable to find hart id for /cpus/cpu@0/inter=
+rupt-controller
+> >
+> > The riscv_of_parent_hartid() is only expected to read the hartid from
+> > the DT so we should directly call of_get_cpu_hwid() instead of calling
+>
+> We should? Or maybe not?
+>
+> Please write precise changelogs and use imperative wording as documented
+> in Documentation/process.
 
-once the merge window opens, please pull the latest slab updates from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.7
+Sure, I will update the wording in the commit description.
 
 Thanks,
-Vlastimil
-
-======================================
-
-* SLUB: slab order calculation refactoring (Vlastimil Babka, Feng Tang)
-
-  Recent proposals to tune the slab order calculations have prompted us to
-  look at the current code and refactor it to make it easier to follow and
-  eliminate some odd corner cases. The refactoring is mostly non-functional
-  changes, but should make the actual tuning easier to implement and review.
-
-----------------------------------------------------------------
-Feng Tang (1):
-      mm/slub: add sanity check for slub_min/max_order cmdline setup
-
-Vlastimil Babka (4):
-      mm/slub: simplify the last resort slab order calculation
-      mm/slub: remove min_objects loop from calculate_order()
-      mm/slub: attempt to find layouts up to 1/2 waste in calculate_order()
-      mm/slub: refactor calculate_order() and calc_slab_order()
-
- mm/slub.c | 73 +++++++++++++++++++++++++++++++--------------------------------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+Anup
