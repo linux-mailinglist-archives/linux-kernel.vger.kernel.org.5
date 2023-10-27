@@ -2,62 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DBC7D9F58
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CFA7D9F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 20:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346470AbjJ0SEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 14:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S232279AbjJ0SH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 14:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346531AbjJ0SEF (ORCPT
+        with ESMTP id S231360AbjJ0SHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 14:04:05 -0400
-Received: from alln-iport-3.cisco.com (alln-iport-3.cisco.com [173.37.142.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BFA172A;
-        Fri, 27 Oct 2023 11:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=14031; q=dns/txt;
-  s=iport; t=1698429832; x=1699639432;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=b0Zo9m81cJ1meXuIVA4WAwJ0k92nX4n9XYOkSvbBGtI=;
-  b=igM07n4kUGgC0Dl61OnV2ZEy+lNuwK7U5sqPzdrAxsaXHyFn6odo70Jl
-   2zf30VEaCMLKXSCMyYiDzNE9tB54upOsgcNRpeauoDgSZT8OkkvvPADzw
-   IbI5RbREi2T3azi4jRkHUrjQ9Ac2+kiE+g07bpAnd/5h0LwxI+H5Q4GjK
-   A=;
-X-CSE-ConnectionGUID: EdayJz5YTayyARLaGGxTyw==
-X-CSE-MsgGUID: Qy5B/OQmStyj2fRKlU5e3w==
-X-IronPort-AV: E=Sophos;i="6.03,256,1694736000"; 
-   d="scan'208";a="173160236"
-Received: from rcdn-core-11.cisco.com ([173.37.93.147])
-  by alln-iport-3.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 18:03:51 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39RI39Op029226
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 27 Oct 2023 18:03:50 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH v2 13/13] scsi: fnic: Improve logs and add support for multiqueue (MQ)
-Date:   Fri, 27 Oct 2023 11:03:02 -0700
-Message-Id: <20231027180302.418676-14-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231027180302.418676-1-kartilak@cisco.com>
-References: <20231027180302.418676-1-kartilak@cisco.com>
+        Fri, 27 Oct 2023 14:07:54 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020003.outbound.protection.outlook.com [52.101.61.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE7FD9;
+        Fri, 27 Oct 2023 11:07:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EMCBn2kMiesrpcELmZ4QUbAQsZtbyZEURNdeXmwnH17QlLnRDNPywKZ43A1oErTS4hybnTdcasi+9N0OWz9V58wDmBwZ1N+w5eLKCBp8Z7I24vexkZ6doHUD2rhlz5WPYEjqE02WIdLB+2N834dDE+oozXRrBnGBy/S11WROobtryfmS8naykOdyF0wb/ZQatC/m6cPAb4v9Kq0TPqALcFLeDWYrDS85mmvyQsm+kpLDUguqF11EoLe6QJ0GJELB+dW9lTYBX+I4KlsNBANofGllb0b9Oyk8uUqd5xSn9m0SHiROheP7EvgHGygpB/H2pK58bjOLQeNWpo/jKRxOyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ShfL1zsfe+Uf5JILIL66mY9RziPKGLNbtlGosHYqzDo=;
+ b=ROh5Idz1gChtlmRncAlYoylDAKHLPocDR5fH5zCqkBBo/CIIPxVH5XJo2mCmmGRXhEXSjaoTvrEKhoWbyHUnGpd9h8+TU68Mw/oSjEG01/M6c4EVTB9EfSzlpOH+drfIwAcnJGigX0/4+r5WdchDoleI4+GPenYTQWF+rNDZsTxK30ENY3L1cthOXGnbyE274mK+qyanhi3ShCmqlYEVQBGmi2dTvnOSAcfYOA92Nt50whBIyNX5axwkiPH5NL8xNg56v85MoSKuSxqe77FOEscjRV2oixroP8yICQUyy7v6CDznSo8N3gKzLAPwsyRCAdqEb8WnEG1jMEQ+5GnSng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ShfL1zsfe+Uf5JILIL66mY9RziPKGLNbtlGosHYqzDo=;
+ b=XcnwuTLisY3hzJIDEKi52bx924hirKRXAGemtI4I32wKEX/rIhEdV4iegDN6G9zB/zwhl9K4w/VL90728lKMXGbBKrzw53Jezg6IaCl25fa7Bj0iy/IveOsKhtNytHN11i6ds6uUaAbVypcatfXU+CHsYAB1h5ka4zig+8e/9jM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by MW4PR21MB2004.namprd21.prod.outlook.com (2603:10b6:303:68::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.6; Fri, 27 Oct
+ 2023 18:07:48 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::c099:1450:81d3:61dd]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::c099:1450:81d3:61dd%4]) with mapi id 15.20.6954.011; Fri, 27 Oct 2023
+ 18:07:48 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Cc:     haiyangz@microsoft.com, decui@microsoft.com,
+        stephen@networkplumber.org, kys@microsoft.com,
+        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+        longli@microsoft.com, ssengar@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+        Konstantin Taranov <kotaranov@microsoft.com>
+Subject: [PATCH net-next] Use xdp_set_features_flag instead of direct assignment
+Date:   Fri, 27 Oct 2023 11:06:51 -0700
+Message-Id: <1698430011-21562-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0350.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::25) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-11.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|MW4PR21MB2004:EE_
+X-MS-Office365-Filtering-Correlation-Id: af73b9b8-c548-4c37-d48c-08dbd717a04d
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5y95vUVM5C1JjxGgHXqOEcQAwA5wK0icf0YZ/SRB+IYaLc9WGMZPvlLRwI1Ea73BRBJ3SHMV08GTCYAuUoqOLB/sbiQJw3CmmtF4RVpQia18WqZtIyJstomu88E3bwFlENTkF6U/a9bSxHgcZcN1QIUH55IZlWiE289lWPy92ivWvFRNtNJZeR3Af4oNlBUxLrOpE+TJg8XAE7RdXT5MGJaGZvIyeYcSv+0kpP0uD31vM08DT0vxpm1IjECwwZhklqTXPKa8Y4STPIUa/0eR04nhuwK7iuVdh7CE3tVjjCMOIYTr+jbJc1acnsEHvlc9bQgU5x9uMOfJ/+tTtcSj6QdXeLFpcj5SlWeMWiz7kHKWYIMsR4xtMX4gogphjJpJMpC4dQowmktumWxidxksuobEHEmBJG4g/1hCWw57029KCq+rcrfqRRUwL5GFOJiLSNPxiFAkaYkuZsYLEV3p3FiZrE3xcYCFiVwQna1Mf0YVVCLsH3WTucIQUrf2lkfNXkkvwroF29suin5evA4o9Q2FpdKiSbLIcEPhTI7Bf07ccG2WHvDcvTWNQGscWXEFv47leXtFrqEKlLKQ3Sds/6nzsgnHpPAgegEe8WlG1+vLxV2hERPbHtwBjunWDsVIBmM1mRdD91np+7MKcWt9TzutAgB2GTT2znjkmXOoF24=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(346002)(396003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(38100700002)(7846003)(6506007)(6666004)(52116002)(10290500003)(83380400001)(82960400001)(82950400001)(107886003)(2616005)(6512007)(7416002)(38350700005)(8676002)(4326008)(2906002)(6486002)(5660300002)(8936002)(316002)(66556008)(66476007)(66946007)(36756003)(41300700001)(26005)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+DaRE5YgmwM0ESVce0CLJ0I3afDkPVOZu7TbkVxX2EhXI9sMmf2FKH9tivDk?=
+ =?us-ascii?Q?yorjjvWNh80sKgOneP7uGtuO4RNWVHmpGPsZULptwfcTLE/2+1n/SHwxIA3b?=
+ =?us-ascii?Q?jIQo3wA9WQCbOtSrHC02KxNo1pFW+pns0slwgg9desyuJfScxvhN5MJJGlSZ?=
+ =?us-ascii?Q?ufXtODneChKUAR7Q/kG2KpZusETK8oS4Mkek2/WUfSKcBaSO+BQ8NDAspxZJ?=
+ =?us-ascii?Q?JoHu/oJmHsYoouulQK5IVYz/p3Y46/NOYu3LkEh3NfvlmN9S3mNqO+QWArmL?=
+ =?us-ascii?Q?9jDmpZMqpQG4DrG0i3Q0RNCjljKgd5XJTHvGL6veNmmYqhllGSXO3LwrvtRg?=
+ =?us-ascii?Q?I2mP029AYNoaRjTPlpeHO+I/GdJeEZntPPUKGsjs0M/HKN7as7NhaC3b4She?=
+ =?us-ascii?Q?1VETzH6NscP6WY3iBnn1JOtl0hChclRrXZxUL2vbD6JCslk7Xckc907LheQy?=
+ =?us-ascii?Q?aOLv9nz7u9FXyYzsgmlBScCT39gI42UiGtlOPlxnVJUBf/5XY2NWSaviWJhl?=
+ =?us-ascii?Q?EOUiaZo5XM6fgNyPMcvJINNMlqDfNitlJ1YK7azv1Dqa3OtxvDGNM6ZA92p1?=
+ =?us-ascii?Q?1R7aYVqxjdL9P+4uty8A66gFrMbRTh3VRk9gCeGqpE3hSNX9OcHFV1H2g3Of?=
+ =?us-ascii?Q?otnsZoYY9b9unNMakjbVo4joCJ4HOgyGHy9EqYIZXeiMHMPywIBoL0geIG+e?=
+ =?us-ascii?Q?4y0ieo/rhEWJWr3KFGD13iOGWyiT6rkmsuKnVqndzbX/DUZ1G9350/ss8BK7?=
+ =?us-ascii?Q?FrYv7EgeeAIkrYfkQ1IzPfKF8WuEbkXJMn3Wsj4cXfISKrzaMe5c37xF8dD5?=
+ =?us-ascii?Q?gYfKxypPD8NlK7u5DX6yUnleoYt24v1N3rsb85wpAp7c1p87Odq/J8NWb8YX?=
+ =?us-ascii?Q?Uwhyriw0unY2z2H3GaNdux/OmaeJVytuHrzTQlfkVA1x8VR3s86abtxGBn4d?=
+ =?us-ascii?Q?sSC+4XMgc8t21yrXztDZB8fH8MqVJvtyGhsB+1MDuB5ZgJuDrnFSstoI+sE1?=
+ =?us-ascii?Q?1GfUplNklWwjrWncjuIdYXkk2vHlq5g3rRsQ8WpAZy8y5NKRlKUM2QTLVshF?=
+ =?us-ascii?Q?uW2C+SqiF90PHEp+zREqIpX1lnU/FhowDp5exd7S32aM4GaGBHsnnHGxVZNp?=
+ =?us-ascii?Q?BxxQQ+n+kl9+EuNJrpc1TT3ZaxNF5E+V2x1shnMUBY1gewFmqYkLtc1nhRCF?=
+ =?us-ascii?Q?JyAYSAMCbLalkUxRrXrOXglseRWCXZHaT3QmBq6Sl+VtydrEfsRmugQg4x9g?=
+ =?us-ascii?Q?JhG4oOlqvmS7JotofXjJqWcXGBaeFCg7oui4/FJjElblgNY2ae+WdAEHfxtv?=
+ =?us-ascii?Q?vfg6vDpoUgWCfxBpvhEgjsuLJCFsqUF/FvGZkDG92vtAM6B9xiNlADCQosiZ?=
+ =?us-ascii?Q?evKZWCHsEgm7c+E/v1s2sDep/RVj/RAayB4ZleAJrDdOVVrxHAszIA9OP5Re?=
+ =?us-ascii?Q?Ah+VQiKbol3figxggw7QCWdNoGMjSnjnrPO+g7Zko2BaO5NRIq5esWbARXyl?=
+ =?us-ascii?Q?Y05AT3gMZ0btExyuUNWHCblYdMk1gZv36uDhn0FZBfBKEsA9cU57oMhvDzFR?=
+ =?us-ascii?Q?rKaUBghoIqmEtVcLDUF8ckCWxCEWXuApg+H1hNPe?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af73b9b8-c548-4c37-d48c-08dbd717a04d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 18:07:47.9551
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 65i/T8yZ633olQs8clDBWRG5Otb8rk4kodq4yW52YU49kZpXHViVvdz8aZXBDFvc8Rum6VkDFaEe2QpgGhXOQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB2004
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,316 +123,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve existing logs by adding fnic number, hardware queue,
-tag, and mqtag in the prints.
-Add logs with the above elements for effective debugging.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Tested-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+This patch uses a helper function for assignment of xdp_features.
+This change simplifies backports.
+
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 ---
- drivers/scsi/fnic/fnic.h      |   2 +-
- drivers/scsi/fnic/fnic_scsi.c | 127 ++++++++++++++++++++--------------
- 2 files changed, 77 insertions(+), 52 deletions(-)
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
-index 87dab09a426d..0f1581c1fb4a 100644
---- a/drivers/scsi/fnic/fnic.h
-+++ b/drivers/scsi/fnic/fnic.h
-@@ -27,7 +27,7 @@
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 48ea4aeeea5d..035f24764ad9 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2687,8 +2687,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	ndev->features = ndev->hw_features | NETIF_F_HW_VLAN_CTAG_TX |
+ 			 NETIF_F_HW_VLAN_CTAG_RX;
+ 	ndev->vlan_features = ndev->features;
+-	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+-			     NETDEV_XDP_ACT_NDO_XMIT;
++	xdp_set_features_flag(ndev, NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
++			     NETDEV_XDP_ACT_NDO_XMIT);
  
- #define DRV_NAME		"fnic"
- #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
--#define DRV_VERSION		"1.6.0.56"
-+#define DRV_VERSION		"1.6.0.58"
- #define PFX			DRV_NAME ": "
- #define DFX                     DRV_NAME "%d: "
- 
-diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
-index fdc4d73ba63c..e6dccb752f7e 100644
---- a/drivers/scsi/fnic/fnic_scsi.c
-+++ b/drivers/scsi/fnic/fnic_scsi.c
-@@ -211,12 +211,14 @@ int fnic_fw_reset_handler(struct fnic *fnic)
- 
- 	if (!ret) {
- 		atomic64_inc(&fnic->fnic_stats.reset_stats.fw_resets);
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			      "Issued fw reset\n");
-+		FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+				"fnic<%d>: %s: %d: Issued fw reset\n",
-+				fnic->fnic_num, __func__, __LINE__);
- 	} else {
- 		fnic_clear_state_flags(fnic, FNIC_FLAGS_FWRESET);
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			      "Failed to issue fw reset\n");
-+		FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+				"fnic<%d>: %s: %d: Failed to issue fw reset\n",
-+				fnic->fnic_num, __func__, __LINE__);
- 	}
- 
- 	return ret;
-@@ -265,9 +267,9 @@ int fnic_flogi_reg_handler(struct fnic *fnic, u32 fc_id)
- 	} else {
- 		fnic_queue_wq_copy_desc_flogi_reg(wq, SCSI_NO_TAG,
- 						  format, fc_id, gw_mac);
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			      "FLOGI reg issued fcid %x map %d dest %pM\n",
--			      fc_id, fnic->ctlr.map_dest, gw_mac);
-+		FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+			"fnic<%d>: %s: %d: FLOGI reg issued fcid 0x%x map %d dest 0x%p\n",
-+			fnic->fnic_num, __func__, __LINE__, fc_id, fnic->ctlr.map_dest, gw_mac);
- 	}
- 
- 	atomic64_inc(&fnic->fnic_stats.fw_stats.active_fw_reqs);
-@@ -644,15 +646,16 @@ static int fnic_fcpio_fw_reset_cmpl_handler(struct fnic *fnic,
- 	if (fnic->state == FNIC_IN_FC_TRANS_ETH_MODE) {
- 		/* Check status of reset completion */
- 		if (!hdr_status) {
--			FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--				      "reset cmpl success\n");
-+			FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+					"fnic<%d>: %s: %d: reset cmpl success\n",
-+					fnic->fnic_num, __func__, __LINE__);
- 			/* Ready to send flogi out */
- 			fnic->state = FNIC_IN_ETH_MODE;
- 		} else {
--			FNIC_SCSI_DBG(KERN_DEBUG,
--				      fnic->lport->host,
--				      "fnic fw_reset : failed %s\n",
--				      fnic_fcpio_status_to_str(hdr_status));
-+			FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+				"fnic<%d>: %s: %d: reset failed with header status: %s\n",
-+				fnic->fnic_num, __func__, __LINE__,
-+				fnic_fcpio_status_to_str(hdr_status));
- 
- 			/*
- 			 * Unable to change to eth mode, cannot send out flogi
-@@ -665,10 +668,9 @@ static int fnic_fcpio_fw_reset_cmpl_handler(struct fnic *fnic,
- 			ret = -1;
- 		}
- 	} else {
--		FNIC_SCSI_DBG(KERN_DEBUG,
--			      fnic->lport->host,
--			      "Unexpected state %s while processing"
--			      " reset cmpl\n", fnic_state_to_str(fnic->state));
-+		FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+			"fnic<%d>: %s: %d: Unexpected state while processing reset completion: %s\n",
-+			fnic->fnic_num, __func__, __LINE__, fnic_state_to_str(fnic->state));
- 		atomic64_inc(&reset_stats->fw_reset_failures);
- 		ret = -1;
- 	}
-@@ -1177,9 +1179,10 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 	if ((id & FNIC_TAG_ABORT) && (id & FNIC_TAG_DEV_RST)) {
- 		/* Abort and terminate completion of device reset req */
- 		/* REVISIT : Add asserts about various flags */
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			      "dev reset abts cmpl recd. id %x status %s\n",
--			      id, fnic_fcpio_status_to_str(hdr_status));
-+		FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x hst: %s Abt/term completion received\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, mqtag, tag,
-+			fnic_fcpio_status_to_str(hdr_status));
- 		fnic_priv(sc)->state = FNIC_IOREQ_ABTS_COMPLETE;
- 		fnic_priv(sc)->abts_status = hdr_status;
- 		fnic_priv(sc)->flags |= FNIC_DEV_RST_DONE;
-@@ -1188,6 +1191,10 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 	} else if (id & FNIC_TAG_ABORT) {
- 		/* Completion of abort cmd */
-+		shost_printk(KERN_DEBUG, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x Abort header status: %s\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, mqtag, tag,
-+			fnic_fcpio_status_to_str(hdr_status));
- 		switch (hdr_status) {
- 		case FCPIO_SUCCESS:
- 			break;
-@@ -1247,9 +1254,14 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 		if (io_req->abts_done) {
- 			complete(io_req->abts_done);
- 			spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
-+			shost_printk(KERN_INFO, fnic->lport->host,
-+					"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x Waking up abort thread\n",
-+					fnic->fnic_num, __func__, __LINE__, hwq, mqtag, tag);
- 		} else {
- 			FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--				      "abts cmpl, completing IO\n");
-+				"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x hst: %s Completing IO\n",
-+				fnic->fnic_num, __func__, __LINE__, hwq, mqtag,
-+				tag, fnic_fcpio_status_to_str(hdr_status));
- 			fnic_priv(sc)->io_req = NULL;
- 			sc->result = (DID_ERROR << 16);
- 			fnic->sw_copy_wq[hwq].io_req_table[tag] = NULL;
-@@ -1277,6 +1289,10 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 		}
- 	} else if (id & FNIC_TAG_DEV_RST) {
- 		/* Completion of device reset */
-+		shost_printk(KERN_INFO, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x DR hst: %s\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, mqtag,
-+			tag, fnic_fcpio_status_to_str(hdr_status));
- 		fnic_priv(sc)->lr_status = hdr_status;
- 		if (fnic_priv(sc)->state == FNIC_IOREQ_ABTS_PENDING) {
- 			spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
-@@ -1286,10 +1302,9 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 				  jiffies_to_msecs(jiffies - start_time),
- 				  desc, 0, fnic_flags_and_state(sc));
- 			FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--				"Terminate pending "
--				"dev reset cmpl recd. id %d status %s\n",
--				(int)(id & FNIC_TAG_MASK),
--				fnic_fcpio_status_to_str(hdr_status));
-+				"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x hst: %s Terminate pending\n",
-+				fnic->fnic_num, __func__, __LINE__, hwq, mqtag,
-+				tag, fnic_fcpio_status_to_str(hdr_status));
- 			return;
- 		}
- 		if (fnic_priv(sc)->flags & FNIC_DEV_RST_TIMED_OUT) {
-@@ -1308,18 +1323,18 @@ static void fnic_fcpio_itmf_cmpl_handler(struct fnic *fnic, unsigned int cq_inde
- 		}
- 		fnic_priv(sc)->state = FNIC_IOREQ_CMD_COMPLETE;
- 		fnic_priv(sc)->flags |= FNIC_DEV_RST_DONE;
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			      "dev reset cmpl recd. id %d status %s\n",
--			      (int)(id & FNIC_TAG_MASK),
--			      fnic_fcpio_status_to_str(hdr_status));
-+		FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d mqtag: 0x%x tag: 0x%x hst: %s DR completion received\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, mqtag,
-+			tag, fnic_fcpio_status_to_str(hdr_status));
- 		if (io_req->dr_done)
- 			complete(io_req->dr_done);
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 
- 	} else {
- 		shost_printk(KERN_ERR, fnic->lport->host,
--			     "Unexpected itmf io state %s tag %x\n",
--			     fnic_ioreq_state_to_str(fnic_priv(sc)->state), id);
-+			"%s: Unexpected itmf io state: hwq: %d tag 0x%x %s\n",
-+			__func__, hwq, id, fnic_ioreq_state_to_str(fnic_priv(sc)->state));
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 	}
- 
-@@ -1470,9 +1485,9 @@ static bool fnic_cleanup_io_iter(struct scsi_cmnd *sc, void *data)
- 	mempool_free(io_req, fnic->io_req_pool);
- 
- 	sc->result = DID_TRANSPORT_DISRUPTED << 16;
--	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--		      "fnic_cleanup_io: tag:0x%x : sc:0x%p duration = %lu DID_TRANSPORT_DISRUPTED\n",
--		      tag, sc, jiffies - start_time);
-+	FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+		"fnic<%d>: %s: %d: mqtag:0x%x tag: 0x%x sc:0x%p duration = %lu DID_TRANSPORT_DISRUPTED\n",
-+		fnic->fnic_num, __func__, __LINE__, mqtag, tag, sc, (jiffies - start_time));
- 
- 	if (atomic64_read(&fnic->io_cmpl_skip))
- 		atomic64_dec(&fnic->io_cmpl_skip);
-@@ -1641,9 +1656,9 @@ static bool fnic_rport_abort_io_iter(struct scsi_cmnd *sc, void *data)
- 
- 	if ((fnic_priv(sc)->flags & FNIC_DEVICE_RESET) &&
- 	    !(fnic_priv(sc)->flags & FNIC_DEV_RST_ISSUED)) {
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			"fnic_rport_exch_reset dev rst not pending sc 0x%p\n",
--			sc);
-+		FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d abt_tag: 0x%x flags: 0x%x Device reset is not pending\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, abt_tag, fnic_priv(sc)->flags);
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 		return true;
- 	}
-@@ -1699,6 +1714,9 @@ static bool fnic_rport_abort_io_iter(struct scsi_cmnd *sc, void *data)
- 		 * lun reset
- 		 */
- 		spin_lock_irqsave(&fnic->wq_copy_lock[hwq], flags);
-+		FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d abt_tag: 0x%x flags: 0x%x Queuing abort failed\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, abt_tag, fnic_priv(sc)->flags);
- 		if (fnic_priv(sc)->state == FNIC_IOREQ_ABTS_PENDING)
- 			fnic_priv(sc)->state = old_ioreq_state;
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
-@@ -1869,8 +1887,9 @@ int fnic_abort_cmd(struct scsi_cmnd *sc)
- 	else
- 		atomic64_inc(&abts_stats->abort_issued_greater_than_60_sec);
- 
--	FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
--		"CBD Opcode: %02x Abort issued time: %lu msec\n", sc->cmnd[0], abt_issued_time);
-+	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
-+		"fnic<%d>: %s: CDB Opcode: 0x%02x Abort issued time: %lu msec\n",
-+		fnic->fnic_num, __func__, sc->cmnd[0], abt_issued_time);
- 	/*
- 	 * Command is still pending, need to abort it
- 	 * If the firmware completes the command after this point,
-@@ -1959,8 +1978,9 @@ int fnic_abort_cmd(struct scsi_cmnd *sc)
- 
- 	if (!(fnic_priv(sc)->flags & (FNIC_IO_ABORTED | FNIC_IO_DONE))) {
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
--		FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--			"Issuing Host reset due to out of order IO\n");
-+	    FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+			"fnic<%d>: %s: Issuing host reset due to out of order IO\n",
-+			fnic->fnic_num, __func__);
- 
- 		ret = FAILED;
- 		goto fnic_abort_cmd_end;
-@@ -2167,6 +2187,9 @@ static bool fnic_pending_aborts_iter(struct scsi_cmnd *sc, void *data)
- 			fnic_priv(sc)->state = old_ioreq_state;
- 		spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 		iter_data->ret = FAILED;
-+		FNIC_SCSI_DBG(KERN_ERR, fnic->lport->host,
-+			"fnic<%d>: %s: %d: hwq: %d abt_tag: 0x%lx Abort could not be queued\n",
-+			fnic->fnic_num, __func__, __LINE__, hwq, abt_tag);
- 		return false;
- 	} else {
- 		spin_lock_irqsave(&fnic->wq_copy_lock[hwq], flags);
-@@ -2300,8 +2323,9 @@ int fnic_device_reset(struct scsi_cmnd *sc)
- 
- 	rport = starget_to_rport(scsi_target(sc->device));
- 	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--		      "Device reset called FCID 0x%x, LUN 0x%llx sc 0x%p\n",
--		      rport->port_id, sc->device->lun, sc);
-+		"fnic<%d>: %s: %d: fcid: 0x%x lun: 0x%llx hwq: %d mqtag: 0x%x flags: 0x%x Device reset\n",
-+		fnic->fnic_num, __func__, __LINE__, rport->port_id, sc->device->lun, hwq, mqtag,
-+		fnic_priv(sc)->flags);
- 
- 	if (lp->state != LPORT_ST_READY || !(lp->link_up))
- 		goto fnic_device_reset_end;
-@@ -2536,8 +2560,9 @@ int fnic_reset(struct Scsi_Host *shost)
- 	fnic = lport_priv(lp);
- 	reset_stats = &fnic->fnic_stats.reset_stats;
- 
--	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--		      "fnic_reset called\n");
-+	FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+			"fnic<%d>: %s: %d: Issuing fnic reset\n",
-+			fnic->fnic_num, __func__, __LINE__);
- 
- 	atomic64_inc(&reset_stats->fnic_resets);
- 
-@@ -2547,10 +2572,9 @@ int fnic_reset(struct Scsi_Host *shost)
- 	 */
- 	ret = fc_lport_reset(lp);
- 
--	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
--		      "Returning from fnic reset %s\n",
--		      (ret == 0) ?
--		      "SUCCESS" : "FAILED");
-+	FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
-+		"fnic<%d>: %s: %d: Returning from fnic reset with: %s\n",
-+		fnic->fnic_num, __func__, __LINE__, (ret == 0) ? "SUCCESS" : "FAILED");
- 
- 	if (ret == 0)
- 		atomic64_inc(&reset_stats->fnic_reset_completions);
-@@ -2766,8 +2790,9 @@ static bool fnic_abts_pending_iter(struct scsi_cmnd *sc, void *data)
- 	 * belongs to the LUN that we are resetting
- 	 */
- 	FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
--		      "Found IO in %s on lun\n",
--		      fnic_ioreq_state_to_str(fnic_priv(sc)->state));
-+		"fnic<%d>: %s: %d: hwq: %d tag: 0x%x Found IO in state: %s on lun\n",
-+		fnic->fnic_num, __func__, __LINE__, hwq, tag,
-+		fnic_ioreq_state_to_str(fnic_priv(sc)->state));
- 	cmd_state = fnic_priv(sc)->state;
- 	spin_unlock_irqrestore(&fnic->wq_copy_lock[hwq], flags);
- 	if (cmd_state == FNIC_IOREQ_ABTS_PENDING)
+ 	err = register_netdev(ndev);
+ 	if (err) {
 -- 
-2.31.1
+2.25.1
 
