@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B9D7DA28D
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F217DA28F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 23:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346564AbjJ0Vge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 17:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S1346579AbjJ0Vib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 17:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235083AbjJ0Vgc (ORCPT
+        with ESMTP id S230451AbjJ0Vi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 17:36:32 -0400
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AC91B5;
-        Fri, 27 Oct 2023 14:36:30 -0700 (PDT)
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6c4a25f6390so1662410a34.2;
-        Fri, 27 Oct 2023 14:36:30 -0700 (PDT)
+        Fri, 27 Oct 2023 17:38:29 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC326B0;
+        Fri, 27 Oct 2023 14:38:27 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3ae5a014d78so1808123b6e.1;
+        Fri, 27 Oct 2023 14:38:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698442589; x=1699047389;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DOW1gEyiWmEb/ezKdyTSa7aCrvLtzejrHPgIEGPvmy0=;
-        b=jpfDoL2cTkyHz5rWEBU3ywhoBa9r4fkAO0Qy2gAgOJ6TRf7+qzGo7Y//i6TyIyvOMq
-         f+rQQb03PMaDbqW5kwpvMI8pOhtETPT2FCnyPcMDH8lKlnhOnu9taQL/YU6WoN4ReAYp
-         k2LLQYoc9+iKvSRbOOL+kHJDWB7w539mHIHNnqWXiLj75795K1G6Oor1oXHu+yA7vq8y
-         qP4HofdYGxcwM4g7cHoi9FlcqfrhlIAakGmhAxq4M3CHi9J5MpOMj6hqzA7TbGzHKdCY
-         Fu72jE7+6SAW5B46t9D6owvfsQ9M4M613JMPOm3RQ5J5UtzY6cr0mmjQp5f3AFDqUi4B
-         UtPQ==
-X-Gm-Message-State: AOJu0YxCna6n3v9c+MK7C1xZFihCtEVFeJNRO7xxwRx9uMQJO707vOBX
-        7fWbq0NDcmRhbD+5obnkuw==
-X-Google-Smtp-Source: AGHT+IFip7ODb1zb61QmrdBN36ulxahgE6GgTEI4aD6ID2yrNuo5bR0hxSJHwxDIywoUx9LZKxej8A==
-X-Received: by 2002:a05:6830:2b23:b0:6b4:5ed3:8246 with SMTP id l35-20020a0568302b2300b006b45ed38246mr5754653otv.2.1698442589625;
-        Fri, 27 Oct 2023 14:36:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698442707; x=1699047507;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VV8Y/zqWOyOyj9MA+JjAGw6dwCs6zYKJK0DrbktN/0Q=;
+        b=xHCzMyzmJbb+PgPEosQevMdAlWebD+AmX1eoJ3SdMsbE3lbqVrmphH0fAJ9TqCPHcW
+         w/I9eGDwH+2uRzMht4TDa4EMN36A4E1p4xCUn5PAZWpbqlh63rP8lWkAXKItmaIEjrGv
+         NtwgB+gfXcIZCqF3c/1RZEuIn0hvb4A6LgK9+WZqfQyQPqcm9m1dCDe4asIRnaT4gQXb
+         afooJBgJbbRSNiEaElaeTEfR0aDXaS/XRap4nhNiw+nj7gM8c6S8ut4pOfTC/tgEz19o
+         A8oxRKpZrvqFbwIxTrstM/obB2eRRIiHAdag1bJz+bimmHj6Cu39ijmQNanu6Dqbmpjd
+         uO6g==
+X-Gm-Message-State: AOJu0YwsfxhLgGuuOmMsVZFBlQo+ibO+JlahriKqIfgNHSADb8fO8Wee
+        8uL+bGMEROmqcDo3rR+X4g==
+X-Google-Smtp-Source: AGHT+IHNV+P5hgurCcMFrxa/aHq6K4VEJjP14O5KjqfBtUZ4qmUT65FmoCi5UaJ+a5hXPc9/ZNP5Zw==
+X-Received: by 2002:a05:6808:7da:b0:3ad:e05b:6745 with SMTP id f26-20020a05680807da00b003ade05b6745mr4135494oij.27.1698442707162;
+        Fri, 27 Oct 2023 14:38:27 -0700 (PDT)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id m6-20020a05683026c600b006b9e872c0a0sm411926otu.68.2023.10.27.14.36.28
+        by smtp.gmail.com with ESMTPSA id de8-20020a0568200a8800b00586d187ed06sm237653oob.48.2023.10.27.14.38.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 14:36:28 -0700 (PDT)
-Received: (nullmailer pid 3413620 invoked by uid 1000);
-        Fri, 27 Oct 2023 21:36:27 -0000
-Date:   Fri, 27 Oct 2023 16:36:27 -0500
+        Fri, 27 Oct 2023 14:38:25 -0700 (PDT)
+Received: (nullmailer pid 3416502 invoked by uid 1000);
+        Fri, 27 Oct 2023 21:38:24 -0000
+Date:   Fri, 27 Oct 2023 16:38:24 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom,sm8650-lpass-lpi-pinctrl:
- add SM8650 LPASS
-Message-ID: <169844258726.3413571.7068196166115912913.robh@kernel.org>
-References: <20231027093615.140656-1-krzysztof.kozlowski@linaro.org>
- <20231027093615.140656-2-krzysztof.kozlowski@linaro.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Sonal Santan <sonal.santan@amd.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Max Zhen <max.zhen@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Lizhi Hou <lizhi.hou@amd.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 1/1] of: unittest: Fix test build on config without
+ CONFIG_OF_ADDRESS
+Message-ID: <169844262050.3414534.12903371538340691664.robh@kernel.org>
+References: <20231027102440.677773-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231027093615.140656-2-krzysztof.kozlowski@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231027102440.677773-1-herve.codina@bootlin.com>
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,16 +76,30 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 27 Oct 2023 11:36:14 +0200, Krzysztof Kozlowski wrote:
-> Add bindings for the pin controller in Low Power Audio SubSystem (LPASS)
-> of Qualcomm SM8650 SoC.
+On Fri, 27 Oct 2023 12:24:37 +0200, Herve Codina wrote:
+> of_address_to_resource() is not defined if !CONFIG_OF_ADDRESS.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Return early in of_unittest_check_addr() to avoid the
+> of_address_to_resource() usage.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310271513.8MUErCK4-lkp@intel.com/
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 > ---
->  .../qcom,sm8650-lpass-lpi-pinctrl.yaml        | 148 ++++++++++++++++++
->  1 file changed, 148 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8650-lpass-lpi-pinctrl.yaml
+> Rob,
+> 
+> This fixes a patch you already applied from my series
+> https://lore.kernel.org/all/20231017110221.189299-1-herve.codina@bootlin.com/
+> 
+> I don't know if it's too late or not but maybe you can squash this fix patch.
+> 
+> My apologies for this issue.
+> 
+> Hervé
+> 
+>  drivers/of/unittest.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Squashed and applied, thanks!
 
