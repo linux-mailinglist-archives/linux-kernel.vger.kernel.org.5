@@ -2,76 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7087D900B
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA2A7D9012
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345459AbjJ0HjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 03:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        id S1345500AbjJ0HkR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 27 Oct 2023 03:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbjJ0HjE (ORCPT
+        with ESMTP id S1345405AbjJ0HkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:39:04 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B01B0;
-        Fri, 27 Oct 2023 00:39:02 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B43F566071F1;
-        Fri, 27 Oct 2023 08:39:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698392341;
-        bh=+BcPgHf1G8FIBhqLU4HwJQyAJtnw/+2yV5G/DzMXp2Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Gth3Q9Y7J7kbGb/GzWpjsyV/6FPr4C5aTbBdwnWzCVUfdNZ+vY1ujUqHhUOT68lFY
-         nIRR8t/w0hoOHAior7+oaO8QXMfnDie4OrGv8USLIUi17Crum3oNJEiMrgk7+I4k4G
-         DkUFOe0Vc7XUTiNKvqUQaxdFghgMCwkUGLtVWyhlKwp6GuKAtV0SQ38TUAFgGzEfeT
-         WwtkSnuA4FihRmFWkRiqHm7q53xq+Pmwju0MgvZ3/StPzrJ3y6uQzh1J0FMBf31wac
-         RINKZjYAMjlJOejg/XUQqSsjUdcuxS2wyotwqYNB0mCCFKJl+JvsxDfopR1qUKrN8l
-         LxFWVKgmJmsqQ==
-Message-ID: <f89f3e14-dbda-41bf-9797-2571be53029f@collabora.com>
-Date:   Fri, 27 Oct 2023 09:39:00 +0200
+        Fri, 27 Oct 2023 03:40:13 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99FE1B1;
+        Fri, 27 Oct 2023 00:40:08 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id EC5D924E29A;
+        Fri, 27 Oct 2023 15:40:04 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
+ 2023 15:40:04 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 27 Oct
+ 2023 15:39:54 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Nikita Shubin" <n.shubin@yadro.com>
+CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+Subject: [PATCH v2] perf vendor events riscv: add StarFive Dubhe-90 JSON file
+Date:   Fri, 27 Oct 2023 15:39:25 +0800
+Message-ID: <20231027073925.1523843-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/7] dt-bindings: arm64: mediatek: Add
- mt8183-kukui-jacuzzi-makomo
-Content-Language: en-US
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231026191343.3345279-1-hsinyi@chromium.org>
- <20231026191343.3345279-5-hsinyi@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231026191343.3345279-5-hsinyi@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 26/10/23 21:09, Hsin-Yi Wang ha scritto:
-> Add makomo sku0 and sku1 which uses different audio codec.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+StarFive Dubhe-90 supports raw event id 0x00 - 0x22.
+The raw events are enabled through PMU node of the DT binding.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Example of PMU DT node:
+pmu {
+	compatible = "riscv,pmu";
+	riscv,raw-event-to-mhpmcounters =
+		/* Event ID 1-31 */
+		<0x00 0x00 0xFFFFFFFF 0xFFFFFFE0 0x00007FF8>,
+		/* Event ID 32-33 */
+		<0x00 0x20 0xFFFFFFFF 0xFFFFFFFE 0x00007FF8>,
+		/* Event ID 34 */
+		<0x00 0x22 0xFFFFFFFF 0xFFFFFF22 0x00007FF8>;
+};
+
+Perf stat output:
+[root@user]# perf stat -a \
+	-e access_mmu_stlb \
+	-e miss_mmu_stlb \
+	-e access_mmu_pte_c \
+	-e rob_flush \
+	-e btb_prediction_miss \
+	-e itlb_miss \
+	-e sync_del_fetch_g \
+	-e icache_miss \
+	-e bpu_br_retire \
+	-e bpu_br_miss \
+	-e ret_ins_retire \
+	-e ret_ins_miss \
+	-- openssl speed rsa2048
+Doing 2048 bits private rsa's for 10s: 39 2048 bits private RSA's in
+10.03s
+Doing 2048 bits public rsa's for 10s: 1469 2048 bits public RSA's in
+9.47s
+version: 3.0.10
+built on: Tue Aug  1 13:47:24 2023 UTC
+options: bn(64,64)
+CPUINFO: N/A
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.257179s 0.006447s      3.9    155.1
+
+ Performance counter stats for 'system wide':
+
+           3112882      access_mmu_stlb
+             10550      miss_mmu_stlb
+             18251      access_mmu_pte_c
+            274765      rob_flush
+          22470560      btb_prediction_miss
+           3035839      itlb_miss
+         643549060      sync_del_fetch_g
+            133013      icache_miss
+          62982796      bpu_br_retire
+            287548      bpu_br_miss
+           8935910      ret_ins_retire
+              8308      ret_ins_miss
+
+      20.656182600 seconds time elapsed
+
+Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+---
+Changelog:
+v1 -> v2:
+- Rename 'Starfive Dubhe' to 'StarFive Dubhe-90' in commit message.
+- Rename 'starfive/dubhe' pmu-events folder to 'starfive/dubhe-90'
+- Update MARCHID to 0x80000000db000090 in mapfile.csv
+---
+ tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+ .../arch/riscv/starfive/dubhe-90/common.json  | 172 ++++++++++++++++++
+ 2 files changed, 173 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+
+diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+index c61b3d6ef616..a884eb59a5de 100644
+--- a/tools/perf/pmu-events/arch/riscv/mapfile.csv
++++ b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+@@ -15,3 +15,4 @@
+ #
+ #MVENDORID-MARCHID-MIMPID,Version,Filename,EventType
+ 0x489-0x8000000000000007-0x[[:xdigit:]]+,v1,sifive/u74,core
++0x67e-0x80000000db000090-0x[[:xdigit:]]+,v1,starfive/dubhe-90,core
+diff --git a/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+new file mode 100644
+index 000000000000..fbffcacb2ace
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+@@ -0,0 +1,172 @@
++[
++  {
++    "EventName": "ACCESS_MMU_STLB",
++    "EventCode": "0x1",
++    "BriefDescription": "access MMU STLB"
++  },
++  {
++    "EventName": "MISS_MMU_STLB",
++    "EventCode": "0x2",
++    "BriefDescription": "miss MMU STLB"
++  },
++  {
++    "EventName": "ACCESS_MMU_PTE_C",
++    "EventCode": "0x3",
++    "BriefDescription": "access MMU PTE-Cache"
++  },
++  {
++    "EventName": "MISS_MMU_PTE_C",
++    "EventCode": "0x4",
++    "BriefDescription": "miss MMU PTE-Cache"
++  },
++  {
++    "EventName": "ROB_FLUSH",
++    "EventCode": "0x5",
++    "BriefDescription": "ROB flush (all kinds of exceptions)"
++  },
++  {
++    "EventName": "BTB_PREDICTION_MISS",
++    "EventCode": "0x6",
++    "BriefDescription": "BTB prediction miss"
++  },
++  {
++    "EventName": "ITLB_MISS",
++    "EventCode": "0x7",
++    "BriefDescription": "ITLB miss"
++  },
++  {
++    "EventName": "SYNC_DEL_FETCH_G",
++    "EventCode": "0x8",
++    "BriefDescription": "SYNC delivery a fetch-group"
++  },
++  {
++    "EventName": "ICACHE_MISS",
++    "EventCode": "0x9",
++    "BriefDescription": "ICache miss"
++  },
++  {
++    "EventName": "BPU_BR_RETIRE",
++    "EventCode": "0xA",
++    "BriefDescription": "condition branch instruction retire"
++  },
++  {
++    "EventName": "BPU_BR_MISS",
++    "EventCode": "0xB",
++    "BriefDescription": "condition branch instruction miss"
++  },
++  {
++    "EventName": "RET_INS_RETIRE",
++    "EventCode": "0xC",
++    "BriefDescription": "return instruction retire"
++  },
++  {
++    "EventName": "RET_INS_MISS",
++    "EventCode": "0xD",
++    "BriefDescription": "return instruction miss"
++  },
++  {
++    "EventName": "INDIRECT_JR_MISS",
++    "EventCode": "0xE",
++    "BriefDescription": "indirect JR instruction miss (inlcude without target)"
++  },
++  {
++    "EventName": "IBUF_VAL_ID_NORDY",
++    "EventCode": "0xF",
++    "BriefDescription": "IBUF valid while ID not ready"
++  },
++  {
++    "EventName": "IBUF_NOVAL_ID_RDY",
++    "EventCode": "0x10",
++    "BriefDescription": "IBUF not valid while ID ready"
++  },
++  {
++    "EventName": "REN_INT_PHY_REG_NORDY",
++    "EventCode": "0x11",
++    "BriefDescription": "REN integer physical register file is not ready"
++  },
++  {
++    "EventName": "REN_FP_PHY_REG_NORDY",
++    "EventCode": "0x12",
++    "BriefDescription": "REN floating point physical register file is not ready"
++  },
++  {
++    "EventName": "REN_CP_NORDY",
++    "EventCode": "0x13",
++    "BriefDescription": "REN checkpoint is not ready"
++  },
++  {
++    "EventName": "DEC_VAL_ROB_NORDY",
++    "EventCode": "0x14",
++    "BriefDescription": "DEC is valid and ROB is not ready"
++  },
++  {
++    "EventName": "OOD_FLUSH_LS_DEP",
++    "EventCode": "0x15",
++    "BriefDescription": "out of order flush due to load/store dependency"
++  },
++  {
++    "EventName": "BRU_RET_IJR_INS",
++    "EventCode": "0x16",
++    "BriefDescription": "BRU retire an IJR instruction"
++  },
++  {
++    "EventName": "ACCESS_DTLB",
++    "EventCode": "0x17",
++    "BriefDescription": "access DTLB"
++  },
++  {
++    "EventName": "MISS_DTLB",
++    "EventCode": "0x18",
++    "BriefDescription": "miss DTLB"
++  },
++  {
++    "EventName": "LOAD_INS_DCACHE",
++    "EventCode": "0x19",
++    "BriefDescription": "load instruction access DCache"
++  },
++  {
++    "EventName": "LOAD_INS_MISS_DCACHE",
++    "EventCode": "0x1A",
++    "BriefDescription": "load instruction miss DCache"
++  },
++  {
++    "EventName": "STORE_INS_DCACHE",
++    "EventCode": "0x1B",
++    "BriefDescription": "store/amo instruction access DCache"
++  },
++  {
++    "EventName": "STORE_INS_MISS_DCACHE",
++    "EventCode": "0x1C",
++    "BriefDescription": "store/amo instruction miss DCache"
++  },
++  {
++    "EventName": "LOAD_SCACHE",
++    "EventCode": "0x1D",
++    "BriefDescription": "load access SCache"
++  },
++  {
++    "EventName": "STORE_SCACHE",
++    "EventCode": "0x1E",
++    "BriefDescription": "store access SCache"
++  },
++  {
++    "EventName": "LOAD_MISS_SCACHE",
++    "EventCode": "0x1F",
++    "BriefDescription": "load miss SCache"
++  },
++  {
++    "EventName": "STORE_MISS_SCACHE",
++    "EventCode": "0x20",
++    "BriefDescription": "store miss SCache"
++  },
++  {
++    "EventName": "L2C_PF_REQ",
++    "EventCode": "0x21",
++    "BriefDescription": "L2C data-prefetcher request"
++  },
++  {
++    "EventName": "L2C_PF_HIT",
++    "EventCode": "0x22",
++    "BriefDescription": "L2C data-prefetcher hit"
++  }
++]
+-- 
+2.25.1
 
