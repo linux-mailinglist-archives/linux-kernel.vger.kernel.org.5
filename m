@@ -2,132 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5D37D9C3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EC97D9C4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 16:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346127AbjJ0OzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 10:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S1346145AbjJ0O4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 10:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345833AbjJ0Oy7 (ORCPT
+        with ESMTP id S1345845AbjJ0O4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 10:54:59 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A753C4;
-        Fri, 27 Oct 2023 07:54:57 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1c0fcbf7ae4so1461733fac.0;
-        Fri, 27 Oct 2023 07:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698418497; x=1699023297; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=FRGus6ktymyimDivswpJ27Ui0IhpUZQSXAOmlCFn8oc=;
-        b=J7NdXdqQVTor8CL+TVudIV2/GvGoZVmjR27T3zO606ncNlNqFSiOWdKWUKgSrZwIDy
-         3mc7B1mkqOjLJyMxccg2pZdAkZ9/xxzGgpbh6XYIpZUFPRQQFFZJy6GNU7ZtAx5hzXEf
-         o4UUwtK1tDlkETq9G040GTmvhwZXYqyk2jPrElo/mhyPFgDCbZhLwM9LzZRdsEYgam/B
-         6znzyT5s/8ky8H58vqh96zuKBzYq0CH6PS/FyWUz98WYfszz2t1FxMUpkKHxkhK2dTh/
-         M3ZRcKatiUTP/pTLAWTsap7bVx150ccgRtaHyAtfL3e4w9yYkKkgt6+o/kT3OEsn9hPD
-         yB2Q==
+        Fri, 27 Oct 2023 10:56:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90323128
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698418513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7GcgtRljqp8I6+SbcnMUmqHUR4tncRi9vmDfTIxBtlw=;
+        b=XFEbk2vSTA6RPgiuF6r2OOnvLbh3HJZ9QATpk/COrp03skGQVBBs7D331YMiQ3qOVQwSOa
+        uu0xZ7KjucqYVguy+b4Rb1XWcerZPFprmeGCyElTfZH/wbBbZY6C2fDoD8UbryW5pGfCmr
+        LLNzy5X+hW4Si/Pi9mYASbxvWF9kGkU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-608-vQcXeLj0MYGh4EIxsVp4OA-1; Fri, 27 Oct 2023 10:55:12 -0400
+X-MC-Unique: vQcXeLj0MYGh4EIxsVp4OA-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-538128e18e9so1615282a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 07:55:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698418497; x=1699023297;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FRGus6ktymyimDivswpJ27Ui0IhpUZQSXAOmlCFn8oc=;
-        b=RO8AMx2w/MFgBXOhewVl6s2ERZP0AfWLQljQrlK5rjNUzOB4r45M2SEOybn/x1RPLX
-         6hqwKKrTj7J4UWJHKmY78IRoZfIzHhKFVNd3g9yDbcHWRAk9KDawho87sykz+Q33Uwvk
-         MFMOhZFvjicFOKG63G8Ky0F1j27PZ8yj4FlKKff+qDiaH0zbcqCz4rNRjVKIvkj/dl/0
-         8aTG7fcnNbg+sxlGpxbgFjQXhvRBRfoVZGn43MjdXoLhW6HMbxx8JhwtAJpFEdjdARn1
-         fehBG3kn0lp+SGbKn1eoZT9rHqFOUtFLancqEp+BUTy8tVtcoccXJ4WMmaZvc+IR8s6N
-         SRPg==
-X-Gm-Message-State: AOJu0YxVmvNkOR8DgBOtotF9IBHbo40mNkQGTWjlOA4VE1H/U/xngTHl
-        NjpBe493jFvOSnWbeum1tzY=
-X-Google-Smtp-Source: AGHT+IHSGc3YoPxDtEzMBIIDVpjwJ36pSYYOeGGCT294/VUaa1hkpwh4XVkxyOqA2FN25iDzWFlFUg==
-X-Received: by 2002:a05:6871:7582:b0:1ea:15e6:9420 with SMTP id nz2-20020a056871758200b001ea15e69420mr3162839oac.52.1698418496787;
-        Fri, 27 Oct 2023 07:54:56 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i184-20020a25d1c1000000b00d677aec54ffsm706978ybg.60.2023.10.27.07.54.54
+        d=1e100.net; s=20230601; t=1698418511; x=1699023311;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7GcgtRljqp8I6+SbcnMUmqHUR4tncRi9vmDfTIxBtlw=;
+        b=ZzRSu+nwGaQlyKe6S0sKQNqxulnliIdjiriecdhQN39BaWkz6y/SHVxZbV9zvBukHA
+         pdAWiYjfYb3YgehRs3nk8IDdeyDMGPg5uAhLkK+T3xSTzX/+/XJxamZKyoODmnIrpCsI
+         TZgoRTKAl/+MpfzWef0HjJmMv93KBvl2ZCh9DqXmpVzmBfh665X+9WiOD1rI5Z92bNRA
+         NDIGc4EuJKJG3QnYFGW2+ydQfZmz+xf5M/n9E3WLd3DZ3hw/7U6utjq5eol3CMVyBWvF
+         6H37zszygkowKDXAvt6r7R9cqDe0hDQVg5O2hlllLDHCVUuCQ4KpWo0Q51Tnf6PDv2Eg
+         tXBg==
+X-Gm-Message-State: AOJu0YzCTj8H1HOefYBKjD6ALS5ks454/1Hfx2+Vub/8JXNg0JKQpxlq
+        03J2CGj0XtJh/rBFw/3/OoQp9tgzcdPpkjb2QkWVgt5pLMpE6+B8DdJtsPty+NbwGBaEo9ul+6M
+        qOZbCrJJnaniXr98Gn9nf3/e3
+X-Received: by 2002:a17:907:7f8c:b0:9b8:b683:5854 with SMTP id qk12-20020a1709077f8c00b009b8b6835854mr3108904ejc.61.1698418510942;
+        Fri, 27 Oct 2023 07:55:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEBLB+7mAs+KwOKlv3cy3r8ss/FeYSMLZK3aFqu+TIHhymj+Pn9FNh4CszMk/hjBCRVHuAd9A==
+X-Received: by 2002:a17:907:7f8c:b0:9b8:b683:5854 with SMTP id qk12-20020a1709077f8c00b009b8b6835854mr3108887ejc.61.1698418510654;
+        Fri, 27 Oct 2023 07:55:10 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id u27-20020a1709063b9b00b0099bcb44493fsm1325920ejf.147.2023.10.27.07.55.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 07:54:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <43b45922-118c-3f77-80f2-960fa398cf1f@roeck-us.net>
-Date:   Fri, 27 Oct 2023 07:54:54 -0700
+        Fri, 27 Oct 2023 07:55:10 -0700 (PDT)
+Message-ID: <00ebd650-72c1-0901-27bc-ae18867ed4b4@redhat.com>
+Date:   Fri, 27 Oct 2023 16:55:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 5.10 000/199] 5.10.199-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231024083326.219645073@linuxfoundation.org>
- <6413ac66-2608-cd76-1b3c-5a185fe6d88d@roeck-us.net>
- <2023102728-gigantic-favorable-71a6@gregkh>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <2023102728-gigantic-favorable-71a6@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Thunderbird/102.13.0
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 6.6-6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        David Lazar <dlazar@gmail.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/23 05:25, Greg Kroah-Hartman wrote:
-> On Wed, Oct 25, 2023 at 08:07:26AM -0700, Guenter Roeck wrote:
->> On 10/24/23 01:36, Greg Kroah-Hartman wrote:
->>> This is the start of the stable review cycle for the 5.10.199 release.
->>> There are 199 patches in this series, all will be posted as a response
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Thu, 26 Oct 2023 08:32:45 +0000.
->>> Anything received after that time might be too late.
->>>
->>
->> Build reference: v5.10.198-200-ge31b6513c43d
->> Compiler version: x86_64-linux-gcc (GCC) 11.4.0
->> Assembler version: GNU assembler (GNU Binutils) 2.40
->>
->> Building x86_64:defconfig ... passed
->> Building x86_64:allyesconfig ... failed
->> --------------
->> Error log:
->> Unsupported relocation type: unknown type rel type name (-1940038754)
->> make[3]: *** [arch/x86/boot/compressed/Makefile:122: arch/x86/boot/compressed/vmlinux.relocs] Error 1
->> make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
->> make[3]: *** Waiting for unfinished jobs....
->> x86_64-linux-objcopy: vmlinux: unsupported relocation type 0x9e
->> x86_64-linux-objcopy: vmlinux[.text]: relocation count is negative: bad value
->> make[3]: *** [arch/x86/boot/compressed/Makefile:114: arch/x86/boot/compressed/vmlinux.bin] Error 1
->> make[2]: *** [arch/x86/boot/Makefile:115: arch/x86/boot/compressed/vmlinux] Error 2
->> make[1]: *** [arch/x86/Makefile:274: bzImage] Error 2
->> make: *** [Makefile:192: __sub-make] Error 2
->>
->> No idea what is causing it, but it is persistent. Something odd between
->> compiler/binutils/objcopy.
->>
->> Guess it doesn't matter since the release is out already.
-> 
-> If the commit that causes this can be figured out, we can revert it.
-> 
+Hi Linus,
 
-The final release built fine. I see this happen once in a while but
-was never able to figure out what causes it to happen. So far it was
-always persistent on a given source but disappeared as soon as something
-changed in the code (making it all but impossible to bisect).
-Looks like that happened again.
+Sorry for the somewhat last minute pull-request. This pull contains
+a single patch to extend the AMD PMC driver DMI quirk list for laptops
+which need special handling to avoid NVME s2idle suspend/resume errors.
 
-Guenter
+The chance of this causing regressions should be close to 0 since it
+just extends a list of DMI quirks.
+
+I decided to send this in at the last minute because together with
+"x86/i8259: Skip probing when ACPI/MADT advertises PCAT compatibility"
+which is pending in tip x86/urgent this fixes a whole group of 9 Lenovo
+AMD Mendocino Soc based laptop models from being unusable with Linux
+to them working fine with Linux.
+
+Regards,
+
+Hans
+
+
+
+The following changes since commit 99c09c985e5973c8f0ad976ebae069548dd86f12:
+
+  platform/mellanox: mlxbf-tmfifo: Fix a warning message (2023-10-18 15:38:09 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.6-6
+
+for you to fetch changes up to 3bde7ec13c971445faade32172cb0b4370b841d9:
+
+  platform/x86: Add s2idle quirk for more Lenovo laptops (2023-10-27 16:42:12 +0200)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v6.6-6
+
+A single patch to extend the AMD PMC driver DMI quirk list for laptops
+which need special handling to avoid NVME s2idle suspend/resume errors.
+
+----------------------------------------------------------------
+David Lazar (1):
+      platform/x86: Add s2idle quirk for more Lenovo laptops
+
+ drivers/platform/x86/amd/pmc/pmc-quirks.c | 73 +++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
