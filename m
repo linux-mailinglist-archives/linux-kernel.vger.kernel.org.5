@@ -2,457 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47B87D9588
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C597D9592
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjJ0KtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
+        id S231538AbjJ0Kul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 06:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbjJ0KtP (ORCPT
+        with ESMTP id S229633AbjJ0Kuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:49:15 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6271129;
-        Fri, 27 Oct 2023 03:49:11 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so28994091fa.1;
-        Fri, 27 Oct 2023 03:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698403750; x=1699008550; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QMu5YjDmD7M90Ihy1ElM06pJGmJ/11f5UFSFKa+oWAI=;
-        b=g1uvjsPoanEe6CUYtn4EabMJPQnyBDmhSV+ghYviKjeHKSHYKA1XXT+TEwp/ICz5YB
-         Pv/p++5hEfnyCY6YEuGi1ypqJalbJT8j6H60mavoDMiUSNWtptoPEHTaY3psc6KyK8aQ
-         wQMqXmkr/Y1nlxt4bc8W0SuvLt5SWEMcSxlHScg5YUkwVBcfBggs7C/iXdEXAcdVSR2j
-         6dloJ7RTGM+Cnr2H/nt60v0dgeG0BBKUQPV4e6r98V1BBqOSrjgjTsWpTrWkpsYeE2IL
-         fMHr78iQC3eVm/1WEH//PwlazeRNSK0vLJnhKaLnOxHghKWGcgcQAXEjHfF5Ul2WOPhn
-         g1hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698403750; x=1699008550;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMu5YjDmD7M90Ihy1ElM06pJGmJ/11f5UFSFKa+oWAI=;
-        b=PlKxqbSM1O0rcHc6Z5ig21DuE+BCaG3B9QjoTXDZmcdyDdG14uqgbKD2zDUbd2vEtu
-         9oyrxKQjEC12poQ8itaOEN5eWmEO5IId8GlQpJW6b+E4VUN0m34livd7xtQwDkvvaM72
-         Ijqm47UyBLOhoCAT/WYYcXuiq9Lpki9ce16BOx/0xEbmr0pvX/zkCa1o2i7fHmfXOCps
-         KeuT4dr6e9HFPMtGDK4SGGb/MG4ZFu/tsv4BCBruclNkxj1IZoBRc22R2iUJ3qX8Sd30
-         /0RPH9RdypZJBbccAKiu6NCl1tZtqFTvHN4OI9GFn041g4xjQkxrrFZ6cl9fYmPMzHVJ
-         swbA==
-X-Gm-Message-State: AOJu0YypIW8GV6bd85MP3192EdUO7a4B95BPhnVCKV4GAs6oojov/a35
-        7v192u1GmAKsI8wjONq8fG0=
-X-Google-Smtp-Source: AGHT+IF692W4oajXfgbo1nm/rWKtfpLHS+FIjrWmRTCnXv63TUVwBApphjQvDqnwEQ7zSNDMxtUyBQ==
-X-Received: by 2002:a05:6512:118d:b0:503:3816:c42c with SMTP id g13-20020a056512118d00b005033816c42cmr1777825lfr.41.1698403749449;
-        Fri, 27 Oct 2023 03:49:09 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id g3-20020a19e043000000b004ff8cd27a61sm233428lfj.213.2023.10.27.03.49.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 03:49:08 -0700 (PDT)
-Message-ID: <341cb934-2e91-442a-a4db-2f69f79ad0b6@gmail.com>
-Date:   Fri, 27 Oct 2023 13:49:07 +0300
+        Fri, 27 Oct 2023 06:50:39 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0D8129;
+        Fri, 27 Oct 2023 03:50:36 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39R9a7eC009413;
+        Fri, 27 Oct 2023 10:50:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=MMzz4KZtclkv1V/Awd4XUFwwqUwElJJELCf6yV1ZtQo=;
+ b=NJJbazSMkgtin/yS9UbDfjO/y9ZDv79e41eR9k6pxRT0k6bLyPUiMZ2DvooKSHSZCjIP
+ ptaQR/xa0kKFLki0HqOd2267ZjWFH//r4/rBEwQxSgZ02A985GBMcaxW+JMnP+r/Ld8E
+ KT1+wIQcFntIGwHNMhIVwuKuAH0jckEsZx9FzmrOzDJjEjgnUBSh1+zfTX5SF44qF08T
+ 4HsvOhTWDstwjwmU+qw5VdcefvqRMl0MHp36Z9p3UJbN1kFpujo2QTj7ckcqW1RQk6lk
+ nQF0GFTJ0zD51jL58JmwZ18UzUItw+zKdbd1P44MldfBgt2WOWRVM+7rCRurHzpE+q9I Zg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tyxqghu1v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 10:50:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39RAoLFS028201
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Oct 2023 10:50:21 GMT
+Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 27 Oct 2023 03:50:17 -0700
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+To:     <akpm@linux-foundation.org>, <david@redhat.com>,
+        <osalvador@suse.de>, <dan.j.williams@intel.com>, <vbabka@suse.cz>,
+        <mgorman@techsingularity.net>, <quic_pkondeti@quicinc.com>,
+        <aneesh.kumar@linux.ibm.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Charan Teja Kalla <quic_charante@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH V2] mm/sparsemem: fix race in accessing memory_section->usage
+Date:   Fri, 27 Oct 2023 16:19:38 +0530
+Message-ID: <1698403778-20938-1-git-send-email-quic_charante@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH v1 2/2] iio: light: Add support for APDS9306 Light Sensor
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gazzillo <paul@pgazz.com>
-Cc:     Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231026143532.39660-1-subhajit.ghosh@tweaklogic.com>
- <20231026143532.39660-3-subhajit.ghosh@tweaklogic.com>
-Content-Language: en-US, en-GB
-In-Reply-To: <20231026143532.39660-3-subhajit.ghosh@tweaklogic.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QkrObHcuXb0hCmYL6aZH1_q5_zjHV2os
+X-Proofpoint-ORIG-GUID: QkrObHcuXb0hCmYL6aZH1_q5_zjHV2os
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_07,2023-10-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2310270093
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Subhajit,
+The below race is observed on a PFN which falls into the device memory
+region with the system memory configuration where PFN's are such that
+[ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL]. Since normal zone start and
+end pfn contains the device memory PFN's as well, the compaction
+triggered will try on the device memory PFN's too though they end up in
+NOP(because pfn_to_online_page() returns NULL for ZONE_DEVICE memory
+sections). When from other core, the section mappings are being removed
+for the ZONE_DEVICE region, that the PFN in question belongs to,
+on which compaction is currently being operated is resulting into the
+kernel crash with CONFIG_SPASEMEM_VMEMAP enabled. The crash logs can be
+seen at [1].
 
-It's nice to see the GTS helpers are used (and hopefully helpful). I 
-didn't have the time to go through everything with full focus - so 
-please just tell me if some of my questions are silly :) The comments I 
-marked as 'nit' aren't really important - feel free to use your 
-judgement on them :)
+compact_zone()			memunmap_pages
+-------------			---------------
+__pageblock_pfn_to_page
+   ......
+ (a)pfn_valid():
+     valid_section()//return true
+			      (b)__remove_pages()->
+				  sparse_remove_section()->
+				    section_deactivate():
+				    [Free the array ms->usage and set
+				     ms->usage = NULL]
+     pfn_section_valid()
+     [Access ms->usage which
+     is NULL]
 
-On 10/26/23 17:35, Subhajit Ghosh wrote:
-> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor with als
-> and clear channels with i2c interface. Hardware interrupt configuration is
-> optional. It is a low power device with 20 bit resolution and has
-> configurable adaptive interrupt mode and interrupt persistence mode.
-> The device also features inbuilt hardware gain, multiple integration time
-> selection options and sampling frequency selection options.
-> 
-> v0 -> v1
-> - Fixed errors as per previous review
-> - Longer commit messages and descriptions
-> - Updated scale calculations as per iio gts scheme to export proper scale
->    values and tables to userspace
-> - Removed processed attribute for the same channel for which raw is
->    provided, instead, exporting proper scale and scale table to userspace so
->    that userspace can do "(raw + offset) * scale" and derive Lux values
-> - Fixed IIO attribute range syntax
-> - Keeping the regmap lock enabled as the driver uses unlocked regfield
->    accesses from interrupt handler
-> - Several levels of cleanups by placing guard mutexes in proper places and
->    returning immediately in case of an error
-> - Using iio_device_claim_direct_mode() during raw reads so that
->    configurations could not be changed during an adc conversion period
-> - In case of a powerdown error, returning immediately
-> - Removing the definition of direction of the hardware interrupt and
->    leaving it on to device tree
-> - Adding the powerdown callback after doing device initialization
-> - Removed the regcache_cache_only() implementation
-> 
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> ---
->   drivers/iio/light/Kconfig    |   12 +
->   drivers/iio/light/Makefile   |    1 +
->   drivers/iio/light/apds9306.c | 1334 ++++++++++++++++++++++++++++++++++
->   3 files changed, 1347 insertions(+)
->   create mode 100644 drivers/iio/light/apds9306.c
-> 
-> diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
-> index 45edba797e4c..04e7d10f1470 100644
-> --- a/drivers/iio/light/Kconfig
-> +++ b/drivers/iio/light/Kconfig
-> @@ -73,6 +73,18 @@ config APDS9300
->   	  To compile this driver as a module, choose M here: the
->   	  module will be called apds9300.
->   
-> +config APDS9306
-> +	tristate "Avago APDS9306 Ambient Light Sensor"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	select IIO_GTS_HELPER
-> +	help
-> +	  If you say Y or M here, you get support for Avago APDS9306
-> +	  Ambient Light Sensor.
-> +
-> +	  If built as a dynamically linked module, it will be called
-> +	  apds9306.
-> +
->   config APDS9960
->   	tristate "Avago APDS9960 gesture/RGB/ALS/proximity sensor"
->   	select REGMAP_I2C
-> diff --git a/drivers/iio/light/Makefile b/drivers/iio/light/Makefile
-> index c0db4c4c36ec..ab94eac04db0 100644
-> --- a/drivers/iio/light/Makefile
-> +++ b/drivers/iio/light/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_ADUX1020)		+= adux1020.o
->   obj-$(CONFIG_AL3010)		+= al3010.o
->   obj-$(CONFIG_AL3320A)		+= al3320a.o
->   obj-$(CONFIG_APDS9300)		+= apds9300.o
-> +obj-$(CONFIG_APDS9306)		+= apds9306.o
->   obj-$(CONFIG_APDS9960)		+= apds9960.o
->   obj-$(CONFIG_AS73211)		+= as73211.o
->   obj-$(CONFIG_BH1750)		+= bh1750.o
-> diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
-> new file mode 100644
-> index 000000000000..352893913a29
-> --- /dev/null
-> +++ b/drivers/iio/light/apds9306.c
-> @@ -0,0 +1,1334 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * APDS-9306/APDS-9306-065 Ambient Light Sensor
-> + * I2C Address: 0x52
-> + * Datasheet: https://docs.broadcom.com/doc/AV02-4755EN
-> + *
-> + * Copyright (C) 2023 Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> + */
-> +
+NOTE: From the above it can be said that the race is reduced to between
+the pfn_valid()/pfn_section_valid() and the section deactivate with
+SPASEMEM_VMEMAP enabled.
 
-...
+The commit b943f045a9af("mm/sparse: fix kernel crash with
+pfn_section_valid check") tried to address the same problem by clearing
+the SECTION_HAS_MEM_MAP with the expectation of valid_section() returns
+false thus ms->usage is not accessed.
 
-> +
-> +/**
-> + * struct part_id_gts_multiplier - Part no. & corresponding gts multiplier
-> + * @part_id: Part ID of the device
-> + * @max_scale_int: Multiplier for iio_init_iio_gts()
-> + * @max_scale_nano: Multiplier for iio_init_iio_gts()
-> + */
-> +struct part_id_gts_multiplier {
-> +	int part_id;
-> +	int max_scale_int;
-> +	int max_scale_nano;
-> +};
-> +
-> +/*
-> + * As per the datasheet, at HW Gain = 3x, Integration time 100mS (32x),
-> + * typical 2000 ADC counts are observed for 49.8 uW per sq cm (340.134 lux)
-> + * for apds9306 and 43 uW per sq cm (293.69 lux) for apds9306-065.
-> + * Assuming lux per count is linear across all integration time ranges.
+Fix this issue by the below steps:
+a) Clear SECTION_HAS_MEM_MAP before freeing the ->usage.
+b) RCU protected read side critical section will either return NULL when
+SECTION_HAS_MEM_MAP is cleared or can successfully access ->usage.
+c) Free the ->usage with kfree_rcu() and set ms->usage = NULL.
+No attempt will be made to access ->usage after this as the
+SECTION_HAS_MEM_MAP is cleared thus valid_section() return false.
 
-I love this comment. Still, even with this I managed to get confused :) 
-It might be beneficial to mention that the minimum gain is 1x from both 
-the integration time and gain. (Not mandatory, I was just trying to 
-figure out why this was so difficult for me to follow).
+Thanks to David/Pavan for their inputs on this patch.
 
-> + * Lux = (raw + offset) * scale; offset can be any value by userspace.
-> + * HG = Hardware Gain; ITG = Gain by changing integration time.
-> + * Scale table by IIO GTS Helpers = (1 / HG) * (1 / ITG) * Multiplier.
-> + *
-> + * The Lux values provided in the datasheet are at ITG=32x and HG=3x,
-> + * at typical 2000 count.
-> + *
-> + * Lux per ADC count at 3x and 32x for apds9306 = 340.134 / 2000
-> + * Lux per ADC count at 3x and 32x for apds9306-065 = 293.69 / 2000
-> + *
-> + * The Multiplier for the scale table provided to userspace:
-> + * IIO GTS scale Multiplier for apds9306 = (340.134 / 2000) * 32 * 3
+[1] https://lore.kernel.org/linux-mm/994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com/
 
-'nit'
-Could you please show also the result of the computation (16.326432)...
+Fixes: f46edbd1b151 ("mm/sparsemem: add helpers track active portions of a section at boot")
+Cc: stable@vger.kernel.org
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+---
+V2: Use kfree_rcu() inplace of synchronize_rcu() - David
 
-> + * IIO GTS scale Multiplier for apds9306-065 = (293.69 / 2000) * 32 * 3
-> + */
-> +static struct part_id_gts_multiplier apds9306_gts_mul[] = {
-> +	{
-> +		.part_id = 0xB1,
-> +		.max_scale_int = 16,
-> +		.max_scale_nano = 3264320,
+V1: https://lore.kernel.org/linux-mm/1697202267-23600-1-git-send-email-quic_charante@quicinc.com/
 
-'nit'
-... to make it easier to see what we have here corresponds to the values 
-in comment above.
+ include/linux/mmzone.h | 14 +++++++++++---
+ mm/sparse.c            | 17 +++++++++--------
+ 2 files changed, 20 insertions(+), 11 deletions(-)
 
-> +	}, {
-> +		.part_id = 0xB3,
-> +		.max_scale_int = 14,
-> +		.max_scale_nano = 9712000,
-> +	},
-> +};
-> +
-> +/**
-> + * apds9306_repeat_rate_freq - Sampling Frequency in uHz
-> + */
-> +static const int apds9306_repeat_rate_freq[][2] = {
-> +	{40, 0},
-> +	{20, 0},
-> +	{10, 0},
-> +	{5,  0},
-> +	{2,  0},
-> +	{1,  0},
-> +	{0, 500000},
-> +};
-> +
-> +/**
-> + * apds9306_repeat_rate_period - Sampling period in uSec
-> + */
-> +static const int apds9306_repeat_rate_period[] = {
-> +	25000, 50000, 100000, 200000, 500000, 1000000, 2000000
-> +};
-> +static_assert(ARRAY_SIZE(apds9306_repeat_rate_freq) ==
-> +	      ARRAY_SIZE(apds9306_repeat_rate_period));
-> +
-> +/**
-> + * struct apds9306_data - apds9306 private data and registers definitions
-> + *
-> + * All regfield definitions are named exactly according to datasheet for easy
-> + * search
-> + *
-> + * @dev:	Pointer to the device structure
-> + * @gts:	IIO Gain Time Scale structure
-> + * @mutex:	Lock for protecting register access, adc reads and power
-> + * @regmap:	Regmap structure pointer
-> + * @regfield_sw_reset:	Reg: MAIN_CTRL, Field: SW_Reset
-> + * @regfield_en:	Reg: MAIN_CTRL, Field: ALS_EN
-> + * @regfield_intg_time:	Reg: ALS_MEAS_RATE, Field: ALS Resolution/Bit Width
-> + * @regfield_repeat_rate:	Reg: ALS_MEAS_RATE, Field: ALS Measurement Rate
-> + * @regfield_scale:	Reg: ALS_GAIN, Field: ALS Gain Range
-> + * @regfield_int_src:	Reg: INT_CFG, Field: ALS Interrupt Source
-> + * @regfield_int_thresh_var_en:	Reg: INT_CFG, Field: ALS Var Interrupt Mode
-> + * @regfield_int_en:	Reg: INT_CFG, Field: ALS Interrupt Enable
-> + * @regfield_int_persist_val:	Reg: INT_PERSISTENCE, Field: ALS_PERSIST
-> + * @regfield_int_thresh_var_val:	Reg: ALS_THRSH_VAR, Field: ALS_THRES_VAR
-> + * @nlux_per_count:	nano lux per ADC count for a particular model
-> + * @read_data_available:	Flag set by IRQ handler for ADC data available
-> + * @intg_time_idx:	Array index for integration times
-> + * @repeat_rate_idx:	Array index for sampling frequency
-> + * @gain_idx:	Array index for gain
-> + * @int_ch:	Currently selected Interrupt channel
-> + */
-> +struct apds9306_data {
-> +	struct device *dev;
-> +	struct iio_gts gts;
-> +	/*
-> +	 * Protects device settings changes where some calculations are required
-> +	 * before or after setting or getting the raw settings values from regmap
-> +	 * writes or reads respectively.
-> +	 */
-> +	struct mutex mutex;
-> +
-> +	struct regmap *regmap;
-> +	struct regmap_field *regfield_sw_reset;
-> +	struct regmap_field *regfield_en;
-> +	struct regmap_field *regfield_intg_time;
-> +	struct regmap_field *regfield_repeat_rate;
-> +	struct regmap_field *regfield_scale;
-> +	struct regmap_field *regfield_int_src;
-> +	struct regmap_field *regfield_int_thresh_var_en;
-> +	struct regmap_field *regfield_int_en;
-> +	struct regmap_field *regfield_int_persist_val;
-> +	struct regmap_field *regfield_int_thresh_var_val;
-> +
-> +	int nlux_per_count;
-> +	int read_data_available;
-> +	u8 intg_time_idx;
-> +	u8 repeat_rate_idx;
-> +	u8 gain_idx;
-
-'nit'
-I'm not sure caching the time and gain idx in the driver data is that 
-beneficial? I assume you use regmap cache amyways. For me caching these 
-add a bit of complexity when trying to ensure they are not used 
-'uninitialized' for not that obvious benefit.
-
-> +	u8 int_ch;
-> +};
-> +
-> +/*
-> + * Available scales with gain 1x - 18x, timings 3.125, 25, 50, 100, 200,
-> + * 400 mS
-> + * Time impacts to gain: 1x, 8x, 16x, 32x, 64x, 128x > + */
-> +
-> +#define APDS9306_GSEL_1X	0x00
-> +#define APDS9306_GSEL_3X	0x01
-> +#define APDS9306_GSEL_6X	0x02
-> +#define APDS9306_GSEL_9X	0x03
-> +#define APDS9306_GSEL_18X	0x04
-> +
-> +static const struct iio_gain_sel_pair apds9306_gains[] = {
-> +	GAIN_SCALE_GAIN(1, APDS9306_GSEL_1X),
-> +	GAIN_SCALE_GAIN(3, APDS9306_GSEL_3X),
-> +	GAIN_SCALE_GAIN(6, APDS9306_GSEL_6X),
-> +	GAIN_SCALE_GAIN(9, APDS9306_GSEL_9X),
-> +	GAIN_SCALE_GAIN(18, APDS9306_GSEL_18X),
-> +};
-> +
-> +#define APDS9306_MEAS_MODE_400MS	0x00
-> +#define APDS9306_MEAS_MODE_200MS	0x01
-> +#define APDS9306_MEAS_MODE_100MS	0x02
-> +#define APDS9306_MEAS_MODE_50MS		0x03
-> +#define APDS9306_MEAS_MODE_25MS		0x04
-> +#define APDS9306_MEAS_MODE_3125US	0x05
-> +
-> +static const struct iio_itime_sel_mul apds9306_itimes[] = {
-> +	GAIN_SCALE_ITIME_US(400000, APDS9306_MEAS_MODE_400MS, 128),
-> +	GAIN_SCALE_ITIME_US(200000, APDS9306_MEAS_MODE_200MS, 64),
-> +	GAIN_SCALE_ITIME_US(100000, APDS9306_MEAS_MODE_100MS, 32),
-> +	GAIN_SCALE_ITIME_US(50000, APDS9306_MEAS_MODE_50MS, 16),
-> +	GAIN_SCALE_ITIME_US(25000, APDS9306_MEAS_MODE_25MS, 8),
-> +	GAIN_SCALE_ITIME_US(3125, APDS9306_MEAS_MODE_3125US, 1),
-> +};
-> +
-
-...
-
-> +
-> +static const struct regmap_config apds9306_regmap = {
-> +	.name = "apds9306_regmap",
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.rd_table = &apds9306_readable_table,
-> +	.wr_table = &apds9306_writable_table,
-> +	.volatile_table = &apds9306_volatile_table,
-> +	.precious_table = &apds9306_precious_table,
-> +	.max_register = APDS9306_ALS_THRES_VAR,
-> +	.cache_type = REGCACHE_RBTREE,
-> +	/*
-> +	 * Leaving the regmap lock enabled as regfield accesses are everywhere
-> +	 * which are read modify writes and data mutex is not used in the
-> +	 * interrupt handler.
-> +	 */
-
-To my eye this comment looks a bit misplaced without the
-	.disable_locking = false,
-- which is a no-op here. I think what you wrote in the comment is true 
-(default assumption) for many drivers - maybe the comment is not needed?
-
-> +};
-
-...
-
-> +static int apds9306_read_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan, int *val,
-> +			     int *val2, long mask)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret, reg;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		if (chan->channel2 == IIO_MOD_LIGHT_CLEAR)
-> +			reg = APDS9306_CLEAR_DATA_0;
-> +		else
-> +			reg = APDS9306_ALS_DATA_0;
-> +		/*
-> +		 * Changing device parameters during adc operation, resets
-> +		 * the ADC which has to avoided.
-> +		 */
-
-Would you need to grab the mutex here? I think you want also prevent 
-changing gain/time during the computations.
-
-> +		ret = iio_device_claim_direct_mode(indio_dev);
-> +		if (ret)
-> +			return ret;
-> +		ret = apds9306_read_data(data, val, reg);
-> +		iio_device_release_direct_mode(indio_dev);
-> +		if (ret)
-> +			return ret;
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_INT_TIME:
-> +		ret = apds9306_intg_time_get(data, val2);
-> +		if (ret)
-> +			return ret;
-> +		*val = 0;
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret = apds9306_sampling_freq_get(data, val, val2);
-> +		if (ret)
-> +			return ret;
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		ret = apds9306_scale_get(data, val, val2);
-> +		if (ret)
-> +			return ret;
-> +		return IIO_VAL_INT_PLUS_NANO;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +};
-> +
-
-Thanks for the nice driver!
-
-Yours,
-	-- Matti
-
-
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4106fbc..19a4b1d 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1770,6 +1770,7 @@ static inline unsigned long section_nr_to_pfn(unsigned long sec)
+ #define SUBSECTION_ALIGN_DOWN(pfn) ((pfn) & PAGE_SUBSECTION_MASK)
+ 
+ struct mem_section_usage {
++	struct rcu_head rcu;
+ #ifdef CONFIG_SPARSEMEM_VMEMMAP
+ 	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
+ #endif
+@@ -1963,7 +1964,7 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+ {
+ 	int idx = subsection_map_index(pfn);
+ 
+-	return test_bit(idx, ms->usage->subsection_map);
++	return test_bit(idx, READ_ONCE(ms->usage)->subsection_map);
+ }
+ #else
+ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+@@ -1987,6 +1988,7 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+ static inline int pfn_valid(unsigned long pfn)
+ {
+ 	struct mem_section *ms;
++	int ret;
+ 
+ 	/*
+ 	 * Ensure the upper PAGE_SHIFT bits are clear in the
+@@ -2000,13 +2002,19 @@ static inline int pfn_valid(unsigned long pfn)
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __pfn_to_section(pfn);
+-	if (!valid_section(ms))
++	rcu_read_lock();
++	if (!valid_section(ms)) {
++		rcu_read_unlock();
+ 		return 0;
++	}
+ 	/*
+ 	 * Traditionally early sections always returned pfn_valid() for
+ 	 * the entire section-sized span.
+ 	 */
+-	return early_section(ms) || pfn_section_valid(ms, pfn);
++	ret = early_section(ms) || pfn_section_valid(ms, pfn);
++	rcu_read_unlock();
++
++	return ret;
+ }
+ #endif
+ 
+diff --git a/mm/sparse.c b/mm/sparse.c
+index 77d91e5..338cf94 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -792,6 +792,13 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
+ 		unsigned long section_nr = pfn_to_section_nr(pfn);
+ 
+ 		/*
++		 * Mark the section invalid so that valid_section()
++		 * return false. This prevents code from dereferencing
++		 * ms->usage array.
++		 */
++		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
++
++		/*
+ 		 * When removing an early section, the usage map is kept (as the
+ 		 * usage maps of other sections fall into the same page). It
+ 		 * will be re-used when re-adding the section - which is then no
+@@ -799,16 +806,10 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
+ 		 * was allocated during boot.
+ 		 */
+ 		if (!PageReserved(virt_to_page(ms->usage))) {
+-			kfree(ms->usage);
+-			ms->usage = NULL;
++			kfree_rcu(ms->usage, rcu);
++			WRITE_ONCE(ms->usage, NULL);
+ 		}
+ 		memmap = sparse_decode_mem_map(ms->section_mem_map, section_nr);
+-		/*
+-		 * Mark the section invalid so that valid_section()
+-		 * return false. This prevents code from dereferencing
+-		 * ms->usage array.
+-		 */
+-		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
+ 	}
+ 
+ 	/*
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+2.7.4
 
