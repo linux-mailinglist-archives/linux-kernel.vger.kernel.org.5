@@ -2,290 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 126847D953E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2817D9541
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbjJ0K1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
+        id S235107AbjJ0K3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 06:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjJ0K12 (ORCPT
+        with ESMTP id S231464AbjJ0K3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:27:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2744D7
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698402446; x=1729938446;
-  h=date:from:to:cc:subject:message-id;
-  bh=mQ/2aLEMeZSajbETcl1Zw9NCBI/lihi5d26RluQsmJw=;
-  b=QHhpXDGrUdoHES5Ztl5pzWUQwb+fJSlnzlELi1hg85T1zQhRbX7lXbyC
-   S3qCVHscsFb30cj1ZTB1I9/nVGOz/v6oJQJEzzM4bh6MSV+VAxMaVVtEA
-   4153g0xLtqkJpHaCxJyryGUZpwNM4c5X0A4cqK3uTZn6l/VqJ+4XcO4vj
-   8BjeyXScvMQHEXI043TrdZPZmHQflh5DbdnHcsS8TAnmWBHx/dYOW3gMr
-   lCQz39t9gUMjcZvQtIzp03J9pQaHLtKg6e/xuK//3orlM4dSjfLtmyoLC
-   GMmrAO/KRyH4zPSVuP138qz8DbgD1ln/60ERslAzyoZtBrJHPw7ou0fux
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="569327"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="569327"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 03:27:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="7613377"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 27 Oct 2023 03:27:12 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwK3l-000AjX-25;
-        Fri, 27 Oct 2023 10:27:21 +0000
-Date:   Fri, 27 Oct 2023 18:27:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 4f0d5e708ef88b58c954581ca54161064beaaaf5
-Message-ID: <202310271803.gcRFUTnm-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 27 Oct 2023 06:29:30 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61461121
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:29:28 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d84c24a810dso1321017276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1698402567; x=1699007367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZn35aVvF3CpjghTrj9bHg72KmEjxE0DqCJaX7l42PE=;
+        b=nGza0flxlzjhcKgbud1O5pKSEQHn41hCTWNZVQUyVORiH9aE2Ok6zbFNzGqZABqDPC
+         DnJBpQgBCGCkZsaH/O3F6wxpYzmITh+IzGhQF2eumM7wIBvipt2tb1oTmY7iOlAZLHX6
+         TSxRCqjZ7emSdnT9T76JFO9uI2k7nlsJRmrNnh8FgTQzUaKWlF1EuE6TRn8aQu9vXAMV
+         gEMOXTGk5LCJsPcUUX8WUkf9bmrrT66i8JnLF1iMBaggogCjni1lzAiug6h7CQKb4l+a
+         tUd0Y60odND8OjnZHeYe1otfLhTqTL8zzrT9rv2EMRj6TsvToiiXHkGI42Vo7yhfv609
+         P86g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698402567; x=1699007367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iZn35aVvF3CpjghTrj9bHg72KmEjxE0DqCJaX7l42PE=;
+        b=MHHVku8xVmQ1NPucojF3ZTaxcBtCGoPyGJh1da4q8oWWmh0xiZ/qA9Oih8/CMhtbP1
+         n5uSMRggsEkAuOxroCU+THLuxKcJCOe9OPKqKPqwGmI5Bf5c0V0Y9TujTCfldvxij36R
+         wWck8NWEcobvLoLQ17qiTl0sWZOQ5ebilxZ7xrHdJf6YxHMT26g553AIsKqg9gWYg1vw
+         +vbBXp3kZzdHpirMLWjURP/3KoIhe9KCp9i9J67ZrKimU6YNrof/y3iD+eu8YsOAqpeT
+         /KwAJBLXL/oresIxlF7tx4TDSWRyYrSqeqCIpqNqviKREtLvdobF2Hm7Ao5jgJbY/tX4
+         jtgg==
+X-Gm-Message-State: AOJu0YwEHmbBkLGzosNIxIle3kE+/P07+Lova/0V1ThY57ThwjZZANVd
+        yV8f0palmmol7xcMtWNTbcqRQlLMSKVqjpXCgO2NBQ==
+X-Google-Smtp-Source: AGHT+IH6ieb+syT5dPw1WbBin1rbO2JFj4W2olI8NDRlCgEsq54ZdAk9RzcGRrD0qzoNEIOqZAJnNOEgMa3aY9X8g5M=
+X-Received: by 2002:a25:4097:0:b0:d9b:ff50:b100 with SMTP id
+ n145-20020a254097000000b00d9bff50b100mr1855215yba.28.1698402567578; Fri, 27
+ Oct 2023 03:29:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
+ <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu> <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
+ <f5475c4f90e52817349e4842984bb3657b1e500d.camel@apitzsch.eu> <3opzxxkqa4p6wxddx7bdf2dixphfuo4xunaaiqibvtppmyz6gr@vjxbtjjqiqvy>
+In-Reply-To: <3opzxxkqa4p6wxddx7bdf2dixphfuo4xunaaiqibvtppmyz6gr@vjxbtjjqiqvy>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 27 Oct 2023 11:29:11 +0100
+Message-ID: <CAPY8ntC4TNkxuG9S8Lo-fmMcCSF39tCT_W2oO1KHHj5Fg6B0VQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] media: i2c: imx214: Add sensor's pixel matrix size
+To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Ricardo Ribalda <ribalda@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 4f0d5e708ef88b58c954581ca54161064beaaaf5  x86/tsc: Defer marking TSC unstable to a worker
+Hi Jacopo
 
-elapsed time: 1489m
+On Fri, 27 Oct 2023 at 09:57, Jacopo Mondi
+<jacopo.mondi@ideasonboard.com> wrote:
+>
+> Hi Andre'
+>
+> On Wed, Oct 25, 2023 at 11:26:00PM +0200, Andr=C3=A9 Apitzsch wrote:
+> > Hi Jacopo,
+> >
+> > Am Dienstag, dem 24.10.2023 um 09:52 +0200 schrieb Jacopo Mondi:
+> > > Hi Andre'
+> > >
+> > > On Mon, Oct 23, 2023 at 11:47:53PM +0200, Andr=C3=A9 Apitzsch wrote:
+> > > > Set effictive and active sensor pixel sizes as shown in product
+> > >
+> > > s/effictive/effective
+> > >
+> > > > brief[1].
+> > > >
+> > > > [1]:
+> > > > https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428=
+-1289331.pdf
+> > > >
+> > > > Signed-off-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu>
+> > > > ---
+> > > >  drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++--
+> > > > -----
+> > > >  1 file changed, 32 insertions(+), 7 deletions(-)
+> > > >
+> > > > diff --git a/drivers/media/i2c/imx214.c
+> > > > b/drivers/media/i2c/imx214.c
+> > > > index bef8dc36e2d0..a2d441cd8dcd 100644
+> > > > --- a/drivers/media/i2c/imx214.c
+> > > > +++ b/drivers/media/i2c/imx214.c
+> > > > @@ -36,6 +36,14 @@
+> > > >  #define IMX214_EXPOSURE_STEP             1
+> > > >  #define IMX214_EXPOSURE_DEFAULT          0x0c70
+> > > >
+> > > > +/* IMX214 native and active pixel array size */
+> > > > +#define IMX214_NATIVE_WIDTH              4224U
+> > > > +#define IMX214_NATIVE_HEIGHT             3136U
+> > > > +#define IMX214_PIXEL_ARRAY_LEFT          8U
+> > > > +#define IMX214_PIXEL_ARRAY_TOP           8U
+> > > > +#define IMX214_PIXEL_ARRAY_WIDTH 4208U
+> > > > +#define IMX214_PIXEL_ARRAY_HEIGHT        3120U
+> > > > +
+> > >
+> > > I do get slightly different numbers from the datasheet version I have
+> > >
+> > > The sensor is said to have 4224x3208 total pixels of which 4208x3120
+> > > are active ones.
+> > >
+> > > The pixel array diagram shows 64 "OPB" (optically black ?) lines,
+> > > followed by 8 dummy lines, followed by 3120 valid lines. There are 8
+> > > dummy columns at each side of the 4208 valid ones.
+> > >
+> > > Now, NATIVE which represents the full pixel array size seems to be
+> > > 4224x3208 (other parts of the datasheet only report 3200 lines
+> > > though)
+> > >
+> > > BOUNDS represents the readabale array area, which I presume
+> > > corresponds to what is named as 'effective area' by the datasheet. It
+> > > excludes the OPB lines at the top of the image and seems to be
+> > > represented by (0, 64, 4224, 3160).
+> > >
+> > > CROP_DEFAULT represents the default crop rectangle which covers the
+> > > active pixel area, so it excludes 8 more lines of dummy pixels and 8
+> > > dummy columns, which gives a rectangle (8, 72, 4208, 3120)
+> > >
+> > > Also note that the driver always reports a TGT_CROP rectangle with
+> > > top/left points set to 0. If my understanding is correct, V4L2
+> > > selection targets are defined from the most external target
+> > > (TGT_NATIVE in this case), and the driver should be corrected to
+> > > initialize the crop rectangle with a top-left corner at (8, 72).
+> > >
+> > > Does this make sense ?
+> >
+> > As far as I understood, only the effective and active sizes of three
+> > sizes provided in the datasheet (total, effective and active) matter.
+> > By comparing the values used in imx219.c (and imx415.c) with the ones
+> > in the corresponding datasheets [1,2] I assume, that "effective"
+> > matches "NATIVE_SIZE", "active" matches "CROP_DEFAULT" and "total" is
+> > ignored.
+>
+> imx219 driver indeed does not consider the OPB areas in the definition
+> of the rectangles...
+>
+> Also looking at the X/Y_ADDR_START value assigned in the register tables
+> for full resolution mode (3280x2462) they have value of 0, indeed
+> meaning the active area is the only readable one.
+>
+> Then yes, you're right, for imx219
+> NATIVE =3D effective
+> CROP_DEFAULT =3D BOUND =3D active
+>
+> > The commit message of 1ed36ecd1459b653cced8929bfb37dba94b64c5d ("media:
+> > i2c: imx219: Selection compliance fixes") seems to support me here:
+>
+> >
+> > > The top/left crop coordinates of the TGT_CROP rectangle were set to
+> > > (0, 0) instead of (8, 8) which is the offset from the larger physical
+> > > pixel array rectangle.
+> >
+> > This (8, 8) is half the difference between number of effective and
+> > active pixels of imx219[1].
+> >
+> > Together with the 8 dummy lines and 8 dummy columns you mentioned, I
+> > still think my values are right. But I've just started working with
+> > V4L2, so I might be wrong.
+>
+> To actually verify if the 'effective area' is readable or not, we
+> should know what register controls the X/Y_ADDR_START value, and
+> that's an information I don't have in my version of the datasheet.
 
-configs tested: 214
-configs skipped: 120
+I happen to have an IMX214 datasheet.
+X_ADDR_START is 0x0344/5 (set in multiples of 2)
+Y_ADDR_START is 0x0346/7 (set in multiples of 4)
+X_ADDR_END is 0x0348/9 (set in multiples of 2)
+Y_ADDR_END is 0x034a/b (set in multiples of 4)
+X_OUTPUT_SIZE 0x034c/d
+Y_OUTPUT_SIZE 0x034e/f
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+X direction are 13bit values, Y direction are 12 bit.
+[12:8] or [11:8] in the low bits of the first register, [7:0] in the
+second register.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231026   gcc  
-arc                   randconfig-001-20231027   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      footbridge_defconfig   gcc  
-arm                          gemini_defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                   randconfig-001-20231027   gcc  
-arm                        realview_defconfig   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                           allnoconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231026   gcc  
-i386         buildonly-randconfig-001-20231027   gcc  
-i386         buildonly-randconfig-002-20231026   gcc  
-i386         buildonly-randconfig-002-20231027   gcc  
-i386         buildonly-randconfig-003-20231026   gcc  
-i386         buildonly-randconfig-003-20231027   gcc  
-i386         buildonly-randconfig-004-20231026   gcc  
-i386         buildonly-randconfig-004-20231027   gcc  
-i386         buildonly-randconfig-005-20231026   gcc  
-i386         buildonly-randconfig-005-20231027   gcc  
-i386         buildonly-randconfig-006-20231026   gcc  
-i386         buildonly-randconfig-006-20231027   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231026   gcc  
-i386                  randconfig-001-20231027   gcc  
-i386                  randconfig-002-20231026   gcc  
-i386                  randconfig-002-20231027   gcc  
-i386                  randconfig-003-20231026   gcc  
-i386                  randconfig-003-20231027   gcc  
-i386                  randconfig-004-20231026   gcc  
-i386                  randconfig-004-20231027   gcc  
-i386                  randconfig-005-20231026   gcc  
-i386                  randconfig-005-20231027   gcc  
-i386                  randconfig-006-20231026   gcc  
-i386                  randconfig-006-20231027   gcc  
-i386                  randconfig-011-20231027   gcc  
-i386                  randconfig-012-20231027   gcc  
-i386                  randconfig-013-20231027   gcc  
-i386                  randconfig-014-20231027   gcc  
-i386                  randconfig-015-20231027   gcc  
-i386                  randconfig-016-20231027   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231026   gcc  
-loongarch             randconfig-001-20231027   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                            ar7_defconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                         cobalt_defconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                       holly_defconfig   gcc  
-powerpc                      katmai_defconfig   clang
-powerpc                     ksi8560_defconfig   clang
-powerpc                         wii_defconfig   gcc  
-powerpc64                           defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_virt_defconfig   clang
-riscv                 randconfig-001-20231026   gcc  
-riscv                 randconfig-001-20231027   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231026   gcc  
-s390                  randconfig-001-20231027   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                             espt_defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sh                           se7750_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sparc                            alldefconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231026   gcc  
-sparc                 randconfig-001-20231027   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231026   gcc  
-x86_64       buildonly-randconfig-001-20231027   gcc  
-x86_64       buildonly-randconfig-002-20231026   gcc  
-x86_64       buildonly-randconfig-002-20231027   gcc  
-x86_64       buildonly-randconfig-003-20231026   gcc  
-x86_64       buildonly-randconfig-003-20231027   gcc  
-x86_64       buildonly-randconfig-004-20231026   gcc  
-x86_64       buildonly-randconfig-004-20231027   gcc  
-x86_64       buildonly-randconfig-005-20231026   gcc  
-x86_64       buildonly-randconfig-005-20231027   gcc  
-x86_64       buildonly-randconfig-006-20231026   gcc  
-x86_64       buildonly-randconfig-006-20231027   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231026   gcc  
-x86_64                randconfig-001-20231027   gcc  
-x86_64                randconfig-002-20231026   gcc  
-x86_64                randconfig-002-20231027   gcc  
-x86_64                randconfig-003-20231026   gcc  
-x86_64                randconfig-003-20231027   gcc  
-x86_64                randconfig-004-20231026   gcc  
-x86_64                randconfig-004-20231027   gcc  
-x86_64                randconfig-005-20231026   gcc  
-x86_64                randconfig-005-20231027   gcc  
-x86_64                randconfig-006-20231026   gcc  
-x86_64                randconfig-006-20231027   gcc  
-x86_64                randconfig-011-20231027   gcc  
-x86_64                randconfig-012-20231027   gcc  
-x86_64                randconfig-013-20231027   gcc  
-x86_64                randconfig-014-20231027   gcc  
-x86_64                randconfig-015-20231027   gcc  
-x86_64                randconfig-016-20231027   gcc  
-x86_64                randconfig-071-20231026   gcc  
-x86_64                randconfig-071-20231027   gcc  
-x86_64                randconfig-072-20231026   gcc  
-x86_64                randconfig-072-20231027   gcc  
-x86_64                randconfig-073-20231026   gcc  
-x86_64                randconfig-073-20231027   gcc  
-x86_64                randconfig-074-20231026   gcc  
-x86_64                randconfig-074-20231027   gcc  
-x86_64                randconfig-075-20231026   gcc  
-x86_64                randconfig-075-20231027   gcc  
-x86_64                randconfig-076-20231026   gcc  
-x86_64                randconfig-076-20231027   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                         virt_defconfig   gcc  
+  Dave
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> It's however plausible that it behaves the same as imx219, as the
+> driver's register sequences seems to program the crop sizes in
+> register 0x034c and 0x034e and there's not programmed top-left corner
+> there.
+>
+> Ok then, let's be consistent and do the same as imx219 as you're doing
+> here.
+>
+> Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+>
+> >
+> > Could you share the imx214 datasheet with me?
+> >
+> > Best regards,
+> > Andr=C3=A9
+> >
+> > [1] https://www.arducam.com/downloads/modules/RaspberryPi_camera/IMX219=
+DS.PDF
+> > [2] https://www.sony-semicon.com/files/62/pdf/p-12_IMX415-AAQR_AAMR_Fly=
+er.pdf
+> > >
+> > > Thanks
+> > >   j
+> > >
+> > >
+> > > >  static const char * const imx214_supply_name[] =3D {
+> > > >   "vdda",
+> > > >   "vddd",
+> > > > @@ -634,14 +642,31 @@ static int imx214_get_selection(struct
+> > > > v4l2_subdev *sd,
+> > > >  {
+> > > >   struct imx214 *imx214 =3D to_imx214(sd);
+> > > >
+> > > > - if (sel->target !=3D V4L2_SEL_TGT_CROP)
+> > > > -         return -EINVAL;
+> > > > + switch (sel->target) {
+> > > > + case V4L2_SEL_TGT_CROP:
+> > > > +         mutex_lock(&imx214->mutex);
+> > > > +         sel->r =3D *__imx214_get_pad_crop(imx214, sd_state,
+> > > > sel->pad,
+> > > > +                                         sel->which);
+> > > > +         mutex_unlock(&imx214->mutex);
+> > > > +         return 0;
+> > > >
+> > > > - mutex_lock(&imx214->mutex);
+> > > > - sel->r =3D *__imx214_get_pad_crop(imx214, sd_state, sel-
+> > > > >pad,
+> > > > -                                 sel->which);
+> > > > - mutex_unlock(&imx214->mutex);
+> > > > - return 0;
+> > > > + case V4L2_SEL_TGT_NATIVE_SIZE:
+> > > > +         sel->r.top =3D 0;
+> > > > +         sel->r.left =3D 0;
+> > > > +         sel->r.width =3D IMX214_NATIVE_WIDTH;
+> > > > +         sel->r.height =3D IMX214_NATIVE_HEIGHT;
+> > > > +         return 0;
+> > > > +
+> > > > + case V4L2_SEL_TGT_CROP_DEFAULT:
+> > > > + case V4L2_SEL_TGT_CROP_BOUNDS:
+> > > > +         sel->r.top =3D IMX214_PIXEL_ARRAY_TOP;
+> > > > +         sel->r.left =3D IMX214_PIXEL_ARRAY_LEFT;
+> > > > +         sel->r.width =3D IMX214_PIXEL_ARRAY_WIDTH;
+> > > > +         sel->r.height =3D IMX214_PIXEL_ARRAY_HEIGHT;
+> > > > +         return 0;
+> > > > + }
+> > > > +
+> > > > + return -EINVAL;
+> > > >  }
+> > > >
+> > > >  static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
+> > > >
+> > > > --
+> > > > 2.42.0
+> > > >
+> >
