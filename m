@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919407D97E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855BF7D97EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjJ0MZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
+        id S1345420AbjJ0MZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjJ0MZG (ORCPT
+        with ESMTP id S230101AbjJ0MZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:25:06 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368DBFA;
-        Fri, 27 Oct 2023 05:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698409502;
-        bh=KmREfUcy5jm4Zpdo+lkmU9dwV5njzrSKpDztzvbFBK8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ejA+/H7DnpQ4MKb6lzAne4asm44jjYQTs3KW/SF+iHxv04IY23qZ9CxfjiBqzf2VO
-         qH1Nkeu9eqpk5+eJBKF6n2p9vFxJycrnET9hb/7Jh3MYGyGwqviWZ2X6wNALYG8XJP
-         q3adPoCzz7wENG/uP4RO5Q/mhVqT6V3/ymyXz9ck=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id ABC921287400;
-        Fri, 27 Oct 2023 08:25:02 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id b8Oe44fgnsbz; Fri, 27 Oct 2023 08:25:02 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1698409502;
-        bh=KmREfUcy5jm4Zpdo+lkmU9dwV5njzrSKpDztzvbFBK8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ejA+/H7DnpQ4MKb6lzAne4asm44jjYQTs3KW/SF+iHxv04IY23qZ9CxfjiBqzf2VO
-         qH1Nkeu9eqpk5+eJBKF6n2p9vFxJycrnET9hb/7Jh3MYGyGwqviWZ2X6wNALYG8XJP
-         q3adPoCzz7wENG/uP4RO5Q/mhVqT6V3/ymyXz9ck=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 5575A12873FC;
-        Fri, 27 Oct 2023 08:25:01 -0400 (EDT)
-Message-ID: <6c733fad84445bd29df230ecb5310535bfef2254.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 5/6] tpm: Add tpm_buf_read_{u8,u16,u32}
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     keyrings@vger.kernel.org,
-        William Roberts <bill.c.roberts@gmail.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Julien Gomes <julien@arista.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Fri, 27 Oct 2023 08:24:59 -0400
-In-Reply-To: <20231024011531.442587-6-jarkko@kernel.org>
-References: <20231024011531.442587-1-jarkko@kernel.org>
-         <20231024011531.442587-6-jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Fri, 27 Oct 2023 08:25:29 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8081B10A;
+        Fri, 27 Oct 2023 05:25:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vv-ygIX_1698409518;
+Received: from 30.240.112.233(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vv-ygIX_1698409518)
+          by smtp.aliyun-inc.com;
+          Fri, 27 Oct 2023 20:25:21 +0800
+Message-ID: <3b2f8b0f-ca94-400f-ae13-ac1de84591b1@linux.alibaba.com>
+Date:   Fri, 27 Oct 2023 20:25:16 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Will Deacon <will@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Yicong Yang <yangyicong@huawei.com>,
+        chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
+ <20231020134230.53342-4-xueshuai@linux.alibaba.com>
+ <20231023123202.GA3515@willie-the-truck>
+ <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
+ <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
+ <20231026144428.00005db8@Huawei.com>
+ <8f8a2e42-f6ed-4328-9457-5f986d761224@arm.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <8f8a2e42-f6ed-4328-9457-5f986d761224@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,31 +55,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-24 at 04:15 +0300, Jarkko Sakkinen wrote:
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -124,3 +124,72 @@ void tpm_buf_append_u32(struct tpm_buf *buf,
-> const u32 value)
->         tpm_buf_append(buf, (u8 *)&value2, 4);
->  }
->  EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
-> +
-> +/**
-> + * tpm_buf_read() - Read from a TPM buffer
-> + * @buf:       &tpm_buf instance
-> + * @offset:    offset within the buffer
-> + * @count:     the number of bytes to read
-> + * @output:    the output buffer
-> + */
-> +static void tpm_buf_read(const struct tpm_buf *buf, off_t *offset,
-> size_t count, void *output)
-> +{
-> +       if (*(offset + count) >= buf->length) {
 
-I don't think you mean that; it's dereferencing a random location in
-the stack, which is why I see this check trip randomly when testing.  I
-think you mean
 
-if (*offset + count >= buf->length) {
+On 2023/10/27 00:52, Robin Murphy wrote:
+> On 26/10/2023 2:44 pm, Jonathan Cameron wrote:
+>> On Tue, 24 Oct 2023 17:29:34 +0800
+>> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+>>
+>>> + Will, Jonathan, Bjorn and Yicong for probe and hotplug handing.
+>>>
+...
+>>>>>> +
+>>>>>> +    dwc_pcie_pmu_hp_state = ret;
+>>>>>> +
+>>>>>> +    ret = platform_driver_register(&dwc_pcie_pmu_driver);
+>>>>>> +    if (ret)
+>>>>>> +        goto platform_driver_register_err;
+>>>>>> +
+>>>>>> +    dwc_pcie_pmu_dev = platform_device_register_simple(
+>>>>>> +                "dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
+>>>>>> +    if (IS_ERR(dwc_pcie_pmu_dev)) {
+>>>>>> +        ret = PTR_ERR(dwc_pcie_pmu_dev);
+>>>>>> +        goto platform_device_register_error;
+>>>>>> +    }
+>>>>>
+>>>>> I'm a bit confused as to why you're having to create a platform device
+>>>>> for a PCI device -- is this because the main designware driver has already
+>>>>> bound to it? A comment here explaining why you need to do this would be
+>>>>> very helpful. In particular, is there any dependency on another driver
+>>>>> to make sure that e.g. config space accesses work properly? If so, we
+>>>>> probably need to enforce module load ordering or something like that.
+>>>>
+>>>> AFAICS the platform device/driver serve no purpose other than being a hilariously roundabout way to run the for_each_pci_dev() loop in dwc_pcie_pmu_probe() upon module init, and to save explicitly freeing the PMU name/data. Furthermore the devres action for dwc_pcie_pmu_remove_cpuhp_instance() is apparently going for even more style points at module exit by not even relying on the corresponding .remove callback of the tenuous platform driver to undo what its .probe did, but (ab)using the device's devres list to avoid having to keep track of an explicit list of PMU instances at all.
+>>>
+>>> You are right.
+>>
+>> Also provides a (potential) parent for the PMU devices which is something
+>> we were trying to clean up for existing PMUs (which end up in the
+>> wrong directly in sysfs because they typically don't have parents).
+> 
+> Surely the relevant PCI device would be an even more appropriate parent, though, since that's the true topology?
+> 
 
-James
+I see, I will add its parent.
 
+Thank you.
+Best Regards,
+Shuai
