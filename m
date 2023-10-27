@@ -2,169 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB04F7D94FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048B47D94FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 12:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345711AbjJ0KQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 06:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S1345732AbjJ0KQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 06:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbjJ0KQR (ORCPT
+        with ESMTP id S1345722AbjJ0KQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:16:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565ADC4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698401733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/3RUe/42QKtvFOMbEd083sCtycO90wm6iZz1XgOvH0k=;
-        b=CQ2cWcnb4RRtqcAvgjETRzgp9BX6TAs94TmhTIOykcaQa3u8whvFFo2qiDrtr/RMq1Up76
-        NCbIjiFYj4itn+ogdX5mOWS8I19uokIlaorGWvGGvkg0cjlC9myNNya76BzrEYPGtealSD
-        NZ1MgMq3+HqRLQy0AmAk5t1ChX3bjSQ=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-557-kZq6ImMJMyOaAPJSSkBt7Q-1; Fri, 27 Oct 2023 06:15:32 -0400
-X-MC-Unique: kZq6ImMJMyOaAPJSSkBt7Q-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41cba6d1330so23432231cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 03:15:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698401732; x=1699006532;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3RUe/42QKtvFOMbEd083sCtycO90wm6iZz1XgOvH0k=;
-        b=E6qS7O56Zie4nsLV0Qf66EA4sPA8W1akWCVbBTung6JGS5nLghN3cgitOuA3uIHntD
-         uAVahJGjCqnzHIJTLsCpUh3QWTETaAm8ZvbDKh2DrkblzCTwZ0Ada32U/K1LA/BMw5ac
-         5MEw3Alqo5YztAhs1IaR0LPkI6zAGdU495likhUDX0r//RuNdwoUIVZVFjvza1Wokjp3
-         1pxTp+KS7fzBXHI+98v7s+IEluWD2kUAEEAVBwXUo8GJ1lBxCvafrTU5Ct9ZBY+W/3Cy
-         50eO4izPwCMoIma2tkbGNkUNacuTFRvnSRDCMSf2J3tXp+77c4nEnKn6OWQlx+jaO2bD
-         esFQ==
-X-Gm-Message-State: AOJu0YwP9xWaZ4YTSSWY9KtEzvVwK/CH4w010uA1ZqHaV1W1sPGHza3h
-        et4vOzol4Hp5HMLMPKoKwX92X+ZobL7hlOQqoZo3Vf9N3i+GckXgIaKWhbALGyiLTiUZmHy6ZES
-        0xR/Yj0/Nfgkf7L7kVvMm1JSQ
-X-Received: by 2002:ac8:5d07:0:b0:418:1235:5c86 with SMTP id f7-20020ac85d07000000b0041812355c86mr2910758qtx.43.1698401731794;
-        Fri, 27 Oct 2023 03:15:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFTEePNVAmHZb/864E4GdsNkiYTWojqEFJErvbBvnJDxMpu5e0tdtlubNMMIbyRvGLZJkKphA==
-X-Received: by 2002:ac8:5d07:0:b0:418:1235:5c86 with SMTP id f7-20020ac85d07000000b0041812355c86mr2910723qtx.43.1698401731427;
-        Fri, 27 Oct 2023 03:15:31 -0700 (PDT)
-Received: from sgarzare-redhat (host-87-12-185-56.business.telecomitalia.it. [87.12.185.56])
-        by smtp.gmail.com with ESMTPSA id g21-20020ac85815000000b00418122186ccsm460002qtg.12.2023.10.27.03.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 03:15:31 -0700 (PDT)
-Date:   Fri, 27 Oct 2023 12:15:25 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     syzbot <syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, stefanha@redhat.com,
-        syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org, syoshida@redhat.com
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in virtio_transport_recv_pkt
-Message-ID: <6pljp7toxsxk4ljnggvn44djqzbi2g3bfou5snhugdrbabu7wv@fpueaouu26ly>
-References: <00000000000008b2940608ae3ce9@google.com>
- <ooihytsfbk3brbwi2oj27ju3ff43ns36qhksfixrxdau2nieor@ervvukakvk4n>
- <CANn89i+kKiSL6KJ6cEW_J5BmV3vSswbNPMNVm8ysKjDynF9d5w@mail.gmail.com>
+        Fri, 27 Oct 2023 06:16:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C5F196;
+        Fri, 27 Oct 2023 03:16:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0672C433C8;
+        Fri, 27 Oct 2023 10:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698401779;
+        bh=4fUwCmh3aJLtidgC+TUbXK1gRF+kVmTye+QZ20QsJ80=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=BwDm/Z6ckHYn0M0+TrPfEdhK1nBIlaIliRl0Ybg91eHjVixIdLevpPaRKvmftAMEm
+         IZrOGxqJNms0OnEXycIJT9OrYkbf89Zjeata2QfkzPvocEUugZlMm8CjsRuu40OOdv
+         lMD2DAJ6qaeKrhOOggYbz68O1ezKbBPQAxfTaYC74mK7m15f0nqOgJ21S9o6cUCN19
+         6aInWdx0Wnk7kwuk/YhKkBmD3PX6R7yApQ6QS0qcBps44pF7Ny6wUueybPSF3n5hWz
+         lVgR2HidXjBFbDkyteUop+808/7NofOCQYUdlr2Oprmyc6awq8XT/2wlRBOFQasSwK
+         0GM3Po/r0uNWg==
+Message-ID: <6b12ba28a4bd276ecd6ffbd97af76de46c72788a.camel@kernel.org>
+Subject: Re: [syzbot] [ext4?] general protection fault in locks_remove_posix
+From:   Jeff Layton <jlayton@kernel.org>
+To:     syzbot <syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, brauner@kernel.org,
+        chuck.lever@oracle.com, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+        viro@zeniv.linux.org.uk
+Date:   Fri, 27 Oct 2023 06:16:17 -0400
+In-Reply-To: <000000000000ef757e0608aba23d@google.com>
+References: <000000000000ef757e0608aba23d@google.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+kKiSL6KJ6cEW_J5BmV3vSswbNPMNVm8ysKjDynF9d5w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 10:48:39AM +0200, Eric Dumazet wrote:
->On Fri, Oct 27, 2023 at 10:25 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
->>
->> On Fri, Oct 27, 2023 at 01:11:24AM -0700, syzbot wrote:
->> >Hello,
->> >
->> >syzbot found the following issue on:
->> >
->> >HEAD commit:    d90b0276af8f Merge tag 'hardening-v6.6-rc3' of git://git.k..
->> >git tree:       upstream
->> >console+strace: https://syzkaller.appspot.com/x/log.txt?x=102c8b22680000
->> >kernel config:  https://syzkaller.appspot.com/x/.config?x=6f1a4029b69273f3
->> >dashboard link: https://syzkaller.appspot.com/bug?extid=0c8ce1da0ac31abbadcd
->> >compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
->> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101e58ec680000
->> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f7adb6680000
->> >
->> >Downloadable assets:
->> >disk image: https://storage.googleapis.com/syzbot-assets/83ae10beee39/disk-d90b0276.raw.xz
->> >vmlinux: https://storage.googleapis.com/syzbot-assets/c231992300f6/vmlinux-d90b0276.xz
->> >kernel image: https://storage.googleapis.com/syzbot-assets/6377c9c2ea97/bzImage-d90b0276.xz
->> >
->> >IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> >Reported-by: syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
->> >
->> >=====================================================
->> >BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1c42/0x2580 net/vmw_vsock/virtio_transport_common.c:1421
->> > virtio_transport_recv_pkt+0x1c42/0x2580 net/vmw_vsock/virtio_transport_common.c:1421
->> > vsock_loopback_work+0x3e2/0x5d0 net/vmw_vsock/vsock_loopback.c:120
->> > process_one_work kernel/workqueue.c:2630 [inline]
->> > process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2703
->> > worker_thread+0xf45/0x1490 kernel/workqueue.c:2784
->> > kthread+0x3e8/0x540 kernel/kthread.c:388
->> > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
->> > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->> >
->> >Uninit was stored to memory at:
->> > virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c:1274 [inline]
->> > virtio_transport_recv_pkt+0x1ea4/0x2580 net/vmw_vsock/virtio_transport_common.c:1415
->> > vsock_loopback_work+0x3e2/0x5d0 net/vmw_vsock/vsock_loopback.c:120
->> > process_one_work kernel/workqueue.c:2630 [inline]
->> > process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2703
->> > worker_thread+0xf45/0x1490 kernel/workqueue.c:2784
->> > kthread+0x3e8/0x540 kernel/kthread.c:388
->> > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
->> > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->> >
->> >Uninit was created at:
->> > slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
->> > slab_alloc_node mm/slub.c:3478 [inline]
->> > kmem_cache_alloc_node+0x577/0xa80 mm/slub.c:3523
->> > kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:559
->> > __alloc_skb+0x318/0x740 net/core/skbuff.c:650
->> > alloc_skb include/linux/skbuff.h:1286 [inline]
->> > virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
->> > virtio_transport_alloc_skb+0x8b/0x1170 net/vmw_vsock/virtio_transport_common.c:58
->> > virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.c:957 [inline]
->> > virtio_transport_recv_pkt+0x1531/0x2580 net/vmw_vsock/virtio_transport_common.c:1387
->> > vsock_loopback_work+0x3e2/0x5d0 net/vmw_vsock/vsock_loopback.c:120
->> > process_one_work kernel/workqueue.c:2630 [inline]
->> > process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2703
->> > worker_thread+0xf45/0x1490 kernel/workqueue.c:2784
->> > kthread+0x3e8/0x540 kernel/kthread.c:388
->> > ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
->> > ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->> >
->> >CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.0-rc2-syzkaller-00337-gd90b0276af8f #0
->> >Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
->> >Workqueue: vsock-loopback vsock_loopback_work
->> >=====================================================
->> >
->>
->> Shigeru Yoshida already posted a patch here:
->>
->> https://lore.kernel.org/netdev/20231026150154.3536433-1-syoshida@redhat.com/
->
->Sure thing, this is why I released this syzbot report from my queue.
->
+On Thu, 2023-10-26 at 22:05 -0700, syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D14e7573968000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D37404d76b3c88=
+40e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dba2c35eb32f5a85=
+137f8
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D125607f5680=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12a22e9368000=
+0
+>=20
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/dis=
+k-20305791.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinu=
+x-20305791.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/b=
+zImage-20305791.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/81394ce585=
+9f/mount_0.gz
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+ba2c35eb32f5a85137f8@syzkaller.appspotmail.com
+>=20
+> general protection fault, probably for non-canonical address 0xdffffc001f=
+fff11a: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: probably user-memory-access in range [0x00000000ffff88d0-0x0000000=
+0ffff88d7]
+> CPU: 1 PID: 5052 Comm: udevd Not tainted 6.6.0-rc6-next-20231020-syzkalle=
+r #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 09/06/2023
+> RIP: 0010:list_empty include/linux/list.h:373 [inline]
+> RIP: 0010:locks_remove_posix+0x100/0x510 fs/locks.c:2555
+> Code: 4d 8b ae 20 02 00 00 4d 85 ed 0f 84 0c 02 00 00 e8 15 60 7d ff 49 8=
+d 55 50 48 b9 00 00 00 00 00 fc ff df 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f=
+ 85 ae 03 00 00 49 8b 45 50 48 39 c2 0f 84 db 01 00
+> RSP: 0018:ffffc90003d6f948 EFLAGS: 00010202
+> RAX: 0000000000000000 RBX: ffff8880271cca00 RCX: dffffc0000000000
+> RDX: 00000000ffff88d0 RSI: 000000001ffff11a RDI: ffff8880796982e0
+> RBP: 1ffff920007adf2b R08: 0000000000000003 R09: 0000000000004000
+> R10: 0000000000000000 R11: dffffc0000000000 R12: ffffc90003d6f988
+> R13: 00000000ffff8880 R14: ffff8880796980c0 R15: ffff8880271ccb90
+> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fc227c3e000 CR3: 000000002000e000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  filp_flush+0x11b/0x1a0 fs/open.c:1554
+>  filp_close+0x1c/0x30 fs/open.c:1563
+>  close_files fs/file.c:432 [inline]
+>  put_files_struct fs/file.c:447 [inline]
+>  put_files_struct+0x1df/0x360 fs/file.c:444
+>  exit_files+0x82/0xb0 fs/file.c:464
+>  do_exit+0xa51/0x2ac0 kernel/exit.c:866
+>  do_group_exit+0xd3/0x2a0 kernel/exit.c:1021
+>  get_signal+0x2391/0x2760 kernel/signal.c:2904
+>  arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:309
+>  exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+>  exit_to_user_mode_prepare+0x11c/0x240 kernel/entry/common.c:204
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+>  syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+>  do_syscall_64+0x4b/0x110 arch/x86/entry/common.c:88
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> RIP: 0033:0x7fc2276be3cd
+> Code: Unable to access opcode bytes at 0x7fc2276be3a3.
+> RSP: 002b:00007ffd929ccc20 EFLAGS: 00000246 ORIG_RAX: 00000000000000ea
+> RAX: 0000000000000000 RBX: 00007fc227b0bc80 RCX: 00007fc2276be3cd
+> RDX: 0000000000000006 RSI: 00000000000013bc RDI: 00000000000013bc
+> RBP: 00000000000013bc R08: 0000000000000000 R09: 0000000000000002
+> R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000006
+> R13: 00007ffd929cce30 R14: 0000000000001000 R15: 0000000000000000
+>  </TASK>
+> Modules linked in:
+> ----------------
+> Code disassembly (best guess):
+>    0:	4d 8b ae 20 02 00 00 	mov    0x220(%r14),%r13
+>    7:	4d 85 ed             	test   %r13,%r13
+>    a:	0f 84 0c 02 00 00    	je     0x21c
+>   10:	e8 15 60 7d ff       	call   0xff7d602a
+>   15:	49 8d 55 50          	lea    0x50(%r13),%rdx
+>   19:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+>   20:	fc ff df
+>   23:	48 89 d6             	mov    %rdx,%rsi
+>   26:	48 c1 ee 03          	shr    $0x3,%rsi
+> * 2a:	80 3c 0e 00          	cmpb   $0x0,(%rsi,%rcx,1) <-- trapping instru=
+ction
+>   2e:	0f 85 ae 03 00 00    	jne    0x3e2
+>   34:	49 8b 45 50          	mov    0x50(%r13),%rax
+>   38:	48 39 c2             	cmp    %rax,%rdx
+>   3b:	0f                   	.byte 0xf
+>   3c:	84 db                	test   %bl,%bl
+>   3e:	01 00                	add    %eax,(%rax)
+>=20
 
-Thanks for that ;-)
+Hrm, this is a curious one. The relevant code is here:
+                                                                           =
+         =20
+        ctx =3D locks_inode_context(inode);                             =
+=20
+        if (!ctx || list_empty(&ctx->flc_posix))                      =20
+                return;                                               =20
 
-Stefano
+So in this case, ctx was non-NULL, but apparently the i_flctx pointer
+was bogus (or maybe the list in it was corrupt? Not certain here). That
+pointer is initialized to NULL in inode_init_always, and it's only ever
+set via cmpxchg in locks_get_lock_context.
 
+The assembly looks really weird, but I found this mail from Linus that
+explains some of what we're seeing (but in the context of a percpu var
+problem):
+
+    https://lkml.org/lkml/2023/10/8/295
+
+I'm stumped. I don't see how this could happen right offhand, so I'm
+left to wonder if maybe we have some sort of generic memory corruption
+here? Could this be a KASAN bug of some sort?
+--=20
+Jeff Layton <jlayton@kernel.org>
