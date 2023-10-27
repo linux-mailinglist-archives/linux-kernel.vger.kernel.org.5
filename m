@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A957D92B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514A77D92CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 10:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345673AbjJ0IxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 04:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        id S1345680AbjJ0IzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 04:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345682AbjJ0Iwm (ORCPT
+        with ESMTP id S235133AbjJ0Iyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 04:52:42 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEA010EB
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:52:38 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5b837db1b26so1430093a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:52:38 -0700 (PDT)
+        Fri, 27 Oct 2023 04:54:50 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3026AD5F
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:54:47 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-778a47bc09aso136158085a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 01:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698396758; x=1699001558; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=sifive.com; s=google; t=1698396886; x=1699001686; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dtKdN8gUg9+lMym9YqfmjhQ5Z4QidptzAJvqHwUlM7g=;
-        b=Kc4k0tiqeG7bK7EyduXOaqeyQvRqI1UDiZwXxkNQZdcNC4pY5TcP/btiMn980BzRgH
-         sXNz7i9PjO96qlcKA9Lnc+hsHiWfDg//qzvn48U8CKGky4qr9hzltIPZNNENXv9olTL/
-         Y5VK3G52KKH2jW8EltDOAFnAhAKB3nIRTU1KppMTVS/Dl82j9dmzeyD1AATfO3y/yXYH
-         FNn7pYpiTAgTrH4jQz8XKb2F60OYw0zoYLhAYGatk5Cn2QY5SbDmM0v6UajFTs47BBQt
-         E2xMOnRYUuHbjXOkTJacykEWm3elVtm4N8h2j7cu3c7EQS3lhz7wN0UjJE0d0iHIRTco
-         OpRw==
+        bh=PdaenGl9X0PEqjSYbPqn12MNPqtdvNAV8Oju3UsrrJ0=;
+        b=jPXDVdwOZWiByTXtns5MQe3jfkq3+LXPNufNTO1vQAUqaeDOYmtPlXlOgarrTtfLMV
+         M2CIsdzRrbDx2e/dbgtc1HL589v6No7k5n/8idt5+kKkMEN7ljGspvIYBt8wIs8LJyF/
+         lGle5OFT5TeQNoP+wcvR+U/VZZUj3qNNHfx1brIlHFUFG8h18uU185y4fpVCYleWGnXg
+         dcvxG8+FGoDhdXZ00WFa5EW7Ap1lSFkPyWQaf8qBR2jJSOnjLS2Y5B2qQAA8elRN5akv
+         sEILGqFzy6ldoqZ92xuT7byvPKgHHwbYs6O8mNkKqdXeSQr1JDtzhTq0enz7nCt/SVqs
+         vZuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698396758; x=1699001558;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698396886; x=1699001686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dtKdN8gUg9+lMym9YqfmjhQ5Z4QidptzAJvqHwUlM7g=;
-        b=O1p9kvRRBrIiz5B0zDlqDUqIG+bIzN8NDqHAAjRYFnPQzArMN/3X0X7ySopH9NeSZ6
-         CuDQ70UIULabqTpNSxFmfndeCpZlB7S6gOj/TRAT8iV0jc6ezq/k0MbwvVHVm5bweePq
-         MmupiF1VBSn7d0hCFMoHTcvNPbH8/pG5yOuEhqCxbjYgSWLUEK71MHP6sRz5y/X5CONU
-         5K7NvChy5wJBsrsEKVOnYxAqiwQAqz5dVGBUwS2RS2kZJoB5c9PqlZTtxSM5sUaKhTvz
-         n+mnaQKYhGlQTo92zT4WnOWk7UJATrapAzcuFomyYhJoEtV5QByyUhrw0a6Ty+rTQL4p
-         9iQg==
-X-Gm-Message-State: AOJu0Yzp9NeBNV7JZmpsevhaik5vNU9Z2cEHbWHw5Kb55gSahZetqOli
-        Z7BoqGEIryU8mnKNqH0lcaf74fUuOLU=
-X-Google-Smtp-Source: AGHT+IHBCLzZpU6n8om3D/dn92DIeV8MgVjACdnbzcVk1bkmBb9Gh079jTRRKZd4w9ssolNOPTQvrg==
-X-Received: by 2002:a05:6a20:c19a:b0:16b:ff2c:c42c with SMTP id bg26-20020a056a20c19a00b0016bff2cc42cmr2092003pzb.62.1698396757804;
-        Fri, 27 Oct 2023 01:52:37 -0700 (PDT)
-Received: from ubuntu.. ([122.174.106.169])
-        by smtp.gmail.com with ESMTPSA id h12-20020a63b00c000000b0055c178a8df1sm698825pgf.94.2023.10.27.01.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 01:52:37 -0700 (PDT)
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Pavan Bobba <opensource206@gmail.com>
-Subject: [PATCH 10/10] staging: vt6655: Type encoding info dropped from variable name "byRxRate"
-Date:   Fri, 27 Oct 2023 14:21:59 +0530
-Message-Id: <16d6e4f4fbf643b45a9e2e5b4c48c93450543ecc.1698396278.git.opensource206@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1698396278.git.opensource206@gmail.com>
-References: <cover.1698396278.git.opensource206@gmail.com>
+        bh=PdaenGl9X0PEqjSYbPqn12MNPqtdvNAV8Oju3UsrrJ0=;
+        b=bkvDKyzrkP5EAoSfzmDwd9egrcHrTipYXezbPXyudKJ7M5Ld7kBo+ZKmnVRCPSXCLv
+         9zlfsBpa7ZfZAGuMM9BUd5ugGAga86edxP/qj1Xh0Yhdmpl8/CvK2DzSh63BJ0qOhtwH
+         c9HnlcvV+FPyBMPIuL73HeqsAS1el6HEW70mHyQ6Veq19ytXQMeVPyXjT0HZ7Kz44fh/
+         f9d3qoarNNhqjMjCG3UubSQlUDvWW5FiOwpY+agbSk5+IBzm0VPcpTFhj560dy78lxNW
+         TPZoXAQiws6KH1tpEuD7bD4s0HibYBcPkXaKCL6jO+lCPaUFPMgitvojLGCMD/gGkyEv
+         i+cg==
+X-Gm-Message-State: AOJu0Yx+L/orBj/sjvrgZxWnImpCn7FE2/tMFKr57aiOfFloO9r3utwR
+        LPWMejJh0yBnJ9PrS11qMZUXzhYVsxb9ordDuFSuQjKScdYJCHyh/Ok=
+X-Google-Smtp-Source: AGHT+IEeCm4aK9bpRM+LcIhgy8a9j/Ju0WiTVSP3A9XTCbcW3Gefp3T6ONYgGWcMpDzNEJEHYxXa/UkgFynZJD761IY=
+X-Received: by 2002:ae9:c114:0:b0:777:2792:4a2d with SMTP id
+ z20-20020ae9c114000000b0077727924a2dmr1687510qki.65.1698396886165; Fri, 27
+ Oct 2023 01:54:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024101902.6689-1-nylon.chen@sifive.com> <20231024101902.6689-2-nylon.chen@sifive.com>
+ <20231024-yin-coliseum-11f5e06fec14@spud> <CAHh=Yk_h_1r7ZG+yLK=SoK9AgPkestuQDH-CK621mz=X-PA+cQ@mail.gmail.com>
+ <20231025-utmost-enforcer-eda125f636ac@spud>
+In-Reply-To: <20231025-utmost-enforcer-eda125f636ac@spud>
+From:   Nylon Chen <nylon.chen@sifive.com>
+Date:   Fri, 27 Oct 2023 16:54:35 +0800
+Message-ID: <CAHh=Yk_MfFowjzUypgZ7DEc2nNN2Pd7MAFCk6W=5P4Asd20T_A@mail.gmail.com>
+Subject: Re: [v5 1/2] riscv: dts: sifive: unleashed/unmatched: Remove PWM
+ controlled LED's active-low properties
+To:     Conor Dooley <conor@kernel.org>
+Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, emil.renner.berthing@canonical.com,
+        vincent.chen@sifive.com, greentime.hu@sifive.com,
+        zong.li@sifive.com, nylon7717@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-variable name "byRxRate" updated like below:
-
-a.type encoding info dropped from name
-b.camelcase name replaced by snakecase
-
-Issue found by checkpatch
-
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/card.c | 12 ++++++------
- drivers/staging/vt6655/card.h |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index ebb96b4c9406..350ab8f3778a 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -278,8 +278,8 @@ bool card_set_phy_parameter(struct vnt_private *priv, u8 bb_type)
-  *
-  * Parameters:
-  *  In:
-- *      priv         - The adapter to be sync.
-- *      byRxRate        - data rate of receive beacon
-+ *      priv            - The adapter to be sync.
-+ *      rx_rate         - data rate of receive beacon
-  *      qwBSSTimestamp  - Rx BCN's TSF
-  *      qwLocalTSF      - Local TSF
-  *  Out:
-@@ -287,7 +287,7 @@ bool card_set_phy_parameter(struct vnt_private *priv, u8 bb_type)
-  *
-  * Return Value: none
-  */
--bool card_update_tsf(struct vnt_private *priv, unsigned char byRxRate,
-+bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
- 		    u64 qwBSSTimestamp)
- {
- 	u64 local_tsf;
-@@ -296,7 +296,7 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char byRxRate,
- 	local_tsf = vt6655_get_current_tsf(priv);
- 
- 	if (qwBSSTimestamp != local_tsf) {
--		qwTSFOffset = CARDqGetTSFOffset(byRxRate, qwBSSTimestamp,
-+		qwTSFOffset = CARDqGetTSFOffset(rx_rate, qwBSSTimestamp,
- 						local_tsf);
- 		/* adjust TSF, HW's TSF add TSF Offset reg */
- 		qwTSFOffset =  le64_to_cpu(qwTSFOffset);
-@@ -708,11 +708,11 @@ unsigned char card_get_pkt_type(struct vnt_private *priv)
-  *
-  * Return Value: TSF Offset value
-  */
--u64 CARDqGetTSFOffset(unsigned char byRxRate, u64 qwTSF1, u64 qwTSF2)
-+u64 CARDqGetTSFOffset(unsigned char rx_rate, u64 qwTSF1, u64 qwTSF2)
- {
- 	unsigned short wRxBcnTSFOffst;
- 
--	wRxBcnTSFOffst = rx_bcn_tsf_off[byRxRate % MAX_RATE];
-+	wRxBcnTSFOffst = rx_bcn_tsf_off[rx_rate % MAX_RATE];
- 
- 	qwTSF2 += (u64)wRxBcnTSFOffst;
- 
-diff --git a/drivers/staging/vt6655/card.h b/drivers/staging/vt6655/card.h
-index caf72892c1cd..19689a291f5b 100644
---- a/drivers/staging/vt6655/card.h
-+++ b/drivers/staging/vt6655/card.h
-@@ -48,13 +48,13 @@ void CARDvUpdateNextTBTT(struct vnt_private *priv, u64 qwTSF,
- 			 unsigned short wBeaconInterval);
- u64 vt6655_get_current_tsf(struct vnt_private *priv);
- u64 CARDqGetNextTBTT(u64 qwTSF, unsigned short wBeaconInterval);
--u64 CARDqGetTSFOffset(unsigned char byRxRate, u64 qwTSF1, u64 qwTSF2);
-+u64 CARDqGetTSFOffset(unsigned char rx_rate, u64 qwTSF1, u64 qwTSF2);
- unsigned char card_get_pkt_type(struct vnt_private *priv);
- void CARDvSafeResetTx(struct vnt_private *priv);
- void CARDvSafeResetRx(struct vnt_private *priv);
- void CARDbRadioPowerOff(struct vnt_private *priv);
- bool card_set_phy_parameter(struct vnt_private *priv, u8 bb_type);
--bool card_update_tsf(struct vnt_private *priv, unsigned char byRxRate,
-+bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
- 		    u64 qwBSSTimestamp);
- bool CARDbSetBeaconPeriod(struct vnt_private *priv,
- 			  unsigned short wBeaconInterval);
--- 
-2.34.1
-
+Conor Dooley <conor@kernel.org> =E6=96=BC 2023=E5=B9=B410=E6=9C=8825=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:14=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, Oct 25, 2023 at 05:32:21PM +0800, Nylon Chen wrote:
+> > Hi Conor,
+> >
+> > Conor Dooley <conor@kernel.org> =E6=96=BC 2023=E5=B9=B410=E6=9C=8824=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8810:55=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >
+> > > Hey,
+> > >
+> > > On Tue, Oct 24, 2023 at 06:19:01PM +0800, Nylon Chen wrote:
+> > > > This removes the active-low properties of the PWM-controlled LEDs i=
+n
+> > > > the HiFive Unmatched device tree.
+> > > >
+> > > > The reference is hifive-unleashed-a00.pdf[0] and hifive-unmatched-s=
+chematics-v3.pdf[1].
+> > > >
+> > > > Link: https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-=
+7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf [0]
+> > > > Link: https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9e-=
+e68ce76f4192_hifive-unmatched-schematics-v3.pdf [1]
+> > >
+> > > >
+> > >
+> > > This blank line should be removed if there is a follow-up.
+> > thanks, I got it.
+> > >
+> > > > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> > >
+> > > What did Vincent contribute to this patch? Are you missing a
+> > > co-developed-by tag, perhaps?
+> > Yes, Vincent was the first person to find the PWM driver problem, and
+>
+> That sounds like s/Signed-off-by/Reported-by/ then.
+Thanks, I got it.
+>
+> Cheers,
+> Conor.
