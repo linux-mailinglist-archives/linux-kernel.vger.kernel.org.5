@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7BD7D8E2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197D07D8E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 07:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345160AbjJ0Fae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 01:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
+        id S1345144AbjJ0FeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 01:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJ0Faa (ORCPT
+        with ESMTP id S229501AbjJ0FeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 01:30:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F0D1A7
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 22:30:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D2292C433C9;
-        Fri, 27 Oct 2023 05:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698384627;
-        bh=4CWjoHhCr3X2E7xAcEv+eOauN9xR9PQxvGnRuz2M7f8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Rvo5n6JlM9HkL9tiR+YtYBZ8lPs+RHHIi0KI1Vi/29KjTcfOxA0s2CFZr1Kk3Y6Be
-         MRR/kaTyZxgB+8oS2X6GtY68YMPIehmu0rLdQq4c0A8W2maXBwEwmTq3iigujAsFy0
-         2I+BT31EfZ8YT45VBR4SZAlWRz5T/i2wQA3Tx0Tieou+aqYfzvWtwDyP0SJmITdIWQ
-         /E2yN5wQiDkUv4D0ThQzW30pl4NzX19jmE+HWgXQLh7WoZrGTn9dUscIVSJvS8QZq9
-         Mp4vedvUz1sP5zQmuY6Xa2IpSt/poUBrNjLdgRBZ6OQU/smRloj1ixTQNLgtnh05dt
-         QlCQVeLp9/r4Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA816E4CC0F;
-        Fri, 27 Oct 2023 05:30:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 27 Oct 2023 01:34:10 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32381A7;
+        Thu, 26 Oct 2023 22:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698384843;
+        bh=ZlwcCpgji3B4ca648vW3TWOMt2e5PNvnzxuKUwNW4i0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hUyF5o4YyWzHLuNGTX1VCmSRatkFuiUWNsanUDL7nkO1jzZfsp8cKSMaa/vRIhakK
+         UVEoelL9P1KDvn+xbyJYDaHVnuadB+IG2qb3CWm4llXsXD+lMJoU0JKbJFsVDdlWLi
+         BkmVJEFFQoA05b/8jGACzuAjUGWsazJBnKf51KrSHe4D7xudAm8FaXqosutjLJ80TN
+         V7Thp+axHf3ph3qwS4kDKoeqo66YEme5mUts6bqY55iD60t38IxeNsyLkVUfddkbri
+         wppuN9ylDKMh+G/HylhYHM9t7L71WLsCC74BnC6H3/xmyFdNBSy4gSqqvSxTUxmOXO
+         O5C0jF/3qw5HA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGrty1GQNz4wcf;
+        Fri, 27 Oct 2023 16:34:01 +1100 (AEDT)
+Date:   Fri, 27 Oct 2023 16:34:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the landlock tree
+Message-ID: <20231027163400.5764d549@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] MAINTAINERS: Remove linuxwwan@intel.com mailing list
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169838462775.19664.12297909147407168362.git-patchwork-notify@kernel.org>
-Date:   Fri, 27 Oct 2023 05:30:27 +0000
-References: <20231025130332.67995-2-bagasdotme@gmail.com>
-In-Reply-To: <20231025130332.67995-2-bagasdotme@gmail.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        horms@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/m5HOWf6jM/D/e4rBXcr.b7H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+--Sig_/m5HOWf6jM/D/e4rBXcr.b7H
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Hi all,
 
-On Wed, 25 Oct 2023 20:03:32 +0700 you wrote:
-> Messages submitted to the ML bounce (address not found error). In
-> fact, the ML was mistagged as person maintainer instead of mailing
-> list.
-> 
-> Remove the ML to keep Cc: lists a bit shorter and not to spam
-> everyone's inbox with postmaster notifications.
-> 
-> [...]
+After merging the landlock tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Here is the summary with links:
-  - [net,v3] MAINTAINERS: Remove linuxwwan@intel.com mailing list
-    https://git.kernel.org/netdev/net-next/c/cc54d2e2c58a
+In file included from security/landlock/net.c:14:
+security/landlock/net.c: In function 'landlock_add_net_hooks':
+security/landlock/common.h:12:23: error: passing argument 3 of 'security_ad=
+d_hooks' from incompatible pointer type [-Werror=3Dincompatible-pointer-typ=
+es]
+   12 | #define LANDLOCK_NAME "landlock"
+      |                       ^~~~~~~~~~
+      |                       |
+      |                       char *
+security/landlock/net.c:199:28: note: in expansion of macro 'LANDLOCK_NAME'
+  199 |                            LANDLOCK_NAME);
+      |                            ^~~~~~~~~~~~~
+In file included from security/landlock/setup.h:12,
+                 from security/landlock/cred.h:17,
+                 from security/landlock/net.c:15:
+include/linux/lsm_hooks.h:120:53: note: expected 'const struct lsm_id *' bu=
+t argument is of type 'char *'
+  120 |                                const struct lsm_id *lsmid);
+      |                                ~~~~~~~~~~~~~~~~~~~~~^~~~~
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Caused by commit
 
+  fff69fb03dde ("landlock: Support network rules with TCP bind and connect")
 
+interacting with commit
+
+  9b09f11320db ("LSM: Identify modules by more than name")
+
+from the security tree.
+
+I have applied the following merge resolution patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 27 Oct 2023 16:13:32 +1100
+Subject: [PATCH] fixup for "landlock: Support network rules with TCP bind a=
+nd
+ connect"
+
+interacting with "LSM: Identify modules by more than name"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ security/landlock/net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/security/landlock/net.c b/security/landlock/net.c
+index aaa92c2b1f08..efa1b644a4af 100644
+--- a/security/landlock/net.c
++++ b/security/landlock/net.c
+@@ -196,5 +196,5 @@ static struct security_hook_list landlock_hooks[] __ro_=
+after_init =3D {
+ __init void landlock_add_net_hooks(void)
+ {
+ 	security_add_hooks(landlock_hooks, ARRAY_SIZE(landlock_hooks),
+-			   LANDLOCK_NAME);
++			   &landlock_lsmid);
+ }
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/m5HOWf6jM/D/e4rBXcr.b7H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU7S8gACgkQAVBC80lX
+0GxBlwf8CZN2qGCwBQDbwTx5IZjzE3VfGoAEWcFxeQzH7FdS5eBJBJjb8h+4exNd
+YayxJxYQ8yN5WYjBWjN6A26xEEdmpFB1Y0Db3MqTeQSW44V0x+ZOwXsj+HRVHQJD
+WwVKeosXLAFJ7y7CLjcbZm+KdsoYeH311XndVrQYd5kzodfscfHPYyQBOgEEIjcO
+whDOvkFDOTgBtdJN5QIf6j5KpN1YBOxAvFnffA1WOOEpKSuE40Z7qZteDgsJiOQ8
+x6830RrEcY3TGikbQJQYlbK5SkqP5geg+V3KXO8i6yU2Sr5a9CXTmcjOxrLPc3jC
+MbXLGAWc4GWObmh6y1IdOrB021Rj0Q==
+=74Wl
+-----END PGP SIGNATURE-----
+
+--Sig_/m5HOWf6jM/D/e4rBXcr.b7H--
