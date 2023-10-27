@@ -2,130 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223937D99DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3817D99EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 15:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345871AbjJ0Ndl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 09:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S1345966AbjJ0Nee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 09:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0Ndj (ORCPT
+        with ESMTP id S1345851AbjJ0Ne1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 09:33:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC82DCA;
-        Fri, 27 Oct 2023 06:33:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CCF7C433C8;
-        Fri, 27 Oct 2023 13:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698413617;
-        bh=WWRr7vPyHlc/VMGJypSn1m+NSFr6RCiyf59wCByVhWs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XazjmrpKo4oiA5ps8HBjVd49X8vONrubs+ZFGb0RlTNTNCYLBNjkeLO3xFb4FVhRP
-         ovNRF1Wp9caINQzMe/Pmr5m1hQkld20ynJNWa7DN3dAS5zylBICimP83sx2xYGyLIb
-         6RWepaBGaPFQ4AWBsUTwClQFy9Dydhw+tuRg8QJkCd1vYPz0R1vTLxfCwAwGuT6Neg
-         xzI8qiytku5rDGimt+CZnh3N0lr9UndHcb7yLl9JcbcGLD5DaidFQU6rhW4S6/am4Z
-         qyZ+9qc3IddggzVxUc7yu8hiI2I4/PdBfxOVqMurFUaClat9mlcdHnIbgp2trieL3/
-         KfpUpDuQFLOkw==
-Date:   Fri, 27 Oct 2023 14:33:35 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Jagath Jog J <jagathjog1996@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mehdi Djait <mehdi.djait.k@gmail.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: kx022a: Fix acceleration value scaling
-Message-ID: <20231027143335.7faa87aa@jic23-huawei>
-In-Reply-To: <77b5f4a6-4012-4409-9034-419b852a783f@gmail.com>
-References: <ZTEt7NqfDHPOkm8j@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-        <CAM+2Eu+ndzS9NLvsZaX_=YTHb_+t4cE5GjQevJ1Lgc2EBO20rA@mail.gmail.com>
-        <c623b6ff-6d6c-4351-b828-4ed4663f9de9@gmail.com>
-        <CAM+2EuJ8J+sJNBqbPuFLXVK-Y9V=q+Lt=js9giWdSZ6H=aJ2Jg@mail.gmail.com>
-        <77b5f4a6-4012-4409-9034-419b852a783f@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 09:34:27 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBADE5
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:34:25 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32d895584f1so1439750f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 06:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698413663; x=1699018463; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWXlEVm7BmX7wHuL11qkF7f8G0gaxC3EbzsfoFC6RTo=;
+        b=zdBw1+6dqq6zp8OOVFFDqgNOKJW3PaHVqyfyzvlKfQh5xnZXbSua0J0DoJHog6QSD5
+         bZRk86KXO9dCNAEd7IP94xof1mKUVqtqN8fjiDr6sNDJDvpz2VCCaTGxz/8QyNNe2JOx
+         6V2P7efoRGn/W5KaEnw6wysMngh/Efwwc7T/gwh9pAJqoufwvXhYiX17sPpMNADSVy77
+         admWsjqJdrlML3THIUIjMb9+4h9Q2ah9sztlQpZ78DTb+t9A3N1eHJGzaEHcZirMMmYf
+         VrntfQfauWn5P+D9Bve9kjXNqj0BEF8aimfuo5GbjPenpvYYwQfnlfSb1Vd1X7++ejZD
+         INdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698413663; x=1699018463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWXlEVm7BmX7wHuL11qkF7f8G0gaxC3EbzsfoFC6RTo=;
+        b=uFMfthsAVn0sElgZmGsA7LKPRjN7FBT4HpOZkVL542MoMuxlwUpVyo65nNwUfXzRTX
+         h+W0LzGaffxxttverjyfaTF3+TDoi7bagmU9uXn7cfXFZNX2V/l8mnb3+m1jiANHlA5F
+         stx1AvQM34YTW6lUk7RASpteX5QWMytzt9PfTtw+nD4CCkMYVJW9F1AODsOsf83kwZUH
+         GS8wDtIpQQX1elnivgTQJhfRLtnm2JoCYLiqwuPaR4Z7iBK5CFA/bnlAoQ58S3Sx+G7v
+         Qr6kqwDc3ztj+ifKrCai6fAe/OOZyqdzGefEEtqvnglbKVl31ae+1KT/+qemOelUsEu8
+         ZXkA==
+X-Gm-Message-State: AOJu0Yx76yFiq8jU2nv9Eg5Z4SR7wfb9ewznBxvCV+Qlaf7/br/zckxt
+        4DDUFJQLJKaW9fez1Gv9yoVZtg==
+X-Google-Smtp-Source: AGHT+IGTKYlxeMGbKvMng7oyFVLH2Eb21STPmNCCi/GdxnbZ7lfAeaYDBGoqDKjebhVx/rZdlHAI7Q==
+X-Received: by 2002:adf:f6c7:0:b0:32d:c0c9:f661 with SMTP id y7-20020adff6c7000000b0032dc0c9f661mr2335821wrp.51.1698413663368;
+        Fri, 27 Oct 2023 06:34:23 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:7207:bbe0:91fb:ad90? ([2a05:6e02:1041:c10:7207:bbe0:91fb:ad90])
+        by smtp.googlemail.com with ESMTPSA id d5-20020a5d6445000000b0032da4f70756sm1796089wrw.5.2023.10.27.06.34.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Oct 2023 06:34:22 -0700 (PDT)
+Message-ID: <65c38717-3e0c-46d3-a124-29cae48f1a2e@linaro.org>
+Date:   Fri, 27 Oct 2023 15:34:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 2/3] clocksource: Add JH7110 timer driver
+Content-Language: en-US
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>
+References: <20231019053501.46899-1-xingyu.wu@starfivetech.com>
+ <20231019053501.46899-3-xingyu.wu@starfivetech.com>
+ <3f76f965-7c7b-109e-2ee0-3033e332e84b@linaro.org>
+ <bb819333-52d3-49fc-9bb9-1a227bd5ca8f@starfivetech.com>
+ <d0e70434-e273-4799-c5ec-bbee1b3f5cc7@linaro.org>
+ <540136d4-6f8f-49a6-80ff-cc621f2f462b@starfivetech.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <540136d4-6f8f-49a6-80ff-cc621f2f462b@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 09:24:39 +0300
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-> On 10/20/23 19:48, Jagath Jog J wrote:
-> > On Fri, Oct 20, 2023 at 5:39=E2=80=AFPM Matti Vaittinen
-> > <mazziesaccount@gmail.com> wrote: =20
-> >>
-> >> On 10/19/23 21:21, Jagath Jog J wrote: =20
-> >>> Hi Matti,
-> >>>
-> >>> On Thu, Oct 19, 2023 at 6:54=E2=80=AFPM Matti Vaittinen
-> >>> <mazziesaccount@gmail.com> wrote: =20
-> >>>> =20
-> >  =20
-> >>>> I did only very quick testing on KX022A and iio_generic_buffer. After
-> >>>> the patch the values seemed to be correct order of magnitude. Further
-> >>>> testing is appreciated :) =20
-> >>>
-> >>> Values are correct with this change, Thank you for fixing.
-> >>> Tested-by: Jagath Jog J <jagathjog1996@gmail.com> =20
-> >>
-> >> Thanks a ton for testing! May I ask which component did you use (or did
-> >> you just use some 'simulated' regster values?) =20
-> >=20
-> > Hi Matti,
-> >=20
-> > I just simulated with the register values, Should the 'tested-by' tag o=
-nly be
-> > provided after hardware testing? =20
->=20
-> I am not sure TBH. I didn't have a problem with your tag though, I was=20
-> merely curious to hear about the IC usage :)
->=20
-> Now that you mentioned the tested-by tag usage, I started to wonder it=20
-> as well. From pure SW/driver point of view the register value simulation=
-=20
-> is sufficient - but in practice we are not interested in whether the=20
-> code works "in theory" - but whether the products do really work. This=20
-> is something which includes handling of potential HW quircks and=20
-> oddities - which are not always documented or known.
->=20
-> If we assume a case where someone is developing new gizmo and hits a bug=
-=20
-> which is in reality caused by some undocumented HW hiccup - then fixes=20
-> with "tested-by" tags which are not actually tested on HW having this=20
-> hiccup but using SW simulation - may be misleading.
->=20
-> The above is just some overall pondering - I am not too concerned on=20
-> your tested-by tag :) Besides, it's cool you did the testing! I=20
-> appreciate that! However, I wonder if there is some wider consensus=20
-> whether the tests should be ran using real HW when tested-by tag is=20
-> given. Jonathan, do you have any educated opinion on this?
+On 27/10/2023 11:17, Xingyu Wu wrote:
+> On 2023/10/25 22:39, Daniel Lezcano wrote:
+>> 
+>> Hi Xingyu,
+>> 
+>> 
+>> On 25/10/2023 11:04, Xingyu Wu wrote:
+>>> On 2023/10/24 22:56, Daniel Lezcano wrote:
+>>>> 
+>>>> Hi Xingyu,
+>>>> 
+>>>> 
+>>>> On 19/10/2023 07:35, Xingyu Wu wrote:
+>>>>> Add timer driver for the StarFive JH7110 SoC.
+>>>> 
+>>>> As it is a new timer, please add a proper nice description
+>>>> explaining the timer hardware, thanks.
+>>> 
+>>> OK. Will add the description in next version.
+>>> 
+>>>> 
+>>>>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com> --- 
+>>>>> MAINTAINERS                        |   7 + 
+>>>>> drivers/clocksource/Kconfig        |  11 + 
+>>>>> drivers/clocksource/Makefile       |   1 + 
+>>>>> drivers/clocksource/timer-jh7110.c | 380
+>>>>> +++++++++++++++++++++++++++++ 4 files changed, 399
+>>>>> insertions(+) create mode 100644
+>>>>> drivers/clocksource/timer-jh7110.c
+>>>>> 
+>>>>> diff --git a/MAINTAINERS b/MAINTAINERS index
+>>>>> 7a7bd8bd80e9..91c09b399131 100644 --- a/MAINTAINERS +++
+>>>>> b/MAINTAINERS @@ -20473,6 +20473,13 @@ S:    Maintained F:
+>>>>> Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
+>>>>>
+>>>>> 
+F:    sound/soc/starfive/jh7110_tdm.c
+>>>>> +STARFIVE JH7110 TIMER DRIVER +M:    Samin Guo
+>>>>> <samin.guo@starfivetech.com> +M:    Xingyu Wu
+>>>>> <xingyu.wu@starfivetech.com> +S:    Supported +F:
+>>>>> Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
+>>>>>
+>>>>> 
++F:    drivers/clocksource/timer-jh7110.c
+>>>>> + STARFIVE JH71X0 CLOCK DRIVERS M:    Emil Renner Berthing
+>>>>> <kernel@esmil.dk> M:    Hal Feng <hal.feng@starfivetech.com> 
+>>>>> diff --git a/drivers/clocksource/Kconfig
+>>>>> b/drivers/clocksource/Kconfig index
+>>>>> 0ba0dc4ecf06..821abcc1e517 100644 ---
+>>>>> a/drivers/clocksource/Kconfig +++
+>>>>> b/drivers/clocksource/Kconfig @@ -641,6 +641,17 @@ config
+>>>>> RISCV_TIMER is accessed via both the SBI and the rdcycle
+>>>>> instruction.  This is required for all RISC-V systems. 
+>>>>> +config STARFIVE_JH7110_TIMER +    bool "Timer for the
+>>>>> STARFIVE JH7110 SoC" +    depends on ARCH_STARFIVE ||
+>>>>> COMPILE_TEST
+>>>> 
+>>>> You may want to use ARCH_STARFIVE only if the platform can make
+>>>> this timer optional. Otherwise, set the option from the
+>>>> platform Kconfig and put the bool "bla bla" if COMPILE_TEST
+>>> 
+>>> Yes, this timer only be used on the StarFive SoC. So I intend to
+>>> modify to this:
+>>> 
+>>> bool "Timer for the STARFIVE JH7110 SoC" if COMPILE_TEST depends
+>>> on ARCH_STARFIVE
+>> 
+>> In this case, you should change the platform config and select the
+>> timer from there. Remove the depends on ARCH_STARFIVE so it is
+>> possible enable cross test compilation. Otherwise COMPILE_TEST will
+>> not work on other platforms.
+>> 
+>> [ ... ]
+>> 
+> 
+> It is not a kernel timer or clocksource. It will not work on other
+> platforms and is just used on the JH7110 SoC. I think I needn't
+> remove it. Maybe I modify to this:
+> 
+> bool "Timer for the STARFIVE JH7110 SoC" if COMPILE_TEST depends on
+> ARCH_STARFIVE || COMPILE_TEST
 
-It's fine to add a note.  People typically do this if they've tested on
-a particular device from a set.  So if you want to (entirely optional)
+I think there is a misunderstanding.
 
-Tested-by .... #Tested by simulate register values
+If we want to compile on x86 drivers for other platforms, we select 
+COMPILE_TEST so we can enable the timer and do compilation testing.
 
-I wouldn't describe that as a particularly educated opinion though :)
-Not something I care that much about.
+In this case, we may want to compile the STARFIVE JH7110 on x86 just to 
+double check it is correctly compiling (eg. we do changes impacting all 
+the drivers). If the ARCH_STARFIVE dependency is set, then that won't be 
+possible.
 
-J
->=20
-> > I referred to this driver because it's
-> > the most recent accelerometer driver that was merged. =20
->=20
-> Makes sense :) Thanks for replying!
->=20
-> Yours,
-> 	-- Matti
->=20
+So it should be:
+
+bool "Timer for the STARFIVE JH7110 SoC" if COMPILE_TEST
+...
+
+And in arch/riscv/Kconfig.socs
+
+config SOC_STARFIVE
+     ...
+     select STARFIVE_JH7110_TIMER
+     ...
+
+>>>>> +struct jh7110_clkevt { +    struct clock_event_device evt; +
+>>>>> struct clocksource cs; +    bool cs_is_valid; +    struct clk
+>>>>> *clk; +    struct reset_control *rst; +    u32 rate; +    u32
+>>>>> reload_val; +    void __iomem *base; +    char
+>>>>> name[sizeof("jh7110-timer.chX")]; +}; + +struct
+>>>>> jh7110_timer_priv { +    struct clk *pclk; +    struct
+>>>>> reset_control *prst; +    struct jh7110_clkevt
+>>>>> clkevt[JH7110_TIMER_CH_MAX];
+>>>> 
+>>>> Why do you need several clock events and clock sources ?
+>>> 
+>>> This timer has four counters (channels) which run independently.
+>>> So each counter can have its own clock event and clock source to
+>>> configure different settings.
+>> 
+>> The kernel only needs one clocksource. Usually multiple clockevents
+>> are per-cpu based system.
+>> 
+>> The driver does not seem to have a per cpu timer but just
+>> initializing multiple clockevents which will end up unused, wasting
+>> energy.
+>> 
+>> 
+> 
+> The board of the StarFive JH7110 SoC has two types of timer :
+> riscv-timer and jh7110-timer. It boots by riscv-timer(clocksource)
+> and the jh7110-timer is optional and additional. I think I should
+> initialize the four channels of jh7110-timer as clockevents not
+> clocksource pre-cpu.
+
+If no clocksource is needed on this SoC because riscv timers are used, 
+then it is not useful to register a clocksource for this timer and the 
+corresponding code can go away.
+
+If the clockevent is optional why do you need this driver at all?
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
