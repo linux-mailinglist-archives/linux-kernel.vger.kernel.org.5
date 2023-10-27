@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB007D97DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919407D97E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 14:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345420AbjJ0MXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 08:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S231627AbjJ0MZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 08:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJ0MXH (ORCPT
+        with ESMTP id S231345AbjJ0MZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:23:07 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532AEFA
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:23:05 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-41cd566d8dfso304631cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 05:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698409384; x=1699014184; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iqGvN31QMgS/WE6R9TnV8U7elzS7sYZgvAhoqmNovxw=;
-        b=mND/Hp34GOfmiN9zzzO0OT0W0nUFHpan4sL8uD2BFr131jcCmit1StwfLERybrSe41
-         HhnMWH3cRkJd8j5/LI50NOQpMRJT+bSzS/txZXa+/lo4MXO3iI0926O8alqBqlF/tFtb
-         vjqXTRvwvRhBvhCb2Un5zEhnihPLbRLdI7WloiVV/LwumrKlB6531tTuCfVtsL6yFmc4
-         pwNOb4T80EJtSM3DpUaVTpDyVWagXD0uGqmoypYvMwAS0YSklFRvg/EyyjXSTaU3Wk34
-         wmU1IzFbkXHbqYgb2hxTlixg7a1YVA8wNSrXSfitXNbVtSac/RQA6yn95grL0biIhRdX
-         niCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698409384; x=1699014184;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iqGvN31QMgS/WE6R9TnV8U7elzS7sYZgvAhoqmNovxw=;
-        b=aCSMFDn9lUJUk0jZClAXYOOEWoKJEr1LtVAVAllFAAcjRMenerOFghqcQaIMAgIXfY
-         NQIRIkcUpK3SNyd2EbZtR1jMreHX+JoEMYo02+6LKqYe+Ufl3oHOnLLVaODfKvAa1QqM
-         upAP5eQnZ4F+txIo9LE9o2dD1HE2IG+xnfB8T6z3JZ9vQP0/TELpkK5r8cHz1riTsqqK
-         nNhlmE03xni0YA3XPwv9zWuNOlb0Tcjw6lSntSb8Ut+VFfNeMEx7SjGG07SOU31xg7EB
-         T19SdWAsz61LlCqFYT2Ts415n21FBz5i7tH1fA5sEd684g1XlFOQ1uZf480bpAaRk/cs
-         UCaA==
-X-Gm-Message-State: AOJu0YzmAGlIfXZyaAX72Q8T6E/g9Y1PzPSNTjJrcrs6NS7KV13ppA6b
-        skc3/imbzNIieAJ/dldU9KiTBrQ5fQQH/kZnYJANZ84rydjJC/s0H/o=
-X-Google-Smtp-Source: AGHT+IF5ivCGWmxdtZn07o9nUqsYy498P5ekFRXRCDKLwLO8+tBImfDDHVjAUMWLfAuKJi0yHYpl39LO9eUJgFg2HJE=
-X-Received: by 2002:a05:622a:7619:b0:41e:3699:388c with SMTP id
- kg25-20020a05622a761900b0041e3699388cmr247776qtb.2.1698409384311; Fri, 27 Oct
- 2023 05:23:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230920150443.1789000-1-jackmanb@google.com>
-In-Reply-To: <20230920150443.1789000-1-jackmanb@google.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Fri, 27 Oct 2023 14:22:53 +0200
-Message-ID: <CA+i-1C29rULUPSKNtnnydqEh47KMhLHJw5EbLBJXo=mTvPK-xQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/entry: Avoid redundant CR3 write on paranoid returns
-To:     luto@kernel.org, tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        laijs@linux.alibaba.com, yosryahmed@google.com, reijiw@google.com,
-        oweisse@google.com, peterz@infradead.org
+        Fri, 27 Oct 2023 08:25:06 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368DBFA;
+        Fri, 27 Oct 2023 05:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1698409502;
+        bh=KmREfUcy5jm4Zpdo+lkmU9dwV5njzrSKpDztzvbFBK8=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=ejA+/H7DnpQ4MKb6lzAne4asm44jjYQTs3KW/SF+iHxv04IY23qZ9CxfjiBqzf2VO
+         qH1Nkeu9eqpk5+eJBKF6n2p9vFxJycrnET9hb/7Jh3MYGyGwqviWZ2X6wNALYG8XJP
+         q3adPoCzz7wENG/uP4RO5Q/mhVqT6V3/ymyXz9ck=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id ABC921287400;
+        Fri, 27 Oct 2023 08:25:02 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id b8Oe44fgnsbz; Fri, 27 Oct 2023 08:25:02 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1698409502;
+        bh=KmREfUcy5jm4Zpdo+lkmU9dwV5njzrSKpDztzvbFBK8=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=ejA+/H7DnpQ4MKb6lzAne4asm44jjYQTs3KW/SF+iHxv04IY23qZ9CxfjiBqzf2VO
+         qH1Nkeu9eqpk5+eJBKF6n2p9vFxJycrnET9hb/7Jh3MYGyGwqviWZ2X6wNALYG8XJP
+         q3adPoCzz7wENG/uP4RO5Q/mhVqT6V3/ymyXz9ck=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 5575A12873FC;
+        Fri, 27 Oct 2023 08:25:01 -0400 (EDT)
+Message-ID: <6c733fad84445bd29df230ecb5310535bfef2254.camel@HansenPartnership.com>
+Subject: Re: [PATCH v3 5/6] tpm: Add tpm_buf_read_{u8,u16,u32}
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     keyrings@vger.kernel.org,
+        William Roberts <bill.c.roberts@gmail.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Julien Gomes <julien@arista.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Fri, 27 Oct 2023 08:24:59 -0400
+In-Reply-To: <20231024011531.442587-6-jarkko@kernel.org>
+References: <20231024011531.442587-1-jarkko@kernel.org>
+         <20231024011531.442587-6-jarkko@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.42.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas, others, any thoughts on this one?
+On Tue, 2023-10-24 at 04:15 +0300, Jarkko Sakkinen wrote:
+> +++ b/drivers/char/tpm/tpm-buf.c
+> @@ -124,3 +124,72 @@ void tpm_buf_append_u32(struct tpm_buf *buf,
+> const u32 value)
+>         tpm_buf_append(buf, (u8 *)&value2, 4);
+>  }
+>  EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
+> +
+> +/**
+> + * tpm_buf_read() - Read from a TPM buffer
+> + * @buf:       &tpm_buf instance
+> + * @offset:    offset within the buffer
+> + * @count:     the number of bytes to read
+> + * @output:    the output buffer
+> + */
+> +static void tpm_buf_read(const struct tpm_buf *buf, off_t *offset,
+> size_t count, void *output)
+> +{
+> +       if (*(offset + count) >= buf->length) {
+
+I don't think you mean that; it's dereferencing a random location in
+the stack, which is why I see this check trip randomly when testing.  I
+think you mean
+
+if (*offset + count >= buf->length) {
+
+James
+
