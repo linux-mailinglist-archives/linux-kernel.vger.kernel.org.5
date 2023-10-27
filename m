@@ -2,61 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D207D8D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 04:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F1E7D8D04
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 04:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345120AbjJ0CCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 26 Oct 2023 22:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S1345138AbjJ0CD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 26 Oct 2023 22:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJ0CCA (ORCPT
+        with ESMTP id S229437AbjJ0CD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 26 Oct 2023 22:02:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DB6AB
-        for <linux-kernel@vger.kernel.org>; Thu, 26 Oct 2023 19:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698372117; x=1729908117;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9wl1fn5OCDJbFx27deXP8MrBM8vEcaM3WdOsTqdpBHw=;
-  b=gWy6h0OOX0AMPZ/nhgV/dz+5icoAPXLmagrGkG6Ao4/o7dWjfxn3rGgw
-   +Ay0syT2BINFtES40U2+vVTdCOXZc9AkRzpEEIg1hVUa15ft8m7UUQxOj
-   PEezELBcVro5RBXcHvVHurnOnuOyjtadT2zfM7cmpvizN/AIYNcDSH2GG
-   u11oIMilT6V2v1D9Cy16G9aKlH3sfHywsEqmZUHaeuThHID4ZoHD2xpYO
-   WEb+h+IDUCiSN2zn+inSE5zKl3OclpiCjWLa3lr6OZrthW49l+PbhxnP0
-   Eth4ai3baBK4bGMf/HTpqLts/OMOaOSrljODkpZLImKRiwJEWSuVhheUc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="378058713"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="378058713"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2023 19:01:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="829818439"
-X-IronPort-AV: E=Sophos;i="6.03,255,1694761200"; 
-   d="scan'208";a="829818439"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Oct 2023 19:01:54 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwCAa-000AKN-29;
-        Fri, 27 Oct 2023 02:01:52 +0000
-Date:   Fri, 27 Oct 2023 10:01:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Nadav Amit <namit@vmware.com>
-Subject: [tip:x86/percpu 21/22] arch/x86/include/asm/processor.h:522:24:
- sparse: sparse: dereference of noderef expression
-Message-ID: <202310270909.QBAOkiZP-lkp@intel.com>
+        Thu, 26 Oct 2023 22:03:27 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02623AB;
+        Thu, 26 Oct 2023 19:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698372202;
+        bh=Xf5W6N69BEL5vs00GlwWRmsDVtQ+vGLCc+Q84wpL6mI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uMyv+GwndA1sIqK17haga7DY6iHQOWflNo0XKSNLpfWoeOcIsD1IKKir4f9yI8V++
+         W9V3yzmG8cNn9ZMfMcVD4qAy8NnAc3Hu8QYbdLinyUZ0ESN/GEqvWgC7lSmN36UyRf
+         vfpvHwsPvAsKQ0gviH7HBJgcxAyKtJ3zWNEiSpVngvJPgppwJ1z2l6DrGafJFMSrn0
+         RQ9VePSX6Q8obWbRApWfnQ1ueTxnp157MKyNmiAoU8k0/UiOXP0y22eCLK7aoY+ZFw
+         1JrCYnjOdsqyYuGCMqBff/MkC5UQ/LJH3fgjx+SMZlaSy2/PreSfZrRMlpD4U5k1BP
+         AyPCCkHSSEgKw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SGmCt0nfTz4wby;
+        Fri, 27 Oct 2023 13:03:21 +1100 (AEDT)
+Date:   Fri, 27 Oct 2023 13:03:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the apparmor tree with the security
+ tree
+Message-ID: <20231027130320.69469330@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; boundary="Sig_/E8NMYd5Jkpz=CO8k/Jo4HbF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,110 +53,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/percpu
-head:   0548eb067ed664b93043e033295ca71e3e706245
-commit: ed2f752e0e0a21d941ca0ee539ef3d4cd576bc5e [21/22] x86/percpu: Introduce const-qualified const_pcpu_hot to micro-optimize code generation
-config: x86_64-randconfig-122-20231027 (https://download.01.org/0day-ci/archive/20231027/202310270909.QBAOkiZP-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231027/202310270909.QBAOkiZP-lkp@intel.com/reproduce)
+--Sig_/E8NMYd5Jkpz=CO8k/Jo4HbF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310270909.QBAOkiZP-lkp@intel.com/
+Hi all,
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
->> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
->> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
->> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
->> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
->> arch/x86/include/asm/processor.h:522:24: sparse: sparse: dereference of noderef expression
-   kernel/entry/common.c: note: in included file (through include/linux/sched.h, include/linux/context_tracking.h):
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
+Today's linux-next merge of the apparmor tree got a conflict in:
 
-vim +522 arch/x86/include/asm/processor.h
+  security/apparmor/lsm.c
 
-   513	
-   514	static __always_inline unsigned long current_top_of_stack(void)
-   515	{
-   516		/*
-   517		 *  We can't read directly from tss.sp0: sp0 on x86_32 is special in
-   518		 *  and around vm86 mode and sp0 on x86_64 is special because of the
-   519		 *  entry trampoline.
-   520		 */
-   521		if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
- > 522			return pcpu_hot.top_of_stack;
-   523	
-   524		return this_cpu_read_stable(pcpu_hot.top_of_stack);
-   525	}
-   526	
+between commit:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  3c3bda37ca1d ("AppArmor: Add selfattr hooks")
+
+from the security tree and commits:
+
+  bd7bd201ca46 ("apparmor: combine common_audit_data and apparmor_audit_dat=
+a")
+  d20f5a1a6e79 ("apparmor: rename audit_data->label to audit_data->subj_lab=
+el")
+
+from the apparmor tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/apparmor/lsm.c
+index 5e16c03936b9,4d34180e9799..000000000000
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@@ -771,16 -868,11 +917,16 @@@ out
+  	return error;
+ =20
+  fail:
+- 	aad(&sa)->label =3D begin_current_label_crit_section();
++ 	ad.subj_label =3D begin_current_label_crit_section();
+ -	ad.info =3D name;
+ +	if (attr =3D=3D LSM_ATTR_CURRENT)
+- 		aad(&sa)->info =3D "current";
+++		ad.info =3D "current";
+ +	else if (attr =3D=3D LSM_ATTR_EXEC)
+- 		aad(&sa)->info =3D "exec";
+++		ad.info =3D "exec";
+ +	else
+- 		aad(&sa)->info =3D "invalid";
+- 	aad(&sa)->error =3D error =3D -EINVAL;
+- 	aa_audit_msg(AUDIT_APPARMOR_DENIED, &sa, NULL);
+- 	end_current_label_crit_section(aad(&sa)->label);
+++		ad.info =3D "invalid";
++ 	ad.error =3D error =3D -EINVAL;
++ 	aa_audit_msg(AUDIT_APPARMOR_DENIED, &ad, NULL);
++ 	end_current_label_crit_section(ad.subj_label);
+  	goto out;
+  }
+ =20
+
+--Sig_/E8NMYd5Jkpz=CO8k/Jo4HbF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU7GmgACgkQAVBC80lX
+0GwKHQf/fYyhNZWglpRfPLqH5NJLnyHFQNiGAlc03fYpdvF2C5YcSiD7AU7UHgOG
+auZCFsuuE8u6BPm5HFxC6KOmXI/MzL+dlVno4axeXoorCbz61V3bddjoDusPIuuk
+Sn4nYKaNJGTNb+cqxv3otweHwTEmpIc5CChdy7sOP/afHqAGU68tMidQhG+cJqwl
+vE68juprl1hYf4UIfZL5kp6G61+etDIZB7l2hXB19erP1AJ2fpGbeudbF+oDFFoh
+/ojAD3GPgy+DsiRKyJ4oEa+PnFsVclyDdEeD52mRfGWhF/2czNQdn1ZV4PiNANoP
+vj6cggD613uYSHijvEwvcT9tCGuCFQ==
+=pcZH
+-----END PGP SIGNATURE-----
+
+--Sig_/E8NMYd5Jkpz=CO8k/Jo4HbF--
