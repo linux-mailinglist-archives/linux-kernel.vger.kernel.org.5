@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7E47D960E
-	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427B67D960F
+	for <lists+linux-kernel@lfdr.de>; Fri, 27 Oct 2023 13:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345735AbjJ0LL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 07:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42968 "EHLO
+        id S1345739AbjJ0LMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 07:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345539AbjJ0LL4 (ORCPT
+        with ESMTP id S1345727AbjJ0LMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 07:11:56 -0400
+        Fri, 27 Oct 2023 07:12:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7079C
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:11:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2443C433C7;
-        Fri, 27 Oct 2023 11:11:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268C2194
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 04:12:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46FE4C433C8;
+        Fri, 27 Oct 2023 11:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698405114;
-        bh=JQLXJ4o35od5EHLfavT645Y6xMQ3NmPP91bkAvMHzkE=;
+        s=korg; t=1698405131;
+        bh=5SfLpsNjYKsmFGqhrTveGezl3NSTwchqI/ptUgfCG6Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1TGYd9oavUJt+N4a5gBeGcpL3pQW2QEUG4TdutySzLtnoXuhLf2W4D3I6H5YLRx2L
-         YLRIYUKBV0msC4U01P4NbrzAUrCVJHEsVOLv49jWJM24tcPc43sJKwEPu2v6e1rNqU
-         DFZBnek4PMMoe+xeA3V23jHIDwD5+dUSAXor9Cuk=
-Date:   Fri, 27 Oct 2023 13:11:51 +0200
+        b=1r+k+tzUq4hL0SGIGwLFtCbwT6E2Q8/lK7YWA+N4NypNE+hblQqnGmsdc2ICMfTym
+         aYWQaAGyY7OEEWykxxxBmEZtCMsN/iw786HzKRwTgDcTIsWA0cdYL86JN9hTpIdULs
+         TQo4FBreXYwEPZUFogzuhyHTmIZtfyu20SVjWJXQ=
+Date:   Fri, 27 Oct 2023 13:12:08 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Yu Wang <quic_yyuwang@quicinc.com>
 Cc:     johannes@sipsolutions.net, rafael@kernel.org,
         linux-kernel@vger.kernel.org, kernel@quicinc.com
 Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
  devcd device
-Message-ID: <2023102730-twins-thieving-d04e@gregkh>
+Message-ID: <2023102757-spree-unruly-dcd6@gregkh>
 References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -87,9 +87,47 @@ On Thu, Oct 26, 2023 at 10:55:21PM -0700, Yu Wang wrote:
 >         device_del(new_device);
 >         put_device(new_device);
 >     }
+> 
+> In devcoredump framework, devcd_dev_release() will be called when
+> releasing the devcd device, it will call the free() callback first
+> and try to delete the symlink in sysfs directory of the failing device.
+> Eventhough it has checked 'devcd->failing_dev->kobj.sd' before that,
+> there is no mechanism to ensure it's still available when accessing
+> it in kernfs_find_ns(), refer to the diagram as below:
+> 
+>     Thread A was waiting for 'dump_state.dump_done' at #A-1-2 after
+>     calling dev_coredumpm().
+>     When thread B calling devcd->free() at #B-2-1, it wakes up
+>     thread A from point #A-1-2, which will call device_del() to
+>     delete the device.
+>     If #B-2-2 comes before #A-3-1, but #B-4 comes after #A-4, it
+>     will hit use-after-free issue when trying to access
+>     'devcd->failing_dev->kobj.sd'.
+> 
+>     #A-1-1: dev_coredumpm()
+>       #A-1-2: wait_for_completion(&dump_state.dump_done)
+>       #A-1-3: device_del()
+>         #A-2: kobject_del()
+>           #A-3-1: sysfs_remove_dir() --> set kobj->sd=NULL
+>           #A-3-2: kernfs_put()
+>             #A-4: kmem_cache_free() --> free kobj->sd
+> 
+>     #B-1: devcd_dev_release()
+>       #B-2-1: devcd->free(devcd->data)
+>       #B-2-2: check devcd->failing_dev->kobj.sd
+>       #B-2-3: sysfs_delete_link()
+>         #B-3: kernfs_remove_by_name_ns()
+>           #B-4: kernfs_find_ns() --> access devcd->failing_dev->kobj.sd
+> 
+> To fix this issue, put operations on devcd->failing_dev before
+> calling the free() callback in devcd_dev_release().
+> 
+> Signed-off-by: Yu Wang <quic_yyuwang@quicinc.com>
+> ---
+>  drivers/base/devcoredump.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-Is there any in-kernel user like this?  If so, why not fix them up to
-not do this?
+Also, what commit id does this fix?
 
 thanks,
 
