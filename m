@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6177DA4CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D997DA4CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjJ1CNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 22:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S233008AbjJ1CQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 22:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1CNV (ORCPT
+        with ESMTP id S232932AbjJ1CQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 22:13:21 -0400
+        Fri, 27 Oct 2023 22:16:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D32FB;
-        Fri, 27 Oct 2023 19:13:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 921F2C433C7;
-        Sat, 28 Oct 2023 02:13:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFB390;
+        Fri, 27 Oct 2023 19:16:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7529EC433C8;
+        Sat, 28 Oct 2023 02:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698459198;
-        bh=SP4XRBefB7saZs3AVFDrH14uJmpfek50CqylL2w0XhY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Go6m+efwnkyKZFLqYKfiPTqolZBTW4oKJxglZCgGOd83fwNMCycMVbrNzkRohpSbb
-         Zxvsyh2QH13GMtOIGytzbZYYZC7p1ITl6HdPXP7DmDfASeXg+vw4PLTcY5Z82TrpP+
-         p4CzGmEJXzVDseM7eT67xJ1z+VmWaFRv4NVAuEZuQBg6mSX+KFIL2AUnnelWy8hRk+
-         KGHICGCz9uxdYiRitzLVRr6lGmkTvHV80BhsCoI4YwzrXoJ9Cogh0/oM5IwMdAEB+/
-         NUFvewg8QVvJprFtspdqRiuNrRQPMhKd4+1+SOUmmqJB1NmH0AtMqPN5peKTTwZn64
-         MmRW+4gj8PM/g==
-Message-ID: <c0bc8db56b0ddad197b4e5ee7cd720be.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231027225821.95833-1-sboyd@kernel.org>
-References: <20231027225821.95833-1-sboyd@kernel.org>
-Subject: Re: [PATCH] clk: Fix clk gate kunit test on big-endian CPUs
+        s=k20201202; t=1698459360;
+        bh=d1DuWVqz/ZVco7mejt+EwNRvaAbtC8yJGdjeSO0L25U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DGfGt0LJOg92w4VOLiUaipuVloMt5+G8yGAfpCpuQSWtd8z88sWfdLYoq9a6ZXVLy
+         y0mt5P0/LFJ6hNGHGbgEwnrHrQZhfNG019iKoMUWVXa3uzLAEdzCaHtMIeQ1CtHrRP
+         2GgS01psru59S7fwag/2M4hDleYHlynJw0QVziAOpuEIkY25fD42sZIiRUfaFoClbd
+         Kb77jZNjkwc2ihbE+3NB8cDulONYSprhcstYXQwiNcdrCf/APs3XHpAod95bsM9701
+         JThnmuZyN0LF8QSpv3NsFzM9bd8PjHgsWV0lo5ss+Zu0VF2Jyy6wNWtCIy1xVJhQXv
+         vKzsv261tlfjg==
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        patches@lists.linux.dev, Boqun Feng <boqun.feng@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Date:   Fri, 27 Oct 2023 19:13:16 -0700
-User-Agent: alot/0.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v6.6-rc7
+Date:   Fri, 27 Oct 2023 19:15:58 -0700
+Message-ID: <20231028021559.138544-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,28 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2023-10-27 15:58:21)
-> The clk gate kunit test checks that the implementation of the basic clk
-> gate reads and writes the proper bits in an MMIO register. The
-> implementation of the basic clk gate type uses writel() and readl()
-> which operate on little-endian registers. This test fails on big-endian
-> CPUs because the clk gate implementation writes to 'fake_reg' with
-> writel(), which converts the value to be written to little-endian before
-> storing the value in the fake register. When the test checks the bits in
-> the fake register on a big-endian machine it falsely assumes the format
-> of the register is also big-endian, when it is really always
-> little-endian. Suffice to say things don't work very well.
->=20
-> Mark 'fake_reg' as __le32 and push through endian accessor fixes
-> wherever the value is inspected to make this test endian agnostic.
-> There's a CLK_GATE_BIG_ENDIAN flag for big-endian MMIO devices, which
-> this test isn't using. A follow-up patch will test with and without that
-> flag.
->=20
-> Reported-by: Boqun Feng <boqun.feng@gmail.com>
-> Closes: https://lore.kernel.org/r/ZTLH5o0GlFBYsAHq@boqun-archlinux
-> Tested-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
+The following changes since commit a47b44fbb13f5e7a981b4515dcddc93a321ae89c:
 
-Applied to clk-next
+  clk: tegra: fix error return case for recalc_rate (2023-09-12 10:56:05 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+
+for you to fetch changes up to 790437bbe0ef7e5cb5d091dd711c0d61d03945a5:
+
+  clk: stm32: Fix a signedness issue in clk_stm32_composite_determine_rate() (2023-10-12 17:30:54 -0700)
+
+----------------------------------------------------------------
+Three fixes, one for the clk framework and two for clk drivers:
+
+ - Avoid an oops in possible_parent_show() by checking for no parent
+   properly when a DT index based lookup is used
+ - Handle errors returned from divider_ro_round_rate() in
+   clk_stm32_composite_determine_rate()
+ - Fix clk_ops::determine_rate() implementation of socfpga's gateclk_ops
+   that was ruining uart output because the divider was forgotten about
+
+----------------------------------------------------------------
+Alessandro Carminati (1):
+      clk: Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
+
+Dan Carpenter (1):
+      clk: stm32: Fix a signedness issue in clk_stm32_composite_determine_rate()
+
+Maxime Ripard (1):
+      clk: socfpga: gate: Account for the divider in determine_rate
+
+ drivers/clk/clk.c                  | 21 ++++++++++++---------
+ drivers/clk/socfpga/clk-gate.c     | 27 +++++++++++++++++++++++----
+ drivers/clk/stm32/clk-stm32-core.c |  2 +-
+ 3 files changed, 36 insertions(+), 14 deletions(-)
+
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
