@@ -2,120 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0C77DA5BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 10:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7244E7DA5C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 10:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjJ1IGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 04:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S233146AbjJ1IIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 04:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjJ1IGd (ORCPT
+        with ESMTP id S229458AbjJ1III (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 04:06:33 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F4F128;
-        Sat, 28 Oct 2023 01:06:30 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9be1ee3dc86so392667466b.1;
-        Sat, 28 Oct 2023 01:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698480388; x=1699085188; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dSAFbD2zXqeXCz/qQ3/GP/6mFeOJu9TLTBJ5xkKSIes=;
-        b=bJNxDmzasQsZzjeydC4z0HAHqfNiP1CLFmLPIQwDMd0xM2O/OaQd89ovt5o3QLmrdB
-         5mwPSF8iqaRuP/HNgYMLJjKpjs0/Xxc+e54esyif2xoFYEfRRPEzq5A4r5JosOfakYIK
-         GyVDvdn2qbXa8QiRC9jGvHB6BXFrXepLJpCx97RvajoYE1Kxwd494lF8w5MML4Jb8ax/
-         Hy7rFmklcq6lFfM3Q94BgyO+OTE1D2JL5rVO4iqtpd/tIU459sdqBlZRTKGk5GWfJN8t
-         kBMTN+U3bk1DEBl0qYMDbPwXxTHiDWMplERoNILJljkgaN2Oc8m04vPxdj0mqH0R8B/r
-         pkyQ==
+        Sat, 28 Oct 2023 04:08:08 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A07AD
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:08:06 -0700 (PDT)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b3f5a58408so3624634b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:08:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698480388; x=1699085188;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698480485; x=1699085285;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dSAFbD2zXqeXCz/qQ3/GP/6mFeOJu9TLTBJ5xkKSIes=;
-        b=pXPGiz8jIS/+ZEQoVIRJ+d3rv+fTmOMRNCGSRq8yqFNd7o8gqbQ8ncYazbeBYtLv2O
-         haq3T8ScQ8hGZDSQ6HY2RtWtvHjSlgEPawY/uI7fykXH4hde7yhQ/p61anthCRR09YV8
-         OdudggrwyISO9uwZQpWcYAcF1nNcl+wH3szvv5VeNU6MXZcKGmI+fQwL/1woD79YRB8t
-         WQZaqTm9+uOnMqTaO9MZn07j/DgeraXyixiEs2AeZQojglxuqHZwhQcpHe8WS6paYQaV
-         BZQrmsw/ArhVuCof/sCPs+O6w1tYa40YCzAhX44Epo/u73toCmuhrwhnrO+7nmTfKjIY
-         GpFg==
-X-Gm-Message-State: AOJu0Ywtx9Gx/Huf4FSDpShtmaLVS+DNK0mkmKSTLHMk8yejF1EP2+Nd
-        4st8hyL58e7Qm9bXoTPA4M+ArBhRYg8=
-X-Google-Smtp-Source: AGHT+IHJgeVWMRHX7vuGRYML70hVSHsN/yOOAMM11wB+4IYCHjjRXA1XBH8Y9DKQszzsJUxHgssoJg==
-X-Received: by 2002:a17:906:fd8b:b0:9c6:4dec:b1f0 with SMTP id xa11-20020a170906fd8b00b009c64decb1f0mr3916751ejb.74.1698480388282;
-        Sat, 28 Oct 2023 01:06:28 -0700 (PDT)
-Received: from ?IPV6:2a01:c23:c119:9c00:b47c:4f5f:820f:2966? (dynamic-2a01-0c23-c119-9c00-b47c-4f5f-820f-2966.c23.pool.telefonica.de. [2a01:c23:c119:9c00:b47c:4f5f:820f:2966])
-        by smtp.googlemail.com with ESMTPSA id i22-20020a1709064ed600b0099ce025f8ccsm2412363ejv.186.2023.10.28.01.06.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 01:06:27 -0700 (PDT)
-Message-ID: <c5cfc90d-c184-4b04-bea0-bac375cfa85c@gmail.com>
-Date:   Sat, 28 Oct 2023 10:06:28 +0200
+        bh=XykZH9oTlS4FJRAOYUq4pLgLKfA/FZr66X6JGVrKVpQ=;
+        b=BE0o55rhEXtfNVwOaCZQql/HGaM8HABKD/tjN0DuNJQQv7qMne04P9PEtou8DJhHk4
+         pVDUszJTm+JRKKoBb7kmnIsT7mcGHHwuSdcibAyF3PZnYOEZ5pFYb5VoM4QYWPO+rWSm
+         9FtiV17mHg3Gsjbqk2fwcMxjIbhWRzwNjt+mXWwX8gAydoo+jjsle2SejMw1nrwH7Uig
+         EK+ZXuJbop3+BCFHyOnQxRG9FTr6QKmz9Kz8uY2veitTh5P9fAIt8ckWOJNboLVK2aHR
+         +J1Kfy0ccLma6P03qVHWmtkKpDDTGsCcKm+6ubS8YIx+BGratQ5mK0MVf/Ilie2Tju0/
+         qn0A==
+X-Gm-Message-State: AOJu0YwurZgXb06eaKnxp1Fw2psM7W3pHePBAnVXbMilA6DBZQZTTHMC
+        Egk2ZZp4HSXuGbQ568gkMWj+XaXOLDgAO566b4l9/SGAm331
+X-Google-Smtp-Source: AGHT+IFDjwDfEIgahcZurhdj//VOcAJxU1BcG40SXOfia+QcOf9ESmzzdSaSQNOaGQ/EYiST033HQpWbrvSDIiQVnHPyLBqCov5D
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net: r8169: Disable multicast filter for
- RTL_GIGA_MAC_VER_46
-Content-Language: en-US
-To:     Patrick Thompson <ptf@google.com>, netdev@vger.kernel.org
-Cc:     Chun-Hao Lin <hau@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        nic_swsd@realtek.com, Jeffery Miller <jefferymiller@google.com>
-References: <20231027213059.3550747-1-ptf@google.com>
- <CAJs+hrEXfk82+WyYSsPvs=qk-_JOsBHdWzgnFuy692eJsP=whQ@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <CAJs+hrEXfk82+WyYSsPvs=qk-_JOsBHdWzgnFuy692eJsP=whQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6808:23c1:b0:3a9:d030:5023 with SMTP id
+ bq1-20020a05680823c100b003a9d0305023mr1765756oib.3.1698480485671; Sat, 28 Oct
+ 2023 01:08:05 -0700 (PDT)
+Date:   Sat, 28 Oct 2023 01:08:05 -0700
+In-Reply-To: <20231028071018.1016-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000001aa1a0608c24e56@google.com>
+Subject: Re: [syzbot] [net?] BUG: corrupted list in ptp_open
+From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -123,57 +55,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.10.2023 23:50, Patrick Thompson wrote:
-> Hello Heiner,
-> 
-> I haven't heard back from realtek about the possibility that this
-> affects other MAC_VERs. Do you think it's acceptable to merge this
-> patch for now and if/when we hear back from realtek I can adjust the
-> function again?
-> 
-Fine with me. 
-Would be nice if mc filtering could be switched on/off via ethtool,
-because now we have to disable mc filtering for all the unaffected
-users too.
+Hello,
 
-> Thank you,
-> Patrick
-> 
-Heiner
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: corrupted list in ptp_release
 
-> On Fri, Oct 27, 2023 at 5:31 PM Patrick Thompson <ptf@google.com> wrote:
->>
->> MAC_VER_46 ethernet adapters fail to detect eapol packets unless
->> allmulti is enabled. Add exception for VER_46 in the same way VER_35
->> has an exception.
->>
->> Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
->> Signed-off-by: Patrick Thompson <ptf@google.com>
->> ---
->>
->> Changes in v2:
->> - add Fixes tag
->> - add net annotation
->> - update description
->>
->>  drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
->> index 361b90007148b..a775090650e3a 100644
->> --- a/drivers/net/ethernet/realtek/r8169_main.c
->> +++ b/drivers/net/ethernet/realtek/r8169_main.c
->> @@ -2584,7 +2584,8 @@ static void rtl_set_rx_mode(struct net_device *dev)
->>                 rx_mode |= AcceptAllPhys;
->>         } else if (netdev_mc_count(dev) > MC_FILTER_LIMIT ||
->>                    dev->flags & IFF_ALLMULTI ||
->> -                  tp->mac_version == RTL_GIGA_MAC_VER_35) {
->> +                  tp->mac_version == RTL_GIGA_MAC_VER_35 ||
->> +                  tp->mac_version == RTL_GIGA_MAC_VER_46) {
->>                 /* accept all multicasts */
->>         } else if (netdev_mc_empty(dev)) {
->>                 rx_mode &= ~AcceptMulticast;
->> --
->> 2.42.0.820.g83a721a137-goog
->>
+list_del corruption. prev->next should be ffff88807bfb5048, but was ffff888065aa5048. (prev=ffff88814b1c1048)
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:62!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6347 Comm: syz-executor.4 Not tainted 6.6.0-rc6-next-20231020-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:__list_del_entry_valid_or_report+0x11f/0x1b0 lib/list_debug.c:62
+Code: 9f e9 8a e8 a3 a3 3a fd 0f 0b 48 89 ca 48 c7 c7 c0 9f e9 8a e8 92 a3 3a fd 0f 0b 48 89 c2 48 c7 c7 20 a0 e9 8a e8 81 a3 3a fd <0f> 0b 48 89 d1 48 c7 c7 a0 a0 e9 8a 48 89 c2 e8 6d a3 3a fd 0f 0b
+RSP: 0018:ffffc90004807e00 EFLAGS: 00010082
+RAX: 000000000000006d RBX: ffff88807bfb4000 RCX: ffffffff816bb8d9
+RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
+RBP: ffff88802857b5e0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000001 R11: 0000000000000001 R12: 0000000000000246
+R13: ffff88807bfb5048 R14: ffff88807bfb5008 R15: ffff88807bfb5050
+FS:  0000555556c77480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fde0ff98000 CR3: 00000000247f4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __list_del_entry_valid include/linux/list.h:124 [inline]
+ __list_del_entry include/linux/list.h:215 [inline]
+ list_del include/linux/list.h:229 [inline]
+ ptp_release+0xc4/0x2b0 drivers/ptp/ptp_chardev.c:147
+ posix_clock_release+0xbc/0x180 kernel/time/posix-clock.c:158
+ __fput+0x270/0xbb0 fs/file_table.c:394
+ __fput_sync+0x47/0x50 fs/file_table.c:475
+ __do_sys_close fs/open.c:1590 [inline]
+ __se_sys_close fs/open.c:1575 [inline]
+ __x64_sys_close+0x86/0xf0 fs/open.c:1575
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fde0fe7b9da
+Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 03 7f 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 63 7f 02 00 8b 44 24
+RSP: 002b:00007ffd2031d3e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fde0fe7b9da
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000032 R08: 0000001b2e460000 R09: 00007fde0ff9bf8c
+R10: 00007ffd2031d530 R11: 0000000000000293 R12: 00007fde0fa000a8
+R13: ffffffffffffffff R14: 00007fde0fa00000 R15: 0000000000020aa6
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__list_del_entry_valid_or_report+0x11f/0x1b0 lib/list_debug.c:62
+Code: 9f e9 8a e8 a3 a3 3a fd 0f 0b 48 89 ca 48 c7 c7 c0 9f e9 8a e8 92 a3 3a fd 0f 0b 48 89 c2 48 c7 c7 20 a0 e9 8a e8 81 a3 3a fd <0f> 0b 48 89 d1 48 c7 c7 a0 a0 e9 8a 48 89 c2 e8 6d a3 3a fd 0f 0b
+RSP: 0018:ffffc90004807e00 EFLAGS: 00010082
+RAX: 000000000000006d RBX: ffff88807bfb4000 RCX: ffffffff816bb8d9
+RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
+RBP: ffff88802857b5e0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000001 R11: 0000000000000001 R12: 0000000000000246
+R13: ffff88807bfb5048 R14: ffff88807bfb5008 R15: ffff88807bfb5050
+FS:  0000555556c77480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fde0ff98000 CR3: 00000000247f4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         20305791 Add linux-next specific files for 20231020
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ea5473680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
+dashboard link: https://syzkaller.appspot.com/bug?extid=df3f3ef31f60781fa911
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=174d13fd680000
 
