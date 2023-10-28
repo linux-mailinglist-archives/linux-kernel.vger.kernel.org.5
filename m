@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6A57DA783
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 16:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0004F7DA7B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbjJ1ON3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 10:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S229509AbjJ1PSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 11:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ1ON2 (ORCPT
+        with ESMTP id S229446AbjJ1PSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 10:13:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC71D6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 07:13:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698502405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkdR3LIP6X/T4MnDwMCMqbjfio/IUFaqU9qNtOKypaQ=;
-        b=sU7SjGBUin4H0wmUtQOdW3ZA+3paJlHz5t2fuCOjlM1lfN1epLOphVLEW0IvItVPy+Dbh0
-        elkkb22BBy6xf7wjUx6demOzyuY/UpO92NeF4zDg9jPR579PwuFk40AkQLuwrJjhYjbrfr
-        FED4Mi0vC8EW0oBsc+VRQpwn46p+13Q/7tW6NKUG5vzuy/fkAcekYZvsXdkkup8Dr113X0
-        PWIo0xiShjll5OfZ2t+MkYij3w6Fwx+6rRI3E6XmXrJosXmtNEc3mbTROUXUfsrpbt7Af6
-        SAvSlks94qP8Aze+E6PpWC+EJkBq/bjxW/FCXEAapJw4KPTGODiXWKbS7CYkVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698502405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkdR3LIP6X/T4MnDwMCMqbjfio/IUFaqU9qNtOKypaQ=;
-        b=I3kavjQv7ypz0TwyykJn9g35qRAyF11mKbWEZ9fjN0wMmWbIxgKJJd+2st7tFRbC55mT8o
-        uSK6gL3XQiJdsSAQ==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH] lockdep: add lockdep_cleanup_dead_cpu()
-In-Reply-To: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
-References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
-Date:   Sat, 28 Oct 2023 16:13:24 +0200
-Message-ID: <877cn625tn.ffs@tglx>
+        Sat, 28 Oct 2023 11:18:45 -0400
+X-Greylist: delayed 908 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 Oct 2023 08:18:42 PDT
+Received: from sender11-op-o11.zoho.eu (sender11-op-o11.zoho.eu [31.186.226.225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EDE93
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 08:18:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698505411; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=HUbGmbVlFYl8nabxnsWxpaWme7pBdrnW1r3J6EdPM6/DWL8DqoIxkWSFtNZf41KNaAZGM82WAsrRqMEsJpmpMnrPyD3v9rErDb/PosVPHeq/S47aMQvcg0+ChoPbr3P5nYZhs6utWNCLB0Spshk5/UOQ3gED0rtu1I0IdkwjwB4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1698505411; h=Content-Type:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+        bh=fcAkc404d9Re+yvfwgnNWPLJSHhtmNiRxLjqyviXX6Y=; 
+        b=U7mjbJSUbdDpeP5a71MhIzSl20U1qXfGsxbWimg4Kj7K72nXf5cIFxqcGXvKS/BNEgcamc0SxVT9zeX0/K/HphZeg7xNzmFYveJgoaBkvHtDdD9tlp+5SZHrGbelFI+a9H85c/EWJ0oRkBmKswXNCzqyw3vPMJYRlpYNzne4vOI=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        dkim=pass  header.i=rdklein.fr;
+        spf=pass  smtp.mailfrom=edou@rdklein.fr;
+        dmarc=pass header.from=<edou@rdklein.fr>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1698505411;
+        s=zoho; d=rdklein.fr; i=edou@rdklein.fr;
+        h=From:From:To:To:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Type:Message-Id:Reply-To:Cc;
+        bh=fcAkc404d9Re+yvfwgnNWPLJSHhtmNiRxLjqyviXX6Y=;
+        b=O32o+kpg7ieQq+Eaf89CGC8y5//llYVYMuQ0VmKMxvDSDik/HhEldODR9Sk4UvJD
+        HnZ89i7Jm56dVcfXc8vdhvLhZFIrMEl2mrw2W6UQhaH4CTTCACut+Uw8iOefjDJH5K6
+        Z4cbVotHm535CA1lQ8iiZ9y5ZIrzTtVS7BodXjySSmPaTsENM960gZ3ZEohS3OQUZzJ
+        SI9D0QJHzR7dGc+FU3bHbFVXOY6w/nHHPMZ0B3POGCugD85TYPBUwr2XsOGxgt6emwO
+        HiPHz1tjipHvvpm8ibGK7td+lLWeyItcewKa/uY2nrYxoYXXtF91yMYyogxQT9N+LLT
+        N4mFU5+GZQ==
+Received: from venerable (dl977-h01-176-145-83-212.dsl.sta.abo.bbox.fr [176.145.83.212]) by mx.zoho.eu
+        with SMTPS id 1698505408734190.88544507003803; Sat, 28 Oct 2023 17:03:28 +0200 (CEST)
+User-agent: mu4e 1.8.9; emacs 28.2
+From:   Edouard Klein <edou@rdklein.fr>
+To:     linux-kernel@vger.kernel.org
+Subject: Mounting a 9P FS from inside a user NS ?
+Date:   Sat, 28 Oct 2023 16:39:35 +0200
+Message-ID: <87zg02bxhd.fsf@rdklein.fr>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-ZohoMailClient: External
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 28 2023 at 12:14, David Woodhouse wrote:
+Dear Kernel Gurus,
 
-> From: David Woodhouse <dwmw@amazon.co.uk>
->
-> Add a function to check that an offlone CPU left the tracing infrastructure
-> in a sane state. The acpi_idle_play_dead() function was recently observed
-> calling safe_halt() instead of raw_safe_halt(), which had the side-effect
-> of setting the hardirqs_enabled flag for the offline CPU. On x86 this
-> triggered lockdep warnings when the CPU came back online, but too early
-> for the exception to be handled correctly, leading to a triple-fault.
->
-> Add lockdep_cleanup_dead_cpu() to check for this kind of failure mode,
-> print the events leading up to it, and correct it so that the CPU can
-> come online again correctly.
->
-> [   61.556652] smpboot: CPU 1 is now offline
-> [   61.556769] CPU 1 left hardirqs enabled!
-> [   61.556915] irq event stamp: 128149
-> [   61.556965] hardirqs last  enabled at (128149): [<ffffffff81720a36>] acpi_idle_play_dead+0x46/0x70
-> [   61.557055] hardirqs last disabled at (128148): [<ffffffff81124d50>] do_idle+0x90/0xe0
-> [   61.557117] softirqs last  enabled at (128078): [<ffffffff81cec74c>] __do_softirq+0x31c/0x423
-> [   61.557199] softirqs last disabled at (128065): [<ffffffff810baae1>] __irq_exit_rcu+0x91/0x100
->
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+I would like to mount 9P filesystems from inside user namespaces, in
+order to replicate Plan 9's default per-process view of the filesystem,
+with 9P as a glue to mount part of one process' fs in another process'
+fs.
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+From what I understand, if I create a user- and mount- namespace, I
+would be able to unprivilegially mount FSs in it. But only if those FS
+have been deemed safe, blessed by the FS_USERNS_MOUNT flag.
+
+For example, tmpfs is a safe FS, and I can do:
+unshare --user --map-root-user --mount
+mount -t tmpfs tmpfs mnt/mnt1/
+
+and it works.
+
+However, if I do:
+unshare --user --map-root-user --mount
+mount -t 9p -o trans=unix /run/9p/srv4 mnt/mnt1
+
+I get  mount: /home/edouard/mnt/mnt1: permission denied.
+
+My question is: Are there currently any plans to make v9fs a
+FS_USERNS_MOUNT-flagged, safe filesystem ?
+
+If not, is it because of a fundamental design flaw somewhere that make
+v9fs less safe than e.g. FUSE, which AFAIK, is deemed safe ?
+
+Or is it because nobody ever got around to it ?
+
+This 2018 thread:
+https://lore.kernel.org/all/39b08c53-3449-3164-c1b1-44ac587dd4ea@metux.net/T/
+ended with
+> plan9fs would also be a candidate for that kind of treatment [being
+> allowed for unprivileged mounts] if it had a maintainer.
+>
+
+Is this still true ? I did not know v9fs was unmaintained.
+
+How big of a change would making v9fs FS_USERNS_MOUNT-flagged be ? Would
+anybody here be open to guide an effort made (by me or anybody else) to
+implement this change ?
+
+
+Last question: I think I can temporarily get by by writing a FUSE
+wrapper for 9P2000.L (the current wrappers, 9pfs and plan9port's 9pfuse
+only speak 9P2000). Is there an easier temporary solution ?
+
+Thank you for your time and hard work around the kernel.
+
+Cheers,
+
+Edouard.
+
+P.S. Please keep me in CC of the replies if you can.
