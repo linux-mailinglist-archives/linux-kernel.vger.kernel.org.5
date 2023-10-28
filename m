@@ -2,171 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734437DA77E
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 16:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F827DA781
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 16:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjJ1OJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 10:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S229939AbjJ1OKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 10:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ1OJZ (ORCPT
+        with ESMTP id S229454AbjJ1OKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 10:09:25 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57D6F0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 07:09:21 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7789aed0e46so224435985a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 07:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698502161; x=1699106961; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6L7rpUCYcNsJk00A3QFyNPiwTqn3W74KW0t1ePj7vug=;
-        b=3+nm+CoKsHY8GIiGZ+OYDMO+IDJSnAGD0MIAmrpN6guB+F9V0F0RpvYGkNhsthxTe3
-         i+OGF4PQlcP0trtyminiTC7cw7EYHnOwnA1Zl7f9aD7kkI9dEUKP2EU6auLH+G9w9gdG
-         6r8GP3ETBH5E57Pey2Pn3x/HMAaGoxbLLgdWRSBpyTZEiER/Ml6NK4/9mo+LwpHK5dqF
-         wH7cDW8ORgz51C0zgC7pHOb5F+9m1Jd2rK8mBgdrBGxd+1jMl31asTKoDm2kBXe+bfSZ
-         tLBL+1IbzNVJtUyyTE6RTkNfLkbPe0Mj7FyDxeSHp5Okjoww0ZBDP3fIK72k2///gkXc
-         FbeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698502161; x=1699106961;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6L7rpUCYcNsJk00A3QFyNPiwTqn3W74KW0t1ePj7vug=;
-        b=CxOd3Xddadx3tXQovG67tAd45nEaSdJrukYzKgAnO8lWmGp0RveF07fYwhaPGNDuiV
-         G5JE/3CExOWYSm6GETS13rLUfxo7BA+uNcvL7qG48edq2JiehBH9icnzi6lApCbFpp07
-         KjKygM0zFo1P8vCG2dTJz8o5h5w4AkeUH0W6BLgE20JNLBA8di3fCc2tRrJVCvHqLUXj
-         8EUYTbpXuBXhhMj3F45c0l1z6OHVbkXYiNwNVFVH/8PSVyle3fjJynF5gdYMsCHspvzw
-         GMbEzK6QdzOfKhB97CkV6puXfP1bfAefeOrAztAhYs0WBZ/NqtyFYvPUElZ8ugi80jHs
-         ES9w==
-X-Gm-Message-State: AOJu0Yz+FSvTinue+0R5gYyNkq0IN9Vw2f0OXY0Qo+gsMAQZrdD2jMc5
-        BwfM1YZPwM+BDcz2i7SwpS9yKQ==
-X-Google-Smtp-Source: AGHT+IFxJ/FDoJS68PD7qMrzmAsk3DKalsqtux142SuGdn1QnmuPxpI7se/KZBd8AMH4GvgqbFrxFA==
-X-Received: by 2002:a05:6214:2a8b:b0:64c:9d23:8f55 with SMTP id jr11-20020a0562142a8b00b0064c9d238f55mr6487367qvb.58.1698502160486;
-        Sat, 28 Oct 2023 07:09:20 -0700 (PDT)
-Received: from [192.168.7.192] (d14-69-93-221.try.wideopenwest.com. [69.14.221.93])
-        by smtp.gmail.com with ESMTPSA id t7-20020a0cde07000000b0064f53943626sm1636205qvk.89.2023.10.28.07.09.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 07:09:20 -0700 (PDT)
-Message-ID: <5fd7d151-cf60-48e1-8eae-fe39039a5acb@google.com>
-Date:   Sat, 28 Oct 2023 07:09:11 -0700
+        Sat, 28 Oct 2023 10:10:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949A7D6;
+        Sat, 28 Oct 2023 07:10:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60BB8C433C7;
+        Sat, 28 Oct 2023 14:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698502214;
+        bh=uN7HCH0yzy8b1CLvlI/NASuYfAWHTNyav6PEkpckViw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IsKeQV41bTjyTzbc0Zlk6kD2iYdCZczsAqbCmV1/DyWInG3i1IAOjMr3b/F7u2Nrf
+         2ampCKN1Sp+LH8PfTQchPhTddELZqhSpmzNKthIlULMo8VBLni6Z3tXu0Y2v2M3Zfz
+         pstIhXtkGzOdEMynFSAvwk4OO+NaRubmndo/6TazYL+M5pvODf0BVS2fmm19GfEiCa
+         vAb3HdXIJ53By94hiSJKckLC9d9rwevZGWcl2hN7Uc58KYP7OE2LFZx+Fjq3y9V/he
+         qhfjB1dQOKIsE5orPSmZ+Melv8wNgpE4PisBCuIfCOjRGwPkDJj/OEIxodpebqR3Ds
+         9huc/xrGyPzhQ==
+Date:   Sat, 28 Oct 2023 16:10:09 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
+Subject: upcoming merge window: Where did the patches we had intended to
+ depend on go? vfs-brauner tree with the btrfs tree
+Message-ID: <20231028-heutzutage-wortfetzen-a54cdb387623@brauner>
+References: <20231009104840.1bdadc80@canb.auug.org.au>
+ <20231009-bauch-gedanken-e02e35804e03@brauner>
+ <20231011083754.45a9ed53@canb.auug.org.au>
+ <20231011092004.GE2211@suse.cz>
+ <20231012154210.GI2211@suse.cz>
+ <20231023175513.GL26353@twin.jikos.cz>
+ <20231024082543.575b3edd@canb.auug.org.au>
+ <20231024-kolossal-ungelegen-f95c436de174@brauner>
+ <20231024154620.GQ26353@twin.jikos.cz>
+ <20231025-braumeister-sprung-44d486e2d721@brauner>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] usb:gadget:uvc Do not use worker thread to pump usb
- requests
-Content-Language: en-US
-To:     Michael Grzeschik <mgr@pengutronix.de>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thinh.Nguyen@synopsys.com, arakesh@google.com, etalvala@google.com,
-        dan.scally@ideasonboard.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-References: <ZToOJhyOFeGCGUFj@pengutronix.de>
- <20231026215635.2478767-1-jchowdhary@google.com>
- <20231027075117.GJ26306@pendragon.ideasonboard.com>
- <ZTuanepgXLXRoSMW@pengutronix.de>
- <20231027114752.GB12144@pendragon.ideasonboard.com>
- <ZTu9oEw1QEOxbHCf@pengutronix.de>
- <7c30f943-aaad-47dd-9ae3-02f1ca57e49b@rowland.harvard.edu>
- <ZTzsJo1/NPVTLCnY@pengutronix.de>
-From:   Jayant Chowdhary <jchowdhary@google.com>
-In-Reply-To: <ZTzsJo1/NPVTLCnY@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231025-braumeister-sprung-44d486e2d721@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 25, 2023 at 03:19:11PM +0200, Christian Brauner wrote:
+> On Tue, Oct 24, 2023 at 05:46:20PM +0200, David Sterba wrote:
+> > On Tue, Oct 24, 2023 at 10:59:39AM +0200, Christian Brauner wrote:
+> > > On Tue, Oct 24, 2023 at 08:25:43AM +1100, Stephen Rothwell wrote:
+> > > > Hi David,
+> > > > 
+> > > > On Mon, 23 Oct 2023 19:55:13 +0200 David Sterba <dsterba@suse.cz> wrote:
+> > > > >
+> > > > > I have updated my for-next branch again, sorry (top commit 1a4dc97c883a4f763cbaf50).
+> > > > > There are some fixes I don't want to miss from the 6.7 pull request.
+> > > > > There should be minimal change to the VFS tree conflict resolution so
+> > > > > the diff should be reusable.
+> > > > 
+> > > > So, why did you not just merge in v6.6-rc7 (or better yet, the branch
+> > > > that contains the fix(es) that Linus merged) and then apply your new
+> > > > commits on top of that?  All the commits that were in the btrfs tree
+> > > > have been rebased unchanged.
+> > > 
+> > > Please reconsider that and follow Stephen's suggestion. I'm sending pull
+> > > requests this week and it'd be really annoying having to rebase
+> > > vfs.super right before sending them.
+> > > 
+> > > We let you carry the required patches in btrfs on your insistence even
+> > > though this effectively blocked two patchsets for a whole cycle
+> > 
+> > I hope I explained my reasons already under that series, core btrfs
+> > changes should not go via VFS tree.
+> > 
+> > > and then
+> > > merged in btrfs into vfs.super for that. Rebasing on such short notice
+> > > is really not very nice.
+> > 
+> > Like said in the my other reply, the amount of VFS changes asks for
+> > stopping taking new patches to btrfs and not continuing the patch
+> > workflow that I've been doing. I understand that the inter-tree
+> > dependencies are never easy so it's about finding some common way and
+> > splitting the work over more releases eventually.
+> > 
+> > A resync of our branches a week before merge window, when there are no
+> 
+> Pull requests for VFS and a bunch of other trees are going out the week
+> before the merge window opens. This has been requested multiple times.
+> It's mentioned in almost every kernel release mail that pull requests
+> should go out early.
+> 
+> So you rebasing a week before the merge window means rebasing
+> right before the pr is sent for us. You might send pull requests later
+> and are free to do so of course but you made us depend on your tree so
+> we need some stability. That's why the rebase is problematic here.
+> 
+> > significant changes on my side does not sound like too short notice, but
+> > you can feel otherwise of course.
+> > 
+> > > I'm going to wait with the rebase for a bit.
+> > 
+> > Ok, don't rebase. I'll push to linux-next the previous snapshot and will
+> > find a way how to deliver the new patches.
+> 
+> Thanks! So I know you have your workflow and that's obviously fine but
+> rebasing when other major trees depend on your tree is a problem and I
+> believe Stephen has already linked to our official "Rebasing and
+> merging" documentation:
+> 
+> "- Do not reparent a tree without a good reason to do so.  Just being on a
+>    newer base or avoiding a merge with an upstream repository is not
+>    generally a good reason."
+> 
+> [...]
+> 
+> "A frequent cause of merge-window trouble is when Linus is presented with a
+> patch series that has clearly been reparented, often to a random commit,
+> shortly before the pull request was sent.  The chances of such a series
+> having been adequately tested are relatively low - as are the chances of
+> the pull request being acted upon."
+> 
+> So I'll make sure to point out that we're depending on the btrfs tree
+> and I have a clear merge commit explaining why we're pulling it in. All
+> of that would be invalidated if you're rebasing. So not rebasing really
+> helps us a lot.
+> 
+> I specifically put Linus in Cc so hopefully everyone is aware up front
+> and there are no unnecessary suprises during the merge window.
 
-On 10/28/23 04:10, Michael Grzeschik wrote:
-> On Fri, Oct 27, 2023 at 10:58:11AM -0400, Alan Stern wrote:
->> On Fri, Oct 27, 2023 at 03:39:44PM +0200, Michael Grzeschik wrote:
->>> On Fri, Oct 27, 2023 at 02:47:52PM +0300, Laurent Pinchart wrote:
->>> > On Fri, Oct 27, 2023 at 01:10:21PM +0200, Michael Grzeschik wrote:
->>> > > On Fri, Oct 27, 2023 at 10:51:17AM +0300, Laurent Pinchart wrote:
->>> > > > On Thu, Oct 26, 2023 at 09:56:35PM +0000, Jayant Chowdhary wrote:
->>> > > >> This patch is based on top of
->>> > > >> https://lore.kernel.org/linux-usb/20230930184821.310143-1-arakesh@google.com/T/#t:
->>> > > >>
->>> > > >> When we use an async work queue to perform the function of pumping
->>> > > >> usb requests to the usb controller, it is possible that thread scheduling
->>> > > >> affects at what cadence we're able to pump requests. This could mean usb
->>> > > >> requests miss their uframes - resulting in video stream flickers on the host
->>> > > >> device.
->>> > > >>
->>> > > >> In this patch, we move the pumping of usb requests to
->>> > > >> 1) uvcg_video_complete() complete handler for both isoc + bulk
->>> > > >>    endpoints. We still send 0 length requests when there is no uvc buffer
->>> > > >>    available to encode.
->>> > > >
->>> > > > This means you will end up copying large amounts of data in interrupt
->>> > > > context. The work queue was there to avoid exactly that, as it will
->>> > > > introduce delays that can affect other parts of the system. I think this
->>> > > > is a problem.
->>> > >
->>> > > Regarding Thin's argument about possible scheduling latency that is already
->>> > > introducing real errors, this seemed like a good solution.
->>> > >
->>> > > But sure, this potential latency introduced in the interrupt context can
->>> > > trigger other side effects.
->>> > >
->>> > > However I think we need some compromise since both arguments are very valid.
->>> >
->>> > Agreed.
->>> >
->>> > > Any ideas, how to solve this?
->>> >
->>> > I'm afraid not.
->>>
->>> We discussed this and came to the conclusion that we could make use of
->>> kthread_create and sched_setattr with an attr->sched_policy = SCHED_DEADLINE
->>> here instead of the workqueue. This way we would ensure that the worker
->>> would be triggered with hard definitions.
->>>
->>> Since the SG case is not that heavy on the completion handler, we could
->>> also make this kthread conditionaly to the memcpy case.
->>
->> If you don't mind a naive suggestion from someone who knows nothing
->> about the driver...
->>
->> An attractive possibility is to have the work queue (or kthread) do the
->> time-consuming copying, but leave the submission up to the completion
->> handler.  If the data isn't ready (or there's no data to send) when the
->> handler runs, then queue a 0-length request.
->>
->> That will give you the best of both worlds: low latency while in
->> interrupt context and a steady, constant flow of USB transfers at all
->> times.  The question of how to schedule the work queue or kthread is a
->> separate matter, not directly relevant to this design decision.
->
-> That's it. This is probably the best way to tackle the overall problem.
->
-> So we leave the call of the encode callback to the worker, that will
-> probably still can be a workqueue. The complete callback is calling
-> the explicit uvcg_video_ep_queue when prepared requests are available
-> and if there is nothing pending it will just enqueue zero requests.
->
-> Thank you Alan, this makes so much sense!
->
-> Jayant, Laurent: Do you agree?
-> If yes, Jayant will you change the patch accordingly?
->
->
-Thanks for all the discussion Greg, Michael, Laurent and Alan.
-Apologies for not responding earlier since I am OOO.
+So now I'm confused.
 
-While I  haven't tried this out this does seem like a very good idea.
-Thank you Alan! I will aim to make changes and post a patch on Monday night PST.
+I prepared the vfs-6.7.super pull request yesterday and was about to
+write the pull request message earlier and was about to send it out. And
+I did the usual checklist and takinga another close look at all the
+patches:
 
-Jayant
+Where are the patches that you insisted go through the btrfs tree and
+that made us merge in the btrfs/for-next tree into vfs.super?
 
+commit d6b5ffd5520a ("btrfs: use the super_block as holder when mounting file systems")
+commit 6d0eb684ad4a ("btrfs: open block devices after superblock creation")
+commit 8f05745a1bf9 ("btrfs: split btrfs_fs_devices.opened")
+commit 987b157f182e ("btrfs: call btrfs_close_devices from ->kill_sb")
+commit b87aed6ff4c3 ("btrfs: always open the device read-only in btrfs_scan_one_device")
+
+They were in btrfs/for-next on October 10, then you rebased and whatever
+is in btrfs/for-next that we merged in doesn't contain any of these
+patches. The top commit I have and that's visible in your repo is:
+c6e8f898f56f ("btrfs: open code timespec64 in struct btrfs_inode")
+
+So what happened and why weren't we told any of this as we did point out
+that we want to depend on this?
+
+I'm rebasing vfs.super onto plain v6.6-rc7 and dropping the btrfs merge
+completely as this is now completely pointless and it doesn't feely very
+transparent.
+
+If the btrfs tree somehow ends up bringing in these changes then that's
+fine. We've reworked locking requirements this cycle and so we will be
+fine without these changes.
+
+But you're actively blocking Jan from making progress with restricting
+writers to a block device because they are required for that for the
+second merge window.
+
+And I hope we won't be repeating this cycle's churn again coming cycle.
+
+And btw, as mentioned multiple times and reported upstream
+https://lore.kernel.org/linux-btrfs/20230908-merklich-bebauen-11914a630db4@brauner
+btrfs is broken when freezing block devices through the block layer
+(e.g., device mapper). Something we also can't fix without these
+patches.
