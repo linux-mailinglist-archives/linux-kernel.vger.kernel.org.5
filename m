@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720037DA54A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F7D7DA550
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbjJ1GYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 02:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S229547AbjJ1G3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 02:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjJ1GYP (ORCPT
+        with ESMTP id S229458AbjJ1G3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 02:24:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5141F11B;
-        Fri, 27 Oct 2023 23:24:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BAF3C433C8;
-        Sat, 28 Oct 2023 06:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698474252;
-        bh=huMuC9eD6QFppqGFj2d2KbgVfFm/ibyW7QtYs7CXVjE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ijwcilxu5csfY0vEjKFFyc18dKh4m0JPxe13OG1jiI1Kj3zWAcXwXDwX8HlDcwgAo
-         XjVlN1yI8WwjejOJUlkSKgz5yLl0YyWmuS/8R9WdrFs0HW/jA7Dn5bpoZQUjUw34ay
-         g37Dnh8jJ+wayTF5AWs2SsO/Q1jdnuCc/21YQd5zTiyvp/JksFagn7x3ecpotkMPxa
-         Xlh0z3L7a3cysgY8njfbfKemsKLyXvLZwAdTF+Uyuwh4dI/bhFB979oSpsaJM92+CH
-         R/pcYkFevSZjwuDTWuSZLKnJbWeIVOG/LdajAX6txTjErnrxwJ/UqPqYq+/Y9znIzG
-         /qRl0uGFVWJPg==
-Date:   Sat, 28 Oct 2023 08:24:04 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.6-rc8
-Message-ID: <ZTypBKf7VqKqnTuG@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>
+        Sat, 28 Oct 2023 02:29:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51B711B;
+        Fri, 27 Oct 2023 23:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698474558; x=1730010558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZmPZf8J+GCs5OUrhdqek1E0Y1P76n/e4mnKOXv6ZLjM=;
+  b=ePirB8Uu75ZOnNNTsup760nCJuELLn5bMlJ0xlc1pXyQLNRllJ5eXqGE
+   FzcFij1ZVWml0QPdf/z4txiWFa8GUKjOTJN9gCpzqE2g+iU0aA1EMBidF
+   FgiDusMBcw7BvR1NB0vza3VBYgm6ucyjNHFVEgxl0aG4tGXo1rwm/0oZ3
+   jr+PEXErcsaQPWeMc8JMH8h86HF4cvcXJpIGLgHv1o39+12HVpXhHO7s5
+   jDSnargNi8Y5f916Lr3ykRT1rkSMfqd9G49kBVubjLpIzoBxQkNHL7FU7
+   hmgJaRD11FiE7moDVfsZAanYAeBjdcgYKx/RFKD7kQhavACYB8eB9bDOZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="719988"
+X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
+   d="scan'208";a="719988"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 23:29:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="825578486"
+X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
+   d="scan'208";a="825578486"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2023 23:29:13 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwcoo-000BXT-3C;
+        Sat, 28 Oct 2023 06:29:11 +0000
+Date:   Sat, 28 Oct 2023 14:29:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paul Gazzillo <paul@pgazz.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+        Matt Ranostay <matt@ranostay.sg>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
+Message-ID: <202310281420.see2fNLh-lkp@intel.com>
+References: <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eoPy7XQcgNvfdFmT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Subhajit,
 
---eoPy7XQcgNvfdFmT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+kernel test robot noticed the following build warnings:
 
-The following changes since commit 94f6f0550c625fab1f373bb86a6669b45e9748b3:
+[auto build test WARNING on 611da07b89fdd53f140d7b33013f255bf0ed8f34]
 
-  Linux 6.6-rc5 (2023-10-08 13:49:43 -0700)
+url:    https://github.com/intel-lab-lkp/linux/commits/Subhajit-Ghosh/dt-bindings-iio-light-Avago-APDS9306/20231027-154954
+base:   611da07b89fdd53f140d7b33013f255bf0ed8f34
+patch link:    https://lore.kernel.org/r/20231027074545.6055-3-subhajit.ghosh%40tweaklogic.com
+patch subject: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
+config: alpha-allmodconfig (https://download.01.org/0day-ci/archive/20231028/202310281420.see2fNLh-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310281420.see2fNLh-lkp@intel.com/reproduce)
 
-are available in the Git repository at:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310281420.see2fNLh-lkp@intel.com/
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.6-rc8
+All warnings (new ones prefixed by >>):
 
-for you to fetch changes up to c896ff2dd8f30a6b0a922c83a96f6d43f05f0e92:
-
-  i2c: stm32f7: Fix PEC handling in case of SMBUS transfers (2023-10-21 20:31:04 +0200)
-
-----------------------------------------------------------------
-Bugfixes for Axxia when it is a target and for PEC handling of stm32f7.
-Plus, fixing an of node leak pattern in the mux subsystem.
-
-----------------------------------------------------------------
-Alain Volmat (1):
-      i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
-
-Herve Codina (3):
-      i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
-      i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
-      i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
-
-Jian Zhang (1):
-      i2c: aspeed: Fix i2c bus hang in slave read
+>> drivers/iio/light/apds9306.c:110: warning: cannot understand function prototype: 'const int apds9306_repeat_rate_freq[][2] = '
+>> drivers/iio/light/apds9306.c:123: warning: cannot understand function prototype: 'const int apds9306_repeat_rate_period[] = '
 
 
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Andrew Jeffery (2):
-      (Test) i2c: aspeed: Fix i2c bus hang in slave read
-      (Rev.) i2c: aspeed: Fix i2c bus hang in slave read
+vim +110 drivers/iio/light/apds9306.c
 
-Jonathan Cameron (3):
-      (Rev.) i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
-      (Rev.) i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
-      (Rev.) i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
+   106	
+   107	/**
+   108	 * apds9306_repeat_rate_freq - Sampling Frequency in uHz
+   109	 */
+ > 110	static const int apds9306_repeat_rate_freq[][2] = {
+   111		{40, 0},
+   112		{20, 0},
+   113		{10, 0},
+   114		{5,  0},
+   115		{2,  0},
+   116		{1,  0},
+   117		{0, 500000},
+   118	};
+   119	
+   120	/**
+   121	 * apds9306_repeat_rate_period - Sampling period in uSec
+   122	 */
+ > 123	static const int apds9306_repeat_rate_period[] = {
+   124		25000, 50000, 100000, 200000, 500000, 1000000, 2000000
+   125	};
+   126	static_assert(ARRAY_SIZE(apds9306_repeat_rate_freq) ==
+   127		      ARRAY_SIZE(apds9306_repeat_rate_period));
+   128	
 
-Pierre-Yves MORDRET (1):
-      (Rev.) i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
-
- drivers/i2c/busses/i2c-aspeed.c       | 3 ++-
- drivers/i2c/busses/i2c-stm32f7.c      | 9 ++++++---
- drivers/i2c/muxes/i2c-demux-pinctrl.c | 2 +-
- drivers/i2c/muxes/i2c-mux-gpmux.c     | 2 +-
- drivers/i2c/muxes/i2c-mux-pinctrl.c   | 2 +-
- 5 files changed, 11 insertions(+), 7 deletions(-)
-
---eoPy7XQcgNvfdFmT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU8qQQACgkQFA3kzBSg
-KbY60Q/9F4XvNPPADRy/0JKcXi3Y3RorEUExrSv3bw8++E/p0WVIJduI6Jj9dHAF
-GF/u6uq2BnNT5oNq5/aHUeaMTVcLKQQDWWTU+LjP2B2zyMedTbwSLUUI5NOJceeS
-shzIDf6TddM0KnZeQqgnVtwdjv+Jul2B/jKntWBLBeAIDA4g0I99f4R8s2f/cASA
-u/ZkYf0+lepzI879OaXniq+XoAmGQOe7i+ZZ6ICSCKtnSSUmg/hFtKXhpIZGsb+m
-dEOY4akPQEDy+nFUxUWeM8cZS7tK9t6cpbuHjakMY61uW3XUE+rVPEJqUXhb0UDy
-a3QKeWUMyEre0Iya4ApHGhj5i53vZ4tYD3tHJIZ+MMygTpCkdF6zW3AUO5mSxSGB
-iiBtrCym8n+/aHVy2hsSf1J81Ljjx+Y0NYwPFtW9wMtWtGRm6bMgOjqpyv7l09nl
-0cRovyLrD+dw+vaN9iHYQgQtWwiGQiqnsCWkoVU0D61moOTFwGwgEO12dMxhZHIe
-6mBwr2cNZmSdyuRfuLC0mxJZqqxEvEvaxzLk69TibLKX7oSMGvCTimpwVI1YtVPe
-OKjQcFy12MPMrKcmrVR2xxqdm/Y7X7HPTP9upQr7Tx/qJ+O7Zwep6Ze7kKQPFN3B
-LmbxG3bOmgeLEMJtxXS2T3pfIgi4SQHS+wfwM+8OVaDmbCDTKUA=
-=E4mS
------END PGP SIGNATURE-----
-
---eoPy7XQcgNvfdFmT--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
