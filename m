@@ -2,80 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB41B7DA4DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005387DA4E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbjJ1Chn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 22:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S232936AbjJ1Crx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 22:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Chl (ORCPT
+        with ESMTP id S229446AbjJ1Crw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 22:37:41 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5490
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 19:37:39 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-779f2718accso210965185a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 19:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698460659; x=1699065459; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZmopjVX/XnMveCj1kUkjKgN/o2U+0IT7sxlJXjVjVAw=;
-        b=dk2oJXzIUjR/UFLRLjjKElpTwM2ZwNOL/2xkcCuE3ZvBq7lESnh7LdRMvgzOaHpGGj
-         jXfZvKXa65Lhb7Wb656LPEE5HGveSQoIlyMf49uEZGphU/y863DvgzXJuHMEBkvgdff1
-         jLDerNVQlibdLPtmmtoGVBOGapLo8sdN2swamI2ik2kKB5kWxO4LHqPvoqWqQU7aflqW
-         5Cy+Z7dDvjx98RMTaIEyulGigITgaJsYODp2kmMBRDDVC7Cek0H9BeNE2YpwqtOO38eq
-         Ykgiq/X0P7nmbkaIFk6HzloYbF/WSsDkfjkZNnQynMsaRo6XsiqJklHVxpFUmOhgey/a
-         CXSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698460659; x=1699065459;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZmopjVX/XnMveCj1kUkjKgN/o2U+0IT7sxlJXjVjVAw=;
-        b=CZQwHDyxNv6tR7yqYaqio8urh+0SL0nSmubdEltUz1v6XhU2iYIe+GP1YSqs8pBnrY
-         yh0tq5QijBh5FHuP8V9I02AdNNzVbkYWBDDssHqyxZX3exTGlffl3zbv9WVkRLHydB6w
-         Mup8Jd1VOou/wp3HPgp7ObVZptawrtMrs2oMImQYeeHolnHLhr1oqQh7hqud8FjlOg80
-         +EekoGaOR+/Dl3i0TJgeyuKtTtMqXi+9sjFwFdX66LKVU0Gl3VKWv/WKTPbclbv51fM2
-         qx+/IgrCv5piuK0SPkiDdSbwo34dT8Vxv4+xRbTKYcyMroHpgx6qqcT8LC5eQi96kmC9
-         U5Lg==
-X-Gm-Message-State: AOJu0Yyj2g5UO2wY2e4V37NGXqRiwKK+0if5wytOYqaH1Ex4Mff2oGp7
-        7cOFlWS7lIQWBGdncLl7Suc=
-X-Google-Smtp-Source: AGHT+IGuBfFDwAPMsAVNNZLgHnrWCCC8tdDHFKtVJ4SLTJ7Jf3niEnItXEIjYBeSM4CIZdmNToPzxg==
-X-Received: by 2002:a05:620a:270c:b0:778:abb7:5cc with SMTP id b12-20020a05620a270c00b00778abb705ccmr4111001qkp.25.1698460658984;
-        Fri, 27 Oct 2023 19:37:38 -0700 (PDT)
-Received: from [10.0.0.218] (162-238-114-46.lightspeed.stlsmo.sbcglobal.net. [162.238.114.46])
-        by smtp.gmail.com with ESMTPSA id bp43-20020a05620a45ab00b0076db1caab16sm1136392qkb.22.2023.10.27.19.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Oct 2023 19:37:38 -0700 (PDT)
-Message-ID: <c36c2c196670a36f32cc776869e91f710c237400.camel@gmail.com>
-Subject: Re: [PATCH] patch_realtek: Splitting the UX3402 into two separate
- models.
-From:   pizFunk <mmpisoni@gmail.com>
-To:     poseaydone@ya.ru, Jaroslav Kysela <perex@perex.cz>
-Cc:     Takashi Iwai <tiwai@suse.com>, "Luke D. Jones" <luke@ljones.dev>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        Andy Chi <andy.chi@canonical.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Matthew Anderson <ruinairas1992@gmail.com>,
-        Luka Guzenko <l.guzenko@web.de>,
-        Yuchi Yang <yangyuchi66@gmail.com>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Date:   Fri, 27 Oct 2023 21:37:36 -0500
-In-Reply-To: <20230913053343.119798-1-poseaydone@ya.ru>
-References: <20230913053343.119798-1-poseaydone@ya.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Fri, 27 Oct 2023 22:47:52 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90724E1;
+        Fri, 27 Oct 2023 19:47:48 -0700 (PDT)
+Received: from dggpemm500012.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SHP5G4Mqcz1L9G5;
+        Sat, 28 Oct 2023 10:44:50 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemm500012.china.huawei.com (7.185.36.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 28 Oct 2023 10:47:45 +0800
+Message-ID: <7591fe2b-f337-ad78-08b1-cfbe7254f578@huawei.com>
+Date:   Sat, 28 Oct 2023 10:47:45 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] scsi: libsas: fix set zero-address when device-type !=
+ NO_DEVICE
+Content-Language: en-CA
+To:     Jason Yan <yanaijie@huawei.com>, <john.g.garry@oracle.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+        <kangfenglong@huawei.com>, <xiabing12@h-partners.com>
+References: <20231020024240.7708-1-yangxingui@huawei.com>
+ <31524a87-9e02-5e43-5d71-5747c2e6e6b0@huawei.com>
+From:   yangxingui <yangxingui@huawei.com>
+In-Reply-To: <31524a87-9e02-5e43-5d71-5747c2e6e6b0@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.120.108]
+X-ClientProxiedBy: dggpemm100024.china.huawei.com (7.185.36.234) To
+ dggpemm500012.china.huawei.com (7.185.36.89)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,18 +55,152 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-How can I get my model number added to the patch_realtek file? It
-suffers the same issue as the UX3402 and the line that needs to be
-added for my model laptop is:
 
-SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602",
-ALC245_FIXUP_CS35L41_SPI_2)
+On 2023/10/20 11:24, Jason Yan wrote:
+> On 2023/10/20 10:42, Xingui Yang wrote:
+>> phy->attached_sas_addr will be set to a zero-address when
+>> phy->linkrate < SAS_LINK_RATE_1_5_GBPS but device-type != NO_DEVICE,
+>> and it may trigger BUG() as follows when do revalidate with zero-address:
+> 
+> Hi  Xingui,
+> 
+> Why is this zero-addressed PHY added to another port? A zero-addressed 
+> PHY should not belong to any port.
+Hi Jason,
 
-Since I see you're being more specific here in splitting the model
-numbers, technically my full model number is: "UX7602ZM".
+[562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
+[562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 
+0000000000000000 (stp)
+port-7:7:0: trying to add phy phy-7:7:19 fails: it's already part of 
+another port
 
-Again, when I patch this locally it works for my model number, but as
-of yet only the other affected ASUS laptop modedls with my issue have
-found their way into the kernel.
+we get phy0's data info:
+crash> struct ex_phy 0xffff8020cead3000
+struct ex_phy {
+   phy_id = 0,
+   phy_state = PHY_EMPTY,
+   attached_dev_type = SAS_END_DEVICE,
+   linkrate = SAS_PHY_RESET_IN_PROGRESS,
+   attached_sata_host = 0 '\000',
+   attached_sata_dev = 1 '\001',
+   attached_sata_ps = 0 '\000',
+   attached_tproto = SAS_PROTOCOL_NONE,
+   attached_iproto = SAS_PROTOCOL_NONE,
+   attached_sas_addr = "\000\000\000\000\000\000\000",
+   attached_phy_id = 0 '\000',
+   phy_change_count = 152,
+   routing_attr = TABLE_ROUTING,
+   virtual = 0 '\000',
+   last_da_index = -1,
+   phy = 0xffff8020ceac5000,
+   port = 0xffffa0300c6f8800
+}
 
-Thanks!
+When a new device is attached, if the address is 0 and the device type 
+is not null, but stp or ssp, the device still creates a port in 
+sas_ex_discover_end_dev() and add all other expander phys with the same 
+sas_address 0 to this port in sas_ex_get_linkrate().
+
+All of the phys is zero-address belongs to port-7:7:0 as follows:
+
+crash> list sas_phy.port_siblings -s sas_phy.dev.kobj.name -s 
+sas_phy.identify.sas_address  -h ffff8020ceac5000
+ffff8020ceac5000
+   dev.kobj.name = 0xffff803017878b00 "phy-7:7:0",
+   identify.sas_address = 0,
+ffff8020ceacb000
+   dev.kobj.name = 0xffff803017871980 "phy-7:7:1",
+   identify.sas_address = 0,
+ffff8020ceade000
+   dev.kobj.name = 0xffff80301787f580 "phy-7:7:2",
+   identify.sas_address = 0,
+ffff8020cead4000
+   dev.kobj.name = 0xffff80301787d980 "phy-7:7:3",
+   identify.sas_address = 0,
+ffff8020ceacc800
+   dev.kobj.name = 0xffff80301787a480 "phy-7:7:4",
+   identify.sas_address = 0,
+ffff8020ceac6000
+   dev.kobj.name = 0xffff803017872500 "phy-7:7:5",
+   identify.sas_address = 0,
+ffff8020ceacd000
+   dev.kobj.name = 0xffff803041e62100 "phy-7:7:12",
+   identify.sas_address = 0,
+ffff8020ceadb000
+   dev.kobj.name = 0xffff803041e61980 "phy-7:7:13",
+   identify.sas_address = 0,
+ffff8020ceac8800
+   dev.kobj.name = 0xffff803041e61a00 "phy-7:7:14",
+   identify.sas_address = 0,
+ffff8020cead1800
+   dev.kobj.name = 0xffff803041e69980 "phy-7:7:15",
+   identify.sas_address = 0,
+
+
+Thanks,
+Xingui
+
+> 
+> Thanks,
+> Jason
+> 
+>>
+>> [562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
+>> [562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 
+>> 0000000000000000 (stp)
+>> [562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's 
+>> already part of another port
+>> [562240.085064] ------------[ cut here ]------------
+>> [562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
+>> [562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
+>> [562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 
+>> 0x0000000003bcbebf)
+>> [562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain 
+>> [libsas]
+>> [562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
+>> [562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>> [562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>> [562240.479751] sp : ffff0000300cfa70
+>> [562240.674822] Call trace:
+>> [562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>> [562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
+>> [562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
+>> [562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
+>> [562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
+>> [562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
+>> [562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
+>> [562240.756014]  process_one_work+0x1b4/0x448
+>> [562240.764548]  worker_thread+0x54/0x468
+>> [562240.772562]  kthread+0x134/0x138
+>> [562240.779989]  ret_from_fork+0x10/0x18
+>>
+>> So set a zero-address for phy->attached_sas_addr only when
+>> phy->attached_dev_type == NO_DEVICE.
+>>
+>> Fixes: 7d1d86518118 ("[SCSI] libsas: fix false positive 'device 
+>> attached' conditions")
+>>
+>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>> ---
+>>   drivers/scsi/libsas/sas_expander.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>> b/drivers/scsi/libsas/sas_expander.c
+>> index a2204674b680..5a81754d3768 100644
+>> --- a/drivers/scsi/libsas/sas_expander.c
+>> +++ b/drivers/scsi/libsas/sas_expander.c
+>> @@ -239,8 +239,7 @@ static void sas_set_ex_phy(struct domain_device 
+>> *dev, int phy_id,
+>>       /* help some expanders that fail to zero sas_address in the 'no
+>>        * device' case
+>>        */
+>> -    if (phy->attached_dev_type == SAS_PHY_UNUSED ||
+>> -        phy->linkrate < SAS_LINK_RATE_1_5_GBPS)
+>> +    if (phy->attached_dev_type == SAS_PHY_UNUSED)
+>>           memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
+>>       else
+>>           memcpy(phy->attached_sas_addr, dr->attached_sas_addr, 
+>> SAS_ADDR_SIZE);
+>>
+> .
