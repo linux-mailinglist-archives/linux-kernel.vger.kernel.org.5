@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A18A7DAA12
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 00:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E782F7DAA11
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 00:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjJ1WEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 18:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        id S229753AbjJ1Wau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 18:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1WEK (ORCPT
+        with ESMTP id S229699AbjJ1Wat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 18:04:10 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F47BE;
-        Sat, 28 Oct 2023 15:04:08 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40790b0a224so23795385e9.0;
-        Sat, 28 Oct 2023 15:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698530646; x=1699135446; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6xAxAgJ8/E1rrp4YMb11CAldnTGshTkVGRolTNv03Y=;
-        b=GTUdjj7tdcYyGawfuFz8N3axp/lgQxJpE7gTZ2f4eV/0pFcqsIBurC47gINhRWQHod
-         I6AUCujXFOR+cZB/K4MoeDUbFzXa0BAeMx6clyXY7WAeHDaOXevsxHm1eF1MbY0y7q2i
-         UIPtZydTxYSJD5LQQkSJrdPCQlN7shsNlbdS1XMDQIfzanNiJrPHr4Zl2TDrIPdynkXK
-         wvlnk5Fm0rmaAs4seSMTu3kMcyaeWeVmQjOwyGngHV58qZ9OWuM6bFd4CZoY9J5iQZDV
-         W7Qn9tPKEiYnmDTmYSFZd2JTqmq9XrJIOkQsudUa5SH1sRB44d70AJtB3PDPK9qJgM2K
-         VsHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698530646; x=1699135446;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W6xAxAgJ8/E1rrp4YMb11CAldnTGshTkVGRolTNv03Y=;
-        b=l6fIZenNYS7zq4doRG9XOhMxb3JijL+KPmaR/qHsXwjLWrZR+lyQJcRiZ4kx9Bohr9
-         S3F+pb2QlO6UtXckD673ES46ZYJOdqHHEsFtUaFcYk2+yVEtzVC1+2SPf3xT5Dsd/Glw
-         83sRJhCbhmqNp+IHP/a3bcY2yNFUUTYk+RyINVGpyRk8OaMrorVk1gSchCyxMKq27pHv
-         IHoUfBfSj8OzMgYniQtjLXfjgnWdDZD7GOo89OEFtKt5wfZQbbb5A5Yi1Ek2iR75UwDy
-         psE+lfAiXvibIwshSwAy0XJpBL1irlb9rkoJDvcgvMvTOKNO+hvr3SrJaDU8d6M8RWuy
-         n/zQ==
-X-Gm-Message-State: AOJu0YzVDKWGqQHp3Dcr89CPFyLLLW4wdyJQAsRlYMrnOgOcP5ndIYYd
-        /rdQTP9Up2hVTx6QorOl418=
-X-Google-Smtp-Source: AGHT+IGCLKsiOFpUOuwmLcFbsoirfIdDeHaZc2OJdfVUAJVeXg6mb8QiXLuLdKX5c4LmBVuLTYJkEQ==
-X-Received: by 2002:a5d:64e3:0:b0:32d:8401:404a with SMTP id g3-20020a5d64e3000000b0032d8401404amr4879072wri.10.1698530645910;
-        Sat, 28 Oct 2023 15:04:05 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id q26-20020adfb19a000000b0031f82743e25sm4638731wra.67.2023.10.28.15.04.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 15:04:05 -0700 (PDT)
-Date:   Sun, 29 Oct 2023 01:04:02 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Mauri Sandberg <sandberg@mailfence.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <20231028220402.gdsynephzfkpvk4m@skbuf>
-References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sat, 28 Oct 2023 18:30:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20852D6
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698532247; x=1730068247;
+  h=date:from:to:cc:subject:message-id;
+  bh=4UXA5fA+dgokM+9oBl3tSt3YfLHgnws7+KXX9nUfhIE=;
+  b=O8+01fOUOIW+J4Y4YgpJPcWaEwnQCqEsIhGs5hGZNWo4KoMpwsAQc2hc
+   dXrQCoSyqwGS+x8TN+JunQtCawKhAGVZ9a/KkDXFaalAjLRhZx3x9/FuQ
+   P1lNlfI14SZfuOm6HAS6W5T1o1Gp6vOWfXtwIrMKhkFwM8BoNqmTqk5oo
+   fuKaDF8eD+j4zrDRGW6r2s01Cg44Ut2GMfJ7b6sM1A52k22dCJu3RkZxj
+   aLVop2HEn+QUJK0+qsAcxrGBKky5i1nuhcah3sYw5C7lpouoH5I5j95g0
+   PzEUigssTgoejdmwpYW1N7odAmrPJAy3zHtYRetUEUx/eHUsDXeUPpogt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="385124837"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="385124837"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 15:30:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="759914844"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="759914844"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 28 Oct 2023 15:30:42 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwrpH-000C8V-30;
+        Sat, 28 Oct 2023 22:30:39 +0000
+Date:   Sun, 29 Oct 2023 06:29:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ f99b926f6543faeadba1b4524d8dc9c102489135
+Message-ID: <202310290644.iiy3Qpda-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,80 +60,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 10:21:39PM +0200, Linus Walleij wrote:
-> It was reported that the "LuCI" web UI was not working properly
-> with a device using the RTL8366RB switch. Disabling the egress
-> port tagging code made the switch work again, but this is not
-> a good solution as we want to be able to direct traffic to a
-> certain port.
-> 
-> It turns out that sometimes, but not always, small packets are
-> dropped by the switch for no reason.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: f99b926f6543faeadba1b4524d8dc9c102489135  irqchip/sifive-plic: Fix syscore registration for multi-socket systems
 
-"For no reason" is a technical statement which means "an unspecific/inconclusive
-drop reason in the ethtool -S output on the conduit interface (which also
-shows the hardware counters of the CPU port", or is it just a figure of
-speech? If just a figure of speech, could you please determine which
-counter gets incremented when the switch drops packets?
+elapsed time: 2282m
 
-What user port is being targeted when the switch drops packets? Any user
-port, or just specific ones?
+configs tested: 136
+configs skipped: 2
 
-What protocol headers do those packets that are dropped have? Is it size
-that they have in common, I wonder (given that you say that small
-packets are not always dropped), or is it something else?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
-> (1518 bytes) everything starts working fine.
-> 
-> As we completely lack datasheet or any insight into how this
-> switch works, this trial-and-error solution is the best we
-> can do.
-> 
-> I have tested smaller sizes, ETH_FRAME_LEN doesn't work for
-> example.
-> 
-> Fixes: 0e90dfa7a8d8 ("net: dsa: tag_rtl4_a: Fix egress tags")
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                   randconfig-001-20231027   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                          collie_defconfig   clang
+arm                                 defconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm                   randconfig-001-20231027   gcc  
+arm                         vf610m4_defconfig   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386         buildonly-randconfig-002-20231027   gcc  
+i386         buildonly-randconfig-004-20231027   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231027   gcc  
+i386                  randconfig-002-20231027   gcc  
+i386                  randconfig-003-20231027   gcc  
+i386                  randconfig-004-20231027   gcc  
+i386                  randconfig-005-20231027   gcc  
+i386                  randconfig-006-20231027   gcc  
+i386                  randconfig-011-20231027   gcc  
+i386                  randconfig-012-20231027   gcc  
+i386                  randconfig-013-20231027   gcc  
+i386                  randconfig-014-20231027   gcc  
+i386                  randconfig-015-20231027   gcc  
+i386                  randconfig-016-20231027   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231027   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5407c3_defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+m68k                        stmark2_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                      chrp32_defconfig   gcc  
+powerpc                     redwood_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231027   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231027   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                           se7780_defconfig   gcc  
+sh                              ul2_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231027   gcc  
+x86_64                randconfig-002-20231027   gcc  
+x86_64                randconfig-003-20231027   gcc  
+x86_64                randconfig-004-20231027   gcc  
+x86_64                randconfig-005-20231027   gcc  
+x86_64                randconfig-006-20231027   gcc  
+x86_64                randconfig-011-20231027   gcc  
+x86_64                randconfig-012-20231027   gcc  
+x86_64                randconfig-013-20231027   gcc  
+x86_64                randconfig-014-20231027   gcc  
+x86_64                randconfig-015-20231027   gcc  
+x86_64                randconfig-016-20231027   gcc  
+x86_64                randconfig-071-20231027   gcc  
+x86_64                randconfig-072-20231027   gcc  
+x86_64                randconfig-073-20231027   gcc  
+x86_64                randconfig-074-20231027   gcc  
+x86_64                randconfig-075-20231027   gcc  
+x86_64                randconfig-076-20231027   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
 
-Have you actually checked out this sha1sum and confirmed that the packet
-drop can be reproduced there? Ideally you could also go back to a bit
-earlier, to commit 9eb8bc593a5e ("net: dsa: tag_rtl4_a: fix egress tags")
-(this is a different commit from Qingfang with the same description) and
-test on user port 0 only?
-
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  net/dsa/tag_rtl4_a.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
-> index c327314b95e3..8b1e81a6377b 100644
-> --- a/net/dsa/tag_rtl4_a.c
-> +++ b/net/dsa/tag_rtl4_a.c
-> @@ -41,8 +41,11 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
->  	u8 *tag;
->  	u16 out;
->  
-> -	/* Pad out to at least 60 bytes */
-> -	if (unlikely(__skb_put_padto(skb, ETH_ZLEN, false)))
-> +	/* We need to pad out to at least ETH_FRAME_LEN + FCS bytes. This was
-> +	 * found by trial-and-error. Sometimes smaller frames work, but sadly
-> +	 * not always.
-> +	 */
-> +	if (unlikely(__skb_put_padto(skb, ETH_FRAME_LEN + ETH_FCS_LEN, false)))
->  		return NULL;
->  
->  	netdev_dbg(dev, "add realtek tag to package to port %d\n",
-> 
-> ---
-> base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-> change-id: 20231027-fix-rtl8366rb-e752bd5901ca
-> 
-> Best regards,
-> -- 
-> Linus Walleij <linus.walleij@linaro.org>
-> 
-
-Until more is known:
-
-pw-bot: cr
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
