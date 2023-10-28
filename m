@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 598167DA709
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B877DA70F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjJ1M7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 08:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        id S229671AbjJ1NFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ1M7w (ORCPT
+        with ESMTP id S229572AbjJ1NFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 08:59:52 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB6DE
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 05:59:49 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so8415483a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 05:59:49 -0700 (PDT)
+        Sat, 28 Oct 2023 09:05:30 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC23E3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:05:25 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c504a5e1deso45667571fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698497988; x=1699102788; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=3UR3GS6imOR6YGJJdA7lpkHOMfJC/pVezhxlj/37b0I=;
-        b=E13sv1wJEbdcifpCRLcy13dm58vFUPHoXXfEvH2czV04EPDRmA7rl+SDNFC4POkMnE
-         MPzMy1pohEQ24t5mo2epEO2rvijE1s+wCsqhXxdj9nzMfitzipKs8JunLh2BUS7Ve3TD
-         2Y8huYAXnRufKwZCq1DD4erTTs/LEMX4tE4iFo5l2wvieCQsiOmsxsR4ZMLoGK/zm7Xf
-         Ica9JfsetlqWg3sJXBAJanWLh2C0qPCgM5R0QA8HqyHlja0CpGaG5S2os9sasbGjZqXI
-         kAUz0EXW6Pkhm1Zo4lw9SdooZURHHtV7IuL6bUdZr+YMe2KyuXYEuJzGOVgFmOn6MyLY
-         cHwA==
+        d=linaro.org; s=google; t=1698498324; x=1699103124; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7REDLfQsAJ7SndjWElaiqS1d/sO15e1fwlkWpCSSgw=;
+        b=BifJbxzZaHymXPjwPjLh1ve4DxlSJA2V7NuNHazcXuy74j7I6jMT02rm9eCQF+wuHW
+         /dCEhHKdSKOZJ5B+JwDGVmKf8xcNtbqGEgie+I/sVUYoxtVFIeN3ntKHkkE/oHtS5OxI
+         OHnk47HLT+nDRQY6goIKyYM5yLQC18OMgCmwveXjKbdh8iOVZj5q6v8SFDNT6J2K9HIk
+         DC+6G6p8JqnLkPe+uvA+iR+AAXk7BiFAZLEIDM4qL0d/U+Z4/eznnDrotbnXdgLsR5bf
+         XaQhvesybQ8FX5VCKQ7e5CaUF6WbpPfZgIkU2U3960YG4UDXmWailYfakZhKCfQ/qhdj
+         Bb8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698497988; x=1699102788;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1698498324; x=1699103124;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3UR3GS6imOR6YGJJdA7lpkHOMfJC/pVezhxlj/37b0I=;
-        b=L1SXvbFkXcaIYIc7ENXkNh4YxhuYu3oITO3tczlVtpIx0Yw5b97yyvkJrQxTeRsoz3
-         ObLexWrs58sSTXlgUNnvpb4uzoOR6423JYh9asKjNwy5JhY8GWIo1eBtJxxB7ol34Kdr
-         pRZAuOnQk8eWEkiTm2V7tk10F5EBkJ+M5MR3fO40WcdCb60AjBrIlHY2Wo2ihqcIDYsx
-         leT9blO65XWCaxhF0PNMHTDIWUoaBdobbCvsE971Lq+212tsW7OxoJ4lUYEAC6hUdwkp
-         srX24dQpfNdjeW62mnevYZiP5DnQGg35vykNNMQehicQlwnCP8dY1mrHU8eTuFz4+PDF
-         5Etg==
-X-Gm-Message-State: AOJu0YzWvjGM/OojMMQZpLnty5gxcDkSpkRGPaCriCGXJI2u4MC1GNne
-        TJv8lxTQKZzTMti3+deu5lTRowEfkSM=
-X-Google-Smtp-Source: AGHT+IGnFL5uFSse0sHaxzVMKIJT6Tjv9APXTdbeTNk6avHvV2KfbsRxegJzGYGHosW240tU136rvw==
-X-Received: by 2002:a17:906:f291:b0:9a5:aa43:1c7c with SMTP id gu17-20020a170906f29100b009a5aa431c7cmr4405860ejb.26.1698497988320;
-        Sat, 28 Oct 2023 05:59:48 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id x6-20020a1709064a8600b00977cad140a8sm2735083eju.218.2023.10.28.05.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 05:59:47 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 28 Oct 2023 14:59:45 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [GIT PULL] x86/asm changes for v6.7
-Message-ID: <ZT0FwZYk4Dm/Lqix@gmail.com>
+        bh=Q7REDLfQsAJ7SndjWElaiqS1d/sO15e1fwlkWpCSSgw=;
+        b=lY92iOYjTyMIeg9ORyWq2uge/vUcFUZEI0BsCTeh8TfxAG/aAHTRP/iyupf8PfGU76
+         s1WLFDWvPq8fOWvX+pAjg7Ohrnz3dBrob3fqd23r1v8K6OZFp6rpcjQR4MiPz8nhb7MO
+         LbR2XnYefPjS45La71WkOU/5I8BVw9TRhvdWFJWGRW81VEYKs1m+4vzj2QFpzOOYRVSh
+         gf00w9J5mliTWYsJnEy4WXaO2EI7rX639fxPhRxfAdi8VSYUmr5NiYKLr6EHJxQsGN/P
+         ZFm6aW6jBbI1ai9hJH3yRpj38HWxFkmt6u/ilI5OECjXPWuwMB/ZRPRgG31seZ8B3DIV
+         h1FA==
+X-Gm-Message-State: AOJu0YyMwi9OCL5/y1Y4JIVeDjLDadEfjxeTCjIsLMH+W38C54nA7A1P
+        tgy8ORGfg/JVG0R8+ZveP3IvrQ==
+X-Google-Smtp-Source: AGHT+IEff08NZ+taaIxvODn3ijskDQen0I7LF1xmT9yvVdzmz0sGH6Mjy906q4wa1YMvfHtWuelFLQ==
+X-Received: by 2002:a2e:a70f:0:b0:2c0:293c:ad12 with SMTP id s15-20020a2ea70f000000b002c0293cad12mr3226120lje.17.1698498323978;
+        Sat, 28 Oct 2023 06:05:23 -0700 (PDT)
+Received: from [192.168.130.123] (178235177183.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.183])
+        by smtp.gmail.com with ESMTPSA id z21-20020a2e8415000000b002b6ce8b0dd6sm618828ljg.75.2023.10.28.06.05.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Oct 2023 06:05:23 -0700 (PDT)
+Message-ID: <42fa773d-b58a-4bd9-b12d-3e9931d2ae6c@linaro.org>
+Date:   Sat, 28 Oct 2023 15:05:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] pinctrl: qcom: sm8650-lpass-lpi: add SM8650 LPASS
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231027093615.140656-1-krzysztof.kozlowski@linaro.org>
+ <20231027093615.140656-3-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <20231027093615.140656-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 27.10.2023 11:36, Krzysztof Kozlowski wrote:
+> Add driver for the pin controller in Low Power Audio SubSystem (LPASS)
+> of Qualcomm SM8650 SoC.
+> 
+> Notable differences against SM8550 LPASS pin controller:
+> 1. Additional address space for slew rate thus driver uses
+>    LPI_FLAG_SLEW_RATE_SAME_REG and sets slew rate via different
+>    register.
+> 
+> 2. Two new pin mux functions: qca_swr_clk and qca_swr_data
+Hmmm so slimbus is entirely removed on 8650?
 
-Please pull the latest x86/asm git tree from:
+Diffing it against 8550, looks sane
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-asm-2023-10-28
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-   # HEAD: 8ae292c66dcb160b3e1e16b66c3076d5a2c63873 x86/lib: Address kernel-doc warnings
-
-x86 assembly code improvements for v6.7 are:
-
-- Micro-optimize the x86 bitops code
-- Define target-specific {raw,this}_cpu_try_cmpxchg{64,128}() to improve code generation
-- Define and use raw_cpu_try_cmpxchg() preempt_count_set()
-- Do not clobber %rsi in percpu_{try_,}cmpxchg{64,128}_op
-- Remove the unused __sw_hweight64() implementation on x86-32
-- Misc fixes and cleanups
-
- Thanks,
-
-	Ingo
-
------------------->
-Ingo Molnar (1):
-      x86/bitops: Remove unused __sw_hweight64() assembly implementation on x86-32
-
-Nick Desaulniers (1):
-      x86/asm/bitops: Use __builtin_clz{l|ll} to evaluate constant expressions
-
-Uros Bizjak (4):
-      x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
-      x86/percpu: Define raw_cpu_try_cmpxchg and this_cpu_try_cmpxchg()
-      x86/percpu: Use raw_cpu_try_cmpxchg() in preempt_count_set()
-      x86/percpu: Do not clobber %rsi in percpu_{try_,}cmpxchg{64,128}_op
-
-Xin Li (Intel) (2):
-      x86/entry: Remove unused argument %rsi passed to exc_nmi()
-      x86/entry: Fix typos in comments
-
-Zhu Wang (1):
-      x86/lib: Address kernel-doc warnings
-
-
- arch/x86/entry/entry_64.S       |  10 ++--
- arch/x86/include/asm/bitops.h   |   9 ++++
- arch/x86/include/asm/percpu.h   | 110 +++++++++++++++++++++++++++++++++++++---
- arch/x86/include/asm/preempt.h  |   4 +-
- arch/x86/lib/csum-wrappers_64.c |   5 --
- arch/x86/lib/hweight.S          |  20 +++-----
- 6 files changed, 125 insertions(+), 33 deletions(-)
+Konrad
