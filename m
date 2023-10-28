@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F7D7DA550
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054387DA555
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjJ1G3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 02:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
+        id S229468AbjJ1GiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 02:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJ1G3T (ORCPT
+        with ESMTP id S229458AbjJ1GiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 02:29:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51B711B;
-        Fri, 27 Oct 2023 23:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698474558; x=1730010558;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZmPZf8J+GCs5OUrhdqek1E0Y1P76n/e4mnKOXv6ZLjM=;
-  b=ePirB8Uu75ZOnNNTsup760nCJuELLn5bMlJ0xlc1pXyQLNRllJ5eXqGE
-   FzcFij1ZVWml0QPdf/z4txiWFa8GUKjOTJN9gCpzqE2g+iU0aA1EMBidF
-   FgiDusMBcw7BvR1NB0vza3VBYgm6ucyjNHFVEgxl0aG4tGXo1rwm/0oZ3
-   jr+PEXErcsaQPWeMc8JMH8h86HF4cvcXJpIGLgHv1o39+12HVpXhHO7s5
-   jDSnargNi8Y5f916Lr3ykRT1rkSMfqd9G49kBVubjLpIzoBxQkNHL7FU7
-   hmgJaRD11FiE7moDVfsZAanYAeBjdcgYKx/RFKD7kQhavACYB8eB9bDOZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="719988"
-X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
-   d="scan'208";a="719988"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 23:29:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="825578486"
-X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
-   d="scan'208";a="825578486"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2023 23:29:13 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwcoo-000BXT-3C;
-        Sat, 28 Oct 2023 06:29:11 +0000
-Date:   Sat, 28 Oct 2023 14:29:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gazzillo <paul@pgazz.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Matt Ranostay <matt@ranostay.sg>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <202310281420.see2fNLh-lkp@intel.com>
-References: <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
+        Sat, 28 Oct 2023 02:38:05 -0400
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7337D11B
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 23:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=TpjAkzYedyZU8caQY65fA7BKsB1dxSgkhWgaBHUI8JU=;
+  b=eSIqmUdiE9luoQvnw/3CL/qaK/0Kn1awq21BUZGf27qojhMKI32laT4a
+   sHq2qas1dSln2fVGzNTv/nI9KZudqDGoNmSOkxlzh7cgTniGAkgdaeFfF
+   XQsZB40asKgx8XCsgnB9VEZeZMBu8QYuQZD6ScPt1jSoa5dFi3iPGka6A
+   Q=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,258,1694728800"; 
+   d="scan'208";a="70000203"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 08:38:00 +0200
+Date:   Sat, 28 Oct 2023 08:37:59 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Chen Yu <yu.c.chen@intel.com>
+cc:     Keisuke Nishimura <keisuke.nishimura@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Subject: Re: [PATCH] sched/fair: Fix the decision for load balance
+In-Reply-To: <ZTyfoIBpm3lxd8Dy@chenyu5-mobl2.ccr.corp.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2310280836100.3338@hadrien>
+References: <20231027171742.1426070-1-keisuke.nishimura@inria.fr> <ZTyfoIBpm3lxd8Dy@chenyu5-mobl2.ccr.corp.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Subhajit,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on 611da07b89fdd53f140d7b33013f255bf0ed8f34]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Subhajit-Ghosh/dt-bindings-iio-light-Avago-APDS9306/20231027-154954
-base:   611da07b89fdd53f140d7b33013f255bf0ed8f34
-patch link:    https://lore.kernel.org/r/20231027074545.6055-3-subhajit.ghosh%40tweaklogic.com
-patch subject: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light Sensor
-config: alpha-allmodconfig (https://download.01.org/0day-ci/archive/20231028/202310281420.see2fNLh-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310281420.see2fNLh-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310281420.see2fNLh-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/iio/light/apds9306.c:110: warning: cannot understand function prototype: 'const int apds9306_repeat_rate_freq[][2] = '
->> drivers/iio/light/apds9306.c:123: warning: cannot understand function prototype: 'const int apds9306_repeat_rate_period[] = '
 
 
-vim +110 drivers/iio/light/apds9306.c
+On Sat, 28 Oct 2023, Chen Yu wrote:
 
-   106	
-   107	/**
-   108	 * apds9306_repeat_rate_freq - Sampling Frequency in uHz
-   109	 */
- > 110	static const int apds9306_repeat_rate_freq[][2] = {
-   111		{40, 0},
-   112		{20, 0},
-   113		{10, 0},
-   114		{5,  0},
-   115		{2,  0},
-   116		{1,  0},
-   117		{0, 500000},
-   118	};
-   119	
-   120	/**
-   121	 * apds9306_repeat_rate_period - Sampling period in uSec
-   122	 */
- > 123	static const int apds9306_repeat_rate_period[] = {
-   124		25000, 50000, 100000, 200000, 500000, 1000000, 2000000
-   125	};
-   126	static_assert(ARRAY_SIZE(apds9306_repeat_rate_freq) ==
-   127		      ARRAY_SIZE(apds9306_repeat_rate_period));
-   128	
+> On 2023-10-27 at 19:17:43 +0200, Keisuke Nishimura wrote:
+> > should_we_balance is called for the decision to do load-balancing.
+> > When sched ticks invoke this function, only one CPU should return
+> > true. However, in the current code, two CPUs can return true. The
+> > following situation, where b means busy and i means idle, is an
+> > example because CPU 0 and CPU 2 return true.
+> >
+> >         [0, 1] [2, 3]
+> >          b  b   i  b
+> >
+> > This fix checks if there exists an idle CPU with busy sibling(s)
+> > after looking for a CPU on an idle core. If some idle CPUs with busy
+> > siblings are found, just the first one should do load-balancing.
+> >
+> > Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
+> > Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+> > ---
+> >  kernel/sched/fair.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 2048138ce54b..eff0316d6c7d 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -11083,8 +11083,9 @@ static int should_we_balance(struct lb_env *env)
+> >  		return cpu == env->dst_cpu;
+> >  	}
+> >
+> > -	if (idle_smt == env->dst_cpu)
+> > -		return true;
+> > +	/* Is there an idle CPU with busy siblings? */
+> > +	if (idle_smt != -1)
+> > +		return idle_smt == env->dst_cpu;
+> >
+> >  	/* Are we the first CPU of this group ? */
+> >  	return group_balance_cpu(sg) == env->dst_cpu;
+>
+> Looks reasonable to me, if there is other idle SMT(from half-busy core)
+> in the system, we should leverage that SMT to do the periodic lb.
+> Per my understanding,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+That's not the goal of this patch.  The goal of this patch is to avoid
+doing return group_balance_cpu(sg) == env->dst_cpu; when a half-busy core
+has been identified that is different from env->dst_cpu.
+
+julia
+
+>
+> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+>
+> thanks,
+> Chenyu
+>
