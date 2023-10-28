@@ -2,216 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E847DA8FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 21:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5817DA927
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 21:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjJ1Tm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 15:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
+        id S229532AbjJ1Tyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 15:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjJ1Tm0 (ORCPT
+        with ESMTP id S229446AbjJ1Tyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 15:42:26 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8488DF1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:42:22 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-66d0169cf43so21916606d6.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698522141; x=1699126941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qq6x4Nq7vuXjfz7tKTCkE6tm57DtbpxomcSKCh+LPx0=;
-        b=JcqMxQRQ8YIOi+Rzn6HDLik/suyzEhoSbiu8bGyrvZAPeASXFOXN+IpuTTyygV1/Fc
-         kfNEwkJuWW0v67TGqYMm7FLM5IGJy25SNA+NjnpemG4kZe6Vx8PWmXWpIiR47TRJcVPg
-         6PZbC9gMc3dVeYnbNw9n2xTbzYM5Wq2kyE1qZL6MQLxMuZu43+UuNmRdCS09/ldV2J5A
-         OP5O7ZjRI9AP4CT5dKC+gJl9xVPv4VRxMHSYjsUQw7U6Cm7ytFoh3vID1jya4rj8SPZ+
-         qg3ywwZ+4vYVAMRg1u2VXttGuyoENYYLsEn1D8WKK/ptfqYqRlvTFN7AgMYc2WZV5gH7
-         PRUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698522141; x=1699126941;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qq6x4Nq7vuXjfz7tKTCkE6tm57DtbpxomcSKCh+LPx0=;
-        b=MD2qVsrVk0YkVFh+MrRBaNbHylCEDm5Z4gg/WgYAfS0oYTbh9odlvl3BxM6e9V2bNt
-         8HBCkRaArWBQQiUQ7raXZzbrsYnUPyLFZ7cJ59ca2QZkEhQqsUKxaBBNP4/Prxiig1wh
-         FbMdplmC1iPUxwUNMpWHyIttb+OyaN6rxpiAziPNo+bHlk+lFvZL3Ce01QHVQYT62j5w
-         Rk6/1kzh6MOqYeqS5PHwuXSG8QOIkuo44D5YPKaAYPcil2CqHPakgiIoy4WFnAwpQTsn
-         gZRfrAcFvtgncMOK7V71kh3qu7YBXsLRNzWzGf/I/gUjfW5pwmGsHWDU50ao35DzRxR4
-         O5rQ==
-X-Gm-Message-State: AOJu0YzTj3gFv6GlrgCzHRJ/jO7LjO1zl2Db/z74RKGbMQgq/mJOtYsb
-        8IoWgetfFhPRW7taQ4CZ8VesqA==
-X-Google-Smtp-Source: AGHT+IG8lUSEc0ZqGXmBwx7uoR3D0JZCF8vHTRrCrxH1Pssc53OXRuD5E/+biagdI12WjtsL+f8OvQ==
-X-Received: by 2002:ad4:4ee3:0:b0:66d:49aa:6844 with SMTP id dv3-20020ad44ee3000000b0066d49aa6844mr9472629qvb.19.1698522141362;
-        Sat, 28 Oct 2023 12:42:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2000:b002:c988:e7b9:36ab:57c6? ([2600:1700:2000:b002:c988:e7b9:36ab:57c6])
-        by smtp.gmail.com with ESMTPSA id l4-20020a056214104400b0065afe284b3csm1853091qvr.125.2023.10.28.12.42.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 12:42:20 -0700 (PDT)
-Message-ID: <65d7ea77-35fa-4aa2-9431-8f7f218cae57@sifive.com>
-Date:   Sat, 28 Oct 2023 14:42:19 -0500
+        Sat, 28 Oct 2023 15:54:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDF094
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698522878; x=1730058878;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=KupxvW8SfWEkvi0E1VvZswZQbyHs9XvqZKnOmX6fp6s=;
+  b=dm3fnr3xpYJ9g1vFtTIa0E2X/fAMAQA7aN/3EaOq12jiqrEDOd1i/V1I
+   slJFkk+pWbViYh5FyMlBJQQlcbmCYyV6Zp4XLwo4b+wpXYJUGxVyPhGzI
+   BV1PMj1IwDkLAeTw7VSofJGE1TFkQZfUXe+e5Cp3w1B/qmLLhb18o5H2L
+   iwIuZXYYLIn1oebSWo29aCnLOndzJgkcE9WPDQhtGhsfFymB0lbd47kfg
+   9PeMPBeTHVvTK1jONeZpctABlJRiFP8Iqm1SCJHiuMM3CnaGl9+EoAYTF
+   LyGVyQ4rGGsJAMfmGEPSfrsYiuGXHccin7REfUGMSmIXMzYceVvJWD6IF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="419028602"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="419028602"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 12:54:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="763541224"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="763541224"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Oct 2023 12:54:36 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwpOE-000C2R-1P;
+        Sat, 28 Oct 2023 19:54:34 +0000
+Date:   Sun, 29 Oct 2023 03:53:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades
+ to integer
+Message-ID: <202310290310.o2kYsmHJ-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/4] riscv: Improve flush_tlb_kernel_range()
-Content-Language: en-US
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-References: <20231019140151.21629-1-alexghiti@rivosinc.com>
- <20231019140151.21629-5-alexghiti@rivosinc.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231019140151.21629-5-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-19 9:01 AM, Alexandre Ghiti wrote:
-> This function used to simply flush the whole tlb of all harts, be more
-> subtile and try to only flush the range.
-> 
-> The problem is that we can only use PAGE_SIZE as stride since we don't know
-> the size of the underlying mapping and then this function will be improved
-> only if the size of the region to flush is < threshold * PAGE_SIZE.
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> # On RZ/Five SMARC
-> ---
->  arch/riscv/include/asm/tlbflush.h | 11 ++++++-----
->  arch/riscv/mm/tlbflush.c          | 33 ++++++++++++++++++++++---------
->  2 files changed, 30 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-> index 170a49c531c6..8f3418c5f172 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -40,6 +40,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  		     unsigned long end);
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> @@ -56,15 +57,15 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
->  	local_flush_tlb_all();
->  }
->  
-> -#define flush_tlb_mm(mm) flush_tlb_all()
-> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> -
->  /* Flush a range of kernel pages */
->  static inline void flush_tlb_kernel_range(unsigned long start,
->  	unsigned long end)
->  {
-> -	flush_tlb_all();
-> +	local_flush_tlb_all();
->  }
->  
-> +#define flush_tlb_mm(mm) flush_tlb_all()
-> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> +
->  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index c27ba720e35f..7e182f2bc0ab 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -97,19 +97,27 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
->  			      unsigned long size, unsigned long stride)
->  {
->  	struct flush_tlb_range_data ftd;
-> -	struct cpumask *cmask = mm_cpumask(mm);
-> +	struct cpumask *cmask, full_cmask;
->  	unsigned long asid = FLUSH_TLB_NO_ASID;
-> -	unsigned int cpuid;
->  	bool broadcast;
->  
-> -	if (cpumask_empty(cmask))
-> -		return;
-> +	if (mm) {
-> +		unsigned int cpuid;
-> +
-> +		cmask = mm_cpumask(mm);
-> +		if (cpumask_empty(cmask))
-> +			return;
->  
-> -	cpuid = get_cpu();
-> -	/* check if the tlbflush needs to be sent to other CPUs */
-> -	broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +		cpuid = get_cpu();
-> +		/* check if the tlbflush needs to be sent to other CPUs */
-> +		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +	} else {
-> +		cpumask_setall(&full_cmask);
-> +		cmask = &full_cmask;
-> +		broadcast = true;
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2af9b20dbb39f6ebf9b9b6c090271594627d818e
+commit: caf1aeaffc3b09649a56769e559333ae2c4f1802 eventpoll: add EPOLL_URING_WAKE poll wakeup flag
+date:   11 months ago
+config: x86_64-randconfig-123-20231016 (https://download.01.org/0day-ci/archive/20231029/202310290310.o2kYsmHJ-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310290310.o2kYsmHJ-lkp@intel.com/reproduce)
 
-on_each_cpu_mask() only considers CPUs in cpu_online_mask anyway, so you can
-more efficiently use:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310290310.o2kYsmHJ-lkp@intel.com/
 
-  cmask = cpu_online_mask;
+sparse warnings: (new ones prefixed by >>)
+>> fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades to integer
+>> fs/eventpoll.c:526:9: sparse: sparse: cast to restricted __poll_t
+>> fs/eventpoll.c:1213:53: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int pollflags @@     got restricted __poll_t @@
+   fs/eventpoll.c:1213:53: sparse:     expected unsigned int pollflags
+   fs/eventpoll.c:1213:53: sparse:     got restricted __poll_t
 
-here (after making cmask const).
+vim +526 fs/eventpoll.c
 
-> +	}
->  
-> -	if (static_branch_unlikely(&use_asid_allocator))
-> +	if (static_branch_unlikely(&use_asid_allocator) && mm)
->  		asid = atomic_long_read(&mm->context.id) & asid_mask;
+   493	
+   494	static void ep_poll_safewake(struct eventpoll *ep, struct epitem *epi,
+   495				     unsigned pollflags)
+   496	{
+   497		struct eventpoll *ep_src;
+   498		unsigned long flags;
+   499		u8 nests = 0;
+   500	
+   501		/*
+   502		 * To set the subclass or nesting level for spin_lock_irqsave_nested()
+   503		 * it might be natural to create a per-cpu nest count. However, since
+   504		 * we can recurse on ep->poll_wait.lock, and a non-raw spinlock can
+   505		 * schedule() in the -rt kernel, the per-cpu variable are no longer
+   506		 * protected. Thus, we are introducing a per eventpoll nest field.
+   507		 * If we are not being call from ep_poll_callback(), epi is NULL and
+   508		 * we are at the first level of nesting, 0. Otherwise, we are being
+   509		 * called from ep_poll_callback() and if a previous wakeup source is
+   510		 * not an epoll file itself, we are at depth 1 since the wakeup source
+   511		 * is depth 0. If the wakeup source is a previous epoll file in the
+   512		 * wakeup chain then we use its nests value and record ours as
+   513		 * nests + 1. The previous epoll file nests value is stable since its
+   514		 * already holding its own poll_wait.lock.
+   515		 */
+   516		if (epi) {
+   517			if ((is_file_epoll(epi->ffd.file))) {
+   518				ep_src = epi->ffd.file->private_data;
+   519				nests = ep_src->nests;
+   520			} else {
+   521				nests = 1;
+   522			}
+   523		}
+   524		spin_lock_irqsave_nested(&ep->poll_wait.lock, flags, nests);
+   525		ep->nests = nests + 1;
+ > 526		wake_up_locked_poll(&ep->poll_wait, EPOLLIN | pollflags);
+   527		ep->nests = 0;
+   528		spin_unlock_irqrestore(&ep->poll_wait.lock, flags);
+   529	}
+   530	
 
-Instead of adding another check, please move this inside "if (mm)" above. Those
-are both non-functional changes, so:
-
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Tested-by: Samuel Holland <samuel.holland@sifive.com>
-
->  
->  	if (broadcast) {
-> @@ -128,7 +136,8 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
->  		local_flush_tlb_range_asid(start, size, stride, asid);
->  	}
->  
-> -	put_cpu();
-> +	if (mm)
-> +		put_cpu();
->  }
->  
->  void flush_tlb_mm(struct mm_struct *mm)
-> @@ -181,6 +190,12 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  
->  	__flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
->  }
-> +
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> +{
-> +	__flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  			unsigned long end)
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
