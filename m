@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56F77DA5B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 10:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2B07DA5B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 10:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbjJ1IE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 04:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
+        id S233201AbjJ1IFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 04:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbjJ1IE1 (ORCPT
+        with ESMTP id S232912AbjJ1IFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 04:04:27 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872CFF2
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:04:24 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507bd644a96so4081303e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:04:24 -0700 (PDT)
+        Sat, 28 Oct 2023 04:05:19 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1BFFA
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:05:16 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50cf61f6dso42028691fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:05:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698480263; x=1699085063; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698480315; x=1699085115; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZohF6XXYHN3lkC97Gnm4RgAjDu75/PnHDh7R0EPDwgo=;
-        b=cHKnUQIoVcjQvwnxhLczFf5lkrXIGktvW15MMasSt34kV9W0s8jOvmaZMjrZ06TBrk
-         aVgyOBXu8D4CtQD/j3COFuDlHYMiElX/KySAmwWSra7wukuP35yBB/uIZ8ypVcrcD4Di
-         EQW2vUKfF+QwkZuxWrfxXiht+AENB09+7y7+bzh5/AItEfffI52nQhGzvWRxD6ygxm6U
-         ke9HIToCjNVII0ivD3mUXYul/h3VQFaL4cTB+ePH/7yEiYrHdh2Ys29bse1R8UrP6Mb3
-         e9GSVOl9Pj06yrqdWAY7ao2dfXtaZS55wyWo+c16R34hvArGnFGAB4f92VLwy3FgUxVV
-         UWDA==
+        bh=mK0o59TWuBIxrXZwIfqZZhfKM/DWh7MO6XtCzhfVuRk=;
+        b=unLagKzZsfgurcLShGgEOirXnfFXGjySAoRitvu86GtvRssldaE3LDq0HBYeYfWoc1
+         k+yk+ETkZWf90ZaMUlYPp2SALcilo8pyYpGWZnu605KWzxsQe83BXVFAGlsebGHB6Wzh
+         YAI5O8qXgX4ENDNRAFds1gHmTg7XO5Ge8FEJvTzGhntc5WTWPm0iLV+d5PQoux1AAW0a
+         bb5jnYUgdnh+1z8n3eGf9bYNEQSQstPYWHdoYlANStzB2lpheD/N49ZKHwub21Ej9S2v
+         qUildLVSreQGOVx2/Ofuh4qyMpm4CpwZV5lgRu0pkftKuR7zvu+z9bYEDP0n7llZ5nMu
+         7Unw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698480263; x=1699085063;
+        d=1e100.net; s=20230601; t=1698480315; x=1699085115;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZohF6XXYHN3lkC97Gnm4RgAjDu75/PnHDh7R0EPDwgo=;
-        b=XhwTparWaEoYIannUopjWkHaC5a1fpwx6Fp9uliB2ulCasB6mj+SAFIjFXCiigvQbG
-         BREDFTn1Y3MZglVb37RxUbkXEEa3OQJN21/OsHi2s9fFWzSbYoXLWoyoyETJIZ6m8Zjp
-         /J5WQ0ZmyPtrRYeE2zkxeEm/RJ4CMTfnoVU14PxSi2UcXwcs6XOeFRwDaeLkX1PVfyzw
-         yygg7sZ5S9vI3TuUvJvYkqUYyUxa1SLhvZqWK73RfQ/80BQMbQ3LNgIX258yw9Y2id3L
-         vZzaHJek8NfNn4+sTFIUn5e92JwlR+H9tPVRE6rhi+3NZqMxmxcEIU2iQ57OqEfxfqZx
-         7vNA==
-X-Gm-Message-State: AOJu0Yz0Ozy4cNWwE8WjAEq+6+JSrwdk9UrPqfA9Kob8FjakTdWdMvNH
-        UEraXFwxmYql7+o6D0wgqaOKvQ==
-X-Google-Smtp-Source: AGHT+IEe1S+QZbje1cgBFmjpwq+WltHVn6lZ7yAZ9PhcsQJki2wnQ7qF193MQV/b/kNE7KU7Aaxwjw==
-X-Received: by 2002:a19:e057:0:b0:4ff:7f7f:22e7 with SMTP id g23-20020a19e057000000b004ff7f7f22e7mr3216188lfj.17.1698480262749;
-        Sat, 28 Oct 2023 01:04:22 -0700 (PDT)
+        bh=mK0o59TWuBIxrXZwIfqZZhfKM/DWh7MO6XtCzhfVuRk=;
+        b=PaNvMNX64SFxEfT+RYCJdR9DcRh/6IuNc/pEHopgq8Fb2cvhOgOYCWeFTscK2lZHQ+
+         N+XP+QkC7lRUCjLmPSDsrUPoQKlG/exdltq2T0KoVmQWDQEiHyX2K5DgFJv6lVVb9DQ1
+         BH8+2paZW8RrepbkCj0TnViiX1GHAbIInOPslGWSTHKgfyf+iY71HdMgtkzAfGFbP94w
+         vmFCWgOv1Gf7ykV0frx5sVZbRgoi6RutoxmkU8AiHkosr/PAaemKPp+a3DLZTMP1XmCi
+         OqgJLBfxtovSxc7yOBR7rIKWvbJthd7UcVGmIl86oFGidY/CUpoPzpnY0FI5+U1ozp5v
+         xEng==
+X-Gm-Message-State: AOJu0YxltYCX47J3CUhTM5FFaWlVH9QkwJYV4bMf5au64c1ia1wzKGXQ
+        w/fv3WpJwNSe4+QJEGiycAauWg==
+X-Google-Smtp-Source: AGHT+IFf/W6ZHopLQ5WYwpD1GTmcL3CczHbL0m+aQGRL/X6gKPX7xaEkBhzdkyAQJY0Ute1d+x7hZA==
+X-Received: by 2002:a19:691a:0:b0:503:183c:1223 with SMTP id e26-20020a19691a000000b00503183c1223mr2930380lfc.7.1698480314713;
+        Sat, 28 Oct 2023 01:05:14 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id c9-20020a056512238900b004fbc82dd1a5sm570985lfv.13.2023.10.28.01.04.21
+        by smtp.gmail.com with ESMTPSA id c9-20020a056512238900b004fbc82dd1a5sm570985lfv.13.2023.10.28.01.05.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 01:04:22 -0700 (PDT)
-Message-ID: <20157964-c3d2-443d-aee3-786b6b73ea1c@linaro.org>
-Date:   Sat, 28 Oct 2023 10:04:20 +0200
+        Sat, 28 Oct 2023 01:05:14 -0700 (PDT)
+Message-ID: <116e29f3-da7e-4710-a60f-7448255cfe19@linaro.org>
+Date:   Sat, 28 Oct 2023 10:05:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] arm64: dts: qcom: sc7280: Remove unused second MPSS
- reg
+Subject: Re: [PATCH 3/9] dt-bindings: remoteproc: qcom: sc7180-pas: Add SC7280
+ compatibles
 Content-Language: en-US
 To:     Luca Weiss <luca.weiss@fairphone.com>,
         Andy Gross <agross@kernel.org>,
@@ -73,7 +73,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
- <20231027-sc7280-remoteprocs-v1-2-05ce95d9315a@fairphone.com>
+ <20231027-sc7280-remoteprocs-v1-3-05ce95d9315a@fairphone.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -119,11 +119,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231027-sc7280-remoteprocs-v1-2-05ce95d9315a@fairphone.com>
+In-Reply-To: <20231027-sc7280-remoteprocs-v1-3-05ce95d9315a@fairphone.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -133,18 +133,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27/10/2023 16:20, Luca Weiss wrote:
-> The bindings for sc7280-mpss-pas neither expects a second reg nor a
-> reg-names property, which is only required by the sc7280-mss-pil
-> bindings.
-> 
-> Move it to sc7280-herobrine-lte-sku.dtsi, the only place where that
-> other compatible is used.
+> Add the compatibles and constraints for the ADSP, CDSP and WPSS found on
+> the SC7280 SoC.
 > 
 > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi | 2 ++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi                   | 3 +--
->  2 files changed, 3 insertions(+), 2 deletions(-)
+>  .../bindings/remoteproc/qcom,sc7180-pas.yaml        | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
