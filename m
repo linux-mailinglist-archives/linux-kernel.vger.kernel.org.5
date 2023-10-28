@@ -2,119 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 697C77DA820
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 18:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5207DA824
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 18:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjJ1Qsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 12:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S229459AbjJ1Qyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 12:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjJ1Qsp (ORCPT
+        with ESMTP id S229446AbjJ1Qyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 12:48:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0440CE;
-        Sat, 28 Oct 2023 09:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=pKU+y/cebogC5d3kvaZU4QNtM5iPWmgULniCim14DXE=; b=p805N/GI2MB9BwL30W+TUfq3QF
-        wYsC9exlj0h3hK3wKSfpRj+ysoaKR6GZTJWOrbiWDKsWOLCzlvMsVltIryEyee53u4n/YeGkqdkET
-        Dq0iOZCCfOjfwSaAYK6bmLiFX23KS5yD24dL1QlASXec9rVRK4WcHrqg3BihlweDNFLvbEe2q6pNB
-        zf1Z2inuml9rtCZbwGVzfSsjUePbosZUSQPo7zZ5bQtAdPzEcqfdTSOU6n6l3zki5DH8wc4xGe1rf
-        OQabisFkg/0q5eNS3l6lLVz0qhNNxYr5Sw8hiIz/ViHP9cV1xiqxjQjQgVxGZjorPEd1gc1GB6JP4
-        H4dgR40g==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qwmUG-000f7k-2t;
-        Sat, 28 Oct 2023 16:48:36 +0000
-Message-ID: <d6f016fe-963b-40ba-9146-de69e4fe0052@infradead.org>
-Date:   Sat, 28 Oct 2023 09:48:36 -0700
+        Sat, 28 Oct 2023 12:54:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5C5D3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 09:54:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698512073; x=1730048073;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=dzK2Toyt3q+Mkf5r2daPoKDylIhodn+OhjhsWsffjvo=;
+  b=AbX8qDmkuiNdAQN4t0U6fSQBM9lLq3gXluJYR7qTtwDaWJQYX4V0furk
+   7hxYojvlC10s7FUJWc5P6EPO7QNynNdRIyRjgKmPdAE6rqASmRJmfGeGu
+   x3BLd33nrbnLHU0np7L3x4G9TKSa7M0TGe12CvTwivoOvswKbeciIWfrP
+   fVqVb/siG0oXNZf6M/eoqCichpeH0Yr2JpmCqz2q26pMmxgpoybHvYKAt
+   V0QdoJFCn1XnfA1EB+k1kD8ixupZw8KdIWT6YBvk86s2l06eiRUGOqmrI
+   t0P/zRW+d8S1qwM/d5iuOxlQvLOK2CW26pq6SvMiWwM964rbLWFOhqzCG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="391776192"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="391776192"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 09:54:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="763521956"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="763521956"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Oct 2023 09:54:31 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwmZw-000Bv5-3B;
+        Sat, 28 Oct 2023 16:54:28 +0000
+Date:   Sun, 29 Oct 2023 00:54:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danny Tsen <dtsen@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: error:
+ 'gcm_init_htable' accessing 256 bytes in a region of size 224
+Message-ID: <202310290004.TQsw1iN1-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] PM: sleep: Expose last succeeded resumed timestamp in
- sysfs
-Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>
-Cc:     suleiman@google.com, briannorris@google.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <169849758243.1357961.4105003693126485611.stgit@mhiramat.roam.corp.google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <169849758243.1357961.4105003693126485611.stgit@mhiramat.roam.corp.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Danny,
 
-On 10/28/23 05:53, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Expose last succeeded resumed timestamp as last_success_resume_time
-> attribute of suspend_stats in sysfs. This timestamp is recorded in
-> CLOCK_MONOTONIC. So user can find the actual resumed time and
-> measure the elapsed time from the time when the kernel finished
-> the resume to the user-space action (e.g. display the UI).
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-Can you go into the use-case a bit more, please?
-You have said "what", but not "why".
-What do you (or google) plan to do with this?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   56567a20b22bdbf85c3e55eee3bf2bd23fa2f108
+commit: 9c716e1bd369afa2d1c5038297e8ceda3f82db7d crypto: p10-aes-gcm - Remove POWER10_CPU dependency
+date:   6 months ago
+config: powerpc64-randconfig-r005-20230913 (https://download.01.org/0day-ci/archive/20231029/202310290004.TQsw1iN1-lkp@intel.com/config)
+compiler: powerpc64le-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310290004.TQsw1iN1-lkp@intel.com/reproduce)
 
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  Changes in v3:
->   - Add (unsigned long long) casting for %llu.
->   - Add a line after last_success_resume_time_show().
->  Changes in v2:
->   - Use %llu instead of %lu for printing u64 value.
->   - Remove unneeded indent spaces from the last_success_resume_time
->     line in the debugfs suspend_stat file.
-> ---
->  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
->  include/linux/suspend.h               |    2 ++
->  kernel/power/main.c                   |   15 +++++++++++++++
->  kernel/power/suspend.c                |    1 +
->  4 files changed, 28 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
-> index a3942b1036e2..63659765dee1 100644
-> --- a/Documentation/ABI/testing/sysfs-power
-> +++ b/Documentation/ABI/testing/sysfs-power
-> @@ -442,6 +442,16 @@ Description:
->  		'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
->  		This number is measured in microseconds.
->  
-> +What:		/sys/power/suspend_stats/last_success_resume_time
-> +Date:		Oct 2023
-> +Contact:	Masami Hiramatsu <mhiramat@kernel.org>
-> +Description:
-> +		The /sys/power/suspend_stats/last_success_resume_time file
-> +		contains the timestamp of when the kernel successfully
-> +		resumed from suspend/hibernate.
-> +		This floating number is measured in seconds by monotonic
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310290004.TQsw1iN1-lkp@intel.com/
 
-What does "floating" mean here?  Not floating point...
+All errors (new ones prefixed by >>):
+
+   arch/powerpc/crypto/aes-gcm-p10-glue.c: In function 'gcmp10_init':
+>> arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: error: 'gcm_init_htable' accessing 256 bytes in a region of size 224 [-Werror=stringop-overflow=]
+     121 |         gcm_init_htable(hash->Htable+32, hash->H);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: note: referencing argument 1 of type 'unsigned char[256]'
+   arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: note: referencing argument 2 of type 'unsigned char[16]'
+   arch/powerpc/crypto/aes-gcm-p10-glue.c:41:17: note: in a call to function 'gcm_init_htable'
+      41 | asmlinkage void gcm_init_htable(unsigned char htable[256], unsigned char Xi[16]);
+         |                 ^~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
 
-> +		clock.
-> +
->  What:		/sys/power/sync_on_suspend
->  Date:		October 2019
->  Contact:	Jonas Meurer <jonas@freesources.org>
+vim +/gcm_init_htable +121 arch/powerpc/crypto/aes-gcm-p10-glue.c
 
-[snip]
+cdcecfd9991fe9a Danny Tsen 2023-02-20  113  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  114  static void gcmp10_init(struct gcm_ctx *gctx, u8 *iv, unsigned char *rdkey,
+cdcecfd9991fe9a Danny Tsen 2023-02-20  115  			struct Hash_ctx *hash, u8 *assoc, unsigned int assoclen)
+cdcecfd9991fe9a Danny Tsen 2023-02-20  116  {
+cdcecfd9991fe9a Danny Tsen 2023-02-20  117  	__be32 counter = cpu_to_be32(1);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  118  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  119  	aes_p8_encrypt(hash->H, hash->H, rdkey);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  120  	set_subkey(hash->H);
+cdcecfd9991fe9a Danny Tsen 2023-02-20 @121  	gcm_init_htable(hash->Htable+32, hash->H);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  122  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  123  	*((__be32 *)(iv+12)) = counter;
+cdcecfd9991fe9a Danny Tsen 2023-02-20  124  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  125  	gctx->Plen = 0;
+cdcecfd9991fe9a Danny Tsen 2023-02-20  126  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  127  	/*
+cdcecfd9991fe9a Danny Tsen 2023-02-20  128  	 * Encrypt counter vector as iv tag and increment counter.
+cdcecfd9991fe9a Danny Tsen 2023-02-20  129  	 */
+cdcecfd9991fe9a Danny Tsen 2023-02-20  130  	aes_p8_encrypt(iv, gctx->ivtag, rdkey);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  131  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  132  	counter = cpu_to_be32(2);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  133  	*((__be32 *)(iv+12)) = counter;
+cdcecfd9991fe9a Danny Tsen 2023-02-20  134  	memcpy(gctx->iv, iv, 16);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  135  
+cdcecfd9991fe9a Danny Tsen 2023-02-20  136  	gctx->aadLen = assoclen;
+cdcecfd9991fe9a Danny Tsen 2023-02-20  137  	memset(gctx->aad_hash, 0, 16);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  138  	if (assoclen)
+cdcecfd9991fe9a Danny Tsen 2023-02-20  139  		set_aad(gctx, hash, assoc, assoclen);
+cdcecfd9991fe9a Danny Tsen 2023-02-20  140  }
+cdcecfd9991fe9a Danny Tsen 2023-02-20  141  
 
-Thanks.
+:::::: The code at line 121 was first introduced by commit
+:::::: cdcecfd9991fe9aac8160a9731b0ffd1e702d19d crypto: p10-aes-gcm - Glue code for AES/GCM stitched implementation
+
+:::::: TO: Danny Tsen <dtsen@linux.ibm.com>
+:::::: CC: Herbert Xu <herbert@gondor.apana.org.au>
+
 -- 
-~Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
