@@ -2,222 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B747DA6D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F0E7DA6DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjJ1MAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 08:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        id S230185AbjJ1MLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 08:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJ1MAu (ORCPT
+        with ESMTP id S229449AbjJ1MLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 08:00:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817DAEB;
-        Sat, 28 Oct 2023 05:00:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C1DCC433C7;
-        Sat, 28 Oct 2023 12:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698494448;
-        bh=NDYeMPRVIZz698JsT+R8LnMI83Zt/EWY2nxoFqm580c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rxlCZaOmJmY70MKRHjymf2B7cedbaw9IX9qFJSPtCk0aoWz8Ty5+APG/TH07kSU9z
-         VliVCxfQjJDI2O1M2j5uhx+vNxAU3X04lEfokPRhT2s2i+BAZ8QWDYMB8rSVzgHoUp
-         aK6XKdGYQp+ybnxwJAweKUifflgcODEEjaxPgsmvrU4ZTKhFKgttDPPi8SV6BjTvXB
-         gVHh+jswdeYnm5+89yA4yMIpZaL7udwJGsf0ZmNmiEagnXsfTygUTk2DJi0WuwcAHl
-         AFmLDjbqe3ZXkfrh5zVIih1O17/nkXNP+Dzia74MbBg1c0Vq1PNoksgo9kzhd5s9BE
-         Cd4v9LiVjIfOw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-581ed744114so1580543eaf.0;
-        Sat, 28 Oct 2023 05:00:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzoGjSiKwZnok3TdMir2S1wksCS11C758VXVC5/9um3OUS/qEsu
-        TbbarzSRk/rQc1KkN53aJ/XDkSCkZri9Ij7o8/Q=
-X-Google-Smtp-Source: AGHT+IG+2xU/Or55TAC3vgQMu5b2z0oZrGlRxgQwoIkOy4bOeE3S4CWNahsGeJWTR25wZIp8RhGB7o1L63jeZhgyr6M=
-X-Received: by 2002:a05:6871:8198:b0:1e9:858e:ff23 with SMTP id
- so24-20020a056871819800b001e9858eff23mr4354359oab.55.1698494447492; Sat, 28
- Oct 2023 05:00:47 -0700 (PDT)
+        Sat, 28 Oct 2023 08:11:13 -0400
+X-Greylist: delayed 159 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 Oct 2023 05:11:08 PDT
+Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990EEF0;
+        Sat, 28 Oct 2023 05:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1698495056; bh=yxb6zphCiYkg1BMNfJoJYLGbGEtFPFGmsEthVt0RmgE=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=gzOm6C8RgfWW200kRZxvKY57EJPqrd+GoSuiec/YbssAkYVGsB/j9vctklefTdZTQ
+         1YcB2PABM3jnlHrQPExEi0NN2LO+uwtCbyqgU4IzPHmHprIu2he0/DWybKjlpyhPUI
+         7oOM9eNRG7YtaO6ssSRRIly49xxllis+inE2yJxU=
+Received: by b221-2.in.mailobj.net [192.168.90.22] with ESMTP
+        via ip-22.mailoo.org [213.182.54.22]
+        Sat, 28 Oct 2023 14:10:56 +0200 (CEST)
+X-EA-Auth: dugBy9wIT2iBVLJu1SI60csL07/ZUymv4lZ45nAesMiPN9y+zAvHoUPGQ5G/fRoY1CSNDg/dMYyWW09v3Yv/m2eTUwo/EGp9viYN0qfvNWQ=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: [PATCH] clk: qcom: gcc-msm8939: Add missing CSI2 related clocks
+Date:   Sat, 28 Oct 2023 14:10:47 +0200
+Message-ID: <20231028121047.317550-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
- <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
- <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
- <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
- <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com>
- <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com> <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 28 Oct 2023 21:00:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATZJJG1yq1qX7xrvoy4akW2hSAcbrt3mnz=p6F7gMgh1Q@mail.gmail.com>
-Message-ID: <CAK7LNATZJJG1yq1qX7xrvoy4akW2hSAcbrt3mnz=p6F7gMgh1Q@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 12:19=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sun, Oct 22, 2023 at 1:24=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-.org> wrote:
-> >
-> > On Sun, Oct 22, 2023 at 4:33=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sat, Oct 21, 2023 at 4:38=E2=80=AFAM Masahiro Yamada <masahiroy@ke=
-rnel.org> wrote:
-> > > >
-> > > > On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahir=
-oy@kernel.org> wrote:
-> > > > > >
-> > > > > > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@g=
-mail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada w=
-rote:
-> > > > > > > > > newer_prereqs_except and if_changed_except are ugly hacks=
- of the
-> > > > > > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
-> > > > > > > > >
-> > > > > > > > > Remove.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > > > > > ---
-> > > > > > > > >
-> > > > > > > > > Changes in v2:
-> > > > > > > > >   - Fix if_changed_except to if_changed
-> > > > > > > > >
-> > > > > > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> > > > > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile=
-.modfinal
-> > > > > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > > > > > > > > --- a/scripts/Makefile.modfinal
-> > > > > > > > > +++ b/scripts/Makefile.modfinal
-> > > > > > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
-> > > > > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > > > > > > > >  ifneq ($(wildcard vmlinux),)
-> > > > > > > > >  vmlinux :=3D vmlinux
-> > > > > > > > > +cmd_btf =3D ; \
-> > > > > > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_F=
-LAGS) --btf_base vmlinux $@; \
-> > > > > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> > > > > > > > >  else
-> > > > > > > > >  $(warning Skipping BTF generation due to unavailability =
-of vmlinux)
-> > > > > > > > >  endif
-> > > > > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
-> > > > > > > > >        cmd_ld_ko_o +=3D                                  =
-               \
-> > > > > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                         =
-             \
-> > > > > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE) =
-             \
-> > > > > > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $=
-^)
-> > > > > > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $=
-^)           \
-> > > > > > > > > +     $(cmd_btf)
-> > > > > > > > >
-> > > > > > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
-> > > > > > > >
-> > > > > > > > nit not sure it's intentional but we no longer display 'BTF=
- [M] ...ko' lines,
-> > > > > > > > I don't mind not displaying that, but we should mention tha=
-t in changelog
-> > > > > > > >
-> > > > > > >
-> > > > > > > Thanks for spotting this! I think those messages are useful a=
-nd
-> > > > > > > important to keep. Masahiro, is it possible to preserve them?
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > No, I do not think so.
-> > > > > >
-> > > > >
-> > > > > That's too bad, I think it's a useful one.
-> > > >
-> > > >
-> > > >
-> > > > I prioritize that the code is correct.
-> > > >
-> > >
-> > > Could you please also prioritize not regressing informativeness of a
-> > > build log? With your changes it's not clear now if BTF was generated
-> > > or not for a kernel module, while previously it was obvious and was
-> > > easy to spot if for some reason BTF was not generated. I'd like to
-> > > preserve this
-> > > property, thank you.
-> > >
-> > > E.g, can we still have BTF generation as a separate command and do a
-> > > separate $(call if_changed,btf_ko)? Or something along those lines.
-> > > Would that work?
-> >
-> > If we have an intermediate file (say, *.no-btf.ko),
-> > it would make sense to have separate
-> > $(call if_changed,ld_ko_o) and $(call if_changed,btf_ko).
->
-> Currently we don't generate intermediate files, but we do rewrite
-> original .ko file as a post-processing step.
->
-> And that rewriting step might not happen depending on Kconfig and
-> toolchain (e.g., too old pahole makes it impossible to generate kernel
-> module BTF). And that's why having a separate BTF [M] message in the
-> build log is important.
->
-> >
-> >
-> >            LD                 RESOLVE_BTFIDS
-> >  *.mod.o  ------> *.no-btf.ko ------------> *.ko
-> >
-> >
-> > When vmlinux is changed, only the second step would
-> > be re-run, but that would require extra file copy.
->
-> Today we rewrite .ko with a new .ko ELF file which gains a new ELF
-> section (.BTF), so we already pay this price when BTF is enabled (if
-> that's your concern).
->
-> >
-> > Is this what you want to see?
->
-> I don't have strong preferences for exact implementation, but what you
-> propose will work, I think. What I'd like to avoid is unnecessarily
-> relinking .ko files if all we need to do is regenerate BTF.
+When adding in the indexes for this clock-controller we missed
+GCC_CAMSS_CSI2_AHB_CLK, GCC_CAMSS_CSI2_CLK, GCC_CAMSS_CSI2PHY_CLK,
+GCC_CAMSS_CSI2PIX_CLK and GCC_CAMSS_CSI2RDI_CLK.
+
+Add them in now.
+
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+No fixes tag because camss is a not-yet-enabled feature for msm8939.
+
+Also didn't rename ftbl_gcc_camss_csi0_1_clk now that csi2 uses it
+to avoid not-required-churn... should it be done anyway ?
+---
+ drivers/clk/qcom/gcc-msm8939.c               | 104 +++++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-msm8939.h |   6 ++
+ 2 files changed, 110 insertions(+)
+
+diff --git a/drivers/clk/qcom/gcc-msm8939.c b/drivers/clk/qcom/gcc-msm8939.c
+index e4a44377b75f..ad6599fffef3 100644
+--- a/drivers/clk/qcom/gcc-msm8939.c
++++ b/drivers/clk/qcom/gcc-msm8939.c
+@@ -728,6 +728,19 @@ static struct clk_rcg2 csi1_clk_src = {
+ 	},
+ };
+ 
++static struct clk_rcg2 csi2_clk_src = {
++	.cmd_rcgr = 0x3c020,
++	.hid_width = 5,
++	.parent_map = gcc_xo_gpll0_map,
++	.freq_tbl = ftbl_gcc_camss_csi0_1_clk,
++	.clkr.hw.init = &(struct clk_init_data){
++		.name = "csi2_clk_src",
++		.parent_data = gcc_xo_gpll0_parent_data,
++		.num_parents = ARRAY_SIZE(gcc_xo_gpll0_parent_data),
++		.ops = &clk_rcg2_ops,
++	},
++};
++
+ static const struct freq_tbl ftbl_gcc_oxili_gfx3d_clk[] = {
+ 	F(19200000, P_XO, 1, 0, 0),
+ 	F(50000000, P_GPLL0, 16, 0, 0),
+@@ -2385,6 +2398,91 @@ static struct clk_branch gcc_camss_csi1rdi_clk = {
+ 	},
+ };
+ 
++static struct clk_branch gcc_camss_csi2_ahb_clk = {
++	.halt_reg = 0x3c040,
++	.clkr = {
++		.enable_reg = 0x3c040,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_camss_csi2_ahb_clk",
++			.parent_hws = (const struct clk_hw*[]){
++				&camss_ahb_clk_src.clkr.hw,
++			},
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
++static struct clk_branch gcc_camss_csi2_clk = {
++	.halt_reg = 0x3c03c,
++	.clkr = {
++		.enable_reg = 0x3c03c,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_camss_csi2_clk",
++			.parent_hws = (const struct clk_hw*[]){
++				&csi2_clk_src.clkr.hw,
++			},
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
++static struct clk_branch gcc_camss_csi2phy_clk = {
++	.halt_reg = 0x3c048,
++	.clkr = {
++		.enable_reg = 0x3c048,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_camss_csi2phy_clk",
++			.parent_hws = (const struct clk_hw*[]){
++				&csi2_clk_src.clkr.hw,
++			},
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
++static struct clk_branch gcc_camss_csi2pix_clk = {
++	.halt_reg = 0x3c058,
++	.clkr = {
++		.enable_reg = 0x3c058,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_camss_csi2pix_clk",
++			.parent_hws = (const struct clk_hw*[]){
++				&csi2_clk_src.clkr.hw,
++			},
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
++static struct clk_branch gcc_camss_csi2rdi_clk = {
++	.halt_reg = 0x3c050,
++	.clkr = {
++		.enable_reg = 0x3c050,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "gcc_camss_csi2rdi_clk",
++			.parent_hws = (const struct clk_hw*[]){
++				&csi2_clk_src.clkr.hw,
++			},
++			.num_parents = 1,
++			.flags = CLK_SET_RATE_PARENT,
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
+ static struct clk_branch gcc_camss_csi_vfe0_clk = {
+ 	.halt_reg = 0x58050,
+ 	.clkr = {
+@@ -3682,6 +3780,7 @@ static struct clk_regmap *gcc_msm8939_clocks[] = {
+ 	[APSS_AHB_CLK_SRC] = &apss_ahb_clk_src.clkr,
+ 	[CSI0_CLK_SRC] = &csi0_clk_src.clkr,
+ 	[CSI1_CLK_SRC] = &csi1_clk_src.clkr,
++	[CSI2_CLK_SRC] = &csi2_clk_src.clkr,
+ 	[GFX3D_CLK_SRC] = &gfx3d_clk_src.clkr,
+ 	[VFE0_CLK_SRC] = &vfe0_clk_src.clkr,
+ 	[BLSP1_QUP1_I2C_APPS_CLK_SRC] = &blsp1_qup1_i2c_apps_clk_src.clkr,
+@@ -3751,6 +3850,11 @@ static struct clk_regmap *gcc_msm8939_clocks[] = {
+ 	[GCC_CAMSS_CSI1PHY_CLK] = &gcc_camss_csi1phy_clk.clkr,
+ 	[GCC_CAMSS_CSI1PIX_CLK] = &gcc_camss_csi1pix_clk.clkr,
+ 	[GCC_CAMSS_CSI1RDI_CLK] = &gcc_camss_csi1rdi_clk.clkr,
++	[GCC_CAMSS_CSI2_AHB_CLK] = &gcc_camss_csi2_ahb_clk.clkr,
++	[GCC_CAMSS_CSI2_CLK] = &gcc_camss_csi2_clk.clkr,
++	[GCC_CAMSS_CSI2PHY_CLK] = &gcc_camss_csi2phy_clk.clkr,
++	[GCC_CAMSS_CSI2PIX_CLK] = &gcc_camss_csi2pix_clk.clkr,
++	[GCC_CAMSS_CSI2RDI_CLK] = &gcc_camss_csi2rdi_clk.clkr,
+ 	[GCC_CAMSS_CSI_VFE0_CLK] = &gcc_camss_csi_vfe0_clk.clkr,
+ 	[GCC_CAMSS_GP0_CLK] = &gcc_camss_gp0_clk.clkr,
+ 	[GCC_CAMSS_GP1_CLK] = &gcc_camss_gp1_clk.clkr,
+diff --git a/include/dt-bindings/clock/qcom,gcc-msm8939.h b/include/dt-bindings/clock/qcom,gcc-msm8939.h
+index 2d545ed0d35a..9a9bc55b49af 100644
+--- a/include/dt-bindings/clock/qcom,gcc-msm8939.h
++++ b/include/dt-bindings/clock/qcom,gcc-msm8939.h
+@@ -193,6 +193,12 @@
+ #define GCC_VENUS0_CORE1_VCODEC0_CLK		184
+ #define GCC_OXILI_TIMER_CLK			185
+ #define SYSTEM_MM_NOC_BFDCD_CLK_SRC		186
++#define CSI2_CLK_SRC				187
++#define GCC_CAMSS_CSI2_AHB_CLK			188
++#define GCC_CAMSS_CSI2_CLK			189
++#define GCC_CAMSS_CSI2PHY_CLK			190
++#define GCC_CAMSS_CSI2PIX_CLK			191
++#define GCC_CAMSS_CSI2RDI_CLK			192
+ 
+ /* Indexes for GDSCs */
+ #define BIMC_GDSC				0
+-- 
+2.41.0
 
 
 
-
-Is there any way to make pahole/resolve_btfids
-take separate input and output files
-instead of in-place modification?
-
-Otherwise, explicit "cp *.no-btf.ko *.ko" would be needed.
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
