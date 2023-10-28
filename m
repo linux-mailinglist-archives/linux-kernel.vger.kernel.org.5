@@ -2,137 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47217DA7A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4D17DA7AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbjJ1PDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 11:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S229488AbjJ1PHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 11:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1PDa (ORCPT
+        with ESMTP id S229446AbjJ1PHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 11:03:30 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D869D
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 08:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=JCgC8iEfqeVG5SmoD+Z1qjOZtlgkC88g0qaak8aF7AM=;
-  b=HwvWRDA7Sgno0G1lAYJ4S8dFlOw/uCUwDTPVjlc61GeP9Fl7fV96iEfB
-   u9SBd+tk6u+pE0SatqvwzY4NmVwZL84fjhx5soQ8lnE2clzkgBbFCh3Df
-   HXpW/QvsvygxkReqhxcvSArAn14eWPH+SFjSgJWvec3LDNKb7Bj6FMSMF
-   w=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,259,1694728800"; 
-   d="scan'208";a="133701260"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 17:03:23 +0200
-Date:   Sat, 28 Oct 2023 17:03:23 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Chen Yu <yu.c.chen@intel.com>
-cc:     Keisuke Nishimura <keisuke.nishimura@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: Fix the decision for load balance
-In-Reply-To: <ZT0gQskmc//KxYyD@chenyu5-mobl2.ccr.corp.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2310281703050.3092@hadrien>
-References: <20231027171742.1426070-1-keisuke.nishimura@inria.fr> <ZTyfoIBpm3lxd8Dy@chenyu5-mobl2.ccr.corp.intel.com> <alpine.DEB.2.22.394.2310280836100.3338@hadrien> <ZT0gQskmc//KxYyD@chenyu5-mobl2.ccr.corp.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 28 Oct 2023 11:07:36 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9AC91;
+        Sat, 28 Oct 2023 08:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=amPD2Fv/HjzzurFL/5PbBJlVeFR9uLqmO4pACbtWeSM=; b=gh
+        Z/6tGXugP/rUAK2/gcHRJsj10N/7Y7i8cEejJllfAcKBCjzDAdvPaG6z1hpubLIdwQVC161N9eff0
+        pbyTRX8AAQe+6ngnAO0kTpFtj/d0L1+ADFaj9+GA7vZdzuelUfUTVkfuSdCBQWx0830yQjxzc2Swk
+        TPr7a1OI5OFXX+s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qwktF-000PNE-09; Sat, 28 Oct 2023 17:06:17 +0200
+Date:   Sat, 28 Oct 2023 17:06:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <c7fffb8e-3ca7-4a70-8c6a-0b9c3d6d96d1@lunn.ch>
+References: <20231027-ethtool_puts_impl-v3-0-3466ac679304@google.com>
+ <20231027-ethtool_puts_impl-v3-1-3466ac679304@google.com>
+ <8ca4ba13-1bcf-4c7b-91b6-8c77fbe55b30@lunn.ch>
+ <CAFhGd8p8mmGfR-eTu_g3k64Z79z=M1xfjTFDhmJ1XaszCtQx1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8p8mmGfR-eTu_g3k64Z79z=M1xfjTFDhmJ1XaszCtQx1w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sat, 28 Oct 2023, Chen Yu wrote:
-
-> On 2023-10-28 at 08:37:59 +0200, Julia Lawall wrote:
+On Fri, Oct 27, 2023 at 06:20:08PM -0700, Justin Stitt wrote:
+> On Fri, Oct 27, 2023 at 4:43 PM Andrew Lunn <andrew@lunn.ch> wrote:
 > >
+> > > +/**
+> > > + * ethtool_puts - Write string to ethtool string data
+> > > + * @data: Pointer to start of string to update
 > >
-> > On Sat, 28 Oct 2023, Chen Yu wrote:
-> >
-> > > On 2023-10-27 at 19:17:43 +0200, Keisuke Nishimura wrote:
-> > > > should_we_balance is called for the decision to do load-balancing.
-> > > > When sched ticks invoke this function, only one CPU should return
-> > > > true. However, in the current code, two CPUs can return true. The
-> > > > following situation, where b means busy and i means idle, is an
-> > > > example because CPU 0 and CPU 2 return true.
-> > > >
-> > > >         [0, 1] [2, 3]
-> > > >          b  b   i  b
-> > > >
-> > > > This fix checks if there exists an idle CPU with busy sibling(s)
-> > > > after looking for a CPU on an idle core. If some idle CPUs with busy
-> > > > siblings are found, just the first one should do load-balancing.
-> > > >
-> > > > Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
-> > > > Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> > > > ---
-> > > >  kernel/sched/fair.c | 5 +++--
-> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > index 2048138ce54b..eff0316d6c7d 100644
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -11083,8 +11083,9 @@ static int should_we_balance(struct lb_env *env)
-> > > >  		return cpu == env->dst_cpu;
-> > > >  	}
-> > > >
-> > > > -	if (idle_smt == env->dst_cpu)
-> > > > -		return true;
-> > > > +	/* Is there an idle CPU with busy siblings? */
-> > > > +	if (idle_smt != -1)
-> > > > +		return idle_smt == env->dst_cpu;
-> > > >
-> > > >  	/* Are we the first CPU of this group ? */
-> > > >  	return group_balance_cpu(sg) == env->dst_cpu;
-> > >
-> > > Looks reasonable to me, if there is other idle SMT(from half-busy core)
-> > > in the system, we should leverage that SMT to do the periodic lb.
-> > > Per my understanding,
-> >
-> > That's not the goal of this patch.  The goal of this patch is to avoid
-> > doing return group_balance_cpu(sg) == env->dst_cpu;
->
-> Yes, I mean, without this patch, we could incorrectly choose the current
-> non idle CPU rather than that idle SMT, but actually we should let that
-> idle SMT to do the idle lb.
+> > Isn't it actually a pointer to a pointer to the start of string to
+> > update?
+> 
+> I suppose.
 
-OK, agreed.  Thanks for the feedback!
+Its kind of relevant because you increment by the length, which you
+can only do because it is **. I also find it a pretty strange API, so
+documenting it correctly is important for me.
 
-julia
+> 
+> FWIW, I just copy-pasted the sprintf doc and tweaked:
+> /**
+>  * ethtool_sprintf - Write formatted string to ethtool string data
+>  * @data: Pointer to start of string to update
 
->
-> thanks,
-> Chenyu
->
-> > when a half-busy core
-> > has been identified that is different from env->dst_cpu.
-> >
-> > julia
-> >
-> > >
-> > > Reviewed-by: Chen Yu <yu.c.chen@intel.com>
-> > >
-> > > thanks,
-> > > Chenyu
-> > >
->
+So that need fixing as well. I will cook up a patch for this one.
+
+   Andrew
