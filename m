@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD4E7DA956
+	by mail.lfdr.de (Postfix) with ESMTP id D71057DA957
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjJ1Urq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 16:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        id S229615AbjJ1Usq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 16:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Uro (ORCPT
+        with ESMTP id S229446AbjJ1Uso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 16:47:44 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512EFB8
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:47:42 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6bd20c30831so803042b3a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:47:42 -0700 (PDT)
+        Sat, 28 Oct 2023 16:48:44 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01142D3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:48:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507e85ebf50so4473335e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698526061; x=1699130861; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VpDOJLyU8MiY3ma65dn79lmcz6KLCXAwl31ARg43/8k=;
-        b=aaiSaFa5r2K1CrnXL7xaQJavVuEAMxxQxWS6SkW2EKjKGZ3nqEAtBJ+IPyx9k7v2hB
-         4ZU4KsGXnrJbUwwqBwmcMgyHiFJJ1v11W4lB9otsWivH8B6fJpvJzZcBdtrK9y54s1S3
-         ov7MJ+v0+r7cs0ZsL5FmQsGpEPga1dYpxGoCHblMfcUjTPc5GQMjozg3WW9Gle2k3g3t
-         fe3XOaFdn84MXz9aUAqDiNm8jXx1Iyw6u912ZNUXuL6N34ZnQE+TvlDQWxqIX6cgDtOg
-         zFReNtcZThVQmi8isELZBbxMRefJ6uHiz7dfqHME0TOGGqErnBj8/DXnsB1u/XcbXpdf
-         5c+g==
+        d=linaro.org; s=google; t=1698526120; x=1699130920; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YVLQjXVLKZfGCSGch/qGFr8re6qYrJR23uX27QZ5BbI=;
+        b=UPUocww3P8hragmlvqHKHM1kAfZDoyiO12bcrM282lqvAjJov/aUmHudFhiTttvMB0
+         6oBEb4/7cPiqNmFUdoh8q7LnRvlegqtpp6v/BQtFDjPWIoeC4QMLUtxbEIG6lt3E14B4
+         h2TIHyVfHwFk8UHVfa0JNksr7BfbFUhqfKeLoedN5ZTODwamQ4jrzaOCmcOJt/Sivwh+
+         RmotqlevDs+a6Ytts+m9+JnaI/PtTWRFO4O0+3jIwu2aGBKREA2UtyJl2m5iVEsdvewK
+         CuEha96BlWH4NbcSkF6FVDDEflawgp+oVb2yPsXMAl8VEI5Ko7kCZgwwQkRHH55lf4tR
+         G1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698526061; x=1699130861;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VpDOJLyU8MiY3ma65dn79lmcz6KLCXAwl31ARg43/8k=;
-        b=vc5UBZsuKStVdtqcPWHcN/KMHdHQDEb97jCrTCHapPay7a+g9kqKRG7j5yyKjNIlnn
-         Zgc1g1o11CNgNRVgQJ/ACxMEV7CRrkKpREwyghfuVDVzYv1VDQW00XOrmcKICdniVUKJ
-         nfY8UdcD9AhjXTQ4m54gaDqmtrIM4t2TVuJAn3OTMOffPI3zSBmW2cC0yQFLwYjTxA0T
-         4Ddi3WHmKG/5cP+S8fZzai6Hwj60/94cedTttLK9cbO64iTKY+a2XPZgxwZmKeckIorY
-         acVm3sBHgiAiWkJZC/HcfuTt5vZJtFw/P8JXS6JGh8LtmTNrt51PF7TKER7sHtxv5F1W
-         4+iA==
-X-Gm-Message-State: AOJu0YwojM6lhFn2XbHB6/A/KbSZiJ8657qaR14oEKvINYRSJ53vp/kO
-        xSIEhi/15KqeLoZ4WqeVeNY=
-X-Google-Smtp-Source: AGHT+IHgmCGa+iM0HuEyly9OpQ7XusJhhgjc/45/fSDPdo/pKZN+Vo/ZmypHY7LVpk5J6VSz6v3wmA==
-X-Received: by 2002:a17:903:2581:b0:1cc:3e45:ac1e with SMTP id jb1-20020a170903258100b001cc3e45ac1emr839464plb.6.1698526061323;
-        Sat, 28 Oct 2023 13:47:41 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.208])
-        by smtp.gmail.com with ESMTPSA id iw2-20020a170903044200b001ca86a9caccsm3611977plb.228.2023.10.28.13.47.36
+        d=1e100.net; s=20230601; t=1698526120; x=1699130920;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YVLQjXVLKZfGCSGch/qGFr8re6qYrJR23uX27QZ5BbI=;
+        b=v6G5rdHciNErBWVSnRVvztFMo7dPWRxVOeD7C069HkFSkOf83rfIatMPN2vKB0ZNDz
+         8c0I2t1MuMW0+byUe1yiNws9xC9wkLHXWvjX45WZ/Lc0NkgXpnMuTJkawBmdyTsnOI6Z
+         /IiY6MHSYmDfvmQeY9vlcZO/Tq/l+827/4fxNzkXjYHdesSVSzofWTlgngH+ZlytPDgX
+         gJ/oZo9MVnlZ1IDfeFAHdx0UBwYqOp1E3z1FdoWwoH/UYzJvjQT3V2VQz+tVX4Qh05k8
+         p8zgNz6nLZkuyWnQmzmcnfO1Z9my7NZVSuxG7D+7b6a2Cclpckv7YfJHJ1+QVySPpCHl
+         GYlw==
+X-Gm-Message-State: AOJu0Yz8JOEJLIhMNbOx3rc9rVkVyk4BM6CfnKBCQvRuWwWcDvutlTqL
+        C9kCQmVZo7Ge5f/Y/9s5FTWBwg==
+X-Google-Smtp-Source: AGHT+IEbWdI89KrKJ0QcwjzCF/uBDgK1n6sTTVv+58ModTMzwrwhkH4H6gODqlwhlitRT3Pkz1fpzA==
+X-Received: by 2002:a05:6512:324a:b0:4fa:5e76:7ad4 with SMTP id c10-20020a056512324a00b004fa5e767ad4mr3946367lfr.10.1698526120201;
+        Sat, 28 Oct 2023 13:48:40 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id n4-20020ac24904000000b0050300e013f3sm770940lfi.254.2023.10.28.13.48.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 13:47:40 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        mst@redhat.com, michael.christie@oracle.com,
-        mathieu.desnoyers@efficios.com, mjguzik@gmail.com,
-        npiggin@gmail.com, shakeelb@google.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH v3] Fixing directly deferencing a __rcu pointer warning
-Date:   Sun, 29 Oct 2023 02:16:09 +0530
-Message-Id: <20231028204609.426841-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <93115738-6919-4855-81b7-eb9b2fc60137@gmail.com>
-References: <93115738-6919-4855-81b7-eb9b2fc60137@gmail.com>
+        Sat, 28 Oct 2023 13:48:39 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 28 Oct 2023 22:48:35 +0200
+Subject: [PATCH net-next] net: xscale: Drop unused PHY number
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231028-ixp4xx-eth-id-v1-1-57be486d7f0f@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAKJzPWUC/x2MSQqAMAwAv1JyNmCr4PIV8aA1ai61tEUC4t8NH
+ odh5oFMiSnDaB5IdHPmKyjYyoA/l3AQ8qYMrnaNrV2PLLEVQSqnGuw2tw67Cut70CYm2ln+3wS
+ BCgaSAvP7fp1i1YtpAAAA
+To:     Krzysztof Halasa <khalasa@piap.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Howard Harte <hharte@magicandroidapps.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the warning about directly dereferencing a pointer
-tagged with __rcu annotation.
+For some cargoculted reason on incomplete cleanup, we have a
+PHY number which refers to nothing and gives confusing messages
+about PHY 0 on all ports.
 
-Dereferencing the pointers tagged with __rcu directly should
-always be avoided according to the docs. There is a rcu helper
-function rcu_dereference(...) to use when dereferencing a __rcu
-pointer inside rcu read side critical sections. This function 
-returns the non __rcu tagged pointer which can be dereferenced 
-just like a normal pointer.
+Print the name of the actual PHY device instead.
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+Reported-by: Howard Harte <hharte@magicandroidapps.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
+ drivers/net/ethernet/xscale/ixp4xx_eth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Link to original patch 
- https://lore.kernel.org/all/20231025222811.855336-1-singhabhinav9051571833@gmail.com/
-
-Change from original -> v2 : 
- 1. removed the null check before dereferencing the dereferenced rcu
-    pointer at line 2372.
- 2. added rcu_dereference(...) at line 2694
-    
-Changes from v2 -> v3 
- 1. added rcu_dereference(...) at line 2693
-
- kernel/fork.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..e78649974669 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+diff --git a/drivers/net/ethernet/xscale/ixp4xx_eth.c b/drivers/net/ethernet/xscale/ixp4xx_eth.c
+index 3b0c5f177447..711f2727fa33 100644
+--- a/drivers/net/ethernet/xscale/ixp4xx_eth.c
++++ b/drivers/net/ethernet/xscale/ixp4xx_eth.c
+@@ -154,7 +154,6 @@ typedef void buffer_t;
  
- 	retval = -EAGAIN;
- 	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
--		if (p->real_cred->user != INIT_USER &&
-+		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
- 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
- 			goto bad_fork_cleanup_count;
- 	}
-@@ -2690,9 +2690,9 @@ __latent_entropy struct task_struct *copy_process(
- 			 * tasklist_lock with adding child to the process tree
- 			 * for propagate_has_child_subreaper optimization.
- 			 */
--			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
--							 p->real_parent->signal->is_child_subreaper;
--			list_add_tail(&p->sibling, &p->real_parent->children);
-+			p->signal->has_child_subreaper = rcu_dereference(p->real_parent)->signal->has_child_subreaper ||
-+							rcu_dereference(p->real_parent)->signal->is_child_subreaper;
-+			list_add_tail(&p->sibling, &rcu_dereference(p->real_parent)->children);
- 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
- 			attach_pid(p, PIDTYPE_TGID);
- 			attach_pid(p, PIDTYPE_PGID);
+ /* Information about built-in Ethernet MAC interfaces */
+ struct eth_plat_info {
+-	u8 phy;		/* MII PHY ID, 0 - 31 */
+ 	u8 rxq;		/* configurable, currently 0 - 31 only */
+ 	u8 txreadyq;
+ 	u8 hwaddr[ETH_ALEN];
+@@ -1520,7 +1519,7 @@ static int ixp4xx_eth_probe(struct platform_device *pdev)
+ 	if ((err = register_netdev(ndev)))
+ 		goto err_phy_dis;
+ 
+-	netdev_info(ndev, "%s: MII PHY %i on %s\n", ndev->name, plat->phy,
++	netdev_info(ndev, "%s: MII PHY %s on %s\n", ndev->name, phydev_name(phydev),
+ 		    npe_name(port->npe));
+ 
+ 	return 0;
+
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20231028-ixp4xx-eth-id-7d2b9f1021c8
+
+Best regards,
 -- 
-2.39.2
+Linus Walleij <linus.walleij@linaro.org>
 
