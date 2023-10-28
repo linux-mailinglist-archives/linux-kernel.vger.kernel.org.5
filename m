@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E037DA42F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 01:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328207DA438
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 02:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbjJ0Xtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 19:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
+        id S232724AbjJ1AEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 20:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJ0Xtk (ORCPT
+        with ESMTP id S229712AbjJ1AEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 19:49:40 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267BF1B4
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:49:38 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50cf61f6dso38901511fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:49:38 -0700 (PDT)
+        Fri, 27 Oct 2023 20:04:52 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D641B4
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 17:04:49 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c9b95943beso23829455ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 17:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698450576; x=1699055376; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/6MVE0JwBSnmzOc2InO3D2kXgpWf8h6/Vrw0EUtdQhA=;
-        b=e6ua2/eb1DFaKiqBF/qeNy1lKa1VRqbtw3+3/sOwRU6bCdcoTIsCmzbvL4oy17pxr5
-         vPBZUGsPFg2ZzM9xCdNg4VzNc3+DCc1zHECJW4dzSM0tnq3JWdP43uzl52P29L8H+sg4
-         Oos68IyszY6FmMyZ9vCqMY6d5Kmam+QB3FWvY=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698451489; x=1699056289; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qU8qhN8NeuXvpuSaXXgUKByT7/WBJrVSQRx8q7qX/KU=;
+        b=IzFwuiqF0vIsd6sQUZz//KGmaRks9/ic2ZYlgJQIaiJPnb/I9Zf3HHjyAFZftMo4w+
+         un5Eaos9eqGarI0pgn78WP74qXjDyERr4xX4DLM8QQ8lB+T+4hY7vzddAn3+T+KRdcz4
+         3y69EHVzpPbtuJY9XThMaxSe1/s0T7JGVk26mdlGUnfaMsP5waHsokfQBKQ2fWJdCSu6
+         bQNFDK5AsKu5sqh3RRMLMDUwALZ9YYVua03bide/00azLbYjLs2yVS/1ZsuZcXzMWbpg
+         LJjpdiIcMeqa2vVQiGSRrcvYXVDbm35ft4ljhtP3mnPG8/7v5/8Y16bfn76T5Lz9tUFc
+         CdqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698450576; x=1699055376;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/6MVE0JwBSnmzOc2InO3D2kXgpWf8h6/Vrw0EUtdQhA=;
-        b=Xj+XFR6Oq9kNK2bcjZL2HmbgSPGDdHmRAfHLjkWAJe8RZsThc4C75T9gzbgbNwzRxQ
-         z0fxuI9PCvDt50fslV5cYUknnCCVNd1niPQObDJcv8/maTrl4Fu1uJptBkDJHVOHDVqY
-         52DmFHsE7dzoEQUYAKh8qpw3J8+xXCEOhHd1k/V057gsIjaPzLoXfqGZS4sg/gyuJiMt
-         6xoA+BA/FuH1pDg0W20OTXbqAg6xJESKf+Fc8l4t9FTtf2wTht1UEIwpbqWEpPxOScCR
-         irt5+D+EDlUiM+7p7CCCHiXQTTXdE+l0Bu73OW5WDCrFodrGCA/IWE570dLSChClF9vQ
-         ZxCg==
-X-Gm-Message-State: AOJu0YzWkDsUZrROygWUmX2UgmAo592V1Bo9UNR37RdPP0cdwfPyKg0o
-        ozyHDLQcSCfosqlCPx7eyv/bZS7LzjBP2IjVTvNb0Hrc
-X-Google-Smtp-Source: AGHT+IEvxjZeigRsdwjNaOWWK8l2qM2XJ/QvhVwrjfeuoxyx9vFQAG00mkAzQdSPMM9jfASbkRDKqA==
-X-Received: by 2002:a05:6512:5cc:b0:503:7c0:ae96 with SMTP id o12-20020a05651205cc00b0050307c0ae96mr3012103lfo.20.1698450576048;
-        Fri, 27 Oct 2023 16:49:36 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id h9-20020a1709063c0900b009ae54585aebsm1846222ejg.89.2023.10.27.16.49.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 16:49:35 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so4069575a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 16:49:35 -0700 (PDT)
-X-Received: by 2002:a50:d616:0:b0:53f:b758:22a3 with SMTP id
- x22-20020a50d616000000b0053fb75822a3mr3200840edi.3.1698450575132; Fri, 27 Oct
- 2023 16:49:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698451489; x=1699056289;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qU8qhN8NeuXvpuSaXXgUKByT7/WBJrVSQRx8q7qX/KU=;
+        b=qj1EGWHKa7watEATXrVso8hRSS3OXY6ElOs3LmqM/u2fWLScAyzFsJ6J8OhRc8Az/C
+         isP4hUFiDwiVsFOilzVp6SFc4EhvgV3Kp0c7kn+wmLQM67z7S8gJeqxqssJhEmlSFqBR
+         2zCMlxGLpZu0R5eHUcOTXGSzOlD90dXeVHQ52XkvVmf+MrIYp7jAxRWKjCPedDEQvMXv
+         edXQbKj94YX1wX2DP70XPEsxmzQedYCbzK5WaboMS9x4Lpj1RK6DnN0ekC/KF00F13nz
+         TW0YmNTzRAb2FIyflD9jPp5GJ3WRVcSZ1eTxVinW+rxmP4RszPTh2x1kOi80JkNEdyLT
+         qUvA==
+X-Gm-Message-State: AOJu0YzdYaBG6ens00W2HE3mIg/bj+tQFOH6ixXP0XrjBbuZx2BzGR6n
+        xWc4FsfiZEjLWNFQb8bLCuirbg==
+X-Google-Smtp-Source: AGHT+IHCWZUCOBrHeYHsbktRHjy1dwHh6CQjMh1NI3hlaxVuQBaSwOfSsn52ubFNnvm1Dp9H4oR9Aw==
+X-Received: by 2002:a17:903:1385:b0:1cc:23ad:c2d5 with SMTP id jx5-20020a170903138500b001cc23adc2d5mr2905369plb.39.1698451488878;
+        Fri, 27 Oct 2023 17:04:48 -0700 (PDT)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id iz15-20020a170902ef8f00b001c9c6a78a56sm2136056plb.97.2023.10.27.17.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 17:04:48 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 17:04:45 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        Xiao Wang <xiao.w.wang@intel.com>,
+        Evan Green <evan@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v8 1/5] asm-generic: Improve csum_fold
+Message-ID: <ZTxQHVplimd4tquE@ghost>
+References: <20231027-optimize_checksum-v8-0-feb7101d128d@rivosinc.com>
+ <20231027-optimize_checksum-v8-1-feb7101d128d@rivosinc.com>
+ <20231027231036.GM800259@ZenIV>
 MIME-Version: 1.0
-References: <00ebd650-72c1-0901-27bc-ae18867ed4b4@redhat.com>
-In-Reply-To: <00ebd650-72c1-0901-27bc-ae18867ed4b4@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 27 Oct 2023 13:49:16 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whDg86U2PdJ3bH7L3_fnUU0UK3Bx2Eo7zcdXH_X521z0w@mail.gmail.com>
-Message-ID: <CAHk-=whDg86U2PdJ3bH7L3_fnUU0UK3Bx2Eo7zcdXH_X521z0w@mail.gmail.com>
-Subject: Re: [GIT PULL] platform-drivers-x86 for 6.6-6
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        David Lazar <dlazar@gmail.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027231036.GM800259@ZenIV>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 at 04:55, Hans de Goede <hdegoede@redhat.com> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.6-6
+On Sat, Oct 28, 2023 at 12:10:36AM +0100, Al Viro wrote:
+> On Fri, Oct 27, 2023 at 03:43:51PM -0700, Charlie Jenkins wrote:
+> >  /*
+> >   * computes the checksum of a memory block at buff, length len,
+> >   * and adds in "sum" (32-bit)
+> > @@ -31,9 +33,7 @@ extern __sum16 ip_fast_csum(const void *iph, unsigned int ihl);
+> >  static inline __sum16 csum_fold(__wsum csum)
+> >  {
+> >  	u32 sum = (__force u32)csum;
+> > -	sum = (sum & 0xffff) + (sum >> 16);
+> > -	sum = (sum & 0xffff) + (sum >> 16);
+> > -	return (__force __sum16)~sum;
+> > +	return (__force __sum16)((~sum - ror32(sum, 16)) >> 16);
+> >  }
+> 
+> Will (~(sum + ror32(sum, 16))>>16 produce worse code than that?
+> Because at least with recent gcc this will generate the exact thing
+> you get from arm inline asm...
 
-I'm not sure why this didn't get the pr-tracker-bot treatment.
+Yes that will produce worse code because an out-of-order processor will be able to
+leverage that ~sum and ror32(sum, 16) can be computed independently of
+each other. There are more strict data dependencies in (~(sum +
+ror32(sum, 16))>>16.
 
-So here's the manual version...
+- Charlie
 
-              Linus
