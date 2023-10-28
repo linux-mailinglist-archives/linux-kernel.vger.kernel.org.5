@@ -2,172 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37617DA581
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9E37DA585
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjJ1Hmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 03:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S229769AbjJ1HoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 03:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJ1Hmo (ORCPT
+        with ESMTP id S229458AbjJ1HoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 03:42:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9ADE1;
-        Sat, 28 Oct 2023 00:42:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DCA8C433CC;
-        Sat, 28 Oct 2023 07:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698478961;
-        bh=htUU5NgNW5XjX1k4bhwOpjiaCPHzbKJXSRlXtBMXaaI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SLt9RpRk04EaksB4alsV5juWqDKrrkoFjxUkbGOZ7QmCkr5DaOIcuWvzpg2KRZFs4
-         oyNj7h+Nu2x3s/nz8wlUOhoDuxjmHXZ81/fxdhC/0g5Voz0M9n1SONNKBWxBpMncFw
-         lBKCeI9FyvIc3DaiiGzH06wGVU7T0+DOcEqxXG5+SBgGefDMATnj9bRNWCQvHdXZeM
-         FyqwXfRoKQYSCd/fmacxctuND9MgMxzBI8ScDwHMoocjekC8Ee6ezXeZ/nIzGkSYtn
-         mnayYsRVJbFeSef6Ffe/Rd0T+4ssNkfDQtYf7XwHBc5QWDgU4QDZ0Wt0a762+yDV6w
-         L93MhRkYGp9Cg==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-507a62d4788so4346139e87.0;
-        Sat, 28 Oct 2023 00:42:41 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzk/iHOJ5O2mT+ydEWzcvjd85tgVWvUTSmwTTkDwf9wg6+iPIKu
-        cby8vZP+KDCNViIlRKuWA1v7c/ka76ewDvg6yD0=
-X-Google-Smtp-Source: AGHT+IFiTcDct53OijnP1Dv//ljwa/j8p7snP2xWb1MXmhUAIVhLZvUBdZmrQEndHPbZWL2iA8aWwpyIs51gK8PaGng=
-X-Received: by 2002:ac2:4835:0:b0:507:9ff7:2ed4 with SMTP id
- 21-20020ac24835000000b005079ff72ed4mr3299897lft.43.1698478959384; Sat, 28 Oct
- 2023 00:42:39 -0700 (PDT)
+        Sat, 28 Oct 2023 03:44:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD22AEB;
+        Sat, 28 Oct 2023 00:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698479061; x=1730015061;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=465OdnQqbfHuFli76mKkKaH0MNO+Oh+EJdtspDJbpzo=;
+  b=P0elTMKtLHBLIWqzXIH6QeBB2lsJqlUvfUFA0puKzVXiwB1WtGJoObEA
+   1kHT5CqraLLz7nlB6FYvwA/PbcCWVxwV3nPV2B+bv3HRPidQARhXJEtqZ
+   Yccxv6QJmgsGpLW0vLHxWnrWkmTzL/0d7WkX32GniFQp3WYJ1L6Dq6NMt
+   dKOsqEcerWMAnoqNTqNlwyeJF73tld5Jq4Db8yY5CtEdkF4A0LLv5D8O6
+   i5k5MW7+x0UgR2yo71Isaz/M8SzPlmXSvdk5+CM/sD+dAGZMYW9zAvkTf
+   z6uSYqZLzyst/h8/JcfiW+Tug8CwhzqnAgj5+J8NqDFhKoP/xeiZmdEFk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="682963"
+X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
+   d="scan'208";a="682963"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 00:44:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="903506551"
+X-IronPort-AV: E=Sophos;i="6.03,258,1694761200"; 
+   d="scan'208";a="903506551"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Oct 2023 00:41:43 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwdzP-000BYv-31;
+        Sat, 28 Oct 2023 07:44:11 +0000
+Date:   Sat, 28 Oct 2023 15:43:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        surenb@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v4 2/5] userfaultfd: UFFDIO_MOVE uABI
+Message-ID: <202310281500.latmtbJs-lkp@intel.com>
+References: <20231028003819.652322-3-surenb@google.com>
 MIME-Version: 1.0
-References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
- <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com> <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
- <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com>
-In-Reply-To: <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 28 Oct 2023 09:42:27 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-Message-ID: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-Subject: Re: qemu-arm64: handle_futex_death - kernel/futex/core.c:661 - Unable
- to handle kernel unknown 43 at virtual address
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>
-Content-Type: multipart/mixed; boundary="000000000000087d0c0608c1f337"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231028003819.652322-3-surenb@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000087d0c0608c1f337
-Content-Type: text/plain; charset="UTF-8"
+Hi Suren,
 
-On Fri, 27 Oct 2023 at 12:57, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Thu, 26 Oct 2023 at 21:09, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
-> > > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
-> > > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 ...
-> > > It looks like this is fallout from the LPA2 enablement.
-> > >
-> > > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
-> > > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
-> > >
-> > >         0b101011 When FEAT_LPA2 is implemented:
-> > >                  Translation fault, level -1.
-> > >
-> > > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
-> > > The exception is expected, and it's supposed to be handled via the exception
-> > > fixups, but the LPA2 patches didn't update the fault_info table entries for all
-> > > the level -1 faults, and so those all get handled by do_bad() and don't call
-> > > fixup_exception(), causing them to be fatal.
-> > >
-> > > It should be relatively simple to update the fault_info table for the level -1
-> > > faults, but given the other issues we're seeing I think it's probably worth
-> > > dropping the LPA2 patches for the moment.
-> > >
-> >
-> > Thanks for the analysis Mark.
-> >
-> > I agree that this should not be difficult to fix, but given the other
-> > CI problems and identified loose ends, I am not going to object to
-> > dropping this partially or entirely at this point. I'm sure everybody
-> > will be thrilled to go over those 60 patches again after I rebase them
-> > onto v6.7-rc1 :-)
->
-> I am happy to test any proposed fix patch.
->
+kernel test robot noticed the following build warnings:
 
-Thanks Naresh. Patch attached.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on next-20231027]
+[cannot apply to linus/master v6.6-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
---000000000000087d0c0608c1f337
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-Add-missing-ESR-decoding-for-level-1-translation-fau.patch"
-Content-Disposition: attachment; 
-	filename="0001-Add-missing-ESR-decoding-for-level-1-translation-fau.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lo9qibwf0>
-X-Attachment-Id: f_lo9qibwf0
+url:    https://github.com/intel-lab-lkp/linux/commits/Suren-Baghdasaryan/mm-rmap-support-move-to-different-root-anon_vma-in-folio_move_anon_rmap/20231028-084120
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231028003819.652322-3-surenb%40google.com
+patch subject: [PATCH v4 2/5] userfaultfd: UFFDIO_MOVE uABI
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231028/202310281500.latmtbJs-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310281500.latmtbJs-lkp@intel.com/reproduce)
 
-RnJvbSAwZDNjOWQzOWE0NTQxZjdjNWRlYTUxNzVhZGVhMmFmNjNlYzFiOTJkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBcmQgQmllc2hldXZlbCA8YXJkYkBrZXJuZWwub3JnPgpEYXRl
-OiBTYXQsIDI4IE9jdCAyMDIzIDA5OjQwOjI5ICswMjAwClN1YmplY3Q6IFtQQVRDSF0gQWRkIG1p
-c3NpbmcgRVNSIGRlY29kaW5nIGZvciBsZXZlbCAtMSB0cmFuc2xhdGlvbiBmYXVsdHMKClNpZ25l
-ZC1vZmYtYnk6IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+Ci0tLQogYXJjaC9hcm02
-NC9tbS9mYXVsdC5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
-KSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL2FybTY0L21tL2ZhdWx0LmMgYi9h
-cmNoL2FybTY0L21tL2ZhdWx0LmMKaW5kZXggNDYwZDc5OWUxMjk2Li4yMjMxOGQ1NjA4N2QgMTAw
-NjQ0Ci0tLSBhL2FyY2gvYXJtNjQvbW0vZmF1bHQuYworKysgYi9hcmNoL2FybTY0L21tL2ZhdWx0
-LmMKQEAgLTc5MSw3ICs3OTEsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZhdWx0X2luZm8gZmF1
-bHRfaW5mb1tdID0gewogCXsgZG9fc2VhLAkJU0lHQlVTLCAgQlVTX09CSkVSUiwJInN5bmNocm9u
-b3VzIGV4dGVybmFsIGFib3J0Igl9LAogCXsgZG9fdGFnX2NoZWNrX2ZhdWx0LAlTSUdTRUdWLCBT
-RUdWX01URVNFUlIsCSJzeW5jaHJvbm91cyB0YWcgY2hlY2sgZmF1bHQiCX0sCiAJeyBkb19iYWQs
-CQlTSUdLSUxMLCBTSV9LRVJORUwsCSJ1bmtub3duIDE4IgkJCX0sCi0JeyBkb19iYWQsCQlTSUdL
-SUxMLCBTSV9LRVJORUwsCSJ1bmtub3duIDE5IgkJCX0sCisJeyBkb19zZWEsCQlTSUdLSUxMLCBT
-SV9LRVJORUwsCSJsZXZlbCAtMSAodHJhbnNsYXRpb24gdGFibGUgd2FsaykiCX0sCiAJeyBkb19z
-ZWEsCQlTSUdLSUxMLCBTSV9LRVJORUwsCSJsZXZlbCAwICh0cmFuc2xhdGlvbiB0YWJsZSB3YWxr
-KSIJfSwKIAl7IGRvX3NlYSwJCVNJR0tJTEwsIFNJX0tFUk5FTCwJImxldmVsIDEgKHRyYW5zbGF0
-aW9uIHRhYmxlIHdhbGspIgl9LAogCXsgZG9fc2VhLAkJU0lHS0lMTCwgU0lfS0VSTkVMLAkibGV2
-ZWwgMiAodHJhbnNsYXRpb24gdGFibGUgd2FsaykiCX0sCkBAIC03OTksNyArNzk5LDcgQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBmYXVsdF9pbmZvIGZhdWx0X2luZm9bXSA9IHsKIAl7IGRvX3NlYSwJ
-CVNJR0JVUywgIEJVU19PQkpFUlIsCSJzeW5jaHJvbm91cyBwYXJpdHkgb3IgRUNDIGVycm9yIiB9
-LAkvLyBSZXNlcnZlZCB3aGVuIFJBUyBpcyBpbXBsZW1lbnRlZAogCXsgZG9fYmFkLAkJU0lHS0lM
-TCwgU0lfS0VSTkVMLAkidW5rbm93biAyNSIJCQl9LAogCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lf
-S0VSTkVMLAkidW5rbm93biAyNiIJCQl9LAotCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lfS0VSTkVM
-LAkidW5rbm93biAyNyIJCQl9LAorCXsgZG9fc2VhLAkJU0lHS0lMTCwgU0lfS0VSTkVMLAkibGV2
-ZWwgLTEgc3luY2hyb25vdXMgcGFyaXR5IGVycm9yICh0cmFuc2xhdGlvbiB0YWJsZSB3YWxrKSIJ
-fSwJLy8gUmVzZXJ2ZWQgd2hlbiBSQVMgaXMgaW1wbGVtZW50ZWQKIAl7IGRvX3NlYSwJCVNJR0tJ
-TEwsIFNJX0tFUk5FTCwJImxldmVsIDAgc3luY2hyb25vdXMgcGFyaXR5IGVycm9yICh0cmFuc2xh
-dGlvbiB0YWJsZSB3YWxrKSIJfSwJLy8gUmVzZXJ2ZWQgd2hlbiBSQVMgaXMgaW1wbGVtZW50ZWQK
-IAl7IGRvX3NlYSwJCVNJR0tJTEwsIFNJX0tFUk5FTCwJImxldmVsIDEgc3luY2hyb25vdXMgcGFy
-aXR5IGVycm9yICh0cmFuc2xhdGlvbiB0YWJsZSB3YWxrKSIJfSwJLy8gUmVzZXJ2ZWQgd2hlbiBS
-QVMgaXMgaW1wbGVtZW50ZWQKIAl7IGRvX3NlYSwJCVNJR0tJTEwsIFNJX0tFUk5FTCwJImxldmVs
-IDIgc3luY2hyb25vdXMgcGFyaXR5IGVycm9yICh0cmFuc2xhdGlvbiB0YWJsZSB3YWxrKSIJfSwJ
-Ly8gUmVzZXJ2ZWQgd2hlbiBSQVMgaXMgaW1wbGVtZW50ZWQKQEAgLTgxMSw5ICs4MTEsOSBAQCBz
-dGF0aWMgY29uc3Qgc3RydWN0IGZhdWx0X2luZm8gZmF1bHRfaW5mb1tdID0gewogCXsgZG9fYmFk
-LAkJU0lHS0lMTCwgU0lfS0VSTkVMLAkidW5rbm93biAzNiIJCQl9LAogCXsgZG9fYmFkLAkJU0lH
-S0lMTCwgU0lfS0VSTkVMLAkidW5rbm93biAzNyIJCQl9LAogCXsgZG9fYmFkLAkJU0lHS0lMTCwg
-U0lfS0VSTkVMLAkidW5rbm93biAzOCIJCQl9LAotCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lfS0VS
-TkVMLAkidW5rbm93biAzOSIJCQl9LAorCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lfS0VSTkVMLAki
-bGV2ZWwgLTEgYWRkcmVzcyBzaXplIGZhdWx0Igl9LAogCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lf
-S0VSTkVMLAkidW5rbm93biA0MCIJCQl9LAotCXsgZG9fYmFkLAkJU0lHS0lMTCwgU0lfS0VSTkVM
-LAkidW5rbm93biA0MSIJCQl9LAorCXsgZG9fdHJhbnNsYXRpb25fZmF1bHQsCVNJR1NFR1YsIFNF
-R1ZfTUFQRVJSLAkibGV2ZWwgLTEgdHJhbnNsYXRpb24gZmF1bHQiCX0sCiAJeyBkb19iYWQsCQlT
-SUdLSUxMLCBTSV9LRVJORUwsCSJ1bmtub3duIDQyIgkJCX0sCiAJeyBkb19iYWQsCQlTSUdLSUxM
-LCBTSV9LRVJORUwsCSJ1bmtub3duIDQzIgkJCX0sCiAJeyBkb19iYWQsCQlTSUdLSUxMLCBTSV9L
-RVJORUwsCSJ1bmtub3duIDQ0IgkJCX0sCi0tIAoyLjM5LjIKCg==
---000000000000087d0c0608c1f337--
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310281500.latmtbJs-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/userfaultfd.c:1289: warning: Function parameter or member 'ctx' not described in 'move_pages'
+>> mm/userfaultfd.c:1289: warning: Function parameter or member 'mm' not described in 'move_pages'
+>> mm/userfaultfd.c:1289: warning: Function parameter or member 'mode' not described in 'move_pages'
+
+
+vim +1289 mm/userfaultfd.c
+
+  1211	
+  1212	/**
+  1213	 * move_pages - move arbitrary anonymous pages of an existing vma
+  1214	 * @dst_start: start of the destination virtual memory range
+  1215	 * @src_start: start of the source virtual memory range
+  1216	 * @len: length of the virtual memory range
+  1217	 *
+  1218	 * Must be called with mmap_lock held for read.
+  1219	 *
+  1220	 * move_pages() remaps arbitrary anonymous pages atomically in zero
+  1221	 * copy. It only works on non shared anonymous pages because those can
+  1222	 * be relocated without generating non linear anon_vmas in the rmap
+  1223	 * code.
+  1224	 *
+  1225	 * It provides a zero copy mechanism to handle userspace page faults.
+  1226	 * The source vma pages should have mapcount == 1, which can be
+  1227	 * enforced by using madvise(MADV_DONTFORK) on src vma.
+  1228	 *
+  1229	 * The thread receiving the page during the userland page fault
+  1230	 * will receive the faulting page in the source vma through the network,
+  1231	 * storage or any other I/O device (MADV_DONTFORK in the source vma
+  1232	 * avoids move_pages() to fail with -EBUSY if the process forks before
+  1233	 * move_pages() is called), then it will call move_pages() to map the
+  1234	 * page in the faulting address in the destination vma.
+  1235	 *
+  1236	 * This userfaultfd command works purely via pagetables, so it's the
+  1237	 * most efficient way to move physical non shared anonymous pages
+  1238	 * across different virtual addresses. Unlike mremap()/mmap()/munmap()
+  1239	 * it does not create any new vmas. The mapping in the destination
+  1240	 * address is atomic.
+  1241	 *
+  1242	 * It only works if the vma protection bits are identical from the
+  1243	 * source and destination vma.
+  1244	 *
+  1245	 * It can remap non shared anonymous pages within the same vma too.
+  1246	 *
+  1247	 * If the source virtual memory range has any unmapped holes, or if
+  1248	 * the destination virtual memory range is not a whole unmapped hole,
+  1249	 * move_pages() will fail respectively with -ENOENT or -EEXIST. This
+  1250	 * provides a very strict behavior to avoid any chance of memory
+  1251	 * corruption going unnoticed if there are userland race conditions.
+  1252	 * Only one thread should resolve the userland page fault at any given
+  1253	 * time for any given faulting address. This means that if two threads
+  1254	 * try to both call move_pages() on the same destination address at the
+  1255	 * same time, the second thread will get an explicit error from this
+  1256	 * command.
+  1257	 *
+  1258	 * The command retval will return "len" is successful. The command
+  1259	 * however can be interrupted by fatal signals or errors. If
+  1260	 * interrupted it will return the number of bytes successfully
+  1261	 * remapped before the interruption if any, or the negative error if
+  1262	 * none. It will never return zero. Either it will return an error or
+  1263	 * an amount of bytes successfully moved. If the retval reports a
+  1264	 * "short" remap, the move_pages() command should be repeated by
+  1265	 * userland with src+retval, dst+reval, len-retval if it wants to know
+  1266	 * about the error that interrupted it.
+  1267	 *
+  1268	 * The UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES flag can be specified to
+  1269	 * prevent -ENOENT errors to materialize if there are holes in the
+  1270	 * source virtual range that is being remapped. The holes will be
+  1271	 * accounted as successfully remapped in the retval of the
+  1272	 * command. This is mostly useful to remap hugepage naturally aligned
+  1273	 * virtual regions without knowing if there are transparent hugepage
+  1274	 * in the regions or not, but preventing the risk of having to split
+  1275	 * the hugepmd during the remap.
+  1276	 *
+  1277	 * If there's any rmap walk that is taking the anon_vma locks without
+  1278	 * first obtaining the folio lock (the only current instance is
+  1279	 * folio_referenced), they will have to verify if the folio->mapping
+  1280	 * has changed after taking the anon_vma lock. If it changed they
+  1281	 * should release the lock and retry obtaining a new anon_vma, because
+  1282	 * it means the anon_vma was changed by move_pages() before the lock
+  1283	 * could be obtained. This is the only additional complexity added to
+  1284	 * the rmap code to provide this anonymous page remapping functionality.
+  1285	 */
+  1286	ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm,
+  1287			   unsigned long dst_start, unsigned long src_start,
+  1288			   unsigned long len, __u64 mode)
+> 1289	{
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
