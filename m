@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DA27DA9A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 23:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8B37DA9A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 23:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjJ1VeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 17:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S229699AbjJ1Vjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 17:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Vd7 (ORCPT
+        with ESMTP id S229446AbjJ1Vjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 17:33:59 -0400
+        Sat, 28 Oct 2023 17:39:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD67D3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 14:33:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 695EDC433C8;
-        Sat, 28 Oct 2023 21:33:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D99CF;
+        Sat, 28 Oct 2023 14:39:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA845C433C7;
+        Sat, 28 Oct 2023 21:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698528835;
-        bh=UtSutLXi7E+qkhfIMryx3kSyfkKokutnxEvlL8G6ZwA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Cdy6mk5q5CB8HhSyv2aPmAM70gKtHkfpfDCtkkkDC5fX/jw5zKTMfRQkqWBI8O62p
-         mFYUccWMuUNF6g0GHPJg6lYG6pOrSfRjULFgYMDlWw15Cn8C7z6BlcA20OweGuuVIP
-         Pqzqd77W1wj8VIs+wMymqQGBcg6CfTSnUb4X+rjxB5zJfrSx/OcDCjLbkTAZYRmC+6
-         xX4l6nhOz4I7bnSLYwZgIcC65cCoEefsYf6sb9JCzdnviCc5QCwrKPp+WNpVRJuO1L
-         ATWP2+fNh7YpUoOr05YRN1dxgFBPlK08idaWzlC0UGftj6jE2iubR6Gg7BJKr/bFDJ
-         ERO1Po8Tb/qQg==
+        s=k20201202; t=1698529182;
+        bh=YFw3MuSD8O4HGkh6VW7jNYSusxafWxc4LG1WG2XEIak=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rsad3ncuTFb6Blb8uETRa8p2CrI/WfNNLFwR0mZNxGykNUbSS+QvH+riGsKiA/N4I
+         pgDnA9qEyefcQjn3Y0aQoGoCKbzFfDsXFieWDkz/Zt1M8OXnvPGQkcs22EmMFpqCAl
+         kEMUvhZXBWtWtl2qhcN0Txqab/AHdTar1m12mJFoOisu3sMJhKabSsPB9tLfTfNpP5
+         H+592qZf/CrUEm3ogVWHSOZl/r55BRqd/GGqawbIZ78Qd/ls7VwZlwAWwCwwLeyUoJ
+         I6deb0IxPsc6gyH9W1WzehsLUoE3B3eJq1vGy3O+3RSbYaXgpu1dW1a1V0y5heXOt4
+         CPfozpxbJi8tw==
 From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH mm-hotfixes-unstable] mm/damon/sysfs: fix unnecessary monitoring results removal when online-commit inputs
-Date:   Sat, 28 Oct 2023 21:33:53 +0000
-Message-Id: <20231028213353.45397-1-sj@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 6.5.y] mm/damon/sysfs: check DAMOS regions update progress from before_terminate()
+Date:   Sat, 28 Oct 2023 21:39:36 +0000
+Message-Id: <20231028213936.45621-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2023102716-prudishly-reggae-1b29@gregkh>
+References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -47,104 +51,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit db27869df6ed ("mm/damon/sysfs: remove requested targets when
-online-commit inputs") of mm-hotfixes-unstable tree[1] makes all targets
-to removed and then added again based on the user input, for
-online-commit inputs.  The commit says it is inefficient but ok as
-below:
+DAMON_SYSFS can receive DAMOS tried regions update request while kdamond
+is already out of the main loop and before_terminate callback
+(damon_sysfs_before_terminate() in this case) is not yet called.  And
+damon_sysfs_handle_cmd() can further be finished before the callback is
+invoked.  Then, damon_sysfs_before_terminate() unlocks damon_sysfs_lock,
+which is not locked by anyone.  This happens because the callback function
+assumes damon_sysfs_cmd_request_callback() should be called before it.
+Check if the assumption was true before doing the unlock, to avoid this
+problem.
 
-    This could cause unnecessary memory dealloc and realloc operations,
-    but this is not a hot code path.  Also, note that damon_target is
-    stateless, and hence no data is lost
-
-But that's not true.  'struct target' is containing the monitoring
-results ('->regions_list').  As a result, the patch makes all previous
-monitoring results to be removed for every online-commit inputs.  Fix it
-by removing targets only when really changed or removal is requested.
-
-[1] https://lore.kernel.org/damon/20231022210735.46409-2-sj@kernel.org/
-
-Fixes: db27869df6ed ("mm/damon/sysfs: remove requested targets when online-commit inputs") # mm-hotfixes-unstable
+Link: https://lkml.kernel.org/r/20231007200432.3110-1-sj@kernel.org
+Fixes: f1d13cacabe1 ("mm/damon/sysfs: implement DAMOS tried regions update command")
 Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: <stable@vger.kernel.org>	[6.2.x]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+(cherry picked from commit 76b7069bcc89dec33f03eb08abee165d0306b754)
 ---
 
-Andrew, if you squash this into the original patch, please update the last
-paragraph as below.
+I sent this patch yesterday, but seems not archived in lore.kernel.org.
+Sending again Cc-ing more mailing lists, to ensure it is sent and others can
+find it, to avoid any duplicated works.
 
-Fix it by doing in place updates and removals of existing targets as user
-requested.  Note that monitoring results (->regions_list) of targets that no
-change has requested are maintained.
-
- mm/damon/sysfs.c | 44 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 39 insertions(+), 5 deletions(-)
+ mm/damon/sysfs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
-index d13e353bee52..1a231bde18f9 100644
+index 33e1d5c9cb54..df165820c605 100644
 --- a/mm/damon/sysfs.c
 +++ b/mm/damon/sysfs.c
-@@ -1150,23 +1150,57 @@ static int damon_sysfs_add_target(struct damon_sysfs_target *sys_target,
- 	return err;
+@@ -1202,6 +1202,8 @@ static int damon_sysfs_set_targets(struct damon_ctx *ctx,
+ 	return 0;
  }
  
-+static int damon_sysfs_update_target(struct damon_target *target,
-+		struct damon_ctx *ctx,
-+		struct damon_sysfs_target *sys_target)
-+{
-+	struct pid *pid;
-+	struct damon_region *r, *next;
++static bool damon_sysfs_schemes_regions_updating;
 +
-+	if (!damon_target_has_pid(ctx))
-+		return 0;
-+
-+	pid = find_get_pid(sys_target->pid);
-+	if (!pid)
-+		return -EINVAL;
-+
-+	/* no change to the target */
-+	if (pid == target->pid) {
-+		put_pid(pid);
-+		return 0;
-+	}
-+
-+	/* remove old monitoring results and update the target's pid */
-+	damon_for_each_region_safe(r, next, target)
-+		damon_destroy_region(r, target);
-+	put_pid(target->pid);
-+	target->pid = pid;
-+	return 0;
-+}
-+
- static int damon_sysfs_set_targets(struct damon_ctx *ctx,
- 		struct damon_sysfs_targets *sysfs_targets)
+ static void damon_sysfs_before_terminate(struct damon_ctx *ctx)
  {
  	struct damon_target *t, *next;
--	int i, err;
-+	int i = 0, err;
+@@ -1209,10 +1211,12 @@ static void damon_sysfs_before_terminate(struct damon_ctx *ctx)
  
- 	/* Multiple physical address space monitoring targets makes no sense */
- 	if (ctx->ops.id == DAMON_OPS_PADDR && sysfs_targets->nr > 1)
- 		return -EINVAL;
- 
- 	damon_for_each_target_safe(t, next, ctx) {
--		if (damon_target_has_pid(ctx))
--			put_pid(t->pid);
--		damon_destroy_target(t);
-+		if (i < sysfs_targets->nr) {
-+			damon_sysfs_update_target(t, ctx,
-+					sysfs_targets->targets_arr[i]);
-+		} else {
-+			if (damon_target_has_pid(ctx))
-+				put_pid(t->pid);
-+			damon_destroy_target(t);
-+		}
-+		i++;
+ 	/* damon_sysfs_schemes_update_regions_stop() might not yet called */
+ 	kdamond = damon_sysfs_cmd_request.kdamond;
+-	if (kdamond && damon_sysfs_cmd_request.cmd ==
++	if (kdamond && (damon_sysfs_cmd_request.cmd ==
+ 			DAMON_SYSFS_CMD_UPDATE_SCHEMES_TRIED_REGIONS &&
++			damon_sysfs_schemes_regions_updating) &&
+ 			ctx == kdamond->damon_ctx) {
+ 		damon_sysfs_schemes_update_regions_stop(ctx);
++		damon_sysfs_schemes_regions_updating = false;
+ 		mutex_unlock(&damon_sysfs_lock);
  	}
  
--	for (i = 0; i < sysfs_targets->nr; i++) {
-+	for (; i < sysfs_targets->nr; i++) {
- 		struct damon_sysfs_target *st = sysfs_targets->targets_arr[i];
+@@ -1331,7 +1335,6 @@ static int damon_sysfs_commit_input(struct damon_sysfs_kdamond *kdamond)
+ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c)
+ {
+ 	struct damon_sysfs_kdamond *kdamond;
+-	static bool damon_sysfs_schemes_regions_updating;
+ 	int err = 0;
  
- 		err = damon_sysfs_add_target(st, ctx);
+ 	/* avoid deadlock due to concurrent state_store('off') */
 -- 
 2.34.1
-
