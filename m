@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F76C7DA767
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71307DA769
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjJ1Nwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S229617AbjJ1NzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjJ1Nw0 (ORCPT
+        with ESMTP id S229488AbjJ1NzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:52:26 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ADBED;
-        Sat, 28 Oct 2023 06:52:23 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 692505C01F7;
-        Sat, 28 Oct 2023 09:52:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 28 Oct 2023 09:52:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698501142; x=1698587542; bh=fRFxfVZQMQ+iwmH5/1/sMEmpdm0BY/1L6Uv
-        PQZbT4lQ=; b=zmZJXQ9YDU7awpWx+y1cysOqGRW9cZMsJUQrfrG291SQm0tFRRt
-        Za+91lGmTbRyS+acymZPbOdk9Z+q0nxW1h505j1eVhkstNfGmC/ZO0lUM2vklRTI
-        zPxX8Fj5hof1VDSGcAnJvSkS2oEzmyipfWbDFtO9uoyRPkYmh0keWgWqbJPb50ta
-        nBYPRTS+6/56wEERfg0464P2ywZpBfWPtilWgw5Ya3pADJGGq1ZAuywMevoJjXQc
-        WIJQpQaIDDdopbRwF6zs2LdMSyyFwrxheaDwLWLB5NOtjwHlRgPmrMDyKg5u3rRC
-        wMzT1wTpjRPl6YTy5pTB21Q677pvZFpp+bQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698501142; x=1698587542; bh=fRFxfVZQMQ+iwmH5/1/sMEmpdm0BY/1L6Uv
-        PQZbT4lQ=; b=R0M3/aJsdpD8XYX3NarQWs4ItYGvrRcKK4yAhLYtU0EHiRGCOIw
-        eMzfxmeF+iBp49oQsHgpxwiaodc2+7++kCW9wVxdB1icDLyVSBaH4CPHvztBTNrG
-        gMfJSaRcaFg5eoApDm0FFXsQCoyHI3czwiRrsQGpPV3HKwRroYSqKmvQ+V1lZzeA
-        LUwQD0DejcEdUhUxPDSFkIry+LN5HWZZN4ANtEiQt7D/ZLtr+LV6FZwzKHY+IfX0
-        +WGyahKwd8qTXopyHQMoaAZY3jCMR9cMac1+CwQ4mv8irCS8q4x1UItXTTUrhehJ
-        c5HiucBk6tKZPJffTbH8g+HLCIUKMOiHVUQ==
-X-ME-Sender: <xms:FhI9ZUM93rRYpc63YSpIZp_PwjwvmrtETgQn0aVhsxA1acYBIfTtwg>
-    <xme:FhI9Za9jZIloGsv3pREm--SdpWGDVng16p7NOB7BNq6VAwUWYRMn8GYkyxQH_BjX5
-    oHzPYBoLVsloqve3mg>
-X-ME-Received: <xmr:FhI9ZbQDAlCLAwQSyPgl1kMkx6kkfA-gD7d2n0CehcpIHuxPurKWe8U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeigdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpedvkeeihfefveekueevteefleffkeegudeghfdtuddugefhueev
-    geffgedukeejleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:FhI9Zcu3AqeWJMKP0i2Iq-hLK843v_HJGSF_9lUhcjctthaoTXBztg>
-    <xmx:FhI9ZcdnsEKUk4AjxeGBHp2Ie-UoCDh2NlA5jq2HJUpxhCNnpH2kJg>
-    <xmx:FhI9ZQ2Ws6Bi77uR3trq8pZoai-HJsLMOoE8mQR0lY-v2lMQcUplnA>
-    <xmx:FhI9ZdoGwH6nc0OCq4pX0juSz7xYmvsAlu7rkRg6OXbVZYtuyapk5A>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 28 Oct 2023 09:52:21 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Sat, 28 Oct 2023 14:52:17 +0100
-Subject: [PATCH 2/2] MIPS: generic: Set SPARSEMEM by default for 64BIT
- kernel
+        Sat, 28 Oct 2023 09:55:13 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4961CED
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:55:10 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id wjmMqrqoPLilFwjmMqmAXJ; Sat, 28 Oct 2023 15:55:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698501308;
+        bh=QDDAkjDTfNEpw/wshaLCFDIwV6LReU6Ggu0GJWjqj6Q=;
+        h=From:To:Cc:Subject:Date;
+        b=pczJLlS4Ft5Nsvs8VT0hKx66s+tQvUDKhbWvAV+q1ZWhNbgM8tNhTceHCv0wmjUeQ
+         4ChR4r7nOQgaJcglERdNOyWwEN0NMK8yviJXFqpoePokbXMfQWoI/PqA+2OTZImwS8
+         c3cQMTajHH3zR0e7tpni7NlgyLvk7PsgNuFtmKoiXNnX6yyZ7bUQsLTLiZfTtE9uH8
+         IHOHzzNEu9EQurDmgr3UTpteovLjp2O69CtgNCB8FUMoG0PvBzuNjiIXtDzlttQqen
+         RI8U5KtJaDHLQ/DmooE5dyrEJfFsldW/FK9ngV0OmRq0/3vBbLc9I6cZTr1B+thNqa
+         YN6cPqqRRLQjQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Oct 2023 15:55:08 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Martin Hicks <mort@sgi.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        kgdb-bugreport@lists.sourceforge.net
+Subject: [PATCH] kdb: Fix a potential buffer overflow in kdb_local()
+Date:   Sat, 28 Oct 2023 15:55:00 +0200
+Message-Id: <0b1790ca91b71e3362a6a4c2863bc5787b4d60c9.1698501284.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231028-mm-v1-2-45377cd158cf@flygoat.com>
-References: <20231028-mm-v1-0-45377cd158cf@flygoat.com>
-In-Reply-To: <20231028-mm-v1-0-45377cd158cf@flygoat.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select ARCH_SPARSEMEM_DEFAULT for 64bit generic kernel build,
-as all platforms supported by 64bit generic kernel have a hole
-in their address space.
+When appending "[defcmd]" to 'kdb_prompt_str', the size of the string
+already in the buffer should be taken into account.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Switch from strncat() to strlcat() which does the correct test to avoid
+such an overflow.
+
+Fixes: 5d5314d6795f ("kdb: core for kgdb back end (1 of 2)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/debug/kdb/kdb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d12e8f3c1d08..fad05f699efd 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -133,6 +133,7 @@ choice
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 438b868cbfa9..e5f0bf0f45d1 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -1350,7 +1350,7 @@ static int kdb_local(kdb_reason_t reason, int error, struct pt_regs *regs,
+ 		snprintf(kdb_prompt_str, CMD_BUFLEN, kdbgetenv("PROMPT"),
+ 			 raw_smp_processor_id());
+ 		if (defcmd_in_progress)
+-			strncat(kdb_prompt_str, "[defcmd]", CMD_BUFLEN);
++			strlcat(kdb_prompt_str, "[defcmd]", CMD_BUFLEN);
  
- config MIPS_GENERIC_KERNEL
- 	bool "Generic board-agnostic MIPS kernel"
-+	select ARCH_SPARSEMEM_DEFAULT if 64BIT
- 	select MIPS_GENERIC
- 	select BOOT_RAW
- 	select BUILTIN_DTB
-
+ 		/*
+ 		 * Fetch command from keyboard
 -- 
 2.34.1
 
