@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8FF7DA6B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8057DA6BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjJ1Lay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 07:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
+        id S229994AbjJ1LgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 07:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJ1Law (ORCPT
+        with ESMTP id S229469AbjJ1LgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 07:30:52 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2199C;
-        Sat, 28 Oct 2023 04:30:50 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9bdf5829000so468828666b.0;
-        Sat, 28 Oct 2023 04:30:50 -0700 (PDT)
+        Sat, 28 Oct 2023 07:36:09 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B446FF4
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:36:06 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c3aec5f326so846521466b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:36:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698492648; x=1699097448; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+GZgpjtqscAa143cX/9uuh3k2yGrgKZoz3xkY7o9yEo=;
-        b=VBdSr5KY2Q8D37X2UpbZ/IzPhhuLlqheBsL2hZEuYCNHY6RPlpP26VwtRyzZ58yf0f
-         /iyv/eC/EdmAYpaekIr4NzBn2+6l0Kv8mp8SOnUZdx4kTyUzU0evxtSrcK/UNLaqfoY+
-         VTaT62RmOYsNxfJjoXr1DWK9VUETPZYqruKJvydT49DpY5/6skoXIbnl9/JKpaAL540M
-         Lx6UgPsw7nLPJYujSu5suxG/lbTDxccZ8hptasbsRHHAUAJpZmhS1ya0mJsnDRw78XTJ
-         L0rq3l75Iv37b6Qc5c0tavyN6YJ/jTxemDlbkdUd/1AtSezmBNGWXXTnPMC0QA3dQAZ9
-         Q/zg==
+        d=gmail.com; s=20230601; t=1698492965; x=1699097765; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwDC7NVEY/qYthbLeaOG/eFgqeQvLS7qgyFuHOZWAJ0=;
+        b=DYbNUYAtBdwsEc+eVh+Tafg4ulcdNY2uQGysOBh29DVYATjLNzEZdaJoemaQSc5PHw
+         eqAZrRRcKSSzDBcxIdJHvcIPGajPa/Mxln+08XkVHYO4NgOSORoXKHgOX772t5fCaBT4
+         5XxG/dIUwfLcGayGtaoBm5LQGIJr9CitZzmFqT89O6gwwW/YQEb87sMLjPwWvdMaB9sk
+         ZfgYgOt7j2iXgnQuV6ZnNQ0Inx9WS3O+Oo3xmIIO+GpgotB6Ckac+IW8SLnvzcbD5vO+
+         uHP9OiSHKiEgBb7SkIgTLNoJpWC+V/452xA+pT3qqv0emvP/0WHLg7NWd7r6jOBU4RCP
+         Cl/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698492648; x=1699097448;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+GZgpjtqscAa143cX/9uuh3k2yGrgKZoz3xkY7o9yEo=;
-        b=le9uTv5avLXrH9jrAcQIXvbr/dPMRlBDbvL9wMSBSI3gh5WAtVtuhFvfW8NJHfDgaL
-         a1OxQFmTOH7ltfCn++q/Z1Qb1Bx6/nnucCxkrGYkd+fewX4uy2fhpT6zLSHpkA+bdPpv
-         3Z8OexVzfzDqosSlZsnZKMZiN/5wphRB9purb2+Tfv3EN9j4VXdBsSiGn4cC4ALRy+vW
-         6g5M/ROaeg8+cVKUeZt+wrnRBCHHKgqt3z1DoR1JYNJkY06+/32T3AyDFBIOwqb3htSy
-         8gPfiBMXl8ldvHXbKDKoAeZZ1PXxmmlXlmgcoOpMKRbdRP/vETkbXAu+AOCAddesB0RB
-         8R/g==
-X-Gm-Message-State: AOJu0YxiLJP7OI4Aqhsr31urcjwNYlT22I4ASC775EdWcid6JxzwlNkK
-        mLKIWsu6ndd5AFCFwsaGs8s=
-X-Google-Smtp-Source: AGHT+IEV6JxpXRi7QuZm8U8u6YWPsop5BcBriL1ekBjQfCgQhSUqwWiN1PUUIGeqqBCb2DIqTuc7KQ==
-X-Received: by 2002:a17:906:ee87:b0:9a5:874a:9745 with SMTP id wt7-20020a170906ee8700b009a5874a9745mr3942462ejb.26.1698492648276;
-        Sat, 28 Oct 2023 04:30:48 -0700 (PDT)
-Received: from standask-GA-A55M-S2HP ([188.123.113.247])
-        by smtp.gmail.com with ESMTPSA id u18-20020a170906409200b009928b4e3b9fsm2648331ejj.114.2023.10.28.04.30.47
+        d=1e100.net; s=20230601; t=1698492965; x=1699097765;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qwDC7NVEY/qYthbLeaOG/eFgqeQvLS7qgyFuHOZWAJ0=;
+        b=iPG18qV5yAUzoFN0+PhOWnNkSyZD+hO/LqIKdV+c0b4bs9PUWV8OfVnmGGueQQuH9/
+         tHAKIg+aKNosLoAe48U3lOdjtbm8pGT4ri7nqzaDJojcFxBj6YOAEWBIPD6VTm23VPyK
+         kO2AcEYgNZxIbnmhQWptXKSzxNC8KldtZ/nZpVOd/YPE8K2qScZbRubHE4lQgRW7yfNZ
+         J4Vd2AQlYbmgGN6IcXMUv0TFf5lQwxX7DgviulL4aWWEmIclDL6RL0ax+Hg+9Obk7evv
+         o2X4cSzOXeqACO8IWHSEDWaQT094Fedb21uFYUfbCn6oWdS+T+F9rai0Pfp+zI8HjEFC
+         Jr/A==
+X-Gm-Message-State: AOJu0Yy/tvvxC3tnpFLmmHexEkpQBRlAZA+Bi6uSPvamO/OY1mouwnZJ
+        0VROtKPEHUlKqodwB/oN3ZE=
+X-Google-Smtp-Source: AGHT+IEPSm+M7HeAHd3E/7L5eplWVMqrARlCy3N8OJ5wJ2hlbgerY+8mEQawKYey/kLYQ3fab5yA2Q==
+X-Received: by 2002:a17:907:c10:b0:9b2:b37d:17ff with SMTP id ga16-20020a1709070c1000b009b2b37d17ffmr8207654ejc.19.1698492964797;
+        Sat, 28 Oct 2023 04:36:04 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id r23-20020a170906365700b009aa292a2df2sm2645867ejb.217.2023.10.28.04.36.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 04:30:48 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 13:30:45 +0200
-From:   Stanislav Jakubek <stano.jakubek@gmail.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: clock: brcm,kona-ccu: convert to YAML
-Message-ID: <ZTzw5c5/MwU3VOBo@standask-GA-A55M-S2HP>
-References: <ZTf0oWfOqnyMEKbF@standask-GA-A55M-S2HP>
- <20231027-bulldog-component-5b84e4660465@spud>
+        Sat, 28 Oct 2023 04:36:03 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 28 Oct 2023 13:36:01 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] objtool changes for v6.7
+Message-ID: <ZTzyIWSElIo0KZzD@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027-bulldog-component-5b84e4660465@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 03:47:48PM +0100, Conor Dooley wrote:
-> On Tue, Oct 24, 2023 at 06:45:21PM +0200, Stanislav Jakubek wrote:
-> > Convert Broadcom Kona family clock controller unit (CCU) bindings
-> > to DT schema.
-> 
-> I didn't cross-check the clock-output-names, but this conversion mostly
-> looks good to me.
-> 
-> > Changes during conversion:
-> >   - remove "dmac" from clock-output-names for brcm,bcm11351-master-ccu,
-> >     it is not used in DT nor the dt-bindings
-> >   - remove "uartb4" from clock-output-names for brcm,bcm21664-slave-ccu,
-> >     it is not used in DT nor the dt-bindings
-> 
-> This I'm not sure about - they _were_ documented in the text-form
-> dt-binding, even if they weren't used in the dts. If the clock
-> controller does actually produce these clocks, removing them doesn't
-> make sense to me.
+Linus,
 
-Hi Conor. Looking at downstream, I was not able to find these clocks, though
-I admit that I'm not familiar enough with the downstream mess to be 100%
-confident.
+Please pull the latest objtool tree from:
 
-From what I can tell, the BCM21664 arch/arm/mach-hawaii/clock.c (e.g. [1])
-doesn't contain any mention of uartb4, only uartb, uartb2 and uartb3.
-And similarly, for the BCM281XX arch/arm/mach-capri/clock_capri.c (e.g. [2])
-I wasn't able to find any mention of dmac, only dmac_mux_apb and dma_axi
-(though these two don't seem to be supported on mainline yet).
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2023-10-28
 
-Judging by that and the fact that mainline Linux or the dt-bindings includes
-don't mention these clocks either, I would say the old txt bindings document
-was the wrong one.
+   # HEAD: 60fd39af33d3f63c4c94bd06784ebdf0d883f5c9 scripts/faddr2line: Skip over mapping symbols in output from readelf
 
-The old clock-output-name table also didn't match with the dt-bindings include
-it was supposedly describing - for example, BCM281XX_MASTER_CCU_USB_IC is
-defined as 4, not 5 as the old table stated.
+Misc fixes and cleanups:
 
-[1] https://github.com/Samsung-KYLEPROXX/android_kernel_samsung_kyleproxx/blob/cm-14.1/arch/arm/mach-hawaii/clock.c
-[2] https://github.com/surblazer/android_kernel_samsung_galaxys2plus-common/blob/android-7.1/arch/arm/mach-capri/clock_capri.c
+ - Fix potential MAX_NAME_LEN limit related build failures
+ - Fix scripts/faddr2line symbol filtering bug
+ - Fix scripts/faddr2line on LLVM=1
+ - Fix scripts/faddr2line to accept readelf output with mapping symbols
+ - Minor cleanups
 
-Thanks,
-Stanislav
+ Thanks,
 
-> 
-> Cheers,
-> Conor.
+	Ingo
 
+------------------>
+Aaron Plattner (2):
+      objtool: Propagate early errors
+      objtool: Remove max symbol name length limitation
+
+Colin Ian King (1):
+      x86/unwind/orc: Remove redundant initialization of 'mid' pointer in __orc_find()
+
+Fangrui Song (1):
+      x86/speculation, objtool: Use absolute relocations for annotations
+
+Ruan Jinjie (1):
+      objtool: Use 'the fallthrough' pseudo-keyword
+
+Will Deacon (3):
+      scripts/faddr2line: Don't filter out non-function symbols from readelf
+      scripts/faddr2line: Use LLVM addr2line and readelf if LLVM=1
+      scripts/faddr2line: Skip over mapping symbols in output from readelf
+
+
+ arch/x86/include/asm/alternative.h   |  4 ++--
+ arch/x86/include/asm/nospec-branch.h |  4 ++--
+ arch/x86/kernel/unwind_orc.c         |  2 +-
+ include/linux/objtool.h              | 10 +++++-----
+ scripts/faddr2line                   | 24 +++++++++++++++++++++---
+ tools/objtool/arch/x86/decode.c      |  6 +++---
+ tools/objtool/elf.c                  | 14 ++++++--------
+ tools/objtool/objtool.c              |  4 +---
+ 8 files changed, 41 insertions(+), 27 deletions(-)
