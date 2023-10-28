@@ -2,230 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFB27DA754
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79A17DA758
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjJ1NgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S229939AbjJ1NhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJ1NgN (ORCPT
+        with ESMTP id S229519AbjJ1NhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:36:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89C6C0;
-        Sat, 28 Oct 2023 06:36:10 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507bd644a96so4306385e87.3;
-        Sat, 28 Oct 2023 06:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698500169; x=1699104969; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AHn8iBxAhpfsJ1tGpFmcP+H91hcjJA0+WNnhiH9LU48=;
-        b=PgJ9+bWagXnWGzpjwDMfcEVaytBCj7iIdiLlLw7/hoKRzeZJCn4vOsfIchS/MobuVM
-         SFvOF6KO73JyFPnAQ8nudaRp1F+fYHrrOMQEoLiZSXmqg2qnWhFvDAaV1nVdxIbQmP10
-         x2u6o1lysyL90am5/HNwq8uITdENS1G7oxa8eP4SbVkTpCPRT0zUJtKo3RM0Y7QOWg48
-         twp7mwZNmuGRCO4497CftP5FyIGVArhdWHJQ7I/a7sLFnN19ntOH8LZIu9EUJwk/zJ2c
-         bmiG1qSRuTjqq/cbtoG6G0pRti2L+gP2XZPLFfsIvcvQ5Aym0RAlzHQFZp9aD8wPo2jk
-         Cs6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698500169; x=1699104969;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AHn8iBxAhpfsJ1tGpFmcP+H91hcjJA0+WNnhiH9LU48=;
-        b=B3euwU8e9HBiHPRiiYMVtds4EbpHKPZzlNs42+hV4+nGSR+ckSJtm0KML3pXvTy3Bk
-         nBeVGcKWfqJ1I+r6IcRDKBTrIL/m84pviwZEgAlLcd3jgpvTVewSOg++kMs9RWUIQBKg
-         ZqOFYumvSlAcFD2eMK10hnjXzfRcelpr/MiIHX71vSb+PPF94yMU8/7qC2El7gQmPP/a
-         p6XA3Gy+WejnJZ8RAWYXoVxXmb2vOLNS9S3rETrFC66qxngRmsBjuQFvRHooj7HZiJaN
-         Ay94FSIGqSXA6NmsYFE9rymu6rTbS4oNr03Chi3NoLdteaajwDOAfQXKPwI84xpNTgR7
-         rK4w==
-X-Gm-Message-State: AOJu0YwbsY1Q4tIKgX5eO2Gh8qEkvuHgYrD9dqsP6Qe23IbPo9yEEbfP
-        S5iDPYpKAGmo21QJSwV6elg=
-X-Google-Smtp-Source: AGHT+IHmsoLQdHcXptq9dP2IARH0nCbjdWTuFJVGv/VB4z72AvQ1VBkpNms0j1/bnNmxE5+f6OnzvA==
-X-Received: by 2002:a05:6512:2525:b0:507:b7b7:e740 with SMTP id be37-20020a056512252500b00507b7b7e740mr6506658lfb.43.1698500168527;
-        Sat, 28 Oct 2023 06:36:08 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id t17-20020a50c251000000b0053eb69ca1bcsm2891517edf.92.2023.10.28.06.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 06:36:08 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sat, 28 Oct 2023 15:36:06 +0200
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
-Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
-Message-ID: <ZT0ORoEdTP7DYX6m@krava>
-References: <20231018151950.205265-4-masahiroy@kernel.org>
- <ZTDlrkTXnkVN1cff@krava>
- <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
- <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
- <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
- <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
- <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com>
- <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
- <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
- <CAK7LNATZJJG1yq1qX7xrvoy4akW2hSAcbrt3mnz=p6F7gMgh1Q@mail.gmail.com>
+        Sat, 28 Oct 2023 09:37:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD55E5;
+        Sat, 28 Oct 2023 06:37:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CD2C433C7;
+        Sat, 28 Oct 2023 13:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698500234;
+        bh=5AyITzoVLQwUHHtk9sF0h2RjlIO0I7u9Y5FstB2snsg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TwvLP4ZKyVK3qt+mAQGdFv4avg6KANxf+qPcDPHfatSjgISfN29B1pV2J82Lg+yWJ
+         Oz+NYhlUmeRE4J+kTpXYbsdvkh0/rknzxDCSY9Etl1M78QpvfGF0VHWl+RRgTtzk6Q
+         iZ/FO1OSZH4B9dZ8hqCZ9eF3qtBw6vr8SfIuEUSWGf16B/5LbQ7fJWKXgLN7lfi4VN
+         7keIQU1We7Y5BAzt9yrEFG6dsMqMbJysVsEv2wAZErAcvfsNjrWGyOwy0ryoA8+J48
+         0ZgJ7LJK7DgugerYLOWzYk+WsGCFduNszC2TN9ITLLo5OWxjDDxEBjRvQIYPZ+pagc
+         XCoKPdonGc/tA==
+Date:   Sat, 28 Oct 2023 14:36:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paul Gazzillo <paul@pgazz.com>,
+        Matt Ranostay <matt@ranostay.sg>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: light: Add support for APDS9306 Light
+ Sensor
+Message-ID: <20231028143631.2545f93e@jic23-huawei>
+In-Reply-To: <ab671f50-7a0f-4e72-98a0-fa4d5f2ed889@tweaklogic.com>
+References: <20231027074545.6055-1-subhajit.ghosh@tweaklogic.com>
+        <20231027074545.6055-3-subhajit.ghosh@tweaklogic.com>
+        <d7ba077d-6bcd-4e04-b678-51e4bbc935ca@linaro.org>
+        <9e55b561-a0ad-4503-9f20-b7c98507afa0@tweaklogic.com>
+        <ebcf3e9f-2bc2-4d91-8b5c-51405236e4ab@linaro.org>
+        <ab671f50-7a0f-4e72-98a0-fa4d5f2ed889@tweaklogic.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNATZJJG1yq1qX7xrvoy4akW2hSAcbrt3mnz=p6F7gMgh1Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 28, 2023 at 09:00:11PM +0900, Masahiro Yamada wrote:
-> On Mon, Oct 23, 2023 at 12:19 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Sun, Oct 22, 2023 at 1:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > On Sun, Oct 22, 2023 at 4:33 AM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Sat, Oct 21, 2023 at 4:38 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > > >
-> > > > > On Sat, Oct 21, 2023 at 5:52 AM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Oct 20, 2023 at 12:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Fri, Oct 20, 2023 at 7:55 AM Andrii Nakryiko
-> > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Thu, Oct 19, 2023 at 1:15 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wrote:
-> > > > > > > > > > newer_prereqs_except and if_changed_except are ugly hacks of the
-> > > > > > > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
-> > > > > > > > > >
-> > > > > > > > > > Remove.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > > > > > > ---
-> > > > > > > > > >
-> > > > > > > > > > Changes in v2:
-> > > > > > > > > >   - Fix if_changed_except to if_changed
-> > > > > > > > > >
-> > > > > > > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
-> > > > > > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > > > > > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
-> > > > > > > > > > --- a/scripts/Makefile.modfinal
-> > > > > > > > > > +++ b/scripts/Makefile.modfinal
-> > > > > > > > > > @@ -19,6 +19,9 @@ vmlinux :=
-> > > > > > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > > > > > > > > >  ifneq ($(wildcard vmlinux),)
-> > > > > > > > > >  vmlinux := vmlinux
-> > > > > > > > > > +cmd_btf = ; \
-> > > > > > > > > > +     LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
-> > > > > > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
-> > > > > > > > > >  else
-> > > > > > > > > >  $(warning Skipping BTF generation due to unavailability of vmlinux)
-> > > > > > > > > >  endif
-> > > > > > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o = LD [M]  $@
-> > > > > > > > > >        cmd_ld_ko_o +=                                                 \
-> > > > > > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                                      \
-> > > > > > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)              \
-> > > > > > > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
-> > > > > > > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)           \
-> > > > > > > > > > +     $(cmd_btf)
-> > > > > > > > > >
-> > > > > > > > > > -quiet_cmd_btf_ko = BTF [M] $@
-> > > > > > > > >
-> > > > > > > > > nit not sure it's intentional but we no longer display 'BTF [M] ...ko' lines,
-> > > > > > > > > I don't mind not displaying that, but we should mention that in changelog
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > Thanks for spotting this! I think those messages are useful and
-> > > > > > > > important to keep. Masahiro, is it possible to preserve them?
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > No, I do not think so.
-> > > > > > >
-> > > > > >
-> > > > > > That's too bad, I think it's a useful one.
-> > > > >
-> > > > >
-> > > > >
-> > > > > I prioritize that the code is correct.
-> > > > >
-> > > >
-> > > > Could you please also prioritize not regressing informativeness of a
-> > > > build log? With your changes it's not clear now if BTF was generated
-> > > > or not for a kernel module, while previously it was obvious and was
-> > > > easy to spot if for some reason BTF was not generated. I'd like to
-> > > > preserve this
-> > > > property, thank you.
-> > > >
-> > > > E.g, can we still have BTF generation as a separate command and do a
-> > > > separate $(call if_changed,btf_ko)? Or something along those lines.
-> > > > Would that work?
-> > >
-> > > If we have an intermediate file (say, *.no-btf.ko),
-> > > it would make sense to have separate
-> > > $(call if_changed,ld_ko_o) and $(call if_changed,btf_ko).
-> >
-> > Currently we don't generate intermediate files, but we do rewrite
-> > original .ko file as a post-processing step.
-> >
-> > And that rewriting step might not happen depending on Kconfig and
-> > toolchain (e.g., too old pahole makes it impossible to generate kernel
-> > module BTF). And that's why having a separate BTF [M] message in the
-> > build log is important.
-> >
-> > >
-> > >
-> > >            LD                 RESOLVE_BTFIDS
-> > >  *.mod.o  ------> *.no-btf.ko ------------> *.ko
-> > >
-> > >
-> > > When vmlinux is changed, only the second step would
-> > > be re-run, but that would require extra file copy.
-> >
-> > Today we rewrite .ko with a new .ko ELF file which gains a new ELF
-> > section (.BTF), so we already pay this price when BTF is enabled (if
-> > that's your concern).
-> >
-> > >
-> > > Is this what you want to see?
-> >
-> > I don't have strong preferences for exact implementation, but what you
-> > propose will work, I think. What I'd like to avoid is unnecessarily
-> > relinking .ko files if all we need to do is regenerate BTF.
-> 
-> 
-> 
-> 
-> Is there any way to make pahole/resolve_btfids
-> take separate input and output files
-> instead of in-place modification?
+On Fri, 27 Oct 2023 22:12:11 +1030
+Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
 
-for pahole I think it'd be possible to get object file with .BTF section
-and just link it with other module objects (it's done like that for vmlinux)
-but I'm not sure which module linking stage this could happen
+> On 27/10/23 21:34, Krzysztof Kozlowski wrote:
+> > On 27/10/2023 10:42, Subhajit Ghosh wrote:  
+> >> 4. Conor reviewed the patch and said that it would be better that I handle all
+> >>      these operations in apds9306 driver (this) patch series rather than submitting
+> >>      a new patch.
+> >>      "Ahh apologies then. The best course of action would likely be to include
+> >>       the patch merging the two bindings in your series adding the third user."
+> >> 5. As per this patch series -- RFC->v0->v1-v2  
+> > 
+> > RFC was the first version sent to mailing list. So after RFC there is
+> > second version - v2. This is v4.  
+> 
+> Acknowledging all your other comments. Appreciate your time and effort in reviewing
+> this. One last question on this - So what version should I use for the patchset
+> which I will submit next - "v3" or "v5" in the Subject of the emails?
+Go with v5 and play it safe given possible confusion.
 
-for resolve_btfids it's not possible at the moment, it just updates the
-.BTF_ids section in the object file
+Numbering when there has previously been one or more RFC versions is always rather
+confusing, but we tend not to have a v0!  So RFC-> v1 -> v2 -> V3 would have
+been fine in my opinion, or
+RFC -> V2 -> v3 
+With a note in v2 cover letter saying changes from RFC to make it clear there
+was not a separate v1.
 
-I'm working on changing resolve_btfids to actually generate separate object
-with .BTF_ids section, which is then link-ed with the final object, but will
-take more time.. especially because I'm not sure where to place this logic
-in module linking ;-)
+Jonathan
 
-jirka
+> 
+> Regards,
+> Subhajit Ghosh
+> 
+
