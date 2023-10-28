@@ -2,135 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EE27DA593
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3667DA59C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjJ1Hyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 03:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S229553AbjJ1H61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 03:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJ1Hyy (ORCPT
+        with ESMTP id S229458AbjJ1H6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 03:54:54 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2213AF2;
-        Sat, 28 Oct 2023 00:54:52 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso4329131e87.1;
-        Sat, 28 Oct 2023 00:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698479690; x=1699084490; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HWNJsQxt66edieq3NUjONu874gZwqx0vvF3MCSn9U9E=;
-        b=CzHS1bE84rwOQuiZ2YP3IJIVIEt8f2U64UuZMM5XsV/RznCyMnrZZPJVCCYQpC1Iaw
-         6QdjWvns74jnpjSuUSwYN3s8qGMmC1r0FX1RrYMtjJakW9C6rpv8qWs+yo71dpyCBYaj
-         EchXoiIcqmMHluv/JwKiql2CQ1L0YIQtq2UKmkfMy/kPYz1hKzvVGJglM73yUzfZSlRT
-         uzC7VkqrrcnYxuE94nZHMyWMARPgbsXsHe3Od8ueTZrIOvrgj/HvIPFTQe2x7fm5sRu1
-         HqKQlpR0fdK9kJLnIrFA4xdFp69ImAeIQSWmXbBAThVXrbFJUoAAZQwDTBIzGjdpSz4l
-         Lg3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698479690; x=1699084490;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HWNJsQxt66edieq3NUjONu874gZwqx0vvF3MCSn9U9E=;
-        b=F29VUGRlv8hC8Yqdt9VYcwVtqYdqiul32Rt8HiXghW7FMZdRu3UG5uaeq6p5PH1Kvo
-         6WPMGii9qkfwpJRh6MFmWCRjF6DctGYeL2O8AZhPXqlJ2unyDeB301OpOzLUxMfB/4Y5
-         HcoTQrCCP/kXGWmLfg0SHUC28ZoOW3ol5DlwDXe8lPIE5LdqEQV3zqPRsiD2wPGqhfcX
-         3yv5fIUc9GrdFIIS/a+2OoIILkSv9idblNDfjNm53b7q3C9gHP2k370RETKs10TsDTfc
-         ncKzxbJHvBxDSiAb7WDZryV0e0+ddTRbYfLFU2kESXJ9lbbD9QG25I3G3+KJEZucsIBq
-         DBIA==
-X-Gm-Message-State: AOJu0YxMu3cxehcCf1bsWuK51+JrqPJq7rMDFfTjBjs+B/77IncTLJab
-        DGftQseXbagwY7T0Zj8GS8E=
-X-Google-Smtp-Source: AGHT+IELtqMRnbnklk2OPXep08KqdzueFWidMDXKJVoTtHqqgwhjS6C32Ie18V8tpr1Tuw8Y+M7g1g==
-X-Received: by 2002:a19:8c19:0:b0:507:b9e9:3e8d with SMTP id o25-20020a198c19000000b00507b9e93e8dmr3529803lfd.28.1698479690039;
-        Sat, 28 Oct 2023 00:54:50 -0700 (PDT)
-Received: from toolbox.. ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5d4c4f000000b0032f7e832cabsm250845wrt.90.2023.10.28.00.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 00:54:49 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Yuntian Zhang <yt@radxa.com>
-Subject: [PATCH] arm64: dts: meson: radxa-zero2: add pwm-fan support
-Date:   Sat, 28 Oct 2023 07:54:45 +0000
-Message-Id: <20231028075445.3515664-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 28 Oct 2023 03:58:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D64F3;
+        Sat, 28 Oct 2023 00:58:21 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SHWzb0FPlzrTbn;
+        Sat, 28 Oct 2023 15:55:23 +0800 (CST)
+Received: from huawei.com (10.50.163.32) by kwepemm000005.china.huawei.com
+ (7.193.23.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Sat, 28 Oct
+ 2023 15:58:19 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>
+CC:     <bcreeley@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH v18 1/2] vfio/migration: Add debugfs to live migration driver
+Date:   Sat, 28 Oct 2023 15:54:46 +0800
+Message-ID: <20231028075447.41939-2-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20231028075447.41939-1-liulongfang@huawei.com>
+References: <20231028075447.41939-1-liulongfang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The A311D on Zero2 needs active cooling and the board includes a header to
-connect a simple fan. Add pwm-fan support with basic thermal properties so
-the fan runs when connected.
+There are multiple devices, software and operational steps involved
+in the process of live migration. An error occurred on any node may
+cause the live migration operation to fail.
+This complex process makes it very difficult to locate and analyze
+the cause when the function fails.
 
-Suggested-by: Yuntian Zhang <yt@radxa.com>
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+In order to quickly locate the cause of the problem when the
+live migration fails, I added a set of debugfs to the vfio
+live migration driver.
+
+    +-------------------------------------------+
+    |                                           |
+    |                                           |
+    |                  QEMU                     |
+    |                                           |
+    |                                           |
+    +---+----------------------------+----------+
+        |      ^                     |      ^
+        |      |                     |      |
+        |      |                     |      |
+        v      |                     v      |
+     +---------+--+               +---------+--+
+     |src vfio_dev|               |dst vfio_dev|
+     +--+---------+               +--+---------+
+        |      ^                     |      ^
+        |      |                     |      |
+        v      |                     |      |
+   +-----------+----+           +-----------+----+
+   |src dev debugfs |           |dst dev debugfs |
+   +----------------+           +----------------+
+
+The entire debugfs directory will be based on the definition of
+the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
+interfaces in vfio.h will be empty definitions, and the creation
+and initialization of the debugfs directory will not be executed.
+
+   vfio
+    |
+    +---<dev_name1>
+    |    +---migration
+    |        +--state
+    |
+    +---<dev_name2>
+         +---migration
+             +--state
+
+debugfs will create a public root directory "vfio" file.
+then create a dev_name() file for each live migration device.
+First, create a unified state acquisition file of "migration"
+in this device directory.
+Then, create a public live migration state lookup file "state".
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 ---
- .../dts/amlogic/meson-g12b-radxa-zero2.dts    | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/vfio/Kconfig      | 10 +++++
+ drivers/vfio/Makefile     |  1 +
+ drivers/vfio/debugfs.c    | 90 +++++++++++++++++++++++++++++++++++++++
+ drivers/vfio/vfio.h       | 14 ++++++
+ drivers/vfio/vfio_main.c  |  4 ++
+ include/linux/vfio.h      |  7 +++
+ include/uapi/linux/vfio.h |  1 +
+ 7 files changed, 127 insertions(+)
+ create mode 100644 drivers/vfio/debugfs.c
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-radxa-zero2.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-radxa-zero2.dts
-index 890f5bfebb03..895b6ea67180 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-radxa-zero2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-radxa-zero2.dts
-@@ -33,6 +33,15 @@ memory@0 {
- 		reg = <0x0 0x0 0x0 0x80000000>;
- 	};
+diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+index 6bda6dbb4878..ceae52fd7586 100644
+--- a/drivers/vfio/Kconfig
++++ b/drivers/vfio/Kconfig
+@@ -80,6 +80,16 @@ config VFIO_VIRQFD
+ 	select EVENTFD
+ 	default n
  
-+	fan0: pwm-fan {
-+		compatible = "pwm-fan";
-+		#cooling-cells = <2>;
-+		cooling-min-state = <0>;
-+		cooling-max-state = <4>;
-+		cooling-levels = <0 64 128 192 255>;
-+		pwms = <&pwm_AO_ab 0 40000 0>;
-+	};
++config VFIO_DEBUGFS
++	bool "Export VFIO internals in DebugFS"
++	depends on DEBUG_FS
++	help
++	  Allows exposure of VFIO device internals. This option enables
++	  the use of debugfs by VFIO drivers as required. The device can
++	  cause the VFIO code create a top-level debug/vfio directory
++	  during initialization, and then populate a subdirectory with
++	  entries as required.
 +
- 	gpio-keys-polled {
- 		compatible = "gpio-keys-polled";
- 		poll-interval = <100>;
-@@ -286,6 +295,24 @@ &cpu103 {
- 	clock-latency = <50000>;
+ source "drivers/vfio/pci/Kconfig"
+ source "drivers/vfio/platform/Kconfig"
+ source "drivers/vfio/mdev/Kconfig"
+diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+index c82ea032d352..d43a699d55b1 100644
+--- a/drivers/vfio/Makefile
++++ b/drivers/vfio/Makefile
+@@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
+ vfio-$(CONFIG_IOMMUFD) += iommufd.o
+ vfio-$(CONFIG_VFIO_CONTAINER) += container.o
+ vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
++vfio-$(CONFIG_VFIO_DEBUGFS) += debugfs.o
+ 
+ obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
+ obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
+diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
+new file mode 100644
+index 000000000000..9f02ae15e084
+--- /dev/null
++++ b/drivers/vfio/debugfs.c
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023, HiSilicon Ltd.
++ */
++
++#include <linux/device.h>
++#include <linux/debugfs.h>
++#include <linux/seq_file.h>
++#include <linux/vfio.h>
++#include "vfio.h"
++
++static struct dentry *vfio_debugfs_root;
++
++static int vfio_device_state_read(struct seq_file *seq, void *data)
++{
++	struct device *vf_dev = seq->private;
++	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
++	enum vfio_device_mig_state state;
++	int ret;
++
++	BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
++		VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
++
++	ret = vdev->mig_ops->migration_get_state(vdev, &state);
++	if (ret)
++		return -EINVAL;
++
++	switch (state) {
++	case VFIO_DEVICE_STATE_ERROR:
++		seq_puts(seq, "ERROR\n");
++		break;
++	case VFIO_DEVICE_STATE_STOP:
++		seq_puts(seq, "STOP\n");
++		break;
++	case VFIO_DEVICE_STATE_RUNNING:
++		seq_puts(seq, "RUNNING\n");
++		break;
++	case VFIO_DEVICE_STATE_STOP_COPY:
++		seq_puts(seq, "STOP_COPY\n");
++		break;
++	case VFIO_DEVICE_STATE_RESUMING:
++		seq_puts(seq, "RESUMING\n");
++		break;
++	case VFIO_DEVICE_STATE_RUNNING_P2P:
++		seq_puts(seq, "RUNNING_P2P\n");
++		break;
++	case VFIO_DEVICE_STATE_PRE_COPY:
++		seq_puts(seq, "PRE_COPY\n");
++		break;
++	case VFIO_DEVICE_STATE_PRE_COPY_P2P:
++		seq_puts(seq, "PRE_COPY_P2P\n");
++		break;
++	default:
++		seq_puts(seq, "Invalid\n");
++	}
++
++	return 0;
++}
++
++void vfio_device_debugfs_init(struct vfio_device *vdev)
++{
++	struct device *dev = &vdev->device;
++
++	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
++
++	if (vdev->mig_ops) {
++		struct dentry *vfio_dev_migration = NULL;
++
++		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
++		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
++					  vfio_device_state_read);
++	}
++}
++
++void vfio_device_debugfs_exit(struct vfio_device *vdev)
++{
++	debugfs_remove_recursive(vdev->debug_root);
++}
++
++void vfio_debugfs_create_root(void)
++{
++	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
++}
++
++void vfio_debugfs_remove_root(void)
++{
++	debugfs_remove_recursive(vfio_debugfs_root);
++	vfio_debugfs_root = NULL;
++}
++
+diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
+index 307e3f29b527..bde84ad344e5 100644
+--- a/drivers/vfio/vfio.h
++++ b/drivers/vfio/vfio.h
+@@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
+ }
+ #endif
+ 
++#ifdef CONFIG_VFIO_DEBUGFS
++void vfio_debugfs_create_root(void);
++void vfio_debugfs_remove_root(void);
++
++void vfio_device_debugfs_init(struct vfio_device *vdev);
++void vfio_device_debugfs_exit(struct vfio_device *vdev);
++#else
++static inline void vfio_debugfs_create_root(void) { }
++static inline void vfio_debugfs_remove_root(void) { }
++
++static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
++static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
++#endif /* CONFIG_VFIO_DEBUGFS */
++
+ #endif
+diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+index e31e1952d7b8..94f02b6891ac 100644
+--- a/drivers/vfio/vfio_main.c
++++ b/drivers/vfio/vfio_main.c
+@@ -311,6 +311,7 @@ static int __vfio_register_dev(struct vfio_device *device,
+ 	refcount_set(&device->refcount, 1);
+ 
+ 	vfio_device_group_register(device);
++	vfio_device_debugfs_init(device);
+ 
+ 	return 0;
+ err_out:
+@@ -378,6 +379,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
+ 		}
+ 	}
+ 
++	vfio_device_debugfs_exit(device);
+ 	/* Balances vfio_device_set_group in register path */
+ 	vfio_device_remove_group(device);
+ }
+@@ -1676,6 +1678,7 @@ static int __init vfio_init(void)
+ 	if (ret)
+ 		goto err_alloc_dev_chrdev;
+ 
++	vfio_debugfs_create_root();
+ 	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+ 	return 0;
+ 
+@@ -1691,6 +1694,7 @@ static int __init vfio_init(void)
+ 
+ static void __exit vfio_cleanup(void)
+ {
++	vfio_debugfs_remove_root();
+ 	ida_destroy(&vfio.device_ida);
+ 	vfio_cdev_cleanup();
+ 	class_destroy(vfio.device_class);
+diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+index 454e9295970c..769d7af86225 100644
+--- a/include/linux/vfio.h
++++ b/include/linux/vfio.h
+@@ -69,6 +69,13 @@ struct vfio_device {
+ 	u8 iommufd_attached:1;
+ #endif
+ 	u8 cdev_opened:1;
++#ifdef CONFIG_DEBUG_FS
++	/*
++	 * debug_root is a static property of the vfio_device
++	 * which must be set prior to registering the vfio_device.
++	 */
++	struct dentry *debug_root;
++#endif
  };
  
-+&cpu_thermal {
-+	cooling-maps {
-+		map0 {
-+			trip = <&cpu_passive>;
-+			cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&ddr_thermal {
-+	cooling-maps {
-+		map0 {
-+			trip = <&ddr_passive>;
-+			cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
- &frddr_a {
- 	status = "okay";
+ /**
+diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+index 7f5fb010226d..2b68e6cdf190 100644
+--- a/include/uapi/linux/vfio.h
++++ b/include/uapi/linux/vfio.h
+@@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
+ 	VFIO_DEVICE_STATE_RUNNING_P2P = 5,
+ 	VFIO_DEVICE_STATE_PRE_COPY = 6,
+ 	VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
++	VFIO_DEVICE_STATE_NR,
  };
+ 
+ /**
 -- 
-2.34.1
+2.24.0
 
