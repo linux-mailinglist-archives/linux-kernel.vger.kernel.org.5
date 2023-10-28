@@ -2,227 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3107DA75D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430C37DA75E
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjJ1Nnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S230180AbjJ1Nns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjJ1Nnb (ORCPT
+        with ESMTP id S229745AbjJ1Nnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:43:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9EA93;
-        Sat, 28 Oct 2023 06:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698500608; x=1730036608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Lgsn/cH6qVOFWUhcF7VtnSy5ywh8V+OwTksqVFwA0F0=;
-  b=WiPrdjbksv6Li3CsD9rlnezcj0A9XKcy1mRyOqzhKg+mQzLdZpBUEUo6
-   GOI57o02ZFV3zZ1wJhq67UjSHTmstt/a85VPf7SZhl5beOgApuUD0uS9J
-   2qQjEUc02t1H5NXozlCu/qgTgh8VqoPrm1SDKgiXQF3M0QPbxMTW4ujBJ
-   Dwb1zaEmI27Ja2++2MIH5gRaV7639Fsre3642A17IIkpzcXzDbkOKQKtu
-   dI3gbOLgaHgOh4bVFrbVwE9qDEZEmGpBJ++v4BWdH2iOMZcJnAdJ1NR+c
-   1KlUbpi2UVJ5Pa1DanyMRPLWLCyIXj7cMyVhxb7Jx59OKXYvAqFSBnAnP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="6530803"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="6530803"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 06:43:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="830274388"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="830274388"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Oct 2023 06:43:23 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwjaz-000BmT-26;
-        Sat, 28 Oct 2023 13:43:21 +0000
-Date:   Sat, 28 Oct 2023 21:42:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 7/7] coresight: debug: Move ACPI support from AMBA driver
- to platform driver
-Message-ID: <202310282104.0VVIo070-lkp@intel.com>
-References: <20231027072943.3418997-8-anshuman.khandual@arm.com>
+        Sat, 28 Oct 2023 09:43:47 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EBF11B
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:43:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54041e33845so4541408a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698500622; x=1699105422; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=FeSH/1L4tOlbWkskU7CQ0rV9kqxc5jadtema2B1aPjE=;
+        b=gLwr8vSVI6Fu/zMAs0HfnJFV/IW7gVgo7ndVwFxY4xaiwIQg5yIH/tC5ju0pfnO7gM
+         bwWK5wIYO6E7x794xhJZwO2vvGE1cTGz8S2r9O/nbbVeifU25UhaNOJuyMGsq7vwe/8k
+         Vl9hlib6PkCSxhUZE++Yth25gnTp7xD/fx/fFaaF8LlQ+9UoTFv/cUipG+LRfNdQRwr/
+         GzQEhPUd1O8Dq3RfnMcIXpagXO6W5spd+RU+qXjKWxy7sA7QArT7Kmf9gNf8GbKDLeWh
+         eUEBulVuk4tFB/+YE3N9V9Ex9Z+dXsGIl4SfzNWtxRrKJIMFeY14nPPWfMCjQGJFEYOr
+         fh1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698500622; x=1699105422;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FeSH/1L4tOlbWkskU7CQ0rV9kqxc5jadtema2B1aPjE=;
+        b=ueKF0KdsRIubm2SUgfoGW30rfzUAyYW1AWw8uIGPt6/mKXatlvKdEdlnCYxVWwYMFz
+         9B0zko+PDOq8OY7M64esk2qUM6p0tv7aqobxUILFSSOadcuiayRU9E8O4lyn6n09fXgC
+         Lk1BmVzN1axNsFKP5iVKnjxzvEYsK0iGIUUAtrFtoHcSOH9oDV8hP9srmRk95ykStb2n
+         hsGSr+dkePeUY9F9yz4/ZbZpXOqOc3oUymdhQhHGx2RXxdmF+/M8ZgPwtIBFHYsJ8zOW
+         s31ABceePVs1qJPVEYsn5bJ3RBovrWWi+06CcHaYw1FjHep8aTA2drgugno0FiIt/gAS
+         gVnA==
+X-Gm-Message-State: AOJu0Yx7AmEaATs1GsLnIinfzbkbo2ybE85gIZETg6vM8t5FwlFzXarG
+        AAAmXBuA+Q+1xiS8MJzRfmWLrJrK/z0=
+X-Google-Smtp-Source: AGHT+IEGRVSsZSXB80mC17cGGVFFlrEHk741RBR9ikSC9ZbNo22R+lIDbblfRIhZ9eDknFw+cWo+Ag==
+X-Received: by 2002:aa7:c6c9:0:b0:523:100b:462b with SMTP id b9-20020aa7c6c9000000b00523100b462bmr4910601eds.5.1698500622540;
+        Sat, 28 Oct 2023 06:43:42 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id p5-20020a056402074500b0053e67bcb3e7sm2839754edy.82.2023.10.28.06.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 06:43:41 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 28 Oct 2023 15:43:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [GIT PULL] x86/irq change for v6.7
+Message-ID: <ZT0QC/LQKl4xNji/@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027072943.3418997-8-anshuman.khandual@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Linus,
 
-kernel test robot noticed the following build errors:
+Please pull the latest x86/irq git tree from:
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on rafael-pm/acpi-bus soc/for-next atorgue-stm32/stm32-next linus/master v6.6-rc7 next-20231027]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-irq-2023-10-28
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Anshuman-Khandual/coresight-replicator-Move-ACPI-support-from-AMBA-driver-to-platform-driver/20231027-153540
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20231027072943.3418997-8-anshuman.khandual%40arm.com
-patch subject: [PATCH 7/7] coresight: debug: Move ACPI support from AMBA driver to platform driver
-config: arm64-randconfig-003-20231028 (https://download.01.org/0day-ci/archive/20231028/202310282104.0VVIo070-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310282104.0VVIo070-lkp@intel.com/reproduce)
+   # HEAD: f44075ecafb726830e63d33fbca29413149eeeb8 x86/nmi: Fix out-of-order NMI nesting checks & false positive warning
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310282104.0VVIo070-lkp@intel.com/
+Fix out-of-order NMI nesting checks resulting in false positive warnings.
 
-All errors (new ones prefixed by >>):
+ Thanks,
 
-   In file included from include/linux/device/driver.h:21,
-                    from include/linux/device.h:32,
-                    from include/linux/amba/bus.h:15,
-                    from drivers/hwtracing/coresight/coresight-cpu-debug.c:7:
-   include/linux/module.h:131:49: error: redefinition of '__inittest'
-     131 |         static inline initcall_t __maybe_unused __inittest(void)                \
-         |                                                 ^~~~~~~~~~
-   include/linux/device/driver.h:262:1: note: in expansion of macro 'module_init'
-     262 | module_init(__driver##_init); \
-         | ^~~~~~~~~~~
-   include/linux/platform_device.h:303:9: note: in expansion of macro 'module_driver'
-     303 |         module_driver(__platform_driver, platform_driver_register, \
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:784:1: note: in expansion of macro 'module_platform_driver'
-     784 | module_platform_driver(debug_platform_driver);
-         | ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/module.h:131:49: note: previous definition of '__inittest' with type 'int (*(void))(void)'
-     131 |         static inline initcall_t __maybe_unused __inittest(void)                \
-         |                                                 ^~~~~~~~~~
-   include/linux/device/driver.h:262:1: note: in expansion of macro 'module_init'
-     262 | module_init(__driver##_init); \
-         | ^~~~~~~~~~~
-   include/linux/amba/bus.h:186:9: note: in expansion of macro 'module_driver'
-     186 |         module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:692:1: note: in expansion of macro 'module_amba_driver'
-     692 | module_amba_driver(debug_driver);
-         | ^~~~~~~~~~~~~~~~~~
-   include/linux/module.h:133:13: error: redefinition of 'init_module'
-     133 |         int init_module(void) __copy(initfn)                    \
-         |             ^~~~~~~~~~~
-   include/linux/device/driver.h:262:1: note: in expansion of macro 'module_init'
-     262 | module_init(__driver##_init); \
-         | ^~~~~~~~~~~
-   include/linux/platform_device.h:303:9: note: in expansion of macro 'module_driver'
-     303 |         module_driver(__platform_driver, platform_driver_register, \
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:784:1: note: in expansion of macro 'module_platform_driver'
-     784 | module_platform_driver(debug_platform_driver);
-         | ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/module.h:133:13: note: previous definition of 'init_module' with type 'int(void)'
-     133 |         int init_module(void) __copy(initfn)                    \
-         |             ^~~~~~~~~~~
-   include/linux/device/driver.h:262:1: note: in expansion of macro 'module_init'
-     262 | module_init(__driver##_init); \
-         | ^~~~~~~~~~~
-   include/linux/amba/bus.h:186:9: note: in expansion of macro 'module_driver'
-     186 |         module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:692:1: note: in expansion of macro 'module_amba_driver'
-     692 | module_amba_driver(debug_driver);
-         | ^~~~~~~~~~~~~~~~~~
->> include/linux/module.h:139:49: error: redefinition of '__exittest'
-     139 |         static inline exitcall_t __maybe_unused __exittest(void)                \
-         |                                                 ^~~~~~~~~~
-   include/linux/device/driver.h:267:1: note: in expansion of macro 'module_exit'
-     267 | module_exit(__driver##_exit);
-         | ^~~~~~~~~~~
-   include/linux/platform_device.h:303:9: note: in expansion of macro 'module_driver'
-     303 |         module_driver(__platform_driver, platform_driver_register, \
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:784:1: note: in expansion of macro 'module_platform_driver'
-     784 | module_platform_driver(debug_platform_driver);
-         | ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/module.h:139:49: note: previous definition of '__exittest' with type 'void (*(void))(void)'
-     139 |         static inline exitcall_t __maybe_unused __exittest(void)                \
-         |                                                 ^~~~~~~~~~
-   include/linux/device/driver.h:267:1: note: in expansion of macro 'module_exit'
-     267 | module_exit(__driver##_exit);
-         | ^~~~~~~~~~~
-   include/linux/amba/bus.h:186:9: note: in expansion of macro 'module_driver'
-     186 |         module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:692:1: note: in expansion of macro 'module_amba_driver'
-     692 | module_amba_driver(debug_driver);
-         | ^~~~~~~~~~~~~~~~~~
->> include/linux/module.h:141:14: error: redefinition of 'cleanup_module'
-     141 |         void cleanup_module(void) __copy(exitfn)                \
-         |              ^~~~~~~~~~~~~~
-   include/linux/device/driver.h:267:1: note: in expansion of macro 'module_exit'
-     267 | module_exit(__driver##_exit);
-         | ^~~~~~~~~~~
-   include/linux/platform_device.h:303:9: note: in expansion of macro 'module_driver'
-     303 |         module_driver(__platform_driver, platform_driver_register, \
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:784:1: note: in expansion of macro 'module_platform_driver'
-     784 | module_platform_driver(debug_platform_driver);
-         | ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/module.h:141:14: note: previous definition of 'cleanup_module' with type 'void(void)'
-     141 |         void cleanup_module(void) __copy(exitfn)                \
-         |              ^~~~~~~~~~~~~~
-   include/linux/device/driver.h:267:1: note: in expansion of macro 'module_exit'
-     267 | module_exit(__driver##_exit);
-         | ^~~~~~~~~~~
-   include/linux/amba/bus.h:186:9: note: in expansion of macro 'module_driver'
-     186 |         module_driver(__amba_drv, amba_driver_register, amba_driver_unregister)
-         |         ^~~~~~~~~~~~~
-   drivers/hwtracing/coresight/coresight-cpu-debug.c:692:1: note: in expansion of macro 'module_amba_driver'
-     692 | module_amba_driver(debug_driver);
-         | ^~~~~~~~~~~~~~~~~~
+	Ingo
+
+------------------>
+Paul E. McKenney (1):
+      x86/nmi: Fix out-of-order NMI nesting checks & false positive warning
 
 
-vim +/__exittest +139 include/linux/module.h
+ arch/x86/kernel/nmi.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  128  
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  129  /* Each module must use one module_init(). */
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  130  #define module_init(initfn)					\
-1f318a8bafcfba Arnd Bergmann  2017-02-01  131  	static inline initcall_t __maybe_unused __inittest(void)		\
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  132  	{ return initfn; }					\
-cf68fffb66d60d Sami Tolvanen  2021-04-08  133  	int init_module(void) __copy(initfn)			\
-cf68fffb66d60d Sami Tolvanen  2021-04-08  134  		__attribute__((alias(#initfn)));		\
-92efda8eb15295 Sami Tolvanen  2022-09-08  135  	___ADDRESSABLE(init_module, __initdata);
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  136  
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  137  /* This is only required if you want to be unloadable. */
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  138  #define module_exit(exitfn)					\
-1f318a8bafcfba Arnd Bergmann  2017-02-01 @139  	static inline exitcall_t __maybe_unused __exittest(void)		\
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  140  	{ return exitfn; }					\
-cf68fffb66d60d Sami Tolvanen  2021-04-08 @141  	void cleanup_module(void) __copy(exitfn)		\
-cf68fffb66d60d Sami Tolvanen  2021-04-08  142  		__attribute__((alias(#exitfn)));		\
-92efda8eb15295 Sami Tolvanen  2022-09-08  143  	___ADDRESSABLE(cleanup_module, __exitdata);
-0fd972a7d91d6e Paul Gortmaker 2015-05-01  144  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index a0c551846b35..4766b6bed443 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -507,12 +507,13 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
+ 	}
+ 	this_cpu_write(nmi_state, NMI_EXECUTING);
+ 	this_cpu_write(nmi_cr2, read_cr2());
++
++nmi_restart:
+ 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU)) {
+ 		WRITE_ONCE(nsp->idt_seq, nsp->idt_seq + 1);
+ 		WARN_ON_ONCE(!(nsp->idt_seq & 0x1));
+ 		WRITE_ONCE(nsp->recv_jiffies, jiffies);
+ 	}
+-nmi_restart:
+ 
+ 	/*
+ 	 * Needs to happen before DR7 is accessed, because the hypervisor can
+@@ -548,16 +549,16 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
+ 
+ 	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
+ 		write_cr2(this_cpu_read(nmi_cr2));
+-	if (this_cpu_dec_return(nmi_state))
+-		goto nmi_restart;
+-
+-	if (user_mode(regs))
+-		mds_user_clear_cpu_buffers();
+ 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU)) {
+ 		WRITE_ONCE(nsp->idt_seq, nsp->idt_seq + 1);
+ 		WARN_ON_ONCE(nsp->idt_seq & 0x1);
+ 		WRITE_ONCE(nsp->recv_jiffies, jiffies);
+ 	}
++	if (this_cpu_dec_return(nmi_state))
++		goto nmi_restart;
++
++	if (user_mode(regs))
++		mds_user_clear_cpu_buffers();
+ }
+ 
+ #if IS_ENABLED(CONFIG_KVM_INTEL)
