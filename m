@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054387DA555
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DE27DA557
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbjJ1GiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 02:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        id S229542AbjJ1Gi6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 28 Oct 2023 02:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJ1GiF (ORCPT
+        with ESMTP id S229458AbjJ1Gi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 02:38:05 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7337D11B
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 23:38:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=TpjAkzYedyZU8caQY65fA7BKsB1dxSgkhWgaBHUI8JU=;
-  b=eSIqmUdiE9luoQvnw/3CL/qaK/0Kn1awq21BUZGf27qojhMKI32laT4a
-   sHq2qas1dSln2fVGzNTv/nI9KZudqDGoNmSOkxlzh7cgTniGAkgdaeFfF
-   XQsZB40asKgx8XCsgnB9VEZeZMBu8QYuQZD6ScPt1jSoa5dFi3iPGka6A
-   Q=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,258,1694728800"; 
-   d="scan'208";a="70000203"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 08:38:00 +0200
-Date:   Sat, 28 Oct 2023 08:37:59 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Chen Yu <yu.c.chen@intel.com>
-cc:     Keisuke Nishimura <keisuke.nishimura@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: Fix the decision for load balance
-In-Reply-To: <ZTyfoIBpm3lxd8Dy@chenyu5-mobl2.ccr.corp.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2310280836100.3338@hadrien>
-References: <20231027171742.1426070-1-keisuke.nishimura@inria.fr> <ZTyfoIBpm3lxd8Dy@chenyu5-mobl2.ccr.corp.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 28 Oct 2023 02:38:57 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2927AAB
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 23:38:53 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-53-WxaLHLu_OZ2prnQx6wMy0Q-1; Sat, 28 Oct 2023 07:38:49 +0100
+X-MC-Unique: WxaLHLu_OZ2prnQx6wMy0Q-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 28 Oct
+ 2023 07:38:52 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 28 Oct 2023 07:38:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Shinas Rasheed' <srasheed@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "hgani@marvell.com" <hgani@marvell.com>,
+        "vimleshk@marvell.com" <vimleshk@marvell.com>,
+        "egallen@redhat.com" <egallen@redhat.com>,
+        "mschmidt@redhat.com" <mschmidt@redhat.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "horms@kernel.org" <horms@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wizhao@redhat.com" <wizhao@redhat.com>,
+        "konguyen@redhat.com" <konguyen@redhat.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        "Sathesh Edara" <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: RE: [PATCH net-next v2 3/4] octeon_ep: implement xmit_more in
+ transmit
+Thread-Topic: [PATCH net-next v2 3/4] octeon_ep: implement xmit_more in
+ transmit
+Thread-Index: AQHaBomkOels9gSWWE2IVlse9GkwiLBevpOA
+Date:   Sat, 28 Oct 2023 06:38:51 +0000
+Message-ID: <0fc50b8e6ff44c43b10481da608c95c3@AcuMS.aculab.com>
+References: <20231024145119.2366588-1-srasheed@marvell.com>
+ <20231024145119.2366588-4-srasheed@marvell.com>
+In-Reply-To: <20231024145119.2366588-4-srasheed@marvell.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Shinas Rasheed
+> Sent: 24 October 2023 15:51
+> 
+> Add xmit_more handling in tx datapath for octeon_ep pf.
+> 
+...
+> -
+> -	/* Ring Doorbell to notify the NIC there is a new packet */
+> -	writel(1, iq->doorbell_reg);
+> -	iq->stats.instr_posted++;
+> +	/* Ring Doorbell to notify the NIC of new packets */
+> +	writel(iq->fill_cnt, iq->doorbell_reg);
+> +	iq->stats.instr_posted += iq->fill_cnt;
+> +	iq->fill_cnt = 0;
+>  	return NETDEV_TX_OK;
 
+Does that really need the count?
+A 'doorbell' register usually just tells the MAC engine
+to go and look at the transmit ring.
+It then continues to process transmits until it fails
+to find a packet.
+So if the transmit is active you don't need to set the bit.
+(Although that is actually rather hard to detect.)
 
-On Sat, 28 Oct 2023, Chen Yu wrote:
+The 'xmit_more' flag is useful if (the equivalent of) writing
+the doorbell register is expensive since it can be delayed
+to a later frame and only done once - adding a slight latency
+to the earlier transmits if the mac engine was idle.
 
-> On 2023-10-27 at 19:17:43 +0200, Keisuke Nishimura wrote:
-> > should_we_balance is called for the decision to do load-balancing.
-> > When sched ticks invoke this function, only one CPU should return
-> > true. However, in the current code, two CPUs can return true. The
-> > following situation, where b means busy and i means idle, is an
-> > example because CPU 0 and CPU 2 return true.
-> >
-> >         [0, 1] [2, 3]
-> >          b  b   i  b
-> >
-> > This fix checks if there exists an idle CPU with busy sibling(s)
-> > after looking for a CPU on an idle core. If some idle CPUs with busy
-> > siblings are found, just the first one should do load-balancing.
-> >
-> > Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
-> > Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> > ---
-> >  kernel/sched/fair.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 2048138ce54b..eff0316d6c7d 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -11083,8 +11083,9 @@ static int should_we_balance(struct lb_env *env)
-> >  		return cpu == env->dst_cpu;
-> >  	}
-> >
-> > -	if (idle_smt == env->dst_cpu)
-> > -		return true;
-> > +	/* Is there an idle CPU with busy siblings? */
-> > +	if (idle_smt != -1)
-> > +		return idle_smt == env->dst_cpu;
-> >
-> >  	/* Are we the first CPU of this group ? */
-> >  	return group_balance_cpu(sg) == env->dst_cpu;
->
-> Looks reasonable to me, if there is other idle SMT(from half-busy core)
-> in the system, we should leverage that SMT to do the periodic lb.
-> Per my understanding,
+I'm not sure how much (if any) performance gain you actually
+get from avoiding the writel().
+Single PCIe writes are 'posted' and pretty much completely
+asynchronous.
 
-That's not the goal of this patch.  The goal of this patch is to avoid
-doing return group_balance_cpu(sg) == env->dst_cpu; when a half-busy core
-has been identified that is different from env->dst_cpu.
+The other problem I've seen is that netdev_xmit_more() is
+the state of the queue when the transmit was started, not
+the current state.
+If a packet is added while the earlier transmit setup code
+is running (setting up the descriptors etc) the it isn't set.
+So the fast path doesn't get taken.
 
-julia
+	David
 
->
-> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
->
-> thanks,
-> Chenyu
->
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
