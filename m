@@ -2,136 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5207DA824
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 18:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE707DA82A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjJ1Qyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 12:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S229572AbjJ1RE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 13:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Qyf (ORCPT
+        with ESMTP id S229446AbjJ1RE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 12:54:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5C5D3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 09:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698512073; x=1730048073;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=dzK2Toyt3q+Mkf5r2daPoKDylIhodn+OhjhsWsffjvo=;
-  b=AbX8qDmkuiNdAQN4t0U6fSQBM9lLq3gXluJYR7qTtwDaWJQYX4V0furk
-   7hxYojvlC10s7FUJWc5P6EPO7QNynNdRIyRjgKmPdAE6rqASmRJmfGeGu
-   x3BLd33nrbnLHU0np7L3x4G9TKSa7M0TGe12CvTwivoOvswKbeciIWfrP
-   fVqVb/siG0oXNZf6M/eoqCichpeH0Yr2JpmCqz2q26pMmxgpoybHvYKAt
-   V0QdoJFCn1XnfA1EB+k1kD8ixupZw8KdIWT6YBvk86s2l06eiRUGOqmrI
-   t0P/zRW+d8S1qwM/d5iuOxlQvLOK2CW26pq6SvMiWwM964rbLWFOhqzCG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="391776192"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="391776192"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 09:54:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="763521956"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="763521956"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Oct 2023 09:54:31 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwmZw-000Bv5-3B;
-        Sat, 28 Oct 2023 16:54:28 +0000
-Date:   Sun, 29 Oct 2023 00:54:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Danny Tsen <dtsen@linux.ibm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: error:
- 'gcm_init_htable' accessing 256 bytes in a region of size 224
-Message-ID: <202310290004.TQsw1iN1-lkp@intel.com>
+        Sat, 28 Oct 2023 13:04:56 -0400
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2832DE
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:04:53 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id wmjwqs5Qa8ZI8wmjxqgmOJ; Sat, 28 Oct 2023 19:04:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698512691;
+        bh=u3XpE1EDC+9oMRTYO51KW7vHfl6tXKZ9dZgi4Ew6grU=;
+        h=From:To:Cc:Subject:Date;
+        b=FFFaV4Gty5EI+wmhvij8pSq4owQ4Xx9sdgwF4xBqKES36Ps0obVUkc1iiRDUl/QGj
+         sGZxd6YF/cuLKS/bs+TDwAIHE7+W6luyIIxjK6pyXFCido6AvaqDjTK+WOFtmPso96
+         gx1/8xhj5yheGPzZkPggN7b/uds8sMfo+D5LXKDOWnmA7n7laLQCmYQj6BAwIprPZi
+         qW8pIBXHCTavVb7sROXP82UcJP1zcCbnjMKOhoYutKQCMkW3Kx0fEaMgdv1JPtzcy6
+         hRkjfo40TWJc6fMbM4yHziAvhHNEBknVMsCtecdshmPDUSRttNInYe7uQ0fYlecPHo
+         AspLu+cDjMoGw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Oct 2023 19:04:51 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        rcu@vger.kernel.org
+Subject: [PATCH] refscale: Optimize process_durations()
+Date:   Sat, 28 Oct 2023 19:04:44 +0200
+Message-Id: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Danny,
+process_durations() is not a hot path, but there is no good reason to
+iterate over and over the data already in 'buf'.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+Data is written directly at the correct place.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   56567a20b22bdbf85c3e55eee3bf2bd23fa2f108
-commit: 9c716e1bd369afa2d1c5038297e8ceda3f82db7d crypto: p10-aes-gcm - Remove POWER10_CPU dependency
-date:   6 months ago
-config: powerpc64-randconfig-r005-20230913 (https://download.01.org/0day-ci/archive/20231029/202310290004.TQsw1iN1-lkp@intel.com/config)
-compiler: powerpc64le-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310290004.TQsw1iN1-lkp@intel.com/reproduce)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ kernel/rcu/refscale.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310290004.TQsw1iN1-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/crypto/aes-gcm-p10-glue.c: In function 'gcmp10_init':
->> arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: error: 'gcm_init_htable' accessing 256 bytes in a region of size 224 [-Werror=stringop-overflow=]
-     121 |         gcm_init_htable(hash->Htable+32, hash->H);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: note: referencing argument 1 of type 'unsigned char[256]'
-   arch/powerpc/crypto/aes-gcm-p10-glue.c:121:9: note: referencing argument 2 of type 'unsigned char[16]'
-   arch/powerpc/crypto/aes-gcm-p10-glue.c:41:17: note: in a call to function 'gcm_init_htable'
-      41 | asmlinkage void gcm_init_htable(unsigned char htable[256], unsigned char Xi[16]);
-         |                 ^~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +/gcm_init_htable +121 arch/powerpc/crypto/aes-gcm-p10-glue.c
-
-cdcecfd9991fe9a Danny Tsen 2023-02-20  113  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  114  static void gcmp10_init(struct gcm_ctx *gctx, u8 *iv, unsigned char *rdkey,
-cdcecfd9991fe9a Danny Tsen 2023-02-20  115  			struct Hash_ctx *hash, u8 *assoc, unsigned int assoclen)
-cdcecfd9991fe9a Danny Tsen 2023-02-20  116  {
-cdcecfd9991fe9a Danny Tsen 2023-02-20  117  	__be32 counter = cpu_to_be32(1);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  118  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  119  	aes_p8_encrypt(hash->H, hash->H, rdkey);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  120  	set_subkey(hash->H);
-cdcecfd9991fe9a Danny Tsen 2023-02-20 @121  	gcm_init_htable(hash->Htable+32, hash->H);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  122  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  123  	*((__be32 *)(iv+12)) = counter;
-cdcecfd9991fe9a Danny Tsen 2023-02-20  124  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  125  	gctx->Plen = 0;
-cdcecfd9991fe9a Danny Tsen 2023-02-20  126  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  127  	/*
-cdcecfd9991fe9a Danny Tsen 2023-02-20  128  	 * Encrypt counter vector as iv tag and increment counter.
-cdcecfd9991fe9a Danny Tsen 2023-02-20  129  	 */
-cdcecfd9991fe9a Danny Tsen 2023-02-20  130  	aes_p8_encrypt(iv, gctx->ivtag, rdkey);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  131  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  132  	counter = cpu_to_be32(2);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  133  	*((__be32 *)(iv+12)) = counter;
-cdcecfd9991fe9a Danny Tsen 2023-02-20  134  	memcpy(gctx->iv, iv, 16);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  135  
-cdcecfd9991fe9a Danny Tsen 2023-02-20  136  	gctx->aadLen = assoclen;
-cdcecfd9991fe9a Danny Tsen 2023-02-20  137  	memset(gctx->aad_hash, 0, 16);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  138  	if (assoclen)
-cdcecfd9991fe9a Danny Tsen 2023-02-20  139  		set_aad(gctx, hash, assoc, assoclen);
-cdcecfd9991fe9a Danny Tsen 2023-02-20  140  }
-cdcecfd9991fe9a Danny Tsen 2023-02-20  141  
-
-:::::: The code at line 121 was first introduced by commit
-:::::: cdcecfd9991fe9aac8160a9731b0ffd1e702d19d crypto: p10-aes-gcm - Glue code for AES/GCM stitched implementation
-
-:::::: TO: Danny Tsen <dtsen@linux.ibm.com>
-:::::: CC: Herbert Xu <herbert@gondor.apana.org.au>
-
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 2c2648a3ad30..861485d865ec 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -28,6 +28,7 @@
+ #include <linux/rcupdate_trace.h>
+ #include <linux/reboot.h>
+ #include <linux/sched.h>
++#include <linux/seq_buf.h>
+ #include <linux/spinlock.h>
+ #include <linux/smp.h>
+ #include <linux/stat.h>
+@@ -890,31 +891,36 @@ static u64 process_durations(int n)
+ {
+ 	int i;
+ 	struct reader_task *rt;
+-	char buf1[64];
++	struct seq_buf s;
+ 	char *buf;
+ 	u64 sum = 0;
+ 
+ 	buf = kmalloc(800 + 64, GFP_KERNEL);
+ 	if (!buf)
+ 		return 0;
+-	buf[0] = 0;
++
++	seq_buf_init(&s, buf, 800 + 64);
++
+ 	sprintf(buf, "Experiment #%d (Format: <THREAD-NUM>:<Total loop time in ns>)",
+ 		exp_idx);
+ 
+ 	for (i = 0; i < n && !torture_must_stop(); i++) {
+ 		rt = &(reader_tasks[i]);
+-		sprintf(buf1, "%d: %llu\t", i, rt->last_duration_ns);
+ 
+ 		if (i % 5 == 0)
+-			strcat(buf, "\n");
+-		if (strlen(buf) >= 800) {
++			seq_buf_putc(&s, '\n');
++
++		if (seq_buf_used(&s) >= 800) {
++			seq_buf_terminate(&s);
+ 			pr_alert("%s", buf);
+-			buf[0] = 0;
++			seq_buf_clear(&s);
+ 		}
+-		strcat(buf, buf1);
++
++		seq_buf_printf(&s, "%d: %llu\t", i, rt->last_duration_ns);
+ 
+ 		sum += rt->last_duration_ns;
+ 	}
++	seq_buf_terminate(&s);
+ 	pr_alert("%s\n", buf);
+ 
+ 	kfree(buf);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
