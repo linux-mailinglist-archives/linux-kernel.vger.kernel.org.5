@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D58C7DA7C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F117DA7C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjJ1PXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 11:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S229539AbjJ1P1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 11:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1PXy (ORCPT
+        with ESMTP id S229446AbjJ1P1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 11:23:54 -0400
+        Sat, 28 Oct 2023 11:27:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62A093;
-        Sat, 28 Oct 2023 08:23:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 815ACC433C8;
-        Sat, 28 Oct 2023 15:23:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E0C93;
+        Sat, 28 Oct 2023 08:27:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 770ADC433C8;
+        Sat, 28 Oct 2023 15:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698506632;
-        bh=DfA14lJV5fCHDlTRV9h2PoOcI7/ngGn2Ntb0yXI7Urk=;
+        s=k20201202; t=1698506833;
+        bh=uLv5WbdZZqD76wzTbqeJg/qmp0G1/IL7KepBHWNLTB8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CO+Y4f5T7gTsX618YlDV3vWfgHW3+gp8LfOaz19r5Ua6TD3X7XyhXe/dDZNfOpzZI
-         dhHYHS3kIpeU0aXZIZxsKB7A4dEPN0gMQelz1Two+6C8Y1PdtymcHj+PeDucTrB1Cs
-         zxqs9uEx4WsOD9ACCTQDD1lYML1IXmS9u37r1kSBlrAuTJB+ZQoXbJnSZ83tqfN8Pm
-         H8qpc7dVg7pKT6Gq/t3L2IcdX+QuKHciJZDmxXzU6Su/6aNLipFCtfJ0DmSg0BLsia
-         VOmAZ8lh1H5cdXUHwjxNRFLNQZVTc/uJbo66lmZ2VOZz+eiUl5iRP+Ct6jgh0x29KZ
-         fq5QHS4jqfZ6A==
-Date:   Sat, 28 Oct 2023 16:23:13 +0100
+        b=DmL++fSy0y+u1Rl27tnahInvKR3esiJmVd5ydYL6v8N6yex88qr1B5xsP6HpqhFfJ
+         bJd+PT2xDa36nz4RxOGvm3Gn15jzbCHLC+4EYamFbr/At8kk78D9J+V96aXHiSCM7x
+         M+GLiWJiI0eWrCWiDuFDIIPsiS6YZh95QcB4lbFRhjU/9od06Hb0pVbyPZDhMYeX3g
+         NIibfeWVM/pXSeMozlDUGKcjHGtqfYWU7RL0X1izl7cS/Zb2vr/Z1NjwYvsKqwiXCM
+         xoGkGMBk+ExLRy6pfsQuMWYFyO8xSNSp/+OekcqYYWFSmLJSmUGTLWb5SW19JS07Yi
+         0JdrpwU0fbkwQ==
+Date:   Sat, 28 Oct 2023 16:26:38 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ramona Gradinariu <ramona.gradinariu@analog.com>
-Cc:     <nuno.sa@analog.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] iio: imu: adis: Use spi cs inactive delay
-Message-ID: <20231028162313.5babf107@jic23-huawei>
-In-Reply-To: <20231027140358.328699-1-ramona.gradinariu@analog.com>
-References: <20231027140358.328699-1-ramona.gradinariu@analog.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: Re: [PATCH v2] iio: sx9324: avoid copying property strings
+Message-ID: <20231028162638.5b477ded@jic23-huawei>
+In-Reply-To: <20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com>
+References: <20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -51,40 +51,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 17:03:55 +0300
-Ramona Gradinariu <ramona.gradinariu@analog.com> wrote:
+On Thu, 26 Oct 2023 23:53:28 +0000
+Justin Stitt <justinstitt@google.com> wrote:
 
-> A delay is needed each time the chip selected becomes inactive,
-> even after burst data readings are performed.
-> Currently, there is no delay added after a burst reading
-> and in case a new SPI transfer is performed before
-> the needed delay, the adis device becomes unresponsive until
-> reset.
+> We're doing some needless string copies when trying to assign the proper
+> `prop` string. We can make `prop` a const char* and simply assign to
+> string literals.
 > 
-> This commit is adding the needed delay directly to the spi driver,
-> using the cs_inactive parameter, in case it is not set and is
-> removing the additional chip select change delay present in adis
-> APIs to remove the double delay.
-
-Series applied.
-
-I'm a bit confused though as this one is turning up in patchwork.
-Meh, maybe a delay and it will show up soon.
-
-Jonathan
-
+> For the case where a format string is used, let's allocate some memory
+> via kasprintf() and point prop to it.
 > 
-> Ramona Gradinariu (3):
->   iio: imu: adis: Use spi cs inactive delay
->   dt-bindings: adis16475: Add 'spi-cs-inactive-delay-ns' property
->   dt-bindings: adis16460: Add 'spi-cs-inactive-delay-ns' property
+> This also cleans up some deprecated strncpy() uses [1].
 > 
->  .../bindings/iio/imu/adi,adis16460.yaml        |  4 ++++
->  .../bindings/iio/imu/adi,adis16475.yaml        |  4 ++++
->  drivers/iio/imu/adis.c                         | 18 ++++++------------
->  3 files changed, 14 insertions(+), 12 deletions(-)
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+
+Seems reasonable to me.
+
++CC Gwendal (+ Stephen) as it's Gwendal's driver and I think they are still actively
+maintaining it.
+
+> ---
+> Changes in v2:
+> - make prop a const char* and do simple assignments (thanks Jonathan)
+> - rebase onto 3a568e3a961ba330
+> - Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
+> ---
+> Note: build-tested
+> ---
+>  drivers/iio/proximity/sx9324.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
+> index 438f9c9aba6e..c8547035cb47 100644
+> --- a/drivers/iio/proximity/sx9324.c
+> +++ b/drivers/iio/proximity/sx9324.c
+> @@ -885,7 +885,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
+>  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
+>  	unsigned int pin_defs[SX9324_NUM_PINS];
+> -	char prop[] = SX9324_PROXRAW_DEF;
+> +	const char *prop = SX9324_PROXRAW_DEF;
+>  	u32 start = 0, raw = 0, pos = 0;
+>  	int ret, count, ph, pin;
+>  	const char *res;
+> @@ -899,7 +899,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  	case SX9324_REG_AFE_PH2:
+>  	case SX9324_REG_AFE_PH3:
+>  		ph = reg_def->reg - SX9324_REG_AFE_PH0;
+> -		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
+> +		prop = kasprintf(GFP_KERNEL, "semtech,ph%d-pin", ph);
+>  
+>  		count = device_property_count_u32(dev, prop);
+>  		if (count != ARRAY_SIZE(pin_defs))
+> @@ -913,6 +913,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  			raw |= (pin_defs[pin] << (2 * pin)) &
+>  			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
+>  		reg_def->def = raw;
+> +		kfree(prop);
+>  		break;
+>  	case SX9324_REG_AFE_CTRL0:
+>  		ret = device_property_read_string(dev,
+> @@ -937,11 +938,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  	case SX9324_REG_AFE_CTRL4:
+>  	case SX9324_REG_AFE_CTRL7:
+>  		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
+> -			strncpy(prop, "semtech,ph01-resolution",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph01-resolution";
+>  		else
+> -			strncpy(prop, "semtech,ph23-resolution",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph23-resolution";
+>  
+>  		ret = device_property_read_u32(dev, prop, &raw);
+>  		if (ret)
+> @@ -1012,11 +1011,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
+>  	case SX9324_REG_PROX_CTRL0:
+>  	case SX9324_REG_PROX_CTRL1:
+>  		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
+> -			strncpy(prop, "semtech,ph01-proxraw-strength",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph01-proxraw-strength";
+>  		else
+> -			strncpy(prop, "semtech,ph23-proxraw-strength",
+> -				ARRAY_SIZE(prop));
+> +			prop = "semtech,ph23-proxraw-strength";
+>  		ret = device_property_read_u32(dev, prop, &raw);
+>  		if (ret)
+>  			break;
+> 
+> ---
+> base-commit: 3a568e3a961ba330091cd031647e4c303fa0badb
+> change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
+> 
+> Best regards,
 > --
-> 2.34.1
+> Justin Stitt <justinstitt@google.com>
 > 
 
