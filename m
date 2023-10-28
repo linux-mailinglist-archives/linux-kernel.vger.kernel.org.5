@@ -2,134 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE707DA82A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 19:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051397DA82C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 19:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjJ1RE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 13:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S229449AbjJ1RFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 13:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1RE4 (ORCPT
+        with ESMTP id S229698AbjJ1RFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 13:04:56 -0400
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2832DE
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:04:53 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id wmjwqs5Qa8ZI8wmjxqgmOJ; Sat, 28 Oct 2023 19:04:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698512691;
-        bh=u3XpE1EDC+9oMRTYO51KW7vHfl6tXKZ9dZgi4Ew6grU=;
-        h=From:To:Cc:Subject:Date;
-        b=FFFaV4Gty5EI+wmhvij8pSq4owQ4Xx9sdgwF4xBqKES36Ps0obVUkc1iiRDUl/QGj
-         sGZxd6YF/cuLKS/bs+TDwAIHE7+W6luyIIxjK6pyXFCido6AvaqDjTK+WOFtmPso96
-         gx1/8xhj5yheGPzZkPggN7b/uds8sMfo+D5LXKDOWnmA7n7laLQCmYQj6BAwIprPZi
-         qW8pIBXHCTavVb7sROXP82UcJP1zcCbnjMKOhoYutKQCMkW3Kx0fEaMgdv1JPtzcy6
-         hRkjfo40TWJc6fMbM4yHziAvhHNEBknVMsCtecdshmPDUSRttNInYe7uQ0fYlecPHo
-         AspLu+cDjMoGw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 28 Oct 2023 19:04:51 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        rcu@vger.kernel.org
-Subject: [PATCH] refscale: Optimize process_durations()
-Date:   Sat, 28 Oct 2023 19:04:44 +0200
-Message-Id: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 28 Oct 2023 13:05:10 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768C9126
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:05:06 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1e9e17b3269so3966000fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:05:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698512705; x=1699117505;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VTo/MYGjU98OZVhpt1voIWuh+FHLPG7oyJBS1qD9LfQ=;
+        b=QJUJAlsdW5JpKHK3kfMsiTSXv8kxTlt5BT4d9kTcVEeWZo4aiEY5AUep1DpRgGfdNO
+         jCFrNKhs1wQexOk/uQjRaq1n9XPTE3/ubzV2huLmv5xoqWkKYExHYdwbZrsJ6s3/jqF/
+         3jEDrS67IWiWkIRXaThUUNRFoiyizQPAtcZrBJImpPPvwETVPZsB+/I4lZ0bt3l9T9an
+         QBFbyv/ncdqNvK5s662GwfkF++suiC6C8cmxFp0LSLbpGuot+8/qFIyhu4tXXHRPbOma
+         FvWAH4fD77wkDqj047XnMxZ9KfRNvCAnUMKDGRFDRslGUO3cUoRGWp2aUPqGg8mbO6a6
+         wkWQ==
+X-Gm-Message-State: AOJu0YyDN0oLgS2/VTqTtM8R3kU441WnWbV6PjIeztjVf55lXXeAT3AW
+        pGYNMobGDu6FFt2x3Xo0Ier7ewDdKuIOiVQ/kyaoxTUKysqB
+X-Google-Smtp-Source: AGHT+IHDWbVpcRZW17s+E9mZT2p3NLImbd1EcjPq+4ECelqP51WUu/Fg5z00UTleUxVPQ3pE/XOUb6xGMgZ4y7h8sYPMfUlG8x9+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:30d:b0:1e1:3367:1429 with SMTP id
+ m13-20020a056870030d00b001e133671429mr2675836oaf.10.1698512705435; Sat, 28
+ Oct 2023 10:05:05 -0700 (PDT)
+Date:   Sat, 28 Oct 2023 10:05:05 -0700
+In-Reply-To: <0000000000003ba9f506013b0aed@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000743d980608c9ce33@google.com>
+Subject: Re: [syzbot] [ntfs3?] INFO: task hung in ntfs_read_folio (2)
+From:   syzbot <syzbot+913093197c71922e8375@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-process_durations() is not a hot path, but there is no good reason to
-iterate over and over the data already in 'buf'.
+syzbot suspects this issue was fixed by commit:
 
-Using a seq_buf saves some useless strcat() and the need of a temp buffer.
-Data is written directly at the correct place.
+commit bfbe5b31caa74ab97f1784fe9ade5f45e0d3de91
+Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Date:   Fri Jun 30 12:22:53 2023 +0000
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- kernel/rcu/refscale.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+    fs/ntfs3: fix deadlock in mark_as_free_ex
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 2c2648a3ad30..861485d865ec 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -28,6 +28,7 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/reboot.h>
- #include <linux/sched.h>
-+#include <linux/seq_buf.h>
- #include <linux/spinlock.h>
- #include <linux/smp.h>
- #include <linux/stat.h>
-@@ -890,31 +891,36 @@ static u64 process_durations(int n)
- {
- 	int i;
- 	struct reader_task *rt;
--	char buf1[64];
-+	struct seq_buf s;
- 	char *buf;
- 	u64 sum = 0;
- 
- 	buf = kmalloc(800 + 64, GFP_KERNEL);
- 	if (!buf)
- 		return 0;
--	buf[0] = 0;
-+
-+	seq_buf_init(&s, buf, 800 + 64);
-+
- 	sprintf(buf, "Experiment #%d (Format: <THREAD-NUM>:<Total loop time in ns>)",
- 		exp_idx);
- 
- 	for (i = 0; i < n && !torture_must_stop(); i++) {
- 		rt = &(reader_tasks[i]);
--		sprintf(buf1, "%d: %llu\t", i, rt->last_duration_ns);
- 
- 		if (i % 5 == 0)
--			strcat(buf, "\n");
--		if (strlen(buf) >= 800) {
-+			seq_buf_putc(&s, '\n');
-+
-+		if (seq_buf_used(&s) >= 800) {
-+			seq_buf_terminate(&s);
- 			pr_alert("%s", buf);
--			buf[0] = 0;
-+			seq_buf_clear(&s);
- 		}
--		strcat(buf, buf1);
-+
-+		seq_buf_printf(&s, "%d: %llu\t", i, rt->last_duration_ns);
- 
- 		sum += rt->last_duration_ns;
- 	}
-+	seq_buf_terminate(&s);
- 	pr_alert("%s\n", buf);
- 
- 	kfree(buf);
--- 
-2.34.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14006f67680000
+start commit:   bfa3037d8280 Merge tag 'fuse-update-6.5' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4507c291b5ab5d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=913093197c71922e8375
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b8869ea80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149e6072a80000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs/ntfs3: fix deadlock in mark_as_free_ex
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
