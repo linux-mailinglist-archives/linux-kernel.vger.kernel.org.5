@@ -2,177 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B6C7DA99D
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 23:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9837DA99F
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 23:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjJ1V0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 17:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        id S229740AbjJ1V1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 17:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1V0c (ORCPT
+        with ESMTP id S229446AbjJ1V1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 17:26:32 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45FCCA;
-        Sat, 28 Oct 2023 14:26:29 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cacf449c1aso6174665ad.0;
-        Sat, 28 Oct 2023 14:26:29 -0700 (PDT)
+        Sat, 28 Oct 2023 17:27:18 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEE3D3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 14:27:15 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7788db95652so243839185a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 14:27:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698528389; x=1699133189; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1698528434; x=1699133234; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+3EhqydIk8cWL76gCn5A4FQeZ+oe6v5e7gK0rC5kDqw=;
-        b=P7WiuQcTvNtX2Jtb6KzV5ytOZiqRH6EHOR4x5+8hEi9To9ZbTJExEjfAuOD2zdUsKX
-         SbRa3/26tPOg+yZpJcmsszy3Arz86EiCTzn81yhZ8nMHyPjwufyJeBsPI5AKupjsXoh3
-         T/Yos47NnHZT/Ovv/Ms9iTZEpOtmP+zUM8viWQUpy+B9nFxlBnJx4jsuh3v7eg43lUiq
-         2wXID7miutg6T4JcSS1aVsp3Dnmfm+FzJUHZ09Lcn8HIifqlNWy0BGMWCb6aFnjK0446
-         NFl2OvAdGPI55Ge5pPaRkAOBZz3NoP1r+47ppKcO300yjzCTsa7bEaVNAJnT9NTIQBfL
-         tsRQ==
+        bh=AZNJ5LBHB14fh0G6oAmi/MIh35dXfuQVmtC+jUmWNXY=;
+        b=hiWn7ov/DjtNRqk/TJJhIsgH/PjWR0+2KotG+VFGczt5eLY1FVqZQ5jhNfU/Ro1pRj
+         w1tZeJuuZV/MNm0mg75LOq10o9hca8JQuYleCf57eYnym3+YMmRVNLuqCplPjBBb7WqT
+         oWzbxVbt/jAphPPmV3wGWUmDBs+icc9yl9dXvs6VWYXAvwuGiZPyDu3eWH0sWUfG/0T+
+         u+vq1FRIOAaN+xjRKAl25weJsV35/n+qyxmJdNRQ4LZvkX+hyymLQYjJJ5tDzDPOlEL/
+         lL6z4Mb9ZdZJ0BJ5O52tND4kiMJ0LsvRG9jNNVoN2g6cxkMuXmdAWhSQjaEdrcer3I9E
+         uoFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698528389; x=1699133189;
+        d=1e100.net; s=20230601; t=1698528434; x=1699133234;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+3EhqydIk8cWL76gCn5A4FQeZ+oe6v5e7gK0rC5kDqw=;
-        b=ofzmEPDQdEljpot6L3CEf9XzpFfU84ppHcJN/gI9p5c8dZndecTRF7L+PhBF+xtkU6
-         /FkcjM8WBxwH4OuHerApl+852BoH5D06/arcRCUJX2SvaegL5cWWXUHpNYJ9jqVpWyjb
-         jewLQ0FRGzkaWPF7pKfa47+zL/Y6x3r5h06rYGC5Zoiy/GB9awVqCvwm1GOh1utaI3FY
-         PpWiEak0+XH0CFwUe/QXhbH4jGFSHOPe8/XukBPzMAaIWFHTS+OKWMq96+7QcPGxuF8O
-         uvKam009DCl1Mh27OGKNyzn3LRW3x/pyzxNJtP/JIRySvrM97aLH1YsY6/T8XEkgkb5w
-         BjHQ==
-X-Gm-Message-State: AOJu0Yx4sqcT/hF9uIsMnh37MzeP+yWPjn1nzoM8djIhd+vvC5ULtjuo
-        7IxIJEsqIKnOIJ4vuqY59imgzMs457ex2mTt
-X-Google-Smtp-Source: AGHT+IFJhiYxmbbhG89wSadf2t17HGRHnSMUp97sHZ9VZIMeyKHjtgzwFKu3r2YhZVGlGZpMGdFmXQ==
-X-Received: by 2002:a17:902:f213:b0:1c4:1cd3:8062 with SMTP id m19-20020a170902f21300b001c41cd38062mr6495445plc.2.1698528389175;
-        Sat, 28 Oct 2023 14:26:29 -0700 (PDT)
-Received: from [192.168.0.152] ([103.75.161.209])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170902c21100b001bbb8d5166bsm3607338pll.123.2023.10.28.14.26.24
+        bh=AZNJ5LBHB14fh0G6oAmi/MIh35dXfuQVmtC+jUmWNXY=;
+        b=ZI6RxSaRGkhe01nklV5ZoMtaanCMmWQdLNtOW3+w4y0j2Ocx84SszRls9LfYHQV1tY
+         BA4FztfvtTJ9EDq0uuijGqVejV9BwiUsHB03lUP/F3lvoSl+N8MqE4BKiVdUjlqcELt4
+         cJmyK91HvVrDaiAVxdufvcyrzaC3mEsljyuJX9a3aeveluDGrnDPbxG2+8fs3Twdu1r6
+         Sqwr1lUFutqd8IavNkfrLASpmXZkaBbytJgK+MnfcN+zJrGIDAK7kcHHsMgjeuQsneKn
+         Gf8JYLyM+O686nhcMdFJzvvbYV8ry173xBT99AR5uVGAmwvrVb+o5oTNFE2pJVDB97CR
+         yB+w==
+X-Gm-Message-State: AOJu0YyN0uYVkQW58lMI6CJNk4Ofz57uvwEshzEXmrQVJrmU4Lw1G0tB
+        e/hQJ6szkbcYYzmtUH9haWc66A==
+X-Google-Smtp-Source: AGHT+IFzWOHUqGhWWbxiEjFLKVYCsO+qorh1TBlfUNPnoKr8olCLDe3Zo88EiW0+r8N/MtNcg6lYxw==
+X-Received: by 2002:a05:620a:19a2:b0:778:9161:c9bd with SMTP id bm34-20020a05620a19a200b007789161c9bdmr6577438qkb.56.1698528434547;
+        Sat, 28 Oct 2023 14:27:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:c988:e7b9:36ab:57c6? ([2600:1700:2000:b002:c988:e7b9:36ab:57c6])
+        by smtp.gmail.com with ESMTPSA id bl9-20020a05620a1a8900b0076cc4610d0asm1866833qkb.85.2023.10.28.14.27.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 14:26:28 -0700 (PDT)
-Message-ID: <19cec6f0-e176-4bcc-95a0-9d6eb0261ed1@gmail.com>
-Date:   Sun, 29 Oct 2023 02:56:17 +0530
+        Sat, 28 Oct 2023 14:27:14 -0700 (PDT)
+Message-ID: <133b60f7-a71c-4fa2-ae19-4cad05596a23@sifive.com>
+Date:   Sat, 28 Oct 2023 16:27:12 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Fixing warning cast removes address space '__iomem' of
- expression
+Subject: Re: [PATCH 5/5] riscv: configs: defconfig: Enable configs required
+ for RZ/Five SoC
 Content-Language: en-US
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        Nischala Yelchuri <Nischala.Yelchuri@microsoft.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <20231024112832.737832-1-singhabhinav9051571833@gmail.com>
- <SN6PR2101MB16937C421EA9CDF373835360D7A3A@SN6PR2101MB1693.namprd21.prod.outlook.com>
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <SN6PR2101MB16937C421EA9CDF373835360D7A3A@SN6PR2101MB1693.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Palmer Dabbelt <palmer@dabbelt.com>, geert@linux-m68k.org
+Cc:     prabhakar.csengg@gmail.com, magnus.damm@gmail.com,
+        conor+dt@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        biju.das.jz@bp.renesas.com, prabhakar.mahadev-lad.rj@bp.renesas.com
+References: <mhng-ac92041d-85e9-4725-b61c-bc0fef5549ec@palmer-ri-x1c9a>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <mhng-ac92041d-85e9-4725-b61c-bc0fef5549ec@palmer-ri-x1c9a>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/23 01:40, Michael Kelley (LINUX) wrote:
-> From: Abhinav Singh <singhabhinav9051571833@gmail.com> Sent: Tuesday, October 24, 2023 4:29 AM
+Hi Palmer,
+
+On 2023-10-27 5:11 PM, Palmer Dabbelt wrote:
+> On Tue, 03 Oct 2023 05:34:13 PDT (-0700), geert@linux-m68k.org wrote:
+>> Hi Prabhakar,
 >>
-> 
-> Subject lines usually have a prefix to indicate the area of the kernel
-> the patch is for.   We're not always super consistent with the prefixes,
-> but you can look at the commit log for a file to see what is
-> typically used.  In this case, the prefix is usually "x86/hyperv:"
-> 
+>> On Fri, Sep 29, 2023 at 2:07 AM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+>>> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>>>
+>>> Enable the configs required by the below IP blocks which are
+>>> present on RZ/Five SoC:
+>>> * ADC
+>>> * CANFD
+>>> * DMAC
+>>> * eMMC/SDHI
+>>> * OSTM
+>>> * RAVB (+ Micrel PHY)
+>>> * RIIC
+>>> * RSPI
+>>> * SSI (Sound+WM8978 codec)
+>>> * Thermal
+>>> * USB (PHY/RESET/OTG)
+>>>
+>>> Along with the above some core configs are enabled too,
+>>> -> CPU frequency scaling as RZ/Five does support this.
+>>> -> MTD is enabled as RSPI can be connected to flash chips
+>>> -> Enabled I2C chardev so that it enables userspace to read/write
+>>>    i2c devices (similar to arm64)
+>>> -> Thermal configs as RZ/Five SoC does have thermal unit
+>>> -> GPIO regulator as we might have IP blocks for which voltage
+>>>    levels are controlled by GPIOs
+>>> -> OTG configs as RZ/Five USB can support host/function
+>>> -> Gadget configs so that we can test USB function (as done in arm64
+>>>    all the gadget configs are enabled)
+>>>
+>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >>
->> This patch fixes sparse complaining about the removal of __iomem address
->> space when casting the return value of this function ioremap_cache(...)
->> from `void __ioremap*` to `void*`.
-> 
-> Should avoid wording like "this patch" in commit messages.  See
-> the commit message guidelines in the "Describe your changes"
-> section of Documentation/process/submitting-patches.rst.  A
-> better approach is to just state the problem:  "Sparse complains
-> about the removal .....".  Then describe the fix.  Also avoid
-> pronouns like "I" or "you".
-> 
+>> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 >>
->> I think there are two way of fixing it, first one is changing the
->> datatype of variable `ghcb_va` from `void*` to `void __iomem*` .
->> Second way of fixing it is using the memremap(...) which is
->> done in this patch.
->>
->> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
->> ---
->>   arch/x86/hyperv/hv_init.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
->> index 21556ad87f4b..c14161add274 100644
->> --- a/arch/x86/hyperv/hv_init.c
->> +++ b/arch/x86/hyperv/hv_init.c
->> @@ -70,7 +70,7 @@ static int hyperv_init_ghcb(void)
->>
->>   	/* Mask out vTOM bit. ioremap_cache() maps decrypted */
+>> As I expect this to go in through the RISC-V tree, I will let the
+>> RISC-V people handle any discussion about more options that should be
+>> made modular instead of builtin.
 > 
-> This comment mentions ioremap_cache().  Since you are changing
-> to use memremap() instead, the comment should be updated to
-> match.
-> 
->>              ghcb_gpa &= ~ms_hyperv.shared_gpa_boundary;
->> -           ghcb_va = (void *)ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
->> +          ghcb_va = memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB);
-> 
-> As noted in the comment, ioremap_cache() provides a mapping that
-> accesses the memory as decrypted.  To be equivalent, the call to
-> memremap() should include the MEMREMAP_DEC flag so that it
-> also is assured of producing a decrypted mapping.
-> 
-> Also, corresponding to the current ioremap_cache() call here,
-> there's an iounmap() call in hv_cpu_die().   To maintain proper
-> pairing, that iounmap() call should be changed to memunmap().
-> 
-> It turns out there are other occurrences of this same pattern in
-> Hyper-V specific code in the Linux kernel.  See hv_synic_enable_regs(),
-> for example.Did "sparse" flag the same problem in those
-> occurrences?
+> I'm pretty much agnostic on that front, so I'm cool just picking up this.  I've
+> got just patch 5 in my queue for testing, there's a few other things in front of
+> it but it should show up on for-next soon.
 
-The particular warning msg for this case is like this "warning: cast 
-removes address space '__iomem' of expression". I only saw these warning 
-one time inside the arch/x86/ directory.
+Does it make sense to merge this, considering RZ/Five support depends on
+NONPORTABLE, and therefore cannot be enabled in defconfig anyway?
 
->It turns out that Nischala Yelchuri at Microsoft is
-> concurrently working on fixing this occurrence as well as the
-> others we know about in Hyper-V specific code.
-
-So should I continue or not with this patch?
-
-> 
-> Michael
-> 
->>
->> --
->> 2.39.2
-> 
-
-Thanks for taking out the time for reviewing this and giving the 
-suggestions.
-
-Thank You,
-Abhinav Singh
-
-
+Regards,
+Samuel
 
