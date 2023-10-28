@@ -2,204 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91867DA93C
+	by mail.lfdr.de (Postfix) with ESMTP id 73AD57DA93B
 	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjJ1UK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 16:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        id S229486AbjJ1UNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 16:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1UK6 (ORCPT
+        with ESMTP id S229446AbjJ1UNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 16:10:58 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020002.outbound.protection.outlook.com [52.101.61.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39970D6;
-        Sat, 28 Oct 2023 13:10:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DRAJ4ZZJztNX2gunnXQiwi51v+80BWfhqYVvDF8W5nNjvtuY8rwcYt8S2cCxYXUnBcmO8aDaQhZ+gokF09fUE2nwnlOxPTSCN7yGTTuxeY6duDPwDf71IIBpSCJpfHoBkgkkIOQ0KprMWRelvV7U5aNlL1/hIPzyPcPAZrEXvM3a5EnqXhv+EHUunDfbrEEnpeYbNcBjaNpE4RPLh+jrCz9rvdkn4tDmEtb2cOpjCrwS+uv3DtTEMNPaEillgxPfIm3UfEGodm+A/AjMCUwnkLNcA3k35hYGbRqK/txHgneyT9lB9GA9zIbP6vIq2Gkv8NQeSBN+GXiyBql6t+D0MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wAxaH+C/atGAZ/4bE2JC1CEluGL0FTddxhIxSSKsA2g=;
- b=MVBvFakVvO5LEpqErRvNzdJDtRjajJx6kO/OygPvTq7Xw6QjIudsxQyld9noZlg6eMt/hDJZH7c87ctsx2xxESuf/rfpnwS2qZGy8DQJGXfN2NZiKwYiOBSQkBthIoJtEYGUjvLHhNENMG+ouRep9HM4eX/kKtfKsdmkiiXl2emB2DJ2xxdyUDkD7l15n/snO6c1qcWMnwQZlhH9XSjs6P3ooOzMV1M2PGGe7SOpNayKc7IRhyLSsoExkxdDIrPQVRXmISUwO1kEhdymx+oieQQ2QkW3UgD0gofhdmWD7BS4nJh7Gw/kw/r++k1iYC57mLO16VagLfWsx04LuVrhyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wAxaH+C/atGAZ/4bE2JC1CEluGL0FTddxhIxSSKsA2g=;
- b=bQKF0BIiZRs2cXsoG50EDFUuuK7IDQ2z6Xiga5+182K5icjJWtEiHjx1it5MYssVPibM+SAx5U1x+sDyzdH65XCD4Nk0IhyJlGZoQ22xr0kUoLbgZBEaQNB441OlW8fRcuza+C/vsl8L/U1inpBnOxFrOZQVIzz1l34yNVJJJK8=
-Received: from SN6PR2101MB1693.namprd21.prod.outlook.com
- (2603:10b6:805:55::19) by DM4PR21MB3754.namprd21.prod.outlook.com
- (2603:10b6:8:a1::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.11; Sat, 28 Oct
- 2023 20:10:52 +0000
-Received: from SN6PR2101MB1693.namprd21.prod.outlook.com
- ([fe80::9ec1:1d74:55ab:f67a]) by SN6PR2101MB1693.namprd21.prod.outlook.com
- ([fe80::9ec1:1d74:55ab:f67a%4]) with mapi id 15.20.6954.012; Sat, 28 Oct 2023
- 20:10:52 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        Nischala Yelchuri <Nischala.Yelchuri@microsoft.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: RE: [PATCH] Fixing warning cast removes address space '__iomem' of
- expression
-Thread-Topic: [PATCH] Fixing warning cast removes address space '__iomem' of
- expression
-Thread-Index: AQHaBm1F5Iw4pphf3EmudYnEmejGXLBfpSNQ
-Date:   Sat, 28 Oct 2023 20:10:51 +0000
-Message-ID: <SN6PR2101MB16937C421EA9CDF373835360D7A3A@SN6PR2101MB1693.namprd21.prod.outlook.com>
-References: <20231024112832.737832-1-singhabhinav9051571833@gmail.com>
-In-Reply-To: <20231024112832.737832-1-singhabhinav9051571833@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=eb796e71-0ae8-4313-aa5f-f20ecb0d7941;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-28T19:57:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR2101MB1693:EE_|DM4PR21MB3754:EE_
-x-ms-office365-filtering-correlation-id: d49f054a-e76f-4a1f-c49e-08dbd7f1fc2b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +I2pa+F6nvrsW5KpKpAnK/2z+0j0jy7i7dZ4jcWrWPhI2pi6KKzrWsvHO564KM3g2tIuPfmIslCOPyDE0fZ7Loaene/cf8W2Yvur5fIYxUFUhvmH+t2Y7rx7OrBLtD9rifO/aZWv2KvnRFeq94BxBOi52XGihBhFZIYXZVJJg+Xf11FbE7HA/HT/2dxi7ppxKjgkwiNJuIlD1AXCsuIuA9qy4do2PYGC/Vhrh4++Y0v/rlDXeyM0FEVij3NhNK2FKiNLcWYTNywbDQ+0hZQSZYeL6sbIZohMnATk4/H7kK4YOkvPr9t/SEQWfs55wQ3+Xj7e+wl/dFV6iTpnUPLPvYpRIw855SI+rWR8nBRiqxn3outyufi/RsHbg9HkKWpIAtut+UK8igPTyDZMN8juyCuYmF/Te47RFjnii1+wUMipE/heOh7bIUWP11TMbXMPs8dXrZmD81iaHbMdaFRPt5V1ePvOhsY6XkI2g6nx4ofBp8dLIhldzGNmY3Jqhwor8FmmDKDjKRdb0Kus6BfnUc62daO4XdTridHGj3Rg8bXF5zPm/gKI5RlwnPiYcYTgZmlKhIHp1//bAoG8Ce+5c8xIHNQKD3zH1BMe2rHfNKmcbjXtp8g5kRLR8gAR+/pXDAocKLgDLpk5et0RGfBsS8a81wB6T7ElrcWOREmx70fmUniFEO6uRVuGWLTatajB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR2101MB1693.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39860400002)(376002)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(86362001)(33656002)(55016003)(71200400001)(83380400001)(6506007)(478600001)(10290500003)(2906002)(8990500004)(26005)(9686003)(41300700001)(5660300002)(316002)(8676002)(4326008)(8936002)(52536014)(38070700009)(54906003)(6636002)(64756008)(66446008)(66476007)(110136005)(921008)(7696005)(82960400001)(66946007)(66556008)(76116006)(122000001)(7416002)(38100700002)(82950400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tiHGeb1RwTldVFHw8TFVlUs6artpOTp0/dYS/T+PQ68oskXSzVxOjm8FesX1?=
- =?us-ascii?Q?4vJhTAqup2hEtjSNUIcILAtWdYHMqSdf5wo08nXtYSeFHjiiMklMlI5zNdEZ?=
- =?us-ascii?Q?nQnUoEWJH8zy2+eVgTivPeB0O0QMvaBUyF5RpxuojomSUMDPAe2PZCjULecO?=
- =?us-ascii?Q?YzEB208OnE68IEQZpUDcPl6Ljg0DY0jz58mczSjxb1cO/geRFQOd2PaX9LBy?=
- =?us-ascii?Q?q0hGBSIAqB9lRY2IuSJeA3d9/KyU+qDp399o2+c8r0h3e8UGpnFp+p4VwXs0?=
- =?us-ascii?Q?KCfOBsAO9/bKMOtW388mE83n7pWrc/EjMQPE2JqLn7xWNu8FFdCi4H4qlSPQ?=
- =?us-ascii?Q?gqoKjADCiZziBuLe0ik4DP1dhLDV2/91oc305PC4KFnb2ylST3A2B+ONKEvl?=
- =?us-ascii?Q?j1wnCizXrxWXQw60dB2P6WIgiOU1+vWVzhH+U5MIPi/spPNI0uo/YvKi3BBE?=
- =?us-ascii?Q?7sYSZNUKb0tpm2NaSS80b3JfpZumF8x+T5g+psvcyn2MDDkmtoKWi1vYV8fe?=
- =?us-ascii?Q?dqNb9rNwOvEZA/0cs++v3G2qAu5jOuzxLb+ZP71SmJGv/EOd3/U865C1Upxl?=
- =?us-ascii?Q?5PhPhrMeMcb/NuW1gPmh2R4lPOoRbjKZHZYsU1AZN+fCDR2L82PtLlTt1q7f?=
- =?us-ascii?Q?4R348T6xLqKGzmrJCkxEbXZVc0AxacP1lyejG7BAwUraRB4HDodoiOsB3ZLf?=
- =?us-ascii?Q?q8KxEx3ORAHpm4PRwsvGdBEoObsQ2nuBWK4szODWcBkzeYEtr9We1Uw6ayq8?=
- =?us-ascii?Q?ZXde4H+8peX+AImKkeBbHKlRCxx4izmfrAwXoRAY4dDI4g8z7hq//fdeX1iL?=
- =?us-ascii?Q?WxC3bjp/A/WHck49H1CRWqKaX5Q/qR9tFd0etEG0zTQzXVZ8aogRSly85s6s?=
- =?us-ascii?Q?BxoB4oBVG4n4VAHIZ1iM/SPfyLdFrvAu+IpelQv6UF9RU0QsKGj8RuotOWjE?=
- =?us-ascii?Q?0oSdy7Zevaxhci+4gy4/h6OaF5KEpnftCOzIFoc46QqP6Nywrr0y3myQFTEX?=
- =?us-ascii?Q?Vz4XfhzMirT9TiDRGLpBPRKyiwdZMGNhq7RZMO8NYHH0Or4r6nIRWflBhcKk?=
- =?us-ascii?Q?hrrkst2z6yxvFSkYDfs9Rk66NbCKYJUGqvldXXFryEsQJw+cX50vfBkt5HHL?=
- =?us-ascii?Q?1xLmELlf+jvkQvRTk9eCr6TSi+s2wISEaIZYD8Ht9A1ETlkj7u2UbzpSWxGB?=
- =?us-ascii?Q?VTsTnxCbRnfYQtO0wh/tNOX14S8TLswI1Q44pZ4xwlgm1qILYPSVnO4EKwTc?=
- =?us-ascii?Q?t6wz41TOETuxF8NfPt3rL977bdSiyhSGOUcO0JU1LWeoBlT/1HBUkW0zazbt?=
- =?us-ascii?Q?nofWBgwpbxF5x/Nw9eRCMGlwdRlvgPrj4K69jWstCTQbsIvxobKs9hGifZoE?=
- =?us-ascii?Q?SnlBFSsiwbaUdFoMgSkw+0VkerAST9KJhTU8UgwZE/++fCKzGrScihUyEn3H?=
- =?us-ascii?Q?f9VGwnEn2ot5yepBk9iwV+/R7Eg/YhnYeS8ad5DpG+BXbmYJXfloEvlqHcTG?=
- =?us-ascii?Q?5dwf+YLsbJQ0Y96NxLk6LkIYgx+Ipdc8saw7kTt59MwRVPgD0DE3m2scWwbl?=
- =?us-ascii?Q?ZRJ/AYnIvy5YWbCa5dDI6IHDYXqOcg9uz2BGq2CC48safe1Ith0LcV1MtQ82?=
- =?us-ascii?Q?mg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 28 Oct 2023 16:13:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D75CC;
+        Sat, 28 Oct 2023 13:13:47 -0700 (PDT)
+Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 993C157E;
+        Sat, 28 Oct 2023 22:13:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698524009;
+        bh=WmT5kZ0+Wb+TJhzIVtG2TQ+c/X5DRYyYMMl3fHXbj6w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZJFV0FZ9TgFud7lp5t7jYtqOrhk7cS3OBqbvz3JIzGbeohIsh6yxZM/OAEJ/dXbEe
+         1QaivXF4KybhY5ejOR/rt/QXoV599tVVC462R7X7d8ad7RcmQ8r2D0kWmQqtkfWl/G
+         oTFyF5TsQDt7pdvH1ZStaH+FrRkZZx6wDw0qO7RE=
+Message-ID: <5f21a75f-7b09-4e17-b300-b5fb0ff12807@ideasonboard.com>
+Date:   Sat, 28 Oct 2023 21:13:40 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR2101MB1693.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d49f054a-e76f-4a1f-c49e-08dbd7f1fc2b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2023 20:10:52.0380
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FUrJCbESqBeR4Wn2pRpBfOI9IT/98y/vtMg0RRDlBL6rnMhwjh4uIOO/sxPPe0d7E1FioY9UXUvhHCtdh4kh5vwZ7ZIDGpEY2LOaOPnmmjw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3754
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 2/4] usb: gadget: uvc: Allocate uvc_requests one at a
+ time
+Content-Language: en-US
+To:     Avichal Rakesh <arakesh@google.com>
+Cc:     etalvala@google.com, gregkh@linuxfoundation.org,
+        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.grzeschik@pengutronix.de
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+ <20231027201959.1869181-1-arakesh@google.com>
+ <20231027201959.1869181-2-arakesh@google.com>
+From:   Dan Scally <dan.scally@ideasonboard.com>
+Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231027201959.1869181-2-arakesh@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhinav Singh <singhabhinav9051571833@gmail.com> Sent: Tuesday, Octob=
-er 24, 2023 4:29 AM
->=20
+Hi Avichal
 
-Subject lines usually have a prefix to indicate the area of the kernel
-the patch is for.   We're not always super consistent with the prefixes,=20
-but you can look at the commit log for a file to see what is
-typically used.  In this case, the prefix is usually "x86/hyperv:"
-
+On 27/10/2023 21:19, Avichal Rakesh wrote:
+> Currently, the uvc gadget driver allocates all uvc_requests as one array
+> and deallocates them all when the video stream stops. This includes
+> de-allocating all the usb_requests associated with those uvc_requests.
+> This can lead to use-after-free issues if any of those de-allocated
+> usb_requests were still owned by the usb controller.
 >
-> This patch fixes sparse complaining about the removal of __iomem address
-> space when casting the return value of this function ioremap_cache(...)
-> from `void __ioremap*` to `void*`.
+> This patch is 1 of 2 patches addressing the use-after-free issue.
+> Instead of bulk allocating all uvc_requests as an array, this patch
+> allocates uvc_requests one at a time, which should allows for similar
+> granularity when deallocating the uvc_requests. This patch has no
+> functional changes other than allocating each uvc_request separately,
+> and similarly freeing each of them separately.
+>
+> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
 
-Should avoid wording like "this patch" in commit messages.  See
-the commit message guidelines in the "Describe your changes"
-section of Documentation/process/submitting-patches.rst.  A
-better approach is to just state the problem:  "Sparse complains
-about the removal .....".  Then describe the fix.  Also avoid=20
-pronouns like "I" or "you".
 
->=20
-> I think there are two way of fixing it, first one is changing the
-> datatype of variable `ghcb_va` from `void*` to `void __iomem*` .
-> Second way of fixing it is using the memremap(...) which is
-> done in this patch.
->=20
-> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+Sorry - I was unclear in my response to the first patch on v8. I meant my R-b to apply to the first 
+patch only rather than to all of them. For this one I understand now the use of the conditional in 
+uvc_video_free_request(), so that point is fine. I agree with Greg that the BUG_ON() shouldn't stand 
+though.
+
+> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Signed-off-by: Avichal Rakesh <arakesh@google.com>
 > ---
->  arch/x86/hyperv/hv_init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 21556ad87f4b..c14161add274 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -70,7 +70,7 @@ static int hyperv_init_ghcb(void)
->=20
->  	/* Mask out vTOM bit. ioremap_cache() maps decrypted */
-
-This comment mentions ioremap_cache().  Since you are changing
-to use memremap() instead, the comment should be updated to
-match.
-
->             ghcb_gpa &=3D ~ms_hyperv.shared_gpa_boundary;
-> -           ghcb_va =3D (void *)ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE)=
-;
-> +          ghcb_va =3D memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB);
-
-As noted in the comment, ioremap_cache() provides a mapping that
-accesses the memory as decrypted.  To be equivalent, the call to
-memremap() should include the MEMREMAP_DEC flag so that it
-also is assured of producing a decrypted mapping.
-
-Also, corresponding to the current ioremap_cache() call here,
-there's an iounmap() call in hv_cpu_die().   To maintain proper
-pairing, that iounmap() call should be changed to memunmap().
-
-It turns out there are other occurrences of this same pattern in
-Hyper-V specific code in the Linux kernel.  See hv_synic_enable_regs(),
-for example.   Did "sparse" flag the same problem in those
-occurrences?  It turns out that Nischala Yelchuri at Microsoft is
-concurrently working on fixing this occurrence as well as the
-others we know about in Hyper-V specific code.
-
-Michael
-
->=20
+> v1 -> v2: Rebased to ToT
+> v2 -> v3: Fix email threading goof-up
+> v3 -> v4: Address review comments & re-rebase to ToT
+> v4 -> v5: Address more review comments. Add Reviewed-by & Tested-by.
+> v5 -> v6: No change
+> v6 -> v7: No change
+> v7 -> v8: No change. Getting back in review queue
+> v8 -> v9: Address review comments.
+>
+>   drivers/usb/gadget/function/uvc.h       |  3 +-
+>   drivers/usb/gadget/function/uvc_video.c | 89 ++++++++++++++-----------
+>   2 files changed, 52 insertions(+), 40 deletions(-)
+>
+> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+> index 989bc6b4e93d..993694da0bbc 100644
+> --- a/drivers/usb/gadget/function/uvc.h
+> +++ b/drivers/usb/gadget/function/uvc.h
+> @@ -81,6 +81,7 @@ struct uvc_request {
+>   	struct sg_table sgt;
+>   	u8 header[UVCG_REQUEST_HEADER_LEN];
+>   	struct uvc_buffer *last_buf;
+> +	struct list_head list;
+>   };
+>
+>   struct uvc_video {
+> @@ -102,7 +103,7 @@ struct uvc_video {
+>
+>   	/* Requests */
+>   	unsigned int req_size;
+> -	struct uvc_request *ureq;
+> +	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
+>   	struct list_head req_free;
+>   	spinlock_t req_lock;
+>
+> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+> index c334802ac0a4..f8f9209fee50 100644
+> --- a/drivers/usb/gadget/function/uvc_video.c
+> +++ b/drivers/usb/gadget/function/uvc_video.c
+> @@ -227,6 +227,24 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
+>    * Request handling
+>    */
+>
+> +static void
+> +uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
+> +{
+> +	sg_free_table(&ureq->sgt);
+> +	if (ureq->req && ep) {
+> +		usb_ep_free_request(ep, ureq->req);
+> +		ureq->req = NULL;
+> +	}
+> +
+> +	kfree(ureq->req_buffer);
+> +	ureq->req_buffer = NULL;
+> +
+> +	if (!list_empty(&ureq->list))
+> +		list_del_init(&ureq->list);
+> +
+> +	kfree(ureq);
+> +}
+> +
+>   static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
+>   {
+>   	int ret;
+> @@ -293,27 +311,12 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+>   static int
+>   uvc_video_free_requests(struct uvc_video *video)
+>   {
+> -	unsigned int i;
+> -
+> -	if (video->ureq) {
+> -		for (i = 0; i < video->uvc_num_requests; ++i) {
+> -			sg_free_table(&video->ureq[i].sgt);
+> +	struct uvc_request *ureq, *temp;
+>
+> -			if (video->ureq[i].req) {
+> -				usb_ep_free_request(video->ep, video->ureq[i].req);
+> -				video->ureq[i].req = NULL;
+> -			}
+> -
+> -			if (video->ureq[i].req_buffer) {
+> -				kfree(video->ureq[i].req_buffer);
+> -				video->ureq[i].req_buffer = NULL;
+> -			}
+> -		}
+> -
+> -		kfree(video->ureq);
+> -		video->ureq = NULL;
+> -	}
+> +	list_for_each_entry_safe(ureq, temp, &video->ureqs, list)
+> +		uvc_video_free_request(ureq, video->ep);
+>
+> +	INIT_LIST_HEAD(&video->ureqs);
+>   	INIT_LIST_HEAD(&video->req_free);
+>   	video->req_size = 0;
+>   	return 0;
+> @@ -322,39 +325,45 @@ uvc_video_free_requests(struct uvc_video *video)
+>   static int
+>   uvc_video_alloc_requests(struct uvc_video *video)
+>   {
+> +	struct uvc_request *ureq;
+>   	unsigned int req_size;
+>   	unsigned int i;
+>   	int ret = -ENOMEM;
+>
+>   	BUG_ON(video->req_size);
+> +	BUG_ON(!list_empty(&video->ureqs));
+>
+>   	req_size = video->ep->maxpacket
+>   		 * max_t(unsigned int, video->ep->maxburst, 1)
+>   		 * (video->ep->mult);
+>
+> -	video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
+> -	if (video->ureq == NULL)
+> -		return -ENOMEM;
+> +	for (i = 0; i < video->uvc_num_requests; i++) {
+> +		ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
+> +		if (ureq == NULL)
+> +			goto error;
+> +
+> +		INIT_LIST_HEAD(&ureq->list);
+> +
+> +		list_add_tail(&ureq->list, &video->ureqs);
+>
+> -	for (i = 0; i < video->uvc_num_requests; ++i) {
+> -		video->ureq[i].req_buffer = kmalloc(req_size, GFP_KERNEL);
+> -		if (video->ureq[i].req_buffer == NULL)
+> +		ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
+> +		if (ureq->req_buffer == NULL)
+>   			goto error;
+>
+> -		video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+> -		if (video->ureq[i].req == NULL)
+> +		ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+> +		if (ureq->req == NULL)
+>   			goto error;
+>
+> -		video->ureq[i].req->buf = video->ureq[i].req_buffer;
+> -		video->ureq[i].req->length = 0;
+> -		video->ureq[i].req->complete = uvc_video_complete;
+> -		video->ureq[i].req->context = &video->ureq[i];
+> -		video->ureq[i].video = video;
+> -		video->ureq[i].last_buf = NULL;
+> +		ureq->req->buf = ureq->req_buffer;
+> +		ureq->req->length = 0;
+> +		ureq->req->complete = uvc_video_complete;
+> +		ureq->req->context = ureq;
+> +		ureq->video = video;
+> +		ureq->last_buf = NULL;
+>
+> -		list_add_tail(&video->ureq[i].req->list, &video->req_free);
+> +		list_add_tail(&ureq->req->list, &video->req_free);
+>   		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+> -		sg_alloc_table(&video->ureq[i].sgt,
+> +		sg_alloc_table(&ureq->sgt,
+>   			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+>   					    PAGE_SIZE) + 2, GFP_KERNEL);
+>   	}
+> @@ -489,8 +498,8 @@ static void uvcg_video_pump(struct work_struct *work)
+>    */
+>   int uvcg_video_enable(struct uvc_video *video, int enable)
+>   {
+> -	unsigned int i;
+>   	int ret;
+> +	struct uvc_request *ureq;
+>
+>   	if (video->ep == NULL) {
+>   		uvcg_info(&video->uvc->func,
+> @@ -502,9 +511,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>   		cancel_work_sync(&video->pump);
+>   		uvcg_queue_cancel(&video->queue, 0);
+>
+> -		for (i = 0; i < video->uvc_num_requests; ++i)
+> -			if (video->ureq && video->ureq[i].req)
+> -				usb_ep_dequeue(video->ep, video->ureq[i].req);
+> +		list_for_each_entry(ureq, &video->ureqs, list) {
+> +			if (ureq->req)
+> +				usb_ep_dequeue(video->ep, ureq->req);
+> +		}
+>
+>   		uvc_video_free_requests(video);
+>   		uvcg_queue_enable(&video->queue, 0);
+> @@ -536,6 +546,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+>    */
+>   int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+>   {
+> +	INIT_LIST_HEAD(&video->ureqs);
+>   	INIT_LIST_HEAD(&video->req_free);
+>   	spin_lock_init(&video->req_lock);
+>   	INIT_WORK(&video->pump, uvcg_video_pump);
 > --
-> 2.39.2
-
+> 2.42.0.820.g83a721a137-goog
