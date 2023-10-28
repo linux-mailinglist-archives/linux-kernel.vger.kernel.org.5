@@ -2,505 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C207DA8DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F69F7DA8E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 21:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbjJ1TVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 15:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        id S229651AbjJ1TZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 15:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1TVM (ORCPT
+        with ESMTP id S229446AbjJ1TZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 15:21:12 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBD6F3;
-        Sat, 28 Oct 2023 12:21:08 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9adb9fa7200so651525666b.0;
-        Sat, 28 Oct 2023 12:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698520865; x=1699125665; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=yTIes5ZfM6rvl7qb6vl+lVRE15hjM3qpYUW5IkBdWfM=;
-        b=WyeWoHLVauOZuW5GujFI46amTnAv/mZsRLErdtg8RaRygDQFFj8G7M7X8PoAyxG7Qg
-         9oWbp3Euj/f3xwYkTkX3KPaKKZ2vLrIOm8Lk9uQYMPmdsckQb2QIEBeoG7fRgBlZJvd/
-         ofm51QbbcWoMBUv8HP0D2EOmoMbYZOG47NmgsgY2qhp2Ld5TIn2CzMdfOyQ7WW+thxUm
-         1Vg14/jUcJC/b/aNGu+Qc7iwMn9Tb3RJVMic8tKTSYgiWKY9dVRrPmiw2gNdWHlDBsYL
-         V5gItaEyJmjB5OLaku+zFSRcsht/nVs+kkR2JzUSMNI8ksEKGXqNkQ2vGJ1XRQfO+h/j
-         xD6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698520865; x=1699125665;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yTIes5ZfM6rvl7qb6vl+lVRE15hjM3qpYUW5IkBdWfM=;
-        b=sF9NZpCxEuWEnPNCYLHeHtpS4gf0EMy1/F78f+wzvwAM92pRk09kf33Hc3+zaHGjhR
-         Tots9p7p7fdEsz4j8OXonhswSZ3Q50apUXmr2rKJxa7+120KJUraPe9gis26l9U7L53U
-         4JwaQIuzEpNXkgNKHcUYVBpnwNy9ih8hnEfiWCzy4EeuI2DDGHI5wQcLgOI8lMafXYxw
-         V7O8mB3kQpoNm/Mmk2AWSsM6G8SnjYSQzqW0WcaoLza8vLC46d7s0wDsW5ufpM2Dc5AF
-         YvSOLQvfE6iYteztTvKtXScOHmWFGCuLcWaVu1F0X9KQoNHGtWjOKwqPfMDTXSfxp2tu
-         iR4g==
-X-Gm-Message-State: AOJu0YzCjzes891E4qT0xeITwDjmSZF3YHe4r17UbgLdkzCchzyEeUD/
-        0KMs+Yv81tpG3+QSL0FNGGk=
-X-Google-Smtp-Source: AGHT+IGqxSEn7WsAlfO3U9GT2VGjzg5EU6UKUJNcf6IvfHD7U4WHCZJkSi+zyaP6SCBKrsMDSfS3Yw==
-X-Received: by 2002:a17:907:968a:b0:9ba:8ed:ea58 with SMTP id hd10-20020a170907968a00b009ba08edea58mr5923885ejc.30.1698520865227;
-        Sat, 28 Oct 2023 12:21:05 -0700 (PDT)
-Received: from ?IPV6:2a01:c23:c119:9c00:f125:7205:8197:3d69? (dynamic-2a01-0c23-c119-9c00-f125-7205-8197-3d69.c23.pool.telefonica.de. [2a01:c23:c119:9c00:f125:7205:8197:3d69])
-        by smtp.googlemail.com with ESMTPSA id v16-20020a170906565000b009b9977867fbsm3174032ejr.109.2023.10.28.12.21.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 12:21:04 -0700 (PDT)
-Message-ID: <376db5ae-1bb0-4682-b132-b9852be3c7aa@gmail.com>
-Date:   Sat, 28 Oct 2023 21:21:03 +0200
+        Sat, 28 Oct 2023 15:25:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B074BB8
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=luGzykmJCpBS80Q5OEUL47rw7m5niq2MC66f0mnvRGI=; b=PjO10Q1Gkjx/KlqXQmJ3gBVfQa
+        FOXPCfX1Q0wNyaXvX9poBa2jFRebQFBxiD7eBVW7Vpboa5BdPyPTvNAHaQDzdR+rB6w/fIZN1lYAm
+        CnZfmqaECao23/JxNlMm4wk1tse4+3Yq2ikkp70csxFIep06vvoKz0EMxN+PZv6NKK+zuX2Ep9Cme
+        qbOaluf3UxPVjuwQtnqlroD4Aq7o65VRnsbhtkdTDGIMZa5g4xvfx8zSfqAnSEByI64X13hotKMzj
+        VD7F1b+GY8rwINM6V/c5IPlq1+aMuZQ2GazgsyierzPFw1730fXug5RcdVsx+n/0atB5EXnDUmNVW
+        x6UtPAvg==;
+Received: from [2001:8b0:10b:5:b7dd:c749:f0d9:3970] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qwovO-00B7vm-4Q; Sat, 28 Oct 2023 19:24:46 +0000
+Message-ID: <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
+Subject: [PATCH v2] lockdep: add lockdep_cleanup_dead_cpu()
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Juergen Gross <jgross@suse.com>
+Date:   Sat, 28 Oct 2023 20:24:45 +0100
+In-Reply-To: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
+References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-rkokxBVqleoYv9wMq1vx"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] r8169: Coalesce RTL8411b PHY power-down recovery
- programming instructions to reduce spinlock stalls
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     nic_swsd@realtek.com, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
-References: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
-Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.10.2023 13:05, Mirsad Goran Todorovac wrote:
-> On RTL8411b the RX unit gets confused if the PHY is powered-down.
-> This was reported in [0] and confirmed by Realtek. Realtek provided
-> a sequence to fix the RX unit after PHY wakeup.
-> 
-> A series of about 130 r8168_mac_ocp_write() calls is performed to
-> program the RTL registers for recovery.
-> 
-> r8168_mac_ocp_write() expands to this code:
-> 
->         static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
->         {
->                 if (rtl_ocp_reg_failure(reg))
->                         return;
-> 
->                 RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
->         }
-> 
->         static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
->         {
->                 unsigned long flags;
-> 
->                 raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->                 __r8168_mac_ocp_write(tp, reg, data);
->                 raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->         }
-> 
-> Register programming is done through RTL_W32() macro which expands into
-> 
->         #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
-> 
-> which is further (on Alpha):
-> 
->         extern inline void writel(u32 b, volatile void __iomem *addr)
->         {
->                 mb();
->                 __raw_writel(b, addr);
->         }
-> 
-> or on i386/x86_64:
-> 
->     #define build_mmio_write(name, size, type, reg, barrier) \
->     static inline void name(type val, volatile void __iomem *addr) \
->     { asm volatile("mov" size " %0,%1": :reg (val), \
->     "m" (*(volatile type __force *)addr) barrier); }
-> 
->     build_mmio_write(writel, "l", unsigned int, "r", :"memory")
-> 
-> This obviously involves iat least a compiler barrier.
-> 
-> mb() expands into something like this i.e. on x86_64:
-> 
->         #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
-> 
-> This means a whole lot of memory bus barriers: for spin_lock_irqsave(),
-> memory barrier, writel(), and spin_unlock_irqrestore().
-> 
-> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
-> a LOCK storm that will thunder all of the cores and CPUs on the same memory controller
-> for certain time that locked memory read-modify-write cyclo or I/O takes to finish.
-> 
-> In a sequential case of RTL register programming, the writes to RTL registers
-> can be coalesced under a same raw spinlock. This can dramatically decrease the
-> number of bus stalls in a multicore or multi-CPU system:
-> 
->         static void __r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->                                               const struct recover_8411b_info *array)
->         {
->                 struct recover_8411b_info const *p = array;
-> 
->                 while (p->reg) {
->                         if (!rtl_ocp_reg_failure(p->reg))
->                                 RTL_W32(tp, OCPDR, OCPAR_FLAG | (p->reg << 15) | p->data);
->                         p++;
->                 }
->         }
-> 
->         static void r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->                                             const struct recover_8411b_info *array)
->         {
->                 unsigned long flags;
-> 
->                 raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->                 __r8168_mac_ocp_write_seq(tp, array);
->                 raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->         }
-> 
->         static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->         {
-> 
->                 ...
-> 
->                 /* The following Realtek-provided magic fixes an issue with the RX unit
->                  * getting confused after the PHY having been powered-down.
->                  */
-> 
->                 static const struct recover_8411b_info init_zero_seq[] = {
->                         { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 }, { 0xFC2E, 0x0000 },
-> 			...
->                 };
-> 
->                 static const struct recover_8411b_info recover_seq[] = {
->                         { 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C }, { 0xF806, 0xE00E },
-> 			...
->                 };
-> 
->                 static const struct recover_8411b_info final_seq[] = {
->                         { 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 }, { 0xFC30, 0x02FD },
-> 			...
->                 };
-> 
->                 r8168_mac_ocp_write_seq(tp, init_zero_seq);
->                 mdelay(3);
->                 r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
->                 r8168_mac_ocp_write_seq(tp, recover_seq);
->                 r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
->                 r8168_mac_ocp_write_seq(tp, final_seq);
->         }
-> 
-> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
-> functions that only changed the function names and the ending of the line, so the actual
-> hex data is unchanged.
-> 
-> Note that the original reason for the introduction of the commit fe4e8db0392a6
-> was to enable recovery of the RX unit on the RTL8411b which was confused by the
-> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
 
-I still have a problem with this statement as you're saying that the original
-problem still exists. I don't think that's the case.
+--=-rkokxBVqleoYv9wMq1vx
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> into a series of about 500+ memory bus locks, most waiting for the main memory read,
-> modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
-> the programming sequence to reach RTL NIC registers.
-> 
-> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
-> 
-> Fixes: fe4e8db0392a6 ("r8169: fix issue with confused RX unit after PHY power-down on RTL8411b")
-> Cc: Heiner Kallweit <hkallweit1@gmail.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: nic_swsd@realtek.com
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Link: https://lore.kernel.org/lkml/20231028005153.2180411-1-mirsad.todorovac@alu.unizg.hr/
-> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> ---
-> v3:
->  removed register/mask pair array sentinels, so using ARRAY_SIZE().
->  avoided duplication of RTL_W32() call code as advised by Heiner.
-> 
->  drivers/net/ethernet/realtek/r8169_main.c | 198 ++++++++--------------
->  1 file changed, 72 insertions(+), 126 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index 361b90007148..3b28bec7098b 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -939,6 +939,32 @@ static void r8168_mac_ocp_modify(struct rtl8169_private *tp, u32 reg, u16 mask,
->  	raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->  }
->  
-> +struct e_info_regmask_pair {
-> +	u32	reg;
-> +	u32	data;
-> +};
-> +
-> +static void __r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
-> +				      const struct e_info_regmask_pair *array, int len)
-> +{
-> +	struct e_info_regmask_pair const *p;
-> +
-> +	for (p = array; len--; p++)
-> +		__r8168_mac_ocp_write(tp, p->reg, p->data);
-> +}
-> +
-> +static void _r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
-> +				     const struct e_info_regmask_pair *array, int len)
-> +{
-> +	unsigned long flags;
-> +
-> +	raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
-> +	__r8168_mac_ocp_write_seq(tp, array, len);
-> +	raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
-> +}
-> +
-> +#define r8168_mac_ocp_write_seq(tp, a) _r8168_mac_ocp_write_seq(tp, a, ARRAY_SIZE(a))
-> +
->  /* Work around a hw issue with RTL8168g PHY, the quirk disables
->   * PHY MCU interrupts before PHY power-down.
->   */
-> @@ -3107,138 +3133,58 @@ static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->  	/* The following Realtek-provided magic fixes an issue with the RX unit
->  	 * getting confused after the PHY having been powered-down.
->  	 */
-> -	r8168_mac_ocp_write(tp, 0xFC28, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC2A, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC2C, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC2E, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC30, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC32, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC34, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xFC36, 0x0000);
-> +
-> +	static const struct e_info_regmask_pair init_zero_seq[] = {
-> +		{ 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 }, { 0xFC2E, 0x0000 },
-> +		{ 0xFC30, 0x0000 }, { 0xFC32, 0x0000 }, { 0xFC34, 0x0000 }, { 0xFC36, 0x0000 },
-> +	};
-> +
-Don't mix code and variable declarations. Did you run checkpatch?
-I think it would complain here.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-> +	static const struct e_info_regmask_pair recover_seq[] = {
-> +		{ 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C }, { 0xF806, 0xE00E },
-> +		{ 0xF808, 0xE027 }, { 0xF80A, 0xE04F }, { 0xF80C, 0xE05E }, { 0xF80E, 0xE065 },
-> +		{ 0xF810, 0xC602 }, { 0xF812, 0xBE00 }, { 0xF814, 0x0000 }, { 0xF816, 0xC502 },
-> +		{ 0xF818, 0xBD00 }, { 0xF81A, 0x074C }, { 0xF81C, 0xC302 }, { 0xF81E, 0xBB00 },
-> +		{ 0xF820, 0x080A }, { 0xF822, 0x6420 }, { 0xF824, 0x48C2 }, { 0xF826, 0x8C20 },
-> +		{ 0xF828, 0xC516 }, { 0xF82A, 0x64A4 }, { 0xF82C, 0x49C0 }, { 0xF82E, 0xF009 },
-> +		{ 0xF830, 0x74A2 }, { 0xF832, 0x8CA5 }, { 0xF834, 0x74A0 }, { 0xF836, 0xC50E },
-> +		{ 0xF838, 0x9CA2 }, { 0xF83A, 0x1C11 }, { 0xF83C, 0x9CA0 }, { 0xF83E, 0xE006 },
-> +		{ 0xF840, 0x74F8 }, { 0xF842, 0x48C4 }, { 0xF844, 0x8CF8 }, { 0xF846, 0xC404 },
-> +		{ 0xF848, 0xBC00 }, { 0xF84A, 0xC403 }, { 0xF84C, 0xBC00 }, { 0xF84E, 0x0BF2 },
-> +		{ 0xF850, 0x0C0A }, { 0xF852, 0xE434 }, { 0xF854, 0xD3C0 }, { 0xF856, 0x49D9 },
-> +		{ 0xF858, 0xF01F }, { 0xF85A, 0xC526 }, { 0xF85C, 0x64A5 }, { 0xF85E, 0x1400 },
-> +		{ 0xF860, 0xF007 }, { 0xF862, 0x0C01 }, { 0xF864, 0x8CA5 }, { 0xF866, 0x1C15 },
-> +		{ 0xF868, 0xC51B }, { 0xF86A, 0x9CA0 }, { 0xF86C, 0xE013 }, { 0xF86E, 0xC519 },
-> +		{ 0xF870, 0x74A0 }, { 0xF872, 0x48C4 }, { 0xF874, 0x8CA0 }, { 0xF876, 0xC516 },
-> +		{ 0xF878, 0x74A4 }, { 0xF87A, 0x48C8 }, { 0xF87C, 0x48CA }, { 0xF87E, 0x9CA4 },
-> +		{ 0xF880, 0xC512 }, { 0xF882, 0x1B00 }, { 0xF884, 0x9BA0 }, { 0xF886, 0x1B1C },
-> +		{ 0xF888, 0x483F }, { 0xF88A, 0x9BA2 }, { 0xF88C, 0x1B04 }, { 0xF88E, 0xC508 },
-> +		{ 0xF890, 0x9BA0 }, { 0xF892, 0xC505 }, { 0xF894, 0xBD00 }, { 0xF896, 0xC502 },
-> +		{ 0xF898, 0xBD00 }, { 0xF89A, 0x0300 }, { 0xF89C, 0x051E }, { 0xF89E, 0xE434 },
-> +		{ 0xF8A0, 0xE018 }, { 0xF8A2, 0xE092 }, { 0xF8A4, 0xDE20 }, { 0xF8A6, 0xD3C0 },
-> +		{ 0xF8A8, 0xC50F }, { 0xF8AA, 0x76A4 }, { 0xF8AC, 0x49E3 }, { 0xF8AE, 0xF007 },
-> +		{ 0xF8B0, 0x49C0 }, { 0xF8B2, 0xF103 }, { 0xF8B4, 0xC607 }, { 0xF8B6, 0xBE00 },
-> +		{ 0xF8B8, 0xC606 }, { 0xF8BA, 0xBE00 }, { 0xF8BC, 0xC602 }, { 0xF8BE, 0xBE00 },
-> +		{ 0xF8C0, 0x0C4C }, { 0xF8C2, 0x0C28 }, { 0xF8C4, 0x0C2C }, { 0xF8C6, 0xDC00 },
-> +		{ 0xF8C8, 0xC707 }, { 0xF8CA, 0x1D00 }, { 0xF8CC, 0x8DE2 }, { 0xF8CE, 0x48C1 },
-> +		{ 0xF8D0, 0xC502 }, { 0xF8D2, 0xBD00 }, { 0xF8D4, 0x00AA }, { 0xF8D6, 0xE0C0 },
-> +		{ 0xF8D8, 0xC502 }, { 0xF8DA, 0xBD00 }, { 0xF8DC, 0x0132 },
-> +	};
-> +
-> +	static const struct e_info_regmask_pair final_seq[] = {
-> +		{ 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 }, { 0xFC30, 0x02FD },
-> +		{ 0xFC32, 0x0C25 }, { 0xFC34, 0x00A9 }, { 0xFC36, 0x012D },
-> +	};
-> +
-> +	r8168_mac_ocp_write_seq(tp, init_zero_seq);
->  	mdelay(3);
->  	r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
->  
-> -	r8168_mac_ocp_write(tp, 0xF800, 0xE008);
-> -	r8168_mac_ocp_write(tp, 0xF802, 0xE00A);
-> -	r8168_mac_ocp_write(tp, 0xF804, 0xE00C);
-> -	r8168_mac_ocp_write(tp, 0xF806, 0xE00E);
-> -	r8168_mac_ocp_write(tp, 0xF808, 0xE027);
-> -	r8168_mac_ocp_write(tp, 0xF80A, 0xE04F);
-> -	r8168_mac_ocp_write(tp, 0xF80C, 0xE05E);
-> -	r8168_mac_ocp_write(tp, 0xF80E, 0xE065);
-> -	r8168_mac_ocp_write(tp, 0xF810, 0xC602);
-> -	r8168_mac_ocp_write(tp, 0xF812, 0xBE00);
-> -	r8168_mac_ocp_write(tp, 0xF814, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xF816, 0xC502);
-> -	r8168_mac_ocp_write(tp, 0xF818, 0xBD00);
-> -	r8168_mac_ocp_write(tp, 0xF81A, 0x074C);
-> -	r8168_mac_ocp_write(tp, 0xF81C, 0xC302);
-> -	r8168_mac_ocp_write(tp, 0xF81E, 0xBB00);
-> -	r8168_mac_ocp_write(tp, 0xF820, 0x080A);
-> -	r8168_mac_ocp_write(tp, 0xF822, 0x6420);
-> -	r8168_mac_ocp_write(tp, 0xF824, 0x48C2);
-> -	r8168_mac_ocp_write(tp, 0xF826, 0x8C20);
-> -	r8168_mac_ocp_write(tp, 0xF828, 0xC516);
-> -	r8168_mac_ocp_write(tp, 0xF82A, 0x64A4);
-> -	r8168_mac_ocp_write(tp, 0xF82C, 0x49C0);
-> -	r8168_mac_ocp_write(tp, 0xF82E, 0xF009);
-> -	r8168_mac_ocp_write(tp, 0xF830, 0x74A2);
-> -	r8168_mac_ocp_write(tp, 0xF832, 0x8CA5);
-> -	r8168_mac_ocp_write(tp, 0xF834, 0x74A0);
-> -	r8168_mac_ocp_write(tp, 0xF836, 0xC50E);
-> -	r8168_mac_ocp_write(tp, 0xF838, 0x9CA2);
-> -	r8168_mac_ocp_write(tp, 0xF83A, 0x1C11);
-> -	r8168_mac_ocp_write(tp, 0xF83C, 0x9CA0);
-> -	r8168_mac_ocp_write(tp, 0xF83E, 0xE006);
-> -	r8168_mac_ocp_write(tp, 0xF840, 0x74F8);
-> -	r8168_mac_ocp_write(tp, 0xF842, 0x48C4);
-> -	r8168_mac_ocp_write(tp, 0xF844, 0x8CF8);
-> -	r8168_mac_ocp_write(tp, 0xF846, 0xC404);
-> -	r8168_mac_ocp_write(tp, 0xF848, 0xBC00);
-> -	r8168_mac_ocp_write(tp, 0xF84A, 0xC403);
-> -	r8168_mac_ocp_write(tp, 0xF84C, 0xBC00);
-> -	r8168_mac_ocp_write(tp, 0xF84E, 0x0BF2);
-> -	r8168_mac_ocp_write(tp, 0xF850, 0x0C0A);
-> -	r8168_mac_ocp_write(tp, 0xF852, 0xE434);
-> -	r8168_mac_ocp_write(tp, 0xF854, 0xD3C0);
-> -	r8168_mac_ocp_write(tp, 0xF856, 0x49D9);
-> -	r8168_mac_ocp_write(tp, 0xF858, 0xF01F);
-> -	r8168_mac_ocp_write(tp, 0xF85A, 0xC526);
-> -	r8168_mac_ocp_write(tp, 0xF85C, 0x64A5);
-> -	r8168_mac_ocp_write(tp, 0xF85E, 0x1400);
-> -	r8168_mac_ocp_write(tp, 0xF860, 0xF007);
-> -	r8168_mac_ocp_write(tp, 0xF862, 0x0C01);
-> -	r8168_mac_ocp_write(tp, 0xF864, 0x8CA5);
-> -	r8168_mac_ocp_write(tp, 0xF866, 0x1C15);
-> -	r8168_mac_ocp_write(tp, 0xF868, 0xC51B);
-> -	r8168_mac_ocp_write(tp, 0xF86A, 0x9CA0);
-> -	r8168_mac_ocp_write(tp, 0xF86C, 0xE013);
-> -	r8168_mac_ocp_write(tp, 0xF86E, 0xC519);
-> -	r8168_mac_ocp_write(tp, 0xF870, 0x74A0);
-> -	r8168_mac_ocp_write(tp, 0xF872, 0x48C4);
-> -	r8168_mac_ocp_write(tp, 0xF874, 0x8CA0);
-> -	r8168_mac_ocp_write(tp, 0xF876, 0xC516);
-> -	r8168_mac_ocp_write(tp, 0xF878, 0x74A4);
-> -	r8168_mac_ocp_write(tp, 0xF87A, 0x48C8);
-> -	r8168_mac_ocp_write(tp, 0xF87C, 0x48CA);
-> -	r8168_mac_ocp_write(tp, 0xF87E, 0x9CA4);
-> -	r8168_mac_ocp_write(tp, 0xF880, 0xC512);
-> -	r8168_mac_ocp_write(tp, 0xF882, 0x1B00);
-> -	r8168_mac_ocp_write(tp, 0xF884, 0x9BA0);
-> -	r8168_mac_ocp_write(tp, 0xF886, 0x1B1C);
-> -	r8168_mac_ocp_write(tp, 0xF888, 0x483F);
-> -	r8168_mac_ocp_write(tp, 0xF88A, 0x9BA2);
-> -	r8168_mac_ocp_write(tp, 0xF88C, 0x1B04);
-> -	r8168_mac_ocp_write(tp, 0xF88E, 0xC508);
-> -	r8168_mac_ocp_write(tp, 0xF890, 0x9BA0);
-> -	r8168_mac_ocp_write(tp, 0xF892, 0xC505);
-> -	r8168_mac_ocp_write(tp, 0xF894, 0xBD00);
-> -	r8168_mac_ocp_write(tp, 0xF896, 0xC502);
-> -	r8168_mac_ocp_write(tp, 0xF898, 0xBD00);
-> -	r8168_mac_ocp_write(tp, 0xF89A, 0x0300);
-> -	r8168_mac_ocp_write(tp, 0xF89C, 0x051E);
-> -	r8168_mac_ocp_write(tp, 0xF89E, 0xE434);
-> -	r8168_mac_ocp_write(tp, 0xF8A0, 0xE018);
-> -	r8168_mac_ocp_write(tp, 0xF8A2, 0xE092);
-> -	r8168_mac_ocp_write(tp, 0xF8A4, 0xDE20);
-> -	r8168_mac_ocp_write(tp, 0xF8A6, 0xD3C0);
-> -	r8168_mac_ocp_write(tp, 0xF8A8, 0xC50F);
-> -	r8168_mac_ocp_write(tp, 0xF8AA, 0x76A4);
-> -	r8168_mac_ocp_write(tp, 0xF8AC, 0x49E3);
-> -	r8168_mac_ocp_write(tp, 0xF8AE, 0xF007);
-> -	r8168_mac_ocp_write(tp, 0xF8B0, 0x49C0);
-> -	r8168_mac_ocp_write(tp, 0xF8B2, 0xF103);
-> -	r8168_mac_ocp_write(tp, 0xF8B4, 0xC607);
-> -	r8168_mac_ocp_write(tp, 0xF8B6, 0xBE00);
-> -	r8168_mac_ocp_write(tp, 0xF8B8, 0xC606);
-> -	r8168_mac_ocp_write(tp, 0xF8BA, 0xBE00);
-> -	r8168_mac_ocp_write(tp, 0xF8BC, 0xC602);
-> -	r8168_mac_ocp_write(tp, 0xF8BE, 0xBE00);
-> -	r8168_mac_ocp_write(tp, 0xF8C0, 0x0C4C);
-> -	r8168_mac_ocp_write(tp, 0xF8C2, 0x0C28);
-> -	r8168_mac_ocp_write(tp, 0xF8C4, 0x0C2C);
-> -	r8168_mac_ocp_write(tp, 0xF8C6, 0xDC00);
-> -	r8168_mac_ocp_write(tp, 0xF8C8, 0xC707);
-> -	r8168_mac_ocp_write(tp, 0xF8CA, 0x1D00);
-> -	r8168_mac_ocp_write(tp, 0xF8CC, 0x8DE2);
-> -	r8168_mac_ocp_write(tp, 0xF8CE, 0x48C1);
-> -	r8168_mac_ocp_write(tp, 0xF8D0, 0xC502);
-> -	r8168_mac_ocp_write(tp, 0xF8D2, 0xBD00);
-> -	r8168_mac_ocp_write(tp, 0xF8D4, 0x00AA);
-> -	r8168_mac_ocp_write(tp, 0xF8D6, 0xE0C0);
-> -	r8168_mac_ocp_write(tp, 0xF8D8, 0xC502);
-> -	r8168_mac_ocp_write(tp, 0xF8DA, 0xBD00);
-> -	r8168_mac_ocp_write(tp, 0xF8DC, 0x0132);
-> +	r8168_mac_ocp_write_seq(tp, recover_seq);
->  
->  	r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
->  
-> -	r8168_mac_ocp_write(tp, 0xFC2A, 0x0743);
-> -	r8168_mac_ocp_write(tp, 0xFC2C, 0x0801);
-> -	r8168_mac_ocp_write(tp, 0xFC2E, 0x0BE9);
-> -	r8168_mac_ocp_write(tp, 0xFC30, 0x02FD);
-> -	r8168_mac_ocp_write(tp, 0xFC32, 0x0C25);
-> -	r8168_mac_ocp_write(tp, 0xFC34, 0x00A9);
-> -	r8168_mac_ocp_write(tp, 0xFC36, 0x012D);
-> +	r8168_mac_ocp_write_seq(tp, final_seq);
-> +
->  }
->  
->  static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
+Add a function to check that an offline CPU left the tracing infrastructure
+in a sane state. The acpi_idle_play_dead() function was recently observed=
+=C2=B9
+calling safe_halt() instead of raw_safe_halt(), which had the side-effect
+of setting the hardirqs_enabled flag for the offline CPU. On x86 this
+triggered lockdep warnings when the CPU came back online, but too early
+for the exception to be handled correctly, leading to a triple-fault.
 
+Add lockdep_cleanup_dead_cpu() to check for this kind of failure mode,
+print the events leading up to it, and correct it so that the CPU can
+come online again correctly.
+
+[   61.556652] smpboot: CPU 1 is now offline
+[   61.556769] CPU 1 left hardirqs enabled!
+[   61.556915] irq event stamp: 128149
+[   61.556965] hardirqs last  enabled at (128149): [<ffffffff81720a36>] acp=
+i_idle_play_dead+0x46/0x70
+[   61.557055] hardirqs last disabled at (128148): [<ffffffff81124d50>] do_=
+idle+0x90/0xe0
+[   61.557117] softirqs last  enabled at (128078): [<ffffffff81cec74c>] __d=
+o_softirq+0x31c/0x423
+[   61.557199] softirqs last disabled at (128065): [<ffffffff810baae1>] __i=
+rq_exit_rcu+0x91/0x100
+
+=C2=B9 https://lore.kernel.org/lkml/a079bba5a0e47d6534b307553fc3772d26ce911=
+b.camel@infradead.org/
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+---
+v2: Fix spelling. 'Offlone' wasn't quite what I meant to type.
+    Add reference to ACPI patch.
+    Fix kerneldoc args for lockdep_cleanup_dead_cpu() (thanks lkp)
+    Closes: https://lore.kernel.org/oe-kbuild-all/202310290041.L5ndwcQ9-lkp=
+@intel.com/
+
+
+ include/linux/irqflags.h |  4 ++++
+ kernel/cpu.c             |  1 +
+ kernel/locking/lockdep.c | 24 ++++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
+
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 2b665c32f5fe..547ed55fc7ff 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -24,12 +24,16 @@
+   extern void lockdep_hardirqs_on_prepare(void);
+   extern void lockdep_hardirqs_on(unsigned long ip);
+   extern void lockdep_hardirqs_off(unsigned long ip);
++  extern void lockdep_cleanup_dead_cpu(unsigned int cpu,
++				       struct task_struct *idle);
+ #else
+   static inline void lockdep_softirqs_on(unsigned long ip) { }
+   static inline void lockdep_softirqs_off(unsigned long ip) { }
+   static inline void lockdep_hardirqs_on_prepare(void) { }
+   static inline void lockdep_hardirqs_on(unsigned long ip) { }
+   static inline void lockdep_hardirqs_off(unsigned long ip) { }
++  static inline void lockdep_cleanup_dead_cpu(unsigned int cpu,
++					      struct task_struct *idle) {}
+ #endif
+=20
+ #ifdef CONFIG_TRACE_IRQFLAGS
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6de7c6bb74ee..225f5bc3708f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1371,6 +1371,7 @@ static int takedown_cpu(unsigned int cpu)
+=20
+ 	cpuhp_bp_sync_dead(cpu);
+=20
++	lockdep_cleanup_dead_cpu(cpu, idle_thread_get(cpu));
+ 	tick_cleanup_dead_cpu(cpu);
+ 	rcutree_migrate_callbacks(cpu);
+ 	return 0;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e85b5ad3e206..62bfda8991b8 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4538,6 +4538,30 @@ void lockdep_softirqs_off(unsigned long ip)
+ 		debug_atomic_inc(redundant_softirqs_off);
+ }
+=20
++/**
++ * lockdep_cleanup_dead_cpu - Ensure CPU lockdep state is cleanly stopped
++ *
++ * @cpu: index of offlined CPU
++ * @idle: task pointer for offlined CPU's idle thread
++ *
++ * Invoked after the CPU is dead. Ensures that the tracing infrastructure
++ * is left in a suitable state for the CPU to be subsequently brought
++ * online again.
++ */
++void lockdep_cleanup_dead_cpu(unsigned int cpu, struct task_struct *idle)
++{
++	if (unlikely(!debug_locks))
++		return;
++
++	if (unlikely(per_cpu(hardirqs_enabled, cpu))) {
++		pr_warn("CPU %u left hardirqs enabled!", cpu);
++		if (idle)
++			print_irqtrace_events(idle);
++		/* Clean it up for when the CPU comes online again. */
++		per_cpu(hardirqs_enabled, cpu) =3D 0;
++	}
++}
++
+ static int
+ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+ {
+--=20
+2.41.0
+
+
+
+--=-rkokxBVqleoYv9wMq1vx
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDI4MTkyNDQ1WjAvBgkqhkiG9w0BCQQxIgQg7Cdxem2k
+pioOzuM3dC8WDFkFsKX9CfYMB+2M4C885wwwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBnaD6zsbb37SGWRgAC3CVZOeLkjR0A8tII
+RKXutnxxXXKOZommdG1FAh/5VZ30gxbPPVfP9Fel5xK2rSd6XmvFMQLjzgNUutQ8QaQu5XWqaEBq
+MSo9BmeMv2nrcuatNy7JHUZmKJFYH7TEhagm7b1YMOzflFPbe/G0EgZ6PGOXfkYMEXVvEWzulfjB
+grTDhyXtTzsnuLMW5qxuXQwpmR4InFvGPTdCiYxLT8aiRou37XU5MDRQmUo4SR23pwPrEBpmJD4/
+zknB4keupE1bEDq9vnfRp9hvjyW1RIBJad03kJ56IQJ/mT7k+PK3hEQnhTI2om2f9OV+nDfP5ium
+HbXRX7L/RbstTNR7MZEeuNRaEplBvh3j7rzec2xK0d5+gWSLGmEo5cS9cX2/xXv+xr+4aw8+VvDY
+85WKOp34QYLxwlVRJhiXzX9to47jSxPVwOc8PdYJ4XojwHIBp722ZgmcxHzctDBVjyI1xXlYjeVE
+KyqTHYRQJYYF4bRJJ99mwJa7tshOMtx6Gotjc4g5i9kKFvuWoyZGlvPHZfN9PQzQevot8fH+95wP
+cMWuju28Ei1cUK/jc64gJ4TlNaK7hTxFrTptNLvJO7Si5yvahFIdmQzXegZYuVtLO3PQbBxbgDSy
+CiWOqbEkMiGY7iQsm6/eZ3iS7YZm7R65pclYVVBv6gAAAAAAAA==
+
+
+--=-rkokxBVqleoYv9wMq1vx--
