@@ -2,153 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F117DA7C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0597DA7C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 17:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjJ1P1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 11:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
+        id S229572AbjJ1P1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 11:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1P1Q (ORCPT
+        with ESMTP id S229446AbjJ1P1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 11:27:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E0C93;
-        Sat, 28 Oct 2023 08:27:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 770ADC433C8;
-        Sat, 28 Oct 2023 15:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698506833;
-        bh=uLv5WbdZZqD76wzTbqeJg/qmp0G1/IL7KepBHWNLTB8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DmL++fSy0y+u1Rl27tnahInvKR3esiJmVd5ydYL6v8N6yex88qr1B5xsP6HpqhFfJ
-         bJd+PT2xDa36nz4RxOGvm3Gn15jzbCHLC+4EYamFbr/At8kk78D9J+V96aXHiSCM7x
-         M+GLiWJiI0eWrCWiDuFDIIPsiS6YZh95QcB4lbFRhjU/9od06Hb0pVbyPZDhMYeX3g
-         NIibfeWVM/pXSeMozlDUGKcjHGtqfYWU7RL0X1izl7cS/Zb2vr/Z1NjwYvsKqwiXCM
-         xoGkGMBk+ExLRy6pfsQuMWYFyO8xSNSp/+OekcqYYWFSmLJSmUGTLWb5SW19JS07Yi
-         0JdrpwU0fbkwQ==
-Date:   Sat, 28 Oct 2023 16:26:38 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH v2] iio: sx9324: avoid copying property strings
-Message-ID: <20231028162638.5b477ded@jic23-huawei>
-In-Reply-To: <20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com>
-References: <20231026-strncpy-drivers-iio-proximity-sx9324-c-v2-1-cee6e5db700c@google.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 28 Oct 2023 11:27:43 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3952DF3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 08:27:40 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id wlDtqYmVP63GJwlDtqx8Ol; Sat, 28 Oct 2023 17:27:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698506858;
+        bh=Rr61ezqlXIq+++3fG0PqDAvd8T62b+RT8E7liIDwSbI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=JaK34++6Peed5B3Y4WwXjt7qsuwfg4ZQp5BCr1IxNyZY0F9M9QpVc2671n0v9rgX3
+         B0IcKccT08IF8fLuo/rhu++vuCEcVRsI/92rboy2I+pOdsQ5uFDjF5FtTZzGn6/orq
+         Zxv1dv+FjBUHhBwSGIruFeyLTwwv5FwymTGs3Q5Hc4iKeDS98TTE9qCUK7UVlL7yKv
+         5JSHQleTGkb9aow4KtNUmNzeaMwG2idl05oqc06iY+NaM1Hs+0AUgICQLsh6uUMh3q
+         0IUbFCbPY4kVVs02k1Lk55cKfXSfE6XTr4KHJBMSjmpz7GqnrqF8JFG3iRdIPnx9AY
+         o/I828mmiNrfg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Oct 2023 17:27:38 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <701141cc-bfe8-4bde-93cd-5fd7d13da3e4@wanadoo.fr>
+Date:   Sat, 28 Oct 2023 17:27:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: dwc2: Use seq_buf instead of hand writing it
+Content-Language: fr
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <4c8b71efe4fe05ed0cc37f33ef774746d4d55299.1698489641.git.christophe.jaillet@wanadoo.fr>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <4c8b71efe4fe05ed0cc37f33ef774746d4d55299.1698489641.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 23:53:28 +0000
-Justin Stitt <justinstitt@google.com> wrote:
-
-> We're doing some needless string copies when trying to assign the proper
-> `prop` string. We can make `prop` a const char* and simply assign to
-> string literals.
+Le 28/10/2023 à 12:41, Christophe JAILLET a écrit :
+> cat_printf() re-implements what the seq_buf API does.
+> So, switch to the seq_buf API to save some line of code.
 > 
-> For the case where a format string is used, let's allocate some memory
-> via kasprintf() and point prop to it.
-> 
-> This also cleans up some deprecated strncpy() uses [1].
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Seems reasonable to me.
+NACK.
 
-+CC Gwendal (+ Stephen) as it's Gwendal's driver and I think they are still actively
-maintaining it.
+This was built tested, but i think that DWC2_PRINT_SCHEDULE was not defined.
+
+	seq_buf_init((&s, tmp, sizeof(tmp));
+can't compile, 's' is not defined.
+
+Let me give another look at it.
+
+CJ
 
 > ---
-> Changes in v2:
-> - make prop a const char* and do simple assignments (thanks Jonathan)
-> - rebase onto 3a568e3a961ba330
-> - Link to v1: https://lore.kernel.org/r/20230921-strncpy-drivers-iio-proximity-sx9324-c-v1-1-4e8d28fd1e7c@google.com
+> seq_buf_printf(&buf, ", "); could be seq_buf_puts(), but the result could
+> be slightly different. So I kept a conservative approach.
+> 
+> If only some seq_buf_printf() are used, the final seq_buf_terminate() can
+> be avoided, but I think it is cleaner with it.
 > ---
-> Note: build-tested
-> ---
->  drivers/iio/proximity/sx9324.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
+>   drivers/usb/dwc2/hcd_queue.c | 53 ++++++++----------------------------
+>   1 file changed, 11 insertions(+), 42 deletions(-)
 > 
-> diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-> index 438f9c9aba6e..c8547035cb47 100644
-> --- a/drivers/iio/proximity/sx9324.c
-> +++ b/drivers/iio/proximity/sx9324.c
-> @@ -885,7 +885,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  #define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
->  #define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
->  	unsigned int pin_defs[SX9324_NUM_PINS];
-> -	char prop[] = SX9324_PROXRAW_DEF;
-> +	const char *prop = SX9324_PROXRAW_DEF;
->  	u32 start = 0, raw = 0, pos = 0;
->  	int ret, count, ph, pin;
->  	const char *res;
-> @@ -899,7 +899,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_AFE_PH2:
->  	case SX9324_REG_AFE_PH3:
->  		ph = reg_def->reg - SX9324_REG_AFE_PH0;
-> -		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
-> +		prop = kasprintf(GFP_KERNEL, "semtech,ph%d-pin", ph);
->  
->  		count = device_property_count_u32(dev, prop);
->  		if (count != ARRAY_SIZE(pin_defs))
-> @@ -913,6 +913,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  			raw |= (pin_defs[pin] << (2 * pin)) &
->  			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
->  		reg_def->def = raw;
-> +		kfree(prop);
->  		break;
->  	case SX9324_REG_AFE_CTRL0:
->  		ret = device_property_read_string(dev,
-> @@ -937,11 +938,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_AFE_CTRL4:
->  	case SX9324_REG_AFE_CTRL7:
->  		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
-> -			strncpy(prop, "semtech,ph01-resolution",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph01-resolution";
->  		else
-> -			strncpy(prop, "semtech,ph23-resolution",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph23-resolution";
->  
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
-> @@ -1012,11 +1011,9 @@ sx9324_get_default_reg(struct device *dev, int idx,
->  	case SX9324_REG_PROX_CTRL0:
->  	case SX9324_REG_PROX_CTRL1:
->  		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
-> -			strncpy(prop, "semtech,ph01-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph01-proxraw-strength";
->  		else
-> -			strncpy(prop, "semtech,ph23-proxraw-strength",
-> -				ARRAY_SIZE(prop));
-> +			prop = "semtech,ph23-proxraw-strength";
->  		ret = device_property_read_u32(dev, prop, &raw);
->  		if (ret)
->  			break;
-> 
-> ---
-> base-commit: 3a568e3a961ba330091cd031647e4c303fa0badb
-> change-id: 20230921-strncpy-drivers-iio-proximity-sx9324-c-8c3437676039
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+> diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+> index 0d4495c6b9f7..66fb74a70bdd 100644
+> --- a/drivers/usb/dwc2/hcd_queue.c
+> +++ b/drivers/usb/dwc2/hcd_queue.c
+> @@ -18,6 +18,7 @@
+>   #include <linux/io.h>
+>   #include <linux/slab.h>
+>   #include <linux/usb.h>
+> +#include <linux/seq_buf.h>
+>   
+>   #include <linux/usb/hcd.h>
+>   #include <linux/usb/ch11.h>
+> @@ -359,41 +360,6 @@ static unsigned long *dwc2_get_ls_map(struct dwc2_hsotg *hsotg,
+>   }
+>   
+>   #ifdef DWC2_PRINT_SCHEDULE
+> -/*
+> - * cat_printf() - A printf() + strcat() helper
+> - *
+> - * This is useful for concatenating a bunch of strings where each string is
+> - * constructed using printf.
+> - *
+> - * @buf:   The destination buffer; will be updated to point after the printed
+> - *         data.
+> - * @size:  The number of bytes in the buffer (includes space for '\0').
+> - * @fmt:   The format for printf.
+> - * @...:   The args for printf.
+> - */
+> -static __printf(3, 4)
+> -void cat_printf(char **buf, size_t *size, const char *fmt, ...)
+> -{
+> -	va_list args;
+> -	int i;
+> -
+> -	if (*size == 0)
+> -		return;
+> -
+> -	va_start(args, fmt);
+> -	i = vsnprintf(*buf, *size, fmt, args);
+> -	va_end(args);
+> -
+> -	if (i >= *size) {
+> -		(*buf)[*size - 1] = '\0';
+> -		*buf += *size;
+> -		*size = 0;
+> -	} else {
+> -		*buf += i;
+> -		*size -= i;
+> -	}
+> -}
+> -
+>   /*
+>    * pmap_print() - Print the given periodic map
+>    *
+> @@ -417,8 +383,7 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+>   
+>   	for (period = 0; period < periods_in_map; period++) {
+>   		char tmp[64];
+> -		char *buf = tmp;
+> -		size_t buf_size = sizeof(tmp);
+> +		struct seq_buf buf;
+>   		int period_start = period * bits_per_period;
+>   		int period_end = period_start + bits_per_period;
+>   		int start = 0;
+> @@ -426,6 +391,8 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+>   		bool printed = false;
+>   		int i;
+>   
+> +		seq_buf_init((&s, tmp, sizeof(tmp));
+> +
+>   		for (i = period_start; i < period_end + 1; i++) {
+>   			/* Handle case when ith bit is set */
+>   			if (i < period_end &&
+> @@ -442,17 +409,19 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+>   				continue;
+>   
+>   			if (!printed)
+> -				cat_printf(&buf, &buf_size, "%s %d: ",
+> -					   period_name, period);
+> +				seq_buf_printf(&buf, "%s %d: ", period_name,
+> +					       period);
+>   			else
+> -				cat_printf(&buf, &buf_size, ", ");
+> +				seq_buf_printf(&buf, ", ");
+>   			printed = true;
+>   
+> -			cat_printf(&buf, &buf_size, "%d %s -%3d %s", start,
+> -				   units, start + count - 1, units);
+> +			seq_buf_printf(&buf, "%d %s -%3d %s", start, units,
+> +				       start + count - 1, units);
+>   			count = 0;
+>   		}
+>   
+> +		seq_buf_terminate(&s);
+> +
+>   		if (printed)
+>   			print_fn(tmp, print_data);
+>   	}
 
