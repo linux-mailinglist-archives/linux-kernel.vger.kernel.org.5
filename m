@@ -2,374 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 387867DA739
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C2C7DA73A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjJ1NZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        id S229511AbjJ1N2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1NZc (ORCPT
+        with ESMTP id S229446AbjJ1N2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:25:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5835DE5;
-        Sat, 28 Oct 2023 06:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698499530; x=1730035530;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=arMzPeS8QGSlgbvGx/aF+yUPvgFD4En3C8klGSPQb4k=;
-  b=ENEcaGr6TIv1SaMrKKARV1qBsFPDtcVw8QvKzUtf/w3gTBVhFRBIynyY
-   5AIiL1pllvt0r/5W73eW0iD9i4kF/iT2tyrviSVfcMXKryu4Impz4UZ+s
-   2M0KzLWyk/mPATUb4tML0pxu4VYrfTsSk4GthRxXqULL5nmADbAV7jeDj
-   lYUTkEGX/ERbiMebfMy7IIklTKeUm5t84U6AENSjWKITh9yfQynUjR3wk
-   LPMBVjRRcwJrGvS9qLSxdvMTmkTiQ3j6fS+dQ4HXLxrgOMy6o+GnTJL9a
-   zK6Ffb5RLbi95SbUoQDbcctTT5xEt+iwWhZo1HkpJWacoO595G2xU91CX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="474135914"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="474135914"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 06:25:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="794870865"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="794870865"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by orsmga001.jf.intel.com with ESMTP; 28 Oct 2023 06:25:26 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, joyce.ooi@intel.com,
-        kw@linux.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lpieralisi@kernel.org, robh@kernel.org,
-        sharath.kumar.d.m@intel.com
-Subject: [PATCH v5 2/2] PCI: altera: add support for agilex7 family fpga
-Date:   Sat, 28 Oct 2023 18:56:14 +0530
-Message-Id: <20231028132614.493617-1-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231025220518.GA1768317@bhelgaas>
-References: <20231025220518.GA1768317@bhelgaas>
+        Sat, 28 Oct 2023 09:28:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A711CC0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:28:45 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507a98517f3so4158582e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698499724; x=1699104524; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=/mkG76O5/U+/SehUGbHiNCbyeL7D+anBRyG+yd5ZEiQ=;
+        b=VNwohSIgr2oHuhVrOE5RYOqTR/zSwvnIqJ/7pkOxDk2oa1mNuzUnmOk7bYoI1GEG9h
+         30TAkv/aXjIW6Yjru7JskkSoBCn+z9yncD51x6fzmqbOZoeCI5tdcZohUv++gbTcBpVY
+         bD7rMVNSEnCr/5hlNH2ikVz2AajE7meerHtJ79h0VBWUJASbxPNJiHcMiIG1SpjizqXC
+         Q4cqWJmOQYjcw9+As5ijFcQXTMPN+1IAxVjExZkEAU9RNiMCurfwWx8WSI4HieXhrje6
+         /Jc0dt3YZhYbjpeXmWy95bcwKYqki0JXYnLDf0N803IQ37ZatSXrcrrAB+kbFmxu2G0a
+         yyzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698499724; x=1699104524;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/mkG76O5/U+/SehUGbHiNCbyeL7D+anBRyG+yd5ZEiQ=;
+        b=CRqbs4cs4yIqs8arLZZxlavkdgbtRrMEjYmdEDLyib5ZdGHowfUXgSRhwTjSXg37Yl
+         MccLuUc+p3BQo9Uky91Oml1e1o9yerbdqnNdrt13WZ0Lkoi33029MJyvl/AXNNdjUTUq
+         dxZRbIk/EIc0273Ow/tz9806pYdtXXrRVXLuyH305rXZK5O9IUu5m+PVfzuUV41m4+Or
+         Wzg66nKNBgyNwVEota6Vy9Go6/J8lu20rLnVv122MupDHHTdbkQlz8Iwup938xNJfeml
+         jHZeVYMoh4ofsGzcSILDBfV9wgA0Ecemq0F4aPw5d0go63P2mNK3exAScLnty4odZ0TC
+         kn+A==
+X-Gm-Message-State: AOJu0Yx+Nk/UPT6WwWOJEqeZ8gi99K3ZLWEgNlnXuIGC1qK4nbTgRk+B
+        K0KXVOtOKKR8ACNDqusrICs=
+X-Google-Smtp-Source: AGHT+IGzuRyj9hWKy9PdPNOmNKSqdyRi0YhGkg1OVLpfmSzNL/QVIhVQCWlqrU0d8hpDSnaLA7lH3Q==
+X-Received: by 2002:ac2:5ec3:0:b0:507:a16d:6699 with SMTP id d3-20020ac25ec3000000b00507a16d6699mr3341963lfq.13.1698499723670;
+        Sat, 28 Oct 2023 06:28:43 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id 22-20020a508e56000000b00542db304680sm1023829edx.63.2023.10.28.06.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 06:28:42 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 28 Oct 2023 15:28:40 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [GIT PULL] x86/build change for v6.7
+Message-ID: <ZT0MiAYT40md4uIS@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Linus,
 
-create new instance of struct altera_pcie_data for agilex7
-"altr,pcie-root-port-3.0"
-provide corresponding callback
-"port_conf_off" points to avmm port config register base
+Please pull the latest x86/build git tree from:
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 207 ++++++++++++++++++++++++++-
- 1 file changed, 206 insertions(+), 1 deletion(-)
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-build-2023-10-28
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index bb073f8424ed..56ee27d54de0 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -79,9 +79,20 @@
- #define S10_TLP_FMTTYPE_CFGWR0		0x45
- #define S10_TLP_FMTTYPE_CFGWR1		0x44
- 
-+#define AGLX_RP_CFG_ADDR(pcie, reg)     \
-+	(((pcie)->hip_base) + (reg))
-+#define AGLX_RP_SECONDARY(pcie)         \
-+	readb(AGLX_RP_CFG_ADDR(pcie, PCI_SECONDARY_BUS))
-+
-+#define AGLX_BDF_REG			0x00002004
-+#define AGLX_ROOT_PORT_IRQ_STATUS	0x14c
-+#define AGLX_ROOT_PORT_IRQ_ENABLE	0x150
-+#define AGLX_CFG_AER			(1<<4)
-+
- enum altera_pcie_version {
- 	ALTERA_PCIE_V1 = 0,
- 	ALTERA_PCIE_V2,
-+	ALTERA_PCIE_V3,
- };
- 
- struct altera_pcie {
-@@ -93,6 +104,8 @@ struct altera_pcie {
- 	struct irq_domain	*irq_domain;
- 	struct resource		bus_range;
- 	const struct altera_pcie_data	*pcie_data;
-+	void __iomem		*cs_base;
-+	u32			port_conf_off;
- };
- 
- struct altera_pcie_ops {
-@@ -138,6 +151,39 @@ static inline u32 cra_readl(struct altera_pcie *pcie, const u32 reg)
- 	return readl_relaxed(pcie->cra_base + reg);
- }
- 
-+static inline void cs_writel(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writel_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writew(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writew_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writeb(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writeb_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readl(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readl_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readw(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readw_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readb(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readb_relaxed(pcie->cs_base + reg);
-+}
-+
- static bool altera_pcie_link_up(struct altera_pcie *pcie)
- {
- 	return !!((cra_readl(pcie, RP_LTSSM) & RP_LTSSM_MASK) == LTSSM_L0);
-@@ -152,6 +198,14 @@ static bool s10_altera_pcie_link_up(struct altera_pcie *pcie)
- 	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static bool aglx_altera_pcie_link_up(struct altera_pcie *pcie)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie,
-+		pcie->pcie_data->cap_offset + PCI_EXP_LNKSTA);
-+
-+	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
-+}
-+
- /*
-  * Altera PCIe port uses BAR0 of RC's configuration space as the translation
-  * from PCI bus to native BUS.  Entire DDR region is mapped into PCIe space
-@@ -432,6 +486,101 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
-+static int aglx_read_own_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 *value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		*value = readb(addr);
-+		break;
-+	case 2:
-+		*value = readw(addr);
-+		break;
-+	default:
-+		*value = readl(addr);
-+		break;
-+	}
-+
-+	/* interrupt pin not programmed in hardware, set to INTA */
-+	if (where == PCI_INTERRUPT_PIN && size == 1 && !(*value))
-+		*value = 0x01;
-+	else if (where == PCI_INTERRUPT_LINE && !(*value & 0xff00))
-+		*value |= 0x0100;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_write_own_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		writeb(value, addr);
-+		break;
-+	case 2:
-+		writew(value, addr);
-+		break;
-+	default:
-+		writel(value, addr);
-+		break;
-+	}
-+
-+	/*
-+	 * Monitor changes to PCI_PRIMARY_BUS register on root port
-+	 * and update local copy of root bus number accordingly.
-+	 */
-+	if (busno == pcie->root_bus_nr && where == PCI_PRIMARY_BUS)
-+		pcie->root_bus_nr = value & 0xff;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_write_other_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		cs_writeb(pcie, value, where);
-+		break;
-+	case 2:
-+		cs_writew(pcie, value, where);
-+		break;
-+	default:
-+		cs_writel(pcie, value, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_read_other_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 *value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		*value = cs_readb(pcie, where);
-+		break;
-+	case 2:
-+		*value = cs_readw(pcie, where);
-+		break;
-+	default:
-+		*value = cs_readl(pcie, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
- static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 		int where, int size, u32 *value)
- {
-@@ -690,6 +839,30 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 	chained_irq_exit(chip, desc);
- }
- 
-+static void aglx_isr(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct altera_pcie *pcie;
-+	struct device *dev;
-+	u32 status;
-+	int ret;
-+
-+	chained_irq_enter(chip, desc);
-+	pcie = irq_desc_get_handler_data(desc);
-+	dev = &pcie->pdev->dev;
-+
-+	status = readl((pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	if (status & AGLX_CFG_AER) {
-+		ret = generic_handle_domain_irq(pcie->irq_domain, 0);
-+		if (ret)
-+			dev_err_ratelimited(dev, "unexpected IRQ %x\n", status);
-+	}
-+	writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	chained_irq_exit(chip, desc);
-+}
-+
- static int altera_pcie_init_irq_domain(struct altera_pcie *pcie)
- {
- 	struct device *dev = &pcie->pdev->dev;
-@@ -725,13 +898,25 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 			return PTR_ERR(pcie->cra_base);
- 	}
- 
--	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V2) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V3)) {
- 		pcie->hip_base =
- 			devm_platform_ioremap_resource_byname(pdev, "Hip");
- 		if (IS_ERR(pcie->hip_base))
- 			return PTR_ERR(pcie->hip_base);
- 	}
- 
-+	if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		pcie->cs_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cs");
-+		if (IS_ERR(pcie->cs_base))
-+			return PTR_ERR(pcie->cs_base);
-+		of_property_read_u32(pcie->pdev->dev.of_node, "port_conf_stat",
-+			&pcie->port_conf_off);
-+		dev_dbg(&pcie->pdev->dev, "port_conf_stat_off =%#x\n",
-+				pcie->port_conf_off);
-+	}
-+
- 	/* setup IRQ */
- 	pcie->irq = platform_get_irq(pdev, 0);
- 	if (pcie->irq < 0)
-@@ -769,6 +954,15 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.rp_isr = altera_pcie_isr,
- };
- 
-+static const struct altera_pcie_ops altera_pcie_ops_3_0 = {
-+	.get_link_status = aglx_altera_pcie_link_up,
-+	.alt_read_own_cfg = aglx_read_own_cfg,
-+	.alt_write_own_cfg = aglx_write_own_cfg,
-+	.alt_read_other_cfg = aglx_read_other_cfg,
-+	.alt_write_other_cfg = aglx_write_other_cfg,
-+	.rp_isr = aglx_isr,
-+};
-+
- static const struct altera_pcie_data altera_pcie_1_0_data = {
- 	.ops = &altera_pcie_ops_1_0,
- 	.cap_offset = 0x80,
-@@ -789,11 +983,19 @@ static const struct altera_pcie_data altera_pcie_2_0_data = {
- 	.cfgwr1 = S10_TLP_FMTTYPE_CFGWR1,
- };
- 
-+static const struct altera_pcie_data altera_pcie_3_0_data = {
-+	.ops = &altera_pcie_ops_3_0,
-+	.version = ALTERA_PCIE_V3,
-+	.cap_offset = 0x70,
-+};
-+
- static const struct of_device_id altera_pcie_of_match[] = {
- 	{.compatible = "altr,pcie-root-port-1.0",
- 	 .data = &altera_pcie_1_0_data },
- 	{.compatible = "altr,pcie-root-port-2.0",
- 	 .data = &altera_pcie_2_0_data },
-+	{.compatible = "altr,pcie-root-port-3.0", /* agilex7 P,F tile */
-+	 .data = &altera_pcie_3_0_data },
- 	{},
- };
- 
-@@ -838,6 +1040,9 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		/* enable all interrupts */
- 		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
- 		altera_pcie_host_init(pcie);
-+	} else if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+			+ AGLX_ROOT_PORT_IRQ_ENABLE));
- 	}
- 
- 	bridge->sysdata = pcie;
--- 
-2.34.1
+   # HEAD: 70c8dc9104275037a39ab0b2a4ed6eaacac39e32 x86/defconfig: Enable CONFIG_DEBUG_ENTRY=y
 
+Enable CONFIG_DEBUG_ENTRY=y in the x86 defconfigs.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Ingo Molnar (1):
+      x86/defconfig: Enable CONFIG_DEBUG_ENTRY=y
+
+
+ arch/x86/configs/i386_defconfig   | 1 +
+ arch/x86/configs/x86_64_defconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index 1b411bbf3cb0..73abbbdd26f8 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -281,4 +281,5 @@ CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+ CONFIG_EARLY_PRINTK_DBGP=y
+ CONFIG_DEBUG_BOOT_PARAMS=y
+ CONFIG_UNWINDER_FRAME_POINTER=y
++CONFIG_DEBUG_ENTRY=y
+ # CONFIG_64BIT is not set
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 409e9182bd29..61e25f6209ed 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -276,3 +276,4 @@ CONFIG_BLK_DEV_IO_TRACE=y
+ CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+ CONFIG_EARLY_PRINTK_DBGP=y
+ CONFIG_DEBUG_BOOT_PARAMS=y
++CONFIG_DEBUG_ENTRY=y
