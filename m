@@ -2,278 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289427DAA14
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 00:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0117DAA17
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjJ1Wng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 18:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S229699AbjJ1XHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 19:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Wne (ORCPT
+        with ESMTP id S229446AbjJ1XH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 18:43:34 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D68BC1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:43:31 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6ce53378ff9so4127993a34.0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:43:31 -0700 (PDT)
+        Sat, 28 Oct 2023 19:07:28 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E110CF;
+        Sat, 28 Oct 2023 16:07:26 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6be840283ceso3067165b3a.3;
+        Sat, 28 Oct 2023 16:07:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698533010; x=1699137810;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kKaKu5M6rUWJh/V22wyQQBR72UTXCs6uvQVuL0NHfts=;
-        b=GS+WhlfK6YUYigYAvZyGLg6szdezXrTPgOkzabJpHWSUSD2ellQPELt0bJbedJWuUA
-         dwvH5AB8jFBLa/r8H7OMpYViyf0P4ycVVCi5i0wGj9d5aTtlWb5MWmVE15zEJFE8vchc
-         v1HC6GYcGA8tiGLicdk7ajySQarDx+EqTWT/LHCmCiaO6Jw7gX/pAicEdXXC36jDubiy
-         e2kPOjcMcb0ltA8yT/u14Z5fw04AUVVKAwf3ocLzfsvD2jgyJIq0WvU+FmY5nN5N9snq
-         JF4ugxIXqLpxCr/R0ub+2HUwoPIRnLjrmgYdbjn6d+Ruy5xB2G2zU7c+TikRfJQd6l/m
-         U47g==
-X-Gm-Message-State: AOJu0YwakYVi97REI0DJdBvWNyraMPwdEESAJXHsnfHFBM+ETjd1iWAs
-        sKcBV5kcq53QjDug5RJOyQ83MNUO7gb12HuNEQ0t+RR/0vIQ
-X-Google-Smtp-Source: AGHT+IGKwmSwzHpWoYMQnqtejvR5tj1v/Fm5QD/4uFVJ2R0ycnP3BmYS+ecZGOcPw+BjAN7wforn14PtxPXE+zfPd1D2q82uAfex
+        d=1e100.net; s=20230601; t=1698534446; x=1699139246;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eDlPBkLdn2EAK6+ebgcvjT1S6LOy4Uub2C1Sv2Bx9Lc=;
+        b=PPFEQ2N4WdYE5udC1tpQ9bFxHn2cKSh7wAI6Q06p3HwugYDqAcz5APKCLhEX/K+8I5
+         wCkgQ2+VxT16pZKPNPOzsypwQGW6JltXQbofN38RwLFaKYiN8Q6uG0gPUQJujpoGAWkp
+         lxH2ruByNzrZvk6E3V/+oXoiCq2gXN7PyXJCNcvNADUfcy5GKSo1hJVR8rkUIdeH24OF
+         f4yXZR0wPeIRErTEphJfOOprGiOGT76tYilJFIxn05DCerKUPhJB7hpu0gPlwWTJU/e3
+         52jnrsB3nGnzdZVGn/AH2D6PaWBoV8pi3w34lOhiyyHFVyGFcwlCzRV4Q5AgG5DTsxpz
+         anAg==
+X-Gm-Message-State: AOJu0Yyhd1aW2wf1WyuYuglVIJh7oM/5xSDoiIw/pGar59OzcBhWpN34
+        aQiLU952al3O5JOmMweF170=
+X-Google-Smtp-Source: AGHT+IFhJa+1mVncSE0wPTEE2mIe537HRM5rVISqh5B77tiL+T93sCHuen690B6KoaDZGmH83Lkmkg==
+X-Received: by 2002:a05:6a00:93aa:b0:6be:bf7:fda5 with SMTP id ka42-20020a056a0093aa00b006be0bf7fda5mr6220884pfb.12.1698534445490;
+        Sat, 28 Oct 2023 16:07:25 -0700 (PDT)
+Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
+        by smtp.gmail.com with ESMTPSA id m16-20020aa78a10000000b0068bc6a75848sm3422684pfa.156.2023.10.28.16.07.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Oct 2023 16:07:24 -0700 (PDT)
+Message-ID: <a344b3b0-a43f-47eb-b5e4-9d54cda62518@acm.org>
+Date:   Sat, 28 Oct 2023 16:07:23 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:4687:b0:6c6:2b19:7270 with SMTP id
- ay7-20020a056830468700b006c62b197270mr2352287otb.1.1698533010599; Sat, 28 Oct
- 2023 15:43:30 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 15:43:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc767f0608ce8895@google.com>
-Subject: [syzbot] [ntfs3?] possible deadlock in indx_read
-From:   syzbot <syzbot+1e19c0a6b5e324635721@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+Content-Language: en-US
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com
+References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+ <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
+ <adad4ee6-ceef-4e45-a13d-048a1377e86f@acm.org>
+ <45c23e30-8405-470b-825c-e5166cd8a313@linux.dev>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <45c23e30-8405-470b-825c-e5166cd8a313@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/27/23 19:48, Zhu Yanjun wrote:
+> In this case, ULP with folio will not work well with current RXE after 
+> this commit is applied.
 
-syzbot found the following issue on:
+Why not? RDMA ULPs like the SRP initiator driver use ib_map_mr_sg(). The
+latter function calls rxe_map_mr_sg() if the RXE driver is used. 
+rxe_map_mr_sg() calls ib_sg_to_pages(). ib_sg_to_pages() translates
+SG-entries that are larger than a virtual memory page into multiple
+entries with size mr->page_size.
 
-HEAD commit:    f017d9a92a73 Add linux-next specific files for 20231024
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=114f9135680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8fd5ab06ad389b6f
-dashboard link: https://syzkaller.appspot.com/bug?extid=1e19c0a6b5e324635721
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Thanks,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Bart.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/feca2ffa52fd/disk-f017d9a9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c2643e9e7d02/vmlinux-f017d9a9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7492edb5b60c/bzImage-f017d9a9.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1e19c0a6b5e324635721@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc7-next-20231024-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/u4:0/24418 is trying to acquire lock:
-ffff888039a1e1c0 (&indx->run_lock){.+.+}-{3:3}, at: indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
-
-but task is already holding lock:
-ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
-ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_update_parent fs/ntfs3/frecord.c:3230 [inline]
-ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x15a4/0x2850 fs/ntfs3/frecord.c:3321
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (&ni->ni_lock#2){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x181/0x1330 kernel/locking/mutex.c:747
-       ntfs_set_state+0x1d2/0x6a0 fs/ntfs3/fsntfs.c:946
-       ni_remove_name+0x2ff/0x670 fs/ntfs3/frecord.c:2926
-       ntfs_unlink_inode+0x37a/0x740 fs/ntfs3/inode.c:1772
-       ntfs_rename+0x387/0xec0 fs/ntfs3/namei.c:288
-       vfs_rename+0xe20/0x1c30 fs/namei.c:4843
-       do_renameat2+0xc3c/0xdc0 fs/namei.c:4995
-       __do_sys_rename fs/namei.c:5041 [inline]
-       __se_sys_rename fs/namei.c:5039 [inline]
-       __x64_sys_rename+0x81/0xa0 fs/namei.c:5039
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-       entry_SYSCALL_64_after_hwframe+0x62/0x6a
-
--> #3 (&ni->ni_lock#2/4){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x181/0x1330 kernel/locking/mutex.c:747
-       ni_lock fs/ntfs3/ntfs_fs.h:1124 [inline]
-       ntfs_fallocate+0x73d/0x1260 fs/ntfs3/file.c:499
-       vfs_fallocate+0x46c/0xe50 fs/open.c:324
-       ksys_fallocate fs/open.c:347 [inline]
-       __do_sys_fallocate fs/open.c:355 [inline]
-       __se_sys_fallocate fs/open.c:353 [inline]
-       __x64_sys_fallocate+0xd5/0x140 fs/open.c:353
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-       entry_SYSCALL_64_after_hwframe+0x62/0x6a
-
--> #2 (mapping.invalidate_lock#5){++++}-{3:3}:
-       down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
-       filemap_invalidate_lock_shared include/linux/fs.h:857 [inline]
-       filemap_fault+0x28c/0x3570 mm/filemap.c:3225
-       __do_fault+0x107/0x5f0 mm/memory.c:4268
-       do_read_fault mm/memory.c:4631 [inline]
-       do_fault mm/memory.c:4765 [inline]
-       do_pte_missing mm/memory.c:3733 [inline]
-       handle_pte_fault mm/memory.c:5041 [inline]
-       __handle_mm_fault+0x2682/0x3d60 mm/memory.c:5182
-       handle_mm_fault+0x474/0x9f0 mm/memory.c:5347
-       faultin_page mm/gup.c:956 [inline]
-       __get_user_pages+0x4b1/0x1480 mm/gup.c:1239
-       populate_vma_page_range+0x2d4/0x410 mm/gup.c:1677
-       __mm_populate+0x1d6/0x380 mm/gup.c:1786
-       mm_populate include/linux/mm.h:3379 [inline]
-       vm_mmap_pgoff+0x2cc/0x3b0 mm/util.c:551
-       ksys_mmap_pgoff+0x421/0x5a0 mm/mmap.c:1428
-       __do_sys_mmap arch/x86/kernel/sys_x86_64.c:93 [inline]
-       __se_sys_mmap arch/x86/kernel/sys_x86_64.c:86 [inline]
-       __x64_sys_mmap+0x125/0x190 arch/x86/kernel/sys_x86_64.c:86
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-       entry_SYSCALL_64_after_hwframe+0x62/0x6a
-
--> #1 (&mm->mmap_lock){++++}-{3:3}:
-       __might_fault mm/memory.c:5958 [inline]
-       __might_fault+0x11b/0x190 mm/memory.c:5951
-       _copy_to_user+0x2b/0xb0 lib/usercopy.c:36
-       copy_to_user include/linux/uaccess.h:191 [inline]
-       fiemap_fill_next_extent+0x232/0x380 fs/ioctl.c:145
-       ni_fiemap+0x440/0xc00 fs/ntfs3/frecord.c:2065
-       ntfs_fiemap+0xc9/0x110 fs/ntfs3/file.c:1164
-       ioctl_fiemap fs/ioctl.c:220 [inline]
-       do_vfs_ioctl+0x339/0x1920 fs/ioctl.c:811
-       __do_sys_ioctl fs/ioctl.c:869 [inline]
-       __se_sys_ioctl fs/ioctl.c:857 [inline]
-       __x64_sys_ioctl+0x112/0x210 fs/ioctl.c:857
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-       entry_SYSCALL_64_after_hwframe+0x62/0x6a
-
--> #0 (&indx->run_lock){.+.+}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x2e22/0x5dc0 kernel/locking/lockdep.c:5136
-       lock_acquire kernel/locking/lockdep.c:5753 [inline]
-       lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
-       down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
-       indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
-       indx_find+0x4a9/0x980 fs/ntfs3/index.c:1181
-       indx_update_dup+0x166/0x440 fs/ntfs3/index.c:2659
-       ni_update_parent fs/ntfs3/frecord.c:3233 [inline]
-       ni_write_inode+0x1650/0x2850 fs/ntfs3/frecord.c:3321
-       write_inode fs/fs-writeback.c:1473 [inline]
-       __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1690
-       writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1916
-       __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1987
-       wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2094
-       wb_check_old_data_flush fs/fs-writeback.c:2198 [inline]
-       wb_do_writeback fs/fs-writeback.c:2251 [inline]
-       wb_workfn+0x9f8/0xfd0 fs/fs-writeback.c:2279
-       process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
-       process_scheduled_works kernel/workqueue.c:2703 [inline]
-       worker_thread+0x8b6/0x1280 kernel/workqueue.c:2784
-       kthread+0x337/0x440 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-other info that might help us debug this:
-
-Chain exists of:
-  &indx->run_lock --> &ni->ni_lock#2/4 --> &ni->ni_lock#2
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ni->ni_lock#2);
-                               lock(&ni->ni_lock#2/4);
-                               lock(&ni->ni_lock#2);
-  rlock(&indx->run_lock);
-
- *** DEADLOCK ***
-
-5 locks held by kworker/u4:0/24418:
- #0: ffff88814226d938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x78a/0x15e0 kernel/workqueue.c:2605
- #1: ffffc9000326fd80 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x7f4/0x15e0 kernel/workqueue.c:2606
- #2: ffff888030fde0e0 (&type->s_umount_key#65){++++}-{3:3}, at: super_trylock_shared+0x1e/0xf0 fs/super.c:610
- #3: ffff888039a1e840 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
- #3: ffff888039a1e840 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x1c6/0x2850 fs/ntfs3/frecord.c:3262
- #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
- #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_update_parent fs/ntfs3/frecord.c:3230 [inline]
- #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x15a4/0x2850 fs/ntfs3/frecord.c:3321
-
-stack backtrace:
-CPU: 1 PID: 24418 Comm: kworker/u4:0 Not tainted 6.6.0-rc7-next-20231024-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: writeback wb_workfn (flush-7:4)
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x310/0x3f0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x2e22/0x5dc0 kernel/locking/lockdep.c:5136
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
- down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
- indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
- indx_find+0x4a9/0x980 fs/ntfs3/index.c:1181
- indx_update_dup+0x166/0x440 fs/ntfs3/index.c:2659
- ni_update_parent fs/ntfs3/frecord.c:3233 [inline]
- ni_write_inode+0x1650/0x2850 fs/ntfs3/frecord.c:3321
- write_inode fs/fs-writeback.c:1473 [inline]
- __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1690
- writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1916
- __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1987
- wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2094
- wb_check_old_data_flush fs/fs-writeback.c:2198 [inline]
- wb_do_writeback fs/fs-writeback.c:2251 [inline]
- wb_workfn+0x9f8/0xfd0 fs/fs-writeback.c:2279
- process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b6/0x1280 kernel/workqueue.c:2784
- kthread+0x337/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
