@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 051397DA82C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 19:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D77DA830
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 19:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjJ1RFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 13:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
+        id S229546AbjJ1RPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 13:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjJ1RFK (ORCPT
+        with ESMTP id S229454AbjJ1RPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 13:05:10 -0400
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768C9126
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:05:06 -0700 (PDT)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1e9e17b3269so3966000fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:05:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698512705; x=1699117505;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTo/MYGjU98OZVhpt1voIWuh+FHLPG7oyJBS1qD9LfQ=;
-        b=QJUJAlsdW5JpKHK3kfMsiTSXv8kxTlt5BT4d9kTcVEeWZo4aiEY5AUep1DpRgGfdNO
-         jCFrNKhs1wQexOk/uQjRaq1n9XPTE3/ubzV2huLmv5xoqWkKYExHYdwbZrsJ6s3/jqF/
-         3jEDrS67IWiWkIRXaThUUNRFoiyizQPAtcZrBJImpPPvwETVPZsB+/I4lZ0bt3l9T9an
-         QBFbyv/ncdqNvK5s662GwfkF++suiC6C8cmxFp0LSLbpGuot+8/qFIyhu4tXXHRPbOma
-         FvWAH4fD77wkDqj047XnMxZ9KfRNvCAnUMKDGRFDRslGUO3cUoRGWp2aUPqGg8mbO6a6
-         wkWQ==
-X-Gm-Message-State: AOJu0YyDN0oLgS2/VTqTtM8R3kU441WnWbV6PjIeztjVf55lXXeAT3AW
-        pGYNMobGDu6FFt2x3Xo0Ier7ewDdKuIOiVQ/kyaoxTUKysqB
-X-Google-Smtp-Source: AGHT+IHDWbVpcRZW17s+E9mZT2p3NLImbd1EcjPq+4ECelqP51WUu/Fg5z00UTleUxVPQ3pE/XOUb6xGMgZ4y7h8sYPMfUlG8x9+
+        Sat, 28 Oct 2023 13:15:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C77E11F
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 10:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698513335; x=1730049335;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Yat7hK8CnokZkhtzDWk7L5zPuap20RZoYveWqGkLz0A=;
+  b=PD4qugeNQ+H68HWSZ0pvKbWsCoQZQY85ip7KEVvraT3BPsiAENYoyDsy
+   iaKktHW3XvkVvlZuydkEIHuNkkUupppAgqjdKLzS4l6ykl3NK3utc7vun
+   9dvPxXOtarVa3p3YY/pqeeKdTIivsuw24yGThvpESj/JzyfGP0qBWNzqi
+   juTBVG3ojAKsuSkAfTDG8FcTuncV914Z85Me/0Pkyp/mxl7t8XOkwnFCy
+   Iybvq9GDcSNF9OfE16VPNOxbTVXGKYioAANExa53i4l4QAZaFgJ6LRanA
+   M9GqIV5Guc4kY4f7yraYHAIq8yQz4Vx8FYeTUJYZOBWIkoG7KUhyl6hEB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="385115271"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="385115271"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 10:15:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="933393801"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="933393801"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 28 Oct 2023 10:15:31 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwmuH-000Bvl-1Z;
+        Sat, 28 Oct 2023 17:15:29 +0000
+Date:   Sun, 29 Oct 2023 01:14:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH] lockdep: add lockdep_cleanup_dead_cpu()
+Message-ID: <202310290041.L5ndwcQ9-lkp@intel.com>
+References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:30d:b0:1e1:3367:1429 with SMTP id
- m13-20020a056870030d00b001e133671429mr2675836oaf.10.1698512705435; Sat, 28
- Oct 2023 10:05:05 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 10:05:05 -0700
-In-Reply-To: <0000000000003ba9f506013b0aed@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000743d980608c9ce33@google.com>
-Subject: Re: [syzbot] [ntfs3?] INFO: task hung in ntfs_read_folio (2)
-From:   syzbot <syzbot+913093197c71922e8375@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        nathan@kernel.org, ndesaulniers@google.com, ntfs3@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,24 +70,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi David,
 
-commit bfbe5b31caa74ab97f1784fe9ade5f45e0d3de91
-Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Date:   Fri Jun 30 12:22:53 2023 +0000
+kernel test robot noticed the following build warnings:
 
-    fs/ntfs3: fix deadlock in mark_as_free_ex
+[auto build test WARNING on tip/smp/core]
+[also build test WARNING on tip/locking/core linus/master v6.6-rc7 next-20231027]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14006f67680000
-start commit:   bfa3037d8280 Merge tag 'fuse-update-6.5' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4507c291b5ab5d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=913093197c71922e8375
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b8869ea80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149e6072a80000
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Woodhouse/lockdep-add-lockdep_cleanup_dead_cpu/20231028-191538
+base:   tip/smp/core
+patch link:    https://lore.kernel.org/r/e5ba02138c31da60daf91ce505ac3860d022332b.camel%40infradead.org
+patch subject: [PATCH] lockdep: add lockdep_cleanup_dead_cpu()
+config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20231029/202310290041.L5ndwcQ9-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310290041.L5ndwcQ9-lkp@intel.com/reproduce)
 
-If the result looks correct, please mark the issue as fixed by replying with:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310290041.L5ndwcQ9-lkp@intel.com/
 
-#syz fix: fs/ntfs3: fix deadlock in mark_as_free_ex
+All warnings (new ones prefixed by >>):
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>> kernel/locking/lockdep.c:4557: warning: Function parameter or member 'cpu' not described in 'lockdep_cleanup_dead_cpu'
+>> kernel/locking/lockdep.c:4557: warning: Function parameter or member 'idle' not described in 'lockdep_cleanup_dead_cpu'
+
+
+vim +4557 kernel/locking/lockdep.c
+
+  4548	
+  4549	/**
+  4550	 * lockdep_cleanup_dead_cpu - Ensure CPU lockdep state is cleanly stopped
+  4551	 *
+  4552	 * Invoked after the CPU is dead. Ensures that the tracing infrastructure
+  4553	 * is left in a suitable state for the CPU to be subsequently brought
+  4554	 * online again.
+  4555	 */
+  4556	void lockdep_cleanup_dead_cpu(unsigned int cpu, struct task_struct *idle)
+> 4557	{
+  4558		if (unlikely(!debug_locks))
+  4559			return;
+  4560	
+  4561		if (unlikely(per_cpu(hardirqs_enabled, cpu))) {
+  4562			pr_warn("CPU %u left hardirqs enabled!", cpu);
+  4563			if (idle)
+  4564				print_irqtrace_events(idle);
+  4565			/* Clean it up for when the CPU comes online again. */
+  4566			per_cpu(hardirqs_enabled, cpu) = 0;
+  4567		}
+  4568	}
+  4569	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
