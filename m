@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E782F7DAA11
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 00:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289427DAA14
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 00:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjJ1Wau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 18:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        id S229597AbjJ1Wng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 18:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjJ1Wat (ORCPT
+        with ESMTP id S229446AbjJ1Wne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 18:30:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20852D6
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698532247; x=1730068247;
-  h=date:from:to:cc:subject:message-id;
-  bh=4UXA5fA+dgokM+9oBl3tSt3YfLHgnws7+KXX9nUfhIE=;
-  b=O8+01fOUOIW+J4Y4YgpJPcWaEwnQCqEsIhGs5hGZNWo4KoMpwsAQc2hc
-   dXrQCoSyqwGS+x8TN+JunQtCawKhAGVZ9a/KkDXFaalAjLRhZx3x9/FuQ
-   P1lNlfI14SZfuOm6HAS6W5T1o1Gp6vOWfXtwIrMKhkFwM8BoNqmTqk5oo
-   fuKaDF8eD+j4zrDRGW6r2s01Cg44Ut2GMfJ7b6sM1A52k22dCJu3RkZxj
-   aLVop2HEn+QUJK0+qsAcxrGBKky5i1nuhcah3sYw5C7lpouoH5I5j95g0
-   PzEUigssTgoejdmwpYW1N7odAmrPJAy3zHtYRetUEUx/eHUsDXeUPpogt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="385124837"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="385124837"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 15:30:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="759914844"
-X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
-   d="scan'208";a="759914844"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 28 Oct 2023 15:30:42 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwrpH-000C8V-30;
-        Sat, 28 Oct 2023 22:30:39 +0000
-Date:   Sun, 29 Oct 2023 06:29:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- f99b926f6543faeadba1b4524d8dc9c102489135
-Message-ID: <202310290644.iiy3Qpda-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Sat, 28 Oct 2023 18:43:34 -0400
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D68BC1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:43:31 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6ce53378ff9so4127993a34.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 15:43:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698533010; x=1699137810;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kKaKu5M6rUWJh/V22wyQQBR72UTXCs6uvQVuL0NHfts=;
+        b=GS+WhlfK6YUYigYAvZyGLg6szdezXrTPgOkzabJpHWSUSD2ellQPELt0bJbedJWuUA
+         dwvH5AB8jFBLa/r8H7OMpYViyf0P4ycVVCi5i0wGj9d5aTtlWb5MWmVE15zEJFE8vchc
+         v1HC6GYcGA8tiGLicdk7ajySQarDx+EqTWT/LHCmCiaO6Jw7gX/pAicEdXXC36jDubiy
+         e2kPOjcMcb0ltA8yT/u14Z5fw04AUVVKAwf3ocLzfsvD2jgyJIq0WvU+FmY5nN5N9snq
+         JF4ugxIXqLpxCr/R0ub+2HUwoPIRnLjrmgYdbjn6d+Ruy5xB2G2zU7c+TikRfJQd6l/m
+         U47g==
+X-Gm-Message-State: AOJu0YwakYVi97REI0DJdBvWNyraMPwdEESAJXHsnfHFBM+ETjd1iWAs
+        sKcBV5kcq53QjDug5RJOyQ83MNUO7gb12HuNEQ0t+RR/0vIQ
+X-Google-Smtp-Source: AGHT+IGKwmSwzHpWoYMQnqtejvR5tj1v/Fm5QD/4uFVJ2R0ycnP3BmYS+ecZGOcPw+BjAN7wforn14PtxPXE+zfPd1D2q82uAfex
+MIME-Version: 1.0
+X-Received: by 2002:a05:6830:4687:b0:6c6:2b19:7270 with SMTP id
+ ay7-20020a056830468700b006c62b197270mr2352287otb.1.1698533010599; Sat, 28 Oct
+ 2023 15:43:30 -0700 (PDT)
+Date:   Sat, 28 Oct 2023 15:43:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bc767f0608ce8895@google.com>
+Subject: [syzbot] [ntfs3?] possible deadlock in indx_read
+From:   syzbot <syzbot+1e19c0a6b5e324635721@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,155 +55,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: f99b926f6543faeadba1b4524d8dc9c102489135  irqchip/sifive-plic: Fix syscore registration for multi-socket systems
+Hello,
 
-elapsed time: 2282m
+syzbot found the following issue on:
 
-configs tested: 136
-configs skipped: 2
+HEAD commit:    f017d9a92a73 Add linux-next specific files for 20231024
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=114f9135680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8fd5ab06ad389b6f
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e19c0a6b5e324635721
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231027   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                          collie_defconfig   clang
-arm                                 defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                   randconfig-001-20231027   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386         buildonly-randconfig-002-20231027   gcc  
-i386         buildonly-randconfig-004-20231027   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231027   gcc  
-i386                  randconfig-002-20231027   gcc  
-i386                  randconfig-003-20231027   gcc  
-i386                  randconfig-004-20231027   gcc  
-i386                  randconfig-005-20231027   gcc  
-i386                  randconfig-006-20231027   gcc  
-i386                  randconfig-011-20231027   gcc  
-i386                  randconfig-012-20231027   gcc  
-i386                  randconfig-013-20231027   gcc  
-i386                  randconfig-014-20231027   gcc  
-i386                  randconfig-015-20231027   gcc  
-i386                  randconfig-016-20231027   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231027   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                  maltasmvp_eva_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                      chrp32_defconfig   gcc  
-powerpc                     redwood_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231027   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231027   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231027   gcc  
-x86_64                randconfig-002-20231027   gcc  
-x86_64                randconfig-003-20231027   gcc  
-x86_64                randconfig-004-20231027   gcc  
-x86_64                randconfig-005-20231027   gcc  
-x86_64                randconfig-006-20231027   gcc  
-x86_64                randconfig-011-20231027   gcc  
-x86_64                randconfig-012-20231027   gcc  
-x86_64                randconfig-013-20231027   gcc  
-x86_64                randconfig-014-20231027   gcc  
-x86_64                randconfig-015-20231027   gcc  
-x86_64                randconfig-016-20231027   gcc  
-x86_64                randconfig-071-20231027   gcc  
-x86_64                randconfig-072-20231027   gcc  
-x86_64                randconfig-073-20231027   gcc  
-x86_64                randconfig-074-20231027   gcc  
-x86_64                randconfig-075-20231027   gcc  
-x86_64                randconfig-076-20231027   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/feca2ffa52fd/disk-f017d9a9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c2643e9e7d02/vmlinux-f017d9a9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7492edb5b60c/bzImage-f017d9a9.xz
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e19c0a6b5e324635721@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc7-next-20231024-syzkaller #0 Not tainted
+------------------------------------------------------
+kworker/u4:0/24418 is trying to acquire lock:
+ffff888039a1e1c0 (&indx->run_lock){.+.+}-{3:3}, at: indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
+
+but task is already holding lock:
+ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
+ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_update_parent fs/ntfs3/frecord.c:3230 [inline]
+ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x15a4/0x2850 fs/ntfs3/frecord.c:3321
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #4 (&ni->ni_lock#2){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x181/0x1330 kernel/locking/mutex.c:747
+       ntfs_set_state+0x1d2/0x6a0 fs/ntfs3/fsntfs.c:946
+       ni_remove_name+0x2ff/0x670 fs/ntfs3/frecord.c:2926
+       ntfs_unlink_inode+0x37a/0x740 fs/ntfs3/inode.c:1772
+       ntfs_rename+0x387/0xec0 fs/ntfs3/namei.c:288
+       vfs_rename+0xe20/0x1c30 fs/namei.c:4843
+       do_renameat2+0xc3c/0xdc0 fs/namei.c:4995
+       __do_sys_rename fs/namei.c:5041 [inline]
+       __se_sys_rename fs/namei.c:5039 [inline]
+       __x64_sys_rename+0x81/0xa0 fs/namei.c:5039
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+       entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+-> #3 (&ni->ni_lock#2/4){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x181/0x1330 kernel/locking/mutex.c:747
+       ni_lock fs/ntfs3/ntfs_fs.h:1124 [inline]
+       ntfs_fallocate+0x73d/0x1260 fs/ntfs3/file.c:499
+       vfs_fallocate+0x46c/0xe50 fs/open.c:324
+       ksys_fallocate fs/open.c:347 [inline]
+       __do_sys_fallocate fs/open.c:355 [inline]
+       __se_sys_fallocate fs/open.c:353 [inline]
+       __x64_sys_fallocate+0xd5/0x140 fs/open.c:353
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+       entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+-> #2 (mapping.invalidate_lock#5){++++}-{3:3}:
+       down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
+       filemap_invalidate_lock_shared include/linux/fs.h:857 [inline]
+       filemap_fault+0x28c/0x3570 mm/filemap.c:3225
+       __do_fault+0x107/0x5f0 mm/memory.c:4268
+       do_read_fault mm/memory.c:4631 [inline]
+       do_fault mm/memory.c:4765 [inline]
+       do_pte_missing mm/memory.c:3733 [inline]
+       handle_pte_fault mm/memory.c:5041 [inline]
+       __handle_mm_fault+0x2682/0x3d60 mm/memory.c:5182
+       handle_mm_fault+0x474/0x9f0 mm/memory.c:5347
+       faultin_page mm/gup.c:956 [inline]
+       __get_user_pages+0x4b1/0x1480 mm/gup.c:1239
+       populate_vma_page_range+0x2d4/0x410 mm/gup.c:1677
+       __mm_populate+0x1d6/0x380 mm/gup.c:1786
+       mm_populate include/linux/mm.h:3379 [inline]
+       vm_mmap_pgoff+0x2cc/0x3b0 mm/util.c:551
+       ksys_mmap_pgoff+0x421/0x5a0 mm/mmap.c:1428
+       __do_sys_mmap arch/x86/kernel/sys_x86_64.c:93 [inline]
+       __se_sys_mmap arch/x86/kernel/sys_x86_64.c:86 [inline]
+       __x64_sys_mmap+0x125/0x190 arch/x86/kernel/sys_x86_64.c:86
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+       entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+-> #1 (&mm->mmap_lock){++++}-{3:3}:
+       __might_fault mm/memory.c:5958 [inline]
+       __might_fault+0x11b/0x190 mm/memory.c:5951
+       _copy_to_user+0x2b/0xb0 lib/usercopy.c:36
+       copy_to_user include/linux/uaccess.h:191 [inline]
+       fiemap_fill_next_extent+0x232/0x380 fs/ioctl.c:145
+       ni_fiemap+0x440/0xc00 fs/ntfs3/frecord.c:2065
+       ntfs_fiemap+0xc9/0x110 fs/ntfs3/file.c:1164
+       ioctl_fiemap fs/ioctl.c:220 [inline]
+       do_vfs_ioctl+0x339/0x1920 fs/ioctl.c:811
+       __do_sys_ioctl fs/ioctl.c:869 [inline]
+       __se_sys_ioctl fs/ioctl.c:857 [inline]
+       __x64_sys_ioctl+0x112/0x210 fs/ioctl.c:857
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+       entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+-> #0 (&indx->run_lock){.+.+}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x2e22/0x5dc0 kernel/locking/lockdep.c:5136
+       lock_acquire kernel/locking/lockdep.c:5753 [inline]
+       lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+       down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
+       indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
+       indx_find+0x4a9/0x980 fs/ntfs3/index.c:1181
+       indx_update_dup+0x166/0x440 fs/ntfs3/index.c:2659
+       ni_update_parent fs/ntfs3/frecord.c:3233 [inline]
+       ni_write_inode+0x1650/0x2850 fs/ntfs3/frecord.c:3321
+       write_inode fs/fs-writeback.c:1473 [inline]
+       __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1690
+       writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1916
+       __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1987
+       wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2094
+       wb_check_old_data_flush fs/fs-writeback.c:2198 [inline]
+       wb_do_writeback fs/fs-writeback.c:2251 [inline]
+       wb_workfn+0x9f8/0xfd0 fs/fs-writeback.c:2279
+       process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
+       process_scheduled_works kernel/workqueue.c:2703 [inline]
+       worker_thread+0x8b6/0x1280 kernel/workqueue.c:2784
+       kthread+0x337/0x440 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+other info that might help us debug this:
+
+Chain exists of:
+  &indx->run_lock --> &ni->ni_lock#2/4 --> &ni->ni_lock#2
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ni->ni_lock#2);
+                               lock(&ni->ni_lock#2/4);
+                               lock(&ni->ni_lock#2);
+  rlock(&indx->run_lock);
+
+ *** DEADLOCK ***
+
+5 locks held by kworker/u4:0/24418:
+ #0: ffff88814226d938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x78a/0x15e0 kernel/workqueue.c:2605
+ #1: ffffc9000326fd80 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x7f4/0x15e0 kernel/workqueue.c:2606
+ #2: ffff888030fde0e0 (&type->s_umount_key#65){++++}-{3:3}, at: super_trylock_shared+0x1e/0xf0 fs/super.c:610
+ #3: ffff888039a1e840 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
+ #3: ffff888039a1e840 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x1c6/0x2850 fs/ntfs3/frecord.c:3262
+ #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1144 [inline]
+ #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_update_parent fs/ntfs3/frecord.c:3230 [inline]
+ #4: ffff888039a1e0e0 (&ni->ni_lock#2){+.+.}-{3:3}, at: ni_write_inode+0x15a4/0x2850 fs/ntfs3/frecord.c:3321
+
+stack backtrace:
+CPU: 1 PID: 24418 Comm: kworker/u4:0 Not tainted 6.6.0-rc7-next-20231024-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Workqueue: writeback wb_workfn (flush-7:4)
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x310/0x3f0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x2e22/0x5dc0 kernel/locking/lockdep.c:5136
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+ down_read+0x9c/0x470 kernel/locking/rwsem.c:1526
+ indx_read+0x251/0xcd0 fs/ntfs3/index.c:1066
+ indx_find+0x4a9/0x980 fs/ntfs3/index.c:1181
+ indx_update_dup+0x166/0x440 fs/ntfs3/index.c:2659
+ ni_update_parent fs/ntfs3/frecord.c:3233 [inline]
+ ni_write_inode+0x1650/0x2850 fs/ntfs3/frecord.c:3321
+ write_inode fs/fs-writeback.c:1473 [inline]
+ __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1690
+ writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1916
+ __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1987
+ wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2094
+ wb_check_old_data_flush fs/fs-writeback.c:2198 [inline]
+ wb_do_writeback fs/fs-writeback.c:2251 [inline]
+ wb_workfn+0x9f8/0xfd0 fs/fs-writeback.c:2279
+ process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b6/0x1280 kernel/workqueue.c:2784
+ kthread+0x337/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
