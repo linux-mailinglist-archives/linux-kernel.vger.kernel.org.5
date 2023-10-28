@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4E57DA59A
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04767DA5AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 10:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjJ1H6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 03:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S233158AbjJ1IBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 04:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJ1H6H (ORCPT
+        with ESMTP id S229460AbjJ1IBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 03:58:07 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B75F3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 00:58:04 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so40362071fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 00:58:04 -0700 (PDT)
+        Sat, 28 Oct 2023 04:01:38 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5007FA
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:01:35 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507adc3381cso4078868e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 01:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698479882; x=1699084682; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698480094; x=1699084894; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wirm5Q3dcoOD4F+NMOnOVCZSztH47TeUP0VbK8KxV8I=;
-        b=ZdI/E+qJ7KLCfhV6NU+gRdW0f2EvGm3u6IDPlZHmlMfWfqfeTWJi8hgvoysfGgg0p4
-         VSyxZO4Invpu6y0jCH+OHYfw6WwwEincQ4NK9vl42z43z807cYWtjrp4LaMVzhxivrz2
-         ZRlg/nIbU06zHtKzS7akoQusU1+6nI3YofaxnCLWaiugt6KCxMM9mRbyCnziQV8Gn1h2
-         Dexzh1mggJoDT3g4iYGNO2QBrFjIJ2vYZO3rr/UQYfU7gWC4r2j9jcomuYPBO0Mdmcqt
-         lDcbii0lDHtSzAooxgFhupK7L+oBUe5LZq50N1+1kX7JU+KWty+7ZP+t1MRK/EPJhHBj
-         lSKg==
+        bh=fKMQucF/uLZCGIr/BFMo7BXVL6Ys3Ai9lA63eq4X32E=;
+        b=QfIeN1AZUwtZvPEJnoQmAIGLRB9/cc2oIlMgGg71mCWMOT9rwaaxv2Of0gpn4r9o1L
+         RAK/WJNUiNDwyF2VkfpcMXlJEcgkPa6Tqq4AgiVNC2J2g1z5vX/alkRpmbRYZ1XrLWlO
+         tCTI2OzK1xk47UAr7YFO/dnGjuoo5EvuTbsDz1nBS4HqUI1ocs2efAbKY+Qv+awvLUec
+         zTJPnrGfAtXtpnXR1sHdBWXoMjlBgmbsrYnAtD/wK7P05MmdajWtx+bPiQa5SHkTQDa8
+         0UoBno9YdA5l2A8AkFRjjKJDTGp1d3pnJuHso1lC5Z1Sx3cdp3ZgZUrrj4vK7s/9YqQU
+         u/aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698479882; x=1699084682;
+        d=1e100.net; s=20230601; t=1698480094; x=1699084894;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wirm5Q3dcoOD4F+NMOnOVCZSztH47TeUP0VbK8KxV8I=;
-        b=qnxqYiIwZWASaEN4jYyOMvpePolVt5+FNV5TAqEGe7MYFyxV5xmtXpmoPQf8iXHnBx
-         T1VyaJXD5Vd/eudLuE1a/0FK4I4wOtmi3q8GEiEddTKiH3a2iRpzbuIyRYGN/kCE/0te
-         4sjNUmMZO6MYGHlnGDJTQNVL9sQLJ3vwOb7sBQTLrkTjRYSLYxLpMAcreVXUzl73I9wx
-         hI18BeKyHXU3gb8FwKfQ29dZXhlFoLzF2UOJignwcsh8vg4BiUuXu1+eB2gvKzQL+VTJ
-         4KELO/hQgxlWcalS0q+gshuuFeuzBQvkjLhpViSo8NRO7QT67+BJRekhNgrCTW2GOBmK
-         4N9g==
-X-Gm-Message-State: AOJu0YwGf/0Prp7fyzzGZ55LjzZn+pKpF8ayUpSA06ZmDT5WFttV5J1k
-        frGazOszD9AHuzXVARK5H9L2zw==
-X-Google-Smtp-Source: AGHT+IGxGFiRG1NAScIBM73dNIGn1bPLnq8cjpK6Q4S6ezx5gtbaCjjBVAQ/T8ESnBZnRDnq8nm6Hw==
-X-Received: by 2002:a05:6512:1107:b0:508:1178:efa4 with SMTP id l7-20020a056512110700b005081178efa4mr4083984lfg.55.1698479881784;
-        Sat, 28 Oct 2023 00:58:01 -0700 (PDT)
+        bh=fKMQucF/uLZCGIr/BFMo7BXVL6Ys3Ai9lA63eq4X32E=;
+        b=ierp9Fg61wQjpF47FzJo9cjLkgEZIxu0+fK4yQV6kaREaTv2s33wbcdA1kEjVO0BFZ
+         fGItrF6OwtTap28mGsG7UALYcYfy0h+zeOClhvr3rYw2z9Q2k7c39xJUVuxaWphHF1OX
+         PlIqvrh7tx0WHpvK9QKIyRJAekL2C7jPIBdXHEJjdSvZoSvcVtEuCLm3HADxMBC1pIVy
+         S5IEQUrBY6sKBDCLYMabRJwyGWymELL2vNZneQsgXDWMcF/eFVdLCLNtPGdIpFtVpcg0
+         COGXaHtARqnZcKqoHhR/kkdhKCfLZPVX4lzIvs+s/lozn2a+/SMaM+uyjpqzsRA0n1i9
+         zJ2w==
+X-Gm-Message-State: AOJu0YyQn3qIGZhSvC+fP9/vVKkHMumfvxihwzeagVAKWIANsWjSJtYA
+        3+37eXIPxm+7zNmjiS/tEFS+cQ==
+X-Google-Smtp-Source: AGHT+IEgVcEcjNrcWyZn1TIa7/8oqWiy8EQyZr4FifWxeAVPZLegawcvYu73ChfKtaUICj+kGYnzNQ==
+X-Received: by 2002:a19:4f42:0:b0:507:a40e:d8bf with SMTP id a2-20020a194f42000000b00507a40ed8bfmr3365332lfk.7.1698480093991;
+        Sat, 28 Oct 2023 01:01:33 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id f22-20020ac251b6000000b005007e7211f7sm571734lfk.21.2023.10.28.00.58.00
+        by smtp.gmail.com with ESMTPSA id l3-20020ac24a83000000b0050804a97f01sm570067lfp.160.2023.10.28.01.01.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 00:58:01 -0700 (PDT)
-Message-ID: <2a29c027-4431-4693-98d4-ba09ad46591b@linaro.org>
-Date:   Sat, 28 Oct 2023 09:57:59 +0200
+        Sat, 28 Oct 2023 01:01:33 -0700 (PDT)
+Message-ID: <b00177e6-9b2b-4bdf-9774-bdaefab50d02@linaro.org>
+Date:   Sat, 28 Oct 2023 10:01:32 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/7] Add a few mt8183 follower boards.
+Subject: Re: [PATCH 1/9] dt-bindings: remoteproc: qcom: sc7180-pas: Fix SC7280
+ MPSS PD-names
 Content-Language: en-US
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231026191343.3345279-1-hsinyi@chromium.org>
- <7b737537-38f2-4404-b469-c67005cdaf83@linaro.org>
- <CAJMQK-jQUHz8-hEx4DzNU3cOnN59JG1xFBPH5mUndLV-rbk+Jg@mail.gmail.com>
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
+ <20231027-sc7280-remoteprocs-v1-1-05ce95d9315a@fairphone.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,9 +119,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJMQK-jQUHz8-hEx4DzNU3cOnN59JG1xFBPH5mUndLV-rbk+Jg@mail.gmail.com>
+In-Reply-To: <20231027-sc7280-remoteprocs-v1-1-05ce95d9315a@fairphone.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -130,31 +131,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 23:22, Hsin-Yi Wang wrote:
-> On Fri, Oct 27, 2023 at 4:17 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 26/10/2023 21:09, Hsin-Yi Wang wrote:
->>> Add makomo, pico, and katsu which are mt8183 followers.
->>>
->>> v4: based on https://lore.kernel.org/all/20231025093816.44327-1-angelogioacchino.delregno@collabora.com/
->>>
->>
->> Where is the changelog? It's already v4 and still no changelog...
->>
+On 27/10/2023 16:20, Luca Weiss wrote:
+> The power domains for MPSS on SC7280 are actually named CX and MSS, and
+> not CX and MX. Adjust the name which also aligns the bindings with the
+> dts and fixes validation.
 > 
-> v3:https://patchwork.kernel.org/project/linux-mediatek/cover/20231025215517.1388735-1-hsinyi@chromium.org/
-> v2:https://patchwork.kernel.org/project/linux-mediatek/cover/20231024212618.1079676-1-hsinyi@chromium.org/
-> v1:https://patchwork.kernel.org/project/linux-mediatek/cover/20231024000724.57714-1-hsinyi@chromium.org/
+> Fixes: 8bb92d6fd0b3 ("dt-bindings: remoteproc: qcom,sc7180-pas: split into separate file")
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> changelog with previous version are in each of the patchset. eg:
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20231025215517.1388735-5-hsinyi@chromium.org/
 
-One would think but:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20231025215517.1388735-7-hsinyi@chromium.org/
-https://patchwork.kernel.org/project/linux-mediatek/patch/20231025215517.1388735-3-hsinyi@chromium.org/
-
-Usually expected is in such case to wrote "v4: No changes".
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
