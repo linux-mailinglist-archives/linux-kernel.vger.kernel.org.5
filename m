@@ -2,109 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8507DA946
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2878F7DA955
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjJ1UZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 16:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S229451AbjJ1Uh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 16:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1UZl (ORCPT
+        with ESMTP id S229446AbjJ1Uhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 16:25:41 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2628AC2
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:25:38 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2f28caab9so1918803b6e.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:25:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698524737; x=1699129537; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q6s/dbIiHsKw5qILIs0FnO/CHdVCCm522luSBKh8UXM=;
-        b=ngF+86yTnPmVwkdBmzrES1X1CBeMciC1hz2SuYgB0I2VSAgg8RVztUpt12MjPLP9D9
-         z8Hg/fjHOW1+FtMDAztP90eSsAau+3RWGwid4+gxtoOjo3LQAo0cvz4megKQGh0QkCFl
-         pqRAk3xRczDpo9gc0I0lDMS6OnTTuefZf2RoSBWrcBmuMkxlAlc3o4f5EmqeHpJRoMGT
-         BGr79HDtc1qZhXqEJR9NF5ldtUyTM6ViqI12KH6YkCkWz7rC8hVhfxnbed+9pxGprZIK
-         K7bfTgFrxd1jcyQuC0DSC6LqDRlianwYAxCWx8+ghY+eT/Nga5fHOYFdoUyVkg5Jyxy0
-         gATQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698524737; x=1699129537;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q6s/dbIiHsKw5qILIs0FnO/CHdVCCm522luSBKh8UXM=;
-        b=PtO7dVEqxFLvSBoT8+CNXGia2jLUzhSvwGXvUj0bAm8fF7RQbr8CNnxbTFs3zXZ8Ps
-         JppDX5O2vV7C50gkgCBNIeDOGYl39c9qTukC79I4C6WrJeUoRj58FZ56XbEHSIDUq4bY
-         fSXvyL1MMxh47XiFKTxfE9LHvq7jemtsMY7+X9NAqQmAQDnRPUn5aZnsbqQLuzkhZysh
-         tJaDxy8txXnQxc4cOq8Y5Yuz33MppMIuVT4qskt2QhjrBnHEZ19o48HbN0onZwHXPSoo
-         EwD8IlgosnuOgLodJ6ptoYlTLUi+MshqW6H/ofyhZa0tBFFnIjHck0CZrkB/m5TktXb6
-         xmuw==
-X-Gm-Message-State: AOJu0Yz2XLpAm2W9Pcn2fmk8qYVfI5+x9XM6p7rmP63yXoWnPDD5ESyk
-        yAhsMRM9aKqdsyJX8fXQxv5KQS0K/jk=
-X-Google-Smtp-Source: AGHT+IHgdcrSFcttPGdKfN9SFlEHz8t+uTkvmaSR08wn5o7z7JDWzEKSLWaWmcv5gBShAZhWs2kn5A==
-X-Received: by 2002:a05:6808:2a87:b0:3ad:f536:2f26 with SMTP id fc7-20020a0568082a8700b003adf5362f26mr6254410oib.18.1698524737423;
-        Sat, 28 Oct 2023 13:25:37 -0700 (PDT)
-Received: from ubuntu ([122.171.167.85])
-        by smtp.gmail.com with ESMTPSA id a18-20020aa780d2000000b006c06804cd39sm3288830pfn.153.2023.10.28.13.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 13:25:37 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 13:25:31 -0700
-From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-To:     Alex Elder <elder@ieee.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kumaran.4353@gmail.com
-Subject: Re: [PATCH v2 3/3] staging: greybus: bootrom: fixed prefer using
- ftrace warning
-Message-ID: <20231028202531.GB2432@ubuntu>
-References: <cover.1697976302.git.nandhakumar.singaram@gmail.com>
- <39be7bb04ce1362b00aa31a638ebe2e88dd81fec.1697976302.git.nandhakumar.singaram@gmail.com>
- <5d457162-d20a-43a5-989e-ef263fbd91b2@ieee.org>
+        Sat, 28 Oct 2023 16:37:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31A0D3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:37:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F38C433C7;
+        Sat, 28 Oct 2023 20:37:50 +0000 (UTC)
+Date:   Sat, 28 Oct 2023 16:37:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux trace kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        "Ajay Kaher" <akaher@vmware.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] eventfs: Test for ei->is_freed when accessing ei->dentry
+Message-ID: <20231028163749.0d3429a1@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d457162-d20a-43a5-989e-ef263fbd91b2@ieee.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 01:20:47PM -0500, Alex Elder wrote:
-> On 10/22/23 7:22 AM, Nandha Kumar Singaram wrote:
-> > Adhere to linux coding style. Reported by checkpatch.pl:
-> > WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-> > 
-> > Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-> 
-> This change looks reasonable to me, though I don't think
-> ftrace provides device information.
-> 
-> Acked-by: Alex Elder <elder@linaro.org>
-> 
-> > ---
-> >   drivers/staging/greybus/bootrom.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
-> > index a8efb86de140..79581457c4af 100644
-> > --- a/drivers/staging/greybus/bootrom.c
-> > +++ b/drivers/staging/greybus/bootrom.c
-> > @@ -491,8 +491,6 @@ static void gb_bootrom_disconnect(struct gb_bundle *bundle)
-> >   {
-> >   	struct gb_bootrom *bootrom = greybus_get_drvdata(bundle);
-> > -	dev_dbg(&bundle->dev, "%s\n", __func__);
-> > -
-> >   	gb_connection_disable(bootrom->connection);
-> >   	/* Disable timeouts */
->
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Thanks Alex for the review and feedback.
+The eventfs_inode (ei) is protected by SRCU, but the ei->dentry is not. It
+is protected by the eventfs_mutex. Anytime the eventfs_mutex is released,
+and access to the ei->dentry needs to be done, it should first check if
+ei->is_freed is set under the eventfs_mutex. If it is, then the ei->dentry
+is invalid and must not be used. The ei->dentry must only be accessed
+under the eventfs_mutex and after checking if ei->is_freed is set.
 
-Regards,
-Nandha Kumar
+When the ei is being freed, it will (under the eventfs_mutex) set is_freed
+and at the same time move the dentry to a free list to be cleared after
+the eventfs_mutex is released. This means that any access to the
+ei->dentry must check first if ei->is_freed is set, because if it is, then
+the dentry is on its way to be freed.
+
+Also add comments to describe this better.
+
+Link: https://lore.kernel.org/all/CA+G9fYt6pY+tMZEOg=SoEywQOe19fGP3uR15SGowkdK+_X85Cg@mail.gmail.com/
+Link: https://lore.kernel.org/all/CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com/
+
+Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Reported-by: Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Beau Belgrave <beaub@linux.microsoft.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 60 ++++++++++++++++++++++++++++++++--------
+ fs/tracefs/internal.h    |  3 +-
+ 2 files changed, 51 insertions(+), 12 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 4d2da7480e5f..385aab6dc982 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -24,7 +24,20 @@
+ #include <linux/delay.h>
+ #include "internal.h"
+ 
++/*
++ * eventfs_mutex protects the eventfs_inode (ei) dentry. Any access
++ * to the ei->dentry must be done under this mutex and after checking
++ * if ei->is_freed is not set. The ei->dentry is released under the
++ * mutex at the same time ei->is_freed is set. If ei->is_freed is set
++ * then the ei->dentry is invalid.
++ */
+ static DEFINE_MUTEX(eventfs_mutex);
++
++/*
++ * The eventfs_inode (ei) itself is protected by SRCU. It is released from
++ * its parent's list and will have is_freed set (under eventfs_mutex).
++ * After the SRCU grace period is over, the ei may be freed.
++ */
+ DEFINE_STATIC_SRCU(eventfs_srcu);
+ 
+ static struct dentry *eventfs_root_lookup(struct inode *dir,
+@@ -234,6 +247,10 @@ create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
+ 	bool invalidate = false;
+ 
+ 	mutex_lock(&eventfs_mutex);
++	if (ei->is_freed) {
++		mutex_unlock(&eventfs_mutex);
++		return NULL;
++	}
+ 	/* If the e_dentry already has a dentry, use it */
+ 	if (*e_dentry) {
+ 		/* lookup does not need to up the ref count */
+@@ -307,6 +324,8 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
+ 	struct eventfs_inode *ei_child;
+ 	struct tracefs_inode *ti;
+ 
++	lockdep_assert_held(&eventfs_mutex);
++
+ 	/* srcu lock already held */
+ 	/* fill parent-child relation */
+ 	list_for_each_entry_srcu(ei_child, &ei->children, list,
+@@ -320,6 +339,7 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
+ 
+ /**
+  * create_dir_dentry - Create a directory dentry for the eventfs_inode
++ * @pei: The eventfs_inode parent of ei.
+  * @ei: The eventfs_inode to create the directory for
+  * @parent: The dentry of the parent of this directory
+  * @lookup: True if this is called by the lookup code
+@@ -327,12 +347,17 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
+  * This creates and attaches a directory dentry to the eventfs_inode @ei.
+  */
+ static struct dentry *
+-create_dir_dentry(struct eventfs_inode *ei, struct dentry *parent, bool lookup)
++create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
++		  struct dentry *parent, bool lookup)
+ {
+ 	bool invalidate = false;
+ 	struct dentry *dentry = NULL;
+ 
+ 	mutex_lock(&eventfs_mutex);
++	if (pei->is_freed || ei->is_freed) {
++		mutex_unlock(&eventfs_mutex);
++		return NULL;
++	}
+ 	if (ei->dentry) {
+ 		/* If the dentry already has a dentry, use it */
+ 		dentry = ei->dentry;
+@@ -435,7 +460,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 	 */
+ 	mutex_lock(&eventfs_mutex);
+ 	ei = READ_ONCE(ti->private);
+-	if (ei)
++	if (ei && !ei->is_freed)
+ 		ei_dentry = READ_ONCE(ei->dentry);
+ 	mutex_unlock(&eventfs_mutex);
+ 
+@@ -449,7 +474,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 		if (strcmp(ei_child->name, name) != 0)
+ 			continue;
+ 		ret = simple_lookup(dir, dentry, flags);
+-		create_dir_dentry(ei_child, ei_dentry, true);
++		create_dir_dentry(ei, ei_child, ei_dentry, true);
+ 		created = true;
+ 		break;
+ 	}
+@@ -583,7 +608,7 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 
+ 	list_for_each_entry_srcu(ei_child, &ei->children, list,
+ 				 srcu_read_lock_held(&eventfs_srcu)) {
+-		d = create_dir_dentry(ei_child, parent, false);
++		d = create_dir_dentry(ei, ei_child, parent, false);
+ 		if (d) {
+ 			ret = add_dentries(&dentries, d, cnt);
+ 			if (ret < 0)
+@@ -637,6 +662,13 @@ static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
+ 	return ret;
+ }
+ 
++static void free_ei(struct eventfs_inode *ei)
++{
++	kfree_const(ei->name);
++	kfree(ei->d_children);
++	kfree(ei);
++}
++
+ /**
+  * eventfs_create_dir - Create the eventfs_inode for this directory
+  * @name: The name of the directory to create.
+@@ -700,12 +732,20 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
+ 	ei->nr_entries = size;
+ 	ei->data = data;
+ 	INIT_LIST_HEAD(&ei->children);
++	INIT_LIST_HEAD(&ei->list);
+ 
+ 	mutex_lock(&eventfs_mutex);
+-	list_add_tail(&ei->list, &parent->children);
+-	ei->d_parent = parent->dentry;
++	if (!parent->is_freed) {
++		list_add_tail(&ei->list, &parent->children);
++		ei->d_parent = parent->dentry;
++	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
++	/* Was the parent freed? */
++	if (list_empty(&ei->list)) {
++		free_ei(ei);
++		ei = NULL;
++	}
+ 	return ei;
+ }
+ 
+@@ -787,13 +827,11 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 	return ERR_PTR(-ENOMEM);
+ }
+ 
+-static void free_ei(struct rcu_head *head)
++static void free_rcu_ei(struct rcu_head *head)
+ {
+ 	struct eventfs_inode *ei = container_of(head, struct eventfs_inode, rcu);
+ 
+-	kfree_const(ei->name);
+-	kfree(ei->d_children);
+-	kfree(ei);
++	free_ei(ei);
+ }
+ 
+ /**
+@@ -880,7 +918,7 @@ void eventfs_remove_dir(struct eventfs_inode *ei)
+ 		for (i = 0; i < ei->nr_entries; i++)
+ 			unhook_dentry(&ei->d_children[i], &dentry_list);
+ 		unhook_dentry(&ei->dentry, &dentry_list);
+-		call_srcu(&eventfs_srcu, &ei->rcu, free_ei);
++		call_srcu(&eventfs_srcu, &ei->rcu, free_rcu_ei);
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 64fde9490f52..21a1fa682b74 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -30,7 +30,7 @@ struct eventfs_inode {
+ 	const struct eventfs_entry	*entries;
+ 	const char			*name;
+ 	struct list_head		children;
+-	struct dentry			*dentry;
++	struct dentry			*dentry; /* Check is_freed to access */
+ 	struct dentry			*d_parent;
+ 	struct dentry			**d_children;
+ 	void				*data;
+@@ -39,6 +39,7 @@ struct eventfs_inode {
+ 	 * @del_list:	list of eventfs_inode to delete
+ 	 * @rcu:	eventfs_inode to delete in RCU
+ 	 * @is_freed:	node is freed if one of the above is set
++	 *   Note if is_freed is set, then dentry is corrupted.
+ 	 */
+ 	union {
+ 		struct list_head	del_list;
+-- 
+2.42.0
+
