@@ -2,45 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1797DA685
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641F07DA68A
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjJ1Kj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 06:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        id S229736AbjJ1KlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 06:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJ1Kjz (ORCPT
+        with ESMTP id S229449AbjJ1KlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 06:39:55 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE57F3;
-        Sat, 28 Oct 2023 03:39:51 -0700 (PDT)
-Received: from kwepemm000009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SHbXn5JS2zVlcb;
-        Sat, 28 Oct 2023 18:35:53 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm000009.china.huawei.com (7.193.23.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 28 Oct 2023 18:39:48 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liulongfang@huawei.com>
-Subject: [PATCH] crypto: hisilicon/qm - remove incorrect type cast
-Date:   Sat, 28 Oct 2023 18:40:12 +0800
-Message-ID: <20231028104012.8648-2-qianweili@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231028104012.8648-1-qianweili@huawei.com>
-References: <20231028104012.8648-1-qianweili@huawei.com>
+        Sat, 28 Oct 2023 06:41:23 -0400
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921BBF2
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 03:41:20 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id wgkmq33su5fs2wgkmqHoZ5; Sat, 28 Oct 2023 12:41:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698489678;
+        bh=Hvnsw6tiEqX0nnVX9A8IeBCG+0I6cphWZAOIfJoabhA=;
+        h=From:To:Cc:Subject:Date;
+        b=d0lOpQhBtwL2y5sCjIptt+P+dH2W6OPXgmaBfxhjpgB8MqUnVnn/KWR9ueM0kfAma
+         ZYdNUuU4iApkxoAgDvQE9DDP3T+MITcL0K8W8GOdSGU8Iz2ibQEpc4ukqqRddj2CPU
+         6CvrakjWoA44h+vaYBzI1Scyzvb0Qos5Iq721fJ5hQ7Q6u8gne0uHcVVrxydHKXk1k
+         DIpjeCF08FrIokT4r1lY8t+NEDWJG1looGecBU/Mel8oQR2uR8xSlcros1L5IWt3Di
+         63J7VtM6hp1q3Sc/JCqZXowF2JZsOgggNGL0hYHNfVL3eBc+R7LkGnFVvnn38awb2D
+         BxAkdtkcl1Tug==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Oct 2023 12:41:18 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH] usb: dwc2: Use seq_buf instead of hand writing it
+Date:   Sat, 28 Oct 2023 12:41:02 +0200
+Message-Id: <4c8b71efe4fe05ed0cc37f33ef774746d4d55299.1698489641.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000009.china.huawei.com (7.193.23.227)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,152 +54,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'offset' type is unsigned long in 'struct debugfs_reg32',
-so type of values casts to unsigned long long is incorrect, and the
-values do not require type cast, remove them.
+cat_printf() re-implements what the seq_buf API does.
+So, switch to the seq_buf API to save some line of code.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/crypto/hisilicon/debugfs.c      | 50 +++++++++++------------
- drivers/crypto/hisilicon/zip/zip_main.c | 54 ++++++++++++-------------
- 2 files changed, 52 insertions(+), 52 deletions(-)
+seq_buf_printf(&buf, ", "); could be seq_buf_puts(), but the result could
+be slightly different. So I kept a conservative approach.
 
-diff --git a/drivers/crypto/hisilicon/debugfs.c b/drivers/crypto/hisilicon/debugfs.c
-index 7e8186fe0512..415139b4abc1 100644
---- a/drivers/crypto/hisilicon/debugfs.c
-+++ b/drivers/crypto/hisilicon/debugfs.c
-@@ -53,34 +53,34 @@ static struct qm_dfx_item qm_dfx_files[] = {
- #define CNT_CYC_REGS_NUM		10
- static const struct debugfs_reg32 qm_dfx_regs[] = {
- 	/* XXX_CNT are reading clear register */
--	{"QM_ECC_1BIT_CNT               ",  0x104000ull},
--	{"QM_ECC_MBIT_CNT               ",  0x104008ull},
--	{"QM_DFX_MB_CNT                 ",  0x104018ull},
--	{"QM_DFX_DB_CNT                 ",  0x104028ull},
--	{"QM_DFX_SQE_CNT                ",  0x104038ull},
--	{"QM_DFX_CQE_CNT                ",  0x104048ull},
--	{"QM_DFX_SEND_SQE_TO_ACC_CNT    ",  0x104050ull},
--	{"QM_DFX_WB_SQE_FROM_ACC_CNT    ",  0x104058ull},
--	{"QM_DFX_ACC_FINISH_CNT         ",  0x104060ull},
--	{"QM_DFX_CQE_ERR_CNT            ",  0x1040b4ull},
--	{"QM_DFX_FUNS_ACTIVE_ST         ",  0x200ull},
--	{"QM_ECC_1BIT_INF               ",  0x104004ull},
--	{"QM_ECC_MBIT_INF               ",  0x10400cull},
--	{"QM_DFX_ACC_RDY_VLD0           ",  0x1040a0ull},
--	{"QM_DFX_ACC_RDY_VLD1           ",  0x1040a4ull},
--	{"QM_DFX_AXI_RDY_VLD            ",  0x1040a8ull},
--	{"QM_DFX_FF_ST0                 ",  0x1040c8ull},
--	{"QM_DFX_FF_ST1                 ",  0x1040ccull},
--	{"QM_DFX_FF_ST2                 ",  0x1040d0ull},
--	{"QM_DFX_FF_ST3                 ",  0x1040d4ull},
--	{"QM_DFX_FF_ST4                 ",  0x1040d8ull},
--	{"QM_DFX_FF_ST5                 ",  0x1040dcull},
--	{"QM_DFX_FF_ST6                 ",  0x1040e0ull},
--	{"QM_IN_IDLE_ST                 ",  0x1040e4ull},
-+	{"QM_ECC_1BIT_CNT               ",  0x104000},
-+	{"QM_ECC_MBIT_CNT               ",  0x104008},
-+	{"QM_DFX_MB_CNT                 ",  0x104018},
-+	{"QM_DFX_DB_CNT                 ",  0x104028},
-+	{"QM_DFX_SQE_CNT                ",  0x104038},
-+	{"QM_DFX_CQE_CNT                ",  0x104048},
-+	{"QM_DFX_SEND_SQE_TO_ACC_CNT    ",  0x104050},
-+	{"QM_DFX_WB_SQE_FROM_ACC_CNT    ",  0x104058},
-+	{"QM_DFX_ACC_FINISH_CNT         ",  0x104060},
-+	{"QM_DFX_CQE_ERR_CNT            ",  0x1040b4},
-+	{"QM_DFX_FUNS_ACTIVE_ST         ",  0x200},
-+	{"QM_ECC_1BIT_INF               ",  0x104004},
-+	{"QM_ECC_MBIT_INF               ",  0x10400c},
-+	{"QM_DFX_ACC_RDY_VLD0           ",  0x1040a0},
-+	{"QM_DFX_ACC_RDY_VLD1           ",  0x1040a4},
-+	{"QM_DFX_AXI_RDY_VLD            ",  0x1040a8},
-+	{"QM_DFX_FF_ST0                 ",  0x1040c8},
-+	{"QM_DFX_FF_ST1                 ",  0x1040cc},
-+	{"QM_DFX_FF_ST2                 ",  0x1040d0},
-+	{"QM_DFX_FF_ST3                 ",  0x1040d4},
-+	{"QM_DFX_FF_ST4                 ",  0x1040d8},
-+	{"QM_DFX_FF_ST5                 ",  0x1040dc},
-+	{"QM_DFX_FF_ST6                 ",  0x1040e0},
-+	{"QM_IN_IDLE_ST                 ",  0x1040e4},
- };
+If only some seq_buf_printf() are used, the final seq_buf_terminate() can
+be avoided, but I think it is cleaner with it.
+---
+ drivers/usb/dwc2/hcd_queue.c | 53 ++++++++----------------------------
+ 1 file changed, 11 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+index 0d4495c6b9f7..66fb74a70bdd 100644
+--- a/drivers/usb/dwc2/hcd_queue.c
++++ b/drivers/usb/dwc2/hcd_queue.c
+@@ -18,6 +18,7 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/usb.h>
++#include <linux/seq_buf.h>
  
- static const struct debugfs_reg32 qm_vf_dfx_regs[] = {
--	{"QM_DFX_FUNS_ACTIVE_ST         ",  0x200ull},
-+	{"QM_DFX_FUNS_ACTIVE_ST         ",  0x200},
- };
+ #include <linux/usb/hcd.h>
+ #include <linux/usb/ch11.h>
+@@ -359,41 +360,6 @@ static unsigned long *dwc2_get_ls_map(struct dwc2_hsotg *hsotg,
+ }
  
- /* define the QM's dfx regs region and region length */
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index db4c964cd649..d6672b777efc 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -270,28 +270,28 @@ static const u64 core_offsets[] = {
- };
+ #ifdef DWC2_PRINT_SCHEDULE
+-/*
+- * cat_printf() - A printf() + strcat() helper
+- *
+- * This is useful for concatenating a bunch of strings where each string is
+- * constructed using printf.
+- *
+- * @buf:   The destination buffer; will be updated to point after the printed
+- *         data.
+- * @size:  The number of bytes in the buffer (includes space for '\0').
+- * @fmt:   The format for printf.
+- * @...:   The args for printf.
+- */
+-static __printf(3, 4)
+-void cat_printf(char **buf, size_t *size, const char *fmt, ...)
+-{
+-	va_list args;
+-	int i;
+-
+-	if (*size == 0)
+-		return;
+-
+-	va_start(args, fmt);
+-	i = vsnprintf(*buf, *size, fmt, args);
+-	va_end(args);
+-
+-	if (i >= *size) {
+-		(*buf)[*size - 1] = '\0';
+-		*buf += *size;
+-		*size = 0;
+-	} else {
+-		*buf += i;
+-		*size -= i;
+-	}
+-}
+-
+ /*
+  * pmap_print() - Print the given periodic map
+  *
+@@ -417,8 +383,7 @@ static void pmap_print(unsigned long *map, int bits_per_period,
  
- static const struct debugfs_reg32 hzip_dfx_regs[] = {
--	{"HZIP_GET_BD_NUM                ",  0x00ull},
--	{"HZIP_GET_RIGHT_BD              ",  0x04ull},
--	{"HZIP_GET_ERROR_BD              ",  0x08ull},
--	{"HZIP_DONE_BD_NUM               ",  0x0cull},
--	{"HZIP_WORK_CYCLE                ",  0x10ull},
--	{"HZIP_IDLE_CYCLE                ",  0x18ull},
--	{"HZIP_MAX_DELAY                 ",  0x20ull},
--	{"HZIP_MIN_DELAY                 ",  0x24ull},
--	{"HZIP_AVG_DELAY                 ",  0x28ull},
--	{"HZIP_MEM_VISIBLE_DATA          ",  0x30ull},
--	{"HZIP_MEM_VISIBLE_ADDR          ",  0x34ull},
--	{"HZIP_CONSUMED_BYTE             ",  0x38ull},
--	{"HZIP_PRODUCED_BYTE             ",  0x40ull},
--	{"HZIP_COMP_INF                  ",  0x70ull},
--	{"HZIP_PRE_OUT                   ",  0x78ull},
--	{"HZIP_BD_RD                     ",  0x7cull},
--	{"HZIP_BD_WR                     ",  0x80ull},
--	{"HZIP_GET_BD_AXI_ERR_NUM        ",  0x84ull},
--	{"HZIP_GET_BD_PARSE_ERR_NUM      ",  0x88ull},
--	{"HZIP_ADD_BD_AXI_ERR_NUM        ",  0x8cull},
--	{"HZIP_DECOMP_STF_RELOAD_CURR_ST ",  0x94ull},
--	{"HZIP_DECOMP_LZ77_CURR_ST       ",  0x9cull},
-+	{"HZIP_GET_BD_NUM                ",  0x00},
-+	{"HZIP_GET_RIGHT_BD              ",  0x04},
-+	{"HZIP_GET_ERROR_BD              ",  0x08},
-+	{"HZIP_DONE_BD_NUM               ",  0x0c},
-+	{"HZIP_WORK_CYCLE                ",  0x10},
-+	{"HZIP_IDLE_CYCLE                ",  0x18},
-+	{"HZIP_MAX_DELAY                 ",  0x20},
-+	{"HZIP_MIN_DELAY                 ",  0x24},
-+	{"HZIP_AVG_DELAY                 ",  0x28},
-+	{"HZIP_MEM_VISIBLE_DATA          ",  0x30},
-+	{"HZIP_MEM_VISIBLE_ADDR          ",  0x34},
-+	{"HZIP_CONSUMED_BYTE             ",  0x38},
-+	{"HZIP_PRODUCED_BYTE             ",  0x40},
-+	{"HZIP_COMP_INF                  ",  0x70},
-+	{"HZIP_PRE_OUT                   ",  0x78},
-+	{"HZIP_BD_RD                     ",  0x7c},
-+	{"HZIP_BD_WR                     ",  0x80},
-+	{"HZIP_GET_BD_AXI_ERR_NUM        ",  0x84},
-+	{"HZIP_GET_BD_PARSE_ERR_NUM      ",  0x88},
-+	{"HZIP_ADD_BD_AXI_ERR_NUM        ",  0x8c},
-+	{"HZIP_DECOMP_STF_RELOAD_CURR_ST ",  0x94},
-+	{"HZIP_DECOMP_LZ77_CURR_ST       ",  0x9c},
- };
+ 	for (period = 0; period < periods_in_map; period++) {
+ 		char tmp[64];
+-		char *buf = tmp;
+-		size_t buf_size = sizeof(tmp);
++		struct seq_buf buf;
+ 		int period_start = period * bits_per_period;
+ 		int period_end = period_start + bits_per_period;
+ 		int start = 0;
+@@ -426,6 +391,8 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+ 		bool printed = false;
+ 		int i;
  
- static const struct debugfs_reg32 hzip_com_dfx_regs[] = {
-@@ -303,11 +303,11 @@ static const struct debugfs_reg32 hzip_com_dfx_regs[] = {
- };
++		seq_buf_init((&s, tmp, sizeof(tmp));
++
+ 		for (i = period_start; i < period_end + 1; i++) {
+ 			/* Handle case when ith bit is set */
+ 			if (i < period_end &&
+@@ -442,17 +409,19 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+ 				continue;
  
- static const struct debugfs_reg32 hzip_dump_dfx_regs[] = {
--	{"HZIP_GET_BD_NUM                ",  0x00ull},
--	{"HZIP_GET_RIGHT_BD              ",  0x04ull},
--	{"HZIP_GET_ERROR_BD              ",  0x08ull},
--	{"HZIP_DONE_BD_NUM               ",  0x0cull},
--	{"HZIP_MAX_DELAY                 ",  0x20ull},
-+	{"HZIP_GET_BD_NUM                ",  0x00},
-+	{"HZIP_GET_RIGHT_BD              ",  0x04},
-+	{"HZIP_GET_ERROR_BD              ",  0x08},
-+	{"HZIP_DONE_BD_NUM               ",  0x0c},
-+	{"HZIP_MAX_DELAY                 ",  0x20},
- };
+ 			if (!printed)
+-				cat_printf(&buf, &buf_size, "%s %d: ",
+-					   period_name, period);
++				seq_buf_printf(&buf, "%s %d: ", period_name,
++					       period);
+ 			else
+-				cat_printf(&buf, &buf_size, ", ");
++				seq_buf_printf(&buf, ", ");
+ 			printed = true;
  
- /* define the ZIP's dfx regs region and region length */
+-			cat_printf(&buf, &buf_size, "%d %s -%3d %s", start,
+-				   units, start + count - 1, units);
++			seq_buf_printf(&buf, "%d %s -%3d %s", start, units,
++				       start + count - 1, units);
+ 			count = 0;
+ 		}
+ 
++		seq_buf_terminate(&s);
++
+ 		if (printed)
+ 			print_fn(tmp, print_data);
+ 	}
 -- 
-2.33.0
+2.34.1
 
