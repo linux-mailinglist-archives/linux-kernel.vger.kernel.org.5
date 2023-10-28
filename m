@@ -2,142 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5337DAA24
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F302D7DAA35
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjJ1XOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 19:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42530 "EHLO
+        id S229562AbjJ1XuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 19:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjJ1XON (ORCPT
+        with ESMTP id S229446AbjJ1XuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 19:14:13 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915571B1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 16:13:57 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso17082325ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 16:13:57 -0700 (PDT)
+        Sat, 28 Oct 2023 19:50:04 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B8ACF;
+        Sat, 28 Oct 2023 16:49:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-408425c7c10so26091045e9.0;
+        Sat, 28 Oct 2023 16:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698534837; x=1699139637; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698536997; x=1699141797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RYq2JBnvfDkZMtFq+gFMcak9lyRAM53Oqx2LdQZI3vI=;
-        b=gEZkrP2YiX4vVYOeeXB7ZtljVqPEl/maZqiQL1ssgjFayGJpuXCPYIAqziTMfgAUzS
-         3cBkzMHmea475AZSzmKa6imwcEd0EpMd+O/H0NS1DK2PP+WUYaIAfXDO1QHrBgtw6prn
-         VxCIrw4o0+plAADTIUEwUv1J9UMKleFWxAhdm/S7tewX0RZSQ5PLZktGAhA1LSHuOyrN
-         spKthjTJp1fwm/tZWO27TKIsK50Ffw4mjsyav8Q6AvPwxQY2OROMsfYXl3oaCQ+yrK/H
-         6BG3AJropXRvA3ApD5tgRK8sin7gfPYSm3RCZgQ4V5ZV+IB102mTSXGruKeaAt4ZCeuT
-         i/ag==
+        bh=g/C8RdsxmTPE6wff6Gcpqd7wLJY2aX8b3m06UTd80i0=;
+        b=QAgyjfAnNngL+dx/G4BVAw1SiSjxt7wgckAsqc4hna5T/hiXtZ9iHo/vmkmdgqfGkj
+         TXFO8g20SiQ8G8LHMT8G+BsXmSK8rdeK/+4wy6EvJ7KPRipDmfKu+db8qGg9EkcnrHUh
+         nUU74hndalEN11M50/dJr2JU3XYogF17fCiUtNEFH7UuNH3y4O0zg/MUewWmeIzP92v+
+         YKUUSiIqgIK5d21C9x4PdZZTRw4xq80b6lBDN4fjO0xzQDQOHkcAivzb1bsnp3amoVbf
+         KiS6G7KdsPBtcNmvPsZhZG/OmOdmObznpI0qQUsT3CscHAN2+V8nY8w+ez7/b8XPauq4
+         VgzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698534837; x=1699139637;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1698536997; x=1699141797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RYq2JBnvfDkZMtFq+gFMcak9lyRAM53Oqx2LdQZI3vI=;
-        b=jc3zzIS8B6/Yfyz7EihbRFYMlkBk0Uzk1toh8OWUyWbGU7iX9/u4KH7dFtOnJozK/4
-         bMGT1c3t7P6oBur2rexjpJAcJF8OaRVq99InDDOMRZzpO6Qn45IyiIxhz/krgOdNm80a
-         1PHShUxjbfGDmajtUCueV+d6PrYNBhsaDfT5Yy0UhU0W8RCJJVUrWpTSoyNAYT/50l6X
-         fZl8OjriNSkvvHwpQNs/Au7ubchraRVDLFllKJFyBQDIO84YOuzL27CdeyQY//rJwf/D
-         QojQBIwXsPq7mbmw70bTJxShB22iGGBlEX+mPJByaMzm2is6cQf1pilQ8wo6PNjUlI7E
-         5K6Q==
-X-Gm-Message-State: AOJu0Ywyio2vQL7ib9tlTaRBZ3m/IRRxFGFXtnPRlne8/gma1TSUC75A
-        FsvUTu8tLnzIhjPA1JE7Q44A2g==
-X-Google-Smtp-Source: AGHT+IHR5gJkl+2hmALdgeC6Mspb2OIhkdCFo9rAzDT7R89li8y2sxi8zbkov4fwyI0EL6o8dg+K/w==
-X-Received: by 2002:a17:902:f542:b0:1c5:a7b7:291c with SMTP id h2-20020a170902f54200b001c5a7b7291cmr8203243plf.12.1698534836728;
-        Sat, 28 Oct 2023 16:13:56 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001b8622c1ad2sm3679345ple.130.2023.10.28.16.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 16:13:56 -0700 (PDT)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v2 11/11] riscv: mm: Always use ASID to flush MM contexts
-Date:   Sat, 28 Oct 2023 16:12:09 -0700
-Message-ID: <20231028231339.3116618-12-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231028231339.3116618-1-samuel.holland@sifive.com>
-References: <20231028231339.3116618-1-samuel.holland@sifive.com>
+        bh=g/C8RdsxmTPE6wff6Gcpqd7wLJY2aX8b3m06UTd80i0=;
+        b=Hm54VAND7BukXAWyG48Pv1DziwUuT+CLWrjeOrYyjWUSFXVpfeux/dksn1yLqd2vXz
+         42JQFgztm5VMseyYrnJM/xCMbyGD0jyoVzH8kcgicXq8e42qtLJxBiJ7v59AbAycu5p+
+         Tj30CHkvAiYvDIjcwyaVF9SfaIxDPofmMxuAXtkpuBxXYSrT5P3mHO1HGiZcfCl5f7Dx
+         s5677HmkQawtRcvF1RqLhkiDXqXsWPTE7/LyeXDgm7d3bXJXMQgh2Lp3gV/Bg9zXI/wx
+         fJ81dmn0Um/DHmwzivYddTg+pSzVOkgQzCxcx4i7knd1Xg8VM3Ggt6KQLLTKJGDjuQyD
+         77Og==
+X-Gm-Message-State: AOJu0Yy4WJlIWM/ZWr8S8YMKjvAG4O5RLL88rHn/oW8P4cklMf5piet/
+        tJHwW2HNi+Uh6ks23MYuN8Hxbdn1OKfh+7HBLvc=
+X-Google-Smtp-Source: AGHT+IFkLIZdxJqOddVHY2lTFwnf1BOfRen48CuhxfISgFdSg4+7VUC7c/jhVA1PEpvon/ctWj1OWuGWlB//tjjpluM=
+X-Received: by 2002:a5d:4049:0:b0:320:8e6:b0cf with SMTP id
+ w9-20020a5d4049000000b0032008e6b0cfmr3731864wrp.42.1698536996822; Sat, 28 Oct
+ 2023 16:49:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1698431765.git.dxu@dxuuu.xyz> <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+In-Reply-To: <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 28 Oct 2023 16:49:45 -0700
+Message-ID: <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/6] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>, antony.antony@secunet.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if multiple ASIDs are not supported, using the single-ASID variant
-of the sfence.vma instruction preserves TLB entries for global (kernel)
-pages. So it is always most efficient to use the single-ASID code path.
+On Fri, Oct 27, 2023 at 11:46=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> This commit adds an unstable kfunc helper to access internal xfrm_state
+> associated with an SA. This is intended to be used for the upcoming
+> IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> words: for custom software RSS.
+>
+> That being said, the function that this kfunc wraps is fairly generic
+> and used for a lot of xfrm tasks. I'm sure people will find uses
+> elsewhere over time.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/net/xfrm.h        |   9 ++++
+>  net/xfrm/Makefile         |   1 +
+>  net/xfrm/xfrm_policy.c    |   2 +
+>  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 117 insertions(+)
+>  create mode 100644 net/xfrm/xfrm_state_bpf.c
+>
+> diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> index 98d7aa78adda..ab4cf66480f3 100644
+> --- a/include/net/xfrm.h
+> +++ b/include/net/xfrm.h
+> @@ -2188,4 +2188,13 @@ static inline int register_xfrm_interface_bpf(void=
+)
+>
+>  #endif
+>
+> +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> +int register_xfrm_state_bpf(void);
+> +#else
+> +static inline int register_xfrm_state_bpf(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  #endif /* _NET_XFRM_H */
+> diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> index cd47f88921f5..547cec77ba03 100644
+> --- a/net/xfrm/Makefile
+> +++ b/net/xfrm/Makefile
+> @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) +=3D xfrm_compat.o
+>  obj-$(CONFIG_XFRM_IPCOMP) +=3D xfrm_ipcomp.o
+>  obj-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface.o
+>  obj-$(CONFIG_XFRM_ESPINTCP) +=3D espintcp.o
+> +obj-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_state_bpf.o
+> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> index 5cdd3bca3637..62e64fa7ae5c 100644
+> --- a/net/xfrm/xfrm_policy.c
+> +++ b/net/xfrm/xfrm_policy.c
+> @@ -4267,6 +4267,8 @@ void __init xfrm_init(void)
+>  #ifdef CONFIG_XFRM_ESPINTCP
+>         espintcp_init();
+>  #endif
+> +
+> +       register_xfrm_state_bpf();
+>  }
+>
+>  #ifdef CONFIG_AUDITSYSCALL
+> diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
+> new file mode 100644
+> index 000000000000..a73a17a6497b
+> --- /dev/null
+> +++ b/net/xfrm/xfrm_state_bpf.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Unstable XFRM state BPF helpers.
+> + *
+> + * Note that it is allowed to break compatibility for these functions si=
+nce the
+> + * interface they are exposed through to BPF programs is explicitly unst=
+able.
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <net/xdp.h>
+> +#include <net/xfrm.h>
+> +
+> +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> + *
+> + * Members:
+> + * @error      - Out parameter, set for any errors encountered
+> + *              Values:
+> + *                -EINVAL - netns_id is less than -1
+> + *                -EINVAL - Passed NULL for opts
+> + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> + *                -ENONET - No network namespace found for netns_id
+> + * @netns_id   - Specify the network namespace for lookup
+> + *              Values:
+> + *                BPF_F_CURRENT_NETNS (-1)
+> + *                  Use namespace associated with ctx
+> + *                [0, S32_MAX]
+> + *                  Network Namespace ID
+> + * @mark       - XFRM mark to match on
+> + * @daddr      - Destination address to match on
+> + * @spi                - Security parameter index to match on
+> + * @proto      - L3 protocol to match on
+> + * @family     - L3 protocol family to match on
+> + */
+> +struct bpf_xfrm_state_opts {
+> +       s32 error;
+> +       s32 netns_id;
+> +       u32 mark;
+> +       xfrm_address_t daddr;
+> +       __be32 spi;
+> +       u8 proto;
+> +       u16 family;
+> +};
+> +
+> +enum {
+> +       BPF_XFRM_STATE_OPTS_SZ =3D sizeof(struct bpf_xfrm_state_opts),
+> +};
+> +
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "Global functions as their definitions will be in xfrm_=
+state BTF");
+> +
+> +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> + *
+> + * Parameters:
+> + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> + *                 Cannot be NULL
+> + * @opts       - Options for lookup (documented above)
+> + *                 Cannot be NULL
+> + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> + */
+> +__bpf_kfunc struct xfrm_state *
+> +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *o=
+pts, u32 opts__sz)
+> +{
+> +       struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> +       struct net *net =3D dev_net(xdp->rxq->dev);
+> +
+> +       if (!opts || opts__sz !=3D BPF_XFRM_STATE_OPTS_SZ) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (opts->netns_id >=3D 0) {
+> +               net =3D get_net_ns_by_id(net, opts->netns_id);
+> +               if (unlikely(!net)) {
+> +                       opts->error =3D -ENONET;
+> +                       return NULL;
+> +               }
+> +       }
+> +
+> +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi=
+,
+> +                                opts->proto, opts->family);
+> +}
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-
-Changes in v2:
- - Update both copies of __flush_tlb_range()
-
- arch/riscv/include/asm/mmu_context.h | 2 --
- arch/riscv/mm/context.c              | 3 +--
- arch/riscv/mm/tlbflush.c             | 5 ++---
- 3 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-index 7030837adc1a..b0659413a080 100644
---- a/arch/riscv/include/asm/mmu_context.h
-+++ b/arch/riscv/include/asm/mmu_context.h
-@@ -33,8 +33,6 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
--DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
--
- #include <asm-generic/mmu_context.h>
- 
- #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 3ca9b653df7d..20057085ab8a 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -18,8 +18,7 @@
- 
- #ifdef CONFIG_MMU
- 
--DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
--
-+static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- static unsigned long num_asids;
- 
- static atomic_long_t current_version;
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 1cfac683bda4..9d06a3e9d330 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -90,8 +90,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 		/* check if the tlbflush needs to be sent to other CPUs */
- 		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
- 
--		if (static_branch_unlikely(&use_asid_allocator))
--			asid = cntx2asid(atomic_long_read(&mm->context.id));
-+		asid = cntx2asid(atomic_long_read(&mm->context.id));
- 	} else {
- 		cmask = cpu_online_mask;
- 		broadcast = true;
-@@ -122,7 +121,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- {
- 	unsigned long asid = FLUSH_TLB_NO_ASID;
- 
--	if (mm && static_branch_unlikely(&use_asid_allocator))
-+	if (mm)
- 		asid = cntx2asid(atomic_long_read(&mm->context.id));
- 
- 	local_flush_tlb_range_asid(start, size, stride, asid);
--- 
-2.42.0
-
+Patch 6 example does little to explain how this kfunc can be used.
+Cover letter sounds promising, but no code to demonstrate the result.
+The main issue is that this kfunc has to be KF_ACQUIRE,
+otherwise bpf prog will keep leaking xfrm_state.
+Plenty of red flags in this RFC.
