@@ -2,199 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9E27DA660
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B527DA65C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjJ1KVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 06:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        id S229805AbjJ1KWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 06:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjJ1KVU (ORCPT
+        with ESMTP id S229736AbjJ1KWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 06:21:20 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0EF18E5
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 03:21:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A7AC1424;
-        Sat, 28 Oct 2023 03:21:59 -0700 (PDT)
-Received: from entos-ampere02.shanghai.arm.com (unknown [10.169.212.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 56FC53F64C;
-        Sat, 28 Oct 2023 03:21:15 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, nd@arm.com,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH v4 2/2] dma-mapping: fix dma_addressing_limited() if dma_range_map can't cover all system RAM
-Date:   Sat, 28 Oct 2023 10:20:59 +0000
-Message-Id: <20231028102059.66891-3-justin.he@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231028102059.66891-1-justin.he@arm.com>
-References: <20231028102059.66891-1-justin.he@arm.com>
+        Sat, 28 Oct 2023 06:22:41 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FAFE5;
+        Sat, 28 Oct 2023 03:22:38 -0700 (PDT)
+Received: from kwepemm000009.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SHb7m371wzpWWH;
+        Sat, 28 Oct 2023 18:17:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemm000009.china.huawei.com (7.193.23.227) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 28 Oct 2023 18:22:35 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>, Weili Qian <qianweili@huawei.com>
+Subject: [PATCH] crypto: hisilicon/qm - print device abnormal information
+Date:   Sat, 28 Oct 2023 18:22:44 +0800
+Message-ID: <20231028102244.43918-1-qianweili@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000009.china.huawei.com (7.193.23.227)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an unusual case that the range map covers right up to the top
-of system RAM, but leaves a hole somewhere lower down. Then it prevents
-the nvme device dma mapping in the checking path of phys_to_dma() and
-causes the hangs at boot.
+When device is abnormal and reports abnormal interrupt event to driver,
+the driver can print device information for error analysis. This patch
+adds some device error-related information output after the device reports
+an abnormal interrupt.
 
-E.g. On an Armv8 Ampere server, the dsdt ACPI table is:
- Method (_DMA, 0, Serialized)  // _DMA: Direct Memory Access
-            {
-                Name (RBUF, ResourceTemplate ()
-                {
-                    QWordMemory (ResourceConsumer, PosDecode, MinFixed,
-MaxFixed, Cacheable, ReadWrite,
-                        0x0000000000000000, // Granularity
-                        0x0000000000000000, // Range Minimum
-                        0x00000000FFFFFFFF, // Range Maximum
-                        0x0000000000000000, // Translation Offset
-                        0x0000000100000000, // Length
-                        ,, , AddressRangeMemory, TypeStatic)
-                    QWordMemory (ResourceConsumer, PosDecode, MinFixed,
-MaxFixed, Cacheable, ReadWrite,
-                        0x0000000000000000, // Granularity
-                        0x0000006010200000, // Range Minimum
-                        0x000000602FFFFFFF, // Range Maximum
-                        0x0000000000000000, // Translation Offset
-                        0x000000001FE00000, // Length
-                        ,, , AddressRangeMemory, TypeStatic)
-                    QWordMemory (ResourceConsumer, PosDecode, MinFixed,
-MaxFixed, Cacheable, ReadWrite,
-                        0x0000000000000000, // Granularity
-                        0x00000060F0000000, // Range Minimum
-                        0x00000060FFFFFFFF, // Range Maximum
-                        0x0000000000000000, // Translation Offset
-                        0x0000000010000000, // Length
-                        ,, , AddressRangeMemory, TypeStatic)
-                    QWordMemory (ResourceConsumer, PosDecode, MinFixed,
-MaxFixed, Cacheable, ReadWrite,
-                        0x0000000000000000, // Granularity
-                        0x0000007000000000, // Range Minimum
-                        0x000003FFFFFFFFFF, // Range Maximum
-                        0x0000000000000000, // Translation Offset
-                        0x0000039000000000, // Length
-                        ,, , AddressRangeMemory, TypeStatic)
-                })
-
-But the System RAM ranges are:
-cat /proc/iomem |grep -i ram
-90000000-91ffffff : System RAM
-92900000-fffbffff : System RAM
-880000000-fffffffff : System RAM
-8800000000-bff5990fff : System RAM
-bff59d0000-bff5a4ffff : System RAM
-bff8000000-bfffffffff : System RAM
-So some RAM ranges are out of dma_range_map.
-
-Fix it by checking whether each of the system RAM resources can be
-properly encompassed within the dma_range_map.
-
-Signed-off-by: Jia He <justin.he@arm.com>
+Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- kernel/dma/direct.c  | 41 +++++++++++++++++++++++++++++++++++++++++
- kernel/dma/direct.h  |  1 +
- kernel/dma/mapping.c | 12 ++++++++++--
- 3 files changed, 52 insertions(+), 2 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 9596ae1aa0da..76cc6daa3ffd 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -598,6 +598,47 @@ int dma_direct_supported(struct device *dev, u64 mask)
- 	return mask >= phys_to_dma_unencrypted(dev, min_mask);
- }
- 
-+/*
-+ * To check whether all ram resource ranges are covered by dma range map
-+ * Returns 0 when further check is needed
-+ * Returns 1 if there is some RAM range can't be covered by dma_range_map
-+ */
-+static int check_ram_in_range_map(unsigned long start_pfn,
-+				  unsigned long nr_pages, void *data)
-+{
-+	unsigned long end_pfn = start_pfn + nr_pages;
-+	const struct bus_dma_region *bdr = NULL;
-+	const struct bus_dma_region *m;
-+	struct device *dev = data;
-+
-+	while (start_pfn < end_pfn) {
-+		for (m = dev->dma_range_map; PFN_DOWN(m->size); m++) {
-+			unsigned long cpu_start_pfn = PFN_DOWN(m->cpu_start);
-+
-+			if (start_pfn >= cpu_start_pfn &&
-+			    start_pfn - cpu_start_pfn < PFN_DOWN(m->size)) {
-+				bdr = m;
-+				break;
-+			}
-+		}
-+		if (!bdr)
-+			return 1;
-+
-+		start_pfn = PFN_DOWN(bdr->cpu_start) + PFN_DOWN(bdr->size);
-+	}
-+
-+	return 0;
-+}
-+
-+bool dma_direct_all_ram_mapped(struct device *dev)
-+{
-+	if (!dev->dma_range_map)
-+		return true;
-+
-+	return !walk_system_ram_range(0, PFN_DOWN(ULONG_MAX) + 1, dev,
-+				      check_ram_in_range_map);
-+}
-+
- size_t dma_direct_max_mapping_size(struct device *dev)
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index 18599f3634c3..4d91a249be74 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -129,16 +129,21 @@
+ #define QM_FIFO_OVERFLOW_TYPE		0xc0
+ #define QM_FIFO_OVERFLOW_TYPE_SHIFT	6
+ #define QM_FIFO_OVERFLOW_VF		0x3f
++#define QM_FIFO_OVERFLOW_QP_SHIFT	16
+ #define QM_ABNORMAL_INF01		0x100014
+ #define QM_DB_TIMEOUT_TYPE		0xc0
+ #define QM_DB_TIMEOUT_TYPE_SHIFT	6
+ #define QM_DB_TIMEOUT_VF		0x3f
++#define QM_DB_TIMEOUT_QP_SHIFT		16
++#define QM_ABNORMAL_INF02		0x100018
++#define QM_AXI_POISON_ERR		BIT(22)
+ #define QM_RAS_CE_ENABLE		0x1000ec
+ #define QM_RAS_FE_ENABLE		0x1000f0
+ #define QM_RAS_NFE_ENABLE		0x1000f4
+ #define QM_RAS_CE_THRESHOLD		0x1000f8
+ #define QM_RAS_CE_TIMES_PER_IRQ		1
+ #define QM_OOO_SHUTDOWN_SEL		0x1040f8
++#define QM_AXI_RRESP_ERR		BIT(0)
+ #define QM_ECC_MBIT			BIT(2)
+ #define QM_DB_TIMEOUT			BIT(10)
+ #define QM_OF_FIFO_OF			BIT(11)
+@@ -1406,7 +1411,7 @@ static void qm_log_hw_error(struct hisi_qm *qm, u32 error_status)
  {
- 	/* If SWIOTLB is active, use its maximum mapping size */
-diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
-index 97ec892ea0b5..18d346118fe8 100644
---- a/kernel/dma/direct.h
-+++ b/kernel/dma/direct.h
-@@ -20,6 +20,7 @@ int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
- bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr);
- int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
- 		enum dma_data_direction dir, unsigned long attrs);
-+bool dma_direct_all_ram_mapped(struct device *dev);
- size_t dma_direct_max_mapping_size(struct device *dev);
+ 	const struct hisi_qm_hw_error *err;
+ 	struct device *dev = &qm->pdev->dev;
+-	u32 reg_val, type, vf_num;
++	u32 reg_val, type, vf_num, qp_id;
+ 	int i;
  
- #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 5bfe782f9a7f..26eaaf4ac996 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -803,8 +803,16 @@ EXPORT_SYMBOL(dma_set_coherent_mask);
-  */
- bool dma_addressing_limited(struct device *dev)
- {
--	return min_not_zero(dma_get_mask(dev), dev->bus_dma_limit) <
--			    dma_get_required_mask(dev);
-+	const struct dma_map_ops *ops = get_dma_ops(dev);
-+
-+	if (min_not_zero(dma_get_mask(dev), dev->bus_dma_limit) <
-+			 dma_get_required_mask(dev))
-+		return true;
-+
-+	if (likely(!ops))
-+		return !dma_direct_all_ram_mapped(dev);
-+
-+	return false;
+ 	for (i = 0; i < ARRAY_SIZE(qm_hw_error); i++) {
+@@ -1422,19 +1427,24 @@ static void qm_log_hw_error(struct hisi_qm *qm, u32 error_status)
+ 			type = (reg_val & QM_DB_TIMEOUT_TYPE) >>
+ 			       QM_DB_TIMEOUT_TYPE_SHIFT;
+ 			vf_num = reg_val & QM_DB_TIMEOUT_VF;
+-			dev_err(dev, "qm %s doorbell timeout in function %u\n",
+-				qm_db_timeout[type], vf_num);
++			qp_id = reg_val >> QM_DB_TIMEOUT_QP_SHIFT;
++			dev_err(dev, "qm %s doorbell timeout in function %u qp %u\n",
++				qm_db_timeout[type], vf_num, qp_id);
+ 		} else if (err->int_msk & QM_OF_FIFO_OF) {
+ 			reg_val = readl(qm->io_base + QM_ABNORMAL_INF00);
+ 			type = (reg_val & QM_FIFO_OVERFLOW_TYPE) >>
+ 			       QM_FIFO_OVERFLOW_TYPE_SHIFT;
+ 			vf_num = reg_val & QM_FIFO_OVERFLOW_VF;
+-
++			qp_id = reg_val >> QM_FIFO_OVERFLOW_QP_SHIFT;
+ 			if (type < ARRAY_SIZE(qm_fifo_overflow))
+-				dev_err(dev, "qm %s fifo overflow in function %u\n",
+-					qm_fifo_overflow[type], vf_num);
++				dev_err(dev, "qm %s fifo overflow in function %u qp %u\n",
++					qm_fifo_overflow[type], vf_num, qp_id);
+ 			else
+ 				dev_err(dev, "unknown error type\n");
++		} else if (err->int_msk & QM_AXI_RRESP_ERR) {
++			reg_val = readl(qm->io_base + QM_ABNORMAL_INF02);
++			if (reg_val & QM_AXI_POISON_ERR)
++				dev_err(dev, "qm axi poison error happened\n");
+ 		}
+ 	}
  }
- EXPORT_SYMBOL(dma_addressing_limited);
- 
 -- 
-2.25.1
+2.33.0
 
