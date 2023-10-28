@@ -2,161 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3166E7DA768
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E027DA779
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 16:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjJ1NzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        id S229581AbjJ1ODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 10:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjJ1NzM (ORCPT
+        with ESMTP id S229461AbjJ1ODb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:55:12 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7A593
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:55:09 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-509109104e2so440907e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:55:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698501307; x=1699106107; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=13B4rWNHywHRgMR1Bza+TmHKe1mS1JOxZEq7LGiAlh4=;
-        b=k61sdXgeir+tpNPDs7GCR1EYlYcU6MCAOinh4K0Icog3K47dDnu5fMcMYQvHtRx41G
-         fx8kpeieUWSvTYegmIxDS/O5s1jA2ypcNwD5kfVOP9Dn3GiGklk2iOiaH3a0L1jEzPJx
-         jaG3/JdEgbZImED9CK/E5Gt8CaaKRgBvoHvzz2A4Gv+fwWlKnHa1AgMTzzCsVS2V+nLb
-         zzIJAiYx7UK44+LM9Q57W2Y66iS2qChQmrLSY3PxhoLDAYJ7q7c//ZD+q3tvJ0/RaSJi
-         lkAy1hjQQddY3KynMHNiRd/z/PmrMZZQ9CC1B1RVOE62wcvlL9X+Cl7zaQdKTHkkwyna
-         xoNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698501307; x=1699106107;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=13B4rWNHywHRgMR1Bza+TmHKe1mS1JOxZEq7LGiAlh4=;
-        b=hrGSFC8neKkJT/N7bEEUl8NzeG2PjavH/9fIqHxLX6i+xbrWSRlRewEaQqiuVpNtpe
-         vq2uoj4Mi9+MZIoIVb3C/KAD6E/ixEcn/XvkjsW8+t35GvOPZtobu0wm3InHfTdm7hhc
-         kI8M4V64OKL6j46nwOIFekoSFDzJVcIW6Y+OOMhU2mPExqdll5gNQ0F1ynotwgZJL+zL
-         pMTFBKgQORq7JShRbWFO79XNR8Cadoqcz9+WVX2H/kJMPBU0m/TKpbbPBTZZhM2ID+2T
-         by9izrp2pA3Q9r/dePoWoWsP4B7SGVwqG/0/SfV3I3K/EJjhrLoK+R663YS96sAMy4ko
-         q80A==
-X-Gm-Message-State: AOJu0YxhnoLVCkN9+qGNlU0017M6HcFafjCu4h0pzOfBaDSRPn2tMQLs
-        V3oXjMWKgenfER3XArdtRU0=
-X-Google-Smtp-Source: AGHT+IHOpRcrvaAeONNReYdl5SEg4qntDuqfyY1rRfqTza9u39llM4DWSWe0dfrHfR3l/lzP1xtNew==
-X-Received: by 2002:a05:6512:14c:b0:506:8b22:bac2 with SMTP id m12-20020a056512014c00b005068b22bac2mr3873234lfo.4.1698501306818;
-        Sat, 28 Oct 2023 06:55:06 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id o15-20020a1709062e8f00b009c70b392051sm2816621eji.100.2023.10.28.06.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 06:55:06 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 28 Oct 2023 15:55:04 +0200
-From:   Ingo Molnar <mingo@kernel.org>
+        Sat, 28 Oct 2023 10:03:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0209C
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 07:03:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17250C433C7;
+        Sat, 28 Oct 2023 14:03:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698501808;
+        bh=chp9cnawE8n3VM2tnnUZVWljPzU2PLJxWi7KUhc5OGw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=G+SjXAzeqDCyldtJtg5IeQFIKzRe6bRA+ZVNh6M/qzRShP7qA3nEyWY1LUWq9Uebr
+         crFSaR9K4Ct2+5BtDURHgfTXHFNg8SYik82vfwi/CeKtXkhJJ62QZ2kAcVl3c5+AZH
+         bSY6LLb7vZGvdHndIJ+AKFFX3zCsHhwfgbF+wSpblOQyvL+vPTQJ9thITbDQK7uP9P
+         TV3yhiVpfXnAANXN7PcwpOteVXT5rJfebgg7QJaZgLfBpDcJExld1COahsmhcmlPfH
+         ju2lRVOwEXumdEHC5R8Ny73mT7wNlwGBwoAFyOwvln8yyLotcRUTlpTW/U0S4Jq+mI
+         07qU1pIluNolQ==
+From:   Christian Brauner <brauner@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [GIT PULL] x86/mm changes for v6.7
-Message-ID: <ZT0SuFRzTlb0Q769@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL for v6.7] vfs super updates
+Date:   Sat, 28 Oct 2023 16:02:33 +0200
+Message-Id: <20231027-vfs-super-aa4b9ecfd803@brauner>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10167; i=brauner@kernel.org; h=from:subject:message-id; bh=chp9cnawE8n3VM2tnnUZVWljPzU2PLJxWi7KUhc5OGw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTaihivu/eodNJ/ps6OeSHzWG7HBD9SmHm4h9dsknu07D6/ lv+zOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaS+5SRYdeJl5KhjNtcJlwx/uwtxn h0btf2jISqZZoeb/IWOK15WsLwv2Btc+3HS0UF3RLtYanr5mkX/nNX17q5e41DRU67WK0EPwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hey Linus,
 
-Please pull the latest x86/mm git tree from:
+The vfs.super tree originally contained a good chunk of the btrfs tree
+as a merge - as mentioned elsewhere - since we had intended to depend on
+work that Christoph did a few months ago. We had allowed btrfs to carry
+the patches themselves.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2023-10-28
+But it since became clear that btrfs/for-next likely does not contain
+any of the patches there's zero reason for the original merge. So the
+merge is dropped. It's not great because it's a late change but it's
+better than bringing in a completely pointless merge.
 
-   # HEAD: a1e2b8b36820d8c91275f207e77e91645b7c6836 x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+I have zero appetite for repeating that unreliable experience again next
+cycle and plan to just carry such conversion changes completely in
+vfs.git going forward.
 
-x86 MM handling code changes for v6.7:
+/* Summary */
+This contains the work to make block device opening functions return a
+struct bdev_handle instead of just a struct block_device. The same
+struct bdev_handle is then also passed to block device closing
+functions.
 
- - Add new NX-stack self-test
- - Improve NUMA partial-CFMWS handling
- - Fix #VC handler bugs resulting in SEV-SNP boot failures
- - Drop the 4MB memory size restriction on minimal NUMA nodes
- - Reorganize headers a bit, in preparation to header dependency reduction efforts
- - Misc cleanups & fixes
+This allows us to propagate context from opening to closing a block
+device without having to modify all users everytime.
 
- Thanks,
+Sidenote, in the future we might even want to try and have block device
+opening functions return a struct file directly but that's a series on
+top of this.
 
-	Ingo
+These are further preparatory changes to be able to count writable opens
+and blocking writes to mounted block devices. That's a separate piece of
+work for next cycle and for that we absolutely need the changes to btrfs
+that have been quietly dropped somehow.
 
------------------->
-Adam Dunlap (2):
-      x86/sev-es: Allow copy_from_kernel_nofault() in earlier boot
-      x86/sev-es: Set x86_virt_bits to the correct value straight away, instead of a two-phase approach
+Originally the series contained a patch that removed the old blkdev_*()
+helpers. But since this would've caused needles churn in -next for
+bcachefs we ended up delaying it.
 
-Alexander Shishkin (2):
-      x86/sev: Move sev_setup_arch() to mem_encrypt.c
-      x86/sev: Drop unneeded #include
+The second piece of work addresses one of the major annoyances about the
+work last cycle, namely that we required dropping s_umount whenever we
+used the superblock and fs_holder_ops for a block device.
 
-Alexey Dobriyan (1):
-      selftests/x86/mm: Add new test that userspace stack is in fact NX
+The reason for that requirement had been that in some codepaths s_umount
+could've been taken under disk->open_mutex (that's always been the case,
+at least theoretically). For example, on surprise block device removal
+or media change. And opening and closing block devices required grabbing
+disk->open_mutex as well.
 
-Alison Schofield (2):
-      x86/numa: Introduce numa_fill_memblks()
-      ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window
+So we did the work and went through the block layer and fixed all those
+places so that s_umount is never taken under disk->open_mutex. This
+means no more brittle games where we yield and reacquire s_umount during
+block device opening and closing and no more requirements where block
+devices need to be closed. Filesystems don't need to care about this.
 
-Binbin Wu (1):
-      selftests/x86/lam: Zero out buffer for readlink()
+There's a bunch of other follow-up work such as moving block device
+freezing and thawing to holder operations which makes it work for all
+block devices and not just the main block device just as we did for
+surprise removal. But that is for next cycle.
 
-Dave Hansen (1):
-      x86/boot: Move x86_cache_alignment initialization to correct spot
+Tested with fstests for all major fses, blktests, LTP.
 
-GUO Zihua (1):
-      x86/sev: Make boot_ghcb_page[] static
+/* Testing */
+clang: Debian clang version 16.0.6 (16)
+gcc: gcc (Debian 13.2.0-5) 13.2.0
 
-Hugh Dickins (1):
-      x86_64: Show CR4.PSE on auxiliaries like on BSP
+All patches are based on v6.6-rc7 and have been sitting in linux-next.
+No build failures or warnings were observed.
 
-Ingo Molnar (1):
-      x86/mm: Move arch_memory_failure() and arch_is_platform_page() definitions from <asm/processor.h> to <asm/pgtable.h>
+/* Conflicts */
 
-Jianlin Li (2):
-      x86/sev/docs: Update document URL in amd-memory-encryption.rst
-      x86/iommu/docs: Update AMD IOMMU specification document URL
+## Merge Conflicts with other trees
 
-Justin Stitt (1):
-      x86/tdx: Replace deprecated strncpy() with strtomem_pad()
+The following trees will have a merge conflict with this tree:
 
-Mike Rapoport (IBM) (1):
-      x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+[1] linux-next: manual merge of the vfs-brauner tree with the mm tree
+    https://lore.kernel.org/r/20230928102504.5c751249@canb.auug.org.au
 
+[2] There used to be a merge conflicts with vfs-6.7.ctime tree. But that
+    merge conflict only happened because of the btrfs merge we carried.
+    So vfs-6.7.ctime now has a merge conflict with btrfs, not with
+    vfs-6.7.super.
 
- Documentation/arch/x86/amd-memory-encryption.rst |   2 +-
- Documentation/arch/x86/iommu.rst                 |   2 +-
- arch/x86/boot/compressed/sev.c                   |   2 +-
- arch/x86/coco/tdx/tdx.c                          |   2 +-
- arch/x86/include/asm/mem_encrypt.h               |   4 +-
- arch/x86/include/asm/numa.h                      |   7 -
- arch/x86/include/asm/pgtable.h                   |   8 +
- arch/x86/include/asm/processor.h                 |   8 -
- arch/x86/include/asm/sparsemem.h                 |   2 +
- arch/x86/kernel/cpu/common.c                     |  40 +++--
- arch/x86/kernel/head_64.S                        |   4 +-
- arch/x86/kernel/setup.c                          |   2 +-
- arch/x86/mm/maccess.c                            |  19 +-
- arch/x86/mm/mem_encrypt.c                        |  34 ++++
- arch/x86/mm/mem_encrypt_amd.c                    |  36 ----
- arch/x86/mm/numa.c                               |  87 +++++++++-
- drivers/acpi/numa/srat.c                         |  11 +-
- include/linux/numa.h                             |   7 +
- tools/testing/selftests/x86/Makefile             |   4 +
- tools/testing/selftests/x86/lam.c                |   6 +-
- tools/testing/selftests/x86/nx_stack.c           | 212 +++++++++++++++++++++++
- 21 files changed, 404 insertions(+), 95 deletions(-)
- create mode 100644 tools/testing/selftests/x86/nx_stack.c
+The following changes since commit 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1:
+
+  Linux 6.6-rc7 (2023-10-22 12:11:21 -1000)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.7.super
+
+for you to fetch changes up to 5aa9130acb98bacacc8bd9f1489a9269430d0eb8:
+
+  porting: update locking requirements (2023-10-28 13:29:23 +0200)
+
+Please consider pulling these changes from the signed vfs-6.7.super tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.7.super
+
+----------------------------------------------------------------
+Christian Brauner (5):
+      block: simplify bdev_del_partition()
+      block: WARN_ON_ONCE() when we remove active partitions
+      block: assert that we're not holding open_mutex over blk_report_disk_dead
+      fs: assert that open_mutex isn't held over holder ops
+      porting: update locking requirements
+
+Christoph Hellwig (1):
+      block: move bdev_mark_dead out of disk_check_media_change
+
+Jan Kara (30):
+      block: Provide bdev_open_* functions
+      block: Use bdev_open_by_dev() in blkdev_open()
+      block: Use bdev_open_by_dev() in disk_scan_partitions() and blkdev_bszset()
+      drdb: Convert to use bdev_open_by_path()
+      pktcdvd: Convert to bdev_open_by_dev()
+      rnbd-srv: Convert to use bdev_open_by_path()
+      xen/blkback: Convert to bdev_open_by_dev()
+      zram: Convert to use bdev_open_by_dev()
+      bcache: Convert to bdev_open_by_path()
+      dm: Convert to bdev_open_by_dev()
+      md: Convert to bdev_open_by_dev()
+      mtd: block2mtd: Convert to bdev_open_by_dev/path()
+      nvmet: Convert to bdev_open_by_path()
+      s390/dasd: Convert to bdev_open_by_path()
+      scsi: target: Convert to bdev_open_by_path()
+      PM: hibernate: Convert to bdev_open_by_dev()
+      PM: hibernate: Drop unused snapshot_test argument
+      mm/swap: Convert to use bdev_open_by_dev()
+      fs: Convert to bdev_open_by_dev()
+      btrfs: Convert to bdev_open_by_path()
+      erofs: Convert to use bdev_open_by_path()
+      ext4: Convert to bdev_open_by_dev()
+      f2fs: Convert to bdev_open_by_dev/path()
+      jfs: Convert to bdev_open_by_dev()
+      nfs/blocklayout: Convert to use bdev_open_by_dev/path()
+      ocfs2: Convert to use bdev_open_by_dev()
+      reiserfs: Convert to bdev_open_by_dev/path()
+      xfs: Convert to bdev_open_by_path()
+      bcache: Fixup error handling in register_cache()
+      fs: Avoid grabbing sb->s_umount under bdev->bd_holder_lock
+
+Lizhi Xu (1):
+      jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+
+ Documentation/filesystems/porting.rst |   7 +++
+ block/bdev.c                          |  65 ++++++++++++++++++---
+ block/disk-events.c                   |  18 +++---
+ block/fops.c                          |  44 +++++++++-----
+ block/genhd.c                         |  19 ++++--
+ block/ioctl.c                         |  11 ++--
+ block/partitions/core.c               |  43 +++++++++-----
+ drivers/block/ataflop.c               |   4 +-
+ drivers/block/drbd/drbd_int.h         |   2 +
+ drivers/block/drbd/drbd_nl.c          |  65 ++++++++++-----------
+ drivers/block/floppy.c                |   4 +-
+ drivers/block/pktcdvd.c               |  76 +++++++++++++-----------
+ drivers/block/rnbd/rnbd-srv.c         |  27 ++++-----
+ drivers/block/rnbd/rnbd-srv.h         |   2 +-
+ drivers/block/xen-blkback/blkback.c   |   4 +-
+ drivers/block/xen-blkback/common.h    |   4 +-
+ drivers/block/xen-blkback/xenbus.c    |  40 +++++++------
+ drivers/block/zram/zram_drv.c         |  31 +++++-----
+ drivers/block/zram/zram_drv.h         |   2 +-
+ drivers/md/bcache/bcache.h            |   2 +
+ drivers/md/bcache/super.c             |  95 +++++++++++++++---------------
+ drivers/md/dm.c                       |  20 ++++---
+ drivers/md/md.c                       |  23 +++-----
+ drivers/md/md.h                       |   4 +-
+ drivers/mtd/devices/block2mtd.c       |  51 +++++++++-------
+ drivers/nvme/target/io-cmd-bdev.c     |  20 ++++---
+ drivers/nvme/target/nvmet.h           |   1 +
+ drivers/s390/block/dasd.c             |  12 ++--
+ drivers/s390/block/dasd_genhd.c       |  45 +++++++-------
+ drivers/s390/block/dasd_int.h         |   2 +-
+ drivers/s390/block/dasd_ioctl.c       |   2 +-
+ drivers/target/target_core_iblock.c   |  19 +++---
+ drivers/target/target_core_iblock.h   |   1 +
+ drivers/target/target_core_pscsi.c    |  26 ++++-----
+ drivers/target/target_core_pscsi.h    |   2 +-
+ fs/btrfs/dev-replace.c                |  14 +++--
+ fs/btrfs/ioctl.c                      |  18 +++---
+ fs/btrfs/volumes.c                    | 107 +++++++++++++++++-----------------
+ fs/btrfs/volumes.h                    |   6 +-
+ fs/cramfs/inode.c                     |   2 +-
+ fs/erofs/data.c                       |   4 +-
+ fs/erofs/internal.h                   |   2 +-
+ fs/erofs/super.c                      |  20 +++----
+ fs/ext4/ext4.h                        |   2 +-
+ fs/ext4/fsmap.c                       |   9 +--
+ fs/ext4/super.c                       |  52 +++++++++--------
+ fs/f2fs/f2fs.h                        |   1 +
+ fs/f2fs/super.c                       |  13 +++--
+ fs/jfs/jfs_logmgr.c                   |  33 ++++++-----
+ fs/jfs/jfs_logmgr.h                   |   2 +-
+ fs/jfs/jfs_mount.c                    |   3 +-
+ fs/nfs/blocklayout/blocklayout.h      |   2 +-
+ fs/nfs/blocklayout/dev.c              |  76 ++++++++++++------------
+ fs/ocfs2/cluster/heartbeat.c          |  81 +++++++++++++------------
+ fs/reiserfs/journal.c                 |  56 ++++++++----------
+ fs/reiserfs/procfs.c                  |   2 +-
+ fs/reiserfs/reiserfs.h                |  11 ++--
+ fs/romfs/super.c                      |   2 +-
+ fs/super.c                            |  66 +++++++++++++--------
+ fs/xfs/xfs_buf.c                      |  22 ++++---
+ fs/xfs/xfs_buf.h                      |   3 +-
+ fs/xfs/xfs_super.c                    |  42 +++++++------
+ include/linux/blkdev.h                |  11 ++++
+ include/linux/device-mapper.h         |   1 +
+ include/linux/fs.h                    |   1 +
+ include/linux/pktcdvd.h               |   4 +-
+ include/linux/swap.h                  |   1 +
+ kernel/power/hibernate.c              |  14 ++---
+ kernel/power/power.h                  |   2 +-
+ kernel/power/swap.c                   |  37 ++++++------
+ mm/swapfile.c                         |  23 ++++----
+ 71 files changed, 854 insertions(+), 684 deletions(-)
