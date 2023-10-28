@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB527DAA18
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E814A7DAA1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjJ1XLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 19:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S229835AbjJ1XNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 19:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjJ1XLm (ORCPT
+        with ESMTP id S229533AbjJ1XNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 19:11:42 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9415ED6;
-        Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77891c236fcso262019385a.3;
-        Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
+        Sat, 28 Oct 2023 19:13:44 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFEFD6
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 16:13:42 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cc131e52f1so18759055ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 16:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698534699; x=1699139499; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
-        b=D2T6KYUM+NLwFRHO0Cclg+cwjQO+kbeFA34kSNssPvsFCVsOkNYVEId+XkhonvgPCe
-         GHiS0nIo9nio5i7bUfLEVe8BZfLMjZ8LxsCkESzI8PKHJiDwLsEv4FUc8T2zhTml9JG4
-         9L1hnJUwUM7DRwYNJvwBK4a2W4hhL1DPCchDPGne/l1Ai9R761vq6zjNGRQi07vh3Z0E
-         dMRAMBsksK5osIHPZZpIRki28Xubl5GeAyOhkvyq12DQJQCOquIvnB0Kyjn0bnPqu8Uh
-         4yjBRKiXL/C1V7rFAZGbkoBF2yuP3r/Nrj5+efktHyQpmB2bb2b4m79kRC2t/X6h1Lf4
-         0BHQ==
+        d=sifive.com; s=google; t=1698534822; x=1699139622; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+YSC/hhoRjtMopBh7FLE1bSq2O3YdveY+o3Gj9D1j+k=;
+        b=UxmzIfftYYnNOz9waJLgkfrA1vz8CLxl09VIpvPuR/CmnJ38g9XlHwXRtdhVANiYY/
+         PHYmCJogcqyWhTaCjjc8OGVJfnrQJKNaFzAmdSbx22YgrAvZwNGelfjbw1JmtZV9OJRd
+         mNFOQW3yC6T4tpPLfA+TR5VHa7AIja0a02uHHHHFfGkJsw3I8P7sO91BP3yyZzVkJBAv
+         0ua7vIHr6Nj0FW0EYUYlPfKmkscaEwmwVBT4uiI/FKQxajFThAcX/08liDZZmPnIEH4D
+         2NukUhfR3KAHWcNlvhmXwPE/L8xSvTPetgqNz5WqkTwhx3EViXvha8+cem2/JEAAlxjC
+         GrVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698534699; x=1699139499;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
-        b=mqHEQSAWoq69H0dDXtOG02+RYbjIy7d+CUSUevSvG4nCKw2hJwgGXF0FmA1bSw7V/b
-         EG3Bv0NYUNGUyOFHuXqByivQVq1wK5sOTGvLTS1DEPUGMsgOR4zpiCzt4EC8YUpNr7sc
-         FcRkcN/trpn17k1O9UizKzG91fB6qR+eIk+Fjvmpu36GwyF/nrKth4o+r+73KgTSpcYE
-         ZSjmuKrF2J8u0jCoplLUr9aAo/m4E1gVJTpVxz+W6mwxRwB9CXLcD54itstt9MVzHHQ4
-         j7NlJSLJqE8Z6DE5itasS7cR5cBDHxI/RRa/PjNAFwZ/gwXcTDdgzrrKEwkKl1U3Ie0H
-         2DAQ==
-X-Gm-Message-State: AOJu0YzINiI5maSNlhA5ksFir6lIgheN5kXMRJusASzleQYrYnwEtu1n
-        zmJT3GgwgUJZblB6aGnQ1Q==
-X-Google-Smtp-Source: AGHT+IGz3+YVwqb4dUdzhuz8wzmFiJtLAHz3MS74BztY0QK4r1cZu0N6BysPVkqTN3lpukHZsE/P9Q==
-X-Received: by 2002:a05:622a:130c:b0:418:a14:9c30 with SMTP id v12-20020a05622a130c00b004180a149c30mr8750949qtk.9.1698534699640;
-        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
-Received: from n191-129-154.byted.org ([147.160.184.150])
-        by smtp.gmail.com with ESMTPSA id z18-20020a05622a061200b00417dd1dd0adsm1968894qta.87.2023.10.28.16.11.39
+        d=1e100.net; s=20230601; t=1698534822; x=1699139622;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+YSC/hhoRjtMopBh7FLE1bSq2O3YdveY+o3Gj9D1j+k=;
+        b=VW9aMAg+ExwdcTJjAOTOwnbmvrCgdctSBp6b25qVzFeovrQsbHlcZ3EzoycUjrkWYk
+         ML5sJpD6l32QYMOcyGAOzLmUcK1ePDynOxFQSQhYrYKk5i80ywS/7qX/9axMIM8YecsU
+         GENC34CbhFL2M16iLrgzjnJGe/lLVR7TvkbuSfWnejHDQ76yenAW0102FvB7EtFl7YDv
+         8uAEG6hOarkFOkIoP4YYQ2mbhPeyjlNMWXZ1aAJNjEf3cLrYKAAuXsSzpmqRvasOmwiI
+         AFlLhehe7BS2DHbDtP313SHgttnVdoRvFEQpVKDcVtkwgJ9Vqpl8WpyP67zsAdO6XXA5
+         J4mg==
+X-Gm-Message-State: AOJu0YwxlzBHBa+XUMSW5mjS3+D3dZMy0YXHBGKBglSV0cVx7pI/fr+D
+        SjI1XXAUQHrae8ARBkIOcRVckw==
+X-Google-Smtp-Source: AGHT+IF0JBsKL86F5ZkzVy7xM0AKZ7eTjPFOs+Rl6fenaIpINViQpBDxNJRC+nKxa/+obzBqy2Feog==
+X-Received: by 2002:a17:903:11d1:b0:1cc:f41:8f82 with SMTP id q17-20020a17090311d100b001cc0f418f82mr8777732plh.16.1698534821805;
+        Sat, 28 Oct 2023 16:13:41 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001b8622c1ad2sm3679345ple.130.2023.10.28.16.13.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 23:11:37 +0000
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Youlun Zhang <zhangyoulun@bytedance.com>
-Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
-Message-ID: <20231028231135.GA2236124@n191-129-154.byted.org>
-References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
- <20231027190254.GA88444@n191-129-154.byted.org>
- <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+        Sat, 28 Oct 2023 16:13:41 -0700 (PDT)
+From:   Samuel Holland <samuel.holland@sifive.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Samuel Holland <samuel.holland@sifive.com>
+Subject: [PATCH v2 00/11] riscv: ASID-related and UP-related TLB flush enhancements
+Date:   Sat, 28 Oct 2023 16:11:58 -0700
+Message-ID: <20231028231339.3116618-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+While reviewing Alexandre Ghiti's "riscv: tlb flush improvements"
+series[1], I noticed that most TLB flush functions end up as a call to
+local_flush_tlb_all() when SMP is disabled. This series resolves that.
+Along the way, I realized that we should be using single-ASID flushes
+wherever possible, so I implemented that as well.
 
-Thanks for taking a look!
+[1]: https://lore.kernel.org/linux-riscv/20231019140151.21629-1-alexghiti@rivosinc.com/
+---
+This series is based on v5 of Alexandre's changes, which I have included
+here so the series can be built by the CI bots. I will rebase once his
+series is merged.
 
-On Sat, Oct 28, 2023 at 09:06:44AM +0200, Daniel Borkmann wrote:
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 21d75108c2e9..7aca28b7d0fd 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
-> > >   			     net_eq(net, dev_net(dev))))
-> > >   			goto out_drop;
-> > >   		skb->dev = dev;
-> > > +		dev_sw_netstats_rx_add(dev, skb->len);
-> > 
-> > This assumes that all devices that support BPF_F_PEER (currently only
-> > veth) use tstats (instead of lstats, or dstats) - is that okay?
-> 
-> Dumb question, but why all this change and not simply just call ...
-> 
->   dev_lstats_add(dev, skb->len)
-> 
-> ... on the host dev ?
+Changes in v2:
+ - Rebase on Alexandre's "riscv: tlb flush improvements" series v5
+ - Move the SMP/UP merge earlier in the series to avoid build issues
+ - Make a copy of __flush_tlb_range() instead of adding ifdefs inside
+ - local_flush_tlb_all() is the only function used on !MMU (smpboot.c)
 
-Since I didn't want to update host-veth's TX counters.  If we
-bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
-I think it means we've bypassed host-veth TX?
+Alexandre Ghiti (4):
+  riscv: Improve tlb_flush()
+  riscv: Improve flush_tlb_range() for hugetlb pages
+  riscv: Make __flush_tlb_range() loop over pte instead of flushing the
+    whole tlb
+  riscv: Improve flush_tlb_kernel_range()
 
-> > If not, should I add another NDO e.g. ->ndo_stats_rx_add()?
-> 
-> Definitely no new stats ndo resp indirect call in fast path.
+Samuel Holland (7):
+  riscv: mm: Combine the SMP and UP TLB flush code
+  riscv: Apply SiFive CIP-1200 workaround to single-ASID sfence.vma
+  riscv: mm: Introduce cntx2asid/cntx2version helper macros
+  riscv: mm: Use a fixed layout for the MM context ID
+  riscv: mm: Make asid_bits a local variable
+  riscv: mm: Preserve global TLB entries when switching contexts
+  riscv: mm: Always use ASID to flush MM contexts
 
-Yeah, I think I'll put a comment saying that all devices that support
-BPF_F_PEER must use tstats (or must use lstats), then.
+ arch/riscv/include/asm/errata_list.h |  12 +-
+ arch/riscv/include/asm/mmu.h         |   3 +
+ arch/riscv/include/asm/mmu_context.h |   2 -
+ arch/riscv/include/asm/sbi.h         |   3 -
+ arch/riscv/include/asm/tlb.h         |   8 +-
+ arch/riscv/include/asm/tlbflush.h    |  59 +++++----
+ arch/riscv/kernel/sbi.c              |  32 ++---
+ arch/riscv/mm/Makefile               |   5 +-
+ arch/riscv/mm/context.c              |  26 ++--
+ arch/riscv/mm/tlbflush.c             | 184 ++++++++++++++++-----------
+ 10 files changed, 186 insertions(+), 148 deletions(-)
 
-Thanks,
-Peilin Ye
+-- 
+2.42.0
 
