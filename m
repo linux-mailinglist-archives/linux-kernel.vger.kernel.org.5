@@ -2,164 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23AE7DA8BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 20:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3627DA8C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 21:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjJ1Sws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 14:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S229570AbjJ1TFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 15:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjJ1Swq (ORCPT
+        with ESMTP id S229446AbjJ1TFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 14:52:46 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9D0F3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 11:52:43 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-66d0f945893so25934426d6.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 11:52:43 -0700 (PDT)
+        Sat, 28 Oct 2023 15:05:37 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B05EB
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:05:35 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a8ee23f043so25966307b3.3
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 12:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1698519163; x=1699123963; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rTzbMaF9e6LFHLkvVnlr1iqkQocBR5uDxVZIr/Uj4WE=;
-        b=bKiCN+XifgLo/kCsXVZ5lyU1MMBSR5PZtUh2oeq3zr3v1A31KOPcJjRPnNr1RFnWya
-         UBCYDpidnkE4lxC4pEAi+LfJoldNgHoDda6NrGGRw9NLWXvQ2vu5n0lo7fzbPgeOfWAP
-         JS7epE/YfcPehp1w8QFwp3bobJG0mqIt1XJGDkSndFNSqApFAdP0SkaAmXQO3GV5wNoU
-         Wqu8ESb06tZ26R0lGjsup22v3l4BE++bPpq+EmqM9ul5ZSvtxtPnDRz3YsujL4VPbvPs
-         oQ4wGRaKBZ827tdr9smCebiTxQu4lUv2F3zUPEADtMwji/lCH57iMNm8wEKgrtY7KUZY
-         ClmA==
+        d=gmail.com; s=20230601; t=1698519934; x=1699124734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wWIdgRFmHPKvDHRv6SpMLld7lnUsj3xAHGK/xCXy82A=;
+        b=m6ryLtQSiXg4dSbnpR7neKmb4+uTyzLGwooeb3LGKbTBDDIlcHvN+QpvUMJrwxEJm1
+         qRlpOGKW/q70FUuISvesyHjpZ5VPcog/D5xETIIZ/xRrD63WkKvgUiGsxY5T27bIfh30
+         BxRgA97tstbxJIkbdlz+sM9QbVRv2tGuz4T9+FPhP2LvcXVHYvQ37OVuOZItqJaHQbic
+         BgVfsu7uhPHSXi5UT2k+HiKJr85kN+QP4NM6+0+TiIaXoQzrt4HpHxnt5/ZtSjgv1qc4
+         3TJ7am0L4w4bOnF8PvsnVF+JOjRC+2qzbk+ixC+CxB7NfRvhMcgwXr9F/Gp4xd2xAeMC
+         RRBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698519163; x=1699123963;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rTzbMaF9e6LFHLkvVnlr1iqkQocBR5uDxVZIr/Uj4WE=;
-        b=S39JQRbGoSBIY+brkc3hpPk3BA4qaA0nDuly1+JN8A1PhLQKjQQjkFMCcEu3GbWIVG
-         CO9O2zPMaRSTXatpnYuCgm+nhQA00Cpn7GBq5atvAenCQyFdHv9boWNhOrmX9KI71vDk
-         dklWaKV51Ute0hbf0xwBTSrCvR7myBOiCIure5SM5BVFKJOT+1fxGThShdzi18HtRYEX
-         OwCm6bXoctOo9iGh2PdrrA4d7PeswSYJMdhnhTYImzg81sQTbgxPgGiOp8qHdOCMS84X
-         Z/p3igkc3/8HmtPOwcH0m3M39jfSvMT6RijcydlAgBQybb+9fDaVFsvKMf0DZm9xiU7F
-         Bxew==
-X-Gm-Message-State: AOJu0Yz8Mb5MEsfYljAiCuG3Gw3zBP1V8JGioFJXQJGr+grGCtFJHRXT
-        047l5qD33MCkQERcBE9feVwoPQ==
-X-Google-Smtp-Source: AGHT+IHRhO2f1MH3WnnbQd9fLdzhnTNzypJ89qAUGrhcvHOOFaTQVJ4ekwM34frzhsDctzrIh0CLVQ==
-X-Received: by 2002:ad4:5aaf:0:b0:66d:8752:b6cf with SMTP id u15-20020ad45aaf000000b0066d8752b6cfmr5006791qvg.26.1698519163004;
-        Sat, 28 Oct 2023 11:52:43 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2000:b002:c988:e7b9:36ab:57c6? ([2600:1700:2000:b002:c988:e7b9:36ab:57c6])
-        by smtp.gmail.com with ESMTPSA id mg22-20020a056214561600b0065b0d9b4ee7sm1820353qvb.20.2023.10.28.11.52.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 11:52:42 -0700 (PDT)
-Message-ID: <e661b2ef-2a9a-44d7-bb32-6c0c8f8b6e85@sifive.com>
-Date:   Sat, 28 Oct 2023 13:52:41 -0500
+        d=1e100.net; s=20230601; t=1698519934; x=1699124734;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wWIdgRFmHPKvDHRv6SpMLld7lnUsj3xAHGK/xCXy82A=;
+        b=h01xQx8wl0SmGUkevjjX4CGTkkcgnk7PbzPiAdASk+zW0UPpu7L+1RnQm60iGboyxD
+         87ycVPy9O8BOrx3iy8NDl4FVlT30ytWAe9IFyIBApavlEn8jEH4euYTclvpeJR8VmWLt
+         WvDxwr23ZD4HJG+hlpD4QWjh8unA5emRfXnsMqZ/RZQihrfOpCn3EVWyQakp6NI4qAN2
+         0MabE1fu/5OQPkBElpgWu1ETwzoS63Ab45K2q+ZuydTIB6PI4HBm+AhBxNednbjmtWZk
+         YH2J7XBa6Wnfk8ZkN4vnQ3crjuK/LKUzqYhIQPEG20M6kszOR8VJ3OsWRN2RvGHak2aU
+         J8ww==
+X-Gm-Message-State: AOJu0Yy+IGQ+53b/uG2GZBP1N7OVR3kjQPuznlYrIFy6W9xi3bkkIajq
+        uR5hQJC8Io6BkG9ZZEBfh/U5Xw3k+LxX3Q==
+X-Google-Smtp-Source: AGHT+IHrYkEcI4lGnNKczgd7jKmjBl2FENry571J4NDiGCSS0z55WXV4VxfuaBzMq1fTTjksiMQJyw==
+X-Received: by 2002:a81:e405:0:b0:5a7:aa65:c536 with SMTP id r5-20020a81e405000000b005a7aa65c536mr5224947ywl.0.1698519933977;
+        Sat, 28 Oct 2023 12:05:33 -0700 (PDT)
+Received: from localhost ([50.221.102.30])
+        by smtp.gmail.com with ESMTPSA id o15-20020a81de4f000000b005add997ae53sm2119688ywl.81.2023.10.28.12.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 12:05:33 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH] lib/find: optimize find_*_bit_wrap
+Date:   Sat, 28 Oct 2023 12:05:29 -0700
+Message-Id: <20231028190530.286300-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] riscv: Improve flush_tlb_range() for hugetlb pages
-Content-Language: en-US
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-References: <20231019140151.21629-1-alexghiti@rivosinc.com>
- <20231019140151.21629-3-alexghiti@rivosinc.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231019140151.21629-3-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-19 9:01 AM, Alexandre Ghiti wrote:
-> flush_tlb_range() uses a fixed stride of PAGE_SIZE and in its current form,
-> when a hugetlb mapping needs to be flushed, flush_tlb_range() flushes the
-> whole tlb: so set a stride of the size of the hugetlb mapping in order to
-> only flush the hugetlb mapping. However, if the hugepage is a NAPOT region,
-> all PTEs that constitute this mapping must be invalidated, so the stride
-> size must actually be the size of the PTE.
-> 
-> Note that THPs are directly handled by flush_pmd_tlb_range().
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/mm/tlbflush.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index fa03289853d8..5933744df91a 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -3,6 +3,7 @@
->  #include <linux/mm.h>
->  #include <linux/smp.h>
->  #include <linux/sched.h>
-> +#include <linux/hugetlb.h>
->  #include <asm/sbi.h>
->  #include <asm/mmu_context.h>
->  
-> @@ -147,7 +148,35 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  		     unsigned long end)
->  {
-> -	__flush_tlb_range(vma->vm_mm, start, end - start, PAGE_SIZE);
-> +	unsigned long stride_size;
-> +
-> +	if (!is_vm_hugetlb_page(vma)) {
-> +		stride_size = PAGE_SIZE;
-> +	} else {
-> +		stride_size = huge_page_size(hstate_vma(vma));
-> +
-> +#ifdef CONFIG_RISCV_ISA_SVNAPOT
+When an offset is 0, there's no need to search a bitmap from the
+beginning after the 1st search failed, because each bit has already
+been tested.
 
-There is a fallback implementation of has_svnapot(), so you do not need this
-preprocessor check. With that removed:
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ include/linux/find.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-
-> +		/*
-> +		 * As stated in the privileged specification, every PTE in a
-> +		 * NAPOT region must be invalidated, so reset the stride in that
-> +		 * case.
-> +		 */
-> +		if (has_svnapot()) {
-> +			if (stride_size >= PGDIR_SIZE)
-> +				stride_size = PGDIR_SIZE;
-> +			else if (stride_size >= P4D_SIZE)
-> +				stride_size = P4D_SIZE;
-
-As a side note, and this is probably premature optimization... PGDIR_SIZE and
-P4D_SIZE check pgtable_l{4,5}_enabled. That's not really necessary here, since
-we are just trying to round down, and there won't be any higher-order hugepages
-if those paging levels are disabled.
-
-> +			else if (stride_size >= PUD_SIZE)
-> +				stride_size = PUD_SIZE;
-> +			else if (stride_size >= PMD_SIZE)
-> +				stride_size = PMD_SIZE;
-> +			else
-> +				stride_size = PAGE_SIZE;
-> +		}
-> +#endif
-> +	}
-> +
-> +	__flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
->  }
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+diff --git a/include/linux/find.h b/include/linux/find.h
+index 5e4f39ef2e72..241b6d028eda 100644
+--- a/include/linux/find.h
++++ b/include/linux/find.h
+@@ -405,7 +405,7 @@ unsigned long find_next_and_bit_wrap(const unsigned long *addr1,
+ {
+ 	unsigned long bit = find_next_and_bit(addr1, addr2, size, offset);
+ 
+-	if (bit < size)
++	if (bit < size || offset == 0)
+ 		return bit;
+ 
+ 	bit = find_first_and_bit(addr1, addr2, offset);
+@@ -427,7 +427,7 @@ unsigned long find_next_bit_wrap(const unsigned long *addr,
+ {
+ 	unsigned long bit = find_next_bit(addr, size, offset);
+ 
+-	if (bit < size)
++	if (bit < size || offset == 0)
+ 		return bit;
+ 
+ 	bit = find_first_bit(addr, offset);
+-- 
+2.39.2
 
