@@ -2,148 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED17DA761
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCA47DA737
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 15:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjJ1Nnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 09:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S229864AbjJ1NWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 09:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjJ1NWV (ORCPT
+        with ESMTP id S229454AbjJ1NWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 09:22:21 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A779AE5
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:22:18 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507c8316abcso3947637e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 06:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698499337; x=1699104137; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E6pdZ2aO7b/DBuGDGSOI5y96/5iv9R+X1Oz+3eai3ok=;
-        b=hS/3xj0C1OacD/bsuv3/FLrDLxotoWEw9Ef0PbZn6O0ixBSS62V99OCS+Cm5jPWXWw
-         1kgEjkgsokMdA01V8EL/IfLha9hh1u1HPtWNCt8FC8JmU4Fnn30IJ6+PDS1SpXp/yaw4
-         Lkc8sEQSYPhUAfb4Vqd4rcoksTk+4+qPI9FYYT9EfOePcs+0C7/14kkCPOqV2TcJVl8j
-         D9ZAeckrkbtOyFTg8GJ5J0KiI/Zj/w1FSm6PSozdTjX2uW13JvMs8dfAOKvf0rHWg6zf
-         UlKLoL2deZaoYY/s4tOYW7Pejn90y55DUfwt1/QgOmxTCKwYy92LzigVCfbvl9P39is1
-         J5Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698499337; x=1699104137;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E6pdZ2aO7b/DBuGDGSOI5y96/5iv9R+X1Oz+3eai3ok=;
-        b=ccmBsxrBfr0TC3mlFiE8aTI8iei19pEbUk/1bbTaCbcncW7JDVzzwcV6WD55gmVj3k
-         khgrBxrilGWMBo8gL4CLllO+vOxs/CBUm5GAXFarlpoW6veMBlH/QlquiXhXKSM4mOnI
-         /qGmPfNr1yFjxM4tHDoflBdzoAF+uGitSz+bbX7dajqbejE8h5klIAMCo+6m/DHrzpZ7
-         xdfAyB0uGkdlVUbomoHQRqYt+HXto6H7ElX7qEJ1Vqtp0IXPCQyLssCR9TMGheefZ1i5
-         +ypfCPU2ipXolY+ZG6ShL6oudVacCxz1aaxr35OSKL3IsgB9N9cvdWilH4zKIMwB7YSO
-         FzaA==
-X-Gm-Message-State: AOJu0YzsDtElhK0Te4TelWub9eS0/0+hf22hzMz2i/p+IXSN6yu1EBut
-        tiwgt0jLGcFZ6oU8hXOeE9gyyg==
-X-Google-Smtp-Source: AGHT+IE0R3d+X38ySMp+r2Oc1WdHuTCVp+cuogvftVJkW1ddwVa5XisoXzYmVnWm4VN29UV31jKb8w==
-X-Received: by 2002:a19:8c0f:0:b0:503:1783:d5a9 with SMTP id o15-20020a198c0f000000b005031783d5a9mr3214741lfd.3.1698499337060;
-        Sat, 28 Oct 2023 06:22:17 -0700 (PDT)
-Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id z12-20020a19504c000000b00507b869b068sm662877lfj.302.2023.10.28.06.22.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 06:22:16 -0700 (PDT)
-Message-ID: <ff0577a5-a46a-4f0c-ad7d-5db8e61cae70@linaro.org>
-Date:   Sat, 28 Oct 2023 15:22:15 +0200
+        Sat, 28 Oct 2023 09:22:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD630E1;
+        Sat, 28 Oct 2023 06:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698499347; x=1730035347;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AfsX+28wvpVYVI/uJyU0Y1wu5/EAzRfsS6SGbjeDVSE=;
+  b=MmLn3CPZH314QLd5H0S+nHtkAGYEzfAMooxPdq/n89M1s4lHXPuQPbt6
+   0GhCVoMZq12z5LRGZ4Aae0TmvG8PeAzWvzqGwi79+326nngoX9J8fcYvV
+   eV+lpIygDYYLaROTbAvb1afy/iplTEVhoe976H8yaTQHXa5mf9fO+DZ5J
+   7RQaFp+/3LJ6wNkTXusnA1SHiN0HbnBNM3AX/yFW42BHplJB/AzdGuWva
+   Jq2keb1AZ4X/yevuFdplgnOOClaoXhO9KLpIqapEA5VMpFFnxUf5Mb+2A
+   xHVie1e91zK+OxSfMfpBlejk9JAJSo4CiB+XFE3GC9w1MCkyoWAEOWibb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="368112763"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="368112763"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 06:22:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="850512765"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="850512765"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Oct 2023 06:22:23 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwjGf-000Blf-0j;
+        Sat, 28 Oct 2023 13:22:21 +0000
+Date:   Sat, 28 Oct 2023 21:22:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 6/7] coresight: stm: Move ACPI support from AMBA driver
+ to platform driver
+Message-ID: <202310282130.HCHZyX0e-lkp@intel.com>
+References: <20231027072943.3418997-7-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] pinctrl: qcom: sm8650-lpass-lpi: add SM8650 LPASS
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231027093615.140656-1-krzysztof.kozlowski@linaro.org>
- <20231027093615.140656-3-krzysztof.kozlowski@linaro.org>
- <42fa773d-b58a-4bd9-b12d-3e9931d2ae6c@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <42fa773d-b58a-4bd9-b12d-3e9931d2ae6c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027072943.3418997-7-anshuman.khandual@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2023 15:05, Konrad Dybcio wrote:
-> On 27.10.2023 11:36, Krzysztof Kozlowski wrote:
->> Add driver for the pin controller in Low Power Audio SubSystem (LPASS)
->> of Qualcomm SM8650 SoC.
->>
->> Notable differences against SM8550 LPASS pin controller:
->> 1. Additional address space for slew rate thus driver uses
->>    LPI_FLAG_SLEW_RATE_SAME_REG and sets slew rate via different
->>    register.
->>
->> 2. Two new pin mux functions: qca_swr_clk and qca_swr_data
-> Hmmm so slimbus is entirely removed on 8650?
-> 
-> Diffing it against 8550, looks sane
+Hi Anshuman,
 
-No, the slimbus functions were there as well.
+kernel test robot noticed the following build warnings:
 
-Best regards,
-Krzysztof
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/acpi-bus soc/for-next atorgue-stm32/stm32-next linus/master v6.6-rc7 next-20231027]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Anshuman-Khandual/coresight-replicator-Move-ACPI-support-from-AMBA-driver-to-platform-driver/20231027-153540
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20231027072943.3418997-7-anshuman.khandual%40arm.com
+patch subject: [PATCH 6/7] coresight: stm: Move ACPI support from AMBA driver to platform driver
+config: arm-randconfig-003-20231028 (https://download.01.org/0day-ci/archive/20231028/202310282130.HCHZyX0e-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310282130.HCHZyX0e-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310282130.HCHZyX0e-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/hwtracing/coresight/coresight-stm.c:151: warning: Function parameter or member 'pclk' not described in 'stm_drvdata'
+
+
+vim +151 drivers/hwtracing/coresight/coresight-stm.c
+
+0f5f9b6ba9e1a7 Suzuki K Poulose  2019-06-19  115  
+237483aa5cf431 Pratik Patel      2016-05-03  116  /**
+237483aa5cf431 Pratik Patel      2016-05-03  117   * struct stm_drvdata - specifics associated to an STM component
+237483aa5cf431 Pratik Patel      2016-05-03  118   * @base:		memory mapped base address for this component.
+237483aa5cf431 Pratik Patel      2016-05-03  119   * @atclk:		optional clock for the core parts of the STM.
+237483aa5cf431 Pratik Patel      2016-05-03  120   * @csdev:		component vitals needed by the framework.
+237483aa5cf431 Pratik Patel      2016-05-03  121   * @spinlock:		only one at a time pls.
+237483aa5cf431 Pratik Patel      2016-05-03  122   * @chs:		the channels accociated to this STM.
+237483aa5cf431 Pratik Patel      2016-05-03  123   * @stm:		structure associated to the generic STM interface.
+9fa3682869d4e1 James Clark       2023-04-25  124   * @mode:		this tracer's mode (enum cs_mode), i.e sysFS, or disabled.
+237483aa5cf431 Pratik Patel      2016-05-03  125   * @traceid:		value of the current ID for this component.
+237483aa5cf431 Pratik Patel      2016-05-03  126   * @write_bytes:	Maximus bytes this STM can write at a time.
+237483aa5cf431 Pratik Patel      2016-05-03  127   * @stmsper:		settings for register STMSPER.
+237483aa5cf431 Pratik Patel      2016-05-03  128   * @stmspscr:		settings for register STMSPSCR.
+237483aa5cf431 Pratik Patel      2016-05-03  129   * @numsp:		the total number of stimulus port support by this STM.
+237483aa5cf431 Pratik Patel      2016-05-03  130   * @stmheer:		settings for register STMHEER.
+237483aa5cf431 Pratik Patel      2016-05-03  131   * @stmheter:		settings for register STMHETER.
+237483aa5cf431 Pratik Patel      2016-05-03  132   * @stmhebsr:		settings for register STMHEBSR.
+237483aa5cf431 Pratik Patel      2016-05-03  133   */
+237483aa5cf431 Pratik Patel      2016-05-03  134  struct stm_drvdata {
+237483aa5cf431 Pratik Patel      2016-05-03  135  	void __iomem		*base;
+237483aa5cf431 Pratik Patel      2016-05-03  136  	struct clk		*atclk;
+ec77ffb6c05951 Anshuman Khandual 2023-10-27  137  	struct clk		*pclk;
+237483aa5cf431 Pratik Patel      2016-05-03  138  	struct coresight_device	*csdev;
+237483aa5cf431 Pratik Patel      2016-05-03  139  	spinlock_t		spinlock;
+237483aa5cf431 Pratik Patel      2016-05-03  140  	struct channel_space	chs;
+237483aa5cf431 Pratik Patel      2016-05-03  141  	struct stm_data		stm;
+237483aa5cf431 Pratik Patel      2016-05-03  142  	local_t			mode;
+237483aa5cf431 Pratik Patel      2016-05-03  143  	u8			traceid;
+237483aa5cf431 Pratik Patel      2016-05-03  144  	u32			write_bytes;
+237483aa5cf431 Pratik Patel      2016-05-03  145  	u32			stmsper;
+237483aa5cf431 Pratik Patel      2016-05-03  146  	u32			stmspscr;
+237483aa5cf431 Pratik Patel      2016-05-03  147  	u32			numsp;
+237483aa5cf431 Pratik Patel      2016-05-03  148  	u32			stmheer;
+237483aa5cf431 Pratik Patel      2016-05-03  149  	u32			stmheter;
+237483aa5cf431 Pratik Patel      2016-05-03  150  	u32			stmhebsr;
+237483aa5cf431 Pratik Patel      2016-05-03 @151  };
+237483aa5cf431 Pratik Patel      2016-05-03  152  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
