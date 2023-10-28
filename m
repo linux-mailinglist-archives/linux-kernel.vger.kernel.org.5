@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0117DAA17
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB527DAA18
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 01:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjJ1XHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 19:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S229768AbjJ1XLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 19:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1XH2 (ORCPT
+        with ESMTP id S229605AbjJ1XLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 19:07:28 -0400
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E110CF;
-        Sat, 28 Oct 2023 16:07:26 -0700 (PDT)
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6be840283ceso3067165b3a.3;
-        Sat, 28 Oct 2023 16:07:26 -0700 (PDT)
+        Sat, 28 Oct 2023 19:11:42 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9415ED6;
+        Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77891c236fcso262019385a.3;
+        Sat, 28 Oct 2023 16:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698534699; x=1699139499; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
+        b=D2T6KYUM+NLwFRHO0Cclg+cwjQO+kbeFA34kSNssPvsFCVsOkNYVEId+XkhonvgPCe
+         GHiS0nIo9nio5i7bUfLEVe8BZfLMjZ8LxsCkESzI8PKHJiDwLsEv4FUc8T2zhTml9JG4
+         9L1hnJUwUM7DRwYNJvwBK4a2W4hhL1DPCchDPGne/l1Ai9R761vq6zjNGRQi07vh3Z0E
+         dMRAMBsksK5osIHPZZpIRki28Xubl5GeAyOhkvyq12DQJQCOquIvnB0Kyjn0bnPqu8Uh
+         4yjBRKiXL/C1V7rFAZGbkoBF2yuP3r/Nrj5+efktHyQpmB2bb2b4m79kRC2t/X6h1Lf4
+         0BHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698534446; x=1699139246;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eDlPBkLdn2EAK6+ebgcvjT1S6LOy4Uub2C1Sv2Bx9Lc=;
-        b=PPFEQ2N4WdYE5udC1tpQ9bFxHn2cKSh7wAI6Q06p3HwugYDqAcz5APKCLhEX/K+8I5
-         wCkgQ2+VxT16pZKPNPOzsypwQGW6JltXQbofN38RwLFaKYiN8Q6uG0gPUQJujpoGAWkp
-         lxH2ruByNzrZvk6E3V/+oXoiCq2gXN7PyXJCNcvNADUfcy5GKSo1hJVR8rkUIdeH24OF
-         f4yXZR0wPeIRErTEphJfOOprGiOGT76tYilJFIxn05DCerKUPhJB7hpu0gPlwWTJU/e3
-         52jnrsB3nGnzdZVGn/AH2D6PaWBoV8pi3w34lOhiyyHFVyGFcwlCzRV4Q5AgG5DTsxpz
-         anAg==
-X-Gm-Message-State: AOJu0Yyhd1aW2wf1WyuYuglVIJh7oM/5xSDoiIw/pGar59OzcBhWpN34
-        aQiLU952al3O5JOmMweF170=
-X-Google-Smtp-Source: AGHT+IFhJa+1mVncSE0wPTEE2mIe537HRM5rVISqh5B77tiL+T93sCHuen690B6KoaDZGmH83Lkmkg==
-X-Received: by 2002:a05:6a00:93aa:b0:6be:bf7:fda5 with SMTP id ka42-20020a056a0093aa00b006be0bf7fda5mr6220884pfb.12.1698534445490;
-        Sat, 28 Oct 2023 16:07:25 -0700 (PDT)
-Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
-        by smtp.gmail.com with ESMTPSA id m16-20020aa78a10000000b0068bc6a75848sm3422684pfa.156.2023.10.28.16.07.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Oct 2023 16:07:24 -0700 (PDT)
-Message-ID: <a344b3b0-a43f-47eb-b5e4-9d54cda62518@acm.org>
-Date:   Sat, 28 Oct 2023 16:07:23 -0700
+        d=1e100.net; s=20230601; t=1698534699; x=1699139499;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jYVnGp3cT6/jvVqSx9OkSVZgoRvtxkzuv24koCwWOG8=;
+        b=mqHEQSAWoq69H0dDXtOG02+RYbjIy7d+CUSUevSvG4nCKw2hJwgGXF0FmA1bSw7V/b
+         EG3Bv0NYUNGUyOFHuXqByivQVq1wK5sOTGvLTS1DEPUGMsgOR4zpiCzt4EC8YUpNr7sc
+         FcRkcN/trpn17k1O9UizKzG91fB6qR+eIk+Fjvmpu36GwyF/nrKth4o+r+73KgTSpcYE
+         ZSjmuKrF2J8u0jCoplLUr9aAo/m4E1gVJTpVxz+W6mwxRwB9CXLcD54itstt9MVzHHQ4
+         j7NlJSLJqE8Z6DE5itasS7cR5cBDHxI/RRa/PjNAFwZ/gwXcTDdgzrrKEwkKl1U3Ie0H
+         2DAQ==
+X-Gm-Message-State: AOJu0YzINiI5maSNlhA5ksFir6lIgheN5kXMRJusASzleQYrYnwEtu1n
+        zmJT3GgwgUJZblB6aGnQ1Q==
+X-Google-Smtp-Source: AGHT+IGz3+YVwqb4dUdzhuz8wzmFiJtLAHz3MS74BztY0QK4r1cZu0N6BysPVkqTN3lpukHZsE/P9Q==
+X-Received: by 2002:a05:622a:130c:b0:418:a14:9c30 with SMTP id v12-20020a05622a130c00b004180a149c30mr8750949qtk.9.1698534699640;
+        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
+Received: from n191-129-154.byted.org ([147.160.184.150])
+        by smtp.gmail.com with ESMTPSA id z18-20020a05622a061200b00417dd1dd0adsm1968894qta.87.2023.10.28.16.11.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 16:11:39 -0700 (PDT)
+Date:   Sat, 28 Oct 2023 23:11:37 +0000
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Youlun Zhang <zhangyoulun@bytedance.com>
+Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+Message-ID: <20231028231135.GA2236124@n191-129-154.byted.org>
+References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+ <20231027190254.GA88444@n191-129-154.byted.org>
+ <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
-Content-Language: en-US
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
-        Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
-        matsuda-daisuke@fujitsu.com
-References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
- <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
- <adad4ee6-ceef-4e45-a13d-048a1377e86f@acm.org>
- <45c23e30-8405-470b-825c-e5166cd8a313@linux.dev>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <45c23e30-8405-470b-825c-e5166cd8a313@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/23 19:48, Zhu Yanjun wrote:
-> In this case, ULP with folio will not work well with current RXE after 
-> this commit is applied.
+Hi Daniel,
 
-Why not? RDMA ULPs like the SRP initiator driver use ib_map_mr_sg(). The
-latter function calls rxe_map_mr_sg() if the RXE driver is used. 
-rxe_map_mr_sg() calls ib_sg_to_pages(). ib_sg_to_pages() translates
-SG-entries that are larger than a virtual memory page into multiple
-entries with size mr->page_size.
+Thanks for taking a look!
+
+On Sat, Oct 28, 2023 at 09:06:44AM +0200, Daniel Borkmann wrote:
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 21d75108c2e9..7aca28b7d0fd 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
+> > >   			     net_eq(net, dev_net(dev))))
+> > >   			goto out_drop;
+> > >   		skb->dev = dev;
+> > > +		dev_sw_netstats_rx_add(dev, skb->len);
+> > 
+> > This assumes that all devices that support BPF_F_PEER (currently only
+> > veth) use tstats (instead of lstats, or dstats) - is that okay?
+> 
+> Dumb question, but why all this change and not simply just call ...
+> 
+>   dev_lstats_add(dev, skb->len)
+> 
+> ... on the host dev ?
+
+Since I didn't want to update host-veth's TX counters.  If we
+bpf_redirect_peer()ed a packet from NIC TC ingress to Pod-veth TC ingress,
+I think it means we've bypassed host-veth TX?
+
+> > If not, should I add another NDO e.g. ->ndo_stats_rx_add()?
+> 
+> Definitely no new stats ndo resp indirect call in fast path.
+
+Yeah, I think I'll put a comment saying that all devices that support
+BPF_F_PEER must use tstats (or must use lstats), then.
 
 Thanks,
-
-Bart.
+Peilin Ye
 
