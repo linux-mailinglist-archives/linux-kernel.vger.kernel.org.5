@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71057DA957
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09F27DA95D
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 22:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjJ1Usq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 16:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S229712AbjJ1U4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 16:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Uso (ORCPT
+        with ESMTP id S229446AbjJ1U4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 16:48:44 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01142D3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:48:41 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507e85ebf50so4473335e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698526120; x=1699130920; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVLQjXVLKZfGCSGch/qGFr8re6qYrJR23uX27QZ5BbI=;
-        b=UPUocww3P8hragmlvqHKHM1kAfZDoyiO12bcrM282lqvAjJov/aUmHudFhiTttvMB0
-         6oBEb4/7cPiqNmFUdoh8q7LnRvlegqtpp6v/BQtFDjPWIoeC4QMLUtxbEIG6lt3E14B4
-         h2TIHyVfHwFk8UHVfa0JNksr7BfbFUhqfKeLoedN5ZTODwamQ4jrzaOCmcOJt/Sivwh+
-         RmotqlevDs+a6Ytts+m9+JnaI/PtTWRFO4O0+3jIwu2aGBKREA2UtyJl2m5iVEsdvewK
-         CuEha96BlWH4NbcSkF6FVDDEflawgp+oVb2yPsXMAl8VEI5Ko7kCZgwwQkRHH55lf4tR
-         G1AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698526120; x=1699130920;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YVLQjXVLKZfGCSGch/qGFr8re6qYrJR23uX27QZ5BbI=;
-        b=v6G5rdHciNErBWVSnRVvztFMo7dPWRxVOeD7C069HkFSkOf83rfIatMPN2vKB0ZNDz
-         8c0I2t1MuMW0+byUe1yiNws9xC9wkLHXWvjX45WZ/Lc0NkgXpnMuTJkawBmdyTsnOI6Z
-         /IiY6MHSYmDfvmQeY9vlcZO/Tq/l+827/4fxNzkXjYHdesSVSzofWTlgngH+ZlytPDgX
-         gJ/oZo9MVnlZ1IDfeFAHdx0UBwYqOp1E3z1FdoWwoH/UYzJvjQT3V2VQz+tVX4Qh05k8
-         p8zgNz6nLZkuyWnQmzmcnfO1Z9my7NZVSuxG7D+7b6a2Cclpckv7YfJHJ1+QVySPpCHl
-         GYlw==
-X-Gm-Message-State: AOJu0Yz8JOEJLIhMNbOx3rc9rVkVyk4BM6CfnKBCQvRuWwWcDvutlTqL
-        C9kCQmVZo7Ge5f/Y/9s5FTWBwg==
-X-Google-Smtp-Source: AGHT+IEbWdI89KrKJ0QcwjzCF/uBDgK1n6sTTVv+58ModTMzwrwhkH4H6gODqlwhlitRT3Pkz1fpzA==
-X-Received: by 2002:a05:6512:324a:b0:4fa:5e76:7ad4 with SMTP id c10-20020a056512324a00b004fa5e767ad4mr3946367lfr.10.1698526120201;
-        Sat, 28 Oct 2023 13:48:40 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id n4-20020ac24904000000b0050300e013f3sm770940lfi.254.2023.10.28.13.48.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 13:48:39 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 28 Oct 2023 22:48:35 +0200
-Subject: [PATCH net-next] net: xscale: Drop unused PHY number
+        Sat, 28 Oct 2023 16:56:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31A9B8
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 13:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698526603; x=1730062603;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2xdmOX1+nYScj0V27GtRPbDInoXKHqK1zJN9coZYscc=;
+  b=D617wmcMboMR9JrcNL/kziIAVnEIgLyqYGuJB/yPm8oXmVaMC88d6SJ9
+   A+8pY5XN2OZY0ujhPzkNDGwyu2lPDTxuXSwpXdnAXuI/3Sa1Asw0yFO4L
+   OFpbZCTDSv+/4QBKwEpJC7pA5P6On76LKHKVYNJLEbgeOFnI1axwDg3+8
+   aPWWmXubqm5S+oCWaNUyYfI1YxAbB/KsaWxabEfcvn4LL/KQKZNZcIhr5
+   nQWHp12eEokFzA0zyhIrWKgZRrxCKvvru+8K0fkRU1fHbkwQWeOG32qKM
+   3lDgunriEqZiApZ7+tiHjd+kE1r65G5jKEOEMUyYDXXqQFsMh3LyZrxjX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="452168104"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="452168104"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 13:56:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="1106760"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 28 Oct 2023 13:56:02 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwqMG-000C4y-38;
+        Sat, 28 Oct 2023 20:56:36 +0000
+Date:   Sun, 29 Oct 2023 04:56:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Baojun Xu <baojun.xu@ti.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz
+Cc:     oe-kbuild-all@lists.linux.dev,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, kevin-lu@ti.com,
+        shenghao-ding@ti.com, baojun.xu@ti.com, peeyush@ti.com,
+        navada@ti.com, tiwai@suse.de
+Subject: Re: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
+Message-ID: <202310290433.ay15yHii-lkp@intel.com>
+References: <20231028092409.96813-1-baojun.xu@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231028-ixp4xx-eth-id-v1-1-57be486d7f0f@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAKJzPWUC/x2MSQqAMAwAv1JyNmCr4PIV8aA1ai61tEUC4t8NH
- odh5oFMiSnDaB5IdHPmKyjYyoA/l3AQ8qYMrnaNrV2PLLEVQSqnGuw2tw67Cut70CYm2ln+3wS
- BCgaSAvP7fp1i1YtpAAAA
-To:     Krzysztof Halasa <khalasa@piap.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Howard Harte <hharte@magicandroidapps.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231028092409.96813-1-baojun.xu@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some cargoculted reason on incomplete cleanup, we have a
-PHY number which refers to nothing and gives confusing messages
-about PHY 0 on all ports.
+Hi Baojun,
 
-Print the name of the actual PHY device instead.
+kernel test robot noticed the following build errors:
 
-Reported-by: Howard Harte <hharte@magicandroidapps.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/net/ethernet/xscale/ixp4xx_eth.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+[auto build test ERROR on broonie-sound/for-next]
+[also build test ERROR on linus/master v6.6-rc7 next-20231027]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/net/ethernet/xscale/ixp4xx_eth.c b/drivers/net/ethernet/xscale/ixp4xx_eth.c
-index 3b0c5f177447..711f2727fa33 100644
---- a/drivers/net/ethernet/xscale/ixp4xx_eth.c
-+++ b/drivers/net/ethernet/xscale/ixp4xx_eth.c
-@@ -154,7 +154,6 @@ typedef void buffer_t;
- 
- /* Information about built-in Ethernet MAC interfaces */
- struct eth_plat_info {
--	u8 phy;		/* MII PHY ID, 0 - 31 */
- 	u8 rxq;		/* configurable, currently 0 - 31 only */
- 	u8 txreadyq;
- 	u8 hwaddr[ETH_ALEN];
-@@ -1520,7 +1519,7 @@ static int ixp4xx_eth_probe(struct platform_device *pdev)
- 	if ((err = register_netdev(ndev)))
- 		goto err_phy_dis;
- 
--	netdev_info(ndev, "%s: MII PHY %i on %s\n", ndev->name, plat->phy,
-+	netdev_info(ndev, "%s: MII PHY %s on %s\n", ndev->name, phydev_name(phydev),
- 		    npe_name(port->npe));
- 
- 	return 0;
+url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ASoC-tas2783-Add-source-files-for-tas2783-driver/20231028-172643
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20231028092409.96813-1-baojun.xu%40ti.com
+patch subject: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
+config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20231029/202310290433.ay15yHii-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310290433.ay15yHii-lkp@intel.com/reproduce)
 
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20231028-ixp4xx-eth-id-7d2b9f1021c8
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310290433.ay15yHii-lkp@intel.com/
 
-Best regards,
+All errors (new ones prefixed by >>):
+
+   arch/mips/kernel/head.o: in function `__kernel_entry':
+   (.text+0x0): relocation truncated to fit: R_MIPS_26 against `kernel_entry'
+   arch/mips/kernel/head.o: in function `smp_bootstrap':
+   (.ref.text+0xd8): relocation truncated to fit: R_MIPS_26 against `start_secondary'
+   init/main.o: in function `set_reset_devices':
+   main.c:(.init.text+0x10): relocation truncated to fit: R_MIPS_26 against `_mcount'
+   main.c:(.init.text+0x18): relocation truncated to fit: R_MIPS_26 against `__sanitizer_cov_trace_pc'
+   init/main.o: in function `debug_kernel':
+   main.c:(.init.text+0x50): relocation truncated to fit: R_MIPS_26 against `_mcount'
+   main.c:(.init.text+0x58): relocation truncated to fit: R_MIPS_26 against `__sanitizer_cov_trace_pc'
+   init/main.o: in function `quiet_kernel':
+   main.c:(.init.text+0x90): relocation truncated to fit: R_MIPS_26 against `_mcount'
+   main.c:(.init.text+0x98): relocation truncated to fit: R_MIPS_26 against `__sanitizer_cov_trace_pc'
+   init/main.o: in function `warn_bootconfig':
+   main.c:(.init.text+0xd0): relocation truncated to fit: R_MIPS_26 against `_mcount'
+   main.c:(.init.text+0xd8): relocation truncated to fit: R_MIPS_26 against `__sanitizer_cov_trace_pc'
+   init/main.o: in function `init_setup':
+   main.c:(.init.text+0x108): additional relocation overflows omitted from the output
+   mips-linux-ld: sound/soc/codecs/tas2783-sdw.o: in function `tas2783_calibration.isra.0':
+>> tas2783-sdw.c:(.text.tas2783_calibration.isra.0+0x50): undefined reference to `efi'
+>> mips-linux-ld: tas2783-sdw.c:(.text.tas2783_calibration.isra.0+0x80): undefined reference to `efi'
+
 -- 
-Linus Walleij <linus.walleij@linaro.org>
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
