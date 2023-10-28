@@ -2,231 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F0E7DA6DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7457DA6E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjJ1MLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 08:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
+        id S230104AbjJ1MV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 08:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJ1MLN (ORCPT
+        with ESMTP id S229449AbjJ1MVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 08:11:13 -0400
-X-Greylist: delayed 159 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 Oct 2023 05:11:08 PDT
-Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990EEF0;
-        Sat, 28 Oct 2023 05:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1698495056; bh=yxb6zphCiYkg1BMNfJoJYLGbGEtFPFGmsEthVt0RmgE=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:Content-Transfer-Encoding;
-        b=gzOm6C8RgfWW200kRZxvKY57EJPqrd+GoSuiec/YbssAkYVGsB/j9vctklefTdZTQ
-         1YcB2PABM3jnlHrQPExEi0NN2LO+uwtCbyqgU4IzPHmHprIu2he0/DWybKjlpyhPUI
-         7oOM9eNRG7YtaO6ssSRRIly49xxllis+inE2yJxU=
-Received: by b221-2.in.mailobj.net [192.168.90.22] with ESMTP
-        via ip-22.mailoo.org [213.182.54.22]
-        Sat, 28 Oct 2023 14:10:56 +0200 (CEST)
-X-EA-Auth: dugBy9wIT2iBVLJu1SI60csL07/ZUymv4lZ45nAesMiPN9y+zAvHoUPGQ5G/fRoY1CSNDg/dMYyWW09v3Yv/m2eTUwo/EGp9viYN0qfvNWQ=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH] clk: qcom: gcc-msm8939: Add missing CSI2 related clocks
-Date:   Sat, 28 Oct 2023 14:10:47 +0200
-Message-ID: <20231028121047.317550-1-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.41.0
+        Sat, 28 Oct 2023 08:21:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0528ED
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 05:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698495636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aY/L9HTCAfBjIm3433sSzOmJ5GhpAINzTj4Ry4zadik=;
+        b=OqWqjujdumtvjTy4kDGyMM57oyw9Wzi33IXYH4D/W3i6xyx5e53s68Gyl6LbrexbDWi5+6
+        GDgmlxi/G3YUVwoyWuXWpR7mworKMvFgqvQZ/StuU3w0ZXlhgGbsJcC4vasTaMnjZ2iinS
+        PTHJUdE8nhg/L0wH8mqKvZ/SMlb3R9s=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-16-1PSffnloOdaobooWtUlnrw-1; Sat, 28 Oct 2023 08:20:35 -0400
+X-MC-Unique: 1PSffnloOdaobooWtUlnrw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-313c930ee0eso1480942f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 05:20:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698495634; x=1699100434;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aY/L9HTCAfBjIm3433sSzOmJ5GhpAINzTj4Ry4zadik=;
+        b=FazlMduLqs39ySnvsMmx/TjMK47v/rlA50V4OjeNhZr2Nx/SeG0NsptLPtuYTthln1
+         CMLao5kiih7ufHqCbxkmLuE0DndFWKstwBYeKp+LPioWN0ly/8SctCTK0QpV188Jp38Y
+         WQrjxHx9gLyYu6D8/Xjd1ejWUub9LyKJIpUjdRN2z+uUahkMbpzkt42d9nlIz6dROYp1
+         6NBILQgZUb5h0LZLjXcw/TnT+/SAts8eprRujbNbJt69yijA2gmfDLS7+BD04sXFjfnf
+         WpjojNAcQGI4Iri/jP+kBp80ncvFZWCIZ4huO9qGDGM18pkh5q0FnscpTeOV9H9wPTK3
+         Q7VA==
+X-Gm-Message-State: AOJu0Yxdvc3ZMZC79Dc8o4Nn35t+K3x9JBdpLHZZzEv4rRVQ9myFkpzX
+        j6uctZwrR9x3FESCUEROfxbQ+T2Z8+cRFMuUBFeizxAqEHGem+fqDmv1FEIax2kafaH1qZ3jkMs
+        mwTLUnrmMmL3+zafIUHsof86p
+X-Received: by 2002:adf:fd82:0:b0:32d:9a87:b7a with SMTP id d2-20020adffd82000000b0032d9a870b7amr3282947wrr.50.1698495634012;
+        Sat, 28 Oct 2023 05:20:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF80KLaWzeWd6XMuxQiL/btLDTUqSjzy0ssxvalh3/0LkuhTt1W/o+9toYfvqCLPckxhP5Ncg==
+X-Received: by 2002:adf:fd82:0:b0:32d:9a87:b7a with SMTP id d2-20020adffd82000000b0032d9a870b7amr3282929wrr.50.1698495633646;
+        Sat, 28 Oct 2023 05:20:33 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
+        by smtp.gmail.com with ESMTPSA id n4-20020a5d4844000000b0032d2f09d991sm3748918wrs.33.2023.10.28.05.20.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 05:20:32 -0700 (PDT)
+Date:   Sat, 28 Oct 2023 08:20:30 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+Cc:     akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, mathieu.desnoyers@efficios.com,
+        mjguzik@gmail.com, npiggin@gmail.com, shakeelb@google.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v3] Fixing directly deferencing a __rcu pointer warning
+Message-ID: <20231028081915-mutt-send-email-mst@kernel.org>
+References: <20231027122221.GA24128@redhat.com>
+ <20231028102247.404488-1-singhabhinav9051571833@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231028102247.404488-1-singhabhinav9051571833@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding in the indexes for this clock-controller we missed
-GCC_CAMSS_CSI2_AHB_CLK, GCC_CAMSS_CSI2_CLK, GCC_CAMSS_CSI2PHY_CLK,
-GCC_CAMSS_CSI2PIX_CLK and GCC_CAMSS_CSI2RDI_CLK.
+On Sat, Oct 28, 2023 at 03:52:47PM +0530, Abhinav Singh wrote:
+> This patch fixes the warning about directly dereferencing a pointer
+> tagged with __rcu annotation.
+> 
+> Dereferencing the pointers tagged with __rcu directly should
+> always be avoided according to the docs. There is a rcu helper
+> function rcu_dereference(...) to use when dereferencing a __rcu
+> pointer. This function returns the non __rcu tagged pointer which
+> can be dereferenced just like a normal pointer.
+> 
+> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> ---
+> v1 -> v2 : added rcu_dereference(...) at line 2694
+> v2 -> v3 : added rcu_dereference(...) at line 2695
+> 
+>  kernel/fork.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 10917c3e1f03..e78649974669 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2369,7 +2369,7 @@ __latent_entropy struct task_struct *copy_process(
+>  
+>  	retval = -EAGAIN;
+>  	if (is_rlimit_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+> -		if (p->real_cred->user != INIT_USER &&
+> +		if (rcu_dereference(p->real_cred)->user != INIT_USER &&
+>  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+>  			goto bad_fork_cleanup_count;
+>  	}
+> @@ -2690,9 +2690,9 @@ __latent_entropy struct task_struct *copy_process(
+>  			 * tasklist_lock with adding child to the process tree
+>  			 * for propagate_has_child_subreaper optimization.
+>  			 */
+> -			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+> -							 p->real_parent->signal->is_child_subreaper;
+> -			list_add_tail(&p->sibling, &p->real_parent->children);
+> +			p->signal->has_child_subreaper = rcu_dereference(p->real_parent)->signal->has_child_subreaper ||
+> +							rcu_dereference(p->real_parent)->signal->is_child_subreaper;
+> +			list_add_tail(&p->sibling, &rcu_dereference(p->real_parent)->children);
+>  			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+>  			attach_pid(p, PIDTYPE_TGID);
+>  			attach_pid(p, PIDTYPE_PGID);
+> -- 
+> 2.39.2
 
-Add them in now.
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
-No fixes tag because camss is a not-yet-enabled feature for msm8939.
+You seem to just ignore review comments. NAK. I'm not going to review this anymore.
 
-Also didn't rename ftbl_gcc_camss_csi0_1_clk now that csi2 uses it
-to avoid not-required-churn... should it be done anyway ?
----
- drivers/clk/qcom/gcc-msm8939.c               | 104 +++++++++++++++++++
- include/dt-bindings/clock/qcom,gcc-msm8939.h |   6 ++
- 2 files changed, 110 insertions(+)
 
-diff --git a/drivers/clk/qcom/gcc-msm8939.c b/drivers/clk/qcom/gcc-msm8939.c
-index e4a44377b75f..ad6599fffef3 100644
---- a/drivers/clk/qcom/gcc-msm8939.c
-+++ b/drivers/clk/qcom/gcc-msm8939.c
-@@ -728,6 +728,19 @@ static struct clk_rcg2 csi1_clk_src = {
- 	},
- };
- 
-+static struct clk_rcg2 csi2_clk_src = {
-+	.cmd_rcgr = 0x3c020,
-+	.hid_width = 5,
-+	.parent_map = gcc_xo_gpll0_map,
-+	.freq_tbl = ftbl_gcc_camss_csi0_1_clk,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "csi2_clk_src",
-+		.parent_data = gcc_xo_gpll0_parent_data,
-+		.num_parents = ARRAY_SIZE(gcc_xo_gpll0_parent_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
- static const struct freq_tbl ftbl_gcc_oxili_gfx3d_clk[] = {
- 	F(19200000, P_XO, 1, 0, 0),
- 	F(50000000, P_GPLL0, 16, 0, 0),
-@@ -2385,6 +2398,91 @@ static struct clk_branch gcc_camss_csi1rdi_clk = {
- 	},
- };
- 
-+static struct clk_branch gcc_camss_csi2_ahb_clk = {
-+	.halt_reg = 0x3c040,
-+	.clkr = {
-+		.enable_reg = 0x3c040,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "gcc_camss_csi2_ahb_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&camss_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gcc_camss_csi2_clk = {
-+	.halt_reg = 0x3c03c,
-+	.clkr = {
-+		.enable_reg = 0x3c03c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "gcc_camss_csi2_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&csi2_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gcc_camss_csi2phy_clk = {
-+	.halt_reg = 0x3c048,
-+	.clkr = {
-+		.enable_reg = 0x3c048,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "gcc_camss_csi2phy_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&csi2_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gcc_camss_csi2pix_clk = {
-+	.halt_reg = 0x3c058,
-+	.clkr = {
-+		.enable_reg = 0x3c058,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "gcc_camss_csi2pix_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&csi2_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gcc_camss_csi2rdi_clk = {
-+	.halt_reg = 0x3c050,
-+	.clkr = {
-+		.enable_reg = 0x3c050,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "gcc_camss_csi2rdi_clk",
-+			.parent_hws = (const struct clk_hw*[]){
-+				&csi2_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
- static struct clk_branch gcc_camss_csi_vfe0_clk = {
- 	.halt_reg = 0x58050,
- 	.clkr = {
-@@ -3682,6 +3780,7 @@ static struct clk_regmap *gcc_msm8939_clocks[] = {
- 	[APSS_AHB_CLK_SRC] = &apss_ahb_clk_src.clkr,
- 	[CSI0_CLK_SRC] = &csi0_clk_src.clkr,
- 	[CSI1_CLK_SRC] = &csi1_clk_src.clkr,
-+	[CSI2_CLK_SRC] = &csi2_clk_src.clkr,
- 	[GFX3D_CLK_SRC] = &gfx3d_clk_src.clkr,
- 	[VFE0_CLK_SRC] = &vfe0_clk_src.clkr,
- 	[BLSP1_QUP1_I2C_APPS_CLK_SRC] = &blsp1_qup1_i2c_apps_clk_src.clkr,
-@@ -3751,6 +3850,11 @@ static struct clk_regmap *gcc_msm8939_clocks[] = {
- 	[GCC_CAMSS_CSI1PHY_CLK] = &gcc_camss_csi1phy_clk.clkr,
- 	[GCC_CAMSS_CSI1PIX_CLK] = &gcc_camss_csi1pix_clk.clkr,
- 	[GCC_CAMSS_CSI1RDI_CLK] = &gcc_camss_csi1rdi_clk.clkr,
-+	[GCC_CAMSS_CSI2_AHB_CLK] = &gcc_camss_csi2_ahb_clk.clkr,
-+	[GCC_CAMSS_CSI2_CLK] = &gcc_camss_csi2_clk.clkr,
-+	[GCC_CAMSS_CSI2PHY_CLK] = &gcc_camss_csi2phy_clk.clkr,
-+	[GCC_CAMSS_CSI2PIX_CLK] = &gcc_camss_csi2pix_clk.clkr,
-+	[GCC_CAMSS_CSI2RDI_CLK] = &gcc_camss_csi2rdi_clk.clkr,
- 	[GCC_CAMSS_CSI_VFE0_CLK] = &gcc_camss_csi_vfe0_clk.clkr,
- 	[GCC_CAMSS_GP0_CLK] = &gcc_camss_gp0_clk.clkr,
- 	[GCC_CAMSS_GP1_CLK] = &gcc_camss_gp1_clk.clkr,
-diff --git a/include/dt-bindings/clock/qcom,gcc-msm8939.h b/include/dt-bindings/clock/qcom,gcc-msm8939.h
-index 2d545ed0d35a..9a9bc55b49af 100644
---- a/include/dt-bindings/clock/qcom,gcc-msm8939.h
-+++ b/include/dt-bindings/clock/qcom,gcc-msm8939.h
-@@ -193,6 +193,12 @@
- #define GCC_VENUS0_CORE1_VCODEC0_CLK		184
- #define GCC_OXILI_TIMER_CLK			185
- #define SYSTEM_MM_NOC_BFDCD_CLK_SRC		186
-+#define CSI2_CLK_SRC				187
-+#define GCC_CAMSS_CSI2_AHB_CLK			188
-+#define GCC_CAMSS_CSI2_CLK			189
-+#define GCC_CAMSS_CSI2PHY_CLK			190
-+#define GCC_CAMSS_CSI2PIX_CLK			191
-+#define GCC_CAMSS_CSI2RDI_CLK			192
- 
- /* Indexes for GDSCs */
- #define BIMC_GDSC				0
 -- 
-2.41.0
-
-
+MST
 
