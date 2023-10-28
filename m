@@ -2,148 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEAE7DA6B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35C17DA6B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjJ1LX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 07:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        id S229864AbjJ1L00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 07:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjJ1LXy (ORCPT
+        with ESMTP id S229450AbjJ1L0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 07:23:54 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A9FD9;
-        Sat, 28 Oct 2023 04:23:49 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4083f613275so21596785e9.2;
-        Sat, 28 Oct 2023 04:23:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698492228; x=1699097028; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=inkVXt8mNRsPeNjfeXHVk0mmWOAzErBsUID4u2QruF4=;
-        b=D1Y1aDfDLJwIPLuUBbTnslxAO+52jb/NtWkBnZAOqhYfRL+qO3zvYG/95X7gT5yvpJ
-         /Tc3lmAe7JUCNEuPbkoG1W2PpOU3UXndpUAVE1FcK8pHrphw/we00snRnWYmMedIv6uA
-         Tqgv2FijJXChGFBJMkQgdI/OC4FzJF1wXdu6d3bCXIPREzkeCseVpGCSa1J9zW/PIC7w
-         8qIOyRTksP3wBDC5XtR2Vr3TzsZTH1UA0f5OxHr/Rzjkl47iR0/XXh9mC4UbeiobiB86
-         +kb73n8Yu5FerKUl0sH5nDm1olPI16I6UIoz2Ry1LQeSkaqMJzdTQUQJSSh2RUsD0tyh
-         EJ1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698492228; x=1699097028;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=inkVXt8mNRsPeNjfeXHVk0mmWOAzErBsUID4u2QruF4=;
-        b=LS7W7qYAfDKxaP3QUSDkDGP9cU+TI3l7CTMMxVrqc6VgRlXh3ouxb2rLiDsOOCn3Th
-         nXT1NcnZOZ49WQc8/X0tv5LbIWwtHPJIECEGvSzmuMqf1R8SgI5K5uKV/oqP9a9JA1/X
-         ZfadfL+m21LHy1ncl5Eb54SMXnM0uuVWqJUUNwep+u0doYehD6xE9PkaNMsamGnJYf/V
-         3t+9t9K97LIERVDvkJXuqsVZLY48ou9R2FoMDyjs8lagOOrl8nx7aMEiCnXRG7UfcAdr
-         rdNK5R6kNYfJgoM3Jqf2dARsghtPMbxPZMQar1a91a2sfcjuL6Pl0cdu+nsOYznDp7t2
-         CnfA==
-X-Gm-Message-State: AOJu0YwBltZQx9Z0Gbbt6+EGsHJFHT/grbwlM3boih8jBoXn63msq7V/
-        husd6lwUPfrZg1+Rd0piJZM=
-X-Google-Smtp-Source: AGHT+IEEFA9l8QD0pR5Se8YVz8kj7afROVeCB03xCjYKtp22lS22SEJmqZZzv6je83H6Y4auL9pW2w==
-X-Received: by 2002:a05:600c:1c8f:b0:406:478e:9e2d with SMTP id k15-20020a05600c1c8f00b00406478e9e2dmr3851621wms.26.1698492227963;
-        Sat, 28 Oct 2023 04:23:47 -0700 (PDT)
-Received: from thinkpad-work.lan (13.red-83-35-58.dynamicip.rima-tde.net. [83.35.58.13])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b004063ea92492sm3785933wmq.22.2023.10.28.04.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 04:23:47 -0700 (PDT)
-Message-ID: <2a5ccee0ce33b2918e8b32b25ff1cd7221d01892.camel@gmail.com>
-Subject: Re: [PATCH v2 4/5] iio: pressure: bmp280: Allow multiple chips id
- per family of devices
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Date:   Sat, 28 Oct 2023 13:23:46 +0200
-In-Reply-To: <20231027144625.36cc694c@jic23-huawei>
-References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
-         <eade22d11e9de4405ea19fdaa5a8249143ae94df.1697994521.git.ang.iglesiasg@gmail.com>
-         <ZTZYNjq/1X95ijXh@smile.fi.intel.com>
-         <20231027144234.0ad6c7b6@jic23-huawei>
-         <20231027144625.36cc694c@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (by Flathub.org) 
+        Sat, 28 Oct 2023 07:26:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A66BDE;
+        Sat, 28 Oct 2023 04:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698492383; x=1730028383;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EiBmg3WSGnU2/oHflLAqGOz1gDRdCnOP+gRHl/4jjzU=;
+  b=ap6/fGfMzPI9VTofXXGIW0nNMeWLZsAsLwwYVXfSV5/AraTU0yzRLxWG
+   qBw+/e2o2iBDyW6NQ4DVdDvbx7OmLH08XdUkcQsrixXVSEprCUDvbjXa3
+   UN+YtNtS8NJMEtzeBQEaPm+FAWgakO/iU6zVpUY50y19Aa6xO6R5+mZvs
+   mlscnRCgZ1nFlHZWtHePhQ2q5B6eoPxnYezJvvqoz+LU+mEPA72tPktIC
+   NGFm8jLn3Ax/sqSAD+Fc8+bpspISMjlAh4cu20wZLO3T9pSLX6/acEhlc
+   pYCWSpa2pn3rjxvrlzTtiVAyLuNJzXB7+xZfDrwWeiDSBrK5kgdlzX0dk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="386780488"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="386780488"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 04:26:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="794853609"
+X-IronPort-AV: E=Sophos;i="6.03,259,1694761200"; 
+   d="scan'208";a="794853609"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 28 Oct 2023 04:26:20 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qwhSL-000BgJ-2B;
+        Sat, 28 Oct 2023 11:26:17 +0000
+Date:   Sat, 28 Oct 2023 19:26:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, suleiman@google.com,
+        briannorris@google.com, Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2] PM: sleep: Expose last succeeded resumed timestamp in
+ sysfs
+Message-ID: <202310281942.ZwkSMsVB-lkp@intel.com>
+References: <169845668624.1319505.1097714089024984847.stgit@mhiramat.roam.corp.google.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169845668624.1319505.1097714089024984847.stgit@mhiramat.roam.corp.google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-27 at 14:46 +0100, Jonathan Cameron wrote:
-> On Fri, 27 Oct 2023 14:42:34 +0100
-> Jonathan Cameron <jic23@kernel.org> wrote:
->=20
-> > On Mon, 23 Oct 2023 14:25:42 +0300
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> >=20
-> > > On Sun, Oct 22, 2023 at 07:22:20PM +0200, Angel Iglesias wrote:=C2=A0=
-=20
-> > > > Improve device detection in certain chip families known to have var=
-ious
-> > > > chip ids.
-> > > > When no known ids match, gives a warning but follows along what dev=
-ice
-> > > > said on the firmware and tries to configure it.=C2=A0=C2=A0=C2=A0=
-=20
-> > >=20
-> > > I would rephrase it a bit:
-> > >=20
-> > > "Improve device detection in certain chip families known to have
-> > > various chip IDs. When no ID matches, give a warning but follow
-> > > along what device said on the firmware side and try to configure
-> > > it."
-> > >=20
-> > > ...
-> > > =C2=A0=20
-> > > > +	for (i =3D 0; i < data->chip_info->num_chip_id; i++) {
-> > > > +		if (chip_id =3D=3D data->chip_info->chip_id[i]) {
-> > > > +			dev_info(dev, "0x%x is a known chip id for
-> > > > %s\n", chip_id, name);
-> > > > +			break;
-> > > > +		}=C2=A0=C2=A0=C2=A0=20
-> > > =C2=A0=20
-> > > > +		dev_warn(dev, "chip id 0x%x does not match known id
-> > > > 0x%x\n",
-> > > > +			 chip_id, data->chip_info->chip_id[i]);=C2=A0=C2=A0=C2=A0=20
-> > >=20
-> > > If the matching ID is not the first one, user will have an unneeded
-> > > warning here.=C2=A0=20
-> >=20
-> > Could be a dev_dbg() but I'd just drop it entirely.
-> >=20
-> Given that was all that came up, I've hopefully saved us all time by
-> dropping the bring and changing the patch description as Andy suggested.
->=20
-> With that done, applied.
->=20
-> Jonathan
->=20
+Hi Masami,
 
-Sorry for the extra work Jonathan. Next time I'll be quicker checking the i=
-nbox.
+kernel test robot noticed the following build warnings:
 
-Thanks for your time guys.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.6-rc7 next-20231027]
+[cannot apply to pavel-leds/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Angel
+url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu-Google/PM-sleep-Expose-last-succeeded-resumed-timestamp-in-sysfs/20231028-093251
+base:   linus/master
+patch link:    https://lore.kernel.org/r/169845668624.1319505.1097714089024984847.stgit%40mhiramat.roam.corp.google.com
+patch subject: [PATCH v2] PM: sleep: Expose last succeeded resumed timestamp in sysfs
+config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20231028/202310281942.ZwkSMsVB-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231028/202310281942.ZwkSMsVB-lkp@intel.com/reproduce)
 
-> >=20
-> > > =C2=A0=20
-> > > > =C2=A0	}=C2=A0=C2=A0=C2=A0=20
-> > > =C2=A0=20
-> >=20
->=20
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310281942.ZwkSMsVB-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
+
+   kernel/power/main.c: In function 'last_success_resume_time_show':
+>> kernel/power/main.c:427:38: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 4 has type 'long int' [-Wformat=]
+     427 |         return sprintf(buf, "%llu.%llu\n",
+         |                                   ~~~^
+         |                                      |
+         |                                      long long unsigned int
+         |                                   %lu
+     428 |                        suspend_stats.last_success_resume_time.tv_sec,
+     429 |                        suspend_stats.last_success_resume_time.tv_nsec);
+         |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                                              |
+         |                                                              long int
+   kernel/power/main.c: In function 'suspend_stats_show':
+   kernel/power/main.c:528:62: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 4 has type 'long int' [-Wformat=]
+     528 |         seq_printf(s,   "last_success_resume_time:\t%-llu.%llu\n",
+         |                                                           ~~~^
+         |                                                              |
+         |                                                              long long unsigned int
+         |                                                           %lu
+     529 |                    suspend_stats.last_success_resume_time.tv_sec,
+     530 |                    suspend_stats.last_success_resume_time.tv_nsec);
+         |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                                          |
+         |                                                          long int
+
+
+vim +427 kernel/power/main.c
+
+   423	
+   424	static ssize_t last_success_resume_time_show(struct kobject *kobj,
+   425			struct kobj_attribute *attr, char *buf)
+   426	{
+ > 427		return sprintf(buf, "%llu.%llu\n",
+   428			       suspend_stats.last_success_resume_time.tv_sec,
+   429			       suspend_stats.last_success_resume_time.tv_nsec);
+   430	}
+   431	static struct kobj_attribute last_success_resume_time =
+   432				__ATTR_RO(last_success_resume_time);
+   433	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
