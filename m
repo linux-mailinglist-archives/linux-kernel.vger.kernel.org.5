@@ -2,147 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CD47DA7F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 18:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9583D7DA7F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 18:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbjJ1QEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 12:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        id S229461AbjJ1QFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 12:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1QEI (ORCPT
+        with ESMTP id S229446AbjJ1QFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 12:04:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A39E1;
-        Sat, 28 Oct 2023 09:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=eSKhnAArEdJ0K2lY6fWY7BVlQz2sRRzxT30U8f6o7W4=; b=YjV4h4/kQ81uUu8OE7ZkPEDJq+
-        6ooH46Hz62+KmbbnRO78qSEL/ogehoEiyM8mf/tFt5TDe/sdYSM6qjn7FdIFgK9gRz96uGyCKnebv
-        vUiqIL2EEgDcWXGpx2FnOXnl3iqYNHWNoltpD0YNMVzKyrBI7YQtB3Ry2GmU+62XuB6p4KIYwqCxJ
-        OBtnPk9v2fDlEYYGqIn8RPRSqB11G1l3tui8ing4gcZidvogpUt9N++e3mtpkafFcHW0Woa2+K2S8
-        wPyKAvWTrvCF8gUce3YIle4dKFtzxJAriKL/+J5xAD6AqFLTP1/2vN0piZ2CKathWO/5noAtISVa1
-        uRmh1pvg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qwln8-000dFK-2i;
-        Sat, 28 Oct 2023 16:04:03 +0000
-Message-ID: <36e87cdb-9341-4e86-a1ad-dc2d1d105fa8@infradead.org>
-Date:   Sat, 28 Oct 2023 09:04:02 -0700
+        Sat, 28 Oct 2023 12:05:08 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE74ED
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 09:05:04 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id wlo5q1cN8yBwnwlo6qKaMv; Sat, 28 Oct 2023 18:05:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698509103;
+        bh=lJV0nrXGftDw+3aoT/GoqGQ9MO17enJwu7GrGnJ+O5s=;
+        h=From:To:Cc:Subject:Date;
+        b=m2c4u+Ew1ymLvM7aeveClQml6joGS6GtBS/tZTl21IhQB0cobcEtGP1V2iVVyi3Gn
+         8gnVIMtkaBD96x9AJvnMpQA0Sb5LTYM/xzYCpQWQ4fcIrRO99EARgVybpzQOKWRyg8
+         qVB6OYn9fNjCIbKMUj+06GIB/8Flz7EueT+1TEFob++hnkxZM0WKUoXHn0gZAVcauP
+         cJc3ie0Vs6AbpXi/nFyUIofgBQtlsGWKTRnI4Gv67UVWUWojLBQJeFh1B+Cq69vNYt
+         tM9WHgAvwBVlEp3OJzNKzWQlZUJNggzNnqU/wVeoFjvOrcUDhnPdG9A7O8p+9A/hDo
+         7qxkmxbxWNtMQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 28 Oct 2023 18:05:03 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH v2] usb: dwc2: Use seq_buf instead of hand writing it
+Date:   Sat, 28 Oct 2023 18:05:00 +0200
+Message-Id: <4eafde20b0fb4894a00f9749a2b17e847a7efa8c.1698509078.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: core: Add option to prevent disabling unused
- regulators
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>, linux-doc@vger.kernel.org
-References: <20231028102423.179400-1-javierm@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231028102423.179400-1-javierm@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+cat_printf() re-implements what the seq_buf API does.
+So, switch to the seq_buf API to save some line of code.
 
-On 10/28/23 03:24, Javier Martinez Canillas wrote:
-> This may be useful for debugging and develompent purposes, when there are
-> drivers that depend on regulators to be enabled but do not request them.
-> 
-> It is inspired from the clk_ignore_unused and pd_ignore_unused parameters,
-> that are used to keep firmware-enabled clocks and power domains on even if
-> these are not used by drivers.
-> 
-> The parameter is not expected to be used in normal cases and should not be
-> needed on a platform with proper driver support.
-> 
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
->  drivers/regulator/core.c                        | 17 +++++++++++++++++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0a1731a0f0ef..91b58d767c2c 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5461,6 +5461,13 @@
->  			print every Nth verbose statement, where N is the value
->  			specified.
->  
-> +	regulator_ignore_unused
-> +			[REGULATOR]
-> +			Prevents the regulator framework to disable regulators
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+seq_buf_printf(&buf, ", "); could be seq_buf_puts(), but the result could
+be slightly different. So I kept a conservative approach.
 
-			                                 from disabling regulators
+If only some seq_buf_printf() are used, the final seq_buf_terminate() can
+be avoided, but I think it is cleaner with it.
 
-> +			that are unused due not driver claiming them. This may
+Changes in v2:
+   - compile tested with DWC2_PRINT_SCHEDULE defined
+   - Fix some built issues
 
-			                    no driver claiming them.
+v1: https://lore.kernel.org/all/4c8b71efe4fe05ed0cc37f33ef774746d4d55299.1698489641.git.christophe.jaillet@wanadoo.fr/
+---
+ drivers/usb/dwc2/hcd_queue.c | 53 ++++++++----------------------------
+ 1 file changed, 11 insertions(+), 42 deletions(-)
 
-> +			be useful for debug and development, but should not be
-> +			needed on a platform with proper driver support.
-> +
->  	relax_domain_level=
->  			[KNL, SMP] Set scheduler's default relax_domain_level.
->  			See Documentation/admin-guide/cgroup-v1/cpusets.rst.
-> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index 3137e40fcd3e..220034ff0273 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -6234,6 +6234,14 @@ static int regulator_late_cleanup(struct device *dev, void *data)
->  	return 0;
->  }
->  
-> +static bool regulator_ignore_unused;
-> +static int __init regulator_ignore_unused_setup(char *__unused)
-> +{
-> +	regulator_ignore_unused = true;
-> +	return 1;
-> +}
-> +__setup("regulator_ignore_unused", regulator_ignore_unused_setup);
-> +
->  static void regulator_init_complete_work_function(struct work_struct *work)
->  {
->  	/*
-> @@ -6246,6 +6254,15 @@ static void regulator_init_complete_work_function(struct work_struct *work)
->  	class_for_each_device(&regulator_class, NULL, NULL,
->  			      regulator_register_resolve_supply);
->  
-> +	/*
-> +	 * For debugging purposes, it may be useful to prevent unused
-> +	 * regulators to be disabled.
-
-	              from being disabled.
-
-> +	 */
-> +	if (regulator_ignore_unused) {
-> +		pr_warn("regulator: Not disabling unused regulators\n");
-> +		return;
-> +	}
-> +
->  	/* If we have a full configuration then disable any regulators
->  	 * we have permission to change the status for and which are
->  	 * not in use or always_on.  This is effectively the default
-
-HTH.
+diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+index 0d4495c6b9f7..4edb87c4247c 100644
+--- a/drivers/usb/dwc2/hcd_queue.c
++++ b/drivers/usb/dwc2/hcd_queue.c
+@@ -18,6 +18,7 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/usb.h>
++#include <linux/seq_buf.h>
+ 
+ #include <linux/usb/hcd.h>
+ #include <linux/usb/ch11.h>
+@@ -359,41 +360,6 @@ static unsigned long *dwc2_get_ls_map(struct dwc2_hsotg *hsotg,
+ }
+ 
+ #ifdef DWC2_PRINT_SCHEDULE
+-/*
+- * cat_printf() - A printf() + strcat() helper
+- *
+- * This is useful for concatenating a bunch of strings where each string is
+- * constructed using printf.
+- *
+- * @buf:   The destination buffer; will be updated to point after the printed
+- *         data.
+- * @size:  The number of bytes in the buffer (includes space for '\0').
+- * @fmt:   The format for printf.
+- * @...:   The args for printf.
+- */
+-static __printf(3, 4)
+-void cat_printf(char **buf, size_t *size, const char *fmt, ...)
+-{
+-	va_list args;
+-	int i;
+-
+-	if (*size == 0)
+-		return;
+-
+-	va_start(args, fmt);
+-	i = vsnprintf(*buf, *size, fmt, args);
+-	va_end(args);
+-
+-	if (i >= *size) {
+-		(*buf)[*size - 1] = '\0';
+-		*buf += *size;
+-		*size = 0;
+-	} else {
+-		*buf += i;
+-		*size -= i;
+-	}
+-}
+-
+ /*
+  * pmap_print() - Print the given periodic map
+  *
+@@ -417,8 +383,7 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+ 
+ 	for (period = 0; period < periods_in_map; period++) {
+ 		char tmp[64];
+-		char *buf = tmp;
+-		size_t buf_size = sizeof(tmp);
++		struct seq_buf s;
+ 		int period_start = period * bits_per_period;
+ 		int period_end = period_start + bits_per_period;
+ 		int start = 0;
+@@ -426,6 +391,8 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+ 		bool printed = false;
+ 		int i;
+ 
++		seq_buf_init(&s, tmp, sizeof(tmp));
++
+ 		for (i = period_start; i < period_end + 1; i++) {
+ 			/* Handle case when ith bit is set */
+ 			if (i < period_end &&
+@@ -442,17 +409,19 @@ static void pmap_print(unsigned long *map, int bits_per_period,
+ 				continue;
+ 
+ 			if (!printed)
+-				cat_printf(&buf, &buf_size, "%s %d: ",
+-					   period_name, period);
++				seq_buf_printf(&s, "%s %d: ", period_name,
++					       period);
+ 			else
+-				cat_printf(&buf, &buf_size, ", ");
++				seq_buf_printf(&s, ", ");
+ 			printed = true;
+ 
+-			cat_printf(&buf, &buf_size, "%d %s -%3d %s", start,
+-				   units, start + count - 1, units);
++			seq_buf_printf(&s, "%d %s -%3d %s", start, units,
++				       start + count - 1, units);
+ 			count = 0;
+ 		}
+ 
++		seq_buf_terminate(&s);
++
+ 		if (printed)
+ 			print_fn(tmp, print_data);
+ 	}
 -- 
-~Randy
+2.34.1
+
