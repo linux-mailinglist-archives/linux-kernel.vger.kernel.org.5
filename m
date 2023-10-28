@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8DA7DA4D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403297DA4D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 04:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbjJ1Cdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 22:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
+        id S232983AbjJ1Cgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 22:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Cdt (ORCPT
+        with ESMTP id S229446AbjJ1Cgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 22:33:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCBCC0;
-        Fri, 27 Oct 2023 19:33:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12903C433C8;
-        Sat, 28 Oct 2023 02:33:45 +0000 (UTC)
-Date:   Fri, 27 Oct 2023 22:33:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
-        Mark Brown <broonie@kernel.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: selftests: user_events: ftrace_test - RIP:
- 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
-Message-ID: <20231027223344.3854ac1f@rorschach.local.home>
-In-Reply-To: <20231027183640.2529ab68@gandalf.local.home>
-References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
-        <20231027192011.GA436-beaub@linux.microsoft.com>
-        <20231027183640.2529ab68@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 27 Oct 2023 22:36:51 -0400
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B23590
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 19:36:48 -0700 (PDT)
+Message-ID: <1199315b-63ce-4be4-8cde-b8b2fd29f91a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698460606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=etADSky/OaS5gb1oFEUv8DDHiwK9mtB5pub2uxFo0DE=;
+        b=JBIXHfvv6v6VjGZ7MkMAqlT/c8McEQ/IlWxR4Vubo0TTQ/milFi/eOpUg+uHg3TYbcYPtW
+        9bWPUFozKc1+MLs7/igxV/A4WuSZ2pVqWoracRM2KtpwSAp1kgPzuTZ+b9+LVFdlsNeF8k
+        1YqmLMLmk+4UKYC8EEWzyYbJoYVZKYM=
+Date:   Sat, 28 Oct 2023 10:36:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [RFC PATCH v3 0/7] slub: Delay freezing of CPU partial slabs
+Content-Language: en-US
+To:     Christoph Lameter <cl@linux.com>
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
+ <d5e40e42-ad02-e53d-c38f-09a4fdf1be88@linux.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <d5e40e42-ad02-e53d-c38f-09a4fdf1be88@linux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Oct 2023 18:36:40 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 2023/10/28 01:57, Christoph Lameter wrote:
+> On Tue, 24 Oct 2023, chengming.zhou@linux.dev wrote:
+> 
+>> 2. Solution
+>> ===========
+>> We solve these problems by leaving slabs unfrozen when moving out of
+>> the node partial list and on CPU partial list, so "frozen" bit is 0.
+>>
+>> These partial slabs won't be manipulate concurrently by alloc path,
+>> the only racer is free path, which may manipulate its list when !inuse.
+>> So we need to introduce another synchronization way to avoid it, we
+>> reuse PG_workingset to keep track of whether the slab is on node partial
+>> list or not, only in that case we can manipulate the slab list.
+>>
+>> The slab will be delay frozen when it's picked to actively use by the
+>> CPU, it becomes full at the same time, in which case we still need to
+>> rely on "frozen" bit to avoid manipulating its list. So the slab will
+>> be frozen only when activate use and be unfrozen only when deactivate.
+> 
+> I think we have to clear our terminology a bit about what a "frozen" slab is.
 
-> On Fri, 27 Oct 2023 12:20:11 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > On Fri, Oct 27, 2023 at 05:38:41PM +0530, Naresh Kamboju wrote:  
-> > > Following kernel crash noticed on x86_64 while running selftests: user_events:
-> > > ftrace_test running 6.6.0-rc7-next-20231026.
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
-> > > kselftest: Running tests in user_events
-> > > TAP version 13
-> > > 1..4
-> > > # timeout set to 90
-> > > # selftests: user_events: ftrace_test
-> > > [ 2391.606817] general protection fault, probably for non-canonical
-> > > address 0x6b6b6b6b6b6b8a83: 0000 [#1] PREEMPT SMP PTI
-> > > [ 2391.617519] CPU: 1 PID: 34662 Comm: ftrace_test Not tainted
-> > > 6.6.0-rc7-next-20231026 #1
-> > > [ 2391.625428] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > 2.7 12/07/2021
-> > > [ 2391.632811] RIP: 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
-> > > [ 2391.637952] Code: 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00
-> > > 55 31 f6 48 89 e5 41 55 41 54 53 48 89 fb 48 c7 c7 40 8c 61 94 e8 92
-> > > d3 5a 01 <44> 0f b6 a3 18 1f 00 00 41 80 fc 01 0f 87 c8 dc 4e 01 45 31  
-> 
-> 
-> 
-> > Warning is from this code:
-> > static void __trace_array_put(struct trace_array *this_tr)
-> > {
-> >         WARN_ON(!this_tr->ref);
-> >         this_tr->ref--;
-> > }
-> > 
-> > It seems like there might be a timing window or an incorrect call to
-> > trace_array_put() somewhere. Do you think this is related to the eventfs
-> > work?  
-> 
-> No, I think this is was probably introduced by:
-> 
->   a1f157c7a3bb ("tracing: Expand all ring buffers individually")
-> 
-> Or possibly a mixture of the two changes? But anyway I think I need to look
-> at this one first.
+Yes, we need to clean up these inconsistent documentations in the source.
 
-Not sure if the bug Beau hit is the same as this one, but the one Beau
-hit I think is fixed by this:
+> 
+> Before this patch a frozen slab is not on the node partial list and therefore its state on the list does not have to be considered during freeing and other operations. The frozen slab could be actively allocated from.
+> 
+> From the source:
+> 
+> *   Frozen slabs
+>  *
+>  *   If a slab is frozen then it is exempt from list management. It is not
+>  *   on any list except per cpu partial list. The processor that froze the
 
--- Steve
+~~ except per cpu partial list ~~
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 4d2da7480e5f..4a54493b8419 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -234,6 +234,10 @@ create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
- 	bool invalidate = false;
- 
- 	mutex_lock(&eventfs_mutex);
-+	if (ei->is_freed) {
-+		mutex_unlock(&eventfs_mutex);
-+		return NULL;
-+	}
- 	/* If the e_dentry already has a dentry, use it */
- 	if (*e_dentry) {
- 		/* lookup does not need to up the ref count */
+Frozen slab is not on any list, it's actively allocated from by the processor
+that froze it. IOW, frozen slab is the cpu slab.
 
+>  *   slab is the one who can perform list operations on the slab. Other
+>  *   processors may put objects onto the freelist but the processor that
+>  *   froze the slab is the only one that can retrieve the objects from the
+>  *   slab's freelist.
+>  *
+
+This part I think is unchanged.
+
+> 
+> 
+> After this patch the PG_workingset indicates the state of being on the partial lists.
+> 
+> What does "frozen slab" then mean? The slab is being allocated from? Is that information useful or can we drop the frozen flag?
+
+Right, frozen slab is the cpu slab, which is being allocated from by the cpu that froze it.
+
+IMHO, the "frozen" bit is useful because:
+
+1. PG_workingset is only useful on partial slab, which indicates the slab is on the node
+   partial list, so we can manipulate its list in the __slab_free() path.
+
+2. But for full slab (slab->freelist == NULL), PG_workingset is not much useful, we don't
+   safely know whether it's used as the cpu slab or not just from this flag. So __slab_free()
+   still rely on the "frozen" bit to know it.
+
+3. And the maintaining of "frozen" has no extra cost now, since it's changed together with "freelist"
+   and other counter using cmpxchg, we already have the cmpxchg when start to use a slab as the cpu slab.
+
+Maybe I missed something, I don't know how to drop the frozen flag.
+
+> 
+> Update the definition?
+> 
+
+Ok, will add a cleanup patch to update.
+
+Thanks!
