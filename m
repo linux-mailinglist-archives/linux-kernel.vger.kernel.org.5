@@ -2,98 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DD07DA623
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 11:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAD67DA626
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 11:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjJ1JUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 05:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
+        id S229676AbjJ1JVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 05:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjJ1JUR (ORCPT
+        with ESMTP id S229579AbjJ1JVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 05:20:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CB7F2;
-        Sat, 28 Oct 2023 02:20:15 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 09:20:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698484814;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+88Ivlr4lTWiNShXR0+BLShmQwq2HwCdL0nyX8w/bI=;
-        b=zVah+bNUiy8lW1Ug7Rw6XlZv2ionOA33nZffW0Ozd/uJbLzcBFNym1WiK+sRvEl+VW8MWk
-        rCmhBM6WbMl2lb9V1knm1lqOEyeck4GV1jjsnBD6lvuQ3aYb5k/mqaV3vXAPorArwHpdCq
-        g2mCqyz14meQ/xjeNPb0+7GRDPrHeW+72uGUirGiE45l6YMJOPDlGonL93f8+mHTaKgLXi
-        iSZycvjsU63T0K+V1Iy8Xf27mK/jNrR1VBlmXgBeOKT1v2nWb/ynjrkdVmdNpP/alYqble
-        sMXxlwtXE//5hKGlke1hghqGdlEj3cEN7rBrVW6+KA6skWt/sD2KFR3uT7DTwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698484814;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+88Ivlr4lTWiNShXR0+BLShmQwq2HwCdL0nyX8w/bI=;
-        b=SL+ulciOuCjQrQsOigMIEM7fwhtuBQxmtdGgkIxQoNVGrvGDBUEuEAfTZt6DAtxCTaOqyh
-        GCERWJ0cJv92egCw==
-From:   "tip-bot2 for Masahiro Yamada" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/headers] x86/headers: Remove unnecessary #include <asm/export.h>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230806145958.380314-1-masahiroy@kernel.org>
-References: <20230806145958.380314-1-masahiroy@kernel.org>
+        Sat, 28 Oct 2023 05:21:11 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471C8C6
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 02:21:08 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39S9IgBG002274;
+        Sat, 28 Oct 2023 09:20:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=DgYGGqF+qVVYIYEoe4B5BqWT4HJb1lY/XVlj3SH5pgc=;
+ b=jx2d/hYl7JYU+ny1dngT6Q9BiGpuV6smJmxLpugsz1p6nHNRJ2bSom5AVf6dSyJzJJhP
+ DFNnNnF1Z9SV9hZ8C0sknyCsWsPR1herOcXgSJa6joriDTSx/Q7aCnlBnJPdB0aXwo8+
+ +5iLBPNnpMk7OZe/FH/qU+J45lZvs8lXtohtDQzkIIwJp3MMGhm0pqfs4xKjCI+gySFm
+ f+6fADqURQioUg95pc33W020ksjk8KKqmRUsv1jHi7YfUndhUtmZHb6Z5JQ3NZ1Ovaqh
+ Ry/nPrHvjedFJ36dQa9Ott0NVoD21ym9zrMdpjOkTwbbIG1oW0WKbaT0pbOgfqtg/5sd yQ== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0s8yrfm3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Oct 2023 09:20:54 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39S9KrGX015402
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 28 Oct 2023 09:20:53 GMT
+Received: from [10.216.57.41] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sat, 28 Oct
+ 2023 02:20:47 -0700
+Message-ID: <867877cc-ea3d-31e9-97ba-0764e1f05b9e@quicinc.com>
+Date:   Sat, 28 Oct 2023 14:50:44 +0530
 MIME-Version: 1.0
-Message-ID: <169848481317.3135.12638031005168748918.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Devcoredump: fix use-after-free issue when releasing
+ devcd device
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     Yu Wang <quic_yyuwang@quicinc.com>, <johannes@sipsolutions.net>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231027055521.2679-1-quic_yyuwang@quicinc.com>
+ <c7ff4072-aeaf-7ffb-017f-2c856c99fc32@quicinc.com>
+In-Reply-To: <c7ff4072-aeaf-7ffb-017f-2c856c99fc32@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4ktEh3FOOOPl9J3NMjo5er8JeGnZvQk_
+X-Proofpoint-ORIG-GUID: 4ktEh3FOOOPl9J3NMjo5er8JeGnZvQk_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-28_06,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310280070
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/headers branch of tip:
 
-Commit-ID:     b425232c676b264faa9edb0b6cece4bd08d8ee82
-Gitweb:        https://git.kernel.org/tip/b425232c676b264faa9edb0b6cece4bd08d8ee82
-Author:        Masahiro Yamada <masahiroy@kernel.org>
-AuthorDate:    Sun, 06 Aug 2023 23:59:55 +09:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 10:38:07 +02:00
 
-x86/headers: Remove unnecessary #include <asm/export.h>
+On 10/27/2023 11:52 AM, Mukesh Ojha wrote:
+> 
+> 
+> On 10/27/2023 11:25 AM, Yu Wang wrote:
+>> With sample code as below, it may hit use-after-free issue when
+>> releasing devcd device.
+>>
+>>      struct my_coredump_state {
+>>          struct completion dump_done;
+>>          ...
+>>      };
+>>
+>>      static void my_coredump_free(void *data)
+>>      {
+>>          struct my_coredump_state *dump_state = data;
+>>          ...
+>>          complete(&dump_state->dump_done);
+>>      }
+>>
+>>      static void my_dev_release(struct device *dev)
+>>      {
+>>          kfree(dev);
+>>      }
+>>
+>>      static void my_coredump()
+>>      {
+>>          struct my_coredump_state dump_state;
+>>          struct device *new_device =
+>>              kzalloc(sizeof(*new_device), GFP_KERNEL);
+>>
+>>          ...
+>>          new_device->release = my_dev_release;
+>>          device_initialize(new_device);
+>>          ...
+>>          device_add(new_device);
+>>          ...
+>>          init_completion(&dump_state.dump_done);
+>>          dev_coredumpm(new_device, NULL, &dump_state, datalen, 
+>> GFP_KERNEL,
+>>                        my_coredump_read, my_coredump_free);
+>>          wait_for_completion(&dump_state.dump_done);
+>>          device_del(new_device);
+>>          put_device(new_device);
+>>      }
+>>
+>> In devcoredump framework, devcd_dev_release() will be called when
+>> releasing the devcd device, it will call the free() callback first
+>> and try to delete the symlink in sysfs directory of the failing device.
+>> Eventhough it has checked 'devcd->failing_dev->kobj.sd' before that,
+>> there is no mechanism to ensure it's still available when accessing
+>> it in kernfs_find_ns(), refer to the diagram as below:
+>>
+>>      Thread A was waiting for 'dump_state.dump_done' at #A-1-2 after
+>>      calling dev_coredumpm().
+>>      When thread B calling devcd->free() at #B-2-1, it wakes up
+>>      thread A from point #A-1-2, which will call device_del() to
+>>      delete the device.
+>>      If #B-2-2 comes before #A-3-1, but #B-4 comes after #A-4, it
+>>      will hit use-after-free issue when trying to access
+>>      'devcd->failing_dev->kobj.sd'.
+>>
+>>      #A-1-1: dev_coredumpm()
+>>        #A-1-2: wait_for_completion(&dump_state.dump_done)
+>>        #A-1-3: device_del()
+>>          #A-2: kobject_del()
+>>            #A-3-1: sysfs_remove_dir() --> set kobj->sd=NULL
+>>            #A-3-2: kernfs_put()
+>>              #A-4: kmem_cache_free() --> free kobj->sd
+>>
+>>      #B-1: devcd_dev_release()
+>>        #B-2-1: devcd->free(devcd->data)
+>>        #B-2-2: check devcd->failing_dev->kobj.sd
+>>        #B-2-3: sysfs_delete_link()
+>>          #B-3: kernfs_remove_by_name_ns()
+>>            #B-4: kernfs_find_ns() --> access devcd->failing_dev->kobj.sd
+>>
+>> To fix this issue, put operations on devcd->failing_dev before
+>> calling the free() callback in devcd_dev_release().
+>>
+>> Signed-off-by: Yu Wang <quic_yyuwang@quicinc.com>
+> 
+> Awesome explanation.
 
-There is no EXPORT_SYMBOL() line there, hence #include <asm/export.h>
-is unnecessary.
+But it is still not solving the original race like device can go 
+anytime., what if caller of dev_coredumpm() is not waiting and
+called device_del() right during this devcd_dev_release() where,
+this race can still happen.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230806145958.380314-1-masahiroy@kernel.org
----
- arch/x86/entry/vdso/vsgx.S | 1 -
- 1 file changed, 1 deletion(-)
+Although, dev_coredumpm() does keep reference to the device
+devcd->failing_dev = get_device(dev);
 
-diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
-index d77d278..37a3d4c 100644
---- a/arch/x86/entry/vdso/vsgx.S
-+++ b/arch/x86/entry/vdso/vsgx.S
-@@ -1,7 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
- #include <linux/linkage.h>
--#include <asm/export.h>
- #include <asm/errno.h>
- #include <asm/enclu.h>
- 
+Does it also need to keep reference to 
+kernfs_get(devcd->failing_dev->kobj.sd) inside dev_coredumpm() itself
+and release reference kernfs_put(devcd->failing_dev->kobj.sd) after
+sysfs_delete_link() to avoid this issue completely.
+
+thoughts ?
+
+> 
+> Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+
+Ignore this for now
+
+-Mukesh
+
+> 
+> -Mukesh
+> 
+>> ---
+>>   drivers/base/devcoredump.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+>> index 91536ee05f14..35c704ddfeae 100644
+>> --- a/drivers/base/devcoredump.c
+>> +++ b/drivers/base/devcoredump.c
+>> @@ -83,9 +83,6 @@ static void devcd_dev_release(struct device *dev)
+>>   {
+>>       struct devcd_entry *devcd = dev_to_devcd(dev);
+>> -    devcd->free(devcd->data);
+>> -    module_put(devcd->owner);
+>> -
+>>       /*
+>>        * this seems racy, but I don't see a notifier or such on
+>>        * a struct device to know when it goes away?
+>> @@ -95,6 +92,8 @@ static void devcd_dev_release(struct device *dev)
+>>                     "devcoredump");
+>>       put_device(devcd->failing_dev);
+>> +    devcd->free(devcd->data);
+>> +    module_put(devcd->owner);
+>>       kfree(devcd);
+>>   }
