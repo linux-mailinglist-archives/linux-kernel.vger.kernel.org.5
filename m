@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FAB7DA6C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CE57DA6CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjJ1L5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 07:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
+        id S230090AbjJ1MAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 08:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJ1L5H (ORCPT
+        with ESMTP id S229449AbjJ1MAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 07:57:07 -0400
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5910FE5
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:57:04 -0700 (PDT)
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6ce37a2b2e9so3955612a34.0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:57:04 -0700 (PDT)
+        Sat, 28 Oct 2023 08:00:03 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F0AE5;
+        Sat, 28 Oct 2023 05:00:00 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 5614622812f47-3b2ea7cc821so2013601b6e.1;
+        Sat, 28 Oct 2023 05:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698494400; x=1699099200; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+PiSBO3Y1WPsVw7wAvcXWqkwkpWT4KTgGbs+zAcx7ow=;
+        b=NOCDrz1rOwfdZArrbnU6OvzfDNA9Ra4sLxqWLlUgxnZ71ZV+MZiqjYu5WpD6qYAcvi
+         6ig+BkoTRjN84Wn7RphSjarh1zpokQz2Wj/njppM78zueJ+ZaqrvoYlw33S+CpwUgBan
+         Ak3dFRksFHIHRBFURFMgJiahfNBdUGyDIb7vzHAF99Sr5veONiI0WnpmEFNItRMKLnIb
+         66fW7Gv8P/mQtEZncjvOBzrlYS9dDgTAh9WZqPlfNSKKHpPSKHhrzkq08IRVbYwrRvj+
+         VUP5RV9due2UwInk/vR0DfHuFh1aCEpH9vQ3uI71PYmYgWtI54yFMwkKLcSLHcFCuF1l
+         Szww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698494223; x=1699099023;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=55/ZxQ7vXJOzYxzPAaT5BWQfrBnwnhAvHjCxioTWPX0=;
-        b=LDkzXmXKs24Apy4K9Q1Z1mTqlvyTLKyNIAD2VenawkNpTWSYgiYbAI7OdbdPqmIPOU
-         qFj3IvwQrh8QF+s+gxX74oDQCrBVcuHnTIy8ToBzLTSjbVcBbq70saaqI0RwB0eqj2c+
-         2jIJ3wG9rsM5Atz2bopPeGxITljW8R7LbF6XzMf2bZDsLQTZEe8Sde7u+Hfbgthi9V7i
-         wfQeplVZPstW8dmmtG4ikIwr/WAqhuUK6MBhp747LZ8DB9jia6GZQSn6crcE53Ny/g+K
-         DUrVTPfJD0lRN0wYtHQT5/W6RmpKpEm/KO6fPTbgatavWDcXsJhBH04W+qoksluc8ool
-         77fA==
-X-Gm-Message-State: AOJu0Yw/CFkq7WRCbcE5qvVP0wHScgkWCQUl0xTZEpkmILsAiIKw1t2C
-        Cfy1960gUmmCy0cDriIsQTBuciAuFibXUBYzxX3q9+QLs+XG
-X-Google-Smtp-Source: AGHT+IHdc3niqkJvCSD73NvwzfvitOGJnYpdUsLk4MxSZ2kD8DUPKy0dq6nfemd6WTJW1f9q//rDvJafPwqz0gjsyd4tfkkbIxBu
+        d=1e100.net; s=20230601; t=1698494400; x=1699099200;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+PiSBO3Y1WPsVw7wAvcXWqkwkpWT4KTgGbs+zAcx7ow=;
+        b=W7ieuYEMC6n903+0ZoUy62Tauo3sA4MLpdQGi1mzoO+4RMv8kXKhSHB+rr/Rk9ohUE
+         65CpyrwXkC1OvjnBJas4/Iq0n3+vNihgMwKg7g9SPFoScQoeEmyQY9v268NrkFqwC/rl
+         r442Jt5QJn++cXx4XG6FKr0GizrdS5rJkCJ2y07Q7uZOY5tCgyIhgNviTkP0MOHq0LsE
+         KoFh1fx96lAADBKBskveG9e1aSQZ9tHd6G9YYvSjRJWVYN9bdhVytq+/rFLGOrFnDKq/
+         fM7zesRz5j8fRxnidWzXfM0vcsI709qEJZSJJ3U4Z5dGmVJM3HCJUWJByqkVm2t4fCCV
+         jxbQ==
+X-Gm-Message-State: AOJu0YxbYVMp6LIESE03sLZq/XPTh9/fOzXdGC4zNWpucQ8I/lKHuexQ
+        cypr1cUZ0VWvln7vED+29d9ityCGiDmFmOKSN4E=
+X-Google-Smtp-Source: AGHT+IHFhc/0+pkWR0SUGHQwml4w6qj5BunSg6KMAvcETHAASsdx3GziCfhnVPK6xL2wvUrGxAXm1wSN3GwMKqtxZxs=
+X-Received: by 2002:a05:6808:a96:b0:39c:59e2:dd79 with SMTP id
+ q22-20020a0568080a9600b0039c59e2dd79mr5054929oij.36.1698494400043; Sat, 28
+ Oct 2023 05:00:00 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:336f:b0:6bd:c20:4215 with SMTP id
- l47-20020a056830336f00b006bd0c204215mr1318421ott.7.1698494223751; Sat, 28 Oct
- 2023 04:57:03 -0700 (PDT)
-Date:   Sat, 28 Oct 2023 04:57:03 -0700
-In-Reply-To: <20231028113238.1092-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dc201f0608c580ed@google.com>
-Subject: Re: [syzbot] [net?] BUG: corrupted list in ptp_open
-From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <025c3d36-587e-480c-b913-2a3916674c54@kernel.org>
+ <20231028082056.43276-1-579lpy@gmail.com> <29d2e5dc-7eb1-4dba-a2fe-4829fdb65a95@kernel.org>
+In-Reply-To: <29d2e5dc-7eb1-4dba-a2fe-4829fdb65a95@kernel.org>
+From:   peiyu li <579lpy@gmail.com>
+Date:   Sat, 28 Oct 2023 19:59:49 +0800
+Message-ID: <CAELPsEZV2rgt7M_UxyhB-QZ+TWcYjgi_PORO9Tk4Lofp2AFTmw@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: hwmon: lm87: convert to YAML
+To:     jdelvare@suse.com
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+>
+> On 28/10/2023 10:20, Li peiyu wrote:
+> > Convert the lm87 hwmon sensor bindings to DT schema
+> >
+> > Signed-off-by: Li peiyu <579lpy@gmail.com>
+> > ---
+> > Changes for v3:
+> > - add type definition of has-temp3, has-in6, has-in7
+> > - Change the description of has-temp3
+> > Changes for v2:
+> > - replace node name lm87 with sensor
+> > - replace character '\t' with spaces
+> >
+> >  .../devicetree/bindings/hwmon/lm87.txt        | 30 ---------
+> >  .../devicetree/bindings/hwmon/lm87.yaml       | 62 +++++++++++++++++++
+>
+> Nothing improved.
+>
+> Stop ignoring feedback. You must respond to it or implement it.
+>
+> Best regards,
+> Krzysztof
+>
+I'm so sorry for that.For v3 I just run make dt_binding_check and forget to
+run checkpatch.pl,resulting in not finding an extra space.Now running the
+dt_binding_check on my computer will cause an error regarding the
+ti,ds90ub960.yaml
+file when I specify the file to be checked as lm87.yaml. This error will occur
+even if I specify other files, I am not sure if it will have an
+impact.I'll submit
+v4.If there are still issues,please tell me the reason again.Sorry again.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         20305791 Add linux-next specific files for 20231020
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1751ca8d680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
-dashboard link: https://syzkaller.appspot.com/bug?extid=df3f3ef31f60781fa911
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=121ad9eb680000
-
-Note: testing is done by a robot and is best-effort only.
+Thanks,
+Li peiyu
