@@ -2,125 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5E97DA4AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 03:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883207DA4AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 03:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbjJ1Bgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 21:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        id S232986AbjJ1Bgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 21:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1Bgj (ORCPT
+        with ESMTP id S229471AbjJ1Bgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 27 Oct 2023 21:36:39 -0400
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6514E128
-        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 18:36:35 -0700 (PDT)
-Message-ID: <23f21bf1-0f27-4091-b889-bf43290fa6f3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698456993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IELGD68QeWnUvOrfpqSGo2BNQPupvv5ypFkOiDnBJWQ=;
-        b=vdsTsXrIyli5JO7yC0/L6twGLUnDhL+qGEMALj5iryqYXHodZr/YFCP2Qr5RSlclXdm6N0
-        K0yHT3pifs7mjyUgVX6H6zUSHPFD/zkZ1/zKtGwpPAhI692iMnWsRdC/AVOACw+b4y9C6+
-        ERzZ6DkTDqUXy60eJitERlKH9si5UKU=
-Date:   Sat, 28 Oct 2023 09:35:55 +0800
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DD91A6;
+        Fri, 27 Oct 2023 18:36:36 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 066505C0100;
+        Fri, 27 Oct 2023 21:36:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 27 Oct 2023 21:36:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698456994; x=1698543394; bh=KsUaa2dQRxZCNliH8E4IgB96uElIa6AZYOi
+        IzXKoc/g=; b=fZYSL1Hh4egXuicxkMFg+jLgSXE3ZgD8AFpH+th6BJTlZigkseO
+        mtkr17z5D5GSLqS3VGFVp3OeFx9U78fXmtLa9W0N/XHvBo5ajUNKShNtUDs7/sKd
+        ZV4tr0uGpIz8uPI45OdgM/w5KYporhOEOR24znvm/rirYuDF3x6YBc+zxbDplwcj
+        7eBteMNTZrNWsvL9HHyHvp/BuuTW1dNXe++6VfFOS27Qnk8Z+nS9kmlR+bgDjVzf
+        gzUPt1jW0vMwPsIsCCc5Gobwv8H4jeIM+R7sWGfp/qmKEDAGzJQ7Vn3acMbKXa6M
+        jPYyerd5HZZrgWis7rMj8zYIuHGTycY1cyQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698456994; x=1698543394; bh=KsUaa2dQRxZCNliH8E4IgB96uElIa6AZYOi
+        IzXKoc/g=; b=F3HFKyzmmg9oxz/ntz+T5+XmYWDdcKhDALX/MCh6lte6GAO0rwY
+        RBcb9BjyHp8jfuTcYbT2DGUA7udnstUUZIewC+T0DtyeWdgMhJ1CexKem91iZYy6
+        UGw2pgxXP/vDrtoAus18DfE8shNHIcPiyWKBOSmk2oal3LptEcqVlRX5oMXDlu+F
+        AF3WjmY+PFO3tr/zpnWzGTezgZo9zPILxeYMg5+G5Z3PliD3q1tUvm7YPhNsNzVD
+        HoedNHyyAhNO8zmJjwOqJoRSuLUhPzLCExH6mpE/QFi0Bg+8usyrjuGQNliseQTW
+        6ABGQ2psafUCNfRw0eRgJHREBL0cIJ+Q2tA==
+X-ME-Sender: <xms:oWU8ZeXAoF6deDOgUPP8C37DgzNB5zqFhXIx_UUlwRxfnidgTS8Z2g>
+    <xme:oWU8Zan70Wjt7XusI4EdTk3INHaBCZEJTNlCgkgZlPjZw0Z6YaGz4P_VlXKBWXG_o
+    5b2IrLD46uq>
+X-ME-Received: <xmr:oWU8ZSZVrs7Ok5a2SVYQddVtyrDFBGeXIx6fztF1Qj5veEm0bWwUb_g9XUSv6pumVvon4v7pGkdUm-az3drwVgg2PHpCw3QRedu6TbUw3NTX1OazR_mEExRB>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgdegjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    egvdetvedvfeeivdeuueejgeetvdehlefhheethfekgfejueffgeeugfekudfhjeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:oWU8ZVXRpVhBFGvyoK3JORYTRAnTL3oJArZ07m9g1A_Y-w8QOstB-Q>
+    <xmx:oWU8ZYlDTKU5SN-q5rutlx_Ge-tniBq1-2UQr9mEKu7oWWOVtiafRQ>
+    <xmx:oWU8ZadzWHfaQcb9lqILEARfOFF8xBUCqVR_7FZPHZC2aNr_ddzUkA>
+    <xmx:omU8ZT-ELN39i8ylB1sZIrKCuC2WhY8InDf7as0RWilH3weOxiBTDQ>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 27 Oct 2023 21:36:27 -0400 (EDT)
+Message-ID: <c938a7d9-aa9e-a3ad-a001-fb9022d21475@themaw.net>
+Date:   Sat, 28 Oct 2023 09:36:23 +0800
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 2/7] slub: Prepare __slab_free() for unfrozen
- partial slab out of node partial list
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/6] mounts: keep list of mounts in an rbtree
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20231025140205.3586473-1-mszeredi@redhat.com>
+ <20231025140205.3586473-3-mszeredi@redhat.com>
+ <b69c1c17-35f9-351e-79a9-ef3ef5481974@themaw.net>
+ <CAOssrKe76uZ5t714=Ta7GMLnZdS4QGm-fOfT9q5hNFe1fsDMVg@mail.gmail.com>
 Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org
-Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
- <20231024093345.3676493-3-chengming.zhou@linux.dev>
- <43da5c9a-aeff-1bff-81a8-4611470c2514@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <43da5c9a-aeff-1bff-81a8-4611470c2514@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAOssrKe76uZ5t714=Ta7GMLnZdS4QGm-fOfT9q5hNFe1fsDMVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/27 23:18, Vlastimil Babka wrote:
-> On 10/24/23 11:33, chengming.zhou@linux.dev wrote:
->> From: Chengming Zhou <zhouchengming@bytedance.com>
+On 27/10/23 16:17, Miklos Szeredi wrote:
+> On Fri, Oct 27, 2023 at 5:12 AM Ian Kent <raven@themaw.net> wrote:
+>> On 25/10/23 22:02, Miklos Szeredi wrote:
+>>> The mnt.mnt_list is still used to set up the mount tree and for
+>>> propagation, but not after the mount has been added to a namespace.  Hence
+>>> mnt_list can live in union with rb_node.  Use MNT_ONRB mount flag to
+>>> validate that the mount is on the correct list.
+>> Is that accurate, propagation occurs at mount and also at umount.
+> When propagating a mount, the new mount's mnt_list is used as a head
+> for the new propagated mounts.  These are then moved to the rb tree by
+> commit_tree().
+>
+> When umounting there's a "to umount" list called tmp_list in
+> umount_tree(), this list is used to collect direct umounts and then
+> propagated umounts.  The direct umounts are added in umount_tree(),
+> the propagated ones umount_one().
+>
+> Note: umount_tree() can be called on a not yet finished mount, in that
+> case the mounts are still on mnt_list, so umount_tree() needs to deal
+> with both.
+>
+>> IDG how the change to umount_one() works, it looks like umount_list()
 >>
->> Now the partial slub will be frozen when taken out of node partial list,
-> 
-> 	  partially empty slab
-> 
->> so the __slab_free() will know from "was_frozen" that the partial slab
->> is not on node partial list and is used by one kmem_cache_cpu.
-> 
-> 				... is a cpu or cpu partial slab of some cpu.
-> 
->> But we will change this, make partial slabs leave the node partial list
->> with unfrozen state, so we need to change __slab_free() to use the new
->> slab_test_node_partial() we just introduced.
+>> uses mnt_list. It looks like propagate_umount() is also using mnt_list.
 >>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  mm/slub.c | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
 >>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 3fad4edca34b..f568a32d7332 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -3610,6 +3610,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>  	unsigned long counters;
->>  	struct kmem_cache_node *n = NULL;
->>  	unsigned long flags;
->> +	bool on_node_partial;
->>  
->>  	stat(s, FREE_SLOWPATH);
->>  
->> @@ -3657,6 +3658,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>  				 */
->>  				spin_lock_irqsave(&n->list_lock, flags);
->>  
->> +				on_node_partial = slab_test_node_partial(slab);
->>  			}
->>  		}
->>  
->> @@ -3685,6 +3687,15 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>  		return;
->>  	}
->>  
->> +	/*
->> +	 * This slab was partial but not on the per-node partial list,
-> 
-> This slab was partially empty ...
-> 
-> Otherwise LGTM!
+>> Am I missing something obvious?
+> So when a mount is part of a namespace (either anonymous or not) it is
+> on the rb tree, when not then it can temporarily be on mnt_list.
+> MNT_ONRB flag is used to validate that the mount is on the list that
+> we expect it to be on, but also to detect the case of the mount setup
+> being aborted.
+>
+> We could handle the second case differently, since we should be able
+> to tell when we are removing the mount from a namespace and when we
+> are aborting a mount, but this was the least invasive way to do this.
 
-Ok, will fix.
+Thanks for the explanation, what you've said is essentially what I
 
-Thanks!
+understood reading the series.
 
-> 
->> +	 * in which case we shouldn't manipulate its list, just return.
->> +	 */
->> +	if (prior && !on_node_partial) {
->> +		spin_unlock_irqrestore(&n->list_lock, flags);
->> +		return;
->> +	}
->> +
->>  	if (unlikely(!new.inuse && n->nr_partial >= s->min_partial))
->>  		goto slab_empty;
->>  
-> 
+
+But I still haven't quite got this so I'll need to spend more time
+
+on this part of the patch series.
+
+
+That's not a problem, ;).
+
+
+Ian
+
+>
+> Thanks,
+> Miklos
+>
