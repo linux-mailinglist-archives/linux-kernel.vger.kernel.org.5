@@ -2,272 +2,542 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFBD7DA6B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7497DA6C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 13:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbjJ1Lb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 07:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S230092AbjJ1Lom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 07:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbjJ1L2U (ORCPT
+        with ESMTP id S229469AbjJ1Loj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 07:28:20 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7F7DE
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:28:17 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso4894419a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698492496; x=1699097296; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pIG/E0j7il+FitUInBo8Z6Tz1lpvJUbD9aS0jo2XnTA=;
-        b=A8lSlyVcWTq+FTXfdXYZiL+wytzIl9gx8c+L5XBeP+ATmzWgkHQmKGdpkvjzl5dqQR
-         9qNoxeiiaO8U5PvCY0BflrkHaP0SUTBxr7VgYwbnoH1ZrR9tWU9QlU56RYjZM6lMxM66
-         UETyWlALyvLO3ir85bYhByAtRGkUWucKx5AYzXCgAvP/6K8Y4wkLuig3C+IXMjlkasto
-         5e2NxX6i4bgYSV0cbH824TVYiaTfHDaaND05r404CanRSk1akWf8AmXGFoEWGmsqrZHX
-         mFGV+l0NAWB3HlUuLRCZbASw9+ezVT8LkmdcKjDTfdBgIfw+3qnYuge3dIY+XJOjQYtU
-         yFiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698492496; x=1699097296;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=pIG/E0j7il+FitUInBo8Z6Tz1lpvJUbD9aS0jo2XnTA=;
-        b=bPCsJH65V32CDmOZ6O9HbtQuEYVeSuvuVk2hp3ihzLTpdBjkQvk10HBZDkBcN8HJxb
-         4pJNmnmmyZ3gG3bUvODi3WRI8A7MN0fBl6qvysoV12YeRoTcvYPfHxx/jhcIrDsmT86q
-         1KBDrHrUE1E9w6MmKAcca1FJbGVA0fu+1eim7KuS6fSnYITUGcPkAKqh4QPHrk+T4Ghj
-         AQmx6kjxieHvvMXgu1Ej9lHlEaeXWAnpLqrOwPt68iBatDhc+oXe7P4Q5jIKIyJ6zGs7
-         n6AVXdUSpsVrM4Yr1C9AXp4t8s5Db7LT0mHKQxoGC7iy4rWTSnqR1S5Dm7zpsXS0GUgH
-         nIIw==
-X-Gm-Message-State: AOJu0YyOJz+uQaLJw6pCK37ZlJGiQWFXvyOw0vGryx7GLmhlsqVID6EP
-        RN1TT1mMPYixHjNhNPidNXw=
-X-Google-Smtp-Source: AGHT+IEUQqXKK8LAfMQbS+GlEuCIkArOJEdo07pdQKgO8xeCx5KDbCv0XX+p5bqYnqXAt2wUGWln4w==
-X-Received: by 2002:a17:907:9629:b0:9c2:a072:78ca with SMTP id gb41-20020a170907962900b009c2a07278camr4936898ejc.28.1698492495982;
-        Sat, 28 Oct 2023 04:28:15 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id sd2-20020a170906ce2200b009c762d89c76sm2612726ejb.0.2023.10.28.04.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 04:28:15 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 28 Oct 2023 13:28:13 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: [GIT PULL] locking changes for v6.7
-Message-ID: <ZTzwTaf1iTnCHwJM@gmail.com>
+        Sat, 28 Oct 2023 07:44:39 -0400
+Received: from 18.mo581.mail-out.ovh.net (18.mo581.mail-out.ovh.net [188.165.56.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06420D9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 04:44:33 -0700 (PDT)
+Received: from director8.ghost.mail-out.ovh.net (unknown [10.108.20.202])
+        by mo581.mail-out.ovh.net (Postfix) with ESMTP id B417A2726A
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 11:29:13 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-bfgcf (unknown [10.110.115.83])
+        by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 4E5F31FD5D;
+        Sat, 28 Oct 2023 11:29:13 +0000 (UTC)
+Received: from RCM-web3.webmail.mail.ovh.net ([178.33.236.78])
+        by ghost-submission-6684bf9d7b-bfgcf with ESMTPSA
+        id u/3yEYnwPGWSZQAAyIRv4w
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Sat, 28 Oct 2023 11:29:13 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Date:   Sat, 28 Oct 2023 14:29:12 +0300
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, skhan@linuxfoundation.org,
+        airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] drm/radeon: replace 1-element arrays with flexible-array
+ members
+In-Reply-To: <BL1PR12MB5144FA51BCB5DFD9A9F88A5BF7DCA@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20231027165841.71810-1-jose.pekkarinen@foxhound.fi>
+ <BL1PR12MB5144FA51BCB5DFD9A9F88A5BF7DCA@BL1PR12MB5144.namprd12.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <634f769b7f723795180d5bd2186943b9@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 104.244.73.190
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Ovh-Tracer-Id: 17332384643125454502
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrleeigdduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepheeiudelueefgefgueehgfeukeejgedthedufedvudetfeduveekleefudehjedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpuddtgedrvdeggedrjeefrdduledtpddujeekrdeffedrvdefiedrjeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkedupdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 2023-10-27 20:55, Deucher, Alexander wrote:
+> [Public]
+> 
+>> -----Original Message-----
+>> From: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>> Sent: Friday, October 27, 2023 12:59 PM
+>> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
+>> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+>> skhan@linuxfoundation.org
+>> Cc: José Pekkarinen <jose.pekkarinen@foxhound.fi>; airlied@gmail.com;
+>> daniel@ffwll.ch; amd-gfx@lists.freedesktop.org; dri-
+>> devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; 
+>> linux-kernel-
+>> mentees@lists.linuxfoundation.org
+>> Subject: [PATCH] drm/radeon: replace 1-element arrays with 
+>> flexible-array
+>> members
+>> 
+>> Reported by coccinelle, the following patch will move the following 1 
+>> element
+>> arrays to flexible arrays.
+>> 
+>> drivers/gpu/drm/radeon/atombios.h:5523:32-48: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:5545:32-48: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:5461:34-44: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4447:30-40: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4236:30-41: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7044:24-37: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7054:24-37: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7095:28-45: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7553:8-17: WARNING use 
+>> flexible-array
+>> member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7559:8-17: WARNING use 
+>> flexible-array
+>> member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:3896:27-37: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:5443:16-25: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:5454:34-43: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4603:21-32: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:6299:32-44: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4628:32-46: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:6285:29-39: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4296:30-36: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4756:28-36: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:4064:22-35: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7327:9-24: WARNING use 
+>> flexible-array
+>> member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7332:32-53: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:6030:8-17: WARNING use 
+>> flexible-array
+>> member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7362:26-41: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7369:29-44: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7349:24-32: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> drivers/gpu/drm/radeon/atombios.h:7355:27-35: WARNING use flexible-
+>> array member instead
+>> (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-
+>> length-and-one-element-arrays)
+>> 
+>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> 
+> Please verify that changing these to variable sized arrays does not
+> break any calculations based on the old size in the driver.  More
+> below.
+> 
+>> ---
+>>  drivers/gpu/drm/radeon/atombios.h | 54 
+>> +++++++++++++++----------------
+>>  1 file changed, 27 insertions(+), 27 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/radeon/atombios.h
+>> b/drivers/gpu/drm/radeon/atombios.h
+>> index 8a6621f1e82c..7fa1606be92c 100644
+>> --- a/drivers/gpu/drm/radeon/atombios.h
+>> +++ b/drivers/gpu/drm/radeon/atombios.h
+>> @@ -3893,7 +3893,7 @@ typedef struct _ATOM_GPIO_PIN_ASSIGNMENT
+>> typedef struct _ATOM_GPIO_PIN_LUT  {
+>>    ATOM_COMMON_TABLE_HEADER  sHeader;
+>> -  ATOM_GPIO_PIN_ASSIGNMENT   asGPIO_Pin[1];
+>> +  ATOM_GPIO_PIN_ASSIGNMENT   asGPIO_Pin[];
+>>  }ATOM_GPIO_PIN_LUT;
+>> 
+>> 
+>> /******************************************************************
+>> **********/
+>> @@ -4061,7 +4061,7 @@ typedef struct
+>> _ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT         //usSrcDstTableOffset
+>>    UCHAR               ucNumberOfSrc;
+>>    USHORT              usSrcObjectID[1];
+>>    UCHAR               ucNumberOfDst;
+>> -  USHORT              usDstObjectID[1];
+>> +  USHORT              usDstObjectID[];
+>>  }ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT;
+>> 
+>> 
+>> @@ -4233,7 +4233,7 @@ typedef struct
+>> _ATOM_CONNECTOR_DEVICE_TAG_RECORD
+>>    ATOM_COMMON_RECORD_HEADER   sheader;
+>>    UCHAR                       ucNumberOfDevice;
+>>    UCHAR                       ucReserved;
+>> -  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[1];         //This Id is 
+>> same as
+>> "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
+>> +  ATOM_CONNECTOR_DEVICE_TAG   asDeviceTag[];          //This Id is 
+>> same as
+>> "ATOM_DEVICE_XXX_SUPPORT", 1 is only for allocation
+>>  }ATOM_CONNECTOR_DEVICE_TAG_RECORD;
+>> 
+>> 
+>> @@ -4293,7 +4293,7 @@ typedef struct
+>> _ATOM_OBJECT_GPIO_CNTL_RECORD
+>>    ATOM_COMMON_RECORD_HEADER   sheader;
+>>    UCHAR                       ucFlags;                // Future 
+>> expnadibility
+>>    UCHAR                       ucNumberOfPins;         // Number of 
+>> GPIO pins used to
+>> control the object
+>> -  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[1];              // the real 
+>> gpio pin pair
+>> determined by number of pins ucNumberOfPins
+>> +  ATOM_GPIO_PIN_CONTROL_PAIR  asGpio[];               // the real 
+>> gpio pin pair
+>> determined by number of pins ucNumberOfPins
+>>  }ATOM_OBJECT_GPIO_CNTL_RECORD;
+>> 
+>>  //Definitions for GPIO pin state
+>> @@ -4444,7 +4444,7 @@ typedef struct
+>> _ATOM_BRACKET_LAYOUT_RECORD
+>>    UCHAR                       ucWidth;
+>>    UCHAR                       ucConnNum;
+>>    UCHAR                       ucReserved;
+>> -  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[1];
+>> +  ATOM_CONNECTOR_LAYOUT_INFO  asConnInfo[];
+>>  }ATOM_BRACKET_LAYOUT_RECORD;
+>> 
+>> 
+>> /******************************************************************
+>> **********/
+>> @@ -4600,7 +4600,7 @@ typedef struct  _ATOM_I2C_VOLTAGE_OBJECT_V3
+>>     UCHAR    ucVoltageControlAddress;
+>>     UCHAR    ucVoltageControlOffset;
+>>     ULONG    ulReserved;
+>> -   VOLTAGE_LUT_ENTRY asVolI2cLut[1];        // end with 0xff
+>> +   VOLTAGE_LUT_ENTRY asVolI2cLut[];         // end with 0xff
+>>  }ATOM_I2C_VOLTAGE_OBJECT_V3;
+>> 
+>>  // ATOM_I2C_VOLTAGE_OBJECT_V3.ucVoltageControlFlag
+>> @@ -4625,7 +4625,7 @@ typedef struct
+>> _ATOM_LEAKAGE_VOLTAGE_OBJECT_V3
+>>     UCHAR    ucLeakageEntryNum;           // indicate the entry number 
+>> of
+>> LeakageId/Voltage Lut table
+>>     UCHAR    ucReserved[2];
+>>     ULONG    ulMaxVoltageLevel;
+>> -   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[1];
+>> +   LEAKAGE_VOLTAGE_LUT_ENTRY_V2 asLeakageIdLut[];
+>>  }ATOM_LEAKAGE_VOLTAGE_OBJECT_V3;
+>> 
+>> 
+>> @@ -4753,7 +4753,7 @@ typedef struct _ATOM_POWER_SOURCE_INFO  {
+>>               ATOM_COMMON_TABLE_HEADER                asHeader;
+>>               UCHAR
+>>                                       asPwrbehave[16];
+>> -             ATOM_POWER_SOURCE_OBJECT                asPwrObj[1];
+>> +             ATOM_POWER_SOURCE_OBJECT                asPwrObj[];
+>>  }ATOM_POWER_SOURCE_INFO;
+>> 
+>> 
+>> @@ -5440,7 +5440,7 @@ typedef struct _ATOM_FUSION_SYSTEM_INFO_V2
+>> typedef struct _ATOM_I2C_DATA_RECORD  {
+>>    UCHAR         ucNunberOfBytes;                                      
+>>         //Indicates how many
+>> bytes SW needs to write to the external ASIC for one block, besides to 
+>> "Start"
+>> and "Stop"
+>> -  UCHAR         ucI2CData[1];                                         
+>>         //I2C data in bytes,
+>> should be less than 16 bytes usually
+>> +  UCHAR         ucI2CData[];                                          
+>>         //I2C data in bytes, should
+>> be less than 16 bytes usually
+>>  }ATOM_I2C_DATA_RECORD;
+>> 
+>> 
+>> @@ -5451,14 +5451,14 @@ typedef struct
+>> _ATOM_I2C_DEVICE_SETUP_INFO
+>>    UCHAR                                      ucSSChipID;             
+>> //SS chip being used
+>>    UCHAR                                      ucSSChipSlaveAddr;      
+>> //Slave Address to
+>> set up this SS chip
+>>    UCHAR                           ucNumOfI2CDataRecords;  //number of 
+>> data block
+>> -  ATOM_I2C_DATA_RECORD            asI2CData[1];
+>> +  ATOM_I2C_DATA_RECORD            asI2CData[];
+>>  }ATOM_I2C_DEVICE_SETUP_INFO;
+>> 
+>> 
+>> //=================================================================
+>> =========================
+>>  typedef struct  _ATOM_ASIC_MVDD_INFO
+>>  {
+>>    ATOM_COMMON_TABLE_HEADER         sHeader;
+>> -  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[1];
+>> +  ATOM_I2C_DEVICE_SETUP_INFO      asI2CSetup[];
+>>  }ATOM_ASIC_MVDD_INFO;
+>> 
+>> 
+>> //=================================================================
+>> =========================
+>> @@ -5520,7 +5520,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO
+>> typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V2  {
+>>    ATOM_COMMON_TABLE_HEADER         sHeader;
+>> -  ATOM_ASIC_SS_ASSIGNMENT_V2           asSpreadSpectrum[1];
+>> //this is point only.
+>> +  ATOM_ASIC_SS_ASSIGNMENT_V2           asSpreadSpectrum[];
+>> //this is point only.
+>>  }ATOM_ASIC_INTERNAL_SS_INFO_V2;
+>> 
+>>  typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3 @@ -5542,7 +5542,7 @@
+>> typedef struct _ATOM_ASIC_SS_ASSIGNMENT_V3  typedef struct
+>> _ATOM_ASIC_INTERNAL_SS_INFO_V3  {
+>>    ATOM_COMMON_TABLE_HEADER         sHeader;
+>> -  ATOM_ASIC_SS_ASSIGNMENT_V3           asSpreadSpectrum[1];
+>> //this is pointer only.
+>> +  ATOM_ASIC_SS_ASSIGNMENT_V3           asSpreadSpectrum[];
+>> //this is pointer only.
+>>  }ATOM_ASIC_INTERNAL_SS_INFO_V3;
+>> 
+>> 
+>> @@ -6027,7 +6027,7 @@ typedef struct _ENABLE_SCALER_PARAMETERS
+>>    UCHAR ucScaler;            // ATOM_SCALER1, ATOM_SCALER2
+>>    UCHAR ucEnable;            // ATOM_SCALER_DISABLE or
+>> ATOM_SCALER_CENTER or ATOM_SCALER_EXPANSION
+>>    UCHAR ucTVStandard;        //
+>> -  UCHAR ucPadding[1];
+>> +  UCHAR ucPadding[];
+> 
+> This may actually be a 1 element array.  It’s just padding at the end
+> of the table.
+> 
+>>  }ENABLE_SCALER_PARAMETERS;
+>>  #define ENABLE_SCALER_PS_ALLOCATION ENABLE_SCALER_PARAMETERS
+>> 
+>> @@ -6282,7 +6282,7 @@ typedef union
+>> _ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
+>> 
+>>  typedef struct _ATOM_MEMORY_SETTING_DATA_BLOCK{
+>>       ATOM_MEMORY_SETTING_ID_CONFIG_ACCESS
+>>       ulMemoryID;
+>> -     ULONG
+>>                                                               
+>> aulMemData[1];
+>> +     ULONG
+>>                                                               
+>> aulMemData[];
+>>  }ATOM_MEMORY_SETTING_DATA_BLOCK;
+>> 
+>> 
+>> @@ -6296,7 +6296,7 @@ typedef struct _ATOM_INIT_REG_BLOCK{
+>>       USHORT
+>>                                               usRegIndexTblSize;
+>> 
+>>                       //size of asRegIndexBuf
+>>       USHORT
+>>                                               usRegDataBlkSize;
+>> 
+>>                               //size of
+>> ATOM_MEMORY_SETTING_DATA_BLOCK
+>>       ATOM_INIT_REG_INDEX_FORMAT
+>>       asRegIndexBuf[1];
+>> -     ATOM_MEMORY_SETTING_DATA_BLOCK  asRegDataBuf[1];
+>> +     ATOM_MEMORY_SETTING_DATA_BLOCK  asRegDataBuf[];
+>>  }ATOM_INIT_REG_BLOCK;
+>> 
+> 
+> This one needs special handling as you have multiple variable sized 
+> arrays.
 
-Please pull the latest locking tree from:
+     I'm happy to add any special handling in v2, though
+I may need to understand what that special handling would
+be. Would you mind to elaborate? Otherwise I can just leave
+the sensitive cases and the paddings untouched and resend
+the patch with the rest of cases converted.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-core-2023-10-28
+> 
+>>  #define END_OF_REG_INDEX_BLOCK  0x0ffff @@ -7041,7 +7041,7 @@
+>> typedef struct _ATOM_DISP_OUT_INFO
+>>       USHORT ptrTransmitterInfo;
+>>       USHORT ptrEncoderInfo;
+>>       ASIC_TRANSMITTER_INFO  asTransmitterInfo[1];
+>> -     ASIC_ENCODER_INFO      asEncoderInfo[1];
+>> +     ASIC_ENCODER_INFO      asEncoderInfo[];
+> 
+> Same here.
+> 
+>>  }ATOM_DISP_OUT_INFO;
+>> 
+>>  typedef struct _ATOM_DISP_OUT_INFO_V2
+>> @@ -7051,7 +7051,7 @@ typedef struct _ATOM_DISP_OUT_INFO_V2
+>>       USHORT ptrEncoderInfo;
+>>    USHORT ptrMainCallParserFar;                  // direct address of 
+>> main parser call
+>> in VBIOS binary.
+>>       ASIC_TRANSMITTER_INFO  asTransmitterInfo[1];
+>> -     ASIC_ENCODER_INFO      asEncoderInfo[1];
+>> +     ASIC_ENCODER_INFO      asEncoderInfo[];
+> 
+> Same here.
+> 
+>>  }ATOM_DISP_OUT_INFO_V2;
+>> 
+>> 
+>> @@ -7092,7 +7092,7 @@ typedef struct _ATOM_DISP_OUT_INFO_V3
+>>    UCHAR  ucCoreRefClkSource;                    // value of 
+>> CORE_REF_CLK_SOURCE
+>>    UCHAR  ucDispCaps;
+>>    UCHAR  ucReserved[2];
+>> -  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[1];     // for 
+>> alligment only
+>> +  ASIC_TRANSMITTER_INFO_V2  asTransmitterInfo[];      // for 
+>> alligment only
+>>  }ATOM_DISP_OUT_INFO_V3;
+>> 
+>>  //ucDispCaps
+>> @@ -7324,12 +7324,12 @@ typedef struct
+>> _CLOCK_CONDITION_SETTING_ENTRY{
+>>    USHORT usMaxClockFreq;
+>>    UCHAR  ucEncodeMode;
+>>    UCHAR  ucPhySel;
+>> -  ULONG  ulAnalogSetting[1];
+>> +  ULONG  ulAnalogSetting[];
+>>  }CLOCK_CONDITION_SETTING_ENTRY;
+>> 
+>>  typedef struct _CLOCK_CONDITION_SETTING_INFO{
+>>    USHORT usEntrySize;
+>> -  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[1];
+>> +  CLOCK_CONDITION_SETTING_ENTRY asClkCondSettingEntry[];
+>>  }CLOCK_CONDITION_SETTING_INFO;
+>> 
+>>  typedef struct _PHY_CONDITION_REG_VAL{
+>> @@ -7346,27 +7346,27 @@ typedef struct _PHY_CONDITION_REG_VAL_V2{
+>> typedef struct _PHY_CONDITION_REG_INFO{
+>>    USHORT usRegIndex;
+>>    USHORT usSize;
+>> -  PHY_CONDITION_REG_VAL asRegVal[1];
+>> +  PHY_CONDITION_REG_VAL asRegVal[];
+>>  }PHY_CONDITION_REG_INFO;
+>> 
+>>  typedef struct _PHY_CONDITION_REG_INFO_V2{
+>>    USHORT usRegIndex;
+>>    USHORT usSize;
+>> -  PHY_CONDITION_REG_VAL_V2 asRegVal[1];
+>> +  PHY_CONDITION_REG_VAL_V2 asRegVal[];
+>>  }PHY_CONDITION_REG_INFO_V2;
+>> 
+>>  typedef struct _PHY_ANALOG_SETTING_INFO{
+>>    UCHAR  ucEncodeMode;
+>>    UCHAR  ucPhySel;
+>>    USHORT usSize;
+>> -  PHY_CONDITION_REG_INFO  asAnalogSetting[1];
+>> +  PHY_CONDITION_REG_INFO  asAnalogSetting[];
+>>  }PHY_ANALOG_SETTING_INFO;
+>> 
+>>  typedef struct _PHY_ANALOG_SETTING_INFO_V2{
+>>    UCHAR  ucEncodeMode;
+>>    UCHAR  ucPhySel;
+>>    USHORT usSize;
+>> -  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[1];
+>> +  PHY_CONDITION_REG_INFO_V2  asAnalogSetting[];
+>>  }PHY_ANALOG_SETTING_INFO_V2;
+>> 
+>>  typedef struct _GFX_HAVESTING_PARAMETERS { @@ -7550,13 +7550,13
+>> @@ typedef struct _ATOM_TMDS_INFO  typedef struct
+>> _ATOM_ENCODER_ANALOG_ATTRIBUTE  {
+>>    UCHAR ucTVStandard;     //Same as TV standards defined above,
+>> -  UCHAR ucPadding[1];
+>> +  UCHAR ucPadding[];
+> 
+> This may actually be a 1 element array.  It’s just padding at the end
+> of the table.
+> 
+>>  }ATOM_ENCODER_ANALOG_ATTRIBUTE;
+>> 
+>>  typedef struct _ATOM_ENCODER_DIGITAL_ATTRIBUTE  {
+>>    UCHAR ucAttribute;      //Same as other digital encoder attributes 
+>> defined
+>> above
+>> -  UCHAR ucPadding[1];
+>> +  UCHAR ucPadding[];
+> 
+> Same here.
+> 
+> Alex
+> 
+>>  }ATOM_ENCODER_DIGITAL_ATTRIBUTE;
+>> 
+>>  typedef union _ATOM_ENCODER_ATTRIBUTE
+>> --
+>> 2.39.2
 
-   # HEAD: c73801ae4f22b390228ebf471d55668e824198b6 futex: Don't include process MM in futex key on no-MMU
+     Thanks for the comments!
 
-Locking changes in this cycle are:
-
- - Futex improvements:
-
-    - Add the 'futex2' syscall ABI, which is an attempt to get away from the
-      multiplex syscall and adds a little room for extentions, while lifting
-      some limitations.
-
-    - Fix futex PI recursive rt_mutex waiter state bug
-
-    - Fix inter-process shared futexes on no-MMU systems
-
-    - Use folios instead of pages
-
- - Micro-optimizations of locking primitives:
-
-    - Improve arch_spin_value_unlocked() on asm-generic ticket spinlock
-      architectures, to improve lockref code generation.
-
-    - Improve the x86-32 lockref_get_not_zero() main loop by adding
-      build-time CMPXCHG8B support detection for the relevant lockref code,
-      and by better interfacing the CMPXCHG8B assembly code with the compiler.
-
-    - Introduce arch_sync_try_cmpxchg() on x86 to improve sync_try_cmpxchg()
-      code generation. Convert some sync_cmpxchg() users to sync_try_cmpxchg().
-
-    - Micro-optimize rcuref_put_slowpath()
-
- - Locking debuggability improvements:
-
-    - Improve CONFIG_DEBUG_RT_MUTEXES=y to have a fast-path as well
-
-    - Enforce atomicity of sched_submit_work(), which is de-facto atomic but
-      was un-enforced previously.
-
-    - Extend <linux/cleanup.h>'s no_free_ptr() with __must_check semantics
-
-    - Fix ww_mutex self-tests
-
-    - Clean up const-propagation in <linux/seqlock.h> and simplify
-      the API-instantiation macros a bit.
-
- - RT locking improvements:
-
-    - Provide the rt_mutex_*_schedule() primitives/helpers and use them
-      in the rtmutex code to avoid recursion vs. rtlock on the PI state.
-
-    - Add nested blocking lockdep asserts to rt_mutex_lock(), rtlock_lock()
-      and rwbase_read_lock().
-
- - Plus misc fixes & cleanups
-
- Thanks,
-
-	Ingo
-
------------------->
-Atul Kumar Pant (1):
-      locking/debug: Fix debugfs API return value checks to use IS_ERR()
-
-Ben Wolsieffer (1):
-      futex: Don't include process MM in futex key on no-MMU
-
-Cuda-Chen (1):
-      locking/seqlock: Fix grammar in comment
-
-Guo Ren (1):
-      asm-generic: ticket-lock: Optimize arch_spin_value_unlocked()
-
-Ingo Molnar (1):
-      locking/seqlock: Propagate 'const' pointers within read-only methods, remove forced type casts
-
-John Stultz (3):
-      locking/ww_mutex/test: Use prng instead of rng to avoid hangs at bootup
-      locking/ww_mutex/test: Fix potential workqueue corruption
-      locking/ww_mutex/test: Make sure we bail out instead of livelock
-
-Li zeming (1):
-      futex/requeue: Remove unnecessary ‘NULL’ initialization from futex_proxy_trylock_atomic()
-
-Lucy Mielke (1):
-      locking/lockdep: Fix string sizing bug that triggers a format-truncation compiler-warning
-
-Matthew Wilcox (Oracle) (1):
-      futex: Use a folio instead of a page
-
-Oleg Nesterov (2):
-      locking/seqlock: Simplify SEQCOUNT_LOCKNAME()
-      locking/seqlock: Change __seqprop() to return the function pointer
-
-Peter Zijlstra (5):
-      cleanup: Make no_free_ptr() __must_check
-      sched: Constrain locks in sched_submit_work()
-      sched: Provide rt_mutex specific scheduler helpers
-      futex/pi: Fix recursive rt_mutex waiter state
-      alpha: Fix up new futex syscall numbers
-
-Sebastian Andrzej Siewior (2):
-      locking/rtmutex: Avoid unconditional slowpath for DEBUG_RT_MUTEXES
-      locking/rtmutex: Use rt_mutex specific scheduler helpers
-
-Thomas Gleixner (2):
-      sched: Extract __schedule_loop()
-      locking/rtmutex: Add a lockdep assert to catch potential nested blocking
-
-Uros Bizjak (6):
-      locking/lockref/x86: Enable ARCH_USE_CMPXCHG_LOCKREF for X86_CMPXCHG64
-      locking/local, arch: Rewrite local_add_unless() as a static inline function
-      locking/atomic: Add generic support for sync_try_cmpxchg() and its fallback
-      locking/atomic/x86: Introduce arch_sync_try_cmpxchg()
-      locking/atomic, xen: Use sync_try_cmpxchg() instead of sync_cmpxchg()
-      locking/atomics: Use atomic_try_cmpxchg_release() to micro-optimize rcuref_put_slowpath()
-
-pangzizhen001@208suo.com (1):
-      locking/seqlock: Fix typo in comment
-
-peterz@infradead.org (10):
-      futex: Clarify FUTEX2 flags
-      futex: Extend the FUTEX2 flags
-      futex: Flag conversion
-      futex: Validate futex value against futex size
-      futex: Add sys_futex_wake()
-      futex: FLAGS_STRICT
-      futex: Add sys_futex_wait()
-      futex: Propagate flags into get_futex_key()
-      futex: Add flags2 argument to futex_requeue()
-      futex: Add sys_futex_requeue()
-
-
- arch/alpha/include/asm/local.h              |  33 ++---
- arch/alpha/kernel/syscalls/syscall.tbl      |   4 +
- arch/arm/tools/syscall.tbl                  |   3 +
- arch/arm64/include/asm/unistd.h             |   2 +-
- arch/arm64/include/asm/unistd32.h           |   6 +
- arch/ia64/kernel/syscalls/syscall.tbl       |   3 +
- arch/loongarch/include/asm/local.h          |  27 ++--
- arch/m68k/kernel/syscalls/syscall.tbl       |   3 +
- arch/microblaze/kernel/syscalls/syscall.tbl |   3 +
- arch/mips/include/asm/local.h               |  27 ++--
- arch/mips/kernel/syscalls/syscall_n32.tbl   |   3 +
- arch/mips/kernel/syscalls/syscall_n64.tbl   |   3 +
- arch/mips/kernel/syscalls/syscall_o32.tbl   |   3 +
- arch/parisc/kernel/syscalls/syscall.tbl     |   3 +
- arch/powerpc/include/asm/local.h            |  12 +-
- arch/powerpc/kernel/syscalls/syscall.tbl    |   3 +
- arch/s390/kernel/syscalls/syscall.tbl       |   3 +
- arch/sh/kernel/syscalls/syscall.tbl         |   3 +
- arch/sparc/kernel/syscalls/syscall.tbl      |   3 +
- arch/x86/Kconfig                            |   2 +-
- arch/x86/entry/syscalls/syscall_32.tbl      |   3 +
- arch/x86/entry/syscalls/syscall_64.tbl      |   3 +
- arch/x86/include/asm/cmpxchg.h              |   6 +
- arch/x86/include/asm/local.h                |  33 ++---
- arch/xtensa/kernel/syscalls/syscall.tbl     |   3 +
- drivers/xen/events/events_fifo.c            |  26 ++--
- drivers/xen/grant-table.c                   |  10 +-
- include/asm-generic/spinlock.h              |  16 +-
- include/linux/atomic/atomic-arch-fallback.h |  15 +-
- include/linux/atomic/atomic-instrumented.h  |  10 +-
- include/linux/cleanup.h                     |  39 ++++-
- include/linux/sched.h                       |   3 +
- include/linux/sched/rt.h                    |   4 +
- include/linux/seqlock.h                     |  52 ++++---
- include/linux/syscalls.h                    |  10 ++
- include/uapi/asm-generic/unistd.h           |   8 +-
- include/uapi/linux/futex.h                  |  31 +++-
- kernel/futex/core.c                         |  86 ++++++-----
- kernel/futex/futex.h                        |  86 ++++++++++-
- kernel/futex/pi.c                           |  91 ++++++++----
- kernel/futex/requeue.c                      |  22 +--
- kernel/futex/syscalls.c                     | 221 ++++++++++++++++++++++------
- kernel/futex/waitwake.c                     |  80 +++++-----
- kernel/locking/lock_events.c                |  10 +-
- kernel/locking/lockdep_proc.c               |   2 +-
- kernel/locking/rtmutex.c                    |  37 ++++-
- kernel/locking/rwbase_rt.c                  |   8 +
- kernel/locking/rwsem.c                      |   8 +-
- kernel/locking/spinlock_rt.c                |   6 +
- kernel/locking/test-ww_mutex.c              |  48 ++++--
- kernel/locking/ww_rt_mutex.c                |   2 +-
- kernel/sched/core.c                         |  64 ++++++--
- kernel/sys_ni.c                             |   3 +
- lib/rcuref.c                                |   2 +-
- scripts/atomic/gen-atomic-fallback.sh       |  33 +++--
- scripts/atomic/gen-atomic-instrumented.sh   |   3 +-
- 56 files changed, 895 insertions(+), 338 deletions(-)
+     José.
