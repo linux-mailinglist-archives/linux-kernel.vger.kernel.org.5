@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932CA7DA669
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6DD7DA686
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 12:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjJ1Kbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 06:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S229687AbjJ1Kjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 06:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjJ1Kbc (ORCPT
+        with ESMTP id S229449AbjJ1Kjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 06:31:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A168ED
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 03:31:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F0DC433C7;
-        Sat, 28 Oct 2023 10:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698489089;
-        bh=DLYTQpYu8yL88OLQO/D4DceJpOvPWTl4um1X4nFwKS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xNv+sOq0/GmDJm+KZxMLh7Xk16HfEogFhS1Zkie3XunKSGmJwUtRQCOMnCE3iERKS
-         txvbPfyqZd835I4rQlmaRmb/GeTxKIv3mbduqD4T6c787Jiu+23E9MrfX252i/lBAh
-         V025nEy3EMdpIPACCCJ3/NrNVTplZJRjHnNdAO4k=
-Date:   Sat, 28 Oct 2023 12:31:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Avichal Rakesh <arakesh@google.com>
-Cc:     dan.scally@ideasonboard.com, etalvala@google.com,
-        jchowdhary@google.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        m.grzeschik@pengutronix.de
-Subject: Re: [PATCH v9 2/4] usb: gadget: uvc: Allocate uvc_requests one at a
- time
-Message-ID: <2023102824-pegboard-sadness-29da@gregkh>
-References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
- <20231027201959.1869181-1-arakesh@google.com>
- <20231027201959.1869181-2-arakesh@google.com>
+        Sat, 28 Oct 2023 06:39:45 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB745F1;
+        Sat, 28 Oct 2023 03:39:43 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9ECBE1C007C; Sat, 28 Oct 2023 12:39:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1698489582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v8GRunWXkz2EhpYIjMx6s+mZlAVkZ08YcCPCZSlxpBg=;
+        b=SW2cpvuUcKZSXMhvvuuxlm/i9jPTzcMmda0cWak6ny1mD29a8a8IpBXjsYa1WK3xc7xnFO
+        xS3FuD96N+gYPA6OAawwsek45oOuRd1BUOQy4uDZ5vL3cCIH/5aV1B4lxwALTBbLat06vT
+        ylVAq+Y92pkHieG+eYCklekWFnLqsoU=
+Date:   Sat, 28 Oct 2023 12:39:41 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     =?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH 0/2] arm64: dts: qcom: longcheer l8910 and l9100: Enable
+ RGB LED
+Message-ID: <ZTzk7cNJd4iPsd3B@localhost>
+References: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027201959.1869181-2-arakesh@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 01:19:57PM -0700, Avichal Rakesh wrote:
->  	BUG_ON(video->req_size);
-> +	BUG_ON(!list_empty(&video->ureqs));
+Hi!
 
-Again, please do not add new BUG_ON() lines, the existing ones need to
-be removed as well, but you can do that in later changes.  I can't take
-changes that add new ones, sorry.
+> With the driver for ktd2026 recently applied to linux-leds[1], the LED
+> can be enabled on longcheer l8910 and l9100.
 
-thanks,
+Please make sure sysfs name is consistent with notification LED on
+other phones, as documented by well-known-leds.txt.
 
-greg k-h
+Best regards,
+								Pavel
+-- 
