@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4F67DA55C
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 08:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4E7DA565
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 09:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjJ1GoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 02:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
+        id S229546AbjJ1G7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 02:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjJ1GoU (ORCPT
+        with ESMTP id S229458AbjJ1G7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 02:44:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C997AB;
-        Fri, 27 Oct 2023 23:44:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3221C433C9;
-        Sat, 28 Oct 2023 06:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698475458;
-        bh=dwWbOPIf2uWAMXmhSQIynTHTbZsemQlqSM9b/f6BDlQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aA6GYP0nGlgOIHepk7aNmZFYb3QGD3WuyEbeC7nn/qtDxehdB94TDc1o12B94Vl8a
-         zQNRzpQxBmDl53840gS8k7A2spJe4w+rFvzTJ6m1jiS33w9pMMlUYmazBawCx+YpWH
-         R3tpUyWPlFofo5JjQd6KFPQJy3Y+JHtZISP3ael7kFeL4HSU+gXH2+S3T+dCD5/SkJ
-         L09S2wjnVM+R9WymLfqLJ9G2aek1sn+h4zXQeWcPJZyY5DL2yxzZiPtJ38yovqbYvS
-         YYimutwflOavuaGc3eW8fE8m1/qoPU0l3EQniKGywyzRCLRS9S1+nh+DDD/D3mt09N
-         3kjxqItMNFwzw==
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7ba0d338367so361074241.2;
-        Fri, 27 Oct 2023 23:44:18 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyAGQxX7NpEmPKf9elf4maVAVMJfx2bx5riaET85uXdXbTGngAT
-        fZpgL9ygzvBm9h/IOkbEVy25t4ZzjKxvt/pSvZw=
-X-Google-Smtp-Source: AGHT+IEtSf0sXKNDqL3U/J8AvmS6jcRIXaiBt2WTHVRrZcMGatGrwAEyBC4D8idnsxc8WWapvt51zmVY7tDm3a6krO4=
-X-Received: by 2002:a1f:1c4a:0:b0:49b:289a:cc4a with SMTP id
- c71-20020a1f1c4a000000b0049b289acc4amr4971311vkc.3.1698475457794; Fri, 27 Oct
- 2023 23:44:17 -0700 (PDT)
+        Sat, 28 Oct 2023 02:59:30 -0400
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9B7E3;
+        Fri, 27 Oct 2023 23:59:24 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1698476359tcw69q76
+Received: from localhost.localdomain ( [175.10.24.131])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 28 Oct 2023 14:59:13 +0800 (CST)
+X-QQ-SSF: 00400000000000O0T000000A0000000
+X-QQ-FEAT: S0uf0xb+BQn1Qs6ENthHsLfFauTVfiNdT4Kdi4ekkZOrMzbIs+8ImU0wAvR5U
+        GehrhuypVGXjps3h1ip/EFdWFlYbfZ1PiHxGEXt+RRO1215o398S9M2A2RnHRfKM2QmCQNH
+        QwOROKIvO596jthBOGmMCjaOgU7a3SoRA9TMiVi8v40cAhCMbiL5a9x7UHSCNoFbaUSZdiy
+        5/MJm4a3qVk/SBv5pUqPwlz3Pvn5PEKiqiPv2nNVQQQApH83PT7eF8ysr5rdoyPsopUfSeO
+        pTKMXOPVjUvns7108Y++J1ntULyLTBUfkv/ZUGyCu85wywdbZmmTaTD2LiWAMafFHiZY5OQ
+        RP345d+IHz/XC+5tDAHQW8ZVhvcJwN3ToSL3HQNl9nuLu+9khE3t5psQv1iew==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 11460424809230058568
+From:   Zhou Jifeng <zhoujifeng@kylinos.com.cn>
+To:     miklos@szeredi.hu
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhou Jifeng <zhoujifeng@kylinos.com.cn>
+Subject: [PATCH] fuse: Track process write operations in both direct and writethrough modes
+Date:   Sat, 28 Oct 2023 14:59:12 +0800
+Message-Id: <20231028065912.6084-1-zhoujifeng@kylinos.com.cn>
+X-Mailer: git-send-email 2.18.1
 MIME-Version: 1.0
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
- <20231023-imx214-v1-2-b33f1bbd1fcf@apitzsch.eu> <CAPybu_2gya-XP2-JH8roYgyROUAeTbVBaY1ypMKyVp+ujb=t6A@mail.gmail.com>
- <8332c443fe33a74774f2375009a31e7895fcf37a.camel@apitzsch.eu>
-In-Reply-To: <8332c443fe33a74774f2375009a31e7895fcf37a.camel@apitzsch.eu>
-From:   Ricardo Ribalda Delgado <ribalda@kernel.org>
-Date:   Sat, 28 Oct 2023 08:44:01 +0200
-X-Gmail-Original-Message-ID: <CAPybu_3FF__5hpcSeAgc0pkxnBjbX5aGt9yif+CvYp4_JFAp-w@mail.gmail.com>
-Message-ID: <CAPybu_3FF__5hpcSeAgc0pkxnBjbX5aGt9yif+CvYp4_JFAp-w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] media: i2c: imx214: Move controls init to separate function
-To:     =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:kylinos.com.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andr=C3=A9
+Due to the fact that fuse does not count the write IO of processes in the
+direct and writethrough write modes, user processes cannot track
+write_bytes through the “/proc/[pid]/io” path. For example, the system
+tool iotop cannot count the write operations of the corresponding process.
 
-On Fri, Oct 27, 2023 at 11:23=E2=80=AFPM Andr=C3=A9 Apitzsch <git@apitzsch.=
-eu> wrote:
->
-> Hi Ricardo,
->
-> Am Freitag, dem 27.10.2023 um 14:25 +0200 schrieb Ricardo Ribalda
-> Delgado:
-> > Hi Andre
-> > On Mon, Oct 23, 2023 at 11:49=E2=80=AFPM Andr=C3=A9 Apitzsch <git@apitz=
-sch.eu>
-> > wrote:
-> > >
-> > > Code refinement, no functional changes.
-> > >
-> > > Signed-off-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu>
-> >
-> > With Jacopos comments (don't use de_err_probe())
-> > Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> >
-> > > +       ret =3D imx214_ctrls_init(imx214);
-> > > +       if (ret < 0)
-> > >                 goto free_ctrl;
-> >
-> > It seems like we can mutex_destroy a non inited mutex. Could you send
-> > a follow-up patch to fix that?
-> >
-> Sorry, I don't get it. Could you explain what you mean. Thanks.
->
+Signed-off-by: Zhou Jifeng <zhoujifeng@kylinos.com.cn>
+---
+ fs/fuse/file.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-If the controls are initialized incorrectly we will jump to free_ctrl
-in line 1046, which calls
-mutex_destroy(&imx214->mutex);
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 1cdb6327511e..6051d2e2a021 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -19,6 +19,7 @@
+ #include <linux/uio.h>
+ #include <linux/fs.h>
+ #include <linux/filelock.h>
++#include <linux/task_io_accounting_ops.h>
+ 
+ static int fuse_send_open(struct fuse_mount *fm, u64 nodeid,
+ 			  unsigned int open_flags, int opcode,
+@@ -1305,6 +1306,7 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	ssize_t written = 0;
+ 	struct inode *inode = mapping->host;
+ 	ssize_t err;
++	ssize_t count;
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
+ 
+ 	if (fc->writeback_cache) {
+@@ -1326,10 +1328,12 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ writethrough:
+ 	inode_lock(inode);
+ 
+-	err = generic_write_checks(iocb, from);
+-	if (err <= 0)
++	count = generic_write_checks(iocb, from);
++	if (count <= 0)
+ 		goto out;
+ 
++	task_io_account_write(count);
++
+ 	err = file_remove_privs(file);
+ 	if (err)
+ 		goto out;
+@@ -1600,6 +1604,7 @@ static ssize_t fuse_direct_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 
+ 	res = generic_write_checks(iocb, from);
+ 	if (res > 0) {
++		task_io_account_write(res);
+ 		if (!is_sync_kiocb(iocb) && iocb->ki_flags & IOCB_DIRECT) {
+ 			res = fuse_direct_IO(iocb, from);
+ 		} else {
+-- 
+2.18.1
 
-But that mutex initialized in line 1050.
-
-You did not introduce the bug, but since you have the hardware and are
-sending the other patches it would be great if you could add a new
-patch to fix it :)
-
-Thanks!
-
-
-> > Thanks!
->
