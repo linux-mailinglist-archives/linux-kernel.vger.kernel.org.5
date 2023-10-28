@@ -2,154 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999387DA45F
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 02:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9547DA46C
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 02:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjJ1Aca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 27 Oct 2023 20:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S1346742AbjJ1Aic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 27 Oct 2023 20:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ1Ac1 (ORCPT
+        with ESMTP id S231444AbjJ1Ai2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 27 Oct 2023 20:32:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A78A129;
-        Fri, 27 Oct 2023 17:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698453145; x=1729989145;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=fJwbtzDAoaG3nAbDfr4PPX2bqQxKsD8wj/l0KEb27M4=;
-  b=BZLRS84+B5KhiuBVVtDQkbSSrk2dwydzhBIzvZAHov8Li6AVZDlFdpmH
-   RWIrIp9cFGQDlRAu37Ffx3IChDwp188M4TTWZKOMVTKicciP4devxBB7N
-   dpLXn8QdVv8I8hJhRXUPyzijkXp/Nj/geboJLCPGREBwTNp70XLZKlzU1
-   dbhi7BdFmm6c4YQZveOXE/VisTbvHXyQDdkM8jBgr1aeHM9ywsZVO5Axl
-   vNKbFUbPyA1krXiRY4zjlO1cDOkyrLW3Y3kqcGVmV6s0K0ZmzSng+IUFr
-   OSgmSRZiPszcdUwlF5nrEk5XnYxWD7n+tDWv49s0OsxwPGOthA2+9p+mi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10876"; a="454337811"
-X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
-   d="scan'208";a="454337811"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 17:32:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,257,1694761200"; 
-   d="scan'208";a="1000494"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Oct 2023 17:32:13 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 27 Oct 2023 17:32:23 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 27 Oct 2023 17:32:23 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 27 Oct 2023 17:32:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nlDcPIa6jxh3v562rWUWQGGdREyL/5k4jzhI1qXcHPVkMzoey/4bjKEchi3diFvcg1OEoPm1tsnX8X8PYmMNjuVk0+UcQ90K998CgG40Us1eNAH7ZP2fzi4q0m62+sM7Fx8TonHK3TxvoqyWjS8uLNt40ViNc/LZ/ybt7iUPj//4+1VSGBW+XdWklyzHxJniwBGMsZcv8IwN3h4jx90tLa2Zno1WLOMu7pvZjXAyhXBu3Tthe4UWnVnXxas8Br4ct3uuR2GnZb2EvowVA6zN+X4Jxtt+xPINvQdHnbZhTpeSRwo4UMcoKcvQjuXn5zzDJWi7KMJm8Jt7N2gw2PI+1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c0JFiuYtxVcrW6fh5eIwjKt1ORjLXHUhoMWqai85Ohw=;
- b=c8535iuxERshFgqHLBcvGEJ6mXFVIPAeS/o0b47jczQihY1xbdz13UKADAWkQIVyzri41zg/l72XHHrwAb54bZa3d5SQrW9xEHI4fzjjtRXVKVp61+bK7071meEThPV0AjBOHg+YHPi774vmyNluQ1og0jELoQwaUGBV/tySGkYr/wIGmM1KKLYI9ciUnCtRvPXbPcZUDd9KH6YIleT2yoXTKSJZs3k2W5Uo0sx0Ih8KR0EJAtCJAfecMZZ+B42Eams5U6CAq55i25AdQ3Kmvkl9ReD7zGhCDLh6PCOeuEYFxkB4DLtO5ooqfKuOU0ghHNntNdhEF7wDpERf8XZ77Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CH3PR11MB8591.namprd11.prod.outlook.com (2603:10b6:610:1af::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Sat, 28 Oct
- 2023 00:32:21 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::e75f:ec47:9be1:e9e4]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::e75f:ec47:9be1:e9e4%4]) with mapi id 15.20.6907.032; Sat, 28 Oct 2023
- 00:32:21 +0000
-Date:   Fri, 27 Oct 2023 17:32:17 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Robert Richter <rrichter@amd.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Davidlohr Bueso <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Alison Schofield" <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Terry Bowman" <terry.bowman@amd.com>
-Subject: Re: [PATCH v12 01/20] cxl/port: Fix release of RCD endpoints
-Message-ID: <653c5691a2372_780ef2949b@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20231018171713.1883517-1-rrichter@amd.com>
- <20231018171713.1883517-2-rrichter@amd.com>
- <653b3299c1a33_244c8f29449@dwillia2-xfh.jf.intel.com.notmuch>
- <ZTw_xd2_uaApAzoL@rric.localdomain>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZTw_xd2_uaApAzoL@rric.localdomain>
-X-ClientProxiedBy: MWH0EPF00056D17.namprd21.prod.outlook.com
- (2603:10b6:30f:fff2:0:1:0:1b) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CH3PR11MB8591:EE_
-X-MS-Office365-Filtering-Correlation-Id: 047db141-d9a3-4527-6380-08dbd74d58ad
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KNe6duc0m/dHhMnxYhQNEX/SojVEqVOuwTfwjDujMa14kkRMVLg+F3uHYaMlFHSPN0GBps4uUd7/7AKPbciHufFSegTMp0TjnSTJ6DFJMcnPgAtENJfB/kE7RaS6Rd+quCuQwTAG5DHtLIIhgP8vXghAq4u7nDqqd4ohgF6lhwgz5aSvcPIkv81ljLQEWd8x/RKiHEMotKvnLEqz6GQ7McgsCSYtUvagz64eFdAtFfFemc1ktWdJyz1SmerauAwOvQ7dEZnR5ouQGYfP7BF/KhSqm0mYPY9wT2oy43lyENP9e3zVCp6+ThYKzIBD4SCeP1OpR1w35gWNsnYyqXcaTPNuvkUitP4NwCRdE08Dx3xz2ckf5Np9R+mdi/NBGyYTGcJXGvXozL3UlBm+UlOwWvq0chK/wfm9i++CFckMsYsIrNM9D3y8Lq5YECZeO32YhOdWiG2707JemPOq6SbbzGXNHrC5aeCKAHw+IvlzOlfn6ktKpir6t31boCqWmnnzV0fZdfbiam52/pozREBUUMeehoDp90SPxRjKuWJzUDDzaKoRSBTEWoFUky9+bRIj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(38100700002)(26005)(6512007)(9686003)(6506007)(83380400001)(82960400001)(4744005)(8936002)(6486002)(8676002)(478600001)(41300700001)(4326008)(86362001)(316002)(5660300002)(2906002)(54906003)(6666004)(66556008)(110136005)(66946007)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2XQrKOUHmfC23/3HUwt4MIPCYJBHKT/HRCcPCeXwXBr89nDP7ebrN/6/7QLS?=
- =?us-ascii?Q?K01ZwGl1pJbryu+pqeM+2ZbWMQbK9PSzt8z7i0WH51qMuzgeWorpljmxac41?=
- =?us-ascii?Q?qbh1tga5vvE0UNE8BNB/eZqyYHVT/WmcLiObwUSHRt9y5l/kSWGqfqi8IAML?=
- =?us-ascii?Q?3VdGn3M7kvmZ/rO7C+Q31ybm16+ZiUCvHNEJQ0S4A7huuTogCF/nssQEoYZ+?=
- =?us-ascii?Q?sRWgPVyCY5qShXs/Q5eoH0diRS48Vw/h4G2jLVSeu21aMXcBLBXJN1aw1DJo?=
- =?us-ascii?Q?SXKIZqlJUcUyRzcCSVvEL6qvBRWHEkhGOALXo2KLyldO7Hvnby5CLuB6TrMj?=
- =?us-ascii?Q?C7Y7rXB91gAuUA0gEnM2L+vAf3GlZEjdZUAquJDXaepaCNB0KAYwPL0Alykh?=
- =?us-ascii?Q?9JYLQZwbIgBG+zcagePBPOPFRH1EPDftAqcV7r1LdQKKRox7kdqLCy1kcnEi?=
- =?us-ascii?Q?GUN9dNtr8gQDULJd7jsmdc3yJkrpN4LVDO3CDe7txrx7STbHGSCrEc6qICG7?=
- =?us-ascii?Q?5QDrf0zv6LV4C4/EHR/iGBnWQjfoSryMe42XUu9ZbSaNJoc/FW4OhBq1Awqw?=
- =?us-ascii?Q?tEZexVsnX5ESqhelYis7mRuI1SYYlQ1dMz2Tb9m25xwjN5mCefHea8fa1ev6?=
- =?us-ascii?Q?kjWh3/LUzmmmK4RLBAUzd/RgJyDSiLqlfdqFI5WK92/yEP8JEUYhCE4FUzSE?=
- =?us-ascii?Q?vBZpiWvPB1M4PINlCX7IRs3Ku6UFwgJmdYt49uwNyw816jwRSfWR4KT/KxKQ?=
- =?us-ascii?Q?ERf2KnqUYmjF/PybKI4jOQYlabEhGYx9yai14WKzSSemWDSNQbZ8Nb/X1n/o?=
- =?us-ascii?Q?6CPRFkPX70zZRnVsPTD6anXcaF3wCzzp3ozQdlMh3pHTJ5KOB5YgMsd+64gO?=
- =?us-ascii?Q?rZudjo4w5vfhaqWbPrq8eFnQM8bb7K8Ggmhfhmvk+V2FrOjcOGDQdk1Jwp6R?=
- =?us-ascii?Q?0UhlSmpniNAy8OhhDulXKIKpRIa5HbRyMCORJuRg7vASpiyJfLnfDaWBooqR?=
- =?us-ascii?Q?APoTLEh5dYCPmCXrC9o7JxlRkkuO0RhYLSk9ZTJCQT60a5qymaTU1YIDnGh2?=
- =?us-ascii?Q?zlWbm7/1Q/cPJtmgktKM22qvhttP3JA6DiHjHqDC5W60LPy74X4mv1h2dbMY?=
- =?us-ascii?Q?3Pjdsimn3WuOyoPIrRn3nJX1OkXw0q+A9VfyLa2kEP4Kixllnbb0qH9Axoq8?=
- =?us-ascii?Q?nmInNp5MOll06g/PGbn6ZuskcjO0MgYoo8vcZvndohJLgJrU3t7/x0Irssf3?=
- =?us-ascii?Q?Qqp3br7Cd4twmQDabjFg5a24a8JfAGvygDV0EB4wxcaiFql/fVSq3Rtasz1C?=
- =?us-ascii?Q?VJR7cOiKw11ipet0/bllpT23C5eAuM0DDVU3qdGOSNpmMpNII69gKDHxfWEJ?=
- =?us-ascii?Q?XuOvTflYgjA9VfywSUMnkK8RVNOBlf/S9OcOCthfn2Zva9chREwpq/Edumi5?=
- =?us-ascii?Q?/KoC6UxRuWXf+zMF+1hrJL+8fpv+W3osrDcqW/gW+1kPr62SpKW4H4tzwmlo?=
- =?us-ascii?Q?m6//tskzfCItQIR2Qov29obJMsdm0nt62w68Gxafhisx+W24UV8Ahn8K3A3l?=
- =?us-ascii?Q?nO7yUZjkGr9FpxnP/tepEIaI0rJv18qyya0EgFTIdHbUKcL74MGz2+rIr0yg?=
- =?us-ascii?Q?DA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 047db141-d9a3-4527-6380-08dbd74d58ad
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2023 00:32:20.7319
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8WXyYpuYUeUfC/8165uWTyrCfxyH9VxqY+tPiTeUZXoaPDx/kC1XvjU2YFe27j85+HHO9TYsPj91wtVuHkyFuCxbzOPho0ag7JyzmcLvQ6k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8591
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Fri, 27 Oct 2023 20:38:28 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1041B9
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 17:38:23 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ae5b12227fso23577857b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 27 Oct 2023 17:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698453503; x=1699058303; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K0U9f0GPnYV6HySM//pU94NgpKMw+FvA1LiNkKj/lR8=;
+        b=EHIYjWzbYSU6ctz50ItDaCybvJ62FKZojKJZn85HTwmmEp3tpW/+rGRo2MNXNC98Pu
+         hh/PD33x9nftZq/lk9RwnsPsdwN+TeG8ggPrWxzSMPAXF1+SxcgmHWKXEBIP6H0n28Wf
+         t4AqOIFAE6ABBu0wGscy1DC4JK4tokB0ryUivqmSYTjMc0h248buSyDbGB4WwbtttyBC
+         /1vE6HpWUMQedBfwp7wYBybcDp6/vvCSEhMa7Cp+QTrarWBql+uzocklE7SOI6DuCqNQ
+         ganZC/gOcyocj6f01LqvgXSPrXOyP9kqoVQo4wS0gZ4kq9aCmyofAu/84IQvxgvsumqN
+         Hkig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698453503; x=1699058303;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K0U9f0GPnYV6HySM//pU94NgpKMw+FvA1LiNkKj/lR8=;
+        b=roAnckowdDAs8VmzcHaS7Lr6z5/8PQoxuKMK81pWWtUbAPtPN76MF19M9qD0oQSqIj
+         frqGJqbal3EAsb8hKozfRidx3KrNKPP+joWeeIaXDGMlwcGW9mKPIz2mD+uYI3bko+9T
+         Vr8jFW3+9QMwARPo4vHMj8DaUNHBhlhV5dJwZepfpczXo2jPgwBY00lF46MwzB8DoBgk
+         Fnl4K5yvI0rER9bAoyCj5qUEu3Dqi+dbSzwY7wpeZLAsg8H7Ony2In2LcJObioYjbsop
+         YtAdjL60/0Us42PJGrkLl5mXxLFKcjQEOw8NA3VDUZ2oLH87fx80dAr29JCDI3x1QnVC
+         go1A==
+X-Gm-Message-State: AOJu0Yw2fJ1cxO3tnIlYOF5vEbecZGYWlN3Xb/9bDxPBabzM9DAn9P3s
+        NMYnWmBkVgb2KGZoicU8loCrbIShVoY=
+X-Google-Smtp-Source: AGHT+IF57V2+l/aVGkA00/iDfSW7mW6cgyvOmonBHFBLJFbYX0O4V0VSM4y3Q3AqMWGi3S7FNlYXsVsLlew=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:cba3:7e7f:79e4:fa57])
+ (user=surenb job=sendgmr) by 2002:a81:92c5:0:b0:5a7:af69:a279 with SMTP id
+ j188-20020a8192c5000000b005a7af69a279mr98223ywg.9.1698453503001; Fri, 27 Oct
+ 2023 17:38:23 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 17:38:10 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231028003819.652322-1-surenb@google.com>
+Subject: [PATCH v4 0/5] userfaultfd move option
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        david@redhat.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, surenb@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -157,21 +75,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robert Richter wrote:
-> Dan,
-[..]
-> 
-> delete_endpoint() is called here, but the uport etc. is not unbound.
-> Which means this is not true:
-> 
-> 	if (parent->driver && !endpoint->dead) {
-> 		...
-> 
-> I don't remember this with my patch. The parent is there different, so
-> that could be the reason.
-> 
-> I could not yet look into more detail but wanted to let you know. Will
-> continue.
+This patch series introduces UFFDIO_MOVE feature to userfaultfd, which
+has long been implemented and maintained by Andrea in his local tree [1],
+but was not upstreamed due to lack of use cases where this approach would
+be better than allocating a new page and copying the contents. Previous
+upstraming attempts could be found at [6] and [7].
 
-Apologies, I didn't have that regression going, I think I see the issue.
-Thanks for the heads up.
+UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
+needs pages to be allocated [2]. However, with UFFDIO_MOVE, if pages are
+available (in userspace) for recycling, as is usually the case in heap
+compaction algorithms, then we can avoid the page allocation and memcpy
+(done by UFFDIO_COPY). Also, since the pages are recycled in the
+userspace, we avoid the need to release (via madvise) the pages back to
+the kernel [3].
+We see over 40% reduction (on a Google pixel 6 device) in the compacting
+thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This=
+ was
+measured using a benchmark that emulates a heap compaction implementation
+using userfaultfd (to allow concurrent accesses by application threads).
+More details of the usecase are explained in [3].
+
+Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
+touching them within the same vma. Today, it can only be done by mremap,
+however it forces splitting the vma.
+
+
+TODOs for follow-up improvements:
+- cross-mm support. Known differences from single-mm and missing pieces:
+	- memcg recharging (might need to isolate pages in the process)
+	- mm counters
+	- cross-mm deposit table moves
+	- cross-mm test
+	- document the address space where src and dest reside in struct
+	  uffdio_move
+
+- TLB flush batching. Will require extensive changes to PTL locking in
+move_pages_pte(). OTOH that might let us reuse parts of mremap code.
+
+
+Changes since v3 [8]:
+- changed retry path in folio_lock_anon_vma_read() to unlock and then
+relock RCU, per Peter Xu
+- removed cross-mm support from initial patchset, per David Hildenbrand
+- replaced BUG_ONs with VM_WARN_ON or WARN_ON_ONCE, per David Hildenbrand
+- added missing cache flushing, per Lokesh Gidra and Peter Xu
+- updated manpage text in the patch description, per Peter Xu
+- renamed internal functions from "remap" to "move", per Peter Xu
+- added mmap_changing check after taking mmap_lock, per Peter Xu
+- changed uffd context check to ensure dst_mm is registered onto uffd we
+are operating on, Peter Xu and David Hildenbrand
+- changed to non-maybe variants of maybe*_mkwrite(), per David Hildenbrand
+- fixed warning for CONFIG_TRANSPARENT_HUGEPAGE=3Dn, per kernel test robot
+- comments cleanup, per David Hildenbrand and Peter Xu
+- checks for VM_IO,VM_PFNMAP,VM_HUGETLB,..., per David Hildenbrand
+- prevent moving pinned pages, per Peter Xu
+- changed uffd tests to call move uffd_test_ctx_clear() at the end of the
+test run instead of in the beginning of the next run
+- added support for testcase-specific ops
+- added test for moving PMD-aligned blocks
+
+Changes since v2 [5]:
+- renamed UFFDIO_REMAP to UFFDIO_MOVE, per David Hildenbrand
+- rebase over mm-unstable to use folio_move_anon_rmap(),
+per David Hildenbrand
+- added text for manpage explaining DONTFORK and KSM requirements for this
+feature, per David Hildenbrand
+- check for anon_vma changes in the fast path of folio_lock_anon_vma_read,
+per Peter Xu
+- updated the title and description of the first patch,
+per David Hildenbrand
+- updating comments in folio_lock_anon_vma_read() explaining the need for
+anon_vma checks, per David Hildenbrand
+- changed all mapcount checks to PageAnonExclusive, per Jann Horn and
+David Hildenbrand
+- changed counters in remap_swap_pte() from MM_ANONPAGES to MM_SWAPENTS,
+per Jann Horn
+- added a check for PTE change after folio is locked in remap_pages_pte(),
+per Jann Horn
+- added handling of PMD migration entries and bailout when pmd_devmap(),
+per Jann Horn
+- added checks to ensure both src and dst VMAs are writable, per Peter Xu
+- added UFFD_FEATURE_MOVE, per Peter Xu
+- removed obsolete comments, per Peter Xu
+- renamed remap_anon_pte to remap_present_pte, per Peter Xu
+- added a comment for folio_get_anon_vma() explaining the need for
+anon_vma checks, per Peter Xu
+- changed error handling in remap_pages() to make it more clear,
+per Peter Xu
+- changed EFAULT to EAGAIN to retry when a hugepage appears or disappears
+from under us, per Peter Xu
+- added links to previous upstreaming attempts, per David Hildenbrand
+
+Changes since v1 [4]:
+- add mmget_not_zero in userfaultfd_remap, per Jann Horn
+- removed extern from function definitions, per Matthew Wilcox
+- converted to folios in remap_pages_huge_pmd, per Matthew Wilcox
+- use PageAnonExclusive in remap_pages_huge_pmd, per David Hildenbrand
+- handle pgtable transfers between MMs, per Jann Horn
+- ignore concurrent A/D pte bit changes, per Jann Horn
+- split functions into smaller units, per David Hildenbrand
+- test for folio_test_large in remap_anon_pte, per Matthew Wilcox
+- use pte_swp_exclusive for swapcount check, per David Hildenbrand
+- eliminated use of mmu_notifier_invalidate_range_start_nonblock,
+per Jann Horn
+- simplified THP alignment checks, per Jann Horn
+- refactored the loop inside remap_pages, per Jann Horn
+- additional clarifying comments, per Jann Horn
+
+Main changes since Andrea's last version [1]:
+- Trivial translations from page to folio, mmap_sem to mmap_lock
+- Replace pmd_trans_unstable() with pte_offset_map_nolock() and handle its
+possible failure
+- Move pte mapping into remap_pages_pte to allow for retries when source
+page or anon_vma is contended. Since pte_offset_map_nolock() start RCU
+read section, we can't block anymore after mapping a pte, so have to unmap
+the ptesm do the locking and retry.
+- Add and use anon_vma_trylock_write()  to avoid blocking while in RCU
+read section.
+- Accommodate changes in mmu_notifier_range_init() API, switch to
+mmu_notifier_invalidate_range_start_nonblock() to avoid blocking while in
+RCU read section.
+- Open-code now removed __swp_swapcount()
+- Replace pmd_read_atomic() with pmdp_get_lockless()
+- Add new selftest for UFFDIO_MOVE
+
+[1] https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4=
+b1fc19e92
+[2] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@r=
+edhat.com/
+[3] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqx=
+RCyjniNVjp0Aw@mail.gmail.com/
+[4] https://lore.kernel.org/all/20230914152620.2743033-1-surenb@google.com/
+[5] https://lore.kernel.org/all/20230923013148.1390521-1-surenb@google.com/
+[6] https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@=
+redhat.com/
+[7] https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorad=
+o.edu/
+[8] https://lore.kernel.org/all/20231009064230.2952396-1-surenb@google.com/
+
+The patchset applies over mm-unstable.
+
+Andrea Arcangeli (2):
+  mm/rmap: support move to different root anon_vma in
+    folio_move_anon_rmap()
+  userfaultfd: UFFDIO_MOVE uABI
+
+Suren Baghdasaryan (3):
+  selftests/mm: call uffd_test_ctx_clear at the end of the test
+  selftests/mm: add uffd_test_case_ops to allow test case-specific
+    operations
+  selftests/mm: add UFFDIO_MOVE ioctl test
+
+ Documentation/admin-guide/mm/userfaultfd.rst |   3 +
+ fs/userfaultfd.c                             |  72 +++
+ include/linux/rmap.h                         |   5 +
+ include/linux/userfaultfd_k.h                |  11 +
+ include/uapi/linux/userfaultfd.h             |  29 +-
+ mm/huge_memory.c                             | 122 ++++
+ mm/khugepaged.c                              |   3 +
+ mm/rmap.c                                    |  30 +
+ mm/userfaultfd.c                             | 596 +++++++++++++++++++
+ tools/testing/selftests/mm/uffd-common.c     |  51 +-
+ tools/testing/selftests/mm/uffd-common.h     |  11 +
+ tools/testing/selftests/mm/uffd-stress.c     |   5 +-
+ tools/testing/selftests/mm/uffd-unit-tests.c | 144 +++++
+ 13 files changed, 1078 insertions(+), 4 deletions(-)
+
+--=20
+2.42.0.820.g83a721a137-goog
+
