@@ -2,169 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1676E7DA705
-	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451B37DA708
+	for <lists+linux-kernel@lfdr.de>; Sat, 28 Oct 2023 14:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbjJ1MxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 08:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S229687AbjJ1M7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 08:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ1MxJ (ORCPT
+        with ESMTP id S229454AbjJ1M7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 08:53:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA8EB4;
-        Sat, 28 Oct 2023 05:53:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF7B5C433C7;
-        Sat, 28 Oct 2023 12:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698497586;
-        bh=stXOpeIlgm4eO2gd/lT/u7rw/1OgZ5uUSmhDHtq65CA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gcotpUcSkcAJUMVZ/e025jSNBMGrMAnXn5k7CujL4NJLj7SUmReAFieLnxvRaHGEl
-         pmDqQYcX7iZbn+k0axapfQ9MFpdxEqt/UfIc8dqVIzR4z/Q1YdGPBcIaac6tANYJWT
-         BV27hfsvS8wnxXiAs1ZyxqZ9Lp/kK0TAMtoMwBOT4Rzumq+d/yIx8g6r4+3Xo1j9k2
-         F2LDNUb0nRxo2y+0FeH0D3NA2hau45Ve4S6jSikvflD42CqfE6HPgXpm+ma+v4+n2y
-         +AynJGrLN06M5ZKkCVqp+PFZYlKh4aq2udDAhD2/0DhSiomP8icljepybOsEMBY541
-         xefmB0emSLzRA==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>
-Cc:     suleiman@google.com, briannorris@google.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v3] PM: sleep: Expose last succeeded resumed timestamp in sysfs
-Date:   Sat, 28 Oct 2023 21:53:02 +0900
-Message-ID:  <169849758243.1357961.4105003693126485611.stgit@mhiramat.roam.corp.google.com>
-X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-User-Agent: StGit/0.19
+        Sat, 28 Oct 2023 08:59:47 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7912CD9
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 05:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=X1xe
+        cixL3cZMjvquWxqOWvQpLDopZGO2SN97cUPkz+w=; b=FprnfAgSDVIs3zUjfsdX
+        PHvJC9E12UDQNt/SgkxiX+VVmMEt0/ef4KxGqqOvTrqFkpGTSOJKGn9nCEO5Ig4o
+        KOB2z0PZO4crb1ESk9p1dhz1Z99D3yCkCEK8m8fzJPJco9vnDhn1Z0eyiVdXFFvJ
+        LFEpiQWW6u45kZ/eYizY+GFfjvaDh2YSugOdy8tj0SSkumK8PNUHcDVbBCwuhi/r
+        7PP3LZA8ymVZ03qksp/ah9+8HZDSz/4k/6mU+VUHATgVePnkrFymtN+8jrsGkD6j
+        DVW59GooIaGZ/L8RBG9SZbUgj7UG/IM83N5ogTQFGZar+t+9C1YW/I3wW5moQ0MQ
+        rw==
+Received: (qmail 3563965 invoked from network); 28 Oct 2023 14:59:43 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Oct 2023 14:59:43 +0200
+X-UD-Smtp-Session: l3s3148p1@W5z0YMYI7MJehhre
+Date:   Sat, 28 Oct 2023 14:59:43 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add YAML file for i2c-demux-pinctrl
+Message-ID: <ZT0Fv9gUGxIMdn89@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231028122309.9867-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RZ528d7M7H3zl72w"
+Content-Disposition: inline
+In-Reply-To: <20231028122309.9867-1-wsa+renesas@sang-engineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Expose last succeeded resumed timestamp as last_success_resume_time
-attribute of suspend_stats in sysfs. This timestamp is recorded in
-CLOCK_MONOTONIC. So user can find the actual resumed time and
-measure the elapsed time from the time when the kernel finished
-the resume to the user-space action (e.g. display the UI).
+--RZ528d7M7H3zl72w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v3:
-  - Add (unsigned long long) casting for %llu.
-  - Add a line after last_success_resume_time_show().
- Changes in v2:
-  - Use %llu instead of %lu for printing u64 value.
-  - Remove unneeded indent spaces from the last_success_resume_time
-    line in the debugfs suspend_stat file.
----
- Documentation/ABI/testing/sysfs-power |   10 ++++++++++
- include/linux/suspend.h               |    2 ++
- kernel/power/main.c                   |   15 +++++++++++++++
- kernel/power/suspend.c                |    1 +
- 4 files changed, 28 insertions(+)
+On Sat, Oct 28, 2023 at 02:23:08PM +0200, Wolfram Sang wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
-index a3942b1036e2..63659765dee1 100644
---- a/Documentation/ABI/testing/sysfs-power
-+++ b/Documentation/ABI/testing/sysfs-power
-@@ -442,6 +442,16 @@ Description:
- 		'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
- 		This number is measured in microseconds.
- 
-+What:		/sys/power/suspend_stats/last_success_resume_time
-+Date:		Oct 2023
-+Contact:	Masami Hiramatsu <mhiramat@kernel.org>
-+Description:
-+		The /sys/power/suspend_stats/last_success_resume_time file
-+		contains the timestamp of when the kernel successfully
-+		resumed from suspend/hibernate.
-+		This floating number is measured in seconds by monotonic
-+		clock.
-+
- What:		/sys/power/sync_on_suspend
- Date:		October 2019
- Contact:	Jonas Meurer <jonas@freesources.org>
-diff --git a/include/linux/suspend.h b/include/linux/suspend.h
-index ef503088942d..ddd789044960 100644
---- a/include/linux/suspend.h
-+++ b/include/linux/suspend.h
-@@ -8,6 +8,7 @@
- #include <linux/pm.h>
- #include <linux/mm.h>
- #include <linux/freezer.h>
-+#include <linux/timekeeping.h>
- #include <asm/errno.h>
- 
- #ifdef CONFIG_VT
-@@ -71,6 +72,7 @@ struct suspend_stats {
- 	u64	last_hw_sleep;
- 	u64	total_hw_sleep;
- 	u64	max_hw_sleep;
-+	struct timespec64 last_success_resume_time;
- 	enum suspend_stat_step	failed_steps[REC_FAILED_NUM];
- };
- 
-diff --git a/kernel/power/main.c b/kernel/power/main.c
-index f6425ae3e8b0..2ab23fd3daac 100644
---- a/kernel/power/main.c
-+++ b/kernel/power/main.c
-@@ -421,6 +421,17 @@ static ssize_t last_failed_step_show(struct kobject *kobj,
- }
- static struct kobj_attribute last_failed_step = __ATTR_RO(last_failed_step);
- 
-+static ssize_t last_success_resume_time_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%llu.%llu\n",
-+		(unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
-+		(unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
-+}
-+
-+static struct kobj_attribute last_success_resume_time =
-+			__ATTR_RO(last_success_resume_time);
-+
- static struct attribute *suspend_attrs[] = {
- 	&success.attr,
- 	&fail.attr,
-@@ -438,6 +449,7 @@ static struct attribute *suspend_attrs[] = {
- 	&last_hw_sleep.attr,
- 	&total_hw_sleep.attr,
- 	&max_hw_sleep.attr,
-+	&last_success_resume_time.attr,
- 	NULL,
- };
- 
-@@ -514,6 +526,9 @@ static int suspend_stats_show(struct seq_file *s, void *unused)
- 			suspend_step_name(
- 				suspend_stats.failed_steps[index]));
- 	}
-+	seq_printf(s,	"last_success_resume_time:\t%-llu.%llu\n",
-+		   (unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
-+		   (unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
- 
- 	return 0;
- }
-diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-index fa3bf161d13f..33334565d5a6 100644
---- a/kernel/power/suspend.c
-+++ b/kernel/power/suspend.c
-@@ -622,6 +622,7 @@ int pm_suspend(suspend_state_t state)
- 		dpm_save_failed_errno(error);
- 	} else {
- 		suspend_stats.success++;
-+		ktime_get_ts64(&suspend_stats.last_success_resume_time);
- 	}
- 	pr_info("suspend exit\n");
- 	return error;
+Applied to for-next, thanks!
 
+
+--RZ528d7M7H3zl72w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU9Bb8ACgkQFA3kzBSg
+KbYOSw/+LFyVxDxtFLpIw7ZQ/J7YZu/w44A1WkoxtHqOwWMMQaVxUWXxx/IQAIyN
+Wb2RKHj4kx7GifZW5gHb54jn7eoqJSDrHFueiez71EHTCz9vMuxtLN7SgpEI6h+P
+A9E7BiDmH5TBOPU/qjCn1OGYwh7dkIqiZN47R14TEPL1eGPhavQuRB90Usm/vsxI
+W7/dJ26g8MvxeRUC3y4tzamgF2FEbNwvbK4Nj+GRqjv6UuZvUGmv4xPjIzZV6v3h
+Z5LQ9Yz1eABVVeFKpbE2Y2tkEVbrySJIvyOfg9BBYb1ZaSc2aMc9NHvcUklFA3Ed
+vB0jQwt+IJ5RKLoy9zU2Vg9oGOZUZeznHKb2+K5wKw5BQjhO2tEHaY2G2vnBPb6O
+Dj/bNTt2BKeDftXPW/ispsBFkQXELx4raAUjDsHdlePSpG1fY7ImePJBQSoYhCm0
+p21BTsRheE31t4bbv3c4oV6v07NQ8BeMBfQRkfr4wGV1vo2buxSOH1YZiDX9BoTF
+UCGgNwcvVQAzHoBsMzlOZXnJAl8UYhPEqNv6d3ZpYZEaNQcjk0XVOejEn0HMlFoI
+A7hsCXJ7sO1qTaPncCJobRCjzAeiqP68A48pMXlVxcXD1+FarsKgkQ7P+ZW2gf8X
+bZpnK1S7HGJo7eQjgkS/s8MNUfDFqfYjwelti8wJEmGmp6O1Nrk=
+=gBj5
+-----END PGP SIGNATURE-----
+
+--RZ528d7M7H3zl72w--
