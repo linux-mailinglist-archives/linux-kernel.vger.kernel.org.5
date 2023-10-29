@@ -2,108 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3939A7DAD45
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 17:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18307DAD4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 17:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjJ2QsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 12:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S229533AbjJ2Qwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 12:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJ2Qr6 (ORCPT
+        with ESMTP id S229487AbjJ2Qwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 12:47:58 -0400
-Received: from aer-iport-3.cisco.com (aer-iport-3.cisco.com [173.38.203.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16550BC;
-        Sun, 29 Oct 2023 09:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=385; q=dns/txt; s=iport;
-  t=1698598076; x=1699807676;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5D2zXWVusUT5D91uMh671kp8XhfaR9IA8GeA9LT8GCw=;
-  b=ZEPZCWfQ9ZDi6vNA4z/iXAXS+r7TKxGU3yv/NKHbGeQdVvAypPU2JH3t
-   /qh//FUqFysGpDKYuhbaYCC5W+w68R9bJWtL1ChBVKAegoNoVByMW1lSe
-   YyWMHVULlp2fiWtsio8YoUTS0gRGwoOGJEUF8zRLuIaaEvQOmeMB+aQV/
-   I=;
-X-CSE-ConnectionGUID: yOUrQ3B8Tb2sBBMrFR99SA==
-X-CSE-MsgGUID: O7nFp6dkT7S8EE4VTIp6bg==
-X-IPAS-Result: =?us-ascii?q?A0BCAACuYjxl/xbLJq1aHQEBAQEJARIBBQUBQIE7CAELA?=
- =?us-ascii?q?YQHLhKNN1+IZZJYiyWBfg8BAQENAQFEBAEBhQYChxsnNAkOAQIEAQEBAQMCA?=
- =?us-ascii?q?wEBAQEBAQECAQEFAQEBAgEHBIEKE4V1hk0BBTo/EAsYLlcGG4VVA6lWeIE0g?=
- =?us-ascii?q?QGzJ4FogUgBiAkBigZCgUlEhD8+imQiBINzgnUogV0VLgMEMoEKDAmBA4MvK?=
- =?us-ascii?q?Yw+XiRHcBsDBwNYKxArBwQwGwcGCRYYFSUGUQICLSQJExI+BIFngVEKgQY/D?=
- =?us-ascii?q?w4RgkMrNjYZSyuCMAkVDDVNdhAqBBQXgRIEah8VHhIlERIXDQMIdh0CESM8A?=
- =?us-ascii?q?wUDBDQKFQ0LIQUUQwNHBkoLAwIaBQMDBIE2BQ0eAhAaBg0nAwMZTQIQFAMeH?=
- =?us-ascii?q?QMDBgMLMQMwgR4MWQNvHzYJPA8MHwI5DSssAk0DRB1AA3g9NRQbbaI+AkeCQ?=
- =?us-ascii?q?sUlhBahIEkDg1gBEoxyhjaSUZg+oxCFGAIEBgUCFoFjPIFZMxoIGxWDI1EZD?=
- =?us-ascii?q?6ITQm0CBwsBAQMJi0oBAQ?=
-IronPort-Data: A9a23:izUsrq+XnrLfnqDzGPd8DrUDhn+TJUtcMsCJ2f8bNWPcYEJGY0x3n
- 2QXDz+Hb62MNjPzKY1+aoq0/EkCuZTWnNZnGwZl+3xEQiMRo6IpJzg2wmQcns+2BpeeJK6yx
- 5xGMrEsFOhtEzmB4E/rauCxxZVF/fngbqLmD+LZMTxGSwZhSSMw4TpugOdRbrRA2bBVOCvT/
- 4upyyHjEAX9gWUtajhFs/vrRC5H5ZwehhtJ5jTSWtgT1LPuvyF9JI4SI6i3M0z5TuF8dgJtb
- 7+epF0R1jqxEyYFUrtJoJ6iGqE5auK60Ty1t5Zjc/PKbi6uCcAF+v1T2PI0MS+7gtgS9jx74
- I0lWZeYEW/FMkBQ8QgQe0EwLs1wAUFJ0K7gHGKG6ubD80ecaFHG5u9ANhBnBqRNr46bAUkWn
- RAZADkAdFWIgPi7he/9Qeh3jcNlJ87uVG8dkig/lneCXbB8GcuFGf+iCdxwhF/cguhHGPfVe
- s4QchJkbQ/LZFtEPVJ/5JcWzb332iOkLlW0rnqy+qwZ+zbfzzAu6+jAHYbrRv2SG89ayxPwS
- mXuuj6R7gshHNiezyeVt3GhnOnCmQvlV48IUr617PhnhBuU3GN7IBYRT1G2vdG9lUj4Xd9DQ
- 2QP9zAhoIAy/UivX9+7VBq9yFaAvxgBS59cFOYS9g6A0OzX7hyfC2xCSSROAPQ+tM4yQT0y/
- kSQgtryBTJ09rqPRjSA9d+pQSiaMCUPaG4aYjUYCA0M/5/ooZo4iVTESdML/LOJs+AZ0ArYm
- 1iixBXSTZ1K5SLX/81XJWz6vg8=
-IronPort-HdrOrdr: A9a23:b0wIuaoLzUVCgic4gG4XCr8aV5oEeYIsimQD101hICG9vPb2qy
- mLpoV/6faUskdyZJhOo7q90cW7LE80sKQFhbX5Xo3SPzUO2lHIEGgK1+KLqAEIWRefygc378
- ldmsZFZOHYPBxTkdv67A6kE9wp3dWLtJyzify29QYLcemvAJsQljuQzW2gYytLeDU=
-X-Talos-CUID: 9a23:OZPO+2BMpna5TS76EzhAyVQtQep1TneH1136BlWWMzc4c5TAHA==
-X-Talos-MUID: 9a23:WESuyARAVeuGiOU7RXTL2zdMLJlk4JjxMxAgvMk4h+icayZ/bmI=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.03,261,1694736000"; 
-   d="scan'208";a="9274235"
-Received: from aer-iport-nat.cisco.com (HELO aer-core-5.cisco.com) ([173.38.203.22])
-  by aer-iport-3.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 16:47:52 +0000
-Received: from localhost ([10.61.205.52])
-        (authenticated bits=0)
-        by aer-core-5.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39TGlpvi002897
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 29 Oct 2023 16:47:52 GMT
-Date:   Sun, 29 Oct 2023 18:47:51 +0200
-From:   Ariel Miculas <amiculas@cisco.com>
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     linux-doc@vger.kernel.org, serge@hallyn.com,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: filesystems: document the squashfs specific mount
- options
-Message-ID: <xuhuiwxtwdnqc25p3s7odrgiybuhno2mmzvqkuqd7cmpuct7tb@2vj64qjwkcq6>
-References: <20231027150814.217689-1-amiculas@cisco.com>
- <9596fa83-f06c-5582-7f99-c99c67e73dba@squashfs.org.uk>
+        Sun, 29 Oct 2023 12:52:36 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557C6BE
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 09:52:33 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5ac376d311aso32428837b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 09:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698598352; x=1699203152; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Aoy1l/OIWuZyO9Z9oXh2HgTPM0zwmwHlZqeVfBp4F14=;
+        b=ICBNXs3MjBrR8S36oUFwyhFsLrCqp00IgwPLWE3/kru9CoNJTunde/9OBVqk+F3UxX
+         tMs8C/QjUvYkZQvSNsP9LvedVHj3WAHWkhmrJnFUssoD2ClcZnc5ILu91ujmUqtg3vfW
+         EF7LFpoXbqBVNwrGLKrbc8UBxeG4nimKEbmnm/uxGpIHit1f2ubmesgaMfCKv7DpqSeF
+         bM2C8aRRnJwcndWhijIScZRRnoAP92tiwyvbr4Q2Tuvpa1WRUAsOjqEQDKyCQuilVOsP
+         rh1DdbHE/K6WKhyoSaJGUJoWv7weHYEaTODie+hB0Jb+ENzahKMzeLfs+bxw6VeoO0OV
+         ZBDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698598352; x=1699203152;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Aoy1l/OIWuZyO9Z9oXh2HgTPM0zwmwHlZqeVfBp4F14=;
+        b=eBqUKgwnXtUwzI6oNDtPaVtyqduZFMkVv3vbZ8vCvZhG1d0Ar3AEJnaeMRlk/dZGwB
+         JlqSWGwZRKsIMI3Tg6mGgDwjU0hh/M3Ow40jiga0ZIVRmDG+Z/spOOOYAO5M2X1RVBuU
+         BLn/osKhH/2hxH/pTQr8w2lq7OijRPJZGp/WmLZ/Cz4IPnANle2Sx70m9BbFbmn1oBkv
+         ZjmCOBnKzSUGfLHXPvfAnaP6snHsxfBANs/v3sAaawjLxkfvdOPKXZIKouu5wvApe0KI
+         mS9Tc4wog2HYr1VYKNlAmf0UdJlxmBS/bmLebrfwwzimIm6GYA7XwaQiX9dALeHQeDg7
+         Y/Nw==
+X-Gm-Message-State: AOJu0YzDfbIpktobzEAiNPxerADRuzfZ4UL0wMgn6KcU2TYhvb5uPm3M
+        k3FpYEE5mhy5YZupDUANywkDb+9bClToQMbXGIm3Yg==
+X-Google-Smtp-Source: AGHT+IFXSrP5aeoWhs3Y4D0eNG10IP70i3n/QShH9gKSv775NDiMg4SU6zfUoxyYEuuq+a+adTKElsBDmpSGQ+aBEhI=
+X-Received: by 2002:a81:e50c:0:b0:5ad:a3f9:1b10 with SMTP id
+ s12-20020a81e50c000000b005ada3f91b10mr6688733ywl.10.1698598352517; Sun, 29
+ Oct 2023 09:52:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9596fa83-f06c-5582-7f99-c99c67e73dba@squashfs.org.uk>
-X-Authenticated-User: amiculas@cisco.com
-X-Outbound-SMTP-Client: 10.61.205.52, [10.61.205.52]
-X-Outbound-Node: aer-core-5.cisco.com
-X-Spam-Status: No, score=-10.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
+ <20231025103957.3776-7-keith.zhao@starfivetech.com> <70805ff2-56a8-45e1-a31c-ffb0e84749e5@linaro.org>
+ <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
+ <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com> <344veqjvvwlo7vls2kdlgjggf77of2ijxwc2hmk7tarm75ugcs@bmozk23uqxqr>
+In-Reply-To: <344veqjvvwlo7vls2kdlgjggf77of2ijxwc2hmk7tarm75ugcs@bmozk23uqxqr>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sun, 29 Oct 2023 18:52:24 +0200
+Message-ID: <CAA8EJpomaDoJVkq+_NhcxqOs6X-dFd=Vo9Wtqnp8egNaWzDH2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] drm/vs: Add hdmi driver
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/29 12:51PM, Phillip Lougher wrote:
-> Good idea to add the options to the Squashfs documentation.
-> 
-> Unfortunately some of the information in the patch is incorrect ... I've
-> commented below where that is.
-> 
-> So NAK this patch.  Please correct and send a V2 patch.
-> 
-> Thanks
-> 
-> Phillip
-> 
-Thanks for the feedback, I've sent a V2 patch.
+On Thu, 26 Oct 2023 at 14:53, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> On Thu, Oct 26, 2023 at 11:57:22AM +0300, Dmitry Baryshkov wrote:
+> > On Thu, 26 Oct 2023 at 11:07, Maxime Ripard <mripard@kernel.org> wrote:
+> > >
+> > > On Thu, Oct 26, 2023 at 01:23:53AM +0300, Dmitry Baryshkov wrote:
+> > > > > +static int starfive_hdmi_register(struct drm_device *drm, struct starfive_hdmi *hdmi)
+> > > > > +{
+> > > > > +   struct drm_encoder *encoder = &hdmi->encoder;
+> > > > > +   struct device *dev = hdmi->dev;
+> > > > > +
+> > > > > +   encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
+> > > > > +
+> > > > > +   /*
+> > > > > +    * If we failed to find the CRTC(s) which this encoder is
+> > > > > +    * supposed to be connected to, it's because the CRTC has
+> > > > > +    * not been registered yet.  Defer probing, and hope that
+> > > > > +    * the required CRTC is added later.
+> > > > > +    */
+> > > > > +   if (encoder->possible_crtcs == 0)
+> > > > > +           return -EPROBE_DEFER;
+> > > > > +
+> > > > > +   drm_encoder_helper_add(encoder, &starfive_hdmi_encoder_helper_funcs);
+> > > > > +
+> > > > > +   hdmi->connector.polled = DRM_CONNECTOR_POLL_HPD;
+> > > > > +
+> > > > > +   drm_connector_helper_add(&hdmi->connector,
+> > > > > +                            &starfive_hdmi_connector_helper_funcs);
+> > > > > +   drmm_connector_init(drm, &hdmi->connector,
+> > > > > +                       &starfive_hdmi_connector_funcs,
+> > > > > +                       DRM_MODE_CONNECTOR_HDMIA,
+> > > >
+> > > > On an embedded device one can not be so sure. There can be MHL or HDMI
+> > > > Alternative Mode. Usually we use drm_bridge here and drm_bridge_connector.
+> > >
+> > > On an HDMI driver, it's far from being a requirement, especially given
+> > > the limitations bridges have.
+> >
+> > It's a blessing that things like MHL / HDMI-in-USB-C / HDMI-to-MyDP
+> > are not widely used in the wild and are mostly non-existing except
+> > several phones that preate wide DP usage.
+>
+> And those can be supported without relying on bridges.
 
-Regards,
-Ariel
+Yes, they likely can, in the way that nouveau handles I2C TV encoders.
+But I don't think this can scale. We can have different devices
+attached to the DSI, LVDS, HDMI and even DP image sources. I don't see
+a scalable solution for either of them. E.g. by switching drm/msm to
+use panel bridges for DSI panels we were able to significantly unify
+and simplify code paths.
+
+> > Using drm_connector directly prevents one from handling possible
+> > modifications on the board level. For example, with the DRM connector
+> > in place, handling a separate HPD GPIO will result in code duplication
+> > from the hdmi-connector driver. Handling any other variations in the
+> > board design (which are pretty common in the embedded world) will also
+> > require changing the driver itself. drm_bridge / drm_bridge_connector
+> > save us from those issues.
+>
+> And we have other solutions there too. Like, EDIDs are pretty much in
+> the same spot with a lot of device variations, but it also works without
+> a common driver. I'd really wish we were having less bridges and more
+> helpers, but here we are.
+>
+> > BTW: what are the limitations of the drm_bridge wrt. HDMI output? I'm
+> > asking because we heavily depend on the bridge infrastructure for HDMI
+> > output. Maybe we are missing something there, which went unnoticed to
+> > me and my colleagues.
+>
+> A bridge cannot extend the connector state or use properties, for
+> example. It works for basic stuff but falls apart as soon as you're
+> trying to do something slightly advanced.
+
+Ack. I agree, we didn't have a necessity to implement properties up to
+now. But that sounds like an interesting topic for DSI-to-HDMI bridges
+and HDCP support. I'll need to check if any of the RB3/RB5/Dragonboard
+bridges are programmed with the HDCP keys.
+--
+With best wishes
+Dmitry
