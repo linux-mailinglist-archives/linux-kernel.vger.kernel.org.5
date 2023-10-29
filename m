@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72917DAAD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CA67DAAD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjJ2E2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 00:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S230202AbjJ2E22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 00:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbjJ2E2G (ORCPT
+        with ESMTP id S230038AbjJ2E2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 00:28:06 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B2CD54;
-        Sat, 28 Oct 2023 21:27:45 -0700 (PDT)
+        Sun, 29 Oct 2023 00:28:10 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62528D6F;
+        Sat, 28 Oct 2023 21:27:48 -0700 (PDT)
 Received: from localhost (unknown [188.24.143.101])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E02A8660738A;
-        Sun, 29 Oct 2023 04:27:42 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7B716660738C;
+        Sun, 29 Oct 2023 04:27:46 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698553663;
-        bh=xvv/tFFVtJp+rbBYtKgTLulVc7HdAalSk1KKPFjFju0=;
+        s=mail; t=1698553666;
+        bh=PHON8ijCTHS0JtMsAgOPwRF7WOfbum611F0K1TIiSeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5SzQHKMiq3FRLM4nvNNRyGURYA4qwkqxN8c1LO85/vBDaS5eKZEaYgpC85M8rdsF
-         BiP7aAnwvRU+Hdd9LkVsID0hco3/F7Ub/R7TGvAiW8jxFeviRk0xsMqgvIeKjTdIxf
-         b15Pjhm8JHpsZe2xV0oLnhIEV6lxUJxzl5gTzyt9Mx4nD+J04epuaQ/6tg+20yRcd/
-         qHrjt1Rldo9Q+S31pa3H4FHLrviNVlJr0asKrsRHkU+MAmdj5jS4TWDR1JjQYnnFKi
-         nPgn6c1IrSE23vp/S/A7lEN01u3A0aXWS364hzBX6UKky7Ca2lMdHTXnmeFlhdF46e
-         JnCP10NVUj6TA==
+        b=lT8K7AO9nvKHATkyZcUyBAN8PE8D+dp7VT6rXaazWSOoq+gzBHL15IsqfyPlZU/3Y
+         BHc5LXSwaqdsyuU8Put466sAI4Ckam/d+2KkmLsYh3rpI928HXYnHdzkpp2fwnCGR3
+         HUX4RSEj9XvfBDLwSjULDrYUzq65W058DGFUEpY5sLN4juAjQVYH6mL7Y6h+7qosvX
+         rEcgd9D7BxPFpfQ5I7QUzp4A47wrzPNZjuvE9quB8jrgoUbmMfYir0HmQhlTxFPHSD
+         bOZhhJnUkdz46w1l4UBmyBpcY9CRkki+9ghroThq1ITBbmbVzVXhAWihbRArW/vvne
+         AXjtMopS+12nw==
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -53,11 +53,10 @@ To:     "David S. Miller" <davem@davemloft.net>,
 Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Subject: [PATCH v2 08/12] riscv: dts: starfive: Add pool for coherent DMA memory on JH7100 boards
-Date:   Sun, 29 Oct 2023 06:27:08 +0200
-Message-ID: <20231029042712.520010-9-cristian.ciocaltea@collabora.com>
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Subject: [PATCH v2 09/12] riscv: dts: starfive: jh7100: Add sysmain and gmac DT nodes
+Date:   Sun, 29 Oct 2023 06:27:09 +0200
+Message-ID: <20231029042712.520010-10-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
 References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
@@ -72,65 +71,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Provide the sysmain and gmac DT nodes supporting the DWMAC found on the
+StarFive JH7100 SoC.
 
-The StarFive JH7100 SoC has non-coherent device DMAs, but most drivers
-expect to be able to allocate coherent memory for DMA descriptors and
-such. However on the JH7100 DDR memory appears twice in the physical
-memory map, once cached and once uncached:
-
-  0x00_8000_0000 - 0x08_7fff_ffff : Off chip DDR memory, cached
-  0x10_0000_0000 - 0x17_ffff_ffff : Off chip DDR memory, uncached
-
-To use this uncached region we create a global DMA memory pool there and
-reserve the corresponding area in the cached region.
-
-However the uncached region is fully above the 32bit address limit, so add
-a dma-ranges map so the DMA address used for peripherals is still in the
-regular cached region below the limit.
-
-Link: https://github.com/starfive-tech/JH7100_Docs/blob/main/JH7100%20Data%20Sheet%20V01.01.04-EN%20(4-21-2021).pdf
-Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- .../boot/dts/starfive/jh7100-common.dtsi      | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ arch/riscv/boot/dts/starfive/jh7100.dtsi | 36 ++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-index b93ce351a90f..504c73f01f14 100644
---- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-@@ -39,6 +39,30 @@ led-ack {
- 			label = "ack";
+diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+index a8a5bb00b0d8..e8228e96d350 100644
+--- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+@@ -179,6 +179,37 @@ plic: interrupt-controller@c000000 {
+ 			riscv,ndev = <133>;
  		};
- 	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		dma-reserved {
-+			reg = <0x0 0xfa000000 0x0 0x1000000>;
-+			no-map;
-+		};
-+
-+		linux,dma {
-+			compatible = "shared-dma-pool";
-+			reg = <0x10 0x7a000000 0x0 0x1000000>;
-+			no-map;
-+			linux,dma-default;
-+		};
-+	};
-+
-+	soc {
-+		dma-ranges = <0x00 0x80000000 0x00 0x80000000 0x00 0x7a000000>,
-+			     <0x00 0xfa000000 0x10 0x7a000000 0x00 0x01000000>,
-+			     <0x00 0xfb000000 0x00 0xfb000000 0x07 0x85000000>;
-+	};
- };
  
- &gpio {
++		gmac: ethernet@10020000 {
++			compatible = "starfive,jh7100-dwmac", "snps,dwmac";
++			reg = <0x0 0x10020000 0x0 0x10000>;
++			clocks = <&clkgen JH7100_CLK_GMAC_ROOT_DIV>,
++				 <&clkgen JH7100_CLK_GMAC_AHB>,
++				 <&clkgen JH7100_CLK_GMAC_PTP_REF>,
++				 <&clkgen JH7100_CLK_GMAC_TX_INV>,
++				 <&clkgen JH7100_CLK_GMAC_GTX>;
++			clock-names = "stmmaceth", "pclk", "ptp_ref", "tx", "gtx";
++			resets = <&rstgen JH7100_RSTN_GMAC_AHB>;
++			reset-names = "ahb";
++			interrupts = <6>, <7>;
++			interrupt-names = "macirq", "eth_wake_irq";
++			max-frame-size = <9000>;
++			snps,multicast-filter-bins = <32>;
++			snps,perfect-filter-entries = <128>;
++			starfive,syscon = <&sysmain 0x70 0>;
++			rx-fifo-depth = <32768>;
++			tx-fifo-depth = <16384>;
++			snps,axi-config = <&stmmac_axi_setup>;
++			snps,fixed-burst;
++			snps,force_thresh_dma_mode;
++			status = "disabled";
++
++			stmmac_axi_setup: stmmac-axi-config {
++				snps,wr_osr_lmt = <0xf>;
++				snps,rd_osr_lmt = <0xf>;
++				snps,blen = <256 128 64 32 0 0 0>;
++			};
++		};
++
+ 		clkgen: clock-controller@11800000 {
+ 			compatible = "starfive,jh7100-clkgen";
+ 			reg = <0x0 0x11800000 0x0 0x10000>;
+@@ -193,6 +224,11 @@ rstgen: reset-controller@11840000 {
+ 			#reset-cells = <1>;
+ 		};
+ 
++		sysmain: syscon@11850000 {
++			compatible = "starfive,jh7100-sysmain", "syscon";
++			reg = <0x0 0x11850000 0x0 0x10000>;
++		};
++
+ 		i2c0: i2c@118b0000 {
+ 			compatible = "snps,designware-i2c";
+ 			reg = <0x0 0x118b0000 0x0 0x10000>;
 -- 
 2.42.0
 
