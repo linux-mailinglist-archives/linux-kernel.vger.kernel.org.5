@@ -2,365 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AA77DAECB
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4758A7DAECD
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjJ2WXx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 29 Oct 2023 18:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        id S230428AbjJ2WYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2WXv (ORCPT
+        with ESMTP id S229533AbjJ2WYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:23:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25241B6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 15:23:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B526C433C7;
-        Sun, 29 Oct 2023 22:23:48 +0000 (UTC)
-Date:   Sun, 29 Oct 2023 18:23:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>
-Subject: [PATCH] eventfs: Save ownership and mode
-Message-ID: <20231029182345.0803e6c2@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 29 Oct 2023 18:24:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E9FBA;
+        Sun, 29 Oct 2023 15:24:51 -0700 (PDT)
+Received: from [192.168.1.90] (unknown [188.24.143.101])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5F5D166072BB;
+        Sun, 29 Oct 2023 22:24:48 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698618289;
+        bh=CceHk5gunNkmS5xqnTyMOvT/5Ea2c+1CgMjho/nsIsU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Uh9alWGouQ7U6jJthpEGwuVHe+CmdXjzGtc0aY68TODT29nPU4vrPOt4UnOKnhPYl
+         1//sMVxcYVCTnIY8joZ85xDL5cS4E1Od5si2MlzQW7T2HNYzOWO1zppZstlFmSmt64
+         hwZphy/RqXi9zkJNfzKRY5Xkv3ZdDA+cFBmkeXg3DB2CiCzxqIISPfiVuM5+Qwh1wX
+         Rb7kDregtZwbcFKuaz0sppThi5rjy7iIrmURUp+uuFD1A4I6LDUwRLRsavbF2F73HP
+         B9/fO78eoxmE4ZROfBb5EqpUTR/hEDnPyv4jGOzlL1cHBPq8wpxAX8VYKWNnzMtLsH
+         SfX2djN/7cteA==
+Message-ID: <05186c62-fcad-4d56-8ae8-d802f87a39e2@collabora.com>
+Date:   Mon, 30 Oct 2023 00:24:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/12] dt-bindings: net: snps,dwmac: Allow exclusive
+ usage of ahb reset
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
+ <3016eff2-fce5-4b5e-bbb2-d56cbb45df85@linaro.org>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <3016eff2-fce5-4b5e-bbb2-d56cbb45df85@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From ae395d53794e7057c9a756e26865549a6b1a0840 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 10/29/23 13:25, Krzysztof Kozlowski wrote:
+> On 29/10/2023 05:27, Cristian Ciocaltea wrote:
+>> The Synopsys DesignWare MAC found on the StarFive JH7100 SoC requires
+>> just the 'ahb' reset name, but the binding allows selecting it only in
+>> conjunction with 'stmmaceth'.
+>>
+>> Fix the issue by permitting exclusive usage of the 'ahb' reset name.
+>>
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+>>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>> index 5c2769dc689a..a4d7172ea701 100644
+>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+>> @@ -146,7 +146,7 @@ properties:
+>>    reset-names:
+>>      minItems: 1
+>>      items:
+>> -      - const: stmmaceth
+>> +      - enum: [stmmaceth, ahb]
+> 
+> Also, this makes sense only with patch #4, so this should be squashed there.
 
-Now that inodes and dentries are created on the fly, they are also
-reclaimed on memory pressure. Since the ownership and file mode are saved
-in the inode, if they are freed, any changes to the ownership and mode
-will be lost.
+I added this as a separate patch since it changes the generic schema
+which is included by many other bindings.  JH7100 just happens to be the
+first use-case requiring this update.  But I can squash the patch if
+that's not a good enough reason to keep it separately.
 
-To counter this, if the user changes the permissions or ownership, save
-them, and when creating the inodes again, restore those changes.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 145 +++++++++++++++++++++++++++++++++++----
- fs/tracefs/internal.h    |  15 ++++
- 2 files changed, 148 insertions(+), 12 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 45bddce7c747..b43f8961370d 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -33,6 +33,15 @@
-  */
- static DEFINE_MUTEX(eventfs_mutex);
- 
-+/* Mode is unsigned short, use the upper bits for flags */
-+enum {
-+	EVENTFS_SAVE_MODE	= BIT(16),
-+	EVENTFS_SAVE_UID	= BIT(17),
-+	EVENTFS_SAVE_GID	= BIT(18),
-+};
-+
-+#define EVENTFS_MODE_MASK	(EVENTFS_SAVE_MODE - 1)
-+
- /*
-  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
-  * its parent's list and will have is_freed set (under eventfs_mutex).
-@@ -47,8 +56,89 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
- static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
- static int eventfs_release(struct inode *inode, struct file *file);
- 
-+static void update_attr(struct eventfs_attr *attr, struct iattr *iattr)
-+{
-+	unsigned int ia_valid = iattr->ia_valid;
-+
-+	if (ia_valid & ATTR_MODE) {
-+		attr->mode = (attr->mode & ~EVENTFS_MODE_MASK) |
-+			(iattr->ia_mode & EVENTFS_MODE_MASK) |
-+			EVENTFS_SAVE_MODE;
-+	}
-+	if (ia_valid & ATTR_UID) {
-+		attr->mode |= EVENTFS_SAVE_UID;
-+		attr->uid = iattr->ia_uid;
-+	}
-+	if (ia_valid & ATTR_GID) {
-+		attr->mode |= EVENTFS_SAVE_GID;
-+		attr->gid = iattr->ia_gid;
-+	}
-+}
-+
-+static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
-+			    struct iattr *iattr)
-+{
-+	const struct eventfs_entry *entry;
-+	struct eventfs_inode *ei;
-+	const char *name;
-+	int ret;
-+
-+	mutex_lock(&eventfs_mutex);
-+	ei = dentry->d_fsdata;
-+	/* The LSB is set when the eventfs_inode is being freed */
-+	if (((unsigned long)ei & 1UL) || ei->is_freed) {
-+		/* Do not allow changes if the event is about to be removed. */
-+		mutex_unlock(&eventfs_mutex);
-+		return -ENODEV;
-+	}
-+
-+	/* Preallocate the children mode array if necessary */
-+	if (!(dentry->d_inode->i_mode & S_IFDIR)) {
-+		if (!ei->entry_attrs) {
-+			ei->entry_attrs = kzalloc(sizeof(*ei->entry_attrs) * ei->nr_entries,
-+						  GFP_KERNEL);
-+			if (!ei->entry_attrs) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+		}
-+	}
-+
-+	ret = simple_setattr(idmap, dentry, iattr);
-+	if (ret < 0)
-+		goto out;
-+
-+	/*
-+	 * If this is a dir, then update the ei cache, only the file
-+	 * mode is saved in the ei->m_children, and the ownership is
-+	 * determined by the parent directory.
-+	 */
-+	if (dentry->d_inode->i_mode & S_IFDIR) {
-+		update_attr(&ei->attr, iattr);
-+
-+	} else {
-+		name = dentry->d_name.name;
-+
-+		for (int i = 0; i < ei->nr_entries; i++) {
-+			entry = &ei->entries[i];
-+			if (strcmp(name, entry->name) == 0) {
-+				update_attr(&ei->entry_attrs[i], iattr);
-+				break;
-+			}
-+		}
-+	}
-+ out:
-+	mutex_unlock(&eventfs_mutex);
-+	return ret;
-+}
-+
- static const struct inode_operations eventfs_root_dir_inode_operations = {
- 	.lookup		= eventfs_root_lookup,
-+	.setattr	= eventfs_set_attr,
-+};
-+
-+static const struct inode_operations eventfs_file_inode_operations = {
-+	.setattr	= eventfs_set_attr,
- };
- 
- static const struct file_operations eventfs_file_operations = {
-@@ -59,6 +149,25 @@ static const struct file_operations eventfs_file_operations = {
- 	.release	= eventfs_release,
- };
- 
-+static void update_inode_attr(struct inode *inode, struct eventfs_attr *attr, umode_t mode)
-+{
-+	if (!attr) {
-+		inode->i_mode = mode;
-+		return;
-+	}
-+
-+	if (attr->mode & EVENTFS_SAVE_MODE)
-+		inode->i_mode = attr->mode & EVENTFS_MODE_MASK;
-+	else
-+		inode->i_mode = mode;
-+
-+	if (attr->mode & EVENTFS_SAVE_UID)
-+		inode->i_uid = attr->uid;
-+
-+	if (attr->mode & EVENTFS_SAVE_GID)
-+		inode->i_gid = attr->gid;
-+}
-+
- /**
-  * create_file - create a file in the tracefs filesystem
-  * @name: the name of the file to create.
-@@ -72,6 +181,7 @@ static const struct file_operations eventfs_file_operations = {
-  * call.
-  */
- static struct dentry *create_file(const char *name, umode_t mode,
-+				  struct eventfs_attr *attr,
- 				  struct dentry *parent, void *data,
- 				  const struct file_operations *fop)
- {
-@@ -95,7 +205,10 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 	if (unlikely(!inode))
- 		return eventfs_failed_creating(dentry);
- 
--	inode->i_mode = mode;
-+	/* If the user updated the directory's attributes, use them */
-+	update_inode_attr(inode, attr, mode);
-+
-+	inode->i_op = &eventfs_file_inode_operations;
- 	inode->i_fop = fop;
- 	inode->i_private = data;
- 
-@@ -114,13 +227,13 @@ static struct dentry *create_file(const char *name, umode_t mode,
-  * This function will create a dentry for a directory represented by
-  * a eventfs_inode.
-  */
--static struct dentry *create_dir(const char *name, struct dentry *parent)
-+static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent)
- {
- 	struct tracefs_inode *ti;
- 	struct dentry *dentry;
- 	struct inode *inode;
- 
--	dentry = eventfs_start_creating(name, parent);
-+	dentry = eventfs_start_creating(ei->name, parent);
- 	if (IS_ERR(dentry))
- 		return dentry;
- 
-@@ -128,7 +241,9 @@ static struct dentry *create_dir(const char *name, struct dentry *parent)
- 	if (unlikely(!inode))
- 		return eventfs_failed_creating(dentry);
- 
--	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-+	/* If the user updated the directory's attributes, use them */
-+	update_inode_attr(inode, &ei->attr, S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO);
-+
- 	inode->i_op = &eventfs_root_dir_inode_operations;
- 	inode->i_fop = &eventfs_file_operations;
- 
-@@ -226,7 +341,7 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- /**
-  * create_file_dentry - create a dentry for a file of an eventfs_inode
-  * @ei: the eventfs_inode that the file will be created under
-- * @e_dentry: a pointer to the d_children[] of the @ei
-+ * @idx: the index into the d_children[] of the @ei
-  * @parent: The parent dentry of the created file.
-  * @name: The name of the file to create
-  * @mode: The mode of the file.
-@@ -239,11 +354,13 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-  * just do a dget() on it and return. Otherwise create the dentry and attach it.
-  */
- static struct dentry *
--create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
-+create_file_dentry(struct eventfs_inode *ei, int idx,
- 		   struct dentry *parent, const char *name, umode_t mode, void *data,
- 		   const struct file_operations *fops, bool lookup)
- {
-+	struct dentry **e_dentry = &ei->d_children[idx];
- 	struct dentry *dentry;
-+	struct eventfs_attr *attr = NULL;
- 	bool invalidate = false;
- 
- 	mutex_lock(&eventfs_mutex);
-@@ -259,13 +376,18 @@ create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
- 		mutex_unlock(&eventfs_mutex);
- 		return *e_dentry;
- 	}
-+
-+	/* ei->entry_attrs are protected by SRCU */
-+	if (ei->entry_attrs)
-+		attr = &ei->entry_attrs[idx];
-+
- 	mutex_unlock(&eventfs_mutex);
- 
- 	/* The lookup already has the parent->d_inode locked */
- 	if (!lookup)
- 		inode_lock(parent->d_inode);
- 
--	dentry = create_file(name, mode, parent, data, fops);
-+	dentry = create_file(name, mode, attr, parent, data, fops);
- 
- 	if (!lookup)
- 		inode_unlock(parent->d_inode);
-@@ -373,7 +495,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 	if (!lookup)
- 		inode_lock(parent->d_inode);
- 
--	dentry = create_dir(ei->name, parent);
-+	dentry = create_dir(ei, parent);
- 
- 	if (!lookup)
- 		inode_unlock(parent->d_inode);
-@@ -490,8 +612,7 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 			if (r <= 0)
- 				continue;
- 			ret = simple_lookup(dir, dentry, flags);
--			create_file_dentry(ei, &ei->d_children[i],
--					   ei_dentry, name, mode, cdata,
-+			create_file_dentry(ei, i, ei_dentry, name, mode, cdata,
- 					   fops, true);
- 			break;
- 		}
-@@ -624,8 +745,7 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
- 		r = entry->callback(name, &mode, &cdata, &fops);
- 		if (r <= 0)
- 			continue;
--		d = create_file_dentry(ei, &ei->d_children[i],
--				       parent, name, mode, cdata, fops, false);
-+		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
- 		if (d) {
- 			ret = add_dentries(&dentries, d, cnt);
- 			if (ret < 0)
-@@ -666,6 +786,7 @@ static void free_ei(struct eventfs_inode *ei)
- {
- 	kfree_const(ei->name);
- 	kfree(ei->d_children);
-+	kfree(ei->entry_attrs);
- 	kfree(ei);
- }
- 
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 21a1fa682b74..3d519455477d 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -13,6 +13,18 @@ struct tracefs_inode {
- 	struct inode            vfs_inode;
- };
- 
-+/*
-+ * struct eventfs_attr - cache the mode and ownership of a eventfs entry
-+ * @mode:	saved mode plus flags of what is saved
-+ * @uid:	saved uid if changed
-+ * @gid:	saved gid if changed
-+ */
-+struct eventfs_attr {
-+	int				mode;
-+	kuid_t				uid;
-+	kgid_t				gid;
-+};
-+
- /*
-  * struct eventfs_inode - hold the properties of the eventfs directories.
-  * @list:	link list into the parent directory
-@@ -22,6 +34,7 @@ struct tracefs_inode {
-  * @dentry:     the dentry of the directory
-  * @d_parent:   pointer to the parent's dentry
-  * @d_children: The array of dentries to represent the files when created
-+ * @entry_attrs: Saved mode and ownership of the children
-  * @data:	The private data to pass to the callbacks
-  * @nr_entries: The number of items in @entries
-  */
-@@ -33,7 +46,9 @@ struct eventfs_inode {
- 	struct dentry			*dentry; /* Check is_freed to access */
- 	struct dentry			*d_parent;
- 	struct dentry			**d_children;
-+	struct eventfs_attr		*entry_attrs;
- 	void				*data;
-+	struct eventfs_attr		attr;
- 	/*
- 	 * Union - used for deletion
- 	 * @del_list:	list of eventfs_inode to delete
--- 
-2.42.0
-
+Thanks,
+Cristian
