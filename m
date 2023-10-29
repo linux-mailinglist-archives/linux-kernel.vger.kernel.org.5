@@ -2,94 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D50387DAEDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FDE7DAF29
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjJ2WyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
+        id S231211AbjJ2W5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2WyB (ORCPT
+        with ESMTP id S231361AbjJ2W4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:54:01 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310C6BA;
-        Sun, 29 Oct 2023 15:53:59 -0700 (PDT)
-Received: from [192.168.1.90] (unknown [188.24.143.101])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5344666072BB;
-        Sun, 29 Oct 2023 22:53:56 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698620037;
-        bh=vm9aJnhq63RdAaCsogNW1tU6wc1DMvmWq3qynSp9OGA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZlS35BI0RXrQj/Gnyaf64juE825VEBdfX4SYCJizDZFvT5KuXISWLctywXd80qzuC
-         /WGuacRkxqmWk5ftBuaGxLpx/Yi+7iInpcYkuBmmI1yJVxhwQJutYlMtAEb54C6GTm
-         NXW+e5p2TQNAHOMyTwCv4742iRyQfKm+GffBe8OlU7tskNnujIke4QYrmA4ohjPNRn
-         TmjagXC3BYwMItuBM4bNDPZXSDLkLOtlPOxyh3Rf0HyBJasYMbr7fLRVG8fBvg8jJx
-         u7+aIQaPU2c/5qxCB/Wb1fKKy0XmH/1JNCQ4MqOGDrUiqtvrx8kr2lkc8F1PwWDDa9
-         iTgFfFHJJ0OUw==
-Message-ID: <233a45e1-15ac-40da-badf-dee2d3d60777@collabora.com>
-Date:   Mon, 30 Oct 2023 00:53:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
- beaglev-starlight: Enable gmac
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Sun, 29 Oct 2023 18:56:54 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D602C26AD;
+        Sun, 29 Oct 2023 15:55:53 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 90FD95C00FF;
+        Sun, 29 Oct 2023 18:55:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 29 Oct 2023 18:55:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698620143; x=1698706543; bh=Ojv0xXhmC6UvWmXfFmEGeOiFIHR8QBj2HEs
+        0AJdBuXw=; b=VyQ3s6uJj8sHu2Yqu3zXXg6+h593DAKTAbF/5u+oKv00FezWOWT
+        gZp5mXJ4B/Zq1uIrYw2FdX4CrCdg1BCFq3oYSVaB2SBq1ikKzO3t5mpLbSFM1Qy6
+        kCNZH14IqEfOXHbUWofJX7ocAMrPE1zCvqJg6XYeSpYmcd91r0apYOdNoBn6Yeu/
+        DEIZoXzlSSm0pjxXiX3eZfyRb7SZaHzCxsj0DCJ2u/wKujcLv+4WLemql2RR2Fa2
+        gYmBlqIXqN9ioPIyJV3mJb+VxMjnTAv2ZcvxhA8j3Duu0b4rBBZoMPuWfW7b/HRU
+        zWqFz7YiBlfwICStO7VDRa/ur/Q40flFe8A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698620143; x=1698706543; bh=Ojv0xXhmC6UvWmXfFmEGeOiFIHR8QBj2HEs
+        0AJdBuXw=; b=MwrfeDNEsRQYmvFdDaXgAVfJBL3iBBM9jqyRk7E0UGYfehBMFDK
+        f/Z1RrXA9XpnXpR4rDtnXqRu9SgLrz+S0uF6jBcEo5JDUyEfDTTi1wF7WQXwMpL6
+        qkcz2jg6SC731JcA5tLS+B0tATSoxbzDDDLdj3RMP8qBN2dK7uZw2MxAShMMx5DN
+        ma8AlciXh5Azwox6Fon3ivxD9OYUMIiWZAgYqWSIB8Q/4xDnwwZ97VorbEB6CN8N
+        g9CJSyWAKYo3P51vdnPnZf3cWV+eBKNtAALRRVIeOIuTWyE0JlWG4nk+cABZDCHF
+        6HjYI+3avT8OBt5p+LiePKUnqM+xVmUp28w==
+X-ME-Sender: <xms:7uI-Zch1DJB3GWAGQCgD1sfhKErRS6AkLJTPbhv_VcDwwTCibeznYg>
+    <xme:7uI-ZVDyddMTUY6Elg77WmozbEpxQwVcEql2U07AIaF5o7xbFscwKrzTtP_kLe08X
+    leiOoAEPdamSODq5w>
+X-ME-Received: <xmr:7uI-ZUFkDLqnLJbIDgrUByiX8sjlqdMHBPg-_OtWldn5RIvpkfRCfxLW4xGJOjbLzjpmgrDjfevv8NRK_CfqiIvZDNMebtjj71eIE_3-XoI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleelgddthecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepieetkeegfeeujefgkeevleelffduleejkedtueekveeuueeg
+    feegueeffeelhfdunecuffhomhgrihhnpehgihhthhhusgdrtghomhdpugiguhhuuhdrgi
+    ihiienucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegu
+    gihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:7uI-ZdSBKGhV_8y_-NYlnhIMRGCErfncEg3datJPiRHsNbCIR1Ld4A>
+    <xmx:7uI-ZZyDl4GIYkXTKRi7CzvLgvkHLn0GD3hlu69S84a060i-iGPe6Q>
+    <xmx:7uI-Zb7Nd2qzSY-AZP-FCCYO7Z-e0_X4oMnAIuKRJ43O4sbpc_e3EA>
+    <xmx:7-I-ZeL8BtmiN5g0x4tWYYb1HTbGYn7leNkIhYY7chBCsBUko8BapQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Oct 2023 18:55:40 -0400 (EDT)
+Date:   Sun, 29 Oct 2023 16:55:39 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
- <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
- <f253b50a-a0ac-40c6-b13d-013de7bac407@lunn.ch>
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <f253b50a-a0ac-40c6-b13d-013de7bac407@lunn.ch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>, antony.antony@secunet.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Subject: Re: [RFC bpf-next 1/6] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+Message-ID: <io26znzyhw4t4drmcqkmvgyykyblxzxpizuntgk5fhqasipfyo@r5tpoqo3djkp>
+References: <cover.1698431765.git.dxu@dxuuu.xyz>
+ <ee5513e6384696147da9bdccd2e22ea27d690084.1698431765.git.dxu@dxuuu.xyz>
+ <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+UUsJvrPp=YhtpwuC6xVWGB=OgwXZwXtHi=2Je6n5a=A@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/23 20:46, Andrew Lunn wrote:
-> On Sun, Oct 29, 2023 at 06:27:12AM +0200, Cristian Ciocaltea wrote:
->> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
->> RGMII-ID.
->>
->> TODO: Verify if manual adjustment of the RX internal delay is needed. If
->> yes, add the mdio & phy sub-nodes.
-> 
-> Please could you try to get this tested. It might shed some light on
-> what is going on here, since it is a different PHY.
+Hi Alexei,
 
-Actually, this is the main reason I added the patch. I don't have access
-to this board, so it would be great if we could get some help with testing.
+On Sat, Oct 28, 2023 at 04:49:45PM -0700, Alexei Starovoitov wrote:
+> On Fri, Oct 27, 2023 at 11:46 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > This commit adds an unstable kfunc helper to access internal xfrm_state
+> > associated with an SA. This is intended to be used for the upcoming
+> > IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> > words: for custom software RSS.
+> >
+> > That being said, the function that this kfunc wraps is fairly generic
+> > and used for a lot of xfrm tasks. I'm sure people will find uses
+> > elsewhere over time.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  include/net/xfrm.h        |   9 ++++
+> >  net/xfrm/Makefile         |   1 +
+> >  net/xfrm/xfrm_policy.c    |   2 +
+> >  net/xfrm/xfrm_state_bpf.c | 105 ++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 117 insertions(+)
+> >  create mode 100644 net/xfrm/xfrm_state_bpf.c
+> >
+> > diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> > index 98d7aa78adda..ab4cf66480f3 100644
+> > --- a/include/net/xfrm.h
+> > +++ b/include/net/xfrm.h
+> > @@ -2188,4 +2188,13 @@ static inline int register_xfrm_interface_bpf(void)
+> >
+> >  #endif
+> >
+> > +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> > +int register_xfrm_state_bpf(void);
+> > +#else
+> > +static inline int register_xfrm_state_bpf(void)
+> > +{
+> > +       return 0;
+> > +}
+> > +#endif
+> > +
+> >  #endif /* _NET_XFRM_H */
+> > diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> > index cd47f88921f5..547cec77ba03 100644
+> > --- a/net/xfrm/Makefile
+> > +++ b/net/xfrm/Makefile
+> > @@ -21,3 +21,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) += xfrm_compat.o
+> >  obj-$(CONFIG_XFRM_IPCOMP) += xfrm_ipcomp.o
+> >  obj-$(CONFIG_XFRM_INTERFACE) += xfrm_interface.o
+> >  obj-$(CONFIG_XFRM_ESPINTCP) += espintcp.o
+> > +obj-$(CONFIG_DEBUG_INFO_BTF) += xfrm_state_bpf.o
+> > diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> > index 5cdd3bca3637..62e64fa7ae5c 100644
+> > --- a/net/xfrm/xfrm_policy.c
+> > +++ b/net/xfrm/xfrm_policy.c
+> > @@ -4267,6 +4267,8 @@ void __init xfrm_init(void)
+> >  #ifdef CONFIG_XFRM_ESPINTCP
+> >         espintcp_init();
+> >  #endif
+> > +
+> > +       register_xfrm_state_bpf();
+> >  }
+> >
+> >  #ifdef CONFIG_AUDITSYSCALL
+> > diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
+> > new file mode 100644
+> > index 000000000000..a73a17a6497b
+> > --- /dev/null
+> > +++ b/net/xfrm/xfrm_state_bpf.c
+> > @@ -0,0 +1,105 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* Unstable XFRM state BPF helpers.
+> > + *
+> > + * Note that it is allowed to break compatibility for these functions since the
+> > + * interface they are exposed through to BPF programs is explicitly unstable.
+> > + */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf_ids.h>
+> > +#include <net/xdp.h>
+> > +#include <net/xfrm.h>
+> > +
+> > +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> > + *
+> > + * Members:
+> > + * @error      - Out parameter, set for any errors encountered
+> > + *              Values:
+> > + *                -EINVAL - netns_id is less than -1
+> > + *                -EINVAL - Passed NULL for opts
+> > + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> > + *                -ENONET - No network namespace found for netns_id
+> > + * @netns_id   - Specify the network namespace for lookup
+> > + *              Values:
+> > + *                BPF_F_CURRENT_NETNS (-1)
+> > + *                  Use namespace associated with ctx
+> > + *                [0, S32_MAX]
+> > + *                  Network Namespace ID
+> > + * @mark       - XFRM mark to match on
+> > + * @daddr      - Destination address to match on
+> > + * @spi                - Security parameter index to match on
+> > + * @proto      - L3 protocol to match on
+> > + * @family     - L3 protocol family to match on
+> > + */
+> > +struct bpf_xfrm_state_opts {
+> > +       s32 error;
+> > +       s32 netns_id;
+> > +       u32 mark;
+> > +       xfrm_address_t daddr;
+> > +       __be32 spi;
+> > +       u8 proto;
+> > +       u16 family;
+> > +};
+> > +
+> > +enum {
+> > +       BPF_XFRM_STATE_OPTS_SZ = sizeof(struct bpf_xfrm_state_opts),
+> > +};
+> > +
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +                 "Global functions as their definitions will be in xfrm_state BTF");
+> > +
+> > +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> > + *
+> > + * Parameters:
+> > + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> > + *                 Cannot be NULL
+> > + * @opts       - Options for lookup (documented above)
+> > + *                 Cannot be NULL
+> > + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> > + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> > + */
+> > +__bpf_kfunc struct xfrm_state *
+> > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts, u32 opts__sz)
+> > +{
+> > +       struct xdp_buff *xdp = (struct xdp_buff *)ctx;
+> > +       struct net *net = dev_net(xdp->rxq->dev);
+> > +
+> > +       if (!opts || opts__sz != BPF_XFRM_STATE_OPTS_SZ) {
+> > +               opts->error = -EINVAL;
+> > +               return NULL;
+> > +       }
+> > +
+> > +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> > +               opts->error = -EINVAL;
+> > +               return NULL;
+> > +       }
+> > +
+> > +       if (opts->netns_id >= 0) {
+> > +               net = get_net_ns_by_id(net, opts->netns_id);
+> > +               if (unlikely(!net)) {
+> > +                       opts->error = -ENONET;
+> > +                       return NULL;
+> > +               }
+> > +       }
+> > +
+> > +       return xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi,
+> > +                                opts->proto, opts->family);
+> > +}
+> 
+> Patch 6 example does little to explain how this kfunc can be used.
+> Cover letter sounds promising, but no code to demonstrate the result.
+
+Part of the reason for that is this kfunc is intended to be used with a
+not-yet-upstreamed xfrm patchset. The other is that the usage is quite
+trivial. This is the code the experiments were run with:
+
+https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
+
+We intend to upstream that cpumap mode to xdp-tools as soon as the xfrm
+patches are in. (Note the linked code is a little buggy but the
+main idea is there).
+
+Depending on your appetite for complex diagrams, I can also offer you a
+sequence diagram that describes how everything fits together:
+
+https://dxuuu.xyz/r/ipsec-pcpu.png
+
+The TLDR is that all the magic comes from xfrm subsystem. This kfunc
+just enables software RSS.
+
+> The main issue is that this kfunc has to be KF_ACQUIRE,
+> otherwise bpf prog will keep leaking xfrm_state.
+> Plenty of red flags in this RFC.
+
+Ack, will check on KF_ACQUIRE.
 
 Thanks,
-Cristian
+Daniel
