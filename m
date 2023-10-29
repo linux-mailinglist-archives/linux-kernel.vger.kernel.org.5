@@ -2,180 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBF57DAD5E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7587DAD64
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjJ2RBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 13:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
+        id S230145AbjJ2RGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 13:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjJ2RA6 (ORCPT
+        with ESMTP id S230155AbjJ2RGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 13:00:58 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B0CBE;
-        Sun, 29 Oct 2023 10:00:56 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c87a85332bso32598505ad.2;
-        Sun, 29 Oct 2023 10:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698598855; x=1699203655; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=+GH3Ep1QSotLQp9G1VgYYbvlYhIk5BNHjZEa/6Fuf0I=;
-        b=R3SVR8ga+9WN303P1EgNb8xLXnlnMabZfeIm/jG8mWDb/cc6hOy0PnaenN9g94AYak
-         mqJgwKTYmZK0bOjy7qsUj/2aurk/R9bITxDPn8IiF2QLeXuBU1unuo2RLjXtrNTmjFKT
-         +TL2O02W/PiEbaYY/8YmsMoTq/2UJ7x+Vvl1EUCZmIqYtzqArGcYj76nQ/LsZfxLV1tB
-         QdAnFBJkH1B++LechmThrqjbHkwAi7NzkZ+yqMVy220/plQTNl1s/FxiKb5jQ6hoy/uB
-         nxXdud5Pa+Jpky4H9BbBtowrM1yUAPzeVOxZRegGSuL5Dpj+hxsHRcnTptQg6jf94Ebe
-         2gPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698598855; x=1699203655;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+GH3Ep1QSotLQp9G1VgYYbvlYhIk5BNHjZEa/6Fuf0I=;
-        b=BVLE0pohj8HfMA1NyRMxVLex2GVfmiK2wwq7Gy4z4zG+v8t1LGY5XT9UFyiVgJuBzE
-         b5w4BP9VbEETRW/zN2ZZmUL0XcFnmGaglLabcjDW548EoyeXk5hu/2IkjNxY9Kj8XQqj
-         qWafcdWuBj5XT8wdPJOl9/NRk99+xgOTKuzzrN+3HYS6ej1tVPe5Izx6EVV6xkynER7N
-         u2QNXk5He7nnszo7eTAvv3jHiFVeNWJMmDhCXnj+bnR/wxzsT8dkxAxG+fY65m3XKL0d
-         NjXKQJ01DqyDMZHp4uYNvPJq/XPF3FaS5+hDS325wgZLi8iG8jlIgK4Ol+1G/ujcVPFr
-         H0tQ==
-X-Gm-Message-State: AOJu0YwTf9DltELccnUgKSN5r0Eyz4TKhcTe6OM4QZOFurX1Mny1bror
-        KC/SaJFdZKi12tlC6KBxAVo8VjnkLtc=
-X-Google-Smtp-Source: AGHT+IH1kqTg/Zqp8Q3QqBbfVl1QPLA3eFWS6aKDqHrsiFiqsnu6cKIrI7U5kT1kewj60UTFaAM9ow==
-X-Received: by 2002:a17:902:e84b:b0:1cc:4559:f5 with SMTP id t11-20020a170902e84b00b001cc455900f5mr1628124plg.14.1698598855567;
-        Sun, 29 Oct 2023 10:00:55 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ja18-20020a170902efd200b001bb892a7a67sm2989381plb.1.2023.10.29.10.00.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 10:00:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <750ec6f7-f075-4075-ba9d-eb67f69239ec@roeck-us.net>
-Date:   Sun, 29 Oct 2023 10:00:54 -0700
+        Sun, 29 Oct 2023 13:06:20 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2180.outbound.protection.outlook.com [40.92.62.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD869B;
+        Sun, 29 Oct 2023 10:06:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tio6nt1YXkeGI+71a7GKytlsSx9SxOxB7jm890sp6hWEBKeqjR6mIgj4ud8NHY3Hc/GTjTwi1CrUOrtDI79omagYHoqkuI7cgEbtIUXvGHKzZHXnEMTfzbguOfbeMovca2Ey8wRUi9jeipx0vYy/9junw72Ib69sL5HGuRvyOchP8A7qOi037KKtfGPDoxikJFiOazcSu/ldBHX5Fi8jboySEjwq4qsvlvulerExS+hA7z/fs2OW+fKVmbL3gMhPqj7C4Eh7PICqF+fQ4m5dO7ATAWbBsm5O5bHSGQC2/0uUYJ4Ld9kFPPL31plVjw7u3NFX5cxaeaK7RGe3z4bWlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tiDvTMOTYKxvPVSYElkAiLllbD9f2SUr5oGuEtAXapc=;
+ b=EFv+LCbRyEXrRRfBi6IiHlOYrc+wxDfwLStHNaaO3LeWUJq95ZRrqdBx+gzn0ard0METfegriwY08D5T4soB8fTZxZZ2GcelfqEs0uqvNPfQcakGGd1dn2w1R0m2TYMmF2WO+OU5mK+fGWACT+dPOI6xHQnssrgvzT93c+fuCLEBCWloY2Vnbd5FsQEOCcDizQv7yrW5QzBwlPIo/uB+aDwyMaQqRkJ6+5VOfewEHrXXhIE5plsoFyoZ32tQ88+Dbgvwz6IPhg3whgUliKB5dmi3Ab6mUTXHW+P8pEDTTAQ8+V838lYcekMt+YiDVafG/0CSZGOoUxQjiPY5CBj+SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tiDvTMOTYKxvPVSYElkAiLllbD9f2SUr5oGuEtAXapc=;
+ b=RwACsaFBRGy2F3Aek8G9OKIbbMgUo/xcnceNfg7Ke7utlGuogBXcfv/jHN/KOXOFqOc7v8iVpi+xVduk2qFL/PU+hWiTRiGyimRa4F37GlBk0WnjHh3fgaLrW+8nNSoxKH8Eqw+Wh6suyhKYuWz27qHhpoCcJEW1MzvN/orK52Ny5flwemh29jwlTsSXjiY5xBtp4Y8eIV/Ot2Fgwr0nss252Hzfz0oOe4e7MTHSR4X7uAFEaNDY//xNCd7zkXmLA1K72GKBMIxc0f4E/oPLrw8FqCQJrhUHOnm+j9vh5Fqrf+V241UBrio1x46+R2QwuEnPKrMX6uaI/r4bfMPWUQ==
+Received: from SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:dd::7) by
+ SY7P282MB4517.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:274::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.26; Sun, 29 Oct 2023 17:06:13 +0000
+Received: from SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::7b4f:c2f2:e037:7f68]) by SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::7b4f:c2f2:e037:7f68%4]) with mapi id 15.20.6933.027; Sun, 29 Oct 2023
+ 17:06:13 +0000
+From:   Yihong Cao <caoyihong4@outlook.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Yihong Cao <caoyihong4@outlook.com>,
+        linux-input@vger.kernel.org (open list:HID CORE LAYER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] HID: apple: add Jamesdonkey and A3R to non-apple keyboards list
+Date:   Mon, 30 Oct 2023 01:05:38 +0800
+Message-ID: <SYYP282MB2110B4E87983EAFEDC8741E49BA2A@SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [591oj4R3DDtFoIqJ3KzKtkgmE+n7KhiA]
+X-ClientProxiedBy: SGXP274CA0019.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::31)
+ To SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:dd::7)
+X-Microsoft-Original-Message-ID: <20231029170539.108529-1-caoyihong4@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sbsa_gwdt: Calculate timeout with 64-bit math
-Content-Language: en-US
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     Darren Hart <darren@os.amperecomputing.com>,
-        linux-kernel@vger.kernel.org,
-        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
-References: <7d1713c5ffab19b0f3de796d82df19e8b1f340de.1695286124.git.darren@os.amperecomputing.com>
- <bcc41311-075c-44fe-b0f7-30564d7ac58c@roeck-us.net> <ZSpbfXzFeaoUJRZ3@Fedora>
- <1fae4d2c-4bc7-f169-7b84-501674a82ee4@roeck-us.net>
- <20231029161056.GB5887@www.linux-watchdog.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231029161056.GB5887@www.linux-watchdog.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SYYP282MB2110:EE_|SY7P282MB4517:EE_
+X-MS-Office365-Filtering-Correlation-Id: 464d0f9b-ce62-4538-ae95-08dbd8a15a87
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eugP1pkXLdr/O1z8afEBD9YfXLqVhAKM3T3nQnycxPhjJPL3CXSR8XW4lz7nb47fhYik7XCs628G4qMq6yPDSTgdifZa63yE8ZZ4n8Nvtt5eaVVet6SursR03K3Tr2cfD7q+O+WxMeDlUb3yI0t0rTxW/zGkX7Fc+GdY6iMlMC/iGm7/1GCuTR2SixHbkUkXHynl3FIcBHQYmrFbGMwOwOuGkqT6mXZL3/JN3lRhkpqcowS9jnJp3zgVUK6sa8WjI0KR9nJj8Qo6x4TIL+FkWHaEwIJT+cMSIM1KeQZA5YiJeS6s5HgVxXEMxLVVS0N29O8+UNcZXVDm9m7GYYp2XdqM9oV4r3QM1JVETA++U9TOXaJwVA+B8nLIZnyZIfEpaXFIJN2pGywDZbLwpVRBRQS+2CPhhsI+/PFTGKaZ4JD9GckZiD+fXFwm6ypjXVMZ9By7kwBTdDa+65hqpj6I/QzobeMTkwOaAlZVkF2qOGfhqnDRu0rzS5HVX3h+tV+DO0a72EKC3qmOi1EMowrRTw2lUvufg0aPWt9ePtFBzzA+xDqz7P1xbDq5x73Faws5kJ/exgzg6bDaP7O1Ly7+g21ZrygWF0HbQeS8VDRFDIebjgHZCGRXhCiPC4MT8ork
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YQvVyRys91IYHAOAhq4kVN34VzKkH2I2i41uZvEuAMBVknn7rfQk77Y/5qp8?=
+ =?us-ascii?Q?C70JwYtgcITpu9VuhZiL7ir0DfvUyQ9GSKHpzg29lyk0Y8cMWFY98FuZ+IjF?=
+ =?us-ascii?Q?Vxe5YG0zDdomu53csA4eTTxHBezGm0XfIgT7BUdUHFVwoWlNsGfH4FBV9QGE?=
+ =?us-ascii?Q?6aDcJfz2ZBWZYxW4d3ZiSrtOL/sSNCjHLHiNRpI5zsfjLIkK6ilEKsdERN0r?=
+ =?us-ascii?Q?ij00y07VDVJKTCyU3sJEKS9hCDaPq8RvL8sDihVJJypUFUEUoSPXttKVEhiq?=
+ =?us-ascii?Q?zYnKJ67YrBQe7ihk/iWQjv7EwBMbE4kf8rVGafvo4BWVX0E59K3daBSIimq0?=
+ =?us-ascii?Q?gyAWF/uSygJR83Sz1G91qegCbCl8I9H2ZYi4Ts1jJXrJdqIm2sz1rYSwk9J/?=
+ =?us-ascii?Q?Rn7dXrG+LC9om1GriCa1FYzwkTpKZDVnbQUFi6hi6U2EW/TsDJShdtDWugI2?=
+ =?us-ascii?Q?32igngxydHFojHsqLnJvd9f3hBmwyHsuX1oDfhTWJaYH/QFueEyPyXSRbtuQ?=
+ =?us-ascii?Q?NA3DwpOIT4Y8EwtNXPD7SGqxVmb31+eH8Af89xINsjCN4QZGqySOxpsVdZD2?=
+ =?us-ascii?Q?qGeUTazH6t0+SkulXvX7Z8cB72rERChAPfXNW+Rzvsyqh+AeedYLHtzBdUk7?=
+ =?us-ascii?Q?sKjQsA16Cx5doLMAPvOA356aGGsJqwc8UZNAlwWWTlfffnDW5DsBIuYB4MSo?=
+ =?us-ascii?Q?c/3Mao7DpiaZ2ZieqVh3LAS+1LoMulwLhz8Cg3bJ7/Q66GI+UNiCG5XDKrdS?=
+ =?us-ascii?Q?NfsldImbWu+kqTSb1x4h0j1kqM1PyvtpIVV6MG/R3HmGASKCBK0n7tpXWY+f?=
+ =?us-ascii?Q?vhCNqKdcejSGVLL6awwzU8s8WtmGFY6wzM/EcRnDLuOA+9/MPVWomqlWskYk?=
+ =?us-ascii?Q?bVNu/Rre1ZjZ13a1e+i6n33vFnfUAP88YupPD0vUh4rybmH31W4e1ABsprbS?=
+ =?us-ascii?Q?xer9f1x2/zZccl9+jxFa+/Du6uofsnnHJOSIbcpa29wsY8dR6jSEzDwG0PYA?=
+ =?us-ascii?Q?IvVtKmeXL8yc/fcPhGunrajQkByUqkH9EG5OVGg5k0RseZgs6Ae/wiNgGHnt?=
+ =?us-ascii?Q?15xkW4GL18TSjRfmVH8osXphEnTZz2ORoOG4Wkh9lyCp+fUd1K9VYqs/7e9U?=
+ =?us-ascii?Q?cjJfrJUW7yprP9ShR4X+0opcgQ12T+Em9Npf58fUFaxdox4ewvFixnxrHzsD?=
+ =?us-ascii?Q?XFENO+uQ5qlMzwtsL3NDSFOxDxGNTUE1aoOn+Q=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 464d0f9b-ce62-4538-ae95-08dbd8a15a87
+X-MS-Exchange-CrossTenant-AuthSource: SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2023 17:06:13.0962
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY7P282MB4517
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/23 09:10, Wim Van Sebroeck wrote:
-> Hi Guenter,
-> 
->> On 10/14/23 02:12, Darren Hart wrote:
->>> On Tue, Sep 26, 2023 at 05:45:13AM -0700, Guenter Roeck wrote:
->>>> On Thu, Sep 21, 2023 at 02:02:36AM -0700, Darren Hart wrote:
->>>>> Commit abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
->>>>> introduced new timer math for watchdog revision 1 with the 48 bit offset
->>>>> register.
->>>>>
->>>>> The gwdt->clk and timeout are u32, but the argument being calculated is
->>>>> u64. Without a cast, the compiler performs u32 operations, truncating
->>>>> intermediate steps, resulting in incorrect values.
->>>>>
->>>>> A watchdog revision 1 implementation with a gwdt->clk of 1GHz and a
->>>>> timeout of 600s writes 3647256576 to the one shot watchdog instead of
->>>>> 300000000000, resulting in the watchdog firing in 3.6s instead of 600s.
->>>>>
->>>>> Force u64 math by casting the first argument (gwdt->clk) as a u64. Make
->>>>> the order of operations explicit with parenthesis.
->>>>>
->>>>> Fixes: abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
->>>>> Reported-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->>>>> Signed-off-by: Darren Hart <darren@os.amperecomputing.com>
->>>>> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
->>>>> Cc: Guenter Roeck <linux@roeck-us.net>
->>>>> Cc: linux-watchdog@vger.kernel.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>> Cc: <stable@vger.kernel.org> # 5.14.x
->>>>
->>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
->>>
->>> Guenter or Wim, I haven't seen this land in the RCs or in next yet. Have
->>> you already picked it up? Anything more needed from me?
->>>
->>> Thanks,
->>>
->>
->> Sorry, I am suffering from what I can only describe as a severe case of
->> maintainer/reviewer PTSD, and I have yet to find a way of dealing with that.
-> 
-> I can imagine what it is like. And I do know that if you wouldn't have been there,
-> that I would have allready stopped being a maintainer. So I hope you can find the
-> right cooping mechanisms. I also had to work non-stop the last 4 to 5 weeks and it was hell.
-> So I wish you all the best.
-> 
-> PS: picking up all patches that have your review-by tag on it as we speack.
-> 
+Jamesdonkey A3R keyboard is identified as "Jamesdonkey A3R" in wired
+mode, "A3R-U" in wireless mode and "A3R" in bluetooth mode. Adding them
+to non-apple keyboards fixes function key.
 
-Thanks,
-Guenter
+Signed-off-by: Yihong Cao <caoyihong4@outlook.com>
+---
+ drivers/hid/hid-apple.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 3ca45975c686..d9e9829b2200 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -345,6 +345,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
+ 	{ "AONE" },
+ 	{ "GANSS" },
+ 	{ "Hailuck" },
++	{ "Jamesdonkey" },
++	{ "A3R" },
+ };
+ 
+ static bool apple_is_non_apple_keyboard(struct hid_device *hdev)
+-- 
+2.42.0
 
