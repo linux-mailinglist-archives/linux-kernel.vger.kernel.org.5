@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2E47DAF0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A648E7DAF09
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjJ2Wz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
+        id S231375AbjJ2Wzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjJ2WzU (ORCPT
+        with ESMTP id S231370AbjJ2WzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:55:20 -0400
+        Sun, 29 Oct 2023 18:55:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B57D3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D27F7;
         Sun, 29 Oct 2023 15:55:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF3F2C433CC;
-        Sun, 29 Oct 2023 22:55:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 774F3C433C7;
+        Sun, 29 Oct 2023 22:55:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620106;
-        bh=z+73B1DIL61o1DugN4c5cLyJNVGWOV+lpmfTf8JmyFI=;
+        s=k20201202; t=1698620107;
+        bh=d6+abDYEVtUova+KDIxPln5hjytDhkyGRBLx/ZCBVSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZEoKsDQeHl+fniX6Lyw4iJe3GUH+iMWEYMHZHWDpiVQPLhPM3YfULc3SLzNvXolvH
-         ZOiEnnMVULrRwJPibImUsKV0ApPyPU5xWyFS18tiqR1rXl6VpKAbtG4JNzxB2rDiqP
-         +oROlUWkNYdXNP2tUbK9bNvhmZzwtTkAAOmt7unyE8YDdn/BWIyWRmg1jx4sihegFi
-         jR0eVAs1XZoT0VGFENXh05/VRmefdO6okMi9WeAaq14i/quzRTy+MO8DH8tyvnbxYF
-         eDTR7xoJ+ir1KVbJwhpVNxFTb50gpkGt0K3IDkB5nqs18vUw4x9iFzjxekOzjijC+7
-         K7qUSPkTU2a+Q==
+        b=tLI2pk3rXZYqXzS8vVVvtravK8O9ghccPpV4wMtH6tXrQIDbqb4KoPf69Vtr/huM2
+         XHka7c4OsQgvJyv7T4wwZfOp2ODibDUjJuFyLQFYwcmi6uZB/zIvUqX/TK/b+JgrAP
+         jLL0lUtIK4Ov/Kz2ZzXKNu2RfCVJPakBd6xnFkStQazO22uxkS3fd7CLUqh4Dhst9U
+         apjLvQS1t05nf9Uay/G/RMu+J810xOHfi+1hNwn/dK7yowioSAU6HQxbAlvK3NsDdD
+         vNS2MxlKSBCxTzA6npDC/vuSmUT70up8d/yN9yGhUq1IXZxq2UtRGo0tM+UD5ctmO0
+         X0UD1NnXUMNzg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "William A. Kennington III" <william@wkennington.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, avifishman70@gmail.com,
-        tmaimon77@gmail.com, tali.perry1@gmail.com,
-        openbmc@lists.ozlabs.org, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 16/52] spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
-Date:   Sun, 29 Oct 2023 18:53:03 -0400
-Message-ID: <20231029225441.789781-16-sashal@kernel.org>
+Cc:     Maurizio Lombardi <mlombard@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 17/52] nvme-rdma: do not try to stop unallocated queues
+Date:   Sun, 29 Oct 2023 18:53:04 -0400
+Message-ID: <20231029225441.789781-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -55,38 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "William A. Kennington III" <william@wkennington.com>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 2ec8b010979036c2fe79a64adb6ecc0bd11e91d1 ]
+[ Upstream commit 3820c4fdc247b6f0a4162733bdb8ddf8f2e8a1e4 ]
 
-We don't want to use the value of ilog2(0) as dummy.buswidth is 0 when
-dummy.nbytes is 0. Since we have no dummy bytes, we don't need to
-configure the dummy byte bits per clock register value anyway.
+Trying to stop a queue which hasn't been allocated will result
+in a warning due to calling mutex_lock() against an uninitialized mutex.
 
-Signed-off-by: "William A. Kennington III" <william@wkennington.com>
-Link: https://lore.kernel.org/r/20230922182812.2728066-1-william@wkennington.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+ DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+ WARNING: CPU: 4 PID: 104150 at kernel/locking/mutex.c:579
+
+ Call trace:
+  RIP: 0010:__mutex_lock+0x1173/0x14a0
+  nvme_rdma_stop_queue+0x1b/0xa0 [nvme_rdma]
+  nvme_rdma_teardown_io_queues.part.0+0xb0/0x1d0 [nvme_rdma]
+  nvme_rdma_delete_ctrl+0x50/0x100 [nvme_rdma]
+  nvme_do_delete_ctrl+0x149/0x158 [nvme_core]
+
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-npcm-fiu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/rdma.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
-index eb353561509a8..01a2b9de18b7f 100644
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -353,8 +353,9 @@ static int npcm_fiu_uma_read(struct spi_mem *mem,
- 		uma_cfg |= ilog2(op->cmd.buswidth);
- 		uma_cfg |= ilog2(op->addr.buswidth)
- 			<< NPCM_FIU_UMA_CFG_ADBPCK_SHIFT;
--		uma_cfg |= ilog2(op->dummy.buswidth)
--			<< NPCM_FIU_UMA_CFG_DBPCK_SHIFT;
-+		if (op->dummy.nbytes)
-+			uma_cfg |= ilog2(op->dummy.buswidth)
-+				<< NPCM_FIU_UMA_CFG_DBPCK_SHIFT;
- 		uma_cfg |= ilog2(op->data.buswidth)
- 			<< NPCM_FIU_UMA_CFG_RDBPCK_SHIFT;
- 		uma_cfg |= op->dummy.nbytes << NPCM_FIU_UMA_CFG_DBSIZ_SHIFT;
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 337a624a537ce..a7fea4cbacd75 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -638,6 +638,9 @@ static void __nvme_rdma_stop_queue(struct nvme_rdma_queue *queue)
+ 
+ static void nvme_rdma_stop_queue(struct nvme_rdma_queue *queue)
+ {
++	if (!test_bit(NVME_RDMA_Q_ALLOCATED, &queue->flags))
++		return;
++
+ 	mutex_lock(&queue->queue_lock);
+ 	if (test_and_clear_bit(NVME_RDMA_Q_LIVE, &queue->flags))
+ 		__nvme_rdma_stop_queue(queue);
 -- 
 2.42.0
 
