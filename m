@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147197DAEDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9BF7DAF02
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjJ2WxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S231435AbjJ2Wzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2WxQ (ORCPT
+        with ESMTP id S230519AbjJ2WzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:53:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F2DBA
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 15:53:14 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d84f18e908aso3193942276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 15:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698619993; x=1699224793; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kh1Npdiagr0GsC7dWj3DYaf78y40AqHKeo0ZRGU7CBs=;
-        b=VlQgeqvSRTf/o7F2EdJe2PhnBNeq/SCab7ZX2bvzi+7pZTPlAnegbsFxnco5CkM3dw
-         4Qw7RmEfQpDnBgZV2HPcLWUG3n3eb+sPEG9Zl7ovKquZwwQ+UojQ8QHtfJuek34mvptX
-         XD1hBIamFvxNqVOEqR06/HVu7nCCxIIb2tRNaVLT9c9rFJDtpUYBNhqJ+K0h3Cc2e21+
-         suAp4ZFG4VRpeX5Kk05aFsPWAt9MvrNSRZS8B9fME9WF/WmpixOQ1WjDSl0mD+3uhz8A
-         FFhLfMHBuowuc3NT7ORvtnkNFvjI8eBtbAG4/Nlz5GADaFtfvcxfzTdjO0pWERrDhXyU
-         ZM8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698619993; x=1699224793;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kh1Npdiagr0GsC7dWj3DYaf78y40AqHKeo0ZRGU7CBs=;
-        b=An0tfRT5rkb48a5BBw7/zKkufRdubngjGU9ygpTfPqHm7qEcP0CGfSa9UOti6kUqhY
-         BBTiPif2RgoAJi8A3ox1GJr83+nW8EBR41uweTeGgaWD1sa2adp+gT+n0y/X7hNU75It
-         9Iba/XSznN1wJpCz7G8W/JTeJioj+qoSfMneNYZjV7XYUos/83ToYzNGvL2L9daLNHkx
-         ejoJa1WUhMTiauHWm21I0XBeHKErUQxlEew6/49VAvU7IRrK50hCE7Cd9z89b5ulHPP2
-         T434IeyaRMvtz1I4wGt9CYF1zggpvfQwXlDJ48K3ILRtb1Xj5n9Eqwe3sGmmTDsdSryY
-         /1lQ==
-X-Gm-Message-State: AOJu0YxiDOhic1n6+3XV3EsW9Ma0/Th1SvRlA83YTuHzYr+ubYrfiwyh
-        ewshlOxljV6lPBDbXp5sMAhMkaJD+4FbNFS96ti2muO61wYETRtsJvxXig==
-X-Google-Smtp-Source: AGHT+IGBAn0VTDre1BNe31QlXIqIMrTmze5z1Qucpkj+uPYH0stMj4Dok73dgBpsfcxDJB9isHerVJybeWlqqdee2H0=
-X-Received: by 2002:a25:824e:0:b0:da0:6179:95ac with SMTP id
- d14-20020a25824e000000b00da0617995acmr6813067ybn.48.1698619993219; Sun, 29
- Oct 2023 15:53:13 -0700 (PDT)
+        Sun, 29 Oct 2023 18:55:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18921B6;
+        Sun, 29 Oct 2023 15:55:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB43DC433CD;
+        Sun, 29 Oct 2023 22:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698620104;
+        bh=pyCdkn/dJ0qS0Zv0n21ByAtdrhLUzh1LXYsv29Xd2Rw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ojQmZhvxY5GoHEahZ34IXRvBTyD6kN/IEQ27ZXLp5ZO5xWfhXRm3uEWZQ6SfUTtMC
+         GapwPHnwRpUYbnXiRuDNldPFxct9PUssQdbMuAXwNia96bdoSBLm1RCgpFBG3/mAmM
+         SekL3t6Gm1H5VJNdqn8h8gQQVw/Zi/mwvcy0U5DaR6X0jZ9VQ+d1z4xc7DpyE4PTqG
+         d+ecExMyrJXfiU4JggS55mcU/yngYZJ8P0gMqwvkJPyrzmOAUo3KphUuV9Jukwg3Wq
+         8Xa8CHBufSd0DqJIVndJ1W+daG6CC8yVzqgW9yU5x6dLEhj/IZlNXx5mXUcCoVF4vT
+         16yeB9lrddYRA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Su Hui <suhui@nfschina.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.5 15/52] fs/ntfs3: Avoid possible memory leak
+Date:   Sun, 29 Oct 2023 18:53:02 -0400
+Message-ID: <20231029225441.789781-15-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
+References: <20231029225441.789781-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20231029194607.379459-1-suijingfeng@loongson.cn> <20231029194607.379459-3-suijingfeng@loongson.cn>
-In-Reply-To: <20231029194607.379459-3-suijingfeng@loongson.cn>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 30 Oct 2023 00:53:01 +0200
-Message-ID: <CAA8EJprjQXcTgxnC1POaBjVBzyVBvKpmKyJcCR5ExRUhVxtYoQ@mail.gmail.com>
-Subject: Re: [PATCH 2/8] drm/loongson: Introduce a drm bridge driver for
- it66121 HDMI transmitter
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.9
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Oct 2023 at 21:46, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
->
-> The IT66121 is a DVO to HDMI converter, LS3A5000+LS7A1000 ML5A_MB use this
-> chip to support HDMI output. Thus add a drm bridge based driver for it.
-> This patch is developed with drivers/gpu/drm/bridge/ite-it66121.c as base.
+From: Su Hui <suhui@nfschina.com>
 
-Please use the original bridge driver instead of adding a new one. If
-it needs to be changed in any way, please help everyone else by
-improving it instead of introducing new driver.
+[ Upstream commit e4494770a5cad3c9d1d2a65ed15d07656c0d9b82 ]
 
->
-> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> ---
->  drivers/gpu/drm/loongson/Kconfig            |   1 +
->  drivers/gpu/drm/loongson/Makefile           |   2 +
->  drivers/gpu/drm/loongson/ite_it66121.c      | 749 ++++++++++++++++++++
->  drivers/gpu/drm/loongson/ite_it66121.h      |  19 +
->  drivers/gpu/drm/loongson/ite_it66121_regs.h | 268 +++++++
->  5 files changed, 1039 insertions(+)
->  create mode 100644 drivers/gpu/drm/loongson/ite_it66121.c
->  create mode 100644 drivers/gpu/drm/loongson/ite_it66121.h
->  create mode 100644 drivers/gpu/drm/loongson/ite_it66121_regs.h
+smatch warn:
+fs/ntfs3/fslog.c:2172 last_log_lsn() warn: possible memory leak of 'page_bufs'
+Jump to label 'out' to free 'page_bufs' and is more consistent with
+other code.
 
+Signed-off-by: Su Hui <suhui@nfschina.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ntfs3/fslog.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+index 12f28cdf5c838..98ccb66508583 100644
+--- a/fs/ntfs3/fslog.c
++++ b/fs/ntfs3/fslog.c
+@@ -2168,8 +2168,10 @@ static int last_log_lsn(struct ntfs_log *log)
+ 
+ 			if (!page) {
+ 				page = kmalloc(log->page_size, GFP_NOFS);
+-				if (!page)
+-					return -ENOMEM;
++				if (!page) {
++					err = -ENOMEM;
++					goto out;
++				}
+ 			}
+ 
+ 			/*
 -- 
-With best wishes
-Dmitry
+2.42.0
+
