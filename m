@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BB77DB107
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CF17DB082
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjJ2X2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        id S231809AbjJ2XHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232207AbjJ2X2H (ORCPT
+        with ESMTP id S232110AbjJ2XGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:28:07 -0400
+        Sun, 29 Oct 2023 19:06:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169394784;
-        Sun, 29 Oct 2023 15:59:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3FD5C116C9;
-        Sun, 29 Oct 2023 22:59:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A728619C;
+        Sun, 29 Oct 2023 16:01:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97180C4AF5C;
+        Sun, 29 Oct 2023 22:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620378;
-        bh=xHeb9um9iaQhOx5M0DAoAvBFBPtVgsYZG1MFY91F2Wo=;
+        s=k20201202; t=1698620379;
+        bh=kmYEwctVNjlIao9AFHKGbKqV/mzm7hbC9f6dmckWLcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fM3UsshmQCRrFG0OIwoadziwS2sbvaoHWjP3GESHCSYCrHoNpK7eDiMcXDvO6LD+v
-         89XrIPPBRc3vOF4MTumQ0D0ifHmT6pyn1io/NQ5RPG3LwuVfHBDv3MOFKDTIMjy/Ke
-         O3O266hrOVG4nKh8A/poOywe0tFpu56k5htICEa0pJneDRDbkxIHiOHLhPkvlBAtKZ
-         XMWmdH0bMwlV0daa0OTHeL53JnyCx6inME5eA/sre/Rwz6lyyqMRBpqB+ivb40ufdf
-         4NDnEgdF2em1g+1/xCYlL9pPX4xP20CaQRxdoba8nca3gacQ+qyzkxiHi+vSYm1DNe
-         04JoJagTzEC6w==
+        b=Ms5RAw4KR09EyGRQ5YTvo07VxmKCgYtpWWPMMgvVmF/1VWQ2DaRRSWzt8e/6fbnLT
+         Vqd5gnFIZJnskIwreKiuaK0ZBrQsV2mAD+imISGWHpmevuNXb0u4CeCsuU9MXD+xiJ
+         qVrnXZswbMv9jj51mV835jWKLcbYNzbRMshs0zsc7RYAAHlVBFcxS7yxSIINYvlOJM
+         5JPfnYGOwnNgW12YaAq0IAnTL/0zgyfgAuqFdWL1WjFIFQ07fHsnKP3eVspEQFEXpE
+         +//736OuV2pnVgpX7cQdwx9UmI1XsXT82sAUPu1iSPC6f3+Y6NlWKCkxDufLUyiNf5
+         /pDfSvxtvQ1DA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ma Ke <make_ruc2021@163.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 15/28] net: ipv4: fix return value check in esp_remove_trailer
-Date:   Sun, 29 Oct 2023 18:58:50 -0400
-Message-ID: <20231029225916.791798-15-sashal@kernel.org>
+Cc:     Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 16/28] Bluetooth: vhci: Fix race when opening vhci device
+Date:   Sun, 29 Oct 2023 18:58:51 -0400
+Message-ID: <20231029225916.791798-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225916.791798-1-sashal@kernel.org>
 References: <20231029225916.791798-1-sashal@kernel.org>
@@ -55,35 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ma Ke <make_ruc2021@163.com>
+From: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
 
-[ Upstream commit 513f61e2193350c7a345da98559b80f61aec4fa6 ]
+[ Upstream commit 92d4abd66f7080075793970fc8f241239e58a9e7 ]
 
-In esp_remove_trailer(), to avoid an unexpected result returned by
-pskb_trim, we should check the return value of pskb_trim().
+When the vhci device is opened in the two-step way, i.e.: open device
+then write a vendor packet with requested controller type, the device
+shall respond with a vendor packet which includes HCI index of created
+interface.
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+When the virtual HCI is created, the host sends a reset request to the
+controller. This request is processed by the vhci_send_frame() function.
+However, this request is send by a different thread, so it might happen
+that this HCI request will be received before the vendor response is
+queued in the read queue. This results in the HCI vendor response and
+HCI reset request inversion in the read queue which leads to improper
+behavior of btvirt:
+
+> dmesg
+[1754256.640122] Bluetooth: MGMT ver 1.22
+[1754263.023806] Bluetooth: MGMT ver 1.22
+[1754265.043775] Bluetooth: hci1: Opcode 0x c03 failed: -110
+
+In order to synchronize vhci two-step open/setup process with virtual
+HCI initialization, this patch adds internal lock when queuing data in
+the vhci_send_frame() function.
+
+Signed-off-by: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/esp4.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/bluetooth/hci_vhci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
-index 386e9875e5b80..ca0cd94eb22d1 100644
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -739,7 +739,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
- 		skb->csum = csum_block_sub(skb->csum, csumdiff,
- 					   skb->len - trimlen);
- 	}
--	pskb_trim(skb, skb->len - trimlen);
-+	ret = pskb_trim(skb, skb->len - trimlen);
-+	if (unlikely(ret))
-+		return ret;
+diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
+index 8469f9876dd26..31d70bad83d29 100644
+--- a/drivers/bluetooth/hci_vhci.c
++++ b/drivers/bluetooth/hci_vhci.c
+@@ -67,7 +67,10 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+ 	struct vhci_data *data = hci_get_drvdata(hdev);
  
- 	ret = nexthdr[1];
+ 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
++
++	mutex_lock(&data->open_mutex);
+ 	skb_queue_tail(&data->readq, skb);
++	mutex_unlock(&data->open_mutex);
  
+ 	wake_up_interruptible(&data->read_wait);
+ 	return 0;
 -- 
 2.42.0
 
