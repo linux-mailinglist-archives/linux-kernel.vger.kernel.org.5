@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D657DAF93
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641607DB1AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjJ2XAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        id S231316AbjJ3ACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 20:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjJ2W7a (ORCPT
+        with ESMTP id S231535AbjJ3ACk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:59:30 -0400
+        Sun, 29 Oct 2023 20:02:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B721BD5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3337E2736;
         Sun, 29 Oct 2023 15:58:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3566EC41679;
-        Sun, 29 Oct 2023 22:58:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C4C5C4167D;
+        Sun, 29 Oct 2023 22:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620286;
-        bh=zciaxIwhax2IHkdmjw3hCzXNaZOtIJu8wdTJbw2dMLs=;
+        s=k20201202; t=1698620287;
+        bh=50C/Dk+kc52f0ekJyekD5vmvlInBqIqlI31HCEGQ6zw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnNrbgC3+CJ3xt2KoiT/BOmVHHliVio3y4pPd1MhJgfM2DUlzjv33IZnAfxIK6h85
-         XNHUD5sVOq1yIqcy1Ndc4FUuHCIqCrIysMuNDCm9XaqYeETMpMnHFxtyX+DP0VPyBs
-         H5+qyt72CfgohdaO8TzsJ+lX+g0PwDUs9MFdfUCBojxG23BUQELq5wvGra5i7RE2mu
-         FmKgEtJXum+j7yvZAtdI4KbuksIiLlyoLovnDJs8pqJLkZhyXzMGBUnWrwNPA9ICez
-         3o4ZKowAtJRbxcX9dPA5RJa9Jki7TghlQX/ARm6v4S1k+xQu4yxiI79gUZeokK5vi7
-         prIR2Eh60LWsw==
+        b=WhrshRHa6vFkTQy+GsK+18zZrdI0xpi6c/v6ctYHFbVFHAWT6IcXGG/CNvLQv/Is1
+         bo+LXRIVQh1o9u4OjeLhMIQdEQqVAy0LJuAgaTHzaAAGPxQ0RaIYILj4vstmWha8z4
+         hBWjIVFf5dJ9UJWH3GsNAMHjIdB8DluM70TVQcOxZlIfNU4Fv7P/BfGvont9kcEHGf
+         RuNy93YTF5yj9vezTbHR9kXud1rHrxJ7MDsiBr4Ci6eFOmNDldYurhXns62UnCIRLP
+         Er3M4eAYKHg1SZ7OTleMy5inEGYK53ghnamJ3htE4xRkj+dfIdJJR2dLKm6eWMrEAa
+         gHo2IYqTS9vCg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>,
-        Sasha Levin <sashal@kernel.org>, pablo@netfilter.org,
-        kadlec@netfilter.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 18/39] netfilter: nfnetlink_log: silence bogus compiler warning
-Date:   Sun, 29 Oct 2023 18:56:50 -0400
-Message-ID: <20231029225740.790936-18-sashal@kernel.org>
+Cc:     Kuan-Wei Chiu <visitorckw@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-efi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 19/39] efi: fix memory leak in krealloc failure handling
+Date:   Sun, 29 Oct 2023 18:56:51 -0400
+Message-ID: <20231029225740.790936-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -56,37 +53,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-[ Upstream commit 2e1d175410972285333193837a4250a74cd472e6 ]
+[ Upstream commit 0d3ad1917996839a5042d18f04e41915cfa1b74a ]
 
-net/netfilter/nfnetlink_log.c:800:18: warning: variable 'ctinfo' is uninitialized
+In the previous code, there was a memory leak issue where the
+previously allocated memory was not freed upon a failed krealloc
+operation. This patch addresses the problem by releasing the old memory
+before setting the pointer to NULL in case of a krealloc failure. This
+ensures that memory is properly managed and avoids potential memory
+leaks.
 
-The warning is bogus, the variable is only used if ct is non-NULL and
-always initialised in that case.  Init to 0 too to silence this.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309100514.ndBFebXN-lkp@intel.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nfnetlink_log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/efi.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index d97eb280cb2e8..c5ff699e30469 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -690,8 +690,8 @@ nfulnl_log_packet(struct net *net,
- 	unsigned int plen = 0;
- 	struct nfnl_log_net *log = nfnl_log_pernet(net);
- 	const struct nfnl_ct_hook *nfnl_ct = NULL;
-+	enum ip_conntrack_info ctinfo = 0;
- 	struct nf_conn *ct = NULL;
--	enum ip_conntrack_info ctinfo;
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index b43e5e6ddaf6e..b7c0e8cc0764f 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -245,9 +245,13 @@ static __init int efivar_ssdt_load(void)
+ 		if (status == EFI_NOT_FOUND) {
+ 			break;
+ 		} else if (status == EFI_BUFFER_TOO_SMALL) {
+-			name = krealloc(name, name_size, GFP_KERNEL);
+-			if (!name)
++			efi_char16_t *name_tmp =
++				krealloc(name, name_size, GFP_KERNEL);
++			if (!name_tmp) {
++				kfree(name);
+ 				return -ENOMEM;
++			}
++			name = name_tmp;
+ 			continue;
+ 		}
  
- 	if (li_user && li_user->type == NF_LOG_TYPE_ULOG)
- 		li = li_user;
 -- 
 2.42.0
 
