@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FF77DB150
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D657DAF93
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbjJ2X37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S231612AbjJ2XAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbjJ2X30 (ORCPT
+        with ESMTP id S231653AbjJ2W7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:29:26 -0400
+        Sun, 29 Oct 2023 18:59:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3111727;
-        Sun, 29 Oct 2023 15:58:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB11C43391;
-        Sun, 29 Oct 2023 22:58:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B721BD5;
+        Sun, 29 Oct 2023 15:58:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3566EC41679;
+        Sun, 29 Oct 2023 22:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620284;
-        bh=qdO2V/6MvSUkqzBNZ9PUsvs75hWWdohJSvt4Lk0haqk=;
+        s=k20201202; t=1698620286;
+        bh=zciaxIwhax2IHkdmjw3hCzXNaZOtIJu8wdTJbw2dMLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xzv7zIItPq08lCtttDWbDA2W6ZdnCFiC4o0dU3vcM4RTWlgoqVPS/QzuzSDcH9521
-         sIEMNbJvc9dglnp25egBvCChYd7X5V/0G6LrLQzjmQhh6dJ7/tVIU0jkrpkr/p44bQ
-         5+uTZQNK/4g2kgQpAG9BDrgx57S3E8RFmGR5hxZ/g726PKNNryllrzW748SrCJ9SGp
-         4rhE0OdgsSarLeHXbqPGnuE15ze5i83R2B+kKze/59LdBy4DhoUDe21AItjZZs/zwp
-         ywpOhOQ1UrAkmiTqvlkZI74H5Y3m+BmRfws1hTyBO9Ap4xKnklXBVOqvmFmThp+l36
-         GTgVqT6/g3drQ==
+        b=dnNrbgC3+CJ3xt2KoiT/BOmVHHliVio3y4pPd1MhJgfM2DUlzjv33IZnAfxIK6h85
+         XNHUD5sVOq1yIqcy1Ndc4FUuHCIqCrIysMuNDCm9XaqYeETMpMnHFxtyX+DP0VPyBs
+         H5+qyt72CfgohdaO8TzsJ+lX+g0PwDUs9MFdfUCBojxG23BUQELq5wvGra5i7RE2mu
+         FmKgEtJXum+j7yvZAtdI4KbuksIiLlyoLovnDJs8pqJLkZhyXzMGBUnWrwNPA9ICez
+         3o4ZKowAtJRbxcX9dPA5RJa9Jki7TghlQX/ARm6v4S1k+xQu4yxiI79gUZeokK5vi7
+         prIR2Eh60LWsw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 17/39] Bluetooth: vhci: Fix race when opening vhci device
-Date:   Sun, 29 Oct 2023 18:56:49 -0400
-Message-ID: <20231029225740.790936-17-sashal@kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>,
+        Sasha Levin <sashal@kernel.org>, pablo@netfilter.org,
+        kadlec@netfilter.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 18/39] netfilter: nfnetlink_log: silence bogus compiler warning
+Date:   Sun, 29 Oct 2023 18:56:50 -0400
+Message-ID: <20231029225740.790936-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -55,54 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 92d4abd66f7080075793970fc8f241239e58a9e7 ]
+[ Upstream commit 2e1d175410972285333193837a4250a74cd472e6 ]
 
-When the vhci device is opened in the two-step way, i.e.: open device
-then write a vendor packet with requested controller type, the device
-shall respond with a vendor packet which includes HCI index of created
-interface.
+net/netfilter/nfnetlink_log.c:800:18: warning: variable 'ctinfo' is uninitialized
 
-When the virtual HCI is created, the host sends a reset request to the
-controller. This request is processed by the vhci_send_frame() function.
-However, this request is send by a different thread, so it might happen
-that this HCI request will be received before the vendor response is
-queued in the read queue. This results in the HCI vendor response and
-HCI reset request inversion in the read queue which leads to improper
-behavior of btvirt:
+The warning is bogus, the variable is only used if ct is non-NULL and
+always initialised in that case.  Init to 0 too to silence this.
 
-> dmesg
-[1754256.640122] Bluetooth: MGMT ver 1.22
-[1754263.023806] Bluetooth: MGMT ver 1.22
-[1754265.043775] Bluetooth: hci1: Opcode 0x c03 failed: -110
-
-In order to synchronize vhci two-step open/setup process with virtual
-HCI initialization, this patch adds internal lock when queuing data in
-the vhci_send_frame() function.
-
-Signed-off-by: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309100514.ndBFebXN-lkp@intel.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_vhci.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nfnetlink_log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-index c443c3b0a4da5..4415d850d698b 100644
---- a/drivers/bluetooth/hci_vhci.c
-+++ b/drivers/bluetooth/hci_vhci.c
-@@ -74,7 +74,10 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
- 	struct vhci_data *data = hci_get_drvdata(hdev);
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index d97eb280cb2e8..c5ff699e30469 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -690,8 +690,8 @@ nfulnl_log_packet(struct net *net,
+ 	unsigned int plen = 0;
+ 	struct nfnl_log_net *log = nfnl_log_pernet(net);
+ 	const struct nfnl_ct_hook *nfnl_ct = NULL;
++	enum ip_conntrack_info ctinfo = 0;
+ 	struct nf_conn *ct = NULL;
+-	enum ip_conntrack_info ctinfo;
  
- 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
-+
-+	mutex_lock(&data->open_mutex);
- 	skb_queue_tail(&data->readq, skb);
-+	mutex_unlock(&data->open_mutex);
- 
- 	wake_up_interruptible(&data->read_wait);
- 	return 0;
+ 	if (li_user && li_user->type == NF_LOG_TYPE_ULOG)
+ 		li = li_user;
 -- 
 2.42.0
 
