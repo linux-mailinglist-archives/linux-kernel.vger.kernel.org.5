@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CCF7DAD75
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2757DAD77
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjJ2RMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 13:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S230197AbjJ2ROH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 13:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2RMA (ORCPT
+        with ESMTP id S229533AbjJ2ROF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 13:12:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4B6AF;
-        Sun, 29 Oct 2023 10:11:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98838C433C7;
-        Sun, 29 Oct 2023 17:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698599516;
-        bh=PraBZzwFCJ7Cwj/1VkXk0MBu6spK3fQhhidNROag0kI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FI21k8ThBaCJpHUzUYTjNWicUgyM5p/xOh1dpK1gyDSz2QRr51axyGIjtgdljCRKr
-         L3PA57nJHpAavc0nqbjPT+xJ1AV4o/PXBvxjJzIGhev3FS9i76/USaBeM9wMezz6DX
-         39owGGc2v+RLHoVzZ5Y18lwVdR9ZQqor75SOSoQpP26GMLfQLi1knyvupawh06H999
-         rS7VpLe08vPi2G0LWh/ebM4oCWWe1o3nRwSPcIqmniprpGk81eeS+R/VBqzU9dBJui
-         l4KZPePzUxOQXQIoDv1Rq5oLUGDgu1aQRozYy22Gi1gJqWKaBXqJw3Xbcw2Xnx+38g
-         srZ5Irg/nCfTw==
-Date:   Sun, 29 Oct 2023 18:11:49 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-Cc:     rric@kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris.Packham@alliedtelesis.co.nz
-Subject: Re: [PATCH] i2c:thunderx:Add disabled node check
-Message-ID: <ZT6SVZNUT/KPucdI@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-        rric@kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris.Packham@alliedtelesis.co.nz
-References: <20230711054147.506437-1-aryan.srivastava@alliedtelesis.co.nz>
+        Sun, 29 Oct 2023 13:14:05 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB56AB;
+        Sun, 29 Oct 2023 10:14:03 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c523ac38fbso54710521fa.0;
+        Sun, 29 Oct 2023 10:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698599641; x=1699204441; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:cc:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0udIX/zF2kSnASkvlQwLeoGUtYljUF4NEJO2MWzKKgs=;
+        b=NTaVx9en9O7jV6ZPs8M0WUNGOXxT721DjssriRNZsJWGUfW0H8GNNY1G/qmI88cxCL
+         rgOx8HUgkpUodjjodoZBFsFiPbEtMjcyRNPjfoaL1i0IErq0phQrtc3+PvUD9JBh6Qky
+         miSI/2xZZ96bqnLY+qWavNzizFM+9RHkMN5Wymr6D62HyJR/G6fdePbtPnQWfM9RS4pr
+         rJb2Av2CkpGuCcuE+ZsFcVnWZ6eLN/v8W2fUpUOstNCcDEIl/zXdQ720HtFRH3QPqcfe
+         B4Zze8qljFhaLdP/cxYHegrQhf+IVPIULUeBBY30SDIjVBKB73f/lKH/r9jdcJ4PesPN
+         x4lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698599641; x=1699204441;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:cc:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0udIX/zF2kSnASkvlQwLeoGUtYljUF4NEJO2MWzKKgs=;
+        b=EGJfSDErOTTbO+Cu4/GzdOX/WlKZ8KKbsYLt2uaYXKIw6qngrPEULB87SVIctcBGz+
+         TDENS7vFqVi2qaKfAU4B/B1+1Y1w3u+XE98IG63zhIjsxk2gG0aSen+M2zOj0PbSNdWV
+         dpI6XtauIcM6qMshSBy/yUit6ykMHSmThhx6M065TsuYffPxYsYz8cWrmFOgXru3Ozwq
+         P7u5AtduE1sIVoEeZAgww+7KlssKsEuBnpZcdYuV0nzCVXXElNUXaP95LNQV813dnnTE
+         DqPJ2+CNxHAhxJz8TibCIBB+S1lpjYpWkcB6087o6S3rX1BgmP36ES8Jza2fNTH3GuJJ
+         77zw==
+X-Gm-Message-State: AOJu0YzE6tHyw8Yf4rOT8fZMXsiwDJx+17hruAoFVx9oJ2LyJStM2Elp
+        HiBRyProDjakKfGEblirXrg=
+X-Google-Smtp-Source: AGHT+IHfVAPdZ/3t/WMgsC6wkvvBghKD/3oAdqyNckbm/9Tzzwvo6clZZQV7RKkUWrtJA4fU0EbaOQ==
+X-Received: by 2002:a05:651c:39a:b0:2c5:ee7:b322 with SMTP id e26-20020a05651c039a00b002c50ee7b322mr5780342ljp.18.1698599641279;
+        Sun, 29 Oct 2023 10:14:01 -0700 (PDT)
+Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
+        by smtp.gmail.com with ESMTPSA id gw18-20020a05600c851200b00405442edc69sm10382411wmb.14.2023.10.29.10.14.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Oct 2023 10:14:00 -0700 (PDT)
+Message-ID: <613efff5-f99a-4a18-ae27-44f3687d10da@gmail.com>
+Date:   Sun, 29 Oct 2023 18:13:59 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Af+7Wv27sclYo7SW"
-Content-Disposition: inline
-In-Reply-To: <20230711054147.506437-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     savicaleksa83@gmail.com, linux-hwmon@vger.kernel.org,
+        leonard.anderweit@gmail.com, Jack Doan <me@jackdoan.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] hwmon: (aquacomputer_d5next) Add support for
+ Aquacomputer High Flow USB and MPS Flow
+To:     Guenter Roeck <linux@roeck-us.net>
+References: <20231016083559.139341-1-savicaleksa83@gmail.com>
+ <20231016083559.139341-3-savicaleksa83@gmail.com>
+ <c08d04b4-8e6d-4221-93f1-cf5fff8c54c4@roeck-us.net>
+ <576a2923-1705-48e8-81b9-f53a43c2b6f7@gmail.com>
+ <c5981e81-2f0c-41f0-b2c4-0a786fe13c2e@roeck-us.net>
+Content-Language: en-US
+From:   Aleksa Savic <savicaleksa83@gmail.com>
+In-Reply-To: <c5981e81-2f0c-41f0-b2c4-0a786fe13c2e@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-10-29 17:59:52 GMT+01:00, Guenter Roeck wrote:
+> On 10/29/23 08:58, Aleksa Savic wrote:
+>> On 2023-10-28 18:24:38 GMT+02:00, Guenter Roeck wrote:
+>>>
+>>> Applied.
+>>>
+>>> Thanks,
+>>> Guenter
+>>>
+>>
+>> Thanks. Maybe I'm missing something, why is the first patch
+>> from the series not applied as well?
+>>
+> 
+> Because I missed your reply to my question. Sorry, I have to admit that I am less
+> than perfect. Applied now.
+> 
+> Guenter
+> 
 
---Af+7Wv27sclYo7SW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you, much appreciated :)
 
-On Tue, Jul 11, 2023 at 05:41:46PM +1200, Aryan Srivastava wrote:
-> Add check for disabled nodes. These nodes should not be probed. Can
-> result in logging for HW which is not present.
->=20
-> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-
-I am confused. This is a PCI driver, no? Why should we deal with DT
-settings here?
-
-
---Af+7Wv27sclYo7SW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU+klEACgkQFA3kzBSg
-Kbb+EA//ac7/KLcvCg7NLwIGDESEirlAsLpGr4nI/zpvKUMHesKpV+JCuzAx3gi8
-VET41JSYqzjyfvAdoi9E6gR39/vlEMGdvpW0wrf7yGlwCxokn3ECYJ/O4xETTouc
-a3nsKRreYST5sO2OGCutGnRT3UM92iafCk4rjQ8+vAXQ+uj5C2aLxEahAK6T0fji
-HRBL4tLbtfwmcmGhfksHqj5E1s1trYzd01Cjeok1ye20Hk9zoCYeej5C+QooUBFg
-VwuSmzrddk7J+1UlOb8blrEJssIOi4rpWab2F/ZzN89xkpvogUCLfUhNCqpTRuXi
-M77QrDpzWF4bMirGZkdt1Zlh9rZGmj/VAXWEnpyGTlHoFYyP6ojmsQC0Jofw5FrE
-U4F/m+zlgiVl0BAYbmkKqXq1MJhL/IPIJ+XPw6995hluZKgrAaup33zSQ2BpGOpn
-6HusiYfctkrZBDqwhK+BY5woWtB6QHHTt1OxNJA41h4iO4E1cTOn+L0kNaGkovP3
-IotdIUOaSdRgB35WFJuX2lZvUk1Gc5cPeywpZIM1Wx4p6ImWKADajv5o0vDDMqSR
-jpdijVwq6UfqxpdsInK6P+TP+5BQsvNNAipSylXA8KYC6VTSfDrgmoRKqgeb1U+u
-krx1xI1TrRdfmJA90tDnGHsXBhz6kWrVluK1Jj7ybVwH39ugrqU=
-=nmih
------END PGP SIGNATURE-----
-
---Af+7Wv27sclYo7SW--
+Aleksa
