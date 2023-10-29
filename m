@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C567DB18A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36DF7DB09C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjJ2Xp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
+        id S231381AbjJ2XIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2Xp0 (ORCPT
+        with ESMTP id S231790AbjJ2XHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:45:26 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DA49E;
-        Sun, 29 Oct 2023 16:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=KaJzOtJRW4EWZHUOSEMMSs8gJwo3z32RgK/AsKPmB5E=; b=TcT1Rc44sOhOTrfiX4DFzUB0QX
-        kiIDhy4VFO7soYj7F2TiwyIJ6KU4+HZboUkTX91Tjan6hFN5K6nsDjIZw+BgsMrbZC0+xayzBzbW9
-        F/+6SBRckibKw6CF21tMyWjzUjksQgsikBGsO+MgImr3DT1aPvZuY6ZxdTZ60sitTiSM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qxEly-000TGF-Dp; Mon, 30 Oct 2023 00:00:46 +0100
-Date:   Mon, 30 Oct 2023 00:00:46 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Mauri Sandberg <sandberg@mailfence.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
-Message-ID: <54f8d583-e900-4ce8-87d1-a18556698f10@lunn.ch>
-References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
- <20231028220402.gdsynephzfkpvk4m@skbuf>
- <CACRpkdbq03ZXcB-TaBp5Udo3M47rb-o+LfkEkC-gA1+=x1Zd-g@mail.gmail.com>
+        Sun, 29 Oct 2023 19:07:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC899EF5;
+        Sun, 29 Oct 2023 16:03:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A1AC433CC;
+        Sun, 29 Oct 2023 23:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698620499;
+        bh=kY4XyLVwrX+3H1bdvNP8pEQe+U5OaqLJ46NhUlVlTC4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ovX9womKt/awtKy7X//j+OImm5hO2WXk4Zm+4HTB9xkNbA7PV/Xs6JcAlRwCOGxK8
+         OmPzKTafPiKuMH4SxF82mUgF9juDeYULdreIj1Fvob50RbTazjONVouD7EG8gvqUq/
+         Zk6Z4yJyDAnM8xFTW6Vmqs207Y18vFcXitUtsL5zBjUDDCH+vv3S34QGBKTQ12qRYh
+         rn2gYajJQvFTUzwIOPVyeXU6eW9RbiAaRaPuJFMpviD5IhGayisgxKTqvO9l2ndb0c
+         ozKPhrIGwqCZRmazECjwXwR9KsQo3/p00Yl/b9G0QsRAUlJmi2XMx7pGY/d0HUt10B
+         aQ1fGWkbBUCzg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Sasha Levin <sashal@kernel.org>, sam@ravnborg.org,
+        javierm@redhat.com, schnelle@linux.ibm.com, xu.panda@zte.com.cn,
+        steve@sk2.org
+Subject: [PATCH AUTOSEL 4.19 01/12] fbdev: atyfb: only use ioremap_uc() on i386 and ia64
+Date:   Sun, 29 Oct 2023 19:01:14 -0400
+Message-ID: <20231029230135.793281-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbq03ZXcB-TaBp5Udo3M47rb-o+LfkEkC-gA1+=x1Zd-g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 4.19.297
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 1496 is suspiciously much 1500 - DSA tag size. However the
-> MTU of the parent ethernet is bumped nicely to 1504 and the
-> device MTU is set up to accomodate it as well.
-> 
-> Modifying the patch to just pad out packets >= 1496 bytes
-> solves the problem in a better way, but maybe that is not the
-> last thing we try here...
+From: Arnd Bergmann <arnd@arndb.de>
 
-Have you tried playing with RTL8366RB_SGCR in rtl8366rb_change_mtu()?
+[ Upstream commit c1a8d1d0edb71dec15c9649cb56866c71c1ecd9e ]
 
-I had an annoying bug in the mv88e6xxx driver where the MTU
-configuration register was up to, but not including... So i had to
-change a <= to <.
+ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+extension, and on ia64 with its slightly unconventional ioremap()
+behavior, everywhere else this is the same as ioremap() anyway.
 
-	Andrew
+Change the only driver that still references ioremap_uc() to only do so
+on x86-32/ia64 in order to allow removing that interface at some
+point in the future for the other architectures.
+
+On some architectures, ioremap_uc() just returns NULL, changing
+the driver to call ioremap() means that they now have a chance
+of working correctly.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/video/fbdev/aty/atyfb_base.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/video/fbdev/aty/atyfb_base.c b/drivers/video/fbdev/aty/atyfb_base.c
+index 05111e90f1681..5ef008e9c61c3 100644
+--- a/drivers/video/fbdev/aty/atyfb_base.c
++++ b/drivers/video/fbdev/aty/atyfb_base.c
+@@ -3435,11 +3435,15 @@ static int atyfb_setup_generic(struct pci_dev *pdev, struct fb_info *info,
+ 	}
+ 
+ 	info->fix.mmio_start = raddr;
++#if defined(__i386__) || defined(__ia64__)
+ 	/*
+ 	 * By using strong UC we force the MTRR to never have an
+ 	 * effect on the MMIO region on both non-PAT and PAT systems.
+ 	 */
+ 	par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
++#else
++	par->ati_regbase = ioremap(info->fix.mmio_start, 0x1000);
++#endif
+ 	if (par->ati_regbase == NULL)
+ 		return -ENOMEM;
+ 
+-- 
+2.42.0
+
