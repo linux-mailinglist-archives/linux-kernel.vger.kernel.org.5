@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AB77DB159
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C56B7DAF47
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbjJ2XdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
+        id S231210AbjJ2W6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232404AbjJ2XdM (ORCPT
+        with ESMTP id S231336AbjJ2W6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:33:12 -0400
+        Sun, 29 Oct 2023 18:58:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146541FF5;
-        Sun, 29 Oct 2023 15:55:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC74C43215;
-        Sun, 29 Oct 2023 22:55:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93981FD4;
+        Sun, 29 Oct 2023 15:55:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41ACCC433CC;
+        Sun, 29 Oct 2023 22:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620133;
-        bh=Uik5RqxSBjzyvuK45WQbsqMsr6W7JfRY8AnekusRtL0=;
+        s=k20201202; t=1698620136;
+        bh=wzcO2YZyhAPiGj+xh3G1vn+3GTn7JHd86F6iAmmOXGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pXA1gHSamPudCKG1OPhOZW5+jArJXi9esfv9+7H1/rorPdkj7Q7xrwWA2P8G3OkGy
-         FjnZDDU3ZWTkRnhhZW0pANim0kOmDcUUImd4tlDmXcRIU9q2Rqk6No3jI9ZHVgIuf9
-         91wkrTJKeBhqs/0ECsJ06Rnos9DZZbAmh9iN8XZk2a+otPYaNWDkD3H+P+olFvlaNk
-         cZZrOlcsjM351SRTR1pT/zZDpIqCoB+LNVAlecBZS+KxQWrjX+DfndcaE3WRmPT7+E
-         C92iu8rR/T83z5YK4kDSqPe2oCMeXpp+bQFeDolZRrgz5gC40q710O5XAl2u8IqZAM
-         oEeQzyFsy8nVQ==
+        b=ulydMYDtryU+Tn0q7bwoa1sVJx4azvOVeVDjrfwdKH88YiMqyhmxNeqDFEtoM/w3p
+         9dhCnSPvPXTdCkfausbUGt9ruj+P0lV4K7j9wpKJYf2wq2veno7UQRwEisJSsuSb0B
+         954ct7u+OSp2ssdD+kgYCJ4w0xWTE9HJQ0bJFNWJKX9XLKkKZX8xOHBXmVEcjV/qC+
+         kDfnRcZBQdtBvEywie0ZwngaOQF02+A8z5RjKtLEuHbgPiAEzjsbbmsBX7b3cKjZ3Z
+         +b+K+483Zg+oXGFEhPydgjx6DQXjmg9G1SDqeBm4VWXKUucUlTFCBDZOI+xQ5tgMbI
+         mEfFTfxMTGYQA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vlad Buslov <vladbu@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        roid@nvidia.com, maord@nvidia.com, shayd@nvidia.com,
-        gal@nvidia.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 25/52] net/mlx5: Bridge, fix peer entry ageing in LAG mode
-Date:   Sun, 29 Oct 2023 18:53:12 -0400
-Message-ID: <20231029225441.789781-25-sashal@kernel.org>
+Cc:     Nikolay Borisov <nik.borisov@suse.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, bp@alien8.de,
+        kirill.shutemov@linux.intel.com, bp@suse.de,
+        thomas.lendacky@amd.com, mikel@mikelr.com, dionnaglaze@google.com,
+        linux-efi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 26/52] x86/efistub: Don't try to print after ExitBootService()
+Date:   Sun, 29 Oct 2023 18:53:13 -0400
+Message-ID: <20231029225441.789781-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -56,129 +56,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vlad Buslov <vladbu@nvidia.com>
+From: Nikolay Borisov <nik.borisov@suse.com>
 
-[ Upstream commit 7a3ce8074878a68a75ceacec93d9ae05906eec86 ]
+[ Upstream commit ff07186b4d774ac22a5345d30763045af4569416 ]
 
-With current implementation in single FDB LAG mode all packets are
-processed by eswitch 0 rules. As such, 'peer' FDB entries receive the
-packets for rules of other eswitches and are responsible for updating the
-main entry by sending SWITCHDEV_FDB_ADD_TO_BRIDGE notification from their
-background update wq task. However, this introduces a race condition when
-non-zero eswitch instance decides to delete a FDB entry, sends
-SWITCHDEV_FDB_DEL_TO_BRIDGE notification, but another eswitch's update task
-refreshes the same entry concurrently while its async delete work is still
-pending on the workque. In such case another SWITCHDEV_FDB_ADD_TO_BRIDGE
-event may be generated and entry will remain stuck in FDB marked as
-'offloaded' since no more SWITCHDEV_FDB_DEL_TO_BRIDGE notifications are
-sent for deleting the peer entries.
+setup_e820() is executed after UEFI's ExitBootService has been called.
+This causes the firmware to throw an exception because the Console IO
+protocol is supposed to work only during boot service environment. As
+per UEFI 2.9, section 12.1:
 
-Fix the issue by synchronously marking deleted entries with
-MLX5_ESW_BRIDGE_FLAG_DELETED flag and skipping them in background update
-job.
+ "This protocol is used to handle input and output of text-based
+ information intended for the system user during the operation of code
+ in the boot services environment."
 
-Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
-Reviewed-by: Jianbo Liu <jianbol@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+So drop the diagnostic warning from this function. We might add back a
+warning that is issued later when initializing the kernel itself.
+
+Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mellanox/mlx5/core/en/rep/bridge.c        | 11 ++++++++
- .../ethernet/mellanox/mlx5/core/esw/bridge.c  | 25 ++++++++++++++++++-
- .../ethernet/mellanox/mlx5/core/esw/bridge.h  |  3 +++
- .../mellanox/mlx5/core/esw/bridge_priv.h      |  1 +
- 4 files changed, 39 insertions(+), 1 deletion(-)
+ drivers/firmware/efi/libstub/x86-stub.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-index 5608002465734..285c13edc09f0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
-@@ -463,6 +463,17 @@ static int mlx5_esw_bridge_switchdev_event(struct notifier_block *nb,
- 		/* only handle the event on peers */
- 		if (mlx5_esw_bridge_is_local(dev, rep, esw))
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 146477da2b98c..a5a856a7639e1 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -648,11 +648,8 @@ setup_e820(struct boot_params *params, struct setup_data *e820ext, u32 e820ext_s
  			break;
-+
-+		fdb_info = container_of(info,
-+					struct switchdev_notifier_fdb_info,
-+					info);
-+		/* Mark for deletion to prevent the update wq task from
-+		 * spuriously refreshing the entry which would mark it again as
-+		 * offloaded in SW bridge. After this fallthrough to regular
-+		 * async delete code.
-+		 */
-+		mlx5_esw_bridge_fdb_mark_deleted(dev, vport_num, esw_owner_vhca_id, br_offloads,
-+						 fdb_info);
- 		fallthrough;
- 	case SWITCHDEV_FDB_ADD_TO_DEVICE:
- 	case SWITCHDEV_FDB_DEL_TO_DEVICE:
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-index f4fe1daa4afd5..de1ed59239da8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-@@ -1748,6 +1748,28 @@ void mlx5_esw_bridge_fdb_update_used(struct net_device *dev, u16 vport_num, u16
- 	entry->lastuse = jiffies;
- }
  
-+void mlx5_esw_bridge_fdb_mark_deleted(struct net_device *dev, u16 vport_num, u16 esw_owner_vhca_id,
-+				      struct mlx5_esw_bridge_offloads *br_offloads,
-+				      struct switchdev_notifier_fdb_info *fdb_info)
-+{
-+	struct mlx5_esw_bridge_fdb_entry *entry;
-+	struct mlx5_esw_bridge *bridge;
-+
-+	bridge = mlx5_esw_bridge_from_port_lookup(vport_num, esw_owner_vhca_id, br_offloads);
-+	if (!bridge)
-+		return;
-+
-+	entry = mlx5_esw_bridge_fdb_lookup(bridge, fdb_info->addr, fdb_info->vid);
-+	if (!entry) {
-+		esw_debug(br_offloads->esw->dev,
-+			  "FDB mark deleted entry with specified key not found (MAC=%pM,vid=%u,vport=%u)\n",
-+			  fdb_info->addr, fdb_info->vid, vport_num);
-+		return;
-+	}
-+
-+	entry->flags |= MLX5_ESW_BRIDGE_FLAG_DELETED;
-+}
-+
- void mlx5_esw_bridge_fdb_create(struct net_device *dev, u16 vport_num, u16 esw_owner_vhca_id,
- 				struct mlx5_esw_bridge_offloads *br_offloads,
- 				struct switchdev_notifier_fdb_info *fdb_info)
-@@ -1810,7 +1832,8 @@ void mlx5_esw_bridge_update(struct mlx5_esw_bridge_offloads *br_offloads)
- 			unsigned long lastuse =
- 				(unsigned long)mlx5_fc_query_lastuse(entry->ingress_counter);
- 
--			if (entry->flags & MLX5_ESW_BRIDGE_FLAG_ADDED_BY_USER)
-+			if (entry->flags & (MLX5_ESW_BRIDGE_FLAG_ADDED_BY_USER |
-+					    MLX5_ESW_BRIDGE_FLAG_DELETED))
+ 		case EFI_UNACCEPTED_MEMORY:
+-			if (!IS_ENABLED(CONFIG_UNACCEPTED_MEMORY)) {
+-				efi_warn_once(
+-"The system has unaccepted memory,  but kernel does not support it\nConsider enabling CONFIG_UNACCEPTED_MEMORY\n");
++			if (!IS_ENABLED(CONFIG_UNACCEPTED_MEMORY))
  				continue;
- 
- 			if (time_after(lastuse, entry->lastuse))
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.h b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.h
-index c2c7c70d99eb7..d6f5391619930 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.h
-@@ -62,6 +62,9 @@ int mlx5_esw_bridge_vport_peer_unlink(struct net_device *br_netdev, u16 vport_nu
- void mlx5_esw_bridge_fdb_update_used(struct net_device *dev, u16 vport_num, u16 esw_owner_vhca_id,
- 				     struct mlx5_esw_bridge_offloads *br_offloads,
- 				     struct switchdev_notifier_fdb_info *fdb_info);
-+void mlx5_esw_bridge_fdb_mark_deleted(struct net_device *dev, u16 vport_num, u16 esw_owner_vhca_id,
-+				      struct mlx5_esw_bridge_offloads *br_offloads,
-+				      struct switchdev_notifier_fdb_info *fdb_info);
- void mlx5_esw_bridge_fdb_create(struct net_device *dev, u16 vport_num, u16 esw_owner_vhca_id,
- 				struct mlx5_esw_bridge_offloads *br_offloads,
- 				struct switchdev_notifier_fdb_info *fdb_info);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge_priv.h b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge_priv.h
-index 4911cc32161b4..7c251af566c6f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge_priv.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge_priv.h
-@@ -133,6 +133,7 @@ struct mlx5_esw_bridge_mdb_key {
- enum {
- 	MLX5_ESW_BRIDGE_FLAG_ADDED_BY_USER = BIT(0),
- 	MLX5_ESW_BRIDGE_FLAG_PEER = BIT(1),
-+	MLX5_ESW_BRIDGE_FLAG_DELETED = BIT(2),
- };
- 
- enum {
+-			}
+ 			e820_type = E820_TYPE_RAM;
+ 			process_unaccepted_memory(d->phys_addr,
+ 						  d->phys_addr + PAGE_SIZE * d->num_pages);
 -- 
 2.42.0
 
