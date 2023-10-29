@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4517DAC2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7508E7DAC31
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjJ2LVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 07:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S229795AbjJ2LYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 07:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjJ2LVH (ORCPT
+        with ESMTP id S229730AbjJ2LYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 07:21:07 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C134C1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:21:05 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507e85ebf50so4912245e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:21:05 -0700 (PDT)
+        Sun, 29 Oct 2023 07:24:37 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F665B0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:24:35 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c78d258fso5151745e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:24:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698578463; x=1699183263; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698578673; x=1699183473; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7gCSp+8NLEPOALl1dnKjmwXpESp91tchBC5/hV+oFRE=;
-        b=DKPDy+fgFqGhERFCwD8gPj/KgC5QRS+x5We5bIDq7mzwIggMnvliSjrm1h8fqAnKO+
-         XJ9xpCGmTKXDV1Q2nhk+n+zljv6rCB2lSvhwfywHdFjTYNgxsUxYFvLRWV5bAwdduWTl
-         OJizIVfuqdxXUDOzr3xKi6RN7qamrUxWozvrSSce99XHQHsoU1t1UEmLfEsXr1cqXx1z
-         OaMWIDH03Ciws/hZDrQQyj4zVCaVAQSk8aSxlcnxvs55wIvJvhN2GrN7zgJVAj4aLyI1
-         7X+v7CIS9UwTgs/VYqbNTI2E0t0TKmJjnY+imaji2dHBJnMDgLm/XEAyvnjIRWLgXzwt
-         no3Q==
+        bh=MTIkZctT4uAZB76Pd6oAyakzgKdJFWnyc22HdELfBlw=;
+        b=WNEWSymNjO0SL7TNdKK+FvXTqsj7a4dzBkpIR+AJn5A0o7XcROxZRlqXN28gzbmNpO
+         AYhQixU77cqfYyYfcJkMqmuf7FRzv3UuxXiBkEu4ktB5NWKR18GS+4IKiOfcGRJ2KHwU
+         z1PUwcewtkrpWfmRriqzZpAjnZmNjFdszQjzH4KpL4yqrPDoSHMGxIZS8HpWMBjvpcLP
+         oNjdLTBhXiMAoYXfZZQReTRR7Npwb6y2kTVUm5RRgyqAMWjM8f9gDTDxQer754FN71/A
+         aMqW7JEf13oCmgRsqXQ9ADQTkOZWVf2hlBakfq57xitxCfocjiMD3jre0komAvN/GHja
+         8eJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698578463; x=1699183263;
+        d=1e100.net; s=20230601; t=1698578673; x=1699183473;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7gCSp+8NLEPOALl1dnKjmwXpESp91tchBC5/hV+oFRE=;
-        b=MsK1CnVnMaQ3G/B5ZWRTZVy6Zej3FcNFoXsvAHkfZE2nTIjmUSbmSS8OaMFRfumQ5+
-         l7mlIw/0XyuEo/MOzzLqnP4JBsdfaNZPxnq/hqQbP605TsP0hSe8BSkVwjP/XKhMY6S6
-         HOxJIbiU2cg2eJBq5TNP7c+LnPWdYI1FQMJ4A6Sisov+J1k+ZNfr0dt59uNhqT4CKP76
-         m7nU2a+nTuEVFa6lJwIvJifvWbAqW9kOwgKorBk3onRrb0Ae8vNXOEyV4axbMLOpOzgJ
-         AfjV8zonhSi8g0oXwcM8z2X7Kf/+LcxB0V02R3EuhMhFjOwOU46SoIJIX8IZWHg0Yeon
-         eUoQ==
-X-Gm-Message-State: AOJu0YxREy/3YGp3k0yUq1y6ZBluJwW44B8TUy8H1iGyVTMdsoP9zMG5
-        VrGLtR0SsFxioA+cTEnzaB49mQ==
-X-Google-Smtp-Source: AGHT+IHsOt3lQewB+MPcmXIfI+AvblsWnE22ZR+HTrXWrIcYDTUSh0FjvmNnc8EoX9hyPx8ZVez2xA==
-X-Received: by 2002:a05:6512:401b:b0:509:e5e:232a with SMTP id br27-20020a056512401b00b005090e5e232amr2984098lfb.42.1698578463531;
-        Sun, 29 Oct 2023 04:21:03 -0700 (PDT)
+        bh=MTIkZctT4uAZB76Pd6oAyakzgKdJFWnyc22HdELfBlw=;
+        b=uTFjQo/9HJ8qZpCiC4FEkv4Xv0PUeDtto8R5jUAb0JhqjipESY2jPvtDkKTZ6cl4l6
+         k7DPGq+1NbnQn09FglPxmkiVAle/zlbuj9cdo/l0vdO9A6fDPeF9T7DRHvMjaLrAA+KQ
+         riWrLjLxwwW95wM/dqMtMT0scUgg38Pg4taeIqWOxn4d0LEEUtDHULDGhnpwN/njkQeZ
+         Yoy3llmqxT5ORPMQtU1bLBPHTIRgz0zyX1PtsgHQ3EdqhCR6CuotNUPi19HvEhRw541N
+         Xxe/oD+80NT+0yYliQCCwbvY4HH0YZrMytcCPFPkaBBjAcaGGvCbpdLiWFUgBiTKK32c
+         7gYQ==
+X-Gm-Message-State: AOJu0Ywtks9L8zNzQBCBEivnWpzrU0AdxYaqmkI7/ftas0dVsBIPMEkn
+        5pKaM0O1UZFvRKGve/zHlj/0YQ==
+X-Google-Smtp-Source: AGHT+IGLY/QCsu0vAjpXSYUgmgOOP8jToRbIdVg3HsJits4bqAozOOTa33SPShi5xJsyS/AHSv24Xg==
+X-Received: by 2002:a05:6512:3d17:b0:500:cb2b:8678 with SMTP id d23-20020a0565123d1700b00500cb2b8678mr6368062lfv.40.1698578673542;
+        Sun, 29 Oct 2023 04:24:33 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id q9-20020a0565123a8900b0050916c6903dsm373343lfu.18.2023.10.29.04.21.02
+        by smtp.gmail.com with ESMTPSA id h2-20020a0565123c8200b005030b642ec8sm1000453lfv.157.2023.10.29.04.24.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 04:21:03 -0700 (PDT)
-Message-ID: <e2c65d01-3498-4287-a6dc-b926135df762@linaro.org>
-Date:   Sun, 29 Oct 2023 12:21:01 +0100
+        Sun, 29 Oct 2023 04:24:33 -0700 (PDT)
+Message-ID: <e8f18634-7187-4e5a-a494-329c7c602fd2@linaro.org>
+Date:   Sun, 29 Oct 2023 12:24:30 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: net: snps,dwmac: Allow exclusive
- usage of ahb reset
+Subject: Re: [PATCH v2 04/12] dt-bindings: net: starfive,jh7110-dwmac: Add
+ JH7100 SoC compatible
 Content-Language: en-US
 To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -80,7 +80,7 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, kernel@collabora.com
 References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
- <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-5-cristian.ciocaltea@collabora.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,13 +126,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20231029042712.520010-5-cristian.ciocaltea@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -140,30 +139,73 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29/10/2023 05:27, Cristian Ciocaltea wrote:
-> The Synopsys DesignWare MAC found on the StarFive JH7100 SoC requires
-> just the 'ahb' reset name, but the binding allows selecting it only in
-> conjunction with 'stmmaceth'.
-> 
-> Fix the issue by permitting exclusive usage of the 'ahb' reset name.
+> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is quite
+> similar to the newer JH7110, but it requires only two interrupts and a
+> single reset line.
 > 
 > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 > ---
->  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+>  .../bindings/net/starfive,jh7110-dwmac.yaml   | 74 +++++++++++++------
+>  2 files changed, 54 insertions(+), 21 deletions(-)
 > 
 > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> index 5c2769dc689a..a4d7172ea701 100644
+> index a4d7172ea701..c1380ff1c054 100644
 > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
 > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -146,7 +146,7 @@ properties:
->    reset-names:
->      minItems: 1
->      items:
-> -      - const: stmmaceth
-> +      - enum: [stmmaceth, ahb]
+> @@ -95,6 +95,7 @@ properties:
+>          - snps,dwmac-5.20
+>          - snps,dwxgmac
+>          - snps,dwxgmac-2.10
+> +        - starfive,jh7100-dwmac
+>          - starfive,jh7110-dwmac
+>  
+>    reg:
+> diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> index 44e58755a5a2..70e35a3401f4 100644
+> --- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> @@ -13,10 +13,14 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - enum:
+> -          - starfive,jh7110-dwmac
+> -      - const: snps,dwmac-5.20
+> +    oneOf:
+> +      - items:
+> +          - const: starfive,jh7100-dwmac
+> +          - const: snps,dwmac
+> +      - items:
+> +          - enum:
+> +              - starfive,jh7110-dwmac
+> +          - const: snps,dwmac-5.20
 
-Your patch #3 says you have minimum two items. Here you claim you have
-only one reset. It's confusing.
+Why do you use different fallback?
+
+>  
+>    reg:
+>      maxItems: 1
+> @@ -37,23 +41,6 @@ properties:
+>        - const: tx
+>        - const: gtx
+>  
+> -  interrupts:
+> -    minItems: 3
+> -    maxItems: 3
+> -
+> -  interrupt-names:
+> -    minItems: 3
+> -    maxItems: 3
+> -
+> -  resets:
+> -    minItems: 2
+> -    maxItems: 2
+
+You just changed it in previous patches... So the previous code allowing
+one item was correct?
+
 
 Best regards,
 Krzysztof
