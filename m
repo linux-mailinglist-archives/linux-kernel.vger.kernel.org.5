@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2817DAE4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 21:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ABB7DAE51
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 21:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjJ2Usw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 16:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        id S230402AbjJ2Us7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 16:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjJ2Uso (ORCPT
+        with ESMTP id S230329AbjJ2Ust (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 16:48:44 -0400
+        Sun, 29 Oct 2023 16:48:49 -0400
 Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92071C4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 13:48:41 -0700 (PDT)
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEFBD3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 13:48:43 -0700 (PDT)
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F39D53F36A
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:48:36 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EE2A13FB55
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698612517;
-        bh=SH87ZmKIdF7eMR0VODUq6DUDb+J0CZk1+c70eMvKp34=;
+        s=20210705; t=1698612519;
+        bh=D+t9WK33ZVldEiPiicjGvkN9bUf9a57a5jRCbansvZI=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=a4yP+dDLtTWpzjKncI0+02tYIy+9ovORaYZC7yn/dZiHSJI8pyewFc0b3SWN86oAA
-         WfJK+kIrI7ePw8MbriTv2wlU5ZjyLhW0Jju3q7/4iwhVDfhUcwAkWrgJ/B/UFJc4NZ
-         f7IL8pKQ0+2QxG7kwCXvS5UfxFIml4IV9KhTwTDbxppP7Nh+9MwzY249eCXfPf9dqP
-         L3TLsHO/rRGdZ4yZ6sOKLiAteGDqGYwZ+trbrf0cO/htD3uKDoK08MU5XoTqtY3bNA
-         CCMPZdt5wBNupdghX2pw1Bvi9D105hV7wPVECjgFTGmo+WUIAKSareyTYbRuq7S6HR
-         t6CQxo4tDVl0Q==
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4083c9b426fso26809625e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 13:48:36 -0700 (PDT)
+        b=c07/edfiEaEi4fICDlTO2MFm46LEO1mbir3n97LwlBCLUS5ihJwoCCVMjzO+AChLK
+         brh8ZIDE8WwqnpNHKg6svh8QH4SGzyeepgRgIPUYZaq6hDVGAb6PaT+m+/qPwPlDjM
+         qKGcSSgJBiwoiQPdSwnbbxnx31A1iegL8cEwEO8NKIiym3sVuPlPCPHjqUKt4b46m/
+         lXUtPyn1ZHM1nXckMHk0cMU+h5ZUi8DUQhZDLk2oUQ1dAOdPGi2OvNmutmxseUz7ut
+         AiXxo4tiNnQ63o6U7KNnk906R4EznoJXvTodatL2i3XK7Ziz2XJhdQukmdVLYBh5Yq
+         KtQnG9jx8j2zQ==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40920512cd3so27733725e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 13:48:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698612515; x=1699217315;
+        d=1e100.net; s=20230601; t=1698612517; x=1699217317;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SH87ZmKIdF7eMR0VODUq6DUDb+J0CZk1+c70eMvKp34=;
-        b=Wmix6XUPqzBk9a3j2Mhgj/7wiiHhw+hyVxZdJopGS7UgiV/eUnw46oTin/Tb6Dp+4L
-         IUJjdv80xdfpy6FnYckC46BZ6/xw5l/CBx25zeT/Xui87ANZF0OkP+F8KfwWmwWqb8An
-         D/RagP5q1NpD1vrGaPTMEjyxcn3Sanj83e77O6whUrNrqv5aw/xOV9xjFWysSSj9XcW6
-         /4PDdztxzaxX2D1WBAht6J6IrIGYpwSQlliCeCeMxZYnz47RdqazoRnwpuYe5KNTpTff
-         5ENWac4GmRrMYHlk0U4a/H9ZPWPbOrwQmJltIwsKDalGTObkYShwPF7lmAzXDNuzMJCd
-         N+pA==
-X-Gm-Message-State: AOJu0YzJrclVDH6WuhkiylutWMumqDsEcHYiWXV7viQL3G+Us3TgTBk0
-        bfhC8uSXLRO5ZrWPzR8q1MmmyfNM8ZljQ85Vr/Zk4Els34WTrMZFObHrmP2frnZkX0RkTyshekE
-        tyB+ra733A0RvN0w8tR3OHML0oYGqpL11GDUTa8bf8g==
-X-Received: by 2002:a05:600c:3ca4:b0:405:36d7:4582 with SMTP id bg36-20020a05600c3ca400b0040536d74582mr7000437wmb.15.1698612515193;
-        Sun, 29 Oct 2023 13:48:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFfcuRiTfAb8KkgDcD2BMJfMf4n/bD7ExxxWqJOp/7yNscMqbqqpJFGbwljPWHs0QD5H36qbw==
-X-Received: by 2002:a05:600c:3ca4:b0:405:36d7:4582 with SMTP id bg36-20020a05600c3ca400b0040536d74582mr7000424wmb.15.1698612514721;
-        Sun, 29 Oct 2023 13:48:34 -0700 (PDT)
+        bh=D+t9WK33ZVldEiPiicjGvkN9bUf9a57a5jRCbansvZI=;
+        b=ZvZmAFKzfbFJO6fdjpj+IiQbVvfK6YohlJTxkm1+FXAi/uD4XVlVjQPlsK0TJ9MAqM
+         pg88tjUBCrzjhwj17qP4cAzH56xy5kbCrHPHh6/KWDPaFM8Tdt1R8BzPYTMckpOFLdtG
+         ElirchjcHsRk2atiUAzG6lEthmU10mrQyDLqKpTjmbWCVTtYFucWApo5PzLiswzpSfCw
+         HmjqvIIOcg1o9eLn+PVgZj6J+vEvlag+GdRboCHOAlmFLGNOCYeelBkuws+VQh3MzyTs
+         PSNOuN+Y/ZQkpcDG4X5lJQSPb+48U7XA6jhXIdYgQzfPKuGkhe0Px5SM+54hkatywoKV
+         XaUw==
+X-Gm-Message-State: AOJu0YwrVYtt52cgjFWEWJgciSipiOF5wfLsQJPsfPIbDBJhQ32Gug7i
+        hQnK5YJ5bn9h3t2bhzYig/bNLD464HYkK78T5yq5lxmVlj1FW4b1OPySdhIyFOZNs+VjOqxUg2u
+        nDi+iZSIQ/CclfL7RMlq0ySEFUXc8W5kbcKFnnPeADQ==
+X-Received: by 2002:a05:6000:186c:b0:32f:7c4a:4f28 with SMTP id d12-20020a056000186c00b0032f7c4a4f28mr3694528wri.65.1698612517404;
+        Sun, 29 Oct 2023 13:48:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHsHenVmm1UaPVZaYRrLCgir8dk0xL3UaoH6fChxyf4x2jNAP6txXUbdB0H3Py4ubLecZFXcQ==
+X-Received: by 2002:a05:6000:186c:b0:32f:7c4a:4f28 with SMTP id d12-20020a056000186c00b0032f7c4a4f28mr3694518wri.65.1698612517100;
+        Sun, 29 Oct 2023 13:48:37 -0700 (PDT)
 Received: from localhost ([2001:67c:1560:8007::aac:c15c])
-        by smtp.gmail.com with ESMTPSA id o13-20020a05600c510d00b003fe15ac0934sm4346423wms.1.2023.10.29.13.48.34
+        by smtp.gmail.com with ESMTPSA id y2-20020adffa42000000b0032f7f4089b7sm3382079wrr.43.2023.10.29.13.48.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 13:48:34 -0700 (PDT)
+        Sun, 29 Oct 2023 13:48:36 -0700 (PDT)
 From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Stephan Mueller <smueller@chronox.de>
-Cc:     simo@redhat.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] crypto: drbg - update FIPS CTR self-checks to aes256
-Date:   Sun, 29 Oct 2023 22:48:21 +0200
-Message-Id: <20231029204823.663930-2-dimitri.ledkov@canonical.com>
+        simo Sorce <simo@redhat.com>,
+        =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] crypto: drbg - ensure drbg hmac sha512 is used in FIPS selftests
+Date:   Sun, 29 Oct 2023 22:48:22 +0200
+Message-Id: <20231029204823.663930-3-dimitri.ledkov@canonical.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
 References: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
@@ -74,7 +74,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,40 +82,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When originally drbg was introduced FIPS self-checks for all types but
-CTR were using the most preferred parameters for each type of
-DRBG. Update CTR self-check to use aes256.
+Update code comment, self test & healthcheck to use HMAC SHA512,
+instead of HMAC SHA256. These changes are in dead-code, or FIPS
+enabled code-paths only and have not effect on usual kernel builds.
 
-Fixes: 541af946fe ("crypto: drbg - SP800-90A Deterministic Random Bit Generator")
+On systems booting in FIPS mode that has the effect of switch sanity
+selftest to HMAC sha512 based (which has been the default DRBG).
+
+Fixes: 9b7b94683a ("crypto: DRBG - switch to HMAC SHA512 DRBG as default DRBG")
 Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 ---
- crypto/drbg.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ crypto/drbg.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 2cce18dcfc..b120e2866b 100644
+index b120e2866b..99666193d9 100644
 --- a/crypto/drbg.c
 +++ b/crypto/drbg.c
-@@ -1478,8 +1478,8 @@ static int drbg_generate(struct drbg_state *drbg,
- 			err = alg_test("drbg_pr_hmac_sha256",
- 				       "drbg_pr_hmac_sha256", 0, 0);
- 		else if (drbg->core->flags & DRBG_CTR)
--			err = alg_test("drbg_pr_ctr_aes128",
--				       "drbg_pr_ctr_aes128", 0, 0);
-+			err = alg_test("drbg_pr_ctr_aes256",
-+				       "drbg_pr_ctr_aes256", 0, 0);
- 		else
- 			err = alg_test("drbg_pr_sha256",
- 				       "drbg_pr_sha256", 0, 0);
-@@ -2017,7 +2017,7 @@ static inline int __init drbg_healthcheck_sanity(void)
- 		return 0;
- 
+@@ -111,9 +111,9 @@
+  * as stdrng. Each DRBG receives an increasing cra_priority values the later
+  * they are defined in this array (see drbg_fill_array).
+  *
+- * HMAC DRBGs are favored over Hash DRBGs over CTR DRBGs, and
+- * the SHA256 / AES 256 over other ciphers. Thus, the favored
+- * DRBGs are the latest entries in this array.
++ * HMAC DRBGs are favored over Hash DRBGs over CTR DRBGs, and the
++ * HMAC-SHA512 / SHA256 / AES 256 over other ciphers. Thus, the
++ * favored DRBGs are the latest entries in this array.
+  */
+ static const struct drbg_core drbg_cores[] = {
  #ifdef CONFIG_CRYPTO_DRBG_CTR
--	drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
-+	drbg_convert_tfm_core("drbg_nopr_ctr_aes256", &coreref, &pr);
- #endif
- #ifdef CONFIG_CRYPTO_DRBG_HASH
+@@ -1475,8 +1475,8 @@ static int drbg_generate(struct drbg_state *drbg,
+ 		int err = 0;
+ 		pr_devel("DRBG: start to perform self test\n");
+ 		if (drbg->core->flags & DRBG_HMAC)
+-			err = alg_test("drbg_pr_hmac_sha256",
+-				       "drbg_pr_hmac_sha256", 0, 0);
++			err = alg_test("drbg_pr_hmac_sha512",
++				       "drbg_pr_hmac_sha512", 0, 0);
+ 		else if (drbg->core->flags & DRBG_CTR)
+ 			err = alg_test("drbg_pr_ctr_aes256",
+ 				       "drbg_pr_ctr_aes256", 0, 0);
+@@ -2023,7 +2023,7 @@ static inline int __init drbg_healthcheck_sanity(void)
  	drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
+ #endif
+ #ifdef CONFIG_CRYPTO_DRBG_HMAC
+-	drbg_convert_tfm_core("drbg_nopr_hmac_sha256", &coreref, &pr);
++	drbg_convert_tfm_core("drbg_nopr_hmac_sha512", &coreref, &pr);
+ #endif
+ 
+ 	drbg = kzalloc(sizeof(struct drbg_state), GFP_KERNEL);
 -- 
 2.34.1
 
