@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DB37DB0EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F70E7DB0F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjJ2XXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S231964AbjJ2XZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbjJ2XXU (ORCPT
+        with ESMTP id S231848AbjJ2XZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:23:20 -0400
+        Sun, 29 Oct 2023 19:25:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7220EA5D8;
-        Sun, 29 Oct 2023 16:03:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3249C4167E;
-        Sun, 29 Oct 2023 23:01:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75DFA5E4;
+        Sun, 29 Oct 2023 16:03:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59751C43395;
+        Sun, 29 Oct 2023 23:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620517;
-        bh=qRIgjQfLbsV9Qh3eHJRvU8mHqGFe89XtdJc16BPBs5I=;
+        s=k20201202; t=1698620519;
+        bh=BTr13UlPX8BoRn4CQ9hLi6BmAeZL2LKy87Zh/UHkVTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVdCcZcQoAN+33bxMnm85KBLpl1oJsLlCUZZLofc+AJbmF7DnUhAg+IehuUdAq2RL
-         9zo6r3hAbYlbVRqR9rQPsj33V5byyjGe/hNQGYSnBm2AS25mqbiFcTrNy7JPjoQ8Nk
-         28nhQjgygU4/lr/jU5uTr8MPr24d5Xw4DPgfZdy89CbuFETp2MZApYw3JwvUYTtW08
-         nH3kKtTdbFL302r0G3hhzs/cyUAdcxu9fYxSyxInBIp+IGWf6P8gbl5KuIkAzWXqAA
-         bsUBtbsa95AvdTfWlXoaO1ITA3Fi8NNFpWzMQ3tXg28fwc5FhcvXhKu9fRCIQSvegg
-         asktI0a0Q5SCg==
+        b=bdWpoCOvkMg+8EToNAeFC29y1O8KryiycsSVrVmoAWurZZtRVMJuUHdaQI6GQp3zE
+         ddZ0haaSWrpvINk30UHu4Z5MgESBET+XrCGvsvfrIo8zVDG2yhK5EQJwR9RNR2/eqQ
+         GGGrg1nbRE/VogoQ6/5C2vypa5yfGIgTYKMIi4tkHsEJEFgpr6TB2I1WD4PdH27N3D
+         xnnOuPgF96aMNvPt8wjemcPfeJNuKRA4UMTG11ZcbB+DrZrwi2fQhV56Gsj+JxnLEm
+         rPhgcRUYRInkDfY+WNq4/j31XQWFo+aKG62whruOSRwwi3fc9VuemRhADpF6NjRDYm
+         3ndfafOi1ssmA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomas Henzl <thenzl@redhat.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, sathya.prakash@broadcom.com,
-        sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 10/12] scsi: mpt3sas: Fix in error path
-Date:   Sun, 29 Oct 2023 19:01:23 -0400
-Message-ID: <20231029230135.793281-10-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 11/12] platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
+Date:   Sun, 29 Oct 2023 19:01:24 -0400
+Message-ID: <20231029230135.793281-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029230135.793281-1-sashal@kernel.org>
 References: <20231029230135.793281-1-sashal@kernel.org>
@@ -56,37 +53,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit e40c04ade0e2f3916b78211d747317843b11ce10 ]
+[ Upstream commit f37cc2fc277b371fc491890afb7d8a26e36bb3a1 ]
 
-The driver should be deregistered as misc driver after PCI registration
-failure.
+Older Asus laptops change the backlight level themselves and then send
+WMI events with different codes for different backlight levels.
 
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Link: https://lore.kernel.org/r/20231015114529.10725-1-thenzl@redhat.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The asus-wmi.c code maps the entire range of codes reported on
+brightness down keypresses to an internal ASUS_WMI_BRN_DOWN code:
+
+define NOTIFY_BRNUP_MIN                0x11
+define NOTIFY_BRNUP_MAX                0x1f
+define NOTIFY_BRNDOWN_MIN              0x20
+define NOTIFY_BRNDOWN_MAX              0x2e
+
+        if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
+                code = ASUS_WMI_BRN_UP;
+        else if (code >= NOTIFY_BRNDOWN_MIN && code <= NOTIFY_BRNDOWN_MAX)
+                code = ASUS_WMI_BRN_DOWN;
+
+Before this commit all the NOTIFY_BRNDOWN_MIN - NOTIFY_BRNDOWN_MAX
+aka 0x20 - 0x2e events were mapped to 0x20.
+
+This mapping is causing issues on new laptop models which actually
+send 0x2b events for printscreen presses and 0x2c events for
+capslock presses, which get translated into spurious brightness-down
+presses.
+
+The plan is disable the 0x11-0x2e special mapping on laptops
+where asus-wmi does not register a backlight-device to avoid
+the spurious brightness-down keypresses. New laptops always send
+0x2e for brightness-down presses, change the special internal
+ASUS_WMI_BRN_DOWN value from 0x20 to 0x2e to match this in
+preparation for fixing the spurious brightness-down presses.
+
+This change does not have any functional impact since all
+of 0x20 - 0x2e is mapped to ASUS_WMI_BRN_DOWN first and only
+then checked against the keymap code and the new 0x2e
+value is still in the 0x20 - 0x2e range.
+
+Reported-by: James John <me@donjajo.com>
+Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
+Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231017090725.38163-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/asus-wmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index c8d97dc2ca63d..bf659bc466dcc 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -11182,8 +11182,10 @@ _mpt3sas_init(void)
- 	mpt3sas_ctl_init(hbas_to_enumerate);
+diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
+index 57a79bddb2861..95612878a841f 100644
+--- a/drivers/platform/x86/asus-wmi.h
++++ b/drivers/platform/x86/asus-wmi.h
+@@ -31,7 +31,7 @@
+ #include <linux/i8042.h>
  
- 	error = pci_register_driver(&mpt3sas_driver);
--	if (error)
-+	if (error) {
-+		mpt3sas_ctl_exit(hbas_to_enumerate);
- 		scsih_exit();
-+	}
+ #define ASUS_WMI_KEY_IGNORE (-1)
+-#define ASUS_WMI_BRN_DOWN	0x20
++#define ASUS_WMI_BRN_DOWN	0x2e
+ #define ASUS_WMI_BRN_UP		0x2f
  
- 	return error;
- }
+ struct module;
 -- 
 2.42.0
 
