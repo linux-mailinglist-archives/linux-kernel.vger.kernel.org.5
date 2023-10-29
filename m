@@ -2,202 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B557DAD8D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E207DAD8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjJ2Rs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 13:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
+        id S230239AbjJ2Rsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 13:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2Rs2 (ORCPT
+        with ESMTP id S230219AbjJ2Rso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 13:48:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A604BB4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 10:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wKbX/PWWvxM0EotyUP9WNIdbPUSgW3vgpoFt3t9BXcw=; b=JLco9n0DCUvo8NnlYNZXGiqJGz
-        VQI6vQs1n/I/E8eQIDFAAFNSvhaKCcR4Vvq2CkctBN6VPYkg5NHhL+D0Tsy5KrBS8FIjexEVIrS3x
-        n1IRi9vBXxgR0k1RnPYceNdfMwti8y2t6LIeAKWwsqH1wm+EwJgSMVI83/JROUwv2P0KByaQV9lCJ
-        bTJjiqAzlOz3dI+G3uVGX/Rwrm97YhVK9l8kJZxByDg5XlV7VT6ywMXh7c8JN6uX4+s4TVB5syGoH
-        OV9cEc5UXhdBdVD+dZqMkDKC6ZyXipJ/pGNlF1gs7zzUyEMvBhb/Lj95M308mzi0IeP/cpx59nnij
-        0D0gtxpw==;
-Received: from [2001:8b0:10b:5:b7dd:c749:f0d9:3970] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qx9tB-00GpoZ-2M; Sun, 29 Oct 2023 17:47:54 +0000
-Message-ID: <c20ead65f61a2609a0a80d7692aed0c74886b238.camel@infradead.org>
-Subject: Re: [PATCH v2] lockdep: add lockdep_cleanup_dead_cpu()
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>
-Date:   Sun, 29 Oct 2023 17:47:52 +0000
-In-Reply-To: <87o7ghz63l.ffs@tglx>
-References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
-         <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
-         <87o7ghz63l.ffs@tglx>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-c/2F9bj4Csr2P+06UNJZ"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Sun, 29 Oct 2023 13:48:44 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932F1D6;
+        Sun, 29 Oct 2023 10:48:41 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39TDN70f028070;
+        Sun, 29 Oct 2023 10:48:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=OP3kArmtoHp5EYUi2p8ZdBSr7Ca6MjehGwqB3ZEv7/c=;
+ b=g5B4FF08QSEoffQPj+1xJLoND9uaOxU+Lla37hn/ZUDUb0LLfkYObCyZkf/0yKCyHdyZ
+ WBZy2aWXOXIoN7JtEhb8hIW8isxuY/fmapSkAHLp+8d1zGjpZ8b9VlJjXJ9VPFeFVC6M
+ anJ2r19rZ8p8Mz2udmBkuRTMaUWajmMLJnG+x+WzTbtQdpDgryWteY8h7iTPeBIeSffJ
+ FccZgyoZ8rpIvWozcxdw+Sver3qtxqHUIy0rXKK2MG+RHW+/E7Q7Xkwsh+7ddjZg5TfX
+ Rf7KxVoZXj+9b6Jj6MYZerPJmmlleNu/4OTN93syUOKP53PyY+nY+k30bWC98GU76fQj Fw== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3u11tp3aq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 29 Oct 2023 10:48:22 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 29 Oct
+ 2023 10:48:20 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 29 Oct 2023 10:48:20 -0700
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id E56A33F70CE;
+        Sun, 29 Oct 2023 10:48:16 -0700 (PDT)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>,
+        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
+        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
+        <chris.packham@alliedtelesis.co.nz>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v4 0/3] arm64: dts: cn913x: add COM Express boards
+Date:   Sun, 29 Oct 2023 19:48:11 +0200
+Message-ID: <20231029174814.559583-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: eZguKLyAA5cOItN7CdpTm3qnZExYVfj2
+X-Proofpoint-ORIG-GUID: eZguKLyAA5cOItN7CdpTm3qnZExYVfj2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-29_06,2023-10-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Elad Nachman <enachman@marvell.com>
 
---=-c/2F9bj4Csr2P+06UNJZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Add support for CN9130 and CN9131 COM Express Type 7 CPU
+module boards by Marvell.
+Define these COM Express CPU modules as dtsi, and
+provide a dtsi file for a carrier board (Marvell AC5X RD
+COM Express type 7 carrier board).
+This Carrier board only utilizes the PCIe link, hence no
+special device / driver support is provided by this dtsi file.
+Finally, add dts file for the combined carrier and CPU module.
 
-On Sun, 2023-10-29 at 18:33 +0100, Thomas Gleixner wrote:
-> On Sat, Oct 28 2023 at 20:24, David Woodhouse wrote:
-> > @@ -24,12 +24,16 @@
-> > =C2=A0=C2=A0 extern void lockdep_hardirqs_on_prepare(void);
-> > =C2=A0=C2=A0 extern void lockdep_hardirqs_on(unsigned long ip);
-> > =C2=A0=C2=A0 extern void lockdep_hardirqs_off(unsigned long ip);
-> > +=C2=A0 extern void lockdep_cleanup_dead_cpu(unsigned int cpu,
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 struct task_struct *idle);
->=20
-> Lacks a forward declaration of 'struct task_struct'
->=20
+v4:
+   1) reorder patches - dt bindings before dts/dtsi files
 
-Apparently so; I thought that was fairly much ubiquitous. Was debating
-spamming you with a v3 in the space of as many days, or perhaps
-revisiting my decision to *pass* the idle task out of kernel/cpu.c.
-=20
-We could always shift the declaration of idle_thread_get() out to
-linux/smpboot.h and let the lockdep code call it directly. You already
-reviewed my patch to do that, although it was dropped in the end.
+   2) correct description in dt bindings
 
-https://lore.kernel.org/lkml/20230321194008.785922-2-usama.arif@bytedance.c=
-om/
+   3) separate dt bindings for CPU module, carrier and combination
 
---=-c/2F9bj4Csr2P+06UNJZ
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+   4) make carrier board dts into dtsi, make dts for combination of
+      carrier and CPU module
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDI5MTc0NzUyWjAvBgkqhkiG9w0BCQQxIgQgomF/hn3m
-ovXHlAS0VtHM3cR7mwdqdIPwp3JIYHJJzgowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCizyV/U1YhQtzvDbWfLHQDGC/PB0f+kKZ6
-kVUyky3zEdA3rDGISZd1Gflu4CjfFagOA+pfww/WGMw9lXpUXAZ8zmlQztoJ+YgnaSV8zFPdFkd5
-ALoESZGUimc057NtTEQwaD1nGP6oeVpR08x9TGky0n7oDhC/D3FRInk2POMKEzJg/U82yAnhkO68
-SCuOearwXrHozBB6og46mJyKKGv6ZjCUPrTr6QUEJoFJ9xQLYY2oDPeUAQTaDXlTrQQl4rKFyxMI
-SGQs44dYpwkvFvVo8wshDH8rhtWVqqJT+JcEAmarMYCzojuHEjWzppWWzwFQZIfuaVLsPit7Vcfz
-vJN8oFXRMTAkPpr5YcSkTY2yQM61z2KSflmcD2f6lQxNgX+RrggtTfJLo0Qo5OHkKsuW+4U4YofP
-HTSt0FPD66GsguDIB5No4ypd+ic9tM3d6CAzpxs2gnGvHIymZ9JXNBr5eEl6mint6nl1i/RQO+NP
-TzQwo4hLTcQ/mX7m15i2OHjCdSD5T/OawVKTCtYtKrOQsnF4M2MDg7tkS1Fpjz8pUlxYyUWtwtlR
-3hvpFXJv8pUgSvaeuqeSluOS42Ws3Np/VbneSLnRGCepYAFk0zj9w6mOKn70JMSolA7mowDjSi6I
-4N2DMA5nIZrVG8q6HhyM/46271OhrL1IPyE6asAlUwAAAAAAAA==
+   5) correct compatibility strings and file names to use dashes
+      instead of underscores
 
+v3:
+   1) Remove acronym which creates warnings for checkpatch.pl
 
---=-c/2F9bj4Csr2P+06UNJZ--
+   2) Correct compatibility string for ac5x rd board
+
+   3) Add above compatibility string to dt bindings
+
+   4) update MAINTAINERS file with ac5 series dts files
+
+   5) remove memory property from carrier dts
+
+   6) add comment explaining that OOB RGMII ethernet port
+      connector and PHY are both on CPU module
+
+v2:
+   1) add compatibility string for the board
+
+   2) remove unneeded hard-coded PHY LED blinking mode initialization
+
+   3) Split the CPU portion of the carrier board to
+      dtsi files, and define a dts file for the AC5X RD
+      carrier board.
+
+Elad Nachman (3):
+  MAINTAINERS: add ac5 to list of maintained Marvell dts files
+  dt-bindings: arm64: dts: add dt-bindings for Marvell COM Express
+    boards
+  arm64: dts: cn913x: add device trees for COM Express boards
+
+ .../bindings/arm/marvell/armada-7k-8k.yaml    |  15 +++
+ .../bindings/arm/marvell/marvell,ac5.yaml     |  14 +++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/marvell/Makefile          |   1 +
+ .../marvell/ac5x-rd-carrier-with-cn9131.dts   |  19 +++
+ .../boot/dts/marvell/ac5x-rd-carrier.dtsi     |  18 +++
+ .../dts/marvell/cn9130-db-comexpress.dtsi     | 101 ++++++++++++++++
+ .../dts/marvell/cn9131-db-comexpress.dtsi     | 113 ++++++++++++++++++
+ 8 files changed, 282 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier-with-cn9131.dts
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
+
+-- 
+2.25.1
+
