@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B847DACCA
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 15:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CC77DACF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjJ2Og2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 10:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        id S230148AbjJ2PH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 11:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJ2OgZ (ORCPT
+        with ESMTP id S229482AbjJ2PHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 10:36:25 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06873B8;
-        Sun, 29 Oct 2023 07:36:23 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a6907e9aa8so127728039f.1;
-        Sun, 29 Oct 2023 07:36:23 -0700 (PDT)
+        Sun, 29 Oct 2023 11:07:55 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA2FB8;
+        Sun, 29 Oct 2023 08:07:50 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc394f4cdfso2584095ad.0;
+        Sun, 29 Oct 2023 08:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698590182; x=1699194982; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WOotfpE7UygG9u+jO7okxXpuJl/dpW05Sd73/FzJiB0=;
-        b=GsP8ePenkX41jxjMPSbzMExd805XG+5rREld9+lvJduoYj+QzuzsbnqGmA3H3uKBws
-         w7/BoMhALV6Fmg2oG1dT7CZ5/D6vQWE151Phj1ycxu9yNEYyk7jlGSLa8D/BuAmythuZ
-         6pwPensPYxlwrjZty9bOmRTnNeE0h8dO70Lt5OShNn4c1kBwuOTE09WeqTNRrybduoXH
-         zy0yBXuuImmQ/faSYrr0lhTJg00eUqOVJTyJBot/es5OJ2QDarEFA0WHYWf48faQI/Xr
-         R5QAikwDahEFT8W9dE5wcZQbLnYWOo711nlHirS/w65u0ljui4GC/LPbH+raV1f0553P
-         ISmQ==
+        d=gmail.com; s=20230601; t=1698592069; x=1699196869; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rq2lTx4r6AxRWMwoBx4OQjZx3mpwnDbM/buzeUwRHtY=;
+        b=fFR/S4T+NgyUIelowbgLRBRp6x4H1D6CG4UvrSoSXWadNTByEBsK2eXxA2PZ+raML1
+         PpKUD+TYbAv4st77nWYZ//WtiF3OhNSx+kzOeZKS5JuiCgocs2OSOYLsGljHcu1EC2ig
+         bffHgCuqaI8fsdatcj5HV1Y704APE27ZnQv5tTxlb0tN643iEkZYumW4b156/oxSa3HO
+         WeQPQZWrsaG73C8F4rYfTuFuALtWB3zx2qZOno4HZs/UQ732yJ0kECxJ2NsGrtItCqBK
+         Vp4Qlm6I6lDSMVkXdXlodtxhPjZgXUmYULMkUGBm9nYxAAnbS2RZW1oF4L63K2rhcLxc
+         3LiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698590182; x=1699194982;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WOotfpE7UygG9u+jO7okxXpuJl/dpW05Sd73/FzJiB0=;
-        b=k/D+q2Id7wFfEUenp7OCx+GvDI7anA2RnB340MXvBq/vL02seJnw052vYWohsc/vf4
-         fN61YUVPar0nWJu95cMEbQw7ps9/iSpXGKqrdO4CBIWb92nZyl8kyUlOAvvkTmlBGo86
-         WoQXt8GhT63ZeYipKluwCo2a7VZsqKnFO8xnF5Fea0VHxMwiRPAARW75eJ0AhRYli9Qb
-         a2DXrc3W3vjtVCVSmP9bkc85gq8diynQksqcJ16d72scsRXaZOdid+oWiUDxs/YYWi50
-         dNpRjv8xK/JmQ82cny0uAGV56sq6m73DcWHo4gCAnnxfwwgOe/C9dsNyMj5jP/ghwLzI
-         3nrA==
-X-Gm-Message-State: AOJu0YxchG3WRWO/npFMz/Cs3SRC4rQ+4fMXW2MKauab2uFL8Cvn5mtz
-        PHTgOcYFsDV/sFkrZaAayo4=
-X-Google-Smtp-Source: AGHT+IEENLk8ESJW5E5A28KlVgccH1FwYwzXqSbjRZcxnjVHBeKBoTbMnxB5GgIFQFt3XPzKtgUChg==
-X-Received: by 2002:a92:cdaf:0:b0:357:600c:7c5f with SMTP id g15-20020a92cdaf000000b00357600c7c5fmr10083288ild.23.1698590182261;
-        Sun, 29 Oct 2023 07:36:22 -0700 (PDT)
-Received: from localhost.localdomain ([202.137.218.21])
-        by smtp.gmail.com with ESMTPSA id a26-20020a63bd1a000000b005b8e1b0090asm3421348pgf.67.2023.10.29.07.36.19
+        d=1e100.net; s=20230601; t=1698592069; x=1699196869;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rq2lTx4r6AxRWMwoBx4OQjZx3mpwnDbM/buzeUwRHtY=;
+        b=mao/j7ELAN+p7UlPd/pju7RjnZ4ZnBwjnSN16CPkOUbV+ZjmFGLTRUyxckbx3u4Ypk
+         /wGQLEofZ4XRoudKkuVpTJaKd2f5WUVc2XfODhZI/6115zQgq/VGgsWqI8ncqrGTU31X
+         ZhCe3oUheQGZXwL+2osUUn4C0JlKH4nejpP6PnRY/vI0LhF56jg3EUls3OYsNrxQSl1S
+         01bADBaTIhZH2f4TUKJoWdj221MTEjxuuPbxFi4nU4zpUvGefpQ5HtPD81TLQj6lyAyP
+         EEtTvfHLq+V/QsmlldqX0tBEWp2nIe1yHulymQZmndunSRUzJe1WSoK8Ab+zqWpSVnbw
+         zebA==
+X-Gm-Message-State: AOJu0Yz/wZemfBCJNBSR9bcjYsio56qwBM+rmZTn8MGqKrvxHrV3ZPQf
+        lcPET+yaFpcmPYesa7KHDLA=
+X-Google-Smtp-Source: AGHT+IHqEqQMKupQeBAJEYNFdKsCoTID1AbZp8zrduE+qBv97MGFQtDmaZUFOCmKTxG5w1vSOlteIg==
+X-Received: by 2002:a17:902:c641:b0:1cc:2bd9:1b2d with SMTP id s1-20020a170902c64100b001cc2bd91b2dmr3052186pls.43.1698592069312;
+        Sun, 29 Oct 2023 08:07:49 -0700 (PDT)
+Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
+        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001c5eb37e92csm4640408plx.305.2023.10.29.08.07.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 07:36:22 -0700 (PDT)
-From:   Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-To:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org
-Cc:     Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] media: stk1160: Fixed high volume of stk1160_dbg messages
-Date:   Sun, 29 Oct 2023 20:06:04 +0530
-Message-Id: <20231029143604.120329-1-ghanshyam1898@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 29 Oct 2023 08:07:48 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Stone <daniels@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:HIBERNATION (aka Software Suspend,
+        aka swsusp)), Marijn Suijten <marijn.suijten@somainline.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sean Paul <sean@poorly.run>
+Subject: [PATCH v2 0/2] drm/msm/gem: Add metadata uapi
+Date:   Sun, 29 Oct 2023 08:07:36 -0700
+Message-ID: <20231029150740.6434-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231027194537.408922-1-robdclark@gmail.com>
+References: <20231027194537.408922-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function stk1160_dbg gets called too many times, which causes
-the output to get flooded with messages. Since stk1160_dbg uses
-printk, it is now replaced with printk_ratelimited directly.
+From: Rob Clark <robdclark@chromium.org>
 
-Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
----
- drivers/media/usb/stk1160/stk1160-video.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Add metadata mechanism to provide a back-channel to communicate image
+layout information between vk and gl, because EXT_external_objects
+doesn't support explicit modifiers and "OPTIMAL_TILING_EXT" is not
+enough information for the importer to deduce the layout.
 
-diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-index 4e966f6bf608..f5b75f380c19 100644
---- a/drivers/media/usb/stk1160/stk1160-video.c
-+++ b/drivers/media/usb/stk1160/stk1160-video.c
-@@ -105,17 +105,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 	u8 *dst = buf->mem;
- 	int remain;
- 
--	/*
--	 * TODO: These stk1160_dbg are very spammy!
--	 * We should 1) check why we are getting them
--	 * and 2) add ratelimit.
--	 *
--	 * UPDATE: One of the reasons (the only one?) for getting these
--	 * is incorrect standard (mismatch between expected and configured).
--	 * So perhaps, we could add a counter for errors. When the counter
--	 * reaches some value, we simply stop streaming.
--	 */
--
- 	len -= 4;
- 	src += 4;
- 
-@@ -151,7 +140,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 
- 	/* Let the bug hunt begin! sanity checks! */
- 	if (lencopy < 0) {
--		stk1160_dbg("copy skipped: negative lencopy\n");
-+		printk_ratelimited("copy skipped: negative lencopy\n");
- 		return;
- 	}
- 
+Rob Clark (2):
+  drm/msm: Small uabi fixes
+  drm/msm/gem: Add metadata
+
+ drivers/gpu/drm/msm/msm_drv.c | 59 +++++++++++++++++++++++++++++++++--
+ drivers/gpu/drm/msm/msm_gem.c |  1 +
+ drivers/gpu/drm/msm/msm_gem.h |  4 +++
+ include/uapi/drm/msm_drm.h    |  2 ++
+ 4 files changed, 64 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.41.0
 
