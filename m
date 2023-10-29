@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD277DB0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5747DB046
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjJ2XZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S231799AbjJ2XEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232151AbjJ2XZU (ORCPT
+        with ESMTP id S231994AbjJ2XEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:25:20 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30A8212F
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:04:13 -0700 (PDT)
-Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1ACE4660739C;
-        Sun, 29 Oct 2023 23:02:45 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698620566;
-        bh=0ZBUE0rLGCchFfVCmY9eX9kO1j9q0pZNyfBn0+Aeqt4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSliMwpu82AbnU5e+erzpzW60WYrd2iWlEbQtA2FCaagAKLdJD3YIHk/zisDs1vgJ
-         0O2O2/RaQHJTtLvzNmPsarvVO/A9Yzxm+I3fda8P3iAOnXMkLjp0sHGxqaC1W16sZr
-         e1aqdT0qI7jyhynFXkco2NGM+pm0hDW/taXH9aQGapSbjNYZ1KSruZzttU5ktUlYM+
-         iGJwoQzfBG2bRbMUYvocEhtEu11qu65pTHYR+DC5jKFCJHNs4+EwKFFHeIj8U2L5XP
-         /w86l90cXCAOj0u7Qq+eZrUhbIdPkfbIiqaqivGyLkByUh5oUay2uP6xTMvD0NZOlQ
-         9fqz9i6ZUI4Ng==
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+        Sun, 29 Oct 2023 19:04:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243AF7D88;
+        Sun, 29 Oct 2023 16:02:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17BD7C433C7;
+        Sun, 29 Oct 2023 23:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698620536;
+        bh=ThgpdufNRoS1xMLZQV3AzV26leDqwWdIz1O5qKKzcyI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hPBJEkeYCK/jYjN7WS+9uvobXluiDB3Rgq51FDTIGXvYoPD+5E0A8o1XEXvLSN+ix
+         m613sFOX2rQ+ZT5LZ/cMSJSR6OQ+F8wv1KZsxv55PiphFmnsIiOZb7RXSYM7PDus+7
+         03Pn3Jur9WsEDuhHKQnF+MAvhxvzPUInT/+eI5QgDG/rchEQ/DsWbjej55gkS06UZo
+         l+WF/xtCn2LLUc/B04bsc2lLIpSVUEafJHPNallg9rd/ehJ/liS0mjcJQ87MhWjFVz
+         CQLAVUACsnP3qU7e102HihIuoE+9d8c8Pa1WR5GV+Klpybl5T3C0/6+5USfYyYgAgW
+         gsD7ekCrO5yKA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Helge Deller <deller@gmx.de>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v18 13/26] drm/shmem-helper: Add drm_gem_shmem_put_pages()
-Date:   Mon, 30 Oct 2023 02:01:52 +0300
-Message-ID: <20231029230205.93277-14-dmitry.osipenko@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Sasha Levin <sashal@kernel.org>, sam@ravnborg.org,
+        javierm@redhat.com, daniel.thompson@linaro.org, steve@sk2.org,
+        schnelle@linux.ibm.com, xu.panda@zte.com.cn
+Subject: [PATCH AUTOSEL 4.14 01/11] fbdev: atyfb: only use ioremap_uc() on i386 and ia64
+Date:   Sun, 29 Oct 2023 19:01:52 -0400
+Message-ID: <20231029230213.793581-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're going to move away from having implicit get_pages() done by
-get_pages_sgt() to ease simplify refcnt handling. Drivers will manage
-get/put_pages() by themselves. Add drm_gem_shmem_put_pages().
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+[ Upstream commit c1a8d1d0edb71dec15c9649cb56866c71c1ecd9e ]
+
+ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+extension, and on ia64 with its slightly unconventional ioremap()
+behavior, everywhere else this is the same as ioremap() anyway.
+
+Change the only driver that still references ioremap_uc() to only do so
+on x86-32/ia64 in order to allow removing that interface at some
+point in the future for the other architectures.
+
+On some architectures, ioremap_uc() just returns NULL, changing
+the driver to call ioremap() means that they now have a chance
+of working correctly.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 20 ++++++++++++++++++++
- include/drm/drm_gem_shmem_helper.h     |  1 +
- 2 files changed, 21 insertions(+)
+ drivers/video/fbdev/aty/atyfb_base.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index ca6f422c0dfc..f371ebc6f85c 100644
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -217,6 +217,7 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
-  * @shmem: shmem GEM object
-  *
-  * This function decreases the use count and puts the backing pages when use drops to zero.
-+ * Caller must hold GEM's reservation lock.
-  */
- void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
- {
-@@ -227,6 +228,25 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
- }
- EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
+diff --git a/drivers/video/fbdev/aty/atyfb_base.c b/drivers/video/fbdev/aty/atyfb_base.c
+index d4b938276d238..71e95533613cd 100644
+--- a/drivers/video/fbdev/aty/atyfb_base.c
++++ b/drivers/video/fbdev/aty/atyfb_base.c
+@@ -3435,11 +3435,15 @@ static int atyfb_setup_generic(struct pci_dev *pdev, struct fb_info *info,
+ 	}
  
-+/*
-+ * drm_gem_shmem_put_pages - Decrease use count on the backing pages for a shmem GEM object
-+ * @shmem: shmem GEM object
-+ *
-+ * This function decreases the use count and puts the backing pages when use drops to zero.
-+ * It's unlocked version of drm_gem_shmem_put_pages_locked(), caller must not hold
-+ * GEM's reservation lock.
-+ */
-+void drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem)
-+{
-+	if (refcount_dec_not_one(&shmem->pages_use_count))
-+		return;
-+
-+	dma_resv_lock(shmem->base.resv, NULL);
-+	drm_gem_shmem_put_pages_locked(shmem);
-+	dma_resv_unlock(shmem->base.resv);
-+}
-+EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages);
-+
- /*
-  * drm_gem_shmem_get_pages - Increase use count on the backing pages for a shmem GEM object
-  * @shmem: shmem GEM object
-diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-index 45cd293e10a4..6aad3e27d7ee 100644
---- a/include/drm/drm_gem_shmem_helper.h
-+++ b/include/drm/drm_gem_shmem_helper.h
-@@ -111,6 +111,7 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
- void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem);
+ 	info->fix.mmio_start = raddr;
++#if defined(__i386__) || defined(__ia64__)
+ 	/*
+ 	 * By using strong UC we force the MTRR to never have an
+ 	 * effect on the MMIO region on both non-PAT and PAT systems.
+ 	 */
+ 	par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
++#else
++	par->ati_regbase = ioremap(info->fix.mmio_start, 0x1000);
++#endif
+ 	if (par->ati_regbase == NULL)
+ 		return -ENOMEM;
  
- int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem);
-+void drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem);
- void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem);
- int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem);
- void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem);
 -- 
-2.41.0
+2.42.0
 
