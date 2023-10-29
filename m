@@ -2,164 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A48E7DAC3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D3E7DAC44
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjJ2L0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 07:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        id S229744AbjJ2LsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 07:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjJ2L0q (ORCPT
+        with ESMTP id S229482AbjJ2LsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 07:26:46 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810B9B8
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:26:43 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507cd62472dso5260340e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:26:43 -0700 (PDT)
+        Sun, 29 Oct 2023 07:48:18 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCB6BC;
+        Sun, 29 Oct 2023 04:48:16 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-509109104e2so1205117e87.3;
+        Sun, 29 Oct 2023 04:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698578802; x=1699183602; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oiJ98AzIdDvp4H2ObVcO2pM8eJBa6hKhd5j05v0RH0w=;
-        b=uLi6D6rPMX7vsQ0EmgjNNq+ZyKOyQQiS9LHJMOSAtFxBQ4S7y+MkJqw6vqGNgl7K+z
-         n8TLocWyaFHZaNNl8aRCjL70LHbZ8Jzc1fAVq5VA8OfX4v2ByoefwdWkEeUyIAKWtheS
-         ojjYof/jpmRMMsukjHpFzXhxw9w65uvCfAdu9r4VBd282N/75uvkWlFyV2Gl6jaRIPeo
-         QYjnpIQxFqHnqiIb5kymevMY7gl/tCNfyXc7sVX5UCLkOBnqgnPAQZP5nrnFwlkNdS3g
-         +61MHF2ruSYLhKCoR76UPkw7IQIG+iWonMuth+jNGxZz2ffRd27OiUvDaCNNgjeoTLmt
-         D0vA==
+        d=gmail.com; s=20230601; t=1698580094; x=1699184894; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+v+Jv8cNfs1h2ATuX1rQpWp90XwNnzcTm+maLE/WR8=;
+        b=B926cCAe3lfEz2qRCjhiHuqd9aFUPWwSGXLruEdunIHN7F1jPu7p9aBZmQmgh0b0GE
+         Fyl3c2GmIKWdIlwFXk8nCLIsUGtlX6i44QBTeOaAxahJsObO1MH238Sz5BSB9SUd5Ete
+         EPNTsQBTbGTp8HCMynwpu0afj8Dzz2ZoovEQF4jG5AjCilN5z2uLHW5kqVt5FebbFhX4
+         V/hFQ6RY4MsAz6xz455iF/ez3TzgN5KgmWZeirIEiQj9xEKTM+nqPyoKfQ6xD4sMOVlh
+         Ttw5a8Hf2LAJZqDvJUqBtmGcPmyskqM0g854vGfM2poWEUsbY3NcwWEZ3tYdwF02TALH
+         tmBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698578802; x=1699183602;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oiJ98AzIdDvp4H2ObVcO2pM8eJBa6hKhd5j05v0RH0w=;
-        b=mue2Jyvj0AslSI5GH0FD0vtPKmIOAMJI6JpMTbdEiJELshJJ33RyXpjjFzRk+aTbEi
-         zXDuMoTlGLNCcRuALnEC6CQU/PWDcOrOQKJps7AAwJ8afv//vIC0rOaVWEB6KxD2byKb
-         qCso0qQy/MBbk2Aq9mtBOV3hPCA+WLcriDP0G5fy/u+1dQ2zezROzS0/H/G2R04lzFry
-         KBDk1fSeQ3yixSm6POLBeQsNaZmxKesFWSM4PyM5LqPhFdY/0zXS9Xt3Yba4dcSdWEG5
-         9H3NPIlGTB7hujygJOaOFO25xgkkU5ma2qFJ0uxnp4cctdYEuqUE2Ks17IgSoOsmRPYq
-         Ga1A==
-X-Gm-Message-State: AOJu0Yz4cU6jQTgxSSB/HJO8Sfc+R6c4vr4cTkYmru/dNfCg5iFKXKQ7
-        ms+p0LXHUxMlWFDUOmgkSqgt8g==
-X-Google-Smtp-Source: AGHT+IF3ww+xNZIcGhsqitXJi46WtGMXlhoovfyHbmi3gpzQ9+l3xdAt6vARv3IK3FgMe6Vb5wtNDw==
-X-Received: by 2002:a05:6512:aca:b0:4fd:c8fb:eb71 with SMTP id n10-20020a0565120aca00b004fdc8fbeb71mr3163336lfu.11.1698578801768;
-        Sun, 29 Oct 2023 04:26:41 -0700 (PDT)
-Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0565123c8200b005030b642ec8sm1000453lfv.157.2023.10.29.04.26.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 04:26:41 -0700 (PDT)
-Message-ID: <dd28569f-b59e-4c07-8b1d-076646396954@linaro.org>
-Date:   Sun, 29 Oct 2023 12:26:40 +0100
+        d=1e100.net; s=20230601; t=1698580094; x=1699184894;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d+v+Jv8cNfs1h2ATuX1rQpWp90XwNnzcTm+maLE/WR8=;
+        b=k0qt9Xq4S2AhuPglYsFArXiVsuWHWQBsPIU7cJxyE8z7sfMp/eCUDAjO2ymmOmQIxl
+         EW5ASWFgJN3kNN0pOG0hX2ZbECzS6rcQRB4pLEdaV5Rv0iu+Da97njfEDqQupdAEDYnu
+         5Nui2O8lfhUFCrVpFXBx9uBz4dwTXg/w1XRNIKs0VChLf0hDRRSA/AI9p7/oQCcDMIB8
+         7l456bX2HzQcEZ3N5C1FPCi85EQMIZb0XF0PQkd3K+6WdFYrAIS93hbcoRfHbl5juwOC
+         766Fh78k8NbAPwmStegPg6BiWtcrI4mKnJW36xqqB8AM8KcSpfHRyOM2P9xyz4+C14N2
+         ceow==
+X-Gm-Message-State: AOJu0YxaAAZ6L+iqFZcoKOq3XKMG1/yBY/UukHfVoJigtUDS0n2rU8+U
+        eXUyqO9zEpuWBiBvCqtLRz1vC1kqdGs=
+X-Google-Smtp-Source: AGHT+IFaczo3IbfhwgIe9Sza33bArtagm3Tkb0JFmxYq8G8NdkFj02bN5c69pTpkewiAkeUUGJBT0A==
+X-Received: by 2002:a05:6512:2082:b0:507:b15b:8b99 with SMTP id t2-20020a056512208200b00507b15b8b99mr4396479lfr.60.1698580094240;
+        Sun, 29 Oct 2023 04:48:14 -0700 (PDT)
+Received: from localhost.localdomain (host-213-145-197-219.kaisa-laajakaista.fi. [213.145.197.219])
+        by smtp.gmail.com with ESMTPSA id 27-20020ac2483b000000b00502e0388846sm1016346lft.244.2023.10.29.04.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Oct 2023 04:48:13 -0700 (PDT)
+From:   Peter Ujfalusi <peter.ujfalusi@gmail.com>
+To:     tony@atomide.com, lee@kernel.org, robh@kernel.org
+Cc:     wens@csie.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: twl6030-irq: Revert to use of_match_device()
+Date:   Sun, 29 Oct 2023 13:48:43 +0200
+Message-ID: <20231029114843.15553-1-peter.ujfalusi@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: mwifiex: document use with the SD8777
- chipset
-Content-Language: en-US
-To:     Karel Balej <balejk@matfyz.cz>, Kalle Valo <kvalo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Cc:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231029111807.19261-1-balejk@matfyz.cz>
- <20231029111807.19261-2-balejk@matfyz.cz>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231029111807.19261-2-balejk@matfyz.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2023 12:08, Karel Balej wrote:
-> Document the corresponding compatible string for the use of this driver
-> with the Marvell SD8777 wireless chipset.
-> 
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
+The core twl chip is probed via i2c and the dev->driver->of_match_table is
+NULL, causing the driver to fail to probe.
 
+This partially reverts commit 1e0c866887f4.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
+Fixes: 1e0c866887f4 ("mfd: Use device_get_match_data() in a bunch of drivers")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 ---
+ drivers/mfd/twl6030-irq.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/mfd/twl6030-irq.c b/drivers/mfd/twl6030-irq.c
+index f9fce8408c2c..3c03681c124c 100644
+--- a/drivers/mfd/twl6030-irq.c
++++ b/drivers/mfd/twl6030-irq.c
+@@ -24,10 +24,10 @@
+ #include <linux/kthread.h>
+ #include <linux/mfd/twl.h>
+ #include <linux/platform_device.h>
+-#include <linux/property.h>
+ #include <linux/suspend.h>
+ #include <linux/of.h>
+ #include <linux/irqdomain.h>
++#include <linux/of_device.h>
+ 
+ #include "twl-core.h"
+ 
+@@ -368,10 +368,10 @@ int twl6030_init_irq(struct device *dev, int irq_num)
+ 	int			nr_irqs;
+ 	int			status;
+ 	u8			mask[3];
+-	const int		*irq_tbl;
++	const struct of_device_id *of_id;
+ 
+-	irq_tbl = device_get_match_data(dev);
+-	if (!irq_tbl) {
++	of_id = of_match_device(twl6030_of_match, dev);
++	if (!of_id || !of_id->data) {
+ 		dev_err(dev, "Unknown TWL device model\n");
+ 		return -EINVAL;
+ 	}
+@@ -409,7 +409,7 @@ int twl6030_init_irq(struct device *dev, int irq_num)
+ 
+ 	twl6030_irq->pm_nb.notifier_call = twl6030_irq_pm_notifier;
+ 	atomic_set(&twl6030_irq->wakeirqs, 0);
+-	twl6030_irq->irq_mapping_tbl = irq_tbl;
++	twl6030_irq->irq_mapping_tbl = of_id->data;
+ 
+ 	twl6030_irq->irq_domain =
+ 		irq_domain_add_linear(node, nr_irqs,
+-- 
+2.42.0
 
