@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EABA7DADEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D377DADF1
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjJ2TRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
+        id S230226AbjJ2T3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 15:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2TRN (ORCPT
+        with ESMTP id S229512AbjJ2T3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:17:13 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7FEB6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:17:10 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32db188e254so2594060f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698607029; x=1699211829; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ITSqca1evCzkzhn7N4VS98YhVKLbCaQ6LkheIXfd40c=;
-        b=Wmbue4+qto/Mi+l2NczYEkPW2S0v48+Bc7RfKYfp+OaLJS3EFHETc6icE4tj83WoYA
-         RAPho8/yVSSj+3yBZOPCiroo4dsvElbmxz88Ss5UL9CpTmhRo2HOjQCqmCAwIPxR0pHO
-         0VD6+5PkqJRHlp4KqldJ2OV81x6aV3VD022ss7YM6ycPy5NylEcCwvaCoaPz8T5BdiR1
-         2Gvn1z5g7I3uc5yhaMOCwCjCJURiUZVNpfSdoLkDNCjMwW7CxaJBpYOgn8dD0p8+RTHW
-         gbx7cLCSvioly8/bxf+kZjpv10xOvchMYrJMh3ofX6RL2qZCWs2kuitLTlt9Xn+w49KO
-         m8tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698607029; x=1699211829;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ITSqca1evCzkzhn7N4VS98YhVKLbCaQ6LkheIXfd40c=;
-        b=ncuflcvoqeqRNpmWKRrJUeoUbeMWc69ztGH8jfxVqmAoivsHB7XDe8nqS6dIEi4AKx
-         5z6hRvsibNwzAUzIEeKY27L/Epw7u2nNTwA1VzRyvoGs/H1y+qNLDiPqirV9sBa0myHH
-         VaM5FGbV0iGHRD8ZBu+GACgA2bzhuk5jQ8DWlSH1n3AyBGGXHwouG03j/jA1EnPq9wqB
-         5M7FKr1XVfYPkL52rBloduCz7HFjR2MeECMe/nPvN5VHNNCTWYq9oP74qZIDEbnA9jAk
-         Vdm9UDY3/6W+kcAbq5f1A6w2yWD88LAfgWh8rKLmeD5F4VX5YYzWbvVid6LR8piokFwW
-         JrLQ==
-X-Gm-Message-State: AOJu0YzDM4K/RwwWmHt+UtPA4oLJmPyf38j2mhb4zFO2yr9i2RHg7oWx
-        OQAJgwt+Xc8g+kOchKVE6CWh5sU7LEEGXeBi
-X-Google-Smtp-Source: AGHT+IHXE2bjhwJPibipKZXXVYDAVNLrcQqlZkEYTJRNgF/vz2gBUtTk5/EHvKpgfBfIDriqLRKsMw==
-X-Received: by 2002:a05:6000:1865:b0:32f:74ee:fcd4 with SMTP id d5-20020a056000186500b0032f74eefcd4mr7064455wri.2.1698607028509;
-        Sun, 29 Oct 2023 12:17:08 -0700 (PDT)
-Received: from nancy-1-2.. ([105.163.156.232])
-        by smtp.googlemail.com with ESMTPSA id p1-20020a5d68c1000000b0032db8f7f378sm6483343wrw.71.2023.10.29.12.17.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 12:17:08 -0700 (PDT)
-From:   Nancy Nyambura <nicymimz@gmail.com>
-Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Nancy Nyambura <nicymimz@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rts5208: Replace strncpy() with strscpy() for appropriate string copying in rtsx_scsi line 524 warning: found by checkpatch.pl script
-Date:   Sun, 29 Oct 2023 22:16:42 +0300
-Message-Id: <20231029191647.44127-1-nicymimz@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Sun, 29 Oct 2023 15:29:42 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D09BC
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:29:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=p9zr
+        TD00DIpe6oylzEgJGwQE8pK2cLRj8DxtFfGEiMQ=; b=bFgaGK7F7IzVg56PCsa7
+        1fGZ28vsCEefZu+LcreA4Q/bGACjqnsoeyeIpGHm3g50ubd2a1u6BReW0szod+3B
+        44pqvZX2GmuRIxKRgrVHxAwcylptSa7jZHf2W2MQWerNTXY8LiEMrZcvLE1MkENr
+        6+Doe2aGc99keRwcXShWQH4vD/AHkz5M1EvInfH3rCBRfi/4D1rf+S2xQGzH35gI
+        zi0Vscki/TqhJfnmm2oZM4KBXxkvJxSCbsyVSesklo4kZ7FSWjvInNXqqsg0H0Mb
+        xtwkVEjU91F1zmL8fgN3EA+9ZRapF08mnSHD1KJR89+ov+cJm3eArwsy84woRIBg
+        gw==
+Received: (qmail 3888756 invoked from network); 29 Oct 2023 20:29:35 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Oct 2023 20:29:35 +0100
+X-UD-Smtp-Session: l3s3148p1@THIM8d8I5JRehhre
+Date:   Sun, 29 Oct 2023 20:29:34 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     ye.xingchen@zte.com.cn
+Cc:     peda@axentia.se, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: mux: Convert to use sysfs_emit_at() API
+Message-ID: <ZT6ynvEUT1gWr4FZ@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        ye.xingchen@zte.com.cn, peda@axentia.se, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <202212071048339386860@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8h6Xx8JROQRZl63F"
+Content-Disposition: inline
+In-Reply-To: <202212071048339386860@zte.com.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
----
- drivers/staging/rts5208/rtsx_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
-index 08bd768ad34d..52324b8ebbc7 100644
---- a/drivers/staging/rts5208/rtsx_scsi.c
-+++ b/drivers/staging/rts5208/rtsx_scsi.c
-@@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 
- 	if (sendbytes > 8) {
- 		memcpy(buf, inquiry_buf, 8);
--		strncpy(buf + 8, inquiry_string, sendbytes - 8);
-+		strscpy(buf + 8, inquiry_string, sendbytes - 8);
- 		if (pro_formatter_flag) {
- 			/* Additional Length */
- 			buf[4] = 0x33;
--- 
-2.40.1
+--8h6Xx8JROQRZl63F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 07, 2022 at 10:48:33AM +0800, ye.xingchen@zte.com.cn wrote:
+> From: ye xingchen <ye.xingchen@zte.com.cn>
+>=20
+> Follow the advice of the Documentation/filesystems/sysfs.rst and show()
+> should only use sysfs_emit() or sysfs_emit_at() when formatting the
+> value to be returned to user space.
+>=20
+> Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
+
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+
+--8h6Xx8JROQRZl63F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU+spoACgkQFA3kzBSg
+KbZQ9A/9E6bzVQmP1mu1+IVaakSwjZ/vEKPpsODnIxahg+yxFBg+R+z9AdAdLinC
+6SCU4rbgnnVoyx0N4X7QvHY3x2Lcjxm2lvnyJFgFAn4s31DNlkXON6+XmA+6v6NM
+C25x3HeqQJJ+h0hiCyd34/MHK71pqiH4Khk7KMMB9LhGS1ERuuLRKWIloAjp24N6
+wPh7KmkuhiktX88fYbssLXew3kLHN/UW2Ey3fhCiNn4S8DAJ0U7wCtW4v45HERlz
+STlg2bh4OpWr+uPtXIjPl0XPBH0pDKVGJRQ+e5qSWhe+fiad8ExwksZkCfSb3CIE
+4SX7OuGzLjZA/rX+Zdk8lVXBwrQa57Tp6bc3ROPOWvVTlH/rx5BXXQOMLhPQLvK3
+jqAJoT+BE3r7PbutyAxEu+UhasIUwKlxblSM4+CwZcyV2UJgvNRZU32ZmCguygHC
+a2JAJvI6bxr6ro3JuF48+3U0RJNoeApaQAM/A8j9RKdJgFCZS/wsN/+UL6VOtzp9
+cDRqp2l7RWbTcrcqJ1vrIGYe9qFJL1u3vh5n9ltZ84We1xN/ciN8XuSt8SF9qROu
+NAu2jOuSjv0EpnGeLjM0qh/KteEJBL7c6IZ+/5MCvWJCSOzUNCcU7vXZDX0hEmx9
+Js7GAfDC0jOoLBuHJDNCd72Ru/Fel2dWpnP3lhkJ1fFOShEdY7M=
+=hJmj
+-----END PGP SIGNATURE-----
+
+--8h6Xx8JROQRZl63F--
