@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 906F57DAE0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3DC7DAE13
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbjJ2Txc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
+        id S230374AbjJ2T5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 15:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjJ2Txb (ORCPT
+        with ESMTP id S229529AbjJ2T5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:53:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECB7BD
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:53:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46471C433C8;
-        Sun, 29 Oct 2023 19:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698609208;
-        bh=lmudrSFAHZUzHPWgKrth9d+IMU9R0eRDc3eGd1MXJC4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BYRXQ30H7zG0VuXvZAImgIlhy7I8o0cO6u74yfM2MHH0xc7shZ1zPeV2NrW/FjYxm
-         i4M3G+IwBNXrgeZp3ir7RiYdAXCQ21w9+g2mLWKgb4yZLNGvf15tGfJJ8JL5yaPcEq
-         qBB0vaSNa3IHDUzD7YZPYbnbbfWpmSVIikUNp0bt+QECZyY+Cvos8qOifeaL0DKm8V
-         B8G6oz2+1L1rKMk4wfU5chSopqlaNhyqJQrmmQ6EM1kahfNdN2MaPEIqrYWIKZinDD
-         UXmf+XJb9cuLyPTCuIg838uJhSmMdiQHs5+J8kT0pLfy4AXYne4Dm49zDSNV8mDFwo
-         9nksLDpGRohlw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v11 09/14] irqchip/riscv-imsic: Add support for PCI MSI
- irqdomain
-In-Reply-To: <87y1fmzja1.ffs@tglx>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-10-apatel@ventanamicro.com>
- <8734y0rwtw.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2UVgTd-a0671Lab_ZeOPWP3=wHY+pydKHqaR-Yg65YhrA@mail.gmail.com>
- <87jzrbf5cw.fsf@all.your.base.are.belong.to.us> <87y1fmzja1.ffs@tglx>
-Date:   Sun, 29 Oct 2023 20:53:25 +0100
-Message-ID: <87bkchfbnu.fsf@all.your.base.are.belong.to.us>
+        Sun, 29 Oct 2023 15:57:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1CFBD;
+        Sun, 29 Oct 2023 12:57:31 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9cc6c92d1e9so106572066b.1;
+        Sun, 29 Oct 2023 12:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698609450; x=1699214250; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vx7izOau8sCiVgG0u6aOBpYUrdCuQ45nTL6cseN6K0E=;
+        b=dnWAGqifrEk/k6HKoxIoUgPoTiA3KmVHVxO8X+4awEitBgSBLj1VC7nTg+gdeQqnqC
+         zzGmoTKFXNYlhoRlPmtBi67r9n4T5UCzRNGJiY/YjtFYeQuS3wkOs9tOk/MnKm3yFGt3
+         4oJ3totMJvIlmTujbgu/Bam4+QKv9tvAPofKNeqzOd9hg+ObWwv/I8yLmQY3Qy0VoAlX
+         RaAmWm5S1Uo/p0/udFhm6XtDHyjZzBj38IJdSILbZLMZHaECN4m0sBtrl/HJcDp6/RKD
+         BN1MoC6URu1n4iXMdwj4dvlmR3s3Yd5XPJa9Tf1x5yn8AhLd7gbC5mhVlpwAx1/eZsGD
+         W3Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698609450; x=1699214250;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vx7izOau8sCiVgG0u6aOBpYUrdCuQ45nTL6cseN6K0E=;
+        b=bJ9t6sc/agcFVrCO/+SX6cObXzyOKQX1N+WG+Wqa5wKXK6weLA7iLpa/8eJhC2c3Sf
+         3TTmlz+2f9KbWSu92dvJ8bw22PwLf5vqLiCFlVmNQOC+4TBIXMOQQC30W7Ey3iaFud52
+         Q6ZOml1A2pz8xuEzpAg8tbJw7fgmXgMpvcNyBQqVoh53YwtDjiBu89e5GukgXvZXxEtQ
+         VnFJ8tLAypaMIU0fpqmlaFYX+eW+V/do2PBOBNY5dJeilJagC+AGkGrGZMw/ZirCjHRG
+         NqCOjrSsjXk7dEypbMMw2wO+pJw0NYU+3aU5ou8dqNrEk/cU7NwGUSxknHO6FHQ1Hxow
+         m3DA==
+X-Gm-Message-State: AOJu0Yx42CKXY41Qqxcd/DEgw5OSQs7SHu1iGRnFqctIjr1qU0KBuYeJ
+        QFIiJSxRGM3m4F3KCSYu0q4=
+X-Google-Smtp-Source: AGHT+IF/H3xSwOkvHLMT4GIJk/7IShD1YiuOAyywwIAOxmeQfdO2wz65jC3sWyupsmOjPUG/bODFZQ==
+X-Received: by 2002:a17:907:890:b0:9d0:51d4:4d7f with SMTP id zt16-20020a170907089000b009d051d44d7fmr3940052ejb.1.1698609449967;
+        Sun, 29 Oct 2023 12:57:29 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([88.117.214.186])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170906051500b009b2ca104988sm4828423eja.98.2023.10.29.12.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Oct 2023 12:57:29 -0700 (PDT)
+Date:   Sun, 29 Oct 2023 12:57:27 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH-net-next] ptp: fix corrupted list in ptp_open
+Message-ID: <ZT65J4mvFe1yx5_3@hoboy.vegasvil.org>
+References: <tencent_61372097D036524ACC74E176DF66043C2309@qq.com>
+ <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
+On Sun, Oct 29, 2023 at 10:09:42AM +0800, Edward Adam Davis wrote:
 
-> On Wed, Oct 25 2023 at 10:55, Bj=C3=B6rn T=C3=B6pel wrote:
->>> Now for IMSIC-PCI domain, the PCI framework expects the
->>> pci_msi_mask/unmask_irq() functions to be called but if
->>> we directly point pci_msi_mask/unmask_irq() in the IMSIC-PCI
->>> irqchip then IMSIC-BASE (parent domain) irq_mask/umask
->>> won't be called hence the IRQ won't be masked/unmask.
->>> Due to this, we call both pci_msi_mask/unmask_irq() and
->>> irq_chip_mask/unmask_parent() for IMSIC-PCI domain.
->>
->> Ok. I wont dig more into it for now! If the interrupt is disabled at
->> PCI, it seems a bit overkill to *also* mask it at the IMSIC level...
->
-> Only _if_ the device provides MSI masking, but that extra mask/unmask is
-> not the end of the world.
+> @@ -585,7 +596,6 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+>  free_event:
+>  	kfree(event);
+>  exit:
+> -	if (result < 0)
+> -		ptp_release(pccontext);
+> +	mutex_unlock(&ptp->tsevq_mux);
+>  	return result;
+>  }
 
-Yikes -- so MSI masking is optional. Ick. :-( Thanks for the excellent
-MSI vs MSI-X post in the other thread, BTW. Great stuff!
+This is the only hunk that makes sense.  Keep this, but remove the
+rest, just like in your previous patches.
+
+Thanks,
+Richard
