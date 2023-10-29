@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9717DAF2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C047DAF26
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjJ2W5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S231270AbjJ2W5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbjJ2W5A (ORCPT
+        with ESMTP id S231336AbjJ2W4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:57:00 -0400
+        Sun, 29 Oct 2023 18:56:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57F21FFF;
-        Sun, 29 Oct 2023 15:55:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEB6C43395;
-        Sun, 29 Oct 2023 22:55:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6206E1;
+        Sun, 29 Oct 2023 15:55:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EE3C433C9;
+        Sun, 29 Oct 2023 22:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620139;
-        bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
+        s=k20201202; t=1698620140;
+        bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DD2ZqOPUQ4dWNHmQvLW7m9YQkFr3zIxKM79zwtOjvKxD13Oofe/RO0FZhGBkehaXu
-         yP9bpWLfpIBJnGX4LTBQ+PWbd2B74GcSXbmK7N5auXTXYIBgv4eDgoRtGFvZVAL1u0
-         bkRiEBAD+P1LzTBhYvuxte4jAr03dn3juUjtynLCtpJeC/1rnlheuh+FecWFLhsSi6
-         7iCoPUQvhGPrS4AveT2T3GPNzaC00vhVBf4pwtbpeDkpB1CHXvBNYqiKKgCrYB/EzE
-         1R/l5caqEO0cfn2VHU5nYsITDH1q1WxyxdF2yBWhlRB4hSkxKD0x6SoGvOgR80s0Rh
-         1WGEBAYKVVefQ==
+        b=TD5CqIn0imcIWVLJ/3i+5GeO4pHgAQq3nAC1hyMiQNNefLP/PSB21A7t334zLICbS
+         D/7JXhphfMqfa+GlogfibeIUMQnts6QdGffKgs2WDtSJVX8LYkNdtO6b8F2XwCLZc1
+         I1uvRIO/dsKse+KZpU09OWUvqJb3/pul+qqi3yMKb8ciCWyPxB16p8/lZt+ozvQEIM
+         ztgMVC5wkyVtgMWodzPs+Esszyp2sbvefqef09Cv/u0kVnPhTooYU/0kTLOAq1GNCj
+         7Uvgf9i9F0v/yuChg724ctBO7+DWT66IIItTZv6LGaqFb4cl2vEskCjWDWkN9SZkqt
+         Fjb7aKd6L/Nzg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
+Cc:     Roy Chateau <roy.chateau@mep-info.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 28/52] ASoC: rt5650: fix the wrong result of key button
-Date:   Sun, 29 Oct 2023 18:53:15 -0400
-Message-ID: <20231029225441.789781-28-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, shenghao-ding@ti.com,
+        kevin-lu@ti.com, baojun.xu@ti.com, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.5 29/52] ASoC: codecs: tas2780: Fix log of failed reset via I2C.
+Date:   Sun, 29 Oct 2023 18:53:16 -0400
+Message-ID: <20231029225441.789781-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -55,33 +55,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Roy Chateau <roy.chateau@mep-info.com>
 
-[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
+[ Upstream commit 4e9a429ae80657bdc502d3f5078e2073656ec5fd ]
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
+Correctly log failures of reset via I2C.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
+Signed-off-by: Roy Chateau <roy.chateau@mep-info.com>
+Link: https://lore.kernel.org/r/20231013110239.473123-1-roy.chateau@mep-info.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/tas2780.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a506d940a2ead..fae04e9fae4e7 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3251,6 +3251,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
+diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
+index 86bd6c18a9440..41076be238542 100644
+--- a/sound/soc/codecs/tas2780.c
++++ b/sound/soc/codecs/tas2780.c
+@@ -39,7 +39,7 @@ static void tas2780_reset(struct tas2780_priv *tas2780)
+ 		usleep_range(2000, 2050);
  	}
- 	rt5645_irq(0, rt5645);
  
+-	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
++	ret = snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
+ 				TAS2780_RST);
+ 	if (ret)
+ 		dev_err(tas2780->dev, "%s:errCode:0x%x Reset error!\n",
 -- 
 2.42.0
 
