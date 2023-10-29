@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AAA7DAA61
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 02:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF67F7DAA66
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 02:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjJ2BnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 21:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39956 "EHLO
+        id S229853AbjJ2Bsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 21:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2BnK (ORCPT
+        with ESMTP id S229446AbjJ2Bsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 21:43:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D24191
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 18:43:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11DDC433CA
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 01:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698543786;
-        bh=RV0zb3lhegMvwu6SBENrY53pytOM0ZbrC0mX4veCDBU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eXRVa3GWQFODDE2mzHNFeEErsTmqwR1J6bHjfw9N18KPPAqn1vFFQZc5WuhNJymrS
-         QAbpYVRq1WvH2namEQ+JNx8fUlSAetTZKcB1EeCV4lKAaIRY7PLDFVuNXKN/Z8hBIF
-         w2M0aDlRB/SO4TaCKho0beIApwKFR4Joc0GKb80l9r4XB/aIhsKpf7PnR/2gT++wwM
-         q8WvaOf/ZZ1ZCBPHzlBn772x0lTDK32D/h5Rsbr8IzJUw3JnVYaWr9eT1dtmPy+7Ao
-         vSZ3gwkfli/7diP69l8yL1MoffGxHR6T8BsVHo26tUQIRXL2LB2xhotV3Aqfdes/6D
-         ytDZC09lzUluw==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso506374666b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 18:43:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz6FnjIX2q82yrLjZkXpxBDgFUGoFftRxO1Tfs7SIekCDI7fcuA
-        3ki7VzMggOo2iXppIoisM4kC5J05peOC1DpH4v0=
-X-Google-Smtp-Source: AGHT+IF2JIMSSTjEVfyF+OUAWOkjcnvrBQ8146GjUqPYA+gK/34LhUZ/knPXxPx2IhS97PMaLJz0ExcCjDyXQRukCkM=
-X-Received: by 2002:a17:907:608c:b0:9c5:6cf5:448a with SMTP id
- ht12-20020a170907608c00b009c56cf5448amr4880619ejc.44.1698543785110; Sat, 28
- Oct 2023 18:43:05 -0700 (PDT)
+        Sat, 28 Oct 2023 21:48:51 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110A1CF;
+        Sat, 28 Oct 2023 18:48:49 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b9af7d41d2so2983220b3a.0;
+        Sat, 28 Oct 2023 18:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698544128; x=1699148928; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=auatwq7IukONekRjkD8fy/r6M5PY6yplZ8A6BcVgrik=;
+        b=ilFFzRS8lobmPuaqxFB1v1cBnI057yV9nPSFL+1fonF7IwA7LIiflwDg2EBF+sE4Ju
+         TJYVaLsM9KlqgsvXkD4jRqMZ92Wq02MwjIjEDyH3HksQqdjHwa98uKXodM3xPcsi7O6e
+         CRgJZRff2rvF9Dg66DRgmJexzzlKYXOyn37aY3cTnZuuuEJHtHppbPXISANxJ5RO8fsF
+         aDPErIYL5662Vxws0wQlj5Tsx2FdsQSMgCsgj/OUo85N0+4if8QMYIvp3tMby8orgqdE
+         76QJ6LQ5yb2ruf7pqZF+sNKKVGydNaecUpMMqIduDWXXl0I7L2g/IW0TsWiwknD/0AJd
+         WJ/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698544128; x=1699148928;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=auatwq7IukONekRjkD8fy/r6M5PY6yplZ8A6BcVgrik=;
+        b=NP4dzvBTe9qLX56rHMgdSRlSISCpStWPv5QknAuov4c67UJqNxuiwORexicUN11aOf
+         9eWYWbTxUYHf7c2QBo8dpX/ghbJtb103W3WnT6N+9Ro9x89kZCeUkL6MvoKXeeBfgDES
+         w9zvzfXuaz1S7j2ouHcCeyCHe6kn2QYTCs6YVJEkbwVqMN9KUdrKfWJo7csjP5t8fxL7
+         0xWYelWjU/JQRvpKbQggYRsZyZ8vOJZTrfqf5OZYeYSfwqQYP7pw+4Sl1ji9fcKRaIdC
+         rTkbHISMLyJQtpx6AIK6lTP640rfuUGwe7wuGtmpHY/7p1UGkwmQeoEVvJizNUJ1OI2P
+         Lx6g==
+X-Gm-Message-State: AOJu0YyXrQ2gdyQvlOi7+C+fGz5Yf9zSwayGOvKRHnKt9rxtbdhn3vMS
+        qD1lCbmC8fHldQyRTe/Nqpg=
+X-Google-Smtp-Source: AGHT+IEmW7h54d/bTZdjJ6PyNgjOmZfb752KgVjw8p6echz5SgbZih3/FuM6WBOgDx4mD+Ik3rg9eA==
+X-Received: by 2002:a17:902:e5cf:b0:1cc:3c6c:ce23 with SMTP id u15-20020a170902e5cf00b001cc3c6cce23mr879901plf.42.1698544128240;
+        Sat, 28 Oct 2023 18:48:48 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001b8baa83639sm3759894plx.200.2023.10.28.18.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Oct 2023 18:48:47 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 98A0E8047BCA; Sun, 29 Oct 2023 08:48:43 +0700 (WIB)
+Date:   Sun, 29 Oct 2023 08:48:42 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Hardware Monitoring <linux-hwmon@vger.kernel.org>,
+        Linux x86 Platform Drivers 
+        <platform-driver-x86@vger.kernel.org>,
+        Linux LEDs <linux-leds@vger.kernel.org>
+Cc:     Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Johannes =?utf-8?Q?Pen=C3=9Fel?= <johannes.penssel@gmail.com>
+Subject: Re: Fwd: sysfs: cannot create duplicate filename
+ .../system76_acpi::kbd_backlight/color
+Message-ID: <ZT25-gUmLl8MPk93@debian.me>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
 MIME-Version: 1.0
-References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
- <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info> <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
- <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
- <ZSO9uArAtsPMPeTP@debian.me> <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
- <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info> <CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com>
- <ZTWoDSPxGO-ApR4r@P70.localdomain> <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
- <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
- <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
- <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee>
-In-Reply-To: <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 29 Oct 2023 09:42:52 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
-Message-ID: <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
-To:     Jaak Ristioja <jaak@ristioja.ee>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Evan Preston <x.arch@epreston.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="l1HHIbidedQ4JpqX"
+Content-Disposition: inline
+In-Reply-To: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,181 +89,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@ristioja.ee> wr=
-ote:
->
-> On 26.10.23 03:58, Huacai Chen wrote:
-> > Hi, Jaak,
-> >
-> > On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@ristioja.ee=
-> wrote:
-> >>
-> >> On 25.10.23 16:23, Huacai Chen wrote:
-> >>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
-> >>> <regressions@leemhuis.info> wrote:
-> >>>>
-> >>>> Javier, Dave, Sima,
-> >>>>
-> >>>> On 23.10.23 00:54, Evan Preston wrote:
-> >>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
-> >>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regression tracking =
-(Thorsten
-> >>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> >>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
-> >>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya <bagasdotme=
-@gmail.com> wrote:
-> >>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
-> >>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Chen <chenhuac=
-ai@kernel.org> wrote:
-> >>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regression trac=
-king (Thorsten
-> >>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> >>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrate=
-d Intel HD
-> >>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results =
-in a blank
-> >>>>>>>>>>>>> screen after boot until the display manager starts... if it=
- does start
-> >>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems to be a =
-workaround.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a804=
-1717e3a2e4
-> >>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall =
-to
-> >>>>>>>>>>>>> subsys_initcall_sync").
-> >>>>>>>>>>>>
-> >>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things wor=
-k fine
-> >>>>>>>>>> again. So I guess the reason:
-> >>>>>>>
-> >>>>>>> Well, this to me still looks a lot (please correct me if I'm wron=
-g) like
-> >>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enabled bef=
-orehand
-> >>>>>>> if I understood things correctly. Or is there a proper fix for th=
-is
-> >>>>>>> already in the works and I just missed this? Or is there some goo=
-d
-> >>>>>>> reason why this won't/can't be fixed?
-> >>>>>>
-> >>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because there =
-was
-> >>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works but it h=
-as a
-> >>>>>> blank screen. Of course it is valuable to investigate further abou=
-t
-> >>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort beca=
-use
-> >>>>>> I don't have a same machine.
-> >>>>
-> >>>> Side note: Huacai, have you tried working with Jaak to get down to t=
-he
-> >>>> real problem? Evan, might you be able to help out here?
-> >>> No, Jaak has no response after he 'fixed' his problem by disabling SI=
-MPLEDRM.
-> >>>
-> >>
-> >> I'm sorry, what was it exactly you want me to do? Please be mindful th=
-at
-> >> I'm not familiar with the internals of the Linux kernel and DRI, and i=
-t
-> >> might sometimes take weeks before I have time to work and respond on t=
-his.
-> > It doesn't matter. I hope you can do some experiments to investigate
-> > deeper. The first experiment you can do is enabling SIMPLEFB (i.e.
-> > CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to see
-> > whether there is also a blank screen. If no blank screen, that
-> > probably means SIMPLEDRM has a bug, if still blank screen, that means
-> > the firmware may pass wrong screen information.
->
-> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=3Dy and
-> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_SIMPLEDRM un=
-set.
-CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device created
-by sysfb_init(). Since FB_SIMPLE works fine, I think the real problem
-is that DRM_SIMPLEDRM has a bug. The next step is to enable
-CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, adding
-some printk() in simpledrm_probe() and its sub-routines to see where
-the driver fails. The output of these printk() can be seen by the
-'dmesg' command after boot.
 
-Huacai
+--l1HHIbidedQ4JpqX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Jaak
->
-> >
-> > Huacai
-> >
-> >>
-> >> Jaak
-> >>
-> >>>>
-> >>>> But I write this mail for a different reason:
-> >>>>
-> >>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
-> >>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).
-> >>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only a blan=
-k
-> >>>>> screen after boot and a rapidly flashing device-access-status
-> >>>>> indicator.
-> >>>>
-> >>>> This additional report makes me wonder if we should revert the culpr=
-it
-> >>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
-> >>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess t=
-hat
-> >>>> might lead to regressions for some users? But the patch description =
-says
-> >>>> that this is not a common configuration, so can we maybe get away wi=
-th that?
-> >>>   From my point of view, this is not a regression, 60aebc9559492c
-> >>> doesn't cause a problem, but exposes a problem. So we need to fix the
-> >>> real problem (SIMPLEDRM has a blank screen on some conditions). This
-> >>> needs Jaak or Evan's help.
-> >>>
-> >>> Huacai
-> >>>>
-> >>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' =
-hat)
-> >>>> --
-> >>>> Everything you wanna know about Linux kernel regression tracking:
-> >>>> https://linux-regtracking.leemhuis.info/about/#tldr
-> >>>> If I did something stupid, please tell me, as explained on that page=
-.
-> >>>>
-> >>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen is blank=
- (don't
-> >>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmwa=
-re: Move
-> >>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sync") th=
-ere is
-> >>>>>>>>>> no platform device created for SIMPLEDRM at early stage, so it=
- seems
-> >>>>>>>>>> also "no problem".
-> >>>>>>>>> I don't understand above. You mean that after that commit the p=
-latform
-> >>>>>>>>> device is also none, right?
-> >>>>>>>> No. The SIMPLEDRM driver needs a platform device to work, and th=
-at
-> >>>>>>>> commit makes the platform device created earlier. So, before tha=
-t
-> >>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blank; afte=
-r that
-> >>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
-> >>>>>>>>
-> >>>>>>>> Huacai
-> >>>>>>>>>
-> >>>>>>>>> Confused...
-> >>>>>>>>>
-> >>>>>>>>> --
-> >>>>>>>>> An old man doll... just what I always wanted! - Clara
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>
-> >>>>>
-> >>
->
+On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+> Hi,
+>=20
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>=20
+> > Loading the system76-acpi kernel module fails on linux 6.6-rc7. This do=
+es not seem to be an issue with system76-acpi itself, because reverting com=
+mit #5d36931f0fe51665c04f56c027613d22e6a03411, which is the only change mad=
+e to this driver across the 6.6 development cycle, does not fix the issue. =
+On 6.5.8, everything works fine. My hardware is a Clevo-based Alder Lake la=
+ptop running coreboot, roughly similar to the System76 Darter Pro 8.
+> >=20
+> > backtrace:
+> > [  266.399036] sysfs: cannot create duplicate filename '/devices/LNXSYS=
+TM:00/LNXSYBUS:00/17761776:00/leds/system76_acpi::kbd_backlight/color'
+> > [  266.399045] CPU: 1 PID: 2896 Comm: modprobe Not tainted 6.6.0-rc7 #1
+> > [  266.399050] Hardware name: Notebook NS5x_NS7xPU/NS5x_NS7xPU, BIOS Da=
+sharo (coreboot+UEFI) v1.6.0 03/30/2023
+> > [  266.399053] Call Trace:
+> > [  266.399057]  <TASK>
+> > [  266.399063]  dump_stack_lvl+0x36/0x50
+> > [  266.399080]  sysfs_warn_dup+0x5a/0x70
+> > [  266.399088]  sysfs_add_file_mode_ns+0x11a/0x130
+> > [  266.399094]  internal_create_group+0x125/0x3b0
+> > [  266.399101]  internal_create_groups+0x42/0xa0
+> > [  266.399107]  device_add+0x5b1/0x8a0
+> > [  266.399113]  ? kstrdup+0x4c/0x70
+> > [  266.399119]  device_create_groups_vargs+0xce/0xf0
+> > [  266.399124]  device_create_with_groups+0x4b/0x70
+> > [  266.399129]  led_classdev_register_ext+0x1d2/0x470 [led_class]
+> > [  266.399149]  ? devm_led_classdev_register_ext+0x3a/0x90 [led_class]
+> > [  266.399162]  devm_led_classdev_register_ext+0x50/0x90 [led_class]
+> > [  266.399173]  system76_add+0x18b/0x460 [system76_acpi]
+> > [  266.399186]  acpi_device_probe+0x47/0x130
+> > [  266.399193]  really_probe+0x19b/0x3e0
+> > [  266.399199]  ? __pfx___driver_attach+0x10/0x10
+> > [  266.399205]  __driver_probe_device+0x78/0x160
+> > [  266.399211]  driver_probe_device+0x1f/0x90
+> > [  266.399217]  __driver_attach+0xd2/0x1c0
+> > [  266.399222]  bus_for_each_dev+0x85/0xd0
+> > [  266.399227]  bus_add_driver+0x116/0x220
+> > [  266.399233]  driver_register+0x59/0x100
+> > [  266.399242]  ? __pfx_system76_driver_init+0x10/0x10 [system76_acpi]
+> > [  266.399252]  do_one_initcall+0x5a/0x300
+> > [  266.399260]  do_init_module+0x60/0x240
+> > [  266.399267]  init_module_from_file+0x86/0xc0
+> > [  266.399275]  __x64_sys_finit_module+0x18a/0x350
+> > [  266.399282]  do_syscall_64+0x5d/0x90
+> > [  266.399289]  ? syscall_exit_to_user_mode+0x26/0x40
+> > [  266.399295]  ? do_syscall_64+0x6c/0x90
+> > [  266.399300]  ? do_syscall_64+0x6c/0x90
+> > [  266.399305]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > [  266.399314] RIP: 0033:0x7f5c11b38d7d
+> > [  266.399360] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=
+ 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05=
+ <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7b d0 0b 00 f7 d8 64 89 01 48
+> > [  266.399364] RSP: 002b:00007ffe30e15b88 EFLAGS: 00000246 ORIG_RAX: 00=
+00000000000139
+> > [  266.399370] RAX: ffffffffffffffda RBX: 000055a8d48d6c10 RCX: 00007f5=
+c11b38d7d
+> > [  266.399372] RDX: 0000000000000000 RSI: 000055a8d3077d8b RDI: 0000000=
+000000003
+> > [  266.399375] RBP: 000055a8d3077d8b R08: 00007f5c11bf6b00 R09: 00007ff=
+e30e15bd0
+> > [  266.399376] R10: 0000000000000050 R11: 0000000000000246 R12: 0000000=
+000040000
+> > [  266.399378] R13: 000055a8d48d6c90 R14: 000055a8d48d6390 R15: 000055a=
+8d48d7090
+> > [  266.399382]  </TASK>
+> > [  266.399410] System76 ACPI Driver: probe of 17761776:00 failed with e=
+rror -17
+>=20
+> See Bugzilla for the full thread and attached dmesg output.
+>=20
+> Anyway, I'm adding this regression to regzbot:
+>=20
+> #regzbot introduced: v6.5..v6.6-rc7 https://bugzilla.kernel.org/show_bug.=
+cgi?id=3D218045
+>=20
+
+The reporter had narrowed down the culprit. He said on Bugzilla:
+
+> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, =
+which introduces a new 'color' attribute for led sysfs class devices. The p=
+roblem is that the system76-acpi platform driver tries to create the exact =
+same sysfs attribute itself for the system76_acpi::kbd_backlight device, le=
+ading to the conflict. For testing purposes, I've just rebuilt the kernel w=
+ith the system76-apci color attribute renamed to kb_color, and that fixes t=
+he issue.
+
+Jean-Jacques Hiblot, would you like to take a look on this regression,
+since you authored the culprit?
+
+Anyway, telling regzbot:
+
+#regzbot introduced: c7d80059b086c4
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--l1HHIbidedQ4JpqX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZT259QAKCRD2uYlJVVFO
+o1aLAQCTcxJzAz7z6gQE5PYbKcSC6KTszCtvXejFOdoLJXcb6wEAiDFpigyZ7u4l
+WkPd9Z5tgzenEgsZPGAbF5PNFtKr+wk=
+=pa9Q
+-----END PGP SIGNATURE-----
+
+--l1HHIbidedQ4JpqX--
