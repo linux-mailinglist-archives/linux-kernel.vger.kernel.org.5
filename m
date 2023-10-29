@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A22D7DAE07
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961867DAE0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjJ2Tqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        id S230263AbjJ2TtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 15:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjJ2TqU (ORCPT
+        with ESMTP id S229533AbjJ2TtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:46:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 767ABC4
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:46:17 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxNvGHtj5l0Js1AA--.38906S3;
-        Mon, 30 Oct 2023 03:46:15 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNx+tj5lKq02AA--.51878S10;
-        Mon, 30 Oct 2023 03:46:13 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] drm/loongson: Add support for the display subsystem in LS2K2000
-Date:   Mon, 30 Oct 2023 03:46:07 +0800
-Message-Id: <20231029194607.379459-9-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231029194607.379459-1-suijingfeng@loongson.cn>
-References: <20231029194607.379459-1-suijingfeng@loongson.cn>
+        Sun, 29 Oct 2023 15:49:07 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E49B;
+        Sun, 29 Oct 2023 12:49:05 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e2308198dso1457998a12.1;
+        Sun, 29 Oct 2023 12:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698608944; x=1699213744; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qvVEduFFGy1+UbYCRZST4+Tb8T3xgC/iEMnPr7os3R0=;
+        b=JK0lgPfCuLn3AG3S9voDPU2NZCVAm02mdZRSjoK9gZmWzKjau0LXNK5jb+W/AL4XLm
+         m9LF28oKmRKrRguV5MjfKmNGVpb+qw4206MCpoc2wUh8rNfGpIx7QLQinTv5zezCXal7
+         gWCerWEme/y16tlDmshM9biUDwW4jYjLiskYyapUCqq+91M20x96upBheX1QKah3ybD1
+         H7EnE2cGL79qteIjSsmxiXCY94zolwTVYxxiAQkLWmHjDh7/lDyM+XVia+iEyQFX04v4
+         A09JGGGdslTvrL3ofYGMB4QtNnpYRXHbR7TWLxEx5XBuhuNOZ2Bd5+vhi7ETOcdRboXo
+         LPxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698608944; x=1699213744;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qvVEduFFGy1+UbYCRZST4+Tb8T3xgC/iEMnPr7os3R0=;
+        b=lafBqk5yXsb2RBu3z3V8ikEq5x5/zhWGyLoyuFir80bN/5rJveh/ATMhFSiCC9rpGU
+         Pxj1qREPfyaHWxBfT7Vb1Aksq0Fu1ifgvbAnvCqgyM3J4W7HqGr99Ih3l1lH+OaOxbj0
+         O0WFCWPR5NwfAz6IR8Jf7ZbYVazZttyPLhDI5QeGqefb1vs335rS0zhhqRBCJw1/nH94
+         xmaO4ONgTeKxJhb8a9g8BjW4pzqW1Er05dNjatS7w+T/CV3FjOOxqs8WqqlHKJMMFLxc
+         7Wx+yGAkDIQn2kybl8dDUFGb6nXT5UckR48F3pGbn2XWekfedL5oZL8kFd8iB5C082hC
+         Joqw==
+X-Gm-Message-State: AOJu0YwXRkAV8kP0nwn1K6mp3vMIkXIwNtJ5+pZ+WKrPqt4BDrhyR9B8
+        1cpSSkcoVa8AuzJeE+H01hP5Wvf7BpC0NQ==
+X-Google-Smtp-Source: AGHT+IE7Q167o7RawkdnlhDCfCIhkxGYrQYUndrnSK5J+wBUTv8P4v6SPs3Q2jBrxEQ91EJ1r2ql5Q==
+X-Received: by 2002:a17:907:7da4:b0:9ae:2f35:442a with SMTP id oz36-20020a1709077da400b009ae2f35442amr6572389ejc.5.1698608943615;
+        Sun, 29 Oct 2023 12:49:03 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([88.117.214.186])
+        by smtp.gmail.com with ESMTPSA id ay16-20020a170906d29000b009b8dbdd5203sm4812000ejb.107.2023.10.29.12.49.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Oct 2023 12:49:02 -0700 (PDT)
+Date:   Sun, 29 Oct 2023 12:49:00 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH-net-next] ptp: fix corrupted list in ptp_open
+Message-ID: <ZT63LEJCuIY7v_Ou@hoboy.vegasvil.org>
+References: <tencent_61372097D036524ACC74E176DF66043C2309@qq.com>
+ <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxXNx+tj5lKq02AA--.51878S10
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3KF47KF4xtFy5XFyfWFy5WrX_yoWDWFWxpa
-        13A3ySgr48tFnI939xtr1UXw1YkFyayFZayFWfGw1rW3srAr18tFnYyF4FqFW7XFy5Jr12
-        qrn7G3yIk3WUGabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU90b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Wrv_
-        ZF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
-        XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-        kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY
-        6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-        vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-        vjDU0xZFpf9x07j6sjUUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,278 +74,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before apply this patch, drm/loongson is basically works on LS2K2000.
-Because majority of hardware features of the DC are same with LS7A2000's
-counterpart. Despite LS2K2000 is a SoC, it don't has a dedicated VRAM.
-But the firmware will carve out part of system RAM as VRAM, and write the
-base address and size of this reserved RAM to the PCI Bar 2 of the GPU.
-So this kind of reserved RAM is nearly same with the dedicated video RAM.
+On Sun, Oct 29, 2023 at 10:09:42AM +0800, Edward Adam Davis wrote:
+> There is no lock protection when writing ptp->tsevqs in ptp_open(), ptp_read(),
+> ptp_release(), which can cause data corruption and increase mutual exclusion
+> to avoid this issue.
 
-In short, the display subsystem in LS2K2000 are nearly compatible with the
-display subsystem in LS7A2000. But LS2K2000 has only one built-in HDMI
-encoder, which is connected with the CRTC-0 (display pipe 0). Display pipe
-1 exports a generic DVO interface. So there still need a trivial fix.
+-ENOPARSE
 
-Before apply this patch:
+How can lack of lock protection increase mutual exclusion?
 
-$ dmesg | grep 0000:00:06.1
+> Moreover, the queue should not be released in ptp_read() and should be deleted
+> together.
 
- pci 0000:00:06.1: [0014:7a36] type 00 class 0x030000
- pci 0000:00:06.1: reg 0x10: [mem 0x51250000-0x5125ffff 64bit]
- pci 0000:00:06.1: reg 0x18: [mem 0x512b6000-0x512b60ff]
- pci 0000:00:06.1: BAR 0: assigned [mem 0x51250000-0x5125ffff 64bit]
- pci 0000:00:06.1: BAR 2: assigned [mem 0x512b7f00-0x512b7fff]
- pci 0000:00:06.1: vgaarb: setting as boot VGA device
- loongson 0000:00:06.1: Found LS7A2000 bridge chipset, revision: 16
- loongson 0000:00:06.1: [drm] dc: 400MHz, gmc: 800MHz, gpu: 533MHz
- loongson 0000:00:06.1: [drm] Dedicated vram start: 0x40000000, size: 256MiB
- loongson 0000:00:06.1: [drm] Loongson VBIOS version: 2.1
- loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
- loongson 0000:00:06.1: [drm] VRAM: 16384 pages ready
- loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
- loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
- loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
- loongson 0000:00:06.1: [drm] DisplayPipe-0 has HDMI-0
- loongson 0000:00:06.1: [drm] DisplayPipe-1 has HDMI-1
- loongson 0000:00:06.1: [drm] Total 2 outputs
- loongson 0000:00:06.1: [drm] registered irq: 42
- [drm] Initialized loongson 1.0.0 20220701 for 0000:00:06.1 on minor 0
- loongson 0000:00:06.1: [drm] *ERROR* Setting HDMI-1 PLL failed
- loongson 0000:00:06.1: [drm] fb0: loongsondrmfb frame buffer device
+The queue should be deleted togther?  Huh?
 
-After apply this patch, the error "*ERROR* Setting HDMI-1 PLL failed" got
-fixed.
+> @@ -543,6 +552,8 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+>  		cnt = EXTTS_BUFSIZE;
+>  
+>  	cnt = cnt / sizeof(struct ptp_extts_event);
+> +	if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
+> +		return -ERESTARTSYS;
 
-$ dmesg | grep 0000:00:06.1
+This is not needed because the spin lock (timestamp_event_queue::lock)
+already protects the event queue.
 
- pci 0000:00:06.1: [0014:7a36] type 00 class 0x030000
- pci 0000:00:06.1: reg 0x10: [mem 0x51250000-0x5125ffff 64bit]
- pci 0000:00:06.1: reg 0x18: [mem 0x512b6000-0x512b60ff]
- pci 0000:00:06.1: BAR 0: assigned [mem 0x51250000-0x5125ffff 64bit]
- pci 0000:00:06.1: BAR 2: assigned [mem 0x512b7f00-0x512b7fff]
- pci 0000:00:06.1: vgaarb: setting as boot VGA device
- loongson 0000:00:06.1: Found LS2K2000 SoC, revision: 16
- loongson 0000:00:06.1: [drm] dc: 400MHz, gmc: 800MHz, gpu: 533MHz
- loongson 0000:00:06.1: [drm] Dedicated vram start: 0x40000000, size: 256MiB
- loongson 0000:00:06.1: [drm] Loongson VBIOS version: 2.1
- loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
- loongson 0000:00:06.1: [drm] VRAM: 16384 pages ready
- loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
- loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
- loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
- loongson 0000:00:06.1: [drm] DisplayPipe-0 has HDMI-0
- loongson 0000:00:06.1: [drm] DisplayPipe-1 has DVO-1
- loongson 0000:00:06.1: [drm] Total 2 outputs
- loongson 0000:00:06.1: [drm] registered irq: 42
- [drm] Initialized loongson 1.0.0 20220701 for 0000:00:06.1 on minor 0
- loongson 0000:00:06.1: [drm] fb0: loongsondrmfb frame buffer device
-
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
----
- drivers/gpu/drm/loongson/Makefile             |  1 +
- drivers/gpu/drm/loongson/loongson_device.c    | 46 ++++++++++
- drivers/gpu/drm/loongson/lsdc_output.h        |  5 ++
- drivers/gpu/drm/loongson/lsdc_output_2k2000.c | 84 +++++++++++++++++++
- 4 files changed, 136 insertions(+)
- create mode 100644 drivers/gpu/drm/loongson/lsdc_output_2k2000.c
-
-diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
-index 393709e686aa..7d3d82ddd5ff 100644
---- a/drivers/gpu/drm/loongson/Makefile
-+++ b/drivers/gpu/drm/loongson/Makefile
-@@ -10,6 +10,7 @@ loongson-y := \
- 	lsdc_i2c.o \
- 	lsdc_irq.o \
- 	lsdc_output.o \
-+	lsdc_output_2k2000.o \
- 	lsdc_output_7a1000.o \
- 	lsdc_output_7a2000.o \
- 	lsdc_plane.o \
-diff --git a/drivers/gpu/drm/loongson/loongson_device.c b/drivers/gpu/drm/loongson/loongson_device.c
-index 64096ad5466e..33aae403f0b0 100644
---- a/drivers/gpu/drm/loongson/loongson_device.c
-+++ b/drivers/gpu/drm/loongson/loongson_device.c
-@@ -6,6 +6,7 @@
- #include <linux/pci.h>
- 
- #include "lsdc_drv.h"
-+#include "lsdc_probe.h"
- 
- extern struct loongson_vbios __loongson_vbios;
- 
-@@ -27,6 +28,15 @@ static const struct lsdc_kms_funcs ls7a2000_kms_funcs = {
- 	.crtc_init = ls7a2000_crtc_init,
- };
- 
-+static const struct lsdc_kms_funcs ls2k2000_kms_funcs = {
-+	.create_i2c = lsdc_create_i2c_chan,
-+	.irq_handler = ls7a2000_dc_irq_handler,
-+	.output_init = ls2k2000_output_init,
-+	.cursor_plane_init = ls7a2000_cursor_plane_init,
-+	.primary_plane_init = lsdc_primary_plane_init,
-+	.crtc_init = ls7a2000_crtc_init,
-+};
-+
- static const struct loongson_gfx_desc ls7a1000_gfx = {
- 	.dc = {
- 		.num_of_crtc = 2,
-@@ -93,14 +103,50 @@ static const struct loongson_gfx_desc ls7a2000_gfx = {
- 	.model = "LS7A2000 bridge chipset",
- };
- 
-+static const struct loongson_gfx_desc ls2k2000_gfx = {
-+	.dc = {
-+		.num_of_crtc = 2,
-+		.max_pixel_clk = 350000,
-+		.max_width = 4096,
-+		.max_height = 4096,
-+		.num_of_hw_cursor = 2,
-+		.hw_cursor_w = 64,
-+		.hw_cursor_h = 64,
-+		.pitch_align = 64,
-+		.has_vblank_counter = true,
-+		.funcs = &ls2k2000_kms_funcs,
-+	},
-+	.conf_reg_base = LS7A2000_CONF_REG_BASE,
-+	.gfxpll = {
-+		.reg_offset = LS7A2000_PLL_GFX_REG,
-+		.reg_size = 8,
-+	},
-+	.pixpll = {
-+		[0] = {
-+			.reg_offset = LS7A2000_PIXPLL0_REG,
-+			.reg_size = 8,
-+		},
-+		[1] = {
-+			.reg_offset = LS7A2000_PIXPLL1_REG,
-+			.reg_size = 8,
-+		},
-+	},
-+	.vbios = &__loongson_vbios,
-+	.chip_id = CHIP_LS2K2000,
-+	.model = "LS2K2000 SoC",
-+};
-+
- static const struct lsdc_desc *__chip_id_desc_table[] = {
- 	[CHIP_LS7A1000] = &ls7a1000_gfx.dc,
- 	[CHIP_LS7A2000] = &ls7a2000_gfx.dc,
-+	[CHIP_LS2K2000] = &ls2k2000_gfx.dc,
- 	[CHIP_LS_LAST] = NULL,
- };
- 
- const struct lsdc_desc *
- lsdc_device_probe(struct pci_dev *pdev, enum loongson_chip_id chip_id)
- {
-+	chip_id = loongson_chip_id_fixup(chip_id);
-+
- 	return __chip_id_desc_table[chip_id];
- }
-diff --git a/drivers/gpu/drm/loongson/lsdc_output.h b/drivers/gpu/drm/loongson/lsdc_output.h
-index a37a72687bdf..463d59d680c2 100644
---- a/drivers/gpu/drm/loongson/lsdc_output.h
-+++ b/drivers/gpu/drm/loongson/lsdc_output.h
-@@ -61,6 +61,11 @@ int ls7a2000_output_init(struct drm_device *ddev,
- 			 struct i2c_adapter *ddc,
- 			 unsigned int index);
- 
-+int ls2k2000_output_init(struct drm_device *ddev,
-+			 struct lsdc_display_pipe *dispipe,
-+			 struct i2c_adapter *ddc,
-+			 unsigned int pipe);
-+
- int lsdc_output_init(struct drm_device *ddev,
- 		     struct lsdc_display_pipe *dispipe,
- 		     struct i2c_adapter *ddc,
-diff --git a/drivers/gpu/drm/loongson/lsdc_output_2k2000.c b/drivers/gpu/drm/loongson/lsdc_output_2k2000.c
-new file mode 100644
-index 000000000000..350af51da541
---- /dev/null
-+++ b/drivers/gpu/drm/loongson/lsdc_output_2k2000.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2023 Loongson Technology Corporation Limited
-+ */
-+
-+#include "lsdc_drv.h"
-+#include "lsdc_output.h"
-+
-+/*
-+ * The DC in LS2K2000 is nearly same with the DC in LS7A2000, except that
-+ * LS2K2000 has only one built-in HDMI encoder which is connected with the
-+ * display pipe 0. Display pipe 1 is a DVO output interface.
-+ *       ________________________
-+ *      |                        |                        ______________
-+ *      |             +----------|                       |              |
-+ *      | CRTC-0 ---> | HDMI phy ---> HDMI Connector --> | HDMI Monitor |<--+
-+ *      |             +----------|                       |______________|   |
-+ *      |            +-------+   |                                          |
-+ *      |            | i2c-x |   <------------------------------------------+
-+ *      |            +-------+   |
-+ *      |                        |
-+ *      |    DC in LS2K2000      |
-+ *      |                        |
-+ *      |            +-------+   |
-+ *      |            | i2c-y |   <------------------------------------+
-+ *      |            +-------+   |                                    |
-+ *      |                        |                                ____|____
-+ *      |                +-------|                               |         |
-+ *      | CRTC-1 ------> |  DVO  --> Encoder1 --> Connector1 --> | Display |
-+ *      |                +-------|                               |_________|
-+ *      |________________________|
-+ */
-+
-+static void ls2k2000_pipe1_dvo_encoder_reset(struct drm_encoder *encoder)
-+{
-+	struct drm_device *ddev = encoder->dev;
-+	struct lsdc_device *ldev = to_lsdc(ddev);
-+	u32 val;
-+
-+	val = PHY_CLOCK_POL | PHY_CLOCK_EN | PHY_DATA_EN;
-+	lsdc_wreg32(ldev, LSDC_CRTC1_DVO_CONF_REG, val);
-+}
-+
-+const struct drm_encoder_funcs ls2k2000_pipe1_dvo_encoder_funcs = {
-+	.reset = ls2k2000_pipe1_dvo_encoder_reset,
-+	.destroy = drm_encoder_cleanup,
-+};
-+
-+static const struct lsdc_output_desc ls2k2000_output_desc[2] = {
-+	{
-+		.pipe = 0,
-+		.encoder_type = DRM_MODE_ENCODER_TMDS,
-+		.connector_type = DRM_MODE_CONNECTOR_HDMIA,
-+		.encoder_funcs = &lsdc_pipe0_hdmi_encoder_funcs,
-+		.encoder_helper_funcs = &lsdc_pipe0_hdmi_encoder_helper_funcs,
-+		.connector_funcs = &lsdc_pipe0_hdmi_connector_funcs,
-+		.connector_helper_funcs = &lsdc_connector_helper_funcs,
-+		.name = "HDMI-0",
-+	},
-+	{
-+		.pipe = 1,
-+		.encoder_type = DRM_MODE_ENCODER_DPI,
-+		.connector_type = DRM_MODE_CONNECTOR_DPI,
-+		.encoder_funcs = &ls2k2000_pipe1_dvo_encoder_funcs,
-+		.encoder_helper_funcs = &lsdc_encoder_helper_funcs,
-+		.connector_funcs = &lsdc_connector_funcs,
-+		.connector_helper_funcs = &lsdc_connector_helper_funcs,
-+		.name = "DVO-1",
-+	},
-+};
-+
-+int ls2k2000_output_init(struct drm_device *ddev,
-+			 struct lsdc_display_pipe *dispipe,
-+			 struct i2c_adapter *ddc,
-+			 unsigned int pipe)
-+{
-+	struct lsdc_output *output = &dispipe->output;
-+
-+	output->descp = &ls2k2000_output_desc[pipe];
-+
-+	lsdc_output_init(ddev, dispipe, ddc, pipe);
-+
-+	return 0;
-+}
--- 
-2.34.1
-
+Thanks,
+Richard
