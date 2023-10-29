@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3DC7DAE13
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE0E7DAE23
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 21:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbjJ2T5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S230386AbjJ2UEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 16:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjJ2T5d (ORCPT
+        with ESMTP id S230169AbjJ2UE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:57:33 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1CFBD;
-        Sun, 29 Oct 2023 12:57:31 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9cc6c92d1e9so106572066b.1;
-        Sun, 29 Oct 2023 12:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698609450; x=1699214250; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vx7izOau8sCiVgG0u6aOBpYUrdCuQ45nTL6cseN6K0E=;
-        b=dnWAGqifrEk/k6HKoxIoUgPoTiA3KmVHVxO8X+4awEitBgSBLj1VC7nTg+gdeQqnqC
-         zzGmoTKFXNYlhoRlPmtBi67r9n4T5UCzRNGJiY/YjtFYeQuS3wkOs9tOk/MnKm3yFGt3
-         4oJ3totMJvIlmTujbgu/Bam4+QKv9tvAPofKNeqzOd9hg+ObWwv/I8yLmQY3Qy0VoAlX
-         RaAmWm5S1Uo/p0/udFhm6XtDHyjZzBj38IJdSILbZLMZHaECN4m0sBtrl/HJcDp6/RKD
-         BN1MoC6URu1n4iXMdwj4dvlmR3s3Yd5XPJa9Tf1x5yn8AhLd7gbC5mhVlpwAx1/eZsGD
-         W3Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698609450; x=1699214250;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vx7izOau8sCiVgG0u6aOBpYUrdCuQ45nTL6cseN6K0E=;
-        b=bJ9t6sc/agcFVrCO/+SX6cObXzyOKQX1N+WG+Wqa5wKXK6weLA7iLpa/8eJhC2c3Sf
-         3TTmlz+2f9KbWSu92dvJ8bw22PwLf5vqLiCFlVmNQOC+4TBIXMOQQC30W7Ey3iaFud52
-         Q6ZOml1A2pz8xuEzpAg8tbJw7fgmXgMpvcNyBQqVoh53YwtDjiBu89e5GukgXvZXxEtQ
-         VnFJ8tLAypaMIU0fpqmlaFYX+eW+V/do2PBOBNY5dJeilJagC+AGkGrGZMw/ZirCjHRG
-         NqCOjrSsjXk7dEypbMMw2wO+pJw0NYU+3aU5ou8dqNrEk/cU7NwGUSxknHO6FHQ1Hxow
-         m3DA==
-X-Gm-Message-State: AOJu0Yx42CKXY41Qqxcd/DEgw5OSQs7SHu1iGRnFqctIjr1qU0KBuYeJ
-        QFIiJSxRGM3m4F3KCSYu0q4=
-X-Google-Smtp-Source: AGHT+IF/H3xSwOkvHLMT4GIJk/7IShD1YiuOAyywwIAOxmeQfdO2wz65jC3sWyupsmOjPUG/bODFZQ==
-X-Received: by 2002:a17:907:890:b0:9d0:51d4:4d7f with SMTP id zt16-20020a170907089000b009d051d44d7fmr3940052ejb.1.1698609449967;
-        Sun, 29 Oct 2023 12:57:29 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([88.117.214.186])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170906051500b009b2ca104988sm4828423eja.98.2023.10.29.12.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 12:57:29 -0700 (PDT)
-Date:   Sun, 29 Oct 2023 12:57:27 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, reibax@gmail.com,
-        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH-net-next] ptp: fix corrupted list in ptp_open
-Message-ID: <ZT65J4mvFe1yx5_3@hoboy.vegasvil.org>
-References: <tencent_61372097D036524ACC74E176DF66043C2309@qq.com>
- <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
+        Sun, 29 Oct 2023 16:04:28 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26187AC
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 13:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=TwHK
+        +0TEdqGdc5LUmitRS4VVDWpLZQ4S7DAZO1sdpFU=; b=FOqlnEixn52OUlb8sedF
+        B7a+AInJIGr4u9tQOzAY5Vr0qiaNqDnzRuYXKCwVNt7QVshjnQCSgaJMgJFm64ok
+        NVdZ6g3Vqg6T6/0rxUcqDZaHFg3YSaF6wymw5HJ9nK7YnXTmIjormlzRGQlSS9os
+        eTBh6/A8WKv7GCdcsDJkSRvhF6G1jcw5MDBflo6Ix133236MOGSUTg4A7RRb/wwi
+        UX+I3tlCHA8yTRgb6zBCFCc4LB0Uj1yvA5jU1tU3dlySuApf3mKRWo5L9GSz+2UW
+        AHZGoUr98I6f9qib7xDgDXMAuqpog7kWEjJP5Eolo1e3JmmMz14feAKZUIag75V4
+        Xg==
+Received: (qmail 3895427 invoked from network); 29 Oct 2023 21:04:24 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Oct 2023 21:04:24 +0100
+X-UD-Smtp-Session: l3s3148p1@lOWQbeAI8JBehhre
+Date:   Sun, 29 Oct 2023 21:04:23 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] Documentation: i2c: add fault code for not
+ supporting 10 bit addresses
+Message-ID: <ZT66x18kb9HxeOuR@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231029194143.22512-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wHtGf4yi1nZHgJbN"
 Content-Disposition: inline
-In-Reply-To: <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
+In-Reply-To: <20231029194143.22512-1-wsa+renesas@sang-engineering.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 10:09:42AM +0800, Edward Adam Davis wrote:
 
-> @@ -585,7 +596,6 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
->  free_event:
->  	kfree(event);
->  exit:
-> -	if (result < 0)
-> -		ptp_release(pccontext);
-> +	mutex_unlock(&ptp->tsevq_mux);
->  	return result;
->  }
+--wHtGf4yi1nZHgJbN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is the only hunk that makes sense.  Keep this, but remove the
-rest, just like in your previous patches.
+On Sun, Oct 29, 2023 at 08:41:43PM +0100, Wolfram Sang wrote:
+> Document the specific fault code when 10 bit addresses cannot be
+> supported. It is used for years, only the documentation slipped through
+> the cracks.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks,
-Richard
+Applied to for-next, thanks!
+
+
+--wHtGf4yi1nZHgJbN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU+usMACgkQFA3kzBSg
+KbYoxw/+LJ0T/BTHMv3+u+eLdpP2cH4OfoCGaqeSm8cQiyRECGSXKxV4FSkTavd+
+wPckghaoiEvBapMRtjYZgm8S7R3AUghD/ZfP45Gtn0U5O2eRXzQDHmXV7Ai68tea
+g1pdZg2jBMml6mZXl61SBawl4Vpiy6periDHYPJep8FbuP0PA3S48RmmybVCfKYc
+r07SLma6yWZjJpioQCNL3APl+ks9L+Ri+7gSqRkbX1x6/uZIeTf4rp7vi0mDApzu
+tPJ3YiqHk0XAXldSMz1piTA/Wr9aY728YpqeVIsF0VIYc9o8C7dE9v2Aa6AdqiXT
+k82SmLKKI2Ucc/3DqkOVptNez+E6kLwlEBXKyinLgPmviYhheqlojoLM4EVWPt/E
+gWMrKMTBGL4uweLl9s2eFzQF3XKa9SHntDfOlvXdv/eVO+5CzdIOksCvYsA9judB
+8QLNeeaX8z4K2IaOxk3PRQt3jI3GUjD1MDKStmQWTC5AJM5rtK5+kgux6Sa46q3f
+xIx+pu+MpNPXHsHhjoFovDZ3dZ6NQ4yB3uVNEbRfM4D2Ur/wKM1sFYGb8zjeJnyS
+0j/3b6ETnS5uX2F+3H5p17H/70hkrD49zgWJEMLZ55B7//KKAA928jipKJWNSKJR
+kGRiaHNoF28kb3kapQADJZQlQFQH49Tl5aZRVEKiCe7M1umr1eo=
+=VEle
+-----END PGP SIGNATURE-----
+
+--wHtGf4yi1nZHgJbN--
