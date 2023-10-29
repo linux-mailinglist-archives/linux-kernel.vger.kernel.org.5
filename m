@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF567DAD85
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9517DAD86
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 18:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjJ2RdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 13:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        id S230269AbjJ2RgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 13:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2RdW (ORCPT
+        with ESMTP id S229512AbjJ2RgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 13:33:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D746CAC
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 10:33:19 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698600798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJlX6iTgddsSs48S6F5ORRxnCz8wkuh8YCy/0tpW4Aw=;
-        b=SHx+UJzs82DuqD2OG2lmPOr6Jlg5kNAMKK6nTvJ3KyVdm1IcPzpQamMm8mHl+TqRRpR5p7
-        7eseFp+BDNbsUHL8AvVLrXviy/u+fHho0KJxsm50eaFG8nV//igioU4B7S72nvwsucx0xD
-        V5ROuI2sSmXggLBCyUvw0xidup+/z3x8ZhumzkpFboFLuG5oP8f8bJ1zRSWcQkLEpzXa74
-        BkH5nzpDRhdGXS9LPbthREc4WakHoXC2pwsVwUyNbqNAwj67xIwjSffuPYOqXIv0OVpe2R
-        qyMgs92DYY5zXWIS6f6xq645JsS98fO+DOjlb4bpVHSPZSw7biXzmmlcYVVxig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698600798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJlX6iTgddsSs48S6F5ORRxnCz8wkuh8YCy/0tpW4Aw=;
-        b=1clZw2E3i212BYI5PAx65/Buq7wGOYnphEG9U7g7HJ10STuCLsxSDt2Q/SkNJvLLnpqZk/
-        1oy57CuQaGtbUvDA==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH v2] lockdep: add lockdep_cleanup_dead_cpu()
-In-Reply-To: <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
-References: <e5ba02138c31da60daf91ce505ac3860d022332b.camel@infradead.org>
- <635fa006e8f3816b4a36b964d6281f0d8efa789b.camel@infradead.org>
-Date:   Sun, 29 Oct 2023 18:33:18 +0100
-Message-ID: <87o7ghz63l.ffs@tglx>
+        Sun, 29 Oct 2023 13:36:01 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E87B6;
+        Sun, 29 Oct 2023 10:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=4xyVcC54i/pj7YjIG5QNyqM/WGtgEIQ1Fy6oJRwheck=; b=xEMHzxMr1QEo9Oin4+rEpvLymQ
+        tSY37YCpYP6egq3NKt1c/B8at0KIzPs5QRQJ/H5NOc33smPQHAY7N8oDeXLizROD0yIJB00ccBOw2
+        +BUIdmnv8P0dkSPy+9FLycsUNcneGDNTTYamlnMGYzwm2KyjflBS975JJCNXa4v0PSD4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qx9hV-000SDI-9P; Sun, 29 Oct 2023 18:35:49 +0100
+Date:   Sun, 29 Oct 2023 18:35:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
+Message-ID: <6c10edf1-dad1-4a4f-ae0e-42b17febbd5d@lunn.ch>
+References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
+ <95f324af-88de-4692-966f-588287305e09@gmail.com>
+ <CACRpkdbyMEqjW1a9oK-GM2_XL0famH1RgSXW-fQLszn9t9UhWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbyMEqjW1a9oK-GM2_XL0famH1RgSXW-fQLszn9t9UhWw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 28 2023 at 20:24, David Woodhouse wrote:
-> @@ -24,12 +24,16 @@
->    extern void lockdep_hardirqs_on_prepare(void);
->    extern void lockdep_hardirqs_on(unsigned long ip);
->    extern void lockdep_hardirqs_off(unsigned long ip);
-> +  extern void lockdep_cleanup_dead_cpu(unsigned int cpu,
-> +				       struct task_struct *idle);
+> The switch is pretty bogus, all documentation we have of it is a vendor
+> code drop, no data sheet. The format for ingress and egress tags
+> was discovered using trial-and-error.
 
-Lacks a forward declaration of 'struct task_struct'
+The code drop does not include tagging? Does the code drop also pad to
+full size Ethernet frames?
 
+I still think it would be good to do some systematic testing to figure
+out if there is any pattern to the drops.
+
+     Andrew
