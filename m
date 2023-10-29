@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2E47DAD00
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC90E7DAD0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjJ2P3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 11:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        id S229778AbjJ2PiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 11:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2P3B (ORCPT
+        with ESMTP id S229482AbjJ2PiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 11:29:01 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86D0BE;
-        Sun, 29 Oct 2023 08:28:58 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c595f5dc84so53303561fa.0;
-        Sun, 29 Oct 2023 08:28:58 -0700 (PDT)
+        Sun, 29 Oct 2023 11:38:20 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3C5BE
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 08:38:17 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7af20c488so32042467b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 08:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698593337; x=1699198137; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y6xDf5Vc6zIi1SFmLYHQbpwJviofARaCdjRCBH2Jzes=;
-        b=BmSv2/4yWcJ4yIBSPcRCmZ73Rsy1uTyagXBTKq7NiTllYTjjGObsxtdJWvl9f9zhZl
-         cEzoJSbYJFoL15ETEAqyvgTh1NQr0BXwtZJCOuLB8pMky76IvkjAyT3lRAHq9rKLiY7Q
-         /CowBj5IPmgMuFpI1mBDMqYZX9jnLk58z41z+buexw9L4Iiv33WSWPti/m3k7funE9k6
-         YrPBs7GIjbzloKoO5nMJfJhnmuHjuhfvL6ICYY9pBIxeup6w7uaVNmEg3I4BTUlBD9We
-         YtU1v6rYIiDpqYGwzUEBqW1hdSlaT2wTITMfK1TMOl20gu1tPEti9//tbISGXsENZoQ4
-         Jc+w==
+        d=linaro.org; s=google; t=1698593897; x=1699198697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qT43Nf94mF07rnV7CrLvxuub2Ca7aEi64+U8CyL0b3g=;
+        b=elKvagR+t77xfpkmWelkGAt9q/K6/ipzvvpjNMG9HNLEq+AAqckqpJP8yQzR7Sm90U
+         6a8Fr9tIpFYT+OecNH1TStn2w8g6nVk4z/63yUxaH8yRoRFafBHqb9Xc5vdKm9lkppmN
+         cul1g9JyEMIHlB+PZWhSqGtQTZoljHYl4Rru+MprgmBzrT1b2extbmbodGdnfVaDaqid
+         b5n8hhtw/6EdyB+l5XitgNGGC2pREvkBcAhj0eFIhCLjLs0lhLSyHhOSaNLAfVjTkfJt
+         7a8XSWMpXnh6BZJQ5k4yoDKq5gr+I8qNatnBw7iXTCcV4vhgxgtQer4YJzDH09g2tcf9
+         kftg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698593337; x=1699198137;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y6xDf5Vc6zIi1SFmLYHQbpwJviofARaCdjRCBH2Jzes=;
-        b=vUC+e9aHXf5Aru4hsFTcsyLZGVlbfx135IFev//RYBkB2CAsX2BM1qLohJ9j3u0PF0
-         rUEG+t6LfxcMJBRzA2irJfQHpD+7a7bT6aJb3twDZiPXeLE5qzjjk9yd9QMMWWoxiyD+
-         6KKQGfXdV2YapKt+PrYpXhOUXvreoywNmp5hz6I2VONtJpiApHXz/TuGmx2T+ojcz6w4
-         EUHlrMgNWVXJA0C7PEzk7EeaOCFy4ONDslS3PxAjHWifz4/PaplxugDH5jn7q4xWBLwK
-         pAOaueVx/0hQASrl7jjqKOEs4P8iyT29JCxQyudNHasmVEME++0i7H2CAxjCG14/5rUP
-         dsxA==
-X-Gm-Message-State: AOJu0YwnkMu+caoSkbuvz5qkUf27Ubv/eCQApB86iz7UQMARGe9scKRD
-        CWq73gXsFbXxYxjHVSwuBBk=
-X-Google-Smtp-Source: AGHT+IFmXgCezaC7vQI1X/HcXYQF/BW2paEjNK3JBgSkgq69t9L8kKBJH4xk5d1uQ0EtNSMxoDt7QQ==
-X-Received: by 2002:a05:6512:3bc:b0:507:cc09:59ab with SMTP id v28-20020a05651203bc00b00507cc0959abmr2288341lfp.9.1698593336638;
-        Sun, 29 Oct 2023 08:28:56 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::1? (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id w29-20020a05651204dd00b00507f1c8040fsm1067146lfq.58.2023.10.29.08.28.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 08:28:55 -0700 (PDT)
-Message-ID: <5d63087a-91c8-434e-aa47-a3d60e456e1f@gmail.com>
-Date:   Sun, 29 Oct 2023 17:28:54 +0200
+        d=1e100.net; s=20230601; t=1698593897; x=1699198697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qT43Nf94mF07rnV7CrLvxuub2Ca7aEi64+U8CyL0b3g=;
+        b=vW1DpBYA/6Hfm9r+hNvZJGR2CDDRRDP5wpQH7qSW5LsVggcCNY9XUsPhU7Hg241rAd
+         b/HllIEkk/d86lsjFwy0p8RMYBscDfXejGUFCmtuenn1WQFO83LIbMp1+XxM0O4TCAKg
+         Z2KboLW6Yig9uqKSwADUfYQSKr26+tkbfJxpnHHgdr+4e8WCxdDKt2vYrkztpas0F0j4
+         nOUh/b6RJ25QonajKjj2BiMgVw6g5UMzvNC8y2yAOFdtFqGVuvGNTHHIcXlYrW3U4zu/
+         oQ2Ny0I3utpzHSbmVIabiVJ2ByZVf4DeRP583ETd+7iHp7WKIYWs/82a9hXsrDvmzRmj
+         TteA==
+X-Gm-Message-State: AOJu0YyCvgwSooFCYeMqgoKBCP/aY6uWQOxKKpx/ZDLH7jwpbTMynndE
+        zaI4QgtJB7CWglA7trVMkk4bOYhqvTsGtbezS5ob8Q==
+X-Google-Smtp-Source: AGHT+IG9mfhQQbXcGl8AcijtrKNfwYSt3oDBm67fZGoetZ9+aWcXQ2nRVhfuKvMzIE9tEEvaJNYpsV9CoFfSaSnzLeU=
+X-Received: by 2002:a0d:ec47:0:b0:595:9135:83c7 with SMTP id
+ r7-20020a0dec47000000b00595913583c7mr7285708ywn.47.1698593896903; Sun, 29 Oct
+ 2023 08:38:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Sanity-check available_scan_masks array
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1697452986.git.mazziesaccount@gmail.com>
- <20231021165535.34dcb94b@jic23-huawei>
- <db83cafb-1a96-40c4-ab36-8cb1ef0f2f30@gmail.com>
- <20231028173221.4dd81185@jic23-huawei>
-Content-Language: en-US, en-GB
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20231028173221.4dd81185@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org> <95f324af-88de-4692-966f-588287305e09@gmail.com>
+In-Reply-To: <95f324af-88de-4692-966f-588287305e09@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 29 Oct 2023 16:38:04 +0100
+Message-ID: <CACRpkdbyMEqjW1a9oK-GM2_XL0famH1RgSXW-fQLszn9t9UhWw@mail.gmail.com>
+Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/23 19:32, Jonathan Cameron wrote:
-> On Sat, 21 Oct 2023 19:03:15 +0300
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> 
->> On 10/21/23 18:55, Jonathan Cameron wrote:
->>> On Mon, 16 Oct 2023 14:04:11 +0300
->>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>>    
->>>> Sanity-check available_scan_masks array
->>>>
->>>> The available_scan_masks is an array of bitmasks representing the
->>>> channels which can be simultaneously(*) scanned by a driver from the
->>>> device. Following special characteristics apply:
->>>>
->>>> - When IIO is scanning through the array it will use the first mask
->>>>     which can be used to scan all enabled channels. This means drivers
->>>>     should order the array in the order of the preference. This does also
->>>>     mean that a mask which is a subset of a mask located earler in array
->>>>     will never be used because the earlier one will be picked by the core.
->>>> - Masks wider than size of long are supported only to some extent. The
->>>>     code scanning through the array will interpret the first mask with
->>>>     first long zeroed as end-of-array terminator. Changing this behaviour
->>>>     would make mask-arrays for multi-long masks to be terminated by more
->>>>     than one zero long. Failure to do so would result kernel to read
->>>>     beyond the array generating a potentially hazardous bug.
->>>>
->>>> Add a sanity-check to IIO-device registration emitting a warning if
->>>> available_scan_mask array is misordered or if mask width is larger than
->>>> a long while available_scan_mask-array is populated. Currently there
->>>> should be no in-tree drivers with available_scan_mask populated and mask
->>>> wider than a long.
->>>>
->>>> Revision history:
->>>> v1 => v2:
->>>> 	- Add patch 2/2 documenting why iio_scan_mask_match() checks only
->>>> 	  a long worth of bits while searching for the end of the
->>>> 	  available_scan_mask-array.
->>>> 	- Styling of patch 1/2 as per comments from Jonathan
->>>> 	v1 and related discussion here:
->>>> 	https://lore.kernel.org/lkml/ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi/
->>>>
->>>> Matti Vaittinen (2):
->>>>     iio: sanity check available_scan_masks array
->>>>     iio: buffer: document known issue
+On Fri, Oct 27, 2023 at 11:23=E2=80=AFPM Florian Fainelli <f.fainelli@gmail=
+.com> wrote:
 
-...
+> > It turns out that sometimes, but not always, small packets are
+> > dropped by the switch for no reason.
+>
+> And we are positive that the Ethernet MAC is also properly padding
+> frames before having them ingress the switch?
 
-> 
-> I've started queuing stuff up for rebasing post merge window, so I've
-> added this as well. For now will only be exposed as the testing branch
-> that 0-day pokes at.
+I don't fully follow, this code is the one adding the padding isn't it?
+Then the result is transmitted to the switch from the ethernet
+MAC (drivers/net/ethernet/cortina/gemini.c).
 
-Thanks Jonathan!
+What am I getting wrong here...
 
+> > If we pad the ethernet frames to a minimum of ETH_FRAME_LEN + FCS
+> > (1518 bytes) everything starts working fine.
+>
+> That is quite unprecedented, either the switch is very bogus or there is
+> something else we do not fully understand...
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+The switch is pretty bogus, all documentation we have of it is a vendor
+code drop, no data sheet. The format for ingress and egress tags
+was discovered using trial-and-error.
 
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Yours,
+Linus Walleij
