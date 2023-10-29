@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A577DB1A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9965B7DB103
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjJ3ACj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 20:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
+        id S231919AbjJ2X2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ3ACg (ORCPT
+        with ESMTP id S231497AbjJ2X1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 20:02:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006418A57
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:20:09 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507adc3381cso5582679e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698621608; x=1699226408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UKg6JBu0qEn61a+ycnEPSwXxhDr86sJsIrWNpil9hP0=;
-        b=BKLw1KuCXDMVdZiAVFD3Xvn5LqMuFgh2pha4JAU/8WVS7Qdo9YeJBWLeIGlKAP3o4u
-         mVMGrifPyu5eZUCeRfhRP8pdBSlhkINo4tc1Z1YTlIFo556jDaSV64PjbiyiuG911V2n
-         MzJrKR4ufjhxyzuzht2W6l777QHG2+SZa1EGhnWmET8axrhY2+KJhxzNEuAogpA/Kpd+
-         JAwlFm+GxrmyR4o+LAQpOYZXFv3NvbvswuRKNevCWhM4iuxK7dhrJpQKxyqGC49h5xnL
-         9vHmKteZ1Mt+6W/RApbSeTqEWoCQYhntAMMZUkX/z3MZ/kYICTbZxe7KVp+7VQRzKB13
-         uOqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698621608; x=1699226408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UKg6JBu0qEn61a+ycnEPSwXxhDr86sJsIrWNpil9hP0=;
-        b=e6HcKYFem1s8aUOcF5RCvscLQzo22dvpjrvSNSW+GznC4TJaN+b5vNzAsoYm37mNCg
-         rLYRd5oxwwqSrnJqU34rTNTQ3FzLq71vbYAQIoy6/S4wTUl1+s7AUGdnrafQfpjEpuNH
-         5UaxbeR4f9IUw3WofgYdHhnDfPW4VA4dLN2C6eF4Zlb/SFegOpkXyauZbMr5MOArpnn0
-         kpsr778s1jsEwwPoiNppu0sjgi3ippVBpBY0ZGecO8SeOgCzzOIyzcx4P3LemaVD4n1w
-         QtE7M94a9cofNUyS7aKtFf6RerjJc1kziP5dm/5ShMbprJcjHG2Ntt9Qi5FHb4DxXzYG
-         B9LQ==
-X-Gm-Message-State: AOJu0YwW+AhVRjbGPLottZS1SeyZPKEa6W1VOIZ0I2iN2AUxYGP31z2G
-        nlHU7mk4J3V5RV8sskYq5ITEVXNLGF8k4ohh+qMjNY0=
-X-Google-Smtp-Source: AGHT+IEETk1eSYzZJ9IPkegzYsV5gV3OTI1ulG2OB0MVutaz0RWyhCW1WNt9WMm2uOJxEhIz/k4orR13ow9AwCiNlds=
-X-Received: by 2002:a19:3812:0:b0:507:96fd:d3ee with SMTP id
- f18-20020a193812000000b0050796fdd3eemr5474633lfa.32.1698621607885; Sun, 29
- Oct 2023 16:20:07 -0700 (PDT)
+        Sun, 29 Oct 2023 19:27:54 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAB91B690;
+        Sun, 29 Oct 2023 16:22:06 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 955CA5C00EF;
+        Sun, 29 Oct 2023 19:22:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 29 Oct 2023 19:22:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698621725; x=1698708125; bh=jAiuAMSOIMa8Cg5aa4qggKms7FgUgfk0/cV
+        Ya27X7G4=; b=K0cNF8xxyKoL7GjLQgX5JcM8YDseoua1sFJjn2T0+BQbhNScNjb
+        y+MvftAgcAqm3vaWRq+qDz6k+EjraAW+HUkHuKsZ7gUahWeSAD/0Hww1TT0VtEP2
+        VXLqrG3WW3Up/mz0fBlWmv5QM64T8mBOVKLGCW1TVbvc0AQxQivdE5v8vVvHPGZi
+        /VdN4x8XQd19iMrj0ex25hOs38lvKdYMj6vq1H68c12Ds0ox70OepMCZkGZzveg6
+        FcRQuj8igpENN41hsM2V7IOQCgswtU7Tc25HOdYl37IpJfx4ur1fPi/SvLim9Mzr
+        3gkw+3HPdqCTWoJoNiFSvtnSqXPPjgLjNow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698621725; x=1698708125; bh=jAiuAMSOIMa8Cg5aa4qggKms7FgUgfk0/cV
+        Ya27X7G4=; b=cXfRGArMSrk+/hlXVi5EBhMBZZFct7Dw3Y/WfIxULB9O28Feshs
+        cwI4kJYscJg/E9cZu0NKbp/CPq5bsTrbo/C2clsozebQI4F8VWBVjtunLvve0Rw8
+        O25zEOkAI2i4ZAhFwJs7IztIy/rNLxqMVPz2KSUEH7j6dz6a6PCnxp0oiW3pXAjF
+        3KkBZZS9CUcC9AtM3pKXJjVVslHOMCJlJ/mSxZJQ149pEG7ixQj/c2G803MOJqbj
+        HAKQ42jHhBQ4EGdFL7nV3gHt0MQRgj3CkKWMFL/Uquyk8QyRJBN58RrdwLcL7lZA
+        5SSDAnC/XHvqIft/ZmRQUsxrA6NqhqcaLgA==
+X-ME-Sender: <xms:Hek-ZaCpBbLg5t0htzkPGX6koBSnpmJ2mdQczDeIQy3b-OGoT3K8NQ>
+    <xme:Hek-ZUgVRUr6d79FdVr0_dZMAZPt3J14uq1S6DTZp_TadlYg3rpgBMCbK80zX0SJh
+    whr5Gz9_QvjsclY-w>
+X-ME-Received: <xmr:Hek-ZdkXSbaONFMTrJIEZ10YrXcv59pAFY2m2GUULPrCMuBe19kC5AtaAaIwynx8abrWI5l6Aa5xVjjmDsGQx6lLJKvintR05A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleelgddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffevtddv
+    jeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Hek-ZYyJe7dNVXmUwDhzPPsR70ZJGRqSgLSkXkacA6f72wm490f3Ag>
+    <xmx:Hek-ZfQcgY4EL9_HIR_OTitiYyam4uXAgH2U-r7CFCQUSmXowtHVrQ>
+    <xmx:Hek-ZTYo03aFpUarKSTLoTFDbHGn7Sxnaizmqous4sxd5ytty2Cd-g>
+    <xmx:Hek-ZQJMN_ej-_IhBpIgZFAORobHNb04GZ5QR29RLau8VHyh4Tc9QQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Oct 2023 19:22:04 -0400 (EDT)
+Date:   Sun, 29 Oct 2023 17:22:02 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     ast@kernel.org, andrii@kernel.org, shuah@kernel.org,
+        daniel@iogearbox.net, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, mykolal@fb.com, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@linux-ipsec.org
+Subject: Re: [RFC bpf-next 5/6] bpf: selftests: test_tunnel: Disable CO-RE
+ relocations
+Message-ID: <73xnkgitatvymw2bqwo6elqmdpsvj2atmh6ugrityvqyegguq7@cjos2bsw2ico>
+References: <cover.1698431765.git.dxu@dxuuu.xyz>
+ <111a64c3e6ccda6b8a2826491715d4e8a645e384.1698431765.git.dxu@dxuuu.xyz>
+ <CAEf4BzbwHZmCJHe8WiV0WeUV1XC+cDB4d4v8YLJh+ZL_k7yB1g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231026160100.195099-1-brgerst@gmail.com> <a094c7da294a4827994af72249262593@AcuMS.aculab.com>
-In-Reply-To: <a094c7da294a4827994af72249262593@AcuMS.aculab.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Sun, 29 Oct 2023 19:19:56 -0400
-Message-ID: <CAMzpN2iYWpUXF815yrujB0sM66Pw1gYU7PoYLURsP1tkcZiuSg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] x86-64: Stack protector and percpu improvements
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uros Bizjak <ubizjak@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbwHZmCJHe8WiV0WeUV1XC+cDB4d4v8YLJh+ZL_k7yB1g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 5:42=E2=80=AFPM David Laight <David.Laight@aculab.c=
-om> wrote:
->
-> From: Brian Gerst
-> > Sent: 26 October 2023 17:01
+On Fri, Oct 27, 2023 at 01:33:09PM -0700, Andrii Nakryiko wrote:
+> On Fri, Oct 27, 2023 at 11:46 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
-> > Currently, x86-64 uses an unusual percpu layout, where the percpu secti=
-on
-> > is linked at absolute address 0.  The reason behind this is that older =
-GCC
-> > versions placed the stack protector (if enabled) at a fixed offset from=
- the
-> > GS segment base.  Since the GS segement is also used for percpu variabl=
-es,
-> > this forced the current layout.
+> > Switching to vmlinux.h definitions seems to make the verifier very
+> > unhappy with bitfield accesses. The error is:
 > >
-> > GCC since version 8.1 supports a configurable location for the stack
-> > protector value, which allows removal of the restriction on how the per=
-cpu
-> > section is linked.  This allows the percpu section to be linked
-> > normally, like most other architectures.  In turn, this allows removal
-> > of code that was needed to support the zero-based percpu section.
->
-> I didn't think the minimum gcc version was anything like 8.1.
-> I'm using 7.5.0 and I don't think that is the oldest version.
+> >     ; md.u.md2.dir = direction;
+> >     33: (69) r1 = *(u16 *)(r2 +11)
+> >     misaligned stack access off (0x0; 0x0)+-64+11 size 2
+> >
+> > It looks like disabling CO-RE relocations seem to make the error go
+> > away.
+> >
+> 
+> for accessing bitfields libbpf provides
+> BPF_CORE_READ_BITFIELD_PROBED() and BPF_CORE_READ_BITFIELD() macros
 
-What distribution are you using that still relies on that old of a compiler=
-?
+In this case the code in question is:
 
-Brian Gerst
+        __u8 direction = 0;
+        md.u.md2.dir = direction;
+
+IOW the problem is assigning to bitfields, not reading from them.
+
+Is that something that libbpf needs to support as well?
+
+Thanks,
+Daniel
