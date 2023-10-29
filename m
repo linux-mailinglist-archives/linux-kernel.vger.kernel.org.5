@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66177DAF74
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9BF7DAF7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjJ2W7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
+        id S231329AbjJ2W7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjJ2W7M (ORCPT
+        with ESMTP id S231361AbjJ2W7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:59:12 -0400
+        Sun, 29 Oct 2023 18:59:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEA74693;
-        Sun, 29 Oct 2023 15:58:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B832AC433BD;
-        Sun, 29 Oct 2023 22:57:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5BE46A1;
+        Sun, 29 Oct 2023 15:58:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C696AC43395;
+        Sun, 29 Oct 2023 22:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620270;
-        bh=tbrn0vobqGBLRWpHyZ3h5Akng6s3kKHk/godsb/JcSM=;
+        s=k20201202; t=1698620271;
+        bh=qy79aDmEvJg4mxmFxDurEDjHBkq2aNi5sBCJ4PTjFc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ROZn2zlKfZBg8ysx3WA91Oq86nK/foIkzh5QgpMdNkr/X9z+WjAntawrfEh0/uLNY
-         KstpBrN/CXIfvE2cRnf74UFhSfOspLoS9qIF24kiyCqO39fSW5pkCRPHKAutobJiz2
-         eAM/7qL4EPZRCpvEFsQh0Mh5EpU3YxmIi3DZsLZDvRa/wzVpQ1+d89E8eDkClDuAuC
-         lnV/7NVL2GQvk5yQ6SRVpv2aREA93ygBXy4Xzs1N2Mmrz4Q/YeFXf/48vQPw1bxxfS
-         yq3rq9XSoACC4DHwMgxF1D+ljgjJ/rJNm51fa4ORUTlJ6HSqb7eVpqzTaNfVl2sL6S
-         Ou1e9Dk0hOBWA==
+        b=QO6vqUjiyrsdJoXjwRJRd7Jb9tMUhL9zmzag9dwfFny1dOGgrb7Z615QQXss7XVL8
+         i4oWrDpVm3zw1N0fFXH30wVcTStF3GAE+UpJW7QiKhg5DAFkYDRiH6NYdviqjchv2d
+         ZU4tHEEp8D4SSlOC0Y6WVil/1lhLiolbEFyBaR6OAaLgpBTaeBOvY0yBCKZFtRgf9m
+         xVTRAQAMdHrXB4PdktJfuGGTcYOjSclyFVTrX/rTxgV+bTGMeQ9SY50wZtK17kZYne
+         rS8CNZ3wXSOzrcFUB992Ate5dWkNnhU48giT3S8HSxW99jr6YKCxgL+tFsnL5V6GFH
+         DtOBdgWP2dSVw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+Cc:     Ziqi Zhao <astrajoan@yahoo.com>,
+        syzbot+60cf892fc31d1f4358fc@syzkaller.appspotmail.com,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 07/39] fs/ntfs3: Fix NULL pointer dereference on error in attr_allocate_frame()
-Date:   Sun, 29 Oct 2023 18:56:39 -0400
-Message-ID: <20231029225740.790936-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 08/39] fs/ntfs3: Fix possible null-pointer dereference in hdr_find_e()
+Date:   Sun, 29 Oct 2023 18:56:40 -0400
+Message-ID: <20231029225740.790936-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -52,33 +54,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+From: Ziqi Zhao <astrajoan@yahoo.com>
 
-[ Upstream commit 9c689c8dc86f8ca99bf91c05f24c8bab38fe7d5f ]
+[ Upstream commit 1f9b94af923c88539426ed811ae7e9543834a5c5 ]
 
+Upon investigation of the C reproducer provided by Syzbot, it seemed
+the reproducer was trying to mount a corrupted NTFS filesystem, then
+issue a rename syscall to some nodes in the filesystem. This can be
+shown by modifying the reproducer to only include the mount syscall,
+and investigating the filesystem by e.g. `ls` and `rm` commands. As a
+result, during the problematic call to `hdr_fine_e`, the `inode` being
+supplied did not go through `indx_init`, hence the `cmp` function
+pointer was never set.
+
+The fix is simply to check whether `cmp` is not set, and return NULL
+if that's the case, in order to be consistent with other error
+scenarios of the `hdr_find_e` method. The rationale behind this patch
+is that:
+
+- We should prevent crashing the kernel even if the mounted filesystem
+  is corrupted. Any syscalls made on the filesystem could return
+  invalid, but the kernel should be able to sustain these calls.
+
+- Only very specific corruption would lead to this bug, so it would be
+  a pretty rare case in actual usage anyways. Therefore, introducing a
+  check to specifically protect against this bug seems appropriate.
+  Because of its rarity, an `unlikely` clause is used to wrap around
+  this nullity check.
+
+Reported-by: syzbot+60cf892fc31d1f4358fc@syzkaller.appspotmail.com
+Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/attrib.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/ntfs3/index.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 63169529b52c4..2215179c925b3 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -1658,10 +1658,8 @@ int attr_allocate_frame(struct ntfs_inode *ni, CLST frame, size_t compr_size,
- 			le_b = NULL;
- 			attr_b = ni_find_attr(ni, NULL, &le_b, ATTR_DATA, NULL,
- 					      0, NULL, &mi_b);
--			if (!attr_b) {
--				err = -ENOENT;
--				goto out;
--			}
-+			if (!attr_b)
-+				return -ENOENT;
+diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+index 495cfb37962fa..b89a33f5761ef 100644
+--- a/fs/ntfs3/index.c
++++ b/fs/ntfs3/index.c
+@@ -729,6 +729,9 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
+ 	u32 total = le32_to_cpu(hdr->total);
+ 	u16 offs[128];
  
- 			attr = attr_b;
- 			le = le_b;
++	if (unlikely(!cmp))
++		return NULL;
++
+ fill_table:
+ 	if (end > total)
+ 		return NULL;
 -- 
 2.42.0
 
