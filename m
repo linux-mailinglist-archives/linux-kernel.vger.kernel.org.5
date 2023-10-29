@@ -2,120 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9597DB17E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD1C7DB0DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjJ2XgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S231678AbjJ2XUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbjJ2XIK (ORCPT
+        with ESMTP id S232115AbjJ2XUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:08:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F250AD2F;
-        Sun, 29 Oct 2023 16:03:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFFCC433BD;
-        Sun, 29 Oct 2023 23:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620556;
-        bh=BTr13UlPX8BoRn4CQ9hLi6BmAeZL2LKy87Zh/UHkVTA=;
+        Sun, 29 Oct 2023 19:20:32 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BA07AAD
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:04:29 -0700 (PDT)
+Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 48F56660738A;
+        Sun, 29 Oct 2023 23:03:01 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698620582;
+        bh=YZpujfqwR6AmPnpzBmGc9/3FlX+rPLPFL/HzVSu4CKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mpw2ByFQO4Gc1Mv6Sv7zwronvc1G2EoZ0cFGQHlEtPhswR6ZhQuPHFy1gquH6X06w
-         m+fxQU3UB1qAiaH0pa5NjDbG/LckwfOUA6CBcYw0C+ez6o6EDJR9rN6FbjTwQe8giC
-         xHjPEDpj02j40WNkFRzJ5jFa2FaFDGGTNEl001Qtr333XSZw3ULwoTVVj8g9JtWPbD
-         BwyA0uZNndyENe37BMhCSYOE+udfL6nuONqDMrje1yoZ0Vvc62qQq3tcq5Cn0MQiTG
-         U1D1tXcUZBQ7K+lhyfxOYrlCSDeDpOYjdHe2wpVzQa8kUIYG+8bjWT31nav2rq/Jcx
-         99ImM6m2IXXZQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
-        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 11/11] platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
-Date:   Sun, 29 Oct 2023 19:02:02 -0400
-Message-ID: <20231029230213.793581-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231029230213.793581-1-sashal@kernel.org>
-References: <20231029230213.793581-1-sashal@kernel.org>
+        b=Yzi3W8Afq1DDLSxF9ukVTTwfwrj58qABchN5r3SkW0gPe8BI910S69aoBsdTsVoVD
+         SlXE9dkAUFWiziQ9pUjbq8CkQecClbuRlYHeFO/5wf26SHo2An0vLCENAn75YU3u95
+         5ovPy6bPEUJ4D2DCaeDhTF1CbW3xqSkKepNSedLPwidn9tsNBh+gwK5O4aCGRYB9iN
+         jQvluZkmDnOgXe1BOQ0mYiaCljza8hX0Nj+ZDD3kS3JX5VqFkSLSZReUIfoyRP8KaB
+         OSDbglDRRnWTYXpHQbWGCg0bk/yo+zrWFoHsOvk1xVXDj0BQe0RwQ0a31bugfyYY3P
+         A2eNIFtbPHsPQ==
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: [PATCH v18 24/26] drm/virtio: Attach shmem BOs dynamically
+Date:   Mon, 30 Oct 2023 02:02:03 +0300
+Message-ID: <20231029230205.93277-25-dmitry.osipenko@collabora.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+Prepare for addition of memory shrinker support by attaching shmem pages
+to host dynamically on first use. Previously the attachment vq command
+wasn't fenced and there was no vq kick made in the BO creation code path,
+hence the attachment already was happening dynamically, but implicitly.
+Making attachment explicitly dynamic will allow to simplify and reuse more
+code when shrinker will be added. The virtio_gpu_object_shmem_init() now
+works under the held reservation lock, which will be important to have for
+shrinker to avoid moving pages while they are in active use by the driver.
 
-[ Upstream commit f37cc2fc277b371fc491890afb7d8a26e36bb3a1 ]
-
-Older Asus laptops change the backlight level themselves and then send
-WMI events with different codes for different backlight levels.
-
-The asus-wmi.c code maps the entire range of codes reported on
-brightness down keypresses to an internal ASUS_WMI_BRN_DOWN code:
-
-define NOTIFY_BRNUP_MIN                0x11
-define NOTIFY_BRNUP_MAX                0x1f
-define NOTIFY_BRNDOWN_MIN              0x20
-define NOTIFY_BRNDOWN_MAX              0x2e
-
-        if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
-                code = ASUS_WMI_BRN_UP;
-        else if (code >= NOTIFY_BRNDOWN_MIN && code <= NOTIFY_BRNDOWN_MAX)
-                code = ASUS_WMI_BRN_DOWN;
-
-Before this commit all the NOTIFY_BRNDOWN_MIN - NOTIFY_BRNDOWN_MAX
-aka 0x20 - 0x2e events were mapped to 0x20.
-
-This mapping is causing issues on new laptop models which actually
-send 0x2b events for printscreen presses and 0x2c events for
-capslock presses, which get translated into spurious brightness-down
-presses.
-
-The plan is disable the 0x11-0x2e special mapping on laptops
-where asus-wmi does not register a backlight-device to avoid
-the spurious brightness-down keypresses. New laptops always send
-0x2e for brightness-down presses, change the special internal
-ASUS_WMI_BRN_DOWN value from 0x20 to 0x2e to match this in
-preparation for fixing the spurious brightness-down presses.
-
-This change does not have any functional impact since all
-of 0x20 - 0x2e is mapped to ASUS_WMI_BRN_DOWN first and only
-then checked against the keymap code and the new 0x2e
-value is still in the 0x20 - 0x2e range.
-
-Reported-by: James John <me@donjajo.com>
-Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
-Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20231017090725.38163-2-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Acked-by: Gerd Hoffmann <kraxel@redhat.com>
+Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/platform/x86/asus-wmi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/virtio/virtgpu_drv.h    |  7 +++
+ drivers/gpu/drm/virtio/virtgpu_gem.c    | 26 +++++++++
+ drivers/gpu/drm/virtio/virtgpu_ioctl.c  | 32 +++++++----
+ drivers/gpu/drm/virtio/virtgpu_object.c | 73 ++++++++++++++++++++-----
+ drivers/gpu/drm/virtio/virtgpu_submit.c | 15 ++++-
+ 5 files changed, 125 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
-index 57a79bddb2861..95612878a841f 100644
---- a/drivers/platform/x86/asus-wmi.h
-+++ b/drivers/platform/x86/asus-wmi.h
-@@ -31,7 +31,7 @@
- #include <linux/i8042.h>
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+index 56269814fb6d..421f524ae1de 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.h
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+@@ -89,6 +89,7 @@ struct virtio_gpu_object {
+ 	uint32_t hw_res_handle;
+ 	bool dumb;
+ 	bool created;
++	bool detached;
+ 	bool host3d_blob, guest_blob;
+ 	uint32_t blob_mem, blob_flags;
  
- #define ASUS_WMI_KEY_IGNORE (-1)
--#define ASUS_WMI_BRN_DOWN	0x20
-+#define ASUS_WMI_BRN_DOWN	0x2e
- #define ASUS_WMI_BRN_UP		0x2f
+@@ -313,6 +314,8 @@ void virtio_gpu_array_put_free(struct virtio_gpu_object_array *objs);
+ void virtio_gpu_array_put_free_delayed(struct virtio_gpu_device *vgdev,
+ 				       struct virtio_gpu_object_array *objs);
+ void virtio_gpu_array_put_free_work(struct work_struct *work);
++int virtio_gpu_array_prepare(struct virtio_gpu_device *vgdev,
++			     struct virtio_gpu_object_array *objs);
+ int virtio_gpu_gem_pin(struct virtio_gpu_object *bo);
+ void virtio_gpu_gem_unpin(struct virtio_gpu_object *bo);
  
- struct module;
+@@ -453,6 +456,10 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+ 
+ bool virtio_gpu_is_shmem(struct virtio_gpu_object *bo);
+ 
++int virtio_gpu_reattach_shmem_object_locked(struct virtio_gpu_object *bo);
++
++int virtio_gpu_reattach_shmem_object(struct virtio_gpu_object *bo);
++
+ int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev,
+ 			       uint32_t *resid);
+ /* virtgpu_prime.c */
+diff --git a/drivers/gpu/drm/virtio/virtgpu_gem.c b/drivers/gpu/drm/virtio/virtgpu_gem.c
+index 625c05d625bf..97e67064c97e 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_gem.c
++++ b/drivers/gpu/drm/virtio/virtgpu_gem.c
+@@ -295,6 +295,26 @@ void virtio_gpu_array_put_free_work(struct work_struct *work)
+ 	spin_unlock(&vgdev->obj_free_lock);
+ }
+ 
++int virtio_gpu_array_prepare(struct virtio_gpu_device *vgdev,
++			     struct virtio_gpu_object_array *objs)
++{
++	struct virtio_gpu_object *bo;
++	int ret = 0;
++	u32 i;
++
++	for (i = 0; i < objs->nents; i++) {
++		bo = gem_to_virtio_gpu_obj(objs->objs[i]);
++
++		if (virtio_gpu_is_shmem(bo) && bo->detached) {
++			ret = virtio_gpu_reattach_shmem_object_locked(bo);
++			if (ret)
++				break;
++		}
++	}
++
++	return ret;
++}
++
+ int virtio_gpu_gem_pin(struct virtio_gpu_object *bo)
+ {
+ 	int err;
+@@ -303,6 +323,12 @@ int virtio_gpu_gem_pin(struct virtio_gpu_object *bo)
+ 		err = drm_gem_shmem_pin(&bo->base);
+ 		if (err)
+ 			return err;
++
++		err = virtio_gpu_reattach_shmem_object(bo);
++		if (err) {
++			drm_gem_shmem_unpin(&bo->base);
++			return err;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/virtio/virtgpu_ioctl.c b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
+index b24b11f25197..070c29cea26a 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_ioctl.c
++++ b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
+@@ -246,6 +246,10 @@ static int virtio_gpu_transfer_from_host_ioctl(struct drm_device *dev,
+ 	if (ret != 0)
+ 		goto err_put_free;
+ 
++	ret = virtio_gpu_array_prepare(vgdev, objs);
++	if (ret)
++		goto err_unlock;
++
+ 	fence = virtio_gpu_fence_alloc(vgdev, vgdev->fence_drv.context, 0);
+ 	if (!fence) {
+ 		ret = -ENOMEM;
+@@ -288,11 +292,25 @@ static int virtio_gpu_transfer_to_host_ioctl(struct drm_device *dev, void *data,
+ 		goto err_put_free;
+ 	}
+ 
++	ret = virtio_gpu_array_lock_resv(objs);
++	if (ret != 0)
++		goto err_put_free;
++
++	ret = virtio_gpu_array_prepare(vgdev, objs);
++	if (ret)
++		goto err_unlock;
++
++	fence = virtio_gpu_fence_alloc(vgdev, vgdev->fence_drv.context, 0);
++	if (!fence) {
++		ret = -ENOMEM;
++		goto err_unlock;
++	}
++
+ 	if (!vgdev->has_virgl_3d) {
+ 		virtio_gpu_cmd_transfer_to_host_2d
+ 			(vgdev, offset,
+ 			 args->box.w, args->box.h, args->box.x, args->box.y,
+-			 objs, NULL);
++			 objs, fence);
+ 	} else {
+ 		virtio_gpu_create_context(dev, file);
+ 
+@@ -301,23 +319,13 @@ static int virtio_gpu_transfer_to_host_ioctl(struct drm_device *dev, void *data,
+ 			goto err_put_free;
+ 		}
+ 
+-		ret = virtio_gpu_array_lock_resv(objs);
+-		if (ret != 0)
+-			goto err_put_free;
+-
+-		ret = -ENOMEM;
+-		fence = virtio_gpu_fence_alloc(vgdev, vgdev->fence_drv.context,
+-					       0);
+-		if (!fence)
+-			goto err_unlock;
+-
+ 		virtio_gpu_cmd_transfer_to_host_3d
+ 			(vgdev,
+ 			 vfpriv ? vfpriv->ctx_id : 0, offset, args->level,
+ 			 args->stride, args->layer_stride, &args->box, objs,
+ 			 fence);
+-		dma_fence_put(&fence->f);
+ 	}
++	dma_fence_put(&fence->f);
+ 	virtio_gpu_notify(vgdev);
+ 	return 0;
+ 
+diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+index 998f8b05ceb1..000bb7955a57 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_object.c
++++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+@@ -143,7 +143,7 @@ static int virtio_gpu_object_shmem_init(struct virtio_gpu_device *vgdev,
+ 	struct sg_table *pages;
+ 	int si;
+ 
+-	pages = drm_gem_shmem_get_pages_sgt(&bo->base);
++	pages = drm_gem_shmem_get_pages_sgt_locked(&bo->base);
+ 	if (IS_ERR(pages))
+ 		return PTR_ERR(pages);
+ 
+@@ -177,6 +177,40 @@ static int virtio_gpu_object_shmem_init(struct virtio_gpu_device *vgdev,
+ 	return 0;
+ }
+ 
++int virtio_gpu_reattach_shmem_object_locked(struct virtio_gpu_object *bo)
++{
++	struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
++	struct virtio_gpu_mem_entry *ents;
++	unsigned int nents;
++	int err;
++
++	if (!bo->detached)
++		return 0;
++
++	err = virtio_gpu_object_shmem_init(vgdev, bo, &ents, &nents);
++	if (err)
++		return err;
++
++	virtio_gpu_object_attach(vgdev, bo, ents, nents);
++
++	bo->detached = false;
++
++	return 0;
++}
++
++int virtio_gpu_reattach_shmem_object(struct virtio_gpu_object *bo)
++{
++	int ret;
++
++	ret = dma_resv_lock_interruptible(bo->base.base.resv, NULL);
++	if (ret)
++		return ret;
++	ret = virtio_gpu_reattach_shmem_object_locked(bo);
++	dma_resv_unlock(bo->base.base.resv);
++
++	return ret;
++}
++
+ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+ 			     struct virtio_gpu_object_params *params,
+ 			     struct virtio_gpu_object **bo_ptr,
+@@ -207,45 +241,56 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+ 
+ 	bo->dumb = params->dumb;
+ 
+-	ret = virtio_gpu_object_shmem_init(vgdev, bo, &ents, &nents);
+-	if (ret != 0)
+-		goto err_put_id;
++	if (bo->blob_mem == VIRTGPU_BLOB_MEM_GUEST)
++		bo->guest_blob = true;
+ 
+ 	if (fence) {
+ 		ret = -ENOMEM;
+ 		objs = virtio_gpu_array_alloc(1);
+ 		if (!objs)
+-			goto err_free_entry;
++			goto err_put_id;
+ 		virtio_gpu_array_add_obj(objs, &bo->base.base);
+ 
+ 		ret = virtio_gpu_array_lock_resv(objs);
+ 		if (ret != 0)
+ 			goto err_put_objs;
++	} else {
++		ret = dma_resv_lock(bo->base.base.resv, NULL);
++		if (ret)
++			goto err_put_id;
+ 	}
+ 
+ 	if (params->blob) {
+-		if (params->blob_mem == VIRTGPU_BLOB_MEM_GUEST)
+-			bo->guest_blob = true;
++		ret = virtio_gpu_object_shmem_init(vgdev, bo, &ents, &nents);
++		if (ret)
++			goto err_unlock_objs;
++	} else {
++		bo->detached = true;
++	}
+ 
++	if (params->blob)
+ 		virtio_gpu_cmd_resource_create_blob(vgdev, bo, params,
+ 						    ents, nents);
+-	} else if (params->virgl) {
++	else if (params->virgl)
+ 		virtio_gpu_cmd_resource_create_3d(vgdev, bo, params,
+ 						  objs, fence);
+-		virtio_gpu_object_attach(vgdev, bo, ents, nents);
+-	} else {
++	else
+ 		virtio_gpu_cmd_create_resource(vgdev, bo, params,
+ 					       objs, fence);
+-		virtio_gpu_object_attach(vgdev, bo, ents, nents);
+-	}
++
++	if (!fence)
++		dma_resv_unlock(bo->base.base.resv);
+ 
+ 	*bo_ptr = bo;
+ 	return 0;
+ 
++err_unlock_objs:
++	if (fence)
++		virtio_gpu_array_unlock_resv(objs);
++	else
++		dma_resv_unlock(bo->base.base.resv);
+ err_put_objs:
+ 	virtio_gpu_array_put_free(objs);
+-err_free_entry:
+-	kvfree(ents);
+ err_put_id:
+ 	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
+ err_put_pages:
+diff --git a/drivers/gpu/drm/virtio/virtgpu_submit.c b/drivers/gpu/drm/virtio/virtgpu_submit.c
+index 5c514946bbad..6e4ef2593e8f 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_submit.c
++++ b/drivers/gpu/drm/virtio/virtgpu_submit.c
+@@ -464,8 +464,19 @@ static void virtio_gpu_install_out_fence_fd(struct virtio_gpu_submit *submit)
+ 
+ static int virtio_gpu_lock_buflist(struct virtio_gpu_submit *submit)
+ {
+-	if (submit->buflist)
+-		return virtio_gpu_array_lock_resv(submit->buflist);
++	int err;
++
++	if (submit->buflist) {
++		err = virtio_gpu_array_lock_resv(submit->buflist);
++		if (err)
++			return err;
++
++		err = virtio_gpu_array_prepare(submit->vgdev, submit->buflist);
++		if (err) {
++			virtio_gpu_array_unlock_resv(submit->buflist);
++			return err;
++		}
++	}
+ 
+ 	return 0;
+ }
 -- 
-2.42.0
+2.41.0
 
