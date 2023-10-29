@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E99C7DB141
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809847DB10F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbjJ2X33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
+        id S231848AbjJ2X22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbjJ2X3D (ORCPT
+        with ESMTP id S232107AbjJ2X2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:29:03 -0400
+        Sun, 29 Oct 2023 19:28:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791841724;
-        Sun, 29 Oct 2023 15:57:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10712C433C7;
-        Sun, 29 Oct 2023 22:56:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AE53A97;
+        Sun, 29 Oct 2023 15:57:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB78C433BA;
+        Sun, 29 Oct 2023 22:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620209;
-        bh=ChxiZgj1s8N53L3B1UfbFt7sFdErPWaTFgDKiWCLX6s=;
+        s=k20201202; t=1698620210;
+        bh=+fquCF2L/2oZkAaBOfHHvRsQJQ6bsGAbQLrcRdEpmqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o3WXAjUdVZmoJNWTCQBxxg8qybKdXraPXEqRtA8wlZ5JJjrLxbDUZ18A+diSq3DSr
-         CUnsj7Ke75ePtOG5vZZDfR0aZf+LGNYmSoyIVOabb1e90Tr0FYJ933HWNIwaU9gqjT
-         IIkXhmE+OFevPPA39mYWJznu+o4f4r+k7jHQxZkDZ+j/7OgntDXlB7xmSxjiOBcx1D
-         27ave2Nv4+EWa+WB4T/e5YcElWZKA5MdP3loy5UkjYykdfqrgqQbS6Gl8wApbS0456
-         s8QtVfv9zwdORR5oswRJbO9FArSKpPNjr4gLY1l4dV4Rt/h3Yewd7f3WEQMJuOeAYr
-         V7DMoSm5mcRPA==
+        b=FVrHYJ5ndc3hj9IVybMvgIvmZoD4KGUsQ6jzpZ1HzJUfUTgnjJcuOWRYWXt9CwRxG
+         PV2YPWUsoibXiN8/MO3eUX4/O6hUD5rtBtwaVEx8nAHTtcHyQFZBXn8WWclClHrcjt
+         vjj6nzHjVdDmm31M7Gu3d8vJKxQE2hpG1isJlpILjdtD4GILnB/iejJZKJ1uqloERY
+         SUkY6BGD9hxr0DSTR7P6BptJnGwCGdBeU3WyrYYEC4FNFAz5HSrvi3fDk0ZY/KsqlU
+         jhYozaWL4fyZER4hDh4tAyE2P4swIppU2TV4L0OGEakYggCsBKnHeVxLnqfa4F7OVb
+         /r89RKwCV+fGw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Icenowy Zheng <uwu@icenowy.me>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        kernel@xen0n.name, akpm@linux-foundation.org, bhe@redhat.com,
-        rppt@kernel.org, willy@infradead.org, zhanghongchen@loongson.cn,
-        david@redhat.com, zhoubinbin@loongson.cn, donmor3000@hotmail.com,
-        yangtiezhu@loongson.cn, tangyouling@loongson.cn,
-        tglx@linutronix.de, loongarch@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.5 43/52] LoongArch: Disable WUC for pgprot_writecombine() like ioremap_wc()
-Date:   Sun, 29 Oct 2023 18:53:30 -0400
-Message-ID: <20231029225441.789781-43-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 44/52] platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
+Date:   Sun, 29 Oct 2023 18:53:31 -0400
+Message-ID: <20231029225441.789781-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -58,98 +53,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <uwu@icenowy.me>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 278be83601dd1725d4732241f066d528e160a39d ]
+[ Upstream commit f37cc2fc277b371fc491890afb7d8a26e36bb3a1 ]
 
-Currently the code disables WUC only disables it for ioremap_wc(), which
-is only used when mapping writecombine pages like ioremap() (mapped to
-the kernel space). But for VRAM mapped in TTM/GEM, it is mapped with a
-crafted pgprot by the pgprot_writecombine() function, in which case WUC
-isn't disabled now.
+Older Asus laptops change the backlight level themselves and then send
+WMI events with different codes for different backlight levels.
 
-Disable WUC for pgprot_writecombine() (fallback to SUC) if needed, like
-ioremap_wc().
+The asus-wmi.c code maps the entire range of codes reported on
+brightness down keypresses to an internal ASUS_WMI_BRN_DOWN code:
 
-This improves the AMDGPU driver's stability (solves some misrendering)
-on Loongson-3A5000/3A6000 machines.
+define NOTIFY_BRNUP_MIN                0x11
+define NOTIFY_BRNUP_MAX                0x1f
+define NOTIFY_BRNDOWN_MIN              0x20
+define NOTIFY_BRNDOWN_MAX              0x2e
 
-Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+        if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
+                code = ASUS_WMI_BRN_UP;
+        else if (code >= NOTIFY_BRNDOWN_MIN && code <= NOTIFY_BRNDOWN_MAX)
+                code = ASUS_WMI_BRN_DOWN;
+
+Before this commit all the NOTIFY_BRNDOWN_MIN - NOTIFY_BRNDOWN_MAX
+aka 0x20 - 0x2e events were mapped to 0x20.
+
+This mapping is causing issues on new laptop models which actually
+send 0x2b events for printscreen presses and 0x2c events for
+capslock presses, which get translated into spurious brightness-down
+presses.
+
+The plan is disable the 0x11-0x2e special mapping on laptops
+where asus-wmi does not register a backlight-device to avoid
+the spurious brightness-down keypresses. New laptops always send
+0x2e for brightness-down presses, change the special internal
+ASUS_WMI_BRN_DOWN value from 0x20 to 0x2e to match this in
+preparation for fixing the spurious brightness-down presses.
+
+This change does not have any functional impact since all
+of 0x20 - 0x2e is mapped to ASUS_WMI_BRN_DOWN first and only
+then checked against the keymap code and the new 0x2e
+value is still in the 0x20 - 0x2e range.
+
+Reported-by: James John <me@donjajo.com>
+Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
+Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231017090725.38163-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/include/asm/io.h           |  5 ++---
- arch/loongarch/include/asm/pgtable-bits.h |  4 +++-
- arch/loongarch/kernel/setup.c             | 10 +++++-----
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ drivers/platform/x86/asus-wmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
-index 1c94102200407..0355b64e90ed0 100644
---- a/arch/loongarch/include/asm/io.h
-+++ b/arch/loongarch/include/asm/io.h
-@@ -54,10 +54,9 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset, unsigned long size,
-  * @offset:    bus address of the memory
-  * @size:      size of the resource to map
-  */
--extern pgprot_t pgprot_wc;
--
- #define ioremap_wc(offset, size)	\
--	ioremap_prot((offset), (size), pgprot_val(pgprot_wc))
-+	ioremap_prot((offset), (size),	\
-+		pgprot_val(wc_enabled ? PAGE_KERNEL_WUC : PAGE_KERNEL_SUC))
+diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
+index a478ebfd34dfa..fc41d1b1bb7f8 100644
+--- a/drivers/platform/x86/asus-wmi.h
++++ b/drivers/platform/x86/asus-wmi.h
+@@ -18,7 +18,7 @@
+ #include <linux/i8042.h>
  
- #define ioremap_cache(offset, size)	\
- 	ioremap_prot((offset), (size), pgprot_val(PAGE_KERNEL))
-diff --git a/arch/loongarch/include/asm/pgtable-bits.h b/arch/loongarch/include/asm/pgtable-bits.h
-index de46a6b1e9f11..7b9ac012cd090 100644
---- a/arch/loongarch/include/asm/pgtable-bits.h
-+++ b/arch/loongarch/include/asm/pgtable-bits.h
-@@ -105,13 +105,15 @@ static inline pgprot_t pgprot_noncached(pgprot_t _prot)
- 	return __pgprot(prot);
- }
+ #define ASUS_WMI_KEY_IGNORE (-1)
+-#define ASUS_WMI_BRN_DOWN	0x20
++#define ASUS_WMI_BRN_DOWN	0x2e
+ #define ASUS_WMI_BRN_UP		0x2f
  
-+extern bool wc_enabled;
-+
- #define pgprot_writecombine pgprot_writecombine
- 
- static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
- {
- 	unsigned long prot = pgprot_val(_prot);
- 
--	prot = (prot & ~_CACHE_MASK) | _CACHE_WUC;
-+	prot = (prot & ~_CACHE_MASK) | (wc_enabled ? _CACHE_WUC : _CACHE_SUC);
- 
- 	return __pgprot(prot);
- }
-diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
-index 9d830ab4e3025..1351614042d4e 100644
---- a/arch/loongarch/kernel/setup.c
-+++ b/arch/loongarch/kernel/setup.c
-@@ -161,19 +161,19 @@ static void __init smbios_parse(void)
- }
- 
- #ifdef CONFIG_ARCH_WRITECOMBINE
--pgprot_t pgprot_wc = PAGE_KERNEL_WUC;
-+bool wc_enabled = true;
- #else
--pgprot_t pgprot_wc = PAGE_KERNEL_SUC;
-+bool wc_enabled = false;
- #endif
- 
--EXPORT_SYMBOL(pgprot_wc);
-+EXPORT_SYMBOL(wc_enabled);
- 
- static int __init setup_writecombine(char *p)
- {
- 	if (!strcmp(p, "on"))
--		pgprot_wc = PAGE_KERNEL_WUC;
-+		wc_enabled = true;
- 	else if (!strcmp(p, "off"))
--		pgprot_wc = PAGE_KERNEL_SUC;
-+		wc_enabled = false;
- 	else
- 		pr_warn("Unknown writecombine setting \"%s\".\n", p);
- 
+ struct module;
 -- 
 2.42.0
 
