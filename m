@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 396567DAF90
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A7A7DB111
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjJ2XAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        id S231598AbjJ2X3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjJ2W7Y (ORCPT
+        with ESMTP id S232185AbjJ2X2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:59:24 -0400
+        Sun, 29 Oct 2023 19:28:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE4F47B0;
-        Sun, 29 Oct 2023 15:58:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75DA9C433C9;
-        Sun, 29 Oct 2023 22:58:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BD349C2;
+        Sun, 29 Oct 2023 15:58:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E830C43142;
+        Sun, 29 Oct 2023 22:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620281;
-        bh=PDqOes406CTDIQMaICBba0Z0k8SUC3PaSei4d0V58qs=;
+        s=k20201202; t=1698620283;
+        bh=JzhV2baKjYJKCG7HB3w3U5IgTexqNb1Lzeevsg8VPaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XKq65EibJrRPkqy+CCanSbZt3Jhq7yDru/pFkzSMiKAzDdGbU+nB7B3HqO+TyWMbQ
-         +dCZ3yLJRs15mlNgNBgjjTPr10Xtp4g5ESCGIZXfKIXS495TM6I/3EIAN8gQ/U1qR1
-         an91DF9Yy5tRnEZUTihkY6bMD7vhJLp+4RZibQ5ruwkLejJBkxsuWbMesZnbo8+1t0
-         qWOkGFZGdymU+A/bOMMZdgRddXv3fMf5UwqrqyxS7W61YYZPKvQGr0O9zGUtzGN5f1
-         5cbcuSwGLa8NvgcGu8OAvNbM/feFTctiWBEg47xapMeOJxRsO9eCJlqrn5zFXK3t28
-         qR2hOfdholAKw==
+        b=kQRcw+uso8/gLDYFWEHYhj6oI1KqZTM2nNluKqubiQY40yuyJH1Rn/vpsfgxM4zwY
+         h3mEjDwM5SK61eZvejGEwJmRdWPBNav+6S+vh6YG4A//3MtX3lcBkg/J0O2HSkF6aX
+         hv43Ibx+aGGcccj7KhBM2Gt8DVVKDVqHnRZ7VcxWG8zhAl0xyQxNQA6UJhgF8sW4za
+         6mdonCfM/PoLiEWEhWdkyst+PB3cuMWEXNLUPrpAKwu+DMho6RMjM+l2bwA29iwSoX
+         iA42OmI/G9UaxgEoarH8Gk8p9u6FwPcnabUMdFTpRSX5H3Z1Umgvis60aGjD42b8kt
+         WKG4N9t0pQ6Sw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ma Ke <make_ruc2021@163.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 15/39] net: ipv4: fix return value check in esp_remove_trailer
-Date:   Sun, 29 Oct 2023 18:56:47 -0400
-Message-ID: <20231029225740.790936-15-sashal@kernel.org>
+Cc:     Dai Ngo <dai.ngo@oracle.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 16/39] nfs42: client needs to strip file mode's suid/sgid bit after ALLOCATE op
+Date:   Sun, 29 Oct 2023 18:56:48 -0400
+Message-ID: <20231029225740.790936-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -45,45 +47,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.60
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ma Ke <make_ruc2021@163.com>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-[ Upstream commit 513f61e2193350c7a345da98559b80f61aec4fa6 ]
+[ Upstream commit f588d72bd95f748849685412b1f0c7959ca228cf ]
 
-In esp_remove_trailer(), to avoid an unexpected result returned by
-pskb_trim, we should check the return value of pskb_trim().
+The Linux NFS server strips the SUID and SGID from the file mode
+on ALLOCATE op.
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Modify _nfs42_proc_fallocate to add NFS_INO_REVAL_FORCED to
+nfs_set_cache_invalid's argument to force update of the file
+mode suid/sgid bit.
+
+Suggested-by: Trond Myklebust <trondmy@hammerspace.com>
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Tested-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/esp4.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/nfs/nfs42proc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
-index 2d094d417ecae..e2546961add3e 100644
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -732,7 +732,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
- 		skb->csum = csum_block_sub(skb->csum, csumdiff,
- 					   skb->len - trimlen);
- 	}
--	pskb_trim(skb, skb->len - trimlen);
-+	ret = pskb_trim(skb, skb->len - trimlen);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	ret = nexthdr[1];
- 
+diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
+index d903ea10410c2..5a8fe0e57a3d3 100644
+--- a/fs/nfs/nfs42proc.c
++++ b/fs/nfs/nfs42proc.c
+@@ -81,7 +81,8 @@ static int _nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
+ 	if (status == 0) {
+ 		if (nfs_should_remove_suid(inode)) {
+ 			spin_lock(&inode->i_lock);
+-			nfs_set_cache_invalid(inode, NFS_INO_INVALID_MODE);
++			nfs_set_cache_invalid(inode,
++				NFS_INO_REVAL_FORCED | NFS_INO_INVALID_MODE);
+ 			spin_unlock(&inode->i_lock);
+ 		}
+ 		status = nfs_post_op_update_inode_force_wcc(inode,
 -- 
 2.42.0
 
