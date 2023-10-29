@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C517DAEB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BFE7DAEBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbjJ2WCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
+        id S230358AbjJ2WH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjJ2WC1 (ORCPT
+        with ESMTP id S229533AbjJ2WH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:02:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B23EB7;
-        Sun, 29 Oct 2023 15:02:25 -0700 (PDT)
-Received: from [192.168.1.90] (unknown [188.24.143.101])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4B00166072BB;
-        Sun, 29 Oct 2023 22:02:22 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698616943;
-        bh=vk26fELTpT3lCmDhyB1BjvWl5h7dQQR7ACLCNBDPifc=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=O+GZqN62WN5APTjARqZkYPmUNIns8iAzqU5RwVcknHv5gn2dalAdOrAvgfZZAN1wO
-         FR82nLLqV7LKaCA7id+z6mFSgps0dFV/FVfrU722pMDmqJAhs2QB+72cdXVQc4mbJm
-         ugmR5k8zhDJur7w4odrYO6R9fzpo8xTaNIDiOc+I8d9lL5nI7uONAbE9g99uLOcFYp
-         iKLWHjI0BNIHuPBK0QNimyIhU/DPJ6bRVtAC4C4vnL2sstX4h0/vYgTydKKegOW1p9
-         jI9XG6Nb3s2U5Qo/oOAeoxmpiYi2fBBwM0sTcipjkdQC5sO398jKwS7iXzNMKYSnqo
-         JxdXwhGZ4fZjw==
-Message-ID: <ee857617-9be9-45ae-a488-3842caf9013b@collabora.com>
-Date:   Mon, 30 Oct 2023 00:02:19 +0200
+        Sun, 29 Oct 2023 18:07:26 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8454FB7;
+        Sun, 29 Oct 2023 15:07:24 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso5989555a12.3;
+        Sun, 29 Oct 2023 15:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698617243; x=1699222043; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5EcvsKKWujXN1u8l3ldEd2sae45jZkF+al3+Z3aUziI=;
+        b=Ykp3APiPqQ957qiKoZU8smBtJd36q9r27JZx5haEwS9qw5qWbcyb+AeQzQs4ZdV7oI
+         CA0tkGSep7ipHhBvH5T8h8h95wk8kBLJXAXikoPAUsZ/ydWmR/ikttcxgD2wsBM+murQ
+         8VtifmOw6jy4jP1SFNdPVvzwaEcvAdl1HbAs/04Rc9cy69dJi8dLQwDtaGu6FX/Bg4ck
+         HlOyS9BRoMEYZZpfK4pm6QPZRu6I+LSD2sbvn+wkgRanq7A1pXuFvR7qBeSuujBrQJXQ
+         VKLGUpzIe/P2lEYPIJ1HtZZgp/Bw4dWjcR7xXQWBmD503IfOrUoJBSzbUe8ZTw+desFe
+         YbhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698617243; x=1699222043;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5EcvsKKWujXN1u8l3ldEd2sae45jZkF+al3+Z3aUziI=;
+        b=HbJmhJHhrteiCaTvRN9YeMv4qStih127WpaTlhB1qBhyeB3bSqM0u7POcmt0ntKSPh
+         1u67zEyP7vTqs/uBNCfocCSRT5UHUKNQ6fG49CcTwCcxow7QAIKuVr/I4ZI2N0g7vtQG
+         nYd96+mNWcUDN5P8GbA1DzyHmIB/VCt4EL08ZQFHkAlaXVuJ3KUYqay766Vy9W1U6Krf
+         ne+yyyNUj3ckcR8qPAFsp2nkH7MXnSiR1K1oFIgHOalBmEj50euEECQCJwrGtqwIAKyF
+         ynSP5PaYQ/u5AIwH3Tj+k1hDltOgr7BCYjrJS0VZl462B1L2FzLmP/duTPUsJXsurEG/
+         Fhqw==
+X-Gm-Message-State: AOJu0YzU2iDi5qoEaCFLpB+p/0yPOzB/wvAK1KzlZvZvDnuKAxsiw4lm
+        JFNFl+Derd7tPWtpSSw9iMw=
+X-Google-Smtp-Source: AGHT+IFtGibfskZvbNGDOf/rSmu8ZBvGaUKFm8MxvUBw1WMmiZBYtPrR5i6MNHib1lIHHocKn8ExKA==
+X-Received: by 2002:aa7:d50b:0:b0:53e:7d60:58bb with SMTP id y11-20020aa7d50b000000b0053e7d6058bbmr6906369edq.27.1698617242685;
+        Sun, 29 Oct 2023 15:07:22 -0700 (PDT)
+Received: from nancy-1-2.. ([105.163.156.232])
+        by smtp.googlemail.com with ESMTPSA id u23-20020a056402111700b00533dd4d2947sm5073092edv.74.2023.10.29.15.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Oct 2023 15:07:22 -0700 (PDT)
+From:   Nancy Nyambura <nicymimz@gmail.com>
+To:     gagallo7+outreachy@gmail.com
+Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
+        Nancy Nyambura <nicymimz@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Media: omap4iss: Enable RSZB and update resizer control
+Date:   Mon, 30 Oct 2023 01:07:09 +0300
+Message-Id: <20231029220710.47063-1-nicymimz@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: net: snps,dwmac: Allow exclusive
- usage of ahb reset
-Content-Language: en-US
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
- <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
- <e2c65d01-3498-4287-a6dc-b926135df762@linaro.org>
- <564503dd-b779-4e9f-851d-f34d9ea5fa65@collabora.com>
-In-Reply-To: <564503dd-b779-4e9f-851d-f34d9ea5fa65@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/23 23:55, Cristian Ciocaltea wrote:
-> On 10/29/23 13:21, Krzysztof Kozlowski wrote:
->> On 29/10/2023 05:27, Cristian Ciocaltea wrote:
->>> The Synopsys DesignWare MAC found on the StarFive JH7100 SoC requires
->>> just the 'ahb' reset name, but the binding allows selecting it only in
->>> conjunction with 'stmmaceth'.
->>>
->>> Fix the issue by permitting exclusive usage of the 'ahb' reset name.
->>>
->>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
->>> ---
->>>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>> index 5c2769dc689a..a4d7172ea701 100644
->>> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
->>> @@ -146,7 +146,7 @@ properties:
->>>    reset-names:
->>>      minItems: 1
->>>      items:
->>> -      - const: stmmaceth
->>> +      - enum: [stmmaceth, ahb]
->>
->> Your patch #3 says you have minimum two items. Here you claim you have
->> only one reset. It's confusing.
-> 
-> At least the following use-cases need to be supported:
-> 
-> - JH7110: reset-names = "stmmaceth", "ahb";
-> - JH7110: reset-names = "ahb";
+Enable RSZB functionality in the OMAP4 ISS driver. This change sets the RSZB system configuration register to enable the RSZB module. Additionally, it updates the resizer control by setting the RSZ_EN_EN flag as required. This change enhances the driver's capabilities and prepares it for future developments.
 
-I've just realized my mistake here - this is for JH7100, sorry for the
-confusion:
+Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
+---
+ drivers/staging/media/omap4iss/iss_resizer.c | 34 +++++++++++---------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-- JH7100: reset-names = "ahb";
+diff --git a/drivers/staging/media/omap4iss/iss_resizer.c b/drivers/staging/media/omap4iss/iss_resizer.c
+index a5f8f9f1ab16..23089eeaf448 100644
+--- a/drivers/staging/media/omap4iss/iss_resizer.c
++++ b/drivers/staging/media/omap4iss/iss_resizer.c
+@@ -7,17 +7,17 @@
+  * Author: Sergio Aguirre <sergio.a.aguirre@gmail.com>
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/uaccess.h>
+-#include <linux/delay.h>
+-#include <linux/device.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/mm.h>
+-#include <linux/sched.h>
+-
+-#include "iss.h"
+-#include "iss_regs.h"
+-#include "iss_resizer.h"
++ #include <linux/module.h>
++ #include <linux/uaccess.h>
++ #include <linux/delay.h>
++ #include <linux/device.h>
++ #include <linux/dma-mapping.h>
++ #include <linux/mm.h>
++ #include <linux/sched.h>
++
++ #include "iss.h"
++ #include "iss_regs.h"
++ #include "iss_resizer.h"
+ 
+ static const unsigned int resizer_fmts[] = {
+ 	MEDIA_BUS_FMT_UYVY8_1X16,
+@@ -30,11 +30,11 @@ static const unsigned int resizer_fmts[] = {
+  *
+  * Also prints other debug information stored in the RESIZER module.
+  */
+-#define RSZ_PRINT_REGISTER(iss, name)\
++ #define RSZ_PRINT_REGISTER(iss, name)\
+ 	dev_dbg(iss->dev, "###RSZ " #name "=0x%08x\n", \
+ 		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_RESIZER, RSZ_##name))
+ 
+-#define RZA_PRINT_REGISTER(iss, name)\
++ #define RZA_PRINT_REGISTER(iss, name)\
+ 	dev_dbg(iss->dev, "###RZA " #name "=0x%08x\n", \
+ 		iss_reg_read(iss, OMAP4_ISS_MEM_ISP_RESIZER, RZA_##name))
+ 
+@@ -116,8 +116,12 @@ static void resizer_enable(struct iss_resizer_device *resizer, u8 enable)
+ 		       RSZ_SRC_EN_SRC_EN, enable ? RSZ_SRC_EN_SRC_EN : 0);
+ 
+ 	/* TODO: Enable RSZB */
+-	iss_reg_update(iss, OMAP4_ISS_MEM_ISP_RESIZER, RZA_EN, RSZ_EN_EN,
+-		       enable ? RSZ_EN_EN : 0);
++	u32 reg_value = ioread32(iss->base_addr + OMAP4_ISS_MEM_ISP_RESIZER,
++		       	+ RZ_SYSCONFIG);
++	reg_value |= RSZ_SYSCONFIG_RSZB_CLK_EN;
++	iowrite32(reg_value, iss->base_addr + OMAP4_ISS_MEM_ISP_RESIZER, 
++			+ RSZ_SYSCONFIG);
++
+ }
+ 
+ /* -----------------------------------------------------------------------------
+-- 
+2.40.1
 
-> - other:  reset-names = "stmmaceth";
-> 
-> Since this is the schema which gets included later in other bindings,
-> the property needs to be generic enough to cope with all the above.
-> [added actual content here for more clarity]
-> 
->   reset-names:
->     minItems: 1
->     items:
->       - enum: [stmmaceth, ahb]
->       - const: ahb
-> 
-> Therefore, only the lower limit (1) is enforced here, while
-> starfive,jh7110-dwmac.yaml (which PATCH 3 relates to) adds further
-> constraints (limiting to precisely two items):
-> 
->     reset-names:
->       items:
->         - const: stmmaceth
->         - const: ahb
-> 
-> I understand the generic binding also allows now specifying 'ahb' twice,
-> but I'm not sure if there's a convenient way to avoid that (e.g. without
-> complicating excessively the schema).
