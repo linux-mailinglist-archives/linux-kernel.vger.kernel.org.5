@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961867DAE0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906F57DAE0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjJ2TtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
+        id S230358AbjJ2Txc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 15:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2TtH (ORCPT
+        with ESMTP id S229529AbjJ2Txb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:49:07 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E49B;
-        Sun, 29 Oct 2023 12:49:05 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e2308198dso1457998a12.1;
-        Sun, 29 Oct 2023 12:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698608944; x=1699213744; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qvVEduFFGy1+UbYCRZST4+Tb8T3xgC/iEMnPr7os3R0=;
-        b=JK0lgPfCuLn3AG3S9voDPU2NZCVAm02mdZRSjoK9gZmWzKjau0LXNK5jb+W/AL4XLm
-         m9LF28oKmRKrRguV5MjfKmNGVpb+qw4206MCpoc2wUh8rNfGpIx7QLQinTv5zezCXal7
-         gWCerWEme/y16tlDmshM9biUDwW4jYjLiskYyapUCqq+91M20x96upBheX1QKah3ybD1
-         H7EnE2cGL79qteIjSsmxiXCY94zolwTVYxxiAQkLWmHjDh7/lDyM+XVia+iEyQFX04v4
-         A09JGGGdslTvrL3ofYGMB4QtNnpYRXHbR7TWLxEx5XBuhuNOZ2Bd5+vhi7ETOcdRboXo
-         LPxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698608944; x=1699213744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qvVEduFFGy1+UbYCRZST4+Tb8T3xgC/iEMnPr7os3R0=;
-        b=lafBqk5yXsb2RBu3z3V8ikEq5x5/zhWGyLoyuFir80bN/5rJveh/ATMhFSiCC9rpGU
-         Pxj1qREPfyaHWxBfT7Vb1Aksq0Fu1ifgvbAnvCqgyM3J4W7HqGr99Ih3l1lH+OaOxbj0
-         O0WFCWPR5NwfAz6IR8Jf7ZbYVazZttyPLhDI5QeGqefb1vs335rS0zhhqRBCJw1/nH94
-         xmaO4ONgTeKxJhb8a9g8BjW4pzqW1Er05dNjatS7w+T/CV3FjOOxqs8WqqlHKJMMFLxc
-         7Wx+yGAkDIQn2kybl8dDUFGb6nXT5UckR48F3pGbn2XWekfedL5oZL8kFd8iB5C082hC
-         Joqw==
-X-Gm-Message-State: AOJu0YwXRkAV8kP0nwn1K6mp3vMIkXIwNtJ5+pZ+WKrPqt4BDrhyR9B8
-        1cpSSkcoVa8AuzJeE+H01hP5Wvf7BpC0NQ==
-X-Google-Smtp-Source: AGHT+IE7Q167o7RawkdnlhDCfCIhkxGYrQYUndrnSK5J+wBUTv8P4v6SPs3Q2jBrxEQ91EJ1r2ql5Q==
-X-Received: by 2002:a17:907:7da4:b0:9ae:2f35:442a with SMTP id oz36-20020a1709077da400b009ae2f35442amr6572389ejc.5.1698608943615;
-        Sun, 29 Oct 2023 12:49:03 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([88.117.214.186])
-        by smtp.gmail.com with ESMTPSA id ay16-20020a170906d29000b009b8dbdd5203sm4812000ejb.107.2023.10.29.12.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 12:49:02 -0700 (PDT)
-Date:   Sun, 29 Oct 2023 12:49:00 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, reibax@gmail.com,
-        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH-net-next] ptp: fix corrupted list in ptp_open
-Message-ID: <ZT63LEJCuIY7v_Ou@hoboy.vegasvil.org>
-References: <tencent_61372097D036524ACC74E176DF66043C2309@qq.com>
- <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
+        Sun, 29 Oct 2023 15:53:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECB7BD
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:53:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46471C433C8;
+        Sun, 29 Oct 2023 19:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698609208;
+        bh=lmudrSFAHZUzHPWgKrth9d+IMU9R0eRDc3eGd1MXJC4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=BYRXQ30H7zG0VuXvZAImgIlhy7I8o0cO6u74yfM2MHH0xc7shZ1zPeV2NrW/FjYxm
+         i4M3G+IwBNXrgeZp3ir7RiYdAXCQ21w9+g2mLWKgb4yZLNGvf15tGfJJ8JL5yaPcEq
+         qBB0vaSNa3IHDUzD7YZPYbnbbfWpmSVIikUNp0bt+QECZyY+Cvos8qOifeaL0DKm8V
+         B8G6oz2+1L1rKMk4wfU5chSopqlaNhyqJQrmmQ6EM1kahfNdN2MaPEIqrYWIKZinDD
+         UXmf+XJb9cuLyPTCuIg838uJhSmMdiQHs5+J8kT0pLfy4AXYne4Dm49zDSNV8mDFwo
+         9nksLDpGRohlw==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v11 09/14] irqchip/riscv-imsic: Add support for PCI MSI
+ irqdomain
+In-Reply-To: <87y1fmzja1.ffs@tglx>
+References: <20231023172800.315343-1-apatel@ventanamicro.com>
+ <20231023172800.315343-10-apatel@ventanamicro.com>
+ <8734y0rwtw.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2UVgTd-a0671Lab_ZeOPWP3=wHY+pydKHqaR-Yg65YhrA@mail.gmail.com>
+ <87jzrbf5cw.fsf@all.your.base.are.belong.to.us> <87y1fmzja1.ffs@tglx>
+Date:   Sun, 29 Oct 2023 20:53:25 +0100
+Message-ID: <87bkchfbnu.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_D71CEB16EC1ECD0879366E9C2E216FBC950A@qq.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 10:09:42AM +0800, Edward Adam Davis wrote:
-> There is no lock protection when writing ptp->tsevqs in ptp_open(), ptp_read(),
-> ptp_release(), which can cause data corruption and increase mutual exclusion
-> to avoid this issue.
+Thomas Gleixner <tglx@linutronix.de> writes:
 
--ENOPARSE
+> On Wed, Oct 25 2023 at 10:55, Bj=C3=B6rn T=C3=B6pel wrote:
+>>> Now for IMSIC-PCI domain, the PCI framework expects the
+>>> pci_msi_mask/unmask_irq() functions to be called but if
+>>> we directly point pci_msi_mask/unmask_irq() in the IMSIC-PCI
+>>> irqchip then IMSIC-BASE (parent domain) irq_mask/umask
+>>> won't be called hence the IRQ won't be masked/unmask.
+>>> Due to this, we call both pci_msi_mask/unmask_irq() and
+>>> irq_chip_mask/unmask_parent() for IMSIC-PCI domain.
+>>
+>> Ok. I wont dig more into it for now! If the interrupt is disabled at
+>> PCI, it seems a bit overkill to *also* mask it at the IMSIC level...
+>
+> Only _if_ the device provides MSI masking, but that extra mask/unmask is
+> not the end of the world.
 
-How can lack of lock protection increase mutual exclusion?
-
-> Moreover, the queue should not be released in ptp_read() and should be deleted
-> together.
-
-The queue should be deleted togther?  Huh?
-
-> @@ -543,6 +552,8 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
->  		cnt = EXTTS_BUFSIZE;
->  
->  	cnt = cnt / sizeof(struct ptp_extts_event);
-> +	if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
-> +		return -ERESTARTSYS;
-
-This is not needed because the spin lock (timestamp_event_queue::lock)
-already protects the event queue.
-
-Thanks,
-Richard
+Yikes -- so MSI masking is optional. Ick. :-( Thanks for the excellent
+MSI vs MSI-X post in the other thread, BTW. Great stuff!
