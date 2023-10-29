@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E41E27DAF24
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2354B7DAF1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjJ2W4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
+        id S231144AbjJ2W42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjJ2Wz7 (ORCPT
+        with ESMTP id S231527AbjJ2Wzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:55:59 -0400
+        Sun, 29 Oct 2023 18:55:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFF2170A;
-        Sun, 29 Oct 2023 15:55:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A051C433C8;
-        Sun, 29 Oct 2023 22:55:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790F710F6;
+        Sun, 29 Oct 2023 15:55:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C9A5C433AB;
+        Sun, 29 Oct 2023 22:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620115;
-        bh=2ML0ItDxpS8Pwcv0Qvcs/7csJFshPgMf0DqbMXXRlxA=;
+        s=k20201202; t=1698620117;
+        bh=2zRB7aVuudlpgLM6tZDf0eCOeWYyJxXUdGN8m/51Z74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DYKeDBSzDRf9As/02zl6apvUuzKaWqvLWmOsLWtSf2EmrEvAn8rN+JkeFTjq37kYu
-         qjBw3aygqMGBKNq/Tm8YjnRHtWN5XgEXp1aFWopdvW3VgNvXsgIFB2QdLQBse26Fh+
-         cYH6cRrbRW2MopiYSrtK4YB2IjpfbaY5mSFCeJwSihjbMCE0FBi6BxYVxtyeYp5YqD
-         5Kh+sOQnbYEUXS3gqNJ3qfZi7fftZ4aQHZzkNolNLaHBOu9mVzpN/NKGuFUOLE48kT
-         TEj2kdIPYGF97oK6J1GgAeqKNvN01749F3xRSwZZvSgFGFEfkG+DiVwVYFpPQrHLvD
-         AYZBJpXgdeJXg==
+        b=JlCXuifQ5LOkFPfRhp8NcNMnk/OuTUJCoIOtCIjSNrslT6rab0DxhiTgcOtDACj14
+         pvJ70n/4Sg8o3mbxnHOxccXphYMsYKfhNkpL1UFmdOErGmtaPRDUt4pwv9pFyuQkUF
+         CM3JgeHf4Xf8c6kDhhzFt5NOI6kMI8PjZIuCv1pnBc0UkzGCWyQ1reCuzSx3CVXzOI
+         5kcj8Lny2js+o0Px10FVxWRBMlxnHv9QoCGGL1nPNHnvGsoK+6wts5YRMEqAgKG+GY
+         bC2YRE1UwYvWTX5jUcFl4E2doG6Z8vXM0mMURJ+3az/kN5GJtcmx/KMAFKofpx1WXO
+         7A6zPHuyAUBgw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dai Ngo <dai.ngo@oracle.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 22/52] nfs42: client needs to strip file mode's suid/sgid bit after ALLOCATE op
-Date:   Sun, 29 Oct 2023 18:53:09 -0400
-Message-ID: <20231029225441.789781-22-sashal@kernel.org>
+Cc:     Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 23/52] Bluetooth: vhci: Fix race when opening vhci device
+Date:   Sun, 29 Oct 2023 18:53:10 -0400
+Message-ID: <20231029225441.789781-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -57,41 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dai Ngo <dai.ngo@oracle.com>
+From: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
 
-[ Upstream commit f588d72bd95f748849685412b1f0c7959ca228cf ]
+[ Upstream commit 92d4abd66f7080075793970fc8f241239e58a9e7 ]
 
-The Linux NFS server strips the SUID and SGID from the file mode
-on ALLOCATE op.
+When the vhci device is opened in the two-step way, i.e.: open device
+then write a vendor packet with requested controller type, the device
+shall respond with a vendor packet which includes HCI index of created
+interface.
 
-Modify _nfs42_proc_fallocate to add NFS_INO_REVAL_FORCED to
-nfs_set_cache_invalid's argument to force update of the file
-mode suid/sgid bit.
+When the virtual HCI is created, the host sends a reset request to the
+controller. This request is processed by the vhci_send_frame() function.
+However, this request is send by a different thread, so it might happen
+that this HCI request will be received before the vendor response is
+queued in the read queue. This results in the HCI vendor response and
+HCI reset request inversion in the read queue which leads to improper
+behavior of btvirt:
 
-Suggested-by: Trond Myklebust <trondmy@hammerspace.com>
-Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Tested-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+> dmesg
+[1754256.640122] Bluetooth: MGMT ver 1.22
+[1754263.023806] Bluetooth: MGMT ver 1.22
+[1754265.043775] Bluetooth: hci1: Opcode 0x c03 failed: -110
+
+In order to synchronize vhci two-step open/setup process with virtual
+HCI initialization, this patch adds internal lock when queuing data in
+the vhci_send_frame() function.
+
+Signed-off-by: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs42proc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/bluetooth/hci_vhci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
-index 063e00aff87ed..28704f924612c 100644
---- a/fs/nfs/nfs42proc.c
-+++ b/fs/nfs/nfs42proc.c
-@@ -81,7 +81,8 @@ static int _nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
- 	if (status == 0) {
- 		if (nfs_should_remove_suid(inode)) {
- 			spin_lock(&inode->i_lock);
--			nfs_set_cache_invalid(inode, NFS_INO_INVALID_MODE);
-+			nfs_set_cache_invalid(inode,
-+				NFS_INO_REVAL_FORCED | NFS_INO_INVALID_MODE);
- 			spin_unlock(&inode->i_lock);
- 		}
- 		status = nfs_post_op_update_inode_force_wcc(inode,
+diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
+index 40e2b9fa11a26..f3892e9ce800f 100644
+--- a/drivers/bluetooth/hci_vhci.c
++++ b/drivers/bluetooth/hci_vhci.c
+@@ -74,7 +74,10 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+ 	struct vhci_data *data = hci_get_drvdata(hdev);
+ 
+ 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
++
++	mutex_lock(&data->open_mutex);
+ 	skb_queue_tail(&data->readq, skb);
++	mutex_unlock(&data->open_mutex);
+ 
+ 	wake_up_interruptible(&data->read_wait);
+ 	return 0;
 -- 
 2.42.0
 
