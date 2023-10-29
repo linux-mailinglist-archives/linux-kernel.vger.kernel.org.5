@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752F97DB044
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37D77DB034
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjJ2XEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
+        id S231246AbjJ2XEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbjJ2XEB (ORCPT
+        with ESMTP id S232047AbjJ2XEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:04:01 -0400
+        Sun, 29 Oct 2023 19:04:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E20E8269;
-        Sun, 29 Oct 2023 16:02:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11705C433CD;
-        Sun, 29 Oct 2023 23:00:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993047EED;
+        Sun, 29 Oct 2023 16:02:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E79C43215;
+        Sun, 29 Oct 2023 23:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620442;
-        bh=AphiLaqJhIn3s622Kc1IAUNX3HxBCwxIz3dhMEJETmE=;
+        s=k20201202; t=1698620443;
+        bh=QjzhNeZ1skYvKCj+5xx8iOynDv8Qdyy8qRRAcFnICec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lWuj1TmILhKyP6Ma+6LIsOLaARuPVzhrCEesBYWjHpEnrZdTrLvdX+eA1+f6r3M9L
-         1kJSWodPA7p3nL3D5CnQrNsbJicJnYGqM0ISoau1qae7mGUZuhCQpAY7yTdz43o9pg
-         fCwo6co/VQmZZdYghJ+qJvPkgAngTe8pJk9vOE7vEKgoESxbiIsXDy2BHRFIej45w9
-         pAtLP7bggOplytZdnKqxmn5tFnZ8rlrGolUVdSBmZW3dtgtJh6/M6qOsU40P+IT4KW
-         GvmtGVTyU+Du1jyhSpVXNeUzxEdwJAsfbf7/0GGPBnRIsLCDE15+ENP3Gl+ONoYocQ
-         OIzoFST6xcoCQ==
+        b=S/FNL0wBVXpc2p1l4/Wag3mnjkgxgzgR3eHO4dgRezjxp5xJHJiv639XB+p5pZAL9
+         zy4gxylxpMhrD/YMF5OnP0v6JMr16yD69UduoVggW1SqJT+X1LwaXwp6JTya+IGHQo
+         T3h8xIStqfxTVRo17oUGmd6UaytZEZCgtBXfkRJupgAl/LTfvYf4yaAO6LgKZwJ67C
+         gVmYNLb9NE6e/G/u/HEBj5EiLwWoEfj9DLyONbRXPi4Jzi5kKJkTzHRMJ8rejB/Ujh
+         l/6820NZppVPPiwtWKKqbBS0WSDZkBPeFmZTlL5FaIkl6LYRdsmjUWZPGm5K5eVSch
+         j7CxvGt4vKAoQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
-        Sasha Levin <sashal@kernel.org>, corentin.chary@gmail.com,
-        ilpo.jarvinen@linux.intel.com, markgross@kernel.org,
-        acpi4asus-user@lists.sourceforge.net,
+Cc:     Liming Sun <limings@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, vadimp@nvidia.com,
         platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 14/16] platform/x86: asus-wmi: Map 0x2a code, Ignore 0x2b and 0x2c events
-Date:   Sun, 29 Oct 2023 19:00:00 -0400
-Message-ID: <20231029230014.792490-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 15/16] platform/mellanox: mlxbf-tmfifo: Fix a warning message
+Date:   Sun, 29 Oct 2023 19:00:01 -0400
+Message-ID: <20231029230014.792490-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029230014.792490-1-sashal@kernel.org>
 References: <20231029230014.792490-1-sashal@kernel.org>
@@ -55,48 +55,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Liming Sun <limings@nvidia.com>
 
-[ Upstream commit 235985d1763f7aba92c1c64e5f5aaec26c2c9b18 ]
+[ Upstream commit 99c09c985e5973c8f0ad976ebae069548dd86f12 ]
 
-Newer Asus laptops send the following new WMI event codes when some
-of the F1 - F12 "media" hotkeys are pressed:
+This commit fixes the smatch static checker warning in function
+mlxbf_tmfifo_rxtx_word() which complains data not initialized at
+line 634 when IS_VRING_DROP() is TRUE.
 
-0x2a Screen Capture
-0x2b PrintScreen
-0x2c CapsLock
-
-Map 0x2a to KEY_SELECTIVE_SCREENSHOT mirroring how similar hotkeys
-are mapped on other laptops.
-
-PrintScreem and CapsLock are also reported as normal PS/2 keyboard events,
-map these event codes to KE_IGNORE to avoid "Unknown key code 0x%x\n" log
-messages.
-
-Reported-by: James John <me@donjajo.com>
-Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
-Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+Signed-off-by: Liming Sun <limings@nvidia.com>
+Link: https://lore.kernel.org/r/20231012230235.219861-1-limings@nvidia.com
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20231017090725.38163-4-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/asus-nb-wmi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-index b4a5cbdae904e..04503ad6c7fb0 100644
---- a/drivers/platform/x86/asus-nb-wmi.c
-+++ b/drivers/platform/x86/asus-nb-wmi.c
-@@ -475,6 +475,9 @@ static void asus_nb_wmi_quirks(struct asus_wmi_driver *driver)
- static const struct key_entry asus_nb_wmi_keymap[] = {
- 	{ KE_KEY, ASUS_WMI_BRN_DOWN, { KEY_BRIGHTNESSDOWN } },
- 	{ KE_KEY, ASUS_WMI_BRN_UP, { KEY_BRIGHTNESSUP } },
-+	{ KE_KEY, 0x2a, { KEY_SELECTIVE_SCREENSHOT } },
-+	{ KE_IGNORE, 0x2b, }, /* PrintScreen (also send via PS/2) on newer models */
-+	{ KE_IGNORE, 0x2c, }, /* CapsLock (also send via PS/2) on newer models */
- 	{ KE_KEY, 0x30, { KEY_VOLUMEUP } },
- 	{ KE_KEY, 0x31, { KEY_VOLUMEDOWN } },
- 	{ KE_KEY, 0x32, { KEY_MUTE } },
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 194f3205e5597..767f4406e55f1 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -588,24 +588,25 @@ static void mlxbf_tmfifo_rxtx_word(struct mlxbf_tmfifo_vring *vring,
+ 
+ 	if (vring->cur_len + sizeof(u64) <= len) {
+ 		/* The whole word. */
+-		if (!IS_VRING_DROP(vring)) {
+-			if (is_rx)
++		if (is_rx) {
++			if (!IS_VRING_DROP(vring))
+ 				memcpy(addr + vring->cur_len, &data,
+ 				       sizeof(u64));
+-			else
+-				memcpy(&data, addr + vring->cur_len,
+-				       sizeof(u64));
++		} else {
++			memcpy(&data, addr + vring->cur_len,
++			       sizeof(u64));
+ 		}
+ 		vring->cur_len += sizeof(u64);
+ 	} else {
+ 		/* Leftover bytes. */
+-		if (!IS_VRING_DROP(vring)) {
+-			if (is_rx)
++		if (is_rx) {
++			if (!IS_VRING_DROP(vring))
+ 				memcpy(addr + vring->cur_len, &data,
+ 				       len - vring->cur_len);
+-			else
+-				memcpy(&data, addr + vring->cur_len,
+-				       len - vring->cur_len);
++		} else {
++			data = 0;
++			memcpy(&data, addr + vring->cur_len,
++			       len - vring->cur_len);
+ 		}
+ 		vring->cur_len = len;
+ 	}
 -- 
 2.42.0
 
