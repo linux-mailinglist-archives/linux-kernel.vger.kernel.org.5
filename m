@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143E97DAEA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 22:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79497DAEA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 22:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbjJ2Vmh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 29 Oct 2023 17:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        id S230367AbjJ2Vr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 17:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbjJ2Vmf (ORCPT
+        with ESMTP id S230145AbjJ2Vr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 17:42:35 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6267E8E
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 14:42:33 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-278-rnF5RcNAOu2EX7E0tydquQ-1; Sun, 29 Oct 2023 21:42:30 +0000
-X-MC-Unique: rnF5RcNAOu2EX7E0tydquQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 29 Oct
- 2023 21:42:41 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 29 Oct 2023 21:42:41 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Brian Gerst' <brgerst@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Uros Bizjak <ubizjak@gmail.com>
-Subject: RE: [PATCH v2 00/11] x86-64: Stack protector and percpu improvements
-Thread-Topic: [PATCH v2 00/11] x86-64: Stack protector and percpu improvements
-Thread-Index: AQHaCCWwM6Gzma9PGEyZRt5JZqLOarBhUF8A
-Date:   Sun, 29 Oct 2023 21:42:41 +0000
-Message-ID: <a094c7da294a4827994af72249262593@AcuMS.aculab.com>
-References: <20231026160100.195099-1-brgerst@gmail.com>
-In-Reply-To: <20231026160100.195099-1-brgerst@gmail.com>
-Accept-Language: en-GB, en-US
+        Sun, 29 Oct 2023 17:47:27 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E81BD
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 14:47:24 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 33F342C0364;
+        Mon, 30 Oct 2023 10:47:22 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1698616042;
+        bh=eZXENlaaQ3CIktnuCPH51cVMXhdJRXe+rTUYYumEFLQ=;
+        h=From:To:Subject:Date:References:In-Reply-To:From;
+        b=dhVIcaMAitFpHdZFl/A0jfIv52brwGbHmfhimwESaeyCgcQ6WbymTuaOu4d1jIlQW
+         Zm/IKMeakFfgOHYyfsUnTwYQNXk+/FORhD+NJCS9HXMtcs70ybdz4alHO7RedaXo+i
+         9SJ/EqEMWwsJBnKznJ4mTPLPe62retk+Y+jJV32Vo0CiwwKYok1LPOXEWUkSQgXZ7l
+         sLWTBKHFGcpITG0ir8RXu7iYAKFgCDS8jBGLo10jXqQ/P1oSX1hPwSQmxlm0ZK2JDJ
+         Iy8phT3MAKU6wLk+OnTSbfJORqnm0RNwOGAnTwglMj1EAc+wI2gPevmRZGxaefDZki
+         NDcvoixlnLuKQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B653ed2ea0000>; Mon, 30 Oct 2023 10:47:22 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.39; Mon, 30 Oct 2023 10:47:22 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Mon, 30 Oct 2023 10:47:21 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.039; Mon, 30 Oct 2023 10:47:21 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>,
+        "rric@kernel.org" <rric@kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c:thunderx:Add disabled node check
+Thread-Topic: [PATCH] i2c:thunderx:Add disabled node check
+Thread-Index: AQHZs7pjS3RbZjoNTE+zaC8ee87FZrBg1J6AgABM/IA=
+Date:   Sun, 29 Oct 2023 21:47:21 +0000
+Message-ID: <82d9d348-f687-4be9-962a-d7d745236d45@alliedtelesis.co.nz>
+References: <20230711054147.506437-1-aryan.srivastava@alliedtelesis.co.nz>
+ <ZT6SVZNUT/KPucdI@shikoro>
+In-Reply-To: <ZT6SVZNUT/KPucdI@shikoro>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+x-originating-ip: [10.33.22.30]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <83AF7CF02DEEE5499FF29757B9FC8D4D@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=mEZQYA9_Tu11ni790zkA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Gerst
-> Sent: 26 October 2023 17:01
-> 
-> Currently, x86-64 uses an unusual percpu layout, where the percpu section
-> is linked at absolute address 0.  The reason behind this is that older GCC
-> versions placed the stack protector (if enabled) at a fixed offset from the
-> GS segment base.  Since the GS segement is also used for percpu variables,
-> this forced the current layout.
-> 
-> GCC since version 8.1 supports a configurable location for the stack
-> protector value, which allows removal of the restriction on how the percpu
-> section is linked.  This allows the percpu section to be linked
-> normally, like most other architectures.  In turn, this allows removal
-> of code that was needed to support the zero-based percpu section.
-
-I didn't think the minimum gcc version was anything like 8.1.
-I'm using 7.5.0 and I don't think that is the oldest version.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+DQpPbiAzMC8xMC8yMyAwNjoxMSwgV29sZnJhbSBTYW5nIHdyb3RlOg0KPiBPbiBUdWUsIEp1bCAx
+MSwgMjAyMyBhdCAwNTo0MTo0NlBNICsxMjAwLCBBcnlhbiBTcml2YXN0YXZhIHdyb3RlOg0KPj4g
+QWRkIGNoZWNrIGZvciBkaXNhYmxlZCBub2Rlcy4gVGhlc2Ugbm9kZXMgc2hvdWxkIG5vdCBiZSBw
+cm9iZWQuIENhbg0KPj4gcmVzdWx0IGluIGxvZ2dpbmcgZm9yIEhXIHdoaWNoIGlzIG5vdCBwcmVz
+ZW50Lg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEFyeWFuIFNyaXZhc3RhdmE8YXJ5YW4uc3JpdmFz
+dGF2YUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiBJIGFtIGNvbmZ1c2VkLiBUaGlzIGlzIGEgUENJ
+IGRyaXZlciwgbm8/IFdoeSBzaG91bGQgd2UgZGVhbCB3aXRoIERUDQo+IHNldHRpbmdzIGhlcmU/
+DQoNCkl0IGlzIGEgUENJIGRyaXZlciBidXQgdGhlIElQIGJsb2NrIGlzIGluY2x1ZGVkIG9uIFNv
+Q3MgbGlrZSB0aGUgQ045NjcwIA0KYW5kIG5vdCBhbGwgaGFyZHdhcmUgZGVzaWducyBtYWtlIHVz
+ZSBvZiBhbGwgdGhlIEkyQyBpbnRlcmZhY2VzIHRoYXQgdGhlIA0KSVAgYmxvY2sgc3VwcG9ydHMu
+DQo=
