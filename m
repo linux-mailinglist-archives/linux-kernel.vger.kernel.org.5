@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994437DB179
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D61B7DB03C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbjJ2XgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
+        id S231189AbjJ2XEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjJ2XEK (ORCPT
+        with ESMTP id S231859AbjJ2XD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:04:10 -0400
+        Sun, 29 Oct 2023 19:03:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6620F826F;
-        Sun, 29 Oct 2023 16:02:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8E1C116B8;
-        Sun, 29 Oct 2023 23:00:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC3159E8;
+        Sun, 29 Oct 2023 16:00:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5F6C4160E;
+        Sun, 29 Oct 2023 23:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620439;
-        bh=KvAI5fw0dtyuRjfmecRVeSYvpgDbDXndNuqfUT/lgAU=;
+        s=k20201202; t=1698620440;
+        bh=IfcMMPun1Iw4m5uoeEqIs0GHCkCQImaisAA0lCP4czo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0+XutSwTUl6OMBRDNyiuHH/Dk3B/25yiHz53vvA12vXS+Zx0Fdsl+X7QBOcczDc7
-         slUJ3+X2xGFCUz2vX2Wax5JNKsLgceDdPssZ103x1Off5TL3b6Es7qAtmLUoodxj0G
-         KoH11AcZySyHDqQDs6aEoYU1c+EmhRU7x6Bd+JbegDiNm5hSpLo8YhcDgdRWMXoXYP
-         mv6y9520p6b8WlvMWUNvty1m7v3yoHr/LxgFYVgZeu2/JHfx9sDMmsFs1gcQ1dlpFu
-         GLNLUfhahvEjJ3/XCmVxO5d2AZxKMo4MuH6T8nOiPbJP9Jj+oSXg71JwRLvG/GekRp
-         TcBazshdT18tQ==
+        b=KycYo5R24gbGxYnwsDU5Q8WlURDduyt4Hf5NxP7kulG1iC5kbAZYyk/fgywXNe9NL
+         UZhB2lvMat7xQermZv+P4QRH/GY9zWOkxbMyiBlvfMwU+dosvGy/NfEoBIC6r/S+kZ
+         MN3PRT1Jwf8Qcyaf2iF/JEiKf+QxeFhQOyTer1gG+y3niTkT8RjT8c1QuFb8h6BRrm
+         7fgrsIsFW3ZX9TFGFWD+BJ5uv10Kk37yF1yRjzeyDybRTtD0Ff92VqtvJZKnDCqYTB
+         A3zRSqur7nyFNnXfOo17ch0Y1yKdmQNT/OB8p5YJk0jlYAWDLV3xPwQKAwOSrDV+Fj
+         8y+fetGeZUytQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomas Henzl <thenzl@redhat.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, sathya.prakash@broadcom.com,
-        sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/16] scsi: mpt3sas: Fix in error path
-Date:   Sun, 29 Oct 2023 18:59:58 -0400
-Message-ID: <20231029230014.792490-12-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 13/16] platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
+Date:   Sun, 29 Oct 2023 18:59:59 -0400
+Message-ID: <20231029230014.792490-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029230014.792490-1-sashal@kernel.org>
 References: <20231029230014.792490-1-sashal@kernel.org>
@@ -46,47 +43,73 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.199
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit e40c04ade0e2f3916b78211d747317843b11ce10 ]
+[ Upstream commit f37cc2fc277b371fc491890afb7d8a26e36bb3a1 ]
 
-The driver should be deregistered as misc driver after PCI registration
-failure.
+Older Asus laptops change the backlight level themselves and then send
+WMI events with different codes for different backlight levels.
 
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Link: https://lore.kernel.org/r/20231015114529.10725-1-thenzl@redhat.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The asus-wmi.c code maps the entire range of codes reported on
+brightness down keypresses to an internal ASUS_WMI_BRN_DOWN code:
+
+define NOTIFY_BRNUP_MIN                0x11
+define NOTIFY_BRNUP_MAX                0x1f
+define NOTIFY_BRNDOWN_MIN              0x20
+define NOTIFY_BRNDOWN_MAX              0x2e
+
+        if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
+                code = ASUS_WMI_BRN_UP;
+        else if (code >= NOTIFY_BRNDOWN_MIN && code <= NOTIFY_BRNDOWN_MAX)
+                code = ASUS_WMI_BRN_DOWN;
+
+Before this commit all the NOTIFY_BRNDOWN_MIN - NOTIFY_BRNDOWN_MAX
+aka 0x20 - 0x2e events were mapped to 0x20.
+
+This mapping is causing issues on new laptop models which actually
+send 0x2b events for printscreen presses and 0x2c events for
+capslock presses, which get translated into spurious brightness-down
+presses.
+
+The plan is disable the 0x11-0x2e special mapping on laptops
+where asus-wmi does not register a backlight-device to avoid
+the spurious brightness-down keypresses. New laptops always send
+0x2e for brightness-down presses, change the special internal
+ASUS_WMI_BRN_DOWN value from 0x20 to 0x2e to match this in
+preparation for fixing the spurious brightness-down presses.
+
+This change does not have any functional impact since all
+of 0x20 - 0x2e is mapped to ASUS_WMI_BRN_DOWN first and only
+then checked against the keymap code and the new 0x2e
+value is still in the 0x20 - 0x2e range.
+
+Reported-by: James John <me@donjajo.com>
+Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
+Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231017090725.38163-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/asus-wmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index c3a5978b0efac..e797f6e3982cf 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -11624,8 +11624,10 @@ _mpt3sas_init(void)
- 	mpt3sas_ctl_init(hbas_to_enumerate);
+diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
+index 1a95c172f94b0..1d0b592e2651b 100644
+--- a/drivers/platform/x86/asus-wmi.h
++++ b/drivers/platform/x86/asus-wmi.h
+@@ -18,7 +18,7 @@
+ #include <linux/i8042.h>
  
- 	error = pci_register_driver(&mpt3sas_driver);
--	if (error)
-+	if (error) {
-+		mpt3sas_ctl_exit(hbas_to_enumerate);
- 		scsih_exit();
-+	}
+ #define ASUS_WMI_KEY_IGNORE (-1)
+-#define ASUS_WMI_BRN_DOWN	0x20
++#define ASUS_WMI_BRN_DOWN	0x2e
+ #define ASUS_WMI_BRN_UP		0x2f
  
- 	return error;
- }
+ struct module;
 -- 
 2.42.0
 
