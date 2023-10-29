@@ -2,58 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BC77DAC8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 13:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1117DACA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 14:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjJ2Myw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 08:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        id S230119AbjJ2Np5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 09:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjJ2Myv (ORCPT
+        with ESMTP id S229482AbjJ2Npx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 08:54:51 -0400
-X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Oct 2023 05:54:49 PDT
-Received: from p3plwbeout27-04.prod.phx3.secureserver.net (p3plsmtp27-04-2.prod.phx3.secureserver.net [216.69.139.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CA4C0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 05:54:49 -0700 (PDT)
-Received: from mailex.mailcore.me ([94.136.40.141])
-        by :WBEOUT: with ESMTP
-        id x5GsqmsyHEGwpx5GsqUYr1; Sun, 29 Oct 2023 05:52:03 -0700
-X-CMAE-Analysis: v=2.4 cv=Z7spoFdA c=1 sm=1 tr=0 ts=653e5573
- a=bheWAUFm1xGnSTQFbH9Kqg==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=AUd_NHdVAAAA:8
- a=VwQbUJbxAAAA:8 a=vaoKmyfopMuWMe4x9wgA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
-X-SID:  x5GsqmsyHEGwp
-Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=[192.168.178.90])
-        by smtp07.mailcore.me with esmtpa (Exim 4.94.2)
-        (envelope-from <phillip@squashfs.org.uk>)
-        id 1qx5Gx-0005xc-L4; Sun, 29 Oct 2023 12:52:08 +0000
-Message-ID: <9596fa83-f06c-5582-7f99-c99c67e73dba@squashfs.org.uk>
-Date:   Sun, 29 Oct 2023 12:51:59 +0000
+        Sun, 29 Oct 2023 09:45:53 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5E3BF;
+        Sun, 29 Oct 2023 06:45:50 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 1FF0A320027A;
+        Sun, 29 Oct 2023 09:45:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 29 Oct 2023 09:45:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:message-id:mime-version:reply-to
+        :sender:subject:subject:to:to; s=fm1; t=1698587147; x=
+        1698673547; bh=jtPdlzGB01j+zIhuSpzNxxVPJdcsn8CG2BgqukBh1go=; b=N
+        D5yxJRP5opfVgZKtMKBoAihYpEsAlQF8+jFRodmy5WMW9X6XapO0DO0WWE1uzJSH
+        Vi9eff7xlGmJbvmHc+TFxhiOxsBWEl3f1+ZWsYV9zwfEKFs2JwTxPxfd5+9oDMQ2
+        ivGvwPp+pQdTw4eEsSCKXUNNmmMFQCn9QfWh8fEc2T1QPR7Nb/uSprQFqCqYpAp5
+        xo3YK2pPSVUAeZQQvOFRvyFJSEk9LXxsdXIbQds91EECRV+WaqcULr/p2sJbLvZ+
+        IowKAk6fk6PuRfGQQCl/15YuWh1MHlKOVuVzB3krtvOkokgV29MkszKPs/gJD67j
+        Fs0oAb7T+r3geroFQnJfA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1698587147; x=1698673547; bh=j
+        tPdlzGB01j+zIhuSpzNxxVPJdcsn8CG2BgqukBh1go=; b=XfkW8ZcZy5CKQgjy6
+        BlTa7z54/h6yFwR0X3phR71tD32QMx6m0/S8rcR4py7jUAP2wfFtaWfVx7doC2NT
+        xACVwd+JudeS1TQohvz10/sb1tfIG0+2UldF8cMhYnSTM9qg7GxO2iXRyfS+BiKK
+        KdEFKnIm7tiOQ6HZjGJuOgchDQEYMnBT5miv31ZPwxikkV4OMGw4ThwXBsL+Uv3z
+        gr6GObE9lpcU32yUU6DQENIY69xSY6oEbokxCwNajt6J9ao1G+O2ohVa2yhMyDS2
+        iyBMu/3hYFvnBe5JSvO1QnaPZ2CdC++bcy3tOBbG5h3lxOVD47zPFGmsUc7rhV1W
+        ZkCbg==
+X-ME-Sender: <xms:C2I-ZcTvDml_zop-4itdjKi3w_GY4IoNUxTr_ta-9VWlzPqacm1Ljg>
+    <xme:C2I-ZZxKbG-kdEyx_XlW6vwcZHYHqGaczeIq7fmGmSBxRFoDKexdOyahVrBQK5zlU
+    Y6os9_BNXFXGb1puIw>
+X-ME-Received: <xmr:C2I-ZZ1EVMPWjzJ2GYcVTT2h_-3zWWKp3TN-SadY7dM-4vlHmXIhR-g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleekgdehhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhufffkfggtgfgvfevofesthejredtredtjeenucfhrhhomheplfhirgiguhhn
+    ucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenucggtf
+    frrghtthgvrhhnpefgveffjeetgeejfeelgfekteelkefhuefggedvueeujeekjeetkeek
+    vdffffefudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:C2I-ZQCxJYyL2Gso1REu5RdHVqUb96HqQirjL1X92TDRA3Fwe_t0fg>
+    <xmx:C2I-ZVghVvFCw_jhxWMetrWpU7qVcsBS0XYHgo51O5YhFDRhSLzWRg>
+    <xmx:C2I-Zcrep7H6mD8Iu2Op9k5bx0xBL05YAmzFG22Zr60Yo-A7UES0Mw>
+    <xmx:C2I-ZYsBU9FHTVi05hw2XS14imais39xSopFc9xMbGWze9YKv9xPjw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Oct 2023 09:45:46 -0400 (EDT)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH 0/8] MIPS: Unify low-level debugging functionalities
+Date:   Sun, 29 Oct 2023 02:53:01 +0000
+Message-Id: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] docs: filesystems: document the squashfs specific mount
- options
-To:     Ariel Miculas <amiculas@cisco.com>, linux-doc@vger.kernel.org
-Cc:     serge@hallyn.com, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org
-References: <20231027150814.217689-1-amiculas@cisco.com>
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-In-Reply-To: <20231027150814.217689-1-amiculas@cisco.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailcore-Auth: 439999529
-X-Mailcore-Domain: 1394945
-X-123-reg-Authenticated:  phillip@squashfs.org.uk  
-X-Originating-IP: 82.69.79.175
-X-CMAE-Envelope: MS4xfPW1OAFQJkflB7NKjk294hyFcn5+1eoM+/3+3IvNWWAsoaQPRrZEQeeTRJiyNihPIFEE9MncUbbHiy7VyFuccVI+aGpjEpArA4THsJZ5+IZyUxKgp8Ia
- sTNzNUlqPV5G+3tXkVENxfksUbimQi4kj1vv1FwwSTWee9nlsHOrtDBHE5EfEVN2/D39mgJnkBSIW8LlaGsWakM7DHtZEiayMPXkou/GJBRznWqZxLKxEFMw
- IqKxsI47FX94qZEgNYZF0Q==
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-B4-Tracking: v=1; b=H4sIAA3JPWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDAyML3dzMguL4lNSk0vT4nBzd1DTL5ORUQzNzM/MkJaCegqLUtMwKsHn
+ RsbW1AMsMQrtfAAAA
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,105 +88,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 16:08, Ariel Miculas wrote:
-> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
-> can be used to specify the decompression mode: single-threaded,
-> multi-threaded or percpu. It can also be used to specify the number of
-> threads used for decompression.
-> This option is only mentioned in fs/squashfs/Kconfig, which makes it
-> difficult to find.
-> 
-> Another mount option available is "errors", which can be configured to
-> panic the kernel when squashfs errors are encountered.
-> 
-> Add both these options to the squashfs documentation, making them more
-> noticeable.
-> 
-> Signed-off-by: Ariel Miculas <amiculas@cisco.com
-Good idea to add the options to the Squashfs documentation.
+Hi all,
 
-Unfortunately some of the information in the patch is incorrect ... I've
-commented below where that is.
+This is a attempt to bring all low-level debugging print functions
+together and provide a arm-like low-level debugging interface and
+a further function to debug early exceptions.
 
-So NAK this patch.  Please correct and send a V2 patch.
+The plan is to elimiate platform specific early_printk and
+cps-vec-ns16550 by debug_ll and earlycon.
+
+cps-vec-ns16550 is leave unchanged for now due to pending patch[1].
+
+Hope you'll find them handy :-)
+
+Happy hacking!
 
 Thanks
+Jiaxun
 
-Phillip
+[1]: https://lore.kernel.org/linux-mips/20231027221106.405666-6-jiaxun.yang@flygoat.com/
 
-> ---
->   Documentation/filesystems/squashfs.rst | 58 ++++++++++++++++++++++++++
->   1 file changed, 58 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/squashfs.rst b/Documentation/filesystems/squashfs.rst
-> index df42106bae71..f71ac870603b 100644
-> --- a/Documentation/filesystems/squashfs.rst
-> +++ b/Documentation/filesystems/squashfs.rst
-> @@ -64,6 +64,64 @@ obtained from this site also.
->   The squashfs-tools development tree is now located on kernel.org
->   	git://git.kernel.org/pub/scm/fs/squashfs/squashfs-tools.git
->   
-> +2.1 Mount options
-> +-----------------
-> +===================    =========================================================
-> +errors=%s              Specify whether squashfs errors trigger a kernel panic
-> +                       or not
-> +
-> +		       ==========  =============================================
-> +                         continue  errors don't trigger a panic (default)
-> +                            panic  trigger a panic when errors are encountered,
-> +                                   similar to several other filesystems (e.g.
-> +                                   btrfs, ext4, f2fs, GFS2, jfs, ntfs, ubifs)
-> +
-> +                                   This allows a kernel dump to be saved,
-> +                                   useful for analyzing and debugging the
-> +                                   corruption.
-> +                       ==========  =============================================
-> +threads=%s             Select the decompression mode or the number of threads
-> +
-> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set:
-> +
-> +		       ==========  =============================================
-> +                           single  use single-threaded decompression (default)
-> +
-> +                                   Only one block (data or metadata) can be
-> +                                   decompressed at any one time. This limits
-> +                                   CPU and memory usage to a minimum, but it
-> +                                   also gives poor performance on parallel I/O
-> +                                   workloads when using multiple CPU machines
-> +                                   due to waiting on decompressor availability.
-> +                            multi  use up to two parallel decompressors per core
-> +
-> +                                   If you have a parallel I/O workload and your
-> +                                   system has enough memory, using this option
-> +                                   may improve overall I/O performance. It
-> +                                   dynamically allocates decompressors on a
-> +                                   demand basis.
-> +                           percpu  use a maximum of one decompressor per core
-> +
-> +                                   It uses percpu variables to ensure
-> +                                   decompression is load-balanced across the
-> +                                   cores.
-> +                        1|2|3|...  configure the number of threads used for
-> +                                   decompression
-> +
-> +                                   The upper limit is num_online_cpus() * 2.
-> +                       ==========  =============================================
-> +
-> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set:
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+Jiaxun Yang (8):
+      MIPS: asm: Move strings to .rodata.str section
+      MIPS: debug: Implement low-level debugging functions
+      MIPS: debug: Hook up DEBUG_LL with early printk
+      MIPS: debug: Provide an early exception vector for low-level debugging
+      MIPS: debug_ll: Add Kconfig symbols for some 8250 uarts
+      MIPS: debug_ll: Implement support for Alchemy uarts
+      MIPS: debug_ll: Implement support for AR933X uarts
+      MIPS: zboot: Convert to use debug_ll facilities
 
-In this case it also depends on the SQUASHFS_DECOMP_MULTI decompressor
-having been selected.  In otherwords threads=xxx won't work if the
-single threaded (SQUASHFS_DECOMP_SINGLE) or percpu threaded
-(SQUASHFS_DECOMP_MULTI_PERCPU) decompressors have been selected at build
-time.
+ arch/mips/Kconfig                        |  12 +-
+ arch/mips/Kconfig.debug                  | 212 +++++++++++++++++++++++++++----
+ arch/mips/boot/compressed/Makefile       |   9 +-
+ arch/mips/boot/compressed/dbg.c          |  37 ------
+ arch/mips/boot/compressed/debug-vec.S    |   3 +
+ arch/mips/boot/compressed/debug.S        |   3 +
+ arch/mips/boot/compressed/decompress.c   |   6 +-
+ arch/mips/boot/compressed/head.S         |   6 +
+ arch/mips/boot/compressed/uart-16550.c   |  47 -------
+ arch/mips/boot/compressed/uart-alchemy.c |   7 -
+ arch/mips/boot/compressed/uart-ath79.c   |   2 -
+ arch/mips/boot/compressed/uart-prom.c    |   7 -
+ arch/mips/include/asm/asm.h              |   2 +-
+ arch/mips/include/debug/8250.S           |  60 +++++++++
+ arch/mips/include/debug/alchemy.S        |  46 +++++++
+ arch/mips/include/debug/ar933x.S         |  41 ++++++
+ arch/mips/include/debug/uhi.S            |  48 +++++++
+ arch/mips/kernel/Makefile                |   3 +
+ arch/mips/kernel/debug-vec.S             | 194 ++++++++++++++++++++++++++++
+ arch/mips/kernel/debug.S                 | 130 +++++++++++++++++++
+ arch/mips/kernel/early_printk.c          |  19 +++
+ arch/mips/kernel/head.S                  |   4 +
+ 22 files changed, 750 insertions(+), 148 deletions(-)
+---
+base-commit: 66f1e1ea3548378ff6387b1ce0b40955d54e86aa
+change-id: 20231028-mips_debug_ll-ef9cce16767b
 
-The reason for this is quite simple, due to their implementation the
-number of threads they use is fixed and cannot be changed.
+Best regards,
+-- 
+Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Changing the line to something like
-
-If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
-SQUASHFS_DECOMP_MULTI is set
-
-should be OK here.
