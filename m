@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BAB7DAAD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA817DAAD8
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjJ2E2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 00:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S230299AbjJ2E2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 00:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjJ2E2T (ORCPT
+        with ESMTP id S229835AbjJ2E2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 00:28:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E82210F1;
-        Sat, 28 Oct 2023 21:27:51 -0700 (PDT)
+        Sun, 29 Oct 2023 00:28:23 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80193171E;
+        Sat, 28 Oct 2023 21:27:55 -0700 (PDT)
 Received: from localhost (unknown [188.24.143.101])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 56370660734A;
-        Sun, 29 Oct 2023 04:27:49 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 21E036607340;
+        Sun, 29 Oct 2023 04:27:53 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698553669;
-        bh=XPFhkQiEs+IGnpXs/VjChiy7INWlUvumm6K55Zul0rU=;
+        s=mail; t=1698553673;
+        bh=AC+Ls3ytNnSvtsq4GFfS8dc+BFMLEfoCVREKO8KW7lU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8+/FjFH44VcIQoEE5TuvkJsBmdkwjJNiQYePXC8QCQKnlodiftL7rIknTTyFaq7S
-         Cu0VbqfW/VBEVttKYtISUXNs0PBw0jHxh04y28J7NHmrnDTS3eRdvVJx/UODNaoDMj
-         LpET5/HJOZjm/9hjPiyDrIz2iz/NBD/NneiJNgxOj5dBZHDS3NcBPosr5mN4pAc5uF
-         +el73KBoQd7VP+auerViiI6gWlkmB5ErUZ5+YoRVzyBU0vbPdRCAUfhWPU+Iq7Nsx7
-         PWGcn3za+cEF/I7zaVfxWipeZ1FgAgerFSYVvPiab548Chgqh25B2iTZfLmGAHIZ0U
-         VI7eDOEjRiUOA==
+        b=RBPXQz2GQGNqffqr51uwLxSOhlWrlkDw3YEFs3NbSf/nxgGJOX1fcRb6/DIhxT13w
+         gNjyWhoEGy6ckmKdXx87Nqn6KdlEUhVgboS5Gy40r6ymqy5eYtuWeajVDgkqWHVOJg
+         I9Eq0d8Wil0pk8/ZKzljUpTNKrufiMAVWlMujcY4jig24W4WVWezOr+TOm0ymEetan
+         +wqbErUZw9mkSdnV7eMBlLLnQohAi+RhCwneJRwQUHnmc2A1YWDiyDF/Dz2EApxyW0
+         gE2lcXa3TgbG+ktNl+mvhxtR5uG5p7bAN6zMkjQ4hj6Sc9sw7PqWb6bzfFLk0r7nza
+         Our6kpSl5wJ0Q==
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -54,9 +54,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: [PATCH v2 10/12] riscv: dts: starfive: jh7100-common: Setup gmac pinmux
-Date:   Sun, 29 Oct 2023 06:27:10 +0200
-Message-ID: <20231029042712.520010-11-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 11/12] riscv: dts: starfive: visionfive-v1: Enable gmac and setup phy
+Date:   Sun, 29 Oct 2023 06:27:11 +0200
+Message-ID: <20231029042712.520010-12-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
 References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
@@ -71,101 +71,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pinmux configuration for the DWMAC found on the JH7100 based boards.
+The StarFive VisionFive V1 SBC has a Motorcomm YT8521 PHY supporting
+RGMII-ID, but requires manual adjustment of the RX internal delay to
+work properly.
+
+The default RX delay provided by the driver is 1.95 ns, which proves to
+be too high. Applying a 50% reduction seems to mitigate the issue.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- .../boot/dts/starfive/jh7100-common.dtsi      | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
+ .../starfive/jh7100-starfive-visionfive-v1.dts  | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-index 504c73f01f14..b556e28069c4 100644
---- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-@@ -65,7 +65,83 @@ soc {
+diff --git a/arch/riscv/boot/dts/starfive/jh7100-starfive-visionfive-v1.dts b/arch/riscv/boot/dts/starfive/jh7100-starfive-visionfive-v1.dts
+index e82af72f1aaf..e043a27f7612 100644
+--- a/arch/riscv/boot/dts/starfive/jh7100-starfive-visionfive-v1.dts
++++ b/arch/riscv/boot/dts/starfive/jh7100-starfive-visionfive-v1.dts
+@@ -18,3 +18,20 @@ gpio-restart {
+ 		priority = <224>;
  	};
  };
- 
-+&gmac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&gmac_pins>;
-+};
 +
- &gpio {
-+	gmac_pins: gmac-0 {
-+		gtxclk-pins {
-+			pins = <PAD_FUNC_SHARE(115)>;
-+			bias-pull-up;
-+			drive-strength = <35>;
-+			input-enable;
-+			input-schmitt-enable;
-+			slew-rate = <0>;
-+		};
-+		miitxclk-pins {
-+			pins = <PAD_FUNC_SHARE(116)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+		tx-pins {
-+			pins = <PAD_FUNC_SHARE(117)>,
-+			       <PAD_FUNC_SHARE(119)>,
-+			       <PAD_FUNC_SHARE(120)>,
-+			       <PAD_FUNC_SHARE(121)>,
-+			       <PAD_FUNC_SHARE(122)>,
-+			       <PAD_FUNC_SHARE(123)>,
-+			       <PAD_FUNC_SHARE(124)>,
-+			       <PAD_FUNC_SHARE(125)>,
-+			       <PAD_FUNC_SHARE(126)>;
-+			bias-pull-up;
-+			drive-strength = <35>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+		rxclk-pins {
-+			pins = <PAD_FUNC_SHARE(127)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <6>;
-+		};
-+		rxer-pins {
-+			pins = <PAD_FUNC_SHARE(129)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+		rx-pins {
-+			pins = <PAD_FUNC_SHARE(128)>,
-+			       <PAD_FUNC_SHARE(130)>,
-+			       <PAD_FUNC_SHARE(131)>,
-+			       <PAD_FUNC_SHARE(132)>,
-+			       <PAD_FUNC_SHARE(133)>,
-+			       <PAD_FUNC_SHARE(134)>,
-+			       <PAD_FUNC_SHARE(135)>,
-+			       <PAD_FUNC_SHARE(136)>,
-+			       <PAD_FUNC_SHARE(137)>,
-+			       <PAD_FUNC_SHARE(138)>,
-+			       <PAD_FUNC_SHARE(139)>,
-+			       <PAD_FUNC_SHARE(140)>,
-+			       <PAD_FUNC_SHARE(141)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-enable;
-+			slew-rate = <0>;
++&gmac {
++	phy-handle = <&phy>;
++	phy-mode = "rgmii-id";
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy: ethernet-phy@0 {
++			reg = <0>;
++			rx-internal-delay-ps = <900>;
 +		};
 +	};
-+
- 	i2c0_pins: i2c0-0 {
- 		i2c-pins {
- 			pinmux = <GPIOMUX(62, GPO_LOW,
++};
 -- 
 2.42.0
 
