@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377E27DAC35
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A48E7DAC3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjJ2LZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 07:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
+        id S230121AbjJ2L0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 07:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjJ2LZJ (ORCPT
+        with ESMTP id S230050AbjJ2L0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 07:25:09 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34F5C1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:25:06 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507a55302e0so4840270e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:25:06 -0700 (PDT)
+        Sun, 29 Oct 2023 07:26:46 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810B9B8
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:26:43 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507cd62472dso5260340e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 04:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698578705; x=1699183505; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698578802; x=1699183602; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=V0Ox+K6e18dI0uF74yvzx36BUUsuowYJYq3TN6hBkz8=;
-        b=e8FiCGOSMJLhu438iKWP9V6Oehd25NaNYnqCbsraKLBBy39tVhDhHPiCI1Y5exSOg8
-         9ZxKN1iy5WKE494jCsTHm/N6cMfgFr8rGpMwBosyjxDpqaGvPwq4VOXEEZYYDEFDku1z
-         pm8dx87EbN6FTVD3OI7mkLh3WHP2pdDLN1ktncTsxGfSOi6yOn+ZiW+WR/G6bxxLR1nb
-         a6qCMHvl0MjSMMjsUuO0dz64Xro7SMi5RSjAzKDSETUwVWM1T53W11C+RD6Xgimha9rI
-         8l7DDKkSA/I1NSfOmlGQl56Vaq9Ygs4S5OUYD+RUsBMXVOBQmMV2s1ybc6ps7yQEd0cZ
-         oh7g==
+        bh=oiJ98AzIdDvp4H2ObVcO2pM8eJBa6hKhd5j05v0RH0w=;
+        b=uLi6D6rPMX7vsQ0EmgjNNq+ZyKOyQQiS9LHJMOSAtFxBQ4S7y+MkJqw6vqGNgl7K+z
+         n8TLocWyaFHZaNNl8aRCjL70LHbZ8Jzc1fAVq5VA8OfX4v2ByoefwdWkEeUyIAKWtheS
+         ojjYof/jpmRMMsukjHpFzXhxw9w65uvCfAdu9r4VBd282N/75uvkWlFyV2Gl6jaRIPeo
+         QYjnpIQxFqHnqiIb5kymevMY7gl/tCNfyXc7sVX5UCLkOBnqgnPAQZP5nrnFwlkNdS3g
+         +61MHF2ruSYLhKCoR76UPkw7IQIG+iWonMuth+jNGxZz2ffRd27OiUvDaCNNgjeoTLmt
+         D0vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698578705; x=1699183505;
+        d=1e100.net; s=20230601; t=1698578802; x=1699183602;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0Ox+K6e18dI0uF74yvzx36BUUsuowYJYq3TN6hBkz8=;
-        b=J0Q/j1dloZ8bFAfhD6EDS3PqwPMGk/oRVqmzGAss4osAfexiM7YXf+sV9L36eqdDkq
-         uDV13TL8J9mdXdhJSaaj/MEK9fJ/SNe85nqFjh/OkFsjNwF9/CipAibR4oFwIhoB08DY
-         tDBpgAGSCOaNlbhWGgDUnXWBXRdrn/6ktrQvAyZ5ft+F9cQ6aFu8nLl4tEqH2oGmRqJi
-         P2gY81GQZRzjBowVuPlcQh1vtLmwicCHvo53hpixH8XVuPrEswo3zQeeZXPu/C1Vf5iQ
-         9Rg5N8tjSpWvTAjaxV59gNrw8TA3NXlhWMhfrJfn8W+kXY7VQYeLsXJS07SquBPkHZkM
-         M/ZA==
-X-Gm-Message-State: AOJu0YxlnQb5T+lsvkz8kGsedQzfSO9rh8p+7sGWUbHVBNgYmyni3b+1
-        VgansU8mCxu9/n9nBaVmeeE2HA==
-X-Google-Smtp-Source: AGHT+IGhdbnujcevleULt1mlxeBCK0bspgRCKyCg1lE5C7YMRVlOsYUWS+Ns150lqBqatitL6lt0GQ==
-X-Received: by 2002:ac2:5e84:0:b0:507:9777:7a7 with SMTP id b4-20020ac25e84000000b00507977707a7mr5025676lfq.17.1698578705179;
-        Sun, 29 Oct 2023 04:25:05 -0700 (PDT)
+        bh=oiJ98AzIdDvp4H2ObVcO2pM8eJBa6hKhd5j05v0RH0w=;
+        b=mue2Jyvj0AslSI5GH0FD0vtPKmIOAMJI6JpMTbdEiJELshJJ33RyXpjjFzRk+aTbEi
+         zXDuMoTlGLNCcRuALnEC6CQU/PWDcOrOQKJps7AAwJ8afv//vIC0rOaVWEB6KxD2byKb
+         qCso0qQy/MBbk2Aq9mtBOV3hPCA+WLcriDP0G5fy/u+1dQ2zezROzS0/H/G2R04lzFry
+         KBDk1fSeQ3yixSm6POLBeQsNaZmxKesFWSM4PyM5LqPhFdY/0zXS9Xt3Yba4dcSdWEG5
+         9H3NPIlGTB7hujygJOaOFO25xgkkU5ma2qFJ0uxnp4cctdYEuqUE2Ks17IgSoOsmRPYq
+         Ga1A==
+X-Gm-Message-State: AOJu0Yz4cU6jQTgxSSB/HJO8Sfc+R6c4vr4cTkYmru/dNfCg5iFKXKQ7
+        ms+p0LXHUxMlWFDUOmgkSqgt8g==
+X-Google-Smtp-Source: AGHT+IF3ww+xNZIcGhsqitXJi46WtGMXlhoovfyHbmi3gpzQ9+l3xdAt6vARv3IK3FgMe6Vb5wtNDw==
+X-Received: by 2002:a05:6512:aca:b0:4fd:c8fb:eb71 with SMTP id n10-20020a0565120aca00b004fdc8fbeb71mr3163336lfu.11.1698578801768;
+        Sun, 29 Oct 2023 04:26:41 -0700 (PDT)
 Received: from [192.168.0.22] ([78.10.206.168])
-        by smtp.gmail.com with ESMTPSA id h2-20020a0565123c8200b005030b642ec8sm1000453lfv.157.2023.10.29.04.25.03
+        by smtp.gmail.com with ESMTPSA id h2-20020a0565123c8200b005030b642ec8sm1000453lfv.157.2023.10.29.04.26.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 04:25:04 -0700 (PDT)
-Message-ID: <3016eff2-fce5-4b5e-bbb2-d56cbb45df85@linaro.org>
-Date:   Sun, 29 Oct 2023 12:25:03 +0100
+        Sun, 29 Oct 2023 04:26:41 -0700 (PDT)
+Message-ID: <dd28569f-b59e-4c07-8b1d-076646396954@linaro.org>
+Date:   Sun, 29 Oct 2023 12:26:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: net: snps,dwmac: Allow exclusive
- usage of ahb reset
+Subject: Re: [PATCH 1/2] dt-bindings: mwifiex: document use with the SD8777
+ chipset
 Content-Language: en-US
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+To:     Karel Balej <balejk@matfyz.cz>, Kalle Valo <kvalo@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -65,22 +65,15 @@ To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
- <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
+        Brian Norris <briannorris@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Cc:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231029111807.19261-1-balejk@matfyz.cz>
+ <20231029111807.19261-2-balejk@matfyz.cz>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,42 +119,46 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231029042712.520010-2-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20231029111807.19261-2-balejk@matfyz.cz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/10/2023 05:27, Cristian Ciocaltea wrote:
-> The Synopsys DesignWare MAC found on the StarFive JH7100 SoC requires
-> just the 'ahb' reset name, but the binding allows selecting it only in
-> conjunction with 'stmmaceth'.
+On 29/10/2023 12:08, Karel Balej wrote:
+> Document the corresponding compatible string for the use of this driver
+> with the Marvell SD8777 wireless chipset.
 > 
-> Fix the issue by permitting exclusive usage of the 'ahb' reset name.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> Signed-off-by: Karel Balej <balejk@matfyz.cz>
 > ---
->  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> index 5c2769dc689a..a4d7172ea701 100644
-> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -146,7 +146,7 @@ properties:
->    reset-names:
->      minItems: 1
->      items:
-> -      - const: stmmaceth
-> +      - enum: [stmmaceth, ahb]
 
-Also, this makes sense only with patch #4, so this should be squashed there.
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
 
 Best regards,
 Krzysztof
