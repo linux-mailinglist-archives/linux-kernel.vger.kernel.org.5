@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 971137DAEF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4267DAEEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjJ2WzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S230494AbjJ2WzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjJ2Wy5 (ORCPT
+        with ESMTP id S231124AbjJ2Wy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:54:57 -0400
+        Sun, 29 Oct 2023 18:54:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10C8C2;
-        Sun, 29 Oct 2023 15:54:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51A9EC433C7;
-        Sun, 29 Oct 2023 22:54:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49F4DB;
+        Sun, 29 Oct 2023 15:54:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94C36C433CB;
+        Sun, 29 Oct 2023 22:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620094;
-        bh=JmAbRc2bNxm64mujRiq0keRT7xLH5Et6Oi008/fCrMo=;
+        s=k20201202; t=1698620095;
+        bh=XpEB7QllHM+SGHwR2XRaJkTltVnlwDvLC5E/fzWUslg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uk2b7+T0ZHuBUzg8n82ML5+LpQ+NP5wQWAto2jtDrC16lccXU8QCho1sOU4o8EF65
-         8yg6otrLkHz+zh0DYeYmz1zpxC2+MJ1Ll+v9Lxxiu8CwUNN7+yQXFp9FRUTmnDOIVh
-         BunkXxhsAHceajUiQCEdfInMXgRCqJelRII15ExapHijjw7HTaCuPj2iSKdPsYyhF6
-         giIz6Q91aitFsiwH2pzvqm3UpQFoHLYaKk2L935QR+kUhAwdJxCUNm/niEZTz0HFgG
-         iaIWyRS8zrxyuBlZ59rIOhcxyf7u+i3sQSdCLkAo4clQfogqHdaAO93iP7AU8/UF1N
-         vFJylDSc8kF+g==
+        b=KrdRMUn0NeTfdvoTXO0y0T5V5mVDNy46JXiTJcN9/U4Fqzgbf+IutxujJCulcydFq
+         C+ifKmx0lIFbgPpk7BBp88BUkuRFlv6+BUi/bnRvcO6dQFw2PQ5548a3Vata/ShCVX
+         vgt0lzLGSi4atizGlC5G1H6FcXEk0Hb5cn2VKWHcsS8e4gXncBWE+MmA3hVqdwPudU
+         uUrcuUVEZ2sx4CNV89GeMJinAX/XHDeSFDM4+a51ySQxKXEuFPUgjMiCyVyzqLWInH
+         rFJmjgKMEG+w64nA+A7oUFmkIMvHXV3PA6miVd30m69jlmCCda2ul/BaFCtmwiGoxl
+         KoSllFruRo3KQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        syzbot+e94d98936a0ed08bde43@syzkaller.appspotmail.com,
+        syzbot+478c1bf0e6bf4a8f3a04@syzkaller.appspotmail.com,
         Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.5 06/52] fs/ntfs3: fix deadlock in mark_as_free_ex
-Date:   Sun, 29 Oct 2023 18:52:53 -0400
-Message-ID: <20231029225441.789781-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 07/52] fs/ntfs3: Fix shift-out-of-bounds in ntfs_fill_super
+Date:   Sun, 29 Oct 2023 18:52:54 -0400
+Message-ID: <20231029225441.789781-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -55,42 +55,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit bfbe5b31caa74ab97f1784fe9ade5f45e0d3de91 ]
+[ Upstream commit 91a4b1ee78cb100b19b70f077c247f211110348f ]
 
-Reported-by: syzbot+e94d98936a0ed08bde43@syzkaller.appspotmail.com
+Reported-by: syzbot+478c1bf0e6bf4a8f3a04@syzkaller.appspotmail.com
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/fsntfs.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/ntfs3/ntfs_fs.h |  2 ++
+ fs/ntfs3/super.c   | 26 ++++++++++++++++++++------
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index edb51dc12f65f..fbfe21dbb4259 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -2454,10 +2454,12 @@ void mark_as_free_ex(struct ntfs_sb_info *sbi, CLST lcn, CLST len, bool trim)
- {
- 	CLST end, i, zone_len, zlen;
- 	struct wnd_bitmap *wnd = &sbi->used.bitmap;
-+	bool dirty = false;
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index 629403ede6e5f..788567d71d939 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -42,9 +42,11 @@ enum utf16_endian;
+ #define MINUS_ONE_T			((size_t)(-1))
+ /* Biggest MFT / smallest cluster */
+ #define MAXIMUM_BYTES_PER_MFT		4096
++#define MAXIMUM_SHIFT_BYTES_PER_MFT	12
+ #define NTFS_BLOCKS_PER_MFT_RECORD	(MAXIMUM_BYTES_PER_MFT / 512)
  
- 	down_write_nested(&wnd->rw_lock, BITMAP_MUTEX_CLUSTERS);
- 	if (!wnd_is_used(wnd, lcn, len)) {
--		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
-+		/* mark volume as dirty out of wnd->rw_lock */
-+		dirty = true;
+ #define MAXIMUM_BYTES_PER_INDEX		4096
++#define MAXIMUM_SHIFT_BYTES_PER_INDEX	12
+ #define NTFS_BLOCKS_PER_INODE		(MAXIMUM_BYTES_PER_INDEX / 512)
  
- 		end = lcn + len;
- 		len = 0;
-@@ -2511,6 +2513,8 @@ void mark_as_free_ex(struct ntfs_sb_info *sbi, CLST lcn, CLST len, bool trim)
+ /* NTFS specific error code when fixup failed. */
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index d3c78e2a49cbe..18a8bc73b8e2d 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -901,9 +901,17 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+ 		goto out;
+ 	}
  
- out:
- 	up_write(&wnd->rw_lock);
-+	if (dirty)
-+		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
- }
+-	sbi->record_size = record_size =
+-		boot->record_size < 0 ? 1 << (-boot->record_size) :
+-					(u32)boot->record_size << cluster_bits;
++	if (boot->record_size >= 0) {
++		record_size = (u32)boot->record_size << cluster_bits;
++	} else if (-boot->record_size <= MAXIMUM_SHIFT_BYTES_PER_MFT) {
++		record_size = 1u << (-boot->record_size);
++	} else {
++		ntfs_err(sb, "%s: invalid record size %d.", hint,
++			 boot->record_size);
++		goto out;
++	}
++
++	sbi->record_size = record_size;
+ 	sbi->record_bits = blksize_bits(record_size);
+ 	sbi->attr_size_tr = (5 * record_size >> 4); // ~320 bytes
  
- /*
+@@ -920,9 +928,15 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+ 		goto out;
+ 	}
+ 
+-	sbi->index_size = boot->index_size < 0 ?
+-				  1u << (-boot->index_size) :
+-				  (u32)boot->index_size << cluster_bits;
++	if (boot->index_size >= 0) {
++		sbi->index_size = (u32)boot->index_size << cluster_bits;
++	} else if (-boot->index_size <= MAXIMUM_SHIFT_BYTES_PER_INDEX) {
++		sbi->index_size = 1u << (-boot->index_size);
++	} else {
++		ntfs_err(sb, "%s: invalid index size %d.", hint,
++			 boot->index_size);
++		goto out;
++	}
+ 
+ 	/* Check index record size. */
+ 	if (sbi->index_size < SECTOR_SIZE || !is_power_of_2(sbi->index_size)) {
 -- 
 2.42.0
 
