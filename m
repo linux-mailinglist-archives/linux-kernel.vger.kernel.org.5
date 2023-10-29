@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CBC7DB161
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9717DAF2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbjJ2Xdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S231163AbjJ2W5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjJ2XdS (ORCPT
+        with ESMTP id S231203AbjJ2W5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:33:18 -0400
+        Sun, 29 Oct 2023 18:57:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD151FE7;
-        Sun, 29 Oct 2023 15:55:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3A2CC43391;
-        Sun, 29 Oct 2023 22:55:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57F21FFF;
+        Sun, 29 Oct 2023 15:55:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEB6C43395;
+        Sun, 29 Oct 2023 22:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620137;
-        bh=b6kCZ/VuTqfdqRtkQc9f6g0UaXs3C8pEWBckCzBd+Nc=;
+        s=k20201202; t=1698620139;
+        bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EClnxfQaXYm+cJT43BKvI1JeQoyQeVEeYexFPKhLPIYhCTgu2Spqo0km5PO5vX9+T
-         MSGfNB1FQ3kK0yPfzu3tIwjDlWcVt3rl/j3brYMVAl1DUi46Hf4j8CHWBf2chGMnBr
-         evX/DqgcMo10Ggc67QFU4dgHQuQPJygDTqhy0CRxLwLViWsS/0nTVoDRjiK0da9q2p
-         fIkM06kFAKPiOFFt9DmqIWFvnXuMsoH5Mp51XwJ1G8zVN2W+8z2tQOrdVX599u9MYx
-         MvMFsyDxrInO65HxnDH1K9uxBB01Ve2fUexbj69YfKVFBU24Ka0U5kTtAtMpm4D/3c
-         M9xjyY0jWptag==
+        b=DD2ZqOPUQ4dWNHmQvLW7m9YQkFr3zIxKM79zwtOjvKxD13Oofe/RO0FZhGBkehaXu
+         yP9bpWLfpIBJnGX4LTBQ+PWbd2B74GcSXbmK7N5auXTXYIBgv4eDgoRtGFvZVAL1u0
+         bkRiEBAD+P1LzTBhYvuxte4jAr03dn3juUjtynLCtpJeC/1rnlheuh+FecWFLhsSi6
+         7iCoPUQvhGPrS4AveT2T3GPNzaC00vhVBf4pwtbpeDkpB1CHXvBNYqiKKgCrYB/EzE
+         1R/l5caqEO0cfn2VHU5nYsITDH1q1WxyxdF2yBWhlRB4hSkxKD0x6SoGvOgR80s0Rh
+         1WGEBAYKVVefQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kuan-Wei Chiu <visitorckw@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 27/52] efi: fix memory leak in krealloc failure handling
-Date:   Sun, 29 Oct 2023 18:53:14 -0400
-Message-ID: <20231029225441.789781-27-sashal@kernel.org>
+Cc:     Shuming Fan <shumingf@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.5 28/52] ASoC: rt5650: fix the wrong result of key button
+Date:   Sun, 29 Oct 2023 18:53:15 -0400
+Message-ID: <20231029225441.789781-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -53,43 +55,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit 0d3ad1917996839a5042d18f04e41915cfa1b74a ]
+[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
 
-In the previous code, there was a memory leak issue where the
-previously allocated memory was not freed upon a failed krealloc
-operation. This patch addresses the problem by releasing the old memory
-before setting the pointer to NULL in case of a krealloc failure. This
-ensures that memory is properly managed and avoids potential memory
-leaks.
+The RT5650 should enable a power setting for button detection to avoid the wrong result.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/efi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 1599f11768426..9cfac61812f68 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -273,9 +273,13 @@ static __init int efivar_ssdt_load(void)
- 		if (status == EFI_NOT_FOUND) {
- 			break;
- 		} else if (status == EFI_BUFFER_TOO_SMALL) {
--			name = krealloc(name, name_size, GFP_KERNEL);
--			if (!name)
-+			efi_char16_t *name_tmp =
-+				krealloc(name, name_size, GFP_KERNEL);
-+			if (!name_tmp) {
-+				kfree(name);
- 				return -ENOMEM;
-+			}
-+			name = name_tmp;
- 			continue;
- 		}
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a506d940a2ead..fae04e9fae4e7 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3251,6 +3251,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
+ 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
+ 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
+ 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
++		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
++				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
+ 	}
+ 	rt5645_irq(0, rt5645);
  
 -- 
 2.42.0
