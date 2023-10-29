@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A3F7DB098
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AF37DB0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjJ2XIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S232253AbjJ2XJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjJ2XHS (ORCPT
+        with ESMTP id S232619AbjJ2XJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:07:18 -0400
+        Sun, 29 Oct 2023 19:09:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E419D93FC;
-        Sun, 29 Oct 2023 16:03:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255FCC4339A;
-        Sun, 29 Oct 2023 23:01:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC9D8A73;
+        Sun, 29 Oct 2023 16:02:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B237C4167D;
+        Sun, 29 Oct 2023 23:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620471;
-        bh=0qq37pZNkamsj1f9kajMgEzb3A3LJPSBUTXHvZwpWE8=;
+        s=k20201202; t=1698620472;
+        bh=1cWFtsWdrS1UHP+2afF8p7YRGN/p9n88KFTGlKvUIZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fQIVQZK9Aa3voFUvd1J8A/gLm6FrMHeHZ/ZOFl5tqe61eG4andrgi6LmGDqKbdhGL
-         i8oaWz8+t2FGIf9lgy5Ev92p4sZn9zXQtw9WAkYZTFQ7jdkBZfwyhoTbgBLUqtxD6M
-         TsPE8FA3d8AQCGxxdKykLXvaApHJ2aPP9cE5Eht2lYfib8dsEyC7oUpR5yWEjQV3v1
-         5opSn4H3b7VkpBh8HxR+xScOyphS+IfvSQu+8gTmL0aTWXjtg2XS+CHfZA3Nx+MnNQ
-         XCfkTKZr6AtZq4LnDfG3r5SQbX8+aDOqn5NumCh3P4mT5a2WU8b7ahihzY46qwTeAX
-         YWVdEc67e1w5g==
+        b=uC2PddOIdrQC/aI0nYYiGv9zipBYa/vfTGpSaRvkWCM2AULeMa/JtjtWpXMqa0b50
+         zLMnuzrfZnkPdv5Bi+4i8XpTRoy57Kdw5jw6c518xVqVh+XAPspvUU9g7Y3N06zy84
+         7YZvr66wskSW/yGF5AQxPlpn3QMxwmPvkQ3ZWsW331xlgcVRmeUKFFqEFofUcIjMl5
+         OHkKdBB3sQDd/ieZ/XpXugkyZmkO81m4eoKb+atUozdKaOjhI5r7F5VjYJcYYhwjug
+         GMKB8a1qgXI+SxjUlyuS5smwxcTdjfl2p1Kf33wF+9sga6d67jeZv9oGXHEhSwFlOe
+         ZdGfhqZ+iFYeQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 07/13] ASoC: rt5650: fix the wrong result of key button
-Date:   Sun, 29 Oct 2023 19:00:40 -0400
-Message-ID: <20231029230057.792930-7-sashal@kernel.org>
+Cc:     Jorge Maidana <jorgem.linux@gmail.com>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+        spock@gentoo.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 08/13] fbdev: uvesafb: Call cn_del_callback() at the end of uvesafb_exit()
+Date:   Sun, 29 Oct 2023 19:00:41 -0400
+Message-ID: <20231029230057.792930-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029230057.792930-1-sashal@kernel.org>
 References: <20231029230057.792930-1-sashal@kernel.org>
@@ -55,33 +54,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Jorge Maidana <jorgem.linux@gmail.com>
 
-[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
+[ Upstream commit 1022e7e2f40574c74ed32c3811b03d26b0b81daf ]
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
+Delete the v86d netlink only after all the VBE tasks have been
+completed.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes initial state restore on module unload:
+uvesafb: VBE state restore call failed (eax=0x4f04, err=-19)
+
+Signed-off-by: Jorge Maidana <jorgem.linux@gmail.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/video/fbdev/uvesafb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a66e93a3af745..9fda0e5548dc6 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3241,6 +3241,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
+diff --git a/drivers/video/fbdev/uvesafb.c b/drivers/video/fbdev/uvesafb.c
+index 7d3af1d19ad3f..115653ba761c0 100644
+--- a/drivers/video/fbdev/uvesafb.c
++++ b/drivers/video/fbdev/uvesafb.c
+@@ -1933,10 +1933,10 @@ static void uvesafb_exit(void)
+ 		}
  	}
- 	rt5645_irq(0, rt5645);
  
+-	cn_del_callback(&uvesafb_cn_id);
+ 	driver_remove_file(&uvesafb_driver.driver, &driver_attr_v86d);
+ 	platform_device_unregister(uvesafb_device);
+ 	platform_driver_unregister(&uvesafb_driver);
++	cn_del_callback(&uvesafb_cn_id);
+ }
+ 
+ module_exit(uvesafb_exit);
 -- 
 2.42.0
 
