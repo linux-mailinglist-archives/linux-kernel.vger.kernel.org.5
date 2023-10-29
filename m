@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAF57DAA8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 03:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235A77DAA8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 03:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjJ2Cly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 22:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
+        id S229914AbjJ2Cy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 22:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2Clx (ORCPT
+        with ESMTP id S229446AbjJ2Cy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 22:41:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E1BC9
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 19:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698547311; x=1730083311;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gJgl0Tbuq1PMUqtQZsw8Ijx0YJdzZNS1T/3zAvMYNg8=;
-  b=AHSnGWPWKzJBQovRrejFRGVRGiLaq1VhO8a83DuT+eGN6kq80p8CGtni
-   8KJHtDKGO1pSI4MymxzaUPwldqM+1QWTpazyHxkVJsecqa8PYxLcdNXac
-   IdoZf+SQsy+udQcQjwZdLVVL3hzJvrdbTsZhwRrhc0tPwMP747SajJ2k/
-   HmJ9xvu8RI4eSvjwEagpfb29YY802zF46zGgoVki9N/6eoNPCnbptUhrE
-   Cz2+TEQzAAGGQxgM7U1wIOkPWeFrpR+i3vIcTgDCZaHczdbtcMOCpYNCr
-   KvLmpw5DLjjXIFs0br2hiHhwrGd0vFewwjkNGeWILvo6kYrgRFj7ANO2k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="390789892"
-X-IronPort-AV: E=Sophos;i="6.03,260,1694761200"; 
-   d="scan'208";a="390789892"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 19:41:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="933464643"
-X-IronPort-AV: E=Sophos;i="6.03,260,1694761200"; 
-   d="scan'208";a="933464643"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 28 Oct 2023 19:41:47 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwvkG-000CHP-2r;
-        Sun, 29 Oct 2023 02:41:44 +0000
-Date:   Sun, 29 Oct 2023 10:41:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     York Jasper Niebuhr <yjnworkstation@gmail.com>,
-        akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        York Jasper Niebuhr <yjnworkstation@gmail.com>
-Subject: Re: [PATCH] Added empty sys_ememz
-Message-ID: <202310291059.qzvihDY2-lkp@intel.com>
-References: <20231028204046.11258-1-yjnworkstation@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231028204046.11258-1-yjnworkstation@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 28 Oct 2023 22:54:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A58ECC;
+        Sat, 28 Oct 2023 19:54:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A4DC433C8;
+        Sun, 29 Oct 2023 02:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698548094;
+        bh=RlNnNHHg3zRkH0P4DdOqNoxHNDzPt997A9kWx4EOy2U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PkFdZLt+Z30Qeqi8MWYZD+cvxIxKF1wHGbjVs6fEo/KOjmoMLe+FA5SdAJOXTo+Ue
+         1MEEZrhmot6/KaGa01niJaSzan2FkmIiTdnCnhAV6AAo1g2CpaXL7A5z+pf6q62wJC
+         1TNn4y9TLnaOlRTnjx5eODYidMsl8OF2ZjnuGKQByK1wWJVZJE0LCvsiGlxY93HFiv
+         JcYBUqcuC7NE5+b37DgPSEH7UCrIXIgxD1mVbYiDubcwq9aOHDY8DXK6uJ86GYZ+Pt
+         4Qo7VhTnwcJfN6MCNSGJ60s8NdRJHxvgWIfnm/SszxEIkJwzrQaBFhq8CbD99vfqaI
+         TrD2LnnAGsDpQ==
+Date:   Sun, 29 Oct 2023 11:54:49 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        suleiman@google.com, briannorris@google.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3] PM: sleep: Expose last succeeded resumed timestamp
+ in sysfs
+Message-Id: <20231029115449.8c942b131312c2464eda6970@kernel.org>
+In-Reply-To: <d6f016fe-963b-40ba-9146-de69e4fe0052@infradead.org>
+References: <169849758243.1357961.4105003693126485611.stgit@mhiramat.roam.corp.google.com>
+        <d6f016fe-963b-40ba-9146-de69e4fe0052@infradead.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi York,
+On Sat, 28 Oct 2023 09:48:36 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-kernel test robot noticed the following build warnings:
+> Hi,
+> 
+> On 10/28/23 05:53, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > Expose last succeeded resumed timestamp as last_success_resume_time
+> > attribute of suspend_stats in sysfs. This timestamp is recorded in
+> > CLOCK_MONOTONIC. So user can find the actual resumed time and
+> > measure the elapsed time from the time when the kernel finished
+> > the resume to the user-space action (e.g. display the UI).
+> 
+> Can you go into the use-case a bit more, please?
+> You have said "what", but not "why".
+> What do you (or google) plan to do with this?
+> 
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  Changes in v3:
+> >   - Add (unsigned long long) casting for %llu.
+> >   - Add a line after last_success_resume_time_show().
+> >  Changes in v2:
+> >   - Use %llu instead of %lu for printing u64 value.
+> >   - Remove unneeded indent spaces from the last_success_resume_time
+> >     line in the debugfs suspend_stat file.
+> > ---
+> >  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
+> >  include/linux/suspend.h               |    2 ++
+> >  kernel/power/main.c                   |   15 +++++++++++++++
+> >  kernel/power/suspend.c                |    1 +
+> >  4 files changed, 28 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
+> > index a3942b1036e2..63659765dee1 100644
+> > --- a/Documentation/ABI/testing/sysfs-power
+> > +++ b/Documentation/ABI/testing/sysfs-power
+> > @@ -442,6 +442,16 @@ Description:
+> >  		'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
+> >  		This number is measured in microseconds.
+> >  
+> > +What:		/sys/power/suspend_stats/last_success_resume_time
+> > +Date:		Oct 2023
+> > +Contact:	Masami Hiramatsu <mhiramat@kernel.org>
+> > +Description:
+> > +		The /sys/power/suspend_stats/last_success_resume_time file
+> > +		contains the timestamp of when the kernel successfully
+> > +		resumed from suspend/hibernate.
+> > +		This floating number is measured in seconds by monotonic
+> 
+> What does "floating" mean here?  Not floating point...
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on tip/x86/asm linus/master v6.6-rc7]
-[cannot apply to arnd-asm-generic/master next-20231027]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Oops, it should be "floating point number".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/York-Jasper-Niebuhr/Added-empty-sys_ememz/20231029-044215
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231028204046.11258-1-yjnworkstation%40gmail.com
-patch subject: [PATCH] Added empty sys_ememz
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231029/202310291059.qzvihDY2-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310291059.qzvihDY2-lkp@intel.com/reproduce)
+Thank you!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310291059.qzvihDY2-lkp@intel.com/
+> 
+> 
+> > +		clock.
+> > +
+> >  What:		/sys/power/sync_on_suspend
+> >  Date:		October 2019
+> >  Contact:	Jonas Meurer <jonas@freesources.org>
+> 
+> [snip]
+> 
+> Thanks.
+> -- 
+> ~Randy
 
-All warnings (new ones prefixed by >>):
-
->> <stdin>:1573:2: warning: #warning syscall ememz not implemented [-Wcpp]
---
->> <stdin>:1573:2: warning: #warning syscall ememz not implemented [-Wcpp]
---
-   scripts/genksyms/parse.y: warning: 9 shift/reduce conflicts [-Wconflicts-sr]
-   scripts/genksyms/parse.y: warning: 5 reduce/reduce conflicts [-Wconflicts-rr]
-   scripts/genksyms/parse.y: note: rerun with option '-Wcounterexamples' to generate conflict counterexamples
->> <stdin>:1573:2: warning: #warning syscall ememz not implemented [-Wcpp]
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
