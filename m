@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3863C7DB15D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE587DB1AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjJ2Xda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S230483AbjJ3AMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 20:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjJ2XdO (ORCPT
+        with ESMTP id S231312AbjJ3AMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:33:14 -0400
+        Sun, 29 Oct 2023 20:12:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF6A270D;
-        Sun, 29 Oct 2023 15:55:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F9FC433C8;
-        Sun, 29 Oct 2023 22:55:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9461D7D;
+        Sun, 29 Oct 2023 15:55:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED33C433CA;
+        Sun, 29 Oct 2023 22:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620147;
-        bh=KyghjT8fjcHLeQ851UGSAKU0YWIhtmCAbJN2wBmIgz8=;
+        s=k20201202; t=1698620148;
+        bh=ZZQxw68ufr291FUHWJMZVT6Kvaw2JkgJY6lRE6iV3fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qTebr8vJKhgpa5Z174zEAj3+X02BqURKnnmxfC44I8kfp7fruI9OWG+IhDEu0oB5S
-         7sAu6lYxsSto/DuvmWRF+inhMV9GE19zWhYQRIwJTnHRMjlttKjDdOQmpqrQPqYB/Y
-         IFdvaC5LT+Omf64oGn1t+O39N2iT9uzczTseXi6q2lZuFhP9fFpcQZAhf1sfSM/ZE4
-         vEtModWg5Jd89tpBy3LCyID83leTNNW4YUpdBm3tlWdrO57q4wX0CxM24D56TX2Saz
-         QrLk/VhZa9IZGpzqgzMyZDO5IWPXkCCnLiMv1IpJgMwUZkBrxeFhqMTAJj/nUwjHKQ
-         jJmWf5adsI92A==
+        b=eznq8qIvnq9iopUqFkMrflUixS3sZpKei8XfngPK57fijIFAv3mLu9VBTzQwQQbVr
+         3j4u3imN+Mnq6W9hU0uqIjwKI5U7RG4SR6zg0YFWqb+jS5AycEzDzHWduzZT/NITHH
+         8ufBlSn6jeHnzMCZAbu1A3Yu4OkLGxGjLq3DK19FovtXM5KLsbRZ+/nRL94J7qCLUp
+         BWinjQQT56QjHx2Gj9+9RM3tfodXCFDHBwXamj//Ux5g1vHJo7q4mJQ3RWJD7ROwtl
+         QB+dGEb+vUT/1qnsTqkvMGKHqQlGyyldJeJ59v/9CoRoO9NIndBTCLggYTmTIvwiVr
+         7nRPCK7NjInvg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>, agordeev@linux.ibm.com,
-        linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 30/52] s390/kasan: handle DCSS mapping in memory holes
-Date:   Sun, 29 Oct 2023 18:53:17 -0400
-Message-ID: <20231029225441.789781-30-sashal@kernel.org>
+Cc:     Karolina Stolarek <karolina.stolarek@intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>, ray.huang@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 31/52] drm/ttm: Reorder sys manager cleanup step
+Date:   Sun, 29 Oct 2023 18:53:18 -0400
+Message-ID: <20231029225441.789781-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.9
@@ -55,55 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Karolina Stolarek <karolina.stolarek@intel.com>
 
-[ Upstream commit 327899674eef18f96644be87aa5510b7523fe4f6 ]
+[ Upstream commit 3b401e30c249849d803de6c332dad2a595a58658 ]
 
-When physical memory is defined under z/VM using DEF STOR CONFIG, there
-may be memory holes that are not hotpluggable memory. In such cases,
-DCSS mapping could be placed in one of these memory holes. Subsequently,
-attempting memory access to such DCSS mapping would result in a kasan
-failure because there is no shadow memory mapping for it.
+With the current cleanup flow, we could trigger a NULL pointer
+dereference if there is a delayed destruction of a BO with a
+system resource that gets executed on drain_workqueue() call,
+as we attempt to free a resource using an already released
+resource manager.
 
-To maintain consistency with cases where DCSS mapping is positioned after
-the kernel identity mapping, which is then covered by kasan zero shadow
-mapping, handle the scenario above by populating zero shadow mapping
-for memory holes where DCSS mapping could potentially be placed.
+Remove the device from the device list and drain its workqueue
+before releasing the system domain manager in ttm_device_fini().
 
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Karolina Stolarek <karolina.stolarek@intel.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231016121525.2237838-1-karolina.stolarek@intel.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/boot/vmem.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/ttm/ttm_device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/boot/vmem.c b/arch/s390/boot/vmem.c
-index c67f59db7a512..f66d642251fe8 100644
---- a/arch/s390/boot/vmem.c
-+++ b/arch/s390/boot/vmem.c
-@@ -57,6 +57,7 @@ static void kasan_populate_shadow(void)
- 	pmd_t pmd_z = __pmd(__pa(kasan_early_shadow_pte) | _SEGMENT_ENTRY);
- 	pud_t pud_z = __pud(__pa(kasan_early_shadow_pmd) | _REGION3_ENTRY);
- 	p4d_t p4d_z = __p4d(__pa(kasan_early_shadow_pud) | _REGION2_ENTRY);
-+	unsigned long memgap_start = 0;
- 	unsigned long untracked_end;
- 	unsigned long start, end;
- 	int i;
-@@ -101,8 +102,12 @@ static void kasan_populate_shadow(void)
- 	 * +- shadow end ----+---------+- shadow end ---+
- 	 */
+diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+index 7726a72befc54..d48b39132b324 100644
+--- a/drivers/gpu/drm/ttm/ttm_device.c
++++ b/drivers/gpu/drm/ttm/ttm_device.c
+@@ -232,10 +232,6 @@ void ttm_device_fini(struct ttm_device *bdev)
+ 	struct ttm_resource_manager *man;
+ 	unsigned i;
  
--	for_each_physmem_usable_range(i, &start, &end)
-+	for_each_physmem_usable_range(i, &start, &end) {
- 		kasan_populate(start, end, POPULATE_KASAN_MAP_SHADOW);
-+		if (memgap_start && physmem_info.info_source == MEM_DETECT_DIAG260)
-+			kasan_populate(memgap_start, start, POPULATE_KASAN_ZERO_SHADOW);
-+		memgap_start = end;
-+	}
- 	if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
- 		untracked_end = VMALLOC_START;
- 		/* shallowly populate kasan shadow for vmalloc and modules */
+-	man = ttm_manager_type(bdev, TTM_PL_SYSTEM);
+-	ttm_resource_manager_set_used(man, false);
+-	ttm_set_driver_manager(bdev, TTM_PL_SYSTEM, NULL);
+-
+ 	mutex_lock(&ttm_global_mutex);
+ 	list_del(&bdev->device_list);
+ 	mutex_unlock(&ttm_global_mutex);
+@@ -243,6 +239,10 @@ void ttm_device_fini(struct ttm_device *bdev)
+ 	drain_workqueue(bdev->wq);
+ 	destroy_workqueue(bdev->wq);
+ 
++	man = ttm_manager_type(bdev, TTM_PL_SYSTEM);
++	ttm_resource_manager_set_used(man, false);
++	ttm_set_driver_manager(bdev, TTM_PL_SYSTEM, NULL);
++
+ 	spin_lock(&bdev->lru_lock);
+ 	for (i = 0; i < TTM_MAX_BO_PRIORITY; ++i)
+ 		if (list_empty(&man->lru[0]))
 -- 
 2.42.0
 
