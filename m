@@ -2,177 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B147DB0D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9597DB17E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjJ2XTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S231704AbjJ2XgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbjJ2XTg (ORCPT
+        with ESMTP id S232374AbjJ2XIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:19:36 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290257AAA
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:04:29 -0700 (PDT)
-Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C9B4D66073B5;
-        Sun, 29 Oct 2023 23:02:59 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698620581;
-        bh=9VDunboaNrQ0+alNzN87bJVPZTdu5GVJOSm1S5JwyL8=;
+        Sun, 29 Oct 2023 19:08:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F250AD2F;
+        Sun, 29 Oct 2023 16:03:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFFCC433BD;
+        Sun, 29 Oct 2023 23:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698620556;
+        bh=BTr13UlPX8BoRn4CQ9hLi6BmAeZL2LKy87Zh/UHkVTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bhh/+dHtFNOZ+FbvkdBKZRTxqXNMGYB7HkZwXtTbvcOiloCDHK7FbKeKTYwRCJC5S
-         DQfQ6yHaC9lXwa6bGT4FhqyI+LQWsa/O+PeOu/rbg1E3HdbDE8J8yafWKuXulU0kWV
-         lX6AMEVMrKRxlXq9yfrIL3l7PN4T7kmFILpa8zRxz4Zq10QI1+v1jhWYOv75Vzq9Zd
-         a0jrgWPsBfFpb8HeBjnl/JUhcssreG88iBdoAfi7WZalN1kVkdNi2HjdEAFEadTAXn
-         J6TnaCgG+AR2jrUVVoF4lQkvcx/uRJ9M4ZH31cipraN5MwmtG+wwvXknrCeY6sZr7w
-         YSqW/hqKf40kQ==
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v18 23/26] drm/virtio: Pin display framebuffer BO
-Date:   Mon, 30 Oct 2023 02:02:02 +0300
-Message-ID: <20231029230205.93277-24-dmitry.osipenko@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        b=Mpw2ByFQO4Gc1Mv6Sv7zwronvc1G2EoZ0cFGQHlEtPhswR6ZhQuPHFy1gquH6X06w
+         m+fxQU3UB1qAiaH0pa5NjDbG/LckwfOUA6CBcYw0C+ez6o6EDJR9rN6FbjTwQe8giC
+         xHjPEDpj02j40WNkFRzJ5jFa2FaFDGGTNEl001Qtr333XSZw3ULwoTVVj8g9JtWPbD
+         BwyA0uZNndyENe37BMhCSYOE+udfL6nuONqDMrje1yoZ0Vvc62qQq3tcq5Cn0MQiTG
+         U1D1tXcUZBQ7K+lhyfxOYrlCSDeDpOYjdHe2wpVzQa8kUIYG+8bjWT31nav2rq/Jcx
+         99ImM6m2IXXZQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>, James John <me@donjajo.com>,
+        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 11/11] platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
+Date:   Sun, 29 Oct 2023 19:02:02 -0400
+Message-ID: <20231029230213.793581-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029230213.793581-1-sashal@kernel.org>
+References: <20231029230213.793581-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare to addition of memory shrinker support by pinning display
-framebuffer BO pages in memory while they are in use by display on host.
-Shrinker is free to relocate framebuffer BO pages if it doesn't know that
-pages are in use, thus pin the pages to disallow shrinker to move them.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Acked-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+[ Upstream commit f37cc2fc277b371fc491890afb7d8a26e36bb3a1 ]
+
+Older Asus laptops change the backlight level themselves and then send
+WMI events with different codes for different backlight levels.
+
+The asus-wmi.c code maps the entire range of codes reported on
+brightness down keypresses to an internal ASUS_WMI_BRN_DOWN code:
+
+define NOTIFY_BRNUP_MIN                0x11
+define NOTIFY_BRNUP_MAX                0x1f
+define NOTIFY_BRNDOWN_MIN              0x20
+define NOTIFY_BRNDOWN_MAX              0x2e
+
+        if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
+                code = ASUS_WMI_BRN_UP;
+        else if (code >= NOTIFY_BRNDOWN_MIN && code <= NOTIFY_BRNDOWN_MAX)
+                code = ASUS_WMI_BRN_DOWN;
+
+Before this commit all the NOTIFY_BRNDOWN_MIN - NOTIFY_BRNDOWN_MAX
+aka 0x20 - 0x2e events were mapped to 0x20.
+
+This mapping is causing issues on new laptop models which actually
+send 0x2b events for printscreen presses and 0x2c events for
+capslock presses, which get translated into spurious brightness-down
+presses.
+
+The plan is disable the 0x11-0x2e special mapping on laptops
+where asus-wmi does not register a backlight-device to avoid
+the spurious brightness-down keypresses. New laptops always send
+0x2e for brightness-down presses, change the special internal
+ASUS_WMI_BRN_DOWN value from 0x20 to 0x2e to match this in
+preparation for fixing the spurious brightness-down presses.
+
+This change does not have any functional impact since all
+of 0x20 - 0x2e is mapped to ASUS_WMI_BRN_DOWN first and only
+then checked against the keymap code and the new 0x2e
+value is still in the 0x20 - 0x2e range.
+
+Reported-by: James John <me@donjajo.com>
+Closes: https://lore.kernel.org/platform-driver-x86/a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com/
+Closes: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231017090725.38163-2-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_drv.h   |  2 ++
- drivers/gpu/drm/virtio/virtgpu_gem.c   | 19 +++++++++++++++++++
- drivers/gpu/drm/virtio/virtgpu_plane.c | 17 +++++++++++++++--
- 3 files changed, 36 insertions(+), 2 deletions(-)
+ drivers/platform/x86/asus-wmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
-index 96365a772f77..56269814fb6d 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-@@ -313,6 +313,8 @@ void virtio_gpu_array_put_free(struct virtio_gpu_object_array *objs);
- void virtio_gpu_array_put_free_delayed(struct virtio_gpu_device *vgdev,
- 				       struct virtio_gpu_object_array *objs);
- void virtio_gpu_array_put_free_work(struct work_struct *work);
-+int virtio_gpu_gem_pin(struct virtio_gpu_object *bo);
-+void virtio_gpu_gem_unpin(struct virtio_gpu_object *bo);
+diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
+index 57a79bddb2861..95612878a841f 100644
+--- a/drivers/platform/x86/asus-wmi.h
++++ b/drivers/platform/x86/asus-wmi.h
+@@ -31,7 +31,7 @@
+ #include <linux/i8042.h>
  
- /* virtgpu_vq.c */
- int virtio_gpu_alloc_vbufs(struct virtio_gpu_device *vgdev);
-diff --git a/drivers/gpu/drm/virtio/virtgpu_gem.c b/drivers/gpu/drm/virtio/virtgpu_gem.c
-index 7db48d17ee3a..625c05d625bf 100644
---- a/drivers/gpu/drm/virtio/virtgpu_gem.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_gem.c
-@@ -294,3 +294,22 @@ void virtio_gpu_array_put_free_work(struct work_struct *work)
- 	}
- 	spin_unlock(&vgdev->obj_free_lock);
- }
-+
-+int virtio_gpu_gem_pin(struct virtio_gpu_object *bo)
-+{
-+	int err;
-+
-+	if (virtio_gpu_is_shmem(bo)) {
-+		err = drm_gem_shmem_pin(&bo->base);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+void virtio_gpu_gem_unpin(struct virtio_gpu_object *bo)
-+{
-+	if (virtio_gpu_is_shmem(bo))
-+		drm_gem_shmem_unpin(&bo->base);
-+}
-diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
-index a2e045f3a000..def57b01a826 100644
---- a/drivers/gpu/drm/virtio/virtgpu_plane.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
-@@ -238,20 +238,28 @@ static int virtio_gpu_plane_prepare_fb(struct drm_plane *plane,
- 	struct virtio_gpu_device *vgdev = dev->dev_private;
- 	struct virtio_gpu_framebuffer *vgfb;
- 	struct virtio_gpu_object *bo;
-+	int err;
+ #define ASUS_WMI_KEY_IGNORE (-1)
+-#define ASUS_WMI_BRN_DOWN	0x20
++#define ASUS_WMI_BRN_DOWN	0x2e
+ #define ASUS_WMI_BRN_UP		0x2f
  
- 	if (!new_state->fb)
- 		return 0;
- 
- 	vgfb = to_virtio_gpu_framebuffer(new_state->fb);
- 	bo = gem_to_virtio_gpu_obj(vgfb->base.obj[0]);
--	if (!bo || (plane->type == DRM_PLANE_TYPE_PRIMARY && !bo->guest_blob))
-+
-+	err = virtio_gpu_gem_pin(bo);
-+	if (err)
-+		return err;
-+
-+	if (plane->type == DRM_PLANE_TYPE_PRIMARY && !bo->guest_blob)
- 		return 0;
- 
- 	if (bo->dumb && (plane->state->fb != new_state->fb)) {
- 		vgfb->fence = virtio_gpu_fence_alloc(vgdev, vgdev->fence_drv.context,
- 						     0);
--		if (!vgfb->fence)
-+		if (!vgfb->fence) {
-+			virtio_gpu_gem_unpin(bo);
- 			return -ENOMEM;
-+		}
- 	}
- 
- 	return 0;
-@@ -261,15 +269,20 @@ static void virtio_gpu_plane_cleanup_fb(struct drm_plane *plane,
- 					struct drm_plane_state *state)
- {
- 	struct virtio_gpu_framebuffer *vgfb;
-+	struct virtio_gpu_object *bo;
- 
- 	if (!state->fb)
- 		return;
- 
- 	vgfb = to_virtio_gpu_framebuffer(state->fb);
-+	bo = gem_to_virtio_gpu_obj(vgfb->base.obj[0]);
-+
- 	if (vgfb->fence) {
- 		dma_fence_put(&vgfb->fence->f);
- 		vgfb->fence = NULL;
- 	}
-+
-+	virtio_gpu_gem_unpin(bo);
- }
- 
- static void virtio_gpu_cursor_plane_update(struct drm_plane *plane,
+ struct module;
 -- 
-2.41.0
+2.42.0
 
