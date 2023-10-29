@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AEE7DAF66
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396567DAF90
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjJ2W7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S231635AbjJ2XAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjJ2W7H (ORCPT
+        with ESMTP id S231588AbjJ2W7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:59:07 -0400
+        Sun, 29 Oct 2023 18:59:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D8E2707;
-        Sun, 29 Oct 2023 15:58:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7E13C43215;
-        Sun, 29 Oct 2023 22:57:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE4F47B0;
+        Sun, 29 Oct 2023 15:58:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75DA9C433C9;
+        Sun, 29 Oct 2023 22:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620280;
-        bh=h53hUr5zu/AVQjfEJC8Swi+cmWdnwCa+Iu0oH3Qi8eo=;
+        s=k20201202; t=1698620281;
+        bh=PDqOes406CTDIQMaICBba0Z0k8SUC3PaSei4d0V58qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X+Qy5KYiGlaePjs/8nw9CmJduLI4fLDvgy/78s5GwJd8efx4CYnCCIPvCQw0bCepV
-         z65MCzdiQVf0mN6ewVMXq/dyjHqKMBlq8Dw7REDiq0MtxO+Fcplzf+AEIErqtTs6Gz
-         tzrQiyTcK2zvfGJTQ8RGhtCK6oAy5KN2pUYECGydm6+q9w0Ed+EVC6HBCKGEYt8uDx
-         +hsQeLT5pAtYTW140AWyYpzjGsZ0B7baqYl9I4T5/T9fT42LkHvDXRCKOd7H0kYYJ2
-         lq918yGeEavJw3dX/vxRpwC2LyuDyWrCWyd89SWLvaAO5Kgtq96uFB/9k5R0bVLpQr
-         SmnJNFjmyVXaQ==
+        b=XKq65EibJrRPkqy+CCanSbZt3Jhq7yDru/pFkzSMiKAzDdGbU+nB7B3HqO+TyWMbQ
+         +dCZ3yLJRs15mlNgNBgjjTPr10Xtp4g5ESCGIZXfKIXS495TM6I/3EIAN8gQ/U1qR1
+         an91DF9Yy5tRnEZUTihkY6bMD7vhJLp+4RZibQ5ruwkLejJBkxsuWbMesZnbo8+1t0
+         qWOkGFZGdymU+A/bOMMZdgRddXv3fMf5UwqrqyxS7W61YYZPKvQGr0O9zGUtzGN5f1
+         5cbcuSwGLa8NvgcGu8OAvNbM/feFTctiWBEg47xapMeOJxRsO9eCJlqrn5zFXK3t28
+         qR2hOfdholAKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ma Ke <make_ruc2021@163.com>,
@@ -34,9 +34,9 @@ Cc:     Ma Ke <make_ruc2021@163.com>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 14/39] net: ipv6: fix return value check in esp_remove_trailer
-Date:   Sun, 29 Oct 2023 18:56:46 -0400
-Message-ID: <20231029225740.790936-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 15/39] net: ipv4: fix return value check in esp_remove_trailer
+Date:   Sun, 29 Oct 2023 18:56:47 -0400
+Message-ID: <20231029225740.790936-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -57,7 +57,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ma Ke <make_ruc2021@163.com>
 
-[ Upstream commit dad4e491e30b20f4dc615c9da65d2142d703b5c2 ]
+[ Upstream commit 513f61e2193350c7a345da98559b80f61aec4fa6 ]
 
 In esp_remove_trailer(), to avoid an unexpected result returned by
 pskb_trim, we should check the return value of pskb_trim().
@@ -66,14 +66,14 @@ Signed-off-by: Ma Ke <make_ruc2021@163.com>
 Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/esp6.c | 4 +++-
+ net/ipv4/esp4.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 14ed868680c6a..c2dcb5c613b6b 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -770,7 +770,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index 2d094d417ecae..e2546961add3e 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -732,7 +732,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
  		skb->csum = csum_block_sub(skb->csum, csumdiff,
  					   skb->len - trimlen);
  	}
