@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CDB7DAF0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D5E7DAF15
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbjJ2W4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        id S231244AbjJ2W4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjJ2Wzf (ORCPT
+        with ESMTP id S231506AbjJ2Wzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:55:35 -0400
+        Sun, 29 Oct 2023 18:55:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0F810C7;
-        Sun, 29 Oct 2023 15:55:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7918DC43395;
-        Sun, 29 Oct 2023 22:55:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F7310EA;
+        Sun, 29 Oct 2023 15:55:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1766CC433C9;
+        Sun, 29 Oct 2023 22:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620110;
-        bh=nPnEdg2P7HZ2zulvM+Lr9IKqD+Kha2HAZogg3tbnRd8=;
+        s=k20201202; t=1698620112;
+        bh=cfI29PQJSiYahbkvtclk8BjJZ5sHHb1RQDEd7GQkkuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKNnra53aJnH5LkjH7TnbN36G19SDOIsPmqPX/mzeHEr5Dlu7kCQTBiGPpcfjyYx5
-         zsnbdqCM5Gsxo15cdswUze3rMcvuvw+92DDcNZMBmG5NiZS6jML2N8moeouNaI5WTr
-         eXO70JZKujC+niabRc9B+HKEp6LATY5PZyj1Vkkqgx4lDuDD790ag8o0kwcqN/Y1Qo
-         0xtGpPGEILPWrKVHbiQFvbCZUCIyqYenAtqvUntxJ6Jsp0S+mvwn5m3jYrZIFXLSGN
-         9pSaUnboqKI61o3P4Cv73iK6QoJBMzhJmvO44dwAYZhqAVLpOWPwFICXv54l7Yzdxt
-         ReFFY4Hz2z97g==
+        b=sKdsOjfZYpUlvlsdpKo9utpvZt2kSOfdGUqQAsGvT37obDoPN8IyTAGrS0Au/4S9m
+         euwxuLWQ4SV+SKkNiXmBtBH6BbYI5tQzIu+bGDTI1GIIM6YUuJ+1mF96oGMEVHIV+t
+         vuxkdHq/5T+Y30K49Rgi9AemjESMconnM5zk4pD0Vqwqk0BKP6LOhbYuFeODyZSDiM
+         KavfT240wOaS94Q/+SdjQ64TFyS07Z8nVF+XAyd2h8fxPCFvQQtmReWM4JAsSplz0d
+         8cQc2dOlbjr29Yxf3dzFeZv9YCIblSFrQPspqf2MzEvQfBgCIAmQWX2UXb0X3j50/2
+         BdsPQG4KVss/w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 19/52] ASoC: codecs: wsa-macro: handle component name prefix
-Date:   Sun, 29 Oct 2023 18:53:06 -0400
-Message-ID: <20231029225441.789781-19-sashal@kernel.org>
+Cc:     Ma Ke <make_ruc2021@163.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 20/52] net: ipv6: fix return value check in esp_remove_trailer
+Date:   Sun, 29 Oct 2023 18:53:07 -0400
+Message-ID: <20231029225441.789781-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -56,41 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Ma Ke <make_ruc2021@163.com>
 
-[ Upstream commit c29e5263d32a6d0ec094d425ae7fef3fa8d4da1c ]
+[ Upstream commit dad4e491e30b20f4dc615c9da65d2142d703b5c2 ]
 
-When comparing widget names in wsa_macro_spk_boost_event(), consider
-also the component's name prefix.  Otherwise the WSA codec won't have
-proper mixer setup resulting in no sound playback through speakers.
+In esp_remove_trailer(), to avoid an unexpected result returned by
+pskb_trim, we should check the return value of pskb_trim().
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/r/20231003155710.821315-3-krzysztof.kozlowski@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv6/esp6.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 8ba7dc89daaaa..4b82ecbd92cd2 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1675,12 +1675,12 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
- 	u16 boost_path_ctl, boost_path_cfg1;
- 	u16 reg, reg_mix;
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index fddd0cbdede15..e023d29e919c1 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -770,7 +770,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
+ 		skb->csum = csum_block_sub(skb->csum, csumdiff,
+ 					   skb->len - trimlen);
+ 	}
+-	pskb_trim(skb, skb->len - trimlen);
++	ret = pskb_trim(skb, skb->len - trimlen);
++	if (unlikely(ret))
++		return ret;
  
--	if (!strcmp(w->name, "WSA_RX INT0 CHAIN")) {
-+	if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT0 CHAIN")) {
- 		boost_path_ctl = CDC_WSA_BOOST0_BOOST_PATH_CTL;
- 		boost_path_cfg1 = CDC_WSA_RX0_RX_PATH_CFG1;
- 		reg = CDC_WSA_RX0_RX_PATH_CTL;
- 		reg_mix = CDC_WSA_RX0_RX_PATH_MIX_CTL;
--	} else if (!strcmp(w->name, "WSA_RX INT1 CHAIN")) {
-+	} else if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT1 CHAIN")) {
- 		boost_path_ctl = CDC_WSA_BOOST1_BOOST_PATH_CTL;
- 		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
- 		reg = CDC_WSA_RX1_RX_PATH_CTL;
+ 	ret = nexthdr[1];
+ 
 -- 
 2.42.0
 
