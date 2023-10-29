@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D997DAF60
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9597DB109
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjJ2W7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        id S232484AbjJ2X2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbjJ2W7B (ORCPT
+        with ESMTP id S232416AbjJ2X2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:59:01 -0400
+        Sun, 29 Oct 2023 19:28:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAEC30E0;
-        Sun, 29 Oct 2023 15:56:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235FFC433A9;
-        Sun, 29 Oct 2023 22:56:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426EE3262;
+        Sun, 29 Oct 2023 15:56:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC04C43395;
+        Sun, 29 Oct 2023 22:56:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620173;
-        bh=001YAmpLETxjsM9j7Vvl/WXpAl9mBPA1mEwrmF4EQAw=;
+        s=k20201202; t=1698620179;
+        bh=1kR/CjoxHbIlGsir+rK7ZCbvL48WL1v8bLuqsLL3sds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUSo1chgV/1QwDOuL4lMJw0aflRcbefarg4mIaCrhSmLID1NRw3ckUR8xzKXHR41J
-         CAifWLXlcN0YsaPP/skQ6FwqSNlV7HAQDrX3CDEAofypDxO2/GtkSD/RU1CYJuvFMu
-         N+1xaKhLM8SeZeuFHrm2s2QH1qE5VlpP2TN9lM8/Qq5Mqc8JwXv12ZfVlbbZ6TNNal
-         bmM4KR1p8uCgYMDyQE2mn2esmTSfh2usIGWnpfvBgibLURFEtuh2miB0EbccacC16o
-         tJg4te9cenjWUCzofVy78Apd5VbFo1DAeBwdN7SJO/C2oPYz7vKylCE3fheeZRLq9s
-         v8K/SgMlXjW4Q==
+        b=qXShCsmf2ThUHKcpIoHfKv9dt4/ldtvRy9eMB4o4fBFgKnPb2E9yt+a3OCI7qC2y+
+         0dxHG4CCMsuNZ/UU2ZyuG/8c316Gkrjo3N2MZ3F9jBwfOG0plAS9emrNNmZWgRx3t/
+         Ly7jfoYC3wSvbcn5lYFVEelHRalk7W36WQT6VOPYJlMh5xzmIf0gG+5Q+rtNm58/JD
+         HCMWxafr6eJ1Qk9klrabRIWRr9m61SdXvfIe++MiLMDXAjhThl6akYQWGdYWwlCT4Y
+         2khIlO9/zIhkLS4/tx/M3vdJA4fhpYNoZ6d6SWAiK1Vt6qcz4Dyw4CJ8pPJ9K6j9WO
+         NSorb8npxiJ4A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Luben Tuikov <luben.tuikov@amd.com>,
@@ -37,9 +37,9 @@ Cc:     Luben Tuikov <luben.tuikov@amd.com>,
         James.Zhu@amd.com, lijo.lazar@amd.com,
         pierre-eric.pelloux-prayer@amd.com, zhenguo.yin@amd.com,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 38/52] drm/amdgpu: Unset context priority is now invalid
-Date:   Sun, 29 Oct 2023 18:53:25 -0400
-Message-ID: <20231029225441.789781-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 39/52] gpu/drm: Eliminate DRM_SCHED_PRIORITY_UNSET
+Date:   Sun, 29 Oct 2023 18:53:26 -0400
+Message-ID: <20231029225441.789781-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -61,43 +61,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Luben Tuikov <luben.tuikov@amd.com>
 
-[ Upstream commit eab0261967aeab528db4d0a51806df8209aec179 ]
+[ Upstream commit fa8391ad68c16716e2c06ada397e99ceed2fb647 ]
 
-A context priority value of AMD_CTX_PRIORITY_UNSET is now invalid--instead of
-carrying it around and passing it to the Direct Rendering Manager--and it
-becomes AMD_CTX_PRIORITY_NORMAL in amdgpu_ctx_ioctl(), the gateway to context
-creation.
+Eliminate DRM_SCHED_PRIORITY_UNSET, value of -2, whose only user was
+amdgpu. Furthermore, eliminate an index bug, in that when amdgpu boots, it
+calls drm_sched_entity_init() with DRM_SCHED_PRIORITY_UNSET, which uses it to
+index sched->sched_rq[].
 
 Cc: Alex Deucher <Alexander.Deucher@amd.com>
 Cc: Christian König <christian.koenig@amd.com>
 Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
 Acked-by: Alex Deucher <Alexander.Deucher@amd.com>
-Link: https://lore.kernel.org/r/20231017035656.8211-1-luben.tuikov@amd.com
+Link: https://lore.kernel.org/r/20231017035656.8211-2-luben.tuikov@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 3 ++-
+ include/drm/gpu_scheduler.h             | 3 +--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-index 0dc9c655c4fbd..092962b93064f 100644
+index 092962b93064f..aac52d9754e6d 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
-@@ -47,7 +47,6 @@ const unsigned int amdgpu_ctx_num_entities[AMDGPU_HW_IP_NUM] = {
- bool amdgpu_ctx_priority_is_valid(int32_t ctx_prio)
+@@ -64,7 +64,8 @@ amdgpu_ctx_to_drm_sched_prio(int32_t ctx_prio)
  {
  	switch (ctx_prio) {
--	case AMDGPU_CTX_PRIORITY_UNSET:
+ 	case AMDGPU_CTX_PRIORITY_UNSET:
+-		return DRM_SCHED_PRIORITY_UNSET;
++		pr_warn_once("AMD-->DRM context priority value UNSET-->NORMAL");
++		return DRM_SCHED_PRIORITY_NORMAL;
+ 
  	case AMDGPU_CTX_PRIORITY_VERY_LOW:
- 	case AMDGPU_CTX_PRIORITY_LOW:
- 	case AMDGPU_CTX_PRIORITY_NORMAL:
-@@ -55,6 +54,7 @@ bool amdgpu_ctx_priority_is_valid(int32_t ctx_prio)
- 	case AMDGPU_CTX_PRIORITY_VERY_HIGH:
- 		return true;
- 	default:
-+	case AMDGPU_CTX_PRIORITY_UNSET:
- 		return false;
- 	}
- }
+ 		return DRM_SCHED_PRIORITY_MIN;
+diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+index f9544d9b670d3..ac65f0626cfc9 100644
+--- a/include/drm/gpu_scheduler.h
++++ b/include/drm/gpu_scheduler.h
+@@ -68,8 +68,7 @@ enum drm_sched_priority {
+ 	DRM_SCHED_PRIORITY_HIGH,
+ 	DRM_SCHED_PRIORITY_KERNEL,
+ 
+-	DRM_SCHED_PRIORITY_COUNT,
+-	DRM_SCHED_PRIORITY_UNSET = -2
++	DRM_SCHED_PRIORITY_COUNT
+ };
+ 
+ /* Used to chose between FIFO and RR jobs scheduling */
 -- 
 2.42.0
 
