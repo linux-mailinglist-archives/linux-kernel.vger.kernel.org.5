@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 786AD7DAC46
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 12:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581947DAC59
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 13:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjJ2Lsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 07:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41314 "EHLO
+        id S229730AbjJ2MOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 08:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjJ2Lsp (ORCPT
+        with ESMTP id S229487AbjJ2MOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 07:48:45 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF1FBF;
-        Sun, 29 Oct 2023 04:48:42 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5079f9675c6so5411279e87.2;
-        Sun, 29 Oct 2023 04:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698580121; x=1699184921; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffdazMpImFy1FetHdByJmVjSy4MkPy3NHoIgY+vA/6Y=;
-        b=dg39IE++4FuepBUfYEniHrmYgnTxrEV5K2PJJBh+pdU0jE4FcbYsV9TgwKH9oe7cDY
-         jbgmhk/j3qu67kT03gnptnkWwWtJnU1sLmEWUBeLl8EMaq4Sj8dbV6fjtFBfJU4xsptw
-         PLHB5tRnlwggLwyKMPWZpBBIEgZ7XLSKC/gwgMZzuJnQRzdO0SDBYu78s9Z22xnhJKOf
-         MOBp2JJy3wbb0Wy5KM7O86rBBUD6K5wg5HUPH4dTiZrjsx5E+8yHO8tlMJIXx3N6Iios
-         gp2J9BsteuM76mlhyT0dMdxwspjow8b21LwVnCF4mg8Y1f3qdbmmuUsAeyEglN17TD35
-         7wZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698580121; x=1699184921;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ffdazMpImFy1FetHdByJmVjSy4MkPy3NHoIgY+vA/6Y=;
-        b=wd/93cxkjwzlBYcusGUz+3Q4ItkVebh5hHkCaupt9hdFV5A4T7NbinAUJxDyGmD6HZ
-         HlgMjq6CtpDoeQ9ND04CXJy2jePlW+WDnlc28R3TyZfkIjEJCKFHO9RwCbm6ZMK23+FI
-         9USvEDRmzI4lO46iKtVnizuqlorvDck1K5R/F4xF1QxT9Ac9TR8V3vEyzxSDdTFLEsHi
-         5WieMCFTjKfeeTH5DSCf9IeAhH7Lxy2qyW7BRUe/ik/rvh5Dl0F61hezsTUqb0b4lLxq
-         mtnQn1Uqey2SONvU5zg+pSYXYcjXZkzVJyjTZZWs364pW84hJoffZZFsO25FV5CyZ30U
-         lviA==
-X-Gm-Message-State: AOJu0Yw8ApFVb2WBRaYHS6Ywozd7zjDeRhWMK/fMz/Ux8TNExOF+fznB
-        qr+/HofxIX3o3a9apulw38o=
-X-Google-Smtp-Source: AGHT+IGGEFN9dF9/qUdc8I54PBYmXWj2i/68f+/tnbsYXwGqFU/BfZzXtg+hd3Gsw9smrCdydi9yPA==
-X-Received: by 2002:a19:7004:0:b0:507:9b93:274b with SMTP id h4-20020a197004000000b005079b93274bmr5263657lfc.26.1698580120678;
-        Sun, 29 Oct 2023 04:48:40 -0700 (PDT)
-Received: from localhost.localdomain (host-213-145-197-219.kaisa-laajakaista.fi. [213.145.197.219])
-        by smtp.gmail.com with ESMTPSA id ep7-20020a056512484700b00503f39e6bcesm1012464lfb.95.2023.10.29.04.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 04:48:40 -0700 (PDT)
-From:   Peter Ujfalusi <peter.ujfalusi@gmail.com>
-To:     tony@atomide.com, lee@kernel.org, robh@kernel.org
-Cc:     wens@csie.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mfd: twl4030-power: Revert to use of_match_device()
-Date:   Sun, 29 Oct 2023 13:49:09 +0200
-Message-ID: <20231029114909.15652-1-peter.ujfalusi@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Sun, 29 Oct 2023 08:14:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B518BBE
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 05:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IrZdwObbGIKWh/WDVQ2jOCxaRN5W4wRKYpNtWgqSq7w=; b=JX1XBcKUmtBoQ6JhrwNpZad1W+
+        tdm0FmMmA5yZv5rvmL0Uighwfgno2d39tUsIZpZCI6SdGr6ltAWG79Cby4t0GbSum4SUrLkoDM4WI
+        qiFt1/4MlYFy9Y4yODp3yqk9q6d5WDLtRz2M2Y/JPrfo+GmX8a+OiYDlxh7QKsE5rrDMy/wcIq47O
+        LnQb76lmUUpdzR+9dGaE/2GGrElLVYBJqnmmRQtlIAPrPNDIHJra4VcY3d6l4TOofVa099wq7IMvp
+        OFYtf7DRRZpBTWXSuQgwpBYW5486tkKu0e/O41E9bSwVnEg+gD/k8Pdk2ewwfW7MVovcKDNpBmPj6
+        FYV2BBZQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qx4fx-001j0Z-2K;
+        Sun, 29 Oct 2023 12:13:53 +0000
+Message-ID: <5265031c-14b3-4526-8d30-75edbf804a38@infradead.org>
+Date:   Sun, 29 Oct 2023 05:13:52 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] gnss: tell what GNSS means
+Content-Language: en-US
+To:     Pavel Machek <pavel@ucw.cz>, Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230925054346.18065-1-rdunlap@infradead.org>
+ <ZS1K5AoZnS-3H-c3@hovoldconsulting.com> <ZT4GnZUUVy0Ri5rS@duo.ucw.cz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZT4GnZUUVy0Ri5rS@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core twl chip is probed via i2c and the dev->driver->of_match_table is
-NULL, causing the driver to fail to probe.
 
-This partially reverts commit 1e0c866887f4.
 
-Fixes: 1e0c866887f4 ("mfd: Use device_get_match_data() in a bunch of drivers")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
- drivers/mfd/twl4030-power.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+On 10/29/23 00:15, Pavel Machek wrote:
+> On Mon 2023-10-16 16:38:28, Johan Hovold wrote:
+>> On Sun, Sep 24, 2023 at 10:43:46PM -0700, Randy Dunlap wrote:
+>>> Tell users what GNSS means in the Kconfig prompt.
+>>  
+>>>  menuconfig GNSS
+>>> -	tristate "GNSS receiver support"
+>>> +	tristate "GNSS (Global Navigation Satellite System) receiver support"
+>>
+>> No, I don't like the way this clutters menuconfig. The above would make
+>> this one of the longest entries and for very little gain.
+> 
+> Yeah, because everyone knows what GNSS means.
+> 
+> Except that most people know GNSS as GPS. You misnamed the subsystem,
+> so it now needs explanation :-(.
+> 								Pavel
 
-diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
-index 1595e9c76132..e35b0f788c50 100644
---- a/drivers/mfd/twl4030-power.c
-+++ b/drivers/mfd/twl4030-power.c
-@@ -27,8 +27,8 @@
- #include <linux/pm.h>
- #include <linux/mfd/twl.h>
- #include <linux/platform_device.h>
--#include <linux/property.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- 
- #include <asm/mach-types.h>
- 
-@@ -883,6 +883,7 @@ static int twl4030_power_probe(struct platform_device *pdev)
- {
- 	const struct twl4030_power_data *pdata = dev_get_platdata(&pdev->dev);
- 	struct device_node *node = pdev->dev.of_node;
-+	const struct of_device_id *match;
- 	int err = 0;
- 	int err2 = 0;
- 	u8 val;
-@@ -903,8 +904,10 @@ static int twl4030_power_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
--	if (node)
--		pdata = device_get_match_data(&pdev->dev);
-+	match = of_match_device(of_match_ptr(twl4030_power_of_match),
-+				&pdev->dev);
-+	if (match && match->data)
-+		pdata = match->data;
- 
- 	if (pdata) {
- 		err = twl4030_power_configure_scripts(pdata);
+Thanks.  Obviously I agree.
+
 -- 
-2.42.0
-
+~Randy
