@@ -2,91 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9717DAE26
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 21:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A117DAE2E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 21:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjJ2ULt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 16:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S230226AbjJ2UR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 16:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJ2ULr (ORCPT
+        with ESMTP id S229778AbjJ2UR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 16:11:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A13AC;
-        Sun, 29 Oct 2023 13:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NHrqX2dC2lEhCtw3IxHryPs6MHyo/+ZGBHAb3HIxQc4=; b=H4Yk/YOzLJ3l9KWC52qtmtxpFo
-        dJ57w9BQ35z8V72QCTvP1nJSapmZxeQDHMsiAyzO/EtGniTRnuI5D7z5QoG6PmWimkfRDSxnuM5H6
-        lbjX0G8iBUW3ct7sl/MxKhuLLSMo3HLSB953r48DiSFyz2IImBg/sYyWH4bB8Inq0v601G9jpihOU
-        5/PMxD0OQiymEXQ8dRl8bHgQ5rlFpE7zqOBnmL6IySER6oUs1o2/IQn6GNMcnj3vtZf6eZpLjDVyy
-        sElUCa6DvWTJOlYziHJcF97elZewKiEP1ZSZ0o7x6MYB0T5px8sC1LDii5bIA5E50oMAh2TOGZ2/R
-        2xX+w1NA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qxC8C-00HTDK-E7; Sun, 29 Oct 2023 20:11:32 +0000
-Date:   Sun, 29 Oct 2023 20:11:32 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Daniel Gomez <da.gomez@samsung.com>
-Cc:     "minchan@kernel.org" <minchan@kernel.org>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "hughd@google.com" <hughd@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [RFC PATCH 01/11] XArray: add cmpxchg order test
-Message-ID: <ZT68dBiJKNLXLRZA@casper.infradead.org>
-References: <20230919135536.2165715-1-da.gomez@samsung.com>
- <20231028211518.3424020-1-da.gomez@samsung.com>
- <CGME20231028211538eucas1p186e33f92dbea7030f14f7f79aa1b8d54@eucas1p1.samsung.com>
- <20231028211518.3424020-2-da.gomez@samsung.com>
+        Sun, 29 Oct 2023 16:17:58 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EBBC0;
+        Sun, 29 Oct 2023 13:17:52 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4a8158e8613so1519222e0c.3;
+        Sun, 29 Oct 2023 13:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698610672; x=1699215472; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qknPkF/GhioNTqsfL8PFnCh2jVNaQR/cXCoqmSLii5U=;
+        b=Z9OAnamaTVxuXra/pe9fhAzYBshFIaCM+iras58b9g5+2cEnmoPZ+RR8ARDGBurSRS
+         itJoKxwIsUkLp1KsNOV3IX+hhuAdcQ9LXGAQ1PkpRqz1dYLimNzZnewG5WRkIQgOXMK2
+         6717RtEhQy317zQggd87hh0+mLSyv8+SPEn7uegjmdFDopywGD/t4G8S2oAzb8a+SWDp
+         GmZOBOD/YdmYyugAK+8MTEV3Xb4UlVQqUwNhdhoy1HylhAJCQcEJCKc3Mgc2+bTPKc8s
+         1PNMcAySOESJTp47Z1lbKy5ByHMXkUcf/OQcHhSP1YQUfBoUIabER80NsTsdSHXg9Nam
+         +a/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698610672; x=1699215472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qknPkF/GhioNTqsfL8PFnCh2jVNaQR/cXCoqmSLii5U=;
+        b=UMI0W+Gb963cUxik2VxgQn8KkaZofbKK4nFTRKlna6jW1o6DiGzW8d4BksKk+Js9uM
+         e4YUHBdOuYMhnLSsQc2qqKZCPxIW+doG/NP6h8TFzt/EAgb0b1unsRzILvrNpciDjhsJ
+         qR9aJcb5WWGNZC5XVT/dNyzkJrsGFbn3TV7qkqhYaC36J+PmgE1JJbF35k4jSBjFyYSR
+         8PyS8NfdIY1fuojNCK682+7p9ia+toSpSjKkxx3zzPoJEil0tXHN1mdVydInLYYX8gBy
+         Z/knsQrr7fkergb869xkBNp5mM29xkg21qU6RPc7StOaufvLzLnWoQKVIM6oRWUm2fxl
+         56DQ==
+X-Gm-Message-State: AOJu0YyJQv6PbJ656WLJXKUgQ8FRAve1KEB4+b2LzU3WS03+YO+NuHlz
+        69gUuj+rqN7mcJ7ZFVDJxl9cXom36tQEkMdrnlU=
+X-Google-Smtp-Source: AGHT+IE5zqFYBvu9XQ7wx3aCUfgWrL3jx20mGsGKxg8tg0GI13mG8EhWtlf6S8LkhPqjgCQ9LcKtSnt1Q9U/FbEwrnk=
+X-Received: by 2002:a1f:ad04:0:b0:495:cace:d59c with SMTP id
+ w4-20020a1fad04000000b00495caced59cmr6820612vke.0.1698610671799; Sun, 29 Oct
+ 2023 13:17:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231028211518.3424020-2-da.gomez@samsung.com>
+References: <20231019140151.21629-1-alexghiti@rivosinc.com> <20231019140151.21629-3-alexghiti@rivosinc.com>
+In-Reply-To: <20231019140151.21629-3-alexghiti@rivosinc.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sun, 29 Oct 2023 20:17:25 +0000
+Message-ID: <CA+V-a8sjeT3_BR2waskiZ1zCXFi+R2z67R7SznyjV_2+vGzU8A@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] riscv: Improve flush_tlb_range() for hugetlb pages
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 28, 2023 at 09:15:35PM +0000, Daniel Gomez wrote:
-> +static noinline void check_cmpxchg_order(struct xarray *xa)
-> +{
-> +	void *FIVE = xa_mk_value(5);
-> +	unsigned int order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 15 : 1;
+On Thu, Oct 19, 2023 at 3:04=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosinc=
+.com> wrote:
+>
+> flush_tlb_range() uses a fixed stride of PAGE_SIZE and in its current for=
+m,
+> when a hugetlb mapping needs to be flushed, flush_tlb_range() flushes the
+> whole tlb: so set a stride of the size of the hugetlb mapping in order to
+> only flush the hugetlb mapping. However, if the hugepage is a NAPOT regio=
+n,
+> all PTEs that constitute this mapping must be invalidated, so the stride
+> size must actually be the size of the PTE.
+>
+> Note that THPs are directly handled by flush_pmd_tlb_range().
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/mm/tlbflush.c | 31 ++++++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> #
+On RZ/Five SMARC
 
-... have you tried this with CONFIG_XARRAY_MULTI deselected?
-I suspect it will BUG() because orders greater than 0 are not allowed.
+Cheers,
+Prabhakar
 
-> +	XA_BUG_ON(xa, !xa_empty(xa));
-> +	XA_BUG_ON(xa, xa_store_index(xa, 5, GFP_KERNEL) != NULL);
-> +	XA_BUG_ON(xa, xa_insert(xa, 5, FIVE, GFP_KERNEL) != -EBUSY);
-> +	XA_BUG_ON(xa, xa_store_order(xa, 5, order, FIVE, GFP_KERNEL));
-> +	XA_BUG_ON(xa, xa_get_order(xa, 5) != order);
-> +	XA_BUG_ON(xa, xa_get_order(xa, xa_to_value(FIVE)) != order);
-> +	old = xa_cmpxchg(xa, 5, FIVE, NULL, GFP_KERNEL);
-> +	XA_BUG_ON(xa, old != FIVE);
-> +	XA_BUG_ON(xa, xa_get_order(xa, 5) != 0);
-> +	XA_BUG_ON(xa, xa_get_order(xa, xa_to_value(FIVE)) != 0);
-> +	XA_BUG_ON(xa, xa_get_order(xa, xa_to_value(old)) != 0);
-> +	XA_BUG_ON(xa, !xa_empty(xa));
-
-I'm not sure this is a great test.  It definitely does do what you claim
-it will, but for example, it's possible that we might keep that
-information for other orders.  So maybe we should have another entry at
-(1 << order) that keeps the node around and could theoretically keep
-the order information around for the now-NULL entry?
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index fa03289853d8..5933744df91a 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/mm.h>
+>  #include <linux/smp.h>
+>  #include <linux/sched.h>
+> +#include <linux/hugetlb.h>
+>  #include <asm/sbi.h>
+>  #include <asm/mmu_context.h>
+>
+> @@ -147,7 +148,35 @@ void flush_tlb_page(struct vm_area_struct *vma, unsi=
+gned long addr)
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>                      unsigned long end)
+>  {
+> -       __flush_tlb_range(vma->vm_mm, start, end - start, PAGE_SIZE);
+> +       unsigned long stride_size;
+> +
+> +       if (!is_vm_hugetlb_page(vma)) {
+> +               stride_size =3D PAGE_SIZE;
+> +       } else {
+> +               stride_size =3D huge_page_size(hstate_vma(vma));
+> +
+> +#ifdef CONFIG_RISCV_ISA_SVNAPOT
+> +               /*
+> +                * As stated in the privileged specification, every PTE i=
+n a
+> +                * NAPOT region must be invalidated, so reset the stride =
+in that
+> +                * case.
+> +                */
+> +               if (has_svnapot()) {
+> +                       if (stride_size >=3D PGDIR_SIZE)
+> +                               stride_size =3D PGDIR_SIZE;
+> +                       else if (stride_size >=3D P4D_SIZE)
+> +                               stride_size =3D P4D_SIZE;
+> +                       else if (stride_size >=3D PUD_SIZE)
+> +                               stride_size =3D PUD_SIZE;
+> +                       else if (stride_size >=3D PMD_SIZE)
+> +                               stride_size =3D PMD_SIZE;
+> +                       else
+> +                               stride_size =3D PAGE_SIZE;
+> +               }
+> +#endif
+> +       }
+> +
+> +       __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+>  }
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
+,
+> --
+> 2.39.2
+>
