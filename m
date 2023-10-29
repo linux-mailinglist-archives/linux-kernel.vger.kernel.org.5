@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0B17DADDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 19:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0207DADE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 19:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjJ2SqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 14:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S231203AbjJ2Sq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 14:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjJ2Spy (ORCPT
+        with ESMTP id S230424AbjJ2SqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 14:45:54 -0400
+        Sun, 29 Oct 2023 14:46:01 -0400
 Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289EEF7;
-        Sun, 29 Oct 2023 11:45:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7DDF1;
+        Sun, 29 Oct 2023 11:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
  h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
  Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1698605142; bh=91P/9m4HKX2FnWBtteRHoyQs6bdEapVxts8s+Azicp0=;
- b=pT/eJvvu16H69EObxGfGqPVgsJmlly4tUv+D9bpParbMMeOYT/69c84c1v5kNM67Mzjkr0kRY
- TzNtxjo/183l3shgJCS99KvDzPJmBGc67uixKwG7Fmttl49SBwVIDjVDYFNRD+NO/NXFyWBPiUh
- YKlYN2ruDdEkh/sZvyj3CgGrpFHv9q63oTCAQrecuIWn1kCKb4eVRpYHMAoBmPDVVjeHXlSvF0M
- Li4NhGLHl9UkLfa7VNkLp1y0AefBaMdDCEikKTNQzYsUSa2V0S5r8c6bbMh3xOQrye8Ai40Kogy
- didVEccASrSut1EIvSITAs3M7xBk3MgGT0Fv9ImPRJLg==
+ t=1698605142; bh=GLeira6JsbrPL9tYw80Zzy+DWNdo12BGwPQhuQmaiLk=;
+ b=bbbxilvKbLuotp6IPtr1icHU/cRmf7U7Zs3mtJnyVSxXf9T4mZX96mzR2dkEsaSnq/p0vfkD+
+ +a9X+PCk5lZ9dNLc1hJVGKTGNi0yCVxCDUnYCDV/lYbK03uw4fvadnpGAgELt6XX6zoUUSOSt0d
+ ziQ+tI6FH6ddoGgJYX3vxOEhQq/H6XWKFEqxVhj7ZO7S7l8YMmQNtqy5RM27tzeiTnrlkbnTFN5
+ MvXCdVIMaNennhOWgxbiJ86QKhfxRtV424Wt79NI8WHAnu2Henj6gEwIL/QTjwMJd50A8Wpb0/P
+ Y0cG6w/5h6ENZbnc78l7Cjo7sWcDzgG0TdQrvyZULrjQ==
 From:   Jonas Karlman <jonas@kwiboo.se>
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -35,9 +35,9 @@ Cc:     Alex Bee <knaerzche@gmail.com>,
         linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v3 01/10] media: v4l2-common: Add helpers to calculate bytesperline and sizeimage
-Date:   Sun, 29 Oct 2023 18:34:08 +0000
-Message-ID: <20231029183427.1781554-2-jonas@kwiboo.se>
+Subject: [PATCH v3 02/10] media: v4l2: Add NV15 and NV20 pixel formats
+Date:   Sun, 29 Oct 2023 18:34:09 +0000
+Message-ID: <20231029183427.1781554-3-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029183427.1781554-1-jonas@kwiboo.se>
 References: <20231029183427.1781554-1-jonas@kwiboo.se>
@@ -49,7 +49,7 @@ X-Complaints-To: abuse@forwardemail.net
 X-ForwardEmail-Version: 0.4.40
 X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
  149.28.215.223
-X-ForwardEmail-ID: 653ea5bd8fe0ffca230b0f15
+X-ForwardEmail-ID: 653ea5c18fe0ffca230b0f22
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -59,129 +59,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add helper functions to calculate plane bytesperline and sizeimage,
-these new helpers consider bpp div, block width and height when
-calculating plane bytesperline and sizeimage.
+Add NV15 and NV20 pixel formats used by the Rockchip Video Decoder for
+10-bit buffers.
+
+NV15 and NV20 is 10-bit 4:2:0/4:2:2 semi-planar YUV formats similar to
+NV12 and NV16, using 10-bit components with no padding between each
+component. Instead, a group of 4 luminance/chrominance samples are
+stored over 5 bytes in little endian order:
+
+YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
+
+The '15' and '20' suffix refers to the optimum effective bits per pixel
+which is achieved when the total number of luminance samples is a
+multiple of 8 for NV15 and 4 for NV20.
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
 v3:
-- Consider bpp_div in calculation
+- Use bpp and bpp_div instead of the misuse of block_w/block_h
+- Update documentation, expand to use full 4x4 sample image
 
- drivers/media/v4l2-core/v4l2-common.c | 78 +++++++++++++--------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
+ .../media/v4l/pixfmt-yuv-planar.rst           | 128 ++++++++++++++++++
+ drivers/media/v4l2-core/v4l2-common.c         |   2 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   2 +
+ include/uapi/linux/videodev2.h                |   2 +
+ 4 files changed, 134 insertions(+)
 
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+index 1840224faa41..4366cdcb970e 100644
+--- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
++++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+@@ -79,6 +79,13 @@ All components are stored with the same number of bits per component.
+       - Cr, Cb
+       - Yes
+       - Linear
++    * - V4L2_PIX_FMT_NV15
++      - 'NV15'
++      - 10
++      - 4:2:0
++      - Cb, Cr
++      - Yes
++      - Linear
+     * - V4L2_PIX_FMT_NV12M
+       - 'NM12'
+       - 8
+@@ -158,6 +165,13 @@ All components are stored with the same number of bits per component.
+       - Cr, Cb
+       - Yes
+       - Linear
++    * - V4L2_PIX_FMT_NV20
++      - 'NV20'
++      - 10
++      - 4:2:2
++      - Cb, Cr
++      - Yes
++      - Linear
+     * - V4L2_PIX_FMT_NV16M
+       - 'NM16'
+       - 8
+@@ -288,6 +302,57 @@ of the luma plane.
+       - Cr\ :sub:`11`
+ 
+ 
++.. _V4L2-PIX-FMT-NV15:
++
++NV15
++----
++
++Semi-planar 10-bit YUV 4:2:0 format similar to NV12, using 10-bit components
++with no padding between each component. A group of 4 components are stored over
++5 bytes in little endian order.
++
++.. flat-table:: Sample 4x4 NV15 Image (1 byte per cell)
++    :header-rows:  0
++    :stub-columns: 0
++
++    * - start + 0:
++      - Y'\ :sub:`00[7:0]`
++      - Y'\ :sub:`01[5:0]`\ Y'\ :sub:`00[9:8]`
++      - Y'\ :sub:`02[3:0]`\ Y'\ :sub:`01[9:6]`
++      - Y'\ :sub:`03[1:0]`\ Y'\ :sub:`02[9:4]`
++      - Y'\ :sub:`03[9:2]`
++    * - start + 5:
++      - Y'\ :sub:`10[7:0]`
++      - Y'\ :sub:`11[5:0]`\ Y'\ :sub:`10[9:8]`
++      - Y'\ :sub:`12[3:0]`\ Y'\ :sub:`11[9:6]`
++      - Y'\ :sub:`13[1:0]`\ Y'\ :sub:`12[9:4]`
++      - Y'\ :sub:`13[9:2]`
++    * - start + 10:
++      - Y'\ :sub:`20[7:0]`
++      - Y'\ :sub:`21[5:0]`\ Y'\ :sub:`20[9:8]`
++      - Y'\ :sub:`22[3:0]`\ Y'\ :sub:`21[9:6]`
++      - Y'\ :sub:`23[1:0]`\ Y'\ :sub:`22[9:4]`
++      - Y'\ :sub:`23[9:2]`
++    * - start + 15:
++      - Y'\ :sub:`30[7:0]`
++      - Y'\ :sub:`31[5:0]`\ Y'\ :sub:`30[9:8]`
++      - Y'\ :sub:`32[3:0]`\ Y'\ :sub:`31[9:6]`
++      - Y'\ :sub:`33[1:0]`\ Y'\ :sub:`32[9:4]`
++      - Y'\ :sub:`33[9:2]`
++    * - start + 20:
++      - Cb\ :sub:`00[7:0]`
++      - Cr\ :sub:`00[5:0]`\ Cb\ :sub:`00[9:8]`
++      - Cb\ :sub:`01[3:0]`\ Cr\ :sub:`00[9:6]`
++      - Cr\ :sub:`01[1:0]`\ Cb\ :sub:`01[9:4]`
++      - Cr\ :sub:`01[9:2]`
++    * - start + 25:
++      - Cb\ :sub:`10[7:0]`
++      - Cr\ :sub:`10[5:0]`\ Cb\ :sub:`10[9:8]`
++      - Cb\ :sub:`11[3:0]`\ Cr\ :sub:`10[9:6]`
++      - Cr\ :sub:`11[1:0]`\ Cb\ :sub:`11[9:4]`
++      - Cr\ :sub:`11[9:2]`
++
++
+ .. _V4L2-PIX-FMT-NV12MT:
+ .. _V4L2-PIX-FMT-NV12MT-16X16:
+ .. _V4L2-PIX-FMT-NV12-4L4:
+@@ -500,6 +565,69 @@ number of lines as the luma plane.
+       - Cr\ :sub:`32`
+ 
+ 
++.. _V4L2-PIX-FMT-NV20:
++
++NV20
++----
++
++Semi-planar 10-bit YUV 4:2:2 format similar to NV16, using 10-bit components
++with no padding between each component. A group of 4 components are stored over
++5 bytes in little endian order.
++
++.. flat-table:: Sample 4x4 NV20 Image (1 byte per cell)
++    :header-rows:  0
++    :stub-columns: 0
++
++    * - start + 0:
++      - Y'\ :sub:`00[7:0]`
++      - Y'\ :sub:`01[5:0]`\ Y'\ :sub:`00[9:8]`
++      - Y'\ :sub:`02[3:0]`\ Y'\ :sub:`01[9:6]`
++      - Y'\ :sub:`03[1:0]`\ Y'\ :sub:`02[9:4]`
++      - Y'\ :sub:`03[9:2]`
++    * - start + 5:
++      - Y'\ :sub:`10[7:0]`
++      - Y'\ :sub:`11[5:0]`\ Y'\ :sub:`10[9:8]`
++      - Y'\ :sub:`12[3:0]`\ Y'\ :sub:`11[9:6]`
++      - Y'\ :sub:`13[1:0]`\ Y'\ :sub:`12[9:4]`
++      - Y'\ :sub:`13[9:2]`
++    * - start + 10:
++      - Y'\ :sub:`20[7:0]`
++      - Y'\ :sub:`21[5:0]`\ Y'\ :sub:`20[9:8]`
++      - Y'\ :sub:`22[3:0]`\ Y'\ :sub:`21[9:6]`
++      - Y'\ :sub:`23[1:0]`\ Y'\ :sub:`22[9:4]`
++      - Y'\ :sub:`23[9:2]`
++    * - start + 15:
++      - Y'\ :sub:`30[7:0]`
++      - Y'\ :sub:`31[5:0]`\ Y'\ :sub:`30[9:8]`
++      - Y'\ :sub:`32[3:0]`\ Y'\ :sub:`31[9:6]`
++      - Y'\ :sub:`33[1:0]`\ Y'\ :sub:`32[9:4]`
++      - Y'\ :sub:`33[9:2]`
++    * - start + 20:
++      - Cb\ :sub:`00[7:0]`
++      - Cr\ :sub:`00[5:0]`\ Cb\ :sub:`00[9:8]`
++      - Cb\ :sub:`01[3:0]`\ Cr\ :sub:`00[9:6]`
++      - Cr\ :sub:`01[1:0]`\ Cb\ :sub:`01[9:4]`
++      - Cr\ :sub:`01[9:2]`
++    * - start + 25:
++      - Cb\ :sub:`10[7:0]`
++      - Cr\ :sub:`10[5:0]`\ Cb\ :sub:`10[9:8]`
++      - Cb\ :sub:`11[3:0]`\ Cr\ :sub:`10[9:6]`
++      - Cr\ :sub:`11[1:0]`\ Cb\ :sub:`11[9:4]`
++      - Cr\ :sub:`11[9:2]`
++    * - start + 30:
++      - Cb\ :sub:`20[7:0]`
++      - Cr\ :sub:`20[5:0]`\ Cb\ :sub:`20[9:8]`
++      - Cb\ :sub:`21[3:0]`\ Cr\ :sub:`20[9:6]`
++      - Cr\ :sub:`21[1:0]`\ Cb\ :sub:`21[9:4]`
++      - Cr\ :sub:`21[9:2]`
++    * - start + 35:
++      - Cb\ :sub:`30[7:0]`
++      - Cr\ :sub:`30[5:0]`\ Cb\ :sub:`30[9:8]`
++      - Cb\ :sub:`31[3:0]`\ Cr\ :sub:`30[9:6]`
++      - Cr\ :sub:`31[1:0]`\ Cb\ :sub:`31[9:4]`
++      - Cr\ :sub:`31[9:2]`
++
++
+ .. _V4L2-PIX-FMT-NV24:
+ .. _V4L2-PIX-FMT-NV42:
+ 
 diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
-index 3a4b15a98e02..834b426da8b1 100644
+index 834b426da8b1..c65ffab5800a 100644
 --- a/drivers/media/v4l2-core/v4l2-common.c
 +++ b/drivers/media/v4l2-core/v4l2-common.c
-@@ -350,6 +350,34 @@ static inline unsigned int v4l2_format_block_height(const struct v4l2_format_inf
- 	return info->block_h[plane];
- }
- 
-+static inline unsigned int v4l2_format_plane_width(const struct v4l2_format_info *info, int plane,
-+						   unsigned int width)
-+{
-+	unsigned int hdiv = plane ? info->hdiv : 1;
-+	unsigned int aligned_width =
-+		ALIGN(width, v4l2_format_block_width(info, plane));
-+
-+	return DIV_ROUND_UP(aligned_width, hdiv) *
-+	       info->bpp[plane] / info->bpp_div[plane];
-+}
-+
-+static inline unsigned int v4l2_format_plane_height(const struct v4l2_format_info *info, int plane,
-+						    unsigned int height)
-+{
-+	unsigned int vdiv = plane ? info->vdiv : 1;
-+	unsigned int aligned_height =
-+		ALIGN(height, v4l2_format_block_height(info, plane));
-+
-+	return DIV_ROUND_UP(aligned_height, vdiv);
-+}
-+
-+static inline unsigned int v4l2_format_plane_size(const struct v4l2_format_info *info, int plane,
-+						  unsigned int width, unsigned int height)
-+{
-+	return v4l2_format_plane_width(info, plane, width) *
-+	       v4l2_format_plane_height(info, plane, height);
-+}
-+
- void v4l2_apply_frmsize_constraints(u32 *width, u32 *height,
- 				    const struct v4l2_frmsize_stepwise *frmsize)
- {
-@@ -385,37 +413,19 @@ int v4l2_fill_pixfmt_mp(struct v4l2_pix_format_mplane *pixfmt,
- 
- 	if (info->mem_planes == 1) {
- 		plane = &pixfmt->plane_fmt[0];
--		plane->bytesperline = ALIGN(width, v4l2_format_block_width(info, 0)) * info->bpp[0] / info->bpp_div[0];
-+		plane->bytesperline = v4l2_format_plane_width(info, 0, width);
- 		plane->sizeimage = 0;
- 
--		for (i = 0; i < info->comp_planes; i++) {
--			unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
--			unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
--			unsigned int aligned_width;
--			unsigned int aligned_height;
--
--			aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
--			aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
--
--			plane->sizeimage += info->bpp[i] *
--				DIV_ROUND_UP(aligned_width, hdiv) *
--				DIV_ROUND_UP(aligned_height, vdiv) / info->bpp_div[i];
--		}
-+		for (i = 0; i < info->comp_planes; i++)
-+			plane->sizeimage +=
-+				v4l2_format_plane_size(info, i, width, height);
- 	} else {
- 		for (i = 0; i < info->comp_planes; i++) {
--			unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
--			unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
--			unsigned int aligned_width;
--			unsigned int aligned_height;
--
--			aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
--			aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
--
- 			plane = &pixfmt->plane_fmt[i];
- 			plane->bytesperline =
--				info->bpp[i] * DIV_ROUND_UP(aligned_width, hdiv) / info->bpp_div[i];
--			plane->sizeimage =
--				plane->bytesperline * DIV_ROUND_UP(aligned_height, vdiv);
-+				v4l2_format_plane_width(info, i, width);
-+			plane->sizeimage = plane->bytesperline *
-+				v4l2_format_plane_height(info, i, height);
- 		}
- 	}
- 	return 0;
-@@ -439,22 +449,12 @@ int v4l2_fill_pixfmt(struct v4l2_pix_format *pixfmt, u32 pixelformat,
- 	pixfmt->width = width;
- 	pixfmt->height = height;
- 	pixfmt->pixelformat = pixelformat;
--	pixfmt->bytesperline = ALIGN(width, v4l2_format_block_width(info, 0)) * info->bpp[0] / info->bpp_div[0];
-+	pixfmt->bytesperline = v4l2_format_plane_width(info, 0, width);
- 	pixfmt->sizeimage = 0;
- 
--	for (i = 0; i < info->comp_planes; i++) {
--		unsigned int hdiv = (i == 0) ? 1 : info->hdiv;
--		unsigned int vdiv = (i == 0) ? 1 : info->vdiv;
--		unsigned int aligned_width;
--		unsigned int aligned_height;
--
--		aligned_width = ALIGN(width, v4l2_format_block_width(info, i));
--		aligned_height = ALIGN(height, v4l2_format_block_height(info, i));
--
--		pixfmt->sizeimage += info->bpp[i] *
--			DIV_ROUND_UP(aligned_width, hdiv) *
--			DIV_ROUND_UP(aligned_height, vdiv) / info->bpp_div[i];
--	}
-+	for (i = 0; i < info->comp_planes; i++)
-+		pixfmt->sizeimage +=
-+			v4l2_format_plane_size(info, i, width, height);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(v4l2_fill_pixfmt);
+@@ -270,8 +270,10 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
+ 		/* YUV planar formats */
+ 		{ .format = V4L2_PIX_FMT_NV12,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 2, .vdiv = 2 },
+ 		{ .format = V4L2_PIX_FMT_NV21,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 2, .vdiv = 2 },
++		{ .format = V4L2_PIX_FMT_NV15,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 5, 10, 0, 0 }, .bpp_div = { 4, 4, 1, 1 }, .hdiv = 2, .vdiv = 2 },
+ 		{ .format = V4L2_PIX_FMT_NV16,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 2, .vdiv = 1 },
+ 		{ .format = V4L2_PIX_FMT_NV61,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 2, .vdiv = 1 },
++		{ .format = V4L2_PIX_FMT_NV20,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 5, 10, 0, 0 }, .bpp_div = { 4, 4, 1, 1 }, .hdiv = 2, .vdiv = 1 },
+ 		{ .format = V4L2_PIX_FMT_NV24,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 1, .vdiv = 1 },
+ 		{ .format = V4L2_PIX_FMT_NV42,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 1, .vdiv = 1 },
+ 		{ .format = V4L2_PIX_FMT_P010,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 2, 2, 0, 0 }, .bpp_div = { 1, 1, 1, 1 }, .hdiv = 2, .vdiv = 1 },
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 9b1de54ce379..937434e5f2c1 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1347,8 +1347,10 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_YUV48_12:	descr = "12-bit YUV 4:4:4 Packed"; break;
+ 	case V4L2_PIX_FMT_NV12:		descr = "Y/UV 4:2:0"; break;
+ 	case V4L2_PIX_FMT_NV21:		descr = "Y/VU 4:2:0"; break;
++	case V4L2_PIX_FMT_NV15:		descr = "10-bit Y/UV 4:2:0 (Packed)"; break;
+ 	case V4L2_PIX_FMT_NV16:		descr = "Y/UV 4:2:2"; break;
+ 	case V4L2_PIX_FMT_NV61:		descr = "Y/VU 4:2:2"; break;
++	case V4L2_PIX_FMT_NV20:		descr = "10-bit Y/UV 4:2:2 (Packed)"; break;
+ 	case V4L2_PIX_FMT_NV24:		descr = "Y/UV 4:4:4"; break;
+ 	case V4L2_PIX_FMT_NV42:		descr = "Y/VU 4:4:4"; break;
+ 	case V4L2_PIX_FMT_P010:		descr = "10-bit Y/UV 4:2:0"; break;
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index c3d4e490ce7c..617340c43e40 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -638,8 +638,10 @@ struct v4l2_pix_format {
+ /* two planes -- one Y, one Cr + Cb interleaved  */
+ #define V4L2_PIX_FMT_NV12    v4l2_fourcc('N', 'V', '1', '2') /* 12  Y/CbCr 4:2:0  */
+ #define V4L2_PIX_FMT_NV21    v4l2_fourcc('N', 'V', '2', '1') /* 12  Y/CrCb 4:2:0  */
++#define V4L2_PIX_FMT_NV15    v4l2_fourcc('N', 'V', '1', '5') /* 15  Y/CbCr 4:2:0 10-bit packed */
+ #define V4L2_PIX_FMT_NV16    v4l2_fourcc('N', 'V', '1', '6') /* 16  Y/CbCr 4:2:2  */
+ #define V4L2_PIX_FMT_NV61    v4l2_fourcc('N', 'V', '6', '1') /* 16  Y/CrCb 4:2:2  */
++#define V4L2_PIX_FMT_NV20    v4l2_fourcc('N', 'V', '2', '0') /* 20  Y/CbCr 4:2:2 10-bit packed */
+ #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
+ #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
+ #define V4L2_PIX_FMT_P010    v4l2_fourcc('P', '0', '1', '0') /* 24  Y/CbCr 4:2:0 10-bit per component */
 -- 
 2.42.0
 
