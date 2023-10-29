@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36DF7DB09C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBF17DB063
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjJ2XIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        id S231877AbjJ2XGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbjJ2XHe (ORCPT
+        with ESMTP id S231846AbjJ2XF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:07:34 -0400
+        Sun, 29 Oct 2023 19:05:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC899EF5;
-        Sun, 29 Oct 2023 16:03:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A1AC433CC;
-        Sun, 29 Oct 2023 23:01:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDE36E8D;
+        Sun, 29 Oct 2023 16:01:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D54DC433CB;
+        Sun, 29 Oct 2023 23:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620499;
-        bh=kY4XyLVwrX+3H1bdvNP8pEQe+U5OaqLJ46NhUlVlTC4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ovX9womKt/awtKy7X//j+OImm5hO2WXk4Zm+4HTB9xkNbA7PV/Xs6JcAlRwCOGxK8
-         OmPzKTafPiKuMH4SxF82mUgF9juDeYULdreIj1Fvob50RbTazjONVouD7EG8gvqUq/
-         Zk6Z4yJyDAnM8xFTW6Vmqs207Y18vFcXitUtsL5zBjUDDCH+vv3S34QGBKTQ12qRYh
-         rn2gYajJQvFTUzwIOPVyeXU6eW9RbiAaRaPuJFMpviD5IhGayisgxKTqvO9l2ndb0c
-         ozKPhrIGwqCZRmazECjwXwR9KsQo3/p00Yl/b9G0QsRAUlJmi2XMx7pGY/d0HUt10B
-         aQ1fGWkbBUCzg==
+        s=k20201202; t=1698620501;
+        bh=X5gW/IKRH0gSCzo1RVJwjhXb3IQF5Zegx0zxC3MlmTs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FiCgoR1OeAswNpr2BAgdwkpFWJYKnJiVSpN4aYcVMflDgoQYSZmTaBJ2UFTxlNYvY
+         G304TNi0e9tPbI0NFavqaaPQMCVo/S6TRrtcEthvahxEzH7xmnBevX3u7SBQBhgcWG
+         xgrGKuMNMfb35ymLBL0DBRe6AWtoAERbj5jkD5xkXQfysvqox3rg4KlkjRTQ3BUsaV
+         bdprhmmAp8Et0V4GuDU0RmbzM0UQiJFP9mDrAuLvaY72CoU5kUar2w4thrhLBVoZlw
+         tjWOdSX4L54QpOJX/xj6+DdkgUHJgUZfQWedMNdryVujR/oHnBgbxWpV4B1IOZWAIa
+         CRTHSroLwIfYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Sasha Levin <sashal@kernel.org>, sam@ravnborg.org,
-        javierm@redhat.com, schnelle@linux.ibm.com, xu.panda@zte.com.cn,
-        steve@sk2.org
-Subject: [PATCH AUTOSEL 4.19 01/12] fbdev: atyfb: only use ioremap_uc() on i386 and ia64
-Date:   Sun, 29 Oct 2023 19:01:14 -0400
-Message-ID: <20231029230135.793281-1-sashal@kernel.org>
+Cc:     Ma Ke <make_ruc2021@163.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 02/12] net: ipv6: fix return value check in esp_remove_trailer
+Date:   Sun, 29 Oct 2023 19:01:15 -0400
+Message-ID: <20231029230135.793281-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029230135.793281-1-sashal@kernel.org>
+References: <20231029230135.793281-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,55 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ma Ke <make_ruc2021@163.com>
 
-[ Upstream commit c1a8d1d0edb71dec15c9649cb56866c71c1ecd9e ]
+[ Upstream commit dad4e491e30b20f4dc615c9da65d2142d703b5c2 ]
 
-ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-extension, and on ia64 with its slightly unconventional ioremap()
-behavior, everywhere else this is the same as ioremap() anyway.
+In esp_remove_trailer(), to avoid an unexpected result returned by
+pskb_trim, we should check the return value of pskb_trim().
 
-Change the only driver that still references ioremap_uc() to only do so
-on x86-32/ia64 in order to allow removing that interface at some
-point in the future for the other architectures.
-
-On some architectures, ioremap_uc() just returns NULL, changing
-the driver to call ioremap() means that they now have a chance
-of working correctly.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/aty/atyfb_base.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/ipv6/esp6.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/aty/atyfb_base.c b/drivers/video/fbdev/aty/atyfb_base.c
-index 05111e90f1681..5ef008e9c61c3 100644
---- a/drivers/video/fbdev/aty/atyfb_base.c
-+++ b/drivers/video/fbdev/aty/atyfb_base.c
-@@ -3435,11 +3435,15 @@ static int atyfb_setup_generic(struct pci_dev *pdev, struct fb_info *info,
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index d847ffbe97451..6529e46ad0914 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -517,7 +517,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
+ 		skb->csum = csum_block_sub(skb->csum, csumdiff,
+ 					   skb->len - trimlen);
  	}
+-	pskb_trim(skb, skb->len - trimlen);
++	ret = pskb_trim(skb, skb->len - trimlen);
++	if (unlikely(ret))
++		return ret;
  
- 	info->fix.mmio_start = raddr;
-+#if defined(__i386__) || defined(__ia64__)
- 	/*
- 	 * By using strong UC we force the MTRR to never have an
- 	 * effect on the MMIO region on both non-PAT and PAT systems.
- 	 */
- 	par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
-+#else
-+	par->ati_regbase = ioremap(info->fix.mmio_start, 0x1000);
-+#endif
- 	if (par->ati_regbase == NULL)
- 		return -ENOMEM;
+ 	ret = nexthdr[1];
  
 -- 
 2.42.0
