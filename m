@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3228D7DB07A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EC07DB12A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjJ2XHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S232625AbjJ2Xa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjJ2XGo (ORCPT
+        with ESMTP id S232509AbjJ2X36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:06:44 -0400
+        Sun, 29 Oct 2023 19:29:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816D56598;
-        Sun, 29 Oct 2023 16:01:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA99C04E60;
-        Sun, 29 Oct 2023 22:59:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99AA49FF;
+        Sun, 29 Oct 2023 15:59:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6318DC43215;
+        Sun, 29 Oct 2023 22:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620382;
-        bh=6f08pzcovKZTGn6aZpAyBL6OCiu5ckqlVg/z8CmfMJU=;
+        s=k20201202; t=1698620384;
+        bh=9VVO23XBv1/53p3hEOS7qJI9D9yrBz97BEXcymii9WU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TOqNcB2NT7bT/xJuXk0bLC+40vwQ0WkfGFlpMX8dZHXai9xb+yG/qKsHWfyFVa/ph
-         DzsFU0ujvMUxxBZMeGEUo6FzQ51/ZYZKlioMjg0PET4GwjF4Ux9pJD+FcpXA4uzCXS
-         X4lp3xQUSDXVqCd+mrYJrSpFTyf9HWQvWnZrRGgsi0QxD4iXFRvj9MaBj1aYb9otz8
-         QVeyawCTl419U6MR7NTSZ87jXPrZ+XCj1sFYRRq4JOi0SvN6GEINu32uyVJ0prIoMx
-         MLVf8sBLuIXzcVUvju/sCTlZARTn11SVJ/d57mB42AygBdfffYKOrgYjeXJnB84At5
-         gZiTxvWtUI0Lw==
+        b=HQ36MqXAscITR62WS5mpXCAVdjJVjscpKK+HoeZAT7TDXNNlO/r4dqMXzI3sLi9JC
+         aYEGaTKwZwdyogz/AXn3kKLvrWO3G/P63p8aO9azzJtcpUDGt2/Z/7Wv4mIdjzWI6h
+         t0iWLGhZ4AYus0tR6KBwknXRbVc8e6akbYUK26RkMXhvFLtohxk8MppYwRw2aDkIn8
+         pt7n64SBbZURXOsSwI4UBCvEel0u+piBO6sPosOa2UpFv+ItotfhirQeQPahWDZk1A
+         sIPbEjB+98lrjFyaOZbJsNkwATEHgVh3+6C3jWQikIKg96MsgjnX1cPtHQQ+nyfR17
+         odhCdIEQ/DoEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 18/28] ASoC: rt5650: fix the wrong result of key button
-Date:   Sun, 29 Oct 2023 18:58:53 -0400
-Message-ID: <20231029225916.791798-18-sashal@kernel.org>
+Cc:     Karolina Stolarek <karolina.stolarek@intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>, ray.huang@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 19/28] drm/ttm: Reorder sys manager cleanup step
+Date:   Sun, 29 Oct 2023 18:58:54 -0400
+Message-ID: <20231029225916.791798-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225916.791798-1-sashal@kernel.org>
 References: <20231029225916.791798-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.137
@@ -55,33 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Karolina Stolarek <karolina.stolarek@intel.com>
 
-[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
+[ Upstream commit 3b401e30c249849d803de6c332dad2a595a58658 ]
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
+With the current cleanup flow, we could trigger a NULL pointer
+dereference if there is a delayed destruction of a BO with a
+system resource that gets executed on drain_workqueue() call,
+as we attempt to free a resource using an already released
+resource manager.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Remove the device from the device list and drain its workqueue
+before releasing the system domain manager in ttm_device_fini().
+
+Signed-off-by: Karolina Stolarek <karolina.stolarek@intel.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231016121525.2237838-1-karolina.stolarek@intel.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/ttm/ttm_device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 8ea6d43335626..385f2cca939a0 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3251,6 +3251,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
- 	}
- 	rt5645_irq(0, rt5645);
+diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+index 2df59b3c2ea16..291cdd893fc50 100644
+--- a/drivers/gpu/drm/ttm/ttm_device.c
++++ b/drivers/gpu/drm/ttm/ttm_device.c
+@@ -234,10 +234,6 @@ void ttm_device_fini(struct ttm_device *bdev)
+ 	struct ttm_resource_manager *man;
+ 	unsigned i;
  
+-	man = ttm_manager_type(bdev, TTM_PL_SYSTEM);
+-	ttm_resource_manager_set_used(man, false);
+-	ttm_set_driver_manager(bdev, TTM_PL_SYSTEM, NULL);
+-
+ 	mutex_lock(&ttm_global_mutex);
+ 	list_del(&bdev->device_list);
+ 	mutex_unlock(&ttm_global_mutex);
+@@ -247,6 +243,10 @@ void ttm_device_fini(struct ttm_device *bdev)
+ 	if (ttm_bo_delayed_delete(bdev, true))
+ 		pr_debug("Delayed destroy list was clean\n");
+ 
++	man = ttm_manager_type(bdev, TTM_PL_SYSTEM);
++	ttm_resource_manager_set_used(man, false);
++	ttm_set_driver_manager(bdev, TTM_PL_SYSTEM, NULL);
++
+ 	spin_lock(&bdev->lru_lock);
+ 	for (i = 0; i < TTM_MAX_BO_PRIORITY; ++i)
+ 		if (list_empty(&man->lru[0]))
 -- 
 2.42.0
 
