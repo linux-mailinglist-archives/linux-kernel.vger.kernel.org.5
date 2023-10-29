@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA297DADDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 19:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1866F7DADE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 19:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbjJ2SqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 14:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S231194AbjJ2SqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 14:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjJ2SqA (ORCPT
+        with ESMTP id S230411AbjJ2SqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 29 Oct 2023 14:46:00 -0400
 Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9AAF2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE03C5;
         Sun, 29 Oct 2023 11:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
  h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
  Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1698605142; bh=+VkvqM2bqlrxzxetawByEreK2Zj3wSKDmtEPq0Vc7Y8=;
- b=xN5Uq8B/XXeSxUj268VBX/V1/GYQVkoEFI4WKr2hxV8GBaVSzLGcgKhpZsu0vtNdhQn/wkvhB
- RECgYei/ZcCHNO/vy9zsM+z6gMMXxE+qsZduNQB9cfc/ItPqP6ARX1DDjCU4gZWSB7LDrVBJONf
- T4tuMCZ3zCQt1hdE6jHP4xSWdLIKyUnUFLtUCFHqlgVI9REJHhD+QLOm/74Pdl2KCEOM1bDg1wq
- jkfrJG61nlaQ8//W88PLSfFI8ve7yfg2SU4eQ74KtH+S41CLDrTFCEayG7qQkrBlUr7dEGjRypq
- VvQF85MINhHn/z8K8GWZHIXlP1ZOBxFul+6Puye2Y7dA==
+ t=1698605142; bh=CDI7CU66wEs270/rnVxpiW23n/7qKyJzphHa0D78l20=;
+ b=MwHhazQcJbCZWxHN3Dq+D/NALM9dhM8cOWgiysWhVZYfTh8arisAjxDc+XkWrCZ9uBNPHd/PE
+ ylT6YMCinGthBAM4pOtp20nVHxJcBERP2haw+AGx08QZXtIVcVpW7zy1QR0RnQFqo+mmIjq3WqY
+ du8CevgaGkUCwP3SM5x0Jg4Zmv3u3wiCAbsV5xLkT+NQTZbfwA861F+maZAEHAB15uHDt907mQh
+ gPgUSGZr7O/+C7+r5pfxomNJYCIKP99vr4TqI5dfoKgAbWZT2zOPsy/R2EOPyIeUVjsviz5nyRW
+ h0sGCY+ziYMqlcGPUJsCOgrWhzcVMH+2jBDYC7iokgcA==
 From:   Jonas Karlman <jonas@kwiboo.se>
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -36,9 +36,9 @@ Cc:     Alex Bee <knaerzche@gmail.com>,
         linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v3 09/10] media: rkvdec: Add get_fmt_opaque and valid_fmt ops
-Date:   Sun, 29 Oct 2023 18:34:16 +0000
-Message-ID: <20231029183427.1781554-10-jonas@kwiboo.se>
+Subject: [PATCH v3 10/10] media: rkvdec: h264: Support High 10 and 4:2:2 profiles
+Date:   Sun, 29 Oct 2023 18:34:17 +0000
+Message-ID: <20231029183427.1781554-11-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029183427.1781554-1-jonas@kwiboo.se>
 References: <20231029183427.1781554-1-jonas@kwiboo.se>
@@ -50,7 +50,7 @@ X-Complaints-To: abuse@forwardemail.net
 X-ForwardEmail-Version: 0.4.40
 X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
  149.28.215.223
-X-ForwardEmail-ID: 653ea5db8fe0ffca230b0f7d
+X-ForwardEmail-ID: 653ea5df8fe0ffca230b0f8a
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,193 +60,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a valid_fmt() ops to validate if a CAPTURE format is supported.
+Add support and enable decoding of H264 High 10 and 4:2:2 profiles.
 
-Expectation is that the valid_fmt() ops is a deterministic function and
-the return value from get_fmt_opaque() ops is passed as input to the
-valid_fmt() ops.
+Decoded CAPTURE buffer width is aligned to 64 pixels to accommodate HW
+requirement of 10-bit format buffers.
 
-The CAPTURE format is reset when queue is not busy and format validation
-fail.
+The get_fmt_opaque and valid_fmt ops is implemented to select a CAPTURE
+format suited for the provided SPS control.
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
 v3:
-- New patch
+- Add get_fmt_opaque ops, the expected pixelformat is used as opaque
+- Add new valid_fmt ops that validate pixelformat matches opaque
+- Update H264_PROFILE control max value
 
- drivers/staging/media/rkvdec/rkvdec.c | 79 +++++++++++++++++++++++----
- drivers/staging/media/rkvdec/rkvdec.h |  3 +
- 2 files changed, 71 insertions(+), 11 deletions(-)
+ drivers/staging/media/rkvdec/rkvdec-h264.c | 45 +++++++++++++++++-----
+ drivers/staging/media/rkvdec/rkvdec.c      | 21 ++++++----
+ 2 files changed, 50 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index bd3568928060..5c7e1b91e908 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -27,17 +27,23 @@
- #include "rkvdec.h"
- #include "rkvdec-regs.h"
- 
--static u32 rkvdec_decoded_fmts(struct rkvdec_ctx *ctx, int index)
-+static u32 rkvdec_decoded_fmts(struct rkvdec_ctx *ctx, int index, u32 opaque)
- {
- 	const struct rkvdec_coded_fmt_desc *desc = ctx->coded_fmt_desc;
-+	unsigned int i, j;
- 
- 	if (WARN_ON(!desc))
- 		return 0;
- 
--	if (index >= desc->num_decoded_fmts)
--		return 0;
-+	for (i = 0, j = 0; i < desc->num_decoded_fmts; i++) {
-+		if (!desc->ops->valid_fmt ||
-+		    desc->ops->valid_fmt(ctx, desc->decoded_fmts[i], opaque)) {
-+			if (index == j++)
-+				return desc->decoded_fmts[i];
-+		}
-+	}
- 
--	return desc->decoded_fmts[index];
-+	return 0;
+diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+index 815d5359ddd5..f773a3f5ecb7 100644
+--- a/drivers/staging/media/rkvdec/rkvdec-h264.c
++++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+@@ -1027,24 +1027,49 @@ static int rkvdec_h264_adjust_fmt(struct rkvdec_ctx *ctx,
+ 	return 0;
  }
  
- static void rkvdec_fill_decoded_pixfmt(struct rkvdec_ctx *ctx,
-@@ -67,7 +73,7 @@ static void rkvdec_reset_decoded_fmt(struct rkvdec_ctx *ctx)
- {
- 	struct v4l2_format *f = &ctx->decoded_fmt;
- 
--	rkvdec_reset_fmt(ctx, f, rkvdec_decoded_fmts(ctx, 0));
-+	rkvdec_reset_fmt(ctx, f, rkvdec_decoded_fmts(ctx, 0, ctx->fmt_opaque));
- 	f->type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
- 	f->fmt.pix_mp.width = ctx->coded_fmt.fmt.pix_mp.width;
- 	f->fmt.pix_mp.height = ctx->coded_fmt.fmt.pix_mp.height;
-@@ -78,15 +84,60 @@ static int rkvdec_try_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct rkvdec_ctx *ctx = container_of(ctrl->handler, struct rkvdec_ctx, ctrl_hdl);
- 	const struct rkvdec_coded_fmt_desc *desc = ctx->coded_fmt_desc;
-+	struct v4l2_pix_format_mplane *pix_mp = &ctx->decoded_fmt.fmt.pix_mp;
-+	struct vb2_queue *vq;
-+	u32 opaque = 0;
-+	int ret;
++static u32 rkvdec_h264_get_fmt_opaque(struct rkvdec_ctx *ctx, struct v4l2_ctrl *ctrl)
++{
++	const struct v4l2_ctrl_h264_sps *sps = ctrl->p_new.p_h264_sps;
 +
-+	if (desc->ops->try_ctrl) {
-+		ret = desc->ops->try_ctrl(ctx, ctrl);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (!desc->ops->valid_fmt)
++	if (ctrl->id != V4L2_CID_STATELESS_H264_SPS)
 +		return 0;
 +
-+	if (desc->ops->get_fmt_opaque) {
-+		opaque = desc->ops->get_fmt_opaque(ctx, ctrl);
-+		if (ctx->fmt_opaque == opaque)
-+			return 0;
++	if (sps->bit_depth_luma_minus8 == 0) {
++		if (sps->chroma_format_idc == 2)
++			return V4L2_PIX_FMT_NV16;
++		else
++			return V4L2_PIX_FMT_NV12;
++	} else if (sps->bit_depth_luma_minus8 == 2) {
++		if (sps->chroma_format_idc == 2)
++			return V4L2_PIX_FMT_NV20;
++		else
++			return V4L2_PIX_FMT_NV15;
 +	}
-+
-+	if (desc->ops->valid_fmt(ctx, pix_mp->pixelformat, opaque))
-+		return 0;
-+
-+	/* format change not allowed when queue is busy */
-+	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
-+			     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
-+	if (vb2_is_busy(vq))
-+		return -EINVAL;
 +
 +	return 0;
 +}
 +
-+static int rkvdec_s_ctrl(struct v4l2_ctrl *ctrl)
++static bool rkvdec_h264_valid_fmt(struct rkvdec_ctx *ctx, u32 fourcc, u32 opaque)
 +{
-+	struct rkvdec_ctx *ctx = container_of(ctrl->handler, struct rkvdec_ctx, ctrl_hdl);
-+	const struct rkvdec_coded_fmt_desc *desc = ctx->coded_fmt_desc;
-+	u32 opaque;
++	if (!opaque)
++		return true;
 +
-+	if (!desc->ops->get_fmt_opaque)
-+		return 0;
- 
--	if (desc->ops->try_ctrl)
--		return desc->ops->try_ctrl(ctx, ctrl);
-+	opaque = desc->ops->get_fmt_opaque(ctx, ctrl);
-+	if (ctx->fmt_opaque == opaque)
-+		return 0;
++	return fourcc == opaque;
++}
 +
-+	ctx->fmt_opaque = opaque;
-+	rkvdec_reset_decoded_fmt(ctx);
+ static int rkvdec_h264_validate_sps(struct rkvdec_ctx *ctx,
+ 				    const struct v4l2_ctrl_h264_sps *sps)
+ {
+ 	unsigned int width, height;
  
- 	return 0;
- }
+-	/*
+-	 * TODO: The hardware supports 10-bit and 4:2:2 profiles,
+-	 * but it's currently broken in the driver.
+-	 * Reject them for now, until it's fixed.
+-	 */
+-	if (sps->chroma_format_idc > 1)
+-		/* Only 4:0:0 and 4:2:0 are supported */
++	if (sps->chroma_format_idc > 2)
++		/* Only 4:0:0, 4:2:0 and 4:2:2 are supported */
+ 		return -EINVAL;
+ 	if (sps->bit_depth_luma_minus8 != sps->bit_depth_chroma_minus8)
+ 		/* Luma and chroma bit depth mismatch */
+ 		return -EINVAL;
+-	if (sps->bit_depth_luma_minus8 != 0)
+-		/* Only 8-bit is supported */
++	if (sps->bit_depth_luma_minus8 != 0 && sps->bit_depth_luma_minus8 != 2)
++		/* Only 8-bit and 10-bit is supported */
+ 		return -EINVAL;
  
- static const struct v4l2_ctrl_ops rkvdec_ctrl_ops = {
- 	.try_ctrl = rkvdec_try_ctrl,
-+	.s_ctrl = rkvdec_s_ctrl,
+ 	width = (sps->pic_width_in_mbs_minus1 + 1) * 16;
+@@ -1171,6 +1196,8 @@ static int rkvdec_h264_try_ctrl(struct rkvdec_ctx *ctx, struct v4l2_ctrl *ctrl)
+ 
+ const struct rkvdec_coded_fmt_ops rkvdec_h264_fmt_ops = {
+ 	.adjust_fmt = rkvdec_h264_adjust_fmt,
++	.get_fmt_opaque = rkvdec_h264_get_fmt_opaque,
++	.valid_fmt = rkvdec_h264_valid_fmt,
+ 	.start = rkvdec_h264_start,
+ 	.stop = rkvdec_h264_stop,
+ 	.run = rkvdec_h264_run,
+diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+index 5c7e1b91e908..fce5cba343a3 100644
+--- a/drivers/staging/media/rkvdec/rkvdec.c
++++ b/drivers/staging/media/rkvdec/rkvdec.c
+@@ -50,7 +50,7 @@ static void rkvdec_fill_decoded_pixfmt(struct rkvdec_ctx *ctx,
+ 				       struct v4l2_pix_format_mplane *pix_mp)
+ {
+ 	v4l2_fill_pixfmt_mp(pix_mp, pix_mp->pixelformat,
+-			    pix_mp->width, pix_mp->height);
++			    ALIGN(pix_mp->width, 64), pix_mp->height);
+ 	pix_mp->plane_fmt[0].sizeimage += 128 *
+ 		DIV_ROUND_UP(pix_mp->width, 16) *
+ 		DIV_ROUND_UP(pix_mp->height, 16);
+@@ -169,7 +169,7 @@ static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
+ 	{
+ 		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+ 		.cfg.min = V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
+-		.cfg.max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
++		.cfg.max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422,
+ 		.cfg.menu_skip_mask =
+ 			BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
+ 		.cfg.def = V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
+@@ -186,8 +186,11 @@ static const struct rkvdec_ctrls rkvdec_h264_ctrls = {
+ 	.num_ctrls = ARRAY_SIZE(rkvdec_h264_ctrl_descs),
  };
  
- static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
-@@ -252,11 +303,15 @@ static int rkvdec_querycap(struct file *file, void *priv,
- 	return 0;
- }
+-static const u32 rkvdec_h264_vp9_decoded_fmts[] = {
++static const u32 rkvdec_h264_decoded_fmts[] = {
+ 	V4L2_PIX_FMT_NV12,
++	V4L2_PIX_FMT_NV15,
++	V4L2_PIX_FMT_NV16,
++	V4L2_PIX_FMT_NV20,
+ };
  
--static bool rkvdec_valid_fmt(struct rkvdec_ctx *ctx, u32 fourcc)
-+static bool rkvdec_valid_fmt(struct rkvdec_ctx *ctx, u32 fourcc, u32 opaque)
- {
- 	const struct rkvdec_coded_fmt_desc *desc = ctx->coded_fmt_desc;
- 	unsigned int i;
+ static const struct rkvdec_ctrl_desc rkvdec_vp9_ctrl_descs[] = {
+@@ -210,6 +213,10 @@ static const struct rkvdec_ctrls rkvdec_vp9_ctrls = {
+ 	.num_ctrls = ARRAY_SIZE(rkvdec_vp9_ctrl_descs),
+ };
  
-+	if (desc->ops->valid_fmt)
-+		return desc->ops->valid_fmt(ctx, fourcc, opaque);
++static const u32 rkvdec_vp9_decoded_fmts[] = {
++	V4L2_PIX_FMT_NV12,
++};
 +
-+	/* All decoded_fmts are valid without a valid_fmt ops */
- 	for (i = 0; i < desc->num_decoded_fmts; i++) {
- 		if (desc->decoded_fmts[i] == fourcc)
- 			return true;
-@@ -281,8 +336,9 @@ static int rkvdec_try_capture_fmt(struct file *file, void *priv,
- 	if (WARN_ON(!coded_desc))
- 		return -EINVAL;
- 
--	if (!rkvdec_valid_fmt(ctx, pix_mp->pixelformat))
--		pix_mp->pixelformat = rkvdec_decoded_fmts(ctx, 0);
-+	if (!rkvdec_valid_fmt(ctx, pix_mp->pixelformat, ctx->fmt_opaque))
-+		pix_mp->pixelformat = rkvdec_decoded_fmts(ctx, 0,
-+							  ctx->fmt_opaque);
- 
- 	/* Always apply the frmsize constraint of the coded end. */
- 	pix_mp->width = max(pix_mp->width, ctx->coded_fmt.fmt.pix_mp.width);
-@@ -398,6 +454,7 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
- 	 *
- 	 * Note that this will propagates any size changes to the decoded format.
- 	 */
-+	ctx->fmt_opaque = 0;
- 	rkvdec_reset_decoded_fmt(ctx);
- 
- 	/* Propagate colorspace information to capture. */
-@@ -447,7 +504,7 @@ static int rkvdec_enum_capture_fmt(struct file *file, void *priv,
- 	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
- 	u32 fourcc;
- 
--	fourcc = rkvdec_decoded_fmts(ctx, f->index);
-+	fourcc = rkvdec_decoded_fmts(ctx, f->index, ctx->fmt_opaque);
- 	if (!fourcc)
- 		return -EINVAL;
- 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
-index 633335ebb9c4..2e423ed6ce85 100644
---- a/drivers/staging/media/rkvdec/rkvdec.h
-+++ b/drivers/staging/media/rkvdec/rkvdec.h
-@@ -66,6 +66,8 @@ vb2_to_rkvdec_decoded_buf(struct vb2_buffer *buf)
- struct rkvdec_coded_fmt_ops {
- 	int (*adjust_fmt)(struct rkvdec_ctx *ctx,
- 			  struct v4l2_format *f);
-+	u32 (*get_fmt_opaque)(struct rkvdec_ctx *ctx, struct v4l2_ctrl *ctrl);
-+	bool (*valid_fmt)(struct rkvdec_ctx *ctx, u32 fourcc, u32 opaque);
- 	int (*start)(struct rkvdec_ctx *ctx);
- 	void (*stop)(struct rkvdec_ctx *ctx);
- 	int (*run)(struct rkvdec_ctx *ctx);
-@@ -104,6 +106,7 @@ struct rkvdec_ctx {
- 	const struct rkvdec_coded_fmt_desc *coded_fmt_desc;
- 	struct v4l2_ctrl_handler ctrl_hdl;
- 	struct rkvdec_dev *dev;
-+	u32 fmt_opaque;
- 	void *priv;
+ static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_H264_SLICE,
+@@ -223,8 +230,8 @@ static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
+ 		},
+ 		.ctrls = &rkvdec_h264_ctrls,
+ 		.ops = &rkvdec_h264_fmt_ops,
+-		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_vp9_decoded_fmts),
+-		.decoded_fmts = rkvdec_h264_vp9_decoded_fmts,
++		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_decoded_fmts),
++		.decoded_fmts = rkvdec_h264_decoded_fmts,
+ 		.subsystem_flags = VB2_V4L2_FL_SUPPORTS_M2M_HOLD_CAPTURE_BUF,
+ 	},
+ 	{
+@@ -239,8 +246,8 @@ static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
+ 		},
+ 		.ctrls = &rkvdec_vp9_ctrls,
+ 		.ops = &rkvdec_vp9_fmt_ops,
+-		.num_decoded_fmts = ARRAY_SIZE(rkvdec_h264_vp9_decoded_fmts),
+-		.decoded_fmts = rkvdec_h264_vp9_decoded_fmts,
++		.num_decoded_fmts = ARRAY_SIZE(rkvdec_vp9_decoded_fmts),
++		.decoded_fmts = rkvdec_vp9_decoded_fmts,
+ 	}
  };
  
 -- 
