@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 793E27DAA96
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 04:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589F37DAA98
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 04:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjJ2D0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 23:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        id S229702AbjJ2Df0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 23:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2D0c (ORCPT
+        with ESMTP id S229446AbjJ2DfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 23:26:32 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DC993;
-        Sat, 28 Oct 2023 20:26:30 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-58441865ffaso2141192eaf.1;
-        Sat, 28 Oct 2023 20:26:30 -0700 (PDT)
+        Sat, 28 Oct 2023 23:35:23 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F8FCF;
+        Sat, 28 Oct 2023 20:35:21 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b2ea7cc821so2385171b6e.1;
+        Sat, 28 Oct 2023 20:35:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698549989; x=1699154789; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uRnOiKu4nI2Ad98Fhq/Hp7MEOJFLr/EtLs46UGel2iA=;
-        b=h8UPyLTJBk2+k4nCpLx3QDfZLtoPam+mROLh3rlj90Jtz7JuW79vsmRyAhMv7gaSIU
-         oC21x+4NouHbKLccEi93UIsJopRE5jyfMOMzo2Fqbv//BcL52Q6be612rI+IY+a3Pj33
-         oQPv/1dkTjvMNDAxVaFXgHyiyUQiGB4X9bfmw4cAj+L8OL6SHy1cjcFBOzxezwZDvm9Y
-         78B2z8IXf8AidizO/6WbdME7PBZM6VnXsmKyOcHRKs2dXMhWMwwHmsSOYSbPGCcn5Gz5
-         7et6Vvh98xVSllSP10g91Eq6S5ucP3E1nhyAeQZ8C3RF+3ADQnaUeoFsOsukK1lW6e4W
-         iAlw==
+        d=gmail.com; s=20230601; t=1698550520; x=1699155320; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xjDo8XieKuMeFuZXOm0zzgIaw5X9UobfJiGgfoOcHjM=;
+        b=cXyKUof1TRpySLccxkrcGfCBFfQ7PhYnz6I1VRxbV+53xIv61ihpQqUDd93jWNGH5Z
+         ok8r8+ixr4X+Vy2S3zMy1OwR52iuxg20C04iUi5W5pb9a7f7DYoj1qRunSyigRz01xG4
+         UWUgXy4eE3hgXB7gD5X6iEAzM29QVb+9edAa+FW88BnYK14R0pRpPCVz97FqM7mNoVSH
+         r+o15Hab38gcd7s8Cd+pGYT6v4MkXdhzt9NFB0682iiHL/xPPJEv1xtvMcLRTsbhzhiu
+         V7ZY2dJQMDf6UHRwNgkeywXfkBPiOcRVt7RUoKs5LWUeT/IELC5PckV/EhzBt27gm/Cu
+         wm3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698549989; x=1699154789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uRnOiKu4nI2Ad98Fhq/Hp7MEOJFLr/EtLs46UGel2iA=;
-        b=oV2ZuES2kon66rlrOeU1FW/GU2xG4cTpdF62EdaJMwZW8qTk+aqlyE+Ca8ngp1QAuH
-         gbEdHiKOppOk0OHcEOEte2Y06QOe4yGiU3FBB950rXB0fpk+rMgpoG7fOtfjxGxRmCOl
-         epBkSCtl37me0HKiEOmXblL3eQkadTSF2iYTgeYO8G9JYAxeUIZxVM/WtTIEZkPsxH9T
-         yaqluB+AAjzyQuGYjtFD5AjyXE9wnFZDhW4m7Y9BMCDGlYtoCQMnpPliim1zeUePnwHR
-         breNznQPl0/Surd273tuH2JBNqP2Xq+q0lI6bFwQRBhm6dQE1WxpbwqFyD+hWBnGtBae
-         e4iw==
-X-Gm-Message-State: AOJu0YxuFGVpBwgLKgJ98tkSlXOaKzVdP5wLezAlN53YdA4HwMdcHrQ7
-        ZxvvRLIeXIrD5n1bYfimRAc=
-X-Google-Smtp-Source: AGHT+IHZJdq2Kpp+5seJOpPFzrlrJs3ax3hBLtrf0qwiyEAh+NCm2a8Skd3c6XCuCvY7X9R1wMer2Q==
-X-Received: by 2002:a05:6358:6f9a:b0:168:e9d2:6568 with SMTP id s26-20020a0563586f9a00b00168e9d26568mr7611380rwn.25.1698549989091;
-        Sat, 28 Oct 2023 20:26:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698550520; x=1699155320;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xjDo8XieKuMeFuZXOm0zzgIaw5X9UobfJiGgfoOcHjM=;
+        b=h+WooqlU4mo4Hwj8D9y3tdrIB2Uh9powZaMsmjmzhFxxYVMQgRJlPlTuFyeD2nxzaA
+         KLT1BAzLSYDq/Zult29gOiei//DP2DfCSkATFMXFhNTLVTUnyH3cN6dKSmqw85T1ZJea
+         BlhCT7Czgx0WEgzAr73u7QzdguXvdFl+DdUIwu8W2MATG4Gk7cLizeGguXi6lKYcL0ga
+         2V3o15P/ss79S2RuHnIKvsQGgkx3hpnj8Ml5fs1KOHLJ6LS9YKabI2gSkQoHQC/NNkJc
+         swvUO59pRSuNrL1amj+DHcTllflhyPmFOj11fa80lxm1acbUuc15XmW60jGJo6wJmYEY
+         KNPQ==
+X-Gm-Message-State: AOJu0YwP1qeREbt+w9GgBCF3lcOQGLbJH8gHRA6KWRCs1tHxQTOZ7l3d
+        nUWQOJ3Qgs8wJRmjR4SR/lQ=
+X-Google-Smtp-Source: AGHT+IHbi4c93mytucXIZVUYJrne6It6w4HgcLUPid9tvqrmA89EUUdgcv1uQWUviSg/UmWBaR6Crw==
+X-Received: by 2002:aca:1909:0:b0:3b2:df82:812e with SMTP id l9-20020aca1909000000b003b2df82812emr7406778oii.32.1698550520181;
+        Sat, 28 Oct 2023 20:35:20 -0700 (PDT)
 Received: from google.com ([205.220.129.30])
-        by smtp.gmail.com with ESMTPSA id f11-20020a170902e98b00b001cc0d1af177sm712442plb.229.2023.10.28.20.26.20
+        by smtp.gmail.com with ESMTPSA id m13-20020aa7900d000000b006b8ffc49ba5sm3604895pfo.38.2023.10.28.20.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 20:26:28 -0700 (PDT)
-Date:   Sun, 29 Oct 2023 03:26:06 +0000
+        Sat, 28 Oct 2023 20:35:19 -0700 (PDT)
+Date:   Sun, 29 Oct 2023 03:34:59 +0000
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Wei-Shih Lin <frank101417@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] Input: Add driver for Novatek NT519XX series
- touchscreen devices
-Message-ID: <ZT3QzhXr8OaOCfx2@google.com>
-References: <20231025082054.1190-1-Weishih_Lin@novatek.com.tw>
- <20231025082054.1190-3-Weishih_Lin@novatek.com.tw>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     linux-input@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Input: cyttsp5 - improve error handling and remove
+ regmap
+Message-ID: <ZT3S43_eMdwHWu2u@google.com>
+References: <20231025013939.353553-1-james.hilliard1@gmail.com>
+ <ZTwWmHC7Wcd5iwqS@google.com>
+ <CADvTj4oH=3Q3EShC-FM9ob7EnvFe4t2LHyDEwr-e7=G8M=UzYg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231025082054.1190-3-Weishih_Lin@novatek.com.tw>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADvTj4oH=3Q3EShC-FM9ob7EnvFe4t2LHyDEwr-e7=G8M=UzYg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,32 +77,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wei-Shih,
+On Sat, Oct 28, 2023 at 03:31:00AM -0600, James Hilliard wrote:
+> On Fri, Oct 27, 2023 at 1:59 PM Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> wrote:
+> 
+> > Hi James,
+> >
+> > On Tue, Oct 24, 2023 at 07:39:38PM -0600, James Hilliard wrote:
+> > > The vendor cyttsp5 driver does not use regmap for i2c support, it
+> > > would appear this is due to regmap not providing sufficient levels
+> > > of control to handle various error conditions that may be present
+> > > under some configuration/firmware variants.
+> > >
+> > > To improve reliability lets refactor the cyttsp5 i2c interface to
+> > > function more like the vendor driver and implement some of the error
+> > > handling retry/recovery techniques present there.
+> >
+> > Sorry but you need to elaborate more on what is missing in regmap and
+> > how vendor code is better. In my experience vendors rarely follow kernel
+> > development and either are not aware of the latest kernel APIs, or they
+> > simply have the driver written to what we had in 3.x kernels and have
+> > not really updated it since then.
+> >
+> 
+> I'm unaware of a way to do essentially raw reads when using regmap, for
+> example I don't know of a way to implement the cyttsp5_deassert_read
+> function using regmap, maybe there's a way I'm not aware of however?
 
-On Wed, Oct 25, 2023 at 04:20:54PM +0800, Wei-Shih Lin wrote:
-> This patch adds support for Novatek NT519XX series touchscreen devices.
-> Existing Novatek touchscreen driver code developed for Acer Iconia One 7
-> B1-750 tablet with Novatek IC NT11205 is novatek-nvt-ts.c in the path
-> drivers/input/touchscreen/. However, this patch supports touch features
-> for automotive display with Novatek TDDI NT519XX.
+What is wrong with current way of reading from the input register? It
+should clear the interrupt line.
 
-How different the protocol of this part from NT11205? Can the existing
-driver be modified to support both variants?
+> 
+> In general the issue with regmap seems to be that regmap always does
+> operations against specific registers and prevents doing raw i2c operations
+> needed to handle some hardware/firmware issues for some variants.
 
-You already got feedback from Krzysztof, on top of his, if we want to
-continue with a separate driver:
+What are those issues and why do they need raw access.
 
-- it should use standard device properties
-- it should use gpiod API
-- it looks like it will benefit of regmap's paging support
-- helpers like nvt_irq_enable() should not be used - your code should
-  know whether itq is enabled or disabled at all times
-- all caps are reserved for macros (CTP_I2C_WRITE and others)
-- I am sure we have crc8 helpers in the kernel
-- please use u8, u16, etc in the kernel code instead of uint8_t,
-  uint16_t
-- your driver will likely benefit from devm APIs
-- no compile-time conditionals like "#if TOUCH_MAX_FINGER_NUM > 1"
+> 
+> Note that I'm not exactly doing things the same way the vendor driver does,
+> I have simplified the error recovery/retry code paths in the startup
+> function.
+> 
+> 
+> >
+> > >
+> > > As part of this rather than assuming the device is in bootloader mode
+> > > we should first check that the device is in bootloader and only
+> > > attempt to launch the app if it actually is in the bootloader.
+> >
+> > I would prefer if this was split into a separate patch.
+> >
+> 
+> I think this change is somewhat intertwined with the probe retry/recovery
+> logic
+> changes and is a bit tricky to split out without breaking the startup
+> sequence
+> from my testing at least.
+
+I understand that it might be tricky but each logical change should
+stand on its own.
 
 Thanks.
 
