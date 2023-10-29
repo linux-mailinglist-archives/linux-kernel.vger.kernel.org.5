@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543717DB0A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DB37DB0EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjJ2XIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S232372AbjJ2XXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbjJ2XH7 (ORCPT
+        with ESMTP id S231640AbjJ2XXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:07:59 -0400
+        Sun, 29 Oct 2023 19:23:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FB7A5D1;
-        Sun, 29 Oct 2023 16:03:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 575C7C433BB;
-        Sun, 29 Oct 2023 23:01:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7220EA5D8;
+        Sun, 29 Oct 2023 16:03:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3249C4167E;
+        Sun, 29 Oct 2023 23:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620516;
-        bh=V3MW3HlJw0Dv/VdEsrQyNiXGgZkXx8rL2UAla9DTeeg=;
+        s=k20201202; t=1698620517;
+        bh=qRIgjQfLbsV9Qh3eHJRvU8mHqGFe89XtdJc16BPBs5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TqokyoJEOy4FBHdvp1nprVYYUkHfvGgCemykOTcUGd6iF0sKEMMX3dFf1riy53aFx
-         DYkCn4G53LkN5POXNALoAe3RiT8AW3fL2mNS9A7T2Zvz8jS2ioYMH0dXM9dw+exQPW
-         FmZjkEYMs9uYV9DMeOdyBCXzmPiLsc0wtTy48flmh6G2m6r/JUopx6w69XRdxBApLA
-         HKFjOwrcM/ZM2NT84/4bAlQ0eoy0+xGwnCMDL5Xabn4o4xVGn9dzAGMqNm78IQlxI9
-         6LanPWmn8jPV98S79xZHNGt/bfbnfs6X5AUQszzzbp9Tao/gffH75pHd+MbMwmsJwv
-         i7FuSxZGeEo0A==
+        b=UVdCcZcQoAN+33bxMnm85KBLpl1oJsLlCUZZLofc+AJbmF7DnUhAg+IehuUdAq2RL
+         9zo6r3hAbYlbVRqR9rQPsj33V5byyjGe/hNQGYSnBm2AS25mqbiFcTrNy7JPjoQ8Nk
+         28nhQjgygU4/lr/jU5uTr8MPr24d5Xw4DPgfZdy89CbuFETp2MZApYw3JwvUYTtW08
+         nH3kKtTdbFL302r0G3hhzs/cyUAdcxu9fYxSyxInBIp+IGWf6P8gbl5KuIkAzWXqAA
+         bsUBtbsa95AvdTfWlXoaO1ITA3Fi8NNFpWzMQ3tXg28fwc5FhcvXhKu9fRCIQSvegg
+         asktI0a0Q5SCg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>, daniel@ffwll.ch,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.19 09/12] fbdev: core: syscopyarea: fix sloppy typing
-Date:   Sun, 29 Oct 2023 19:01:22 -0400
-Message-ID: <20231029230135.793281-9-sashal@kernel.org>
+Cc:     Tomas Henzl <thenzl@redhat.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, sathya.prakash@broadcom.com,
+        sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 10/12] scsi: mpt3sas: Fix in error path
+Date:   Sun, 29 Oct 2023 19:01:23 -0400
+Message-ID: <20231029230135.793281-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029230135.793281-1-sashal@kernel.org>
 References: <20231029230135.793281-1-sashal@kernel.org>
@@ -53,39 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Tomas Henzl <thenzl@redhat.com>
 
-[ Upstream commit e8e4a470b677511f9d1ad4f3cef32adc1d9a60ca ]
+[ Upstream commit e40c04ade0e2f3916b78211d747317843b11ce10 ]
 
-In sys_copyarea(), the local variable bits_per_line is needlessly typed as
-*unsigned long* -- which is a 32-bit type on the 32-bit arches and a 64-bit
-type on the 64-bit arches; that variable's value is derived from the __u32
-typed fb_fix_screeninfo::line_length field (multiplied by 8u) and a 32-bit
-*unsigned int* type should still be enough to store the # of bits per line.
+The driver should be deregistered as misc driver after PCI registration
+failure.
 
-Found by Linux Verification Center (linuxtesting.org) with the Svace static
-analysis tool.
-
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Tomas Henzl <thenzl@redhat.com>
+Link: https://lore.kernel.org/r/20231015114529.10725-1-thenzl@redhat.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/syscopyarea.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/core/syscopyarea.c b/drivers/video/fbdev/core/syscopyarea.c
-index c1eda31909682..7b8bd3a2bedc5 100644
---- a/drivers/video/fbdev/core/syscopyarea.c
-+++ b/drivers/video/fbdev/core/syscopyarea.c
-@@ -316,7 +316,7 @@ void sys_copyarea(struct fb_info *p, const struct fb_copyarea *area)
- {
- 	u32 dx = area->dx, dy = area->dy, sx = area->sx, sy = area->sy;
- 	u32 height = area->height, width = area->width;
--	unsigned long const bits_per_line = p->fix.line_length*8u;
-+	unsigned int const bits_per_line = p->fix.line_length * 8u;
- 	unsigned long *base = NULL;
- 	int bits = BITS_PER_LONG, bytes = bits >> 3;
- 	unsigned dst_idx = 0, src_idx = 0, rev_copy = 0;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+index c8d97dc2ca63d..bf659bc466dcc 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -11182,8 +11182,10 @@ _mpt3sas_init(void)
+ 	mpt3sas_ctl_init(hbas_to_enumerate);
+ 
+ 	error = pci_register_driver(&mpt3sas_driver);
+-	if (error)
++	if (error) {
++		mpt3sas_ctl_exit(hbas_to_enumerate);
+ 		scsih_exit();
++	}
+ 
+ 	return error;
+ }
 -- 
 2.42.0
 
