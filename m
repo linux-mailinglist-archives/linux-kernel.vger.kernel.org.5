@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460287DB17C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AF17DB02D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbjJ2Xg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S231567AbjJ2XDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231747AbjJ2XDx (ORCPT
+        with ESMTP id S230519AbjJ2XDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:03:53 -0400
+        Sun, 29 Oct 2023 19:03:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B0386A9;
-        Sun, 29 Oct 2023 16:02:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D946C433B6;
-        Sun, 29 Oct 2023 23:00:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9439C8A41;
+        Sun, 29 Oct 2023 16:02:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EF1BC433C8;
+        Sun, 29 Oct 2023 23:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620461;
-        bh=GR11dSCmXDQaGLlSghT5l5vMdJAfd6ZPWoQdAcTV658=;
-        h=From:To:Cc:Subject:Date:From;
-        b=c4PhYA1r3oGMYBdERBBQEbQwOtaWEPjuyx+tpMirj7hRC0dL2LBXLo19rf2nQFldN
-         dfI+l+SIGiCeLse0TmX4ctPPxGVPAUpex39UGARl9PBLBBwJsO8hX0WibhCTxOHpbW
-         iaGOPxrfwjHMVOFD3aIwvRdyMqi13xW3UtmfacrD6So7aJStZirhFPdopnC8/k+g/U
-         AWr/XqEqeaBch5/u3nHKpC7Honkap9o25qSLC3p+XN1FWHtZFt4uVYT7XwjtS/TqlH
-         N+5njeFI44XvQ9IqeB6D1X/ykYLA9JKrtQ7JzplU69+1MQrfrqqiSXbPWG4JbMfGYH
-         7H9sQf3csc/AQ==
+        s=k20201202; t=1698620462;
+        bh=nefNvxaZGIfqqhRnyykqauUv1ya0p4ckjFquWYv42cw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GrJFT+xVsIshi7TjK31/Sq4pBiyNKgEu/59ZKzgUTJzy5Ae5TYHnV7YiaXqPyfk6l
+         2pLf13ZtZH+cyHFJ3a1YiMXgPVhVhn9TBAFHxr3u+Rpyh9Z+aDhQqcpc+SBBbffesX
+         C1DzFxTdlQkWf23H5UM09YLZyFkNSObh2vopqcOiwQLUvycpV4peJS734Z1s0jSHP0
+         vQ6g12cbTGd1ex2ZONVZ5Th31KD5duc7cbG46H6FyaORlpXIcHrrQi+tk1ULLmcmvq
+         CirLrz0/oLn0hFi7DIgjSRXIMzimqO0OsnaqAbmSxrDxlz9SR1GMJNDNIR8N74px+y
+         Z3fyt7SgM6CNg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Sasha Levin <sashal@kernel.org>, javierm@redhat.com,
-        sam@ravnborg.org, daniel.thompson@linaro.org,
-        schnelle@linux.ibm.com, xu.panda@zte.com.cn, steve@sk2.org
-Subject: [PATCH AUTOSEL 5.4 01/13] fbdev: atyfb: only use ioremap_uc() on i386 and ia64
-Date:   Sun, 29 Oct 2023 19:00:34 -0400
-Message-ID: <20231029230057.792930-1-sashal@kernel.org>
+Cc:     "William A. Kennington III" <william@wkennington.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, avifishman70@gmail.com,
+        tmaimon77@gmail.com, tali.perry1@gmail.com,
+        openbmc@lists.ozlabs.org, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 02/13] spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
+Date:   Sun, 29 Oct 2023 19:00:35 -0400
+Message-ID: <20231029230057.792930-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029230057.792930-1-sashal@kernel.org>
+References: <20231029230057.792930-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,56 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: "William A. Kennington III" <william@wkennington.com>
 
-[ Upstream commit c1a8d1d0edb71dec15c9649cb56866c71c1ecd9e ]
+[ Upstream commit 2ec8b010979036c2fe79a64adb6ecc0bd11e91d1 ]
 
-ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-extension, and on ia64 with its slightly unconventional ioremap()
-behavior, everywhere else this is the same as ioremap() anyway.
+We don't want to use the value of ilog2(0) as dummy.buswidth is 0 when
+dummy.nbytes is 0. Since we have no dummy bytes, we don't need to
+configure the dummy byte bits per clock register value anyway.
 
-Change the only driver that still references ioremap_uc() to only do so
-on x86-32/ia64 in order to allow removing that interface at some
-point in the future for the other architectures.
-
-On some architectures, ioremap_uc() just returns NULL, changing
-the driver to call ioremap() means that they now have a chance
-of working correctly.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: "William A. Kennington III" <william@wkennington.com>
+Link: https://lore.kernel.org/r/20230922182812.2728066-1-william@wkennington.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/aty/atyfb_base.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/spi/spi-npcm-fiu.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/aty/atyfb_base.c b/drivers/video/fbdev/aty/atyfb_base.c
-index 6dda5d885a03b..bb9ecf12e7630 100644
---- a/drivers/video/fbdev/aty/atyfb_base.c
-+++ b/drivers/video/fbdev/aty/atyfb_base.c
-@@ -3410,11 +3410,15 @@ static int atyfb_setup_generic(struct pci_dev *pdev, struct fb_info *info,
- 	}
- 
- 	info->fix.mmio_start = raddr;
-+#if defined(__i386__) || defined(__ia64__)
- 	/*
- 	 * By using strong UC we force the MTRR to never have an
- 	 * effect on the MMIO region on both non-PAT and PAT systems.
- 	 */
- 	par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
-+#else
-+	par->ati_regbase = ioremap(info->fix.mmio_start, 0x1000);
-+#endif
- 	if (par->ati_regbase == NULL)
- 		return -ENOMEM;
- 
+diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+index 1e770d6739050..cc4e29cd86dab 100644
+--- a/drivers/spi/spi-npcm-fiu.c
++++ b/drivers/spi/spi-npcm-fiu.c
+@@ -334,8 +334,9 @@ static int npcm_fiu_uma_read(struct spi_mem *mem,
+ 		uma_cfg |= ilog2(op->cmd.buswidth);
+ 		uma_cfg |= ilog2(op->addr.buswidth)
+ 			<< NPCM_FIU_UMA_CFG_ADBPCK_SHIFT;
+-		uma_cfg |= ilog2(op->dummy.buswidth)
+-			<< NPCM_FIU_UMA_CFG_DBPCK_SHIFT;
++		if (op->dummy.nbytes)
++			uma_cfg |= ilog2(op->dummy.buswidth)
++				<< NPCM_FIU_UMA_CFG_DBPCK_SHIFT;
+ 		uma_cfg |= ilog2(op->data.buswidth)
+ 			<< NPCM_FIU_UMA_CFG_RDBPCK_SHIFT;
+ 		uma_cfg |= op->dummy.nbytes << NPCM_FIU_UMA_CFG_DBSIZ_SHIFT;
 -- 
 2.42.0
 
