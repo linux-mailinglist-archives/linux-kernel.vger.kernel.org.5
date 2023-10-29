@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775B97DB132
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C8D7DB075
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjJ2Xa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S231756AbjJ2XG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjJ2Xa1 (ORCPT
+        with ESMTP id S232147AbjJ2XGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:30:27 -0400
+        Sun, 29 Oct 2023 19:06:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC78F5FCD;
-        Sun, 29 Oct 2023 16:00:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56098C433B7;
-        Sun, 29 Oct 2023 22:59:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921915FDC;
+        Sun, 29 Oct 2023 16:00:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03E8C4163C;
+        Sun, 29 Oct 2023 22:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620373;
-        bh=mfutkbzhl3xkRVSBDt388tSkZwdwIZdy7DDdvPlTclo=;
+        s=k20201202; t=1698620374;
+        bh=Xk3/KL1/p/7aPW6+tG0rfglenLkveedb3INbBGFMFs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQBeqinCDWEj6/ZL48CHD6M8dsUwEEfISA1t7nfXCnzooTk/WWC6P6tgdrzX35ESn
-         W6/6f5eybyHWiEddlkH6GEV9bbb6f/dBRyj1kzUxXlFXaGKrQUw+fU/qO92cy8n5JA
-         SuRHQFtW+auS7Jiqa9dyZVAiXWQ/Zv3HlK+jg9OHDH8bv+Fzu2pDGt6vetDYiZWTes
-         +3CPfMaf7RH4ELzgTeOT72V4Tfc5s9i5DsgjdznXTh30Sjt2sDt6XwiGF/JoIlYRTA
-         FSQ0bdCZ5HQSY9nbiOjHIKJd4p3S1VF9l+8ecLh9VOl2eMcxk0UB99ghEfJRT1c6jM
-         dDbmf2JB6vLLw==
+        b=SIQDVKCAUsmWG7V4E7dhkZ8TQaTcNSFKLD/BtBgfSK6lMk82IdyQy7quAP6KjyCXa
+         y6O9P+wfTo236GiJ3RsLinuEXbED0ZqBz3aI5M0Evsw3nrH0qn7+sIVHlq5ZJXmJcQ
+         raqGguXiEPxeZH6++v+AKRckAOWNPwW3TrE8yRiEBhfKwJaWrx3EgDrek4xBlGnchp
+         RMzuw60voiDkGmm50pxZtFEaefg8jXacphSub6xrJmAH6Csfur4vuLXSxUH+tZswla
+         /9izNVJNViie9YaDYBA9eDXpCOrmYARU7nigGPpfljNKXbkPOIbmkz1PPLLtnSc+Nw
+         gX17ipzr8+Uyg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maurizio Lombardi <mlombard@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 12/28] nvme-rdma: do not try to stop unallocated queues
-Date:   Sun, 29 Oct 2023 18:58:47 -0400
-Message-ID: <20231029225916.791798-12-sashal@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.15 13/28] ASoC: codecs: wsa-macro: handle component name prefix
+Date:   Sun, 29 Oct 2023 18:58:48 -0400
+Message-ID: <20231029225916.791798-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225916.791798-1-sashal@kernel.org>
 References: <20231029225916.791798-1-sashal@kernel.org>
@@ -55,46 +56,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 3820c4fdc247b6f0a4162733bdb8ddf8f2e8a1e4 ]
+[ Upstream commit c29e5263d32a6d0ec094d425ae7fef3fa8d4da1c ]
 
-Trying to stop a queue which hasn't been allocated will result
-in a warning due to calling mutex_lock() against an uninitialized mutex.
+When comparing widget names in wsa_macro_spk_boost_event(), consider
+also the component's name prefix.  Otherwise the WSA codec won't have
+proper mixer setup resulting in no sound playback through speakers.
 
- DEBUG_LOCKS_WARN_ON(lock->magic != lock)
- WARNING: CPU: 4 PID: 104150 at kernel/locking/mutex.c:579
-
- Call trace:
-  RIP: 0010:__mutex_lock+0x1173/0x14a0
-  nvme_rdma_stop_queue+0x1b/0xa0 [nvme_rdma]
-  nvme_rdma_teardown_io_queues.part.0+0xb0/0x1d0 [nvme_rdma]
-  nvme_rdma_delete_ctrl+0x50/0x100 [nvme_rdma]
-  nvme_do_delete_ctrl+0x149/0x158 [nvme_core]
-
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20231003155710.821315-3-krzysztof.kozlowski@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/lpass-wsa-macro.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index b76e1d4adcc77..6e92bdf459fe4 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -645,6 +645,9 @@ static void __nvme_rdma_stop_queue(struct nvme_rdma_queue *queue)
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index dd1a8b7bc794c..643ddf7dd6c5d 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1668,12 +1668,12 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
+ 	u16 boost_path_ctl, boost_path_cfg1;
+ 	u16 reg, reg_mix;
  
- static void nvme_rdma_stop_queue(struct nvme_rdma_queue *queue)
- {
-+	if (!test_bit(NVME_RDMA_Q_ALLOCATED, &queue->flags))
-+		return;
-+
- 	mutex_lock(&queue->queue_lock);
- 	if (test_and_clear_bit(NVME_RDMA_Q_LIVE, &queue->flags))
- 		__nvme_rdma_stop_queue(queue);
+-	if (!strcmp(w->name, "WSA_RX INT0 CHAIN")) {
++	if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT0 CHAIN")) {
+ 		boost_path_ctl = CDC_WSA_BOOST0_BOOST_PATH_CTL;
+ 		boost_path_cfg1 = CDC_WSA_RX0_RX_PATH_CFG1;
+ 		reg = CDC_WSA_RX0_RX_PATH_CTL;
+ 		reg_mix = CDC_WSA_RX0_RX_PATH_MIX_CTL;
+-	} else if (!strcmp(w->name, "WSA_RX INT1 CHAIN")) {
++	} else if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT1 CHAIN")) {
+ 		boost_path_ctl = CDC_WSA_BOOST1_BOOST_PATH_CTL;
+ 		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
+ 		reg = CDC_WSA_RX1_RX_PATH_CTL;
 -- 
 2.42.0
 
