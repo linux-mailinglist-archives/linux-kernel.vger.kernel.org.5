@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B78487DB1A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 01:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55A87DB115
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjJ3ACq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 20:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
+        id S231903AbjJ2X2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjJ3ACg (ORCPT
+        with ESMTP id S231191AbjJ2X2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 20:02:36 -0400
+        Sun, 29 Oct 2023 19:28:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D56244A6;
-        Sun, 29 Oct 2023 15:58:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47D29C433CD;
-        Sun, 29 Oct 2023 22:57:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F72D79;
+        Sun, 29 Oct 2023 15:57:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65270C433D9;
+        Sun, 29 Oct 2023 22:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620263;
-        bh=JvXWdaPVGCXGPljCNPOAWNOooFCOP2wSIUJSdS6nMTU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=e+HOEm9Dph06Y1p06hYWg27v0mMzYcikpuM5V7+aIeolERgQQrcUaNOwfipIte41U
-         XxeF+3sMToFrYBC3PZQZy2suzmC1L3WVOB0aSQ8Pyy1vjfQWaVoYKxTRv8Z4nIy+q3
-         RfQSSiJig5wgOyseZRpJN/y6B7WiaUgwbx+kknp3CEnQsgBSwksjH/OHQIVuTjmF/y
-         6XVlGwYDTPSQqt/jUqfg+4xy4GXi48CLWHRtRi8UsirGO3Bunym5zrKVcNOZmGoX1y
-         vLqEkJBZtSpUghPxCDzoQHNLVpM3d3jMyzv9v8l+b3C32RddBSc6rspdP/+zAlMlHb
-         K1JHg3fqSLVvw==
+        s=k20201202; t=1698620265;
+        bh=jAHUril8lBS0BRD6a5/QOtzXJLQsnqbARQUT4v575to=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HTiUQRAxiIUAoGVjii4C5OhyuxhLdNtGTXtZfi9ekGSFlnJRvGou5XWEqc2ZNBbFc
+         xbaBcxiPp5DHy6USEryhLmFeMup9twRvSTLf3fS4zmHhq0bOzD16LphT5oNF3+ntwm
+         Ani2VmvO/E1dFa8SMxmRCf0+elRZnEEO7vkV61ea9/E4jFr+1ryMTOJ75FwntjZYSD
+         4F9kGH+En+vMmJb4BM09LQfOp/Om5pRE7WAK5QwCv/aaBoZ15SF7rJ4lJi9npe8Ikr
+         MJg3fbNkw/hTgJWcnixsqfwRe5nn6y5yPD/Lt80mMnVHU7x+veS+tTOaoAMbi2j5hs
+         vT9ZIcpAKnh7w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Baoquan He <bhe@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Sasha Levin <sashal@kernel.org>, javierm@redhat.com,
-        sam@ravnborg.org, xu.panda@zte.com.cn, schnelle@linux.ibm.com,
-        steve@sk2.org
-Subject: [PATCH AUTOSEL 6.1 01/39] fbdev: atyfb: only use ioremap_uc() on i386 and ia64
-Date:   Sun, 29 Oct 2023 18:56:33 -0400
-Message-ID: <20231029225740.790936-1-sashal@kernel.org>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 02/39] fs/ntfs3: Add ckeck in ni_update_parent()
+Date:   Sun, 29 Oct 2023 18:56:34 -0400
+Message-ID: <20231029225740.790936-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
+References: <20231029225740.790936-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,56 +52,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit c1a8d1d0edb71dec15c9649cb56866c71c1ecd9e ]
+[ Upstream commit 87d1888aa40f25773fa0b948bcb2545f97e2cb15 ]
 
-ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-extension, and on ia64 with its slightly unconventional ioremap()
-behavior, everywhere else this is the same as ioremap() anyway.
+Check simple case when parent inode equals current inode.
 
-Change the only driver that still references ioremap_uc() to only do so
-on x86-32/ia64 in order to allow removing that interface at some
-point in the future for the other architectures.
-
-On some architectures, ioremap_uc() just returns NULL, changing
-the driver to call ioremap() means that they now have a chance
-of working correctly.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/aty/atyfb_base.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ntfs3/frecord.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/video/fbdev/aty/atyfb_base.c b/drivers/video/fbdev/aty/atyfb_base.c
-index b3463d1371520..faaa64fa5dfe9 100644
---- a/drivers/video/fbdev/aty/atyfb_base.c
-+++ b/drivers/video/fbdev/aty/atyfb_base.c
-@@ -3447,11 +3447,15 @@ static int atyfb_setup_generic(struct pci_dev *pdev, struct fb_info *info,
- 	}
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index dda13e1f1b330..166c3c49530ec 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -3198,6 +3198,12 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
+ 		if (!fname || !memcmp(&fname->dup, dup, sizeof(fname->dup)))
+ 			continue;
  
- 	info->fix.mmio_start = raddr;
-+#if defined(__i386__) || defined(__ia64__)
- 	/*
- 	 * By using strong UC we force the MTRR to never have an
- 	 * effect on the MMIO region on both non-PAT and PAT systems.
- 	 */
- 	par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
-+#else
-+	par->ati_regbase = ioremap(info->fix.mmio_start, 0x1000);
-+#endif
- 	if (par->ati_regbase == NULL)
- 		return -ENOMEM;
- 
++		/* Check simple case when parent inode equals current inode. */
++		if (ino_get(&fname->home) == ni->vfs_inode.i_ino) {
++			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
++			continue;
++		}
++
+ 		/* ntfs_iget5 may sleep. */
+ 		dir = ntfs_iget5(sb, &fname->home, NULL);
+ 		if (IS_ERR(dir)) {
 -- 
 2.42.0
 
