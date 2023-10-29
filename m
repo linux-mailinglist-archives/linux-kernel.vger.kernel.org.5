@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2397DAE03
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22D7DAE07
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 20:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbjJ2Tqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 15:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S230483AbjJ2Tqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 15:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbjJ2TqR (ORCPT
+        with ESMTP id S230402AbjJ2TqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 15:46:17 -0400
+        Sun, 29 Oct 2023 15:46:20 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 53F00C6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:46:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 767ABC4
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 12:46:17 -0700 (PDT)
 Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cxh+iGtj5lyps1AA--.3638S3;
-        Mon, 30 Oct 2023 03:46:14 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8CxNvGHtj5l0Js1AA--.38906S3;
+        Mon, 30 Oct 2023 03:46:15 +0800 (CST)
 Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNx+tj5lKq02AA--.51878S9;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNx+tj5lKq02AA--.51878S10;
         Mon, 30 Oct 2023 03:46:13 +0800 (CST)
 From:   Sui Jingfeng <suijingfeng@loongson.cn>
 To:     Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] drm/loongson: Support to infer DC reversion from CPU's PRID value
-Date:   Mon, 30 Oct 2023 03:46:06 +0800
-Message-Id: <20231029194607.379459-8-suijingfeng@loongson.cn>
+Subject: [PATCH 8/8] drm/loongson: Add support for the display subsystem in LS2K2000
+Date:   Mon, 30 Oct 2023 03:46:07 +0800
+Message-Id: <20231029194607.379459-9-suijingfeng@loongson.cn>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231029194607.379459-1-suijingfeng@loongson.cn>
 References: <20231029194607.379459-1-suijingfeng@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxXNx+tj5lKq02AA--.51878S9
+X-CM-TRANSID: AQAAf8AxXNx+tj5lKq02AA--.51878S10
 X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxJw4kKw4UCw15AF1ruFWfJFc_yoWrGw4xpr
-        ZxAFySkryDGw12y39xAr18Aa4fAa4fXFZ3uFZ2kw1qgw1UAa4UWFyUCF4YvrZrZryxJry2
-        v3sakrWUuF1aywcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW3KF47KF4xtFy5XFyfWFy5WrX_yoWDWFWxpa
+        13A3ySgr48tFnI939xtr1UXw1YkFyayFZayFWfGw1rW3srAr18tFnYyF4FqFW7XFy5Jr12
+        qrn7G3yIk3WUGabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
         sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
         0xBIdaVrnRJUUU90b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
         IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
         e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
         0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
         6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
-        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Wrv_
+        ZF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
         xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
         XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
         kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY
         6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
         vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-        vjDU0xZFpf9x07jz2NtUUUUU=
+        vjDU0xZFpf9x07j6sjUUUUUU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -61,109 +61,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the fact that the same display IP core has been integrated into
-different platform, there is a need to differentiate them on the runtime.
-The DC in LS7A1000/LS2K1000 has the PCI vendor & device ID of 0x0014:0x7A06
-The DC in LS7A2000/LS2K2000 has the PCI vendor & device ID of 0x0014:0x7A36
+Before apply this patch, drm/loongson is basically works on LS2K2000.
+Because majority of hardware features of the DC are same with LS7A2000's
+counterpart. Despite LS2K2000 is a SoC, it don't has a dedicated VRAM.
+But the firmware will carve out part of system RAM as VRAM, and write the
+base address and size of this reserved RAM to the PCI Bar 2 of the GPU.
+So this kind of reserved RAM is nearly same with the dedicated video RAM.
 
-Because the output ports and host platform of the DC IP varies, without a
-revision information we can't achieve fine-grained controls. The canonical
-approach to do such a thing is to read reversion register from the PCIe
-device. But LS2K1000 SoC was taped out at 2017, it is rather old. Our BIOS
-engineer don't assign a different revision ID to it, probably because of
-ignorance.
+In short, the display subsystem in LS2K2000 are nearly compatible with the
+display subsystem in LS7A2000. But LS2K2000 has only one built-in HDMI
+encoder, which is connected with the CRTC-0 (display pipe 0). Display pipe
+1 exports a generic DVO interface. So there still need a trivial fix.
 
-LS2K2000 SoC was newly taped on 2023, we strictly force the BIOS engineer
-assign a different revision ID(0x10) to it. But the problem is that it is
-too casual, there is no formal convention or public documented rule
-established. For Loongson LS2K series SoC, the display controller IP is
-taped togather with the CPU core. For Loongson LS7A series bridge chips,
-the display controller IP is taped togather with the bridge chips itself.
-Consider the fact the all Loongson CPU has a unique PRID, this patch choose
-to infer DC reversion from CPU's PRID value.
+Before apply this patch:
 
- - LS3A4000/LS3A5000 has 0xC0 as its processor ID.
- - LS2K2000 has 0xB0 as its processor ID.
- - LS2K2000LA has 0xA0 as its processor ID.
+$ dmesg | grep 0000:00:06.1
 
-The provided approach has no dependency on DT or ACPI, thus is preferfed.
-Besides, this approach can be used to acquire more addtional HW features.
-So the provided method has the potential to bring more benifits.
+ pci 0000:00:06.1: [0014:7a36] type 00 class 0x030000
+ pci 0000:00:06.1: reg 0x10: [mem 0x51250000-0x5125ffff 64bit]
+ pci 0000:00:06.1: reg 0x18: [mem 0x512b6000-0x512b60ff]
+ pci 0000:00:06.1: BAR 0: assigned [mem 0x51250000-0x5125ffff 64bit]
+ pci 0000:00:06.1: BAR 2: assigned [mem 0x512b7f00-0x512b7fff]
+ pci 0000:00:06.1: vgaarb: setting as boot VGA device
+ loongson 0000:00:06.1: Found LS7A2000 bridge chipset, revision: 16
+ loongson 0000:00:06.1: [drm] dc: 400MHz, gmc: 800MHz, gpu: 533MHz
+ loongson 0000:00:06.1: [drm] Dedicated vram start: 0x40000000, size: 256MiB
+ loongson 0000:00:06.1: [drm] Loongson VBIOS version: 2.1
+ loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
+ loongson 0000:00:06.1: [drm] VRAM: 16384 pages ready
+ loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
+ loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
+ loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
+ loongson 0000:00:06.1: [drm] DisplayPipe-0 has HDMI-0
+ loongson 0000:00:06.1: [drm] DisplayPipe-1 has HDMI-1
+ loongson 0000:00:06.1: [drm] Total 2 outputs
+ loongson 0000:00:06.1: [drm] registered irq: 42
+ [drm] Initialized loongson 1.0.0 20220701 for 0000:00:06.1 on minor 0
+ loongson 0000:00:06.1: [drm] *ERROR* Setting HDMI-1 PLL failed
+ loongson 0000:00:06.1: [drm] fb0: loongsondrmfb frame buffer device
+
+After apply this patch, the error "*ERROR* Setting HDMI-1 PLL failed" got
+fixed.
+
+$ dmesg | grep 0000:00:06.1
+
+ pci 0000:00:06.1: [0014:7a36] type 00 class 0x030000
+ pci 0000:00:06.1: reg 0x10: [mem 0x51250000-0x5125ffff 64bit]
+ pci 0000:00:06.1: reg 0x18: [mem 0x512b6000-0x512b60ff]
+ pci 0000:00:06.1: BAR 0: assigned [mem 0x51250000-0x5125ffff 64bit]
+ pci 0000:00:06.1: BAR 2: assigned [mem 0x512b7f00-0x512b7fff]
+ pci 0000:00:06.1: vgaarb: setting as boot VGA device
+ loongson 0000:00:06.1: Found LS2K2000 SoC, revision: 16
+ loongson 0000:00:06.1: [drm] dc: 400MHz, gmc: 800MHz, gpu: 533MHz
+ loongson 0000:00:06.1: [drm] Dedicated vram start: 0x40000000, size: 256MiB
+ loongson 0000:00:06.1: [drm] Loongson VBIOS version: 2.1
+ loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
+ loongson 0000:00:06.1: [drm] VRAM: 16384 pages ready
+ loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
+ loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
+ loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
+ loongson 0000:00:06.1: [drm] DisplayPipe-0 has HDMI-0
+ loongson 0000:00:06.1: [drm] DisplayPipe-1 has DVO-1
+ loongson 0000:00:06.1: [drm] Total 2 outputs
+ loongson 0000:00:06.1: [drm] registered irq: 42
+ [drm] Initialized loongson 1.0.0 20220701 for 0000:00:06.1 on minor 0
+ loongson 0000:00:06.1: [drm] fb0: loongsondrmfb frame buffer device
 
 Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 ---
- drivers/gpu/drm/loongson/lsdc_drv.h   |  2 ++
- drivers/gpu/drm/loongson/lsdc_probe.c | 35 +++++++++++++++++++++++++++
- drivers/gpu/drm/loongson/lsdc_probe.h |  2 ++
- 3 files changed, 39 insertions(+)
+ drivers/gpu/drm/loongson/Makefile             |  1 +
+ drivers/gpu/drm/loongson/loongson_device.c    | 46 ++++++++++
+ drivers/gpu/drm/loongson/lsdc_output.h        |  5 ++
+ drivers/gpu/drm/loongson/lsdc_output_2k2000.c | 84 +++++++++++++++++++
+ 4 files changed, 136 insertions(+)
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_output_2k2000.c
 
-diff --git a/drivers/gpu/drm/loongson/lsdc_drv.h b/drivers/gpu/drm/loongson/lsdc_drv.h
-index 46ba9b88a30d..e1f4a2db2a0a 100644
---- a/drivers/gpu/drm/loongson/lsdc_drv.h
-+++ b/drivers/gpu/drm/loongson/lsdc_drv.h
-@@ -42,6 +42,8 @@
- enum loongson_chip_id {
- 	CHIP_LS7A1000 = 0,
- 	CHIP_LS7A2000 = 1,
-+	CHIP_LS2K1000 = 2,
-+	CHIP_LS2K2000 = 3,
- 	CHIP_LS_LAST,
+diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
+index 393709e686aa..7d3d82ddd5ff 100644
+--- a/drivers/gpu/drm/loongson/Makefile
++++ b/drivers/gpu/drm/loongson/Makefile
+@@ -10,6 +10,7 @@ loongson-y := \
+ 	lsdc_i2c.o \
+ 	lsdc_irq.o \
+ 	lsdc_output.o \
++	lsdc_output_2k2000.o \
+ 	lsdc_output_7a1000.o \
+ 	lsdc_output_7a2000.o \
+ 	lsdc_plane.o \
+diff --git a/drivers/gpu/drm/loongson/loongson_device.c b/drivers/gpu/drm/loongson/loongson_device.c
+index 64096ad5466e..33aae403f0b0 100644
+--- a/drivers/gpu/drm/loongson/loongson_device.c
++++ b/drivers/gpu/drm/loongson/loongson_device.c
+@@ -6,6 +6,7 @@
+ #include <linux/pci.h>
+ 
+ #include "lsdc_drv.h"
++#include "lsdc_probe.h"
+ 
+ extern struct loongson_vbios __loongson_vbios;
+ 
+@@ -27,6 +28,15 @@ static const struct lsdc_kms_funcs ls7a2000_kms_funcs = {
+ 	.crtc_init = ls7a2000_crtc_init,
  };
  
-diff --git a/drivers/gpu/drm/loongson/lsdc_probe.c b/drivers/gpu/drm/loongson/lsdc_probe.c
-index 48ba69bb8a98..f49b642d8f65 100644
---- a/drivers/gpu/drm/loongson/lsdc_probe.c
-+++ b/drivers/gpu/drm/loongson/lsdc_probe.c
-@@ -54,3 +54,38 @@ unsigned int loongson_cpu_get_prid(u8 *imp, u8 *rev)
++static const struct lsdc_kms_funcs ls2k2000_kms_funcs = {
++	.create_i2c = lsdc_create_i2c_chan,
++	.irq_handler = ls7a2000_dc_irq_handler,
++	.output_init = ls2k2000_output_init,
++	.cursor_plane_init = ls7a2000_cursor_plane_init,
++	.primary_plane_init = lsdc_primary_plane_init,
++	.crtc_init = ls7a2000_crtc_init,
++};
++
+ static const struct loongson_gfx_desc ls7a1000_gfx = {
+ 	.dc = {
+ 		.num_of_crtc = 2,
+@@ -93,14 +103,50 @@ static const struct loongson_gfx_desc ls7a2000_gfx = {
+ 	.model = "LS7A2000 bridge chipset",
+ };
  
- 	return prid;
++static const struct loongson_gfx_desc ls2k2000_gfx = {
++	.dc = {
++		.num_of_crtc = 2,
++		.max_pixel_clk = 350000,
++		.max_width = 4096,
++		.max_height = 4096,
++		.num_of_hw_cursor = 2,
++		.hw_cursor_w = 64,
++		.hw_cursor_h = 64,
++		.pitch_align = 64,
++		.has_vblank_counter = true,
++		.funcs = &ls2k2000_kms_funcs,
++	},
++	.conf_reg_base = LS7A2000_CONF_REG_BASE,
++	.gfxpll = {
++		.reg_offset = LS7A2000_PLL_GFX_REG,
++		.reg_size = 8,
++	},
++	.pixpll = {
++		[0] = {
++			.reg_offset = LS7A2000_PIXPLL0_REG,
++			.reg_size = 8,
++		},
++		[1] = {
++			.reg_offset = LS7A2000_PIXPLL1_REG,
++			.reg_size = 8,
++		},
++	},
++	.vbios = &__loongson_vbios,
++	.chip_id = CHIP_LS2K2000,
++	.model = "LS2K2000 SoC",
++};
++
+ static const struct lsdc_desc *__chip_id_desc_table[] = {
+ 	[CHIP_LS7A1000] = &ls7a1000_gfx.dc,
+ 	[CHIP_LS7A2000] = &ls7a2000_gfx.dc,
++	[CHIP_LS2K2000] = &ls2k2000_gfx.dc,
+ 	[CHIP_LS_LAST] = NULL,
+ };
+ 
+ const struct lsdc_desc *
+ lsdc_device_probe(struct pci_dev *pdev, enum loongson_chip_id chip_id)
+ {
++	chip_id = loongson_chip_id_fixup(chip_id);
++
+ 	return __chip_id_desc_table[chip_id];
  }
-+
-+enum loongson_chip_id loongson_chip_id_fixup(enum loongson_chip_id chip_id)
-+{
-+	u8 impl;
-+
-+	if (loongson_cpu_get_prid(&impl, NULL)) {
-+		/*
-+		 * LS2K2000 only has the LoongArch edition.
-+		 */
-+		if (chip_id == CHIP_LS7A2000) {
-+			if (impl == LOONGARCH_CPU_IMP_LS2K2000)
-+				return CHIP_LS2K2000;
-+		}
-+
-+		/*
-+		 * LS2K1000 has the LoongArch edition(with two LA264 CPU core)
-+		 * and the Mips edition(with two mips64r2 CPU core), Only the
-+		 * instruction set of the CPU are changed, the peripheral
-+		 * devices are basically same.
-+		 */
-+		if (chip_id == CHIP_LS7A1000) {
-+#if defined(__loongarch__)
-+			if (impl == LOONGARCH_CPU_IMP_LS2K1000)
-+				return CHIP_LS2K1000;
-+#endif
-+
-+#if defined(__mips__)
-+			if (impl == LOONGSON_CPU_MIPS_IMP_LS2K)
-+				return CHIP_LS2K1000;
-+#endif
-+		}
-+	}
-+
-+	return chip_id;
-+}
-diff --git a/drivers/gpu/drm/loongson/lsdc_probe.h b/drivers/gpu/drm/loongson/lsdc_probe.h
-index 8bb6de2e3c64..8c630c5c90ce 100644
---- a/drivers/gpu/drm/loongson/lsdc_probe.h
-+++ b/drivers/gpu/drm/loongson/lsdc_probe.h
-@@ -9,4 +9,6 @@
- /* Helpers for chip detection */
- unsigned int loongson_cpu_get_prid(u8 *impl, u8 *rev);
+diff --git a/drivers/gpu/drm/loongson/lsdc_output.h b/drivers/gpu/drm/loongson/lsdc_output.h
+index a37a72687bdf..463d59d680c2 100644
+--- a/drivers/gpu/drm/loongson/lsdc_output.h
++++ b/drivers/gpu/drm/loongson/lsdc_output.h
+@@ -61,6 +61,11 @@ int ls7a2000_output_init(struct drm_device *ddev,
+ 			 struct i2c_adapter *ddc,
+ 			 unsigned int index);
  
-+enum loongson_chip_id loongson_chip_id_fixup(enum loongson_chip_id chip_id);
++int ls2k2000_output_init(struct drm_device *ddev,
++			 struct lsdc_display_pipe *dispipe,
++			 struct i2c_adapter *ddc,
++			 unsigned int pipe);
 +
- #endif
+ int lsdc_output_init(struct drm_device *ddev,
+ 		     struct lsdc_display_pipe *dispipe,
+ 		     struct i2c_adapter *ddc,
+diff --git a/drivers/gpu/drm/loongson/lsdc_output_2k2000.c b/drivers/gpu/drm/loongson/lsdc_output_2k2000.c
+new file mode 100644
+index 000000000000..350af51da541
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/lsdc_output_2k2000.c
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2023 Loongson Technology Corporation Limited
++ */
++
++#include "lsdc_drv.h"
++#include "lsdc_output.h"
++
++/*
++ * The DC in LS2K2000 is nearly same with the DC in LS7A2000, except that
++ * LS2K2000 has only one built-in HDMI encoder which is connected with the
++ * display pipe 0. Display pipe 1 is a DVO output interface.
++ *       ________________________
++ *      |                        |                        ______________
++ *      |             +----------|                       |              |
++ *      | CRTC-0 ---> | HDMI phy ---> HDMI Connector --> | HDMI Monitor |<--+
++ *      |             +----------|                       |______________|   |
++ *      |            +-------+   |                                          |
++ *      |            | i2c-x |   <------------------------------------------+
++ *      |            +-------+   |
++ *      |                        |
++ *      |    DC in LS2K2000      |
++ *      |                        |
++ *      |            +-------+   |
++ *      |            | i2c-y |   <------------------------------------+
++ *      |            +-------+   |                                    |
++ *      |                        |                                ____|____
++ *      |                +-------|                               |         |
++ *      | CRTC-1 ------> |  DVO  --> Encoder1 --> Connector1 --> | Display |
++ *      |                +-------|                               |_________|
++ *      |________________________|
++ */
++
++static void ls2k2000_pipe1_dvo_encoder_reset(struct drm_encoder *encoder)
++{
++	struct drm_device *ddev = encoder->dev;
++	struct lsdc_device *ldev = to_lsdc(ddev);
++	u32 val;
++
++	val = PHY_CLOCK_POL | PHY_CLOCK_EN | PHY_DATA_EN;
++	lsdc_wreg32(ldev, LSDC_CRTC1_DVO_CONF_REG, val);
++}
++
++const struct drm_encoder_funcs ls2k2000_pipe1_dvo_encoder_funcs = {
++	.reset = ls2k2000_pipe1_dvo_encoder_reset,
++	.destroy = drm_encoder_cleanup,
++};
++
++static const struct lsdc_output_desc ls2k2000_output_desc[2] = {
++	{
++		.pipe = 0,
++		.encoder_type = DRM_MODE_ENCODER_TMDS,
++		.connector_type = DRM_MODE_CONNECTOR_HDMIA,
++		.encoder_funcs = &lsdc_pipe0_hdmi_encoder_funcs,
++		.encoder_helper_funcs = &lsdc_pipe0_hdmi_encoder_helper_funcs,
++		.connector_funcs = &lsdc_pipe0_hdmi_connector_funcs,
++		.connector_helper_funcs = &lsdc_connector_helper_funcs,
++		.name = "HDMI-0",
++	},
++	{
++		.pipe = 1,
++		.encoder_type = DRM_MODE_ENCODER_DPI,
++		.connector_type = DRM_MODE_CONNECTOR_DPI,
++		.encoder_funcs = &ls2k2000_pipe1_dvo_encoder_funcs,
++		.encoder_helper_funcs = &lsdc_encoder_helper_funcs,
++		.connector_funcs = &lsdc_connector_funcs,
++		.connector_helper_funcs = &lsdc_connector_helper_funcs,
++		.name = "DVO-1",
++	},
++};
++
++int ls2k2000_output_init(struct drm_device *ddev,
++			 struct lsdc_display_pipe *dispipe,
++			 struct i2c_adapter *ddc,
++			 unsigned int pipe)
++{
++	struct lsdc_output *output = &dispipe->output;
++
++	output->descp = &ls2k2000_output_desc[pipe];
++
++	lsdc_output_init(ddev, dispipe, ddc, pipe);
++
++	return 0;
++}
 -- 
 2.34.1
 
