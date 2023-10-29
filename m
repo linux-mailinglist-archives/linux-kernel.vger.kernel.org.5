@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A95B7DAA76
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 03:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659A67DAA7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 03:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjJ2CN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 22:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S229702AbjJ2CUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 22:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2CNy (ORCPT
+        with ESMTP id S229446AbjJ2CUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 22:13:54 -0400
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D3DB8;
-        Sat, 28 Oct 2023 19:13:51 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 5BA05207AC;
-        Sun, 29 Oct 2023 03:13:49 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LPJ8PIOGi8-4; Sun, 29 Oct 2023 03:13:45 +0100 (CET)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id C859E20612;
-        Sun, 29 Oct 2023 03:13:45 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id B9D0380004A;
-        Sun, 29 Oct 2023 03:13:45 +0100 (CET)
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 29 Oct 2023 03:13:45 +0100
-Received: from moon.secunet.de (172.18.149.1) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Sun, 29 Oct
- 2023 03:13:44 +0100
-Date:   Sun, 29 Oct 2023 03:13:35 +0100
-From:   Antony Antony <antony.antony@secunet.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <steffen.klassert@secunet.com>, <antony.antony@secunet.com>,
-        <devel@linux-ipsec.org>
-Subject: Re: [RFC bpf-next 0/6] Add bpf_xdp_get_xfrm_state() kfunc
-Message-ID: <ZT2/z1pbufL0fYqe@moon.secunet.de>
-Reply-To: <antony.antony@secunet.com>
-References: <cover.1698431765.git.dxu@dxuuu.xyz>
+        Sat, 28 Oct 2023 22:20:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD81C1
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 19:20:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A7E9FC433C9;
+        Sun, 29 Oct 2023 02:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698546021;
+        bh=mHqrtotLhVYixBi6DdxWrP1feYoRLltHdF408c+SDzI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SRB6T5xQ6BtuBgG3zjbj1IO83AEJ1IPv9igpVFKR5uDDIIEXdlGKuzXjGFKNy/V0k
+         WgHLKi31UXScu54vNvMlF+CGdH12KFRK8M2/G1f24mAi6bqwyxbwRQYBLWLEw0eJlv
+         E7oWWOkPZViOa0T4RTHUYh275G8xojJOAsTzgT9oLL7Wz2wC+Ti8rx6DTjTSoP5+ga
+         4a0bBglvTMudjdG7C/A2zXJ+fWz/Fcj8pFzFNe7rP7xe3+q1LE+P7y73V/7SGBgQ8d
+         klwqhPJ28njrMhKDaYRzZlSaRhfFgm1jOfFH+ptC8j2jYxiMHZiy8/AHQNK2MbqRVT
+         YPVHd7QCCcOSw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8EB76C04E32;
+        Sun, 29 Oct 2023 02:20:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1698431765.git.dxu@dxuuu.xyz>
-Organization: secunet
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4] platform/chrome: cros_ec_lpc: Separate host command and
+ irq disable
+From:   patchwork-bot+chrome-platform@kernel.org
+Message-Id: <169854602158.20472.60935674192148715.git-patchwork-notify@kernel.org>
+Date:   Sun, 29 Oct 2023 02:20:21 +0000
+References: <20231027160221.v4.1.I1725c3ed27eb7cd9836904e49e8bfa9fb0200a97@changeid>
+In-Reply-To: <20231027160221.v4.1.I1725c3ed27eb7cd9836904e49e8bfa9fb0200a97@changeid>
+To:     Lalith Rajendran <lalithkraj@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bleung@chromium.org,
+        groeck@chromium.org, rrangel@chromium.org, timvp@chromium.org,
+        tzungbi@kernel.org, chrome-platform@lists.linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,46 +54,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 12:46:16 -0600, Daniel Xu wrote:
-> This patchset adds a kfunc helper, bpf_xdp_get_xfrm_state(), that wraps
-> xfrm_state_lookup(). The intent is to support software RSS (via XDP) for
-> the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
-> on (hopefully) reproducible AWS testbeds indicate that single tunnel
-> pcpu ipsec can reach line rate on 100G ENA nics.
-> 
-> More details about that will be presented at netdev next week [1].
-> 
-> Antony did the initial stable bpf helper - I later ported it to unstable
-> kfuncs. So for the series, please apply a Co-developed-by for Antony,
-> provided he acks and signs off on this.
+Hello:
 
-Thanks Daniel for working on this and bringing it upstreadm.
+This patch was applied to chrome-platform/linux.git (for-next)
+by Tzung-Bi Shih <tzungbi@kernel.org>:
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
+On Fri, 27 Oct 2023 16:02:22 -0500 you wrote:
+> From: Lalith Rajendran <lalithkraj@chromium.org>
+> 
+> Both cros host command and irq disable were moved to suspend
+> prepare stage from late suspend recently. This is causing EC
+> to report MKBP event timeouts during suspend stress testing.
+> When the MKBP event timeouts happen during suspend, subsequent
+> wakeup of AP by EC using MKBP doesn't happen properly. Move the
+> irq disabling part back to late suspend stage which is a general
+> suggestion from the suspend kernel documentaiton to do irq
+> disable as late as possible.
+> 
+> [...]
 
-> 
-> [0]: https://datatracker.ietf.org/doc/html/draft-ietf-ipsecme-multi-sa-performance-02
-> [1]: https://netdevconf.info/0x17/sessions/workshop/security-workshop.html
-> 
-> Daniel Xu (6):
->   bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
->   bpf: selftests: test_tunnel: Use ping -6 over ping6
->   bpf: selftests: test_tunnel: Mount bpffs if necessary
->   bpf: selftests: test_tunnel: Use vmlinux.h declarations
->   bpf: selftests: test_tunnel: Disable CO-RE relocations
->   bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-> 
->  include/net/xfrm.h                            |   9 ++
->  net/xfrm/Makefile                             |   1 +
->  net/xfrm/xfrm_policy.c                        |   2 +
->  net/xfrm/xfrm_state_bpf.c                     | 105 ++++++++++++++++++
->  .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
->  .../selftests/bpf/progs/test_tunnel_kern.c    |  95 +++++++++-------
->  tools/testing/selftests/bpf/test_tunnel.sh    |  43 ++++---
->  7 files changed, 202 insertions(+), 54 deletions(-)
->  create mode 100644 net/xfrm/xfrm_state_bpf.c
-> 
-> -- 
-> 2.42.0
-> 
+Here is the summary with links:
+  - [v4] platform/chrome: cros_ec_lpc: Separate host command and irq disable
+    https://git.kernel.org/chrome-platform/c/47ea0ddb1f56
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
