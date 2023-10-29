@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2917DAB3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 08:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F4D7DAB55
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 08:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbjJ2HJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 03:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        id S230022AbjJ2HPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 03:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2HJz (ORCPT
+        with ESMTP id S230012AbjJ2HPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 03:09:55 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8BE97
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 00:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=9lN2ObqSL6Cmzxyrg8cFMqmAxXNAfu2kZGPVULsb8jI=;
-  b=udaodB4Mhgae7NxN/Irls/ppHzYt1+VxqvYjrGqrBo66d1cU4GgHsvJy
-   raSAH0dF9uGMHumLiBbm65irJtDWsGsvSeSgDhQvrM2+VfakpB2xgl5Uz
-   e2ZDW2ti9u9h7b31wcYExjch4M2Gdrxp+gSztXI69fk9tA3KnssuCr+L2
-   s=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,260,1694728800"; 
-   d="scan'208";a="70037883"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 08:09:46 +0100
-Date:   Sun, 29 Oct 2023 08:09:45 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     David Vernet <void@manifault.com>
-cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, joshdon@google.com,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, youssefesmat@google.com,
-        greg.marsden@oracle.com, willy@infradead.org,
-        andrea.righi@canonical.com, andrealmeid@igalia.com,
-        changwoo@igalia.com, gpiccoli@igalia.com, tj@kernel.org,
-        colin.i.king@gmail.com, ast@kernel.org, julia.lawall@inria.fr,
-        himadrispandya@gmail.com, redha.gouicem@rwth-aachen.de,
-        admin@ptr1337.dev, lucjan.lucjanov@gmail.com
-Subject: Re: Sched Ext slack channel / office hours
-In-Reply-To: <20231018205431.GA4176@maniforge>
-Message-ID: <alpine.DEB.2.22.394.2310290809110.3136@hadrien>
-References: <20231018205431.GA4176@maniforge>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 29 Oct 2023 03:15:51 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C903C103
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 00:15:44 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C459A1C0070; Sun, 29 Oct 2023 08:15:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1698563742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PHNsN7kdXf3he6aH97H69VuD01SSwZUqepp/AZtvVu0=;
+        b=k2WKPssDcxGwf2Xui+voNyeWMFK9f2fo6XWiKzEVFTMjKrU9WghKR03GWpC9oH9pVAFJ5T
+        4Xoiz9cSFOtXH7JS2P8TWyTCdQI1R6JyiLd+Cu/6H+Scgs7ZW3k+qmPoyZhghn5QxQd25h
+        U24LZfwfaU772OxzjTwj99dm3BROkYI=
+Date:   Sun, 29 Oct 2023 08:15:41 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] gnss: tell what GNSS means
+Message-ID: <ZT4GnZUUVy0Ri5rS@duo.ucw.cz>
+References: <20230925054346.18065-1-rdunlap@infradead.org>
+ <ZS1K5AoZnS-3H-c3@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-451953215-1698563386=:3136"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="V01C0rPXzEZtMUI/"
+Content-Disposition: inline
+In-Reply-To: <ZS1K5AoZnS-3H-c3@hovoldconsulting.com>
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
+        SPF_NEUTRAL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-451953215-1698563386=:3136
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+--V01C0rPXzEZtMUI/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon 2023-10-16 16:38:28, Johan Hovold wrote:
+> On Sun, Sep 24, 2023 at 10:43:46PM -0700, Randy Dunlap wrote:
+> > Tell users what GNSS means in the Kconfig prompt.
+> =20
+> >  menuconfig GNSS
+> > -	tristate "GNSS receiver support"
+> > +	tristate "GNSS (Global Navigation Satellite System) receiver support"
+>=20
+> No, I don't like the way this clutters menuconfig. The above would make
+> this one of the longest entries and for very little gain.
+
+Yeah, because everyone knows what GNSS means.
+
+Except that most people know GNSS as GPS. You misnamed the subsystem,
+so it now needs explanation :-(.
+								Pavel
 
 
+--V01C0rPXzEZtMUI/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-On Wed, 18 Oct 2023, David Vernet wrote:
+-----BEGIN PGP SIGNATURE-----
 
-> Hello everyone,
->
-> The first RFC patch set [0] for sched_ext was sent to the upstream list
-> almost one year ago, with three more revisions of the series having been
-> sent upstream since. In that time, a number of individuals, companies,
-> and organizations have begun to use and experiment with sched_ext. We
-> want to make it easier to collaborate, so we’ve decided to set up a
-> weekly office hours call, and create a Slack channel [1] that folks can
-> join to ask questions, discuss features, etc.
->
-> [0]: https://lore.kernel.org/lkml/20221130082313.3241517-1-tj@kernel.org/
-> [1]: https://join.slack.com/t/schedextworkspace/shared_invite/zt-24c4on3sk-sHlozdLfCZBODfwU6t6dbw
->
-> The Slack channel can be joined via the link in [1]. For office hours,
-> we’ll start with 10:00 PDT / 17:00 UTC on Mondays (likely starting the
-> week of 10/30), but we can change the time if it’s inconvenient for too
-> many folks. The calls will likely take place through Slack, so you’ll
-> have to join the Slack channel if you want to participate in the office
-> hours calls. As a friendly reminder, you can access the sched_ext
-> repository at [2].
->
-> [2]: https://github.com/sched-ext/sched_ext
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZT4GnQAKCRAw5/Bqldv6
+8vs6AJ94Iz6zUQbGOTHPj8X8wHmAysCXfwCeJuLZTpDtvWrcpa7k7Z5+djM+q0Q=
+=asuu
+-----END PGP SIGNATURE-----
 
-In Europe, we just changed to winter time.  I don't know if it is the same
-in the US.  What time will the meeting be?
-
-thanks,
-julia
---8323329-451953215-1698563386=:3136--
+--V01C0rPXzEZtMUI/--
