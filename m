@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7877F7DB057
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46677DAFD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbjJ2XFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
+        id S231439AbjJ2XA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjJ2XEh (ORCPT
+        with ESMTP id S231451AbjJ2W7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:04:37 -0400
+        Sun, 29 Oct 2023 18:59:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A16F4EE3;
-        Sun, 29 Oct 2023 16:00:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57722C116B5;
-        Sun, 29 Oct 2023 22:58:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0CB2D57;
+        Sun, 29 Oct 2023 15:58:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B35C116B9;
+        Sun, 29 Oct 2023 22:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620334;
-        bh=zU+lIRouFZQEutZDW0zkHy3oOu3eFvjDeDjEihVxilw=;
+        s=k20201202; t=1698620335;
+        bh=dEu3444VhH0+iwkcPyJ9iW+h66Z9iMseq9nw/fn7lP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CGaxBZgwyzxl3DY/68mdHXTPFvWbafnBjCHtPfDB7vYyOpITHpRrrlxmA9Wqx45tV
-         ag2tL7QJgaBBmmMZ0dVsbwR9LP5cjAN6uZgYLHaW41+Rt0p5Vp5Os6faLqVRJ+E+6e
-         p8llglLk6AtKR+yhYTD+KRKkiGfpqEnAb/g2gTMg51XY1UjQO0+pD2DiSMb1zM7vZt
-         qqDXGGx0APsMtiX7IQ02J3VIq1YW+9uBZVuFMFuSXS9GczSd1FdqqbqsnNjVSKBLrJ
-         Ka6D/cacVE2kTICiVd3Pmx7hNUqwBICdAnDbiG0/WWHKsL1tmEwXtaJAyVJnF36IV/
-         VYnOcWYxnC1bw==
+        b=qNdjrKfndki2ajr9XqCxc5UFDasfROyy9KoLHSiqGIBGiyEqRLJdpn2m4y0gD1mmQ
+         mpd8XBTJrqc5T+jOsytqrvkfVUcdGyxIGl8rXr6E9hHRXSeHY95e34Fz5AHAdzGcZV
+         OVwXQCnph14rClzXIyAnw+u/XZ3bq6glwrSNgEUIjU1K1k7DGd2JdT5XPLF6fFIjEN
+         osH1AL2MP8cryhGJ9E20hlNIyi4G9GZQfH+GcR6kHUI970+bdpaqXJ8bvCHhGHWniz
+         lgnlwU6ezlg4jXQWbvpJwzSLSVECSYlP4ITFHSL0gqiXwMGulnmC6rPXCk5RUwTXF/
+         Ow4nDDXjygXmw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liming Sun <limings@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, ilpo.jarvinen@linux.intel.com,
-        markgross@kernel.org, vadimp@nvidia.com,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 36/39] platform/mellanox: mlxbf-tmfifo: Fix a warning message
-Date:   Sun, 29 Oct 2023 18:57:08 -0400
-Message-ID: <20231029225740.790936-36-sashal@kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>, welsh@cassens.com,
+        Sasha Levin <sashal@kernel.org>, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 37/39] nvme-pci: add BOGUS_NID for Intel 0a54 device
+Date:   Sun, 29 Oct 2023 18:57:09 -0400
+Message-ID: <20231029225740.790936-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -55,63 +53,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liming Sun <limings@nvidia.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 99c09c985e5973c8f0ad976ebae069548dd86f12 ]
+[ Upstream commit 5c3f4066462a5f6cac04d3dd81c9f551fabbc6c7 ]
 
-This commit fixes the smatch static checker warning in function
-mlxbf_tmfifo_rxtx_word() which complains data not initialized at
-line 634 when IS_VRING_DROP() is TRUE.
+These ones claim cmic and nmic capable, so need special consideration to ignore
+their duplicate identifiers.
 
-Signed-off-by: Liming Sun <limings@nvidia.com>
-Link: https://lore.kernel.org/r/20231012230235.219861-1-limings@nvidia.com
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217981
+Reported-by: welsh@cassens.com
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/mellanox/mlxbf-tmfifo.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ drivers/nvme/host/pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index a04ff89a7ec44..9925a6d94affc 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -588,24 +588,25 @@ static void mlxbf_tmfifo_rxtx_word(struct mlxbf_tmfifo_vring *vring,
- 
- 	if (vring->cur_len + sizeof(u64) <= len) {
- 		/* The whole word. */
--		if (!IS_VRING_DROP(vring)) {
--			if (is_rx)
-+		if (is_rx) {
-+			if (!IS_VRING_DROP(vring))
- 				memcpy(addr + vring->cur_len, &data,
- 				       sizeof(u64));
--			else
--				memcpy(&data, addr + vring->cur_len,
--				       sizeof(u64));
-+		} else {
-+			memcpy(&data, addr + vring->cur_len,
-+			       sizeof(u64));
- 		}
- 		vring->cur_len += sizeof(u64);
- 	} else {
- 		/* Leftover bytes. */
--		if (!IS_VRING_DROP(vring)) {
--			if (is_rx)
-+		if (is_rx) {
-+			if (!IS_VRING_DROP(vring))
- 				memcpy(addr + vring->cur_len, &data,
- 				       len - vring->cur_len);
--			else
--				memcpy(&data, addr + vring->cur_len,
--				       len - vring->cur_len);
-+		} else {
-+			data = 0;
-+			memcpy(&data, addr + vring->cur_len,
-+			       len - vring->cur_len);
- 		}
- 		vring->cur_len = len;
- 	}
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 64990a2cfd0a7..886c3fc9578e4 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3439,7 +3439,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x0a54),	/* Intel P4500/P4600 */
+ 		.driver_data = NVME_QUIRK_STRIPE_SIZE |
+ 				NVME_QUIRK_DEALLOCATE_ZEROES |
+-				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
++				NVME_QUIRK_IGNORE_DEV_SUBNQN |
++				NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_VDEVICE(INTEL, 0x0a55),	/* Dell Express Flash P4600 */
+ 		.driver_data = NVME_QUIRK_STRIPE_SIZE |
+ 				NVME_QUIRK_DEALLOCATE_ZEROES, },
 -- 
 2.42.0
 
