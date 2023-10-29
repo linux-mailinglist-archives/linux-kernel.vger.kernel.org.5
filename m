@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CC77DACF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802647DACF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjJ2PH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 11:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S230175AbjJ2PIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 11:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJ2PHz (ORCPT
+        with ESMTP id S229512AbjJ2PH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 11:07:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA2FB8;
-        Sun, 29 Oct 2023 08:07:50 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc394f4cdfso2584095ad.0;
-        Sun, 29 Oct 2023 08:07:50 -0700 (PDT)
+        Sun, 29 Oct 2023 11:07:56 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2498EBC;
+        Sun, 29 Oct 2023 08:07:52 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b20a48522fso3305579b3a.1;
+        Sun, 29 Oct 2023 08:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698592069; x=1699196869; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698592071; x=1699196871; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rq2lTx4r6AxRWMwoBx4OQjZx3mpwnDbM/buzeUwRHtY=;
-        b=fFR/S4T+NgyUIelowbgLRBRp6x4H1D6CG4UvrSoSXWadNTByEBsK2eXxA2PZ+raML1
-         PpKUD+TYbAv4st77nWYZ//WtiF3OhNSx+kzOeZKS5JuiCgocs2OSOYLsGljHcu1EC2ig
-         bffHgCuqaI8fsdatcj5HV1Y704APE27ZnQv5tTxlb0tN643iEkZYumW4b156/oxSa3HO
-         WeQPQZWrsaG73C8F4rYfTuFuALtWB3zx2qZOno4HZs/UQ732yJ0kECxJ2NsGrtItCqBK
-         Vp4Qlm6I6lDSMVkXdXlodtxhPjZgXUmYULMkUGBm9nYxAAnbS2RZW1oF4L63K2rhcLxc
-         3LiA==
+        bh=Lt1yPiSudbjGWZyU7fD8DRkiWRaUYJwJXas2ZsoVM40=;
+        b=WuLmA1toE2/Yt/cFUt+jPZqgjyC6jZuRcda8PwjdcOWsS+jPlwp/NMM4lmsScO6Kyt
+         4jpHVRAYdcXzjrF+VADGXKcI7sLEfv7pH3hqn4ziqnO6+wC46UTX/MPYcX8RVBj5RnPF
+         1JXJqg6d1IbC0nO8Rcs8s11RVzrhsp5WlCykYoW04Xj6Oxo0a2D2u5PBlccCfAcJdt1p
+         NaJnUZrlv44RDfV9u3w4WojtkRs0JI5PY9RFLyl7LF8qWF5RmxOsgZG36+F9V71v8AR1
+         UspM3eDhp1SwA0BOXjQ0Vdii0mfGwwbYYwrnbzMnnjfQsAF0WW8jAdYsY7AqwT1TId5f
+         xFug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698592069; x=1699196869;
+        d=1e100.net; s=20230601; t=1698592071; x=1699196871;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rq2lTx4r6AxRWMwoBx4OQjZx3mpwnDbM/buzeUwRHtY=;
-        b=mao/j7ELAN+p7UlPd/pju7RjnZ4ZnBwjnSN16CPkOUbV+ZjmFGLTRUyxckbx3u4Ypk
-         /wGQLEofZ4XRoudKkuVpTJaKd2f5WUVc2XfODhZI/6115zQgq/VGgsWqI8ncqrGTU31X
-         ZhCe3oUheQGZXwL+2osUUn4C0JlKH4nejpP6PnRY/vI0LhF56jg3EUls3OYsNrxQSl1S
-         01bADBaTIhZH2f4TUKJoWdj221MTEjxuuPbxFi4nU4zpUvGefpQ5HtPD81TLQj6lyAyP
-         EEtTvfHLq+V/QsmlldqX0tBEWp2nIe1yHulymQZmndunSRUzJe1WSoK8Ab+zqWpSVnbw
-         zebA==
-X-Gm-Message-State: AOJu0Yz/wZemfBCJNBSR9bcjYsio56qwBM+rmZTn8MGqKrvxHrV3ZPQf
-        lcPET+yaFpcmPYesa7KHDLA=
-X-Google-Smtp-Source: AGHT+IHqEqQMKupQeBAJEYNFdKsCoTID1AbZp8zrduE+qBv97MGFQtDmaZUFOCmKTxG5w1vSOlteIg==
-X-Received: by 2002:a17:902:c641:b0:1cc:2bd9:1b2d with SMTP id s1-20020a170902c64100b001cc2bd91b2dmr3052186pls.43.1698592069312;
-        Sun, 29 Oct 2023 08:07:49 -0700 (PDT)
+        bh=Lt1yPiSudbjGWZyU7fD8DRkiWRaUYJwJXas2ZsoVM40=;
+        b=JbyquM56QEHOQ0FH/E+e2tcn4XmxQ7wT56HdaHUSXQBOsIKaED+1HbkjkwfnKKWC5i
+         tvl0CbOjiEhDBbWxyEVBDfkSf/fh+auymkToB3+Wlc+i3RXKl/Y/whgxJFBO3J0Cfyoe
+         aGiaWhEgkvdD62cHqs2MoUDrabUT9ELMHaVA9crSxpcSNUv/6FwVH12d4w0X7sfx8jIn
+         X0wpUtdHVsmfgubDYXIUROizyK6Iuq1rFW51c7VjMNeWTqRt/5zOmJHhYZgM5xU7OSpU
+         86XOMyTQ/xFhWKYV3yyh8G3vAEsTdpp+hBbfPhD3VOMcKp9H3DFcl8fcabn/WjAS8V2L
+         3xrA==
+X-Gm-Message-State: AOJu0YwlslWHAcyd2aak55Zvc3rZJ1Zik1BK+TN7T3bTEera7ulyx28W
+        PN0czmund9ag17B4/T3ld5g=
+X-Google-Smtp-Source: AGHT+IGCMUKh34gT5nl8CUjZ566Kd2FRN3OEZw5HRLc+unyF38DiiGuQSIWjSbXNTAFuqoOsPqb+tA==
+X-Received: by 2002:a05:6a21:7985:b0:159:b7ba:74bd with SMTP id bh5-20020a056a21798500b00159b7ba74bdmr5750825pzc.50.1698592071558;
+        Sun, 29 Oct 2023 08:07:51 -0700 (PDT)
 Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
-        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001c5eb37e92csm4640408plx.305.2023.10.29.08.07.47
+        by smtp.gmail.com with ESMTPSA id p22-20020a637f56000000b005b8ea15c338sm3466302pgn.62.2023.10.29.08.07.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 08:07:48 -0700 (PDT)
+        Sun, 29 Oct 2023 08:07:50 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
@@ -57,14 +57,15 @@ Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         Daniel Vetter <daniel@ffwll.ch>,
         Daniel Stone <daniels@collabora.com>,
         Rob Clark <robdclark@chromium.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-pm@vger.kernel.org (open list:HIBERNATION (aka Software Suspend,
-        aka swsusp)), Marijn Suijten <marijn.suijten@somainline.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sean Paul <sean@poorly.run>
-Subject: [PATCH v2 0/2] drm/msm/gem: Add metadata uapi
-Date:   Sun, 29 Oct 2023 08:07:36 -0700
-Message-ID: <20231029150740.6434-1-robdclark@gmail.com>
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] drm/msm: Small uabi fixes
+Date:   Sun, 29 Oct 2023 08:07:37 -0700
+Message-ID: <20231029150740.6434-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231027194537.408922-1-robdclark@gmail.com>
 References: <20231027194537.408922-1-robdclark@gmail.com>
@@ -82,21 +83,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-Add metadata mechanism to provide a back-channel to communicate image
-layout information between vk and gl, because EXT_external_objects
-doesn't support explicit modifiers and "OPTIMAL_TILING_EXT" is not
-enough information for the importer to deduce the layout.
+Correct the minor version exposed and error return value for
+MSM_INFO_GET_NAME.
 
-Rob Clark (2):
-  drm/msm: Small uabi fixes
-  drm/msm/gem: Add metadata
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/gpu/drm/msm/msm_drv.c | 59 +++++++++++++++++++++++++++++++++--
- drivers/gpu/drm/msm/msm_gem.c |  1 +
- drivers/gpu/drm/msm/msm_gem.h |  4 +++
- include/uapi/drm/msm_drm.h    |  2 ++
- 4 files changed, 64 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 4bd028fa7500..781db689fb16 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -51,7 +51,7 @@
+  * - 1.11.0 - Add wait boost (MSM_WAIT_FENCE_BOOST, MSM_PREP_BOOST)
+  */
+ #define MSM_VERSION_MAJOR	1
+-#define MSM_VERSION_MINOR	10
++#define MSM_VERSION_MINOR	11
+ #define MSM_VERSION_PATCHLEVEL	0
+ 
+ static void msm_deinit_vram(struct drm_device *ddev);
+@@ -896,7 +896,7 @@ static int msm_ioctl_gem_info(struct drm_device *dev, void *data,
+ 		break;
+ 	case MSM_INFO_GET_NAME:
+ 		if (args->value && (args->len < strlen(msm_obj->name))) {
+-			ret = -EINVAL;
++			ret = -ETOOSMALL;
+ 			break;
+ 		}
+ 		args->len = strlen(msm_obj->name);
 -- 
 2.41.0
 
