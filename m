@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEE67DAABF
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1A47DAAC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 05:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjJ2E1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 00:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S230080AbjJ2E1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 00:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjJ2E1i (ORCPT
+        with ESMTP id S230055AbjJ2E1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 00:27:38 -0400
+        Sun, 29 Oct 2023 00:27:43 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFA8CC;
-        Sat, 28 Oct 2023 21:27:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B30C10B;
+        Sat, 28 Oct 2023 21:27:38 -0700 (PDT)
 Received: from localhost (unknown [188.24.143.101])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C16796607385;
-        Sun, 29 Oct 2023 04:27:33 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B04776607388;
+        Sun, 29 Oct 2023 04:27:36 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698553653;
-        bh=rQEEY6dQh5x1XU/k0bkvaMxbU5A9Ka+KlBHywJ6TdZA=;
+        s=mail; t=1698553656;
+        bh=ws/tHftC6ooYXFFPrRkdjo583U1IPv/5VDVbOl/IleQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ply1YYfpowSWtHZbXt0ZnAxukmin99chjF272ojHa0/L8dD4MgwT8yDf3dX5K0kH7
-         N3qheSFgI2+Na+BqE5ZPpFRj6DsYlmMgAw2ya2cl/vVMRYIBAgt0xG/J+EUyVSIyiq
-         MHvqlJ79Hdy061OWUwAi2apEw/xePCHFtUJr6AgNclKW40CsbaR3bQKVG+x2MoF7Dy
-         DsgtRJ84r+PAtfm/vxu2KtRmDXgEOEVOeY0kdp0HCH3WOAoNKlmFaGjtayHxc88GBW
-         J4D3DP56T1NEpd9rfPxsYKjXw9qxOjXgEL9+Tnos5kBCwN/2V0M7glqryd5IscL55+
-         seI9heDfUmE8A==
+        b=hO7JKhCfgez4T2EdD7WdvDzdPCr/74lUNLBlZiIJrZFAB1wawXL4bQeTCrsiL5oK2
+         Ef/Y6mxqH+0jfzTktFf4NAqixF5R8VcduHXBNa8HanlJ9Ee+qTcgwm0K7AhyHFFk50
+         xq2HZox5esJDX1w7WAVPy5G4wHEaeqO7RREU38MBxdSct1YdbILqymZ3Ckdg9ybW8e
+         samRlBIopNGtUSJVE9F3pKDQ8BtRBwWKUUxN6dCOH45PlHOcB2wNbSBmoIRuixe4PD
+         IKf2ch/qYB7zxV+dxuUfMYSyzOHObaGDiiCibF5A5UcNEVC7Gsr38czGoBvd9lfTRl
+         QBaTfTewEIMOA==
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -54,9 +54,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: [PATCH v2 05/12] net: stmmac: dwmac-starfive: Add support for JH7100 SoC
-Date:   Sun, 29 Oct 2023 06:27:05 +0200
-Message-ID: <20231029042712.520010-6-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 06/12] riscv: dts: starfive: jh7100: Add dma-noncoherent property
+Date:   Sun, 29 Oct 2023 06:27:06 +0200
+Message-ID: <20231029042712.520010-7-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
 References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
@@ -71,112 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a missing quirk to enable support for the StarFive JH7100 SoC.
+The RISC-V architecture is by default coherent, since it selects
+ARCH_DMA_DEFAULT_COHERENT, but the StarFive JH7100 is not, hence provide
+the dma-noncoherent property to the soc DT node.
 
-Additionally, for greater flexibility in operation, allow using the
-rgmii-rxid and rgmii-txid phy modes.
-
-Co-developed-by: Emil Renner Berthing <kernel@esmil.dk>
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  6 ++--
- .../ethernet/stmicro/stmmac/dwmac-starfive.c  | 32 ++++++++++++++++---
- 2 files changed, 31 insertions(+), 7 deletions(-)
+ arch/riscv/boot/dts/starfive/jh7100.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index a2b9e289aa36..c3c2c8360047 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -165,9 +165,9 @@ config DWMAC_STARFIVE
- 	help
- 	  Support for ethernet controllers on StarFive RISC-V SoCs
+diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+index e68cafe7545f..06bb157ce111 100644
+--- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+@@ -144,6 +144,7 @@ soc {
+ 		interrupt-parent = <&plic>;
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
++		dma-noncoherent;
+ 		ranges;
  
--	  This selects the StarFive platform specific glue layer support for
--	  the stmmac device driver. This driver is used for StarFive JH7110
--	  ethernet controller.
-+	  This selects the StarFive platform specific glue layer support
-+	  for the stmmac device driver. This driver is used for the
-+	  StarFive JH7100 and JH7110 ethernet controllers.
- 
- config DWMAC_STI
- 	tristate "STi GMAC support"
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-index 5d630affb4d1..88c431edcea0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
-@@ -15,13 +15,20 @@
- 
- #include "stmmac_platform.h"
- 
--#define STARFIVE_DWMAC_PHY_INFT_RGMII	0x1
--#define STARFIVE_DWMAC_PHY_INFT_RMII	0x4
--#define STARFIVE_DWMAC_PHY_INFT_FIELD	0x7U
-+#define STARFIVE_DWMAC_PHY_INFT_RGMII		0x1
-+#define STARFIVE_DWMAC_PHY_INFT_RMII		0x4
-+#define STARFIVE_DWMAC_PHY_INFT_FIELD		0x7U
-+
-+#define JH7100_SYSMAIN_REGISTER49_DLYCHAIN	0xc8
-+
-+struct starfive_dwmac_data {
-+	unsigned int gtxclk_dlychain;
-+};
- 
- struct starfive_dwmac {
- 	struct device *dev;
- 	struct clk *clk_tx;
-+	const struct starfive_dwmac_data *data;
- };
- 
- static void starfive_dwmac_fix_mac_speed(void *priv, unsigned int speed, unsigned int mode)
-@@ -67,6 +74,8 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
- 
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
- 		mode = STARFIVE_DWMAC_PHY_INFT_RGMII;
- 		break;
- 
-@@ -89,6 +98,14 @@ static int starfive_dwmac_set_mode(struct plat_stmmacenet_data *plat_dat)
- 	if (err)
- 		return dev_err_probe(dwmac->dev, err, "error setting phy mode\n");
- 
-+	if (dwmac->data) {
-+		err = regmap_write(regmap, JH7100_SYSMAIN_REGISTER49_DLYCHAIN,
-+				   dwmac->data->gtxclk_dlychain);
-+		if (err)
-+			return dev_err_probe(dwmac->dev, err,
-+					     "error selecting gtxclk delay chain\n");
-+	}
-+
- 	return 0;
- }
- 
-@@ -114,6 +131,8 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 	if (!dwmac)
- 		return -ENOMEM;
- 
-+	dwmac->data = device_get_match_data(&pdev->dev);
-+
- 	dwmac->clk_tx = devm_clk_get_enabled(&pdev->dev, "tx");
- 	if (IS_ERR(dwmac->clk_tx))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(dwmac->clk_tx),
-@@ -144,8 +163,13 @@ static int starfive_dwmac_probe(struct platform_device *pdev)
- 	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
- }
- 
-+static const struct starfive_dwmac_data jh7100_data = {
-+	.gtxclk_dlychain = 4
-+};
-+
- static const struct of_device_id starfive_dwmac_match[] = {
--	{ .compatible = "starfive,jh7110-dwmac"	},
-+	{ .compatible = "starfive,jh7100-dwmac", .data = &jh7100_data },
-+	{ .compatible = "starfive,jh7110-dwmac" },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, starfive_dwmac_match);
+ 		clint: clint@2000000 {
 -- 
 2.42.0
 
