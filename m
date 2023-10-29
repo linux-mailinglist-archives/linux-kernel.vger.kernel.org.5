@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C047DAF26
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3863C7DB15D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjJ2W5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 18:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S231820AbjJ2Xda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjJ2W4u (ORCPT
+        with ESMTP id S232536AbjJ2XdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 18:56:50 -0400
+        Sun, 29 Oct 2023 19:33:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6206E1;
-        Sun, 29 Oct 2023 15:55:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EE3C433C9;
-        Sun, 29 Oct 2023 22:55:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF6A270D;
+        Sun, 29 Oct 2023 15:55:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F9FC433C8;
+        Sun, 29 Oct 2023 22:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620140;
-        bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
+        s=k20201202; t=1698620147;
+        bh=KyghjT8fjcHLeQ851UGSAKU0YWIhtmCAbJN2wBmIgz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TD5CqIn0imcIWVLJ/3i+5GeO4pHgAQq3nAC1hyMiQNNefLP/PSB21A7t334zLICbS
-         D/7JXhphfMqfa+GlogfibeIUMQnts6QdGffKgs2WDtSJVX8LYkNdtO6b8F2XwCLZc1
-         I1uvRIO/dsKse+KZpU09OWUvqJb3/pul+qqi3yMKb8ciCWyPxB16p8/lZt+ozvQEIM
-         ztgMVC5wkyVtgMWodzPs+Esszyp2sbvefqef09Cv/u0kVnPhTooYU/0kTLOAq1GNCj
-         7Uvgf9i9F0v/yuChg724ctBO7+DWT66IIItTZv6LGaqFb4cl2vEskCjWDWkN9SZkqt
-         Fjb7aKd6L/Nzg==
+        b=qTebr8vJKhgpa5Z174zEAj3+X02BqURKnnmxfC44I8kfp7fruI9OWG+IhDEu0oB5S
+         7sAu6lYxsSto/DuvmWRF+inhMV9GE19zWhYQRIwJTnHRMjlttKjDdOQmpqrQPqYB/Y
+         IFdvaC5LT+Omf64oGn1t+O39N2iT9uzczTseXi6q2lZuFhP9fFpcQZAhf1sfSM/ZE4
+         vEtModWg5Jd89tpBy3LCyID83leTNNW4YUpdBm3tlWdrO57q4wX0CxM24D56TX2Saz
+         QrLk/VhZa9IZGpzqgzMyZDO5IWPXkCCnLiMv1IpJgMwUZkBrxeFhqMTAJj/nUwjHKQ
+         jJmWf5adsI92A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Roy Chateau <roy.chateau@mep-info.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, shenghao-ding@ti.com,
-        kevin-lu@ti.com, baojun.xu@ti.com, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 29/52] ASoC: codecs: tas2780: Fix log of failed reset via I2C.
-Date:   Sun, 29 Oct 2023 18:53:16 -0400
-Message-ID: <20231029225441.789781-29-sashal@kernel.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, agordeev@linux.ibm.com,
+        linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 30/52] s390/kasan: handle DCSS mapping in memory holes
+Date:   Sun, 29 Oct 2023 18:53:17 -0400
+Message-ID: <20231029225441.789781-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -55,33 +55,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roy Chateau <roy.chateau@mep-info.com>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-[ Upstream commit 4e9a429ae80657bdc502d3f5078e2073656ec5fd ]
+[ Upstream commit 327899674eef18f96644be87aa5510b7523fe4f6 ]
 
-Correctly log failures of reset via I2C.
+When physical memory is defined under z/VM using DEF STOR CONFIG, there
+may be memory holes that are not hotpluggable memory. In such cases,
+DCSS mapping could be placed in one of these memory holes. Subsequently,
+attempting memory access to such DCSS mapping would result in a kasan
+failure because there is no shadow memory mapping for it.
 
-Signed-off-by: Roy Chateau <roy.chateau@mep-info.com>
-Link: https://lore.kernel.org/r/20231013110239.473123-1-roy.chateau@mep-info.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+To maintain consistency with cases where DCSS mapping is positioned after
+the kernel identity mapping, which is then covered by kasan zero shadow
+mapping, handle the scenario above by populating zero shadow mapping
+for memory holes where DCSS mapping could potentially be placed.
+
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tas2780.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/boot/vmem.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-index 86bd6c18a9440..41076be238542 100644
---- a/sound/soc/codecs/tas2780.c
-+++ b/sound/soc/codecs/tas2780.c
-@@ -39,7 +39,7 @@ static void tas2780_reset(struct tas2780_priv *tas2780)
- 		usleep_range(2000, 2050);
- 	}
+diff --git a/arch/s390/boot/vmem.c b/arch/s390/boot/vmem.c
+index c67f59db7a512..f66d642251fe8 100644
+--- a/arch/s390/boot/vmem.c
++++ b/arch/s390/boot/vmem.c
+@@ -57,6 +57,7 @@ static void kasan_populate_shadow(void)
+ 	pmd_t pmd_z = __pmd(__pa(kasan_early_shadow_pte) | _SEGMENT_ENTRY);
+ 	pud_t pud_z = __pud(__pa(kasan_early_shadow_pmd) | _REGION3_ENTRY);
+ 	p4d_t p4d_z = __p4d(__pa(kasan_early_shadow_pud) | _REGION2_ENTRY);
++	unsigned long memgap_start = 0;
+ 	unsigned long untracked_end;
+ 	unsigned long start, end;
+ 	int i;
+@@ -101,8 +102,12 @@ static void kasan_populate_shadow(void)
+ 	 * +- shadow end ----+---------+- shadow end ---+
+ 	 */
  
--	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
-+	ret = snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
- 				TAS2780_RST);
- 	if (ret)
- 		dev_err(tas2780->dev, "%s:errCode:0x%x Reset error!\n",
+-	for_each_physmem_usable_range(i, &start, &end)
++	for_each_physmem_usable_range(i, &start, &end) {
+ 		kasan_populate(start, end, POPULATE_KASAN_MAP_SHADOW);
++		if (memgap_start && physmem_info.info_source == MEM_DETECT_DIAG260)
++			kasan_populate(memgap_start, start, POPULATE_KASAN_ZERO_SHADOW);
++		memgap_start = end;
++	}
+ 	if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
+ 		untracked_end = VMALLOC_START;
+ 		/* shallowly populate kasan shadow for vmalloc and modules */
 -- 
 2.42.0
 
