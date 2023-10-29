@@ -2,130 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 235A77DAA8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 03:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776847DAA8F
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 04:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjJ2Cy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 22:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
+        id S229533AbjJ2DKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 23:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2Cy4 (ORCPT
+        with ESMTP id S229446AbjJ2DKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 22:54:56 -0400
+        Sat, 28 Oct 2023 23:10:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A58ECC;
-        Sat, 28 Oct 2023 19:54:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A4DC433C8;
-        Sun, 29 Oct 2023 02:54:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90899CF
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 20:10:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F86DC433C8;
+        Sun, 29 Oct 2023 03:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698548094;
-        bh=RlNnNHHg3zRkH0P4DdOqNoxHNDzPt997A9kWx4EOy2U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PkFdZLt+Z30Qeqi8MWYZD+cvxIxKF1wHGbjVs6fEo/KOjmoMLe+FA5SdAJOXTo+Ue
-         1MEEZrhmot6/KaGa01niJaSzan2FkmIiTdnCnhAV6AAo1g2CpaXL7A5z+pf6q62wJC
-         1TNn4y9TLnaOlRTnjx5eODYidMsl8OF2ZjnuGKQByK1wWJVZJE0LCvsiGlxY93HFiv
-         JcYBUqcuC7NE5+b37DgPSEH7UCrIXIgxD1mVbYiDubcwq9aOHDY8DXK6uJ86GYZ+Pt
-         4Qo7VhTnwcJfN6MCNSGJ60s8NdRJHxvgWIfnm/SszxEIkJwzrQaBFhq8CbD99vfqaI
-         TrD2LnnAGsDpQ==
-Date:   Sun, 29 Oct 2023 11:54:49 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        suleiman@google.com, briannorris@google.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3] PM: sleep: Expose last succeeded resumed timestamp
- in sysfs
-Message-Id: <20231029115449.8c942b131312c2464eda6970@kernel.org>
-In-Reply-To: <d6f016fe-963b-40ba-9146-de69e4fe0052@infradead.org>
-References: <169849758243.1357961.4105003693126485611.stgit@mhiramat.roam.corp.google.com>
-        <d6f016fe-963b-40ba-9146-de69e4fe0052@infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1698549051;
+        bh=9t8XSEZa0yobHjz6LzUAd1uwRa75aeszKCTXOZzVNt0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GfviiagAPaVvYNtgf+S9S/2I5n7P92WfJI53ixQW6rJllJzgKdpphgzpJK9PV6dqA
+         pZA/yEehcL+Ee2kJ0EATFjwfBxNIVR3POKfsxHl/wtm4k05/iUsry2NJcMH+D1Vwh8
+         Mihlf8udmWchtragYxqeG0kCoTYSrVVmRB269bAnydzOMXV0FF8KqEx8wzA3UuwPgB
+         cRwf50aFgkRUsR0gRfeqTK3jAI2U3zor1HtNZDvoWXIYOJR1CL5npJkjZRZPQMif5I
+         6cSHUhp7G+4rqyRlz8KyfO16GPmppznSvd+dbhU57CxGS13wn40VWOx4vDVLuCv0Yz
+         q2MTEgtVMKxXg==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux trace kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Francis Laniel <flaniel@linux.microsoft.com>
+Subject: [PATCH for-next] tracing/kprobes: Add symbol counting check when module loads
+Date:   Sun, 29 Oct 2023 12:10:46 +0900
+Message-Id: <169854904604.132316.12500381416261460174.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Oct 2023 09:48:36 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-> Hi,
-> 
-> On 10/28/23 05:53, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > Expose last succeeded resumed timestamp as last_success_resume_time
-> > attribute of suspend_stats in sysfs. This timestamp is recorded in
-> > CLOCK_MONOTONIC. So user can find the actual resumed time and
-> > measure the elapsed time from the time when the kernel finished
-> > the resume to the user-space action (e.g. display the UI).
-> 
-> Can you go into the use-case a bit more, please?
-> You have said "what", but not "why".
-> What do you (or google) plan to do with this?
-> 
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> >  Changes in v3:
-> >   - Add (unsigned long long) casting for %llu.
-> >   - Add a line after last_success_resume_time_show().
-> >  Changes in v2:
-> >   - Use %llu instead of %lu for printing u64 value.
-> >   - Remove unneeded indent spaces from the last_success_resume_time
-> >     line in the debugfs suspend_stat file.
-> > ---
-> >  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
-> >  include/linux/suspend.h               |    2 ++
-> >  kernel/power/main.c                   |   15 +++++++++++++++
-> >  kernel/power/suspend.c                |    1 +
-> >  4 files changed, 28 insertions(+)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
-> > index a3942b1036e2..63659765dee1 100644
-> > --- a/Documentation/ABI/testing/sysfs-power
-> > +++ b/Documentation/ABI/testing/sysfs-power
-> > @@ -442,6 +442,16 @@ Description:
-> >  		'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
-> >  		This number is measured in microseconds.
-> >  
-> > +What:		/sys/power/suspend_stats/last_success_resume_time
-> > +Date:		Oct 2023
-> > +Contact:	Masami Hiramatsu <mhiramat@kernel.org>
-> > +Description:
-> > +		The /sys/power/suspend_stats/last_success_resume_time file
-> > +		contains the timestamp of when the kernel successfully
-> > +		resumed from suspend/hibernate.
-> > +		This floating number is measured in seconds by monotonic
-> 
-> What does "floating" mean here?  Not floating point...
+Check the number of probe target symbols in the target module when
+the module is loaded. If the probe is not on the unique name symbols
+in the module, it will be rejected at that point.
 
-Oops, it should be "floating point number".
+Note that the symbol which has a unique name in the target module,
+it will be accepted even if there are same-name symbols in the
+kernel or other modules,
 
-Thank you!
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ kernel/trace/trace_kprobe.c |  112 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 68 insertions(+), 44 deletions(-)
 
-> 
-> 
-> > +		clock.
-> > +
-> >  What:		/sys/power/sync_on_suspend
-> >  Date:		October 2019
-> >  Contact:	Jonas Meurer <jonas@freesources.org>
-> 
-> [snip]
-> 
-> Thanks.
-> -- 
-> ~Randy
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index e834f149695b..90cf2219adb4 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -670,6 +670,21 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++static int validate_module_probe_symbol(const char *modname, const char *symbol);
++
++static int register_module_trace_kprobe(struct module *mod, struct trace_kprobe *tk)
++{
++	const char *p;
++	int ret = 0;
++
++	p = strchr(trace_kprobe_symbol(tk), ':');
++	if (p)
++		ret = validate_module_probe_symbol(module_name(mod), p++);
++	if (!ret)
++		ret = register_trace_kprobe(tk);
++	return ret;
++}
++
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -688,7 +703,7 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 		if (trace_kprobe_within_module(tk, mod)) {
+ 			/* Don't need to check busy - this should have gone. */
+ 			__unregister_trace_kprobe(tk);
+-			ret = __register_trace_kprobe(tk);
++			ret = register_module_trace_kprobe(mod, tk);
+ 			if (ret)
+ 				pr_warn("Failed to re-register probe %s on %s: %d\n",
+ 					trace_probe_name(&tk->tp),
+@@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const char *name, unsigned long unused)
+ 	return 0;
+ }
+ 
+-static unsigned int number_of_same_symbols(char *func_name)
++static unsigned int number_of_same_symbols(const char *mod, const char *func_name)
+ {
+ 	struct sym_count_ctx ctx = { .count = 0, .name = func_name };
+ 
+-	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
++	if (!mod)
++		kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
+ 
+-	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
++	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
+ 
+ 	return ctx.count;
+ }
+ 
++static int validate_module_probe_symbol(const char *modname, const char *symbol)
++{
++	unsigned int count = number_of_same_symbols(modname, symbol);
++
++	if (count > 1) {
++		/*
++		 * Users should use ADDR to remove the ambiguity of
++		 * using KSYM only.
++		 */
++		return -EADDRNOTAVAIL;
++	} else if (count == 0) {
++		/*
++		 * We can return ENOENT earlier than when register the
++		 * kprobe.
++		 */
++		return -ENOENT;
++	}
++	return 0;
++}
++
++static int validate_probe_symbol(char *symbol)
++{
++	char *mod = NULL, *p;
++	int ret;
++
++	p = strchr(symbol, ':');
++	if (p) {
++		mod = symbol;
++		symbol = p + 1;
++		*p = '\0';
++	}
++	ret = validate_module_probe_symbol(mod, symbol);
++	if (p)
++		*p = ':';
++	return ret;
++}
++
+ static int __trace_kprobe_create(int argc, const char *argv[])
+ {
+ 	/*
+@@ -859,6 +912,14 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+ 			trace_probe_log_err(0, BAD_PROBE_ADDR);
+ 			goto parse_error;
+ 		}
++		ret = validate_probe_symbol(symbol);
++		if (ret) {
++			if (ret == -EADDRNOTAVAIL)
++				trace_probe_log_err(0, NON_UNIQ_SYMBOL);
++			else
++				trace_probe_log_err(0, BAD_PROBE_ADDR);
++			goto parse_error;
++		}
+ 		if (is_return)
+ 			ctx.flags |= TPARG_FL_RETURN;
+ 		ret = kprobe_on_func_entry(NULL, symbol, offset);
+@@ -871,31 +932,6 @@ static int __trace_kprobe_create(int argc, const char *argv[])
+ 		}
+ 	}
+ 
+-	if (symbol && !strchr(symbol, ':')) {
+-		unsigned int count;
+-
+-		count = number_of_same_symbols(symbol);
+-		if (count > 1) {
+-			/*
+-			 * Users should use ADDR to remove the ambiguity of
+-			 * using KSYM only.
+-			 */
+-			trace_probe_log_err(0, NON_UNIQ_SYMBOL);
+-			ret = -EADDRNOTAVAIL;
+-
+-			goto error;
+-		} else if (count == 0) {
+-			/*
+-			 * We can return ENOENT earlier than when register the
+-			 * kprobe.
+-			 */
+-			trace_probe_log_err(0, BAD_PROBE_ADDR);
+-			ret = -ENOENT;
+-
+-			goto error;
+-		}
+-	}
+-
+ 	trace_probe_log_set_index(0);
+ 	if (event) {
+ 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
+@@ -1767,21 +1803,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+ 	char *event;
+ 
+ 	if (func) {
+-		unsigned int count;
+-
+-		count = number_of_same_symbols(func);
+-		if (count > 1)
+-			/*
+-			 * Users should use addr to remove the ambiguity of
+-			 * using func only.
+-			 */
+-			return ERR_PTR(-EADDRNOTAVAIL);
+-		else if (count == 0)
+-			/*
+-			 * We can return ENOENT earlier than when register the
+-			 * kprobe.
+-			 */
+-			return ERR_PTR(-ENOENT);
++		ret = validate_probe_symbol(func);
++		if (ret)
++			return ERR_PTR(ret);
+ 	}
+ 
+ 	/*
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
