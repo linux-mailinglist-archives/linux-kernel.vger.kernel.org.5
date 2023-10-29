@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EEF7DB0DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729567DB178
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjJ2XUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S231883AbjJ2Xg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjJ2XUK (ORCPT
+        with ESMTP id S231992AbjJ2XIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:20:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381CE7692
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:04:21 -0700 (PDT)
-Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 546C36607396;
-        Sun, 29 Oct 2023 23:02:58 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698620579;
-        bh=8rtXn19fvaBXhb48S1Y4vYdXdzNTfF4j95pl2pB4Jj8=;
+        Sun, 29 Oct 2023 19:08:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BEAAD28;
+        Sun, 29 Oct 2023 16:03:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CED1CC116B1;
+        Sun, 29 Oct 2023 23:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698620555;
+        bh=dL4P6YCdxmDPVyfmEilj6EyM6SwdmXWC/xailMuqy4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRGBZwF1NKhPQjB1XQlhRcOVPXHE84vqpNBhZrkK8krkrkiczEXKlHJqJFSt5Ww9A
-         li5hV7sh/Zq/Gg8hOZjrbJ9jpEIg9QckJmNImb4IvRjWhWqpNpxAvikQCnNIelyYfe
-         LBNNSlcea5YhZowelFyeGDaSya0NHk+bytBWQ1/1BxxYsUIgX7OHsQGKsMo+HFNH+s
-         71KYOKFuX8jktieetnuG3bIEH/j5eJOHRWcuFXlSBi1nt+QhKLXN+XqfN3fV7kTL8d
-         JIwe/KHanbZO0DjJ6j6zPyZTADs7al9+xga2M3r83xbeXc/8hUodG7MCY27isI+Edj
-         xQFYRgY+PCaug==
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v18 22/26] drm/shmem-helper: Don't free refcounted GEM
-Date:   Mon, 30 Oct 2023 02:02:01 +0300
-Message-ID: <20231029230205.93277-23-dmitry.osipenko@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        b=FsJNzIAUps12CPzduUU+YFovC3UmpcxOrkV7BGV98fNIjgUagbLHdR5F3Q2R4LTGG
+         ljeKxete8P/hgzUx3KbbHYTscqMuhJnpsAQz5H6jl4FlRpVCZUijeRWInOceqiyutm
+         FNXeBhOGUplPwc0/bLB+tGjnDjVGM4+UVyMLJm02c+osU76F7TFZt4XrAsqbH/bNaG
+         /+8yF9tmw3Mu2po9osR00gkaJlPUGiHNMaVPsXvnxljVTWJqAILwXVf2f9U9UlMRre
+         6Ofqi1WRvWhq+dXw8dGvzgiX0Crog/4mtY2Ax3pyqevIUPxBHYaQtdEAU268oTxsXs
+         JoMYJXvq5/N1w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tomas Henzl <thenzl@redhat.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, sathya.prakash@broadcom.com,
+        sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 10/11] scsi: mpt3sas: Fix in error path
+Date:   Sun, 29 Oct 2023 19:02:01 -0400
+Message-ID: <20231029230213.793581-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231029230213.793581-1-sashal@kernel.org>
+References: <20231029230213.793581-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't free refcounted shmem object to prevent use-after-free bug that
-is worse than a memory leak.
+From: Tomas Henzl <thenzl@redhat.com>
 
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+[ Upstream commit e40c04ade0e2f3916b78211d747317843b11ce10 ]
+
+The driver should be deregistered as misc driver after PCI registration
+failure.
+
+Signed-off-by: Tomas Henzl <thenzl@redhat.com>
+Link: https://lore.kernel.org/r/20231015114529.10725-1-thenzl@redhat.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index 6dd087f19ea3..4253c367dc07 100644
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -203,9 +203,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
- 	if (obj->import_attach)
- 		drm_prime_gem_destroy(obj, shmem->sgt);
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+index 8fb7491c5bc02..0bccc4a12e53b 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -9482,8 +9482,10 @@ _mpt3sas_init(void)
+ 	mpt3sas_ctl_init(hbas_to_enumerate);
  
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
-+	if (drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count)) ||
-+	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count)) ||
-+	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count)))
-+		return;
+ 	error = pci_register_driver(&mpt3sas_driver);
+-	if (error)
++	if (error) {
++		mpt3sas_ctl_exit(hbas_to_enumerate);
+ 		scsih_exit();
++	}
  
- 	drm_gem_object_release(obj);
- 	kfree(shmem);
+ 	return error;
+ }
 -- 
-2.41.0
+2.42.0
 
