@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55A87DB115
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DA37DAF6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 23:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjJ2X2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S231641AbjJ2W72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 18:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjJ2X2Q (ORCPT
+        with ESMTP id S231290AbjJ2W7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:28:16 -0400
+        Sun, 29 Oct 2023 18:59:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F72D79;
-        Sun, 29 Oct 2023 15:57:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65270C433D9;
-        Sun, 29 Oct 2023 22:57:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCF244B4;
+        Sun, 29 Oct 2023 15:58:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF35C433CB;
+        Sun, 29 Oct 2023 22:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620265;
-        bh=jAHUril8lBS0BRD6a5/QOtzXJLQsnqbARQUT4v575to=;
+        s=k20201202; t=1698620266;
+        bh=w7zIj0XQKMS+IcxUMKCn+DPPlG4ZSR3j2YvVKeVcfcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HTiUQRAxiIUAoGVjii4C5OhyuxhLdNtGTXtZfi9ekGSFlnJRvGou5XWEqc2ZNBbFc
-         xbaBcxiPp5DHy6USEryhLmFeMup9twRvSTLf3fS4zmHhq0bOzD16LphT5oNF3+ntwm
-         Ani2VmvO/E1dFa8SMxmRCf0+elRZnEEO7vkV61ea9/E4jFr+1ryMTOJ75FwntjZYSD
-         4F9kGH+En+vMmJb4BM09LQfOp/Om5pRE7WAK5QwCv/aaBoZ15SF7rJ4lJi9npe8Ikr
-         MJg3fbNkw/hTgJWcnixsqfwRe5nn6y5yPD/Lt80mMnVHU7x+veS+tTOaoAMbi2j5hs
-         vT9ZIcpAKnh7w==
+        b=lbedU2WqH9K3kL1w/q0KO267aOWDjPDz4C010EFTIaGCu5FKtIVhd/g3ixVSSflCD
+         N7V32ENUsSGk1Kx/SZHMGsmWugazfCfJsbpnRAbXxRVf0mhTrfa/tmAZ8uI2ZApmBV
+         mpNc6atovqFvtzkTqsRjx89VfyxJ68EQbh5v+jx3BtO1ztVHXvyyhJJt9kcUDeXvj1
+         I1BK1uN1NtbMXRPHOurWE9bz4IHm4A9uWpHi3mYHa63REQMUiD/JtIgNIRQe2aAfk7
+         /ZAgEo+lMISaMcOqMYCFpE/HxkeR16gn3SSjKJmYQvWIpi3XXzJtTYTgOhtpKaKZVA
+         +gC8fUseTs7uw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         Sasha Levin <sashal@kernel.org>, ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 02/39] fs/ntfs3: Add ckeck in ni_update_parent()
-Date:   Sun, 29 Oct 2023 18:56:34 -0400
-Message-ID: <20231029225740.790936-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 03/39] fs/ntfs3: Write immediately updated ntfs state
+Date:   Sun, 29 Oct 2023 18:56:35 -0400
+Message-ID: <20231029225740.790936-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
 References: <20231029225740.790936-1-sashal@kernel.org>
@@ -54,33 +54,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit 87d1888aa40f25773fa0b948bcb2545f97e2cb15 ]
-
-Check simple case when parent inode equals current inode.
+[ Upstream commit 06ccfb00645990a9fcc14249e6d1c25921ecb836 ]
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/frecord.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/ntfs3/fsntfs.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index dda13e1f1b330..166c3c49530ec 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -3198,6 +3198,12 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
- 		if (!fname || !memcmp(&fname->dup, dup, sizeof(fname->dup)))
- 			continue;
+diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+index 829b62d3bb889..4b79232aeb59b 100644
+--- a/fs/ntfs3/fsntfs.c
++++ b/fs/ntfs3/fsntfs.c
+@@ -953,18 +953,11 @@ int ntfs_set_state(struct ntfs_sb_info *sbi, enum NTFS_DIRTY_FLAGS dirty)
+ 	if (err)
+ 		return err;
  
-+		/* Check simple case when parent inode equals current inode. */
-+		if (ino_get(&fname->home) == ni->vfs_inode.i_ino) {
-+			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
-+			continue;
-+		}
-+
- 		/* ntfs_iget5 may sleep. */
- 		dir = ntfs_iget5(sb, &fname->home, NULL);
- 		if (IS_ERR(dir)) {
+-	mark_inode_dirty(&ni->vfs_inode);
++	mark_inode_dirty_sync(&ni->vfs_inode);
+ 	/* verify(!ntfs_update_mftmirr()); */
+ 
+-	/*
+-	 * If we used wait=1, sync_inode_metadata waits for the io for the
+-	 * inode to finish. It hangs when media is removed.
+-	 * So wait=0 is sent down to sync_inode_metadata
+-	 * and filemap_fdatawrite is used for the data blocks.
+-	 */
+-	err = sync_inode_metadata(&ni->vfs_inode, 0);
+-	if (!err)
+-		err = filemap_fdatawrite(ni->vfs_inode.i_mapping);
++	/* write mft record on disk. */
++	err = _ni_write_inode(&ni->vfs_inode, 1);
+ 
+ 	return err;
+ }
 -- 
 2.42.0
 
