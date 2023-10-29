@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C62F7DAD0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 16:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698F97DAD32
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 17:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjJ2P6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 11:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S229795AbjJ2QR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 12:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjJ2P6t (ORCPT
+        with ESMTP id S229512AbjJ2QR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 11:58:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F28B6;
-        Sun, 29 Oct 2023 08:58:47 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507bd64814fso5102615e87.1;
-        Sun, 29 Oct 2023 08:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698595125; x=1699199925; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3e6k9aLofPBwqtOZrl9eOkhzMIksyEAGsMT8mwHRyZM=;
-        b=Mvb/wDkrLCx3xmNgUd5TSo1Q0+GSK1vvjwW03vlzxaD8vGghFIHbOI+iYEEuLDBNsC
-         KYxjBpsB0NT9dYWCxhp4/4PxtnwnwUkVQSHiTT3PTFVpk5E1tN/HajqGZ9odjE4Gf/bW
-         +UO/ksjjzxXJ4p0yN3CEXbXypfdZFU0lkJwGgkrMwgTUN4k7CKvbQ04XZUXgUBTgqiGO
-         p2d8Xcs3nrZrmnLEfYB6HeFiEAW92uerdFenbYBfknATti5DMkcpodeS2stCt+CtGK1a
-         auXGtpYaPYWEK4P43+2XYpT7cStOpZSwi61OoxRZQ6dHBX07gQtvxqoLhwDaoBRcTybJ
-         jpog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698595125; x=1699199925;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3e6k9aLofPBwqtOZrl9eOkhzMIksyEAGsMT8mwHRyZM=;
-        b=FZ1MzQDbK3a55dkGqCOcsGa8EetZk9+5ou9BLZmE/yKVPNj2+eY2v3A0aRTsiJ4WOg
-         SZ8t/ebQtA1bPRXCaka/c1ujdaYH5k+IqU1fQIsUc69wW0qxzfyFmgeOZiNt1rM2ksyT
-         VdBa+x78st/dsGPJAbSXL3h3sdicIYu6y/iAjC+6/HewTK5CBSvyDJ41OMpn11WJ/+Uo
-         eUk5y0a+1ZduTC1UVN9jm3ZxvRUKAOt6ReJwOkb/hgxkeznz3V4YjRVCjLEdDkOUEKOD
-         37Dc/pCKqMrlDfH5BJpWVzZalli7/12v/L6W4ph78Nv3lpERaFL16nVi1vBkgMxdq5y6
-         KoIg==
-X-Gm-Message-State: AOJu0YzSwgNUNI418rfYl0y2v+AMkN+38xVinuB01BL9Gj6Vnwr3bDyd
-        //PnQKCmJCcAysom2u3v8yPyw3f0IhjpCA==
-X-Google-Smtp-Source: AGHT+IGdwy7SYuF6/s1PQPTMV/8CnnApzRpnqRmzo6LOWmpIsBoiqW0De7bNFLzKpreJ56RvnOLJoQ==
-X-Received: by 2002:a05:6512:1150:b0:503:26b0:e126 with SMTP id m16-20020a056512115000b0050326b0e126mr7221754lfg.59.1698595124842;
-        Sun, 29 Oct 2023 08:58:44 -0700 (PDT)
-Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id j15-20020adfb30f000000b0032d8eecf901sm6231180wrd.3.2023.10.29.08.58.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 08:58:44 -0700 (PDT)
-Message-ID: <576a2923-1705-48e8-81b9-f53a43c2b6f7@gmail.com>
-Date:   Sun, 29 Oct 2023 16:58:42 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     savicaleksa83@gmail.com, linux-hwmon@vger.kernel.org,
-        leonard.anderweit@gmail.com, Jack Doan <me@jackdoan.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwmon: (aquacomputer_d5next) Add support for
- Aquacomputer High Flow USB and MPS Flow
+        Sun, 29 Oct 2023 12:17:26 -0400
+Received: from www.linux-watchdog.org (www.linux-watchdog.org [185.87.125.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 129DFBA;
+        Sun, 29 Oct 2023 09:17:23 -0700 (PDT)
+Received: by www.linux-watchdog.org (Postfix, from userid 500)
+        id 734AC40A00; Sun, 29 Oct 2023 17:10:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org 734AC40A00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
+        s=odk20180602; t=1698595856;
+        bh=K01uBZjOi6MJBggCB1PXyOP/1H5GeP1Q9SQyHlNOR9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FiwAXl6cid4H//9jwshG3o0P+lziIRrfSk7HMNHElnfRGqIJ+kEj82SF9MWkReqmD
+         lRxDl09YSMlRRd3BVsCCAICgp13QqRrE09MGmjrzTozlGeqxBYo9dVAO8awWOLFRcl
+         Dtlti4dwJ76pOqmfT+yN8GyKNYaV+yDUn/QEmsVI=
+Date:   Sun, 29 Oct 2023 17:10:56 +0100
+From:   Wim Van Sebroeck <wim@linux-watchdog.org>
 To:     Guenter Roeck <linux@roeck-us.net>
-References: <20231016083559.139341-1-savicaleksa83@gmail.com>
- <20231016083559.139341-3-savicaleksa83@gmail.com>
- <c08d04b4-8e6d-4221-93f1-cf5fff8c54c4@roeck-us.net>
-Content-Language: en-US
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-In-Reply-To: <c08d04b4-8e6d-4221-93f1-cf5fff8c54c4@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Darren Hart <darren@os.amperecomputing.com>,
+        linux-kernel@vger.kernel.org,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] sbsa_gwdt: Calculate timeout with 64-bit math
+Message-ID: <20231029161056.GB5887@www.linux-watchdog.org>
+References: <7d1713c5ffab19b0f3de796d82df19e8b1f340de.1695286124.git.darren@os.amperecomputing.com>
+ <bcc41311-075c-44fe-b0f7-30564d7ac58c@roeck-us.net>
+ <ZSpbfXzFeaoUJRZ3@Fedora>
+ <1fae4d2c-4bc7-f169-7b84-501674a82ee4@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1fae4d2c-4bc7-f169-7b84-501674a82ee4@roeck-us.net>
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-28 18:24:38 GMT+02:00, Guenter Roeck wrote:
-> 
-> Applied.
-> 
-> Thanks,
-> Guenter
-> 
+Hi Guenter,
 
-Thanks. Maybe I'm missing something, why is the first patch
-from the series not applied as well?
+> On 10/14/23 02:12, Darren Hart wrote:
+> >On Tue, Sep 26, 2023 at 05:45:13AM -0700, Guenter Roeck wrote:
+> >>On Thu, Sep 21, 2023 at 02:02:36AM -0700, Darren Hart wrote:
+> >>>Commit abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
+> >>>introduced new timer math for watchdog revision 1 with the 48 bit offset
+> >>>register.
+> >>>
+> >>>The gwdt->clk and timeout are u32, but the argument being calculated is
+> >>>u64. Without a cast, the compiler performs u32 operations, truncating
+> >>>intermediate steps, resulting in incorrect values.
+> >>>
+> >>>A watchdog revision 1 implementation with a gwdt->clk of 1GHz and a
+> >>>timeout of 600s writes 3647256576 to the one shot watchdog instead of
+> >>>300000000000, resulting in the watchdog firing in 3.6s instead of 600s.
+> >>>
+> >>>Force u64 math by casting the first argument (gwdt->clk) as a u64. Make
+> >>>the order of operations explicit with parenthesis.
+> >>>
+> >>>Fixes: abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
+> >>>Reported-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+> >>>Signed-off-by: Darren Hart <darren@os.amperecomputing.com>
+> >>>Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> >>>Cc: Guenter Roeck <linux@roeck-us.net>
+> >>>Cc: linux-watchdog@vger.kernel.org
+> >>>Cc: linux-kernel@vger.kernel.org
+> >>>Cc: linux-arm-kernel@lists.infradead.org
+> >>>Cc: <stable@vger.kernel.org> # 5.14.x
+> >>
+> >>Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> >
+> >Guenter or Wim, I haven't seen this land in the RCs or in next yet. Have
+> >you already picked it up? Anything more needed from me?
+> >
+> >Thanks,
+> >
+> 
+> Sorry, I am suffering from what I can only describe as a severe case of
+> maintainer/reviewer PTSD, and I have yet to find a way of dealing with that.
 
-Aleksa
+I can imagine what it is like. And I do know that if you wouldn't have been there, 
+that I would have allready stopped being a maintainer. So I hope you can find the 
+right cooping mechanisms. I also had to work non-stop the last 4 to 5 weeks and it was hell.
+So I wish you all the best.
+
+PS: picking up all patches that have your review-by tag on it as we speack.
+
+Kind regards,
+Wim.
+
