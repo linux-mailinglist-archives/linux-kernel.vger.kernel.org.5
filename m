@@ -2,248 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFD67DAA9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 04:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 871CA7DAA99
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Oct 2023 04:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjJ2Do5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Oct 2023 23:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
+        id S229533AbjJ2Dla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Oct 2023 23:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJ2Doz (ORCPT
+        with ESMTP id S229446AbjJ2Dl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Oct 2023 23:44:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650ADC0
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 20:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698551091; x=1730087091;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=85wMPL2uqOf5q59P0+uejAWZy7fKjuaP8kvR1uFbLUA=;
-  b=VJl2GbIkCc/xAm67fd271LUhxLg8AcWJa0xSzFldnBAtXmcZdn3gvLim
-   I6lxFv33bbvKWmfM3elN4f9iDb5sFzTXHEsbl40QawOfFaoiFKKNRQSgH
-   wuIB+xtKIEbyV732GWCtB9tFShhXvBdaZNcGoXrdkxlTNcdT7DR0zzCTE
-   PkQe4iCUTjDc+Bi0zW8hahKGP1T/O4VXE8FViGGKW8JFeip9yyD2lHBnw
-   5lc1zAT8bNUB3KOSmJ/bgNzV7ooKOmkerndXwzoJDjLRM0p28xERld9NX
-   ZLtENQRh+wNkVKAREobM7xO2AyzcIoh6m47saj+6/w0sUx7B79Q7P6SRe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="767965"
-X-IronPort-AV: E=Sophos;i="6.03,260,1694761200"; 
-   d="scan'208";a="767965"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2023 20:44:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10877"; a="933474924"
-X-IronPort-AV: E=Sophos;i="6.03,260,1694761200"; 
-   d="scan'208";a="933474924"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 28 Oct 2023 20:44:48 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qwwjF-000CJ5-2c;
-        Sun, 29 Oct 2023 03:44:45 +0000
-Date:   Sun, 29 Oct 2023 11:44:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Karolina Stolarek <karolina.stolarek@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: drivers/gpu/drm/ttm/ttm_bo_util.c:318:38: sparse: sparse: incorrect
- type in assignment (different address spaces)
-Message-ID: <202310291100.L4qywPt5-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Sat, 28 Oct 2023 23:41:27 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2086.outbound.protection.outlook.com [40.107.21.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44019C0
+        for <linux-kernel@vger.kernel.org>; Sat, 28 Oct 2023 20:41:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GtEKz87uCHSBRuHC+gsms4EY0GzZ7Z5zT7MwJ1xwr31u0ngt+BWNS23wCJxcEHQqNgAjgdjwkhrrTDhyNnzw8WdfaPC4lh4kMEr0QK/ijICwIAQFP5Aa1cabux34uwQNqhqpdZBpwcYd4CwG1kF7YZlR+gaGS2peqv3O7EdbGNGF5f0ccVsPPl2/bxDNbgotJDeJxpFFnKdpn+Zpw/IphA63BYg4n+mamNpBCW83qR8DbJqDjq87DukfzrwJyz6AJMTy1elhkbJYuulKwcdcDsxG6fd0vpGg5o0FHH5ypTRg6lwp/1jG4rGv3nLqGc+1IHmj4EFu7StH8XGBZF0Fag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7ExxpjrZqr9AEf2SuDcZDpjC8ld+uOPhsjJ7Ar+c2nw=;
+ b=H0TIFvqqYmrSE0hMGUn6jHsl8cRsQVzbFI640ygyWrQlhmW0xxl+RKGi0e2gPYHSs2zVm2p+ORtlpAmYkiCkA+tJkS5iSwp4HXOMe2SHmTJz7CktMvZeW+gFxNl6jrp1iKQh+aYOsmztX8YaWjxfZDQyg1aL2CJIuOcZ/BxAsiNTn1JPUCm2INpvQKB+A68500QKL0XD9lduIceMOZv4PH9D9MwtuUooAWSGZIgIyzImGv+oYqcnR37D3Gnss7WthE2+7FfQjZS3LvQ1HRW+DYJPSvO4rHqtrWetU8VVag8gpDOkHVQ6hxa8gPAs4wdn+SwXXhCM1BEMNr/QkaDlzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ExxpjrZqr9AEf2SuDcZDpjC8ld+uOPhsjJ7Ar+c2nw=;
+ b=UgHQU45AiG4S0GbU41Zz3ktZO2r+iNYQCZfqkYowwZkfD8sXM2UmePC97ofjGk/4hh9h9LYOuREdaj2+RuRKj8Un0F41Mus23OWnzTeusJ5/XgRRhWnPk1LAJ7oTP8xnDxtZyhfje3unznvYFrY8Q6phqPq1o4dwe6X3ss4XGO0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.14; Sun, 29 Oct
+ 2023 03:41:18 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::50bf:dcd6:885e:32c4]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::50bf:dcd6:885e:32c4%4]) with mapi id 15.20.6933.011; Sun, 29 Oct 2023
+ 03:41:18 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     m.felsch@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2] soc: imx8mp: support 128 bits UID
+Date:   Sun, 29 Oct 2023 11:45:47 +0800
+Message-Id: <20231029034547.3039893-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0051.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::6) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB8465:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22c140fb-b1ac-43d2-35e5-08dbd830e8c7
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zIjVYKzyJ8p5N4INM8DqQsaOwo2HH5cQBgqPR1z11TjqnqIqFC2aUvHXZw+x1rRIJ92t0zEL4TdF+Qr6ZDJ+isUPNFlxh7++rYNhJoArRc8Zf3XB9kx9RWzY+m/lzGkJIhm2WXMMWOA4Sthr0qEWECdcCjj5kbsWtkrobZ4F5nkCSuG8vZ14W664ZBSMSNys/cDWhcghMxt1UNsOtcwjB4+SBvo6dPnS0V5y9N4QtKNhMeQdrO5N4GWsrRvloW7THDsoVUfBE2oFgJtqErh5ryEbUjvV2mUonmGfmSunAIXyCwRdp1QQ6kHrxu1KhproWgui6n3pbOfiO87ptFuvqdBw9FrYZjSfiud0v8nLkkdO/+O6utWo4FClNFk05nlO9Y6fJ8acBVjh1/nex0plGBB6Dk2YkCLT04hnQSThSeHlP5BSvFihYQDov/552RrVQbHyk96lVVq4q2OCqif/gXTHz2CuwUURLx4mPgRV5YEC0P9oblokixIbxtJo7MW4qYmZRqV7FK9kVfCzCFtOiX2eosAa2v9vNBpSA3uBx0uy2Fqi5IYeqg57kfcf5yZQNF55ni8P0UFsTZljPEmn73T8tWuZ9FLJIjcpwTq0mU+aG16fieWiCfZ2dd82QjidiQb+75GETLlzB3vDTWMz5Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(136003)(376002)(346002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(2906002)(316002)(66556008)(66476007)(38100700002)(6666004)(52116002)(6506007)(478600001)(6486002)(83380400001)(66946007)(2616005)(6512007)(26005)(1076003)(5660300002)(41300700001)(38350700005)(4326008)(8936002)(8676002)(86362001)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EjC6lWgzEoMQG3NszKn7mGez11iMDJV0NxlxSxzKjBqZi86ZBGDCY7IEIkNZ?=
+ =?us-ascii?Q?hQft4eVbfSMRLruWzL+LeKkLxDjsHBB15/9m2YOOA08ZorDJ8pyUtj+2xrws?=
+ =?us-ascii?Q?AItjcce1vXFADrOEuJUh6YXMlMQtBk5KFIViYHF2clsmpXQ0kKCIWwcMjHyy?=
+ =?us-ascii?Q?rh5pwE/2BEtn8D6wnReSFT9bTe9Ltb7QC8Yk1Mtsd7Vaj0v1RvEFgXGfrohQ?=
+ =?us-ascii?Q?Fw3ievgJ/txAo4E8xlbJiZOJcOSE1hHLhf2RWbjJ93mGETXBz1l74f9BmvpE?=
+ =?us-ascii?Q?9GyOlebASRhMbsdW6SgsSpP4bZ3nhrV9LTyBS88MIORzJQ6sHdG0Y7yaurkz?=
+ =?us-ascii?Q?H5AmxVM5aKqq/P6VWJ0/fKQ0uX/4Ll+CIInaoYzXxEZbOjMGFIe3mGgn2Bj1?=
+ =?us-ascii?Q?o8+dzjk7ufPi4VitEAq7/odRGUVWTA9s40vcxpdP4XnZiwVmmyRxWcVBN45M?=
+ =?us-ascii?Q?iQDaezgOsgoxgxQEXGwq12N5KM05jBfRYJ1vh0LdSpZK2bDRS8Pw8DUHBDJs?=
+ =?us-ascii?Q?4ci5CJJcV8rFEXr6CSKbe78IQRgi3mJvEXZreJ9eglmXsqWnOkcLH/uvkv50?=
+ =?us-ascii?Q?1f7W5DCuVfRJOs6qZpfGqjcpWJUJ1Ay/zGUWZ9G8DaIJGiL9v9g74O3MRKRh?=
+ =?us-ascii?Q?u7QouD9kaSXkhXf+HmE0GFFay26mrspFJwqRBBUvdp/jyVh1/dIt4zgtWc6i?=
+ =?us-ascii?Q?ItSDB/4UFBvpdwVnG3r7Lio0Qq64AEN1w1tO1iQYxq3zzmbD6RwDzIQvEq1v?=
+ =?us-ascii?Q?JoXkJNEEjOb8gtvYxGUuXVK/VddmmbXOpfk9qy7H6SnYBioSohEeVaTVYwHZ?=
+ =?us-ascii?Q?tMEiI7LhaeUfoSaE+HqQjN2aaMlsmv2u+9XuMcieNRn34epjzJGTJJukI5WF?=
+ =?us-ascii?Q?chgr2LvHw3KfvvpShWfarJ8ewM+3Y0UT939ojrksF7isq3pZCNa+WqHJvAGp?=
+ =?us-ascii?Q?RzuWbc/A+NRFoc6duuhbZfhdu42qpmV1LhElasZN/oLD3pHm1c/GW3ejNSV6?=
+ =?us-ascii?Q?sDejWXPtBrDckIKZsvkTXkxVwZVyTkr3gshwRSlDwFqe1CT0XAKwGwYNr6gH?=
+ =?us-ascii?Q?bLxl4mionma2/Itdz9hfHUiJKGsLKTJSkyZEOyOH3nsLdKBokYRnM/ielvjM?=
+ =?us-ascii?Q?WNvGTzOiFn1UTgaButnO7yVZ3DwH4gKTtuZ+QsMCUf6Rb2ZXZ8mJjv6MEkgy?=
+ =?us-ascii?Q?MR39OxAT5k8MHLM9YJVfKE9/w3vzHOYNQ8eROyDdzqaod9mAbPy3zYL+2649?=
+ =?us-ascii?Q?MBvy3p9iO0cJiY/XCeiHsn2Jcv35pHSq7HvuzbVWujje9PghO+1YzgFQ6RAO?=
+ =?us-ascii?Q?NCsRY62MYcqubKWqYYhQWepoCnyxTfgyXq2qeuQJxb5JXrR9fFBfODl5KnUr?=
+ =?us-ascii?Q?aXWe8arxyNbgNWSr0p168IwWpb20Pc85i0hjv1jPDDGIODoSUsgW+A5tbMHJ?=
+ =?us-ascii?Q?pfViphsd03LT2ME6fx3neoEbsGutTT2smW85RqfkEGxYCw4+0Q0invNTKZLS?=
+ =?us-ascii?Q?v5MfGOd+5VgNEb/UuJ+Laz6RZ1Yybwry2pl0ysXKAH0Nju2TUUQGGlAyzi+M?=
+ =?us-ascii?Q?M5wxPXMWw4a22HyrQrRgQtX+oQQM9VPEKoDyDiX/?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22c140fb-b1ac-43d2-35e5-08dbd830e8c7
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2023 03:41:18.2932
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aENfaeWRigVnj3WQaDOm8NxfigStHsYEAE1XMIVOR94JbJ6YdxQFPJJiCAWrt7J29WETc4dSUhaVL4Ow5WIRlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8465
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2af9b20dbb39f6ebf9b9b6c090271594627d818e
-commit: e3912d09bf8ddd8e274118d4c9cc550d9665115d drm/ttm: Introduce KUnit test
-date:   3 months ago
-config: x86_64-randconfig-123-20231016 (https://download.01.org/0day-ci/archive/20231029/202310291100.L4qywPt5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231029/202310291100.L4qywPt5-lkp@intel.com/reproduce)
+From: Peng Fan <peng.fan@nxp.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310291100.L4qywPt5-lkp@intel.com/
+Current driver only supports 64bits UID for i.MX8MP, but
+i.MX8MP UID is actually 128bits, the high 64bits is at 0xE00.
+So update driver to support it.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/ttm/ttm_bo_util.c:318:38: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *virtual @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/ttm/ttm_bo_util.c:318:38: sparse:     expected void *virtual
-   drivers/gpu/drm/ttm/ttm_bo_util.c:318:38: sparse:     got void [noderef] __iomem *
-   drivers/gpu/drm/ttm/ttm_bo_util.c:321:38: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *virtual @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/ttm/ttm_bo_util.c:321:38: sparse:     expected void *virtual
-   drivers/gpu/drm/ttm/ttm_bo_util.c:321:38: sparse:     got void [noderef] __iomem *
-   drivers/gpu/drm/ttm/ttm_bo_util.c:324:38: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *virtual @@     got void [noderef] __iomem * @@
-   drivers/gpu/drm/ttm/ttm_bo_util.c:324:38: sparse:     expected void *virtual
-   drivers/gpu/drm/ttm/ttm_bo_util.c:324:38: sparse:     got void [noderef] __iomem *
->> drivers/gpu/drm/ttm/ttm_bo_util.c:427:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *virtual @@
-   drivers/gpu/drm/ttm/ttm_bo_util.c:427:28: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/gpu/drm/ttm/ttm_bo_util.c:427:28: sparse:     got void *virtual
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
 
-vim +318 drivers/gpu/drm/ttm/ttm_bo_util.c
+V2:
+ Address Shawn and Macro's comments
 
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  302  
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  303  static int ttm_bo_ioremap(struct ttm_buffer_object *bo,
-82c5da6bf8b55a Jerome Glisse         2010-04-09  304  			  unsigned long offset,
-82c5da6bf8b55a Jerome Glisse         2010-04-09  305  			  unsigned long size,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  306  			  struct ttm_bo_kmap_obj *map)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  307  {
-d3116756a710e3 Christian König       2021-04-12  308  	struct ttm_resource *mem = bo->resource;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  309  
-d3116756a710e3 Christian König       2021-04-12  310  	if (bo->resource->bus.addr) {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  311  		map->bo_kmap_type = ttm_bo_map_premapped;
-d3116756a710e3 Christian König       2021-04-12  312  		map->virtual = ((u8 *)bo->resource->bus.addr) + offset;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  313  	} else {
-d3116756a710e3 Christian König       2021-04-12  314  		resource_size_t res = bo->resource->bus.offset + offset;
-d3116756a710e3 Christian König       2021-04-12  315  
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  316  		map->bo_kmap_type = ttm_bo_map_iomap;
-ce65b874001d75 Christian König       2020-09-30  317  		if (mem->bus.caching == ttm_write_combined)
-d3116756a710e3 Christian König       2021-04-12 @318  			map->virtual = ioremap_wc(res, size);
-b849bec29a991d Oak Zeng              2021-02-26  319  #ifdef CONFIG_X86
-b849bec29a991d Oak Zeng              2021-02-26  320  		else if (mem->bus.caching == ttm_cached)
-d3116756a710e3 Christian König       2021-04-12  321  			map->virtual = ioremap_cache(res, size);
-b849bec29a991d Oak Zeng              2021-02-26  322  #endif
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  323  		else
-d3116756a710e3 Christian König       2021-04-12  324  			map->virtual = ioremap(res, size);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  325  	}
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  326  	return (!map->virtual) ? -ENOMEM : 0;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  327  }
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  328  
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  329  static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  330  			   unsigned long start_page,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  331  			   unsigned long num_pages,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  332  			   struct ttm_bo_kmap_obj *map)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  333  {
-d3116756a710e3 Christian König       2021-04-12  334  	struct ttm_resource *mem = bo->resource;
-d0cef9fa4411eb Roger He              2017-12-21  335  	struct ttm_operation_ctx ctx = {
-d0cef9fa4411eb Roger He              2017-12-21  336  		.interruptible = false,
-d0cef9fa4411eb Roger He              2017-12-21  337  		.no_wait_gpu = false
-d0cef9fa4411eb Roger He              2017-12-21  338  	};
-62975d27d647a4 Christian König       2020-08-12  339  	struct ttm_tt *ttm = bo->ttm;
-d0cef9fa4411eb Roger He              2017-12-21  340  	pgprot_t prot;
-b1e5f172325547 Jerome Glisse         2011-11-02  341  	int ret;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  342  
-62975d27d647a4 Christian König       2020-08-12  343  	BUG_ON(!ttm);
-b1e5f172325547 Jerome Glisse         2011-11-02  344  
-0a667b500703db Dave Airlie           2020-08-25  345  	ret = ttm_tt_populate(bo->bdev, ttm, &ctx);
-b1e5f172325547 Jerome Glisse         2011-11-02  346  	if (ret)
-b1e5f172325547 Jerome Glisse         2011-11-02  347  		return ret;
-b1e5f172325547 Jerome Glisse         2011-11-02  348  
-ce65b874001d75 Christian König       2020-09-30  349  	if (num_pages == 1 && ttm->caching == ttm_cached) {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  350  		/*
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  351  		 * We're mapping a single page, and the desired
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  352  		 * page protection is consistent with the bo.
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  353  		 */
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  354  
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  355  		map->bo_kmap_type = ttm_bo_map_kmap;
-b1e5f172325547 Jerome Glisse         2011-11-02  356  		map->page = ttm->pages[start_page];
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  357  		map->virtual = kmap(map->page);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  358  	} else {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  359  		/*
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  360  		 * We need to use vmap to get the desired page protection
-af901ca181d92a André Goddard Rosa    2009-11-14  361  		 * or to make the buffer object look contiguous.
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  362  		 */
-867bcecd6ae463 Christian König       2020-09-30  363  		prot = ttm_io_prot(bo, mem, PAGE_KERNEL);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  364  		map->bo_kmap_type = ttm_bo_map_vmap;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  365  		map->virtual = vmap(ttm->pages + start_page, num_pages,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  366  				    0, prot);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  367  	}
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  368  	return (!map->virtual) ? -ENOMEM : 0;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  369  }
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  370  
-a3185f91d0579b Christian König       2022-05-09  371  /**
-a3185f91d0579b Christian König       2022-05-09  372   * ttm_bo_kmap
-a3185f91d0579b Christian König       2022-05-09  373   *
-a3185f91d0579b Christian König       2022-05-09  374   * @bo: The buffer object.
-a3185f91d0579b Christian König       2022-05-09  375   * @start_page: The first page to map.
-a3185f91d0579b Christian König       2022-05-09  376   * @num_pages: Number of pages to map.
-a3185f91d0579b Christian König       2022-05-09  377   * @map: pointer to a struct ttm_bo_kmap_obj representing the map.
-a3185f91d0579b Christian König       2022-05-09  378   *
-a3185f91d0579b Christian König       2022-05-09  379   * Sets up a kernel virtual mapping, using ioremap, vmap or kmap to the
-a3185f91d0579b Christian König       2022-05-09  380   * data in the buffer object. The ttm_kmap_obj_virtual function can then be
-a3185f91d0579b Christian König       2022-05-09  381   * used to obtain a virtual address to the data.
-a3185f91d0579b Christian König       2022-05-09  382   *
-a3185f91d0579b Christian König       2022-05-09  383   * Returns
-a3185f91d0579b Christian König       2022-05-09  384   * -ENOMEM: Out of memory.
-a3185f91d0579b Christian König       2022-05-09  385   * -EINVAL: Invalid range.
-a3185f91d0579b Christian König       2022-05-09  386   */
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  387  int ttm_bo_kmap(struct ttm_buffer_object *bo,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  388  		unsigned long start_page, unsigned long num_pages,
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  389  		struct ttm_bo_kmap_obj *map)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  390  {
-82c5da6bf8b55a Jerome Glisse         2010-04-09  391  	unsigned long offset, size;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  392  	int ret;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  393  
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  394  	map->virtual = NULL;
-82c5da6bf8b55a Jerome Glisse         2010-04-09  395  	map->bo = bo;
-e3c92eb4a84fb0 Somalapuram Amaranath 2022-10-27  396  	if (num_pages > PFN_UP(bo->resource->size))
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  397  		return -EINVAL;
-e3c92eb4a84fb0 Somalapuram Amaranath 2022-10-27  398  	if ((start_page + num_pages) > PFN_UP(bo->resource->size))
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  399  		return -EINVAL;
-02b29caf18b3b0 Huang Rui             2018-08-15  400  
-d3116756a710e3 Christian König       2021-04-12  401  	ret = ttm_mem_io_reserve(bo->bdev, bo->resource);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  402  	if (ret)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  403  		return ret;
-d3116756a710e3 Christian König       2021-04-12  404  	if (!bo->resource->bus.is_iomem) {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  405  		return ttm_bo_kmap_ttm(bo, start_page, num_pages, map);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  406  	} else {
-82c5da6bf8b55a Jerome Glisse         2010-04-09  407  		offset = start_page << PAGE_SHIFT;
-82c5da6bf8b55a Jerome Glisse         2010-04-09  408  		size = num_pages << PAGE_SHIFT;
-82c5da6bf8b55a Jerome Glisse         2010-04-09  409  		return ttm_bo_ioremap(bo, offset, size, map);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  410  	}
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  411  }
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  412  EXPORT_SYMBOL(ttm_bo_kmap);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  413  
-a3185f91d0579b Christian König       2022-05-09  414  /**
-a3185f91d0579b Christian König       2022-05-09  415   * ttm_bo_kunmap
-a3185f91d0579b Christian König       2022-05-09  416   *
-a3185f91d0579b Christian König       2022-05-09  417   * @map: Object describing the map to unmap.
-a3185f91d0579b Christian König       2022-05-09  418   *
-a3185f91d0579b Christian König       2022-05-09  419   * Unmaps a kernel map set up by ttm_bo_kmap.
-a3185f91d0579b Christian König       2022-05-09  420   */
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  421  void ttm_bo_kunmap(struct ttm_bo_kmap_obj *map)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  422  {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  423  	if (!map->virtual)
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  424  		return;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  425  	switch (map->bo_kmap_type) {
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  426  	case ttm_bo_map_iomap:
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10 @427  		iounmap(map->virtual);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  428  		break;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  429  	case ttm_bo_map_vmap:
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  430  		vunmap(map->virtual);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  431  		break;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  432  	case ttm_bo_map_kmap:
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  433  		kunmap(map->page);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  434  		break;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  435  	case ttm_bo_map_premapped:
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  436  		break;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  437  	default:
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  438  		BUG();
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  439  	}
-d3116756a710e3 Christian König       2021-04-12  440  	ttm_mem_io_free(map->bo->bdev, map->bo->resource);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  441  	map->virtual = NULL;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  442  	map->page = NULL;
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  443  }
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  444  EXPORT_SYMBOL(ttm_bo_kunmap);
-ba4e7d973dd09b Thomas Hellstrom      2009-06-10  445  
+ drivers/soc/imx/soc-imx8m.c | 63 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 57 insertions(+), 6 deletions(-)
 
-:::::: The code at line 318 was first introduced by commit
-:::::: d3116756a710e3cd51293a9d58b525957ab7e784 drm/ttm: rename bo->mem and make it a pointer
-
-:::::: TO: Christian König <christian.koenig@amd.com>
-:::::: CC: Christian König <christian.koenig@amd.com>
-
+diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+index ec87d9d878f3..6ed7889e1902 100644
+--- a/drivers/soc/imx/soc-imx8m.c
++++ b/drivers/soc/imx/soc-imx8m.c
+@@ -24,6 +24,7 @@
+ #define OCOTP_UID_HIGH			0x420
+ 
+ #define IMX8MP_OCOTP_UID_OFFSET		0x10
++#define IMX8MP_OCOTP_UID_HIGH		0xe00
+ 
+ /* Same as ANADIG_DIGPROG_IMX7D */
+ #define ANADIG_DIGPROG_IMX8MM	0x800
+@@ -31,9 +32,11 @@
+ struct imx8_soc_data {
+ 	char *name;
+ 	u32 (*soc_revision)(void);
++	bool uid_128bit;
+ };
+ 
+ static u64 soc_uid;
++static u64 soc_uid_h;
+ 
+ #ifdef CONFIG_HAVE_ARM_SMCCC
+ static u32 imx8mq_soc_revision_from_atf(void)
+@@ -101,8 +104,6 @@ static void __init imx8mm_soc_uid(void)
+ 	void __iomem *ocotp_base;
+ 	struct device_node *np;
+ 	struct clk *clk;
+-	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
+-		     IMX8MP_OCOTP_UID_OFFSET : 0;
+ 
+ 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
+ 	if (!np)
+@@ -118,12 +119,52 @@ static void __init imx8mm_soc_uid(void)
+ 
+ 	clk_prepare_enable(clk);
+ 
+-	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + offset);
++	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+ 	soc_uid <<= 32;
+-	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
++	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
+ 
+ 	clk_disable_unprepare(clk);
+ 	clk_put(clk);
++
++	iounmap(ocotp_base);
++	of_node_put(np);
++}
++
++static void __init imx8mp_soc_uid(void)
++{
++	void __iomem *ocotp_base;
++	struct device_node *np;
++	struct clk *clk;
++
++	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mp-ocotp");
++	if (!np)
++		return;
++
++	ocotp_base = of_iomap(np, 0);
++	if (!ocotp_base) {
++		WARN_ON(!ocotp_base);
++		return;
++	}
++
++	clk = of_clk_get_by_name(np, NULL);
++	if (IS_ERR(clk)) {
++		WARN_ON(IS_ERR(clk));
++		return;
++	}
++
++	clk_prepare_enable(clk);
++
++	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + IMX8MP_OCOTP_UID_OFFSET);
++	soc_uid <<= 32;
++	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + IMX8MP_OCOTP_UID_OFFSET);
++
++	soc_uid_h = readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH + 0x10);
++	soc_uid_h <<= 32;
++	soc_uid_h |= readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH);
++
++	clk_disable_unprepare(clk);
++	clk_put(clk);
++
+ 	iounmap(ocotp_base);
+ 	of_node_put(np);
+ }
+@@ -146,7 +187,11 @@ static u32 __init imx8mm_soc_revision(void)
+ 	iounmap(anatop_base);
+ 	of_node_put(np);
+ 
+-	imx8mm_soc_uid();
++
++	if (of_machine_is_compatible("fsl,imx8mp"))
++		imx8mp_soc_uid();
++	else
++		imx8mm_soc_uid();
+ 
+ 	return rev;
+ }
+@@ -169,6 +214,7 @@ static const struct imx8_soc_data imx8mn_soc_data = {
+ static const struct imx8_soc_data imx8mp_soc_data = {
+ 	.name = "i.MX8MP",
+ 	.soc_revision = imx8mm_soc_revision,
++	.uid_128bit = true,
+ };
+ 
+ static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+@@ -222,7 +268,12 @@ static int __init imx8_soc_init(void)
+ 		goto free_soc;
+ 	}
+ 
+-	soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
++	if (data->uid_128bit)
++		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX%016llX",
++							soc_uid_h, soc_uid);
++	else
++		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
++
+ 	if (!soc_dev_attr->serial_number) {
+ 		ret = -ENOMEM;
+ 		goto free_rev;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.37.1
+
