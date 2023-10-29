@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6557DB0B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BD07DB0B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 00:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbjJ2XJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 19:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        id S231308AbjJ2XJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 19:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232760AbjJ2XJP (ORCPT
+        with ESMTP id S232797AbjJ2XJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:09:15 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5585465BC
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:03:56 -0700 (PDT)
+        Sun, 29 Oct 2023 19:09:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802D35256
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 16:03:57 -0700 (PDT)
 Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 298FC6607388;
-        Sun, 29 Oct 2023 23:02:34 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A42C36607389;
+        Sun, 29 Oct 2023 23:02:35 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698620555;
-        bh=kRBcrLAj4D2pvg6jvqHxVmGBnWprZUgp4H9azTfbRYE=;
+        s=mail; t=1698620556;
+        bh=8mHobcZt5q0EvB1OxUktWTmajwvEEdihAewQToXFLnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kIcrT91R2KsnfqEJqrzr/8g5XvCiRTG15pQZrSdsY7CjrthMuTV7UzFCNftZBg1Kx
-         BzICvJKEVCKLmItWaM3WtIcqVa7F6dbGZfLe6jAAXWpiMWZl1i3+1O8K+Ype8kWrOz
-         R6zoBWI0WE2fxtmAVZ/QiFlmaqzr3yxhekXoIplfhC5oEQOTfVjZM1pgxrDQuYi+ca
-         Htl/XMDw1kRYVtEv8jT3+GblNjOo069yvUlg0ld4ec99SHby87w0OznehkfMW/UDZJ
-         et6pZ+ZDDBdzgezCpqkps5G+ApbO/NCPzb3BWIF5c+spZLGgtYOyxzsUNDY8//cQkK
-         io8K/I6piPBhA==
+        b=aVpW1wjuKVHMcJl8AwetW+SjRrRqS3ZqXoa4ojguAof7GuTPAkVL2mE9vISHmZrMY
+         bmzLQt/7sRiddkBk3QPB10UQLnYr9b5TOtPYmETy0z/tdgj4ySnLemP6afpdltLaRx
+         43AINAMyrF24KDK6Wjbba54k/HfUeEs04lqnAxQ26+ItWPkWkpnhd4h6yd0pOMA1IH
+         1lSB9x8+t8wTKQbifhU2hlLkwGfPt8kyqbhgW2sw+3d33cr0TODMiwzS1QtN4FqFnN
+         AMGxm7HgyEun0ra71s7zRuDKmoa4VL4VtkCWw23CXfPWvvjX5/qv5E5driSNrsQUq3
+         eDyoOVmcOqAZg==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@gmail.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
@@ -47,9 +47,9 @@ To:     David Airlie <airlied@gmail.com>,
         Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v18 06/26] drm/shmem-helper: Add and use pages_pin_count
-Date:   Mon, 30 Oct 2023 02:01:45 +0300
-Message-ID: <20231029230205.93277-7-dmitry.osipenko@collabora.com>
+Subject: [PATCH v18 07/26] drm/shmem-helper: Use refcount_t for pages_use_count
+Date:   Mon, 30 Oct 2023 02:01:46 +0300
+Message-ID: <20231029230205.93277-8-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
 References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
@@ -64,112 +64,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add separate pages_pin_count for tracking of whether drm-shmem pages are
-moveable or not. With the addition of memory shrinker support to drm-shmem,
-the pages_use_count will no longer determine whether pages are hard-pinned
-in memory, but whether pages exist and are soft-pinned (and could be swapped
-out). The pages_pin_count > 1 will hard-pin pages in memory.
+Use atomic refcount_t helper for pages_use_count to optimize pin/unpin
+functions by skipping reservation locking while GEM's pin refcount > 1.
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 25 +++++++++++++++++--------
- include/drm/drm_gem_shmem_helper.h     | 11 +++++++++++
- 2 files changed, 28 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/drm_gem_shmem_helper.c  | 33 +++++++++++--------------
+ drivers/gpu/drm/lima/lima_gem.c         |  2 +-
+ drivers/gpu/drm/panfrost/panfrost_mmu.c |  2 +-
+ include/drm/drm_gem_shmem_helper.h      |  2 +-
+ 4 files changed, 18 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index 2cc0601865f6..b9b71a1a563a 100644
+index b9b71a1a563a..6e02643ed87e 100644
 --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
 +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -156,6 +156,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+@@ -155,7 +155,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+ 		if (shmem->pages)
  			drm_gem_shmem_put_pages_locked(shmem);
  
- 		drm_WARN_ON(obj->dev, shmem->pages_use_count);
-+		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
+-		drm_WARN_ON(obj->dev, shmem->pages_use_count);
++		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+ 		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
  
  		dma_resv_unlock(shmem->base.resv);
- 	}
-@@ -234,18 +235,16 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
+@@ -173,14 +173,13 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
  
  	dma_resv_assert_held(shmem->base.resv);
  
-+	if (refcount_inc_not_zero(&shmem->pages_pin_count))
-+		return 0;
-+
- 	ret = drm_gem_shmem_get_pages_locked(shmem);
-+	if (!ret)
-+		refcount_set(&shmem->pages_pin_count, 1);
+-	if (shmem->pages_use_count++ > 0)
++	if (refcount_inc_not_zero(&shmem->pages_use_count))
+ 		return 0;
  
- 	return ret;
+ 	pages = drm_gem_get_pages(obj);
+ 	if (IS_ERR(pages)) {
+ 		drm_dbg_kms(obj->dev, "Failed to get pages (%ld)\n",
+ 			    PTR_ERR(pages));
+-		shmem->pages_use_count = 0;
+ 		return PTR_ERR(pages);
+ 	}
+ 
+@@ -196,6 +195,8 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
+ 
+ 	shmem->pages = pages;
+ 
++	refcount_set(&shmem->pages_use_count, 1);
++
+ 	return 0;
  }
  
--static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
--{
--	dma_resv_assert_held(shmem->base.resv);
+@@ -211,21 +212,17 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+ 
+ 	dma_resv_assert_held(shmem->base.resv);
+ 
+-	if (drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
+-		return;
 -
--	drm_gem_shmem_put_pages_locked(shmem);
--}
+-	if (--shmem->pages_use_count > 0)
+-		return;
 -
- /**
-  * drm_gem_shmem_pin - Pin backing pages for a shmem GEM object
-  * @shmem: shmem GEM object
-@@ -263,6 +262,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
++	if (refcount_dec_and_test(&shmem->pages_use_count)) {
+ #ifdef CONFIG_X86
+-	if (shmem->map_wc)
+-		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
++		if (shmem->map_wc)
++			set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+ #endif
  
- 	drm_WARN_ON(obj->dev, obj->import_attach);
+-	drm_gem_put_pages(obj, shmem->pages,
+-			  shmem->pages_mark_dirty_on_put,
+-			  shmem->pages_mark_accessed_on_put);
+-	shmem->pages = NULL;
++		drm_gem_put_pages(obj, shmem->pages,
++				  shmem->pages_mark_dirty_on_put,
++				  shmem->pages_mark_accessed_on_put);
++		shmem->pages = NULL;
++	}
+ }
+ EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
  
-+	if (refcount_inc_not_zero(&shmem->pages_pin_count))
-+		return 0;
-+
- 	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
- 	if (ret)
- 		return ret;
-@@ -286,8 +288,14 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
+@@ -552,8 +549,8 @@ static void drm_gem_shmem_vm_open(struct vm_area_struct *vma)
+ 	 * mmap'd, vm_open() just grabs an additional reference for the new
+ 	 * mm the vma is getting copied into (ie. on fork()).
+ 	 */
+-	if (!drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
+-		shmem->pages_use_count++;
++	drm_WARN_ON_ONCE(obj->dev,
++			 !refcount_inc_not_zero(&shmem->pages_use_count));
  
- 	drm_WARN_ON(obj->dev, obj->import_attach);
- 
-+	if (refcount_dec_not_one(&shmem->pages_pin_count))
-+		return;
-+
- 	dma_resv_lock(shmem->base.resv, NULL);
--	drm_gem_shmem_unpin_locked(shmem);
-+
-+	if (refcount_dec_and_test(&shmem->pages_pin_count))
-+		drm_gem_shmem_put_pages_locked(shmem);
-+
  	dma_resv_unlock(shmem->base.resv);
- }
- EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
-@@ -632,6 +640,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
- 	if (shmem->base.import_attach)
+ 
+@@ -641,7 +638,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
  		return;
  
-+	drm_printf_indent(p, indent, "pages_pin_count=%u\n", refcount_read(&shmem->pages_pin_count));
- 	drm_printf_indent(p, indent, "pages_use_count=%u\n", shmem->pages_use_count);
+ 	drm_printf_indent(p, indent, "pages_pin_count=%u\n", refcount_read(&shmem->pages_pin_count));
+-	drm_printf_indent(p, indent, "pages_use_count=%u\n", shmem->pages_use_count);
++	drm_printf_indent(p, indent, "pages_use_count=%u\n", refcount_read(&shmem->pages_use_count));
  	drm_printf_indent(p, indent, "vmap_use_count=%u\n", shmem->vmap_use_count);
  	drm_printf_indent(p, indent, "vaddr=%p\n", shmem->vaddr);
+ }
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 62d4a409faa8..988e74f67465 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -47,7 +47,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 		}
+ 
+ 		bo->base.pages = pages;
+-		bo->base.pages_use_count = 1;
++		refcount_set(&bo->base.pages_use_count, 1);
+ 
+ 		mapping_set_unevictable(mapping);
+ 	}
+diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+index 9fd4a89c52dd..770dab1942c2 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -487,7 +487,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
+ 			goto err_unlock;
+ 		}
+ 		bo->base.pages = pages;
+-		bo->base.pages_use_count = 1;
++		refcount_set(&bo->base.pages_use_count, 1);
+ 	} else {
+ 		pages = bo->base.pages;
+ 		if (pages[page_offset]) {
 diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-index 6ee4a4046980..5088bd623518 100644
+index 5088bd623518..bd3596e54abe 100644
 --- a/include/drm/drm_gem_shmem_helper.h
 +++ b/include/drm/drm_gem_shmem_helper.h
-@@ -39,6 +39,17 @@ struct drm_gem_shmem_object {
+@@ -37,7 +37,7 @@ struct drm_gem_shmem_object {
+ 	 * Reference count on the pages table.
+ 	 * The pages are put when the count reaches zero.
  	 */
- 	unsigned int pages_use_count;
+-	unsigned int pages_use_count;
++	refcount_t pages_use_count;
  
-+	/**
-+	 * @pages_pin_count:
-+	 *
-+	 * Reference count on the pinned pages table.
-+	 *
-+	 * Pages are hard-pinned and reside in memory if count
-+	 * greater than zero. Otherwise, when count is zero, the pages are
-+	 * allowed to be evicted and purged by memory shrinker.
-+	 */
-+	refcount_t pages_pin_count;
-+
  	/**
- 	 * @madv: State for madvise
- 	 *
+ 	 * @pages_pin_count:
 -- 
 2.41.0
 
