@@ -2,94 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ED27DC0D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E2D7DC0E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjJ3T4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S229537AbjJ3UC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJ3T4W (ORCPT
+        with ESMTP id S229456AbjJ3UCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:56:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9A2EE;
-        Mon, 30 Oct 2023 12:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698695780; x=1730231780;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RfFmeUpBcZaSntkwX6+z9kb48K08ozZBr+jkwdc7DzY=;
-  b=OBgb7qB8J/QfjNaTrX8JiAn2ZSM3zX6rW1zO4+GcHWi3c2TF6FJ55er8
-   QtPDmOddSn3qJ7TSObBBVgeNhyrwYPnQ6KJCHw2Vx8v54UcukAgX3skwj
-   KAe2ynEySGiPO3V15X6u3TRM7uRLlEgDp+CHGihzmSsLGDxWoSvQphdN8
-   gp1d0sjGm1RWnIfi9ZTAprQlVWnoCTc+tDWvuGxdpiTdAf21Y9waAiJ46
-   shcMCYye3HtzcUhHhpx+/fxwlwwUWMPTZPcUix59ruR5CSsy9oa2dT7oT
-   UQn7mLiTtFvTtyCVP6rH8EQSSqKrWNHdD9qvRt6OEeqtkxnrNuYEvRO3v
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="419260314"
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="419260314"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 12:56:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="753898339"
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="753898339"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 12:56:17 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qxYMw-00000009yDG-3nYB;
-        Mon, 30 Oct 2023 21:56:14 +0200
-Date:   Mon, 30 Oct 2023 21:56:14 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 01/17] pinctrl: intel: Provide Intel pin control wide
- PM ops structure
-Message-ID: <ZUAKXulF43OtSAWN@smile.fi.intel.com>
-References: <20231030120734.2831419-1-andriy.shevchenko@linux.intel.com>
- <20231030120734.2831419-2-andriy.shevchenko@linux.intel.com>
- <20231030194112.00001917@Huawei.com>
- <20231030194350.0000581f@Huawei.com>
+        Mon, 30 Oct 2023 16:02:25 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A164CCC
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:02:22 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-66fbcaf03c6so23106066d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:02:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698696142; x=1699300942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CfU1Vfre9ZPJUwx/epHI06bmjrSaEYsIgo8tdkDUzfc=;
+        b=ME+9t+htyQBWKQJdo32UkF+s3byQWFRMJXPb9sWf6SqDEbfhk8DI3Vbn6yRTtnKrBm
+         bJCLLXqPS1/4yC6bivHhAUWDYNLyuvdliaq2TKTortlM1m0fjUBz4bN9Y8RnLCMOAwtq
+         8OJ+6Rm4wAtr8rEYyVxrdk8UrdLVhFV2osHLZr39PXj6HrB9WARpkBJ4VsfThFNsDtDj
+         5lP4475YJx/EhmOoO7FxylWkf+OH1MgS7Mw3dnImEyrthzCxvkWF7awxrrLViLzGayQu
+         W2yOMjm59+3coJMD93BgpDnlI5PzpjFYoN9BFDbHNJNVOELZ9F4zTNiME1vnAVZ6PhlO
+         rmrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698696142; x=1699300942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CfU1Vfre9ZPJUwx/epHI06bmjrSaEYsIgo8tdkDUzfc=;
+        b=h4aLfjeO5Jb/Y3Kk83pSuEu7Mc+7jo5HAmoswJFwa5EBB73Z+GyG/PE2XWlmCKhyWO
+         S6g5p0YzIsdm/uVh6Oh9h9Cw6IPOA1bhvRrQ27krtImWc8amhGXQmGoTK/oqeZ4NKfdp
+         T3zOMCKIRT2LI2xAS9cLqKfSM/+1J0OrV6OWgqsvFnKAYhIvz640gVC/C78qpJFUTXvW
+         n5FXsW5xqOUmVpKq2ezemP7NbJ1i2OODrBQroaSgDT5tcNZSvd0NUoGxs2+VeMtQ1N90
+         VmMHAaEq25MQ9TSrs/oM3vYwhOI3Lx8LvYJH5/IQllgbRiWARJK/RAitazxPfgYOiKGk
+         Ujvg==
+X-Gm-Message-State: AOJu0YwUfDfJ5wCy3VziRHC26tI5P2yMHyf64jSrNvGiqO/VTNNJg3x/
+        34nJrWS/KCJU7y+5Nyug3yaN6lKX0LN3LOtruGgTcg==
+X-Google-Smtp-Source: AGHT+IEpqgeWYuK4AEA+W9HhAJXA/nN3xDb3dPmYj/gB7sD7cdA2fS9iCZIx/ybdKPGcmfhMI9nozE03NMueRkWzTGI=
+X-Received: by 2002:a05:6214:d09:b0:672:3f54:b94f with SMTP id
+ 9-20020a0562140d0900b006723f54b94fmr4383869qvh.7.1698696141585; Mon, 30 Oct
+ 2023 13:02:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030194350.0000581f@Huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230916040915.1075620-1-irogers@google.com> <CAL715WLq+wMGC26ESviAwSFGCpCYbf8knRFo=6Lbwgk8qwB8xA@mail.gmail.com>
+In-Reply-To: <CAL715WLq+wMGC26ESviAwSFGCpCYbf8knRFo=6Lbwgk8qwB8xA@mail.gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 30 Oct 2023 13:01:45 -0700
+Message-ID: <CAL715W+gnsi8NiRfwBHAGLhGo5hpS1c=+v8EGbz8iX_ygUxm1w@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:43:50PM +0000, Jonathan Cameron wrote:
-> On Mon, 30 Oct 2023 19:41:12 +0000
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Mon, Oct 30, 2023 at 12:04=E2=80=AFPM Mingwei Zhang <mizhang@google.com>=
+ wrote:
+>
+> On Fri, Sep 15, 2023 at 9:10=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > Dummy events are created with an attribute where the period and freq
+> > are zero. evsel__config will then see the uninitialized values and
+> > initialize them in evsel__default_freq_period. As fequency mode is
+> > used by default the dummy event would be set to use frequency
+> > mode. However, this has no effect on the dummy event but does cause
+> > unnecessary timers/interrupts. Avoid this overhead by setting the
+> > period to 1 for dummy events.
+> >
+> > evlist__add_aux_dummy calls evlist__add_dummy then sets freq=3D0 and
+> > period=3D1. This isn't necessary after this change and so the setting i=
+s
+> > removed.
+> >
+> > From Stephane:
+> >
+> > The dummy event is not counting anything. It is used to collect mmap
+> > records and avoid a race condition during the synthesize mmap phase of
+> > perf record. As such, it should not cause any overhead during active
+> > profiling. Yet, it did. Because of a bug the dummy event was
+> > programmed as a sampling event in frequency mode. Events in that mode
+> > incur more kernel overheads because on timer tick, the kernel has to
+> > look at the number of samples for each event and potentially adjust
+> > the sampling period to achieve the desired frequency. The dummy event
+> > was therefore adding a frequency event to task and ctx contexts we may
+> > otherwise not have any, e.g., perf record -a -e
+> > cpu/event=3D0x3c,period=3D10000000/. On each timer tick the
+> > perf_adjust_freq_unthr_context() is invoked and if ctx->nr_freq is
+> > non-zero, then the kernel will loop over ALL the events of the context
+> > looking for frequency mode ones. In doing, so it locks the context,
+> > and enable/disable the PMU of each hw event. If all the events of the
+> > context are in period mode, the kernel will have to traverse the list f=
+or
+> > nothing incurring overhead. The overhead is multiplied by a very large
+> > factor when this happens in a guest kernel. There is no need for the
+> > dummy event to be in frequency mode, it does not count anything and
+> > therefore should not cause extra overhead for no reason.
+> >
+> > Fixes: 5bae0250237f ("perf evlist: Introduce perf_evlist__new_dummy con=
+structor")
+> > Reported-by: Stephane Eranian <eranian@google.com>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/evlist.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > index 25c3ebe2c2f5..e36da58522ef 100644
+> > --- a/tools/perf/util/evlist.c
+> > +++ b/tools/perf/util/evlist.c
+> > @@ -251,6 +251,9 @@ static struct evsel *evlist__dummy_event(struct evl=
+ist *evlist)
+> >                 .type   =3D PERF_TYPE_SOFTWARE,
+> >                 .config =3D PERF_COUNT_SW_DUMMY,
+> >                 .size   =3D sizeof(attr), /* to capture ABI version */
+> > +               /* Avoid frequency mode for dummy events to avoid assoc=
+iated timers. */
+> > +               .freq =3D 0,
+> > +               .sample_period =3D 1,
+> >         };
+> >
+> >         return evsel__new_idx(&attr, evlist->core.nr_entries);
+> > @@ -277,8 +280,6 @@ struct evsel *evlist__add_aux_dummy(struct evlist *=
+evlist, bool system_wide)
+> >         evsel->core.attr.exclude_kernel =3D 1;
+> >         evsel->core.attr.exclude_guest =3D 1;
+> >         evsel->core.attr.exclude_hv =3D 1;
+> > -       evsel->core.attr.freq =3D 0;
+> > -       evsel->core.attr.sample_period =3D 1;
+> >         evsel->core.system_wide =3D system_wide;
+> >         evsel->no_aux_samples =3D true;
+> >         evsel->name =3D strdup("dummy:u");
+> > --
+> > 2.42.0.459.ge4e396fd5e-goog
+> >
+>
+> Hi Greg,
+>
+> This patch is a critical performance fix for perf and vPMU. Can you
+> help us dispatch the commit to all stable kernel versions?
+>
+> Appreciate your help. Thanks.
+> -Mingwei
 
-...
-
-> Actually looking at usecase, why isn't the absence of an EXPORT in
-> the !CONFIG_PM_SLEEP path not a problem for bisection of this series given
-> you haven't yet protected the users?
-
-I'm not sure I got the issue you are trying to point out.
-Between first and last patches the main driver exports two things: the PM ops
-functions, which are _always_ been exported and PM ops structure, which is
-exported only when CONFIG_PM_SLEEP=y. Every converted user has pm_sleep_ptr()
-guard added so it shouldn't be a problem. What exactly did I miss?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Oops... Update target email to: stable@vger.kernel.org
