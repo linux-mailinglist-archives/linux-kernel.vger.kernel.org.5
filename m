@@ -2,112 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE28F7DC1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448727DC1EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjJ3Vbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
+        id S231976AbjJ3VcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjJ3Vbv (ORCPT
+        with ESMTP id S231969AbjJ3Vb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:31:51 -0400
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D9EE1;
-        Mon, 30 Oct 2023 14:31:49 -0700 (PDT)
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b40d5ea323so3087114b6e.0;
-        Mon, 30 Oct 2023 14:31:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698701508; x=1699306308;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OuBaURUuWJkEQpbZhWeSxspKPPb+Lr69ekE2ADTt8Wc=;
-        b=ctMEZumrolkdnjByFGUWOWQUVnxi61WDindnpVDBDNpzKALR2zuRQXMFQv3Jd5iooU
-         x51LimDOvJH9znKkaZBhlkoRhXWRNxjsMq/XXpLbkWnxQLvwxODQNvNc0TaibUEYD6lA
-         R6CvOWkxJV00ZYY8USh6XMIS+KnNY1HFJI0E+3j1TQ1J6h8Bmo/YDvAf1mzP8Pmr4HkX
-         hmBE/1R/U3ZVuG6TFwInTBUqd0YBqkwIXfN8r3aee0MO8VZK6u6BpfiwS+3tMrsw0MPl
-         qoPctdqhQQJKi9h4NHptdoJZv7POl3t7K9Q4APAXB42kYVEoNgDSjMEKA0jHBrXFnrGg
-         JfeA==
-X-Gm-Message-State: AOJu0YyAIfB3gcDoPI56bcesX54lm/i11vsNoxr0EJnYzGiVMr9pB7Oo
-        XqqBGB66HsM4a05SG4tpDg==
-X-Google-Smtp-Source: AGHT+IGKuby//PdBhTBpw28HsYfEui30ghahooRRo1gU9DZgJ7OM+SQsCkxRsIdIYwyzeeSbhBnk8w==
-X-Received: by 2002:a05:6808:1789:b0:3ae:554b:9c97 with SMTP id bg9-20020a056808178900b003ae554b9c97mr14084990oib.37.1698701508322;
-        Mon, 30 Oct 2023 14:31:48 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id e22-20020a05680809b600b003afc33bf048sm1518710oig.2.2023.10.30.14.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 14:31:47 -0700 (PDT)
-Received: (nullmailer pid 2495794 invoked by uid 1000);
-        Mon, 30 Oct 2023 21:31:46 -0000
-Date:   Mon, 30 Oct 2023 16:31:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Li Yang <leoyang.li@nxp.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        Mon, 30 Oct 2023 17:31:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A1AED;
+        Mon, 30 Oct 2023 14:31:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CC4C433C8;
+        Mon, 30 Oct 2023 21:31:53 +0000 (UTC)
+Date:   Mon, 30 Oct 2023 17:31:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-trace-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v8 00/30] Add support for QMC HDLC, framer infrastructure
- and PEF2256 framer
-Message-ID: <20231030213146.GA2490536-robh@kernel.org>
-References: <20231011061437.64213-1-herve.codina@bootlin.com>
- <20231013164647.7855f09a@kernel.org>
- <20231025170051.27dc83ea@bootlin.com>
- <20231025123215.5caca7d4@kernel.org>
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: selftests: user_events: ftrace_test - RIP:
+ 0010:tracing_update_buffers (kernel/trace/trace.c:6470)
+Message-ID: <20231030173151.0631169b@gandalf.local.home>
+In-Reply-To: <20231030124223.4e4ddeb8@gandalf.local.home>
+References: <CA+G9fYuDP3hVQ3t7FfrBAjd_WFVSurMgCepTxunSJf=MTe=6aA@mail.gmail.com>
+        <20231027192011.GA436-beaub@linux.microsoft.com>
+        <20231027183640.2529ab68@gandalf.local.home>
+        <20231027223344.3854ac1f@rorschach.local.home>
+        <20231030163102.GA1853-beaub@linux.microsoft.com>
+        <20231030124223.4e4ddeb8@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025123215.5caca7d4@kernel.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 12:32:15PM -0700, Jakub Kicinski wrote:
-> On Wed, 25 Oct 2023 17:00:51 +0200 Herve Codina wrote:
-> > > Which way will those patches go? Via some FSL SoC tree?  
+On Mon, 30 Oct 2023 12:42:23 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> > I still get the splat about the trace_array_put when running
+> > user_event's ftrace selftest:
 > > 
-> > This series seems mature now.
-> > What is the plan next in order to have it applied ?
-> > 
-> > Don't hesitate to tell me if you prefer split series.
+> > [   26.665931] ------------[ cut here ]------------
+> > [   26.666663] WARNING: CPU: 12 PID: 291 at kernel/trace/trace.c:516 tracing_release_file_tr+0x46/0x50
+> > [   26.667470] Modules linked in:
+> > [   26.667808] CPU: 12 PID: 291 Comm: ftrace_test Not tainted 6.6.0-rc7-next-20231026 #3
+> > [   26.668665] RIP: 0010:tracing_release_file_tr+0x46/0x50
+> > [   26.669093] Code: d1 03 01 8b 83 c0 1e 00 00 85 c0 74 1d 83 e8 01 48 c7 c7 80 5b ef bc 89 83 c0 1e 00 00 e8 f2 b5 03 01 31 c0 5b e9 75 ee 27 01 <0f> 0b eb df 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90
+> > [   26.670580] RSP: 0018:ffffb6ef858ffee8 EFLAGS: 00010246
+> > [   26.671128] RAX: 0000000000000000 RBX: ffff9d7ae2364058 RCX: 0000000000000000
+> > [   26.671793] RDX: 0000000000000000 RSI: ffffffffbcb6b38b RDI: 00000000ffffffff
+> > [   26.672444] RBP: ffff9d7ac3e72200 R08: 0000000000000000 R09: 0000000000000000
+> > [   26.673072] R10: ffffb6ef858ffee8 R11: ffffffffbb28526f R12: 00000000000f801f
+> > [   26.673705] R13: ffff9d7b661a2020 R14: ffff9d7ac6057728 R15: 0000000000000000
+> > [   26.674339] FS:  00007fa852fa6740(0000) GS:ffff9d81a6300000(0000) knlGS:0000000000000000
+> > [   26.674978] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   26.675506] CR2: 00007fa852c2a250 CR3: 0000000105d92001 CR4: 0000000000370eb0
+> > [   26.676142] Call Trace:
+> > [   26.676357]  <TASK>
+> > [   26.676572]  ? __warn+0x7f/0x160
+> > [   26.677092]  ? tracing_release_file_tr+0x46/0x50
+> > [   26.677540]  ? report_bug+0x1c3/0x1d0
+> > [   26.677871]  ? handle_bug+0x3c/0x70
+> > [   26.678196]  ? exc_invalid_op+0x14/0x70
+> > [   26.678520]  ? asm_exc_invalid_op+0x16/0x20
+> > [   26.678845]  ? tracing_release_file_tr+0x1f/0x50
+> > [   26.679268]  ? tracing_release_file_tr+0x46/0x50
+> > [   26.679691]  ? tracing_release_file_tr+0x1f/0x50
+> > [   26.680105]  __fput+0xab/0x300
+> > [   26.680437]  __x64_sys_close+0x38/0x80  
 > 
-> FWIW we are happy to take the drivers/net/ parts if there is no hard
-> dependency. But there's no point taking that unless the SoC bits
-> also go in for 6.7.
-> 
-> Li Yang, what are your expectations WRT merging this series?
+> Hmm, this doesn't tell me much. Let me go play with the user_event self
+> tests.
 
-I think it is too late for SoC stuff for 6.7. 
+I added a bunch of printk()s and I'm thinking there's a race in user event
+(or dynamic event) code.
 
-I picked up binding patches 6, 7, and 8 because 6 and 7 are the same as 
-an additionalProperties fix I have in my tree. As 8 depends on them, I 
-just picked it up too.
+I put a printk in the open, write and release call to record the filp and
+the file in the open and this is what I hit:
 
-Rob
+[   32.603954] open ffff8d05488bf000 file=ffff8d0484f7a688
+[   32.607026] write ffff8d05488bf000
+[   32.608829] update file = ffff8d0484f7a688
+[   32.610100] update tr = ffffffffb2bebda0
+[   32.622203] write ffff8d05488bf000
+[   32.623231] update file = ffff8d0484f7a688
+[   32.624397] update tr = ffffffffb2bebda0
+[   32.625975] call delayed destroy
+[   32.627241] open ffff8d048510fc00 file=ffff8d0484f7a688
+
+Another open with a different filp, but has the same file pointer (which is
+the meta data that matches the eventfs files, but not part of eventfs).
+
+[   32.628720] release ffff8d048510fc00
+
+Only one release is called and then we call:
+
+[   32.630785] Remove event call ffff8d04809d7c58
+
+The above "Remove event call" came from user_event_set_call_visible()
+
+	if (visible) {
+		printk("show event call %px\n", &user->call);
+		ret = trace_add_event_call(&user->call);
+	} else {
+		printk("Remove event call %px\n", &user->call);
+		ret = trace_remove_event_call(&user->call);
+	}
+
+Where trace_remove_event_call() calls:
+
+   probe_remove_event_call() {
+      __trace_remove_event_call() {
+         event_remove() {
+            remove_event_from_tracers() {
+               remove_event_file_dir() {
+                  remove_event_file_dir() {
+                     kmem_cache_free(file_cachep, file);
+
+That is, call->file is freed at this point. Now any access to the file
+pointer is going to be garbage, which a write to enable will cause.
+
+So I see it is freed without seeing a release called.
+
+[   32.632323] Removing __test_event
+
+The above is the dentry being released (unlinked).
+
+[   32.633618] Removing enable
+[   32.634453] Removing user_events
+[   32.634948] write ffff8d05488bf000
+
+Another write is happening to the user event file (it may have been
+unlinked, but the release was never called, so it is still valid.
+
+[   32.636440] update file = ffff8d0484f7a688
+[   32.637685] update tr = dc64cc323d943921
+
+The above is the file pointer that we freed, and you can see the file->tr
+is now garbage.
+
+[   32.638827] general protection fault, probably for non-canonical address 0xdc64cc323d9457f9: 0000 [#1] PREEMPT SMP PTI
+[   32.641712] CPU: 4 PID: 911 Comm: ftrace_test Not tainted 6.6.0-rc4-test-00024-gd402dc722a1b-dirty #158
+[   32.644220] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[   32.646717] RIP: 0010:tracing_update_buffers+0x19/0x50
+[   32.648133] Code: 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 55 31 f6 31 ed 53 48 89 fb 48 c7 c7 e0 bc be b2 e8 d7 b6 cb 00 <80> bb d8 1e 00 00 00 74 15 48 c7 c7 e0 bc be b2 e8 42 9f cb 00 89
+[   32.653125] RSP: 0018:ffffb7b34172be20 EFLAGS: 00010246
+[   32.654573] RAX: 0000000000000000 RBX: dc64cc323d943921 RCX: 0000000000000000
+[   32.656503] RDX: 0000000000000000 RSI: ffffffffb1e09128 RDI: ffffffffb1e09128
+[   32.658445] RBP: 0000000000000000 R08: 000000000000002f R09: 0000000000000000
+[   32.660378] R10: ffffb7b34172be20 R11: 0000000000000001 R12: ffffb7b34172bf08
+[   32.662322] R13: ffff8d0484f7a688 R14: ffffb7b34172bf08 R15: 0000000000000000
+[   32.664249] FS:  00007f1769a10740(0000) GS:ffff8d05f7c00000(0000) knlGS:0000000000000000
+[   32.666438] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   32.668009] CR2: 000055c0cd72fc70 CR3: 000000010e3c6003 CR4: 0000000000170ee0
+[   32.669954] Call Trace:
+[   32.670653]  <TASK>
+[   32.671263]  ? die_addr+0x36/0x90
+[   32.672203]  ? exc_general_protection+0x236/0x4a0
+[   32.673521]  ? asm_exc_general_protection+0x26/0x30
+[   32.674872]  ? __mutex_lock+0x1c8/0xb40
+[   32.675942]  ? __mutex_lock+0x1c8/0xb40
+[   32.677009]  ? tracing_update_buffers+0x19/0x50
+[   32.678259]  event_enable_write+0xb4/0x140
+[   32.679311]  vfs_write+0xf2/0x530
+[   32.680172]  ? find_held_lock+0x2b/0x80
+[   32.681159]  ? _raw_spin_unlock+0x2d/0x50
+[   32.682711]  ? rcu_is_watching+0x11/0x50
+[   32.684159]  ? _raw_spin_unlock+0x2d/0x50
+[   32.685642]  ? trace_preempt_on+0x78/0x80
+[   32.687027]  ksys_write+0x75/0x100
+[   32.688257]  do_syscall_64+0x3f/0xc0
+[   32.689561]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[   32.691048] RIP: 0033:0x7f1769b0ab00
+
+Note, I think I can simplify some of the code (but not fix this bug) by
+letting the dput free the eventfs_inode as well (I think that is required).
+But the above looks to be a bug in the implementation of user_events.
+
+-- Steve
