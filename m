@@ -2,278 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCAA7DB47B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EF67DB47E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjJ3HjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        id S232130AbjJ3Hje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 03:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbjJ3Hi4 (ORCPT
+        with ESMTP id S231694AbjJ3Hjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:38:56 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04182A7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:38:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=acByIXPGUFV2DCBoYKoiLi1cG8RLut4ZcSIz0Nc7V45KvOpVkVtrrs6y0lHBgh2zAtgxXbBPcPY0HF2rH+H1AkqLPBxRSU11JkgypOxgPls/GzDQdsgx8ptl8RjQ4BHanUvwcjvBVotaf+GO9EqjLpAZLDIrDVzcF4uAMMi0LejP0R/JY1t14qHDhRMiTF5jBGRH3dJk5EJhe+3X6TgB+olyhsEopkAmph/rVTgyYRtO1WxRahsVxrKmWRDCgDwuRYg+am/VGXv0NCVXCLMzdO9ts8Gb/z5ufoUTZSrwSnZ5GGCgN15/HZU2UF/WS4QF24jI7zY+cThcUTn3n1Dj0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VDgIUeyibxRSIRYzFCfkM/erZlKhIdTxlKeQmrVzpUU=;
- b=BP6OSPNwq8BxCvC66CAO2VJCVrsyiUUgnT+9HhdmuUMRUiRP6c9IFTf/fpjn2KyyXXhu5pwHy965yS1X40rt8bmK1ROirQB7A86VQVQjg8M7f7K3ew6FxhjGscY3yJx6cPRtDMc9NBgv1kxY2Om/pyu+RSH6pJn6xZC92IvMswrNe8ikCG4aQ6JDH4J13bLsL6ke7JhsX71+r/N44Te9HtSWbNBDGVTXLI1oV5wBf5MV/ljxC3GVjUOv5SKkrY7UYTbkDUigftZRbLO2rDXxkLmZiefZoOrAc8HEqazhVx3Ayfv6HYBwInCyXe3m6jo5JyC4ABz8vcUVai9sUvuV0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VDgIUeyibxRSIRYzFCfkM/erZlKhIdTxlKeQmrVzpUU=;
- b=Rp3dquYmigoJGax2FxA+epgFPhAx5XtP06PONtJFHdGLRN2nWZvoKwStyUiXBdIhfkiVEqzOhrAKb7qHvu0WY2ExkS01brlPGR2esWe9tryRJnyn4A0eChngTX8TWg2kyOZL2y+K9CbcMkMuPIKCX+EkZQVnTVqtkn0OtOfYqQE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by IA0PR12MB7724.namprd12.prod.outlook.com (2603:10b6:208:430::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26; Mon, 30 Oct
- 2023 07:38:51 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%6]) with mapi id 15.20.6933.026; Mon, 30 Oct 2023
- 07:38:50 +0000
-Message-ID: <ffb8ff87-a555-42d2-aef1-a21069282227@amd.com>
-Date:   Mon, 30 Oct 2023 08:38:45 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v3] drm/sched: implement dynamic job-flow
- control
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, faith@gfxstrand.net,
-        luben.tuikov@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231026161431.5934-1-dakr@redhat.com>
- <0bc79ae3-04fe-4e85-9fd0-e8b281148390@amd.com>
- <20231027093238.2ff8172e@collabora.com>
- <ff389793-1226-49fd-b599-07dbda0b97be@amd.com>
- <20231027093943.3f0ae992@collabora.com>
- <98988459-25a8-4ee0-89d4-cb816cbc5bef@amd.com>
- <20231027102237.0cdb85af@collabora.com>
- <190e3ab7-6440-4d41-a79f-5dd4b7d3ca52@amd.com>
- <20231027121707.414810d6@collabora.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20231027121707.414810d6@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0350.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f4::12) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Mon, 30 Oct 2023 03:39:31 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C760BA7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:39:28 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c3c8adb27so611547366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698651567; x=1699256367; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=un1B+HdCY4rb6l+yNfK1fdIrKdS9fURStbp/Gin4628=;
+        b=YL2zWM4SBRfjz3WDVAlK3i7bukpWyy3ZEoNjHVJ9YmlQTcmbFy8e+JyBxByeeL8Oc0
+         9uWqvtODjE+W4++cgVXuyyHX7+pC9aeWKaGMtZMxSU8XKvTNW3OKdHaYIQ0yXbxLjsqg
+         B1Fv1XdR2RhYblU/vZriE1JqNR/yNST59hvFcZDn5ELne8yI76wUbCYf133+KCppuXQ9
+         il3Ornc1Bxg6N1Fe8GQk5PO7g69ojqsZhUQhIc4KVATSOSoZboT4jRh02jFa5gnnOD0O
+         oLrL/Oc4LdaFSXMGXsEMmMuhwqxvTyp8e/XrLLWwSe8EWsz92Doh+hoNcsAiujvorvEd
+         ngIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698651567; x=1699256367;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=un1B+HdCY4rb6l+yNfK1fdIrKdS9fURStbp/Gin4628=;
+        b=EYnDv2y8t0ea5lbSHgK9v3agfMEB8uWra46Te6f94EKZYZxWqvAHFTO3Buq1fQGStZ
+         csHuYs/PoYUXh16B1frxykZYuuBY2akbE0JffuVjkKUyFfTHD5aW702ztKzPy9bfWLrd
+         tD+yJR16urvMJo9F8Q9UGKEhPliciXOIhql2TQZLxKrUxGEpG2Gg8fpF78OeucDiK26u
+         2LllcIhx67It/LeaG/IMqxPg+VKdihjg429763Cr9CfKO2/Tb6SDb5vY7o0avyAsAmc9
+         Lu/pRRSi9JC2SIQAd1Z0hkOEvgzzNMW+so4J+yS1z9kAz9Aql3wTXjoOsYrqRXzcUmI+
+         KMpw==
+X-Gm-Message-State: AOJu0YzLrxdr4m2c1S6PJbswZWRouy0CWT2Gp73irOX4ksvaaj7W5OD5
+        7fmo4sKRWSRRWQzVpdiM71B+ow==
+X-Google-Smtp-Source: AGHT+IF8Ef++OJHXVJllrD3R72IaUiIgCv3FiU91UCPPrjv6o6Nke2xQzDc/J+zev/lhkV/+SQoJDw==
+X-Received: by 2002:a17:907:2910:b0:9be:51ce:e91b with SMTP id eq16-20020a170907291000b009be51cee91bmr5536966ejc.68.1698651567082;
+        Mon, 30 Oct 2023 00:39:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id x22-20020a170906149600b009b2b47cd757sm5490088ejc.9.2023.10.30.00.39.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 00:39:26 -0700 (PDT)
+Message-ID: <baf6a0c3-e76a-4d9d-8866-b3f4fdae162e@linaro.org>
+Date:   Mon, 30 Oct 2023 08:39:24 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|IA0PR12MB7724:EE_
-X-MS-Office365-Filtering-Correlation-Id: ccb9305b-c725-4604-3e48-08dbd91b4242
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MJlCCyVxglIibieUrY2dpDG1xsgKj0S/Wp3SAhEg8I3JbX9r291PYBf4TijHA7eY2OigxQUBebkkgOqzuMg7qtMZHI/G6zMk4P9T89RZPI6cs/8PuOCyUfUV0RDnjeem+TIzaQZ86BL1OBsI76zhFISrEMczdE39SgK56Jv3sOYgtZdkXYgFoI7hiiNj36uCiWdHTWivj9jtGDiRB3TaAj1d28vkuBiJChzAaYDTt763KxLQbkZzlqpRmA9qU1TmVO+IpHndEQVuKuR8juQuWLBkUII8f9xbCL9q1YMHJO3u0e5hbv9L/vW6k173we46QvXADHjmnAQJqGK70nbd7pWsfw6o7tfEopec2XRn6/TMizRVZD+YC6K7jPhjYdftvP78+068ddoYm+TSH4XtgtX8LqT+INSxit2XS7X2blncOyYA+WsihNgPtdMExuqHBbbp+VP+/jZbMlc+3Y3RDQl9hyPbUy50aOOX+JAIDQ/KrcxNhvvbuw/q/ViPprKoDgme/Nzc8McoZzfcWFpyqEAzxAKRb4XVucqSNdw5SpsvEastXeggwYzycJhleJlAox557X70E7SHyTYr/ngcC3jmUk4y9E1LYoqtep66+8PfCFEyyZ5nWBDFVvXX5EAGBJ/mFJKe+Zalk6CsD88Atw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(6916009)(66556008)(66476007)(66946007)(316002)(6512007)(6506007)(26005)(6486002)(6666004)(478600001)(66574015)(83380400001)(2616005)(41300700001)(5660300002)(8936002)(8676002)(4326008)(86362001)(31696002)(36756003)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MklXNmlJUVRaTjVuK1k0aUQ4SFJWSEJGdGZwUUxxMTFzVUlGYy9vcHN6UTlC?=
- =?utf-8?B?Q0FDejBHYm1QTnB4TTlzUytYZmNhRXZUMWtoam1pTzllN29UaWVrSEhqRy9O?=
- =?utf-8?B?eWxDYVJnNDlMR1U2dGpFMGh4NDZ6RCtheTg0aGpXM1A1eWY2TG1SLzhLUFpM?=
- =?utf-8?B?S3YvZFdtSitGenk5ZXlCZTdMcVJnSEszVHY0eXlaUG4xeWZmdUxRaWx4eDh0?=
- =?utf-8?B?SmJWajNCbE50Z1E0TStHQmJ2amducXBnditoc0lPTnFRK1RqMUFPU0pERDFN?=
- =?utf-8?B?WkdjZkI1WjZrZThMQ3FrMWxrTXV0R1lXTDdaQmpySzFZM1NJOW5YS2NHcWUy?=
- =?utf-8?B?bnhUSW82Z3djS0ZJTWpITWdNOGlHV3dKbERvUUFPV1hROUlTNjc2MXRXOVhM?=
- =?utf-8?B?TjhuaFR4WjQrNWNDc3NyUWI1T2RXakFiYmZENndKK3hOYTB4amhGS3M2UU5y?=
- =?utf-8?B?Y0pyaHFLMEtldFBFUmxnZlBETUtOeG5EbUJyeENYWVg5QnNXTE5aTkJYaTBv?=
- =?utf-8?B?WkFJQ0VFY215ZmpOb1huM0V1SFgybzJ5NDJ4VHRWZEpDSEVaTnRFTHkxTDRI?=
- =?utf-8?B?M2xsWVYrRDBuUzRxeU1sTEdNeHZGekRTejBJbGlpeVNyZTZrOWVVZDViZFpz?=
- =?utf-8?B?SHFBaEEvL2JiZ2lidnp5S1dDR3dCWkU1YS9oTVpYS05HVlRJMnd3MGRJSllx?=
- =?utf-8?B?VzhEbUxHalcrZk5wTURmMVk3SHQ4ZFhvbllSRFVQYVczNGhxMk5rTmlNTmVC?=
- =?utf-8?B?WHR0azczOU92dEFyN0ppdklHZDF0K0FxYWZLMzU1ak1jWFJGVVBpM0ZXbE1u?=
- =?utf-8?B?V08rSjdsZTRSdXhzamh3elAzYnR5dEV4NmpqL1dXMXJTYVhONlluZFBjRTZH?=
- =?utf-8?B?U0hzVEhMcVN4OWhLNGFXblF3YzB0bWhHTGFBbDUyWnNOUkZZbnp6MHVtbUZy?=
- =?utf-8?B?ZGZLUUhIbmR5enpvT2N2ZkFZa3JKNHl2VnZzTmVnMVJmbnZRSnFiWjBLTFdQ?=
- =?utf-8?B?RnZzUXB0QTRkOGxUWTBqdjV1ZVZRVVlsVUFFd3FOM0hPazVCVEI5dEZEa09l?=
- =?utf-8?B?ci9uVzd2dk1kSnZJUTF4K041QXJoMHBIZ0RjODVBMzNvSVF3ZFNFamFCSlpX?=
- =?utf-8?B?SmQybHlYZEdWZ3FrTzlENEE1RjE2ZnRzL1dyNEZkdnQrSkp3ay92K0liQVJJ?=
- =?utf-8?B?R0ZqTUZuU3ppOGhyWUJZVmFLVnp0WWRDdTQ0MlgzKzJyenNmemdvWTUraldx?=
- =?utf-8?B?eHZHQlJQTVJPV2VVTjFYZU5TZlgzUTR1b3FwRVo0K1NxSGJUdnJtUGFrZ0Rm?=
- =?utf-8?B?Wlk5QTh0Z0RCZXZsY0tIY1JFOFRodURwY2ZCcEpPTlBqcG91U1ZZdVAzMUlL?=
- =?utf-8?B?bThjZjdXM2hENks5SWZMc1Y2YTN2dzhTQUk3ZDhRdUtWRDlBMkFzMHRNZnRm?=
- =?utf-8?B?dG5aMmhNMWtsSUVXL1RzNkp2OW9mZk5TSDhGNG45VGdRcFA1b1FUSXp0Wm5m?=
- =?utf-8?B?YTNCNGUwNS9VclE0S2RBRTQwUnBSVSt6SU5nSjJSQWVqSGNJNnhUMXBhYTlH?=
- =?utf-8?B?Ky9uWUpHUWIxQ004TU9IRXpJRGtpWXFQTzJXRDdUS0pkWkE3MTU5OHBSbmJZ?=
- =?utf-8?B?QXhRTjg0WXdYbFBjS3B6SVdoNlN2a2VEQ01wR3RWejNSVVZ6MGRWRk9sampj?=
- =?utf-8?B?UmsrRU5td2EzWW10WUVkYWhQRUxSb0xmMXE0TjZBVCtFT09lYzBaV21odEtu?=
- =?utf-8?B?VWR5aWRXTVVIOGpPNkNkTEs3SExQMkxueGFUNmlyWlpiQk15RmtUSDhKUXc5?=
- =?utf-8?B?ZWVveE00a3dWODR4eWpFUXZlaS9TVVVGZUExSW0rZ1BtMmxJbEV0bGVYZUtL?=
- =?utf-8?B?Z0hEMGlMdTNsSmRhRWg4eHJ6anNzYmVTT2lZMkEwRU1sWkY1YmVvcEcvN1Bq?=
- =?utf-8?B?VFVFdnRlRkkrRkRuOWsxbnVqWSt1di95ZTRkUWd4LytHdW8wM2xlUEFlTkIz?=
- =?utf-8?B?V1U2SWwxSzJzUUFTSDhPUzNZdXlqdkwzRnlzbk5UZzZWcnh5ZVhFbkwxM29m?=
- =?utf-8?B?V2lZWjRIMkVHSzMvcnMvOEdsL1QrdGFqeDN2WWdRZzZCQ2t2S2RkZGJZcmU3?=
- =?utf-8?Q?QxM4=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccb9305b-c725-4604-3e48-08dbd91b4242
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 07:38:50.3383
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y3u7TpSq2/dzzvj7HnDxa9pOVFAPkvT61yg7fhvDRVvTJNOuoesWuEn1JxMDNpUg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7724
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+Content-Language: en-US
+To:     Jyan Chou <jyanchou@realtek.com>, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, jh80.chung@samsung.com,
+        riteshh@codeaurora.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        asutoshd@codeaurora.org, p.zabel@pengutronix.de
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        briannorris@chromium.org, doug@schmorgal.com,
+        tonyhuang.sunplus@gmail.com, abel.vesa@linaro.org,
+        william.qiu@starfivetech.com
+References: <20231030062749.2840-1-jyanchou@realtek.com>
+ <20231030062749.2840-3-jyanchou@realtek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231030062749.2840-3-jyanchou@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+On 30/10/2023 07:27, Jyan Chou wrote:
+> We implemented cmdq feature on Synopsys DesignWare mmc driver.
+> The difference between dw_mmc.c and dw_mmc_cqe.c were distinct
+> register definitions, mmc user flow and the addition of cmdq.
+> 
+> New version of User Guide had modify mmc driver's usage flow,
+> we may need to renew code to precisely follow user guide.
+> 
+> More over, We added a wait status function to satisfy synopsys
+> user guide's description, since this flow might be specific in
+> synopsys host driver only.
+> 
+> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+> 
+> —--
+> v3 -> v4:
+> - Modify dma mode selection and dma addressing bit to statisfy
+>   linux coding style.
+> 
 
-Am 27.10.23 um 12:17 schrieb Boris Brezillon:
-> Hi Christian,
->
-> On Fri, 27 Oct 2023 11:06:44 +0200
-> Christian König <christian.koenig@amd.com> wrote:
->
->> Am 27.10.23 um 10:22 schrieb Boris Brezillon:
->>> On Fri, 27 Oct 2023 09:44:13 +0200
->>> Christian König<christian.koenig@amd.com>  wrote:
->>>   
->>>> Am 27.10.23 um 09:39 schrieb Boris Brezillon:
->>>>> On Fri, 27 Oct 2023 09:35:01 +0200
->>>>> Christian König<christian.koenig@amd.com>   wrote:
->>>>>      
->>>>>> Am 27.10.23 um 09:32 schrieb Boris Brezillon:
->>>>>>> On Fri, 27 Oct 2023 09:22:12 +0200
->>>>>>> Christian König<christian.koenig@amd.com>   wrote:
->>>>>>>         
->>>>>>>>> +
->>>>>>>>> +	/**
->>>>>>>>> +	 * @update_job_credits: Called once the scheduler is considering this
->>>>>>>>> +	 * job for execution.
->>>>>>>>> +	 *
->>>>>>>>> +	 * Drivers may use this to update the job's submission credits, which is
->>>>>>>>> +	 * useful to e.g. deduct the number of native fences which have been
->>>>>>>>> +	 * signaled meanwhile.
->>>>>>>>> +	 *
->>>>>>>>> +	 * The callback must either return the new number of submission credits
->>>>>>>>> +	 * for the given job, or zero if no update is required.
->>>>>>>>> +	 *
->>>>>>>>> +	 * This callback is optional.
->>>>>>>>> +	 */
->>>>>>>>> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job);
->>>>>>>> Why do we need an extra callback for this?
->>>>>>>>
->>>>>>>> Just document that prepare_job() is allowed to reduce the number of
->>>>>>>> credits the job might need.
->>>>>>> ->prepare_job() is called only once if the returned fence is NULL, but
->>>>>>> we need this credit-update to happen every time a job is considered for
->>>>>>> execution by the scheduler.
->>>>>> But the job is only considered for execution once. How do you see that
->>>>>> this is called multiple times?
->>>>> Nope, it's not. If drm_sched_can_queue() returns false, the scheduler
->>>>> will go look for another entity that has a job ready for execution, and
->>>>> get back to this entity later, and test drm_sched_can_queue() again.
->>>>> Basically, any time drm_sched_can_queue() is called, the job credits
->>>>> update should happen, so we have an accurate view of how many credits
->>>>> this job needs.
->>>> Well, that is the handling which I already rejected because it creates
->>>> unfairness between processes. When you consider the credits needed
->>>> *before* scheduling jobs with a lower credit count are always preferred
->>>> over jobs with a higher credit count.
->>> My bad, it doesn't pick another entity when an entity with a
->>> ready job that doesn't fit the queue is found, it just bails out from
->>> drm_sched_rq_select_entity_rr() and returns NULL (AKA: no ready entity
->>> found). But we still want to update the job credits before checking if
->>> the job fits or not (next time this entity is tested).
->> Why? I only see a few possibility here:
->>
->> 1. You need to wait for submissions to the same scheduler to finish
->> before the one you want to push to the ring.
->>       This case can be avoided by trying to cast the dependency fences to
->> drm_sched_fences and looking if they are already scheduled.
->>
->> 2. You need to wait for submissions to a different scheduler instance
->> and in this case you should probably return that as dependency instead.
-> It's already described as a dependency, but native dependency waits are
-> deferred to the FW (we wait on scheduled to run the job, not finished).
-> The thing is, after ->prepare_job() returned NULL (no non-native deps
-> remaining), and before ->run_job() gets called, there might be several
-> of these native deps that get signaled, and we're still considering
-> job->submission_credits as unchanged, when each of these signalled
-> fence could have reduced the job credits, potentially allowing it to be
-> submitted sooner.
+I asked to fix several coding style issues so it will look a bit as
+matching Linux coding style. I don't see improvements.
 
-Ah, ok that at least clears up your intentions here.
+Please read carefully, more than once, the Linux coding style. Then
+document in changelog what you fixed. If you document nothing, means you
+ignored the feedback.
 
-Question is if that is really that important for you? I mean you just 
-seem to fill up more of the ring buffer.
+Fix every warning from checkpatch --strict. Then document in changelog
+what you fixed. If you document nothing, means you ignored the feedback.
 
->
->> So to me it looks like when prepare_job() is called because it is
->> selected as next job for submission you should already know how many
->> credits it needs.
-> You know how many credits it needs when ->prepare_job() is called, but
-> if this number is too high, the entity will not be picked, and next
-> time it's checked, you'll still consider the job credits at the time
-> ->prepare_job() was called, which might differ from the current job
-> credits (signalled native fences might have been signalled in the
-> meantime, and they could be evicted).
->
->>>> What you can do is to look at the credits of a job *after* it was picked
->>>> up for scheduling so that you can scheduler more jobs.
->>> Sure, but then you might further delay your job if something made it
->>> smaller (ie. native fences got signaled) between ->prepare_job() and
->>> drm_sched_can_queue(). And any new drm_sched_can_queue() test would
->>> just see the old credits value.
->>>
->>> Out of curiosity, what are you worried about with this optional
->>> ->update_job_credits() call in the drm_sched_can_queue() path? Is the
->>> if (sched->update_job_credits) overhead considered too high for drivers
->>> that don't need it?
->> Since the dma_fences are also used for resource management the scheduler
->> is vital for correct system operation.
->>
->> We had massively problems because people tried to over-optimize the
->> dma_fence handling which lead to very hard to narrow down memory
->> corruptions.
->>
->> So for every change you come up here you need to have a very very good
->> justification. And just saving a bit size of your ring buffer is
->> certainly not one of them.
-> I fail to see how calling ->update_job_credits() changes the scheduler
-> behavior or how it relates to the sort memory corruption you're
-> referring to.
+> +
+> +	if (!host->bus_hz) {
+> +		dev_err(host->dev,
+> +			"Platform data must supply bus speed\n");
+> +		ret = -ENODEV;
+> +		goto err_clk_ciu;
+> +	}
+> +
+> +	if (!IS_ERR(host->pdata->rstc)) {
+> +		reset_control_assert(host->pdata->rstc);
+> +		usleep_range(10, 50);
+> +		reset_control_deassert(host->pdata->rstc);
+> +	}
+> +
+> +	timer_setup(&host->timer, dw_mci_cqe_cto_timer, 0);
+> +
+> +	spin_lock_init(&host->lock);
+> +	spin_lock_init(&host->irq_lock);
+> +	init_rwsem(&host->cr_rw_sem);
+> +	tasklet_init(&host->tasklet, dw_mci_cqe_tasklet_func, (unsigned long)host);
+> +
+> +	/*pio mode's parameters should be initialized here*/
 
-Yeah, you are right that's not even remotely related.
+Nothing improved.
 
-> And yes, we can live with the overhead of making jobs
-> slightly bigger than they actually are, thus potentially delaying their
-> execution. It's just that I don't quite understand the rational behind
-> this conservatism, as I don't really see what negative impact this extra
-> ->update_job_credits() call in the credit checking path has, other than
-> the slight overhead of an if-check for drivers that don't need it.
+> +
+> +	/*Initialize the eMMC IP related attribute*/
+> +	dw_mci_cqe_setup(host);
+> +
+> +	dw_mci_cqe_init_dma(host);
+> +
+> +	/* This flag will be set 1 when doing tuning,
 
- From experience it showed that we should not make the scheduler more 
-complicated than necessary. And I still think that the ring buffers only 
-need to be filled enough to keep the hardware busy.
+Nothing improved.
 
-If this here has some measurable positive effect then yeah we should 
-probably do it, but as long as it's only nice to have I have some 
-objections to that.
+> +	 * we add this flag because
+> +	 * some vendors might use other cmd instead of 21
+> +	 * to tune phase under high speed interface.
+> +	 * we use this flag to recognize if the system is under tuning stage.
+> +	 */
+> +	host->tuning = 0;
+> +
+> +	/*Timing_setting is to avoid sending command
 
-Regards,
-Christian.
+Nothing improved.
 
->
-> Regards,
->
-> Boris
+> +	 *before setting phase in hs200, hs400
+> +	 */
+> +	host->current_speed = 0;
+> +
+> +	/*Do the rest of init for specific*/
+> +	if (drv_data && drv_data->init) {
+> +		ret = drv_data->init(host);
+> +		if (ret) {
+> +			dev_err(host->dev,
+> +				"implementation specific init failed\n");
+> +			goto err_dmaunmap;
+> +		}
+> +	}
+> +
+> +	ret = dw_mci_cqe_init_slot(host);
+> +	if (ret) {
+> +		dev_err(host->dev, "slot 0 init failed\n");
+> +		goto err_dmaunmap;
+> +	}
+> +
+> +	ret = devm_request_irq(host->dev, host->irq, dw_mci_cqe_interrupt,
+> +			       host->irq_flags, "dw-mci-cqe", host);
+> +	if (ret)
+> +		goto err_dmaunmap;
+> +
+> +	/*After the slot initialization,
+
+Nothing improved.
+
+> +	 *now we have mmc data and can initialize cmdq if user enabled
+> +	 */
+> +	dw_mci_cqhci_init(host);
+> +
+> +	return 0;
+> +
+> +err_dmaunmap:
+> +	if (!IS_ERR(host->pdata->rstc))
+> +		reset_control_assert(host->pdata->rstc);
+> +err_clk_ciu:
+> +	clk_disable_unprepare(host->ciu_clk);
+> +
+> +err_clk_biu:
+> +	clk_disable_unprepare(host->biu_clk);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(dw_mci_cqe_probe);
+> +
+> +void dw_mci_cqe_remove(struct dw_mci *host)
+> +{
+> +	dev_dbg(host->dev, "remove slot\n");
+
+Nothing improved.
+
+> +	if (host->slot)
+> +		dw_mci_cqe_cleanup_slot(host->slot);
+> +
+> +	if (!IS_ERR(host->pdata->rstc))
+> +		reset_control_assert(host->pdata->rstc);
+> +
+> +	clk_disable_unprepare(host->ciu_clk);
+> +	clk_disable_unprepare(host->biu_clk);
+> +}
+> +EXPORT_SYMBOL(dw_mci_cqe_remove);
+> +
+> +#ifdef CONFIG_PM
+> +int dw_mci_cqe_runtime_suspend(struct device *dev)
+> +{
+> +	struct dw_mci *host = dev_get_drvdata(dev);
+> +	int ret = 0;
+> +
+> +	if (host->pdata && (host->pdata->caps2 & MMC_CAP2_CQE)) {
+> +		if (host->slot) {
+> +			dev_info(host->dev, "cqe suspend\n");
+
+Nothing improved.
+
+> +			ret = cqhci_suspend(host->slot->mmc);
+> +			if (ret) {
+> +				dev_err(host->dev, "cqe suspend failed\n");
+
+Nothing improved.
+
+> +				return ret;
+> +			}
+> +		}
+> +	}
+> +
+> +	clk_disable_unprepare(host->ciu_clk);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(dw_mci_cqe_runtime_suspend);
+> +
+> +int dw_mci_cqe_runtime_resume(struct device *dev)
+> +{
+> +	struct dw_mci *host = dev_get_drvdata(dev);
+> +	const struct dw_mci_drv_data *drv_data = host->drv_data;
+> +	int ret = 0;
+> +
+> +	clk_prepare_enable(host->ciu_clk);
+> +
+> +	dw_mci_cqe_setup(host);
+> +	if (drv_data && drv_data->init) {
+> +		ret = drv_data->init(host);
+> +		if (ret)
+> +			dev_err(host->dev, "implementation specific init failed\n");
+> +	}
+> +
+> +	init_completion(host->int_waiting);
+> +
+> +	if (host->pdata && (host->pdata->caps2 & MMC_CAP2_CQE)) {
+> +		if (host->slot) {
+> +			dev_info(host->dev, "cqe resume\n");
+> +			ret = cqhci_resume(host->slot->mmc);
+> +			if (ret)
+> +				dev_err(host->dev, "cqe resume failed\n");
+
+
+Nothing improved.
+
+> +		}
+> +	}
+> +
+> +	dw_mci_cqe_setup_bus(host->slot, true);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(dw_mci_cqe_runtime_resume);
+> +#endif /* CONFIG_PM */
+> +
+> +static int __init dw_mci_cqe_init(void)
+> +{
+> +	pr_info("Synopsys Designware Multimedia Card Interface Driver\n");
+
+
+Nothing improved.
+
+> +	return 0;
+> +}
+> +
+> +static void __exit dw_mci_cqe_exit(void)
+> +{
+> +}
+> +
+> +module_init(dw_mci_cqe_init);
+> +module_exit(dw_mci_cqe_exit);
+
+This part of code is just useless.
+
+Best regards,
+Krzysztof
 
