@@ -2,204 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C607DB4AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9307DB4B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjJ3H7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
+        id S231965AbjJ3IBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbjJ3H7m (ORCPT
+        with ESMTP id S231741AbjJ3IBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:59:42 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A41A7;
-        Mon, 30 Oct 2023 00:59:40 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39U6BLWA021704;
-        Mon, 30 Oct 2023 03:59:16 -0400
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3u1f5hp8nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 03:59:16 -0400 (EDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eXsw7aCx7gXbDwsrtK2G757cZJZ/kn9tWtX8+EzsynSuiGoOBY8qCn0n04aaDJ5pml6BSYLya2LwF1/R3b2Rt5e+c2kGYRDEnVdCdnevzqq/KgXz+gLInWsYvD095aHYiV3DdZsDoOfjP5FdH8NS2zCGADKqPrZYoDy8cG8IxbuhztY5acJKqsXMESCjuOR91DPvevNQ7EE/rxFnT3gSB4PJRqChixO2LXOO59HQIW/FiQacUuf8bUT5WoBrX14NHWmL2sRYJE9xVMVc0gPuQvJRqKqccSTAxZlUA9i/qzy+hVcqIqAFW08PT0JXfbyOCy+xjiYDH6PAlLqe7lIwew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Uaz/eAXAgvFomGrqW/uQdB/u1gT1gS83WUEnYRPSPhY=;
- b=BazSoXkidgrtiJB+/ezUzXnrBdVuJV6c8IiqpqQk5J+SPS/FdI0TmtiXs3p3ir3U4xPx4NxLwQHgmh5MOi1I2Q5qDlmBjG8H/R1GQL5GWKgcF2hXYfGnGwVrzj8vZjQdtSfLPyP7F7zRBXvIoRFcJE5VcSUnbQPnejkcrgUCygw/H3poJvK4R0x0/KMD5ugVu72y5AHSSEDwPNjqjzBGtf1oA3cI1/a8+fBvKOzGorAff3rau3w423OREqFb3WTmqWiZ2H+RzguuwNsySzjreMdg138Eb/lnB6RaVVqJLfOWDTjh1vG9XeH4tntnXG/gWTnbgCdQ6IYNNXd3UbvbpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uaz/eAXAgvFomGrqW/uQdB/u1gT1gS83WUEnYRPSPhY=;
- b=M2qUK19gw133atrPbaJoHeS1O/cRzHpMMHwtcMuAIFuLDg4f7WsbBLNXeyjX+e+Y13ZlO6hQVHBwCZY1ztI2tjnk0mko3zdDLRPy/PmUJUgksWN1sHqOtOA8YqsoHaROTwYPK8+JdJdE8Jn748l9pH5eGREzStz8fpAFI68MUGU=
-Received: from CY4PR03MB3399.namprd03.prod.outlook.com (2603:10b6:910:57::13)
- by CH0PR03MB6068.namprd03.prod.outlook.com (2603:10b6:610:bf::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.16; Mon, 30 Oct
- 2023 07:59:13 +0000
-Received: from CY4PR03MB3399.namprd03.prod.outlook.com
- ([fe80::26c3:a563:9b0a:3321]) by CY4PR03MB3399.namprd03.prod.outlook.com
- ([fe80::26c3:a563:9b0a:3321%3]) with mapi id 15.20.6954.014; Mon, 30 Oct 2023
- 07:59:12 +0000
-From:   "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v5 2/2] hwmon: ltc2991: add driver support
-Thread-Topic: [PATCH v5 2/2] hwmon: ltc2991: add driver support
-Thread-Index: AQHaB/gc9TyQBjH91U+XiC0CuBoxd7BfZOIAgAKYcqA=
-Date:   Mon, 30 Oct 2023 07:59:12 +0000
-Message-ID: <CY4PR03MB3399049CB79E0F468A945C659BA1A@CY4PR03MB3399.namprd03.prod.outlook.com>
-References: <20231026103413.27800-1-antoniu.miclaus@analog.com>
- <20231026103413.27800-2-antoniu.miclaus@analog.com>
- <075f6150-74f2-478e-9290-aa7186140cee@roeck-us.net>
-In-Reply-To: <075f6150-74f2-478e-9290-aa7186140cee@roeck-us.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYW1pY2xhdXNc?=
- =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy0zNjE0ZjQ4YS03NmZhLTExZWUtYWU3Ni1kNDgx?=
- =?us-ascii?Q?ZDc1MDZkZGVcYW1lLXRlc3RcMzYxNGY0OGMtNzZmYS0xMWVlLWFlNzYtZDQ4?=
- =?us-ascii?Q?MWQ3NTA2ZGRlYm9keS50eHQiIHN6PSIxNDcxIiB0PSIxMzM0MzEyNjM1Mjcx?=
- =?us-ascii?Q?NDE0NzIiIGg9InNpOTRuZk53b25HTWJHZTlxMDdzL3BCSlhwST0iIGlkPSIi?=
- =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
- =?us-ascii?Q?QmdnSGY0Qmd2YUFZbU02RWRoQTdVN2lZem9SMkVEdFRzREFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFRQUJBQUFBRU9wbE9nQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
- =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
- =?us-ascii?Q?OEFaZ0JoQUd3QWN3QmxBRjhBWmdCdkFITUFhUUIwQUdrQWRnQmxBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBWkFCcEFGOEFjd0JsQUdNQWRR?=
- =?us-ascii?Q?QnlBR1VBWHdCd0FISUFid0JxQUdVQVl3QjBBSE1BWHdCMEFHa0FaUUJ5QURF?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
- =?us-ascii?Q?QUFBQUNlQUFBQVlRQmtBR2tBWHdCekFHVUFZd0IxQUhJQVpRQmZBSEFBY2dC?=
- =?us-ascii?Q?dkFHb0FaUUJqQUhRQWN3QmZBSFFBYVFCbEFISUFNZ0FBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFBPT0iLz48L21l?=
- =?us-ascii?Q?dGE+?=
-x-dg-rorf: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY4PR03MB3399:EE_|CH0PR03MB6068:EE_
-x-ms-office365-filtering-correlation-id: a06aaf32-472a-4997-1aa0-08dbd91e1acb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 93YQeuqQMixgk0urIqhzPZYl+RFirkpwTJvm0LT73UOgUi8L9mFkq1zK0ror9tuAqeDbNoFzDjB7SRyPqaLaNzmzcSjGkc2Eh9MunB8hVWFPPl0BVOYcRMYi9WGfuNuH8w3c53aKnuY7Rf9AcGmc6ojq0y2K7IDTHgaZOuVCrF3foHWHORbD7GJ6xk52ETgXnvGl2iLBzLPGapVDpkeXO8jkzG4pfbZ2ngstg6tmdOd/kyBhBdgMYmrTQS7aA8iJEg11Pz26OP83bqoIotQRzVx+/Tuf2ZgdcCXIZ0JlYSP5NyX7urdO+CwOzUofMELTaRu9GplgRNk43MbRRlbeAUBfSRKLWpzB0hRyLdG/K3zbamETzxTB4oB2l2M5gCf1xC5zuUrxyzxxCc7xFp3P6KYCxBs8JCYtzqjDLZzuF6ggKORLzrDopc9/XnqoaTmlmRdZED49VugbASxHKk0bjKDqu+uISNhH/yBEeLgKWLyiUjs7Tw8936jWYfQd4hq7Q3fJy6TJTaNVfOslbf87c6PBmyfKKyRwrVttr2laGxWqKCm9ceoG/JNldZtvDDKuLKZZA4z0dD3lEkIMriehNJAVgnoPyv31rzctHasdj8tykqkW858H3304auKzkAKr
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR03MB3399.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(346002)(136003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(71200400001)(41300700001)(2906002)(7416002)(5660300002)(86362001)(55016003)(33656002)(52536014)(26005)(122000001)(38100700002)(6506007)(7696005)(9686003)(478600001)(64756008)(54906003)(66476007)(66446008)(66556008)(76116006)(4326008)(66946007)(8936002)(8676002)(316002)(6916009)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wR5sygZLoWjs/C5FFj6J3PudO4R7gBoL0mGeyGunEhb8VIRSc9JusI0CC+fU?=
- =?us-ascii?Q?mOHcVGQtjjgDJmdyy4j4Cbs/kLulGxmYUDGTIJpU4cukshEXyFdgq+OGnJ59?=
- =?us-ascii?Q?8yVfgTi+OFw034MXrfPsIbCbnXsYg99sLrlFLJWr8ku9hkvprr8h2gwMJaWI?=
- =?us-ascii?Q?uDsUw6sNf0ZuqU68G05lz1++hSWB7cYrHPoFNRXcCu8DBU0WDjefdP8Jnvw5?=
- =?us-ascii?Q?CilKTxzxn0RTcCJvTE8xMFY9m6+U/NOXo/syG4dVnis3Qpx+LYQ3V96ANqjt?=
- =?us-ascii?Q?syet9LHjADBKydO8KUA0YCbNS3v8b3le+wKFPM7REKALSnkC4+QR+aGWcLWn?=
- =?us-ascii?Q?akqNitR/cQbKK7A9x4lhWCCGlSqUBOfaOqKaqpmF9LljLG1QuKjUz4aJAdl+?=
- =?us-ascii?Q?u8SZJhFZs0a7fYO6RtQq6EtgRig9A4+xVTJrU/YRZngHgj2AHjk04vtsBsFe?=
- =?us-ascii?Q?hEo9bkiIDXmoGmqckyt7qYxeHNcCXMU8S1O/x0T5UosE+1j0w4xODjnIi9ya?=
- =?us-ascii?Q?rMw+zh8xMnvqO/7Z8IfG02lapZ3OhPNRedmrf+b9ogQB+X0YEVkwX3V+0Nmg?=
- =?us-ascii?Q?4UgCz2/ZyY9YpUkZ4H6Jf5GBv/6618EfKtqf2mlbz3ywk+dCX8yuQRnEmtGf?=
- =?us-ascii?Q?4ydomd0sXUGvxtPrpwgeuyZQg2qSi0sIGxp78SPSdSO65mYvqOCzcmhj389C?=
- =?us-ascii?Q?zZthccAKqiKVMLu1suMeZBbeL5Xze7n/pPucPdPsKqpBWa8nNVT112iXWW6K?=
- =?us-ascii?Q?b1+2tFwgoPeV6e+dxdzopRmqFVPRErjhQ/oo25s44yFMrq4lz03aNJ9WsZVH?=
- =?us-ascii?Q?z0FkCpXWzfubvXoMnVTeVLIimmxqcmQ51ERL+BtZX3FAP04f87sJbrGPIda6?=
- =?us-ascii?Q?r9N29DfCY0ZKwDNtvSuUH9bUSUfKq529bNh++to2K7IPPdHt1Ietkj39JAw6?=
- =?us-ascii?Q?lPL6eyvZzhUFWO9Qk69vtXdykI6uIiCwur8Kpj39PKBPYEGiaYPyBJkfaxNi?=
- =?us-ascii?Q?HtsEHlBoSQ6jLjNIxeuwfP/rqUKW+WHPSFGR9otJoA9zQr+UaItSu1kovNMF?=
- =?us-ascii?Q?vYs7MaEdUR4E/bC3QAkCITtkpk0URsit2JkfYrCGitmCyedMKZ/vEVgP1yNl?=
- =?us-ascii?Q?u6eolrg/CaGWAENgukQGtnk/hDgTkAtCyH05DMiULiV5gyHo6AvSjS9AKJRP?=
- =?us-ascii?Q?qyYXkdRv/xqeJNGA3qyK3csJx+P9XdTZnVVLGsD9kdhqJL1haG3KzRroh0zW?=
- =?us-ascii?Q?0IDoUZ0eY7/fs+LPl5KGjxVLRAkzyh+RLXzcBMUh4neOummnGLSE2IJNxr5L?=
- =?us-ascii?Q?fCvzLFdKo1QFjcSgH4qDdJvxsgB22cuaa9CmuVqsp+xXUDFxnHdLqYSj/UNP?=
- =?us-ascii?Q?Zm07GpLFdXmuxi2iaRjnUPfqtDtlWnPx04pmqpMRJFFahJ5R91myGga0Gntl?=
- =?us-ascii?Q?/312zkz2q7e+G6sK4dO3PZ7OJVzk8Sat85S3qo/jLnBxPa7gyMvTqMy6rw91?=
- =?us-ascii?Q?dL34R2Bp6lIC68x2qSb+CDwtt8FUvLCaEjJGIFcZZwAyzGtG5vOpFnLq7cRd?=
- =?us-ascii?Q?nsZW8vjkAYrMFWsw4kfnqAegHr8Lt1z0Y+xyLQHvsgNslgKVxJRXXhBi8/E8?=
- =?us-ascii?Q?Dw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 30 Oct 2023 04:01:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC52BD
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698652866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=h9RWUS1F6kr4OiaR+WSA0tOpjHyodlexhso6k4CIFR0=;
+        b=fl1n/5IMwu2e3rxjlqwlUTs+DyWrd7sPz9ZkSivq2di1J4tgKyVFz3oha2MqfmfQTR572L
+        y8HtyAkR9NUCwwE7C3nRXioPeVuC7MQ4ipFM1j5Zm2BO5EJlSE35y5iKopRtz7GtMObQOD
+        wLIxz9xUI4TTT9dklvxY8dicPDEd/Ow=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-YW3RG2G9PO2gjH9aUDYhqA-1; Mon, 30 Oct 2023 04:01:00 -0400
+X-MC-Unique: YW3RG2G9PO2gjH9aUDYhqA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c4fe286a5dso41711681fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:00:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698652858; x=1699257658;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h9RWUS1F6kr4OiaR+WSA0tOpjHyodlexhso6k4CIFR0=;
+        b=oTjKUk/oZVa06sYJmOQg5EVBf+at6hYf1n/Wi8kWsmzg7g4hfhZHpuyxEl16+eNrBx
+         ABz5k+oonU5Ps4rsZWRbqIhujbB93eKJWd9G1K9LnWV5cGstZ1vHJsj/yHvnpJCMghFe
+         qqSsgZQTmw1gwbem3vjo8YYtCaJL/G9eHf0JNzd2Eg7QoZflXlnDHIMtstBERTkq6qNs
+         UTzy/hDRnxBzxmsbeepwfsuF5Rnzb/KAyDUt528SSDyy2nViTiZ1YMjCiPMMFZl17I04
+         nqtA7tYVkxZY+gThOVvfU2i/H/6ajuqu7vojgScKPZMz4GhVMv+zNqq7jDrSTxSEQJQP
+         EZww==
+X-Gm-Message-State: AOJu0YzhtssOaErlW3+L9lrs6V8IQL4zouxCCJ7dAraPBPkR74MNo+7n
+        riJIbOwVYyPfAagHun6G8ID6n/wbOu0LL5D+FtKjGC+/We+fk5xphp/1YrPYHKRHUAw1ebbnlpQ
+        YV1fLDjZujW1SUhjVz6UJi/ux
+X-Received: by 2002:a2e:b0e5:0:b0:2c5:2813:5538 with SMTP id h5-20020a2eb0e5000000b002c528135538mr7184206ljl.21.1698652858591;
+        Mon, 30 Oct 2023 01:00:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExs1BL8ct+ce0/tI04RetXN5MBe36TMMnwdk2wwQHYjsjyxZFYa3xhH18djXHV6HoC3s7Uxg==
+X-Received: by 2002:a2e:b0e5:0:b0:2c5:2813:5538 with SMTP id h5-20020a2eb0e5000000b002c528135538mr7184185ljl.21.1698652858145;
+        Mon, 30 Oct 2023 01:00:58 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c73c:f800:7df6:a2c9:652e:c799? (p200300cbc73cf8007df6a2c9652ec799.dip0.t-ipconnect.de. [2003:cb:c73c:f800:7df6:a2c9:652e:c799])
+        by smtp.gmail.com with ESMTPSA id k21-20020a05600c1c9500b00401e32b25adsm8558453wms.4.2023.10.30.01.00.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 01:00:57 -0700 (PDT)
+Message-ID: <a8337371-50ed-4618-b48e-78b96d18810f@redhat.com>
+Date:   Mon, 30 Oct 2023 09:00:56 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR03MB3399.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a06aaf32-472a-4997-1aa0-08dbd91e1acb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2023 07:59:12.4818
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dxdoX94VDQzsooXNBcWXvZpmTaXvVISX6GR2TIkBu0WULok0D1GuLZA16a4751kbH0jFr1dzdz+uKmb72Wap7YCcNCVPRa6nxIL7F+RvEBY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR03MB6068
-X-Proofpoint-GUID: SpVjsjbwRc5IYtHlawiMBSq3EZozlxxV
-X-Proofpoint-ORIG-GUID: SpVjsjbwRc5IYtHlawiMBSq3EZozlxxV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_06,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 adultscore=0 impostorscore=0 bulkscore=0
- priorityscore=1501 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2310240000 definitions=main-2310300059
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-3-byungchul@sk.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231030072540.38631-3-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30.10.23 08:25, Byungchul Park wrote:
+> Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
+> We always face the migration overhead at either promotion or demotion,
+> while working with tiered memory e.g. CXL memory and found out TLB
+> shootdown is a quite big one that is needed to get rid of if possible.
+> 
+> Fortunately, TLB flush can be defered or even skipped if both source and
+> destination of folios during migration are kept until all TLB flushes
+> required will have been done, of course, only if the target PTE entries
+> have read only permission, more precisely speaking, don't have write
+> permission. Otherwise, no doubt the folio might get messed up.
+> 
+> To achieve that:
+> 
+>     1. For the folios that map only to non-writable TLB entries, prevent
+>        TLB flush at migration by keeping both source and destination
+>        folios, which will be handled later at a better time.
+> 
+>     2. When any non-writable TLB entry changes to writable e.g. through
+>        fault handler, give up CONFIG_MIGRC mechanism so as to perform
+>        TLB flush required right away.
+> 
+>     3. Temporarily stop migrc from working when the system is in very
+>        high memory pressure e.g. direct reclaim needed.
+> 
+> The measurement result:
+> 
+>     Architecture - x86_64
+>     QEMU - kvm enabled, host cpu
+>     Numa - 2 nodes (16 CPUs 1GB, no CPUs 8GB)
+>     Linux Kernel - v6.6-rc5, numa balancing tiering on, demotion enabled
+>     Benchmark - XSBench -p 50000000 (-p option makes the runtime longer)
+> 
+>     run 'perf stat' using events:
+>        1) itlb.itlb_flush
+>        2) tlb_flush.dtlb_thread
+>        3) tlb_flush.stlb_any
+>        4) dTLB-load-misses
+>        5) dTLB-store-misses
+>        6) iTLB-load-misses
+> 
+>     run 'cat /proc/vmstat' and pick:
+>        1) numa_pages_migrated
+>        2) pgmigrate_success
+>        3) nr_tlb_remote_flush
+>        4) nr_tlb_remote_flush_received
+>        5) nr_tlb_local_flush_all
+>        6) nr_tlb_local_flush_one
+> 
+>     BEFORE - mainline v6.6-rc5
+>     ------------------------------------------
+>     $ perf stat -a \
+> 	   -e itlb.itlb_flush \
+> 	   -e tlb_flush.dtlb_thread \
+> 	   -e tlb_flush.stlb_any \
+> 	   -e dTLB-load-misses \
+> 	   -e dTLB-store-misses \
+> 	   -e iTLB-load-misses \
+> 	   ./XSBench -p 50000000
+> 
+>     Performance counter stats for 'system wide':
+> 
+>        20953405     itlb.itlb_flush
+>        114886593    tlb_flush.dtlb_thread
+>        88267015     tlb_flush.stlb_any
+>        115304095543 dTLB-load-misses
+>        163904743    dTLB-store-misses
+>        608486259	   iTLB-load-misses
+> 
+>     556.787113849 seconds time elapsed
+> 
+>     $ cat /proc/vmstat
+> 
+>     ...
+>     numa_pages_migrated 3378748
+>     pgmigrate_success 7720310
+>     nr_tlb_remote_flush 751464
+>     nr_tlb_remote_flush_received 10742115
+>     nr_tlb_local_flush_all 21899
+>     nr_tlb_local_flush_one 740157
+>     ...
+> 
+>     AFTER - mainline v6.6-rc5 + CONFIG_MIGRC
+>     ------------------------------------------
+>     $ perf stat -a \
+> 	   -e itlb.itlb_flush \
+> 	   -e tlb_flush.dtlb_thread \
+> 	   -e tlb_flush.stlb_any \
+> 	   -e dTLB-load-misses \
+> 	   -e dTLB-store-misses \
+> 	   -e iTLB-load-misses \
+> 	   ./XSBench -p 50000000
+> 
+>     Performance counter stats for 'system wide':
+> 
+>        4353555      itlb.itlb_flush
+>        72482780     tlb_flush.dtlb_thread
+>        68226458     tlb_flush.stlb_any
+>        114331610808 dTLB-load-misses
+>        116084771    dTLB-store-misses
+>        377180518    iTLB-load-misses
+> 
+>     552.667718220 seconds time elapsed
+> 
+>     $ cat /proc/vmstat
+> 
 
-> On Thu, Oct 26, 2023 at 01:33:13PM +0300, Antoniu Miclaus wrote:
-> > Add support for LTC2991 Octal I2C Voltage, Current, and Temperature
-> > Monitor.
-> >
-> > The LTC2991 is used to monitor system temperatures, voltages and
-> > currents. Through the I2C serial interface, the eight monitors can
-> > individually measure supply voltages and can be paired for
-> > differential measurements of current sense resistors or temperature
-> > sensing transistors. Additional measurements include internal
-> > temperature and internal VCC.
-> >
-> > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
->=20
-> Applied. I do have one comment (see below) about code which
-> I would normally reject, but I am getting tired.
->=20
-> [ ... ]
->=20
-> > +
-> > +struct ltc2991_state {
-> > +	struct device		*dev;
->=20
-> It is completely pointless to have a reference to dev in struct
-> ltc2991_state because it is only used in the init function and
-> dereferenced six times there. It would have been much easier to
-> pass it as argument to that function. That would also have avoided
-> the wrong assumption or expectation that it is needed/used elsewhere.
->=20
-> Guenter
-Sorry for the misunderstanding. I took as reference some old driver
-implementations from the mainline kernel.
+So, an improvement of 0.74% ? How stable are the results? Serious 
+question: worth the churn?
 
-Is it fine if I do a follow-up patch on this subject in the near future?
+Or did I get the numbers wrong?
 
-Regards,
-Antoniu
+>   #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 5c02720c53a5..1ca2ac91aa14 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -135,6 +135,9 @@ enum pageflags {
+>   #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+>   	PG_arch_2,
+>   	PG_arch_3,
+> +#endif
+> +#ifdef CONFIG_MIGRC
+> +	PG_migrc,		/* Page has its copy under migrc's control */
+>   #endif
+>   	__NR_PAGEFLAGS,
+>   
+> @@ -589,6 +592,10 @@ TESTCLEARFLAG(Young, young, PF_ANY)
+>   PAGEFLAG(Idle, idle, PF_ANY)
+>   #endif
+>   
+> +#ifdef CONFIG_MIGRC
+> +PAGEFLAG(Migrc, migrc, PF_ANY)
+> +#endif
+
+I assume you know this: new pageflags are frowned upon.
+
+-- 
+Cheers,
+
+David / dhildenb
 
