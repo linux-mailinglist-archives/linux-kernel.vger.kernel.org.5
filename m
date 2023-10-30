@@ -2,515 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98CD7DBB21
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3347DBB26
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjJ3NxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        id S232655AbjJ3NyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJ3NxK (ORCPT
+        with ESMTP id S231992AbjJ3NyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:53:10 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868E4C6;
-        Mon, 30 Oct 2023 06:53:04 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id B55B260173;
-        Mon, 30 Oct 2023 14:53:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698673982; bh=qTLJSEnpY0gjcW6oMPacMiI3ynbYimVpSyzYqwTqYM0=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=Gzt4nR0L8fR8lBIoUfcnG8GH5bO3/BfYS6ww1uboU/pW41XEzTtT0gzcXgcipBQDg
-         ydWMwhLvA9phW8umkx9/ewmwQBl4OOE9IQYatckGO450oML2dI/RR6+T+4jho2WxPa
-         K+BGcc0JUDwAbKtSvHESiKmssyto7m4lIux/3Xo5yH97vsuZU/QPcAeLa2H2m3QmjV
-         c9z/E/LlZKVvmHjlihq4KnwudiAj/znUDkt0rQEaFLRpSWiK9dL08LJFCBEUHD6G14
-         0eXzI3OyvXJuhwzWpld3cw74f50qmjoMwjAt7WZjO7MGAkLMWj1Xuoh6w39a8atxXd
-         1YSdcBfDdezPw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 93NwYSBe5HaO; Mon, 30 Oct 2023 14:52:59 +0100 (CET)
-Received: from [192.168.1.6] (78-3-40-166.adsl.net.t-com.hr [78.3.40.166])
-        by domac.alu.hr (Postfix) with ESMTPSA id B58EC60171;
-        Mon, 30 Oct 2023 14:52:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1698673979; bh=qTLJSEnpY0gjcW6oMPacMiI3ynbYimVpSyzYqwTqYM0=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=OvXw/SePK41zxu6AJaaZRQeZ75djc7Lxj/ldOqV+t8o9Uui4nu/kw3dRj7gG6x0lz
-         DStw85WFIECipif5mXPV4IkRVxXoDGd+u9qaR088bQ5MooQdpzJvTAhh5dCiXtsmXt
-         vzXwLmn9A1L05gxozP5/8ZMdL7b3icMyHVAfvVpEHxVdDkFWOzRekBJxlNadfrsu+q
-         qZ1KCnnMEB48rzpQ9JSeoYkKySKQGcsWUQLzwd+szgxvdFACvuo/AGhMqnBlqaF7n8
-         DvUL3A2c7J3f1uWcqkcB3w4DwksHDcieBaf90REHndYgjEJ+TOg2xSOzyZUdRxX9T9
-         0sahjAWJMicpw==
-Message-ID: <3df7447e-bfea-4996-897d-05e66c8a69b5@alu.unizg.hr>
-Date:   Mon, 30 Oct 2023 14:52:58 +0100
-MIME-Version: 1.0
+        Mon, 30 Oct 2023 09:54:20 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2087.outbound.protection.outlook.com [40.107.212.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D82C1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:54:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KPmuCgjdMls91qehmEu3ZkEx4gOb9vZ58beJiQ+NKg/3XXnnW9YWyTg5UnBhFPJz2el3ak5+t4DTPohimNU3y75biBJuqq4jU6UN22Fp06sGLw4oyLw7EFkvr9JMoKdFX+htGMspXMMxWl90spAvT6bh2/7BuTxewqnem5Xb6RGyhCFYFl+oJ4N3KEzmfEPlDe515x7vhax6d0Y7VmmRyB/Vk6wj/0UxLKp0KJSIbNwpm9ZyBZECF/AX1XTgoMEUrBjOS66EpUhmhMBProXnayWxgtJo4i+MMTpfoL+pPNEUiKNCvea12GmmDDpoETjvjdieqCs/CfnkNgeboDd32Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6fZS+ghr7l8tJ7qgpBUbuX0ahwciCBQKwFQlWxARTi4=;
+ b=Q4tBZRK2nCMYCY8L+TqfxJ4ieaulVLTtc8vmHaYh1ikUqJpnLO3tjI6mQc2mj0nhzirdRUCAPg+lrNVnGIJATl36D1wCAgq4dy1fH4YjftT4sao7DuFkFBUMHFo22T19cKFotDXBDgWNU8eQoHMwzsnuJT5j0y0FfqX2ck1jtrjQOApYkFDnpQrtezFIpQJEWbVqwJVfYmvLNVLMStcKXVI3sLTIwCu9MLKPqm+RqhKtZpjErKSmWcPHIs+1ZXRuZ5pFakATkEacoYzSEsTnracINUxHO9/ZUNAYqBPiKnqMfn3UhQszvNkXZs5kpVOZ3tTiwyPJePJhty3VE+UHpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6fZS+ghr7l8tJ7qgpBUbuX0ahwciCBQKwFQlWxARTi4=;
+ b=MKpJI7hLqyEqlT5k6laJpFV53/MBpvGfZoXdy/mS1q8gXsW3IBffZ7RDiWzQJr69OmJ7LsWCHaERD7pd3f2NSXYb933l0iTYoJSjdUqZPLW+pBX7nbrIFrslxYQDubeVPYRJwMHdTDt0UlprgJIfzXdHxXAUE+KM4Mi/rBDkqos=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com (2603:10b6:610:d7::13)
+ by MN2PR12MB4533.namprd12.prod.outlook.com (2603:10b6:208:266::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26; Mon, 30 Oct
+ 2023 13:54:15 +0000
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::33ed:3162:e4ed:3569]) by CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::33ed:3162:e4ed:3569%6]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
+ 13:54:15 +0000
+Message-ID: <d56cd927-49fc-cb4e-8abd-abc539e4d276@amd.com>
+Date:   Mon, 30 Oct 2023 09:54:10 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] r8169: Coalesce RTL8411b PHY power-down recovery
- programming instructions to reduce spinlock stalls
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     nic_swsd@realtek.com, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
-References: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
- <376db5ae-1bb0-4682-b132-b9852be3c7aa@gmail.com>
- <23428695-fcff-495b-ac43-07639b4f5d08@alu.unizg.hr>
- <30e15e9a-d82e-4d24-be37-1b9d1534c082@gmail.com>
- <9f99c3a4-2752-464b-b37d-58a4f8041804@alu.unizg.hr>
-In-Reply-To: <9f99c3a4-2752-464b-b37d-58a4f8041804@alu.unizg.hr>
+Subject: Re: [PATCH] drm/amd/display: remove duplicated argument
+Content-Language: en-CA
+To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        harry.wentland@amd.com, sunpeng.li@amd.com,
+        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com,
+        skhan@linuxfoundation.org
+Cc:     airlied@gmail.com, daniel@ffwll.ch, qingqing.zhuo@amd.com,
+        Jun.Lei@amd.com, alex.hung@amd.com, Zhongwei.Zhang@amd.com,
+        sunran001@208suo.com, Yao.Wang1@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231029093926.137766-1-jose.pekkarinen@foxhound.fi>
+From:   Aurabindo Pillai <aurabindo.pillai@amd.com>
+In-Reply-To: <20231029093926.137766-1-jose.pekkarinen@foxhound.fi>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: YQXP288CA0020.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c00:41::49) To CH0PR12MB5284.namprd12.prod.outlook.com
+ (2603:10b6:610:d7::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5284:EE_|MN2PR12MB4533:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7bc89c14-6105-42e6-59ac-08dbd94fb400
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ELuE7TohiQKPKOUAv9mXKT0DAUrevXdGIlwtKbtTn2NRMQOVbiUB1spz+vbjec12JaAM6vnefW0pxt80TmGAu0tkeB151NeXQFaP02cDlz7aXS1Rr2rhlruQvNCUtIjXeKAZA/1P8hYc1am38WNlSuLtk7TivE5RV8DwlyaWAm+peF1dusXHk8O4dQCeGnilohmnkldmAETwryiYFi8ftot/zwO5HnKUijK1WvyT+ripLKEYt0s+x5LpyOAur/JS75r2ArdFwp3RNpXCu9M0DNvp5G1UKCgUdHrVn7XGWGwmctc5loq/2RoF1cCoyXNoInrebsjgwH48W9fSRMXGIj7AJfef6vyIRP59ChYa+mvTNak7LX67G2AX7P18TOlJryMoB8Pm75r33eW8i6jrfcwwKmdfUk6Qm+7E/DcjPFyFOQK5852p4b14EGtHerhfJZH/LYmJAEXECv52zjIIdqqKT9NJMnPxanIiI9TAyn8gVRV7lh2zJFQ+u2PanbgpWACsKG7DozcAZd+HSXFZRW9ijOmVkeQZOHJV3HMsw4eruXtNxpm2tsE1d0JfIp3ULBWD6iwY814t0mXWmXEAn9C69wk86bsP8CXHB10GWYT1Hs7YRge2CafNYkE2VTm1/lpoQVR9FGNF+qv5mDlt1w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5284.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6506007)(53546011)(6666004)(6512007)(6486002)(83380400001)(478600001)(26005)(2616005)(2906002)(5660300002)(66946007)(66476007)(66556008)(8936002)(44832011)(8676002)(4326008)(316002)(31696002)(86362001)(36756003)(38100700002)(41300700001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWxPUHFwam9sNWpObTE1c0FleUxUVHZFNU5Vem9DUHVXUGlPNnI3NE8rRHR2?=
+ =?utf-8?B?MXN5b29oWU5FbTlxbGlqVzRVaXltUjBoakVlNmZnUW9YTzJIOU9XUFlRai9m?=
+ =?utf-8?B?N1lTTTJjV2U0TGtmbUFZZ25KZ21acmNkdEczZnQ4aG5aRmM0cHJMMlpkRkJL?=
+ =?utf-8?B?STB1bC9MTmovM1NBbkZ5TGFOZUJML3BEOVE0MUJEOGc4d1ZDTDRNb3lKeUpD?=
+ =?utf-8?B?cC9zK081M1NnUVBUM3B0YlZwRG55c1RRVm5IQ212OUhHV09ac1YyR0k4QS9k?=
+ =?utf-8?B?dWdBN3h6WWpSMzZtdmxuYU9aeWhaa3c5SWlkZjZ2ck9HWmpTWXNsUlBUZnVa?=
+ =?utf-8?B?aWxPZUZMaFZoK01aYjR4cElnYjFTaldRS2czbkVmTkhwZDBpUEp5RitqbjZZ?=
+ =?utf-8?B?dEVkODZTaUV0ZjhVd041YmNFNWQ4ZDdZUTNnZVg1TS9pQm94c2RJZWVxdkhv?=
+ =?utf-8?B?ZG55ajZNZGUwakRtaHpycFo5ak8wSXhoRVJXVUY4VkNSdmNYK1BCMmZ1S2tQ?=
+ =?utf-8?B?UGpScVNHYXNaS3BnQVIxZjcreGRGZzhLWnd3Q1orNG9rRGRKK1gvdnB0SzFu?=
+ =?utf-8?B?elIrWmZURkpRSFpUYTZjeGI4M0VYSmxBV1pIeWRqN0szTlR4U2huT2RxTTBp?=
+ =?utf-8?B?N21Ubm1UUFhXMUV0WHhZcEVJQ3hocXFORkU5THdjVkZMWDVWVlJCRGxQT0dT?=
+ =?utf-8?B?bTEvSnZMWTJFYXlkeHJJaG9WeFg0LytqN2g2OWc1OFJSbE5nK2wxS0xJTXpj?=
+ =?utf-8?B?aWM3RTUwYTREa1V6QTdTMGF5YnZTY1NZczhWRjdhRzA5ZDVmakVNMG9hVlhk?=
+ =?utf-8?B?ZXdoSExCakRxU1hneDdMdkQ0UWZTZWF6WDFUS2wxcGtMM2VacktNY0lmb09Q?=
+ =?utf-8?B?c1VkbXM1R3VKSGExWTFTMkI4ajBSaG9pYUJkcVVlUTBGZW1KQjFWNEhLY1hI?=
+ =?utf-8?B?YnErNnk5d2RUVXJHVUx3bk5ZRi9YeEdXbStSZFNZRFE2emsyVU5rWEdzS0hL?=
+ =?utf-8?B?TldyTXg1R1pqa3pXVTZ5UDFMQVo2QVBtVnZ3STNYRGFYSGRPaytGdmZ0ZGp1?=
+ =?utf-8?B?MEV6S2FyMmc3M0h4RVMxemY2R01BaUpSZmlMSXVHNU9OSk5iZS9RM2dnZVRv?=
+ =?utf-8?B?bktNdGphZHhrTXlNeEpleGU3NWhaSFUrUjlkSUNMNVZvUlFCbXQ4UWQ5aEhx?=
+ =?utf-8?B?aklTdHhPVUJhRUdZZ1NMYVUrd01PT1RtQzZRRjllWmxZdDN4bDc0TldSZnlN?=
+ =?utf-8?B?bzFvbmlyRHJHUXZZVzRkTk0yNUM0RjJ3dXJ4VlFhRnoxemVQUzl4R2ltR1VT?=
+ =?utf-8?B?c1l2NjJlSjkrdjZDTWZZaHdTdGhTbElDT0dsRFVmSVJVdEhmSk8rUlhIQy9v?=
+ =?utf-8?B?cEdza1JrbTZhQlRNVXV1aHVWTC91dDlUSnB5TVNqR3hMYlZRRWlGRFkvbW1q?=
+ =?utf-8?B?YmpaWUtNV1Qvb3orZFNZZ1R2TjlnZmMzODRPYTJuYkFwVXBJaXE4dXBEMEVs?=
+ =?utf-8?B?MFp3Nkszd1NVdFo2SkF4V3EyM3JpQ0RXU0JCQXZaZE0rZWJMcmZsY1Rpdzkw?=
+ =?utf-8?B?U0o4c2xQVWR4dmVXQytPOG90MDhkYUttWStjQTJqVklOYzJlOFl0ODVvU2lr?=
+ =?utf-8?B?RFZIcUxVK28vMUhtT3UxZW1NeTBQclZZdnI5dHh3YUJDVlk2UFZiclo0c3dm?=
+ =?utf-8?B?dEhiaWU0S2JRTmR3Tk8rNG01dnVUNkN2UW5paGV6UEZIY2NXclpKcTZ6NUhq?=
+ =?utf-8?B?cXZYb0FZUUUvdktITTBWY3l3dDdTYXo3bUdTQWdQbDB5UEEzdHNFS1phUGVt?=
+ =?utf-8?B?d1NvczlENDVyQ3pNMkkvV1p4QTdTcXVYcEx4NDhlZUFHZkhseUtnLzhiQnA3?=
+ =?utf-8?B?b0g1WmF1dVo5TzZBMVlCMXpEaExUbGlEV3p6N2M0ODNLUU9BYXNPK2Q0cmx2?=
+ =?utf-8?B?MlZBejg4eXhvdEF6Qk9rd1ZoQjRwRmxxWTdIcDZleC93bE5EM1BmeFJPYk11?=
+ =?utf-8?B?YWVwV0xIVElYS2x4cCtNTENwcUU0UnA0T21lU05tUlhlanRyWnIyQkMwTnRL?=
+ =?utf-8?B?YmN4U0xwSnNxRUxickgrQlVNQjJPamdVUm00VlVnOFpCSDJRamxQTkY4bFNu?=
+ =?utf-8?Q?KbbiyTo92Xh4qvtJLZz6V2GsR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bc89c14-6105-42e6-59ac-08dbd94fb400
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5284.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 13:54:15.4468
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mnp4L/TylTaRlH4QSEg6vBVvP8h8Oax1RSI7cjxmq2q5736eVntxbZK3K/sRziigxI7Z1sApyfWNI1J0c9pKBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4533
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 14:30, Mirsad Todorovac wrote:
-> 
-> 
-> On 10/30/23 14:17, Heiner Kallweit wrote:
->> On 29.10.2023 05:56, Mirsad Todorovac wrote:
->>>
->>>
->>> On 10/28/23 21:21, Heiner Kallweit wrote:
->>>> On 28.10.2023 13:05, Mirsad Goran Todorovac wrote:
->>>>> On RTL8411b the RX unit gets confused if the PHY is powered-down.
->>>>> This was reported in [0] and confirmed by Realtek. Realtek provided
->>>>> a sequence to fix the RX unit after PHY wakeup.
->>>>>
->>>>> A series of about 130 r8168_mac_ocp_write() calls is performed to
->>>>> program the RTL registers for recovery.
->>>>>
->>>>> r8168_mac_ocp_write() expands to this code:
->>>>>
->>>>>           static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
->>>>>           {
->>>>>                   if (rtl_ocp_reg_failure(reg))
->>>>>                           return;
->>>>>
->>>>>                   RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
->>>>>           }
->>>>>
->>>>>           static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
->>>>>           {
->>>>>                   unsigned long flags;
->>>>>
->>>>>                   raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->>>>>                   __r8168_mac_ocp_write(tp, reg, data);
->>>>>                   raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>>>>           }
->>>>>
->>>>> Register programming is done through RTL_W32() macro which expands into
->>>>>
->>>>>           #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
->>>>>
->>>>> which is further (on Alpha):
->>>>>
->>>>>           extern inline void writel(u32 b, volatile void __iomem *addr)
->>>>>           {
->>>>>                   mb();
->>>>>                   __raw_writel(b, addr);
->>>>>           }
->>>>>
->>>>> or on i386/x86_64:
->>>>>
->>>>>       #define build_mmio_write(name, size, type, reg, barrier) \
->>>>>       static inline void name(type val, volatile void __iomem *addr) \
->>>>>       { asm volatile("mov" size " %0,%1": :reg (val), \
->>>>>       "m" (*(volatile type __force *)addr) barrier); }
->>>>>
->>>>>       build_mmio_write(writel, "l", unsigned int, "r", :"memory")
->>>>>
->>>>> This obviously involves iat least a compiler barrier.
->>>>>
->>>>> mb() expands into something like this i.e. on x86_64:
->>>>>
->>>>>           #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
->>>>>
->>>>> This means a whole lot of memory bus barriers: for spin_lock_irqsave(),
->>>>> memory barrier, writel(), and spin_unlock_irqrestore().
->>>>>
->>>>> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
->>>>> a LOCK storm that will thunder all of the cores and CPUs on the same memory controller
->>>>> for certain time that locked memory read-modify-write cyclo or I/O takes to finish.
->>>>>
->>>>> In a sequential case of RTL register programming, the writes to RTL registers
->>>>> can be coalesced under a same raw spinlock. This can dramatically decrease the
->>>>> number of bus stalls in a multicore or multi-CPU system:
->>>>>
->>>>>           static void __r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->>>>>                                                 const struct recover_8411b_info *array)
->>>>>           {
->>>>>                   struct recover_8411b_info const *p = array;
->>>>>
->>>>>                   while (p->reg) {
->>>>>                           if (!rtl_ocp_reg_failure(p->reg))
->>>>>                                   RTL_W32(tp, OCPDR, OCPAR_FLAG | (p->reg << 15) | p->data);
->>>>>                           p++;
->>>>>                   }
->>>>>           }
->>>>>
->>>>>           static void r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->>>>>                                               const struct recover_8411b_info *array)
->>>>>           {
->>>>>                   unsigned long flags;
->>>>>
->>>>>                   raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->>>>>                   __r8168_mac_ocp_write_seq(tp, array);
->>>>>                   raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>>>>           }
->>>>>
->>>>>           static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->>>>>           {
->>>>>
->>>>>                   ...
->>>>>
->>>>>                   /* The following Realtek-provided magic fixes an issue with the RX unit
->>>>>                    * getting confused after the PHY having been powered-down.
->>>>>                    */
->>>>>
->>>>>                   static const struct recover_8411b_info init_zero_seq[] = {
->>>>>                           { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 }, { 0xFC2E, 0x0000 },
->>>>>              ...
->>>>>                   };
->>>>>
->>>>>                   static const struct recover_8411b_info recover_seq[] = {
->>>>>                           { 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C }, { 0xF806, 0xE00E },
->>>>>              ...
->>>>>                   };
->>>>>
->>>>>                   static const struct recover_8411b_info final_seq[] = {
->>>>>                           { 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 }, { 0xFC30, 0x02FD },
->>>>>              ...
->>>>>                   };
->>>>>
->>>>>                   r8168_mac_ocp_write_seq(tp, init_zero_seq);
->>>>>                   mdelay(3);
->>>>>                   r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
->>>>>                   r8168_mac_ocp_write_seq(tp, recover_seq);
->>>>>                   r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
->>>>>                   r8168_mac_ocp_write_seq(tp, final_seq);
->>>>>           }
->>>>>
->>>>> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
->>>>> functions that only changed the function names and the ending of the line, so the actual
->>>>> hex data is unchanged.
->>>>>
->>>>> Note that the original reason for the introduction of the commit fe4e8db0392a6
->>>>> was to enable recovery of the RX unit on the RTL8411b which was confused by the
->>>>> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
->>>>
->>>> I still have a problem with this statement as you're saying that the original
->>>> problem still exists. I don't think that's the case.
->>>
->>> I will not disagree about it.
->>>
->>> But we have only reduced the number of spin_lock_irqsave/spin_unlock_irqrestore()
->>> pairs.
->>>
->>> Maybe additionally, on the low level, memory barrier isn't required for each write to
->>> MMIO?
->>>
->> One could argue whether in several places writel_relaxed() could be used.
->> But it's not really worth it, because we're not in a hot path.
-> 
-> I see. Thank you for your evaluation.
-> 
-> Using writel_relaxed() sounds clever. It expands to:
-> 
->      #define build_mmio_write(name, size, type, reg, barrier) \
->          static inline void name(type val, volatile void __iomem *addr) \
->           { asm volatile("mov" size " %0,%1": :reg (val), \
->                          "m" (*(volatile type __force *)addr) barrier); }
->      build_mmio_write(__writel, "l", unsigned int, "r", )
->      #define writel_relaxed(v, a) __writel(v, a)
-> 
-> Here "barrier" is an empty string. Really clever. ;-)
-> 
-> I will not contradict, but the cummulative amount of memory barriers on each MMIO read/write
-> in each single one of the drivers could amount to some degrading of overall performance and
-> latency in a multicore system.
-> 
-> As I understood Mr. Jonathan Corbet on LWN, the initiative and trend is to reduce overall
-> kernel latency.
 
-P.S.
 
-On the second thought, if barrier() is only the compiler optimisation barrier from memory
-reordering, then we do not gain much disablin git as it doesn't affect the other cores, and
-reordering MMIO writes can really confuse some NIC hardware.
+On 10/29/2023 5:39 AM, José Pekkarinen wrote:
+> Spotted by coccicheck, there is a redundant check for
+> v->SourcePixelFormat[k] != dm_444_16. This patch will
+> remove it. The corresponding output follows.
+> 
+> drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c:5130:86-122: duplicated argument to && or ||
+> 
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> ---
+>   drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+> index ad741a723c0e..3686f1e7de3a 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+> @@ -5128,7 +5128,7 @@ void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+>   			ViewportExceedsSurface = true;
+>   
+>   		if (v->SourcePixelFormat[k] != dm_444_64 && v->SourcePixelFormat[k] != dm_444_32 && v->SourcePixelFormat[k] != dm_444_16
+> -				&& v->SourcePixelFormat[k] != dm_444_16 && v->SourcePixelFormat[k] != dm_444_8 && v->SourcePixelFormat[k] != dm_rgbe) {
+> +				&& v->SourcePixelFormat[k] != dm_444_8 && v->SourcePixelFormat[k] != dm_rgbe) {
+>   			if (v->ViewportWidthChroma[k] > v->SurfaceWidthC[k] || v->ViewportHeightChroma[k] > v->SurfaceHeightC[k]) {
+>   				ViewportExceedsSurface = true;
+>   			}
 
-/* Optimization barrier */
-#ifndef barrier
-/* The "volatile" is due to gcc bugs */
-# define barrier() __asm__ __volatile__("": : :"memory")
-#endif
+Thanks for catching.
 
->>> If it still uses a LOCK addl $0, m32/m64, then it still creates 130 instances of all core
->>> bus locks for this NIC reset after the lost PHY? I'm just thinking, this is nothing
->>> authoritative ...
->>>
->>>>> into a series of about 500+ memory bus locks, most waiting for the main memory read,
->>>>> modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
->>>>> the programming sequence to reach RTL NIC registers.
->>>>>
->>>>> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
->>>>>
->>>>> Fixes: fe4e8db0392a6 ("r8169: fix issue with confused RX unit after PHY power-down on RTL8411b")
->>>>> Cc: Heiner Kallweit <hkallweit1@gmail.com>
->>>>> Cc: Marco Elver <elver@google.com>
->>>>> Cc: nic_swsd@realtek.com
->>>>> Cc: "David S. Miller" <davem@davemloft.net>
->>>>> Cc: Eric Dumazet <edumazet@google.com>
->>>>> Cc: Jakub Kicinski <kuba@kernel.org>
->>>>> Cc: Paolo Abeni <pabeni@redhat.com>
->>>>> Cc: netdev@vger.kernel.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Link: https://lore.kernel.org/lkml/20231028005153.2180411-1-mirsad.todorovac@alu.unizg.hr/
->>>>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
->>>>> ---
->>>>> v3:
->>>>>    removed register/mask pair array sentinels, so using ARRAY_SIZE().
->>>>>    avoided duplication of RTL_W32() call code as advised by Heiner.
->>>>>
->>>>>    drivers/net/ethernet/realtek/r8169_main.c | 198 ++++++++--------------
->>>>>    1 file changed, 72 insertions(+), 126 deletions(-)
->>>>>
->>>>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
->>>>> index 361b90007148..3b28bec7098b 100644
->>>>> --- a/drivers/net/ethernet/realtek/r8169_main.c
->>>>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
->>>>> @@ -939,6 +939,32 @@ static void r8168_mac_ocp_modify(struct rtl8169_private *tp, u32 reg, u16 mask,
->>>>>        raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>>>>    }
->>>>>    +struct e_info_regmask_pair {
->>>>> +    u32    reg;
->>>>> +    u32    data;
->>>>> +};
->>>>> +
->>>>> +static void __r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->>>>> +                      const struct e_info_regmask_pair *array, int len)
->>>>> +{
->>>>> +    struct e_info_regmask_pair const *p;
->>>>> +
->>>>> +    for (p = array; len--; p++)
->>>>> +        __r8168_mac_ocp_write(tp, p->reg, p->data);
->>>>> +}
->>>>> +
->>>>> +static void _r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
->>>>> +                     const struct e_info_regmask_pair *array, int len)
->>>>> +{
->>>>> +    unsigned long flags;
->>>>> +
->>>>> +    raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->>>>> +    __r8168_mac_ocp_write_seq(tp, array, len);
->>>>> +    raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>>>> +}
->>>>> +
->>>>> +#define r8168_mac_ocp_write_seq(tp, a) _r8168_mac_ocp_write_seq(tp, a, ARRAY_SIZE(a))
->>>>> +
->>>>>    /* Work around a hw issue with RTL8168g PHY, the quirk disables
->>>>>     * PHY MCU interrupts before PHY power-down.
->>>>>     */
->>>>> @@ -3107,138 +3133,58 @@ static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->>>>>        /* The following Realtek-provided magic fixes an issue with the RX unit
->>>>>         * getting confused after the PHY having been powered-down.
->>>>>         */
->>>>> -    r8168_mac_ocp_write(tp, 0xFC28, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC2A, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC2C, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC2E, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC30, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC32, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC34, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC36, 0x0000);
->>>>> +
->>>>> +    static const struct e_info_regmask_pair init_zero_seq[] = {
->>>>> +        { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 }, { 0xFC2E, 0x0000 },
->>>>> +        { 0xFC30, 0x0000 }, { 0xFC32, 0x0000 }, { 0xFC34, 0x0000 }, { 0xFC36, 0x0000 },
->>>>> +    };
->>>>> +
->>>> Don't mix code and variable declarations. Did you run checkpatch?
->>>> I think it would complain here.
->>>
->>> Thank you for the warning, I will fix it.
->>>
->>> As I said to Mr. Greg, I will do the required number of iterations to fix this issue.
->>>
->>> I will add checkpatch to my routine handling of my submitted patches.
->>>
->>> Thanks,
->>> Mirsad
->>>
->>>>> +    static const struct e_info_regmask_pair recover_seq[] = {
->>>>> +        { 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C }, { 0xF806, 0xE00E },
->>>>> +        { 0xF808, 0xE027 }, { 0xF80A, 0xE04F }, { 0xF80C, 0xE05E }, { 0xF80E, 0xE065 },
->>>>> +        { 0xF810, 0xC602 }, { 0xF812, 0xBE00 }, { 0xF814, 0x0000 }, { 0xF816, 0xC502 },
->>>>> +        { 0xF818, 0xBD00 }, { 0xF81A, 0x074C }, { 0xF81C, 0xC302 }, { 0xF81E, 0xBB00 },
->>>>> +        { 0xF820, 0x080A }, { 0xF822, 0x6420 }, { 0xF824, 0x48C2 }, { 0xF826, 0x8C20 },
->>>>> +        { 0xF828, 0xC516 }, { 0xF82A, 0x64A4 }, { 0xF82C, 0x49C0 }, { 0xF82E, 0xF009 },
->>>>> +        { 0xF830, 0x74A2 }, { 0xF832, 0x8CA5 }, { 0xF834, 0x74A0 }, { 0xF836, 0xC50E },
->>>>> +        { 0xF838, 0x9CA2 }, { 0xF83A, 0x1C11 }, { 0xF83C, 0x9CA0 }, { 0xF83E, 0xE006 },
->>>>> +        { 0xF840, 0x74F8 }, { 0xF842, 0x48C4 }, { 0xF844, 0x8CF8 }, { 0xF846, 0xC404 },
->>>>> +        { 0xF848, 0xBC00 }, { 0xF84A, 0xC403 }, { 0xF84C, 0xBC00 }, { 0xF84E, 0x0BF2 },
->>>>> +        { 0xF850, 0x0C0A }, { 0xF852, 0xE434 }, { 0xF854, 0xD3C0 }, { 0xF856, 0x49D9 },
->>>>> +        { 0xF858, 0xF01F }, { 0xF85A, 0xC526 }, { 0xF85C, 0x64A5 }, { 0xF85E, 0x1400 },
->>>>> +        { 0xF860, 0xF007 }, { 0xF862, 0x0C01 }, { 0xF864, 0x8CA5 }, { 0xF866, 0x1C15 },
->>>>> +        { 0xF868, 0xC51B }, { 0xF86A, 0x9CA0 }, { 0xF86C, 0xE013 }, { 0xF86E, 0xC519 },
->>>>> +        { 0xF870, 0x74A0 }, { 0xF872, 0x48C4 }, { 0xF874, 0x8CA0 }, { 0xF876, 0xC516 },
->>>>> +        { 0xF878, 0x74A4 }, { 0xF87A, 0x48C8 }, { 0xF87C, 0x48CA }, { 0xF87E, 0x9CA4 },
->>>>> +        { 0xF880, 0xC512 }, { 0xF882, 0x1B00 }, { 0xF884, 0x9BA0 }, { 0xF886, 0x1B1C },
->>>>> +        { 0xF888, 0x483F }, { 0xF88A, 0x9BA2 }, { 0xF88C, 0x1B04 }, { 0xF88E, 0xC508 },
->>>>> +        { 0xF890, 0x9BA0 }, { 0xF892, 0xC505 }, { 0xF894, 0xBD00 }, { 0xF896, 0xC502 },
->>>>> +        { 0xF898, 0xBD00 }, { 0xF89A, 0x0300 }, { 0xF89C, 0x051E }, { 0xF89E, 0xE434 },
->>>>> +        { 0xF8A0, 0xE018 }, { 0xF8A2, 0xE092 }, { 0xF8A4, 0xDE20 }, { 0xF8A6, 0xD3C0 },
->>>>> +        { 0xF8A8, 0xC50F }, { 0xF8AA, 0x76A4 }, { 0xF8AC, 0x49E3 }, { 0xF8AE, 0xF007 },
->>>>> +        { 0xF8B0, 0x49C0 }, { 0xF8B2, 0xF103 }, { 0xF8B4, 0xC607 }, { 0xF8B6, 0xBE00 },
->>>>> +        { 0xF8B8, 0xC606 }, { 0xF8BA, 0xBE00 }, { 0xF8BC, 0xC602 }, { 0xF8BE, 0xBE00 },
->>>>> +        { 0xF8C0, 0x0C4C }, { 0xF8C2, 0x0C28 }, { 0xF8C4, 0x0C2C }, { 0xF8C6, 0xDC00 },
->>>>> +        { 0xF8C8, 0xC707 }, { 0xF8CA, 0x1D00 }, { 0xF8CC, 0x8DE2 }, { 0xF8CE, 0x48C1 },
->>>>> +        { 0xF8D0, 0xC502 }, { 0xF8D2, 0xBD00 }, { 0xF8D4, 0x00AA }, { 0xF8D6, 0xE0C0 },
->>>>> +        { 0xF8D8, 0xC502 }, { 0xF8DA, 0xBD00 }, { 0xF8DC, 0x0132 },
->>>>> +    };
->>>>> +
->>>>> +    static const struct e_info_regmask_pair final_seq[] = {
->>>>> +        { 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 }, { 0xFC30, 0x02FD },
->>>>> +        { 0xFC32, 0x0C25 }, { 0xFC34, 0x00A9 }, { 0xFC36, 0x012D },
->>>>> +    };
->>>>> +
->>>>> +    r8168_mac_ocp_write_seq(tp, init_zero_seq);
->>>>>        mdelay(3);
->>>>>        r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
->>>>>    -    r8168_mac_ocp_write(tp, 0xF800, 0xE008);
->>>>> -    r8168_mac_ocp_write(tp, 0xF802, 0xE00A);
->>>>> -    r8168_mac_ocp_write(tp, 0xF804, 0xE00C);
->>>>> -    r8168_mac_ocp_write(tp, 0xF806, 0xE00E);
->>>>> -    r8168_mac_ocp_write(tp, 0xF808, 0xE027);
->>>>> -    r8168_mac_ocp_write(tp, 0xF80A, 0xE04F);
->>>>> -    r8168_mac_ocp_write(tp, 0xF80C, 0xE05E);
->>>>> -    r8168_mac_ocp_write(tp, 0xF80E, 0xE065);
->>>>> -    r8168_mac_ocp_write(tp, 0xF810, 0xC602);
->>>>> -    r8168_mac_ocp_write(tp, 0xF812, 0xBE00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF814, 0x0000);
->>>>> -    r8168_mac_ocp_write(tp, 0xF816, 0xC502);
->>>>> -    r8168_mac_ocp_write(tp, 0xF818, 0xBD00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF81A, 0x074C);
->>>>> -    r8168_mac_ocp_write(tp, 0xF81C, 0xC302);
->>>>> -    r8168_mac_ocp_write(tp, 0xF81E, 0xBB00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF820, 0x080A);
->>>>> -    r8168_mac_ocp_write(tp, 0xF822, 0x6420);
->>>>> -    r8168_mac_ocp_write(tp, 0xF824, 0x48C2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF826, 0x8C20);
->>>>> -    r8168_mac_ocp_write(tp, 0xF828, 0xC516);
->>>>> -    r8168_mac_ocp_write(tp, 0xF82A, 0x64A4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF82C, 0x49C0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF82E, 0xF009);
->>>>> -    r8168_mac_ocp_write(tp, 0xF830, 0x74A2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF832, 0x8CA5);
->>>>> -    r8168_mac_ocp_write(tp, 0xF834, 0x74A0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF836, 0xC50E);
->>>>> -    r8168_mac_ocp_write(tp, 0xF838, 0x9CA2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF83A, 0x1C11);
->>>>> -    r8168_mac_ocp_write(tp, 0xF83C, 0x9CA0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF83E, 0xE006);
->>>>> -    r8168_mac_ocp_write(tp, 0xF840, 0x74F8);
->>>>> -    r8168_mac_ocp_write(tp, 0xF842, 0x48C4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF844, 0x8CF8);
->>>>> -    r8168_mac_ocp_write(tp, 0xF846, 0xC404);
->>>>> -    r8168_mac_ocp_write(tp, 0xF848, 0xBC00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF84A, 0xC403);
->>>>> -    r8168_mac_ocp_write(tp, 0xF84C, 0xBC00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF84E, 0x0BF2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF850, 0x0C0A);
->>>>> -    r8168_mac_ocp_write(tp, 0xF852, 0xE434);
->>>>> -    r8168_mac_ocp_write(tp, 0xF854, 0xD3C0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF856, 0x49D9);
->>>>> -    r8168_mac_ocp_write(tp, 0xF858, 0xF01F);
->>>>> -    r8168_mac_ocp_write(tp, 0xF85A, 0xC526);
->>>>> -    r8168_mac_ocp_write(tp, 0xF85C, 0x64A5);
->>>>> -    r8168_mac_ocp_write(tp, 0xF85E, 0x1400);
->>>>> -    r8168_mac_ocp_write(tp, 0xF860, 0xF007);
->>>>> -    r8168_mac_ocp_write(tp, 0xF862, 0x0C01);
->>>>> -    r8168_mac_ocp_write(tp, 0xF864, 0x8CA5);
->>>>> -    r8168_mac_ocp_write(tp, 0xF866, 0x1C15);
->>>>> -    r8168_mac_ocp_write(tp, 0xF868, 0xC51B);
->>>>> -    r8168_mac_ocp_write(tp, 0xF86A, 0x9CA0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF86C, 0xE013);
->>>>> -    r8168_mac_ocp_write(tp, 0xF86E, 0xC519);
->>>>> -    r8168_mac_ocp_write(tp, 0xF870, 0x74A0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF872, 0x48C4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF874, 0x8CA0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF876, 0xC516);
->>>>> -    r8168_mac_ocp_write(tp, 0xF878, 0x74A4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF87A, 0x48C8);
->>>>> -    r8168_mac_ocp_write(tp, 0xF87C, 0x48CA);
->>>>> -    r8168_mac_ocp_write(tp, 0xF87E, 0x9CA4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF880, 0xC512);
->>>>> -    r8168_mac_ocp_write(tp, 0xF882, 0x1B00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF884, 0x9BA0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF886, 0x1B1C);
->>>>> -    r8168_mac_ocp_write(tp, 0xF888, 0x483F);
->>>>> -    r8168_mac_ocp_write(tp, 0xF88A, 0x9BA2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF88C, 0x1B04);
->>>>> -    r8168_mac_ocp_write(tp, 0xF88E, 0xC508);
->>>>> -    r8168_mac_ocp_write(tp, 0xF890, 0x9BA0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF892, 0xC505);
->>>>> -    r8168_mac_ocp_write(tp, 0xF894, 0xBD00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF896, 0xC502);
->>>>> -    r8168_mac_ocp_write(tp, 0xF898, 0xBD00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF89A, 0x0300);
->>>>> -    r8168_mac_ocp_write(tp, 0xF89C, 0x051E);
->>>>> -    r8168_mac_ocp_write(tp, 0xF89E, 0xE434);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8A0, 0xE018);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8A2, 0xE092);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8A4, 0xDE20);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8A6, 0xD3C0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8A8, 0xC50F);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8AA, 0x76A4);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8AC, 0x49E3);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8AE, 0xF007);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8B0, 0x49C0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8B2, 0xF103);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8B4, 0xC607);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8B6, 0xBE00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8B8, 0xC606);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8BA, 0xBE00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8BC, 0xC602);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8BE, 0xBE00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8C0, 0x0C4C);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8C2, 0x0C28);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8C4, 0x0C2C);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8C6, 0xDC00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8C8, 0xC707);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8CA, 0x1D00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8CC, 0x8DE2);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8CE, 0x48C1);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8D0, 0xC502);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8D2, 0xBD00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8D4, 0x00AA);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8D6, 0xE0C0);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8D8, 0xC502);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8DA, 0xBD00);
->>>>> -    r8168_mac_ocp_write(tp, 0xF8DC, 0x0132);
->>>>> +    r8168_mac_ocp_write_seq(tp, recover_seq);
->>>>>          r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
->>>>>    -    r8168_mac_ocp_write(tp, 0xFC2A, 0x0743);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC2C, 0x0801);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC2E, 0x0BE9);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC30, 0x02FD);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC32, 0x0C25);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC34, 0x00A9);
->>>>> -    r8168_mac_ocp_write(tp, 0xFC36, 0x012D);
->>>>> +    r8168_mac_ocp_write_seq(tp, final_seq);
->>>>> +
->>>>>    }
->>>>>      static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
+Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
