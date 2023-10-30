@@ -2,69 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4627DB1C4
+	by mail.lfdr.de (Postfix) with ESMTP id 99E457DB1C3
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjJ3BIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 21:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S230481AbjJ3BAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 21:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJ3BID (ORCPT
+        with ESMTP id S229510AbjJ3BAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 21:08:03 -0400
-X-Greylist: delayed 1119 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Oct 2023 18:07:59 PDT
-Received: from smtp.bekkoame.ne.jp (lbkksmtpnat.bekkoame.ne.jp [150.95.255.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71B78BC
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 18:07:59 -0700 (PDT)
-Received: from smtp.3web.ne.jp (localhost [127.0.0.1])
-        by smtp.bekkoame.ne.jp (Postfix) with ESMTP id 809221042B9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:45:49 +0900 (JST)
-Received: from [127.0.0.1] (unknown [104.215.52.205])
-        by mx1.tky.3web.ne.jp (Postfix) with ESMTPA id 78DA41042AF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:45:49 +0900 (JST)
-Content-Type: text/plain; charset=utf-8
-From:   =?UTF-8?Q?vger=2Ekernel=2Eorg=E3=83=A1=E3=83=BC?=
-         =?UTF-8?Q?=E3=83=AB=E9=80=9A=E7=9F=A5=E3=82=B5?=
-         =?UTF-8?Q?=E3=83=BC=E3=83=93=E3=82=B9?= <te2@tky.3web.ne.jp>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?=E3=83=A1=E3=83=BC=E3=83=AB=E3=80=90linu?=
- =?UTF-8?Q?x-kernel=40vger=2Ekernel=2Eorg=E3=80=91?=
- =?UTF-8?Q?=E3=81=AE=E8=A8=AD=E5=AE=9A=E7=A2=BA?=
- =?UTF-8?Q?=E8=AA=8D=E3=81=AE=E3=81=8A=E9=A1=98?= =?UTF-8?Q?=E3=81=84?=
-Message-ID: <55a09474-3fb6-6ba3-538e-67ca38cf88a3@tky.3web.ne.jp>
-X-Priority: 1 (Highest)
-X-Msmail-Priority: High
-Importance: High
-Content-Transfer-Encoding: base64
-Date:   Mon, 30 Oct 2023 00:45:49 +0000
+        Sun, 29 Oct 2023 21:00:33 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E284BE;
+        Sun, 29 Oct 2023 18:00:31 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b7f0170d7bso3888241b3a.2;
+        Sun, 29 Oct 2023 18:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698627630; x=1699232430; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yM3bj0rbBL/9ahZnFNJ1BZ/2B4Z9gVw0ViqgRvqDFxQ=;
+        b=baEXbdapK+PD4FBEoo1iBpMr6AKWeed6pF4NVC+3t5cnAx+B5Z/mxkq3qbhxDotya2
+         kbYK13fxtvLrH5g7TsxKt0TI3bIBnnvhFoVr09qoADoikkAwsPdmfov6Pxn1tUIaLsSY
+         3YrRhcRL1U29xGSzl3JAWiikHLpCT+uI/T31tzxzIrXNDd9vgsR2hsYmqPuSz0sC9Yn1
+         mdqNjutXqce8gMLRdgBeMNEj3dItUg8vY7X9NOnVaExtH9hb3zUsf50pVme8VyFb4oDF
+         5jaIsGwVI4QOOwBDnhvKmM9MdU3Yj2a9J4yLTjyJv3XoUqOHCfj8Lft8VGzTynsjw3FH
+         plIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698627630; x=1699232430;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yM3bj0rbBL/9ahZnFNJ1BZ/2B4Z9gVw0ViqgRvqDFxQ=;
+        b=pKVN5FDdMLgZdjEcNkk2/i/MKDUWODSAfa7/hSgJO1yfDEhyYgyof4lpHCgkmJ9qkI
+         kdQbJlCnRj+/6TQqzLokkTYIUsXZFwIYDGRloPDanKKUYzmHob8BUBfNmOxMmdEMnJvx
+         iwpBCGhb4DYFWr44CO4rgTcQsIxTrvBgYRKUkLuSgnJhb/FymlVZqWNT8y/27bITN9oS
+         wy1FcqrRhYl48gMD9i7H4EEGEmojv9/fN8xN5MC3swmFJnuBx/OLlVfM6jBcpEZNy73g
+         qj4sDotx2c2BqBq6eNgqJZ3EQ0s9iFt3JxrXnjWNXPPFht6Bi8aArXvChJ8kfX6zo39O
+         RuvQ==
+X-Gm-Message-State: AOJu0YxoquOLGN0ks3nXFu653aYfg2q0bIpleK9TBzuHvt0sRmxfA3Zm
+        VI0tWdyWpSyZUoiYQbN56b81YfZOfRw=
+X-Google-Smtp-Source: AGHT+IGUEqwA9TfhXYwEcBKwZhJjsY5VNP/UOZLJZUM2YONqX1HnXpM02hmCNe0xrobBQa9jbHIixw==
+X-Received: by 2002:a05:6a20:7d95:b0:169:cd02:65e9 with SMTP id v21-20020a056a207d9500b00169cd0265e9mr11792797pzj.33.1698627630397;
+        Sun, 29 Oct 2023 18:00:30 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id o4-20020a17090ab88400b0027df6ff00eesm4360964pjr.19.2023.10.29.18.00.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Oct 2023 18:00:29 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 26FEE954130D; Mon, 30 Oct 2023 08:00:26 +0700 (WIB)
+Date:   Mon, 30 Oct 2023 08:00:25 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Ariel Miculas <amiculas@cisco.com>, linux-doc@vger.kernel.org
+Cc:     serge@hallyn.com, Phillip Lougher <phillip@squashfs.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: filesystems: document the squashfs specific
+ mount options
+Message-ID: <ZT8AKXruPLR0oUIM@debian.me>
+References: <20231029161924.50648-1-amiculas@cisco.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_99,BAYES_999,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4FtQT5HRz676trB8"
+Content-Disposition: inline
+In-Reply-To: <20231029161924.50648-1-amiculas@cisco.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-4oC744GT44Gu44Oh44O844OrIO+8iFZnZXLvvInkvJrlk6Hjga7nmobmp5jjgavlrpvjgabjgZ/j
-goLjga7jgafjgZnjgIINCuKAu+OBk+OBruODoeODvOODq+OBuOOBrui/lOS/oeOBr+OBlOmBoOaF
-ruOBj+OBoOOBleOBhOOAgg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCjIwMjPlubQxMOac
-iDMw5pelDQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg44OJ44Oh44Kk
-44Oz44Oh44Oz44OQ44O8Og0KDQrlubPntKDjgojjgornpZ7lpYjlt53lpKflrabjgrXjg7zjg5Pj
-grnjgpLjgZTliKnnlKjjgYTjgZ/jgaDjgY3oqqDjgavjgYLjgorjgYzjgajjgYbjgZTjgZbjgYTj
-gb7jgZnjgIINCg0K44OT44OD44Kw44Ot44O844OW77yIVmdlcu+8ieODoeODvOODq+OAkGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmfjgJHjga7jgrvjgq3jg6Xjg6rjg4bjgqPlvLfljJbjga7j
-gZ/jgoHjgIHjg6Hjg7zjg6vjgr3jg5Xjg4jjga7oqK3lrprjgpLlpInmm7TjgZXjgZvjgabjgYTj
-gZ/jgaDjgY3jgb7jgZnjgIINCuODoeODvOODq+OCveODleODiOOBruioreWumuOCkuOBlOeiuuiq
-jeOBhOOBn+OBoOOBjeOAgeS7iuW+jOOCguOBlOWIqeeUqOOBhOOBn+OBoOOBkeOCi+OCiOOBhuio
-reWumuOCkuWkieabtOOBl+OBpuOBj+OBoOOBleOBhOOAgg0KDQoNCuODoeODvOODq+OCveODleOD
-iOOBruioreWumueiuuiqjeODu+WkieabtOaWueazleOBq+OBpOOBhOOBpuOBr+OAgeS7peS4i+OB
-ruODquODs+OCr+OCkuOBlOWPgueFp+OBj+OBoOOBleOBhOOAgg0KDQrjg6Hjg7zjg6vjgr3jg5Xj
-g4jjga7oqK3lrprnorroqo3jg7vlpInmm7Tmlrnms5UNCg0KaHR0cHM6Ly9rYi1hdC5jb20vbWFp
-bC5hbXNlcnZlci5qcC9VSS9Mb2dpbj91aWQ9bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
-DQrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrvvIrv
-vIrvvIrvvIrvvIoNCuOBlOWNlOWKm+OBguOCiuOBjOOBqOOBhuOBlOOBluOBhOOBvuOBmeOAgg0K
-aHR0cHM6Ly93d3cudmdlci5rZXJuZWwub3JnL2NvbnRhY3QvdXNlci8NCu+8iu+8iu+8iu+8iu+8
-iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8iu+8ig==
+
+--4FtQT5HRz676trB8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Oct 29, 2023 at 06:19:24PM +0200, Ariel Miculas wrote:
+> +2.1 Mount options
+> +-----------------
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +errors=3D%s              Specify whether squashfs errors trigger a kerne=
+l panic
+> +                       or not
+> +
+> +		       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +                         continue  errors don't trigger a panic (default)
+> +                            panic  trigger a panic when errors are encou=
+ntered,
+> +                                   similar to several other filesystems =
+(e.g.
+> +                                   btrfs, ext4, f2fs, GFS2, jfs, ntfs, u=
+bifs)
+> +
+> +                                   This allows a kernel dump to be saved,
+> +                                   useful for analyzing and debugging the
+> +                                   corruption.
+> +                       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +threads=3D%s             Select the decompression mode or the number of =
+threads
+> +
+> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set:
+> +
+> +		       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +                           single  use single-threaded decompression (de=
+fault)
+> +
+> +                                   Only one block (data or metadata) can=
+ be
+> +                                   decompressed at any one time. This li=
+mits
+> +                                   CPU and memory usage to a minimum, bu=
+t it
+> +                                   also gives poor performance on parall=
+el I/O
+> +                                   workloads when using multiple CPU mac=
+hines
+> +                                   due to waiting on decompressor availa=
+bility.
+> +                            multi  use up to two parallel decompressors =
+per core
+> +
+> +                                   If you have a parallel I/O workload a=
+nd your
+> +                                   system has enough memory, using this =
+option
+> +                                   may improve overall I/O performance. =
+It
+> +                                   dynamically allocates decompressors o=
+n a
+> +                                   demand basis.
+> +                           percpu  use a maximum of one decompressor per=
+ core
+> +
+> +                                   It uses percpu variables to ensure
+> +                                   decompression is load-balanced across=
+ the
+> +                                   cores.
+> +                        1|2|3|...  configure the number of threads used =
+for
+> +                                   decompression
+> +
+> +                                   The upper limit is num_online_cpus() =
+* 2.
+> +                       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set=
+ and
+> +                       SQUASHFS_DECOMP_MULTI is set:
+> +
+> +		       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +                          2|3|...  configure the number of threads used =
+for
+> +                                   decompression
+> +
+> +                                   The upper limit is num_online_cpus() =
+* 2.
+> +                       =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +
+>=20
+
+The doc LGTM, thanks!
+
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--4FtQT5HRz676trB8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZT8AIwAKCRD2uYlJVVFO
+o5wjAQCsgbmSs7ucDXi9WqJ5A/Tf7HwOfCe7yWvzuqjkUcqcuAEArnipjFsP96Ve
+bTHe4jPw2SCfz9icTUtm4UsAhcm6BA8=
+=8P7/
+-----END PGP SIGNATURE-----
+
+--4FtQT5HRz676trB8--
