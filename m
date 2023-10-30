@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10517DB9ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCD37DB9F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbjJ3M3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        id S233227AbjJ3MgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbjJ3M3I (ORCPT
+        with ESMTP id S232291AbjJ3MgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:29:08 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41ACC9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:29:05 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso61257811fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698668943; x=1699273743; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7UKpbwqL+ANoEjbCv4Z4RqT2pwQ+PiCS3uUt13ox2/Y=;
-        b=zFmPXfShBtrQOexUcZ3zhfkfyYpWPDSWLlTRiVIk4S5ybDjO1dvbcW20u4XFA2QssU
-         POdz/fZf3Q8NwcGsBMUt7YPRUotCAcvHVRreHFClqza+d0RE/hlBze0bNoQUHFy/VMY0
-         YS8V5iFK+IJJj6vtMq9rKAuTOk40zlwY5ujzsfF6B/dYZNCZLlnxDJSQvlBWZRNgfdk5
-         C/+gaSNz2E8qHK0GGzWlMF9PukIbBiC8l64kR3yzWV+H7nOOVhgfyVI9szzYaGij0eU1
-         7AdPtFzVbq1Nl/FZ0p46jIS5leHbTlzBlmAscToUKbRWAng+36milMqYrqSmiSIHa6qw
-         8+Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698668943; x=1699273743;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7UKpbwqL+ANoEjbCv4Z4RqT2pwQ+PiCS3uUt13ox2/Y=;
-        b=YH5zNtHl3rA/75HZZdtGtDC+fbu3FfgXwkWbBZDOzDv6x2Aaql8EkkIlhCRLZxU23P
-         OO4wOvtbVvXbHPXbI0HyEfbi+zO+aTclaM+/UK/Wia5tsXQdf5Aja/xn5bWTFcd4CHxk
-         YQ77cF6A1/l4dSmV1wA1kx2C8FCj4SpqqTzVpGP5s7rINhXbbgbXcZLWy3mCHIvySCjk
-         V1YQGq6d8FWbQMC7tXL92LzZzSpsy7+ykeuCKzccOiHAUNs1HNRYjRdgR1/WL9IUjREO
-         qQjqvZjdDDwjWqldvrKdW298x8nZN1pp7zGddxPsdhrvWaId6n32o3kGCKhZIFTNeQF0
-         qhNw==
-X-Gm-Message-State: AOJu0YxFU7x82sZS9DHVp4p8sqwxR0/Sj9XU3FPF5KpIWUgp/NRaoc9R
-        0zGllrreDpCGC6ZwOQQ1yALkTg==
-X-Google-Smtp-Source: AGHT+IF33MHrB2gXQa3cyGUqHxSS7zkJJvW+X68u76LoqvgseSpCsTceucKyGh6krUBFt7XCUh8FGA==
-X-Received: by 2002:a2e:9dd9:0:b0:2c5:2475:f848 with SMTP id x25-20020a2e9dd9000000b002c52475f848mr7781734ljj.15.1698668943524;
-        Mon, 30 Oct 2023 05:29:03 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id s13-20020a05600c45cd00b004083bc9ac90sm9184188wmo.24.2023.10.30.05.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:29:02 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 15:29:00 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Nancy Nyambura <nicymimz@gmail.com>
-Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] Staging: rts5208: Replace strncpy() with strscpy()
-Message-ID: <9e125b7a-673a-4c69-8216-f8c519e5ae1c@kadam.mountain>
-References: <20231030115939.48985-1-nicymimz@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030115939.48985-1-nicymimz@gmail.com>
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 30 Oct 2023 08:36:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8CEC6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:36:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2B04C433C7;
+        Mon, 30 Oct 2023 12:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698669373;
+        bh=/71kbiytdp/VoW3kuCJ1kqiDxE4ZD+L4PqRlfCczo0I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T/eyqJHUuAonHxnuxkt6GEdACiAWxX9iI1QzI/1RvlpMqU+QIDFtVwJ77UdO0XvJC
+         whof5OokBZX4wF9CnXOJilVIpV5+6Vm3nfMb9Dmn0iL21Ijq/oVFyOmGXToQ3b79uo
+         +Px4uqo3N8WAbbkz+P6kLR1kTuGBpuT5r4SsJf1bH41QU76hfWLInxSyk8xNcNm5ss
+         HbgM4IgDJY+Mr5i+VpNTJ3FnH/IQ+f10OD1v+xEPcU64+kY2ArVy3bmKZxvB7i6q4I
+         k47oIEq2mQDF6WbGwAJZpWuAyBW/R5SZ9/+zn6LmcoBGl3Nm5hIALsSVer6hj82+ad
+         4rxYLEkan3pew==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qxRV5-008vI6-5Z;
+        Mon, 30 Oct 2023 12:36:11 +0000
+Date:   Mon, 30 Oct 2023 12:36:09 +0000
+Message-ID: <86msw01e4m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jan Henrik Weinstock <jan@mwa.re>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Lukas =?UTF-8?B?SsO8bmdlcg==?= <lukas@mwa.re>
+Subject: Re: KVM exit to userspace on WFI
+In-Reply-To: <CANi1PHjAwLWAq9EW7r5Yh_xbvPiJMsq8342JwAGafz1d1NUhSA@mail.gmail.com>
+References: <CANi1PHhzk80HvwQbBM46gpJ6_AA_P6+m5Jo0Nuy_MAdA4C2BhQ@mail.gmail.com>
+        <87ttql5aq7.wl-maz@kernel.org>
+        <CANi1PHieGooO0DK=6BPwq0UknHzsn9QM3rFQkh3HLMfWxDseUQ@mail.gmail.com>
+        <86cyx250w9.wl-maz@kernel.org>
+        <CANi1PHjAwLWAq9EW7r5Yh_xbvPiJMsq8342JwAGafz1d1NUhSA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jan@mwa.re, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, lukas@mwa.re
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 02:59:34PM +0300, Nancy Nyambura wrote:
-> warning found by checkpatch.pl script.I replaced the usage of strncpy()
-> with strscpy() in the code(line 524) for the buf buffer to improve
-> string copying.This is appropriate since strscpy() is used when you want
-> to copy a NUL-terminated string and the destination buffer requires
-> trailing NUL-padding.
+[please make an effort not to top-post]
+
+On Fri, 27 Oct 2023 18:41:44 +0100,
+Jan Henrik Weinstock <jan@mwa.re> wrote:
 > 
-> Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
-> ---
-> Changes in v2:
->   - Make the commit message more clearer.
+> Hi Marc,
+> 
+> the basic idea behind this is to have a (single-threaded) execution loop,
+> something like this:
+> 
+> vcpu-thread:    vcpu-run | process-io-devices | vcpu-run | process-io...
+>                          ^
+>                   WFX or timeout
+> 
+> We switch to simulating IO devices whenever the vcpu is idle (wfi) or exceeds
+> a certain budget of instructions (counted via pmu). Our fallback currently is
+> to kick the vcpu out of its execution using a signal (via a timeout/alarm). But
+> of course, if the cpu is stuck at a wfi, we are wasting a lot of time.
+> 
+> I understand that the proposed behavior is not desirable for most use cases,
+> which is why I suggest locking it behind a flag, e.g.
+> KVM_ARCH_FLAG_WFX_EXIT_TO_USER.
 
-Hi Nancy,
+But how do you reconcile the fact that exposing this to userspace
+breaks fundamental expectations that the guest has, such as getting
+its timer interrupts and directly injected LPIs? Implementing WFI in
+userspace breaks it. What about the case where we don't trap WFx and
+let the *guest* wait for an interrupt?
 
-Your commit message does not explain why you used strscpy() instead of
-strscpy_pad().  I have written a blog that might be helpful.
+Honestly, what you are describing seems to be a use model that doesn't
+fit KVM, which is a general purpose hypervisor, but more a simulation
+environment. Yes, the primitives are the same, but the plumbing is
+wildly different.
 
-https://staticthinking.wordpress.com/2023/10/30/strcpy-strncpy-strlcpy-and-strscpy/
+*If* that's the stuff you're looking at, then I'm afraid you'll have
+to do it in different way, because what you are suggesting is
+fundamentally incompatible with the guarantees that KVM gives to guest
+and userspace. Because your KVM_ARCH_FLAG_WFX_EXIT_TO_USER is really a
+lie. It should really be named something more along the lines of
+KVM_ARCH_FLAG_WFX_EXIT_TO_USER_SOMETIME_AND_I_DONT_EVEN_KNOW_WHEN
+(probably with additional clauses related to breaking things).
 
-regards,
-dan carpenter
+Overall, you are still asking for something that is not guaranteed at
+the architecture level, even less in KVM, and I'm not going to add
+support for something that can only work "sometime".
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
