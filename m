@@ -2,134 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771A67DB64C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB807DB65A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbjJ3Jn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S232735AbjJ3JqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJ3Jn4 (ORCPT
+        with ESMTP id S232645AbjJ3Jpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:43:56 -0400
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54954B3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:43:54 -0700 (PDT)
-Message-ID: <6e7df8dc-e31b-472c-86fb-0aef8f6e712b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698659030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6cn7H6WirnCJsuxRJBZuoEdbpY+E2+h4X2v+GizpQXU=;
-        b=A5Hy9oUeINP2HvIVJdk5n3qRXZjQCpLhKAAXFKWEJO9K7P+BbxhVCEPJUdRvUc/S3vQ4eb
-        MrWC/0Slhv5cifz+YZsoQrZ9GBDY/CPrw5CaDFE+lJca0D+TBSAumAmvGUy5PmRR1vj59g
-        gGmUiKnVfs/O+Rehr+c5YY3g0rrn100=
-Date:   Mon, 30 Oct 2023 17:43:42 +0800
+        Mon, 30 Oct 2023 05:45:47 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E431E139;
+        Mon, 30 Oct 2023 02:45:40 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c52289e900so8647631fa.0;
+        Mon, 30 Oct 2023 02:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698659139; x=1699263939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=roNWFMRIdrA2XJQW3qCZb+P5wFturM6emUJo4E5vPqI=;
+        b=Qdy4TY5T+sQo1kfvTxNYpgmNWdFzuq5emI2aiCbKbKW6tdaCXuIis4ooVcVZ8q9ZRO
+         eoWm7AxZkczj1Ud0PZ8HkZwOkIpZMqXnpg1TaTTOcy2wQ324Vlxq9JineE/BWXYz0Q1n
+         AnanwTxueMJvB7ppgkNbVt0SDovUwp3JXcsjwKbWSGgwWSgWfUjGD1YPR2NaU+T4MzxM
+         Kp5bLjzzRO8YoMegNPMGtG1f+D0QHOQ4HXE5U2+rMYif2W/RfV3vyVRnK642ZjN2VPMq
+         qTrAn8GnADrEmp5DdhDRtW7iD14TustuF48KO2ckug59uJuDB13mKDFtmu4rC8SKOnaQ
+         8Juw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698659139; x=1699263939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=roNWFMRIdrA2XJQW3qCZb+P5wFturM6emUJo4E5vPqI=;
+        b=QtQHT/ecPqiIvvSc4LaUQRiCuOGEyk8YNMLsbBfqsNxGfQ2J4TrJSCDPMCjkz89AEW
+         w4DxeElpHBnHEhZ2BlhrvwAjoOCTA5wcEBqUnxixSsmRR0yfHFTuYtT150Ys7lYOAGQq
+         I1Qjvd+P6vlOawXMC2AQvriN3LAA/pXulRGHwvFBSKULAtE3pEaMAx7zBxudXxMvmQB0
+         1Ifj17Vlhtwp1bzbkYfpaBfvQTG9Wiu0KIkzr6Y6vOTyo2aLdKobh7M0dZjjH1gUtSZR
+         g39dd1CTlRhNXSu/UNPAQOnvuyShr6yxgIGvkA6Xn0W39WGVwKFKCq2DNgy+9aX2I8AI
+         grkg==
+X-Gm-Message-State: AOJu0YyDNeTfgD9wKVwIkzTm0DXIpnMMCIb7DOyq+DRqNgAXImSRqBo/
+        ypU8CqzmZ7smYjZVNyKmklbu30FPgckqwA==
+X-Google-Smtp-Source: AGHT+IFlD366l8eXN2XK8pK+fCHY69joDXkYrc265Zwn9kNPlFud5PBYeigDyU//8huZ6seoEXmCIg==
+X-Received: by 2002:a2e:b531:0:b0:2c0:1cae:dd3d with SMTP id z17-20020a2eb531000000b002c01caedd3dmr5732749ljm.4.1698659138776;
+        Mon, 30 Oct 2023 02:45:38 -0700 (PDT)
+Received: from localhost.localdomain ([94.141.255.13])
+        by smtp.googlemail.com with ESMTPSA id w16-20020a05651c103000b002bcd94f9714sm1243216ljm.126.2023.10.30.02.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 02:45:38 -0700 (PDT)
+From:   Konstantin Runov <runebone1@gmail.com>
+To:     keescook@chromium.org
+Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konstantin Runov <runebone1@gmail.com>
+Subject: [PATCH] Fixed typo (args -> argc) in plugin description
+Date:   Mon, 30 Oct 2023 12:45:08 +0300
+Message-Id: <20231030094508.245432-1-runebone1@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>
-References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
- <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
- <784a65e3-5438-4700-b3e4-1d72d144ec2a@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <784a65e3-5438-4700-b3e4-1d72d144ec2a@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/10/30 16:13, Zhijian Li (Fujitsu) 写道:
-> 
-> 
-> On 27/10/2023 16:17, Zhu Yanjun wrote:
->> 在 2023/10/27 13:41, Li Zhijian 写道:
->>> mr->page_list only encodes *page without page offset, when
->>> page_size != PAGE_SIZE, we cannot restore the address with a wrong
->>> page_offset.
->>>
->>> Note that this patch will break some ULPs that try to register 4K
->>> MR when PAGE_SIZE is not 4K.
->>> SRP and nvme over RXE is known to be impacted.
->>
->> When ULP uses folio or compound page, ULP can not work well with RXE after this commit is applied.
->>
->> Perhaps removing page_size set in RXE is a good solution because page_size is set twice, firstly page_size is set in infiniband/core, secondly it is set in RXE.
-> 
-> Does The RXE one mean rxe_mr_init(), I think rxe_reg_user_mr() requires this.
+Clearly, argc should be used
 
-Please read the discussions carefully. This problem has been discussed.
+Signed-off-by: Konstantin Runov <runebone1@gmail.com>
+---
+ scripts/gcc-plugins/latent_entropy_plugin.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best Regards,
-Zhu Yanjun
-
-> 
->    48 static void rxe_mr_init(int access, struct rxe_mr *mr)
->    49 {
->    50         u32 key = mr->elem.index << 8 | rxe_get_next_key(-1);
->    51
->    52         /* set ibmr->l/rkey and also copy into private l/rkey
->    53          * for user MRs these will always be the same
->    54          * for cases where caller 'owns' the key portion
->    55          * they may be different until REG_MR WQE is executed.
->    56          */
->    57         mr->lkey = mr->ibmr.lkey = key;
->    58         mr->rkey = mr->ibmr.rkey = key;
->    59
->    60         mr->access = access;
->    61         mr->ibmr.page_size = PAGE_SIZE;
->    62         mr->page_mask = PAGE_MASK;
->    63         mr->page_shift = PAGE_SHIFT;
->    64         mr->state = RXE_MR_STATE_INVALID;
->    65 }
-> 
-> 
-> Thanks
-> Zhijian
-> 
->>
->> When folio or compound page is used in ULP, it is very possible that page_size in infiniband/core is different from the page_size in RXE
->>
->> Not sure what problem this difference will cause.
->>
->> Zhu Yanjun
->>
->>>
->>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->>> ---
->>>    drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
->>>    1 file changed, 6 insertions(+)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> index f54042e9aeb2..61a136ea1d91 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->>>        struct rxe_mr *mr = to_rmr(ibmr);
->>>        unsigned int page_size = mr_page_size(mr);
->>> +    if (page_size != PAGE_SIZE) {
->>> +        rxe_info_mr(mr, "Unsupported MR with page_size %u, expect %lu\n",
->>> +               page_size, PAGE_SIZE);
->>> +        return -EOPNOTSUPP;
->>> +    }
->>> +
->>>        mr->nbuf = 0;
->>>        mr->page_shift = ilog2(page_size);
->>>        mr->page_mask = ~((u64)page_size - 1);
+diff --git a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/latent_entropy_plugin.c
+index 39e86be60dd2..ff0b192be91f 100644
+--- a/scripts/gcc-plugins/latent_entropy_plugin.c
++++ b/scripts/gcc-plugins/latent_entropy_plugin.c
+@@ -17,7 +17,7 @@
+  *	if (argc <= 1)
+  *		printf("%s: no command arguments :(\n", *argv);
+  *	else
+- *		printf("%s: %d command arguments!\n", *argv, args - 1);
++ *		printf("%s: %d command arguments!\n", *argv, argc - 1);
+  * }
+  *
+  * after:
+@@ -47,7 +47,7 @@
+  *		// perturb_local_entropy()
+  *	} else {
+  *		local_entropy ^= 3896280633962944730;
+- *		printf("%s: %d command arguments!\n", *argv, args - 1);
++ *		printf("%s: %d command arguments!\n", *argv, argc - 1);
+  *	}
+  *
+  *	// latent_entropy_execute() 4.
+-- 
+2.40.1
 
