@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E21B7DBD38
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889967DBD08
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbjJ3P7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
+        id S233681AbjJ3P54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjJ3P7C (ORCPT
+        with ESMTP id S231845AbjJ3P5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:59:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0255DF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698681495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=wOaUyTLUS0taBhz/WyCO0smnj0qbDFqjI3pF8ZVyn2U=;
-        b=i59xOgDq7BMsuqMtx1DvOGe3QOCdZETwsPZPjVFnz1Q30TQ0NgZx0p2pTckjRiGFiKVhQg
-        FwPZhM1rFPVD8eNQSYBmkwMJOW7nCB6tPhrIcNJkSR+xxWHm2j4VwCdoi65G8hGRhePGn0
-        trvO0I9HA+6jGg0zPOfGnRzzl+DoQ0M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-QVZ95d_wODyJWmZnRTy1ag-1; Mon, 30 Oct 2023 11:58:13 -0400
-X-MC-Unique: QVZ95d_wODyJWmZnRTy1ag-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 840E4185A788;
-        Mon, 30 Oct 2023 15:58:13 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.219])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 61A921C060AE;
-        Mon, 30 Oct 2023 15:58:12 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 30 Oct 2023 16:57:12 +0100 (CET)
-Date:   Mon, 30 Oct 2023 16:57:10 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] introduce for_other_threads(p, t)
-Message-ID: <20231030155710.GA9095@redhat.com>
+        Mon, 30 Oct 2023 11:57:55 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E91C5;
+        Mon, 30 Oct 2023 08:57:51 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 98400844;
+        Mon, 30 Oct 2023 16:57:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698681452;
+        bh=mjGo8QR1uzy1XFMLkNUMXlLinihEOiu5eSDDbZ8U+0M=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=CA9k6gMNEx4/eic1OhA63qm1U9s/10PGArgBaMR04XRPrBp+NC5ImBbFZzVXMCm0I
+         HqS3YEJngrNXC2gYARtyXSgceBCKGIEykHdwxaRzniKb1OF2/4e4qTaYE8BJ+D8BBW
+         DavoodxOM6ZS+ML5cMUOOQOpIDqbwXm6e3tcZSKc=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231028-imx214-v3-1-cd4bf77f9690@apitzsch.eu>
+References: <20231028-imx214-v3-0-cd4bf77f9690@apitzsch.eu> <20231028-imx214-v3-1-cd4bf77f9690@apitzsch.eu>
+Subject: Re: [PATCH v3 1/4] media: i2c: imx214: Explain some magic numbers
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        =?utf-8?q?Andr=C3=A9?= Apitzsch <git@apitzsch.eu>,
+        Ricardo Ribalda <ribalda@chromium.org>
+To:     =?utf-8?q?Andr=C3=A9?= Apitzsch <git@apitzsch.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Date:   Mon, 30 Oct 2023 15:57:45 +0000
+Message-ID: <169868146535.388626.1249625693260183894@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cosmetic, but imho it makes the usage look more clear and simple, the
-new helper doesn't require to initialize "t".
+Quoting Andr=C3=A9 Apitzsch (2023-10-28 09:41:45)
+> Code refinement, no functional changes.
+>=20
+> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
 
-After this change while_each_thread() has only 3 users, and it is only
-used in the do/while loops.
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- fs/exec.c                    |  3 +--
- include/linux/sched/signal.h |  3 +++
- kernel/signal.c              | 11 ++++-------
- 3 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index 6518e33ea813..e5bdce5e36ee 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1580,11 +1580,10 @@ static void check_unsafe_exec(struct linux_binprm *bprm)
- 	 * will be able to manipulate the current directory, etc.
- 	 * It would be nice to force an unshare instead...
- 	 */
--	t = p;
- 	n_fs = 1;
- 	spin_lock(&p->fs->lock);
- 	rcu_read_lock();
--	while_each_thread(p, t) {
-+	for_other_threads(p, t) {
- 		if (t->fs == p->fs)
- 			n_fs++;
- 	}
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index d7fa3ca2fa53..134a2c0bc283 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -655,6 +655,9 @@ extern bool current_is_single_threaded(void);
- #define while_each_thread(g, t) \
- 	while ((t = next_thread(t)) != g)
- 
-+#define for_other_threads(p, t)	\
-+	for (t = p; (t = next_thread(t)) != p; )
-+
- #define __for_each_thread(signal, t)	\
- 	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
- 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ccfc3ded5672..f5781a54d89d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1376,12 +1376,12 @@ int force_sig_info(struct kernel_siginfo *info)
-  */
- int zap_other_threads(struct task_struct *p)
- {
--	struct task_struct *t = p;
-+	struct task_struct *t;
- 	int count = 0;
- 
- 	p->signal->group_stop_count = 0;
- 
--	while_each_thread(p, t) {
-+	for_other_threads(p, t) {
- 		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
- 		/* Don't require de_thread to wait for the vhost_worker */
- 		if ((t->flags & (PF_IO_WORKER | PF_USER_WORKER)) != PF_USER_WORKER)
-@@ -2457,12 +2457,10 @@ static bool do_signal_stop(int signr)
- 			sig->group_exit_code = signr;
- 
- 		sig->group_stop_count = 0;
--
- 		if (task_set_jobctl_pending(current, signr | gstop))
- 			sig->group_stop_count++;
- 
--		t = current;
--		while_each_thread(current, t) {
-+		for_other_threads(current, t) {
- 			/*
- 			 * Setting state to TASK_STOPPED for a group
- 			 * stop is always done with the siglock held,
-@@ -2958,8 +2956,7 @@ static void retarget_shared_pending(struct task_struct *tsk, sigset_t *which)
- 	if (sigisemptyset(&retarget))
- 		return;
- 
--	t = tsk;
--	while_each_thread(tsk, t) {
-+	for_other_threads(tsk, t) {
- 		if (t->flags & PF_EXITING)
- 			continue;
- 
--- 
-2.25.1.362.g51ebf55
-
-
+> Signed-off-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu>
+> ---
+>  drivers/media/i2c/imx214.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
+> index 4f77ea02cc27..1c30f6666d35 100644
+> --- a/drivers/media/i2c/imx214.c
+> +++ b/drivers/media/i2c/imx214.c
+> @@ -19,12 +19,23 @@
+>  #include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-subdev.h>
+> =20
+> +#define IMX214_REG_MODE_SELECT         0x0100
+> +#define IMX214_MODE_STANDBY            0x00
+> +#define IMX214_MODE_STREAMING          0x01
+> +
+>  #define IMX214_DEFAULT_CLK_FREQ        24000000
+>  #define IMX214_DEFAULT_LINK_FREQ 480000000
+>  #define IMX214_DEFAULT_PIXEL_RATE ((IMX214_DEFAULT_LINK_FREQ * 8LL) / 10)
+>  #define IMX214_FPS 30
+>  #define IMX214_MBUS_CODE MEDIA_BUS_FMT_SRGGB10_1X10
+> =20
+> +/* Exposure control */
+> +#define IMX214_REG_EXPOSURE            0x0202
+> +#define IMX214_EXPOSURE_MIN            0
+> +#define IMX214_EXPOSURE_MAX            3184
+> +#define IMX214_EXPOSURE_STEP           1
+> +#define IMX214_EXPOSURE_DEFAULT                3184
+> +
+>  static const char * const imx214_supply_name[] =3D {
+>         "vdda",
+>         "vddd",
+> @@ -665,7 +676,7 @@ static int imx214_set_ctrl(struct v4l2_ctrl *ctrl)
+>         case V4L2_CID_EXPOSURE:
+>                 vals[1] =3D ctrl->val;
+>                 vals[0] =3D ctrl->val >> 8;
+> -               ret =3D regmap_bulk_write(imx214->regmap, 0x202, vals, 2);
+> +               ret =3D regmap_bulk_write(imx214->regmap, IMX214_REG_EXPO=
+SURE, vals, 2);
+>                 if (ret < 0)
+>                         dev_err(imx214->dev, "Error %d\n", ret);
+>                 ret =3D 0;
+> @@ -743,7 +754,7 @@ static int imx214_start_streaming(struct imx214 *imx2=
+14)
+>                 dev_err(imx214->dev, "could not sync v4l2 controls\n");
+>                 goto error;
+>         }
+> -       ret =3D regmap_write(imx214->regmap, 0x100, 1);
+> +       ret =3D regmap_write(imx214->regmap, IMX214_REG_MODE_SELECT, IMX2=
+14_MODE_STREAMING);
+>         if (ret < 0) {
+>                 dev_err(imx214->dev, "could not sent start table %d\n", r=
+et);
+>                 goto error;
+> @@ -761,7 +772,7 @@ static int imx214_stop_streaming(struct imx214 *imx21=
+4)
+>  {
+>         int ret;
+> =20
+> -       ret =3D regmap_write(imx214->regmap, 0x100, 0);
+> +       ret =3D regmap_write(imx214->regmap, IMX214_REG_MODE_SELECT, IMX2=
+14_MODE_STANDBY);
+>         if (ret < 0)
+>                 dev_err(imx214->dev, "could not sent stop table %d\n",  r=
+et);
+> =20
+> @@ -991,9 +1002,12 @@ static int imx214_probe(struct i2c_client *client)
+>          *
+>          * Yours sincerely, Ricardo.
+>          */
+> -       imx214->exposure =3D v4l2_ctrl_new_std(&imx214->ctrls, &imx214_ct=
+rl_ops,
+> +       imx214->exposure =3D v4l2_ctrl_new_std(ctrl_hdlr, &imx214_ctrl_op=
+s,
+>                                              V4L2_CID_EXPOSURE,
+> -                                            0, 3184, 1, 0x0c70);
+> +                                            IMX214_EXPOSURE_MIN,
+> +                                            IMX214_EXPOSURE_MAX,
+> +                                            IMX214_EXPOSURE_STEP,
+> +                                            IMX214_EXPOSURE_DEFAULT);
+> =20
+>         imx214->unit_size =3D v4l2_ctrl_new_std_compound(&imx214->ctrls,
+>                                 NULL,
+>=20
+> --=20
+> 2.42.0
+>
