@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D797DBB63
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9C47DBB64
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbjJ3OHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
+        id S233588AbjJ3OIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233159AbjJ3OHD (ORCPT
+        with ESMTP id S232677AbjJ3OIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:07:03 -0400
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289D2C6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:01 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-da0344eb3fdso3862982276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:01 -0700 (PDT)
+        Mon, 30 Oct 2023 10:08:02 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60EDC1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:59 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4079ed65582so33024835e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698674878; x=1699279678; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+x6+LsrjZdB8dHUELRSubYTsHMKRqi5GBjTWofSCMDk=;
+        b=XzR15MZSaJ5rcYRcqgEh7c8vUnMlL5v9R+zWTwbI4usZ3aPhMF5rinw2t9iEsxbYEy
+         H5gp4XB4XlAF/bySz4rt+PGc1f9nyW3YWafsXXMnE/bOlaJUML8A/VkrmnMLZRS7GJ3k
+         QAHXipYM3oM7fyBAzg8G9PLSi2//LurYS2cgeE8y21NB+MrZWFOi9KJcUk2uz7GvyuvZ
+         9DhRI/ZZbSo9WlgwrqMO3uyewsXb+6ijOq3wlwgL9zZFDAO5RLCee/dqzKe0IV2X0e+o
+         X6QWMr3R1z9/hSMtDLx0pBB29Is//qmbc7/DrsFFH8bxOV15bcdUt3Miq1oRUyfipYIP
+         nqqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698674820; x=1699279620;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4r2EU33FC3tvkju4g7ttecb3uzQbVR6EQt+LBLKNDv4=;
-        b=uFGbB+fkQQb2MIGjl32c2QvKP3IhcL11UfgbUGS8ghoYy+rroyQzIRCbas3BMFIqNZ
-         FA0zO3Wps5Jkee/skIVcYtQGAebCJXlfuHQff5NeOFkUCqSiEPkJb6EcGFgorwS88K6K
-         ki2RmZ9UiHF4qU1xWC/NQ3GKt0kDgMJjZ0yCoEvbQWLxSNQaTkpoLXOQ1Y7IeQavuvLn
-         9yDq3D1wInFBsUrifqCVGn9beNA6mVR+rmVBw6VHZTIyicAdvtIWSbisidfqDejdgOlE
-         G267GMAV64l+pqAWz9qnJce4m4P8hXC7WCj8wIPjC3udSwxmY7brL4B5mzd4NvAaSlvn
-         JMhw==
-X-Gm-Message-State: AOJu0YwZ3J3kDd3yaYKSwDjznuE/rEurnlZTElNeOqfkf8D8e/Yyj9Sb
-        y55DFNMvOheWHcPHAYZWC/0=
-X-Google-Smtp-Source: AGHT+IHgEgePAFlmZngtoBKX85G6XO/ZhspoS57t/9aeuwp/6Ru63xorm6OMBzk9vWY+pTaiezNtgw==
-X-Received: by 2002:a5b:b44:0:b0:da0:76eb:3d31 with SMTP id b4-20020a5b0b44000000b00da076eb3d31mr7980479ybr.15.1698674820036;
-        Mon, 30 Oct 2023 07:07:00 -0700 (PDT)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id v8-20020a2583c8000000b00d9caf6f7539sm3767107ybm.1.2023.10.30.07.06.57
+        d=1e100.net; s=20230601; t=1698674878; x=1699279678;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+x6+LsrjZdB8dHUELRSubYTsHMKRqi5GBjTWofSCMDk=;
+        b=eoUlX7gLRBDP+6aWQhG0+oBU2JsyeiG+vaRk+vNh/J+UY10SmcdDVxAh+U9wvkrEyL
+         slJOCb8MDgrhpodCjB5xB6Zklw4IWKm9U9YCIsz3dz62W4XpGrvfeXnhIKjYx2abV31D
+         RHxc0jSu3Pdt5xaVjL9ZxlwWM0jgxHoQUejEtcVfeD0z6VtW3Q975BEXnpfQ60m99ds3
+         D5MGmZx12B4sw54ucheUZp7/G7ldc1449VOb6/DwYBN9mJ0erpU8wSq7GVWXLrAtSxmA
+         OkJUp1Aw6jum7h3Wn5TfDUvYS+juQ2qd0P2vuqIGJ8Pf+PnOsXcKNUrUshRcWwT4GLsH
+         Dwlg==
+X-Gm-Message-State: AOJu0YwNQQ6HnlIiTEqqAOcSsrS3SyM18CMp0FK54ve072OO4u0pKhIp
+        hlVSO2f3p4wAME3gPgV1QPLWkhfy7km8cZLz+4o=
+X-Google-Smtp-Source: AGHT+IHa3PONe2ZHFjs1Ut/yXYmZH5eEEBpHXQF4IG+q5Drd25RgyRrQwRp16iOxIIUmK+4amlW37A==
+X-Received: by 2002:a05:600c:35cd:b0:406:872d:7725 with SMTP id r13-20020a05600c35cd00b00406872d7725mr8744073wmq.1.1698674878017;
+        Mon, 30 Oct 2023 07:07:58 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id g10-20020a5d46ca000000b0031980783d78sm8241952wrs.54.2023.10.30.07.07.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 07:06:59 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 09:06:54 -0500
-From:   David Vernet <void@manifault.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, vschneid@redhat.com, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, joshdon@google.com,
-        brho@google.com, pjt@google.com, derkling@google.com,
-        haoluo@google.com, youssefesmat@google.com,
-        greg.marsden@oracle.com, willy@infradead.org,
-        andrea.righi@canonical.com, andrealmeid@igalia.com,
-        changwoo@igalia.com, gpiccoli@igalia.com, tj@kernel.org,
-        colin.i.king@gmail.com, ast@kernel.org, himadrispandya@gmail.com,
-        redha.gouicem@rwth-aachen.de, admin@ptr1337.dev,
-        lucjan.lucjanov@gmail.com
-Subject: Re: Sched Ext slack channel / office hours
-Message-ID: <20231030140654.GA2355@maniforge>
-References: <20231018205431.GA4176@maniforge>
- <alpine.DEB.2.22.394.2310290809110.3136@hadrien>
+        Mon, 30 Oct 2023 07:07:57 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 17:07:54 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Tyler Hicks <code@tyhicks.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, ecryptfs@vger.kernel.org
+Subject: Re: [PATCH] ecryptfs: Simplify
+ ecryptfs_crypto_api_algify_cipher_name()
+Message-ID: <72f7eca6-3566-46fd-9ff9-386b4077d55d@kadam.mountain>
+References: <2c4bd387e8036854d3338400038fdde8dce3806a.1698672391.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.22.394.2310290809110.3136@hadrien>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <2c4bd387e8036854d3338400038fdde8dce3806a.1698672391.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 08:09:45AM +0100, Julia Lawall wrote:
+On Mon, Oct 30, 2023 at 02:27:32PM +0100, Christophe JAILLET wrote:
+> Use kasprintf() instead of hand writing it.
+> It is much less verbose.
 > 
-> 
-> On Wed, 18 Oct 2023, David Vernet wrote:
-> 
-> > Hello everyone,
-> >
-> > The first RFC patch set [0] for sched_ext was sent to the upstream list
-> > almost one year ago, with three more revisions of the series having been
-> > sent upstream since. In that time, a number of individuals, companies,
-> > and organizations have begun to use and experiment with sched_ext. We
-> > want to make it easier to collaborate, so we’ve decided to set up a
-> > weekly office hours call, and create a Slack channel [1] that folks can
-> > join to ask questions, discuss features, etc.
-> >
-> > [0]: https://lore.kernel.org/lkml/20221130082313.3241517-1-tj@kernel.org/
-> > [1]: https://join.slack.com/t/schedextworkspace/shared_invite/zt-24c4on3sk-sHlozdLfCZBODfwU6t6dbw
-> >
-> > The Slack channel can be joined via the link in [1]. For office hours,
-> > we’ll start with 10:00 PDT / 17:00 UTC on Mondays (likely starting the
-> > week of 10/30), but we can change the time if it’s inconvenient for too
-> > many folks. The calls will likely take place through Slack, so you’ll
-> > have to join the Slack channel if you want to participate in the office
-> > hours calls. As a friendly reminder, you can access the sched_ext
-> > repository at [2].
-> >
-> > [2]: https://github.com/sched-ext/sched_ext
-> 
-> In Europe, we just changed to winter time.  I don't know if it is the same
-> in the US.  What time will the meeting be?
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Hello Julia,
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-The meeting will start in ~3 hours from now at UTC 17:00. This can be
-adjusted for future sessions if it turns out to be inconvenient for
-folks.
+regards,
+dan carpenter
 
-For now, we'll be conducting the meeting over Zoom. I'll post details of
-the meeting into Slack. Anyone who would like to join the meeting but is
-not on Slack may ping me privately, and I'll send them the Zoom meeting
-information.
-
-Thanks,
-David
