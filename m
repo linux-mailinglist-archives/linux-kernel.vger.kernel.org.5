@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD347DC0A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79327DC0A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjJ3ThG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S231194AbjJ3ThD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjJ3Tg6 (ORCPT
+        with ESMTP id S230468AbjJ3Tg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:36:58 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D442E8;
-        Mon, 30 Oct 2023 12:36:55 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a3b8b113so7050734e87.0;
-        Mon, 30 Oct 2023 12:36:55 -0700 (PDT)
+        Mon, 30 Oct 2023 15:36:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A86EA;
+        Mon, 30 Oct 2023 12:36:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-508126afb9bso6792745e87.0;
+        Mon, 30 Oct 2023 12:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694614; x=1699299414; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698694615; x=1699299415; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rsTszCSXFvrVoDKYOUlX0fXU0RZFKqac+kUpQnY46h0=;
-        b=W4YQ9fCaKV9tDJKF4uQu/OSDPGxuvJSHdSLodpK9YQ5sChfsfd2lrUAmrlDN6WMTNd
-         p/QZ1gwdBS93OwHOsU4dNCPymbtpvHXi4nuS1aWGh3fYAeah8FkJr8jBmAYYq4pVJ3VV
-         Ovwgz4f+YfxD4A3YbtoymGdvs8DhIMW9Ngcw8BtKr9xucacBVj9UfeHZIxcUTX8iBArE
-         f1Yj1vLGX2XrsJmfyFM/Jv3mCDl5VwR78ILQzf3Tu86Gyl2HviEWlWHoQlLEPFHOIpjF
-         LRzPE7QP1UR2ge8dicc6WC1xxZux/AexApqXFYjLmox7sN7PtjhggVyU5L3yNF5nyOWX
-         cueg==
+        bh=3545GZ4rTilRPlMK6OENQjdsYfS2hQ9SURsOYUBvQmk=;
+        b=A+e3+i6htx2s2elGh3IHaPlPGRUyh6++kHhK3TxVzr0WPNjzFAeopth8zFAjfwn2MN
+         Ug2Ai8JtxKE76gPP1pUJNMCthVGeRzNA+SaaX5n+8EKDppgQwjvNz7G3VVdeGzfJlmQ4
+         z9io28Coag9k1ziFIzMQYR8znBLE5ka7ybhZDc7hy8lktQgKdDRs8ShT0x46/Oqmll5f
+         iAtcZ16c9wKWJfNWq4+d1CCxa1g58GchplG/iu93u92wsYi+lQd/9c/P/H74oG6aqhWs
+         O8nfnVC+FhDdFfkeWPt0Cv7RGvYXvo+maJDQHD1p923zmhSX1MuTSIQpaLdrTdeRWD4z
+         Qkbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694614; x=1699299414;
+        d=1e100.net; s=20230601; t=1698694615; x=1699299415;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rsTszCSXFvrVoDKYOUlX0fXU0RZFKqac+kUpQnY46h0=;
-        b=FS22tgsaaTIgUKNFDYGnGGb8V87Hxo9POyIYMrmzt848sOHYPhwdNpqvb/KS47vTaL
-         6qBSmXsDTRMsqP3Osn/fZsLpVks5zoNQOW2JB9x58KFWIovEJfNV5FmrTaWXXZu7lQoh
-         4DTlKc4vg1HABWxDN7xOjrAAvkFF4OhuYR4r1YA4JtOcycKenA6CeNrYYpbxeoMxs66T
-         AvNusE/t0VABuuwuF3vVWNbllY7AfjLjHNHYIie9pwqNCUuRdLCh565x1pzYivDHXxz2
-         ZGPMiSHufBXyVFwVLlIgCJjOwE+t+LhdPkJLG/WLBf7VOx7Xv8AEkllty7BGD/qG5EVR
-         0mHQ==
-X-Gm-Message-State: AOJu0YxsDpTB+0zBcXfz+4UbAZdYKmDTfWTVCPRskPxkv/pKOc17FJlf
-        b/kKXN/UGrdYfvah2R3Yr7Y=
-X-Google-Smtp-Source: AGHT+IFB+RKv2I5H6bnmHVz+Aw2ioB6q7i0G0n1NYuRW/nXkfYXYrsukRucFQUg8sOwllWzNENVKKA==
-X-Received: by 2002:a05:6512:1107:b0:508:1178:efa4 with SMTP id l7-20020a056512110700b005081178efa4mr9370551lfg.55.1698694613737;
-        Mon, 30 Oct 2023 12:36:53 -0700 (PDT)
+        bh=3545GZ4rTilRPlMK6OENQjdsYfS2hQ9SURsOYUBvQmk=;
+        b=pwU6RiAvDFG2uoOgFK/bdi+Wlzg/A3sTOv9Oue4/WySqS5Kni4gONq7ei3AsAEavYn
+         7MFKcZr4euIf2MLGZkYsuBWpkQ/os/A4BmPhdlZo8sxbdRYm53ozTZBhBcS2uZoYAlLw
+         ykk8RXR/+Fb5cCTHELswk3/7rki3Mc23udbxl5Mdnp88w2MIu7Eurhq1N7m8SQ38Fv3g
+         1aa6DuZIhzjqby7iL1SUdPdbbIuRbPiWcBE+GGracR1vM2KMxpwj/QVg+ufYOt/wQOTp
+         buiyh6j6X34J0qvEEAFBzLxv+KrfKShGW82PypUTcC4pPfCFd8QdL5lauJ8PtarsTMqy
+         xpOA==
+X-Gm-Message-State: AOJu0YwqmHmUm+KNM5VUoQ3WCqiiKNw+aMEV0Tvs7GhewEV1s4y2RECX
+        zR9naQqr0bNmrwNlx8Ya56w=
+X-Google-Smtp-Source: AGHT+IH4tyRtZxoFgaCdcYiyDVNGjcMgbv6ArWgd/XQf8AUJ2MXWhaZebmU+QV/0TBLyx0L18j6UVw==
+X-Received: by 2002:a05:6512:3e09:b0:503:19d8:8dc3 with SMTP id i9-20020a0565123e0900b0050319d88dc3mr9284816lfv.31.1698694615292;
+        Mon, 30 Oct 2023 12:36:55 -0700 (PDT)
 Received: from hex.my.domain (83.11.208.51.ipv4.supernova.orange.pl. [83.11.208.51])
-        by smtp.gmail.com with ESMTPSA id a27-20020ac2521b000000b0050482b29ac8sm1510781lfl.31.2023.10.30.12.36.52
+        by smtp.gmail.com with ESMTPSA id a27-20020ac2521b000000b0050482b29ac8sm1510781lfl.31.2023.10.30.12.36.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 12:36:53 -0700 (PDT)
+        Mon, 30 Oct 2023 12:36:54 -0700 (PDT)
 From:   Artur Weber <aweber.kernel@gmail.com>
-Date:   Mon, 30 Oct 2023 20:36:39 +0100
-Subject: [PATCH 2/6] dt-bindings: mfd: brcm,bcm59056: Add compatible for
- BCM59054
+Date:   Mon, 30 Oct 2023 20:36:40 +0100
+Subject: [PATCH 3/6] ARM: dts: Drop DTS for BCM59056 PMIC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-bcm59054-v1-2-3517f980c1e3@gmail.com>
+Message-Id: <20231030-bcm59054-v1-3-3517f980c1e3@gmail.com>
 References: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
 In-Reply-To: <20231030-bcm59054-v1-0-3517f980c1e3@gmail.com>
 To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
@@ -76,16 +75,16 @@ Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         Artur Weber <aweber.kernel@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694608; l=4952;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694608; l=3995;
  i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=J5qoqMtHdHEbtDpozL70617xHH15jYDWQN+WwVZOQIk=;
- b=CpQns/5NHRryN35mhzpRZ+QiuHTlaUGPSZFCWeE6W3Z8X9lMl5FOSeWs+7HRasA6qKs7eWOcJ
- 8oyHAAdrH3xCipZMdjS0mBZ0GxHEdOmrenJwRdWMVZdvFBP8uxydgTm
+ bh=DBtpuYO/zr95rgnLU/rQbbV2xjIrUTq43L7BHBrPA9U=;
+ b=hZdG9wUjwVxv+mKU8AxupCxa7wqP/eesbom+u4x00YcCHX2XrH7KzI07mJSBw3r5HgIZBwjah
+ DN7mNasV6LeCrxA/gv2MoC855gyUl/PFMS7JhkQ8aXq3b+MPu7jsmk3
 X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
  pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,158 +92,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM59054 MFD is fairly similar to the BCM59056, and will use
-the same driver. Add compatible and specify the allowed regulator
-nodes.
+The BCM59056 PMIC has its own separate DTSI, meant to be included
+in a DTS file after defining the pmu node on some I2C bus.
+
+I'm not aware of many other devices that do this, and it seems very
+unintuitive. Drop the DTS in favor of adding the BCM59056 PMIC node
+directly into the device DTS files.
 
 Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 ---
- .../devicetree/bindings/mfd/brcm,bcm59056.yaml     | 125 +++++++++++++++------
- 1 file changed, 88 insertions(+), 37 deletions(-)
+ arch/arm/boot/dts/broadcom/bcm28155-ap.dts | 68 +++++++++++-----------
+ arch/arm/boot/dts/broadcom/bcm59056.dtsi   | 91 ------------------------------
+ 2 files changed, 32 insertions(+), 127 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
-index 6d6acc9fd312..5b5044867eca 100644
---- a/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
-+++ b/Documentation/devicetree/bindings/mfd/brcm,bcm59056.yaml
-@@ -12,6 +12,7 @@ maintainers:
- properties:
-   compatible:
-     enum:
-+      - "brcm,bcm59054"
-       - "brcm,bcm59056"
+diff --git a/arch/arm/boot/dts/broadcom/bcm28155-ap.dts b/arch/arm/boot/dts/broadcom/bcm28155-ap.dts
+index 2f3634545e64..cefaa9a3c45c 100644
+--- a/arch/arm/boot/dts/broadcom/bcm28155-ap.dts
++++ b/arch/arm/boot/dts/broadcom/bcm28155-ap.dts
+@@ -37,7 +37,39 @@ &pmu_bsc {
+ 	status = "okay";
  
-   reg:
-@@ -24,43 +25,93 @@ properties:
-     type: object
-     description: Container node for regulators.
+ 	pmu: pmu@8 {
++		compatible = "brcm,bcm59056";
++		interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+ 		reg = <0x08>;
++
++		regulators {
++			camldo1_reg: camldo1 {
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			sdldo_reg: sdldo {
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++			};
++
++			sdxldo_reg: sdxldo {
++				regulator-min-microvolt = <2700000>;
++				regulator-max-microvolt = <3300000>;
++			};
++
++			usbldo_reg: usbldo {
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++			};
++
++			iosr1_reg: iosr1 {
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++			};
++		};
+ 	};
+ };
  
--    # The valid regulator node names for BCM59056 are:
--    #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
--    #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
--    #   csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
--    #   gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
--    #   vbus
--    patternProperties:
--      "^(cam|sim|mmc)ldo[1-2]$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
+@@ -74,39 +106,3 @@ &usbotg {
+ &usbphy {
+ 	status = "okay";
+ };
 -
--      "^(rf|sd|sdx|aud|mic|usb|vib)ldo$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
+-#include "bcm59056.dtsi"
 -
--      "^(c|m|v)sr$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
+-&pmu {
+-	compatible = "brcm,bcm59056";
+-	interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
+-	regulators {
+-		camldo1_reg: camldo1 {
+-			regulator-min-microvolt = <3300000>;
+-			regulator-max-microvolt = <3300000>;
+-			regulator-always-on;
+-		};
 -
--      "^(io|sd)sr[1-2]$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
+-		sdldo_reg: sdldo {
+-			regulator-min-microvolt = <3000000>;
+-			regulator-max-microvolt = <3000000>;
+-		};
 -
--      "^gpldo[1-6]$":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
+-		sdxldo_reg: sdxldo {
+-			regulator-min-microvolt = <2700000>;
+-			regulator-max-microvolt = <3300000>;
+-		};
 -
--    properties:
--      "vbus":
--        type: object
--        $ref: /schemas/regulator/regulator.yaml#
--        unevaluatedProperties: false
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: "brcm,bcm59056"
-+    then:
-+      properties:
-+        regulators:
-+          # The valid regulator node names for BCM59056 are:
-+          #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
-+          #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
-+          #   csr, iosr1, iosr2, msr, sdsr1, sdsr2, vsr,
-+          #   gpldo1, gpldo2, gpldo3, gpldo4, gpldo5, gpldo6,
-+          #   vbus
-+          patternProperties:
-+            "^(cam|sim|mmc)ldo[1-2]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(rf|sd|sdx|aud|mic|usb|vib)ldo$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(c|m|v)sr$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(io|sd)sr[1-2]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^gpldo[1-6]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+          properties:
-+            "vbus":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+          additionalProperties: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: "brcm,bcm59054"
-+    then:
-+      properties:
-+        regulators:
-+          # The valid regulator node names for BCM59054 are:
-+          #   rfldo, camldo1, camldo2, simldo1, simldo2, sdldo, sdxldo,
-+          #   mmcldo1, mmcldo2, audldo, micldo, usbldo, vibldo,
-+          #   csr, iosr1, iosr2, mmsr, sdsr1, sdsr2, vsr,
-+          #   gpldo1, gpldo2, gpldo3, tcxldo, lvldo1, lvldo2
-+          patternProperties:
-+            "^(cam|sim|mmc)ldo[1-2]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(rf|sd|sdx|aud|mic|usb|vib|tcx)ldo$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(c|mm|v)sr$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^(io|sd)sr[1-2]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^gpldo[1-3]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+            "^lvldo[1-2]$":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+          properties:
-+            "vbus":
-+              type: object
-+              $ref: /schemas/regulator/regulator.yaml#
-+
-+          additionalProperties: false
- 
- required:
-   - compatible
+-		usbldo_reg: usbldo {
+-			regulator-min-microvolt = <3300000>;
+-			regulator-max-microvolt = <3300000>;
+-			regulator-always-on;
+-		};
+-
+-		iosr1_reg: iosr1 {
+-			regulator-min-microvolt = <1800000>;
+-			regulator-max-microvolt = <1800000>;
+-			regulator-always-on;
+-		};
+-	};
+-};
+diff --git a/arch/arm/boot/dts/broadcom/bcm59056.dtsi b/arch/arm/boot/dts/broadcom/bcm59056.dtsi
+deleted file mode 100644
+index a9bb7ad81378..000000000000
+--- a/arch/arm/boot/dts/broadcom/bcm59056.dtsi
++++ /dev/null
+@@ -1,91 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+-* Copyright 2014 Linaro Limited
+-* Author: Matt Porter <mporter@linaro.org>
+-*/
+-
+-&pmu {
+-	compatible = "brcm,bcm59056";
+-	regulators {
+-		rfldo_reg: rfldo {
+-		};
+-
+-		camldo1_reg: camldo1 {
+-		};
+-
+-		camldo2_reg: camldo2 {
+-		};
+-
+-		simldo1_reg: simldo1 {
+-		};
+-
+-		simldo2_reg: simldo2 {
+-		};
+-
+-		sdldo_reg: sdldo {
+-		};
+-
+-		sdxldo_reg: sdxldo {
+-		};
+-
+-		mmcldo1_reg: mmcldo1 {
+-		};
+-
+-		mmcldo2_reg: mmcldo2 {
+-		};
+-
+-		audldo_reg: audldo {
+-		};
+-
+-		micldo_reg: micldo {
+-		};
+-
+-		usbldo_reg: usbldo {
+-		};
+-
+-		vibldo_reg: vibldo {
+-		};
+-
+-		csr_reg: csr {
+-		};
+-
+-		iosr1_reg: iosr1 {
+-		};
+-
+-		iosr2_reg: iosr2 {
+-		};
+-
+-		msr_reg: msr {
+-		};
+-
+-		sdsr1_reg: sdsr1 {
+-		};
+-
+-		sdsr2_reg: sdsr2 {
+-		};
+-
+-		vsr_reg: vsr {
+-		};
+-
+-		gpldo1_reg: gpldo1 {
+-		};
+-
+-		gpldo2_reg: gpldo2 {
+-		};
+-
+-		gpldo3_reg: gpldo3 {
+-		};
+-
+-		gpldo4_reg: gpldo4 {
+-		};
+-
+-		gpldo5_reg: gpldo5 {
+-		};
+-
+-		gpldo6_reg: gpldo6 {
+-		};
+-
+-		vbus_reg: vbus {
+-		};
+-	};
+-};
 
 -- 
 2.42.0
