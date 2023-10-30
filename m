@@ -2,166 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D867DBCE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC197DBCE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbjJ3PtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        id S233558AbjJ3PuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjJ3PtM (ORCPT
+        with ESMTP id S232654AbjJ3PuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:49:12 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DC3C5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:49:09 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qxUVm-0001ed-Q8; Mon, 30 Oct 2023 16:49:06 +0100
-Message-ID: <6e9968a0-c511-4a29-aec5-42892b8254d2@leemhuis.info>
-Date:   Mon, 30 Oct 2023 16:49:06 +0100
+        Mon, 30 Oct 2023 11:50:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7D2C5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:50:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31635C433C8;
+        Mon, 30 Oct 2023 15:50:20 +0000 (UTC)
+Date:   Mon, 30 Oct 2023 11:50:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, <arnd@arndb.de>,
+        naresh.kamboju@linaro.org,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] eventfs: Hold eventfs_mutex when calling callback
+ functions
+Message-ID: <20231030115018.25399dbd@gandalf.local.home>
+In-Reply-To: <20231030114047.759c7bdf@gandalf.local.home>
+References: <20231030114047.759c7bdf@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: Linux regressions report for mainline [2023-10-29]
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-References: <169858752781.1095326.10615907253726224231@leemhuis.info>
- <CAHk-=wgEHNFHpcvnp2X6-fjBngrhPYO=oHAR905Q_qk-njV31A@mail.gmail.com>
-Content-Language: en-US, de-DE
-In-Reply-To: <CAHk-=wgEHNFHpcvnp2X6-fjBngrhPYO=oHAR905Q_qk-njV31A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698680949;746d030f;
-X-HE-SMSGID: 1qxUVm-0001ed-Q8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.10.23 18:19, Linus Torvalds wrote:
-> On Sun, 29 Oct 2023 at 03:52, Regzbot (on behalf of Thorsten Leemhuis)
-> <regressions@leemhuis.info> wrote:
+
+I think I figured out why claws-mail adds a backslash to quotes when
+sending. It allows you to add more than one Cc on a line, and I think (I
+haven't tested it yet) if you add multiple names with quotes on the
+same line, it thinks that it's a single name and will backslash internal
+quotes. Hmm.
+
+Anyway, I had to remove all quoted names to reply to this email. Hopefully
+claws-mail doesn't screw it up again :-p
+
+I may also need to upgrade claws-mail, as I build my own because I have
+some things enabled that the distro version does not include.
+
+-- Steve
+
+
+On Mon, 30 Oct 2023 11:40:47 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
->> * There was another report about a blank screen during boot on a Lenovo
->> laptop because simpledrm (that users apparently had enabled without
->> problems beforehand) started to support those machines due to
->> 60aebc9559492c ("drivers/firmware: Move sysfb_init() from
->> device_initcall to subsys_initcall_sync"). I suggested a revert, but the
->> developers disagree (to quote: "From my point of view, this is not a
->> regression, 60aebc9559492c doesn't cause a problem, but exposes a
->> problem.")
+> The callback function that is used to create inodes and dentries is not
+> protected by anything and the data that is passed to it could become
+> stale. After eventfs_remove_dir() is called by the tracing system, it is
+> free to remove the events that are associated to that directory.
+> Unfortunately, that means the callbacks must not be called after that.
 > 
-> Honestly, "exposes a problem" is pretty much the *definition* of a
-> regression. So that excuse is particularly bad.
+>      CPU0				CPU1
+>      ----				----
+>  eventfs_root_lookup() {
+> 				 eventfs_remove_dir() {
+> 				      mutex_lock(&event_mutex);
+> 				      ei->is_freed = set;
+> 				      mutex_unlock(&event_mutex);
+> 				 }
+> 				 kfree(event_call);
 > 
-> The whole point of "regression" is "things that used to work no longer work".
+>     for (...) {
+>       entry = &ei->entries[i];
+>       r = entry->callback() {
+>           call = data;		// call == event_call above
+>           if (call->flags ...)
 > 
-> And no, "there's another bug that needs to be fixed" is _not_ the
-> answer - not unless you have that fix in hand.
+>  [ USE AFTER FREE BUG ]
+> 
+> The safest way to protect this is to wrap the callback with:
+> 
+>  mutex_lock(&eventfs_mutex);
+>  if (!ei->is_freed)
+>      r = entry->callback();
+>  else
+>      r = -1;
+>  mutex_unlock(&eventfs_mutex);
+> 
+> This will make sure that the callback will not be called after it is
+> freed. But now it needs to be known that the callback is called while
+> holding internal eventfs locks, and that it must not call back into the
+> eventfs / tracefs system. There's no reason it should anyway, but document
+> that as well.
+> 
+> Link: https://lore.kernel.org/all/CA+G9fYu9GOEbD=rR5eMR-=HJ8H6rMsbzDC2ZY5=Y50WpWAE7_Q@mail.gmail.com/
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  fs/tracefs/event_inode.c | 22 ++++++++++++++++++--
+>  include/linux/tracefs.h  | 43 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 63 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index 7ad7496bd597..5a3cc5394294 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -609,7 +609,13 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+>  		entry = &ei->entries[i];
+>  		if (strcmp(name, entry->name) == 0) {
+>  			void *cdata = data;
+> -			r = entry->callback(name, &mode, &cdata, &fops);
+> +			mutex_lock(&eventfs_mutex);
+> +			/* If ei->is_freed, then the event itself may be too */
+> +			if (!ei->is_freed)
+> +				r = entry->callback(name, &mode, &cdata, &fops);
+> +			else
+> +				r = -1;
+> +			mutex_unlock(&eventfs_mutex);
+>  			if (r <= 0)
+>  				continue;
+>  			ret = simple_lookup(dir, dentry, flags);
+> @@ -743,7 +749,13 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+>  		void *cdata = data;
+>  		entry = &ei->entries[i];
+>  		name = entry->name;
+> -		r = entry->callback(name, &mode, &cdata, &fops);
+> +		mutex_lock(&eventfs_mutex);
+> +		/* If ei->is_freed, then the event itself may be too */
+> +		if (!ei->is_freed)
+> +			r = entry->callback(name, &mode, &cdata, &fops);
+> +		else
+> +			r = -1;
+> +		mutex_unlock(&eventfs_mutex);
+>  		if (r <= 0)
+>  			continue;
+>  		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
+> @@ -821,6 +833,10 @@ static void free_ei(struct eventfs_inode *ei)
+>   *   data = A pointer to @data, and the callback may replace it, which will
+>   *         cause the file created to pass the new data to the open() call.
+>   *   fops = the fops to use for the created file.
+> + *
+> + * NB. @callback is called while holding internal locks of the eventfs
+> + *     system. The callback must not call any code that might also call into
+> + *     the tracefs or eventfs system or it will risk creating a deadlock.
+>   */
+>  struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode *parent,
+>  					 const struct eventfs_entry *entries,
+> @@ -880,6 +896,8 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
+>   * @data: The default data to pass to the files (an entry may override it).
+>   *
+>   * This function creates the top of the trace event directory.
+> + *
+> + * See eventfs_create_dir() for use of @entries.
+>   */
+>  struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry *parent,
+>  						const struct eventfs_entry *entries,
+> diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
+> index 13359b1a35d1..7a5fe17b6bf9 100644
+> --- a/include/linux/tracefs.h
+> +++ b/include/linux/tracefs.h
+> @@ -23,9 +23,52 @@ struct file_operations;
+>  
+>  struct eventfs_file;
+>  
+> +/**
+> + * eventfs_callback - A callback function to create dynamic files in eventfs
+> + * @name: The name of the file that is to be created
+> + * @mode: return the file mode for the file (RW access, etc)
+> + * @data: data to pass to the created file ops
+> + * @fops: the file operations of the created file
+> + *
+> + * The evetnfs files are dynamically created. The struct eventfs_entry array
+> + * is passed to eventfs_create_dir() or eventfs_create_events_dir() that will
+> + * be used to create the files within those directories. When a lookup
+> + * or access to a file within the directory is made, the struct eventfs_entry
+> + * array is used to find a callback() with the matching name that is being
+> + * referenced (for lookups, the entire array is iterated and each callback
+> + * will be called).
+> + *
+> + * The callback will be called with @name for the name of the file to create.
+> + * The callback can return less than 1 to indicate  that no file should be
+> + * created.
+> + *
+> + * If a file is to be created, then @mode should be populated with the file
+> + * mode (permissions) for which the file is created for. This would be
+> + * used to set the created inode i_mode field.
+> + *
+> + * The @data should be set to the data passed to the other file operations
+> + * (read, write, etc). Note, @data will also point to the data passed in
+> + * to eventfs_create_dir() or eventfs_create_events_dir(), but the callback
+> + * can replace the data if it chooses to. Otherwise, the original data
+> + * will be used for the file operation functions.
+> + *
+> + * The @fops should be set to the file operations that will be used to create
+> + * the inode.
+> + *
+> + * NB. This callback is called while holding internal locks of the eventfs
+> + *     system. The callback must not call any code that might also call into
+> + *     the tracefs or eventfs system or it will risk creating a deadlock.
+> + */
+>  typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **data,
+>  				const struct file_operations **fops);
+>  
+> +/**
+> + * struct eventfs_entry - dynamically created eventfs file call back handler
+> + * @name:	Then name of the dynamic file in an eventfs directory
+> + * @callback:	The callback to get the fops of the file when it is created
+> + *
+> + * See evenfs_callback() typedef for how to set up @callback.
+> + */
+>  struct eventfs_entry {
+>  	const char			*name;
+>  	eventfs_callback		callback;
 
-Thx for stating it so clearly. I had tried to get that point across, but
-failed despite some links to LKML messages from you that covered similar
-situations.
-
-This happens frequently, which is tiresome and draining for me. I wish
-we had *your* overall view on what regressions and how they are meant to
-be handled written up in one short text you explicitly vetted. That
-might give me a better lever and makes things easier for maintainers as
-well, especially new ones.
-
-See the text below[1] to give you a rough idea what kind of text I'm
-thinking of.
-
-The beginning of the merge window is a bad time to bring this up for
-discussion, especially when your also traveling. So I will let this rest
-for now and get back to you. Unless you say "that's a bad idea, don't
-waste your time on it".
-
-> That said, this already went into 6.5, so I'm not going to revert it
-> now just before the 6.6 release. That would be more dangerous than
-> just letting things be.
-
-Yup, fully agreed. Thx again for looking into this.
-
-Ciao, Thorsten
-
-
-[1] here is something I quickly complied
-
-"""
-Linus "no regressions rule"
----------------------------
-
-The goal
-~~~~~~~~
-
-People should always feel like they can update to a new kernel version
-without worrying anything might break.
-
-
-What qualifies as regression
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It's a regression if some practical use case running fine with one Linux
-version works worse or not at all with a newer version compiled using a
-similar configuration.
-
-To elaborate:
-
-* The aspect "works worse" includes higher power consumption or lower
-performance, unless the difference is minor.
-
-* Among the things that do not qualify as "practical use case" are
-legacy museum style equipment, ABI/API test scripts, and microbenchmarks.
-
-* It's irrelevant if the change causing the regression only does so by
-exposing a problem that beforehand was silently lurking somewhere else
-(hardware, firmware, userland, or some other part of the kernel).
-
-* It's irrelevant if a change is fixing some undefined behavior or a bug.
-
-* It's irrelevant if users could easily avoid the problem somehow, e.g.
-by changing the configuration or updating some other software (this
-includes firmware stored in the device or shipped in the linux-firmware
-package).
-
-* A "similar configuration" usually means that the .config of the old
-kernel was taken as base for the newer one and processed with
-"olddefconfig".
-
-* Old and new kernel versions obviously must both be untainted vanilla
-kernels.
-
-
-How to handle regression report
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-[FIXME: this section is missing for now this requires some more thought;
-I guess what's needed here is basically the very essence of what
-Documentation/process/handling-regressions.rst outlines in "Expectations
-and best practices for fixing regressions"]
-
-
-Closing words
-~~~~~~~~~~~~~
-
-Reality is never entirely black-and-white, therefore in rare cases
-exceptions will not be fixed.
-
-For example, sometimes it is impossible to resolve a security
-vulnerability without causing a regression. That being said, developers
-should try hard to avoid such an outcome and when unable to do so
-minimize the impact as much as possible.
-
-Another example: regressions only found years after the culprit was
-merged might be handled like regular bugs or not addressed at all, as
-the developers which introduced it might have moved on to other endeavors.
-"""
