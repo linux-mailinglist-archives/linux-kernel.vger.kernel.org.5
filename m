@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF0E7DB8BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAA47DB8C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjJ3LIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        id S232849AbjJ3LI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbjJ3LIP (ORCPT
+        with ESMTP id S232783AbjJ3LIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:08:15 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C81DE
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:08:12 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-408382da7f0so31766095e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:08:12 -0700 (PDT)
+        Mon, 30 Oct 2023 07:08:54 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CAAB4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:08:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c509f2c46cso59891041fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:08:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698664091; x=1699268891; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698664129; x=1699268929; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=c8YUMXVjGsp7QycWhLIdbuMi1zziTusz002mRumFttA=;
-        b=drETaWl147bRlPutpw0BC+6G4dtjBQRoLn8lBvQw6uPytz9lPr4zQ4pyaBcuIyB203
-         53cU8HmVwR6k9rrxxPwlvf4uo4rt94IZ2FDoOsQ96PixodN6Kcu3bjISnUDq3nUIKMd6
-         v6yM/L2CoU5N9dthwdDeDBZbqTaFcFPTpNgpTezeLOeLpzh9SbphwBTd1/bbANLu6iVa
-         DQy5nZ9QL3cjdGvZqE3xtkLN1jAWjlcKDdLrbTmwKhZsmK2Qhgdbp0be7HQf83XNSAMP
-         4RB5stsDgv1FPyQyn7zSlHvSH0fOckhRy+HzMrGPqLykLepLD59nbZ/luXk4+KqUOnwo
-         JX3A==
+        bh=atBJUT0WBGYVt6zhYd3mjzV/V17w9px/MQvdW4tfAT4=;
+        b=K1JViR9LJ+/3dfB0JJuFODFiEVBFFfQgRV4v3SrLN5BVDgrVvjQr8PUCkIfdX0ZbYl
+         3Qt/uR7HXP6Mxn6GOyAsdLehlz27lpBHAWeTdMPCoIP/HMHspTiisG6qnJtIQ11Gxjh7
+         HR/+BOTnLcmOWhIGMfMmryW6wVm1qSLY7I3yIT9ChEoMuiEHgSpQJbxRot7+isow/wUT
+         vGoj+mkBSntP9MfESroK/rmnE9Q5MQdoDYvvo3ej6a+ThVitF2fxUBWC6aClDIugg+AD
+         UR5gTFkqJDTd2DF/uwTD9tBj9Pm6/TjZ4kBKlfOqA4SUZnv8v7iEIoqxZW0p7DyyWeqq
+         tuzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698664091; x=1699268891;
+        d=1e100.net; s=20230601; t=1698664129; x=1699268929;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8YUMXVjGsp7QycWhLIdbuMi1zziTusz002mRumFttA=;
-        b=qCxj1zWUvwcpMQpXvgmYfCG4WGL15f8kNdoyEGiFyOspjZXV5A4lWHGKdlJYHwKvhb
-         LKLswgR4ae55e/y9TvnvbLtgSrmDdGWZgFhD5hC4GJV0KgS1GDVIpC8/7LIMEZY+d8hj
-         zj2IoAjN7bsQEKOmBvGF076rDDexBzhVaqJifSVTa56l5OJH1RAZI6Qhm6MWVJffXelo
-         LyQs3YBvSg+n31JCrfvxkJHxw/2bxG1t6Uhb+C73svgDIjPgozRwPUye4B8cnMAB0OWO
-         mIqGvJqaexws7MLNcgaXmY/hu3FbHti8VXxkT6bnZGPRJwZdwR7/AdrnG44sHOyfU925
-         Pj9w==
-X-Gm-Message-State: AOJu0Ywk6sINHJm4mvJnPbEqyyahWhnkIcbYpzF25zSWdJxotivz/eJx
-        PAIDY4z1qHmEoQpHuM0x2N18HA==
-X-Google-Smtp-Source: AGHT+IFPATwT+gA7n2SMo0pqpfBec+Mba3Z9T78KW9wESAYjKLzpG0Cq0nCcH6c64eFwLGDIX/r5DQ==
-X-Received: by 2002:a05:600c:444f:b0:406:535a:cfb4 with SMTP id v15-20020a05600c444f00b00406535acfb4mr8468038wmn.1.1698664090891;
-        Mon, 30 Oct 2023 04:08:10 -0700 (PDT)
+        bh=atBJUT0WBGYVt6zhYd3mjzV/V17w9px/MQvdW4tfAT4=;
+        b=sYWoxIvM6jaelL9v6fMkS4CuhCLT4Ye1HlPgDgKgVOn9x2kYQMtJMNeUrLZuM923Y9
+         yDD1HXSImiO8dCRah1q6hmJGKsITRA4lfxvgRcXcWF9QLhw82Y1CXiE/1KbL48Ir2RDQ
+         SR0wS6h/E24r6TgsCgLSEWqf6gDZ8yNVkPcjVpIAPKJBmC3fe105G/D/+ETblywUrR6o
+         3VDUr18GtQZA6/roV7ANh+Q3+OdUXfUB596lxGtmaLM9JQg9/yi/dojZlnNMJrqUTHDH
+         v5r+2EgQ/Tk9/ABX4cj3jMkziipIz8L822+SAJAe+Jg5sCurEhV7Iu/vYTqENXrLjZzh
+         Z+ag==
+X-Gm-Message-State: AOJu0YzkN7jbEn4RhdBEtXo4D/zp/Y3tL3R+6lq8elyRwV2P4fv8oqe/
+        hOuVmlL1hDtCZrhHCnFJ7nVO3w==
+X-Google-Smtp-Source: AGHT+IHiGM4vS0zw1vZwRYa6lqkvncT6SbyZCf6FcQkqCx4mV9qetcpOH5LZfGDziCLj4bxathejOA==
+X-Received: by 2002:a2e:9410:0:b0:2c4:fe14:a85 with SMTP id i16-20020a2e9410000000b002c4fe140a85mr8260002ljh.18.1698664129275;
+        Mon, 30 Oct 2023 04:08:49 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id f24-20020a1c6a18000000b004063977eccesm12165035wmc.42.2023.10.30.04.08.09
+        by smtp.gmail.com with ESMTPSA id f24-20020a1c6a18000000b004063977eccesm12165035wmc.42.2023.10.30.04.08.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 04:08:10 -0700 (PDT)
-Message-ID: <8e2c7363-7544-41bc-a673-26cabdcb60c5@linaro.org>
-Date:   Mon, 30 Oct 2023 12:08:09 +0100
+        Mon, 30 Oct 2023 04:08:48 -0700 (PDT)
+Message-ID: <18ca181a-8aee-46f5-9e2d-bfba4c8bd99e@linaro.org>
+Date:   Mon, 30 Oct 2023 12:08:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] dt-bindings: clock: ipq5332: add definition for
- GPLL0_OUT_AUX clock
+Subject: Re: [PATCH 8/8] arm64: defconfig: build NSS Clock Controller driver
+ for IPQ5332
 Content-Language: en-US
 To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -73,7 +73,7 @@ Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20231030-ipq5332-nsscc-v1-0-6162a2c65f0a@quicinc.com>
- <20231030-ipq5332-nsscc-v1-3-6162a2c65f0a@quicinc.com>
+ <20231030-ipq5332-nsscc-v1-8-6162a2c65f0a@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -119,7 +119,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231030-ipq5332-nsscc-v1-3-6162a2c65f0a@quicinc.com>
+In-Reply-To: <20231030-ipq5332-nsscc-v1-8-6162a2c65f0a@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -133,15 +133,9 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/10/2023 10:47, Kathiravan Thirumoorthy wrote:
-> Add the definition for GPLL0_OUT_AUX clock.
-> 
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
->  include/dt-bindings/clock/qcom,ipq5332-gcc.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> Build Qualcomm IPQ9574 NSSCC driver as module.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Why? Commit msg should answer this.
 
 Best regards,
 Krzysztof
