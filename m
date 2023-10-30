@@ -2,130 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAADA7DB1DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DA17DB1DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 02:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjJ3BzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 21:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        id S229830AbjJ3B4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 21:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjJ3BzR (ORCPT
+        with ESMTP id S229563AbjJ3B4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 21:55:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8E0BF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 18:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698630914; x=1730166914;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=4z9cc4o/HwXQhG6Oi7EH4mIi1M0DulyFnn9b0G5P/MQ=;
-  b=RI7IjVXHe06LTxHTqOYWURzAVrM9QcQGVEYX46pzmbrWWlZdIAFY3nx2
-   R+7OGPM3GJCKJ3ZXDM2NmMdN6jB4Uvhj0JOk6YhzKSQOD7RF+iNcTwonD
-   dpBnlpai6Ya9tvEoI1CsAndClMZ/2fYWbofxUKbrykudhgVBAn0rQL+JL
-   v7ZNduMvCa23gS7FT05LrVn6yhPb4pOBwkzAdLtzycuIC5+jCuW6Fa5UP
-   evmzGdbT+Jn9Z9FKw2jAtHZ8ypxmw59dOCugHkwmO5w+hChDnMMK/IBfR
-   ip4uIxkEQdJcmbwCZUtbRpgNwGa45UBKUwu1pWlWnlilOCFA8oPQbmUZy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="390854918"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="390854918"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 18:55:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="789317352"
-X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
-   d="scan'208";a="789317352"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 18:55:12 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     <akpm@linux-foundation.org>, <shy828301@gmail.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: huge_memory: batch tlb flush when splitting a
- pte-mapped THP
-In-Reply-To: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
-        (Baolin Wang's message of "Mon, 30 Oct 2023 09:11:47 +0800")
-References: <431d9fb6823036369dcb1d3b2f63732f01df21a7.1698488264.git.baolin.wang@linux.alibaba.com>
-Date:   Mon, 30 Oct 2023 09:53:10 +0800
-Message-ID: <87bkcgev09.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Sun, 29 Oct 2023 21:56:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E523BE;
+        Sun, 29 Oct 2023 18:56:34 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2802c41b716so614023a91.1;
+        Sun, 29 Oct 2023 18:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698630994; x=1699235794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sXRLwnyvcfy6jE/MUWoW/Yby9B0gy2TfIvcPthNvb0k=;
+        b=O1e2zy9Do0fs/PL6Pmt8MBaiCHSxW/+3ckEQrUQrWdyZjDl/cgQXdt5AZpdsHfIeMv
+         +At2VCR7h/WwvcGLMiiTgw9JFk2ddoOpY3o+Xz2J1OZtqm1CXfvSL+WcovKIhCg31pUk
+         dTjEINUXVd8d6iQ5GC2tBKiFq0ldZ2qNQeqYT3vNZxUyfaOZ6RFokmkNlD8yyXcr0+4I
+         qbXG4Vu/lVaT9N2sgC0bSTzk5YZweC7FYuVQczFxdYV1Ck83lXd1hXDQAsh4vXLb0DVH
+         7U8VVZDELjhr6feY9hGi7BnHYdwWwowVDii5S0H//jdSLHFMXelGvs4AsgHIx1tEcJo9
+         9MFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698630994; x=1699235794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sXRLwnyvcfy6jE/MUWoW/Yby9B0gy2TfIvcPthNvb0k=;
+        b=se5Vno6qfa2cv1FMDRrzvoRKluOy6GXDxrA6BlN7eIoFoku0fV557md2fGP3BtSRRF
+         qbpEdI7xcdhZ9lbjEvbkpzVKHPR62ud6MSay0cqgoV1Hejp8Dm4A9RFt59dC2JAXcS5w
+         mG1Xp+SVRGLkGWQnkT/vZ8NBLjMJvOD8pePwVvM+RgEQEMpoRc7yzRCWEcQBYW1ar5Ui
+         d+EfnJolmC+Yrh8RdEIkknrezmvKJYgLXN3CAVREzsAv8948kqXAvo2SJp5jp/T2jzDV
+         Gbw4a+EKeZMpQaDgsLkNgmefzqGttB2zQ5khHXaoaGzE9iqgj9EGOZ/X8obXxpab2FpO
+         x1pA==
+X-Gm-Message-State: AOJu0Yxj8kHpimHcUjJoi5Pjnjnn1RN5A0tOwrZjKixX16twG0V78NzM
+        3NDIxnoWMLV92ltkff5g4B169KlWKOAlRwZptHI=
+X-Google-Smtp-Source: AGHT+IGAB1+4aLMMfdrAGAJeVPLx3vXyPUzK5aU43XjGbCGprf4okqXxvQKJ4QuTuO9/Vq869iPZgyjlym6LTFzzngQ=
+X-Received: by 2002:a17:90a:357:b0:27d:5964:4eec with SMTP id
+ 23-20020a17090a035700b0027d59644eecmr5885791pjf.1.1698630993867; Sun, 29 Oct
+ 2023 18:56:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com> <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl>
+In-Reply-To: <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Mon, 30 Oct 2023 09:56:22 +0800
+Message-ID: <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 00/13] Add audio support in v4l2 framework
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+On Fri, Oct 27, 2023 at 7:18=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> Hi Shengjiu,
+>
+> Is there a reason why this series is still marked RFC?
+>
+> Just wondering about that.
 
-> I can observe an obvious tlb flush hotpot when splitting a pte-mapped THP on
-> my ARM64 server, and the distribution of this hotspot is as follows:
->
->    - 16.85% split_huge_page_to_list
->       + 7.80% down_write
->       - 7.49% try_to_migrate
->          - 7.48% rmap_walk_anon
->               7.23% ptep_clear_flush
->       + 1.52% __split_huge_page
->
-> The reason is that the split_huge_page_to_list() will build migration entries
-> for each subpage of a pte-mapped Anon THP by try_to_migrate(), or unmap for
-> file THP, and it will clear and tlb flush for each subpage's pte. Moreover,
-> the split_huge_page_to_list() will set TTU_SPLIT_HUGE_PMD flag to ensure
-> the THP is already a pte-mapped THP before splitting it to some normal pages.
->
-> Actually, there is no need to flush tlb for each subpage immediately, instead
-> we can batch tlb flush for the pte-mapped THP to improve the performance.
->
-> After this patch, we can see the batch tlb flush can improve the latency
-> obviously when running thpscale.
->                              k6.5-base                   patched
-> Amean     fault-both-1      1071.17 (   0.00%)      901.83 *  15.81%*
-> Amean     fault-both-3      2386.08 (   0.00%)     1865.32 *  21.82%*
-> Amean     fault-both-5      2851.10 (   0.00%)     2273.84 *  20.25%*
-> Amean     fault-both-7      3679.91 (   0.00%)     2881.66 *  21.69%*
-> Amean     fault-both-12     5916.66 (   0.00%)     4369.55 *  26.15%*
-> Amean     fault-both-18     7981.36 (   0.00%)     6303.57 *  21.02%*
-> Amean     fault-both-24    10950.79 (   0.00%)     8752.56 *  20.07%*
-> Amean     fault-both-30    14077.35 (   0.00%)    10170.01 *  27.76%*
-> Amean     fault-both-32    13061.57 (   0.00%)    11630.08 *  10.96%*
->
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+In the very beginning I started this series with RFC, So
+I still use RFC now...
 
-LGTM, Thanks!
-
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-
-> ---
->  mm/huge_memory.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Best regards
+Wang shengjiu
 >
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index f31f02472396..0e4c14bf6872 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2379,7 +2379,7 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
->  static void unmap_folio(struct folio *folio)
->  {
->  	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
-> -		TTU_SYNC;
-> +		TTU_SYNC | TTU_BATCH_FLUSH;
->  
->  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
->  
-> @@ -2392,6 +2392,8 @@ static void unmap_folio(struct folio *folio)
->  		try_to_migrate(folio, ttu_flags);
->  	else
->  		try_to_unmap(folio, ttu_flags | TTU_IGNORE_MLOCK);
-> +
-> +	try_to_unmap_flush();
->  }
->  
->  static void remap_page(struct folio *folio, unsigned long nr)
+> Regards,
+>
+>         Hans
+>
+> On 27/10/2023 12:35, Shengjiu Wang wrote:
+> > Audio signal processing also has the requirement for memory to
+> > memory similar as Video.
+> >
+> > This asrc memory to memory (memory ->asrc->memory) case is a non
+> > real time use case.
+> >
+> > User fills the input buffer to the asrc module, after conversion, then =
+asrc
+> > sends back the output buffer to user. So it is not a traditional ALSA p=
+layback
+> > and capture case.
+> >
+> > It is a specific use case,  there is no reference in current kernel.
+> > v4l2 memory to memory is the closed implementation,  v4l2 current
+> > support video, image, radio, tuner, touch devices, so it is not
+> > complicated to add support for this specific audio case.
+> >
+> > Because we had implemented the "memory -> asrc ->i2s device-> codec"
+> > use case in ALSA.  Now the "memory->asrc->memory" needs
+> > to reuse the code in asrc driver, so the first 3 patches is for refinin=
+g
+> > the code to make it can be shared by the "memory->asrc->memory"
+> > driver.
+> >
+> > The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+> > user applications only use the ioctl of v4l2 framework.
+> >
+> > Other change is to add memory to memory support for two kinds of i.MX A=
+SRC
+> > module.
+> >
+> > changes in v8:
+> > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+> > - update doc for FIXED_POINT
+> > - address comments for imx-asrc
+> >
+> > changes in v7:
+> > - add acked-by from Mark
+> > - separate commit for fixed point, m2m audio class, audio rate controls
+> > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+> > - remove used fmts
+> > - address other comments for Hans
+> >
+> > changes in v6:
+> > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+> >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_par=
+t_two.
+> > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+> > - fix warning by kernel test rebot
+> > - remove some unused format V4L2_AUDIO_FMT_XX
+> > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+> > - rename audm2m to viaudm2m.
+> >
+> > changes in v5:
+> > - remove V4L2_AUDIO_FMT_LPCM
+> > - define audio pixel format like V4L2_AUDIO_FMT_S8...
+> > - remove rate and format in struct v4l2_audio_format.
+> > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+> > - updata document accordingly.
+> >
+> > changes in v4:
+> > - update document style
+> > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commi=
+t
+> >
+> > changes in v3:
+> > - Modify documents for adding audio m2m support
+> > - Add audio virtual m2m driver
+> > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+> > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+> > - with modification in v4l-utils, pass v4l2-compliance test.
+> >
+> > changes in v2:
+> > - decouple the implementation in v4l2 and ALSA
+> > - implement the memory to memory driver as a platfrom driver
+> >   and move it to driver/media
+> > - move fsl_asrc_common.h to include/sound folder
+> >
+> > Shengjiu Wang (13):
+> >   ASoC: fsl_asrc: define functions for memory to memory usage
+> >   ASoC: fsl_easrc: define functions for memory to memory usage
+> >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+> >   ASoC: fsl_asrc: register m2m platform device
+> >   ASoC: fsl_easrc: register m2m platform device
+> >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+> >   media: v4l2: Add audio capture and output support
+> >   media: uapi: Define audio sample format fourcc type
+> >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+> >   media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+> >   media: uapi: Add audio rate controls support
+> >   media: imx-asrc: Add memory to memory driver
+> >   media: vim2m_audio: add virtual driver for audio memory to memory
+> >
+> >  .../userspace-api/media/v4l/buffer.rst        |    6 +
+> >  .../userspace-api/media/v4l/common.rst        |    1 +
+> >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+> >  .../userspace-api/media/v4l/devices.rst       |    1 +
+> >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
+> >  .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
+> >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+> >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+> >  .../media/v4l/vidioc-g-ext-ctrls.rst          |   17 +-
+> >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+> >  .../media/v4l/vidioc-querycap.rst             |    3 +
+> >  .../media/v4l/vidioc-queryctrl.rst            |    9 +-
+> >  .../media/videodev2.h.rst.exceptions          |    4 +
+> >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+> >  drivers/media/platform/nxp/Kconfig            |   12 +
+> >  drivers/media/platform/nxp/Makefile           |    1 +
+> >  drivers/media/platform/nxp/imx-asrc.c         | 1186 +++++++++++++++++
+> >  drivers/media/test-drivers/Kconfig            |    9 +
+> >  drivers/media/test-drivers/Makefile           |    1 +
+> >  drivers/media/test-drivers/vim2m_audio.c      |  680 ++++++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-api.c      |    5 +-
+> >  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    2 +
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   16 +
+> >  drivers/media/v4l2-core/v4l2-dev.c            |   17 +
+> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+> >  include/media/v4l2-dev.h                      |    2 +
+> >  include/media/v4l2-ioctl.h                    |   34 +
+> >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
+> >  include/uapi/linux/v4l2-controls.h            |    9 +
+> >  include/uapi/linux/videodev2.h                |   42 +
+> >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
+> >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
+> >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+> >  sound/soc/fsl/fsl_easrc.c                     |  233 ++++
+> >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
+> >  35 files changed, 2771 insertions(+), 11 deletions(-)
+> >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem=
+2mem.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-aud=
+io-m2m.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.=
+rst
+> >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+> >  create mode 100644 drivers/media/test-drivers/vim2m_audio.c
+> >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
+> >
+>
