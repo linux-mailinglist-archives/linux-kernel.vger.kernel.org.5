@@ -2,54 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01327DC0FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C281B7DC0FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 21:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbjJ3UGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 16:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S231705AbjJ3UIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 16:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjJ3UFp (ORCPT
+        with ESMTP id S231207AbjJ3UIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 16:05:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72550FD
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:05:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DF7ABC433D9;
-        Mon, 30 Oct 2023 20:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698696340;
-        bh=1P62kfcP7S7n9/IVYnvnbjaTSf1XpA8/x0aok6sFJ3k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rxAOYzIkTvOwd3gnbMIjOHq3z9ARi6FMfsSvtBVyMUSPb69Dc8qtEMLPjQlMGm1Qt
-         QMJvQLie+gguigLteehBhIs+QD5XWaIX6zOX8rRX+pUa4oAY+rkjCX7Y7DRxU6uG2q
-         owUcCUPjpsAhweM8BzKWGFW5GRGUnSU9nPt/6H0AJtRwPKKHcv7vkpqzLZ148mx5vg
-         zz7DPh7h4kJWRdH6FdOKTDT4fWIiPobBZLCBIuhF699PnJrJYATseFn5UScs318aA1
-         4Y6Xm+9UHuZQbICTKKUZWQPzIK3SAueyNGPtC3V37gxjZRFwZL9ie0xeqvhwnicwHr
-         Ikm62OgVXvRtw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CBC50C4316B;
-        Mon, 30 Oct 2023 20:05:40 +0000 (UTC)
-Subject: Re: [GIT PULL for v6.7] vfs time updates
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231027-vfs-ctime-6271b23ced64@brauner>
-References: <20231027-vfs-ctime-6271b23ced64@brauner>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231027-vfs-ctime-6271b23ced64@brauner>
-X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.7.ctime
-X-PR-Tracked-Commit-Id: 12cd44023651666bd44baa36a5c999698890debb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 14ab6d425e80674b6a0145f05719b11e82e64824
-Message-Id: <169869634083.3440.2926215966082490773.pr-tracker-bot@kernel.org>
-Date:   Mon, 30 Oct 2023 20:05:40 +0000
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 30 Oct 2023 16:08:23 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439B1CC
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:08:21 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-66d0169cf43so32710496d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 13:08:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698696500; x=1699301300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wdB2S3KUR4VydwWGzBK/FNweWRak7f59CHm7VtpooJk=;
+        b=QHlD7XxebRlFNuerZab2nuu9BaKB/Haq/+3hebGZWouG67N67Y3p33iZveUp3BO+oA
+         NNdSN6itjCIlW8pL+6zDiq4uS2ondG/sT0btgUkmHket0pSoeIaCB9MikRXiXibJMSa9
+         p2OIMU9rlX3UN8CjCXsOy2Np8R5j7qCOVKJ8lPj1jEwx5NtzmlEUV8i4g4rKGdHK3Ibw
+         paAIyFBsqWuCVAgDw4E6B7VTKVoqR6A47gb2HW/3RoG1pToUY/PgWuz9NSMRe8c1uR+A
+         0busPGfqw//7up5uAwis1KIBaDeQRgG2xA5Vtws1K6Xg5HNsW5j08sKir/hJ53hP77kf
+         uwYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698696500; x=1699301300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wdB2S3KUR4VydwWGzBK/FNweWRak7f59CHm7VtpooJk=;
+        b=mOIcG0V5QjOJcwdPJjMMtiUbbhPoTB9NQWcqxIBP2uK81KecSnNkuE3BMdouaDygGN
+         subdoD0qE/WZoHTBSzasAkEluR+5lWRFYqXDSekSDtTuPtXbJI53Efq+CvJRdxnFXYvm
+         KgUtXH/sr3zDehEwZaJKdK4Cad/Or8InN0i0cS0vrbGfXgb+/RihJU9J+INmxDf21icQ
+         Q6GGAo39Zlpm4xbNOc+HtpYNMKiKsddBRfB2H/z7oXweE2qcwZHJgYMFHYXic6592NGW
+         eaAYKc1Hl6k5NnJCi8Yy1Eg+FgMBhrJGEDw9jwkmeC8w2NnO6hZ6R1dyWRlLt+tQZNa0
+         KsQw==
+X-Gm-Message-State: AOJu0YxULYnnu18Jj9a9KJPHWiQZpANGugEZ8m96/YjXam37NFlms5An
+        M1XJwifvOoBGvD4KH2Hk7+LLTjQV2I3uN0e7wuU=
+X-Google-Smtp-Source: AGHT+IHApIH0otX5rPuJqUKfLnjhGC0MxsS8+v8rHBCV9cnennUXFhctqMqBHdF/89A1ndp8+gZplcir+G8pPtJx40U=
+X-Received: by 2002:a05:6214:c88:b0:671:2c2f:4fe6 with SMTP id
+ r8-20020a0562140c8800b006712c2f4fe6mr7118796qvr.46.1698696500317; Mon, 30 Oct
+ 2023 13:08:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-2-surenb@google.com>
+ <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com> <20231024194653.c24qbnk6bx3hep6y@moria.home.lan>
+ <ZTpl1ELUMEmne21U@smile.fi.intel.com> <20231026184456.q6ocnmpq6jhqi7zi@moria.home.lan>
+In-Reply-To: <20231026184456.q6ocnmpq6jhqi7zi@moria.home.lan>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 30 Oct 2023 22:07:43 +0200
+Message-ID: <CAHp75Vch5U=F00i0yB82XRU2504pUUEUu1YvBPbiU=FRbJ9FJw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/39] lib/string_helpers: Add flags param to string_get_size()
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,15 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 27 Oct 2023 16:51:07 +0200:
+On Thu, Oct 26, 2023 at 9:45=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+> On Thu, Oct 26, 2023 at 04:12:52PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 24, 2023 at 03:46:53PM -0400, Kent Overstreet wrote:
+> > > On Tue, Oct 24, 2023 at 05:26:18PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Oct 24, 2023 at 06:45:58AM -0700, Suren Baghdasaryan wrote:
 
-> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.7.ctime
+...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/14ab6d425e80674b6a0145f05719b11e82e64824
+> Andy: to be blunt, you've been pretty hostile and hysterical ("breaking
+> the kernel!" over debug statements? really?)
 
-Thank you!
+Where did I say that?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+And instead of judging me, look from the reviewer's and maintainer's
+point of view. The patch is unreviewable and has not good
+maintainability in this form as it does a few things at once.
+
+Also the commit message is poorly written as it has no mention about use ca=
+ses.
+
+>  and the bikeshedding is
+> getting to be too much - I'm just going to drop this patch from the
+> series and we'll post process the output as needed.
+
+I don't think I bikeshed here too much. This is the regular asking the
+reviewers and/or maintainers usually do, so is it too hard to split?
+
+--=20
+With Best Regards,
+Andy Shevchenko
