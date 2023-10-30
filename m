@@ -2,174 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0907DBF90
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B817DBF9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 19:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjJ3SQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 14:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        id S232795AbjJ3SQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 14:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3SPw (ORCPT
+        with ESMTP id S232822AbjJ3SQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 14:15:52 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377EABD
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:15:49 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27db9fdec0dso4129757a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:15:49 -0700 (PDT)
+        Mon, 30 Oct 2023 14:16:55 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4163AF9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:16:48 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so7361217a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 11:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1698689748; x=1699294548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XmnI5qBbSMZl1OWF9Q0rVzehwSZZifS0Ca/lJsm0aEQ=;
-        b=WkuxvrbT/NEPCGxNewpViuN5VI1z0AhZfB0kMGvPLMw9O0hoejiz7hLrJq5IZ/xCn8
-         tscLj4fSnAxU8jXvcLJwXx0WNkmoUH7mEHvaJoWAWuFtn06kCYF/GoEuRfBH1rfaxW2F
-         /mDj5eY4Fx6JzG20eCP8Q9loogAkVM9N+Oz7cCLklVllPqWvxPE0E1VM7Ha1emrOTD6t
-         5+LuxaUzc+NfpzkQTlfJHL5Na0OnEw2YSQQO76koa6ai4H/XHSIWiDP0iTRiNl2JVHX+
-         c1EGiPfld/93JGgAucnvtXEWSUTvtgaHpwVVBivOtNXPx/RB4QqJ76Yq5+IHXohmiyT9
-         Teng==
+        d=google.com; s=20230601; t=1698689806; x=1699294606; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XNAE/3aC2lNL4lcg+U/6tDVAD81XY3dhOt1l+j+r1Y0=;
+        b=CsgCQ/aRSI8oeNykPd1H3Vw1bU3hAd9V8Wgmag9klY8oNhYgz805J8JB47fDUwaLNy
+         /d97sxUTzOdvBGXWrjqNCjbs5gkrwKk9OAA4Q5hNCGEExXMa22xCOIb6u3dkEopYKV74
+         R6HBUhdiFKu9uzNeIFwK/gf3UWp4xFTK0GqC41YRi9e6YF+qx30rFlWi9pkB7dgvJchg
+         j2ZuJmzoVwMacN0Jty1kpB4FL2im4MnaYBGOOzmwi4YOEOi0oCtZMMY4clJvlSAoeiZH
+         FwQg8IjyNGeNCkc5/7lQh0SruYqybExeJhC1fKZVW6xATsAmY4xnI1z77m+dsUszz20j
+         jeWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698689748; x=1699294548;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XmnI5qBbSMZl1OWF9Q0rVzehwSZZifS0Ca/lJsm0aEQ=;
-        b=iEvEoPYAtsKJS2+39NzuSQZtMcQK5+QQ4BDNoMQ9UI9EMw/Jox3MPSATRi03DUQo3J
-         5wC+jQe1VnDkBbBgtFTyiO+tWRjIHpj0KcBUvHSJgovRc383pPPCx4Wqvra1ekr23CxM
-         /LgWc0TABnmYgY2iBarMG9gKbO3VWZTntjb4iFOh4+U3T9A1rAmTBKrzKFT1M5KB7k7e
-         1JRWNA5VaGfEjL6ycdxz8P0vnUAltCDdXk60D4OXerMPo2AGeqfATIfhcZSewRdlMETG
-         1ID8vyWf/yPEbe6N13iDKCjyzwbdkZgQCXeqjaC2KRFO0pCja23QjLhH2KpmTST9x2Bi
-         C9Lw==
-X-Gm-Message-State: AOJu0YyjQFYmsR7psTmvdCfhAd1TbvtVDpEI0I1KzpesPwUWjtgY9hjV
-        CT3INyTwSmFkpBe6+qYozsKAgaWY/xpAYvfkBz8=
-X-Google-Smtp-Source: AGHT+IGzIk0q5DFc6SUvyh4xXFBWbmnMc4JsWCwcwGkrdSnNztaLRGrwg2NHM7rmwQPW9TuA2n5hrA==
-X-Received: by 2002:a17:90b:23d7:b0:280:29cd:4802 with SMTP id md23-20020a17090b23d700b0028029cd4802mr5034310pjb.3.1698689748510;
-        Mon, 30 Oct 2023 11:15:48 -0700 (PDT)
-Received: from localhost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id d88-20020a17090a6f6100b0027e022bd3e5sm6257471pjk.54.2023.10.30.11.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 11:15:48 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 11:15:48 -0700 (PDT)
-X-Google-Original-Date: Mon, 30 Oct 2023 11:15:44 PDT (-0700)
-Subject:     Re: linux-next: duplicate patches in the risc-v tree
-In-Reply-To: <20231030075629.0296f072@canb.auug.org.au>
-CC:     Paul Walmsley <paul@pwsan.com>, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-b6345abb-81b3-450c-ae11-deed854821dc@palmer-ri-x1c9a>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698689806; x=1699294606;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XNAE/3aC2lNL4lcg+U/6tDVAD81XY3dhOt1l+j+r1Y0=;
+        b=fZlp+KYJn8OzkVf27Eap06B+byUk8xsLVbLxVyW+86FDz5XMEZ3N4CsxsnUtsqMvIo
+         NdnhJzDt1dzgNW38NBQsO6tgaaZE0mvs1gmr/5zFo01nYIZ5az87F0E813v+eWmj8NCH
+         tSopzuvJoGzBQsjI0OYBPZdRI0mO83B+veNEuOk/20m75KivJOuB4xIFR8vfex3W0L73
+         R8ouStcvB1QYA0Cz0DAxXUJDEy4KMofHG1BN++0ofu8iXG1tvX/mSBRA2Yu+O29lRLHD
+         UZqnUalD3bVvXXtbPeuyI2MO8i68URBfh7fstH3s7poBJJFmNeYhoXYRDWdaneV8tzIi
+         HezQ==
+X-Gm-Message-State: AOJu0YwfXnpJE+HuVBzhvVEU4xu14GmeHh6yszRj/muJrvVXnNhIFh3N
+        7hxyfG4nLiAnEaNmsEqDirO2MQHSDtcP3xlrxqaMHg==
+X-Google-Smtp-Source: AGHT+IENwS1N7Hx+TRzjhWYcV0enr0HvAOm8fD5bZdSc53hLpUYyGMmqwwxUWxQxThG/uKP/3FP8UjKuG236SN4+FF0=
+X-Received: by 2002:a17:907:3f20:b0:9be:e278:4d47 with SMTP id
+ hq32-20020a1709073f2000b009bee2784d47mr9500540ejc.27.1698689806504; Mon, 30
+ Oct 2023 11:16:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231024203302.1920362-1-nphamcs@gmail.com> <20231024203302.1920362-3-nphamcs@gmail.com>
+ <CAJD7tkZM4aOAwc4nRiU1PHofxHeZmV-NNGP5-E7X88ivRC7Pgw@mail.gmail.com> <CAKEwX=Nr7xJYpL2nE_ob0dWg9rnfoz67OMe_wvGsKjxboo1H+A@mail.gmail.com>
+In-Reply-To: <CAKEwX=Nr7xJYpL2nE_ob0dWg9rnfoz67OMe_wvGsKjxboo1H+A@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 30 Oct 2023 11:16:10 -0700
+Message-ID: <CAJD7tkZ7PPQmWu9UVH7WS3KFjmNW3q=JoMASmYtUb-Uy702iJg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] zswap: make shrinking memcg-aware
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Oct 2023 13:56:29 PDT (-0700), Stephen Rothwell wrote:
-> Hi all,
+> > [..]
+> > > +/*********************************
+> > > +* lru functions
+> > > +**********************************/
+> > > +static bool zswap_lru_add(struct list_lru *list_lru, struct zswap_entry *entry)
+> > > +{
+> > > +       struct mem_cgroup *memcg = get_mem_cgroup_from_entry(entry);
+> > > +       int nid = entry_to_nid(entry);
+> > > +       bool added = list_lru_add(list_lru, &entry->lru, nid, memcg);
+> > > +
+> > > +       mem_cgroup_put(memcg);
+> >
+> > Still not fond of the get/put pattern but okay..
 >
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
+> Actually, Johannes and I took another look to see if we can replace
+> the memcg reference getting with just rcu_read_lock().
 >
->   767423658d53 ("riscv: kexec: Align the kexeced kernel entry")
->   fe2ed36d419f ("riscv: Remove duplicate objcopy flag")
+> It seems there might be a race between zswap LRU manipulation
+> and memcg offlining - not just with the rcu_read_lock() idea, but also
+> with our current implementation!
+>
+> I'll shoot another email with more details later when I'm sure of it
+> one way or another...
+>
 
-Sorry, but I'm lost here -- I'm not sure if I've managed to screw up git 
-again?  If it helps, I'm not seeing the same commits here:
+Interesting, well at least something came out of my complaining :)
 
-    $ git show fe2ed36d419f
-    commit fe2ed36d419fdae48a6850bdbe2d2e7543c3c389
-    gpg: Signature made Wed 20 Sep 2023 02:51:59 AM PDT
-    gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
-    gpg:                issuer "palmer@dabbelt.com"
-    gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
-    gpg:                 aka "Palmer Dabbelt <palmer@rivosinc.com>" [ultimate]
-    Author: Song Shuai <songshuaishuai@tinylab.org>
-    Date:   Thu Sep 14 17:13:34 2023 +0800
-    
-        riscv: Remove duplicate objcopy flag
-    
-        There are two duplicate `-O binary` flags when objcopying from vmlinux
-        to Image/xipImage.
-    
-        RISC-V set `-O binary` flag in both OBJCOPYFLAGS in the top-level riscv
-        Makefile and OBJCOPYFLAGS_* in the boot/Makefile, and the objcopy cmd
-        in Kbuild would join them together.
-    
-        The `-O binary` flag is only needed for objcopying Image, so remove the
-        OBJCOPYFLAGS in the top-level riscv Makefile.
-    
-        Fixes: c0fbcd991860 ("RISC-V: Build flat and compressed kernel images")
-        Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
-        Link: https://lore.kernel.org/r/20230914091334.1458542-1-songshuaishuai@tinylab.org
-        Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-    
-    diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-    index 1329e060c548..b43a6bb7e4dc 100644
-    --- a/arch/riscv/Makefile
-    +++ b/arch/riscv/Makefile
-    @@ -6,7 +6,6 @@
-     # for more details.
-     #
-    
-    -OBJCOPYFLAGS    := -O binary
-     LDFLAGS_vmlinux := -z norelro
-     ifeq ($(CONFIG_RELOCATABLE),y)
-     	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext --emit-relocs
+> > [..]
+> > > @@ -652,28 +679,37 @@ static int zswap_reclaim_entry(struct zswap_pool *pool)
+> > >          */
+> > >         swpoffset = swp_offset(entry->swpentry);
+> > >         tree = zswap_trees[swp_type(entry->swpentry)];
+> > > -       spin_unlock(&pool->lru_lock);
+> > > +       list_lru_isolate(l, item);
+> > > +       /*
+> > > +        * It's safe to drop the lock here because we return either
+> > > +        * LRU_REMOVED_RETRY or LRU_RETRY.
+> > > +        */
+> > > +       spin_unlock(lock);
+> > >
+> > >         /* Check for invalidate() race */
+> > >         spin_lock(&tree->lock);
+> > > -       if (entry != zswap_rb_search(&tree->rbroot, swpoffset)) {
+> > > -               ret = -EAGAIN;
+> > > +       if (entry != zswap_rb_search(&tree->rbroot, swpoffset))
+> > >                 goto unlock;
+> > > -       }
+> > > +
+> > >         /* Hold a reference to prevent a free during writeback */
+> > >         zswap_entry_get(entry);
+> > >         spin_unlock(&tree->lock);
+> > >
+> > > -       ret = zswap_writeback_entry(entry, tree);
+> > > +       writeback_result = zswap_writeback_entry(entry, tree);
+> > >
+> > >         spin_lock(&tree->lock);
+> > > -       if (ret) {
+> > > -               /* Writeback failed, put entry back on LRU */
+> > > -               spin_lock(&pool->lru_lock);
+> > > -               list_move(&entry->lru, &pool->lru);
+> > > -               spin_unlock(&pool->lru_lock);
+> > > +       if (writeback_result) {
+> > > +               zswap_reject_reclaim_fail++;
+> > > +               memcg = get_mem_cgroup_from_entry(entry);
+> >
+> > Can this return NULL? Seems like we don't check the return in most/all places.
+>
+> I believe so, but memcg experts should fact check me on this.
 
-and
+If that's the case, there should be NULL checks, no?
 
-    $ git show 767423658d53 | cat
-    commit 767423658d53d147409821e51e6d0bc12425b24f
-    gpg: Signature made Wed 20 Sep 2023 02:53:30 AM PDT
-    gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
-    gpg:                issuer "palmer@dabbelt.com"
-    gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
-    gpg:                 aka "Palmer Dabbelt <palmer@rivosinc.com>" [ultimate]
-    Author: Song Shuai <songshuaishuai@tinylab.org>
-    Date:   Thu Sep 7 18:33:03 2023 +0800
-    
-        riscv: kexec: Align the kexeced kernel entry
-    
-        The current riscv boot protocol requires 2MB alignment for RV64
-        and 4MB alignment for RV32.
-    
-        In KEXEC_FILE path, the elf_find_pbase() function should align
-        the kexeced kernel entry according to the requirement, otherwise
-        the kexeced kernel would silently BUG at the setup_vm().
-    
-        Fixes: 8acea455fafa ("RISC-V: Support for kexec_file on panic")
-        Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
-        Link: https://lore.kernel.org/r/20230907103304.590739-3-songshuaishuai@tinylab.org
-        Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-    
-    diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-    index 5372b708fae2..9a81d6926ac6 100644
-    --- a/arch/riscv/kernel/elf_kexec.c
-    +++ b/arch/riscv/kernel/elf_kexec.c
-    @@ -98,7 +98,13 @@ static int elf_find_pbase(struct kimage *image, unsigned long kernel_len,
-     	kbuf.image = image;
-     	kbuf.buf_min = lowest_paddr;
-     	kbuf.buf_max = ULONG_MAX;
-    -	kbuf.buf_align = PAGE_SIZE;
-    +
-    +	/*
-    +	* Current riscv boot protocol requires 2MB alignment for
-    +	* RV64 and 4MB alignment for RV32
-    +	*
-    +	*/
-    +	kbuf.buf_align = PMD_SIZE;
-     	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-     	kbuf.memsz = ALIGN(kernel_len, PAGE_SIZE);
-     	kbuf.top_down = false;
+> It's roughly the same pattern as zswap charging/uncharging:
+>
+> obj_cgroup_uncharge_zswap(entry->objcg, entry->length)
+> -> getting memcg (under rcu_read_lock())
+>
+> >
+> > > +               spin_lock(lock);
+> > > +               /* we cannot use zswap_lru_add here, because it increments node's lru count */
+> > > +               list_lru_putback(&entry->pool->list_lru, item, entry_to_nid(entry), memcg);
+> >
+> > Perhaps we can move this call with the memcg get/put to a helper like
+> > add/del? (e.g. zswap_lru_putback)
+> >
+> > We would need to move get_mem_cgroup_from_entry() into the lock but I
+> > think that's okay.
+>
+> We probably could, but that sounds like extra code for not a lot of gains, no?
+
+I don't feel strongly, just a fan of consistency.
 
 >
-> -- 
-> Cheers,
-> Stephen Rothwell
+> >
+> > > +               spin_unlock(lock);
+> > > +               mem_cgroup_put(memcg);
+> > > +               ret = LRU_RETRY;
+> > >                 goto put_unlock;
+> > >         }
+> > > +       zswap_written_back_pages++;
+> > >
+> > >         /*
+> > >          * Writeback started successfully, the page now belongs to the
+[..]
+> > > @@ -696,15 +759,17 @@ static void shrink_worker(struct work_struct *w)
+> > >                                                 shrink_work);
+> > >         int ret, failures = 0;
+> > >
+> > > +       /* global reclaim will select cgroup in a round-robin fashion. */
+> > >         do {
+> > > -               ret = zswap_reclaim_entry(pool);
+> > > -               if (ret) {
+> > > -                       zswap_reject_reclaim_fail++;
+> > > -                       if (ret != -EAGAIN)
+> > > -                               break;
+> > > -                       if (++failures == MAX_RECLAIM_RETRIES)
+> > > -                               break;
+> > > -               }
+> > > +               pool->next_shrink = mem_cgroup_iter(NULL, pool->next_shrink, NULL);
+> >
+> > I think this can be a problem. We hold a ref to a memcg here until the
+> > next time we shrink, which can be a long time IIUC. This can cause the
+> > memcg to linger as a zombie. I understand it is one memcg per-zswap
+> > pool, but I am still unsure about it.
+> >
+> > MGLRU maintains a memcg LRU for global reclaim that gets properly
+> > cleaned up when a memcg is going away, so that's one option, although
+> > complicated.
+> >
+> > A second option would be to hold a pointer to the objcg instead, which
+> > should be less problematic (although we are still holding that objcg
+> > hostage indefinitely). The problem here is that if the objcg gets
+> > reparented, next time we will start at the parent of the memcg we
+> > stopped at last time, which tbh doesn't sound bad at all to me.
+> >
+> > A third option would be to flag the memcg such that when it is getting
+> > offlined we can call into zswap to reset pool->next_shrink (or move it
+> > to the parent) and drop the ref. Although synchronization can get
+> > hairy when racing with offlining.
+> >
+> > Not sure what's the right solution, but I prefer we don't hold any
+> > memcgs hostages indefinitely. I also think if we end up using
+> > mem_cgroup_iter() then there should be a mem_cgroup_iter_break()
+> > somewhere if/when breaking the iteration.
+> >
+>
+> I'm not sure if this is that big of a problem in the first place, but
+> if it is, doing something similar to MGLRU is probably the cleanest:
+> when the memcg is freed, trigger the zswap_exit_memcg() callback,
+> which will loop through all the zswap pools and update pool->next_shrink
+> where appropriate.
+>
+> Note that we only have one pool per (compression algorithm x allocator)
+> combinations, so there cannot be that many pools, correct?
+>
+> Johannes suggests this idea to me (my apologies if I butcher it)
+> during one of our conversations. That sounds relatively easy IIUC.
+
+Be careful that there will be a race between memcg offlining and
+zswap's usage of pool->next_shrink. AFAICT there is no lock to prevent
+offlining so there will have to be some sort of dance here to make
+sure everything works correctly.
