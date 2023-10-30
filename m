@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30247DBCFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817167DBCFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbjJ3PzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        id S233761AbjJ3PzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbjJ3PzI (ORCPT
+        with ESMTP id S233600AbjJ3PzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:55:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E492CDB;
+        Mon, 30 Oct 2023 11:55:10 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF1BD9;
         Mon, 30 Oct 2023 08:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698681306; x=1730217306;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cui525UNipVa8oEMgTPsnR567PdLaN5sF8CXFM/W4Zk=;
-  b=QNwulWTauECbxSl0bMpmcrTtnlsW6BqNKdBWi4EyRT2Tjd6yP2c3kcs0
-   7lSN4DkD59iI/PvcstmM4bitav/DPWEqIsXxOrHJLRxymSPlwcLSdmX5I
-   8liN4y44AwQd7AAgYY1QvkBY4esFgRrE+9zQBidGpcZTRMBoTP1nEw/8X
-   nx11/Q0RDeuw0/OgaZg3TX1laH+TH+R6KiuAS+ieMpiRMt6dKN8428YfJ
-   xoVVjjtPdYUDw5bZi0PFuCrKvAtLi7EMTDWvNKZCLADXE9pzAze5kND2c
-   SuulFjGGYUJ8h1LGXZSaUYHDIRZonOIDTLLaFmgQRYMvFDo5ZIHgLVtUa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367444898"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="367444898"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 08:54:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="760322099"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="760322099"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 30 Oct 2023 08:54:34 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4A4FC2AB; Mon, 30 Oct 2023 17:54:33 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 1/1] pinctrl: intel: Move default strength assignment to a switch-case
-Date:   Mon, 30 Oct 2023 17:54:32 +0200
-Message-Id: <20231030155432.3468704-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-da0359751dbso4022707276.1;
+        Mon, 30 Oct 2023 08:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698681304; x=1699286104; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=+KcnCc8OcVrtkUDLFPg4rco6LW+HzyCGBYMev1xsRt4=;
+        b=eYBUm5I7MoQotVToOKgSXujxp7sOka5YMcWqyP1eIvCZS0ZqZ7qRYZpCtfiFQxkbr1
+         YhfzLD/B2qjJz93xnpsUJVV8SEh4jIeapuUg8wgDHLJhC33RmB+kTY6F2hNxZvImXCc6
+         zSo7QoAY3Zv8212VCkUczKWFdAKJSscCryM2AbOFkdCheLjIinJe9SPXl4ZMDNvZVB4w
+         xAX5NPT8WlItUNptucK4MK8EnmVcM6t9nWuevDoHmR1GNifUIs4Y7w1n/nFbZaTs3QMZ
+         q4rJ/hM92djrTGg47hDODJDYrQC2wgj8XNNAhgpofPrm6+PLN7AGlGmS20O4I5h0KqCY
+         Rh+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698681304; x=1699286104;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+KcnCc8OcVrtkUDLFPg4rco6LW+HzyCGBYMev1xsRt4=;
+        b=vz2ytw/u5chtP9aIaxxUbN+yjl/NKwYtLwD0bCdoAj6SPs+A2jpc4uFIlTrOhyB4Jk
+         93AlzGuuvo/eeuh/W200OwV6dzoMiMkESD+kWFzK/Pm2zx9SefD+TrpMlVGEYXyphWTk
+         nPgohM1E/UGosa2hO95HotViP8rfQ4BQ1lpRagZaNhGpEGBqCbnb0c/9uzzxBVNHNmdD
+         L0GZ02mAzm917q7x/AxishWkdMCIjSrwc5W1f5GhzNniALxc7DqYcvfrHcY/K94sBLNK
+         L9Ifmt+Hzj0A4VsqwrX/BNhcs5rpaiR2DBJkSGZoObAhuYHgIFotCfk2Q0W6Jiz2NFCs
+         wohg==
+X-Gm-Message-State: AOJu0YzZAATlr9ttlolo9/fKG1xV/sbkz4qmQgsE9hN/bj3VRkUezt/l
+        pquwBfPQns4l4v35FKgwLSo=
+X-Google-Smtp-Source: AGHT+IHBSPXTALfopHoDL4pTBC6D9dJHqB3uVWSE3r4JgfLA2bdGKLKZfPtqduKW6A3+k7KChrakfQ==
+X-Received: by 2002:a25:e907:0:b0:d9a:b844:a16 with SMTP id n7-20020a25e907000000b00d9ab8440a16mr15870ybd.16.1698681304276;
+        Mon, 30 Oct 2023 08:55:04 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p136-20020a25748e000000b00d9cce349877sm4030001ybc.16.2023.10.30.08.55.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 08:55:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <db548513-84e6-491a-97de-511b6481cbd8@roeck-us.net>
+Date:   Mon, 30 Oct 2023 08:55:01 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] hwmon: npcm750-pwm-fan: Add NPCM8xx support
+Content-Language: en-US
+To:     Tomer Maimon <tmaimon77@gmail.com>, jdelvare@suse.com,
+        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
+        andrew@codeconstruct.com.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, j.neuschaefer@gmx.net
+Cc:     openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231030150119.342791-1-tmaimon77@gmail.com>
+ <20231030150119.342791-2-tmaimon77@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231030150119.342791-2-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iWhen ->pin_config_set() is called from the GPIO library (assumed
-GpioIo() ACPI resource), the argument can be 1, when, for example,
-PullDefault is provided. In such case we supply sane default in
-the driver. Move that default assingment to a switch-case, so
-it will be consolidated in one place.
+On 10/30/23 08:01, Tomer Maimon wrote:
+> Adding Pulse Width Modulation (PWM) and fan tacho NPCM8xx support to
+> NPCM PWM and fan tacho driver.
+> NPCM8xx uses a different number of PWM devices.
+> 
+> As part of adding NPCM8XX support:
+> - Add NPCM8xx specific compatible string.
+> - Add data to handle architecture-specific PWM and fan tacho parameters.
+                                                  ^^^^^^^^^^^^^
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/intel/pinctrl-intel.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+I don't see any fan related changes in the patch. What am I missing ?
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index fb3e0e1e0a0e..3e8010607d32 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -677,10 +677,6 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 	u32 term = 0, up = 0, value;
- 	void __iomem *padcfg1;
- 
--	/* Set default strength value in case none is given */
--	if (arg == 1)
--		arg = 5000;
--
- 	switch (param) {
- 	case PIN_CONFIG_BIAS_DISABLE:
- 		break;
-@@ -690,6 +686,7 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 		case 20000:
- 			term = PADCFG1_TERM_20K;
- 			break;
-+		case 1: /* Set default strength value in case none is given */
- 		case 5000:
- 			term = PADCFG1_TERM_5K;
- 			break;
-@@ -716,6 +713,7 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 		case 20000:
- 			term = PADCFG1_TERM_20K;
- 			break;
-+		case 1: /* Set default strength value in case none is given */
- 		case 5000:
- 			term = PADCFG1_TERM_5K;
- 			break;
--- 
-2.40.0.1.gaa8946217a0b
+Guenter
 
