@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECFC7DC221
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD687DC222
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbjJ3VvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S229812AbjJ3Vvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232139AbjJ3VvN (ORCPT
+        with ESMTP id S232128AbjJ3Vvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:51:13 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C7BFF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:51:09 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso7581127e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:51:09 -0700 (PDT)
+        Mon, 30 Oct 2023 17:51:39 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5E1119;
+        Mon, 30 Oct 2023 14:51:30 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6ce2cf67be2so3211791a34.2;
+        Mon, 30 Oct 2023 14:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698702668; x=1699307468; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+i0ZPrNW1oXlJv0V43Xxb3tYdTNJ/c4Q2gcMWYRfwq4=;
-        b=EcTJxrAoJopW9AmKYK+IlnIRlIdG+0emgd2KkWh36ZOgnYy+K5Ts/+VGRhJ6l+o7ih
-         Cro7XeKXZJNSWu/wm6n9fz5EhfVsQ9RfbBFGf9kLdMIHvdmXBoQCpAn+G2VJC/HrAeSd
-         XfR6/wtfZi3PoSxEli8uvDWM3yXhrHwVXc9Xl9UeuTQ+kG+JJs7G/tPtRs29g/l8fzTG
-         Cw/A05ouMYaz2YJMz8rOGi6ZFocD4AihIsh2VoDW2ocuMOxHjlVYy9QLko7Aj3OlFjp6
-         7HpCHgzb8qVaqwwgklv9HfJO/JA3lgROwtC638L5N5Q696+oKKAEhDX9XAiBaUZQIHiy
-         vPZA==
+        d=gmail.com; s=20230601; t=1698702690; x=1699307490; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XU6YDGeI4+wBW6QcdXCx4BV1CZFjMKR0ks808HcPwwQ=;
+        b=MNqtA8OLfMT9W2eDB5mBNGV5spw19L7tc9YBCjNFkxJJJTTkt8B1hGUzu/AY3HL85A
+         bZl+Fwb5mbIL+Uo/J9OzzNcDwtrFBEDA0TPqyNZyZXmY/eT0clhulJaTT3XXFsaeAbMD
+         6B87tLX3LtWItTyqFm2J9MppBERAqOfNvs8Dymvoh/z0vwto/G5Ye8NyPzmIuRug0A/2
+         tv6zlF3i3ttP1gMBjESolPuGDZW1v8g3ajl6tHo8edRKO7hVuc+eti1PwfDnRE6hXUvJ
+         Yfvm1Qu1vlm6TVhs3exPyzfUDWiA+oUnPD1fe+0wW3CpbxRF/ZV32fe9JPP5lwFUy/V1
+         Mvkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698702668; x=1699307468;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+i0ZPrNW1oXlJv0V43Xxb3tYdTNJ/c4Q2gcMWYRfwq4=;
-        b=IxyhVW26w/O7PHShXLPdIN4CoCKL9PFwKRMFXHj0zyeNs/cVb6WK3GYSq7DaIWIuUS
-         mmBH39jLCKfIcHjeLFzxq52vYiBUVGF6bCpxvFt+mqJrv8ahnhnN3j0W+10JQJSaG7wu
-         wvSC0qKmsikURMmhRU5GhwbxBzbErw/PFlpXDivJ46tiQPOn1TvezRUyrYWVpf8q8qT9
-         D5D9VGnDXcyVpuDcLoQ/eQS4blQdquKNC7ulVmu+VRGAgKKdQy06fxgsiJwOEw0HFsNy
-         Pjb/VVbbMhrANk8OmkGzVQ4tjzsZihle7DPKRNtHIuXQwFdKu8+nPdfIcd8+HGLCkTHl
-         HlJw==
-X-Gm-Message-State: AOJu0YwRJjAwxDhOYbhDj8Px6jB2wRZlUZP2ATl0oJPwi4fVI/dvW0Eb
-        QDavsVZc2Hg9KiEJrobToxxuOA==
-X-Google-Smtp-Source: AGHT+IFmE6ztU2Q6zdkf1gJY8NFYriow0ELTB1pszbg8s2vqp3M0zhuSbTLIyoyXRVcM1bqTSGcHzQ==
-X-Received: by 2002:a19:6746:0:b0:509:dd0:941a with SMTP id e6-20020a196746000000b005090dd0941amr5060062lfj.11.1698702668031;
-        Mon, 30 Oct 2023 14:51:08 -0700 (PDT)
-Received: from [192.168.133.160] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
-        by smtp.gmail.com with ESMTPSA id s2-20020a19ad42000000b0050794b05c8asm1560841lfd.42.2023.10.30.14.51.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 14:51:07 -0700 (PDT)
-Message-ID: <db624c01-a48c-4a8f-b9ea-548b25aa3091@linaro.org>
-Date:   Mon, 30 Oct 2023 22:51:06 +0100
+        d=1e100.net; s=20230601; t=1698702690; x=1699307490;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XU6YDGeI4+wBW6QcdXCx4BV1CZFjMKR0ks808HcPwwQ=;
+        b=M3jFnBEbxpnd28zuEnkfRcWKwG2GI99kyRjP1+C/G/ezSwOR/43YaYs9Cdwn2LLxTK
+         LYNYHBXOU6TMiesobj/lkMGfsFSf6nflc7ASwkPb/Apd6DaYMOLPeb2HXX/RweM6xXAB
+         JGyllcM55GB5/14aQQ3+ArZYM7wjQgiUF6iA2/ggv7hkYp+VRperYq6nU2Zw+1vUyEMv
+         rJ+k1hFurEPuQ1tlifu249EtW98WY/lshcAuS+O9HKTaZz1wIESowiACBmKQAD+MFaVS
+         y7V1z8wmbrkiRmeu/ZLegzhUDBT/meVvVMcyu514vjFPLx8uDBlS7xrkeYDdx6zzSZNT
+         fiHA==
+X-Gm-Message-State: AOJu0YzARsveJSmcUeuYR3Mspcvb43yuLVTAVEHJ266TUwZemWjH8HmE
+        Lb5qCkO4NkpsF03skQTZzQ==
+X-Google-Smtp-Source: AGHT+IGLVz1d9Q/Rkzo8IbHTLi8FgvNKF2npO02/ws7LHL6ufzuWyDYmYF4cPmxCUtROBTpN+rPnGA==
+X-Received: by 2002:a05:6359:2c44:b0:168:e9e5:b407 with SMTP id qv4-20020a0563592c4400b00168e9e5b407mr9778121rwb.10.1698702689775;
+        Mon, 30 Oct 2023 14:51:29 -0700 (PDT)
+Received: from n191-129-154.byted.org ([130.44.212.103])
+        by smtp.gmail.com with ESMTPSA id o14-20020a05620a22ce00b007776c520488sm3692396qki.9.2023.10.30.14.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 14:51:29 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 21:51:27 +0000
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peilin Ye <peilin.ye@bytedance.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Youlun Zhang <zhangyoulun@bytedance.com>
+Subject: Re: [PATCH net] veth: Fix RX stats for bpf_redirect_peer() traffic
+Message-ID: <20231030215124.GA1626574@n191-129-154.byted.org>
+References: <20231027184657.83978-1-yepeilin.cs@gmail.com>
+ <20231027190254.GA88444@n191-129-154.byted.org>
+ <59be18ff-dabc-2a07-3d78-039461b0f3f7@iogearbox.net>
+ <20231028231135.GA2236124@n191-129-154.byted.org>
+ <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: acer-aspire1: Add sound
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-To:     Nikita Travkin <nikita@trvn.ru>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231027-aspire1-sound-v1-0-5ff3cf8b5701@trvn.ru>
- <20231027-aspire1-sound-v1-3-5ff3cf8b5701@trvn.ru>
- <c2ad06fd-805f-44b9-bf4d-806ef20f272a@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <c2ad06fd-805f-44b9-bf4d-806ef20f272a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94c88020-5282-c82b-8f88-a2d012444699@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.10.2023 22:50, Konrad Dybcio wrote:
-> On 27.10.2023 16:42, Nikita Travkin wrote:
->> This laptop has two i2s speakers; an i2s audio codec for the headset
->> jack; two DMIC microphones in the lid and the displayport audio channel.
->>
->> This commit adds the audio node that describes all of the above with the
->> exception of the DMICs that require in-SoC digital codec to be brought
->> up, which will be done later.
->>
->> Note that the displayport channel is connected here for completeness,
->> but the displayport can't be used yet since the HPD signal is created by
->> the embedded controller, which will be added later.
->>
->> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> ---
-> [...]
-> 
-> 
->> +		primary-tx-dai-link {
->> +			link-name = "Primary MI2S Capture";
->> +
->> +			cpu {
->> +				sound-dai = <&q6afedai PRIMARY_MI2S_TX>;
->> +			};
->> +
->> +			platform {
->> +				sound-dai = <&q6routing>;
->> +			};
->> +
->> +			codec {
->> +				sound-dai = <&alc5682 0>;
-> Both RX and TX going to 5862 interface?
-interface1*
-> 
-> Konrad
+On Mon, Oct 30, 2023 at 03:19:26PM +0100, Daniel Borkmann wrote:
+> OT: does cadvisor run inside the Pod to collect the device stats? Just
+> curious how it gathers them.
+
+Seems like it reads from /proc/$PID/net/dev:
+https://github.com/google/cadvisor/blob/d19df4f3b8e73c7e807d4b9894c252b54852fa8a/container/libcontainer/handler.go#L461
+
+Thanks,
+Peilin Ye
+
