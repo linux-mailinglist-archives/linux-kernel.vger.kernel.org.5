@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C387DC0AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C957DC0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjJ3Tih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        id S231649AbjJ3Tjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjJ3Tif (ORCPT
+        with ESMTP id S230299AbjJ3Tjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:38:35 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15DDDB;
-        Mon, 30 Oct 2023 12:38:32 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so7482019a12.1;
-        Mon, 30 Oct 2023 12:38:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694711; x=1699299511; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZDlCveOzfrtYuSzhJicUknBESAxGt/aXJl0pyL4TPSI=;
-        b=KptD38l25NleTb5xbOtu1ng1sR4bJxOjBk21ppubGPVkLRsFFWRQtZ6lNSXc0KYl/v
-         kAcETberWTCVlAa0uP/JRPZlrMf7RjSqLybWo7suLJcRRDkC+pS/EItWtzznlYXrylel
-         sKSm9Kr/ZXvj9ug2SKoC8wypXWQ6Pq4wTpiihNa1Ssgj8ZG4mDwXvIDpBU8TzS00kHQF
-         415wbIAELwkievDNrg1XoJ2S7Huwq0Ta9MqKNWPCOk8s8y9ibI791QpPYD51gbnU1YnS
-         Ykbw79h83no/5Zjg3jWY+ZH1E0j8kfHwoVMDTkj9qwBYIlQ5311M8VC2Qn7V9v4Z6+Gt
-         85Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694711; x=1699299511;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZDlCveOzfrtYuSzhJicUknBESAxGt/aXJl0pyL4TPSI=;
-        b=FtteJsV9TCxqzKWujTB1ALTwaD7fHlGDbs8JlegoGzpyEl9m3mYGsHMjZJ9Wg7qgTq
-         Z/o2mr/ZTuEBshVNnylIA4vgHDjBCvov7Y76mNkcRKrbF4AUDyNcsVDLz6ZgMzVUZ/Qa
-         RGw66yCw1mYfdRTfvxqt2VSrR/zIxTsSfwod+oginvrkcQkrpiqli2k+Hs6HOKvsSINE
-         tj8dKK6/JB5iwoouN+2CYOTIzkVkx+fWcVYNZrMwmzKxI5OP3JTQGRtF6KHcFC6rZ4Zx
-         MwEfMs0WE3PcuPMtrjYQA/FpuHhEfFJJqjBKEMqZTHJxf4Fx+/5QtWt3WgAY2A/JE4/z
-         +zzA==
-X-Gm-Message-State: AOJu0YyPNhivr/1WnP9iyI0PKXV2avfyTK+j5nwbJdjrGHKQa+tUdptx
-        qQjmEOoIpdkb7d/rfjA/WOs=
-X-Google-Smtp-Source: AGHT+IGLbtw6rlrMWPU9BL6guP43c3VsuX1B5+KyM08H+eiqimKmKRTPi8stOq8pUaaKCLepZUDlkQ==
-X-Received: by 2002:a50:fb82:0:b0:540:346c:7b2f with SMTP id e2-20020a50fb82000000b00540346c7b2fmr7520057edq.40.1698694710923;
-        Mon, 30 Oct 2023 12:38:30 -0700 (PDT)
-Received: from ?IPV6:2a01:c23:bc31:8900:c490:292e:2164:5dcb? (dynamic-2a01-0c23-bc31-8900-c490-292e-2164-5dcb.c23.pool.telefonica.de. [2a01:c23:bc31:8900:c490:292e:2164:5dcb])
-        by smtp.googlemail.com with ESMTPSA id a12-20020aa7d74c000000b0053dd8898f75sm6467989eds.81.2023.10.30.12.38.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 12:38:30 -0700 (PDT)
-Message-ID: <cd23aed9-a792-4baa-ba1a-701e6512ce30@gmail.com>
-Date:   Mon, 30 Oct 2023 20:38:30 +0100
+        Mon, 30 Oct 2023 15:39:37 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670FEB3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 12:39:34 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39UJcr0l063551;
+        Mon, 30 Oct 2023 14:38:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698694733;
+        bh=eRZhcwsh01MNRG8TzbgicpmIGpJj8SD8iJ7MpzFDb5s=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Bgznk0m8c8vaPJxAyhJ73LdxsvpephUr9tog/J5DHUeZBeEqqD0y5axcihHlCAP23
+         Ulo2kIB8YBLEl5IA7x6+mnbtL+XfEYVMc/6GdEiCpCIHC1vkD1w+rvlCaakPI3jZNS
+         h7Rzt3k0JCQqJl5angST+WT7hnLLxGWAbbnOBzmI=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39UJcraB008524
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Oct 2023 14:38:53 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 30
+ Oct 2023 14:38:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 30 Oct 2023 14:38:52 -0500
+Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39UJchRe002093;
+        Mon, 30 Oct 2023 14:38:45 -0500
+Message-ID: <e387cc1a-2cf6-ee0f-78fa-82d327b289b4@ti.com>
+Date:   Tue, 31 Oct 2023 01:08:43 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net: r8169: Disable multicast filter for
- RTL_GIGA_MAC_VER_46
-To:     Patrick Thompson <ptf@google.com>
-Cc:     netdev@vger.kernel.org, Chun-Hao Lin <hau@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        nic_swsd@realtek.com
-References: <20231027213059.3550747-1-ptf@google.com>
- <415e0355-7d71-4b82-b4fc-37dad22486a9@gmail.com>
- <CAJs+hrEi8oo1q5mMfNbaUi8x1H-sBGmYToTkRfVXs=ga9LPupQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 7/8] drm/tidss: Update encoder/bridge chain connect
+ model
 Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <CAJs+hrEi8oo1q5mMfNbaUi8x1H-sBGmYToTkRfVXs=ga9LPupQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+CC:     DRI Development List <dri-devel@lists.freedesktop.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rahul T R <r-ravikumar@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        "Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>
+References: <20230606082142.23760-1-a-bhatia1@ti.com>
+ <20230606082142.23760-8-a-bhatia1@ti.com>
+ <24282420-b4dd-45b3-bb1c-fc37fe4a8205@siemens.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <24282420-b4dd-45b3-bb1c-fc37fe4a8205@siemens.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,63 +88,299 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.10.2023 17:52, Patrick Thompson wrote:
-> I wouldn't trust the mc filter, the eap packet being filtered is not a
-> multicast packet so I wonder what else could be erroneously filtered.
-> I do agree that it would be nice to be able to override it for testing
-> purposes.
+
+
+On 30-Oct-23 14:55, Jan Kiszka wrote:
+> On 06.06.23 10:21, Aradhya Bhatia wrote:
+>> With the new encoder/bridge chain model, the display controller driver
+>> is required to create a drm_connector entity instead of asking the
+>> bridge to do so during drm_bridge_attach. Moreover, the controller
+>> driver should create a drm_bridge entity to negotiate bus formats and a
+>> 'simple' drm_encoder entity to expose it to userspace.
+>>
+>> Update the encoder/bridge initialization sequence in tidss as per the
+>> new model.
+>>
+>> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+>> ---
+>>
+>> Notes:
+>>
+>>     changes from v5:
+>>     * Drop patches 5 and 6 from the original series.
+>>     * Instead add this patch that addresses Boris Brezillon's comments
+>>       of creating bridge, simple encoder and connector.
+>>
+>>  drivers/gpu/drm/tidss/tidss_encoder.c | 140 ++++++++++++++++----------
+>>  drivers/gpu/drm/tidss/tidss_encoder.h |   5 +-
+>>  drivers/gpu/drm/tidss/tidss_kms.c     |  12 +--
+>>  3 files changed, 94 insertions(+), 63 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/tidss/tidss_encoder.c b/drivers/gpu/drm/tidss/tidss_encoder.c
+>> index 0d4865e9c03d..17a86bed8054 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_encoder.c
+>> +++ b/drivers/gpu/drm/tidss/tidss_encoder.c
+>> @@ -6,91 +6,125 @@
+>>  
+>>  #include <linux/export.h>
+>>  
+>> +#include <drm/drm_atomic_helper.h>
+>> +#include <drm/drm_bridge.h>
+>> +#include <drm/drm_bridge_connector.h>
+>>  #include <drm/drm_crtc.h>
+>>  #include <drm/drm_modeset_helper_vtables.h>
+>>  #include <drm/drm_panel.h>
+>>  #include <drm/drm_of.h>
+>> +#include <drm/drm_simple_kms_helper.h>
+>>  
+>>  #include "tidss_crtc.h"
+>>  #include "tidss_drv.h"
+>>  #include "tidss_encoder.h"
+>>  
+>> -static int tidss_encoder_atomic_check(struct drm_encoder *encoder,
+>> -				      struct drm_crtc_state *crtc_state,
+>> -				      struct drm_connector_state *conn_state)
+>> +struct tidss_encoder {
+>> +	struct drm_bridge bridge;
+>> +	struct drm_encoder encoder;
+>> +	struct drm_connector *connector;
+>> +	struct drm_bridge *next_bridge;
+>> +	struct tidss_device *tidss;
+>> +};
+>> +
+>> +static inline struct tidss_encoder
+>> +*bridge_to_tidss_encoder(struct drm_bridge *b)
+>> +{
+>> +	return container_of(b, struct tidss_encoder, bridge);
+>> +}
+>> +
+>> +static int tidss_bridge_attach(struct drm_bridge *bridge,
+>> +			       enum drm_bridge_attach_flags flags)
+>> +{
+>> +	struct tidss_encoder *t_enc = bridge_to_tidss_encoder(bridge);
+>> +
+>> +	return drm_bridge_attach(bridge->encoder, t_enc->next_bridge,
+>> +				 bridge, flags);
+>> +}
+>> +
+>> +static int tidss_bridge_atomic_check(struct drm_bridge *bridge,
+>> +				     struct drm_bridge_state *bridge_state,
+>> +				     struct drm_crtc_state *crtc_state,
+>> +				     struct drm_connector_state *conn_state)
+>>  {
+>> -	struct drm_device *ddev = encoder->dev;
+>> +	struct tidss_encoder *t_enc = bridge_to_tidss_encoder(bridge);
+>> +	struct tidss_device *tidss = t_enc->tidss;
+>>  	struct tidss_crtc_state *tcrtc_state = to_tidss_crtc_state(crtc_state);
+>>  	struct drm_display_info *di = &conn_state->connector->display_info;
+>> -	struct drm_bridge *bridge;
+>> -	bool bus_flags_set = false;
+>> -
+>> -	dev_dbg(ddev->dev, "%s\n", __func__);
+>> -
+>> -	/*
+>> -	 * Take the bus_flags from the first bridge that defines
+>> -	 * bridge timings, or from the connector's display_info if no
+>> -	 * bridge defines the timings.
+>> -	 */
+>> -	drm_for_each_bridge_in_chain(encoder, bridge) {
+>> -		if (!bridge->timings)
+>> -			continue;
+>> -
+>> -		tcrtc_state->bus_flags = bridge->timings->input_bus_flags;
+>> -		bus_flags_set = true;
+>> -		break;
+>> -	}
+>> +	struct drm_bridge_state *next_bridge_state = NULL;
+>> +
+>> +	if (t_enc->next_bridge)
+>> +		next_bridge_state = drm_atomic_get_new_bridge_state(crtc_state->state,
+>> +								    t_enc->next_bridge);
+>>  
+>> -	if (!di->bus_formats || di->num_bus_formats == 0)  {
+>> -		dev_err(ddev->dev, "%s: No bus_formats in connected display\n",
+>> +	if (next_bridge_state) {
+>> +		tcrtc_state->bus_flags = next_bridge_state->input_bus_cfg.flags;
+>> +		tcrtc_state->bus_format = next_bridge_state->input_bus_cfg.format;
+>> +	} else if (di->num_bus_formats) {
+>> +		tcrtc_state->bus_format = di->bus_formats[0];
+>> +		tcrtc_state->bus_flags = di->bus_flags;
+>> +	} else {
+>> +		dev_err(tidss->dev, "%s: No bus_formats in connected display\n",
+>>  			__func__);
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> -	// XXX any cleaner way to set bus format and flags?
+>> -	tcrtc_state->bus_format = di->bus_formats[0];
+>> -	if (!bus_flags_set)
+>> -		tcrtc_state->bus_flags = di->bus_flags;
+>> -
+>>  	return 0;
+>>  }
+>>  
+>> -static void tidss_encoder_destroy(struct drm_encoder *encoder)
+>> -{
+>> -	drm_encoder_cleanup(encoder);
+>> -	kfree(encoder);
+>> -}
+>> -
+>> -static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
+>> -	.atomic_check = tidss_encoder_atomic_check,
+>> -};
+>> -
+>> -static const struct drm_encoder_funcs encoder_funcs = {
+>> -	.destroy = tidss_encoder_destroy,
+>> +static const struct drm_bridge_funcs tidss_bridge_funcs = {
+>> +	.attach				= tidss_bridge_attach,
+>> +	.atomic_check			= tidss_bridge_atomic_check,
+>> +	.atomic_reset			= drm_atomic_helper_bridge_reset,
+>> +	.atomic_duplicate_state		= drm_atomic_helper_bridge_duplicate_state,
+>> +	.atomic_destroy_state		= drm_atomic_helper_bridge_destroy_state,
+>>  };
+>>  
+>> -struct drm_encoder *tidss_encoder_create(struct tidss_device *tidss,
+>> -					 u32 encoder_type, u32 possible_crtcs)
+>> +int tidss_encoder_create(struct tidss_device *tidss,
+>> +			 struct drm_bridge *next_bridge,
+>> +			 u32 encoder_type, u32 possible_crtcs)
+>>  {
+>> +	struct tidss_encoder *t_enc;
+>>  	struct drm_encoder *enc;
+>> +	struct drm_connector *connector;
+>>  	int ret;
+>>  
+>> -	enc = kzalloc(sizeof(*enc), GFP_KERNEL);
+>> -	if (!enc)
+>> -		return ERR_PTR(-ENOMEM);
+>> +	t_enc = drmm_simple_encoder_alloc(&tidss->ddev, struct tidss_encoder,
+>> +					  encoder, encoder_type);
+>> +	if (IS_ERR(t_enc))
+>> +		return PTR_ERR(t_enc);
+>> +
+>> +	t_enc->tidss = tidss;
+>> +	t_enc->next_bridge = next_bridge;
+>> +	t_enc->bridge.funcs = &tidss_bridge_funcs;
+>>  
+>> +	enc = &t_enc->encoder;
+>>  	enc->possible_crtcs = possible_crtcs;
+>>  
+>> -	ret = drm_encoder_init(&tidss->ddev, enc, &encoder_funcs,
+>> -			       encoder_type, NULL);
+>> -	if (ret < 0) {
+>> -		kfree(enc);
+>> -		return ERR_PTR(ret);
+>> +	/* Attaching first bridge to the encoder */
+>> +	ret = drm_bridge_attach(enc, &t_enc->bridge, NULL,
+>> +				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+>> +	if (ret) {
+>> +		dev_err(tidss->dev, "bridge attach failed: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Initializing the connector at the end of bridge-chain */
+>> +	connector = drm_bridge_connector_init(&tidss->ddev, enc);
+>> +	if (IS_ERR(connector)) {
+>> +		dev_err(tidss->dev, "bridge_connector create failed\n");
+>> +		return PTR_ERR(connector);
+>> +	}
+>> +
+>> +	ret = drm_connector_attach_encoder(connector, enc);
+>> +	if (ret) {
+>> +		dev_err(tidss->dev, "attaching encoder to connector failed\n");
+>> +		return ret;
+>>  	}
+>>  
+>> -	drm_encoder_helper_add(enc, &encoder_helper_funcs);
+>> +	t_enc->connector = connector;
+>>  
+>>  	dev_dbg(tidss->dev, "Encoder create done\n");
+>>  
+>> -	return enc;
+>> +	return ret;
+>>  }
+>> diff --git a/drivers/gpu/drm/tidss/tidss_encoder.h b/drivers/gpu/drm/tidss/tidss_encoder.h
+>> index ace877c0e0fd..3e561d6b1e83 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_encoder.h
+>> +++ b/drivers/gpu/drm/tidss/tidss_encoder.h
+>> @@ -11,7 +11,8 @@
+>>  
+>>  struct tidss_device;
+>>  
+>> -struct drm_encoder *tidss_encoder_create(struct tidss_device *tidss,
+>> -					 u32 encoder_type, u32 possible_crtcs);
+>> +int tidss_encoder_create(struct tidss_device *tidss,
+>> +			 struct drm_bridge *next_bridge,
+>> +			 u32 encoder_type, u32 possible_crtcs);
+>>  
+>>  #endif
+>> diff --git a/drivers/gpu/drm/tidss/tidss_kms.c b/drivers/gpu/drm/tidss/tidss_kms.c
+>> index ad2fa3c3d4a7..c979ad1af236 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_kms.c
+>> +++ b/drivers/gpu/drm/tidss/tidss_kms.c
+>> @@ -193,7 +193,6 @@ static int tidss_dispc_modeset_init(struct tidss_device *tidss)
+>>  	for (i = 0; i < num_pipes; ++i) {
+>>  		struct tidss_plane *tplane;
+>>  		struct tidss_crtc *tcrtc;
+>> -		struct drm_encoder *enc;
+>>  		u32 hw_plane_id = feat->vid_order[tidss->num_planes];
+>>  		int ret;
+>>  
+>> @@ -216,16 +215,13 @@ static int tidss_dispc_modeset_init(struct tidss_device *tidss)
+>>  
+>>  		tidss->crtcs[tidss->num_crtcs++] = &tcrtc->crtc;
+>>  
+>> -		enc = tidss_encoder_create(tidss, pipes[i].enc_type,
+>> +		ret = tidss_encoder_create(tidss, pipes[i].bridge,
+>> +					   pipes[i].enc_type,
+>>  					   1 << tcrtc->crtc.index);
+>> -		if (IS_ERR(enc)) {
+>> +		if (ret) {
+>>  			dev_err(tidss->dev, "encoder create failed\n");
+>> -			return PTR_ERR(enc);
+>> -		}
+>> -
+>> -		ret = drm_bridge_attach(enc, pipes[i].bridge, NULL, 0);
+>> -		if (ret)
+>>  			return ret;
+>> +		}
+>>  	}
+>>  
+>>  	/* create overlay planes of the leftover planes */
+> 
+> This breaks the IOT2050 devices over 6.6, just bisected to it:
+> 
+> [    3.435153] [drm] Initialized tidss 1.0.0 20180215 for 4a00000.dss on minor 0
+> [    3.491246] tidss 4a00000.dss: [drm] Cannot find any crtc or sizes
+> 
+> vs.
+> 
+> [    3.436116] [drm] Initialized tidss 1.0.0 20180215 for 4a00000.dss on minor 0
+> [    3.910574] Console: switching to colour frame buffer device 80x30
+> [    3.937614] tidss 4a00000.dss: [drm] fb0: tidssdrmfb frame buffer device
+> 
+> Do we need to adjust its device tree to anything, or what may be the 
+> reason?
 > 
 
-I'm not an EAP(OL) expert, just read that EAPOL can use unicast,
-broadcast , and ethernet multicast (01:80:C2:00:00:03).
-What's that target MAC and IP4 address of the packet being
-filtered out in your case?
+Hey Jan,
 
-> Would you like me to add MAC_VER_48 to the patch? I would not be able
-> to test and confirm that it affects it in the same way I have for
-> VER_46.
-> 
-Yes, VER_48 should be included because it has the same MAC as VER_46.
+This patch series added support for the DRM_BRIDGE_ATTACH_NO_CONNECTOR
+flag, for tidss, and for a few of the bridges.
 
-> It is unfortunate that the naming doesn't quite line up.
-> 
-> On Sat, Oct 28, 2023 at 4:38 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>
->> On 27.10.2023 23:30, Patrick Thompson wrote:
->>> MAC_VER_46 ethernet adapters fail to detect eapol packets unless
->>> allmulti is enabled. Add exception for VER_46 in the same way VER_35
->>> has an exception.
->>>
->> MAC_VER_48 (RTL8107E) has the same MAC, just a different PHY.
->> So I would expect that the same quirk is needed for MAC_VER_48.
->>
->> MAC_VER_xx is a little misleading, actually it should be NIC_VER_xx
->>
->>> Fixes: 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
->>> Signed-off-by: Patrick Thompson <ptf@google.com>
->>> ---
->>>
->>> Changes in v2:
->>> - add Fixes tag
->>> - add net annotation
->>> - update description
->>>
->>>  drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
->>> index 361b90007148b..a775090650e3a 100644
->>> --- a/drivers/net/ethernet/realtek/r8169_main.c
->>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
->>> @@ -2584,7 +2584,8 @@ static void rtl_set_rx_mode(struct net_device *dev)
->>>               rx_mode |= AcceptAllPhys;
->>>       } else if (netdev_mc_count(dev) > MC_FILTER_LIMIT ||
->>>                  dev->flags & IFF_ALLMULTI ||
->>> -                tp->mac_version == RTL_GIGA_MAC_VER_35) {
->>> +                tp->mac_version == RTL_GIGA_MAC_VER_35 ||
->>> +                tp->mac_version == RTL_GIGA_MAC_VER_46) {
->>>               /* accept all multicasts */
->>>       } else if (netdev_mc_empty(dev)) {
->>>               rx_mode &= ~AcceptMulticast;
->>
+Upon a quick look at the devicetree files, I see that the IOT-2050
+platform is using Toshiba's TC358767 DPI to DP bridge, and it appears
+that the TC358767 driver does not support the get_input_bus_fmt hook.
 
+I have sent a patch for it[0].
+
+Since I do not have hardware with me, I would appreciate it if you could
+test and review it. The patch has only been build tested.
+
+
+Regards
+Aradhya
+
+
+[0]: Patch Link:
+https://lore.kernel.org/all/20231030192846.27934-1-a-bhatia1@ti.com/
