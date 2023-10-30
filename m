@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A167DB584
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AC97DB58D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbjJ3IzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S232357AbjJ3I6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbjJ3IzQ (ORCPT
+        with ESMTP id S231467AbjJ3I6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:55:16 -0400
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1C8A7;
-        Mon, 30 Oct 2023 01:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1698656109;
-        bh=YL3oMrHvLLHmTWBOYlwZjV1439I387W9eHucJaKOZmE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=D8otj1U5HvmHurYdRxMdCtHpwCcE5i9aZwnuNm8nB4qb4YmHEMZFE1BvFlBRutEkJ
-         HZOMW665dxTBl6FuWxGt2DFnPEOrcahHy6XpMVYgCmiUm03RY/DzGMuoO09/Ar5tkq
-         MiJLqFkhzBt+Z/vRiTv2nJk6b0qqNz00urD19xuE=
-Received: from [192.168.31.137] ([116.128.244.171])
-        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-        id D828F086; Mon, 30 Oct 2023 16:54:02 +0800
-X-QQ-mid: xmsmtpt1698656042tbvnfg6pq
-Message-ID: <tencent_4CA081DD6E435CDA2EAB9C826F7899F78C05@qq.com>
-X-QQ-XMAILINFO: MuA+oTsEL+6qtO3H4xWQPCso6pV/I/yJkvKbmlvufrMvIKLO9vdahjdohO9J+t
-         2BhmIBOfWO2/tauGOmKA0HagbvXagy1Ql+cjmOWLEUJUqjamxnOm3PXltm7836EvTWUaOObks+u6
-         ukJD3mzcbtXjlyDLeZWxQpQP3nOamk61cbLG301Fu09yvG9I4gmFoamyQFJFb4W6EcO+YXRlKvAi
-         HCVNRenqgGcw/IWXF0bJAuvcOo+BBCWCp4BGqabhXvq63rP2gy10bTE1NH745+OD+P161tQU8l+A
-         LjPYnUB4hPoPrMUit5xAtLJ5oL35AvcDTDRXFDpseN90ac8xUBH/0VHYmQGIkU3u7ikzzy8YieAn
-         2l3kuv5uaOcvik40weCVd8TKZaDRYmxFAyhdoTzjd4/pwpU+KfEyTQF6nsi/kEsKdEYWBD3KAP+9
-         ox/hefgXMiFH8IgdCogqHb88VLrEciI1QyRZjOM9O9E5QRiSoix9XOs+jVy621ggz8WlhDKu1KAD
-         Wx12+Y91QvmqVfhW5JD6P2a8JV8M8k4yz9jwglEcsMh+46pAKmoTRTrKnC3Cw1GA+UCbaQpJCKp5
-         mdPWDtJlT18R6rF7SmztDVMaBjy51CNT+DsoajJZ0tCUoZbjxxjENf0qOeTu2c8BzNbUpZ6qbpx4
-         awL32/3pH28MrzmAATL2bM1P23vJ2FSK46OkjKalWnptr8uczT02eF7UxxgyPFs9e/IlETLe/C4U
-         K5+GVo+hfyPISorfj8iXTAzOwW2Bcw3mh9K9t7g7G/a0B6am45tFEwFarPuvi7OREIQ4o9iaBwp+
-         8cUbjg099/1ohJm6bBd3s1LSq6fe16pYHDkkzDr6FKeVNhCI0s5evx13VmhfISEhukFQh2BcG8Cm
-         ayhaU7Kqpuh563i5iBhM+fNj9gyWh/U/q0uVTverV2YM4cvlHvGTEyqrXkaYjuHTp1uiteWJyaqx
-         //oXLTm5Xvc9UJIAz77bYGnvFDH01GU3xPi7QTzFfPmH6HcSA60vpmS+/vi0zHwpc+phVrvjFL4k
-         W1HZPx+Pbqd2JbcXWs
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-X-OQ-MSGID: <5e3bb5bf-b298-4666-b476-a3758c2245f4@foxmail.com>
-Date:   Mon, 30 Oct 2023 16:54:02 +0800
+        Mon, 30 Oct 2023 04:58:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372F794;
+        Mon, 30 Oct 2023 01:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698656328; x=1730192328;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iWVbjdypmwEuC8THWSop88+8PL4MTuv4dODLuKVqSkc=;
+  b=AKTMWcoozSVUEg8Jd6C1dS5QAoVi8kibqBfpBXhOG9iRMjn6Q/WAUO16
+   gGNxy4HyzRzrLu/NdqoC3sUF67esdIyXQrjBEPR5YX+QZzRNaCR5fmM1G
+   S5lKI5IoaHvtPjgykWnljkaW9BCYeoC75nfZZrSFI933vVMZPlI6jy47O
+   G8ezhUZQmsRHMFNFgY5YYpTo0UYbT5l1nj5yIkzlewyL7jl2rS0C6qmgw
+   3XBMx4nuYRMcRW7maHW/rwHz3xrjSsuzPuvAfEMbUrzyAdUGbmVUhdPF9
+   CpOFr/6IBeJ1TAtu044e0XTWVM4z/4ocgzwZY/S7RadmaQB7uxBtBa+TS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="6670971"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="6670971"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 01:58:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="736681128"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="736681128"
+Received: from yujie-x299.sh.intel.com ([10.239.159.77])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 01:58:45 -0700
+From:   Yujie Liu <yujie.liu@intel.com>
+To:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] scripts/kernel-doc: Fix the regex for matching -Werror flag
+Date:   Mon, 30 Oct 2023 16:54:04 +0800
+Message-Id: <20231030085404.3343403-1-yujie.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question about LTS 4.19 patch "89047634f5ce NFS: Don't interrupt
- file writeout due to fatal errors"
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     trond.myklebust@hammerspace.com, chenxiaosong@kylinos.cn,
-        Anna.Schumaker@netapp.com, sashal@kernel.org,
-        liuzhengyuan@kylinos.cn, huangjinhui@kylinos.cn,
-        liuyun01@kylinos.cn, huhai@kylinos.cn, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
- <2023103055-anaerobic-childhood-c1f1@gregkh>
-From:   ChenXiaoSong <chenxiaosongemail@foxmail.com>
-In-Reply-To: <2023103055-anaerobic-childhood-c1f1@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/30 16:43, Greg KH wrote:
-> Try it and see, but note, that came from the 4.19.99 release which was
-> released years ago, are you sure you are using the most recent 4.19.y
-> release?
+Swarup reported a "make htmldocs" warning:
 
-I use the most recent release 1b540579cf66 Linux 4.19.296.
+  Variable length lookbehind is experimental in regex;
+  marked by <-- HERE in m/(?<=^|\s)-Werror(?=$|\s)
+  <-- HERE / at ./scripts/kernel-doc line 188.
 
-> If we missed some patches, that should be added on top of the current
-> tree, please let us know the git commit ids of them after you have
-> tested them that they work properly, and we will gladly apply them.
-Merging the entire patchset may not be the best option. Perhaps a better 
-choice is to revert this patch. And I would like to see Trond's suggestion.
+Akira managed to reproduce it by perl v5.34.0.
+
+On second thought, it is not necessary to have the complicated
+"lookahead and lookbehind" things, and the regex can be simplified.
+
+Generally, the kernel-doc warnings should be considered as errors only
+when "-Werror" flag is set in KCFLAGS, but not when
+"-Werror=<diagnostic-type>" is set, which means there needs to be a
+space or start of string before "-Werror", and a space or end of string
+after "-Werror".
+
+The following cases have been tested to work as expected:
+
+* kernel-doc warnings are considered as errors:
+
+  $ KCFLAGS="-Werror" make W=1
+  $ KCFLAGS="-Wcomment -Werror" make W=1
+  $ KCFLAGS="-Werror -Wundef" make W=1
+  $ KCFLAGS="-Wcomment -Werror -Wundef" make W=1
+
+* kernel-doc warnings remain as warnings:
+
+  $ KCFLAGS="-Werror=return-type" make W=1
+  $ KCFLAGS="-Wcomment -Werror=return-type" make W=1
+  $ KCFLAGS="-Werror=return-type -Wundef" make W=1
+  $ KCFLAGS="-Wcomment -Werror=return-type -Wundef" make W=1
+
+The "Variable length lookbehind is experimental in regex" warning is
+also resolved by this patch.
+
+Fixes: 91f950e8b9d8 ("scripts/kernel-doc: match -Werror flag strictly")
+Reported-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+Cc: Akira Yokosawa <akiyks@gmail.com>
+Signed-off-by: Yujie Liu <yujie.liu@intel.com>
+---
+ scripts/kernel-doc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index d660e1f4b483..08a3e603db19 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -185,7 +185,7 @@ if (defined($ENV{'KBUILD_VERBOSE'}) && $ENV{'KBUILD_VERBOSE'} =~ '1') {
+ if (defined($ENV{'KCFLAGS'})) {
+ 	my $kcflags = "$ENV{'KCFLAGS'}";
+ 
+-	if ($kcflags =~ /(?<=^|\s)-Werror(?=$|\s)/) {
++	if ($kcflags =~ /(\s|^)-Werror(\s|$)/) {
+ 		$Werror = 1;
+ 	}
+ }
+-- 
+2.34.1
 
