@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C512D7DBB4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862A17DBB50
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjJ3OES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        id S233460AbjJ3OEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbjJ3OEK (ORCPT
+        with ESMTP id S233358AbjJ3OEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Oct 2023 10:04:10 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32B9C6;
-        Mon, 30 Oct 2023 07:04:06 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso7348229a12.2;
-        Mon, 30 Oct 2023 07:04:06 -0700 (PDT)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA744CC;
+        Mon, 30 Oct 2023 07:04:07 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so7710200a12.1;
+        Mon, 30 Oct 2023 07:04:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698674645; x=1699279445; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698674646; x=1699279446; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+oNiOzVWb1OPayLI3UpcZtoHUryNLF1OMI1H1r1pii4=;
-        b=Oe1p/UbXOjEB16mqtM1xgjfGZcZ9YhOAsR3RSrrtzAtaKcSPeHLSu9cV7q0jwXOyuC
-         Nn6C345j6MZ8JSSp1qZV68yd6cjIWWbUkytcsW2cj7EgeWwJ6etiF4gxg1fCi5eLoUhz
-         9qc0It1OOhkure5AMu4pNqSXNo9yenU17hFOwY8JgF5/iOzddqJsRrHYFHKxdSdbynrK
-         JcQtRCF8K4jESgn1FIiKj2nfuMFWVl94jdjUA5Wrat4lkg0qXpf2flp3MB6DbAxtrnYi
-         NYiNE9xEcNUVoEZs4BxKYG4Ak5gnwsIoSObgIqpVwmqNpdgeXW7jhKOn2omfEWGJaEw3
-         FPFw==
+        bh=tbCvdNe7F5MorIkCCQbrjPzb/zp5a5yYuYejTw2bp8k=;
+        b=Hs/ET9hyxMUG6L9SRVUYGMy8Lk79UC/FwC80moa4ai1JXi/OG/vfo9+0Xr97+VwZFg
+         bfve5Z1j+OQru0uK/+OmMicXKRwfZ3c2I98FvW6qAQy6SD1h2eCqxO38Zy8ee4GiAfxp
+         7wM2aUf4OZvxCxMguCyTwJBqg0xo00gzGYw6rZEzAOWxmtim3U3+fkaPg2QNhysjJihy
+         /sFMIDKxWUYiiNFijSgWMi4Zw8CRFEYp4N4U3hutxMrnwAeMJCm8lcKBbTR2C/9VtQLm
+         ajI7q7glFziDHz8e3DiqOGeUQtdthaGvZjXBsL/Qy9SK0/apADSxbLrGXevIkoeYi2sX
+         yDTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698674645; x=1699279445;
+        d=1e100.net; s=20230601; t=1698674646; x=1699279446;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+oNiOzVWb1OPayLI3UpcZtoHUryNLF1OMI1H1r1pii4=;
-        b=rdORYNvYPME4//7Hfzg9qdg0Z51xtWM7DL5e9xNNP4yCEwD2ZNY6npwx/ix0YwAOuv
-         XL1RucZdcIhSTi/7raWvUhCcPJL548tY/9dWgnga/XLljmBsTDC05BmPBtsuTUhyVgPc
-         eUCtqSc7aaC10QTueA20Ep6+daIUECoIUShSD55WHItbmiNyPlWhTSkRRZm3iHQcqvnQ
-         sWZoK50q5MJJSIRHWWS77kS+tkbkwEeXTvBf8AV4nWlZ76Y2FZrGp7qNUWXFLSHkmvaV
-         DYhpERCHK0xckcMoeCaarIDfyUBqi5XjUF2InRCRpt5YaiSF1h5JQPxtONumzQ8qvFGH
-         EiMg==
-X-Gm-Message-State: AOJu0YzI3M6DwJXILuWgk+VRLg2/bd4ZKw3Hk9eVcPuWtIFJye6uN2/0
-        CNs7MBEVg2A0yxaRMuARAFA=
-X-Google-Smtp-Source: AGHT+IGuB54s6jt5VweeRbOkpv1wIU19siV44qKlRwvJUPLaaNQIqUU4r7Z2qBf99J+gcTg2aucBeQ==
-X-Received: by 2002:aa7:d70e:0:b0:53e:fd81:67ab with SMTP id t14-20020aa7d70e000000b0053efd8167abmr7583675edq.6.1698674644917;
-        Mon, 30 Oct 2023 07:04:04 -0700 (PDT)
+        bh=tbCvdNe7F5MorIkCCQbrjPzb/zp5a5yYuYejTw2bp8k=;
+        b=Em6XrEhLvMM2sO16DvLJrO5lqAgsjc0cSMSHc9zTkO94ChfQZ3JRs4q4JEQgHdD3dK
+         uxnH7662tvevXotzSnGtVoT8yVZYCABChJ9e7t3DP67IH/x3qp16bG2w0E8jw344dTfB
+         P8RZsdE4VGd3jAVnpkiFLTtOzCIAKYtNg2M4oFBBrR1PJgUlAuJUU2s/0fO35tRrq6n0
+         xHioaqEv26Px4XUQqFsuZlYTV/36UKrgsTRxmAF7naxRBsyfBviXEaFN2vaK70X9bmEi
+         0aQOy2VSlUIIxbcY8fR+lKoPqQ2IRDR9tXQQaB/eVbcexdg8MXinyERN2EHKMYOYQO27
+         EACQ==
+X-Gm-Message-State: AOJu0YxLUhKEdlPhBwHFTcXHBt8JsP2BKEMsvO2N+xXDH6l+JIh1kIGA
+        aa8mlO2+ZKP+lrTnaQpGbgk=
+X-Google-Smtp-Source: AGHT+IHTDOyNikz5cPH8NdtkvFvvchP3TUw6l9WUeLBHcaQMWKAVDOtehknGjAB8N8OOGrcUtCP9UQ==
+X-Received: by 2002:a05:6402:2029:b0:53d:a7d9:5149 with SMTP id ay9-20020a056402202900b0053da7d95149mr7759255edb.6.1698674646101;
+        Mon, 30 Oct 2023 07:04:06 -0700 (PDT)
 Received: from ?IPV6:2a01:c23:bc31:8900:5db7:a938:1060:35a3? (dynamic-2a01-0c23-bc31-8900-5db7-a938-1060-35a3.c23.pool.telefonica.de. [2a01:c23:bc31:8900:5db7:a938:1060:35a3])
-        by smtp.googlemail.com with ESMTPSA id n27-20020a5099db000000b0053116e45317sm6278564edb.44.2023.10.30.07.04.04
+        by smtp.googlemail.com with ESMTPSA id n27-20020a5099db000000b0053116e45317sm6278564edb.44.2023.10.30.07.04.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 07:04:04 -0700 (PDT)
-Message-ID: <a3cc5420-8b0e-4336-accd-78557b5f8f46@gmail.com>
-Date:   Mon, 30 Oct 2023 14:50:36 +0100
+        Mon, 30 Oct 2023 07:04:05 -0700 (PDT)
+Message-ID: <ef1c0b25-01f9-4693-b8cd-5fd72013629d@gmail.com>
+Date:   Mon, 30 Oct 2023 14:51:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/7] r8169: Coalesce mac ocp write and modify for 8168H
- start to reduce spinlock contention
+Subject: Re: [PATCH v5 4/7] r8169: Coalesce mac ocp write and modify for
+ 8168ep start to reduce spinlock contention
 Content-Language: en-US
 To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
@@ -68,7 +68,7 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
 References: <20231029183600.451694-1-mirsad.todorovac@alu.unizg.hr>
- <20231029183600.451694-3-mirsad.todorovac@alu.unizg.hr>
+ <20231029183600.451694-4-mirsad.todorovac@alu.unizg.hr>
 From:   Heiner Kallweit <hkallweit1@gmail.com>
 Autocrypt: addr=hkallweit1@gmail.com; keydata=
  xsFNBF/0ZFUBEAC0eZyktSE7ZNO1SFXL6cQ4i4g6Ah3mOUIXSB4pCY5kQ6OLKHh0FlOD5/5/
@@ -113,7 +113,7 @@ Autocrypt: addr=hkallweit1@gmail.com; keydata=
  H/0Z53okMykVs3a8tECPHIxnre2UxKdTbCEkjkR4V6JyplTS47oWMw3zyI7zkaadfzVFBxk2
  lo/Tny+FX1Azea3Ce7oOnRUEZtWSsUidtIjmL8YUQFZYm+JUIgfRmSpMFq8JP4VH43GXpB/S
  OCrl+/xujzvoUBFV/cHKjEQYBxo+MaiQa1U54ykM2W4DnHb1UiEf5xDkFd4=
-In-Reply-To: <20231029183600.451694-3-mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20231029183600.451694-4-mirsad.todorovac@alu.unizg.hr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,17 +126,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.10.2023 19:35, Mirsad Goran Todorovac wrote:
+On 29.10.2023 19:36, Mirsad Goran Todorovac wrote:
 > Repeated calls to r8168_mac_ocp_write() and r8168_mac_ocp_modify() in
-> the startup of 8168H involve implicit spin_lock_irqsave() and spin_unlock_irqrestore()
-> on each invocation.
+> the startup of RTL8168ep involve implicit spin_lock_irqsave() and
+> spin_unlock_irqrestore() on each invocation.
 > 
 > Coalesced with the corresponding helpers into r8168_mac_ocp_write_seq() and
 > r8168_mac_ocp_modify_seq() with a sinqle paired spin_lock_irqsave() and
 > spin_unlock_irqrestore(), these calls help reduce overall spinlock contention.
 > 
 > Fixes: ef712ede3541d ("r8169: add helper r8168_mac_ocp_modify")
-> Fixes: 6e1d0b8988188 ("r8169:add support for RTL8168H and RTL8107E")
 > Cc: Heiner Kallweit <hkallweit1@gmail.com>
 > Cc: Marco Elver <elver@google.com>
 > Cc: nic_swsd@realtek.com
@@ -165,54 +164,36 @@ On 29.10.2023 19:35, Mirsad Goran Todorovac wrote:
 >  removed register/mask pair array sentinels, so using ARRAY_SIZE().
 >  avoided duplication of RTL_W32() call code as advised by Heiner.
 > 
->  drivers/net/ethernet/realtek/r8169_main.c | 26 +++++++++++++++--------
->  1 file changed, 17 insertions(+), 9 deletions(-)
+>  drivers/net/ethernet/realtek/r8169_main.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index f4a1d1a74b8b..29ee93b8b702 100644
+> index 29ee93b8b702..27016aaeb6a0 100644
 > --- a/drivers/net/ethernet/realtek/r8169_main.c
 > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -3231,6 +3231,21 @@ static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
->  		{ 0x04, 0xffff,	0x854a },
->  		{ 0x01, 0xffff,	0x068b }
+> @@ -3326,6 +3326,12 @@ static void rtl_hw_start_8168ep_3(struct rtl8169_private *tp)
+>  		{ 0x1e, 0x0000,	0x2000 },
 >  	};
-> +
-> +	static const struct e_info_regmaskset e_info_regmaskset_8168h_1[] = {
-> +		{ 0xe056, 0x00f0, 0x0070 },
-> +		{ 0xe052, 0x6000, 0x8008 },
-> +		{ 0xe0d6, 0x01ff, 0x017f },
-> +		{ 0xd420, 0x0fff, 0x047f },
+>  
+> +	static const struct e_info_regmaskset e_info_8168ep_3_mod_1[] = {
+> +		{ 0xd3e2, 0x0fff, 0x0271 },
+> +		{ 0xd3e4, 0x00ff, 0x0000 },
+> +		{ 0xe860, 0x0000, 0x0080 },
 > +	};
 > +
-> +	static const struct e_info_regdata e_info_regdata_8168h_1[] = {
-> +		{ 0xe63e, 0x0001 },
-> +		{ 0xe63e, 0x0000 },
-> +		{ 0xc094, 0x0000 },
-> +		{ 0xc09e, 0x0000 },
-> +	};
-> +
->  	int rg_saw_cnt;
+>  	rtl_ephy_init(tp, e_info_8168ep_3);
 >  
->  	rtl_ephy_init(tp, e_info_8168h_1);
-> @@ -3271,15 +3286,8 @@ static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
->  		r8168_mac_ocp_modify(tp, 0xd412, 0x0fff, sw_cnt_1ms_ini);
->  	}
+>  	rtl_hw_start_8168ep(tp);
+> @@ -3333,9 +3339,7 @@ static void rtl_hw_start_8168ep_3(struct rtl8169_private *tp)
+>  	RTL_W8(tp, DLLPR, RTL_R8(tp, DLLPR) & ~PFM_EN);
+>  	RTL_W8(tp, MISC_1, RTL_R8(tp, MISC_1) & ~PFM_D3COLD_EN);
 >  
-> -	r8168_mac_ocp_modify(tp, 0xe056, 0x00f0, 0x0070);
-> -	r8168_mac_ocp_modify(tp, 0xe052, 0x6000, 0x8008);
-> -	r8168_mac_ocp_modify(tp, 0xe0d6, 0x01ff, 0x017f);
-> -	r8168_mac_ocp_modify(tp, 0xd420, 0x0fff, 0x047f);
-> -
-> -	r8168_mac_ocp_write(tp, 0xe63e, 0x0001);
-> -	r8168_mac_ocp_write(tp, 0xe63e, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xc094, 0x0000);
-> -	r8168_mac_ocp_write(tp, 0xc09e, 0x0000);
-> +	r8168_mac_ocp_modify_seq(tp, e_info_regmaskset_8168h_1);
-> +	r8168_mac_ocp_write_seq(tp, e_info_regdata_8168h_1);
+> -	r8168_mac_ocp_modify(tp, 0xd3e2, 0x0fff, 0x0271);
+> -	r8168_mac_ocp_modify(tp, 0xd3e4, 0x00ff, 0x0000);
+> -	r8168_mac_ocp_modify(tp, 0xe860, 0x0000, 0x0080);
+> +	r8168_mac_ocp_modify_seq(tp, e_info_8168ep_3_mod_1);
 >  }
 >  
->  static void rtl_hw_start_8168ep(struct rtl8169_private *tp)
+>  static void rtl_hw_start_8117(struct rtl8169_private *tp)
 
-For these few calls I don't really see a benefit in the change.
-Instead it makes the code harder to read.
-
+Same here, it' not worth it and makes the code harder to read.
