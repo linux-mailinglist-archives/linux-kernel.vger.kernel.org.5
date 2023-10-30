@@ -2,322 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC18C7DB21F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 03:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7657DB223
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 03:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjJ3Cpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 22:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S231430AbjJ3CsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 22:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjJ3Cpm (ORCPT
+        with ESMTP id S229510AbjJ3CsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 22:45:42 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CECBE;
-        Sun, 29 Oct 2023 19:45:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vv4z2Lv_1698633932;
-Received: from 30.240.96.210(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Vv4z2Lv_1698633932)
-          by smtp.aliyun-inc.com;
-          Mon, 30 Oct 2023 10:45:33 +0800
-Message-ID: <3bbdc5de-ce97-4a4d-b420-1605cef3ffcd@linux.alibaba.com>
-Date:   Mon, 30 Oct 2023 10:45:29 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Sharing page tables across processes (mshare)
-Content-Language: en-US
-To:     Khalid Aziz <khalid.aziz@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        Sun, 29 Oct 2023 22:48:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA82BD;
+        Sun, 29 Oct 2023 19:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698634095; x=1730170095;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=NcH0XnP6VoshU9abBq6Ta+z+6AM7rwOc9BoEsxOjEI8=;
+  b=aHPvBEOcF8UNnYyVrNSDnTk34xvwbG1P7Ds5/6DwXehvM2MNWvlsYHNj
+   r9A0vN9ypdQ0/1mPjm5QRrvySWzXEprPcAoAsv47IciVucku/1oCpatiB
+   5hgnlDo9qpBaUZQfHb93//W9vbk5dB/vsylVgguShRJUNvH93bgLcjOFy
+   ahvWa1DmiMR5aHqJhsool5qYm9f65nUev8eNgnCo1bnsjie9gTUq6r8br
+   Iv2hmiRFxBa/2CU2c0+FGOSpGIVSpMs1hN3/xYKQvQclvEqDwLSKV1cOF
+   +MD/1iGVZdiJHxg0cyWByG1/U+hh3JuO4sqcEJIbdipg6SM8DExsmsIuq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="367347174"
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="367347174"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 19:48:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="760135503"
+X-IronPort-AV: E=Sophos;i="6.03,262,1694761200"; 
+   d="scan'208";a="760135503"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2023 19:48:10 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mark Hemment <markhemm@googlemail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-References: <4082bc40-a99a-4b54-91e5-a1b55828d202@oracle.com>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <4082bc40-a99a-4b54-91e5-a1b55828d202@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v7 2/3] mm/memory_hotplug: split memmap_on_memory
+ requests across memblocks
+In-Reply-To: <20231025-vv-kmem_memmap-v7-2-4a76d7652df5@intel.com> (Vishal
+        Verma's message of "Wed, 25 Oct 2023 16:44:34 -0600")
+References: <20231025-vv-kmem_memmap-v7-0-4a76d7652df5@intel.com>
+        <20231025-vv-kmem_memmap-v7-2-4a76d7652df5@intel.com>
+Date:   Mon, 30 Oct 2023 10:46:08 +0800
+Message-ID: <875y2oddzj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vishal Verma <vishal.l.verma@intel.com> writes:
 
+> The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is restricted to
+> 'memblock_size' chunks of memory being added. Adding a larger span of
+> memory precludes memmap_on_memory semantics.
+>
+> For users of hotplug such as kmem, large amounts of memory might get
+> added from the CXL subsystem. In some cases, this amount may exceed the
+> available 'main memory' to store the memmap for the memory being added.
+> In this case, it is useful to have a way to place the memmap on the
+> memory being added, even if it means splitting the addition into
+> memblock-sized chunks.
+>
+> Change add_memory_resource() to loop over memblock-sized chunks of
+> memory if caller requested memmap_on_memory, and if other conditions for
+> it are met. Teach try_remove_memory() to also expect that a memory
+> range being removed might have been split up into memblock sized chunks,
+> and to loop through those as needed.
+>
+> This does preclude being able to use PUD mappings in the direct map; a
+> proposal to how this could be optimized in the future is laid out
+> here[1].
+>
+> [1]: https://lore.kernel.org/linux-mm/b6753402-2de9-25b2-36e9-eacd49752b19@redhat.com/
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> ---
+>  mm/memory_hotplug.c | 209 ++++++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 144 insertions(+), 65 deletions(-)
+>
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 6be7de9efa55..b97035193090 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1380,6 +1380,48 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
+>  	return arch_supports_memmap_on_memory(vmemmap_size);
+>  }
+>  
+> +static int create_altmaps_and_memory_blocks(int nid, struct memory_group *group,
+> +					    u64 start, u64 size)
+> +{
+> +	unsigned long memblock_size = memory_block_size_bytes();
+> +	u64 cur_start;
+> +	int ret;
+> +
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		struct mhp_params params = { .pgprot =
+> +						     pgprot_mhp(PAGE_KERNEL) };
+> +		struct vmem_altmap mhp_altmap = {
+> +			.base_pfn = PHYS_PFN(cur_start),
+> +			.end_pfn = PHYS_PFN(cur_start + memblock_size - 1),
+> +		};
+> +
+> +		mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> +		params.altmap = kmemdup(&mhp_altmap, sizeof(struct vmem_altmap),
+> +					GFP_KERNEL);
+> +		if (!params.altmap)
+> +			return -ENOMEM;
+> +
+> +		/* call arch's memory hotadd */
+> +		ret = arch_add_memory(nid, cur_start, memblock_size, &params);
+> +		if (ret < 0) {
+> +			kfree(params.altmap);
 
-On 2023/10/24 06:44, Khalid Aziz wrote:
-> Threads of a process share address space and page tables that allows for
-> two key advantages:
->
-> 1. Amount of memory required for PTEs to map physical pages stays low
-> even when large number of threads share the same pages since PTEs are
-> shared across threads.
->
-> 2. Page protection attributes are shared across threads and a change
-> of attributes applies immediately to every thread without any overhead
-> of coordinating protection bit changes across threads.
->
-> These advantages no longer apply when unrelated processes share pages.
-> Some applications can require 1000s of processes that all access the
-> same set of data on shared pages. For instance, a database server may
-> map in a large chunk of database into memory to provide fast access to
-> data to the clients using buffer cache. Server may launch new processes
-> to provide services to new clients connecting to the shared database.
-> Each new process will map in the shared database pages. When the PTEs
-> for mapping in shared pages are not shared across processes, each
-> process will consume some memory to store these PTEs. On x86_64, each
-> page requires a PTE that is only 8 bytes long which is very small
-> compared to the 4K page size. When 2000 processes map the same page in
-> their address space, each one of them requires 8 bytes for its PTE and
-> together that adds up to 8K of memory just to hold the PTEs for one 4K
-> page. On a database server with 300GB SGA, a system crash was seen with
-> out-of-memory condition when 1500+ clients tried to share this SGA even
-> though the system had 512GB of memory. On this server, in the worst case
-> scenario of all 1500 processes mapping every page from SGA would have
-> required 878GB+ for just the PTEs. If these PTEs could be shared, amount
-> of memory saved is very significant.
->
-> When PTEs are not shared between processes, each process ends up with
-> its own set of protection bits for each shared page. Database servers
-> often need to change protection bits for pages as they manipulate and
-> update data in the database. When changing page protection for a shared
-> page, all PTEs across all processes that have mapped the shared page in
-> need to be updated to ensure data integrity. To accomplish this, the
-> process making the initial change to protection bits sends messages to
-> every process sharing that page. All processes then block any access to
-> that page, make the appropriate change to protection bits, and send a
-> confirmation back.  To ensure data consistency, access to shared page
-> can be resumed when all processes have acknowledged the change. This is
-> a disruptive and expensive coordination process. If PTEs were shared
-> across processes, a change to page protection for a shared PTE becomes
-> applicable to all processes instantly with no coordination required to
-> ensure consistency. Changing protection bits across all processes
-> sharing database pages is a common enough operation on Oracle databases
-> that the cost is significant and cost goes up with the number of clients.
->
-> This is a proposal to extend the same model of page table sharing for
-> threads across processes. This will allow processes to tap into the
-> same benefits that threads get from shared page tables,
->
-> Sharing page tables across processes opens their address spaces to each
-> other and thus must be done carefully. This proposal suggests sharing
-> PTEs across processes that trust each other and have explicitly agreed
-> to share page tables. The proposal is to add a new flag to mmap() call -
-> MAP_SHARED_PT.  This flag can be specified along with MAP_SHARED by a
-> process to hint to kernel that it wishes to share page table entries
-> for this file mapping mmap region with other processes. Any other process
-> that mmaps the same file with MAP_SHARED_PT flag can then share the same
-> page table entries. Besides specifying MAP_SHARED_PT flag, the processe
-> must map the files at a PMD aligned address with a size that is a
-> multiple of PMD size and at the same virtual addresses. NOTE: This
-> last requirement of same virtual addresses can possibly be relaxed if
-> that is the consensus.
->
-> When mmap() is called with MAP_SHARED_PT flag, a new host mm struct
-> is created to hold the shared page tables. Host mm struct is not
-> attached to a process. Start and size of host mm are set to the
-> start and size of the mmap region and a VMA covering this range is
-> also added to host mm struct. Existing page table entries from the
-> process that creates the mapping are copied over to the host mm
-> struct. All processes mapping this shared region are considered
-> guest processes. When a guest process mmap's the shared region, a vm
-> flag VM_SHARED_PT is added to the VMAs in guest process. Upon a page
-> fault, VMA is checked for the presence of VM_SHARED_PT flag. If the
-> flag is found, its corresponding PMD is updated with the PMD from
-> host mm struct so the PMD will point to the page tables in host mm
-> struct.  When a new PTE is created, it is created in the host mm struct
-> page tables and the PMD in guest mm points to the same PTEs.
->
->
-> --------------------------
-> Evolution of this proposal
-> --------------------------
->
-> The original proposal -
-> <https://lore.kernel.org/lkml/cover.1642526745.git.khalid.aziz@oracle.com/>, 
->
-> was for an mshare() system call that a donor process calls to create
-> an empty mshare'd region. This shared region is pgdir aligned and
-> multiple of pgdir size. Each mshare'd region creates a corresponding
-> file under /sys/fs/mshare which can be read to get information on
-> the region.  Once an empty region has been created, any objects can
-> be mapped into this region and page tables for those objects will be
-> shared.  Snippet of the code that a donor process would run looks
-> like below:
->
->         addr = mmap((void *)TB(2), GB(512), PROT_READ | PROT_WRITE,
->                         MAP_SHARED | MAP_ANONYMOUS, 0, 0);
->         if (addr == MAP_FAILED)
->                 perror("ERROR: mmap failed");
->
->         err = syscall(MSHARE_SYSCALL, "testregion", (void *)TB(2),
->             GB(512), O_CREAT|O_RDWR|O_EXCL, 600);
->         if (err < 0) {
->                 perror("mshare() syscall failed");
->                 exit(1);
->         }
->
->         strncpy(addr, "Some random shared text",
->             sizeof("Some random shared text"));
->
->
-> Snippet of code that a consumer process would execute looks like:
->
->         fd = open("testregion", O_RDONLY);
->         if (fd < 0) {
->                 perror("open failed");
->                 exit(1);
->         }
->
->         if ((count = read(fd, &mshare_info, sizeof(mshare_info)) > 0))
->                 printf("INFO: %ld bytes shared at addr %lx \n",
->                 mshare_info[1], mshare_info[0]);
->         else
->                 perror("read failed");
->
->         close(fd);
->
->         addr = (char *)mshare_info[0];
->         err = syscall(MSHARE_SYSCALL, "testregion", (void 
-> *)mshare_info[0],
->             mshare_info[1], O_RDWR, 600);
->         if (err < 0) {
->                 perror("mshare() syscall failed");
->                 exit(1);
->         }
->
->         printf("Guest mmap at %px:\n", addr);
->         printf("%s\n", addr);
->     printf("\nDone\n");
->
->         err = syscall(MSHARE_UNLINK_SYSCALL, "testregion");
->         if (err < 0) {
->                 perror("mshare_unlink() failed");
->                 exit(1);
->         }
->
->
-> This proposal evolved into completely file and mmap based API -
-> <https://lore.kernel.org/lkml/cover.1656531090.git.khalid.aziz@oracle.com/>. 
->
-> This new API looks like below:
->
-> 1. Mount msharefs on /sys/fs/mshare -
->     mount -t msharefs msharefs /sys/fs/mshare
->
-> 2. mshare regions have alignment and size requirements. Start
->    address for the region must be aligned to an address boundary and
->    be a multiple of fixed size. This alignment and size requirement
->    can be obtained by reading the file /sys/fs/mshare/mshare_info
->    which returns a number in text format. mshare regions must be
->    aligned to this boundary and be a multiple of this size.
->
-> 3. For the process creating mshare region:
->     a. Create a file on /sys/fs/mshare, for example -
->         fd = open("/sys/fs/mshare/shareme",
->                 O_RDWR|O_CREAT|O_EXCL, 0600);
->
->     b. mmap this file to establish starting address and size -
->         mmap((void *)TB(2), BUF_SIZE, PROT_READ | PROT_WRITE,
->                         MAP_SHARED, fd, 0);
->
->     c. Write and read to mshared region normally.
->
-> 4. For processes attaching to mshare'd region:
->     a. Open the file on msharefs, for example -
->         fd = open("/sys/fs/mshare/shareme", O_RDWR);
->
->     b. Get information about mshare'd region from the file:
->         struct mshare_info {
->             unsigned long start;
->             unsigned long size;
->         } m_info;
->
->         read(fd, &m_info, sizeof(m_info));
->
->     c. mmap the mshare'd region -
->         mmap(m_info.start, m_info.size,
->             PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
->
-> 5. To delete the mshare region -
->         unlink("/sys/fs/mshare/shareme");
->
->
->
-> Further discussions over mailing lists and LSF/MM resulted in eliminating
-> msharefs and making this entirely mmap based -
-> <https://lore.kernel.org/lkml/cover.1682453344.git.khalid.aziz@oracle.com/>. 
->
-> With this change, if two processes map the same file with same
-> size, PMD aligned address, same virtual address and both specify
-> MAP_SHARED_PT flag, they start sharing PTEs for the file mapping.
-> These changes eliminate support for any arbitrary objects being
-> mapped in mshare'd region. The last implementation required sharing
-> minimum PMD sized chunks across processes. These changes were
-> significant enough to make this proposal distinct enough for me to
-> use a new name - ptshare.
->
->
-> ----------
-> What next?
-> ----------
->
-> There were some more discussions on this proposal while I was on
-> leave for a few months. There is enough interest in this feature to
-> continue to refine this. I will refine the code further but before
-> that I want to make sure we have a common understanding of what this
-> feature should do.
->
-> As a result of many discussions, a new distinct version of
-> original proposal has evolved. Which one do we agree to continue
-> forward with - (1) current version which restricts sharing to PMD sized
-> and aligned file mappings only, using just a new mmap flag
-> (MAP_SHARED_PT), or (2) original version that creates an empty page
-> table shared mshare region using msharefs and mmap for arbitrary
-> objects to be mapped into later?
-Hi, Khalid
+Should we call
 
-I am unfamiliar to original version, but I can provide some feedback on 
-the issues encountered
-during the implementation of current version (mmap & MAP_SHARED_PT).
-We realize our internal pgtable sharing version in the current method, 
-but the codes
-are a bit hack in some places, e.g. (1) page fault, need to switch 
-original mm to flush TLB or
-charge memcg; (2) shrink memory, a bit complicated to to handle pte 
-entries like normal pte mapping;
-(3) munmap/madvise support;
+        remove_memory_blocks_and_altmaps(start, cur_start - start);
 
-If these hack codes can be resolved, the current method seems already 
-simple and usable enough (just my humble opinion).
+here to clean up resources?
 
+--
+Best Regards,
+Huang, Ying
 
-And besides above issues, we (our internal version) do not care memory 
-migration, compaction, etc,. I'm not sure what
-functions pgtable sharing needs to support. Maybe we can have a 
-discussion about that firstly, then decide
-which one? Here are the things we support in pgtable sharing:
-
-a. share pgtables only between parent and child processes;
-b. support anonymous shared memory and id-known (SYSV shared memory);
-c. madvise(MADV_DONTNEED, MADV_DONTDUMP, MADV_DODUMP), DONTNEED supports 
-2M granularity;
-d. reclaim pgtable sharing memory in shrinker;
-
-The above support is actually requested by our internal user. Plus, we 
-skip memory migration, compaction, mprotect, mremap etc, directly.
-IMHO, support all memory behavior likes normal pte mapping is unnecessary?
-(Next, It seems I need to study your original version :-))
-
-Thanks,
--wrw
->
-> Thanks,
-> Khalid
-
+> +			return ret;
+> +		}
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(cur_start, memblock_size,
+> +						  params.altmap, group);
+> +		if (ret) {
+> +			arch_remove_memory(cur_start, memblock_size, NULL);
+> +			kfree(params.altmap);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+>   * and online/offline operations (triggered e.g. by sysfs).
+> @@ -1390,10 +1432,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  {
+>  	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+>  	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
+> -	struct vmem_altmap mhp_altmap = {
+> -		.base_pfn =  PHYS_PFN(res->start),
+> -		.end_pfn  =  PHYS_PFN(res->end),
+> -	};
+>  	struct memory_group *group = NULL;
+>  	u64 start, size;
+>  	bool new_node = false;
+> @@ -1436,28 +1474,22 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  	/*
+>  	 * Self hosted memmap array
+>  	 */
+> -	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
+> -		if (mhp_supports_memmap_on_memory(size)) {
+> -			mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> -			params.altmap = kmemdup(&mhp_altmap,
+> -						sizeof(struct vmem_altmap),
+> -						GFP_KERNEL);
+> -			if (!params.altmap)
+> -				goto error;
+> +	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY) &&
+> +	    mhp_supports_memmap_on_memory(memory_block_size_bytes())) {
+> +		ret = create_altmaps_and_memory_blocks(nid, group, start, size);
+> +		if (ret)
+> +			goto error;
+> +	} else {
+> +		ret = arch_add_memory(nid, start, size, &params);
+> +		if (ret < 0)
+> +			goto error;
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(start, size, NULL, group);
+> +		if (ret) {
+> +			arch_remove_memory(start, size, NULL);
+> +			goto error;
+>  		}
+> -		/* fallback to not using altmap  */
+> -	}
+> -
+> -	/* call arch's memory hotadd */
+> -	ret = arch_add_memory(nid, start, size, &params);
+> -	if (ret < 0)
+> -		goto error_free;
+> -
+> -	/* create memory block devices after memory was added */
+> -	ret = create_memory_block_devices(start, size, params.altmap, group);
+> -	if (ret) {
+> -		arch_remove_memory(start, size, NULL);
+> -		goto error_free;
+>  	}
+>  
+>  	if (new_node) {
+> @@ -1494,8 +1526,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  		walk_memory_blocks(start, size, NULL, online_memory_block);
+>  
+>  	return ret;
+> -error_free:
+> -	kfree(params.altmap);
+>  error:
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
+>  		memblock_remove(start, size);
+> @@ -2076,6 +2106,16 @@ static int test_has_altmap_cb(struct memory_block *mem, void *arg)
+>  	return 0;
+>  }
+>  
+> +static int count_memory_range_altmaps_cb(struct memory_block *mem, void *arg)
+> +{
+> +	u64 *num_altmaps = (u64 *)arg;
+> +
+> +	if (mem->altmap)
+> +		*num_altmaps += 1;
+> +
+> +	return 0;
+> +}
+> +
+>  static int check_cpu_on_node(int nid)
+>  {
+>  	int cpu;
+> @@ -2146,11 +2186,69 @@ void try_offline_node(int nid)
+>  }
+>  EXPORT_SYMBOL(try_offline_node);
+>  
+> -static int __ref try_remove_memory(u64 start, u64 size)
+> +static void __ref remove_memory_blocks_and_altmaps(u64 start, u64 size)
+>  {
+> -	struct memory_block *mem;
+> -	int rc = 0, nid = NUMA_NO_NODE;
+> +	unsigned long memblock_size = memory_block_size_bytes();
+>  	struct vmem_altmap *altmap = NULL;
+> +	struct memory_block *mem;
+> +	u64 cur_start;
+> +	int rc;
+> +
+> +	/*
+> +	 * For memmap_on_memory, the altmaps could have been added on
+> +	 * a per-memblock basis. Loop through the entire range if so,
+> +	 * and remove each memblock and its altmap.
+> +	 */
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		rc = walk_memory_blocks(cur_start, memblock_size, &mem,
+> +					test_has_altmap_cb);
+> +		if (rc) {
+> +			altmap = mem->altmap;
+> +			/*
+> +			 * Mark altmap NULL so that we can add a debug
+> +			 * check on memblock free.
+> +			 */
+> +			mem->altmap = NULL;
+> +		}
+> +
+> +		remove_memory_block_devices(cur_start, memblock_size);
+> +
+> +		arch_remove_memory(cur_start, memblock_size, altmap);
+> +
+> +		/* Verify that all vmemmap pages have actually been freed. */
+> +		if (altmap) {
+> +			WARN(altmap->alloc, "Altmap not fully unmapped");
+> +			kfree(altmap);
+> +		}
+> +	}
+> +}
+> +
+> +static int memory_blocks_have_altmaps(u64 start, u64 size)
+> +{
+> +	u64 num_memblocks = size / memory_block_size_bytes();
+> +	u64 num_altmaps = 0;
+> +
+> +	if (!mhp_memmap_on_memory())
+> +		return 0;
+> +
+> +	walk_memory_blocks(start, size, &num_altmaps,
+> +			   count_memory_range_altmaps_cb);
+> +
+> +	if (num_altmaps == 0)
+> +		return 0;
+> +
+> +	if (num_memblocks != num_altmaps) {
+> +		WARN_ONCE(1, "Not all memblocks in range have altmaps");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+> +static int __ref try_remove_memory(u64 start, u64 size)
+> +{
+> +	int rc, nid = NUMA_NO_NODE;
+>  
+>  	BUG_ON(check_hotplug_memory_range(start, size));
+>  
+> @@ -2167,45 +2265,25 @@ static int __ref try_remove_memory(u64 start, u64 size)
+>  	if (rc)
+>  		return rc;
+>  
+> -	/*
+> -	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+> -	 * the same granularity it was added - a single memory block.
+> -	 */
+> -	if (mhp_memmap_on_memory()) {
+> -		rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
+> -		if (rc) {
+> -			if (size != memory_block_size_bytes()) {
+> -				pr_warn("Refuse to remove %#llx - %#llx,"
+> -					"wrong granularity\n",
+> -					start, start + size);
+> -				return -EINVAL;
+> -			}
+> -			altmap = mem->altmap;
+> -			/*
+> -			 * Mark altmap NULL so that we can add a debug
+> -			 * check on memblock free.
+> -			 */
+> -			mem->altmap = NULL;
+> -		}
+> -	}
+> -
+>  	/* remove memmap entry */
+>  	firmware_map_remove(start, start + size, "System RAM");
+>  
+> -	/*
+> -	 * Memory block device removal under the device_hotplug_lock is
+> -	 * a barrier against racing online attempts.
+> -	 */
+> -	remove_memory_block_devices(start, size);
+> -
+>  	mem_hotplug_begin();
+>  
+> -	arch_remove_memory(start, size, altmap);
+> -
+> -	/* Verify that all vmemmap pages have actually been freed. */
+> -	if (altmap) {
+> -		WARN(altmap->alloc, "Altmap not fully unmapped");
+> -		kfree(altmap);
+> +	rc = memory_blocks_have_altmaps(start, size);
+> +	if (rc < 0) {
+> +		goto err;
+> +	} else if (rc == 0) {
+> +		/*
+> +		 * Memory block device removal under the device_hotplug_lock is
+> +		 * a barrier against racing online attempts.
+> +		 * No altmaps present, do the removal directly
+> +		 */
+> +		remove_memory_block_devices(start, size);
+> +		arch_remove_memory(start, size, NULL);
+> +	} else {
+> +		/* all memblocks in the range have altmaps */
+> +		remove_memory_blocks_and_altmaps(start, size);
+>  	}
+>  
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+> @@ -2218,8 +2296,9 @@ static int __ref try_remove_memory(u64 start, u64 size)
+>  	if (nid != NUMA_NO_NODE)
+>  		try_offline_node(nid);
+>  
+> +err:
+>  	mem_hotplug_done();
+> -	return 0;
+> +	return (rc < 0 ? rc : 0);
+>  }
+>  
+>  /**
