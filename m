@@ -2,117 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC37DB216
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 03:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC18C7DB21F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 03:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjJ3CcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 22:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        id S229968AbjJ3Cpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 22:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjJ3CcQ (ORCPT
+        with ESMTP id S229569AbjJ3Cpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 22:32:16 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F23BE
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 19:32:13 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2ec9a79bdso2929796b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 19:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698633133; x=1699237933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BtRtbmMq9KJMTw6sTU1zuBGrB/yDjOuWLWJULnTmnP8=;
-        b=OSxlK/6/kQHnhGXzzT8l9DYrnIGcn6P0r0oWptVdY5pjS66KvcOgOymnITpXg2cIsr
-         FNEHiCdmFs2FlE26gEL2fNt3fTE9pWZ9ZqQ4k8rvdyTy0VeJcifWZ4iTyCQhzBYSw1yV
-         S0I6yGaQr9nNgWYEct/oxbmrwnIsr6YOqpP5eDR5MdmVIcheKHwagbQfDYNqrU2MJszt
-         i9DGa4Im7x1sZxkcfZbd77JDmcSTzFTSaZG2h9FZdPf++Sn1qRttltWwCAn2isdUAtOw
-         ZUyj+NRmrOck7wSY07zbQ8rqOqWgvNTGfhcAsM6T3lwcOFrJtGmopykaxAeMeKgmN9HO
-         x0+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698633133; x=1699237933;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BtRtbmMq9KJMTw6sTU1zuBGrB/yDjOuWLWJULnTmnP8=;
-        b=D3TczKFAgsi1Bk87SMSzx5DbfkKUO0qgCevERokyNRo29qETMQjVuHcPXPdk4m1Z9c
-         oWJpbjqzVnmx4ixXLaiF+o5CMOJaQckWmvcF4mXn2bH3ea0tDkp+/ERpX8iyBnKRxbVG
-         kjuZ8ag6oFDol/L/QotsDoKF8Y8OrxTTG1FeohMkYbEd0TERuqb5I92OyTpq7xpHJtVl
-         WXyLyvqN4Xia0Xgg2v27XRUC7LTeIoJe3SKpZjAVJv7jJNb7oC9+9bsQ1vbNBhk6IPcy
-         hH8WVzBYLKbuePQ9I95Qa7Zwi/bMSAT92upECCFLXe5vqLe+1+eHRvxW3lb31ZY/T8x9
-         6HIg==
-X-Gm-Message-State: AOJu0YyPnRUsCdL7SuE86uHfpGJUtGcyyNUbieBkc0xDR5h29qcbaDGh
-        FXQ7HT0yVVQe9K4mEw52In6/FA==
-X-Google-Smtp-Source: AGHT+IETHd7sJFZEOIbrX1KTZbiUrA3SPw0allcn/4MpQFozC278d5wO2CVTLqFJboUPxykO1MphSw==
-X-Received: by 2002:a05:6358:7e47:b0:168:d21d:f56f with SMTP id p7-20020a0563587e4700b00168d21df56fmr11153503rwm.20.1698633133166;
-        Sun, 29 Oct 2023 19:32:13 -0700 (PDT)
-Received: from [10.4.36.6] ([139.177.225.229])
-        by smtp.gmail.com with ESMTPSA id d4-20020a633604000000b005b929dc2d25sm3894803pga.10.2023.10.29.19.32.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Oct 2023 19:32:12 -0700 (PDT)
-Message-ID: <5cf3d2a8-563e-4fe5-a1a2-7af417bd8043@bytedance.com>
-Date:   Mon, 30 Oct 2023 10:32:05 +0800
+        Sun, 29 Oct 2023 22:45:42 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CECBE;
+        Sun, 29 Oct 2023 19:45:37 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vv4z2Lv_1698633932;
+Received: from 30.240.96.210(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Vv4z2Lv_1698633932)
+          by smtp.aliyun-inc.com;
+          Mon, 30 Oct 2023 10:45:33 +0800
+Message-ID: <3bbdc5de-ce97-4a4d-b420-1605cef3ffcd@linux.alibaba.com>
+Date:   Mon, 30 Oct 2023 10:45:29 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH bpf-next v6 2/8] bpf: Introduce css_task open-coded
- iterator kfuncs
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231018061746.111364-1-zhouchuyi@bytedance.com>
- <20231018061746.111364-3-zhouchuyi@bytedance.com>
- <bf2add1f-a9e4-46ac-b1ac-5b6ad9f0ed86@roeck-us.net>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <bf2add1f-a9e4-46ac-b1ac-5b6ad9f0ed86@roeck-us.net>
+Subject: Re: Sharing page tables across processes (mshare)
+Content-Language: en-US
+To:     Khalid Aziz <khalid.aziz@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mark Hemment <markhemm@googlemail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+References: <4082bc40-a99a-4b54-91e5-a1b55828d202@oracle.com>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <4082bc40-a99a-4b54-91e5-a1b55828d202@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-在 2023/10/30 01:09, Guenter Roeck 写道:
-> On Wed, Oct 18, 2023 at 02:17:40PM +0800, Chuyi Zhou wrote:
->> This patch adds kfuncs bpf_iter_css_task_{new,next,destroy} which allow
->> creation and manipulation of struct bpf_iter_css_task in open-coded
->> iterator style. These kfuncs actually wrapps css_task_iter_{start,next,
->> end}. BPF programs can use these kfuncs through bpf_for_each macro for
->> iteration of all tasks under a css.
->>
->> css_task_iter_*() would try to get the global spin-lock *css_set_lock*, so
->> the bpf side has to be careful in where it allows to use this iter.
->> Currently we only allow it in bpf_lsm and bpf iter-s.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> With this patch in linux-next:
-> 
-> Building m68k:defconfig ... failed
-> --------------
-> Error log:
-> kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
-> kernel/bpf/task_iter.c:917:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->    917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->        |              ^~~~~~~~~~~~~~~~~~~
-> kernel/bpf/task_iter.c:917:14: note: each undeclared identifier is reported only once for each function it appears in
-> kernel/bpf/task_iter.c:917:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->    917 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-> 
-> My apologies for the noise if this has already been reported and/or fixed.
-> 
-> Guenter
 
-Here is the previous discussion link:
-https://lore.kernel.org/lkml/20231020132749.1398012-1-arnd@kernel.org/
+On 2023/10/24 06:44, Khalid Aziz wrote:
+> Threads of a process share address space and page tables that allows for
+> two key advantages:
+>
+> 1. Amount of memory required for PTEs to map physical pages stays low
+> even when large number of threads share the same pages since PTEs are
+> shared across threads.
+>
+> 2. Page protection attributes are shared across threads and a change
+> of attributes applies immediately to every thread without any overhead
+> of coordinating protection bit changes across threads.
+>
+> These advantages no longer apply when unrelated processes share pages.
+> Some applications can require 1000s of processes that all access the
+> same set of data on shared pages. For instance, a database server may
+> map in a large chunk of database into memory to provide fast access to
+> data to the clients using buffer cache. Server may launch new processes
+> to provide services to new clients connecting to the shared database.
+> Each new process will map in the shared database pages. When the PTEs
+> for mapping in shared pages are not shared across processes, each
+> process will consume some memory to store these PTEs. On x86_64, each
+> page requires a PTE that is only 8 bytes long which is very small
+> compared to the 4K page size. When 2000 processes map the same page in
+> their address space, each one of them requires 8 bytes for its PTE and
+> together that adds up to 8K of memory just to hold the PTEs for one 4K
+> page. On a database server with 300GB SGA, a system crash was seen with
+> out-of-memory condition when 1500+ clients tried to share this SGA even
+> though the system had 512GB of memory. On this server, in the worst case
+> scenario of all 1500 processes mapping every page from SGA would have
+> required 878GB+ for just the PTEs. If these PTEs could be shared, amount
+> of memory saved is very significant.
+>
+> When PTEs are not shared between processes, each process ends up with
+> its own set of protection bits for each shared page. Database servers
+> often need to change protection bits for pages as they manipulate and
+> update data in the database. When changing page protection for a shared
+> page, all PTEs across all processes that have mapped the shared page in
+> need to be updated to ensure data integrity. To accomplish this, the
+> process making the initial change to protection bits sends messages to
+> every process sharing that page. All processes then block any access to
+> that page, make the appropriate change to protection bits, and send a
+> confirmation back.  To ensure data consistency, access to shared page
+> can be resumed when all processes have acknowledged the change. This is
+> a disruptive and expensive coordination process. If PTEs were shared
+> across processes, a change to page protection for a shared PTE becomes
+> applicable to all processes instantly with no coordination required to
+> ensure consistency. Changing protection bits across all processes
+> sharing database pages is a common enough operation on Oracle databases
+> that the cost is significant and cost goes up with the number of clients.
+>
+> This is a proposal to extend the same model of page table sharing for
+> threads across processes. This will allow processes to tap into the
+> same benefits that threads get from shared page tables,
+>
+> Sharing page tables across processes opens their address spaces to each
+> other and thus must be done carefully. This proposal suggests sharing
+> PTEs across processes that trust each other and have explicitly agreed
+> to share page tables. The proposal is to add a new flag to mmap() call -
+> MAP_SHARED_PT.  This flag can be specified along with MAP_SHARED by a
+> process to hint to kernel that it wishes to share page table entries
+> for this file mapping mmap region with other processes. Any other process
+> that mmaps the same file with MAP_SHARED_PT flag can then share the same
+> page table entries. Besides specifying MAP_SHARED_PT flag, the processe
+> must map the files at a PMD aligned address with a size that is a
+> multiple of PMD size and at the same virtual addresses. NOTE: This
+> last requirement of same virtual addresses can possibly be relaxed if
+> that is the consensus.
+>
+> When mmap() is called with MAP_SHARED_PT flag, a new host mm struct
+> is created to hold the shared page tables. Host mm struct is not
+> attached to a process. Start and size of host mm are set to the
+> start and size of the mmap region and a VMA covering this range is
+> also added to host mm struct. Existing page table entries from the
+> process that creates the mapping are copied over to the host mm
+> struct. All processes mapping this shared region are considered
+> guest processes. When a guest process mmap's the shared region, a vm
+> flag VM_SHARED_PT is added to the VMAs in guest process. Upon a page
+> fault, VMA is checked for the presence of VM_SHARED_PT flag. If the
+> flag is found, its corresponding PMD is updated with the PMD from
+> host mm struct so the PMD will point to the page tables in host mm
+> struct.  When a new PTE is created, it is created in the host mm struct
+> page tables and the PMD in guest mm points to the same PTEs.
+>
+>
+> --------------------------
+> Evolution of this proposal
+> --------------------------
+>
+> The original proposal -
+> <https://lore.kernel.org/lkml/cover.1642526745.git.khalid.aziz@oracle.com/>, 
+>
+> was for an mshare() system call that a donor process calls to create
+> an empty mshare'd region. This shared region is pgdir aligned and
+> multiple of pgdir size. Each mshare'd region creates a corresponding
+> file under /sys/fs/mshare which can be read to get information on
+> the region.  Once an empty region has been created, any objects can
+> be mapped into this region and page tables for those objects will be
+> shared.  Snippet of the code that a donor process would run looks
+> like below:
+>
+>         addr = mmap((void *)TB(2), GB(512), PROT_READ | PROT_WRITE,
+>                         MAP_SHARED | MAP_ANONYMOUS, 0, 0);
+>         if (addr == MAP_FAILED)
+>                 perror("ERROR: mmap failed");
+>
+>         err = syscall(MSHARE_SYSCALL, "testregion", (void *)TB(2),
+>             GB(512), O_CREAT|O_RDWR|O_EXCL, 600);
+>         if (err < 0) {
+>                 perror("mshare() syscall failed");
+>                 exit(1);
+>         }
+>
+>         strncpy(addr, "Some random shared text",
+>             sizeof("Some random shared text"));
+>
+>
+> Snippet of code that a consumer process would execute looks like:
+>
+>         fd = open("testregion", O_RDONLY);
+>         if (fd < 0) {
+>                 perror("open failed");
+>                 exit(1);
+>         }
+>
+>         if ((count = read(fd, &mshare_info, sizeof(mshare_info)) > 0))
+>                 printf("INFO: %ld bytes shared at addr %lx \n",
+>                 mshare_info[1], mshare_info[0]);
+>         else
+>                 perror("read failed");
+>
+>         close(fd);
+>
+>         addr = (char *)mshare_info[0];
+>         err = syscall(MSHARE_SYSCALL, "testregion", (void 
+> *)mshare_info[0],
+>             mshare_info[1], O_RDWR, 600);
+>         if (err < 0) {
+>                 perror("mshare() syscall failed");
+>                 exit(1);
+>         }
+>
+>         printf("Guest mmap at %px:\n", addr);
+>         printf("%s\n", addr);
+>     printf("\nDone\n");
+>
+>         err = syscall(MSHARE_UNLINK_SYSCALL, "testregion");
+>         if (err < 0) {
+>                 perror("mshare_unlink() failed");
+>                 exit(1);
+>         }
+>
+>
+> This proposal evolved into completely file and mmap based API -
+> <https://lore.kernel.org/lkml/cover.1656531090.git.khalid.aziz@oracle.com/>. 
+>
+> This new API looks like below:
+>
+> 1. Mount msharefs on /sys/fs/mshare -
+>     mount -t msharefs msharefs /sys/fs/mshare
+>
+> 2. mshare regions have alignment and size requirements. Start
+>    address for the region must be aligned to an address boundary and
+>    be a multiple of fixed size. This alignment and size requirement
+>    can be obtained by reading the file /sys/fs/mshare/mshare_info
+>    which returns a number in text format. mshare regions must be
+>    aligned to this boundary and be a multiple of this size.
+>
+> 3. For the process creating mshare region:
+>     a. Create a file on /sys/fs/mshare, for example -
+>         fd = open("/sys/fs/mshare/shareme",
+>                 O_RDWR|O_CREAT|O_EXCL, 0600);
+>
+>     b. mmap this file to establish starting address and size -
+>         mmap((void *)TB(2), BUF_SIZE, PROT_READ | PROT_WRITE,
+>                         MAP_SHARED, fd, 0);
+>
+>     c. Write and read to mshared region normally.
+>
+> 4. For processes attaching to mshare'd region:
+>     a. Open the file on msharefs, for example -
+>         fd = open("/sys/fs/mshare/shareme", O_RDWR);
+>
+>     b. Get information about mshare'd region from the file:
+>         struct mshare_info {
+>             unsigned long start;
+>             unsigned long size;
+>         } m_info;
+>
+>         read(fd, &m_info, sizeof(m_info));
+>
+>     c. mmap the mshare'd region -
+>         mmap(m_info.start, m_info.size,
+>             PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+>
+> 5. To delete the mshare region -
+>         unlink("/sys/fs/mshare/shareme");
+>
+>
+>
+> Further discussions over mailing lists and LSF/MM resulted in eliminating
+> msharefs and making this entirely mmap based -
+> <https://lore.kernel.org/lkml/cover.1682453344.git.khalid.aziz@oracle.com/>. 
+>
+> With this change, if two processes map the same file with same
+> size, PMD aligned address, same virtual address and both specify
+> MAP_SHARED_PT flag, they start sharing PTEs for the file mapping.
+> These changes eliminate support for any arbitrary objects being
+> mapped in mshare'd region. The last implementation required sharing
+> minimum PMD sized chunks across processes. These changes were
+> significant enough to make this proposal distinct enough for me to
+> use a new name - ptshare.
+>
+>
+> ----------
+> What next?
+> ----------
+>
+> There were some more discussions on this proposal while I was on
+> leave for a few months. There is enough interest in this feature to
+> continue to refine this. I will refine the code further but before
+> that I want to make sure we have a common understanding of what this
+> feature should do.
+>
+> As a result of many discussions, a new distinct version of
+> original proposal has evolved. Which one do we agree to continue
+> forward with - (1) current version which restricts sharing to PMD sized
+> and aligned file mappings only, using just a new mmap flag
+> (MAP_SHARED_PT), or (2) original version that creates an empty page
+> table shared mshare region using msharefs and mmap for arbitrary
+> objects to be mapped into later?
+Hi, Khalid
 
-We can talk this issue on that maillist.
+I am unfamiliar to original version, but I can provide some feedback on 
+the issues encountered
+during the implementation of current version (mmap & MAP_SHARED_PT).
+We realize our internal pgtable sharing version in the current method, 
+but the codes
+are a bit hack in some places, e.g. (1) page fault, need to switch 
+original mm to flush TLB or
+charge memcg; (2) shrink memory, a bit complicated to to handle pte 
+entries like normal pte mapping;
+(3) munmap/madvise support;
 
-thanks.
+If these hack codes can be resolved, the current method seems already 
+simple and usable enough (just my humble opinion).
+
+
+And besides above issues, we (our internal version) do not care memory 
+migration, compaction, etc,. I'm not sure what
+functions pgtable sharing needs to support. Maybe we can have a 
+discussion about that firstly, then decide
+which one? Here are the things we support in pgtable sharing:
+
+a. share pgtables only between parent and child processes;
+b. support anonymous shared memory and id-known (SYSV shared memory);
+c. madvise(MADV_DONTNEED, MADV_DONTDUMP, MADV_DODUMP), DONTNEED supports 
+2M granularity;
+d. reclaim pgtable sharing memory in shrinker;
+
+The above support is actually requested by our internal user. Plus, we 
+skip memory migration, compaction, mprotect, mremap etc, directly.
+IMHO, support all memory behavior likes normal pte mapping is unnecessary?
+(Next, It seems I need to study your original version :-))
+
+Thanks,
+-wrw
+>
+> Thanks,
+> Khalid
+
