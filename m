@@ -2,226 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ABF7DB807
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435157DB814
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbjJ3K0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S232622AbjJ3K1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbjJ3K0l (ORCPT
+        with ESMTP id S232516AbjJ3K1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:26:41 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8997109
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:26:37 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-e4-653f84dca000
-Date:   Mon, 30 Oct 2023 19:26:31 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        "hughd@google.com" <hughd@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [v3 1/3] mm/rmap: Recognize non-writable TLB entries during TLB
- batch flush
-Message-ID: <20231030102631.GB81877@system.software.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <20231030072540.38631-2-byungchul@sk.com>
- <1DB097E6-6585-4D10-95C9-7BAA5A622B7E@vmware.com>
+        Mon, 30 Oct 2023 06:27:12 -0400
+Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F41ED5B;
+        Mon, 30 Oct 2023 03:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1698661627; x=1698920827;
+        bh=7zkqBv0IO/Cia/bOBqGNBNHhZyCIsu/SyD77apT8FwM=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=hz++OsoUsK1VhjY8aQ4u7QQDVflJTPKI6TPUu0HlpZAh49Zrt+sNGsQAwh2Aoy3nG
+         bS0IPcnb8t+8XvdIFN3eR5Cjqrcu9CJ9pfKwhtCdfiwlTKx6tW3ZeOhzM8VFKTLcFZ
+         lJcVSw6DVsazaPXmoOmGarl8jgNnaNeFL4OBoqM8bfb/yxNUun0LbUTXs9zbl4JuQu
+         iveKXBZcNn4E3VkwW3q+DnMw72a1rxaqzwyda/FdFJ9Bc6fEWx18kvxwfqJrLZq4R1
+         A6z3CRPC3dbrHSez0voR8PHhFQkFVfZ6PUb1wTFDivRp1BDA/+urphz91Era3VWJYk
+         LRy3Jxx+Gndqg==
+Date:   Mon, 30 Oct 2023 10:26:56 +0000
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Janne Grunau <j@jannau.net>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH v1 12/12] usb: typec: qcom: define the bridge's path
+Message-ID: <ggE_bGq2Q6EpabJVQHH3boOhxNpTZLD9RVaI-RdchIuQZNkRRL5L9WL4-91foZPnzP59SI_ChrQszENrYBXsFUqK9nSvMv2e-yGYpsz5jUA=@emersion.fr>
+In-Reply-To: <CAA8EJpoWuRw_eDSEL=khDoXrS1GctxJzXhdMy9iLb5PDG-=Vfg@mail.gmail.com>
+References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org> <20230903214150.2877023-13-dmitry.baryshkov@linaro.org> <ZQRKq7K8jKlH/Y4X@kuha.fi.intel.com> <0F1BE090-92C4-4233-A77A-9B4C653DA1A7@linaro.org> <ZT9m/OoFUiZaWy9s@kuha.fi.intel.com> <CAA8EJprgpfh_GOeV+557YHWUJC-9W1Tw7nzb0jy5mPAv35VuGA@mail.gmail.com> <B8P9onfq9cXaSM_GbX3N_PSdo19FY_donmDWeAwLGlrrRvclqNcOA2LCGBnVYuJtAlJJFanedJL6GygtJHDS6WP5twzb-L7VJYnmqyFXZtk=@emersion.fr> <CAA8EJpoWuRw_eDSEL=khDoXrS1GctxJzXhdMy9iLb5PDG-=Vfg@mail.gmail.com>
+Feedback-ID: 1358184:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1DB097E6-6585-4D10-95C9-7BAA5A622B7E@vmware.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsXC9ZZnoe7dFvtUg1Zjiznr17BZfN7wj83i
-        xYZ2Rouv638xWzz91MdicXnXHDaLe2v+s1qc37WW1WLH0n1MFpcOLGCyuL7rIaPF8d4DTBab
-        N01ltvj9A6huzhQri5OzJrM4CHh8b+1j8ViwqdRj8wotj8V7XjJ5bFrVyeax6dMkdo93586x
-        e5yY8ZvFY+dDS495JwM93u+7yuax9Zedx+dNch7v5r9lC+CL4rJJSc3JLEst0rdL4Mr4sZu1
-        YKpyxbnDe5kaGG9IdzFyckgImEj0bmpmhLEPfL4DZrMIqEqc+rSWHcRmE1CXuHHjJzOILSKg
-        KHFo/z2wGmaBd6wS3z9pgtjCAlESX2ZuB4vzClhIPN76haWLkYtDSGAqo8SjrglsEAlBiZMz
-        n7BANKtL/Jl3CWgoB5AtLbH8HwdEWF6ieetssDCngJ3Et9YIkLCogLLEgW3HmUBGSghsY5e4
-        drCRHeJmSYmDK26wTGAUnIVkwywkG2YhbJiFZMMCRpZVjEKZeWW5iZk5JnoZlXmZFXrJ+bmb
-        GIHxuqz2T/QOxk8Xgg8xCnAwKvHwBoTbpQqxJpYVV+YeYpTgYFYS4WV2tEkV4k1JrKxKLcqP
-        LyrNSS0+xCjNwaIkzmv0rTxFSCA9sSQ1OzW1ILUIJsvEwSnVwMhzVVVU7ONmtbrfedLfz7/d
-        oRjgtuzwXtHF8+RqZB8Wm4iePXUozOfUrsXuZ2J0Orqf73dnmM1ZdqD+7Dr/krYLa/T0xZT3
-        ngsTl17NsZr187WTDa+zef7VL8kJM/zzOfNYR7vF1R/ud+va7gvq7lrr65Nw4tlhJqljLccl
-        NUM+b9I5Z7erUVCJpTgj0VCLuag4EQDalPfl0wIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsXC5WfdrHunxT7V4P8MJYs569ewWXze8I/N
-        4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
-        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
-        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPxS8+MHls/WXn8XmTnMe7+W/ZAvijuGxSUnMy
-        y1KL9O0SuDJ+7GYtmKpcce7wXqYGxhvSXYycHBICJhIHPt9hBLFZBFQlTn1ayw5iswmoS9y4
-        8ZMZxBYRUJQ4tP8eWA2zwDtWie+fNEFsYYEoiS8zt4PFeQUsJB5v/cLSxcjFISQwlVHiUdcE
-        NoiEoMTJmU9YIJrVJf7MuwQ0lAPIlpZY/o8DIiwv0bx1NliYU8BO4ltrBEhYVEBZ4sC240wT
-        GPlmIRk0C8mgWQiDZiEZtICRZRWjSGZeWW5iZo6pXnF2RmVeZoVecn7uJkZg/C2r/TNxB+OX
-        y+6HGAU4GJV4eAPC7VKFWBPLiitzDzFKcDArifAyO9qkCvGmJFZWpRblxxeV5qQWH2KU5mBR
-        Euf1Ck9NEBJITyxJzU5NLUgtgskycXBKNTC2+X1ofPlSZzfHlw9eWZZZ6iVfKncfnqC4yvgQ
-        37F4R6HgA3+SRIOfv+uQ2uLbqPJ60vxbisuW/JhdG+ixIzg4yDZfdp/L2bytJ6OP2TUsM1T2
-        iXjgmzBtparB8Z8XTh4vMnNJTd5yVWKdipiWcXug9vW23Ts1M4oK70aLTuNmuxP2nj/Du1iJ
-        pTgj0VCLuag4EQB+QdrXuwIAAA==
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:52:05AM +0000, Nadav Amit wrote:
-> 
-> Below are some points you might find useful:
+On Monday, October 30th, 2023 at 11:22, Dmitry Baryshkov <dmitry.baryshkov@=
+linaro.org> wrote:
 
-Thank you!
+> On Mon, 30 Oct 2023 at 12:13, Simon Ser contact@emersion.fr wrote:
+>=20
+> > On Monday, October 30th, 2023 at 10:47, Dmitry Baryshkov dmitry.baryshk=
+ov@linaro.org wrote:
+> >=20
+> > > On Mon, 30 Oct 2023 at 10:19, Heikki Krogerus
+> > > heikki.krogerus@linux.intel.com wrote:
+> > >=20
+> > > > On Mon, Oct 23, 2023 at 09:24:33PM +0300, Dmitry Baryshkov wrote:
+> > > >=20
+> > > > > On 15 September 2023 15:14:35 EEST, Heikki Krogerus heikki.kroger=
+us@linux.intel.com wrote:
+> > > > >=20
+> > > > > > Hi Dmitry,
+> > > > > >=20
+> > > > > > On Mon, Sep 04, 2023 at 12:41:50AM +0300, Dmitry Baryshkov wrot=
+e:
+> > > > > >=20
+> > > > > > > In order to notify the userspace about the DRM connector's US=
+B-C port,
+> > > > > > > export the corresponding port's name as the bridge's path fie=
+ld.
+> > > > > > >=20
+> > > > > > > Signed-off-by: Dmitry Baryshkov dmitry.baryshkov@linaro.org
+> > > > > > > ---
+> > > > > > > drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 11 +++++++---=
+-
+> > > > > > > drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c | 4 +++-
+> > > > > > > drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h | 6 ++++--
+> > > > > > > 3 files changed, 14 insertions(+), 7 deletions(-)
+> > > > > > >=20
+> > > > > > > diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/=
+drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> > > > > > > index b9d4856101c7..452dc6437861 100644
+> > > > > > > --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> > > > > > > +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> > > > > > > @@ -156,6 +156,7 @@ static int qcom_pmic_typec_probe(struct p=
+latform_device *pdev)
+> > > > > > > struct device_node *np =3D dev->of_node;
+> > > > > > > const struct pmic_typec_resources *res;
+> > > > > > > struct regmap *regmap;
+> > > > > > > + char *tcpm_name;
+> > > > > > > u32 base[2];
+> > > > > > > int ret;
+> > > > > > >=20
+> > > > > > > @@ -211,10 +212,6 @@ static int qcom_pmic_typec_probe(struct =
+platform_device *pdev)
+> > > > > > > mutex_init(&tcpm->lock);
+> > > > > > > platform_set_drvdata(pdev, tcpm);
+> > > > > > >=20
+> > > > > > > - tcpm->pmic_typec_drm =3D qcom_pmic_typec_init_drm(dev);
+> > > > > > > - if (IS_ERR(tcpm->pmic_typec_drm))
+> > > > > > > - return PTR_ERR(tcpm->pmic_typec_drm);
+> > > > > > > -
+> > > > > > > tcpm->tcpc.fwnode =3D device_get_named_child_node(tcpm->dev, =
+"connector");
+> > > > > > > if (!tcpm->tcpc.fwnode)
+> > > > > > > return -EINVAL;
+> > > > > > > @@ -225,6 +222,12 @@ static int qcom_pmic_typec_probe(struct =
+platform_device *pdev)
+> > > > > > > goto fwnode_remove;
+> > > > > > > }
+> > > > > > >=20
+> > > > > > > + tcpm_name =3D tcpm_port_get_name(tcpm->tcpm_port);
+> > > > > > > + tcpm->pmic_typec_drm =3D qcom_pmic_typec_init_drm(dev, tcpm=
+_name);
+> > > > > >=20
+> > > > > > So I got some questions and concerns off-list. This was one of =
+the
+> > > > > > concerns. That tcpm_name is now the actual port device name, so=
+ I'm
+> > > > > > afraid this is not acceptable.
+> > > > > >=20
+> > > > > > You can't use device name as a reference, ever. There is no way=
+ to
+> > > > > > guarantee that a device with a specific name is what you meant =
+it to
+> > > > > > be by the time it's accessed.
+> > > > >=20
+> > > > > Hmm, could you please be more specific, why? I mean, class device=
+s are not
+> > > > > that easy to be renamed in sysfs, are they? Or are you concerned =
+about the
+> > > > > device being destroyed behind userspace's back? At least for MSM =
+this will be
+> > > > > a huge problem already, with the bridge driver suddenly being rem=
+oved.
+> > > >=20
+> > > > The race exists even in your case, but please do not look at this a=
+s a
+> > > > solution for only your platform.
+> > >=20
+> > > Yes!
+> > >=20
+> > > > This is about showing the user space a link between two device
+> > > > instances (struct device), and the way you do that is by creating a
+> > > > symlink. That way the kernel can take care of reference counting an=
+d
+> > > > guarantee that the link always points to the correct device. That w=
+ay
+> > > > the link will also be always visible in user space without requirem=
+ent
+> > > > for any specific ABI like it should.
+> > >=20
+> > > I'm fine with the symlink approach (and I'll follow that up after
+> > > finishing the UCSI glue driver rework). However I feel several
+> > > deficiencies there:
+> > >=20
+> > > 1) It creates asymmetry with the DP MST case. Do we want to have
+> > > symlinks in each of the MST connectors? Or do we follow the PATH
+> > > properties in the MST case until we find the root port, which has
+> > > symlink? Please note, that fine X11 renames DP MST connectors
+> > > internally, so in xrandr I see DP-2-1, which maps to
+> > > /sys/class/drm/card0-DP-2. Kind of hard to follow.
+> > >=20
+> > > 2) For the multi-card cases, one has to remap the connector to the
+> > > card index + connector path. And this needs to be done by all user
+> > > space applications, which would like to present this kind of
+> > > information for the user.
+> > >=20
+> > > 3) If we were to support non-USB-C connectors (e.g. MyDP / SlimPort
+> > > and MHL used simple micro-USB connectors) there would be a completely
+> > > new uABI. And any external port / wrapper will also require a
+> > > completely new symlink kind.
+> > >=20
+> > > I understand your concerns regarding mentioning external device in th=
+e
+> > > PATH property. However I think we should make it easier for the
+> > > userspace app to determine the kind of the external connector. What
+> > > would you think about extending the PATH property in the following
+> > > way:
+> > >=20
+> > > For the USB-C connectors the PATH property has the value of
+> > > `typec:cardN-DP-m` value. Userspace app can then look for the
+> > > typec_connector symlink at the /sys/class/drm/cardN-DP-m subdir to
+> > > find the information about the corresponding USB-C port.
+> >=20
+> > This doesn't make sense to me. "cardN-DP-m" has nothing to do with the
+> > physical path of the connector. All of the parts of this string are
+> > exposed elsewhere in the KMS uAPI already.
+>=20
+> True. It seems I mixed KMS and xrandr clients in my head.
+> Just 'typec:' then? This way userspace will still know that it is a
+> USB-C connector (and can stop there) and if it needs more information
+> (e.g. physical location) it can further look for the symlink in the
+> sysfs.
 
-> > +
-> > /*
-> >  * Blindly accessing user memory from NMI context can be dangerous
-> >  * if we're in the middle of switching the current user task or
-> > diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
-> > index aa44fff8bb9d..35ba9425d48d 100644
-> > --- a/include/linux/mm_types_task.h
-> > +++ b/include/linux/mm_types_task.h
-> > @@ -59,8 +59,8 @@ struct tlbflush_unmap_batch {
-> > 	 */
-> > 	struct arch_tlbflush_unmap_batch arch;
-> > 
-> > -	/* True if a flush is needed. */
-> > -	bool flush_required;
-> > +	/* The number of flush requested. */
-> 
-> Number of what? Base pages I presume.
+It sounds like an abuse of the PATH property. PATH is supposed to
+contain an actual path, not just some connector type.
 
-How many times set_tlb_ubc_flush_pending() has been called.
-
-> > +	int nr_flush_required;
-> 
-> Perhaps unsigned would be better suited?
-
-Will change it to unsigned.
-
-> > 	/*
-> > 	 * If true then the PTE was dirty when unmapped. The entry must be
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 77f01ac385f7..63189c023357 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1324,6 +1324,7 @@ struct task_struct {
-> > #endif
-> > 
-> > 	struct tlbflush_unmap_batch	tlb_ubc;
-> > +	struct tlbflush_unmap_batch	tlb_ubc_nowr;
-> 
-> tlb_ubc_nowr is - I think - less informative the tlb_ubc_ro (and a comment
-> would be useful).
-
-At the beginning, I named it tlb_ubc_ro but.. I forgot why I changed it
-to tlb_ubc_nowr but.. I will change it back and add a comment on it.
-
-> > +
-> > +int nr_flush_required(void)
-> > +{
-> > +	return current->tlb_ubc.nr_flush_required;
-> > +}
-> > +
-> > +int nr_flush_required_nowr(void)
-> > +{
-> > +	return current->tlb_ubc_nowr.nr_flush_required;
-> > +}
-> 
-> I haven’t gone through the users of these functions yet, as they are not included
-> in this patch (which is usually not great).
-
-Right. I will place these two on another patch that uses the functions.
-Or need to add an explanation in this commit message.
-
-> Anyhow, it might be a bit wasteful to have a function call for such a function. See
-> if it is possible to avoid that call.
-
-I will move them to mm/internal.h with inline added if possible.
-
-> > +
-> > /*
-> >  * Flush TLB entries for recently unmapped pages from remote CPUs. It is
-> >  * important if a PTE was dirty when it was unmapped that it's flushed
-> > @@ -615,11 +641,12 @@ void try_to_unmap_flush(void)
-> > {
-> > 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-> > 
-> > -	if (!tlb_ubc->flush_required)
-> > +	fold_ubc_nowr();
-> > +	if (!tlb_ubc->nr_flush_required)
-> > 		return;
-> > 
-> > 	arch_tlbbatch_flush(&tlb_ubc->arch);
-> > -	tlb_ubc->flush_required = false;
-> > +	tlb_ubc->nr_flush_required = 0;
-> > 	tlb_ubc->writable = false;
-> > }
-> > 
-> > @@ -627,8 +654,9 @@ void try_to_unmap_flush(void)
-> > void try_to_unmap_flush_dirty(void)
-> > {
-> > 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-> > +	struct tlbflush_unmap_batch *tlb_ubc_nowr = &current->tlb_ubc_nowr;
-> > 
-> > -	if (tlb_ubc->writable)
-> > +	if (tlb_ubc->writable || tlb_ubc_nowr->writable)
-> > 		try_to_unmap_flush();
-> > }
-> > 
-> > @@ -645,15 +673,16 @@ void try_to_unmap_flush_dirty(void)
-> > static void set_tlb_ubc_flush_pending(struct mm_struct *mm, pte_t pteval,
-> > 				      unsigned long uaddr)
-> > {
-> > -	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-> > +	struct tlbflush_unmap_batch *tlb_ubc;
-> > 	int batch;
-> > 	bool writable = pte_dirty(pteval);
-> > 
-> > 	if (!pte_accessible(mm, pteval))
-> > 		return;
-> > 
-> > +	tlb_ubc = pte_write(pteval) || writable ? &current->tlb_ubc : &current->tlb_ubc_nowr;
-> 
-> Using the ternary operator here is a bit confusing. You can use an “if”
-> instead or if you mind is set doing it this way at least make it easier to
-> read:
-> 
-> 	tlb_ubc = (pte_write(pteval) || writable) ? &current->tlb_ubc :
-> 						    &current->tlb_ubc_nowr;
-
-You are right. I should change it that way. Thanks.
-
-> And of course, add a comment.
-
-Okay. Also will add a comment.
-
-> > 	arch_tlbbatch_add_pending(&tlb_ubc->arch, mm, uaddr);
-> > -	tlb_ubc->flush_required = true;
-> > +	tlb_ubc->nr_flush_required += 1;
-> 
-> Presumably overflow is impossible for other reasons, but something like that
-> worries me.
-
-Agree with you. Lemme think it more and fix it.
-
-Thank you.
-
-	Byungchul
-
+User-space can directly look into sysfs if it wants to figure out
+whether a connector is typec.
