@@ -2,417 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20EC7DBF3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE497DBF10
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbjJ3RmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S233935AbjJ3Rfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbjJ3RmI (ORCPT
+        with ESMTP id S233700AbjJ3Rfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:42:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C7A9C;
-        Mon, 30 Oct 2023 10:42:04 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 02B391FD91;
-        Mon, 30 Oct 2023 17:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698687723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wACBdOFb6STjmPZ65T6qXGq/FF13z4B1T83IY8oXR3k=;
-        b=c04hO3Mmg/TTO+ttl2njonBwzIN4Ov2cyzk8DXlVqLb4uVDHpP4fPXLK7P1vjzjxgELzHs
-        XsHJV4FszBCD9wQXPqMbFjIGznifZ/7ObWq6I8Pp1Ico3m9PIp5QYNjDBXsKmauArfBIAj
-        TVmKJnSPBdviVVhNjutEzharWdt4jJw=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A5E062CEC5;
-        Mon, 30 Oct 2023 17:42:02 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C88F4DA83C; Mon, 30 Oct 2023 18:35:06 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 6.7
-Date:   Mon, 30 Oct 2023 18:35:03 +0100
-Message-ID: <cover.1698679287.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 30 Oct 2023 13:35:32 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2060.outbound.protection.outlook.com [40.107.247.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FA59C;
+        Mon, 30 Oct 2023 10:35:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eKz33+m1lFBK+xpl+I/lAhs5O6MI7lPRMA8pS/BCdkCHmUQoXCbI9Z6csNtu1HIHDd2SCdvLwowgBbiBvVFz4NIrwa6g7Oe+KDvLrcqpyYcNwwkUHD9Y6hxXMDJcnLLdZFhcWGOaUZ4rK4QYKp/GeXcwUr3BU74dyTIk3RMpBeOH5AD89OxrXnCO/B4xK76ccE7RuOw4xadtRdQbITKYwcvJJe9mw5sFW86nre2aitgV0Avm31Zq5YhALGmsjtO9rf519JUecGUhu1c0An+iRMQdSDD1dNfepS3zqnxUYctRMAFNSxYYKoJNOSZi74yDD9R6m3SxWambwsrPpot1Yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wvH0nYycAO6sAl/F2vJcb18b2LcPDZnTf02Zg6sDcFE=;
+ b=AbJKdJTiAfegkefAqXUeO3sl7LtyiNSYTPQd+3+3tuXPPJOd8Z+uiXMqURibOk5Cat7M8tdYX+49zEQQKz3iY7diJkCzhwQZ6m4gr2xRAVCQQ+FK2xo6ZbisdMHD3fZeehANWRSWZHSw44Mca4VDoYA5tP+qTw1UKGyz+VGtJtceS4ngUEYj+VGLw+OKhX9TRN+yBXeWqCwLOPM1tPEy9FiN5haSi7vuY3bySdkzNL63KjGGVVYu8u9mjJ+VXHyUzxjsendLNjkFOIrYRD6iHN/mdeFDZ4Yf/EElodDSuv2B1rUtFFmXw0jwwwTHnAxUKp6m7vvkOwqc6N9ouY5nhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wvH0nYycAO6sAl/F2vJcb18b2LcPDZnTf02Zg6sDcFE=;
+ b=ILGoz6BBJ09Fhf7CI7CHQkgwPcGUN658s5isfC0d7pfod0z97EkmRNQI7AF1tyH+ZTHHpobxqgRtdbAtqat1PvqHvUrTntxT9RODTDHCOX1ReySm+UfGZqdG8Qbw0F7kAWceVa6CUPv+Rnkay3jCY/lWUIWmUDnQDVEOlb/gBtjsL34RL9k6OoNA3lERC2x1vUL372AzAM07wBSDyrTrxSnRbz8yx4qJWnQJBaV5Xayz8oJSPS+P3qfjw8/uVvIqnVMdDNQY4rQhS1k75R9BhFGc7ZW61DYC5BxVuiSKK4u9+89QfS8QTUHk3PlzYEBA7lHhjPhGvJ8eO00RJQJdEg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
+ by GVXPR10MB8083.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:115::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.29; Mon, 30 Oct
+ 2023 17:35:26 +0000
+Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8496:a3a3:d7a8:b24d]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8496:a3a3:d7a8:b24d%4]) with mapi id 15.20.6933.028; Mon, 30 Oct 2023
+ 17:35:26 +0000
+Message-ID: <90334e24-6bcc-4676-8ddf-8c8f8191038d@siemens.com>
+Date:   Mon, 30 Oct 2023 18:35:19 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] dt-bindings: trivial-devices: Add IOT2050 Arduino SPI
+ connector
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
+        Benedikt Niedermayr <benedikt.niedermayr@siemens.com>
+References: <cover.1698413678.git.jan.kiszka@siemens.com>
+ <7838d99a1795337c73f480fafcbf698fc17d16dd.1698413678.git.jan.kiszka@siemens.com>
+ <20231030164327.GA1242659-robh@kernel.org>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+In-Reply-To: <20231030164327.GA1242659-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0PR03CA0070.namprd03.prod.outlook.com
+ (2603:10b6:610:cc::15) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:588::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|GVXPR10MB8083:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9b8c3bea-30b3-4a40-7ecd-08dbd96e9a57
+X-LD-Processed: 38ae3bcd-9579-4fd4-adda-b42e1495d55a,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T4c5mPGvBXq001i92aAvLWb1krtG1ER686EXrHnND96IasMvOHTV5dvRIRkgLSadeg4wZcLUXcrV+GwtN3FYtOHcU3Ep152tKu748DNI/Rx93PyFe/C3MBCONSYVMlYr8bebdHHvM7TY8DrbLjNV9CeJ0fsyVMd/iniLuEt8YxUcfyeO4Mfvy9aJE+oZraDolLThSH6Q4YoaI04tok03i3ilcSFLoaWCaDiJAHVG72lizdldNAw3OLo+iapdouJNnCSNyhAjhdiuypcFDGfDREK5svYYHKDiThrWyB3ofLIrxNPv3EW9ysBzOaf0/4t9hBtKKHw3Z+JK7z1cMHUyEUphP2R5iJK2s4SlKJeJjhKocbCYbFtnTG/sXckCxNmTo8qGBs02ESneY0sjoMvPAloWUixYcBdWxIwEk00Jac5dLxM+3We7qHrxJiAXw3usJqKC8yihB1OWJmiGAfnL8WUhmStekcY/hYG04ud/GXJDnpCmgdwb7heyianXSfKBhhoL5sRFlu65vv2I47pqxLPbfom1zqimxjJMcTXOhBXYx4UlYQtwUxiE29NathhfK3IWYpRyoyjzl3UZkRQZfWbMoNsV15qgNvv2dypa8ZzsSc09xeOvd+ZnJKo+41tEUnoaU6Wj7St1f3WrxRIIJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(366004)(396003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(26005)(2616005)(107886003)(38100700002)(316002)(54906003)(66556008)(66946007)(66476007)(6916009)(5660300002)(44832011)(8676002)(8936002)(4326008)(53546011)(6666004)(6506007)(6512007)(6486002)(2906002)(41300700001)(478600001)(82960400001)(31696002)(86362001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2ZpNExJdFU4WWFCZ29WVE03ekdCeEdJR05RbkdYZE50NHM4Q2Voa29GQWtQ?=
+ =?utf-8?B?ckxSdFVORXJMTDlqQUJvNDZDTUFtbVVFQkFlS1NDazlqOTV5b1FFdG1uc3gr?=
+ =?utf-8?B?eGU4dEtMeFJsOEk0TkorYTFIeXNQRVZ0Kyt3VXlsSWtKL0RYa1UwVzVNMjYy?=
+ =?utf-8?B?WWhPaTJ3bzZNdHlPZkJGeVdFaDNMQlBXZWQ5eHh0TXpwWlNXMFk2MHBmUWFm?=
+ =?utf-8?B?RU9TWlpmdnAwY0xMeXFUWHY1MU5hSWZyMDNTdDFiS3VjZGdURzhFUy9kOG52?=
+ =?utf-8?B?TTB1MGFkZzRIRm4za2lyRWhSSTJWRGNCQ3N6OTBud3YvKzJ3K1o3TzVnS1ZV?=
+ =?utf-8?B?bmRBOXlFaHQyZFNQcVR6Qlh0S2grdXVIK1BuYjhkN08xQTBLUVRYeFkvK3JY?=
+ =?utf-8?B?UEZhNE51Mk1BTUljREJNZ0E4bVNKcGRYWXBpUjN2WVA0WWgwQUgrRGRrem94?=
+ =?utf-8?B?MEhHaFN4a1k2UndVR255aDBWOTVLYzdLRnJtb2I5dFpLbFM2NmhNZ1pER1da?=
+ =?utf-8?B?dFhSbXFrU3pQaE1CL3FkYXYzYUZhb0c1eHlVL1dhRVg1ZmxYZ3Z5anpyTUJB?=
+ =?utf-8?B?S3UyT0RYTzBZYWpXTXZUTG8wcHU0YVpKK1d1dm9WZDl6UmpsK3JFKzkrK0lJ?=
+ =?utf-8?B?S1BQcHhwUUQxc0dlY2g1bWdXZ0pyT0Y5QmMvS1JoT1ZiT0ROQWgwMDlDUDR3?=
+ =?utf-8?B?a0FDanVIVUZ1R3FDRzJmWStpT0U5S1RQNXZ2endiR3plTFJIQXdVZUZNV0Z0?=
+ =?utf-8?B?MXhydFRZWWxHVE9GbWRVdGg2WGtuMzh6SzRPdG5Va1lmTzQzem5hMU1KTnJB?=
+ =?utf-8?B?QjJOTFJNMXNGOGFoWU9wU3ZlZjkyNnY4Y1ltYjh1Y0wrYi9ZMjg2NDBjeE1I?=
+ =?utf-8?B?NFhKNjI0QjU0UkRnSC9JSHd1ZVA0N25FbDhZNGFBSU1VaXVFdXpndmJwQ2Rm?=
+ =?utf-8?B?Um1vVmNETkVuVHllaVljZWxkYnRjK2RmUFlCOW5rMVdyZFk1d3lHT1FvWlIw?=
+ =?utf-8?B?QzdzVC9veUpPeEtNNkJSS2ttZzVQRlBmdU1WVDlnWWtNbkowaHdEcFFoWnp5?=
+ =?utf-8?B?WElVVU5wUEZDUzB0dlUvaHJ0NENDRFBHQnJkdGY5ckZrcTVvZHFpMy9kWXA0?=
+ =?utf-8?B?RXo4eVFMTURGcmVKYVc5d2oweTg0TEZ4NWkzZlMrQThqSkhldCswMitkNkF5?=
+ =?utf-8?B?OEdTbHNDMWlMWXhEaEVaVHREUitIV3R3UGxVSVBtcXA0ZGZ5SjZsODYyY0dS?=
+ =?utf-8?B?bkZOcHhGOWIyL2RITlNza1ZZK0MyUXJUS0hPOURreTcvSUkvakNEdzFGd0lH?=
+ =?utf-8?B?dmVZRitEL1orVm5IZ3M3UUJDdkpTSjVsSjJVSC9VRlRDLzZrMTVVRXpldlVM?=
+ =?utf-8?B?L2Rvdk5wQXVsSjdQZTd4OGlRSlVNdTZSVkwvd1VPdXRtdDRDU1dFK3lFM1RK?=
+ =?utf-8?B?ZmZnMWFVT1lrUTU5ZmxZVWRKMVFlUzFyQTlmcTlLdnVBOEtNb0JhV2l5Uld1?=
+ =?utf-8?B?WGlYWk83ZEVjVS8xL3ZKOUhwSzg3eXVBNFRDaG55Um1sbGVjWXBKQ0lpUFJE?=
+ =?utf-8?B?Z2l4aDZRRnBlUTV5WUNkaFRsakpKdzZiZ3ZDZmQyOVFvRE80aXp4SVI1QUcx?=
+ =?utf-8?B?RzhLRmhhUk51cEl3b0ZHYU1rVThXL1NQUXoxT0NLUnllaFh1cWxXTUlxYS9J?=
+ =?utf-8?B?N0xBS0VVWHRMcTNSemhMM05nL1VqMThydG41K080WmtUb280QTNtazhPaEtK?=
+ =?utf-8?B?bUFNMEQ4bElKSDQ1U1VITFRBWGRYa3FtQ0U2OVQwSkN2OTBjQTFkM3hCWTB1?=
+ =?utf-8?B?RTIyRFVjMTZsMFZUZ2N2dmZQZGtqdmNMVVBCM2hMUkU3M1Y4MFhYQjI0dDgw?=
+ =?utf-8?B?VDVjUVpCQmpZUnU5M0cweExiZHJKdncyU1VzOGNhOEQ4aVdMOWN0RmJMS1dr?=
+ =?utf-8?B?M1prMnZ2Wlg5V3ByZ3BJNCt3VHZUbTZqMG5TN05iTm9yRlVIeG5ZYXRKbHly?=
+ =?utf-8?B?NWd4SnEyWmM1QUE5Zkl1dis5K2N6K2YvY3dzcW1qcDhGdXVPQm5UMGJtOFV6?=
+ =?utf-8?B?NExKUmFuNDlLcGh6d1RlREpLZnlkK2FRUEVORFRsYm5YOVFvYVh6d1hpd0xB?=
+ =?utf-8?B?bDZJVW1NTGlyNUlrSTM3WUM2WTNoTFZnSDdVc1JmRFQ0SEFHMEdpWDhqTzBC?=
+ =?utf-8?B?d0E9PQ==?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8c3bea-30b3-4a40-7ecd-08dbd96e9a57
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 17:35:26.5188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ugs3A+9tF1rPLhCkmMty2EqBDm9LrFtOtuxIebue2jqyfbUctYi7fstCvFnmLv/UnJv6ElSJFf1njIfJKrHt6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB8083
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 30.10.23 17:43, Rob Herring wrote:
+> On Fri, Oct 27, 2023 at 03:34:36PM +0200, Jan Kiszka wrote:
+>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>
+>> On the Siemens IOT2050 devices, the SPI controller wired to the Arduino
+>> connector is normally driven by userspace. Introduce a binding for use
+>> by spidev.
+> 
+> What's spidev? Not a h/w device...
+> 
+> 
+>>
+>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+>> ---
+>>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> index 430a814f64a5..01b9f36afcd5 100644
+>> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+>> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> @@ -349,6 +349,8 @@ properties:
+>>            - silabs,si3210
+>>              # Relative Humidity and Temperature Sensors
+>>            - silabs,si7020
+>> +            # Siemens IOT2050: SPI interface on Arduino connector
+>> +          - siemens,iot2050-arduino-spi
+> 
+> How is this specific to your board? Presumably, an 'Arduino connector' 
+> is a somewhat standard interface, right? If every board with an Arduino 
+> connector adds a compatible, this doesn't scale.
+> 
+> A connector is what you should be describing, but I imagine it is not 
+> just SPI. Here's some past discussions[1][2] on the need for connector 
+> bindings.
 
-this time around we have 3 new features, described below, and the rest
-is refactoring, cleanups and some performance improvements.
+Right, we are not alone with this modelling problem on our board. The
+code talking to the SPI devices is inside applications, the kernel just
+needs to pave the way to the interface. However, you can't define that
+path without bending of the DT. This is specific to at least SPI, maybe
+some other buses without probing as well.
 
-The branch for this pull request is base for the vfs timestamps updates
-(https://lore.kernel.org/all/20231027-vfs-ctime-6271b23ced64@brauner/)
-and there will be merge conflicts.
+If this were a PCI device, no problem: tell vfio-pci or uio_pci_generic
+to be responsible as well (add IDs on the fly), bind bind any of them
+and then let userspace handle things. Same why to go back to an
+in-kernel driver. No bothering of the DT regarding how the final device
+is driven.
 
-I'll send another pull request for btrfs with fixes and minor cleanups
-that have been sent after the base branch for vfs was frozen. The
-patches would have been part of this pull request but sending them
-separately will reduce merge conflicts with vfs branches.  (Branch
-for-6.7-part2).  I can pick only the fixes and send them after rc1 if
-you'd prefer that.
+Jan
 
-Please pull, thanks.
+-- 
+Siemens AG, Technology
+Linux Expert Center
 
-New features:
-
-- raid-stripe-tree
-  New tree for logical file extent mapping where the physical mapping
-  may not match on multiple devices. This is now used in zoned mode to
-  implement RAID0/RAID1* profiles, but can be used in non-zoned mode as
-  well. The support for RAID56 is in development and will eventually
-  fix the problems with the current implementation. This is a backward
-  incompatible feature and has to be enabled at mkfs time.
-
-- simple quota accounting (squota)
-  A simplified mode of qgroup that accounts all space on the initial
-  extent owners (a subvolume), the snapshots are then cheap to create
-  and delete. The deletion of snapshots in fully accounting qgroups is a
-  known CPU/IO performance bottleneck.
-  The squota is not suitable for the general use case but works well for
-  containers where the original subvolume exists for the whole time.
-  This is a backward incompatible feature as it needs extending some
-  structures, but can be enabled on an existing filesystem.
-
-- temporary filesystem fsid (temp_fsid)
-  The fsid identifies a filesystem and is hard coded in the structures,
-  which disallows mounting the same fsid found on different devices.
-  For a single device filesystem this is not strictly necessary, a new
-  temporary fsid can be generated on mount e.g. after a device is
-  cloned. This will be used by Steam Deck for root partition A/B
-  testing, or can be used for VM root images.
-
-Other user visible changes:
-
-- filesystems with partially finished metadata_uuid conversion cannot
-  be mounted anymore and the uuid fixup has to be done by btrfs-progs
-  (btrfstune).
-
-Performance improvements:
-
-- reduce reservations for checksum deletions (with enabled free space
-  tree by factor of 4), on a sample workload on file with many extents
-  the deletion time decreased by 12%
-
-- make extent state merges more efficient during insertions, reduce
-  rb-tree iterations (run time of critical functions reduced by 5%)
-
-Core changes:
-
-- the integrity check functionality has been removed, this was a
-  debugging feature and removal does not affect other integrity checks
-  like checksums or tree-checker
-
-- space reservation changes
-  - more efficient delayed ref reservations, this avoids building up too
-    much work or overusing or exhausting the global block reserve in
-    some situations
-  - move delayed refs reservation to the transaction start time, this
-    prevents some ENOSPC corner cases related to exhaustion of global
-    reserve
-  - improvements in reducing excessive reservations for block group
-    items
-  - adjust overcommit logic in near full situations, account for one
-    more chunk to eventually allocate metadata chunk, this is mostly
-    relevant for small filesystems (<10GiB)
-
-- single device filesystems are scanned but not registered (except seed
-  devices), this allows temp_fsid to work
-
-- qgroup iterations do not need GFP_ATOMIC allocations anymore
-
-- cleanups, refactoring, reduced data structure size, function parameter
-  simplifications, error handling fixes
-
-----------------------------------------------------------------
-The following changes since commit 401644852d0b2a278811de38081be23f74b5bb04:
-
-  Merge tag 'fs_for_v6.6-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs (2023-10-11 14:21:15 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-tag
-
-for you to fetch changes up to c6e8f898f56fae2cb5bc4396bec480f23cd8b066:
-
-  btrfs: open code timespec64 in struct btrfs_inode (2023-10-12 16:44:19 +0200)
-
-----------------------------------------------------------------
-Anand Jain (11):
-      btrfs: sipmlify uuid parameters of alloc_fs_devices()
-      btrfs: comment about fsid and metadata_uuid relationship
-      btrfs: scan but don't register device on single device filesystem
-      btrfs: reject devices with CHANGING_FSID_V2
-      btrfs: remove incomplete metadata_uuid conversion fixup logic
-      btrfs: add helper function find_fsid_by_disk
-      btrfs: support cloned-device mount capability
-      btrfs: update comment for temp-fsid, fsid, and metadata_uuid
-      btrfs: disable the seed feature for temp-fsid
-      btrfs: disable the device add feature for temp-fsid
-      btrfs: sysfs: show temp_fsid feature
-
-Boris Burkov (18):
-      btrfs: qgroup: introduce quota mode
-      btrfs: qgroup: add new quota mode for simple quotas
-      btrfs: sysfs: expose quota mode via sysfs
-      btrfs: sysfs: add simple_quota incompat feature entry
-      btrfs: qgroup: flush reservations during quota disable
-      btrfs: create qgroup earlier in snapshot creation
-      btrfs: add helper for recording simple quota deltas
-      btrfs: rename tree_ref and data_ref owning_root
-      btrfs: track owning root in btrfs_ref
-      btrfs: track original extent owner in head_ref
-      btrfs: new inline ref storing owning subvol of data extents
-      btrfs: add helper for inline owner ref lookup
-      btrfs: record simple quota deltas in delayed refs
-      btrfs: qgroup: simple quota auto hierarchy for nested subvolumes
-      btrfs: qgroup: check generation when recording simple quota delta
-      btrfs: qgroup: track metadata relocation COW with simple quota
-      btrfs: track data relocation with simple quota
-      btrfs: qgroup: only set QUOTA_ENABLED when done reading qgroups
-
-Christoph Hellwig (4):
-      btrfs: zoned: introduce a zone_info struct in btrfs_load_block_group_zone_info
-      btrfs: zoned: factor out per-zone logic from btrfs_load_block_group_zone_info
-      btrfs: zoned: factor out single bg handling from btrfs_load_block_group_zone_info
-      btrfs: zoned: factor out DUP bg handling from btrfs_load_block_group_zone_info
-
-Colin Ian King (1):
-      btrfs: remove redundant initialization of variable dirty in btrfs_update_time()
-
-David Sterba (24):
-      btrfs: move functions comments from qgroup.h to qgroup.c
-      btrfs: reformat remaining kdoc style comments
-      btrfs: drop __must_check annotations
-      btrfs: reduce parameters of btrfs_pin_reserved_extent
-      btrfs: reduce parameters of btrfs_pin_extent_for_log_replay
-      btrfs: reduce arguments of helpers space accounting root item
-      btrfs: reduce size of prelim_ref::level
-      btrfs: reduce size and reorder compression members in struct btrfs_inode
-      btrfs: reduce size of struct btrfs_ref
-      btrfs: move extent_buffer::lock_owner to debug section
-      btrfs: rename errno identifiers to error
-      btrfs: merge ordered work callbacks in btrfs_work into one
-      btrfs: relocation: use more natural types for tree_block bitfields
-      btrfs: relocation: use enum for stages
-      btrfs: relocation: switch bitfields to bool in reloc_control
-      btrfs: relocation: open code mapping_tree_init
-      btrfs: switch btrfs_backref_cache::is_reloc to bool
-      btrfs: relocation: return bool from btrfs_should_ignore_reloc_root
-      btrfs: relocation: constify parameters where possible
-      btrfs: add specific helper for range bit test exists
-      btrfs: change test_range_bit to scan the whole range
-      btrfs: open code btrfs_ordered_inode_tree in btrfs_inode
-      btrfs: reorder btrfs_inode to fill gaps
-      btrfs: open code timespec64 in struct btrfs_inode
-
-Filipe Manana (55):
-      btrfs: update comment for reservation of metadata space for delayed items
-      btrfs: pass a space_info argument to btrfs_reserve_metadata_bytes()
-      btrfs: remove unnecessary logic when running new delayed references
-      btrfs: remove the refcount warning/check at btrfs_put_delayed_ref()
-      btrfs: remove refs_to_add argument from __btrfs_inc_extent_ref()
-      btrfs: remove refs_to_drop argument from __btrfs_free_extent()
-      btrfs: initialize key where it's used when running delayed data ref
-      btrfs: remove pointless 'ref_root' variable from run_delayed_data_ref()
-      btrfs: use a single variable for return value at run_delayed_extent_op()
-      btrfs: use a single variable for return value at lookup_inline_extent_backref()
-      btrfs: return -EUCLEAN if extent item is missing when searching inline backref
-      btrfs: simplify check for extent item overrun at lookup_inline_extent_backref()
-      btrfs: allow to run delayed refs by bytes to be released instead of count
-      btrfs: reserve space for delayed refs on a per ref basis
-      btrfs: remove pointless initialization at btrfs_delayed_refs_rsv_release()
-      btrfs: stop doing excessive space reservation for csum deletion
-      btrfs: always reserve space for delayed refs when starting transaction
-      btrfs: abort transaction on generation mismatch when marking eb as dirty
-      btrfs: use btrfs_crit at btrfs_mark_buffer_dirty()
-      btrfs: mark transaction id check as unlikely at btrfs_mark_buffer_dirty()
-      btrfs: remove pointless loop from btrfs_update_block_group()
-      btrfs: remove stale comment from btrfs_free_extent()
-      btrfs: remove useless comment from btrfs_pin_extent_for_log_replay()
-      btrfs: simplify error check condition at btrfs_dirty_inode()
-      btrfs: remove noinline from btrfs_update_inode()
-      btrfs: remove redundant root argument from btrfs_update_inode_fallback()
-      btrfs: remove redundant root argument from btrfs_update_inode()
-      btrfs: remove redundant root argument from btrfs_update_inode_item()
-      btrfs: remove redundant root argument from btrfs_delayed_update_inode()
-      btrfs: remove redundant root argument from maybe_insert_hole()
-      btrfs: remove redundant root argument from fixup_inode_link_count()
-      btrfs: move btrfs_defrag_root() to defrag.{c,h}
-      btrfs: remove noinline attribute from btrfs_cow_block()
-      btrfs: use round_down() to align block offset at btrfs_cow_block()
-      btrfs: rename and export __btrfs_cow_block()
-      btrfs: export comp_keys() from ctree.c as btrfs_comp_keys()
-      btrfs: move btrfs_realloc_node() from ctree.c into defrag.c
-      btrfs: make extent state merges more efficient during insertions
-      btrfs: update stale comment at extent_io_tree_release()
-      btrfs: make wait_extent_bit() static
-      btrfs: remove redundant memory barrier from extent_io_tree_release()
-      btrfs: collapse wait_on_state() to its caller wait_extent_bit()
-      btrfs: make tree iteration in extent_io_tree_release() more efficient
-      btrfs: use extent_io_tree_release() to empty dirty log pages
-      btrfs: make sure we cache next state in find_first_extent_bit()
-      btrfs: stop reserving excessive space for block group item updates
-      btrfs: stop reserving excessive space for block group item insertions
-      btrfs: add and use helpers for reading and writing last_log_commit
-      btrfs: add and use helpers for reading and writing log_transid
-      btrfs: add and use helpers for reading and writing fs_info->generation
-      btrfs: add and use helpers for reading and writing last_trans_committed
-      btrfs: remove pointless barrier from btrfs_sync_file()
-      btrfs: update comment for struct btrfs_inode::lock
-      btrfs: remove pointless empty log context list check when syncing log
-      btrfs: remove redundant log root tree index assignment during log sync
-
-Jiapeng Chong (1):
-      btrfs: qgroup: remove unused helpers for ulist aux data
-
-Johannes Thumshirn (12):
-      btrfs: add raid stripe tree definitions
-      btrfs: read raid stripe tree from disk
-      btrfs: add support for inserting raid stripe extents
-      btrfs: delete stripe extent on extent deletion
-      btrfs: lookup physical address from stripe extent
-      btrfs: scrub: implement raid stripe tree support
-      btrfs: zoned: support RAID0/1/10 on top of raid stripe tree
-      btrfs: add raid stripe tree pretty printer
-      btrfs: sysfs: announce presence of raid-stripe-tree
-      btrfs: tracepoints: add events for raid stripe tree
-      btrfs: tree-checker: add support for raid stripe tree
-      btrfs: add raid stripe tree to features enabled with debug config
-
-Josef Bacik (15):
-      btrfs: move btrfs_crc32c_final into free-space-cache.c
-      btrfs: remove btrfs_crc32c wrapper
-      btrfs: move btrfs_extref_hash into inode-item.h
-      btrfs: move btrfs_name_hash to dir-item.h
-      btrfs: include asm/unaligned.h in accessors.h
-      btrfs: include linux/iomap.h in file.c
-      btrfs: add fscrypt related dependencies to respective headers
-      btrfs: add btrfs_delayed_ref_head declaration to extent-tree.h
-      btrfs: include trace header in where necessary
-      btrfs: include linux/security.h in super.c
-      btrfs: remove extraneous includes from ctree.h
-      btrfs: don't arbitrarily slow down delalloc if we're committing
-      btrfs: fix ->free_chunk_space math in btrfs_shrink_device
-      btrfs: increase ->free_chunk_space in btrfs_grow_device
-      btrfs: adjust overcommit logic when very close to full
-
-Qu Wenruo (15):
-      btrfs: do not require EXTENT_NOWAIT for btrfs_redirty_list_add()
-      btrfs: qgroup: iterate qgroups without memory allocation for qgroup_reserve()
-      btrfs: qgroup: use qgroup_iterator in btrfs_qgroup_free_refroot()
-      btrfs: qgroup: use qgroup_iterator in qgroup_convert_meta()
-      btrfs: qgroup: use qgroup_iterator in __qgroup_excl_accounting()
-      btrfs: qgroup: use qgroup_iterator to replace tmp ulist in qgroup_update_refcnt()
-      btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt()
-      btrfs: qgroup: pre-allocate btrfs_qgroup to reduce GFP_ATOMIC usage
-      btrfs: qgroup: prealloc btrfs_qgroup_list for __add_relation_rb()
-      btrfs: check-integrity: remove btrfsic_check_bio() function
-      btrfs: check-integrity: remove btrfsic_mount() function
-      btrfs: check-integrity: remove btrfsic_unmount() function
-      btrfs: check-integrity: remove CONFIG_BTRFS_FS_CHECK_INTEGRITY option
-      btrfs: remove the need_raid_map parameter from btrfs_map_block()
-      btrfs: warn on tree blocks which are not nodesize aligned
-
- fs/btrfs/Kconfig                     |   21 -
- fs/btrfs/Makefile                    |    3 +-
- fs/btrfs/accessors.h                 |   16 +
- fs/btrfs/async-thread.c              |   12 +-
- fs/btrfs/async-thread.h              |    6 +-
- fs/btrfs/backref.c                   |    5 +-
- fs/btrfs/backref.h                   |   10 +-
- fs/btrfs/bio.c                       |   47 +-
- fs/btrfs/block-group.c               |  178 +--
- fs/btrfs/block-rsv.c                 |   24 +-
- fs/btrfs/btrfs_inode.h               |   80 +-
- fs/btrfs/check-integrity.c           | 2871 ----------------------------------
- fs/btrfs/check-integrity.h           |   20 -
- fs/btrfs/compression.c               |    6 +-
- fs/btrfs/ctree.c                     |  340 ++--
- fs/btrfs/ctree.h                     |  142 +-
- fs/btrfs/defrag.c                    |  152 +-
- fs/btrfs/defrag.h                    |    2 +-
- fs/btrfs/delalloc-space.c            |    6 +-
- fs/btrfs/delayed-inode.c             |   27 +-
- fs/btrfs/delayed-inode.h             |    1 -
- fs/btrfs/delayed-ref.c               |  199 ++-
- fs/btrfs/delayed-ref.h               |   70 +-
- fs/btrfs/dev-replace.c               |    3 +-
- fs/btrfs/dir-item.c                  |    8 +-
- fs/btrfs/dir-item.h                  |    9 +
- fs/btrfs/disk-io.c                   |  142 +-
- fs/btrfs/disk-io.h                   |    3 +-
- fs/btrfs/extent-io-tree.c            |  272 ++--
- fs/btrfs/extent-io-tree.h            |    7 +-
- fs/btrfs/extent-tree.c               |  538 ++++---
- fs/btrfs/extent-tree.h               |   15 +-
- fs/btrfs/extent_io.c                 |   39 +-
- fs/btrfs/extent_io.h                 |    4 +-
- fs/btrfs/file-item.c                 |   17 +-
- fs/btrfs/file.c                      |   61 +-
- fs/btrfs/free-space-cache.c          |   28 +-
- fs/btrfs/free-space-tree.c           |   17 +-
- fs/btrfs/fs.h                        |   69 +-
- fs/btrfs/inode-item.c                |   21 +-
- fs/btrfs/inode-item.h                |    8 +
- fs/btrfs/inode.c                     |  182 +--
- fs/btrfs/ioctl.c                     |   23 +-
- fs/btrfs/locking.c                   |   20 +-
- fs/btrfs/messages.c                  |   32 +-
- fs/btrfs/messages.h                  |   14 +-
- fs/btrfs/ordered-data.c              |  127 +-
- fs/btrfs/ordered-data.h              |   17 +-
- fs/btrfs/print-tree.c                |   35 +
- fs/btrfs/props.c                     |    1 +
- fs/btrfs/qgroup.c                    |  872 +++++++----
- fs/btrfs/qgroup.h                    |  149 +-
- fs/btrfs/raid-stripe-tree.c          |  274 ++++
- fs/btrfs/raid-stripe-tree.h          |   50 +
- fs/btrfs/ref-verify.c                |    9 +-
- fs/btrfs/reflink.c                   |    3 +-
- fs/btrfs/relocation.c                |  208 ++-
- fs/btrfs/relocation.h                |    9 +-
- fs/btrfs/root-tree.c                 |   12 +-
- fs/btrfs/root-tree.h                 |    8 +-
- fs/btrfs/scrub.c                     |   78 +-
- fs/btrfs/send.c                      |    6 +-
- fs/btrfs/space-info.c                |   64 +-
- fs/btrfs/space-info.h                |    3 +-
- fs/btrfs/super.c                     |   87 +-
- fs/btrfs/sysfs.c                     |   53 +-
- fs/btrfs/tests/extent-buffer-tests.c |    6 +-
- fs/btrfs/tests/inode-tests.c         |   12 +-
- fs/btrfs/transaction.c               |  231 +--
- fs/btrfs/transaction.h               |   20 +-
- fs/btrfs/tree-checker.c              |   48 +-
- fs/btrfs/tree-log.c                  |   81 +-
- fs/btrfs/ulist.c                     |    3 +-
- fs/btrfs/uuid-tree.c                 |    6 +-
- fs/btrfs/verity.c                    |    4 +-
- fs/btrfs/volumes.c                   |  417 +++--
- fs/btrfs/volumes.h                   |   39 +-
- fs/btrfs/xattr.c                     |   12 +-
- fs/btrfs/zoned.c                     |  452 ++++--
- fs/btrfs/zstd.c                      |   11 +-
- include/trace/events/btrfs.h         |   83 +-
- include/uapi/linux/btrfs.h           |    3 +
- include/uapi/linux/btrfs_tree.h      |   60 +-
- 83 files changed, 4030 insertions(+), 5293 deletions(-)
- delete mode 100644 fs/btrfs/check-integrity.c
- delete mode 100644 fs/btrfs/check-integrity.h
- create mode 100644 fs/btrfs/raid-stripe-tree.c
- create mode 100644 fs/btrfs/raid-stripe-tree.h
