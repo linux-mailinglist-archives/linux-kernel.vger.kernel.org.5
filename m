@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAFE7DB947
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A537DB95C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbjJ3LvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        id S232976AbjJ3Lzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbjJ3LvB (ORCPT
+        with ESMTP id S232887AbjJ3Lz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:51:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB0C9D
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698666659; x=1730202659;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4GRBubH/Otb5eL3Hy70mHZ0QZ2wvkq5ML1h3y6fE1CA=;
-  b=ZPoFfIjLOSTCcI6h4z3O/dTzf9S7FxgoQSDo+zooNkSuC9WY41lpwoSa
-   Ym2juzCnvQk1UAvFHd3dGtS1ckgLBxNuLVNko7ODqgLW9NCT2MHIZBMC7
-   iyvkGgG3qjwKbNzPkGWXK3bflExJ0OAxsYiM47VqeVWiwh5yHN0ouH/NY
-   b2UEr7B4zoIcOCCFlpi8Qj6tF+Mqv4CmlJa+MrlqkA3uEgw+cbfI8nmM7
-   ro2oQThKseP8tY8tHJwDMyA15nJuXn11iVDAwirIgsRhEEzknbtTMq3gS
-   LOHdMTo3XN3F14AK8ahMkPjrHJ8oDYpLztZNZTBuF223EGDe0lPGCDlzr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="6688918"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="6688918"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 04:50:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="826031142"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="826031142"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Oct 2023 04:50:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B431A2BF; Mon, 30 Oct 2023 13:50:55 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Subject: [PATCH v1 1/1] pcmcia: Convert to use less arguments in pci_bus_for_each_resource()
-Date:   Mon, 30 Oct 2023 13:50:53 +0200
-Message-Id: <20231030115053.2752588-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 30 Oct 2023 07:55:29 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AA8C6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:55:26 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so7339679a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 04:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698666925; x=1699271725; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q31c8fnQHD+W10kmomcQ4zTSAMbkT+bVtaWYEa58nas=;
+        b=HvoOMHM3zushLZ9gCVFUIC4w7Sq7a2oQf/zsEOrIJiV2h3ds3QAP5QGzzx8OOL+dRS
+         sNxzjq1xK1IqleJ0U2RWCPf1GazQcoR38f0IkZvEMevVJHyA7lrZPMVym0p9b1vK5l9A
+         Sdi9DCSdHxh/voEzqQ6C7id53wKrCXOXGRDHUpg2aU0N6bKaAcRwrMIhnpm7UWUEkIaa
+         z4I+5xiv+JwyPIxKPDtqeE35zVMyQDdmJggjNCCaDZQ5DYE5iHHoPbo541xDR+Fi9MqX
+         3QMk8i8gwj7wkGUw5BLpoqX2LZ/cvl+bYuwWfikj2XGbtHwzwZga4wuZxrgtOxfDHqZY
+         yqGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698666925; x=1699271725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q31c8fnQHD+W10kmomcQ4zTSAMbkT+bVtaWYEa58nas=;
+        b=TWVU55wl/vJ1DlveIXmaGDwVOHcypaM3aOyDop4MnLpulXHkdZpvVZ/417mSovH2Ub
+         Wx6CkD9yPvui7zxfKWGshbAqdIILDCdVawqrm518qnPv1f5mtuza8fUCk2MiKugjNBOS
+         0ngdTyWobvttgRyl1+wveMVboCW7nu4PWItXGtGiTpL29NUR+Nf92KnyzU5vp6Ds6O0u
+         uJvbEg2AgeNVV94SFKQLrYGtFbPA4KGmlPq3MDXwno4a7j+crIh4zfqwb7OBan4Y8nYc
+         R9dun3KK7YPhHOouKKv4Im5eZ8n8qmrJ6j/CJJ0MycjHhSouBdpakiT+Au6VtKoRKIKo
+         1RJA==
+X-Gm-Message-State: AOJu0Yymdfc9SbRyWFA//MJmfqSH7zqMTbwNt95ZZsGMCzIg9FOTBV7z
+        +H4g7tVrIr2mBs06YAov2goptA==
+X-Google-Smtp-Source: AGHT+IEK0FVzrhD+/lsg/GFhSKbE3HoxQjpfS+HOYJ/lF5CE71Yh2/i3l6Z4QGe2FLuRhkkWz0rUHA==
+X-Received: by 2002:a17:906:c14b:b0:9be:ab38:a362 with SMTP id dp11-20020a170906c14b00b009beab38a362mr8139316ejc.46.1698666925439;
+        Mon, 30 Oct 2023 04:55:25 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id lf19-20020a170906ae5300b009ad89697c86sm5944350ejb.144.2023.10.30.04.55.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 04:55:24 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 12:55:23 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: stmmac: Wait a bit for the reset to take effect
+Message-ID: <ZT+Zq4j9iQj1+Xai@nanopsycho>
+References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pci_bus_for_each_resource() can hide the iterator loop since
-it may be not used otherwise. With this, we may drop that iterator
-variable definition.
+Mon, Oct 30, 2023 at 07:01:11AM CET, bernd.edlinger@hotmail.de wrote:
+>otherwise the synopsys_id value may be read out wrong,
+>because the GMAC_VERSION register might still be in reset
+>state, for at least 1 us after the reset is de-asserted.
+>
+>Add a wait for 10 us before continuing to be on the safe side.
+>
+>Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-
- Split out of a series: 20230330162434.35055-1-andriy.shevchenko@linux.intel.com.
-
- Fixed the second hunk in nonstatic_autoadd_resources() to avoid
- potential breakage.
-
- drivers/pcmcia/rsrc_nonstatic.c | 6 +++---
- drivers/pcmcia/yenta_socket.c   | 3 +--
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/pcmcia/rsrc_nonstatic.c b/drivers/pcmcia/rsrc_nonstatic.c
-index bf9d070a4496..39da2ad9d0b2 100644
---- a/drivers/pcmcia/rsrc_nonstatic.c
-+++ b/drivers/pcmcia/rsrc_nonstatic.c
-@@ -934,7 +934,7 @@ static int adjust_io(struct pcmcia_socket *s, unsigned int action, unsigned long
- static int nonstatic_autoadd_resources(struct pcmcia_socket *s)
- {
- 	struct resource *res;
--	int i, done = 0;
-+	int done = 0;
- 
- 	if (!s->cb_dev || !s->cb_dev->bus)
- 		return -ENODEV;
-@@ -961,10 +961,10 @@ static int nonstatic_autoadd_resources(struct pcmcia_socket *s)
- 	if (s->cb_dev->bus->number == 0)
- 		return -EINVAL;
- 
--	for (i = 0; i < PCI_BRIDGE_RESOURCE_NUM; i++) {
-+	for (unsigned int i = 0; i < PCI_BRIDGE_RESOURCE_NUM; i++) {
- 		res = s->cb_dev->bus->resource[i];
- #else
--	pci_bus_for_each_resource(s->cb_dev->bus, res, i) {
-+	pci_bus_for_each_resource(s->cb_dev->bus, res) {
- #endif
- 		if (!res)
- 			continue;
-diff --git a/drivers/pcmcia/yenta_socket.c b/drivers/pcmcia/yenta_socket.c
-index 1365eaa20ff4..fd18ab571ce8 100644
---- a/drivers/pcmcia/yenta_socket.c
-+++ b/drivers/pcmcia/yenta_socket.c
-@@ -673,9 +673,8 @@ static int yenta_search_res(struct yenta_socket *socket, struct resource *res,
- 			    u32 min)
- {
- 	struct resource *root;
--	int i;
- 
--	pci_bus_for_each_resource(socket->dev->bus, root, i) {
-+	pci_bus_for_each_resource(socket->dev->bus, root) {
- 		if (!root)
- 			continue;
- 
--- 
-2.40.0.1.gaa8946217a0b
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
