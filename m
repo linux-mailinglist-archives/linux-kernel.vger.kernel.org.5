@@ -2,151 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7457DBC97
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E38C7DBC9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbjJ3P3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        id S233658AbjJ3Pa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbjJ3P3g (ORCPT
+        with ESMTP id S232176AbjJ3Pa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:29:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0329EA9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:29:33 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-5-oHEMwp6QNkelFYo-i2F22g-1; Mon, 30 Oct 2023 15:29:31 +0000
-X-MC-Unique: oHEMwp6QNkelFYo-i2F22g-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 30 Oct
- 2023 15:29:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 30 Oct 2023 15:29:45 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Shinas Rasheed' <srasheed@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Haseeb Gani <hgani@marvell.com>,
-        Vimlesh Kumar <vimleshk@marvell.com>,
-        "egallen@redhat.com" <egallen@redhat.com>,
-        "mschmidt@redhat.com" <mschmidt@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wizhao@redhat.com" <wizhao@redhat.com>,
-        "konguyen@redhat.com" <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh B Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: RE: [PATCH net-next v2 3/4] octeon_ep: implement xmit_more in
- transmit
-Thread-Topic: [PATCH net-next v2 3/4] octeon_ep: implement xmit_more in
- transmit
-Thread-Index: AQHaBomkOels9gSWWE2IVlse9GkwiLBevpOAgAOrQICAAA7xIA==
-Date:   Mon, 30 Oct 2023 15:29:45 +0000
-Message-ID: <9631475a8ba94c1682696d219c632538@AcuMS.aculab.com>
-References: <20231024145119.2366588-1-srasheed@marvell.com>
- <20231024145119.2366588-4-srasheed@marvell.com>
- <0fc50b8e6ff44c43b10481da608c95c3@AcuMS.aculab.com>
- <PH0PR18MB47340A7A9E68DE2747DB94F9C7A1A@PH0PR18MB4734.namprd18.prod.outlook.com>
-In-Reply-To: <PH0PR18MB47340A7A9E68DE2747DB94F9C7A1A@PH0PR18MB4734.namprd18.prod.outlook.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 30 Oct 2023 11:30:56 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C3DB3;
+        Mon, 30 Oct 2023 08:30:51 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso710123066b.2;
+        Mon, 30 Oct 2023 08:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698679850; x=1699284650; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fucSBr7KI97NI+mfq5QKSGfLCAvmSHTUlbKwSB46i8M=;
+        b=FyeD1hi7Q70290DBZmyismC8doWU9c9J9ZCN6nhoBnZ/hAK2onXFD+5AplnoMwZl7C
+         5mB9EpjQZgNAW1q0WbXX5+TJkaAW39opDVsp+rKti3wHpgvJOklFMvY1F+w1JvtNoCmW
+         4ewguXHNZWDiTF8shw5308BQiYqBc+3RjN5Jxm1qUTsflU4NyjAQmffj1zEg/VDH1OMs
+         NyYTsycCjeSAZNrNXuzFZqbPXhe1fv48/Ort4XT+mfQvrMODGIrYx9M5Y6ZAhtNQK3eJ
+         Sj+KIqCP1/0Vdb3VySY7WRasiWSYoZGxgOeZ9Q7A72pDMDvLo6aiIsninANKDd5xkKkz
+         /cfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698679850; x=1699284650;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fucSBr7KI97NI+mfq5QKSGfLCAvmSHTUlbKwSB46i8M=;
+        b=B12ExwBMXvYYRo8JcWwIe4VjGeUTk4Rsq+sF3nMnDDONRlHMh/cGWkn+c8xzMkkeXm
+         coW4cOjWR676Eu9r9dvoRkSJCa46OqTFD8YMPfZUjU/VmFCc+FdxMzdJcS3755jlvTy8
+         VtVOtbnP8xnis/7Mqs8YUQ/Ws6I6U6RqFh8VVOkC95oPecf3OxBJ5Wkk3omYe+85bwr2
+         8p+T45swtbb49180Fpw4oWmzBpLC5C5fu+ulGJK72BdEN8wmmY9YJz+c6p0Gx8VUGmrq
+         MahE8Chqns4WrM8IYwBrtvPVvKEGA27T9zcQ063BpqSCwvekixS4+isI/ulZ4sJjRvx1
+         SJGQ==
+X-Gm-Message-State: AOJu0YwJLyhtzkvtCpA/bhUkXUB11kM/MAv0Ai4DP50xjqD79sXfrd2o
+        yWmX0RGlTAgGQHOnCsYQIgrUVStJvyc=
+X-Google-Smtp-Source: AGHT+IHQSz27xYdC8l13VusKgW8ymoWqjteGO/wj2sa3TzwVQ905mfNPeAsWlsqdiV8MCkI5ddpiug==
+X-Received: by 2002:a17:907:7f9e:b0:9c6:8190:359f with SMTP id qk30-20020a1709077f9e00b009c68190359fmr9810526ejc.33.1698679850002;
+        Mon, 30 Oct 2023 08:30:50 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id q17-20020a17090622d100b0098921e1b064sm6138533eja.181.2023.10.30.08.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 08:30:49 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 16:30:48 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] iommu/tegra-smmu: fix error checking for
+ debugfs_create_dir()
+Message-ID: <ZT_MKDVkqMECiv4I@orome.fritz.box>
+References: <20231025110140.2034650-1-dario.binacchi@amarulasolutions.com>
+ <1acd75d0-67a7-4a17-99c7-707cca305f37@linux.intel.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tiC6UW8JeMZZZOlp"
+Content-Disposition: inline
+In-Reply-To: <1acd75d0-67a7-4a17-99c7-707cca305f37@linux.intel.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU2hpbmFzIFJhc2hlZWQgPHNyYXNoZWVkQG1hcnZlbGwuY29tPg0KPiBTZW50OiAzMCBP
-Y3RvYmVyIDIwMjMgMTQ6MTUNCj4gDQo+IEhpLA0KPiANCj4gSSB1bmRlcnN0YW5kIHRoZSB3aW5k
-b3cgaXMgY2xvc2VkLCBidXQganVzdCByZXBseWluZyB0byBhIHBlbmRpbmcgY29tbWVudCBvbiB0
-aGUgdGhyZWFkLg0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206
-IERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+DQo+ID4gLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQ0KPiA+IEZyb206IFNoaW5hcyBSYXNoZWVkDQo+ID4gPiBTZW50OiAyNCBPY3RvYmVyIDIwMjMg
-MTU6NTENCj4gPiA+DQo+ID4gPiBBZGQgeG1pdF9tb3JlIGhhbmRsaW5nIGluIHR4IGRhdGFwYXRo
-IGZvciBvY3Rlb25fZXAgcGYuDQo+ID4gPg0KPiA+IC4uLg0KPiA+ID4gLQ0KPiA+ID4gLQkvKiBS
-aW5nIERvb3JiZWxsIHRvIG5vdGlmeSB0aGUgTklDIHRoZXJlIGlzIGEgbmV3IHBhY2tldCAqLw0K
-PiA+ID4gLQl3cml0ZWwoMSwgaXEtPmRvb3JiZWxsX3JlZyk7DQo+ID4gPiAtCWlxLT5zdGF0cy5p
-bnN0cl9wb3N0ZWQrKzsNCj4gPiA+ICsJLyogUmluZyBEb29yYmVsbCB0byBub3RpZnkgdGhlIE5J
-QyBvZiBuZXcgcGFja2V0cyAqLw0KPiA+ID4gKwl3cml0ZWwoaXEtPmZpbGxfY250LCBpcS0+ZG9v
-cmJlbGxfcmVnKTsNCj4gPiA+ICsJaXEtPnN0YXRzLmluc3RyX3Bvc3RlZCArPSBpcS0+ZmlsbF9j
-bnQ7DQo+ID4gPiArCWlxLT5maWxsX2NudCA9IDA7DQo+ID4gPiAgCXJldHVybiBORVRERVZfVFhf
-T0s7DQo+ID4NCj4gPiBEb2VzIHRoYXQgcmVhbGx5IG5lZWQgdGhlIGNvdW50Pw0KPiA+IEEgJ2Rv
-b3JiZWxsJyByZWdpc3RlciB1c3VhbGx5IGp1c3QgdGVsbHMgdGhlIE1BQyBlbmdpbmUNCj4gPiB0
-byBnbyBhbmQgbG9vayBhdCB0aGUgdHJhbnNtaXQgcmluZy4NCj4gPiBJdCB0aGVuIGNvbnRpbnVl
-cyB0byBwcm9jZXNzIHRyYW5zbWl0cyB1bnRpbCBpdCBmYWlscw0KPiA+IHRvIGZpbmQgYSBwYWNr
-ZXQuDQo+ID4gU28gaWYgdGhlIHRyYW5zbWl0IGlzIGFjdGl2ZSB5b3UgZG9uJ3QgbmVlZCB0byBz
-ZXQgdGhlIGJpdC4NCj4gPiAoQWx0aG91Z2ggdGhhdCBpcyBhY3R1YWxseSByYXRoZXIgaGFyZCB0
-byBkZXRlY3QuKQ0KPiANCj4gVGhlIHdheSB0aGUgb2N0ZW9uIGhhcmR3YXJlIHdvcmtzIGlzIHRo
-YXQgaXQgZXhwZWN0cyBudW1iZXIgb2YgbmV3bHkgdXBkYXRlZCBwYWNrZXRzDQo+IHRvIGJlIHdy
-aXR0ZW4gdG8gdGhlIGRvb3JiZWxsIHJlZ2lzdGVyLHdoaWNoIGVmZmVjdGl2ZWx5IGluY3JlbWVu
-dHMgdGhlIGRvb3JiZWxsDQo+IGNvdW50IHdoaWNoIHNoYWxsIGJlIGRlY3JlbWVudGVkIGJ5IGhh
-cmR3YXJlIGFzIGl0IHJlYWRzIHRoZXNlIHBhY2tldHMuIFNvIGluIGVzc2VuY2UsDQo+IHRoZSBk
-b29yYmVsbCBjb3VudCBhbHNvIGluZGljYXRlcyBvdXRzdGFuZGluZyBwYWNrZXRzIHRvIGJlIHJl
-YWQgYnkgaGFyZHdhcmUuDQoNClVudXN1YWwgLSBJIHdvdWxkbid0IGNhbGwgdGhhdCBhIGRvb3Ji
-ZWxsIHJlZ2lzdGVyLg0KDQo+ID4gVGhlICd4bWl0X21vcmUnIGZsYWcgaXMgdXNlZnVsIGlmICh0
-aGUgZXF1aXZhbGVudCBvZikgd3JpdGluZw0KPiA+IHRoZSBkb29yYmVsbCByZWdpc3RlciBpcyBl
-eHBlbnNpdmUgc2luY2UgaXQgY2FuIGJlIGRlbGF5ZWQNCj4gPiB0byBhIGxhdGVyIGZyYW1lIGFu
-ZCBvbmx5IGRvbmUgb25jZSAtIGFkZGluZyBhIHNsaWdodCBsYXRlbmN5DQo+ID4gdG8gdGhlIGVh
-cmxpZXIgdHJhbnNtaXRzIGlmIHRoZSBtYWMgZW5naW5lIHdhcyBpZGxlLg0KPiA+DQo+ID4gSSdt
-IG5vdCBzdXJlIGhvdyBtdWNoIChpZiBhbnkpIHBlcmZvcm1hbmNlIGdhaW4geW91IGFjdHVhbGx5
-DQo+ID4gZ2V0IGZyb20gYXZvaWRpbmcgdGhlIHdyaXRlbCgpLg0KPiA+IFNpbmdsZSBQQ0llIHdy
-aXRlcyBhcmUgJ3Bvc3RlZCcgYW5kIHByZXR0eSBtdWNoIGNvbXBsZXRlbHkNCj4gPiBhc3luY2hy
-b25vdXMuDQo+IA0KPiBDYW4geW91IGVsYWJvcmF0ZSB3aGF0IHlvdSBhcmUgc3VnZ2VzdGluZyBo
-ZXJlIHRvIGRvPyBUaGUgZHJpdmVyIGlzIHRyeWluZw0KPiB0byBtYWtlIHVzZSBvZiB0aGUgJ3ht
-aXRfbW9yZScgaGludCBmcm9tIHRoZSBuZXR3b3JrIHN0YWNrLCBhcyBhbnkgbmV0d29yaw0KPiBk
-cml2ZXIgbWlnaHQgb3B0IHRvIGRvLg0KDQpUaGVyZSBhcmUgc29tZSBkcml2ZXJzIHdoZXJlIHdh
-a2luZyB1cCB0aGUgTUFDIGVuZ2luZSBpcyBleHBlbnNpdmUuDQpJZiB5b3UgbmVlZCB0byBkbyBh
-IFBDSWUgcmVhZCB0aGVuIHRoZXkgYXJlIGV4cGVuc2l2ZS4NClRoZXJlIG1pZ2h0IGFsc28gYmUg
-ZHJpdmVycyB0aGF0IG5lZWQgdG8gc2VuZCBhIFVTQiBtZXNzYWdlLg0KSSBkb24ndCBhY3R1YWxs
-eSBrbm93IHdoaWNoIG9uZSBpdCB3YXMgYWRkZWQgZm9yLg0KDQo+IEkgdGhpbmsgYXZvaWRpbmcg
-Y29udGludW91cyBQQ0llIHBvc3RzIGZvciBlYWNoIHBhY2tldCBzaGFsbCBzdGlsbCBiZSB3YXN0
-ZWZ1bA0KPiBhcyB0aGUgaGFyZHdhcmUgY2FuIGJ1bGsgcmVhZCBmcm9tIHRoZSBxdWV1ZSBpZiB3
-ZSBnaXZlIGl0IGEgYmF0Y2ggb2YgcGFja2V0cy4NCg0KSWYgeW91IGRvIHdyaXRlcyBmb3IgZXZl
-cnkgcGFja2V0IHRoZW4gdGhlIGhhcmR3YXJlIGNhbiBnZXQgb24gd2l0aA0Kc2VuZGluZyB0aGUg
-Zmlyc3QgcGFja2V0IGFuZCBtaWdodCBiZSBhYmxlIHRvIGRvIGJ1bGsgcmVhZHMNCmZvciB0aGUg
-bmV4dCBwYWNrZXQocykgd2hlbiB0aGF0IGZpbmlzaGVzLg0KDQpUaGUgZXh0cmEgY29kZSB5b3Ug
-YXJlIGFkZGluZyBjb3VsZCBlYXNpbHkgKHdhdmluZyBoYW5kcykNCmJlIG1vcmUgZXhwZW5zaXZl
-IHRoYW4gdGhlIHBvc3RlZCBQQ0llIHdyaXRlLg0KKEVzcGVjaWFsbHkgaWYgeW91IGhhdmUgdG8g
-YWRkIGFuIGF0b21pYyBvcGVyYXRpb24uKQ0KDQpVbmxlc3MsIG9mIGNvdXJzZSwgeW91IGhhdmUg
-dG8gd2FpdCBmb3IgaXQgdG8gc2VuZCB0aGF0IGJhdGNoDQpvZiBwYWNrZXRzIGJlZm9yZSB5b3Ug
-Y2FuIGdpdmUgaXQgYW55IG1vcmUuDQpXaGljaCB3b3VsZCBiZSByYXRoZXIgZW50aXJlbHkgYnJv
-a2VuIGFuZCB3b3VsZCByZWFsbHkgcmVxdWlyZQ0KeW91IGRvIHRoZSB3cml0ZSBpbiB0aGUgZW5k
-LW9mLXRyYW5zaXQgcGF0aC4NCg0KPiA+IFRoZSBvdGhlciBwcm9ibGVtIEkndmUgc2VlbiBpcyB0
-aGF0IG5ldGRldl94bWl0X21vcmUoKSBpcw0KPiA+IHRoZSBzdGF0ZSBvZiB0aGUgcXVldWUgd2hl
-biB0aGUgdHJhbnNtaXQgd2FzIHN0YXJ0ZWQsIG5vdA0KPiA+IHRoZSBjdXJyZW50IHN0YXRlLg0K
-PiA+IElmIGEgcGFja2V0IGlzIGFkZGVkIHdoaWxlIHRoZSBlYXJsaWVyIHRyYW5zbWl0IHNldHVw
-IGNvZGUNCj4gPiBpcyBydW5uaW5nIChzZXR0aW5nIHVwIHRoZSBkZXNjcmlwdG9ycyBldGMpIHRo
-ZSBpdCBpc24ndCBzZXQuDQo+ID4gU28gdGhlIGZhc3QgcGF0aCBkb2Vzbid0IGdldCB0YWtlbi4N
-Cj4gDQo+IEJ5IHRoZSBuZXh0IHBhY2tldCB0aGUga2VybmVsIHNlbmRzLCB0aGUgeG1pdF9tb3Jl
-IHNob3VsZCBiZSBzZXQNCj4gYXMgZmFyIEkgdW5kZXJzdGFuZCwgcmlnaHQ/IChhcyB0aGUgeG1p
-dF9tb3JlIGJvb2wgaXMgc2V0IGlmIHNrYi0+bmV4dA0KPiBpcyBwcmVzZW50LCBpZiB0aGUgdHJh
-bnNtaXQgcGF0aCBmb2xsb3dzIGRldl9oYXJkX3N0YXJ0X3htaXQpLg0KDQpUaGUgbG9vcCBpcyBz
-b21ldGhpbmcgbGlrZToNCgl3aGlsZSAoZ2V0X3BhY2tldCgpKSB7DQoJCXBlcl9jcHUtPnhtaXRf
-bW9yZSA9ICFxdWV1ZV9lbXB0eSgpOw0KCQlpZiAodHJhbnNtaXRfcGFja2V0KCkgIT0gVFhfT0sp
-DQoJCQlicmVhazsNCgl9DQpTbyBpZiBhIHBhY2tldCBpcyBhZGRlZCB3aGlsZSBhbGwgdGhlIHRy
-YW5zbWl0IHNldHVwIGNvZGUgaXMgcnVubmluZw0KaXQgaXNuJ3QgZGV0ZWN0ZWQuDQpJIG1hbmFn
-ZWQgdG8gcmVwZWF0ZWRseSBnZXQgdGhhdCB0byBsb29wIHdoZW4geG1pdF9tb3JlIHdhc24ndCBz
-ZXQNCmFuZCBpbiBhIGRyaXZlciB3aGVyZSB0aGUgJ2Rvb3JiZWxsJyB3cml0ZSB3YXNuJ3QgZW50
-aXJlbHkgdHJpdmlhbC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
+--tiC6UW8JeMZZZOlp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 25, 2023 at 07:25:50PM +0800, Baolu Lu wrote:
+> On 2023/10/25 19:01, Dario Binacchi wrote:
+> > The return value of debugfs_create_dir() should be checked using the
+> > IS_ERR() function.
+> >=20
+> > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> > ---
+> >=20
+> >   drivers/iommu/tegra-smmu.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> > index e445f80d0226..cd1d80c4c673 100644
+> > --- a/drivers/iommu/tegra-smmu.c
+> > +++ b/drivers/iommu/tegra-smmu.c
+> > @@ -1056,7 +1056,7 @@ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+> >   static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
+> >   {
+> >   	smmu->debugfs =3D debugfs_create_dir("smmu", NULL);
+> > -	if (!smmu->debugfs)
+> > +	if (IS_ERR(smmu->debugfs))
+> >   		return;
+>=20
+> This check can be removed, as debugfs_create_file() can handle the case
+> where @parent is an error pointer.
+
+A patch for this has been in linux-next for a few weeks, see:
+
+commit f7da9c081517daba70f9f9342e09d7a6322ba323
+Author: Jinjie Ruan <ruanjinjie@huawei.com>
+Date:   Fri Sep 1 15:30:56 2023 +0800
+
+    iommu/tegra-smmu: Drop unnecessary error check for for debugfs_create_d=
+ir()
+   =20
+    The debugfs_create_dir() function returns error pointers.
+    It never returns NULL.
+   =20
+    As Baolu suggested, this patch removes the error checking for
+    debugfs_create_dir in tegra-smmu.c. This is because the DebugFS kernel =
+API
+    is developed in a way that the caller can safely ignore the errors that
+    occur during the creation of DebugFS nodes. The debugfs APIs have
+    a IS_ERR() judge in start_creating() which can handle it gracefully. So
+    these checks are unnecessary.
+   =20
+    Fixes: d1313e7896e9 ("iommu/tegra-smmu: Add debugfs support")
+    Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+    Suggested-by: Baolu Lu <baolu.lu@linux.intel.com>
+    Acked-by: Thierry Reding <treding@nvidia.com>
+    Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+    Link: https://lore.kernel.org/r/20230901073056.1364755-1-ruanjinjie@hua=
+wei.com
+    Signed-off-by: Joerg Roedel <jroedel@suse.de>
+
+Thierry
+
+--tiC6UW8JeMZZZOlp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmU/zCgACgkQ3SOs138+
+s6E+Ew//bfW6yOHM4+iM8OVsK+t0vyqrUeQ74ao0+QMKgBje2qbrxeWcV5cIdeaZ
+rL39jdMkomI2H3G7JXUrfqigRkRH6y2ObXU5fPX1VbXG9Olom9wqRiN6xCEDKzP1
+hI6EbvDYhHB5otD9t9/NUy926QQLrNs2N1g+fHJZjT4H7oZKUg5U/ayO2ZqfBuPI
+pG3kb/n+Yr6IGjGtsFaX3xgp8uu0YFe6znrUqIHXgrxga6DmHCSm/TCjb5ykZMKk
+s/8fiZKJlAl+emIvzh3h9vyNqjzCTjz5T84KQIFxJFPytmxGqc0kQlmlUOn65Ren
+K6XVfcoy0R1XFY+z6uGZwk31qo72afJSvOIG+T299r16mgTfopBpQhXXW1i/FaM2
+s8wYy6C33/GbB3pTtbSSuVxbd5ZwPA/eFXZQfn/Zs+J2BgKJ1eG0DULMnGowcNQq
+RHox8DQeQpuL52B7ncg1qc4DACuqZPbK+b1BLQ+T9LWILhDnoMVE+l5LfpmVTcXa
+Awt5nJnxPQy85qD4fP8Vij+rLwi82NiJRrQzy+P1efAO512SoYAouJ/trug9LkRT
+uhzqFB2tUojtdEtxR57uo0EnX6lX7V13yqNJHIkb5PhgKjFOkzFttHB2cj2wDmxD
+L/yGOHwED8cXLV4a/WWFStNKeOlCJfUUGfsShh8lsKcpjExog+Y=
+=+7dL
+-----END PGP SIGNATURE-----
+
+--tiC6UW8JeMZZZOlp--
