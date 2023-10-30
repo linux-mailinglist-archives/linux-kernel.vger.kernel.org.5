@@ -2,283 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEA77DB5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E678F7DB5BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjJ3JF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
+        id S232394AbjJ3JGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjJ3JFZ (ORCPT
+        with ESMTP id S232385AbjJ3JGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:05:25 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707EE94;
-        Mon, 30 Oct 2023 02:05:22 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39U7HYOd020046;
-        Mon, 30 Oct 2023 09:05:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=+BHBBy2hbEIEKkYqrqkXVOp/Y/qfuNbbQXEDeHpGtwA=;
- b=VK3uIspdfgrwF7vM3quQrb1kJ1QMazT9hmnNm48CivF0j3oEPyf0RjoUc8OoT6s3+F07
- v6p5ErwYib63aP7KC7A3W2WzUL0NtUAeXBWqgqDY9gyVkQXkpLMFBwhAFjMgJ5UZTbEd
- u3W5Hne8WeXLJN2u0Eo4rVVsgOK45EteY326HDX3Qgd8uGfCmoB8087kZ0xYWe+QyTvx
- 0Kc7OhLgY19cBaYDq9s1RzWmYAeBqDZSn3ZX7Y2SECtwvr+dgiaaAKXGIDfu2sO2QmM8
- Frd5JF8oXBeLaWj7HLG0wRTB6heiFvdcDb6t+glJelzPSU0SdrrPm6aW4HZ8BQFvJsaa bw== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0smrkek8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 09:05:16 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39U95EnS000976
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 09:05:14 GMT
-Received: from [10.214.225.95] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
- 2023 02:05:07 -0700
-Message-ID: <7934a36a-9438-719a-2ed0-4a78757b044b@quicinc.com>
-Date:   Mon, 30 Oct 2023 14:34:54 +0530
+        Mon, 30 Oct 2023 05:06:03 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09871BD
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:05:58 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-200-g2Ds3xdjPpCK9cbP3JEE4w-1; Mon, 30 Oct 2023 09:05:55 +0000
+X-MC-Unique: g2Ds3xdjPpCK9cbP3JEE4w-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 30 Oct
+ 2023 09:05:48 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 30 Oct 2023 09:05:48 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Uros Bizjak' <ubizjak@gmail.com>
+CC:     Brian Gerst <brgerst@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Ingo Molnar" <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: RE: [PATCH v2 00/11] x86-64: Stack protector and percpu improvements
+Thread-Topic: [PATCH v2 00/11] x86-64: Stack protector and percpu improvements
+Thread-Index: AQHaCCWwM6Gzma9PGEyZRt5JZqLOarBhUF8AgACvZQCAAA+iwA==
+Date:   Mon, 30 Oct 2023 09:05:48 +0000
+Message-ID: <1eb4f2c46e1642519a40924ed3fe3ccc@AcuMS.aculab.com>
+References: <20231026160100.195099-1-brgerst@gmail.com>
+ <a094c7da294a4827994af72249262593@AcuMS.aculab.com>
+ <CAFULd4ZBGzceGbRaVLuMJ+qkoUpMv-rdBZB_D=Mni5RAWzgQBQ@mail.gmail.com>
+In-Reply-To: <CAFULd4ZBGzceGbRaVLuMJ+qkoUpMv-rdBZB_D=Mni5RAWzgQBQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 7/9] arm64: dts: qcom: sc7280: Add CDSP node
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-CC:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Matti_Lehtim=c3=a4ki?= <matti.lehtimaki@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
- <20231027-sc7280-remoteprocs-v1-7-05ce95d9315a@fairphone.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231027-sc7280-remoteprocs-v1-7-05ce95d9315a@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GwXz9xNa5tS4sBJylnvstFr-_uM972uO
-X-Proofpoint-GUID: GwXz9xNa5tS4sBJylnvstFr-_uM972uO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_06,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 clxscore=1011 adultscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310300067
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogVXJvcyBCaXpqYWsNCj4gU2VudDogMzAgT2N0b2JlciAyMDIzIDA4OjA3DQo+IA0KPiBP
+biBTdW4sIE9jdCAyOSwgMjAyMyBhdCAxMDo0MuKAr1BNIERhdmlkIExhaWdodCA8RGF2aWQuTGFp
+Z2h0QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogQnJpYW4gR2Vyc3QNCj4gPiA+
+IFNlbnQ6IDI2IE9jdG9iZXIgMjAyMyAxNzowMQ0KPiA+ID4NCj4gPiA+IEN1cnJlbnRseSwgeDg2
+LTY0IHVzZXMgYW4gdW51c3VhbCBwZXJjcHUgbGF5b3V0LCB3aGVyZSB0aGUgcGVyY3B1IHNlY3Rp
+b24NCj4gPiA+IGlzIGxpbmtlZCBhdCBhYnNvbHV0ZSBhZGRyZXNzIDAuICBUaGUgcmVhc29uIGJl
+aGluZCB0aGlzIGlzIHRoYXQgb2xkZXIgR0NDDQo+ID4gPiB2ZXJzaW9ucyBwbGFjZWQgdGhlIHN0
+YWNrIHByb3RlY3RvciAoaWYgZW5hYmxlZCkgYXQgYSBmaXhlZCBvZmZzZXQgZnJvbSB0aGUNCj4g
+PiA+IEdTIHNlZ21lbnQgYmFzZS4gIFNpbmNlIHRoZSBHUyBzZWdlbWVudCBpcyBhbHNvIHVzZWQg
+Zm9yIHBlcmNwdSB2YXJpYWJsZXMsDQo+ID4gPiB0aGlzIGZvcmNlZCB0aGUgY3VycmVudCBsYXlv
+dXQuDQo+ID4gPg0KPiA+ID4gR0NDIHNpbmNlIHZlcnNpb24gOC4xIHN1cHBvcnRzIGEgY29uZmln
+dXJhYmxlIGxvY2F0aW9uIGZvciB0aGUgc3RhY2sNCj4gPiA+IHByb3RlY3RvciB2YWx1ZSwgd2hp
+Y2ggYWxsb3dzIHJlbW92YWwgb2YgdGhlIHJlc3RyaWN0aW9uIG9uIGhvdyB0aGUgcGVyY3B1DQo+
+ID4gPiBzZWN0aW9uIGlzIGxpbmtlZC4gIFRoaXMgYWxsb3dzIHRoZSBwZXJjcHUgc2VjdGlvbiB0
+byBiZSBsaW5rZWQNCj4gPiA+IG5vcm1hbGx5LCBsaWtlIG1vc3Qgb3RoZXIgYXJjaGl0ZWN0dXJl
+cy4gIEluIHR1cm4sIHRoaXMgYWxsb3dzIHJlbW92YWwNCj4gPiA+IG9mIGNvZGUgdGhhdCB3YXMg
+bmVlZGVkIHRvIHN1cHBvcnQgdGhlIHplcm8tYmFzZWQgcGVyY3B1IHNlY3Rpb24uDQo+ID4NCj4g
+PiBJIGRpZG4ndCB0aGluayB0aGUgbWluaW11bSBnY2MgdmVyc2lvbiB3YXMgYW55dGhpbmcgbGlr
+ZSA4LjEuDQo+ID4gSSdtIHVzaW5nIDcuNS4wIGFuZCBJIGRvbid0IHRoaW5rIHRoYXQgaXMgdGhl
+IG9sZGVzdCB2ZXJzaW9uLg0KPiANCj4gUGxlYXNlIHNlZSBwcmV2aW91cyBkaXNjdXNzaW9uIHJl
+Z2FyZGluZyBtb2Rlcm5pemluZyBzdGFjayBwcm90ZWN0b3INCj4gb24geDg2XzY0IFsxXQ0KPiAN
+Cj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTExMTMxMjQwMzUuOTE4MC0x
+LWJyZ2Vyc3RAZ21haWwuY29tLw0KPiANCj4gYW5kIHg4Nl8zMiBbMl0NCj4gDQo+IFsyXSBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9sa21sL2NvdmVyLjE2MDE5MjUyNTEuZ2l0Lmx1dG9Aa2VybmVs
+Lm9yZy8NCj4gDQo+IFRoZSBjb25jbHVzaW9uIGluIFsyXSBpczoNCj4gDQo+ICJJJ20gYWxsIGlu
+IGZhdm91ciBvZiBzaW1wbHkgcmVxdWlyaW5nIEdDQy04LjEgdG8gYnVpbGQgYSBtb3JlIHNlY3Vy
+ZQ0KPiB4ODZfNjQga2VybmVsLiBHaXZlcyBwZW9wbGUgYW4gaW5jZW50aXZlIHRvIG5vdCB1c2Ug
+YW5jaWVudCBjb21waWxlcnMuDQo+IA0KPiBBbmQgaWYgeW91IGRvIHdhbnQgdG8gdXNlIHlvdXIg
+YW5jaWVudCBjb21waWxlciwgd2UnbGwgc3RpbGwgYnVpbGQsIHlvdQ0KPiBqdXN0IGRvbid0IGdl
+dCB0byBoYXZlIHN0YWNrcHJvdGVjdG9yLiINCg0KSSBkaWRuJ3Qgc2VlIGEgcGF0Y2ggdGhhdCBs
+aW1pdGVkICdzdGFja3Byb3RlY3RvcicgdG8gZ2NjID49IDguMQ0KV2l0aG91dCB0aGF0IGFueW9u
+ZSB3aG8gYWxyZWFkeSBoYXMgaXQgZW5hYmxlZCBhbmQgaXMgdXNpbmcgYW4NCm9sZGVyIGNvbXBp
+bGVyIHdpbGwgZ2V0IHZlcnkgYnJva2VuIGtlcm5lbHMuDQoNCglEYXZpZA0KDQo+IA0KPiBhbmQg
+aW4gWzFdOg0KPiANCj4gIkFjay4gIFdlIGRpZCB0aGlzIGZvciAzMi1iaXQgYW5kIGdvdCBmZXcg
+Y29tcGxhaW50cy4gTGV04oCZcyBmaW5pc2ggdGhlIGpvYi4iDQo+IA0KPiBVcm9zLg0KDQotDQpS
+ZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWls
+dG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMp
+DQo=
 
-
-On 10/27/2023 7:50 PM, Luca Weiss wrote:
-> Add the node for the ADSP found on the SC7280 SoC, using standard
-> Qualcomm firmware.
-> 
-> The memory region for sc7280-chrome-common.dtsi is taken from msm-5.4
-> yupik.dtsi since the other areas also seem to match that file there,
-> though I cannot be sure there.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->   arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |   5 +
->   arch/arm64/boot/dts/qcom/sc7280.dtsi               | 138 +++++++++++++++++++++
->   2 files changed, 143 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
-> index eb55616e0892..6e5a9d4c1fda 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
-> @@ -29,6 +29,11 @@ adsp_mem: memory@86700000 {
->   			no-map;
->   		};
->   
-> +		cdsp_mem: memory@88f00000 {
-> +			reg = <0x0 0x88f00000 0x0 0x1e00000>;
-> +			no-map;
-> +		};
-> +
-
-Just a question, why to do it here, if chrome does not use this ?
-
--Mukesh
-
->   		camera_mem: memory@8ad00000 {
->   			reg = <0x0 0x8ad00000 0x0 0x500000>;
->   			no-map;
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index cc153f4e6979..e15646289bf7 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -3815,6 +3815,144 @@ nsp_noc: interconnect@a0c0000 {
->   			qcom,bcm-voters = <&apps_bcm_voter>;
->   		};
->   
-> +		remoteproc_cdsp: remoteproc@a300000 {
-> +			compatible = "qcom,sc7280-cdsp-pas";
-> +			reg = <0 0x0a300000 0 0x10000>;
-> +
-> +			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_LEVEL_HIGH>,
-> +					      <&cdsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-> +					      <&cdsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-> +					      <&cdsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-> +					      <&cdsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-> +					      <&cdsp_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
-> +			interrupt-names = "wdog", "fatal", "ready", "handover",
-> +					  "stop-ack", "shutdown-ack";
-> +
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "xo";
-> +
-> +			power-domains = <&rpmhpd SC7280_CX>,
-> +					<&rpmhpd SC7280_MX>;
-> +			power-domain-names = "cx", "mx";
-> +
-> +			interconnects = <&nsp_noc MASTER_CDSP_PROC 0 &mc_virt SLAVE_EBI1 0>;
-> +
-> +			memory-region = <&cdsp_mem>;
-> +
-> +			qcom,qmp = <&aoss_qmp>;
-> +
-> +			qcom,smem-states = <&cdsp_smp2p_out 0>;
-> +			qcom,smem-state-names = "stop";
-> +
-> +			status = "disabled";
-> +
-> +			glink-edge {
-> +				interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
-> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
-> +							     IRQ_TYPE_EDGE_RISING>;
-> +				mboxes = <&ipcc IPCC_CLIENT_CDSP
-> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +
-> +				label = "cdsp";
-> +				qcom,remote-pid = <5>;
-> +
-> +				fastrpc {
-> +					compatible = "qcom,fastrpc";
-> +					qcom,glink-channels = "fastrpcglink-apps-dsp";
-> +					label = "cdsp";
-> +					qcom,non-secure-domain;
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					compute-cb@1 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <1>;
-> +						iommus = <&apps_smmu 0x11a1 0x0420>,
-> +							 <&apps_smmu 0x1181 0x0420>;
-> +					};
-> +
-> +					compute-cb@2 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <2>;
-> +						iommus = <&apps_smmu 0x11a2 0x0420>,
-> +							 <&apps_smmu 0x1182 0x0420>;
-> +					};
-> +
-> +					compute-cb@3 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <3>;
-> +						iommus = <&apps_smmu 0x11a3 0x0420>,
-> +							 <&apps_smmu 0x1183 0x0420>;
-> +					};
-> +
-> +					compute-cb@4 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <4>;
-> +						iommus = <&apps_smmu 0x11a4 0x0420>,
-> +							 <&apps_smmu 0x1184 0x0420>;
-> +					};
-> +
-> +					compute-cb@5 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <5>;
-> +						iommus = <&apps_smmu 0x11a5 0x0420>,
-> +							 <&apps_smmu 0x1185 0x0420>;
-> +					};
-> +
-> +					compute-cb@6 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <6>;
-> +						iommus = <&apps_smmu 0x11a6 0x0420>,
-> +							 <&apps_smmu 0x1186 0x0420>;
-> +					};
-> +
-> +					compute-cb@7 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <7>;
-> +						iommus = <&apps_smmu 0x11a7 0x0420>,
-> +							 <&apps_smmu 0x1187 0x0420>;
-> +					};
-> +
-> +					compute-cb@8 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <8>;
-> +						iommus = <&apps_smmu 0x11a8 0x0420>,
-> +							 <&apps_smmu 0x1188 0x0420>;
-> +					};
-> +
-> +					/* note: secure cb9 in downstream */
-> +
-> +					compute-cb@11 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <11>;
-> +						iommus = <&apps_smmu 0x11ab 0x0420>,
-> +							 <&apps_smmu 0x118b 0x0420>;
-> +					};
-> +
-> +					compute-cb@12 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <12>;
-> +						iommus = <&apps_smmu 0x11ac 0x0420>,
-> +							 <&apps_smmu 0x118c 0x0420>;
-> +					};
-> +
-> +					compute-cb@13 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <13>;
-> +						iommus = <&apps_smmu 0x11ad 0x0420>,
-> +							 <&apps_smmu 0x118d 0x0420>;
-> +					};
-> +
-> +					compute-cb@14 {
-> +						compatible = "qcom,fastrpc-compute-cb";
-> +						reg = <14>;
-> +						iommus = <&apps_smmu 0x11ae 0x0420>,
-> +							 <&apps_smmu 0x118e 0x0420>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +
->   		usb_1: usb@a6f8800 {
->   			compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
->   			reg = <0 0x0a6f8800 0 0x400>;
-> 
