@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F577DBED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06D87DBECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233709AbjJ3RZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S233769AbjJ3RYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbjJ3RZw (ORCPT
+        with ESMTP id S232492AbjJ3RYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:25:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB97B9F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:25:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698686704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=aTBFgLt9uRovWwF2IMctF7UYTEbuVr1QbBbWiOdNkAA=;
-        b=YtEiCgiRBCgSqdKLh4oVxoQXZPZto5z/gsEXLAFKsXtopfmMy0bQPbL9Xn3AxLmcy1dHDt
-        wlNp7PUXUezBBi+mMKlCEXfDlMV02bDPUm3hc3hE+0walDLIdqOBRgFiQ7F16odu4oEyJF
-        Uw5qPgTLpo1NS3nUDCWmOr8Z7bHFUIE=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-Y4LGCtdUPV2is72tMNUPwg-1; Mon, 30 Oct 2023 13:24:52 -0400
-X-MC-Unique: Y4LGCtdUPV2is72tMNUPwg-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c50255b905so50618401fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:24:52 -0700 (PDT)
+        Mon, 30 Oct 2023 13:24:48 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB119C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:24:44 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso34571405e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698686683; x=1699291483; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SgPvEq1XzKxonQVfxRuv6f0Aq4ieBnAx1krvZV+XHBA=;
+        b=EMrOjmgnaMM43FAcepwfzrDFf7LhbTE3XCtTsaVgOm4eEdKq5NXcWMmox4CfFrNBcX
+         Q0vxA7bEC6KpIAfhsRGChioFUuQL8vHmGyCz5dehVG5In6TSTQrC32crM8tdqpDvcEly
+         rOrdqPSQSVZ6bKDZl4Lt/4z+iRM3GKothFCX19auROvlkrc5JRLYzhdQqSccHJc9AzfL
+         AaL6ubXvSoedNJgXH58S+kXHjo5SuNsT1XPb61Nsao1ysVnF9BuxKoM7OxQ7npAHTWm8
+         /LqR+D3G8xNvf7wo7GaWBhlbHKTOuf36HRn3UFelaCLumXPF1QU+ss74gLOj7a2a+JHE
+         Flow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698686691; x=1699291491;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698686683; x=1699291483;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aTBFgLt9uRovWwF2IMctF7UYTEbuVr1QbBbWiOdNkAA=;
-        b=JUiCbccNpsvPCDGOfDR5A1sAvWgfyhn9KdAbcHGSLcARJ6Kk5PASyCUNbtqzdfAv+M
-         Dkr9LuJD3WAT6reGESWoinbxtqpBYbnpReqeA4T8BEpW7dARCaP2nKIjJUxCZoVm7Xo+
-         mVoWMbA/L+18nrIuQluvm6h2oZgPcVVO8x9B/g/kVWOusY7glTymMCpDh734GEEvg+R3
-         4EONI5GLpReaft2QgeeDlYKqWHAHBBKCINhzOgXjXJHB0ZZGPZAI9adn4oOp7crR0uNK
-         c6Un6lihTVx0xr6unRJ+ACsWnmsG/xD4RyviKnCT5I0gcbl0y5T2QnqTIzqgul/RM15L
-         kBJQ==
-X-Gm-Message-State: AOJu0YwsWo86ApsZRfgQ0xn7NjGSr3Lldk4jAr1Mr1YwPvP7xeuBTxFi
-        0z+XadihUS2iYD7+3jjY0pyA62eLb6zYP4YYYePwUU6mG1UnKjIhQYj41ZYTA8RpzBYQnqlBOFl
-        juyW/0mpBgIj67gDNbE8ZlRR7
-X-Received: by 2002:a05:651c:c98:b0:2c5:13b1:b450 with SMTP id bz24-20020a05651c0c9800b002c513b1b450mr10090916ljb.26.1698686691293;
-        Mon, 30 Oct 2023 10:24:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHH4GpuJ4hd8lDIQ6vW1HWByPqqh+IwG7ee+zcxusmVo9be7cbvygAsUC7OMmwHWlxrzIuEsg==
-X-Received: by 2002:a05:651c:c98:b0:2c5:13b1:b450 with SMTP id bz24-20020a05651c0c9800b002c513b1b450mr10090869ljb.26.1698686690900;
-        Mon, 30 Oct 2023 10:24:50 -0700 (PDT)
-Received: from [192.168.1.174] ([151.81.68.207])
-        by smtp.googlemail.com with ESMTPSA id n13-20020a05600c500d00b0040772934b12sm13131967wmr.7.2023.10.30.10.24.37
+        bh=SgPvEq1XzKxonQVfxRuv6f0Aq4ieBnAx1krvZV+XHBA=;
+        b=LdXCopQO84IkIVBiABIHouwV5Mhahq3pxQf2nCYCCQ8bpZFzHNAAXc5gCMzYABEkdm
+         r35xI/lot6eZydQi2EBUqvPiIsvy5phjrk3FWLZGkSmK/GoVUFHdcblix++g0qyUZJ3H
+         VcBPT9nOtEnrL9h7/z+d718BQ+DeQQZfWk4H8WONBuDE/8ij9mGizFT9q3EW7Fz987qG
+         e6f/yjT85elcsNnor5JcyCmvTFyjuwzoz56bO3RZD6Ey9gdsW53Y3JQDb+W+g7Bm0ukQ
+         538tnZ464J0fIECWm9fIhjQNzS2SUsEUFjWSC5FSiEVu6Ns8eaep5fmrdKI35X34VwBS
+         1jmg==
+X-Gm-Message-State: AOJu0YzUHWBDiDMbUWg+eCzYrRMoRkzXGLXNMqZ43/cq6ll+3cEiIjHo
+        91jEVNB/NDQQIlyGc9cLHiff5w==
+X-Google-Smtp-Source: AGHT+IFtCe+pmUo8vQC26fq5Uq7bvUXmF+s5YykZk0Z1s2Gq+eJ22Egf+z1817cGkL9BW0hN7yGcoQ==
+X-Received: by 2002:a05:600c:3149:b0:409:101e:235a with SMTP id h9-20020a05600c314900b00409101e235amr8466479wmo.28.1698686683266;
+        Mon, 30 Oct 2023 10:24:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b004063d8b43e7sm13350720wmq.48.2023.10.30.10.24.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 10:24:49 -0700 (PDT)
-Message-ID: <601f24a0-cb55-458e-aa15-3970f2290172@redhat.com>
-Date:   Mon, 30 Oct 2023 18:24:34 +0100
+        Mon, 30 Oct 2023 10:24:42 -0700 (PDT)
+Message-ID: <11906efc-e16a-40bc-98a5-db32fefbf355@linaro.org>
+Date:   Mon, 30 Oct 2023 18:24:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 14/35] mm: Add AS_UNMOVABLE to mark mapping as
- completely unmovable
+Subject: Re: [PATCH 1/2] dt-bindings: rtc: max31335: add max31335 bindings
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-15-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20231027182217.3615211-15-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20231030115016.97823-1-antoniu.miclaus@analog.com>
+ <20231030115016.97823-2-antoniu.miclaus@analog.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231030115016.97823-2-antoniu.miclaus@analog.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -154,159 +126,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/23 20:21, Sean Christopherson wrote:
-> Add an "unmovable" flag for mappings that cannot be migrated under any
-> circumstance.  KVM will use the flag for its upcoming GUEST_MEMFD support,
-> which will not support compaction/migration, at least not in the
-> foreseeable future.
+On 30/10/2023 12:50, Antoniu Miclaus wrote:
+> Document the Analog Devices MAX31335 device tree bindings.
 > 
-> Test AS_UNMOVABLE under folio lock as already done for the async
-> compaction/dirty folio case, as the mapping can be removed by truncation
-> while compaction is running.  To avoid having to lock every folio with a
-> mapping, assume/require that unmovable mappings are also unevictable, and
-> have mapping_set_unmovable() also set AS_UNEVICTABLE.
-> 
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Co-developed-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-I think this could even be "From: Vlastimil", but no biggie.
-
-Paolo
-
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 > ---
->   include/linux/pagemap.h | 19 +++++++++++++++++-
->   mm/compaction.c         | 43 +++++++++++++++++++++++++++++------------
->   mm/migrate.c            |  2 ++
->   3 files changed, 51 insertions(+), 13 deletions(-)
+>  .../devicetree/bindings/rtc/adi,max31335.yaml | 61 +++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/adi,max31335.yaml
 > 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 351c3b7f93a1..82c9bf506b79 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -203,7 +203,8 @@ enum mapping_flags {
->   	/* writeback related tags are not used */
->   	AS_NO_WRITEBACK_TAGS = 5,
->   	AS_LARGE_FOLIO_SUPPORT = 6,
-> -	AS_RELEASE_ALWAYS,	/* Call ->release_folio(), even if no private data */
-> +	AS_RELEASE_ALWAYS = 7,	/* Call ->release_folio(), even if no private data */
-> +	AS_UNMOVABLE	= 8,	/* The mapping cannot be moved, ever */
->   };
->   
->   /**
-> @@ -289,6 +290,22 @@ static inline void mapping_clear_release_always(struct address_space *mapping)
->   	clear_bit(AS_RELEASE_ALWAYS, &mapping->flags);
->   }
->   
-> +static inline void mapping_set_unmovable(struct address_space *mapping)
-> +{
-> +	/*
-> +	 * It's expected unmovable mappings are also unevictable. Compaction
-> +	 * migrate scanner (isolate_migratepages_block()) relies on this to
-> +	 * reduce page locking.
-> +	 */
-> +	set_bit(AS_UNEVICTABLE, &mapping->flags);
-> +	set_bit(AS_UNMOVABLE, &mapping->flags);
-> +}
+> diff --git a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+> new file mode 100644
+> index 000000000000..b84be0fa34ef
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/adi,max31335.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +static inline bool mapping_unmovable(struct address_space *mapping)
-> +{
-> +	return test_bit(AS_UNMOVABLE, &mapping->flags);
-> +}
+> +title: Analog Devices MAX31335 RTC Device Tree Bindings
+
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+Although I wonder why there is no error report from the bot.
+
+Drop "Device Tree Bindings"
+
 > +
->   static inline gfp_t mapping_gfp_mask(struct address_space * mapping)
->   {
->   	return mapping->gfp_mask;
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 38c8d216c6a3..12b828aed7c8 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -883,6 +883,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->   
->   	/* Time to isolate some pages for migration */
->   	for (; low_pfn < end_pfn; low_pfn++) {
-> +		bool is_dirty, is_unevictable;
->   
->   		if (skip_on_failure && low_pfn >= next_skip_pfn) {
->   			/*
-> @@ -1080,8 +1081,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->   		if (!folio_test_lru(folio))
->   			goto isolate_fail_put;
->   
-> +		is_unevictable = folio_test_unevictable(folio);
+> +allOf:
+> +  - $ref: rtc.yaml#
+
+This goes after description. Several existing files have it in other
+place, but if doing changes then well...
+
 > +
->   		/* Compaction might skip unevictable pages but CMA takes them */
-> -		if (!(mode & ISOLATE_UNEVICTABLE) && folio_test_unevictable(folio))
-> +		if (!(mode & ISOLATE_UNEVICTABLE) && is_unevictable)
->   			goto isolate_fail_put;
->   
->   		/*
-> @@ -1093,26 +1096,42 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->   		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_writeback(folio))
->   			goto isolate_fail_put;
->   
-> -		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_dirty(folio)) {
-> -			bool migrate_dirty;
-> +		is_dirty = folio_test_dirty(folio);
+> +maintainers:
+> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
 > +
-> +		if (((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty) ||
-> +		    (mapping && is_unevictable)) {
-> +			bool migrate_dirty = true;
-> +			bool is_unmovable;
->   
->   			/*
->   			 * Only folios without mappings or that have
-> -			 * a ->migrate_folio callback are possible to
-> -			 * migrate without blocking.  However, we may
-> -			 * be racing with truncation, which can free
-> -			 * the mapping.  Truncation holds the folio lock
-> -			 * until after the folio is removed from the page
-> -			 * cache so holding it ourselves is sufficient.
-> +			 * a ->migrate_folio callback are possible to migrate
-> +			 * without blocking.
-> +			 *
-> +			 * Folios from unmovable mappings are not migratable.
-> +			 *
-> +			 * However, we can be racing with truncation, which can
-> +			 * free the mapping that we need to check. Truncation
-> +			 * holds the folio lock until after the folio is removed
-> +			 * from the page so holding it ourselves is sufficient.
-> +			 *
-> +			 * To avoid locking the folio just to check unmovable,
-> +			 * assume every unmovable folio is also unevictable,
-> +			 * which is a cheaper test.  If our assumption goes
-> +			 * wrong, it's not a correctness bug, just potentially
-> +			 * wasted cycles.
->   			 */
->   			if (!folio_trylock(folio))
->   				goto isolate_fail_put;
->   
->   			mapping = folio_mapping(folio);
-> -			migrate_dirty = !mapping ||
-> -					mapping->a_ops->migrate_folio;
-> +			if ((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty) {
-> +				migrate_dirty = !mapping ||
-> +						mapping->a_ops->migrate_folio;
-> +			}
-> +			is_unmovable = mapping && mapping_unmovable(mapping);
->   			folio_unlock(folio);
-> -			if (!migrate_dirty)
-> +			if (!migrate_dirty || is_unmovable)
->   				goto isolate_fail_put;
->   		}
->   
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 2053b54556ca..ed874e43ecd7 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -956,6 +956,8 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
->   
->   		if (!mapping)
->   			rc = migrate_folio(mapping, dst, src, mode);
-> +		else if (mapping_unmovable(mapping))
-> +			rc = -EOPNOTSUPP;
->   		else if (mapping->a_ops->migrate_folio)
->   			/*
->   			 * Most folios have a mapping and most filesystems
+> +description: Analog Devices MAX31335 I2C RTC
+
+Drop or say something else than title.
+
+
+> +
+> +properties:
+> +  compatible:
+> +    const: adi,max31335
+> +
+> +  reg:
+> +    description: I2C address of the RTC
+
+Drop description, obvious.
+
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  "#clock-cells":
+> +    description:
+> +      RTC can be used as a clock source through its clock output pin.
+> +    const: 0
+> +
+> +  trickle-resistor-ohms:
+> +    description: Selected resistor for trickle charger.
+> +    enum: [3000, 6000, 11000]
+
+default? Or missing property has other meaning...
+
+> +
+> +  trickle-diode-enable: true
+
+Where is it defined? You added it as it was a common property, so where
+is the one definition? Maybe you wanted to use other property from
+rtc.yaml which is deprecated, so obviously not...
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+
+Best regards,
+Krzysztof
 
