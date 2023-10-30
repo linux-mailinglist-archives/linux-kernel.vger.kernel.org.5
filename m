@@ -2,146 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330637DBF04
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25537DBF09
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbjJ3RdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S229569AbjJ3RfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbjJ3RdF (ORCPT
+        with ESMTP id S229606AbjJ3RfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:33:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D290AC4;
-        Mon, 30 Oct 2023 10:33:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C874C433C8;
-        Mon, 30 Oct 2023 17:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698687181;
-        bh=NmBMUZ0aub9K48dR63VKdL58hnY2i/0sav/2YAAE35U=;
-        h=From:Date:Subject:To:Cc:From;
-        b=k8D7hDd/jRRDxRUikY75NK4PT5NJhZ/JiMopIn/+4CIsU1/N56OAa8sJnbV8ozULt
-         l4IUAHFIiYMiCFgedv+jMf7KNxpdMyuoXrbbjlvYcNw8PtPACykq89SBaE116KHjP+
-         ZJeBR2nXRHXLw3Y8tSR0N9yGINbTCSWeo6zoIM5IFNHu8luS0308YpF3Gtk4bGNF5P
-         ZZYdIM0vlTuVH9XqDSg0lpZC6kDeih5Z108J1xlE/sJn+iKz4+J0WJSGTcGQcDprN8
-         DfQw9Bhe3VhdFK1BRbIRWO7rac35BLD8sO0HFkduXt/BnyB/fz0thsGs5TqiS0THlM
-         Dz/Gy0fSLEtnw==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Mon, 30 Oct 2023 13:32:54 -0400
-Subject: [PATCH RFC] nfsd: fix error handling in nfsd_svc
+        Mon, 30 Oct 2023 13:35:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4740599
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698687259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5fMqrw+qFhssxj8qhYVvLd8lvq+1o5oZc/SrI7TORTQ=;
+        b=aX7D2XInE3im0lFLJxafHhkRtxARBOstcwsapG6x2d3JTjdZ3VqRgF0QpSfg56C02KacZm
+        pb94k/ApH88eR4CYWHB9oRFIR3J+MFC9TQn4exSyFBvSUT5ZHAh3WI0BQYEa+5TwsVLdAa
+        uL16pDRgM8OREsxchxcUaW0idqhlPcs=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-ECMtNYhIMSmreVfnYVHKCA-1; Mon, 30 Oct 2023 13:34:17 -0400
+X-MC-Unique: ECMtNYhIMSmreVfnYVHKCA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d931872cbso2475733f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:34:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698687256; x=1699292056;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fMqrw+qFhssxj8qhYVvLd8lvq+1o5oZc/SrI7TORTQ=;
+        b=Fe3FciBo5pW8Wl0ehmWtRnABnKYAbrTKuhrOk1AZk5TU5yW5RtIeSUheN/Cmz0zGqk
+         qzQ/obN/OOHNcFj9Wkx2U/jyEzQ7h/QoK7uvAkVL0fTIF6wNzmR9VxQCmASR9k3a/Juo
+         nW5DAaHuBY8lMD5BazqxW+/HmdUTQ+shMvSsUdqB9zEFCAFM8d9uslubLsjhfJ+ZLtcH
+         pQsouetj0BknqXCfddrau3tEVx6wy04vm7hLNG5Hhj0TebzYgLJdX/L5AMXdd7mlUQy8
+         pcJy7plRphKSSE75LYZ5Ps7W/ya5qZUVhkJ8D7LOONJSct+V/7s9elcIJvoQFUPXKeFz
+         AkgQ==
+X-Gm-Message-State: AOJu0YwEX8Q0X+6OaCx0l1cDh4cqUGMlBQQproH31ItKfqccg5kT/Hn7
+        wCzyPyT9x5fm3fyAS1qc/nGagKUVXKFvWRbYC24zZ9v4wYM+vqMebGe7Dxmsxfvv9c6t6Uc9m9d
+        +kUQ9J+HCnOJQtwXS5S2txPx3
+X-Received: by 2002:a5d:674c:0:b0:32d:bc7d:c431 with SMTP id l12-20020a5d674c000000b0032dbc7dc431mr8595493wrw.1.1698687256659;
+        Mon, 30 Oct 2023 10:34:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGoSwHjCgF60i9p5iHFG+4s/5oKx7xoJBSRpuzoczO/1s/n65Z43CGXqwQnwC+DGZUjQ2L04A==
+X-Received: by 2002:a5d:674c:0:b0:32d:bc7d:c431 with SMTP id l12-20020a5d674c000000b0032dbc7dc431mr8595455wrw.1.1698687256340;
+        Mon, 30 Oct 2023 10:34:16 -0700 (PDT)
+Received: from [192.168.1.174] ([151.81.68.207])
+        by smtp.googlemail.com with ESMTPSA id o26-20020a5d58da000000b0032d2489a399sm8695806wrf.49.2023.10.30.10.34.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 10:34:15 -0700 (PDT)
+Message-ID: <9bc69994-c98f-48e4-b956-08a8d98a6e6d@redhat.com>
+Date:   Mon, 30 Oct 2023 18:34:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 22/35] KVM: Allow arch code to track number of memslot
+ address spaces per VM
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-23-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231027182217.3615211-23-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-kdevops-v1-1-bae6baf62c69@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAMXoP2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDA2MD3eyU1LL8gmJd0zRzYzMzC0vz1DQTJaDqgqLUtMwKsEnRSkFuzkq
- xtbUAjF+kFl4AAAA=
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhi Li <yieli@redhat.com>, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2391; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=NmBMUZ0aub9K48dR63VKdL58hnY2i/0sav/2YAAE35U=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlP+jMieljdWA7oHspQdewsswpVd+f8UwiG+n1y
- ZIOVFya9s+JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZT/ozAAKCRAADmhBGVaC
- FdeTD/0cUpezDGAcWntDUPpmiPKDSMP0JDjOOjg1nZH/FLgYmNnXxGcmyPoLkd1bljXM1mIhCMo
- mUP/N41fq6xkawH6x4GI4FBxDcdESCgPXmbM8x8KecHWHzAzN/ILD5KJrD6OwUjRTd1ekE8F20p
- 3slYBEjrDLH2BBeNQP2V8JxU31wyOC2y83SiGU9/kLzQTrTjbxRCVfzP5CjgGarYQEE7QxYlxJK
- zZkpV4C6bISQ+OaaXlKStvmzKuEV6ArwO2AB4YuRooh/hYxwzdwUU8z/3omEm/moGsE3Q4oN1rF
- TmE0LH7zTlypSFTjGstS4JaHAXeRZAUDL4MLI0rk8ncAo6SmIqFBM0oMoQ/tDLEtqO/hYmbqrqh
- AulROmOxJHXxF2/qLsSHgkq1T1dLXtbPvSQEkPwG8x+6hti7f0g1egisuDn5drEMVVUt1PiKRW4
- bRrjPCJC1t1GyO6DK6QE+nhqY8PYNeJ/2U3catucMquw7s5EYqHaM04VnvGvp5e9027vcjTIrms
- RALPlyQMkiX8+Vmt0oIiiz7uNvaHiiqbXpyxvDt2LgYTJwguVyPaKMF+asYd0vpdfBt00NqdrdO
- Nq8rra1LEJ7ua9hRtBAwFA1yYcPRRz6zPCUo3hMSqlc6mZ66T0sbRbvzYTfDUWb0uT23arDI20t
- 9XDU0hItO9deQdw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once we've set the nfsd_serv pointer in nfsd_svc, we still need to call
-nfsd_last_thread if the server fails to be started. Remove the special
-casing for nfsd_up_before case since shutting down the per-net stuff is
-also handled by nfsd_last_thread.
+On 10/27/23 20:22, Sean Christopherson wrote:
+> Let x86 track the number of address spaces on a per-VM basis so that KVM
+> can disallow SMM memslots for confidential VMs.  Confidentials VMs are
+> fundamentally incompatible with emulating SMM, which as the name suggests
+> requires being able to read and write guest memory and register state.
+> 
+> Disallowing SMM will simplify support for guest private memory, as KVM
+> will not need to worry about tracking memory attributes for multiple
+> address spaces (SMM is the only "non-default" address space across all
+> architectures).
 
-Finally, add a new special case at the start and skip doing anything if
-the service already exists, 0 threads were requested and
-serv->sv_nrthreads is 0.
-
-Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_put()")
-Reported-by: Zhi Li <yieli@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Here's what I was thinking for a targeted patch for stable. Testing it
-now, but I won't have results until tomorrow.
----
- fs/nfsd/nfssvc.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 3deef000afa9..187b68769815 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -787,7 +787,6 @@ int
- nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
- {
- 	int	error;
--	bool	nfsd_up_before;
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
- 	struct svc_serv *serv;
- 
-@@ -797,8 +796,9 @@ nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
- 	nrservs = max(nrservs, 0);
- 	nrservs = min(nrservs, NFSD_MAXSERVS);
- 	error = 0;
-+	serv = nn->nfsd_serv;
- 
--	if (nrservs == 0 && nn->nfsd_serv == NULL)
-+	if (nrservs == 0 && (serv == NULL || serv->sv_nrthreads == 0))
- 		goto out;
- 
- 	strscpy(nn->nfsd_name, utsname()->nodename,
-@@ -808,22 +808,17 @@ nfsd_svc(int nrservs, struct net *net, const struct cred *cred)
- 	if (error)
- 		goto out;
- 
--	nfsd_up_before = nn->nfsd_net_up;
- 	serv = nn->nfsd_serv;
- 
- 	error = nfsd_startup_net(net, cred);
- 	if (error)
- 		goto out_put;
- 	error = svc_set_num_threads(serv, NULL, nrservs);
--	if (error)
--		goto out_shutdown;
--	error = serv->sv_nrthreads;
- 	if (error == 0)
--		nfsd_last_thread(net);
--out_shutdown:
--	if (error < 0 && !nfsd_up_before)
--		nfsd_shutdown_net(net);
-+		error = serv->sv_nrthreads;
- out_put:
-+	if (serv->sv_nrthreads == 0)
-+		nfsd_last_thread(net);
- 	/* Threads now hold service active */
- 	if (xchg(&nn->keep_active, 0))
- 		svc_put(serv);
-
----
-base-commit: 31b5a36c4b88b44c91cdd523997b1e86fb47339d
-change-id: 20231030-kdevops-5f7366897ef4
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
