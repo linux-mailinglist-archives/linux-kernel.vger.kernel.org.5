@@ -2,139 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A83677DB25B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 04:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7897DB25E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 04:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbjJ3D4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Oct 2023 23:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S231535AbjJ3D5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Oct 2023 23:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3D4Q (ORCPT
+        with ESMTP id S231518AbjJ3D5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Oct 2023 23:56:16 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23E19B;
-        Sun, 29 Oct 2023 20:56:13 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c5cd27b1acso35906405ad.2;
-        Sun, 29 Oct 2023 20:56:13 -0700 (PDT)
+        Sun, 29 Oct 2023 23:57:13 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1700C0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:57:10 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so3549645b3a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 20:57:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698638173; x=1699242973; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y2LKPRDN6GCfDpHNmFLj1e87YJK73PiRp76sihBNMTM=;
-        b=G/S2rZ5+JEMyqHAyowQAJHhBu5/E3DmDo/fS7Gi3+8QHuj9QYLAWDg+6DKMS2AYnIN
-         59WuepT1I+tLXZrU1fCfR3GmOCc8l3AG/fyYRglAizWPB3J9sMMMX5DELiUWdtkF+XBK
-         hQFFJAVaGKKX+D4CxN4yIvT/qSoXHf44GT5BcbIz3QRkshwJWsO4KQnntrpPUGJKhGCW
-         5VDQh/nKj3jXrI5qdMr1AcwoqI5mAY+3pCJ5VWFEURU/CZB8qemYSDxuSJQ4z9HLtBV+
-         J+xP5F5j63Qn4TH/rv3hVDeNS7Gg2pe+Fz1gdIR1pfA7DoMhWuTPG2v1PXDv1KLu8JoE
-         Iqtg==
+        d=google.com; s=20230601; t=1698638230; x=1699243030; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ne8SXDkcXFFwq2DJL9gmjTYE7QsrFEkJZWdUaILBAC8=;
+        b=KcatbkYRjGOlJI8A23ZSXDpfHjnify9p0cGIhDRkcJnH8H8mWlZEQ3gWX2W9Zge0fW
+         ftTDqLRvKqgk10Jtpqpn7loOKuX7pDDiEnHxRCbLs2sNnRVMaPlAvJ9cmNVEpw+SUjzG
+         PBxaNr79D2Cl6EH7O8cexZCW37Skg3YE6Lc/5dDA+Ko+V6SLCcDzb866NeEel6YUUT23
+         BdnBfiZHcPFi9P7Un5bPEHQAnK0sWGZyttyxrGhHyN7jJgMiZZfwfEL4MdVfo7nHrXUR
+         NBkGjRpry9di8qMRABgJcG+Me+tZm0YdrkDwKtAP7OSss9jTSJ3DcUKptMpjZF3CPh7u
+         mcBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698638173; x=1699242973;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y2LKPRDN6GCfDpHNmFLj1e87YJK73PiRp76sihBNMTM=;
-        b=cydBVcAicUIThvXQJizcVgpRutfo/SlEDyvoMs/VP78t5CQMXW22tfip/XB87LjTlJ
-         fRatRdNgiPDMPH1XLmEbed8Ry/IH9pIaekgE26ugpX5el5cNK3JubKMhDo/2Cp4pWnsa
-         zGYtUq0Pd6ooxlbAnsCE2DZnD4dzDQaLqv9efP1cK9RPUkjQ6G2pYxLPp7zOvLxo1fYV
-         1Ylwo0C2f74Sz1UxiBkDLqOwPybrMhjvabYiJ1G7VVVHMk2X8u8ni4GYtwYk0qzJvt8E
-         3JhLaNZo2MWv6cZJNC8nZB91j5cotNg05RvrfW/su8xC9ctXBmsXi9YDNoAhk7ONyW41
-         2mdw==
-X-Gm-Message-State: AOJu0YwiDUIRIdcyvH0h+3VE/lnlqMvIdk9JIRvsD2nmHr3C4QM5H52R
-        56icS4D2VoY/lUJFwoLEAm8=
-X-Google-Smtp-Source: AGHT+IFtziW0YEt+qaY773vj4t1QmwQ2WxPAPa4J4C8WbaX4O7OoKTqUrQZRKxurTVOpf3PHJN/cmQ==
-X-Received: by 2002:a17:903:2054:b0:1cc:4146:9ecb with SMTP id q20-20020a170903205400b001cc41469ecbmr2679315pla.47.1698638173229;
-        Sun, 29 Oct 2023 20:56:13 -0700 (PDT)
-Received: from localhost.localdomain ([74.48.130.204])
-        by smtp.googlemail.com with ESMTPSA id f7-20020a170902860700b001ca773d674bsm5159445plo.278.2023.10.29.20.56.03
+        d=1e100.net; s=20230601; t=1698638230; x=1699243030;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ne8SXDkcXFFwq2DJL9gmjTYE7QsrFEkJZWdUaILBAC8=;
+        b=MN8fnTz7W4LIfjQlbQnA91TeLwq94iHP1W2zeclpzO5ZvWv8D3w5Ib7Fai/24RfXPi
+         +fafi+XCVJ9tzS93UXdez+1+CnmpZCo+usryjLW9ynZbnPU8ag/UjZDW2TtaX6OCPzm0
+         RjttV2Yi1QPin/gM5MTE6yrrGiaR7CI7JDozBhFF5xORsxe8m1i1cC69v0L9ME58ATz7
+         YDehO9c2rje+ku9B7dNZysC1Zfec1gNgobfg2pHQrIjb1Agi6bdUHS4YPWVygVzRpvgd
+         qNz5CXyB6rRAupS5iHyxF20Os2yuVsFoxTSd+X5hPwYh0zBX1z8W4JcOnEvWFjpfINkP
+         eWdQ==
+X-Gm-Message-State: AOJu0YzhukPz4JP2Khd4oWt6EpEY1Sk9z6gDnieZ8iCdP/6Yj8dpAyDO
+        mA2vb/LusJ5EvHeVXLmSC10Z0A==
+X-Google-Smtp-Source: AGHT+IFoAgdtfAghj821g9kM1YgGoDdEC6gChDxr4PITFJqr111aBbTmgAn9BDyGIaR80cEFIm61RQ==
+X-Received: by 2002:a05:6a00:218d:b0:6b3:55fd:d851 with SMTP id h13-20020a056a00218d00b006b355fdd851mr7660252pfi.10.1698638229341;
+        Sun, 29 Oct 2023 20:57:09 -0700 (PDT)
+Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
+        by smtp.gmail.com with ESMTPSA id d5-20020a056a0010c500b006bfb903599esm4913052pfu.139.2023.10.29.20.57.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Oct 2023 20:56:12 -0700 (PDT)
-From:   Furong Xu <0x1207@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com, Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net-next v2] net: stmmac: xgmac: Enable support for multiple Flexible PPS outputs
-Date:   Mon, 30 Oct 2023 11:55:50 +0800
-Message-Id: <20231030035550.2340514-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 29 Oct 2023 20:57:08 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 03:57:04 +0000
+From:   Mingwei Zhang <mizhang@google.com>
+To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+Subject: Re: [kvm-unit-tests Patch 0/5] Fix PMU test failures on Sapphire
+ Rapids
+Message-ID: <ZT8pkA28Q8zzDMrp@google.com>
+References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
+ <ZTmo9IVM2Tq6ZSrn@google.com>
+ <719318df-dc19-4f4c-88ff-5c69377f713c@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <719318df-dc19-4f4c-88ff-5c69377f713c@linux.intel.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From XGMAC Core 3.20 and later, each Flexible PPS has individual PPSEN bit
-to select Fixed mode or Flexible mode. The PPSEN must be set, or it stays
-in Fixed PPS mode by default.
-XGMAC Core prior 3.20, only PPSEN0(bit 4) is writable. PPSEN{1,2,3} are
-read-only reserved, and they are already in Flexible mode by default, our
-new code always set PPSEN{1,2,3} do not make things worse ;-)
+On Thu, Oct 26, 2023, Mi, Dapeng wrote:
+> On 10/26/2023 7:47 AM, Mingwei Zhang wrote:
+> > On Tue, Oct 24, 2023, Dapeng Mi wrote:
+> > > When running pmu test on Intel Sapphire Rapids, we found several
+> > > failures are encountered, such as "llc misses" failure, "all counters"
+> > > failure and "fixed counter 3" failure.
+> > hmm, I have tested your series on a SPR machine. It looks like, all "llc
+> > misses" already pass on my side. "all counters" always fail with/without
+> > your patches. "fixed counter 3" never exists... I have "fixed
+> > cntr-{0,1,2}" and "fixed-{0,1,2}"
+> 
+> 1. "LLC misses" failure
+> 
+> Yeah, the "LLC misses" failure is not always seen. I can see the "LLC 
+> misses" 2 ~3 times out of 10 runs of PMU standalone test and you could see
+> the failure with higher possibility if you run the full kvm-unit-tests. I
+> think whether you can see the "LLC misses" failure it really depends on
+> current cache status on your system, how much cache memory are consumed by
+> other programs. If there are lots of free cache lines on system when running
+> the pmu test, you may have higher possibility to see the LLC misses failures
+> just like what I see below.
+> 
+> PASS: Intel: llc references-7
+> *FAIL*: Intel: llc misses-0
+> PASS: Intel: llc misses-1
+> PASS: Intel: llc misses-2
+> 
+> 2. "all counters" failure
+> 
+> Actually the "all counters" failure are not always seen, but it doesn't mean
+> current code is correct. In current code, the length of "cnt[10]" array in
+> check_counters_many() is defined as 10, but there are at least 11 counters
+> supported (8 GP counters + 3 fixed counters) on SPR even though fixed
+> counter 3 is not supported in current upstream code. Obviously there would
+> be out of range memory access in check_counters_many().
+> 
 
-Signed-off-by: Furong Xu <0x1207@gmail.com>
----
-Changes in v2:
-  - Add comment for XGMAC_PPSEN description among different XGMAC core versions.
-  - Update commit message, thanks Serge Semin and Jacob Keller for your advices.
----
- drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h     |  2 +-
- .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    | 14 +++++++++++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ok, I will double check on these. Thanks.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-index 7a8f47e7b728..a4e8b498dea9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-@@ -259,7 +259,7 @@
- 	((val) << XGMAC_PPS_MINIDX(x))
- #define XGMAC_PPSCMD_START		0x2
- #define XGMAC_PPSCMD_STOP		0x5
--#define XGMAC_PPSEN0			BIT(4)
-+#define XGMAC_PPSENx(x)			BIT(4 + (x) * 8)
- #define XGMAC_PPSx_TARGET_TIME_SEC(x)	(0x00000d80 + (x) * 0x10)
- #define XGMAC_PPSx_TARGET_TIME_NSEC(x)	(0x00000d84 + (x) * 0x10)
- #define XGMAC_TRGTBUSY0			BIT(31)
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index f352be269deb..453e88b75be0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -1178,7 +1178,19 @@ static int dwxgmac2_flex_pps_config(void __iomem *ioaddr, int index,
- 
- 	val |= XGMAC_PPSCMDx(index, XGMAC_PPSCMD_START);
- 	val |= XGMAC_TRGTMODSELx(index, XGMAC_PPSCMD_START);
--	val |= XGMAC_PPSEN0;
-+
-+	/* XGMAC Core has 4 PPS outputs at most.
-+	 *
-+	 * Prior XGMAC Core 3.20, Fixed mode or Flexible mode are selectable for
-+	 * PPS0 only via PPSEN0. PPS{1,2,3} are in Flexible mode by default,
-+	 * and can not be switched to Fixed mode, since PPSEN{1,2,3} are
-+	 * read-only reserved to 0.
-+	 * But we always set PPSEN{1,2,3} do not make things worse ;-)
-+	 *
-+	 * From XGMAC Core 3.20 and later, PPSEN{0,1,2,3} are writable and must
-+	 * be set, or the PPS outputs stay in Fixed PPS mode by default.
-+	 */
-+	val |= XGMAC_PPSENx(index);
- 
- 	writel(cfg->start.tv_sec, ioaddr + XGMAC_PPSx_TARGET_TIME_SEC(index));
- 
--- 
-2.34.1
-
+> > 
+> > You may want to double check the requirements of your series. Not just
+> > under your setting without explainning those setting in detail.
+> > 
+> > Maybe what I am missing is your topdown series? So, before your topdown
+> > series checked in. I don't see value in this series.
+> 
+> 3. "fixed counter 3" failure
+> 
+> Yeah, I just realized I used the kernel which includes the vtopdown
+> supporting patches after Jim's reminding. As the reply for Jim's comments
+> says, the patches for support slots event are still valuable for current
+> emulation framework and I would split them from the original vtopdown
+> patchset and resend them as an independent patchset. Anyway, even though
+> there is not slots event support in Kernel, it only impacts the patch 4/5,
+> other patches are still valuable.
+> 
+> 
+> > 
+> > Thanks.
+> > -Mingwei
+> > > Intel Sapphire Rapids introduces new fixed counter 3, total PMU counters
+> > > including GP and fixed counters increase to 12 and also optimizes cache
+> > > subsystem. All these changes make the original assumptions in pmu test
+> > > unavailable any more on Sapphire Rapids. Patches 2-4 fixes these
+> > > failures, patch 0 remove the duplicate code and patch 5 adds assert to
+> > > ensure predefine fixed events are matched with HW fixed counters.
+> > > 
+> > > Dapeng Mi (4):
+> > >    x86: pmu: Change the minimum value of llc_misses event to 0
+> > >    x86: pmu: Enlarge cnt array length to 64 in check_counters_many()
+> > >    x86: pmu: Support validation for Intel PMU fixed counter 3
+> > >    x86: pmu: Add asserts to warn inconsistent fixed events and counters
+> > > 
+> > > Xiong Zhang (1):
+> > >    x86: pmu: Remove duplicate code in pmu_init()
+> > > 
+> > >   lib/x86/pmu.c |  5 -----
+> > >   x86/pmu.c     | 17 ++++++++++++-----
+> > >   2 files changed, 12 insertions(+), 10 deletions(-)
+> > > 
+> > > 
+> > > base-commit: bfe5d7d0e14c8199d134df84d6ae8487a9772c48
+> > > -- 
+> > > 2.34.1
+> > > 
