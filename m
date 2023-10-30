@@ -2,270 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5912F7DC296
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFA97DC29C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjJ3Wn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        id S231539AbjJ3Wsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjJ3Wn5 (ORCPT
+        with ESMTP id S229646AbjJ3Wsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:43:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA82CDD;
-        Mon, 30 Oct 2023 15:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698705834; x=1730241834;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XG7coGZzFRldwW+IF/F2D/I9/JstEOKy7alKE54kPdM=;
-  b=aMwzcDo13qoZNli8wrOk9YFOvrFWlOBR66zaBGBedSxYgEnXAxgMW3Js
-   Zymd/qn+yuaBXPtX6p2v3xrOpZtWDiKfbHRPbm5ipbU8Yl+/LLg1pXIvw
-   1war8qtdDd1fWzY8ZOaiRfpcl9OZKjiYxd9V3wO215hCeZbJAucL72E9H
-   dMvXp+L/7n7swKq8O7v4BLlIyGO7VSt94OrpoxgvlwN/b4ZjHbCzQJDP3
-   eXE2JUYCuObsiM5gtblPVrHRuVwiEW3NWKKiD13siXozjlfnaxhAm64Kd
-   5OB8XnO/yxvO2nh6I3/3l1wAZ684WOU1aesZT8bSKQAOrZPMh/zzymEO8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="367521512"
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="367521512"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 15:43:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="764058297"
-X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
-   d="scan'208";a="764058297"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 15:43:49 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 3A8F711F894;
-        Tue, 31 Oct 2023 00:43:47 +0200 (EET)
-Date:   Mon, 30 Oct 2023 22:43:47 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
-        linuxfancy@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZUAxoy2cRR6Rm9ig@kekkonen.localdomain>
-References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
- <20231020141354.2500602-4-tomm.merciai@gmail.com>
- <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
- <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+        Mon, 30 Oct 2023 18:48:37 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12271E1;
+        Mon, 30 Oct 2023 15:48:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698706105; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=kZBYoZChuCK8CR9lbKS4snbL9NzakTXIPj9YUQNH5yaZITrymmug6QfsUSZEBMYIj0
+    5cPfquV2vr1r5tEHqvu3tkrnG8gy8FGtGr/pGbI9Xg5X9WMA8zWm+veVtsh56bR4DjSb
+    gWAvU5lXiVSCD2XU+wAXf2jNXSYDTH5hV7N0I20As4C0ws2mFxDvE29LY4wrvUjGvmx1
+    4CcXew4tvZFfZ2asuYIgGBewAeSVaHs96BsIFWcdrY3PezLV2OELQhv/gtB1Iq04sxRq
+    y4SppF1j2gj4winiYsyIf5VkzeQqa5KRluwAwhsjOxjw/0Y/CHgdtGFEakQjfHKuJOFo
+    E6Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698706105;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=NLfEces4BfsEWbaKYovgafBvpx5rnI42aFAQwYNElhE=;
+    b=eGG1Q0AfdtJq3wIxT4BXFgMRZNkWZUlRAXjLAVOxE/wrdXs1NwwJqK0ooqCqMemwey
+    IormpZ+FDUa3rzacchSp9cNgcX2U4sDRkagHueDcIRcy205m2sVShQXm1sCd1GyTHmBV
+    q+gEqzzUFMl5KV9sp/0vDeoc+we9qdcFyLtkjWe8RhBRDHf8LVhgnPyAYUsLy8vGO5iY
+    3+wB9M7RhZ/zXwHNNUpKnpA6Xw7ysmTZMZvJu2L907b1F7LAK4/MFMRHhWSDp+IW+Yeg
+    xwnnRufhnkLb6ktJi1sI245sD9ATy9egz1xXg8Xna5GqX/j3MWEmq9siTtidgkQwiKSC
+    RMCw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698706105;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=NLfEces4BfsEWbaKYovgafBvpx5rnI42aFAQwYNElhE=;
+    b=kjrTCfJhmXXKVLSuHyRGqUXmqb+5pAnicDdC/pstc5pb4i2Gvp71/4ZShKlOxy+Uh4
+    PMaaQ9dyWRhR6jOlYHT0vm+QxKi2CQntks/42rvxpGDEpf+IgxT/Xe18BMBEqs4XuuI9
+    fn4tJ6YfK7jWHo8BLOAMQDCoklMZ7fHSQoXYz4LyXvF2tI3JfSKZlXaAoSFN4P1EfuoC
+    K6YQMJuzilIes51z/CcTDfbjIjbv6uHxGyf9oYsfekHMEo1KlEJJih5BYTkIUhvvPaRE
+    IdoIFgoNXJTo1gKoNCBOQQBBFg58JX9lbzcTiaqmEbMctPt8MSkUVJUEukQV4OAOOoFl
+    OjGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698706105;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=NLfEces4BfsEWbaKYovgafBvpx5rnI42aFAQwYNElhE=;
+    b=yR5hIyiBI8Y+O0JuNH52hbVnEBESOimD9DeB/evAmclgtkqE8jeQQFjN4/HLa6S3KM
+    l0N1h9AoVpZt5gOU4sAw==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1XjJKt+IXM0qv4S/D"
+Received: from Munilab01-lab..
+    by smtp.strato.de (RZmta 49.9.1 AUTH)
+    with ESMTPSA id zd0181z9UMmPGWd
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 30 Oct 2023 23:48:25 +0100 (CET)
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     ulf.hansson@linaro.org, cLoehle@hyperstone.com,
+        adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>,
+        Rafael Beims <rafael.beims@toradex.com>, stable@vger.kernel.org
+Subject: [v5] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
+Date:   Mon, 30 Oct 2023 23:48:09 +0100
+Message-Id: <20231030224809.59245-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
+From: Bean Huo <beanhuo@micron.com>
 
-On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
+Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
+operation be allowed only after a write has occurred. Otherwise, the
+cache flush command or subsequent commands will time out.
 
-...
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Rafael Beims <rafael.beims@toradex.com>
+Cc: stable@vger.kernel.org
+---
 
-> > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
-> > > +{
-> > > +	u64 val;
-> > > +	int ret = 0;
-> > > +
-> > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
-> > 
-> > Missing error checking before the use of the value. The same pattern
-> > remains prevalent throughout the driver.
-> > 
-> > I think it'd be easier if you didn't use a temporary variable for reading,
-> > but instead had a register width specific access function. You could even
-> > introduce a helper macro to read this information as I suggested in an
-> > earlier review.
-> 
-> oks.
-> We are moving to use the following macros:
-> 
-> #define alvium_read_check(alvium, reg, value) \
-> { \
-> 	int ret = alvium_read(alvium, reg, value, NULL); \
-> 	if (ret) \
-> 		return ret; \
-> }
-> 
+Changelog:
+v4--v5:
+    1. In the case of a successful flush, set writing_flag in _mmc_flush_cache()
+v3--v4:
+    1. Add helper function for this quirk in drivers/mmc/core/card.h.
+    2. Set card->written_flag only for REQ_OP_WRITE.
+v2--v3:
+    1. Set card->written_flag in mmc_blk_mq_issue_rq().
+v1--v2:
+    1. Add Rafael's test-tag, and Co-developed-by.
+    2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
+---
+ drivers/mmc/core/block.c  | 4 +++-
+ drivers/mmc/core/card.h   | 4 ++++
+ drivers/mmc/core/mmc.c    | 8 ++++++--
+ drivers/mmc/core/quirks.h | 7 ++++---
+ include/linux/mmc/card.h  | 2 ++
+ 5 files changed, 19 insertions(+), 6 deletions(-)
 
-You could do something like (entirely untested):
-
-#define ALVIUM_DECLARE_READ(sign, bits) \
-	static int
-	alvium_read_ ## sign ## bits(struct alvium_dev *alvium, u32 reg, \
-				     sign ## bits *val, int *err) \
-	{ \
-		u64 val64; \
-		int ret; \
-			\
-		if (err && *err < 0) \
-			return *err; \
-			\
-		alvium_read(alvium, reg, &val64, &ret); \
-		if (ret < 0) { \
-			if (err) \
-				*err = ret; \
-			return ret; \
-		}	\
-			\
-		*val = val64; \
-			\
-		return 0; \
-	}
-
-ALVIUM_DECLARE_READ(u, 32);
-
-And then, e.g. instead of (and failing to check ret):
-
-	u64 val;
-
-	alvium_read(alvium, REG_BCRM_CONTRAST_VALUE_RW, &val, &ret);
-	alvium->dft_contrast = val;
-
-you'd have a single call:
-
-	alvium_read_u32(alvium, REG_BCRM_CONTRAST_VALUE_RW,
-		        &alvium->dft_contrast, &ret);
-
-And so on.
-
-You can drop sign if you don't need signed reads but some of the struct
-fields you're writing something appear to be signed.
-
-It'd be good to check the register size matches with the size of *val, too.
-Maybe something like:
-
-WARN_ON((CCI_REG ## bits(0) && CCI_REG_WIDTH_MASK) >> CCI_REG_WIDTH_SHIFT
-	!= sizeof(sign ## bits));
-
-> > > +static int alvium_get_csi_clk_params(struct alvium_dev *alvium)
-> > > +{
-> > > +	u64 val;
-> > > +	int ret = 0;
-> > > +
-> > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MIN_R, &val, &ret);
-> > > +	alvium->min_csi_clk = val;
-> > > +
-> > > +	alvium_read(alvium, REG_BCRM_CSI2_CLOCK_MAX_R, &val, &ret);
-> > > +	alvium->max_csi_clk = val;
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int alvium_set_csi_clk(struct alvium_dev *alvium)
-> > > +{
-> > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > +	u64 csi_clk;
-> > > +	int ret;
-> > > +
-> > > +	csi_clk = (u32)alvium->ep.link_frequencies[0];
-> > 
-> > Why casting to u32? Shouldn't csi_clk be u32 instead?
-> 
-> Ok we fix this in v11.
-> Change to use u64 for calculation because type of ep.link_frequencies[0]
-> Plan is to clamp csi_clk between min/max instead of returning error.
-
-I think I would keep it as-is: this isn't V4L2 UAPI.
-
-> 
-> > 
-> > > +
-> > > +	if (csi_clk < alvium->min_csi_clk || csi_clk > alvium->max_csi_clk)
-> > > +		return -EINVAL;
-> > > +
-> > > +	ret = alvium_write_hshake(alvium, REG_BCRM_CSI2_CLOCK_RW, csi_clk);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Fail to set csi lanes reg\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	alvium->link_freq = alvium->ep.link_frequencies[0];
-> > > +
-> > > +	return 0;
-> > > +}
-
-...
-
-> > > +			goto out;
-> > > +
-> > > +		ret = alvium_set_mode(alvium, state);
-> > > +		if (ret)
-> > > +			goto out;
-> > > +
-> > > +		fmt = v4l2_subdev_get_pad_format(sd, state, 0);
-> > > +		ret = alvium_set_framefmt(alvium, fmt);
-> > > +		if (ret)
-> > > +			goto out;
-> > > +
-> > > +		ret = alvium_set_stream_mipi(alvium, enable);
-> > > +		if (ret)
-> > > +			goto out;
-> > > +
-> > > +	} else {
-> > > +		alvium_set_stream_mipi(alvium, enable);
-> > > +		pm_runtime_mark_last_busy(&client->dev);
-> > > +		pm_runtime_put_autosuspend(&client->dev);
-> > 
-> > pm_runtime_put() here, too.
-> 
-> Here is not needed we already have pm_runtime_put_autosuspend.
-> I'm missing something?
-
-Ah, I missed that while reviewing. Please ignore that comment then.
-
-> 
-> > 
-> > > +	}
-> > > +
-> > > +	alvium->streaming = !!enable;
-> > > +	v4l2_subdev_unlock_state(state);
-> > > +
-> > > +	return 0;
-> > > +
-> > > +out:
-> > > +	v4l2_subdev_unlock_state(state);
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int alvium_init_cfg(struct v4l2_subdev *sd,
-> > > +			   struct v4l2_subdev_state *state)
-> > > +{
-> > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > +	struct alvium_mode *mode = &alvium->mode;
-> > 
-> > Init_cfg() is expected to be configuration independent (as much as
-> > possible). Therefore you should use defaults here, not current mode.
-> 
-> Defaults alvium mode already used here.
-
-Ah, indeed. Please ignore.
-
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 3a8f27c3e310..152dfe593c43 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2381,8 +2381,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+ 			}
+ 			ret = mmc_blk_cqe_issue_flush(mq, req);
+ 			break;
+-		case REQ_OP_READ:
+ 		case REQ_OP_WRITE:
++			card->written_flag = true;
++			fallthrough;
++		case REQ_OP_READ:
+ 			if (host->cqe_enabled)
+ 				ret = mmc_blk_cqe_issue_rw_rq(mq, req);
+ 			else
+diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+index 4edf9057fa79..b7754a1b8d97 100644
+--- a/drivers/mmc/core/card.h
++++ b/drivers/mmc/core/card.h
+@@ -280,4 +280,8 @@ static inline int mmc_card_broken_sd_cache(const struct mmc_card *c)
+ 	return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
+ }
+ 
++static inline int mmc_card_broken_cache_flush(const struct mmc_card *c)
++{
++	return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
++}
+ #endif
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 8180983bd402..11053f920ac4 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -2086,13 +2086,17 @@ static int _mmc_flush_cache(struct mmc_host *host)
+ {
+ 	int err = 0;
+ 
++	if (mmc_card_broken_cache_flush(host->card) && !host->card->written_flag)
++		return err;
++
+ 	if (_mmc_cache_enabled(host)) {
+ 		err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
+ 				 EXT_CSD_FLUSH_CACHE, 1,
+ 				 CACHE_FLUSH_TIMEOUT_MS);
+ 		if (err)
+-			pr_err("%s: cache flush error %d\n",
+-			       mmc_hostname(host), err);
++			pr_err("%s: cache flush error %d\n", mmc_hostname(host), err);
++		else
++			host->card->written_flag = false;
+ 	}
+ 
+ 	return err;
+diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+index 32b64b564fb1..5e68c8b4cdca 100644
+--- a/drivers/mmc/core/quirks.h
++++ b/drivers/mmc/core/quirks.h
+@@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
+ 		  MMC_QUIRK_TRIM_BROKEN),
+ 
+ 	/*
+-	 * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
+-	 * support being used to offload WRITE_ZEROES.
++	 * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
++	 * WRITE_ZEROES offloading. It also supports caching, but the cache can
++	 * only be flushed after a write has occurred.
+ 	 */
+ 	MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
+-		  MMC_QUIRK_TRIM_BROKEN),
++		  MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
+ 
+ 	/*
+ 	 * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index daa2f40d9ce6..7b12eebc5586 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -295,7 +295,9 @@ struct mmc_card {
+ #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
+ #define MMC_QUIRK_BROKEN_SD_DISCARD	(1<<14)	/* Disable broken SD discard support */
+ #define MMC_QUIRK_BROKEN_SD_CACHE	(1<<15)	/* Disable broken SD cache support */
++#define MMC_QUIRK_BROKEN_CACHE_FLUSH	(1<<16)	/* Don't flush cache until the write has occurred */
+ 
++	bool			written_flag;	/* Indicates eMMC has been written since power on */
+ 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+ 
+ 	unsigned int		erase_size;	/* erase size in sectors */
 -- 
-Kind regards,
+2.34.1
 
-Sakari Ailus
