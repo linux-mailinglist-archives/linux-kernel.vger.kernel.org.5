@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1FC7DB480
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCF87DB489
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjJ3Hjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
+        id S231694AbjJ3Hl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 03:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbjJ3Hjr (ORCPT
+        with ESMTP id S232155AbjJ3Hly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:39:47 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAE0D9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:39:45 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so3560672276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 00:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698651584; x=1699256384; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a2xzc+4V3pjtNNji+lt7+KZcsYsbe7/AwgknDeXfupc=;
-        b=aZp7Ftxp2VsEE7ZvbwEelk8uUN4tbWHeU8PWkmlPO7lFgVyut2VFSjDAE/Mbbl88AV
-         kAlWjgCXKPxIunYabPbfpol3vfPSvYhX+Xzo3J50TRZdeQ1HroOtQ32DcECZ5TZgmQ2o
-         8/6UJaASQPEB0TCDi7nkRTA1HleITA0pWtV9Ehu1ILIlinERGC8bv+o9pYBrq2VY6GWV
-         AbVA6WknWIJ7MQjMVtocg6JIpxWPWNOuSPUMTBFHRGcscbPWvjkno8pxvQhXPKEUW4ow
-         pAtiIiZr3RSjfax0vO9hQEGdanbHa/Bfh2HkP19v8l8qj7mQmLGTdTua6rlVT14WA1fl
-         0FeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698651584; x=1699256384;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a2xzc+4V3pjtNNji+lt7+KZcsYsbe7/AwgknDeXfupc=;
-        b=bNKuS+on3wIUICS8Q2/8eOeDkqh1dnWvl+I2ITco4scUDk/oyWlIP9uEtvgZB0v5nR
-         lJBPyX28rinSQABLrjZZyyEcymOA1sc0eGClVEsiA6DCOF8ay7r9wlEc6dbYnHRyl41Q
-         FgrDp83I1Alek/Ln6Is+j3/6v+y5N9p2ZpNUIv4ZKfnN+bTuT1UHposssBWUzubsB8XT
-         kkzcf5ya5/5sMMJ8w4Phn9qNMJwm1TyiRRKw+x/pcj0wcTLDY5+vDzFgSF9HLowWtWhh
-         QdWo+yuF3mTZJiE8wn2KddrJfbzsGsGjyY9SQLk0RTL/o5WwPVdMciW9POHGrnce0M3C
-         TaOA==
-X-Gm-Message-State: AOJu0YxQmE2yFit27n7l6IP8LG15lZq/cuMIA+ubXeaYYCuJ3Jf4Wgjj
-        fkh0ZuIln+A/+UApaBbDTn7e42wOAY8kXLqvTjVzWyqUvwBGmq0D
-X-Google-Smtp-Source: AGHT+IGzN5VdTFqyOdXnElQpS0BpsQlNE2DuCDvNp8TKt1PyIUJ/oxKGJYobpdPpd4lVLkf5kG9gp2v3udScopsX0Dc=
-X-Received: by 2002:a25:4246:0:b0:d9c:28cb:2e54 with SMTP id
- p67-20020a254246000000b00d9c28cb2e54mr17328230yba.18.1698651584308; Mon, 30
- Oct 2023 00:39:44 -0700 (PDT)
+        Mon, 30 Oct 2023 03:41:54 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2101.outbound.protection.outlook.com [40.92.18.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2087A2;
+        Mon, 30 Oct 2023 00:41:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XkbY8sPxiBcmFZD06LJh06cCCz2RS1jC4RISjUujG3oDxp6IzqECAnBuo+CYJwUGVuZG5vImuJjjBWLNOFrgzhTcHTcteb1EqZDleGznc+7kwym1o+u05/r9riyHI8twdNHd6iOlyVB95yfcWE/htVfx715qG/znsknHL31EfB3bsMddAP+cHDT1xM4WvjXiXMUO0Wvdd7B+/vISTUGbwJ8Hba6WxdghUWfwdKgadIlbs30eWZJgfNOJTNUz4KFTVH16KpEMEq8HZV7F/pPQqxv9uU52RXn9t/XiDjdRFHM3C5ZgNdfLjCz9mvTHZc1QFBHyUxK3EaC+fWa8s/KOUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vvfMIPrRaI9nRJnjmTglFevwrok4cT1bM4EX4WtXQHA=;
+ b=fsHLB++339BJEDuVYmdLNna6YFxKid6ke6IWptSyPh4CrEgTrdFCsKwd04P91Uq1IPl5BpBDn2cpp0jhoRjDnKZOr0Pa5XXGCXJgsvO7/Cv3EfIb8G4RZ4TysV5BoAcNnGBZl7i673KbKyVSPDotznDmFqT++W3+hliAc+783kr2lO2kLz6tX8yzN5Fp1W1MOPxpX4ixA6qxT/wthb3AeGswVgYPlrK39iyHDRVkLDI8OKGnuizZt+Eir0ITVFLmxI+rwNufBA6IK1tK+iQYtVjbtbU5niz5OSqzXKKk3E4CICVuFA6X2Vm1SK5NTuJkwQC9v+RQoHRpzLRJtiPP5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vvfMIPrRaI9nRJnjmTglFevwrok4cT1bM4EX4WtXQHA=;
+ b=UEi0XaOD1sUK4qd3B84//x+mnwZUX3oE3RW1fVtC6yaZrblGW3yFOQV66kh5v5plclLhJJCfUl5mof+3SsfG9fO3WVSe7esVDmLtHCNr9+eRT2V/2geG+Qk7V4AZR59gW8S30ltwCHAN1X2Nc/9Iw83oXHZxIQGwz67tkaaAiyQlC0iUlInmiQmZktj9yVoKdMUq0B1Z0srCvLDu+sf+rPOoT+yiKXo675GrHdkaQ6TOOC9WgNMo7PUzHLpZ1MIvyr9dPf24EFHRtdupZ61xV6np24qftxcU7TojAfoR1n7pDRmMLGNcNKflhhxNOXm4B7UqhJL1mi+Mz0sXVevE1Q==
+Received: from MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1e1::10)
+ by DM3PR84MB3692.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:0:1e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Mon, 30 Oct
+ 2023 07:41:49 +0000
+Received: from MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::6761:2623:329a:27d6]) by MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::6761:2623:329a:27d6%3]) with mapi id 15.20.6933.027; Mon, 30 Oct 2023
+ 07:41:48 +0000
+From:   Youling Tang <youling.tang@outlook.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, tangyouling@kylinos.cn,
+        youling.tang@outlook.com
+Subject: [PATCH] readahead: Update the file_ra_state.ra_pages with each readahead operation
+Date:   Mon, 30 Oct 2023 15:41:30 +0800
+Message-ID: <MW4PR84MB3145AFD512F2C777635765B381A1A@MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [K4EcORULqWqsEe8xctEACmQSjMROm7kF]
+X-ClientProxiedBy: TYCPR01CA0067.jpnprd01.prod.outlook.com
+ (2603:1096:405:2::31) To MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
+ (2603:10b6:303:1e1::10)
+X-Microsoft-Original-Message-ID: <20231030074130.1538968-1-youling.tang@outlook.com>
 MIME-Version: 1.0
-References: <20231027-fix-rtl8366rb-v1-1-d565d905535a@linaro.org>
- <20231028220402.gdsynephzfkpvk4m@skbuf> <CACRpkdbq03ZXcB-TaBp5Udo3M47rb-o+LfkEkC-gA1+=x1Zd-g@mail.gmail.com>
- <54f8d583-e900-4ce8-87d1-a18556698f10@lunn.ch>
-In-Reply-To: <54f8d583-e900-4ce8-87d1-a18556698f10@lunn.ch>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 30 Oct 2023 08:39:26 +0100
-Message-ID: <CACRpkdZXAqkn0QeX4s2JFmyMOz82uQq7C18408Kow-peN8tCqA@mail.gmail.com>
-Subject: Re: [PATCH] dsa: tag_rtl4_a: Bump min packet size
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Mauri Sandberg <sandberg@mailfence.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR84MB3145:EE_|DM3PR84MB3692:EE_
+X-MS-Office365-Filtering-Correlation-Id: d886a587-3402-4e42-7b94-08dbd91bac6d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L5FiTsJSjQeJUpb+UeqnlN3BftMKa25dQOgqUBAeOCVGqhi53n94pl0WnEuT6JuxUV91RbU7G0Luk8OKAa5CWZpxE4t9LxScyGpKhsv4wuB1VUWd7g8N4TqSZ05b2Ps052QL1M12uwgj/Ns/g/fO/R1TM60+c6DB09Lujmp6mHQrLEFtyeAivvVcnVTDFXJmK0j8MEEqzaHClZ5ZO+R+oVuQ3PO4ilhNK7ytB39KDA6rmaGqkzmPwvIiN3k2cjzpREVUoMEvrzKVMcsvQFcMbD1Qex9Dm2CHV1MRTleJoxGO3lEM4e/rg0McL+duDiSKFUTWzk1CVUlg2UmCfa5Vg2R8SONaUFNajrTdXD9cQfrLvOFtXQsedg1WsXjnPOiTlYiiZINYBQRh1FI1GwYzhurQY6rH0qUuVLDg13V8PlKlGQYPaksIksGq99wpcrt9vURL9h9reMwhP2rLdgAoANPLXQwrFbSQCQ6jcVGyWDvPKCpOvfO1vxxIo1K9O/P1lXjOM4dQQvYm2gWg9C9CJrKSMOMJaXmATHRJxf2BwBeLettTxR4NroovE8DmIX0/FKKDoPL3nqepaIaLR0N5RvP+8M2dWq5kQBoLXnrFfrU4nlWj/F+KSz5HfpipiAh6
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jELSgBrRdf9KhZxmrIdeF1y+qCWQfRZT9zPsst3RikPAqYSVtSJtxwbTJcS6?=
+ =?us-ascii?Q?wkEiBA60uLrV3JTPPMdaApoIVuUGDadiNhWtYGQEXn2xlhpR8WpgPWYP03Uf?=
+ =?us-ascii?Q?ra8J2dIqPxx04KzUnEZdBI4TcUkI/ZL14pfUDqPqk9enbibXB5FNxgOBPNjY?=
+ =?us-ascii?Q?9g7DxQxcDY9wU9rkzNXQVXmLHC2YpaprEKJVZTIqkBPIN9I+ucc8gRi7VsJ+?=
+ =?us-ascii?Q?5ICn5AV6Dv7/DQt5c/353Cr//jwYGplJnFgahmJRSXSa/AKbX1/PryWeS0q+?=
+ =?us-ascii?Q?8kja9ruAa3XD+Bl45lF7NEBEhR74JzScz82z0je2+ukj7+gqw7HWVfHA6U2X?=
+ =?us-ascii?Q?wp6qzVrqR3Fdpe5ttW7YOjYqPU40vQPv67dQSFBUzCRVKfSps1+LJNaQ9Dak?=
+ =?us-ascii?Q?pf4aQqP/qy59MGZOyE1YcP9GGG1auw4OiWjkOsuG+7Qc5wA8eXsxoDMPZ+Dk?=
+ =?us-ascii?Q?myt5gpMGhQbjDjatecmLyn3gYGbr3u0LfEY27tk6NvR0Sv2r89QiXgSgorr5?=
+ =?us-ascii?Q?lTsoX0Yz8G+GCGGCjUXy933RI06qKULacsMCZSj5o+YRAQrUNAsAuMbwOacQ?=
+ =?us-ascii?Q?oGFla1NSD2/uxEHZA6mpBZaVC3sFk/TVphFsyx+Jj3RYdsqdZSZ5kWIHyqvQ?=
+ =?us-ascii?Q?15Ni11RqHPfJ+pRSleMGzfp0dTsneSAL7ZAZC4kKoBEeLNi4KCkH05ojQuwi?=
+ =?us-ascii?Q?/Zl1/L5jUsmvXQmCDUK7ykjWhupV7zqS4IagKAyObFNRQsjYn3iiwuHoG1Cx?=
+ =?us-ascii?Q?OyP1CV4JQcEhzSuaBIbuMzZ3+ahl7GoQgjQpnRhrauzaL4erygNkHkOQlJgt?=
+ =?us-ascii?Q?vfDbkRkjZUk8XhcnOi02Oo37LQRR3ks9ptEwRfN6NIbSN4ahgv1MtVpQmp1o?=
+ =?us-ascii?Q?MMzmJpzmcCWgqIeUn27Fs6nLlY7rlwyc+D9G8+pwm2OQCeP4RtLnQkJ+qCQz?=
+ =?us-ascii?Q?gp2yAT7ygEuEyEa+ZDJseDqbWXLJ1NkYYF9CeTSRHd0vJVbHYadLAVDLuYB6?=
+ =?us-ascii?Q?NOthIS84kKh3qLV/w1lk9xZMDYupIgX6FjFcH3M7vdRJ1lKBEOpjSxl9Xpe7?=
+ =?us-ascii?Q?QTWS2VtwxwU5rayjNZIVLZC6tYRUM0z2kyEp+AhpB8oxAxLmyKDSy6pTbG3p?=
+ =?us-ascii?Q?BlCPM4Xrz83G1YK6TBGHQlAAu2/5652onWICz2hatHexf5elbuWXbTemulIx?=
+ =?us-ascii?Q?bzAnq8V4pW1tIEAB81M0ukee8/ZP3Us8EA9QRDzr60LDnTYW3g31ElkCd1Q?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d886a587-3402-4e42-7b94-08dbd91bac6d
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR84MB3145.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 07:41:48.5400
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR84MB3692
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 12:00=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote=
-:
+From: Youling Tang <tangyouling@kylinos.cn>
 
-> > 1496 is suspiciously much 1500 - DSA tag size. However the
-> > MTU of the parent ethernet is bumped nicely to 1504 and the
-> > device MTU is set up to accomodate it as well.
-> >
-> > Modifying the patch to just pad out packets >=3D 1496 bytes
-> > solves the problem in a better way, but maybe that is not the
-> > last thing we try here...
->
-> Have you tried playing with RTL8366RB_SGCR in rtl8366rb_change_mtu()?
+Changing the read_ahead_kb value midway through a sequential read of a
+large file found that the ra->ra_pages value remained unchanged (new
+ra_pages can only be detected the next time the file is opened). Because
+file_ra_state_init() is only called once in do_dentry_open() in most
+cases.
 
-Yes I set the MTU to increasingly larger sizes.
+In ondemand_readahead(), update bdi->ra_pages to ra->ra_pages to ensure
+that the maximum pages that can be allocated by the readahead algorithm
+are the same as (read_ahead_kb * 1024) / PAGE_SIZE after read_ahead_kb
+is modified.
 
-Sadly MTU has nothing to do with this, it's really annoying,
-I have a v2 patch that is better and working, I'll include some test
-text so you see where the problem is.
+Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+---
+ mm/readahead.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/mm/readahead.c b/mm/readahead.c
+index e815c114de21..3dbabf819187 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -554,12 +554,14 @@ static void ondemand_readahead(struct readahead_control *ractl,
+ {
+ 	struct backing_dev_info *bdi = inode_to_bdi(ractl->mapping->host);
+ 	struct file_ra_state *ra = ractl->ra;
+-	unsigned long max_pages = ra->ra_pages;
++	unsigned long max_pages;
+ 	unsigned long add_pages;
+ 	pgoff_t index = readahead_index(ractl);
+ 	pgoff_t expected, prev_index;
+ 	unsigned int order = folio ? folio_order(folio) : 0;
+ 
++	max_pages = ra->ra_pages = bdi->ra_pages;
++
+ 	/*
+ 	 * If the request exceeds the readahead window, allow the read to
+ 	 * be up to the optimal hardware IO size
+-- 
+2.25.1
+
