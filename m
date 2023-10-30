@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2FA7DBBB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B427DBBB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbjJ3O0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
+        id S233329AbjJ3O11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbjJ3O0P (ORCPT
+        with ESMTP id S231919AbjJ3O10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:26:15 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C19AFD55
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:25:52 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Dx_+vuvD9l9MA1AA--.38290S3;
-        Mon, 30 Oct 2023 22:25:50 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxni_pvD9lzAU3AA--.52834S3;
-        Mon, 30 Oct 2023 22:25:47 +0800 (CST)
-Message-ID: <20cd9518-fee4-4a99-86f2-a5eea9abaa57@loongson.cn>
-Date:   Mon, 30 Oct 2023 22:25:46 +0800
+        Mon, 30 Oct 2023 10:27:26 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C18B7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:27:24 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-586beb5e6a7so2301279eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:27:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698676043; x=1699280843;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bqGE+grehw3xbV0zDjPAo9aiOxbRmWUNIDFRm/VPJr4=;
+        b=OgTsuHkDKYHmB3MV2aL0puWkJXxemae+TDAS+/UVduLzpTP/ZlnOa1GKrG4HvIe+HR
+         RCmYrC8w0DHoiup/1RrzM4fDsMuX/nTWNRbK0j3Fb4Ob7gAOgIALr/w9UBSDhzCc+rIj
+         vks0xdq9nXhAWEgv47ZmCaxBIvgK9LNi7x6UbhROwlML2BFe1N13DP55SXhxm4YS3TpE
+         VcnuaRTp+V4WbpxP/NhSyn390cgrtuC/hUiuuO25gQ0EPUNmL6kNc8ESenhqN1Mldfe7
+         gZAXiTWpHkG/fjO3vPx4N5hPCbFeNB0CHV7k8SlCeBZ8kAblCZ8ha1M21tVccWvfMISN
+         0m9g==
+X-Gm-Message-State: AOJu0YwtdpVQZBjcsput7xf2MGDemXoYxaw1CXJr8u/67lgC5RBrewXq
+        hJY91S2Wsf5x6Zgsx/YUvfXHB/GneQ==
+X-Google-Smtp-Source: AGHT+IE7d3qTe9TNfkTKRFaPOQ39ZwkuT78GxUML3FSSbwJlzlCcjSZP7s6lwOkd/N4/eLj9LKppqw==
+X-Received: by 2002:a05:6870:815:b0:1e9:9c39:a580 with SMTP id fw21-20020a056870081500b001e99c39a580mr11847037oab.7.1698676043410;
+        Mon, 30 Oct 2023 07:27:23 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id q5-20020a9d6305000000b006ce32816a35sm1445877otk.81.2023.10.30.07.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 07:27:22 -0700 (PDT)
+Received: (nullmailer pid 822774 invoked by uid 1000);
+        Mon, 30 Oct 2023 14:27:21 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     soc@kernel.org, Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] soc: apple: mailbox: Add explicit include of platform_device.h
+Date:   Mon, 30 Oct 2023 09:26:21 -0500
+Message-ID: <20231030142620.818663-2-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] drm/loongson: Introduce a drm bridge driver for
- it66121 HDMI transmitter
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20231029194607.379459-1-suijingfeng@loongson.cn>
- <20231029194607.379459-3-suijingfeng@loongson.cn>
- <CAA8EJprjQXcTgxnC1POaBjVBzyVBvKpmKyJcCR5ExRUhVxtYoQ@mail.gmail.com>
- <3ccb9600-6990-4ec7-81de-0d7b4e1294eb@loongson.cn>
- <CAA8EJpqCe2j3GyeutnwTB0bkGXGk0az9-w3sPHLFwMVgAS=e7g@mail.gmail.com>
- <df176548-0001-4df4-b556-6227b776cd18@loongson.cn>
- <CAA8EJprS72FUDvMrgXatLWHYNiAOhfugiWFCWuXnmzS2zmUDTA@mail.gmail.com>
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <CAA8EJprS72FUDvMrgXatLWHYNiAOhfugiWFCWuXnmzS2zmUDTA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Bxni_pvD9lzAU3AA--.52834S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3JF4UJr45GrW3Kw4xXF45XFc_yoWxtF43pF
-        4UKa4akrWDJr42y3yavw18CFyYy393JrWrWrnxG34F9r90934Iyr1xtFW5WF9rWr13Ca1j
-        vrWDuFWxWF10yagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-        67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr
-        0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UM
-        CJPUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,168 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it as merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other and pull in various other headers. In
+preparation to fix this, adjust the includes for what is actually needed.
 
+platform_device.h is implicitly included by of_platform.h, but that's going
+to be removed.
 
-On 2023/10/30 21:48, Dmitry Baryshkov wrote:
-> On Mon, 30 Oct 2023 at 15:26, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
->> Hi,
->>
->>
->> On 2023/10/30 18:01, Dmitry Baryshkov wrote:
->>> On Mon, 30 Oct 2023 at 11:42, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
->>>> Hi,
->>>>
->>>>
->>>> On 2023/10/30 06:53, Dmitry Baryshkov wrote:
->>>>> On Sun, 29 Oct 2023 at 21:46, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
->>>>>> The IT66121 is a DVO to HDMI converter, LS3A5000+LS7A1000 ML5A_MB use this
->>>>>> chip to support HDMI output. Thus add a drm bridge based driver for it.
->>>>>> This patch is developed with drivers/gpu/drm/bridge/ite-it66121.c as base.
->>>>> Please use the original bridge driver instead of adding a new one.
->>>> I'm agree with the spirit of code sharing, but this is nearly impossible for non-DT system.
->>>>
->>>> Because the original bridge driver(say it66121.ko) is fully dependent on the DT.
->>> I can not agree here. It doesn't depend on DT. It has fully populated
->>> i2c_device_id structures, so it will work with bare I2C buses.
->>> Most likely you will have to change of calls into fwnode calls, that's it.
->>>
->>>> UEFI+ACPI based system can not use with it.
->>>>
->>>> Our I2C adapter is created by the drm/loongson.ko on the runtime.
->>>> The potential problem is that *cyclic dependency* !
->>>>
->>>> I2C adapter driver is depend on drm/loongson
->>>> drm/loongson depend on drm bridge driver (say it66121.ko)
->>>> drm bridge driver (say it66121.ko) depend on I2C adapter to setup.
->>>>
->>>> This plus the defer probe mechanism is totally a trap,
->>>> incurring troubles and don't work.
->>> Welcome. We had this kind of issue for DP AUX buses.
->>>
->>> I can suggest the following approach:
->>> - In the root probe function you can create an i2c bus and populate it
->>> with the i2c devices.
->>> - I have not checked whether you use components or not. If not, please
->>> use an auxiliary or a platform device for the main DRM functionality.
->>> - In the subdevice probe / bind function you check for the next
->>> bridge. Then you get one of the following:drm_bridge pointer,
->>> -EPROBE_DEFER, or any other error case. Your driver can react
->>> accordingly.
->> I have similar way to solve this problem, and I have solved it one and a half years ago.
->> See [1] for a reference.
->>
->> [1] https://patchwork.freedesktop.org/patch/478998/?series=99512&rev=11
->>
->> When the PCI device get probed, we create the I2C bus first.
->> This ensure that when drm/lsdc.ko get loaded, the I2C bus is presence
->> and ready to be get by the drm_bridge driver.
->> This is basically a PCI-to-GPIO-emulated-I2C adapter,
->> then wait the display bridges driver get loaded and set up.
->>
->> I also need to create a virtual platform device for the display controller.
->> which allow the drm drivers instance for this virtual platform device
->> be able to probed due to defer probe mechanism.
->>
->> This solution made the framework of my driver distortion severely,
-> I don't think I could catch this phrase. Did you see distortions on the screen?
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+Note this was added in the merge window and missed the last round.
 
+Arnd, Can you apply this directly.
 
-I means that it destroy the my drm driver's framework.
-I means that we are all-in-one driver. The solution you
-mentioned have side effect also. That is because user-space
-will open the PCI device first, not your created virtual platform device.
+---
+ drivers/soc/apple/mailbox.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-
->> and in the end we still solve a easy problem by workaround.
-> No workarounds for the kernel subsystems are allowed.
-
-
-I means that the idea(solution) you told me is still a workaround.
-bring no benifits to the drm driver itself.
-
-
->> I know how to use the component framework also, but the component framework just
->> a wrapper. Similar with above approach, it brings no gains in the end.
->> It does not make this driver better. I got trapped one years ago,
->> and I don't want to got trapped another time.
->> And I know how solve such a problem by workaround, but that's not worthy for the effort.
->>
->> I think my approach provide a solution, while still keep the bridges drivers
->> to a modular at the same time. Despite simple, it indeed solve the problem.
->> It simple because of explicit control of the loading order by myself, not by
->> rely on the framework or something else (say component)
-> PCI media drivers have had this issue for ages. And all of them found
-> a way to work.
-
-I have said that PCI KMS display drivers is different,  because of user 
-space open the PCI device.
-
-
->> It is not totally duplicating, I have rewrite part of them.
-> This is even worse. Now one can not apply fixes to the second one.
-
-
-I don't need to either, I want to maintain this by myself.
-
-
->> You can compare
->> to see what I'm changed. It is just that it66162 was upstream-ed earlier than
->> our solution. But I also have write display drivers for lt8618 and lt8619
->> completely by myself.
->>
->>
->> Even though our local drm bridges driver will not be able to enjoy the updates.
->> We will accept such a results(or pain). I can maintain our local drm bridges
->> drivers by myself.
-> What happens if anybody wants to reuse your bridge driver for their
-> own platform?
-
-Copy and modify.
-
-> Linux kernel uses driver model and frameworks to improve code sharing,
-> not to reduce it.
-
-
-Well I don't think my patch actually reduce something.
-Please see i915, amdgpu, radeon and nouveau.
-Non of them use the DRM bridge drivers.
-It is just that the various DRM bridge drivers are not suitable to use for my driver.
-
-
->> Sorry, on this technique point, we will not follow your idea.
->> I'm sure that my approach is toward to right direction for our device at now.
->> If someone invent a better solution to handle this problem, which make the
->> various drm bridges drivers usable out of box, then I will follow and cooperate
->> to test.
->>
->>
->>> Basically duplicating the existing driver code is not really a way to
->>> go. Consider somebody adding a new feature or fixing a bug in your
->>> driver copy. Then they have to check if the fix applies to the driver
->>> at drivers/gpu/drm/bridge/ite-it66121.c. And vice versa. After fixing
->>> an issue in the standard driver one has to keep in mind to check your
->>> private copy.
->>>
->>> So, please, use the OF code as an inspiration and register all your
->>> devices in the device tree. Yes, this requires some effort from your
->>> side. Yes, this pays off in the longer distance.
->>>
->>>>>     If
->>>>> it needs to be changed in any way, please help everyone else by
->>>>> improving it instead of introducing new driver.
->>>>>
->>>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->>>>>> ---
->>>>>>     drivers/gpu/drm/loongson/Kconfig            |   1 +
->>>>>>     drivers/gpu/drm/loongson/Makefile           |   2 +
->>>>>>     drivers/gpu/drm/loongson/ite_it66121.c      | 749 ++++++++++++++++++++
->>>>>>     drivers/gpu/drm/loongson/ite_it66121.h      |  19 +
->>>>>>     drivers/gpu/drm/loongson/ite_it66121_regs.h | 268 +++++++
->>>>>>     5 files changed, 1039 insertions(+)
->>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121.c
->>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121.h
->>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121_regs.h
->
+diff --git a/drivers/soc/apple/mailbox.c b/drivers/soc/apple/mailbox.c
+index 0cbd172f435e..780199bf351e 100644
+--- a/drivers/soc/apple/mailbox.c
++++ b/drivers/soc/apple/mailbox.c
+@@ -26,6 +26,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+-- 
+2.42.0
 
