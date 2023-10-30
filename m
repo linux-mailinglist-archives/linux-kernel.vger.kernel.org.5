@@ -2,117 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BDA7DB810
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ABF7DB807
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbjJ3K1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S232519AbjJ3K0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjJ3K1C (ORCPT
+        with ESMTP id S231741AbjJ3K0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:27:02 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4108D43;
-        Mon, 30 Oct 2023 03:26:59 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39U8f6FH028076;
-        Mon, 30 Oct 2023 10:26:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uP9thLy3jzWSSjRvA0uZ8VuTotc1A8u04dYCHo/3CCc=;
- b=KUzvHYTpYanvEe/7C7Qc3AOJ+FFAkphFNVOefPz0Q6sM9WWa8lEkJTNAdM6ZIWPqNP1R
- O6oAAKEsfsFRizw0oppVLb7lPmswyB2+YWzwpGxNUtX0dI5BwVeZoDdVszAZ+LWwP5LX
- O7H59QuwtCAzG+iJcKjsMKkgHZupC6jfWbC8QImrEj2H3bzx6YFqqBzFW94+nLRFCBi7
- BoDSco4tlBMct3ZYfFNnnbZC3cztK11jVAmaXzcFiMj2rMMFR4wepWZ5ANd6D5WLbHhw
- Uon99bH7D9CxyQhZup5O1jyIoZxJJefD2AAnlY5R3OJOBfBLr/Nh0v5vAn4SkPjRPB+F 7A== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u0s8yukmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 10:26:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UAQmML008236
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Oct 2023 10:26:48 GMT
-Received: from [10.216.13.23] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
- 2023 03:26:42 -0700
-Message-ID: <c77d416e-ed4a-4f92-980a-abe6b690f049@quicinc.com>
-Date:   Mon, 30 Oct 2023 15:56:28 +0530
+        Mon, 30 Oct 2023 06:26:41 -0400
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8997109
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:26:37 -0700 (PDT)
+X-AuditID: a67dfc5b-d6dff70000001748-e4-653f84dca000
+Date:   Mon, 30 Oct 2023 19:26:31 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
+        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
+        "hughd@google.com" <hughd@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [v3 1/3] mm/rmap: Recognize non-writable TLB entries during TLB
+ batch flush
+Message-ID: <20231030102631.GB81877@system.software.com>
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-2-byungchul@sk.com>
+ <1DB097E6-6585-4D10-95C9-7BAA5A622B7E@vmware.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/8] arm64: defconfig: build NSS Clock Controller driver
- for IPQ5332
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20231030-ipq5332-nsscc-v1-0-6162a2c65f0a@quicinc.com>
- <20231030-ipq5332-nsscc-v1-8-6162a2c65f0a@quicinc.com>
-Content-Language: en-US
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20231030-ipq5332-nsscc-v1-8-6162a2c65f0a@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: obNjgnvksFC1bfVqdm-UQHVIJnqf_l6B
-X-Proofpoint-ORIG-GUID: obNjgnvksFC1bfVqdm-UQHVIJnqf_l6B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_09,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- suspectscore=0 spamscore=0 mlxlogscore=899 mlxscore=0 malwarescore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2310300079
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1DB097E6-6585-4D10-95C9-7BAA5A622B7E@vmware.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsXC9ZZnoe7dFvtUg1Zjiznr17BZfN7wj83i
+        xYZ2Rouv638xWzz91MdicXnXHDaLe2v+s1qc37WW1WLH0n1MFpcOLGCyuL7rIaPF8d4DTBab
+        N01ltvj9A6huzhQri5OzJrM4CHh8b+1j8ViwqdRj8wotj8V7XjJ5bFrVyeax6dMkdo93586x
+        e5yY8ZvFY+dDS495JwM93u+7yuax9Zedx+dNch7v5r9lC+CL4rJJSc3JLEst0rdL4Mr4sZu1
+        YKpyxbnDe5kaGG9IdzFyckgImEj0bmpmhLEPfL4DZrMIqEqc+rSWHcRmE1CXuHHjJzOILSKg
+        KHFo/z2wGmaBd6wS3z9pgtjCAlESX2ZuB4vzClhIPN76haWLkYtDSGAqo8SjrglsEAlBiZMz
+        n7BANKtL/Jl3CWgoB5AtLbH8HwdEWF6ieetssDCngJ3Et9YIkLCogLLEgW3HmUBGSghsY5e4
+        drCRHeJmSYmDK26wTGAUnIVkwywkG2YhbJiFZMMCRpZVjEKZeWW5iZk5JnoZlXmZFXrJ+bmb
+        GIHxuqz2T/QOxk8Xgg8xCnAwKvHwBoTbpQqxJpYVV+YeYpTgYFYS4WV2tEkV4k1JrKxKLcqP
+        LyrNSS0+xCjNwaIkzmv0rTxFSCA9sSQ1OzW1ILUIJsvEwSnVwMhzVVVU7ONmtbrfedLfz7/d
+        oRjgtuzwXtHF8+RqZB8Wm4iePXUozOfUrsXuZ2J0Orqf73dnmM1ZdqD+7Dr/krYLa/T0xZT3
+        ngsTl17NsZr187WTDa+zef7VL8kJM/zzOfNYR7vF1R/ud+va7gvq7lrr65Nw4tlhJqljLccl
+        NUM+b9I5Z7erUVCJpTgj0VCLuag4EQDalPfl0wIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsXC5WfdrHunxT7V4P8MJYs569ewWXze8I/N
+        4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
+        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
+        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPxS8+MHls/WXn8XmTnMe7+W/ZAvijuGxSUnMy
+        y1KL9O0SuDJ+7GYtmKpcce7wXqYGxhvSXYycHBICJhIHPt9hBLFZBFQlTn1ayw5iswmoS9y4
+        8ZMZxBYRUJQ4tP8eWA2zwDtWie+fNEFsYYEoiS8zt4PFeQUsJB5v/cLSxcjFISQwlVHiUdcE
+        NoiEoMTJmU9YIJrVJf7MuwQ0lAPIlpZY/o8DIiwv0bx1NliYU8BO4ltrBEhYVEBZ4sC240wT
+        GPlmIRk0C8mgWQiDZiEZtICRZRWjSGZeWW5iZo6pXnF2RmVeZoVecn7uJkZg/C2r/TNxB+OX
+        y+6HGAU4GJV4eAPC7VKFWBPLiitzDzFKcDArifAyO9qkCvGmJFZWpRblxxeV5qQWH2KU5mBR
+        Euf1Ck9NEBJITyxJzU5NLUgtgskycXBKNTC2+X1ofPlSZzfHlw9eWZZZ6iVfKncfnqC4yvgQ
+        37F4R6HgA3+SRIOfv+uQ2uLbqPJ60vxbisuW/JhdG+ixIzg4yDZfdp/L2bytJ6OP2TUsM1T2
+        iXjgmzBtparB8Z8XTh4vMnNJTd5yVWKdipiWcXug9vW23Ts1M4oK70aLTuNmuxP2nj/Du1iJ
+        pTgj0VCLuag4EQB+QdrXuwIAAA==
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/30/2023 3:17 PM, Kathiravan Thirumoorthy wrote:
-> Build Qualcomm IPQ9574 NSSCC driver as module.
-
-should be IPQ5332, will fix it in V2.
-
+On Mon, Oct 30, 2023 at 07:52:05AM +0000, Nadav Amit wrote:
 > 
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
->   arch/arm64/configs/defconfig | 1 +
->   1 file changed, 1 insertion(+)
+> Below are some points you might find useful:
+
+Thank you!
+
+> > +
+> > /*
+> >  * Blindly accessing user memory from NMI context can be dangerous
+> >  * if we're in the middle of switching the current user task or
+> > diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
+> > index aa44fff8bb9d..35ba9425d48d 100644
+> > --- a/include/linux/mm_types_task.h
+> > +++ b/include/linux/mm_types_task.h
+> > @@ -59,8 +59,8 @@ struct tlbflush_unmap_batch {
+> > 	 */
+> > 	struct arch_tlbflush_unmap_batch arch;
+> > 
+> > -	/* True if a flush is needed. */
+> > -	bool flush_required;
+> > +	/* The number of flush requested. */
 > 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index b60aa1f89343..c075202d255d 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -1223,6 +1223,7 @@ CONFIG_QCOM_CLK_SMD_RPM=y
->   CONFIG_QCOM_CLK_RPMH=y
->   CONFIG_IPQ_APSS_6018=y
->   CONFIG_IPQ_GCC_5332=y
-> +CONFIG_IPQ_NSSCC_5332=m
->   CONFIG_IPQ_APSS_5018=y
->   CONFIG_IPQ_GCC_5018=y
->   CONFIG_IPQ_GCC_6018=y
+> Number of what? Base pages I presume.
+
+How many times set_tlb_ubc_flush_pending() has been called.
+
+> > +	int nr_flush_required;
 > 
+> Perhaps unsigned would be better suited?
+
+Will change it to unsigned.
+
+> > 	/*
+> > 	 * If true then the PTE was dirty when unmapped. The entry must be
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 77f01ac385f7..63189c023357 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1324,6 +1324,7 @@ struct task_struct {
+> > #endif
+> > 
+> > 	struct tlbflush_unmap_batch	tlb_ubc;
+> > +	struct tlbflush_unmap_batch	tlb_ubc_nowr;
+> 
+> tlb_ubc_nowr is - I think - less informative the tlb_ubc_ro (and a comment
+> would be useful).
+
+At the beginning, I named it tlb_ubc_ro but.. I forgot why I changed it
+to tlb_ubc_nowr but.. I will change it back and add a comment on it.
+
+> > +
+> > +int nr_flush_required(void)
+> > +{
+> > +	return current->tlb_ubc.nr_flush_required;
+> > +}
+> > +
+> > +int nr_flush_required_nowr(void)
+> > +{
+> > +	return current->tlb_ubc_nowr.nr_flush_required;
+> > +}
+> 
+> I haven’t gone through the users of these functions yet, as they are not included
+> in this patch (which is usually not great).
+
+Right. I will place these two on another patch that uses the functions.
+Or need to add an explanation in this commit message.
+
+> Anyhow, it might be a bit wasteful to have a function call for such a function. See
+> if it is possible to avoid that call.
+
+I will move them to mm/internal.h with inline added if possible.
+
+> > +
+> > /*
+> >  * Flush TLB entries for recently unmapped pages from remote CPUs. It is
+> >  * important if a PTE was dirty when it was unmapped that it's flushed
+> > @@ -615,11 +641,12 @@ void try_to_unmap_flush(void)
+> > {
+> > 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
+> > 
+> > -	if (!tlb_ubc->flush_required)
+> > +	fold_ubc_nowr();
+> > +	if (!tlb_ubc->nr_flush_required)
+> > 		return;
+> > 
+> > 	arch_tlbbatch_flush(&tlb_ubc->arch);
+> > -	tlb_ubc->flush_required = false;
+> > +	tlb_ubc->nr_flush_required = 0;
+> > 	tlb_ubc->writable = false;
+> > }
+> > 
+> > @@ -627,8 +654,9 @@ void try_to_unmap_flush(void)
+> > void try_to_unmap_flush_dirty(void)
+> > {
+> > 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
+> > +	struct tlbflush_unmap_batch *tlb_ubc_nowr = &current->tlb_ubc_nowr;
+> > 
+> > -	if (tlb_ubc->writable)
+> > +	if (tlb_ubc->writable || tlb_ubc_nowr->writable)
+> > 		try_to_unmap_flush();
+> > }
+> > 
+> > @@ -645,15 +673,16 @@ void try_to_unmap_flush_dirty(void)
+> > static void set_tlb_ubc_flush_pending(struct mm_struct *mm, pte_t pteval,
+> > 				      unsigned long uaddr)
+> > {
+> > -	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
+> > +	struct tlbflush_unmap_batch *tlb_ubc;
+> > 	int batch;
+> > 	bool writable = pte_dirty(pteval);
+> > 
+> > 	if (!pte_accessible(mm, pteval))
+> > 		return;
+> > 
+> > +	tlb_ubc = pte_write(pteval) || writable ? &current->tlb_ubc : &current->tlb_ubc_nowr;
+> 
+> Using the ternary operator here is a bit confusing. You can use an “if”
+> instead or if you mind is set doing it this way at least make it easier to
+> read:
+> 
+> 	tlb_ubc = (pte_write(pteval) || writable) ? &current->tlb_ubc :
+> 						    &current->tlb_ubc_nowr;
+
+You are right. I should change it that way. Thanks.
+
+> And of course, add a comment.
+
+Okay. Also will add a comment.
+
+> > 	arch_tlbbatch_add_pending(&tlb_ubc->arch, mm, uaddr);
+> > -	tlb_ubc->flush_required = true;
+> > +	tlb_ubc->nr_flush_required += 1;
+> 
+> Presumably overflow is impossible for other reasons, but something like that
+> worries me.
+
+Agree with you. Lemme think it more and fix it.
+
+Thank you.
+
+	Byungchul
+
