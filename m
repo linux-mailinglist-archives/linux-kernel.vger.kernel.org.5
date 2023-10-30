@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1412D7DC33F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CB97DC342
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjJ3Xle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 19:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
+        id S230306AbjJ3Xmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjJ3Xlb (ORCPT
+        with ESMTP id S229646AbjJ3Xmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 19:41:31 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2042.outbound.protection.outlook.com [40.107.92.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2417DFA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:41:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DA86l8RGVAxgcxL6tVCQHbUpDK+cMI3TbtOIl8wIpPDr01xU3jk4eY6PnwjHQcJaeULmjdAWSEo/tF4hh9BASeVI6TDfzqGvIqRX+YTZbOdXi34a4lrFuGEtrLSZCAFLDmG54kODBLjb9mF6InQBDSDTE0tK6VEyjLDAyEeo6AZ8wJSW/ZWuoym9ZuA7AHlO/kC5c9RjzSySHpTSbaWjNzJNtSvWc+/MY2e+v2ohJZ41nLRWRf3CUfdkMLqwX5DI/HhqwWE3ugchoJb6t7VT0TOGPvavBigJMHclF5NVTtd9pU3B3+Ii+T9DNObV5hfZ56xqff4I64wpIoEOt8zllw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HG4nGqNQgNMUx9D5PhugVji1bQn/NOStE9FM9U34sTE=;
- b=dArgSFEQgpIgjg9U8RwPmz2qx3xBIyHX1wrhWwUhic8LArFwwJajN++Y3+y7soY+5CCoOz93VOko12ZmUxaMYJJL+7ZGoSp7Ji85wu/wpb0Tsi1BGmscPgobUmx99731iil8QaiiDwLH795ll/5/yJNyYQIGv0X/re1ohAZHsDf0jjAqUayqao8fK2fvBe/P1WDnB/lN1j9/AjT156KfI97WDkUfAfWl4oGp/gyagJBVj21R+hvbL6Jsa1RxdqSRLEbzrrC5kA7UKWKsZNYRfcanZiu1QSNxVXSWMYbiKzRaIKYnOAKoDEpH0Ut7QoVO4J6SZgYnOxyQO3z91a0eog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HG4nGqNQgNMUx9D5PhugVji1bQn/NOStE9FM9U34sTE=;
- b=pnAfDQKCT6VWO6CMXmHXQjVkOZu/fkkbN7/PbsE+oq0Mf2SpW7805jMnP1ZtOIEkWO8twj8l/o/D+cmnnRNqfJb30bESgzTGOjg4DIzp51mJxYosdj3k5R2HjZ5v4i0DwRZaxClEZwQFU8EOsyMr9gyYR1w6+Rf7LgAm8jj7Ehc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by CY8PR17MB6650.namprd17.prod.outlook.com (2603:10b6:930:7b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.15; Mon, 30 Oct
- 2023 23:41:26 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4%4]) with mapi id 15.20.6954.015; Mon, 30 Oct 2023
- 23:41:26 +0000
-Date:   Mon, 30 Oct 2023 19:41:23 -0400
-From:   Gregory Price <gregory.price@memverge.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
-        naoya.horiguchi@linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kpageflags: respect folio head-page flag placement
-Message-ID: <ZUA/IzTMokFsXS5Y@memverge.com>
-References: <20231030180005.2046-1-gregory.price@memverge.com>
- <ZUA6qq6zXuc0fqOE@casper.infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZUA6qq6zXuc0fqOE@casper.infradead.org>
-X-ClientProxiedBy: SJ0PR03CA0227.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::22) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+        Mon, 30 Oct 2023 19:42:52 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D70EDB
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:42:50 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9c3aec5f326so1285278266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1698709368; x=1699314168; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e5N724rwDHXZ7JYVD8hn/Em5XUesdSK4Pl1fcV5KWlA=;
+        b=LdNZRe9kaCiZwpUBKZ/zv3T9Lxjoif6Rq6L4NTspFfhQ9wvWZswkWmXoAqwhQbMoZq
+         wMjhwW7yUNuC0caCT2QKeVpWym963DJNsNzPoZLRn6Z9suonoV5Glr1YoH2Z3nPm28yH
+         x9tbzNxZcjfpCzTV8AE/Vh8k0yBabXwPhCHdc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698709368; x=1699314168;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e5N724rwDHXZ7JYVD8hn/Em5XUesdSK4Pl1fcV5KWlA=;
+        b=cCwF6MSwD7CcARWr2nRxHqCbz4wtufg0cx4oEteZYXoybZUKIzXE6FHYTaQBY8WDzw
+         bYWDKYaEu2j5YzI6xw23kvywvFo5h4UJy6FNv51FCkzoIxi4AT2rA9pv2oVcBT0GJsPZ
+         TmfAzEXC4jv9jV9x9FsEOzLOmon+K87uCUXjLqvPaVkOq2/4GKkdpIFtGgzJpesnB1Se
+         0Ko2jGLtzhhdLcsvuNiKOAzAH3J1YynJW4OeW5Qd7n1zLmE258sTS4kGzOUfZONVXUL4
+         ApIPR1N0mWx/zsQiapseNmb322SqdLZtOH+15e9NmMxvHxluzj+JOpFGWPsOe1kymlFD
+         1Tbw==
+X-Gm-Message-State: AOJu0YztFJNBeneGdbFAYTz3LW05Cv81pRH1Jy1vyQ4PZnG58b6huDfr
+        5G8plNlikgFEe6lV3uhEz0KOuVWq9VmzaGsUbjw5tA==
+X-Google-Smtp-Source: AGHT+IHYCzKH8q9uFigwvDW5KY2tk82Z2s1MZrXde8UZkqsj/Q8yIZ/DdoACPV09eta4kzcefCDtaA==
+X-Received: by 2002:a17:906:24da:b0:9c5:7f5d:42dc with SMTP id f26-20020a17090624da00b009c57f5d42dcmr974834ejb.33.1698709368385;
+        Mon, 30 Oct 2023 16:42:48 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id m10-20020a17090607ca00b009875a6d28b0sm47371ejc.51.2023.10.30.16.42.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 16:42:47 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9c603e2354fso1036076166b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:42:47 -0700 (PDT)
+X-Received: by 2002:a17:906:ef02:b0:9be:85c9:43f1 with SMTP id
+ f2-20020a170906ef0200b009be85c943f1mr839873ejs.7.1698709367234; Mon, 30 Oct
+ 2023 16:42:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CY8PR17MB6650:EE_
-X-MS-Office365-Filtering-Correlation-Id: b3a5c39f-19da-439f-b11d-08dbd9a1bba0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b0K33JIQOnSo4MlbdVb9AmxTXJi3QDo7FFB6YNHYZdNcsIMj1QF85fTfWHOoLcFMZglacTSNzES9YiJJbSUDz0Bg0nlPpRXieDmUUldcQtR3Qkl/q7sk50sjbq07riTYVaXdtT+N/3Ef7ToGkSuxsfWh1m1T03CaCiI+3+Z37nK1mca2WMlgXimwfCCobEwBa1/eN4PJ286Rr6Z2fvhp8Zt0tKDOCez0jldOz/dgU2MxHbfNNHJSRnS9cGBBhuRs5nFjT9Jziy+Y8zkStU6UCy3vBdkvM2JaNoARSQFCtgK7U/LmC4O9XyR17ob8VTVeuryUI9TczPAtnmco4sqMtCEHT3enZ+7hvblBoTm69+tAEW3C9oSOHmkkhuBwnI2rMX20opNX23eZBXrYE9pGyh+O/BYIQO2PhIs6EZplbQy/NveRBaryheA+DpFm9ltUT5DkOYkmFQDco3AGOzrN+VmFnEtlWcSLelMTvf+8Ut0FV9UUwOHN1n0R4gS4TM0kz9c6Wgm3cveESMO6jmwt7vUeoT5G515ZV+erdj8fu4LbEBR8b/tRAinhSj255LyTHqELcbnqcXZB6aSDMGAIHgIlBuJwhnj1UvX3qEiJCT65xRvGnRBzr5r2/SdPJhQP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39840400004)(376002)(366004)(230273577357003)(230173577357003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(6506007)(6666004)(6512007)(86362001)(8676002)(8936002)(41300700001)(2906002)(4326008)(44832011)(5660300002)(36756003)(6486002)(478600001)(66946007)(2616005)(26005)(66476007)(6916009)(66556008)(316002)(38100700002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HMa4ZhKcJVMZ06uFw1DxHKunYoKDAQ4ClOV0DHZ1GkOCB67HeHsfq8pYeLDJ?=
- =?us-ascii?Q?Q8/yWooHW2N5YwceZRNG56b2aUkAUfQoqupfEteiJd9fvm8y/d9zrTCXNk3O?=
- =?us-ascii?Q?prVUZs05FHp3bLIiM/K1VfYTflidRO8RsnPkryRMwZaMENSkj189WT0AVlkO?=
- =?us-ascii?Q?2PxILCTOjvDNXXIJoPMlRbttA85AelCXL6QMMH010FIfxUjhWPns9CRkc4gS?=
- =?us-ascii?Q?hR8LZuShRuWW8DQCx2WydVz/lWIRSY6Ovc3PrJODMf7FyNVPmYZYst2qdKKv?=
- =?us-ascii?Q?FHXKuoO5MfFi1htzdIODIQ3mVAgtfPDV1E3jkq+iln3+YtPS/HZGgWDBhYtm?=
- =?us-ascii?Q?sduqOYDP+Daj8wVlZ/jOXbjm8IeUWTobYP5egGt1jCCx/F+L3T0928b/y5Hs?=
- =?us-ascii?Q?19b6s0m8jSNfLvPi3GuCRnBxcrfxgKXyv0a7GrGZZfkv7nJue9+/w0NlJO8O?=
- =?us-ascii?Q?TnXSm2pXdoYgv/LGuPJHmdcgp/HsnC0nm91ENw3LCeludS4yEO/rgrs9JKqh?=
- =?us-ascii?Q?syXsCETV3RO+ovfvqlHD46G2EQtP8qmAWufnNNrYzpokRZcjGbNu1PmHW0M4?=
- =?us-ascii?Q?TD7HW5gg0OvoZap0tZXXlq4pkXB+19UHPGFI9m9R/vg7awOtcd5nq4IJR9aI?=
- =?us-ascii?Q?L852F8wP2ViT6EwcG2YtScWIdBrQ3brf/z6/ueBOiiV28j+75DApFb//u6pY?=
- =?us-ascii?Q?Ri6GauLBeYbKwsDvC44afFiuDC6HtWZxHfu+jcccdqVDrepEs1E9amYh4QSN?=
- =?us-ascii?Q?iVis1ubJpj8j0LdGLt/l1gQ90fbwAbJIBsI4o/wGIgdyeBDiGiQuG+qKwdPd?=
- =?us-ascii?Q?VQJd//zDY9b8vkCqYz++Vmfl/LQv32XKYVWlmhaLAm5ww9yy2xIDlD98VJAR?=
- =?us-ascii?Q?AXi21/4hmaaKyyav8dEbSFSTsHGiZBEfMwGe7am9TMX10/Fur1lVrSlvVaxE?=
- =?us-ascii?Q?kkf/YWRRPWRgF0p92p34FGkLaC9huSJQhZVwfWXpK4J4ju3wNqPkp1/FrjUy?=
- =?us-ascii?Q?ENWGmXcsrB45laBws1vxyFYo6NGNm96BYrNOGaFuoCNL8NtBbpSAVP4OyWDS?=
- =?us-ascii?Q?GPeWNKRtdwWCXwrfh7YpY/qPUdX2rM38Kbb6/qM9wBeBu0QV4+/rcV4s92iZ?=
- =?us-ascii?Q?r6NPOLiNqk5f89DgfNem1no4F5nDfDmLaAnDKqZMRHcf9n5ACAQZkQ/a+6RM?=
- =?us-ascii?Q?zrxQukyHFkzgR6+T8Ejwf77GDrwpgwcZCnytIL+4nT8B5ERqXbCnv8RO9mym?=
- =?us-ascii?Q?keD5klIyIjosGjGjKI0urUC9sxoJjuBddO4CDpMH3R168HznqTnd0yq3DVqF?=
- =?us-ascii?Q?V1gyCi/9n2Xm2Bn1ew8rWSPczvGI6bo6th+DeIG6cJV9b1yKB8riNxnC+lhe?=
- =?us-ascii?Q?2wzilrjZMyyG9/aZsW8cAFlPD/PSeT7VjwWHr6CyFia0PML0jyZrAH023mQi?=
- =?us-ascii?Q?GXMc8rqn+sjENeZgyPw+KXAQg7fp1XSqdehocowDjWXtpBP05NZ1tjg5oHuO?=
- =?us-ascii?Q?V+BbTPdFxCdkeAZobm39OMfpXVjOnLpDLshDSl/KD4FZpzDu5ux0GVGX73/Z?=
- =?us-ascii?Q?OPRg1y3MpnEMuPMwW1O825fsBYkFvPNtu3BcAv5aZqKhAJ6dosPDTMprp0ql?=
- =?us-ascii?Q?xQ=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3a5c39f-19da-439f-b11d-08dbd9a1bba0
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 23:41:26.5733
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Cot1vWvUC+tPu+/8HR1b4eBze/jfTrgNp7gxvbpOsnUP+LmwHkiv+g9fvuSlLOlwGiE+/8sHXNI0xONi55j4lZAB+BqanjIOxadij3UH2SE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR17MB6650
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <34E014FF-351E-4977-B694-060A5DADD35A@oracle.com>
+ <CAHk-=wifhiJ-QbcwrH0RzPaKeZv93GKDQuBUth18ay=sLu5CVA@mail.gmail.com> <96800661-0F30-4F9E-89E4-C0B032EFDEB9@oracle.com>
+In-Reply-To: <96800661-0F30-4F9E-89E4-C0B032EFDEB9@oracle.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Oct 2023 13:42:30 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wgyD3=63P=xewgmzSxcMmfj9LPakdVBDWnzR1EwUUOctQ@mail.gmail.com>
+Message-ID: <CAHk-=wgyD3=63P=xewgmzSxcMmfj9LPakdVBDWnzR1EwUUOctQ@mail.gmail.com>
+Subject: Re: [GIT PULL] nfsd changes for v6.7 (early)
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,35 +77,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 11:22:18PM +0000, Matthew Wilcox wrote:
-> On Mon, Oct 30, 2023 at 02:00:05PM -0400, Gregory Price wrote:
-> > kpageflags reads page-flags directly from the page, even when the
-> > respective flag is only updated on the headpage of a folio.
-> > 
-> > Update bitchecks to use PAGEFLAG() interfaces to check folio for the
-> > referenced, dirty, lru, active, and unevictable bits.
-> 
-> But uptodate, writeback and reclaim (amongst others) are also defined
-> only on the head page.
-> 
+On Mon, 30 Oct 2023 at 13:21, Chuck Lever III <chuck.lever@oracle.com> wrote:
+>
+> Do you need a refreshed PR with the testing bit removed,
+> or can you live with Neil or me sending a subsequent
+> fix-up later in the merge window?
 
-Ah yes i was only looking at the things defined w/ PAGEFLAG defines in
-page-flags.h. I'll give it full once over can collect them all, my bad.
+Oh, I've pulled it, I just haven't pushed out my recent merges yet.
 
-(also i forgot to update my commit message)
+I realize that my complaints are nit-picky and they don't hold up pull
+requests. It's just that bad Kconfig questions are a pet peeve of
+mine.
 
-Quick question here since i have your attention: any recommendation on
-what to do for ONLY_HEAD flags?  If the provided page is not the head,
-should the flag report 0... or whatever the head says?
+But being a pet peeve doesn't make it a showstopper..
 
-> >  	u |= kpf_copy_bit(k, KPF_UPTODATE,	PG_uptodate);
-> >  	u |= kpf_copy_bit(k, KPF_WRITEBACK,	PG_writeback);
-> >  
-> >  	u |= kpf_copy_bit(k, KPF_RECLAIM,	PG_reclaim);
-> >  
-> >  	if (PageSwapCache(page))
-> >  		u |= 1 << KPF_SWAPCACHE;
-> >  	u |= kpf_copy_bit(k, KPF_SWAPBACKED,	PG_swapbacked);
-> >  
-> >  	u |= kpf_copy_bit(k, KPF_MLOCKED,	PG_mlocked);
-> 
+          Linus
