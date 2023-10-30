@@ -2,227 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF87E7DB9F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676C77DB9FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjJ3MhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S233237AbjJ3Mje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbjJ3MhE (ORCPT
+        with ESMTP id S232291AbjJ3Mjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:37:04 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E16C6;
-        Mon, 30 Oct 2023 05:36:59 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0944741;
-        Mon, 30 Oct 2023 13:36:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698669402;
-        bh=++qPR+20T0qfganR7/c8e6ywMMgh6so0KQlWwma87O4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eo4bfGELxC46WTEZq5pLKTxti4fNEtE51rboCLrRUmZJsfLlJ++UWXsZ2SDu7Fli7
-         kuHZzYp8Rcb1Fumt3a/w/qR2C0Je/Adq3q2pRqKpJH8KnSXKWRjyqlJZwFa58C66JX
-         tBB2ivkwmSO4/XGB4pWSskCDcDUnC9e7b6aDC69Y=
-Date:   Mon, 30 Oct 2023 14:37:03 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, mhecht73@gmail.com,
-        linuxfancy@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 3/3] media: i2c: Add support for alvium camera
-Message-ID: <20231030123703.GK12144@pendragon.ideasonboard.com>
-References: <20231020141354.2500602-1-tomm.merciai@gmail.com>
- <20231020141354.2500602-4-tomm.merciai@gmail.com>
- <ZTpnHdpTgRNll3TC@kekkonen.localdomain>
- <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+        Mon, 30 Oct 2023 08:39:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6320AB4;
+        Mon, 30 Oct 2023 05:39:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B056219CD;
+        Mon, 30 Oct 2023 12:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1698669569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Lngqcg+nkjGVgOoPgmcw4oMm+hcyGCopDw1fWfcrD/8=;
+        b=Y5PKASa8dFVmFdnT6aL8z5iuwp4kcS3EeacVeKZUt/f07PMcW/mWWajKWL565n56G1hLov
+        U3bRVzYyDJxOy2KSCtmT9hAXa8+XCMS3GI8vldRR0+Pd4xjCY75XRAmxWZh4LY5qxC+Gu4
+        8j3I9oJ6K0OfNxn6YPbWpfHYe3QPz4g=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93B40138EF;
+        Mon, 30 Oct 2023 12:39:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZbidIgCkP2UOegAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 30 Oct 2023 12:39:28 +0000
+Message-ID: <3b6a8d5d-f766-49fd-aa35-992c5b048bc6@suse.com>
+Date:   Mon, 30 Oct 2023 13:39:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZT+hEg7WqkQBnLV5@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
+ alternative
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20231019091520.14540-1-jgross@suse.com>
+ <20231019091520.14540-2-jgross@suse.com>
+ <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------CjY5AqY2i0DxVv5xgZzdvcJ0"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------CjY5AqY2i0DxVv5xgZzdvcJ0
+Content-Type: multipart/mixed; boundary="------------WtUeyENtP6GaM0fFvnSU09ev";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Ajay Kaher <akaher@vmware.com>, Alexey Makhalov <amakhalov@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, Peter Zijlstra <peterz@infradead.org>
+Message-ID: <3b6a8d5d-f766-49fd-aa35-992c5b048bc6@suse.com>
+Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
+ alternative
+References: <20231019091520.14540-1-jgross@suse.com>
+ <20231019091520.14540-2-jgross@suse.com>
+ <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
+In-Reply-To: <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
 
-On Mon, Oct 30, 2023 at 01:26:58PM +0100, Tommaso Merciai wrote:
-> On Thu, Oct 26, 2023 at 01:18:21PM +0000, Sakari Ailus wrote:
-> > Hi Tommaso,
-> > 
-> > Thanks for the update.
-> > 
-> > There's still quite a bit to do in this driver. Feel free to ask further
-> > questions regarding the comments.
-> > 
-> > On Fri, Oct 20, 2023 at 04:13:51PM +0200, Tommaso Merciai wrote:
-> > > The Alvium camera is shipped with sensor + isp in the same housing.
-> > > The camera can be equipped with one out of various sensor and abstract
-> > > the user from this. Camera is connected via MIPI CSI-2.
-> > > 
-> > > Most of the camera module features are supported, with the main exception
-> > > being fw update.
-> > > 
-> > > The driver provides all mandatory, optional and recommended V4L2 controls
-> > > for maximum compatibility with libcamera
-> > > 
-> > > References:
-> > >  - https://www.alliedvision.com/en/products/embedded-vision-solutions
-> > > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > ---
-> > > Changes since v2:
-> > >  - Removed gpios/clock handling as suggested by LPinchart
-> > >  - Added vcc-ext-in supply support as suggested by LPinchart
-> > >  - Fixed alvium_setup_mipi_fmt funct as suggested by CJAILLET
-> > >  - Removed upside_down/hshake_bit priv data as suggested by CJAILLET
-> > >  - Fixed commit body as suggested by LPinchart
-> > >  - Mv alvium_set_streamon_delay to yalvium_set_lp2hs_delay
-> > >  - Fixed comment on lp2hs prop as suggested by LPinchart
-> > >  - Added pm resume/suspend functs as suggested by LPinchart
-> > >  - Dropped alvium_link_setup/alvium_s_power as suggested by LPinchart
-> > >  - Fixed regs defines as suggested by LPinchart
-> > >  - Fixed typedef as suggested by LPinchart
-> > >  - Dropped bcrm_v/fw_v from priv data as suggested by LPinchart
-> > >  - Now driver use the subdev active state to store the active format and crop
-> > >    as suggested by LPinchart
-> > >  - Dropped alvium_is_csi2/i2c_to_alvium as suggested by LPinchart
-> > > 
-> > > Changes since v3:
-> > >  - Fixed warnings Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > Changes since v4:
-> > >  - Removed print into alvium_get_dt_data for alliedvision,lp2hs-delay-us as
-> > >    suggested by CDooley
-> > > 
-> > > Changes since v5:
-> > >  - Used tab instead of space in .h as suggested by SAilus
-> > >  - Added support for new CCI API from HDeGoede as suggested by SAilus
-> > >  - Fixed alvium_write/alvium_read, functions now using the new CCI api, suggested by LPinchart
-> > >  - Fixed alvium_get_feat_inq func as suggested by SAilus
-> > >  - Fixed indentation/var-order/includes-order as suggested by SAilus
-> > >  - Fixed alvium_csi2_fmts with MIPI_CSI2_DT_ defines as suggested by SAilus
-> > >  - Fixed alvium_is_alive as suggested by SAilus
-> > >  - Fixed alvium_code_to_pixfmt funct as suggested by SAilus
-> > >  - Fixed alvium_get_dt_data function, now use only fwnode as suggested by SAilus
-> > >  - Fixed autosuspend into the probe, is disable as default as suggested by SAilus
-> > >  - Fixed alvium_get_dt_data function, assigned bus type before parsing the ep
-> > >    as suggested by SAilus
-> > >  - Fixed alvium_power_off, removed wrong print as suggested by SAilus
-> > > 
-> > > Changes since v6:
-> > >  - Fixed .h indentation
-> > >  - Fixed function params indentation
-> > >  - Added int *err params for alvium_read/alvium_write as suggested by LPinchart
-> > >  - Removed dbg print from the driver, driver is now using dbg/err prints that comes from
-> > >    new cci API as suggested by LPinchart. This, fits SAilus suggestion on common pattern function.
-> > >  - Fixed alvium_write_hshake, now use read_poll_timeout as suggested by LPinchart
-> > >  - Removed useless includes
-> > >  - Added maintainers file entries
-> > > 
-> > > Changes since v7:
-> > >  - Fix company legal entity from Inc. to GmbH
-> > >  - Fix warnings given from HVerkuil build-scripts in alvium_get_bcrm_vers,
-> > >    alvium_get_fw_version and probe functions using __le16/__le32. Fixed also
-> > >    probe function warning alvium-csi2.c:2665 alvium_probe() warn: missing error code? 'ret'
-> > > 
-> > > Changes since v8:
-> > >  - Fixed alvium_i2c_driver struct, use probe istead of probe_new
-> > >  - Fixed Kconfig description taking as reference new mt9m114 driver
-> > >  - Fixed Kconfig just select V4L2_CCI_I2C taking as reference new mt9m114 driver
-> > > 
-> > > Changes since v9:
-> > >  - Fixed Y8_1X8 mipi_fmt_regval
-> > >  - Removed alliedvision,lp2hs-delay-us property we set now a default safe value as discussed with SAilus
-> > >  - Added dft property for ctrls initialization, we first read dft values from the camera and set this into ctrls
-> > >  - Fixed indentation as suggested by SAilus
-> > >  - Fixed bit field definitions alignment into .h as suggested by SAilus
-> > >  - Fixed Heartbeat reg from R -> RW
-> > >  - Fixed adjusting values in format/crop changes as suggested by SAilus
-> > >  - Removed unnecessary brcm_addr checks as suggested by SAilus
-> > >  - Merged poweron/poweroff functions as suggested by SAilus
-> > >  - Added poweroff path during probe as suggested by SAilus
-> > >  - Fixed module license type as suggested by SAilus
-> > >  - Removed unnecessary MODULE_DEVICE_TABLE as suggested by SAilus
-> > >  - Fixed pm support in s_ctrl and s_stream functions
-> > >  - Removed unnecessary local variables  as suggested by SAilus
-> > >  - Added ret values checks as suggested by SAilus
-> > > 
-> > >  MAINTAINERS                     |    9 +
-> > >  drivers/media/i2c/Kconfig       |   10 +
-> > >  drivers/media/i2c/Makefile      |    1 +
-> > >  drivers/media/i2c/alvium-csi2.c | 2666 +++++++++++++++++++++++++++++++
-> > >  drivers/media/i2c/alvium-csi2.h |  489 ++++++
-> > >  5 files changed, 3175 insertions(+)
-> > >  create mode 100644 drivers/media/i2c/alvium-csi2.c
-> > >  create mode 100644 drivers/media/i2c/alvium-csi2.h
+--------------WtUeyENtP6GaM0fFvnSU09ev
+Content-Type: multipart/mixed; boundary="------------gKgRX3PD6Fey5HM02ylSIZYh"
 
-[snip]
+--------------gKgRX3PD6Fey5HM02ylSIZYh
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > new file mode 100644
-> > > index 000000000000..2c40804655cd
-> > > --- /dev/null
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -0,0 +1,2666 @@
+T24gMjUuMTAuMjMgMTI6MzQsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gVGh1LCBP
+Y3QgMTksIDIwMjMgYXQgMTE6MTU6MTZBTSArMDIwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
+Cj4+ICsvKiBMb3ctbGV2ZWwgYmFja2VuZCBmdW5jdGlvbnMgdXNhYmxlIGZyb20gYWx0ZXJu
+YXRpdmUgY29kZSByZXBsYWNlbWVudHMuICovDQo+PiArREVGSU5FX0FTTV9GVU5DKHg4Nl9u
+b3AsICIiLCAuZW50cnkudGV4dCk7DQo+PiArRVhQT1JUX1NZTUJPTF9HUEwoeDg2X25vcCk7
+DQo+IA0KPiBUaGlzIGlzIGFsbCB4ODYgY29kZSBzbyB5b3UgZG9uJ3QgcmVhbGx5IG5lZWQg
+dGhlICJ4ODZfIiBwcmVmaXggLSAibm9wIg0KPiBpcyBwZXJmZWN0bHkgZmluZS4NCj4gDQo+
+PiArbm9pbnN0ciB2b2lkIHg4Nl9CVUcodm9pZCkNCj4+ICt7DQo+PiArCUJVRygpOw0KPj4g
+K30NCj4+ICtFWFBPUlRfU1lNQk9MX0dQTCh4ODZfQlVHKTsNCj4gDQo+IFRoYXQgZXhwb3J0
+IGlzIG5lZWRlZCBmb3I/DQo+IA0KPiBQYXJhdmlydCBzdHVmZiBpbiBtb2R1bGVzPw0KPiAN
+Cj4gSXQgYnVpbGRzIGhlcmUgd2l0aG91dCBpdCAtIEkgZ3Vlc3MgSSBuZWVkIHRvIGRvIGFu
+IGFsbG1vZGNvbmZpZy4NCj4gDQoNClR1cm5zIG91dCBpdCBpcyBuZWVkZWQgYWZ0ZXIgYWxs
+LiBXaXRoIHBhdGNoIDQgYXBwbGllZCBJIGdldDoNCg0KRVJST1I6IG1vZHBvc3Q6ICJCVUdf
+ZnVuYyIgW2FyY2gveDg2L2V2ZW50cy9hbWQvcG93ZXIua29dIHVuZGVmaW5lZCENCkVSUk9S
+OiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFthcmNoL3g4Ni9rZXJuZWwvY3B1L21jZS9tY2UtaW5q
+ZWN0LmtvXSB1bmRlZmluZWQhDQpFUlJPUjogbW9kcG9zdDogIkJVR19mdW5jIiBbYXJjaC94
+ODYva2VybmVsL2NwdWlkLmtvXSB1bmRlZmluZWQhDQpFUlJPUjogbW9kcG9zdDogIkJVR19m
+dW5jIiBbYXJjaC94ODYva3ZtL2t2bS5rb10gdW5kZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6
+ICJCVUdfZnVuYyIgW2FyY2gveDg2L2t2bS9rdm0taW50ZWwua29dIHVuZGVmaW5lZCENCkVS
+Uk9SOiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFthcmNoL3g4Ni9rdm0va3ZtLWFtZC5rb10gdW5k
+ZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6ICJCVUdfZnVuYyIgW2ZzL25mc2QvbmZzZC5rb10g
+dW5kZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6ICJCVUdfZnVuYyIgW2NyeXB0by9hZXNfdGku
+a29dIHVuZGVmaW5lZCENCkVSUk9SOiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFtkcml2ZXJzL3Zp
+ZGVvL2ZiZGV2L3V2ZXNhZmIua29dIHVuZGVmaW5lZCENCkVSUk9SOiBtb2Rwb3N0OiAiQlVH
+X2Z1bmMiIFtkcml2ZXJzL3ZpZGVvL3ZnYXN0YXRlLmtvXSB1bmRlZmluZWQhDQoNCg0KSnVl
+cmdlbg0K
+--------------gKgRX3PD6Fey5HM02ylSIZYh
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-[snip]
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-> > > +static int alvium_get_host_supp_csi_lanes(struct alvium_dev *alvium)
-> > > +{
-> > > +	u64 val;
-> > > +	int ret = 0;
-> > > +
-> > > +	alvium_read(alvium, REG_BCRM_CSI2_LANE_COUNT_RW, &val, &ret);
-> > 
-> > Missing error checking before the use of the value. The same pattern
-> > remains prevalent throughout the driver.
-> > 
-> > I think it'd be easier if you didn't use a temporary variable for reading,
-> > but instead had a register width specific access function. You could even
-> > introduce a helper macro to read this information as I suggested in an
-> > earlier review.
-> 
-> oks.
-> We are moving to use the following macros:
-> 
-> #define alvium_read_check(alvium, reg, value) \
-> { \
-> 	int ret = alvium_read(alvium, reg, value, NULL); \
-> 	if (ret) \
-> 		return ret; \
-> }
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-Please don't. Embedding a return in a macro is very confusing for the
-reader, and very very frowned upon in the kernel.
+--------------gKgRX3PD6Fey5HM02ylSIZYh--
 
-> > > +	alvium->h_sup_csi_lanes = val;
-> > > +
-> > > +	return ret;
-> > > +}
+--------------WtUeyENtP6GaM0fFvnSU09ev--
 
-[snip]
+--------------CjY5AqY2i0DxVv5xgZzdvcJ0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
--- 
-Regards,
+-----BEGIN PGP SIGNATURE-----
 
-Laurent Pinchart
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmU/pAAFAwAAAAAACgkQsN6d1ii/Ey9X
+uQf9HVW5MAezF4sh5DKlZuUi81hLzbrceMI/4mgDEoARnFElG81OLh2+VbeukkopRfKFk83m3iDX
+Nwczt7+A65fKi2X31jD2Qcwk+Roy22HyH3YOVGR8GyrwD+t40pnnA2j+ltwLNwT8NlnQ4sX/Xs54
+/u43Mb372gE+gxQUR6JQq3aHeO+xcYoAvOYOeUn3JGOWoCu/HbQGwAoU6T2Xn5xwdeHTnTRugghs
+DsS8QMJJXxmeTFMVokdeISwUqENxPiGTPyOlhzCxLtHkAQyatGHlUXcuOoE/9LeQ+yjOBa6QO8Zp
+psAtk64ro1/ouewo/0WZUNT9G+g3r8jL2mkMZU5Bww==
+=rD7o
+-----END PGP SIGNATURE-----
+
+--------------CjY5AqY2i0DxVv5xgZzdvcJ0--
