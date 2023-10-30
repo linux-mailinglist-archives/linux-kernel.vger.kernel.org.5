@@ -2,96 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB217DBD74
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9557DBE5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233631AbjJ3QHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S233475AbjJ3Q4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjJ3QHW (ORCPT
+        with ESMTP id S231433AbjJ3Q4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:07:22 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC58C9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:07:20 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc42d3f61eso11957755ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698682039; x=1699286839; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CYj9CzuAjK7WX2GIPL2L+DIVtRCWsgVm7uwhZjeF2lA=;
-        b=3eQEBVVJW6qpJRwIuasDzGtyhpatmXjUjasnElIBF8WjDI+5ApsFJ1zlDBlWT/69TB
-         PbTOHJinmlk+6aMVIH1rf63/lkKTsx0HNyXkcOGxLPBIKoLTzYcS4D+N1dBwkqdfsq/S
-         yrUZOH4RT0MgkqHKkV9fo9/iJHC5KhS9aBgKJ5GC3Ehhb5WvIv5T2CWdFs5anHN3mu4N
-         TuA4Z1ZZjrp9Qq2HjIs19K7Ul9Ov/A5B/bGpzVvmCJQKXDxhBNMpPGy8oagszu8qGOCM
-         Sy9/BZQ01UDgphVn92xAZ3R44OHqqS2VIxjhPZ/H/x+68a9CrcENGbg1bva66PztNRjU
-         oSLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698682039; x=1699286839;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CYj9CzuAjK7WX2GIPL2L+DIVtRCWsgVm7uwhZjeF2lA=;
-        b=RA6pGUpuRh7yZhiMI0mNLz/UWaADQ98Hv51TnUShJlZVQonhVmHtyTyYufKWVsf6th
-         gPetf9jIEJxyfmFS5BsetgGReiGXvXhs+2S7MjIeEm4Y86lXii7U5m01oH9gUYsf9JdK
-         OhC5teYwnILHOcXXKQQN9GsylEXYXORDUgTXqnY1qh03M0LtDfNxNlom6f+U4bDB641B
-         6462IM32aqZAA5YYcf3OdiY/bno0T//cO2jfYb6tj1zZ5mpppqZqfpq4OEjHpdoP7fTM
-         XOlQ3DWpMKhReqCZd4hm7LXTSC38uNZqu1QV/9Oe/Vv69SYXan7+C7jGhWvXLEl2eDw6
-         wxdg==
-X-Gm-Message-State: AOJu0YytOEhVD/Lne/iR7wpRJAmHVAx0M/tL3CH0HgRSx1n/ZelzArQk
-        zfbioQCOlUHgT+dznkibROePHa+F+yI=
-X-Google-Smtp-Source: AGHT+IFV5tV3//QjGmVmppct6PwpDpPOizUHi1+e/PWkSYXnddQsZMLTEun3JdOKBwDTc/ow3wO73Wx/+3M=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d887:b0:1cc:47d4:492c with SMTP id
- b7-20020a170902d88700b001cc47d4492cmr63679plz.11.1698682039706; Mon, 30 Oct
- 2023 09:07:19 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 16:07:18 +0000
-In-Reply-To: <20231030141728.1406118-1-nik.borisov@suse.com>
-Mime-Version: 1.0
-References: <20231030141728.1406118-1-nik.borisov@suse.com>
-Message-ID: <ZT_UtjWSKCwgBxb_@google.com>
-Subject: Re: [PATCH] KVM: x86: User mutex guards to eliminate __kvm_x86_vendor_init()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     pbonzini@redhat.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 12:56:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A33A9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:56:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698684999; x=1730220999;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=dEjCXDT0zPEo0nS7+2ecfgvoIT2oYjrfZSHG4lH9szk=;
+  b=WffeSOA6C8LUXvmVrXnTh9RBQV6TopmQIJfarbA/ZwGuxHCgq93Jjxyb
+   ascQ5CMOBJwu1vNpvLKSechJeujKxzYerN+HgrrggO8XsWygwjH30SJE8
+   z2ySzZLv+Cfkpy3eZi8aEQtcWA/ZJXp4t07oH18du7d8aPh4EcDfNFfrA
+   Cvzf3uzr7hkcb40VW5uphwkFoa+YHMyRcNxWHRQ2R4EdMvxLQUkOoKZ3E
+   5CKcPB8FY2XDKE6tSeRiEJ0lAEvaC7vuHA8nK/6dFk+A61hAv10xoiFdV
+   aTyADGyubcWX9YqCXXSdoBOoRgjkWAlJz1dF6gql34tq+MGbBW+if9s2c
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="957307"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="957307"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 09:56:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="830736415"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="830736415"
+Received: from wezedi-mobl1.amr.corp.intel.com (HELO [10.212.223.192]) ([10.212.223.192])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 09:56:37 -0700
+Message-ID: <257609dc-8fa9-40e0-8730-29e45af93878@linux.intel.com>
+Date:   Mon, 30 Oct 2023 11:08:50 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ALSA: hda: intel-dsp-cfg: Use AVS driver on SKL/KBL/APL
+ Chromebooks
+Content-Language: en-US
+To:     Brady Norander <bradynorander@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+        alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+References: <ZTz9orCylVwn3Pye@arch>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZTz9orCylVwn3Pye@arch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023, Nikolay Borisov wrote:
-> Current separation between (__){0,1}kvm_x86_vendor_init() is superfluos as
 
-superfluous
 
-But this intro is actively misleading.  The double-underscore variant most definitely
-isn't superfluous, e.g. it eliminates the need for gotos reduces the probability
-of incorrect error codes, bugs in the error handling, etc.  It _becomes_ superflous
-after switching to guard(mutex).
+On 10/28/23 07:25, Brady Norander wrote:
+> The legacy SKL driver no longer works properly on these Chromebook
+> platforms. Use the new AVS driver by default instead.
 
-IMO, this is one of the instances where the "problem, then solution" appoach is
-counter-productive.  If there are no objections, I'll massage the change log to
-the below when applying (for 6.8, in a few weeks).
+shouldn't this be used only if AVS is compiled in?
 
-  Use the recently introduced guard(mutex) infrastructure acquire and
-  automatically release vendor_module_lock when the guard goes out of scope.
-  Drop the inner __kvm_x86_vendor_init(), its sole purpose was to simplify
-  releasing vendor_module_lock in error paths.
-
-  No functional change intended.
-
-> the the underscore version doesn't have any other callers.
 > 
-> Instead, use the newly added cleanup infrastructure to ensure that
-> kvm_x86_vendor_init() holds the vendor_module_lock throughout its
-> exectuion and that in case of error in the middle it's released. No
-> functional changes.
-
+> Signed-off-by: Brady Norander <bradynorander@gmail.com>
+> ---
+>  sound/hda/intel-dsp-config.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+> index 756fa0aa69bb..1045be1fd441 100644
+> --- a/sound/hda/intel-dsp-config.c
+> +++ b/sound/hda/intel-dsp-config.c
+> @@ -16,10 +16,11 @@
+>  static int dsp_driver;
+>  
+>  module_param(dsp_driver, int, 0444);
+> -MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF)");
+> +MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF, 4=AVS)");
+>  
+>  #define FLAG_SST			BIT(0)
+>  #define FLAG_SOF			BIT(1)
+> +#define FLAG_AVS			BIT(2)
+>  #define FLAG_SST_ONLY_IF_DMIC		BIT(15)
+>  #define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
+>  #define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
+> @@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
+>  /*
+>   * Apollolake (Broxton-P)
+>   * the legacy HDAudio driver is used except on Up Squared (SOF) and
+> - * Chromebooks (SST), as well as devices based on the ES8336 codec
+> + * Chromebooks (AVS), as well as devices based on the ES8336 codec
+>   */
+>  #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+>  	{
+> @@ -81,7 +82,7 @@ static const struct config_entry config_table[] = {
+>  #endif
+>  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+>  	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
+>  		.dmi_table = (const struct dmi_system_id []) {
+>  			{
+> @@ -96,13 +97,13 @@ static const struct config_entry config_table[] = {
+>  #endif
+>  /*
+>   * Skylake and Kabylake use legacy HDAudio driver except for Google
+> - * Chromebooks (SST)
+> + * Chromebooks (AVS)
+>   */
+>  
+>  /* Sunrise Point-LP */
+>  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
+>  	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
+>  		.dmi_table = (const struct dmi_system_id []) {
+>  			{
+> @@ -122,7 +123,7 @@ static const struct config_entry config_table[] = {
+>  /* Kabylake-LP */
+>  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
+>  	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
+>  		.dmi_table = (const struct dmi_system_id []) {
+>  			{
+> @@ -667,6 +668,9 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+>  		}
+>  	}
+>  
+> +	if (cfg->flags & FLAG_AVS)
+> +		return SND_INTEL_DSP_DRIVER_AVS;
+> +
+>  	return SND_INTEL_DSP_DRIVER_LEGACY;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
