@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C21437DBB4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C512D7DBB4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbjJ3OEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S233378AbjJ3OES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbjJ3OEJ (ORCPT
+        with ESMTP id S232853AbjJ3OEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:04:09 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7B5C1;
-        Mon, 30 Oct 2023 07:04:05 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so7229614a12.3;
-        Mon, 30 Oct 2023 07:04:05 -0700 (PDT)
+        Mon, 30 Oct 2023 10:04:10 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32B9C6;
+        Mon, 30 Oct 2023 07:04:06 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso7348229a12.2;
+        Mon, 30 Oct 2023 07:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698674644; x=1699279444; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698674645; x=1699279445; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qt5VNnrZhkT8YwkXJ+TkOhYq+JeQbEwo9PeLT+R3kjE=;
-        b=kPLEhRYlnb2N2Hid6FCXLbLc3GwvMIi+F6SNqIbW8prf8fhlcnfsr+nYWRZp4Ihewf
-         eqpzdXPe5bHaQcCjyfFp2AZPkgVAUmf58IRZ4w3n0AMqs2qtWIwec0Yai0UhBBiqzkgN
-         LuiFvge1LsUV7kRSvCW2SNqi2Fx/lKbWOcjOO48Nm9nmnYsyD1eSH3c5R8dkqN5Xbxmj
-         CKpxqhLLatiLEiiQ2G01DxZjo7QaWcql2+2v+yr9cHcEXVQthFnlnHgGegP0w3KyJFDv
-         LUNadRJOpWfl09ZsLd5HQoqjRNTo2Z+gIUSQnVoB6L/P81Kq/ACWD85oxSEdGzfYPWGD
-         wNZg==
+        bh=+oNiOzVWb1OPayLI3UpcZtoHUryNLF1OMI1H1r1pii4=;
+        b=Oe1p/UbXOjEB16mqtM1xgjfGZcZ9YhOAsR3RSrrtzAtaKcSPeHLSu9cV7q0jwXOyuC
+         Nn6C345j6MZ8JSSp1qZV68yd6cjIWWbUkytcsW2cj7EgeWwJ6etiF4gxg1fCi5eLoUhz
+         9qc0It1OOhkure5AMu4pNqSXNo9yenU17hFOwY8JgF5/iOzddqJsRrHYFHKxdSdbynrK
+         JcQtRCF8K4jESgn1FIiKj2nfuMFWVl94jdjUA5Wrat4lkg0qXpf2flp3MB6DbAxtrnYi
+         NYiNE9xEcNUVoEZs4BxKYG4Ak5gnwsIoSObgIqpVwmqNpdgeXW7jhKOn2omfEWGJaEw3
+         FPFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698674644; x=1699279444;
+        d=1e100.net; s=20230601; t=1698674645; x=1699279445;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qt5VNnrZhkT8YwkXJ+TkOhYq+JeQbEwo9PeLT+R3kjE=;
-        b=W4JdRJpKrfckPqrYlk0NDvRQOzwLm/ogEwQbkgLRH5MZCtGdySDT5XJGwkl6hlFwoP
-         Xw5FBZ53h8mk8WFYOXzXVpyAUf8JLtriXaYyNVxjQ+A6NiJqXz542L6CgsG/E6wYG5hm
-         QJ3zAdqnzNgHebjpzccAvhRlzc8HOjWEFBUz9ISTKfWeOhNYjfD2PStD2OE/wtl8ogZz
-         z0XpZu3oW7kbHgBaBgpLZpU6OeRhvgNMYq40eaBUTAN6C9ZT6ThNcL75KoXoPRwVP4P7
-         43rWZbYC6lsqQITmMCsQosw7A87FMZBSOU6KFjIVE2ub+OJPPiL5YHPgf6HTwY0M2XL8
-         FItg==
-X-Gm-Message-State: AOJu0Yxix6X8vWLF2bPiUN36ApKxGLIbEzrjRrIZJZbrP0wnP/bblIxa
-        3kAJLU5cozUjwWbwfetcXVI=
-X-Google-Smtp-Source: AGHT+IE3nQiZ67e/Wb//i3pdBi0hY0U3T8Y1GrCo+SrJxi3o5oYA6auTP73Syz2bn5kVoK/tcSGpAg==
-X-Received: by 2002:a50:cd48:0:b0:540:31ef:80b6 with SMTP id d8-20020a50cd48000000b0054031ef80b6mr8260231edj.0.1698674643797;
-        Mon, 30 Oct 2023 07:04:03 -0700 (PDT)
+        bh=+oNiOzVWb1OPayLI3UpcZtoHUryNLF1OMI1H1r1pii4=;
+        b=rdORYNvYPME4//7Hfzg9qdg0Z51xtWM7DL5e9xNNP4yCEwD2ZNY6npwx/ix0YwAOuv
+         XL1RucZdcIhSTi/7raWvUhCcPJL548tY/9dWgnga/XLljmBsTDC05BmPBtsuTUhyVgPc
+         eUCtqSc7aaC10QTueA20Ep6+daIUECoIUShSD55WHItbmiNyPlWhTSkRRZm3iHQcqvnQ
+         sWZoK50q5MJJSIRHWWS77kS+tkbkwEeXTvBf8AV4nWlZ76Y2FZrGp7qNUWXFLSHkmvaV
+         DYhpERCHK0xckcMoeCaarIDfyUBqi5XjUF2InRCRpt5YaiSF1h5JQPxtONumzQ8qvFGH
+         EiMg==
+X-Gm-Message-State: AOJu0YzI3M6DwJXILuWgk+VRLg2/bd4ZKw3Hk9eVcPuWtIFJye6uN2/0
+        CNs7MBEVg2A0yxaRMuARAFA=
+X-Google-Smtp-Source: AGHT+IGuB54s6jt5VweeRbOkpv1wIU19siV44qKlRwvJUPLaaNQIqUU4r7Z2qBf99J+gcTg2aucBeQ==
+X-Received: by 2002:aa7:d70e:0:b0:53e:fd81:67ab with SMTP id t14-20020aa7d70e000000b0053efd8167abmr7583675edq.6.1698674644917;
+        Mon, 30 Oct 2023 07:04:04 -0700 (PDT)
 Received: from ?IPV6:2a01:c23:bc31:8900:5db7:a938:1060:35a3? (dynamic-2a01-0c23-bc31-8900-5db7-a938-1060-35a3.c23.pool.telefonica.de. [2a01:c23:bc31:8900:5db7:a938:1060:35a3])
-        by smtp.googlemail.com with ESMTPSA id n27-20020a5099db000000b0053116e45317sm6278564edb.44.2023.10.30.07.04.02
+        by smtp.googlemail.com with ESMTPSA id n27-20020a5099db000000b0053116e45317sm6278564edb.44.2023.10.30.07.04.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 07:04:03 -0700 (PDT)
-Message-ID: <d0ec3a4a-f70e-4212-81e7-67a16c6dfaf4@gmail.com>
-Date:   Mon, 30 Oct 2023 14:48:11 +0100
+        Mon, 30 Oct 2023 07:04:04 -0700 (PDT)
+Message-ID: <a3cc5420-8b0e-4336-accd-78557b5f8f46@gmail.com>
+Date:   Mon, 30 Oct 2023 14:50:36 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/7] r8169: Coalesce RTL8411b PHY power-down recovery
- calls to reduce spinlock contention
+Subject: Re: [PATCH v5 3/7] r8169: Coalesce mac ocp write and modify for 8168H
+ start to reduce spinlock contention
 Content-Language: en-US
 To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
@@ -68,7 +68,7 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
 References: <20231029183600.451694-1-mirsad.todorovac@alu.unizg.hr>
- <20231029183600.451694-2-mirsad.todorovac@alu.unizg.hr>
+ <20231029183600.451694-3-mirsad.todorovac@alu.unizg.hr>
 From:   Heiner Kallweit <hkallweit1@gmail.com>
 Autocrypt: addr=hkallweit1@gmail.com; keydata=
  xsFNBF/0ZFUBEAC0eZyktSE7ZNO1SFXL6cQ4i4g6Ah3mOUIXSB4pCY5kQ6OLKHh0FlOD5/5/
@@ -113,13 +113,13 @@ Autocrypt: addr=hkallweit1@gmail.com; keydata=
  H/0Z53okMykVs3a8tECPHIxnre2UxKdTbCEkjkR4V6JyplTS47oWMw3zyI7zkaadfzVFBxk2
  lo/Tny+FX1Azea3Ce7oOnRUEZtWSsUidtIjmL8YUQFZYm+JUIgfRmSpMFq8JP4VH43GXpB/S
  OCrl+/xujzvoUBFV/cHKjEQYBxo+MaiQa1U54ykM2W4DnHb1UiEf5xDkFd4=
-In-Reply-To: <20231029183600.451694-2-mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20231029183600.451694-3-mirsad.todorovac@alu.unizg.hr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -127,67 +127,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29.10.2023 19:35, Mirsad Goran Todorovac wrote:
-> On RTL8411b the RX unit gets confused if the PHY is powered-down.
-> This was reported in [0] and confirmed by Realtek. Realtek provided
-> a sequence to fix the RX unit after PHY wakeup.
+> Repeated calls to r8168_mac_ocp_write() and r8168_mac_ocp_modify() in
+> the startup of 8168H involve implicit spin_lock_irqsave() and spin_unlock_irqrestore()
+> on each invocation.
 > 
-> A series of about 130 r8168_mac_ocp_write() calls is performed to
-> program the RTL registers for recovery.
+> Coalesced with the corresponding helpers into r8168_mac_ocp_write_seq() and
+> r8168_mac_ocp_modify_seq() with a sinqle paired spin_lock_irqsave() and
+> spin_unlock_irqrestore(), these calls help reduce overall spinlock contention.
 > 
-> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
-> a lock storm that will stall all of the cores and CPUs on the same memory controller
-> for certain time I/O takes to finish.
-> 
-> In a sequential case of RTL register programming, a sequence of writes to the RTL
-> registers can be coalesced under a same raw spinlock. This can dramatically decrease
-> the number of bus stalls in a multicore or multi-CPU system:
-> 
->     static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->     {
-> 
->     ...
-> 
->     /* The following Realtek-provided magic fixes an issue with the RX unit
->      * getting confused after the PHY having been powered-down.
->      */
-> 
->     static const struct recover_8411b_info init_zero_seq[] = {
-> 	{ 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 },
-> 	...
->     };
-> 
->     static const struct recover_8411b_info recover_seq[] = {
-> 	{ 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C },
-> 	...
->     };
-> 
->     static const struct recover_8411b_info final_seq[] = {
-> 	{ 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 },
-> 	...
->     };
-> 
->     r8168_mac_ocp_write_seq(tp, init_zero_seq);
->     mdelay(3);
->     r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
->     r8168_mac_ocp_write_seq(tp, recover_seq);
->     r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
->     r8168_mac_ocp_write_seq(tp, final_seq);
->     }
-> 
-> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
-> functions that only changed the function names and the ending of the line, so the actual
-> hex data is unchanged.
-> 
-> Note that the reason for the introduction of the original commit
-> was to enable recovery of the RX unit on the RTL8411b which was confused by the
-> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
-> into a series of about 500+ memory bus locks, most waiting for the main MMIO memory
-> read-modify-write under a LOCK. The memory barrier in RTL_W32 should suffice for
-> the programming sequence to reach RTL NIC registers.
-> 
-> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
-> 
-> Fixes: fe4e8db0392a6 ("r8169: fix issue with confused RX unit after PHY power-down on RTL8411b")
+> Fixes: ef712ede3541d ("r8169: add helper r8168_mac_ocp_modify")
+> Fixes: 6e1d0b8988188 ("r8169:add support for RTL8168H and RTL8107E")
 > Cc: Heiner Kallweit <hkallweit1@gmail.com>
 > Cc: Marco Elver <elver@google.com>
 > Cc: nic_swsd@realtek.com
@@ -216,9 +165,54 @@ On 29.10.2023 19:35, Mirsad Goran Todorovac wrote:
 >  removed register/mask pair array sentinels, so using ARRAY_SIZE().
 >  avoided duplication of RTL_W32() call code as advised by Heiner.
 > 
->  drivers/net/ethernet/realtek/r8169_main.c | 173 ++++++----------------
->  1 file changed, 46 insertions(+), 127 deletions(-)
+>  drivers/net/ethernet/realtek/r8169_main.c | 26 +++++++++++++++--------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index f4a1d1a74b8b..29ee93b8b702 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -3231,6 +3231,21 @@ static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
+>  		{ 0x04, 0xffff,	0x854a },
+>  		{ 0x01, 0xffff,	0x068b }
+>  	};
+> +
+> +	static const struct e_info_regmaskset e_info_regmaskset_8168h_1[] = {
+> +		{ 0xe056, 0x00f0, 0x0070 },
+> +		{ 0xe052, 0x6000, 0x8008 },
+> +		{ 0xe0d6, 0x01ff, 0x017f },
+> +		{ 0xd420, 0x0fff, 0x047f },
+> +	};
+> +
+> +	static const struct e_info_regdata e_info_regdata_8168h_1[] = {
+> +		{ 0xe63e, 0x0001 },
+> +		{ 0xe63e, 0x0000 },
+> +		{ 0xc094, 0x0000 },
+> +		{ 0xc09e, 0x0000 },
+> +	};
+> +
+>  	int rg_saw_cnt;
+>  
+>  	rtl_ephy_init(tp, e_info_8168h_1);
+> @@ -3271,15 +3286,8 @@ static void rtl_hw_start_8168h_1(struct rtl8169_private *tp)
+>  		r8168_mac_ocp_modify(tp, 0xd412, 0x0fff, sw_cnt_1ms_ini);
+>  	}
+>  
+> -	r8168_mac_ocp_modify(tp, 0xe056, 0x00f0, 0x0070);
+> -	r8168_mac_ocp_modify(tp, 0xe052, 0x6000, 0x8008);
+> -	r8168_mac_ocp_modify(tp, 0xe0d6, 0x01ff, 0x017f);
+> -	r8168_mac_ocp_modify(tp, 0xd420, 0x0fff, 0x047f);
+> -
+> -	r8168_mac_ocp_write(tp, 0xe63e, 0x0001);
+> -	r8168_mac_ocp_write(tp, 0xe63e, 0x0000);
+> -	r8168_mac_ocp_write(tp, 0xc094, 0x0000);
+> -	r8168_mac_ocp_write(tp, 0xc09e, 0x0000);
+> +	r8168_mac_ocp_modify_seq(tp, e_info_regmaskset_8168h_1);
+> +	r8168_mac_ocp_write_seq(tp, e_info_regdata_8168h_1);
+>  }
+>  
+>  static void rtl_hw_start_8168ep(struct rtl8169_private *tp)
 
-Patch it self looks good to me, just consider the comments regarding commit
-message and Fixes tag for patch 1.
+For these few calls I don't really see a benefit in the change.
+Instead it makes the code harder to read.
+
