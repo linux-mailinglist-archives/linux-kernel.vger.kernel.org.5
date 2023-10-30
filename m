@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676C77DB9FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F197DBA00
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjJ3Mje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        id S233230AbjJ3Mkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbjJ3Mjc (ORCPT
+        with ESMTP id S233191AbjJ3Mkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:39:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6320AB4;
-        Mon, 30 Oct 2023 05:39:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B056219CD;
-        Mon, 30 Oct 2023 12:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698669569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Lngqcg+nkjGVgOoPgmcw4oMm+hcyGCopDw1fWfcrD/8=;
-        b=Y5PKASa8dFVmFdnT6aL8z5iuwp4kcS3EeacVeKZUt/f07PMcW/mWWajKWL565n56G1hLov
-        U3bRVzYyDJxOy2KSCtmT9hAXa8+XCMS3GI8vldRR0+Pd4xjCY75XRAmxWZh4LY5qxC+Gu4
-        8j3I9oJ6K0OfNxn6YPbWpfHYe3QPz4g=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93B40138EF;
-        Mon, 30 Oct 2023 12:39:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZbidIgCkP2UOegAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 30 Oct 2023 12:39:28 +0000
-Message-ID: <3b6a8d5d-f766-49fd-aa35-992c5b048bc6@suse.com>
-Date:   Mon, 30 Oct 2023 13:39:27 +0100
+        Mon, 30 Oct 2023 08:40:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4944EC9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 05:40:39 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UCUfv8002259;
+        Mon, 30 Oct 2023 12:40:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=oT8Q2JY+ZYriM6AyjlplkXOaiisUB1+zlmU2NxFg5bg=;
+ b=BkP3BgFhgtfOCJXwuAFbjnczCb/AfWc/JBI/r3u2GwXKqNfTRid6CF9fB9DRLUw+o6/i
+ e8PmL7aVexkqG0PUfb/mT/JAI3jdJeo+4AdX7v/DTCDxEaT0/R4cg/RrXZlHhYgyF1R/
+ qFKWc+B01Mil5+fr836hVwxMqx6V4Tiga0KMdCdN0jW+EmGrDrGxlOSEGV4a9Ns3NyF+
+ kQywXFMWVor7aJqby7oMt+2tkSu+5Cne4kuhpChdDXE8FpWZiKvRbStZS3NsZnopuL+Z
+ jHYBDm0iVkNshovdBgK+YOlqjkhIUgx/3w+MAOaha8PdZWIZRJViJkyP6muls21bLjBB EQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chyg0tg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 12:40:23 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UCeMqW009157
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 12:40:22 GMT
+Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 30 Oct 2023 05:40:19 -0700
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+To:     <akpm@linux-foundation.org>, <mgorman@techsingularity.net>,
+        <mhocko@suse.com>, <david@redhat.com>, <vbabka@suse.cz>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: [PATCH] mm: page_alloc: unreserve highatomic page blocks before oom
+Date:   Mon, 30 Oct 2023 18:09:50 +0530
+Message-ID: <1698669590-3193-1-git-send-email-quic_charante@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
- alternative
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20231019091520.14540-1-jgross@suse.com>
- <20231019091520.14540-2-jgross@suse.com>
- <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------CjY5AqY2i0DxVv5xgZzdvcJ0"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: meoXfyj-2M7sxjewK1Sa1HdZUAmpIapY
+X-Proofpoint-GUID: meoXfyj-2M7sxjewK1Sa1HdZUAmpIapY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ clxscore=1011 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300097
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -101,139 +73,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------CjY5AqY2i0DxVv5xgZzdvcJ0
-Content-Type: multipart/mixed; boundary="------------WtUeyENtP6GaM0fFvnSU09ev";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Ajay Kaher <akaher@vmware.com>, Alexey Makhalov <amakhalov@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Vitaly Kuznetsov <vkuznets@redhat.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, Peter Zijlstra <peterz@infradead.org>
-Message-ID: <3b6a8d5d-f766-49fd-aa35-992c5b048bc6@suse.com>
-Subject: Re: [PATCH v3 1/5] x86/paravirt: move some functions and defines to
- alternative
-References: <20231019091520.14540-1-jgross@suse.com>
- <20231019091520.14540-2-jgross@suse.com>
- <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
-In-Reply-To: <20231025103402.GBZTjvGse9c0utZGO0@fat_crate.local>
+__alloc_pages_direct_reclaim() is called from slowpath allocation where
+high atomic reserves can be unreserved after there is a progress in
+reclaim and yet no suitable page is found. Later should_reclaim_retry()
+gets called from slow path allocation to decide if the reclaim needs to
+be retried before OOM kill path is taken.
 
---------------WtUeyENtP6GaM0fFvnSU09ev
-Content-Type: multipart/mixed; boundary="------------gKgRX3PD6Fey5HM02ylSIZYh"
+should_reclaim_retry() checks the available(reclaimable + free pages)
+memory against the min wmark levels of a zone and returns:
+a)  true, if it is above the min wmark so that slow path allocation will
+do the reclaim retries.
+b) false, thus slowpath allocation takes oom kill path.
 
---------------gKgRX3PD6Fey5HM02ylSIZYh
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+should_reclaim_retry() can also unreserves the high atomic reserves
+**but only after all the reclaim retries are exhausted.**
 
-T24gMjUuMTAuMjMgMTI6MzQsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gVGh1LCBP
-Y3QgMTksIDIwMjMgYXQgMTE6MTU6MTZBTSArMDIwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
-Cj4+ICsvKiBMb3ctbGV2ZWwgYmFja2VuZCBmdW5jdGlvbnMgdXNhYmxlIGZyb20gYWx0ZXJu
-YXRpdmUgY29kZSByZXBsYWNlbWVudHMuICovDQo+PiArREVGSU5FX0FTTV9GVU5DKHg4Nl9u
-b3AsICIiLCAuZW50cnkudGV4dCk7DQo+PiArRVhQT1JUX1NZTUJPTF9HUEwoeDg2X25vcCk7
-DQo+IA0KPiBUaGlzIGlzIGFsbCB4ODYgY29kZSBzbyB5b3UgZG9uJ3QgcmVhbGx5IG5lZWQg
-dGhlICJ4ODZfIiBwcmVmaXggLSAibm9wIg0KPiBpcyBwZXJmZWN0bHkgZmluZS4NCj4gDQo+
-PiArbm9pbnN0ciB2b2lkIHg4Nl9CVUcodm9pZCkNCj4+ICt7DQo+PiArCUJVRygpOw0KPj4g
-K30NCj4+ICtFWFBPUlRfU1lNQk9MX0dQTCh4ODZfQlVHKTsNCj4gDQo+IFRoYXQgZXhwb3J0
-IGlzIG5lZWRlZCBmb3I/DQo+IA0KPiBQYXJhdmlydCBzdHVmZiBpbiBtb2R1bGVzPw0KPiAN
-Cj4gSXQgYnVpbGRzIGhlcmUgd2l0aG91dCBpdCAtIEkgZ3Vlc3MgSSBuZWVkIHRvIGRvIGFu
-IGFsbG1vZGNvbmZpZy4NCj4gDQoNClR1cm5zIG91dCBpdCBpcyBuZWVkZWQgYWZ0ZXIgYWxs
-LiBXaXRoIHBhdGNoIDQgYXBwbGllZCBJIGdldDoNCg0KRVJST1I6IG1vZHBvc3Q6ICJCVUdf
-ZnVuYyIgW2FyY2gveDg2L2V2ZW50cy9hbWQvcG93ZXIua29dIHVuZGVmaW5lZCENCkVSUk9S
-OiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFthcmNoL3g4Ni9rZXJuZWwvY3B1L21jZS9tY2UtaW5q
-ZWN0LmtvXSB1bmRlZmluZWQhDQpFUlJPUjogbW9kcG9zdDogIkJVR19mdW5jIiBbYXJjaC94
-ODYva2VybmVsL2NwdWlkLmtvXSB1bmRlZmluZWQhDQpFUlJPUjogbW9kcG9zdDogIkJVR19m
-dW5jIiBbYXJjaC94ODYva3ZtL2t2bS5rb10gdW5kZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6
-ICJCVUdfZnVuYyIgW2FyY2gveDg2L2t2bS9rdm0taW50ZWwua29dIHVuZGVmaW5lZCENCkVS
-Uk9SOiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFthcmNoL3g4Ni9rdm0va3ZtLWFtZC5rb10gdW5k
-ZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6ICJCVUdfZnVuYyIgW2ZzL25mc2QvbmZzZC5rb10g
-dW5kZWZpbmVkIQ0KRVJST1I6IG1vZHBvc3Q6ICJCVUdfZnVuYyIgW2NyeXB0by9hZXNfdGku
-a29dIHVuZGVmaW5lZCENCkVSUk9SOiBtb2Rwb3N0OiAiQlVHX2Z1bmMiIFtkcml2ZXJzL3Zp
-ZGVvL2ZiZGV2L3V2ZXNhZmIua29dIHVuZGVmaW5lZCENCkVSUk9SOiBtb2Rwb3N0OiAiQlVH
-X2Z1bmMiIFtkcml2ZXJzL3ZpZGVvL3ZnYXN0YXRlLmtvXSB1bmRlZmluZWQhDQoNCg0KSnVl
-cmdlbg0K
---------------gKgRX3PD6Fey5HM02ylSIZYh
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+In a case where there are almost none reclaimable memory and free pages
+contains mostly the high atomic reserves but allocation context can't
+use these high atomic reserves, makes the available memory below min
+wmark levels hence false is returned from should_reclaim_retry() leading
+the allocation request to take OOM kill path. This is an early oom kill
+because high atomic reserves are holding lot of free memory and 
+unreserving of them is not attempted.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+(early)OOM is encountered on a machine in the below state(excerpt from
+the oom kill logs):
+[  295.998653] Normal free:7728kB boost:0kB min:804kB low:1004kB
+high:1204kB reserved_highatomic:8192KB active_anon:4kB inactive_anon:0kB
+active_file:24kB inactive_file:24kB unevictable:1220kB writepending:0kB
+present:70732kB managed:49224kB mlocked:0kB bounce:0kB free_pcp:688kB
+local_pcp:492kB free_cma:0kB
+[  295.998656] lowmem_reserve[]: 0 32
+[  295.998659] Normal: 508*4kB (UMEH) 241*8kB (UMEH) 143*16kB (UMEH)
+33*32kB (UH) 7*64kB (UH) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB
+0*4096kB = 7752kB
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Per above log, the free memory of ~7MB exist in the high atomic
+reserves is not freed up before falling back to oom kill path.
 
---------------gKgRX3PD6Fey5HM02ylSIZYh--
+This fix includes unreserving these atomic reserves in the OOM path
+before going for a kill. The side effect of unreserving in oom kill path
+is that these free pages are checked against the high wmark. If
+unreserved from should_reclaim_retry()/__alloc_pages_direct_reclaim(),
+they are checked against the min wmark levels.
 
---------------WtUeyENtP6GaM0fFvnSU09ev--
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+---
+ mm/page_alloc.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---------------CjY5AqY2i0DxVv5xgZzdvcJ0
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 95546f3..2a2536d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3281,6 +3281,8 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+ 		.order = order,
+ 	};
+ 	struct page *page;
++	struct zone *zone;
++	struct zoneref *z;
+ 
+ 	*did_some_progress = 0;
+ 
+@@ -3295,6 +3297,16 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+ 	}
+ 
+ 	/*
++	 * If should_reclaim_retry() encounters a state where:
++	 * reclaimable + free doesn't satisfy the wmark levels,
++	 * it can directly jump to OOM without even unreserving
++	 * the highatomic page blocks. Try them for once here
++	 * before jumping to OOM.
++	 */
++retry:
++	unreserve_highatomic_pageblock(ac, true);
++
++	/*
+ 	 * Go through the zonelist yet one more time, keep very high watermark
+ 	 * here, this is only to catch a parallel oom killing, we must fail if
+ 	 * we're still under heavy pressure. But make sure that this reclaim
+@@ -3307,6 +3319,12 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+ 	if (page)
+ 		goto out;
+ 
++	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, ac->highest_zoneidx,
++								ac->nodemask) {
++		if (zone->nr_reserved_highatomic > 0)
++			goto retry;
++	}
++
+ 	/* Coredumps can quickly deplete all memory reserves */
+ 	if (current->flags & PF_DUMPCORE)
+ 		goto out;
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmU/pAAFAwAAAAAACgkQsN6d1ii/Ey9X
-uQf9HVW5MAezF4sh5DKlZuUi81hLzbrceMI/4mgDEoARnFElG81OLh2+VbeukkopRfKFk83m3iDX
-Nwczt7+A65fKi2X31jD2Qcwk+Roy22HyH3YOVGR8GyrwD+t40pnnA2j+ltwLNwT8NlnQ4sX/Xs54
-/u43Mb372gE+gxQUR6JQq3aHeO+xcYoAvOYOeUn3JGOWoCu/HbQGwAoU6T2Xn5xwdeHTnTRugghs
-DsS8QMJJXxmeTFMVokdeISwUqENxPiGTPyOlhzCxLtHkAQyatGHlUXcuOoE/9LeQ+yjOBa6QO8Zp
-psAtk64ro1/ouewo/0WZUNT9G+g3r8jL2mkMZU5Bww==
-=rD7o
------END PGP SIGNATURE-----
-
---------------CjY5AqY2i0DxVv5xgZzdvcJ0--
