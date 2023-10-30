@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F2D7DBD44
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D177DBD47
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbjJ3QA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S233806AbjJ3QAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbjJ3QAY (ORCPT
+        with ESMTP id S233767AbjJ3QAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:00:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D576E8;
-        Mon, 30 Oct 2023 09:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698681622; x=1730217622;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R95PXWqdcCQqpxhYQ7a+K0L2FvJAJWH3UWqlEom9KTY=;
-  b=RHW2qKjILCtfZpI0Zmmy3urwmK+hfxLvgbYmIBvgN9QVHEDCZtgGTcGL
-   VxPmB7zGht4GV7X24KhJw2hPlAY0k5h2l0BhXmaj9PGQ1lRYluvvDw5ss
-   McuN1axJKSAgzt6ZVrl4sRuW09AZchjAnKKN2RY6ltucUcEDGYitIuRwQ
-   uKaiB94Kcax0NGsEpjqJclP5ojm0PwHOeH2HfDCuTvx2XcAacOg51p6eQ
-   my+QU3KH/8oe02j/dDQBZ8o7f7B8AYCBx4KvuV7IS3d8ZJ435d2SN6pxm
-   +AsgUC+I8mAphlT+MwxiRbCSMgP2mhxDkFmmHGeb2IuZf0u9DGpwx4H6n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="9630399"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="9630399"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 09:00:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="850955302"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="850955302"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 09:00:19 -0700
-Date:   Mon, 30 Oct 2023 18:00:16 +0200
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        len.brown@intel.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v2] ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
-Message-ID: <ZT_TENjSBRpwMw90@black.fi.intel.com>
-References: <20231026083335.12551-1-raag.jadav@intel.com>
- <20231027081855.GK3208943@black.fi.intel.com>
- <ZTuMo2qDO6Aqq3D_@black.fi.intel.com>
- <ZTvGaNZmGWpsM-yw@black.fi.intel.com>
- <20231027142856.GL3208943@black.fi.intel.com>
- <ZTvqYwFWm9PQeKIU@black.fi.intel.com>
- <CAJZ5v0hkB6Lm82ie6hfzFVDaqEj7DYxnYxD5NRQNXZxKZjL+xg@mail.gmail.com>
- <CAJZ5v0i6H3aaDv1pPoygSHLLNA9YUr2AkMus=Cbb=KvyV5BEpg@mail.gmail.com>
- <ZTzNBAPe0ToFUqIw@black.fi.intel.com>
- <ZT+BiykmKepdAA8K@smile.fi.intel.com>
+        Mon, 30 Oct 2023 12:00:45 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DCA10F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:00:42 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40859dee28cso36372385e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698681640; x=1699286440; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NKk2V4+YytGbf7Kubv6ahLWsu9n3OHUmke4aOKpHn8o=;
+        b=Yf7bzi1PG5ut2cbQ1LOqoqr+9MFgeva2chErIQxn/qrNCkvGKnw2V2osoLDat5DQbp
+         HquBd/SqGgflnr0n3esqw2t34IT8xMjWG02NgBUdA6epG+X404cssQhd3+5TL7ljxbm5
+         7/o4eUGGLLS/MI87lBWz0goSvZLH7XKb2FzkdYJcVxkECGYYIDp5NhYQAy7I4DRhHfov
+         viZ+cH4VtzYpBGpckD5nwSu23HJRlSeTfuMXnf98UYTE77pkTz7bp6RntYv++JlTIi8m
+         6Z02UPjjxzqIR53qJSxSu4U57WuANdXs1+buoKEIiU7jJNW5CV1nwmA7elQ3ZPR4LaEw
+         nKDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698681640; x=1699286440;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NKk2V4+YytGbf7Kubv6ahLWsu9n3OHUmke4aOKpHn8o=;
+        b=n26rgoQPRt0X0w3dYHMLM8n1zGvdcYPVIV3+YqxnVs+qkHepoAksbvNH/bLSsS9sM5
+         0LbEiaserj5xYTMSjXVHR7dliSZFYhfigyF/GPSZRd3BE0UrkLb2C++9x5Px2oEfByxP
+         9aBbzFjGCqgXAX9GXj3obiRNY6RGSTro35yc6jeVqMVjGpvDdf4/UgBGsYUYjd6qUrAp
+         SEgzO7ZAj94U5tmdU+VcvtKDv3nUASQPlZvaIdImj8oRBD5SJpfmWquu/mWuLMOMh8Ve
+         Ww44drnoRMZMzq/hqBhC+4aCqf8Tb5FIJqX3kK6DUmpPxACe2u9wm7pmg7yv1iOMw67e
+         RMIQ==
+X-Gm-Message-State: AOJu0Yzu44yhPMuABsr9VuOwzg5IhfuQOMGA0rhPGB3ADUf83fcdU5Gy
+        faniuzLeXBgXFEgK1S5JtzUudQ==
+X-Google-Smtp-Source: AGHT+IFgDOW6Z+sEemwwIK9J/rhKUnbKudXde4JZ+gqlGYM31QGNGKxbw5dTfoiWkoWDrgoIQbN6HQ==
+X-Received: by 2002:a5d:4842:0:b0:317:6513:da7e with SMTP id n2-20020a5d4842000000b003176513da7emr8040501wrs.36.1698681640485;
+        Mon, 30 Oct 2023 09:00:40 -0700 (PDT)
+Received: from linaro.org ([86.122.213.220])
+        by smtp.gmail.com with ESMTPSA id h16-20020adfe990000000b0032dc24ae625sm8575499wrm.12.2023.10.30.09.00.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 09:00:40 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 18:00:38 +0200
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, catalin.marinas@arm.com,
+        ulf.hansson@linaro.org, agross@kernel.org, conor+dt@kernel.org,
+        ayan.kumar.halder@amd.com, j@jannau.net,
+        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        lpieralisi@kernel.org, quic_rjendra@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+Subject: Re: [PATCH 0/5] dts: qcom: Introduce SC8380XP platforms device tree
+Message-ID: <ZT/TJtlHrXXXr7X1@linaro.org>
+References: <20231025142427.2661-1-quic_sibis@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZT+BiykmKepdAA8K@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231025142427.2661-1-quic_sibis@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 12:12:27PM +0200, Andy Shevchenko wrote:
-> On Sat, Oct 28, 2023 at 11:58:12AM +0300, Raag Jadav wrote:
-> > On Fri, Oct 27, 2023 at 07:40:38PM +0200, Rafael J. Wysocki wrote:
+On 23-10-25 19:54:22, Sibi Sankar wrote:
+> This series adds the initial (clocks, pinctrl, rpmhpd, regulator, interconnect,
+> CPU, SoC and board compatibles) device tree support to boot to shell on the
+> Qualcomm SC8380XP platform, aka Snapdragon X Elite.
 > 
-> ...
+> Dependencies:
+> clks: https://lore.kernel.org/lkml/20231025133320.4720-1-quic_sibis@quicinc.com/
+> interconnect: https://lore.kernel.org/lkml/20231025134049.9734-1-quic_sibis@quicinc.com/
+> llcc: https://lore.kernel.org/lkml/20231025134632.10363-1-quic_sibis@quicinc.com/
+> misc-bindings: https://lore.kernel.org/lkml/20231025140640.22601-1-quic_sibis@quicinc.com/ 
+> pinctrl: https://lore.kernel.org/lkml/20231025135058.11268-1-quic_sibis@quicinc.com/
+> regulators: https://lore.kernel.org/lkml/20231025135550.13162-1-quic_sibis@quicinc.com/
+> rpmhpd: https://lore.kernel.org/lkml/20231025135943.13854-1-quic_sibis@quicinc.com/
 > 
-> > We'd probably end up with an oops trying to strcmp into a random address
-> > without knowing its type, so I think Mika's would be a better approach.
-> > 
-> > #define acpi_dev_uid_match(adev, uid2)                                                          \
-> > ({                                                                                              \
-> >         const char *uid1 = acpi_device_uid(adev);                                               \
-> >         u64 __uid1;                                                                             \
-> >                                                                                                 \
-> >         _Generic(uid2,                                                                          \
-> >                  int: uid1 && !kstrtou64(uid1, 0, &__uid1) && (typeof(uid2))__uid1 == uid2,     \
-> >                  const char *: uid1 && uid2 && !strcmp(uid1, (const char *)uid2),               \
-> >                  default: false);                                                               \
-> >                                                                                                 \
-> > })
-> > 
-> > This one I atleast got to compile, but I'm not very well versed with _Generic,
-> > so this could definitely use some comments.
+> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+Here is a public tree with all the support currently brought up
+for this platform:
+
+https://git.codelinaro.org/linaro/qcomlt/demos/linux/-/tree/sc8380xp
+
 > 
-> If you go this way, make _Generic() use simple in the macro with a help of two
-> additional functions (per type). Also you need to take care about uid2 type to
-> be _any_ unsigned integer. Or if you want to complicate things, then you need
-> to distinguish signed and unsigned cases.
-
-My initial thought was to have separate functions per type, but then
-I realized it would become an unnecessary inconvenience to maintain
-one per type. Having it inline with _Generic would make it relatively
-easier, but I'll leave it to the maintainers to decide.
-
-> P.S.
-> All to me it seems way too overengineered w/o any potential prospective user.
-
-I found a couple of acpi_dev_uid_to_integer() usages which could be
-simplified with this implementation, but let's see how everyone feels
-about this.
-
-Thanks for the comments,
-Raag
+> Abel Vesa (1):
+>   arm64: dts: qcom: sc8380xp: Add Compute Reference Device
+> 
+> Rajendra Nayak (4):
+>   dt-bindings: arm: cpus: Add qcom,oryon compatible
+>   dt-bindings: arm: qcom: Document SC8380XP SoC and boards
+>   arm64: dts: qcom: Add base SC8380XP dtsi and the QCP dts
+>   arm64: defconfig: Enable SC8380XP SoC base configs
+> 
+>  .../devicetree/bindings/arm/cpus.yaml         |    1 +
+>  .../devicetree/bindings/arm/qcom.yaml         |    8 +
+>  arch/arm64/boot/dts/qcom/Makefile             |    2 +
+>  arch/arm64/boot/dts/qcom/sc8380xp-crd.dts     |  423 +++
+>  arch/arm64/boot/dts/qcom/sc8380xp-qcp.dts     |  398 ++
+>  arch/arm64/boot/dts/qcom/sc8380xp.dtsi        | 3267 +++++++++++++++++
+>  arch/arm64/configs/defconfig                  |    3 +
+>  7 files changed, 4102 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc8380xp-crd.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc8380xp-qcp.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc8380xp.dtsi
+> 
+> -- 
+> 2.17.1
+> 
