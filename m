@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D098E7DBAC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455FC7DBAD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 14:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbjJ3Nb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 09:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S233488AbjJ3NdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 09:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbjJ3Nb4 (ORCPT
+        with ESMTP id S233480AbjJ3Nc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:31:56 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1C3EA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:31:46 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40806e4106dso26213645e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:31:46 -0700 (PDT)
+        Mon, 30 Oct 2023 09:32:59 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B6697
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:32:56 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4079ed65471so32691895e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 06:32:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698672705; x=1699277505; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698672775; x=1699277575; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5iBVIduJX5Kfi6GRQtob+W5jdhc7zjXnDk4PvajJvFM=;
-        b=pbwmH1PigYzsyzw1zqZrgNTZ6ZaYq2luxAdd1uOhYhn0z8AihnIWQ2Cnv26tLnS0mU
-         PQCSQzFKrF4cuDCf02p36s1Zj5ZhZ3XUPDqkA0pD+6nBHdATjra8pcAeXx446FrsxAxi
-         IhXSNmJJVYT/3Ph9cesRLcxi4nGg8TB09/VeJjvx1MBqpqHt9kNlj9CkI4oUawk6BD0L
-         Ia4uiaaPQfGO8q7m4ec+/qSHFWC1Nh3qRK5wislKTPSUGoDaUwe/taoXxwtX00P6dAcP
-         kk+GEiFNQQnRPbPlq1OyNAnp/7IYCS9/lOMOctv+OH3n6Gah/UJt3RkdyHwxAy+j1Uhq
-         K9YQ==
+        bh=FSsZlGJ0JWpeCuk/dM7vPXRJ7s2Y68pam9jGh9VCh8Q=;
+        b=Ru8TpXzCZRKbDIAp4O1JM0ceZeoxtPLaVOy9cN0iHxkrAeAJDHDQweHnPQf3oQDyXn
+         qlLooBAHM6PS1NC+mOrBqvhmTchn6is0Gqzm6L7YOOVUg/H7dzHvxQIOA7NjHPWFMnnI
+         8zUjoJLyYaY6VYpHxQsAP+lzi+15tSdfwKEs+0EmXEUc5FV/zvj/VI3pygg8G78IJSKP
+         +fKjTs6+6bD1s+VU0xddGZgRfpV++il3LeoX//DqmpnGOpGhKPcWLut3JOztUk+fAGGh
+         PC744j5z7pa3SrRvwenWLU923s5NmoXxBzhOAEGI8dTuVuRv5dPrcy9tc1BxE9rCVHD0
+         RNyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698672705; x=1699277505;
+        d=1e100.net; s=20230601; t=1698672775; x=1699277575;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5iBVIduJX5Kfi6GRQtob+W5jdhc7zjXnDk4PvajJvFM=;
-        b=YeqlDIWIV4QcVuQEC5do6PnX5hiUMS4sqoNXuZ5gZvaI8meax4VUIvMKWMoeweiYEG
-         ULnRWgCG7fJvNY8RDJiKjh3OG1MaXq6IjZ+AEVg6bQsyIb3PaXXAHVfXzumnDqsucTtI
-         7iJCthkYJuTUeVxAN+NfX1WwFPv045UY9evS+wY01jZ+BHgS6jQ3b2dD7CCJGXhmWjCT
-         JFVKEt5VQzPCBHelrDWNgfx3FAEkUpUCciTfEUtjS+Am++bLfway3Rurgdihs/Zj7cZ7
-         P+hdIYPljFloT8fc34Pikw5zzclmWpOHkLuJfbTKtMU0iHq/wJ2ew3QTpSaMVIbN4896
-         CR6w==
-X-Gm-Message-State: AOJu0YzKUqPxe/Er7AYyntj/GqiyyC5gm0eNsJ5Q6cfdktLOHUbo4jIq
-        lyXBzkLUr3NikfX680pNy3bG+Q==
-X-Google-Smtp-Source: AGHT+IHf698iUk8+rK/GdvGulrlxhAI8TWrfJmuEGblijlvDRZ6Aw20X/PccNTb++4ld76SHEaf2uA==
-X-Received: by 2002:a05:600c:4fc1:b0:406:51a0:17ea with SMTP id o1-20020a05600c4fc100b0040651a017eamr11246731wmq.10.1698672704689;
-        Mon, 30 Oct 2023 06:31:44 -0700 (PDT)
+        bh=FSsZlGJ0JWpeCuk/dM7vPXRJ7s2Y68pam9jGh9VCh8Q=;
+        b=OP+p3EsDHtXsl+03TovMj5wPHPbdD1Pq7SP5XN4nUfKVZfSI34ztA4BtAVNOw/oUjF
+         95PTXr3cLFmjZIFni+x8wlSHPo4XbNgcgrbuvwzbi5U53ue1q0O/QOWNS22PKLvFM3s1
+         S1J1E/fVbNzR3c5wXOHd/MD9CDYp/s/GJ0NswpvvE34FBawBTknS9n7uTlRIOPm/70nc
+         x5HByfxSXQOk0mp42iMyYfajDO2ns1pzE4EaPDjMGc4j4sKAuQ1oNvkLRGV2SOhI76bh
+         Q19zVeshFfzq/hBYDeIAe0udK1qe/ggHz1a3TerdPmti4bs+YlZyY5YDQDJzMhBEIM0x
+         QVZQ==
+X-Gm-Message-State: AOJu0Yyi5HYE2U3h86g2GRVmv4WJys9fb9Sz5q9M8bU1HVjB5NU+zTqs
+        VbpKsV+McKc5ewXBTEn/R3X8qg==
+X-Google-Smtp-Source: AGHT+IG8SNw66Pwt0HEMTLsi+OhjycW90eUy0mgkJ3vFWtzeIbfCWCd0CJwNlFOMwopsLbdxiiHBng==
+X-Received: by 2002:a05:600c:1988:b0:402:ea96:c09a with SMTP id t8-20020a05600c198800b00402ea96c09amr8193491wmq.16.1698672774739;
+        Mon, 30 Oct 2023 06:32:54 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id ew11-20020a05600c808b00b004063c9f68f2sm9048498wmb.26.2023.10.30.06.31.40
+        by smtp.gmail.com with ESMTPSA id ew11-20020a05600c808b00b004063c9f68f2sm9048498wmb.26.2023.10.30.06.32.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 06:31:44 -0700 (PDT)
-Message-ID: <02040f13-22ae-4ea5-9119-99bf778c27bf@linaro.org>
-Date:   Mon, 30 Oct 2023 14:31:38 +0100
+        Mon, 30 Oct 2023 06:32:54 -0700 (PDT)
+Message-ID: <fa69e90e-04d0-443f-adb1-f6b622eaa5f9@linaro.org>
+Date:   Mon, 30 Oct 2023 14:32:53 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: arm64: dts: add dt-bindings for
- Marvell COM Express boards
+Subject: Re: [PATCH v4 3/3] arm64: dts: cn913x: add device trees for COM
+ Express boards
 Content-Language: en-US
 To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -66,7 +66,7 @@ To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     cyuval@marvell.com
 References: <20231029174814.559583-1-enachman@marvell.com>
- <20231029174814.559583-3-enachman@marvell.com>
+ <20231029174814.559583-4-enachman@marvell.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,12 +112,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231029174814.559583-3-enachman@marvell.com>
+In-Reply-To: <20231029174814.559583-4-enachman@marvell.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -127,76 +128,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 29/10/2023 18:48, Elad Nachman wrote:
 > From: Elad Nachman <enachman@marvell.com>
 > 
-
-A nit, subject: drop second/last, redundant "dt-bindings for". The
-"dt-bindings" prefix is already stating that these are bindings.
-
-> Add dt bindings for:
-> CN9130 COM Express CPU module
-> CN9131 COM Express CPU module
-> AC5X RD COM Express Type 7 carrier board.
-> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
+> Add support for CN9130 and CN9131 COM Express Type 7 CPU
+> module boards by Marvell.
+> Define these COM Express CPU modules as dtsi and
+> provide a dtsi file for a carrier board (Marvell AC5X RD
+> COM Express type 7 carrier board).
+> This Carrier board only utilizes the PCIe link, hence no
+> special device / driver support is provided by this dtsi file.
+> Finally, provide a dts file for the com express carrier and
+> CPU module combination.
+> 
+> These COM Express boards differ from the existing CN913x DB
+> boards by the type of ethernet connection (RGMII),
+> the type of voltage regulators (not i2c expander based)
+> and the USB phy (not UTMI based).
+> Note - PHY + RGMII connector is OOB on CPU module.
+> CN9131 COM Express board is basically CN9130 COM Express board
+> with an additional CP115 I/O co-processor, which in this case
+> provides an additional USB host controller on the board.
 > 
 > Signed-off-by: Elad Nachman <enachman@marvell.com>
 > ---
->  .../bindings/arm/marvell/armada-7k-8k.yaml        | 15 +++++++++++++++
->  .../bindings/arm/marvell/marvell,ac5.yaml         | 14 ++++++++++++++
->  2 files changed, 29 insertions(+)
+>  arch/arm64/boot/dts/marvell/Makefile          |   1 +
+>  .../marvell/ac5x-rd-carrier-with-cn9131.dts   |  20 ++++
+>  .../boot/dts/marvell/ac5x-rd-carrier.dtsi     |  15 +++
+>  .../dts/marvell/cn9130-db-comexpress.dtsi     | 101 ++++++++++++++++
+>  .../dts/marvell/cn9131-db-comexpress.dtsi     | 113 ++++++++++++++++++
+>  5 files changed, 250 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier-with-cn9131.dts
+>  create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
+>  create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
+>  create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> index 52d78521e412..7e0ac5110eef 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> @@ -60,4 +60,19 @@ properties:
->            - const: marvell,armada-ap807-quad
->            - const: marvell,armada-ap807
->  
-> +      - description: Armada CN9130 SoC without external CP as COM Express CPU module
-> +        items:
-> +          - const: marvell,cn9130-cpu-module
-
-How CPU module can be used alone?
-
-> +          - const: marvell,cn9130
-> +          - const: marvell,armada-ap807-quad
-> +          - const: marvell,armada-ap807
+> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> index 79ac09b58a89..88c0f357a778 100644
+> --- a/arch/arm64/boot/dts/marvell/Makefile
+> +++ b/arch/arm64/boot/dts/marvell/Makefile
+> @@ -26,4 +26,5 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += ac5x-rd-carrier-with-cn9131.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
+> diff --git a/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-with-cn9131.dts b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-with-cn9131.dts
+> new file mode 100644
+> index 000000000000..9ca2725184e2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-with-cn9131.dts
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (C) 2023 Marvell International Ltd.
+> + *
+> + * Device tree for the AC5X RD Type 7 Com Express carrier board,
+> + * Utilizing the CN913x COM Express CPU module board.
+> + * This specific board only maintains a PCIe link with the CPU CPU module
+> + * module, which does not require any special DTS definitions.
+> + */
 > +
-> +      - description: Armada CN9131 SoC with one external CP as COM Express CPU module
-> +        items:
-> +          - const: marvell,cn9131-cpu-module
-> +          - const: marvell,cn9131
-> +          - const: marvell,cn9130
-> +          - const: marvell,armada-ap807-quad
-> +          - const: marvell,armada-ap807
+> +#include "cn9131-db-comexpress.dtsi"
+> +#include "ac5x-rd-carrier.dtsi"
 > +
->  additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/marvell,ac5.yaml b/Documentation/devicetree/bindings/arm/marvell/marvell,ac5.yaml
-> index 8960fb8b2b2f..734e1716a3e9 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/marvell,ac5.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/marvell,ac5.yaml
-> @@ -27,6 +27,20 @@ properties:
->            - const: marvell,ac5x
->            - const: marvell,ac5
->  
-> +      - description: Alleycat5X (98DX35xx) Reference Design as COM Express Carrier
-> +        items:
-> +          - enum:
-> +              - marvell,rd-ac5x-carrier
-> +          - const: marvell,ac5x
-> +
-> +      - description:
-> +           Alleycat5X (98DX35xx) Reference Design as COM Express Carrier plus
-> +           Armada CN9131 COM Express CPU module
-> +        items:
-> +          - enum:
-> +              - marvell,rd-ac5x-carrier-with-cn9131
-> +          - const: marvell,ac5x
+> +/ {
+> +	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board with CN9131 CPU module";
+> +	compatible = "marvell,rd-ac5x-carrier-with-cn9131", "marvell,rd-ac5x-carrier",
+> +		     "marvell,cn9131", "marvell,cn9130",
+> +		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
 
-You never responded to me concerns, so I still do not know what's this.
-This claims it has CN9131, but compatibles are missing.
+So you clearly did not test what you wrote.
 
-Can anyone help us understand why AC5 has CN9130 but these are in
-different files?
+This is v4, so at this point testing should be obvious. You must test
+your bindings and you must test your DTS against bindings.
+
+Successful test means: ZERO warnings.
+
+Standard disclaimer:
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+
 
 Best regards,
 Krzysztof
