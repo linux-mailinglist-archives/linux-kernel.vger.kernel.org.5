@@ -2,59 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885AA7DB31F
+	by mail.lfdr.de (Postfix) with ESMTP id DDDE67DB320
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjJ3GND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S231394AbjJ3GN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbjJ3GNA (ORCPT
+        with ESMTP id S231376AbjJ3GNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:13:00 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE26B7
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=SOF4+PcgGPb+gmIIwjzNN4MW7Y6OXy/4z0Y3hzoww/k=;
-  b=bpRdTC9evxq++pSHCC7JZIzJIFMcbUGe8q4kMVeutURj1tNxbNxu7u2W
-   dSqhLhx67Wv8+7n/tfl2cYuvulFUdcaP6UqnoyIHCaLKAoNGI0bIeUiAo
-   IfO3fgUk0CG8SmnhN6X4398qwz7sFDMbVKmDtpkkym7cUWysxXNuewjwM
-   E=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,262,1694728800"; 
-   d="scan'208";a="133817206"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 07:12:54 +0100
-Date:   Mon, 30 Oct 2023 07:12:54 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Dorine Tipo <dorine.a.tipo@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nick Terrell <terrelln@fb.com>,
-        Daniel Stone <daniels@collabora.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Linux Outreachy <outreachy@lists.linux.dev>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH Resend] Fix line Length
-In-Reply-To: <ZT7v39jG4WTxPYjm@debian.me>
-Message-ID: <alpine.DEB.2.22.394.2310300712310.3533@hadrien>
-References: <20231029144312.5895-1-dorine.a.tipo@gmail.com> <alpine.DEB.2.22.394.2310291610030.3136@hadrien> <ZT7v39jG4WTxPYjm@debian.me>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 30 Oct 2023 02:13:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060A3C9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:13:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20596C433C8;
+        Mon, 30 Oct 2023 06:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698646400;
+        bh=6qx7gkadhjjPFR2FBT459d6MskGyskl2wBormk0qgU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TQRT3hhWe3ySUJPZU6t5QFh0Ah5G7FADdt82bPl4Ox3CPkwTdLoALxmWMl8u6tXUx
+         R9RuQuWvypFSJhWSrvXo2kWUYFh22EgKSJQO9tmCiF79PpZaQFU3vFEXQOoEEFhSja
+         05uM4iakw3PJa72dh5R58issdP3bw9z3rEeBftZQ=
+Date:   Mon, 30 Oct 2023 07:13:17 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nancy Nyambura <nicymimz@gmail.com>
+Cc:     nicydaniels@gmail.com, outreachy@lists.linux.dev,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rts5208: Replace strncpy() with strscpy() for
+ appropriate string copying in rtsx_scsi line 524 warning: found by
+ checkpatch.pl script
+Message-ID: <2023103052-musky-defacing-ca25@gregkh>
+References: <20231029191647.44127-1-nicymimz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029191647.44127-1-nicymimz@gmail.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,39 +47,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 29, 2023 at 10:16:42PM +0300, Nancy Nyambura wrote:
+> Signed-off-by: Nancy Nyambura <nicymimz@gmail.com>
+> ---
+>  drivers/staging/rts5208/rtsx_scsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rts5208/rtsx_scsi.c b/drivers/staging/rts5208/rtsx_scsi.c
+> index 08bd768ad34d..52324b8ebbc7 100644
+> --- a/drivers/staging/rts5208/rtsx_scsi.c
+> +++ b/drivers/staging/rts5208/rtsx_scsi.c
+> @@ -523,7 +523,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+>  
+>  	if (sendbytes > 8) {
+>  		memcpy(buf, inquiry_buf, 8);
+> -		strncpy(buf + 8, inquiry_string, sendbytes - 8);
+> +		strscpy(buf + 8, inquiry_string, sendbytes - 8);
+>  		if (pro_formatter_flag) {
+>  			/* Additional Length */
+>  			buf[4] = 0x33;
+> -- 
+> 2.40.1
+> 
+> 
 
+Hi,
 
-On Mon, 30 Oct 2023, Bagas Sanjaya wrote:
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-> On Sun, Oct 29, 2023 at 04:11:01PM +0100, Julia Lawall wrote:
-> >
-> >
-> > On Sun, 29 Oct 2023, Dorine Tipo wrote:
-> >
-> > > Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
-> > >
-> > > Fix the line lengths of lines 8 and 49
-> >
-> > The Signed off by line should be here, below the log message.  Please see
-> > the patches sent by others.
-> >
-> > >  export IGT_FORCE_DRIVER=${DRIVER_NAME}
-> > >  export PATH=$PATH:/igt/bin/
-> > > -export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib/aarch64-linux-gnu/:/igt/lib/x86_64-linux-gnu:/igt/lib:/igt/lib64
-> > > +export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib/aarch64-linux-gnu/:/igt/lib/x86_64-linux-gnu
-> > > +export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/igt/lib:/igt/lib64
-> >
-> > There was a suggestion that it was better to keep this as one line.
-> >
->
-> Hi Julia,
->
-> The submitter touched one of CI scripts for the DRM subsystem. To test
-> this patch, there must be a way to run these scripts locally (which
-> may requires non-trivial setup).
->
-> Cc'ed DRM maintainers.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-There is a DRM outreachy project.  I think that motivated this patch.
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what is needed in
+  order to properly describe the change.
 
-julia
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what a proper
+  Subject: line should look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
