@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B54F7DC280
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56547DC282
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjJ3WcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        id S230222AbjJ3WgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjJ3WcH (ORCPT
+        with ESMTP id S229672AbjJ3WgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:32:07 -0400
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1744FFE
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:32:04 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+        Mon, 30 Oct 2023 18:36:01 -0400
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3A6DD
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:35:58 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 18:35:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698705122;
+        t=1698705357;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dX/CNNGfQ6c5dPpCwI6UOaZajkT8HSm2ODmF0tBLXhk=;
-        b=uScaisRtxc5f6AxWz0R5aDz611fTWv469IFtr/9dW7S9xusx288MD3RyerH5qDTRPO8jya
-        Z+arpJXjJIjVI45nX2tmbTlrMkHzZPjDNkvS28ac0RLP3wwWOH6SEd2afXdlWwhrDPAFwH
-        pj0kFs68VWruzszKBSMnFDwo6/ea56I=
-From:   andrey.konovalov@linux.dev
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: raw-gadget: update documentation
-Date:   Mon, 30 Oct 2023 23:31:58 +0100
-Message-Id: <20231030223158.36636-1-andrey.konovalov@linux.dev>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aGKhGcA7hoykm4opZ2dFmPkeWp+rME4yNLwrlH1CA4Q=;
+        b=PoUuMClXCdoxxX6TuVKOZMEUxAGomGwPfc5ZAGnDuZxutO+VlUkE9rrkzJqBpw8/dqSf0U
+        0F55Lhak0PbjL2xa6QRzY8/dkkf6InOk/g5MBdAL2rMCaU3l47JaL4S9X1B1hJFaEWuinI
+        uSqsA3NMo0LIflvFjOaNuSRjBAfMoZw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/39] lib/string_helpers: Add flags param to
+ string_get_size()
+Message-ID: <20231030223553.b246qs6qnibudhbv@moria.home.lan>
+References: <20231024134637.3120277-1-surenb@google.com>
+ <20231024134637.3120277-2-surenb@google.com>
+ <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com>
+ <20231024194653.c24qbnk6bx3hep6y@moria.home.lan>
+ <ZTpl1ELUMEmne21U@smile.fi.intel.com>
+ <20231026184456.q6ocnmpq6jhqi7zi@moria.home.lan>
+ <CAHp75Vch5U=F00i0yB82XRU2504pUUEUu1YvBPbiU=FRbJ9FJw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vch5U=F00i0yB82XRU2504pUUEUu1YvBPbiU=FRbJ9FJw@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
+On Mon, Oct 30, 2023 at 10:07:43PM +0200, Andy Shevchenko wrote:
+> I don't think I bikeshed here too much. This is the regular asking the
+> reviewers and/or maintainers usually do, so is it too hard to split?
 
-A recent patch added reporting of more event types to Raw Gadget.
+Excuse me?
 
-Update the documentation to reflect that this feature has been
-implemented.
+You were objecting to the new approach making it impossible to add
+_octal_ support, and your proposed patch split was completely broken.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
----
- Documentation/usb/raw-gadget.rst | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/Documentation/usb/raw-gadget.rst b/Documentation/usb/raw-gadget.rst
-index 818a1648b387..59b2132b584d 100644
---- a/Documentation/usb/raw-gadget.rst
-+++ b/Documentation/usb/raw-gadget.rst
-@@ -81,9 +81,6 @@ feature must be kept in the implementation.
- Potential future improvements
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--- Report more events (suspend, resume, etc.) through
--  ``USB_RAW_IOCTL_EVENT_FETCH``.
--
- - Support ``O_NONBLOCK`` I/O. This would be another mode of operation, where
-   Raw Gadget would not wait until the completion of each USB request.
- 
--- 
-2.25.1
-
+Are you trying to be more reasonable now...?
