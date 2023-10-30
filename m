@@ -2,80 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D5E7DC22D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891877DC233
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjJ3Vz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S232120AbjJ3V5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjJ3Vz1 (ORCPT
+        with ESMTP id S230390AbjJ3V5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:55:27 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A999F9E
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:55:23 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so8468131a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:55:23 -0700 (PDT)
+        Mon, 30 Oct 2023 17:57:34 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA01F7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:57:32 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d2de704f53so2253444a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698702921; x=1699307721; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XqyNfPUEzQcC86GGtCQWWD8Oa22hZLdjLYhI8L84gmY=;
-        b=Z+TZIdGnee1piytDqsY41R1RIdmPMgLYRTVpjoSsCrtHnILekgQ4N15jH0Urqd9LJF
-         SDTlTCKZP1ODgjqNn2XZP2rVabzDu27CHMM+TXPWTTprByzOcfvxS64LA70As498Wm/3
-         O2KqVj4n6rUfVFBtwnEn+9uFpUtqn+audgbCE=
+        d=gmail.com; s=20230601; t=1698703051; x=1699307851; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k4F0aTRBcZ7fBrQao5GQkvnUof+5v+oaXX1zm7ulzMs=;
+        b=NMGXQk1g/D5/logC/cy+BHn3YXlzpANevJTzmdaCj0q52LmF6q4mX2y/URchJlkfcF
+         7/NIRh0NEwluUfIxypQgAZUpwsWYTN4cj26ePrR2PDIOmJZ1+iEbH4wUQpytl271rwEn
+         OCx5UtpU8dH7kQubPfNhOjQFxVRoIDaVuwl/oPkceOGXJhSZkZypkH8yAN8zchBckAz+
+         O5qOkowElKQfFId6cJlPX4mPJSuAHgO2c/VPVrrljXxXZE0ByBHqg9TSTP97odmfw0wt
+         uGUsCmvVHJh0RmntwJxgBfWIXjv8vj9kNqD5E8lQhfdlk2OXLPA7I5t8lgnUHM3b+Dn5
+         eVJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698702921; x=1699307721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XqyNfPUEzQcC86GGtCQWWD8Oa22hZLdjLYhI8L84gmY=;
-        b=maE9TokI9GccA27g9vEwtrKkzcxKDxfTSfqhGmNptIMW4xctUIZYeozptdX/whGUoJ
-         kuVkFlcZq3SlMnQrrGDHbQZUsb9I6NGJnzyY9vr8Z80N0MIFFLz3VXbzqyviup7RBO/u
-         wXdZXA0E5fQwKCL/FEafSIpFQTMun9OGJedkT03l1Ft3pA7//PZzNr0n9M81JDekbOny
-         pIOklFdtc6ecQKr86PkM4F9Mcc3VeC9afbAgMhc7hSm46r28gN4p8FGjeLhQiyPVWNhI
-         H/E7OCIJ/e8WRbk3OO5VYkgEP07jowdqXoCSe628Rr5nLW+XVSjm3s2iWX9sWpJABPUr
-         /Uvw==
-X-Gm-Message-State: AOJu0Yxub5qDx++NzydrBEt+/3JZWUE4xpskdXP3qAFm8zI1lcagEwZt
-        omKKoNmssfg8nduAXE54ytdAdMpFgMAk+u1xN7z0o9QI
-X-Google-Smtp-Source: AGHT+IGCk43py80P9mXUF/4Ntw14oq5TgHtq6dJP5/wUAWrwbNpfP1KsXlcxdAMz4rjLab68Um1Pcg==
-X-Received: by 2002:a50:ab55:0:b0:543:fa0:b4b6 with SMTP id t21-20020a50ab55000000b005430fa0b4b6mr1794265edc.33.1698702921673;
-        Mon, 30 Oct 2023 14:55:21 -0700 (PDT)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id r5-20020aa7cb85000000b00543597cd190sm46304edt.47.2023.10.30.14.55.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 14:55:21 -0700 (PDT)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-408c6ec1fd1so6735e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:55:20 -0700 (PDT)
-X-Received: by 2002:a05:600c:3c9b:b0:3f7:3e85:36a with SMTP id
- bg27-20020a05600c3c9b00b003f73e85036amr20721wmb.7.1698702920586; Mon, 30 Oct
- 2023 14:55:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698703051; x=1699307851;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k4F0aTRBcZ7fBrQao5GQkvnUof+5v+oaXX1zm7ulzMs=;
+        b=Tmz0ILDfsabRTP1i/xCQHwTqfOMhacIJ2SXPrfEJT57Fb0dIUxTLfowgnGn4lFio3j
+         Mxa4MgY3IxOsaxINhif0N6ZWMN1Ya9O9ndA55/gxs3kekn2caW4J/75iDu+oy7rNR8bb
+         /s6oZA5Z0vPrnRMArpTlfGul/9krslJdNCN+VwcJTKYB5qk/1ZzAl204Lwn3QgBh/oSS
+         GwSP5PGirzxyIzA4b+p82hgOWKE/47IkZcKHCWnWswSF/GdCgrfbwQUaAnRlS8gO819b
+         6I2mtPcrMtbe+8rNSpTW7qK8OtEw3iAyS7hMOPD6HxtvoYY5/Jm8Md4IpZ9aG84zjISx
+         d4DA==
+X-Gm-Message-State: AOJu0YyotNXMKknRPlvLT+lV9WjYGDXMZ2OzwykYaJiNfkfryX2L4svM
+        DYrgleiceNubx+sA2Xu5+2rWa/MUTkw=
+X-Google-Smtp-Source: AGHT+IG9roxjl6N0gDzotVZBlBu2U2nCtzJcY+vTqhZkhZjFKpCd3cTOWiR06kFJti+zBRyPIQCcgA==
+X-Received: by 2002:a05:6830:90a:b0:6c4:ae52:9599 with SMTP id v10-20020a056830090a00b006c4ae529599mr12639047ott.7.1698703051496;
+        Mon, 30 Oct 2023 14:57:31 -0700 (PDT)
+Received: from urola ([208.184.224.238])
+        by smtp.gmail.com with ESMTPSA id d17-20020a056830045100b006c4d6a06a94sm1563651otc.76.2023.10.30.14.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 14:57:31 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 14:57:29 -0700
+From:   Frederik Deweerdt <deweerdt.lkml@gmail.com>
+To:     kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] Add missing NULL check in `tls_strp_check_queue_ok`
+Message-ID: <ZUAmyb44sy309V6H@urola>
 MIME-Version: 1.0
-References: <20231027-aspire1-sound-v1-0-5ff3cf8b5701@trvn.ru>
- <20231027-aspire1-sound-v1-1-5ff3cf8b5701@trvn.ru> <d6b63a3c-d171-4b6b-b222-8c619d90f51b@linaro.org>
-In-Reply-To: <d6b63a3c-d171-4b6b-b222-8c619d90f51b@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 30 Oct 2023 14:55:04 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
-Message-ID: <CAD=FV=UigovpD_s89j6V7MhCXOVHVVXLRtH3XGEHtcHKbwVgBA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: acer-aspire1: Enable RTC
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Nikita Travkin <nikita@trvn.ru>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,26 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi!
 
-On Mon, Oct 30, 2023 at 2:47=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
->
-> On 27.10.2023 16:42, Nikita Travkin wrote:
-> > pm6150 has a read-only RTC that can be used to keep the time with some
-> > extra userspace tools. Enable it.
-> >
-> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> > ---
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->
-> kinda unsure why it'd ever be disabled
->
-> Konrad
+We see `tls_strp_check_queue_ok` running into a NULL deref when
+evaluating `TCP_SKB_CB(skb)->seq`.
 
-FWIW we don't use the PMIC RTC in Chrome boards. I can't quite
-remember why, but I _think_ that the power lines aren't hooked up to
-the PMIC to keep power on for the board's lowest power states.
-Instead we use the RTC that's on the EC (Embedded Controller).
+This commit attempts to address the issue by exiting the loop if
+skb->next is NULL, and has proven stable under load.
 
--Doug
+That said i don't understand the code enough to convince myself that
+the NULL check is indeed required, and i would be happy gather data if
+that's useful.
+
+Signed-off-by: Frederik Deweerdt <deweerdt.lkml@gmail.com>
+---
+ net/tls/tls_strp.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/tls/tls_strp.c b/net/tls/tls_strp.c
+index ca1e0e198ceb..cabac0db6445 100644
+--- a/net/tls/tls_strp.c
++++ b/net/tls/tls_strp.c
+@@ -441,6 +441,8 @@ static bool tls_strp_check_queue_ok(struct tls_strparser *strp)
+ 		len -= skb->len;
+ 		skb = skb->next;
+ 
++		if (!skb)
++			return false;
+ 		if (TCP_SKB_CB(skb)->seq != seq)
+ 			return false;
+ 		if (skb_cmp_decrypted(first, skb))
+-- 
+2.42.0
+
