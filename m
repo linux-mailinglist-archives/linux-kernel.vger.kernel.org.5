@@ -2,236 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 422DF7DB5AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC847DB5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjJ3JDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
+        id S232388AbjJ3JEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbjJ3JDf (ORCPT
+        with ESMTP id S232385AbjJ3JEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:03:35 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AFCC4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:03:25 -0700 (PDT)
-X-UUID: 292a8d78770311ee8051498923ad61e6-20231030
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=jpW8nuYKQCNcvGDsf1014WZCblos7bNZyKdTpmIH2FQ=;
-        b=JVin93lwmuIwizSs6Kf/pUP/kCmCYFgR0jYV6OdliDwa1DZpE5ILxNlf8J0cPkbkRcaRhclziqA2V0S8b/ttglCDBmrzoILL0r7w7UIM+c1dn+BwsI73KAcL14A7ovSCZ9rHU+dOK/7Ay4b+i4ItRgDM1cGXMn9gMG1iIX2d6AU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:fcc641cc-7094-4135-b09b-db693fc065aa,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:5f78ec9,CLOUDID:7964eefb-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 292a8d78770311ee8051498923ad61e6-20231030
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 604541160; Mon, 30 Oct 2023 17:03:15 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+        Mon, 30 Oct 2023 05:04:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D98BDE;
+        Mon, 30 Oct 2023 02:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698656643; x=1730192643;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=HXGK7sSsr5+opx08mGT0ZofSHBbyl3M3jD1J1d73E4g=;
+  b=Q4FnNHvtGUjIrq8Q8d1yxVDEhiyF6FpYW66H5d/XngJCQY6uLDdhRrRM
+   m8hC34cVulgj93U9TwLWiF9P6gztUxVWEs30/nAHRNZII7/ZMVTo0T+0T
+   KSq7CwhI4NbsIClZwe9pqmXiNbEK+ucxk2sJxT8AckNozJeTxH0saA/oS
+   LqUX1mrOmPQvOu1TpIdQOBk+VbUhU6UB1X3DwFbhXPh2e5SRNBosqea3Q
+   85A4iFcJ17erFeeV8UR2RKgcjHBAD12cGJmmx5ixiagGvG2OTbkj6dEm7
+   M0xNGu1uoUlbFsvS7T3OO53lDL5AiFO1vhgFHvWBU7n4mNjSxOf26KcKb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="452295953"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="452295953"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:04:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="826000355"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="826000355"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Oct 2023 02:04:02 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 30 Oct 2023 02:04:01 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 30 Oct 2023 02:04:01 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 30 Oct 2023 17:03:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 30 Oct 2023 17:03:13 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "CK Hu" <ck.hu@mediatek.com>, Sean Paul <seanpaul@chromium.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>
-Subject: [PATCH v2 1/1] drm/mediatek: Fix errors when reporting rotation capability
-Date:   Mon, 30 Oct 2023 17:03:12 +0800
-Message-ID: <20231030090312.7758-2-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231030090312.7758-1-shawn.sung@mediatek.com>
-References: <20231030090312.7758-1-shawn.sung@mediatek.com>
+ 15.1.2507.34; Mon, 30 Oct 2023 02:04:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eh9lfTsgFntFz33NsSTcJ69qthvnNffFn6vzX2/e15+W8O8cABWWpeMFzjI0z03RsZRKXdmjgvyS+2hpzJrHf7do7lqwAXSVoa/rGr0rdX9uphs0Tp2aFdrWm2zF2bOD6BPc01eNYHaoT7Snmc49IobyRMYEAf7CHMb8E/dhcZJLo2898B3+gwkPqsVoc0doiLGsl68Zbo00XFeE6sB7wY4gCVvB8PDJnJC575saRofJBAV7X8DOIkRHvZgFcyONP+Y26av4X6cFE++rHhcW6LwuoP+9UdI7JFrnHWvFJYC0w8CDdzaIOL85NlbxrU/PLFUVyBBmtWuXFXuklQZfeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZaHpICN7hR90rsMs3w9PFjYdmq5GcQsALrg0TyR7NWo=;
+ b=GHodMxhch5ZcsaHiaLne7fLJYjVCJkRLsWkX34Yh67gEnD2tfUl9XkhR0jYWTAMK6WwibtLX2qFADyqVIB0iNMA7ipCIyClouuYqcmFTMPbT8BhqDDa2pcAf72CgXqaxIusrxFnQBMHQwzMrA0F4PEsTdyL8Ht5GnuvO/IQqfAmAxfqS9v98YEcAzZGT4aTj2DzUNstSnKtKR3O1vaWFN69tMTxySf4iLulr/z5YdUEIwHGqtvD5MrXo97+EKcsycbYMNlNZ8c+o+JsYD6RIpUPUI2k+BV8UDHW05Bjo0vgzKpCTwwHnc3FKD08kXIZyj+96KTB7SsMOEEjSUREV4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL0PR11MB3122.namprd11.prod.outlook.com (2603:10b6:208:75::32)
+ by CO1PR11MB4978.namprd11.prod.outlook.com (2603:10b6:303:91::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Mon, 30 Oct
+ 2023 09:03:59 +0000
+Received: from BL0PR11MB3122.namprd11.prod.outlook.com
+ ([fe80::7911:8ae6:fc73:1097]) by BL0PR11MB3122.namprd11.prod.outlook.com
+ ([fe80::7911:8ae6:fc73:1097%6]) with mapi id 15.20.6907.032; Mon, 30 Oct 2023
+ 09:03:59 +0000
+From:   "Pucha, HimasekharX Reddy" <himasekharx.reddy.pucha@intel.com>
+To:     ivecera <ivecera@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     Eric Dumazet <edumazet@google.com>,
+        "dacampbe@redhat.com" <dacampbe@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        "Keller, Jacob E" <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: RE: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP
+ for flags and hw_features fields in i40e_pf
+Thread-Topic: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP
+ for flags and hw_features fields in i40e_pf
+Thread-Index: AQHaA5P3bOgubmWSP0ePBzjqfldr77BiF+sw
+Date:   Mon, 30 Oct 2023 09:03:59 +0000
+Message-ID: <BL0PR11MB312265F889807ED756CB63A4BDA1A@BL0PR11MB3122.namprd11.prod.outlook.com>
+References: <20231020193746.2274379-1-ivecera@redhat.com>
+ <20231020193746.2274379-3-ivecera@redhat.com>
+In-Reply-To: <20231020193746.2274379-3-ivecera@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR11MB3122:EE_|CO1PR11MB4978:EE_
+x-ms-office365-filtering-correlation-id: 9c1c4a66-1121-439e-3af6-08dbd927279f
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B9IN+tcQLAejc0BTloqTEg6SxaypNuPpH3ky4XAkCLXApX6otlRAsXjxyTsWJ+m/cxISIFqceJ50cLpwm6rXLebl4sQ+wRKvH+h6j6FwbidkEuv5J/NruC4iy3kWWwrSu04kH0eN0Y//4g2qu7XgqBbYSSkdcFKX8n7D+ZotvfMyaLWMptL0ZpCzShwbVX003knY+WwoYwoOwM2PDGHgIoPxG/CfFk/Pnr3eCS/nLGknQFpB4ya0VxoATgO4sYIcrUAPP7fv55QvG7ZVhFpSs1V5M0+JQXcrYT3OjaOxQ/SZnHUBjcHOvbDQ6VjTv1fbzmMb6RHFWsVr/tGQezIQ7cFh03v7GQ7Y+vy7CYE7e9781V1Wm76NEuLrB51k8/bkoyAsZb0bxr2pEMs8bVUSahn0yjaWsUJ06pA1jsMmBcQIeGvw8KFSwSHpf59aycZoMaZfOD6UEYC+bf8+1lPbH9eb2E7qEMQVESpmePhi8E2Kf8MBy0idr2MkwGVi02rUlOwCY5fq2cQY/5WMGdhkq/i2bDvb03825mFZDgdMLTKC0FIJKIPDbIxu8qVzciF1wcPNqrjQ8zjB5uX9ziV0HiDtOVvdN/Xg4NnSd2E3uuI7mcgy9xIKdK8QVE5MRCYZ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3122.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(136003)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(64756008)(6506007)(7696005)(53546011)(71200400001)(9686003)(478600001)(83380400001)(26005)(2906002)(5660300002)(7416002)(66946007)(41300700001)(54906003)(66556008)(66446008)(66476007)(76116006)(52536014)(110136005)(4326008)(8936002)(8676002)(316002)(38070700009)(86362001)(33656002)(38100700002)(122000001)(82960400001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TBjI9xNd85nQAMvEjM7fgqUTdEDuiUgLoYOFrORaoC4vpEJ+8fenVugNoD/+?=
+ =?us-ascii?Q?xC6d6phfM4/JiOEKXLypxhA8VlGhHKyK/4DefD+jlTrXnhuYfbp6tPco/JLj?=
+ =?us-ascii?Q?f643Jl2o7ZVtjzbzB4mMm9JMupyoyJzM+8xB4vGGavVt97lGBIwOp/vbDj9l?=
+ =?us-ascii?Q?manKatChZltPvjFj/rRgXDYxyzrT+JIdY8JgpGwuoRplVZfG5xmaZCpJojlY?=
+ =?us-ascii?Q?3W/kR4/c8VjbRuGISKRv7ne024L5UJi7VLkSv6L+WFmV1oJfNVquJXbtjC/i?=
+ =?us-ascii?Q?O0/vs232EUOjhGS+cxw1uDJNwj8qQvfHqTyHw+uZwl5yk3CkAYUNzj3xNUEP?=
+ =?us-ascii?Q?ZmwmcUkt0yUb6uvSiNUGr7v9Pgjr3HhodbQjxwQg0yx97jd+UfbXoH7nISlA?=
+ =?us-ascii?Q?WRvlM/G+dn6NC8bK3v7PZ00ZeoU5SkQ1qVMnPSjfT/5mH261yu2DfabmrwV4?=
+ =?us-ascii?Q?fM9ByRlAUqaXybW5Ht3Y015EFpG1iq2qPXr2Senxr5Fx3THUzBctG0eHTPUa?=
+ =?us-ascii?Q?QzDzvXBRbcE4WADmiDom9AmZB1plx17IWH/KGc6Xe4Hy6IIPKVllE6rihi8f?=
+ =?us-ascii?Q?4tcFx9bhxTwbm0PLKcA1YRfJRkKVwsTDE20pvMe9wLOH6/JUGsM3ILlyaa2j?=
+ =?us-ascii?Q?S97jsqO+Qk7hS3p41bRjkEXRcyyGIFCYQRhaSFC/u4QSRR1XQHi3pVLuQsum?=
+ =?us-ascii?Q?a35GVPSCGL2MsmJiz9qzWerGLLB96VIfQEbu/Ztdg+RJr+C+t8hMF4EamiDx?=
+ =?us-ascii?Q?hppiWs8iQuewe2OLnq08tMBQJNgv5H238Wi8XJBnIzrXGTMkKBHsZEyPPshf?=
+ =?us-ascii?Q?EgytVDxaFRT6ksZ544ZHC6KdcNLEXfm6qV5h9Bow5GsLVbONrMb7QaViQth/?=
+ =?us-ascii?Q?HouwglvCbHmeyZYBkEXlYDtSFHthwlMRElzctHARprt9sLGQOcAnXYszvp4l?=
+ =?us-ascii?Q?Rdgr1COf8uF5NSJSoGvRwUt7NNM7F95QGzlx1UO1BzZit82+dyc2FTGyNVnc?=
+ =?us-ascii?Q?BnBpBwYzua4nnOUjjKnj70gLpcOGY7cOPWW3Y++hc6HHBbA61ofHGSZN/mot?=
+ =?us-ascii?Q?UzjnaghEMXEy6oCx406i9DeIBoXrxr+aPq/GRDERMKh2xDdmVzmMMTwm4SaV?=
+ =?us-ascii?Q?qbArmnWKYjuratiF1IdiZCKad3HuVhJ68e3oRPnVVA73x/3MVA5BzwiekUFu?=
+ =?us-ascii?Q?+tigiB0RaKBv7HbXc3WS4fzlyUQ0WI988Rxn8vJOIA2FAFnxdRL2F4YBaOPp?=
+ =?us-ascii?Q?3SSwhkYRc4NYAbHDlKV26LvyDQYHI6IG5jKwPA73ai0KVBvBRiocK2+SS1RO?=
+ =?us-ascii?Q?Z+16UX3SW4NRxvVqNl6D3hov7PRGZaZzPja+FvC28tkksxVsBiOYTepicvmd?=
+ =?us-ascii?Q?OEmKW7IGL7hKuAREbHZT1IzVCAbDhyxiPbfx5DXQZ/BEMtJA4zm7oR7el4WU?=
+ =?us-ascii?Q?Knkz4C7U1bXO9iqgfGdo+4xHzi7ZNQotK3XV5FNpvcl0qW2v12wKcd11azcB?=
+ =?us-ascii?Q?/+GF5Tc9Rfaz1ZDxK3NqDmWKa823psk6F6HGL5K7xk8YNwNvPnR0ifWHnHzz?=
+ =?us-ascii?Q?hlGZ+xSUhb//GbKjABPC2GbmZZA6BX2Y1WPMhEWGM9RtezaW9dF/0LXf3vEc?=
+ =?us-ascii?Q?hg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--5.845500-8.000000
-X-TMASE-MatchedRID: 2T4BY0PVJD8ijAXMyA8nC+7KTDtx8Cgg6SXuwUgGH0hbKBBN5zqG8AYB
-        5gsbo0L8o5qw/iFKtvaIJs0Up7vkWIPN2a+Tga3SFYJUGv4DL3yZ2scyRQceryI9JQsGBsNv1Fv
-        g6E0U6v+4+90dmk+Zo+3NnYNx6mdYKGxJMBjfwlWxCl9NrK01yIv8pidhVYOU/vhiW664SDOrKq
-        FreRg70NAOjQU9UCdqp9q9Zbsl6Oa72iRvlw4XNp4CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyMdRT
-        5TQAJnA6oja9AxlelDUKCQ01ZUHMmpdp3WWW7eFiT0Pr/5TunGeqD9WtJkSIw==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.845500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 8FB96CD340DE745395AEC7BD8EDD4C0A760F1B1D46FA0E65C709EFE94C49C5442000:8
-X-MTK:  N
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,
-        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3122.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c1c4a66-1121-439e-3af6-08dbd927279f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2023 09:03:59.4506
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IzyvYA+LqWSoQavTvEJJh1ptA5K+SXXssVX7Dj8sS5ljGxoSJs/MorEhdjT6OMDQatqFmNkIzTC8fLQY/CHoqzJHUTYG7ZpoNSO2SnxqrTQGeFGGt6WdZCCE6/3S66m5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4978
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For CRTCs that doesn't support rotation should still return
-DRM_MODE_ROTATE_0. Returns hardware capabilities accordingly.
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of I=
+van Vecera
+> Sent: Saturday, October 21, 2023 1:08 AM
+> To: netdev@vger.kernel.org
+> Cc: Eric Dumazet <edumazet@google.com>; dacampbe@redhat.com; Richard Coch=
+ran <richardcochran@gmail.com>; Brandeburg, Jesse <jesse.brandeburg@intel.c=
+om>; open list <linux-kernel@vger.kernel.org>; Nguyen, Anthony L <anthony.l=
+.nguyen@intel.com>; moderated list:INTEL ETHERNET DRIVERS <intel-wired-lan@=
+lists.osuosl.org>; Keller, Jacob E <jacob.e.keller@intel.com>; Jakub Kicins=
+ki <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; David S. Miller <dav=
+em@davemloft.net>
+> Subject: [Intel-wired-lan] [PATCH iwl-next 3/6] i40e: Use DECLARE_BITMAP =
+for flags and hw_features fields in i40e_pf
+>
+> Convert flags and hw_features fields from i40e_pf from u32 to
+> bitmaps and their usage to use bit access functions.
+>
+> Changes:
+> - Convert "pf_ptr->(flags|hw_features) & FL" to "test_bit(FL, ...)"
+> - Convert "pf_ptr->(flags|hw_features) |=3D FL" to "set_bit(FL, ...)"
+> - Convert "pf_ptr->(flags|hw_features) &=3D ~FL" to "clear_bit(FL, ...)"
+> - Rename flag field to bitno in i40e_priv_flags and adjust ethtool
+>   callbacks to work with flags bitmap
+> - Rename flag names where '_ENABLED'->'_ENA' and '_DISABLED'->'_DIS'
+>   like in ice driver
+>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+> drivers/net/ethernet/intel/i40e/i40e.h        | 165 ++---
+> drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c |  24 +-
+>  .../net/ethernet/intel/i40e/i40e_debugfs.c    |   4 +-
+>  .../net/ethernet/intel/i40e/i40e_ethtool.c    | 209 ++++---
+>  drivers/net/ethernet/intel/i40e/i40e_main.c   | 587 +++++++++---------
+>  drivers/net/ethernet/intel/i40e/i40e_ptp.c    |  26 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  20 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   4 +-
+>  .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  20 +-
+>  9 files changed, 544 insertions(+), 515 deletions(-)
+>
 
-Fixes: 84d805753983 ("drm/mediatek: Support reflect-y plane rotation")
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c       | 30 ++++++++++---------
- .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   |  5 ++++
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  1 +
- drivers/gpu/drm/mediatek/mtk_drm_plane.c      |  2 +-
- 5 files changed, 24 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index 4d6e8b667bc3..c5afeb7c5527 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -127,6 +127,7 @@ void mtk_ovl_adaptor_register_vblank_cb(struct device *dev, void (*vblank_cb)(vo
- void mtk_ovl_adaptor_unregister_vblank_cb(struct device *dev);
- void mtk_ovl_adaptor_enable_vblank(struct device *dev);
- void mtk_ovl_adaptor_disable_vblank(struct device *dev);
-+unsigned int mtk_ovl_adaptor_supported_rotations(struct device *dev);
- void mtk_ovl_adaptor_start(struct device *dev);
- void mtk_ovl_adaptor_stop(struct device *dev);
- unsigned int mtk_ovl_adaptor_layer_nr(struct device *dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index ecc38932fd44..bca7b2f4b1d9 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -177,6 +177,7 @@ static const u32 mt8195_ovl_crc_ofs[] = {
-  * @supports_clrfmt_ext: whether the ovl supports clear format (for alpha blend)
-  * @crc_ofs: crc offset table
-  * @crc_cnt: count of crc registers (could be more than one bank)
-+ * @rotations: supported rotations
-  */
- struct mtk_disp_ovl_data {
- 	unsigned int addr;
-@@ -190,6 +191,7 @@ struct mtk_disp_ovl_data {
- 	bool supports_clrfmt_ext;
- 	const u32 *crc_ofs;
- 	size_t crc_cnt;
-+	unsigned int rotations;
- };
- 
- /**
-@@ -415,35 +417,26 @@ unsigned int mtk_ovl_layer_nr(struct device *dev)
- 
- unsigned int mtk_ovl_supported_rotations(struct device *dev)
- {
--	return DRM_MODE_ROTATE_0 | DRM_MODE_ROTATE_180 |
--	       DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
-+	struct mtk_disp_ovl *ovl = dev_get_drvdata(dev);
-+
-+	return ovl->data->rotations ?: DRM_MODE_ROTATE_0;
- }
- 
- int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
- 			struct mtk_plane_state *mtk_state)
- {
- 	struct drm_plane_state *state = &mtk_state->base;
--	unsigned int rotation = 0;
- 
--	rotation = drm_rotation_simplify(state->rotation,
--					 DRM_MODE_ROTATE_0 |
--					 DRM_MODE_REFLECT_X |
--					 DRM_MODE_REFLECT_Y);
--	rotation &= ~DRM_MODE_ROTATE_0;
--
--	/* We can only do reflection, not rotation */
--	if ((rotation & DRM_MODE_ROTATE_MASK) != 0)
-+	if (state->rotation & ~mtk_ovl_supported_rotations(dev))
- 		return -EINVAL;
- 
- 	/*
- 	 * TODO: Rotating/reflecting YUV buffers is not supported at this time.
- 	 *	 Only RGB[AX] variants are supported.
- 	 */
--	if (state->fb->format->is_yuv && rotation != 0)
-+	if (state->fb->format->is_yuv && (state->rotation & ~DRM_MODE_ROTATE_0))
- 		return -EINVAL;
- 
--	state->rotation = rotation;
--
- 	return 0;
- }
- 
-@@ -883,6 +876,15 @@ static const struct mtk_disp_ovl_data mt8195_ovl_driver_data = {
- 	.supports_clrfmt_ext = true,
- 	.crc_ofs = mt8195_ovl_crc_ofs,
- 	.crc_cnt = ARRAY_SIZE(mt8195_ovl_crc_ofs),
-+
-+	/*
-+	 * although OVL only supports reflections on MT8195,
-+	 * reflect x + reflect y = rotate 180
-+	 */
-+	.rotations = DRM_MODE_ROTATE_0   |
-+		     DRM_MODE_ROTATE_180 |
-+		     DRM_MODE_REFLECT_X  |
-+		     DRM_MODE_REFLECT_Y,
- };
- 
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index 4398db9a6276..b0d3ebdba93a 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -383,6 +383,11 @@ void mtk_ovl_adaptor_register_vblank_cb(struct device *dev, void (*vblank_cb)(vo
- 				     vblank_cb, vblank_cb_data);
- }
- 
-+unsigned int mtk_ovl_adaptor_supported_rotations(struct device *dev)
-+{
-+	return DRM_MODE_ROTATE_0;
-+}
-+
- void mtk_ovl_adaptor_unregister_vblank_cb(struct device *dev)
- {
- 	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index ffa4868b1222..206dd6f6f99e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -422,6 +422,7 @@ static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor = {
- 	.remove = mtk_ovl_adaptor_remove_comp,
- 	.get_formats = mtk_ovl_adaptor_get_formats,
- 	.get_num_formats = mtk_ovl_adaptor_get_num_formats,
-+	.supported_rotations = mtk_ovl_adaptor_supported_rotations,
- };
- 
- static const char * const mtk_ddp_comp_stem[MTK_DDP_COMP_TYPE_MAX] = {
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index e2ec61b69618..894c39a38a58 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -344,7 +344,7 @@ int mtk_plane_init(struct drm_device *dev, struct drm_plane *plane,
- 		return err;
- 	}
- 
--	if (supported_rotations & ~DRM_MODE_ROTATE_0) {
-+	if (supported_rotations) {
- 		err = drm_plane_create_rotation_property(plane,
- 							 DRM_MODE_ROTATE_0,
- 							 supported_rotations);
--- 
-2.39.2
+Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Co=
+ntingent worker at Intel)
 
