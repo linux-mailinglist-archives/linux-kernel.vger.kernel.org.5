@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 025DC7DBDC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC2F7DBDCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbjJ3Q0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S232887AbjJ3Q1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjJ3Q0l (ORCPT
+        with ESMTP id S231562AbjJ3Q1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:26:41 -0400
-Received: from 3.mo576.mail-out.ovh.net (3.mo576.mail-out.ovh.net [188.165.52.203])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD71B9E
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:26:37 -0700 (PDT)
-Received: from director7.ghost.mail-out.ovh.net (unknown [10.108.20.172])
-        by mo576.mail-out.ovh.net (Postfix) with ESMTP id AFB4223A57
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:26:35 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-7hln7 (unknown [10.110.208.67])
-        by director7.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 16CAE1FE61;
-        Mon, 30 Oct 2023 16:26:35 +0000 (UTC)
-Received: from RCM-web3.webmail.mail.ovh.net ([178.33.236.78])
-        by ghost-submission-6684bf9d7b-7hln7 with ESMTPSA
-        id zBVnAzvZP2VUTQEAW38/SQ
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Mon, 30 Oct 2023 16:26:35 +0000
+        Mon, 30 Oct 2023 12:27:34 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5214F1;
+        Mon, 30 Oct 2023 09:27:27 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UExUPN007745;
+        Mon, 30 Oct 2023 16:27:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=jm/R6KRA2W21JvQwRBpLxy+9HHpN8ayQwQqtG2bLlE0=;
+ b=PZPkeGkLExzUgKDt3vOt24DA6b3+bcRztQZU1v4/7ABaWC+j7uPTjZs4RbsDQ6PXS8x7
+ FE1Zf1L1Abfd+8niXT1+ALBgbslCwlJdZDC/dz7Sy28v60vtVYvYHViNihuepW/lhXnD
+ K/C7sv/TqRLFfYHtL+3ESaNsnRp6E8Sy+SChWhtAyOQ0dP0HMAzr578WTJcGWNUezNAC
+ F/Q6DJGw0tD9oH/rUgCZblYMt6YedtdBgOBmsGto9zzsN+fxSuWpxD+xLyTIca+dXa7I
+ gw+KA80ErLv3Q6PZGocepKnul9px6Bde13wEjhPnrrwnQkdHXbeasV3xjy/YVvrYG3Vm zA== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2chygkgu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 16:27:20 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UGRK6v007483
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 16:27:20 GMT
+Received: from [10.216.30.48] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
+ 2023 09:27:17 -0700
+Message-ID: <9d71fc3b-f7a9-9f23-6fbe-a7665954cd30@quicinc.com>
+Date:   Mon, 30 Oct 2023 21:57:13 +0530
 MIME-Version: 1.0
-Date:   Mon, 30 Oct 2023 18:26:34 +0200
-From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, skhan@linuxfoundation.org,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dillon.varone@amd.com, Jun.Lei@amd.com, george.shen@amd.com,
-        samson.tam@amd.com, SyedSaaem.Rizvi@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] drm/amd/display: remove redundant check
-In-Reply-To: <ce1b69e1-fa38-2e12-1ad5-375ac244af42@amd.com>
-References: <20231029124404.16159-1-jose.pekkarinen@foxhound.fi>
- <ce1b69e1-fa38-2e12-1ad5-375ac244af42@amd.com>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <3c228e4f69c01dddd4743bdb68845566@foxhound.fi>
-X-Sender: jose.pekkarinen@foxhound.fi
-Organization: Foxhound Ltd.
-X-Originating-IP: 162.247.74.74
-X-Webmail-UserID: jose.pekkarinen@foxhound.fi
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 15653104930003855014
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddttddgkeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeekhfeguddufeegvdelgedtvdffgeehvddtkeevkeejvedvgeeitdefleehtdeitdenucfkphepuddvjedrtddrtddruddpudeivddrvdegjedrjeegrdejgedpudejkedrfeefrddvfeeirdejkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejiedpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] eventfs: Fix kerneldoc of eventfs_remove_rec()
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+CC:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20231030121523.0b2225a7@gandalf.local.home>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231030121523.0b2225a7@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: luB8N8f8cj3zTVPpKHG2HhCZl_liRfVI
+X-Proofpoint-GUID: luB8N8f8cj3zTVPpKHG2HhCZl_liRfVI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=953 spamscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300128
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30 15:52, Aurabindo Pillai wrote:
-> On 10/29/2023 8:44 AM, José Pekkarinen wrote:
->> This patch addresses the following warning spotted by
->> using coccinelle where the case checked does the same
->> than the else case.
->> 
->> drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c:4664:8-10: 
->> WARNING: possible condition with no effect (if == else)
->> 
->> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
->> ---
->>   .../drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c   | 4 
->> ----
->>   1 file changed, 4 deletions(-)
->> 
->> diff --git 
->> a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c 
->> b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
->> index ecea008f19d3..d940dfa5ae43 100644
->> --- 
->> a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
->> +++ 
->> b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_util_32.c
->> @@ -4661,10 +4661,6 @@ void dml32_CalculateMinAndMaxPrefetchMode(
->>   	} else if (AllowForPStateChangeOrStutterInVBlankFinal == 
->> dm_prefetch_support_uclk_fclk_and_stutter) {
->>   		*MinPrefetchMode = 0;
->>   		*MaxPrefetchMode = 0;
->> -	} else if (AllowForPStateChangeOrStutterInVBlankFinal ==
->> -			dm_prefetch_support_uclk_fclk_and_stutter_if_possible) {
->> -		*MinPrefetchMode = 0;
->> -		*MaxPrefetchMode = 3;
->>   	} else {
->>   		*MinPrefetchMode = 0;
->>   		*MaxPrefetchMode = 3;
+
+
+On 10/30/2023 9:45 PM, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> What tree did you use to generate the patch? On amd-staging-drm-next,
-> MaxPrefetchMode is 0 for the second last branch, which is the correct
-> one, so this patch isnt needed.
+> The eventfs_remove_rec() had some missing parameters in the kerneldoc
+> comment above it. Also, rephrase the description a bit more to have a bit
+> more correct grammar.
+> 
+> Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode");
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310052216.4SgqasWo-lkp@intel.com/
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-     I'm using the stable tree, sorry, if it is out of
-date just ignore it then.
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-     Thanks!
-
-     José.
+-Mukesh
+> ---
+>   fs/tracefs/event_inode.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index 5a3cc5394294..1c28e013201f 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -977,9 +977,11 @@ static void free_rcu_ei(struct rcu_head *head)
+>   /**
+>    * eventfs_remove_rec - remove eventfs dir or file from list
+>    * @ei: eventfs_inode to be removed.
+> + * @head: the list head to place the deleted @ei and children
+> + * @level: prevent recursion from going more than 3 levels deep.
+>    *
+> - * This function recursively remove eventfs_inode which
+> - * contains info of file or dir.
+> + * This function recursively removes eventfs_inodes which
+> + * contains info of files and/or directories.
+>    */
+>   static void eventfs_remove_rec(struct eventfs_inode *ei, struct list_head *head, int level)
+>   {
