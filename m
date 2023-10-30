@@ -2,397 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61947DBBB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2FA7DBBB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbjJ3O0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:26:19 -0400
+        id S233468AbjJ3O0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:26:35 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbjJ3OZv (ORCPT
+        with ESMTP id S233436AbjJ3O0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:25:51 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF67C11A
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:25:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 43C071FE71;
-        Mon, 30 Oct 2023 14:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698675940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Xm3XX0lpogqG4X8OBm0jw7upX4JQzBbrWGV4vURmd8=;
-        b=B367c5izNqhlevT5ZziUYl9KghzgVkFfXEMKLDYFKP0ichZbM8O8GWZzHoO0MgTKEuqNsF
-        lMRDyd4MN5Wh84wrUMybsEZxSy4sq7668FHRXybQv+cF9uoKIjR5vlEGTqIkAWiXFP1mqC
-        gw94y2URnBmB+uazBpE6+3esyaWI8lE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5584138F8;
-        Mon, 30 Oct 2023 14:25:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HPi7MuO8P2UfQQAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 30 Oct 2023 14:25:39 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org
-Cc:     Juergen Gross <jgross@suse.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v4 5/5] x86/paravirt: remove no longer needed paravirt patching code
-Date:   Mon, 30 Oct 2023 15:25:08 +0100
-Message-Id: <20231030142508.1407-6-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231030142508.1407-1-jgross@suse.com>
-References: <20231030142508.1407-1-jgross@suse.com>
+        Mon, 30 Oct 2023 10:26:15 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C19AFD55
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:25:52 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Dx_+vuvD9l9MA1AA--.38290S3;
+        Mon, 30 Oct 2023 22:25:50 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxni_pvD9lzAU3AA--.52834S3;
+        Mon, 30 Oct 2023 22:25:47 +0800 (CST)
+Message-ID: <20cd9518-fee4-4a99-86f2-a5eea9abaa57@loongson.cn>
+Date:   Mon, 30 Oct 2023 22:25:46 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/8] drm/loongson: Introduce a drm bridge driver for
+ it66121 HDMI transmitter
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20231029194607.379459-1-suijingfeng@loongson.cn>
+ <20231029194607.379459-3-suijingfeng@loongson.cn>
+ <CAA8EJprjQXcTgxnC1POaBjVBzyVBvKpmKyJcCR5ExRUhVxtYoQ@mail.gmail.com>
+ <3ccb9600-6990-4ec7-81de-0d7b4e1294eb@loongson.cn>
+ <CAA8EJpqCe2j3GyeutnwTB0bkGXGk0az9-w3sPHLFwMVgAS=e7g@mail.gmail.com>
+ <df176548-0001-4df4-b556-6227b776cd18@loongson.cn>
+ <CAA8EJprS72FUDvMrgXatLWHYNiAOhfugiWFCWuXnmzS2zmUDTA@mail.gmail.com>
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <CAA8EJprS72FUDvMrgXatLWHYNiAOhfugiWFCWuXnmzS2zmUDTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Bxni_pvD9lzAU3AA--.52834S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3JF4UJr45GrW3Kw4xXF45XFc_yoWxtF43pF
+        4UKa4akrWDJr42y3yavw18CFyYy393JrWrWrnxG34F9r90934Iyr1xtFW5WF9rWr13Ca1j
+        vrWDuFWxWF10yagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8C
+        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
+        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
+        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr
+        0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UM
+        CJPUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that paravirt is using the alternatives patching infrastructure,
-remove the paravirt patching code.
+Hi,
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/paravirt.h       | 18 --------
- arch/x86/include/asm/paravirt_types.h | 40 ----------------
- arch/x86/include/asm/text-patching.h  | 12 -----
- arch/x86/kernel/alternative.c         | 66 +--------------------------
- arch/x86/kernel/paravirt.c            | 30 ------------
- arch/x86/kernel/vmlinux.lds.S         | 13 ------
- arch/x86/tools/relocs.c               |  2 +-
- 7 files changed, 3 insertions(+), 178 deletions(-)
 
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 9c6c5cfa9fe2..f09acce9432c 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -725,31 +725,13 @@ void native_pv_lock_init(void) __init;
- 
- #else  /* __ASSEMBLY__ */
- 
--#define _PVSITE(ptype, ops, word, algn)		\
--771:;						\
--	ops;					\
--772:;						\
--	.pushsection .parainstructions,"a";	\
--	 .align	algn;				\
--	 word 771b;				\
--	 .byte ptype;				\
--	 .byte 772b-771b;			\
--	 _ASM_ALIGN;				\
--	.popsection
--
--
- #ifdef CONFIG_X86_64
- #ifdef CONFIG_PARAVIRT_XXL
- #ifdef CONFIG_DEBUG_ENTRY
- 
--#define PARA_PATCH(off)		((off) / 8)
--#define PARA_SITE(ptype, ops)	_PVSITE(ptype, ops, .quad, 8)
- #define PARA_INDIRECT(addr)	*addr(%rip)
- 
- .macro PARA_IRQ_save_fl
--	PARA_SITE(PARA_PATCH(PV_IRQ_save_fl),
--		  ANNOTATE_RETPOLINE_SAFE;
--		  call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);)
- 	ANNOTATE_RETPOLINE_SAFE;
- 	call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);
- .endm
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 9b0526967d69..15d2b83ce410 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -2,15 +2,6 @@
- #ifndef _ASM_X86_PARAVIRT_TYPES_H
- #define _ASM_X86_PARAVIRT_TYPES_H
- 
--#ifndef __ASSEMBLY__
--/* These all sit in the .parainstructions section to tell us what to patch. */
--struct paravirt_patch_site {
--	u8 *instr;		/* original instructions */
--	u8 type;		/* type of this instruction */
--	u8 len;			/* length of original instruction */
--};
--#endif
--
- #ifdef CONFIG_PARAVIRT
- 
- #ifndef __ASSEMBLY__
-@@ -250,34 +241,6 @@ struct paravirt_patch_template {
- extern struct pv_info pv_info;
- extern struct paravirt_patch_template pv_ops;
- 
--#define PARAVIRT_PATCH(x)					\
--	(offsetof(struct paravirt_patch_template, x) / sizeof(void *))
--
--#define paravirt_type(op)				\
--	[paravirt_typenum] "i" (PARAVIRT_PATCH(op)),	\
--	[paravirt_opptr] "m" (pv_ops.op)
--/*
-- * Generate some code, and mark it as patchable by the
-- * apply_paravirt() alternate instruction patcher.
-- */
--#define _paravirt_alt(insn_string, type)		\
--	"771:\n\t" insn_string "\n" "772:\n"		\
--	".pushsection .parainstructions,\"a\"\n"	\
--	_ASM_ALIGN "\n"					\
--	_ASM_PTR " 771b\n"				\
--	"  .byte " type "\n"				\
--	"  .byte 772b-771b\n"				\
--	_ASM_ALIGN "\n"					\
--	".popsection\n"
--
--/* Generate patchable code, with the default asm parameters. */
--#define paravirt_alt(insn_string)					\
--	_paravirt_alt(insn_string, "%c[paravirt_typenum]")
--
--/* Simple instruction patching code. */
--#define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
--
--unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned int len);
- #define paravirt_ptr(op)	[paravirt_opptr] "m" (pv_ops.op)
- 
- int paravirt_disable_iospace(void);
-@@ -545,9 +508,6 @@ unsigned long pv_native_read_cr2(void);
- 
- #define paravirt_nop	((void *)nop_func)
- 
--extern struct paravirt_patch_site __parainstructions[],
--	__parainstructions_end[];
--
- #endif	/* __ASSEMBLY__ */
- 
- #define ALT_NOT_XEN	ALT_NOT(X86_FEATURE_XENPV)
-diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-index 29832c338cdc..0b70653a98c1 100644
---- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -6,18 +6,6 @@
- #include <linux/stddef.h>
- #include <asm/ptrace.h>
- 
--struct paravirt_patch_site;
--#ifdef CONFIG_PARAVIRT
--void apply_paravirt(struct paravirt_patch_site *start,
--		    struct paravirt_patch_site *end);
--#else
--static inline void apply_paravirt(struct paravirt_patch_site *start,
--				  struct paravirt_patch_site *end)
--{}
--#define __parainstructions	NULL
--#define __parainstructions_end	NULL
--#endif
--
- /*
-  * Currently, the max observed size in the kernel code is
-  * JUMP_LABEL_NOP_SIZE/RELATIVEJUMP_SIZE, which are 5.
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index dd14db12c573..2474335e264b 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -160,7 +160,6 @@ extern s32 __retpoline_sites[], __retpoline_sites_end[];
- extern s32 __return_sites[], __return_sites_end[];
- extern s32 __cfi_sites[], __cfi_sites_end[];
- extern s32 __ibt_endbr_seal[], __ibt_endbr_seal_end[];
--extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
- extern s32 __smp_locks[], __smp_locks_end[];
- void text_poke_early(void *addr, const void *opcode, size_t len);
- 
-@@ -1466,46 +1465,6 @@ int alternatives_text_reserved(void *start, void *end)
- }
- #endif /* CONFIG_SMP */
- 
--#ifdef CONFIG_PARAVIRT
--
--/* Use this to add nops to a buffer, then text_poke the whole buffer. */
--static void __init_or_module add_nops(void *insns, unsigned int len)
--{
--	while (len > 0) {
--		unsigned int noplen = len;
--		if (noplen > ASM_NOP_MAX)
--			noplen = ASM_NOP_MAX;
--		memcpy(insns, x86_nops[noplen], noplen);
--		insns += noplen;
--		len -= noplen;
--	}
--}
--
--void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
--				     struct paravirt_patch_site *end)
--{
--	struct paravirt_patch_site *p;
--	char insn_buff[MAX_PATCH_LEN];
--
--	for (p = start; p < end; p++) {
--		unsigned int used;
--
--		BUG_ON(p->len > MAX_PATCH_LEN);
--		/* prep the buffer with the original instructions */
--		memcpy(insn_buff, p->instr, p->len);
--		used = paravirt_patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
--
--		BUG_ON(used > p->len);
--
--		/* Pad the rest with nops */
--		add_nops(insn_buff + used, p->len - used);
--		text_poke_early(p->instr, insn_buff, p->len);
--	}
--}
--extern struct paravirt_patch_site __start_parainstructions[],
--	__stop_parainstructions[];
--#endif	/* CONFIG_PARAVIRT */
--
- /*
-  * Self-test for the INT3 based CALL emulation code.
-  *
-@@ -1641,28 +1600,11 @@ void __init alternative_instructions(void)
- 	 */
- 
- 	/*
--	 * Paravirt patching and alternative patching can be combined to
--	 * replace a function call with a short direct code sequence (e.g.
--	 * by setting a constant return value instead of doing that in an
--	 * external function).
--	 * In order to make this work the following sequence is required:
--	 * 1. set (artificial) features depending on used paravirt
--	 *    functions which can later influence alternative patching
--	 * 2. apply paravirt patching (generally replacing an indirect
--	 *    function call with a direct one)
--	 * 3. apply alternative patching (e.g. replacing a direct function
--	 *    call with a custom code sequence)
--	 * Doing paravirt patching after alternative patching would clobber
--	 * the optimization of the custom code with a function call again.
-+	 * Make sure to set (artificial) features depending on used paravirt
-+	 * functions which can later influence alternative patching.
- 	 */
- 	paravirt_set_cap();
- 
--	/*
--	 * First patch paravirt functions, such that we overwrite the indirect
--	 * call with the direct call.
--	 */
--	apply_paravirt(__parainstructions, __parainstructions_end);
--
- 	__apply_fineibt(__retpoline_sites, __retpoline_sites_end,
- 			__cfi_sites, __cfi_sites_end, true);
- 
-@@ -1673,10 +1615,6 @@ void __init alternative_instructions(void)
- 	apply_retpolines(__retpoline_sites, __retpoline_sites_end);
- 	apply_returns(__return_sites, __return_sites_end);
- 
--	/*
--	 * Then patch alternatives, such that those paravirt calls that are in
--	 * alternatives can be overwritten by their immediate fragments.
--	 */
- 	apply_alternatives(__alt_instructions, __alt_instructions_end);
- 
- 	/*
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index acc5b1004f0f..5358d43886ad 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -43,14 +43,6 @@ void __init default_banner(void)
- 	       pv_info.name);
- }
- 
--static unsigned paravirt_patch_call(void *insn_buff, const void *target,
--				    unsigned long addr, unsigned len)
--{
--	__text_gen_insn(insn_buff, CALL_INSN_OPCODE,
--			(void *)addr, target, CALL_INSN_SIZE);
--	return CALL_INSN_SIZE;
--}
--
- #ifdef CONFIG_PARAVIRT_XXL
- DEFINE_ASM_FUNC(_paravirt_ident_64, "mov %rdi, %rax", .text);
- DEFINE_ASM_FUNC(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
-@@ -73,28 +65,6 @@ static void native_tlb_remove_table(struct mmu_gather *tlb, void *table)
- 	tlb_remove_page(tlb, table);
- }
- 
--unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
--			    unsigned int len)
--{
--	/*
--	 * Neat trick to map patch type back to the call within the
--	 * corresponding structure.
--	 */
--	void *opfunc = *((void **)&pv_ops + type);
--	unsigned ret;
--
--	if (opfunc == NULL)
--		/* If there's no function, patch it with BUG_func() */
--		ret = paravirt_patch_call(insn_buff, BUG_func, addr, len);
--	else if (opfunc == nop_func)
--		ret = 0;
--	else
--		/* Otherwise call the function. */
--		ret = paravirt_patch_call(insn_buff, opfunc, addr, len);
--
--	return ret;
--}
--
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
- 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index f15fb71f280e..1a3153dfaea8 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -270,19 +270,6 @@ SECTIONS
- 	}
- #endif
- 
--	/*
--	 * start address and size of operations which during runtime
--	 * can be patched with virtualization friendly instructions or
--	 * baremetal native ones. Think page table operations.
--	 * Details in paravirt_types.h
--	 */
--	. = ALIGN(8);
--	.parainstructions : AT(ADDR(.parainstructions) - LOAD_OFFSET) {
--		__parainstructions = .;
--		*(.parainstructions)
--		__parainstructions_end = .;
--	}
--
- #ifdef CONFIG_RETPOLINE
- 	/*
- 	 * List of instructions that call/jmp/jcc to retpoline thunks
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index d30949e25ebd..a3bae2b24626 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -66,7 +66,7 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
- 	[S_REL] =
- 	"^(__init_(begin|end)|"
- 	"__x86_cpu_dev_(start|end)|"
--	"(__parainstructions|__alt_instructions)(_end)?|"
-+	"__alt_instructions(_end)?|"
- 	"(__iommu_table|__apicdrivers|__smp_locks)(_end)?|"
- 	"__(start|end)_pci_.*|"
- #if CONFIG_FW_LOADER
--- 
-2.35.3
+On 2023/10/30 21:48, Dmitry Baryshkov wrote:
+> On Mon, 30 Oct 2023 at 15:26, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
+>> Hi,
+>>
+>>
+>> On 2023/10/30 18:01, Dmitry Baryshkov wrote:
+>>> On Mon, 30 Oct 2023 at 11:42, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
+>>>> Hi,
+>>>>
+>>>>
+>>>> On 2023/10/30 06:53, Dmitry Baryshkov wrote:
+>>>>> On Sun, 29 Oct 2023 at 21:46, Sui Jingfeng <suijingfeng@loongson.cn> wrote:
+>>>>>> The IT66121 is a DVO to HDMI converter, LS3A5000+LS7A1000 ML5A_MB use this
+>>>>>> chip to support HDMI output. Thus add a drm bridge based driver for it.
+>>>>>> This patch is developed with drivers/gpu/drm/bridge/ite-it66121.c as base.
+>>>>> Please use the original bridge driver instead of adding a new one.
+>>>> I'm agree with the spirit of code sharing, but this is nearly impossible for non-DT system.
+>>>>
+>>>> Because the original bridge driver(say it66121.ko) is fully dependent on the DT.
+>>> I can not agree here. It doesn't depend on DT. It has fully populated
+>>> i2c_device_id structures, so it will work with bare I2C buses.
+>>> Most likely you will have to change of calls into fwnode calls, that's it.
+>>>
+>>>> UEFI+ACPI based system can not use with it.
+>>>>
+>>>> Our I2C adapter is created by the drm/loongson.ko on the runtime.
+>>>> The potential problem is that *cyclic dependency* !
+>>>>
+>>>> I2C adapter driver is depend on drm/loongson
+>>>> drm/loongson depend on drm bridge driver (say it66121.ko)
+>>>> drm bridge driver (say it66121.ko) depend on I2C adapter to setup.
+>>>>
+>>>> This plus the defer probe mechanism is totally a trap,
+>>>> incurring troubles and don't work.
+>>> Welcome. We had this kind of issue for DP AUX buses.
+>>>
+>>> I can suggest the following approach:
+>>> - In the root probe function you can create an i2c bus and populate it
+>>> with the i2c devices.
+>>> - I have not checked whether you use components or not. If not, please
+>>> use an auxiliary or a platform device for the main DRM functionality.
+>>> - In the subdevice probe / bind function you check for the next
+>>> bridge. Then you get one of the following:drm_bridge pointer,
+>>> -EPROBE_DEFER, or any other error case. Your driver can react
+>>> accordingly.
+>> I have similar way to solve this problem, and I have solved it one and a half years ago.
+>> See [1] for a reference.
+>>
+>> [1] https://patchwork.freedesktop.org/patch/478998/?series=99512&rev=11
+>>
+>> When the PCI device get probed, we create the I2C bus first.
+>> This ensure that when drm/lsdc.ko get loaded, the I2C bus is presence
+>> and ready to be get by the drm_bridge driver.
+>> This is basically a PCI-to-GPIO-emulated-I2C adapter,
+>> then wait the display bridges driver get loaded and set up.
+>>
+>> I also need to create a virtual platform device for the display controller.
+>> which allow the drm drivers instance for this virtual platform device
+>> be able to probed due to defer probe mechanism.
+>>
+>> This solution made the framework of my driver distortion severely,
+> I don't think I could catch this phrase. Did you see distortions on the screen?
+
+
+I means that it destroy the my drm driver's framework.
+I means that we are all-in-one driver. The solution you
+mentioned have side effect also. That is because user-space
+will open the PCI device first, not your created virtual platform device.
+
+
+
+>> and in the end we still solve a easy problem by workaround.
+> No workarounds for the kernel subsystems are allowed.
+
+
+I means that the idea(solution) you told me is still a workaround.
+bring no benifits to the drm driver itself.
+
+
+>> I know how to use the component framework also, but the component framework just
+>> a wrapper. Similar with above approach, it brings no gains in the end.
+>> It does not make this driver better. I got trapped one years ago,
+>> and I don't want to got trapped another time.
+>> And I know how solve such a problem by workaround, but that's not worthy for the effort.
+>>
+>> I think my approach provide a solution, while still keep the bridges drivers
+>> to a modular at the same time. Despite simple, it indeed solve the problem.
+>> It simple because of explicit control of the loading order by myself, not by
+>> rely on the framework or something else (say component)
+> PCI media drivers have had this issue for ages. And all of them found
+> a way to work.
+
+I have said that PCI KMS display drivers is different,  because of user 
+space open the PCI device.
+
+
+>> It is not totally duplicating, I have rewrite part of them.
+> This is even worse. Now one can not apply fixes to the second one.
+
+
+I don't need to either, I want to maintain this by myself.
+
+
+>> You can compare
+>> to see what I'm changed. It is just that it66162 was upstream-ed earlier than
+>> our solution. But I also have write display drivers for lt8618 and lt8619
+>> completely by myself.
+>>
+>>
+>> Even though our local drm bridges driver will not be able to enjoy the updates.
+>> We will accept such a results(or pain). I can maintain our local drm bridges
+>> drivers by myself.
+> What happens if anybody wants to reuse your bridge driver for their
+> own platform?
+
+Copy and modify.
+
+> Linux kernel uses driver model and frameworks to improve code sharing,
+> not to reduce it.
+
+
+Well I don't think my patch actually reduce something.
+Please see i915, amdgpu, radeon and nouveau.
+Non of them use the DRM bridge drivers.
+It is just that the various DRM bridge drivers are not suitable to use for my driver.
+
+
+>> Sorry, on this technique point, we will not follow your idea.
+>> I'm sure that my approach is toward to right direction for our device at now.
+>> If someone invent a better solution to handle this problem, which make the
+>> various drm bridges drivers usable out of box, then I will follow and cooperate
+>> to test.
+>>
+>>
+>>> Basically duplicating the existing driver code is not really a way to
+>>> go. Consider somebody adding a new feature or fixing a bug in your
+>>> driver copy. Then they have to check if the fix applies to the driver
+>>> at drivers/gpu/drm/bridge/ite-it66121.c. And vice versa. After fixing
+>>> an issue in the standard driver one has to keep in mind to check your
+>>> private copy.
+>>>
+>>> So, please, use the OF code as an inspiration and register all your
+>>> devices in the device tree. Yes, this requires some effort from your
+>>> side. Yes, this pays off in the longer distance.
+>>>
+>>>>>     If
+>>>>> it needs to be changed in any way, please help everyone else by
+>>>>> improving it instead of introducing new driver.
+>>>>>
+>>>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>>>> ---
+>>>>>>     drivers/gpu/drm/loongson/Kconfig            |   1 +
+>>>>>>     drivers/gpu/drm/loongson/Makefile           |   2 +
+>>>>>>     drivers/gpu/drm/loongson/ite_it66121.c      | 749 ++++++++++++++++++++
+>>>>>>     drivers/gpu/drm/loongson/ite_it66121.h      |  19 +
+>>>>>>     drivers/gpu/drm/loongson/ite_it66121_regs.h | 268 +++++++
+>>>>>>     5 files changed, 1039 insertions(+)
+>>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121.c
+>>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121.h
+>>>>>>     create mode 100644 drivers/gpu/drm/loongson/ite_it66121_regs.h
+>
 
