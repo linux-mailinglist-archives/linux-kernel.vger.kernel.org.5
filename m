@@ -2,280 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151027DC0CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B007DC0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbjJ3TmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
+        id S230516AbjJ3TnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjJ3TmC (ORCPT
+        with ESMTP id S229688AbjJ3TnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:42:02 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25FE10A;
-        Mon, 30 Oct 2023 12:41:57 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507962561adso7107470e87.0;
-        Mon, 30 Oct 2023 12:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698694916; x=1699299716; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nV4Ai08tkpOWFMEbSJPptM95Z5+f/6Xg1fGxclm9cNA=;
-        b=mDMD1tUatcmH3j4c80jPFQ3s2sCeTlmfISC2YbY2GexRO/6liIPwaKY0TD06xtW3+o
-         CE0BarUN6zkoPm/QgJbrzdcKRyQb20htth0Q3cBdnjHcN7d84QVsJcx7d28ZtUXc4HhW
-         ObBnebXDlTF0h1Ak6kT/9egDygdR1RXt3eO8PbBPoQl/0eUeRKNaNpA7rzDcC+L+qAYU
-         FLl6GElzDvKxyHJduuLIgxixwcuhVELMqvGwFqv7vT2HW1XUil0d5RS45mGtoluYMtvm
-         TCIdzkeXG/XJotvHMNKaGgAAyLmhbE2zL1aYF1x/vb0dPoxCn1/DKToFmtsMmZViM5z6
-         +p4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698694916; x=1699299716;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nV4Ai08tkpOWFMEbSJPptM95Z5+f/6Xg1fGxclm9cNA=;
-        b=ejQYkBXhQdCYTexYeaNCc62HTmb0kZoyE8xmw6IwK/H5jEo2pLZbLOYZT8Ft5UXOuk
-         tA+6aFvAOc2tYNJwdnRfXXz4F8XTZJevDhWV/Kbq/rt5QUoWVBHS1Vj5gFNB/pAVt0hT
-         uaI7LQUo0XZvk3xONzGCAudK9xYPFA5DmKdgFjVdMzwJao948Wk1ogW9GF8ul4CoflbQ
-         MrZHWGphYPxQnq8bOu2QUnUhyp/oK1jmRZTZ0XP2Vb4Ufa5Hcyn/YaaRcbGP7Yk2yVol
-         4UuUVD0gT9aJjeUG+2yEP1bH67g9eX+CBZw70KlItgEejRt/cBbSs+cHU4wvBHX42JVu
-         IW/g==
-X-Gm-Message-State: AOJu0YyYjg76ONKlAsFgA8xFXflkNZqBC4aYf4nxu5PxOwv0bOGloFAE
-        przOX5xVCLS3bts6TLfLS20=
-X-Google-Smtp-Source: AGHT+IGlIeZzyq3CXKnAFKiUZLlTEcTypiCnxmVZUhW20jITO9bthnPr+fPPYDRtfYBZCJdUShAiFA==
-X-Received: by 2002:a19:ad44:0:b0:4fb:9f93:365f with SMTP id s4-20020a19ad44000000b004fb9f93365fmr7587568lfd.38.1698694915815;
-        Mon, 30 Oct 2023 12:41:55 -0700 (PDT)
-Received: from hex.my.domain (83.11.208.51.ipv4.supernova.orange.pl. [83.11.208.51])
-        by smtp.gmail.com with ESMTPSA id m10-20020ac2428a000000b005057184ae62sm1527802lfh.96.2023.10.30.12.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 12:41:55 -0700 (PDT)
-From:   Artur Weber <aweber.kernel@gmail.com>
-Date:   Mon, 30 Oct 2023 20:41:48 +0100
-Subject: [PATCH v2 6/6] regulator: bcm590xx: Add proper handling for PMMODE
- registers
+        Mon, 30 Oct 2023 15:43:16 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E1E12B;
+        Mon, 30 Oct 2023 12:43:00 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id C00813200406;
+        Mon, 30 Oct 2023 15:42:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 30 Oct 2023 15:43:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1698694979; x=1698781379; bh=PsJGzIrCBaCrtIhZZeL7C9rcuU0UA6MoDzw
+        fDN8leh0=; b=aTSqkCi/UkHAgEcDYLMzvljR2j0i10ePIhRtfm7CoXaJHUkw2aE
+        vZONa/bqGH9wb5ugST4+nqiGpj7ZzXwc0Vhk1z8qVIKRP7QWdBtN0vbzkgTe6EmL
+        4rwp3Z3V95TV04oj6CPhENG2IoX2BWgTnqBquoK7b4xWaMdFiBCKFjDn4VQW5Nfb
+        dM08Pr4Cam5LYvJiSWCe6wrsU6gab9DE0DRv/GvZIdNhL3DWiZBW6AC2hKF6DzBi
+        cl7K9rF1RHU6+v+ciADGICpgtMJKB96sTeauVGvWlfDMu8KBhGUrbBFHzjrw1dmi
+        GGA4ng/yJ3ByL56MYLM+y0d0Rd8gjJPO1aw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698694979; x=1698781379; bh=PsJGzIrCBaCrtIhZZeL7C9rcuU0UA6MoDzw
+        fDN8leh0=; b=rvMMKeKDBPCbQEBe2Yit4ba8thhPfFHAw2/0MY5fififDYLOXFY
+        2avPCyj5SkQR18+b1B5NrxTDL0/ZsOxclsUjHeCC5xxBRbTi45fHZ4QGPJmlg6FX
+        4sbtTiW7D8wYB1QgZoU0gDwPIvysdSRBm813zwfSC+OqYl/NoA1cFfNDkRoR2Dts
+        Zupg2YTXwJ4K+aWPFcg4ztbt6mTa6IEoUTQbXoBb6KcTXuf7ZtZ5X9v1IXWrCfjE
+        DJotWh2HniZCZsqbSyutgwYOR2zUpMNjapRRbcR41yLP7pXNxjJwl9yL3+C5RSPG
+        vBub2lQ7flXsQ6UuTlyTofw7QCfp7D8rD9Q==
+X-ME-Sender: <xms:QgdAZcieN50pRRnI2-eWiPKpUVobzlb6EBM23A1Mc-ghx9k2zZcMrQ>
+    <xme:QgdAZVBnrAE9p7YJQJmDE38ZyBicXcy8UF1qCvs7cWDm8EV4d1tg5Ae7O2PYFP8LM
+    lRv7vP5kuzD1Vw0ng>
+X-ME-Received: <xmr:QgdAZUE1WjDlTkiq1pprtCR6WrgM3HD46akcVk-VNkFusadXmlMAEEWzrF4-PPvCXtbKoYhRivR6h97Iq_ot0h9VBBXlDkHVRgzXNqDzbdVaSloSiaSKaPXt1Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddttddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfhuffvvehfjggtgfesthekredttdefjeenucfhrhhomhepufgr
+    mhhuvghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqne
+    cuggftrfgrthhtvghrnhepvddutdekleevvefhkefhleeiieevkefhfeduheelgfejkedv
+    jefhkeeihedtlefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhl
+    lhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:QgdAZdR-EF36o4ElkXWVudVEWWMgcody3IABqLhnCoX2shFITH8hFg>
+    <xmx:QgdAZZw8rHHcLomsSvzj0tferT1qKzxOTadgZhlhMlRKLHGHFb4hBA>
+    <xmx:QgdAZb6SgM2lJ6UdX9rkPlcEQ08kEGKl6e-idRaM686Ry6hMKqVKmQ>
+    <xmx:QwdAZR9S1XXGEFAIGQE-UoC6b5m35kldr7CDufC4FLIkXmvSgLNTMA>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 30 Oct 2023 15:42:57 -0400 (EDT)
+Message-ID: <e63664ce-de35-7072-c081-9191df89d5f4@sholland.org>
+Date:   Mon, 30 Oct 2023 14:42:56 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-bcm59054-v2-6-5fa4011aa5ba@gmail.com>
-References: <20231030-bcm59054-v2-0-5fa4011aa5ba@gmail.com>
-In-Reply-To: <20231030-bcm59054-v2-0-5fa4011aa5ba@gmail.com>
-To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Stanislav Jakubek <stano.jakubek@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698694906; l=6532;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=MOr6P062Hw1cr9IL31CLgUIsSEz/SzMD3p5bHJ1QOHY=;
- b=kLCeoKqnWrubrHw320soyDTW4OEXc3S5QCIyFAvROBe8Aa6eK7SRWEca6BdODbEslTI1mCmHT
- 0z/YbvmoUDSBuEf3a86eSCoh/CRt+rotHIRF/NlMuvrk5sv7l8RL8qk
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux ppc64le; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: linux-next: duplicate patches in the risc-v tree
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul@pwsan.com>, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+References: <mhng-b6345abb-81b3-450c-ae11-deed854821dc@palmer-ri-x1c9a>
+Content-Language: en-US
+In-Reply-To: <mhng-b6345abb-81b3-450c-ae11-deed854821dc@palmer-ri-x1c9a>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The state of BCM590XX regulators is controlled by writing to the
-PMCTRL registers; there are 7 selectable mode entries in those
-registers, each storing a specific mode value - OFF, LPM or ON.
-Which entry is selected depends on the combination of enabled
-PC pins (PC1, PC2 and the optional PC3).
+On 10/30/23 13:15, Palmer Dabbelt wrote:
+> On Sun, 29 Oct 2023 13:56:29 PDT (-0700), Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> The following commits are also in Linus Torvalds' tree as different
+>> commits (but the same patches):
+>>
+>>   767423658d53 ("riscv: kexec: Align the kexeced kernel entry")
+>>   fe2ed36d419f ("riscv: Remove duplicate objcopy flag")
+> 
+> Sorry, but I'm lost here -- I'm not sure if I've managed to screw up git
+> again?  If it helps, I'm not seeing the same commits here:
 
-Add a new function to write a specific mode value to all entries,
-and make a custom enable/disable function to make use of it.
-Keep the is_enabled function using the naive regmap method
-(a potential improvement here would be to add support for getting
-the state of the PC pins to figure out the selected mode).
+Each of these commits (separately) is a duplicate of a commit in Linus's
+tree:
 
-It should also be possible to extend this to support regulator
-modes, though some work may be needed to make sure it doesn't
-interfere with the enabled/disabled state.
-
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
- drivers/regulator/bcm590xx-regulator.c | 96 +++++++++++++++++++++++++++++-----
- 1 file changed, 84 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/regulator/bcm590xx-regulator.c b/drivers/regulator/bcm590xx-regulator.c
-index 8b90eae06ca6..1905dc2a4111 100644
---- a/drivers/regulator/bcm590xx-regulator.c
-+++ b/drivers/regulator/bcm590xx-regulator.c
-@@ -38,6 +38,15 @@ struct bcm590xx_reg {
- #define BCM590XX_LDO_VSEL_MASK		GENMASK(5, 3)
- #define BCM590XX_SR_VSEL_MASK		GENMASK(5, 0)
- 
-+#define BCM590XX_PMMODE_ON		0x0
-+#define BCM590XX_PMMODE_LPM		0x1
-+#define BCM590XX_PMMODE_OFF		0x2
-+
-+#define PMMODE_3BIT_MASK(mode)						\
-+	((mode << 3) | mode)
-+#define PMMODE_2BIT_MASK(mode)						\
-+	((mode << 6) | (mode << 4) | (mode << 2) | mode)
-+
- /* BCM59056 registers */
- 
- /* I2C slave 0 registers */
-@@ -444,7 +453,7 @@ static int bcm590xx_get_vsel_register(struct bcm590xx_reg *pmu, int id)
- 	return -EINVAL;
- }
- 
--static int bcm59054_get_enable_register(struct bcm590xx_reg *pmu, int id)
-+static int bcm59054_get_pmctrl_register(struct bcm590xx_reg *pmu, int id)
- {
- 	int reg = 0;
- 
-@@ -483,7 +492,7 @@ static int bcm59054_get_enable_register(struct bcm590xx_reg *pmu, int id)
- 	return reg;
- }
- 
--static int bcm59056_get_enable_register(struct bcm590xx_reg *pmu, int id)
-+static int bcm59056_get_pmctrl_register(struct bcm590xx_reg *pmu, int id)
- {
- 	int reg = 0;
- 
-@@ -522,13 +531,13 @@ static int bcm59056_get_enable_register(struct bcm590xx_reg *pmu, int id)
- 	return reg;
- }
- 
--static int bcm590xx_get_enable_register(struct bcm590xx_reg *pmu, int id)
-+static int bcm590xx_get_pmctrl_register(struct bcm590xx_reg *pmu, int id)
- {
- 	switch (pmu->mfd->device_type) {
- 	case BCM59054_TYPE:
--		return bcm59054_get_enable_register(pmu, id);
-+		return bcm59054_get_pmctrl_register(pmu, id);
- 	case BCM59056_TYPE:
--		return bcm59056_get_enable_register(pmu, id);
-+		return bcm59056_get_pmctrl_register(pmu, id);
- 	}
- 	return -EINVAL;
- }
-@@ -541,10 +550,73 @@ static int bcm590xx_get_enable_mask(struct bcm590xx_reg *pmu, int id)
- 	return BCM590XX_REG_ENABLE;
- }
- 
-+/*
-+ * The state of BCM590XX regulators is controlled by the PM mode; most
-+ * regulators have 3 such modes (off, low-power and on).
-+ *
-+ * These modes are then stored in the PMCTRL registers - there are 7
-+ * PMMODE entries within these registers for any given regulator.
-+ * Which one is selected is decided by the PC1 and PC2 pins (and the
-+ * optional PC3 pin, if configured).
-+ *
-+ * For simplicity, to set a PM mode, we write it to all available
-+ * PMMODE registers.
-+ */
-+static int
-+_bcm590xx_set_pmmode(struct bcm590xx_reg *pmu, int reg_id, unsigned int mode)
-+{
-+	struct regmap *regmap;
-+	u8 pmctrl_addr = bcm590xx_get_pmctrl_register(pmu, reg_id);
-+	unsigned int i;
-+	int pmctrl_count;
-+	int mode_mask;
-+	int ret;
-+
-+	/*
-+	 * Regulators using 2-bit mode controls have 2 PMCTRL registers;
-+	 * regulators using 3-bit mode controls have 4 PMCTRL registers.
-+	 * This is to accommodate all 7 selectable modes.
-+	 */
-+	if (bcm590xx_reg_mode_is_3bit(pmu, reg_id)) {
-+		pmctrl_count = 4;
-+		mode_mask = PMMODE_3BIT_MASK(mode);
-+	} else {
-+		pmctrl_count = 2;
-+		mode_mask = PMMODE_2BIT_MASK(mode);
-+	}
-+
-+	if (bcm590xx_reg_is_secondary(pmu, reg_id))
-+		regmap = pmu->mfd->regmap_sec;
-+	else
-+		regmap = pmu->mfd->regmap_pri;
-+
-+	for (i = 0; i < pmctrl_count; i++) {
-+		ret = regmap_write(regmap, pmctrl_addr + i, mode_mask);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int bcm590xx_regulator_enable(struct regulator_dev *rdev)
-+{
-+	struct bcm590xx_reg *pmu = rdev->reg_data;
-+
-+	return _bcm590xx_set_pmmode(pmu, rdev->desc->id, BCM590XX_PMMODE_ON);
-+}
-+
-+static int bcm590xx_regulator_disable(struct regulator_dev *rdev)
-+{
-+	struct bcm590xx_reg *pmu = rdev->reg_data;
-+
-+	return _bcm590xx_set_pmmode(pmu, rdev->desc->id, BCM590XX_PMMODE_OFF);
-+}
-+
- static const struct regulator_ops bcm590xx_ops_ldo = {
- 	.is_enabled		= regulator_is_enabled_regmap,
--	.enable			= regulator_enable_regmap,
--	.disable		= regulator_disable_regmap,
-+	.enable			= bcm590xx_regulator_enable,
-+	.disable		= bcm590xx_regulator_disable,
- 	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
- 	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
- 	.list_voltage		= regulator_list_voltage_table,
-@@ -553,8 +625,8 @@ static const struct regulator_ops bcm590xx_ops_ldo = {
- 
- static const struct regulator_ops bcm590xx_ops_dcdc = {
- 	.is_enabled		= regulator_is_enabled_regmap,
--	.enable			= regulator_enable_regmap,
--	.disable		= regulator_disable_regmap,
-+	.enable			= bcm590xx_regulator_enable,
-+	.disable		= bcm590xx_regulator_disable,
- 	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
- 	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
- 	.list_voltage		= regulator_list_voltage_linear_range,
-@@ -563,8 +635,8 @@ static const struct regulator_ops bcm590xx_ops_dcdc = {
- 
- static const struct regulator_ops bcm590xx_ops_static = {
- 	.is_enabled		= regulator_is_enabled_regmap,
--	.enable			= regulator_enable_regmap,
--	.disable		= regulator_disable_regmap,
-+	.enable			= bcm590xx_regulator_enable,
-+	.disable		= bcm590xx_regulator_disable,
- };
- 
- static int bcm590xx_probe(struct platform_device *pdev)
-@@ -633,7 +705,7 @@ static int bcm590xx_probe(struct platform_device *pdev)
- 			pmu->desc[i].enable_is_inverted = true;
- 		}
- 		pmu->desc[i].enable_reg = \
--			bcm590xx_get_enable_register(pmu, i);
-+			bcm590xx_get_pmctrl_register(pmu, i);
- 		pmu->desc[i].type = REGULATOR_VOLTAGE;
- 		pmu->desc[i].owner = THIS_MODULE;
- 
-
--- 
-2.42.0
-
+$ git range-diff v6.6...riscv/for-next | grep -v ' [<>] '
+1441:  505b02957e74 !    2:  fe2ed36d419f riscv: Remove duplicate objcopy flag
+    @@ Commit message
+     
+         Fixes: c0fbcd991860 ("RISC-V: Build flat and compressed kernel images")
+         Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+    -    Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+         Link: https://lore.kernel.org/r/20230914091334.1458542-1-songshuaishuai@tinylab.org
+    -    Cc: stable@vger.kernel.org
+         Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+     
+      ## arch/riscv/Makefile ##
+ 297:  1bfb2b618d52 !    4:  767423658d53 riscv: kexec: Align the kexeced kernel entry
+    @@ Commit message
+     
+         Fixes: 8acea455fafa ("RISC-V: Support for kexec_file on panic")
+         Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+    -    Link: https://lore.kernel.org/r/20230906095817.364390-1-songshuaishuai@tinylab.org
+    +    Link: https://lore.kernel.org/r/20230907103304.590739-3-songshuaishuai@tinylab.org
+         Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+     
+      ## arch/riscv/kernel/elf_kexec.c ##
