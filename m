@@ -2,220 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CCB7DBC72
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BFC7DBC6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbjJ3POG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S233622AbjJ3PNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233605AbjJ3POE (ORCPT
+        with ESMTP id S233616AbjJ3PNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:14:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FACFC9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698678796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tqhHvkxz2M3gWjoEU6H5EuCj6+A9vLSSzAJNkkzQU6w=;
-        b=TfwWhQslVFcC3sOGID6dcb9y9SFDy/gnZ2CgesroE7QeSNkgwgrOg9ucVB4I7dhN86Hdpi
-        NWfLJyn61blGSE+KMAaYiELsly+BJm5seMbP+srTsjx2IIIg1CA6greseJitd/YSxX6siS
-        XvPAVI+0QIvvdso+q2HAhbxfgSA9MpU=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-324-ftqvXhQ3MveGtEOc-mD02A-1; Mon, 30 Oct 2023 11:13:14 -0400
-X-MC-Unique: ftqvXhQ3MveGtEOc-mD02A-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5af9b0850fdso36907497b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:13:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698678793; x=1699283593;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tqhHvkxz2M3gWjoEU6H5EuCj6+A9vLSSzAJNkkzQU6w=;
-        b=n9On7yhBhRQKCWtDlcaB2Aod1JAmlPgDrtbXlBdSV5ivGqkgFv6aAMzdWcw/Py17IH
-         l/kLq5Mf1QiIaaEwFE6m1XW+EBI81iFFRJNNqnidmi4mLhsOnCidac0I4w1U75R0egNS
-         DZzjyPoV9w/K2a0UODrNrkc9QCsDxdAkOwb3FnXu2dq7gRRUulezMNGbwedkUSe1HuA6
-         rPK/eeyAcHy55ckb3k0z7SxAuFrZJHO/pTeVFm4YFBAEPWQG9eHfXMqqx/yW/tQXMH5K
-         mWp7QahexST7Dnp898HMthRzcxilmSM6XlQYuaF0Uya+J6l6kUjkGKqfAGjHfxV70oru
-         8EcQ==
-X-Gm-Message-State: AOJu0Yy6U2pARga+kFZL13WunwJmFqyeDMPCqAR2XzmbwyjT1Y1JpGcQ
-        wpyrIvYZ6XIXNEkCXCvKsxRxIkjdBWiwJlKi+GTlIiFknG+CzyruQuNFdCnmEUAO8LfM3k1ph7f
-        XVQVFm8w0nKAUMiRK/8X80lG9Y8ida4qk5zBIpj2d
-X-Received: by 2002:a81:c645:0:b0:59a:f131:50fa with SMTP id q5-20020a81c645000000b0059af13150famr8908940ywj.47.1698678793588;
-        Mon, 30 Oct 2023 08:13:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE8cagaVuRD2uSX1dWbSnBRneMUnh/waBGaPbXNrsgtq6V0qCCz1BymrTFgG+Jx9BdLD5vLUGUG7Gx9e5ChMvk=
-X-Received: by 2002:a81:c645:0:b0:59a:f131:50fa with SMTP id
- q5-20020a81c645000000b0059af13150famr8908930ywj.47.1698678793337; Mon, 30 Oct
- 2023 08:13:13 -0700 (PDT)
+        Mon, 30 Oct 2023 11:13:35 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990C0A9;
+        Mon, 30 Oct 2023 08:13:30 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 7424B60173;
+        Mon, 30 Oct 2023 16:13:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698678808; bh=jt1ajQUFTODFu4535JvpJn3dsYAjfo6xCKzT4wuEm+4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=c9rkLkbLdA32O8+jNbjgHH3ReMiBOcqh+bTgr/QwU84olGg35gU3mlQLl+l8kzFSa
+         gDQJtcq08T+vmlpaw+oks6OhLKC2p//+PBmzAuEQM0/A90DgqnU3OVC0EDj6h1wy7l
+         oOh14j+UzoWz4KOIECPleypBytxDbTvVVAdiHy1TIMBHpX5Lm59TqyjUlfP/eFl5IR
+         cZxuYxRgZH5X9wMQEqwK+qp/FYpNlH1/I3zv2AHulDOB3HH/V6q/VbYavlpfbSFAwV
+         eXIXNgxIJq9pgTVVhV383al3JemWz+D6UMF6igCsfEVHex5WZfNgWRowicupTSuKVu
+         6ETp42Qzk9jaQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pl458Xk_WwpT; Mon, 30 Oct 2023 16:13:25 +0100 (CET)
+Received: from [192.168.1.6] (78-3-40-166.adsl.net.t-com.hr [78.3.40.166])
+        by domac.alu.hr (Postfix) with ESMTPSA id A198F60171;
+        Mon, 30 Oct 2023 16:13:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1698678805; bh=jt1ajQUFTODFu4535JvpJn3dsYAjfo6xCKzT4wuEm+4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QlbxZ0rmUt9xbu9IIFjuQONwF36HH302uDjaqHWzSoyUZxGrLLQLEDmO3ifTPgsbO
+         HdZJ7XbcnoQoPFzgVOMTo9BlO33bp8KtsFOpNd+6vGfS00qhGPmgR8SAxSeCJE3dPt
+         7Ld/p4yXv+MaCMkj74UifOhEEjJ4dQGd3uw5QIwhrEacxS5a2CVBCLnInsEOhEIb5/
+         v9JSKEXMOMi05AqWd2x73XaKu2YpcjKgptW1E9W5dvEmsp6mwSbxKSXjl64/azT1NO
+         tofu3M/Fz/ymtdGirusfqD+JAxVlCKvoKXeX9msw85QOvR9dg5bxtNhx1UDqRVqfon
+         /bdFYDMM6gaiA==
+Message-ID: <587704fa-c93d-4f78-a1d2-c3020108e921@alu.unizg.hr>
+Date:   Mon, 30 Oct 2023 16:13:25 +0100
 MIME-Version: 1.0
-References: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1698350834-415881-1-git-send-email-steven.sistare@oracle.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Mon, 30 Oct 2023 16:12:36 +0100
-Message-ID: <CAJaqyWc59oRS86sygnUR-D-wQ-N2TbofsG1hxAmCiGwkb4y42A@mail.gmail.com>
-Subject: Re: [RFC] vdpa/mlx5: preserve CVQ vringh index
-To:     Steve Sistare <steven.sistare@oracle.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] r8169: Coalesce RTL8411b PHY power-down recovery
+ programming instructions to reduce spinlock stalls
+Content-Language: en-US
+To:     Marco Elver <elver@google.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <20231028110459.2644926-1-mirsad.todorovac@alu.unizg.hr>
+ <376db5ae-1bb0-4682-b132-b9852be3c7aa@gmail.com>
+ <23428695-fcff-495b-ac43-07639b4f5d08@alu.unizg.hr>
+ <30e15e9a-d82e-4d24-be37-1b9d1534c082@gmail.com>
+ <9f99c3a4-2752-464b-b37d-58a4f8041804@alu.unizg.hr>
+ <3df7447e-bfea-4996-897d-05e66c8a69b5@alu.unizg.hr>
+ <CANpmjNPKn6mDUfir9bLhHdoutLZ1kkNd2bhLBqXSTg-mcbNzxQ@mail.gmail.com>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <CANpmjNPKn6mDUfir9bLhHdoutLZ1kkNd2bhLBqXSTg-mcbNzxQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:09=E2=80=AFPM Steve Sistare
-<steven.sistare@oracle.com> wrote:
->
-> mlx5_vdpa does not preserve userland's view of vring base for the control
-> queue in the following sequence:
->
-> ioctl VHOST_SET_VRING_BASE
-> ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
->   mlx5_vdpa_set_status()
->     setup_cvq_vring()
->       vringh_init_iotlb()
->         vringh_init_kern()
->           vrh->last_avail_idx =3D 0;
-> ioctl VHOST_GET_VRING_BASE
->
-> To fix, restore the value of cvq->vring.last_avail_idx after calling
-> vringh_init_iotlb.
->
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c |  7 ++++++-
->  drivers/vhost/vringh.c            | 30 ++++++++++++++++++++++++++++++
->  include/linux/vringh.h            |  2 ++
->  3 files changed, 38 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index 946488b8989f..f64758143115 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *=
-mvdev)
->         struct mlx5_control_vq *cvq =3D &mvdev->cvq;
->         int err =3D 0;
->
-> -       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> +       if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-> +               u16 last_avail_idx =3D cvq->vring.last_avail_idx;
-> +
->                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_feat=
-ures,
->                                         MLX5_CVQ_MAX_ENT, false,
->                                         (struct vring_desc *)(uintptr_t)c=
-vq->desc_addr,
->                                         (struct vring_avail *)(uintptr_t)=
-cvq->driver_addr,
->                                         (struct vring_used *)(uintptr_t)c=
-vq->device_addr);
->
-> +               if (!err)
-> +                       vringh_set_base_iotlb(&cvq->vring, last_avail_idx=
-);
-> +       }
->         return err;
->  }
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index 7b8fd977f71c..799762c83007 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -595,6 +595,24 @@ static inline void __vringh_notify_disable(struct vr=
-ingh *vrh,
->         }
->  }
->
-> +static inline int __vringh_set_base(struct vringh *vrh, u16 idx,
-> +                           int (*putu16)(const struct vringh *vrh,
-> +                               __virtio16 *p, u16 val))
-> +{
-> +    int ret;
-> +
-> +    ret =3D putu16(vrh, &vrh->vring.avail->idx, idx);
-> +    if (ret)
-> +        return ret;
-> +
-> +    ret =3D putu16(vrh, &vrh->vring.used->idx, idx);
-> +    if (ret)
-> +        return ret;
-> +
+On 10/30/23 15:05, Marco Elver wrote:
+> On Mon, 30 Oct 2023 at 14:53, Mirsad Todorovac
+> <mirsad.todorovac@alu.unizg.hr> wrote:
+>>
+>> On 10/30/23 14:30, Mirsad Todorovac wrote:
+>>>
+>>>
+>>> On 10/30/23 14:17, Heiner Kallweit wrote:
+>>>> On 29.10.2023 05:56, Mirsad Todorovac wrote:
+>>>>>
+>>>>>
+>>>>> On 10/28/23 21:21, Heiner Kallweit wrote:
+>>>>>> On 28.10.2023 13:05, Mirsad Goran Todorovac wrote:
+>>>>>>> On RTL8411b the RX unit gets confused if the PHY is powered-down.
+>>>>>>> This was reported in [0] and confirmed by Realtek. Realtek provided
+>>>>>>> a sequence to fix the RX unit after PHY wakeup.
+>>>>>>>
+>>>>>>> A series of about 130 r8168_mac_ocp_write() calls is performed to
+>>>>>>> program the RTL registers for recovery.
+>>>>>>>
+>>>>>>> r8168_mac_ocp_write() expands to this code:
+>>>>>>>
+>>>>>>>            static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
+>>>>>>>            {
+>>>>>>>                    if (rtl_ocp_reg_failure(reg))
+>>>>>>>                            return;
+>>>>>>>
+>>>>>>>                    RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
+>>>>>>>            }
+>>>>>>>
+>>>>>>>            static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg, u32 data)
+>>>>>>>            {
+>>>>>>>                    unsigned long flags;
+>>>>>>>
+>>>>>>>                    raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
+>>>>>>>                    __r8168_mac_ocp_write(tp, reg, data);
+>>>>>>>                    raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+>>>>>>>            }
+>>>>>>>
+>>>>>>> Register programming is done through RTL_W32() macro which expands into
+>>>>>>>
+>>>>>>>            #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
+>>>>>>>
+>>>>>>> which is further (on Alpha):
+>>>>>>>
+>>>>>>>            extern inline void writel(u32 b, volatile void __iomem *addr)
+>>>>>>>            {
+>>>>>>>                    mb();
+>>>>>>>                    __raw_writel(b, addr);
+>>>>>>>            }
+>>>>>>>
+>>>>>>> or on i386/x86_64:
+>>>>>>>
+>>>>>>>        #define build_mmio_write(name, size, type, reg, barrier) \
+>>>>>>>        static inline void name(type val, volatile void __iomem *addr) \
+>>>>>>>        { asm volatile("mov" size " %0,%1": :reg (val), \
+>>>>>>>        "m" (*(volatile type __force *)addr) barrier); }
+>>>>>>>
+>>>>>>>        build_mmio_write(writel, "l", unsigned int, "r", :"memory")
+>>>>>>>
+>>>>>>> This obviously involves iat least a compiler barrier.
+>>>>>>>
+>>>>>>> mb() expands into something like this i.e. on x86_64:
+>>>>>>>
+>>>>>>>            #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+>>>>>>>
+>>>>>>> This means a whole lot of memory bus barriers: for spin_lock_irqsave(),
+>>>>>>> memory barrier, writel(), and spin_unlock_irqrestore().
+>>>>>>>
+>>>>>>> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
+>>>>>>> a LOCK storm that will thunder all of the cores and CPUs on the same memory controller
+>>>>>>> for certain time that locked memory read-modify-write cyclo or I/O takes to finish.
+>>>>>>>
+>>>>>>> In a sequential case of RTL register programming, the writes to RTL registers
+>>>>>>> can be coalesced under a same raw spinlock. This can dramatically decrease the
+>>>>>>> number of bus stalls in a multicore or multi-CPU system:
+>>>>>>>
+>>>>>>>            static void __r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
+>>>>>>>                                                  const struct recover_8411b_info *array)
+>>>>>>>            {
+>>>>>>>                    struct recover_8411b_info const *p = array;
+>>>>>>>
+>>>>>>>                    while (p->reg) {
+>>>>>>>                            if (!rtl_ocp_reg_failure(p->reg))
+>>>>>>>                                    RTL_W32(tp, OCPDR, OCPAR_FLAG | (p->reg << 15) | p->data);
+>>>>>>>                            p++;
+>>>>>>>                    }
+>>>>>>>            }
+>>>>>>>
+>>>>>>>            static void r8168_mac_ocp_write_seq(struct rtl8169_private *tp,
+>>>>>>>                                                const struct recover_8411b_info *array)
+>>>>>>>            {
+>>>>>>>                    unsigned long flags;
+>>>>>>>
+>>>>>>>                    raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
+>>>>>>>                    __r8168_mac_ocp_write_seq(tp, array);
+>>>>>>>                    raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+>>>>>>>            }
+>>>>>>>
+>>>>>>>            static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
+>>>>>>>            {
+>>>>>>>
+>>>>>>>                    ...
+>>>>>>>
+>>>>>>>                    /* The following Realtek-provided magic fixes an issue with the RX unit
+>>>>>>>                     * getting confused after the PHY having been powered-down.
+>>>>>>>                     */
+>>>>>>>
+>>>>>>>                    static const struct recover_8411b_info init_zero_seq[] = {
+>>>>>>>                            { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 }, { 0xFC2E, 0x0000 },
+>>>>>>>               ...
+>>>>>>>                    };
+>>>>>>>
+>>>>>>>                    static const struct recover_8411b_info recover_seq[] = {
+>>>>>>>                            { 0xF800, 0xE008 }, { 0xF802, 0xE00A }, { 0xF804, 0xE00C }, { 0xF806, 0xE00E },
+>>>>>>>               ...
+>>>>>>>                    };
+>>>>>>>
+>>>>>>>                    static const struct recover_8411b_info final_seq[] = {
+>>>>>>>                            { 0xFC2A, 0x0743 }, { 0xFC2C, 0x0801 }, { 0xFC2E, 0x0BE9 }, { 0xFC30, 0x02FD },
+>>>>>>>               ...
+>>>>>>>                    };
+>>>>>>>
+>>>>>>>                    r8168_mac_ocp_write_seq(tp, init_zero_seq);
+>>>>>>>                    mdelay(3);
+>>>>>>>                    r8168_mac_ocp_write(tp, 0xFC26, 0x0000);
+>>>>>>>                    r8168_mac_ocp_write_seq(tp, recover_seq);
+>>>>>>>                    r8168_mac_ocp_write(tp, 0xFC26, 0x8000);
+>>>>>>>                    r8168_mac_ocp_write_seq(tp, final_seq);
+>>>>>>>            }
+>>>>>>>
+>>>>>>> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
+>>>>>>> functions that only changed the function names and the ending of the line, so the actual
+>>>>>>> hex data is unchanged.
+>>>>>>>
+>>>>>>> Note that the original reason for the introduction of the commit fe4e8db0392a6
+>>>>>>> was to enable recovery of the RX unit on the RTL8411b which was confused by the
+>>>>>>> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
+>>>>>>
+>>>>>> I still have a problem with this statement as you're saying that the original
+>>>>>> problem still exists. I don't think that's the case.
+>>>>>
+>>>>> I will not disagree about it.
+>>>>>
+>>>>> But we have only reduced the number of spin_lock_irqsave/spin_unlock_irqrestore()
+>>>>> pairs.
+>>>>>
+>>>>> Maybe additionally, on the low level, memory barrier isn't required for each write to
+>>>>> MMIO?
+>>>>>
+>>>> One could argue whether in several places writel_relaxed() could be used.
+>>>> But it's not really worth it, because we're not in a hot path.
+>>>
+>>> I see. Thank you for your evaluation.
+>>>
+>>> Using writel_relaxed() sounds clever. It expands to:
+>>>
+>>>       #define build_mmio_write(name, size, type, reg, barrier) \
+>>>           static inline void name(type val, volatile void __iomem *addr) \
+>>>            { asm volatile("mov" size " %0,%1": :reg (val), \
+>>>                           "m" (*(volatile type __force *)addr) barrier); }
+>>>       build_mmio_write(__writel, "l", unsigned int, "r", )
+>>>       #define writel_relaxed(v, a) __writel(v, a)
+>>>
+>>> Here "barrier" is an empty string. Really clever. ;-)
+>>>
+>>> I will not contradict, but the cummulative amount of memory barriers on each MMIO read/write
+>>> in each single one of the drivers could amount to some degrading of overall performance and
+>>> latency in a multicore system.
+>>>
+>>> As I understood Mr. Jonathan Corbet on LWN, the initiative and trend is to reduce overall
+>>> kernel latency.
+>>
+>> P.S.
+>>
+>> On the second thought, if barrier() is only the compiler optimisation barrier from memory
+>> reordering, then we do not gain much disablin git as it doesn't affect the other cores, and
+>> reordering MMIO writes can really confuse some NIC hardware.
+>>
+>> /* Optimization barrier */
+>> #ifndef barrier
+>> /* The "volatile" is due to gcc bugs */
+>> # define barrier() __asm__ __volatile__("": : :"memory")
+>> #endif
+>>
+>>>>> If it still uses a LOCK addl $0, m32/m64, then it still creates 130 instances of all core
+>>>>> bus locks for this NIC reset after the lost PHY? I'm just thinking, this is nothing
+>>>>> authoritative ...
+> 
+> I would recommend looking at the pre-processed source code if you
+> can't manually untangle the maze of macros. ;-)
+> 
+> Look at the .${obj}.cmd file (e.g.
+> drivers/net/ethernet/realtek/.r8169_main.o.cmd), copy the compiler
+> command in it, and add the "-E" option and make the compiler write the
+> result to some temporary file you can inspect.
 
-I don't think VMM should be able to modify the guest's vring memory.
-For vringh it should be enough with the next line, no need for
-previous.
+Thanks for the tip. I tried to add
 
-If I'm not wrong this was solved in the simulator by [1] and [2]. Am I
-missing something?
+	EXTRA_CFLAGS += -save-temps
 
-Thanks!
+to the driver/net/ethernet/realtek/Kbuild, but something went wrong. Now I see that it is deprecated.
 
-[1] https://lkml.org/lkml/2023/1/18/1045
-[2] https://www.spinics.net/lists/kernel/msg4705724.html
-
-> +    vrh->last_avail_idx =3D vrh->last_used_idx =3D idx;
-> +    return 0;
-> +}
-> +
->  /* Userspace access helpers: in this case, addresses are really userspac=
-e. */
->  static inline int getu16_user(const struct vringh *vrh, u16 *val, const =
-__virtio16 *p)
->  {
-> @@ -1456,6 +1474,18 @@ void vringh_set_iotlb(struct vringh *vrh, struct v=
-host_iotlb *iotlb,
->  }
->  EXPORT_SYMBOL(vringh_set_iotlb);
->
-> +/**
-> + * vringh_set_base_iotlb - set avail_idx and used_idx
-> + * @vrh: the vring
-> + * @idx: the value to set
-> + */
-> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx)
-> +{
-> +    return __vringh_set_base(vrh, idx, putu16_iotlb);
-> +}
-> +EXPORT_SYMBOL(vringh_set_base_iotlb);
-> +
-> +
->  /**
->   * vringh_getdesc_iotlb - get next available descriptor from ring with
->   * IOTLB.
-> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> index c3a8117dabe8..e9b8af4e6a5e 100644
-> --- a/include/linux/vringh.h
-> +++ b/include/linux/vringh.h
-> @@ -306,6 +306,8 @@ int vringh_init_iotlb_va(struct vringh *vrh, u64 feat=
-ures,
->                          struct vring_avail *avail,
->                          struct vring_used *used);
->
-> +int vringh_set_base_iotlb(struct vringh *vrh, u16 idx);
-> +
->  int vringh_getdesc_iotlb(struct vringh *vrh,
->                          struct vringh_kiov *riov,
->                          struct vringh_kiov *wiov,
-> --
-> 2.39.3
->
-
+Best regards,
+Mirsad Todorovac
