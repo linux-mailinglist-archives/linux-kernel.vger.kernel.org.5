@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B27927DB58B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FBE7DB58F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbjJ3I6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S232322AbjJ3I7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjJ3I6q (ORCPT
+        with ESMTP id S231467AbjJ3I7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:58:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947D8A7;
-        Mon, 30 Oct 2023 01:58:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E42C433C8;
-        Mon, 30 Oct 2023 08:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698656324;
-        bh=erM2EyKMcmAPiQ3Ee/fFfOGmnuj/HoTNrYWY9/L8w/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=orpMJTPOKZ9Y7pqYCShS3dCwyhQMartTyOrQ3f3P5/kXRLBaEF3ArbCulkLvQRyPU
-         8BnsfLViT73X2JIxkgIwcTRnrfrFs0SFa848NF9pnEuQnjDtFex8MWuWztD6WJKqC9
-         K1oPi4+jFJQAgSDx4jjbBFSHWDb6UkBIw1wPhEvU=
-Date:   Mon, 30 Oct 2023 09:58:41 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ChenXiaoSong <chenxiaosongemail@foxmail.com>
-Cc:     trond.myklebust@hammerspace.com, chenxiaosong@kylinos.cn,
-        Anna.Schumaker@netapp.com, sashal@kernel.org,
-        liuzhengyuan@kylinos.cn, huangjinhui@kylinos.cn,
-        liuyun01@kylinos.cn, huhai@kylinos.cn, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Question about LTS 4.19 patch "89047634f5ce NFS: Don't interrupt
- file writeout due to fatal errors"
-Message-ID: <2023103055-saddled-payer-bd26@gregkh>
-References: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
- <2023103055-anaerobic-childhood-c1f1@gregkh>
- <tencent_4CA081DD6E435CDA2EAB9C826F7899F78C05@qq.com>
+        Mon, 30 Oct 2023 04:59:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656E594
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698656369; x=1730192369;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=R89fHrH0vTzIahQagBTYg9QO944K4Vt7HCsfbwzD2Tg=;
+  b=Wubh3Y/tmjB5VWQh4CFiz+bpm0rL5xyjE6/sRkD+ApvkzP6n1jgXA64K
+   BqrN36xm3CHKzWhmwvCvzDe8YB40iRJMX+w8GlQNyV3fZIBK1O+S1i3Ty
+   BRskIgVhtzCmJ2xt+KjHcB9VMPTE98QuiqR/NQN68oaShEqGy7DIDkCke
+   s6/aDruTxOlkeB1gui2yEi5zcibW9j6QZBmvcqOuUW/Xosoqi4MzGPini
+   0SdsDknd85u0TE6a5Mho35xbab564IxRbeJ+s0PLijMxBANqxhmxhqg0E
+   Uas/wfYroHV/5ZhdjcnjtBvVpiiibkub64il0PVHBvMCsbdSGAeUvLxt5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="474271553"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="474271553"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 01:59:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="903925373"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="903925373"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 01:59:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qxO7I-00000009mf1-1ZTG;
+        Mon, 30 Oct 2023 10:59:24 +0200
+Date:   Mon, 30 Oct 2023 10:59:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vsprintf: uninline simple_strntoull(), reorder arguments
+Message-ID: <ZT9wbLC9Nl+mKes3@smile.fi.intel.com>
+References: <82a2af6e-9b6c-4a09-89d7-ca90cc1cdad1@p183>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tencent_4CA081DD6E435CDA2EAB9C826F7899F78C05@qq.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <82a2af6e-9b6c-4a09-89d7-ca90cc1cdad1@p183>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 04:54:02PM +0800, ChenXiaoSong wrote:
-> On 2023/10/30 16:43, Greg KH wrote:
-> > Try it and see, but note, that came from the 4.19.99 release which was
-> > released years ago, are you sure you are using the most recent 4.19.y
-> > release?
+On Fri, Oct 27, 2023 at 05:13:58PM +0300, Alexey Dobriyan wrote:
+> * uninline simple_strntoull(),
+>   gcc overinlines and this function is not performance critical
 > 
-> I use the most recent release 1b540579cf66 Linux 4.19.296.
+> * reorder arguments, so that appending INT_MAX as 4th argument
+>   generates very efficient tail call
 > 
-> > If we missed some patches, that should be added on top of the current
-> > tree, please let us know the git commit ids of them after you have
-> > tested them that they work properly, and we will gladly apply them.
-> Merging the entire patchset may not be the best option. Perhaps a better
-> choice is to revert this patch. And I would like to see Trond's suggestion.
+> Space savings:
 > 
+> 	add/remove: 1/0 grow/shrink: 0/3 up/down: 27/-179 (-152)
+> 	Function                            old     new   delta
+> 	simple_strntoll                       -      27     +27
+> 	simple_strtoull                      15      10      -5
+> 	simple_strtoll                       41       7     -34
+> 	vsscanf                            1930    1790    -140
 
-If you just revert that one patch, is the issue resolved?  And what
-about other stable releases that have that change in it?
 
-If this does need to be reverted, please submit a patch that does so and
-we can review it that way.
+Makes sense to me
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-thanks,
+...
 
-greg k-h
+>  		if (is_sign)
+> -			val.s = simple_strntoll(str,
+> -						field_width >= 0 ? field_width : INT_MAX,
+> -						&next, base);
+> +			val.s = simple_strntoll(str, &next, base,
+> +						field_width >= 0 ? field_width : INT_MAX);
+>  		else
+> -			val.u = simple_strntoull(str,
+> -						 field_width >= 0 ? field_width : INT_MAX,
+> -						 &next, base);
+> +			val.u = simple_strntoull(str, &next, base,
+> +						 field_width >= 0 ? field_width : INT_MAX);
+
+Looking at these, why do we even care about signedness? field_witdh IIRC is 16-bit or less
+and if size_t is to big it's still fine. No?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
