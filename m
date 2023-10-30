@@ -2,211 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194CC7DC087
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BEA7DC08C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 20:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjJ3TbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 15:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
+        id S231222AbjJ3Tco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 15:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJ3TbA (ORCPT
+        with ESMTP id S229510AbjJ3Tcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 15:31:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282B2A9;
-        Mon, 30 Oct 2023 12:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698694256; x=1730230256;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oE5glMctpbfYlLJs53M3TJqVUGKgwDxVjEE0ZRcfHpM=;
-  b=NV3cAfTKh5BNgEUMPp5/yH4Fu+uaNWL6hMCxcDUDyKIVFToxMyQKw0T4
-   G19bKDnjCm9fTEQ37RLj9x6x8QQ9RO1wzht3pRIO/V2inW5cIzKpM0a0T
-   6RPoxQqsyekTEShaUBH9VMskv9fJ/6PJ0TyTkRbxeLmyX7z7kh8n7SkPU
-   9enC7YRS9Q2keXSsAJHc0yEIZ5V4yIS5G5XQIGei/10qIOIYazgDG4PSB
-   Z9dMar8ubxnNh8r0xpdhkaeX+e3VRP37xdV1F7bBxnpCdwHL+QM5ja4ah
-   YcnXOhbthPVrGsMlKyvs7ikuJTvYmvLe3x7FAf3i1IfIEQrXJeh1j6Tho
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="387965408"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="387965408"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 12:30:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="1007520505"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
-   d="scan'208";a="1007520505"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.41.161])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 12:30:54 -0700
-Message-ID: <e7c12e07-7540-47ea-8891-2cec73d58df1@intel.com>
-Date:   Mon, 30 Oct 2023 21:30:48 +0200
+        Mon, 30 Oct 2023 15:32:42 -0400
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8283AC9;
+        Mon, 30 Oct 2023 12:32:40 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a92782615dso48496947b3.2;
+        Mon, 30 Oct 2023 12:32:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698694359; x=1699299159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1pByH2StVHoqPD6IH6IBloBGUwp09k45GfAx3mFKKEk=;
+        b=rL8zZ6GphI4C+0FnU/jFnqzcrRaYPVU82NESFdqIU4+p77qiNQhS7HHXgCSqC+DmlI
+         7qRUbZZwsSQc6ubWvHw1Ml0mN5ivvEeTi5F7gGexZxVWSW4wu6iVjYMM+NDjzSd6db0B
+         G9hnd16SiiKGFgvhnG3xsS0bbGGBFzwIMxKOryey7vH/hW84OMklO5u2Yu0tHnQGSJw7
+         O5cvSMoFq726g/VCWevDSK/CKcmpz/gtMuMDLxzOkdOYZUWR1/k+Vxq+z8zF2KV2/FDm
+         9zxgMRs9tJjfQVMHrZ6sYpWd5OkpPc9p/w9cBARgi1CpoD35gspFrhhrQZMSBe1STxGX
+         Qs3Q==
+X-Gm-Message-State: AOJu0YxP3V4gld8V0tI9dTJrQuqtdIyeruKnPfw99maDzIHbmfuF/MLV
+        2VquonG1rPeCrxvcKIJHLw==
+X-Google-Smtp-Source: AGHT+IHK3wChZcWT3XRLoyn0yhbfVBF3GMz9Z0DMZB75PXL08vwUDIKlwJthVuKSpdwIy0fvpvHBbw==
+X-Received: by 2002:a25:6605:0:b0:da3:743d:ea3e with SMTP id a5-20020a256605000000b00da3743dea3emr125254ybc.21.1698694359538;
+        Mon, 30 Oct 2023 12:32:39 -0700 (PDT)
+Received: from herring.priv ([2607:fb91:e6c7:c3eb:a6fd:69b4:aba3:6929])
+        by smtp.gmail.com with ESMTPSA id e131-20020a256989000000b00d9ab95777ecsm45311ybc.49.2023.10.30.12.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 12:32:38 -0700 (PDT)
+Received: (nullmailer pid 2046098 invoked by uid 1000);
+        Mon, 30 Oct 2023 19:32:36 -0000
+Date:   Mon, 30 Oct 2023 14:32:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mehdi Djait <mehdi.djait@bootlin.com>
+Cc:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com, michael.riesch@wolfvision.net
+Subject: Re: [PATCH v9 1/3] media: dt-bindings: media: add bindings for
+ Rockchip CIF
+Message-ID: <20231030193236.GA1995060-robh@kernel.org>
+References: <cover.1698666612.git.mehdi.djait@bootlin.com>
+ <5f83d60031320c4c7b0f0727604903f50ee49058.1698666612.git.mehdi.djait@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mmc: cqhci: Add a quirk to clear stale TC
-Content-Language: en-US
-To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-References: <20231027145623.2258723-1-korneld@chromium.org>
- <20231027145623.2258723-2-korneld@chromium.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231027145623.2258723-2-korneld@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f83d60031320c4c7b0f0727604903f50ee49058.1698666612.git.mehdi.djait@bootlin.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/23 17:56, Kornel Dulęba wrote:
-> This fix addresses a stale task completion event issued right after the
-> CQE recovery. As it's a hardware issue the fix is done in form of a
-> quirk.
+On Mon, Oct 30, 2023 at 01:25:12PM +0100, Mehdi Djait wrote:
+> Add a documentation for the Rockchip Camera Interface
+> binding.
 > 
-> When error interrupt is received the driver runs recovery logic is run.
-> It halts the controller, clears all pending tasks, and then re-enables
-> it. On some platforms a stale task completion event is observed,
-> regardless of the CQHCI_CLEAR_ALL_TASKS bit being set.
-> 
-> This results in either:
-> a) Spurious TC completion event for an empty slot.
-> b) Corrupted data being passed up the stack, as a result of premature
->    completion for a newly added task.
-> 
-> To fix that re-enable the controller, clear task completion bits,
-> interrupt status register and halt it again.
-> This is done at the end of the recovery process, right before interrupts
-> are re-enabled.
-> 
-> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
+> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
 > ---
->  drivers/mmc/host/cqhci-core.c | 42 +++++++++++++++++++++++++++++++++++
->  drivers/mmc/host/cqhci.h      |  1 +
->  2 files changed, 43 insertions(+)
+> v8=>v9:
+> dropped the "Reviewed-by: Rob Herring <robh@kernel.org>"
+> because of the following changes:
+> - changed the compatible to rk3066-cif: rk3066 is the earliest Rockchip SoC
+>   that uses cif and it is the first model starting the RK30 lineup.
+
+Is px30 compatible with rk3066? It's not clear because you didn't add 
+rk3066 support. If not compatible, then add rk3066 when you have a user. 
+If it is compatible, then you should have a fallback for px30.
+
+> - adjusted the description
+> - changed the node name to video-capture
 > 
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index b3d7d6d8d654..e534222df90c 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -1062,6 +1062,45 @@ static void cqhci_recover_mrqs(struct cqhci_host *cq_host)
->  /* CQHCI could be expected to clear it's internal state pretty quickly */
->  #define CQHCI_CLEAR_TIMEOUT		20
->  
-> +/*
-> + * During CQE recovery all pending tasks are cleared from the
-> + * controller and its state is being reset.
-> + * On some platforms the controller sets a task completion bit for
-> + * a stale(previously cleared) task right after being re-enabled.
-> + * This results in a spurious interrupt at best and corrupted data
-> + * being passed up the stack at worst. The latter happens when
-> + * the driver enqueues a new request on the problematic task slot
-> + * before the "spurious" task completion interrupt is handled.
-> + * To fix it:
-> + * 1. Re-enable controller by clearing the halt flag.
-> + * 2. Clear interrupt status and the task completion register.
-> + * 3. Halt the controller again to be consistent with quirkless logic.
-> + *
-> + * This assumes that there are no pending requests on the queue.
-> + */
-> +static void cqhci_quirk_clear_stale_tc(struct cqhci_host *cq_host)
-> +{
-> +	u32 reg;
+> 
+>  .../bindings/media/rockchip,rk3066-cif.yaml   | 96 +++++++++++++++++++
+>  1 file changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml b/Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+> new file mode 100644
+> index 000000000000..be69e474ed26
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+> @@ -0,0 +1,96 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/rockchip,rk3066-cif.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	WARN_ON(cq_host->qcnt);
-> +	cqhci_writel(cq_host, 0, CQHCI_CTL);
-> +	if ((cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)) {
-> +		pr_err("%s: cqhci: CQE failed to exit halt state\n",
-> +			mmc_hostname(cq_host->mmc));
-> +	}
-> +	reg = cqhci_readl(cq_host, CQHCI_TCN);
-> +	cqhci_writel(cq_host, reg, CQHCI_TCN);
-> +	reg = cqhci_readl(cq_host, CQHCI_IS);
-> +	cqhci_writel(cq_host, reg, CQHCI_IS);
+> +title: Rockchip CIF Camera Interface
 > +
-> +	/*
-> +	 * Halt the controller again.
-> +	 * This is only needed so that we're consistent across quirk
-> +	 * and quirkless logic.
-> +	 */
-> +	cqhci_halt(cq_host->mmc, CQHCI_FINISH_HALT_TIMEOUT);
-> +}
+> +maintainers:
+> +  - Mehdi Djait <mehdi.djait@bootlin.com>
+> +
+> +description: |
 
-Thanks a lot for tracking this down!
+Don't need '|'
 
-It could be that the "un-halt" starts a task, so it would be
-better to force the "clear" to work if possible, which
-should be the case if CQE is disabled.
+> +  CIF is a camera interface present on some rockchip SoCs. It
+> +  receives the data from Camera sensor or CCIR656 encoder and
+> +  transfers it into system main memory by AXI bus.
 
-Would you mind trying the code below?  Note the increased
-CQHCI_START_HALT_TIMEOUT helps avoid trying to clear tasks
-when CQE has not halted.
+Wrap lines at 80.
 
-
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index b3d7d6d8d654..534c13069833 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -987,7 +987,7 @@ static bool cqhci_halt(struct mmc_host *mmc, unsigned int timeout)
-  * layers will need to send a STOP command), so we set the timeout based on a
-  * generous command timeout.
-  */
--#define CQHCI_START_HALT_TIMEOUT	5
-+#define CQHCI_START_HALT_TIMEOUT	500
- 
- static void cqhci_recovery_start(struct mmc_host *mmc)
- {
-@@ -1075,28 +1075,27 @@ static void cqhci_recovery_finish(struct mmc_host *mmc)
- 
- 	ok = cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
- 
--	if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
--		ok = false;
--
- 	/*
- 	 * The specification contradicts itself, by saying that tasks cannot be
- 	 * cleared if CQHCI does not halt, but if CQHCI does not halt, it should
- 	 * be disabled/re-enabled, but not to disable before clearing tasks.
- 	 * Have a go anyway.
- 	 */
--	if (!ok) {
--		pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname(mmc));
--		cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
--		cqcfg &= ~CQHCI_ENABLE;
--		cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
--		cqcfg |= CQHCI_ENABLE;
--		cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
--		/* Be sure that there are no tasks */
--		ok = cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
--		if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
--			ok = false;
--		WARN_ON(!ok);
--	}
-+	if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-+		ok = false;
-+
-+	cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
-+	cqcfg &= ~CQHCI_ENABLE;
-+	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-+
-+	cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
-+	cqcfg |= CQHCI_ENABLE;
-+	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-+
-+	cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-+
-+	if (!ok)
-+		cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT);
- 
- 	cqhci_recover_mrqs(cq_host);
- 
-
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - rockchip,rk3066-cif
+> +      - rockchip,px30-vip
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: ACLK
+> +      - description: HCLK
+> +      - description: PCLK
+> +
+> +  clock-names:
+> +    items:
+> +      - const: aclk
+> +      - const: hclk
+> +      - const: pclk
+> +
+> +  resets:
+> +    items:
+> +      - description: AXI
+> +      - description: AHB
+> +      - description: PCLK IN
+> +
+> +  reset-names:
+> +    items:
+> +      - const: axi
+> +      - const: ahb
+> +      - const: pclkin
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description: A connection to a sensor or decoder
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/px30-cru.h>
+> +    #include <dt-bindings/power/px30-power.h>
+> +
+> +    parent {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        video-capture@ff490000 {
+> +            compatible = "rockchip,px30-vip";
+> +            reg = <0x0 0xff490000 0x0 0x200>;
+> +            interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
+> +            clock-names = "aclk", "hclk", "pclk";
+> +            resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
+> +            reset-names = "axi", "ahb", "pclkin";
+> +            power-domains = <&power PX30_PD_VI>;
+> +
+> +            port {
+> +                endpoint {
+> +                    remote-endpoint = <&tw9900_out>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.41.0
+> 
