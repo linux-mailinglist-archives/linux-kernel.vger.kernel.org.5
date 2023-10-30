@@ -2,134 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 315DC7DB81D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607C77DB823
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 11:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjJ3K3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 06:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S232594AbjJ3KbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 06:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbjJ3K3u (ORCPT
+        with ESMTP id S232532AbjJ3KbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 06:29:50 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45A39E
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:29:47 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b2018a11efso4265331b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698661787; x=1699266587; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xQ903xeVy9AHTb8iQsfsuNGoJuliVwNflrg4mGwSUpg=;
-        b=XaXwNxN5BAKfgACkpsi8UODdwRRu9pCDTCeDqeBNCs16ikE4nibXbbzGR2a1ht4Eh4
-         coJZZNURbMVzXGkjKGULTAA/1Az7UZtNWcK4a296hDJiHxP9NhdmorvuoI183MHe0LU9
-         TufSd2MfPxdAZKvu6fB872VUS73lTNUiJGeLMV3dzzxporuokW9LGPY2WRiXU2U6pMvV
-         AQWVDRg/mBP+hHAs7h3ggIRXzKs0pUcCA0uji+1R1ktmJi461F08qTQwoI8x55UDPoU4
-         tC5DfSHom1TofIxcHEO8u/0djqALtDg/8dj22m591zQWW2ZsPJ6nYQOc0ZPZHZ4Afz9+
-         0rhw==
+        Mon, 30 Oct 2023 06:31:19 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4069E
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:31:15 -0700 (PDT)
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CEBFC3F129
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1698661869;
+        bh=9khDIoutyVVO4OorlUjWR4zCGtUfevyQIKBqlCrcSI4=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=b7jjbcevW6TEkqWllgoeUjGHjvOfuI2jC4XmBXk3cf+A/gWbxjNdCqGzR22Hhrh1R
+         G+Uj/SK5yzOJQQ56W7FKEfVpC+kVf9JNz3JDlDsveW5Z+FTxPzh7duJ7mTyggJnyYR
+         fDhbxAkgvqro6bPkppuEc2mRT5fe6zk65G7WI98PjDAU0wvQf6C2T4Yt9gkmtzIb8T
+         t9xUpRCB+Eq+XVyc1fp7O8JsfEmJ5zChC9yMzcI6VONO80afizsQc1pojkoXg4W/Ae
+         AdjLA1CSBfF7NmffTwj4gWfYHD15p9ZJBb3vh8aILB5fqpCDID/fltYdYEnZpWacnQ
+         8SozQFnZud69Q==
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-507b8ac8007so5144968e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 03:31:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698661787; x=1699266587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xQ903xeVy9AHTb8iQsfsuNGoJuliVwNflrg4mGwSUpg=;
-        b=HrcOxdxFInqxjTYGi8Z5fJCpOEGkzPMH2uEcxKhl2D2yloPORrhSqMR4uXGZG4FyyW
-         Yk63aTyfeGFJdCjpUC4LNTISoIMoBeyBj0BITVQIAOAKlFCicTYMtXl+15L9qtRTsWAL
-         a6FHG0tQZkAS/DN0B65dLLWxfdWxIfD126ppPjfUzUaa43E//p5pW17oRBIeot+7PJg3
-         2nDx6abxGD1nORzQMG6AuYcHFQSSYbADa44Jvd6Zu1zCFlpquLZGN/gJT8kxIfrAELE+
-         85eMaivRTEUz4uvw1mE9ghAmP0S9idh6h/YPsRB4tgza+/uT2NJkBCogdj0H9CCnX9T3
-         c37w==
-X-Gm-Message-State: AOJu0YyORl6ZMnuPVx+lkZxK9BaH1qhLk9Fi6jh715JCY3MvQbVyLlSR
-        dvPdcGGbZfzaBUba1SoQ98qAeg==
-X-Google-Smtp-Source: AGHT+IEIkqkVLiCDQVtENyPWVuu+h7nL9aLn3AM3oh8xYNImGe5nqy1fuDl53jyeHebKXVRznc0WIQ==
-X-Received: by 2002:a05:6a20:914a:b0:13f:9cee:ff42 with SMTP id x10-20020a056a20914a00b0013f9ceeff42mr11931773pzc.41.1698661787428;
-        Mon, 30 Oct 2023 03:29:47 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id e26-20020a62aa1a000000b006c003d9897bsm5628756pff.138.2023.10.30.03.29.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 03:29:46 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 15:59:44 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
-Message-ID: <20231030102944.nrw4bta467zxes5c@vireshk-i7>
-References: <cover.1697710527.git.viresh.kumar@linaro.org>
- <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
- <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
- <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
- <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
- <ZTkciw5AwufxQYnB@gerhold.net>
- <CAPDyKFq+zsoeF-4h5TfT4Z+S46a501_pUq8y2c1x==Tt6EKBGA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1698661868; x=1699266668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9khDIoutyVVO4OorlUjWR4zCGtUfevyQIKBqlCrcSI4=;
+        b=Lk4ozucOgE5Cym0We8ZbrgbwI7+SFVSUwj1vwVXh8DR9/I2shVSiUlMjkGFHJlY1O5
+         b/vPBxoIZd6y+E3oNrze467Jj3TiYqHSMB2A+Ig/CvG4W+Fjw9Q5BB7qp7yIB3S5arGf
+         50ncxj2aqOS6PdP5RtLMbJ8r8cTTP5BQJ/O6SiDgQRGvGRn+3IgEbIo6TwAxW1zyRfJb
+         BRNr6k+UNKOGVxkwvHuk0HU2eGozL6O8/iwNAOCly+4liNSntaZqp1ttPraMQW+R3bLv
+         NmYGF9g7AUVnIxc7te9qXUUtzRG9XaL1CWsUMIeyGjfouQF9ghBseObDHW4Fby+jmGlY
+         R76w==
+X-Gm-Message-State: AOJu0Ywa9arIeQe3T2WTpVI9SFAqmij48wZUJkR/7pfi4iLgEglnxcQ3
+        Fzsf1fASBgeRG4WCkQ4MJufesO8DhpebLAIjqjXoE72H7K1cTHoRgf1FPyJKfE6iVDgJHvHQstw
+        6SVT2V6MqHxCh3/C0QirtjoBwno3YYuoTLmnxsJ7i25sQ0aMGLao1qxFMQ38Ca0dkXEi3HLdtLA
+        ==
+X-Received: by 2002:a19:ca45:0:b0:502:9fce:b6da with SMTP id h5-20020a19ca45000000b005029fceb6damr6117131lfj.21.1698661868747;
+        Mon, 30 Oct 2023 03:31:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEzmok2NC2UFhT5xqTcur1IDEbtbIhjT5/OR1Odr6djEXj7xXwohl+4ifXuKC+ZtvwN2tG9K+tbsxMsHwtT0U8=
+X-Received: by 2002:a19:ca45:0:b0:502:9fce:b6da with SMTP id
+ h5-20020a19ca45000000b005029fceb6damr6117116lfj.21.1698661868368; Mon, 30 Oct
+ 2023 03:31:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFq+zsoeF-4h5TfT4Z+S46a501_pUq8y2c1x==Tt6EKBGA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231029204823.663930-1-dimitri.ledkov@canonical.com>
+ <20231029204823.663930-2-dimitri.ledkov@canonical.com> <6413919.eMfrkXpHmx@tauon.chronox.de>
+In-Reply-To: <6413919.eMfrkXpHmx@tauon.chronox.de>
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Date:   Mon, 30 Oct 2023 12:30:32 +0200
+Message-ID: <CADWks+Z0b8GPSg37=TQK_5LqVejC_CzbOxn_TUsvkQ45TOyuYw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] crypto: drbg - update FIPS CTR self-checks to aes256
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, simo@redhat.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-10-23, 11:53, Ulf Hansson wrote:
-> On Wed, 25 Oct 2023 at 15:49, Stephan Gerhold <stephan@gerhold.net> wrote:
-> >  2. The OPP WARNing triggers with both variants because it just checks
-> >     if "required-opps" has a single entry. I guess we need extra checks
-> >     to exclude the "parent genpd" case compared to the "OPP" case.
+On Mon, 30 Oct 2023 at 12:23, Stephan Mueller <smueller@chronox.de> wrote:
+>
+> Am Sonntag, 29. Oktober 2023, 21:48:21 CET schrieb Dimitri John Ledkov:
+>
+> Hi Dimitri,
+>
+> > When originally drbg was introduced FIPS self-checks for all types but
+> > CTR were using the most preferred parameters for each type of
+> > DRBG. Update CTR self-check to use aes256.
 > >
-> >         [    1.116244] WARNING: CPU: 2 PID: 36 at drivers/opp/of.c:331 _link_required_opps+0x180/0x1cc
-> >         [    1.125897] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> >         [    1.146887] pc : _link_required_opps+0x180/0x1cc
-> >         [    1.146902] lr : _link_required_opps+0xdc/0x1cc
-> >         [    1.276408] Call trace:
-> >         [    1.283519]  _link_required_opps+0x180/0x1cc
-> >         [    1.285779]  _of_add_table_indexed+0x61c/0xd40
-> >         [    1.290292]  dev_pm_opp_of_add_table+0x10/0x18
-> >         [    1.294546]  of_genpd_add_provider_simple+0x80/0x160
-> >         [    1.298974]  cpr_probe+0x6a0/0x97c
-> >         [    1.304092]  platform_probe+0x64/0xbc
+> > Fixes: 541af946fe ("crypto: drbg - SP800-90A Deterministic Random Bit
+> > Generator") Signed-off-by: Dimitri John Ledkov
+> > <dimitri.ledkov@canonical.com>
+>
+>
+>
+> > ---
+> >  crypto/drbg.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
 > >
-> > It does seem to work correctly, with and without this patch. So I guess
-> > another option might be to simply silence this WARN_ON(). :')
-> 
-> Oh, thanks for pointing this out! This case haven't crossed my mind yet!
-> 
-> Allow me to think a bit more about it. I will get back to you again
-> with a suggestion soon, unless Viresh comes back first. :-)
+> > diff --git a/crypto/drbg.c b/crypto/drbg.c
+> > index 2cce18dcfc..b120e2866b 100644
+> > --- a/crypto/drbg.c
+> > +++ b/crypto/drbg.c
+> > @@ -1478,8 +1478,8 @@ static int drbg_generate(struct drbg_state *drbg,
+> >                       err = alg_test("drbg_pr_hmac_sha256",
+> >                                      "drbg_pr_hmac_sha256", 0, 0);
+> >               else if (drbg->core->flags & DRBG_CTR)
+> > -                     err = alg_test("drbg_pr_ctr_aes128",
+> > -                                    "drbg_pr_ctr_aes128", 0, 0);
+> > +                     err = alg_test("drbg_pr_ctr_aes256",
+> > +                                    "drbg_pr_ctr_aes256", 0, 0);
+> >               else
+> >                       err = alg_test("drbg_pr_sha256",
+> >                                      "drbg_pr_sha256", 0, 0);
+> > @@ -2017,7 +2017,7 @@ static inline int __init drbg_healthcheck_sanity(void)
+> > return 0;
+> >
+> >  #ifdef CONFIG_CRYPTO_DRBG_CTR
+> > -     drbg_convert_tfm_core("drbg_nopr_ctr_aes128", &coreref, &pr);
+> > +     drbg_convert_tfm_core("drbg_nopr_ctr_aes256", &coreref, &pr);
+> >  #endif
+> >  #ifdef CONFIG_CRYPTO_DRBG_HASH
+> >       drbg_convert_tfm_core("drbg_nopr_sha256", &coreref, &pr);
+>
+> I am not sure again whether this warrants a "Fixes" tag, because the first
+> modification is in a commented-out code section and the latter again intends
+> to test the DRBG thresholds and thus just needs "a" DRBG.
+>
 
-I have resent the series now.
+Agreed, it is more of a reference. But yes, I don't believe this needs
+to trigger stable backports - because yes it is like dead code, or
+fips only code which majority kernels don't do. Maybe I should
+reference that commit in description only?
 
-Stephan, please give it a try again. Thanks.
-
-Regarding this case where a genpd's table points to a parent genpd's table via
-the required-opps, it is a bit tricky to solve and the only way around that I
-could think of is that someone needs to call dev_pm_opp_set_config() with the
-right device pointer, with that we won't hit the warning anymore and things will
-work as expected.
-
-In this case the OPP core needs to call dev_pm_domain_set_performance_state()
-for device and then its genpd. We need the right device pointers :(
-
-Ulf, also another important thing here is that maybe we would want the genpd
-core to not propagate the voting anymore to the parent genpd's ? The
-dev_pm_opp_set_opp() call is better placed at handling all things and not just
-the performance state, like clk, regulator, bandwidth and so the recursion
-should happen at OPP level only. For now my series shouldn't break anything,
-just that we will try to set performance state twice for the parent genpd, the
-second call should silently return as the target state should be equal to
-current state.
+> Anyhow:
+>
+> Reviewed-by: Stephan Mueller <smueller@chronox.de>
+>
+>
+> Ciao
+> Stephan
+>
+>
 
 -- 
-viresh
+okurrr,
+
+Dimitri
