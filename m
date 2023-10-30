@@ -2,198 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1857DBD7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4897DBD83
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 17:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbjJ3QJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 12:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        id S233817AbjJ3QK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 12:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbjJ3QJx (ORCPT
+        with ESMTP id S233798AbjJ3QKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 12:09:53 -0400
-Received: from aer-iport-7.cisco.com (aer-iport-7.cisco.com [173.38.203.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29CDE4;
-        Mon, 30 Oct 2023 09:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3699; q=dns/txt; s=iport;
-  t=1698682190; x=1699891790;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eNnoMQ4I7acQaTIEyjdpFkNmCGqvwkumfmLfUlT8veM=;
-  b=a/wY+Z2rZJqafXwQC6lcdsaqwRWKQNGnGajtzM79g1c/CYVjk4pfU3Dr
-   wrbLj0Cnc/wpXrZeKsXmp+J6xGXvRmL+0xexqowRKLWv8RW80MJGSKg6z
-   YOKdUBtqCJJRQj+WR3RqD4ph4UgXMXHtRrd3EVYKvpz2tp+QFBmpBjd7T
-   0=;
-X-CSE-ConnectionGUID: W+MC8d5QRbySLYisNsXQ0A==
-X-CSE-MsgGUID: YO8MyPrtRzmES2iiCX6qSg==
-X-IPAS-Result: =?us-ascii?q?A0BhAQCd1D9llxbLJq1aHgEBCxIMQIFEC4QILhJIjU6IY?=
- =?us-ascii?q?gOSWYslgSUDVg8BAQENAQFEBAEBgXIBgxMChx0nNAkOAQIEAQEBAQMCAwEBA?=
- =?us-ascii?q?QEBAQECAQEFAQEBAgEHBBQBAQEBAQEBATcFEDWFdYZMAQEBAQIBOj8FCwsYL?=
- =?us-ascii?q?lcGEwiCdoI8IwOoCHiBNIEBsyeBaIFIiAoBigZCgUlEhD8+hBuGSSIEhmQog?=
- =?us-ascii?q?V0HDi4HMoEKDAmBA4J6NSmMQF4iR3AbAwcDWCsQKwcEMBsHBgkWGBUlBlECA?=
- =?us-ascii?q?i0kCRMSPgSBZYFRCoEDPw8OEYJDIgIHNjYZSyuCMAkVDDRNdhAqBBQXgREEa?=
- =?us-ascii?q?h8VHhIlERIXDQMIdh0CESM8AwUDBDQKFQ0LIQUUQwNEBkoLAwIaBQMDBIE2B?=
- =?us-ascii?q?Q0eAhAaBg0nAwMZTQIQFAMeHQMDBgMLMQMwgR4MWgNsHzYJPA8MHwI5DSkqA?=
- =?us-ascii?q?jsWA0QdQAN4PTUUG22eV4IQW2gCDwI2gQMSgQ4BHcUmhBahIEkDlxOSUZg+q?=
- =?us-ascii?q?CgCBAYFAhaBYzqBWzMaCBsVgyJSGQ+OOZNaQjI7AgcLAQEDCYhvglsBAQ?=
-IronPort-Data: A9a23:8HCCpaueenIyrvkl59WCIYjOM+fnVNFeMUV32f8akzHdYApBsoF/q
- tZmKW6CO/+LM2v3ft5/OY2z8hsB75HcmoJkTVc/r3s3Qi1HgMeUXt7xwmUckM+xwmwvaGo9s
- q3yv/GZdJhcokf0/0rrav656yAkiclkf5KkYMbcICd9WAR4fykojBNnioYRj5Vh6TSDK1vlV
- eja/YuHYzdJ5xYuajhPsvrY8Es21BjPkGpwUmIWNKgjUGD2zxH5PLpHTYmtIn3xRJVjH+LSb
- 44vG5ngows1Vz90Yj+Uuu6Tnn8iG9Y+DiDS4pZiYJVOtzAZzsAEPgnXA9JHAatfo23hc9mcU
- 7yhv7ToIesiFvWkdOjwz3C0HgkmVZCq9oMrLlCA8um4n0GbSkHm0s5KPUAtG5Yow75eVDQmG
- fwwcFjhbziKivjzy7WhR6wywM8iN8LseogYvxmMzxmAUq1gGsCFGf2Ro4UCtNszrpgm8fL2b
- s8YYidrZQ/oaBxUMVBRA5U79AutriCnKmQA8gvPzUYxy1n0nClg6KLxCsjQV+fQRMR+rhiBn
- W2TqgwVBTlDZIDAllJp6EmEgu7JgDO+W48IErC83uBljUfVxWEJDhASE1yhrpGRgUmkUd9DA
- 0gL/GwooLRa3FemVNbwdx2xpHqVuFgXXN84O+Q58ASlzqvS/hbcCG8ZSDJIdN0hsokxXzNC/
- luImc75QDBou5WLRn+HsLSZtzW/PW4SN2BqTTcETA8B4sHLu5guhwnPQM0lF7S6yMD2cQwc2
- BiDoTJ7hq0Ul9JO0aynu1vGmDmr4JPOS2bZ+zk7QEqarSZSNIL4Xrai+GP/3PdbCp2pdwGo6
- S1sd9el0MgCCpSElSqoSeoLHa206/vtDNE6qQMwd3XG32n9k0NPbby88xkjfhw3Y5ZslSvBP
- RWK41I5CIp7ZiPCUENhX26mI+IOpUQKPf3hU/3OY5J1fpF9HONs1Hg1PBP4M4zFvkwhj6Y7M
- JGXGftA7Er264w6klJapM9Ej9fHIxzSI0uIHPgXKDz9iNKjiIa9E+ttDbd3RrlRAFm4iAvU6
- c1DEMCB1g9SVubzCgGOr99DcwhWdyNqXcivwyCySgJlClc3cI3GI6GJqY7Nh6Q+90iovr6Sp
- yrkChMwJKTX3COZeW1mlUyPmJu2Dcog8hrXzAQnPE2j3DA4cJ2z4aIEH6bbjpF5nNGPOcVcF
- qFfE+3ZW6wnYm2eq1wggWzV8dUKmOKD3lnVYUJIoVEXIvZdeuA+0oa/IFaxpHFQUHHfWAlXi
- +TI6z43iKErH2xKZPs6otr2p79tlRDxQN5PYnY=
-IronPort-HdrOrdr: A9a23:k2JGs68EPoC4SKKXMdFuk+D3I+orL9Y04lQ7vn2ZhyY7TiW9rb
- HKoB17726XtN9/YhsdcLy7VZVoBEmskaKdgrNhXotKPjOGhILAFugLhrcKgQeBJ8SUzIBgPM
- lbH5RWOZnZEUV6gcHm4AOxDtoshOWc/LvAv5a485+oJjsaEp2JKGxCe2CmLnE=
-X-Talos-CUID: 9a23:9J8qTm78pVasIq/H5tssyw0xMZApL0TnxmbrB365EkByeITNYArF
-X-Talos-MUID: =?us-ascii?q?9a23=3Akd9TgQ0VcDwxSmcw6v+5g72qBTUj0oP+LVE1i4k?=
- =?us-ascii?q?8qcypDnZxOhyt0i2MTdpy?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.03,263,1694736000"; 
-   d="scan'208";a="10110212"
-Received: from aer-iport-nat.cisco.com (HELO aer-core-6.cisco.com) ([173.38.203.22])
-  by aer-iport-7.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 16:09:46 +0000
-Received: from localhost (ams3-vpn-dhcp2135.cisco.com [10.61.72.87])
-        (authenticated bits=0)
-        by aer-core-6.cisco.com (8.15.2/8.15.2) with ESMTPSA id 39UG9jo8022939
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 30 Oct 2023 16:09:46 GMT
-Date:   Mon, 30 Oct 2023 18:09:45 +0200
-From:   Ariel Miculas <amiculas@cisco.com>
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, serge@hallyn.com,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: filesystems: document the squashfs specific
- mount options
-Message-ID: <oonydtkv6anpjbugjvqkp4byqlf3aiwkwf4g7y5w5tthivxomh@b4w4jyceaepz>
-References: <20231029161924.50648-1-amiculas@cisco.com>
- <bd039dc7-cfe5-c210-b65e-0cba3186ee0b@squashfs.org.uk>
- <qgwx4cjswrhzxqijsosix437xyw3ifglv6uz2d3nq7whkjqueo@c5pzoqtoqtgb>
- <46d308b2-5e59-862d-b429-e6ee418bc61e@squashfs.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46d308b2-5e59-862d-b429-e6ee418bc61e@squashfs.org.uk>
-X-Authenticated-User: amiculas@cisco.com
-X-Outbound-SMTP-Client: 10.61.72.87, ams3-vpn-dhcp2135.cisco.com
-X-Outbound-Node: aer-core-6.cisco.com
-X-Spam-Status: No, score=-10.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 30 Oct 2023 12:10:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEC5C9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:10:50 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso3987948276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 09:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698682249; x=1699287049; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3/eJ4eIlm/QBKFGigGc88HjjNKR0Bxic1+CMFaJ9ygg=;
+        b=xIpHiLlYMInUSLi5VCe6TqJpt61TrAn/5ZPqHyszcZVdiUz0c28xoPUwvcEMHNUUBu
+         bjF6Yr/DB7VAqku0bXwkoDWpKKaLxSJLtdpMLXIhVr1yBgLYL10+qdippLa24OArU/Ob
+         OwQ2TTIYKwbkYktDUAQAIdsnD/M4DgEeFtpYBvnMbhG3d/BCNvQoQVsQPU27dnX1jXDB
+         UeMR4FLftEFiRahqkhojZ8222kP2JSVepRntLbr6vFa4dpcBCRJpOWtfBeutPekiBf49
+         oUMkfOtdlQQrA4ZJF3Lld7zJYzp8Ky17grYE0WRGw7K9oXCY6meP3JgYnvf8zfFcsScO
+         Pq2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698682249; x=1699287049;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3/eJ4eIlm/QBKFGigGc88HjjNKR0Bxic1+CMFaJ9ygg=;
+        b=MiWH2kNNvOjCtgmkeV8VpMQlX4JYOXM1GOG4A1wILjAP3cF/DVoafCx2KvrOayWuRx
+         +WE84+ibhhlXT4Gty5RqcSmI1SjJn/OQxFtx+jtiTD1KrNKZzxYrweSobZbKv6fnUi2i
+         vgnqQ/njFpJkF+U8daM8j4NDHjZcjBcGjP0XA8H/14w/bXem4IUHbs/eKBpXDHKsCtZ/
+         6R8y1wCMbKOkGMa11umnqp26upGfgnpsWj5kT3RFmd0gvbmyAmQCylL/6JoGWeDmdi9z
+         RBmh7bxlV7F+pdFXT4Tq0trfKNuPvx1lEE3KSgPWt4KNPdC8Rxu/sUcSfn5SAbisY0CI
+         S5CQ==
+X-Gm-Message-State: AOJu0YyynuuFj4tWKDdtZXKSOmgpXYsG50K9otPZfzJhdVofuknp5Gkg
+        nUVoeL9qDFSNCqWSMVx5wzhALC7Kvs0=
+X-Google-Smtp-Source: AGHT+IG/nj4LaX3JPzHZqsehR5FWhArOOi7E0ApKeqEkunCLK98IonUlxUU55c5VBDsNlZFSGb1icvfnahw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
+ v3-20020a056902108300b00d9ac3b84274mr243782ybu.7.1698682249642; Mon, 30 Oct
+ 2023 09:10:49 -0700 (PDT)
+Date:   Mon, 30 Oct 2023 16:10:48 +0000
+In-Reply-To: <ZT9lQ9c7Bik6FIpw@chao-email>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-14-seanjc@google.com>
+ <ZT9lQ9c7Bik6FIpw@chao-email>
+Message-ID: <ZT_ViJOW1p4TN_fI@google.com>
+Subject: Re: [PATCH v13 13/35] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/30 03:40PM, Phillip Lougher wrote:
-> On 30/10/2023 12:57, Ariel Miculas wrote:
-> > On 23/10/29 08:33PM, Phillip Lougher wrote:
-> > > On 29/10/2023 16:19, Ariel Miculas wrote:
-> > > > When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
-> > > > can be used to specify the decompression mode: single-threaded,
-> > > > multi-threaded, percpu or the number of threads used for decompression.
-> > > > When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set and
-> > > > SQUASHFS_DECOMP_MULTI is set, the "threads" option can also be used to
-> > > > specify the number of threads used for decompression. This mount option
-> > > > is only mentioned in fs/squashfs/Kconfig, which makes it difficult to
-> > > > find.
-> > > > 
-> > > > Another mount option available is "errors", which can be configured to
-> > > > panic the kernel when squashfs errors are encountered.
-> > > > 
-> > > > Add both these options to the squashfs documentation, making them more
-> > > > noticeable.
-> > > > 
-> > > > Signed-off-by: Ariel Miculas <amiculas@cisco.com>
-> > > 
-> > > Looks good to me.
-> > > 
-> > > Reviewed-by: Phillip Lougher <phillip@squashfs.org.uk>
-> > 
-> > Unfortunately, it seems this is not quite correct either:
-> > There is the config option SQUASHFS_MOUNT_DECOMP_THREADS:
-> > ```
-> > 	bool "Add the mount parameter 'threads=' for squashfs"
-> > 	depends on SQUASHFS
-> > 	depends on SQUASHFS_DECOMP_MULTI
-> > 	default n
-> > 	help
-> > 	  Use threads= to set the decompression parallel mode and the number of threads.
-> > 	  If SQUASHFS_CHOICE_DECOMP_BY_MOUNT=y
-> > 	      threads=<single|multi|percpu|1|2|3|...>
-> > 	  else
-> > 	      threads=<2|3|...>
-> > 	  The upper limit is num_online_cpus() * 2.
-> > ```
-> > that depends on SQUASHFS_DECOMP_MULTI.
-> > So I think I should take my v1 patch and specify that the "threads="
-> > mount option depends on SQUASHFS_MOUNT_DECOMP_THREADS. There's no need
-> > to specify SQUASHFS_DECOMP_MULTI, because SQUASHFS_MOUNT_DECOMP_THREADS
-> > already depends on it.
+On Mon, Oct 30, 2023, Chao Gao wrote:
+> On Fri, Oct 27, 2023 at 11:21:55AM -0700, Sean Christopherson wrote:
+> >From: Chao Peng <chao.p.peng@linux.intel.com>
+> >
+> >In confidential computing usages, whether a page is private or shared is
+> >necessary information for KVM to perform operations like page fault
+> >handling, page zapping etc. There are other potential use cases for
+> >per-page memory attributes, e.g. to make memory read-only (or no-exec,
+> >or exec-only, etc.) without having to modify memslots.
+> >
+> >Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
+> >userspace to operate on the per-page memory attributes.
+> >  - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
+> >    a guest memory range.
 > 
-> Sorry, you have to specify SQUASHFS_DECOMP_MULTI to be able to specify
-> SQUASHFS_MOUNT_DECOMP_THREADS if SQUASHFS_DECOMP_BY_MOUNT is unselected.
-Agree.
+> >  - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
+> >    memory attributes.
 > 
-> Just try it, do make menuconfig, ensure SQUASHFS_CHOICE_DECOMP_BY_MOUNT
-> is unselected, select Single threaded decompression and you won't be
-> able to specify SQUASHFS_MOUNT_DECOMP_THREADS.
-True.
-> 
-> That was the point of my review. What bit don't you understand?
-But SQUASHFS_DECOMP_MULTI is not enough, you need to specify
-SQUASHFS_MOUNT_DECOMP_THREADS in order to use the "threads=" mount
-option.
-So instead of saying
-```
-If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
-SQUASHFS_DECOMP_MULTI is set:
-```
-wouldn't it be right to actually say:
-```
-If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
-SQUASHFS_MOUNT_DECOMP_THREADS is set:
-```?
+> This ioctl() is already removed. So, the changelog is out-of-date and needs
+> an update.
 
-As you've mentioned, you could only set SQUASHFS_MOUNT_DECOMP_THREADS
-when SQUASHFS_DECOMP_MULTI is selected. That happens in two cases:
-* either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, in which case it also
-  selects SQUASHFS_MOUNT_DECOMP_THREADS
-* either SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set,
-  SQUASHFS_DECOMP_MULTI is set and SQUASHFS_MOUNT_DECOMP_THREADS is also
-  set
+Doh, I lost track of this and the fixup for KVM_CAP_MEMORY_ATTRIBUTES below.
 
-So I wouldn't even mention SQUASHFS_DECOMP_MULTI in the documentation,
-only SQUASHFS_MOUNT_DECOMP_THREADS, because the latter always depends on
-the former. And the "threads=" mount option is only available when
-SQUASHFS_MOUNT_DECOMP_THREADS is set (which is the configuration I've
-missed in v1 and v2).
+> >+:Capability: KVM_CAP_MEMORY_ATTRIBUTES
+> >+:Architectures: x86
+> >+:Type: vm ioctl
+> >+:Parameters: struct kvm_memory_attributes(in)
+> 
+> 					   ^ add one space here?
 
-Regards,
-Ariel
+Ah, yeah, that does appear to be the standard.
 > 
-> Phillip
 > 
-> > What do you think?
-> > 
-> > Regards,
-> > Ariel
-> > 
+> >+static bool kvm_pre_set_memory_attributes(struct kvm *kvm,
+> >+					  struct kvm_gfn_range *range)
+> >+{
+> >+	/*
+> >+	 * Unconditionally add the range to the invalidation set, regardless of
+> >+	 * whether or not the arch callback actually needs to zap SPTEs.  E.g.
+> >+	 * if KVM supports RWX attributes in the future and the attributes are
+> >+	 * going from R=>RW, zapping isn't strictly necessary.  Unconditionally
+> >+	 * adding the range allows KVM to require that MMU invalidations add at
+> >+	 * least one range between begin() and end(), e.g. allows KVM to detect
+> >+	 * bugs where the add() is missed.  Rexlaing the rule *might* be safe,
 > 
+> 					    ^^^^^^^^ Relaxing
+> 
+> >@@ -4640,6 +4850,17 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+> > 	case KVM_CAP_BINARY_STATS_FD:
+> > 	case KVM_CAP_SYSTEM_EVENT_DATA:
+> > 		return 1;
+> >+#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> >+	case KVM_CAP_MEMORY_ATTRIBUTES:
+> >+		u64 attrs = kvm_supported_mem_attributes(kvm);
+> >+
+> >+		r = -EFAULT;
+> >+		if (copy_to_user(argp, &attrs, sizeof(attrs)))
+> >+			goto out;
+> >+		r = 0;
+> >+		break;
+> 
+> This cannot work, e.g., no @argp in this function and is fixed by a later commit:
+> 
+> 	fcbef1e5e5d2 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing memory")
+
+I'll post a fixup patch for all of these, thanks much!
