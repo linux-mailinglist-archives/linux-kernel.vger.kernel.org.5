@@ -2,109 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3287DC2EF
+	by mail.lfdr.de (Postfix) with ESMTP id C6A4E7DC2F0
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjJ3W4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S232240AbjJ3W5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbjJ3W4C (ORCPT
+        with ESMTP id S229682AbjJ3W5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:56:02 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CDA6E4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:55:54 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-81-654034790898
-Date:   Tue, 31 Oct 2023 07:55:48 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel_team@skhynix.com, akpm@linux-foundation.org,
-        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Subject: Re: [v3 0/3] Reduce TLB flushes under some specific conditions
-Message-ID: <20231030225548.GB900@system.software.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <08c82a91-87d1-42c7-93c4-4028f3725340@intel.com>
+        Mon, 30 Oct 2023 18:57:49 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7053ADD
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:57:46 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a82c2eb50cso41878487b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698706665; x=1699311465; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mOqpJwapvpRYXVNPTTKOLnjojsLqC4JocbtWhR4syPY=;
+        b=ui07+5Qnn11jUW7iw8DX6C2Sl0WCdv7TQtNg8elsBjFWioSv2tmLFY4jHYqC7n1y+G
+         YbRcEFkyElwmZPFzVSzVPrh/1xSd03krVZrA0j7J+vOeLlN0xeSQP3tMpTP5a6qXqnBD
+         Zg1tbCBKbImExbW3g9Vz8jOblAAB+nVIvSl7n+4LhAPpw5+W80vsIxvpOSIycew4nOgV
+         96gqtEQrSICD36I0rXYGq+EFQBel09i+kuvaKJRHwtcqd196z3oBmT4S/cgHJRl3bHIv
+         na2zdZteWN3Gy/n3FpRMbwmKmOXQ4OAWv2qNkc5bYP+gP2OdsMK434I0CUn1XKpVDUri
+         Cb+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698706665; x=1699311465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mOqpJwapvpRYXVNPTTKOLnjojsLqC4JocbtWhR4syPY=;
+        b=JO/S5aiscoGCqVYy5wg85JQ8FJWMEnSr/bASXIe90n1xoTffV6uuFJqI1xu3wTj4xF
+         Lqr1zDWrsU4Hg3B43gFap6iN+mXeRYfgojVQ7RbMK3Gili5d3+7/aaTBRDfDZRpuA7bZ
+         SPqSZUIoBoS6i2vR7mcYe6vE06KT3WDBcBLw+cI1CIoxraXW419b/qGXD/hJw8ji+eMF
+         wXGcfCsyIR2M+/1DFqMSt4KiDtyEZXTsqj67D2fOi+t4FCNW9TY1N2oa7/t403u4cl7U
+         Z+ETovTz7vgYIt5m3EAaFOsqKTO4iz1yn+eJoPkOYsrTpk1EEHqRRTz1D3HnrhQD6Njt
+         k7Ow==
+X-Gm-Message-State: AOJu0Ywx1FZgrxP68iJvUkwhGDsEnBP4QCA0NOCCCDY6+oJCro8spWXi
+        kuqqh08ZFCE4WKMDIH6nnLidZ2noNXLYFcdzFe/hng==
+X-Google-Smtp-Source: AGHT+IHHNd6xOi3tS5B9+YYG7Jz7GgDIxjgIhWzquOcABcL8hJSbxW/ZS0Ej1cU7ZBO0Cx0JuFY9j3Eo+5gTwJG5y2A=
+X-Received: by 2002:a81:ca08:0:b0:5a8:1924:b7e7 with SMTP id
+ p8-20020a81ca08000000b005a81924b7e7mr8194231ywi.27.1698706665480; Mon, 30 Oct
+ 2023 15:57:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08c82a91-87d1-42c7-93c4-4028f3725340@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsXC9ZZnoW6liUOqwZ42S4s569ewWXze8I/N
-        4tPLB4wWLza0M1p8Xf+L2eLppz4Wi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
-        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
-        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPrb/sPD5vkvN4N/8tWwBfFJdNSmpOZllqkb5d
-        AlfGztd9TAX/uCuWzLrP3sC4mrOLkZNDQsBEYuHkG6ww9o3Zt1lAbBYBVYlbu+6C2WwC6hI3
-        bvxkBrFFgOxTK5ezdzFycTALNDFLXFu/GaxZWMBd4mXHFkYQm1fATOLJq5tgDUICGRJfmjuZ
-        IOKCEidnPgEbyiygJXHj30ugOAeQLS2x/B8HSJhTwFbiYe9vsBJRAWWJA9uOM4HskhBYxy5x
-        4/5ZJohDJSUOrrjBMoFRYBaSsbOQjJ2FMHYBI/MqRqHMvLLcxMwcE72MyrzMCr3k/NxNjMB4
-        XFb7J3oH46cLwYcYBTgYlXh4N/TYpwqxJpYVV+YeYpTgYFYS4WV2tEkV4k1JrKxKLcqPLyrN
-        SS0+xCjNwaIkzmv0rTxFSCA9sSQ1OzW1ILUIJsvEwSnVwFjxvXxb0+d7WwSnCO0Tddv+63HP
-        KlujO8b3PqgXrPpbs06YZaOvrVrqbb/+5n9nD21sWSC44brFfMvXtotvPZ1W9/H1zNQzdmzf
-        d6bwOtyZ+0leq+66320dESfXZuFJGnbGCQuPb/P6u+7e4h8CjWJ5h78dT4x1/RjLpxb2Oipq
-        y4d2ng2ul82UWIozEg21mIuKEwFJU9JxwwIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsXC5WfdrFtp4pBqsH+PisWc9WvYLD5v+Mdm
-        8enlA0aLFxvaGS2+rv/FbPH0Ux+LxeG5J1ktLu+aw2Zxb81/Vovzu9ayWuxYuo/J4tKBBUwW
-        13c9ZLQ43nuAyWLzpqnMFr9/ANXNmWJlcXLWZBYHIY/vrX0sHgs2lXpsXqHlsXjPSyaPTas6
-        2Tw2fZrE7vHu3Dl2jxMzfrN47Hxo6THvZKDH+31X2TwWv/jA5LH1l53H501yHu/mv2UL4I/i
-        sklJzcksSy3St0vgytj5uo+p4B93xZJZ99kbGFdzdjFyckgImEjcmH2bBcRmEVCVuLXrLpjN
-        JqAucePGT2YQWwTIPrVyOXsXIxcHs0ATs8S19ZtZQRLCAu4SLzu2MILYvAJmEk9e3QRrEBLI
-        kPjS3MkEEReUODnzCdhQZgEtiRv/XgLFOYBsaYnl/zhAwpwCthIPe3+DlYgKKEsc2HacaQIj
-        7ywk3bOQdM9C6F7AyLyKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMLqW1f6ZuIPxy2X3Q4wC
-        HIxKPLwbeuxThVgTy4orcw8xSnAwK4nwMjvapArxpiRWVqUW5ccXleakFh9ilOZgURLn9QpP
-        TRASSE8sSc1OTS1ILYLJMnFwSjUwZj9WLH/JlG787BR7fO7J8JldizYUdk19YrJe6FaczJ6N
-        lxkvPvjqbqhQHrIq/8cKwQL/67yr3bo0z4Xp6jSoLMjYU2WxPEKq9meOsPfMu1lbpp56dOn4
-        /TCb/U6VxkW6RQvMTmwMV87p+/5y+e/ZT7OveR+I+Mgr1Hdnhdnfs0HlTwpU7BxKlViKMxIN
-        tZiLihMB1bFmnqoCAAA=
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231030-fix-rtl8366rb-v2-1-e66e1ef7dbd2@linaro.org>
+ <20231030141623.ufzhb4ttvxi3ukbj@skbuf> <CACRpkdaN2rTSHXDxwuS4czCzWyUkazY4Fn5vVLYosqF0=qi-Bw@mail.gmail.com>
+ <20231030222035.oqos7v7sdq5u6mti@skbuf>
+In-Reply-To: <20231030222035.oqos7v7sdq5u6mti@skbuf>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 30 Oct 2023 23:57:33 +0100
+Message-ID: <CACRpkdZ4+QrSA0+JCOrx_OZs4gzt1zx1kPK5bdqxp0AHfEQY3g@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: dsa: tag_rtl4_a: Bump min packet size
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 10:55:07AM -0700, Dave Hansen wrote:
-> On 10/30/23 00:25, Byungchul Park wrote:
-> > I'm suggesting a mechanism to reduce TLB flushes by keeping source and
-> > destination of folios participated in the migrations until all TLB
-> > flushes required are done, only if those folios are not mapped with
-> > write permission PTE entries at all. I worked Based on v6.6-rc5.
-> 
-> There's a lot of common overhead here, on top of the complexity in general:
-> 
->  * A new page flag
->  * A new cpumask_t in task_struct
->  * A new zone list
->  * Extra (temporary) memory consumption
-> 
-> and the benefits are ... "performance improved a little bit" on one
-> workload.  That doesn't seem like a good overall tradeoff to me.
-> 
-> There will certainly be workloads that, before this patch, would have
-> little or no memory pressure and after this patch would need to do reclaim.
+On Mon, Oct 30, 2023 at 11:20=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com=
+> wrote:
 
-'if (gain - cost) > 0 ?'" is a difficult problem. I think the followings
-are already big benefit in general:
+> I see commit 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tag=
+s")
+> also mentions: "Qingfang came up with the solution: we need to pad the
+> ethernet frame to 60 bytes using eth_skb_pad(), then the switch will
+> happily accept frames with custom tags.". So the __skb_put_padto() was
+> something very empirical in the first place.
+>
+> Since it's all problematic, would you mind removing the __skb_put_padto()
+> altogether from rtl4a_tag_xmit(), and let me know what is the output for
+> the following sweep through packet sizes? I truly wonder if it's just
+> for small and large packets that we see packet drops, or if it's somethin=
+g
+> repetitive throughout the range as well.
+>
+> for size in $(seq 0 1476); do if ping 10.0.0.56 -s $size -W 1 -c 1 -q >/d=
+ev/null; then echo "$((size + 42)): OK"; else echo "$((size + 42)): NOK"; f=
+i; done
 
-	1. big reduction of IPIs #
-	2. big reduction of TLB flushes #
-	3. big reduction of TLB misses #
+The weird thing is that if I remove the __skb_put_padto()
+call, ping doesn't work at all. Somehow the packets are
+corrupted, because they sure get out of the switch and I
+can see them arriving with tcpdump on the host.
 
-Of course, I or we need to keep trying to see a better number in
-end-to-end performance.
+root@OpenWrt:/# for size in $(seq 0 1476); do if ping 192.168.1.137 -s $siz=
+e -W
+1 -c 1 -q >/dev/null; then echo "$((size + 42)): OK"; else echo "$((size + =
+42)):
+ NOK"; fi; done
+42: NOK
+43: NOK
+44: NOK
+45: NOK
+46: NOK
+47: NOK
+48: NOK
+49: NOK
+50: NOK
+51: NOK
+(...)
+1509: NOK
+1510: NOK
+1511: NOK
+1512: NOK
+1513: NOK
+1514: NOK
+1515: NOK
+1516: NOK
+1517: NOK
+1518: NOK
 
-> Also, looking with my arch/x86 hat on, there's really nothing
-> arch-specific here.  Please try to keep stuff out of arch/x86 unless
-> it's very much arch-specific.
+This of course make no sense, since the padding function should do nothing
+when the packet is bigger than 60 bytes.
 
-Okay. I will try to keep it out of arch code. I should give up an
-optimization that can be achieved by working on arch code tho.
+So what we are seeing is some kind of side effect from the usage of
+__skb_put_padto() I suppose? But I have no idea what that is, I looked
+at the function and what it calls down to __skb_pad().
 
-	Byungchul
+I'm testing skb_linearize(), which seems to be called on this path...
+
+TCPdump on the host looks like this:
+# tcpdump -i enp7s0
+dropped privs to tcpdump
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on enp7s0, link-type EN10MB (Ethernet), snapshot length 262144 by=
+tes
+23:28:55.184019 IP _gateway > fedora: ICMP echo request, id 2461, seq
+0, length 27
+23:28:56.205294 IP _gateway > fedora: ICMP echo request, id 2462, seq
+0, length 28
+23:28:57.226495 IP _gateway > fedora: ICMP echo request, id 2463, seq
+0, length 29
+23:28:58.248013 IP _gateway > fedora: ICMP echo request, id 2464, seq
+0, length 30
+23:28:59.269157 IP _gateway > fedora: ICMP echo request, id 2465, seq
+0, length 31
+23:29:00.290443 IP _gateway > fedora: ICMP echo request, id 2466, seq
+0, length 32
+23:29:01.698700 IP _gateway > fedora: ICMP echo request, id 2467, seq
+0, length 33
+23:29:02.332131 IP _gateway > fedora: ICMP echo request, id 2468, seq
+0, length 34
+23:29:03.352442 IP _gateway > fedora: ICMP echo request, id 2469, seq
+0, length 35
+(...)
+23:53:33.834706 IP _gateway > fedora: ICMP echo request, id 4000, seq
+0, length 1475
+23:53:34.854946 IP _gateway > fedora: ICMP echo request, id 4001, seq
+0, length 1476
+23:53:36.258777 IP truncated-ip - 1 bytes missing! _gateway > fedora:
+ICMP echo request, id 4002, seq 0, length 1477
+23:53:36.896654 IP truncated-ip - 2 bytes missing! _gateway > fedora:
+ICMP echo request, id 4003, seq 0, length 1478
+23:53:37.918022 IP truncated-ip - 3 bytes missing! _gateway > fedora:
+ICMP echo request, id 4004, seq 0, length 1479
+23:53:38.938355 IP truncated-ip - 4 bytes missing! _gateway > fedora:
+ICMP echo request, id 4005, seq 0, length 1480
+23:53:39.958451 IP truncated-ip - 4 bytes missing! _gateway > fedora:
+ICMP echo request, id 4006, seq 0, length 1480
+23:53:40.978598 IP truncated-ip - 4 bytes missing! _gateway > fedora:
+ICMP echo request, id 4007, seq 0, length 1480
+23:53:41.998991 IP truncated-ip - 4 bytes missing! _gateway > fedora:
+ICMP echo request, id 4008, seq 0, length 1480
+23:53:43.020309 IP truncated-ip - 4 bytes missing! _gateway > fedora:
+ICMP echo request, id 4010, seq 0, length 1480
+
+Here you can incidentally also see what happens if we don't pad the big pac=
+kets:
+the packet gets truncated.
+
+Yours,
+Linus Walleij
