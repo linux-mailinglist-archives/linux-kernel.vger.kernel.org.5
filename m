@@ -2,70 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E097DBCE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D867DBCE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 16:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233570AbjJ3Pt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 11:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S233509AbjJ3PtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 11:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233551AbjJ3Pt0 (ORCPT
+        with ESMTP id S231919AbjJ3PtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 11:49:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6970BF4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:49:22 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54357417e81so4269a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698680960; x=1699285760; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FkWEvSpj4EOzW1FIq48dR5K6zMnw3n6lBUOqN6Xvf9E=;
-        b=nghZKH6b+lS1Z/EVQwhZix/byx/bJu0xcffRkCRaH4PS5oTTjZEixMhrDfleD9/iPX
-         9we+bOgD8C3gPZ9m7ApXONgBa0ZSfZSCFcqx8tXYxTVq2gwCrcFCi3Xezqee6bqISoUO
-         66Jb/7nKcdSkbm6vtRuCw9uFeEubg2j983J6jH8UwXNbIhAr+kadSsSz9hYXRUG42Es8
-         dhWhEekCTaAFdkXeVSrOF0UX78VvXt1HUXhIUP7bgRv6MlGdtVo4BSQlMurJE40NNPfs
-         ZukJzHa+5E+wu7xCt5rKXi92NczazCtzyOQDfSWbFsbHrgG5++cUKPAKg1VXh1dTYoCN
-         j9JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698680960; x=1699285760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FkWEvSpj4EOzW1FIq48dR5K6zMnw3n6lBUOqN6Xvf9E=;
-        b=h8hQmP/4ZaQyFbLSdaIMJx5oeAjPd7Y+vwE7G2KoSZxplbf0Wm7L6V12OXA9iHla/j
-         SqpjBKTBVLqUIfqmGBUkjAf7ODqqcH//eAPlNwThCqJBXi46bXggffIX6g5BnkKzUYFX
-         GLzriMiUmXeblE7r0JcOcc5482Z/ewHtOjFuYChgvpIHMWXdrtM6SOP+2tGZ4w5qDPRb
-         6wQxyYXsVXKtBpUHhy0RmYKQjZEoPFs8B8bI7ZJuBgoFK2bKGSAewJMVoWZAfTJclaXD
-         HZyS+hbbZ3cwByk9D/7Qw5Ye6WfuOahot5Rjmo5Q7CpoYIAipRzpm1pwTjS/Wy0Xilhy
-         5wcA==
-X-Gm-Message-State: AOJu0YxtmF+Ihz/qzT+Z8r7+VJ1zDFQZkwciBA+hWGbjbJjNp2CKQwe9
-        IHc+vHBasy+pjzOhUlZ3g7E5MtzxB9MtzFa8QcMRWA==
-X-Google-Smtp-Source: AGHT+IHmnsYDLOCh0X2FX2ePeYR5kt25POJ/6EJ5OuyPzDSCNjm9Kly3q4T57cyTmD//emtw3QSiA7mgey1mzsGEqjw=
-X-Received: by 2002:a50:baee:0:b0:540:e63d:3cfb with SMTP id
- x101-20020a50baee000000b00540e63d3cfbmr130594ede.3.1698680960030; Mon, 30 Oct
- 2023 08:49:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231028144136.3462-1-bragathemanick0908@gmail.com>
- <CANn89iJyLWy6WEa_1p+jKpGBfq=h=TX=_7p_-_i4j6mHcMXbgA@mail.gmail.com> <e38353e7-ea99-434b-9700-151ab2de6f85@gmail.com>
-In-Reply-To: <e38353e7-ea99-434b-9700-151ab2de6f85@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
+        Mon, 30 Oct 2023 11:49:12 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DC3C5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 08:49:09 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qxUVm-0001ed-Q8; Mon, 30 Oct 2023 16:49:06 +0100
+Message-ID: <6e9968a0-c511-4a29-aec5-42892b8254d2@leemhuis.info>
 Date:   Mon, 30 Oct 2023 16:49:06 +0100
-Message-ID: <CANn89iKPTdE+oAB30gp4koC7ddnga20R8H6V3qismvvEP80aqg@mail.gmail.com>
-Subject: Re: [PATCH net] dccp: check for ccid in ccid_hc_tx_send_packet
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        dccp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: Linux regressions report for mainline [2023-10-29]
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+References: <169858752781.1095326.10615907253726224231@leemhuis.info>
+ <CAHk-=wgEHNFHpcvnp2X6-fjBngrhPYO=oHAR905Q_qk-njV31A@mail.gmail.com>
+Content-Language: en-US, de-DE
+In-Reply-To: <CAHk-=wgEHNFHpcvnp2X6-fjBngrhPYO=oHAR905Q_qk-njV31A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1698680949;746d030f;
+X-HE-SMSGID: 1qxUVm-0001ed-Q8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,60 +46,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 4:40=E2=80=AFPM Bragatheswaran Manickavel
-<bragathemanick0908@gmail.com> wrote:
->
->
-> On 30/10/23 14:29, Eric Dumazet wrote:
-> > On Sat, Oct 28, 2023 at 4:41=E2=80=AFPM Bragatheswaran Manickavel
-> > <bragathemanick0908@gmail.com> wrote:
-> >> ccid_hc_tx_send_packet might be called with a NULL ccid pointer
-> >> leading to a NULL pointer dereference
-> >>
-> >> Below mentioned commit has similarly changes
-> >> commit 276bdb82dedb ("dccp: check ccid before dereferencing")
-> >>
-> >> Reported-by: syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
-> >> Closes: https://syzkaller.appspot.com/bug?extid=3Dc71bc336c5061153b502
-> >> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com=
->
-> >> ---
-> >>   net/dccp/ccid.h | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/net/dccp/ccid.h b/net/dccp/ccid.h
-> >> index 105f3734dadb..1015dc2b9392 100644
-> >> --- a/net/dccp/ccid.h
-> >> +++ b/net/dccp/ccid.h
-> >> @@ -163,7 +163,7 @@ static inline int ccid_packet_dequeue_eval(const i=
-nt return_code)
-> >>   static inline int ccid_hc_tx_send_packet(struct ccid *ccid, struct s=
-ock *sk,
-> >>                                           struct sk_buff *skb)
-> >>   {
-> >> -       if (ccid->ccid_ops->ccid_hc_tx_send_packet !=3D NULL)
-> >> +       if (ccid !=3D NULL && ccid->ccid_ops->ccid_hc_tx_send_packet !=
-=3D NULL)
-> >>                  return ccid->ccid_ops->ccid_hc_tx_send_packet(sk, skb=
-);
-> >>          return CCID_PACKET_SEND_AT_ONCE;
-> >>   }
-> >> --
-> >> 2.34.1
-> >>
-> > If you are willing to fix dccp, I would make sure that some of
-> > lockless accesses to dccps_hc_tx_ccid
-> > are also double checked and fixed.
-> >
-> > do_dccp_getsockopt() and dccp_get_info()
->
->
-> Hi Eric,
->
-> In both do_dccp_getsockopt() and dccp_get_info(), dccps_hc_rx_ccid are
-> checked properly before access.
->
+On 29.10.23 18:19, Linus Torvalds wrote:
+> On Sun, 29 Oct 2023 at 03:52, Regzbot (on behalf of Thorsten Leemhuis)
+> <regressions@leemhuis.info> wrote:
+> 
+>> * There was another report about a blank screen during boot on a Lenovo
+>> laptop because simpledrm (that users apparently had enabled without
+>> problems beforehand) started to support those machines due to
+>> 60aebc9559492c ("drivers/firmware: Move sysfb_init() from
+>> device_initcall to subsys_initcall_sync"). I suggested a revert, but the
+>> developers disagree (to quote: "From my point of view, this is not a
+>> regression, 60aebc9559492c doesn't cause a problem, but exposes a
+>> problem.")
+> 
+> Honestly, "exposes a problem" is pretty much the *definition* of a
+> regression. So that excuse is particularly bad.
+> 
+> The whole point of "regression" is "things that used to work no longer work".
+> 
+> And no, "there's another bug that needs to be fixed" is _not_ the
+> answer - not unless you have that fix in hand.
 
-Not really, because another thread can change the value at the same time.
+Thx for stating it so clearly. I had tried to get that point across, but
+failed despite some links to LKML messages from you that covered similar
+situations.
 
-Adding checks is not solving races.
+This happens frequently, which is tiresome and draining for me. I wish
+we had *your* overall view on what regressions and how they are meant to
+be handled written up in one short text you explicitly vetted. That
+might give me a better lever and makes things easier for maintainers as
+well, especially new ones.
+
+See the text below[1] to give you a rough idea what kind of text I'm
+thinking of.
+
+The beginning of the merge window is a bad time to bring this up for
+discussion, especially when your also traveling. So I will let this rest
+for now and get back to you. Unless you say "that's a bad idea, don't
+waste your time on it".
+
+> That said, this already went into 6.5, so I'm not going to revert it
+> now just before the 6.6 release. That would be more dangerous than
+> just letting things be.
+
+Yup, fully agreed. Thx again for looking into this.
+
+Ciao, Thorsten
+
+
+[1] here is something I quickly complied
+
+"""
+Linus "no regressions rule"
+---------------------------
+
+The goal
+~~~~~~~~
+
+People should always feel like they can update to a new kernel version
+without worrying anything might break.
+
+
+What qualifies as regression
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's a regression if some practical use case running fine with one Linux
+version works worse or not at all with a newer version compiled using a
+similar configuration.
+
+To elaborate:
+
+* The aspect "works worse" includes higher power consumption or lower
+performance, unless the difference is minor.
+
+* Among the things that do not qualify as "practical use case" are
+legacy museum style equipment, ABI/API test scripts, and microbenchmarks.
+
+* It's irrelevant if the change causing the regression only does so by
+exposing a problem that beforehand was silently lurking somewhere else
+(hardware, firmware, userland, or some other part of the kernel).
+
+* It's irrelevant if a change is fixing some undefined behavior or a bug.
+
+* It's irrelevant if users could easily avoid the problem somehow, e.g.
+by changing the configuration or updating some other software (this
+includes firmware stored in the device or shipped in the linux-firmware
+package).
+
+* A "similar configuration" usually means that the .config of the old
+kernel was taken as base for the newer one and processed with
+"olddefconfig".
+
+* Old and new kernel versions obviously must both be untainted vanilla
+kernels.
+
+
+How to handle regression report
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[FIXME: this section is missing for now this requires some more thought;
+I guess what's needed here is basically the very essence of what
+Documentation/process/handling-regressions.rst outlines in "Expectations
+and best practices for fixing regressions"]
+
+
+Closing words
+~~~~~~~~~~~~~
+
+Reality is never entirely black-and-white, therefore in rare cases
+exceptions will not be fixed.
+
+For example, sometimes it is impossible to resolve a security
+vulnerability without causing a regression. That being said, developers
+should try hard to avoid such an outcome and when unable to do so
+minimize the impact as much as possible.
+
+Another example: regressions only found years after the culprit was
+merged might be handled like regular bugs or not addressed at all, as
+the developers which introduced it might have moved on to other endeavors.
+"""
