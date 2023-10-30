@@ -2,119 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7597DC30A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC71F7DC30D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjJ3XR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 19:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S230352AbjJ3XUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJ3XRz (ORCPT
+        with ESMTP id S229775AbjJ3XUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 19:17:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CA9E8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:17:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9c5708ddbeso4913395276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:17:52 -0700 (PDT)
+        Mon, 30 Oct 2023 19:20:15 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B19E1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:20:12 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c3c8adb27so753450766b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698707872; x=1699312672; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Csx+TsEcocBEQ6kz2m3CofW0FivmcdzPkNL/+8GkZMU=;
-        b=wulmNnMEVs3z1tDVSYYaowkPOqPUAn0OwUr0Yxt0sNaGoWkFzIS5lxPZsuZTFxmzqz
-         K3k0qwnP4rd0aFYKs+dSrkrCkaacN0asJ9V56YnPOXvkt5ior2H2ik4wM9SBvFBn9NVt
-         0DV9a5aefavweNuYu/yfkIH8hLgoBBMDTDUb79Gzvzfu7TowIU2Ese6EwlEEYufCjz5o
-         ou/V2xRPnTIacxCxE9hBkPaeifWvMZWG8R+k5DajFwO7+XScAzAQdu2nUuxxmAPSlqML
-         4USw3SHoBdA4IxouKgvqvBqdhA5HEJGJNbEKMTPBrdn9s0EKu0NniVjx6cRZ/D9sLwLV
-         gFKA==
+        d=chromium.org; s=google; t=1698708009; x=1699312809; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4gcrr3kC74rReKv7GNSo411IeX5s50dNiJe54KXuM0I=;
+        b=kPkmaHg2cHUgopcKDuTz222n+a42k6W35SuEowImKi7IsLYZRLkNBM0UmLpd+h1nud
+         Udb9kwwrJ53cATHTlo6gFDKFWLMcCnO5SFz43T8aT4/tlo6WygFv5cnH1vm3ppb/hvzI
+         KAMsuedz2hMXnG6WXK5BaN4i7dnWtw6rlpTy4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698707872; x=1699312672;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Csx+TsEcocBEQ6kz2m3CofW0FivmcdzPkNL/+8GkZMU=;
-        b=lxPxp+eyw+9unvmojeeV1dscpbljDJVBUn/VVKCy6KwjOOuvBOZF7RyKRGQ2DDOkDY
-         LQEIsBh7o+3wCsNeoHfv9Yks9cvkuetMHdSh3v7ZcPLBsNbWQi354jtZRUVZv2fKLtt9
-         t23hyDWwkE3NvvQ8w1p0+J52b1WL0JH4Gc0SUc+Ffx+H6/Mg6KyNDZZ0BEUTW6tK+ceO
-         MDHT1kHzCwi3MzNvEi7Dg/8wk6f+s9etfSQillJYF4dMS4/ueHLCtEwuouolRpZvc1Q0
-         do+Z8a3eAYnrwFDwefVDV2Eon9wumUBipSdkeZDmwxG1vGye0jpKbKt2hJwAXMnVlTQz
-         SEIw==
-X-Gm-Message-State: AOJu0Yxlz0Mj/lROKJM9N6VF0h2VMmt2WMjMoJ3K6VqfCrYNIi0fLxi9
-        +yehPnVF987QOzu8S4YnEt+5sCPBu3w=
-X-Google-Smtp-Source: AGHT+IHcWu2teE0w4erdqneJsvHZS2M1ee6fdESgDAEOW+IWBnZCh53mWv/aUqxFdZ3MsAoLbwB56oaCH0o=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:aa04:0:b0:d9c:2a58:b905 with SMTP id
- s4-20020a25aa04000000b00d9c2a58b905mr210703ybi.9.1698707872051; Mon, 30 Oct
- 2023 16:17:52 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 16:17:50 -0700
-In-Reply-To: <47c9a8f1-0098-4543-ac98-e210ca6b0d34@intel.com>
-Mime-Version: 1.0
-References: <20231025055914.1201792-1-xiaoyao.li@intel.com>
- <20231025055914.1201792-2-xiaoyao.li@intel.com> <87a5s73w53.fsf@redhat.com>
- <ZTkkmgs_oCnDCGvd@google.com> <47c9a8f1-0098-4543-ac98-e210ca6b0d34@intel.com>
-Message-ID: <ZUA5nnAV3CxOX9lB@google.com>
-Subject: Re: [PATCH v2 1/2] x86/kvm/async_pf: Use separate percpu variable to
- track the enabling of asyncpf
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1698708009; x=1699312809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4gcrr3kC74rReKv7GNSo411IeX5s50dNiJe54KXuM0I=;
+        b=CxrlZhRObm4XQf4aH7AVYb77AM6sqVzLb2ZUSF/JYllCO8YJeJkxQvf6LZs6Ls1Ugd
+         bFMtHJIx6+UGdKUTNpI2MFsZHbUWa+bO+ZqjPUqWDQNtgmhLJnjYCy1SRd+o1vLwUCoi
+         NGah74YI1jY7cOeSUo3WUjNHO9WuzRdLVyfze+ZOPbL7rFhPtK2kp6/4Kjv6kHHa4K2d
+         l9qsKsTZ11h82Ogs6G+OAHuK+ueutHEIfgmFnsWw0DX2wwEqjP69CzWK0doJDVezE+ro
+         +47SYPOtQY0eS7A2dLC0bhVfoQniwVYULq4tbNp6i472ak8LZ6AoVSbjZgUdg2ZJ2L6R
+         6dug==
+X-Gm-Message-State: AOJu0YxwPwB36Slm0VXgRX4srSI6By9+lMRWgmTQg4Np36fthjtQ3RlL
+        DCzdGED5X2koios65wc4XFA7U2XYyaTf/rcuQSSMM+Iz
+X-Google-Smtp-Source: AGHT+IEsmkOLKklEqlIx16duhmNHnwW+vySRIyW2k2E62Bg0l66S6/kGTnQ4IF62R7ksRpBrSbzPaA==
+X-Received: by 2002:a17:907:3fa4:b0:9be:8ead:54c7 with SMTP id hr36-20020a1709073fa400b009be8ead54c7mr10198091ejc.12.1698708008816;
+        Mon, 30 Oct 2023 16:20:08 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id ci18-20020a170906c35200b009887f4e0291sm31017ejb.27.2023.10.30.16.20.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Oct 2023 16:20:08 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so6397a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:20:08 -0700 (PDT)
+X-Received: by 2002:a50:c04f:0:b0:542:d6e7:1e09 with SMTP id
+ u15-20020a50c04f000000b00542d6e71e09mr46600edd.0.1698708007918; Mon, 30 Oct
+ 2023 16:20:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
+ <ZS-7DC9OH2DUejLY@FVFF77S0Q05N>
+In-Reply-To: <ZS-7DC9OH2DUejLY@FVFF77S0Q05N>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 30 Oct 2023 16:19:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V=Jqcq+oS1xQr71eqOHSbW4VHT=_AEDU6upjwsPKGKdg@mail.gmail.com>
+Message-ID: <CAD=FV=V=Jqcq+oS1xQr71eqOHSbW4VHT=_AEDU6upjwsPKGKdg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arm64: Disable GiC priorities on Mediatek devices w/
+ firmware issues
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        James Morse <james.morse@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023, Xiaoyao Li wrote:
-> On 10/25/2023 10:22 PM, Sean Christopherson wrote:
-> > On Wed, Oct 25, 2023, Vitaly Kuznetsov wrote:
-> > > Xiaoyao Li <xiaoyao.li@intel.com> writes:
-> > > > diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> > > > index b8ab9ee5896c..388a3fdd3cad 100644
-> > > > --- a/arch/x86/kernel/kvm.c
-> > > > +++ b/arch/x86/kernel/kvm.c
-> > > > @@ -65,6 +65,7 @@ static int __init parse_no_stealacc(char *arg)
-> > > >   early_param("no-steal-acc", parse_no_stealacc);
-> > > > +static DEFINE_PER_CPU_READ_MOSTLY(bool, async_pf_enabled);
-> > > 
-> > > Would it make a difference is we replace this with a cpumask? I realize
-> > > that we need to access it on all CPUs from hotpaths but this mask will
-> > > rarely change so maybe there's no real perfomance hit?
-> > 
-> > FWIW, I personally prefer per-CPU booleans from a readability perspective.  I
-> > doubt there is a meaningful performance difference for a bitmap vs. individual
-> > booleans, the check is already gated by a static key, i.e. kernels that are NOT
-> > running as KVM guests don't care.
-> 
-> I agree with it.
-> 
-> > Actually, if there's performance gains to be had, optimizing kvm_read_and_reset_apf_flags()
-> > to read the "enabled" flag if and only if it's necessary is a more likely candidate.
-> > Assuming the host isn't being malicious/stupid, then apf_reason.flags will be '0'
-> > if PV async #PFs are disabled.  The only question is whether or not apf_reason.flags
-> > is predictable enough for the CPU.
-> > 
-> > Aha!  In practice, the CPU already needs to resolve a branch based on apf_reason.flags,
-> > it's just "hidden" up in __kvm_handle_async_pf().
-> > 
-> > If we really want to micro-optimize, provide an __always_inline inner helper so
-> > that __kvm_handle_async_pf() doesn't need to make a CALL just to read the flags.
-> > Then in the common case where a #PF isn't due to the host swapping out a page,
-> > the paravirt happy path doesn't need a taken branch and never reads the enabled
-> > variable.  E.g. the below generates:
-> 
-> If this is wanted. It can be a separate patch, irrelevant with this series,
-> I think.
+Hi,
 
-Yes, it's definitely beyond the scope of this series.
+On Wed, Oct 18, 2023 at 4:01=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> On Fri, Oct 06, 2023 at 03:15:51PM -0700, Douglas Anderson wrote:
+> > In commit 44bd78dd2b88 ("irqchip/gic-v3: Disable pseudo NMIs on
+> > Mediatek devices w/ firmware issues") we added a method for detecting
+> > Mediatek devices with broken firmware and disabled pseudo-NMI. While
+> > that worked, it didn't address the problem at a deep enough level.
+> >
+> > The fundamental issue with this broken firmware is that it's not
+> > saving and restoring several important GICR registers. The current
+> > list is believed to be:
+> > * GICR_NUM_IPRIORITYR
+> > * GICR_CTLR
+> > * GICR_ISPENDR0
+> > * GICR_ISACTIVER0
+> > * GICR_NSACR
+> >
+> > Pseudo-NMI didn't work because it was the only thing (currently) in
+> > the kernel that relied on the broken registers, so forcing pseudo-NMI
+> > off was an effective fix. However, it could be observed that calling
+> > system_uses_irq_prio_masking() on these systems still returned
+> > "true". That caused confusion and led to the need for
+> > commit a07a59415217 ("arm64: smp: avoid NMI IPIs with broken MediaTek
+> > FW"). It's worried that the incorrect value returned by
+> > system_uses_irq_prio_masking() on these systems will continue to
+> > confuse future developers.
+> >
+> > Let's fix the issue a little more completely by disabling IRQ
+> > priorities at a deeper level in the kernel. Once we do this we can
+> > revert some of the other bits of code dealing with this quirk.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> >  arch/arm64/kernel/cpufeature.c | 21 +++++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> >
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeat=
+ure.c
+> > index 2806a2850e78..e35efab8efa9 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -2094,9 +2094,30 @@ static int __init early_enable_pseudo_nmi(char *=
+p)
+> >  }
+> >  early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
+> >
+> > +static bool are_gic_priorities_broken(void)
+> > +{
+> > +     bool is_broken =3D false;
+> > +     struct device_node *np;
+> > +
+> > +     /*
+> > +      * Detect broken Mediatek firmware that doesn't properly save and
+> > +      * restore GIC priorities.
+> > +      */
+> > +     np =3D of_find_compatible_node(NULL, NULL, "arm,gic-v3");
+> > +     if (np) {
+> > +             is_broken =3D of_property_read_bool(np, "mediatek,broken-=
+save-restore-fw");
+> > +             of_node_put(np);
+> > +     }
+> > +
+> > +     return is_broken;
+> > +}
+>
+> I'm definitely in favour of detecting this in the cpucap, but I think it'=
+d be
+> better to parse the DT once on the boot CPU rather than on each CPU every=
+ time
+> it's brought up.
+>
+> I think if we add something like:
+>
+> #ifdef CONFIG_ARM64_PSEUDO_NMI
+> static void detect_system_supports_pseudo_nmi(void)
+> {
+>         struct device_node *np;
+>
+>         if (!enable_pseudo_nmi)
+>                 return;
+>
+>         /*
+>          * Detect broken Mediatek firmware that doesn't properly save and
+>          * restore GIC priorities.
+>          */
+>         np =3D of_find_compatible_node(NULL, NULL, "arm,gic-v3");
+>         if (np && of_property_read_bool(np, "mediatek,broken-save-restore=
+-fw")) {
+>                 pr_info("Pseudo-NMI disabled due to Mediatek Chromebook G=
+ICR save problem");
+>                 enable_pseudo_nmi =3D false;
+>         }
+>         of_node_put(np);
+> }
+> #endif /* CONFIG_ARM64_PSEUDO_NMI */
+> static inline void detect_system_supports_pseudo_nmi(void) { }
+> #endif
+>
+> ... then we can call that from init_cpu_features() before we call
+> setup_boot_cpu_capabilities(), and then the existing logic in
+> can_use_gic_priorities() should just work as that returns the value of
+> enable_pseudo_nmi.
+>
+> Note: of_node_put(NULL) does nothing, like kfree(NULL), so it's fine for =
+that
+> to be called in the !np case.
+>
+> Would you be happy to fold that in? I'm happy with a Suggested-by tag if =
+so. :)
+
+Yup, that looks good to me and I can fold it in (fixing a few nits
+like missing "\n" and adding __init to the function). I'll wait to get
+maintainers opinions on whether to fold patch #3 in here and then send
+a v2.
+
+-Doug
