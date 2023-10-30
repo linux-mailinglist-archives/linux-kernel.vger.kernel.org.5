@@ -2,63 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ED47DBC18
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACF17DBC1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 15:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbjJ3Ouf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 10:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S233540AbjJ3Owd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 10:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232542AbjJ3Oud (ORCPT
+        with ESMTP id S232542AbjJ3Owb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 10:50:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457FFC2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:50:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC56C433C7;
-        Mon, 30 Oct 2023 14:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698677429;
-        bh=Lq3kUlbKODK3hpI0ykMHy/CoeP2mot4776pgkJO0T1c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Q6Z7Mrmq5c4vvIr47jfTjs9fdgEa++nxwoO9Bf2u8e37HFW2+2KorqY/7h8lqm428
-         fS6UZKX/tKN63ZhJs01OjeQ+6+DsAP6csmXTLrgiA+T+EUZSJ/haAe2/b4DY5lnVYI
-         j+rWINl2eAcywmAgsJ01ACcmCQlwI8SwNPnY9mOyJZyBq0QZzjP1RDwGWKcNw5Jh0f
-         F72zQK1BnujuzswhhEdOre0NwjOZRBbczJiAvXzxMTq8ZyW7NJ+MhaH5hMOoY/nY80
-         uMNKsCqLTcqw6GkBDb4yrIDWdyvu9AnFVwt7EroRZIY6C0Qkz+6wMsQxgNkIuq4+c/
-         S06GXugMAg2Bw==
-Message-ID: <c5450fd8-d4da-bbf9-006e-33428506bc2b@kernel.org>
-Date:   Mon, 30 Oct 2023 22:50:25 +0800
+        Mon, 30 Oct 2023 10:52:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83826C2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 07:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698677502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iZM5Ir1agMVPmsp/0h/z8SE5MvN1kGhnLqtdaxL5v4U=;
+        b=UrNZkCfc99nrG6JWraMNbIgCnD2ZOfrDTgdal9GkGb7lbEqCs/qGmARn9osFqTfNcCfoaz
+        W8OINYUvt20JW9JlkuuMmUnGPOwn5ZL6BH8+A9jRrGKdgkMV7YEfmqmqJVMlQdNnSiZ6eU
+        DKPUcJZYgtY9iHojQzHSGLXYs80cuhg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-42-ZvuMTU3_O-aBrCNMZjNOXQ-1; Mon,
+ 30 Oct 2023 10:51:32 -0400
+X-MC-Unique: ZvuMTU3_O-aBrCNMZjNOXQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 61BD61C01B2C;
+        Mon, 30 Oct 2023 14:51:31 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0EA81492BE0;
+        Mon, 30 Oct 2023 14:51:28 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: [PATCH] sched/fair: Make the BW replenish timer expire in hardirq context for PREEMPT_RT
+Date:   Mon, 30 Oct 2023 15:51:04 +0100
+Message-ID: <20231030145104.4107573-1-vschneid@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] erofs: don't warn MicroLZMA format anymore
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20231021020137.1646959-1-hsiangkao@linux.alibaba.com>
-Content-Language: en-US
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20231021020137.1646959-1-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/21 10:01, Gao Xiang wrote:
-> The LZMA algorithm support has been landed for more than one year since
-> Linux 5.16.  Besides, the new XZ Utils 5.4 has been available in most
-> Linux distributions.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Consider the following scenario under PREEMPT_RT:
+o A CFS task p0 gets throttled while holding read_lock(&lock)
+o A task p1 blocks on write_lock(&lock), making further readers enter the
+  slowpath
+o A ktimers or ksoftirqd task blocks on read_lock(&lock)
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+If the cfs_bandwidth.period_timer to replenish p0's runtime is enqueued on
+the same CPU as one where ktimers/ksoftirqd is blocked on read_lock(&lock),
+this creates a circular dependency.
 
-Thanks,
+This has been observed to happen with:
+o fs/eventpoll.c::ep->lock
+o net/netlink/af_netlink.c::nl_table_lock (after hand-fixing the above)
+but can trigger with any rwlock that can be acquired in both process and
+softirq contexts.
+
+The linux-rt tree has had
+  1ea50f9636f0 ("softirq: Use a dedicated thread for timer wakeups.")
+which helped this scenario for non-rwlock locks by ensuring the throttled
+task would get PI'd to FIFO1 (ktimers' default priority). Unfortunately,
+rwlocks cannot sanely do PI as they allow multiple readers.
+
+Make the period_timer expire in hardirq context under PREEMPT_RT. The
+callback for this timer can end up doing a lot of work, but this is
+mitigated somewhat when using nohz_full / CPU isolation: the timers *are*
+pinned, but on the CPUs the taskgroups are created on, which is usually
+going to be HK CPUs.
+
+Link: https://lore.kernel.org/all/xhsmhttqvnall.mognet@vschneid.remote.csb/
+Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+---
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8767988242ee3..15cf7de865a97 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6236,7 +6236,7 @@ void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth *paren
+ 	cfs_b->hierarchical_quota = parent ? parent->hierarchical_quota : RUNTIME_INF;
+ 
+ 	INIT_LIST_HEAD(&cfs_b->throttled_cfs_rq);
+-	hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED);
++	hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED_HARD);
+ 	cfs_b->period_timer.function = sched_cfs_period_timer;
+ 
+ 	/* Add a random offset so that timers interleave */
+@@ -6263,7 +6263,7 @@ void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+ 
+ 	cfs_b->period_active = 1;
+ 	hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
+-	hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
++	hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+ }
+ 
+ static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+-- 
+2.41.0
+
