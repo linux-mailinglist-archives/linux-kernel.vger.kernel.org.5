@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76757DB332
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16227DB34C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 07:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjJ3GYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 02:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S231210AbjJ3Gad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 02:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjJ3GYm (ORCPT
+        with ESMTP id S231682AbjJ3GaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 02:24:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BB094
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Oct 2023 23:24:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 366D2C433C9;
-        Mon, 30 Oct 2023 06:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698647080;
-        bh=2tB1guhBfYrZu5adq6I0lYKpY3+d8eVRbal6gHyEA0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dwiRR/bQ0LdbjutMPX+kumE3h0Jj3Y8Q4xAaoyUVtiMbr8zqWeNHOX4JO/8hAIia6
-         fXC/ut8HuCd+NpKNYqfqQREujU9ulkcIhwYRwSQizLHbgDWXdkScOaO3a9WVhaLmrr
-         tEBNhurAB0ksSllDicC3fGlWKQoV5ApztyuJQNbM=
-Date:   Mon, 30 Oct 2023 07:24:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Oliver Crumrine <ozlinux@hotmail.com>, colin.i.king@gmail.com,
-        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
-        geert@linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v5 2/6] staging: octeon: remove typedef in enum
- cvmx_helper_interface_mode_t
-Message-ID: <2023103049-daybed-abstain-bad9@gregkh>
-References: <cover.1693236450.git.ozlinux@hotmail.com>
- <PH7PR11MB7643DEB4401AA83A0578087CBCE0A@PH7PR11MB7643.namprd11.prod.outlook.com>
- <32e9ad3c-191e-4dd1-b1cc-07f7b93c3f28@roeck-us.net>
+        Mon, 30 Oct 2023 02:30:14 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90220D7E;
+        Sun, 29 Oct 2023 23:29:55 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39U6Rsu962780485, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39U6Rsu962780485
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Oct 2023 14:27:54 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Mon, 30 Oct 2023 14:27:55 +0800
+Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Mon, 30 Oct 2023 14:27:54 +0800
+Received: from localhost.localdomain (172.21.252.101) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
+ 15.1.2507.17 via Frontend Transport; Mon, 30 Oct 2023 14:27:54 +0800
+From:   Jyan Chou <jyanchou@realtek.com>
+To:     <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <jh80.chung@samsung.com>, <riteshh@codeaurora.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <asutoshd@codeaurora.org>,
+        <p.zabel@pengutronix.de>
+CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <arnd@arndb.de>,
+        <briannorris@chromium.org>, <doug@schmorgal.com>,
+        <tonyhuang.sunplus@gmail.com>, <abel.vesa@linaro.org>,
+        <william.qiu@starfivetech.com>, <jyanchou@realtek.com>
+Subject: [PATCH V4][0/4] Add DesignWare Mobile mmc driver
+Date:   Mon, 30 Oct 2023 14:27:45 +0800
+Message-ID: <20231030062749.2840-1-jyanchou@realtek.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32e9ad3c-191e-4dd1-b1cc-07f7b93c3f28@roeck-us.net>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-KSE-ServerInfo: RTEXMBS05.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 29, 2023 at 10:17:21AM -0700, Guenter Roeck wrote:
-> On Mon, Aug 28, 2023 at 11:39:07AM -0400, Oliver Crumrine wrote:
-> > Remove typedef in enum cvmx_helper_interface_mode_t, and rename all instances
-> > to cvmx_helper_interface_mode
-> > 
-> > Signed-off-by: Oliver Crumrine <ozlinux@hotmail.com>
-> 
-> In linux-next:
-> 
-> Building mips:cavium_octeon_defconfig ... failed
-> --------------
-> Error log:
-> drivers/staging/octeon/ethernet.c: In function 'cvm_oct_common_get_stats':
-> drivers/staging/octeon/ethernet.c:204:37: error: storage size of 'rx_status' isn't known
->   204 |         struct cvmx_pip_port_status rx_status;
->       |                                     ^~~~~~~~~
-> drivers/staging/octeon/ethernet.c:205:37: error: storage size of 'tx_status' isn't known
->   205 |         struct cvmx_pko_port_status tx_status;
->       |                                     ^~~~~~~~~
-> drivers/staging/octeon/ethernet.c:205:37: warning: unused variable 'tx_status' [-Wunused-variable]
-> drivers/staging/octeon/ethernet.c:204:37: warning: unused variable 'rx_status' [-Wunused-variable]
->   204 |         struct cvmx_pip_port_status rx_status;
->       |                                     ^~~~~~~~~
-> drivers/staging/octeon/ethernet.c: In function 'cvm_oct_probe':
-> drivers/staging/octeon/ethernet.c:801:22: error: variable 'imode' has initializer but incomplete type
->   801 |                 enum cvmx_helper_interface_mode imode =
->       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/staging/octeon/ethernet.c:801:49: error: storage size of 'imode' isn't known
->   801 |                 enum cvmx_helper_interface_mode imode =
->       |                                                 ^~~~~
-> drivers/staging/octeon/ethernet.c:801:49: warning: unused variable 'imode' [-Wunused-variable]
-> 
-> Bisect points to this patch. Bisect log attached.
-> 
-> As usual, my apologies for the noise if this has already been reported
-> and/or fixed.
+We added Synopsys DesignWare mmc cmdq driver and also added
+Realtek mmc driver to make good use of it.
 
-It has not been reported, thanks for it, I'll go revert the offending
-commits.  And I need to figure out how to build this driver better, I
-get no build-failures from anyone for it when stuff like this happens,
-odd...
+Jyan Chou (4):
+  mmc: solve DMA boundary limitation of CQHCI driver
+  mmc: Add Synopsys DesignWare mmc cmdq host driver
+  mmc: Add dw mobile mmc cmdq rtk driver
+  dt-bindings: mmc: Add dt-bindings for realtek mmc driver
 
-thanks,
+ .../bindings/mmc/realtek-dw-mshc.yaml         |  161 ++
+ drivers/mmc/host/Kconfig                      |   22 +
+ drivers/mmc/host/Makefile                     |    2 +
+ drivers/mmc/host/cqhci-core.c                 |    8 +-
+ drivers/mmc/host/cqhci.h                      |    5 +
+ drivers/mmc/host/dw_mmc_cqe-rtk.c             |  979 ++++++++++
+ drivers/mmc/host/dw_mmc_cqe-rtk.h             |  160 ++
+ drivers/mmc/host/dw_mmc_cqe.c                 | 1620 +++++++++++++++++
+ drivers/mmc/host/dw_mmc_cqe.h                 |  449 +++++
+ 9 files changed, 3405 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
+ create mode 100644 drivers/mmc/host/dw_mmc_cqe-rtk.c
+ create mode 100644 drivers/mmc/host/dw_mmc_cqe-rtk.h
+ create mode 100644 drivers/mmc/host/dw_mmc_cqe.c
+ create mode 100644 drivers/mmc/host/dw_mmc_cqe.h
 
-greg k-h
+-- 
+2.42.0
+
