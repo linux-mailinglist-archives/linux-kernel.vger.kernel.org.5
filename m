@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF46F7DB9B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A233C7DB9B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 13:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbjJ3MQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 08:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
+        id S233172AbjJ3MRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 08:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3MQz (ORCPT
+        with ESMTP id S229456AbjJ3MRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 08:16:55 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A975A2;
-        Mon, 30 Oct 2023 05:16:53 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507e85ebf50so6115429e87.1;
-        Mon, 30 Oct 2023 05:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698668211; x=1699273011; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cbm5lTXBFVIsSs+1ANa7wn2CrqJ6D0ati494gyw8FFM=;
-        b=ebosuiKT12gVLtSyNgY6F1P2yZzM2MPDv07yAI3jhA7gr7KX5PzvuMUIZn7ZXJiw9B
-         GxHgpv9e24gIB9tLRE+V9Y7/latOs5CYfBx9n9YV7CGl5wicwA9dmkeZx46IOB3IwRNw
-         z3fEgbcl9oq9TE9v9G645ev/lviqvDUwbT12r0CTGnGaswauRVvy2RtR7lGEI/+jzy+Z
-         ikvrexRu6J9PVqZcx80aTfrLHcnech9xgxZyvFiwBOSsPuTO8zS0eIDhB14Qq+WjLWIa
-         e2I4GeTsNjOEZQimSfJCWSZhQwGbp546prv9eS0uqrh8kZZtaMoBcuacc3jbH20s2T88
-         /haA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698668211; x=1699273011;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cbm5lTXBFVIsSs+1ANa7wn2CrqJ6D0ati494gyw8FFM=;
-        b=dsPESA8mwPALnsqRJsmwRLfJzC2S6MupWzNkSuebGyDgjjLHDFkJDG8E353Fnxa2pk
-         x1P80Jf1Ql3KhOYweq7PVRNLk7BJuKYXGsdF9K7f0rkfjsxxRoo8gS9xwxSXLVK5vdtX
-         eni0Y6nU4AKXB3NA3fA7mxCwHGyBmRQL/HhymKjuVxBNJDey5CC0jt/AbjPXVwiUQtiB
-         XvSA/jGg/l3JMRCkSLCtvdapi1zS4MQqrbI2oBBaUASHdZvr6l2rk+Ap/wDLuwy/oDH7
-         la8SrUNC5KOR6rSVu2qOfuTbf/BbQM4DWO76Q7rLY+nCHP30v84GBlG0YzyCeUP3RJH6
-         V1NA==
-X-Gm-Message-State: AOJu0YwKEWBaH6UdBE1tPswgSndTT3ALQTOEOOIVO6eLnVAdyrrOUfDO
-        dE9pOSuHk8VyQKLKM1lBn6g=
-X-Google-Smtp-Source: AGHT+IEOLthbp7Tfp6EdgCrBQvhiY+rzXkU8whMbq+0zowLUHkcytR2z5F8TiLx8t1G9VqSpCIIewg==
-X-Received: by 2002:ac2:43bc:0:b0:508:1a4c:b9b8 with SMTP id t28-20020ac243bc000000b005081a4cb9b8mr5907776lfl.36.1698668210756;
-        Mon, 30 Oct 2023 05:16:50 -0700 (PDT)
-Received: from mobilestation (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id f22-20020ac251b6000000b005007e7211f7sm1432686lfk.21.2023.10.30.05.16.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:16:50 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 15:16:48 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Furong Xu <0x1207@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net] net: stmmac: xgmac: Fix support for multiple
- Flexible PPS outputs
-Message-ID: <ek3edupo2ve2puzee7376ugjwpuimz3pipf5m2naulmi4ghefr@qgz5g6vitblx>
-References: <20231027025603.1035668-1-0x1207@gmail.com>
- <bayygz3wn6toglzzfdy7ygzs3bhenlrs2y4jjkat54tr3pvxbt@gligw4c4umbe>
+        Mon, 30 Oct 2023 08:17:34 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC900C6;
+        Mon, 30 Oct 2023 05:17:31 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UC22KA009492;
+        Mon, 30 Oct 2023 12:17:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sToO5dS37nxn9aoMDEsp5N8FKwJnKm31VXzSUlvVJGQ=;
+ b=AV4xLF5ltCIrWNcxUjyuinFAEbhSjD+AuPnxY1P16bpENnXoxCzddFpokq9JLmLB2PX6
+ fOaolHpL4qmKgu6V7IfZKWo6pPPVNYu5B5QA+WEmZF9BccSe6Ab6jqzj80lugFNrjpXq
+ TVBLHwCakosYRsQ37KCY7G9AFVkv/R3yMacBiVczhGCcVGq+4I0PBT2/W7Hdc6rxIAXj
+ WY6UnHe00NST5txhH5Yqs+UMJUf+Y7AAc/wAlQ7o88IdY/FBgUFsUlWeKX67q8WHoU/D
+ 3oZwXaQczc5OcVS88/lUO8pj2Mgly810EgRRgy0mL7+E5U0HXvTgGNYs1N7eG4PnQP06 nA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2c4rr0wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 12:17:28 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39UCHSxw031954
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 12:17:28 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 30 Oct
+ 2023 05:17:24 -0700
+Message-ID: <31ca9b01-d94d-71c2-bf2d-4786a20106bf@quicinc.com>
+Date:   Mon, 30 Oct 2023 17:47:21 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bayygz3wn6toglzzfdy7ygzs3bhenlrs2y4jjkat54tr3pvxbt@gligw4c4umbe>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: qcom,ids: Add SoC ID for SM8650
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231030-topic-sm8650-upstream-socinfo-v2-0-4751e7391dc9@linaro.org>
+ <20231030-topic-sm8650-upstream-socinfo-v2-1-4751e7391dc9@linaro.org>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231030-topic-sm8650-upstream-socinfo-v2-1-4751e7391dc9@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: K83V_dwCp9gXJgwCzwM6vysHpVh5PZF_
+X-Proofpoint-GUID: K83V_dwCp9gXJgwCzwM6vysHpVh5PZF_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_10,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxlogscore=788
+ malwarescore=0 mlxscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2310300093
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,61 +86,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 02:03:50PM +0300, Serge Semin wrote:
-> On Fri, Oct 27, 2023 at 10:56:03AM +0800, Furong Xu wrote:
-> > From XGMAC Core 3.20 and later, each Flexible PPS has individual PPSEN bit
-> > to select Fixed mode or Flexible mode. The PPSEN must be set, or it stays
-> > in Fixed PPS mode by default.
-> > XGMAC Core prior 3.20, corresponding PPSEN bits are read-only reserved,
-> > always set PPSEN do not make things worse ;)
-> > 
-> > Fixes: 95eaf3cd0a90 ("net: stmmac: dwxgmac: Add Flexible PPS support")
-> > Signed-off-by: Furong Xu <0x1207@gmail.com>
-> 
-> Please don't forget to add the already got tags shall you need more
-> patch revisions.
-> 
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Ops, this was intended to be sent for v2... I'll send a copy there.
 
--Serge(y)
+On 10/30/2023 3:25 PM, Neil Armstrong wrote:
+> Add the ID for the Qualcomm SM8650 SoC.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+
+-Mukesh
+
+> ---
+>   include/dt-bindings/arm/qcom,ids.h | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> -Serge(y)
+> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
+> index f7248348a459..51e0f6059410 100644
+> --- a/include/dt-bindings/arm/qcom,ids.h
+> +++ b/include/dt-bindings/arm/qcom,ids.h
+> @@ -255,6 +255,7 @@
+>   #define QCOM_ID_SA8775P			534
+>   #define QCOM_ID_QRU1000			539
+>   #define QCOM_ID_QDU1000			545
+> +#define QCOM_ID_SM8650			557
+>   #define QCOM_ID_SM4450			568
+>   #define QCOM_ID_QDU1010			587
+>   #define QCOM_ID_QRU1032			588
 > 
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h      | 2 +-
-> >  drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > index 7a8f47e7b728..a4e8b498dea9 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> > @@ -259,7 +259,7 @@
-> >  	((val) << XGMAC_PPS_MINIDX(x))
-> >  #define XGMAC_PPSCMD_START		0x2
-> >  #define XGMAC_PPSCMD_STOP		0x5
-> > -#define XGMAC_PPSEN0			BIT(4)
-> > +#define XGMAC_PPSENx(x)			BIT(4 + (x) * 8)
-> >  #define XGMAC_PPSx_TARGET_TIME_SEC(x)	(0x00000d80 + (x) * 0x10)
-> >  #define XGMAC_PPSx_TARGET_TIME_NSEC(x)	(0x00000d84 + (x) * 0x10)
-> >  #define XGMAC_TRGTBUSY0			BIT(31)
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > index f352be269deb..53bb8f16c481 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > @@ -1178,7 +1178,7 @@ static int dwxgmac2_flex_pps_config(void __iomem *ioaddr, int index,
-> >  
-> >  	val |= XGMAC_PPSCMDx(index, XGMAC_PPSCMD_START);
-> >  	val |= XGMAC_TRGTMODSELx(index, XGMAC_PPSCMD_START);
-> > -	val |= XGMAC_PPSEN0;
-> > +	val |= XGMAC_PPSENx(index);
-> >  
-> >  	writel(cfg->start.tv_sec, ioaddr + XGMAC_PPSx_TARGET_TIME_SEC(index));
-> >  
-> > -- 
-> > 2.34.1
-> > 
-> > 
