@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE917DBF14
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBA37DBF02
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 18:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbjJ3Rgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 13:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S233860AbjJ3Rcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 13:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233841AbjJ3Rgq (ORCPT
+        with ESMTP id S229849AbjJ3Rcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 13:36:46 -0400
-X-Greylist: delayed 440 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 10:36:42 PDT
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CC4C4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:36:41 -0700 (PDT)
-Received: from [192.168.133.160] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl [178.235.177.91])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 1CA072016C;
-        Mon, 30 Oct 2023 18:29:15 +0100 (CET)
-Message-ID: <aed5ddf8-8b78-4b63-9241-85b20c26b805@somainline.org>
-Date:   Mon, 30 Oct 2023 18:29:14 +0100
+        Mon, 30 Oct 2023 13:32:52 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 10:32:49 PDT
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D59C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 10:32:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ByIrGYpnzkjEbWryrA2QUNyVJEVzplp0rRIRgaVq6tA=;
+  b=JAnfXtPbtnMHaTFHHhmwwnLYBtBA275yoabzmGGRjGpddXsw/rlEHI+y
+   qzUq6287mX/7vxOObz3GA/ahpdzrpXQ8gYoJJir7TxSev3s2DG7zUdQhu
+   Tx5gDzgU8jyXFi+d+vU6KfUuV9llTVT4fINyg3ecpiHkowtAcjqkA9YQC
+   c=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=keisuke.nishimura@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,263,1694728800"; 
+   d="scan'208";a="133946899"
+Received: from dt-aponte.paris.inria.fr (HELO keisuke-XPS-13-7390.paris.inria.fr) ([128.93.67.66])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 18:31:44 +0100
+From:   Keisuke Nishimura <keisuke.nishimura@inria.fr>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Subject: [PATCH v2] sched/fair: Fix the decision for load balance
+Date:   Mon, 30 Oct 2023 18:29:46 +0100
+Message-Id: <20231030172945.1505532-1-keisuke.nishimura@inria.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 0/3] ASoC: codecs: Add aw88399 amplifier driver
-To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
-        herve.codina@bootlin.com, shumingf@realtek.com,
-        rf@opensource.cirrus.com, arnd@arndb.de, 13916275206@139.com,
-        ryans.lee@analog.com, linus.walleij@linaro.org,
-        ckeepax@opensource.cirrus.com,
-        ajye_huang@compal.corp-partner.google.com, fido_max@inbox.ru,
-        liweilei@awinic.com, yijiangtao@awinic.com, trix@redhat.com,
-        colin.i.king@gmail.com, dan.carpenter@linaro.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231025112625.959587-1-wangweidong.a@awinic.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <20231025112625.959587-1-wangweidong.a@awinic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+should_we_balance is called for the decision to do load-balancing.
+When sched ticks invoke this function, only one CPU should return
+true. However, in the current code, two CPUs can return true. The
+following situation, where b means busy and i means idle, is an
+example, because CPU 0 and CPU 2 return true.
 
+        [0, 1] [2, 3]
+         b  b   i  b
 
-On 25.10.2023 13:26, wangweidong.a@awinic.com wrote:
-> From: Weidong Wang <wangweidong.a@awinic.com>
-> 
-> Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
-> 
-> Add i2c and amplifier registration for
-> aw88399 and their associated operation functions.
-Hi!
+This fix checks if there exists an idle CPU with busy sibling(s)
+after looking for a CPU on an idle core. If some idle CPUs with busy
+siblings are found, just the first one should do load-balancing.
 
-Just out of interest, do you folks have any plans to add support
-for CHIP_ID 0x1852?
+Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole core for load balance")
+Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+---
+ kernel/sched/fair.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Konrad
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2048138ce54b..69d63fae34f4 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11079,12 +11079,16 @@ static int should_we_balance(struct lb_env *env)
+ 			continue;
+ 		}
+ 
+-		/* Are we the first idle CPU? */
++		/*
++		 * Are we the first idle core in a MC or higher domain
++		 * or the first idle CPU in a SMT domain?
++		 */
+ 		return cpu == env->dst_cpu;
+ 	}
+ 
+-	if (idle_smt == env->dst_cpu)
+-		return true;
++	/* Are we the first idle CPU with busy siblings? */
++	if (idle_smt != -1)
++		return idle_smt == env->dst_cpu;
+ 
+ 	/* Are we the first CPU of this group ? */
+ 	return group_balance_cpu(sg) == env->dst_cpu;
+-- 
+2.34.1
+
