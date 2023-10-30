@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891877DC233
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861067DC239
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232120AbjJ3V5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
+        id S232129AbjJ3WCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 18:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjJ3V5e (ORCPT
+        with ESMTP id S230106AbjJ3WCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:57:34 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA01F7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:57:32 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d2de704f53so2253444a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698703051; x=1699307851; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k4F0aTRBcZ7fBrQao5GQkvnUof+5v+oaXX1zm7ulzMs=;
-        b=NMGXQk1g/D5/logC/cy+BHn3YXlzpANevJTzmdaCj0q52LmF6q4mX2y/URchJlkfcF
-         7/NIRh0NEwluUfIxypQgAZUpwsWYTN4cj26ePrR2PDIOmJZ1+iEbH4wUQpytl271rwEn
-         OCx5UtpU8dH7kQubPfNhOjQFxVRoIDaVuwl/oPkceOGXJhSZkZypkH8yAN8zchBckAz+
-         O5qOkowElKQfFId6cJlPX4mPJSuAHgO2c/VPVrrljXxXZE0ByBHqg9TSTP97odmfw0wt
-         uGUsCmvVHJh0RmntwJxgBfWIXjv8vj9kNqD5E8lQhfdlk2OXLPA7I5t8lgnUHM3b+Dn5
-         eVJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698703051; x=1699307851;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k4F0aTRBcZ7fBrQao5GQkvnUof+5v+oaXX1zm7ulzMs=;
-        b=Tmz0ILDfsabRTP1i/xCQHwTqfOMhacIJ2SXPrfEJT57Fb0dIUxTLfowgnGn4lFio3j
-         Mxa4MgY3IxOsaxINhif0N6ZWMN1Ya9O9ndA55/gxs3kekn2caW4J/75iDu+oy7rNR8bb
-         /s6oZA5Z0vPrnRMArpTlfGul/9krslJdNCN+VwcJTKYB5qk/1ZzAl204Lwn3QgBh/oSS
-         GwSP5PGirzxyIzA4b+p82hgOWKE/47IkZcKHCWnWswSF/GdCgrfbwQUaAnRlS8gO819b
-         6I2mtPcrMtbe+8rNSpTW7qK8OtEw3iAyS7hMOPD6HxtvoYY5/Jm8Md4IpZ9aG84zjISx
-         d4DA==
-X-Gm-Message-State: AOJu0YyotNXMKknRPlvLT+lV9WjYGDXMZ2OzwykYaJiNfkfryX2L4svM
-        DYrgleiceNubx+sA2Xu5+2rWa/MUTkw=
-X-Google-Smtp-Source: AGHT+IG9roxjl6N0gDzotVZBlBu2U2nCtzJcY+vTqhZkhZjFKpCd3cTOWiR06kFJti+zBRyPIQCcgA==
-X-Received: by 2002:a05:6830:90a:b0:6c4:ae52:9599 with SMTP id v10-20020a056830090a00b006c4ae529599mr12639047ott.7.1698703051496;
-        Mon, 30 Oct 2023 14:57:31 -0700 (PDT)
-Received: from urola ([208.184.224.238])
-        by smtp.gmail.com with ESMTPSA id d17-20020a056830045100b006c4d6a06a94sm1563651otc.76.2023.10.30.14.57.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 14:57:31 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 14:57:29 -0700
-From:   Frederik Deweerdt <deweerdt.lkml@gmail.com>
-To:     kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] Add missing NULL check in `tls_strp_check_queue_ok`
-Message-ID: <ZUAmyb44sy309V6H@urola>
+        Mon, 30 Oct 2023 18:02:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D755A9E
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 15:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698703333; x=1730239333;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jfzh0ip6bSohVXGujADTB1xLhPFtMHVGpGbmPmLH2XI=;
+  b=Jt8X2daGsKz/zjRUUfMjXaBHxVSYzbtdYvP4IsfSorbZLGW+/2ggc2mh
+   pWVDTMZVF4Hn+U1nwx6CDHwB/zIsIZ7h02+LelzE4meaOU+Fpwy0ui7Rx
+   /cGUQNk5TOaMl07x1KoNJxhrarRreEX734tOoNDboIsqp1B9Sta/NrVLy
+   cID2ju+RTEvwjNp/YpFiEvQuYGpq94gDqb7ouc1hSCQdroMKkLI8S62/C
+   liyx1aA+X1dFd/LurL1mYH+uPzuhjT2z/SMTEDaTqoOjp6jkV+JQAEo4m
+   kzP7wB30KUyLBn3AdDcZZMJTJca5M2dlNbLlpumFfy3ikrfOQUO4zhm18
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="474412993"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="474412993"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 15:02:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="764050683"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="764050683"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Oct 2023 15:02:12 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qxaKn-000DaR-03;
+        Mon, 30 Oct 2023 22:02:09 +0000
+Date:   Tue, 31 Oct 2023 06:01:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: sound/soc/generic/simple-card-utils.c:28:33: sparse: sparse:
+ incorrect type in initializer (different base types)
+Message-ID: <202310310501.Yb4dFWIo-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   14ab6d425e80674b6a0145f05719b11e82e64824
+commit: 047a05366f4bb2e32eabbd3c8990d1d91ab87c89 ASoC: simple-card-utils: Fixup DAI sample format
+date:   1 year, 3 months ago
+config: x86_64-randconfig-x014-20230805 (https://download.01.org/0day-ci/archive/20231031/202310310501.Yb4dFWIo-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310310501.Yb4dFWIo-lkp@intel.com/reproduce)
 
-We see `tls_strp_check_queue_ok` running into a NULL deref when
-evaluating `TCP_SKB_CB(skb)->seq`.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310310501.Yb4dFWIo-lkp@intel.com/
 
-This commit attempts to address the issue by exiting the loop if
-skb->next is NULL, and has proven stable under load.
+sparse warnings: (new ones prefixed by >>)
+>> sound/soc/generic/simple-card-utils.c:28:33: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] val @@     got restricted snd_pcm_format_t [usertype] @@
+   sound/soc/generic/simple-card-utils.c:28:33: sparse:     expected unsigned int [usertype] val
+   sound/soc/generic/simple-card-utils.c:28:33: sparse:     got restricted snd_pcm_format_t [usertype]
+   sound/soc/generic/simple-card-utils.c:29:33: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] val @@     got restricted snd_pcm_format_t [usertype] @@
+   sound/soc/generic/simple-card-utils.c:29:33: sparse:     expected unsigned int [usertype] val
+   sound/soc/generic/simple-card-utils.c:29:33: sparse:     got restricted snd_pcm_format_t [usertype]
+   sound/soc/generic/simple-card-utils.c:30:33: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] val @@     got restricted snd_pcm_format_t [usertype] @@
+   sound/soc/generic/simple-card-utils.c:30:33: sparse:     expected unsigned int [usertype] val
+   sound/soc/generic/simple-card-utils.c:30:33: sparse:     got restricted snd_pcm_format_t [usertype]
+   sound/soc/generic/simple-card-utils.c:31:33: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] val @@     got restricted snd_pcm_format_t [usertype] @@
+   sound/soc/generic/simple-card-utils.c:31:33: sparse:     expected unsigned int [usertype] val
+   sound/soc/generic/simple-card-utils.c:31:33: sparse:     got restricted snd_pcm_format_t [usertype]
+   sound/soc/generic/simple-card-utils.c:32:33: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] val @@     got restricted snd_pcm_format_t [usertype] @@
+   sound/soc/generic/simple-card-utils.c:32:33: sparse:     expected unsigned int [usertype] val
+   sound/soc/generic/simple-card-utils.c:32:33: sparse:     got restricted snd_pcm_format_t [usertype]
 
-That said i don't understand the code enough to convince myself that
-the NULL check is indeed required, and i would be happy gather data if
-that's useful.
+vim +28 sound/soc/generic/simple-card-utils.c
 
-Signed-off-by: Frederik Deweerdt <deweerdt.lkml@gmail.com>
----
- net/tls/tls_strp.c | 2 ++
- 1 file changed, 2 insertions(+)
+    17	
+    18	static void asoc_simple_fixup_sample_fmt(struct asoc_simple_data *data,
+    19						 struct snd_pcm_hw_params *params)
+    20	{
+    21		int i;
+    22		struct snd_mask *mask = hw_param_mask(params,
+    23						      SNDRV_PCM_HW_PARAM_FORMAT);
+    24		struct {
+    25			char *fmt;
+    26			u32 val;
+    27		} of_sample_fmt_table[] = {
+  > 28			{ "s8",		SNDRV_PCM_FORMAT_S8},
+    29			{ "s16_le",	SNDRV_PCM_FORMAT_S16_LE},
+    30			{ "s24_le",	SNDRV_PCM_FORMAT_S24_LE},
+    31			{ "s24_3le",	SNDRV_PCM_FORMAT_S24_3LE},
+    32			{ "s32_le",	SNDRV_PCM_FORMAT_S32_LE},
+    33		};
+    34	
+    35		for (i = 0; i < ARRAY_SIZE(of_sample_fmt_table); i++) {
+    36			if (!strcmp(data->convert_sample_format,
+    37				    of_sample_fmt_table[i].fmt)) {
+    38				snd_mask_none(mask);
+    39				snd_mask_set(mask, of_sample_fmt_table[i].val);
+    40				break;
+    41			}
+    42		}
+    43	}
+    44	
 
-diff --git a/net/tls/tls_strp.c b/net/tls/tls_strp.c
-index ca1e0e198ceb..cabac0db6445 100644
---- a/net/tls/tls_strp.c
-+++ b/net/tls/tls_strp.c
-@@ -441,6 +441,8 @@ static bool tls_strp_check_queue_ok(struct tls_strparser *strp)
- 		len -= skb->len;
- 		skb = skb->next;
- 
-+		if (!skb)
-+			return false;
- 		if (TCP_SKB_CB(skb)->seq != seq)
- 			return false;
- 		if (skb_cmp_decrypted(first, skb))
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
