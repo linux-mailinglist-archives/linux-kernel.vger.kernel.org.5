@@ -2,116 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCE67DB8EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7819A7DB91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 12:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbjJ3L3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 07:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        id S233064AbjJ3LjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 07:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbjJ3L3I (ORCPT
+        with ESMTP id S229456AbjJ3LjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:29:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E239B3;
-        Mon, 30 Oct 2023 04:29:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 932DCFEC;
-        Mon, 30 Oct 2023 04:29:46 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D8F83F67D;
-        Mon, 30 Oct 2023 04:29:02 -0700 (PDT)
-Message-ID: <288bcd70-ee12-e4f7-2381-8d18e6fc0c1b@arm.com>
-Date:   Mon, 30 Oct 2023 11:29:03 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 4/8] coresight-tpdm: Add support to configure CMB
-Content-Language: en-US
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-References: <1698202408-14608-1-git-send-email-quic_taozha@quicinc.com>
- <1698202408-14608-5-git-send-email-quic_taozha@quicinc.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <1698202408-14608-5-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Mon, 30 Oct 2023 07:39:11 -0400
+X-Greylist: delayed 479 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 04:39:06 PDT
+Received: from mx.kolabnow.com (mx.kolabnow.com [212.103.80.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B6B6;
+        Mon, 30 Oct 2023 04:39:06 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by mx.kolabnow.com (Postfix) with ESMTP id 2383A300D3C0;
+        Mon, 30 Oct 2023 12:31:05 +0100 (CET)
+Authentication-Results: ext-mx-out013.mykolab.com (amavis);
+ dkim=pass (4096-bit key) reason="pass (just generated, assumed good)"
+ header.d=kolabnow.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
+        in-reply-to:content-transfer-encoding:content-disposition
+        :content-type:content-type:mime-version:references:message-id
+        :subject:subject:from:from:date:date:received:received:received;
+         s=dkim20160331; t=1698665461; x=1700479862; bh=eBDtrN7ZvBxFwKuZ
+        vgReLOW8gdMuBQzsiliNBUr48oo=; b=2Ar7ReonuU2AMblzpP+eFajn0xGEo4Hp
+        cNiwDc40KGvOkQzi6mLGDqAHTPjRequ5VjtA2eOHxz4AIlwEv+edQ8iI3rS4Qsat
+        7RqNAfmnHnsmuLiuCgq0FD8UJ8WvEayHCztpFaQjZNf92GCIDBYY8/VAOIBIF4tR
+        qGtkBJYgm+PK4hHvVLN+6NmgnON3+CnexmpEA3T9htGji1qOaQPPjzGyqY6tWi/f
+        cWQrsRX+WZvkVOByYurHQzVky9UvPK8hJUpbJ5mlhiqe1hPuBIuRnyU8H7N2M/wp
+        ovX3UBlBFGlOrmQlbf8DyZIeWC7jtkpnn/aNeASdcfWHwCdGTqQXWvybwZAFislA
+        lQT5Yxcm7fhwdptsfGYJ6LZ683NLIWOeyoVmrt6qHNBDLpfW8w1Zsv69eath7CaO
+        zVJLQmnhBoJTxMiee3XMtanUooktxZShsxTEMju4LlHGIwlPcMSTVcOWzmkusVcb
+        fygmUX0u51PnBrFcFEaSr3KBT8nwCgr467dXeIY8BuUpa5YbDVvQ9mV7tKrCne5p
+        lClgqRfbMgPz04QoM2ZWulE9yi7LfPasSWklypWsZeqI/7ipr7gPNozARrDvM1d3
+        YpcfUhkRabHjYFU1LYnSFXS+dJ6txHhFn3MXEtRgj6tViGBdvPoVoam9wtABahdB
+        PMKgTINdICU=
+X-Virus-Scanned: amavis at mykolab.com
+X-Spam-Score: -1
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
+Received: from mx.kolabnow.com ([127.0.0.1])
+ by localhost (ext-mx-out013.mykolab.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id zVXVNBbUoT_A; Mon, 30 Oct 2023 12:31:01 +0100 (CET)
+Received: from int-mx009.mykolab.com (unknown [10.9.13.9])
+        by mx.kolabnow.com (Postfix) with ESMTPS id 0712F300D37F;
+        Mon, 30 Oct 2023 12:30:54 +0100 (CET)
+Received: from ext-subm010.mykolab.com (unknown [10.9.6.10])
+        by int-mx009.mykolab.com (Postfix) with ESMTPS id 565E820DFFCB;
+        Mon, 30 Oct 2023 12:30:54 +0100 (CET)
+Date:   Mon, 30 Oct 2023 12:30:52 +0100
+From:   Federico Vaga <federico.vaga@vaga.pv.it>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Hu Haowen <src.res.211@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: translations: add translations links when they
+ exist
+Message-ID: <20231030113052.ykblzg2jdca6pmlt@numero-86.vaga.pv.it>
+References: <20231028162931.261843-1-vegard.nossum@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231028162931.261843-1-vegard.nossum@oracle.com>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I find it a nice initiative :)
 
+On Sat, Oct 28, 2023 at 06:29:31PM +0200, Vegard Nossum wrote:
+>Add a new Sphinx extension that knows about the translations of kernel
+>documentation and can insert links to the translations at the top of
+>the document.
+>
+>It basically works like this:
+>
+>1. Register a new node type, LanguagesNode.
+>
+>2. Register a new transform, TranslationsTransform, that inserts a new
+>   LanguageNode at the top of every document. The LanguageNode contains
+>   "pending references" to translations of the document. The key here
+>   is that these are pending (i.e. unresolved) references that may or
+>   may not actually exist.
+>
+>3. Register a 'doctree-resolved' event that iterates over all the
+>   LanguageNode nodes. Any unresolved references are filtered out; the
+>   list of resolved references is passed to the 'translations.html'
+>   template and rendered as an HTML node (if HTML output is selected).
+>
+>Testing: make htmldocs with v7.3.0.
+>
+>Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+>---
+> Documentation/conf.py                         |  2 +-
+> Documentation/sphinx-static/custom.css        |  8 ++
+> .../sphinx/templates/translations.html        | 12 +++
+> Documentation/sphinx/translations.py          | 96 +++++++++++++++++++
+> 4 files changed, 117 insertions(+), 1 deletion(-)
+> create mode 100644 Documentation/sphinx/templates/translations.html
+> create mode 100644 Documentation/sphinx/translations.py
+>
+>diff --git a/Documentation/conf.py b/Documentation/conf.py
+>index d4fdf6a3875a..64eab500b2cd 100644
+>--- a/Documentation/conf.py
+>+++ b/Documentation/conf.py
+>@@ -55,7 +55,7 @@ needs_sphinx = '1.7'
+> extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
+>               'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
+>               'maintainers_include', 'sphinx.ext.autosectionlabel',
+>-              'kernel_abi', 'kernel_feat']
+>+              'kernel_abi', 'kernel_feat', 'translations']
+>
+> if major >= 3:
+>     if (major > 3) or (minor > 0 or patch >= 2):
+>diff --git a/Documentation/sphinx-static/custom.css b/Documentation/sphinx-static/custom.css
+>index 084a884f6fb7..33adee4a35d9 100644
+>--- a/Documentation/sphinx-static/custom.css
+>+++ b/Documentation/sphinx-static/custom.css
+>@@ -73,3 +73,11 @@ input.kernel-toc-toggle { display: none; }
+>     h3.kernel-toc-contents { display: inline; }
+>     div.kerneltoc a { color: black; }
+> }
+>+
+>+/* Language selection bar */
+>+div.language-selection {
+>+    background: #eeeeee;
+>+    border: 1px solid #cccccc;
+>+    margin-bottom: 1em;
+>+    padding: .5em;
+>+}
+>diff --git a/Documentation/sphinx/templates/translations.html b/Documentation/sphinx/templates/translations.html
+>new file mode 100644
+>index 000000000000..08afb595c203
+>--- /dev/null
+>+++ b/Documentation/sphinx/templates/translations.html
+>@@ -0,0 +1,12 @@
+>+<!-- SPDX-License-Identifier: GPL-2.0 -->
+>+<!-- Copyright © 2023, Oracle and/or its affiliates. -->
+>+
+>+{# Create a language bar for translations #}
+>+{% if languages|length > 0: %}
+>+<div class="language-selection">
+>+Languages:
 
-On 25/10/2023 03:53, Tao Zhang wrote:
-> TPDM CMB subunits support two forms of CMB data set element creation:
-> continuous and trace-on-change collection mode. Continuous change
-> creates CMB data set elements on every CMBCLK edge. Trace-on-change
-> creates CMB data set elements only when a new data set element differs
-> in value from the previous element in a CMB data set. Set CMB_CR.MODE
-> to 0 for continuous CMB collection mode. Set CMB_CR.MODE to 1 for
-> trace-on-change CMB collection mode
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> Signed-off-by: Jinlong Mao <quic_jinlmao@quicinc.com>
-> ---
->  .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 10 +++
->  drivers/hwtracing/coresight/coresight-tpdm.c       | 71 ++++++++++++++++++++++
->  drivers/hwtracing/coresight/coresight-tpdm.h       | 12 ++++
->  3 files changed, 93 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> index f07218e..ace7231 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> @@ -170,3 +170,13 @@ Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_t
->  Description:
->  		(RW) Set/Get the MSR(mux select register) for the DSB subunit
->  		TPDM.
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/cmb_mode
-> +Date:		March 2023
-> +KernelVersion	6.7
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:	(Write) Set the data collection mode of CMB tpdm.
+Should also "Languages" subject to translation?
+Or perhaps, nothing. Just the list of languages.
 
-I know it's expanded elsewhere, but it's probably worth expanding the
-CMB abbreviation here as well so people reading the docs don't have to
-go into the code.
+>+{% for ref in languages: %}
+>+<a href="{{ ref.refuri }}">{{ ref.astext() }}</a>{% if not loop.last %}, {% endif %}
+>+{% endfor %}
+>+</div>
+>+{% endif %}
+>diff --git a/Documentation/sphinx/translations.py b/Documentation/sphinx/translations.py
+>new file mode 100644
+>index 000000000000..e1da811bdaf0
+>--- /dev/null
+>+++ b/Documentation/sphinx/translations.py
+>@@ -0,0 +1,96 @@
+>+# SPDX-License-Identifier: GPL-2.0
+>+#
+>+# Copyright © 2023, Oracle and/or its affiliates.
+>+# Author: Vegard Nossum <vegard.nossum@oracle.com>
+>+#
+>+# Add translation links to the top of the document.
+>+#
+>+
+>+import os
+>+
+>+from docutils import nodes
+>+from docutils.transforms import Transform
+>+
+>+import sphinx
+>+from sphinx import addnodes
+>+from sphinx.errors import NoUri
+>+
+>+all_languages = {
+>+    # English is always first
+>+    None: 'English',
+>+
+>+    # Keep the rest sorted alphabetically
+>+    'zh_CN': 'Chinese',
+>+    'it_IT': 'Italian',
+>+    'ja_JP': 'Japanese',
+>+    'ko_KR': 'Korean',
+>+    'sp_SP': 'Spanish',
+>+    'zh_TW': 'Taiwanese',
 
-Otherwise:
+Minor comment. Should we use the language name in its original language?
 
-Reviewed-by: James Clark <james.clark@arm.com>
+Example:
 
-> +
-> +		Accepts only one of the 2 values -  0 or 1.
-> +		0 : Continuous CMB collection mode.
-> +		1 : Trace-on-change CMB collection mode.
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-> index c8bb388..efb376e 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-> @@ -148,6 +148,18 @@ static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
->  	return 0;
->  }
+[... snip ...]
+'it_IT': Italiano,
+[... snip ...]
+'sp_SP': Español,
+[... snip ...]
 
-[...]
+>+}
+>+
+>+class LanguagesNode(nodes.Element):
+>+    pass
+>+
+>+class TranslationsTransform(Transform):
+>+    default_priority = 900
+>+
+>+    def apply(self):
+>+        app = self.document.settings.env.app
+>+        if app.builder.format not in ['html']:
+>+            return
+>+
+>+        docname = self.document.settings.env.docname
+>+
+>+        this_lang_code = None
+>+        components = docname.split(os.sep)
+>+        if components[0] == 'translations' and len(components) > 2:
+>+            this_lang_code = components[1]
+>+
+>+            # normalize docname to be the untranslated one
+>+            docname = os.path.join(*components[2:])
+>+
+>+        new_nodes = LanguagesNode()
+>+
+>+        for lang_code, lang_name in all_languages.items():
+>+            if lang_code == this_lang_code:
+>+                continue
+
+We could show all languages (remove the above two lines) to have a consistent
+output among pages.
+
+>+            if lang_code is None:
+>+                target_name = docname
+>+            else:
+>+                target_name = os.path.join('translations', lang_code, docname)
+>+
+>+            pxref = addnodes.pending_xref('', refdomain='std',
+>+                reftype='doc', reftarget='/' + target_name, modname=None,
+>+                classname=None, refexplicit=True)
+>+            pxref += nodes.Text(lang_name)
+>+            new_nodes += pxref
+>+
+>+        self.document.insert(0, new_nodes)
+>+
+>+def process_languages(app, doctree, docname):
+>+    for node in doctree.traverse(LanguagesNode):
+>+        languages = []
+>+
+>+        # Iterate over the child nodes; any resolved links will have
+>+        # the type 'nodes.reference', while unresolved links will be
+>+        # type 'nodes.Text'.
+>+        languages = list(filter(lambda xref:
+>+            isinstance(xref, nodes.reference), node.children))
+>+
+>+        html_content = app.builder.templates.render('translations.html',
+>+            context={
+>+                'languages': languages,
+>+            })
+>+
+>+        node.replace_self(nodes.raw('', html_content, format='html'))
+>+
+>+def setup(app):
+>+    app.add_node(LanguagesNode)
+>+    app.add_transform(TranslationsTransform)
+>+    app.connect('doctree-resolved', process_languages)
+>+
+>+    return {
+>+        'parallel_read_safe': True,
+>+        'parallel_write_safe': True,
+>+    }
+>-- 
+>2.34.1
+>
+
+-- 
+Federico Vaga
