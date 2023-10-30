@@ -2,146 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1A57DB5A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB0D7DB59C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 10:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjJ3JDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 05:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        id S232321AbjJ3JCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 05:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232320AbjJ3JDS (ORCPT
+        with ESMTP id S230477AbjJ3JCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:03:18 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EC6B7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:03:15 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32f70391608so1738550f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 02:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698656594; x=1699261394; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y5DNReJrJjqC3ApxSGU7LvngHjOHwZujFq9jNZRCwZ0=;
-        b=Knd5/ZgAFGenFoFuAX7lFdY109eZxtGViHvleFy7dLLDhOiLL79k0FB1rSBURa9pH7
-         TB/q2FvPRvQSiV+BzeM7IcaaIqZpJDtxX+t6+VDxjcPpu8XxDlWm2SbOJ9QP2myufPzi
-         etgcWbbODMVYhY1R5EXonoHqiyDmaBp0xmeUNmIR0cONhDDr7tr/MVsaE66Qt/BLqfsy
-         CzBIbiY7AWA4JHeMthpQLCqvonXWIP5qYT2++wa4+6gFtXjdVHBQg3bbIWWtNc8O0IUM
-         qrxXCsSFz55cHalcAySHn15CkVNRJ3AR1ORGdxDOWFnuBjLcHT+/rloVhGptMwvlaSbV
-         m4Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698656594; x=1699261394;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y5DNReJrJjqC3ApxSGU7LvngHjOHwZujFq9jNZRCwZ0=;
-        b=wNXQQ4AhapgeKvnfSEB7ZEKiRGGicQiehcsitIQz9/Ydyw17we/4QC0/eqKXPkAN+z
-         qsbmdAR2QAbsZ2dub8AKE8SirZELaTLjmJmoUepzHTM7JabJKcsg7VVJTaVTXvAnzZkh
-         FX0GedfzcYg9EPXtshKYRYGVbUao7efsYNV/uOMs/dp5gwr5Y+VkxFJ5X/kucxlZx4Er
-         NQJReWpRadv6WgQPQ40GEKJIGi68pK4wuKHq9SAfGtBra1U/g7IzCeiEYFkmwClo5Tsz
-         pS4mXscgoElpigoz3FXwHv1JeKwIJqt60Kme1rwOPAtqtk1kNXGz9ydeP0iLwzSACvoy
-         llzA==
-X-Gm-Message-State: AOJu0YxBzeaaXPZY1Kr90U6Z+J5EWZtRDdRmNQ2tG1/lZ8b7cyyZmaGC
-        JuDcSXjCXeNWxh5CaYrnlOcKBw==
-X-Google-Smtp-Source: AGHT+IEhsz4/79n5D4u1uifu9B339uC6hyL43ZVUwHGiKOTkc6qwKZ4xELMfYIeVLRV4xprg4rCGaQ==
-X-Received: by 2002:adf:f18a:0:b0:32d:ac49:2bb1 with SMTP id h10-20020adff18a000000b0032dac492bb1mr7477941wro.63.1698656593914;
-        Mon, 30 Oct 2023 02:03:13 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id u9-20020a5d6ac9000000b0032d687fd9d0sm7701427wrw.19.2023.10.30.02.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 02:03:13 -0700 (PDT)
-Date:   Mon, 30 Oct 2023 12:01:33 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kv-team <kv-team@linaro.org>
-Subject: [RFC] drm/tests: annotate intentional stack trace in
- drm_test_rect_calc_hscale()
-Message-ID: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
+        Mon, 30 Oct 2023 05:02:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3140B4;
+        Mon, 30 Oct 2023 02:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698656548; x=1730192548;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=i8w9x7dxltFrnpCuSRUPcPt133FkZLGMti/aX/HuhEE=;
+  b=WqbSJhz3R3Jxap63rcMr+CHjmZZADHuKPFujS0W4Aqwxar1ApZSQzJjf
+   8MC5f0SeYmz5/TCmQ6asAWlaHZAFY9wSJkE5oVQHEWNZM0OXzHkp8qrz+
+   /vvICiC1UmkGIDNeGlDrIEScZNaDJ0JlumNVbkstkd66nL3TLMlBfKu2I
+   PmdJkh/cFshwfEdspml7qLEDp3rcrIrnENucfva1m9LeGV6oS8kvkr0p6
+   lhPRRyEvsTtrhLLriOja/Y3T7LCdtYaGMlgSu14prM/W+ynlim78SBoVf
+   qtXIevgrBbgLY1IaNPCdEBmH6mV5VNXd4hfmUejYsAy1v6KzD+QG4di85
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="367383147"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="367383147"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 02:02:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="795210656"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200"; 
+   d="scan'208";a="795210656"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga001.jf.intel.com with SMTP; 30 Oct 2023 02:02:24 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 30 Oct 2023 11:02:23 +0200
+Date:   Mon, 30 Oct 2023 11:02:23 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] usb: typec: fsa4480: Add support to swap SBU
+ orientation
+Message-ID: <ZT9xH7Rz1+oScLKW@kuha.fi.intel.com>
+References: <20231020-fsa4480-swap-v2-0-9a7f9bb59873@fairphone.com>
+ <20231020-fsa4480-swap-v2-2-9a7f9bb59873@fairphone.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231020-fsa4480-swap-v2-2-9a7f9bb59873@fairphone.com>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have started printing more and more intentional stack traces.  Whether
-it's testing KASAN is able to detect use after frees or it's part of a
-kunit test.
+On Fri, Oct 20, 2023 at 11:33:19AM +0200, Luca Weiss wrote:
+> On some hardware designs the AUX+/- lanes are connected reversed to
+> SBU1/2 compared to the expected design by FSA4480.
+> 
+> Made more complicated, the otherwise compatible Orient-Chip OCP96011
+> expects the lanes to be connected reversed compared to FSA4480.
+> 
+> * FSA4480 block diagram shows AUX+ connected to SBU2 and AUX- to SBU1.
+> * OCP96011 block diagram shows AUX+ connected to SBU1 and AUX- to SBU2.
+> 
+> So if OCP96011 is used as drop-in for FSA4480 then the orientation
+> handling in the driver needs to be reversed to match the expectation of
+> the OCP96011 hardware.
+> 
+> Support parsing the data-lanes parameter in the endpoint node to swap
+> this in the driver.
+> 
+> The parse_data_lanes_mapping function is mostly taken from nb7vpq904m.c.
+> 
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-These stack traces can be problematic.  They suddenly show up as a new
-failure.  Now the test team has to contact the developers.  A bunch of
-people have to investigate the bug.  We finally decide that it's
-intentional so now the test team has to update their filter scripts to
-mark it as intentional.  These filters are ad-hoc because there is no
-standard format for warnings.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-A better way would be to mark it as intentional from the start.
+> ---
+>  drivers/usb/typec/mux/fsa4480.c | 71 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/mux/fsa4480.c b/drivers/usb/typec/mux/fsa4480.c
+> index e0ee1f621abb..cb7cdf90cb0a 100644
+> --- a/drivers/usb/typec/mux/fsa4480.c
+> +++ b/drivers/usb/typec/mux/fsa4480.c
+> @@ -60,6 +60,7 @@ struct fsa4480 {
+>  	unsigned int svid;
+>  
+>  	u8 cur_enable;
+> +	bool swap_sbu_lanes;
+>  };
+>  
+>  static const struct regmap_config fsa4480_regmap_config = {
+> @@ -76,6 +77,9 @@ static int fsa4480_set(struct fsa4480 *fsa)
+>  	u8 enable = FSA4480_ENABLE_DEVICE;
+>  	u8 sel = 0;
+>  
+> +	if (fsa->swap_sbu_lanes)
+> +		reverse = !reverse;
+> +
+>  	/* USB Mode */
+>  	if (fsa->mode < TYPEC_STATE_MODAL ||
+>  	    (!fsa->svid && (fsa->mode == TYPEC_MODE_USB2 ||
+> @@ -179,12 +183,75 @@ static int fsa4480_mux_set(struct typec_mux_dev *mux, struct typec_mux_state *st
+>  	return ret;
+>  }
+>  
+> +enum {
+> +	NORMAL_LANE_MAPPING,
+> +	INVERT_LANE_MAPPING,
+> +};
+> +
+> +#define DATA_LANES_COUNT	2
+> +
+> +static const int supported_data_lane_mapping[][DATA_LANES_COUNT] = {
+> +	[NORMAL_LANE_MAPPING] = { 0, 1 },
+> +	[INVERT_LANE_MAPPING] = { 1, 0 },
+> +};
+> +
+> +static int fsa4480_parse_data_lanes_mapping(struct fsa4480 *fsa)
+> +{
+> +	struct fwnode_handle *ep;
+> +	u32 data_lanes[DATA_LANES_COUNT];
+> +	int ret, i, j;
+> +
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&fsa->client->dev), NULL);
+> +	if (!ep)
+> +		return 0;
+> +
+> +	ret = fwnode_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
+> +	if (ret == -EINVAL)
+> +		/* Property isn't here, consider default mapping */
+> +		goto out_done;
+> +	if (ret) {
+> +		dev_err(&fsa->client->dev, "invalid data-lanes property: %d\n", ret);
+> +		goto out_error;
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
+> +		for (j = 0; j < DATA_LANES_COUNT; j++) {
+> +			if (data_lanes[j] != supported_data_lane_mapping[i][j])
+> +				break;
+> +		}
+> +
+> +		if (j == DATA_LANES_COUNT)
+> +			break;
+> +	}
+> +
+> +	switch (i) {
+> +	case NORMAL_LANE_MAPPING:
+> +		break;
+> +	case INVERT_LANE_MAPPING:
+> +		fsa->swap_sbu_lanes = true;
+> +		break;
+> +	default:
+> +		dev_err(&fsa->client->dev, "invalid data-lanes mapping\n");
+> +		ret = -EINVAL;
+> +		goto out_error;
+> +	}
+> +
+> +out_done:
+> +	ret = 0;
+> +
+> +out_error:
+> +	fwnode_handle_put(ep);
+> +
+> +	return ret;
+> +}
+> +
+>  static int fsa4480_probe(struct i2c_client *client)
+>  {
+>  	struct device *dev = &client->dev;
+>  	struct typec_switch_desc sw_desc = { };
+>  	struct typec_mux_desc mux_desc = { };
+>  	struct fsa4480 *fsa;
+> +	int ret;
+>  
+>  	fsa = devm_kzalloc(dev, sizeof(*fsa), GFP_KERNEL);
+>  	if (!fsa)
+> @@ -193,6 +260,10 @@ static int fsa4480_probe(struct i2c_client *client)
+>  	fsa->client = client;
+>  	mutex_init(&fsa->lock);
+>  
+> +	ret = fsa4480_parse_data_lanes_mapping(fsa);
+> +	if (ret)
+> +		return ret;
+> +
+>  	fsa->regmap = devm_regmap_init_i2c(client, &fsa4480_regmap_config);
+>  	if (IS_ERR(fsa->regmap))
+>  		return dev_err_probe(dev, PTR_ERR(fsa->regmap), "failed to initialize regmap\n");
+> 
+> -- 
+> 2.42.0
 
-Here, I have marked the beginning and the end of the trace.  It's more
-tricky for things like lkdtm_FORTIFY_MEM_MEMBER() where the flow doesn't
-reach the end of the function.  I guess I would print a different
-warning for stack traces that can't have a
-"Intentional warning finished\n" message at the end.
-
-I haven't actually tested this patch...  Daniel, do you have a
-list of intentional stack traces we could annotate?
-
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/tests/drm_rect_test.c | 2 ++
- include/kunit/test.h                  | 3 +++
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/gpu/drm/tests/drm_rect_test.c b/drivers/gpu/drm/tests/drm_rect_test.c
-index 76332cd2ead8..367738254493 100644
---- a/drivers/gpu/drm/tests/drm_rect_test.c
-+++ b/drivers/gpu/drm/tests/drm_rect_test.c
-@@ -409,8 +409,10 @@ static void drm_test_rect_calc_hscale(struct kunit *test)
- 	const struct drm_rect_scale_case *params = test->param_value;
- 	int scaling_factor;
- 
-+	START_INTENTIONAL_WARNING();
- 	scaling_factor = drm_rect_calc_hscale(&params->src, &params->dst,
- 					      params->min_range, params->max_range);
-+	END_INTENTIONAL_WARNING();
- 
- 	KUNIT_EXPECT_EQ(test, scaling_factor, params->expected_scaling_factor);
- }
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 20ed9f9275c9..1f01d4c81055 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -337,6 +337,9 @@ void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
- void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin);
- void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr);
- 
-+#define START_INTENTIONAL_WARNING() pr_info("Triggering a stack trace\n")
-+#define END_INTENTIONAL_WARNING() pr_info("Intentional warning finished\n")
-+
- #if IS_BUILTIN(CONFIG_KUNIT)
- int kunit_run_all_tests(void);
- #else
 -- 
-2.42.0
-
+heikki
