@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DEE7DB400
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546C27DB411
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 08:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjJ3HUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 03:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S232161AbjJ3HUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 03:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbjJ3HUB (ORCPT
+        with ESMTP id S231951AbjJ3HU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 03:20:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2084.outbound.protection.outlook.com [40.107.93.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279C9F9;
-        Mon, 30 Oct 2023 00:19:42 -0700 (PDT)
+        Mon, 30 Oct 2023 03:20:27 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2046.outbound.protection.outlook.com [40.107.102.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A810C;
+        Mon, 30 Oct 2023 00:20:10 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IRa3BNow11Hh62yV5jIdbm6NxbkJqBfjEnwe2hZ4TOUMdEHrJYtcJtokLfdhaRpDo7iRYiT8omtS7FKZMWDTsZYUOn4oGkbxzGDgHJJld3O8eloO5dnz2US5upJD6G8oHEshVVLLMQ8/8e0XIp1Q/fskq4kGsxyskkbqRknmIABURaJyUaF/6AOX3RJzE9AwfmJTX5DH40wQfdB4Jp2GUSpLq2EVVT4EemZJjpjdfxcYJFTmamkoS79llobT2ZBWYMNV8zI9spDM38rFybplCA/74FJVR0e/Ri7BBcINo7dKDQ98i36fV1+dSyddohMcTqlsl8x11V3HXC3IyUFH5g==
+ b=C4EJEa2BpPbYzzjUyU1xJA8xUA4VWXWuETvlp9zbOGTpLBPp6g/kyEHVFm+17lE7OQOP3GALmiULRHNEFaYZoLI0ynaDiYOkiEDgcjcshKNjog5OR5erQU3HfdPi4kYXVfdi7UIsgaKwFnOHpCcyu5Z8XyxRNbx7kTCTvisHzO7FFV7TjIWJqpMIJxuJtiwQFTCREMZ9EmqkVMTeVX9GYxT361OyGiGC0WJT212A667qyti3d2Ll44Q92OPKfg0WcHheZ7749f4XrJ0sWN62GV4GC4o062BPAMpsHy6sCL/5gO9ScdCAif38A0Nt2kbk82dK8XhpFjjYn2TPqZqXdw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b47FqelRefLaNhS5fA+DTa7jmlBH5D7qfcxAlOfSPuI=;
- b=iez4pY4q+79iX3TgM7PEIMCQZuM/qPcaQoVxgCBqWOKb9EITD60rYHHiP9kV+kDSdoUZii/eEd2YuqWUb9Hlhfb4NkQIAq0VsnobEQZ8zDNk6wKVivlFBYgFICEVCPZVLkG7nzWI/pMTYFvF/3rlX+PNjBDPphsipnR++zBGKiDnRvKuuGU3is/+tS0mnzt9WTTyaYWXCFf2X/5feYNuw2SGx/ckyhrgQGjOMpEWwOVupxGOB7nivNTadAlKUYyKXe8Kpqvc4DQ6Hv3YyN6AWHlHYlaLFmfp1UWl9hFqa9W0mq6Luj74ZNWW8jvV1rxreAn/GMd6ZcbXF/oxW4k7vg==
+ bh=N1XOWVVtWY45HBepnoCI/Ml43DNr9H3H4CqOcEGQCm8=;
+ b=YZ/6UJxTqGwqOt6SCXkzwmLilK58+Wsrki7zLwClMCo68+2+J6DAFJ/Qmmvt5UX5p0CpavNYHp0WRbEGO9PNwdKF38r8lN9GYbkwxqXY7/P4V1O0HU7g1TL2ICFuaPnLTUBsXEndCxrDPmegwvpTF3MDjbUiNegPgReH/meZlFROOqAOH7xYzI20pKt/YTbn5szUf1BzATJacaGdJoyZQ5Nbg+4FVTiKqVMdu3f0vvEuLfhRcTpwejkp4t5eiAPueOUAOW8PWMeqV5gBl4Td4xmUFnldVAJSQtOfWsp3gqloZJJbTtBCnkUEddb4XQGgZupRafJy/JaS77SBf74NHw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b47FqelRefLaNhS5fA+DTa7jmlBH5D7qfcxAlOfSPuI=;
- b=1g0+VqkDbicOyTjvIw2V0qgUnKIkiTNjFFprbirzgKQChdSqBRDYwvfSKigs9HauNvcDRiEfXkZPNqzXBSrDTJtmUwxNgngAHR2/Q2Cl3L564K3YBiGhZT9SgvkaPR8lD+nTowJf7GwJQqS6DaxCI4IDKJDcc+7gxUvFrNEN4/Q=
-Received: from CY5PR13CA0042.namprd13.prod.outlook.com (2603:10b6:930:11::10)
- by DS0PR12MB7511.namprd12.prod.outlook.com (2603:10b6:8:139::8) with
+ bh=N1XOWVVtWY45HBepnoCI/Ml43DNr9H3H4CqOcEGQCm8=;
+ b=XNkC4faAhnxyXGLX6y5x661Lyj5l8VyS/p3HakQCx7UdE3HyQyLmRajeAWdkxQ5QWllhe50IcylG+nDe5PGeysJeZ/cjXIXqWHMfZm7rNR9ROsU1tnR5jEwJ8bertUCN7T0mHS+BGKFQV4vZzUiyXrQtFEzhdU6azr0sdIi4IYg=
+Received: from CY5PR04CA0030.namprd04.prod.outlook.com (2603:10b6:930:1e::23)
+ by CH3PR12MB7667.namprd12.prod.outlook.com (2603:10b6:610:14f::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.28; Mon, 30 Oct
- 2023 07:19:40 +0000
-Received: from CY4PEPF0000E9D9.namprd05.prod.outlook.com
- (2603:10b6:930:11:cafe::7b) by CY5PR13CA0042.outlook.office365.com
- (2603:10b6:930:11::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.14 via Frontend
- Transport; Mon, 30 Oct 2023 07:19:39 +0000
+ 2023 07:20:06 +0000
+Received: from CY4PEPF0000E9D7.namprd05.prod.outlook.com
+ (2603:10b6:930:1e:cafe::92) by CY5PR04CA0030.outlook.office365.com
+ (2603:10b6:930:1e::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.26 via Frontend
+ Transport; Mon, 30 Oct 2023 07:20:05 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -47,13 +47,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D9.mail.protection.outlook.com (10.167.241.77) with Microsoft
+ CY4PEPF0000E9D7.mail.protection.outlook.com (10.167.241.78) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 07:19:39 +0000
+ 15.20.6933.15 via Frontend Transport; Mon, 30 Oct 2023 07:20:05 +0000
 Received: from compile-server.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 30 Oct
- 2023 02:19:34 -0500
+ 2023 02:19:39 -0500
 From:   Ma Jun <Jun.Ma2@amd.com>
 To:     <amd-gfx@lists.freedesktop.org>, <lenb@kernel.org>,
         <johannes@sipsolutions.net>, <davem@davemloft.net>,
@@ -64,9 +64,9 @@ To:     <amd-gfx@lists.freedesktop.org>, <lenb@kernel.org>,
         <linux-doc@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>
 CC:     <majun@amd.com>, Evan Quan <quanliangl@hotmail.com>,
         Ma Jun <Jun.Ma2@amd.com>
-Subject: [Patch v13 4/9] wifi: mac80211: Add support for WBRF features
-Date:   Mon, 30 Oct 2023 15:18:27 +0800
-Message-ID: <20231030071832.2217118-5-Jun.Ma2@amd.com>
+Subject: [Patch v13 5/9] drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
+Date:   Mon, 30 Oct 2023 15:18:28 +0800
+Message-ID: <20231030071832.2217118-6-Jun.Ma2@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231030071832.2217118-1-Jun.Ma2@amd.com>
 References: <20231030071832.2217118-1-Jun.Ma2@amd.com>
@@ -78,23 +78,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D9:EE_|DS0PR12MB7511:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3b8d27ca-470c-4db8-4971-08dbd91894a0
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D7:EE_|CH3PR12MB7667:EE_
+X-MS-Office365-Filtering-Correlation-Id: d4365309-ae32-42a3-be34-08dbd918a42b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Va9DIqJEB85PM7hffGQdYUzLY3VxQS+NGt0KqKBynI/NlRfbS9WCcrM51tz4b+RuoRfXSvJe0j+M55fGmtn3JRPGP5L4M+SAnOrpGj12VeA2q0fzNPeleZDNfvo4oTksOL1D0nzn6ZsGr6DXzVz9+KazPDmff/RUKQBh270Ei1AFBiqMNImaPCIvv4NuWjlhcBRAmzP4IhDG2mTqJWdesi+Kt+OwP+ojWosJEIJtrziyC+LXqtS42sR2X25CJ3oZRli8WWlh3kJvrDRwKNo3BafSw5sDztuO1bETweFY7Pd4IeaqD1U2H6CIJpk1lyoFMBl8t6iDFj2pjPmz4E+Iogf+d2Z/yN78VOXDl7YGpIkmuRqTbypipWE94Gvul8EMizuDLj1qKur4OLcyALcYCcBfcK2LmFZqNwgvcntxZqrIEprOnTRUe0qULZLKSTuRLHNv6MM+gtekpiQqHzdmNSMP97JWjKffyBQW7W514se+BfzWackgwZQcfqy0/Vrh3sODKjt0ZvMycqQkI8jxO+50PikA6XzuCjhtpfNYNQbhDLLBGOhmYIq5YS5YX7zVMH/q/xQcpme6DfUeC5PzkYnP1rov7p/LtBzG8nbHVp4VlKwrv3iMXyxTZ97u8qAGclOfxLETIYjvLpYH0eb9skp7lTm5nC6R5K9TiKFpP5ZCx4HXtfL+QthWCaCTFT8CH/1Izjq1SZMj/F9BtccD2TNbwtGhUoGXMTN/UhzKUTVSl7aS+Ub8TSyYrChv4N9NTQDUEUrVKGF45YsVp9uUeU/uYbpRZUGzWEVYQjSc77E=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(82310400011)(36840700001)(40470700004)(40480700001)(40460700003)(45080400002)(478600001)(110136005)(70586007)(70206006)(7696005)(6666004)(32650700002)(83380400001)(36756003)(36860700001)(82740400003)(81166007)(356005)(1076003)(2616005)(41300700001)(2906002)(426003)(336012)(16526019)(26005)(86362001)(921008)(8676002)(8936002)(316002)(54906003)(4326008)(7416002)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: eAGng1Xs655QeP/Lnd2ToogsTaM9qxo/7xdRkn3LJqSTmb6x0JMkhgiDjmHAUTeueqeGniW8vVagpkhxjuujmZW6/mdBABfuwpZTAsRaxZhioSdQA2QTZT0m9owDxKY74HELUYWZFFRbrGdJBkDBLAJAGSs3aIkGPc2qNUZlweUMd0abv/lm0G71FL/s/q3W/1EeZpf9eXfqPTbkg3X0GV4apDV/v6XYRK7EM+0ILsP1te1nPzzBPZ+PlZ+Q75fRbD3ANerIIXMddjis4mu2HFeoJEG/VxL8tlbRLGnkVcakmFodpRy6xjnAIci7A80/N2pwgJwNRdEGOAKyw2ogL+lGZC9hBUJ/Cs9+zKbIzMZXWrfNhDz1KRy6B2pj5Sy31hck/59tCkJ0oZ8SQc8YfAzkN+Du7B3gt97ZkSsIYmc4M8wNfOYuh2mWlYdRhlcnbuKsZSxcFK/ifr8G/d/KMsucmI2joeNU+kSMgKHzBoseZEORHjmOxLn738iS3Q0qYbPEtduYUQhi19upbd27l+2IP7Xp6Gc8SbIwyWVfAZa0nHWYht3T+GNNTUuUboGiQdHp3ELgoZQeOBaKx/GUFjpyiI/nwvm6GGu+nf9WAiczmBPzJrCusQwutR/w/DBI8YwcPnFNn/OAU+PTuv5K9Xaic9nSrIpsv9LLAZir46XTcVDJvdEO0zGLI1l2eXk4QBgTjXFJdFPCa5v/EuzpUZBWnsvElUs4t7cgeISv/tllYYOf5idxj0KaJ5HLMJGly7vRw4vniaj4s32Vzn0SMUM/2dz/K0+H3IPcuBDyBd4=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(136003)(346002)(230922051799003)(64100799003)(82310400011)(186009)(1800799009)(451199024)(36840700001)(40470700004)(7696005)(6666004)(45080400002)(478600001)(83380400001)(16526019)(26005)(2616005)(1076003)(336012)(426003)(2906002)(5660300002)(7416002)(15650500001)(41300700001)(54906003)(316002)(70206006)(110136005)(4326008)(8676002)(32650700002)(8936002)(921008)(70586007)(36860700001)(86362001)(36756003)(81166007)(356005)(82740400003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 07:19:39.7938
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2023 07:20:05.8736
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b8d27ca-470c-4db8-4971-08dbd91894a0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4365309-ae32-42a3-be34-08dbd918a42b
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D7.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7511
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7667
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -107,232 +107,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Evan Quan <quanliangl@hotmail.com>
 
-To support the WBRF mechanism, Wifi adapters utilized in the system must
-register the frequencies in use (or unregister those frequencies no longer
-used) via the dedicated calls. So that, other drivers responding to the
-frequencies can take proper actions to mitigate possible interference.
+Add those data structures to support Wifi RFI mitigation feature.
 
-Co-developed-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Co-developed-by: Evan Quan <quanliangl@hotmail.com>
 Signed-off-by: Evan Quan <quanliangl@hotmail.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
---
-v1->v2:
-  - place the new added member(`wbrf_supported`) in
-    ieee80211_local(Johannes)
-  - handle chandefs change scenario properly(Johannes)
-  - some minor fixes around code sharing and possible invalid input
-    checks(Johannes)
-v2->v3:
-  - drop unnecessary input checks and intermediate APIs(Mario)
-  - Separate some mac80211 common code(Mario, Johannes)
-v3->v4:
-  - some minor fixes around return values(Johannes)
-v9->v10:
-  - get ranges_in->num_of_ranges set and passed in(Johannes)
-v12:
-  - use acpi_amd_wbrf_add_remove to replace the acpi_amd_wbrf_add_exclusion
-    acpi_amd_wbrf_remove_exclusion
-v13:
-  - Fix the format issue (IIpo Jarvinen)
-  - Remove KHZ_TO_HZ and use HZ_PER_KHZ in linux/units.h (IIpo Jarvinen)
----
- net/mac80211/Makefile      |  2 +
- net/mac80211/chan.c        |  9 ++++
- net/mac80211/ieee80211_i.h |  7 +++
- net/mac80211/main.c        |  2 +
- net/mac80211/wbrf.c        | 95 ++++++++++++++++++++++++++++++++++++++
- 5 files changed, 115 insertions(+)
- create mode 100644 net/mac80211/wbrf.c
 
-diff --git a/net/mac80211/Makefile b/net/mac80211/Makefile
-index b8de44da1fb8..d46c36f55fd3 100644
---- a/net/mac80211/Makefile
-+++ b/net/mac80211/Makefile
-@@ -65,4 +65,6 @@ rc80211_minstrel-$(CONFIG_MAC80211_DEBUGFS) += \
+v13:
+ - Move some struct variables to amdgpu_smu.h to reduce
+duplicate code
+---
+ drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h         | 11 +++++++++++
+ .../pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_0.h    |  3 ++-
+ .../pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_7.h    |  3 ++-
+ .../drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |  5 ++---
+ .../drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |  3 ++-
+ 5 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h b/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
+index 5a52098bcf16..fbcaa0947b39 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
+@@ -1457,6 +1457,17 @@ enum smu_baco_seq {
+ 			 __dst_size);					   \
+ })
  
- mac80211-$(CONFIG_MAC80211_RC_MINSTREL) += $(rc80211_minstrel-y)
++typedef struct {
++	uint16_t     LowFreq;
++	uint16_t     HighFreq;
++} WifiOneBand_t;
++
++typedef struct {
++	uint32_t		WifiBandEntryNum;
++	WifiOneBand_t	WifiBandEntry[11];
++	uint32_t		MmHubPadding[8];
++} WifiBandEntryTable_t;
++
+ #if !defined(SWSMU_CODE_LAYER_L2) && !defined(SWSMU_CODE_LAYER_L3) && !defined(SWSMU_CODE_LAYER_L4)
+ int smu_get_power_limit(void *handle,
+ 			uint32_t *limit,
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_0.h b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_0.h
+index 9dd1ed5b8940..b114d14fc053 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_0.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_0.h
+@@ -1615,7 +1615,8 @@ typedef struct {
+ #define TABLE_I2C_COMMANDS            9
+ #define TABLE_DRIVER_INFO             10
+ #define TABLE_ECCINFO                 11
+-#define TABLE_COUNT                   12
++#define TABLE_WIFIBAND                12
++#define TABLE_COUNT                   13
  
-+mac80211-y += wbrf.o
-+
- ccflags-y += -DDEBUG
-diff --git a/net/mac80211/chan.c b/net/mac80211/chan.c
-index 68952752b599..458469c224ae 100644
---- a/net/mac80211/chan.c
-+++ b/net/mac80211/chan.c
-@@ -506,11 +506,16 @@ static void _ieee80211_change_chanctx(struct ieee80211_local *local,
+ //IH Interupt ID
+ #define IH_INTERRUPT_ID_TO_DRIVER                   0xFE
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_7.h b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_7.h
+index 62b7c0daff68..8b1496f8ce58 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_7.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu13_driver_if_v13_0_7.h
+@@ -1605,7 +1605,8 @@ typedef struct {
+ #define TABLE_I2C_COMMANDS            9
+ #define TABLE_DRIVER_INFO             10
+ #define TABLE_ECCINFO                 11
+-#define TABLE_COUNT                   12
++#define TABLE_WIFIBAND                12
++#define TABLE_COUNT                   13
  
- 	WARN_ON(!cfg80211_chandef_compatible(&ctx->conf.def, chandef));
+ //IH Interupt ID
+ #define IH_INTERRUPT_ID_TO_DRIVER                   0xFE
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h
+index e2ee855c7748..e862d323caab 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h
+@@ -138,10 +138,9 @@
+ #define PPSMC_MSG_SetBadMemoryPagesRetiredFlagsPerChannel 0x4A
+ #define PPSMC_MSG_SetPriorityDeltaGain           0x4B
+ #define PPSMC_MSG_AllowIHHostInterrupt           0x4C
+-
+ #define PPSMC_MSG_DALNotPresent                  0x4E
+-
+-#define PPSMC_Message_Count                      0x4F
++#define PPSMC_MSG_EnableUCLKShadow               0x51
++#define PPSMC_Message_Count                      0x52
  
-+	ieee80211_remove_wbrf(local, &ctx->conf.def);
-+
- 	ctx->conf.def = *chandef;
+ //Debug Dump Message
+ #define DEBUGSMC_MSG_TestMessage                    0x1
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h
+index 6aaefca9b595..a6bf9cdd130e 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h
+@@ -134,6 +134,7 @@
+ #define PPSMC_MSG_SetBadMemoryPagesRetiredFlagsPerChannel 0x4A
+ #define PPSMC_MSG_SetPriorityDeltaGain           0x4B
+ #define PPSMC_MSG_AllowIHHostInterrupt           0x4C
+-#define PPSMC_Message_Count                      0x4D
++#define PPSMC_MSG_EnableUCLKShadow               0x51
++#define PPSMC_Message_Count                      0x52
  
- 	/* check if min chanctx also changed */
- 	changed = IEEE80211_CHANCTX_CHANGE_WIDTH |
- 		  _ieee80211_recalc_chanctx_min_def(local, ctx, rsvd_for);
-+
-+	ieee80211_add_wbrf(local, &ctx->conf.def);
-+
- 	drv_change_chanctx(local, ctx, changed);
- 
- 	if (!local->use_chanctx) {
-@@ -668,6 +673,8 @@ static int ieee80211_add_chanctx(struct ieee80211_local *local,
- 	lockdep_assert_held(&local->mtx);
- 	lockdep_assert_held(&local->chanctx_mtx);
- 
-+	ieee80211_add_wbrf(local, &ctx->conf.def);
-+
- 	if (!local->use_chanctx)
- 		local->hw.conf.radar_enabled = ctx->conf.radar_enabled;
- 
-@@ -748,6 +755,8 @@ static void ieee80211_del_chanctx(struct ieee80211_local *local,
- 	}
- 
- 	ieee80211_recalc_idle(local);
-+
-+	ieee80211_remove_wbrf(local, &ctx->conf.def);
- }
- 
- static void ieee80211_free_chanctx(struct ieee80211_local *local,
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index 98ef1fe1226e..1172554bd831 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -1600,6 +1600,8 @@ struct ieee80211_local {
- 
- 	/* extended capabilities provided by mac80211 */
- 	u8 ext_capa[8];
-+
-+	bool wbrf_supported;
- };
- 
- static inline struct ieee80211_sub_if_data *
-@@ -2637,4 +2639,9 @@ ieee80211_eht_cap_ie_to_sta_eht_cap(struct ieee80211_sub_if_data *sdata,
- 				    const struct ieee80211_eht_cap_elem *eht_cap_ie_elem,
- 				    u8 eht_cap_len,
- 				    struct link_sta_info *link_sta);
-+
-+void ieee80211_check_wbrf_support(struct ieee80211_local *local);
-+void ieee80211_add_wbrf(struct ieee80211_local *local, struct cfg80211_chan_def *chandef);
-+void ieee80211_remove_wbrf(struct ieee80211_local *local, struct cfg80211_chan_def *chandef);
-+
- #endif /* IEEE80211_I_H */
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index 24315d7b3126..b20bdaac84db 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -1396,6 +1396,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
- 	debugfs_hw_add(local);
- 	rate_control_add_debugfs(local);
- 
-+	ieee80211_check_wbrf_support(local);
-+
- 	rtnl_lock();
- 	wiphy_lock(hw->wiphy);
- 
-diff --git a/net/mac80211/wbrf.c b/net/mac80211/wbrf.c
-new file mode 100644
-index 000000000000..ca3f30b58476
---- /dev/null
-+++ b/net/mac80211/wbrf.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Wifi Band Exclusion Interface for WLAN
-+ * Copyright (C) 2023 Advanced Micro Devices
-+ *
-+ */
-+
-+#include <linux/acpi_amd_wbrf.h>
-+#include <linux/units.h>
-+#include <net/cfg80211.h>
-+#include "ieee80211_i.h"
-+
-+void ieee80211_check_wbrf_support(struct ieee80211_local *local)
-+{
-+	struct wiphy *wiphy = local->hw.wiphy;
-+	struct device *dev;
-+
-+	if (!wiphy)
-+		return;
-+
-+	dev = wiphy->dev.parent;
-+	if (!dev)
-+		return;
-+
-+	local->wbrf_supported = acpi_amd_wbrf_supported_producer(dev);
-+	dev_dbg(dev, "WBRF is %s supported\n",
-+		local->wbrf_supported ? "" : "not");
-+}
-+
-+static void get_chan_freq_boundary(u32 center_freq, u32 bandwidth, u64 *start, u64 *end)
-+{
-+	bandwidth = MHZ_TO_KHZ(bandwidth);
-+	center_freq = MHZ_TO_KHZ(center_freq);
-+
-+	*start = center_freq - bandwidth / 2;
-+	*end = center_freq + bandwidth / 2;
-+
-+	/* Frequency in Hz is expected */
-+	*start = *start * HZ_PER_KHZ;
-+	*end = *end * HZ_PER_KHZ;
-+}
-+
-+static void get_ranges_from_chandef(struct cfg80211_chan_def *chandef,
-+				    struct wbrf_ranges_in_out *ranges_in)
-+{
-+	u64 start_freq1, end_freq1;
-+	u64 start_freq2, end_freq2;
-+	int bandwidth;
-+
-+	bandwidth = nl80211_chan_width_to_mhz(chandef->width);
-+
-+	get_chan_freq_boundary(chandef->center_freq1, bandwidth, &start_freq1, &end_freq1);
-+
-+	ranges_in->band_list[0].start = start_freq1;
-+	ranges_in->band_list[0].end = end_freq1;
-+	ranges_in->num_of_ranges = 1;
-+
-+	if (chandef->width == NL80211_CHAN_WIDTH_80P80) {
-+		get_chan_freq_boundary(chandef->center_freq2, bandwidth, &start_freq2, &end_freq2);
-+
-+		ranges_in->band_list[1].start = start_freq2;
-+		ranges_in->band_list[1].end = end_freq2;
-+		ranges_in->num_of_ranges++;
-+	}
-+}
-+
-+void ieee80211_add_wbrf(struct ieee80211_local *local, struct cfg80211_chan_def *chandef)
-+{
-+	struct wbrf_ranges_in_out ranges_in = {0};
-+	struct device *dev;
-+
-+	if (!local->wbrf_supported)
-+		return;
-+
-+	dev = local->hw.wiphy->dev.parent;
-+
-+	get_ranges_from_chandef(chandef, &ranges_in);
-+
-+	acpi_amd_wbrf_add_remove(dev, WBRF_RECORD_ADD, &ranges_in);
-+}
-+
-+void ieee80211_remove_wbrf(struct ieee80211_local *local, struct cfg80211_chan_def *chandef)
-+{
-+	struct wbrf_ranges_in_out ranges_in = {0};
-+	struct device *dev;
-+
-+	if (!local->wbrf_supported)
-+		return;
-+
-+	dev = local->hw.wiphy->dev.parent;
-+
-+	get_ranges_from_chandef(chandef, &ranges_in);
-+
-+	acpi_amd_wbrf_add_remove(dev, WBRF_RECORD_REMOVE, &ranges_in);
-+}
+ #endif
 -- 
 2.34.1
 
