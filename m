@@ -2,50 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA277DC35E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 01:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307577DC363
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 01:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236063AbjJ3XuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 19:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        id S236227AbjJ3Xux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236016AbjJ3XuL (ORCPT
+        with ESMTP id S235990AbjJ3XuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 19:50:11 -0400
+        Mon, 30 Oct 2023 19:50:12 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCFCEA
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:50:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A780AC116B4;
-        Mon, 30 Oct 2023 23:50:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEAD102
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 16:50:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 735F5C4167D;
+        Mon, 30 Oct 2023 23:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698709807;
-        bh=cF9CAg8PZjSD1N/wQqAZxp91W5DZzmcyJzLCCJiiv6U=;
+        s=k20201202; t=1698709808;
+        bh=w+z+AWwZSZmxcAagsGBErR0O+uiAosw6l4/Zh7U1mIw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LuFeiZm9m88TP3jWKLAoy3dXVDfhoki+DVOA+PpXVpYBcGb4bjXiRayYV0Gxwa9GH
-         9a9QWlXZcjYOE053qu/Cfn/FHzbsHyg6u1tO1I2X050MvDszjKRQ53iKYOLOSM5mud
-         qRUT66Lwpoiy0ZrNnVVhqvuha9jWMQ6SsxAJ4fYNQdux5v7yuFZjO7iYuNugoBGqAC
-         Lr30yVodPbEonUWXqpMqKPh6PUYuNfmKzIalRutcsJmRDQLSom630VaFz7yVNcjysT
-         NMLGurYiP0v8Ydlee1W+Wh+UKyvq7BvgM6qhtSxT+0ZvEO+45UPVsq4X1kuzrtmoEW
-         XmnnhMavZwBGg==
+        b=Kgopti04ZwoUuLkG2TqNgSBHRigwP1oFdg2P8YZLWDt4L9NW8fM1GYg0nlZUbX2Fx
+         cykbQSPKRT85cBPeBmQszXTlzO3XNAOJWrMPgByiAWWNxCzzpeKDrD0YjJbgC5ssem
+         t82+K1Ks9TyE/AYnMxhEEiciDt7COhqjDzeqDiViG2o9cQRiioj3w/20/mBSlsXjaq
+         yHU+KhlsU6NtiDT0uAbW1YCOCtHucHolusPEdshSDjuTm5AM/GVwjFWL7jHWOZbV/Z
+         38acPgp4990tuB8FALc3WiXoa97avbd9H/Jf+LzQntEaOZKwBFG6qTIoV9iflaLPna
+         zaGYMzQ3xgwVw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8BD05EAB08B;
-        Mon, 30 Oct 2023 23:50:07 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/cpu for v6.7
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5EE18E0008C;
+        Mon, 30 Oct 2023 23:50:08 +0000 (UTC)
+Subject: Re: [GIT PULL] objtool changes for v6.7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231027170151.GOZTvs/wR/47ib4+qe@fat_crate.local>
-References: <20231027170151.GOZTvs/wR/47ib4+qe@fat_crate.local>
+In-Reply-To: <ZTzyIWSElIo0KZzD@gmail.com>
+References: <ZTzyIWSElIo0KZzD@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231027170151.GOZTvs/wR/47ib4+qe@fat_crate.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cpu_for_6.7_rc1
-X-PR-Tracked-Commit-Id: b5034c63858d8cb44587bb1ce5a0790a1b4e4a05
+X-PR-Tracked-Message-Id: <ZTzyIWSElIo0KZzD@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2023-10-28
+X-PR-Tracked-Commit-Id: 60fd39af33d3f63c4c94bd06784ebdf0d883f5c9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ca2e9c3beec67dc90944f3d2a72f77652fb9cefc
-Message-Id: <169870980756.17163.3473492276184968328.pr-tracker-bot@kernel.org>
-Date:   Mon, 30 Oct 2023 23:50:07 +0000
-To:     Borislav Petkov <bp@alien8.de>
+X-PR-Merge-Commit-Id: cd063c8b9e1e95560e90bac7816234d8b2ee2897
+Message-Id: <169870980838.17163.12472974391694975542.pr-tracker-bot@kernel.org>
+Date:   Mon, 30 Oct 2023 23:50:08 +0000
+To:     Ingo Molnar <mingo@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,12 +59,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 27 Oct 2023 19:01:51 +0200:
+The pull request you sent on Sat, 28 Oct 2023 13:36:01 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cpu_for_6.7_rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2023-10-28
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ca2e9c3beec67dc90944f3d2a72f77652fb9cefc
+https://git.kernel.org/torvalds/c/cd063c8b9e1e95560e90bac7816234d8b2ee2897
 
 Thank you!
 
