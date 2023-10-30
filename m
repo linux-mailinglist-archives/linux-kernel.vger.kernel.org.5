@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839C57DB582
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F887DB587
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbjJ3Iyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        id S232332AbjJ3Izi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjJ3Iyt (ORCPT
+        with ESMTP id S232319AbjJ3Izh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:54:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9707494;
-        Mon, 30 Oct 2023 01:54:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3F9DEC433C7;
-        Mon, 30 Oct 2023 08:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux.dev; s=korg;
-        t=1698656086; bh=Y6RkweAiaJcVTeeS6WX5S7GACsI1tkgdNxGrycq560I=;
-        h=From:Date:Subject:To:Cc:From;
-        b=cn+rmzhle65x84iyJBGFRYCM2SAQk6RZcrLyMpA0vG4eQkzCnT94mAodYULDbIJHP
-         kTk1MQvNbEo7Y+DyDz3wOOafQ8FCAN5+0dg0GMXigbyOxhBNoXvfNcWPyjEW0bL88P
-         Crlsmg8Y44fGHA6XivePoPKWiIhN/LW3EyfSEkoU=
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 15061C4332F;
-        Mon, 30 Oct 2023 08:54:46 +0000 (UTC)
-From:   Itaru Kitayama <itaru.kitayama@linux.dev>
-Date:   Mon, 30 Oct 2023 17:54:45 +0900
-Subject: [PATCH] Lower the ptrace permissions so that the memfd_secrect
- test program runs without an issue.
+        Mon, 30 Oct 2023 04:55:37 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54229D
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:55:33 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39U19Ykq018206;
+        Mon, 30 Oct 2023 09:55:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=LkBbLvL
+        Wqz8jghg6R6KCsG4K3/XdyCwgF3lhmAR9LKI=; b=6Nl+ofVZKO1k3WVRF3WYHMf
+        8G27kt5YaSptLBPcXCEObFi2cd3gBqY5hP1fok4gtmqBkO925gQN2iItW0wpin9l
+        xOYjmu0o/w8xVC6pZ3Edugd5vFPgxiR2C87oy8eSwBkN2t4c8efZ7EXEG3xyy/9Z
+        d144tCo12M6/BIUpM7qG4VmhPLDm2QMNepwkYiLBC9kKcER6UU2n4QDRs3tiAiWz
+        NAfd0hbd9++VZ2AfxHW5c1LYRb+/r1zaazTa6sQTR6wYSHzcMDL220NDP67wFhUX
+        aXXG9bfZq0CIL8Tg5P56nluyvJqdYJ/dG2PBA7C1jYqj5v6qQlTagVwXzy+HQMw=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u0tuf6h21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Oct 2023 09:55:25 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 73E9110005C;
+        Mon, 30 Oct 2023 09:55:24 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4272D21862F;
+        Mon, 30 Oct 2023 09:55:24 +0100 (CET)
+Received: from localhost (10.201.20.20) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 30 Oct
+ 2023 09:55:23 +0100
+From:   Etienne Carriere <etienne.carriere@foss.st.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        <op-tee@lists.trustedfirmware.org>,
+        Etienne Carriere <etienne.carriere@foss.st.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] optee: add missing description of RPC argument reference
+Date:   Mon, 30 Oct 2023 09:55:15 +0100
+Message-ID: <20231030085515.907123-1-etienne.carriere@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231030-selftest-v1-1-743df68bb996@linux.dev>
-X-B4-Tracking: v=1; b=H4sIAFRvP2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDA2MD3eLUnLSS1OIS3WRz0yTDJBMzAwtDcyWg8oKi1LTMCrBR0bG1tQB
- ajs+YWgAAAA==
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Itaru Kitayama <itaru.kitayama@linux.dev>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698656085; l=1171;
- i=itaru.kitayama@linux.dev; s=20231030; h=from:subject:message-id;
- bh=0yXLvAw3hkhizEEQX735jRdYWkFus1UusgKEaYjOuWM=;
- b=89ytidZI13PJru53wdET0bYxdvD3UHcUSfWSvoeULHl5lYVnnUAZXTBUz7i3iDUa7HYr/SDzo
- 9SsAc+E87oFCrEQEpJS+9zCDSPF8qhi3AinWq3wst4TTeAt6gA+9RPt
-X-Developer-Key: i=itaru.kitayama@linux.dev; a=ed25519;
- pk=4yYhz2CbKL7F2qR5IzP7QvqM9B6c+dfWJRHWez+rMDw=
-X-Endpoint-Received: by B4 Relay for itaru.kitayama@linux.dev/20231030 with auth_id=92
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.20]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-30_06,2023-10-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adds missing inline description comment for RPC optional arguments
+reference.
 
-
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/lkml/202310192021.fvb6JDOY-lkp@intel.com/
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
 ---
-On Ubuntu and probably other distros, ptrace permissions are tightend a
-bit by default; i.e., /proc/sys/kernel/yama/ptrace_score is set to 1.
-This cases memfd_secret's ptrace attach test fails with a permission
-error. Set it to 0 piror to running the program. 
-
-Signed-off-by: Itaru Kitayama <itaru.kitayama@linux.dev>
----
- tools/testing/selftests/mm/run_vmtests.sh | 1 +
+ drivers/tee/optee/smc_abi.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index 3e2bc818d566..7d31718ce834 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -303,6 +303,7 @@ CATEGORY="hmm" run_test bash ./test_hmm.sh smoke
- # MADV_POPULATE_READ and MADV_POPULATE_WRITE tests
- CATEGORY="madv_populate" run_test ./madv_populate
- 
-+echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
- CATEGORY="memfd_secret" run_test ./memfd_secret
- 
- # KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
-
----
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
-change-id: 20231030-selftest-c75b1b460817
-
-Best regards,
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index d5b28fd35d66..67bfa25d6302 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -806,6 +806,7 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ /**
+  * optee_handle_rpc() - handle RPC from secure world
+  * @ctx:	context doing the RPC
++ * @rpc_arg:	pointer to RPC arguments if any, or NULL if none
+  * @param:	value of registers for the RPC
+  * @call_ctx:	call context. Preserved during one OP-TEE invocation
+  *
 -- 
-Itaru Kitayama <itaru.kitayama@linux.dev>
+2.25.1
 
