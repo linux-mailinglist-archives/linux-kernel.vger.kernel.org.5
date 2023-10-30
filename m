@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1787DB4F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9737DB4F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 09:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbjJ3IPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 04:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S232058AbjJ3IQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 04:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjJ3IPu (ORCPT
+        with ESMTP id S232022AbjJ3IQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:15:50 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7E291;
-        Mon, 30 Oct 2023 01:15:44 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5079f9675c6so6280367e87.2;
-        Mon, 30 Oct 2023 01:15:44 -0700 (PDT)
+        Mon, 30 Oct 2023 04:16:25 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42EEB4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:16:22 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53f647c84d4so11676a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 01:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698653742; x=1699258542; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KWYjvSDY5DIMMFjnpJiqvif2JTitQHxK/8ZOowXvcTI=;
-        b=gpwVR6g/irhgPQClnd1F4QpmwjX2W+eoQ5E5IbHIzEJvOHHCN8bJNfbZ3dlM2C4w4N
-         HXn7Su/r6ZaTIxVjKuBb0E0b3wYzGsDtvQFYgP4AozZPyN6qUbgOxHaRxbdDE+kxiXY4
-         W6Z/AXAAhVeBzV5+qLBHYj9Uaq0Xsb/hhEhoDFugEPwXfqezKJh203SUgGC6Wg9a3KHV
-         Csq89Zf97He0VofY4iP9mStj8we/DQF2RXowXTlf84pZ0hFy6vkHQ4u9tmVMQsT2ywx2
-         tvGb6aoZHptOPtKGg2hg6qDHaYldtEm4MMWV17pMgx4hnOAOJibIrRRHn/GSWL4uKPvX
-         wrPw==
+        d=google.com; s=20230601; t=1698653781; x=1699258581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g89XSggoLUaEMPo+RRID+6tdEeDrel7KLo6Qj6UN4p0=;
+        b=flF6YDsmduK+vpK/QFn2fm/1huYgaWSiO5ovHa+eRvhMPklkFHS5KUGCS+GTZ2kOK3
+         MfZ37MHtjAD1+/9mIIiuimXGg1g3xmyktcjMHJBpl6Bxk3qDib86kfg5DVpCLYwRyVqK
+         TxAU29B3eQYAvgP5uqFYs+WeOqeVsV8KbI+EKy+gKrtv0SFLibVASx7XyeIamOC+BIQl
+         cS/43hoPsO1PsyMeW+1Rf0vh6HPpvurlukuIACqWncBtz47Lu/kTk/+C6oNk5dvKeamr
+         qK01DjIR5OhebNW8xb1OaIJCQ28dHwuVCEvuklbHvEajSX9UHYVrdZLViwxedk+2lBoN
+         ca3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698653742; x=1699258542;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KWYjvSDY5DIMMFjnpJiqvif2JTitQHxK/8ZOowXvcTI=;
-        b=vuiL7A+4p0T8e7DDJlV6FtdCkO1z/LLfbAMeLdhTyuTYc5mtyxItHmwwsnaDEQBIX4
-         GIgveE5l5U9KJP3UiBHLbb52fVJ9KoiCK63tNBOgApRAG7rWsnyBMh2Yj5aJeAgAwa0F
-         BxA/66rAXyuozKplop0CMEpTmyIIbQ0Lj+ewdl8xWoh9hNT6+gDGxdD+AeyRkEgpscdM
-         4zAZVKkc6YrKelJ9ahLoBhTS2i5vEpIDyGOvkFskeszwMPuOwY9dHvyYTjTClDsyyFd+
-         Nsz0mZA1G8KhRv7MMZBoZoFV1G/CdC1+atQ1BV5lejeu6o/IQzagoJN5NR2P0QK9AYCQ
-         eIrA==
-X-Gm-Message-State: AOJu0YwqtsjHV3mb6usPHrSlSnbgivm9V6BA9dFWXiL96bPhow3COZYj
-        PYBKHlur6s7BzZHrgX6c+rBAZuHsVoBxXd6YX2ErYtdX
-X-Google-Smtp-Source: AGHT+IHblBhpQey3QA286YT9LUKfwfKp4KRW2N0/x8HmCpUcyQrgHgSeWzhTZnzJekj9aqpKhjR75KioNv30Rn+svKI=
-X-Received: by 2002:ac2:4a79:0:b0:503:90d:e0df with SMTP id
- q25-20020ac24a79000000b00503090de0dfmr6221722lfp.34.1698653742068; Mon, 30
- Oct 2023 01:15:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698653781; x=1699258581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g89XSggoLUaEMPo+RRID+6tdEeDrel7KLo6Qj6UN4p0=;
+        b=r4/PqbY2STUvb4olXvoDwu/bdGTnksZS78N+MS86qr5r5oOJoolQriVBa3z4aTrZGv
+         mhlphzP65tEFQYDF2qSpV+TSJ6Tzhr1xWU6GAgU8vsuCO/hlzCzEuv2CjYV32H43rtEj
+         1t4YJ+JcvJ4DqJ3oTLasc7KWh1ybiTd0nIw0wfwb7Gvuz8DWMEri091XYmgwEHDSCOWF
+         7PlXck2NjL/ykQo39/1IBGkCVW1aMNkihVVGIwAu3GpX+IRU9ZPfdQdZ1FwU/rtXtfl6
+         Hc4BmHMo3ttM9b0qg4gYT206GCAIN0jdXTbKTa5v3AJAGT6blf9okUBEhbxVBar5+iMU
+         Mr6g==
+X-Gm-Message-State: AOJu0YwfzYDkJYcykmVNsZCz8rBb1YMDuLy18UesWh7ues/Uj08N+ALN
+        rfi5qMkP1rQQOrgK2QGUNCGnrJXU5fPY929jhlqz7g==
+X-Google-Smtp-Source: AGHT+IG4I7Rtp4zpBaUCuU660uqL5hMSv74JlubURsiyygvmUDA4z2m2beZ18vlmuO0Yv/s3YCT8ZDuLK12Wrfjhwqg=
+X-Received: by 2002:a50:baee:0:b0:540:e63d:3cfb with SMTP id
+ x101-20020a50baee000000b00540e63d3cfbmr93917ede.3.1698653780877; Mon, 30 Oct
+ 2023 01:16:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFGKuwoFUaXMsOOWJNBenQDG6+syt80Z9pvQQK1XSZFztC2_SQ@mail.gmail.com>
- <2023103052-unpeeled-calibrate-ae48@gregkh>
-In-Reply-To: <2023103052-unpeeled-calibrate-ae48@gregkh>
-From:   ariel marcovitch <arielmarcovitch@gmail.com>
-Date:   Mon, 30 Oct 2023 10:15:30 +0200
-Message-ID: <CAFGKuwp7JH8H9vjz8iJ24R9TRW0GDE-O96VBAG4L8X4DhTabXg@mail.gmail.com>
-Subject: Re: Gaps in logs while using usb-serial as a console
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231023192217.426455-1-dima@arista.com> <20231023192217.426455-16-dima@arista.com>
+In-Reply-To: <20231023192217.426455-16-dima@arista.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 30 Oct 2023 09:16:08 +0100
+Message-ID: <CANn89iJQvO11pRqrsHpB5Y3NuurX1UcEFu_SYq7kxJsvW7y7BQ@mail.gmail.com>
+Subject: Re: [PATCH v16 net-next 15/23] net/tcp: Add tcp_hash_fail()
+ ratelimited logs
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        "Nassiri, Mohammad" <mnassiri@ciena.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,80 +92,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 08:22, Greg KH <gregkh@linuxfoundation.org> wrote:
+On Mon, Oct 23, 2023 at 9:22=E2=80=AFPM Dmitry Safonov <dima@arista.com> wr=
+ote:
 >
-> On Sun, Oct 29, 2023 at 08:21:21PM +0200, ariel marcovitch wrote:
-> > Greetings!
-> >
-> > While using a usb-serial device as console, I've noticed some
-> > significant gaps in the kernel logs it receives.
-> >
-> > The problem can be reproduced in qemu like this (the kernel is a
-> > x86_64_defconfig with usb-serial enabled and with the ftdi_sio driver
-> > enabled):
-> > qemu-system-x86_64 -m 4G -kernel arch/x86_64/boot/bzImage -usb -device
-> > usb-serial,chardev=ser -chardev pty,id=ser -append 'console=ttyUSB0'
-> > (this will create a `pts` device that will connect to the other end of
-> > the emulated usb-serial)
-> >
-> > Then the logs look something like this:
-> > [    1.006459] SELinux:  Initializing.
-> > [    1.011620] Mount-cache hash table entries: 8192 (order: 4, 65536
-> > bytes, li[    2.315341] ACPI: \_SB_.LNKD: Enabled at IRQ 11
-> >
-> > This probably happens because of the code in
-> > `usb_serial_generic_write` which tries to insert the data into the
-> > fifo:
-> > count = kfifo_in_locked(&port->write_fifo, buf, count, &port->lock);
-> > Because added indications for when the result is less than expected
-> > and it showed significant losses.
-> > The return value is silently ignored in `usb_console_write`
-> > Also making the fifo bigger in `setup_port_bulk_out` helped (I made it
-> > 10 times bigger and there were no losses)
-> >
-> > The reason so much data is written at a short time is because
-> > usb-serial is initialized rather late, and when it is registered as a
-> > console, all the logs until this point are written to it.
-> >
-> > I'm not sure what the solution should be. Maybe we need to check
-> > whether the write in `console_emit_next_record` was successful and not
-> > increase the seq counter in this case.
-> >
-> > Any suggestions?
+> Add a helper for logging connection-detailed messages for failed TCP
+> hash verification (both MD5 and AO).
 >
-> Please realize that usb-serial console was the result of me loosing a
-> drunken bet.  It's amazing it works at all.  For "fake" devices like
-LOL your drunken bet was quite helpful to some people
-Because modern PCs come without a serial port, I wanted to use it to
-see early logs on my crashing kernel without having to use printk
-delay and things like that.
-I'm curious as to how kernel people debug PCs in general...
-In any case, the usb-serial setup was quite weird as it required two
-usb-serial and a gender changer
+> Co-developed-by: Francesco Ruggeri <fruggeri@arista.com>
+> Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+> Co-developed-by: Salam Noureddine <noureddine@arista.com>
+> Signed-off-by: Salam Noureddine <noureddine@arista.com>
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> Acked-by: David Ahern <dsahern@kernel.org>
+> ---
+>  include/net/tcp.h    | 14 ++++++++++++--
+>  include/net/tcp_ao.h | 29 +++++++++++++++++++++++++++++
+>  net/ipv4/tcp.c       | 23 +++++++++++++----------
+>  net/ipv4/tcp_ao.c    |  7 +++++++
+>  4 files changed, 61 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index d29c8a867f0e..c93ac6cc12c4 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -2746,12 +2746,18 @@ tcp_inbound_hash(struct sock *sk, const struct re=
+quest_sock *req,
+>         int l3index;
+>
+>         /* Invalid option or two times meet any of auth options */
+> -       if (tcp_parse_auth_options(th, &md5_location, &aoh))
+> +       if (tcp_parse_auth_options(th, &md5_location, &aoh)) {
+> +               tcp_hash_fail("TCP segment has incorrect auth options set=
+",
+> +                             family, skb, "");
+>                 return SKB_DROP_REASON_TCP_AUTH_HDR;
+> +       }
+>
+>         if (req) {
+>                 if (tcp_rsk_used_ao(req) !=3D !!aoh) {
+>                         NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
+> +                       tcp_hash_fail("TCP connection can't start/end usi=
+ng TCP-AO",
+> +                                     family, skb, "%s",
+> +                                     !aoh ? "missing AO" : "AO signed");
+>                         return SKB_DROP_REASON_TCP_AOFAILURE;
+>                 }
+>         }
+> @@ -2768,10 +2774,14 @@ tcp_inbound_hash(struct sock *sk, const struct re=
+quest_sock *req,
+>                  * the last key is impossible to remove, so there's
+>                  * always at least one current_key.
+>                  */
+> -               if (tcp_ao_required(sk, saddr, family, true))
+> +               if (tcp_ao_required(sk, saddr, family, true)) {
+> +                       tcp_hash_fail("AO hash is required, but not found=
+",
+> +                                       family, skb, "L3 index %d", l3ind=
+ex);
+>                         return SKB_DROP_REASON_TCP_AONOTFOUND;
+> +               }
+>                 if (unlikely(tcp_md5_do_lookup(sk, l3index, saddr, family=
+))) {
+>                         NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5NOTFO=
+UND);
+> +                       tcp_hash_fail("MD5 Hash not found", family, skb, =
+"");
+>                         return SKB_DROP_REASON_TCP_MD5NOTFOUND;
+>                 }
+>                 return SKB_NOT_DROPPED_YET;
+> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+> index 0c3516d1b968..4da6e3657913 100644
+> --- a/include/net/tcp_ao.h
+> +++ b/include/net/tcp_ao.h
+> @@ -118,6 +118,35 @@ struct tcp_ao_info {
+>         struct rcu_head         rcu;
+>  };
+>
+> +#define tcp_hash_fail(msg, family, skb, fmt, ...)                      \
+> +do {                                                                   \
+> +       const struct tcphdr *th =3D tcp_hdr(skb);                        =
+ \
+> +       char hdr_flags[5] =3D {};                                        =
+ \
+> +       char *f =3D hdr_flags;                                           =
+ \
+> +                                                                       \
+> +       if (th->fin)                                                    \
+> +               *f++ =3D 'F';                                            =
+ \
+> +       if (th->syn)                                                    \
+> +               *f++ =3D 'S';                                            =
+ \
+> +       if (th->rst)                                                    \
+> +               *f++ =3D 'R';                                            =
+ \
+> +       if (th->ack)                                                    \
+> +               *f++ =3D 'A';                                            =
+ \
+> +       if (f !=3D hdr_flags)                                            =
+ \
+> +               *f =3D ' ';                                              =
+ \
 
-> this, that use the generic usb-serial code, yes, you will have overruns
-> and other problems, that's just part of how it works (i.e. not well.)
->
-> For something like qemu, please use a real console, like the serial port
-> (i.e. a fake serial port), not the fake usb-serial port.
-Yeah I was just using it to demonstrate the problem (I agree it is
-quite weird to use usb-serial as a console for qemu)
-I experienced the same problem with a real usb-serial device, then I
-tried to use emulation so I can debug it more easily
+I see no null termination of  hdr_flags[] if FIN+SYN+ACK+RST are all set.
 
->
-> So this is "working as designed" in that it wasn't designed at all and
-> again, it is a miracle any data is flowing there at all :)
-I see...
-However it may be possible to fix it without much effort, so why not?
-Something like checking the return value for the console's write
-function seems reasonable to me anyway...
-Besides, don't other types of consoles have the same problem (being
-initialized late, getting a lot of data, losing some of it)?
->
-> sorry,
->
-> greg k-h
-Thank you for your honest feedback,
+I will send something like:
 
-Ariel Marcovitch
+diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+index a375a171ef3cb37ab1d8246c72c6a3e83f5c9184..5daf96a3dbee14bd3786e19ea49=
+72e351058e6e7
+100644
+--- a/include/net/tcp_ao.h
++++ b/include/net/tcp_ao.h
+@@ -124,7 +124,7 @@ struct tcp_ao_info {
+ #define tcp_hash_fail(msg, family, skb, fmt, ...)                      \
+ do {                                                                   \
+        const struct tcphdr *th =3D tcp_hdr(skb);                         \
+-       char hdr_flags[5] =3D {};                                         \
++       char hdr_flags[5];                                              \
+        char *f =3D hdr_flags;                                            \
+                                                                        \
+        if (th->fin)                                                    \
+@@ -135,8 +135,7 @@ do {
+                         \
+                *f++ =3D 'R';                                             \
+        if (th->ack)                                                    \
+                *f++ =3D 'A';                                             \
+-       if (f !=3D hdr_flags)                                             \
+-               *f =3D ' ';                                               \
++       *f =3D 0;                                                         \
+        if ((family) =3D=3D AF_INET) {                                     =
+ \
+                net_info_ratelimited("%s for (%pI4, %d)->(%pI4, %d)
+%s" fmt "\n", \
+                                msg, &ip_hdr(skb)->saddr, ntohs(th->source)=
+, \
