@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEBB7DC18F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BF07DC18B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 22:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjJ3VF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 17:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
+        id S231858AbjJ3VFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 17:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbjJ3VFy (ORCPT
+        with ESMTP id S229764AbjJ3VFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:05:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B653CE1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698699916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1JmURPcvLtSqLUUbFA7SrmnbERd26AC5lme3Qx7nOkM=;
-        b=T/cc2gdQ9Ogl+lNkXTZ4+MnJ/+1mcVUxPEUf8ftjlI/eaC6EoR3O5e072R9RT6+ZUOhngS
-        Zy2U9EMqDQIYd1ioRSLCsv+BX76lhLwZkAwyDJTKF3IUpN9ZpA1rvJ5qCbyhxG4axrEdrO
-        SIyR3OfJgEF4zfFvBZeDCKx0BIc2rkE=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688-n5jPfTScMcG6JlCWLTDk8A-1; Mon, 30 Oct 2023 17:05:13 -0400
-X-MC-Unique: n5jPfTScMcG6JlCWLTDk8A-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b7bf1c206fso2996241a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:05:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698699912; x=1699304712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1JmURPcvLtSqLUUbFA7SrmnbERd26AC5lme3Qx7nOkM=;
-        b=E5v87nffN4aPLmyZDJ9PxciP5WYPfed0NZX9hElGizhIvNLcPOSlBDmxVK0/MOcMbd
-         mC4NSfo/vq4aaaNKzJcDvH3NSgcVrwm48huVMpUoRuZCgbBNLD7GbqN4WgWR6zvRuVdl
-         Rd8PLWhW4JrHFvrgbyzXGejmRfaOVz50O+zyE9zl2dQodIh8zZ55A8dfQ9jyG5fJih7m
-         rl697YE4VzmOc9ZAK1Z29iF1LHIKV8wqqFA5NEA9R4AR29wU3ybk3TpKjU9BghO/9Tfj
-         t9cP5FlYbaTF7A/CDQl/FiT8pV2QFD1ez4FCzHhSXDDg0UyHM4FIOQFbDYDRf/4lv5Qf
-         SgoA==
-X-Gm-Message-State: AOJu0YzI1CkqUPsoAjLrz4rPC5nz3iJtHzm/GgHG5NWkZSa9EClNbE9E
-        3KrA/v8ZpJV9pW5aUSZc645zmB4QWitOxLE/8gbaXTWsKUFKLgiiEt6hxODFgsNiNUldqLEG7zW
-        7L/jhlYirv32vNZIqUu/x8KbSityTrF0wF7IduIs+
-X-Received: by 2002:a17:902:bf44:b0:1ca:c490:8537 with SMTP id u4-20020a170902bf4400b001cac4908537mr8378144pls.14.1698699912579;
-        Mon, 30 Oct 2023 14:05:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHzbZk3QaOS4ZLoC9Xi0ie7QckJKqDxiUMckdm8KX4ydz1J+XDcKYN3ZT+xrDzl974H1L6JMnNQ06VhK1wjIKY=
-X-Received: by 2002:a17:902:bf44:b0:1ca:c490:8537 with SMTP id
- u4-20020a170902bf4400b001cac4908537mr8378130pls.14.1698699912248; Mon, 30 Oct
- 2023 14:05:12 -0700 (PDT)
+        Mon, 30 Oct 2023 17:05:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F91AE1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Oct 2023 14:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698699912; x=1730235912;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=LKLP6UEl/pkjGe0QKZIWac46a5g0E8T9ZC0+kHW1Z4g=;
+  b=N9QSXF/t2GWYZ5g14ApqZ4oHKy2mPUpUD0FH+9/TdRnGcwcqh3lbFvIB
+   8aylIYepCIxEL2OEQ4Gjgqd2z2B7OHutsaByewvhl/01LDQLp40WPnMVD
+   NDjQ6vy5oxrq8QPQCIvCsGrfJIduodngQDdU3XfYIe7McyEG1PK0fpqj8
+   KqrpUJpjQF5oLHkYIsWjFA65Thpf6x1zfYmGyQwiKEZpSqbAaEcd2OhyI
+   hu05GO3NYy0dhdwBeMqBxjKfblqt+A9p5+rY7a50mknZc2ks4vQ1zAmDF
+   ecFdBFvT/g4d9e7NdRRndm9WDcNw7Ezi8fEH3Cs4jGS8Uu9HMG0zRaX3F
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="9691829"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="9691829"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 14:05:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="795365560"
+X-IronPort-AV: E=Sophos;i="6.03,264,1694761200"; 
+   d="scan'208";a="795365560"
+Received: from wezedi-mobl1.amr.corp.intel.com (HELO [10.212.223.192]) ([10.212.223.192])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2023 14:05:10 -0700
+Message-ID: <85890ed8-0ab3-4b14-879b-be9f0c760db8@linux.intel.com>
+Date:   Mon, 30 Oct 2023 16:05:09 -0500
 MIME-Version: 1.0
-References: <0000000000000c44b0060760bd00@google.com> <000000000000c92c0d06082091ee@google.com>
- <20231025032133.GA1247614@ZenIV>
-In-Reply-To: <20231025032133.GA1247614@ZenIV>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 30 Oct 2023 22:05:00 +0100
-Message-ID: <CAHc6FU4Zd0szGBzZBx212K4MgjFJAEMwD1jbTraw0ihMG14Z2w@mail.gmail.com>
-Subject: Re: [syzbot] [gfs2?] WARNING: suspicious RCU usage in gfs2_permission
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     syzbot <syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com>,
-        cluster-devel@redhat.com, gfs2@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        postmaster@duagon.onmicrosoft.com, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
+Content-Language: en-US
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Baojun Xu <baojun.xu@ti.com>, lgirdwood@gmail.com, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kevin-lu@ti.com, shenghao-ding@ti.com, peeyush@ti.com,
+        navada@ti.com, tiwai@suse.de
+References: <20231028092409.96813-1-baojun.xu@ti.com>
+ <7f4465c1-5e8e-4c5f-bbff-d2c930326986@linux.intel.com>
+ <9d922584-288a-4b73-83ef-477d1bc58521@sirena.org.uk>
+ <9b94488e-206d-419b-92ed-e70aab11907b@linux.intel.com>
+In-Reply-To: <9b94488e-206d-419b-92ed-e70aab11907b@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al,
 
-On Wed, Oct 25, 2023 at 5:29=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
-> On Fri, Oct 20, 2023 at 12:10:38AM -0700, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit 0abd1557e21c617bd13fc18f7725fc6363c05913
-> > Author: Al Viro <viro@zeniv.linux.org.uk>
-> > Date:   Mon Oct 2 02:33:44 2023 +0000
-> >
-> >     gfs2: fix an oops in gfs2_permission
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D10b21c33=
-680000
-> > start commit:   2dac75696c6d Add linux-next specific files for 20231018
-> > git tree:       linux-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D12b21c33=
-680000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D14b21c33680=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6f8545e1ef7=
-a2b66
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D3e5130844b0c0=
-e2b4948
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D101c8d096=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11a07475680=
-000
-> >
-> > Reported-by: syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com
-> > Fixes: 0abd1557e21c ("gfs2: fix an oops in gfs2_permission")
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
-ction
->
-> Complaints about rcu_dereference() outside of rcu_read_lock().
->
-> We could replace that line with
->         if (mask & MAY_NOT_BLOCK)
->                 gl =3D rcu_dereference(ip->i_gl);
->         else
->                 gl =3D ip->i_gl;
-> or by any equivalent way to tell lockdep it ought to STFU.
 
-the following should do then, right?
+On 10/30/23 12:40, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 10/30/23 12:20, Mark Brown wrote:
+>> On Mon, Oct 30, 2023 at 11:05:39AM -0500, Pierre-Louis Bossart wrote:
+>>
+>>>> +static bool tas2783_readable_register(struct device *dev, unsigned int reg)
+>>>> +{
+>>>> +	switch (reg) {
+>>>> +	case 0x000 ... 0x080:	/* Data port 0. */
+>>
+>>> No, this is wrong. All the data port 'standard' registers are "owned" by
+>>> the SoundWire core and handled during the port prepare/configure/bank
+>>> switch routines. Do not use them for regmap.
+>>
+>>> In other words, you *shall* only define vendor-specific registers in
+>>> this codec driver.
+>>
+>> This seems to come up a moderate amount and is an understandable thing
+>> to do - could you (or someone else who knows SoundWire) perhaps send a
+>> patch for the regmap SoundWire integration which does some validation
+>> here during registration and at least prints a warning?
+> 
+> Good suggestion, we could indeed check that the registers are NOT in the
+> range [0,0xBF] for all ports - only the range [0xC0..FF] is allowed for
+> implementation-defined values. I'll try to cook something up.
 
-    gl =3D rcu_dereference_check(ip->i_gl, !(mask & MAY_NOT_BLOCK));
+After checking, the following ranges are invalid for codec drivers:
 
-> BTW, the amount of rcu_dereference_protected(..., true) is somewhat depre=
-ssing...
->
-> Probably need to turn
->                 ip->i_gl =3D NULL;
-> in the end of gfs2_evict_inode() into rcu_assign_pointer(ip->i_gl, NULL);
+for address < 0x1000
+LSB = 0x00 - 0xBF standard or reserved
 
-That's what commit 0abd1557e21c6 does already so there's nothing to fix, ri=
-ght?
+0x1800 – 0x1FFF reserved
+0x48000000 - 0xFFFFFFFF reserved
 
-> and transpose it with the previous line -
->                 gfs2_glock_put_eventually(ip->i_gl);
->
-> I don't think it really matters in this case, though - destruction of the=
- object
-> it used to point to is delayed in all cases.  Matter of taste (and lockde=
-p
-> false positives)...
+is the recommendation to check the regmap_config and its 'yes_ranges'?
 
-I don't understand. What would lockdep complain about here?
-
-Thanks,
-Andreas
-
+Presumably if the range_min or range_max is within the invalid values
+above then the configuration can be tagged as problematic in the dmesg
+log or rejected with an error code?
