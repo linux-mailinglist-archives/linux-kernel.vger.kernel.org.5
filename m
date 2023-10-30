@@ -2,69 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243867DC29E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Oct 2023 23:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4457DC2F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Oct 2023 00:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjJ3Wu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Oct 2023 18:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S229897AbjJ3XCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Oct 2023 19:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjJ3Wu2 (ORCPT
+        with ESMTP id S229453AbjJ3XCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Oct 2023 18:50:28 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99548E;
-        Mon, 30 Oct 2023 15:50:25 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc55bcd51eso2345545ad.0;
-        Mon, 30 Oct 2023 15:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698706225; x=1699311025; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ol71Wy23MLqAWlJq8ZIGhp6OorJwOj5RE9vie1iTxBI=;
-        b=JuetohCpSC/VS6nclBxAf7zvP+xioCQH4kw/XmEZEfe/orDYLVI1ELSmwUDS6M+yxk
-         hiXd9RraKr7+U3BCF8+aT4tpka+88nINtUOq5q2q2zFXu0/vTCDO7cOByHY8y1YrQuWz
-         P7g92BhDd8OEZsH1pUnLdmAK/Bv77S/WWOWKek2xW2glh+SUKZ9foMrsxegKlVLH065s
-         2Ma96EBhjbhaRVp5GnxLlKYZzp3cL/vdULQZa5mEkvbPBsrsvKlbGUrxdSfzqUQLYKiV
-         lB1x7FBRUcZZOyjH1LIXJcFnUUGVZUIjAtX6znBBZ4NgNB7oqp+rdFmfLpx0KnXp6s34
-         p+3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698706225; x=1699311025;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ol71Wy23MLqAWlJq8ZIGhp6OorJwOj5RE9vie1iTxBI=;
-        b=RVGHvTO8k51KZES3pg0M9fNgh5bczkOeWuJa7ncz9J7LunL2fVtpA6Q7+YuhTLHyfR
-         PAbQqa2razDdQ9mANaFbC9Osf4XqQFEomQkQrAklXo6JEdtscaF6T8d3GiNGN0Nu+u+8
-         C6Io+8Bi2rDFkf5CyufsF3T4o2TVezzrDKl5kDZymjw1JzS6DZcalaeAqjh8VCYDi7Q6
-         OejcaieCqvR3aBuf1uSzk2joh3GadCZp0kv180rbMh9sfLCQ+CCNsY6ijm2y8ZiVA+B3
-         +ycGe3jc5cD3drDe+g19K0bx6s2JQmOLTJHhtwNECll6QGlH/0oSxecG8Nm0Jah7+ieb
-         GRqQ==
-X-Gm-Message-State: AOJu0YxayFr+SY7ZBrBcW4IYlWRxXERLYdcPcWzkN28oXaE+9X1lSQHs
-        rxdOSXoIsrj14ev988RPmdfnwmUGVA5Cb+tM
-X-Google-Smtp-Source: AGHT+IFOrFgKAQD3TszBSjrQcXQS15Tf/X3a/FzJ2mdzcpcahVuvRrcDI3fFHhxMc0r+2KGuykC+4w==
-X-Received: by 2002:a17:902:e906:b0:1c0:bf60:ba82 with SMTP id k6-20020a170902e90600b001c0bf60ba82mr12045288pld.5.1698706224955;
-        Mon, 30 Oct 2023 15:50:24 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.210])
-        by smtp.gmail.com with ESMTPSA id y6-20020a170902ed4600b001c898328289sm34350plb.158.2023.10.30.15.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 15:50:24 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     hpa@zytor.com, x86@kernel.org, dave.hansen@linux.intel.com,
-        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        decui@microsoft.com, wei.liu@kernel.org, haiyangz@microsoft.com,
-        kys@microsoft.com, niyelchu@linux.microsoft.com,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH v2] x86/hyperv : Fixing removal of __iomem address space warning
-Date:   Tue, 31 Oct 2023 04:20:03 +0530
-Message-Id: <20231030225003.374717-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 30 Oct 2023 19:02:45 -0400
+X-Greylist: delayed 324 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 16:02:39 PDT
+Received: from mail-1.server.selfnet.de (mail-1.server.selfnet.de [141.70.126.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C4E1;
+        Mon, 30 Oct 2023 16:02:39 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 57C33409E5;
+        Mon, 30 Oct 2023 23:57:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=selfnet.de; s=selfnet;
+        t=1698706627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PCsZTHDftr8v1kPvgW50F/V5olhAwY15OTuwMPbeyYg=;
+        b=Qq/N8Vfi3ilbXcQ0xQ061biLwDUoayRiTxIIKKhFDlbJNE1ggo/Bj8/tTmcYqxuNsIZ1l0
+        Ryuyet8AFFPCL589Ssga3y8y47IIC6jk7MQWbi8oAgoqEvQlpkitNhxAJQW2c1kSQvWAFi
+        pLN2tkFnyjwdvXswIDqcdh2kgLTOP3Ga/trEFSWZ8cz3FBTthlN2SuZFGB/UAzXnlGC6Xz
+        WnCredEuDVtZyx8b8DTIVCymPrRzq5MFZjKj4fl+KuCT9Ih9wENe6h76jA+wkcUzBwCGnU
+        J+qN3B1iNRIXg1tfkBj/R0O8J/snchKtklHx6cYxTkTlrbWTdP1NKf08BWtkjQ==
+From:   Marco von Rosenberg <marcovr@selfnet.de>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Marco von Rosenberg <marcovr@selfnet.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: phy: broadcom: Wire suspend/resume for BCM54612E
+Date:   Mon, 30 Oct 2023 23:54:45 +0100
+Message-ID: <20231030225446.17422-1-marcovr@selfnet.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,60 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes two sparse warnings
+On some devices, the bootloader suspends the PHY before booting the OS.
+Not having a resume callback wired up is a problem in such situations
+since it is then never resumed.
+This behavior was observed with a Huawei enterprise WLAN access point.
 
-1. sparse complaining about the removal of __iomem address
-space when casting the return value of this ioremap_cache(...)
-from `void __ioremap*` to `void*`.
-Fixed this by replacing the ioremap_cache(...)
-by memremap(...) and using MEMREMAP_DEC and MEMREMAP_WB flag for making
-sure the memory is always decrypted and it will support full write back
-cache.
+The BCM54612E ethernet PHY supports IDDQ-SR.
+Therefore wire-up the suspend and resume callbacks
+to point to bcm54xx_suspend() and bcm54xx_resume().
 
-2. sparse complaining `expected void volatile [noderef] __iomem *addr`
-when calling iounmap with a non __iomem pointer.
-Fixed this by replacing iounmap(...) with memumap(...).
+The same wire-up has been done in commit 38b6a9073007 ("net: phy:
+broadcom: Wire suspend/resume for BCM50610 and BCM50610M") for two PHYs
+also supporting IDDQ-SR.
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+Signed-off-by: Marco von Rosenberg <marcovr@selfnet.de>
 ---
+ drivers/net/phy/broadcom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-v1:
-https://lore.kernel.org/all/19cec6f0-e176-4bcc-95a0-9d6eb0261ed1@gmail.com/T/
-
-v1 to v2:
-1. Fixed the comment which was earlier describing ioremap_cache(...).
-2. Replaced iounmap(...) with memremap(...) inside function hv_cpu_die(...).
-
- arch/x86/hyperv/hv_init.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 21556ad87f4b..2a14928b8a36 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -68,9 +68,11 @@ static int hyperv_init_ghcb(void)
- 	 */
- 	rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
-
--	/* Mask out vTOM bit. ioremap_cache() maps decrypted */
-+	/* Mask out vTOM bit.
-+	MEMREMAP_WB full write back cache
-+	MEMREMAP_DEC maps decrypted memory */
- 	ghcb_gpa &= ~ms_hyperv.shared_gpa_boundary;
--	ghcb_va = (void *)ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
-+	ghcb_va = memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB | MEMREMAP_DEC);
- 	if (!ghcb_va)
- 		return -ENOMEM;
-
-@@ -238,7 +240,7 @@ static int hv_cpu_die(unsigned int cpu)
- 	if (hv_ghcb_pg) {
- 		ghcb_va = (void **)this_cpu_ptr(hv_ghcb_pg);
- 		if (*ghcb_va)
--			iounmap(*ghcb_va);
-+			memunmap(*ghcb_va);
- 		*ghcb_va = NULL;
- 	}
-
---
-2.39.2
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 04b2e6eeb195..ac14f223649b 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -1060,6 +1060,8 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.handle_interrupt = bcm_phy_handle_interrupt,
+ 	.link_change_notify	= bcm54xx_link_change_notify,
+ 	.led_brightness_set	= bcm_phy_led_brightness_set,
++	.suspend	= bcm54xx_suspend,
++	.resume		= bcm54xx_resume,
+ }, {
+ 	.phy_id		= PHY_ID_BCM54616S,
+ 	.phy_id_mask	= 0xfffffff0,
+-- 
+2.42.0
 
